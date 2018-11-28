@@ -1,0 +1,580 @@
+__09.02.2017 V 4.0__
+- Modul- und Studiengangsverwaltung im Kern integriert
+- Komplett neu entwickeltes Dateimanagement
+- Navigation 4.0 und neues Design mit Avatarmenü
+- Verbesserte Responsivität für Darstellung auf allen Geräteklassen
+- Definition von Veranstaltungsgruppen mit einer Hauptveranstaltung
+- Kodierung auf UTF-8
+
+  __Plugins__
+  - Anbindung Owncloud
+  - Anbindung Powerfolder
+
+__02.02.2017 V 3.5__
+- Modul- und Studiengangsverwaltung als Kernplugin
+- Erweiterung der Anmeldeverfahren um Kontingentierung
+- Internationalisierung von Datenbankinhalten
+- Activity-Feed
+- PHP7-Kompatibilität
+- Umstellung auf Inno-DB
+- Mailänderungen
+- Allgemeine Modernisierungen wie Open Graph, Responsivität
+- Überarbeitete Raum-/Zeit-Seite
+- Neuer Adminbereich für Einrichtungen und Dozenten
+
+  __Plugins__
+  - Lernmaterialien
+  - Moodle connect
+  - StudiPPlotter
+  - Datefinder
+  - StudiTeams Organizer
+  - Coursehistory
+  - Doorman
+  - Tetris
+  - Neue Test mit Plugins, z.B. Votecreator und Datefinder
+  - AdminSammelbearbeiten
+
+__30.04.2016 V 3.4__
+- Terminafrage und Abstimmung im Gruppenterminkalender
+- Umstellung auf InnoDB
+- Redesign der Raum-/Zeitseite
+- Komplette Neugestaltung von Umfragen und Tests
+- Erweiterung des Ablaufplans um Termine
+- Blubber umgestelt auf responsives Design
+- Performanceverbesserungen
+- Konsistenzanpassungen in Raum- und Rollenverwaltung
+- Neue Personenseite in Studiengruppen
+
+__30.11.2015 V 3.3__
+- Erweiterte Verwaltungsfunktionen von Teilnehmenden an Lehrveranstaltungen
+- Neuer Assistent zum Anlegen von Veranstaltungen
+- Neue Metriken
+- Neues Design von Schaltflächen
+- Überarbeiteter Ablaufplan
+- Neues Bedienkonzept auf der Seite "Termine und Themen"
+- Didaktische Hilfe und Einsatzszenarien für Funktionen für Lehrveranstaltungen auf der "Mehr"-Seite
+- Blubber-Integration auf Profilseite
+- Sidebar auf weiteren Seiten
+- Neuer Adminbereich ist nun auch für Root nutzbar
+- Raumverwaltung: Anzeige verfügbarer Räume verbessert
+
+__15.05.2015 V 3.2__
+- In-Place-Editor für Hilfetouren
+- Überarbeiteter Terminkalender
+- Echte Gruppentermine
+- Scoreformel 2.0
+- Automatische Updates für PlugIns
+- Umstellung der Icons auf SVG
+- Überarbeitung des Buddysystems
+- Neugestaltete "Mehr"-Seite in Veranstaltungen inkl. didaktischer Hinweise
+- Neue Ausgabe über externe Seiten
+
+__14.09.2014 V 3.1__
+- Komplett neues Design
+- Eigene Schriftart
+- Sidebar statt Infoboxen
+- Neue Schmuckgrafiken
+- Verbesserte Customizingmöglichkeiten
+- APIs, z.B. für Sidebar, Hilfefunktionen
+- "Hilfelasche" auf allen Seiten für schnelle Überblick
+- WYSWIG-Editor
+- Neue Eingabemöglichkeit per Dialog
+- Hilfetouren für beliebige Seiten
+- Persönlicher Dateibereich
+- Neue Startseite mit Widgetfunktionalität
+- Neue Übersichtsseite "Meine Veranstaltungen"
+
+__23.05.2014 V 3.0__
+- Neue Anmeldeverfahren mit modularem Aufbau und Härtefallberücksichtigung
+- Plugin-Rollen können jetzt lokal beschränkt sein
+- Erweiterung des Loggings auf beliebige Objekte
+- Vorläufige Accounts, z.B. für Lehrauftragsplanung
+- Abfrage von Zusatzangaben vor Eintrag in Veranstaltungen
+- Überarbeitetes Ankündigungssystem
+- Vorschaubilder für Links in Blubber
+- Blubbermeldungen lasen sich "weitersagen"
+- Veranstaltungsgruppen können nun Termine haben
+- Überarbeiteter Mailversand
+- Integration eines WYSIWYG-Editors
+- Sortierfunktionen für Veranstaltungslisten
+- Beschreibungstexte für Plugins
+- Integration der REST-Schnittstelle ins Kernsystem
+- Designüberarbeitungen
+- Performanceverbesserungen
+
+__07.11.2013 V 2.5__
+- Automatisiertes Eintragen von Benutzern brücksichtigt Domänen
+- Benutzerdefinierte Blubberströme
+- Redesign der Seite "Teilnehmer/-innen" in Lehrveranstaltungen
+- Konsistenter Datumspicker
+- Avatare und Icons in Retinauflösung
+- Persönliche Benachrichtigungen im Benachrichtigungscenter
+- Erweiterung der Plugin-Administration
+
+__20.06.2013 V 2.4__
+- Chat, Gästebuch und Messenger entfernt
+- Blubber
+- Neues Forum
+- Erweiterung der Seminarklassen für flexible Veranstaltungsvorlagen
+- Datenfelder können Pflichtangaben enthalten
+- Ausfalltermine in Lehrveranstaltungen
+- Module und Plugins lassen sich nur für Admins verfügbar machen
+- Anwendern können auf ihrer Homepage selbst Plugins einschalten
+- Cronjobs lassen sich über die Weboberfläche anlegen und konfigurieren
+- Neues Mailsystem, dass besser mit Massenmailversand klarkommt
+- Verwendung von MathJAX für LaTex-Befehle
+- "Alles gelesen"-Button auf der Veranstaltungsübersichtsseite
+- Einführung Blattdesign
+- Hoovern auf Terminen im Kalender
+- PDF-Export eines vollständigen Wikis
+
+__02.08.2012 V 2.3__
+- iCal-Export zum Einbinden der Termine in externe Kalenderanwendungen per Webadresse
+- Anpassung der Buttons an überarbeitetes Rahmendesign
+- Neuer Blockveranstaltungsassistent
+
+__17.01.2012 v 2.2__
+- Raumanfragen für einzelne regelmäßige Zeiten
+- Adminseiten um Möglichkeit zum Blättern durch Veranstaltungen erweitern
+- Labels für Dozenten und Tutoren einer Veranstaltung
+- Mehrsprachige u. mehrere Veranstalltungstitel
+- Verwendung von underscore.js
+- Teilnehmeransicht in Veranstaltungen für Lehrende
+- Erweiterung des Kalenders um optionale Gruppenkalender-Funktionen
+
+__23.07.2011 v 2.1__
+- Sperregeln erweitern auf Einrichtungen und Nutzer
+- Anpassung der Kopfzeile an überarbeitetes Rahmendesign
+- Zuordnung von Lehrpersonen zu Terminen
+- Erweiterte Zugriffsregeln für Webservices
+- PDF-Export von Wiki-Seiten
+- Barrierefreies Stud.IP: Skiplinks, Landmarks und verbesserte Tab-Navigation
+- Automatisches Eintragen und Informieren von Nutzern
+- Umstellung und Erweiterung der Benutzerverwaltung
+- Barrierefreies dynamisches Validieren von Formularfeldern in Stud.IP
+- Schutz vor CSRF über Sicherheitstoken
+- Icons für Reiter
+- Teilnehmer-Icon auf "Meine Seminare"
+
+__06.01.2011 v 2.0__
+- Anzeige-API für Zeiten & Räume von Veranstaltungen
+- Dateien eines Nutzers nicht löschen, wenn der Nutzer gelöscht wird
+- Kopieren/Verschieben von Dateien und Ordner in mehrere Veranstaltungen/Einrichtungen
+- Erweiterter Veranstaltungsturnus
+- Renovierung von Adminbereich/Veranstaltungen/Grunddaten
+- Erweiterte Schnittstelle zu Ilias 4
+- Zwangsgruppierung "Meine Veranstaltungen"
+- Dozierendenvertretung
+- Umstellung der Konfiguration im Adminbereich auf trails
+- Umbau der Studiengangsseiten im User- und Adminbereich
+- Erweiterung der von Stud.IP ausgehenden Mails um eine HTML-Variante
+- API für Eingriffe in den Seitenaufbau
+- Zentrale Konfiguration für alle Stud.IP-Module
+- Dynamische Sitemap erstellen
+- prototype und scriptaculous durch jQuery + UI ersetzen
+- Verzicht auf auto_prepend_file
+- Einheitliche und barrierefreie Suchfelder
+- Einbindung von Video- und Audiodateien (HTML 5)
+- Neuer Stundenplan
+- Entfernung wap-Seiten
+- Neue Adminnavigation für Dozenten
+- Neue Icons für das System
+- Überarbeitung der Reiterstruktur
+- Feineinstellung von Sichtbarkeiten und Privatsphäre
+
+__20.04.2010 v 1.11__
+- Dateibasiertes caching als default
+- Event-System für Stud.IP
+- Navigation 2.0
+- Umgestaltung Dateibereich
+- Installation von Plugins aus dem Repository
+
+__16.11.2009 v 1.10__
+- Interfaces für Plugins (Komponenten)
+- Vorlesungsverzeichnis und systemweite Personalübersicht für externe Seiten
+- Entfernung Schnittstelle Ilias 2
+- Erweiterung der Raumplanung
+- Schnellsuche (für Veranstaltungen)
+- Erweiterung der Anzeige von Ressourcengruppen
+- "Avatare" für Veranstaltungen und Einrichtungen
+- eMail-Benachrichtigung an Dozenten bei neuem Admin
+- Statusmeldungen erneuern und erweitern
+- Erweiterung der Datenfelder um einen neuen Typ Link
+- Erweiterung und Überarbeitung des Rollenmanagments in der Plugin-Schnittstelle
+- Attachments an internen Nachrichten
+- Interne Nachrichten an Mitarbeitergruppen einer Einrichtung
+- Urheberrecht und Stud.IP
+- Studentische Arbeitsgruppen ("Studiengruppen")
+- Abweichende Bezeichnung für "Lehrende" und "Tutor/-innen"
+
+__01.04.2009 v 1.9__
+- Editierbares Impressum
+- Abbildung von Modulstrukturen über Veranstaltungshierarchie und Plugins
+- Hoch- und Runterladen von Konfigurationen für externe Seiten
+- Update-Funktion für Plugins
+- Optionale Passwortänderung durch root
+- Erweiterungen des Logging-Mechanismus
+- Neue GUI für die Auswahl von Studienbereichen
+
+__22.09.2008 v 1.8__
+- Verwendung von trac für das Projektmanagement
+- Einführung von Nutzerdomänen
+- Erweiterung der Nutzerdaten- und Statusgruppenverwaltung
+- Admin-Link auf "Meine Seminare"
+- (leicht) verbesserte Forenssuche
+- Generische Datenfelder für Nutzer auf der Homepage verschieben
+- Stundenplan Take 2 (ausblenden von Terminen möglich)
+- Reorganisation des Upload-Verzeichnisses
+- Zip Download Beschränkung
+- Erweiterung Sperregeln / Umgang mit importierten Veranstaltungen
+- Vereinfachte eMail-Änderung (Aktivierungslink)
+
+__08.04.2008 v 1.7.0__
+- Stud.IP ist nun Shibboleth-Ready
+- Erweiterung der globalen Einstellungen um Regeln zur Sperrung von Veranstaltungsdaten
+- Zukünftig PDO als Standardmethode des Datenbankzugriffs
+- Möglichkeit des automatischen Anforderns eines neuen Passworts durch den Benutzer
+- Ajax-Erweiterung zum automatischen Vervollständigen bei der Personen- und Veranstaltungssuche
+- bei Bedarf Verwendung von Nutzerbilder-Thumbnails anstelle der Originalbilder
+- Erweiterung Anmeldesystem II - die Kontingentierung ist jetzt optional
+- Einbindung von Flash-Movies über Schnellformatierung und im Dateibereich möglich
+- Möglichkeit zum Anlegen eines Wiki-Inhaltsverzeichnises
+- Beschränkung der freien Nutzeranmeldung nach Email-Adressen möglich
+- Generierung von "Assets"-Verweise vereinfacht
+- Refactoring der Datei "plugins.php"
+
+__02.10.2007 v 1.6.0__
+- Abbildung von Studienmodulstrukturen (Hallesche Lösung)
+- Erweiterung der Teilnehmeransicht
+- Introducing Safiré (Einführung eines neuen generischen Designs)
+- Anzeige des Nutzernamens und des Freitexts im Belegungsplan von Ressourcen
+- Darstellung von Systemsplugins auf der Startseite
+- Erweiterung Anmeldesystem
+- "Flexi"-bilisierung der Infobox ( = als Templateversion)
+- Erweiterung der Gruppenfunktion / Dateiordner für Gruppen
+- Erweiterungen IIlias Verknüpfung
+- Erweiterung des Teilnehmerexports bzgl. Sortierung nach Anmeldedatum
+- Query-Caching on Demand
+- Online-Konfiguration der Typisierung generischer Datenfelder
+- Suchfunktion für Wikis
+- Migrations
+- Vereinfachte Nachrichten an Rechtegruppen innerhalb einer Veranstaltung
+- Hinzufügen von Konfigurationsoptionen für Verzeichnisse mit dynamischen Inhalt
+- Externe Seiten templatebasiert
+- Sperrung von Veranstaltung gegen Selbsteintrag
+- Caching
+- Neue Admin-Seiten für "Zeiten" und "Ablaufplan"
+- weitere Detailverbesserungen und Bugfixes
+
+__27.03.2007 v 1.5.0__
+- PmWiki läßt sich jetzt über die E-Learning-Schnittstelle anbinden
+- Anzeige des Skype Namen und Links von Usern auf der Homepage
+- Erweiterung SCM-Seite in Seminaren
+- die Reihenfolge von  Dozenten in Seminaren läßt sich jetzt ändern
+- bei Anmeldeverfahren lassen sich die Wartelisten deaktivieren
+- Nicht abonnieren, sondern nur in Stundenplan eintragen nun möglich
+- neue user management tools für Admins
+- Einführung eines abstrakten Interfaces für einen Template-Mechanismus
+- Umstellung der Verzeichnisstruktur und Anpassungen an PHP5
+- weitere Detailverbesserungen und Bugfixes
+
+__25.08.2006 v 1.4.0__
+- Sichtbarkeit von NutzerInnen
+- Neues Hilfe-System basierend auf einer zentralen Wiki-Seite
+- Ordnerberechtigungssystemim für den Dateibereich
+- alternativer Chatclient (AJAX)
+- Literaturlistenimport über Plugins
+- Externe Seiten: Sichtbarkeit von Veranstaltungstypen, Einschränkung der Veranstaltungsübersichten auf ausgewählte Studienbereiche
+- Anzeige des Namens auf der wer-ist-online konfigurierbar, "Motto"
+- Nutzerkommentare bei vorläufiger Anmeldung und Anpassung Teilnehmerexport
+- Erweiterungen für Single Sign On
+- Erweiterung der Plugin-Schnittstelle
+- Alphabetische Sortierung für Statusgruppen
+- Löschen des eigenen Homepagebildes nun möglich
+- Konfigurierbare Sperre für den Nutzertitel
+- Root-Funktion zum Sperren einzelner Benutzer
+- weitere Detailverbesserungen und Bugfixes
+
+__22.02.2006 v 1.3.0__
+- RSS-Reader für Nutzer
+- RSS-Feeds für alle News (neu: Veranstaltungen, Einrichtungen und Systemnews)
+- neue Schnittstelle zu anderen eLearning-Systemen, insbesondere ILIAS3
+- eMail-Benachrichtigung bei neuen Inhalten in Veranstaltungen
+- neuer Dateiupload für mehrere Dateien per ZIP
+- grafische Evaluationsauswertung
+- neue Plugin-Schnittstelle
+- Logginfunktionen für wichtige Systembereiche
+- Teilnehmer können aus Listen in Veranstaltungen importiert werden
+- Wartungsmodus
+- Diese history.txt wird nun formatiert ausgegeben ;-)
+- weitere Detailverbesserungen und Bugfixes
+
+__30.08.2005 v 1.2.0__
+- neuer Zugriff per Tastenkombination auf die wichtigsten Systembereiche
+- Friend-of-Friend Anzeige (Verbindungsketten zu anderen Nutzern) auf der Homepage
+- RSS-Feed für private News
+- News-Kommentare für alle News im System
+- neue Gruppierungsfunktion der Seite "Meine Veranstaltungen" nach Farbgruppen, Semestern, Typ und Studienbereichen
+- Verschieben von Dateien und Ordnern in andere Veranstaltungen oder Einrichtungen ist nun möglich
+- Sichtbarkeit und Archivieren kann für Dozenten freigeschaltet werden
+- Erweiterungen an der Ressourcenverwaltung: Listenansicht für Raumanfragen, Sortierung von Raumanfragen nach Dringlichkeit, Belegungsübersichten für Semester, externe Darstellung von Raumplänen, Raumgruppen und weitere Detailverbesserungen
+- freie Datenfelder können nun weitergehend konfiguriert werden
+- neues Sessionmanagement: Die Stud.IP-PhpLib kann nun mit PHP4-Sessions arbeiten
+- neues Datenbankbasiertes Konfiguratiossystem
+- Erweiterung der Schnellformatierung um Tabellendarstellung
+- Wiki-Seiten werden nun archiviert
+- Performance-Verbesserungen (Datenbankabfragen und -struktur)
+- weitere Detailverbesserungen und Bugfixes
+
+__26.09.2004 v 1.1.5__
+- Neue Messaging-Funktionen: Betreff für systeminterne Nachrichten, erzwungene/ optionale eMail-Weiterleitung, differenzierte Lesebestätigung, Bild des Absenders in Nachrichtenansicht und verbesserte Anwort-Funktionalität
+- Neue Art der Erfassung von besuchten Bereichen in Veranstaltungen, so dass nun für jeden Bereich einzeln angezeigt werden kann, ob neue Inhalte vorliegen.
+- Optische Kennzeichnung von neuen Inhalten auf der Startseite (News, Evaluationen und Votes)
+- Einfügen von personalisierten Kommentaren an beliebige Stellen in Wiki-Seiten ähnlich der Word-Anmerkungs-Funktion; Anzeige als Textbox oder Hover-Icon
+- Darstellung von Smileys nach Kategorie und eigenen Favoriten, Statistik für die Smileyverwaltung
+- Verbesserte Eingabe von Bewertungen im Forum
+- Termineingabehilfe/Minikalender für die Eingabe von Terminen an vielen Stellen im System, konfigurierbare Standardzeiten zum Auswählen für regelmäßige Termine
+- Verbesserte Bedienung der Ablaufplansicht und Ablaufplanverwaltung
+- automatische Umsetzung von internen Links, falls mehrere Servername verwendet werden
+- Intern verbesserte Benutzerverwaltung
+- Zahlreiche Performance-Verbesserungen (Datenbankabfragen und -struktur)
+- weitere Detailverbesserungen und Bugfixes
+
+__08.04.2004 v 1.1.0__
+- Evaluations und Umfragemodul zur Erstellung empirischer Online-Fragebögen
+- Möglichkeit der Dateiverlinkung auf geschützte Dokumente auf externen Servern
+- Administrationsebene für Literaturnachweise mit integriertem Bibliothekscheck
+- Erweiterte Raumverwaltung für zentrale Raumvergabe über Raumwünsche
+- Funktion zum Kopieren von Veranstaltungen
+- Mechanismus zum Verstecken und Sichtbarmachen von Veranstaltungen
+- Weiterleitung interner Mail an E-Mail-Adresse schaltbar
+- Verschiedene Sortierungen der Teilnehmerliste
+- Anzeige von Veranstaltsungnsummern in verschiedenen Listen
+- Blätternavigation in Gästebüchern
+- Smiley-Verwaltung
+- Semester und Ferien-Verwaltung nun mit eigenem Frontend
+- Neue Berechnungsformel der Stud.IP Score ;)
+- neues Sytaxhighlighting für php-Code
+- weitere Detailverbesserungen und Bugfixes
+
+__29.12.2003 v 1.0.0__
+- neue WAP-Schnittstelle
+- neue Literaturverwaltung zur direkten Literaturrecherche und -verwaltung aus Stud.IP heraus
+- neue Funktionen zur Verwaltung systeminterner Nachrichten: Ordner, Weiterleiten an anderen Account, Löschschutz, Fallweises Bearbeiten von Signaturen, Vorschau und ein Experten-Modus zum Versenden von Nachrichten
+- neue Simple-Content-Funktion zum Verwalten von beliebigem Content innerhalb von Veranstaltungen und Einrichtungen
+- neuer vCard-Export für Personendaten
+- neue Funktion zum Erstellen von vorformatierten Veranstaltungslisten als PDF
+- neue Synchronisationsschnittstelle für Termine
+- neue Gästebuchfunktion für persönliche Homepages
+- Viewcounter für perönliche Homepages und News
+- kompletter Download als Zip-Archiv mit Ordnerstruktur für alle Dateien oder einzelne Ordner einer Veranstaltung und Archivierung von Dateien als Zip-Archiv mit der kompletten Ordnerstruktur der Veranstaltung
+- neue Formatierung: Einbindung von externen Bildern in Textbeiträge
+- neue Formatierung: Umgehen aller Formatierungen
+- neue Funktion zum Einbinden von grafischen Bannern auf der Startseite
+- überarbeitetes Design im Terminkalender
+- Veranstaltungen und Einrichtungen werden nun zusammen unter "Meine Veranstaltungen" geführt
+- leichte Überarbeitung einiger Icons
+- weitere Detailverbesserungen und Bugfixes
+
+__30.09.2003 v 0.9.5__
+- neues Modul für Votings und Tests
+- neues Wiki-Web-Modul zum kollaborativen Erstellen von verlinkten Dokumenten
+- komplette Überarbeitung der Engine für Forensysteme, um neue Funktionen erweitert (Flatview, Indikatoren, Sortierung, Favoriten, AutoShrink)
+- komplette Überarbeitung des Bereichs zum Versenden von systeminternen-Nachrichten: Mehrere Empfänger können ausgewählt werden, gesendete und empfangene Nachrichten, bessere Bedienung
+- StartUp-Checker: Überprüft vor dem Anlegen von Veranstaltungen, ob alle Voraussetzungen zum Anlegen gegebenen sind und bietet gegebenenfalls Hilfestellungen.
+- Erweiterungen am Dateisystem: Angabe eines freien Namens für Dateien, Möglichkeit zur Aktualisierung bestehenden Dateien
+- Erweiterungen am Anmeldesystem: Einstellen des Anmeldezeitraumes, Verfahren um Nutzer vorläufig in Veranstaltungen aufzunehmen.
+- neues Verfahren zur Erweiterung der Metadaten von Veranstaltungen, Einrichtungen und Nutzer um generische Felder
+- Modularisierung von Veranstaltungen und Einrichtungen: Alle Bereiche können jederzeit für einzelne Veranstaltungen und Einrichtungen an- bzw. abgeschaltet werden.
+- externe Authentifizierungen (LDAP, Radius, andere Stud.IP Installationen) sind über eine Plug-In-Architektur möglich
+- Internationalisierung: Die Internationalisierung und Erstellung einer englischen Sprachversion ist komplett abgeschlossen.
+- weitere Detailverbesserungen und Bugfixes
+
+__31.03.2003 v 0.9.0__
+- erweitertes Chatsystem: eigene Chaträume für Veranstaltungen, Personen und Einrichtungen, Protokoll-Funktion, Chaträume können mit einem Passwort gesichert werden
+- Verknüpfungsmöglichkeit mit Lernmodulen von ILIAS Open Source (muss ebenfalls installiert werden)
+- systemweiter TeX-Support
+- personalisierte Übersicht der persönlichen Veranstaltungen im Archiv
+- automatische Verwaltung und Konfiguration für externe Seiten (zur Einbindung des Stud.IP Contents in bestehende Internetseiten)
+- Veranstaltungssuche / Browser umgebaut und erweitert, verwendet nun zur Darstellung die neuen Bäume
+- Internationalisierung: weite Teile des Systems können nun auch in Englisch benutzt werden
+- Ressourcenverwaltung wird nun für Verwaltung der Räume von Veranstaltungen genutzt (falls aktiviert)
+- neue Ressourcenverwaltung (eigenständiges Modul) zur Verwaltung von Räumen, Gebäuden, Geräten und weiteren Ressourcen.
+- neues Adressbuch auf Grundlage der Buddyverwaltung
+- neues Exporttool, unterstützt Ausgaben in XML, RTF, TXT und PDF
+- neue Einrichtungssuche, verwendet den Einrichtungsbaum
+- neuer Einrichtungsbaum zur Darstellung der Uni-Hierachie
+- neuer Vorlesungsbaum zur Darstellung von Veranstaltungshierachien (etwa Vorlesungsverzeichnis)
+- bei regelmäßigen Veranstaltungen kann nun ein Raum für jeden Termin angegeben werden
+- Ablaufplanverwaltung überarbeitet
+- neue Titelverwaltung für Nutzernamen mit vor- und nachgestellten Titeln
+- überarbeitete Startseite
+- verbesserte Konfigurierbarkeit des Mailversands
+- weitere Detailverbesserungen und Bugfixes
+
+__13.10.2002 v 0.8.15__ ;-)
+- Neue Übersicht der persönlichen Termine auf der Startseite
+- Terminkalender überarbeitet
+- Kürzel für Symbole wie Pfeile oder Copyright-Zeichen eingebaut
+- neue Verwaltungsebene "Funktionen / Gruppen", verwendbar für Einrichtungen und Veranstaltungen
+- grafische Aktivitätsanzeige in Veranstaltungen kann vom Dozenten aktiviert werden
+- Anpassungen für die Funktionalität von Veranstaltungen als "Work Groups"
+- weitere Detailverbesserungen und Bugfixes
+
+__31.08.2002 v 0.8 release candidate 3__
+- Verschieben von Postings in andere Einrichtungen nun möglich
+- neues Wartungstool um die Integrität der Datenbank zu testen und wiederherzustellen
+- beliebige Teilnehmer können nun von Berechtigten direkt berufen werden
+- neues Hovern von Tabellen eingebaut
+- Umstrukturierung der Reiter im Adminbereich in logische Einheiten
+- neue Übersichtsseite "Meine Einrichtungen" für direkten Zugriff auf Einrichtungsobjekte eingebaut.
+- Äusserst umfangreiche und flexible Funktionen zur Teilnehmerbegrenzung von Veranstaltungen. Veranstaltungen können mit einem eigenen Losverfahren oder nach chronologischer Anmeldung mit unterschiedlichen Kontingenten für beliebig viele Studiengänge begrenzt werden
+- neue Ebene "Studienfach" eingebaut. Studenten können nun im System hinterlegen, welche Studienfächer sie studieren
+- neuer Archivierungsassistent
+- System zur optischen Gewichtung des Alters von Objekten eingeführt (Pfeile sind je nach alter mehr oder weniger rot)
+- Veranstaltungssuche/Übersicht verbessert: optische besser hervorgehobene Gliederung, frei wählbare Gliederungsmodi, verbesserte und übersichtlichere Darstellung
+- Rundmails an alle Buddies können verschickt werden
+- neue Einrichtungssuche eingebaut
+- Selbstbezeichnung für Einrichtungen kann nun verändert werden
+- Einrichtungen können nun als eigenes Objekt betrachtet werden: Damit gibt es eigene Foren, Dateibereich, Mitarbeiterlisten und Veranstaltungsübersicht an jedem Institut innerhalb des Systems
+- leichte Veränderung des Designs, neues Hintergrundbild
+- Geschwindigkeitsoptimierungen
+- weitere Detailverbesserungen und Bugfixes
+
+__10.03.2002 v 0.7.5 release candidate 2__
+- bessere Performance der Veranstaltungsübersicht
+- Druckansicht für ein komplettes Forum einer Veranstaltung
+- beim Archivieren wird ein Forumdump mit archiviert
+- der Terminkalender wurde weiter verbessert, insbesondere das Handling von Ganztagsterminen
+- Zitierfunktion im Forum und SMS eingefügt
+- v 2.0 des Chats fertig gestellt: neue Funktionen: SMS aus dem Chat, private Nachrichten, alle Schnellformatierungen verfügbar, Performance optimiert
+- Druckansicht für das Stundenplanmodul eingefügt
+- umfangreiche Schnellformatierungen eingeführt. Dafür wird aus Sicherheitsgründen kein html-Code mehr akzeptiert
+- Linkerkennung verbessert, Formatierungstag für Linknamen eingeführt
+- Smiley-Funktion überarbeitet: Neue Smileys, Smiley-Tag wird auf Alt-Tag eingeblendet, Smiley-Übersichtsseite als Link auf jedes Smiley
+- v 2.0 des SMS-Systems: Nachrichten werden nicht mehr sofort gelöscht, automatisches Löschen beim Logout auf Wunsch, Signatur für SMS
+- Messsenger verbessert
+- Buddylisten eingefüngt
+- neue Konfigurationsseite Messaging: Buddieverwaltung, Funktion zum automatischen Starten des Messengers, Einstellungen für SMS-System
+- Hilfeseiten auf den aktuellen Stand gebracht
+- mehr Smileys :)
+- weitere Detailverbesserungen und Bugfixes
+
+__13.01.2002 v 0.7.0 release candidate 1__
+- Komplett neu geschriebener Terminkalender: Tages-, Monats-, Wochen- und Jahresansicht, flexible Wiederholungstermine, farbliche Kennungen für Termine, freie Einbindung vom Veranstaltungsterminen, PIM-Optik, zahlreiche Optionen über MyStudip-Bereich frei konfigurierbar
+- verbesserte Ablaufplanverwaltung: Optik an Fluid-Design angepasst, nachträgliches Anlegen von Datei und Forenordnern nun möglich, verbesserte Bedienung
+- Veranstaltungsübersicht für Instituts-Admins durch Stundenplanmodul realisiert
+- Semesterauswahl für Stundenplan nun möglich
+- MyStud.IP Bereich als eingeständiges Modul erstellt und ausgebaut: Optionen für Forum, Stundenplan und Terminkalender können hier zentral verwaltet werden.
+- Neuer Autologin, der html-Datei als Login Script an den Benutzer verschickt
+- v 3.0 der Newsverwaltung: Übersichtliches Auswählen von gewünschten Bereichen, verbesserte Bedienung, zahlreiche Detailverbesserungen
+- Aufteilung aller Veranstaltung in beliebig viele Kategorien, etwa Kultur und Lehre
+- TOP Listen bei der Veranstaltungsauswahl zeigen meistbesuchte, zuletzt angelegte, aktivste und teilnehmerstärkste Veranstaltungen an
+- Veranstaltungsauswahl über Reiter in Bereiche strukturiert
+- Persönliche Seite in der Bedienung verbessert: Einzelne Bereiche können direkt angesprungen werden
+- v 2.0 der Verwaltung eigener Kategorien
+- Optik der Startseite verbessert und differenzierte Startseiten für verschiedene Nutzergruppen realisiert
+- Adminbereich neustrukturiert: Auswahllisten für einzelne Bereiche sind identisch im Aufbau, Veranstaltungen können vorgewählt werden, so dass das Verwalten mehrerer Aspekte einer Veranstaltung leicht fällt
+- Optik des Archivs verbessert, es kann auf selbst besuchte Veranstaltungen eingegrenzt werden
+- Der Download wurde verbessert: Download ist als ZIP-Archiv für alle Dateitypen möglich, MIME-Typen werden für die wichtigsten Dateien erkannt
+- Aussagekräftigere Fehlermeldungen in vielen Bereichen umgesetzt
+- Geschlecht kann bei der Registrierung mit angegeben werden, Zeitpunkt der Erstanmeldung wird gespeichert
+- Übersichtliche Kennzeichnung von Veränderungen in besuchten Seminaren auf der Übersichtsseite
+- Verschieben ist im Forum möglich, etliche Detailverbesserungen im Forenbereich
+- Impressum neu strukturiert
+- Optik des Literaturbereichs verbessert
+- Handling von Sonderzeichen systemweit optimiert
+- weitere Detailverbesserungen und Bugfixes
+
+__01.10.2001 v 0.6.0 beta 4__
+- erste komplett überarbeitete und in vielen Details neu durchdachte und strukturierte Version
+- v.2.0 des Forensystems (NT Version): Komplett graphischer Treeview, JavaScript Effekte zur schnellen Verarbeitung der Informationen
+- Assistent zum Anlegen von Seminaren
+- Neues Terminsystem, das flexible Verwaltung von Terminmetadaten ermöglicht
+- Neue Suchfunktion in der globalen Nutzerverwaltung
+- v.2.0 der Terminverwaltung und des Assistenten zum Erstellen eines Ablaufplans
+- v.3.0 der Ordnerverwaltung: rekursive Ordnerverwaltung, flexibles Anpassen an unterschiedliche Anforderungen, Download per send-Methode
+- Optimierung der Dateiverwaltung durch das OS
+- Optimierung des Zusammenspiels zwischen Terminen und Dokumenten/Ordnern
+- deutlich verbesserte Archivsuche
+- nachträgliches Vergeben von Berechtigungen im Archiv nun möglich
+- Anzeigen der berechtigten Personen im Archiv möglich
+- Scorefunktion eingefügt (Codename geschnitten Brot)
+- freies Verwalten von Kategorien auf der persönlichen Homepage (Codename Extrawurst) eingefügt
+- mystudip eingefügt
+- Stud.IP Messenger eingefügt (beta)
+- Fluid 'n' table_header Optik eingeführt
+- Ersetzen von Buttons durch Grafikbuttons begonnen
+- Detailverbesserungen am Seminar-Browser
+- Neue Reiteroptik
+- weitere Detailverbesserungen und Bugfixes
+
+__28.08.2001__
+- Start der Portalseite auf www.studip.de
+
+__07.06.2001 v 0.5.0 beta 3__
+- Release bei Sourceforge
+- weitere Fixes
+- Graphische Ausgabe des Stundenplans
+- SMS nicht mehr auf 255 Zeichen begrenzt
+
+__01.05,2001 v 0.4.0 beta 2__
+- Archiv eingefügt
+- neuer Seminar-Browser (Suchfunktion für Veranstaltungen)
+- automatisches Archivieren der Veranstaltungen
+- Bereichs- und Fachverwaltung
+- v.2.0 der Dateiverwaltung: Upload nun über grafische Oberfläche, orientiert am Explorerlook
+- kontextsensitives Hilfesystem
+- Gruppierung von "Meine Veranstaltungen" über Farbcodes
+- v.2.0 des Newssystems
+- Facelifting beim Design: neue Buttons, konsequenter Fensterlook
+
+__19.03.2001 v 0.3.0 beta 1__
+- erster Release bei Sourceforge
+- unzählige Buxfixes
+- viele Detail-Verbesserungen, die sich im laufenden Betrieb ergeben haben
+- diese Version hat den Betrieb über ein Semester als Produktivsystem am Zentrum für interdisziplinäre Medienwissenschaft ohne Probleme überstanden
+
+__15.12.2000__
+- Stud.IP wird bei Sourceforge registriert
+
+__16.10.2000 v 0.2.0 alpha__
+- In letzter Sekunde wird pünktlich zum Start des WS 2000/01 die erste Version im öffentlichen Einsatz fertig gestellt
+- Neue Funktionen: Dateiordner, Chat, SMS-System, Anzeige von Personen, die Online sind, Terminplaner, Personensuche und persönliche Homepage
+- Erste Version mit durchgängiger CI
+- Navigation per Reitersystem
+- Anbindung an externe Seiten
+
+__07.08.2000__
+- sechsstufiges Rechtessystem wird fertig gestellt
+
+__05.08.2000__
+- Das Chatmodul wird eingefügt
+
+__Sommer 2000__
+- Die Konturen des Systems werden allmählich erkennbar. Seminarverwaltung, Rechtessystem, Personenverwaltung, erweitertes Forensystem und einige weitere Seiten sind umgesetzt
+- André Noack stößt zu der Entwicklercrew
+- Der Name Stud.IP wird geboren. Es ist die Abkürzung für STUDentischer Internetsupport von Präsenzlehre
+- Domain www.studip.de wird registriert
+
+__11.01.2000 v 0.1.0__
+- Die erste Version im Lehreinsatz: Die Veranstaltung "Kurzfilmpraxis" von Ralf Stockmann nutzt das personalisierte Forum zur Entwicklung von Drehbüchern
+
+__07.01.2000__
+- Umstellung auf PHP-Lib und damit Einführung des Sessionmanagements und der Userverwaltung
+
+__Dezember 1999__
+- Die Arbeiten an Stud.IP beginnen. Noch ist der Name allerdings nicht erfunden :)
+- Die Entwickler der ersten Stunde: Stefan Suchi (Core) und Ralf Stockmann (Forum)
+- Grundstein des Systems: Ein Forensystem, realisiert in PHP
+
+__03.12.1999__
+- Der Stud.IP Server, der inzwischen die Göttinger Installation bereitstellt, wird installiert.
+
+__27.11.1999__
+- Die ersten Projektentwürfe von Stud.IP entstehen. Es soll ein internetbasiertes System zur Unterstützung von Lehrveranstaltungen entstehen. Es soll personalisiert sein, mit Seminarverwaltung, Dateiupload, Terminen, News, Forum und Literatur- und Linklisten.
+- Das Konzept wird maßgeblich von Oliver Brakel, Cornelis Kater, Ralf Stockmann und Stefan Suchi entworfen. Aus diesen Entwicklern entsteht die Stud.IP-Crew, die die das System unabhängig weiterentwickelt
+- Schnell wird klar, das die Technologie der Wahl ein LAMP Server-System ist
+
+__Herbst 1999__
+- Eine kleine Gruppe von Interessierten trifft sich, um gemeinsam die Technik dynamischer Internetseiten mit Datenbankanbindung zu erlernen

@@ -1,0 +1,329 @@
+#layout-sidebar {
+    background: #fff;
+    flex: 0 1 auto;
+    position: relative;
+    left: 0px;
+    margin-right: 5px;
+    margin-left: 15px;
+    text-align: left;
+    min-width: 270px;
+}
+.sidebar {
+    border-left: 0;
+    display: inline-block;
+    flex: 0 0 auto;
+    margin-bottom: 1em;
+    position: relative;
+
+}
+.sidebar-image {
+    position: relative;
+    > img {
+        display: block;
+        width: 100%;
+    }
+    &-with-context {
+        margin-bottom: 9px;
+    }
+}
+.sidebar-context {
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid @base-color-20;
+    padding: 0px;
+    max-height: 75px;
+    position: absolute;
+    bottom: -7px;
+    right: 13px;
+}
+.sidebar-title {
+    color: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 1.2em;
+    padding: 5px 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .sidebar-image-with-context & {
+        right: 120px;
+    }
+}
+ul.widget-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    > li {
+        background-repeat: no-repeat;
+        background-position: 0 1px;
+        background-size: 16px 16px;
+        padding-left: 20px;
+        word-wrap: break-word;
+    }
+}
+div#sidebar-navigation {
+    div.sidebar-widget-header {
+        display: none;
+    }
+    div.sidebar-widget-content {
+        border-top: 0px;
+    }
+}
+.widget-links {
+    margin: 5px;
+    > li img {
+        vertical-align: text-top;
+    }
+    a {
+        display: block;
+    }
+    .widget-content a:only-child {
+        box-sizing: border-box;
+        line-height: 16px;
+    }
+    span[disabled] {
+        color: @dark-gray-color-80;
+        cursor: not-allowed;
+        font-weight: lighter;
+    }
+    &.sidebar-navigation > li.active {
+        background-color: @base-color;
+        margin-left: -4px;
+        //#arrow > .right-border(14px, @content-color-20, 1px, @content-color-40, -5px);
+        #arrow > .right-border(14px, @base-color, 1px, @base-color, -5px);
+        a {
+            color: @white;
+            padding-left: 4px;
+        }
+    }
+    &.sidebar-views > li.active {
+        background: @activity-color-40;
+        margin-left: -5px;
+        box-shadow: inset 0 0 0 1px @activity-color;
+        #arrow > .right-border(14px, @activity-color-40, 1px, @activity-color, -5px);
+        a {
+            color: @base-color;
+            padding-left: 4px;
+        }
+    }
+    &.sidebar-navigation > li,
+    &.sidebar-views > li {
+        padding-left: 5px;
+
+        &.active {
+
+            line-height: 2em;
+            &:before, &:after {
+                margin-left: -1px;
+            }
+            display: block;
+
+            // Obtuse angle looks kinda ugly with borders
+            &:before {
+                border-left-width: floor((14px * 2 / 3));
+            }
+            &:after {
+                border-left-width: floor((14px * 2 / 3 - 1));
+            }
+        }
+    }
+
+    .link-form {
+        display: inline-block;
+
+        button {
+            background: transparent;
+            border: 0;
+            color: @base-color;
+            margin: 0;
+            padding: 0;
+
+            &:hover {
+                color: @active-color;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+.sidebar-widget-cloud {
+    margin: 0px;
+    padding: 0px;
+    max-width: 100%;
+    overflow: hidden;
+    > li { display: inline-block; }
+    a.weigh-1 { font-size: 0.7em; }
+    a.weigh-2 { font-size: 0.8em; }
+    a.weigh-3 { font-size: 0.9em; }
+    a.weigh-4 { font-size: 1.0em; }
+    a.weigh-5 { font-size: 1.1em; }
+    a.weigh-6 { font-size: 1.3em; }
+    a.weigh-7 { font-size: 1.5em; }
+    a.weigh-8 { font-size: 1.7em; }
+    a.weigh-9 { font-size: 1.9em; }
+    a.weigh-10 { font-size: 2.1em; }
+}
+
+.sidebar-widget {
+    background: #fff;
+    .clearfix;
+}
+.sidebar-widget-content {
+    border-top: 1px solid @content-color-40;
+    padding: 4px;
+    transition: all 0.5s;
+}
+
+.sidebar {
+    @width: 270px;
+
+    padding-bottom: 7px;
+    width: @width;
+    z-index: 2;
+
+    .sidebar-image > img {
+        width: @width;
+    }
+
+    .course-avatar-medium, .stream-avatar-medium, .avatar-medium {
+        max-width: 75px;
+        height: 75px;
+    }
+    .sidebar-widget, .sidebar-widget-placeholder {
+        background: #fff;
+        border: 1px solid @content-color-40;
+        margin: 15px 0px 0;
+    }
+    .sidebar-widget-header {
+        .clearfix();
+        background: @content-color-20;
+        color: @base-color;
+        font-weight: bold;
+        padding: 4px;
+    }
+    .sidebar-widget-options {
+        float: right;
+        opacity: 0;
+        transition: all 0.5s;
+    }
+    .sidebar-widget:hover .sidebar-widget-options {
+        opacity: 1;
+    }
+}
+
+.sidebar-widget-header {
+    .clearfix();
+    .sidebar-widget-extra {
+        float: right;
+    }
+}
+.sidebar-widget .widget-options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+        line-height: 1.5em;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .options-checkbox {
+        background-repeat: no-repeat;
+        background-position: left 2px;
+        display: block;
+        padding-left: 20px;
+
+        &.options-checked {
+            .background-icon('checkbox-checked', 'clickable');
+        }
+        &.options-unchecked {
+            .background-icon('checkbox-unchecked', 'clickable');
+        }
+    }
+
+    .options-radio {
+        background-repeat: no-repeat;
+        background-position: left 2px;
+        display: block;
+        padding-left: 20px;
+
+        &.options-checked {
+            .background-icon('radiobutton-checked', 'clickable');
+        }
+        &.options-unchecked {
+            .background-icon('radiobutton-unchecked', 'clickable');
+        }
+    }
+}
+
+// TODO: These two should be combined into one widget
+select.sidebar-selectlist {
+    overflow-y: auto;
+    width: 100%;
+}
+.selector-widget select {
+    cursor: pointer;
+    padding: 0;
+
+    option {
+        padding: 0 0.5em;
+    }
+}
+
+.sidebar-search {
+    .needles input[type=text] {
+        box-sizing: border-box;
+        border: 1px solid @base-color-60;
+        border-right-width: 30px;
+        float: left;
+        height: 22px;
+        width: 100%;
+    }
+    input[type=submit] {
+        .hide-text();
+        .size(20px, 29px);
+        .background-icon('search', 'info_alt');
+        float: left;
+        background-position: center 3px;
+        background-repeat: no-repeat;
+        vertical-align: top;
+        margin-left: -30px;
+    }
+    ul.needles {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        li {
+            .clearfix();
+            margin-bottom: 0.5em;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+    ul.filters {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        li {
+            display: inline-block;
+        }
+    }
+}
+
+// Links inside the sidebar
+.sidebar {
+    a.link-intern {
+        .icon('before', 'link-intern', 'clickable', 16, 2px);
+    }
+    a.link-extern {
+        .icon('before', 'link-extern', 'clickable', 16, 2px);
+    }
+}
+
+// Prevent selects from growing too large
+.sidebar select {
+    max-width: 100%;
+}

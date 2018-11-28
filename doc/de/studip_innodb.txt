@@ -1,0 +1,45 @@
+Durch die Umstellung der Stud.IP-Datenbank von MyISAM auf InnoDB gibt es Einstellungen, die beachtet werden sollten:
+
+1. ROW_FORMAT Barracuda
+=======================
+MySQL ab der Version 5.5 (wie auch MariaDB und Percona Server) unterstützen neben dem schon länger bestehenden Format
+"Antelope" nun das neue Zeilenformat "Barracuda". Dies ist auch das empfohlene Zeilenformat für InnoDB-Tabellen,
+und zwar in der Variante "DYNAMIC" (nicht "COMPRESSED"). Wenn Sie noch das "Antelope"-Format verwenden, haben Sie
+entweder "COMPACT" oder "REDUNDANT" als ROW_FORMAT Ihrer Tabellen.
+
+Um Barracuda verwenden zu können, müssen zwei Variablen Ihres Datenbankservers auf bestimmte Werte gesetzt sein:
+
+innodb_file_per_table = 1
+innodb_file_format = Barracuda
+
+Mit diesen beiden Werten konfigurieren Sie Ihren Server so, dass pro Datenbanktabelle eine eigene Datei verwendet wird
+und das Format dieser Datei im Barracuda-Format sein kann.
+
+Ab MySQL 5.7.6 gilt obige Einschränkung nicht mehr (https://dev.mysql.com/doc/refman/5.7/en/innodb-row-format-dynamic.html)
+und es kann ab Version 5.7.9 auch über die Systemvariable innodb_default_row_format vorgegeben werden, dass für neue
+Tabellen Barracuda (DYNAMIC) verwendet werden soll. Ältere Versionen müssen dies beim Anlegen der Tabelle explizit
+im CREATE TABLE-Query angeben ("ROW_FORMAT=DYNAMIC").
+
+Für nachträgliche Änderungen an den Datenbanktabellen gibt es im cli-Ordner die beiden php-Skripten
+
+- myisam_to_innodb.php
+- antelope_to_barracuda.php
+
+Diese können Sie jederzeit ausführen und so die Änderungen auch nach Updates des Datenbankservers oder Einstellung der
+entsprechenden Variablen nachziehen. Bereits konvertierte Datenbanktabellen bleiben völlig unberührt.
+
+2. FULLTEXT-Index
+=================
+FULLTEXT-Indizes werden für InnoDB aber erst ab MySQL 5.6 unterstützt. Bei der Migration der Stud.IP-Tabellen werden daher für alle älteren
+MySQL-Versionen Tabelle, die einen solchen Index benutzen im MyISAM-Format belassen. Bei einem späteren Upgrade des Datenbankservers können Sie die
+Tabelle z.B. über das mitgelieferte Kommandozeilenskript cli/myisam_to_innodb.php nachträglich konvertieren.
+
+3. Tuning von InnoDB
+====================
+Um die bestmögliche Leistung aus der Datenbank herauszuholen, müssen für InnoDB andere Variablen des Datenbankservers
+gesetzt werden als es bei MyISAM der Fall war. Hier seien besonders folgende Links empfohlen:
+
+- https://www.percona.com/blog/2013/09/20/innodb-performance-optimization-basics-updated/
+- https://www.percona.com/blog/2014/01/28/10-mysql-settings-to-tune-after-installation/
+- https://www.percona.com/live/london-2014/sessions/tuning-mysql-its-about-performance
+- http://www.tocker.ca/2013/09/17/what-to-tune-in-mysql-56-after-installation.html

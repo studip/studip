@@ -1,0 +1,43 @@
+/* --- AJAX indicator ------------------------------------------------------- */
+#ajax_notification {
+    background-color: #7387ac;
+    bottom: 0;
+    color: #fff;
+    display: none;
+    font-size: 1.3em;
+    font-weight: bold;
+    height: 20px;
+    margin: 0;
+    padding: 5px 0 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+
+    img { vertical-align: middle; }
+}
+
+.ajax_notification {
+    position: relative;
+
+    .notification {
+        background: rgba(255, 255, 255, 0.5) url("@{image-path}/ajax_indicator_small.gif") center center no-repeat;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        display: inline-block;
+        height: 16px;
+        margin: 0 3px;
+        opacity: 1;
+        position: absolute;
+        width: 16px;
+    }
+}
+
+.ajaxing {
+    background: url("@{image-path}/ajax_indicator_small.gif") center no-repeat;
+    display: inline-block;
+    .size(16px, 16px);
+    .hide-text;
+
+    img, image, svg { display: none; }
+}
+

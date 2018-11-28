@@ -1,0 +1,671 @@
+/*******************************************************************************
+  Standard-Stylesheet für Stud.IP im Safire-Design
+  - use http://www.colorzilla.com/gradient-editor/ for gradients
+*******************************************************************************/
+@import "mixins.less";
+
+@import "less/font-face-lato.less";
+@import "less/variables.less";
+@import "less/breakpoints.less";
+@import "less/typography.less";
+@import "less/visibility.less";
+@import "less/links.less";
+@import "less/tables.less";
+@import "less/forms.less";
+@import "less/content.less";
+@import "less/css_tree.less";
+
+@import "less/layouts.less";
+@import "less/header.less";
+@import "less/personal-notifications.less";
+@import "less/navigation.less";
+@import "less/sidebar.less";
+@import "less/helpbar.less";
+@import "less/content_box.less";
+@import "less/badges.less";
+@import "less/actionmenu.less";
+@import "less/studip-selection.less";
+@import "less/article.less";
+@import "less/comments.less";
+
+@import "less/ajax.less";
+@import "less/autocomplete.less";
+@import "less/avatar.less";
+@import "less/buttons.less";
+@import "less/messagebox.less";
+@import "less/messages.less";
+@import "less/quicksearch.less";
+@import "less/search.less";
+@import "less/skiplinks.less";
+@import "less/tabs.less";
+@import "less/tooltip.less";
+@import "less/questionnaire.less";
+@import "less/copyable-links.less";
+
+@import "less/admin.less";
+@import "less/calendar.less";
+@import "less/contacts.less";
+@import "less/cronjobs.less";
+@import "less/dashboard.less";
+@import "less/documents.less";
+@import "less/dates.less";
+@import "less/files.less";
+@import "less/evaluation.less";
+@import "less/index.less";
+@import "less/news.less";
+@import "less/schedule.less";
+@import "less/study-area-selection.less";
+@import "less/tour.less";
+@import "less/studygroup.less";
+@import "less/wiki.less";
+@import "less/raumzeit.less";
+@import "less/opengraph.less";
+@import "less/statusgroups.less";
+@import "less/start.less";
+@import "less/profile.less";
+@import "less/my_courses.less";
+
+@import "less/mobile.less";
+@import "less/pagination.less";
+@import "less/admission.less";
+@import "less/enrolment.less";
+@import "less/dialog.less";
+@import "less/studip-overlay.less";
+@import "less/lists.less";
+@import "less/selects.less";
+@import "less/plus.less";
+@import "less/coursewizard.less";
+@import "less/smileys.less";
+@import "less/big-image-handler.less";
+@import "less/i18n.less";
+
+@import "less/globalsearch.less";
+@import "less/gradebook.less";
+
+@import "less/responsive.less";
+@import "less/navigation-hoverborder.less";
+
+@import "less/deprecated.less";
+
+@import "less/mvv.less";
+
+// Class for DOM elements that should only be visible to Screen readers
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+/* --- Standardvorgaben ----------------------------------------------------- */
+//TODO: the Body-Background color should be similar to A:link.toolbar and A:visited.toolbar for best effect!!
+html, body { height: 100%; }
+html { overflow-y: auto; }
+body {
+    background-color: #d8dadc;
+    background-repeat: repeat-x;
+    margin: 0;
+}
+
+ul + br, table + br {
+    display: none;
+}
+
+blockquote {
+    border-left: 3px solid @brand-color-lighter;
+    padding: 5px;
+    margin: 8px;
+    padding-left: 8px;
+    margin-left: 0px;
+    background-color: rgba(0,0,0,0.05);
+    > .author {
+    	background-color: @brand-color-lighter;
+        padding: 4px;
+        margin-left: -10px;
+        padding-left: 15px;
+        margin-right: -5px;
+        color: white;
+        margin-top: -5px;
+        margin-bottom: 5px;
+    }
+}
+
+dd { margin-left: 1.5em; }
+
+input.placeholder { opacity: 0.7; }
+::placeholder {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+table.content {
+    border-collapse: collapse;
+
+    td {
+        border: thin solid #666;
+        font-size: smaller;
+        padding: 3px;
+    }
+}
+
+div.indent { margin-left: 2em; }
+
+h1.topic, h2.topic, h3.topic {
+    font-weight: bold;
+    line-height: 1em;
+    margin-bottom: 0.1em;
+    margin-top: 0.1em;
+    padding: 0.1em;
+}
+h1.topic { font-size: 1.6em; }
+h2.topic, h3.topic { font-size: 1.2em; }
+
+ul.clean {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    > li {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        padding: 0px;
+    }
+}
+
+/* --- media preview -------------------------------------------------------- */
+.preview {
+    img, audio, video {
+        max-height: 500px;
+        max-width: 750px;
+    }
+}
+
+.mainmenu {
+    margin-top: 7px;
+    text-align: left;
+    font-size: 16px;
+    padding: 5px;
+}
+
+/* --- StudipForm selectbox control------------------------------------------ */
+.selectbox {
+    background-color:#ffffff;
+    border:1px solid @base-color;
+    margin-top:5px;
+    margin-bottom:5px;
+    padding:5px;
+    max-height:200px;
+    overflow:auto;
+
+    fieldset {
+        border:none;
+        margin:0px;
+        padding:0px;
+    }
+}
+
+
+.minor {
+    color: gray;
+    font-size: 0.75em;
+}
+.quiet { color: gray; }
+
+.middle      { vertical-align: middle; }
+.text-bottom { vertical-align: text-bottom; }
+.text-top    { vertical-align: text-top !important; }
+
+/* --- index.php anpassungen an den boxen zur vereinheitlichung ------------- */
+table.index_box {
+    border-collapse: collapse;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+td.index_box_cell {
+    background-color: @content-color-20;
+    padding: 4px;
+}
+
+/* overdiv */
+div.overdiv {
+    background-color: @content-color-20;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 600px;
+    z-index: 2;
+
+    .title { margin: 0; }
+    a.title {
+        padding: 2px;
+        float: right;
+    }
+    div.title {
+        background: @brand-color-lighter;
+        height: 1.4em;
+        padding: 0;
+    }
+    h4.title {
+        color: #fff;
+        float: left;
+        font-size: 1em;
+        overflow: hidden;
+        padding: 2px;
+        width: 90%;
+    }
+
+    div.content {
+        background-color: @content-color-20;
+        clear: both;
+        margin: 0;
+        overflow: hidden;
+        padding: 2px;
+    }
+}
+
+/* --- Editor Toolbar ------------------------------------------------------- */
+.add_toolbar {
+    box-sizing: border-box;
+}
+.editor_toolbar {
+    display: inline-block;
+
+    .buttons {
+        font-size: 0.75em;
+
+        .clearfix();
+        margin: 0 !important;  // Locked since .buttons is pretty generic
+        padding: 0 !important; // and other styles could easily interfere
+
+        border-spacing: 0; // Chrome needs this
+
+        .left  { float: left; }
+        .right { float: right; }
+
+        .ui-button {
+            background: @dark-gray-color-15;
+            display: inline-block;
+            height: 1.4em;
+            line-height: 1.4;
+            padding: 0.4em 1em;
+
+            &:hover {
+                background-color: @base-color-60;
+                color: @contrast-content-white;
+            }
+        }
+    }
+}
+
+/* --- Plugin Administration ------------------------------------------------ */
+.plugin_image {
+    text-align: center;
+    width: 88px;
+    vertical-align: top;
+}
+
+.plugin_score   { white-space: nowrap; }
+.plugin_install { text-align: center; }
+
+.plugin_description {
+    a {
+        display: none;
+    }
+}
+
+.plugin_description.short {
+    div {
+        max-height: 15em;
+        overflow: hidden;
+        position: relative;
+
+        p.read_more {
+             position: absolute;
+             bottom: 0;
+             left: 0;
+             width: 100%;
+             height: 4em;
+             margin: 0;
+             background-image: linear-gradient(to bottom, fadeout(@white, 100%), @white)
+         }
+    }
+
+    .read_more_link {
+        .icon('before', 'add', 'clickable');
+
+        span {
+            vertical-align: middle;
+            padding-top: 3px;
+        }
+    }
+
+    a {
+        display: inline-block;
+    }
+}
+
+
+
+img.plugin_preview {
+    height: 60px;
+    width: 80px;
+}
+
+/* --- User Administration -------------------------------------------------- */
+
+.user_form { width: 250px; }
+
+.times-rooms-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 -0.5em;
+    section {
+        flex: 1;
+        min-width: 23em;
+        max-width: 100%;
+        padding: 0 0.5em;
+
+        &:empty {
+            height: 0;
+        }
+
+        section {
+            padding: 0;
+        }
+    }
+}
+
+/* --- Veranstaltungsverwaltung --------------------------------------------- */
+.boxed-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    margin: 0 -0.5em;
+
+    &, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        flex: 1 1 23em;
+        display: block;
+        min-width: 23em;
+        max-width: 100%;
+        padding: 0 0.5em;
+
+        &:empty {
+            height: 0;
+        }
+    }
+
+    a {
+        box-sizing: border-box;
+        background-color: @content-color-20;
+        border: 1px solid #D0D0D0;
+        display: block;
+        height: 11em;
+        margin: 0 0 1em;
+        overflow: hidden;
+        padding: 1em;
+        position: relative;
+
+        &:hover {
+            background-color: #F2F2F2;
+            border-color: #A4A4A4;
+
+            p { color: #000; }
+        }
+    }
+    img {
+        height: calc(100% - 20px);
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        bottom: 10px;
+        opacity: 0.1;
+    }
+
+
+    h3 {
+        color: inherit;
+        font-size: 2em;
+        font-weight: normal;
+        margin: 0;
+        padding: 0;
+    }
+    p {
+        color: #666;
+    }
+}
+
+.smashbox_kategorie {
+    font-weight: bold;
+    font-size: 2em;
+    margin: 0;
+    width: 90%;
+}
+
+.smashbox_stripe {
+    background: url("@{image-path}/background_stripes.jpg") repeat-x;
+    border-top: 1px solid #D0D0D0;
+}
+
+/* --- general style classes ------------------------------------------------ */
+.arrow_down {
+    background: transparent top left no-repeat !important;
+    .background-icon('arr_1down', 'clickable') !important;
+}
+.arrow_right {
+    background: transparent top left no-repeat !important;
+    .background-icon('arr_1right', 'clickable') !important;
+}
+h1:hover, h2:hover, h3:hover, h4:hover {
+    .arrow_down  {
+        .background-icon('arr_1down', 'attention');
+    }
+    .arrow_right {
+        .background-icon('arr_1right', 'attention');
+    }
+}
+
+.invalid { border: 2px dotted red; } // an invalid form entry
+.invalid_message {
+    display: none;
+    font-weight: bold;
+    color: red;
+}
+.invisible { display: none; }
+.no-break { white-space: nowrap; }
+
+/* classes for the news modules in Stud.IP ---------------------------------- */
+.news_item { margin: 3px; }
+
+/* error message */
+.error {
+    background-color: #fcc;
+    border: 1px solid #fcc;
+    color: #000;
+    display: none;
+    font-size: 11px;
+    padding: 4px 10px;
+
+    p { margin: 0; }
+    div.arrow {
+        border: 10px solid;
+        border-color: transparent transparent #FCC transparent;
+        height: 0;
+        left: 60px;
+        position: absolute;
+        top: -18px;
+        width: 0;
+    }
+}
+
+.setting_info {
+    font-size: 0.9em;
+    font-style: italic;
+    text-align: right;
+    color: #444;
+}
+
+pre.usercode {
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: hsla(0, 0%, 0%, 0.1) 5px solid;
+}
+
+
+.semtree li {
+    font-weight: bold;
+    list-style: none;
+    padding-bottom: 5px;
+}
+
+/* descriptional texts */
+p.info {
+    padding: 10px;
+    margin: 0;
+}
+
+.draggable        { margin-top: 4px; }
+.draggable_folder { margin-bottom: 3px; }
+
+/* --- institute administration ------------------------------------------- */
+.admin-institute {
+    input[type=text], input[type=tel], input[type=url], input[type=email], select:first-child {
+        box-sizing: border-box;
+        width: 98%;
+    }
+}
+
+/* --- info text neu lecture --------------------------------------------- */
+div.info { padding-left: 1%; }
+
+/* --- rating --- */
+.printhead .rating img { padding: 0; }
+
+/* --- online list --- */
+.online-list {
+    display: flex;
+    flex-wrap: wrap;
+    > div {
+        flex: 1;
+        flex-basis: 300px;
+        margin-left: 10px;
+        &:first-child {
+            margin-left: 0px;
+        }
+    }
+}
+
+/* Simple Content Module */
+.scm {
+    // Workaround for :last-child which is not supported by IE8
+    .content_title {
+        td {
+            text-align: right;
+            white-space: nowrap;
+            &:first-child {
+                text-align: left;
+                white-space: normal;
+            }
+        }
+        input[type=text] {
+            width: 200px;
+        }
+    }
+    .content_body {
+        td {
+            padding: 22px;
+        }
+        textarea {
+            height: 200px;
+            width: 100%;
+            resize: vertical;
+        }
+    }
+    .table_footer td {
+        text-align: center;
+    }
+}
+
+.no-js .hidden-no-js{
+    display:none;
+}
+.js .hidden-js{
+    display: none;
+}
+.no-js #enrollment ul{
+    cursor: auto;
+}
+
+.svg-input {
+    input {
+        display: none;
+    }
+    svg, img {
+        cursor: pointer;
+    }
+}
+
+// course members
+a.new-member {
+    .icon('after', 'star', 'attention', 8px);
+}
+
+// calculate difference in images and apply filter
+.recolor() {
+    filter:
+    hue-rotate(unit((hsvhue(@base-color) - hsvhue(#28497c)), deg))
+    saturate((100 + hsvsaturation(@base-color)-hsvsaturation(#28497c)))
+    brightness((100 + hsvvalue(@base-color)-hsvvalue(#28497c)));
+}
+
+.recolor-reset() {
+    filter:
+    hue-rotate(unit(hsvhue(#28497c)-hsvhue(@base-color), deg))
+    saturate(100% - hsvsaturation(@base-color)+hsvsaturation(#28497c))
+    brightness(100% - hsvvalue(@base-color)+hsvvalue(#28497c));
+}
+
+#barTopMenu li a img, #barTopMenu li a canvas, div#layout-sidebar div.sidebar-image img {
+    .recolor;
+}
+
+.recolor {
+    .recolor();
+}
+
+/**
+ * Style the details tag according to stud.ip
+ */
+details.studip {
+    summary {
+        .icon('before', 'arr_1right', 'clickable');
+        cursor: pointer;
+
+        &::before {
+            vertical-align: text-bottom;
+        }
+
+        // Hide default icon
+        list-style: none;
+        &::-webkit-details-marker {
+            display: none;
+        }
+    }
+
+    &[open] {
+        summary {
+            .icon('before', 'arr_1down', 'clickable');
+        }
+    }
+
+}

@@ -1,0 +1,7 @@
+pluginclassname=ActivityFeed
+pluginname=ActivityFeed
+origin=core
+version=1.0
+studipMinVersion=3.4
+plugincontext=Startseite
+description=Mit diesem Widget haben Sie alle Aktivitäten im Überlick.

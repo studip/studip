@@ -1,0 +1,217 @@
+/*
+ * studip-mixins.less
+ *
+ * This file contains all mixins created specifically for Stud.IP
+ * while mixins.less should contain a copy of the mixins from
+ * twitter's bootstrap.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       2.4
+ */
+
+// Drop shadows
+.box-shadow(@shadow1, @shadow2) {
+  -webkit-box-shadow: @shadow1, @shadow2;
+     -moz-box-shadow: @shadow1, @shadow2;
+          box-shadow: @shadow1, @shadow2;
+}
+
+// Double transition
+.transition(@transition1, @transition2) {
+    .transition(~"@{transition1}, @{transition2}");
+}
+// Double transform
+.transform(@transformation1, @transformation2) {
+    -webkit-transform: @transformation1 @transformation2;
+       -moz-transform: @transformation1 @transformation2;
+        -ms-transform: @transformation1 @transformation2;
+         -o-transform: @transformation1 @transformation2;
+            transform: @transformation1 @transformation2;
+}
+
+// Disable text selection by user
+.disable-select() {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+}
+
+// Retina background icons
+.retina-background-image(@image0, @image1, @width: 100%, @height: @width) {
+    background-image: url("@{image-path}/@{image0}");
+    @media (-webkit-min-device-pixel-ratio: 2),
+           (min-resolution: 192dpi)
+    {
+        background-image: url("@{image-path}/@{image1}");
+        .background-size(@width @height);
+    }
+}
+
+// Role to color mapping
+.role2color(@role) when (@role = 'info') {
+  @color: 'black';
+}
+
+.role2color(@role) when (@role = 'clickable'), (@role = 'link') {
+  @color: 'blue';
+}
+
+.role2color(@role) when (@role = 'accept'), (@role = 'status-green') {
+  @color: 'green';
+}
+
+.role2color(@role) when (@role = 'inactive') {
+  @color: 'grey';
+}
+
+.role2color(@role) when (@role = 'navigation') {
+  @color: 'lightblue';
+}
+
+.role2color(@role) when (@role = 'new'), (@role = 'attention'), (@role = 'status-red') {
+  @color: 'red';
+}
+
+.role2color(@role) when (@role = 'info_alt') {
+  @color: 'white';
+}
+
+.role2color(@role) when (@role = 'sort'), (@role = 'status-yellow') {
+  @color: 'yellow';
+}
+
+.background-icon(@icon, @role, @size: 16, @append: 0) {
+    .role2color(@role);
+    @temp-icon: replace("@{color}/@{icon}", "\.(png|svg)$", '', g);
+    @svg: "@{image-path}/icons/@{temp-icon}.svg";
+
+
+    & when (@append = 0) {
+        background-image: url("@{svg}");
+        background-size: unit(@size, px);
+    }
+    & when (@append = 1) {
+        background-image+: url("@{svg}");
+        background-size+: unit(@size, px);
+    }
+}
+
+.background-icons(@icon0, @role0, @size0: 16, @icon1, @role1: @role0, @size1: @size0) {
+    & {
+        .background-icon(@icon0, @role0, @size0, 1);
+    }
+    & {
+        .background-icon(@icon1, @role1, @size1, 1);
+    }
+}
+
+.icon(@position, @icon, @role, @size: 16, @padding: 0) when (@position = "before") {
+    &::before {
+        background-repeat: no-repeat;
+        content: ' ';
+        display: inline-block;
+        height: unit(@size, px);
+        margin-right: @padding;
+        .background-icon(@icon, @role, @size);
+        vertical-align: text-top;
+        width: unit(@size, px);
+    }
+}
+
+.icon(@position, @icon, @role, @size: 16, @padding: 0) when (@position = "after") {
+    &::after {
+        background-repeat: no-repeat;
+        content: ' ';
+        display: inline-block;
+        height: unit(@size, px);
+        margin-left: @padding;
+        .background-icon(@icon, @role, @size);
+        vertical-align: text-top;
+        width: unit(@size, px);
+    }
+}
+
+// Scrollboxes
+// From http://lea.verou.me/2012/04/background-attachment-local/
+//  and http://dabblet.com/gist/6134408
+.scrollbox-vertical {
+    overflow: auto;
+
+    background:
+        /* Shadow covers */
+        linear-gradient(white 30%, rgba(255,255,255,0)),
+        linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background:
+        /* Shadow covers */
+        linear-gradient(white 30%, rgba(255,255,255,0)),
+        linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+    /* Opera doesn't support this in the shorthand */
+    background-attachment: local, local, scroll, scroll;
+}
+
+.scrollbox-horizontal {
+    overflow: auto;
+
+    background:
+        /* Shadow covers */
+        linear-gradient(90deg, white 30%, rgba(255,255,255,0)),
+        linear-gradient(90deg, rgba(255,255,255,0), white 70%) 100% 0,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+    background:
+        /* Shadow covers */
+        linear-gradient(90deg, white 30%, rgba(255,255,255,0)),
+        linear-gradient(90deg, rgba(255,255,255,0), white 70%) 100% 0,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+
+    /* Opera doesn't support this in the shorthand */
+    background-attachment: local, local, scroll, scroll;
+}
+
+// Define action icons for widgets
+/********************
+ ** Widget actions **
+ ********************/
+.widget-action(@action, @icon: @action, @role: 'clickable', @rules: {}) {
+    .widget-action[data-action="@{action}"] {
+        .hide-text();
+        .square(16px);
+        .background-icon(@icon, @role, 16px);
+
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: block;
+        // vertical-align: middle;
+
+        @rules();
+    }
+}

@@ -1,0 +1,1 @@
+<?= formatReady($abschnitt->kommentar) ?>

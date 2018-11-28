@@ -1,0 +1,520 @@
+// TODO: LESSify
+
+/* --- Styles fuer Terminkalender ------------------------------------------- */
+a.day {
+    font-weight: bold;
+}
+
+a.sday {
+    color: @red;
+    font-weight: bold;
+}
+
+a.hday {
+    color: @red-80;
+    font-weight: bold;
+}
+
+span.kwmin {
+    color: @dark-gray-color-80;
+    font-weight: bold;
+}
+
+a.lightday {
+    color: @base-color-40;
+    font-weight: bold;
+}
+
+a.lightsday {
+    color: @red-40;
+    font-weight: bold;
+}
+
+.inday {
+    font-size: 8pt;
+}
+
+.precol1w {
+    font-size: 12pt;
+    font-weight: bold;
+    color: @light-gray-color;
+    text-align: center;
+    vertical-align: top;
+}
+
+.precol2w {
+    font-size: 8pt;
+    font-weight: bold;
+    color: @light-gray-color;
+    text-align: center;
+}
+
+td.calhead, div.calhead {
+    font-size: 18pt;
+    font-weight: bold;
+    color: @light-gray-color;
+    text-align: center;
+}
+
+a:link.calhead {
+    color: @base-color-60;
+    white-space: nowrap;
+    font-weight: bold;
+}
+
+a:hover.calhead {
+    color: @red-60;
+}
+
+.calhead label {
+  cursor: pointer;
+  &:hover {
+    color: @base-color-40;
+  }
+
+  .media-breakpoint-small-down({
+    .button();
+
+    img {
+      padding-left: 0.5em;
+      vertical-align: middle;
+    }
+  })
+}
+
+.celltoday {
+    background-color: @red-20;
+}
+
+td.weekend {
+    background-color: @dark-gray-color-15;
+}
+
+td.weekday {
+    background-color: @dark-gray-color-5;
+}
+
+td.current {
+    padding: 2px;
+    border: 2px solid @red;
+}
+
+table.calendar-week, table.calendar-day {
+    border-spacing: 0;
+    table-layout: fixed;
+    td {
+        padding: 0;
+    }
+}
+
+table.calendar-month {
+    width: 100%;
+    tr td {
+        max-width: 90px;
+        min-width: 90px;
+        vertical-align: top;
+    }
+}
+
+td.month {
+    background-color: fadeout(darken(@dark-gray-color-15, 5), 30);
+    padding: 3px;
+    div {
+        width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+td.lightmonth {
+    background-color: fadeout(darken(@dark-gray-color-5, 5), 30);
+    padding: 3px;
+    div {
+        width: 90%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+table.calendar-month td.calendar-month-week {
+    text-align: center;
+    vertical-align: middle;
+    height: 80px;
+    width: 80px;
+}
+
+td.weekdayevents {
+    width: 90px;
+}
+
+nav.calendar-nav {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1em;
+
+  > div {
+    flex: 1 1 auto;
+  }
+
+  .calhead {
+    color: @base-color;
+  }
+}
+
+.calendar-day-edit {
+    text-align: right;
+    font-size: 0.8em;
+}
+
+.calendar-week tbody tr, .calendar-day tbody tr {
+    transition: background-color 0.3s;
+    &:hover {
+        background-color: fadeout(@dark-gray-color-5, 40%);
+    }
+    & td {
+        padding: 3px;
+        border-bottom: 1px solid @dark-gray-color-5;
+    }
+}
+
+.calendar-day-event-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    a {
+        color: #fff;
+    }
+}
+
+.calendar-category-mixin {
+    vertical-align: top;
+    font-size: 11px;
+    color: #fff;
+    padding: 0;
+}
+
+.calendar-single-year {
+  .calendar-single-year--table {
+
+    > thead th {
+      min-width: 5em;
+      text-align: left;
+    }
+
+    .yday {
+      white-space: nowrap;
+    }
+  }
+}
+
+table.calendar-week, table.calendar-day {
+    &  tbody tr td {
+        &.calendar-category1, &.calendar-course-category5 {
+            div:first-child {
+                background-color: @dark-green;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, mix(#41643F, #fff, 90%), mix(#41643F, #fff, 70%)) repeat-x mix(#41643F, #fff, 70%);
+            border: solid 1px @dark-green;
+            .calendar-category-mixin;
+        }
+        &.calendar-category2, &.calendar-course-category1 {
+            div:first-child {
+                background-color: @dark-violet;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #3E4490, #7379A9) repeat-x #3E4490;
+            border: solid 1px @dark-violet;
+            .calendar-category-mixin;
+        }
+        &.calendar-category3, &.calendar-course-category2 {
+            div:first-child {
+                background-color:  @violet;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #874293, #AE77B8) repeat-x #874293;
+            border: solid 1px @violet;
+            .calendar-category-mixin;
+        }
+        &.calendar-category4, &.calendar-course-category3 {
+            div:first-child {
+                background-color: @petrol;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #8FAD29, #A3BA50) repeat-x #8FAD29;
+            border: solid 1px @petrol;
+            .calendar-category-mixin;
+        }
+        &.calendar-category5, &.calendar-course-category4 {
+            div:first-child {
+                background-color: @orange;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #8E8EB2, #BABAD4) repeat-x #8E8EB2;
+            border: solid 1px @orange;
+            .calendar-category-mixin;
+        }
+        &.calendar-category6, &.calendar-course-category6 {
+            div:first-child {
+                background-color: @brown;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #904E42, #B5867E) repeat-x #904E42;
+            border: solid 1px @brown;
+            .calendar-category-mixin;
+        }
+        &.calendar-category7 {
+            div:first-child {
+                background-color: @green;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #AB9448, #C9B988) repeat-x #AB9448;
+            border: solid 1px @green;
+            .calendar-category-mixin;
+        }
+        &.calendar-category8 {
+            div:first-child {
+                background-color: @red;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #6D9441, #9DB97C) repeat-x #6D9441;
+            border: solid 1px @red;
+            .calendar-category-mixin;
+        }
+        &.calendar-category9 {
+            div:first-child {
+                background-color: @yellow;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #EBC443, #ECD379) repeat-x #EBC443;
+            border: solid 1px @yellow;
+            .calendar-category-mixin;
+        }
+        &.calendar-category10 {
+            div:first-child {
+                background-color: @dark-green-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #DB9F63, #E9B583) repeat-x #DB9F63;
+            border: solid 1px @dark-green-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category11 {
+            div:first-child {
+                background-color: @dark-violet-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #90D070, #A6D98C) repeat-x #90D070;
+            border: solid 1px @dark-violet-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category12 {
+            div:first-child {
+                background-color: @violet-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #418494, #6CA6B2) repeat-x #418494;
+            border: solid 1px @violet-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category13 {
+            div:first-child {
+                background-color: @petrol-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, mix(#41643F, #fff, 90%), mix(#41643F, #fff, 70%)) repeat-x mix(#41643F, #fff, 70%);
+            border: solid 1px @petrol-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category14 {
+            div:first-child {
+                background-color: @orange-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, mix(#41643F, #fff, 90%), mix(#41643F, #fff, 70%)) repeat-x mix(#41643F, #fff, 70%);
+            border: solid 1px @orange-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category15, &.calendar-course-category7 {
+            div:first-child {
+                background-color: @brown-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, mix(#41643F, #fff, 90%), mix(#41643F, #fff, 70%)) repeat-x mix(#41643F, #fff, 70%);
+            border: solid 1px @brown-60;
+            .calendar-category-mixin;
+        }
+        &.calendar-category255, &.calendar-course-category255 {
+            div:first-child {
+                background-color: @light-gray-color-60;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, @light-gray-color-60, @light-gray-color-40) repeat-x @light-gray-color-60;
+            border: solid 1px @light-gray-color-60;
+            .calendar-category-mixin;
+        }
+        /* Termin von im Stundenplan vorgemerkter Kurs */
+        &.calendar-course-category256 {
+            div:first-child {
+                background-color: #2D2C64;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, #3E4490, #7379A9) repeat-x #3E4490;
+            border: solid 1px #2D2C64;
+            .calendar-category-mixin;
+        }
+    }
+}
+
+a.calendar-event-text1,
+a.Calendar-course-event-text5 {
+    color: @dark-green;
+}
+
+a.calendar-event-text2,
+a.Calendar-course-event-text1{
+    color: @dark-violet;
+}
+
+a.calendar-event-text3,
+a.Calendar-course-event-text2 {
+    color: @violet;
+}
+
+a.calendar-event-text4,
+a.Calendar-course-event-text3 {
+    color: @petrol;
+}
+
+a.calendar-event-text5,
+a.Calendar-course-event-text4 {
+    color: @orange;
+}
+
+a.calendar-event-text6,
+a.Calendar-course-event-text6 {
+    color: @brown;
+}
+
+a.calendar-event-text7 {
+    color: @green;
+}
+
+a.calendar-event-text8 {
+    color: @red;
+}
+
+a.calendar-event-text9 {
+    color: @yellow;
+}
+
+a.calendar-event-text10 {
+    color: @dark-green-60;
+}
+
+a.calendar-event-text11 {
+    color: @dark-violet-60;
+}
+
+a.calendar-event-text12 {
+    color: @violet-60;
+}
+
+a.calendar-event-text13 {
+    color: @petrol-60;
+}
+
+a.calendar-event-text14 {
+    color: @orange-60;
+}
+
+a.calendar-event-text15,
+a.Calendar-course-event-text7 {
+    color: @brown-60;
+}
+
+a.calendar-event-text255,
+a.Calendar-course-event-text255 {
+    color: @light-gray-color-60;
+}
+.calendar-tooltip {
+    display: none;
+    font-size: 0.8em;
+}
+
+.calendar-group-events {
+    background: linear-gradient(to right, #8E8EB2, #BABAD4) repeat-x #8E8EB2;
+    border: solid 1px #505064;
+}
+
+#exc-dates {
+    padding: 2px;
+    list-style-type: none;
+    width: 7.5em;
+    min-height: 5em;
+    max-height: 10em;
+    overflow: auto;
+    border: 1px solid #888;
+
+    img {
+        vertical-align: text-top;
+    }
+    input:checked ~ span {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+}
+
+/* --- Styles fuer TerminZeile ---------------------------------------------- */
+table.tabdaterow {
+    background-color: white;
+}
+
+td.tddaterowp {
+    border: 1px solid #FFFFFF;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #009900;
+    font-size: 8pt;
+}
+
+td.tddaterowpx {
+    border: 1px solid #D00000;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    color: #009900;
+    font-size: 8pt;
+}
+
+
+.recurrences {
+    width: 100%;
+    float: none;
+    list-style: none;
+    text-align: left;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    li {
+        display: block;
+        width: 100%;
+    }
+    input.rec-select {
+    }
+    .rec-label {
+        cursor: pointer;
+    }
+    .rec-label:hover {
+    }
+    .rec-content {
+        display: none;
+        position: relative;
+        padding-left: 3em;
+    }
+    [id^="rec"]:checked + label.rec-label {
+    }
+    [id^="rec"]:checked ~ [id^="rec-content"] {
+    display: block;
+    }
+}

@@ -1,0 +1,101 @@
+.studip-selection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    > * {
+        flex: 1 0 100%;
+    }
+    > legend {
+        margin-bottom: 0 !important;
+    }
+
+    // General list item styles and placeholders
+    ul, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    li {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    li:not(.empty-placeholder) {
+        color: @base-color;
+        cursor: pointer;
+        margin: 1px 0;
+        padding-right: 0.5em;
+    }
+
+    li.empty-placeholder {
+        color: fadeout(@text-color, 30%);
+        &:not(:only-child) {
+            display: none;
+        }
+    }
+
+    .studip-selection-selectable li.empty-placeholder {
+        color: @text-color;
+        padding-left: 20px;
+        position: relative;
+
+        .icon('before', 'info-circle', 'info');
+        &::before {
+            position: absolute;
+            left: 0;
+            top: 3px;
+        }
+    }
+
+    // Selected and selectable lists
+    .studip-selection-image img {
+        transition: opacity 300ms;
+    }
+
+    .studip-selection-selected .studip-selection-label {
+        .icon('before', 'radiobutton-checked', 'clickable');
+    }
+    .studip-selection-selectable .studip-selection-label {
+        .icon('before', 'radiobutton-unchecked', 'clickable');
+    }
+
+    .studip-selection-image + .studip-selection-label {
+        &::before {
+            display: none;
+        }
+    }
+
+    .studip-selection-selected li:hover {
+        .studip-selection-image,
+        .studip-selection-label::before {
+            .background-icon('remove-circle-full', 'clickable');
+        }
+    }
+    .studip-selection-selectable li:hover {
+        .studip-selection-image,
+        .studip-selection-label::before {
+            .background-icon('add-circle-full', 'clickable');
+        }
+    }
+
+    .studip-selection-selected,
+    .studip-selection-selectable {
+        flex: 1 1 300px;
+        margin-top: 0;
+
+        li:hover {
+            .studip-selection-image {
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: contain;
+                img {
+                    opacity: 0;
+                }
+            }
+            .studip-selection-label {
+                color: @active-color;
+            }
+        }
+    }
+}

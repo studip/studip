@@ -1,0 +1,39 @@
+.audible {
+    position: absolute;
+    left: -999em;
+}
+.pagination, .pagination li {
+    line-height: 1.2em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.pagination {
+    li {
+        display: inline-block;
+        &:before {
+            content:" | ";
+            font-weight: normal;
+        }
+        &:first-child:before { content: " "; }
+    }
+    .current {
+        font-weight: bold;
+        a { color: #000; }
+    }
+    .prev a, .next a {
+        .hide-text;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: inline-block;
+        height: 16px;
+        width: 16px;
+        vertical-align: top;
+    }
+    .prev a {
+        .background-icon('arr_1left', 'clickable');
+    }
+    .next a {
+        .background-icon('arr_1right', 'clickable');
+    }
+}

@@ -1,0 +1,26 @@
+#!/usr/bin/env php
+<?php
+/*
+ * This file is part of the ILess
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+/**
+ * The cli interface to the parser
+ *
+ * @package ILess
+ * @subpackage ILess\CLI
+ */
+
+use ILess\Autoloader;
+use ILess\CLI;
+
+require_once dirname(__FILE__).'/../lib/ILess/Autoloader.php';
+Autoloader::register();
+
+$cli = new CLI($argv);
+$statusCode = $cli->run();
+
+exit($statusCode);

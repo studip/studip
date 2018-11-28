@@ -1,0 +1,196 @@
+div.clear
+{
+    clear: both;
+    visibility: hidden;
+}
+
+// Common styles for both tab sets
+#tabs, #tabs2 {
+    line-height: 20px;
+    min-height: 30px;
+    float: none;
+    flex: 0 1 auto;
+    margin: 0;
+    background-color: @dark-gray-color-10;
+
+    ul, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    li { float: left; }
+    a {
+        color: #000;
+    }
+}
+
+// Main tab set with the tabs sitting on top of the main content
+#tabs {
+    padding: 0 2px 0 7px;
+
+    border-top: 1px solid @dark-gray-color-40;
+    border-bottom: 1px solid @dark-gray-color-40;
+
+    span { padding: 0; }
+    .quiet img { opacity: 0.25; }
+
+    li {
+        background-color: @dark-gray-color-10;
+
+        &:last-child {
+            border-right: none;
+        }
+        &.current {
+            color: @base-color;
+        }
+        &:hover {
+            //background-color: #fff;
+            border-bottom: 3px solid @dark-gray-color-30;
+            color: @base-color;
+            padding-top: 0px;
+            padding-bottom: 1px;
+        }
+
+        &.current {
+            border-bottom: 3px solid @dark-gray-color-80;
+            padding-top: 0px;
+            padding-bottom: 1px;
+            line-height: 25px;
+            a, span.quiet {
+                color: @base-color;
+            }
+        }
+    }
+    a, span.quiet {
+        color: #000;
+        float: left;
+        display: block;
+
+        padding: 3px 8px 6px;
+        white-space: nowrap;
+        height: 23px;
+    }
+}
+
+.tab-icon {
+    float: left;
+    margin: 4px 5px 0 -0.5em;
+    .size(16px, 16px);
+    display: none;
+}
+
+.tab-subnav {
+    float: right;
+
+    .action-menu-icon {
+        position: relative;
+        top: -5px;
+        height: 14px;
+
+        img {
+            vertical-align: middle;
+            filter: hue-rotate(350deg) saturate(8.7%) brightness(177.3%);
+        }
+    }
+
+
+    .action-menu-content {
+        z-index: 1000;
+        position: absolute;
+        top: inherit;
+        right: inherit;
+        padding: 0px 0px 10px 0px;
+        margin-top: 10px;
+        background: @content-color-20;
+        box-shadow: 1px 1px 1px @dark-gray-color-60;
+        text-align: left;
+        white-space: nowrap;
+
+        ul {
+            display: flex;
+            flex-direction: column;
+        }
+
+        a:hover {
+            color: @red !important;
+        }
+
+    }
+
+    .action-menu-content:before,
+    .action-menu-content:after {
+        bottom: 100%;
+        left: 11px;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .action-menu-content:before {
+        border-color: rgba(194, 225, 245, 0);
+        border-bottom-color: @dark-gray-color-60;
+        border-width: 9px;
+        margin-left: -8px;
+    }
+    .action-menu-content:after {
+        border-color: rgba(194, 225, 245, 0);
+        border-bottom-color: @content-color-20;
+        border-width: 8px;
+        margin-left: -8px;
+    }
+}
+
+#tabs2 {
+    background-color: #fff;
+
+    padding: 0 2px 0 0;
+
+    span {
+        padding: 0;
+    }
+    .quiet img {
+        opacity: 0.25;
+    }
+
+    li {
+        background-color: #fff;
+        padding: 5px 5px 2px 5px;
+        margin-right: 0px;
+        margin-left: 10px;
+
+        &:last-child {
+            border-right: none;
+        }
+
+        &.current {
+            color: @base-color;
+        }
+
+        &:hover {
+            //background-color: @dark-gray-color-10;
+            border-bottom: 3px solid @dark-gray-color-20;
+            color: @base-color;
+        }
+
+        &.current {
+            border-bottom: 3px solid @dark-gray-color-80;
+            padding-top: 5px;
+            line-height: 20px;
+            a, span.quiet {
+                color: @base-color;
+            }
+        }
+    }
+    a, span.quiet {
+        color: #000;
+        float: left;
+        display: block;
+
+        padding-right: 0em;
+        white-space: nowrap;
+        height: 23px;
+    }
+}

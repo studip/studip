@@ -1,0 +1,84 @@
+option {
+  &.faculty {
+    font-weight: bold;
+  }
+  &.sub_institute {
+    padding-left: 15px;
+  }
+}
+
+div {
+  &#wizard-participating, &#wizard-lecturers, &#wizard-deputies, &#wizard-tutors {
+    margin-top: 5px;
+    margin-left: 25px;
+    div.description {
+      font-style: italic;
+    }
+  }
+  &#assigned {
+    float:left;
+    padding-right: 10px;
+    width: ~"calc(50% - 10px)";
+  }
+  &#studyareas {
+    border-left: 1px solid #666666;
+    float: left;
+    padding-left: 10px;
+    width: ~"calc(50% - 20px)";
+  }
+}
+
+/*
+change order for AdvancedBasicDataWizardStep
+so we do not have to copy the basicdata/index.php
+*/
+form.course-wizard-step-0 {
+   display: flex;
+   flex-direction: column;
+    
+   > * {
+        order: 1;
+    }
+    section:nth-of-type(2) {
+        order: 2;
+    }
+    section:nth-of-type(3) {
+        order: 3;
+    }
+    section:nth-of-type(4) {
+        order: 5;
+    }
+    section:nth-of-type(5) {
+        order: 9;
+    }
+    section:nth-of-type(6) {
+        order: 10;
+    }
+    section:nth-of-type(7) {
+        order: 11;
+    }
+    section:nth-of-type(8) {
+        order: 12;
+    }
+    section:nth-of-type(9) {
+        order: 13;
+    }
+    section:nth-of-type(10) {
+        order: 11
+    }
+    section:nth-of-type(11) {
+        order: 4;
+    }
+    section:nth-of-type(12) {
+        order: 6;
+    }
+    section:nth-of-type(13) {
+        order: 7;
+    }
+    section:nth-of-type(14) {
+        order: 8;
+    }
+    footer {
+        order: 100;
+    }
+}

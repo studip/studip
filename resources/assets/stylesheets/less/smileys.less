@@ -1,0 +1,163 @@
+.smiley-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 0.5em;
+    line-height: 1.8em;
+    width: 100%;
+
+    &, li {
+        list-style: none;
+        padding: 0;
+    }
+    li {
+        &:extend(#tabs li all);
+
+        flex-grow: 1;
+        display: inline-block;
+        float: none;
+        margin: 0;
+        white-space: nowrap;
+        
+        &.favorites a {
+            .icon('before', 'smiley', 'info_alt');
+        }
+        &.favorites.current a {
+            .icon('before', 'smiley', 'info');
+        }
+    }
+    a {
+        &:extend(#tabs a all);
+
+        display: block;
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+    }
+}
+
+.smiley-container {
+    border-collapse: collapse;
+    width: 100%;
+    > tbody > tr > td {
+        padding: 0 1em 0 0;
+        &:last-child {
+            padding-right: 0;
+        }
+    }
+}
+.smiley-container, .smiley-column {
+    table-layout: fixed;
+}
+.smiley-column {
+    margin-right: 1em;
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.smiley-icon {
+    img {
+        height: auto;
+        max-width: 100%;
+        width: auto;
+    }
+}
+
+.smiley-toggle {
+    .square(16px);
+    .hide-text;
+    .background-icon('checkbox-unchecked', 'clickable');
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+
+    &.favorite { 
+        .background-icon('checkbox-checked', 'clickable');
+    }
+    &.ajax {
+        background-image: url("@{image-path}/ajax_indicator_small.gif");
+    }
+}
+
+.smiley-statistics {
+    margin: 0;
+    padding: 0;
+
+    dt {
+        clear: left;
+        float: left;
+        padding-right: 0.5em;
+        
+        &::after {
+            content: ':';
+        }
+    }
+    dd {
+        font-weight: 700;
+        margin: 0;
+        text-align: right;
+    }
+}
+
+.smiley-picker {
+    width: 420px;
+    .smileys {
+        text-align: center;
+        width: 100%;
+        padding: 5px 0;
+    }
+
+    .smiley, .empty {
+        display: inline-block;
+        height: 80px;
+        vertical-align: middle;
+        width: 80px;
+    }
+    .smiley {
+        box-sizing: border-box;
+        cursor: pointer;
+        max-height: 80px;
+        max-width: 80px;
+        text-align: center;
+
+        // see http://css-tricks.com/centering-in-the-unknown/
+        &:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em;
+        }
+        img {
+            vertical-align: middle;
+            max-height: 76px;
+            max-width: 72px;
+            margin-right: 0.25em;
+        }
+
+        &:hover {
+            background-color: fade(@active-color, 10%);
+            border-radius: 20px;
+            box-shadow:0 -1px 4px fade(@active-color, 10%), 0 2px 5px #888;
+        }
+    }
+
+    .navigation {
+        border-collapse: collapse;
+        width: 100%;
+        img { vertical-align: text-top; }
+        td { padding: 2px; }
+        &.top td { border-bottom: 1px solid @brand-color-dark; }
+        &.bottom td { border-top: 1px solid @brand-color-dark; }
+        .active a {
+            color: @active-color;
+            font-weight: bold;
+        }
+    }
+}
+.smiley-picker-dialog {
+    .ui-dialog-content {
+        padding: 0;
+    }
+}

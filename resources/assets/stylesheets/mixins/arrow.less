@@ -1,0 +1,124 @@
+/*
+ * arrow.less - CSS arrows mixin
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       2.4
+ */
+
+#arrow {
+    .init() {
+        position: relative;
+    }
+
+    .pseudo(@width, @color) {
+        border: (@width) solid fadeout(@color, 100%);
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+
+    // Top
+    .top-pseudo(@width, @color) {
+        #arrow > .pseudo(@width, @color);
+        border-bottom-color: @color;
+        bottom: 100%;
+        left: 50%;
+        margin-left: (-@width);
+    }
+    .top(@width, @color, @margin) {
+        #arrow > .init();
+        &:before { #arrow > .top-pseudo(@width, @color); }
+        margin-top: (@margin);
+    }
+    .top(@width, @color) {
+        #arrow > .top(@width, @color, @width);
+    }
+    .top-border(@width, @color, @border-width, @border-color, @margin) {
+        #arrow > .top(@width, @border-color, @margin);
+        &:after { #arrow > .top-pseudo(@width - @border-width, @color); }
+    }
+    .top-border(@width, @color, @border-width, @border-color) {
+        #arrow > .top-border(@width, @color, @border-width, @border-color, @width);
+    }
+
+    // Right
+    .right-pseudo(@width, @color) {
+        #arrow > .pseudo(@width, @color);
+        border-left-color: @color;
+        left: 100%;
+        top: 50%;
+        margin-top: (-@width);
+    }
+    .right(@width, @color, @margin) {
+        #arrow > .init();
+        &:before { #arrow > .right-pseudo(@width, @color); }
+        margin-right: (@margin);
+    }
+    .right(@width, @color) {
+        #arrow > .right(@width, @color, @width);
+    }
+    .right-border(@width, @color, @border-width, @border-color, @margin) {
+        #arrow > .right(@width, @border-color, @margin);
+        &:after { #arrow > .right-pseudo(@width - @border-width, @color); }
+    }
+    .right-border(@width, @color, @border-width, @border-color) {
+        #arrow > .right-border(@width, @color, @border-width, @border-color, @width);
+    }
+
+    // Bottom
+    .bottom-pseudo(@width, @color) {
+        #arrow > .pseudo(@width, @color);
+        border-top-color: @color;
+        top: 100%;
+        left: 50%;
+        margin-left: (-@width);
+    }
+    .bottom(@width, @color, @margin) {
+        #arrow > .init();
+        &:before { #arrow > .bottom-pseudo(@width, @color); }
+        margin-bottom: (@margin);
+    }
+    .bottom(@width, @color) {
+        #arrow > .bottom(@width, @color, @width);
+    }
+    .bottom-border(@width, @color, @border-width, @border-color, @margin) {
+        #arrow > .bottom(@width, @border-color, @margin);
+        &:after { #arrow > .bottom-pseudo(@width - @border-width, @color); }
+    }
+    .bottom-border(@width, @color, @border-width, @border-color) {
+        #arrow > .bottom-border(@width, @color, @border-width, @border-color, @width);
+    }
+
+    // Left
+    .left-pseudo(@width, @color) {
+        #arrow > .pseudo(@width, @color);
+        border-right-color: @color;
+        right: 100%;
+        top: 50%;
+        margin-top: -(@width);
+    }
+    .left(@width, @color, @margin) {
+        #arrow > .init();
+        &:before { #arrow > .left-pseudo(@width, @color); }
+        margin-left: (@margin);
+    }
+    .left(@width, @color) {
+        #arrow > .left(@width, @color, @width);
+    }
+    .left-border(@width, @color, @border-width, @border-color, @margin) {
+        #arrow > .left(@width, @border-color, @margin);
+        &:after { #arrow > .left-pseudo(@width - @border-width, @color); }
+    }
+    .left-border(@width, @color, @border-width, @border-color) {
+        #arrow > .left-border(@width, @color, @border-width, @border-color, @width);
+    }
+}

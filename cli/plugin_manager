@@ -1,0 +1,306 @@
+#!/usr/bin/env php
+<?php
+/*
+ * plugin_manager.php - CLI Plugin-Manager for Stud.IP
+ *
+ * Detailed documentation of this cli-script can be found at:
+ * http://docs.studip.de/develop/Entwickler/CLIPluginManager
+ *
+ * Copyright (C) 2012 - Till Glöggler <tgloeggl@uos.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of
+ * the License, or (at your option) any later version.
+ */
+
+require_once 'studip_cli_env.inc.php';
+require_once 'cli/getopts.php';
+
+$args = $_SERVER['argv'];
+
+if ($args) {
+
+    $command = $args[1];
+
+     if (!$command) {
+        echo 'Usage: '. $args[0] .' {install|register|unregister|migrate|activate|deactivate|info|scan}' . "\n";
+    }
+
+    switch ($command) {
+        case 'install':
+            $zipfile = $args[2];
+
+            // show usage
+            if (!$zipfile) {
+                echo 'Usage: '. $args[0] .' install PATH/TO/PLUGIN.ZIP' . "\n\n";
+                exit(1);
+            }
+
+            $plugin_admin = new PluginAdministration();
+
+            try {
+                if (parse_url($zipfile, PHP_URL_SCHEME)) {
+                    $plugin_admin->installPluginFromURL($zipfile);
+                } else {
+                    $plugin_admin->installPlugin($zipfile);
+                }
+                echo 'Das Plugin wurde erfolgreich installiert.' . "\n";
+            } catch (PluginInstallationException $ex) {
+                echo $ex->getMessage() . "\n";
+            }
+
+            exit(0);
+        break;
+
+        case 'register':
+            $plugindir = $args[2];
+
+            // show usage
+            if (!$plugindir) {
+                echo 'Usage: '. $args[0] .' register PATH/TO/PLUGIN' . "\n\n";
+                # echo 'Options:' . "\n";
+                # echo "\t". '-f force installation and try to (re-)execute any sql-scripts associated' ."\n";
+                exit(1);
+            }
+
+            # $options = getopts(':f'); // if f is set, try to execute the plugins sql-scripts (if any)
+
+            $plugin_manager = PluginManager::getInstance();
+            $manifest = $plugin_manager->getPluginManifest($plugindir);
+
+            if (!$manifest) {
+                echo 'Das Plugin-Manifest fehlt!' . "\n";
+                exit(1);
+            }
+
+            // get plugin meta data
+            $pluginclass = $manifest['pluginclassname'];
+            $origin      = $manifest['origin'];
+            $min_version = $manifest['studipMinVersion'];
+            $max_version = $manifest['studipMaxVersion'];
+
+            // check for compatible version
+            if ((isset($min_version) && StudipVersion::olderThan($min_version)) ||
+                (isset($max_version) && StudipVersion::newerThan($max_version))) {
+                throw new PluginInstallationException(_('Das Plugin ist mit dieser Stud.IP-Version nicht kompatibel.'));
+            }
+
+            // determine the plugin path
+            $basepath = get_config('PLUGINS_PATH');
+            $pluginpath = $origin . '/' . $pluginclass;
+
+            $plugin_manager = PluginManager::getInstance();
+            $pluginregistered = $plugin_manager->getPluginInfo($pluginclass);
+
+            // create database schema if needed
+            if (isset($manifest['dbscheme']) && !$pluginregistered) {
+                $schemafile = $plugindir . '/' . $manifest['dbscheme'];
+                $contents   = file_get_contents($schemafile);
+                $statements = preg_split("/;[[:space:]]*\n/", $contents, -1, PREG_SPLIT_NO_EMPTY);
+                $db = DBManager::get();
+                foreach ($statements as $statement) {
+                    $db->exec($statement);
+                }
+            }
+
+            // check for migrations
+            if (is_dir($plugindir . '/migrations')) {
+                $schema_version = new DBSchemaVersion($manifest['pluginname']);
+                $migrator = new Migrator($plugindir . '/migrations', $schema_version);
+                $migrator->migrate_to(null);
+            }
+
+            // now register the plugin in the database
+            $pluginid = $plugin_manager->registerPlugin($manifest['pluginname'], $pluginclass, $pluginpath);
+
+            // register additional plugin classes in this package
+            $additionalclasses = $manifest['additionalclasses'];
+
+            if (is_array($additionalclasses)) {
+                foreach ($additionalclasses as $class) {
+                    $plugin_manager->registerPlugin($class, $class, $pluginpath, $pluginid);
+                }
+            }
+
+            echo 'Das Plugin '. $manifest['pluginname'] .' wurde erfolgreich eingetragen.' . "\n";
+        break;
+
+        case 'migrate':
+            $pluginname  = $args[2];
+            unset($args[0], $args[1], $args[2]);
+
+            // show usage
+            if (!$pluginname) {
+                echo 'Usage: '. $args[0] .' migrate PLUGINNAME [-l] [-t] [-v]' . "\n";
+                exit(1);
+            }
+
+            // parse options
+            list($errors, $options, $args) = getopts(array('l' => 'Ss l list', 'v' => 'Ss v verbose', 't'=> 'Vs t target'));
+            $list = false;
+            $verbose = false;
+            $target = NULL;
+
+            foreach ($options as $option => $value) {
+                switch ($option) {
+                    case 'l':
+                        $list = $value;
+                        break;
+                    case 't':
+                        $target = ($value === false) ? null : (int) $value;
+                        break;
+                    case 'v':
+                        $verbose = $value;
+                        break;
+                }
+            }
+
+            // create plugin-manager and search for plugin by name
+            $plugin_manager = PluginManager::getInstance();
+            $plugins = $plugin_manager->getPluginInfos();
+
+            foreach ($plugins as $plugin) {
+                if (mb_strtolower($pluginname) === mb_strtolower($plugin['name'])) {
+                    $plugindir = Config::get()->PLUGINS_PATH . '/' . $plugin['path'];
+
+                    if (is_dir($plugindir . '/migrations')) {
+                        // if there are migrations, migrate
+                        $schema_version = new DBSchemaVersion($plugin['name']);
+                        $migrator = new Migrator($plugindir . '/migrations', $schema_version, $verbose);
+
+                        if ($list) {
+                            $migrations = $migrator->relevant_migrations($target);
+
+                            foreach ($migrations as $number => $migration) {
+                                $description = $migration->description() ?: '(no description)';
+
+                                printf("%3d %-20s %s\n", $number, get_class($migration), $description);
+                            }
+                        } else {
+                            $migrator->migrate_to($target);
+                        }
+
+                        exit(0);
+                    } else {
+                        echo 'Konnte keine Migrationen für das Plugin '. $plugin['name'] .' finden.' . "\n";
+                        exit(1);
+                    }
+                }
+            }
+
+            echo 'Konnte kein Plugin mit dem Namen ' . $pluginname . ' finden.' . "\n";
+            echo 'Überprüfen sie bitte den Namen (auch auf Groß-/Kleinschreibung!)' ."\n";
+            exit(1);
+        break;
+
+        case 'unregister':
+            $pluginname  = $args[2];
+
+            // show usage
+            if (!$pluginname) {
+                echo 'Usage: '. $args[0] .' unregister PLUGINNAME' . "\n";
+                exit(1);
+            }
+
+            $plugin_manager = PluginManager::getInstance();
+            $plugins = $plugin_manager->getPluginInfos();
+            foreach ($plugins as $plugin) {
+                if (mb_strtolower($pluginname) == mb_strtolower($plugin['name'])) {
+                    $plugindir = get_config('PLUGINS_PATH') .'/'. $plugin['path'];
+
+                    $plugin_manager->unregisterPlugin($plugin['id']);
+
+                    if (is_dir($plugindir . '/migrations')) {
+                        $schema_version = new DBSchemaVersion($plugin['name']);
+                        $migrator = new Migrator($plugindir . '/migrations', $schema_version);
+                        $migrator->migrate_to(0);
+                    }
+
+                    echo 'Das Plugin '. $plugin['name'] .' wurde ausgetragen.' . "\n";
+                    exit(0);
+                }
+            }
+
+            echo 'Konnte kein Plugin mit dem Namen '. $pluginname .' finden.' . "\n";
+            echo 'Überprüfen sie bitte den Namen (auch auf Groß-/Kleinschreibung!)' ."\n";
+            exit(1);
+        break;
+
+        case 'activate':
+        case 'deactivate':
+            $pluginname  = $args[2];
+
+            // show usage
+            if (!$pluginname) {
+                echo 'Usage: '. $args[0] .' '. $command .' PLUGINNAME' . "\n";
+                exit(1);
+            }
+
+            $plugin_manager = PluginManager::getInstance();
+            $plugins = $plugin_manager->getPluginInfos();
+            foreach ($plugins as $plugin) {
+                if (mb_strtolower($pluginname) == mb_strtolower($plugin['name'])) {
+                    $plugin_manager->setPluginEnabled($plugin['id'], ($command == 'activate'));
+                    echo 'Das Plugin '. $plugin['name'] .' wurde ' . ($command == 'activate' ? 'aktiviert' : 'deaktiviert') . '.' . "\n";
+                    exit(0);
+                }
+            }
+
+            echo 'Konnte kein Plugin mit dem Namen '. $pluginname .' finden.' . "\n";
+            echo 'Überprüfen sie bitte den Namen (auch auf Groß-/Kleinschreibung!)' ."\n";
+            exit(1);
+        break;
+
+        case 'info':
+            $pluginname  = $args[2];
+
+            $plugin_manager = PluginManager::getInstance();
+            $plugins = $plugin_manager->getPluginInfos();
+            if ($pluginname) {
+                $plugins = array_filter($plugins, function($p) use ($pluginname) {return mb_stripos($p['name'], $pluginname) !== false;});
+            }
+            $basepath = get_config('PLUGINS_PATH');
+            foreach ($plugins as $plugin) {
+                $plugindir = $basepath . '/' . $plugin['path'] . '/';
+                $plugin['class_exists'] = 0;
+                $pluginfile = $plugindir . $plugin['class'] . '.class.php';
+                if (file_exists($pluginfile)) {
+                    $plugin['class_exists'] = 1;
+                } else {
+                    $pluginfile = $plugindir . $plugin['class'] . '.php';
+                    if (file_exists($pluginfile)) {
+                        $plugin['class_exists'] = 1;
+                    }
+                }
+                if (is_dir($plugindir . '/migrations')) {
+                    $schema_version = new DBSchemaVersion($plugin['name']);
+                    $migrator = new Migrator($plugindir .'/migrations', $schema_version);
+                    $plugin['migration_top_version'] = $migrator->top_version();
+                    $plugin['schema_version'] = $schema_version->get();
+                }
+                echo "\n";
+                $plugin['type'] = join(',' , $plugin['type']);
+                echo join("\n", array_filter(array_map(function($p){if ($p[0] == ' ') return trim($p);},explode("\n", print_r($plugin,1)))));
+                echo "\n";
+            }
+            exit(0);
+        break;
+
+        case 'scan':
+            $plugin_admin = new PluginAdministration();
+            $plugin_manager = PluginManager::getInstance();
+            foreach ($plugin_admin->scanPluginDirectory() as $manifest) {
+                if (!$plugin_manager->getPluginInfo($manifest['pluginclassname'])) {
+                    echo "\n";
+                    echo join("\n", array_filter(array_map(function($p){if ($p[0] == ' ') return trim($p);},explode("\n", print_r($manifest,1)))));
+                    echo "\n";
+                }
+            }
+            exit(0);
+        break;
+    }
+
+}
+
+exit(0);

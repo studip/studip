@@ -1,0 +1,33 @@
+Erläuterungen zu den Datanbank-Dumps:
+-------------------------------------
+
+- studip.sql: Enthält die Grundstruktur aller benötigten Tabellen. 
+  Dieser Dump muss installiert werden.
+- studip_default_data.sql: Enthält die Voreinstellungen, die direkt in die
+  Datenbank geschrieben werden. Dieser Dump muss installiert werden.
+- studip_root_user.sql: Mit diesem Dump wird ein Stud.IP-Nutzer vom Status root
+  (innerhalb des Systems) angelegt. 
+  Accountname: root@studip
+  Password: testing
+  ACHTUNG: Das Passwort sollte, wenn das System erfolgreich aufgesetzt wurde, 
+  sofort geändert werden!
+  
+Ein weiterer Dump muss eingespielt werden, wenn die Ressourcenverwaltung 
+genutzt werden soll:
+
+- studip_resources_default_data.sql: Dieser Dump enthält notwendige Defaults für
+  die Ressourcenverwaltung. Er ist zum Betrieb notwendig.
+
+Wenn Sie das System zunächst testen wollen, können Sie die folgenden Demo-Daten
+einspielen:
+
+- studip_demo_data.sql: Mit diesem Dump werden einige Demonstrations-Daten ins
+  Systen eimgespielt. Das Einspielen dieses Dumps ist zum Betrieb nicht notwendig.
+  Enthalten sind die folgenden Testaccounts:
+  test_admin, test_dozent, test_tutor und test_autor. Bei allen Accounts ist 
+  das Passwort ebenfalls testing.
+  Diese Accounts sollten gelöscht werden, wenn das System in einen produktiven Einsatz
+  geht oder die Testphase beendet wird.
+- studip_resources_demo_data.sql: Mit diesem Dump werden einige Demonstrations-Daten 
+  für die Ressourcenverwaltung ins System eingespielt. Das Einspielen dieses Dumps 
+  ist zum Betrieb nicht notwendig.

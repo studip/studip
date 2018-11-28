@@ -1,0 +1,19 @@
+pluginclassname=Blubber
+pluginname=Blubber
+origin=core
+version=2.5.1
+studipMinVersion=2.5
+studipMaxVersion=2.99
+summary=Schneller und einfacher Austausch von Informationen
+description=Blubber ist eine Kommunikationsform mit Ähnlichkeiten zu einem Forum, in dem aber in Echtzeit miteinander kommuniziert werden kann und das durch den etwas informelleren Charakter eher einem Chat anmutet. Anders als im Forum ist es nicht notwendig, die Seiten neu zu laden, um die neuesten Einträge (z. B. Antworten auf eigene Postings) sehen zu können: Die Seite aktualisiert sich selbst bei neuen Einträgen. Dateien (z.B. Fotos, Audiodateien, Links) können per Drag and Drop in das Feld gezogen und somit verlinkt werden. Auch Textformatierungen und das Verwenden von Smileys sind möglich.
+homepage=http://docs.studip.de/help/3.0/de/Basis/InteraktionBlubber
+
+screenshots = assets/images/screenshots
+screenshots.Blubbern.png = Blubbern
+
+displayname = Blubber
+icon = ../../../assets/images/icons/black/blubber.svg
+keywords = Informationen über neue Nachrichten per E-Mail; Antworten ebenfalls per E-Mail möglich; Einfach Text schreiben und mit <Enter> abschicken; Private und öffentliche bzw. veranstaltungsbezogene Blubberstreams; Direktes Kontaktieren anderer Stud.IP-NutzerInnen (@Vorname Nachname); Setzen von und Suche nach Stichworten über Hashtags (#Stichwort); Einbinden von Dateien per drag and drop
+category = Kommunikation und Zusammenarbeit
+descriptionshort = Schneller und einfacher Austausch von Informationen in Gesprächsform
+descriptionlong = Kommunikationsform mit Ähnlichkeiten zu einem Forum. Im Gegensatz zum Forum kann mit Blubber jedoch in Echtzeit miteinander kommuniziert werden. Das Tool ähnelt durch den etwas informelleren Charakter einem Chat. Anders als im Forum ist es nicht notwendig, die Seiten neu zu laden, um die neuesten Einträge (z. B. Antworten auf eigene Postings) sehen zu können. Dateien (z. B. Fotos, Audiodateien, Links) können per drag and drop in das Feld gezogen und somit verlinkt werden. Auch Textformatierungen und das Verwenden von Smileys sind möglich. Des Weiteren ist ein direktes Ansprechen von anderen Stud.IP-NutzerInnen (@benutzername oder @'Vorname Nachname') möglich wie auch das Kommunizieren per Hashtags (#Stichwort), auf die Bezug genommen werden kann.

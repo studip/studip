@@ -1,0 +1,90 @@
+.modal-overlay {
+    .ui-widget-overlay;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    &-local {
+        background-color: fadeout(@light-gray-color, 50%);
+        position: absolute;
+    }
+    &-ajax {
+        // Fallback to gif for browsers that don't support svg. Fortunately,
+        // the support for multiple background images and svg covers the same
+        // browsers (except for some old android versions that we can neglect).
+        // Thus said, if the loading animation looks ugly - update your
+        // browser ffs!
+        background-image: url("@{image-path}/ajax_indicator_small.gif");
+        background-image: none, url("@{image-path}/ajax-indicator-white.svg");
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    &-ajax.modal-overlay-dark {
+        background-image: none, url("@{image-path}/ajax-indicator-black.svg");
+    }
+
+    // Progress
+    &.ui-front {
+        .center() {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        cursor: wait;
+
+        h1 {
+            .center();
+
+            margin-bottom: 0;
+            padding-bottom: 100px;
+
+            color: #fff;
+            border-bottom: 0;
+        }
+        progress {
+            .center();
+
+            margin-top: 45px;
+            width: 80%;
+            height: 20px;
+
+            appearance: none;
+
+            background-size: auto;
+
+            border: none;
+            border-radius: 2px;
+            box-shadow: 0 0 3px @light-gray-color-20;
+
+            background-color: @light-gray-color;
+
+            &::-moz-progress-bar, &::-webkit-progress-value {
+                background-color: @yellow-40;
+                transition: all 300ms;
+            }
+        }
+        ul.overlay-progress-log {
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+
+            list-style: none;
+            margin: 60px 0 0;
+            padding: 0;
+            text-align: center;
+            color: white;
+            max-height: 120px;
+            overflow: hidden;
+        }
+    }
+
+}
+#layout_wrapper.has-overlay {
+    filter: blur(1px);
+}

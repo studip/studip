@@ -1,0 +1,95 @@
+ul.termin_related {
+    padding: 0;
+    margin: 5px 0 10px 0;
+    li {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        position: relative;
+        width: 325px;
+    }
+}
+
+div.at_least_one_teacher {
+    width: 325px;
+}
+
+.is_ex_termin {
+    color: @dark-gray-color-80;
+    text-decoration: line-through;
+}
+
+.contentbox.timesrooms {
+    > form {
+        article {
+            border-color: @content-color-40;
+            border-style: solid;
+            border-width: 1px;
+            margin: 10px;
+
+            > section {
+                max-height: 0px;
+                opacity: 0;
+                padding: 0;
+                transition: opacity 0.3s;
+            }
+
+            &:not(.open) header ~ * {
+                max-height: 0px;
+                opacity: 0;
+                overflow: auto;
+                transition: opacity 0.3s;
+            }
+
+            &.open {
+                > p, > section, > footer, > div {
+                    max-height: none;
+                    opacity: 1;
+                    transition: opacity 0.3s;
+                }
+
+                footer {
+                    border-top-style: solid;
+                }
+
+                header h1 a::before {
+                    transform: rotate(90deg);
+                }
+            }
+        }
+    }
+    article header {
+        &.red {
+            border-left: 3px solid @red;
+        }
+        &.yellow {
+            border-left: 3px solid @activity-color;
+        }
+        &.green {
+            border-left: 3px solid @green;
+        }
+        &.red .tooltip-icon {
+            .icon('before', 'arr_1right', 'clickable');
+            .icon('before', 'radiobutton-checked', 'status-red');
+        }
+        &.yellow .tooltip-icon {
+            .icon('before', 'radiobutton-checked', 'status-yellow');
+        }
+        &.green .tooltip-icon {
+            .icon('before', 'radiobutton-checked', 'status-green');
+        }
+    }
+    form.default {
+        td label {
+            margin-top: 0;
+        }
+        tfoot select {
+            max-width: 30em;
+        }
+    }
+}
+
+.times-rooms-grid .selectbox input[type="radio"]:checked + label {
+    font-weight: bold;
+    text-decoration: underline;
+}

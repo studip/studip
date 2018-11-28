@@ -1,0 +1,11 @@
+compress: true
+assets_root: <?= TEST_FIXTURES_PATH ?>squeeze
+package_path: <?= TEST_FIXTURES_PATH ?>squeeze/squeezed
+package_url: http://example.com/assets/squeezed
+
+javascripts:
+  test: &test
+    - src/*.js
+  test_nested:
+    - *test
+    - src/**/*.js

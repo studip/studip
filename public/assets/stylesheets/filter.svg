@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter id="brightness">
+            <feComponentTransfer>
+                <feFuncR type="linear" slope="1" intercept="+1" />
+                <feFuncG type="linear" slope="1" intercept="+1" />
+                <feFuncB type="linear" slope="1" intercept="+1" />
+            </feComponentTransfer>
+        </filter>
+    </defs>
+</svg>

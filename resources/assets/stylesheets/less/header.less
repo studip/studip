@@ -1,0 +1,185 @@
+/* --- header.css ----------------------------------------------------------- */
+#layout_wrapper {
+    box-sizing: border-box;
+    padding-top: @bar-bottom-container-height;
+}
+#barBottomContainer {
+    background-color: @base-color;
+    border: 1px @brand-color-darker;
+    color: @contrast-content-white;
+    border-bottom-style: solid;
+    height: @bar-bottom-container-height;
+
+    width: 100%;
+    position: relative;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+
+    transform: translate(0, 0) !important; // We need !important due to the horizontal scroll handler
+    position: fixed;
+    top: 0px;
+    z-index: 10000;
+
+}
+#barBottomLeft,
+#barTopFont {
+    flex: 0 0 auto;
+    padding: 0px 15px;
+    z-index: 2;
+}
+
+
+#layout_footer,
+#barBottomright {
+    > ul > li > a {
+        color: @contrast-content-white;
+        margin: 0 6px;
+        text-decoration: none;
+        &:hover {
+            color: @contrast-content-hovergray;
+        }
+    }
+}
+
+#layout_footer {
+    > ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        list-style-type: none;
+        height: 30px;
+        padding: 0px;
+        > li {
+            margin: 2px;
+        }
+    }
+}
+
+#barBottomright {
+    flex: 0 1 auto;
+    justify-self: flex-end;
+    > ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        list-style-type: none;
+        height: 40px;
+        padding: 0px;
+        > li {
+            margin: 2px;
+            padding: 0px 10px;
+        }
+    }
+}
+
+#barTopAvatar {
+    display: inline-flex;
+
+    #avatar-arrow {
+        position: relative;
+        float: right;
+        z-index: 1;
+        padding: 7px 8px;
+        cursor: pointer;
+    }
+}
+
+#header_avatar_menu {
+    height: 30px;
+    margin: 0;
+    vertical-align: text-bottom;
+    z-index: 1003;
+
+    .action-menu-icon {
+        border: 1px solid @dark-gray-color-40;
+        background: @dark-gray-color-5;
+        height: 28px;
+        margin: 0;
+        position: relative;
+        width: 28px;
+        z-index: 1;
+
+        img {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .action-menu-title{
+        margin: 0em 0 0.3em;
+    }
+
+    .action-menu-content {
+        z-index: 1002;
+        position: absolute;
+        top: 39px;
+        right: -31px;
+        /*padding: 4px 28px 4px 8px;*/
+        background: #fff;
+        box-shadow: 1px 1px 1px @dark-gray-color-60;
+        text-align: left;
+        white-space: nowrap;
+
+        a:link,
+        a:visited {
+            color: @base-color;
+        }
+        a:hover,
+        a:active {
+            color: @active-color;
+        }
+
+        div {
+            color: #000;
+        }
+    }
+}
+
+.header_avatar_container {
+    align-items: center;
+}
+
+#barTopFont {
+    flex: 1;
+    color: @white;
+    margin-left: 0px;
+    z-index: 1002;
+    line-height: @bar-bottom-container-height;
+    white-space: nowrap;
+}
+
+.studip-logo {
+    .hide-text();
+    background-repeat: no-repeat;
+
+    .retina-background-image('logos/studip4-logo.png', 'logos/studip4-logo@2x.png', 130px, 92px);
+    background-image: none, url("@{image-path}/logos/studip4-logo.svg");
+
+    background-size: 130px 92px;
+    display: block;
+    width: 130px;
+    height: 92px;
+}
+
+#barTopStudip {
+    margin-left: 20px;
+    margin-right: 12px;
+}
+
+#barTopLogo {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+
+#flex-header {
+    height: @header-height;
+    background-color: @dark-gray-color-5;
+
+    position: relative;
+    z-index: 3;
+}

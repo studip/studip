@@ -1,0 +1,18 @@
+body {
+  background: white url("bgbody.gif") repeat-x;
+  color: #555;
+  font: 1.5em Verdana, Arial, 'Bitstream Vera Sans', sans-serif;
+}
+
+#header {
+  font: 1.8em Verdana, Arial, 'Bitstream Vera Sans', sans-serif;
+  color: white;
+  height: 101px;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.amp {
+  font-style: italic;
+  font-family: 'Goudy Old Style', 'Palatino', 'Book Antiqua', serif;
+}

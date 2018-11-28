@@ -1,0 +1,168 @@
+/**
+ * styles.css - CSS styles for WYSIWYG editor.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Robert Costa <zabbarob@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ */
+
+/* configure look and feel of CKEditor's content area and toolbar */
+.animated-height-change {           /* content area in HTML source view mode */
+    transition: height 0.2s;
+}
+
+/* override inherited font-weight of label */
+.cke {
+    text-indent: 0;
+}
+
+.cktoolbar {                        /* toolbar */
+    padding: 0;
+    margin: 0;
+    text-indent: 0;
+    z-index: 1;
+}
+.cke_editable {
+    min-height: 6em;
+}
+
+/* CKEDITOR dialogs */
+select.cke_dialog_ui_input_select {
+    background-color: #ffffff !important;
+}
+
+/* CKEDITOR image dialog */
+.cke_dialog .ImagePreviewBox {
+    border: 1px ridge black !important;
+}
+
+/* CKEDITOR mathjax Plugin (TeX) Link color */
+a.cke_mathjax_doc[href] {
+    color: #28497c !important;
+    text-decoration: none !important;
+}
+
+/* Override 'Select Style Menu' CSS */
+.cke_combo_off a.cke_combo_button:hover,
+.cke_combo_off a.cke_combo_button:focus,
+.cke_combo_on a.cke_combo_button:hover,
+.cke_combo_on a.cke_combo_button:focus {
+    box-shadow: none !important;
+}
+.cke_combo_off a.cke_combo_button:active,
+.cke_combo_on a.cke_combo_button:active,
+.cke_combo_on a.cke_combo_button {
+    box-shadow: none !important;
+}
+
+/* The CSS arrow, which belongs to the toolbar collapser. */
+.cke_toolbox_collapser .cke_arrow {
+    display: inline-block;
+
+    /* Pure CSS Arrow */
+
+    width: 5px !important;
+    height: 5px !important;
+    font-size: 12px !important;
+    margin-top: 4px !important;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+    border-right: 2px solid black !important;
+    border-top: 2px solid black !important;
+    transform: rotate(315deg) !important;
+    /*margin-right: 0.5em;*/
+
+    /*Hide the text.*/
+    text-indent: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.cke_toolbox_collapser.cke_toolbox_collapser_min .cke_arrow {
+    margin-top: 1px !important;
+    transform: rotate(135deg) !important;
+}
+
+.cke_toolbox_collapser {
+    border: none !important;
+    border-bottom-color: transparent !important;
+
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    background-image: linear-gradient(to bottom, #ffffff, #ffffff) !important;
+    filter: none !important;
+}
+
+.cke_toolbox_collapser:hover {
+    background: #E3EAF6 !important;
+    filter: none !important;
+}
+/* drop zone effects */
+.drag .dropzone {
+    display: block;
+}
+.dropzone {
+    pointer-events: none;
+    display: none;
+    position:absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+
+    border: 2px dashed lightgrey;
+    background-color: white;
+    z-index: 998;
+    opacity: 0.7;
+
+    text-align: center;
+    vertical-align: middle;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* other settings */
+
+.wiki-link {
+    background-image: url(../javascripts/ckeditor/plugins/studip-wiki/icons/wikilink-grey.png);
+    background-repeat: no-repeat;
+    background-position: right top;
+    background-size: 8px;
+    padding-right: 9px;
+}
+
+
+/* from plugins/emojione/styles/emojione.css */
+
+.emojione, .cke_hand[data-shortcode] {
+  /* Emoji Sizing */
+  font-size: inherit;
+  height: 30px !important;
+  width: 30px !important;
+
+  /* Inline alignment adjust the margins  */
+  display: inline-block;
+  margin: -.2ex .15em .2ex;
+  line-height: normal;
+  vertical-align: middle;
+}
+
+/* Margin for lists */
+.cke_editable ul,
+.cke_editable ol {
+    margin: 0.5em 0;
+}
+.cke_editable ul ul,
+.cke_editable ol ul,
+.cke_editable ul ol,
+.cke_editable ol ol {
+    margin-top: 0;
+    margin-bottom: 0;
+}

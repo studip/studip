@@ -1,0 +1,110 @@
+.documents {
+    .chdir-up a {
+        display: block;
+    }
+    .options {
+        text-align: right;
+    }
+    .bread-crumbs {
+        display: inline-block;
+        min-height: 1.5em;
+        width: 40px;
+        z-index: 1;
+    
+        > a, ul {
+            background-color: #fff;
+            padding: 5px;
+        }
+        > a {
+            padding-bottom: 2px;
+        }
+
+        &.extendable:hover {
+            > a, > ul {
+                box-shadow: 0 4px 3px #aaa;
+            }
+            ul {
+                display: flex;
+                flex-direction: column-reverse;
+            }
+        }
+    
+        ul {
+            display: none;
+            list-style: none;
+            margin: 0;
+            position: absolute;
+        }
+        li {
+            font-size: 0.85em;
+            line-height: 1.5em;
+
+            a {
+                .background-icon('folder-parent', 'clickable', 24);
+                background-position: left center;
+                background-repeat: no-repeat;
+                padding-left: 30px;
+            }
+            &:first-child a {
+                .background-icon('folder-empty', 'clickable', 24);
+            }
+        }
+    }
+}
+
+.document-dialog {
+    @info-width: 150px;
+    .clearfix;
+    > aside {
+        float: left;
+        width: @info-width;
+    }
+    .document-dialog-icon {
+        text-align: center;
+    }
+    > div {
+        border-left: 1px dashed #888;
+        margin-left: @info-width;
+        min-height: 100%;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+    dl {
+        dt:after {
+            content: ':';
+        }
+        dd {
+            margin: 0 0 0.5em 0.5em;
+            padding: 0;
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.documents.dragging {
+    [data-file]:not([data-folder]) {
+        background-color: @light-gray-color-40;
+        opacity: 0.6;
+    }
+}
+.documents {
+    [data-folder].dropping {
+        background-color: @red-40;
+    }
+}
+
+.document-draggable-helper {
+    background-color: @activity-color-40 !important;
+    opacity: 1 !important;
+    td {
+        border-bottom: 0 !important;
+    }
+}
+
+fieldset.document-admin-search label {
+    box-sizing: border-box;
+    display: inline-block;
+    width: 49%;
+}

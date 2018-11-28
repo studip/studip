@@ -1,0 +1,10 @@
+<phpunit colors="true">
+    <logging>
+        <log type="junit" target="junit_log.xml"/>
+    </logging>
+    <testsuites>
+        <testsuite name="Stud.IP Unit-Tests" class="TestSuite">
+            <directory suffix="_test.php">lib</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

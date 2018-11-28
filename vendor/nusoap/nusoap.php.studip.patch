@@ -1,0 +1,26 @@
+--- nusoap.php	2010-04-26 22:38:08.000000000 +0200
++++ nusoap.php	2011-07-27 12:30:48.543869991 +0200
+@@ -6129,7 +6129,7 @@
+ 				$rows = sizeof($value);
+ 				$contents = '';
+ 				foreach($value as $k => $v) {
+-					$this->debug("serializing array element: $k, $v of type: $typeDef[arrayType]");
++					$this->debug("serializing array element: $k, ".$this->varDump($v)." of type: ".$typeDef['arrayType']);
+ 					//if (strpos($typeDef['arrayType'], ':') ) {
+ 					if (!in_array($typeDef['arrayType'],$this->typemap['http://www.w3.org/2001/XMLSchema'])) {
+ 					    $contents .= $this->serializeType('item', $typeDef['arrayType'], $v, $use);
+@@ -8138,11 +8138,9 @@
+ 	}
+ }
+
+-if (!extension_loaded('soap')) {
+-	/**
+-	 *	For backwards compatiblity, define soapclient unless the PHP SOAP extension is loaded.
++/**
++ *	For backwards compatiblity, define soap_client as in version 0.7.2.
+ 	 */
+-	class soapclient extends nusoap_client {
+-	}
++class soap_client extends nusoap_client {
+ }
+ ?>

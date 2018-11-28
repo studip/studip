@@ -1,0 +1,9 @@
+{
+    "config": {
+        "vendor-dir": "composer"
+    },
+    "require-dev": {
+        "codeception/codeception": "*",
+        "phpunit/phpunit": "5.7.27"
+    }
+}

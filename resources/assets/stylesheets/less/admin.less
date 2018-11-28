@@ -1,0 +1,152 @@
+.drag-and-drop { display: none; }
+.js .drag-and-drop {
+    display: block;
+    margin: 5px;
+    margin-left: -15px;
+    overflow: hidden;
+    padding: 10px;
+    padding-left: 0px;
+    position: relative;
+    text-align: center;
+    background-color: @content-color-20;
+    .background-icon('upload', 'clickable', 50);
+    background-repeat: no-repeat;
+    background-position: center 10px;
+    padding-top: 70px;
+    color: @base-color;
+    cursor: pointer;
+
+    input[type=file] {
+        border: 0;
+        font-size: 5em;
+        margin: 0;
+        opacity: 0;
+        padding: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    &.hovered {
+        background-color: @base-color;
+        .background-icon('upload', 'info_alt', 50);
+        color: white;
+    }
+}
+
+fieldset.attribute_table {
+    border-collapse: collapse;
+
+    ul {
+        margin: 0px;
+    }
+    .sem_class_name .sem_class_edit {
+        display: none;
+    }
+    .sem_class_name:hover .sem_class_edit {
+        display: inline;
+    }
+    ul#sem_type_list > li {
+        height: 20px;
+    }
+    ul#sem_type_list > li .sem_type_delete, ul#sem_type_list > li .sem_type_edit {
+        display: none;
+    }
+    ul#sem_type_list > li:hover .sem_type_delete, ul#sem_type_list > li:hover .sem_type_edit {
+        display: inline;
+    }
+    div[container] {
+        display: inline-block;
+        width: 150px;
+        max-width: 150px;
+        overflow: hidden;
+        border: thin solid #cccccc;
+        vertical-align: top;
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
+    div[container] > h2 {
+        display: block;
+        width: 100%;
+        background-color: #dddddd;
+        font-size: 12px;
+        text-align: center;
+        margin: 0px;
+    }
+    div[container] > div.droparea {
+        min-height: 30px;
+        padding: 1px;
+    }
+    div[container] > div.droparea > div.plugin {
+        cursor: move;
+        border: thin solid #cccccc;
+        border-radius: 5px;
+        background-color: #dddddd;
+        margin: 5px;
+        margin-left: 7px;
+        margin-right: 7px;
+        display: inline-block;
+        min-width: 132px;
+        max-width: 132px;
+    }
+    div[container] > div.droparea > div > h2 {
+        display: block;
+        width: 100%;
+        background-color: #cccccc;
+        font-size: 12px;
+        text-align: center;
+        margin: 0px;
+    }
+    div[container] > div.droparea > div.deactivated {
+        opacity: 0.5;
+    }
+    div[container]#plugins {
+        width: 99%;
+        max-width: 99%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    hr {
+        height: 1px;
+        color: #aaaaaa;
+        background-color: #aaaaaa;
+        border: none;
+    }
+    div[container]#deactivated_modules {
+        width: 99%;
+        max-width: 99%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    div[container]#deactivated_modules .plugin > div {
+        display: none;
+    }
+}
+
+.course-admin {
+    .course-completion {
+        .hide-text();
+        .square(16px);
+        background-repeat: no-repeat;
+        display: block;
+    }
+
+    th .course-completion {
+        .background-icon('radiobutton-checked', 'clickable');
+    }
+
+    td .course-completion {
+        .background-icon('radiobutton-checked', 'status-red');
+
+        &[data-course-completion="1"] {
+            .background-icon('radiobutton-checked', 'status-yellow');
+        }
+        &[data-course-completion="2"] {
+            .background-icon('radiobutton-checked', 'status-green');
+        }
+
+        &.ajaxing {
+            background-image: url("@{image-path}/ajax_indicator_small.gif");
+        }
+    }
+}

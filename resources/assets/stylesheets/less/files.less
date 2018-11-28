@@ -1,0 +1,338 @@
+.file_uploader {
+    display: none;
+
+}
+.uploadbar {
+    padding: 10px;
+    background-image: linear-gradient(@base-color, @base-color);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    border: @base-color solid 1px;
+    .ufo {
+        float: right;
+        animation: ufoflight 1.5s linear infinite;
+    }
+}
+
+@keyframes ufoflight {
+    25% {
+        transform: translateX(-2px) translateY(4px);
+    }
+    50% {
+        transform: translateX(-0px) translateY(8px);
+    }
+    75% {
+        transform: translateX(-2px) translateY(4px);
+    }
+    100% {
+        transform: translateX(0px) translateY(0px);
+    }
+}
+
+.subfolders .empty {
+    display: none;
+    &:only-child {
+        display: table-row;
+    }
+}
+
+/* for file/edit view and file/new_edit_folder_form view: */
+div.file_select_possibilities, .folder_type_select_possibilities {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    > * {
+        background-color: transparent;
+        margin: 10px;
+        border: thin solid @content-color-20;
+        padding: 5px;
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+        height: 100px;
+        min-height: 100px;
+        max-height: 100px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+        > img {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+
+    > label.content_terms_of_use_entry:not(.undecorated)
+    {
+        width: 40px;
+        min-width: 40px;
+        max-width: 40px;
+        height: 40px;
+        min-height: 40px;
+        max-height: 40px;
+
+        img {
+            width:100%;
+            height:100%;
+            display:block;
+        }
+    }
+
+    > button {
+        cursor: pointer;
+        width: 140px;
+        min-width: 140px;
+        max-width: 140px;
+        height: 140px;
+        min-height: 140px;
+        max-height: 140px;
+        color: @base-color;
+    }
+
+
+    > label:not(.undecorated) {
+        display: flex;
+        justify-content: center;
+        font-size:0.7em;
+        cursor: pointer;
+
+        img {
+            width:40%;
+            height:40%;
+            display:block;
+        }
+    }
+
+
+    /* for file/edit view only: */
+
+    input[name=content_terms_of_use_id] {
+        display: none;
+    }
+
+    input[name=content_terms_of_use_id]:checked + label {
+        background-color: @brand-color-darker;
+        color: @contrast-content-white;
+
+        img {
+            filter: invert(100%) brightness(200%);
+        }
+    }
+
+
+    /* for file/new_edit_folder_form view only: */
+
+    input[name=folder_type] {
+        display: none;
+    }
+
+    input[name=folder_type]:checked + label {
+        background-color: @brand-color-darker;
+        color: @contrast-content-white;
+
+        img {
+            filter: invert(100%) brightness(200%);
+        }
+    }
+
+}
+
+div.file_select_possibilities.content_terms_of_use_icons {
+    justify-content: left;
+}
+
+
+#file_edit_window, #file_details_window {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+
+/* for file/edit and folder/edit only: */
+@media screen and (max-width: 800px) {
+    /* mobile view: */
+    #file_aside, #folder_aside {
+        display: block;
+
+        div.file-icon, div.folder-icon {
+            img {
+                width: 30%;
+                height: 100%;
+                max-height: 10em;
+                margin-right: 1em;
+            }
+        }
+
+        h3 {
+            font-size: 140%;
+            padding-top: 1em;
+        }
+
+        dl {
+            display: table;
+        }
+    }
+
+    #file_management_forms {
+        display: table;
+        width: 100%;
+    }
+
+    .file_preview {
+        max-width: 100%;
+    }
+
+    #file_edit_window, #file_details_window {
+        flex-direction: column;
+    }
+
+    #file_aside, #folder_aside {
+        width: 100%;
+        max-width: none;
+    }
+
+    #file_management_forms {
+        width: 100%;
+        max-width: none;
+    }
+
+}
+
+@media screen and (min-width: 801px) {
+    /* desktop view: */
+
+    #file_aside, #folder_aside {
+        width: calc(30% - 10px);
+        max-width: calc(30% - 10px);
+/*         overflow: hidden; */
+
+        div.file-icon, div.folder-icon {
+            img {
+                margin-left: 20%;
+                width: 60%;
+                max-height: 16em;
+                height: 100%;
+            }
+        }
+
+        h3 {
+            font-size: 1.1em;
+        }
+    }
+
+    #file_management_forms, div#preview_container {
+        width: calc(70% - 10px);
+        max-width: calc(70% - 10px);
+
+        .file_preview {
+            max-width: 100%;
+        }
+    }
+
+}
+
+form.default fieldset.select_terms_of_use {
+    > legend {
+        margin: 0px;
+        width: 100%;
+    }
+    border: none;
+    padding: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    > input[type=radio] {
+        display: none;
+    }
+    > label {
+        cursor: pointer;
+        border: 1px solid @content-color-40;
+        transition: background-color 200ms;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px;
+        padding-bottom: 2px;
+        margin-top: 0px;
+        border-top: none;
+        > .text {
+            width: 100%;
+            margin-left: 10px;
+        }
+        > .arrow {
+            margin-right: 5px;
+        }
+        > .check {
+            display: none;
+        }
+    }
+    > label:first-of-type {
+        border-top: 1px solid @content-color-40;
+    }
+    > div {
+        border: 1px solid @content-color-40;
+        border-top: none;
+        display: none;
+        padding: 10px;
+
+    }
+    > input[type=radio]:checked + label {
+        background-color: @content-color-20;
+        transition: background-color 200ms;
+        > .arrow {
+            display: none;
+        }
+        > .check {
+            display: inline-block;
+        }
+    }
+    > input[type=radio]:checked + label + div {
+        display: block;
+        .description {
+            animation-duration: 400ms;
+            animation-name: terms_of_use_fadein;
+        }
+    }
+}
+
+@keyframes terms_of_use_fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+table.documents {
+    td, th {
+        vertical-align: top;
+
+        &:first-child {
+            padding-left: 8px;
+        }
+    }
+
+    &.flat td.filter-match {
+        background-color: @yellow-20;
+    }
+
+    tr:target {
+        background-color: @activity-color-20;
+    }
+}
+
+
+/*
+For the file and folder table in the selection dialogs
+when adding a file or copying/moving things:
+*/
+td.document-icon {
+    max-width: 40px;
+    width: 40px;
+}

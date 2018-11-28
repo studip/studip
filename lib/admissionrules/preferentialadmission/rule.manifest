@@ -1,0 +1,4 @@
+# PreferentialAdmissions
+classname=PreferentialAdmission
+installsql=sql/install.sql
+uninstallsql=sql/uninstall.sql

@@ -1,0 +1,3 @@
+classname=CourseMemberAdmission
+installsql=sql/install.sql
+uninstallsql=sql/uninstall.sql

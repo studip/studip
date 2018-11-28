@@ -1,0 +1,287 @@
+.ui-widget-overlay {
+    background: fadeout(@base-color, 50%);
+    opacity: 1;
+    position: fixed;
+}
+
+.ui-dialog.ui-widget.ui-widget-content {
+    border: 3px solid white;
+    padding: 0;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0.5);
+
+    .hide-in-dialog {
+        display: none;
+    }
+
+    .ui-dialog-titlebar {
+        background: @brand-color-darker;
+        border: 0;
+        color: @contrast-content-white;
+        font-size:1.3em;
+        font-weight: normal;
+    }
+
+    .ui-dialog-titlebar-close {
+        .square(32px);
+        background: inherit;
+        border: 0;
+        line-height:32px;
+        margin-top:-16px;
+        padding: 0;
+        text-align:center;
+
+        &:hover {
+            .square(32px);
+            background: inherit;
+            border: 0;
+            margin-top:-16px;
+            padding: 0;
+        }
+        .ui-icon {
+            .square(16px);
+            .background-icon('decline', 'info_alt');
+            background-position: 0;
+            display:inline-block;
+            margin: 0;
+
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+
+            &:hover{
+              .background-icon('decline', 'info_alt');
+            }
+        }
+    }
+    &.no-close .ui-dialog-titlebar-close {
+        display: none;
+    }
+
+    .ui-dialog-buttonpane {
+        padding: 0.5em 0.4em;
+        margin: 0 1em;
+        border-color: @base-color-20;
+
+        .ui-dialog-buttonset {
+            text-align: center;
+            float: none;
+            white-space: nowrap;
+        }
+        .ui-button {
+            .button(); // Include button mixin
+            font-weight: bold;
+
+            &.accept,
+            &.cancel {
+                padding-right: 23px;
+            }
+            &:last-child {
+                margin-right: 0;
+            }
+
+            &.accept {
+              .button-with-icon("accept", "clickable", "info_alt");
+            }
+
+            &.cancel {
+              .button-with-icon("decline", "clickable", "info_alt");
+            }
+
+            &.download {
+              .button-with-icon("download2", "clickable", "info_alt");
+            }
+
+            &.disabled,
+            &[disabled] {
+                background: @light-gray-color-20;
+                cursor: default;
+                opacity: 0.65;
+
+                &:hover {
+                    color: @base-color;
+                }
+            }
+
+            &::before {
+                margin-left: -5px;
+                margin-top: 2px;
+            }
+        }
+
+        .ui-button-text-only .ui-button-text {
+            padding: 0;
+            white-space: nowrap;
+        }
+    }
+}
+.ui-dialog-titlebar-wiki {
+    .background-icon('question-circle', 'info_alt', 24);
+    background-position: center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    position: absolute;
+    .square(32px);
+    margin-top: -16px;
+    top: 50%;
+    right: 34px; // This is ugly but hard to avoid since the close button's position on a dialog is also hardcoded
+}
+.ui-dialog {
+    .ui-dialog-title {
+        margin-right: 48px; // Needs to be adjusted to the width of wiki icon
+    }
+    .with-wiki-link .ui-dialog-title {
+        box-sizing: border-box;
+        padding-right: 24px;
+    }
+}
+
+// Centered content in dialog
+.studip-dialog-centered .ui-dialog-content {
+    box-sizing: border-box;
+    display: table !important; // jQuery UI sets these values directly on
+    width: 100% !important;    // the element, thus we need to force it!
+}
+.studip-dialog-centered-helper {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+// Confirmation dialog (like createQuestion)
+.ui-dialog.ui-widget.ui-widget-content.studip-confirmation {
+    min-width: 30em;
+
+    .ui-dialog-titlebar {
+        background-color: @yellow;
+        color: black;
+        text-align: left;
+    }
+    .ui-dialog-titlebar-close {
+        background: transparent;
+        border: 0;
+
+        .ui-icon, .ui-icon:hover {
+            .background-icon('decline', 'clickable');
+            background-position: 0;
+        }
+    }
+
+    .ui-dialog-content {
+        box-sizing: border-box;
+        .background-icon('question-circle-full', 'status-yellow');
+        background-position: 12px 8px;
+        background-repeat: no-repeat;
+        background-size: 32px;
+        padding: 15px 15px 15px 55px;
+        max-height: 60vh;
+    }
+
+    .ui-dialog-buttonpane {
+        text-align: center;
+
+        .ui-dialog-buttonset {
+            float: none;
+            > * {
+                display: inline-block;
+            }
+        }
+    }
+}
+
+.ui-dialog.studip-lightbox {
+    @arrow-distance: 8px;
+    @arrow-size: 32px;
+    @arrow-zoom: 16px;
+    .wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+
+        .next,
+        .previous {
+            transition: opacity 300ms;
+            background-repeat: no-repeat;
+            display: block;
+            opacity: 0.1;
+
+            position: absolute;
+            top: 0;
+            bottom: 0;
+
+            outline: none;
+
+            &:hover {
+                opacity: 1;
+            }
+
+        }
+        .previous {
+            left: 0;
+            right: 50%;
+
+            .icon('before', 'arr_1left', 'clickable', @arrow-size);
+            &::before {
+                position: absolute;
+                left: @arrow-distance;
+                top: 50%;
+                transform: translate(0, -50%);
+                z-index: 2;
+            }
+
+            &::after {
+                .square((@arrow-size + @arrow-zoom));
+
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translate(0, -50%);
+
+                background-color: @white;
+                content: '';
+                display: block;
+
+                z-index: 1;
+            }
+        }
+        .next {
+            right: 0;
+            left: 50%;
+
+            .icon('before', 'arr_1right', 'clickable', @arrow-size);
+            &::before {
+                position: absolute;
+                right: @arrow-distance;
+                top: 50%;
+                transform: translate(0, -50%);
+                z-index: 2;
+            }
+
+            &::after {
+                .square((@arrow-size + @arrow-zoom));
+
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translate(0, -50%);
+
+                background-color: @white;
+                content: '';
+                display: block;
+
+                z-index: 1;
+            }
+        }
+
+        &.first .previous,
+        &.last .next {
+            display: none;
+        }
+    }
+}

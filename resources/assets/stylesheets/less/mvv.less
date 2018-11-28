@@ -1,0 +1,671 @@
+dl {
+    &.mvv-form {        
+        margin: 0;
+        
+        dt {
+            font-weight: bold;
+            padding-left: 15px;
+            padding-top: 5px;
+            
+            label&:after {
+                content: ":";                
+            }
+        }
+        
+        dd {
+            padding: 10px 10px 10px 30px;
+            border-bottom: 1px solid @dark-gray-color-20;
+            
+            label {
+                display: inline-block;
+                padding: 10px;
+            }
+            
+            div.mvv-fachsemester label {
+                display: inline;
+                padding: 0 10px 0 0;                    
+            }
+        }
+        
+        label img {
+            vertical-align: baseline;
+        }
+        
+        div.studip {
+            width: 75%;
+            display: inline;
+        }
+        
+        blockquote {
+            border: 1px dashed @dark-gray-color-80;
+            margin: 3px;
+            padding: 3px;
+            font-size: 0.9em;
+            flex: 1 0 auto;
+            
+            &:hover {
+                background-color: @yellow-20;
+                border-color: @red;
+            }
+        }
+        
+    }
+    
+    &.mvv-details {
+        margin: 0;
+        
+        dt {
+            font-weight: bold;
+            padding: 5px 0 0 5px;
+        }
+        
+        dd {
+            margin: 0;
+            padding: 5px 0 0 15px;
+        }
+    }
+}
+
+span.mvv-chooser-id {
+    display: none;    
+}
+
+table {
+    
+    tr td.ellipsis {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    &.default {
+        
+        > tbody {
+            &.collapsed > tr > td {
+                border-bottom: 1px solid @dark-gray-color-20;
+            }
+            
+            &.not-collapsed {
+                > tr > td {
+                    border-bottom: 1px solid @dark-gray-color-20;
+                }
+                > tr.loaded-details > td {
+                    padding: 0px 0px 5px 20px;
+                }
+            }
+            
+            &:last-of-type > tr.last-child > td {
+                border-bottom: 1px solid @dark-gray-color-20;
+            }
+            
+            &.ui-sortable-helper {
+                display: table;
+            }
+            
+            &.ui-sortable-placeholder {
+                display: block;
+            }
+        }
+        
+        > tbody.sort_items {
+            > tr.header-row > td:first-child {
+                background: #fff url("@{image-path}/anfasser_24.png") no-repeat left center;
+                cursor: move;
+                padding-left: 10px;
+            }
+            &.empty > tr.header-row > td:first-child {
+                &:extend(& > tr.header-row > td:first-child);
+                padding-left: 30px;
+            }
+        }
+        
+    }
+    
+    &.mvv-form tr td {
+        &:first-child {
+            vertical-align: top;
+            font-weight: bold;
+        }
+    }   
+    
+    &.mvv-modul-details {
+        margin: 10px;
+        width: 99%;
+        
+        td {
+            vertical-align: top;
+        }
+        
+        th {
+            text-align: left;
+            vertical-align: top;
+            
+            .mvv-modul-details-head {
+                text-align: center;
+            }
+        }
+        
+        table th {
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        input[type=checkbox].mvv-cb-more {
+            display: none;
+            &:checked ~ ul li {
+                &:nth-child(n+6) {
+                    height: 0;
+                    visibility: hidden;
+                }
+                & label.cb-more-label {
+                    display: block;
+                }
+            }
+            & ~ ul label.cb-more-label {
+                display: none;
+            }
+        }
+    }
+
+    &.mvv-semsterdata {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+        height: 2em;
+        
+        td {
+            border: none;
+            border-right:1px solid @dark-gray-color-20;
+            text-align: center;
+            margin: 0px;
+            padding:0px;
+            
+            &.type{
+                font-size: 0.5em;                
+                &.soll{
+                    color:@red;
+                }                
+                &.kann{
+                    color:@dark-green;
+                }
+            }
+        }
+        
+        th {
+            border: none;
+            border-right:1px solid @dark-gray-color-20;
+            text-align: center;
+            margin: 0px;
+            padding:0px;
+        }
+    }
+    
+}
+
+ul {    
+    &.mvv-result-list {
+        list-style-type: none;
+        padding: 0;
+        
+        dt {
+            padding: 1em;
+            margin: 0;
+        }
+    
+        li {
+            padding: 10px 20px;
+            margin: 0;
+        }
+        
+        dd {
+            margin: 0;
+        }
+        
+        &.even {
+            background-color: @dark-gray-color-10;
+            
+            &:hover {
+                background-color: @content-color-60;
+            }
+        }
+        
+        &.odd {
+            background-color: @dark-gray-color-5;
+            
+            &:hover {
+                background-color: @content-color-40;
+            }
+        }
+    }
+    
+    &.mvv-modul li {
+        .icon('before', 'learnmodule', 'info', 16, 2px);
+        padding-left: 20px;        
+    }
+    
+    &.mvv-persons {
+        width: 100%;
+        
+        & li {
+            .icon('before', 'person', 'info', 16, 2px);
+            padding-left: 20px;
+        }
+    }
+    
+    &.mvv-faecher li {
+        .icon('before', 'file', 'info', 16, 2px);
+        padding-left: 20px;
+    }
+    
+    &.mvv-dokumente li {
+        > div:first-child {
+            .icon('before', 'file', 'info', 16, 2px);
+        }
+    }
+    
+    &.mvv-institute li {
+        .icon('before', 'institute', 'info', 16, 2px);
+        padding-left: 20px;
+    }
+    
+    &.mvv-languages li {
+        .icon('before', 'consultation', 'info', 16, 2px);
+        padding-left: 20px;
+    }
+    
+    &.mvv-assigned-items {
+        max-width: 40em;
+        width: 100%;
+        list-style-type: none;
+        padding: 20px 0px 20px 10px;
+        
+        li {
+            border-bottom: solid @dark-gray-color-45 1px;
+            padding-top: 5px;
+            padding-left: 5px;
+            margin-bottom: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            
+            &.sort_items {
+                background: #fff url("@{image-path}/anfasser_24.png") no-repeat left center;
+                cursor: move;
+                padding-left: 10px;
+            }
+            
+        }
+        
+        &.ui-autocomplete {
+            max-width: 700px;
+        }        
+        
+    }
+    
+    li.mvv-item-list-placeholder {
+        background-image: none !important;
+        border: none !important;
+        font-weight: normal !important;
+        padding-left: 20px;    
+    }
+}
+
+div {
+    &.mvv-item-list-properties {
+        width: 100%;
+        align-self: baseline;
+        padding-left: 40px;
+        div {
+            font-style: italic;
+            font-size: 0.9em;
+            max-height: 1.2em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }    
+    
+    &.mvv-item-list-text {
+        flex: 9;
+    }
+    
+    &.mvv-item-list-buttons {
+        flex: 1;
+        text-align: right;
+    }
+    
+    &.mvv-edit-form-new {
+        padding: 10px;
+    }
+    
+    &.mvv-property-en {
+        background: url("@{image-path}/languages/lang_en.gif") no-repeat left center;
+        padding-left: 20px;
+        font-style: italic;
+        height: 1.5em;
+        text-overflow: ellipsis;
+    }
+    
+    &.mvv-property-de {
+        background: url("@{image-path}/languages/lang_de.gif") no-repeat left center;
+        padding-left: 20px;
+        font-style: italic;
+        height: 1.5em;
+        text-overflow: ellipsis;
+    }
+}
+
+select.mvv-search-select-list {
+    display: none;
+    max-width: 40em;
+}
+
+#mvv-chooser {
+
+    div {
+        float: left;
+        width: 19%;
+    }
+
+    ul {    
+        list-style: none inside;    
+        margin: 5px;
+        padding: 0;
+    
+        li {            
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border-top: 1px solid @dark-gray-color-60;
+            padding: 3px 20px 3px 2px;
+            height: 1.3em;
+            
+            &:hover {
+                background:@dark-gray-color-10;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            
+            &.selected {
+                .background-icon('arr_2right', 'inactive', 16);
+                background-position: right;
+                background-repeat: no-repeat;
+                cursor: pointer;
+                font-weight: bold;
+                
+                &.last {
+                    .background-icon('accept', 'inactive', 16);
+                    background-position: right;
+                    background-repeat: no-repeat;
+                }
+
+                &:after {
+                    float: right;
+                }
+            }
+        }        
+    }
+}
+
+#mvv-chooser-toggle {    
+    .icon('before', 'arr_2up', 'clickable', 16, 2px);
+    width: 20px;
+    height: 20px;
+    float: right;
+    cursor: pointer;
+    display: none;    
+}
+
+#exposeMask {
+    position: fixed !important;
+    bottom: 0px;
+}
+
+.mvv-add-button {
+    width: 20px;
+    display: inline-block;
+    
+    a {
+        cursor: pointer;
+        display: none;
+        vertical-align: middle;
+    }
+}
+
+.mvv-chooser-hidden {    
+    .icon('before', 'arr_2down', 'clickable', 16, 2px);
+}
+
+.mvv-hideable-hidden {
+    display: none;
+}
+
+.mvv-include-edit {
+    background: url("{@plugin-path}/images/edit-top.png") no-repeat center top;
+    width: 580px;
+    margin: 0px;
+    padding-top: 20px;
+}
+
+.mvv-edit-form-ovl {
+    width: 560px;
+    
+    input[type=text], textarea {
+        width: 90%;
+        vertical-align: top;
+    }
+}
+
+.mvv-include-content {
+    margin: 0 15px;
+    position: relative;
+    height: 400px;
+    overflow: auto;
+}
+
+.mvv-edit-bottom {
+    background: url("{@plugin-path}/images/edit-bottom.png") no-repeat center bottom;
+    padding-top: 20px;
+}
+
+.mvv-include-close {
+    background: url("{@plugin-path}/images/close.png") no-repeat;
+    cursor: pointer;
+    height: 35px;
+    position: absolute;
+    right: -30px;
+    top: -13px;
+    width: 35px;
+    z-index: 1000;
+}
+
+.mvv-include-background {
+    background: url("{@plugin-path}/images/edit-bg.png") repeat-y 0 0;
+}
+
+.mvv-search-reset {
+    display: none;
+    cursor: pointer;
+}
+
+.sortable  a {
+    cursor: pointer;
+} 
+
+.ui-resizable-handle {
+    z-index: 999;
+}
+
+.ui-menu-item a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.clear{
+    clear:both;
+}
+
+form.default .mvv-inst-chooser select {
+    width: 20em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.mvv-inst-next-button {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    
+    img {
+        display: none;
+        cursor: pointer;
+    }
+}
+
+.mvv-inst-add-button {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    display: inline-block;
+    
+    img {
+        display: none;
+        cursor: pointer;
+    }
+}
+
+.mvv-select-group {
+    padding-bottom: 25px;
+    
+    li {
+        font-weight: bold;
+        
+        ul {
+            padding: 10px 0 0 10px;
+            list-style-type: none;
+            
+            li {
+                font-weight: normal;
+            }
+        }
+    }
+}
+
+.mvv-orig-lang {
+    display: none;
+    border: 1px solid @light-gray-color-40;
+    margin: 3px;
+    padding: 3px;
+    font-size: 0.9em;
+    background-color: #fff;
+    max-height: 10em;
+    overflow: auto;
+}
+
+#lvgruppe_selection {
+    padding: 1em;
+    
+    h3 {
+        margin-top: 1em;
+    }
+    
+    &.odd {
+        background-color: @dark-gray-color-5;
+    }
+    
+    &.even {
+        background-color: @content-color-20;
+    }
+}
+
+#lvgruppe_selection_chosen {
+    width: 49%;
+    float: left;
+    margin: 0;
+    padding: 0;
+    
+    ul {
+      /*  list-style: none; */
+        padding: 0;
+        margin: 0;
+        
+        li {
+            list-style: none;
+            padding: 0 0 0 1em;
+            margin: 0;
+        }
+    }
+}
+
+#lvgruppe_selection_none,
+#lvgruppe_selection_at_least_one {
+    font-style: italic;
+}
+
+#lvgruppe_selection_selectables {
+    width: 49%;
+    margin: 0 0 0 50%;
+    padding: 0;
+    
+    ul {     
+        padding: 0;
+        margin: 0;
+        
+        li {
+            list-style: none;
+            padding: 0 0 0 1em;
+            margin: 0;
+        }
+    }
+}
+
+
+#lvgruppe_selection_selected li ul li {
+    list-style: inside;
+    padding-bottom: 0.3em;
+}
+
+#admin_seminare_assi #lvgruppe_selection {
+    font-size: 0.8em;
+    
+    h3 {
+        font-weight: normal;
+    }
+}
+
+.mvv-no-entry {
+    font-style: italic;
+}
+
+.mvv-content-overlay {
+    width: 1100px;
+    position: absolute;
+    background-color: #fff;
+    height: 80%;
+}
+
+.mvv-content-overlay-close{
+    right: -15px;
+}
+
+.mvv-content-overlay-inner {
+    overflow: auto;
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 18px;
+    bottom: 18px;
+}
+
+.quicksearch_frame {
+    white-space: nowrap;
+}
+
+.difflog {
+    color: brown;
+    font-size: smaller;
+    vertical-align: text-top;
+    text-decoration: none;
+}

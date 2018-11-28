@@ -1,0 +1,83 @@
+section.course-statusgroups {
+    article {
+        header {
+            h1 {
+                a {
+                    display: inline;
+
+                    &.no-contentbox-link::before {
+                        background-image: none;
+                        width: 0;
+                    }
+
+                    img {
+                        vertical-align: bottom;
+                    }
+                }
+
+            }
+        }
+
+        section {
+            border-left: 1px solid @content-color-20;
+            border-right: 1px solid @content-color-20;
+
+            table {
+                td.memberactions {
+                    text-align: right;
+                }
+
+                thead {
+                    tr th {
+                        background-color: @content-color-20;
+                    }
+                }
+
+                tbody {
+                    tr td {
+                        span.member-invisible {
+                            font-style: italic;
+                            color: @light-gray-color;
+                        }
+                    }
+                }
+
+                tfoot {
+                    tr td {
+                        background-color: @content-color-20;
+                        padding-left: 5px;
+                        padding-right: 0;
+                    }
+                }
+            }
+
+            div.statusgroup-no-members {
+                font-style: italic;
+                margin: 15px;
+            }
+        }
+
+    }
+
+    footer {
+        background-color: @content-color-20;
+        border-top: 1px solid @black;
+        font-size: medium;
+        padding: 5px;
+        padding-left: 18px;
+        text-align: left;
+    }
+
+    &.ui-sortable {
+        article.draggable header {
+            cursor: move;
+            background-image: url("@{image-path}/anfasser_24.png");
+            background-position: 3px center;
+            background-repeat: no-repeat;
+            padding-left: 12px;
+        }
+        article.ui-sortable-placeholder {
+            border-style: dotted;
+        }
+    }
+}

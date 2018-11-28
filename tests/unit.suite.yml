@@ -1,0 +1,9 @@
+# Codeception Test Suite Configuration
+
+# suite for unit (internal) tests.
+# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+
+error_level: E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_NOTICE
+class_name: CodeGuy
+modules:
+    enabled: [CodeHelper]

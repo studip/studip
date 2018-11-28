@@ -1,0 +1,49 @@
+/* --- Links ---------------------------------------------------------------- */
+a, a:link, a:visited {
+    color: @base-color;
+    text-decoration: none;
+
+    &.index     { color: #444; }
+    &.printhead { color: #339; }    
+    &.tree      { color: #000; }
+    &.toolbar {
+        color: #91a2b6;
+        font-size: 9px;
+    }
+}
+a[href] {
+    transition: color 0.3s;
+}
+a[disabled] {
+    pointer-events: none;
+}
+
+a:hover, a:active, a:hover.index, a:active.index, a:hover.tree {
+    color: @active-color;
+    text-decoration: none;
+}
+
+a:hover.toolbar {
+    color: #eee;
+}
+
+a.link-intern, a.link-extern {
+    white-space: nowrap;
+}
+
+a.link-intern {
+    .icon('before', 'link-intern', 'clickable', 16, 2px);
+}
+a.link-extern {
+    .icon('before', 'link-extern', 'clickable', 16, 2px);
+}
+a.link-add {
+    .icon('before', 'add', 'clickable', 16, 2px);
+}
+a.link-edit {
+    .icon('before', 'edit', 'clickable', 16, 2px);
+}
+
+a img {
+    border: 0;
+}

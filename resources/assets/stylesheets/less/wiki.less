@@ -1,0 +1,45 @@
+div.wikitoc {
+    font-size: 1em;
+    margin-bottom: 5px;
+
+    h1, h2, h3, h4 {
+        color: black;
+        font-size: 1em;
+        margin: 0 0 0 -10px;
+    }
+
+    ul {
+        list-style: none;
+        margin-bottom: 0;
+        margin-top: 0;
+        padding-left: 0;
+
+        ul       { padding-left: 10px; }
+        ul ul    { padding-left: 20px; }
+        ul ul ul { padding-left: 30px; }
+    }
+}
+
+.wikitoc_editlink {
+    div& {
+        font-size: 1em;
+        margin-bottom: -10px;
+        padding-top: 5px;
+    }
+    span& { font-size: 75%; }
+}
+
+span.wikitoc_toggler { font-size: 0.8em; }
+textarea.wiki-editor {
+    display: block;
+    height: 250px;
+    width: 98%;
+}
+
+body#wiki #main_content td.printcontent:last-child:not(:first-child) {
+    padding-right: 22px;
+}
+
+.no-js #wiki button[name="submit-and-edit"] {
+    display: none;
+}

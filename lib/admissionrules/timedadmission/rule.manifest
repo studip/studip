@@ -1,0 +1,4 @@
+# TimedAdmissions
+classname=TimedAdmission
+installsql=sql/install.sql
+uninstallsql=sql/uninstall.sql

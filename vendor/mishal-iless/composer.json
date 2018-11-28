@@ -1,0 +1,39 @@
+{
+  "name": "mishal/iless",
+  "type": "library",
+  "description": "Less.js port to PHP",
+  "keywords": [
+    "less",
+    "lesscss",
+    "css",
+    "parser",
+    "compiler",
+    "less.js"
+  ],
+  "license": "MIT",
+  "homepage": "http://github.com/mishal/iless",
+  "authors": [
+    {
+      "name": "ILess contributors",
+      "homepage": "https://github.com/mishal/iless/wiki/Contributors"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0"
+  },
+  "require-dev": {
+  },
+  "bin": [
+    "bin/iless"
+  ],
+  "autoload": {
+    "psr-4": {
+      "ILess\\": "lib/ILess"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "2.1-dev"
+    }
+  }
+}

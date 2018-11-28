@@ -1,0 +1,315 @@
+/* --- main navigation ----------------------------------------------------- */
+body:not(.fixed) #barTopMenu {
+    align-self: flex-end;
+
+    margin: 0 0 4px 5px;
+    padding: 0;
+    z-index: 1000;
+    font-size: 0;
+
+    > li {
+        display: inline-block;
+        list-style-type: none;
+        width: 64px;
+        height: 55px;
+        padding: 0;
+        z-index: 2;
+        font-size: @font-size-base;
+    }
+    a {
+        color: @base-color;
+        display: block;
+        padding: 0 0px;
+        text-align: center;
+        line-height: 1em;
+
+        // Icon state: normal
+        span {
+            background: no-repeat 0 0;
+            display: inline-block;
+            .square(32px);
+
+            // Icon state: new
+            &.new {
+                background-position: -64px 0;
+            }
+        }
+
+        img {
+            margin: 5px 0px;
+            .square(28px);
+        }
+        &[data-badge]:not([data-badge="0"]) {
+            position: relative;
+
+            &::before {
+                position: absolute;
+                left: 50%;
+                top: 0;
+
+                margin-left: 5px;
+                .square(16px);
+
+                background-clip: content-box;
+                background-color: @red;
+                border: 3px solid @dark-gray-color-5;
+                border-radius: 50%;
+                color: white;
+                content: attr(data-badge);
+                display: inline-block;
+                font-size: 10px;
+                z-index: 2;
+            }
+        }
+    }
+
+    > li > a,
+    > li > label {
+        .navtitle {
+            position: absolute;
+            white-space: nowrap;
+
+            left: 50%;
+            transform: translate(-50%, 0);
+
+            opacity: 0;
+        }
+    }
+
+    img {
+        filter: hue-rotate(350deg) saturate(8.7%) brightness(177.3%) !important;
+    }
+
+    // Hide all navigation item title on hover and display only the currently
+    // hovered one
+    .navtitle {
+        transition: opacity 300ms; // Smooth change when entering
+    }
+    &:hover {
+        > li.active .navtitle {
+            opacity: 0;
+        }
+        > li:hover .navtitle {
+            opacity: 1;
+            transition: opacity 0; // Quick change when leaving
+        }
+    }
+
+    // Recolor on hover and for active items
+    li:hover,
+    li.active {
+        .navtitle {
+            opacity: 1;
+        }
+        > a {
+            img {
+                filter: hue-rotate(0deg) saturate(100%) brightness(100%) !important;
+
+                filter: url('filter.svg#brightness');
+                filter: brightness(100%);
+            }
+        }
+
+        // Icon state: hover
+        span     { background-position: -32px 0; }
+        // Icon state: hover and new
+        span.new { background-position: -96px 0; }
+    }
+
+    > .overflow {
+        position: relative;
+
+        // Hide overflow and touch toggle
+        > input[type="checkbox"] {
+            display: none;
+        }
+
+        // Rotate icon
+        > label img {
+            transition: transform 300ms;
+            transform: rotate(90deg);
+        }
+
+        // Define transition duration for possible badge on overflow
+        > label > a[data-badge]::before {
+            transition: opacity 300ms;
+        }
+
+        // Display menu on activation
+        &:hover label,
+        input[type="checkbox"]:checked {
+            ~ ul {
+                display: block;
+            }
+            img,
+            ~ label img {
+                transform: rotate(180deg);
+            }
+            > a[data-badge]::before {
+                opacity: 0;
+            }
+        }
+
+        > ul {
+            display: none;
+
+            position: absolute;
+            right: 0;
+            top: 100%;
+            z-index: 10;
+
+            list-style: none;
+            margin: 5px 0 0;
+            padding: 0;
+
+            background-color: @dark-gray-color-5;
+            border: 1px solid @dark-gray-color-40;
+            border-top: 0;
+
+            min-width: 150px;
+            max-width: 250px;
+            overflow: hidden;
+
+            li {
+                display: block;
+                a {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    align-items: center;
+
+                    padding: 0.5em 1em;
+
+                    &[data-badge]:not([data-badge="0"])::before {
+                        left: 21px;
+                    }
+                }
+                img {
+                    flex: 1 0 24px;
+                    .square(24px);
+                    margin: 2px 0.7em 0 0;
+                }
+                .navtitle {
+                    flex: 1 0 100%;
+                    text-align: left;
+                    white-space: nowrap;
+                }
+                br {
+                    display: none;
+                }
+            }
+        }
+    }
+    &:not(.overflown) > .overflow {
+        display: none;
+    }
+}
+
+// Toggle mechanism for touch/hover
+#barTopMenu-toggle {
+    display: none;
+}
+label[for="barTopMenu-toggle"] {
+    .background-icon('hamburger', 'info_alt', 16);
+    background-position: 0px center;
+    background-repeat: no-repeat;
+
+    color: @white;
+    line-height: @bar-bottom-container-height;
+    overflow: hidden;
+    padding-left: (5px + 16px + 5px); // padding + icon + next padding
+    white-space: nowrap;
+
+    height: 0;
+    max-height: 0;
+    opacity: 0;
+    transition: all 300ms;
+
+    // 1/4 of the screen's width, creates a bigger hover area
+    width: 25vw;
+
+}
+html.no-touch {
+    #barTopMenu-toggle,
+    label[for="barTopMenu-toggle"] {
+        pointer-events: none;
+    }
+}
+
+body.fixed {
+    #flex-header {
+        height: @header-height;
+    }
+
+    label[for="barTopMenu-toggle"] {
+        opacity: 1;
+        max-height: @bar-bottom-container-height;
+        height: auto;
+    }
+    #barTopMenu {
+        background-color: @base-color;
+
+        list-style: none;
+        margin: 0px 0px 0px -15px;
+        padding: 0px;
+        position: absolute;
+
+        width: fit-content;
+
+        // Hide menu
+        display: none;
+
+        img {
+            filter: url('filter.svg#brightness'); // IE?
+            filter: contrast(0) brightness(2);
+
+            .square(16px);
+            margin-right: 0.8em;
+        }
+
+        li {
+            padding: 0.25em 15px;
+            > a {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+
+                color: @white;
+            }
+
+            &:hover {
+                background-color: @base-color-80;
+            }
+
+            &.overflow {
+                padding: 0;
+
+                &:hover {
+                    background-color: inherit;
+                }
+
+                input[type="checkbox"],
+                label {
+                    display: none;
+                }
+
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                &:last-child {
+                    padding-bottom: 10px;
+                }
+            }
+
+
+        }
+    }
+    #barBottomLeft:hover #barTopMenu,
+    #barTopMenu-toggle:checked ~ #barTopMenu {
+        display: block;
+    }
+}

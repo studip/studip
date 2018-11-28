@@ -1,0 +1,31 @@
+/* --- Autocompleter -------------------------------------------------------- */
+div.autocomplete { position: absolute; }
+
+.ac_odd  { background-color: #eee; }
+.ac_over { background-color: #ffb; }
+
+.ac_results {
+    background-color: white;
+    border: 1px solid #888;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    z-index: 99999;
+
+    ul {
+        list-style: none outside none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    li {
+        list-style-type: none;
+        cursor: pointer;
+        display: block;
+        font-size: 0.75em;
+        margin: 0;
+        min-height: 2em;
+        padding: 2px;
+        text-align: left;
+    }
+}

@@ -1,0 +1,83 @@
+/* --- Quicksearch ---------------------------------------------------------- */
+form#search_sem_quick_search_frame {
+    display: flex;
+    align-items: center;
+}
+
+input.quicksearchbox {
+    background-color: @dark-gray-color-10;
+    border: 1px solid @dark-gray-color-40;
+    color: @base-color;
+    font-size: 14px;
+    width: 250px;
+    height: 19px;
+    padding-left: 6px;
+}
+
+.quicksearch_frame {
+    input[type="text"] {
+        box-sizing: border-box;
+        border-width: 1px 30px 1px 1px;
+        border-style: solid;
+        border-color: #7E92B0;
+        border-image: none;
+        float: left;
+        width: 250px;
+    }
+
+    input[type=submit] {
+        font: 0/0 a;
+        color: transparent;
+        text-shadow: none;
+        background-color: transparent;
+        border: 0;
+        width: 29px;
+        height: 20px;
+        .background-icon('search', 'info_alt');
+        background-position: center 4px;
+        background-repeat: no-repeat;
+        vertical-align: top;
+        margin-left: -30px;
+    }
+}
+
+.extendedLayout {
+    .ui-autocomplete {
+        max-height: 275px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 99999;
+    }
+
+    .ui-menu-item {
+        white-space: nowrap;
+    }
+
+    .ui-menu-item a img {
+        float: left;
+        width: 40px;
+        height: 40px;
+        margin-right: 5px;
+    }
+}
+.quicksearchbutton {
+    border: 0;
+    margin-left: 6px;
+    padding: 0;
+    vertical-align: text-bottom;
+}
+.ui-autocomplete {
+    z-index: 99999;
+}
+
+.quicksearch_select {
+    width: calc(100% - 32px);
+
+    + input[type=submit] {
+        float: none;
+        margin-left: 0px;
+        height: 30px;
+        background-color: #7E92B0;
+        background-position: center center;
+    }
+}

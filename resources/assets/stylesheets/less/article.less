@@ -1,0 +1,126 @@
+article.studip {
+    border-color: @content-color-40;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 10px;
+    transition: all 300ms ease 0s;
+    padding: 10px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+
+        padding: 2px;
+        background-color: @content-color-20;
+        margin: -10px;
+        margin-bottom: 10px;
+
+        > * {
+            /* Try to get header aligned by forcing children into centering */
+            display: flex;
+            align-items: center;
+
+            &:first-child {
+                flex: 1;
+            }
+        }
+
+        h1 {
+            padding: 5px;
+            margin: 0;
+            color: @base-color;
+            border-bottom: none;
+            font-size: medium;
+
+            > a {
+                display: flex;
+                align-items: center;
+                img, svg {
+                    margin-right: 5px;
+                }
+            }
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            overflow: hidden;
+
+            > * {
+                border-right: 1px solid @content-color;
+                padding-right: 4px;
+                margin-right: 4px;
+                max-height: 2em;
+
+                &:last-child {
+                    border-right: none;
+                    padding-right: 0;
+                    margin-right: 0;
+                }
+
+                &.nowrap {
+                    white-space: nowrap;
+                }
+            }
+
+        }
+    }
+
+    &.toggle {
+        > header {
+            .icon('before', 'arr_1right', 'clickable');
+            &:before {
+                transition: all 200ms ease 0s;
+                margin-left: 5px;
+            }
+            margin-bottom: -10px;
+            > *:first-child {
+                cursor: pointer;
+            }
+        }
+        > *:not(header) {
+            display: none;
+        }
+
+        &.open {
+            > header {
+                margin-bottom: 10px;
+                &:before {
+                    transform: rotate(90deg);
+                }
+            }
+            > *:not(header) {
+                display: inherit;
+            }
+        }
+    }
+
+    > footer {
+        text-align: center;
+        border-color: @content-color-40;
+        border-top-style: solid;
+        border-width: 1px;
+        margin: -10px;
+        margin-top: 10px;
+
+        &:empty {
+            display: none !important;
+            border: 0 !important;
+        }
+    }
+}
+
+article.new {
+    &.toggle {
+        > header {
+            .icon('before', 'arr_1right', 'new');
+        }
+    }
+}

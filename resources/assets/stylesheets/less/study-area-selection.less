@@ -1,0 +1,44 @@
+/* --- Studienbereichsauswahl ----------------------------------------------- */
+#study_area_selection {
+    padding: 1em;
+
+    h3    { margin-top: 1em; }
+    .odd  { background-color: #f3f5f8; }
+    .even { background-color: @content-color-20; }
+}
+
+#study_area_selection_none,
+#study_area_selection_at_least_one {
+    font-style: italic;
+}
+
+#study_area_selection_chosen {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 49%;
+}
+
+#study_area_selection_selectables {
+    margin: 0 0 0 50%;
+    padding: 0;
+    width: 49%;
+}
+
+#study_area_selection_chosen,
+#study_area_selection_selectables {
+    ul, li {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    li { padding-left: 1em; }
+}
+
+#admin_seminare_assi {
+    #study_area_selection {
+        font-size: 0.8em;
+
+        h3 { font-weight: normal; }
+    }
+}

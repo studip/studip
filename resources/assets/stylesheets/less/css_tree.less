@@ -1,0 +1,121 @@
+@css-tree-delay: 300ms;
+@css-tree-distance: 8px;
+@css-tree-border: 1px solid @light-gray-color-80;
+
+.css-tree {
+    &, ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    ul {
+        margin-left: @css-tree-distance;
+        position: relative;
+
+        &:before {
+            border-left: @css-tree-border;
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 0;
+        }
+    }
+    li {
+        overflow: hidden;
+        padding-left: (@css-tree-distance + 2px);
+        position: relative;
+
+        &.css-tree-hidden {
+            display: none;
+        }
+    }
+    ul li:before {
+        content: '';
+        display: block;
+        height: 0;
+        width: @css-tree-distance;
+        position: absolute;
+        border-top: @css-tree-border;
+        left: 0;
+        top: @css-tree-distance;
+    }
+    ul li:last-child:before {
+        background: #fff;
+        height: auto;
+        top: 10px;
+        bottom: 0;
+    }
+}
+.css-tree.collapsable {
+    input[type=checkbox] {
+        display: none;
+        + label {
+            .icon('before', 'arr_1right', 'clickable');
+            cursor: pointer;
+
+            &:before {
+                transition: transform @css-tree-delay;
+                vertical-align: baseline;
+            }
+        }
+        ~ ul {
+            max-height: 0;
+            opacity: 0;
+
+            transition: all @css-tree-delay;
+        }
+        ~ input[type=radio] + label {
+            margin-left: 0;
+        }
+
+        &:checked {
+            + label {
+                .icon('before', 'arr_1down', 'clickable');
+                .csstransforms & {
+                    .icon('before', 'arr_1right', 'clickable');
+                    &:before {
+                        transform: rotate(90deg);
+                    }
+                }
+            }
+            ~ ul {
+                max-height: 10000px;
+                opacity: 1;
+            }
+        }
+    }
+}
+.css-tree.selectable {
+    input[type=checkbox] {
+        + label {
+            .hide-text();
+        }
+        ~ input[type=radio] + label {
+            margin-left: 0;
+        }
+    }
+
+    input[type=radio] {
+        display: none;
+
+        + label {
+            color: @brand-color-dark;
+            border-radius: 2px;
+            cursor: pointer;
+            padding: 0 3px;
+            margin-left: 1px;
+        }
+
+        &:checked + label {
+            font-weight: bold;
+            background: @content-color-40;
+        }
+
+        &[disabled] + label {
+            color: #888;
+        }
+    }
+}

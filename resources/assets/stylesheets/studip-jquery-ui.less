@@ -1,0 +1,115 @@
+@z-index: 1001;
+
+@import "mixins.less";
+
+@import (less) "jquery-ui.structure.css";
+@import "less/jquery-ui/custom.less";
+@import "less/jquery-ui/studip.less";
+@import "~jquery-ui-timepicker-addon/dist/jquery-ui-timepicker-addon.css";
+@import "~multiselect/css/multi-select.css";
+
+// Tweaks/adjustments for multi-select
+.ms-container {
+    @avatar-size: 32px;
+    @avatar-border: 2px;
+    @element-padding: 2px;
+    @icon-size: 16px;
+
+    background: none;
+    width: 100%;
+
+    .ms-selectable,
+    .ms-selection {
+        color: @dark-gray-color;
+        width: 47%;
+
+        li.ms-elem-selectable,
+        li.ms-elem-selection {
+            background: #fff;
+            border-bottom-color: @content-color-20;
+            color: @dark-gray-color;
+            padding: @element-padding;
+        }
+        li {
+            display: flex;
+            align-items: center;
+            span {
+                flex: 10 0 auto;
+            }
+
+            &.ms-hover, &:hover {
+              background: @brand-color-dark;
+              color: #fff;
+            }
+            &.disabled {
+              background-color: @content-color-20;
+              color: @dark-gray-color;
+              cursor: not-allowed;
+            }
+            &[style*="background-image"] {
+                min-height: (2 * @element-padding + @avatar-size + 2 * @avatar-border);
+
+                background-repeat: no-repeat;
+                background-size: @avatar-size;
+                background-position: (@element-padding + @avatar-border) center;
+                padding-left: (@element-padding + @avatar-size + 2 * @avatar-border);
+
+                &.ms-elem-selection {
+                    background-position: (@element-padding + @avatar-border + @icon-size) center;
+                }
+            }
+        }
+    }
+
+    .ms-selectable li:not(.disabled) {
+        .icon('after', "arr_1right", 'info_alt', @icon-size);
+        &::after {
+            flex: 0 1 auto;
+            visibility: hidden;
+        }
+        &:hover {
+            background-color: @brand-color-dark;
+            &::after {
+                visibility: visible;
+            }
+        }
+    }
+
+    .ms-selection li {
+        &[style*="background-image"] {
+            padding-left: (@element-padding + @icon-size + @element-padding + @avatar-size + 2 * @avatar-border)
+        }
+
+        position: relative;
+
+        .icon('before', 'arr_1left', 'info_alt', @icon-size);
+        &::before {
+            flex: 0 1 auto;
+            position: absolute;
+            left: @element-padding;
+            top: 50%;
+            transform: translate(0, -50%);
+            visibility: hidden;
+        }
+        &:hover {
+            background-color: @brand-color-dark;
+            &::before {
+                visibility: visible;
+            }
+        }
+    }
+
+    .ms-list {
+        border-radius: 0;
+        border-color: @light-gray-color-40;
+        position: relative;
+    }
+
+    .ms-optgroup-label {
+        color: @dark-gray-color-60;
+    }
+}
+
+.ui-menu .ui-menu-item {
+    list-style: none;
+}

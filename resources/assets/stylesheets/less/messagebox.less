@@ -1,0 +1,136 @@
+/* --- MessageBoxes --------------------------------------------------------- */
+div.messagebox {
+    background: no-repeat 10px 10px;
+    border: 2px solid;
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 5px 0;
+    padding: 15px 15px 15px 55px;
+    position: relative;
+    text-align: left;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    .messagebox_buttons {
+        position: absolute;
+        right: 3px;
+        top: 3px;
+
+        a {
+            background: transparent no-repeat center center;
+            background-size: 16px 16px;
+
+            display: inline-block;
+            margin: 1px;
+            .size(16px, 16px);
+
+            &.close, &.details {
+                span { display: none; }
+            }
+            &.close {
+                .background-icon('decline', 'clickable');
+            }
+            &.details {
+                .background-icon('arr_eol-down', 'clickable');
+            }
+        }
+    }
+
+    &.details_hidden {
+        .messagebox_buttons a.details {
+            .background-icon('arr_eol-up', 'clickable');
+        }
+        .messagebox_details { height: 0; }
+    }
+}
+
+div.messagebox_details {
+    font-weight: normal;
+    overflow: hidden;
+}
+
+// Messagebox definitions
+
+.messagebox (@name, @color, @background-color) {
+  .messagebox (@name, @color, @background-color, @color, @name);
+}
+
+.messagebox (@name, @color, @background-color, @border-color) {
+  .messagebox (@name, @color, @background-color, @border-color, @name);
+}
+
+.messagebox (@name, @color, @background-color, @border-color, @image) {
+    // Also generates the neccessary selector not only the rules
+    div.messagebox_@{name} {
+        color: @color;
+        background-color: @background-color;
+        background-image: url("@{image-path}/messagebox/@{image}.png");
+        background-size: 32px 32px;
+        border-color: @border-color;
+    }
+}
+
+.messagebox(info,      #000, white,   @base-color);
+.messagebox(success,   #000, white,   @dark-green);
+.messagebox(error,     #000, white,   @red);
+.messagebox(exception, @red, @red-20, @red);
+.messagebox(warning,   #000, white,   @yellow-60, 'advice');
+
+// Define modal messagebox
+.modaloverlay {
+    background: fadeout(@base-color, 50%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10vh 20vw;
+
+    .messagebox {
+        display: inline-block;
+        zoom: 1; // IE :(
+        box-sizing: border-box;
+//        position: relative;
+        vertical-align: middle;
+        margin: auto;
+
+        position: relative;
+        max-height: 50%;
+        min-width: 30em;
+        max-width: 50%;
+        width: auto;
+
+        color: #000;
+        border-color: @yellow;
+        background-color: white;
+        background-image: url("@{image-path}/messagebox/question.png");
+        background-size: 32px 32px;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.5);
+
+        .content {
+            max-height: 200px;
+            overflow: auto;
+            text-align: left;
+        }
+        .buttons {
+            margin-top: 1em;
+            text-align: center;
+        }
+    }
+    .ui-dialog {
+        display: inline-block;
+        zoom: 1; // IE :(
+        box-sizing: border-box;
+        position: relative;
+        vertical-align: middle;
+        margin: auto;
+    }
+}

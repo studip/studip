@@ -1,0 +1,4 @@
+# LimitedAdmissions
+classname=LimitedAdmission
+installsql=sql/install.sql
+uninstallsql=sql/uninstall.sql

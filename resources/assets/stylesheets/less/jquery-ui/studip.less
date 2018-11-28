@@ -1,0 +1,155 @@
+.ui-front {
+    z-index: @z-index;
+}
+.ui-widget_start {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.0em;
+    padding: 0;
+}
+
+.ui-widget {
+    font-family: inherit;
+    font-size: 1.0em;
+
+    input,
+    select,
+    textarea,
+    button {
+        font-family: inherit;
+    }
+}
+.ui-widget-content {
+    background: #fff;
+}
+
+.ui-widget-header {
+    background-color: @brand-color-lighter;
+    background-image: none;
+}
+.ui-widget_columnl {
+    float: left;
+    width: 100%;
+}
+.ui-widget_columnr {
+    float: right;
+    /*width: 39%; */
+}
+.ui-widgetContainer {
+    background-image: none;
+    color: white;
+    padding: 2%;
+}
+
+.ui-widget_head {
+    background-color: @brand-color-lighter;
+    color: white;
+    font-size: 1.3em;
+    line-height: 30px;
+    text-align: center;
+
+    &:hover {
+        cursor:move;
+    }
+
+    h1 {
+        color: black;
+        line-height: 100px;
+        text-align: center;
+    }
+}
+
+
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-right,
+.ui-corner-left,
+.ui-corner-bottom,
+.ui-corner-tr,
+.ui-corner-br,
+.ui-corner-bl,
+.ui-corner-tl {
+    border-radius: 0;
+}
+
+.ui-state-active,
+.ui-state-focus,
+.ui-state-hover,
+.ui-autocomplete .ui-state-hover,
+.ui-state-hover:hover,
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+    background-color: @brand-color-lighter;
+    color: white;
+}
+
+.ui-datepicker-header .ui-icon {
+    background-image: url(../images/vendor/jquery-ui/ui-icons_ffffff_256x240.png);
+}
+
+.ui-accordion .ui-accordion-header {
+    &,
+    .ui-state-default,
+    .ui-state-active,
+    .ui-state-hover {
+        background: @content-color-20;
+        border-radius: 0;
+        border: none;
+        border-top: 1px solid @light-gray-color-20;
+        border-bottom: 1px solid @light-gray-color-20;
+        color: #000;
+        font-size: 10pt;
+        margin: 0;
+        padding: 5px 5px 5px 30px;
+        text-align: left;
+    }
+}
+
+.ui-accordion .ui-accordion-content {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid @light-gray-color-20;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover, .ui-state-focus,
+.ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background-image: none;
+}
+
+.ui-datepicker-calendar .ui-state-active {
+    color: @brand-color-light;
+}
+
+.ui-datepicker-calendar .ui-state-active.ui-state-hover {
+    color: white;
+}
+
+.ui-autocomplete {
+    border: 1px solid @dark-gray-color-45;
+    padding: 1px;
+
+    .ui-menu-item {
+        .ui-menu-item-wrapper {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &.ui-state-active {
+                background: @base-color;
+                border: 0;
+                margin: 0;
+            }
+        }
+    }
+}
+
+/* --- textarea resizer ----------------------------------------------------- */
+textarea.ui-resizable-handle.ui-resizable-s {
+    background: #eee url("@{image-path}/vendor/handle_background.png") no-repeat center;
+    bottom: 0;
+    cursor: s-resize;
+    height: 12px;
+}

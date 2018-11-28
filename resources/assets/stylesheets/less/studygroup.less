@@ -1,0 +1,49 @@
+ul.studygroup-gallery {
+    list-style: none;
+    padding-left: 15px;
+    li {
+        box-sizing: border-box;
+        vertical-align: top;
+        text-align: center;
+        margin: 5px;
+        width: 120px;
+        height: 150px;
+        max-height: 150px;
+        overflow: hidden;
+        display: inline-blocK;
+        section {
+            margin: 0 auto;
+
+        }
+    }
+}
+
+.studygroupmemberlist {
+    .member-avatar {
+        position: relative;
+        img {
+            margin-right: 5px;
+        }
+    }
+    .new-member .member-avatar {
+        .icon('after', 'star', 'new', 12);
+        &::after {
+            position: absolute;
+            margin: -1px 0 0 -14px;
+        }
+    }
+    tr > .actions {
+        text-align: right;
+        white-space: nowrap;
+    }
+}
+
+.studygroup-browse {
+  td.studygroup-title {
+    a {
+      display: block;
+      max-width: 40em;
+      min-width: 15em;
+    }
+  }
+}

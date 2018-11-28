@@ -1,0 +1,121 @@
+----------------------------------------------------------------------------
+The Stud.IP CoreGroup
+----------------------------------------------------------------------------
+
+Marco Bohnsack      <bohnsack@data-quest.de>
+Rasmus Fuhse        <fuhse@data-quest.de>
+Till Glöggler       <tgloeggl@uos.de>
+Thomas Hackl        <thomas.hackl@uni-passau.de>
+Cornelis Kater      <kater@elsa.uni-hannover.de>
+André Klaßen        <aklassen@uos.de>
+Elmar Ludwig        <elmar.ludwig@uos.de>
+Marcus Lunzenauer   <marcus.lunzenauer@elanag.com>
+Nico Müller         <nico.mueller@uni-oldenburg.de>
+André Noack         <noack@data-quest.de>
+Cornelia Roser      <roser@hawk-hhg.de>
+Sabine Scheele      <sabine.scheele@hrz.uni-giessen.de>
+David Siegfried     <david.siegfried@uni-vechta.de>
+Martin Stratmann    <martin@herrstratmann.de>
+Stefan Suchi        <suchi@data-quest.de>
+Peter Thienel       <thienel@data-quest.de>
+Jan-Hendrik Willms  <tleilax@gmail.com>
+
+----------------------------------------------------------------------------
+Credits and Comments
+----------------------------------------------------------------------------
+
+Boris Erdmann       <be@shonline.de>
+Kristian Köhntopp   <kk@shonline.de>
+PHPLib Development, all classes
+
+Manuel Lemos        <mlemos@acm.org>
+E-mail address validation class
+SMTP E-mail sending class
+> Both classes taken with some minor changes from
+> http://phpclasses.upperdesign.com
+
+Brad Bulger         <brad@wired.com>
+Threaded Discussion with PHP/MySQL
+> widely changed, based on a tutorial at webmonkey
+
+Erik Bosrup
+overLIB
+> JavaScript library created to enhance websites with small popup boxes (tooltips)
+> http://www.bosrup.com/web/overlib
+
+Benjamin Zeiss      <zeiss@math.uni-goettingen.de>
+LaTex rendering class
+> http://www.kellnerweg.de/~bzeiss/
+
+Alexander Willner   <mail@alexanderwillner.de>
+Christian Bauer     <cbauer79@gmx.net>
+Michael Cohrs       <michael@cohrs.de>
+John Wowra          <johnnyw@technologist.com>
+voting-module, evaluation-module
+
+Christian Bauer     <cbauer79@gmx.net>
+vCard-export, record of study
+
+Florian Hansen      <florian_h@gmx.net>
+WAP pages for Stud.IP
+
+Tobias Möller       <tmoelle1@gwdg.de>
+Stud.IP-Logo
+
+Rosemary Wilson     <rwilson@uni-goettingen.de>
+Hartje Kriete       <kriete@math.uni-goettingen.de>
+Englisch translation
+
+Oliver Brakel       <obrakel@studip.de>
+One of the initiators of Stud.IP
+
+Arne Schröder       <schroeder@data-quest.de>
+Ilias2-Interface, E-Learning-Modules-Interface, Export
+
+Dennis Reil         <Dennis.Reil@offis.de>
+PlugIn-Interface
+
+Nils Kolja Windisch <info@nkwindisch.de>
+Messaging System, Stud.IP Blog
+
+Ralf Stockmann      <rstockm@gwdg.de>
+Forum System, Address Book, Design
+
+Torsten Heinrich    <to.heinrich@fh-osnabrueck.de>
+Administration of times and room information
+
+Jens Schmelzer      <jens.schmelzer@fh-jena.de>
+Smiley administration, calendar pop-up, lots of security related bugfixes
+
+Jörg Röpke          <roepke@uni-trier.de>
+
+Tobias Thelen       <tobias.thelen@uos.de>
+Stud.IP help, event logging, wiki enhancements
+
+Hartje Kriete       <kriete@math.uni-goettingen.de>
+English translation
+
+Carola Kruse        <carola.kruse@tu-braunschweig.de>
+
+Jan Kulmann         <jankul@zmml.uni-bremen.de>
+Evaluation results, literature import, RSS-reader, plugins
+
+Michael Riehemann   <michael.riehemann@uni-oldenburg.de>
+
+Frank Ollermann     <frank.ollermann@uni-osnabrueck.de>
+GUI & Usability
+
+Arne Koesling       <koesling@elsa.uni-hannover.de>
+
+----------------------------------------------------------------------------
+CreativeCommons sources
+----------------------------------------------------------------------------
+
+Daniel Ulrich:
+http://www.flickr.com/photos/threedots/177592275/
+
+----------------------------------------------------------------------------
+Any others whose names we probably forgot to add (email us and we'll put you
+in here)
+
+- The StudIP Core Group <info@studip.de> 2015

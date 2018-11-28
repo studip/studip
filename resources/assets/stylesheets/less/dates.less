@@ -1,0 +1,36 @@
+table.dates {
+    width: calc(100% - 4px);
+    .themen_list > * {
+        background-color: transparent;
+    }
+    tr.ausfall {
+        transition: opacity 300ms;
+        opacity: 0.5;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+    .nextdate {
+        background-color: @content-color-40;
+    }
+
+    .topic-droppable {
+        &.active {
+            background-color: @activity-color-40;
+        }
+        &.hovered {
+            background-color: @activity-color-80;
+        }
+    }
+    .draggable-topic-handle {
+        cursor: move;
+        background: transparent url("@{image-path}/anfasser_24.png") 3px center no-repeat;
+        padding-left: 12px;
+    }
+    .ui-draggable-dragging {
+        img.icon-shape-trash {
+            display: none;
+        }
+    }
+}

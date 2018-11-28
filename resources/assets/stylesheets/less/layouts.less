@@ -1,0 +1,201 @@
+// TODO: LESSify
+
+@page-margin: 15px;
+
+@sidebar-width: 250px;
+@sidebar-padding: 12px;
+@sidebar-border-width: 1px;
+
+@content-width: 400px;
+@content-margin: 12px;
+
+@site-width: (@page-margin * 2 + @sidebar-width + @sidebar-padding * 2 + @sidebar-border-width * 2 + @content-width + @content-margin * 2);
+@page-width: (@sidebar-width + @sidebar-padding * 2 + @sidebar-border-width * 2 + @content-width + @content-margin * 2);
+
+
+/* --- Layouts -------------------------------------------------------------- */
+#layout_page {
+    border-radius: 0 0 2px 2px;
+    box-sizing: border-box;
+    clear: both;
+    margin: @page-margin;
+    background-color: #fff;
+    margin: 0px;
+}
+
+// for old pages without template layout
+#layout_table {
+    background-color: @light-gray-color-60;
+    border: 20px solid #fff;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+
+    td { vertical-align: top; }
+}
+
+#layout_container {
+    background-color: white;
+    border-radius: 0 0 2px 2px;
+    /*margin: 0;*/
+    padding-top: 15px;
+}
+
+#page_title_container {
+    float: left;
+    background-color: #fff;
+    border-bottom: 1px solid @content-color-40;
+    line-height: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+    min-height: 45px;
+}
+
+#current_page_title {
+    font-weight: bold;
+    font-size: 1.4em;
+    position: relative;
+    top: 20px;
+}
+
+#layout_page.oversized {
+    overflow: visible;
+}
+
+
+#layout_content {
+    box-sizing: border-box;
+    .scrollbox-horizontal();
+    padding: 0 @content-margin 20px @content-margin;
+    vertical-align: top;
+    min-width: @content-width;
+
+    .oversized & {
+        overflow: visible;
+    }
+}
+
+#layout_sidebar {
+    background: inherit;
+    border-left: 1px dashed @brand-color-darker;
+    max-width: @sidebar-width;
+    width: @sidebar-width;
+    min-width: @sidebar-width;
+    padding: @sidebar-padding;
+}
+
+#layout_wrapper {
+    .clearfix;
+    clear: both;
+    min-width: 800px; // 800px breite ist minimum
+    min-height: 100%;
+    width: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto;
+}
+
+#layout_footer {
+    background-color: @base-color;
+    color: @contrast-content-white;
+    display: flex;
+    padding: 2px 0px;
+    flex: 0 1 auto;        // fourth row of flex-main
+    min-width: @site-width;
+    width: 100%;
+}
+#footer {
+    flex: 1;
+    margin-left: 8px;
+    margin-top: 2px;
+    line-height: 28px;
+}
+
+#layout_wrapper {                // the main flex, dividing all elements into flexing rows
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    min-width: @site-width;
+
+    #flex-header {              // first row of flex-main
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: stretch;
+        align-items: stretch;
+        justify-content: flex-start;
+
+        width: 100%;
+        min-width: @site-width;
+
+        flex: 0 1 auto;
+
+        #barTopMenu {                   // column 1 of flex-header
+            flex: 1 1 auto;
+        }
+
+        #barTopStudip {             // column 2 of flex-header
+            flex: 0 1 auto;
+        }
+    }
+
+    #barBottomContainer {       // second row of flex-main
+        flex: 0 1 auto;
+
+        min-width: @site-width;
+        z-index: 1001; // High enough so it will be above the sidebar
+    }
+
+    #layout_page {              // third row of flex-main
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-content: stretch;
+        align-items: stretch;
+        justify-content: flex-start;
+
+        flex: 10 1 auto;
+
+        min-width: @page-width;
+
+        #tabs, #tabs2 {                     // row 1 of layout_page
+            min-height: 30px;
+            float: none;
+            flex: 0 1 auto;
+        }
+
+        #layout_container {          // row 3 of layout_page
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: stretch;
+            align-items: stretch;
+            justify-content: flex-start;
+
+            flex: 1 1 auto;
+            min-width: @page-width;
+
+            #layout_content {           // column 1 of layout_container
+                flex: 1 1 auto;
+            }
+
+            #layout_sidebar {           // column 2 of layout_container
+                flex: 0 1 auto;
+            }
+
+        }
+    }
+
+}
+
+@-moz-document url-prefix() {
+    .flex-container {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+}

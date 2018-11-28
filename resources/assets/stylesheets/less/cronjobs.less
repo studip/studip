@@ -1,0 +1,110 @@
+/* CSS */
+.cron-task {
+    label {
+        cursor: pointer;
+        display: block;
+        padding: 5px;
+    }
+    td {
+        padding: 0;
+        vertical-align: middle;
+    }
+    tr ~ tr {
+        display: none;
+    }
+    .selected {
+        td { background-color: fadeout(@active-color, 75%); }
+        tr ~ tr {
+            display: table-row;
+            td {
+                background-color: #fff;
+            }
+            td[colspan] {
+                background-color: inherit;
+                padding: 0;
+            }
+        }
+    }
+    .parameters {
+        border: 1px solid #888;
+        border-bottom: 0;
+        border-top: 0;
+        padding: 0.5em;
+
+        h3 {
+            margin: 0;
+            padding: 0;
+        }
+
+        input[type=text], input[type=number], select, textarea {
+            width: 200px;
+        }
+    }
+    .parameter {
+        &.required {
+            font-weight: bold;
+        }
+        label {
+            padding: 0;
+        }
+    }
+    tbody:last-child .parameters {
+        border-bottom: 1px solid #888;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+}
+
+.cronjob-filters {
+    margin-bottom: 1em;
+    
+    label {
+        display: block;
+        font-weight: bold;
+    }
+    select { width: 100%; }
+    thead th {
+        text-align: right;
+        &:first-child { text-align: left; }
+    }
+    tfoot td { text-align: center; }
+}
+.crontab, .crontab li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.crontab li {
+    display: inline-block;
+    padding-right: 5px;
+    text-align: center;
+}
+.crontab span {
+    display: block;
+    text-align: right;
+}
+
+.inactivatible td {
+    color: #888;
+}
+
+.cronjobs-edit {
+    h1 {
+        margin: 0 0 0.5em;
+    }
+
+    > table > thead > tr > th { .table_header_bold; }
+    > table {
+        margin-bottom: 1em;
+    }
+    td { vertical-align: top; }
+}
+.cron-schedule tbody tr td label {
+    display: inline;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.cron-item input[type=number] {
+    width: 2em;
+}

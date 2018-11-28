@@ -1,0 +1,573 @@
+--- docxmlrpcs.inc	2018-09-20 18:07:45.093573858 +0200
++++ docxmlrpcs.inc	2018-09-20 18:11:45.855512205 +0200
+@@ -33,6 +33,17 @@
+ 		/// relative path to the visual xmlrpc editing dialog
+ 		var $editorpath = '';
+ 
++
++		function checkAuth()
++		{
++
++		    $rules = WebserviceAccessRule::findByApiKey($_SERVER['PHP_AUTH_PW']);
++		    if (!count($rules)) {
++		        Header("WWW-Authenticate: Basic realm=\"Please enter valid api key as password\"");
++                Header("HTTP/1.0 401 Unauthorized");
++                die('Please enter valid api key as password');
++            }
++		}
+ 		/**
+ 		* Override xmlrpc_server service method:
+ 		*   in case of GET requests show docs about implemented methods;
+@@ -46,7 +57,8 @@
+ 		{
+ 			if($_SERVER['REQUEST_METHOD'] != 'POST')
+ 			{
+-				if ($doctype == '' || !in_array($doctype, $this->supported_doctypes))
++                $this->checkAuth();
++			    if ($doctype == '' || !in_array($doctype, $this->supported_doctypes))
+ 				{
+ 					$doctype = $this->default_doctype;
+ 				}
+@@ -76,7 +88,8 @@
+ 					&& $_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded'
+ 					&& isset($_POST['methodCall']))
+ 				{
+-					if (get_magic_quotes_gpc())
++					$this->checkAuth();
++				    if (get_magic_quotes_gpc())
+ 					{
+ 						$_POST['methodCall'] = stripslashes($_POST['methodCall']);
+ 					}
+@@ -119,6 +132,7 @@
+ 				// method name decoding: is user seeking info about a single method?
+ 				if (isset($_GET['methodName']))
+ 				{
++					$_GET['methodName'] = preg_replace('/[^a-zA-Z0-9_.:\/]/', '', $_GET['methodName']);
+ 					$opts = array('lang' => $lang, 'title' => 'Method '.$_GET['methodName']);
+ 					if ($editorpath != '')
+ 					{
+@@ -218,23 +232,509 @@
+ 
+ 	/**
+ 	* Templates used for building docs
+-	* The charset is assumed to be ISO-8859-1 for every generated html. Take care
++	* The charset is assumed to be UTF-8 for every generated html. Take care
+ 	*/
+ 	$GLOBALS['xmlrpcdocparts'] = array(
+ 		'html' => array(
+ 
+ //'httpheaders' => array(),
+ 
+-'docheader' => '<?xml version="1.0" encoding="iso-8859-1"?>
++'docheader' => '<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$lang}" lang="{$lang}">
+ <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+ <meta http-equiv="Content-Script-Type" content="text-javascript" />
+ <meta name="generator" content="'.$GLOBALS['xmlrpcName'].'" />
+-<link rel="stylesheet" type="text/css" href="docxmlrpcs.css" />
++<style type="text/css" media="screen">
++body {
++    font-family: sans-serif;
++    color: #000000;
++    background-color: #ffffff;
++}
++
++h1 {
++    font-family: serif;
++    color: #000000;
++    font-size: 150%;
++    text-align: left;
++}
++
++h2 {
++    font-family: serif;
++    color: #000000;
++    font-size: 120%;
++    text-align: left;
++    border-width: 1pt 0pt 0pt 0pt;
++    border-style: solid;
++    border-color: #8888dd;
++}
++
++h3 {
++    font-family: serif;
++    font-size: 110%
++}
++
++table tr td {
++    vertical-align: top;
++}
++
++table tr th {
++    vertical-align: top;
++}
++
++table.headerlinks {
++    width: 100%;
++    border-collapse: collapse;
++}
++
++table.headerlinks tr td {
++    padding: 2pt;
++    margin: 0pt;
++    font-variant: small-caps;
++    background-color: #ddddff;
++    border-width: 0pt 0pt 1pt 0pt;
++    border-style: solid;
++    border-color: #8888dd;
++}
++
++table.headerlinks tr td.prevnext {
++    text-align: right;
++}
++
++.footer {
++    margin-top: 16pt;
++    border-width: 1pt 0pt 0pt 0pt;
++    border-style: solid;
++    border-color: #8888dd;
++    font-size: 70%;
++    font-style: italic;
++    text-align: right;
++}
++
++table.metadata {
++    left: 0pt;
++    margin: 8pt 0pt 0pt 0pt;
++    border-collapse: collapse;
++}
++
++table.metadata tr td.key {
++    font-weight: bold;
++    padding: 0pt 4pt 0pt 0pt;
++}
++
++table.metadata tr td.value {
++    padding: 0pt;
++}
++
++table.parameters {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: fixed;
++    table-layout: auto;
++    width: 100%;
++}
++
++table.parameters tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++}
++
++table.parameters tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.parameters tr td.value {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.parameters tr td.name {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.parameters tr td.required {
++    /* font-variant: small-caps; */
++}
++
++table.inputparameters {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: auto;
++    width: 95%;
++}
++
++table.inputparameters tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++}
++
++table.inputparameters tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.inputparameters tr td.value {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.inputparameters tr td.name {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.inputparameters tr td.required {
++    /* font-variant: small-caps; */
++}
++
++table.outputparameters {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: auto;
++    width: 95%;
++}
++
++table.outputparameters tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++}
++
++table.outputparameters tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.outputparameters tr td.value {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.outputparameters tr td.name {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.outputparameters tr td.required {
++    /* font-variant: small-caps; */
++}
++
++table.resultcodes {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: auto;
++    width: 95%;
++}
++
++table.resultcodes tr th {
++    color: #ffffff;
++    background-color: #7777dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++}
++
++table.resultcodes tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.resultcodes tr td.value {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.resultcodes tr.default td.value {
++    font-style: italic;
++}
++
++table.resultcodes tr td.name {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++table.resultcodes tr td.required {
++    /* font-variant: small-caps; */
++}
++
++table.element_details {
++    width: 100%;
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: auto;
++    width: 95%;
++}
++
++table.element_details tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++    text-align: left;
++    width: 160px;
++}
++
++table.element_details tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.example {
++    border: none;
++    border-collapse: collapse;
++    table-layout: auto;
++    width: 95%;
++}
++
++table.example tr th {
++    background-color: #ddddff;
++    text-align: left;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.example tr td {
++    background-color: #ddddff;
++    text-align: left;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.example tr td.header {
++    text-align: left;
++    border: none;
++    padding: 2pt;
++    background-color: #ffffff;
++}
++
++.xml {
++    font-family: monospace;
++    font-size: 90%;
++    white-space: pre;
++}
++
++.xml .decl {
++    font-weight: bold;
++    color: #008800;
++}
++
++.xml .decl .elem .name {
++    font-weight: bold;
++    color: #008800;
++}
++
++.xml .elem .name {
++    font-weight: bold;
++    color: #000088;
++}
++
++.xml .pcdata {
++    font-style: italic;
++}
++
++.xml .elem .attr .name {
++    font-weight: normal;
++    color: #000088;
++}
++
++.url {
++    font-family: monospace;
++    font-size: 90%;
++    white-space: pre;
++}
++
++.url .functionparam .name {
++    color: #880000;
++    font-weight: bold
++}
++
++.url .functionparam .value {
++    color: #880000;
++    font-weight: bold
++}
++
++.url .param .name {
++    color: #000088;
++    font-weight: bold
++}
++
++.url .param .value {
++    color: #008800;
++    font-weight: bold
++}
++
++blockquote {
++    margin-top: 10pt;
++    margin-bottom: 10pt;
++}
++
++pre {
++    font-family: monospace;
++    font-size: 90%;
++}
++
++a:hover {
++    background-color: #ddddff;
++    text-decoration: underline;
++}
++
++a {
++    color: #0000bb;
++    text-decoration: none;
++}
++
++a:visited {
++    color: #0000bb;
++    text-decoration: none;
++}
++
++a img {
++    border-style: none;
++}
++
++.disabled {
++    color: #888888;
++}
++
++.active {
++    color: #888888;
++    font-weight: bold;
++}
++
++table.apilist {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: fixed;
++    table-layout: auto;
++    width: 100%;
++}
++
++table.apilist tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++    text-align: left;
++}
++
++table.apilist tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.functionlist {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: fixed;
++    table-layout: auto;
++    width: 100%;
++}
++
++table.functionlist tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++    text-align: left;
++}
++
++table.functionlist tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++table.typelist {
++    border: none;
++    background-color: #ddddff;
++    border-collapse: collapse;
++    table-layout: fixed;
++    table-layout: auto;
++    width: 100%;
++}
++
++table.typelist tr th {
++    color: #ffffff;
++    background-color: #8888dd;
++    border: solid 1px #8888dd;
++    padding: 2pt;
++    font-weight: bold;
++    text-align: left;
++}
++
++table.typelist tr td {
++    border: solid 1px #8888dd;
++    padding: 2pt;
++}
++
++input {
++    border: 1px #8888dd solid;
++    font-family: sans-serif;
++    font-size: 9pt;
++    background-color: #ffffff;
++}
++
++input.required {
++    border: 2px #8888dd solid;
++}
++
++input[name=\'submit\'] {
++    margin-top: 5px;
++    text-align: center;
++    font-weight: bold;
++    cursor: hand;
++    background-color: #eeeeff;
++}
++
++select {
++    border: 1px #8888dd solid;
++    font-family: sans-serif;
++    font-size: 9pt;
++    background-color: #ffffff;
++}
++
++select.required {
++    border: 2px #8888dd solid;
++}
++
++td.status {
++    font-variant: small-caps;
++}
++
++.broken_freeze {
++    color: #ff4444;
++    font-weight: bold;
++}
++
++div.broken_freeze {
++    border: dashed 1px #ff4444;
++    margin-top: 1em;
++    margin-bottom: 1.5em;
++    padding: 1em;
++}
++</style>
+ {$extras}
+ <title>{$title}</title>
+ </head>
+--- xmlrpc.inc	2018-09-20 18:02:22.000634736 +0200
++++ xmlrpc.inc	2018-09-20 18:12:41.615040836 +0200
+@@ -206,7 +206,7 @@
+ 	// The encoding used internally by PHP.
+ 	// String values received as xml will be converted to this, and php strings will be converted to xml
+ 	// as if having been coded with this
+-	$GLOBALS['xmlrpc_internalencoding']='ISO-8859-1';
++	$GLOBALS['xmlrpc_internalencoding']='UTF-8';
+ 
+ 	$GLOBALS['xmlrpcName']='XML-RPC for PHP';
+ 	$GLOBALS['xmlrpcVersion']='3.0.0.beta';

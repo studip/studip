@@ -1,0 +1,206 @@
+#notification_marker {
+    width: 48px;
+    margin-left: 0px;
+    padding-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
+    height: 28px;
+    font-size: 0.8em;
+    color: @base-color;
+    text-align: center;
+    line-height: 28px;
+    vertical-align: text-bottom;
+    background-color: @dark-gray-color-10;
+    border: 1px solid @dark-gray-color-40;
+
+    &.alert {
+        background-color: @red;
+        color: @white;
+    }
+}
+
+#notification_container {
+    @arrow-height: 10px;
+
+    @list-width: 400px;
+
+    width: 49px;
+    height: 30px;
+    /*border: thin solid @dark-gray-color-20;*/
+    color: @base-color;
+    vertical-align: text-bottom;
+    background-color: @base-color;
+    position: relative;
+
+    // Insert invisible padding on top of the arrow in order to try to
+    // close the "mouse trap gap" created by the arrow as well as an invisible
+    // 25px border to the left
+    &:hover::before {
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: -@arrow-height;
+        left: (-@list-width);
+        right: 0;
+        height: @arrow-height;
+    }
+    &:hover::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 100%;
+        width: 25px;
+    }
+
+    .list, li&:hover .list { display: none; }
+    &.hoverable:hover {
+        .list { display: block; }
+    }
+    #notification_list {
+        z-index: 1001;
+        margin-top: 10px;
+        ul {
+            width: 100%;
+            padding: 0;
+        }
+        .more {
+            font-size: 0.8em;
+            text-align: center;
+        }
+    }
+    .list {
+        // Creates an arrow pointing from the list to the triggering element
+        #arrow > .top-border(10px, @white, 1px, @light-gray-color-80);
+
+        background-color: @white;
+        border-left: thin solid @light-gray-color-60;
+        border-top: thin solid @light-gray-color-60;
+        border-collapse: collapse;
+        color: @black;
+        display: none;
+        font-size: 1em;
+        position: absolute;
+        width: @list-width;
+        max-width: @list-width;
+        box-shadow: 1px 1px 1px @light-gray-color-80;
+
+        // Without this, buttons or message boxes would appear on top of the list
+        z-index: 2;
+        &::before, &::after {
+            left: (@list-width - 20px);
+        }
+
+        // Positions: below or left'ish or right'ish to the triggering element
+        &.below {
+            left: (-@list-width + 44px);
+        }
+        &.left {
+            right: 0px;
+            &:before {
+                left: auto;
+                right: 4px;
+            }
+        }
+        &.right {
+            left: 0px;
+            &:before { left: 4px; }
+        }
+
+        // List item
+        .item {
+            @padding: 5px;
+            border-top: thin solid @light-gray-color-60;
+            line-height: 20px;
+            display: block;
+            height: auto;
+            padding: @padding;
+            white-space: normal;
+
+            &:hover { background-color: fadeout(@light-gray-color, 80%);}
+
+            &:first-child:hover {
+                #arrow > .top(10px, fadeout(@light-gray-color, 80%));
+                margin-top: 0;
+                &::before {
+                    left: (@list-width - 20px);
+                    z-index: 2;
+                }
+            }
+
+            // First child: no top-border and but rounded corners
+            &:first-child {
+                border-top: 0;
+            }
+            .content {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+
+                .avatar {
+                    @avatar-size: 40px;
+                    margin-right: 10px;
+                    margin-left: 0px;
+                    background-position: center center;
+                    background-size: 100%;
+                    background-repeat: no-repeat;
+                    width: @avatar-size;
+                    height: @avatar-size;
+                    min-width: @avatar-size;
+                }
+            }
+        }
+
+        a {
+            color: @brand-color-dark;
+            display: block;
+            padding: 0px;
+            &:hover { color: @active-color; }
+        }
+
+        .options {
+            cursor: pointer;
+            float: right;
+            padding-top: 4px;
+            > img {
+                vertical-align: top;
+            }
+
+            &.hidden { visibility: hidden; }
+        }
+        .item:hover .options.hidden { visibility: visible; }
+    }
+
+    a.mark-all-as-read {
+        // Creates an arrow pointing from the list to the triggering element
+        #arrow > .top-border(10px, @light-gray-color-20, 1px, @light-gray-color-80);
+        &::before, &::after {
+            left: (@list-width - 20px);
+            z-index: 2;
+        }
+
+        .background-icon('accept', 'clickable');
+        background-color: @light-gray-color-20;
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+
+        border-bottom: thin solid @light-gray-color-60;
+        margin: 0;
+        padding: 5px 5px 5px 14px;
+        z-index: 3;
+
+        // Create blind effect to hide/display this links smoothly
+        transition: all 300ms;
+        max-height: 31px;
+
+        &.hidden {
+            border-bottom-width: 0;
+            max-height: 0;
+            opacity: 0;
+            padding-bottom: 0;
+            padding-top: 0;
+            pointer-events: none;
+        }
+    }
+}

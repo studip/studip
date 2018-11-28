@@ -1,0 +1,192 @@
+@select-border: 1px solid @light-gray-color-40;
+@select-border-focus: 1px solid @brand-color-dark;
+@select-border-radius: 0;
+@select-height-default: 30px;
+@select-arrow-size: 10;
+
+select {
+    // Reset appearance
+    box-sizing: border-box;
+    appearance: none;
+    background-color: #fff;
+    font-size: 1em;
+    vertical-align: baseline;
+    &::-ms-expand {
+        display: none;
+    }
+
+    border: @select-border;
+    border-radius: @select-border-radius;
+    padding: 1px 8px 1px 8px;
+    position: relative;
+    white-space: nowrap;
+
+    &:not([multiple]):not([size]) {
+        // Allow all other paddings to be overwritten but the right padding
+        // to ensure the icon is always clearly visible
+        padding-right: 20px;
+
+        .background-icon('arr_1down', 'clickable', @select-arrow-size);
+        background-position: right 4px center;
+        background-repeat: no-repeat;
+
+        height: @select-height-default;
+        line-height: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &:focus {
+        border: @select-border-focus;
+    }
+}
+
+@import (inline) "~select2/dist/css/select2.css";
+
+// The wrapper is neccessary for the validation error messages to appear
+// at the correct position
+.select2-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+// Resets select2's styles on the hidden select element itself and
+// position it exactly over the newly created select2.
+.select2-hidden-accessible {
+    box-sizing: border-box;
+    border: initial !important;
+    clip: initial !important;
+    height: initial !important;
+    margin: initial !important;
+    padding: initial !important;
+    opacity: 0;
+    width: initial !important;
+
+    pointer-events: none; // Ignore all user interaction with this element
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+        border: @select-border;
+        border-radius: @select-border-radius;
+        min-height: @select-height-default;
+
+        .select2-selection__content {
+            font-weight: normal; // Reset due to form.default label = bold
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .select2-selection--single {
+        .select2-selection__clear {
+            .background-icon('decline', 'clickable', @select-arrow-size);
+            background-position: right center;
+            background-repeat: no-repeat;
+            color: transparent;
+            display: inline-block;
+            float: none;
+            width: unit((@select-arrow-size + 5), px);
+        }
+
+        .select2-selection__rendered {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            > * {
+                flex: 1 1 auto;
+            }
+            .select2-selection__content {
+                order: 1;
+            }
+            .select2-selection__clear {
+                order: 2;
+            }
+        }
+    }
+
+    .select2-selection--multiple {
+        padding-right: unit((@select-arrow-size + 5), px);
+        .background-icon('arr_1down', 'clickable', @select-arrow-size);
+        background-position: right 4px top unit((@select-height-default / 2 - 4), px);
+        background-repeat: no-repeat;
+
+        .select2-selection__choice__remove {
+            .background-icon('decline', 'clickable', @select-arrow-size);
+            background-position: right center;
+            background-repeat: no-repeat;
+            color: transparent !important;
+            display: inline-block;
+            float: none;
+            width: unit((@select-arrow-size + 5), px);
+        }
+
+        .select2-selection__choice {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            > * {
+                flex: 1 1 auto;
+            }
+            .select2-selection__content {
+                order: 1;
+            }
+            .select2-selection__choice__remove {
+                order: 2;
+            }
+        }
+    }
+
+    .select2-selection__arrow {
+        .background-icon('arr_1down', 'clickable', @select-arrow-size);
+        background-position: right 4px center;
+        background-repeat: no-repeat;
+
+        b {
+            visibility: hidden;
+        }
+    }
+
+    .select2-results > .select2-results__options {
+        max-height: 40vh;
+    }
+
+    &.select2-container--open {
+        .select2-selection--single,
+        .select2-selection--multiple {
+            border: @select-border-focus;
+        }
+    }
+
+}
+
+.nested-select {
+    .select2-results > ul > li {
+        &.nested-item-header {
+            font-weight: bold;
+        }
+        &.nested-item, &.nested-item.nested-level-1 {
+            text-indent: 2ex;
+        }
+        &.nested-item.nested-level-2 {
+            text-indent: 4ex;
+        }
+        &.nested-item.nested-level-3 {
+            text-indent: 6ex;
+        }
+        &.nested-item.nested-level-4 {
+            text-indent: 8ex;
+        }
+    }
+
+    &.institute-list .select2-results > ul > li:not(.nested-item) {
+        font-weight: bold;
+    }
+}

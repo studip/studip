@@ -1,0 +1,115 @@
+#enrollment {
+    ul {
+        border-top: 1px solid @base-color;
+        list-style: none inside;
+        margin: 0px;
+        overflow-x: auto;
+        padding: 0px;
+
+        .media-breakpoint-medium-up({
+            max-height: 200px;
+        });
+
+        li {
+            border-bottom: 1px solid @base-color;
+            padding: 5px;
+
+            &.ui-draggable.ui-draggable-handle {
+                cursor: move;
+            }
+
+            .actions {
+                cursor: pointer;
+                float: right;
+                white-space: nowrap;
+            }
+
+            &::after {
+                content: '';
+                display: block;
+                clear: both;
+            }
+        }
+
+        &.ui-sortable li.empty {
+            cursor: no-drop;
+        }
+    }
+
+    li.empty:not(:only-child) {
+        display: none;
+    }
+
+    #available-courses li.visible,
+    #selected-courses li {
+        &:hover {
+            background-color: @base-color-20;
+        }
+    }
+
+    #available-courses li.ui-draggable.ui-draggable-dragging,
+    #selected-courses li.ui-sortable-helper {
+        background-color: @base-color-20;
+        border: 1px solid @base-color;
+        list-style: none inside;
+        padding: 5px;
+        width: auto;
+    }
+
+    #available-courses li:not(.visible) {
+        display: none;
+    }
+
+    #selected-courses li {
+        list-style-type: decimal;
+
+        &.ui-sortable-placeholder,
+        &.empty {
+            list-style-type: none;
+        }
+
+        &.ui-sortable-placeholder {
+            background-color: @yellow-20;
+        }
+    }
+
+    .ui-sortable-helper .delete {
+        display:none;
+    }
+
+    input[name="filter"] {
+        margin-bottom: 20px;
+    }
+
+    .ui-state-highlight {
+        background: @red;
+        border: 0;
+        height: 30px;
+        padding: 10px;
+    }
+
+    // Show available and selected courses next to each others
+    .priority-lists {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+
+        .available,
+        .selected {
+            flex: 1;
+        }
+        .available {
+            margin-right: 0.5em;
+        }
+        .selected {
+            margin-left: 0.5em;
+        }
+        //
+        // .available #available-courses,
+        // .selected #selected-courses {
+        //     position: sticky;
+        //     top: 0;
+        // }
+    }
+}

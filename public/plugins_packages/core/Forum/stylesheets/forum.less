@@ -1,0 +1,424 @@
+/* An enhanced style for the forum, Web 2.0 - like*/
+
+/* mixins */
+.rounded(@radius: 3px) {
+    border-radius: @radius;
+    -moz-border-radius: @radius;
+    -webkit-border-radius: @radius;
+}
+
+@forum_light: #e7ebf1;
+@forum_dark: #d0d7e3;
+@forum_header: #899ab9;
+@forum_highlight: #ffe4ad;
+@shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+
+@media print {
+    #forum {
+        .searchbar, div[data-type="page_chooser"],
+        .likes, dl.postprofile {
+            display: none;
+        }
+
+        div.title {
+            p.author {
+                margin-bottom: 0px;
+            }
+        }
+
+        div.postbody {
+            width: 100%;
+        }
+    }
+}
+
+.ui-dialog {
+    box-shadow: @shadow
+}
+
+html.no-js #forum {
+    .js {
+        display: none;
+    }
+
+    .handle {
+        cursor: default;
+    }
+}
+
+#forum {
+    img.button, input[type=image] {
+        vertical-align: middle;
+    }
+
+    form {
+        display: inline;
+    }
+
+    .postbody img {
+        border: none;
+        max-width: 100%;
+        height: auto;
+    }
+
+    span.highlight {
+        background-color: #ffe4ad;
+        border: 1px solid #ffe4ad;
+        .rounded
+    }
+
+    .searchbar {
+        text-align: left;
+        input[name=searchfor] {
+            width: 90%;
+        }
+
+    }
+
+    .forum_header {
+        background-color: @forum_header;
+        color: #ffffff;
+        margin: 0pt;
+        padding: 0pt;
+        .button {
+            margin: 0px;
+        }
+
+    }
+
+    .heading {
+        display: block;
+        margin: 1px 4px 4px 6px;
+        text-transform: uppercase;
+    }
+
+    table.forum {
+        td.selected {
+            background-color: @forum_highlight
+        }
+    }
+
+    td.postings {
+        vertical-align: middle;
+        text-align: center;
+        width: 80px;
+    }
+
+    td.answer {
+        width: 300px;
+    }
+
+    .area_title {
+        padding: 0 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .area_input {
+        display: block;
+        padding: 0 5px;
+    }
+
+    .add_area_form {
+        display: block;
+        padding: 0 5px;
+        text-align: center;
+    }
+
+    td.add_area {
+        font-weight: bold;
+        font-size: 16pt;
+        text-align: right;
+        padding-right: 12px;
+
+        img {
+            margin-bottom: -3px;
+        }
+
+        span {
+            font-size: 10pt;
+            font-weight: normal;
+        }
+    }
+
+    td.add_area:hover {
+        cursor: pointer;
+
+        span {
+            color: #FF3333;
+        }
+    }
+
+    .icon {
+        padding: 0;
+        margin: 0pt;
+        width: 30px;
+        height: 50px;
+        white-space: nowrap;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .icon_thread {
+        padding: 0pt;
+        margin: 0pt;
+        width: 40px;
+        height: 30px;
+    }
+
+    span.areaname {
+        display: block;
+        margin-right: 55px;
+        font-weight: bold;
+    }
+
+    span.threadauthor {
+        float: left;
+        width: 70%;
+    }
+
+    .posting {
+        height: 100%;
+        margin: 0 0 0.75em 0;
+        padding: 0;
+        background-color: @forum_light;
+        a {
+            word-break: break-all;
+
+            &.link-extern,
+            &.link-intern {
+                display: inline-block;
+                max-width: 50vw;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                vertical-align: top;
+            }
+        }
+    }
+
+    .real_posting {
+        display: flex;
+    }
+
+    @keyframes border-pulsate {
+        0%   { border-color: rgba(255, 255, 153, 1); }
+        50%  { border-color: rgba(255, 255, 153, 0); }
+        100% { border-color: rgba(255, 255, 153, 1); }
+    }
+
+    div.highlight {
+        border: 4px solid #ffe4ad;
+        animation: border-pulsate 2s 5;
+    }
+
+    .postbody {
+        position: relative;
+        padding: 0pt 5px;
+        margin: 5px 0 0 0;
+        flex: 1;
+        text-align: left;
+    }
+
+    .buttons {
+        clear: both;
+        width: 100%;
+        text-align: center;
+        padding-top: 5px;
+    }
+
+    div.title {
+        text-align: left;
+        float: left;
+        width: 100%;
+    }
+
+    .title {
+        font-weight: bold;
+    }
+
+    div.postbody span.icons {
+        float: right;
+        min-width: 3%;
+    }
+
+    div.postbody .content {
+        overflow: hidden;
+        clear: both;
+    }
+
+    p.author {
+        margin: 2px 0px 8px 0px;
+    }
+
+    .content {
+        clear: both;
+    }
+
+    span.username {
+        font-weight: bold;
+    }
+
+    .postprofile {
+        @media only screen and (max-width: 768px) {
+            display: none !important;
+        }
+        border-left: 1px solid #ffffff;
+        margin: 0;
+        padding: 4px;
+        height: 100%;
+        width: 180px;
+        dd, dt {
+            padding: 0pt;
+            margin: 0pt;
+        }
+
+    }
+
+    span.buttons {
+        display: block;
+        clear: both;
+        text-align: center;
+        width: 78%;
+    }
+
+    .clear {
+        display: block;
+        clear: both;
+    }
+
+    .action-icons {
+        position: absolute;
+        right: 10px;
+        top: 0px;
+        visibility: hidden;
+    }
+
+    tr:hover .action-icons {
+        visibility: visible;
+    }
+
+    .action-buttons {
+        display: none;
+    }
+
+    textarea {
+        width: 100%;
+        height: 20em;
+    }
+
+    .handle {
+        cursor: move;
+    }
+
+    .editor_toolbar {
+        width: 100%;
+    }
+
+    a.marked div {
+        cursor: pointer;
+        .background-icon('staple', 'clickable', 32px);
+        position: absolute;
+        top: -10px;
+        right: 10px;
+        height: 32px;
+        width: 32px;
+        transform: rotate(140deg);
+
+    }
+
+    .new_posting {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    div.action-icons {
+        display: none;
+    }
+
+    dd.posting_icons {
+        padding-top: 5px;
+        img {
+            vertical-align: bottom;
+        }
+
+        a {
+            margin-right: 5px;
+        }
+    }
+
+    .smiley_favorites {
+        text-align: center;
+        padding-right: 5px;
+    }
+
+    a.tooltip2 {
+      color: black;
+      cursor: help;
+      display: inline-block;
+      outline: none;
+      position: relative;
+      text-decoration: none;
+
+        span {
+          position: relative;
+          display: inline-block;
+          margin-bottom: 9px;
+          background-color: rgba(255, 255, 255, 0.3);
+          background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+          background-image: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(255, 255, 255, 0.5)), to(rgba(255, 255, 255, 0)));
+          background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+          background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+          background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+          background-repeat: repeat-x;
+          filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80ffffff', endColorstr='#00ffffff', GradientType=0);
+          background-color: #ddd;
+          border: 2px solid #ccc;
+          -webkit-border-radius: 4px;
+          -moz-border-radius: 4px;
+          border-radius: 4px;
+          top: 20%;
+          bottom: none;
+          -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+          -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+          font-size: 10pt;
+          font-weight: normal;
+          margin-left: 0px;
+          opacity: .95;
+          padding: 10px;
+          position: absolute;
+          text-align: left;
+          text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+          visibility: hidden;
+          white-space: normal;
+          width: 400px;
+          z-index: 999;
+          clear: both;
+        }
+    }
+
+    a.tooltip2:hover span {
+      visibility: visible;
+    }
+
+    li.selected {
+        background-color: #DDDDFF;
+    }
+
+    div.posting.bg2 {
+        flex: 1;
+    }
+
+    #tutorBreadcrumb {
+        float: left;
+        margin-bottom: 1em;
+        font-size: 1.4em;
+    }
+
+    #page-chooser {
+        float: right;
+        padding-right: 10px;
+        margin-bottom: 1em;
+    }
+}

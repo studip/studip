@@ -1,0 +1,106 @@
+.opengraph-area {
+    margin: 10px auto 5px;
+    max-width: 700px;
+
+    .switcher {
+        list-style: none;
+        text-align: right;
+
+        li {
+            border-top: thin solid @dark-gray-color-20;
+            display: inline-block;
+            padding: 5px;
+
+            &:first-child {
+                border-left: thin solid @dark-gray-color-20;
+            }
+            &:last-child {
+                border-right: thin solid @dark-gray-color-20;
+            }
+        }
+        .switch-left, .switch-right {
+            .hide-text();
+            .square(20px);
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 0;
+
+            &:not([disabled]) {
+                cursor: pointer;
+            }
+        }
+        .switch-left {
+            .background-icon('arr_1left', 'clickable');
+            &[disabled] {
+                .background-icon('arr_1left', 'inactive');
+            }
+        }
+        .switch-right {
+            .background-icon('arr_1right', 'clickable');
+            &[disabled] {
+                .background-icon('arr_1right', 'inactive');
+            }
+        }
+    }
+
+    .js & .opengraph.hidden,
+    .js &:not(.handled) .opengraph:not(:first-of-type) {
+        // The second selector prevents flash of content before everything
+        // is setup
+        display: none;
+    }
+}
+
+.opengraph {
+    @padding: 10px;
+    @height: 120px;
+
+    .clearfix;
+
+    font-size: 0.8em;
+    border: 1px solid @dark-gray-color-20;
+    padding: @padding;
+    min-height: @height;
+
+    .flash-embedder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% auto;
+        .play {
+            border-radius: 100px;
+            transition: background-color 300ms;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+        &:hover .play {
+            background-color: rgba(0, 0, 0, 1);
+        }
+    }
+    .video .flash-embedder {
+        height: 200px;
+    }
+
+    a.info {
+        box-sizing: border-box;
+        color: black;
+        display: block;
+        word-break: normal !important;
+        &:hover {
+            color: black;
+        }
+    }
+    .image {
+        .square(@height);
+        background-size: contain;
+        background-position: left center;
+        background-repeat: no-repeat;
+        display: inline-block;
+        float: left;
+        margin-right: @padding;
+    }
+}

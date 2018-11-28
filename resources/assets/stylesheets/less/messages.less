@@ -1,0 +1,100 @@
+#reloader.more {
+  display: none;
+}
+.unread {
+  font-weight: bold;
+}
+.dropping {
+  background-color: @content-color;
+  a {
+      color: white;
+  }
+}
+a.message-tag {
+  white-space: nowrap;
+  .icon('before', 'tag', 'clickable');
+}
+
+#message-move-handle {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 3px;
+    border-radius: 5px;
+    border: thin solid #000;
+
+    .icon('before', 'mail', 'clickable', 20, 2px);
+}
+#messages-tags.dragging .sidebar-widget-content {
+    background-color: @activity-color-20;
+}
+
+#statusbar_container {
+  > .statusbar {
+    border: thin solid lightgrey;
+    min-width: 100%;
+    max-width: 100%;
+    background-color: @content-color-40;
+    > .progress {
+      background-color: @content-color;
+      width: 100%;
+      min-width: 0%;
+      max-width: 0%;
+      height: 20px;
+      line-height: 20px;
+      &.progress-error {
+        background-color: @red;
+      }
+    }
+    > .progresstext {
+      margin-top: -20px;
+      text-align: center;
+      color: white;
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
+#message_metadata tr {
+    vertical-align: top;
+}
+
+#adressees {
+    max-height: 120px;
+    overflow: auto;
+    li.adressee {
+        white-space: nowrap;
+    }
+}
+
+.message_body {
+    background-color: @content-color-20;
+    margin: 3px;
+    padding: 10px;
+}
+
+.responsive_author {
+  margin: 0;
+  font-size: 0.8em;
+  color: @base-gray;
+}
+
+.message-search-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1ex;
+
+    > * {
+        margin-right: 1em;
+    }
+}
+ul.message-options {
+   list-style: none;
+   margin: 1em 0 0;
+   padding: 0;
+   text-align: center;
+
+   > li {
+       display: inline-block;
+       min-width: 70px;
+   }
+}

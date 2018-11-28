@@ -1,0 +1,218 @@
+#sort1, #sort0, #sort3 {
+    padding : 0 0px;
+}
+#admin_widget_container {
+    padding-top: 1em;
+    width: 100%;
+}
+
+#main, #choices {
+    width: 99%;
+    border: 1px solid @dark-gray-color-60;
+}
+
+.studip-widget-wrapper {
+    margin: 0 0 20px;
+    padding: 0;
+}
+
+.studip-widget {
+    border: 1px solid @base-color-20;
+    transition: border-color 300ms ease-in-out;
+
+    .widget-header {
+        box-sizing: border-box;
+
+        background-color: @content-color-20;
+        color: @brand-color-dark;
+
+        font-size: 1.1em;
+        font-weight: bold;
+        line-height: 2em;
+        padding: 0 1ex;
+        text-align: left;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-options {
+        float: right;
+        white-space: nowrap;
+    }
+
+    section.contentbox {
+        border: none;
+        > header {
+            display: none;
+        }
+    }
+
+    > div > article.studip {
+        border: none;
+        > header {
+            display: none;
+        }
+    }
+}
+
+.studip-widget:hover {
+    border: 1px solid @brand-color-darker;
+    transition: border-color 300ms ease-in-out;
+
+}
+#widget_choices{
+    border-right: 1px dashed @brand-color-darker;
+    margin-right: 25px;
+}
+.start-widgetcontainer {
+    padding: 0;
+    margin-top: 0;
+    width: 100%;
+}
+
+/* some improvements for ui_widget elements */
+.ui-widget_start {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.0em;
+    padding: 0;
+}
+
+.ui-widget_columnl {
+    float: left;
+    width: 100%;
+}
+.ui-widgetContainer {
+    color: white;
+    background-image: none;
+}
+
+.ui-widget_columnr {
+    float: right;
+}
+
+.ui-widget_head {
+    line-height: 30px;
+
+    text-align: center;
+    color: white;
+    font-size: 1.3em;
+    background-color: @content-color;
+}
+
+.ui-widget_head:hover {
+    cursor:move;
+
+}
+.ui-widget_head h1 {
+    line-height: 100px;
+    text-align: center;
+    color: black;
+}
+
+.addclip-widgets {
+    color: #000;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    a:link, a:visited {
+        color: #000;
+    }
+    a:hover, a:active {
+        color: @active-color;
+    }
+
+    li {
+        border-top: 1px solid @content-color;
+        padding: 4px 0;
+
+        &:first-child {
+            border-top: 0;
+        }
+    }
+    p {
+        margin-left: 25px;
+    }
+}
+
+
+// Wirklich wichtiger Code
+div.start-widgetcontainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+
+    > ul {
+        box-sizing: border-box;
+        display: inline-block;
+
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        vertical-align: top;
+        &:first-child {
+            flex-grow: 2;
+            max-width: 65%;
+            min-width: 65%;
+        }
+        &:last-child {
+            flex-grow: 1;
+            margin-left: 20px;
+            max-width: 33%;
+            min-width: 33%;
+        }
+        &.empty {
+            display: none;
+        }
+        &.move {
+            border: @base-color-80 dashed 1px;
+        }
+    }
+}
+
+div.edit-widgetcontainer {
+    .start-widgetcontainer {
+        min-height: 60px;
+        margin-bottom: 2em;
+    }
+}
+div.available-widgets {
+    ul {
+        box-sizing: border-box;
+        display: inline-block;
+
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        min-height: 60px;
+        width: 100%;
+
+        li {
+            float: left;
+            margin-right: 5px;
+        }
+
+        &.move {
+            border: @base-color-80 dashed 1px;
+        }
+    }
+
+    .studip-widget {
+        width: 250px;
+        display: inline-block;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    div.start-widgetcontainer {
+        display: block;
+        ul.portal-widget-list {
+            display: block;
+            margin-left: 0;
+            min-width: 100%;
+            max-width: 100%;
+        }
+    }
+}

@@ -1,0 +1,442 @@
+form.default {
+    @max-width-s: 8em;
+    @max-width-m: 48em;
+    @max-width-l: 100%;
+
+    div.select2-wrapper {
+        display: block ! important;
+    }
+
+    section {
+        padding-top: 1.5ex;
+
+        label:first-of-type {
+            margin-top: 0px;
+        }
+    }
+
+    ol.default {
+        padding-left: 20px;
+
+        li {
+            padding: 2px 0px;
+        }
+    }
+
+    span.empty {
+        color: @light-gray-color-40;
+        font-style: italic;
+    }
+
+    input[type=date], input[type=email], input[type=number],
+    input[type=password], input[type=text], input[type=time], input[type=url], input[type=tel],
+    textarea, select {
+        box-sizing: border-box;
+
+        border: 1px solid @light-gray-color-40;
+        color: @dark-gray-color;
+        max-width: @max-width-m;
+        padding: 5px;
+        vertical-align: middle;
+        width: 100%;
+        transition: all 0.3s ease-out;
+
+        &:focus {
+            border-color: @brand-color-dark;
+        }
+
+        &.size-s {
+            max-width: @max-width-s;
+        }
+
+        &.size-m {
+        }
+
+        &.size-l {
+            max-width: @max-width-l;
+        }
+
+        &[readonly] {
+            background-color: @light-gray-color-20;
+        }
+    }
+
+    input[type=date], input[type=number], input[type=time], input[type=tel]:not(.size-m)  {
+        max-width: @max-width-s;
+    }
+
+    textarea {
+        min-height: 6em;
+    }
+
+    label:not(.undecorated) {
+        display: block;
+        margin-top: 1.5ex;
+        max-width: 100%;
+        text-indent: 0.25ex;
+        vertical-align: top;
+
+        input[type=date], input[type=email], input[type=number],
+        input[type=password], input[type=text], input[type=time], input[type=tel], input[type=url],
+        textarea, select {
+            display: block;
+            margin-top: 0.5ex;
+        }
+    }
+
+    .label-text {
+        display: inline-block;
+        text-indent: 0.25ex;
+    }
+
+    /* we have to use specific css selectors, otherwise the settings are
+       overwritten by other rules  */
+    label.col-1, label.col-2, label.col-3, label.col-4, label.col-5,
+    div.col-1, div.col-2, div.col-3, div.col-4, div.col-5,
+    section.col-1, section.col-2, section.col-3, section.col-4, section.col-5 {
+        display: inline-block;
+        padding-right: 1em;
+        vertical-align: top;
+    }
+
+    label.col-1, div.col-1, section.col-1 {
+        min-width: 14%;
+    }
+
+    label.col-2, div.col-2, section.col-2 {
+        min-width: 29%;
+    }
+
+    label.col-3, div.col-3, section.col-3 {
+        min-width: 45%;
+    }
+
+    label.col-4, div.col-4, section.col-4 {
+        min-width: 60%;
+    }
+
+    label.col-5, div.col-5, section.col-5 {
+        min-width: 75%;
+    }
+
+    fieldset {
+        box-sizing: border-box;
+
+        border: solid 1px @content-color-40;
+        margin: 0 0 10px;
+        padding: 10px;
+        padding-top: 0px;
+        position: relative;
+
+        break-before: column;
+
+        > legend {
+            box-sizing: border-box;
+            background-color: @fieldset-header;
+            border: 1px solid @content-color-40;
+            border-bottom: 0;
+            color: @brand-color-dark;
+            font-size: 12pt;
+            font-weight: bold;
+            line-height: 2em;
+            margin: 0 -11px;
+            padding: 0;
+            text-indent: 10px;
+            width: calc(100% + 23px);
+        }
+    }
+
+    .required {
+        font-weight: bold;
+        &:after {
+            content: "*";
+            color: red;
+        }
+    }
+
+    input[type=checkbox] {
+        vertical-align: bottom;
+    }
+
+    input[type=radio] {
+        vertical-align: text-bottom;
+    }
+
+    select[disabled] {
+        background-color: @dark-gray-color-15;
+    }
+
+    .tooltip.tooltip-icon::before {
+        vertical-align: text-bottom;
+    }
+
+    footer {
+        background-color: @content-color-20;
+        border-top: 1px solid @brand-color-darker;
+        clear: both;
+        margin-left: 0;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+
+        .button {
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+    }
+
+    //Special inputs
+
+    label.file-upload {
+        .background-icon('upload', 'clickable');
+
+        background-repeat: no-repeat;
+        background-position: top left;
+        background-size: 20px 20px;
+        cursor: pointer;
+        padding-left: 30px;
+        color: @base-color;
+
+        input[type=file] {
+            display: none;
+        }
+        .filename {
+            padding-left: 0.5em;
+            color: @light-gray-color-80;
+        }
+    }
+
+    label.with-action {
+        span:first-of-type {
+            display: block;
+        }
+
+        > input[type=image], > img {
+            vertical-align: text-bottom;
+            margin-left: 5px;
+        }
+
+        input[type=date], input[type=email], input[type=number],
+        input[type=password], input[type=text], input[type=time], input[type=url], input[type=tel],
+        textarea, select {
+            max-width: calc(@max-width-m - 2em);
+            width: calc(100% - 2em);
+            display: inline-block;
+
+            transition: all 0.3s ease-out;
+
+            &:focus {
+                border-color: @brand-color-dark;
+            }
+
+            &.size-s {
+                max-width: calc(@max-width-s - 2em);
+            }
+
+            &.size-m {
+            }
+
+            &.size-l {
+                max-width: calc(@max-width-l - 2em);
+            }
+        }
+    }
+
+    // Group elements in a row
+    .hgroup, .hgroup-btn {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        max-width: @max-width-m;
+
+        &.size-s {
+            max-width: @max-width-s;
+        }
+        &.size-l {
+            max-width: @max-width-l;
+        }
+
+        > * {
+            box-sizing: border-box;
+            flex: 1 0 auto;
+
+            &:not(:first-child) {
+                margin-left: 3px;
+            }
+            &:not(:last-child) {
+                margin-right: 3px;
+            }
+        }
+
+        label {
+            margin-top: 0;
+        }
+
+        &, label:not(.undecorated) {
+            input[type=date], input[type=email], input[type=number],
+            input[type=password], input[type=text], input[type=time], input[type=tel], input[type=url],
+            textarea, select {
+                display: inline-block;
+                margin-top: 0;
+                width: auto;
+            }
+        }
+    }
+
+    .hgroup-btn {
+        align-items: baseline;
+        .form-control {
+            flex: 1;
+        }
+        .button {
+            flex: 0;
+        }
+    }
+
+    // Collapsable fieldsets
+    .js &.collapsable fieldset, fieldset.collapsable {
+        legend {
+            box-sizing: border-box;
+            .background-icon('arr_1down', 'clickable', 20);
+            background-position: 6px center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            padding-left: 20px;
+        }
+
+        &.collapsed {
+            legend {
+                .background-icon('arr_1right', 'clickable', 20);
+                margin-bottom: 0;
+            }
+            padding-bottom: 0;
+            *:not(legend) {
+                display: none;
+            }
+        }
+    }
+
+    // Length hint display for input[maxlength]
+    .length-hint-wrapper {
+        position: relative;
+        white-space: nowrap;
+    }
+    .length-hint {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+
+        color: @light-gray-color;
+        font-size: 0.8em;
+    }
+
+    // Display small forms as inline
+    &.inline {
+        label {
+            display: inline;
+            max-width: inherit;
+            vertical-align: middle;
+            width: auto;
+        }
+        input, textarea, select, button {
+            display: inline-block;;
+        }
+    }
+
+    label.packed {
+        display: flex;
+
+        > * {
+            flex: 1;
+            max-width: none;
+        }
+        button {
+            flex: 0 0 auto;
+            margin: 0;
+        }
+    }
+
+    .invalid {
+        border: 2px dotted red ! important;
+    } // an invalid form entry
+
+    .invalid_message {
+        display: none;
+        font-weight: bold;
+        color: red;
+    }
+
+    .select2-container {
+        margin-top: 0.5ex;
+    }
+}
+
+form.narrow {
+    label.col-1, label.col-2, label.col-3, label.col-4, label.col-5,
+    div.col-1, div.col-2, div.col-3, div.col-4, div.col-5,
+    section.col-1, section.col-2, section.col-3, section.col-4, section.col-5
+    {
+        padding-right: 0px;
+    }
+}
+
+.studip-checkbox {
+    opacity: 0;
+    position: absolute;
+    + label {
+        .icon('before', 'checkbox-unchecked', 'clickable', 16, 5px);
+        cursor: pointer;
+    }
+    &:checked + label {
+        .icon('before', 'checkbox-checked', 'clickable', 16, 5px);
+    }
+    &:indeterminate + label {
+        .icon('before', 'checkbox-indeterminate', 'clickable', 16, 5px);
+    }
+}
+
+// give forms some optimized styling for very narrow screen sizes
+.media-breakpoint-tiny-down({
+    form.default {
+        label.col-1, div.col-1, section.col-1,
+        label.col-2, div.col-2, section.col-2,
+        label.col-3, div.col-3, section.col-3,
+        label.col-4, div.col-4, section.col-4,
+        label.col-5, div.col-5, section.col-5 {
+            min-width: 100%;
+        }
+    }
+});
+
+table.hide_datafield_title {
+    .datafield_title {
+        display: none;
+    }
+}
+
+.content-title {
+    background-color: transparent;
+    padding-top: 0px;
+    color: @base-gray;
+    font-size: 1.4em;
+    text-align: left;
+}
+
+@media (max-width: 580px) {
+    .ms-selectable,
+    .ms-selection {
+        width: 100% ! important;
+    }
+}
+
+// Adjustments for dialog
+.ui-dialog {
+    form.default > fieldset:first-of-type:last-of-type {
+        border: 0;
+        padding: 0;
+
+        legend {
+            display: none;
+        }
+    }
+}

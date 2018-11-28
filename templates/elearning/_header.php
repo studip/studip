@@ -1,0 +1,3 @@
+<legend>
+    <?= htmlReady($title) ?>
+</legend>

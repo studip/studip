@@ -1,0 +1,100 @@
+@transition-duration: 300ms;
+.border-beneath(@color, @margin: 2px, @height: 3px) when (@color = 'dark') {
+    .border-beneath(@dark-gray-color-80, @height, @margin);
+}
+.border-beneath(@color, @margin: 2px, @height: 3px) when (@color = 'light') {
+    .border-beneath(@dark-gray-color-40, @height, @margin);
+}
+.border-beneath(@color, @margin: 2px, @height: 3px) {
+    border-bottom: 0;
+    padding-bottom: 0;
+    position: relative;
+
+    &::after {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        opacity: 1;
+        content: '';
+        display: block;
+        background-color: @color;
+        height: @height;
+        margin-top: @margin;
+
+        transition: left @transition-duration,
+                    right @transition-duration,
+                    opacity @transition-duration;
+    }
+}
+.border-shrink() {
+    left: 50%;
+    right: 50%;
+    opacity: 0;
+}
+
+body:not(.fixed) #barTopMenu {
+    > li.active {
+        .border-beneath('dark');
+    }
+    > li:not(.active) {
+        .border-beneath('light');
+        &:not(:hover)::after {
+            .border-shrink();
+        }
+    }
+
+    &:hover > li:not(:hover)::after {
+        .border-shrink();
+    }
+
+    .action-menu-icon {
+        transform: rotate(-90deg);
+    }
+
+    .overflow li:hover {
+        .border-beneath('light', 2px, 2px);
+        &::after {
+            transform: translate(0, -4px);
+        }
+    }
+}
+
+#tabs, #tabs2 {
+    > li {
+        &, &.current, &:hover {
+            line-height: 25px;
+        }
+        &.current {
+            .border-beneath('dark', -2px, 2px);
+        }
+        &:not(.current) {
+            .border-beneath('light', -2px, 2px);
+            &:not(:hover)::after {
+                .border-shrink();
+            }
+        }
+    }
+
+    &:hover > li:not(:hover)::after {
+        .border-shrink();
+    }
+}
+
+/*#barTopAvatar {
+    &:not(.fixed) {
+        &, &.active, &:hover {
+            line-height: 25px;
+            padding-top: 3px;
+        }
+        &.active {
+            .border-beneath('dark', 1px);
+        }
+        &:not(.active) {
+            .border-beneath('light', 1px);
+            &:not(:hover)::after {
+                .border-shrink();
+            }
+        }
+    }
+}*/

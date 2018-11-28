@@ -1,0 +1,130 @@
+.button() {
+    background: white;
+    border: 1px solid @base-color;
+    border-radius: 0;
+    box-sizing: border-box;
+    color: @base-color;
+    cursor: pointer;
+    display: inline-block;
+    font-family: @font-family-base;
+    font-size: 14px;
+    line-height: 130%;
+    margin: 0.8em 0.6em 0.8em 0;
+    min-width: 100px;
+    overflow: visible;
+    padding: 5px 15px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: auto;
+
+    &:hover, &:active  {
+        background: @base-color;
+        color: white;
+        outline: 0;
+    }
+    &:focus {
+        outline: dotted 1px #000;
+    }
+    &::-moz-focus-inner {
+        border: 0;
+    }
+
+    &.disabled, &[disabled] {
+        box-shadow: none;
+        background: @light-gray-color-20;
+        cursor: default;
+        opacity: 0.65;
+
+        &:hover {
+            color: @base-color;
+        }
+    }
+
+    transition: none;
+}
+
+a.button, button.button {
+    .button;
+}
+
+.button-with-empty-icon {
+    white-space: nowrap;
+
+    &::before {
+        background: no-repeat;
+        content: " ";
+        float: left;
+        height: 16px;
+        margin: 1px 5px 0 -8px;
+        width: 16px;
+    }
+}
+
+.button-with-icon(@icon, @role, @roleOnHover) {
+    &:extend(.button-with-empty-icon);
+    &::before {
+        &:extend(.button-with-empty-icon::before);
+        .background-icon(@icon, @role);
+    }
+
+    &:hover::before {
+        .background-icon(@icon, @roleOnHover);
+    }
+
+    &.disabled,
+    &[disabled] {
+        &:hover::before {
+            .background-icon(@icon, @role);
+        }
+    }
+}
+
+.button.accept {
+  .button-with-icon("accept", "clickable", "info_alt");
+}
+
+.button.cancel {
+  .button-with-icon("decline", "clickable", "info_alt");
+}
+
+.button.download {
+  .button-with-icon("download2", "clickable", "info_alt");
+}
+
+.button.edit {
+  .button-with-icon("edit", "clickable", "info_alt");
+}
+
+.button.move-up {
+  .button-with-icon("arr_1up", "clickable", "info_alt");
+}
+
+.button.move-down {
+  .button-with-icon("arr_1down", "clickable", "info_alt");
+}
+
+.button.add {
+  .button-with-icon("add", "clickable", "info_alt");
+}
+
+.button.download {
+  .button-with-icon("download", "clickable", "info_alt");
+}
+
+/* Grouped Buttons */
+.button-group {
+    display: inline-block;
+    list-style: none;
+    margin: 0 0.8em 0 0;
+    padding: 0;
+    vertical-align: middle;
+
+    button, .button {
+        float: left;
+        margin-left: 5px;
+        margin-right: 0;
+    }
+}
