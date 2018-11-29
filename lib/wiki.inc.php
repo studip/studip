@@ -25,52 +25,28 @@ $wiki_extended_link_regex = "\[\[(([\w\.\-\:\(\)_§\/@# ]|&[AOUaou]uml;|&szlig;)
 * @param int    Version number. If empty, latest version is returned.
 *
 **/
-function getWikiPage($keyword, $version, $db = NULL)
+function getWikiPage($keyword, $version)
 {
-    global $perm;
-    $query = "SELECT *
-              FROM wiki
-              WHERE keyword = :keyword AND range_id = :range_id";
-    $parameters = array(
-        'keyword'  => $keyword,
-        'range_id' => Context::getId(),
-    );
-
-    if (!$version) {
-        $query .= " ORDER BY version DESC";
-    } else {
-        $query .= " AND version = :version";
-        $parameters['version'] = $version;
+    $page = null;
+    if ($version) {
+        $page = WikiPage::find([Context::getId(), $keyword, $version]);
     }
-    $query .= " LIMIT 1"; // only one version needed
-
-    $statement = DBManager::get()->prepare($query);
-    $statement->execute($parameters);
-    $row = $statement->fetch(PDO::FETCH_ASSOC);
-
-    if (!$row) {
-        if ($keyword == 'WikiWikiWeb') {
-            $range_id = Context::getId();
-            $row = WikiPageConfig::find([$range_id, $keyword]);
-            if ($row["edit_perms"] == "") {
-                $edit_perms = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
-            } else {
-                $edit_perms = $row["edit_perms"];
-            }
-
-            if ($perm->have_studip_perm($edit_perms, $range_id)) {
-                $body = _("Dieses Wiki ist noch leer. Bearbeiten Sie es!\nNeue Seiten oder Links werden einfach durch Eingeben von [nop][[Wikinamen]][/nop] in doppelten eckigen Klammern angelegt.");
-            } else {
-                $body = _("Dieses Wiki ist noch leer.");
-            }
-            $wikidata = array('body' => $body, 'user_id' => 'nobody',  'version' => 0);
-        } else {
-            return NULL;
-        }
-    } else {
-        $wikidata = $row;
+    if ($page === null) {
+        $page = WikiPage::findLatestPage(Context::getId(), $keyword);
     }
-    return $wikidata;
+
+    if ($page) {
+        return $page;
+    }
+
+    if ($keyword === 'WikiWikiWeb') {
+        return WikiPage::getStartPage(Context::getId());
+    }
+
+    $page = new WikiPage();
+    $page->range_id = Context::getId();
+    $page->keyword  = $keyword;
+    return $page;
 }
 
 
@@ -89,9 +65,9 @@ function submitWikiPage($keyword, $version, $body, $user_id, $range_id) {
     global $perm;
     releasePageLocks($keyword, $user_id); // kill lock that was set when starting to edit
     // write changes to db, show new page
-    $latestVersion=getWikiPage($keyword,false);
+    $latestVersion = getWikiPage($keyword, false);
     if ($latestVersion) {
-        $date=time();
+        $date = time();
         $lastchange = $date - $latestVersion['chdate'];
     }
 
@@ -105,28 +81,19 @@ function submitWikiPage($keyword, $version, $body, $user_id, $range_id) {
         // if same author changes again within 30 minutes, no new verison is created
         $wp = WikiPage::find([$range_id, $keyword, $version]);
         if ($wp) {
-            // apply replace-before-save transformations
-            $wp->body = transformBeforeSave($body);
-
-            $range_id = Context::getId();
-            $row = WikiPageConfig::find([$range_id, $keyword]);
-            if ($row["edit_perms"] == "") {
-                $edit_perms = "autor";
-            } else {
-                $edit_perms = $row["edit_perms"];
-            }
-            if ($perm->have_studip_perm($edit_perms, $range_id)) {
+            if ($wp->isEditableBy($GLOBALS['user'])) {
+                // apply replace-before-save transformations
+                $wp->body = transformBeforeSave($body);
                 $wp->store();
             } else {
-                $message = MessageBox::info(_('Keine Änderung vorgenommen, da zwischenzeitlich die Editier-Berechtigung entzogen wurde.'));
-                PageLayout::postMessage($message);
+                PageLayout::postInfo(_('Keine Änderung vorgenommen, da zwischenzeitlich die Editier-Berechtigung entzogen wurde.'));
             }
         }
     } else {
         if ($version === null) {
-            $version=0;
+            $version = 0;
         } else {
-            $version=$latestVersion['version']+1;
+            $version = $latestVersion['version'] + 1;
         }
 
         // apply replace-before-save transformations
@@ -549,7 +516,6 @@ function deleteWikiPage($keyword, $version, $range_id) {
     }
 
     if (!keywordExists($keyword)) { // all versions have gone
-        WikiPageConfig::deleteBySQL('range_id = ? AND keyword = ?', [$range_id, $keyword]);
         $addmsg = '<br>' . sprintf(_("Damit ist die Seite %s mit allen Versionen gelöscht."),'<b>'.htmlReady($keyword).'</b>');
         $newkeyword = "WikiWikiWeb";
     } else {
@@ -584,7 +550,6 @@ function deleteAllWikiPage($keyword, $range_id) {
     }
 
     WikiPage::deleteBySQL("keyword = ? AND range_id = ?", [$keyword, $range_id]);
-    WikiPageConfig::deleteBySQL('range_id = ? AND keyword = ?', [$range_id, $keyword]);
     $message = MessageBox::info(sprintf(_('Die Seite %s wurde mit allen Versionen gelöscht.'), '<b>'.htmlReady($keyword).'</b>'));
     PageLayout::postMessage($message);
     refreshBacklinks($keyword, "");
@@ -601,7 +566,6 @@ function deleteAllWikiPage($keyword, $range_id) {
 **/
 function listPages($mode, $sortby = NULL)
 {
-    global $perm;
     if ($mode=="all") {
         $selfurl = "?view=listall";
         $sort = "ORDER by lastchange DESC"; // default sort order for "all pages"
@@ -714,15 +678,9 @@ function listPages($mode, $sortby = NULL)
             $user_id = $temp['user_id'];
             $version = $temp['version'];
 
-            $range_id = Context::getId();
-            $row = WikiPageConfig::find([$range_id, $keyword]);
-            if ($row["read_perms"] == "") {
-                $read_perms = "autor";
-            } else {
-                $read_perms = $row["read_perms"];
-            }
+            $page = WikiPage::findLatestPage(Context::getId(), $keyword);
 
-            if ($perm->have_studip_perm($read_perms, $range_id)) {
+            if ($page->isVisibleTo($GLOBALS['user'])) {
 
                 $tdheadleft="<td class=\"$class\" align=\"left\"><font size=\"-1\">";
                 $tdheadcenter="<td class=\"$class\" align=\"center\"><font size=\"-1\">";
@@ -1248,140 +1206,161 @@ function showPageFrameEnd()
 **/
 function getShowPageInfobox($keyword, $latest_version)
 {
+    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_PERM;
+
     $versions = getWikiPageVersions($keyword);
 
     if (!$latest_version) {
-        $message = sprintf(_('Sie betrachten eine alte Version, die nicht mehr geändert werden kann. Verwenden Sie dazu die %saktuelle Version%s.'),
-                           '<a href="' . URLHelper::getLink('?keyword='.urlencode($keyword)) . '">',
-                           '</a>');
-        PageLayout::postMessage(MessageBox::info($message));
+        $message = sprintf(
+            _('Sie betrachten eine alte Version, die nicht mehr geändert werden kann. Verwenden Sie dazu die %saktuelle Version%s.'),
+            '<a href="' . URLHelper::getLink('', compact('keyword')) . '">',
+            '</a>'
+        );
+        PageLayout::postInfo($message);
     }
 
     $sidebar = Sidebar::get();
 
     // Table of Contents/QuickLinks
-    $widget = new ListWidget();
+    $widget = $sidebar->addWidget(new ListWidget());
     $widget->setTitle(_('QuickLinks'));
 
     $toccont = get_toc_content();
     $toccont_empty = !trim(strip_tags($toccont));
-    if ($GLOBALS['perm']->have_studip_perm('autor', Context::getId())){
-        $extra = sprintf('<a href="%s">%s</a>',
-                         URLHelper::getLink('?keyword=toc&view=edit'),
-                         $toccont_empty
-                             ? Icon::create('add', 'clickable', ['title' => _('erstellen')])->asImg()
-                             : Icon::create('edit', 'clickable', ['title' => _('bearbeiten')])->asImg());
+
+    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId())) {
+        $extra = sprintf(
+            '<a href="%s">%s</a>',
+            URLHelper::getLink('?keyword=toc&view=edit'),
+            $toccont_empty
+                ? Icon::create('add')->asImg(['title' => _('erstellen')])
+                : Icon::create('edit')->asImg(['title' => _('bearbeiten')])
+        );
         $widget->setExtra($extra);
     }
 
     $element = new WidgetElement($toccont_empty ? _('Keine QuickLinks vorhanden') : $toccont);
-    $element->icon = Icon::create('link-intern', 'clickable');
+    $element->icon = Icon::create('link-intern');
     $widget->addElement($element);
-    $sidebar->addWidget($widget);
 
     // Actions:
-    $widget = new ActionsWidget();
-    $widget->addLink(
-        _('Neue Wiki-Seite anlegen'),
-        URLHelper::getLink('dispatch.php/wiki/create', compact('keyword')),
-        Icon::create('add'),
-        ['data-dialog' => 'size=auto']
-    );
-
-    // Change wiki course permissions
-    if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
+    $widget = $sidebar->addWidget(new ActionsWidget());
+    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId())) {
         $widget->addLink(
-            _('Wiki-Einstellungen ändern'),
-            URLHelper::getLink('dispatch.php/wiki/change_courseperms', compact('keyword')),
-            Icon::create('edit'),
-            ['data-dialog' => 'size=auto']
-        );
+            _('Neue Wiki-Seite anlegen'),
+            URLHelper::getURL('dispatch.php/wiki/create', compact('keyword')),
+            Icon::create('add')
+        )->asDialog('size=auto');
     }
 
-    $widget->addLink(
-        _('Seiten importieren'),
-        URLHelper::getLink('dispatch.php/wiki/import/' . Context::getId()),
-        Icon::create('wiki+add'),
-        ['data-dialog' => '']
-    );
-    $sidebar->addWidget($widget);
+    if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
+        $widget->addLink(
+            _('Seiten importieren'),
+            URLHelper::getURL('dispatch.php/wiki/import/' . Context::getId()),
+            Icon::create('wiki+add')
+        )->asDialog('size=auto');
+
+        // Change wiki course permissions
+        $widget->addLink(
+            _('Wiki-Einstellungen ändern'),
+            URLHelper::getURL('dispatch.php/wiki/change_courseperms', compact('keyword')),
+            Icon::create('admin')
+        )->asDialog('size=auto');
+    }
 
     // Backlinks
     if ($latest_version) {
-        $widget = new LinksWidget();
+        $widget = $sidebar->addWidget(new LinksWidget());
         $widget->setTitle(_('Seiten, die auf diese Seite verweisen'));
         foreach(getBacklinks($keyword) as $backlink) {
-            $widget->addLink($backlink, URLHelper::getLink('?keyword=' . urlencode($backlink)));
+            $widget->addLink(
+                $backlink,
+                URLHelper::getLink('?keyword=' . urlencode($backlink))
+            );
         }
-        $sidebar->addWidget($widget);
     }
 
     // Ansichten
-    $widget = new ViewsWidget();
-    $widget->addLink(_('Standard'),
-                     URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=show'),
-                     Icon::create('wiki', 'clickable'))
-           ->setActive(true);
+    $widget = $sidebar->addWidget(new ViewsWidget());
+    $widget->addLink(
+        _('Standard'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=show'),
+        Icon::create('wiki')
+    )->setActive(true);
     if (count($versions) >= 1) {
-        $widget->addLink(_('Textänderungen anzeigen'),
-                         URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=diff'));
-        $widget->addLink(_('Text mit Autor/-innenzuordnung anzeigen'),
-                         URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=combodiff'));
+        $widget->addLink(
+            _('Textänderungen anzeigen'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=diff')
+        );
+        $widget->addLink(
+            _('Text mit Autor/-innenzuordnung anzeigen'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=combodiff')
+        );
     }
-    $sidebar->addWidget($widget);
 
     // Suche
-    $widget = new SearchWidget(URLHelper::getLink('?view=search&keyword=' . urlencode($keyword)));
+    $widget = $sidebar->addWidget(new SearchWidget(URLHelper::getLink('?view=search&keyword=' . urlencode($keyword))));
     $widget->addNeedle(_('Im Wiki suchen'), 'searchfor', true);
     $widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
-    $sidebar->addWidget($widget);
 
     // Versionen
     if (count($versions) > 0) {
-        $widget = new SelectWidget(_('Alte Versionen dieser Seite'),
-                                   URLHelper::getLink('?keyword=' . urlencode($keyword)),
-                                   'version');
+        $widget = $sidebar->addWidget(new SelectWidget(
+            _('Alte Versionen dieser Seite'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword)),
+            'version'
+        ));
         $widget->addElement(new SelectElement('', _('Aktuelle Version')));
         foreach ($versions as $version) {
-            $element = new SelectElement($version['version'],
-                                         sprintf(_('Version %u (%s)'),
-                                                 $version['version'],
-                                                 date('d.m.Y, H:i', $version['chdate'])),
-                                         $version['version'] == Request::int('version', 0));
-            $widget->addElement($element);
+            $widget->addElement(new SelectElement(
+                $version['version'],
+                sprintf(
+                    _('Version %u (%s)'),
+                    $version['version'],
+                    date('d.m.Y, H:i', $version['chdate'])
+                ),
+                $version['version'] == Request::int('version', 0)
+            ));
         }
-        $sidebar->addWidget($widget);
     }
 
     // Kommentare
-    $widget = new OptionsWidget();
+    $widget = $sidebar->addWidget(new OptionsWidget(), 'comments');
     $widget->setTitle(_('Kommentare'));
-    $widget->addRadioButton(_('einblenden'),
-                            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=all'),
-                            $GLOBALS['show_wiki_comments'] === 'all');
-    $widget->addRadioButton(_('als Icons einblenden'),
-                            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=icon'),
-                            $GLOBALS['show_wiki_comments'] === 'icon');
-    $widget->addRadioButton(_('ausblenden'),
-                            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=none'),
-                            $GLOBALS['show_wiki_comments'] === 'none');
-    $sidebar->addWidget($widget, 'comments');
+    $widget->addRadioButton(
+        _('einblenden'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=all'),
+        $GLOBALS['show_wiki_comments'] === 'all'
+    );
+    $widget->addRadioButton(
+        _('als Icons einblenden'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=icon'),
+        $GLOBALS['show_wiki_comments'] === 'icon'
+    );
+    $widget->addRadioButton(
+        _('ausblenden'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&wiki_comments=none'),
+        $GLOBALS['show_wiki_comments'] === 'none'
+    );
 
     // Exportfunktionen
     $version = Request::int('version') ?: '';
 
-    $widget = new ExportWidget();
-    $widget->addLink(_('Druckansicht'),
-                     URLHelper::getLink('?keyword=' . urlencode($keyword) . '&version=' . $version . '&view=wikiprint'),
-                     Icon::create('print', 'clickable'),
-                     array('target' => '_blank'));
-    $widget->addLink(_('PDF-Ausgabe'),
-                     URLHelper::getLink('?keyword=' . urlencode($keyword) . '&version=' . $version . '&view=export_pdf'),
-                     Icon::create('file-pdf', 'clickable'),
-                     array('target' => '_blank'));
-    $sidebar->addWidget($widget);
+    $widget = $sidebar->addWidget(new ExportWidget());
+    $widget->addLink(
+        _('Druckansicht'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&version=' . $version . '&view=wikiprint'),
+        Icon::create('print'),
+        ['target' => '_blank']
+    );
+    $widget->addLink(
+        _('PDF-Ausgabe'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&version=' . $version . '&view=export_pdf'),
+        Icon::create('file-pdf', 'clickable'),
+        ['target' => '_blank']
+    );
 
-    return array();
+    return [];
 }
 
 /**
@@ -1393,40 +1372,47 @@ function getShowPageInfobox($keyword, $latest_version)
 **/
 function getDiffPageInfobox($keyword) {
 
-    $versions=getWikiPageVersions($keyword);
+    $versions = getWikiPageVersions($keyword);
 
     // Aktuelle Version
-    $widget = new ViewsWidget();
-    $widget->addLink(_('Standard'),
-                     URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=show'));
+    $widget = Sidebar::get()->addWidget(new ViewsWidget());
+    $widget->addLink(
+        _('Standard'),
+        URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=show')
+    );
     if (count($versions) >= 1) {
-        $widget->addLink(_('Textänderungen anzeigen'),
-                         URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=diff'))
-               ->setActive(Request::option('view') === 'diff');
-        $widget->addLink(_('Text mit Autor/-innenzuordnung anzeigen'),
-                         URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=combodiff'))
-               ->setActive(Request::option('view') === 'combodiff');
+        $widget->addLink(
+            _('Textänderungen anzeigen'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=diff')
+        )->setActive(Request::option('view') === 'diff');
+        $widget->addLink(
+            _('Text mit Autor/-innenzuordnung anzeigen'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword) . '&view=combodiff')
+        )->setActive(Request::option('view') === 'combodiff');
     }
-    Sidebar::get()->addWidget($widget);
 
     // Versionen
     if (count($versions) > 0) {
-        $widget = new SelectWidget(_('Alte Versionen dieser Seite'),
-                                   URLHelper::getLink('?keyword=' . urlencode($keyword)),
-                                   'version');
+        $widget = Sidebar::get()->addWidget(new SelectWidget(
+            _('Alte Versionen dieser Seite'),
+            URLHelper::getLink('?keyword=' . urlencode($keyword)),
+            'version'
+        ));
         $widget->addElement(new SelectElement('', _('Aktuelle Version')));
         foreach ($versions as $version) {
-            $element = new SelectElement($version['version'],
-                                         sprintf(_('Version %u (%s)'),
-                                                 $version['version'],
-                                                 date('d.m.Y, H:i', $version['chdate'])),
-                                         $version['version'] == Request::int('version', 0));
-            $widget->addElement($element);
+            $widget->addElement(new SelectElement(
+                $version['version'],
+                sprintf(
+                    _('Version %u (%s)'),
+                    $version['version'],
+                    date('d.m.Y, H:i', $version['chdate'])
+                ),
+                $version['version'] == Request::int('version', 0)
+            ));
         }
-        Sidebar::get()->addWidget($widget);
     }
 
-    return array();
+    return [];
 }
 
 function get_toc_toggler() {
@@ -1491,56 +1477,52 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
 
     // show dialogs if any..
     //
-    if ($special == "delete") {
-        $version=showDeleteDialog($keyword, $version);
-    } else if ($special == "delete_all") {
+    if ($special === 'delete') {
+        $version = showDeleteDialog($keyword, $version);
+    } else if ($special === 'delete_all') {
         showDeleteAllDialog($keyword);
     }
 
     $wikiData = getWikiPage($keyword, $version);
-    if (!$version) {
-        $latest_version=1;
-    } else {
-        $wikiLatest= getLatestVersion($keyword, Context::getId());
-        if ($version==$wikiLatest["version"]) {
-            $latest_version=1;
-        } else {
-            $latest_version=0;
-        }
-    }
 
     // show page logic
     wikiSinglePageHeader($wikiData, $keyword);
 
-    if ($perm->have_studip_perm("autor", Context::getId())) {
-        if (!$latest_version) {
-            $edit  = Icon::create('lock-locked', 'info')->asImg();
-            $edit .= _("Ältere Version, nicht bearbeitbar!");
-        } else {
-            $edit="";
+    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_PERM;
+    if ($perm->have_studip_perm($edit_perms, Context::getId())) {
+        if ($wikiData->isLatestVersion()) {
+            $edit = '';
 
-            $range_id = Context::getId();
-            $row = WikiPageConfig::find([$range_id, $keyword]);
-            if ($row["edit_perms"] != "") {
-                $edit_perms = $row["edit_perms"];
-            } else {
-                $edit_perms = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
+            if ($wikiData->isEditableBy($GLOBALS['user'])) {
+                $edit .= LinkButton::create(
+                    _('Bearbeiten'),
+                    URLHelper::getURL('', ['keyword' => $keyword, 'view' => 'edit'])
+                );
             }
-            if ($perm->have_studip_perm($edit_perms, $range_id)) {
-                $edit.=LinkButton::create(_('Bearbeiten'), URLHelper::getURL("?keyword=".urlencode($keyword)."&view=edit"));
+            if ($perm->have_studip_perm('tutor', Context::getId()) && !$wikiData->isNew()) {
+                $edit .= LinkButton::create(
+                    _('Löschen'),
+                    URLHelper::getURL('', ['keyword' => $keyword, 'cmd' => 'delete', 'version' => 'latest'])
+                );
+
+                $edit .= LinkButton::create(
+                    _('Alle Versionen löschen'),
+                    URLHelper::getURL('', ['keyword' => $keyword, 'cmd' => 'delete_all'])
+                );
+
+                $edit .= LinkButton::create(
+                    _('Seiten-Einstellungen'),
+                    URLHelper::getURL('dispatch.php/wiki/change_pageperms', compact('keyword')),
+                    ['data-dialog' => 'size=auto']
+                );
             }
-            if ($perm->have_studip_perm("tutor", Context::getId())) {
-                $edit.=LinkButton::create(_('Löschen'),URLHelper::getURL("?keyword=".urlencode($keyword)."&cmd=delete&version=latest"));
-                // Neuer Button zum Löschen aller Versionen auf der Ebene des Bearbeitens und Löschens statt im Bestätigungsdialog des Löschens
-                $edit.=LinkButton::create(_('Alle Versionen löschen'), URLHelper::getURL('?cmd=delete_all&keyword='.urlencode($keyword)));
-            }
-            if ($perm->have_studip_perm("tutor", Context::getId()) && $wikiData["version"]) {
-                $edit.=LinkButton::create(_('Seiten-Einstellungen'),URLHelper::getURL('dispatch.php/wiki/change_pageperms', compact('keyword')),['data-dialog' => 'size=auto']);
-            }
+        } else {
+            $edit  = Icon::create('lock-locked', Icon::ROLE_INFO)->asImg();
+            $edit .= _('Ältere Version, nicht bearbeitbar!');
         }
         $edit .= "<br>&nbsp;";
     } else {
-        $edit="";
+        $edit = '';
     }
 
     begin_blank_table();
@@ -1578,11 +1560,9 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     printcontent(0,0, $cont, $edit);
     end_blank_table();
 
-    echo "</td>"; // end content area
-    //
     // end showpage logic
 
-    getShowPageInfobox($keyword, $latest_version);
+    getShowPageInfobox($keyword, $wikiData->isLatestVersion());
     showPageFrameEnd();
 }
 
@@ -2021,5 +2001,3 @@ class DiffLine
         return $this->text;
     }
 }
-
-?>

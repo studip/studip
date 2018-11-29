@@ -1,61 +1,69 @@
-<form action="<?= URLHelper::getLink('wiki.php', ['view' => 'pageperms','lastpage' => $keyword]) ?>" method="post" class="default">
+<form action="<?= $controller->link_for('wiki/store_pageperms', compact('keyword')) ?>" method="post" class="default" id="wiki-config">
+    <?= CSRFProtection::tokenTag() ?>
 
-    <input type="hidden" name="keyword" value="<?= htmlReady($keyword) ?>">
-    <? $storedStatusListEdit = ["autor"=>"","tutor"=>"","dozent"=>""]; ?>
-    <? $storedStatusListRead = $storedStatusListEdit;?>
-    <? $storedStatusListEdit[$storedStatusEdit] = "checked";?>
-    <? $storedStatusListRead[$storedStatusRead] = "checked";?>
-    <?
-       if ($storedStatusRead == "autor" && $storedStatusEdit == "") {
-           $statusGlobal = "checked";
-           $storedStatusListEdit[$storedStatusStandard] = "checked";
-           array_walk($storedStatusListRead, function(&$item) { $item .= " disabled"; });
-           array_walk($storedStatusListEdit, function(&$item) { $item .= " disabled"; }); ?>
-           <input type="radio" hidden id="autor_edit_standard" <?=$storedStatusListEdit["autor"]?>>
-           <input type="radio" hidden id="tutor_edit_standard" <?=$storedStatusListEdit["tutor"]?>>
-    <?  }
-        if ($storedStatusRead == "tutor") {
-            $storedStatusListEdit["autor"] .= " disabled";
-        }
-        if ($storedStatusRead == "dozent") {
-            $storedStatusListEdit["autor"] .= " disabled";
-            $storedStatusListEdit["tutor"] .= " disabled";
-        }
-    ?>
-
-    <label>
-        <input type="checkbox" name="page_global_perms" id="global" <?=$statusGlobal?>> <?=_("Standard Wiki-Einstellungen verwenden")?>
-    </label>
-    <br>
-
-    <fieldset>
-        <legend><?=_("Leseberechtigung")?></legend>
+    <fieldset class="global-permissions">
         <label>
-            <input type="radio" name="page_read_perms" id="autor_read" value="autor" <?=$storedStatusListRead["autor"]?> title="<?=_('Wiki-Seite für alle Teilnehmende lesbar')?>" > <?=_("alle in der Veranstaltung")?>
-        </label>
-        <label>
-            <input type="radio" name="page_read_perms" id="tutor_read" value="tutor" <?=$storedStatusListRead["tutor"]?> title="<?=_('Wiki-Seite nur eingeschränkt lesbar')?>" > <?=_("Lehrende und Tutor/innen")?>
-        </label>
-        <label>
-            <input type="radio" name="page_read_perms" id="dozent_read" value="dozent" <?=$storedStatusListRead["dozent"]?> title="<?=_('Wiki-Seite nur eingeschränkt lesbar')?>" > <?=_("nur Lehrende")?>
+            <input type="checkbox" name="page_global_perms" value="1"
+                   data-deactivates=".read-permissions :radio, .edit-permissions :radio"
+                   <? if ($config->isDefault()) echo 'checked'; ?>>
+            <?= _('Standard Wiki-Einstellungen verwenden') ?>
         </label>
     </fieldset>
 
-    <fieldset>
-        <legend><?=_("Editierberechtigung")?></legend>
+    <fieldset class="read-permissions">
+        <legend><?= _('Leseberechtigung') ?></legend>
+
         <label>
-            <input type="radio" name="page_edit_perms" id="autor_edit" value="autor" <?=$storedStatusListEdit["autor"]?> title="<?=_('editierbar nur, wenn für alle Teilnehmenden lesbar')?>" > <?=_("alle in der Veranstaltung")?>
+            <input type="radio" name="page_read_perms" id="autor_read" value="user"
+                   <? if ($config->read_perms === 'user') echo 'checked'; ?>
+                   title="<?= _('Wiki-Seite für alle Teilnehmende lesbar') ?>"
+                   data-activates=".edit-permissions :radio">
+            <?= _('Alle in der Veranstaltung') ?>
         </label>
         <label>
-            <input type="radio" name="page_edit_perms" id="tutor_edit" value="tutor" <?=$storedStatusListEdit["tutor"]?> title="<?=_('editierbar nur, wenn für diesen Personenkreis lesbar')?>" > <?=_("Lehrende und Tutor/innen")?>
+            <input type="radio" name="page_read_perms" id="tutor_read" value="tutor"
+                   <? if ($config->read_perms === 'tutor') echo 'checked'; ?>
+                   title="<?= _('Wiki-Seite nur eingeschränkt lesbar') ?>"
+                   data-deactivates="#autor_edit" data-activates="#tutor_edit">
+            <?= _('Lehrende und Tutor/innen') ?>
         </label>
         <label>
-            <input type="radio" name="page_edit_perms" id="dozent_edit" value="dozent" <?=$storedStatusListEdit["dozent"]?> title="<?=_('editierbar nur, wenn für diesen Personenkreis lesbar')?>" > <?=_("nur Lehrende")?>
+            <input type="radio" name="page_read_perms" id="dozent_read" value="dozent"
+                   <? if ($config->read_perms === 'dozent') echo 'checked'; ?>
+                   title="<?= _('Wiki-Seite nur eingeschränkt lesbar') ?>"
+                   data-deactivates="#autor_edit,#tutor_edit">
+            <?= _('Nur Lehrende') ?>
+        </label>
+    </fieldset>
+
+    <fieldset class="edit-permissions">
+        <legend><?= _('Editierberechtigung') ?></legend>
+
+        <label>
+            <input type="radio" name="page_edit_perms" id="autor_edit" value="autor"
+                   <? if ($config->edit_perms === 'autor') echo 'checked'; ?>
+                   title="<?= _('Nur editierbar, wenn für alle Teilnehmenden lesbar') ?>">
+            <?= _('Alle in der Veranstaltung') ?>
+        </label>
+        <label>
+            <input type="radio" name="page_edit_perms" id="tutor_edit" value="tutor"
+                   <? if ($config->edit_perms === 'tutor') echo 'checked'; ?>
+                   title="<?= _('Nur editierbar, wenn für diesen Personenkreis lesbar') ?>">
+            <?= _('Lehrende und Tutor/innen') ?>
+        </label>
+        <label>
+            <input type="radio" name="page_edit_perms" id="dozent_edit" value="dozent"
+                   <? if ($config->edit_perms === 'dozent') echo 'checked'; ?>
+                   title="<?= _('Nur editierbar, wenn für diesen Personenkreis lesbar') ?>">
+            <?= _('Nur Lehrende') ?>
         </label>
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Speichern'), 'submit') ?>
-        <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('wiki.php', compact('keyword'))) ?>
+        <?= Studip\Button::createAccept(_('Speichern')) ?>
+        <?= Studip\LinkButton::createCancel(
+            _('Abbrechen'),
+            URLHelper::getURL('wiki.php', compact('keyword'))
+        ) ?>
     </footer>
 </form>

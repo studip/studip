@@ -16,6 +16,8 @@ class WikiController extends AuthenticatedController
 
         $this->keyword  = Request::get('keyword');
         $this->range_id = Context::getId();
+
+        Navigation::activateItem('/course/wiki/show');
     }
 
     /**
@@ -23,12 +25,7 @@ class WikiController extends AuthenticatedController
      */
     public function create_action()
     {
-        Navigation::activateItem('/course/wiki/show');
-        $range_id = Context::getId();
-        $this->storedStatusStandard = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
-
-        $this->keyword  = Request::get('keyword');
-        getShowPageInfobox($keyword, true);
+        getShowPageInfobox($this->keyword, true);
     }
 
     /**
@@ -36,53 +33,101 @@ class WikiController extends AuthenticatedController
      */
     public function change_courseperms_action()
     {
-        Navigation::activateItem('/course/wiki/show');
-        $range_id = Context::getId();
-        $this->storedStatus = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
-        $this->keyword  = Request::get('keyword');
-        $keyword = $this->keyword;
-        $perm = $GLOBALS['perm'];
-
-        getShowPageInfobox($keyword, true);
-
-        if (!$perm->have_studip_perm("autor", $range_id)) {
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->range_id)) {
             throw new AccessDeniedException(_('Sie haben keine Berechtigung, Berechtigungen Wiki-Seiten zu ändern!'));
         }
 
         // prevent malformed urls: keyword must be set
-        if (!$keyword) {
+        if (!$this->keyword) {
             throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
         }
 
+        PageLayout::setTitle(_('Wiki-Einstellungen ändern'));
+
+        $this->status = CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM;
+
+        getShowPageInfobox($this->keyword, true);
     }
 
-    public function change_pageperms_action()
+    /**
+     * store course permissions of wiki pages
+     */
+    public function store_courseperms_action()
     {
-        Navigation::activateItem('/course/wiki/show');
-        $this->keyword  = Request::get('keyword');
-        $keyword = $this->keyword;
-        $this->version = Request::int('version');
-        $version = $this->version;
+        CSRFProtection::verifyUnsafeRequest();
 
-        $range_id = Context::getId();
-        $row = WikiPageConfig::find([$range_id, $keyword]);
-        $this->storedStatusEdit = $row->edit_perms;
-        $this->storedStatusRead = $row->read_perms;
-
-        $range_id = Context::getId();
-        $this->storedStatusStandard = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
-
-        if ($this->storedStatusRead == "") {
-            $this->storedStatusRead = "autor";
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->range_id)) {
+            throw new AccessDeniedException(_('Sie haben keine Berechtigung, Berechtigungen Wiki-Seiten zu ändern!'));
         }
 
-        getShowPageInfobox($keyword, true);
-
         // prevent malformed urls: keyword must be set
-        if (!$keyword) {
+        if (!$this->keyword) {
             throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
         }
 
+        CourseConfig::get($this->range_id)->store(
+            'WIKI_COURSE_EDIT_PERM',
+            Request::get('courseperms')
+        );
+        PageLayout::postSuccess(_('Die veranstaltungsbezogenen Berechtigungen auf die Wiki-Seiten wurden geändert!'));
+        $this->redirect(URLHelper::getURL('wiki.php', ['keyword' => $this->keyword]));
+    }
+
+    /**
+    * change page permission of a single wiki page
+    */
+    public function change_pageperms_action()
+    {
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->range_id)) {
+            throw new AccessDeniedException(_('Sie haben keine Berechtigung, Berechtigungen Wiki-Seiten zu ändern!'));
+        }
+
+        // prevent malformed urls: keyword must be set
+        if (!$this->keyword) {
+            throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
+        }
+
+        $page = WikiPage::findLatestPage($this->range_id, $this->keyword);
+
+        PageLayout::setTitle(_('Seiten-Einstellungen ändern'));
+
+        $this->status = CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM;
+        $this->config = $page->config;
+
+        getShowPageInfobox($this->keyword, true);
+    }
+
+    /**
+     * store page permissions of a wiki page
+     */
+    public function store_pageperms_action()
+    {
+        CSRFProtection::verifyUnsafeRequest();
+
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->range_id)) {
+            throw new AccessDeniedException(_('Sie haben keine Berechtigung, Berechtigungen von Wiki-Seiten zu ändern!'));
+        }
+
+        // prevent malformed urls: keyword must be set
+        if (!$this->keyword) {
+            throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
+        }
+
+        $wiki_page_config = new WikiPageConfig([$this->range_id, $this->keyword]);
+        $wiki_page_config->read_perms = Request::option('page_read_perms');
+        $wiki_page_config->edit_perms = Request::option('page_edit_perms');
+
+        if (Request::int('page_global_perms') || $wiki_page_config->isDefault()) {
+            WikiPageConfig::deleteBySQL('range_id = ? AND keyword = ?', [$this->range_id, $this->keyword]);
+        } else {
+            $wiki_page_config->store();
+        }
+
+        PageLayout::postSuccess(sprintf(
+            _('Die Berechtigungen für Wiki-Seite "%s" wurden geändert!'),
+            htmlReady($this->keyword)
+        ));
+        $this->redirect(URLHelper::getURL('wiki.php', ['keyword' => $this->keyword]));
     }
 
     public function store_action($version)
@@ -94,12 +139,12 @@ class WikiController extends AuthenticatedController
         $latest_version = getLatestVersion($this->keyword, $this->range_id);
 
         if (Request::isXhr()) {
-            $this->render_json(array(
+            $this->render_json([
                 'version'  => $latest_version['version'],
                 'body'     => $latest_version['body'],
                 'messages' => implode(PageLayout::getMessages()) ?: false,
                 'zusatz'   => getZusatz($latest_version),
-            ));
+            ]);
         } else {
             // Yeah, wait for the whole trailification of the wiki...
         }
@@ -131,6 +176,11 @@ class WikiController extends AuthenticatedController
      */
     public function import_action($course_id = null)
     {
+        $edit_perms = CourseConfig::get($course_id)->WIKI_COURSE_EDIT_PERM;
+        if (!$GLOBALS['perm']->have_studip_perm($edit_perms, $this->range_id)) {
+            throw new AccessDeniedException(_('Sie haben keine Berechtigung, Änderungen an Wikiseiten vorzunehmen!'));
+        }
+
         $this->course = Course::find($course_id);
         if (!$this->course) {
             PageLayout::postError(

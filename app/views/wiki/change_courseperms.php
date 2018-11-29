@@ -1,20 +1,26 @@
-<form action="<?= URLHelper::getLink('wiki.php', ['view' => 'courseperms', 'lastpage' => $keyword]) ?>" method="post" class="default">
+<form action="<?= $controller->link_for('wiki/store_courseperms', compact('keyword')) ?>" method="post" class="default">
+    <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
-        <input type="hidden" name="keyword" value="<?= htmlReady($keyword) ?>">
-        <strong><?=_("Editierberechtigung")?></strong>
-        <? $storedStatusList = ["autor"=>"","tutor"=>""]; ?>
-        <? $storedStatusList[$storedStatus] = "checked";?>
+        <label><?= _('Editierberechtigung') ?></label>
+
         <label>
-            <input type="radio" name="courseperms" id="alle" value="autor" <?=$storedStatusList["autor"]?>> <?=_("alle in der Veranstaltung")?>
+            <input type="radio" name="courseperms" value="autor"
+                   <? if ($status === 'autor') echo 'checked'; ?>>
+            <?= _('Alle in der Veranstaltung') ?>
         </label>
         <label>
-            <input type="radio" name="courseperms" id="tutoren" value="tutor" <?=$storedStatusList["tutor"]?>> <?=_("Lehrende und Tutor/innen")?>
+            <input type="radio" name="courseperms" value="tutor"
+                   <? if ($status === 'tutor') echo 'checked'; ?>>
+            <?= _('Lehrende und Tutor/innen') ?>
         </label>
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Speichern'), 'submit') ?>
-        <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('wiki.php', compact('keyword'))) ?>
+        <?= Studip\Button::createAccept(_('Speichern')) ?>
+        <?= Studip\LinkButton::createCancel(
+            _('Abbrechen'),
+            URLHelper::getURL('wiki.php', compact('keyword'))
+        ) ?>
     </footer>
 </form>

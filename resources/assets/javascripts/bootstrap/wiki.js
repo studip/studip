@@ -129,56 +129,12 @@ $(document)
         }
     });
 
-$(document).on('click', '#global', function(event) {
-    if ($('#global').prop('checked')) {
-        $('#autor_edit').prop('checked', $('#autor_edit_standard').prop('checked'));
-        $('#autor_edit').prop('disabled', true);
-        $('#autor_read').prop('disabled', true);
-        $('#dozent_edit').prop('disabled', true);
-        $('#dozent_read').prop('disabled', true);
-        $('#tutor_edit').prop('checked', $('#tutor_edit_standard').prop('checked'));
-        $('#tutor_edit').prop('disabled', true);
-        $('#tutor_read').prop('disabled', true);
-    } else {
-        $('#autor_edit').prop('disabled', false);
-        $('#autor_read').prop('disabled', false);
-        $('#dozent_edit').prop('disabled', false);
-        $('#dozent_read').prop('disabled', false);
-        $('#tutor_edit').prop('disabled', false);
-        $('#tutor_read').prop('disabled', false);
-
-        if ($('#tutor_read').prop('checked')) {
-            $('#autor_edit').prop('disabled', true);
-            $('#tutor_edit').prop('disabled', false);
-        };
-
-        if ($('#dozent_read').prop('checked')) {
-            $('#autor_edit').prop('disabled', true);
-            $('#tutor_edit').prop('disabled', true);
-        }
+$(document).on('change', '#wiki-config .global-permissions :checkbox', function () {
+    if ($(this).is(':checked')) {
+        return;
     }
-});
 
-$(document).on('click', '#autor_read', function(event) {
-    $('#autor_edit').prop('disabled', false);
-    $('#tutor_edit').prop('disabled', false);
-});
-
-$(document).on('click', '#tutor_read', function(event) {
-    $('#autor_edit').prop('disabled', true);
-    $('#tutor_edit').prop('disabled', false);
-
-    if ($('#autor_edit').prop('checked')) {
-        if (!$('#dozent_edit').prop('checked')) {
-            $('#tutor_edit').prop('checked', true);
-        }
-    }
-});
-
-$(document).on('click', '#dozent_read', function(event) {
-    $('#autor_edit').prop('checked', false);
-    $('#autor_edit').prop('disabled', true);
-    $('#dozent_edit').prop('checked', true);
-    $('#tutor_edit').prop('checked', false);
-    $('#tutor_edit').prop('disabled', true);
+    $('#wiki-config .read-permissions [data-activates],[data-deactivates]').filter(':checked').change();
+}).on('change', '#wiki-config .read-permissions :radio', function () {
+    $('#wiki-config .edit-permissions:has(:radio[disabled]:checked) :radio:not([disabled]):first').prop('checked', true);
 });
