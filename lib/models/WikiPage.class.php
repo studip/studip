@@ -34,6 +34,10 @@ class WikiPage extends SimpleORMap implements PrivacyObject
             'class_name'  => User::class,
             'foreign_key' => 'user_id'
         ];
+        $config['belongs_to']['course'] = [
+            'class_name'  => Course::class,
+            'foreign_key' => 'range_id',
+        ];
 
         $config['additional_fields']['config']['get'] = function ($page) {
             return new WikiPageConfig([$page->range_id, $page->keyword]);
@@ -108,8 +112,8 @@ class WikiPage extends SimpleORMap implements PrivacyObject
      */
     public function isVisibleTo($user)
     {
-        // 'user' anyone can see this page
-        if ($this->config->read_perms === 'user') {
+        // 'user' anyone can see this page if it belongs to a free course
+        if ($this->config->read_perms === 'user' && $this->course && $this->course->lesezugriff == 0) {
             return true;
         }
 
