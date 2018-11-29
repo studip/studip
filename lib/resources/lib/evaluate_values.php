@@ -1751,6 +1751,7 @@ if (Request::submitted('save_state')) {
                                 $req_added_msg .= $zw_msg;
                                 $copyReqObj = clone $reqObj;
                                 $copyReqObj->copy();
+                                $copyReqObj->setMetadateId('');
                                 $copyReqObj->setTerminId($val["termin_id"]);
                                 $copyReqObj->store();
                             }
