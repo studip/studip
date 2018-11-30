@@ -42,6 +42,10 @@
            value="<?= htmlReady($selected_course->id) ?>">
     <? if ($wiki_pages): ?>
         <table class="default">
+            <colgroup>
+                <col width="20px">
+                <col>
+            </colgroup>
             <caption>
                 <?= sprintf(
                     _('%s: Importierbare Wikiseiten'),
