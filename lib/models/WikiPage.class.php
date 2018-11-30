@@ -113,7 +113,10 @@ class WikiPage extends SimpleORMap implements PrivacyObject
     public function isVisibleTo($user)
     {
         // 'user' anyone can see this page if it belongs to a free course
-        if ($this->config->read_perms === 'user' && $this->course && $this->course->lesezugriff == 0) {
+        if ($this->config->read_perms === 'user'
+            && Config::get()->ENABLE_FREE_ACCESS
+            && $this->course && $this->course->lesezugriff == 0)
+        {
             return true;
         }
 
