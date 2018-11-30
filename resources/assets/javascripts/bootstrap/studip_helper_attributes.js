@@ -80,9 +80,9 @@ $(document)
         });
     })
     .ready(() => {
-        $('[data-activates],[data-deactivates]').trigger('change');
+        $('[data-activates],[data-deactivates]').filter(':checked').trigger('change');
     }).on('dialog-update', () => {
-        $('[data-activates],[data-deactivates]').trigger('change');
+        $('[data-activates],[data-deactivates]').filter(':checked').trigger('change');
     });
 
 // Use a select as a toggle switch for the disabled attribute of another
