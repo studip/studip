@@ -67,7 +67,7 @@
                     <td>
                         <input type="checkbox"
                                name="selected_wiki_page_ids[]"
-                               value="<?= htmlReady($wiki_page->id) ?>">
+                               value="<?= htmlReady(json_encode($wiki_page->getId())) ?>">
                     </td>
                     <td><?= htmlReady($wiki_page->keyword) ?></td>
                 </tr>
