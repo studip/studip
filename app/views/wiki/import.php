@@ -48,6 +48,11 @@
         </table>
         <div data-dialog-button>
             <?= Studip\Button::create(_('Importieren'), 'import') ?>
+            <?= Studip\LinkButton::create(
+                _('Neue Suche'),
+                $controller->url_for("wiki/import/{$course->id}"),
+                ['data-dialog' => '']
+            ) ?>
         </div>
     <? else: ?>
         <?= MessageBox::info(
