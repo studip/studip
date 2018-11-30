@@ -7,7 +7,7 @@
     <fieldset>
         <legend><?= _('Suche nach Veranstaltungen') ?></legend>
         <label>
-            <?= _('Bitte wählen Sie eine Veranstaltung aus.') ?>
+            <?= _('Sie können hier eine Veranstaltung mit zu importierenden Wikiseiten suchen.') ?>
             <?= $course_search->render() ?>
         </label>
     </fieldset>
