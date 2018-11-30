@@ -10,22 +10,16 @@
         <label class="with-action">
             <?= _('Sie können hier eine Veranstaltung mit zu importierenden Wikiseiten suchen.') ?>
             <?= $course_search->render() ?>
-            <?= Icon::create('search', 'clickable')->asImg(
-                '16px',
-                [
-                    'class' => 'text-bottom',
-                    'title' => _('Suche starten'),
-                    'onclick' => 'jQuery(this).closest(\'form\').submit();'
-                ]
-            ) ?>
-            <?= Icon::create('decline', 'clickable')->asImg(
-                '16px',
-                [
-                    'class' => 'text-bottom',
-                    'title' => _('Suche zurücksetzen'),
-                    'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
-                ]
-            ) ?>
+            <?= Icon::create('search')->asImg([
+                'class' => 'text-bottom',
+                'title' => _('Suche starten'),
+                'onclick' => "jQuery(this).closest('form').submit();"
+            ]) ?>
+            <?= Icon::create('decline')->asImg([
+                'class' => 'text-bottom',
+                'title' => _('Suche zurücksetzen'),
+                'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
+            ]) ?>
         </label>
     </fieldset>
 <? endif ?>
