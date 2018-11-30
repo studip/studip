@@ -92,7 +92,7 @@ class PluginManager
                 'enabled'                 => $plugin['enabled'] === 'yes',
                 'position'                => $plugin['navigationpos'],
                 'depends'                 => (int) $plugin['dependentonid'],
-                'core'                    => $plugin['pluginpath'] === '' || strpos($plugin['pluginpath'], 'core/') === 0,
+                'core'                    => strpos($plugin['pluginpath'], 'core/') === 0,
                 'automatic_update_url'    => $plugin['automatic_update_url'],
                 'automatic_update_secret' => $plugin['automatic_update_secret']
             );
@@ -345,13 +345,7 @@ class PluginManager
      */
     private function loadPlugin ($class, $path)
     {
-        if ($path) {
-            $basepath = Config::get()->PLUGINS_PATH;
-        } else {
-            $basepath = $GLOBALS['STUDIP_BASE_PATH'];
-            $path = 'lib/modules';
-        }
-
+        $basepath = Config::get()->PLUGINS_PATH;
         $pluginfile = $basepath.'/'.$path.'/'.$class.'.class.php';
 
         if (!file_exists($pluginfile)) {
