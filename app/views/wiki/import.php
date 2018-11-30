@@ -1,6 +1,6 @@
 <form class="default" method="post"
       data-dialog="<?= $show_wiki_page_form ? 'reload-on-close' : '' ?>"
-      action="<?= $controller->link_for("wiki/import/{$course->id}") ?>'"
+      action="<?= $controller->link_for("wiki/import/{$course->id}") ?>"
     <?= CSRFProtection::tokenTag() ?>
 
 <? if (!$show_wiki_page_form && !$success): ?>

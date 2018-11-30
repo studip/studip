@@ -17,7 +17,9 @@ class WikiController extends AuthenticatedController
         $this->keyword  = Request::get('keyword');
         $this->range_id = Context::getId();
 
-        Navigation::activateItem('/course/wiki/show');
+        if (Navigation::hasItem('/course/wiki/show')) {
+            Navigation::activateItem('/course/wiki/show');
+        }
     }
 
     /**
