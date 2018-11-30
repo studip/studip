@@ -8,7 +8,11 @@
     <fieldset>
         <legend><?= _('Suche nach Veranstaltungen') ?></legend>
         <label class="with-action">
-            <?= _('Sie können hier eine Veranstaltung mit zu importierenden Wikiseiten suchen.') ?>
+            <? if ($bad_course_search): ?>
+                <?= _('Meinten Sie eine der folgenden Veranstaltungen?') ?>
+            <? else: ?>
+                <?= _('Sie können hier eine Veranstaltung mit zu importierenden Wikiseiten suchen.') ?>
+            <? endif ?>
             <?= $course_search->render() ?>
             <?= Icon::create('search')->asImg([
                 'class' => 'text-bottom',
@@ -21,6 +25,15 @@
                 'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
             ]) ?>
         </label>
+        <? if ($bad_course_search): ?>
+            <div data-dialog-button>
+                <?= Studip\LinkButton::create(
+                    _('Neue Suche'),
+                    $controller->url_for("wiki/import/{$course->id}"),
+                    ['data-dialog' => '']
+                ) ?>
+            </div>
+        <? endif ?>
     </fieldset>
 <? endif ?>
 

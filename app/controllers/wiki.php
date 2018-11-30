@@ -224,6 +224,8 @@ class WikiController extends AuthenticatedController
 
             if (!$this->selected_course) {
                 PageLayout::postError(_('Die ausgewählte Veranstaltung wurde nicht gefunden!'));
+                $this->bad_course_search = true;
+                return;
             }
 
             $this->wiki_pages = WikiPage::findLatestPages(
