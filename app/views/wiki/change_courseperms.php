@@ -5,13 +5,13 @@
         <label><?= _('Editierberechtigung') ?></label>
 
         <label>
-            <input type="radio" name="courseperms" value="autor"
-                   <? if ($status === 'autor') echo 'checked'; ?>>
+            <input type="radio" name="courseperms" value="0"
+                   <? if (!$restricted) echo 'checked'; ?>>
             <?= _('Alle in der Veranstaltung') ?>
         </label>
         <label>
-            <input type="radio" name="courseperms" value="tutor"
-                   <? if ($status === 'tutor') echo 'checked'; ?>>
+            <input type="radio" name="courseperms" value="1"
+                   <? if ($restricted) echo 'checked'; ?>>
             <?= _('Lehrende und Tutor/innen') ?>
         </label>
     </fieldset>

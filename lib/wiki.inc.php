@@ -1206,7 +1206,7 @@ function showPageFrameEnd()
 **/
 function getShowPageInfobox($keyword, $latest_version)
 {
-    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_PERM;
+    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
 
     $versions = getWikiPageVersions($keyword);
 
@@ -1488,7 +1488,7 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     // show page logic
     wikiSinglePageHeader($wikiData, $keyword);
 
-    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_PERM;
+    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
     if ($perm->have_studip_perm($edit_perms, Context::getId())) {
         if ($wikiData->isLatestVersion()) {
             $edit = '';

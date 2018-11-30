@@ -32,18 +32,18 @@ class WikiPageConfig extends SimpleORMap
     }
 
     /**
-     * Specialized getValue that returns the course default for edit_perms.
+     * Specialized getValue that returns the course default for edit_restricted.
      *
      * @param  string $field Field to get the value for
      * @return mixed
      */
     public function getValue($field)
     {
-        if ($field !== 'edit_perms' || !$this->isNew() || !$this->range_id) {
+        if ($field !== 'edit_restricted' || !$this->isNew() || !$this->range_id) {
             return parent::getValue($field);
         }
 
-        return CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM;
+        return CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_RESTRICTED;
     }
 
     /**
@@ -54,10 +54,7 @@ class WikiPageConfig extends SimpleORMap
      */
     public function isDefault()
     {
-        return $this->isNew()
-            || (
-                $this->read_perms === $this->getDefaultValue('read_perms')
-                && $this->edit_perms === CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM
-            );
+        return $this->read_restricted === $this->getDefaultValue('read_restricted') &&
+               $this->edit_restricted === CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_RESTRICTED;
     }
 }

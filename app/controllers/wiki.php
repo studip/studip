@@ -46,7 +46,7 @@ class WikiController extends AuthenticatedController
 
         PageLayout::setTitle(_('Wiki-Einstellungen ändern'));
 
-        $this->status = CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM;
+        $this->restricted = CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_RESTRICTED;
 
         getShowPageInfobox($this->keyword, true);
     }
@@ -68,8 +68,8 @@ class WikiController extends AuthenticatedController
         }
 
         CourseConfig::get($this->range_id)->store(
-            'WIKI_COURSE_EDIT_PERM',
-            Request::get('courseperms')
+            'WIKI_COURSE_EDIT_RESTRICTED',
+            Request::int('courseperms')
         );
         PageLayout::postSuccess(_('Die veranstaltungsbezogenen Berechtigungen auf die Wiki-Seiten wurden geändert!'));
         $this->redirect(URLHelper::getURL('wiki.php', ['keyword' => $this->keyword]));
@@ -93,7 +93,6 @@ class WikiController extends AuthenticatedController
 
         PageLayout::setTitle(_('Seiten-Einstellungen ändern'));
 
-        $this->status = CourseConfig::get($this->range_id)->WIKI_COURSE_EDIT_PERM;
         $this->config = $page->config;
 
         getShowPageInfobox($this->keyword, true);
@@ -116,8 +115,8 @@ class WikiController extends AuthenticatedController
         }
 
         $wiki_page_config = new WikiPageConfig([$this->range_id, $this->keyword]);
-        $wiki_page_config->read_perms = Request::option('page_read_perms');
-        $wiki_page_config->edit_perms = Request::option('page_edit_perms');
+        $wiki_page_config->read_restricted = Request::int('page_read_perms');
+        $wiki_page_config->edit_restricted = Request::int('page_edit_perms');
 
         if (Request::int('page_global_perms') || $wiki_page_config->isDefault()) {
             WikiPageConfig::deleteBySQL('range_id = ? AND keyword = ?', [$this->range_id, $this->keyword]);
@@ -178,7 +177,7 @@ class WikiController extends AuthenticatedController
      */
     public function import_action($course_id = null)
     {
-        $edit_perms = CourseConfig::get($course_id)->WIKI_COURSE_EDIT_PERM;
+        $edit_perms = CourseConfig::get($course_id)->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
         if (!$GLOBALS['perm']->have_studip_perm($edit_perms, $this->range_id)) {
             throw new AccessDeniedException(_('Sie haben keine Berechtigung, Änderungen an Wikiseiten vorzunehmen!'));
         }

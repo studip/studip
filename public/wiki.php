@@ -155,7 +155,7 @@ if ($view=="listall") {
     //
 
     $range_id = Context::getId();
-    $edit_perms = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_PERM;
+    $edit_perms = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
     if (!$perm->have_studip_perm($edit_perms, $range_id)) {
         throw new AccessDeniedException(_('Sie haben keine Berechtigung, in dieser Veranstaltung Seiten zu editieren!'));
     }
@@ -238,7 +238,7 @@ if ($view=="listall") {
 
     $range_id = Context::getId();
     $config = WikiPageConfig::find([$range_id, $keyword]);
-    if ($perm->have_studip_perm($config->read_perms, $range_id)) {
+    if (!$config || !$config->read_restricted || $perm->have_studip_perm('tutor', $range_id)) {
         showWikiPage($keyword, $version, $special, $show_wiki_comments, Request::get('hilight'));
     } else {
         throw new AccessDeniedException(sprintf(
