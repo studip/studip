@@ -163,6 +163,14 @@ const QuickSearch = {
         jQuery('#' + name).autocomplete({ minLength: 1 });
         jQuery('#' + name).autocomplete('search', term);
         jQuery('#' + name).autocomplete({ minLength: 3 });
+    },
+
+    reset: function(form_name, quick_search_name) {
+        if (!form_name || !quick_search_name) {
+            return;
+        }
+        document.forms[form_name].elements[quick_search_name].value = '';
+        document.forms[form_name].elements[quick_search_name + '_parameter'].value = '';
     }
 };
 

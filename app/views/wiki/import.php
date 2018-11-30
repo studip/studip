@@ -1,4 +1,5 @@
 <form class="default" method="post"
+      name="wiki_import_form"
       data-dialog="<?= $show_wiki_page_form ? 'reload-on-close' : '' ?>"
       action="<?= $controller->link_for("wiki/import/{$course->id}") ?>"
     <?= CSRFProtection::tokenTag() ?>
@@ -6,9 +7,25 @@
 <? if (!$show_wiki_page_form && !$success): ?>
     <fieldset>
         <legend><?= _('Suche nach Veranstaltungen') ?></legend>
-        <label>
+        <label class="with-action">
             <?= _('Sie können hier eine Veranstaltung mit zu importierenden Wikiseiten suchen.') ?>
             <?= $course_search->render() ?>
+            <?= Icon::create('search', 'clickable')->asImg(
+                '16px',
+                [
+                    'class' => 'text-bottom',
+                    'title' => _('Suche starten'),
+                    'onclick' => 'jQuery(this).closest(\'form\').submit();'
+                ]
+            ) ?>
+            <?= Icon::create('decline', 'clickable')->asImg(
+                '16px',
+                [
+                    'class' => 'text-bottom',
+                    'title' => _('Suche zurücksetzen'),
+                    'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
+                ]
+            ) ?>
         </label>
     </fieldset>
 <? endif ?>
