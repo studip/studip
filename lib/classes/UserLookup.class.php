@@ -1,31 +1,19 @@
 <?php
-# Lifter010: TODO
-/**
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
- * @since       2.1
- */
-
 /**
  * UserLookup.class.php
+ *
  * provides an easy way to look up user ids by certain filter criteria
  *
  * Example of use:
  * @code
  *   # Create a new UserLookup object
- *   $user_lookup = new UserLookup;
+ *    $user_lookup = new UserLookup;
  *
  *   # Filter all users in their first to sixth fachsemester
  *   $user_lookup->setFilter('fachsemester', range(1, 6));
  *
  *   # Filter all users that have an 'autor' or 'tutor' permission
- *   $user_lookup->setFilter('status', array('autor', 'tutor'));
+ *   $user_lookup->setFilter('status', ['autor', 'tutor']);
  *
  *   # Get a list of all matching user ids (sorted by the user's names)
  *   $user_ids = $user_lookup->execute(UserLookup::FLAG_SORT_NAME);
@@ -34,9 +22,13 @@
  *   # the complete unordered dataset
  *   $user_ids = $user_lookup->execute(UserLookup::FLAG_RETURN_FULL_INFO);
  * @endcode
+ *
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       2.1
  */
-
-final class UserLookup
+class UserLookup
 {
     // At the moment, the cache is only used for the GetValuesForType method
     const USE_CACHE = false;
@@ -45,43 +37,46 @@ final class UserLookup
     const FLAG_SORT_NAME = 1;
     const FLAG_RETURN_FULL_INFO = 2;
 
+    // Special constant to use for a combined study group filter
+    const USE_COMBINED_STUDYGROUP_FILTER = 'use-combined-studygroup-filter';
+
     /**
      * Predefined array of filter criteria
      *
      * @var array
      */
-    protected static $types = array(
-        'abschluss' => array(
-            'filter' => 'UserLookup::abschlussFilter',
+    protected static $types = [
+        'abschluss' => [
+            'filter' => self::USE_COMBINED_STUDYGROUP_FILTER,
             'values' => 'UserLookup::abschlussValues',
-        ),
-        'fach' => array(
-            'filter' => 'UserLookup::fachFilter',
+        ],
+        'fach' => [
+            'filter' => self::USE_COMBINED_STUDYGROUP_FILTER,
             'values' => 'UserLookup::fachValues',
-        ),
-        'fachsemester' => array(
-            'filter' => 'UserLookup::fachsemesterFilter',
+        ],
+        'fachsemester' => [
+            'filter' => self::USE_COMBINED_STUDYGROUP_FILTER,
             'values' => 'UserLookup::fachsemesterValues',
-        ),
-        'institut' => array(
+        ],
+        'institut' => [
             'filter' => 'UserLookup::institutFilter',
             'values' => 'UserLookup::institutValues',
-        ),
-        'status' => array(
+        ],
+        'status' => [
             'filter' => 'UserLookup::statusFilter',
             'values' => 'UserLookup::statusValues',
-        ),
-        'domain'=>array(
+        ],
+        'domain' => [
             'filter'    =>'UserLookup::domainFilter',
             'values'    =>'UserLookup::domainValues'
-        )
-    );
+        ],
+    ];
 
     /**
      * Contains the resulting filter set
      * @var array
      */
-    private $filters = array();
+    private $filters = [];
 
     /**
      * Adds another type filter to the set of current filters.
@@ -97,14 +92,14 @@ final class UserLookup
     public function setFilter($type, $value)
     {
         if (!array_key_exists($type, self::$types)) {
-            throw new Exception('[UserLookup] Cannot set filter for unknown type "'.$type.'"');
+            throw new Exception('[UserLookup] Cannot set filter for unknown type "' . $type . '"');
         }
 
         if (!isset($this->filters[$type])) {
-            $this->filters[$type] = array();
+            $this->filters[$type] = [];
         }
 
-        $this->filters[$type] = array_merge($this->filters[$type], (array)$value);
+        $this->filters[$type] = array_merge($this->filters[$type], (array) $value);
 
         return $this;
     }
@@ -132,8 +127,8 @@ final class UserLookup
         }
 
         $result = null;
-        foreach ($this->filters as $type => $values) {
-            $temp_result = call_user_func(self::$types[$type]['filter'], $values);
+        foreach ($this->getFilters() as $filter) {
+            $temp_result = call_user_func($filter['callable'], $filter['needles']);
 
             if ($result === null) {
                 $result = $temp_result;
@@ -142,23 +137,51 @@ final class UserLookup
             }
         }
 
-        if (($flags & self::FLAG_SORT_NAME) and !($flags & self::FLAG_RETURN_FULL_INFO)) {
-            $temp_result = self::arrayQuery("SELECT user_id FROM auth_user_md5 WHERE user_id IN (??) ORDER BY Nachname ASC, Vorname ASC", $result);
-            $result = $temp_result->fetchAll(PDO::FETCH_COLUMN);
+        if (($flags & self::FLAG_SORT_NAME) && !($flags & self::FLAG_RETURN_FULL_INFO)) {
+            $query = "SELECT `user_id`
+                      FROM `auth_user_md5`
+                      WHERE `user_id` IN (?)
+                      ORDER BY `Nachname` ASC, `Vorname` ASC";
+            $result = DBManager::get()->fetchFirst($query, [$result]);
         }
 
-        if (!empty($result) and ($flags & self::FLAG_RETURN_FULL_INFO)) {
-            $query = "SELECT user_id, username, Vorname, Nachname, Email, perms FROM auth_user_md5 WHERE user_id IN (??)";
+        if (!empty($result) && ($flags & self::FLAG_RETURN_FULL_INFO)) {
+            $query = "SELECT `user_id`, `username`, `Vorname`, `Nachname`, `Email`, `perms`
+                      FROM `auth_user_md5`
+                      WHERE `user_id` IN (?)";
             if ($flags & self::FLAG_SORT_NAME) {
                 $query .= " ORDER BY Nachname ASC, Vorname ASC";
             }
 
-            $temp_result = self::arrayQuery($query, $result);
-            $result = $temp_result->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
-            $result = array_map('reset', $result);
+            $result = DBManager::get()->fetchGrouped($query, [$result]);
         }
 
         return $result;
+    }
+
+    protected function getFilters()
+    {
+        $filters = [];
+        $study_course_filter = [];
+        foreach ($this->filters as $type => $values) {
+            if (self::$types[$type]['filter'] === self::USE_COMBINED_STUDYGROUP_FILTER) {
+                $study_course_filter[$type] = $values;
+            } else {
+                $filters[] = [
+                    'callable' => self::$types[$type]['filter'],
+                    'needles'  => $values,
+                ];
+            }
+        }
+
+        if ($study_course_filter) {
+            $filters[] = [
+                'callable' => [$this, 'combinedStudyCourseFilter'],
+                'needles'  => $study_course_filter,
+            ];
+        }
+
+        return $filters;
     }
 
     /**
@@ -168,7 +191,8 @@ final class UserLookup
      */
     public function clearFilters()
     {
-        $this->filters = array();
+        $this->filters = [];
+        $this->study_course_filter = [];
         return $this;
     }
 
@@ -183,16 +207,16 @@ final class UserLookup
     public static function addType($name, $values_callback, $filter_callback)
     {
         if (!is_callable($values_callback)) {
-            throw new Exception('[UserLookup] Values callback for type "'.$name.'" is not callable');
+            throw new Exception('[UserLookup] Values callback for type "' . $name . '" is not callable');
         }
         if (!is_callable($filter_callback)) {
-            throw new Exception('[UserLookup] Filter callback for type "'.$name.'" is not callable');
+            throw new Exception('[UserLookup] Filter callback for type "' . $name . '" is not callable');
         }
 
-        self::$types[$name] = array(
+        self::$types[$name] = [
             'filter' => $filter_callback,
             'values' => $values_callback,
-        );
+        ];
     }
 
     /**
@@ -205,12 +229,12 @@ final class UserLookup
     public static function getValuesForType($type)
     {
         if (!array_key_exists($type, self::$types)) {
-            throw new Exception('[UserLookup] Unknown type "'.$type.'"');
+            throw new Exception('[UserLookup] Unknown type "' . $type . '"');
         }
 
         if (self::USE_CACHE) {
             $cache = StudipCacheFactory::getCache();
-            $cache_key = 'UserLookup/'.$type.'/values';
+            $cache_key = "UserLookup/{$type}/values";
             $cached_values = $cache->read($cache_key);
             if ($cached_values) {
                 return unserialize($cached_values);
@@ -227,53 +251,15 @@ final class UserLookup
     }
 
     /**
-     * Convenience method to query over an array via ".. WHERE x IN (<array>)".
-     * Any ?? is substituted by the array of values.
-     *
-     * @param  string $query  The query to execute
-     * @param  array  $values Array containing the values to search for
-     * @return PDOStatement   Result of the query against the db
-     */
-    protected static function arrayQuery($query, $values)
-    {
-        $values = array_unique($values);
-        $values = array_map(array(DBManager::get(), 'quote'), $values);
-        $query = str_replace('??', implode(',', $values), $query);
-
-        return DBManager::get()->query($query);
-    }
-
-    /**
-     * Return all user with matching studiengang_id in $needles
-     * @param  array $needles List of studiengang ids to filter against
-     * @return array List of user ids matching the given filter
-     */
-    protected static function fachFilter($needles)
-    {
-        $db_result = self::arrayQuery("SELECT user_id FROM user_studiengang WHERE fach_id IN (??)", $needles);
-        return $db_result->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    /**
      * Return all studycourses
      * @return array Associative array of studiengang ids and studiengang names
      */
     protected static function fachValues()
     {
-        $db_result = DBManager::get()->query("SELECT fach_id, name FROM fach ORDER BY name ASC");
-        $result = $db_result->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
-        return array_map('reset', $result);
-    }
-
-    /**
-     * Return all user with matching abschluss_id in $needles
-     * @param  array $needles List of abschluss ids to filter against
-     * @return array List of user ids matching the given filter
-     */
-    protected static function abschlussFilter($needles)
-    {
-        $result = self::arrayQuery("SELECT user_id FROM user_studiengang WHERE abschluss_id IN (??)", $needles);
-        return $result->fetchAll(PDO::FETCH_COLUMN);
+        $query = "SELECT `fach_id`, `name`
+                  FROM `fach`
+                  ORDER BY `name` ASC";
+        return DBManager::get()->fetchPairs($query);
     }
 
     /**
@@ -282,20 +268,10 @@ final class UserLookup
      */
     protected static function abschlussValues()
     {
-        $db_result = DBManager::get()->query("SELECT abschluss_id, name FROM abschluss ORDER BY name ASC");
-        $result = $db_result->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_COLUMN);
-        return array_map('reset', $result);
-    }
-
-    /**
-     * Return all users with a matching fachsemester given in $needles
-     * @param  array $needles List of fachsemesters to filter against
-     * @return array List of user ids matching the given filter
-     */
-    protected static function fachsemesterFilter($needles)
-    {
-        $result = self::arrayQuery("SELECT user_id FROM user_studiengang WHERE semester IN (??)", $needles);
-        return $result->fetchAll(PDO::FETCH_COLUMN);
+        $query = "SELECT `abschluss_id`, `name`
+                  FROM `abschluss`
+                  ORDER BY `name` ASC";
+        return DBManager::get()->fetchPairs($query);
     }
 
     /**
@@ -305,10 +281,39 @@ final class UserLookup
      */
     protected static function fachsemesterValues()
     {
-        $db_result = DBManager::get()->query("SELECT MAX(semester) FROM user_studiengang");
-        $max = $db_result->fetchColumn();
+        $query = "SELECT MAX(`semester`) FROM `user_studiengang`";
+        $max = DBManager::get()->fetchColumn($query);
         $values = range(1, $max);
         return array_combine($values, $values);
+    }
+
+    /**
+     * Returns all user with a matching set of values in user study course
+     * table.
+     * @return array List of user ids matching the given filter
+     */
+    private static function combinedStudyCourseFilter(array $needles)
+    {
+        $type_column_mapping = [
+            'abschluss'    => 'abschluss_id',
+            'fach'         => 'fach_id',
+            'fachsemester' => 'semester',
+        ];
+
+        $conditions = [];
+        $parameters = [];
+        foreach ($needles as $type => $needles) {
+            $column = $type_column_mapping[$type];
+
+            $conditions[] = "`{$column}` IN (:{$column})";
+            $parameters[":{$column}"] = $needles;
+        }
+
+        $query = "SELECT `user_id`
+                  FROM `user_studiengang`
+                  WHERE " . implode(' AND ', $conditions);
+
+        return DBManager::get()->fetchFirst($query, $parameters);
     }
 
     /**
@@ -318,8 +323,14 @@ final class UserLookup
      */
     protected static function institutFilter($needles)
     {
-        $result = self::arrayQuery("SELECT user_id FROM user_inst WHERE Institut_id IN (??)", $needles);
-        return $result->fetchAll(PDO::FETCH_COLUMN);
+        if (!$needles) {
+            return [];
+        }
+
+        $query = "SELECT `user_id`
+                  FROM `user_inst`
+                  WHERE `Institut_id` IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles]);
     }
 
     /**
@@ -329,16 +340,20 @@ final class UserLookup
      */
     protected static function institutValues()
     {
-        $db_result = DBManager::get()->query("SELECT fakultaets_id, Institut_id, Name, fakultaets_id = Institut_id AS is_fakultaet FROM Institute ORDER BY Institut_id = fakultaets_id DESC, Name ASC")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+        $query = "SELECT `fakultaets_id`, `Institut_id`, `Name`,
+                         `fakultaets_id` = `Institut_id` AS is_fakultaet
+                  FROM `Institute`
+                  ORDER BY `Institut_id` = `fakultaets_id` DESC, `Name` ASC";
+        $db_result = DBManager::get()->query($query)->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
 
-        $result = array();
+        $result = [];
         foreach ($db_result as $fakultaets_id => $items) {
             foreach ($items as $item) {
                 if (!isset($result[$fakultaets_id])) {
-                    $result[$fakultaets_id] = array(
+                    $result[$fakultaets_id] = [
                         'name'   => $item['Name'],
-                        'values' => array(),
-                    );
+                        'values' => [],
+                    ];
                 } else {
                     $result[$fakultaets_id]['values'][$item['Institut_id']] = $item['Name'];
                 }
@@ -354,23 +369,14 @@ final class UserLookup
      */
     protected static function statusFilter($needles)
     {
-        $result = self::arrayQuery("SELECT user_id FROM auth_user_md5 WHERE perms IN (??)", $needles);
-        return $result->fetchAll(PDO::FETCH_COLUMN);
-    }
-
-    protected static function domainFilter($needles){
-   $result = self::arrayQuery("SELECT user_id FROM user_userdomains WHERE userdomain_id IN (??)", $needles);
-        return $result->fetchAll(PDO::FETCH_COLUMN);
-    }
-    protected static function domainValues(){
-     
-           $domains = array();
-        $domains ['keine']=_('Ohne Domain');
-        foreach(UserDomain::getUserDomains() as $domain){
-            $domains[$domain->getId()] = $domain->getName();
+        if (!$needles) {
+            return [];
         }
-       
-        return $domains;
+
+        $query = "SELECT `user_id`
+                  FROM `auth_user_md5`
+                  WHERE `perms` IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles]);
     }
 
     /**
@@ -379,12 +385,44 @@ final class UserLookup
      */
     protected static function statusValues()
     {
-        return array(
+        return [
             'autor'  => _('Autor'),
             'tutor'  => _('Tutor'),
             'dozent' => _('Dozent'),
             'admin'  => _('Admin'),
             'root'   => _('Root'),
-        );
+        ];
+    }
+
+    /**
+     * Return all users with a matching domain given in $needles
+     * @param  array $needles List of domain ids to filter against
+     * @return array List of user ids matching the given filter
+     */
+    protected static function domainFilter($needles)
+    {
+        if (!$needles) {
+            return [];
+        }
+
+        $query = "SELECT `user_id`
+                 FROM `user_userdomains`
+                 WHERE `userdomain_id` IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles]);
+    }
+
+    /**
+     * Return all valid domains
+     * @return array Associative array of domain id and name
+     */
+    protected static function domainValues()
+    {
+        $domains = [];
+        $domains['keine'] = _('Ohne Domain');
+        foreach (UserDomain::getUserDomains() as $domain) {
+            $domains[$domain->getId()] = $domain->getName();
+        }
+
+        return $domains;
     }
 }
