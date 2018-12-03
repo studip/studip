@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.40-84.0, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.42-84.2, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: studip_41
+-- Host: localhost    Database: studip_42
 -- ------------------------------------------------------
--- Server version	5.6.40-84.0
+-- Server version	5.6.42-84.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -3207,7 +3207,7 @@ DROP TABLE IF EXISTS `personal_notifications_user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `personal_notifications_user` (
   `personal_notification_id` int(10) unsigned NOT NULL,
-  `user_id` binary(32) NOT NULL,
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
   `seen` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`personal_notification_id`,`user_id`),
   KEY `user_id` (`user_id`,`seen`)
@@ -3253,7 +3253,7 @@ CREATE TABLE `plugins` (
   `automatic_update_url` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `automatic_update_secret` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`pluginid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3265,10 +3265,10 @@ DROP TABLE IF EXISTS `plugins_activated`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `plugins_activated` (
   `pluginid` int(10) unsigned NOT NULL DEFAULT '0',
-  `poiid` varchar(36) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-  `state` enum('on','off') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'on',
-  PRIMARY KEY (`pluginid`,`poiid`),
-  UNIQUE KEY `poiid` (`poiid`,`pluginid`,`state`)
+  `range_type` enum('sem','inst','user') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'sem',
+  `range_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`pluginid`,`range_type`,`range_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3726,7 +3726,7 @@ CREATE TABLE `roles` (
   `rolename` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `system` enum('y','n') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'n',
   PRIMARY KEY (`roleid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3856,10 +3856,7 @@ DROP TABLE IF EXISTS `sem_classes`;
 CREATE TABLE `sem_classes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `compact_mode` tinyint(4) NOT NULL,
-  `workgroup_mode` tinyint(4) NOT NULL,
   `only_inst_user` tinyint(4) NOT NULL,
-  `turnus_default` int(11) NOT NULL,
   `default_read_level` int(11) NOT NULL,
   `default_write_level` int(11) NOT NULL,
   `bereiche` tinyint(4) NOT NULL,
@@ -4133,7 +4130,6 @@ CREATE TABLE `seminare` (
   `admission_waitlist_max` int(10) unsigned NOT NULL DEFAULT '0',
   `admission_disable_waitlist_move` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `completion` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `public_topics` tinyint(2) NOT NULL DEFAULT '1',
   `parent_course` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`Seminar_id`),
   KEY `Institut_id` (`Institut_id`),
@@ -4228,6 +4224,7 @@ CREATE TABLE `statusgruppe_user` (
   `position` int(11) NOT NULL DEFAULT '0',
   `visible` tinyint(4) NOT NULL DEFAULT '1',
   `inherit` tinyint(4) NOT NULL DEFAULT '1',
+  `mkdate` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`statusgruppe_id`,`user_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -4345,6 +4342,7 @@ CREATE TABLE `themen` (
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `priority` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `paper_related` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `mkdate` int(10) unsigned NOT NULL DEFAULT '0',
   `chdate` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`issue_id`),
@@ -4566,7 +4564,7 @@ CREATE TABLE `user_visibility_settings` (
   KEY `parent_id` (`parent_id`),
   KEY `identifier` (`identifier`),
   KEY `userid` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4813,4 +4811,4 @@ CREATE TABLE `wiki_locks` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-29 18:21:34
+-- Dump completed on 2018-12-03 18:06:39
