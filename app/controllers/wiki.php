@@ -213,6 +213,10 @@ class WikiController extends AuthenticatedController
             )
         );
 
+        $this->course_search->fireJSFunctionOnSelect(
+            "function() {jQuery(this).closest('form').submit();}"
+        );
+
         //The following steps are identical for the search and the import.
         if (Request::submitted('selected_course_id') || Request::submitted('import')) {
             CSRFProtection::verifyUnsafeRequest();
