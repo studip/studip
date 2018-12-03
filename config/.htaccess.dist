@@ -5,11 +5,11 @@
 #RewriteRule ^download/(normal|force_download|zip)/5/([^/]+)/([^/]+)/(.+)$ sendfile.php?$1=1&type=5&range_id=$2&list_id=$3&file_name=$4 [L]
 
 #Apache 2.2
-Order Allow,Deny
-Allow from all
+#Order Allow,Deny
+#Allow from all
 
 #Apache 2.4
-#Require all granted
+Require all granted
 
 php_value upload_max_filesize 7M
 php_value post_max_size 8M
@@ -18,27 +18,12 @@ php_value max_execution_time 300
 php_flag short_open_tag On
 php_flag allow_url_fopen On
 php_value max_input_vars 10000
-php_value default_charset utf-8
-php_value mbstring.internal_encoding utf-8
 
 #PHP Konstanten sind hier nicht verfügbar
 # 22519 = E_ALL & ~(E_NOTICE|E_DEPRECATED) PHP 5.3.x
 php_value error_reporting 22519
-#ab PHP 5.6
-#php_value default_charset none
 
-#Wenn die suhosin extension benutzt wird, sind diese Optionen notwendig
-#php_value suhosin.cookie.plainlist Seminar_Session
-#php_flag suhosin.session.encrypt Off
-#php_value suhosin.post.max_array_depth 200
-#php_value suhosin.post.max_array_index_length 128
-#php_value suhosin.post.max_name_length 128
-#php_value suhosin.post.max_totalname_length 512
-#php_value suhosin.post.max_value_length 10000000
-#php_value suhosin.post.max_vars 10000
-#php_value suhosin.request.max_array_depth 200
-#php_value suhosin.request.max_array_index_length 128
-#php_value suhosin.request.max_totalname_length 512
-#php_value suhosin.request.max_value_length 10000000
-#php_value suhosin.request.max_vars 10000
-#php_value suhosin.request.max_varname_length 128
+# PHP 5.5 (ab 5.6 Standardeinstellung)
+php_value default_charset utf-8
+php_value mbstring.internal_encoding utf-8
+
