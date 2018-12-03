@@ -173,7 +173,7 @@ Special outer level classes used in this file:
    that element. */
 .cke_wysiwyg_div {
 	display: block;
-	height: 100%;
+	height: calc(100% - 16px);
 	overflow: auto;
 	padding: 0 0;
 	outline-style: none;
