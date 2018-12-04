@@ -19,6 +19,6 @@
             <?= Studip\Button::createAccept(_('Speichern')) ?>
             <?= Studip\Button::create(_('Speichern und weiter bearbeiten'), 'submit-and-edit') ?>
         </div>
-        <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?cmd=abortedit' . $lastpage, compact('keyword'))) ?>
+        <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?cmd=abortedit', compact('keyword', 'lastpage'))) ?>
     </footer>
 </form>
