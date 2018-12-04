@@ -53,7 +53,7 @@ class DBSchemaVersion extends SchemaVersion
     /**
      * Initialize the current schema version.
      */
-    private function init_schema_info ()
+    private function init_schema_info()
     {
         $query = "SELECT version FROM schema_version WHERE domain = ?";
         $statement = DBManager::get()->prepare($query);

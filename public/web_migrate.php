@@ -32,8 +32,6 @@ if (empty($_SESSION['_language'])) {
 
 $_language_path = init_i18n($_SESSION['_language']);
 
-//include 'lib/include/html_head.inc.php';
-
 $path = $GLOBALS['STUDIP_BASE_PATH'] . '/db/migrations';
 $verbose = true;
 $target = NULL;
@@ -79,5 +77,3 @@ $template->migrations   = $migrations;
 $template->lock         = $lock;
 $template->set_layout($template_factory->open('layouts/base.php'));
 echo $template->render();
-
-//include 'lib/include/html_end.inc.php';
