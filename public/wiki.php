@@ -168,7 +168,7 @@ if ($view=="listall") {
     $wikiData = getWikiPage($keyword, 0); // always get newest page
 
     // warning in the case of an existing wiki page
-    if ($wikiData) {
+    if ($wikiData && !$wikiData->isNew()) {
         PageLayout::postInfo(sprintf(_('Die Wiki-Seite "%s" existiert bereits. Änderungen hier überschreiben diese Seite!'), htmlReady($keyword)));
     }
 
@@ -176,7 +176,7 @@ if ($view=="listall") {
     setWikiLock(null, $user->id, Context::getId(), $keyword);
 
     //show form
-    wikiEdit($keyword, $wikiData, $user->id, Request::quoted('lastpage'));
+    wikiEdit($keyword, $wikiData, $user->id, Request::get('lastpage'));
 
 } else {
     // Default action: Display WikiPage (+ logic for submission)

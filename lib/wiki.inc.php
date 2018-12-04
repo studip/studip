@@ -940,7 +940,7 @@ function wikiSinglePageHeader($wikiData, $keyword) {
 **/
 function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
 {
-    if (!$wikiData) {
+    if (!$wikiData || $wikiData->isNew()) {
         $body = "";
         $version = 0;
         $lastpage="&lastpage=".urlencode($backpage);
