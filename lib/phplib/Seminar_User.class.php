@@ -19,7 +19,7 @@ class Seminar_User
     private $user = null; //User object
     private $last_online_time = null;
 
-    function __construct($user = null)
+    public function __construct($user = null)
     {
         if ($user instanceOf User) {
             $this->user = $user;
@@ -35,12 +35,12 @@ class Seminar_User
         $this->last_online_time = $this->get_last_action();
     }
 
-    function getAuthenticatedUser()
+    public function getAuthenticatedUser()
     {
         return $this->user->id !== 'nobody' ? $this->user : null;
     }
 
-    function get_last_action()
+    public function get_last_action()
     {
         if ($this->id && $this->id != 'nobody') {
             try {
@@ -58,7 +58,7 @@ class Seminar_User
         }
     }
 
-    function set_last_action($timestamp = 0)
+    public function set_last_action($timestamp = 0)
     {
         if ($this->id && $this->id != 'nobody') {
             if ($timestamp <= 0) {
@@ -87,7 +87,7 @@ class Seminar_User
         }
     }
 
-    function delete()
+    public function delete()
     {
         if ($this->id && $this->id != 'nobody') {
             $stmt = DBManager::get()->prepare("DELETE FROM user_online WHERE user_id = ?");
@@ -96,7 +96,7 @@ class Seminar_User
         }
     }
 
-    function __get($field)
+    public function __get($field)
     {
         if ($field == 'id') {
             return $this->user->user_id;
@@ -104,19 +104,29 @@ class Seminar_User
         return $this->user->$field;
     }
 
-    function __set($field, $value)
+    public function __set($field, $value)
     {
         return null;
     }
 
-    function __isset($field)
+    public function __isset($field)
     {
         return isset($this->user->$field);
     }
 
-    function getFullName($format = 'full')
+    public function getFullName($format = 'full')
     {
         return $this->user->getFullName($format);
     }
-}
 
+    /**
+     * Returns whether the current needs to accept the terms of use.
+     * @return bool
+     */
+    public function needsToAcceptTerms()
+    {
+        return $this->id !== 'nobody'
+            && Config::get()->SHOW_TERMS_ON_FIRST_LOGIN
+            && !$this->cfg->TERMS_ACCEPTED;
+    }
+}

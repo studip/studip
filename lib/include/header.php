@@ -42,18 +42,21 @@ if (PageLayout::isHeaderEnabled()) //Einige Seiten benötigen keinen Header, spr
                 $header_template->public_hint = _('öffentliche Veranstaltung');
             }
         }
-        if ($GLOBALS['user']->cfg->getValue('ACCESSKEY_ENABLE')){
+        if ($GLOBALS['user']->cfg->ACCESSKEY_ENABLE) {
             $header_template->accesskey_enabled = true;
         }
-        // fetch semester for quick search box in the link bar
-        $semester_data = SemesterData::GetSemesterArray();
-        $default_semester = $_SESSION['_default_sem'] ?
-                            SemesterData::GetSemesterIndexById($_SESSION['_default_sem']) :
-                            'all';
-        $header_template->search_semester_nr = $default_semester;
-        $header_template->search_semester_name = $default_semester != 'all' ?
-                                                 $semester_data[$default_semester]['name'] :
-                                                 _("alle Semester");
+
+        if (!$GLOBALS['user']->needsToAcceptTerms()) {
+            // fetch semester for quick search box in the link bar
+            $semester_data = SemesterData::GetSemesterArray();
+            $default_semester = $_SESSION['_default_sem']
+                              ? SemesterData::GetSemesterIndexById($_SESSION['_default_sem'])
+                              : 'all';
+            $header_template->search_semester_nr = $default_semester;
+            $header_template->search_semester_name = $default_semester !== 'all'
+                                                   ? $semester_data[$default_semester]['name']
+                                                   : _('alle Semester');
+        }
     }
 } else {
     $header_template = $GLOBALS['template_factory']->open('noheader');

@@ -154,10 +154,10 @@ if ($seminar_open_redirected) {
 }
 
 // Show terms on first login
-if (Config::get()->SHOW_TERMS_ON_FIRST_LOGIN
-    && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody'
-    && !$GLOBALS['user']->cfg->TERMS_ACCEPTED
-    && !match_route('dispatch.php/terms')) {
+if (is_object($GLOBALS['user'])
+    && $GLOBALS['user']->needsToAcceptTerms()
+    && !match_route('dispatch.php/terms'))
+{
     if (!Request::isXhr()) {
         header('Location: ' . URLHelper::getURL('dispatch.php/terms', ['return_to' => $_SERVER['REQUEST_URI'], 'redirect_token' => (string)Token::generate($GLOBALS['user']->id, 600)], true));
     } else {
