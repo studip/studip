@@ -1,15 +1,17 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
-<form action="<?= $controller->url_for('admin/cronjobs/logs/filter') ?>"
+<form action="<?= $controller->link_for('admin/cronjobs/logs/filter') ?>"
       method="post" class="cronjob-filters default">
 
     <fieldset>
         <legend>
             <?= _('Darstellung einschränken') ?>
 
-            <? if ($total_filtered != $total): ?>
+        <? if ($total_filtered != $total): ?>
+            <small>
                 <?= sprintf(_('Passend: %u von %u Logeinträgen'), $total_filtered, $total) ?>
-            <? endif; ?>
+            </small>
+        <? endif; ?>
         </legend>
 
         <label class="col-2">
@@ -114,10 +116,10 @@
             <? endif; ?>
             </td>
             <td style="text-align: right">
-                <a data-dialog href="<?= $controller->url_for('admin/cronjobs/logs/display', $logs[$i]->log_id, $page) ?>">
+                <a data-dialog href="<?= $controller->link_for('admin/cronjobs/logs/display', $logs[$i]->log_id, $page) ?>">
                     <?= Icon::create('admin', 'clickable', ['title' => _('Logeintrag anzeigen')])->asImg() ?>
                 </a>
-                <a href="<?= $controller->url_for('admin/cronjobs/logs/delete', $logs[$i]->log_id, $page) ?>">
+                <a href="<?= $controller->link_for('admin/cronjobs/logs/delete', $logs[$i]->log_id, $page) ?>">
                     <?= Icon::create('trash', 'clickable', ['title' => _('Logeintrag löschen')])->asImg() ?>
                 </a>
             </td>
@@ -136,12 +138,12 @@
         <section style="float: right">
             <?
                 $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
-                $pagination->set_attributes(array(
+                $pagination->set_attributes([
                     'perPage'      => $max_per_page,
-                    'num_postings' => $total,
+                    'num_postings' => $total_filtered,
                     'page'         => $page,
                     'pagelink'     => $controller->url_for('admin/cronjobs/logs/index/%u')
-                ));
+                ]);
                 echo $pagination->render();
             ?>
         </section>
