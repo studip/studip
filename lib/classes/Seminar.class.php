@@ -2353,18 +2353,16 @@ class Seminar
             if ($this->parent_course) {
 
                 // ... check if user is member in another sibling ...
-                $other = CourseMember::findBySQL(
+                $other = CourseMember::countBySQL(
                     "`user_id` = :user AND `Seminar_id` IN (:courses) AND `Seminar_id` != :this",
                     ['user' => $user_id, 'courses' => $this->parent->children->pluck('seminar_id'), 'this' => $this->id]
                 );
 
                 // ... and delete from parent course if this was the only
                 // course membership in this family.
-                if (count($other) == 0) {
-                    $m = CourseMember::find([$this->parent_course, $user_id]);
-                    if ($m) {
-                        $m->delete();
-                    }
+                if ($other == 0) {
+                    $s = new Seminar($this->parent);
+                    $s->deleteMember($user_id);
                 }
             }
 
@@ -2386,6 +2384,14 @@ class Seminar
 
                 foreach ($termine as $termin_id) {
                     $statement->execute([$termin_id, $user_id]);
+                }
+                if (isDefaultDeputyActivated()) {
+                    $other_dozenten = array_diff(array_keys($dozenten), [$user_id]);
+                    foreach (Deputy::findByRange_id($user_id) as $default_deputy) {
+                        if (!Deputy::countBySql("range_id IN (?)", [$other_dozenten])) {
+                            Deputy::deleteBySQL("range_id = ? AND user_id = ?", [$this->id, $default_deputy->user_id]);
+                        }
+                    }
                 }
             }
 
