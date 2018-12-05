@@ -150,72 +150,52 @@
                 <tbody>
                     <tr>
                         <td class="cron-item">
-                            <section class="hgroup">
-                                <select name="periodic[minute][type]" id="minute" class="size-s">
-                                    <option value="" title="<?= _('beliebig') ?>">*</option>
-                                    <option value="once" <? if ($schedule->minute !== null && $schedule->minute >= 0) echo 'selected'; ?>>
-                                        min
-                                    </option>
-                                    <option value="periodic" <? if ($schedule->minute < 0) echo 'selected'; ?>>
-                                        */min
-                                    </option>
-                                </select>
-                                <div>
-                                    <span>min=</span>
-                                    <input type="number" name="periodic[minute][value]" value="<?= abs($schedule->minute) ?>">
-                                </div>
-                            </section>
+                            <select name="periodic[minute][type]" id="minute" class="size-s">
+                                <option value="" title="<?= _('beliebig') ?>">*</option>
+                                <option value="once" <? if ($schedule->minute !== null && $schedule->minute >= 0) echo 'selected'; ?>>
+                                    min
+                                </option>
+                                <option value="periodic" <? if ($schedule->minute < 0) echo 'selected'; ?>>
+                                    */min
+                                </option>
+                            </select>
+                            <input type="number" name="periodic[minute][value]" value="<?= abs($schedule->minute) ?>">
                         </td>
                         <td class="cron-item">
-                            <section class="hgroup">
-                                <select name="periodic[hour][type]" id="hour" class="size-s">
-                                    <option value="" title="<?= _('beliebig') ?>">*</option>
-                                    <option value="once" <? if ($schedule->hour !== null && $schedule->hour >= 0) echo 'selected'; ?>>
-                                        hour
-                                    </option>
-                                    <option value="periodic" <? if ($schedule->hour < 0) echo 'selected'; ?>>
-                                        */hour
-                                    </option>
-                                </select>
-                                <div>
-                                    <span>hour=</span>
-                                    <input type="number" name="periodic[hour][value]" value="<?= abs($schedule->hour) ?>">
-                                </div>
-                            </section>
+                            <select name="periodic[hour][type]" id="hour" class="size-s">
+                                <option value="" title="<?= _('beliebig') ?>">*</option>
+                                <option value="once" <? if ($schedule->hour !== null && $schedule->hour >= 0) echo 'selected'; ?>>
+                                    hour
+                                </option>
+                                <option value="periodic" <? if ($schedule->hour < 0) echo 'selected'; ?>>
+                                    */hour
+                                </option>
+                            </select>
+                            <input type="number" name="periodic[hour][value]" value="<?= abs($schedule->hour) ?>">
                         </td>
                         <td class="cron-item">
-                            <section class="hgroup">
-                                <select name="periodic[day][type]" id="day" class="size-s">
-                                    <option value="" title="<?= _('beliebig') ?>">*</option>
-                                    <option value="once" <? if ($schedule->day !== null && $schedule->day >= 0) echo 'selected'; ?>>
-                                        day
-                                    </option>
-                                    <option value="periodic" <? if ($schedule->day < 0) echo 'selected'; ?>>
-                                        */day
-                                    </option>
-                                </select>
-                                <div>
-                                    <span>day=</span>
-                                    <input type="number" name="periodic[day][value]" value="<?= abs($schedule->day) ?>">
-                                </div>
-                            </section>
+                            <select name="periodic[day][type]" id="day" class="size-s">
+                                <option value="" title="<?= _('beliebig') ?>">*</option>
+                                <option value="once" <? if ($schedule->day !== null && $schedule->day >= 0) echo 'selected'; ?>>
+                                    day
+                                </option>
+                                <option value="periodic" <? if ($schedule->day < 0) echo 'selected'; ?>>
+                                    */day
+                                </option>
+                            </select>
+                            <input type="number" name="periodic[day][value]" value="<?= abs($schedule->day) ?>">
                         </td>
                         <td class="cron-item">
-                            <section class="hgroup">
-                                <select name="periodic[month][type]" id="month" class="size-s">
-                                    <option value="" title="<?= _('beliebig') ?>">*</option>
-                                    <option value="once" <? if ($schedule->month !== null && $schedule->month >= 0) echo 'selected'; ?>>
-                                        month
-                                    </option>
-                                    <option value="periodic" <? if ($schedule->month < 0) echo 'selected'; ?>>
-                                        */month
-                                    </option>
-                                </select>
-                                <div>
-                                    <span>month=</span>
-                                    <input type="number" name="periodic[month][value]" value="<?= abs($schedule->month) ?>">
-                                </div>
-                            </section>
+                            <select name="periodic[month][type]" id="month" class="size-s">
+                                <option value="" title="<?= _('beliebig') ?>">*</option>
+                                <option value="once" <? if ($schedule->month !== null && $schedule->month >= 0) echo 'selected'; ?>>
+                                    month
+                                </option>
+                                <option value="periodic" <? if ($schedule->month < 0) echo 'selected'; ?>>
+                                    */month
+                                </option>
+                            </select>
+                            <input type="number" name="periodic[month][value]" value="<?= abs($schedule->month) ?>" class="size-s">
                         </td>
                         <td>
                             <section>

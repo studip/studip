@@ -191,17 +191,17 @@ if ($the_tree->mode == "MoveItem" || $the_tree->mode == "CopyItem"){
             <?=$search_obj->getSearchField("scope")?>
         </label>
 
-        <label class="col-2">
+        <label>
             <?=_("Kombination")?>
-            <?=$search_obj->getSearchField("combination", ['class' => 'size-s'])?>
+            <?=$search_obj->getSearchField('combination')?>
         </label>
 
-        <label class="col-2">
+        <label class="col-3">
             <?=_("Typ")?>
             <?=$search_obj->getSearchField("type", ['class' => 'size-s'])?>
         </label>
 
-        <label class="col-2">
+        <label class="col-3">
             <?=_("Semester")?>
             <?=$search_obj->getSearchField("sem", ['class' => 'size-s'])?>
         </label>

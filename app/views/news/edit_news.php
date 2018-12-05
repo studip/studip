@@ -61,7 +61,7 @@
                 aria-label="<?= _('Inhalt der Ankündigung') ?>" required><?= wysiwygReady($body) ?></textarea>
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <span class="required">
                 <?= _('Veröffentlichungsdatum') ?>
             </span>
@@ -73,7 +73,7 @@
                    aria-label="<?= _('Einstelldatum') ?>" required>
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <span class="required">
                 <?= _('Ablaufdatum') ?>
             </span>
@@ -85,7 +85,7 @@
                    aria-label="<?= _('Ablaufdatum') ?>" required>
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <?= _('Laufzeit in Tagen') ?>
 
             <input type="number" class="news_date news_prevent_submit"

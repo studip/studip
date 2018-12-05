@@ -31,7 +31,7 @@ use Studip\Button, Studip\LinkButton;
             <input name="nachname" type="text" value="<?= htmlReady($request['nachname']) ?>">
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <?= _('Status')?>
 
             <select name="perm">
@@ -43,7 +43,7 @@ use Studip\Button, Studip\LinkButton;
             </select>
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <span class="label-text"><?= _('inaktiv') ?></span>
 
             <div class="hgroup">
@@ -61,7 +61,7 @@ use Studip\Button, Studip\LinkButton;
             </div>
         </label>
 
-        <label class="col-1" style="padding-top: 1.8em;">
+        <label class="col-2" style="padding-top: 1.8em;">
             <input type="checkbox" name="locked" value="1" <?=  ($request['locked']) ?  'checked' : '' ?>>
             <?= _('nur gesperrt') ?>
         </label>

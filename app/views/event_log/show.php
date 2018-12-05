@@ -43,7 +43,7 @@ use Studip\Button, Studip\LinkButton;
             </select>
         </label>
 
-        <label class="col-1">
+        <label class="col-2">
             <?= _('Art der Einträge') ?><br>
             <select name="type" <?= isset($objects) ? 'disabled="disabled"' : ''?>>
                 <? foreach ($types as $name => $title): ?>
