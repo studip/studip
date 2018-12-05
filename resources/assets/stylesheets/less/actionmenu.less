@@ -33,6 +33,17 @@
         white-space: nowrap;
     }
 
+    &.reversed {
+        .action-menu-content {
+            top: auto;
+            bottom: -4px;
+
+            .action-menu-list .action-menu-item:last-of-type {
+                padding-right: 20px;
+            }
+        }
+    }
+
     .action-menu-title {
         font-weight: bold;
         margin: 0.2em 0 0.3em;

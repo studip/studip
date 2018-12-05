@@ -6,14 +6,18 @@
 
     // Open action menu on click on the icon
     $(document).on('mousedown focus', '.action-menu-icon', function (event) {
-        var menu = $(this).closest('.action-menu');
-        if ((event.type !== "mousedown") && menu.is(".bymousedown")) {
-            menu.removeClass("bymousedown");
+        var menu = $(this).closest('.action-menu'),
+            menu_offset = $(menu).position().top + $('.action-menu-content', menu).height(),
+            max_offset = $('#layout_content').position().top + $('#layout_content').height(),
+            reversed = menu_offset > max_offset;
+
+        if ((event.type !== 'mousedown') && menu.is('.bymousedown')) {
+            menu.removeClass('bymousedown');
             event.stopPropagation();
             return false;
         }
-        if (event.type === "mousedown") {
-            menu.addClass("bymousedown");
+        if (event.type === 'mousedown') {
+            menu.addClass('bymousedown');
         }
 
         // Close other menus (and remove contentbox overflow handling)
@@ -23,13 +27,13 @@
         }
 
         // Open menu (and force visibility on contentbox parent elements)
-        $(this).closest('.action-menu').toggleClass('active')
+        menu.toggleClass('active').toggleClass('reversed', reversed)
             .filter('.active').parents().filter(function () {
                 return $(this).is('p, section, div')
                     && $(this).parent().is('section.contentbox > article');
             }).addClass('force-visible-overflow');
 
-        $(this).attr("aria-expanded", $(this).closest('.action-menu').is(".active") ? "true" : "false");
+        $(this).attr('aria-expanded', menu.is('.active') ? 'true' : 'false');
         // Stop event so the following close event will not be fired
         event.stopPropagation();
     });
