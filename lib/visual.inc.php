@@ -609,6 +609,10 @@ function tooltip2($text, $with_alt = TRUE, $with_popup = FALSE) {
  */
 function tooltipIcon($text, $important = false, $html = false)
 {
+    if (!trim($text)) {
+        return;
+    }
+
     // render tooltip
     $template = $GLOBALS['template_factory']->open('shared/tooltip');
     return $template->render(compact('text', 'important', 'html'));

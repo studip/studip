@@ -30,9 +30,13 @@
             </div>
             <div class="text">
                 <?= htmlReady($folder_type['name']) ?>
+            <? if ($template = $folder_type['instance']->getDescriptionTemplate()): ?>
+                <?= tooltipIcon($template instanceof Flexi_Template ? $template->render() : $template, false, true) ?>
+            <? endif; ?>
+
             </div>
-            <?= Icon::create('arr_1down', Icon::ROLE_CLICKABLE)->asImg(24, ['class' => 'arrow']) ?>
-            <?= Icon::create('check-circle', Icon::ROLE_CLICKABLE)->asImg(32, ['class' => 'check']) ?>
+            <?= Icon::create('arr_1down')->asImg(24, ['class' => 'arrow']) ?>
+            <?= Icon::create('check-circle')->asImg(32, ['class' => 'check']) ?>
         </label>
         <? if ($folder_type['class'] === get_class($folder)) : ?>
             <? $folder_template = $folder->getEditTemplate() ?>
