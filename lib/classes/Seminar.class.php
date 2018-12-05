@@ -315,7 +315,7 @@ class Seminar
             $sub_key = $_SESSION['_language'] .'/unfiltered';
         }
 
-        $data = false; // TODO: unserialize($cache->read($cache_key));
+        $data = unserialize($cache->read($cache_key));
 
         // build cache from scratch
         if (!$data || !$data[$sub_key]) {
