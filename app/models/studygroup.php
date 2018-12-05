@@ -282,7 +282,7 @@ class StudygroupModel
             $sql .= "AND visible = 1";
         }
 
-        $parameters[] = array($status);
+        $parameters[] = [$status];
 
         if (isset($search)) {
             $sql .= " AND Name LIKE CONCAT('%', ?, '%')";
@@ -332,7 +332,9 @@ class StudygroupModel
                 $sql .= " AND s.Name LIKE CONCAT('%', ?, '%')";
                 $parameters[] = $search;
             }
+            $sql .= " GROUP BY s.Seminar_id";
             $sql .= " ORDER BY aum.Nachname " . $sort_order;
+
         } else if ($sort == 'ismember_asc' || $sort == 'ismember_desc') {
             $sql = "SELECT s.*,
                           (SELECT su.user_id FROM seminar_user AS su WHERE su.user_id = ? AND su.Seminar_id = s.Seminar_id ) AS ismember

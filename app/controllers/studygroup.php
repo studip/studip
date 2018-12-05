@@ -51,7 +51,7 @@ class StudygroupController extends AuthenticatedController
             $this->clear_flash();
             $this->search = null;
             $this->page   = 1;
-            $this->sort   = "founded_desc";
+            $this->sort   = 'founded_desc';
         }
 
         $this->lower_bound = ($this->page - 1) * $this->entries_per_page;
@@ -107,6 +107,7 @@ class StudygroupController extends AuthenticatedController
         }
 
         $this->groups = $groups;
+        $this->closed_groups = $closed_groups;
     }
 
     private function setupSidebar()
@@ -118,7 +119,7 @@ class StudygroupController extends AuthenticatedController
             $actions = new ActionsWidget();
             $actions->addLink(
                 _('Neue Studiengruppe anlegen'),
-                URLHelper::getLink('dispatch.php/course/wizard', ['studygroup' => 1]),
+                URLHelper::getURL('dispatch.php/course/wizard', ['studygroup' => 1]),
                 Icon::create('add')
             )->asDialog();
             $sidebar->addWidget($actions);

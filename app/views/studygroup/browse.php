@@ -9,19 +9,19 @@
         <tr class="sortable" title="<?= _("Klicken, um die Sortierung zu ändern") ?>">
             <th class="nosort hidden-small-down"></th>
             <th <?= ($sort_type == 'name') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'name_asc' ? 'name_desc' : 'name_asc')) ?>"><?= _("Name") ?></a>
+                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'name_asc' ? 'name_desc' : 'name_asc'), compact('closed_groups')) ?>"><?= _("Name") ?></a>
             </th>
             <th <?= ($sort_type == 'founded') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founded_asc' ? 'founded_desc' : 'founded_asc')) ?>"><?= _("gegründet") ?></a>
+                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founded_asc' ? 'founded_desc' : 'founded_asc'), compact('closed_groups')) ?>"><?= _("gegründet") ?></a>
             </th>
             <th <?= ($sort_type == 'member') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'member_asc' ? 'member_desc' : 'member_asc')) ?>"><?= _("Mitglieder") ?></a>
+                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'member_asc' ? 'member_desc' : 'member_asc'), compact('closed_groups')) ?>"><?= _("Mitglieder") ?></a>
             </th>
             <th <?= ($sort_type == 'founder') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founder_asc' ? 'founder_desc' : 'founder_asc')) ?>"><?= _("GründerIn") ?></a>
+                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founder_asc' ? 'founder_desc' : 'founder_asc'), compact('closed_groups')) ?>"><?= _("GründerIn") ?></a>
             </th>
             <th <?= ($sort_type == 'ismember') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'ismember_asc' ? 'ismember_desc' : 'ismember_asc')) ?>"><?= _("Mitglied") ?></a>
+                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'ismember_asc' ? 'ismember_desc' : 'ismember_asc'), compact('closed_groups')) ?>"><?= _("Mitglied") ?></a>
             </th>
         </tr>
         </thead>
@@ -78,7 +78,7 @@
                         'perPage'      => $entries_per_page,
                         'num_postings' => $anzahl,
                         'page'         => $page,
-                        'pagelink'     => 'dispatch.php/studygroup/browse/%s/' . $sort,
+                        'pagelink'     => 'dispatch.php/studygroup/browse/%s/' . $sort . ($closed_groups ? '?closed_groups=1' : ''),
                     ]) ?>
                 </td>
             </tr>
