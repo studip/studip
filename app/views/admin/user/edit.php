@@ -198,19 +198,19 @@ use Studip\Button, Studip\LinkButton;
                && !$prelim
         ): ?>
 
-            <label class="col-1">
+            <label class="col-2">
                 <?= _('Neues Passwort') ?>
                 <input class="user_form" name="pass_1" type="password" id="pass_1">
             </label>
 
-            <label class="col-1">
+            <label class="col-2">
                 <?= _('Passwortwiederholung') ?>
 
                 <input class="user_form" name="pass_2" type="password" id="pass_2"
                        onkeyup="jQuery('#pw_success').toggle(jQuery('#pass_1').val() === $('#pass_2').val())">
            </label>
 
-           <label class="col-1">
+           <label class="col-2">
                 <?= Icon::create('accept', 'accept')->asImg([
                     'id'    => 'pw_success',
                     'style' => 'display: none',
