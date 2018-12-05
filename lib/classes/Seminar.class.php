@@ -315,7 +315,7 @@ class Seminar
             $sub_key = $_SESSION['_language'] .'/unfiltered';
         }
 
-        $data = unserialize($cache->read($cache_key));
+        $data = false; // TODO: unserialize($cache->read($cache_key));
 
         // build cache from scratch
         if (!$data || !$data[$sub_key]) {
@@ -324,6 +324,13 @@ class Seminar
             $rooms = array();
 
             foreach (array_keys($cycles) as $id) {
+                if ($this->filterStart && $this->filterEnd
+                    && !$this->metadate->hasDates($id, $this->filterStart, $this->filterEnd))
+                {
+                    unset($cycles[$id]);
+                    continue;
+                }
+
                 $cycles[$id]['first_date'] = CycleDataDB::getFirstDate($id);
                 if (!empty($cycles[$id]['assigned_rooms'])) {
                     foreach ($cycles[$id]['assigned_rooms'] as $room_id => $count) {
@@ -333,15 +340,15 @@ class Seminar
             }
 
             // besser wieder mit direktem Query statt Objekten
-            if (is_array($cycles) && (sizeof($cycles) == 0)) {
-                $cycles = FALSE;
+            if (is_array($cycles) && count($cycles) === 0) {
+                $cycles = false;
             }
 
             $ret['regular']['turnus_data'] = $cycles;
 
             // the irregular single-dates
             foreach ($dates as $val) {
-                $zw = array(
+                $zw = [
                     'metadate_id' => $val->getMetaDateID(),
                     'termin_id'   => $val->getTerminID(),
                     'date_typ'    => $val->getDateType(),
@@ -357,7 +364,7 @@ class Seminar
                     'raum'        => $val->getFreeRoomText(),
                     'typ'         => $val->getDateType(),
                     'tostring'    => $val->toString()
-                );
+                ];
 
                 if ($val->getResourceID()) {
                     $rooms[$val->getResourceID()]++;
@@ -2105,8 +2112,8 @@ class Seminar
             }
         }
 
-        $template->set_attribute('dates', $this->getUndecoratedData(isset($params['semester_id'])));
-        $template->set_attribute('seminar_id', $this->getId());
+        $template->dates = $this->getUndecoratedData(isset($params['semester_id']));
+        $template->seminar_id = $this->getId();
 
         $template->set_attributes($params);
         return trim($template->render());

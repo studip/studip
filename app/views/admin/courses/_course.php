@@ -78,10 +78,10 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
         <? endif ?>
         <? if (in_array('room_time', $view_filter)) : ?>
             <td class="raumzeit">
-                <?= Seminar::GetInstance($semid)->getDatesHTML(array(
-                    'semester_id' => $semester->id,
-                    'show_room'   => true
-                )) ?: _('nicht angegeben') ?>
+                <?= Seminar::GetInstance($semid)->getDatesHTML([
+                    'semester_id' => $semester ? $semester->id : null,
+                    'show_room'   => true,
+                ]) ?: _('nicht angegeben') ?>
             </td>
         <? endif ?>
         <? if (in_array('semester', $view_filter)) : ?>
