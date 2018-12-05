@@ -220,7 +220,7 @@ class Course_EnrolmentController extends AuthenticatedController
             PageLayout::postQuestion(
                 sprintf(
                     _('Wollen Sie sich zu der Veranstaltung "%s" wirklich anmelden?'),
-                    Course::find($this->course_id)->name
+                    htmlReady(Course::find($this->course_id)->name)
                 ),
                 $this->url_for("/apply/{$this->course_id}", ['apply' => 1]),
                 $this->url_for("/apply/{$this->course_id}", ['decline' => 1])
