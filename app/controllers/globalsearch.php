@@ -151,8 +151,6 @@ class GlobalSearchController extends AuthenticatedController
      */
     public function settings_action()
     {
-        $GLOBALS['perm']->check('root');
-
         PageLayout::setTitle(_('Globale Suche: Einstellungen'));
         Navigation::activateItem('/admin/config/globalsearch');
 
