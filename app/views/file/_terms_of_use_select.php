@@ -4,6 +4,15 @@ if (!$selected_terms_of_use_id) {
 }
 ?>
 <? if ($content_terms_of_use_entries): ?>
+    <div style="margin-bottom: 1ex;">
+        <?= _('Bereitgestellte Dateien können heruntergeladen und ggf. weiterverbreitet werden.
+               Dabei ist das Urheberrecht sowohl beim Hochladen der Datei als auch bei der Nutzung
+               zu beachten. Bitte geben Sie daher an, um welche Art von Bereitstellung es sich handelt.
+               Diese Angabe dient mehreren Zwecken: Beim Herunterladen wird ein Hinweis angezeigt,
+               welche Nutzung der Datei zulässig ist. Beim Hochladen stellt die Angabe eine
+               Entscheidungshilfe dar, damit Sie sichergehen können, dass die Datei tatsächlich
+               bereitgestellt werden darf.') ?>
+    </div>
     <fieldset class="select_terms_of_use">
     <? foreach ($content_terms_of_use_entries as $content_terms_of_use_entry) : ?>
         <input type="radio" name="content_terms_of_use_id"
