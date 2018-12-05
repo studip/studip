@@ -143,7 +143,7 @@ class Admin_RoleController extends AuthenticatedController
         PageLayout::postQuestion(
             sprintf(
                 _('Wollen Sie wirklich die Rolle "%s" löschen?'),
-                self::getRole($role_id)->getRolename()
+                htmlReady(self::getRole($role_id)->getRolename())
             ),
             $this->url_for("admin/role/remove_role/{$role_id}")
         )->includeTicket();

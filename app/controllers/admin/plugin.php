@@ -339,7 +339,7 @@ class Admin_PluginController extends AuthenticatedController
             PageLayout::postQuestion(
                 sprintf(
                     _('Wollen Sie wirklich "%s" deinstallieren?'),
-                    $plugin['name']
+                    htmlReady($plugin['name'])
                 ),
                 $this->url_for("admin/plugin/delete/{$plugin_id}")
             )->includeTicket();

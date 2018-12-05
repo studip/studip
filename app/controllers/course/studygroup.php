@@ -810,19 +810,19 @@ class Course_StudygroupController extends AuthenticatedController
                 StudygroupModel::accept_user($user, $id);
                 PageLayout::postSuccess(sprintf(
                     _('Der Nutzer %s wurde akzeptiert.'),
-                    get_fullname_from_uname($user, 'full')
+                    htmlReady(get_fullname_from_uname($user, 'full'))
                 ));
             } elseif ($action === 'deny') {
                 StudygroupModel::deny_user($user, $id);
                 PageLayout::postInfo(sprintf(
                     _('Der Nutzer %s wurde nicht akzeptiert.'),
-                    get_fullname_from_uname($user, 'full')
+                    htmLReady(get_fullname_from_uname($user, 'full'))
                 ));
             } elseif ($action === 'cancelInvitation') {
                 StudygroupModel::cancelInvitation($user, $id);
                 PageLayout::postSuccess(sprintf(
                     _('Die Einladung des Nutzers %s wurde gelöscht.'),
-                    get_fullname_from_uname($user, 'full')
+                    htmlReady(get_fullname_from_uname($user, 'full'))
                 ));
             } elseif ($perm->have_studip_perm('tutor', $id)) {
                 if (!$perm->have_studip_perm('dozent', $id, get_userid($user)) || count(Course::find($id)->getMembersWithStatus('dozent')) > 1) {
@@ -831,20 +831,20 @@ class Course_StudygroupController extends AuthenticatedController
                         StudygroupModel::promote_user($user, $id, $status);
                         PageLayout::postSuccess(sprintf(
                             _('Der Status des Nutzers %s wurde geändert.'),
-                            get_fullname_from_uname($user, 'full')
+                            htmlReady(get_fullname_from_uname($user, 'full'))
                         ));
                     } elseif ($action === "downgrade" && $perm->have_studip_perm('dozent', $id)) {
                         $status = $perm->have_studip_perm('dozent', $id, get_userid($user)) ? "tutor" : "autor";
                         StudygroupModel::promote_user($user, $id, $status);
                         PageLayout::postSuccess(sprintf(
                             _('Der Status des Nutzers %s wurde geändert.'),
-                            get_fullname_from_uname($user, 'full')
+                            htmlReady(get_fullname_from_uname($user, 'full'))
                         ));
                     } elseif ($action === 'remove') {
                         PageLayout::postQuestion(
                             sprintf(
                                 _('Möchten Sie wirklich den Nutzer %s aus der Studiengruppe entfernen?'),
-                                get_fullname_from_uname($user, 'full')
+                                htmlReady(get_fullname_from_uname($user, 'full'))
                             ),
                             $this->url_for("course/studygroup/edit_members/{$id}/remove_approved", compact('user'))
                         )->includeTicket();
@@ -852,7 +852,7 @@ class Course_StudygroupController extends AuthenticatedController
                         StudygroupModel::remove_user($user, $id);
                         PageLayout::postSuccess(sprintf(
                             _('Der Nutzer %s wurde aus der Studiengruppe entfernt.'),
-                            get_fullname_from_uname($user, 'full')
+                            htmlReady(get_fullname_from_uname($user, 'full'))
                         ));
                     }
                 } else {

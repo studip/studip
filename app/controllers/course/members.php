@@ -1097,7 +1097,10 @@ class Course_MembersController extends AuthenticatedController
                 }
 
                 PageLayout::postQuestion(
-                    sprintf(_('Wollen Sie die/den "%s" wirklich austragen?'), $this->status_groups[$status])
+                    sprintf(
+                        _('Wollen Sie die/den "%s" wirklich austragen?'),
+                        htmlReady($this->status_groups[$status])
+                    )
                 )->setAcceptURL(
                     $this->url_for("course/members/cancel_subscription/collection/{$status}"),
                     compact('users')

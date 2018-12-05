@@ -211,10 +211,16 @@ class StartController extends AuthenticatedController
             if (Request::submitted('yes')) {
                 $name = WidgetHelper::getWidgetName($id);
                 if (WidgetHelper::removeWidget($id, $name, $GLOBALS['user']->id)) {
-                    $message = sprintf(_('Widget "%s" wurde entfernt.'), $name);
+                    $message = sprintf(
+                        _('Widget "%s" wurde entfernt.'),
+                        htmlReady($name)
+                    );
                     PageLayout::postSuccess($message);
                 } else {
-                    $message = sprintf(_('Widget "%s" konnte nicht entfernt werden.'), $name);
+                    $message = sprintf(
+                        _('Widget "%s" konnte nicht entfernt werden.'),
+                        htmlReady($name)
+                    );
                     PageLayout::postError($message);
                 }
             }
@@ -222,7 +228,7 @@ class StartController extends AuthenticatedController
             PageLayout::postQuestion(
                 sprintf(
                     _('Sind Sie sicher, dass Sie das Widget "%s" von der Startseite entfernen möchten?'),
-                    WidgetHelper::getWidgetName($id)
+                    htmlReady(WidgetHelper::getWidgetName($id))
                 ),
                 $this->url_for('start/delete/' . $id)
             );

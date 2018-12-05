@@ -191,7 +191,7 @@ class Settings_CategoriesController extends Settings_SettingsController
             PageLayout::postQuestion(
                 sprintf(
                     _('Möchten Sie wirklich die Kategorie "%s" löschen?'),
-                    Kategorie::find($id)->name
+                    htmlReady(Kategorie::find($id)->name)
                 ),
                 $this->url_for("settings/categories/delete/{$id}/1")
             )->includeTicket();
