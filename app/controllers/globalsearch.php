@@ -15,6 +15,14 @@
 
 class GlobalSearchController extends AuthenticatedController
 {
+    public function before_filter(&$action, &$args)
+    {
+        parent::before_filter($action, $args);
+
+        if (in_array($action, ['settings', 'saveconfig'])) {
+            $GLOBALS['perm']->check('root');
+        }
+    }
 
     /**
      * Perform search in all registered modules for the given search term.
@@ -143,6 +151,8 @@ class GlobalSearchController extends AuthenticatedController
      */
     public function settings_action()
     {
+        $GLOBALS['perm']->check('root');
+
         PageLayout::setTitle(_('Globale Suche: Einstellungen'));
         Navigation::activateItem('/admin/config/globalsearch');
 

@@ -55,7 +55,7 @@ class Seminar_Perm
     function check($must_have)
     {
         if (!$this->have_perm($must_have)) {
-            if ($GLOBALS['user']->id == 'nobody') {
+            if ($GLOBALS['user']->id === 'nobody') {
                 $message = _('Sie sind nicht im System angemeldet und können daher nicht auf diesen Teil des Systems zugreifen. '
                            . 'Um den vollen Funktionsumfang des Systems benutzen zu können, müssen Sie sich mit Ihrem Nutzernamen und Passwort anmelden.');
                 throw new AccessDeniedException($message);
@@ -347,4 +347,3 @@ class Seminar_Perm
         return (bool)$st->fetchColumn();
     }
 }
-
