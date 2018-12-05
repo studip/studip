@@ -280,7 +280,7 @@ class PrivacyController extends AuthenticatedController
                     switch ($storage_type) {
                         case 'tabular':
                             foreach ($storage['tabular'] as $meta) {
-                                $stored_data[$plugin->getPluginId()][$plugin->getPluginName()] = array('table_name' => $meta['key'], 'table_content' => $meta['value']);
+                                $stored_data[$plugin->getPluginId()][$plugin->getPluginName() .' ('. $meta['key'] .')'] = array('table_name' => $meta['key'], 'table_content' => $meta['value']);
                             }
                             break;
                         case 'file':
