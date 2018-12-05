@@ -16,7 +16,7 @@
 
     <? if (!$evaluations): ?>
         <section>
-            <?= _('Keine Evaluationen vorhanden. Um neue Umfragen zu erstellen, klicken Sie rechts auf die Zahnräder.') ?>
+            <?= _('Keine Evaluationen vorhanden. Um neue Umfragen zu erstellen, klicken Sie rechts auf das Bearbeiten-Zeichen.') ?>
         </section>
     <? else: ?>
         <? foreach ($evaluations as $evaluation): ?>
