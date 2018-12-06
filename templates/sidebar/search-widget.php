@@ -28,8 +28,11 @@
 <? if (!empty($filters)): ?>
     <ul class="filters">
     <? foreach ($filters as $key => $label): ?>
+        <input type="hidden" name="<?= htmlReady($key) ?>" value="0" id="<?= md5($url . $key) ?>">
         <label>
-            <input type="checkbox" name="<?= htmlReady($key) ?>" value="1" <? if (!$has_data || Request::int($key)) echo 'checked'; ?>>
+            <input type="checkbox" name="<?= htmlReady($key) ?>" value="1"
+                   <? if (!$has_data || Request::int($key)) echo 'checked'; ?>
+                   data-deactivates="#<?= md5($url . $key) ?>">
             <?= htmlReady($label) ?>
         </label>
     <? endforeach; ?>

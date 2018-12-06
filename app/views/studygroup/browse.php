@@ -1,29 +1,39 @@
 <?= $this->render_partial("course/studygroup/_feedback") ?>
 
-<? if ($anzahl >= 1): ?>
+<?php
+$headers = [
+    'name'     => _('Name'),
+    'founded'  => _('gegründet'),
+    'member'   => _('Mitglieder'),
+    'founder'  => _('GründerIn'),
+    'ismember' => _('Mitglied'),
+];
+?>
+
+<? if ($anzahl > 0): ?>
     <table class="default studygroup-browse">
         <caption>
-            <?= sprintf(ngettext('%u Studiengruppe', '%u Studiengruppen',$anzahl), $anzahl)?>
+            <?= sprintf(ngettext('%u Studiengruppe', '%u Studiengruppen', $anzahl), $anzahl)?>
         </caption>
+        <colgroup>
+            <col style="width: 32px">
+            <col>
+            <col style="width: 10%">
+            <col style="width: 10%">
+            <col style="width: 20%">
+            <col style="width: 10%">
+        </colgroup>
         <thead>
-        <tr class="sortable" title="<?= _("Klicken, um die Sortierung zu ändern") ?>">
-            <th class="nosort hidden-small-down"></th>
-            <th <?= ($sort_type == 'name') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'name_asc' ? 'name_desc' : 'name_asc'), compact('closed_groups')) ?>"><?= _("Name") ?></a>
-            </th>
-            <th <?= ($sort_type == 'founded') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founded_asc' ? 'founded_desc' : 'founded_asc'), compact('closed_groups')) ?>"><?= _("gegründet") ?></a>
-            </th>
-            <th <?= ($sort_type == 'member') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'member_asc' ? 'member_desc' : 'member_asc'), compact('closed_groups')) ?>"><?= _("Mitglieder") ?></a>
-            </th>
-            <th <?= ($sort_type == 'founder') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'founder_asc' ? 'founder_desc' : 'founder_asc'), compact('closed_groups')) ?>"><?= _("GründerIn") ?></a>
-            </th>
-            <th <?= ($sort_type == 'ismember') ? 'class="sort' . $sort_order . '"' : '' ?>>
-                <a href="<?= $controller->url_for('studygroup/browse/1/' . ($sort == 'ismember_asc' ? 'ismember_desc' : 'ismember_asc'), compact('closed_groups')) ?>"><?= _("Mitglied") ?></a>
-            </th>
-        </tr>
+            <tr class="sortable" title="<?= _('Klicken, um die Sortierung zu ändern') ?>">
+                <th class="nosort hidden-small-down"></th>
+            <? foreach ($headers as $key => $label): ?>
+                <th <? if ($sort_type === $key) echo 'class="sort' . $sort_order . '"'; ?>>
+                    <a href="<?= $controller->link_for("studygroup/browse/1/{$key}_" . ($sort_order === 'asc' ? 'desc' : 'asc'), compact('q', 'closed')) ?>">
+                        <?= htmlReady($label) ?>
+                    </a>
+                </th>
+            <? endforeach; ?>
+            </tr>
         </thead>
         <tbody>
         <? foreach ($groups as $group): ?>
@@ -53,12 +63,12 @@
                 <td style="white-space:nowrap;">
                     <? $founders = StudygroupModel::getFounder($group['Seminar_id']);
                     foreach ($founders as $founder) : ?>
-                        <?= Avatar::getAvatar($founder['user_id'])
-                            ->getImageTag(
-                                    Avatar::SMALL,
-                                    ['title' => $founder['fullname'], 'class' => 'hidden-small-down']
-                            ) ?>
-                        <a href="<?= URLHelper::getlink('dispatch.php/profile?username=' . $founder['uname']) ?>"><?= htmlready($founder['fullname']) ?></a>
+                        <?= Avatar::getAvatar($founder['user_id'])->getImageTag(Avatar::SMALL, [
+                            'class' => 'hidden-small-down',
+                        ]) ?>
+                        <a href="<?= URLHelper::getlink('dispatch.php/profile', ['username' => $founder['uname']]) ?>">
+                            <?= htmlready($founder['fullname']) ?>
+                        </a>
                         <br>
                     <? endforeach; ?>
                 </td>
@@ -70,20 +80,21 @@
             </tr>
         <? endforeach; ?>
         </tbody>
-        <? if ($anzahl > $entries_per_page) : ?>
-            <tfoot>
+    <? if ($anzahl > $entries_per_page) : ?>
+        <tfoot>
             <tr>
                 <td colspan="6" class="actions">
                     <?= $GLOBALS['template_factory']->render('shared/pagechooser', [
                         'perPage'      => $entries_per_page,
                         'num_postings' => $anzahl,
                         'page'         => $page,
-                        'pagelink'     => 'dispatch.php/studygroup/browse/%s/' . $sort . ($closed_groups ? '?closed_groups=1' : ''),
+                        'pagelink'     => "dispatch.php/studygroup/browse/%s/{$sort}",
+                        'pageparams'   => compact('q', 'closed'),
                     ]) ?>
                 </td>
             </tr>
-            </tfoot>
-        <? endif; ?>
+        </tfoot>
+    <? endif; ?>
     </table>
 <? endif; ?>
 

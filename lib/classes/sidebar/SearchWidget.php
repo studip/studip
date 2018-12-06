@@ -148,10 +148,12 @@ class SearchWidget extends SidebarWidget
         }
 
         if ($this->hasData()) {
-            $reset_link = sprintf('<a href="%s">%s %s</a>',
-                                  URLHelper::getLink($this->url, array_merge($query_params, array('reset-search' => 1))),
-                                  Icon::create('search+decline', 'clickable')->asImg(["class" => 'text-top']),
-                                  _('Zurücksetzen'));
+            $reset_link = sprintf(
+                '<a href="%s">%s %s</a>',
+                URLHelper::getLink($this->url, array_merge($query_params, ['reset-search' => 1])),
+                Icon::create('search+decline')->asImg(['class' => 'text-top']),
+                _('Zurücksetzen')
+            );
             $this->template_variables['reset_search'] = $reset_link;
         }
 
@@ -173,12 +175,18 @@ class SearchWidget extends SidebarWidget
      */
     protected function hasData()
     {
-        if (!Request::method() === mb_strtoupper($this->method)) {
+        if (Request::method() !== mb_strtoupper($this->method)) {
             return false;
         }
 
         foreach ($this->needles as $needle) {
             if ($needle['value']) {
+                return true;
+            }
+        }
+
+        foreach (array_keys($this->filters) as $key) {
+            if (Request::submitted($key) && !Request::int($key)) {
                 return true;
             }
         }

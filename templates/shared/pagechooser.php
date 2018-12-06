@@ -1,4 +1,4 @@
-<?
+<?php
     $num_pages = ceil($num_postings / $perPage);
     if ($num_pages <= 1) {
         return;
@@ -12,6 +12,8 @@
 
     $last_page = reset($items) - 1;
     $random_id = mb_substr(md5(uniqid('pagination', true)), -8);
+
+    $pageparams = $pageparams ?: [];
 ?>
 <p id="pagination-label-<?= $random_id ?>" class="audible">
     <?= _('Blättern') ?>
@@ -20,7 +22,7 @@
     aria-labelledby="pagination-label-<?= $random_id ?>">
 <? if ($cur_page > 1): ?>
     <li class="prev">
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page - 1)) ?>" rel="prev" <?= $dialog ? $dialog : ''?>>
+        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page - 1), $pageparams) ?>" rel="prev" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Eine Seite') ?></span>
             <?= _('zurück') ?>
         </a>
@@ -31,18 +33,18 @@
     <li class="divider" data-skipped="<?= $last_page + 1 ?>-<?= $item - 1 ?>">&hellip;</li>
 <? endif; ?>
     <li <? if ($item == $cur_page) echo 'class="current"'; ?>>
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $item)) ?>" <?= $dialog ? $dialog : ''?>>
+        <a href="<?= URLHelper::getLink(sprintf($pagelink, $item), $pageparams) ?>" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Seite') ?></span>
             <?= $item ?>
         </a>
     </li>
-<? 
+<?
     $last_page = $item;
     endforeach;
 ?>
 <? if ($cur_page < $num_pages): ?>
     <li class="next">
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page + 1)) ?>" rel="next" <?= $dialog ? $dialog : ''?>>
+        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page + 1), $pageparams) ?>" rel="next" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Eine Seite') ?></span>
             <?= _('weiter') ?>
         </a>
