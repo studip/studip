@@ -30,28 +30,21 @@ class Settings_SettingsController extends AuthenticatedController
     {
         // Abwärtskompatibilität, erst ab 1.1 bekannt
         if (!isset(Config::get()->ALLOW_CHANGE_NAME)) {
-            Config::get()->ALLOW_CHANGE_NAME = TRUE;
+            Config::get()->ALLOW_CHANGE_NAME = true;
         }
 
         parent::before_filter($action, $args);
 
         // Ensure user is logged in
-        $GLOBALS['auth']->login_if(($action !== 'logout') && ($GLOBALS['auth']->auth['uid'] === 'nobody'));
+        $GLOBALS['auth']->login_if($action !== 'logout' && $GLOBALS['auth']->auth['uid'] === 'nobody');
 
         // extract username
-        $username = Request::username('username', $GLOBALS['user']->username);
-        $user     = User::findByUsername($username);
-
-        if (!$GLOBALS['perm']->have_profile_perm('user', $user->user_id)) {
-            $username = $GLOBALS['user']->username;
-        } else {
-            $username = $user->username;
-            URLHelper::addLinkParam('username', $username);
-        }
+        $username   = Request::username('username', $GLOBALS['user']->username);
         $this->user = User::findByUsername($username);
 
-        if (!$GLOBALS['perm']->get_profile_perm($this->user->user_id)) {
-            PageLayout::postError(_('Zugriff verweigert.'), array(
+        if (!$GLOBALS['perm']->have_profile_perm('user', $this->user->user_id)) {
+            $exception = new AccessDeniedException(_('Sie dürfen dieses Profil nicht bearbeiten'));
+            $exception->setDetails([
                 _("Wahrscheinlich ist Ihre Session abgelaufen. Bitte "
                  ."nutzen Sie in diesem Fall den untenstehenden Link, "
                  ."um zurück zur Anmeldung zu gelangen.\n\n"
@@ -59,17 +52,16 @@ class Settings_SettingsController extends AuthenticatedController
                  ."auf Userdaten, die Sie nicht bearbeiten dürfen, sein. "
                  ."Nutzen Sie den untenstehenden Link, um zurück auf "
                  ."die Startseite zu gelangen."),
-                sprintf(_('%s Hier%s geht es wieder zur Anmeldung beziehungsweise Startseite.'),
-                        '<a href="index.php">', '</a>')
-            ));
-            $this->render_nothing();
-            return;
+            ]);
+            throw $exception;
         }
 
-        $this->restricted = ($GLOBALS['perm']->get_profile_perm($this->user->user_id) !== 'user')
-                            && ($username !== $GLOBALS['user']->username);
+        URLHelper::addLinkParam('username', $this->user->username);
+
+        $this->restricted = $GLOBALS['perm']->get_profile_perm($this->user->user_id) !== 'user'
+                         && $username !== $GLOBALS['user']->username;
         $this->config     = UserConfig::get($this->user->user_id);
-        $this->validator  = new email_validation_class; # Klasse zum Ueberpruefen der Eingaben
+        $this->validator  = new email_validation_class(); # Klasse zum Ueberpruefen der Eingaben
         $this->validator->timeout = 10;
 
         // Default auth plugin to standard
@@ -78,11 +70,13 @@ class Settings_SettingsController extends AuthenticatedController
         }
 
         // Show info message if user is not on his own profile
-        if ($username != $GLOBALS['user']->username) {
-            $message = sprintf(_('Daten von: %1$s (%2$s), Status: %3$s'),
-                               htmlReady($this->user->getFullName()),
-                               htmlReady($username),
-                               htmlReady($this->user->perms));
+        if ($username !== $GLOBALS['user']->username) {
+            $message = sprintf(
+                _('Daten von: %1$s (%2$s), Status: %3$s'),
+                htmlReady($this->user->getFullName()),
+                htmlReady($username),
+                htmlReady($this->user->perms)
+            );
             $mbox = MessageBox::info($message);
             PageLayout::postMessage($mbox, 'settings-user-anncouncement');
         }

@@ -52,7 +52,7 @@ class Seminar_Perm
      * @param $must_have
      * @throws AccessDeniedException
      */
-    function check($must_have)
+    public function check($must_have)
     {
         if (!$this->have_perm($must_have)) {
             if ($GLOBALS['user']->id === 'nobody') {
@@ -97,7 +97,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return bool
      */
-    function have_perm($perm, $user_id = false)
+    public function have_perm($perm, $user_id = false)
     {
 
         $pageperm = $this->permissions[$perm];
@@ -112,7 +112,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return mixed
      */
-    function get_studip_perm($range_id, $user_id = false)
+    public function get_studip_perm($range_id, $user_id = false)
     {
 
         if (!$user_id) {
@@ -130,7 +130,7 @@ class Seminar_Perm
      * @param $user_id
      * @return bool|string
      */
-    function get_uncached_studip_perm($range_id, $user_id)
+    public function get_uncached_studip_perm($range_id, $user_id)
     {
         global $user;
         $db = DBManager::get();
@@ -209,7 +209,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return bool
      */
-    function have_studip_perm($perm, $range_id, $user_id = false)
+    public function have_studip_perm($perm, $range_id, $user_id = false)
     {
 
         $pageperm = $this->permissions[$perm];
@@ -223,9 +223,8 @@ class Seminar_Perm
      * @param bool $user_id
      * @return mixed
      */
-    function get_profile_perm($range_id, $user_id = false)
+    public function get_profile_perm($range_id, $user_id = false)
     {
-
         if (!$user_id) {
             $user_id = $GLOBALS['user']->id;
         }
@@ -241,12 +240,11 @@ class Seminar_Perm
      * @param $user_id
      * @return bool|string
      */
-    function get_uncached_profile_perm($range_id, $user_id)
+    public function get_uncached_profile_perm($range_id, $user_id)
     {
-
         $status = false;
 
-        if ($range_id == $user_id && $this->have_perm('autor', $user_id)) {
+        if ($range_id === $user_id && $this->have_perm('autor', $user_id)) {
             // user on his own profile
             $status = 'user';
         } else if (isDeputyEditAboutActivated() && isDeputy($user_id, $range_id, true)) {
@@ -289,7 +287,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return bool
      */
-    function have_profile_perm($perm, $range_id, $user_id = false)
+    public function have_profile_perm($perm, $range_id, $user_id = false)
     {
 
         $pageperm = $this->permissions[$perm];
@@ -302,7 +300,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return bool
      */
-    function is_fak_admin($user_id = false)
+    public function is_fak_admin($user_id = false)
     {
         global $user;
         if (!$user_id) $user_id = $user->id;
@@ -329,7 +327,7 @@ class Seminar_Perm
      * @param bool $user_id
      * @return bool
      */
-    function is_staff_member($user_id = false)
+    public function is_staff_member($user_id = false)
     {
         global $user;
         if (!$user_id) $user_id = $user->id;

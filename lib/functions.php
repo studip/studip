@@ -1549,6 +1549,8 @@ function studip_default_exception_handler($exception) {
     }
     $layout = 'layouts/base.php';
     if ($exception instanceof AccessDeniedException) {
+        PageLayout::setTitle(_('Zugriff verweigert'));
+
         $status = 403;
         $template = 'access_denied_exception';
     } else if ($exception instanceof CheckObjectException) {
