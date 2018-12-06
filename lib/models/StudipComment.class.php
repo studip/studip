@@ -108,9 +108,9 @@ class StudipComment extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('comments', $field_data, $user);
+                $storage->addTabularData(_('Ankündigungen Kommentare'), 'comments', $field_data, $user);
             }
         }
-        return [_('Ankündigungen Kommentare') => $storage];
+        return $storage;
     }
 }

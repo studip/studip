@@ -215,9 +215,9 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('questionnaires', $field_data, $user);
+                $storage->addTabularData(_('Fragebögen'), 'questionnaires', $field_data, $user);
             }
         }
-        return [_('Fragebögen') => $storage];
+        return $storage;
     }
 }

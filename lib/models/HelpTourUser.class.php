@@ -62,9 +62,9 @@ class HelpTourUser extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('help_tour_user', $field_data, $user);
+                $storage->addTabularData(_('Hilfetouren'), 'help_tour_user', $field_data, $user);
             }
         }
-        return [_('Hilfetouren') => $storage];
+        return $storage;
     }
 }

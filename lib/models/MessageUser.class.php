@@ -92,9 +92,9 @@ class MessageUser extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('message_user', $field_data, $user);
+                $storage->addTabularData(_('MessageUser'), 'message_user', $field_data, $user);
             }
         }
-        return [_('MessageUser') => $storage];
+        return $storage;
     }
 }

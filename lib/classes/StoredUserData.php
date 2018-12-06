@@ -12,13 +12,6 @@ class StoredUserData
     protected $data = [
         'file'    => [],
         'tabular' => [],
-        'url'     => [],
-    ];
-
-    protected $contexts = [
-        'Course'    => [],
-        'Institute' => [],
-        'User'      => [],
     ];
 
     /**
@@ -26,9 +19,9 @@ class StoredUserData
      *
      * @param User $user User object
      */
-    public function __construct(User $user)
+    public function __construct($user_id)
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -36,9 +29,9 @@ class StoredUserData
      *
      * @return User object
      */
-    public function getUser()
+    public function getUserId()
     {
-        return $this->user;
+        return $this->user_id;
     }
 
     /**
@@ -52,41 +45,83 @@ class StoredUserData
     }
 
     /**
-     * Adds a file. By passing an optional context, the data may be associated
-     * with this context.
-     *
-     * @param StoredFile  $file
-     * @param SimpleORMap $context Optional context
-     */
-    public function addFile(StoredFile $file, SimpleORMap $context = null)
-    {
-        $this->addStoredData('file', $file, $context);
-    }
-
-    /**
      * Adds tabular data under the specified key. By passing an optional
      * context, the data may be associated with this context.
      *
-     * @param string      $key
-     * @param mixed       $value
+     * @param string      $name Display label
+     * @param string      $key Table name (e.g. database table)
+     * @param mixed       $value Array containing the rows
      * @param SimpleORMap $context Optional context
      */
-    public function addTabularData($key, $value, SimpleORMap $context = null)
+    public function addTabularData($name, $key, $value, SimpleORMap $context = null)
     {
-        $this->addStoredData('tabular', compact('key', 'value'), $context);
+        $this->addData('tabular', compact('name', 'key', 'value'), $context);
     }
 
     /**
-     * Adds a url with an optional description. By passing an optional context,
-     * the data may be associated with this context.
+     * Adds a file reference. By passing an optional context, the data may be
+     * associated with this context.
      *
-     * @param string      $url
-     * @param string      $description
-     * @param SimpleORMap $context      Optional context
+     * @param FileRef     $fileref
+     * @param SimpleORMap $context Optional context
      */
-    public function addURL($url, $description = null, SimpleORMap $context = null)
+    public function addFileRef(FileRef $fileref, SimpleORMap $context = null)
     {
-        $this->addStoredData('url', compact('url', 'description'), $context);
+        if ($file_ref->file->getURL()) {
+            $this->addFileWithContents($file_ref->name . '.url', $file_ref->file->getURL(), $context);
+        } else if ($file_ref->file->getPath()) {
+            $this->addFileAtPath($file_ref->name, $file_ref->file->getPath(), $context);
+        }
+    }
+
+    /**
+     * Adds a local file on disk. By passing an optional context, the data may be
+     * associated with this context.
+     *
+     * @param string      $name File name
+     * @param string      $path File path
+     * @param SimpleORMap $context Optional context
+     */
+    public function addFileAtPath($name, $path, SimpleORMap $context = null)
+    {
+        $this->addData('file', compact('name', 'path'), $context);
+    }
+
+    /**
+     * Adds content as a file. By passing an optional context, the data may be
+     * associated with this context.
+     *
+     * @param string      $name File name
+     * @param string      $contents File contents (text or binary)
+     * @param SimpleORMap $context Optional context
+     */
+    public function addFileWithContents($name, $contents, SimpleORMap $context = null)
+    {
+        $this->addData('file', compact('name', 'contents'), $context);
+    }
+
+    /**
+     * Returns the stored file data for all contexts (if $context is null)
+     * or a specific context.
+     *
+     * @param SimpleORMap $context Optional context
+     * @return array
+     */
+    public function getFileData(SimpleORMap $context = null)
+    {
+        return $this->getData('file', $context);
+    }
+
+    /**
+     * Returns the stored tabular data for all contexts (if $context is null)
+     * or a specific context.
+     *
+     * @param SimpleORMap $context Optional context
+     * @return array
+     */
+    public function getTabularData(SimpleORMap $context = null)
+    {
+        return $this->getData('tabular', $context);
     }
 
     /**
@@ -97,115 +132,37 @@ class StoredUserData
      * @param mixed       $data
      * @param SimpleORMap $context Optional context
      */
-    protected function addStoredData($type, $data, SimpleORMap $context = null)
+    protected function addData($type, $data, SimpleORMap $context = null)
     {
         if (!isset($this->data[$type])) {
-            throw new Exception('Invalid data type');
+            throw new InvalidArgumentException('Invalid data type');
         }
 
-        $hash = md5(serialize($data));
-
-        $this->data[$type][$hash] = $data;
-
-        if ($context === null) {
-            return;
-        }
-
-        $context_data = &$this->getContextData($context);
-
-        $context_data[] =  compact('type', 'hash');
+        $this->data[$type][] = $data + compact('context');
     }
 
     /**
-     * Returns an array reference where context specific lookup data should be
-     * stored.
+     * Returns the stored data of the given type for all contexts
+     * (if $context is null) or a specific context.
      *
-     * @param SimpleORMap $context
-     * @return array reference
-     */
-    protected function &getContextData(SimpleORMap $context)
-    {
-        $context_type = get_class($context);
-
-        if (!isset($this->contexts[$context_type])) {
-            throw new Exception('Invalid context type given, only courses, institutes and users are valid contexts');
-        }
-
-        if (!isset($this->contexts[$context_type][$context->id])) {
-            $this->contexts[$context_type][$context->id] = [];
-        }
-
-        return $this->contexts[$context_type][$context->id];
-    }
-
-    /**
-     * Returns the stored data for a specific context.
-     *
-     * @param SimpleORMap $context
+     * @param string      $type    Type of data
+     * @param SimpleORMap $context Optional context
      * @return array
      */
-    public function getStoredDataForContext(SimpleORMap $context)
+    protected function getData($type, SimpleORMap $context = null)
     {
-        $data = $this->getContextData($context);
-
-        $result = array_fill_keys(array_keys($this->data), []);
-        foreach ($data as $key => $row) {
-            extract($row);
-
-            $result[$type][] = $this->data[$type][$hash];
-        }
-        return $result;
-    }
-
-    /**
-     * Removes the stored data for a specific context.
-     *
-     * @param SimpleORMap $context
-     */
-    public function removeStoredDataForContext(SimpleORMap $context)
-    {
-        $data = $this->getContextData($context);
-
-        foreach ($data as $key => $row) {
-            extract($row);
-
-            unset($this->data[$type][$hash]);
+        if (!isset($this->data[$type])) {
+            throw new InvalidArgumentException('Invalid data type');
         }
 
-        $data = [];
-    }
+        $data = $this->data[$type];
 
-    /**
-     * Exports the stored data to a specific location.
-     *
-     * @param string $location
-     * @param string $name
-     */
-    public function export($location, $name = null)
-    {
-        $location = rtrim($location, '/');
-
-        if (!is_dir($location)) {
-            throw new Exception('Given location is not a folder');
-        }
-        if (!is_writable($location)) {
-            throw new Exception('Cannot write to given location');
+        if ($context) {
+            $data = array_filter($data, function ($item) use ($context) {
+                return $item['context'] instanceof $context && $item['context']->id == $context->id;
+            });
         }
 
-        // Export tabular data
-        if ($this->data['tabular']) {
-            $name = $name ?: 'plugin-data';
-
-            file_put_contents(
-                "{$location}/{$name}.json",
-                json_encode($this->data['tabular'])
-            );
-        }
-
-        // Export files
-        // TODO: Duplicate filenames?
-        foreach ($this->data['file'] as $file) {
-            $file->store($location);
-        }
+        return $data;
     }
 }

@@ -15,9 +15,9 @@
 
 interface MetricsPlugin
 {
-    public static function count($stat, $value, $sampleRate = null);
+    public function count($stat, $value, $sampleRate = null);
 
-    public static function timing($stat, $time, $sampleRate = null);
+    public function timing($stat, $time, $sampleRate = null);
 
-    public static function gauge($stat, $value, $sampleRate = null);
+    public function gauge($stat, $value, $sampleRate = null);
 }

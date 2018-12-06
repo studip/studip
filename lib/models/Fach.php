@@ -774,10 +774,10 @@ class Fach extends ModuleManagementModelTreeItem implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('fach', $field_data, $user);
+                $storage->addTabularData(_('Fächer/Studiengänge'), 'fach', $field_data, $user);
             }
         }
-        return [_('Fächer/Studiengänge') => $storage];
+        return $storage;
     }
 
 }

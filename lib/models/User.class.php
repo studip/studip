@@ -1348,7 +1348,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     public static function getUserdata(User $user)
     {
         $storage = new StoredUserData($user);
-        $storage2 = new StoredUserData($user);
         $sorm = User::findBySQL("user_id = ?", [$user->user_id]);
 
         if ($sorm) {
@@ -1358,7 +1357,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $field_data[] = $row->toRawArray($limit);
             }
             if ($field_data) {
-                $storage->addTabularData('auth_user_md5', $field_data, $user);
+                $storage->addTabularData(_('Kerndaten'), 'auth_user_md5', $field_data, $user);
             }
 
             $limit = 'user_id hobby lebenslauf publi schwerp home privatnr privatcell privadr score geschlecht mkdate chdate title_front title_rear preferred_language smsforward_copy smsforward_rec email_forward smiley_favorite motto lock_rule';
@@ -1367,13 +1366,10 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $field_data[] = $row->toRawArray($limit);
             }
             if ($field_data) {
-                $storage2->addTabularData('user_info', $field_data, $user);
+                $storage->addTabularData(_('Benutzer Informationen'), 'user_info', $field_data, $user);
             }
         }
 
-        return [
-            _('Kerndaten') => $storage,
-            _('Benutzer Informationen') => $storage2,
-        ];
+        return $storage;
     }
 }

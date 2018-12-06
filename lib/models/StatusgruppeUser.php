@@ -144,10 +144,10 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('statusgruppe_user', $field_data, $user);
+                $storage->addTabularData(_('StatusgruppeUser'), 'statusgruppe_user', $field_data, $user);
             }
         }
-        return [_('StatusgruppeUser') => $storage];
+        return $storage;
     }
 
 }

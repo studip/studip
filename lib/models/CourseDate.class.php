@@ -461,9 +461,9 @@ class CourseDate extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('termine', $field_data, $user);
+                $storage->addTabularData(_('Termine'), 'termine', $field_data, $user);
             }
         }
-        return [_('Termine') => $storage];
+        return $storage;
     }
 }

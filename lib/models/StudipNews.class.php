@@ -650,9 +650,9 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('news', $field_data, $user);
+                $storage->addTabularData(_('Ankündigungen'), 'news', $field_data, $user);
             }
         }
-        return [_('Ankündigungen') => $storage];
+        return $storage;
     }
 }

@@ -100,9 +100,9 @@ class AdmissionApplication extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('admission_seminar_user', $field_data, $user);
+                $storage->addTabularData(_('Wartelisten'), 'admission_seminar_user', $field_data, $user);
             }
         }
-        return [_('Wartelisten') => $storage];
+        return $storage;
     }
 }

@@ -615,9 +615,9 @@ class Course extends SimpleORMap implements Range, PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('seminare', $field_data, $user);
+                $storage->addTabularData(_('Seminare'), 'seminare', $field_data, $user);
             }
         }
-        return [_('Seminare') => $storage];
+        return $storage;
     }
 }

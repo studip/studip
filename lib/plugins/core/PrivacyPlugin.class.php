@@ -16,11 +16,10 @@ interface PrivacyPlugin
 {
     /**
      * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * containing the available data of a given user. You may also return
+     * null to indicate that no user data is stored.
      *
-     * @return array of StoredUserData objects
+     * @return StoredUserData object
      */
-    public function getUserdata($user);
-
-    public function deleteUserdata($user);
+    public function getUserData($user_id);
 }

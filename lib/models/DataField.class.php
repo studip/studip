@@ -314,9 +314,9 @@ class DataField extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('datafields', $field_data, $user);
+                $storage->addTabularData(_('Datenfelder'), 'datafields', $field_data, $user);
             }
         }
-        return [_('Datenfelder') => $storage];
+        return $storage;
     }
 }

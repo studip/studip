@@ -330,10 +330,10 @@ class Message extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('message', $field_data, $user);
+                $storage->addTabularData(_('Nachrichten'), 'message', $field_data, $user);
             }
         }
-        return [_('Nachrichten') => $storage];
+        return $storage;
     }
 
 }

@@ -605,9 +605,9 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('blubber', $field_data, $user);
+                $storage->addTabularData(_('Blubber'), 'blubber', $field_data, $user);
             }
         }
-        return [_('Blubber') => $storage];
+        return $storage;
     }
 }

@@ -1351,10 +1351,10 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('calendar_event', $field_data, $user);
+                $storage->addTabularData(_('Kalender'), 'calendar_event', $field_data, $user);
             }
         }
-        return [_('Kalender') => $storage];
+        return $storage;
     }
 
 }

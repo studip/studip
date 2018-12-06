@@ -108,9 +108,9 @@ class EventData extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('event_data', $field_data, $user);
+                $storage->addTabularData(_('Kalender Einträge'), 'event_data', $field_data, $user);
             }
         }
-        return [_('Kalender Einträge') => $storage];
+        return $storage;
     }
 }

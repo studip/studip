@@ -86,9 +86,9 @@ class UserStudyCourse extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('user_studiengang', $field_data, $user);
+                $storage->addTabularData(_('UserStudiengang'), 'user_studiengang', $field_data, $user);
             }
         }
-        return [_('UserStudiengang') => $storage];
+        return $storage;
     }
 }

@@ -64,9 +64,9 @@ class ArchivedCourseMember extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('archiv_user', $field_data, $user);
+                $storage->addTabularData(_('archivierte SeminareUser'), 'archiv_user', $field_data, $user);
             }
         }
-        return [_('archivierte SeminareUser') => $storage];
+        return $storage;
     }
 }

@@ -37,8 +37,8 @@ class UserConfig extends ObjectConfig implements PrivacyObject
             $usr_conf[0][$key] = is_array($val) ? print_r($val, true) : $val;
         }
         if ($usr_conf) {
-            $storage->addTabularData('user_config', $usr_conf, $user);
+            $storage->addTabularData(_('Benutzer Konfigurationen'), 'user_config', $usr_conf, $user);
         }
-        return [_('Benutzer Konfigurationen') => $storage];
+        return $storage;
     }
 }

@@ -499,10 +499,10 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('abschluss', $field_data, $user);
+                $storage->addTabularData(_('Abschlüsse'), 'abschluss', $field_data, $user);
             }
         }
 
-        return [_('Abschlüsse') => $storage];
+        return $storage;
     }
 }

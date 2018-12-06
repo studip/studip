@@ -243,9 +243,9 @@ class CourseExDate extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('ex_termine', $field_data, $user);
+                $storage->addTabularData(_('ausgefallende Termine'), 'ex_termine', $field_data, $user);
             }
         }
-        return [_('ausgefallende Termine') => $storage];
+        return $storage;
     }
 }

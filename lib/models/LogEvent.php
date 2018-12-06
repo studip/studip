@@ -394,8 +394,8 @@ class LogEvent extends SimpleORMap implements PrivacyObject
         }
 
         if ($log) {
-            $storage->addTabularData('log_events', $log, $user);
+            $storage->addTabularData(_('Logs'), 'log_events', $log, $user);
         }
-        return [_('Logs') => $storage];
+        return $storage;
     }
 }

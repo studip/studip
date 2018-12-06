@@ -36,9 +36,9 @@ class QuestionnaireAssignment extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('questionnaire_assignments', $field_data, $user);
+                $storage->addTabularData(_('Fragebögen Zuweisungen'), 'questionnaire_assignments', $field_data, $user);
             }
         }
-        return [_('Fragebögen Zuweisungen') => $storage];
+        return $storage;
     }
 }

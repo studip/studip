@@ -146,9 +146,9 @@ class CourseMember extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData('seminar_user', $field_data, $user);
+                $storage->addTabularData(_('SeminareUser'), 'seminar_user', $field_data, $user);
             }
         }
-        return [_('SeminareUser') => $storage];
+        return $storage;
     }
 }

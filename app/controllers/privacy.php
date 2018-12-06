@@ -22,8 +22,7 @@ class PrivacyController extends AuthenticatedController
         }
 
         Navigation::activateItem('/profile');
-        $user = User::find($user_id);
-        $this->plugins = [Privacy::getUserdataInformation($user_id)] + $this->getStoredUserDataFromPlugins($user, 'tabular');
+        $this->plugin_data = Privacy::getUserdataInformation($user_id) + $this->getStoredUserDataFromPlugins($user_id, 'tabular');
         $this->user_id = $user_id;
 
         $actions = new ActionsWidget();
@@ -61,19 +60,13 @@ class PrivacyController extends AuthenticatedController
      * @param string $user_id
      * @throws AccessDeniedException if user has no privileges
      */
-    public function export2CSV_action($plugin_id, $table, $user_id)
+    public function export2CSV_action($table, $user_id)
     {
         if (!Privacy::isVisible($user_id)) {
             throw new AccessDeniedException();
         }
 
-        if ($plugin_id > 0){
-            $user = User::find($user_id);
-            $all_data = $this->getStoredUserDataFromPlugins($user, 'tabular');
-            $plugin_data = $all_data[$plugin_id];
-        } else {
-            $plugin_data = Privacy::getUserdataInformation($user_id);
-        }
+        $plugin_data = Privacy::getUserdataInformation($user_id) + $this->getStoredUserDataFromPlugins($user_id, 'tabular');
 
         if (!empty($plugin_data)) {
             foreach($plugin_data as $table_label => $table_data) {
@@ -112,7 +105,7 @@ class PrivacyController extends AuthenticatedController
         PageLayout::addStylesheet('print.css');
 
         $user = User::find($user_id);
-        $this->plugins = [Privacy::getUserdataInformation($user_id)] + $this->getStoredUserDataFromPlugins($user, 'tabular');
+        $this->plugin_data = Privacy::getUserdataInformation($user_id) + $this->getStoredUserDataFromPlugins($user_id, 'tabular');
         $this->user_id = $user_id;
         $this->user_fullname = $user->getFullName();
     }
@@ -130,52 +123,32 @@ class PrivacyController extends AuthenticatedController
         }
 
         $user = User::find($user_id);
+        $plugin_data = Privacy::getUserdataInformation($user_id) + $this->getStoredUserDataFromPlugins($user_id, 'tabular');
         $files = [];
-        $core_csv = [];
+        $csv = [];
 
-        foreach (Privacy::getUserdataInformation($user_id) as $label => $table) {
+        foreach ($plugin_data as $label => $table) {
             $data = $table['table_content'];
-            $headers = array_keys($data[0]);
-            $csvdata =array();
-            foreach ($data as $row) {
-                $csvdata[] = array_values($row);
-            }
-            $tmpname = md5(uniqid($user_id.$table['table_name']));
-            $filepath = $GLOBALS['TMP_PATH'] . DIRECTORY_SEPARATOR . $tmpname;
-            if (array_to_csv($csvdata, $filepath, $headers)) {
-                $core_csv[$table['table_name']] = $filepath;
-            }
-        }
-        $files[0] = $core_csv;
-
-        foreach ($this->getStoredUserDataFromPlugins($user, 'tabular') as $plugin_id =>  $plugin_data) {
-            $plugin_csv = [];
-
-            foreach ($plugin_data as $label => $table) {
-                $data = $table['table_content'];
+            if ($data) {
                 $headers = array_keys($data[0]);
-                $csvdata = [];
+                $csvdata = array();
                 foreach ($data as $row) {
                     $csvdata[] = array_values($row);
                 }
                 $tmpname = md5(uniqid($user_id.$table['table_name']));
                 $filepath = $GLOBALS['TMP_PATH'] . DIRECTORY_SEPARATOR . $tmpname;
                 if (array_to_csv($csvdata, $filepath, $headers)) {
-                    $plugin_csv[$table['table_name']] = $filepath;
+                    $csv[$table['table_name']] = $filepath;
                 }
             }
-
-            $files[$plugin_id] = $plugin_csv;
         }
 
         $tmpname = md5(uniqid('datenexport_' . $user->username));
         $zipname = $GLOBALS['TMP_PATH'] . DIRECTORY_SEPARATOR . $tmpname;
         $zip = new ZipArchive;
         $zip->open($zipname, ZipArchive::CREATE);
-        foreach ($files as $plugin => $plugin_files) {
-            foreach ($plugin_files as $table => $file) {
-                $zip->addFile($file, $table . '.csv');
-            }
+        foreach ($csv as $table => $file) {
+            $zip->addFile($file, $table . '.csv');
         }
         if ($zip->close()) {
             foreach ($files as $plugin => $plugin_files) {
@@ -220,12 +193,17 @@ class PrivacyController extends AuthenticatedController
             $zip->addFile($avatar->getCustomAvatarPath('normal'), $user_id . '.png');
         }
 
+        // FIXME this will overwrite files with the same name in different folders
         foreach (FileRef::findBySQL("user_id = ?", [$user_id]) as $core_fileref) {
             FileArchiveManager::addFileRefToArchive($zip, $core_fileref, $user_id);
         }
 
-        foreach ($this->getStoredUserDataFromPlugins($user, 'file') as $plugin_fileref) {
-            FileArchiveManager::addFileRefToArchive($zip, $plugin_fileref, $user_id);
+        foreach ($this->getStoredUserDataFromPlugins($user_id, 'file') as $file_data) {
+            if (isset($file_data['path'])) {
+                $zip->addFile($file_data['path'], $file_data['name']);
+            } else {
+                $zip->addFromString($file_data['name'], $file_data['contents']);
+            }
         }
 
         $zip->close();
@@ -268,27 +246,22 @@ class PrivacyController extends AuthenticatedController
      *
      * @param string $user_id
      */
-    private function getStoredUserDataFromPlugins($user , $storage_type)
+    private function getStoredUserDataFromPlugins($user_id, $storage_type)
     {
-        $plugins = PluginManager::getInstance()->getPlugins(NULL);
+        $plugins = PluginEngine::getPlugins('PrivacyPlugin');
         $stored_data = [];
-        foreach ($plugins as $id => $plugin) {
-            if ($plugin instanceof PrivacyPlugin) {
-                $plugin_data = $plugin->getUserdata($user);
-                if ($plugin_data instanceof StoredUserData) {
-                    $storage = $plugin_data->getStoredDataForContext($user);
-                    switch ($storage_type) {
-                        case 'tabular':
-                            foreach ($storage['tabular'] as $meta) {
-                                $stored_data[$plugin->getPluginId()][$plugin->getPluginName() .' ('. $meta['key'] .')'] = array('table_name' => $meta['key'], 'table_content' => $meta['value']);
-                            }
-                            break;
-                        case 'file':
-                            foreach ($storage['file'] as $fileref) {
-                                $stored_data[$plugin->getPluginId()][] = $fileref;
-                            }
-                            break;
-                    }
+        foreach ($plugins as $plugin) {
+            $plugin_data = $plugin->getUserData($user_id);
+            if ($plugin_data instanceof StoredUserData) {
+                switch ($storage_type) {
+                    case 'tabular':
+                        foreach ($plugin_data->getTabularData() as $meta) {
+                            $stored_data[$meta['name']] = ['table_name' => $meta['key'], 'table_content' => $meta['value']];
+                        }
+                        break;
+                    case 'file':
+                        $stored_data = $plugin_data->getFileData();
+                        break;
                 }
             }
         }
