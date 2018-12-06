@@ -90,6 +90,7 @@ class GlobalSearchMyCourses extends GlobalSearchModule
     public static function getSearchURL($searchterm)
     {
         return URLHelper::getURL('dispatch.php/search/courses', [
+            'level'                                       => 'f',
             'reset_all'                                   => 1,
             'search_sem_qs_choose'                        => 'title_lecturer_number',
             'search_sem_sem'                              => 'all',

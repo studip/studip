@@ -85,8 +85,8 @@ class GlobalSearchInstitutes extends GlobalSearchModule
     public static function getSearchURL($searchterm)
     {
         return URLHelper::getURL('institut_browse.php', [
-            'cmd'         => 'suche',
-            'search_name' => $searchterm
+            'search'         => '',
+            'search_text' => $searchterm
         ]);
     }
 
