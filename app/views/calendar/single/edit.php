@@ -28,12 +28,12 @@
             <?= _('Beginn') ?>
         </section>
 
-        <label class="col-1">
+        <label class="col-3">
             <?= _('Datum') ?>
             <input type="text" name="start_date" id="start-date" value="<?= strftime('%x', $event->getStart()) ?>" size="12" required>
         </label>
 
-        <label class="col-1">
+        <label class="col-3">
             <?= _('Uhrzeit') ?>
 
             <div class="hgroup">
@@ -47,12 +47,12 @@
             <?= _('Ende') ?>
         </section>
 
-        <label class="col-1">
+        <label class="col-3">
             <?= _('Datum') ?>
             <input type="text" name="end_date" id="end-date" value="<?= strftime('%x', $event->getEnd()) ?>" size="12" required>
         </label>
 
-        <label class="col-1">
+        <label class="col-3">
             <?= _('Uhrzeit') ?>
 
             <div class="hgroup">
@@ -75,7 +75,7 @@
             <textarea rows="2" cols="40" id="description" name="description"><?= htmlReady($event->getDescription()) ?></textarea>
         </label>
 
-        <label class="col-2">
+        <label class="col-3">
             <?= _('Kategorie') ?>
             <select name="category_intern" id="category-intern" class="nested-select">
             <? foreach ($GLOBALS['PERS_TERMIN_KAT'] as $key => $category) : ?>
@@ -86,7 +86,7 @@
             </select>
         </label>
 
-        <label class="col-2">
+        <label class="col-3">
             <?= tooltipicon(_('Sie können beliebige Kategorien in das Freitextfeld eingeben. Trennen Sie einzelne Kategorien bitte durch ein Komma.')) ?>
             <input type="text" name="categories" value="<?= htmlReady($event->getUserDefinedCategories()) ?>"
                 placeholder="<?= _('Eigener Kategoriename') ?>">
