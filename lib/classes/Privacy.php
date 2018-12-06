@@ -68,6 +68,8 @@ class Privacy
      */
     public static function getUserdataInformation($user_id)
     {
+        //workaround make Forum Model available
+        PluginManager::getInstance()->getPlugin('CoreForum');
         $core_data = [];
         $user = User::find($user_id);
 

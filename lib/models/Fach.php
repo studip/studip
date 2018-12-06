@@ -757,7 +757,7 @@ class Fach extends ModuleManagementModelTreeItem implements PrivacyObject
      * Return a storage object (an instance of the StoredUserData class)
      * enriched with the available data of a given user.
      *
-     * @return array of StoredUserData objects
+     * @return StoredUserData object
      */
     public static function getUserdata(User $user )
     {

@@ -340,7 +340,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
      * enriched with the available data of a given user.
      *
      * @param User $user User object to acquire data for
-     * @return array of StoredUserData objects
+     * @return StoredUserData object
      */
     public static function getUserdata(User $user)
     {
@@ -389,7 +389,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
                 }
             }
 
-            $a['readable_entry'] = $log_event->formatEvent();
+            $a['readable_entry'] = html_entity_decode(strip_tags(str_replace('<br>', PHP_EOL, ($log_event->formatEvent()))));
             $log[$pos]= array_merge($a, $event);
         }
 
