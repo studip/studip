@@ -75,12 +75,16 @@ article.studip {
 
     &.toggle {
         > header {
-            .icon('before', 'arr_1right', 'clickable');
-            &:before {
-                transition: all 200ms ease 0s;
-                margin-left: 5px;
+            h1 > a {
+                .icon('before', 'arr_1right', 'clickable');
+                &::before {
+                    flex: 1 0 auto;
+                    margin-right: 5px;
+                    transition: all 200ms ease 0s;
+                }
             }
             margin-bottom: -10px;
+
             > *:first-child {
                 cursor: pointer;
             }
@@ -91,10 +95,12 @@ article.studip {
 
         &.open {
             > header {
-                margin-bottom: 10px;
-                &:before {
-                    transform: rotate(90deg);
+                h1 > a {
+                    &::before {
+                        transform: rotate(90deg);
+                    }
                 }
+                margin-bottom: 10px;
             }
             > *:not(header) {
                 display: inherit;
@@ -120,7 +126,12 @@ article.studip {
 article.new {
     &.toggle {
         > header {
-            .icon('before', 'arr_1right', 'new');
+            h1 > a {
+                .icon('before', 'arr_1right', 'new');
+                &::before {
+                    margin-right: 5px;
+                }
+            }
         }
     }
 }
