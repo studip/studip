@@ -135,13 +135,13 @@ class Test extends \SimpleORMap implements \PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('eTask Tests'), 'etask_tests', $field_data, $user);
+                $storage->addTabularData(_('eTask Tests'), 'etask_tests', $field_data);
             }
         }
 
         $field_data = \DBManager::get()->fetchAll("SELECT * FROM etask_test_tags WHERE user_id =?", array($user->user_id));
         if ($field_data) {
-            $storage->addTabularData(_('eTask Tests Tags'), 'etask_test_tags', $field_data, $user);
+            $storage->addTabularData(_('eTask Tests Tags'), 'etask_test_tags', $field_data);
         }
         return $storage;
     }

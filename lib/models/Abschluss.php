@@ -485,7 +485,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findThru($user->user_id, [
             'thru_table'        => 'user_studiengang',
             'thru_key'          => 'user_id',
@@ -499,7 +499,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Abschlüsse'), 'abschluss', $field_data, $user);
+                $storage->addTabularData(_('Abschlüsse'), 'abschluss', $field_data);
             }
         }
 

@@ -444,35 +444,35 @@ class Evaluation extends EvaluationObject implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $field_data = DBManager::get()->fetchAll("SELECT * FROM eval WHERE author_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('Evaluation'), 'eval', $field_data, $user);
+            $storage->addTabularData(_('Evaluation'), 'eval', $field_data);
         }
 
         $field_data = DBManager::get()->fetchAll("SELECT * FROM evalanswer_user WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('EvaluationAnswerUser'), 'evalanswer_user', $field_data, $user);
+            $storage->addTabularData(_('EvaluationAnswerUser'), 'evalanswer_user', $field_data);
         }
 
         $field_data = DBManager::get()->fetchAll("SELECT * FROM eval_group_template WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('EvaluationGroupTemplate'), 'eval_group_template', $field_data, $user);
+            $storage->addTabularData(_('EvaluationGroupTemplate'), 'eval_group_template', $field_data);
         }
 
         $field_data = DBManager::get()->fetchAll("SELECT * FROM eval_templates WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('EvaluationTemplates'), 'eval_templates', $field_data, $user);
+            $storage->addTabularData(_('EvaluationTemplates'), 'eval_templates', $field_data);
         }
 
         $field_data = DBManager::get()->fetchAll("SELECT * FROM eval_templates_user WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('EvaluationTemplatesUser'), 'eval_templates_user', $field_data, $user);
+            $storage->addTabularData(_('EvaluationTemplatesUser'), 'eval_templates_user', $field_data);
         }
 
         $field_data = DBManager::get()->fetchAll("SELECT * FROM eval_user WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('EvaluationUser'), 'eval_user', $field_data, $user);
+            $storage->addTabularData(_('EvaluationUser'), 'eval_user', $field_data);
         }
 
         return $storage;

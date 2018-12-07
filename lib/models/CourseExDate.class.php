@@ -235,7 +235,7 @@ class CourseExDate extends SimpleORMap implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findBySQL("autor_id = ?", array($user->user_id));
         if ($sorm) {
             $field_data = [];
@@ -243,7 +243,7 @@ class CourseExDate extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('ausgefallende Termine'), 'ex_termine', $field_data, $user);
+                $storage->addTabularData(_('ausgefallende Termine'), 'ex_termine', $field_data);
             }
         }
         return $storage;

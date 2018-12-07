@@ -31,13 +31,13 @@ class UserConfig extends ObjectConfig implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $usr_conf = [[]];
         foreach (new UserConfig($user->user_id) as $key => $val) {
             $usr_conf[0][$key] = is_array($val) ? print_r($val, true) : $val;
         }
         if ($usr_conf) {
-            $storage->addTabularData(_('Benutzer Konfigurationen'), 'user_config', $usr_conf, $user);
+            $storage->addTabularData(_('Benutzer Konfigurationen'), 'user_config', $usr_conf);
         }
         return $storage;
     }

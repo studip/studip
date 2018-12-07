@@ -473,14 +473,14 @@ class StudipLitList extends TreeAbstract implements PrivacyObject {
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $field_data = DBManager::get()->fetchAll("SELECT * FROM lit_list WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('Literaturlisten'), 'lit_list', $field_data, $user);
+            $storage->addTabularData(_('Literaturlisten'), 'lit_list', $field_data);
         }
         $field_data = DBManager::get()->fetchAll("SELECT * FROM lit_list_content WHERE user_id = ?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('Literaturlisten Inhalte'), 'lit_list_content', $field_data, $user);
+            $storage->addTabularData(_('Literaturlisten Inhalte'), 'lit_list_content', $field_data);
         }
         return $storage;
     }

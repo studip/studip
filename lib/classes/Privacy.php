@@ -95,6 +95,18 @@ class Privacy
             ];
         }
 
+        foreach (PluginEngine::getPlugins('PrivacyPlugin') as $plugin) {
+            $plugin_data = $plugin->getUserData($user_id);
+            if ($plugin_data && $plugin_data->hasData()) {
+                foreach ($plugin_data->getTabularData() as $meta) {
+                    $core_data[$meta['name']] = [
+                        'table_name'    => $meta['key'],
+                        'table_content' => $meta['value']
+                    ];
+                }
+            }
+        }
+
         return $core_data;
     }
 

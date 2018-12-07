@@ -95,7 +95,7 @@ class EventData extends SimpleORMap implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = EventData::findThru($user->user_id, [
             'thru_table'        => 'calendar_event',
             'thru_key'          => 'range_id',
@@ -108,7 +108,7 @@ class EventData extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Kalender Einträge'), 'event_data', $field_data, $user);
+                $storage->addTabularData(_('Kalender Einträge'), 'event_data', $field_data);
             }
         }
         return $storage;

@@ -344,7 +344,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $user_id = $user->user_id;
         $templates = [];
 
@@ -394,7 +394,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
         }
 
         if ($log) {
-            $storage->addTabularData(_('Logs'), 'log_events', $log, $user);
+            $storage->addTabularData(_('Logs'), 'log_events', $log);
         }
         return $storage;
     }

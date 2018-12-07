@@ -322,7 +322,7 @@ class Message extends SimpleORMap implements PrivacyObject
      */
     public static function getUserdata(User $user )
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findBySQL("autor_id = ?", [$user->user_id]);
         if ($sorm) {
             $field_data = [];
@@ -330,7 +330,7 @@ class Message extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Nachrichten'), 'message', $field_data, $user);
+                $storage->addTabularData(_('Nachrichten'), 'message', $field_data);
             }
         }
         return $storage;

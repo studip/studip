@@ -101,13 +101,13 @@ class Task extends \SimpleORMap implements \PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('eTask Aufgaben'), 'etask_tasks', $field_data, $user);
+                $storage->addTabularData(_('eTask Aufgaben'), 'etask_tasks', $field_data);
             }
         }
 
         $field_data = \DBManager::get()->fetchAll("SELECT * FROM etask_task_tags WHERE user_id =?", [$user->user_id]);
         if ($field_data) {
-            $storage->addTabularData(_('eTask Aufgaben Tags'), 'etask_task_tags', $field_data, $user);
+            $storage->addTabularData(_('eTask Aufgaben Tags'), 'etask_task_tags', $field_data);
         }
         return $storage;
     }

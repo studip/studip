@@ -196,7 +196,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findBySQL("user_id = ?", [$user->user_id]);
         if ($sorm) {
             $field_data = [];
@@ -204,7 +204,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Wiki Einträge'), 'wiki', $field_data, $user);
+                $storage->addTabularData(_('Wiki Einträge'), 'wiki', $field_data);
             }
         }
         return $storage;

@@ -602,7 +602,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
      */
     public static function getUserdata(User $user)
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findThru($user->user_id, [
             'thru_table'        => 'seminar_user',
             'thru_key'          => 'user_id',
@@ -615,7 +615,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Seminare'), 'seminare', $field_data, $user);
+                $storage->addTabularData(_('Seminare'), 'seminare', $field_data);
             }
         }
         return $storage;

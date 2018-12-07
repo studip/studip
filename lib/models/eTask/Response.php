@@ -79,7 +79,7 @@ class Response extends \SimpleORMap implements \PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('eTask Antworten'), 'etask_responses', $field_data, $user);
+                $storage->addTabularData(_('eTask Antworten'), 'etask_responses', $field_data);
             }
         }
         return $storage;

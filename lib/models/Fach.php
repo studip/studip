@@ -761,7 +761,7 @@ class Fach extends ModuleManagementModelTreeItem implements PrivacyObject
      */
     public static function getUserdata(User $user )
     {
-        $storage = new StoredUserData($user);
+        $storage = new StoredUserData($user->id);
         $sorm = self::findThru($user->user_id, [
             'thru_table'        => 'user_studiengang',
             'thru_key'          => 'user_id',
@@ -774,7 +774,7 @@ class Fach extends ModuleManagementModelTreeItem implements PrivacyObject
                 $field_data[] = $row->toRawArray();
             }
             if ($field_data) {
-                $storage->addTabularData(_('Fächer/Studiengänge'), 'fach', $field_data, $user);
+                $storage->addTabularData(_('Fächer/Studiengänge'), 'fach', $field_data);
             }
         }
         return $storage;
