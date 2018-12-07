@@ -13,142 +13,94 @@
 
 class ArchiveController extends AuthenticatedController
 {
-
     public function before_filter(&$action, &$args)
     {
+        $sections = [
+            'overview' => _('Übersicht'),
+            'forum'    => _('Forum'),
+            'wiki'     => _('Wiki'),
+        ];
+
         parent::before_filter($action, $args);
-        
-        $navigation = new Navigation(
-            _('Archiv'),
-            $this->url_for('archive')
-        );
-        
-        $navigation->addSubNavigation(
-            'overview',
-            new Navigation(
-                _('Übersicht'),
-                $this->url_for('archive/overview/' . $args[0])
-                )
-        );
-        
-        $navigation->addSubNavigation(
-            'forum',
-            new Navigation(
-                _('Forum'),
-                $this->url_for('archive/forum/' . $args[0])
-                )
-        );
-        
-        $navigation->addSubNavigation(
-            'wiki',
-            new Navigation(
-                _('Wiki'),
-                $this->url_for('archive/wiki/' . $args[0])
-                )
-        );
-        
-        
+
+        $navigation = new Navigation(_('Archiv'), $this->url_for('archive'));
+        foreach ($sections as $key => $label) {
+            $navigation->addSubNavigation($key, new Navigation(
+                $label,
+                $this->url_for("archive/{$key}/{$args[0]}")
+            ));
+        }
         Navigation::addItem('/archive', $navigation);
-        
-    }
-    
-    
-    private function buildSidebar()
-    {
-        $sidebar = Sidebar::get();
-        
-        $search = new SearchWidget(URLHelper::getUrl('dispatch.php/search/archive'));
-        
+
+        // Set page title, activate appropriate navigation item and load course
+        PageLayout::setTitle(_('Veranstaltungsarchiv'));
+
+        if (Navigation::hasItem("/archive/{$action}")) {
+            Navigation::activateItem("/archive/{$action}");
+        }
+
+        // Setup sidebar
+        $search = new SearchWidget(URLHelper::getURL('dispatch.php/search/archive'));
         $search->addNeedle(
             _('Suche im Veranstaltungsarchiv'),
-            'archivedCourse',
+            'criteria',
             _('Name der archivierten Veranstaltung')
         );
-        
-        $sidebar->addWidget($search);
+
+        Sidebar::get()->addWidget($search);
+
     }
-    
-    /**
-        To avoid code duplication this method is called from
-        overview_action, forum_action and wiki_action, because
-        those three actions just display different stuff
-        from one ArchivedCourse object that is identified
-        by the HTTP GET parameter courseId.
-    */
-    private function findArchivedCourse($courseId = null)
+
+    public function overview_action($course_id)
     {
-        $this->course = false; //just in case we don't get a courseId
-        if($courseId) {
-            $this->course = ArchivedCourse::find($courseId);
+        $this->course = ArchivedCourse::find($course_id);
+    }
+
+    public function forum_action($course_id)
+    {
+        $this->course = ArchivedCourse::find($course_id);
+    }
+
+    public function wiki_action($course_id)
+    {
+        $this->course = ArchivedCourse::find($course_id);
+    }
+
+    public function delete_action($course_id)
+    {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
         }
-    }
-    
-    
-    public function overview_action($courseId = null)
-    {
-        PageLayout::setTitle(_('Veranstaltungsarchiv'));
-        $this->findArchivedCourse($courseId);
-        Navigation::activateItem('archive/overview');
-        $this->buildSidebar();
-    }
-    
-    
-    public function forum_action($courseId = null)
-    {
-        PageLayout::setTitle(_('Veranstaltungsarchiv'));
-        $this->findArchivedCourse($courseId);
-        Navigation::activateItem('archive/forum');
-        $this->buildSidebar();
-    }
-    
-    
-    public function wiki_action($courseId = null)
-    {
-        PageLayout::setTitle(_('Veranstaltungsarchiv'));
-        $this->findArchivedCourse($courseId);
-        Navigation::activateItem('archive/wiki');
-        $this->buildSidebar();
-    }
-    
-    
-    public function delete_action($course_id = null)
-    {
-        if (archiv_check_perm($course_id) != 'admin') {
+
+        if (archiv_check_perm($course_id) !== 'admin') {
             throw new AccessDeniedException();
         }
 
-        $this->findArchivedCourse($course_id);
-        if ($this->course) {
-            $course_name = $this->course->name;
-            if ($this->course->delete()) {
-                PageLayout::postSuccess(
-                    sprintf(
-                        _('Die Veranstaltung %1$s wurde aus dem Archiv gelöscht!'),
-                        $course_name
-                    )
-                );
+        $course = ArchivedCourse::find($course_id);
+        if ($course) {
+            $course_name = $course->name;
+            if ($course->delete()) {
+                PageLayout::postSuccess(sprintf(
+                    _('Die Veranstaltung %1$s wurde aus dem Archiv gelöscht!'),
+                    htmlReady($course_name)
+                ));
             } else {
-                PageLayout::postError(
-                    sprintf(
-                        _('Fehler beim Löschen der Veranstaltung %1$s aus dem Archiv!'),
-                        $course_name
-                    )
-                );
+                PageLayout::postError(sprintf(
+                    _('Fehler beim Löschen der Veranstaltung %1$s aus dem Archiv!'),
+                    htmlReady($course_name)
+                ));
             }
         }
 
-        //This action is called from the course archive search page.
-        //Because of that we should redirect to that page
-        //when this action is finished:
-        $this->redirect(
-            URLHelper::getURL(
-                'dispatch.php/search/archive',
-                [
-                    'criteria' => Request::get('criteria'),
-                    'selectedSemester' => Request::get('selectedSemester'),
-                    'selectedDepartment' => Request::get('selectedDepartment')
-                ]
-            )
-        );
+        // This action is called from the course archive search page.
+        // Because of that we should redirect to that page when this action is
+        // finished:
+        $this->redirect(URLHelper::getURL('dispatch.php/search/archive', [
+            'criteria'        => Request::get('criteria'),
+            'teacher'         => Request::get('teacher'),
+            'semester'        => Request::get('semester'),
+            'institute'       => Request::get('institute'),
+            'my_courses_only' => Request::int('my_courses_only'),
+        ]));
     }
 }

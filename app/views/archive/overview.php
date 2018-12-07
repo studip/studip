@@ -1,5 +1,5 @@
 <? if ($course) : ?>
-<?= $course->dump; ?>
+    <?= $course->dump ?>
 <? else : ?>
-<?= MessageBox::error(_('Es wurde keine Veranstaltung ausgewählt!')); ?>
+    <?= MessageBox::error(_('Es wurde keine Veranstaltung ausgewählt!')) ?>
 <? endif ?>
