@@ -1254,11 +1254,13 @@ function getShowPageInfobox($keyword, $latest_version)
     }
 
     if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
-        $widget->addLink(
-            _('Seiten importieren'),
-            URLHelper::getURL('dispatch.php/wiki/import/' . Context::getId()),
-            Icon::create('wiki+add')
-        )->asDialog('size=auto');
+        if (Context::getType() == Context::COURSE) {
+            $widget->addLink(
+                _('Seiten importieren'),
+                URLHelper::getURL('dispatch.php/wiki/import/' . Context::getId()),
+                Icon::create('wiki+add')
+            )->asDialog('size=auto');
+        }
 
         // Change wiki course permissions
         $widget->addLink(
