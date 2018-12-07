@@ -60,12 +60,11 @@ class Lvgruppen_LvgruppenController extends MVVController
                     $own_institutes);
         }
 
-
         if (count($this->filter['mvv_modul_inst.institut_id'])) {
             $filter = array_merge(
                 array(
                     'mvv_lvgruppe.lvgruppe_id' => $search_result,
-                    'mvv_modul_inst.gruppe'      => 'hauptverantwortlich'),
+                    'mvv_modul_inst.gruppe'    => 'hauptverantwortlich'),
                 (array) $this->filter);
         } else {
             $filter = array_merge(
@@ -74,8 +73,11 @@ class Lvgruppen_LvgruppenController extends MVVController
         }
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
+        if ($this->semester_filter == 'no') {
+            $filter['seminare.seminar_id'] = '__undefined__';
+        }
         $this->semester_filter =
-                $this->semester_filter ?: Semester::findCurrent()->semester_id;
+                $this->semester_filter ?: Semester::findCurrent()->id;
         $author_sql = null;
         $this->lvgruppen = Lvgruppe::getAllEnriched(
                 $this->sortby,
@@ -319,14 +321,7 @@ class Lvgruppen_LvgruppenController extends MVVController
      */
     private function sidebar_filter()
     {
-        $selected_fachbereich = '';
-        if (!empty($this->filter['mvv_modul_inst.institut_id'])) {
-            if (count($this->filter['mvv_modul_inst.institut_id']) > 1) {
-                $selected_fachbereich = '';
-            } else {
-                $selected_fachbereich = reset($this->filter['mvv_modul_inst.institut_id']);
-            }
-        }
+        $selected_fachbereich = $this->filter['mvv_modul_inst.institut_id'];
         
         $sidebar = Sidebar::get();
         
@@ -335,9 +330,15 @@ class Lvgruppen_LvgruppenController extends MVVController
             $this->url_for('/set_filter', array('fachbereich_filter' => $selected_fachbereich)),
             'semester_filter'
         );
-        
-        $widget->addElement(new SelectElement('all', _('Alle')), 'sem_select-all');
-        $widget->addElement(new SelectElement('no', _('Nicht verwendet')), 'sem_select-no');
+
+        // set default to current semester
+        $this->semester_filter = $this->semester_filter
+                ?: Semester::findCurrent()->id;
+
+        $widget->addElement(new SelectElement('all', _('Alle'),
+                $this->semester_filter == 'all'), 'sem_select-all');
+        $widget->addElement(new SelectElement('no', _('Nicht verwendet'),
+                $this->semester_filter == 'no'), 'sem_select-no');
         
         foreach (array_reverse(Semester::getAll()) as $semester) {
             $widget->addElement(
@@ -359,13 +360,15 @@ class Lvgruppen_LvgruppenController extends MVVController
             );
              
             $widget->class = 'institute-list';
-            
-            $widget->addElement(new SelectElement('select-none', _('Alle'), $selected_fachbereich == ''));
-            $widget->addElement(new SelectElement('select-no', _('Nicht verwendet'), $selected_fachbereich == 'select-no'));
+            $widget->addElement(new SelectElement('select-none',
+                    _('Alle'), $selected_fachbereich == ''));
+            $widget->addElement(new SelectElement('__undefined__',
+                    _('Nicht verwendet'), $selected_fachbereich == '__undefined__'));
 
             $institutes = Institute::getInstitutes();
             foreach ($institutes as $institute) {
-                if (!(count($perm_institutes) == 0 || in_array($institute['Institut_id'], $perm_institutes))) {
+                if (!(count($perm_institutes) == 0
+                        || in_array($institute['Institut_id'], $perm_institutes))) {
                     continue;
                 }
                 
@@ -382,7 +385,6 @@ class Lvgruppen_LvgruppenController extends MVVController
                     
             $sidebar->addWidget($widget, 'fachbereich_filter');
         }
-        
     }
 
     /**
