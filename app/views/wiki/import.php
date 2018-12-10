@@ -19,11 +19,22 @@
                 'title' => _('Suche starten'),
                 'onclick' => "jQuery(this).closest('form').submit();"
             ]) ?>
-            <?= Icon::create('decline')->asImg([
-                'class' => 'text-bottom',
-                'title' => _('Suche zurücksetzen'),
-                'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
-            ]) ?>
+            <? if ($bad_course_search): ?>
+                <a href="<?= $controller->link_for("wiki/import/{$course->id}") ?>"
+                   data-dialog="1">
+                    <?= Icon::create('decline')->asImg([
+                        'class' => 'text-bottom',
+                        'title' => _('Suche zurücksetzen'),
+                        'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
+                    ]) ?>
+                </a>
+            <? else: ?>
+                <?= Icon::create('decline')->asImg([
+                    'class' => 'text-bottom',
+                    'title' => _('Suche zurücksetzen'),
+                    'onclick' => "STUDIP.QuickSearch.reset('wiki_import_form', 'selected_course_id');"
+                ]) ?>
+            <? endif ?>
         </label>
         <? if ($bad_course_search): ?>
             <div data-dialog-button>

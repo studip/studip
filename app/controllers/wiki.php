@@ -226,7 +226,6 @@ class WikiController extends AuthenticatedController
             $this->selected_course = Course::find($this->selected_course_id);
 
             if (!$this->selected_course) {
-                PageLayout::postError(_('Die ausgewählte Veranstaltung wurde nicht gefunden!'));
                 $this->bad_course_search = true;
                 return;
             }
