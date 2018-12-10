@@ -28,7 +28,11 @@ class Lvgruppen_LvgruppenController extends MVVController
         // set navigation
         Navigation::activateItem($this->me . '/lvgruppen/lvgruppen');
         $this->filter = $this->sessGet('filter', array());
-        $this->semester_filter = $this->sessGet('semester_filter', null);
+        // set the selected semester, if not set use selected semester from
+        // my courses or the current semester
+        $this->semester_filter = $this->sessGet('semester_filter',
+                $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE
+                    ?: Semester::findCurrent()->id);
         $this->action = $action;
 
         if (Request::isXhr()) {
@@ -76,8 +80,6 @@ class Lvgruppen_LvgruppenController extends MVVController
         if ($this->semester_filter == 'no') {
             $filter['seminare.seminar_id'] = '__undefined__';
         }
-        $this->semester_filter =
-                $this->semester_filter ?: Semester::findCurrent()->id;
         $author_sql = null;
         $this->lvgruppen = Lvgruppe::getAllEnriched(
                 $this->sortby,
@@ -244,8 +246,6 @@ class Lvgruppen_LvgruppenController extends MVVController
                 (array) $this->filter);
         }
 
-        $this->semester_filter = $this->semester_filter ?: Semester::findCurrent()->getId();
-
         $this->lvgruppen = Lvgruppe::getAllEnriched(
             $this->sortby,
             $this->order,
@@ -330,10 +330,6 @@ class Lvgruppen_LvgruppenController extends MVVController
             $this->url_for('/set_filter', array('fachbereich_filter' => $selected_fachbereich)),
             'semester_filter'
         );
-
-        // set default to current semester
-        $this->semester_filter = $this->semester_filter
-                ?: Semester::findCurrent()->id;
 
         $widget->addElement(new SelectElement('all', _('Alle'),
                 $this->semester_filter == 'all'), 'sem_select-all');
