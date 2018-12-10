@@ -458,13 +458,13 @@ function export_sem($inst_id, $ex_sem_id = 'all')
                 ModuleManagementModelTreeItem::setObjectFilter('StgteilVersion', function ($version) {
                     return $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
                 });
-                $trail_classes = ['StgteilabschnittModul', 'Studiengang'];
+                $trail_classes = ['Modulteil', 'StgteilabschnittModul', 'StgteilAbschnitt', 'StgteilVersion'];
                 $mvv_object_paths = MvvCourse::get($sem_obj->id)->getTrails($trail_classes);
                 $mvv_paths = [];
 
                 foreach ($mvv_object_paths as $mvv_object_path) {
                     // show only complete paths
-                    if (count($mvv_object_path) === 2) {
+                    if (count($mvv_object_path) === 4) {
                         $mvv_object_names = [];
                         foreach ($mvv_object_path as $mvv_object) {
                             $mvv_object_names[] = $mvv_object->getDisplayName();
@@ -472,7 +472,7 @@ function export_sem($inst_id, $ex_sem_id = 'all')
                         $mvv_paths[] = implode(' > ', $mvv_object_names);
                     }
                 }
-                foreach (array_unique_recursive($mvv_paths, SORT_REGULAR) as $mvv_path) {
+                foreach ($mvv_paths as $mvv_path) {
                     $data_object .= xml_tag($val, $mvv_path);
                 }
                 $data_object .= xml_close_tag($xml_groupnames_lecture['childgroup3a']);
