@@ -594,16 +594,14 @@ class Course extends SimpleORMap implements Range, PrivacyObject
     }
 
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(User $user)
+    public static function exportUserData(StoredUserData $storage)
     {
-        $storage = new StoredUserData($user->id);
-        $sorm = self::findThru($user->user_id, [
+        $sorm = self::findThru($storage->user_id, [
             'thru_table'        => 'seminar_user',
             'thru_key'          => 'user_id',
             'thru_assoc_key'    => 'Seminar_id',
@@ -618,6 +616,5 @@ class Course extends SimpleORMap implements Range, PrivacyObject
                 $storage->addTabularData(_('Seminare'), 'seminare', $field_data);
             }
         }
-        return $storage;
     }
 }

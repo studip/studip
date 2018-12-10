@@ -179,13 +179,14 @@ class PrivacyController extends AuthenticatedController
             throw new AccessDeniedException();
         }
 
+        $storage = new StoredUserData($user_id);
         $user = User::find($user_id);
         $files = [];
 
-        $tmpname = md5(uniqid('datienexport_' . $user->username));
+        $tmpname = md5(uniqid('dateiexport_' . $user_id));
         $zipname = $GLOBALS['TMP_PATH'] . DIRECTORY_SEPARATOR . $tmpname;
 
-        $zip = new ZipArchive;
+        $zip = new ZipArchive();
         $zip->open($zipname, ZipArchive::CREATE);
 
         $avatar = Avatar::getAvatar($user_id);
@@ -194,20 +195,19 @@ class PrivacyController extends AuthenticatedController
         }
 
         // FIXME this will overwrite files with the same name in different folders
-        foreach (FileRef::findBySQL("user_id = ?", [$user_id]) as $core_fileref) {
-            FileArchiveManager::addFileRefToArchive($zip, $core_fileref, $user_id);
+        foreach (FileRef::findByUser_id($user_id) as $fileref) {
+            $storage->addFileRef($fileref);
         }
 
         foreach (PluginEngine::getPlugins('PrivacyPlugin') as $plugin) {
-            $plugin_data = $plugin->getUserData($user_id);
-            if ($plugin_data && $plugin_data->hasData()) {
-                foreach ($plugin_data->getFileData() as $file_data) {
-                    if (isset($file_data['path'])) {
-                        $zip->addFile($file_data['path'], $file_data['name']);
-                    } else {
-                        $zip->addFromString($file_data['name'], $file_data['contents']);
-                    }
-                }
+            $plugin->exportUserData($storage);
+        }
+
+        foreach ($storage->getFileData() as $file_data) {
+            if (isset($file_data['path'])) {
+                $zip->addFile($file_data['path'], $file_data['name']);
+            } else {
+                $zip->addFromString($file_data['name'], $file_data['contents']);
             }
         }
 

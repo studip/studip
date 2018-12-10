@@ -168,16 +168,14 @@ class InstituteMember extends SimpleORMap implements PrivacyObject
     }
 
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(User $user)
+    public static function exportUserData(StoredUserData $storage)
     {
-        $storage = new StoredUserData($user->id);
-        $sorm = self::findBySQL("user_id=?", array($user->user_id));
+        $sorm = self::findBySQL("user_id=?", [$storage->user_id]);
         if ($sorm) {
             $field_data = [];
             foreach ($sorm as $row) {
@@ -187,6 +185,5 @@ class InstituteMember extends SimpleORMap implements PrivacyObject
                 $storage->addTabularData(_('Einrichtungs Informationen'), 'user_inst', $field_data);
             }
         }
-        return $storage;
     }
 }

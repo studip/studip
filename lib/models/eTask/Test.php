@@ -119,16 +119,14 @@ class Test extends \SimpleORMap implements \PrivacyObject
     }
 
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(\User $user)
+    public static function exportUserData(\StoredUserData $storage)
     {
-        $storage = new \StoredUserData($user);
-        $sorm = self::findBySQL("user_id = ?", [$user->user_id]);
+        $sorm = self::findBySQL("user_id = ?", [$storage->user_id]);
         if ($sorm) {
             $field_data = [];
             foreach ($sorm as $row) {
@@ -139,10 +137,9 @@ class Test extends \SimpleORMap implements \PrivacyObject
             }
         }
 
-        $field_data = \DBManager::get()->fetchAll("SELECT * FROM etask_test_tags WHERE user_id =?", array($user->user_id));
+        $field_data = \DBManager::get()->fetchAll("SELECT * FROM etask_test_tags WHERE user_id =?", [$storage->user_id]);
         if ($field_data) {
             $storage->addTabularData(_('eTask Tests Tags'), 'etask_test_tags', $field_data);
         }
-        return $storage;
     }
 }

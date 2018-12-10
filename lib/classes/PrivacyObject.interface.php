@@ -2,11 +2,10 @@
 interface PrivacyObject
 {
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(User $user);
+    public static function exportUserData(StoredUserData $storage);
 }

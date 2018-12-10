@@ -23,22 +23,19 @@ class UserConfig extends ObjectConfig implements PrivacyObject
     protected $range_type = 'user';
 
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(User $user)
+    public static function exportUserData(StoredUserData $storage)
     {
-        $storage = new StoredUserData($user->id);
         $usr_conf = [[]];
-        foreach (new UserConfig($user->user_id) as $key => $val) {
+        foreach (new UserConfig($storage->user_id) as $key => $val) {
             $usr_conf[0][$key] = is_array($val) ? print_r($val, true) : $val;
         }
         if ($usr_conf) {
             $storage->addTabularData(_('Benutzer Konfigurationen'), 'user_config', $usr_conf);
         }
-        return $storage;
     }
 }

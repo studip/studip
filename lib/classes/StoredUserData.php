@@ -9,6 +9,8 @@
  */
 class StoredUserData
 {
+    public $user_id;
+
     protected $data = [
         'file'    => [],
         'tabular' => [],
@@ -69,10 +71,10 @@ class StoredUserData
      */
     public function addFileRef(FileRef $fileref, SimpleORMap $context = null)
     {
-        if ($file_ref->file->getURL()) {
-            $this->addFileWithContents($file_ref->name . '.url', $file_ref->file->getURL(), $context);
-        } else if ($file_ref->file->getPath()) {
-            $this->addFileAtPath($file_ref->name, $file_ref->file->getPath(), $context);
+        if ($fileref->file->getURL()) {
+            $this->addFileWithContents($fileref->name . '.url', $fileref->file->getURL(), $context);
+        } else if ($fileref->file->getPath()) {
+            $this->addFileAtPath($fileref->name, $fileref->file->getPath(), $context);
         }
     }
 

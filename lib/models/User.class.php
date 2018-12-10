@@ -1339,16 +1339,14 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     }
 
     /**
-     * Return a storage object (an instance of the StoredUserData class)
-     * enriched with the available data of a given user.
+     * Export available data of a given user into a storage object
+     * (an instance of the StoredUserData class) for that user.
      *
-     * @param User $user User object to acquire data for
-     * @return StoredUserData object
+     * @param StoredUserData $storage object to store data into
      */
-    public static function getUserdata(User $user)
+    public static function exportUserData(StoredUserData $storage)
     {
-        $storage = new StoredUserData($user->id);
-        $sorm = User::findBySQL("user_id = ?", [$user->user_id]);
+        $sorm = User::findBySQL("user_id = ?", [$storage->user_id]);
 
         if ($sorm) {
             $limit ='user_id username password perms vorname nachname email validation_key auth_plugin locked lock_comment locked_by visible';
@@ -1370,6 +1368,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             }
         }
 
-        return $storage;
+        $data = DBManager::get()->fetchAll('SELECT * FROM object_user_visits WHERE user_id = ?', [$storage->user_id]);
+        $storage->addTabularData(_('Objekt Aufrufe'), 'object_user_visits', $data);
     }
 }
