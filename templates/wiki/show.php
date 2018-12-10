@@ -25,8 +25,8 @@
                            URLHelper::getURL('', ['keyword' => $wikipage->keyword, 'cmd' => 'delete_all']),
                            _('Alle Versionen löschen'),
                            Icon::create('trash')) ?>
-                <?= $actionMenu->render() ?>
                 <? endif ?>
+                <?= $actionMenu->render() ?>
             <? endif ?>
         </nav>
     </header>
