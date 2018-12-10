@@ -1473,10 +1473,6 @@ function get_toc_content() {
 *
 **/
 function showWikiPage($keyword, $version, $special="", $show_comments="icon", $hilight=NULL) {
-    global $perm;
-
-    showPageFrameStart();
-
     // show dialogs if any..
     //
     if ($special === 'delete') {
@@ -1486,86 +1482,29 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     }
 
     $wikiData = getWikiPage($keyword, $version);
+    $content = wikiReady($wikiData["body"], TRUE, FALSE, $show_comments);
 
-    // show page logic
-    wikiSinglePageHeader($wikiData, $keyword);
-
-    $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
-    if ($perm->have_studip_perm($edit_perms, Context::getId())) {
-        if ($wikiData->isLatestVersion()) {
-            $edit = '';
-
-            if ($wikiData->isEditableBy($GLOBALS['user'])) {
-                $edit .= LinkButton::create(
-                    _('Bearbeiten'),
-                    URLHelper::getURL('', ['keyword' => $keyword, 'view' => 'edit'])
-                );
-            }
-            if ($perm->have_studip_perm('tutor', Context::getId()) && !$wikiData->isNew()) {
-                $edit .= LinkButton::create(
-                    _('Löschen'),
-                    URLHelper::getURL('', ['keyword' => $keyword, 'cmd' => 'delete', 'version' => 'latest'])
-                );
-
-                $edit .= LinkButton::create(
-                    _('Alle Versionen löschen'),
-                    URLHelper::getURL('', ['keyword' => $keyword, 'cmd' => 'delete_all'])
-                );
-
-                $edit .= LinkButton::create(
-                    _('Seiten-Einstellungen'),
-                    URLHelper::getURL('dispatch.php/wiki/change_pageperms', compact('keyword')),
-                    ['data-dialog' => 'size=auto']
-                );
-            }
-        } else {
-            $edit  = Icon::create('lock-locked', Icon::ROLE_INFO)->asImg();
-            $edit .= _('Ältere Version, nicht bearbeitbar!');
-        }
-        $edit .= "<br>&nbsp;";
-    } else {
-        $edit = '';
-    }
-
-    begin_blank_table();
-    echo "<tr>";
-    echo "<td class=\"printcontent\"><div align=\"center\">&nbsp;<br>";
-    echo $edit;
-    echo "</div></td></tr>";
-    end_blank_table();
-
-    begin_blank_table();
-    echo "<tr>\n";
-    $cont="";
-
-    $content = wikiReady($wikiData["body"],TRUE,FALSE,$show_comments);
-    $cont .= $content;
     if ($hilight) {
         // Highlighting must only take place outside HTML tags, so
         // 1. save all html tags in array $founds[0]
         // 2. replace all html tags with  \007\007
         // 3. highlight
         // 4. replace all \007\007 with corresponding saved tags
-        $founds=array();
-        preg_match_all("/<[^>].*>/U",$cont,$founds);
-        $cont=preg_replace("/<[^>].*>/U","\007\007",$cont);
-        $cont=preg_replace("/(".preg_quote(htmlReady($hilight),"/").")/i","<span style='background-color:#FFFF88'>\\1</span>",$cont,-1);
+        $founds = array();
+        preg_match_all("/<[^>].*>/U", $content, $founds);
+        $content = preg_replace("/<[^>].*>/U", "\007\007", $content);
+        $content = preg_replace("/(".preg_quote(htmlReady($hilight), "/").")/i", "<span style='background-color:#FFFF88'>\\1</span>", $content, -1);
         foreach($founds[0] as $f) {
-            $cont=preg_replace("/\007\007/",$f,$cont,1);
+            $content = preg_replace("/\007\007/", $f, $content, 1);
         }
     }
-    $num_body_lines=mb_substr_count($wikiData['body'], "\n");
-    if ($num_body_lines<15) {
-        $cont .= "<p>";
-        $cont .= str_repeat("&nbsp;<br>", 15-$num_body_lines);
-    }
-    printcontent(0,0, $cont, $edit);
-    end_blank_table();
 
-    // end showpage logic
+    $template = $GLOBALS['template_factory']->open('wiki/show.php');
+    $template->wikipage = $wikiData;
+    $template->content  = $content;
+    echo $template->render();
 
     getShowPageInfobox($keyword, $wikiData->isLatestVersion());
-    showPageFrameEnd();
 }
 
 /**
@@ -1605,10 +1544,7 @@ function showDiffs($keyword, $versions_since)
         throw new InvalidArgumentException(_('Es gibt keine zu vergleichenden Versionen.'));
     }
 
-    showPageFrameStart();
-    wikiSinglePageHeader($wikiData, $keyword);
-
-    echo "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+    $content = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 
     $version     = array_shift($versions);
     $last        = $version['body'];
@@ -1616,7 +1552,7 @@ function showDiffs($keyword, $versions_since)
     $zusatz      = getZusatz($version);
 
     foreach ($versions as $version) {
-        echo '<tr>';
+        $content .= '<tr>';
         $current        = $version['body'];
         $currentversion = $version['version'];
 
@@ -1624,8 +1560,8 @@ function showDiffs($keyword, $versions_since)
         $diffarray .= "<table cellpadding=0 cellspacing=0 border=0 width=\"100%\">\n";
         $diffarray .= do_diff($current, $last);
         $diffarray .= "</table>\n";
-        printcontent(0, 0, $diffarray, '');
-        echo '</tr>';
+        $content .= printcontent(0, 0, $diffarray, '', false);
+        $content .= '</tr>';
 
         $last        = $current;
         $lastversion = $currentversion;
@@ -1634,10 +1570,16 @@ function showDiffs($keyword, $versions_since)
             break;
         }
     }
-    echo '</table>';
+    $content .= '</table>';
+
+    $wikiData = getWikiPage($keyword, null);
+
+    $template = $GLOBALS['template_factory']->open('wiki/show.php');
+    $template->wikipage = $wikiData;
+    $template->content  = $content;
+    echo $template->render();
 
     getDiffPageInfobox($keyword);
-    showPageFrameEnd();
 
     // help texts
     $help = _('Die Ansicht zeigt den Verlauf der Textänderungen einer Wiki-Seite.');
@@ -1678,10 +1620,7 @@ function showComboDiff($keyword, $db=NULL)
     $version2=$version2["version"];
     $version1=$version1["version"];
 
-    showPageFrameStart();
-    wikiSinglePageHeader($wikiData, $keyword);
-
-    echo "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
+    $content = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
 
     // create combodiff
 
@@ -1703,28 +1642,28 @@ function showComboDiff($keyword, $db=NULL)
         }
         $current_version++;
     }
-    $content="<table>";
+    $legend="<table>";
     $count=0;
     $authors=array();
     foreach ($diffarray1 as $i) {
         if ($i && !in_array($i->who, $authors)) {
             $authors[]=$i->who;
             if ($count % 4 == 0) {
-                $content.= "<tr width=\"100%\">";
+                $legend.= "<tr width=\"100%\">";
             }
-            $content.= "<td bgcolor=".create_color($count)." width=14>&nbsp;</td><td><font size=-1>".get_fullname($i->who,'full',1)."</font></td><td>&nbsp;</td>";
+            $legend.= "<td bgcolor=".create_color($count)." width=14>&nbsp;</td><td><font size=-1>".get_fullname($i->who,'full',1)."</font></td><td>&nbsp;</td>";
             if ($count % 4 == 3) {
-                $content .= "</tr>";
+                $legend .= "</tr>";
             }
             $count++;
         }
     }
-    echo "<tr><td class=\"table_row_even\" colspan=2>";
-    echo "<p><font size=-1>&nbsp;<br>";
-    echo _("Legende der Autor/-innenfarben:");
-    echo "<table cellpadding=6 cellspacing=6>$content</table>\n";
-    echo "</p>";
-    echo "<table cellpadding=0 cellspacing=0 width=\"100%\">";
+    $content .= "<tr><td colspan=2>";
+    $content .= "<p><font size=-1>&nbsp;<br>";
+    $content .= _("Legende der Autor/-innenfarben:");
+    $content .= "<table cellpadding=6 cellspacing=6>$legend</table>\n";
+    $content .= "</p>";
+    $content .= "<table cellpadding=0 cellspacing=0 width=\"100%\">";
     $last_author=None;
     $collect="";
     $diffarray1[]=NULL;
@@ -1733,14 +1672,14 @@ function showComboDiff($keyword, $db=NULL)
             if (trim($collect)!="") {
                 $idx=array_search($last_author, $authors);
                 $col=create_color($idx);
-                echo "<tr bgcolor=$col>";
-                echo "<td width=30 align=center valign=top>";
-                echo Icon::create('info-circle', 'inactive', ['title' => _("Änderung von").' ' . get_fullname($last_author)])->asImg();
-                echo "</td>";
-                echo "<td><font size=-1>";
-                echo wikiReady($collect);
-                echo "</font></td>";
-                echo "</tr>";
+                $content .= "<tr bgcolor=$col>";
+                $content .= "<td width=30 align=center valign=top>";
+                $content .= Icon::create('info-circle', 'inactive', ['title' => _("Änderung von").' ' . get_fullname($last_author)])->asImg();
+                $content .= "</td>";
+                $content .= "<td><font size=-1>";
+                $content .= wikiReady($collect);
+                $content .= "</font></td>";
+                $content .= "</tr>";
             }
             $collect="";
         }
@@ -1749,10 +1688,17 @@ function showComboDiff($keyword, $db=NULL)
             $collect .= $i->text;
         }
     }
-    echo "</table></td></tr>";
-    echo "</table>     ";
+    $content .= "</table></td></tr>";
+    $content .= "</table>     ";
+
+    $wikiData = getWikiPage($keyword, null);
+
+    $template = $GLOBALS['template_factory']->open('wiki/show.php');
+    $template->wikipage = $wikiData;
+    $template->content  = $content;
+    echo $template->render();
+
     getDiffPageInfobox($keyword);
-    showPageFrameEnd();
 
     // help texts
     $help = array(
