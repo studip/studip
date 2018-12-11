@@ -649,6 +649,7 @@ function listPages($mode, $sortby = NULL)
         $template->versionsortlink = $versionsortlink;
         $template->changesortlink  = $changesortlink;
         $template->pages           = $pages;
+        $template->lastlogindate   = $lastlogindate;
         echo $template->render();
     }
 
