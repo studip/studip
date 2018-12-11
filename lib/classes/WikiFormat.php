@@ -14,17 +14,17 @@
 
 class WikiFormat extends StudipFormat
 {
-    private static $wiki_rules = array(
-        'wiki-comments' => array(
+    private static $wiki_rules = [
+        'wiki-comments' => [
             'start'    => '\[comment(=.*?)\](.*?)\[\/comment\]',
             'callback' => 'WikiFormat::markupWikiComments'
-        ),
-        'wiki-links' => array(
+        ],
+        'wiki-links' => [
             'start'    => '\[\[(.*?)(?:\|(.*?))?\]\]',
             'callback' => 'WikiFormat::markupWikiLinks',
             'before'   => 'links'
-        ),
-    );
+        ],
+    ];
 
     /**
      * Adds a new markup rule to the wiki markup set. This can
@@ -69,14 +69,15 @@ class WikiFormat extends StudipFormat
      * Returns a single markup-rule if it exists.
      * @return array: array('start' => "...", 'end' => "...", 'callback' => "...")
      */
-    public static function getWikiMarkup($name) {
+    public static function getWikiMarkup($name)
+    {
         return self::$wiki_rules[$name];
     }
 
     /**
      * Removes a markup rule from the wiki markup set.
      *
-     * @param string $name      name of the rule
+     * @param string $name Name of the rule
      */
     public static function removeWikiMarkup($name)
     {
@@ -102,51 +103,81 @@ class WikiFormat extends StudipFormat
 
     /**
      * Stud.IP markup for wiki-comments
+     *
+     * @param  StudipFormat $markup  Markup object
+     * @param  array        $matches Found matches
+     * @return string
      */
     protected static function markupWikiComments($markup, $matches)
     {
         $from = mb_substr($matches[1], 1);
         $comment = $matches[2];
 
-        if (Request::get("wiki_comments") === "all") {
+        if (Request::get('wiki_comments') === 'all') {
             $commenttmpl = "<table style=\"border:thin solid;margin: 5px;\" bgcolor=\"#ffff88\"><tr><td><font size=-1><b>"._("Kommentar von")." %1\$s:</b>&nbsp;</font></td></tr><tr class=steelgrau><td class=steelgrau><font size=-1>%2\$s</font></td></tr></table>";
-            return sprintf($commenttmpl,
+            return sprintf(
+                $commenttmpl,
                 $from,
                 $comment
             );
-        } elseif(Request::get("wiki_comments") !== "none") {
+        } elseif (Request::get('wiki_comments') !== "none") {
             $from = decodeHTML($from);
             $comment = decodeHTML($comment); //because tooltip already escapes
             return sprintf(
-                    '<a href="javascript:void(0);" %s>'.
-                        Icon::create('chat2', 'status-yellow').
-                    '</a>',
-                tooltip(sprintf("%s %s: %s", _("Kommentar von"), $from, $comment), TRUE, TRUE)
+                '<a href="javascript:void(0);" %s>%s</a>',
+                tooltip(sprintf("%s %s: %s", _("Kommentar von"), $from, $comment), true, true),
+                Icon::create('chat2', Icon::ROLE_STATUS_YELLOW)
             );
         } else {
-            return "";
+            return '';
         }
 
     }
 
-    protected static function markupWikiLinks($markup, $matches) {
-        $page = decodeHTML($matches[1]);
-        $display_page = $matches[2] ? $markup->format($matches[2]) : htmlReady($page);
+    /**
+     * Stud.IP markup for wiki links
+     *
+     * @param  StudipFormat $markup  Markup object
+     * @param  array        $matches Found matches
+     * @return string
+     */
+    protected static function markupWikiLinks($markup, $matches)
+    {
+        $keyword = decodeHTML($matches[1]);
+        $display_page = $matches[2] ? $markup->format($matches[2]) : htmlReady($keyword);
 
-        if (keywordExists($page, Context::getId())) {
-            return sprintf('<a href="%s">%s</a>',
-                URLHelper::getLink("wiki.php", array('keyword' => $page)),
-                $display_page
-            );
-        } else {
+        $page = WikiPage::findLatestPage(Context::getId(), $keyword);
+
+        // Page does not exist
+        if (!$page) {
             return sprintf('<a href="%s">%s(?)</a>',
-                URLHelper::getLink("wiki.php", array(
-                    'keyword' => $page,
+                URLHelper::getLink('wiki.php', [
+                    'keyword' => $keyword,
                     'view' => 'editnew'
-                )),
+                ]),
                 $display_page
             );
         }
+
+        // Page is visible to current user
+        if ($page->isVisibleTo($GLOBALS['user'])) {
+            return sprintf(
+                '<a href="%s">%s</a>',
+                URLHelper::getLink('wiki.php', compact('keyword')),
+                $display_page
+            );
+        }
+
+        // Page is not visible to current user and show be displayed accordingly
+        return sprintf(
+            '<a href="%s" class="wiki-restricted" title="%s">%s</a>',
+            URLHelper::getLink('wiki.php', compact('keyword')),
+            sprintf(
+                _('Sie haben keine Berechtigung, die Seite %s zu lesen!'),
+                htmlReady($keyword)
+            ),
+            $display_page
+        );
     }
 
 }

@@ -46,20 +46,18 @@ $keyword = Request::get('keyword');
 $version = Request::int('version');
 $cmd = Request::option('cmd');
 
-if ($view=="wikiprint") {
+if ($view === 'wikiprint') {
     printWikiPage($keyword, $version);
     page_close();
     die();
-} elseif ($view=="wikiprintall") {
+} elseif ($view === 'wikiprintall') {
     printAllWikiPages(Context::getId(), Context::getHeaderLine());
     page_close();
     die();
-} elseif ($view=="export_pdf") {
-    include_once 'lib/classes/exportdocument/ExportPDF.class.php';
+} elseif ($view === 'export_pdf') {
     exportWikiPagePDF($keyword, $version);
-} elseif ($view=="exportall_pdf") {
-    include_once 'lib/classes/exportdocument/ExportPDF.class.php';
-    exportAllWikiPagesPDF("all", Request::option('sortby'));
+} elseif ($view === 'exportall_pdf') {
+    exportAllWikiPagesPDF('all', Request::option('sortby'));
 }
 
 checkObject(); // do we have an open object?
@@ -75,12 +73,12 @@ if (in_array(Request::get('view'), words('listnew listall export'))) {
     Navigation::activateItem('/course/wiki/show');
 }
 
-if (Request::option('wiki_comments')=="all") {         // show all comments
-    $show_wiki_comments="all";
-} elseif (Request::option('wiki_comments')=="none") {  // don't show comments
-    $show_wiki_comments="none";
+if (Request::option('wiki_comments') === 'all') {         // show all comments
+    $show_wiki_comments = 'all';
+} elseif (Request::option('wiki_comments') === 'none') {  // don't show comments
+    $show_wiki_comments = 'none';
 } else {                             // show comments as icons
-    $show_wiki_comments="icon";
+    $show_wiki_comments = 'icon';
 }
 
 URLHelper::addLinkParam('wiki_comments', $show_wiki_comments);
@@ -89,67 +87,69 @@ ob_start();
 
 // ---------- Start of main WikiLogic
 
-if ($view=="listall") {
+if ($view === 'listall') {
     //
     // list all pages, default sorting = alphabetically
     //
-    SkipLinks::addIndex(_("Alle Seiten"), 'main_content', 100);
-    listPages("all", Request::option('sortby'));
+    SkipLinks::addIndex(_('Alle Seiten'), 'main_content', 100);
+    listPages('all', Request::option('sortby'));
 
-} else if ($view=="listnew") {
+} else if ($view === 'listnew') {
     //
     // list new pages, default sorting = newest first
     //
-    SkipLinks::addIndex(_("Neue Seiten"), 'main_content', 100);
-    listPages("new", Request::option('sortby'));
+    SkipLinks::addIndex(_('Neue Seiten'), 'main_content', 100);
+    listPages('new', Request::option('sortby'));
 
-} else if ($view=="diff") {
+} else if ($view === 'diff') {
     //
     // show one large diff-file containing all changes
     //
-    SkipLinks::addIndex(_("Seite mit Änderungen"), 'main_content', 100);
+    SkipLinks::addIndex(_('Seite mit Änderungen'), 'main_content', 100);
     showDiffs($keyword, Request::option('versionssince'));
 
-} else if ($view=="combodiff") {
+} else if ($view === 'combodiff') {
     //
     // show one large diff-file containing all changes
     //
-    SkipLinks::addIndex(_("Seite mit Änderungen"), 'main_content', 100);
+    SkipLinks::addIndex(_('Seite mit Änderungen'), 'main_content', 100);
     showComboDiff($keyword);
 
-} else if ($view=="export") {
+} else if ($view === 'export') {
     //
     // show export dialog
     //
-    SkipLinks::addIndex(_("Seiten exportieren"), 'wiki_export', 100);
+    SkipLinks::addIndex(_('Seiten exportieren'), 'wiki_export', 100);
     exportWiki();
 
-} else if ($view=="search") {
+} else if ($view === 'search') {
     searchWiki(Request::get('searchfor'), Request::get('searchcurrentversions'), Request::get('keyword'), Request::get('localsearch'));
 
-} else if ($view=="edit") {
+} else if ($view === 'edit') {
     //
     // show page for editing
     //
-    if (!$perm->have_studip_perm("autor", Context::getId())) {
-        throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu editieren!'));
-    }
 
     // prevent malformed urls: keyword must be set
     if (!$keyword) {
         throw new InvalidArgumentException(_('Es wurde keine zu editierende Seite übergeben!'));
     }
-    SkipLinks::addIndex(_("Seite bearbeiten"), 'main_content', 100);
 
-    $wikiData=getWikiPage($keyword,0); // always get newest page
+    $wikiData = getWikiPage($keyword, 0); // always get newest page
+
+    if ($wikiData && !$wikiData->isEditableBy($GLOBALS['user'])) {
+        throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu editieren!'));
+    }
+
+    SkipLinks::addIndex(_('Seite bearbeiten'), 'main_content', 100);
 
     // set lock
     setWikiLock(null, $user->id, Context::getId(), $keyword);
 
-    //show form
+    // show form
     wikiEdit($keyword, $wikiData, $user->id);
 
-} else if ($view=='editnew') {
+} else if ($view === 'editnew') {
     //
     // edit a new page
     //
@@ -169,7 +169,10 @@ if ($view=="listall") {
 
     // warning in the case of an existing wiki page
     if ($wikiData && !$wikiData->isNew()) {
-        PageLayout::postInfo(sprintf(_('Die Wiki-Seite "%s" existiert bereits. Änderungen hier überschreiben diese Seite!'), htmlReady($keyword)));
+        PageLayout::postInfo(sprintf(
+            _('Die Wiki-Seite "%s" existiert bereits. Änderungen hier überschreiben diese Seite!'),
+            htmlReady($keyword)
+        ));
     }
 
     // set lock
@@ -182,63 +185,63 @@ if ($view=="listall") {
     // Default action: Display WikiPage (+ logic for submission)
     //
     if (empty($keyword)) {
-        $keyword='WikiWikiWeb'; // display Start page as default
+        $keyword = 'WikiWikiWeb'; // display Start page as default
     }
     releaseLocks($keyword); // kill old locks
-    $special="";
+    $special = '';
 
     if (Request::submitted('submit')) {
         //
         // Page was edited and submitted
         //
         submitWikiPage($keyword, $version, Studip\Markup::purifyHtml(Request::get('body')), $user->id, Context::getId());
-        $version=""; // $version="" means: get latest
+        $version = ''; // $version="" means: get latest
 
-    } else if ($cmd == "abortedit") { // Editieren abgebrochen
+    } else if ($cmd === 'abortedit') { // Editieren abgebrochen
         //
         // Editing page was aborted
         //
-        releasePageLocks($keyword, $user->id); // kill lock (set when starting to edit)
-        if (Request::quoted('lastpage')) { // if editing new page was aborted, display last page again
-            $keyword=Request::quoted('lastpage');
-        }
 
-    } else if ($cmd == "delete") {
+        // kill lock (set when starting to edit)
+        releasePageLocks($keyword, $user->id);
+
+        // if editing new page was aborted, display last page again
+        $keyword = Request::get('lastpage', $keyword);
+
+    } else if ($cmd === 'delete') {
         //
         // Delete request sent -> confirmdialog and current page
         //
-        $special="delete";
+        $special = 'delete';
 
-    } else if ($cmd == "really_delete") {
+    } else if ($cmd === 'really_delete') {
         //
         // Delete was confirmed -> really delete
         //
 
-        $keyword=deleteWikiPage($keyword, $version, Context::getId());
-        $version=""; // show latest version
-
-    } else if ($cmd == "delete_all") {
+        $keyword = deleteWikiPage($keyword, $version, Context::getId());
+        $version = ''; // show latest version
+    } else if ($cmd === 'delete_all') {
         //
         // Delete all request sent -> confirmdialog and current page
         //
-        $special="delete_all";
+        $special = 'delete_all';
 
-    } else if ($cmd == "really_delete_all") {
+    } else if ($cmd === 'really_delete_all') {
         //
         // Delete all was confirmed -> delete entire page
         //
-        $keyword=deleteAllWikiPage($keyword, Context::getId());
-        $version=""; // show latest version
+        $keyword = deleteAllWikiPage($keyword, Context::getId());
+        $version = ''; // show latest version
     }
 
     //
     // Show Page
     //
-    SkipLinks::addIndex(_("Aktuelle Seite"), 'main_content', 100);
+    SkipLinks::addIndex(_('Aktuelle Seite'), 'main_content', 100);
 
     $range_id = Context::getId();
-    $config = WikiPageConfig::find([$range_id, $keyword]);
-    if (!$config || !$config->read_restricted || $perm->have_studip_perm('tutor', $range_id)) {
+    if (WikiPage::findLatestPage($range_id, $keyword)->isVisibleTo($GLOBALS['user']->id)) {
         showWikiPage($keyword, $version, $special, $show_wiki_comments, Request::get('hilight'));
     } else {
         throw new AccessDeniedException(sprintf(

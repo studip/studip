@@ -43,3 +43,12 @@ body#wiki #main_content td.printcontent:last-child:not(:first-child) {
 .no-js #wiki button[name="submit-and-edit"] {
     display: none;
 }
+
+a.wiki-restricted {
+    @icon-size: 12px;
+    .background-icon('lock-locked', 'info', @icon-size);
+    background-position: left center;
+    background-repeat: no-repeat;
+
+    padding-left: @icon-size;
+}

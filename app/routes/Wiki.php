@@ -75,7 +75,7 @@ class Wiki extends \RESTAPI\RouteMap
             $last_version = new \WikiPage(array($course_id, $keyword, 0));
         }
 
-        if (!$last_version->isCreatableBy($user_id = $GLOBALS['user']->id)) {
+        if (!$last_version->isEditableBy($user_id = $GLOBALS['user']->id)) {
             $this->error(401);
         }
 
