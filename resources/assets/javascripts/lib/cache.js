@@ -68,14 +68,22 @@
  */
 
 // Use localstorage or dummy
-const cache = window.localStorage || new class {
-    constructor() { this.length = 0; }
-    clear()       {}
-    getItem()     { return undefined; }
-    key()         { return undefined; }
-    removeItem()  {}
-    setItem()     {}
-};
+var cache;
+try {
+    let test_key = '__storageTest123';
+    window.localStorage.setItem(test_key, 'foo');
+    window.localStorage.removeItem(test_key);
+    cache = window.localStorage;
+} catch (e) {
+    cache = new class {
+        constructor() { this.length = 0; }
+        clear()       {}
+        getItem()     { return undefined; }
+        key()         { return undefined; }
+        removeItem()  {}
+        setItem()     {}
+    };
+}
 
 // Initialized browser session?
 const now = new Date().getTime();
@@ -111,23 +119,20 @@ class Cache {
      * @return mixed false if item is not found, item's value otherwise
      */
     locate(index) {
-        // Prefix index
         index = this.prefix + index;
 
-        const now = new Date().getTime();
-
-        // Locate item in cache
         if (cache.hasOwnProperty(index)) {
-            // Fetch item and decode it
+            const now = new Date().getTime();
+
             let item = JSON.parse(cache.getItem(index));
-            // Check expiration
+
             if (!item.expires || item.expires > now) {
                 return item.value;
             }
-            // Expired, invalidate
+
             cache.removeItem(index);
         }
-        // Item not found
+
         return undefined;
     }
 
@@ -169,10 +174,8 @@ class Cache {
      * @param mixed  expires Optional storage duration in seconds
      */
     set(index, value, expires) {
-        // Prefix index
         index = this.prefix + index;
 
-        // Determine which cache to use and store the value
         cache.setItem(index, JSON.stringify({
             value: value,
             expires: expires ? new Date().getTime() + expires * 1000 : false,
@@ -188,7 +191,6 @@ class Cache {
     remove(index) {
         index = this.prefix + index;
 
-        // Locate item in cache
         if (this.has(index)) {
             cache.removeItem(index);
         }
