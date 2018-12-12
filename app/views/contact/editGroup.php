@@ -1,8 +1,8 @@
-<form class="default" method="post" action="<?= $controller->link_for('contact/editGroup/' . $this->group->id) ?>'"
+<form class="default" method="post" action="<?= $controller->link_for('contact/editGroup/' . $group->id) ?>'"
     <? CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend class="hide-in-dialog">
-            <? if ($this->group->isNew()) : ?>
+            <? if ($group->isNew()) : ?>
                 <?= _('Gruppe anlegen') ?>
             <? else : ?>
                 <?= _('Gruppe bearbeiten') ?>
@@ -12,12 +12,12 @@
             <span class="required"><?= _('Gruppenname') ?></span>
             <input required type="text" name="name"
                    placeholder="<?= _('Gruppenname') ?>"
-                   value='<?= htmlReady($this->group->name) ?>'>
+                   value='<?= htmlReady($group->name) ?>'>
         </label>
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept($this->group->isNew() ? _('Anlegen') : _('Speichern'), 'store') ?>
+        <?= Studip\Button::createAccept($group->isNew() ? _('Anlegen') : _('Speichern'), 'store') ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
             $controller->url_for('contact/index')
