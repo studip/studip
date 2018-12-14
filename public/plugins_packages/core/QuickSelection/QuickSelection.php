@@ -35,16 +35,14 @@ class QuickSelection extends StudIPPlugin implements PortalPlugin
 
     private function getFilteredNavigation($items)
     {
+        $result = [];
+
         $navigation = Navigation::getItem('/start');
-        $result = array();
-
-
         foreach ($navigation as $name => $nav) {
             // if config is new (key:value) display values which are not in config array
             // otherwise hide items which are not in config array
             // This is important for patching.
-            if (!in_array($name, array_keys($items)) ||
-                (in_array($name, array_keys($items)) && $items[$name] !== 'deactivated')) {
+            if (!isset($items[$name]) || $items[$name] !== 'deactivated') {
                 $result[] = $nav;
             }
         }
@@ -54,15 +52,20 @@ class QuickSelection extends StudIPPlugin implements PortalPlugin
 
     public function save_action()
     {
-        if (get_config('QUICK_SELECTION') === NULL) {
-            Config::get()->create('QUICK_SELECTION', array('range' => 'user', 'type' => 'array', 'description' => 'Einstellungen des QuickSelection-Widgets'));
+        if (Config::get()->QUICK_SELECTION === null) {
+            Config::get()->create('QUICK_SELECTION', [
+                'range'       => 'user',
+                'type'        => 'array',
+                'description' => 'Einstellungen des QuickSelection-Widgets',
+            ]);
         }
 
         $add_removes = Request::optionArray('add_removes');
 
         // invert add_removes so that only unchecked values are stored into config
+        $names = [];
+
         $navigation = Navigation::getItem('/start');
-        $names = array();
         foreach ($navigation as $name => $nav) {
             if (!in_array($name, $add_removes)) {
                 $names[$name] = 'deactivated';
