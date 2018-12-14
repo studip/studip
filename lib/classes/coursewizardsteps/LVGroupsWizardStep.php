@@ -139,7 +139,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             if (isset($c->stat)) {
                 if ($c->stat != 'genehmigt') {
                     continue;
-                } elseif (isset($c->start)) {
+                } elseif (isset($c->start) || isset($c->end)) {
                     $mvv_start = Semester::find($c->start);
                     $mvv_start = $mvv_start ? $mvv_start->beginn : 0;
                     $mvv_end = Semester::find($c->end);
