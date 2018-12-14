@@ -45,7 +45,7 @@
             <? else: ?>
                 <input required type="text" id="beginn" name="beginn"
                        <? if (isset($errors['beginn'])) echo 'class="invalid"'; ?>
-                       data-date-picker='{"<":"#ende"}'
+                       data-date-picker
                        value="<? if ($semester->beginn) echo date('d.m.Y', $semester->beginn) ?>">
             <? endif; ?>
         </label>

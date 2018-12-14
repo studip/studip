@@ -16,7 +16,7 @@
         <label class="col-3">
             <?= _('Ferienbeginn') ?>:
             <input required type="text" id="beginn" name="beginn"
-                   data-date-picker='{"<=":"#ende"}'
+                   data-date-picker
                    value="<? if ($holiday->beginn) echo date('d.m.Y', $holiday->beginn) ?>">
            </label>
 

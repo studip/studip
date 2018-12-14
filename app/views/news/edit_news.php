@@ -68,7 +68,7 @@
 
             <input type="text" class="news_date news_prevent_submit"
                    name="news_startdate" id="news_startdate"
-                   data-date-picker='{"<=":"#news_enddate"}'
+                   data-date-picker
                    value="<? if ($news['date']) echo date('d.m.Y', $news['date']); ?>"
                    aria-label="<?= _('Einstelldatum') ?>" required>
         </label>
