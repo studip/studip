@@ -25,9 +25,15 @@ class LoginBackground extends SimpleORMap
      *
      * @param Array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'loginbackgrounds';
+
+        $config['registered_callbacks']['after_delete'][] = function ($pic) {
+            if (file_exists($pic->getPath())) {
+                unlink($pic->getPath());
+            }
+        };
 
         parent::configure($config);
     }
@@ -38,8 +44,9 @@ class LoginBackground extends SimpleORMap
     public function getURL()
     {
         return URLHelper::getURL(
-            self::getRelativePath() . '/' . $this->id
-            . '.' . pathinfo($this->filename, PATHINFO_EXTENSION),
+            $GLOBALS['DYNAMIC_CONTENT_URL']
+                . self::getRelativePath()
+                . "/{$this->id}.{$this->getExtension()}",
             null,
             true
         );
@@ -50,8 +57,7 @@ class LoginBackground extends SimpleORMap
      */
     public function getPath()
     {
-        return self::getPictureDirectory() . DIRECTORY_SEPARATOR
-             . $this->id . '.' . pathinfo($this->filename, PATHINFO_EXTENSION);
+        return self::getPictureDirectory() . "/{$this->id}.{$this->getExtension()}";
     }
 
     /**
@@ -71,15 +77,12 @@ class LoginBackground extends SimpleORMap
     }
 
     /**
-     * Deletes the current picture by removing all data from database and file system.
-     * @return int
+     * @return string The picture's extension
      */
-    public function delete()
+    public function getExtension()
     {
-        unlink($this->getPath());
-        return parent::delete();
+        return pathinfo($this->filename, PATHINFO_EXTENSION);
     }
-
 
     /**
      * Provides a random picture for the given view.
@@ -92,7 +95,7 @@ class LoginBackground extends SimpleORMap
             throw new Exception('Unknown view mode');
         }
 
-        $pic = self::findOneBySQL($view . " = 1 ORDER BY RAND() LIMIT 1");
+        $pic = self::findOneBySQL("{$view} = 1 ORDER BY RAND() LIMIT 1");
         return $pic;
     }
 
@@ -101,7 +104,7 @@ class LoginBackground extends SimpleORMap
      */
     public static function getRelativePath()
     {
-        return 'pictures' . DIRECTORY_SEPARATOR . 'loginbackgrounds';
+        return '/loginbackgrounds';
     }
 
     /**
@@ -109,8 +112,7 @@ class LoginBackground extends SimpleORMap
      */
     public static function getPictureDirectory()
     {
-        return $GLOBALS['STUDIP_BASE_PATH'] . DIRECTORY_SEPARATOR
-             . 'public' . DIRECTORY_SEPARATOR . self::getRelativePath();
+        return $GLOBALS['DYNAMIC_CONTENT_PATH'] . self::getRelativePath();
     }
 
 }

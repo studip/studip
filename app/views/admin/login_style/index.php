@@ -1,4 +1,4 @@
-<?php if (count($pictures) > 0) : ?>
+<? if (count($pictures) > 0) : ?>
     <table class="default">
         <caption>
             <?= _('Hintergrundbilder für den Startbildschirm') ?>
@@ -17,7 +17,9 @@
                 <th><?= _('Aktionen') ?></th>
             </tr>
         </thead>
-        <?php foreach ($pictures as $pic) : $dim = $pic->getDimensions(); ?>
+        <? foreach ($pictures as $pic) :
+            $dim = $pic->getDimensions();
+        ?>
             <tr>
                 <td>
                     <?= htmlReady($pic->filename) ?>
@@ -29,31 +31,34 @@
                     <img src="<?= $pic->getURL() ?>" width="400">
                 </td>
                 <td>
-                    <a href="<?= $controller->url_for('admin/loginstyle/activation', $pic->id, 'desktop', (int) !$pic->desktop) ?>">
-                        <?= Icon::create('computer', $pic->desktop ? 'clickable' : 'inactive', [
+                    <a href="<?= $controller->link_for("admin/loginstyle/activation/{$pic->id}/desktop", (int) !$pic->desktop) ?>">
+                        <?= Icon::create('computer', $pic->desktop ? Icon::ROLE_CLICKABLE : Icon::ROLE_INACTIVE)->asImg(32, [
                             'title' => $pic->desktop
                                      ? _('Bild nicht mehr für die Desktopansicht verwenden')
                                      : _('Bild für die Desktopansicht verwenden')
-                        ])->asImg(32) ?>
+                        ]) ?>
                     </a>
-                    <a href="<?= $controller->url_for('admin/loginstyle/activation', $pic->id, 'mobile', (int) !$pic->mobile) ?>">
-                        <?= Icon::create('cellphone', $pic->mobile ? 'clickable' : 'inactive', [
+                    <a href="<?= $controller->link_for("admin/loginstyle/activation/{$pic->id}/mobile", (int) !$pic->mobile) ?>">
+                        <?= Icon::create('cellphone', $pic->mobile ? Icon::ROLE_CLICKABLE : Icon::ROLE_INACTIVE)->asImg(32, [
                             'title' => $pic->mobile
                                      ? _('Bild nicht mehr für die Mobilansicht verwenden')
                                      : _('Bild für die Mobilansicht verwenden')
-                        ])->asImg(32) ?>
+                        ]) ?>
                     </a>
                 </td>
-                <td>
-                <?php if (!$pic->in_release): ?>
-                    <a href="<?= $controller->url_for('admin/loginstyle/delete', $pic->id) ?>">
-                        <?= Icon::create('trash', 'clickable', ['title' => _('Bild löschen')]) ?>
+                <td class="actions">
+                <? if (!$pic->in_release): ?>
+                    <a href="<?= $controller->link_for("admin/loginstyle/delete/{$pic->id}") ?>">
+                        <?= Icon::create('trash')->asImg([
+                            'title'        => _('Bild löschen'),
+                            'data-confirm' => _('Soll das Bild wirklich gelöscht werden?'),
+                        ]) ?>
                     </a>
-                <?php endif; ?>
+                <? endif; ?>
                 </td>
             </tr>
-        <?php endforeach ?>
+        <? endforeach ?>
     </table>
-<?php else : ?>
+<? else : ?>
     <?= PageLayout::postInfo(_('In Ihrem System sind leider keine Bilder für den Startbildschirm hinterlegt.')) ?>
-<?php endif ?>
+<? endif ?>
