@@ -1,10 +1,9 @@
-<? use Studip\Button; ?>
-
-<?
+<?php
 $genders = [
         _('unbekannt'),
         _('männlich'),
         _('weiblich'),
+        _('divers'),
 ];
 ?>
 
@@ -19,7 +18,7 @@ $genders = [
 <? endif; ?>
 
 <form id="edit_userdata" method="post" name="pers" class="default"
-      action="<?= $controller->url_for('settings/account/store') ?>"
+      action="<?= $controller->link_for('settings/account/store') ?>"
         <? if (!$restricted) echo 'data-validate="true"'; ?>>
     <?= CSRFProtection::tokenTag() ?>
     <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
@@ -157,6 +156,6 @@ $genders = [
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
+        <?= Studip\Button::create(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
     </footer>
 </form>

@@ -180,6 +180,12 @@ use Studip\Button, Studip\LinkButton;
                             <?= $disable_field ? 'readonly' : 'name="geschlecht"' ?>>
                     <?= _('weiblich') ?>
                 </label>
+                <label>
+                    <input type="radio" value="3"
+                            <? if ($user->geschlecht == 3) echo 'checked'; ?>
+                            <?= $disable_field ? 'readonly' : 'name="geschlecht"' ?>>
+                    <?= _('divers') ?>
+                </label>
             </div>
         </section>
     </fieldset>

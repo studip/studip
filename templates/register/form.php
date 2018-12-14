@@ -116,18 +116,27 @@ jQuery(document).ready(function() {
 
         <section class="hgroup" id="gender">
             <label>
-                <input type="radio" <? if (!$geschlecht) echo 'checked' ?> name="geschlecht" value="0">
-                <?= _("unbekannt") ?>
+                <input type="radio" name="geschlecht" value="0"
+                       <? if (!$geschlecht) echo 'checked' ?>>
+                <?= _('unbekannt') ?>
             </label>
 
             <label>
-                <input type="radio" <? if ($geschlecht == 1) echo "checked" ?> name="geschlecht" value="1">
-                <?= _("männlich") ?>
+                <input type="radio" name="geschlecht" value="1"
+                       <? if ($geschlecht == 1) echo "checked" ?>>
+                <?= _('männlich') ?>
             </label>
 
             <label>
-                <input type="radio" name="geschlecht" <? if ($geschlecht == 2) echo "checked" ?> value="2">
-                <?= _("weiblich") ?>
+                <input type="radio" name="geschlecht" value="2"
+                       <? if ($geschlecht == 2) echo "checked" ?>>
+                <?= _('weiblich') ?>
+            </label>
+
+            <label>
+                <input type="radio" name="geschlecht" value="3"
+                       <? if ($geschlecht == 3) echo "checked" ?>>
+                <?= _('divers') ?>
             </label>
         </section>
 

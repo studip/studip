@@ -74,19 +74,27 @@ use Studip\Button, Studip\LinkButton;
             <?= _("Geschlecht:") ?>
             <div class="hgroup">
                 <label>
-                    <input id="unknown" type="radio"<?= (!$user['geschlecht']) ? ' checked' : '' ?> name="geschlecht" value="0">
-                    <?= _("unbekannt") ?>
+                    <input id="unknown" type="radio" name="geschlecht" value="0"
+                           <? if (!$user['geschlecht']) echo 'checked'; ?>>
+                    <?= _('unbekannt') ?>
                 </label>
 
                 <label>
-                    <input id="male" type="radio"<?= ($user['geschlecht'] == 1) ? ' checked' : '' ?> name="geschlecht" value="1">
-                    <?= _("männlich") ?>
+                    <input id="male" type="radio" name="geschlecht" value="1"
+                           <? if ($user['geschlecht'] == 1) echo 'checked'; ?>>
+                    <?= _('männlich') ?>
                 </label>
 
                 <label>
-                    <input id="female" type="radio"<?= ($user['geschlecht'] == 2) ? ' checked' : '' ?> name="geschlecht" value="2">
-                    <?= _("weiblich") ?>
+                    <input id="female" type="radio" name="geschlecht" value="2"
+                           <? if ($user['geschlecht'] == 2) echo 'checked'; ?>>
+                    <?= _('weiblich') ?>
                 </label>
+
+                <label>
+                    <input id="diverse" type="radio" name="geschlecht" value="3"
+                           <? if ($user['geschlecht'] == 3) echo 'checked'; ?>>
+                    <?= _('divers') ?>
             </div>
         </section>
 

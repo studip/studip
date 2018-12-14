@@ -45,8 +45,9 @@ class UserInfo extends SimpleORMap
      * Constants for column geschlecht
      */
     const GENDER_UNKNOWN = 0;
-    const GENDER_FEMALE = 2;
     const GENDER_MALE = 1;
+    const GENDER_FEMALE = 2;
+    const GENDER_DIVERSE = 3;
 
     protected static function configure($config = array())
     {
