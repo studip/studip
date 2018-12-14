@@ -5,7 +5,11 @@
             <fieldset>
             <? foreach ($links as $key=>$nav) : ?>
                 <label>
-                    <input type="checkbox" name="add_removes[]" value="<?= htmlReady($key) ?>" <?= empty($config) || in_array($key, $config) ? 'checked' : ''?>>
+                    <!-- values which are not in $config are displayed checked,
+                    but checked values will be returned via add_removes[]  and be stored with a 'deactivated' value-->
+                    <input type="checkbox" name="add_removes[]" value="<?= htmlReady($key) ?>"
+                        <?= empty($config) || !in_array($key, array_keys($config))
+                        || (in_array($key, array_keys($config)) && $config[$key] !== 'deactivated') ? 'checked' : ''?>>
                     <?= htmlReady($nav->getTitle()) ?>
                 </label>
             <? endforeach ?>

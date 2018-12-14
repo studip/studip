@@ -38,8 +38,13 @@ class QuickSelection extends StudIPPlugin implements PortalPlugin
         $navigation = Navigation::getItem('/start');
         $result = array();
 
+
         foreach ($navigation as $name => $nav) {
-            if (empty($items) || in_array($name, $items)) {
+            // if config is new (key:value) display values which are not in config array
+            // otherwise hide items which are not in config array
+            // This is important for patching.
+            if (!in_array($name, array_keys($items)) ||
+                (in_array($name, array_keys($items)) && $items[$name] !== 'deactivated')) {
                 $result[] = $nav;
             }
         }
@@ -53,7 +58,18 @@ class QuickSelection extends StudIPPlugin implements PortalPlugin
             Config::get()->create('QUICK_SELECTION', array('range' => 'user', 'type' => 'array', 'description' => 'Einstellungen des QuickSelection-Widgets'));
         }
 
-        $names = Request::optionArray('add_removes');
+        $add_removes = Request::optionArray('add_removes');
+
+        // invert add_removes so that only unchecked values are stored into config
+        $navigation = Navigation::getItem('/start');
+        $names = array();
+        foreach ($navigation as $name => $nav) {
+            if (!in_array($name, $add_removes)) {
+                $names[$name] = 'deactivated';
+            }
+
+        }
+
         WidgetHelper::addWidgetUserConfig($GLOBALS['user']->id, 'QUICK_SELECTION', $names);
 
         $template_factory = new Flexi_TemplateFactory(__DIR__ . '/templates');
