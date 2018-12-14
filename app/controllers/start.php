@@ -202,8 +202,6 @@ class StartController extends AuthenticatedController
      * @param string $widgetId
      * @param string $approveDelete
      * @param string $studipticket
-     *
-     * @return void
      */
     public function delete_action($id)
     {
@@ -224,13 +222,13 @@ class StartController extends AuthenticatedController
                     PageLayout::postError($message);
                 }
             }
-        } else {
+        } elseif ($widget_name = WidgetHelper::getWidgetName($id)) {
             PageLayout::postQuestion(
                 sprintf(
                     _('Sind Sie sicher, dass Sie das Widget "%s" von der Startseite entfernen möchten?'),
-                    htmlReady(WidgetHelper::getWidgetName($id))
+                    htmlReady($widget_name)
                 ),
-                $this->url_for('start/delete/' . $id)
+                $this->url_for("start/delete/{$id}")
             );
         }
         $this->redirect('start');

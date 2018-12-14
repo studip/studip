@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * WidgetHelper.php - utility functions for Widget-Parameter Handling
  *
  *
@@ -18,7 +18,6 @@
 
 class WidgetHelper
 {
-
     /**
      * array of submitted widget parameter values
      */
@@ -33,7 +32,7 @@ class WidgetHelper
      * Set the last active Widget
      * @param string $activeWidget
      */
-    static function setActiveWidget($activeWidget)
+    public static function setActiveWidget($activeWidget)
     {
         self::$activeWidget = $activeWidget;
     }
@@ -46,7 +45,7 @@ class WidgetHelper
      *
      * @return the position as array matrix
      */
-    static function getWidgetPosition($pluginid)
+    public static function getWidgetPosition($pluginid)
     {
         $query = "SELECT position FROM widget_user where id = ?";
         $statement = DBManager::get()->prepare($query);
@@ -63,7 +62,7 @@ class WidgetHelper
      *
      * @return void
      */
-    static function storeNewPositions($widget, $position, $column)
+    public static function storeNewPositions($widget, $position, $column)
     {
         $db = DBManager::get();
         $oldWidget = $db->fetchOne("SELECT position,col FROM widget_user WHERE id = ? AND range_id = ?", array($widget, $GLOBALS['user']->id));
@@ -89,7 +88,7 @@ class WidgetHelper
      *
      * @return void
      */
-    static function addInitialPositions($col, $ids, $range_id)
+    public static function addInitialPositions($col, $ids, $range_id)
     {
         if(is_array($ids)) {
              foreach ($ids as $pos => $id) {
@@ -110,52 +109,52 @@ class WidgetHelper
      *
      * @return boolean success
      */
-     static function storeInitialPositions($col, $ids, $perm)
-     {
-         $stmt = DBManager::get()->prepare('DELETE FROM widget_default WHERE `perm` = ? AND `col` = ?;');
-         $stmt->execute(array($perm, $col));
+    public static function storeInitialPositions($col, $ids, $perm)
+    {
+        $stmt = DBManager::get()->prepare('DELETE FROM widget_default WHERE `perm` = ? AND `col` = ?;');
+        $stmt->execute(array($perm, $col));
 
-         if (is_array($ids)) {
-             foreach ($ids as $id => $pos) {
-                 if ($id != ""){
-                     $pos = intVal($pos);
-                     $stmt = DBManager::get()->prepare("REPLACE INTO widget_default (`pluginid`,`col`, `position`, `perm`) VALUES (?,?,?,?);");
-                     $stmt->execute(array($id, $col, $pos, $perm));
-                 }
-             }
+        if (is_array($ids)) {
+            foreach ($ids as $id => $pos) {
+                if ($id) {
+                    $pos = intVal($pos);
+                    $stmt = DBManager::get()->prepare("REPLACE INTO widget_default (`pluginid`,`col`, `position`, `perm`) VALUES (?,?,?,?);");
+                    $stmt->execute(array($id, $col, $pos, $perm));
+                }
+            }
 
-             return true;
-         }
+            return true;
+        }
 
-         return false;
-     }
+        return false;
+    }
 
-     static function getInitialPositions($perm)
-     {
-         return DBManager::get()->fetchGroupedPairs("SELECT col, pluginid, position FROM widget_default "
-                 . "WHERE perm = ? "
-                 . "ORDER BY col ASC, position ASC", array($perm));
-     }
+    public static function getInitialPositions($perm)
+    {
+        return DBManager::get()->fetchGroupedPairs("SELECT col, pluginid, position FROM widget_default "
+                . "WHERE perm = ? "
+                . "ORDER BY col ASC, position ASC", array($perm));
+    }
 
-     /**
-      * Sets the current setting of a user as the default for a usergroup
-      *
-      * @param string $range_id The range id of the user that defines the setting
-      * @param string $group The usergroup
-      */
-     static function setAsInitialPositions($range_id, $group)
-     {
-         DBManager::get()->execute('DELETE FROM widget_default WHERE `perm` = ?', array($group));
-         DBManager::get()->execute('INSERT INTO widget_default (SELECT pluginid, col, position, ? as perm  FROM widget_user WHERE range_id = ?)', array($group, $range_id));
-     }
+    /**
+     * Sets the current setting of a user as the default for a usergroup
+     *
+     * @param string $range_id The range id of the user that defines the setting
+     * @param string $group The usergroup
+     */
+    public static function setAsInitialPositions($range_id, $group)
+    {
+        DBManager::get()->execute('DELETE FROM widget_default WHERE `perm` = ?', array($group));
+        DBManager::get()->execute('INSERT INTO widget_default (SELECT pluginid, col, position, ? as perm  FROM widget_user WHERE range_id = ?)', array($group, $range_id));
+    }
 
-     /**
-      * setInitialPositions - copies the default to the logged on user
-      */
-     static function setInitialPositions()
-     {
-         DBManager::get()->execute('INSERT INTO widget_user (pluginid, position, range_id, col) (SELECT pluginid, position, ?, col as perm  FROM widget_default WHERE perm = ?)', array($GLOBALS['user']->id, $GLOBALS['perm']->get_perm()));
-     }
+    /**
+     * setInitialPositions - copies the default to the logged on user
+     */
+    public static function setInitialPositions()
+    {
+        DBManager::get()->execute('INSERT INTO widget_user (pluginid, position, range_id, col) (SELECT pluginid, position, ?, col as perm  FROM widget_default WHERE perm = ?)', array($GLOBALS['user']->id, $GLOBALS['perm']->get_perm()));
+    }
 
     /**
      * getUserWidgets - retrieves the widget settings for a given user
@@ -164,7 +163,7 @@ class WidgetHelper
      *
      * @return array $widgets
      */
-    static function getUserWidgets($id, $col = 0)
+    public static function getUserWidgets($id, $col = 0)
     {
         $plugin_manager = PluginManager::getInstance();
         $query = "SELECT * FROM widget_user WHERE range_id=? AND col = ? ORDER BY position";
@@ -191,7 +190,7 @@ class WidgetHelper
      *
      * @return void
      */
-    static function addWidgetUserConfig($id, $pluginName, $confArray )
+    public static function addWidgetUserConfig($id, $pluginName, $confArray )
     {
         UserConfig::get($id)->store($pluginName, $confArray );
     }
@@ -205,7 +204,7 @@ class WidgetHelper
      *
      * @return object UserConfig
      */
-    static function getWidgetUserConfig($id, $pluginName)
+    public static function getWidgetUserConfig($id, $pluginName)
     {
         return UserConfig::get($id)->getValue($pluginName);
 
@@ -220,7 +219,7 @@ class WidgetHelper
      *
      * @return bool success
      */
-    static function removeWidget($id, $pluginName, $range_id)
+    public static function removeWidget($id, $pluginName, $range_id)
     {
         UserConfig::get($range_id)->delete($pluginName);
 
@@ -262,7 +261,7 @@ class WidgetHelper
      *
      * @return string widget_name
      */
-    static function getWidgetName($id)
+    public static function getWidgetName($id)
     {
         $query = "SELECT `pluginid` FROM `widget_user` WHERE `id`=?";
         $statement = DBManager::get()->prepare($query);
@@ -271,7 +270,7 @@ class WidgetHelper
 
         $plugin_manager = PluginManager::getInstance();
         $plugin_info = $plugin_manager->getPluginById($pid['pluginid']);
-        return $plugin_info->getPluginName();
+        return $plugin_info ? $plugin_info->getPluginName() : false;
 
     }
 
@@ -283,7 +282,7 @@ class WidgetHelper
      *
      * @return object widget
      */
-    static function getWidget($pluginid)
+    public static function getWidget($pluginid)
     {
         return PluginManager::getInstance()->getPluginById($pluginid);
     }
@@ -295,7 +294,7 @@ class WidgetHelper
      *
      * @return array All available widgets.
      */
-    static function getAvailableWidgets($user_id = null)
+    public static function getAvailableWidgets($user_id = null)
     {
         $all_widgets = PluginEngine::getPlugins('PortalPlugin');
 
