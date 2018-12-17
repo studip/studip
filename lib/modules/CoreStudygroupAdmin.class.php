@@ -25,7 +25,7 @@ class CoreStudygroupAdmin implements StudipModule {
             $navigation->setActiveImage(Icon::create('admin', 'info'));
 
             $navigation->addSubNavigation('main', new Navigation(_('Verwaltung'), 'dispatch.php/course/studygroup/edit/'.$course_id));
-            $navigation->addSubNavigation('avatar', new Navigation(_('Infobild'), 'dispatch.php/course/avatar/update/'.$course_id));
+            $navigation->addSubNavigation('avatar', new Navigation(_('Infobild'), 'dispatch.php/avatar/update/course/'. $course_id .'?cid=' . $course_id));
 
             if (!$GLOBALS['perm']->have_perm('admin')) {
                 if (get_config('VOTE_ENABLE')) {
