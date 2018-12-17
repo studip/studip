@@ -240,8 +240,8 @@ if ($view === 'listall') {
     //
     SkipLinks::addIndex(_('Aktuelle Seite'), 'main_content', 100);
 
-    $range_id = Context::getId();
-    if (WikiPage::findLatestPage($range_id, $keyword)->isVisibleTo($GLOBALS['user']->id)) {
+    $page = WikiPage::findLatestPage(Context::getId(), $keyword);
+    if (!$page || $page->isVisibleTo($GLOBALS['user']->id)) {
         showWikiPage($keyword, $version, $special, $show_wiki_comments, Request::get('hilight'));
     } else {
         throw new AccessDeniedException(sprintf(
