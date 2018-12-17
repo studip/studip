@@ -176,7 +176,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
         $start = self::findLatestPage($course_id, '');
 
         if (!$start) {
-            $start = new self([$course_id, 'WikiWikWeb', 0]);
+            $start = new self([$course_id, 'WikiWikiWeb', 0]);
             $start->body = _('Dieses Wiki ist noch leer.');
 
             if ($start->isEditableBy($GLOBALS['user'])) {
