@@ -71,11 +71,13 @@ class Course_StudygroupController extends AuthenticatedController
      * @param string id of a studygroup
      * @return void
      */
-    public function details_action()
+    public function details_action($id = null)
     {
         global $perm;
 
-        $id = Context::getId();
+        if (!$id) {
+            $id = Context::getId();
+        }
 
         $studygroup = new Seminar($id);
         if (Request::isXhr()) {
