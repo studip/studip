@@ -6,7 +6,7 @@ use Studip\Button, Studip\LinkButton;
 
 <?= $this->render_partial("course/studygroup/_feedback") ?>
 
-<form action="<?= $controller->url_for('course/studygroup/update/'.$sem_id) ?>" method="post" class="default">
+<form action="<?= $controller->url_for('course/studygroup/update/', ['cid' => $sem_id]) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend>

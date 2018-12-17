@@ -91,8 +91,8 @@ class BlubberUser extends User implements BlubberContact {
         if ($posting['context_type'] === "course" && !$GLOBALS['perm']->have_studip_perm("user", $posting['Seminar_id'], $this->getId())) {
             $body .= "\n\n" .
                     _("Sie sind noch kein Mitglied der zugehörigen Veranstaltung. Melden Sie sich erst hier an, damit Sie den Blubber sehen können: ") .
-                    ($GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Course::find($posting['Seminar_id'])->status]['class']]['studygroup_mode'] 
-                        ? $GLOBALS['ABSOLUTE_URI_STUDIP']."dispatch.php/course/studygroup/details/".$posting['Seminar_id']
+                    ($GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Course::find($posting['Seminar_id'])->status]['class']]['studygroup_mode']
+                        ? $GLOBALS['ABSOLUTE_URI_STUDIP']."dispatch.php/course/studygroup/details/?cid=" . $posting['Seminar_id']
                         : $GLOBALS['ABSOLUTE_URI_STUDIP']."dispatch.php/course/details?sem_id=".$posting['Seminar_id']);
         }
         $mention_text = _("Sie wurden erwähnt.");

@@ -12,7 +12,7 @@
 class CoreStudygroupAdmin implements StudipModule {
 
     function getIconNavigation($course_id, $last_visit, $user_id) {
-        $navigation = new Navigation(_('Verwaltung'), 'dispatch.php/course/studygroup/edit/'.$course_id);
+        $navigation = new Navigation(_('Verwaltung'), 'dispatch.php/course/studygroup/edit/?cid=' . $course_id);
         $navigation->setImage(Icon::create('admin', 'inactive', ["title" => _('Verwaltung')]));
         return $navigation;
     }
@@ -24,7 +24,7 @@ class CoreStudygroupAdmin implements StudipModule {
             $navigation->setImage(Icon::create('admin', 'info_alt'));
             $navigation->setActiveImage(Icon::create('admin', 'info'));
 
-            $navigation->addSubNavigation('main', new Navigation(_('Verwaltung'), 'dispatch.php/course/studygroup/edit/'.$course_id));
+            $navigation->addSubNavigation('main', new Navigation(_('Verwaltung'), 'dispatch.php/course/studygroup/edit/?cid='.$course_id));
             $navigation->addSubNavigation('avatar', new Navigation(_('Infobild'), 'dispatch.php/avatar/update/course/'. $course_id .'?cid=' . $course_id));
 
             if (!$GLOBALS['perm']->have_perm('admin')) {

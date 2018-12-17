@@ -1027,7 +1027,7 @@ class MyRealmModel
     {
         if ($my_obj["modules"]["participants"]) {
             if (SeminarCategories::GetByTypeId($my_obj['status'])->studygroup_mode) {
-                $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/' . $object_id);
+                $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/?cid=' . $object_id);
             } else {
                 $nav = new Navigation('participants', 'dispatch.php/course/members/index');
             }

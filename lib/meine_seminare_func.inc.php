@@ -609,7 +609,7 @@ function get_my_obj_values (&$my_obj, $user_id)
                     }
                 }
                 if (SeminarCategories::GetByTypeId($my_obj[$object_id]['sem_status'])->studygroup_mode) {
-                    $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/'. $object_id);
+                    $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/?cid='. $object_id);
                 } else {
                     $nav = new Navigation('participants', 'dispatch.php/course/members/index');
                 }
@@ -640,7 +640,7 @@ function get_my_obj_values (&$my_obj, $user_id)
 
             if ($my_obj[$object_id]["modules"]["participants"]) {
                 if (SeminarCategories::GetByTypeId($my_obj[$object_id]['sem_status'])->studygroup_mode) {
-                    $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/'. $object_id);
+                    $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/?cid='. $object_id);
                 } else {
                     $nav = new Navigation('participants', 'dispatch.php/course/members/index');
                 }

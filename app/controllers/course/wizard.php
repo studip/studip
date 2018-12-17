@@ -185,7 +185,7 @@ class Course_WizardController extends AuthenticatedController
                                 sprintf(_('Die Studien-/Arbeitsgruppe "%s" wurde angelegt. ' .
                                     'Sie können sie direkt hier weiter verwalten.'),
                                     htmlReady($this->course->name)));
-                            $target = $this->url_for('course/studygroup/edit/' . $this->course->id . '?cid=' . $this->course->id);
+                            $target = $this->url_for('course/studygroup/edit/?cid=' . $this->course->id);
                             // "Normal" course.
                         } else {
                             if (Request::int('dialog')) {

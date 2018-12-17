@@ -49,7 +49,7 @@ class AvatarController extends AuthenticatedController
             } else {
                 $class = 'CourseAvatar';
             }
-            $this->cancel_link = $this->url_for('avatar/update/course', $id);
+            $this->cancel_link = $this->url_for('avatar/update/course?cid=' . $id);
         }
 
         if (!$has_perm) {
@@ -101,7 +101,7 @@ class AvatarController extends AuthenticatedController
             $studygroup_mode = $sem->getSemClass()->offsetget('studygroup_mode');
             if ($studygroup_mode) {
                 $class = 'StudygroupAvatar';
-                $redirect = 'course/studygroup/edit/' . $id;
+                $redirect = 'course/studygroup/edit/?cid=' . $id;
             } else {
                 $class = 'CourseAvatar';
                 $redirect = 'course/management';
@@ -182,7 +182,7 @@ class AvatarController extends AuthenticatedController
             $studygroup_mode = $sem->getSemClass()->offsetget('studygroup_mode');
             if ($studygroup_mode) {
                 $class = 'StudygroupAvatar';
-                $redirect = 'course/studygroup/edit/' . $id;
+                $redirect = 'course/studygroup/edit/?cid=' . $id;
             } else {
                 $class = 'CourseAvatar';
                 $redirect = 'course/management';

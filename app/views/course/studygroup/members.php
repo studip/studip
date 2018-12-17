@@ -58,11 +58,11 @@
                             </a>
                         </td>
                         <td class="actions">
-                            <a href="<?= $controller->url_for('course/studygroup/edit_members/' . $sem_id . '/accept?user=' . $p->username) ?>">
+                            <a href="<?= $controller->url_for('course/studygroup/edit_members/accept?user=' . $p->username, ['cid' => $sem_id]) ?>">
                                 <?= Icon::create('accept', 'clickable', ['title' => _('Eintragen')])->asImg() ?>
                             </a>
 
-                            <a href="<?= $controller->url_for('course/studygroup/edit_members/' . $sem_id . '/deny?user=' . $p->username) ?>" data-confirm="<?= _('Wollen Sie die Mitgliedschaft wirklich ablehnen?') ?>">
+                            <a href="<?= $controller->url_for('course/studygroup/edit_members/deny?user=' . $p->username, ['cid' => $sem_id]) ?>" data-confirm="<?= _('Wollen Sie die Mitgliedschaft wirklich ablehnen?') ?>">
                                 <?= Icon::create('trash', 'clickable', ['title' => _('Mitgliedschaft ablehnen')])->asImg() ?>
                             </a>
                         </td>
@@ -103,7 +103,7 @@
                             </a>
                         </td>
                         <td class="actions">
-                            <a href="<?= $controller->url_for('course/studygroup/edit_members/' . $sem_id . '/cancelInvitation?user=' . $p['username']) ?>" data-confirm="<?= _('Wollen Sie die Einladung wirklich löschen?') ?>">
+                            <a href="<?= $controller->url_for('course/studygroup/edit_members/cancelInvitation?user=' . $p['username'], ['cid' => $sem_id]) ?>" data-confirm="<?= _('Wollen Sie die Einladung wirklich löschen?') ?>">
                                 <?= Icon::create('trash', 'clickable', ['title' => _('Einladung löschen')])->asImg() ?>
                             </a>
                         </td>

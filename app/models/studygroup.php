@@ -645,7 +645,7 @@ class StudygroupModel
                 get_fullname($user_id),
                 $sem->getName(),
                 URLHelper::getlink(
-                    "{$GLOBALS['ABSOLUTE_URI_STUDIP']}dispatch.php/course/studygroup/members/{$sem->id}",
+                    "{$GLOBALS['ABSOLUTE_URI_STUDIP']}dispatch.php/course/studygroup/members/?cid={$sem->id}",
                     ['cid' => $sem->id]
                 )
             );
@@ -656,7 +656,7 @@ class StudygroupModel
                 get_fullname($user_id),
                 $sem->getName(),
                 URLHelper::getlink(
-                    "{$GLOBALS['ABSOLUTE_URI_STUDIP']}dispatch.php/course/studygroup/members/{$sem->id}",
+                    "{$GLOBALS['ABSOLUTE_URI_STUDIP']}dispatch.php/course/studygroup/members/?cid={$sem->id}",
                     ['cid' => $sem->id]
                 )
             );

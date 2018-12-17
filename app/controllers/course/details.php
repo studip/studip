@@ -54,7 +54,10 @@ class Course_DetailsController extends AuthenticatedController
             if ($GLOBALS['perm']->have_studip_perm('autor', $this->course->id)) { // participants may see seminar_main
                 $link = URLHelper::getUrl('seminar_main.php', array('auswahl' => $this->course->id));
             } else {
-                $link = URLHelper::getUrl('dispatch.php/course/studygroup/details/' . $this->course->id, array('send_from_search_page' => $this->send_from_search_page));
+                $link = URLHelper::getUrl('dispatch.php/course/studygroup/details', [
+                    'send_from_search_page' => $this->send_from_search_page,
+                    'cid' => $this->course_id
+                ]);
             }
             $this->redirect($link);
             return;
