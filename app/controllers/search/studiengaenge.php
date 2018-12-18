@@ -173,7 +173,12 @@ class Search_StudiengaengeController extends MVVController
             // Studiengangteil-Bezeichnungen)
             $this->data = array();
             foreach ($studiengangTeile as $teil) {
-                $this->data[$teil->getId()] = $teil->fach->getDisplayName();
+                $filter = function ($version) {
+                    return $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
+                };
+                if (count($teil->versionen->filter($filter)) > 0) {
+                    $this->data[$teil->getId()] = $teil->fach->getDisplayName();
+                }
             }
             if (!$this->verlauf_url) {
                 $this->verlauf_url = '/verlauf';
