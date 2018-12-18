@@ -1,4 +1,6 @@
-<h1><?= _('Lehrveranstaltungsgruppen') ?></h1>
+<legend>
+    <?= _('Lehrveranstaltungsgruppen') ?>
+</legend>
 <div id="assigned" data-ajax-url="<?= $ajax_url ?>" data-forward-url="<?= $no_js_url ?>">
     <h2>
         <span class="required">

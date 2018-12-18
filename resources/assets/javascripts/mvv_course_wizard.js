@@ -161,6 +161,7 @@ MVV.CourseWizard = {
                     .attr('type', 'checkbox')
                     .attr('id', values.id);
                 var label = $('<label>')
+                    .addClass('undecorated')
                     .attr('for', values.id)
                     .attr(
                         'onclick',
