@@ -152,6 +152,8 @@ class Avatar {
     {
         $this->user_id = $user_id;
         $this->username = $username;
+
+        $this->checkAvatarVisibility();
     }
 
 
@@ -164,7 +166,6 @@ class Avatar {
      * @return string    the absolute file path to the avatar
      */
     function getFilename($size, $ext = 'png') {
-        $this->checkAvatarVisibility();
         return $this->is_customized()
             ? $this->getCustomAvatarPath($size, $ext)
             : $this->getNobody()->getCustomAvatarPath($size, $ext);
@@ -181,7 +182,6 @@ class Avatar {
      */
     # TODO (mlunzena) in Url umbenennen
     function getURL($size, $ext = 'png') {
-        $this->checkAvatarVisibility();
         return $this->is_customized()
             ? $this->getCustomAvatarUrl($size, $ext)
             : $this->getNobody()->getCustomAvatarUrl($size, $ext);
@@ -194,9 +194,10 @@ class Avatar {
      * @return boolean    returns TRUE if the user customized her picture, FALSE
      *                                    otherwise.
      */
-    function is_customized() {
-        return $this->user_id !== Avatar::NOBODY &&
-                     file_exists($this->getCustomAvatarPath(Avatar::MEDIUM));
+    public function is_customized()
+    {
+        return $this->user_id !== Avatar::NOBODY
+            && file_exists($this->getCustomAvatarPath(Avatar::MEDIUM));
     }
 
 
