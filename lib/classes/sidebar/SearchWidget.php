@@ -12,8 +12,8 @@ class SearchWidget extends SidebarWidget
     const INDEX = 'search';
 
     protected $url;
-    protected $needles = array();
-    protected $filters = array();
+    protected $needles = [];
+    protected $filters = [];
     protected $method = 'get';
     protected $id = null;
 
@@ -29,8 +29,6 @@ class SearchWidget extends SidebarWidget
         $this->url      = $url ?: $_SERVER['REQUEST_URI'];
         $this->title    = _('Suche');
         $this->template = 'sidebar/search-widget';
-
-        $this->needles = $needles;
     }
 
     /**
@@ -86,7 +84,7 @@ class SearchWidget extends SidebarWidget
     public function addNeedle($label, $name, $placeholder = false, SearchType $quick_search = null, $js_func = null, $value = null)
     {
         $value = $value ?: Request::get($name);
-        $this->needles[] = compact(words('label name placeholder value quick_search js_func'));
+        $this->needles[] = compact(['label', 'name', 'placeholder', 'value', 'quick_search',  'js_func']);
     }
 
     /**
@@ -119,7 +117,7 @@ class SearchWidget extends SidebarWidget
      * @param Array $variables Unused variables parameter
      * @return String containing the html output of the widget
      */
-    public function render($variables = array())
+    public function render($variables = [])
     {
         $query = parse_url($this->url, PHP_URL_QUERY);
         if ($query) {
