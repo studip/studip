@@ -13,8 +13,23 @@
 $sidebar = Sidebar::get();
 $sidebar->setImage('sidebar/literature-sidebar.png');
 $widget = new ActionsWidget();
-$widget->addLink(_('Literatur importieren'), URLHelper::getLink('dispatch.php/literature/import_list?return_range='.$_range_id), Icon::create('literature+add', 'clickable'), array('data-dialog' => ''));
-$widget->addLink(_('Neue Literatur anlegen'), URLHelper::getLink('dispatch.php/literature/edit_element?_range_id=new_entry&return_range='.$_range_id), Icon::create('literature+add', 'clickable'), array('data-dialog' => ''));
+
+$widget->addLink(
+        _('Neue Literaturliste'),
+    URLHelper::getLink('dispatch.php/literature/edit_list?cmd=NewItem&item_id=root&foo='. DbView::get_uniqid() .'#anchor'),
+        Icon::create('add', Icon::ROLE_CLICKABLE, tooltip2(_('Eine neue Literaturliste anlegen')))
+);
+
+$widget->addLink(
+        _('Neue Literatur anlegen'),
+        URLHelper::getLink('dispatch.php/literature/edit_element?_range_id=new_entry&return_range='.$_range_id),
+        Icon::create('literature+add', 'clickable'), array('data-dialog' => '')
+);
+$widget->addLink(
+    _('Literatur importieren'),
+    URLHelper::getLink('dispatch.php/literature/import_list?return_range='.$_range_id),
+    Icon::create('literature+add', 'clickable'), array('data-dialog' => '')
+);
 $sidebar->addWidget($widget);
 ob_start();
 ?>
