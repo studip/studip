@@ -56,10 +56,12 @@
     }
 
     .action-menu-item {
-        padding: 0;
+        line-height: 1;
+        padding: 3px 0;
+
         a {
             margin: 0;
-            padding: 3px 0;
+            padding: 0;
             display: block;
 
             &[disabled] {
@@ -67,11 +69,16 @@
             }
         }
 
-        img, svg, .action-menu-no-icon, input[type="image"] {
-            margin: 0 0.25em;
-            .square(@icon-size);
+        a img,
+        a svg,
+        .action-menu-no-icon,
+        input[type="image"] {
             display: inline-block;
+            margin: 0 0.25em;
             vertical-align: bottom;
+
+            width: @icon-size;
+            height: @icon-size;
         }
         > label {
             color: @base-color;
