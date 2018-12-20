@@ -157,7 +157,7 @@ class Course_StudygroupController extends AuthenticatedController
             $ashare = new ShareWidget();
             $ashare->addCopyableLink(
                 _('Link zu dieser Studiengruppe kopieren'),
-                $this->link_for("course/studygroup/details", ['cid' => $studygroup->id]),
+                $this->link_for("course/studygroup/details/" . $studygroup->id, ['cid' => null]),
                 Icon::create('group')
             );
             $sidebar->addWidget($ashare);
@@ -909,7 +909,7 @@ class Course_StudygroupController extends AuthenticatedController
             $msg     = new Messaging();
             $sem     = new Seminar($id);
             $message = sprintf(_("%s möchte Sie auf die Studiengruppe %s aufmerksam machen. Klicken Sie auf den untenstehenden Link, um direkt zur Studiengruppe zu gelangen.\n\n %s"),
-                get_fullname(), $sem->name, URLHelper::getlink("dispatch.php/course/studygroup/details", ['cid' => $id]));
+                get_fullname(), $sem->name, URLHelper::getlink("dispatch.php/course/studygroup/details/" . $cid, ['cid' => null]));
             $subject = _("Sie wurden in eine Studiengruppe eingeladen");
             $msg->insert_message($message, get_username($receiver), '', '', '', '', '', $subject);
 
