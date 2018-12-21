@@ -62,7 +62,7 @@
 <body id="body">
     <h1>
         <button id="toggle">
-            <?= _('Grund anzeigen / verstecken') ?>
+            <?= _('Grund anzeigen / verbergen') ?>
         </button>
 
         <?= sprintf(

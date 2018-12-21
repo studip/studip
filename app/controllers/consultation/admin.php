@@ -261,7 +261,7 @@ class Consultation_AdminController extends ConsultationController
         $this->block->room = Request::get('room');
         $this->block->store();
 
-        PageLayout::postSuccess(_('Der Sprechstundenblock wurden gespeichert.'));
+        PageLayout::postSuccess(_('Der Sprechstundenblock wurde gespeichert.'));
         $this->redirect("consultation/admin#block-{$block_id}");
     }
 
@@ -371,7 +371,7 @@ class Consultation_AdminController extends ConsultationController
                 );
             }
 
-            PageLayout::postSuccess(_('Der Grund für die Sprechstundenbuchung wurde bearbeitet'));
+            PageLayout::postSuccess(_('Der Grund für die Sprechstundenbuchung wurde bearbeitet.'));
             $this->redirect("consultation/admin#block-{$this->booking->slot->block_id}");
         }
     }

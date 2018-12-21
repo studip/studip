@@ -9,10 +9,10 @@ $days_of_the_week = [
     _('Sonntag')    => 0
 ];
 $intervals = [
-    _('wöchentlich') => 1,
-    ('zweiwöchig')  => 2,
-    _('dreiwöchig')  => 3,
-    _('monatlich')   => 4,
+    _('wöchentlich')     => 1,
+    _('zweiwöchentlich') => 2,
+    _('dreiwöchentlich') => 3,
+    _('monatlich')       => 4,
 ];
 ?>
 
@@ -119,7 +119,7 @@ $intervals = [
     <? if ($course_search): ?>
         <label>
             <?= _('Zugewiesene Veranstaltung') ?>
-            <?= tooltipIcon(_('Wählen Sie hier eine Veranstaltung aus, so sind die Sprechstundentermine nur für Teilnehmer der gewählten Veranstaltung sichtbar und können auch nur von diesen belegt werden')) ?>
+            <?= tooltipIcon(_('Wählen Sie hier eine Veranstaltung aus, damit die Sprechstundentermine nur für Teilnehmer der gewählten Veranstaltung sichtbar sind und auch nur von diesen belegt werden können.')) ?>
             <?= $course_search->render() ?>
         </label>
     <? endif; ?>

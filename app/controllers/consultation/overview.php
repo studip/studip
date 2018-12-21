@@ -63,7 +63,7 @@ class Consultation_OverviewController extends ConsultationController
                     $booking->user
                 );
 
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert'));
+                PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert.'));
             }
 
             $this->redirect("consultation/overview#block-{$block_id}");
