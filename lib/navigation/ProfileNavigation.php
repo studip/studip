@@ -1,21 +1,13 @@
 <?php
-# Lifter010: TODO
-/*
+/**
  * ProfilNavigation.php - navigation for user profile page
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * @author      Elmar Ludwig
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
- */
-
-/**
  * Navigation for the user's profile page. This page includes all
  * information about a user and allows editing this data.
+ *
+ * @author   Elmar Ludwig
+ * @license  GPL version 2 or any later version
+ * @category Stud.IP
  */
 class ProfileNavigation extends Navigation
 {
@@ -24,24 +16,14 @@ class ProfileNavigation extends Navigation
      */
     public function __construct()
     {
-
         parent::__construct(_('Profil'));
     }
 
     public function initItem()
     {
-        global $user;
         parent::initItem();
-        $db = DBManager::get();
 
-        $time = $user->cfg->PROFILE_LAST_VISIT ? $user->cfg->PROFILE_LAST_VISIT : $user->cfg->LAST_LOGIN_TIMESTAMP;
-
-        $hp_txt = _('Zu Ihrer Profilseite');
-        $hp_link = 'dispatch.php/profile';
-
-        $hp_txt .= sprintf(' (%s, %s)', $user->username, $user->perms);
-        $this->setURL($hp_link);
-        //$this->setImage(Icon::create('person', 'navigation', ["title" => $hp_txt]), ["class" => $hp_class]);
+        $this->setURL('dispatch.php/profile');
     }
 
     /**
@@ -91,7 +73,7 @@ class ProfileNavigation extends Navigation
                 $navigation->addSubNavigation('studies', new Navigation(_('Studiendaten'), 'dispatch.php/settings/studies'));
             }
 
-            if ($current_user->perms != 'root') {
+            if ($current_user->perms !== 'root') {
                 if (count(UserDomain::getUserDomains())) {
                     $navigation->addSubNavigation('userdomains', new Navigation(_('Nutzerdomänen'), 'dispatch.php/settings/userdomains'));
                 }
@@ -110,11 +92,11 @@ class ProfileNavigation extends Navigation
                 $navigation->addSubNavigation('privacy', new Navigation(_('Privatsphäre'), 'dispatch.php/settings/privacy'));
                 $navigation->addSubNavigation('messaging', new Navigation(_('Nachrichten'), 'dispatch.php/settings/messaging'));
 
-                if (get_config('CALENDAR_ENABLE')) {
+                if (Config::get()->CALENDAR_ENABLE) {
                     $navigation->addSubNavigation('calendar_new', new Navigation(_('Terminkalender'), 'dispatch.php/settings/calendar'));
                 }
 
-                if (!$perm->have_perm('admin') and get_config('MAIL_NOTIFICATION_ENABLE')) {
+                if (!$perm->have_perm('admin') && Config::get()->MAIL_NOTIFICATION_ENABLE) {
                     $navigation->addSubNavigation('notification', new Navigation(_('Benachrichtigung'), 'dispatch.php/settings/notification'));
                 }
 
@@ -132,7 +114,60 @@ class ProfileNavigation extends Navigation
             // user defined sections
             $navigation = new Navigation(_('Kategorien'), 'dispatch.php/settings/categories');
             $this->addSubNavigation('categories', $navigation);
-
         }
+
+        // Add consultations if appropriate
+        $navigation = $this->createConsultationNavigation($current_user);
+        if ($navigation) {
+            $this->addSubNavigation('consultation', $navigation);
+        }
+    }
+
+    /**
+     * Creates the consultation navigation if they are globally activated and
+     * should be visible to the current user.
+     *
+     * @param object $user User object of the user whose profile will be displayed
+     * @return mixed Navigation object or null
+     */
+    protected function createConsultationNavigation($user)
+    {
+        // Consultations are disabled
+        if (!Config::get()->CONSULTATION_ENABLED) {
+            return null;
+        }
+
+        // User is not allowed to have any consultations
+        if (!$GLOBALS['perm']->have_perm(Config::get()->CONSULTATION_REQUIRED_PERMISSION, $user->id)) {
+            return null;
+        }
+
+        // Visiting user is the user itself, create administrative navigation
+        if ($user->id === $GLOBALS['user']->id || $GLOBALS['user']->perms === 'root') {
+            $navigation = new Navigation(_('Sprechstunden'), 'dispatch.php/consultation/admin');
+            $navigation->addSubNavigation('admin', new Navigation(_('Verwaltung'), 'dispatch.php/consultation/admin'));
+            return $navigation;
+        }
+
+        // Permissions that are allowed to book reservervations
+        $allowed = ['user', 'autor', 'tutor'];
+        if (Config::get()->CONSULTATION_ALLOW_DOCENTS_RESERVING) {
+            $allowed[] = 'dozent';
+        }
+
+        // User does not have required permissions
+        if (!in_array($GLOBALS['user']->perms, $allowed)) {
+            return null;
+        }
+
+        // Teacher has no consultations defined
+        if (!ConsultationBlock::existForTeacherAndUser($user->id, $GLOBALS['user']->id)) {
+            return null;
+        }
+
+        // Create visitor navigation
+        $navigation = new Navigation(_('Sprechstunden'), 'dispatch.php/consultation/overview');
+        $navigation->addSubNavigation('overview', new Navigation(_('Übersicht'), 'dispatch.php/consultation/overview'));
+        return $navigation;
     }
 }

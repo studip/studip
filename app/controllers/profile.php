@@ -42,7 +42,7 @@ class ProfileController extends AuthenticatedController
         if ($this->current_user['user_id'] == $this->user->id && !$this->current_user['locked']) {
             PageLayout::setTitle(_('Mein Profil'));
             UserConfig::get($this->user->id)->store('PROFILE_LAST_VISIT', time());
-        } else if ($this->current_user['user_id'] && ($this->perm->have_perm('root') || (!$this->current_user['locked'] && get_visibility_by_id($this->current_user['user_id'])))) {
+        } elseif ($this->current_user['user_id'] && ($this->perm->have_perm('root') || (!$this->current_user['locked'] && get_visibility_by_id($this->current_user['user_id'])))) {
             PageLayout::setTitle(_('Profil von') . ' ' . $this->current_user->getFullname());
             object_add_view($this->current_user->user_id);
         } else {

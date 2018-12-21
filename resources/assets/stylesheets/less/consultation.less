@@ -1,0 +1,20 @@
+.consultation-note {
+    border-top: 1px solid @light-gray-color-40;
+    font-size: @font-size-small;
+    margin-top: 2px;
+    padding-top: 2px;
+
+    &.shortened {
+        .icon('before', 'info-circle', 'info', 12, 5px);
+        transition: opacity 300ms;
+        &:not(:hover)::after {
+            opacity: 0.5;
+        }
+    }
+}
+.consultation-free {
+    color: @green;
+}
+.consultation-occupied {
+    color: @red;
+}

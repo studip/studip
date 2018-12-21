@@ -1,29 +1,19 @@
 <?php
-
 /**
  * ProfileModulesController
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
- * @author      Thomas Hackl <thomas.hackl@uni-passau.de>
- * @author      Florian Bieringer
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
- * @since       2.4
- */
-
-/**
  * Controller for the (de-)activation of homepage plugins for every user.
+ *
+ * @author    Thomas Hackl <thomas.hackl@uni-passau.de>
+ * @author    Florian Bieringer
+ * @license   GPL2 or any later version
+ * @category  Stud.IP
+ * @since     2.4
  */
 class ProfileModulesController extends AuthenticatedController
 {
-
-    var $user_id = '';
-    var $modules = array();
-    var $plugins = array();
+    protected $user;
+    protected $plugins = [];
 
     /**
      * This function is called before any output is generated or any other
@@ -36,136 +26,164 @@ class ProfileModulesController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        $this->modules = array();
-
         // Set Navigation
-        PageLayout::setHelpKeyword("Basis.ProfileModules");
-        PageLayout::setTitle(_("Mehr Funktionen"));
+        PageLayout::setHelpKeyword('Basis.ProfileModules');
+        PageLayout::setTitle(_('Mehr Funktionen'));
         Navigation::activateItem('/profile/modules');
 
         // Get current user.
         $this->username = Request::username('username', $GLOBALS['user']->username);
-        $this->user_id = get_userid($this->username);
+        $this->user     = User::findByUsername($this->username);
 
-        $this->plugins = array();
-        $blubber = PluginEngine::getPlugin('Blubber');
+        $this->plugins = $this->getPlugins();
+
+        // Show info message if user is not on his own profile
+        if ($this->user->id !== $GLOBALS['user']->id) {
+            PageLayout::postInfo(htmlReady(sprintf(
+                _('Daten von: %s %s (%s), Status: %s'),
+                $this->user->Vorname,
+                $this->user->Nachname,
+                $this->user->username,
+                $this->user->perms
+            )));
+        }
+
+        $this->config = $this->getConfig();
+        $this->processRequest($this->config);
+    }
+
+    private function getConfig()
+    {
+        $config = $GLOBALS['user']->cfg->PLUS_SETTINGS;
+        if (!$config || !isset($config['profile_plus'])) {
+            return [
+                'view'         => 'openall',
+                'displaystyle' => 'category',
+                'hidden'       => [],
+            ];
+        }
+
+        return $config['profile_plus'];
+    }
+
+    private function storeConfig(array $config)
+    {
+        $cfg = $GLOBALS['user']->cfg->PLUS_SETTINGS;
+        if (!$cfg) {
+            $cfg = [];
+        }
+        $cfg['profile_plus'] = $config;
+
+        $GLOBALS['user']->cfg->store('PLUS_SETTINGS', $cfg);
+    }
+
+    private function processRequest(array $config)
+    {
+        $initial = $config;
+
+        if (Request::submitted('mode')) {
+            $config['view'] = Request::get('mode');
+        }
+        if (Request::submitted('displaystyle')) {
+            $config['displaystyle'] = Request::get('displaystyle');
+        }
+        if (Request::submitted('show')) {
+            $config['hidden'] = array_diff(
+                $config['hidden'],
+                [Request::get('show')]
+            );
+        }
+        if (Request::submitted('hide')) {
+            $config['hidden'][] = Request::get('hide');
+        }
+
+        if ($initial != $config) {
+            $this->storeConfig($config);
+            $this->redirect('profilemodules');
+        }
+    }
+
+    private function getPlugins()
+    {
+        $plugins = [];
+
         // Add blubber to plugin list so status can be updated.
-        if ($blubber) {
-            $this->plugins[] = $blubber;
+        if ($blubber = PluginEngine::getPlugin('Blubber')) {
+            $plugins[$blubber->getPluginId()] = $blubber;
         }
 
         // Get homepage plugins from database.
-        $this->plugins = array_merge($this->plugins, PluginEngine::getPlugins('HomepagePlugin'));
-
-        // Show info message if user is not on his own profile
-        if ($this->user_id != $GLOBALS['user']->id) {
-            $current_user = User::find($this->user_id);
-            $message = sprintf(_('Daten von: %s %s (%s), Status: %s'),
-                htmlReady($current_user->Vorname),
-                htmlReady($current_user->Nachname),
-                htmlReady($current_user->username),
-                htmlReady($current_user->perms));
-            $mbox = MessageBox::info($message);
-            PageLayout::postMessage($mbox, 'settings-user-anncouncement');
+        foreach (PluginEngine::getPlugins('HomepagePlugin') as $plugin) {
+            $plugins[$plugin->getPluginId()] = $plugin;
         }
 
-        $this->setupSidebar();
+        return $plugins;
     }
 
     /**
      * Creates the sidebar.
      */
-    private function setupSidebar()
+    private function setupSidebar(array $list, array $config)
     {
-
         $sidebar = Sidebar::get();
         $sidebar->setImage('sidebar/plugin-sidebar.png');
         $sidebar->setTitle(PageLayout::getTitle());
 
-        $plusconfig = UserConfig::get($GLOBALS['user']->id)->PLUS_SETTINGS;
+        if ($config['displaystyle'] === 'category') {
+            $widget = $sidebar->addWidget(new OptionsWidget());
+            $widget->setTitle(_('Kategorien'));
 
-        if (!isset($_SESSION['profile_plus'])) {
-            if (is_array($plusconfig['profile_plus'])){
-                $_SESSION['profile_plus'] = $plusconfig['profile_plus'];
-            } else {
-                //$_SESSION['profile_plus']['Kategorie']['Lehrorganisation'] = 1;
-                $_SESSION['profile_plus']['Kategorie']['Kommunikation und Zusammenarbeit'] = 1;
-                //$_SESSION['profile_plus']['Kategorie']['Aufgaben'] = 1;
-                $_SESSION['profile_plus']['Kategorie']['Sonstiges'] = 1;
-                //$_SESSION['profile_plus']['Kategorie']['Projekte und Entwicklung'] = 1;
-                /*$_SESSION['profile_plus']['Komplex'][1] = 1;
-                $_SESSION['profile_plus']['Komplex'][2] = 1;
-                $_SESSION['profile_plus']['Komplex'][3] = 1;*/
-                $_SESSION['profile_plus']['View'] = 'openall';
-                $_SESSION['profile_plus']['displaystyle'] = 'category';
+            foreach (array_keys($list) as $key) {
+                $widget->addCheckbox(
+                    $key,
+                    !in_array($key, $config['hidden']),
+                    $this->link_for('profilemodules', ['show' => $key]),
+                    $this->link_for('profilemodules', ['hide' => $key])
+                );
             }
         }
 
-        /*if (Request::Get('Komplex1') != null) $_SESSION['profile_plus']['Komplex'][1] = Request::Get('Komplex1');
-        if (Request::Get('Komplex2') != null) $_SESSION['profile_plus']['Komplex'][2] = Request::Get('Komplex2');
-        if (Request::Get('Komplex3') != null) $_SESSION['profile_plus']['Komplex'][3] = Request::Get('Komplex3');*/
-        if (Request::Get('mode') != null) $_SESSION['profile_plus']['View'] = Request::Get('mode');
-        if (Request::Get('displaystyle') != null) $_SESSION['profile_plus']['displaystyle'] = Request::Get('displaystyle');
-
-
-        $widget = new OptionsWidget();
-        $widget->setTitle(_('Kategorien'));
-
-        foreach ($_SESSION['profile_plus']['Kategorie'] as $key => $val) {
-            if ($key == 'Sonstiges') continue;
-            if (Request::Get(md5('cat_' . $key)) != null) $_SESSION['profile_plus']['Kategorie'][$key] = Request::Get(md5('cat_' . $key));
-
-            $widget->addCheckbox($key, $_SESSION['profile_plus']['Kategorie'][$key],
-                URLHelper::getLink('?', array(md5('cat_' . $key) => 1)), URLHelper::getLink('?', array(md5('cat_' . $key) => 0)));
-
-        }
-
-        if (Request::Get(md5('cat_Sonstiges')) != null) $_SESSION['profile_plus']['Kategorie']['Sonstiges'] = Request::Get(md5('cat_Sonstiges'));
-
-        $widget->addCheckbox(_('Sonstiges'), $_SESSION['profile_plus']['Kategorie']['Sonstiges'],
-            URLHelper::getLink('?', array(md5('cat_Sonstiges') => 1)), URLHelper::getLink('?', array(md5('cat_Sonstiges') => 0)));
-
-        $sidebar->addWidget($widget, "Kategorien");
-
-
-        /*$widget = new OptionsWidget();
-        $widget->setTitle(_('Komplexität'));
-        $widget->addCheckbox(_('Standard'), $_SESSION['profile_plus']['Komplex'][1],
-            URLHelper::getLink('?', array('Komplex1' => 1)), URLHelper::getLink('?', array('Komplex1' => 0)));
-        $widget->addCheckbox(_('Erweitert'), $_SESSION['profile_plus']['Komplex'][2],
-            URLHelper::getLink('?', array('Komplex2' => 1)), URLHelper::getLink('?', array('Komplex2' => 0)));
-        $widget->addCheckbox(_('Intensiv'), $_SESSION['profile_plus']['Komplex'][3],
-            URLHelper::getLink('?', array('Komplex3' => 1)), URLHelper::getLink('?', array('Komplex3' => 0)));
-        $sidebar->addWidget($widget, "Komplex");*/
-
-
-        $widget = new ActionsWidget();
-        $widget->setTitle(_("Ansichten"));
-        if ($_SESSION['profile_plus']['View'] == 'openall') {
-            $widget->addLink(_("Alles zuklappen"),
-                URLHelper::getLink('?', array('mode' => 'closeall')), Icon::create('assessment', 'clickable'));
+        $widget = $sidebar->addWidget(new ActionsWidget());
+        $widget->setTitle(_('Ansichten'));
+        if ($config['view'] === 'openall') {
+            $widget->addLink(
+                _('Alles zuklappen'),
+                $this->link_for('profilemodules', ['mode' => 'closeall']),
+                Icon::create('assessment')
+            );
         } else {
-            $widget->addLink(_("Alles aufklappen"),
-                URLHelper::getLink('?', array('mode' => 'openall')), Icon::create('assessment', 'clickable'));
+            $widget->addLink(
+                _('Alles aufklappen'),
+                $this->link_for('profilemodules', ['mode' => 'openall']),
+                Icon::create('assessment')
+            );
         }
 
-        if ($_SESSION['profile_plus']['displaystyle'] == 'category') {
-            $widget->addLink(_("Alphabetische Anzeige ohne Kategorien"),
-                    URLHelper::getLink('?', array('displaystyle' => 'alphabetical')), Icon::create('assessment', 'clickable'));
+        if ($config['displaystyle'] === 'category') {
+            $widget->addLink(
+                _('Alphabetische Anzeige ohne Kategorien'),
+                $this->link_for('profilemodules', ['displaystyle' => 'alphabetical']),
+                Icon::create('assessment')
+            );
         } else {
-            $widget->addLink(_("Anzeige nach Kategorien"),
-                    URLHelper::getLink('?', array('displaystyle' => 'category')), Icon::create('assessment', 'clickable'));
+            $widget->addLink(
+                _('Anzeige nach Kategorien'),
+                $this->link_for('profilemodules', ['displaystyle' => 'category']),
+                Icon::create('assessment')
+            );
         }
 
-
-        $widget->addLink(_('Alle Inhaltselemente aktivieren'),
-            $this->url_for('profilemodules/reset/true'), Icon::create('accept', 'clickable'));
-        $widget->addLink(_('Alle Inhaltselemente deaktivieren'),
-            $this->url_for('profilemodules/reset'), Icon::create('decline', 'clickable'));
-        $sidebar->addWidget($widget);
-
-        $plusconfig['profile_plus'] = $_SESSION['profile_plus'];
-        UserConfig::get($GLOBALS['user']->id)->store(PLUS_SETTINGS,$plusconfig);
+        $widget = $sidebar->addWidget(new ActionsWidget());
+        $widget->addLink(
+            _('Alle Inhaltselemente aktivieren'),
+            $this->url_for('profilemodules/reset/1'),
+            Icon::create('accept')
+        );
+        $widget->addLink(
+            _('Alle Inhaltselemente deaktivieren'),
+            $this->url_for('profilemodules/reset/0'),
+            Icon::create('decline')
+        );
     }
 
     /**
@@ -174,8 +192,13 @@ class ProfileModulesController extends AuthenticatedController
      */
     public function index_action()
     {
-        $this->sortedList = $this->getSortedList(User::find($this->user_id));
-        if (Request::submitted('deleteContent')) $this->deleteContent($this->sortedList);
+        $list = $this->getSortedList($this->user, $this->config);
+
+        $this->setupSidebar($list, $this->config);
+
+        $this->list = array_filter($list, function ($category) {
+            return !in_array($category, $this->config['hidden']);
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     /**
@@ -186,40 +209,31 @@ class ProfileModulesController extends AuthenticatedController
         CSRFProtection::verifyUnsafeRequest();
 
         $manager = PluginManager::getInstance();
-        $modules = Request::optionArray('modules');
+        $modules = Request::intArray('modules');
 
         $success = null;
-        $anchor = "";
-        // Plugins
-        foreach ($this->plugins as $plugin) {
-            // Check local activation status.
-            $id = $plugin->getPluginId();
+        $anchor = '';
 
-            $state_before = $manager->isPluginActivatedForUser($id, $this->user_id);
-            $state_after = in_array($id, $modules);
+        foreach ($modules as $item => $state) {
+            list($changed, $name) = $this->updateItem($item, $state);
 
-            if ($state_before !== $state_after) {
-                $updated = $manager->setPluginActivated($id, $this->user_id, $state_after, 'user');
+            $success = $success || $changed !== null;
 
-                $success = $success || $updated;
+            if ($changed !== null) {
+                PageLayout::postSuccess(sprintf(
+                    $changed ? _('"%s" wurde aktiviert.') : _('"%s" wurde deaktiviert.'),
+                    htmlReady($name)
+                ));
 
-                if ($state_after) {
-                    PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), $plugin->getPluginName()));
-                } else {
-                    PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), $plugin->getPluginName()));
-                }
-                $anchor = '#p_' . $plugin->getPluginId();
+                $anchor = "#p_{$item}";
             }
         }
 
         if ($success === false) {
-            $message = MessageBox::error(_('Ihre Änderungen konnten nicht gespeichert werden.'));
-        }
-        if ($message) {
-            PageLayout::postMessage($message);
+            PageLayout::postError(_('Ihre Änderungen konnten nicht gespeichert werden.'));
         }
 
-        $this->redirect($this->url_for('profilemodules/index' . $anchor, array('username' => $this->username)));
+        $this->redirect($this->url_for("profilemodules{$anchor}", ['username' => $this->username]));
     }
 
     /**
@@ -227,22 +241,35 @@ class ProfileModulesController extends AuthenticatedController
      */
     public function reset_action($state = false)
     {
-        $manager = PluginManager::getInstance();
-        foreach ($this->plugins as $plugin) {
-            // Check local activation status.
-            $id = $plugin->getPluginId();
-
-            $manager->setPluginActivated($plugin->getPluginId(), $this->user_id, $state, 'user');
+        foreach ($this->plugins as $id => $plugin) {
+            $this->updateItem($id, $state);
         }
 
-        PageLayout::postMessage(MessageBox::success(_('Ihre Änderungen wurden gespeichert.')));
-        $this->redirect($this->url_for('profilemodules/index', array('username' => $this->username)));
+        PageLayout::postSuccess(_('Ihre Änderungen wurden gespeichert.'));
+        $this->redirect($this->url_for('profilemodules', ['username' => $this->username]));
     }
 
-
-    private function getSortedList(Range $context)
+    private function updateItem($item, $state)
     {
-        $list = array();
+        static $manager = null;
+
+        if ($manager === null) {
+            $manager = $manager = PluginManager::getInstance();
+        }
+
+        $state = (bool) $state;
+        if ($state != $manager->isPluginActivated($item, $this->user->id)
+            && $manager->setPluginActivated($item, $this->user->id, $state, 'user'))
+        {
+            return [$state, $this->plugins[$item]->getPluginName()];
+        }
+
+        return null;
+    }
+
+    private function getSortedList(Range $context, array $config)
+    {
+        $list = [];
 
         $manager = PluginManager::getInstance();
 
@@ -253,81 +280,73 @@ class ProfileModulesController extends AuthenticatedController
             }
 
             // Check local activation status.
-            $id = $plugin->getPluginId();
-            $activated = $manager->isPluginActivatedForUser($id, $this->user_id);
+
             // Load plugin data (e.g. name and description)
             $metadata = $plugin->getMetadata();
 
-            if($_SESSION['profile_plus']['displaystyle'] != 'category'){
-
-                $key = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
-
-
-                $list['Funktionen von A-Z'][mb_strtolower($key)]['object'] = $plugin;
-                $list['Funktionen von A-Z'][mb_strtolower($key)]['activated'] = $activated;
-
-
+            if ($config['displaystyle'] !== 'category'){
+                $cat = 'Funktionen von A-Z';
             } else {
+                $cat = $metadata['category'] ?: 'Sonstiges';
+            }
 
-                $cat = isset($metadata['category']) ? $metadata['category'] : 'Sonstiges';
+            $item = [
+                'id'          => $plugin->getPluginId(),
+                'name'        => $metadata['displayname'] ?: $plugin->getPluginname(),
+                'url'         => $plugin->getPluginURL(),
+                'activated'   => $manager->isPluginActivatedForUser($plugin->getPluginId(), $this->user->id),
+                'icon'        => $metadata['icon'] ? "{$plugin->getPluginURL()}/{$metadata['icon']}" : null,
+                'abstract'    => str_replace('\n', ' ', $metadata['descriptionshort'] ?: $metadata['summary']),
+                'description' => str_replace('\n', ' ', $metadata['descriptionlong'] ?: $metadata['description']),
+                'screenshots' => [],
+                'keywords'    => $metadata['keywords'] ? explode(';', $metadata['keywords']) : [],
+                'homepage'    => $metadata['homepage'],
+                'helplink'    => $metadata['helplink'],
+            ];
 
-                if (!isset($_SESSION['profile_plus']['Kategorie'][$cat])) $_SESSION['profile_plus']['Kategorie'][$cat] = 1;
+            if (isset($metadata['screenshot'])) {
+                $ext = end(explode('.', $metadata['screenshot']));
+                $title  = str_replace('_', ' ', basename($metatdata['screenshot'], ".{$ext}"));
+                $source = "{$plugin->getPluginURL()}/{$metadata['screenshot']}";
 
-                $key = isset($metadata['displayname']) ? $metadata['displayname'] : $plugin->getPluginname();
+                $item['screenshots'][] = compact('title', 'source');
+            }
+            if (isset($metadata['additionalscreenshots'])) {
+                foreach ($metadata['additionalscreenshots'] as $picture) {
+                    $ext = end(explode('.', $picture));
+                    $title  = str_replace('_', ' ', basename($picture, ".{$ext}"));
+                    $source = "{$plugin->getPluginURL()}/{$picture}";
 
-                $list[$cat][mb_strtolower($key)]['object'] = $plugin;
-                $list[$cat][mb_strtolower($key)]['activated'] = $activated;
+                    $item['screenshots'][] = compact('title', 'source');
+                }
+            }
+            if (isset($metadata['screenshots'])) {
+                foreach ($metadata['screenshots']['pictures'] as $picture) {
+                    $title  = $picture['title'];
+                    $source = "{$plugin->getPluginURL()}/{$metadata['screenshots']['path']}/{$picture['source']}";
 
+                    $item['screenshots'][] = compact('title', 'source');
+                }
+            }
+
+            $list[$cat][$plugin->getPluginId()] = $item;
+        }
+
+        foreach ($list as $cat_key => $cat_val) {
+            uasort($cat_val, function ($a, $b) {
+                return strcmp($a['name'], $b['name']);
+            });
+
+            $list[$cat_key] = $cat_val;
+            if ($cat_key !== 'Sonstiges') {
+                $sortedcats[$cat_key] = $list[$cat_key];
             }
         }
 
-        $sortedcats['Lehrorganisation'] = array();
-        $sortedcats['Kommunikation und Zusammenarbeit'] = array();
-        $sortedcats['Aufgaben'] = array();
-
-        foreach ($list as $cat_key => $cat_val) {
-            ksort($cat_val);
-            $list[$cat_key] = $cat_val;
-            if ($cat_key != 'Sonstiges') $sortedcats[$cat_key] = $list[$cat_key];
+        if (isset($list['Sonstiges'])) {
+            $sortedcats['Sonstiges'] = $list['Sonstiges'];
         }
-
-        if (isset($list['Sonstiges'])) $sortedcats['Sonstiges'] = $list['Sonstiges'];
 
         return $sortedcats;
     }
-
-
-    private function deleteContent($plugmodlist)
-    {
-        $name = Request::Get('name');
-
-        foreach ($plugmodlist as $key => $val) {
-            if (array_key_exists($name, $val)) {
-                if ($val[$name]['type'] == 'plugin') {
-                    $class = PluginEngine::getPlugin(get_class($val[$name]['object']));
-                    $displayname = $class->getPluginName();
-                } elseif ($val[$name]['type'] == 'modul') {
-                    if ($this->sem_class) {
-                        $class = $this->sem_class->getModule($this->sem_class->getSlotModule($val[$name]['modulkey']));
-                        $displayname = $val[$name]['object']['name'];
-                    }
-                }
-            }
-        }
-
-        if (Request::submitted('check')) {
-            if (method_exists($class, 'deleteContent')) {
-                $class->deleteContent();
-            } else {
-                PageLayout::postMessage(MessageBox::info(_("Das Plugin/Modul enthält keine Funktion zum Löschen der Inhalte.")));
-            }
-        } else {
-            PageLayout::postMessage(MessageBox::info(sprintf(_("Sie beabsichtigen die Inhalte von %s zu löschen."), $displayname)
-                . "<br>" . _("Wollen Sie die Inhalte wirklich löschen?") . "<br>"
-                . LinkButton::createAccept(_('Ja'), URLHelper::getURL("?deleteContent=true&check=true&name=" . $name))
-                . LinkButton::createCancel(_('Nein'))));
-        }
-    }
-
-
 }

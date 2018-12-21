@@ -1,25 +1,13 @@
 .plus {
 
-  td.element {
-    padding-bottom: 2em;
-  }
+    td.element {
+        padding-bottom: 2em;
+    }
 
-  .element_header {
+    .element_header {
         display: inline-block;
         width: 250px;
         margin-left: 5px;
-    }
-
-    .complexity {
-        display: inline-block;
-        float: right;
-    }
-
-    .complexity_element {
-        float: left;
-        width: 16px;
-        height: 16px;
-        border: 1px solid;
     }
 
     .element_description {
@@ -88,5 +76,9 @@
 
     .helplink {
         float: right;
+    }
+
+    article.studip > section:not(:last-child) {
+        border-bottom: 1px solid @table-header-color;
     }
 }

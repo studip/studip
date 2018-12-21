@@ -141,19 +141,30 @@ const QuickSearch = {
 
             if (jQuery('#' + name + '_frame').length) {
                 // trigger search on button click
-                $('#' + name + '_frame input[type="submit"]').click(function(e) {
+                jQuery('#' + name + '_frame input[type="submit"]').click(function(e) {
                     e.preventDefault();
                     QuickSearch.triggerSearch(name);
                 });
 
                 // trigger search on enter key down
-                $('#' + name).keydown(function(e) {
+                jQuery('#' + name).keydown(function(e) {
                     if (e.keyCode == 13) {
                         e.preventDefault();
                         QuickSearch.triggerSearch(name);
                     }
                 });
             }
+
+            var input  = jQuery('#' + name);
+            var hidden = jQuery('#' + name + '_realvalue');
+            if (input.is('[required]')) {
+                input.closest('form').submit(function (event) {
+                    if (hidden.val() === '') {
+                        input[0].setCustomValidity('Bitte wählen Sie einen gültigen Wert aus!'.toLocaleString());
+                        event.preventDefault();
+                     }
+                 });
+             }
         }
     },
 

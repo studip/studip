@@ -398,6 +398,16 @@ class QuickSearch
     }
 
     /**
+     * Convert quicksearch to string by rendering it
+     * 
+     * @return string rendered html
+     */
+    public function __toString()
+    {
+        return $this->render();
+    }
+
+    /**
      * returns the id string used for the input field
      *
      * @return string

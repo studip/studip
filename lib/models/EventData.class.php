@@ -16,22 +16,22 @@
 class EventData extends SimpleORMap implements PrivacyObject
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'event_data';
 
-        $config['belongs_to']['author'] = array(
-            'class_name' => 'User',
+        $config['belongs_to']['author'] = [
+            'class_name'  => User::class,
             'foreign_key' => 'author_id',
-        );
-        $config['belongs_to']['editor'] = array(
-            'class_name' => 'User',
+        ];
+        $config['belongs_to']['editor'] = [
+            'class_name'  => User::class,
             'foreign_key' => 'editor_id',
-        );
-        $config['has_many']['calendars'] = array(
-            'class_name' => 'CalendarEvent',
+        ];
+        $config['has_many']['calendars'] = [
+            'class_name'  => CalendarEvent::class,
             'foreign_key' => 'event_id'
-        );
+        ];
 
         $config['default_values']['linterval'] = 0;
         $config['default_values']['sinterval'] = 0;

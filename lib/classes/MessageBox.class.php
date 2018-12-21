@@ -36,7 +36,11 @@ class MessageBox implements LayoutMessage
     /**
      * type and contents of the message box
      */
-    public $class, $message, $details, $close_details;
+    public $class;
+    public $message;
+    public $details;
+    public $close_details;
+    protected $hide_close = false;
 
     /**
      * This function returns an exception message box. Use it only for system errors
@@ -125,19 +129,30 @@ class MessageBox implements LayoutMessage
     }
 
     /**
+     * Sets the state whether the close button should be hidden or not.
+     *
+     * @param  boolean $state Whether the close button should be hidden or not
+     * @return MessageBox instance to allow chaining
+     */
+    public function hideClose($state = true)
+    {
+        $this->hide_close = (bool) $state;
+        return $this;
+    }
+
+    /**
      * This method renders a MessageBox object to a string.
      *
      * @return string   html output of the message box
      */
     public function __toString()
     {
-        $params = array(
+        return $GLOBALS['template_factory']->render('shared/message_box', [
             'class'         => $this->class,
             'message'       => $this->message,
             'details'       => $this->details,
-            'close_details' => $this->close_details
-        );
-
-        return $GLOBALS['template_factory']->render('shared/message_box', $params);
+            'close_details' => $this->close_details,
+            'hide_close'    => $this->hide_close,
+        ]);
     }
 }
