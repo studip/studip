@@ -21,7 +21,7 @@ class Course_StudygroupController extends AuthenticatedController
         ) {
 
             // args at position zero is always the studygroup-id
-            if ($args[0]) {
+            if ($args[0] && $action == 'details') {
                 if (SeminarCategories::GetBySeminarId($args[0])->studygroup_mode == false) {
                     throw new Exception(_('Dieses Seminar ist keine Studiengruppe!'));
                 }
@@ -35,7 +35,9 @@ class Course_StudygroupController extends AuthenticatedController
         Sidebar::get()->setImage('sidebar/studygroup-sidebar.png');
         $this->set_layout('course/studygroup/layout');
 
-        $this->view = $this->getView($args[0]);
+        if (Context::getId()) {
+            $this->view = $this->getView(Context::getId());
+        }
     }
 
     private function getView($course_id)
@@ -83,7 +85,7 @@ class Course_StudygroupController extends AuthenticatedController
         if (Request::isXhr()) {
             PageLayout::setTitle(_('Studiengruppendetails'));
         } else {
-            PageLayout::setTitle(Context::getHeaderLine() . ' - ' . _('Studiengruppendetails'));
+            PageLayout::setTitle((Context::getHeaderLine() ?: Course::find($id)->getFullname()) . ' - ' . _('Studiengruppendetails'));
             PageLayout::setHelpKeyword('Basis.StudiengruppenAbonnieren');
 
             $stmt = DBManager::get()->prepare("SELECT * FROM admission_seminar_user"
