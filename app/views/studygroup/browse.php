@@ -46,7 +46,7 @@ $headers = [
                     <? if ($is_member): ?>
                     <a href="<?= URLHelper::getlink("seminar_main.php?auswahl=" . $group['Seminar_id']) ?>">
                         <? else: ?>
-                        <a href="<?= URLHelper::getlink("dispatch.php/course/studygroup/details/", ['cid' => $group['Seminar_id']]) ?>">
+                        <a href="<?= URLHelper::getlink("dispatch.php/course/studygroup/details/" . $group['Seminar_id'], ['cid' => null]) ?>">
                             <? endif; ?>
                             <?= htmlready($group['Name']) ?>
                             <?= $group['visible'] ? '' : "[" . _('versteckt') . "]" ?>
