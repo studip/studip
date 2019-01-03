@@ -21,13 +21,13 @@
              </select>
         <? endforeach; ?></p>
         <select multiple="multiple" id="<?= $name . '_selectbox'; ?>" name="<?= $name . '_selectbox'; ?>[]" data-init-js="true">
-        </select>
-        <select multiple="multiple" id="<?= $name . '_selectbox_default'; ?>" style="display: none;">
             <? foreach ($defaultSelectableUsers as $person): ?>
                 <option value="<?= $person->id ?>"><?= Avatar::getAvatar($person->id)->getURL(Avatar::MEDIUM); ?> -- <?= htmlReady($person->getFullName('full_rev')) ?> -- <?= htmlReady($person->perms) ?> (<?= htmlReady($person->username)?>)</option>
             <? endforeach; ?>
+        </select>
+        <select multiple="multiple" id="<?= $name . '_selectbox_default'; ?>" style="display: none;">
             <? foreach ($defaultSelectedUsers as $person): ?>
-                <option value="<?= $person->id ?>" selected><?= Avatar::getAvatar($person->id)->getURL(Avatar::MEDIUM); ?> -- <?= htmlReady($person->getFullName('full_rev')) ?> -- <?= htmlReady($person->perms) ?> (<?= htmlReady($person->username)?>)</option>
+                <option value="<?= $person->id ?>"><?= Avatar::getAvatar($person->id)->getURL(Avatar::MEDIUM); ?> -- <?= htmlReady($person->getFullName('full_rev')) ?> -- <?= htmlReady($person->perms) ?> (<?= htmlReady($person->username)?>)</option>
             <? endforeach; ?>
         </select>
 
