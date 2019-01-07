@@ -2,8 +2,8 @@
 
 /**
  * AdmissionUserList.class.php
- * 
- * Contains users that get different probabilities than others in seat 
+ *
+ * Contains users that get different probabilities than others in seat
  * distribution algorithm.
  *
  * This program is free software; you can redistribute it and/or
@@ -31,8 +31,8 @@ class AdmissionUserList
     public $conditions = array();
 
     /**
-     * A factor for seat distribution algorithm ("1" means normal algorithm, 
-     * everything between 0 and 1 decreases the chance to get a seat, 
+     * A factor for seat distribution algorithm ("1" means normal algorithm,
+     * everything between 0 and 1 decreases the chance to get a seat,
      * everything above 1 increases it.)
      */
     public $factor = 1;
@@ -56,7 +56,7 @@ class AdmissionUserList
 
     /**
      * Standard constructor.
-     * 
+     *
      * @param String id If this is an existing list, here is its ID.
      * @return This object.
      */
@@ -162,7 +162,7 @@ class AdmissionUserList
 
     /**
      * Gets all user lists the given user has created.
-     * 
+     *
      * @param  String userId
      * @return array
      */
@@ -173,7 +173,7 @@ class AdmissionUserList
         $stmt->execute(array($userId));
         $lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($lists as $list) {
-            $result[$list['list_id']] = new AdmissionUserList($list['list_id']); 
+            $result[$list['list_id']] = new AdmissionUserList($list['list_id']);
         }
         return $result;
     }
@@ -191,9 +191,10 @@ class AdmissionUserList
     /**
      * Helper function for loading data from DB.
      */
-    public function load() {
+    public function load()
+    {
         // Load basic data.
-        $stmt = DBManager::get()->prepare("SELECT * 
+        $stmt = DBManager::get()->prepare("SELECT *
             FROM `admissionfactor` WHERE `list_id`=? LIMIT 1");
         $stmt->execute(array($this->id));
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -201,18 +202,19 @@ class AdmissionUserList
             $this->name = $current['name'];
             $this->ownerId = $current['owner_id'];
             // Load user IDs.
-            $stmt2 = DBManager::get()->prepare("SELECT uf.* 
-                FROM `user_factorlist` uf
-                    JOIN `auth_user_md5` a ON (uf.`user_id`=a.`user_id`)
+            $stmt2 = DBManager::get()->prepare("SELECT uf.*
+                FROM `user_factorlist` AS uf
+                JOIN `auth_user_md5` AS a ON (uf.`user_id`=a.`user_id`)
                 WHERE uf.`list_id`=?
                 ORDER BY a.`Nachname` ASC, a.`Vorname` ASC, a.`username` ASC");
-            $stmt2->execute(array($this->id));
+            $stmt2->execute([$this->id]);
             while ($user = $stmt2->fetch(PDO::FETCH_ASSOC)) {
                 $this->users[$user['user_id']] = true;
             }
+
             // Load selection conditions, if applicable.
-            $stmt2 = DBManager::get()->prepare("SELECT `condition_id` FROM ".
-                "`condition_factorlist` WHERE `list_id`=? ORDER BY `mkdate` ASC");
+            // $stmt2 = DBManager::get()->prepare("SELECT `condition_id` FROM ".
+            //     "`condition_factorlist` WHERE `list_id`=? ORDER BY `mkdate` ASC");
             //$stmt2->execute(array($this->id));
             //while ($current = $stmt2->fetch(PDO::FETCH_ASSOC)) {
             //    $this->conditions[$current['condition_id']] =
@@ -247,7 +249,7 @@ class AdmissionUserList
 
     /**
      * Set the conditions to the given set.
-     * 
+     *
      * @param  Array conditions
      * @return AdmissionUserList
      */
@@ -311,7 +313,7 @@ class AdmissionUserList
     }
 
     /**
-     * Function for storing the data to DB. Is not called automatically on 
+     * Function for storing the data to DB. Is not called automatically on
      * changing object values.
      */
     public function store() {
@@ -319,16 +321,16 @@ class AdmissionUserList
         if (!$this->id) {
             do {
                 $newid = md5(uniqid('AdmissionUserList', true));
-                $db = DBManager::get()->query("SELECT `list_id` 
+                $db = DBManager::get()->query("SELECT `list_id`
                     FROM `admissionfactor` WHERE `list_id`='.$newid.'");
             } while ($db->fetch());
             $this->id = $newid;
         }
         // Store basic list data.
-        $stmt = DBManager::get()->prepare("INSERT INTO `admissionfactor` 
-            (`list_id`, `name`, `factor`, `owner_id`, `mkdate`, `chdate`) 
-            VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE 
-            `name`=VALUES(`name`), `factor`=VALUES(`factor`), 
+        $stmt = DBManager::get()->prepare("INSERT INTO `admissionfactor`
+            (`list_id`, `name`, `factor`, `owner_id`, `mkdate`, `chdate`)
+            VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
+            `name`=VALUES(`name`), `factor`=VALUES(`factor`),
             `owner_id`=VALUES(`owner_id`), `chdate`=VALUES(`chdate`)");
         $stmt->execute(array($this->id, $this->name, $this->factor,
             $this->ownerId, time(), time()));
@@ -338,9 +340,9 @@ class AdmissionUserList
             implode("', '", array_keys($this->users))."')");
         // Store assigned users.
         foreach ($this->users as $userId => $assigned) {
-            $stmt = DBManager::get()->prepare("INSERT INTO `user_factorlist` 
-                (`list_id`, `user_id`, `mkdate`) 
-                VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE 
+            $stmt = DBManager::get()->prepare("INSERT INTO `user_factorlist`
+                (`list_id`, `user_id`, `mkdate`)
+                VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE
                 `user_id`=VALUES(`user_id`)");
             $stmt->execute(array($this->id, $userId, time()));
         }
@@ -358,7 +360,7 @@ class AdmissionUserList
 
     /**
      * Standard string representation of this object.
-     * 
+     *
      * @return String
      */
     public function __toString() {

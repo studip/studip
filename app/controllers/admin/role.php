@@ -18,7 +18,9 @@
 class Admin_RoleController extends AuthenticatedController
 {
     /**
-     *
+     * Returns the role with the given id.
+     * @param string $role_id Id of the role
+     * @return Role
      */
     public static function getRole($role_id)
     {
@@ -179,13 +181,17 @@ class Admin_RoleController extends AuthenticatedController
      */
     private function search_user($searchtxt)
     {
-        $searchtxt = '%' . $searchtxt . '%';
+        $searchtxt = "%{$searchtxt}%";
         $stmt = DBManager::get()->prepare(
-          'SELECT user_id FROM auth_user_md5 '.
-          'WHERE username LIKE ? OR Vorname LIKE ? OR Nachname LIKE ? '.
-          'ORDER BY Vorname, Nachname, username');
+            "SELECT user_id
+             FROM auth_user_md5
+             WHERE username LIKE ?
+                OR Vorname LIKE ?
+                OR Nachname LIKE ?
+             ORDER BY Vorname, Nachname, username"
+        );
 
-        $stmt->execute(array($searchtxt, $searchtxt, $searchtxt));
+        $stmt->execute([$searchtxt, $searchtxt, $searchtxt]);
         $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
         return User::findMany($ids);
     }

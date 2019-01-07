@@ -72,7 +72,7 @@ class Settings_MessagingController extends Settings_SettingsController
                              Vorname LIKE CONCAT('%', :needle, '%') OR
                              Nachname LIKE CONCAT('%', :needle, '%'))
                         AND user_id != :user_id AND {$vis_query}
-                      ORDER BY Nachname ASC";
+                      ORDER BY Nachname ASC, Vorname ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':needle', Request::get('search_exp'));
             $statement->bindValue(':user_id', $this->user->user_id);

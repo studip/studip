@@ -551,8 +551,11 @@ class Admission_CoursesetController extends AuthenticatedController
         $factored_users = $courseset->getUserFactorList();
         $applicants = AdmissionPriority::getPriorities($set_id);
         $this->users = User::findAndMapMany(function($u) use ($factored_users, $applicants) {
-                                          return array_merge($u->toArray('username vorname nachname'), array('applicant' => isset($applicants[$u->id]), 'factor' => $factored_users[$u->id]));
-                                       }, array_keys($factored_users), 'ORDER BY Nachname');
+            return array_merge(
+                $u->toArray('username vorname nachname'),
+                ['applicant' => isset($applicants[$u->id]), 'factor' => $factored_users[$u->id]]
+            );
+        }, array_keys($factored_users), 'ORDER BY Nachname, Vorname');
     }
 
     /**
@@ -567,10 +570,10 @@ class Admission_CoursesetController extends AuthenticatedController
 
         $courseset = new CourseSet($set_id);
         $applicants = AdmissionPriority::getPriorities($set_id);
-        $users = User::findMany(array_keys($applicants), 'ORDER BY Nachname');
+        $users = User::findMany(array_keys($applicants), 'ORDER BY Nachname, Vorname');
         $courses = SimpleCollection::createFromArray(Course::findMany($courseset->getCourses()));
-        $captions = array(_("Nachname"), _("Vorname"), _("Nutzername"), _("Veranstaltung"), _("Nummer"), _("Studiengang"), _("Priorität"));
-        $data = array();
+        $captions = [_('Nachname'), _('Vorname'), _('Nutzername'), _('Veranstaltung'), _('Nummer'), _('Studiengang'), _('Priorität')];
+        $data = [];
         $studycourses = function ($st) {
             return sprintf(
                 '%s (%s)',

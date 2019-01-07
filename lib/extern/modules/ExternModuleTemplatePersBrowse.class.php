@@ -319,7 +319,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             . "LEFT JOIN user_info uin USING(user_id) "
             . "WHERE CONCAT(ui.user_id, ui.Institut_id) IN ('%s') "
             . "AND " . get_ext_vis_query()
-            . "ORDER BY aum.Nachname ",
+            . "ORDER BY aum.Nachname, aum.Vorname ",
             $GLOBALS['_fullname_sql'][$nameformat],
             implode("','", $user_list));
 

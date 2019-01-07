@@ -38,24 +38,26 @@
  * @param string $name_format defines which format the full name of a deputy should have
  * @return array An array containing all deputies.
  */
-function getDeputies($range_id, $name_format='full_rev') {
-    global $_fullname_sql;
-    if ($_fullname_sql[$name_format]) {
-        $name_query = $_fullname_sql[$name_format];
+function getDeputies($range_id, $name_format = 'full_rev') {
+    if (isset($GLOBALS['_fullname_sql'][$name_format])) {
+        $name_query = $GLOBALS['_fullname_sql'][$name_format];
     } else {
-        $name_query = $_fullname_sql['full_rev'];
+        $name_query = $GLOBALS['_fullname_sql']['full_rev'];
     }
     $name_query .= " AS fullname ";
-    $data = DBManager::get()->query(
-        "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about, ".
-        "a.perms, ".$name_query.
-        "FROM deputies d ".
-        "LEFT JOIN auth_user_md5 a ON (d.user_id=a.user_id) ".
-        "LEFT JOIN user_info ON (a.user_id=user_info.user_id) ".
-        "WHERE d.range_id='$range_id' ".
-        "ORDER BY a.Nachname ASC, a.Vorname ASC");
-    $deputies = array();
-    foreach ($data->fetchAll() as $entry) {
+
+    $query = "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about,
+                     a.perms, {$name_query}
+              FROM deputies AS d
+              LEFT JOIN auth_user_md5 AS a ON (d.user_id = a.user_id)
+              LEFT JOIN user_info ON (a.user_id=user_info.user_id)
+              WHERE d.range_id = ?
+              ORDER BY a.Nachname ASC, a.Vorname ASC";
+    $statement = DBManager::get()->prepare($query);
+    $statement->execute([$range_id]);
+
+    $deputies = [];
+    foreach ($statement->fetchAll() as $entry) {
         $deputies[$entry['user_id']] = $entry;
     }
     return $deputies;
@@ -68,22 +70,24 @@ function getDeputies($range_id, $name_format='full_rev') {
  * @param string $name_format what format should full name entries have?
  * @return array An array of the given person's bosses.
  */
-function getDeputyBosses($user_id, $name_format='full_rev') {
-    global $_fullname_sql;
-    if ($_fullname_sql[$name_format]) {
-        $name_query = $_fullname_sql[$name_format];
+function getDeputyBosses($user_id, $name_format = 'full_rev') {
+    if ($GLOBALS['_fullname_sql'][$name_format]) {
+        $name_query = $GLOBALS['_fullname_sql'][$name_format];
     } else {
-        $name_query = $_fullname_sql['full_rev'];
+        $name_query = $GLOBALS['_fullname_sql']['full_rev'];
     }
     $name_query .= " AS fullname ";
-    $data = DBManager::get()->query(
-       "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about, ".
-        $name_query.
-       " FROM deputies d LEFT JOIN auth_user_md5 a ON (d.range_id=a.user_id) ".
-       "JOIN user_info ui ON (a.user_id=ui.user_id) ".
-       "WHERE d.user_id='$user_id' ".
-       "ORDER BY a.Nachname ASC, a.Vorname ASC");
-    return $data->fetchAll();
+
+    $query = "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about,
+                     {$name_query}
+              FROM deputies AS d
+              LEFT JOIN auth_user_md5 AS a ON (d.range_id = a.user_id)
+              LEFT JOIN user_info AS ui ON (a.user_id = ui.user_id)
+              WHERE d.user_id = ?
+              ORDER BY a.Nachname ASC, a.Vorname ASC";
+    $statement = DBManager::get()->query($query);
+    $statement->execute([$user_id]);
+    return $statement->fetchAll();
 }
 
 /**

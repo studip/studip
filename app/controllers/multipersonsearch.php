@@ -21,8 +21,8 @@ class MultipersonsearchController extends AuthenticatedController
      */
     public function ajax_search_action($name)
     {
-        $searchterm = Request::get("s");
-        $searchterm = str_replace(",", " ", $searchterm);
+        $searchterm = Request::get('s');
+        $searchterm = str_replace(',', ' ', $searchterm);
         $searchterm = preg_replace('/\s+/u', ' ', $searchterm);
 
         $result = array();
@@ -32,17 +32,19 @@ class MultipersonsearchController extends AuthenticatedController
             $searchObject = $mp->getSearchObject();
             $result = array_map(function ($r) {
                 return $r['user_id'];
-            }, $searchObject->getResults($searchterm, array(), 50));
-            $result = User::findFullMany($result, 'ORDER BY nachname asc, vorname asc');
+            }, $searchObject->getResults($searchterm, [], 50));
+            $result = User::findFullMany($result, 'ORDER BY Nachname ASC, Vorname ASC');
             $alreadyMember = $mp->getDefaultSelectedUsersIDs();
         }
-        $output = array();
 
+        $output = [];
         foreach ($result as $user) {
-            $output[] = array('user_id' => $user->id,
-                              'avatar'  => Avatar::getAvatar($user->id)->getURL(Avatar::SMALL),
-                              'text'    => $user->nachname . ", " . $user->vorname . " -- " . $user->perms . " (" . $user->username . ")",
-                              'member'  => in_array($user->id, $alreadyMember));
+            $output[] = [
+                'user_id' => $user->id,
+                'avatar'  => Avatar::getAvatar($user->id)->getURL(Avatar::SMALL),
+                'text'    => "{$user->nachname}, {$user->vorname} -- {$user->perms} ({$user->username})",
+                'member'  => in_array($user->id, $alreadyMember),
+            ];
         }
         $this->render_json($output);
     }
@@ -74,14 +76,14 @@ class MultipersonsearchController extends AuthenticatedController
         $this->additionHTML = $mp->getAdditionHTML();
         $this->data_dialog_status = $mp->getDataDialogStatus();
         foreach ($this->quickfilter as $title => $users) {
-            $tmp = User::findFullMany($users, 'ORDER BY nachname asc, vorname asc');
+            $tmp = User::findFullMany($users, 'ORDER BY Nachname ASC, Vorname ASC');
             $this->quickfilter[$title] = $tmp;
         }
         $this->executeURL = $mp->getExecuteURL();
         $this->jsFunction = $mp->getJSFunctionOnSubmit();
-        $tmp = User::findFullMany($mp->getDefaultSelectableUsersIDs(), 'ORDER BY nachname asc, vorname asc');
+        $tmp = User::findFullMany($mp->getDefaultSelectableUsersIDs(), 'ORDER BY Nachname asc, Vorname asc');
         $this->defaultSelectableUsers = $tmp;
-        $tmp = User::findFullMany($mp->getDefaultSelectedUsersIDs(), 'ORDER BY nachname asc, vorname asc');
+        $tmp = User::findFullMany($mp->getDefaultSelectedUsersIDs(), 'ORDER BY Nachname ASC, Vorname ASC');
         $this->defaultSelectedUsers = $tmp;
         $this->ajax = Request::isXhr();
 

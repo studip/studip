@@ -15,11 +15,11 @@
 
 class CalendarUser extends SimpleORMap
 {
-    
+
     protected static function configure($config = array())
     {
         $config['db_table'] = 'calendar_user';
-        
+
         $config['has_one']['owner'] = array(
             'class_name' => 'User',
             'foreign_key' => 'owner_id',
@@ -29,18 +29,18 @@ class CalendarUser extends SimpleORMap
             'class_name' => 'User',
             'foreign_key' => 'user_id'
         );
-        
+
         $config['additional_fields']['nachname']['get'] = function ($cu) {
             return $cu->user->nachname;
         };
         $config['additional_fields']['vorname']['get'] = function ($cu) {
             return $cu->user->vorname;
         };
-        
+
         parent::configure($config);
-        
+
     }
-    
+
     public function setPerm($permission)
     {
         if ($permission == Calendar::PERMISSION_READABLE) {
@@ -52,7 +52,7 @@ class CalendarUser extends SimpleORMap
                 'Calendar permission must be of type PERMISSION_READABLE or PERMISSION_WRITABLE.');
         }
     }
-    
+
     public static function getUsers($user_id, $permission = null)
     {
         $permission_array = array(Calendar::PERMISSION_READABLE,
@@ -68,9 +68,9 @@ class CalendarUser extends SimpleORMap
         return SimpleORMapCollection::createFromArray(CalendarUser::findBySQL(
                 'owner_id = ? AND permission IN(?)',
                 array($user_id, $permission)));
-        
+
     }
-    
+
     public static function getOwners($user_id, $permission = null)
     {
         $permission_array = array(Calendar::PERMISSION_READABLE,
@@ -86,10 +86,10 @@ class CalendarUser extends SimpleORMap
         $statement = DBManager::get()->prepare("
             SELECT *
             FROM calendar_user
-                INNER JOIN auth_user_md5 ON (auth_user_md5.user_id = calendar_user.owner_id) 
+                INNER JOIN auth_user_md5 ON (auth_user_md5.user_id = calendar_user.owner_id)
             WHERE calendar_user.user_id = :user_id
                 AND calendar_user.permission IN (:permission)
-            ORDER BY auth_user_md5.Nachname
+            ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname
         ");
         $statement->execute(array(
             'user_id' => $user_id,
@@ -100,6 +100,6 @@ class CalendarUser extends SimpleORMap
             $calendar_users[] = CalendarUser::buildExisting($data);
         }
         return SimpleORMapCollection::createFromArray($calendar_users);
-        
+
     }
 }

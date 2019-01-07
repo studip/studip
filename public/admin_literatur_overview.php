@@ -402,7 +402,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                               FROM seminar_user
                               INNER JOIN auth_user_md5 USING (user_id)
                               WHERE status = 'dozent' AND seminar_id IN (?)
-                              ORDER BY position, Nachname";
+                              ORDER BY position, Nachname, Vorname";
                     $statement = DBManager::get()->prepare($query);
                     $statement->execute(array(
                         array_keys($_SESSION['_lit_data'][$cid]['sem_data'])

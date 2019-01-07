@@ -136,19 +136,19 @@ class Message extends SimpleORMap implements PrivacyObject
     public function getRecipients()
     {
         if ($this->relations['receivers'] === null) {
-            $sql = "SELECT user_id,vorname,nachname,username,title_front,title_rear,perms,motto FROM
-                    message_user
-                    INNER JOIN auth_user_md5 aum USING(user_id)
-                    LEFT JOIN user_info ui USING(user_id)
-                    WHERE message_id=? AND snd_rec='rec'
-                    ORDER BY Nachname";
+            $sql = "SELECT user_id,vorname,nachname,username,title_front,title_rear,perms,motto
+                    FROM message_user
+                    INNER JOIN auth_user_md5 aum USING (user_id)
+                    LEFT JOIN user_info ui USING (user_id)
+                    WHERE message_id = ? AND snd_rec = 'rec'
+                    ORDER BY Nachname, Vorname";
             $params = array($this->id);
         } else {
-            $sql = "SELECT user_id,vorname,nachname,username,title_front,title_rear,perms,motto FROM
-                    auth_user_md5 aum
-                    LEFT JOIN user_info ui USING(user_id)
-                    WHERE aum.user_id IN(?)
-                    ORDER BY Nachname";
+            $sql = "SELECT user_id,vorname,nachname,username,title_front,title_rear,perms,motto
+                    FROM auth_user_md5 AS aum
+                    LEFT JOIN user_info ui USING (user_id)
+                    WHERE aum.user_id IN (?)
+                    ORDER BY Nachname, Vorname";
             $params = array($this->receivers->pluck('user_id'));
         }
         $db = DbManager::get();

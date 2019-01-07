@@ -152,7 +152,7 @@ function dump_sem($sem_id, $print_view = false)
               LEFT JOIN auth_user_md5 USING (user_id)
               LEFT JOIN user_info USING (user_id)
               WHERE Seminar_id = ? AND status = 'dozent'
-              ORDER BY position, Nachname";
+              ORDER BY position, Nachname, Vorname";
     $statement = DBManager::get()->prepare($query);
     $statement->execute(array($sem_id));
     $teachers = $statement->fetchAll(PDO::FETCH_COLUMN);
@@ -167,7 +167,7 @@ function dump_sem($sem_id, $print_view = false)
               LEFT JOIN auth_user_md5 USING (user_id)
               LEFT JOIN user_info USING (user_id)
               WHERE Seminar_id = ? AND status = 'tutor'
-              ORDER BY position, Nachname";
+              ORDER BY position, Nachname, Vorname";
     $statement = DBManager::get()->prepare($query);
     $statement->execute(array($sem_id));
     $tutors = $statement->fetchAll(PDO::FETCH_COLUMN);

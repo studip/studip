@@ -38,68 +38,18 @@
  */
 class CourseMember extends SimpleORMap implements PrivacyObject
 {
-
-    public static function findByCourse($course_id)
-    {
-        $db = DbManager::get();
-        return $db->fetchAll("SELECT seminar_user.*, aum.vorname,aum.nachname,aum.email,
-                             aum.username,ui.title_front,ui.title_rear
-                             FROM seminar_user
-                             LEFT JOIN auth_user_md5 aum USING (user_id)
-                             LEFT JOIN user_info ui USING (user_id)
-                             WHERE seminar_id = ? ORDER BY position,nachname",
-                             array($course_id),
-                             __CLASS__ . '::buildExisting');
-    }
-
-    public static function findByCourseAndStatus($course_id, $status)
-    {
-        $db = DbManager::get();
-        return $db->fetchAll("SELECT seminar_user.*, aum.vorname,aum.nachname,aum.email,
-                             aum.username,ui.title_front,ui.title_rear
-                             FROM seminar_user
-                             LEFT JOIN auth_user_md5 aum USING (user_id)
-                             LEFT JOIN user_info ui USING (user_id)
-                             WHERE seminar_id = ? AND seminar_user.status IN(?) ORDER BY status,position,nachname",
-                             array($course_id, is_array($status) ? $status : words($status)),
-                             __CLASS__ . '::buildExisting');
-    }
-
-    public static function findByUser($user_id)
-    {
-        $db = DbManager::get();
-        return $db->fetchAll("SELECT seminar_user.*, seminare.Name as course_name
-                             FROM seminar_user
-                             LEFT JOIN seminare USING (seminar_id)
-                             WHERE user_id = ? ORDER BY seminare.Name",
-                             array($user_id),
-                             __CLASS__ . '::buildExisting');
-    }
-
-    /**
-     * Retrieves the number of all members of a status
-     *
-     * @param String|Array $status  the status to filter with
-     *
-     * @return int the number of all those members.
-     */
-    public static function countByCourseAndStatus($course_id, $status)
-    {
-        return self::countBySql('seminar_id = ? AND status IN(?)', array($course_id, is_array($status) ? $status : words($status)));
-    }
-
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'seminar_user';
-        $config['belongs_to']['user'] = array(
-            'class_name' => 'User',
+        $config['belongs_to']['user'] = [
+            'class_name'  => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['belongs_to']['course'] = array(
-            'class_name' => 'Course',
+        ];
+        $config['belongs_to']['course'] = [
+            'class_name'  => 'Course',
             'foreign_key' => 'seminar_id',
-        );
-        $config['has_many']['datafields'] = array(
+        ];
+        $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_foreign_key' =>
                 function($model, $params) {
@@ -114,20 +64,88 @@ class CourseMember extends SimpleORMap implements PrivacyObject
                 function($course_member) {
                     return array($course_member);
                 }
-        );
-        $config['additional_fields']['vorname'] = array('user', 'vorname');
-        $config['additional_fields']['nachname'] = array('user', 'nachname');
-        $config['additional_fields']['username'] = array('user', 'username');
-        $config['additional_fields']['email'] = array('user', 'email');
-        $config['additional_fields']['title_front'] = array('user', 'title_front');
-        $config['additional_fields']['title_rear'] = array('user', 'title_rear');
-        $config['additional_fields']['course_name'] = array();
+        ];
+
+        $config['additional_fields']['vorname']     = ['user', 'vorname'];
+        $config['additional_fields']['nachname']    = ['user', 'nachname'];
+        $config['additional_fields']['username']    = ['user', 'username'];
+        $config['additional_fields']['email']       = ['user', 'email'];
+        $config['additional_fields']['title_front'] = ['user', 'title_front'];
+        $config['additional_fields']['title_rear']  = ['user', 'title_rear'];
+
+        $config['additional_fields']['course_name'] = [];
+
         parent::configure($config);
     }
 
-    function getUserFullname($format = "full")
+    public static function findByCourse($course_id)
     {
-        return User::build(array_merge(array('motto' => ''), $this->toArray('vorname nachname username title_front title_rear')))->getFullname($format);
+        $query = "SELECT seminar_user.*, aum.Vorname, aum.Nachname, aum.Email,
+                         aum.username, ui.title_front, ui.title_rear
+                         FROM seminar_user
+                         LEFT JOIN auth_user_md5 aum USING (user_id)
+                         LEFT JOIN user_info ui USING (user_id)
+                         WHERE seminar_id = ?
+                         ORDER BY position, Nachname, Vorname";
+        return DBManager::get()->fetchAll(
+            $query,
+            [$course_id],
+            __CLASS__ . '::buildExisting'
+        );
+    }
+
+    public static function findByCourseAndStatus($course_id, $status)
+    {
+        $query = "SELECT seminar_user.*, aum.Vorname, aum.Nachname, aum.Email,
+                         aum.username, ui.title_front, ui.title_rear
+                  FROM seminar_user
+                  LEFT JOIN auth_user_md5 aum USING (user_id)
+                  LEFT JOIN user_info ui USING (user_id)
+                  WHERE seminar_id = ?
+                    AND seminar_user.status IN (?)
+                  ORDER BY status, position, Nachname, Vorname";
+        return DBManager::get()->fetchAll(
+            $query,
+            [$course_id, is_array($status) ? $status : words($status)],
+            __CLASS__ . '::buildExisting'
+        );
+    }
+
+    public static function findByUser($user_id)
+    {
+        $query = "SELECT seminar_user.*, seminare.Name AS course_name
+                  FROM seminar_user
+                  LEFT JOIN seminare USING (seminar_id)
+                  WHERE user_id = ?
+                  ORDER BY seminare.Name";
+        return DBManager::get()->fetchAll(
+            $query,
+            [$user_id],
+            __CLASS__ . '::buildExisting'
+        );
+    }
+
+    /**
+     * Retrieves the number of all members of a status
+     *
+     * @param String|Array $status  the status to filter with
+     *
+     * @return int the number of all those members.
+     */
+    public static function countByCourseAndStatus($course_id, $status)
+    {
+        return self::countBySql(
+            'seminar_id = ? AND status IN(?)',
+            [$course_id, is_array($status) ? $status : words($status)]
+        );
+    }
+
+    public function getUserFullname($format = 'full')
+    {
+        return User::build(array_merge(
+            ['motto' => ''],
+            $this->toArray('vorname nachname username title_front title_rear')
+        ))->getFullname($format);
     }
 
     /**
@@ -138,7 +156,7 @@ class CourseMember extends SimpleORMap implements PrivacyObject
      */
     public static function exportUserData(StoredUserData $storage)
     {
-        $sorm = self::findBySQL("user_id = ?", [$storage->user_id]);
+        $sorm = self::findBySQL('user_id = ?', [$storage->user_id]);
         if ($sorm) {
             $field_data = [];
             foreach ($sorm as $row) {

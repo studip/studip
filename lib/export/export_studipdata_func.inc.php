@@ -674,7 +674,7 @@ function export_teilis($inst_id, $ex_sem_id = "no")
                       LEFT JOIN abschluss AS a USING (abschluss_id)
                       WHERE seminar_id = :seminar_id AND su.status = :status
                       GROUP BY aum.user_id
-                      ORDER BY " . ($key1 == 'dozent' ? 'position, ' : '') . "Nachname, Vorname";
+                      ORDER BY " . ($key1 === 'dozent' ? 'position, ' : '') . "Nachname, Vorname";
             $parameters[':seminar_id'] = $ex_sem_id;
             $parameters[':status']     = $key1;
         }

@@ -300,26 +300,35 @@ class SiteinfoMarkupEngine {
         return $template->render();
     }
 
-
-    function rootlist() {
+    /**
+     * Returns a list of all root accounts as html
+     * @return string html
+     */
+    public function rootlist()
+    {
         $template = $this->template_factory->open('rootlist');
         $sql = "SELECT {$GLOBALS['_fullname_sql']['full']} AS fullname,
                        Email, username
                 FROM auth_user_md5
                 LEFT JOIN user_info USING (user_id)
-                WHERE perms='root'
-                AND ".get_vis_query()."
-                ORDER BY Nachname";
+                WHERE perms = 'root'
+                AND " . get_vis_query() . "
+                ORDER BY Nachname, Vorname";
         $result = $this->db->query($sql);
         if ($result->rowCount() > 0) {
             $template->users = $result->fetchAll(PDO::FETCH_ASSOC);
         } else {
-            $template->error = TRUE;
+            $template->error = true;
         }
         return $template->render();
     }
 
-    function adminList() {
+    /**
+     * Returns a list of all admin accounts as html
+     * @return string html
+     */
+    public function adminList()
+    {
         $template = $this->template_factory->open('adminList');
         $sql = "SELECT Institute.Name AS institute,
                        {$GLOBALS['_fullname_sql']['full']} AS fullname,
@@ -584,5 +593,3 @@ function stripforeignlanguage($language, $text) {
         return '';
     }
 }
-
-?>
