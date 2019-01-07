@@ -85,7 +85,7 @@ function getDeputyBosses($user_id, $name_format = 'full_rev') {
               LEFT JOIN user_info AS ui ON (a.user_id = ui.user_id)
               WHERE d.user_id = ?
               ORDER BY a.Nachname ASC, a.Vorname ASC";
-    $statement = DBManager::get()->query($query);
+    $statement = DBManager::get()->prepare($query);
     $statement->execute([$user_id]);
     return $statement->fetchAll();
 }
