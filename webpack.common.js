@@ -14,7 +14,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "public/assets"),
-    chunkFilename: "javascripts/[name].chunk.js",
+    chunkFilename: "javascripts/[name]-[chunkhash].chunk.js",
     filename: "javascripts/[name].js"
   },
   module: {
