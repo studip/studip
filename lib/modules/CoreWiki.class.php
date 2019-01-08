@@ -2,7 +2,7 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
@@ -10,7 +10,7 @@
  */
 
 class CoreWiki implements StudipModule {
-    
+
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('WIKI_ENABLE')) {
             $navigation = new Navigation(_('Wiki'), "seminar_main.php?auswahl=".$course_id."&redirect_to=wiki.php");
@@ -20,7 +20,7 @@ class CoreWiki implements StudipModule {
             return null;
         }
     }
-    
+
     function getTabNavigation($course_id) {
         if (get_config('WIKI_ENABLE')) {
             $navigation = new Navigation(_('Wiki'));
@@ -36,11 +36,11 @@ class CoreWiki implements StudipModule {
         }
     }
 
-    /** 
+    /**
      * @see StudipModule::getMetadata()
-     */ 
+     */
     function getMetadata()
-    { 
+    {
         return array(
             'summary' => _('Gemeinsames asynchrones Erstellen und Bearbeiten von Texten'),
             'description' => _('Im Wiki-Web oder kurz "Wiki" können '.
@@ -55,7 +55,7 @@ class CoreWiki implements StudipModule {
                 'nachvollziehbar werden. Einzelne Versionen können zudem '.
                 'auch gelöscht werden (nur Lehrende). Ein Export als '.
                 'pdf-Datei ist integriert.'),
-            
+
             'displayname' => _('Wiki-Web'),
             'keywords' => _('Individuelle Bearbeitung von Texten;
                             Versionshistorie;
@@ -79,7 +79,7 @@ class CoreWiki implements StudipModule {
                 'pictures' => array(
                     0 => array( 'source' => 'Gemeinsam_erstellte_Texte.jpg', 'title' => 'Gemeinsam erstellte Texte')
                 )
-            )               
+            )
         );
     }
 }

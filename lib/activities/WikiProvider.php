@@ -17,25 +17,31 @@ class WikiProvider implements ActivityProvider
      */
     public function getActivityDetails($activity)
     {
+        // Check visibility of wiki page
+        $page = \WikiPage::findLatestPage($activity->context_id, $activity->object_id);
+        if ($page && !$page->isVisibleTo($GLOBALS['user'])) {
+            return false;
+        }
+
         $activity->content = \htmlReady($activity->content);
 
-        if ($activity->context == "course") {
-            $url = \URLHelper::getUrl("wiki.php?cid={$activity->context_id}&keyword={$activity->object_id}");
-            $route = \URLHelper::getURL('api.php/course/' . $activity->context_id . '/wiki/' . $activity->object_id, NULL, true);
+        if ($activity->context === 'course') {
+            $url = \URLHelper::getURL('wiki.php', ['cid' => $activity->context_id, 'keyword' => $activity->object_id]);
+            $route = \URLHelper::getURL("api.php/course/{$activity->context_id}/wiki/{$activity->object_id}", null, true);
 
-            $activity->object_url = array(
-                $url => _('Zum Wiki der Veranstaltung')
-            );
+            $activity->object_url = [
+                $url => _('Zum Wiki der Veranstaltung'),
+            ];
 
             $activity->object_route = $route;
 
-        } elseif ($activity->context == "institute") {
-            $url = \URLHelper::getUrl("wiki.php?cid={$activity->context_id}&keyword={$activity->object_id}");
+        } elseif ($activity->context === 'institute') {
+            $url = \URLHelper::getURL('wiki.php', ['cid' => $activity->context_id, 'keyword' => $activity->object_id]);
             $route= null;
 
-            $activity->object_url = array(
+            $activity->object_url = [
                 $url => _('Zum Wiki der Einrichtung')
-            );
+            ];
 
             $activity->object_route = $route;
         }
@@ -54,8 +60,8 @@ class WikiProvider implements ActivityProvider
         $range_id = $info['range_id'];
         $keyword = $info['keyword'];
 
-        $type     = get_object_type($range_id);
-        if ($type == 'sem') {
+        $type = get_object_type($range_id);
+        if ($type === 'sem') {
             $course = \Course::find($range_id);
         } else {
             $course = \Institute::find($range_id);
@@ -64,23 +70,23 @@ class WikiProvider implements ActivityProvider
         $user_id = $GLOBALS['user']->id;
         $mkdate = time();
 
-        if ($event == 'WikiPageDidCreate') {
+        if ($event === 'WikiPageDidCreate') {
             $verb = 'created';
-            if ($type == 'sem') {
+            if ($type === 'sem') {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Veranstaltung "%s" angelegt.');
             } else {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Einrichtung "%s" angelegt.');
             }
-        } elseif ($event == 'WikiPageDidUpdate') {
+        } elseif ($event === 'WikiPageDidUpdate') {
             $verb = 'edited';
-            if ($type == 'sem') {
+            if ($type === 'sem') {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Veranstaltung "%s" aktualisiert.');
             } else {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Einrichtung "%s" aktualisiert.');
             }
-        } elseif ($event == 'WikiPageDidDelete') {
+        } elseif ($event === 'WikiPageDidDelete') {
             $verb = 'voided';
-            if ($type == 'sem') {
+            if ($type === 'sem') {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Veranstaltung "%s" gelöscht.');
             } else {
                 $summary = _('Die Wiki-Seite %s wurde von %s in der Einrichtung "%s" gelöscht.');
@@ -89,20 +95,18 @@ class WikiProvider implements ActivityProvider
 
         $summary = sprintf($summary, $keyword, get_fullname($user_id), $course->name);
 
-        $activity = Activity::create(
-            array(
-                'provider'     => __CLASS__,
-                'context'      => $type === 'sem' ? 'course' : 'institute',
-                'context_id'   => $range_id,
-                'content'      => $summary,
-                'actor_type'   => 'user',   // who initiated the activity?
-                'actor_id'     => $user_id, // id of initiator
-                'verb'         => $verb,    // the activity type
-                'object_id'    => $keyword, // the id of the referenced object
-                'object_type'  => 'wiki',   // type of activity object
-                'mkdate'       =>  $mkdate
-            )
-        );
+        $activity = Activity::create([
+            'provider'     => __CLASS__,
+            'context'      => $type === 'sem' ? 'course' : 'institute',
+            'context_id'   => $range_id,
+            'content'      => $summary,
+            'actor_type'   => 'user',   // who initiated the activity?
+            'actor_id'     => $user_id, // id of initiator
+            'verb'         => $verb,    // the activity type
+            'object_id'    => $keyword, // the id of the referenced object
+            'object_type'  => 'wiki',   // type of activity object
+            'mkdate'       =>  $mkdate,
+        ]);
 
     }
 
