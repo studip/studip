@@ -47,10 +47,15 @@
             <? endif; ?>
             </td>
             <td>
-                <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $page->author->username]) ?>">
-                    <?= Avatar::getAvatar($page->author->id)->getImageTag(Avatar::SMALL) ?>
-                    <?= htmlReady($page->author->getFullName()) ?>
-                </a>
+                <? if (isset($page->author)) : ?>
+                    <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $page->author->username]) ?>">
+                        <?= Avatar::getAvatar($page->author->id, $page->author->username)->getImageTag(Avatar::SMALL, ['title' => $page->author->getFullName()]) ?>
+                        <?= htmlReady($page->author->getFullName()) ?>
+                    </a>
+                <? else : ?>
+                    <?= Avatar::getNobody()->getImageTag(Avatar::SMALL) ?>
+                    <?= _('unbekannt') ?>
+                <? endif ?>
             </td>
         </tr>
     <? endforeach; ?>
