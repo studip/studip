@@ -44,19 +44,16 @@
                     ['data-dialog' => 'size=auto']
                 ) ?>
             <? endif ?>
-            <? if (!Request::isDialog()): ?>
-                <?= Studip\LinkButton::create(
-                    _('Abbrechen'),
-                    URLHelper::getURL(
-                        'wiki.php',
-                        [
-                            'cid' => Context::getId(),
-                            'view' => 'show'
-                        ]
-                    ),
-                    ['data-dialog' => 'size=auto']
-                ) ?>
-            <? endif ?>
+            <?= Studip\LinkButton::createCancel(
+                _('Abbrechen'),
+                URLHelper::getURL(
+                    'wiki.php',
+                    [
+                        'cid' => Context::getId(),
+                        'view' => 'show'
+                    ]
+                )
+            ) ?>
         </div>
     </fieldset>
 <? endif ?>
@@ -105,19 +102,16 @@
                 $controller->url_for("wiki/import/{$course->id}"),
                 ['data-dialog' => 'size=auto']
             ) ?>
-            <? if (!Request::isDialog()): ?>
-                <?= Studip\LinkButton::create(
-                    _('Abbrechen'),
-                    URLHelper::getURL(
-                        'wiki.php',
-                        [
-                            'cid' => Context::getId(),
-                            'view' => 'show'
-                        ]
-                    ),
-                    ['data-dialog' => 'size=auto']
-                ) ?>
-            <? endif ?>
+            <?= Studip\LinkButton::createCancel(
+                _('Abbrechen'),
+                URLHelper::getURL(
+                    'wiki.php',
+                    [
+                        'cid' => Context::getId(),
+                        'view' => 'show'
+                    ]
+                )
+            ) ?>
         </div>
     <? else: ?>
         <?= MessageBox::info(
@@ -132,19 +126,16 @@
             $controller->url_for("wiki/import/{$course->id}"),
             ['data-dialog' => 'size=auto']
         ) ?>
-        <? if (!Request::isDialog()): ?>
-            <?= Studip\LinkButton::create(
-                _('Zurück zum Wiki'),
-                URLHelper::getURL(
-                    'wiki.php',
-                    [
-                        'cid' => Context::getId(),
-                        'view' => 'show'
-                    ]
-                ),
-                ['data-dialog' => 'size=auto']
-            ) ?>
-        <? endif ?>
+        <?= Studip\LinkButton::createCancel(
+            _('Zurück zum Wiki'),
+            URLHelper::getURL(
+                'wiki.php',
+                [
+                    'cid' => Context::getId(),
+                    'view' => 'show'
+                ]
+            )
+        ) ?>
     </div>
 <? endif ?>
 </form>
