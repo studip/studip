@@ -36,15 +36,28 @@
                 ]) ?>
             <? endif ?>
         </label>
-        <? if ($bad_course_search): ?>
-            <div data-dialog-button>
+        <div data-dialog-button>
+            <? if ($bad_course_search): ?>
                 <?= Studip\LinkButton::create(
                     _('Neue Suche'),
                     $controller->url_for("wiki/import/{$course->id}"),
                     ['data-dialog' => 'size=auto']
                 ) ?>
-            </div>
-        <? endif ?>
+            <? endif ?>
+            <? if (!Request::isDialog()): ?>
+                <?= Studip\LinkButton::create(
+                    _('Abbrechen'),
+                    URLHelper::getURL(
+                        'wiki.php',
+                        [
+                            'cid' => Context::getId(),
+                            'view' => 'show'
+                        ]
+                    ),
+                    ['data-dialog' => 'size=auto']
+                ) ?>
+            <? endif ?>
+        </div>
     </fieldset>
 <? endif ?>
 
@@ -92,6 +105,19 @@
                 $controller->url_for("wiki/import/{$course->id}"),
                 ['data-dialog' => 'size=auto']
             ) ?>
+            <? if (!Request::isDialog()): ?>
+                <?= Studip\LinkButton::create(
+                    _('Abbrechen'),
+                    URLHelper::getURL(
+                        'wiki.php',
+                        [
+                            'cid' => Context::getId(),
+                            'view' => 'show'
+                        ]
+                    ),
+                    ['data-dialog' => 'size=auto']
+                ) ?>
+            <? endif ?>
         </div>
     <? else: ?>
         <?= MessageBox::info(
@@ -106,6 +132,19 @@
             $controller->url_for("wiki/import/{$course->id}"),
             ['data-dialog' => 'size=auto']
         ) ?>
+        <? if (!Request::isDialog()): ?>
+            <?= Studip\LinkButton::create(
+                _('Abbrechen'),
+                URLHelper::getURL(
+                    'wiki.php',
+                    [
+                        'cid' => Context::getId(),
+                        'view' => 'show'
+                    ]
+                ),
+                ['data-dialog' => 'size=auto']
+            ) ?>
+        <? endif ?>
     </div>
 <? endif ?>
 </form>
