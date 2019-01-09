@@ -134,7 +134,7 @@
         ) ?>
         <? if (!Request::isDialog()): ?>
             <?= Studip\LinkButton::create(
-                _('Abbrechen'),
+                _('Zurück zum Wiki'),
                 URLHelper::getURL(
                     'wiki.php',
                     [
