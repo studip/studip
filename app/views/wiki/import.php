@@ -1,6 +1,6 @@
 <form class="default" method="post"
       name="wiki_import_form"
-      data-dialog="<?= $show_wiki_page_form ? 'reload-on-close' : '' ?>"
+      data-dialog="size=auto;<?= $show_wiki_page_form ? 'reload-on-close' : '' ?>"
       action="<?= $controller->link_for("wiki/import/{$course->id}") ?>"
     <?= CSRFProtection::tokenTag() ?>
 
@@ -41,7 +41,7 @@
                 <?= Studip\LinkButton::create(
                     _('Neue Suche'),
                     $controller->url_for("wiki/import/{$course->id}"),
-                    ['data-dialog' => '']
+                    ['data-dialog' => 'size=auto']
                 ) ?>
             </div>
         <? endif ?>
@@ -90,7 +90,7 @@
             <?= Studip\LinkButton::create(
                 _('Neue Suche'),
                 $controller->url_for("wiki/import/{$course->id}"),
-                ['data-dialog' => '']
+                ['data-dialog' => 'size=auto']
             ) ?>
         </div>
     <? else: ?>
@@ -104,7 +104,7 @@
         <?= Studip\LinkButton::create(
             _('Import neu starten'),
             $controller->url_for("wiki/import/{$course->id}"),
-            ['data-dialog' => '']
+            ['data-dialog' => 'size=auto']
         ) ?>
     </div>
 <? endif ?>
