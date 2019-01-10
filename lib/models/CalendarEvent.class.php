@@ -1120,18 +1120,26 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public static function getEventsByInterval($range_id, DateTime $start, DateTime $end)
     {
-        $stmt = DBManager::get()->prepare('SELECT * FROM calendar_event '
-                . 'INNER JOIN event_data USING(event_id) '
-                . 'WHERE range_id = :range_id '
-                . 'AND (start BETWEEN :start AND :end OR '
-                . "(start <= :end AND (expire + end - start) >= :start AND rtype != 'SINGLE') "
-                . 'OR (:start BETWEEN start AND end)) '
-                . 'ORDER BY start ASC');
-        $stmt->execute(array(
+        $query = "SELECT *
+                  FROM calendar_event
+                  INNER JOIN event_data USING (event_id)
+                  WHERE range_id = :range_id
+                    AND (
+                        start BETWEEN :start AND :end
+                        OR (
+                            start <= :end
+                            AND CAST(expire + end AS SIGNED) - CAST(start AS SIGNED) >= :start
+                            AND rtype != 'SINGLE'
+                        )
+                        OR :start BETWEEN start AND end
+                    )
+                  ORDER BY start ASC";
+        $stmt = DBManager::get()->prepare($query);
+        $stmt->execute([
             ':range_id' => $range_id,
             ':start'    => $start->getTimestamp(),
-            ':end'      => $end->getTimestamp()
-        ));
+            ':end'      => $end->getTimestamp(),
+        ]);
         $i = 0;
         $event_collection = new SimpleORMapCollection();
         $event_collection->setClassName('Event');
