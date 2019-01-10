@@ -1128,7 +1128,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         start BETWEEN :start AND :end
                         OR (
                             start <= :end
-                            AND CAST(expire + end AS SIGNED) - CAST(start AS SIGNED) >= :start
+                            AND CAST(expire AS SIGNED) + CAST(end AS SIGNED) - CAST(start AS SIGNED) >= :start
                             AND rtype != 'SINGLE'
                         )
                         OR :start BETWEEN start AND end
