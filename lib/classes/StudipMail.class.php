@@ -1,5 +1,4 @@
 <?php
-# Lifter010: TODO
 /**
  * StudipMail.class.php
  *
@@ -8,28 +7,9 @@
  *
  * @author  André Noack <noack@data-quest>, Suchi & Berg GmbH <info@data-quest.de>
  * @version 1
+ * @license GPL2 or any later version
+ * @copyright 2009 authors
  */
-
-// +---------------------------------------------------------------------------+
-// This file is part of Stud.IP
-//
-// Copyright (C) 2009 André Noack <noack@data-quest>,
-// Suchi & Berg GmbH <info@data-quest.de>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+
-
 class StudipMail
 {
     /**
@@ -54,7 +34,7 @@ class StudipMail
      * Array of all attachments, name ist key
      * @var array
      */
-    private $attachments = array();
+    private $attachments = [];
     /**
      * @var string
      */
@@ -63,7 +43,7 @@ class StudipMail
      * Array of all recipients, mail is key
      * @var array
      */
-    private $recipients = array();
+    private $recipients = [];
     /**
      * @var string
      */
@@ -74,7 +54,8 @@ class StudipMail
      * @param email_message_class $transporter
      * @return void
      */
-    public static function setDefaultTransporter(email_message_class $transporter) {
+    public static function setDefaultTransporter(email_message_class $transporter)
+    {
         self::$transporter = $transporter;
     }
 
@@ -83,7 +64,8 @@ class StudipMail
      *
      * @return email_message_class
      */
-    public static function getDefaultTransporter() {
+    public static function getDefaultTransporter()
+    {
         return self::$transporter;
     }
 
@@ -96,7 +78,8 @@ class StudipMail
      * @param string $html      HTML version of the message (optional).
      * @return bool
      */
-    public static function sendMessage($recipient, $subject, $text, $html = null) {
+    public static function sendMessage($recipient, $subject, $text, $html = null)
+    {
         $mail = new StudipMail();
         return $mail->setSubject($subject)
                     ->addRecipient($recipient)
@@ -113,7 +96,8 @@ class StudipMail
      * @param string $text
      * @return bool
      */
-    public static function sendAbuseMessage($subject, $text) {
+    public static function sendAbuseMessage($subject, $text)
+    {
         $mail = new StudipMail();
         $abuse = $mail->getReplyToEmail();
         return $mail->setSubject($subject)
@@ -128,11 +112,12 @@ class StudipMail
      * configuration settings. The return path is always set to MAIL_ABUSE
      *
      */
-    function __construct($data = null) {
-        $mail_localhost = ($GLOBALS['MAIL_LOCALHOST'] == "") ? $_SERVER["SERVER_NAME"] : $GLOBALS['MAIL_LOCALHOST'];
-        $this->setSenderEmail($GLOBALS['MAIL_ENV_FROM'] == "" ? "wwwrun@" . $mail_localhost : $GLOBALS['MAIL_ENV_FROM']);
-        $this->setSenderName($GLOBALS['MAIL_FROM'] == "" ? 'Stud.IP - ' . Config::get()->UNI_NAME_CLEAN : $GLOBALS['MAIL_FROM']);
-        $this->setReplyToEmail($GLOBALS['MAIL_ABUSE'] == "" ? "abuse@" . $mail_localhost : $GLOBALS['MAIL_ABUSE']);
+    public function __construct($data = null)
+    {
+        $mail_localhost = $GLOBALS['MAIL_LOCALHOST'] ?: $_SERVER['SERVER_NAME'];
+        $this->setSenderEmail($GLOBALS['MAIL_ENV_FROM'] ?: "wwwrun@{$mail_localhost}");
+        $this->setSenderName($GLOBALS['MAIL_FROM'] ?: 'Stud.IP - ' . Config::get()->UNI_NAME_CLEAN);
+        $this->setReplyToEmail($GLOBALS['MAIL_ABUSE'] ?: "abuse@{$mail_localhost}");
 
         if ($data) {
             $this->setData($data);
@@ -143,7 +128,8 @@ class StudipMail
      * @param string $mail
      * @return StudipMail provides fluent interface
      */
-    function setSenderEmail($mail) {
+    public function setSenderEmail($mail)
+    {
         $this->sender['mail'] = $mail;
         return $this;
     }
@@ -151,7 +137,8 @@ class StudipMail
     /**
      * @return string
      */
-    function getSenderEmail() {
+    public function getSenderEmail()
+    {
         return $this->sender['mail'];
     }
 
@@ -159,7 +146,8 @@ class StudipMail
      * @param string $name
      * @return StudipMail provides fluent interface
      */
-    function setSenderName($name) {
+    public function setSenderName($name)
+    {
         $this->sender['name'] = $name;
         return $this;
     }
@@ -167,7 +155,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getSenderName() {
+    public function getSenderName()
+    {
         return $this->sender['name'];
     }
 
@@ -175,7 +164,8 @@ class StudipMail
      * @param $mail
      * @return StudipMail provides fluent interface
      */
-    function setReplyToEmail($mail) {
+    public function setReplyToEmail($mail)
+    {
         $this->reply_to['mail'] = $mail;
         return $this;
     }
@@ -183,7 +173,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getReplyToEmail(){
+    public function getReplyToEmail()
+    {
         return $this->reply_to['mail'];
     }
 
@@ -191,7 +182,8 @@ class StudipMail
      * @param $name
      * @return StudipMail provides fluent interface
      */
-    function setReplyToName($name) {
+    public function setReplyToName($name)
+    {
         $this->reply_to['name'] = $name;
         return $this;
     }
@@ -199,7 +191,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getReplyToName() {
+    public function getReplyToName()
+    {
         return $this->reply_to['name'];
     }
 
@@ -207,7 +200,8 @@ class StudipMail
      * @param $subject
      * @return StudipMail provides fluent interface
      */
-    function setSubject($subject){
+    public function setSubject($subject)
+    {
         $this->subject = $subject;
         return $this;
     }
@@ -215,7 +209,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getSubject(){
+    public function getSubject()
+    {
         return $this->subject;
     }
 
@@ -225,10 +220,13 @@ class StudipMail
      * @param $type
      * @return StudipMail provides fluent interface
      */
-    function addRecipient($mail, $name = '', $type = 'To') {
+    public function addRecipient($mail, $name = '', $type = 'To')
+    {
         $type = ucfirst($type);
         $type = in_array($type, array('To', 'Cc', 'Bcc')) ? $type : 'To';
-        $this->recipients[$mail] = compact('mail', 'name', 'type');
+        if (isset($this->recipients[$mail]) && $this->recipients[$mail]['type'] === 'To') {
+            $this->recipients[$mail] = compact('mail', 'name', 'type');
+        }
         return $this;
     }
 
@@ -236,7 +234,8 @@ class StudipMail
      * @param $mail
      * @return StudipMail provides fluent interface
      */
-    function removeRecipient($mail) {
+    public function removeRecipient($mail)
+    {
         unset($this->recipients[$mail]);
         return $this;
     }
@@ -244,7 +243,8 @@ class StudipMail
     /**
      * @return array
      */
-    function getRecipients() {
+    public function getRecipients()
+    {
         return $this->recipients;
     }
 
@@ -252,7 +252,8 @@ class StudipMail
      * @param $mail
      * @return unknown_type
      */
-    function isRecipient($mail) {
+    public function isRecipient($mail)
+    {
         return isset($this->recipients[$mail]);
     }
 
@@ -263,8 +264,9 @@ class StudipMail
      * @param $disposition
      * @return StudipMail provides fluent interface
      */
-    function addFileAttachment($file_name, $name = '', $type = 'automatic/name', $disposition = 'attachment') {
-        $name = $name == '' ? basename($file_name) : $name;
+    public function addFileAttachment($file_name, $name = '', $type = 'automatic/name', $disposition = 'attachment')
+    {
+        $name = $name ?: basename($file_name);
         $this->attachments[$name] = compact('file_name', 'name', 'type', 'disposition');
         return $this;
     }
@@ -276,7 +278,8 @@ class StudipMail
      * @param $disposition
      * @return StudipMail provides fluent interface
      */
-    function addDataAttachment($data, $name, $type = 'automatic/name', $disposition = 'attachment') {
+    public function addDataAttachment($data, $name, $type = 'automatic/name', $disposition = 'attachment')
+    {
         $this->attachments[$name] = compact('data', 'name', 'type', 'disposition');
         return $this;
     }
@@ -285,7 +288,7 @@ class StudipMail
      * @param FileRef $file_ref The FileRef object of a file that shall be added to a mail
      * @return StudipMail provides fluent interface
      */
-    function addStudipAttachment(FileRef $file_ref)
+    public function addStudipAttachment(FileRef $file_ref)
     {
         if (!$file_ref->isNew()) {
             $this->addFileAttachment(
@@ -300,7 +303,8 @@ class StudipMail
      * @param $name
      * @return StudipMail provides fluent interface
      */
-    function removeAttachment($name) {
+    public function removeAttachment($name)
+    {
         unset($this->attachments[$name]);
         return $this;
     }
@@ -308,7 +312,8 @@ class StudipMail
     /**
      * @return array
      */
-    function getAttachments() {
+    public function getAttachments()
+    {
         return $this->attachments;
     }
 
@@ -316,15 +321,17 @@ class StudipMail
      * @param $name
      * @return unknown_type
      */
-    function isAttachment($name) {
-        return isset($this->attachments[name]);
+    public function isAttachment($name)
+    {
+        return isset($this->attachments[$name]);
     }
 
     /**
      * @param $body
      * @return StudipMail provides fluent interface
      */
-    function setBodyText($body) {
+    public function setBodyText($body)
+    {
         $this->body_text = $body;
         return $this;
     }
@@ -332,7 +339,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getBodyText() {
+    public function getBodyText()
+    {
         return $this->body_text;
     }
 
@@ -340,7 +348,8 @@ class StudipMail
      * @param $body
      * @return StudipMail provides fluent interface
      */
-    function setBodyHtml($body) {
+    public function setBodyHtml($body)
+    {
         $this->body_html = $body;
         return $this;
     }
@@ -348,7 +357,8 @@ class StudipMail
     /**
      * @return unknown_type
      */
-    function getBodyHtml() {
+    public function getBodyHtml()
+    {
         return $this->body_html;
     }
 
@@ -356,7 +366,8 @@ class StudipMail
      * quotes the given string if it contains any characters
      * reserved for special interpretation in RFC 2822.
      */
-    protected static function quoteString($string) {
+    protected static function quoteString($string)
+    {
         // list of reserved characters in RFC 2822
         if (strcspn($string, '()<>[]:;@\\,.') < mb_strlen($string)) {
             $string = '"' . addcslashes($string, "\r\"\\") . '"';
@@ -371,17 +382,18 @@ class StudipMail
      * @param email_message_class $transporter
      * @return bool
      */
-    function send(email_message_class $transporter = null) {
-        if(is_null($transporter)){
+    public function send(email_message_class $transporter = null)
+    {
+        if ($transporter === null) {
             $transporter = self::$transporter;
         }
-        if(is_null($transporter)){
+        if ($transporter === null) {
             throw new Exception('no mail transport defined');
         }
         $transporter->ResetMessage();
-        $transporter->SetEncodedEmailHeader("From", $this->getSenderEmail(), self::quoteString($this->getSenderName()));
+        $transporter->SetEncodedEmailHeader('From', $this->getSenderEmail(), self::quoteString($this->getSenderName()));
         if($this->getReplyToEmail()){
-            $transporter->SetEncodedEmailHeader("Reply-To", $this->getReplyToEmail(), self::quoteString($this->getReplyToName()));
+            $transporter->SetEncodedEmailHeader('Reply-To', $this->getReplyToEmail(), self::quoteString($this->getReplyToName()));
         }
         foreach($this->getRecipients() as $recipient) {
             $recipients_by_type[$recipient['type']][$recipient['mail']] = self::quoteString($recipient['name']);
@@ -389,14 +401,14 @@ class StudipMail
         foreach($recipients_by_type as $type => $recipients){
             $transporter->SetMultipleEncodedEmailHeader($type, $recipients);
         }
-        $transporter->SetEncodedHeader("Subject", $this->getSubject());
+        $transporter->SetEncodedHeader('Subject', $this->getSubject());
         if($this->getBodyHtml()){
             $html_part = '';
             $transporter->CreateQuotedPrintableHTMLPart($this->getBodyHtml(), "", $html_part);
             $text_part = '';
             $text_message = $this->getBodyText();
             if(!$text_message){
-                $text_message = _("Diese Nachricht ist im HTML-Format verfasst. Sie benötigen eine E-Mail-Anwendung, die das HTML-Format anzeigen kann.");
+                $text_message = _('Diese Nachricht ist im HTML-Format verfasst. Sie benötigen eine E-Mail-Anwendung, die das HTML-Format anzeigen kann.');
             }
             $transporter->CreateQuotedPrintableTextPart($transporter->WrapText($text_message), "", $text_part);
             $transporter->AddAlternativeMultipart($part = array($text_part, $html_part));
@@ -404,13 +416,13 @@ class StudipMail
             $transporter->AddQuotedPrintableTextPart($this->getBodyText());
         }
         foreach($this->getAttachments() as $attachment){
-            $transporter->addFilePart($part = array(
-                'FileName' => $attachment['file_name'],
-                'Data' => $attachment['data'],
-                'Name' => $attachment['name'],
+            $transporter->addFilePart($part = [
+                'FileName'     => $attachment['file_name'],
+                'Data'         => $attachment['data'],
+                'Name'         => $attachment['name'],
                 'Content-Type' => $attachment['type'],
-                'Disposition' => $attachment['disposition']
-            ));
+                'Disposition'  => $attachment['disposition'],
+            ]);
         }
         $error = $transporter->Send();
         if (mb_strlen($error) === 0) {
