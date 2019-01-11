@@ -382,7 +382,7 @@ class MembersModel
     {
         list($order, $asc) = explode(' ', $order_by);
         if ($order === 'nachname') {
-            $order_by = "nachname {$asc},vorname {$asc}";
+            $order_by = "Nachname {$asc},Vorname {$asc}";
         }
 
         $query = "SELECT su.user_id, username, Vorname, Nachname, Email, status,
