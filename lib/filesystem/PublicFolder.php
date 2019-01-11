@@ -64,7 +64,7 @@ class PublicFolder extends StandardFolder
     }
 
     /**
-     * PublicFolders are always visible.
+     * PublicFolders are visible for the owner, or for all if viewable flag is set
      *
      * @param string $user_id The user who wishes to see the folder.
      *
@@ -72,11 +72,11 @@ class PublicFolder extends StandardFolder
      */
     public function isVisible($user_id)
     {
-        return true;
+        return $this->viewable || $this->range_id === $user_id;
     }
 
     /**
-     * PublicFolders are always readable.
+     * PublicFolders are readable for the owner, or for all if viewable flag is set
      *
      * @param string $user_id The user who wishes to read the folder.
      *
@@ -84,7 +84,7 @@ class PublicFolder extends StandardFolder
      */
     public function isReadable($user_id)
     {
-        return true;
+        return $this->isVisible($user_id);
     }
 
     /**
