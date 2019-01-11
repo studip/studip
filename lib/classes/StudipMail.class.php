@@ -224,7 +224,7 @@ class StudipMail
     {
         $type = ucfirst($type);
         $type = in_array($type, array('To', 'Cc', 'Bcc')) ? $type : 'To';
-        if (isset($this->recipients[$mail]) && $this->recipients[$mail]['type'] === 'To') {
+        if (!isset($this->recipients[$mail]) || $this->recipients[$mail]['type'] !== 'To') {
             $this->recipients[$mail] = compact('mail', 'name', 'type');
         }
         return $this;
