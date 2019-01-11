@@ -403,7 +403,7 @@ class MembersModel
             if ($status === $sort_status) {
                 $filtered_members[$status]->orderBy($order_by, $order !== 'nachname' ? SORT_NUMERIC : SORT_LOCALE_STRING);
             } else {
-                $filtered_members[$status]->orderBy(in_array($status, words('tutor dozent')) ? 'position,nachname,vorname' : 'nachname,vorname');
+                $filtered_members[$status]->orderBy(in_array($status, words('tutor dozent')) ? 'position,Nachname,Vorname' : 'Nachname,Vorname');
             }
         }
         return $filtered_members;
