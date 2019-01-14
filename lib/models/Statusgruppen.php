@@ -389,6 +389,15 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
             return false;
         }
         $user = new StatusgruppeUser(array($this->id, $user_id));
+
+        // set up default datafield values for institute groups
+        if ($user->isNew() && !Course::find($this->range_id)) {
+            $user->datafields->each(function ($datafield) {
+                // note: $datafield->content does not work here
+                $datafield['content'] = 'default_value';
+                $datafield->store();
+            });
+        }
         return $user->store();
     }
 
