@@ -311,7 +311,7 @@ class ProfileController extends AuthenticatedController
             if (class_exists('Blubber')) {
                 $actions->addLink(
                     _('Anblubbern'),
-                    URLHelper::geURL('plugins.php/blubber/streams/global', ['mention' => $this->current_user->username]),
+                    URLHelper::getURL('plugins.php/blubber/streams/global', ['mention' => $this->current_user->username]),
                     Icon::create('blubber', Icon::ROLE_CLICKABLE, tooltip2(_('Blubber diesen Nutzer an')))
                 );
             }
