@@ -4,11 +4,17 @@
  */
 class StEP00330 extends Migration
 {
+
+    function description()
+    {
+        return 'Adds a visibility flag to lock semesters';
+    }
+
     public function up()
     {
         $query = "ALTER TABLE `semester_data`
                     ADD `visible` TINYINT(2) UNSIGNED NOT NULL DEFAULT '1' AFTER `vorles_ende`";
-        DBManager::get()->exec();
+        DBManager::get()->exec($query);
 
         SimpleORMap::expireTableScheme();
     }
