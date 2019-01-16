@@ -135,6 +135,7 @@ $translations = array(
 
     // resources/assets/javascripts/lib/quick_search.js
     'Kein Ergebnis gefunden.' => _('Kein Ergebnis gefunden.'),
+    'Bitte wählen Sie einen gültigen Wert aus!' => _('Bitte wählen Sie einen gültigen Wert aus!'),
 
     // resources/assets/javascripts/lib/raumzeit.js
     'Nur buchbare Räume anzeigen' => _('Nur buchbare Räume anzeigen'),
@@ -177,10 +178,9 @@ $translations = array(
     'Die Person ist bereits eingetragen.' => _('Die Person ist bereits eingetragen.'),
 
     // resources/assets/javascripts/studip-ui.js
-    'schließen' => _('schließen'),
     'Zurück' => _('Zurück'),
-    'Vor;' => _('Vor;'),
-    'heute' => _('heute'),
+    'Vor' => _('Vor'),
+    'Jetzt' => _('Jetzt'),
     'Januar' => _('Januar'),
     'Februar' => _('Februar'),
     'März' => _('März'),
@@ -211,6 +211,17 @@ $translations = array(
     'Do' => _('Do'),
     'Fr' => _('Fr'),
     'Sa' => _('Sa'),
+    'Zeit wählen' => _('Zeit wählen'),
+    'Zeit' => _('Zeit'),
+    'Stunde' => _('Stunde'),
+    'Minute' => _('Minute'),
+    'Sekunde' => _('Sekunde'),
+    'Millisekunde' => _('Millisekunde'),
+    'Mikrosekunde' => _('Mikrosekunde'),
+    'Zeitzone' => _('Zeitzone'),
+    'HH:mm' => _('HH:mm'),
+    'vorm.' => _('vorm.'),
+    'nachm.' => _('nachm.'),
 
 );
 
