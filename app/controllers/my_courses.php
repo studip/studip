@@ -89,10 +89,7 @@ class MyCoursesController extends AuthenticatedController
         $sem_create_perm              = (in_array(Config::get()->SEM_CREATE_PERM, array('root', 'admin',
             'dozent')) ? Config::get()->SEM_CREATE_PERM : 'dozent');
 
-        $this->sem_data = [];
-        foreach (Semester::getAll() as $semester) {
-            $this->sem_data[] = $semester->toArray();
-        }
+        $this->sem_data = Semester::getAllAsArray();
 
         $sem = ($config_sem && $config_sem != '0' ? $config_sem : Config::get()->MY_COURSES_DEFAULT_CYCLE);
         if (Request::option('sem_select')) {
@@ -239,10 +236,7 @@ class MyCoursesController extends AuthenticatedController
 
         $this->with_modules = (bool) Request::int('modules');
 
-        $this->sem_data = [];
-        foreach (Semester::getAll() as $semester) {
-            $this->sem_data[] = $semester->toArray();
-        }
+        $this->sem_data = Semester::getAllAsArray();
 
         $this->group_field = 'sem_number';
 

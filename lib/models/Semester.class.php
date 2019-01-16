@@ -138,6 +138,32 @@ class Semester extends SimpleORMap
     }
 
     /**
+     * Returns a list of all semesters as array, optionally with an entry at
+     * the beginning that represents the time before the first semester in the
+     * system.
+     *
+     * @param  boolean $with_before_first Show the optional first entry as described above
+     * @param  boolean $force_reload
+     * @return array
+     */
+    public static function getAllAsArray($with_before_first = true, $force_reload = false)
+    {
+        $result = array_map(function ($semester) {
+            return $semester->toArray();
+        }, self::getAll($force_reload));
+        $result = array_values($result);
+
+        if ($with_before_first) {
+            array_unshift($result, [
+                'name' => sprintf(_('vor dem %s'), $result[0]['name']),
+                'past' => true,
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
      * Caches seminar counts
      */
     protected $seminar_counts = null;
