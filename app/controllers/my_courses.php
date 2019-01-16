@@ -794,7 +794,7 @@ class MyCoursesController extends AuthenticatedController
                   LEFT JOIN semester_data ON (semester_data.beginn >= seminare.start_time
                       AND (semester_data.beginn <= seminare.start_time + seminare.duration_time OR seminare.duration_time = -1))
                   LEFT JOIN seminar_user USING (Seminar_id)
-                  WHERE seminar_user.user_id = ?
+                  WHERE seminar_user.user_id = ? AND seminare.status <> 99
                   GROUP BY semester_data.semester_id";
         $statement = DBManager::get()->prepare($query);
         $statement->execute(array($GLOBALS['user']->id));

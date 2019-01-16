@@ -827,7 +827,7 @@ class MyRealmModel
 
     public static function getSelectedSemesters($sem = 'all')
     {
-        $sem_data  = SemesterData::GetSemesterArray();
+        $sem_data = Semester::getAllAsArray();
         $semesters = array();
         foreach ($sem_data as $sem_key => $one_sem) {
             $current_sem = $sem_key;

@@ -76,7 +76,7 @@ class SemesterData
     {
         $index = false;
 
-        foreach (SemesterData::getAllSemesterData() as $i => $sem){
+        foreach (Semester::getAllAsArray(false) as $i => $sem){
             if ($sem['semester_id'] == $semester_id) {
                 $index = $i + 1;
             }
