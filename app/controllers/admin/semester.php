@@ -135,14 +135,14 @@ class Admin_SemesterController extends AuthenticatedController
             }
 
             if (count($errors) === 1) {
-                PageLayout::postMessage(MessageBox::error($errors[0]));
+                PageLayout::postError($errors[0]);
             } elseif (!empty($errors)) {
                 $message = _('Beim Löschen der Semester sind folgende Fehler aufgetreten.');
-                PageLayout::postMessage(MessageBox::error($message, $errors));
+                PageLayout::postError($message, $errors);
             }
             if ($deleted > 0) {
                 $message = sprintf(_('%u Semester wurde(n) erfolgreich gelöscht.'), $deleted);
-                PageLayout::postMessage(MessageBox::success($message));
+                PageLayout::postSuccess($message);
             }
         }
 
@@ -235,23 +235,210 @@ class Admin_SemesterController extends AuthenticatedController
         $sidebar->setTitle(_('Semester'));
         $sidebar->setImage('sidebar/admin-sidebar.png');
 
-        $views = new ViewsWidget();
-        $views->addLink(_('Alle Einträge'),
-                        $this->url_for('admin/semester', array('filter' => null)))
-              ->setActive(!$this->filter);
-        $views->addLink(_('Aktuelle/zukünftige Einträge'),
-                        $this->url_for('admin/semester', array('filter' => 'current')))
-              ->setActive($this->filter === 'current');
-        $views->addLink(_('Vergangene Einträge'),
-                        $this->url_for('admin/semester', array('filter' => 'past')))
-              ->setActive($this->filter === 'past');
-        $sidebar->addWidget($views);
+        $views = $sidebar->addWidget(new ViewsWidget());
+        $views->addLink(
+            _('Alle Einträge'),
+            $this->url_for('admin/semester', ['filter' => null])
+        )->setActive(!$this->filter);
+        $views->addLink(
+            _('Aktuelle/zukünftige Einträge'),
+            $this->url_for('admin/semester', ['filter' => 'current'])
+        )->setActive($this->filter === 'current');
+        $views->addLink(
+            _('Vergangene Einträge'),
+            $this->url_for('admin/semester', ['filter' => 'past'])
+        )->setActive($this->filter === 'past');
 
-        $links = new ActionsWidget();
-        $links->addLink(_('Neues Semester anlegen'),
-                        $this->url_for('admin/semester/edit', array('filter' => null)),
-                        Icon::create('add', 'clickable'))
-              ->asDialog('size=auto');
-        $sidebar->addWidget($links);
+        $links = $sidebar->addWidget(new ActionsWidget());
+        $links->addLink(
+            _('Neues Semester anlegen'),
+            $this->url_for('admin/semester/edit', ['filter' => null]),
+            Icon::create('add')
+        )->asDialog('size=auto');
+    }
+
+    /**
+     * This method locks a semester or a bundle of semesters.
+     *
+     * @param string $id Id of the semester (or 'bulk' for a bulk operation)
+     */
+    public function lock_action($id)
+    {
+        PageLayout::setTitle(_('Sperren von Semestern'));
+
+        $this->id = $id;
+
+        $ids = $id === 'bulk'
+             ? Request::optionArray('ids')
+             : [$id];
+
+        if (count($ids) === 0) {
+            throw new InvalidArgumentException(_('Es wurde kein Semester zum Sperren übergeben'));
+        }
+
+        $semesters = Semester::findMany($ids);
+
+        if (Request::isPost()) {
+            $errors = [];
+            $locked = 0;
+
+            $lock_enroll   = (bool) Request::int('lock_enroll');
+            $degrade_users = (bool) Request::int('degrade_users');
+            $lock_rule     = Request::get('lock_sem_all') ?: null;
+
+            foreach ($semesters as $semester) {
+                $semester->visible = false;
+
+                if ($semester->store()) {
+                    $this->lockCourses($semester, $lock_rule, $degrade_users, $lock_enroll);
+
+                    $locked += 1;
+                } else {
+                    $errors[] = $semester->name;
+                }
+            }
+
+            if (count($errors) === 1) {
+                PageLayout::postError(sprintf(
+                    _('Fehler beim Sperren des Semesters "%s".'),
+                    htmlReady($errors[0])
+                ));
+            } elseif (count($errors) > 0) {
+                $message = _('Beim Sperren der folgenden Semester sind Fehler aufgetreten:');
+                PageLayout::postError($message, array_map('htmlReady', $errors));
+            }
+            if ($locked > 0) {
+                $message = sprintf(_('%u Semester wurde(n) erfolgreich gesperrt.'), $locked);
+                PageLayout::postSuccess($message);
+            }
+
+            $this->relocate('admin/semester');
+            return;
+        }
+
+        $sum_courses = 0;
+        $sem_names = [];
+        foreach ($semesters as $semester) {
+            $sum_courses += Course::countBySQL("duration_time >= 0 AND start_time + duration_time = ?", [$semester->beginn]);
+            $sem_names[] = $semester->name;
+        }
+
+        $lock_info = [
+            sprintf(ngettext(
+                'Es wird folgendes Semester gesperrt: %s.',
+                'Es werden folgende Semester gesperrt: %s.',
+                $sum_courses
+            ), implode(', ', $sem_names)),
+            sprintf(_('Es werden %u Veranstaltungen geändert.'), $sum_courses),
+            _('Unbegrenzt laufende Veranstaltungen werden nicht geändert.')
+        ];
+
+        PageLayout::postWarning(
+            sprintf(_('Wollen sie wirklich %u Semester sperren?'), count($semesters)),
+            array_map('htmlReady', $lock_info)
+        );
+
+        $this->all_lock_rules = LockRule::findAllByType('sem');
+    }
+
+    /**
+     * This method unlocks a semester or a bundle of semesters.
+     *
+     * @param string $id Id of the semester (or 'bulk' for a bulk operation)
+     */
+    public function unlock_action($id)
+    {
+        $ids = $id === 'bulk'
+             ? Request::optionArray('ids')
+             : [$id];
+
+        if (count($ids) > 0) {
+            $errors   = [];
+            $unlocked = 0;
+
+            $semesters = Semester::findMany($ids);
+            foreach ($semesters as $semester) {
+                $semester->visible = true;
+
+                if ($semester->store()) {
+                    $unlocked += 1;
+                } else {
+                    $errors[] = sprintf(_('Fehler beim Entsperren des Semesters "%s".'), $semester->name);
+                }
+            }
+
+            if (count($errors) === 1) {
+                PageLayout::postError(htmlReady($errors[0]));
+            } elseif (count($errors) > 0) {
+                $message = _('Beim Entsperren der Semester sind folgende Fehler aufgetreten.');
+                PageLayout::postError($message, array_map('htmlReady', $errors));
+            }
+            if ($unlocked > 0) {
+                $message = sprintf(_('%u Semester wurde(n) erfolgreich entsperrt.'), $unlocked);
+                PageLayout::postSuccess($message);
+            }
+        }
+
+        $this->redirect('admin/semester');
+    }
+
+    /**
+     * Locks all courses for a given semester.
+     *
+     * @param  Semester $semester      Semester to lock
+     * @param  string   $lock_rule     Lock rule to apply (might be null for none)
+     * @param  bool     $lock_enroll   Lock enrolment?
+     * @param  bool     $degrade_users Degrade users?
+     * @return [type]                  [description]
+     */
+    private function lockCourses(Semester $semester, $lock_rule, $degrade_users, $lock_enroll)
+    {
+        // Querying for the locked courseset id is costly so we should cache
+        // this
+        static $locked_courseset_id = null;
+
+        // Obtain neccessary courses
+        $course_ids = Course::findAndMapBySQL(
+            function ($course) {
+                return $course->id;
+            },
+            "duration_time >= 0 AND start_time + duration_time = ?",
+            [$semester->beginn]
+        );
+
+        // No courses, leave early
+        if (count($course_ids) === 0) {
+            return;
+        }
+
+        // Hide courses and set lock rule
+        $query = "UPDATE `seminare`
+                  SET `visible` = 0, `lock_rule` = ?
+                  WHERE `Seminar_id` IN (?)";
+        DBManager::get()->execute($query, [$lock_rule, $course_ids]);
+
+        // Degrade users
+        if ($degrade_users) {
+            $query = "UPDATE `seminar_user`
+                      SET `status` = 'user'
+                      WHERE `Seminar_id` IN (?) AND `status` = 'autor'";
+            DBManager::get()->execute($query, [$course_ids]);
+        }
+
+        // Lock enrolment
+        if ($lock_enroll) {
+            if ($locked_courseset_id === null) {
+                $locked_courseset_id = CourseSet::getGlobalLockedAdmissionSetId();
+            }
+
+            foreach ($course_ids as $id) {
+                $cset = CourseSet::getSetForCourse($id);
+                if ($cset) {
+                    CourseSet::removeCourseFromSet($cset->getId(), $id);
+                }
+                CourseSet::addCourseToSet($locked_courseset_id, $id);
+            }
+        }
+
     }
 }

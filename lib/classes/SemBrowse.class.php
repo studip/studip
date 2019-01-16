@@ -1433,12 +1433,13 @@ class SemBrowse {
     public static function setSemesterSelector($submit_url)
     {
         $semesters = SemesterData::GetSemesterArray();
+        unset($semesters[0]);
         $sidebar = Sidebar::Get();
         $list = new SelectWidget(_('Semester'),
                 $submit_url, 'search_sem_sem');
         $list->addElement(new SelectElement('all', _('Alle'),
                 ($_SESSION['sem_browse_data']['default_sem']) === 'all'));
-        for ($i = count($semesters) -1 ; $i >= 0; --$i) {
+        for ($i = count($semesters) ; $i > 0; --$i) {
             $list->addElement(new SelectElement(
                 $i,
                 $semesters[$i]['name'],

@@ -55,7 +55,7 @@ class SemesterData
             $all_semester = SemesterData::getAllSemesterData();
             array_unshift($all_semester, 0);
             $all_semester[0] = [
-                'name' => sprintf(_("vor dem %s"), $all_semester[1]['name']),
+                'name' => sprintf(_('vor dem %s'), $all_semester[1]['name']),
                 'past' => true
             ];
         }
@@ -76,8 +76,8 @@ class SemesterData
     {
         $index = false;
 
-        foreach(SemesterData::getAllSemesterData() as $i => $sem){
-            if($sem['semester_id'] == $semester_id) {
+        foreach (SemesterData::getAllSemesterData() as $i => $sem){
+            if ($sem['semester_id'] == $semester_id) {
                 $index = $i + 1;
             }
         }
@@ -175,7 +175,9 @@ class SemesterData
     {
         $ret = array();
         foreach (Semester::getAll() as $semester) {
-            $ret[] = $semester->toArray();
+            if ($GLOBALS['perm']->have_perm('admin') || $semester->visible) {
+                $ret[] = $semester->toArray();
+            }
         }
         return $ret;
     }

@@ -38,18 +38,20 @@
 
 class ArchivedCourse extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'archiv';
-        $config['has_many']['members'] = array(
-            'class_name' => 'ArchivedCourseMember',
-            'on_delete' => 'delete',
-            'on_store' => 'store',
-        );
-        $config['belongs_to']['home_institut'] = array(
-            'class_name' => 'Institute',
+
+        $config['has_many']['members'] = [
+            'class_name' => ArchivedCourseMember::class,
+            'on_delete'  => 'delete',
+            'on_store'   => 'store',
+        ];
+        $config['belongs_to']['home_institut'] = [
+            'class_name'  => Institute::class,
             'foreign_key' => 'heimat_inst_id',
-        );
+        ];
+
         parent::configure($config);
     }
 
@@ -68,9 +70,13 @@ class ArchivedCourse extends SimpleORMap implements PrivacyObject
             'assoc_foreign_key' => 'Seminar_id',
         ]);
         if ($sorm) {
+            $limit = 'seminar_id name untertitel beschreibung start_time '
+                   . 'semester heimat_inst_id institute dozenten fakultaet '
+                   . 'archiv_file_id archiv_protected_file_id mkdate '
+                   . 'studienbereiche VeranstaltungsNummer';
             $field_data = [];
             foreach ($sorm as $row) {
-                $field_data[] = $row->toRawArray();
+                $field_data[] = $row->toRawArray($limit);
             }
             if ($field_data) {
                 $storage->addTabularData(_('archivierte Seminare'), 'archiv', $field_data);

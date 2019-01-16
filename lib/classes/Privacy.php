@@ -17,44 +17,59 @@ class Privacy
      * Names of classes containing user data.
      */
     private static $privacy_classes = [
-        'User',
-        'BlubberPosting',
-        'CalendarEvent',
-        'EventData',
-        'CourseDate',
-        'CourseExDate',
-        'DataField',
-        'DatafieldEntryModel',
-        'FileRef',
-        'ForumEntry',
-        'StudipNews',
-        'StudipComment',
-        'Message',
-        'MessageUser',
-        'Course',
-        'CourseMember',
-        'AdmissionApplication',
-        'ArchivedCourse',
-        'ArchivedCourseMember',
-        'Statusgruppen',
-        'StatusgruppeUser',
-        'UserConfig',
-        'InstituteMember',
-        'UserStudyCourse',
-        'Fach',
-        'Abschluss',
-        'WikiPage',
-        'Evaluation',
-        'Questionnaire',
-        'QuestionnaireAnswer',
-        'QuestionnaireAssignment',
-        'eTask\Attempt',
-        'eTask\Response',
-        'eTask\Task',
-        'eTask\Test',
-        'HelpTourUser',
-        'StudipLitList',
-        'LogEvent'
+        'core' => [
+            'User',
+            'DataField',
+            'DatafieldEntryModel',
+            'UserConfig',
+            'HelpTourUser',
+            'LogEvent',
+        ],
+        'date' => [
+            'CalendarEvent',
+            'EventData',
+            'CourseDate',
+            'CourseExDate',
+        ],
+        'message' => [
+            'BlubberPosting',
+            'StudipNews',
+            'StudipComment',
+            'Message',
+            'MessageUser',
+        ],
+        'content' => [
+            'FileRef',
+            'ForumEntry',
+            'WikiPage',
+            'StudipLitList',
+        ],
+        'quest' => [
+            'Evaluation',
+            'Questionnaire',
+            'QuestionnaireAnswer',
+            'QuestionnaireAnonymousAnswer',
+            'QuestionnaireAssignment',
+            'eTask\Attempt',
+            'eTask\Response',
+            'eTask\Task',
+            'eTask\Test',
+        ],
+        'membership' => [
+            'Course',
+            'CourseMember',
+            'AdmissionApplication',
+            'ArchivedCourse',
+            'ArchivedCourseMember',
+            'Statusgruppen',
+            'StatusgruppeUser',
+            'InstituteMember',
+            'UserStudyCourse',
+            'Fach',
+            'Abschluss',
+        ],
+        'plugins' => [
+        ],
     ];
 
     /**
@@ -64,29 +79,40 @@ class Privacy
      * $array[ table display name ] = [ 'table_name' => name of the table, 'table_content' => array of db rows containing userdata]
      *
      * @param string $user_id
+     * @param string $section
      * @return array
      */
-    public static function getUserdataInformation($user_id)
+    public static function getUserdataInformation($user_id, $section = null)
     {
         //workaround make Forum Model available
         PluginEngine::getPlugin('CoreForum');
         $storage = new StoredUserData($user_id);
-        $user_data = [];
 
-        foreach (self::$privacy_classes as $privacy_class) {
+        if ($section && !isset(self::$privacy_classes[$section])) {
+            throw new Exception("Invalid privacy section '{$section}'");
+        }
+
+        $privacy_classes = $section
+                         ? self::$privacy_classes[$section]
+                         : array_flatten(array_values(self::$privacy_classes));
+
+        foreach ($privacy_classes as $privacy_class) {
             if (is_a($privacy_class, 'PrivacyObject', true)) {
                 $privacy_class::exportUserData($storage);
             }
         }
 
-        foreach (PluginEngine::getPlugins('PrivacyPlugin') as $plugin) {
-            $plugin->exportUserData($storage);
+        if (!$section || $section === 'plugins') {
+            foreach (PluginEngine::getPlugins('PrivacyPlugin') as $plugin) {
+                $plugin->exportUserData($storage);
+            }
         }
 
+        $user_data = [];
         foreach ($storage->getTabularData() as $meta) {
             $user_data[$meta['name']] = [
                 'table_name'    => $meta['key'],
-                'table_content' => $meta['value']
+                'table_content' => $meta['value'],
             ];
         }
 
@@ -103,14 +129,11 @@ class Privacy
     {
         $needed_perm = Config::get()->PRIVACY_PERM ?: 'root';
         $allowed_person = true;
-        if (!in_array($needed_perm, ['root', 'admin'])) {
-            if (!$GLOBALS['perm']->have_perm('admin')) {
-                $allowed_person = $GLOBALS['user']->user_id === $user_id;
-            }
+        if (!in_array($needed_perm, ['root', 'admin']) && !$GLOBALS['perm']->have_perm('admin')) {
+            $allowed_person = $GLOBALS['user']->user_id === $user_id;
         }
 
         return $GLOBALS['perm']->have_perm($needed_perm)
             && $allowed_person;
     }
-
 }

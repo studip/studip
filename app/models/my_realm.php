@@ -751,7 +751,11 @@ class MyRealmModel
         $order_by          = $params['order_by'];
         $order             = $params['order'];
         $deputies_enabled  = $params['deputies_enabled'];
-        $sem_data          = SemesterData::GetSemesterArray();
+        $sem_data = [];
+        foreach (Semester::getAll() as $semester) {
+            $sem_data[] = $semester->toArray();
+        }
+
         $min_sem           = $sem_data[$min_sem_key];
         $max_sem           = $sem_data[$max_sem_key];
         $studygroup_filter = !$params['studygroups_enabled'] ? false : true;

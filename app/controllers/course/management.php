@@ -91,20 +91,24 @@ class Course_ManagementController extends AuthenticatedController
      */
     function change_visibility_action()
     {
-        if ((Config::get()->ALLOW_DOZENT_VISIBILITY || $GLOBALS['perm']->have_perm('admin')) &&
-            !LockRules::Check($GLOBALS['SessionSeminar'], 'seminar_visibility') && Seminar_Session::check_ticket(Request::option('studip_ticket'))) {
+        if ((Config::get()->ALLOW_DOZENT_VISIBILITY || $GLOBALS['perm']->have_perm('admin'))
+            && !LockRules::Check($GLOBALS['SessionSeminar'], 'seminar_visibility')
+            && check_ticket(Request::option('studip_ticket')))
+        {
             $course = Course::findCurrent();
-            if (!$course->visible) {
-                StudipLog::log('SEM_VISIBLE', $course->id);
-                $course->visible = 1;
-                $msg             = _("Die Veranstaltung wurde sichtbar gemacht.");
-            } else {
-                StudipLog::log('SEM_INVISIBLE', $course->id);
-                $course->visible = 0;
-                $msg             = _("Die Veranstaltung wurde versteckt.");
-            }
-            if ($course->store()) {
-                PageLayout::postMessage(MessageBox::success($msg));
+            if ($course->duration_time == -1 || $course->end_semester->visible) {
+                if (!$course->visible) {
+                    StudipLog::log('SEM_VISIBLE', $course->id);
+                    $course->visible = true;
+                    $msg = _('Die Veranstaltung wurde sichtbar gemacht.');
+                } else {
+                    StudipLog::log('SEM_INVISIBLE', $course->id);
+                    $course->visible = false;
+                    $msg = _('Die Veranstaltung wurde versteckt.');
+                }
+                if ($course->store()) {
+                    PageLayout::postSuccess($msg);
+                }
             }
         }
         $this->redirect($this->url_for('/index'));

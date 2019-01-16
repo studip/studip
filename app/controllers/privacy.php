@@ -15,23 +15,32 @@
 
 class PrivacyController extends AuthenticatedController
 {
-    public function index_action($user_id)
+    /**
+     * Presents the userdata of given user
+     *
+     * @param string $user_id
+     * @param string $section
+     * @throws AccessDeniedException if user has no privileges
+     */
+    public function index_action($user_id, $section = null)
     {
         if (!Privacy::isVisible($user_id)) {
             throw new AccessDeniedException();
         }
 
         Navigation::activateItem('/profile');
-        $this->plugin_data = Privacy::getUserdataInformation($user_id);
-        $this->user_id = $user_id;
 
-        $actions = new ActionsWidget();
+        $this->plugin_data = Privacy::getUserdataInformation($user_id, $section);
+        $this->user_id = $user_id;
+        $this->section = $section;
+
+        $actions = Sidebar::Get()->addWidget(new ActionsWidget());
         $actions->setTitle(_('Datenschutz'));
         $actions->addLink(
             _('Anzeige Personendaten'),
-            $this->url_for('privacy/index/' . $user_id),
+            $this->url_for("privacy/landing/{$user_id}"),
             Icon::create('log', Icon::ROLE_CLICKABLE, tooltip2(_('Anzeige Personendaten')))
-        )->asDialog('size=big');
+        )->asDialog('size=medium');
         $actions->addLink(
             _('Personendaten drucken'),
             $this->url_for('privacy/print/' . $user_id),
@@ -39,17 +48,78 @@ class PrivacyController extends AuthenticatedController
             ['class' => 'print_action', 'target' => '_blank']
         );
         $actions->addLink(
-            _('Export Personendaten als CVS'),
-            $this->url_for('privacy/export/' . $user_id),
+            _('Export Personendaten als CSV'),
+            $this->url_for("privacy/export/{$user_id}"),
             Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CVS')))
         );
         $actions->addLink(
+            _('Export persönlicher Dateien als XML'),
+            $this->url_for("privacy/xml/{$user_id}"),
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als XML')))
+        );
+        $actions->addLink(
             _('Export persönlicher Dateien als ZIP'),
-            $this->url_for('privacy/filesexport/' . $user_id),
+            $this->url_for("privacy/filesexport/{$user_id}"),
             Icon::create('file-archive', Icon::ROLE_CLICKABLE, tooltip2(_('Export persönlicher Dateien als ZIP')))
         );
 
-        Sidebar::Get()->addWidget($actions);
+
+        $exports = Sidebar::Get()->addWidget(new ExportWidget());
+        $exports->addLink(
+            _('Export angezeigter Dateien als XML'),
+            $this->url_for("privacy/xml/{$user_id}" . ($section ? "/{$section}" : '')),
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export angezeigter Daten als XML')))
+        );
+
+        foreach ($this->plugin_data as $label => $tabledata) {
+            $exports->addLink(
+                htmlReady($label) . ' ' . _('CSV'),
+                $this->url_for("privacy/export2csv/{$tabledata['table_name']}/{$user_id}"),
+                Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(htmlReady($label) . ' CSV'))
+            );
+        }
+    }
+
+    /**
+     * Gives access to accumulated userdata or single categories
+     *
+     * @param string $user_id
+     * @throws AccessDeniedException if user has no privileges
+     */
+    public function landing_action($user_id)
+    {
+        if (!Privacy::isVisible($user_id)) {
+            throw new AccessDeniedException();
+        }
+
+        Navigation::activateItem('/profile');
+
+        $this->user_id  = $user_id;
+        $this->sections = $this->getViewSections();
+
+        $actions = Sidebar::Get()->addWidget(new ActionsWidget());
+        $actions->setTitle(_('Datenschutz'));
+        $actions->addLink(
+            _('Personendaten drucken'),
+            $this->url_for("privacy/print/{$user_id}"),
+            Icon::create('print', Icon::ROLE_CLICKABLE, tooltip2(_('Personendaten drucken'))),
+            ['class' => 'print_action', 'target' => '_blank']
+        );
+        $actions->addLink(
+            _('Export Personendaten als CSV'),
+            $this->url_for("privacy/export/{$user_id}"),
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CVS')))
+        );
+        $actions->addLink(
+            _('Export persönlicher Dateien als XML'),
+            $this->url_for("privacy/xml/{$user_id}"),
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als XML')))
+        );
+        $actions->addLink(
+            _('Export persönlicher Dateien als ZIP'),
+            $this->url_for("privacy/filesexport/{$user_id}"),
+            Icon::create('file-archive', Icon::ROLE_CLICKABLE, tooltip2(_('Export persönlicher Dateien als ZIP')))
+        );
     }
 
     /**
@@ -168,6 +238,45 @@ class PrivacyController extends AuthenticatedController
     }
 
     /**
+     * Create a xml file with user data
+     *
+     * @param string $user_id
+     * @throws AccessDeniedException if user has no privileges
+     */
+    public function xml_action($user_id, $section = null)
+    {
+        if (!Privacy::isVisible($user_id)) {
+            throw new AccessDeniedException();
+        }
+        $user = User::find($user_id);
+
+        $plugin_data = Privacy::getUserdataInformation($user_id, $section);
+
+        $xml = new SimpleXMLElement('<xml/>');
+        foreach ($plugin_data as $label => $tabledata) {
+            if ($tabledata['table_content']) {
+                $table = $xml->addChild('table');
+                $table->addChild('tablename', $tabledata['table_name']);
+                foreach ($tabledata['table_content'] as $row) {
+                    $tableentry = $table->addChild('tableentry');
+                    foreach ($row as $key => $value){
+                        $tableentry->addChild('field', $key);
+                        $tableentry->addChild('value', htmlReady($value));
+                    }
+                }
+            }
+        }
+
+        $this->set_content_type('text/xml');
+        $this->response->add_header(
+            'Content-disposition',
+            'attachment;' . encode_header_parameter('filename', "datenexport_{$user->username}.xml")
+        );
+        $this->render_text($xml->asXML());
+
+    }
+
+    /**
      * Delivers a zip containing the files from plugins which feature the specific function
      *
      * @param string $user_id
@@ -240,9 +349,66 @@ class PrivacyController extends AuthenticatedController
         if ($user) {
             $mail_subject = _('Auskunft nach Art 15 DSGVO');
             $mail_message = _("Sehr geehrte Damen und Herren,\n\nhiermit bitte ich Sie nach Art 15 DSGVO, mir Auskunft über die über mich gespeicherten personenbezogenen Daten zu geben.");
-            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', ['rec_uname' => $mail_user, 'default_subject' => $mail_subject, 'default_body' => $mail_message]));
+            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', [
+                'rec_uname'       => $mail_user,
+                'default_subject' => $mail_subject,
+                'default_body'    => $mail_message,
+            ]));
         } else {
-            $this->render_text(MessageBox::error(_("Es wurde keine Kontaktperson bestimmt."), array(_('Bitte wenden Sie sich an den in der Datenschutzerklärung angegebenen Ansprechpartner.'))));
+            $this->render_text(MessageBox::error(
+                _('Es wurde keine Kontaktperson bestimmt.'),
+                [_('Bitte wenden Sie sich an den in der Datenschutzerklärung angegebenen Ansprechpartner.'),]
+            ));
         }
+    }
+
+    /**
+     * Returns a list of all the sections to be displayed.
+     * @return array of arrays (key => icon, title, description)
+     */
+    protected function getViewSections()
+    {
+        return [
+            '' => [
+                'icon'        => Icon::create('persons'),
+                'title'       => _('Alle Daten'),
+                'description' => _('Übersicht aller Personendaten'),
+            ],
+            'core' => [
+                'icon'        => Icon::create('person'),
+                'title'       => _('Kerndaten'),
+                'description' => _('Angaben zur Person, Konfigurationen, Logs'),
+            ],
+            'membership' => [
+                'icon'        => Icon::create('seminar'),
+                'title'       => _('Veranstaltungen, Einrichtungen'),
+                'description' => _('Zuordnung zu Veranstaltungen, Einrichtungen, Fächern, Studiengängen'),
+            ],
+            'date' => [
+                'icon'        => Icon::create('date'),
+                'title'       => _('Kalender/Termine'),
+                'description' => _('Kalendereinträge und Termine'),
+            ],
+            'message' => [
+                'icon'        => Icon::create('mail'),
+                'title'       => _('Nachrichten'),
+                'description' => _('Nachrichten, Kommentare, Blubber, News'),
+            ],
+            'content' => [
+                'icon'        => Icon::create('forum2'),
+                'title'       => _('Inhalte'),
+                'description' => _('Dateien, Forum, Wiki, Literaturlisten'),
+            ],
+            'quest' => [
+                'icon'        => Icon::create('vote'),
+                'title'       => _('Fragebögen, Aufgaben'),
+                'description' => _('Fragebögen, Umfragen, Aufgaben'),
+            ],
+            'plugins' => [
+                'icon'        => Icon::create('plugin'),
+                'title'       => _('Plugin-Inhalte'),
+                'description' => _('Inhalte aus Plugins'),
+            ],
+        ];
     }
 }

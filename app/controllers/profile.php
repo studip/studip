@@ -311,7 +311,7 @@ class ProfileController extends AuthenticatedController
             if (class_exists('Blubber')) {
                 $actions->addLink(
                     _('Anblubbern'),
-                    URLHelper::getLink('plugins.php/blubber/streams/global', ['mention' => $this->current_user->username]),
+                    URLHelper::geURL('plugins.php/blubber/streams/global', ['mention' => $this->current_user->username]),
                     Icon::create('blubber', Icon::ROLE_CLICKABLE, tooltip2(_('Blubber diesen Nutzer an')))
                 );
             }
@@ -331,9 +331,9 @@ class ProfileController extends AuthenticatedController
         if (Privacy::isVisible($this->current_user->user_id)) {
             $privacy->addLink(
                 _('Anzeige Personendaten'),
-                $this->url_for('privacy/index/' . $this->current_user->user_id),
+                $this->url_for('privacy/landing/' . $this->current_user->user_id),
                 Icon::create('log', Icon::ROLE_CLICKABLE, tooltip2(_('Anzeige Personendaten')))
-            )->asDialog('size=big');
+            )->asDialog('size=medium');
 
             $privacy->addLink(
                 _('Personendaten drucken'),
@@ -346,6 +346,12 @@ class ProfileController extends AuthenticatedController
                 _('Export Personendaten als CSV'),
                 $this->url_for('privacy/export/' . $this->current_user->user_id),
                 Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CSV')))
+            );
+
+            $privacy->addLink(
+                _('Export Personendaten als XML'),
+                $this->url_for('privacy/xml/' . $this->current_user->user_id),
+                Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als XML')))
             );
 
             $privacy->addLink(
