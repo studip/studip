@@ -1490,7 +1490,8 @@ class FileController extends AuthenticatedController
                 }
 
                 if ($file_ref) {
-                    $result = $parent_folder->deleteFile($element);
+                    $current_folder = $file_ref->getFolderType();
+                    $result = $current_folder ? $current_folder->deleteFile($element) : false;
                     if ($result && !is_array($result)) {
                         $count_files += 1;
                     }
