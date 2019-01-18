@@ -20,8 +20,6 @@
  * @author      Robert Costa <rcosta@uos.de>
  */
 
-use Studip\WysiwygRequest;
-
 class WysiwygException extends Exception {};
 
 class WysiwygHttpException extends WysiwygException {};
@@ -54,7 +52,7 @@ class WysiwygHttpExceptionMethodNotAllowed extends WysiwygHttpException
     }
 }
 
-class WysiwygController extends \AuthenticatedController
+class WysiwygController extends AuthenticatedController
 {
     const UPLOAD_PERMISSION = 'autor'; // minimum permission level for uploading
     const FOLDER_NAME = 'Wysiwyg Uploads';
@@ -84,7 +82,7 @@ class WysiwygController extends \AuthenticatedController
     public function upload_action()
     {
         try {
-            WysiwygRequest::verifyWritePermission(self::UPLOAD_PERMISSION);
+            CSRFProtection::verifyUnsafeRequest();
 
             $user = User::findCurrent();
 
