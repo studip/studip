@@ -101,5 +101,9 @@
 
     <footer data-dialog-button>
         <?= Studip\Button::create(_('Speichern'), 'speichern') ?>
-    <footer>
+        <?= Studip\LinkButton::createCancel(
+            _('Abbrechen'),
+            $controller->index("#banner-{$banner->id}")
+        ) ?>
+    </footer>
 </form>

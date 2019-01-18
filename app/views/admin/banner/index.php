@@ -23,7 +23,7 @@
     </thead>
     <tbody>
     <? foreach ($banners as $banner): ?>
-        <tr>
+        <tr id="banner-<?= htmlReady($banner->id) ?>">
             <td style="text-align: center;">
                 <?= $banner->toImg(['style' => 'max-width: 80px']) ?>
             </td>

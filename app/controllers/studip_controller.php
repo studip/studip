@@ -247,6 +247,17 @@ abstract class StudipController extends Trails_Controller
             $params = array_pop($args);
         }
 
+        // Map any sorm objects to their ids
+        $args = array_map(function ($arg) {
+            if (is_object($arg) && $arg instanceof SimpleORMap) {
+                return $arg->id;
+            }
+            return $arg;
+        }, $args);
+
+        // Combine arguments to new $to string
+        $to = implode('/', $args);
+
         //preserve fragment
         list($to, $fragment) = explode('#', $to);
 
@@ -265,19 +276,9 @@ abstract class StudipController extends Trails_Controller
             $to = $this->controller_path() . $to;
         }
 
-        // Map any sorm objects to their ids
-        $args = array_map(function ($arg) {
-            if (is_object($arg) && $arg instanceof SimpleORMap) {
-                return $arg->id;
-            }
-            return $arg;
-        }, $args);
-
-        // Restore arguments
-        $args[0] = $to;
         $url = preg_match('#^(/|\w+://)#', $to)
              ? $to
-             : call_user_func_array('parent::url_for', $args);
+             : call_user_func('parent::url_for', $to);
         if ($fragment) {
             $url .= '#' . $fragment;
         }
