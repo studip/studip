@@ -13,7 +13,7 @@
             <? foreach ($files as $file_ref): ?>
                 <?= $this->render_partial('files/_fileref_tr', [
                     'file_ref'       => $file_ref,
-                    'current_folder' => $folders[$file_ref->folder_id]
+                    'current_folder' => $folders[$file_ref->folder_id] ?: $file_ref->folder->getTypedFolder()
                 ]) ?>
             <? endforeach ?>
         <? endif; ?>
