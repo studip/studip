@@ -621,7 +621,7 @@ class StudipCoreFormat extends TextFormat
         // Remove closing bracket if not part of url
         $postfix = '';
         if ($title === $url
-            && preg_match('/\)\.?$/', $url, $match)
+            && preg_match('/\)[\.,]?$/', $url, $match)
             && substr_count($url, '(') !== substr_count($url, ')'))
         {
             $title = $url = mb_substr($url, 0, -mb_strlen($match[0]));
