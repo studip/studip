@@ -84,6 +84,7 @@ function getDeputyBosses($user_id, $name_format = 'full_rev') {
               LEFT JOIN auth_user_md5 AS a ON (d.range_id = a.user_id)
               LEFT JOIN user_info AS ui ON (a.user_id = ui.user_id)
               WHERE d.user_id = ?
+                  AND a.`user_id` IS NOT NULL
               ORDER BY a.Nachname ASC, a.Vorname ASC";
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$user_id]);
