@@ -137,6 +137,16 @@ class Consultations extends Migration
         $has_size = (bool) DBManager::get()->query($query)->fetchColumn();
         $size_col = $has_size ? '`size`' : 1;
 
+        // Migrate blocks
+        $query = "INSERT INTO `consultation_blocks` (
+                    `block_id`, `teacher_id`, `start`, `end`,
+                    `room`, `calendar_events`, `note`, `size`
+                  )
+                  SELECT `id`, `dozent_id`, `start_date`, `end_date`,
+                         `ort`, `in_calendar`, `note_on_schedule`, {$size_col}
+                  FROM `SprechstundenTerminDesc`";
+        DBManager::get()->exec($query);
+
         // Migrate slots
         $query = "INSERT INTO `consultation_slots` (
                     `slot_id`, `block_id`,
@@ -154,16 +164,6 @@ class Consultations extends Migration
                   JOIN `SprechstundenTerminDesc` AS std ON st.`desc_id` = std.`id`
                   LEFT JOIN `SprechstundenAnmeldung` AS sa ON sa.`zeitslot_id` = szs.`id`
                   GROUP BY szs.`id`";
-        DBManager::get()->exec($query);
-
-        // Migrate blocks
-        $query = "INSERT INTO `consultation_blocks` (
-                    `block_id`, `teacher_id`, `start`, `end`,
-                    `room`, `calendar_events`, `note`, `size`
-                  )
-                  SELECT `id`, `dozent_id`, `start_date`, `end_date`,
-                         `ort`, `in_calendar`, `note_on_schedule`, {$size_col}
-                  FROM `SprechstundenTerminDesc`";
         DBManager::get()->exec($query);
 
         // Migrate bookings
