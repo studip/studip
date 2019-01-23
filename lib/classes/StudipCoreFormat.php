@@ -200,7 +200,7 @@ class StudipCoreFormat extends TextFormat
                     [a-z][a-z0-9\+\-\.]*:\/\/
 
                     # user:password@host:port\/path?query#fragment
-                    [\w\-\.~!$&\'\(\)\[\]*+,;=%:@\/?#]+
+                    [a-zA-Z0-9\x{00a0}-\x{d7ff}\x{f900}-\x{fdcf}\x{fdf0}-\x{ffef}_\-\.~!$&\'\(\)\[\]*+,;=%:@\/?#]+
                 )
             )',
             'callback' => 'StudipCoreFormat::markupLinks'
@@ -615,8 +615,19 @@ class StudipCoreFormat extends TextFormat
             return $matches[0];
         }
 
-        $url   = $matches[2];
+        $url = $matches[2];
         $title = $matches[1] ?: $url;
+
+        // Remove closing bracket if not part of url
+        $postfix = '';
+        if ($title === $url
+            && preg_match('/\)\.?$/', $url, $match)
+            && substr_count($url, '(') !== substr_count($url, ')'))
+        {
+            $title = $url = mb_substr($url, 0, -mb_strlen($match[0]));
+            $postfix = $match[0];
+        }
+
 
         $intern = isLinkIntern($url);
 
@@ -626,11 +637,12 @@ class StudipCoreFormat extends TextFormat
         $linkmarkup->removeMarkup('links');
         $linkmarkup->removeMarkup('wiki-links');
 
-        return sprintf('<a class="%s" href="%s"%s>%s</a>',
+        return sprintf('<a class="%s" href="%s"%s>%s</a>%s',
             $intern ? 'link-intern' : 'link-extern',
             $url,
             $intern ? '' : ' target="_blank" rel="noreferrer noopener"',
-            $linkmarkup->format($title)
+            $linkmarkup->format($title),
+            $postfix
         );
     }
 

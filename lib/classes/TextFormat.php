@@ -141,7 +141,7 @@ class TextFormat
 
             $tags = array_unique($tags);
             $regexp = preg_replace('/(?<!\\\\)(\\\\\\\\)*\((?!\?)/', '$0?:', join('|', $tags));
-            $this->start_regexp = '/(' . $regexp . ')/ms';
+            $this->start_regexp = '/(' . $regexp . ')/msu';
         }
 
         return $this->start_regexp;
@@ -263,7 +263,7 @@ class TextFormat
      */
     private static function matchPart($pattern, $text, &$matches, $offset)
     {
-        $pattern = '/' . $pattern . '/ms';
+        $pattern = '/' . $pattern . '/msu';
         $result = preg_match($pattern, $text, $matches, PREG_OFFSET_CAPTURE, $offset);
 
         if ($result) {
