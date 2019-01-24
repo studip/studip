@@ -49,7 +49,7 @@ function getDeputies($range_id, $name_format = 'full_rev') {
     $query = "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about,
                      a.perms, {$name_query}
               FROM deputies AS d
-              LEFT JOIN auth_user_md5 AS a ON (d.user_id = a.user_id)
+              JOIN auth_user_md5 AS a ON (d.user_id = a.user_id)
               LEFT JOIN user_info ON (a.user_id=user_info.user_id)
               WHERE d.range_id = ?
               ORDER BY a.Nachname ASC, a.Vorname ASC";
@@ -81,10 +81,9 @@ function getDeputyBosses($user_id, $name_format = 'full_rev') {
     $query = "SELECT a.user_id, a.username, a.Vorname, a.Nachname, d.edit_about,
                      {$name_query}
               FROM deputies AS d
-              LEFT JOIN auth_user_md5 AS a ON (d.range_id = a.user_id)
+              JOIN auth_user_md5 AS a ON (d.range_id = a.user_id)
               LEFT JOIN user_info AS ui ON (a.user_id = ui.user_id)
               WHERE d.user_id = ?
-                  AND a.`user_id` IS NOT NULL
               ORDER BY a.Nachname ASC, a.Vorname ASC";
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$user_id]);
