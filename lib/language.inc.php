@@ -188,17 +188,14 @@ function restoreLanguage() {
 * This function tries to set the appropriate environment variables and
 * locale settings for the given language and also (optionally) sets the
 * translation domain.
-* Note: To support non-POSIX compliant systems (SuSE 9.x, OpenSolaris?),
-* the environment variables LANG and LC_ALL are also set to $language.
 *
 * @access   public
 */
 function setLocaleEnv($language, $language_domain = ''){
-    putenv("LANG=$language.UTF-8");
-    putenv("LC_ALL=$language.UTF-8");
-    $ret = setlocale(LC_ALL, '');
+    putenv('LANGUAGE'); //unset language preference 
+    $ret = setlocale(LC_ALL, $language . '.UTF-8');
     setlocale(LC_NUMERIC, 'C');
-    if($language_domain){
+    if ($language_domain) {
         bindtextdomain($language_domain, $GLOBALS['STUDIP_BASE_PATH'] . "/locale");
         textdomain($language_domain);
         bind_textdomain_codeset($language_domain, 'utf-8');
