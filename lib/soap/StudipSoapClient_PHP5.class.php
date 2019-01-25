@@ -28,7 +28,6 @@ class StudipSoapClient
         $result = false;
         if ($this->soap_client instanceOf SoapClient) {
             $this->faultstring = "";
-            $this->soap_client->_cookies = array();
             try {
                 $result = $this->soap_client->__soapCall($method, $params);
             } catch  (SoapFault $fault) {

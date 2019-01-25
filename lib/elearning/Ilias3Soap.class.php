@@ -3,7 +3,6 @@
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
-require_once("lib/soap/StudipSoapClient" . (Config::get()->SOAP_USE_PHP5 ? "_PHP5" : "") .".class.php");
 
 /**
 * class to use ILIAS-3-Webservices

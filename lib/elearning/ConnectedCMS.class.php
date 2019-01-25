@@ -144,43 +144,52 @@ class ConnectedCMS
 //      error_reporting(0);
 
         // check connection to CMS
-        $file = fopen($this->ABSOLUTE_PATH_ELEARNINGMODULES."", "r");
-        if ($file == false)
-        {
-            $msg["path"]["error"] = sprintf(_("Die Verbindung zum System \"%s\" konnte nicht hergestellt werden. Der Pfad \"$this->ABSOLUTE_PATH_ELEARNINGMODULES\" ist ungültig."), $this->name);
-        }
-        else
-        {
-            fclose($file);
-            $msg["path"]["info"] = sprintf(_("Die %s-Installation wurde gefunden."), $this->name);
 
-            // check if target-file exists
-            $file = fopen($this->ABSOLUTE_PATH_ELEARNINGMODULES.$this->target_file, "r");
-            if ($file == false)
-            {
-                $msg["auth"]["error"] = sprintf(_("Die Zieldatei \"%s\" liegt nicht im Hauptverzeichnis der %s-Installation."), $this->target_file, $this->name);
-            }
-            else
-            {
-                fclose($file);
-                $msg["auth"]["info"] = sprintf(_("Die Zieldatei ist vorhanden."));
-            }
-        }
         if (!$this->auth_necessary)
             $msg["auth"]["info"] = sprintf(_("Eine Authentifizierung ist für dieses System nicht vorgesehen."));
 
         // check for SOAP-Interface
-        if ($this->ABSOLUTE_PATH_SOAP != "" && in_array($this->CLASS_PREFIX, words('Ilias3 Ilias4')))
+        if (in_array($this->CLASS_PREFIX, words('Ilias3 Ilias4 Ilias5')))
         {
+            $check = @get_headers($this->ABSOLUTE_PATH_ELEARNINGMODULES . 'login.php');
+            if (strpos($check[0], '200') === false) {
+                $msg["path"]["error"] = sprintf(_("Die Verbindung zum System \"%s\" konnte nicht hergestellt werden. Der Pfad \"$this->ABSOLUTE_PATH_ELEARNINGMODULES\" ist ungültig."), $this->name);
+
+            } else {
+                $msg["path"]["info"] = sprintf(_("Die %s-Installation wurde gefunden."), $this->name);
+            }
+
             if (!Config::get()->SOAP_ENABLE)
                 $msg["soap"]["error"] = sprintf(_("Das Stud.IP-Modul für die SOAP-Schnittstelle ist nicht aktiviert. Ändern Sie den entsprechenden Eintrag in der Konfigurationsdatei \"local.inc\"."));
             elseif (! is_array($this->soap_data))
                 $msg["soap"]["error"] = sprintf(_("Die SOAP-Verbindungsdaten sind für dieses System nicht gesetzt. Ergänzen Sie die Einstellungen für dieses Systems um den Eintrag \"soap_data\" in der Konfigurationsdatei \"local.inc\"."));
             else
             {
-                require_once("lib/soap/StudipSoapClient" . (Config::get()->SOAP_USE_PHP5 ? "_PHP5" : "") .".class.php");
                 $this->soap_client = new StudipSoapClient($this->ABSOLUTE_PATH_SOAP);
                 $msg["soap"]["info"] = sprintf(_("Das SOAP-Modul ist aktiv."));
+            }
+        } else {
+            $file = fopen($this->ABSOLUTE_PATH_ELEARNINGMODULES."", "r");
+            if ($file == false)
+            {
+                $msg["path"]["error"] = sprintf(_("Die Verbindung zum System \"%s\" konnte nicht hergestellt werden. Der Pfad \"$this->ABSOLUTE_PATH_ELEARNINGMODULES\" ist ungültig."), $this->name);
+            }
+            else
+            {
+                fclose($file);
+                $msg["path"]["info"] = sprintf(_("Die %s-Installation wurde gefunden."), $this->name);
+
+                // check if target-file exists
+                $file = fopen($this->ABSOLUTE_PATH_ELEARNINGMODULES.$this->target_file, "r");
+                if ($file == false)
+                {
+                    $msg["auth"]["error"] = sprintf(_("Die Zieldatei \"%s\" liegt nicht im Hauptverzeichnis der %s-Installation."), $this->target_file, $this->name);
+                }
+                else
+                {
+                    fclose($file);
+                    $msg["auth"]["info"] = sprintf(_("Die Zieldatei ist vorhanden."));
+                }
             }
         }
 

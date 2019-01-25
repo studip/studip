@@ -571,39 +571,39 @@ class MyRealmModel
                 $nav = new Navigation('elearning', 'dispatch.php/course/elearning/show');
                 if ((int)$result['neue']) {
                     $nav->setImage(
-                        Icon::create(
-                            'learnmodule+new',
-                            'attention',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%1$d Lernmodul, %2$d neues',
-                                        '%1$d Lernmodule, %2$d neue',
-                                        $result['count']
-                                    ),
-                                    $result['count'],
-                                    $result['neue']
-                                )
-                            ]
-                        )
-                    );
+                            Icon::create(
+                                    'learnmodule+new',
+                                    'attention',
+                                    [
+                                                    'title' => sprintf(
+                                                            ngettext(
+                                                                    '%1$d Lernmodul, %2$d neues',
+                                                                    '%1$d Lernmodule, %2$d neue',
+                                                                    $result['count']
+                                                                    ),
+                                                            $result['count'],
+                                                            $result['neue']
+                                                            )
+                                    ]
+                                    )
+                            );
                 } elseif ((int)$result['count']) {
                     $nav->setImage(
-                        Icon::create(
-                            'learnmodule',
-                            'inactive',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%d Lernmodul',
-                                        '%d Lernmodule',
-                                        $result['count']
-                                    ),
-                                    $result['count']
-                                )
-                            ]
-                        )
-                    );
+                            Icon::create(
+                                    'learnmodule',
+                                    'inactive',
+                                    [
+                                                    'title' => sprintf(
+                                                            ngettext(
+                                                                    '%d Lernmodul',
+                                                                    '%d Lernmodule',
+                                                                    $result['count']
+                                                                    ),
+                                                            $result['count']
+                                                            )
+                                    ]
+                                    )
+                            );
                 }
                 return $nav;
             }

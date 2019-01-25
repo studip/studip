@@ -78,8 +78,8 @@ class AdminModules extends ModulesNotification {
         $this->registered_modules["scm"]["msg_deactivate"] = _("Die freie Informationsseite kann jederzeit deaktiviert werden.");
 
         $this->registered_modules["elearning_interface"]["name"] = _("Lernmodul-Schnittstelle");
-        $this->registered_modules["elearning_interface"]["msg_warning"] = _("Wollen Sie wirklich die Schnittstelle für die Integration von Content-Modulen deaktivieren und damit alle bestehenden Verknüpfungen mit Lernmodulen löschen? (Alle erstellten Inhalte im angebundenen System werden gelöscht).");
-        $this->registered_modules["elearning_interface"]["msg_pre_warning"] = _("Achtung: Beim Deaktivieren der Schnittstelle für die Integration von Content-Modulen werden <b>%s</b> Verknüpfungen mit Lernmodulen aufgelöst!");
+        $this->registered_modules["elearning_interface"]["msg_warning"] = _("Wollen Sie wirklich die Schnittstelle für die Integration von Content-Modulen deaktivieren?");
+        $this->registered_modules["elearning_interface"]["msg_pre_warning"] = _("Achtung: Beim Deaktivieren der Schnittstelle für die Integration von Content-Modulen werden <b>%s</b> Verknüpfungen mit Lernmodulen nicht mehr in Stud.IP verfügbar sein!");
         $this->registered_modules["elearning_interface"]["msg_activate"] = _("Die Schnittstelle für die Integration von Content-Modulen kann jederzeit aktiviert werden.");
         $this->registered_modules["elearning_interface"]["msg_deactivate"] = _("Die Schnittstelle für die Integration von Content-Modulen kann jederzeit deaktiviert werden.");
 

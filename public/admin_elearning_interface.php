@@ -57,8 +57,7 @@ if (Config::get()->ELEARNING_INTERFACE_ENABLE)
         {
             ELearningUtils::setConfigValue("ACTIVE", "0", $cms_select);
         }
-
-        if ($error_count == 0)
+        if (!count(array_column($connection_status, 'error')))
         {
             require_once ("lib/elearning/" . $ELEARNING_INTERFACE_MODULES[$cms_select]["CLASS_PREFIX"] . "ConnectedCMS.class.php");
             $classname = $ELEARNING_INTERFACE_MODULES[$cms_select]["CLASS_PREFIX"] . "ConnectedCMS";

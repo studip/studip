@@ -390,6 +390,7 @@ class SemClass implements ArrayAccess
                 "resources = :resources, " .
                 "calendar = :calendar, " .
                 "elearning_interface = :elearning_interface, " .
+                "ilias_interface = :ilias_interface, " .
                 "modules = :modules, " .
                 "title_dozent = :title_dozent, " .
                 "title_dozent_plural = :title_dozent_plural, " .

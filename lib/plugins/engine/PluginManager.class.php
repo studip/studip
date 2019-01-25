@@ -92,7 +92,7 @@ class PluginManager
                 'enabled'                 => $plugin['enabled'] === 'yes',
                 'position'                => $plugin['navigationpos'],
                 'depends'                 => (int) $plugin['dependentonid'],
-                'core'                    => strpos($plugin['pluginpath'], 'core/') === 0,
+                'core'                    => $plugin['pluginpath'] === '' || strpos($plugin['pluginpath'], 'core/') === 0,
                 'automatic_update_url'    => $plugin['automatic_update_url'],
                 'automatic_update_secret' => $plugin['automatic_update_secret']
             );
@@ -116,7 +116,7 @@ class PluginManager
      * @param string $id        id of the plugin
      * @param bool   $enabled   plugin status (true or false)
      * @param bool   $force     force (de)activation regardless of the result
-    *                           of on(en|dis)able
+     *                           of on(en|dis)able
      * @return bool  indicating whether the plugin was updated or null if the
      *               passed state equals the current state or if the plugin is
      *               missing.
@@ -198,8 +198,8 @@ class PluginManager
         if (!$context) return;
         if (!isset($this->plugins_activated_cache[$context])) {
             $query = "SELECT pluginid, state "
-                   . "FROM plugins_activated "
-                   . "WHERE range_type IN ('sem', 'inst') AND range_id = ?";
+                . "FROM plugins_activated "
+                . "WHERE range_type IN ('sem', 'inst') AND range_id = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute(array($context));
             $this->plugins_activated_cache[$context] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
@@ -244,8 +244,8 @@ class PluginManager
         }
         if (!isset($this->plugins_activated_cache[$userId])) {
             $query = "SELECT pluginid, state "
-                   . "FROM plugins_activated "
-                   . "WHERE range_type = 'user' AND range_id = ?";
+                . "FROM plugins_activated "
+                . "WHERE range_type = 'user' AND range_id = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute(array($userId));
             $this->plugins_activated_cache[$userId] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
@@ -261,7 +261,7 @@ class PluginManager
         return $activated;
     }
 
-        /**
+    /**
      * Sets the activation status of a plugin in the given context.
      *
      * @param $id        id of the plugin
@@ -345,7 +345,13 @@ class PluginManager
      */
     private function loadPlugin ($class, $path)
     {
-        $basepath = Config::get()->PLUGINS_PATH;
+        if ($path) {
+            $basepath = Config::get()->PLUGINS_PATH;
+        } else {
+            $basepath = $GLOBALS['STUDIP_BASE_PATH'];
+            $path = 'lib/modules';
+        }
+
         $pluginfile = $basepath.'/'.$path.'/'.$class.'.class.php';
 
         if (!file_exists($pluginfile)) {
