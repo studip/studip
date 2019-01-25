@@ -21,13 +21,28 @@ class GlobalSearchRoomAssignments extends GlobalSearchModule
     }
 
     /**
+     * Returns the URL that can be called for a full search.
+     *
+     * @param string $searchterm what to search for?
+     * @return URL to the full search, containing the searchterm and the category
+     */
+    public static function getSearchURL($searchterm)
+    {
+        return URLHelper::getURL('dispatch.php/search/globalsearch', [
+            'searchterm' => $searchterm,
+            'category' => self::class
+        ]);
+    }
+
+    /**
      * Search freetext resource assignments for the given search term.
      *
      * @param string $search The term or date to search for. You can either use
      *                       part of the room assignment free text or a date.
+     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return null|string
      */
-    public static function getSQL($search)
+    public static function getSQL($search, $filter)
     {
         if (!Config::get()->RESOURCES_ENABLE || !$search || !$GLOBALS['perm']->have_perm('root')) {
             return null;

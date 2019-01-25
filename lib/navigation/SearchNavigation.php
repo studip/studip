@@ -39,6 +39,10 @@ class SearchNavigation extends Navigation
     {
         parent::initSubNavigation();
 
+        // global search
+        $navigation = new Navigation(_('Globale Suche'), 'dispatch.php/search/globalsearch');
+        $this->addSubNavigation('globalsearch', $navigation);
+
         // browse courses
         // get first search option
         $navigation_option = SemBrowse::getSearchOptionNavigation('sidebar');

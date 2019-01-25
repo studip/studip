@@ -20,12 +20,13 @@ abstract class GlobalSearchModule
     abstract public static function getName();
 
     /**
-     * Has to return a SQL Query that discovers all objects. All retrieved data is passed row by row to getGlobalSearchFilter
+     * Has to return a SQL Query that discovers all objects. All retrieved data is passed row by row to getGlobalSearchFilter.
      *
      * @param $search the input query string
+     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    abstract public static function getSQL($search);
+    abstract public static function getSQL($search, $filter);
 
     /**
      * Returns an array of information for the found element. Following informations (key: description) are necessary
@@ -46,13 +47,24 @@ abstract class GlobalSearchModule
     abstract public static function filter($data, $search);
 
     /**
-     * Returns the URL that can be called for a full search.
+     * Returns the filters that are displayed in the sidebar of the global search.
+     * 
+     * @return array Filters for this class.
+     */
+    public static function getFilters()
+    {
+        return '';
+    }
+
+    /**
+     * Returns the URL that can be called for a full search, containing
+     * the specified category and the searchterm.
      *
-     * This could become obsolete when we have a real global search page.
      * Overwrite this method in your subclass to provide the category
-     * specific search page.
+     * specific search.
      *
      * @param string $searchterm what to search for?
+     * @return URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -131,5 +143,49 @@ abstract class GlobalSearchModule
         }
 
         return $string;
+    } 
+
+    /**
+    * Get the selected institute with sub-institutes as an array of IDs
+    * or a single institute as a string to use in the SQL query.
+    *
+    * @param $institute_id ID of the given institute or faculty
+    * @return mixed: a single institute as string if selected
+    *                or an array of institute IDs if a faculty was selected
+    */
+    public static function getInstituteIdsForSQL($institute_id)
+    {
+        $institutes = Institute::findByFaculty($institute_id);
+        if ($institutes) {
+            $institute_ids = array_column($institutes, 'Institut_id');
+            $institute_ids[] = $institute_id;
+            return $institute_ids;
+        } else {
+            return $institute_id;
+        }
+    }
+
+    /**
+     * Get the selected seminar class with sub-types as an array
+     * or a single seminar type as a string to use in an SQL query.
+     *
+     * @param $sem_class a single sem_type ID or a sem_class containing multiple sem_types
+     * @return mixed: seminar class/types formatted for an SQL query
+     */
+    public static function getSeminarTypesForSQL($sem_class)
+    {
+        $classes = SemClass::getClasses();
+        if ($pos = strpos($sem_class, '_')) {
+            // return just the sem_types.id (which is equal to seminare.status)
+            return substr($sem_class, $pos + 1);
+        } else {
+            $type_ids = array();
+            // return an array containing all sem_types belonging to the chosen sem_class
+            $class = $classes[$sem_class];
+            foreach ($class->getSemTypes() as $types_id => $types) {
+                array_push($type_ids, $types['id']);
+            }
+            return $type_ids;
+        }
     }
 }

@@ -20,21 +20,32 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
     }
 
     /**
+     * Returns the filters that are displayed in the sidebar of the global search.
+     *
+     * @return array Filters for this class.
+     */
+    public static function getFilters()
+    {
+        return ['semester', 'institute', 'seminar_type'];
+    }
+
+    /**
      * Transforms the search request into an sql statement, that provides the id (same as getId) as type and
      * the object id, that is later passed to the filter.
      *
      * This function is required to make use of the mysql union parallelism
      *
      * @param $search the input query string
+     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search)
+    public static function getSQL($search, $filter)
     {
         if (!$search) {
             return null;
         }
-        $search = str_replace(" ", "% ", $search);
-        $query = DBManager::get()->quote("%$search%");
+        $search = str_replace(' ', '% ', $search);
+        $query = DBManager::get()->quote("%{$search}%");
 
         // visibility
         if (!$GLOBALS['perm']->have_perm('admin')) {
@@ -42,8 +53,25 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             $seminaruser = " AND NOT EXISTS (
                 SELECT 1 FROM `seminar_user`
                 WHERE `seminar_id` = `courses`.`Seminar_id`
-                    AND `user_id` = ".DBManager::get()->quote($GLOBALS['user']->id)."
+                    AND `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
             ) ";
+        }
+
+        // generate SQL for the given sidebar filter (semester, institute, seminar_type)
+        if ($filter['category'] === self::class || $filter['category'] === 'show_all_categories') {
+            if ($filter['semester']) {
+                $semester_condition = " AND (`courses`.start_time <= " . DBManager::get()->quote($filter['semester']) .
+                            " AND (`courses`.start_time + `courses`.duration_time >= " . DBManager::get()->quote($filter['semester']).
+                            " OR `courses`.duration_time = -1)) ";
+            }
+            if ($filter['institute']) {
+                $institutes = self::getInstituteIdsForSQL($filter['institute']);
+                $institute_condition = " AND `courses`.`Institut_id` IN (" . DBManager::get()->quote($institutes) . ") ";
+            }
+            if ($filter['seminar_type']) {
+                $seminar_types = self::getSeminarTypesForSQL($filter['seminar_type']);
+                $seminar_type_condition = " AND `courses`.`status` IN (" . DBManager::get()->quote($seminar_types) . ") ";
+            }
         }
 
         $sql = "SELECT courses.`Seminar_id`, courses.`start_time`, courses.`Name`,
@@ -52,24 +80,28 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)
                 JOIN `seminar_user` u ON (u.`Seminar_id` = courses.`Seminar_id` AND u.`status` = 'dozent')
                 JOIN `auth_user_md5` a ON (a.`user_id` = u.`user_id`)
-                WHERE $visibility
-                    (courses.`Name` LIKE $query
-                        OR courses.`VeranstaltungsNummer` LIKE $query
-                        OR CONCAT_WS(' ', `sem_types`.`name`, courses.`Name`, `sem_types`.`name`) LIKE $query
-                        OR a.`Nachname` LIKE $query
-                        OR CONCAT_WS(' ', a.`Vorname`, a.`Nachname`) LIKE $query
-                        OR CONCAT_WS(' ', a.`Nachname`, a.`Vorname`) LIKE $query
-                )
-                $seminaruser
+                WHERE {$visibility}
+                    (
+                        courses.`Name` LIKE {$query}
+                        OR courses.`VeranstaltungsNummer` LIKE {$query}
+                        OR CONCAT_WS(' ', `sem_types`.`name`, courses.`Name`, `sem_types`.`name`) LIKE {$query}
+                        OR a.`Nachname` LIKE {$query}
+                        OR CONCAT_WS(' ', a.`Vorname`, a.`Nachname`) LIKE {$query}
+                        OR CONCAT_WS(' ', a.`Nachname`, a.`Vorname`) LIKE {$query}
+                    )
+                {$seminaruser}
+                {$institute_condition}
+                {$seminar_type_condition}
+                {$semester_condition}
                 GROUP BY courses.Seminar_id
-                ORDER BY ABS(start_time - unix_timestamp()) ASC";
+                ORDER BY ABS(start_time - UNIX_TIMESTAMP()) ASC";
 
         if (Config::get()->IMPORTANT_SEMNUMBER) {
             $sql .= ", courses.`VeranstaltungsNummer`";
         }
 
         $sql .= ", courses. `Name`";
-        $sql .= " LIMIT ".(4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+        $sql .= " LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
 
         return $sql;
     }
@@ -93,19 +125,41 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
     public static function filter($data, $search)
     {
         $course = Course::buildExisting($data);
+        $seminar = new Seminar($course);
+        $turnus_string = $seminar->getDatesExport([
+            'short'  => true,
+            'shrink' => true,
+        ]);
+        //Shorten, if string too long (add link for details.php)
+        if (mb_strlen($turnus_string) > 70) {
+            $turnus_string = htmlReady(mb_substr($turnus_string, 0, mb_strpos(mb_substr($turnus_string, 70, mb_strlen($turnus_string)), ',') + 71));
+            $turnus_string .= ' ... <a href="' . URLHelper::getURL("dispatch.php/course/details/index/{$course->id}") . '">(' . _('mehr') . ')</a>';
+        } else {
+            $turnus_string = htmlReady($turnus_string);
+        }
         $semester = $course->start_semester;
 
         $result = [
             'id'         => $course->id,
+            'number'     => self::mark($course->veranstaltungsnummer, $search),
             'name'       => self::mark($course->getFullname(), $search),
             'url'        => URLHelper::getURL('dispatch.php/course/details/index/' . $course->id),
             'date'       => $semester->token ?: $semester->name,
-            'additional' => implode(', ', array_map(function ($u) use ($search) {
-                return self::mark($u->getUserFullname(), $search);
-            }, $course->getMembersWithStatus('dozent'))),
+            'dates'      => $turnus_string,
+            'additional' => implode(', ',
+                array_map(
+                    function ($u) use ($search) {
+                        return self::mark($u->getUserFullname(), $search);
+                    },
+                    $course->getMembersWithStatus('dozent')
+                )),
             'expand'     => self::getSearchURL($search),
         ];
-        $avatar = CourseAvatar::getAvatar($course->id);
+        if ($course->getSemClass()->offsetGet('studygroup_mode')) {
+            $avatar = StudygroupAvatar::getAvatar($course->id);
+        } else {
+            $avatar = CourseAvatar::getAvatar($course->id);
+        }
         $result['img'] = $avatar->getUrl(Avatar::MEDIUM);
         return $result;
     }
@@ -179,19 +233,14 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
     /**
      * Returns the URL that can be called for a full search.
      *
-     * This could become obsolete when we have a real global search page.
-     *
      * @param string $searchterm what to search for?
+     * @return URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
-        return URLHelper::getURL("dispatch.php/search/courses", [
-            'level' => 'f',
-            'reset_all' => 1,
-            'search_sem_qs_choose' => 'title_lecturer_number',
-            'search_sem_sem' => 'all',
-            'search_sem_quick_search_parameter' => $searchterm,
-            'search_sem_1508068a50572e5faff81c27f7b3a72f' => 1 // Why the hell is that needed?
+        return URLHelper::getURL('dispatch.php/search/globalsearch', [
+            'searchterm' => $searchterm,
+            'category' => self::class
         ]);
     }
 

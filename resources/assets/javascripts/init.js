@@ -48,6 +48,7 @@ import register from './lib/register.js';
 import RESTAPI, { api } from './lib/restapi.js';
 import Schedule from './lib/schedule.js';
 import Scroll from './lib/scroll.js';
+import Search from './lib/search.js';
 import Sidebar from './lib/sidebar.js';
 import SkipLinks from './lib/skip_links.js';
 import SmileyPicker from './lib/smiley_picker.js';
@@ -116,6 +117,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     RESTAPI,
     Schedule,
     Scroll,
+    Search,
     Sidebar,
     SkipLinks,
     SmileyPicker,

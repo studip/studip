@@ -15,9 +15,7 @@ const GlobalSearch = {
         if (!visible && cleanup) {
             $('#globalsearch-searchbar').removeClass('has-value');
             $('#globalsearch-results').html('');
-            $('#globalsearch-input')
-                .blur()
-                .val('');
+            $('#globalsearch-input').blur().val('');
         }
 
         $('html.responsive-display').toggleClass('globalsearch-visible', visible);
@@ -29,9 +27,7 @@ const GlobalSearch = {
      * Performs the actual search.
      */
     doSearch: function() {
-        var searchterm = $('#globalsearch-input')
-                .val()
-                .trim(),
+        var searchterm = $('#globalsearch-input').val().trim(),
             hasValue = searchterm.length >= 3,
             resultsDiv = $('#globalsearch-results'),
             resultsPerType = resultsDiv.data('results-per-type'),
@@ -56,114 +52,112 @@ const GlobalSearch = {
         // Call AJAX endpoint and get search results.
         $.getJSON(STUDIP.URLHelper.getURL('dispatch.php/globalsearch/find'), {
             search: searchterm
-        })
-            .done(function(json) {
-                resultsDiv.html('');
+        }).done(function(json) {
+            resultsDiv.html('');
 
-                // No results found...
-                if (!$.isPlainObject(json) || $.isEmptyObject(json)) {
-                    wrapper.removeClass('is-searching');
-                    resultsDiv.html(resultsDiv.data('no-result'));
-                    return;
+            // No results found...
+            if (!$.isPlainObject(json) || $.isEmptyObject(json)) {
+                wrapper.removeClass('is-searching');
+                resultsDiv.html(resultsDiv.data('no-result'));
+                return;
+            }
+
+            // Iterate over each result category.
+            $.each(json, function(name, value) {
+                // Create an <article> for category.
+                var category = $(`<article id="globalsearch-${name}">`),
+                    header = $('<header>').appendTo(category),
+                    counter = 0;
+
+                // Create header name
+                $('<a href="#">')
+                    .text(value.name)
+                    .wrap('<div class="globalsearch-category">')
+                    .parent() // Element is now the wrapper
+                    .data('category', name)
+                    .appendTo(header);
+
+                // We have more search results than shown, provide link to
+                // full search if available.
+                if (value.more && value.fullsearch !== '') {
+                    $('<a>')
+                        .attr('href', value.fullsearch)
+                        .text(moreResultsText)
+                        .wrap('<div class="globalsearch-more-results">')
+                        .parent() // Element is now the wrapper
+                        .appendTo(header);
                 }
 
-                // Iterate over each result category.
-                $.each(json, function(name, value) {
-                    // Create an <article> for category.
-                    var category = $('<article id="globalsearch-' + name + '">'),
-                        header = $('<header>').appendTo(category),
-                        counter = 0;
+                // Process results and create corresponding entries.
+                $.each(value.content, function(index, result) {
+                    // Create single result entry.
+                    var single = $('<section>'),
+                        data = $('<div class="globalsearch-result-data">'),
+                        details = $('<div class="globalsearch-result-details">');
 
-                    // Create header name
-                    $('<a href="#">')
-                        .text(value.name)
-                        .wrap('<div class="globalsearch-category">')
-                        .parent() // Element is now the wrapper
-                        .data('category', name)
-                        .appendTo(header);
-
-                    // We have more search results than shown, provide link to
-                    // full search if available.
-                    if (value.more && value.fullsearch !== '') {
-                        $('<a>')
-                            .attr('href', value.fullsearch)
-                            .text(moreResultsText)
-                            .wrap('<div class="globalsearch-more-results">')
-                            .parent() // Element is now the wrapper
-                            .appendTo(header);
+                    if (counter >= resultsPerType) {
+                        single.addClass('globalsearch-extended-result');
                     }
 
-                    // Process results and create corresponding entries.
-                    $.each(value.content, function(index, result) {
-                        // Create single result entry.
-                        var single = $('<section>'),
-                            data = $('<div class="globalsearch-result-data">'),
-                            details = $('<div class="globalsearch-result-details">');
+                    var link = $(`<a href="${result.url}">`).appendTo(single);
 
-                        if (counter >= resultsPerType) {
-                            single.addClass('globalsearch-extended-result');
-                        }
+                    // Optional image...
+                    if (result.img !== null) {
+                        $(`<img src="${result.img}">`)
+                            .wrap('<div class="globalsearch-result-img">')
+                            .parent() // Element is now the wrapper
+                            .appendTo(link);
+                    }
 
-                        var link = $('<a href="' + result.url + '">').appendTo(single);
+                    link.append(data);
 
-                        // Optional image...
-                        if (result.img !== null) {
-                            $('<img src="' + result.img + '">')
-                                .wrap('<div class="globalsearch-result-img">')
-                                .parent() // Element is now the wrapper
-                                .appendTo(link);
-                        }
+                    // Name/title
+                    $('<div class="globalsearch-result-title">')
+                        .html($.parseHTML(result.name))
+                        .appendTo(data);
 
-                        link.append(data);
+                    // Details: Descriptional text
+                    if (result.description !== null) {
+                        $('<div class="globalsearch-result-description">')
+                            .html($.parseHTML(result.description))
+                            .appendTo(details);
+                    }
 
-                        // Name/title
-                        $('<div class="globalsearch-result-title">')
-                            .html($.parseHTML(result.name))
-                            .appendTo(data);
+                    // Details: Additional information
+                    if (result.additional !== null) {
+                        $('<div class="globalsearch-result-additional">')
+                            .html($.parseHTML(result.additional))
+                            .appendTo(details);
+                    }
 
-                        // Details: Descriptional text
-                        if (result.description !== null) {
-                            $('<div class="globalsearch-result-description">')
-                                .html($.parseHTML(result.description))
-                                .appendTo(details);
-                        }
+                    data.append(details);
 
-                        // Details: Additional information
-                        if (result.additional !== null) {
-                            $('<div class="globalsearch-result-additional">')
-                                .html($.parseHTML(result.additional))
-                                .appendTo(details);
-                        }
+                    // Date/Time of entry
+                    if (result.date !== null) {
+                        $('<div class="globalsearch-result-time">')
+                            .html($.parseHTML(result.date))
+                            .appendTo(link);
+                    }
 
-                        data.append(details);
+                    // "Expand" attribute for further, result-related search
+                    // (e.g. search in course of found forum entry)
+                    if (result.expand !== null && result.expand !== value.fullsearch && value.more) {
+                        $(`<a href="${result.expand}" title="${result.expandtext}">`)
+                            .wrap('<div class="globalsearch-result-expand">')
+                            .parent() // Element is now the wrapper
+                            .appendTo(single);
+                    }
+                    category.append(single);
 
-                        // Date/Time of entry
-                        if (result.date !== null) {
-                            $('<div class="globalsearch-result-time">')
-                                .html($.parseHTML(result.date))
-                                .appendTo(link);
-                        }
-
-                        // "Expand" attribute for further, result-related search
-                        // (e.g. search in course of found forum entry)
-                        if (result.expand !== null && result.expand !== value.fullsearch && value.more) {
-                            $('<a href="' + result.expand + '" title="' + result.expandtext + '">')
-                                .wrap('<div class="globalsearch-result-expand">')
-                                .parent() // Element is now the wrapper
-                                .appendTo(single);
-                        }
-                        category.append(single);
-
-                        counter += 1;
-                    });
-                    resultsDiv.append(category);
+                    counter += 1;
                 });
-
-                wrapper.removeClass('is-searching');
-            })
-            .fail(function(xhr, status, error) {
-                window.alert(error);
+                resultsDiv.append(category);
             });
+
+            wrapper.removeClass('is-searching');
+        }).fail(function(xhr, status, error) {
+            window.alert(error);
+        });
     },
 
     /**
@@ -186,16 +180,14 @@ const GlobalSearch = {
      */
     expandCategory: function(category) {
         // Hide other categories.
-        $('#globalsearch-results article:not([id="globalsearch-' + category + '"])').hide();
+        $(`#globalsearch-results article:not([id="globalsearch-${category}"])`).hide();
         // Show all results.
-        $('#globalsearch-' + category + ' section.globalsearch-extended-result').removeClass(
+        $(`#globalsearch-${category} section.globalsearch-extended-result`).removeClass(
             'globalsearch-extended-result'
         );
-        $('article#globalsearch-' + category)
-            .get(0)
-            .scrollIntoView();
+        $(`article#globalsearch-${category}`).get(0).scrollIntoView();
         // Reassign category click to closing extended view.
-        $('#globalsearch-results article#globalsearch-' + category + ' header a')
+        $(`#globalsearch-results article#globalsearch-${category} header div.globalsearch-category a`)
             .off('click')
             .on('click', function() {
                 GlobalSearch.showAllCategories(category);
@@ -210,18 +202,18 @@ const GlobalSearch = {
      * @param currentCategory
      */
     showAllCategories: function(currentCategory) {
-        $('#globalsearch-results article#globalsearch-' + currentCategory + ' header a')
+        $(`#globalsearch-results article#globalsearch-${currentCategory} header div.globalsearch-category a`)
             .off('click')
             .on('click', function() {
                 GlobalSearch.expandCategory(currentCategory);
                 return false;
             });
         var resultCount = $('#globalsearch-results').data('results-per-type') - 1;
-        $('#globalsearch-' + currentCategory + ' section:gt(' + resultCount + ')').addClass(
+        $(`#globalsearch-${currentCategory} section:gt(${resultCount})`).addClass(
             'globalsearch-extended-result'
         );
         $('#globalsearch-results')
-            .children('article:not([id="globalsearch-' + currentCategory + '"])')
+            .children(`article:not([id="globalsearch-${currentCategory}"])`)
             .show();
         return false;
     }

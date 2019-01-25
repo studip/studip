@@ -37,6 +37,8 @@ class GlobalSearchController extends AuthenticatedController
 
         $search = trim(Request::get('search'));
 
+        $filter = json_decode(Request::get('filters'), true);
+
         $result = $classes = [];
 
         // Global config setting says to use mysqli
@@ -45,7 +47,7 @@ class GlobalSearchController extends AuthenticatedController
                 if ($data['active']) {
                     $class = new $className();
                     $classes[$className] = $class;
-                    $partSQL = $class->getSQL($search);
+                    $partSQL = $class->getSQL($search, $filter);
                     if ($partSQL) {
                         $new = mysqli_connect($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
                             $GLOBALS['DB_STUDIP_PASSWORD'], $GLOBALS['DB_STUDIP_DATABASE']);
@@ -81,7 +83,6 @@ class GlobalSearchController extends AuthenticatedController
                                 && count($result[$id]['content']) >= Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE)
                             {
                                 $result[$id]['more'] = true;
-                                $result[$id]['fullsearch'] = $classes[$id]->getSearchURL($search) ?: '';
                             }
 
                             $arg = $data['type'] && count($data) == 2 ? $data['id'] : $data;
@@ -89,6 +90,7 @@ class GlobalSearchController extends AuthenticatedController
                             // Filter item and add to result if necessary.
                             if ($item = $classes[$id]->filter($arg, $search)) {
                                 $result[$id]['name'] = $classes[$id]->getName();
+                                $result[$id]['fullsearch'] = $classes[$id]->getSearchURL($search) ?: '';
                                 $result[$id]['content'][] = $item;
                             }
                         }
@@ -105,7 +107,7 @@ class GlobalSearchController extends AuthenticatedController
                 if ($data['active']) {
                     $class = new $className();
                     $classes[$className] = $class;
-                    $partSQL = $class->getSQL($search);
+                    $partSQL = $class->getSQL($search, $filter);
 
                     // ... and execute corresponding SQL.
                     if ($partSQL) {
@@ -116,13 +118,13 @@ class GlobalSearchController extends AuthenticatedController
                             // Filter item and add to result if necessary.
                             if ($item = $classes[$className]->filter($one, $search)) {
                                 $result[$className]['name'] = $classes[$className]->getName();
+                                $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
                                 $result[$className]['content'][] = $item;
                             }
                         }
                         // We found more results than needed, add "more" link for full search.
                         if (count($result[$className]['content']) > Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE) {
                             $result[$className]['more'] = true;
-                            $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
                         }
                     }
                 }

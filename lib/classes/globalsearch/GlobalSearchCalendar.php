@@ -22,14 +22,14 @@ class GlobalSearchCalendar extends GlobalSearchModule
     /**
      * Returns the URL that can be called for a full search.
      *
-     * This could become obsolete when we have a real global search page.
-     *
      * @param string $searchterm what to search for?
+     * @return URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
-        return URLHelper::getURL('dispatch.php/calendar/single/week', [
-            'atime' => strtotime($searchterm)
+        return URLHelper::getURL('dispatch.php/search/globalsearch', [
+            'searchterm' => $searchterm,
+            'category' => self::class
         ]);
     }
 
@@ -40,9 +40,10 @@ class GlobalSearchCalendar extends GlobalSearchModule
      * This function is required to make use of the mysql union parallelism
      *
      * @param $search the input query string
+     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search)
+    public static function getSQL($search, $filter)
     {
         $time    = strtotime($search);
         $endtime = $time + 24 * 60 * 60;
@@ -52,7 +53,7 @@ class GlobalSearchCalendar extends GlobalSearchModule
             return "SELECT `date`, `end_time`, `seminar_id`
                     FROM `termine`
                     JOIN `seminar_user` ON (`range_id` = `seminar_id`)
-                    WHERE user_id = {$user_id}
+                    WHERE `user_id` = {$user_id}
                       AND `date` BETWEEN {$time} AND {$endtime}
                     ORDER BY `date`
                     LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
