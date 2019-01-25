@@ -137,7 +137,7 @@ class MyIliasAccountsController extends AuthenticatedController
     {
         $ilias_configs = Config::get()->ILIAS_INTERFACE_SETTINGS;
         if ($ilias_configs[$index]['is_active']) {
-            $this->ilias = new ConnectedIlias($ilias_index);
+            $this->ilias = new ConnectedIlias($index);
             $this->ilias_index = $index;
         }
     }
