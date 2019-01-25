@@ -1,35 +1,44 @@
 <?php
-
-/*
- *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
+/**
+ * Ilias Interface - navigation and meta data
  *
- *  This program is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU General Public License as
- *  published by the Free Software Foundation; either version 2 of
- *  the License, or (at your option) any later version.
+ * @author    André Noack <noack@data-quest.de>
+ * @copyright 2019 Stud.IP Core-Group
+ * @license   GPL version 2 or any later version
+ * @since     4.3
  */
 
-class IliasInterfaceModule  extends StudIPPlugin implements StandardPlugin, SystemPlugin
+class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, SystemPlugin
 {
     public function __construct()
     {
         parent::__construct();
-        if (Seminar_Perm::get()->have_perm('root')) {
-            Navigation::addItem('/admin/config/ilias_interface',
-                new Navigation(_('ILIAS-Schnittstelle'), 'dispatch.php/admin/ilias_interface'));
+        if (Config::get()->ILIAS_INTERFACE_ENABLE) {
+            if (Seminar_Perm::get()->have_perm('root')) {
+                Navigation::addItem('/admin/config/ilias_interface',
+                    new Navigation(_('ILIAS-Schnittstelle'), 'dispatch.php/admin/ilias_interface'));
+            }
+            if (Seminar_Perm::get()->have_perm('tutor')) {
+                Navigation::addItem('/tools/my_ilias_accounts',
+                    new Navigation(_('ILIAS'), 'dispatch.php/my_ilias_accounts'));
+            }
         }
-        if (Seminar_Perm::get()->have_perm('tutor')) {
-            Navigation::addItem('/tools/my_ilias_accounts',
-                new Navigation(_('ILIAS'), 'dispatch.php/my_ilias_accounts'));
-        }
-
-
     }
 
-    public function getInfoTemplate($course_id) {}
+    public function isActivatableForContext(Range $context)
+    {
+        return Config::get()->ILIAS_INTERFACE_ENABLE;
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+    }
 
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
+        if (!Config::get()->ILIAS_INTERFACE_ENABLE) {
+            return;
+        }
         $sql = "SELECT a.object_id, COUNT(module_id) as count,
                 COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
                 MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
@@ -90,6 +99,9 @@ class IliasInterfaceModule  extends StudIPPlugin implements StandardPlugin, Syst
 
     public function getTabNavigation($course_id)
     {
+        if (!Config::get()->ILIAS_INTERFACE_ENABLE) {
+            return;
+        }
         $ilias_interface_config = Config::get()->ILIAS_INTERFACE_BASIC_SETTINGS;
         if (count($ilias_interface_config)) {
             $moduletitle = Config::get()->getValue('ILIAS_INTERFACE_MODULETITLE');
@@ -120,22 +132,22 @@ class IliasInterfaceModule  extends StudIPPlugin implements StandardPlugin, Syst
     public function getMetadata()
     {
         return array(
-            'summary' => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
-            'description' => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus '.
-                                'einer ILIAS-Installation (ILIAS-Version >= 5.3.8) in Stud.IP zur Verfügung '.
-                                'zu stellen. Lehrende haben die Möglichkeit, in '.
-                                'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
-            'displayname' => _('ILIAS-Schnittstelle'),
-            'category' => _('Inhalte und Aufgabenstellungen'),
-            'keywords' => _('Einbindung von ILIAS-Lernobjekten;
+            'summary'          => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
+            'description'      => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus ' .
+                'einer ILIAS-Installation (ILIAS-Version >= 5.3.8) in Stud.IP zur Verfügung ' .
+                'zu stellen. Lehrende haben die Möglichkeit, in ' .
+                'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
+            'displayname'      => _('ILIAS-Schnittstelle'),
+            'category'         => _('Inhalte und Aufgabenstellungen'),
+            'keywords'         => _('Einbindung von ILIAS-Lernobjekten;
                             Zugang zu ILIAS;
                             Aufgaben- und Test-Erstellung'),
-            'icon' => Icon::create('learnmodule', 'info'),
+            'icon'             => Icon::create('learnmodule', 'info'),
             'descriptionshort' => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
-            'descriptionlong' => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus '.
-                            'einer ILIAS-Installation (> 5.1.8) in Stud.IP zur Verfügung '.
-                            'zu stellen. Lehrende haben die Möglichkeit, in '.
-                            'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
+            'descriptionlong'  => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus ' .
+                'einer ILIAS-Installation (> 5.1.8) in Stud.IP zur Verfügung ' .
+                'zu stellen. Lehrende haben die Möglichkeit, in ' .
+                'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
         );
     }
 }
