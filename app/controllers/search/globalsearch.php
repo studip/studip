@@ -142,7 +142,7 @@ class Search_GlobalsearchController extends AuthenticatedController
         foreach ($insts as $institute) {
             $institutes[$institute['Institut_id']] = ($institute['is_fak'] ? '' : '  ') . $institute['Name'];
         }
-        return array_merge($first_entry, $institutes);
+        return $institutes;
     }
 
     /**
