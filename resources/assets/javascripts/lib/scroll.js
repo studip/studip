@@ -20,6 +20,9 @@ function scrollHandler() {
         $.each(handlers, function(index, handler) {
             handler(scrollTop, scrollLeft);
         });
+
+        lastTop  = scrollTop;
+        lastLeft = scrollLeft;
     }
 
     animId = false;
