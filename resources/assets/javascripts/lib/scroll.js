@@ -6,16 +6,25 @@
  * Updates/calls to the callback are synchronized to screen refresh by using
  * the animation frame method (which will fallback to a timer based solution).
  */
-var handlers = {},
-    animId = false;
+var handlers = {};
+var animId = false;
+
+var lastTop  = null;
+var lastLeft = null;
 
 function scrollHandler() {
-    var scrollTop = $(document).scrollTop(),
-        scrollLeft = $(document).scrollLeft();
-    $.each(handlers, function(index, handler) {
-        handler(scrollTop, scrollLeft);
-    });
-    animId = window.requestAnimationFrame(scrollHandler);
+    var scrollTop = $(document).scrollTop();
+    var scrollLeft = $(document).scrollLeft();
+
+    if (scrollTop !== lastTop || scrollLeft !== lastLeft) {
+        $.each(handlers, function(index, handler) {
+            handler(scrollTop, scrollLeft);
+        });
+    }
+
+    animId = false;
+
+    engageScrollTrigger();
 }
 
 function refresh() {
@@ -28,14 +37,19 @@ function refresh() {
     }
 }
 
+function engageScrollTrigger() {
+    $(window).off('scroll.studip-handler');
+    $(window).one('scroll.studip-handler', refresh);
+}
+
 const Scroll = {
     addHandler(index, handler) {
         handlers[index] = handler;
-        refresh();
+        engageScrollTrigger();
     },
     removeHandler(index) {
         delete handlers[index];
-        refresh();
+        engageScrollTrigger();
     }
 };
 
