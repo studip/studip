@@ -213,7 +213,7 @@ namespace {
     if (Config::Get()->ILIAS_INTERFACE_ENABLE) {
         require_once 'lib/ilias_interface/IliasUserObserver.php';
     }
-    
+
     // set dummy navigation until db is ready
     Navigation::setRootNavigation(new Navigation(''));
 
@@ -224,9 +224,9 @@ namespace {
     Studip\Activity\ActivityObserver::initialize();
     FilesSearch\NotificationObserver::initialize();
     if (Config::Get()->ILIAS_INTERFACE_ENABLE) {
-        IliasInterface\IliasUserObserver::initialize();
+        IliasUserObserver::initialize();
     }
-    
+
     //Besser hier globale Variablen definieren...
     $GLOBALS['_fullname_sql'] = array();
     $GLOBALS['_fullname_sql']['full'] = "TRIM(CONCAT(title_front,' ',Vorname,' ',Nachname,IF(title_rear!='',CONCAT(', ',title_rear),'')))";

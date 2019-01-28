@@ -1,9 +1,4 @@
 <?php
-
-namespace IliasInterface;
-
-use NotificationCenter;
-
 /**
  * This class observes changes in user data and updates ILIAS users
  *
@@ -26,7 +21,7 @@ class IliasUserObserver
      *
      * @param User $user  the observed user
      */
-    public static function obeserveIliasUser($event, \User $user)
+    public static function observeIliasUser($event, User $user)
     {
         switch ($event) {
             case 'UserDidUpdate':
