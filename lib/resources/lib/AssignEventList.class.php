@@ -5,9 +5,9 @@
 # Lifter010: TODO
 /**
 * AssignEventList.class.php
-* 
+*
 * container for an list of assign-events
-* 
+*
 *
 * @author       Cornelis Kater <ckater@gwdg.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -48,17 +48,17 @@ class AssignEventList{
     var $range_id;      // range_id (String)
     var $user_id;       // userId from PhpLib (String)
     var $filter;        // filter mode (single, repeated, all)
-    
+
     // Konstruktor
     // if activated without timestamps, we take the current semester
     function __construct($begin = 0, $end = 0, $resource_id='', $range_id='', $user_id='', $sort = TRUE, $filter = FALSE, $day_of_week = false){
         $semester = Semester::findCurrent();
-        
+
         if (!$begin)
             $begin = $semester->beginn;
         if (!$end )
             $end = $semester->ende;
-        
+
         $this->dow = $day_of_week;
         $this->begin = $begin;
         $this->end = $end;
@@ -66,16 +66,17 @@ class AssignEventList{
         $this->resource_id = $resource_id;
         $this->range_id = $range_id;
         $this->user_id = $user_id;
+        $this->events = [];
         $this->restore();
         if($sort)
             $this->sort();
     }
-    
+
     // public
     function getBegin(){
         return $this->begin;
     }
-    
+
     // public
     function getEnd(){
         return $this->end;
@@ -95,21 +96,21 @@ class AssignEventList{
     function getUserId(){
         return $this->user_id;
     }
-    
+
     // private
     function restore() {
         list_restore_assign($this, $this->resource_id,  $this->begin, $this->end, FALSE, FALSE, $this->filter, $this->dow);
     }
-    
+
     // public
     function numberOfEvents(){
         return sizeof($this->events);
     }
-    
+
     function existEvent(){
         return sizeof($this->events) > 0 ? TRUE : FALSE;
     }
-    
+
     // public
     function nextEvent(){
         if (is_array($this->events)) {
@@ -118,10 +119,10 @@ class AssignEventList{
         }
         return FALSE;
     }
-    
+
     function sort(){
         if($this->events)
             usort($this->events,"cmp_assign_events");
     }
-    
-} 
+
+}

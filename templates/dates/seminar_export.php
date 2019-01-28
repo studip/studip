@@ -1,14 +1,14 @@
 <?
 if (!isset($show_room)) :
     // show rooms only if there is more than one
-    if (sizeof($dates['rooms']) <= 1) :
+    if (empty($dates['rooms']) || sizeof($dates['rooms']) === 1) :
         $show_room = false;
     else :
         $show_room = true;
     endif;
 endif;
 
-if ($dates['regular']['turnus_data'] || sizeof($dates['irregular'])) :
+if (!empty($dates['regular']['turnus_data']) || !empty($dates['irregular'])) :
   $output = array();
   if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turnus_data'] as $cycle) :
     $first_date = sprintf(_("ab %s"), strftime('%x', $cycle['first_date']['date']));
