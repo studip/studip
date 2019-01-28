@@ -16,7 +16,7 @@ class TemplateWidget extends SidebarWidget
      *
      * @param String         $title     Title of the widget
      * @param Flexi_Template $template  Template for the widget
-     * @param Array          $variables Associated variables for the template
+     * @param array          $variables Associated variables for the template
      */
     public function __construct($title, Flexi_Template $template, array $variables = [])
     {
@@ -36,9 +36,11 @@ class TemplateWidget extends SidebarWidget
     public function render($variables = [])
     {
         $this->template->set_attributes($variables);
+        $layout = $GLOBALS['template_factory']->open($this->layout);
+        $layout->layout_css_classes = $this->layout_css_classes;
         return $this->template->render(
             $this->template_variables,
-            $GLOBALS['template_factory']->open($this->layout)
+            $layout
         );
     }
 }

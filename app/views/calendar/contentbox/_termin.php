@@ -18,7 +18,7 @@
         </nav>
     </header>
     <div>
-        <? $themen = $termin['topics'] ?>
+        <? $themen = $termin['topics'] ? : [] ?>
         <? if ($termin['description'] || count($themen)) : ?>
         <p><?= formatReady($termin['description']) ?></p>
         <? if (count($themen)) : ?>
