@@ -855,7 +855,6 @@ class UserManagement
             // delete all remaining user data
             $queries = [
                 "DELETE FROM user_userdomains WHERE user_id = ?",
-                "DELETE FROM user_info WHERE user_id = ?",
             ];
             foreach ($queries as $query) {
                 DBManager::get()->execute($query, [$this->user_data['auth_user_md5.user_id']]);
@@ -919,6 +918,10 @@ class UserManagement
 
         if ($delete_personal_documents && $delete_personal_content && $delete_names && $delete_memberships) {
             // delete Stud.IP account
+            $query = "DELETE FROM user_info WHERE user_id = ?";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([$this->user_data['auth_user_md5.user_id']]);
+
             $query = "DELETE FROM auth_user_md5 WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$this->user_data['auth_user_md5.user_id']]);
