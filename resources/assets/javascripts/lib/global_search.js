@@ -99,7 +99,8 @@ const GlobalSearch = {
                         single.addClass('globalsearch-extended-result');
                     }
 
-                    var link = $(`<a href="${result.url}">`).appendTo(single);
+                    var dataDialog = (name === 'GlobalSearchFiles' ? dataDialog = 'data-dialog' : dataDialog = '');
+                    var link = $(`<a href="${result.url}" ${dataDialog}>`).appendTo(single);
 
                     // Optional image...
                     if (result.img !== null) {

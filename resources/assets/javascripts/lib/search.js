@@ -94,8 +94,8 @@ const Search = {
                     if (counter >= resultsPerType) {
                         single.addClass('search-extended-result');
                     }
-
-                    var link = $(`<a href="${result.url}">`)
+                    var dataDialog = (name === 'GlobalSearchFiles' ? dataDialog = 'data-dialog' : dataDialog = '');
+                    var link = $(`<a href="${result.url}" ${dataDialog}>`)
                         .appendTo(single);
 
                     // Optional image...
