@@ -1,3 +1,5 @@
+/*jslint esversion: 6*/
+
 /**
  * Stud.IP: Caching in JavaScript
  *
@@ -82,7 +84,7 @@ try {
         key()         { return undefined; }
         removeItem()  {}
         setItem()     {}
-    };
+    }();
 }
 
 // Initialized browser session?
@@ -101,7 +103,7 @@ if (session_id === undefined) {
         if (item.expires < now || (item.expires === false && item.session !== session_id)) {
             cache.removeItem(key);
         }
-    };
+    }
 }
 
 class Cache {
@@ -189,9 +191,8 @@ class Cache {
      * @param String index Key used to store the item
      */
     remove(index) {
-        index = this.prefix + index;
-
         if (this.has(index)) {
+            index = this.prefix + index;
             cache.removeItem(index);
         }
     }
