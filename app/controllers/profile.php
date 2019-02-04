@@ -332,38 +332,38 @@ class ProfileController extends AuthenticatedController
             $privacy->addLink(
                 _('Anzeige Personendaten'),
                 $this->url_for('privacy/landing/' . $this->current_user->user_id),
-                Icon::create('log', Icon::ROLE_CLICKABLE, tooltip2(_('Anzeige Personendaten')))
+                Icon::create('log')
             )->asDialog('size=medium');
 
             $privacy->addLink(
                 _('Personendaten drucken'),
                 $this->url_for('privacy/print/' . $this->current_user->user_id),
-                Icon::create('print', Icon::ROLE_CLICKABLE, tooltip2(_('Personendaten drucken'))),
+                Icon::create('print'),
                 ['class' => 'print_action', 'target' => '_blank']
             );
 
             $privacy->addLink(
                 _('Export Personendaten als CSV'),
                 $this->url_for('privacy/export/' . $this->current_user->user_id),
-                Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CSV')))
+                Icon::create('file-text')
             );
 
             $privacy->addLink(
                 _('Export Personendaten als XML'),
                 $this->url_for('privacy/xml/' . $this->current_user->user_id),
-                Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als XML')))
+                Icon::create('file-text')
             );
 
             $privacy->addLink(
                 _('Export persönlicher Dateien als ZIP'),
                 $this->url_for('privacy/filesexport/' . $this->current_user->user_id),
-                Icon::create('file-archive', Icon::ROLE_CLICKABLE, tooltip2(_('Export persönlicher Dateien als ZIP')))
+                Icon::create('file-archive')
             );
-        } elseif ($this->current_user->username === $this->user->username) {
+        } elseif ($this->current_user->username === $this->user->username && Config::get()->PRIVACY_CONTACT) {
             $privacy->addLink(
                 _('Datenschutzauskunft anfordern'),
                 $this->url_for('privacy/askfor/' . $this->current_user->user_id),
-                Icon::create('mail', Icon::ROLE_CLICKABLE, tooltip2(_('Datenschutzauskunft anfordern')))
+                Icon::create('mail')
             )->asDialog('size=auto');
         }
         $sidebar->addWidget($privacy);
