@@ -241,9 +241,7 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         // Step 2: Validate
-        if (mb_strlen($value) === 0) {
-            $error = _('Es wurde kein gültiger Wert eingetragen!');
-        } elseif ($config['type'] === 'integer' && !is_numeric($value)) {
+        if ($config['type'] === 'integer' && !is_numeric($value)) {
             $error = _('Bitte geben Sie bei Parametern vom Typ "integer" nur Zahlen ein!');
         } elseif ($config['type'] === 'array' && !is_array($value)) {
             $error = _('Bitte geben Sie bei Parametern vom Typ "array" ein Array oder Objekt in korrekter JSON Notation ein!');
