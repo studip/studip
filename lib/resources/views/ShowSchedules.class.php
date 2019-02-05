@@ -118,7 +118,7 @@ class ShowSchedules
                            date('Y', $start_time));
 
         ?>
-        <table class="default">
+        <table class="default nohover">
             <form method="POST" action="<?echo URLHelper::getLink('?navigate=TRUE&quick_view=view_schedule&quick_view_mode='.$view_mode)?>">
             <?= CSRFProtection::tokenTag() ?>
             <tr>
@@ -205,7 +205,7 @@ class ShowSchedules
            $view = 'edit_object_assign';
         }
         ?>
-        <table class="default">
+        <table class="default nohover">
             <colgroup>
                 <col width="4%">
                 <col width="96%">
@@ -351,7 +351,7 @@ class ShowSchedules
                         URLHelper::getLink('?cancel_edit_assign=1&quick_view=' . $view . '&quick_view_mode='.$view_mode.'&edit_assign_object='.$event->getAssignId()), $add_info, $categories[$repeat_mode]);
         }
         ?>
-        <table class="default">
+        <table class="default nohover">
             <colgroup>
                 <col width="4%">
                 <col width="10%">
