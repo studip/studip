@@ -187,7 +187,6 @@ const Search = {
                         .appendTo(footer);
                     footer.appendTo(category);
                     if (STUDIP.Search.getActiveCategory() != 'show_all_categories') {
-                        console.log(STUDIP.Search.getActiveCategory());
                         $(`a#link_all_results_${STUDIP.Search.getActiveCategory()}`).hide();
                         $(`a#link_results_${STUDIP.Search.getActiveCategory()}`).show();
                         $(`div#show-all-categories-${STUDIP.Search.getActiveCategory()}`).show();

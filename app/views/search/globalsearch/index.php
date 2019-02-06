@@ -9,10 +9,10 @@
                 <?= Icon::create('search')->asImg(['title' => _('Suche beginnen')]) ?>
             </button>
 
-            <?= \Studip\LinkButton::createReset(
-                ('Zurücksetzen'),
-                ['name' => 'reset', 'id' => 'reset-search']
-            ) ?>
+            <button type="submit" class="button" id="reset-search">
+                <?= Icon::create('decline')->asImg(['title' => _('Suche zurücksetzen')]) ?>
+            </button>
+
         </span>
     </div>
 </form>
