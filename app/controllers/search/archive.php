@@ -25,6 +25,9 @@ class Search_ArchiveController extends AuthenticatedController
      */
     public function index_action()
     {
+        if (!Config::get()->ENABLE_ARCHIVE_SEARCH) {
+            throw new AccessDeniedException();
+        }
         PageLayout::setHelpKeyword('Suche.Archiv');
         PageLayout::setTitle(_('Suche im Veranstaltungsarchiv'));
 

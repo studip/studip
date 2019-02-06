@@ -63,15 +63,17 @@ class SearchNavigation extends Navigation
 
         if ($GLOBALS['user']->id != 'nobody') {
             // search archive
-            $navigation = new Navigation(_('Archiv'), 'dispatch.php/search/archive');
-            $this->addSubNavigation('archive', $navigation);
+            if (Config::get()->ENABLE_ARCHIVE_SEARCH) {
+                $navigation = new Navigation(_('Archiv'), 'dispatch.php/search/archive');
+                $this->addSubNavigation('archive', $navigation);
+            }
 
             // browse institutes
             $navigation = new Navigation(_('Einrichtungen'), 'institut_browse.php');
             $this->addSubNavigation('institutes', $navigation);
 
             // browse resources
-            if (get_config('RESOURCES_ENABLE')) {
+            if (Config::get()->RESOURCES_ENABLE) {
                 $navigation = new Navigation(_('Ressourcen'), 'resources.php', array('view' => 'search', 'reset' => 'TRUE'));
                 $this->addSubNavigation('resources', $navigation);
             }
