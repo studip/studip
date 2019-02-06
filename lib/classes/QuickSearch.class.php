@@ -149,7 +149,7 @@ class QuickSearch
      */
     public static function get($name, $search = NULL)
     {
-        return new QuickSearch($name, $search);
+        return new static($name, $search);
     }
 
 
@@ -399,7 +399,7 @@ class QuickSearch
 
     /**
      * Convert quicksearch to string by rendering it
-     * 
+     *
      * @return string rendered html
      */
     public function __toString()
