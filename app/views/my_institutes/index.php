@@ -105,7 +105,7 @@ if ($GLOBALS['perm']->have_perm('dozent') && !empty($institutes)) {
 }
 if ($GLOBALS['perm']->have_perm('autor')) {
     $links->addLink(_('Einrichtungen suchen'),
-                    URLHelper::getLink('institut_browse.php'), Icon::create('institute+add', 'clickable') );
+                    URLHelper::getLink('dispatch.php/search/globalsearch#GlobalSearchInstitutes'), Icon::create('institute+add', 'clickable') );
     $links->addLink(_('Studiendaten bearbeiten'),
                     URLHelper::getLink('dispatch.php/settings/studies'), Icon::create('person', 'clickable'));
 }
