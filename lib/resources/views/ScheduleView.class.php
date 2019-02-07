@@ -120,6 +120,10 @@ class ScheduleView
         $id = md5(uniqid("rss",1));
         if( ($collision_id = $this->checkCollision($sort_index,$category)) ){
             $this->events[$collision_id]['collisions'][] = array('name' => $name, 'link' => $link,'add_info' => $add_info);
+            if ($end_time > $this->events[$collision_id]['end_time']) {
+                $this->events[$collision_id]['rows'] = $rows;
+                $this->events[$collision_id]['end_time'] = $end_time;
+            }
         } else {
             $this->events[$id]=array (
                         "sort_index" => $sort_index,
