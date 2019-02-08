@@ -347,6 +347,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
             foreach ($modul_assignments as $assignment) {
                 $new_modul_assignment = clone $assignment;
                 $new_modul_assignment->setNew(true);
+                $new_modul_assignment->setNewId();
                 $new_modul_assignment->abschnitt_id = $new_abschnitt->abschnitt_id;
                 $new_mvv_objects[] = $new_modul_assignment;
             }
