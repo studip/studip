@@ -1,6 +1,5 @@
-            
-$(function () {
-    var cache = STUDIP.Cache.getInstance();
+jQuery(function ($) {
+    var cache = STUDIP.Search.getCache();
     // initially hide all filters except for the semester filter
     $('#reset-search').hide();
     STUDIP.Search.hideAllFilters();

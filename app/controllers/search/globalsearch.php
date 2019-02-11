@@ -29,6 +29,11 @@ class Search_GlobalsearchController extends AuthenticatedController
             Navigation::activateItem('/search/globalsearch');
         }
 
+        PageLayout::addHeadElement('meta', [
+            'name'    => 'studip-cache-prefix',
+            'content' => md5("{$_COOKIE[Seminar_Session::class]}-{$GLOBALS['user']->id}"),
+        ]);
+
         $this->addInfoText();
         $this->addSidebar();
     }

@@ -1,6 +1,19 @@
+var cache = null;
+
 const Search = {
     lastSearch: null,
     lastSearchFilter: null,
+
+    getCache: function () {
+        if (cache === null) {
+            let prefix = '';
+            if ($('meta[name="studip-cache-prefix"]').length > 0) {
+                prefix = $('meta[name="studip-cache-prefix"]').attr('content');
+            }
+            cache = STUDIP.Cache.getInstance(prefix);
+        }
+        return cache;
+    },
 
     /**
      * This function starts the actual search via AJAX call.
@@ -10,7 +23,7 @@ const Search = {
      */
     doSearch: function (filter) {
 
-        var cache           = STUDIP.Cache.getInstance(),
+        var cache           = STUDIP.Search.getCache(),
             searchterm      = $('#search-input').val().trim() || cache.get('searchterm'),
             hasValue        = searchterm && searchterm.length >= 3,
             resultsDiv      = $('#search-results'),
@@ -215,7 +228,7 @@ const Search = {
      * reload the page and reset the active category.
      */
     resetSearch: function () {
-        var cache = STUDIP.Cache.getInstance();
+        var cache = STUDIP.Search.getCache();
         STUDIP.Search.lastSearch = null;
         cache.remove('searchterm');
         cache.remove('search_category');
@@ -286,7 +299,7 @@ const Search = {
      * @param {string} category Given category which should be highlighted in the sidebar.
      */
     setActiveCategory: function (category) {
-        var cache = STUDIP.Cache.getInstance();
+        var cache = STUDIP.Search.getCache();
         cache.set('search_category', category);
         // remove all active classes
         $('#show_all_categories').closest('li').removeClass('active');
@@ -340,7 +353,7 @@ const Search = {
      * @return {string} The active (currently selected) category in the sidebar widget.
      */
     getActiveCategory: function () {
-        var cache = STUDIP.Cache.getInstance();
+        var cache = STUDIP.Search.getCache();
         return cache.get('search_category');
     },
 
