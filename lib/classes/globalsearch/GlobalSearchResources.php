@@ -31,7 +31,7 @@ class GlobalSearchResources extends GlobalSearchModule
      */
     public static function getSQL($search, $filter)
     {
-        if (!Config::get()->RESOURCES_ENABLE || !$search || !$GLOBALS['perm']->have_perm('admin')) {
+        if (!Config::get()->RESOURCES_ENABLE || !$search) {
             return null;
         }
         $query = DBManager::get()->quote("%{$search}%");
