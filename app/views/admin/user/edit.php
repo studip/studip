@@ -358,6 +358,30 @@ use Studip\Button, Studip\LinkButton;
                 </div>
             </section>
         <? endif ?>
+        <label class="col-3">
+            <?= _('Neue Einrichtung') ?>
+
+            <select name="new_student_inst" id="new_student_inst" class="nested-select">
+                <option value="" class="is-placeholder">
+                    <?= _('-- Bitte Einrichtung auswählen --') ?>
+                </option>
+                <? foreach ($available_institutes as $i) : ?>
+
+                    <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ?', [$user->user_id, $i['Institut_id']]) == 0
+                        && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
+                    ) : ?>
+                        <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
+                                value="<?= htmlReady($i['Institut_id']) ?>">
+                            <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                        </option>
+                    <? else: ?>
+                        <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
+                            <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                        </option>
+                    <? endif; ?>
+                <? endforeach; ?>
+            </select>
+        </label>
 
         <? if (sizeof($user->studycourses)) : ?>
         <section class="col-3">
@@ -372,6 +396,12 @@ use Studip\Button, Studip\LinkButton;
                         _('Fachsemester')
                     ) ?>
 
+                    <a href="<?= $controller->url_for('admin/user/delete_studycourse/' . $user->user_id . '/' . $usc->fach_id . '/' . $usc->abschluss_id) ?>">
+                        <?= Icon::create('trash')->asImg([
+                            'class' => 'text-bottom',
+                            'title' => _('Diesen Studiengang löschen'),
+                        ]) ?>
+                    </a>
                     <? $versionen = StgteilVersion::findByFachAbschluss($usc->fach_id, $usc->abschluss_id); ?>
                     <? $versionen = array_filter($versionen, function ($ver) {
                         return $ver->hasPublicStatus('genehmigt');
@@ -387,47 +417,16 @@ use Studip\Button, Studip\LinkButton;
                                 <?= htmlReady($version->getDisplayName()) ?>
                             </option>
                         <? endforeach; ?>
-                        </select>,<br>
+                        </select>
                     <? else : ?>
                         <?= tooltipIcon(_('Keine Version in der gewählten Fach-Abschluss-Kombination verfügbar.'), true) ?>
                     <? endif; ?>
-
-                    <a href="<?= $controller->url_for('admin/user/delete_studycourse/' . $user->user_id . '/' . $usc->fach_id . '/' . $usc->abschluss_id) ?>">
-                        <?= Icon::create('trash')->asImg([
-                            'class' => 'text-bottom',
-                            'title' => _('Diesen Studiengang löschen'),
-                        ]) ?>
-                    </a>
                 </li>
             <? endforeach ?>
             </ol>
         </section>
         <? endif ?>
 
-        <label class="col-3">
-            <?= _('Neue Einrichtung') ?>
-
-            <select name="new_student_inst" id="new_student_inst" class="nested-select">
-                <option value="" class="is-placeholder">
-                    <?= _('-- Bitte Einrichtung auswählen --') ?>
-                </option>
-            <? foreach ($available_institutes as $i) : ?>
-
-                <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ?', [$user->user_id, $i['Institut_id']]) == 0
-                        && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
-                ) : ?>
-                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
-                            value="<?= htmlReady($i['Institut_id']) ?>">
-                        <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                    </option>
-                <? else: ?>
-                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
-                        <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                    </option>
-                <? endif; ?>
-            <? endforeach; ?>
-            </select>
-        </label>
 
         <? if (sizeof($student_institutes)) : ?>
         <section class="col-3">
