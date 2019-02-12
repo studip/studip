@@ -559,7 +559,7 @@ class Course_TimesroomsController extends AuthenticatedController
                 $this->deleteDate($id, 'cancel', $cycle_id);
             } elseif ($termin->metadate_id === null || $termin->metadate_id === '') {
                 $this->deleteDate($id, 'delete', $cycle_id);
-            } elseif ($termin->metadate_id && $termin instanceof CoursExDate) {
+            } elseif ($termin->metadate_id && $termin instanceof CourseExDate) {
                 //$this->deleteDate($id, 'delete', $cycle_id);
             }
         }
