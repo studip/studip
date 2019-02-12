@@ -81,7 +81,7 @@ class Api_OauthController extends StudipController
                 }
                 return;
            }
-        } catch (OAuthException $e) {
+        } catch (OAuthException2 $e) {
             // No token to be verified in the request, show a page where the user can enter the token to be verified
             // **your code here**
             die('invalid');
