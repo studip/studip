@@ -1309,18 +1309,6 @@ class Admin_UserController extends AuthenticatedController
     }
 
     /**
-     * Show file details
-     * @param $file_id
-     */
-    public function file_details_action($file_id)
-    {
-        $file        = StudipDocument::find($file_id);
-        $this->files = [$file];
-        PageLayout::setTitle(sprintf(_('Detail für %s'), $file->name));
-        $this->render_template('admin/user/list_files');
-    }
-
-    /**
      * Create array
      * @param $user_id
      * @return array
