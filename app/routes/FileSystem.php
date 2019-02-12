@@ -439,11 +439,11 @@ class FileSystem extends \RESTAPI\RouteMap
             $this->data['description']
         );
 
-        if (!$result instanceof FolderType) {
+        if (!$result instanceof \FolderType) {
             $this->halt(500, 'Error while creating a folder: ' . implode(' ', $result));
         }
 
-        $folder = Folder::find($result->getId());
+        $folder = \Folder::find($result->getId());
         $folder_data = $folder->toRawArray();
         $folder_data['data_content'] = json_decode($folder->data_content);
         return $folder_data;
@@ -609,14 +609,14 @@ class FileSystem extends \RESTAPI\RouteMap
 
         $result = \FileManager::editFolder($folder, \User::findCurrent(), $this->data['name'], $this->data['description']);
 
-        if (!($result instanceof FolderType)) {
+        if (!($result instanceof \FolderType)) {
             $this->halt(500, 'Error while editing a folder: ' . implode(' ', $errors));
         }
 
         //We must get the result folder from the database to get updated data.
         //Furthermore we can't use the FolderType object since it
         //doesn't have the toRawArray method.
-        $result_folder = Folder::find($result->getId());
+        $result_folder = \Folder::find($result->getId());
         $folder_data = $result_folder->toRawArray();
         $folder_data['data_content'] = json_decode($result_folder->data_content);
         return $folder_data;
@@ -653,14 +653,14 @@ class FileSystem extends \RESTAPI\RouteMap
 
         $result = \FileManager::copyFolder($folder, $destination_folder, $user);
 
-        if (!$result instanceof FolderType) {
+        if (!$result instanceof \FolderType) {
             $this->halt(500, 'Error while copying a folder: ' . implode(' ', $result));
         }
 
         //We must get the result folder from the database to get updated data.
         //Furthermore we can't use the FolderType object since it
         //doesn't provide us with the toRawArray method.
-        $result_folder = Folder::find($result->getId());
+        $result_folder = \Folder::find($result->getId());
         $folder_data = $result_folder->toRawArray();
         $folder_data['data_content'] = json_decode($result_folder->data_content);
         return $folder_data;
@@ -704,7 +704,7 @@ class FileSystem extends \RESTAPI\RouteMap
         //We must get the result folder from the database to get updated data.
         //Furthermore we can't use the FolderType object since it
         //doesn't provide us with the toRawArray method.
-        $result_folder = Folder::find($folder->getId());
+        $result_folder = \Folder::find($folder->getId());
         $folder_data = $result_folder->toRawArray();
         $folder_data['data_content'] = json_decode($result_folder->data_content);
         return $folder_data;
