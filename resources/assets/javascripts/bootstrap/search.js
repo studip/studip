@@ -50,6 +50,9 @@ jQuery(function ($) {
         var category = cache.get('search_category');
         STUDIP.Search.toggleLinkText(category);
         STUDIP.Search.showAllCategories(category);
+        if (!STUDIP.Search.resultsInCategory) {
+            STUDIP.Search.resetFilters();
+        }
     });
 
     // perform a new search when another filter is selected by the user

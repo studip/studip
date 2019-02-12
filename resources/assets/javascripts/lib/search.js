@@ -3,6 +3,7 @@ var cache = null;
 const Search = {
     lastSearch: null,
     lastSearchFilter: null,
+    resultsInCategory: false,
 
     getCache: function () {
         if (cache === null) {
@@ -40,7 +41,7 @@ const Search = {
             return;
         }
 
-        var resultsInCategory = false;
+        STUDIP.Search.resultsInCategory = false;
 
         $('#search-no-result').hide();
         $('#reset-search').show();
@@ -78,7 +79,7 @@ const Search = {
                     categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category),
                     counter  = 0;
                 if (STUDIP.Search.getActiveCategory() == name) {
-                    resultsInCategory = true;
+                    STUDIP.Search.resultsInCategory = true;
                 }
 
                 // Create header name
@@ -190,8 +191,6 @@ const Search = {
                         })
                         .appendTo(footer);
                     $(`<a id="link_results_${name}" href="#">`).text(allResultsText).hide()
-                        // .wrap(footer)
-                        // .parent() // Element is now the wrapper
                         .click(function() {
                             STUDIP.Search.toggleLinkText(name);
                             STUDIP.Search.showAllCategories(name);
@@ -207,13 +206,11 @@ const Search = {
                 }
 
             });
-            if (STUDIP.Search.getActiveCategory() != 'show_all_categories') {
-                if (!resultsInCategory) {
-                    STUDIP.Search.showAllCategories(STUDIP.Search.getActiveCategory());
-                    STUDIP.Search.setActiveCategory('show_all_categories');
-                } else {
-                    STUDIP.Search.expandCategory(STUDIP.Search.getActiveCategory());
-                    // STUDIP.Search.toggleLinkText(STUDIP.Search.getActiveCategory());
+            if (STUDIP.Search.getActiveCategory() != 'show_all_categories' &&
+                STUDIP.Search.getActiveCategory() != undefined) {
+                STUDIP.Search.expandCategory(STUDIP.Search.getActiveCategory());
+                if (!STUDIP.Search.resultsInCategory) {
+                    $('#search-no-result').show();
                 }
             }
 
@@ -347,6 +344,12 @@ const Search = {
         $(`#${filter}_select`).val(value);
     },
 
+    resetFilters: function () {
+        $('select').filter(function () {
+            return this.id.match(/.*_select/);
+        }).val('').change();
+    },
+
     /**
      * Getter for the selected (active) category.
      *
@@ -384,6 +387,7 @@ const Search = {
     expandCategory: function (category) {
         // Hide other categories.
         $(`#search-results article:not([id="search-${category}"])`).hide();
+        $('#search-no-result').hide();
         // Show all results.
         $(`#search-${category} section.search-extended-result`)
             .removeClass('search-extended-result');
@@ -426,6 +430,7 @@ const Search = {
             .addClass('search-extended-result');
         $('#search-results').children(`article:not([id="search-${currentCategory}"])`).show();
         STUDIP.Search.setActiveCategory('show_all_categories');
+        $('#search-no-result').hide();
         return false;
     }
 };
