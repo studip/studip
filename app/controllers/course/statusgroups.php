@@ -1185,7 +1185,7 @@ class Course_StatusgroupsController extends AuthenticatedController
     public function order_action()
     {
         if (!Request::isPost()) {
-            throw new MethodAllowedException();
+            throw new MethodNotAllowedException();
         }
 
         if (!$this->is_tutor || $this->is_locked) {
