@@ -68,7 +68,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 (array) $this->filter);
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
-        
+
         // get data
         $this->studiengaenge = Studiengang::getAllEnriched(
                 $this->sortby, $this->order, $this->filter,
@@ -86,12 +86,12 @@ class Studiengaenge_StudiengaengeController extends MVVController
         if (!isset($this->studiengang_id)) {
             $this->studiengang_id = null;
         }
-        
+
         // show details
         if ($studiengang_id) {
             $this->set_studiengangteile($studiengang_id);
         }
-        
+
         $this->count = Studiengang::getCount($this->filter);
         $this->show_sidebar_search = true;
 
@@ -628,7 +628,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                         $id = $id . '_';
                     }
                     $one_stgteil = $stgteile->find($id);
-                    
+
                     if ($one_stgteil && $one_stgteil->position != $i) {
                         $one_stgteil->position = $i;
                         $one_stgteil->store();
@@ -870,13 +870,13 @@ class Studiengaenge_StudiengaengeController extends MVVController
     {
         $this->studiengang_id = $studiengang_id;
         $this->studiengang =  Studiengang::find($studiengang_id);
-        
+
         if (!$this->studiengang) {
             PageLayout::postError( _('Unbekannter Studiengang!'));
             $this->relocate('/index');
             return;
         }
-        
+
         $this->institut = Fachbereich::find($this->studiengang->institut_id);
 
         if (Request::submitted('approval')) {
@@ -933,7 +933,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             } else {
                 $content = $template->render();
                 $this->response->add_header('Content-type', 'application/msword');
-                $this->response->add_header('Content-Disposition', 'attachment; ' . encode_header_parameter('filename', FileHelper::sanitizeFilename($studiengang->getDisplayName()). '.doc'));
+                $this->response->add_header('Content-Disposition', 'attachment; ' . encode_header_parameter('filename', FileManager::cleanFileName($studiengang->getDisplayName()). '.doc'));
                 $this->render_text($content);
             }
         }
