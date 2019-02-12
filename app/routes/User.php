@@ -246,7 +246,7 @@ class User extends \RESTAPI\RouteMap
             $this->halt(403, "You may not alter this user's data");
         }
 
-        $member = CourseMember::find([$course_id, $user->id]);
+        $member = \CourseMember::find([$course_id, $user->id]);
         if (!$member) {
             $this->notFound('You are not a member of the course');
         }
