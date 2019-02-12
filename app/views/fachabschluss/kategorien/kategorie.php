@@ -26,7 +26,7 @@
         <label>
             <?= _('Beschreibung') ?>
             <?= MvvI18N::textarea('beschreibung', $abschluss_kategorie->beschreibung, ['class' => 'add_toolbar ui-resizable wysiwyg'])->checkPermission($abschluss_kategorie) ?>
-        </lab
+        </label>
     </fieldset>
     <?= $this->render_partial('shared/form_dokumente', array('perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE))) ?>
     <footer data-dialog-buttons>
