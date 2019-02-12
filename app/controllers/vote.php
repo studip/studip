@@ -29,7 +29,7 @@ class VoteController extends AuthenticatedController {
          * Insert vote
          */
         if ($vote = Request::get('vote')) {
-            $vote = new StudipVote($vote);
+            $vote = new Vote($vote);
             if (!$this->nobody && $vote && $vote->isRunning() && (!$vote->userVoted() || $vote->changeable)) {
                 try {
                     $vote->insertVote(Request::getArray('vote_answers'), $GLOBALS['user']->id);
@@ -60,7 +60,7 @@ class VoteController extends AuthenticatedController {
             }
         }
 
-        $this->votes = StudipVote::findBySQL('range_id = ? AND state IN (?) ORDER BY mkdate desc', array($range_id,$show_votes));
+        $this->votes = Vote::findBySQL('range_id = ? AND state IN (?) ORDER BY mkdate desc', array($range_id,$show_votes));
         $this->visit();
 
         }
@@ -81,7 +81,7 @@ class VoteController extends AuthenticatedController {
     /**
      * Determines if a vote should show its result
      *
-     * @param StudipVote $vote the vote to check
+     * @param Vote $vote the vote to check
      * @return boolean true if result should be shown
      */
     public function showResult($vote) {
