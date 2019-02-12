@@ -81,8 +81,8 @@ class Wiki extends \RESTAPI\RouteMap
 
         // TODO: rewrite this code and put #submitWikiPage into
         // class \WikiPage
-        if (!Context::get()) {
-            Context::set($course_id);
+        if (!\Context::get()) {
+            \Context::set($course_id);
         }
         submitWikiPage($keyword, $last_version->version, $this->data['content'], $user_id, $course_id);
 
