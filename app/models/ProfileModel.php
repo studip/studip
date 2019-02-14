@@ -39,7 +39,7 @@ class ProfileModel
      * @param String $current_user
      * @param String $user
      */
-    function __construct($current_user, $user)
+    public function __construct($current_user, $user)
     {
         $this->current_user = User::find($current_user);
         $this->user         = User::find($user);
@@ -52,7 +52,7 @@ class ProfileModel
      *
      * @return array
      */
-    function getHomepageVisibilities()
+    public function getHomepageVisibilities()
     {
         $visibilities = get_local_visibility_by_id($this->current_user->user_id, 'homepage');
         if (is_array(json_decode($visibilities, true))) {
@@ -66,7 +66,7 @@ class ProfileModel
      *
      * @return String
      */
-    function getVisibilityValue($param, $visibility = '')
+    public function getVisibilityValue($param, $visibility = '')
     {
         if (Visibility::verify($visibility ?: $param, $this->current_user->user_id)) {
             return $this->current_user->$param;
@@ -80,7 +80,8 @@ class ProfileModel
      * @return String
      */
 
-    function getSpecificVisibilityValue($param) {
+    public function getSpecificVisibilityValue($param)
+    {
         if (!empty($this->visibilities[$param])) {
             return $this->visibilities[$param];
         }
@@ -92,14 +93,13 @@ class ProfileModel
      *
      * @return array
      */
-    function getDozentSeminars()
+    public function getDozentSeminars()
     {
         $courses = array();
         $semester = array_reverse(Semester::getAll());
+        $field = 'name';
         if (Config::get()->IMPORTANT_SEMNUMBER) {
-            $field = 'veranstaltungsnummer';
-        } else {
-            $field = 'name';
+            $field = "veranstaltungsnummer,{$field}";
         }
         $allcourses = new SimpleCollection(Course::findBySQL("INNER JOIN seminar_user USING(Seminar_id) WHERE user_id=? AND seminar_user.status='dozent' AND seminare.visible=1", array($this->current_user->id)));
         foreach (array_filter($semester) as $one) {
@@ -126,7 +126,7 @@ class ProfileModel
      *
      * @return array
      */
-    function getDatafields()
+    public function getDatafields()
     {
         // generische Datenfelder aufsammeln
         $short_datafields = array();
@@ -154,7 +154,7 @@ class ProfileModel
      *
      * @return array
      */
-    function getLongDatafields()
+    public function getLongDatafields()
     {
         $datafields = $this->getDatafields();
         $array      = array();
@@ -177,7 +177,7 @@ class ProfileModel
      *
      * @return array
      */
-    function getShortDatafields()
+    public function getShortDatafields()
     {
         $shortDatafields = $this->getDatafields();
         $array = array();
