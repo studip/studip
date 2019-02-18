@@ -61,6 +61,11 @@ class Search_GlobalsearchController extends AuthenticatedController
         $this->filters['show_all_categories'] = ['semester'];
         foreach ($modules as $class_name => $data) {
             if (is_a($class_name, 'GlobalSearchModule', true) && $data['active']) {
+                if ($class_name == 'GlobalSearchModules' && !MVV::isVisible() ||
+                    ($class_name == 'GlobalSearchResources' || $class_name == 'GlobalSearchRoomAssignments') 
+                    && !get_config(RESOURCES_ENABLE)) {
+                    continue;
+                }
                 $this->filters[$class_name] = $class_name::getFilters();
                 $links_widget->addLink(
                     $class_name::getName(),

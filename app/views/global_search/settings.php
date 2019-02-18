@@ -49,7 +49,13 @@
                     <tr>
                         <td class="dragHandle"></td>
                         <td>
-                            <label for="active[<?= htmlReady(get_class($module)) ?>]">
+                            <?php $resourcesInactive = (get_class($module) == 'GlobalSearchResources' || 
+                                get_class($module) == 'GlobalSearchRoomAssignments') && !get_config(RESOURCES_ENABLE)?>
+                            <label for="active[<?= htmlReady(get_class($module)) ?>]" 
+                                <?php if ($resourcesInactive) : ?> 
+                                    class="inactive-settings-category" data-tooltip="<?= $module->getName() . 
+                                        _(' sind inaktiv, da die Ressourcenverwaltung derzeit deaktiviert ist.')?>"
+                                <?php endif ?>>
                                 <?= htmlReady($module->getName()) ?>
                             </label>
                             <input type="hidden" name="modules[<?= get_class($module) ?>][class]"
@@ -58,7 +64,8 @@
                         <td>
                             <input type="checkbox" id="active[<?= htmlReady(get_class($module)) ?>]"
                                    name="modules[<?= get_class($module) ?>][active]" value="1"
-                                <?= $config[get_class($module)]['active'] ? ' checked' : ''?>>
+                                <?= $config[get_class($module)]['active'] && !$resourcesInactive ? ' checked' : '' ?>
+                                <?= $resourcesInactive ? ' disabled' : '' ?>>
                         </td>
                         <td>
                             <?php if (is_a($module, 'GlobalSearchFulltext')) : ?>
