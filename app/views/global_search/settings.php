@@ -49,27 +49,28 @@
                     <tr>
                         <td class="dragHandle"></td>
                         <td>
-                            <?php $resourcesInactive = (get_class($module) == 'GlobalSearchResources' || 
-                                get_class($module) == 'GlobalSearchRoomAssignments') && !get_config(RESOURCES_ENABLE)?>
-                            <label for="active[<?= htmlReady(get_class($module)) ?>]" 
-                                <?php if ($resourcesInactive) : ?> 
-                                    class="inactive-settings-category" data-tooltip="<?= $module->getName() . 
-                                        _(' sind inaktiv, da die Ressourcenverwaltung derzeit deaktiviert ist.')?>"
-                                <?php endif ?>>
+                            <?php $resourcesInactive = (get_class($module) == 'GlobalSearchResources' ||
+                                get_class($module) == 'GlobalSearchRoomAssignments') && !Config::get()->RESOURCES_ENABLE ?>
+                            <label for="active[<?= htmlReady(get_class($module)) ?>]"
+                                <?php if ($resourcesInactive) : ?>
+                                    class="inactive-settings-category"
+                                    data-tooltip="<?= htmlReady(sprintf(_('%s sind inaktiv, da die Ressourcenverwaltung derzeit deaktiviert ist.'), $module->getName())) ?>"
+                                <?php endif ?>
+                            >
                                 <?= htmlReady($module->getName()) ?>
                             </label>
-                            <input type="hidden" name="modules[<?= get_class($module) ?>][class]"
-                                   value="<?= get_class($module) ?>">
+                            <input type="hidden" name="modules[<?= htmlReady(get_class($module)) ?>][class]"
+                                   value="<?= htmlReady(get_class($module)) ?>">
                         </td>
                         <td>
                             <input type="checkbox" id="active[<?= htmlReady(get_class($module)) ?>]"
-                                   name="modules[<?= get_class($module) ?>][active]" value="1"
+                                   name="modules[<?= htmlReady(get_class($module)) ?>][active]" value="1"
                                 <?= $config[get_class($module)]['active'] && !$resourcesInactive ? ' checked' : '' ?>
                                 <?= $resourcesInactive ? ' disabled' : '' ?>>
                         </td>
                         <td>
                             <?php if (is_a($module, 'GlobalSearchFulltext')) : ?>
-                                <input type="checkbox" name="modules[<?= get_class($module) ?>][fulltext]"
+                                <input type="checkbox" name="modules[<?= htmlReady(get_class($module)) ?>][fulltext]"
                                        value="1"<?= $config[get_class($module)]['fulltext'] ? ' checked' : ''?>>
                             <?php endif ?>
                         </td>
