@@ -66,8 +66,8 @@ class Search_GlobalsearchController extends AuthenticatedController
                     continue;
                 }
                 // Hide resources from search if disabled
-                if (in_array($class_name, ['GlobalSearchResources', 'GlobalSearchRoomAssignments']
-                    && !Config::get()->RESOURCES_ENABLE))
+                if (in_array($class_name, ['GlobalSearchResources', 'GlobalSearchRoomAssignments'])
+                    && !Config::get()->RESOURCES_ENABLE)
                 {
                     continue;
                 }
