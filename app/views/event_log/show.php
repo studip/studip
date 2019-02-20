@@ -7,7 +7,7 @@ use Studip\Button, Studip\LinkButton;
     <?= MessageBox::error($error_msg) ?>
 <? endif ?>
 
-<form action="<?= $controller->url_for('event_log/show') ?>" method="POST" class="default">
+<form action="<?= $controller->link_for('event_log/show') ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend>
@@ -16,22 +16,18 @@ use Studip\Button, Studip\LinkButton;
 
         <label class="col-2">
             <?= _('Aktionen filtern') ?>
-            <select name="action_id">
+            <select name="action_id" class="nested-select" required>
                 <option value="all"><?= _('Alle Aktionen') ?></option>
-                <? foreach ($log_actions as $log_action): ?>
-                    <option value="<?= $log_action['action_id'] ?>"
-                        <? if ($log_action['action_id'] === $action_id): ?>
-                        selected
-                        <? endif ?>
-
-                        <? if ($log_action['log_group'] !== $lastgroup): ?>
-                            <? $lastgroup = $log_action['log_group'] ?>
-                            style="border-top: 1px solid #cccccc;"
-                        <? endif ?>
-                    >
-                    <?= htmlReady($log_action['description']) ?>
+            <? foreach ($log_actions as $group => $actions): ?>
+                <option value="" class="nested-item-header" disabled>
+                    <?= _('Gruppe') ?> <?= htmlReady($group) ?>
                 </option>
-                <? endforeach ?>
+                <? foreach ($actions as $id => $description): ?>
+                    <option value="<?= htmlReady($id) ?>" <? if ($id === $action_id) echo 'selected'; ?> class="nested-item">
+                        <?= htmlReady($description) ?>
+                    </option>
+                <? endforeach; ?>
+            <? endforeach; ?>
             </select>
         </label>
 

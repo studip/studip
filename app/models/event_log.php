@@ -130,7 +130,17 @@ class EventLog
      */
     function get_used_log_actions ()
     {
-        return LogAction::getUsed();
+        $actions = [];
+        foreach (LogAction::getUsed() as $action) {
+            extract($action);
+
+            if (!isset($actions[$log_group])) {
+                $actions[$log_group] = [];
+            }
+            $actions[$log_group][$action_id] = $description;
+        }
+//        asort($actions);
+        return $actions;
     }
 
     /**
@@ -145,12 +155,12 @@ class EventLog
         } else if ($expires < 0) {
             throw new InvalidArgumentException(_('Ablaufzeit darf nicht negativ sein.'));
         }
-        
+
         $action = LogAction::find($action_id);
         if (!$action) {
             throw new InvalidArgumentException(_('Unbekannte Aktion.'));
         }
-        
+
         $action->description = $description;
         $action->info_template = $info_template;
         $action->active = $active;
