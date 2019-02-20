@@ -137,6 +137,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
         } else {
             $turnus_string = htmlReady($turnus_string);
         }
+        $lecturers = $course->getMembersWithStatus('dozent');
         $semester = $course->start_semester;
 
         $result = [
@@ -147,12 +148,20 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             'date'       => $semester->token ?: $semester->name,
             'dates'      => $turnus_string,
             'additional' => implode(', ',
-                array_map(
-                    function ($u) use ($search) {
-                        return self::mark($u->getUserFullname(), $search);
-                    },
-                    $course->getMembersWithStatus('dozent')
-                )),
+                array_filter(
+                    array_map(
+                        function ($lecturer, $index) use ($search, $course) {
+                            if ($index < 3) {
+                                return '<a href="' . URLHelper::getURL('dispatch.php/profile', ['username' => $lecturer->username]) . '">' . self::mark($lecturer->getUserFullname(), $search) . '</a>';
+                            } else if ($index == 3) {
+                                return '<a href="' . URLHelper::getURL('dispatch.php/course/details/index/' . $course->id) . '">... (' . _('mehr') . ') </a>';
+                            }
+                        },
+                        $lecturers,
+                        array_keys($lecturers)
+                    )
+                )
+            ),
             'expand'     => self::getSearchURL($search),
         ];
         if ($course->getSemClass()->offsetGet('studygroup_mode')) {
