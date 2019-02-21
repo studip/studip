@@ -220,6 +220,10 @@ class Course extends SimpleORMap implements Range, PrivacyObject
         $config['i18n_fields']['ort'] = true;
 
         $config['registered_callbacks']['before_update'][] = 'logStore';
+        $config['registered_callbacks']['after_delete'][] = function ($course) {
+            CourseAvatar::getAvatar($course->id)->reset();
+        };
+
         parent::configure($config);
     }
 
