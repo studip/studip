@@ -97,7 +97,9 @@ class Events extends \RESTAPI\RouteMap
             'Content-Length'      => strlen($content),
             'Content-Disposition' => 'attachment; ' . encode_header_parameter('filename', 'studip.ics'),
         ]);
-        $this->halt(200, $this->response->headers, $content);
+        $this->halt(200, $this->response->headers, function () use ($content) {
+            echo $content;
+        });
     }
 
 
