@@ -169,7 +169,10 @@ class Course_ArchiveController extends AuthenticatedController
                 $coursename = $course->getFullname();
                 if ($seminar->delete()) {
                     $this->deletedCourses[] = $courseId;
-                    PageLayout::postSuccess( sprintf(_('Die Veranstaltung %s wurde erfolgreich gelöscht.'), $coursename));
+                    PageLayout::postSuccess(sprintf(
+                        _('Die Veranstaltung %s wurde erfolgreich gelöscht.'),
+                        htmlReady($coursename)
+                    ));
                 }
             } else {
                 throw new Exception(_('Veranstaltung nicht in Datenbank gefunden!'));
