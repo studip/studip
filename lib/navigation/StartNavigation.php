@@ -101,7 +101,7 @@ class StartNavigation extends Navigation
 
         parent::initSubNavigation();
 
-        if (!$perm->have_perm('user')) {
+        if (!is_object($perm) || !$perm->have_perm('user')) {
             return;
         }
 
