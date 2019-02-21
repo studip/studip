@@ -208,7 +208,7 @@ class Context
         }
 
         if (self::isCourse() || self::isInstitute()) {
-            $GLOBALS['SessionSeminar']  =  $id;
+            $GLOBALS['SessionSeminar'] = $id;
         }
 
         URLHelper::addLinkParam('cid', $GLOBALS['SessionSeminar']);
@@ -231,10 +231,16 @@ class Context
             }
 
             // if the aux data is forced for this seminar forward all user that havent made an input to this site
-            if ($course['aux_lock_rule_forced'] && !$perm->have_studip_perm('tutor', $course['Seminar_id'])
-                    && !in_array($_SERVER['PATH_INFO'], ['/course/members/additional_input', '/course/change_view'])) {
-
-                $statement = DBManager::get()->prepare("SELECT 1 FROM datafields_entries WHERE range_id = ? AND sec_range_id = ? LIMIT 1");
+            if ($course['aux_lock_rule_forced']
+                && !$perm->have_studip_perm('tutor', $course['Seminar_id'])
+                && !match_route('dispatch.php/course/members/additional_input')
+                && !match_route('dispatch.php/course/change_view/*'))
+            {
+                $query = "SELECT 1
+                          FROM datafields_entries
+                          WHERE range_id = ? AND sec_range_id = ?
+                          LIMIT 1";
+                $statement = DBManager::get()->prepare($query);
                 $statement->execute([$GLOBALS['user']->id, $course['Seminar_id']]);
 
                 if (!$statement->rowCount()) {
@@ -245,7 +251,7 @@ class Context
             }
         } else if (self::isInstitute()) {
             // check if current user can access the object
-            if (!get_config('ENABLE_FREE_ACCESS') && !$perm->have_perm('user')) {
+            if (!Config::get()->ENABLE_FREE_ACCESS && !$perm->have_perm('user')) {
                 // redirect to login page if user is not logged in
                 $auth->login_if($auth->auth['uid'] === 'nobody');
 
@@ -253,8 +259,6 @@ class Context
                     throw new AccessDeniedException();
                 }
             }
-        } else if (self::getType() === self::USER) {
-
         }
     }
 

@@ -1,7 +1,8 @@
 <?php
-
 /**
  * change_view.php - contains Course_ChangeViewController
+ *
+ * This controller realises a redirector for administrative pages
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -13,23 +14,14 @@
  * @category    Stud.IP
  * @since       2.2
  */
-
-/**
- * This controller realises a redirector for administrative pages
- *
- * @since 2.2
- * @author Thomas Hackl <thomas.hackl@uni-passau.de>
- */
 class Course_ChangeViewController extends AuthenticatedController
 {
-
     // see Trails_Controller#before_filter
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
 
         $this->course_id = Course::findCurrent()->id;
-
     }
 
     /**
@@ -40,10 +32,10 @@ class Course_ChangeViewController extends AuthenticatedController
      */
     public function set_changed_view_action()
     {
-        if (!$GLOBALS['perm']->have_studip_perm('tutor', Course::findCurrent()->id)) {
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->course_id)) {
             throw new Trails_Exception(400);
         }
-        $_SESSION['seminar_change_view_' . $this->course_id] = 'autor';
+        $_SESSION["seminar_change_view_{$this->course_id}"] = 'autor';
         $this->relocate('course/overview');
     }
 
@@ -59,10 +51,10 @@ class Course_ChangeViewController extends AuthenticatedController
          * We need to check the real database entry here because $perm would
          * only return the simulated rights.
          */
-        if (!CourseMember::findByCourseAndStatus(Course::findCurrent()->id, array('tutor', 'dozent'))) {
+        if (!CourseMember::findByCourseAndStatus($this->course_id, ['tutor', 'dozent'])) {
             throw new Trails_Exception(400);
         }
-        unset($_SESSION['seminar_change_view_' . $this->course_id]);
+        unset($_SESSION["seminar_change_view_{$this->course_id}"]);
         $this->relocate('course/management');
     }
 }

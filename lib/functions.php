@@ -1512,11 +1512,13 @@ function match_route($requested_route, $current_route = '')
     }
     $route_parts = explode('?', $requested_route);
     // if base routes don't match, return false without further checks
-    if ($route_parts[0] != $current_route)
+    if (!fnmatch($route_parts[0], $current_route)) {
         return false;
+    }
     // if no parameters given and base routes do match, return true
-    if (!$route_parts[1])
+    if (!$route_parts[1]) {
         return true;
+    }
     // extract vars and check if they are set accordingly
     $vars = array();
     parse_str($route_parts[1], $vars);
