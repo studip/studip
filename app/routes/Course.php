@@ -191,11 +191,11 @@ class Course extends \RESTAPI\RouteMap
             $json[$key] = $course->$key ? $this->urlf('/semester/%s', [htmlReady($course->$key->id)]) : null;
         }
 
-        $modules = new \Modules;
+        $modules = new \Modules();
         $activated = $modules->getLocalModules($course->id, 'sem');
         $json['modules'] = [];
         foreach (['forum'     => 'forum_categories',
-                  'documents' => 'files',
+                  'documents' => 'top_folder',
                   'wiki'      => 'wiki'] as $module => $uri)
         {
 
