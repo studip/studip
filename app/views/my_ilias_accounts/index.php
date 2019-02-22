@@ -4,7 +4,7 @@
         <a name='anker'></a>
     <? endif?>
     <div class="messagebox messagebox_info" style="background-image: none; padding-left: 15px">
-        <?=sprintf(_('Hier gelangen Sie direkt zur Startseite im angebundenen System %s'), '<a href='.$controller->url_for('my_ilias_accounts/redirect/'.$ilias_index.'?ilias_target=login').' target="_blank" rel="noopener noreferrer">'.htmlReady($ilias->getName()).'</a>');?>
+        <?=sprintf(_('Hier gelangen Sie direkt zur Startseite im angebundenen System %s'), '<a href='.$controller->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/login').' target="_blank" rel="noopener noreferrer">'.htmlReady($ilias->getName()).'</a>');?>
     </div>
     <table class="default">
         <caption>

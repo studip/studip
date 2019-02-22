@@ -87,7 +87,7 @@ class MyIliasAccountsController extends AuthenticatedController
             if ($GLOBALS['perm']->have_perm('autor')) {
                 $widget->addLink(
                         sprintf(_('Zur %s-Startseite'), $ilias->getName()),
-                        $this->url_for('my_ilias_accounts/redirect/'.$ilias_index.'?target=login'),
+                        $this->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/login'),
                         Icon::create('link-extern', 'clickable'),
                         ['target' => '_blank', 'rel' => 'noopener noreferrer']
                         );
