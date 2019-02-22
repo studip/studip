@@ -32,6 +32,7 @@ const GlobalSearch = {
             resultsDiv = $('#globalsearch-results'),
             resultsPerType = resultsDiv.data('results-per-type'),
             moreResultsText = resultsDiv.data('more-results'),
+            limit = resultsPerType * 3,
             wrapper = $('#globalsearch-searchbar');
 
         if (searchterm === '') {
@@ -50,7 +51,7 @@ const GlobalSearch = {
         wrapper.addClass('is-searching');
 
         // Call AJAX endpoint and get search results.
-        $.getJSON(STUDIP.URLHelper.getURL('dispatch.php/globalsearch/find'), {
+        $.getJSON(STUDIP.URLHelper.getURL('dispatch.php/globalsearch/find/' + limit), {
             search: searchterm
         }).done(function(json) {
             resultsDiv.html('');

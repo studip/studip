@@ -26,7 +26,7 @@ abstract class GlobalSearchModule
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    abstract public static function getSQL($search, $filter);
+    abstract public static function getSQL($search, $filter, $limit);
 
     /**
      * Returns an array of information for the found element. Following informations (key: description) are necessary

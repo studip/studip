@@ -36,7 +36,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search, $filter)
+    public static function getSQL($search, $filter, $limit)
     {
         $query = DBManager::get()->quote('%' . trim($search) . '%');
 
@@ -110,7 +110,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                     JOIN `files` f ON (r.`file_id` = f.`id`)
                     WHERE fo.`range_id` IN (" . DBManager::get()->quote($course_ids) . ")
                       AND (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
-                    ORDER BY r.`chdate` DESC LIMIT " . (3 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                    ORDER BY r.`chdate` DESC LIMIT " . $limit;
 
         } else {
 
@@ -127,7 +127,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
                             JOIN `files` f ON (r.`file_id` = f.`id`)
                             WHERE (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
-                            ORDER BY r.`chdate` DESC LIMIT " . (3 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                            ORDER BY r.`chdate` DESC LIMIT " . $limit;
 
                 /*
                  * Admins see files in courses at their own institutes,
@@ -149,7 +149,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                                   OR fo.`range_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
                                   OR fo.`range_id` IN (" . DBManager::get()->quote($institutes) . ")
                               ) AND (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
-                            ORDER BY r.`chdate` DESC LIMIT " . (3 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                            ORDER BY r.`chdate` DESC LIMIT " . $limit;
                 /*
                  * dozent, tutor, autor, user see files in their own courses,
                  * at institutes or in their personal file area.
@@ -178,7 +178,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                                    OR fo.`range_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
                                    OR fo.`range_id` IN (" . DBManager::get()->quote($institutes) . ")
                               ) AND (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
-                            ORDER BY r.`chdate` DESC LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                            ORDER BY r.`chdate` DESC LIMIT " . $limit;
             }
         }
 
@@ -315,14 +315,14 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                     {$ownseminars}
                     WHERE (seminare.name LIKE BINARY {$binary} OR seminare.name LIKE {$prequery})
                       {$comp} dokumente.name LIKE {$query}
-                    ORDER BY dokumente.chdate DESC LIMIT " . (2*Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE * 2);
+                    ORDER BY dokumente.chdate DESC LIMIT " . $limit;
         } else {
             $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
             return "SELECT dokumente.*
                     FROM dokumente IGNORE INDEX (chdate)
                     {$ownseminars}
                     WHERE MATCH(dokumente.name) AGAINST ($query IN BOOLEAN MODE)
-                    ORDER BY dokumente.chdate DESC LIMIT " . (Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE * 2);
+                    ORDER BY dokumente.chdate DESC LIMIT " . $limit;
         }
     }
 }

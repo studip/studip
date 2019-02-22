@@ -29,7 +29,7 @@ class GlobalSearchResources extends GlobalSearchModule
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search, $filter)
+    public static function getSQL($search, $filter, $limit)
     {
         if (!Config::get()->RESOURCES_ENABLE || !$search) {
             return null;
@@ -42,7 +42,7 @@ class GlobalSearchResources extends GlobalSearchModule
                   OR REPLACE(`name`, ' ', '') LIKE {$query}
                   OR REPLACE(`description`, ' ', '') LIKE {$query}
                 ORDER BY `name` ASC
-                LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                LIMIT " . $limit;
     }
 
     /**

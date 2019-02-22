@@ -27,7 +27,7 @@ class GlobalSearchController extends AuthenticatedController
     /**
      * Perform search in all registered modules for the given search term.
      */
-    public function find_action()
+    public function find_action($limit)
     {
         // Perform search by mysqli (=async) or by PDO (=sync)?
         $async = Config::get()->GLOBALSEARCH_ASYNC_QUERIES;
@@ -47,7 +47,7 @@ class GlobalSearchController extends AuthenticatedController
                 if ($data['active']) {
                     $class = new $className();
                     $classes[$className] = $class;
-                    $partSQL = $class->getSQL($search, $filter);
+                    $partSQL = $class->getSQL($search, $filter, $limit);
                     if ($partSQL) {
                         $new = mysqli_connect($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
                             $GLOBALS['DB_STUDIP_PASSWORD'], $GLOBALS['DB_STUDIP_DATABASE']);
@@ -107,7 +107,7 @@ class GlobalSearchController extends AuthenticatedController
                 if ($data['active']) {
                     $class = new $className();
                     $classes[$className] = $class;
-                    $partSQL = $class->getSQL($search, $filter);
+                    $partSQL = $class->getSQL($search, $filter, $limit);
 
                     // ... and execute corresponding SQL.
                     if ($partSQL) {

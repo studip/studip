@@ -50,7 +50,7 @@ class GlobalSearchBuzzwords extends SimpleORMap
      * @param $search the input query string
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search)
+    public static function getSQL($search, $filter, $limit)
     {
         if (!$search) {
             return null;

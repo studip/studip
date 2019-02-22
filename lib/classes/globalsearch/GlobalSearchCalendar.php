@@ -43,7 +43,7 @@ class GlobalSearchCalendar extends GlobalSearchModule
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search, $filter)
+    public static function getSQL($search, $filter, $limit)
     {
         $time    = strtotime($search);
         $endtime = $time + 24 * 60 * 60;
@@ -56,7 +56,7 @@ class GlobalSearchCalendar extends GlobalSearchModule
                     WHERE `user_id` = {$user_id}
                       AND `date` BETWEEN {$time} AND {$endtime}
                     ORDER BY `date`
-                    LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                    LIMIT " . $limit;
         }
     }
 

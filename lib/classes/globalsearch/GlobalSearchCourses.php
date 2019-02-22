@@ -39,7 +39,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search, $filter)
+    public static function getSQL($search, $filter, $limit)
     {
         if (!$search) {
             return null;
@@ -101,7 +101,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
         }
 
         $sql .= ", courses. `Name`";
-        $sql .= " LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+        $sql .= " LIMIT " . $limit;
 
         return $sql;
     }

@@ -26,7 +26,7 @@ class GlobalSearchModules extends GlobalSearchModule
      * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
-    public static function getSQL($search, $filter)
+    public static function getSQL($search, $filter, $limit)
     {
         if (!$search) {
             return null;
@@ -81,7 +81,7 @@ class GlobalSearchModules extends GlobalSearchModule
                     )
                   GROUP BY `m`.`modul_id`
                   ORDER BY `m`.`code`, IFNULL(`i18n`.`value`, `md`.`bezeichnung`)
-                  LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
+                  LIMIT " . $limit;
         return $query;
     }
 
