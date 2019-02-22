@@ -584,7 +584,7 @@ class SharedVersionController extends MVVController
     /**
      * copy a version
      */
-    public function copy_action($version_id)
+    public function copy_version_action($version_id)
     {
         $version = StgteilVersion::find($version_id);
         if (!$version) {

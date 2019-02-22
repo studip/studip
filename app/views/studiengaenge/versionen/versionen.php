@@ -54,7 +54,7 @@
                                 _('Version kopieren'),
                                 Icon::create('files', 'clickable',
                                         ['title'        => _('Version kopieren'),
-                                         'formaction'   => $controller->url_for('/copy/'. $version->id),
+                                         'formaction'   => $controller->url_for('/copy_version/'. $version->id),
                                          'data-confirm' => sprintf(_('Wollen Sie wirklich die Version "%s" des Studiengangteils kopieren?'),
                                                  htmlReady($version->getDisplayName()))]))
                         ?>
