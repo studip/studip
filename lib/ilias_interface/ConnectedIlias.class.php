@@ -339,40 +339,43 @@ class ConnectedIlias
             $this->user->id = $user_id;
             $this->user->login = $this->ilias_config['user_prefix'].$this->user->studip_login;
 
-            $this->user->setConnection(self::USER_TYPE_CREATED, true);
+            $this->user->setConnection(IliasUser::USER_TYPE_CREATED, true);
             return true;
         }
         return false;
     }
 
     /**
-     * update user account
+     * update given user account
      *
      * updates ILIAS user data
      * @access public
+     * @param $user Stud.IP user object
      * @return boolean returns false
      */
-    public function updateUser()
+    public function updateUser($user)
     {
-        if (! $this->user->id) {
+        if (! is_object($user)) {
             return false;
         }
+        $update_user = new IliasUser($this->index, $this->ilias_config['version'], $user->id);
+        if ($update_user->isConnected()) {
+            $user_data = $update_user->getUserArray();
+            $user_data["login"] = $this->ilias_config['user_prefix'].$user_data["login"];
 
-        $user_data = $this->user->getUserArray();
+            // set role according to Stud.IP perm
+            if ($user->perms == "root") {
+                $role_id = 2;
+            } else {
+                $role_id = 4;
+            }
 
-        // set role according to Stud.IP perm
-        if ($GLOBALS['auth']->auth["perm"] == "root") {
-            $role_id = 2;
-        } else {
-            $role_id = 4;
-        }
-
-        $this->soap_client->setCachingStatus(false);
-        $this->soap_client->clearCache();
-        $user_id = $this->soap_client->addUser($user_data, $role_id);
-        if ($user_id != false)
-        {
-            return true;
+            $this->soap_client->setCachingStatus(false);
+            $this->soap_client->clearCache();
+            $user_id = $this->soap_client->addUser($user_data, $role_id);
+            if ($user_id != false) {
+                return true;
+            }
         }
         return false;
     }

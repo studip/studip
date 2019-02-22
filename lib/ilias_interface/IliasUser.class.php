@@ -3,9 +3,6 @@
 # Lifter003: TODO
 # Lifter010: TODO
 
-DEFINE ("USER_TYPE_ORIGINAL" , "1");
-DEFINE ("USER_TYPE_CREATED", "0");
-
 /**
 * class to handle user-accounts
 *
@@ -19,6 +16,9 @@ DEFINE ("USER_TYPE_CREATED", "0");
 */
 class IliasUser
 {
+    const USER_TYPE_ORIGINAL= '1';
+    const USER_TYPE_CREATED= '0';
+
     public $index;
     public $version;
     public $id;
