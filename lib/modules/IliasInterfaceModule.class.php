@@ -39,21 +39,22 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
         if (!Config::get()->ILIAS_INTERFACE_ENABLE) {
             return;
         }
-        $sql = "SELECT a.object_id, COUNT(module_id) as count,
+        $sql = "SELECT a.object_id, COUNT(IF(a.module_type != 'crs', module_id, NULL)) as count_modules, COUNT(IF(a.module_type = 'crs', module_id, NULL)) as count_courses,
                 COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
                 MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
                 FROM
                 object_contentmodules a
                 LEFT JOIN object_user_visits b ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='ilias_interface')
-                WHERE a.object_id = :course_id  AND a.module_type != 'crs'
+                WHERE a.object_id = :course_id
                 GROUP BY a.object_id";
-
+        
         $statement = DBManager::get()->prepare($sql);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', object_get_visit_threshold());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
+
         if (!empty($result)) {
             $title = CourseConfig::get($course_id)->getValue('ILIAS_INTERFACE_MODULETITLE');
             $nav = new Navigation($title, 'dispatch.php/course/ilias_interface/index');
@@ -75,7 +76,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                         ]
                     )
                 );
-            } elseif ((int)$result['count']) {
+            } elseif ((int)$result['count_modules']) {
                 $nav->setImage(
                     Icon::create(
                         'learnmodule',
@@ -85,9 +86,26 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                                 ngettext(
                                     '%d Lernobjekt',
                                     '%d Lernobjekte',
-                                    $result['count']
+                                    $result['count_modules']
                                 ),
-                                $result['count']
+                                $result['count_modules']
+                            )
+                        ]
+                    )
+                );
+            } elseif ((int)$result['count_courses']) {
+                $nav->setImage(
+                    Icon::create(
+                        'learnmodule',
+                        'inactive',
+                        [
+                            'title' => sprintf(
+                                ngettext(
+                                    '%d ILIAS-Kurs',
+                                    '%d ILIAS-Kurse',
+                                    $result['count_courses']
+                                ),
+                                $result['count_courses']
                             )
                         ]
                     )
@@ -145,7 +163,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
             'icon'             => Icon::create('learnmodule', 'info'),
             'descriptionshort' => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
             'descriptionlong'  => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus ' .
-                'einer ILIAS-Installation (> 5.1.8) in Stud.IP zur Verfügung ' .
+                'einer ILIAS-Installation (> 5.3.8) in Stud.IP zur Verfügung ' .
                 'zu stellen. Lehrende haben die Möglichkeit, in ' .
                 'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
         );

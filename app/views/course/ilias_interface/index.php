@@ -1,5 +1,6 @@
 <form method="post">
 <? foreach($ilias_list as $ilias_index => $ilias) : ?>
+    <? if (!count($ilias->getCourseModules()) && !$courses[$ilias_index] && !$edit_permission) continue; ?>
     <? if ($anker_target == $ilias_index) : ?>
         <a name='anker'></a>
     <? endif?>
