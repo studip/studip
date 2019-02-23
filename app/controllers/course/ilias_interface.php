@@ -243,6 +243,9 @@ class Course_IliasInterfaceController extends AuthenticatedController
             if ($ilias_config['is_active']) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);
                 $last_ilias_index = $ilias_index;
+                if (Request::get('ilias_index') == $ilias_index) {
+                    $index = $ilias_index;
+                }
             }
         }
 
@@ -363,6 +366,9 @@ class Course_IliasInterfaceController extends AuthenticatedController
             if ($ilias_config['is_active'] && IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $ilias_index)) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);
                 $last_ilias_index = $ilias_index;
+                if (Request::get('ilias_index') == $ilias_index) {
+                    $index = $ilias_index;
+                }
             }
         }
 
