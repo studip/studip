@@ -71,7 +71,7 @@
    <? else : ?>
         <tr>
             <td colspan="4">
-                 <?=sprintf(_("Sie haben im System %s noch keine eigenen Lernmodule."), htmlReady($config['name']))?>
+                 <?=sprintf(_("Sie haben im System %s noch keine eigenen Lernmodule."), htmlReady($ilias->getName()))?>
             </td>
         </tr>
    <? endif ?>
