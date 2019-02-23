@@ -42,7 +42,7 @@
 
     <footer data-dialog-button>
     <? if (!$tourdata) :  ?>
-        <?= Studip\Button::create(_('Importieren'), 'import_file', ['data-dialog' => 'size=auto'])?>
+        <?= Studip\Button::create(_('Importieren'), 'import_file', ['data-dialog' => 'size=auto;reload-on-close'])?>
     <? endif ?>
         <?= Studip\LinkButton::createCancel(_('Schließen'), $controller->url_for('tour/admin_overview')) ?>
     </footer>

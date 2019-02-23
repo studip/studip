@@ -277,7 +277,7 @@ class TourController extends AuthenticatedController
             // import basic data
             $imported_tour = new HelpTour($tour_data['tour']['tour_id']);
             if (!$imported_tour->isNew()) {
-                PageLayout::postError(_('Es existiert bereits eine Tour mit dieser ID. Um sie zu ersetzen, müssen Sie die alte Tour erst löschen.'));
+                PageLayout::postError(sprintf(_('Es existiert bereits eine Tour mit dieser ID. Um sie zu ersetzen, müssen Sie die alte Tour "%s" erst löschen.'), $imported_tour->name));
             } else {
                 $imported_tour->setData($tour_data['tour'], true);
                 if ($imported_tour->store()) {
