@@ -135,13 +135,13 @@ class Course_IliasInterfaceController extends AuthenticatedController
                         _('Neuen ILIAS-Kurs anlegen'),
                         $this->url_for('course/ilias_interface/add_object/new_course'),
                         Icon::create('course+add', 'clickable'),
-                        ['data-dialog' => 'size=auto']
+                        ['data-dialog' => 'size=auto;reload-on-close']
                         );
                 $widget->addLink(
                         _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
                         $this->url_for('course/ilias_interface/add_object/assign_course'),
                         Icon::create('course+add', 'clickable'),
-                        ['data-dialog' => 'size=auto']
+                        ['data-dialog' => 'size=auto;reload-on-close']
                         );
             }
         }

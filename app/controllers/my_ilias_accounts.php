@@ -83,11 +83,11 @@ class MyIliasAccountsController extends AuthenticatedController
         }
 
         $widget = new ActionsWidget();
-        foreach($this->ilias_list as $ilias) {
+        foreach($this->ilias_list as $ilias_list_index => $ilias) {
             if ($GLOBALS['perm']->have_perm('autor')) {
                 $widget->addLink(
                         sprintf(_('Zur %s-Startseite'), $ilias->getName()),
-                        $this->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/login'),
+                        $this->url_for('my_ilias_accounts/redirect/'.$ilias_list_index.'/login'),
                         Icon::create('link-extern', 'clickable'),
                         ['target' => '_blank', 'rel' => 'noopener noreferrer']
                         );

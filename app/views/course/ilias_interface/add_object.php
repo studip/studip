@@ -91,7 +91,7 @@
     <? endif ?>
     <footer data-dialog-button>
         <? if ($ilias->isActive() && $submit_text) : ?>
-        <?= Studip\Button::create($submit_text, 'submit', $dialog ? ['data-dialog' => 'size=auto'] : []) ?>
+        <?= Studip\Button::create($submit_text, 'submit', $dialog ? ['data-dialog' => 'size=auto;reload-on-close'] : []) ?>
         <? endif ?>
         <?= Studip\Button::createCancel(_('Schließen'), 'cancel', $dialog ? ['data-dialog' => 'close'] : []) ?>
     </footer>
