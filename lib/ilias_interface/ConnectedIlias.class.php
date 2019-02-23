@@ -243,6 +243,10 @@ class ConnectedIlias
     {
         if (!$this->ilias_config['root_category']) {
             // check category
+            if (!$this->ilias_config['root_category_name']) {
+                $this->error[] = _("Die ILIAS-Kategorie für Stud.IP-Inhalte wurde noch nicht festgelegt.");
+                return false;
+            }
             $category = $this->soap_client->getReferenceByTitle($this->ilias_config['root_category_name'], 'cat');
             if (!$category) {
                 $this->error[] = sprintf(_("Die Kategorie \"%s\" wurde nicht gefunden."), $this->ilias_config['root_category_name']);
@@ -282,6 +286,10 @@ class ConnectedIlias
     public function getPermissionsSettingsStatus()
     {
         // check role template
+        if (!$this->ilias_config['author_role_name']) {
+            $this->error[] = _("Das Rollen-Template für die persönliche Kategorie wurde noch nicht festgelegt.");
+            return false;
+        }
         $role_template = $this->soap_client->getObjectByTitle( $this->ilias_config['author_role_name'], "rolt" );
         if ($role_template == false) {
             $this->error[] = sprintf(_("Das Rollen-Template mit dem Namen \"%s\" wurde im System %s nicht gefunden."), htmlReady($this->ilias_config['author_role_name']), htmlReady($this->getName()));

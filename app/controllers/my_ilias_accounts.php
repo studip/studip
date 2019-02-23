@@ -64,7 +64,7 @@ class MyIliasAccountsController extends AuthenticatedController
                             $this->ilias_list[$ilias_index]->user->setUsername(Request::get('ilias_login'));
                             $this->ilias_list[$ilias_index]->user->setPassword('');
                             $this->ilias_list[$ilias_index]->user->setId($user_id);
-                            $this->ilias_list[$ilias_index]->user->setConnection(USER_TYPE_ORIGINAL);
+                            $this->ilias_list[$ilias_index]->user->setConnection(IliasUser::USER_TYPE_ORIGINAL);
                             PageLayout::postSuccess(_("ILIAS-Account zugeordnet."));
                             $this->ilias_list[$ilias_index]->soap_client->clearCache();
                         }

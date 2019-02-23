@@ -4,7 +4,7 @@
 <form class="default" action="<?= $controller->url_for('admin/ilias_interface/save/'.$ilias_index) ?>" method="post">
 <? endif ?>
     <?= CSRFProtection::tokenTag() ?>
-    <? if (count($existing_indices)) : ?>
+    <? if (count($existing_indices) && ($ilias_index == 'new')) : ?>
     <label>
         <span class="required"><?= _('Art der Verknüpfung') ?></span>
         <select name="ilias_index">
@@ -13,6 +13,12 @@
             <option value="<?=$existing_index?>"><?=sprintf(_('ILIAS-Installation (Index %s) aus vorheriger Verknüpfung'), $existing_index)?></option>
         <? endforeach ?>
         </select>
+    </label>
+    <? else : ?>
+    <label>
+        <span class="required"><?= _('Kennung der Verknüpfung') ?></span>
+        <input type="hidden" name="ilias_index" value="<?=$ilias_index?>">
+        <input type="text" size="50" maxlength="255" value="<?=$ilias_index == 'new' ? _('Neue Verknüpfung') : $ilias_index?>" disabled>
     </label>
     <? endif ?>
     <label>
