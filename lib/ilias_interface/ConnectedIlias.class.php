@@ -1149,7 +1149,7 @@ class ConnectedIlias
     */
     public function getTargetFile()
     {
-        return $this->ilias_config['url'].'/studip_referrer.php';
+        return $this->ilias_config['url'].'studip_referrer.php';
     }
 
     /**

@@ -165,6 +165,8 @@ class MyIliasAccountsController extends AuthenticatedController
                 $session_array = explode("::", $session_id);
                 $session_id = $session_array[0];
 
+                if (Request::get('ilias_module_type')) $module_type = Request::get('ilias_module_type');
+
                 // build target link
                 $parameters = '?sess_id='.$session_id;
                 if (!empty($this->ilias->getClientId())) {

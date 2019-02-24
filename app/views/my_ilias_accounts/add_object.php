@@ -1,4 +1,4 @@
-<form class="default" action="<?= $controller->url_for('my_ilias_accounts/redirect/'.$ilias_index) ?>" method="post" target="_blank">
+<form class="default" action="<?= $controller->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/new/'.$ilias_ref_id) ?>" method="post" target="_blank">
     <?= CSRFProtection::tokenTag() ?>
 	<input type="hidden" name="ilias_target" value="new">
 	<input type="hidden" name="ilias_ref_id" value="<?=$ilias_ref_id?>">
