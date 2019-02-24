@@ -350,7 +350,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
      * Add/Update status groups
      * @param $index Index of ILIAS installation
      */
-    public function add_groups_action($index)
+    public function add_groups_action($index = '')
     {
         PageLayout::setTitle(_('Statusgruppen anlegen'));
 
@@ -390,18 +390,38 @@ class Course_IliasInterfaceController extends AuthenticatedController
             if ((Request::get('cmd') == 'create_groups') && $course_id) {
                 // add groups
                 foreach ($this->groups as $group) {
-                    $update = false;
-                    if ($group_id = IliasObjectConnections::getConnectionModuleId($group->getId(), "group", $this->ilias_index)) {
-                        // delete existing group
-                        $this->ilias->soap_client->deleteObject($group_id);
-                        $update = true;
-                    }
-                    // create new group
                     $group_data = array(
                                     'title' => $group->getName(),
                                     'owner' => $this->ilias->user->getId()
                     );
-                    if ($group_id = $this->ilias->soap_client->addGroup($group_data, $course_id)) {
+                    if ($group_id = IliasObjectConnections::getConnectionModuleId($group->getId(), "group", $this->ilias_index)) {
+                        // update existing group
+                        $this->ilias->soap_client->updateGroup($group_data, $group_id);
+                        $ilias_group = $this->ilias->soap_client->getGroup($group_id);
+                        $member_count = 0;
+                        // add assigned Stud.IP members
+                        foreach ($group->members as $member) {
+                            $query = "SELECT external_user_id FROM auth_extern WHERE studip_user_id = ? AND external_user_system_type = ?";
+                            $statement = DBManager::get()->prepare($query);
+                            $statement->execute(array($member->user_id, $this->ilias_index));
+                            $data = $statement->fetch(PDO::FETCH_ASSOC);
+                            if ($data) {
+                                $member_count++;
+                                $position = array_search($data['external_user_id'], $ilias_group['members']);
+                                if ($position === false) {
+                                    $this->ilias->soap_client->assignGroupMember($group_id, $data['external_user_id'], 'Member');
+                                } else {
+                                    unset($ilias_group['members'][$position]);
+                                }
+                            }
+                        }
+                        // remove remaining ILIAS members
+                        foreach ($ilias_group['members'] as $member) {
+                            $this->ilias->soap_client->excludeGroupMember($group_id, $member);
+                        }
+                        PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) aktualisiert.'), $group->getName(), $member_count));
+                    } elseif ($group_id = $this->ilias->soap_client->addGroup($group_data, $course_id)) {
+                        // create new group
                         IliasObjectConnections::setConnection($group->getId(), $group_id, 'group', $this->ilias_index);
                         // add members
                         $member_count = 0;
@@ -415,11 +435,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                                 $this->ilias->soap_client->assignGroupMember($group_id, $data['external_user_id'], 'Member');
                             }
                         }
-                        if ($update) {
-                            PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) aktualisiert.'), $group->getName(), $member_count));
-                        } else {
-                            PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) angelegt.'), $group->getName(), $member_count));
-                        }
+                        PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) angelegt.'), $group->getName(), $member_count));
                     }
                 }
                 $this->redirect($this->url_for('course/ilias_interface'));
