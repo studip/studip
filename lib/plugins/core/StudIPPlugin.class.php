@@ -122,16 +122,6 @@ abstract class StudIPPlugin {
     }
 
     /**
-     * Return a warning message to be printed before deactivation of
-     * this plugin in the given context.
-     *
-     * @param $context   context range id
-     */
-    public function deactivationWarning($context) {
-        return NULL;
-    }
-
-    /**
      * This method dispatches all actions.
      *
      * @param string   part of the dispatch path that was not consumed

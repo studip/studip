@@ -55,8 +55,6 @@ foreach ($available_modules as $category => $pluginlist) {
             $pluginname = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
             $URL = $plugin->getPluginURL();
 
-            $warning = $plugin->deactivationWarning(Context::getId());
-
         } elseif ($val['type'] == 'modul') {
 
             $modul = $val['object'];
@@ -301,10 +299,6 @@ foreach ($available_modules as $category => $pluginlist) {
                                     <strong><?= _('Weitere Informationen:') ?></strong>
                                     <a href="<?= htmlReady($info['homepage']) ?>"><?= htmlReady($info['homepage']) ?></a>
                                 </p>
-                            <? endif ?>
-
-                            <? if (isset($warning)) : ?>
-                                <p><strong><?= _('Hinweis') ?>:</strong> <?= htmlReady($warning) ?></p>
                             <? endif ?>
 
                             <!-- helplink -->

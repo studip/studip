@@ -33,7 +33,6 @@ class Course_StudygroupController extends AuthenticatedController
         }
 
         Sidebar::get()->setImage('sidebar/studygroup-sidebar.png');
-        $this->set_layout('course/studygroup/layout');
 
         if (Context::getId()) {
             $this->view = $this->getView(Context::getId());
@@ -419,8 +418,6 @@ class Course_StudygroupController extends AuthenticatedController
 
         $id = Context::getId();
 
-        $this->flash->keep('deactivate_modules');
-        $this->flash->keep('deactivate_plugins');
         PageLayout::setHelpKeyword('Basis.StudiengruppenBearbeiten');
 
         // if we are permitted to edit the studygroup get some data...
@@ -439,23 +436,6 @@ class Course_StudygroupController extends AuthenticatedController
             $this->enabled_plugins   = StudygroupModel::getEnabledPlugins($id);
             $this->modules           = new Modules();
             $this->founders          = StudygroupModel::getFounders($id);
-
-            $this->deactivate_modules_names = "";
-            if ($this->flash['deactivate_modules']) {
-                $amodules = new AdminModules();
-                foreach ($this->flash['deactivate_modules'] as $key) {
-                    $this->deactivate_modules_names .= "- " . $amodules->registered_modules[$key]['name'] . "\n";
-                }
-            }
-            if ($this->flash['deactivate_plugins']) {
-                foreach ($this->flash['deactivate_plugins'] as $key => $name) {
-                    $plugin    = PluginManager::getInstance()->getPluginById($key);
-                    $p_warning = $plugin->deactivationWarning($id);
-                    $this->deactivate_modules_names .= "- " . $name
-                                                       . ($p_warning ? " : " . $p_warning : "")
-                                                       . "\n";
-                }
-            }
 
             $actions = new ActionsWidget();
 
@@ -498,74 +478,7 @@ class Course_StudygroupController extends AuthenticatedController
 
             CSRFProtection::verifyUnsafeRequest();
 
-            if (Request::get('abort_deactivate')) {
-                // let's do nothing and go back to the studygroup
-                return $this->redirect('course/studygroup/edit/?cid=' . $id);
-
-            } else if (Request::get('really_deactivate')) {
-
-                $modules = Request::optionArray('deactivate_modules');
-                $plugins = Request::optionArray('deactivate_plugins');
-
-                // really deactive modules
-
-                // 1. Modules
-                if (is_array($modules)) {
-
-                    $mods       = new Modules();
-                    $admin_mods = new AdminModules();
-                    $bitmask    = $sem->modules;
-                    foreach ($modules as $key) {
-                        $module_name = $sem_class->getSlotModule($key);
-                        if ($module_name
-                            && ($sem_class->isModuleMandatory($module_name)
-                                || !$sem_class->isModuleAllowed($module_name))
-                        ) {
-                            continue;
-                        }
-                        $mods->clearBit($bitmask, $mods->registered_modules[$key]["id"]);
-                        $methodDeactivate = "module" . ucfirst($key) . "Deactivate";
-                        if (method_exists($admin_mods, $methodDeactivate)) {
-                            $admin_mods->$methodDeactivate($sem->id);
-                            $studip_module = $sem_class->getModule($key);
-                            if (is_a($studip_module, "StandardPlugin")) {
-                                PluginManager::getInstance()->setPluginActivated(
-                                    $studip_module->getPluginId(),
-                                    $id,
-                                    false
-                                );
-                            }
-                        }
-                    }
-
-                    $sem->modules = $bitmask;
-                    $sem->store();
-                }
-
-                // 2. Plugins
-
-                if (is_array($plugins)) {
-                    $plugin_manager    = PluginManager::getInstance();
-                    $available_plugins = StudygroupModel::getInstalledPlugins();
-
-                    foreach ($plugins as $class) {
-                        $plugin = $plugin_manager->getPlugin($class);
-                        // Deaktiviere Plugin
-                        if ($available_plugins[$class]
-                            && !$sem_class->isModuleMandatory($class)
-                            && !$sem_class->isSlotModule($class)
-                        ) {
-                            $plugin_manager->setPluginActivated($plugin->getPluginId(), $id, false);
-                        }
-                    }
-                }
-
-                // Success message
-
-                PageLayout::postSuccess(_('Inhaltselement(e) erfolgreich deaktiviert.'));
-                return $this->redirect('course/studygroup/edit/?cid=' . $id);
-
-            } else if (Request::submitted('replace_founder')) {
+            if (Request::submitted('replace_founder')) {
 
                 // retrieve old founder
                 $old_dozent = current(StudygroupModel::getFounder($id));
@@ -625,7 +538,6 @@ class Course_StudygroupController extends AuthenticatedController
                     $orig_modules      = $mods->getLocalModules($sem->id, "sem");
                     $active_plugins    = Request::getArray("groupplugin");
 
-                    $deactivate_modules = array();
                     foreach (array_keys($available_modules) as $key) {
                         $module_name = $sem_class->getSlotModule($key);
                         if (!$module_name || ($module_name
@@ -656,21 +568,29 @@ class Course_StudygroupController extends AuthenticatedController
                             }
                         } else {
                             // prepare for deactivation
-                            // (user will have to confirm)
+                            $mods->clearBit($bitmask, $mods->registered_modules[$key]["id"]);
                             if ($orig_modules[$key]) {
-                                $deactivate_modules[] = $key;
+                                $methodDeactivate = "module" . ucfirst($key) . "Deactivate";
+                                if (method_exists($admin_mods, $methodDeactivate)) {
+                                    $admin_mods->$methodDeactivate($sem->id);
+                                    $studip_module = $sem_class->getModule($key);
+                                    if (is_a($studip_module, "StandardPlugin")) {
+                                        PluginManager::getInstance()->setPluginActivated(
+                                            $studip_module->getPluginId(),
+                                            $id,
+                                            false
+                                        );
+                                    }
+                                }
                             }
                         }
                     }
-                    $this->flash['deactivate_modules'] = $deactivate_modules;
-
                     $sem->modules = $bitmask;
                     $sem->store();
 
                     // de-/activate plugins
                     $available_plugins  = StudygroupModel::getInstalledPlugins();
                     $plugin_manager     = PluginManager::getInstance();
-                    $deactivate_plugins = array();
 
                     foreach ($available_plugins as $key => $name) {
                         $plugin    = $plugin_manager->getPlugin($key);
@@ -679,16 +599,15 @@ class Course_StudygroupController extends AuthenticatedController
                             $plugin_manager->setPluginActivated($plugin_id, $id, true);
                         } else {
                             if ($plugin_manager->isPluginActivated($plugin_id, $id) && !$sem_class->isSlotModule($key)) {
-                                $deactivate_plugins[$plugin_id] = $key;
+                                $plugin_manager->setPluginActivated($plugin_id, $id, false);
                             }
                         }
                     }
-                    $this->flash['deactivate_plugins'] = $deactivate_plugins;
                 }
             }
         }
 
-        if (!$this->flash['errors'] && !$deactivate_modules && !$deactivate_plugins) {
+        if (!$this->flash['errors']) {
             // Everything seems fine
             PageLayout::postSuccess(_('Die Änderungen wurden erfolgreich übernommen.'));
         }
