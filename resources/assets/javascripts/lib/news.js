@@ -27,7 +27,7 @@ const News = {
             } else {
                 start = $('#news_startdate').datepicker('getDate');
                 end = $('#news_enddate').datepicker('getDate');
-                duration = Math.floor((end - start) / (24 * 60 * 60 * 1000));
+                duration = Math.round((end - start) / (24 * 60 * 60 * 1000));
                 duration = Math.max(0, duration);
 
                 $('#news_duration').val(duration);
