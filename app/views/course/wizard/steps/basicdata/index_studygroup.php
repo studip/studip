@@ -44,8 +44,12 @@
 
 <label><span class="required"><?= _('Nutzungsbedingungen')?></span></label>
 
-<i><?= htmlReady(Config::Get()->STUDYGROUP_TERMS) ?></i>
-<br/>
+<? if ($GLOBALS['perm']->have_perm('admin')) : ?>
+    <p style="font-weight: bold;">
+      <?= _('Ich habe die eingetragenen Personen darüber informiert, dass in Ihrem Namen eine Studiengruppe angelegt wird und versichere, dass Sie mit folgenden Nutzungsbedingungen einverstandenen sind:') ?>
+    </p>
+<? endif ?>
+<?= formatReady(Config::Get()->STUDYGROUP_TERMS) ?>
 
 <label>
     <input type="checkbox" name="accept" id="wizard-accept" required>
