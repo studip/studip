@@ -36,7 +36,7 @@ class GlobalSearchInstitutes extends GlobalSearchModule
         }
         $search = str_replace(' ', '% ', $search);
         $query = DBManager::get()->quote("%{$search}%");
-        $sql = "SELECT *
+        $sql = "SELECT SQL_CALC_FOUND_ROWS *
                 FROM `Institute`
                 WHERE `Name` LIKE {$query}
                 ORDER BY `Name` DESC

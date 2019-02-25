@@ -35,7 +35,7 @@ class GlobalSearchResources extends GlobalSearchModule
             return null;
         }
         $query = DBManager::get()->quote("%{$search}%");
-        return "SELECT `resource_id`, `name`, `description`
+        return "SELECT SQL_CALC_FOUND_ROWS `resource_id`, `name`, `description`
                 FROM `resources_objects`
                 WHERE `name` LIKE {$query}
                   OR `description` LIKE {$query}

@@ -178,7 +178,7 @@ const Search = {
                 resultsDiv.append(category);
                 $(`a#search_category_${name}`)
                     .removeClass('no-result')
-                    .text(`${value.name}  (${counter})`);
+                    .text(`${value.name}  (${counter}${value.plus ? '+' : ''})`);
 
                 // We have more search results than shown, provide link to
                 // full search if available.
