@@ -50,7 +50,7 @@ class GlobalSearchModules extends GlobalSearchModule
             $status_cond = "`m`.`stat` = " . DBManager::get()->quote('genehmigt');
         }
 
-        $query = "SELECT SQL_CALC_FOUND_ROWS `m`.`modul_id`, `m`.`code`,
+        $query = "SELECT `m`.`modul_id`, `m`.`code`,
                          IFNULL(`i18n`.`value`, `md`.`bezeichnung`) AS `bezeichnung`,
                          `m`.`stat`, `m`.`kp`,
                          `sd0`.`name` AS `sem_start`, `sd1`.`name` AS `sem_end`,

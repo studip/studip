@@ -69,7 +69,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             $anonymous = "";
         }
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS `forum_entries`.*
+        $sql = "SELECT `forum_entries`.*
                 FROM `forum_entries`
                 WHERE {$anonymous} (
                     `name` LIKE {$query}

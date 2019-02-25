@@ -74,7 +74,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             }
         }
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.`Seminar_id`, courses.`start_time`, courses.`Name`,
+        $sql = "SELECT courses.`Seminar_id`, courses.`start_time`, courses.`Name`,
                        courses.`VeranstaltungsNummer`, courses.`status`
                 FROM `seminare` courses
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)

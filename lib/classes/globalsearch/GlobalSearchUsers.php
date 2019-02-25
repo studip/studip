@@ -41,7 +41,7 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
             $visQuery = get_vis_query('user', 'search') . " AND ";
         }
         $query = DBManager::get()->quote("%{$search}%");
-        $sql = "SELECT SQL_CALC_FOUND_ROWS user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`
+        $sql = "SELECT user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`
                 FROM `auth_user_md5` AS user
                 LEFT JOIN `user_visibility` USING (`user_id`)
                 WHERE {$visQuery}
@@ -131,7 +131,7 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
             $visQuery = get_vis_query('user', 'search') . " AND ";
         }
         $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-        $sql = "SELECT SQL_CALC_FOUND_ROWS user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`
+        $sql = "SELECT user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`
                 FROM `auth_user_md5` AS user
                 LEFT JOIN `user_visibility` USING (`user_id`)
                 WHERE {$visQuery} MATCH(`username`, `Vorname`, `Nachname`) AGAINST($query IN BOOLEAN MODE)

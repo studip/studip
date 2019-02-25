@@ -50,7 +50,7 @@ class GlobalSearchCalendar extends GlobalSearchModule
         $user_id = DBManager::get()->quote($GLOBALS['user']->id);
 
         if ($time) {
-            return "SELECT SQL_CALC_FOUND_ROWS `date`, `end_time`, `seminar_id`
+            return "SELECT `date`, `end_time`, `seminar_id`
                     FROM `termine`
                     JOIN `seminar_user` ON (`range_id` = `seminar_id`)
                     WHERE `user_id` = {$user_id}

@@ -59,7 +59,7 @@ class GlobalSearchBuzzwords extends SimpleORMap
         $query = DBManager::get()->quote("%{$search}%");
         $rights = $GLOBALS['perm']->permissions[$GLOBALS['perm']->get_perm()];
 
-        return "SELECT SQL_CALC_FOUND_ROWS *
+        return "SELECT *
                 FROM `globalsearch_buzzwords`
                 WHERE `buzzwords` LIKE {$query}
                   AND {$rights} >= rights";

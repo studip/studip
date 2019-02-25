@@ -38,7 +38,7 @@ class GlobalSearchMessages extends GlobalSearchModule
 
         $query = DBManager::get()->quote("%{$search}%");
         $user_id = DBManager::get()->quote($GLOBALS['user']->id);
-        $sql = "SELECT SQL_CALC_FOUND_ROWS `message`.*
+        $sql = "SELECT `message`.*
                 FROM `message`
                     JOIN `message_user` USING (`message_id`)
                 WHERE `user_id` = {$user_id}

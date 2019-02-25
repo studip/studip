@@ -50,7 +50,7 @@ class GlobalSearchRoomAssignments extends GlobalSearchModule
 
         $query = DBManager::get()->quote('%' . trim($search) . '%');
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT a.`assign_id`, a.`user_free_name`, r.`resource_id`, r.`name`, a.`begin`, a.`end`
+        $sql = "SELECT DISTINCT a.`assign_id`, a.`user_free_name`, r.`resource_id`, r.`name`, a.`begin`, a.`end`
                 FROM `resources_assign` a
                 JOIN `resources_objects` r USING (`resource_id`)
                 WHERE a.`user_free_name` != ''

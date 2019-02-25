@@ -65,7 +65,7 @@ class GlobalSearchMyCourses extends GlobalSearchModule
         $search = str_replace(" ", "% ", $search);
         $query = DBManager::get()->quote("%{$search}%");
         $user_id = DBManager::get()->quote($GLOBALS['user']->id);
-        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.* FROM `seminare` AS  courses
+        $sql = "SELECT courses.* FROM `seminare` AS  courses
                 JOIN `seminar_user` USING (`Seminar_id`)
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)
                 WHERE `user_id` = {$user_id}

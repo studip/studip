@@ -41,48 +41,90 @@ class GlobalSearchController extends AuthenticatedController
 
         $result = $classes = [];
 
-        foreach ($modules as $className => $data) {
-            if ($data['active']) {
-                $class = new $className();
-                $classes[$className] = $class;
-                $partSQL = $class->getSQL($search, $filter, $limit);
-                if ($partSQL) {
-                    // Global config setting says to use mysqli
-                    if ($async) {
-                        $mysqli = new mysqli($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
+        // Global config setting says to use mysqli
+        if ($async) {
+            foreach ($modules as $className => $data) {
+                if ($data['active']) {
+                    $class = new $className();
+                    $classes[$className] = $class;
+                    $partSQL = $class->getSQL($search, $filter, $limit);
+                    if ($partSQL) {
+                        $new = mysqli_connect($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
                             $GLOBALS['DB_STUDIP_PASSWORD'], $GLOBALS['DB_STUDIP_DATABASE']);
-                        mysqli_set_charset($mysqli, 'UTF8');
-                        if ($mysqli->multi_query($partSQL . '; SELECT FOUND_ROWS() as found_rows;')) {
-                            do {
-                                if ($res = $mysqli->store_result()) {
-                                    $all_links[$className][] = $res->fetch_all(MYSQLI_ASSOC);
-                                }
-                            } while ($mysqli->more_results() && $mysqli->next_result());
+                        mysqli_set_charset($new, 'UTF8');
+                        $new->query($partSQL, MYSQLI_ASYNC);
+                        $new->id = $className;
+                        $all_links[] = $new;
+                    }
+                }
+            }
+
+            $read = $error = $reject = array();
+            while (count($read) + count($error) + count($reject) < count($all_links)) {
+
+                // Parse all links
+                $error = $reject = $read = $all_links;
+
+                // Poll will reject connection that have no query running
+                mysqli_poll($read, $error, $reject, 1);
+
+                foreach ($read as $r) {
+                    if ($r && $set = $r->reap_async_query()) {
+                        $id = $r->id;
+
+                        // Walk through each fetched entry.
+                        while ($data = $set->fetch_assoc()) {
+
+                            /*
+                             * We found more results than needed,
+                             * add "more" link for full search.
+                             */
+                            if (isset($result[$id]['content'])
+                                && count($result[$id]['content']) >= Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE)
+                            {
+                                $result[$id]['more'] = true;
+                            }
+
+                            $arg = $data['type'] && count($data) == 2 ? $data['id'] : $data;
+
+                            // Filter item and add to result if necessary.
+                            if ($item = $classes[$id]->filter($arg, $search)) {
+                                $result[$id]['name'] = $classes[$id]->getName();
+                                $result[$id]['fullsearch'] = $classes[$id]->getSearchURL($search) ?: '';
+                                $result[$id]['content'][] = $item;
+                            }
                         }
-                        $entries = $all_links[$className][0];
-                        $entries_count = (int)$all_links[$className][1][0]['found_rows'];
-                    // Global config setting calls for PDO
-                    } else {
+                    }
+                }
+            }
+
+        // Global config setting calls for PDO
+        } else {
+
+            // Process active search modules...
+            foreach ($modules as $className => $data) {
+
+                if ($data['active']) {
+                    $class = new $className();
+                    $classes[$className] = $class;
+                    $partSQL = $class->getSQL($search, $filter, $limit);
+
+                    // ... and execute corresponding SQL.
+                    if ($partSQL) {
                         $entries = DBManager::get()->fetchAll($partSQL);
-                        $entries_count_array = DBManager::get()->fetchAll('SELECT FOUND_ROWS() as found_rows');
-                        $entries_count = (int)$entries_count_array[0]['found_rows'];
-                    }
-                    // Walk through results
-                    foreach ($entries as $one) {
-                        // Filter item and add to result if necessary.
-                        if ($item = $classes[$className]->filter($one, $search)) {
-                            $result[$className]['name'] = $classes[$className]->getName();
-                            $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
-                            $result[$className]['content'][] = $item;
+
+                        // Walk through results
+                        foreach ($entries as $one) {
+                            // Filter item and add to result if necessary.
+                            if ($item = $classes[$className]->filter($one, $search)) {
+                                $result[$className]['name'] = $classes[$className]->getName();
+                                $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
+                                $result[$className]['content'][] = $item;
+                            }
                         }
-                    }
-                    // We found more results than needed, add "more" link for full search.
-                    if (count($result[$className]['content']) > Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE) {
-                        $result[$className]['more'] = true;
-                        // There are more results than our arbitrary LIMIT and a plus ('+') 
-                        // should be shown besides the category result count
-                        if (count($result[$className]['content']) < $entries_count) {
-                            $result[$className]['plus'] = true;
+                        // We found more results than needed, add "more" link for full search.
+                        if (count($result[$className]['content']) > Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE) {
+                            $result[$className]['more'] = true;
                         }
                     }
                 }
