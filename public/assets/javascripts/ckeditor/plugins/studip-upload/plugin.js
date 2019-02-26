@@ -58,14 +58,14 @@ CKEDITOR.plugins.add('studip-upload', {
         // actual file upload handler
         // NOTE depends on jQuery File Upload plugin being loaded beforehand!
         // TODO integrate jQuery File Upload plugin into studip-upload
-        var inputId = 'fileupload';
+        
         editor.on('instanceReady', function(event){
             var $container = $(event.editor.container.$);
 
             // install upload handler
             $('<input>')
                 .attr({
-                    id: inputId,
+                    class: 'fileupload',
                     type: 'file',
                     name: 'files[]',
                     multiple: true
@@ -95,17 +95,13 @@ CKEDITOR.plugins.add('studip-upload', {
 
         // avoid multiple uploads of the same file via drag and drop
         editor.on('beforeDestroy', function(event){
-            if ($.fn.fileupload) {
-                $('#' + inputId).fileupload('destroy');
-            }
+            $(event.editor.container.$).find('.fileupload').fileupload('destroy');
         });
 
         // ckeditor
         editor.addCommand('upload', {    // command handler
             exec: function(editor){
-                // NOTE if  $('#' + inputId) is stored in variable then
-                //      upload works only once
-                $('#' + inputId).click();
+                $(editor.container.$).find('.fileupload').click();
             }
         });
         editor.ui.addButton('upload', {  // toolbar button
