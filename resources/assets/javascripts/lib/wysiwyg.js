@@ -482,6 +482,13 @@ function replaceTextarea(textarea) {
             }
         });
 
+	// fix for not pasting text from clipboard twice on firefox in a dialog
+	if (CKEDITOR.env.gecko && $textarea.closest('.ui-dialog').length) {
+            $(editor.container.$).on('paste', function(event) {
+                event.preventDefault();
+            });
+	}
+
         // clean up HTML edited in source mode before submit
         var form = $textarea.closest('form');
         form.submit(function(event) {
