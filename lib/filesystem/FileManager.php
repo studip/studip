@@ -675,7 +675,7 @@ class FileManager
                 $new_reference = new FileRef();
                 $new_reference->file_id     = $source->file_id;
                 $new_reference->folder_id   = $destination_folder->getId();
-                $new_reference->name        = $source->file->name;
+                $new_reference->name        = $source->name;
                 $new_reference->description = $source->description;
                 $new_reference->user_id     = $user->id;
                 $new_reference->content_terms_of_use_id = $source->content_terms_of_use_id;
@@ -690,12 +690,12 @@ class FileManager
                 $copied_file = new File();
                 $copied_file->user_id = $user->id;
                 $copied_file->mime_type = $source->file->mime_type;
-                $copied_file->name = $source->file->name;
+                $copied_file->name = $source->name;
                 $copied_file->size = $source->file->size;
                 $copied_file->storage = $source->file->storage;
                 $copied_file->author_name = $user->getFullName('no_title');
                 $copied_file->id = $copied_file->getNewId();
-                if ($copied_file->storage == 'disk') {
+                if ($copied_file->storage === 'disk') {
                     //We must copy the physical data.
                     $copy_path = $GLOBALS['TMP_PATH'] . '/' . $copied_file->id;
                     if (!copy($source->file->getPath(), $copy_path)) {
@@ -743,13 +743,13 @@ class FileManager
             if ($source_plugin) {
                 $prepared_file_ref = $source_plugin->getPreparedFile($source->id, true);
 
-                $file_meta = array(
-                    'name' => $prepared_file_ref->name,
-                    'error' => [0],
-                    'type' => $prepared_file_ref->mime_type,
+                $file_meta = [
+                    'name'     => $prepared_file_ref->name,
+                    'error'    => [0],
+                    'type'     => $prepared_file_ref->mime_type,
                     'tmp_name' => $prepared_file_ref->path_to_blob,
-                    'size' => $prepared_file_ref->size
-                );
+                    'size'     => $prepared_file_ref->size,
+                ];
                 $result = $destination_folder->createFile($file_meta);
 
                 if (is_a($result, "MessageBox")) {
@@ -764,14 +764,14 @@ class FileManager
                     $source->path_to_blob = File::find($source->file_id)->getPath();
                 }
 
-                $file_meta = array(
-                    'name' => $source->name,
-                    'error' => [0],
-                    'type' => $source->mime_type,
+                $file_meta = [
+                    'name'     => $source->name,
+                    'error'    => [0],
+                    'type'     => $source->mime_type,
                     'tmp_name' => $source->path_to_blob,
-                    'url' => $source->file->url,
-                    'size' => $source->size
-                );
+                    'url'      => $source->file->url,
+                    'size'     => $source->size,
+                ];
 
                 if ($source->file->url) {
                     if ($destination_plugin) {
@@ -779,7 +779,8 @@ class FileManager
                     } else {
                         $copied_file = new File();
                         $copied_file->setData($source->file);
-                        $copied_file['user_id'] = $user->id;
+                        $copied_file->name    = $source->name;
+                        $copied_file->user_id = $user->id;
                         $copied_file->setId($copied_file->getNewId());
                         $copied_file->store();
 
@@ -791,21 +792,21 @@ class FileManager
                         $new_reference = new FileRef();
                         $new_reference->file_id     = $copied_file->id;
                         $new_reference->folder_id   = $destination_folder->getId();
-                        $new_reference->name        = $source->file->name;
+                        $new_reference->name        = $source->name;
                         $new_reference->description = $source->description;
                         $new_reference->user_id     = $user->id;
                     }
                 } else {
-                    $file_meta = array(
-                        'name' => array($source->name),
-                        'error' => [0],
-                        'type' => array($source->mime_type),
-                        'tmp_name' => array($source->path_to_blob),
-                        'url' => array($source->file->url),
-                        'size' => array($source->size)
-                    );
+                    $file_meta = [
+                        'name'     => [$source->name],
+                        'error'    => [0],
+                        'type'     => [$source->mime_type],
+                        'tmp_name' => [$source->path_to_blob],
+                        'url'      => [$source->file->url],
+                        'size'     => [$source->size],
+                    ];
                     $fcopy = self::handleFileUpload($file_meta, $destination_folder, $user->id);
-                    $new_reference = $fcopy["files"][0];
+                    $new_reference = $fcopy['files'][0];
                 }
 
                 $new_reference->content_terms_of_use_id = $source->content_terms_of_use_id;
