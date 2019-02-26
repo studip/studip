@@ -42,15 +42,14 @@
                 -webkit-hyphens: auto;
                 hyphens: auto;
             }
-            
         </style>
-        <link rel="stylesheet" href="http://localhost/studip_mvv31/assets/stylesheets/print.css">
+        <?= Assets::stylesheet('print') ?>
     </head>
     <body>
         <div>
         <?
-            echo $this->render_partial('shared/version/_version', array('version' => $stgversion, 'url' => $this->plugin->getPluginURL()."/public/"));
-            echo $this->render_partial('shared/version/_versionmodule', array('version' => $stgversion, 'plugin' => $this->plugin));
+            echo $this->render_partial('shared/version/_version', array('version' => $stgversion));
+            echo $this->render_partial('shared/version/_versionmodule', array('version' => $stgversion));
         ?>
         </div>
     </body>
