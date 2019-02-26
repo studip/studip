@@ -68,12 +68,14 @@ class GlobalSearchController extends AuthenticatedController
                         $entries_count = (int)$entries_count_array[0]['found_rows'];
                     }
                     // Walk through results
-                    foreach ($entries as $one) {
-                        // Filter item and add to result if necessary.
-                        if ($item = $classes[$className]->filter($one, $search)) {
-                            $result[$className]['name'] = $classes[$className]->getName();
-                            $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
-                            $result[$className]['content'][] = $item;
+                    if (is_array($entries)) {
+                        foreach ($entries as $one) {
+                            // Filter item and add to result if necessary.
+                            if ($item = $classes[$className]->filter($one, $search)) {
+                                $result[$className]['name'] = $classes[$className]->getName();
+                                $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
+                                $result[$className]['content'][] = $item;
+                            }
                         }
                     }
                     // We found more results than needed, add "more" link for full search.
