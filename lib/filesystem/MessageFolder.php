@@ -376,8 +376,7 @@ class MessageFolder implements FolderType
      */
     public function store()
     {
-        return !$this->folder->isDirty()
-            || $this->folder->store();
+        return $this->folder->store();
     }
 
     /**

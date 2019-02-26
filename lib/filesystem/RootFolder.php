@@ -75,6 +75,6 @@ class RootFolder extends StandardFolder
     public function store()
     {
         $this->folderdata['parent_id'] = '';
-        return parent::store();
+        return $this->folderdata->store();
     }
 }
