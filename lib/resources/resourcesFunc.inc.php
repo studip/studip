@@ -218,8 +218,8 @@ function getGlobalPerms($user_id)
     if ($cache[$user_id]) {
         return $cache[$user_id];
     }
-
-    if ($perm->have_perm('root')) {
+    
+    if ($perm->have_perm('root', $user_id)) {
         $res_perm = 'admin';
     } else {
         $query = "SELECT perms

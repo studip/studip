@@ -51,7 +51,7 @@ class ResourcesUserRoomsList {
         if (!$user_id){
             $user_id = $GLOBALS['auth']->auth['uid'];
         }
-        if($GLOBALS['perm']->have_perm('root') || getGlobalPerms($user_id) == 'admin'){
+        if($GLOBALS['perm']->have_perm('root', $user_id) || getGlobalPerms($user_id) == 'admin'){
             return true;
         }
         if (!isset($resources_list[$user_id])){
@@ -133,7 +133,7 @@ class ResourcesUserRoomsList {
         global $perm, $user;
 
         //if perm is root or resources admin, load all rooms/objects
-        if (($perm->have_perm ("root")) || ($this->global_perms == "admin")) { //hier muss auch admin rein!! {
+        if (($perm->have_perm ("root", $this->user_id)) || ($this->global_perms == "admin")) { //hier muss auch admin rein!! {
             if ($this->only_rooms) {
                 $query = "SELECT resource_id, resources_objects.name
                           FROM resources_categories
@@ -151,8 +151,8 @@ class ResourcesUserRoomsList {
                 $this->insertResource($row['resource_id'], $row['name']);
             }
         //if tutor, dozent or admin, load all the rooms of all his administrable objects
-        } elseif  ($perm->have_perm ("tutor")) {
-            $my_objects=search_administrable_objects();
+        } elseif  ($perm->have_perm ("tutor", $this->user_id)) {
+            $my_objects=search_administrable_objects('', $this->user_id);
             $my_objects[$this->user_id]=TRUE;
             $my_objects["all"]=TRUE;
             if (is_array($my_objects) && count($my_objects)){
