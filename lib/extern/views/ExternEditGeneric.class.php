@@ -286,11 +286,11 @@ class ExternEditGeneric extends ExternEdit {
         for ($i = 0; $i < sizeof($option_values); $i++) {
             $out .= "<option value=\"{$option_values[$i]}\"";
             if ($multiple) {
-                if ($option_values[$i] && in_array($option_values[$i], (array) $value)) {
+                if (in_array($option_values[$i], (array) $value)) {
                     $out .= " selected";
                 }
             } else {
-                if ($value == $option_values[$i] && $option_values[$i]) {
+                if ($value == $option_values[$i]) {
                     $out .= " selected";
                 }
             }
