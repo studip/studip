@@ -221,7 +221,8 @@ class StandardFolder implements FolderType
      */
     public function store()
     {
-        return $this->folderdata->store();
+        return !$this->folderdata->isDirty()
+            || $this->folderdata->store();
     }
 
     /**
