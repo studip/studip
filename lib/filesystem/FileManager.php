@@ -606,7 +606,7 @@ class FileManager
         }
 
 
-        if ($file_ref->store()) {
+        if (!$file_ref->isDirty() || $file_ref->store()) {
             //everything went fine
             return $file_ref;
         }
