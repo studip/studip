@@ -1,4 +1,5 @@
-<form action="<?= URLHelper::getLink("dispatch.php/questionnaire/bulkdelete", $range_type ? ['range_type' => $range_type, 'range_id' => Context::getId()]: []) ?>" method="post">
+<form action="<?= $controller->link_for("questionnaire/bulkdelete", $range_type ? ['range_type' => $range_type, 'range_id' => Context::getId()]: []) ?>"
+      method="post">
     <table class="default" id="questionnaire_overview">
         <thead>
             <tr>
@@ -26,8 +27,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="100">
-                    <?= \Studip\LinkButton::create(_("Löschen"), "delete", ['onclick' => "STUDIP.Dialog.confirm('"._("Wirklich löschen?")."', function () { jQuery('#questionnaire_overview').closest('form').submit(); }); return false;"]) ?>
+                <td colspan="7">
+                    <?= \Studip\Button::create(_("Löschen"), "bulkdelete", ['data-confirm' => _("Wirklich löschen?")]) ?>
                 </td>
             </tr>
         </tfoot>
