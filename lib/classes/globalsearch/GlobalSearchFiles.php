@@ -57,7 +57,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             switch ($GLOBALS['perm']->get_perm()) {
                 // Roots see all files, no matter where.
                 case 'root':
-                    $mycourses = "SELECT DISTINCT `Seminar_id`
+                    $mycourses = "SELECT SQL_CALC_FOUND_ROWS DISTINCT `Seminar_id`
                                   FROM `seminare`
                                   WHERE (`Name` LIKE {$prequery}
                                     OR `VeranstaltungsNummer` LIKE {$prequery})
@@ -70,7 +70,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 case 'admin':
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    $mycourses = "SELECT DISTINCT i.`seminar_id`
+                    $mycourses = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.`seminar_id`
                                   FROM `seminar_inst` i
                                   JOIN `seminare` s ON (s.`Seminar_id` = i.`seminar_id`)
                                   WHERE i.`institut_id` IN (" . DBManager::get()->quote($institutes) . ")
@@ -83,7 +83,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 default:
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    $mycourses = "SELECT DISTINCT u.`Seminar_id`
+                    $mycourses = "SELECT SQL_CALC_FOUND_ROWS DISTINCT u.`Seminar_id`
                                   FROM `seminar_user` u
                                   JOIN `seminare` s ON (s.`Seminar_id` = u.`Seminar_id`)
                                   WHERE u.`user_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
@@ -103,7 +103,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             $course_ids = DBManager::get()->fetchFirst($mycourses);
 
             // Fetch all files from relevant courses.
-            return "SELECT DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
+            return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
                         r.`chdate`, fo.`range_id`, f.`mime_type`
                     FROM `file_refs` r
                     JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
@@ -121,7 +121,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             switch ($GLOBALS['perm']->get_perm()) {
                 // Roots see all files, no matter where.
                 case 'root':
-                    return "SELECT DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
                                 r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
                             FROM `file_refs` r
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
@@ -136,7 +136,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 case 'admin':
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    return "SELECT DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
                                 r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
                             FROM `file_refs` r
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
@@ -157,7 +157,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 default:
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    $mycourses = "SELECT `Seminar_id`
+                    $mycourses = "SELECT SQL_CALC_FOUND_ROWS `Seminar_id`
                                   FROM `seminar_user`
                                   WHERE `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id);
 
@@ -169,7 +169,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                             WHERE `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id);
                     }
 
-                    return "SELECT DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
                                 r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
                             FROM `file_refs` r
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
@@ -309,7 +309,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             $binary = DBManager::get()->quote('%' . join('%', preg_split('//u',
                         mb_strtoupper(trim($args[0])), null, PREG_SPLIT_NO_EMPTY)) . '%');
             $comp = "AND";
-            return "SELECT dokumente.*
+            return "SELECT SQL_CALC_FOUND_ROWS dokumente.*
                     FROM dokumente
                     JOIN seminare USING (seminar_id)
                     {$ownseminars}
@@ -318,7 +318,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                     ORDER BY dokumente.chdate DESC LIMIT " . $limit;
         } else {
             $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-            return "SELECT dokumente.*
+            return "SELECT SQL_CALC_FOUND_ROWS dokumente.*
                     FROM dokumente IGNORE INDEX (chdate)
                     {$ownseminars}
                     WHERE MATCH(dokumente.name) AGAINST ($query IN BOOLEAN MODE)
