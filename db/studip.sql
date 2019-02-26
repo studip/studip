@@ -4148,7 +4148,7 @@ DROP TABLE IF EXISTS `session_data`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `session_data` (
   `sid` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-  `val` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `val` mediumblob NOT NULL,
   `changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sid`),
   KEY `changed` (`changed`)

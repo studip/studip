@@ -8,6 +8,7 @@ class CourseMailingForStudents extends Migration
         DBManager::get()->exec($query);
 
         SimpleORMap::expireTableScheme();
+        DBManager::get()->exec("ALTER TABLE `session_data` CHANGE COLUMN `val` `val` mediumblob NOT NULL"); //see #9106
     }
 
     public function down()

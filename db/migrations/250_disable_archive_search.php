@@ -20,6 +20,7 @@ class DisableArchiveSearch extends Migration
             'type'        => 'boolean',
             'value'       => '0'
         ]);
+        $db->exec("ALTER TABLE `session_data` CHANGE COLUMN `val` `val` mediumblob NOT NULL"); //see #9106
 
     }
 

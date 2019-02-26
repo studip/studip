@@ -48,7 +48,7 @@ class DbUpdatesFor42 extends Migration
                     'ASSI_SEMESTER_PRESELECT',
                     'ENABLE_PROTECTED_DOWNLOAD_RESTRICTION'
                     )");
-
+        $db->exec("ALTER TABLE `session_data` CHANGE COLUMN `val` `val` mediumblob NOT NULL"); //see #9106
 
     }
 
