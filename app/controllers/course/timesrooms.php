@@ -508,10 +508,6 @@ class Course_TimesroomsController extends AuthenticatedController
                 PageLayout::setTitle(_('Termine ausfallen lassen'));
                 $this->prepareCancel($cycle_id);
                 break;
-            case 'delete':
-                PageLayout::setTitle(_('Termine löschen'));
-                $this->deleteStack($cycle_id);
-                break;
             case 'undelete':
                 PageLayout::setTitle(_('Termine stattfinden lassen'));
                 $this->unDeleteStack($cycle_id);
@@ -541,33 +537,6 @@ class Course_TimesroomsController extends AuthenticatedController
     {
         $this->cycle_id = $cycle_id;
         $this->render_template('course/timesrooms/cancelStack');
-    }
-
-    /**
-     * Deletes a stack/cycle.
-     *
-     * @param String $cycle_id Id of the cycle to be deleted.
-     */
-    private function deleteStack($cycle_id = '')
-    {
-        foreach ($_SESSION['_checked_dates'] as $id) {
-            $termin = CourseDate::find($id);
-            if ($termin === null) {
-                $termin = CourseExDate::find($id);
-            }
-            if ($termin->metadate_id && $termin instanceof CourseDate) {
-                $this->deleteDate($id, 'cancel', $cycle_id);
-            } elseif ($termin->metadate_id === null || $termin->metadate_id === '') {
-                $this->deleteDate($id, 'delete', $cycle_id);
-            } elseif ($termin->metadate_id && $termin instanceof CourseExDate) {
-                //$this->deleteDate($id, 'delete', $cycle_id);
-            }
-        }
-        $this->displayMessages();
-
-        unset($_SESSION['_checked_dates']);
-
-        $this->relocate('course/timesrooms/index', ['contentbox_open' => $cycle_id]);
     }
 
     /**
@@ -625,26 +594,19 @@ class Course_TimesroomsController extends AuthenticatedController
      */
     private function saveCanceledStack()
     {
-        $msg           = _('Folgende Termine wurden gelöscht') . '<ul>';
         $deleted_dates = array();
+        $cancel_comment = trim(Request::get('cancel_comment'));
+        $cancel_send_message = Request::int('cancel_send_message');
 
-        foreach ($_SESSION['_checked_dates'] as $val) {
-            $termin = CourseDate::find($val);
-            if ($termin === null) {
-                continue;
-            }
-            $termin->content = trim(Request::get('cancel_comment', ''));
-            $new_ex_termin   = $termin->cancelDate();
-            if ($new_ex_termin !== null) {
-                $msg .= sprintf('<li>%s</li>', $new_ex_termin->getFullname());
-                $deleted_dates[] = CourseDate::build($new_ex_termin, false);
+        foreach ($_SESSION['_checked_dates'] as $id) {
+            $termin = CourseDate::find($id);
+            if ($termin) {
+                $deleted_dates[] = $this->deleteDate($termin, $cancel_comment);
             }
         }
-        $msg .= '</ul>';
-        $this->course->createMessage($msg);
 
-        if (Request::int('cancel_send_message') && count($deleted_dates) > 0) {
-            $snd_messages = raumzeit_send_cancel_message(Request::get('cancel_comment'), $deleted_dates);
+        if ($cancel_send_message && $cancel_comment != '' && count($deleted_dates) > 0) {
+            $snd_messages = raumzeit_send_cancel_message($cancel_comment, $deleted_dates);
             if ($snd_messages > 0) {
                 $this->course->createMessage(_('Alle Teilnehmenden wurden benachrichtigt.'));
             }
@@ -1113,38 +1075,44 @@ class Course_TimesroomsController extends AuthenticatedController
     /**
      * Deletes a date.
      *
-     * @param String $termin_id Id of the date
-     * @param String $sub_cmd Sub command to be executed
-     * @param String $cycle_id Id of the associated cycle
+     * @param String $termin CourseDate of the date
+     * @param String $cancel_comment cancel mesessage (if non empty)
+     *
+     * @return CourseDate|CourseExDate deleted date
      */
-    private function deleteDate($termin_id, $sub_cmd, $cycle_id)
+    private function deleteDate($termin, $cancel_comment)
     {
+        $seminar_id = $termin->range_id;
+        $termin_room = $termin->getRoomName();
+        $termin_date = $termin->getFullname();
+        $has_topics  = $termin->topics->count();
+
+        if ($cancel_comment != '') {
+            $termin->content = $cancel_comment;
+        }
+
         //cancel cycledate entry
-        if ($sub_cmd === 'cancel') {
-            $termin     = CourseDate::find($termin_id);
-            $seminar_id = $termin->range_id;
-            $termin->cancelDate();
-            StudipLog::log('SEM_DELETE_SINGLEDATE', $termin_id, $seminar_id, 'Cycle_id: ' . $cycle_id);
-        } else if ($sub_cmd === 'delete') {
-            $termin      = CourseDate::find($termin_id) ?: CourseExDate::find($termin_id);
-            $seminar_id  = $termin->range_id;
-            $termin_room = $termin->getRoom();
-            $termin_date = $termin->getFullname();
-            $has_topics  = $termin->topics->count();
+        if ($termin->metadate_id || $cancel_comment != '') {
+            $termin = $termin->cancelDate();
+            StudipLog::log('SEM_DELETE_SINGLEDATE', $termin_id, $seminar_id, 'Cycle_id: ' . $termin->metadate_id);
+        } else {
             if ($termin->delete()) {
                 StudipLog::log("SEM_DELETE_SINGLEDATE", $termin_id, $seminar_id, 'appointment cancelled');
-                if ($has_topics) {
-                    $this->course->createMessage(sprintf(_('Sie haben den Termin %s gelöscht, dem ein Thema zugeordnet war.'
-                        . 'Sie können das Thema im Ablaufplan einem anderen Termin (z.B. einem Ausweichtermin) zuordnen.'),
-                        $termin_date, '<a href="' . URLHelper::getLink('dispatch.php/course/topics') . '">', '</a>'));
-                } elseif ($termin_room) {
-                    $this->course->createMessage(sprintf(_('Der Termin %s wurde gelöscht! Die Buchung für den Raum %s wurde gelöscht.'),
-                        $termin_date, $termin_room));
-                } else {
-                    $this->course->createMessage(sprintf(_('Der Termin %s wurde gelöscht!'), $termin_date));
-                }
             }
         }
+
+        if ($has_topics) {
+            $this->course->createMessage(sprintf(_('Dem Termin %s war ein Thema zugeordnet. Sie können das Thema im Ablaufplan einem anderen Termin (z.B. einem Ausweichtermin) zuordnen.'),
+                $termin_date, '<a href="' . URLHelper::getLink('dispatch.php/course/topics') . '">', '</a>'));
+        }
+        if ($termin_room) {
+            $this->course->createMessage(sprintf(_('Der Termin %s wurde gelöscht! Die Buchung für den Raum %s wurde gelöscht.'),
+                $termin_date, $termin_room));
+        } else {
+            $this->course->createMessage(sprintf(_('Der Termin %s wurde gelöscht!'), $termin_date));
+        }
+
+        return $termin;
     }
 
 
