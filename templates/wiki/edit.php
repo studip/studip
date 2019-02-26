@@ -9,8 +9,7 @@
         <input type="hidden" name="cmd" value="show">
 
         <br>
-        <textarea name="body" class="wiki-editor add_toolbar wysiwyg resizable size-l"
-            data-editor="extraPlugins=studip-wiki"
+        <textarea name="body" class="wiki-editor add_toolbar wysiwyg size-l" data-editor="extraPlugins=studip-wiki"
         ><?= wysiwygReady($body) ?></textarea>
     </fieldset>
 
