@@ -8,9 +8,13 @@ jQuery(function ($) {
     // searchterm and category can be passed by URL parameters (e.g. through the quicksearch)
     var searchterm = $('#search-results').data('searchterm');
     var category = $('#search-results').data('category');
-    if(searchterm && category) {
+    if(searchterm) {
         cache.set('searchterm', searchterm);
-        STUDIP.Search.setActiveCategory(category);
+        if (category) {
+            STUDIP.Search.setActiveCategory(category);
+        } else {
+            STUDIP.Search.setActiveCategory('show_all_categories');
+        }
         STUDIP.Search.setFilter('semester', '');
     }
 
