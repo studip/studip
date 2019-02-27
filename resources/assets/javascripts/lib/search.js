@@ -24,14 +24,15 @@ const Search = {
      */
     doSearch: function (filter) {
 
-        var cache           = STUDIP.Search.getCache(),
-            searchterm      = $('#search-input').val().trim() || cache.get('searchterm'),
-            hasValue        = searchterm && searchterm.length >= 3,
-            resultsDiv      = $('#search-results'),
-            resultsPerType  = resultsDiv.data('results-per-type'),
-            allResultsText  = resultsDiv.data('all-results'),
-            limit           = 100,
-            wrapper         = $('#search');
+        var cache           = STUDIP.Search.getCache();
+        var searchterm      = $('#search-input').val().trim() || cache.get('searchterm');
+        var hasValue        = searchterm && searchterm.length >= 3;
+        var resultChunks    = $();
+        var resultsDiv      = $('#search-results');
+        var resultsPerType  = resultsDiv.data('results-per-type');
+        var allResultsText  = resultsDiv.data('all-results');
+        var limit           = 100;
+        var wrapper         = $('#search');
 
         if (searchterm === '') {
             return;
@@ -62,7 +63,7 @@ const Search = {
             search: searchterm,
             filters: JSON.stringify(filter)
         }).done(function (json) {
-            resultsDiv.html('');
+            resultsDiv.empty();
 
             // No results found...
             if (!$.isPlainObject(json) || $.isEmptyObject(json)) {
@@ -75,27 +76,26 @@ const Search = {
             // Iterate over each result category.
             $.each(json, function (name, value) {
                 // Create an <article> for category.
-                var category = $(`<article id="search-${name}" class="studip">`),
-                    header   = $('<header>').appendTo(category),
-                    categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category),
-                    counter  = 0;
-                if (STUDIP.Search.getActiveCategory() == name) {
+                var category = $(`<article id="search-${name}" class="studip">`);
+                var header = $('<header>').appendTo(category);
+                var categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category);
+                var counter = 0;
+                var isActive = STUDIP.Search.getActiveCategory() === name;
+
+                if (isActive) {
                     STUDIP.Search.resultsInCategory = true;
                 }
 
                 // Create header name
-                $('<a href="#">').text(value.name)
-                    .wrap('<h1 class="search-category">')
-                    .parent() // Element is now the wrapper
-                    .data('category', name)
+                $(`<h1 class="search-category" data-category="${name}">`)
+                    .append(`<a href="#">${value.name}</a>`)
                     .appendTo(header);
 
                 if (value.more) {
-                    $('<a href="#">').text(allResultsText)
-                        .wrap(`<div id="show-all-categories-${name}" class="search-more-results">`)
-                        .parent() // Element is now the wrapper
-                        .appendTo(header)
-                        .hide();
+                    $(`<div id="show-all-categories-${name}" class="search-more-results">`)
+                        .append(`<a href="#">${allResultsText}</a>`)
+                        .toggle(isActive)
+                        .appendTo(header);
                 }
 
                 // Process results and create corresponding entries.
@@ -115,9 +115,8 @@ const Search = {
 
                     // Optional image...
                     if (result.img !== null) {
-                        $(`<img src="${result.img}">`)
-                            .wrap('<div class="search-result-img">')
-                            .parent() // Element is now the wrapper
+                        $('<div class="search-result-img">')
+                            .append(`<img src="${result.img}">`)
                             .appendTo(link);
                     }
 
@@ -125,25 +124,25 @@ const Search = {
 
                     // Name/title
                     $('<div class="search-result-title">')
-                        .html($.parseHTML(result.name))
+                        .html(result.name)
                         .appendTo(data);
 
                     if (result.number !== null) {
                         $('<div class="search-result-number">')
-                            .html($.parseHTML(result.number))
+                            .html(result.number)
                             .appendTo(details);
                     }
 
                     // Details: Descriptional text
                     if (result.description !== null) {
                         $('<div class="search-result-description">')
-                            .html($.parseHTML(result.description))
+                            .html(result.description)
                             .appendTo(details);
                     }
 
                     if (result.dates !== null) {
                         $('<div class="search-result-dates">')
-                            .html($.parseHTML(result.dates))
+                            .html(result.dates)
                             .appendTo(details);
                     }
 
@@ -152,14 +151,14 @@ const Search = {
                     // Date/Time of entry
                     if (result.date !== null) {
                         $('<div class="search-result-time">')
-                            .html($.parseHTML(result.date))
+                            .html(result.date)
                             .appendTo(information);
                     }
 
                     // Details: Additional information
                     var additional = $('<div class="search-result-additional">');
                     if (result.additional !== null) {
-                        additional.html($.parseHTML(result.additional));
+                        additional.html(result.additional);
 
                         // "Expand" attribute for further, result-related search
                         // (e.g. search in course of found forum entry)
@@ -175,7 +174,6 @@ const Search = {
 
                     counter += 1;
                 });
-                resultsDiv.append(category);
                 $(`a#search_category_${name}`)
                     .removeClass('no-result')
                     .text(`${value.name}  (${counter}${value.plus ? '+' : ''})`);
@@ -190,6 +188,7 @@ const Search = {
                             STUDIP.Search.expandCategory(name);
                             STUDIP.Search.setActiveCategory(name);
                         })
+                        .toggle(!isActive)
                         .appendTo(footer);
                     $(`<a id="link_results_${name}" href="#">`).text(allResultsText).hide()
                         .click(function() {
@@ -197,24 +196,24 @@ const Search = {
                             STUDIP.Search.showAllCategories(name);
                             STUDIP.Search.setActiveCategory(name);
                         })
+                        .toggle(isActive)
                         .appendTo(footer);
                     footer.appendTo(category);
-                    if (STUDIP.Search.getActiveCategory() != 'show_all_categories') {
-                        $(`a#link_all_results_${STUDIP.Search.getActiveCategory()}`).hide();
-                        $(`a#link_results_${STUDIP.Search.getActiveCategory()}`).show();
-                        $(`div#show-all-categories-${STUDIP.Search.getActiveCategory()}`).show();
-                    }
                 }
 
+                resultChunks = resultChunks.add(category);
             });
-            if (STUDIP.Search.getActiveCategory() != 'show_all_categories' &&
-                STUDIP.Search.getActiveCategory() != undefined) {
+
+            if (STUDIP.Search.getActiveCategory()
+                && STUDIP.Search.getActiveCategory() !== 'show_all_categories')
+            {
                 STUDIP.Search.expandCategory(STUDIP.Search.getActiveCategory());
                 if (!STUDIP.Search.resultsInCategory) {
                     $('#search-no-result').show();
                 }
             }
 
+            resultsDiv.html(resultChunks);
             wrapper.removeClass('is-searching');
         }).fail(function (xhr, status, error) {
             window.alert(error);
