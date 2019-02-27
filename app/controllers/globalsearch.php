@@ -42,53 +42,72 @@ class GlobalSearchController extends AuthenticatedController
         $result = $classes = [];
 
         foreach ($modules as $className => $data) {
-            if ($data['active']) {
-                $class = new $className();
-                $classes[$className] = $class;
-                $partSQL = $class->getSQL($search, $filter, $limit);
-                if ($partSQL) {
-                    // Global config setting says to use mysqli
-                    if ($async) {
-                        $mysqli = new mysqli($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
-                            $GLOBALS['DB_STUDIP_PASSWORD'], $GLOBALS['DB_STUDIP_DATABASE']);
-                        mysqli_set_charset($mysqli, 'UTF8');
-                        if ($mysqli->multi_query($partSQL . '; SELECT FOUND_ROWS() as found_rows;')) {
-                            do {
-                                if ($res = $mysqli->store_result()) {
-                                    $all_links[$className][] = $res->fetch_all(MYSQLI_ASSOC);
-                                }
-                            } while ($mysqli->more_results() && $mysqli->next_result());
+            // Not active? Leave.
+            if (!$data['active']) {
+                continue;
+            }
+
+            $class = new $className();
+            $classes[$className] = $class;
+            $partSQL = $class->getSQL($search, $filter, $limit);
+
+            // No valid sql? Leave.
+            if (!$partSQL) {
+                continue;
+            }
+
+            // Global config setting says to use mysqli
+            if ($async) {
+                $mysqli = new mysqli($GLOBALS['DB_STUDIP_HOST'], $GLOBALS['DB_STUDIP_USER'],
+                    $GLOBALS['DB_STUDIP_PASSWORD'], $GLOBALS['DB_STUDIP_DATABASE']);
+                mysqli_set_charset($mysqli, 'UTF8');
+                if ($mysqli->multi_query($partSQL . '; SELECT FOUND_ROWS() as found_rows;')) {
+                    do {
+                        if ($res = $mysqli->store_result()) {
+                            $all_links[$className][] = $res->fetch_all(MYSQLI_ASSOC);
                         }
-                        $entries = $all_links[$className][0];
-                        $entries_count = (int)$all_links[$className][1][0]['found_rows'];
-                    // Global config setting calls for PDO
-                    } else {
-                        $entries = DBManager::get()->fetchAll($partSQL);
-                        $entries_count_array = DBManager::get()->fetchAll('SELECT FOUND_ROWS() as found_rows');
-                        $entries_count = (int)$entries_count_array[0]['found_rows'];
-                    }
-                    // Walk through results
-                    if (is_array($entries)) {
-                        foreach ($entries as $one) {
-                            // Filter item and add to result if necessary.
-                            if ($item = $classes[$className]->filter($one, $search)) {
-                                $result[$className]['name'] = $classes[$className]->getName();
-                                $result[$className]['fullsearch'] = $classes[$className]->getSearchURL($search);
-                                $result[$className]['content'][] = $item;
-                            }
-                        }
-                    }
-                    // We found more results than needed, add "more" link for full search.
-                    if (count($result[$className]['content']) > Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE) {
-                        $result[$className]['more'] = true;
-                        // There are more results than our arbitrary LIMIT and a plus ('+') 
-                        // should be shown besides the category result count
-                        if (count($result[$className]['content']) < $entries_count) {
-                            $result[$className]['plus'] = true;
-                        }
-                    }
+                    } while ($mysqli->more_results() && $mysqli->next_result());
+                }
+                $entries = $all_links[$className][0];
+                $entries_count = (int)$all_links[$className][1][0]['found_rows'];
+            // Global config setting calls for PDO
+            } else {
+                $entries = DBManager::get()->fetchAll($partSQL);
+                $entries_count_array = DBManager::get()->fetchAll('SELECT FOUND_ROWS() as found_rows');
+                $entries_count = (int)$entries_count_array[0]['found_rows'];
+            }
+
+            // No results? Leave.
+            if (!is_array($entries)) {
+                continue;
+            }
+
+
+            // Walk through results
+            $found = [];
+            foreach ($entries as $one) {
+                // Filter item and add to result if necessary.
+                if ($item = $classes[$className]->filter($one, $search)) {
+                    $found[] = $item;
                 }
             }
+
+            // Nothing found? Leave.
+            if (count($found) === 0) {
+                continue;
+            }
+
+            $result[$className] = [
+                'name'       => $classes[$className]->getName(),
+                'fullsearch' => $classes[$className]->getSearchURL($search),
+                'content'    => $found,
+                // If we found more results than needed, indicate a "more" link
+                // for full search.
+                'more'       => count($found) > Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE,
+                // If there are more results than our arbitrary LIMIT, a plus
+                // ('+') should be shown besides the category result count
+                'plus'       => count($found) < $entries_count,
+            ];
         }
 
         // Sort
