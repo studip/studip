@@ -29,6 +29,7 @@ class GlobalSearchController extends AuthenticatedController
      */
     public function find_action($limit)
     {
+        $limit = min(100, (int)$limit);
         // Perform search by mysqli (=async) or by PDO (=sync)?
         $async = Config::get()->GLOBALSEARCH_ASYNC_QUERIES;
 
