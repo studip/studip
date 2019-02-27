@@ -24,7 +24,7 @@
 
     <div id="search-results" data-loading-text="<?= _('Suche...') ?>"
         data-all-results="<?= _('Filter aufheben') ?>"
-        data-searchterm="<?= htmlReady(Request::get('searchterm')) ?>"
+        data-searchterm="<?= htmlReady(Request::get('q')) ?>"
         data-category="<?= htmlReady(Request::get('category')) ?>"
         data-results-per-type="<?= Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE ?>"
         data-filters="<?= htmlReady(json_encode($filters)) ?>">

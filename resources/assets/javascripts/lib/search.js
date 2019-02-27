@@ -63,6 +63,12 @@ const Search = {
             search: searchterm,
             filters: JSON.stringify(filter)
         }).done(function (json) {
+            // Trigger searched event (regardless of successful or not)
+            $(document).trigger('searched.studip', {
+                needle: searchterm,
+                category: STUDIP.Search.getActiveCategory()
+            });
+
             resultsDiv.empty();
 
             // No results found...
@@ -308,12 +314,14 @@ const Search = {
         }).closest('li').removeClass('active');
 
         // set clicked class active
-        if (category == 'show_all_categories') {
+        if (category === 'show_all_categories') {
             $('#show_all_categories').closest('li').addClass('active');
         } else {
             $(`#search_category_${category}`).closest('li').addClass('active');
         }
         STUDIP.Search.showFilter(category);
+
+        $(document).trigger('search-category-change.studip', {category: category});
     },
 
     /**
