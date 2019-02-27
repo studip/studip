@@ -62,7 +62,7 @@ class Search_GlobalsearchController extends AuthenticatedController
         foreach ($modules as $class_name => $data) {
             if (is_a($class_name, 'GlobalSearchModule', true) && $data['active']) {
                 // Exclude modules from search if modules are not visible
-                if ($class_name === 'GlobalSearchModules' && !MVV::isVisible()) {
+                if ($class_name === 'GlobalSearchModules' && !MVV::isVisibleSearch()) {
                     continue;
                 }
                 // Hide resources from search if disabled
