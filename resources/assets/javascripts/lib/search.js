@@ -216,7 +216,9 @@ const Search = {
             resultsDiv.html(resultChunks);
             wrapper.removeClass('is-searching');
         }).fail(function (xhr, status, error) {
-            window.alert(error);
+            if (error) {
+                window.alert(error);
+            }
         });
     },
 
