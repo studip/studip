@@ -27,13 +27,14 @@ const GlobalSearch = {
      * Performs the actual search.
      */
     doSearch: function() {
-        var searchterm = $('#globalsearch-input').val().trim(),
-            hasValue = searchterm.length >= 3,
-            resultsDiv = $('#globalsearch-results'),
-            resultsPerType = resultsDiv.data('results-per-type'),
-            moreResultsText = resultsDiv.data('more-results'),
-            limit = resultsPerType * 3,
-            wrapper = $('#globalsearch-searchbar');
+        var searchterm = $('#globalsearch-input').val().trim();
+        var hasValue = searchterm.length >= 3;
+        var results = $();
+        var resultsDiv = $('#globalsearch-results');
+        var resultsPerType = resultsDiv.data('results-per-type');
+        var moreResultsText = resultsDiv.data('more-results');
+        var limit = resultsPerType * 3;
+        var wrapper = $('#globalsearch-searchbar');
 
         if (searchterm === '') {
             return;
@@ -54,7 +55,7 @@ const GlobalSearch = {
         $.getJSON(STUDIP.URLHelper.getURL('dispatch.php/globalsearch/find/' + limit), {
             search: searchterm
         }).done(function(json) {
-            resultsDiv.html('');
+            resultsDiv.empty();
 
             // No results found...
             if (!$.isPlainObject(json) || $.isEmptyObject(json)) {
@@ -115,20 +116,20 @@ const GlobalSearch = {
 
                     // Name/title
                     $('<div class="globalsearch-result-title">')
-                        .html($.parseHTML(result.name))
+                        .html(result.name)
                         .appendTo(data);
 
                     // Details: Descriptional text
                     if (result.description !== null) {
                         $('<div class="globalsearch-result-description">')
-                            .html($.parseHTML(result.description))
+                            .html(result.description)
                             .appendTo(details);
                     }
 
                     // Details: Additional information
                     if (result.additional !== null) {
                         $('<div class="globalsearch-result-additional">')
-                            .html($.parseHTML(result.additional))
+                            .html(result.additional)
                             .appendTo(details);
                     }
 
@@ -137,7 +138,7 @@ const GlobalSearch = {
                     // Date/Time of entry
                     if (result.date !== null) {
                         $('<div class="globalsearch-result-time">')
-                            .html($.parseHTML(result.date))
+                            .html(result.date)
                             .appendTo(link);
                     }
 
@@ -153,12 +154,15 @@ const GlobalSearch = {
 
                     counter += 1;
                 });
-                resultsDiv.append(category);
+                results = results.add(category);
             });
 
+            resultsDiv.html(results);
             wrapper.removeClass('is-searching');
         }).fail(function(xhr, status, error) {
-            window.alert(error);
+            if (error) {
+                window.alert(error);
+            }
         });
     },
 

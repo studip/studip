@@ -204,6 +204,8 @@ const Search = {
                 resultChunks = resultChunks.add(category);
             });
 
+            resultsDiv.html(resultChunks);
+
             if (STUDIP.Search.getActiveCategory()
                 && STUDIP.Search.getActiveCategory() !== 'show_all_categories')
             {
@@ -213,7 +215,6 @@ const Search = {
                 }
             }
 
-            resultsDiv.html(resultChunks);
             wrapper.removeClass('is-searching');
         }).fail(function (xhr, status, error) {
             if (error) {
