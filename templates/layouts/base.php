@@ -28,7 +28,7 @@ if ($navigation) {
                 $link->addClass('quiet');
             }
         }
-        if ($nav_links->hasElements() && count($nav_links->getElements()) > 1) {
+        if ($nav_links->hasElements()) {
             Sidebar::get()->insertWidget($nav_links, ':first');
         }
     }
