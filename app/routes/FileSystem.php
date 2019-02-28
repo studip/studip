@@ -559,11 +559,10 @@ class FileSystem extends \RESTAPI\RouteMap
     }
 
     /**
-     * Get a list with permissions a user (or the current user) has for a folder.
+     * Get a list with permissions the current user has for a folder.
      * @get /folder/:folder_id/permissions
-     * @get /folder/:folder_id/permissions/:user_id
      */
-    public function getFolderPermissions($folder_id, $user_id = null)
+    public function getFolderPermissions($folder_id)
     {
         $folder = \Folder::find($folder_id);
         if (!$folder) {
@@ -575,10 +574,7 @@ class FileSystem extends \RESTAPI\RouteMap
             $this->halt(500, 'Folder type not found!');
         }
 
-        if (!$user_id) {
-            //user_id is not set: use the ID of the current user
-            $user_id = \User::findCurrent()->id;
-        }
+        $user_id = \User::findCurrent()->id;
 
         // read permissions of the user and return them:
         return [
