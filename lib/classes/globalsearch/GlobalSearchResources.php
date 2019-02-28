@@ -84,7 +84,7 @@ class GlobalSearchResources extends GlobalSearchModule
     public static function getSearchURL($searchterm)
     {
         return URLHelper::getURL('dispatch.php/search/globalsearch', [
-            'searchterm' => $searchterm,
+            'q'        => $searchterm,
             'category' => self::class
         ]);
     }

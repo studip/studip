@@ -48,7 +48,7 @@ abstract class GlobalSearchModule
 
     /**
      * Returns the filters that are displayed in the sidebar of the global search.
-     * 
+     *
      * @return array Filters for this class.
      */
     public static function getFilters()
@@ -143,7 +143,7 @@ abstract class GlobalSearchModule
         }
 
         return $string;
-    } 
+    }
 
     /**
     * Get the selected institute with sub-institutes as an array of IDs
