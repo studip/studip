@@ -121,7 +121,7 @@ const Search = {
 
                     // Optional image...
                     if (result.img !== null) {
-                        $('<div class="search-result-img">')
+                        $('<div class="search-result-img hidden-tiny-down">')
                             .append(`<img src="${result.img}">`)
                             .appendTo(link);
                     }

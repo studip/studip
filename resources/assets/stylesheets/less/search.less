@@ -118,7 +118,6 @@ label.inactive-settings-category {
                     flex: 1;
                     overflow: hidden;
                     margin-right: 6px;
-                    white-space: nowrap;
 
                     .search-result-title {
                         font-size: @font-size-base;
@@ -133,6 +132,10 @@ label.inactive-settings-category {
 
                 .search-result-information {
                     position: relative;
+                    flex: 1;
+                    overflow: hidden;
+                    margin-right: 6px;
+                  
 
                     .search-result-time {
                         color: @dark-gray-color-80;
@@ -144,15 +147,13 @@ label.inactive-settings-category {
 
                     .search-result-additional {
                         color: @dark-gray-color-80;
-                        flex: 0;
+                        flex: 1;
                         font-size: @font-size-small;
-                        white-space: nowrap;
+                        overflow: hidden;
+                        text-align: right;
                         position: absolute;
                         right: 0;
                         bottom: 0;
-                        width: 42em;
-                        overflow: hidden;
-                        text-align: right;
                     }
                 }
 
