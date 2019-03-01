@@ -915,6 +915,10 @@ class ConnectedIlias
             return false;
         }
 
+        if ($GLOBALS['user']->perms == 'root') {
+            return true;
+        }
+
         // get course role folder and local roles
         $user_roles = $this->soap_client->getUserRoles($this->user->getId());
         $local_roles = $this->soap_client->getLocalRoles($ilias_course_id);
@@ -936,7 +940,6 @@ class ConnectedIlias
         }
 
         // is user already course-member? otherwise add member with proper role
-        // TODO: do not add root
         $is_member = $this->soap_client->isMember( $this->user->getId(), $ilias_course_id);
         if (!$is_member) {
             $member_data["usr_id"] = $this->user->getId();
