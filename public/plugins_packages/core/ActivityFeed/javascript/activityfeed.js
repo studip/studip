@@ -49,49 +49,52 @@
 
             STUDIP.ActivityFeed.polling = true;
 
-            $.ajax(STUDIP.URLHelper.resolveURL('api.php/user/' + STUDIP.ActivityFeed.user_id
-                    + '/activitystream?filtertype=' + filtertype + '&scrollfrom=' + STUDIP.ActivityFeed.scrolledfrom), {
-                success: function(data) {
-                    var stream        = STUDIP.ActivityFeed.getTemplate('activity_stream');
-                    var activity      = STUDIP.ActivityFeed.getTemplate('activity');
-                    var activity_urls = STUDIP.ActivityFeed.getTemplate('activity-urls');
-                    var activities    = data;
+            STUDIP.api.GET(['user', STUDIP.ActivityFeed.user_id, 'activitystream'], {
+                filtertype: filtertype,
+                scrollfrom: STUDIP.ActivityFeed.scrolledfrom
+            }).done(function (activities) {
+                var stream        = STUDIP.ActivityFeed.getTemplate('activity_stream');
+                var activity      = STUDIP.ActivityFeed.getTemplate('activity');
+                var activity_urls = STUDIP.ActivityFeed.getTemplate('activity-urls');
+                var num_entries   = Object.keys(activities).length;
+                var lastelem      = $(activities).last();
 
-                    var num_entries   = Object.keys(activities).length;
-
-
-                    var lastelem = $(activities).last();
-
-                    if(lastelem[0]) {
-                        STUDIP.ActivityFeed.scrolledfrom  = lastelem[0].mkdate;
-                    } else {
-                        STUDIP.ActivityFeed.scrolledfrom = false;
-                    }
-
-                    if (STUDIP.ActivityFeed.initial) {            // replace data in DOM
-                        $('#stream-container').html('');
-                    }
-
-                    $('#stream-container').append(stream({
-                        stream        : activities,
-                        num_entries   : num_entries,
-                        activity      : activity,
-                        activity_urls : activity_urls,
-                        user_id       :  STUDIP.ActivityFeed.user_id
-                    }));
-
-                    STUDIP.ActivityFeed.setToggleStatus();
-
-                    STUDIP.ActivityFeed.initial = false;
-                    STUDIP.ActivityFeed.polling = false;
-
-
-                    if ($('#stream-container').height() < STUDIP.ActivityFeed.maxheight) {
-                        STUDIP.ActivityFeed.loadFeed(filtertype);
-                    }
+                if (lastelem[0]) {
+                    STUDIP.ActivityFeed.scrolledfrom  = lastelem[0].mkdate;
+                } else {
+                    STUDIP.ActivityFeed.scrolledfrom = false;
                 }
-            });
 
+                STUDIP.ActivityFeed.writeToStream(stream({
+                    stream        : activities,
+                    num_entries   : num_entries,
+                    activity      : activity,
+                    activity_urls : activity_urls,
+                    user_id       :  STUDIP.ActivityFeed.user_id
+                }));
+
+                STUDIP.ActivityFeed.setToggleStatus();
+
+                if ($('#stream-container').height() < STUDIP.ActivityFeed.maxheight) {
+                    STUDIP.ActivityFeed.loadFeed('');
+                }
+            }).fail(function () {
+                var template = STUDIP.ActivityFeed.getTemplate('activity-load-error');
+                STUDIP.ActivityFeed.writeToStream(template());
+            }).always(function () {
+                STUDIP.ActivityFeed.polling = false;
+            });
+        },
+
+        writeToStream: function (html) {
+            if (STUDIP.ActivityFeed.initial) {
+                // replace data in DOM
+                $('#stream-container').html('');
+
+                STUDIP.ActivityFeed.initial = false;
+            }
+
+            $('#stream-container').append(html);
         },
 
         setToggleStatus: function() {

@@ -18,7 +18,7 @@ RESTAPI.adjustOptions = function(options) {
             parameters: {},
             headers: {},
             data: {},
-            overlay: true,
+            overlay: false,
             async: false,
             before: false
         },

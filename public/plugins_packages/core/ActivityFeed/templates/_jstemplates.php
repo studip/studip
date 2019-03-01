@@ -24,6 +24,10 @@
     <% } %>
 </script>
 
+<script type="text/template" class="activity-load-error">
+    <?= MessageBox::error(_('Aktivitäten konnten nicht geladen werden')) ?>
+</script>
+
 <script type="text/template" class="activity">
     <section class="activity">
         <header>
