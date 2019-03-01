@@ -81,15 +81,7 @@ class Search_ModuleController extends MVVController
         $widget->addElement(new WidgetElement(_('Auch unvollständige Namen (mindestens 3 Zeichen) werden akzeptiert.')));
         $helpbar->addWidget($widget);
 
-        $sem = Request::option('sem_select');
-        if ($sem) {
-            $this->sessSet('selected_semester', $sem);
-        }
-
-        $semesterSwitch = intval(get_config('SEMESTER_TIME_SWITCH'));
-        $currentSemester = SemesterData::getSemesterDataByDate(time() + $semesterSwitch * 7 * 24 * 60 * 60);
-        $this->selected_semester = Semester::find($this->sessGet('selected_semester',
-            $currentSemester['semester_id']));
+        $this->setSemester();
 
         $do_search = Request::int('do_search');
         if (mb_strlen(trim(str_replace('%', '', $this->sterm))) < 3) {
@@ -157,8 +149,6 @@ class Search_ModuleController extends MVVController
 
         $this->input_search = $this->sterm;
         $this->result_count = count($this->search_result['Modul']);
-
-        $active_list = Request::get('actlist', 'studiengaenge');
 
         $drill_down['studiengaenge']['objects'] =
                 $this->drilldown_studiengaenge($this->search_result['Modul']);
@@ -272,9 +262,7 @@ class Search_ModuleController extends MVVController
             $this->drilldown();
         }
 
-        if($sem = Request::option('sem_select')) {
-            $this->sessSet('selected_semester', $sem);
-        }
+        $this->setSemester();
 
         $this->modul = Modul::find($modul_id);
         $courses = $this->getSemesterCourses($this->modul);
@@ -298,10 +286,7 @@ class Search_ModuleController extends MVVController
             }
             $sem_number++;
         }
-        $semesterSwitch = intval(get_config('SEMESTER_TIME_SWITCH'));
-        $currentSemester = SemesterData::getSemesterDataByDate(time() + $semesterSwitch * 7 * 24 * 60 * 60);
-        $this->selected_semester =  Semester::find($this->sessGet('selected_semester',
-                $currentSemester['semester_id']));
+        
         $this->semester_select = array_reverse($this->semester_select);
         $response = $this->relay('shared/modul/overview', $this->modul->getId(), $this->selected_semester->semester_id);
 
@@ -531,9 +516,7 @@ class Search_ModuleController extends MVVController
             $this->drilldown();
         }
 
-        if($sem = Request::option('sem_select')) {
-            $this->sessSet('selected_semester', $sem);
-        }
+        $this->setSemester();
 
         $this->modul = Modul::get($modul_id);
         $courses = $this->getSemesterCourses($this->modul);
@@ -558,12 +541,8 @@ class Search_ModuleController extends MVVController
             $sem_number++;
         }
 
-        $semesterSwitch = intval(get_config('SEMESTER_TIME_SWITCH'));
-        $currentSemester = SemesterData::getSemesterDataByDate(time() + $semesterSwitch * 7 * 24 * 60 * 60);
-        $this->selected_semester =  Semester::find($this->sessGet('selected_semester',
-                $currentSemester['semester_id']));
         $this->semester_select = array_reverse($this->semester_select);
-        $response = $this->relay('shared/modul/overview', $this->modul->getId(), $currentSemester['semester_id']);
+        $response = $this->relay('shared/modul/overview', $this->modul->getId(), $this->selected_semester->semester_id);
 
         if (Request::isXhr()) {
             $this->render_text($response->body);
@@ -602,5 +581,20 @@ class Search_ModuleController extends MVVController
         }
         return $courses;
     }
-
+    
+    /**
+     * Sets the default semester if no semester was selected by semester filter.
+     */
+    private function setSemester()
+    {
+        if (Request::option('sem_select')) {
+            $this->sessSet('selected_semester', Request::option('sem_select'));
+        }
+        if (!$this->sessGet('selected_semester')) {
+            $semester_switch = intval(get_config('SEMESTER_TIME_SWITCH'));
+            $current_semester = SemesterData::getSemesterDataByDate(time() + $semester_switch * 7 * 24 * 60 * 60);
+            $this->sessSet('selected_semester', $current_semester['semester_id']);
+        }
+        $this->selected_semester = Semester::find($this->sessGet('selected_semester'));
+    }
 }
