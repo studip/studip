@@ -352,7 +352,11 @@ if (!$have_config) {
 
             foreach ($configurations[$module_type["module"]] as $configuration) {
                 echo "<tr><td style=\"width: 65%\">";
-                echo $configuration["name"] . "</td>\n";
+                echo $configuration["name"];
+                if ($configuration['is_default']) {
+                    echo ' (' . _('Standard') . ')';
+                }
+                echo "</td>\n";
                 $actionMenu = ActionMenu::get();
                 $actionMenu->addLink(
                         URLHelper::getLink('?com=download_config&config_id='. $configuration['id'] .'&module='. $module_type['module']),
