@@ -55,8 +55,7 @@ class StudipLog
             return;
         }
 
-        $log_action = SimpleORMapCollection::createFromArray(
-                LogAction::findByName($action_name))->first();
+        $log_action = LogAction::findOneByName($action_name);
         if (!$log_action) {
             // Action doesn't exist -> LOG_ERROR
             $debug = sprintf('StudipLog::log(%s,%s,%s,%s,%s) for user %s',
@@ -164,7 +163,7 @@ class StudipLog
      */
     public function unregisterAction($name)
     {
-        $action = LogAction::findByName($name)->first();
+        $action = LogAction::findOneByName($name);
         if ($action) {
             return $action->delete();
         }
@@ -232,8 +231,7 @@ class StudipLog
         // search for deleted institutes
         // Name of deleted institute is part of info field,
         // old id (still in DB) is in affected column
-        $log_action_delete_institute = SimpleORMapCollection::createFromArray(
-                LogAction::findByName('INST_DEL'))->first();
+        $log_action_delete_institute = LogAction::findOneByName('INST_DEL');
         $log_events_delete_institute = LogEvent::findBySQL(
                 "action_id = ? AND info LIKE CONCAT('%', ?, '%')",
                 array($log_action_delete_institute->getId(), $needle));
@@ -283,9 +281,7 @@ class StudipLog
         // registered log actions in the past.
         // Search for the user if it is still in database. If not, the search
         // for deleted users is not possible.
-        $log_action_deleted_user = SimpleORMapCollection::createFromArray(
-            LogAction::findByName('USER_DEL')
-        )->first();
+        $log_action_deleted_user = LogAction::findOneByName('USER_DEL');
         if ($log_action_deleted_user) {
             $log_events_deleted_user = LogEvent::findBySQL(
                 "action_id = ? AND info LIKE CONCAT('%', ?, '%')",
