@@ -1,19 +1,7 @@
-<?
-# Lifter001: DONE
+<?php
 # Lifter002: TODO
-# Lifter003: TEST
-# Lifter005: TODO
 # Lifter007: TODO
-# Lifter010: TODO
 use Studip\Button, Studip\LinkButton;
-// wiki regex pattern
-// IMPORTANT: Wiki Keyword has to be in 2nd paranthesed pattern!!
-// Make sure to change routines below if this changes
-//
-global $wiki_keyword_regex, $wiki_link_regex, $wiki_extended_link_regex;
-$wiki_keyword_regex = "(^|\s|\A|\>)(([A-ZÄÖÜ]|&[AOU]uml;)([a-z0-9äöüß]|&[aou]uml;|&szlig;)+([A-ZÄÖÜ]|&[AOU]uml;)([a-zA-Z0-9äöüÄÖÜß]|&[aouAOU]uml;|&szlig;)+)";
-$wiki_link_regex = "\[\[(([\w\.\-\:\(\)_§\/@# ]|&[AOUaou]uml;|&szlig;)+)\]\]";
-$wiki_extended_link_regex = "\[\[(([\w\.\-\:\(\)_§\/@# ]|&[AOUaou]uml;|&szlig;)+)\|([^\]]+)\]\]";
 
 /**
 * Retrieve a WikiPage version from current seminar's WikiWikiWeb.
@@ -324,15 +312,15 @@ function releasePageLocks($keyword, $user_id)
 *
 **/
 function getWikiLinks($str) {
-    global $wiki_keyword_regex, $wiki_link_regex, $wiki_extended_link_regex;
     $str = preg_replace('/\[nop\].*\[\/nop\]/', '', $str);
     $str = preg_replace('/\[code\].*\[\/code\]/', '', $str);
-    preg_match_all("/$wiki_keyword_regex/", $str, $out_wikiwords, PREG_PATTERN_ORDER);
-    preg_match_all("/$wiki_link_regex/", $str, $out_wikilinks, PREG_PATTERN_ORDER);
-    preg_match_all("/$wiki_extended_link_regex/", $str, $out_wikiextlinks, PREG_PATTERN_ORDER);
-    $result = array_merge($out_wikiwords[2], $out_wikilinks[1], $out_wikiextlinks[1]);
-    $result = array_map('trim', $result);
-    return array_unique($result);
+    preg_match_all(
+        '/' . WikiFormat::getWikiMarkup('wiki-links')['start'] . '/',
+        $str,
+        $out_wikiwords,
+        PREG_PATTERN_ORDER
+    );
+    return array_unique($out_wikiwords[1]);
 }
 
 /**
