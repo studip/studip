@@ -81,6 +81,13 @@ namespace RESTAPI {
         } else {
             echo $status;
         }
+    } catch (\Exception $e) {
+        header('Content-Type: application/json; charset=UTF-8');
+        header("{$_SERVER['SERVER_PROTOCOL']} 500 {$e->getMessage()}");
+        echo $GLOBALS['template_factory']->render('json_exception', [
+            'exception' => $e,
+            'status'    => 500,
+        ]);
     }
 
     function setupAuth($router)
