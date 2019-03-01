@@ -210,6 +210,15 @@ nav.calendar-nav {
 
 table.calendar-week, table.calendar-day {
     &  tbody tr td {
+        &.calendar-day-event {
+            div:first-child {
+                background-color: @brand-color-dark;
+                overflow: hidden;
+            }
+            background: linear-gradient(to right, @base-color-80,  @base-color-40) repeat-x  @base-color-80;
+            border: solid 1px @brand-color-dark;
+            .calendar-category-mixin;
+        }
         &.calendar-category1, &.calendar-course-category5 {
             div:first-child {
                 background-color: @dark-green;
@@ -264,7 +273,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @brown;
             .calendar-category-mixin;
         }
-        &.calendar-category7 {
+        &.calendar-category7, &.calendar-course-category8 {
             div:first-child {
                 background-color: @green;
                 overflow: hidden;
@@ -273,7 +282,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @green;
             .calendar-category-mixin;
         }
-        &.calendar-category8 {
+        &.calendar-category8, &.calendar-course-category9 {
             div:first-child {
                 background-color: @red;
                 overflow: hidden;
@@ -282,7 +291,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @red;
             .calendar-category-mixin;
         }
-        &.calendar-category9 {
+        &.calendar-category9, &.calendar-course-category10 {
             div:first-child {
                 background-color: @yellow;
                 overflow: hidden;
@@ -291,7 +300,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @yellow;
             .calendar-category-mixin;
         }
-        &.calendar-category10 {
+        &.calendar-category10, &.calendar-course-category11 {
             div:first-child {
                 background-color: @dark-green-60;
                 overflow: hidden;
@@ -300,7 +309,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @dark-green-60;
             .calendar-category-mixin;
         }
-        &.calendar-category11 {
+        &.calendar-category11, &.calendar-course-category12 {
             div:first-child {
                 background-color: @dark-violet-60;
                 overflow: hidden;
@@ -309,7 +318,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @dark-violet-60;
             .calendar-category-mixin;
         }
-        &.calendar-category12 {
+        &.calendar-category12, &.calendar-course-category13 {
             div:first-child {
                 background-color: @violet-60;
                 overflow: hidden;
@@ -318,7 +327,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @violet-60;
             .calendar-category-mixin;
         }
-        &.calendar-category13 {
+        &.calendar-category13, &.calendar-course-category14 {
             div:first-child {
                 background-color: @petrol-60;
                 overflow: hidden;
@@ -327,7 +336,7 @@ table.calendar-week, table.calendar-day {
             border: solid 1px @petrol-60;
             .calendar-category-mixin;
         }
-        &.calendar-category14 {
+        &.calendar-category14, &.calendar-course-category15 {
             div:first-child {
                 background-color: @orange-60;
                 overflow: hidden;
