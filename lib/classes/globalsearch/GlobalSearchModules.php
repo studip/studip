@@ -108,7 +108,7 @@ class GlobalSearchModules extends GlobalSearchModule
         $label = $module_data['code'] . ' ' . $module_data['bezeichnung'];
 
         // Get icon according to permissions
-        $icon_role = Icon::ROLE_INFO;
+        $icon_role = Icon::ROLE_CLICKABLE;
         if (self::extendedDisplay()) {
             if ($module_data['stat'] === 'genehmigt') {
                 $icon_role = Icon::ROLE_STATUS_GREEN;
