@@ -8,7 +8,7 @@ class ShowAdressees extends Migration
             'description' => 'Ab wievielen Adressaten dürfen diese aus datenschutzgründen nicht mehr angezeigt werden in einer empfangenen Nachricht?',
             'section'     => 'global',
             'range'       => 'global',
-            'type'        => 'string',
+            'type'        => 'integer',
             'value'       => '20'
         )
     );
