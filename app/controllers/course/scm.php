@@ -78,7 +78,6 @@ class Course_ScmController extends StudipController
             Sidebar::get()->addWidget($widget);
         }
 
-        PageLayout::setHelpKeyword('Basis.Informationsseite');
         Navigation::activateItem('/course/scm');
 
         checkObject(); // do we have an open object?
