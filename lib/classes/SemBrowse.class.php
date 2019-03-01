@@ -1074,21 +1074,21 @@ class SemBrowse {
                             $seminar_obj->admission_prelim)) {
                         case 1:
                             $row .= Icon::create(
-                                'span-2quarter',
+                                'info-circle',
                                 Icon::ROLE_STATUS_YELLOW,
                                 tooltip2(_('Eingeschränkter Zugang'))
                             );
                             break;
                         case 2:
                             $row .= Icon::create(
-                                'span-empty',
+                                'decline-circle',
                                 Icon::ROLE_STATUS_RED,
                                 tooltip2(_('Kein Zugang'))
                             );
                             break;
                         default:
                             $row .= Icon::create(
-                                'span-full',
+                                'check-circle',
                                 Icon::ROLE_STATUS_GREEN,
                                 tooltip2(_('Uneingeschränkter Zugang'))
                             );
