@@ -413,9 +413,9 @@ class ConnectedIlias
         } else {
             // add new user category at main user data category in ILIAS
             $this->user->category = $this->soap_client->addObject($object_data, $this->ilias_config['user_data_category']);
-            if ($this->ilias_config['category_to_desktop']) {
-                $this->soap_client->addDesktopItems($this->user->getId(), $this->user->category);
-            }
+        }
+        if ($this->ilias_config['category_to_desktop'] && $this->user->category) {
+            $this->soap_client->addDesktopItems($this->user->getId(), array($this->user->category));
         }
 
         // store data
