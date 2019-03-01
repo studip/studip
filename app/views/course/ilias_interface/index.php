@@ -87,12 +87,12 @@
         </tr>
     <? else : ?>
         <tr>
-            <td><?=Icon::create('learnmodule', Icon::ROLE_INFO, [
+            <td><?=Icon::create('learnmodule', $course_objects[$ilias_index]->is_offline ? Icon::ROLE_INACTIVE : Icon::ROLE_INFO, [
                             'title'        => _('ILIAS-Kurs')
                             ])
             ?></td>
             <td>
-                <a href="<?= $controller->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/start/'.$courses[$ilias_index].'/crs')?>" target="_blank"><?= sprintf(_('Kurs in %s'), $ilias->getName())?></a>
+                <a href="<?= $controller->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/start/'.$courses[$ilias_index].'/crs')?>" target="_blank"><?= sprintf(_('Kurs in %s'), $ilias->getName()).($course_objects[$ilias_index]->is_offline ? ' '._('(offline)') : '')?></a>
             </td>
             <td><?=_('ILIAS-Kurs')?></td>
                 <td class="actions">

@@ -72,7 +72,9 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     $this->author_permission = true;
                 }
                 $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $ilias_index);
-                if (!$crs_id) {
+                $this->course_objects[$ilias_index] = $this->ilias_list[$ilias_index]->getModule($crs_id);
+//var_dump($crs_object);
+                if (!$crs_id || !$this->course_objects[$ilias_index]->isAllowed('start')) {
                     $missing_course = true;
                 } else {
                     $this->courses[$ilias_index] = $crs_id;
@@ -135,7 +137,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
         }
         foreach ($this->courses as $ilias_index => $crs_id) {
             $widget->addLink(
-                    sprintf(_('Kurs in %s'), $this->ilias_list[$ilias_index]->getName()),
+                    sprintf(_('Kurs in %s'), $this->ilias_list[$ilias_index]->getName()).($this->course_objects[$ilias_index]->is_offline ? ' '._('(offline)') : ''),
                     $this->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/start/'.$crs_id.'/crs'),
                     Icon::create('link-extern', 'clickable'),
                     ['target' => '_blank', 'rel' => 'noopener noreferrer']
