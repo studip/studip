@@ -34,7 +34,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
     </td>
     <td data-sort-value="<?= htmlReady($file_ref->name) ?>">
     <? if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id)) : ?>
-        <a href="<?= htmlReady($controller->url_for('file/details/' . $file_ref->id)) ?>" data-dialog="">
+        <a href="<?= $controller->link_for("file/details/{$file_ref->id}/1") ?>" data-dialog>
             <?= htmlReady($file_ref->name) ?>
         </a>
     <? else : ?>
@@ -53,7 +53,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
     </td>
     <td data-sort-value="<?= htmlReady($file_ref->author_name) ?>" class="responsive-hidden">
     <? if ($file_ref->user_id !== $GLOBALS['user']->id && $file_ref->owner): ?>
-        <a href="<?= URLHelper::getURL('dispatch.php/profile?username=' . $file_ref->owner->username) ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $file_ref->owner->username) ?>">
             <?= htmlReady($file_ref->author_name) ?>
         </a>
     <? else: ?>
@@ -67,7 +67,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
     <?php
         $actionMenu = ActionMenu::get();
         $actionMenu->addLink(
-            $controller->url_for('file/details/' . $file_ref->id),
+            $controller->url_for("file/details/{$file_ref->id}/1"),
             _('Info'),
             Icon::create('info-circle', Icon::ROLE_CLICKABLE, ['size' => 20]),
             ['data-dialog' => 1]

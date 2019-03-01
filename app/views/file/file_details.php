@@ -16,9 +16,12 @@
     <? endif; ?>
         <h3><?=_('Pfad')?></h3>
         <article>
-            <? foreach (array_values($fullpath) as $i => $one_folder) : ?>
-                <a href="<?=FileManager::getFolderLink($one_folder)?>"><?=htmlReady($one_folder->name)?></a><?=($i < count($fullpath) - 1 ? ' / ' : '')?>
-            <? endforeach; ?>
+        <? foreach (array_values($fullpath) as $i => $one_folder) : ?>
+            <? if ($i): ?>/<? endif; ?>
+            <a href="<?= FileManager::getFolderLink($one_folder) ?>">
+                <?= htmlReady($one_folder->name) ?>
+            </a>
+        <? endforeach; ?>
         </article>
 
         <h3><?= _('Beschreibung') ?></h3>
@@ -32,21 +35,21 @@
 <? if ($previous_file_ref_id): ?>
     <?= Studip\LinkButton::create(
         _('<< Vorherige Datei'),
-        $controller->url_for('file/details/' . $previous_file_ref_id, ['from_plugin' => $from_plugin]),
+        $controller->url_for("file/details/{$previous_file_ref_id}/1", compact('from_plugin')),
         ['data-dialog' => '']
     ) ?>
 <? endif; ?>
 <? if ($next_file_ref_id): ?>
     <?= Studip\LinkButton::create(
         _('Nächste Datei >>'),
-        $controller->url_for('file/details/' . $next_file_ref_id, ['from_plugin' => $from_plugin]),
+        $controller->url_for("file/details/{$next_file_ref_id}/1", compact('from_plugin')),
         ['data-dialog' => '']
     ) ?>
 <? endif; ?>
 <? if ($is_editable) : ?>
     <?= Studip\LinkButton::create(
         _('Bearbeiten'),
-        $controller->url_for('file/edit/' . $file_ref->id, ['from_plugin' => $from_plugin]),
+        $controller->url_for("file/edit/{$file_ref->id}", compact('from_plugin')),
         ['data-dialog' => '']
     ) ?>
 <? endif; ?>

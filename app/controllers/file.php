@@ -201,7 +201,7 @@ class FileController extends AuthenticatedController
      *
      * @param string $file_area_object_id A file area object like a Folder or a FileRef.
      */
-    public function details_action($file_area_object_id = null)
+    public function details_action($file_area_object_id = null, $include_navigation = false)
     {
         //check if the file area object is a FileRef:
         if (Request::get("from_plugin")) {
@@ -239,7 +239,9 @@ class FileController extends AuthenticatedController
 
             //load the previous and next file in the folder,
             //if the folder is of type FolderType.
-            if ($folder->isReadable(User::findCurrent()->id)) {
+            $this->previous_file_ref_id = false;
+            $this->next_file_ref_id     = false;
+            if ($include_navigation && $folder->isReadable(User::findCurrent()->id)) {
                 $current_file_ref_id = null;
                 foreach ($folder->getFiles() as $folder_file_ref) {
                     $last_file_ref_id = $current_file_ref_id;
