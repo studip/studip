@@ -393,10 +393,10 @@ class Admin_PluginController extends AuthenticatedController
             $filepath
         );
 
-        header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; ' . encode_header_parameter('filename', $filename));
-        header('Content-Length: ' . filesize($filepath));
-        header('Pragma: public');
+        $this->set_content_type('application/zip');
+        $this->response->add_header('Content-Disposition',  'attachment; ' . encode_header_parameter('filename', $filename));
+        $this->response->add_header('Content-Length', filesize($filepath));
+        $this->response->add_header('Pragma', 'public');
 
         $this->render_nothing();
 
