@@ -658,7 +658,7 @@ function listPages($mode, $sortby = NULL)
             ['target' => '_blank']
         );
     }
-#    end_blank_table();
+
     showPageFrameEnd(array());
 }
 
@@ -856,20 +856,6 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
     Sidebar::get()->addWidget($widget);
 
     showPageFrameEnd(array());
-}
-
-
-/**
-* Print a wiki page header including printhead-bar with page name and
-* last change info.
-*
-**/
-function wikiSinglePageHeader($wikiData, $keyword) {
-    $zusatz=getZusatz($wikiData);
-
-    begin_blank_table();
-    printhead(0, 0, FALSE, "icon-wiki", FALSE, "", "<b>" . htmlReady($keyword) ."</b>", $zusatz);
-    end_blank_table();
 }
 
 /**
@@ -1448,22 +1434,6 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     echo $template->render();
 
     getShowPageInfobox($keyword, $wikiData->isLatestVersion());
-}
-
-/**
-* Helper function that prints header for a "blank" table
-*
-**/
-function begin_blank_table() {
-    echo "<table width=\"100%\" class=\"blank\" border=0 cellpadding=0 cellspacing=0>\n";
-}
-
-/**
-* Helper function that prints footer for a "blank" table
-*
-**/
-function end_blank_table() {
-    echo "</tr></table>";
 }
 
 /**
