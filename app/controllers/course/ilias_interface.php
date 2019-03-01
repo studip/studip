@@ -60,9 +60,11 @@ class Course_IliasInterfaceController extends AuthenticatedController
     {
         Navigation::activateItem('/course/ilias_interface/view');
 
+        // Zugeordnete Ilias-Kurse ermitteln und ggf. aktualisieren
         $missing_course = false;
         $this->courses = array();
         $this->ilias_list = array();
+        $module_count = 0;
         foreach (Config::get()->ILIAS_INTERFACE_SETTINGS as $ilias_index => $ilias_config) {
             if ($ilias_config['is_active']) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);
@@ -76,25 +78,11 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     $this->courses[$ilias_index] = $crs_id;
                     $this->ilias_list[$ilias_index]->checkUserCoursePermissions($crs_id);
                     $this->ilias_list[$ilias_index]->updateCourseConnections($crs_id);
+                    $module_count += count($this->ilias_list[$ilias_index]->getCourseModules());
                 }
             }
         }
 
-        // Zugeordnete Ilias-Kurse ermitteln und ggf. aktualisieren
-        // Instanz mit den Zuordnungen von Content-Modulen zur Veranstaltung
-        $object_connections = new IliasObjectConnections($this->seminar_id);
-        $connected_systems = $object_connections->getConnections();
-        $module_count = 0;
-        foreach ($this->ilias_list as $ilias_index => $ilias) {
-            if ($object_connections->isConnected($ilias_index)) {
-                foreach ($connected_systems[$ilias_index] as $module_id => $module_data) {
-                    if ($this->ilias_list[$ilias_index]->isAllowedModuleType($module_data['type'])) {
-                        $this->ilias_list[$ilias_index]->addCourseModule($module_id, $module_data);
-                        $this->module_count++;
-                    }
-                }
-            }
-        }
         if (($this->module_count == 0) && (!$this->courses)) {
             if (Context::isInstitute()) {
                 PageLayout::postInfo(_('Momentan sind dieser Einrichtung keine Lernobjekte zugeordnet.'));

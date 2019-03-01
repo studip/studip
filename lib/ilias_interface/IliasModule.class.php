@@ -29,6 +29,7 @@ class IliasModule
     public $ilias_index;
     public $ilias_version;
     public $allowed_operations;
+    public $is_offline;
     public $is_connected;
 
     /**
@@ -58,6 +59,7 @@ class IliasModule
         } else {
             $this->allowed_operations = [];
         }
+        $this->is_offline = $module_data['offline'];
     }
 
     /**

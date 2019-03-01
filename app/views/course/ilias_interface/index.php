@@ -24,15 +24,19 @@
     <? if (count($ilias->getCourseModules())) : ?>
         <? foreach ($ilias->getCourseModules() as $module_id => $module) : ?>
         <tr>
-            <td><?=Icon::create('learnmodule', Icon::ROLE_INFO, [
+            <td><?=Icon::create('learnmodule', $module->is_offline ? Icon::ROLE_INACTIVE : Icon::ROLE_INFO, [
                             'title'        => $module->getModuleTypeName()
                             ])
             ?></td>
+            <? if ($module->is_offline) : ?>
+            <td><?=$module->getTitle()?> <?=_('(offline)')?></td>
+            <? else : ?>
             <td><a href="<?= $controller->url_for($module->getRoute('view_course'))?>" data-dialog="size=auto"><?=$module->getTitle()?></a></td>
+            <? endif ?>
             <td><?=$module->getModuleTypeName()?></td>
                 <td class="actions">
                     <? $actionMenu = ActionMenu::get() ?>
-                    <? $actionMenu->addButton(
+                    <? if (! $module->is_offline) $actionMenu->addButton(
                             'view',
                             _('Info'),
                             Icon::create('info-circle', Icon::ROLE_CLICKABLE, [

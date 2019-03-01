@@ -320,11 +320,18 @@ class IliasSoap extends StudipSoapClient
                 $single_object['owner'] = (string)$object->Owner;
                 $single_object['create_date'] = (string)$object->CreateDate;
                 $single_object['last_update'] = (string)$object->LastUpdate;
+                $single_object['ref_count'] = count($object->References);
                 foreach ($object->References as $reference) {
                     //$single_object['references'][(string)$reference[0]['ref_id']]['ref_id'] = (string)$reference[0]['ref_id'];
                     if ($condition_field && ($reference[0][$condition_field] == $condition_value)) {
                         $single_object['ref_id'] = (string)$reference[0]['ref_id'];
+                        $single_object['parent_id'] = (string)$reference[0]['parent_id'];
+                        $single_object['accessInfo'] = (string)$reference[0]['accessInfo'];
+                        foreach ($reference->Operation as $operation) {
+                            $single_object['operations'][] = (string)$operation;
+                        }
                     }
+                    $single_object['references'][(string)$reference[0]['ref_id']]['parent_id'] = (string)$reference[0]['parent_id'];
                     $single_object['references'][(string)$reference[0]['ref_id']]['accessInfo'] = (string)$reference[0]['accessInfo'];
                     foreach ($reference->Operation as $operation) {
                         $single_object['references'][(string)$reference[0]['ref_id']]['operations'][] = (string)$operation;
