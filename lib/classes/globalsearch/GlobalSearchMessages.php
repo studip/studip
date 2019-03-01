@@ -69,8 +69,8 @@ class GlobalSearchMessages extends GlobalSearchModule
         $message = Message::buildExisting($message_id);
 
         $additional = ($message->autor_id === '____%system%____'
-                    ? htmlReady(_('Systemnachricht'))
-                    : ($message->author ? '<a href="' . URLHelper::getURL('dispatch.php/profile', ['username' => $message->author->username]) . '">' . self::mark($message->author->getFullname(), $search) . '</a>' : htmlReady(_('unbekannt'))));
+                    ? _('Systemnachricht')
+                    : ($message->author ? '<a href="' . URLHelper::getURL('dispatch.php/profile', ['username' => $message->author->username]) . '">' . self::mark($message->author->getFullname(), $search) . '</a>' : _('unbekannt')));
 
         $result = [
             'name'        => self::mark($message->subject, $search),
