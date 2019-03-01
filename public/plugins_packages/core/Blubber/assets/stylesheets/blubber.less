@@ -250,8 +250,9 @@
 #blubber_threads > li.thread .additional_tags a:hover {
     color: @active-color;
 }
-#blubber_threads .loading {
+#blubber_threads > .loading {
     text-align: center;
+    margin-bottom: 40px;
 }
 #blubber_threads > li, #blubber_threads > li > ul > li {
     margin: 0px;
@@ -497,4 +498,10 @@ table.select {
     .want_to_share {
         cursor: pointer;
     }
+}
+
+// Fix footer
+#layout_footer {
+    position: fixed;
+    bottom: 0;
 }

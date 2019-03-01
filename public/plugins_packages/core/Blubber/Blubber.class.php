@@ -112,20 +112,6 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
     }
 
     /**
-     * Initializes the plugin when actually invoked. Injects stylesheets into
-     * the page layout.
-     */
-    public function initialize()
-    {
-        $this->addStylesheet('assets/stylesheets/blubber.less');
-
-        $assets_url = $this->getPluginURL() . '/assets/';
-        PageLayout::addHeadElement('script', array('src' => $assets_url . '/javascripts/autoresize.jquery.min.js'), '');
-        PageLayout::addHeadElement('script', array('src' => $assets_url . '/javascripts/blubber.js'), '');
-        PageLayout::addHeadElement('script', array('src' => $assets_url . '/javascripts/formdata.js'), '');
-    }
-
-    /**
      * Returns a navigation for the tab displayed in the course.
      * @param string $course_id of the course
      * @return \AutoNavigation
@@ -195,4 +181,14 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
         return _("Blubber");
     }
 
+    public function perform($unconsumed)
+    {
+        $this->addStylesheet('assets/stylesheets/blubber.less');
+
+        PageLayout::addScript("{$this->getPluginURL()}/assets/javascripts/autoresize.jquery.min.js");
+        PageLayout::addScript("{$this->getPluginURL()}/assets/javascripts/blubber.js");
+        PageLayout::addScript("{$this->getPluginURL()}/assets/javascripts/formdata.js");
+
+        parent::perform($unconsumed);
+    }
 }
