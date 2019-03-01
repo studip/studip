@@ -70,20 +70,22 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
             $controller->url_for("file/details/{$file_ref->id}/1"),
             _('Info'),
             Icon::create('info-circle', Icon::ROLE_CLICKABLE, ['size' => 20]),
-            ['data-dialog' => 1]
+            ['data-dialog' => '']
         );
-        if (Navigation::hasItem('/course/files_new/flat') && Navigation::getItem('/course/files_new/flat')->isActive()) {
-            $actionMenu->addLink(
-                $controller->url_for('course/files/index/' . $file_ref->folder_id),
-                _('Ordner öffnen'),
-                Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
-            );
-        } elseif (Navigation::hasItem('/files_dashboard/files/flat') && Navigation::getItem('/files_dashboard/files/flat')->isActive()) {
-             $actionMenu->addLink(
-                 $controller->url_for('files/index/' . $file_ref->folder_id),
-                 _('Ordner öffnen'),
-                 Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
-            );
+        if ($current_action === 'flat') {
+            if (Navigation::hasItem('/course/files') && Navigation::getItem('/course/files')->isActive()) {
+                $actionMenu->addLink(
+                    $controller->url_for('course/files/index/' . $file_ref->folder_id),
+                    _('Ordner öffnen'),
+                    Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
+                );
+            } elseif (Navigation::hasItem('/files_dashboard/files') && Navigation::getItem('/files_dashboard/files')->isActive()) {
+                 $actionMenu->addLink(
+                     $controller->url_for('files/index/' . $file_ref->folder_id),
+                     _('Ordner öffnen'),
+                     Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
+                );
+            }
         }
         if ($current_folder->isFileEditable($file_ref->id, $GLOBALS['user']->id)) {
             $actionMenu->addLink(
