@@ -89,8 +89,9 @@
     <?php
         foreach ($lostDateKeys as $key) {
             $date = $dates[$key];
+            $partial = $date instanceof CourseExDate ? '_date_row-exdate' : '_date_row';
             echo $this->render_partial(
-                'course/dates/_date_row.php',
+                "course/dates/{$partial}.php",
                 compact('date', 'dates', 'key')
             );
         }
