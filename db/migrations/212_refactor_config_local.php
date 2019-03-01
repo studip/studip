@@ -113,7 +113,7 @@ class RefactorConfigLocal extends Migration
                 'default' => 1
             ),
             "ALLOW_CHANGE_EMAIL" => array(
-                'description' => "If true, users are allowed to change their username",
+                'description' => "If true, users are allowed to change their email",
                 'type' => "boolean",
                 'section' => "permissions",
                 'default' => 1
