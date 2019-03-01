@@ -68,9 +68,9 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                                 ngettext(
                                     '%1$d Lernobjekt, %2$d neues',
                                     '%1$d Lernobjekte, %2$d neue',
-                                    $result['count']
+                                    $result['count_modules']
                                 ),
-                                $result['count'],
+                                $result['count_modules'],
                                 $result['neue']
                             )
                         ]
