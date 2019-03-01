@@ -88,37 +88,21 @@ class ForumHelpers {
      * @param  string  $perm
      * @return string
      */
-    static function translate_perm($perm)
+    public static function translate_perm($perm)
     {
-        switch ($perm) {
-            case 'root':
-                return _('Chef im Ring');
-                break;
+        $mapping = [
+            'root'   => _('Root'),
+            'admin'  => _('Administrator/-in'),
+            'dozent' => _('Lehrende/-r'),
+            'tutor'  => _('Tutor/-in'),
+            'autor'  => _('Autor/-in'),
+            'user'   => _('Leser/-in'),
+        ];
 
-            case 'admin':
-                return _('Administrator/-in');
-                break;
+        // TODO: Activate next when devboard reliably runs on PHP7
+        // return $mapping[$perm] ?? '';
 
-            case 'dozent':
-                return _('Lehrende/-r');
-                break;
-
-            case 'tutor':
-                return _('Tutor/-in');
-                break;
-
-            case 'autor':
-                return _('Autor/-in');
-                break;
-
-            case 'user':
-                return _('Leser/-in');
-                break;
-
-            default:
-                return '';
-                break;
-        }
+        return isset($mapping[$perm]) ? $mapping[$perm] : '';
     }
 
     /**
