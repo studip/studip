@@ -58,7 +58,7 @@ class Moadb extends Migration
 ('0b542c6c891af499763356f2c7218f7f', 7, '', 'Weniger häufig benötigte Funktionen sind in Stud.IP 4 hinter dem Aktionsmenü mit den drei Punkten zu finden.', 'LT', 0, 'table.documents nav.action-menu', 'dispatch.php/files', '', '', 'root@localhost', 1514883706, 1516749543),
 ('0b542c6c891af499763356f2c7218f7f', 8, '', 'Ebenfalls neu ist die dezente Navigationszeile. Der gerade aktive Bereich wird durch eine Linie angezeigt.', 'B', 0, '#tabs', 'dispatch.php/files', '', '', 'root@localhost', 1514883773, 1514883781),
 ('0b542c6c891af499763356f2c7218f7f', 9, '', 'Das waren die allerwichtigsten Dinge im Überblick. In Stud.IP 4 hat sich aber noch viel mehr getan. Jedes Detail wurde durchdacht und verbessert . Damit ist Stud.IP 4 das modernste Open-Source-LMS auf dem Markt.', 'B', 0, '', 'dispatch.php/files', '', '', 'root@localhost', 1514883871, 1514883871),
-('0b542c6c891af499763356f2c7218f7f', 10, 'Das Stud.IP-Team wünscht viel Erolg bei der Arbeit mit Stud.IP 4!', '', 'B', 0, '', 'dispatch.php/start', '', '', 'root@localhost', 1514883886, 1514883946)");
+('0b542c6c891af499763356f2c7218f7f', 10, 'Das Stud.IP-Team wünscht viel Erfolg bei der Arbeit mit Stud.IP 4!', '', 'B', 0, '', 'dispatch.php/start', '', '', 'root@localhost', 1514883886, 1514883946)");
     }
 
     public function up()
