@@ -72,7 +72,7 @@ class Course_StudyAreasController extends AuthenticatedController
                 foreach (Navigation::getItem('/course/admin/main') as $nav) {
                     if ($nav->isVisible(true)) {
                         $image = $nav->getImage();
-                        $links->addLink($nav->getTitle(), URLHelper::getLink($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $image);
+                        $links->addLink($nav->getTitle(), URLHelper::getURL($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $image);
                     }
                 }
                 $sidebar->addWidget($links);

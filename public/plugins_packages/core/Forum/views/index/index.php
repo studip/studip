@@ -31,7 +31,7 @@ if ($section == 'index') {
     if (ForumPerm::has('abo', $seminar_id)) {
         if (ForumAbo::has($constraint['topic_id'])) :
             $abo_text = _('Nicht mehr abonnieren');
-            $abo_url = PluginEngine::getLink('coreforum/index/remove_abo/' . $constraint['topic_id']);
+            $abo_url = PluginEngine::getURL('coreforum/index/remove_abo/' . $constraint['topic_id']);
         else :
             switch ($constraint['depth']) {
                 case '0': $abo_text = _('Komplettes Forum abonnieren');break;
@@ -39,7 +39,7 @@ if ($section == 'index') {
                 default: $abo_text = _('Dieses Thema abonnieren');break;
             }
 
-            $abo_url = PluginEngine::getLink('coreforum/index/abo/' . $constraint['topic_id']);
+            $abo_url = PluginEngine::getURL('coreforum/index/abo/' . $constraint['topic_id']);
         endif;
 
         $actions->addLink($abo_text, $abo_url, Icon::create('link-intern', 'clickable'));

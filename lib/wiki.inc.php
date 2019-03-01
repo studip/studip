@@ -647,13 +647,13 @@ function listPages($mode, $sortby = NULL)
         $widget = Sidebar::get()->addWidget(new ExportWidget());
         $widget->addLink(
             _('PDF-Ausgabe aller Wiki-Seiten'),
-            URLHelper::getLink('?view=exportall_pdf', ['sortby' => $sortby]),
+            URLHelper::getURL('?view=exportall_pdf', ['sortby' => $sortby]),
             Icon::create('file-pdf'),
             ['target' => '_blank']
         );
         $widget->addLink(
             _('Druckansicht aller Wiki-Seiten'),
-            URLHelper::getLink('?view=wikiprintall'),
+            URLHelper::getURL('?view=wikiprintall'),
             Icon::create('print'),
             ['target' => '_blank']
         );
@@ -1291,13 +1291,13 @@ function getShowPageInfobox($keyword, $latest_version)
     $widget = $sidebar->addWidget(new ExportWidget());
     $widget->addLink(
         _('Druckansicht'),
-        URLHelper::getLink('?view=wikiprint', compact('keyword', 'version')),
+        URLHelper::getURL('?view=wikiprint', compact('keyword', 'version')),
         Icon::create('print'),
         ['target' => '_blank']
     );
     $widget->addLink(
         _('PDF-Ausgabe'),
-        URLHelper::getLink('?view=export_pdf', compact('keyword', 'version')),
+        URLHelper::getURL('?view=export_pdf', compact('keyword', 'version')),
         Icon::create('file-pdf'),
         ['target' => '_blank']
     );
@@ -1320,16 +1320,16 @@ function getDiffPageInfobox($keyword) {
     $widget = Sidebar::get()->addWidget(new ViewsWidget());
     $widget->addLink(
         _('Standard'),
-        URLHelper::getLink('?view=show', compact('keyword'))
+        URLHelper::getURL('?view=show', compact('keyword'))
     );
     if (count($versions) >= 1) {
         $widget->addLink(
             _('Textänderungen anzeigen'),
-            URLHelper::getLink('?view=diff', compact('keyword'))
+            URLHelper::getURL('?view=diff', compact('keyword'))
         )->setActive(Request::option('view') === 'diff');
         $widget->addLink(
             _('Text mit Autor/-innenzuordnung anzeigen'),
-            URLHelper::getLink('?view=combodiff', compact('keyword'))
+            URLHelper::getURL('?view=combodiff', compact('keyword'))
         )->setActive(Request::option('view') === 'combodiff');
     }
 

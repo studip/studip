@@ -62,7 +62,7 @@ class Course_ManagementController extends AuthenticatedController
             $links = new ActionsWidget();
             foreach (Navigation::getItem('/course/admin/main') as $nav) {
                 if ($nav->isVisible(true)) {
-                    $links->addLink($nav->getTitle(), URLHelper::getLink($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $nav->getImage(), $nav->getLinkAttributes());
+                    $links->addLink($nav->getTitle(), URLHelper::getURL($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $nav->getImage(), $nav->getLinkAttributes());
                 }
             }
             $sidebar->addWidget($links);

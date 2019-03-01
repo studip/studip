@@ -79,12 +79,12 @@ class Institute_OverviewController extends AuthenticatedController
         if (Config::get()->ALLOW_SELFASSIGN_INSTITUTE && $GLOBALS['user']->id !== 'nobody' && !$GLOBALS['perm']->have_perm('admin')) {
             $widget = new ActionsWidget();
             if (! $GLOBALS['perm']->have_studip_perm('user', $this->institute_id)) {
-                $url = URLHelper::getLink('dispatch.php/institute/overview', array(
+                $url = URLHelper::getURL('dispatch.php/institute/overview', array(
                     'follow_inst' => 'on'
                 ));
                 $widget->addLink(_('Einrichtung abonnieren'), $url);
             } elseif (! $GLOBALS['perm']->have_studip_perm('autor', $this->institute_id)) {
-                $url = URLHelper::getLink('dispatch.php/institute/overview', array(
+                $url = URLHelper::getURL('dispatch.php/institute/overview', array(
                     'follow_inst' => 'off'
                 ));
                 $widget->addLink(_('Austragen aus der Einrichtung'), $url);

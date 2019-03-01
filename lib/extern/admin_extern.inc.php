@@ -359,16 +359,16 @@ if (!$have_config) {
                 echo "</td>\n";
                 $actionMenu = ActionMenu::get();
                 $actionMenu->addLink(
-                        URLHelper::getLink('?com=download_config&config_id='. $configuration['id'] .'&module='. $module_type['module']),
+                        URLHelper::getURL('?com=download_config&config_id='. $configuration['id'] .'&module='. $module_type['module']),
                         _('Konfigurationsdatei herunterladen'),
                         Icon::create('download', 'clickable', ['title' => _('Konfigurationsdatei herunterladen')]));
 
                 $actionMenu->addLink(
-                        URLHelper::getLink('?com=upload_config&config_id='. $configuration['id']),
+                        URLHelper::getURL('?com=upload_config&config_id='. $configuration['id']),
                         _('Konfigurationsdatei hochladen'),
                         Icon::create('upload', 'clickable', ['title' => _('Konfigurationsdatei hochladen')]));
                 $actionMenu->addLink(
-                        URLHelper::getLink('?com=info&config_id=' . $configuration['id']),
+                        URLHelper::getURL('?com=info&config_id=' . $configuration['id']),
                         _('weitere Informationen anzeigen'),
                         Icon::create('infopage', 'clickable', ['title' => _('weitere Informationen anzeigen')]));
 
@@ -376,18 +376,18 @@ if (!$have_config) {
                 // Switching for the is_default option. Read the comment above.
                 if ($configuration["is_default"]) {
                     $actionMenu->addLink(
-                            URLHelper::getLink('?com=unset_default&config_id=' . $configuration['id']) . '#anker',
+                            URLHelper::getURL('?com=unset_default&config_id=' . $configuration['id']) . '#anker',
                             _('Standard entziehen'),
                             Icon::create('checkbox-checked', 'clickable', ['title' => _('Standard entziehen')]));
                 } else {
                     $actionMenu->addLink(
-                            URLHelper::getLink('?com=set_default&config_id=' . $configuration['id']) . '#anker',
+                            URLHelper::getURL('?com=set_default&config_id=' . $configuration['id']) . '#anker',
                             _('Standard zuweisen'),
                             Icon::create('checkbox-checked', 'clickable', ['title' => _('Standard zuweisen')]));
                 }
 
                 $actionMenu->addLink(
-                        URLHelper::getLink('?com=delete_sec&config_id=' . $configuration['id']) . '#anker',
+                        URLHelper::getURL('?com=delete_sec&config_id=' . $configuration['id']) . '#anker',
                         _('Konfiguration löschen'),
                         Icon::create('trash', 'clickable', ['title' => _('Konfiguration löschen')]));
                 $actionMenu->addLink(

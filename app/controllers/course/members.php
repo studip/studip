@@ -1394,7 +1394,7 @@ class Course_MembersController extends AuthenticatedController
         $widget  = $sidebar->addWidget(new ActionsWidget());
 
         if ($this->is_tutor || $config->COURSE_STUDENT_MAILING) {
-            $url = URLHelper::getLink('dispatch.php/messages/write', [
+            $url = URLHelper::getURL('dispatch.php/messages/write', [
                 'course_id'       => $this->course_id,
                 'default_subject' => $this->subject,
                 'filter'          => 'all',

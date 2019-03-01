@@ -152,13 +152,13 @@ if (!$institute->isNew()) {
     $widget = new ActionsWidget();
     $widget->addLink(
         _('Infobild ändern'),
-        URLHelper::getLink('dispatch.php/avatar/update/institute/' . $institute->id),
+        URLHelper::getURL('dispatch.php/avatar/update/institute/' . $institute->id),
         Icon::create('edit')
     )->asDialog();
     if (InstituteAvatar::getAvatar($institute->id)->is_customized()) {
         $widget->addLink(
             _('Infobild löschen'),
-            URLHelper::getLink('dispatch.php/avatar/delete/institute/' . $institute->id),
+            URLHelper::getURL('dispatch.php/avatar/delete/institute/' . $institute->id),
             Icon::create('trash')
         );
     }

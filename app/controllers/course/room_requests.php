@@ -194,11 +194,11 @@ class Course_RoomRequestsController extends AuthenticatedController
 
 
         $actions = new ActionsWidget();
-        $actions->addLink(_('Bearbeitung abbrechen'), $this->link_for('index/' . $this->course_id), Icon::create('decline', 'clickable'));
+        $actions->addLink(_('Bearbeitung abbrechen'), $this->url_for('index/' . $this->course_id), Icon::create('decline', 'clickable'));
 
         if (!$request->isNew() && (getGlobalPerms($GLOBALS['user']->id) == 'admin' || ($GLOBALS['perm']->have_perm('admin') && count(getMyRoomRequests(null, null, true, $request->getId()))))) {
             $actions->addLink(_('Raumanfrage auflösen'),
-                URLHelper::getLink('resources.php', array('view'           => 'edit_request',
+                URLHelper::getURL('resources.php', array('view'           => 'edit_request',
                                                           'single_request' => $request->getId()
                 )),
                 Icon::create('admin', 'clickable'));

@@ -55,7 +55,7 @@ if (Request::option('com') == 'new') {
             else {
                 echo MessageBox::error(sprintf(_('Es wurden bereits %s Konfigurationen angelegt. Sie können für dieses Module keine weiteren Konfigurationen anlegen.')
                     , $GLOBALS['EXTERN_MAX_CONFIGURATIONS']));
-                
+
                 echo LinkButton::create("<< " . _("Zurück"), URLHelper::getURL('?list=TRUE'));
                 $template = $GLOBALS['template_factory']->open('layouts/base.php');
                 $template->content_for_layout = ob_get_clean();
@@ -162,7 +162,7 @@ if ($module->getType() != 0) {
     if ($global_config = ExternConfig::GetGlobalConfiguration($module->config->range_id)) {
         $url .= "&global_id=$global_config";
     }
-    
+
     $actions = new ActionsWidget();
     $actions->addLink(_('Vorschau'), $url, Icon::create('question-circle', 'clickable', ['title' => _('Vorschau')]), ['target' => '_blank']);
     Sidebar::get()->addWidget($actions);

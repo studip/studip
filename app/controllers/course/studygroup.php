@@ -112,7 +112,7 @@ class Course_StudygroupController extends AuthenticatedController
                     $icon = $icon->copyWithRole('info');
                     $infotext = _('Mitgliedschaft bereits beantragt!');
                 } else {
-                    $infolink = URLHelper::getLink('seminar_main.php', ['auswahl' => $studygroup->id]);
+                    $infolink = URLHelper::getURL('seminar_main.php', ['auswahl' => $studygroup->id]);
                     $infotext = _('Direkt zur Studiengruppe');
                 }
             } else if ($GLOBALS['perm']->have_perm('admin')) {
@@ -121,7 +121,7 @@ class Course_StudygroupController extends AuthenticatedController
                 $icon     = Icon::create('decline', 'attention');
             } else {
                 $action           = _('Aktionen');
-                $infolink         = $this->link_for("course/enrolment/apply/{$studygroup->id}");
+                $infolink         = $this->url_for("course/enrolment/apply/{$studygroup->id}");
                 $infolink_options = ['data-dialog' => ''];
                 // customize link text if user is invited or group access is restricted
                 if ($invited) {

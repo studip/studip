@@ -181,18 +181,18 @@ class Course_PlusController extends AuthenticatedController
 
         if ($_SESSION['plus']['View'] == 'openall') {
             $widget->addLink(_("Alles zuklappen"),
-                URLHelper::getLink('?', array('mode' => 'closeall')), Icon::create('assessment', 'clickable'));
+                URLHelper::getURL('?', array('mode' => 'closeall')), Icon::create('assessment', 'clickable'));
         } else {
             $widget->addLink(_("Alles aufklappen"),
-                URLHelper::getLink('?', array('mode' => 'openall')), Icon::create('assessment', 'clickable'));
+                URLHelper::getURL('?', array('mode' => 'openall')), Icon::create('assessment', 'clickable'));
         }
 
         if ($_SESSION['plus']['displaystyle'] == 'category') {
             $widget->addLink(_("Alphabetische Anzeige ohne Kategorien"),
-                    URLHelper::getLink('?', array('displaystyle' => 'alphabetical')), Icon::create('assessment', 'clickable'));
+                    URLHelper::getURL('?', array('displaystyle' => 'alphabetical')), Icon::create('assessment', 'clickable'));
         } else {
             $widget->addLink(_("Anzeige nach Kategorien"),
-                    URLHelper::getLink('?', array('displaystyle' => 'category')), Icon::create('assessment', 'clickable'));
+                    URLHelper::getURL('?', array('displaystyle' => 'category')), Icon::create('assessment', 'clickable'));
         }
 
         $sidebar->addWidget($widget, "aktion");

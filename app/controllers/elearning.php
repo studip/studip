@@ -147,7 +147,7 @@ class ElearningController extends AuthenticatedController
                 if ($connected_cms[$cms_key]->user->isConnected()) {
                     $widget->addLink(
                         sprintf(_('Zur %s Startseite'), $cms_data['name']),
-                        URLHelper::getScriptLink($cms_data['start_link']),
+                        URLHelper::getURL($cms_data['start_link']),
                         Icon::create('link-extern', 'clickable'),
                         ['target' => '_blank', 'rel' => 'noopener noreferrer']
                     );

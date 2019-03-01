@@ -21,13 +21,13 @@
         <? $actionMenu = ActionMenu::get() ?>
         <? if (class_exists('Blubber')) : ?>
             <? $actionMenu->addLink(
-                URLHelper::getLink('plugins.php/blubber/streams/global', ['mention' => $user['username']]),
+                URLHelper::getURL('plugins.php/blubber/streams/global', ['mention' => $user['username']]),
                 _('Blubber diesen Nutzer an'),
                 Icon::create('blubber', 'clickable')
             ) ?>
         <? endif ?>
         <? $actionMenu->addLink(
-            URLHelper::getLink('dispatch.php/messages/write', ['rec_uname' => $user['username']]),
+            URLHelper::getURL('dispatch.php/messages/write', ['rec_uname' => $user['username']]),
             _('Nachricht an Benutzer verschicken'),
             Icon::create('mail', 'clickable'),
             ['data-dialog' => 'size=50%']

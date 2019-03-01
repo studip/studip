@@ -78,31 +78,31 @@
         $menu = ActionMenu::get();
         if ($questionnaire->isRunning()) {
             $menu->addLink(
-                $controller->link_for('questionnaire/stop/' . $questionnaire->id, in_array($range_type, ['course', 'institute']) ? ['redirect' => 'questionnaire/courseoverview'] : []),
+                $controller->url_for('questionnaire/stop/' . $questionnaire->id, in_array($range_type, ['course', 'institute']) ? ['redirect' => 'questionnaire/courseoverview'] : []),
                 _('Fragebogen beenden'),
                 Icon::create('pause', 'clickable')
             );
         } else {
             $menu->addLink(
-                $controller->link_for('questionnaire/start/'  .$questionnaire->id, in_array($range_type, ['course', 'institute']) ? ['redirect' => 'questionnaire/courseoverview'] : []),
+                $controller->url_for('questionnaire/start/'  .$questionnaire->id, in_array($range_type, ['course', 'institute']) ? ['redirect' => 'questionnaire/courseoverview'] : []),
                 _('Fragebogen starten'),
                 Icon::create('play', 'clickable')
             );
         }
         $menu->addLink(
-            $controller->link_for('questionnaire/evaluate/'  .$questionnaire->id),
+            $controller->url_for('questionnaire/evaluate/'  .$questionnaire->id),
             _('Auswertung'),
             Icon::create('stat', 'clickable'),
             ['data-dialog' => '']
         );
         $menu->addLink(
-            $controller->link_for('questionnaire/export/'  .$questionnaire->id),
+            $controller->url_for('questionnaire/export/'  .$questionnaire->id),
             _('Export als CSV'),
             Icon::create('file-excel', 'clickable'),
             ['data-dialog' => '']
         );
         $menu->addLink(
-            $controller->link_for('questionnaire/delete/'  .$questionnaire->id),
+            $controller->url_for('questionnaire/delete/'  .$questionnaire->id),
             _('Fragebogen löschen'),
             Icon::create('trash', 'clickable'),
             ['data-confirm' => _('Wirklich löschen?')]

@@ -960,7 +960,7 @@ class EvalTemplateGUI {
    */
   function createInfoBox () {
       global $evalID, $rangeID;
-      
+
       if (get_Username($rangeID)) {
           $rangeID = get_Username($rangeID);
       }
@@ -971,12 +971,12 @@ class EvalTemplateGUI {
 
       $actions = new ActionsWidget();
       $actions->addLink(_('Vorschau der Evaluation'),
-          URLHelper::getLink('show_evaluation.php',
+          URLHelper::getURL('show_evaluation.php',
               ['evalID' => $evalID,
                'isPreview' => YES]), Icon::create('question-circle', 'clickable'),
           ['target' => $evalID,
           'onClick' => "openEval('".$evalID."'); return false;"]);
-      $actions->addLink(_('Zurück zur Evaluations-Verwaltung'), URLHelper::getLink('admin_evaluation.php',
+      $actions->addLink(_('Zurück zur Evaluations-Verwaltung'), URLHelper::getURL('admin_evaluation.php',
           ['page' => 'overview',
            'check_abort_creation_button' => '1',
           'evalID' => $evalID,

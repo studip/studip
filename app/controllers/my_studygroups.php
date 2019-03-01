@@ -34,13 +34,13 @@ class MyStudygroupsController extends AuthenticatedController
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Neue Studiengruppe anlegen'),
-            URLHelper::getLink('dispatch.php/course/wizard', ['studygroup' => 1]),
+            URLHelper::getURL('dispatch.php/course/wizard', ['studygroup' => 1]),
             Icon::create('add')
         )->asDialog('size=auto');
         if (count($this->studygroups) > 0) {
             $actions->addLink(
                 _('Farbgruppierung ändern'),
-                URLHelper::getLink('dispatch.php/my_courses/groups/all/true'),
+                URLHelper::getURL('dispatch.php/my_courses/groups/all/true'),
                 Icon::create('group4')
             )->asDialog();
         }

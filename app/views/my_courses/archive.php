@@ -44,7 +44,7 @@
                             <?= Icon::create('forum', 'inactive')->asImg(20, ["style" => 'visibility: hidden;']) ?>
                         <? endif; ?>
 
-                        
+
                         <? $course = ArchivedCourse::find($row['seminar_id']); ?>
 
                         <? if(($row['archiv_file_id']) and archiv_check_perm($row['seminar_id'])): ?>
@@ -81,7 +81,7 @@ $sidebar->setTitle(_('Meine archivierten Veranstaltungen'));
 
 $links = new LinksWidget();
 $links->setTitle(_('Aktionen'));
-$links->addLink(_('Suche im Archiv'),URLHelper::getLink('dispatch.php/search/archive'), Icon::create('search', 'info'));
+$links->addLink(_('Suche im Archiv'),URLHelper::getURL('dispatch.php/search/archive'), Icon::create('search', 'info'));
 
 $sidebar->addWidget($links, 'actions');
 ?>

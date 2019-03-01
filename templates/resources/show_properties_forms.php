@@ -157,7 +157,7 @@ use Studip\Button, Studip\LinkButton;
 $sidebar = Sidebar::Get();
 $sidebar->setTitle(htmlReady($resObject->getName()));
 $action = new ActionsWidget();
-$action->addLink(_('Ressourcensuche'), URLHelper::getLink('resources.php?view=search&quick_view_mode=' . $view_mode));
+$action->addLink(_('Ressourcensuche'), URLHelper::getURL('resources.php?view=search&quick_view_mode=' . $view_mode));
 
 $sidebar->addWidget($action);
 ?>

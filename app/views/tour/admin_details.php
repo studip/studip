@@ -184,7 +184,7 @@ if (count($tour->steps)) {
     $widget = new ActionsWidget();
     $widget->addLink(
         _('Schritt hinzufügen'),
-        $controller->link_for('tour/edit_step/' . $tour->tour_id . '/' . (count($tour->steps) + 1) . '/new'),
+        $controller->url_for('tour/edit_step/' . $tour->tour_id . '/' . (count($tour->steps) + 1) . '/new'),
         Icon::create('add', 'clickable'),
         ['data-dialog' => 'size=auto;reload-on-close']
     );

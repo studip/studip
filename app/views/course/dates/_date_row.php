@@ -54,7 +54,7 @@ $dialog_url = $show_raumzeit
                                     _('Thema hinzufügen'), Icon::create('topic+add'), ['data-dialog' => 'size=auto']) ?>
         <? endif ?>
         <? if ($filecount): ?>
-            <? $actionMenu->addLink($controller->link_for('course/dates/details_files/' . $date->id),
+            <? $actionMenu->addLink($controller->url_for('course/dates/details_files/' . $date->id),
                                     _('Dateien anzeigen'), Icon::create('folder-topic-full'), ['data-dialog' => '']) ?>
         <? endif ?>
         <? if ($has_access): ?>

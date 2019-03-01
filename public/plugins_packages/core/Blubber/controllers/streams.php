@@ -996,7 +996,7 @@ class StreamsController extends PluginController {
             foreach ($tags as $tag) {
                 $cloud->addLink(
                     "#".$tag['tag'],
-                    URLHelper::getLink("plugins.php/blubber/streams/$context", array('hash' => $tag['tag'])),
+                    URLHelper::getURL("plugins.php/blubber/streams/$context", array('hash' => $tag['tag'])),
                     ceil(10 * $tag['counter'] / $maximum)
                 );
             }

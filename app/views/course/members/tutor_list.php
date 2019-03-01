@@ -121,7 +121,7 @@
                     <? endif ?>
                     <? if ($user_id !== $tutor['user_id']) : ?>
                         <? $actionMenu->addLink(
-                            URLHelper::getLink('dispatch.php/messages/write', [
+                            URLHelper::getURL('dispatch.php/messages/write', [
                                 'filter'           => 'send_sms_to_all',
                                 'emailrequest'    => 1,
                                 'rec_uname'       => $tutor['username'],

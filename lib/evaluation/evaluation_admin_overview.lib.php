@@ -565,7 +565,7 @@ class EvalOverview {
         /* create new ---------------------------------------------------------- */
         $actions = new ActionsWidget();
         $actions->addLink(_('Neue Evaluationsvorlage'),
-                          URLHelper::getLink('?rangeID=' . $_SESSION['rangeID'] .'&page=edit&newButton=1'),
+                          URLHelper::getURL('?rangeID=' . $_SESSION['rangeID'] .'&page=edit&newButton=1'),
                           Icon::create('add', 'clickable'));
         Sidebar::get()->addWidget($actions);
         /* ----------------------------------------------------- end: create new */

@@ -101,12 +101,12 @@ if ($reset) {
 }
 if ($GLOBALS['perm']->have_perm('dozent') && !empty($institutes)) {
     $links->addLink(_('Einrichtungsdaten bearbeiten'),
-                    URLHelper::getLink('dispatch.php/settings/statusgruppen'), Icon::create('institute+edit', 'clickable') );
+                    URLHelper::getURL('dispatch.php/settings/statusgruppen'), Icon::create('institute+edit', 'clickable') );
 }
 if ($GLOBALS['perm']->have_perm('autor')) {
     $links->addLink(_('Einrichtungen suchen'),
-                    URLHelper::getLink('dispatch.php/search/globalsearch#GlobalSearchInstitutes'), Icon::create('institute+add', 'clickable') );
+                    URLHelper::getURL('dispatch.php/search/globalsearch#GlobalSearchInstitutes'), Icon::create('institute+add', 'clickable') );
     $links->addLink(_('Studiendaten bearbeiten'),
-                    URLHelper::getLink('dispatch.php/settings/studies'), Icon::create('person', 'clickable'));
+                    URLHelper::getURL('dispatch.php/settings/studies'), Icon::create('person', 'clickable'));
 }
 $sidebar->addWidget($links);

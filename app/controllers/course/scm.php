@@ -73,7 +73,7 @@ class Course_ScmController extends StudipController
         if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
             $widget = new ActionsWidget();
             $widget->addLink(_('Neuen Eintrag anlegen'),
-                             URLHelper::getLink('dispatch.php/course/scm/create'), Icon::create('add', 'clickable'))
+                             URLHelper::getURL('dispatch.php/course/scm/create'), Icon::create('add', 'clickable'))
                    ->asDialog();
             Sidebar::get()->addWidget($widget);
         }

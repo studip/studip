@@ -148,13 +148,13 @@ class ProfileModulesController extends AuthenticatedController
         if ($config['view'] === 'openall') {
             $widget->addLink(
                 _('Alles zuklappen'),
-                $this->link_for('profilemodules', ['mode' => 'closeall']),
+                $this->url_for('profilemodules', ['mode' => 'closeall']),
                 Icon::create('assessment')
             );
         } else {
             $widget->addLink(
                 _('Alles aufklappen'),
-                $this->link_for('profilemodules', ['mode' => 'openall']),
+                $this->url_for('profilemodules', ['mode' => 'openall']),
                 Icon::create('assessment')
             );
         }
@@ -162,13 +162,13 @@ class ProfileModulesController extends AuthenticatedController
         if ($config['displaystyle'] === 'category') {
             $widget->addLink(
                 _('Alphabetische Anzeige ohne Kategorien'),
-                $this->link_for('profilemodules', ['displaystyle' => 'alphabetical']),
+                $this->url_for('profilemodules', ['displaystyle' => 'alphabetical']),
                 Icon::create('assessment')
             );
         } else {
             $widget->addLink(
                 _('Anzeige nach Kategorien'),
-                $this->link_for('profilemodules', ['displaystyle' => 'category']),
+                $this->url_for('profilemodules', ['displaystyle' => 'category']),
                 Icon::create('assessment')
             );
         }

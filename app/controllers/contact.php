@@ -216,16 +216,16 @@ class ContactController extends AuthenticatedController
         $actions = new ActionsWidget();
         $actions->addLink(_('Neue Gruppe anlegen'), $this->url_for('contact/editGroup'), Icon::create('group3+add', 'clickable'))->asDialog('size=auto');
         $actions->addLink(_('Nachricht an alle'), $this->url_for('messages/write', array('rec_uname' => $this->allContacts->pluck('username'))), Icon::create('mail', 'clickable'))->asDialog();
-        $actions->addLink(_('E-Mail an alle'), URLHelper::getLink('mailto:' . join(',', $this->allContacts->pluck('email'))), Icon::create('mail', 'clickable'));
+        $actions->addLink(_('E-Mail an alle'), URLHelper::getURL('mailto:' . join(',', $this->allContacts->pluck('email'))), Icon::create('mail', 'clickable'));
         $actions->addLink(_('Alle vCards herunterladen'), $this->url_for('contact/vcard/' . $this->filter), Icon::create('vcard', 'clickable'));
         $sidebar->addWidget($actions);
 
         // Groups navigation
         $groupsWidget = new ViewsWidget();
         $groupsWidget->setTitle(_('Gruppen'));
-        $groupsWidget->addLink(_('Alle Kontakte'), URLHelper::getLink('dispatch.php/contact/index'))->setActive(!$active_id);
+        $groupsWidget->addLink(_('Alle Kontakte'), URLHelper::getURL('dispatch.php/contact/index'))->setActive(!$active_id);
         foreach ($this->groups as $group) {
-            $groupsWidget->addLink($group->name, URLHelper::getLink('dispatch.php/contact/index/' . $group->id))->setActive($group->id == $active_id);
+            $groupsWidget->addLink($group->name, URLHelper::getURL('dispatch.php/contact/index/' . $group->id))->setActive($group->id == $active_id);
         }
         $sidebar->addWidget($groupsWidget);
     }

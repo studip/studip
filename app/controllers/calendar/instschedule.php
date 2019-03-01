@@ -105,10 +105,10 @@ class Calendar_InstscheduleController extends AuthenticatedController
         Helpbar::Get()->addPlainText(_('Information'), _('Der Stundenplan zeigt die regelmäßigen Veranstaltungen dieser Einrichtung.'), Icon::create('info'));
 
         $views = new ViewsWidget();
-        $views->addLink(_('klein'), URLHelper::getLink('', array('zoom' => 0)))->setActive($zoom == 0);
-        $views->addLink(_('mittel'), URLHelper::getLink('', array('zoom' => 2)))->setActive($zoom == 2);
-        $views->addLink(_('groß'), URLHelper::getLink('', array('zoom' => 4)))->setActive($zoom == 4);
-        $views->addLink(_('extra groß'), URLHelper::getLink('', array('zoom' => 7)))->setActive($zoom == 7);
+        $views->addLink(_('klein'), URLHelper::getURL('', array('zoom' => 0)))->setActive($zoom == 0);
+        $views->addLink(_('mittel'), URLHelper::getURL('', array('zoom' => 2)))->setActive($zoom == 2);
+        $views->addLink(_('groß'), URLHelper::getURL('', array('zoom' => 4)))->setActive($zoom == 4);
+        $views->addLink(_('extra groß'), URLHelper::getURL('', array('zoom' => 7)))->setActive($zoom == 7);
 
         Sidebar::Get()->addWidget($views);
         $actions = new ActionsWidget();

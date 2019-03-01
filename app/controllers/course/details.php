@@ -215,7 +215,7 @@ class Course_DetailsController extends AuthenticatedController
             $links = new ActionsWidget();
             $links->addLink(
                 _('Drucken'),
-                $this->link_for("course/details/index/{$this->course->id}"),
+                $this->url_for("course/details/index/{$this->course->id}"),
                 Icon::create('print'),
                 ['class' => 'print_action', 'target' => '_blank']
             );
@@ -230,7 +230,7 @@ class Course_DetailsController extends AuthenticatedController
                 }
                 $links->addLink(
                     $abo_msg,
-                    $this->link_for("course/enrolment/apply/{$this->course->id}"),
+                    $this->url_for("course/enrolment/apply/{$this->course->id}"),
                     Icon::create('door-enter'),
                     ['data-dialog' => 'size=big']
                 );
@@ -252,7 +252,7 @@ class Course_DetailsController extends AuthenticatedController
                 if (!$penciled) {
                     $links->addLink(
                         _('Nur im Stundenplan vormerken'),
-                        $this->link_for("calendar/schedule/addvirtual/{$this->course->id}"),
+                        $this->url_for("calendar/schedule/addvirtual/{$this->course->id}"),
                         Icon::create('info')
                     );
                 }
@@ -261,7 +261,7 @@ class Course_DetailsController extends AuthenticatedController
             if ($this->send_from_search_page) {
                 $links->addLink(
                     _('Zurück zur letzten Auswahl'),
-                    URLHelper::getLink($this->send_from_search_page),
+                    URLHelper::getURL($this->send_from_search_page),
                     Icon::create('link-intern')
                 );
             }

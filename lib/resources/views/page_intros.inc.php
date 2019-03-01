@@ -117,7 +117,7 @@ switch ($view) {
 
                 $widget = new ActionsWidget();
                 $widget->addLink(_('Neue Belegung erstellen'),
-                                 URLHelper::getLink('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
+                                 URLHelper::getURL('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
                 $sidebar->addWidget($widget);
             }
 
@@ -141,10 +141,10 @@ switch ($view) {
 
         $widget = new ViewsWidget();
         $widget->addLink(_('Eigenschaften anzeigen'),
-                         URLHelper::getLink('?quick_view=view_details&quick_view_mode=' . $view_mode), Icon::create('resources', 'clickable'));
+                         URLHelper::getURL('?quick_view=view_details&quick_view_mode=' . $view_mode), Icon::create('resources', 'clickable'));
         if (Config::get()->RESOURCES_ENABLE_SEM_SCHEDULE) {
             $widget->addLink(_('Semesterplan anzeigen'),
-                             URLHelper::getLink('?quick_view=view_sem_schedule&quick_view_mode=' . $view_mode), Icon::create('schedule', 'clickable'));
+                             URLHelper::getURL('?quick_view=view_sem_schedule&quick_view_mode=' . $view_mode), Icon::create('schedule', 'clickable'));
         }
         $sidebar->addWidget($widget);
 
@@ -155,7 +155,7 @@ switch ($view) {
 
             $widget = new ActionsWidget();
             $widget->addLink(_('Neue Belegung erstellen'),
-                             URLHelper::getLink('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
+                             URLHelper::getURL('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
             $sidebar->addWidget($widget);
         }
 
@@ -175,7 +175,7 @@ switch ($view) {
 
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
-                         URLHelper::getLink('?view=view_schedule&print_view=1'), Icon::create('print', 'clickable'),
+                         URLHelper::getURL('?view=view_schedule&print_view=1'), Icon::create('print', 'clickable'),
                          array('target' => '_blank'));
         $sidebar->addWidget($widget);
     break;
@@ -187,14 +187,14 @@ switch ($view) {
 
         $widget = new ViewsWidget();
         $widget->addLink(_('Eigenschaften anzeigen'),
-                         URLHelper::getLink('?quick_view=view_details&quick_view_mode=' . $view_mode), Icon::create('resources', 'clickable'));
+                         URLHelper::getURL('?quick_view=view_details&quick_view_mode=' . $view_mode), Icon::create('resources', 'clickable'));
         if ($view_mode === 'no_nav') {
             $qv = $view_mode === 'oobj'
                 ? 'openobject_schedule'
                 : 'view_schedule';
 
             $widget->addLink(_('Belegungsplan anzeigen'),
-                             URLHelper::getLink('?quick_view=' . $qv . '&quick_view_mode=no_nav'), Icon::create('schedule', 'clickable'));
+                             URLHelper::getURL('?quick_view=' . $qv . '&quick_view_mode=no_nav'), Icon::create('schedule', 'clickable'));
         }
         $sidebar->addWidget($widget);
 
@@ -205,7 +205,7 @@ switch ($view) {
 
             $widget = new ActionsWidget();
             $widget->addLink(_('Neue Belegung erstellen'),
-                             URLHelper::getLink('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
+                             URLHelper::getURL('?cancel_edit_assign=1&quick_view=' . $qv . '&quick_view_mode=' . $view_mode), Icon::create('date+add', 'clickable'));
             $sidebar->addWidget($widget);
         }
 
@@ -225,7 +225,7 @@ switch ($view) {
 
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
-                         URLHelper::getLink('?view=view_sem_schedule&print_view=1'), Icon::create('print', 'clickable'),
+                         URLHelper::getURL('?view=view_sem_schedule&print_view=1'), Icon::create('print', 'clickable'),
                          array('target' => '_blank'));
         $sidebar->addWidget($widget);
     break;
@@ -236,7 +236,7 @@ switch ($view) {
 
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
-                         URLHelper::getLink('?view=view_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
+                         URLHelper::getURL('?view=view_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
                          array('target' => '_blank'));
         $sidebar->addWidget($widget);
     break;
@@ -247,7 +247,7 @@ switch ($view) {
 
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
-                         URLHelper::getLink('?view=view_group_schedule_daily&print_view=1'), Icon::create('print', 'clickable'),
+                         URLHelper::getURL('?view=view_group_schedule_daily&print_view=1'), Icon::create('print', 'clickable'),
                          array('target' => '_blank'));
         $sidebar->addWidget($widget);
     break;
@@ -281,10 +281,10 @@ switch ($view) {
 
         $widget = new ActionsWidget();
         $widget->addLink(_('Ressourcen suchen'),
-                         URLHelper::getLink('resources.php?view=search&quick_view_mode=no_nav'), Icon::create('search', 'clickable'),
+                         URLHelper::getURL('resources.php?view=search&quick_view_mode=no_nav'), Icon::create('search', 'clickable'),
                          array('onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"));
         $widget->addLink(_('Nachrichten zu zugewiesenen Anfragen versenden'),
-                         URLHelper::getLink('?snd_closed_request_sms=TRUE'), Icon::create('mail', 'clickable'));
+                         URLHelper::getURL('?snd_closed_request_sms=TRUE'), Icon::create('mail', 'clickable'));
         $sidebar->addWidget($widget);
 
         $widget = new OptionsWidget();
@@ -327,13 +327,13 @@ switch ($view) {
         if ($view_mode == 'no_nav' && is_object($currentObject) && $currentObject->getCategoryId()) {
             $widget = new ViewsWidget();
             $widget->addLink(_('Belegungsplan anzeigen'),
-                             URLHelper::getLink('?quick_view=view_schedule&quick_view_mode=no_nav'), Icon::create('schedule', 'clickable'));
+                             URLHelper::getURL('?quick_view=view_schedule&quick_view_mode=no_nav'), Icon::create('schedule', 'clickable'));
             $sidebar->addWidget($widget);
 
             if ($ActualObjectPerms->havePerm('autor')) {
                 $widget = new ActionsWidget();
                 $widget->addLink(_('Neue Belegung erstellen'),
-                                 URLHelper::getLink('?cancel_edit_assign=1&quick_view=edit_object_assign&quick_view_mode=' . $view_mode), Icon::create('date+add', 'info'));
+                                 URLHelper::getURL('?cancel_edit_assign=1&quick_view=edit_object_assign&quick_view_mode=' . $view_mode), Icon::create('date+add', 'info'));
                 $sidebar->addWidget($widget);
             }
         }
@@ -367,7 +367,7 @@ switch ($view) {
 
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
-                         URLHelper::getLink('?view=openobject_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
+                         URLHelper::getURL('?view=openobject_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
                          array('target' => '_blank'));
         $sidebar->addWidget($widget);
     break;
@@ -377,7 +377,7 @@ switch ($view) {
 
         $widget = new ViewsWidget();
         $widget->addLink(_('Semesterplan'),
-                         URLHelper::getLink('resources.php?actual_object=' . $_SESSION['resources_data']['resolve_requests_one_res'] . '&quick_view=view_sem_schedule&quick_view_mode=no_nav'),
+                         URLHelper::getURL('resources.php?actual_object=' . $_SESSION['resources_data']['resolve_requests_one_res'] . '&quick_view=view_sem_schedule&quick_view_mode=no_nav'),
                          Icon::create('schedule', 'clickable'),
                          array('onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"));
         $sidebar->addWidget($widget);

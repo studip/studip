@@ -138,7 +138,7 @@ $grouping->setTitle(_("Anzeige gruppieren:"));
 foreach ($sem_browse_obj->group_by_fields as $i => $field){
     $grouping->addLink(
         $field['name'],
-        URLHelper::getLink('?', array('group_by' => $i)),
+        URLHelper::getURL('?', array('group_by' => $i)),
         $group_by == $i ? Icon::create('arr_1right', 'attention') : null
     );
 }
@@ -150,26 +150,26 @@ if (get_config('EXPORT_ENABLE') && $perm->have_perm("tutor")) {
     if ($level == "s") {
         $export->addLink(
             _("Diese Daten exportieren"),
-            URLHelper::getLink("export.php", array('range_id' => Context::getId(),
+            URLHelper::getURL("export.php", array('range_id' => Context::getId(),
                 'o_mode' => 'choose', 'ex_type' => "veranstaltung",
                 'xslt_filename' => Context::get()->Name, 'ex_sem' => $show_semester)),
             Icon::create('download', 'info')
         );
         $export->addLink(
             _("Download als Excel Tabelle"),
-            URLHelper::getLink('?send_excel=1&group_by=' . (int)$group_by),
+            URLHelper::getURL('?send_excel=1&group_by=' . (int)$group_by),
             Icon::create('file-xls', 'info')
         );
     }
     if ($level == "sbb") {
         $export->addLink(
             _("Diese Daten exportieren"),
-            URLHelper::getLink("export.php", array('range_id' => $id, 'o_mode' => 'choose', 'ex_type' => "veranstaltung", 'xslt_filename' => $id, 'ex_sem' => $show_semester)),
+            URLHelper::getURL("export.php", array('range_id' => $id, 'o_mode' => 'choose', 'ex_type' => "veranstaltung", 'xslt_filename' => $id, 'ex_sem' => $show_semester)),
             Icon::create('download', 'info')
         );
         $export->addLink(
             _("Download als Excel Tabelle"),
-            URLHelper::getLink('?send_excel=1&group_by=' . (int)$group_by),
+            URLHelper::getURL('?send_excel=1&group_by=' . (int)$group_by),
             Icon::create('file-xls', 'info')
         );
     }

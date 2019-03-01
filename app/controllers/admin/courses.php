@@ -238,11 +238,11 @@ class Admin_CoursesController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm($this->sem_create_perm)) {
             $actions = new ActionsWidget();
             $actions->addLink(_('Neue Veranstaltung anlegen'),
-                              URLHelper::getLink('dispatch.php/course/wizard'),
+                              URLHelper::getURL('dispatch.php/course/wizard'),
                               Icon::create('seminar+add', 'clickable'))->asDialog('size=50%');
             $actions->addLink(
                 _('Diese Seitenleiste konfigurieren'),
-                URLHelper::getLink('dispatch.php/admin/courses/sidebar'),
+                URLHelper::getURL('dispatch.php/admin/courses/sidebar'),
                 Icon::create('admin', 'clickable')
                 )->asDialog();
 
@@ -265,7 +265,7 @@ class Admin_CoursesController extends AuthenticatedController
             }
             $export = new ExportWidget();
             $export->addLink(_('Als Excel exportieren'),
-                             URLHelper::getLink('dispatch.php/admin/courses/export_csv', $params),
+                             URLHelper::getURL('dispatch.php/admin/courses/export_csv', $params),
                              Icon::create('file-excel', 'clickable'));
             $sidebar->addWidget($export);
         }

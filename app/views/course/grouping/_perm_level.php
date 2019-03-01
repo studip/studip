@@ -5,7 +5,7 @@
             <span class="actions">
                 <? $actionMenu = ActionMenu::get() ?>
                 <? $actionMenu->addLink(
-                    URLHelper::getLink('dispatch.php/messages/write', [
+                    URLHelper::getURL('dispatch.php/messages/write', [
                         'rec_uname'       => $members->pluck('username'),
                         'default_subject' => '[' . $current->getFullname() . ']',
                     ]),
@@ -62,7 +62,7 @@
                 <td class="actions">
                     <? $actionMenu = ActionMenu::get() ?>
                     <? $actionMenu->addLink(
-                        URLHelper::getLink('dispatch.php/messages/write', [
+                        URLHelper::getURL('dispatch.php/messages/write', [
                             'rec_uname'       => $m->user_id,
                             'default_subject' => '[' . $current->getFullname() . ']'
                         ]),

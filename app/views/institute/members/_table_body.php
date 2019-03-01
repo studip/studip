@@ -9,7 +9,7 @@
         <?= ActionMenu::get()
             ->condition($mail_status)
             ->addLink(
-                $controller->link_for('messages/write?filter=inst_status', [
+                $controller->url_for('messages/write?filter=inst_status', [
                     'who'             => $key,
                     'default_subject' => Context::get()->Name,
                     'course_id'       => Context::getId(),
@@ -20,7 +20,7 @@
             )
             ->condition($mail_gruppe)
             ->addLink(
-                $controller->link_for('messages/write', [
+                $controller->url_for('messages/write', [
                     'group_id'        => $group->id,
                     'default_subject' => Context::get()->Name,
                 ]),
@@ -90,7 +90,7 @@
         <td class="actions">
         <?= ActionMenu::get()
             ->addLink(
-                $controller->link_for("messages/write?rec_uname={$member->username}"),
+                $controller->url_for("messages/write?rec_uname={$member->username}"),
                 _('Nachricht an Benutzer verschicken'),
                 Icon::create('mail', 'clickable'),
                 ['data-dialog' => '']
@@ -103,14 +103,14 @@
             )
             ->condition(isset($group))
             ->addLink(
-                $controller->link_for('institute/members/remove_from_group', $group->id, $type, ['username' => $member->username]),
+                $controller->url_for('institute/members/remove_from_group', $group->id, $type, ['username' => $member->username]),
                 _('Person aus Gruppe austragen'),
                 Icon::create('door-leave', 'clickable'),
                 ['data-confirm' => _('Wollen Sie die Person wirklich aus der Gruppe austragen?')]
             )
             ->condition(!isset($group))
             ->addLink(
-                $controller->link_for('institute/members/remove_from_institute', $type, ['username' => $member->username]),
+                $controller->url_for('institute/members/remove_from_institute', $type, ['username' => $member->username]),
                 _('Person aus Einrichtung austragen'),
                 Icon::create('door-leave', 'clickable'),
                 ['data-confirm' => _('Wollen Sie die Person wirklich aus der Einrichtung austragen?')]
@@ -151,7 +151,7 @@
             <?= ActionMenu::get()
                 ->conditionAll($admin_view && !LockRules::Check($institute->id, 'participants'))
                 ->addLink(
-                    $controller->link_for("settings/statusgruppen#{$group->id}", [
+                    $controller->url_for("settings/statusgruppen#{$group->id}", [
                         'username'        => $member->username,
                         'contentbox_open' => $group->id,
                     ]),
@@ -159,7 +159,7 @@
                     Icon::create('edit', 'clickable')
                 )
                 ->addLink(
-                    $controller->link_for('institute/members/remove_from_group', $group->id, $type, ['username' => $member->username]),
+                    $controller->url_for('institute/members/remove_from_group', $group->id, $type, ['username' => $member->username]),
                     _('Person aus Gruppe austragen'),
                     Icon::create('door-leave', 'clickable'),
                     ['data-confirm' => _('Wollen Sie die Person wirklich aus der Gruppe austragen?')]

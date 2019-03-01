@@ -154,7 +154,7 @@ if ($perm->have_perm('admin')) {
 
             if (Config::get()->EXPORT_ENABLE) {
                 $widget = new ExportWidget();
-                $link = URLHelper::getLink('dispatch.php/resources/helpers/export_requestlist');
+                $link = URLHelper::getURL('dispatch.php/resources/helpers/export_requestlist');
                 $widget->addLink(_('Anfragenliste als CSV-Dokument exportieren'), $link, Icon::create('file-office'));
                 $sidebar->addWidget($widget);
             }
