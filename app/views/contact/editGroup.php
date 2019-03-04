@@ -1,4 +1,4 @@
-<form class="default" method="post" action="<?= $controller->link_for('contact/editGroup/' . $group->id) ?>'">
+<form class="default" method="post" action="<?= $controller->link_for('contact/editGroup/' . $group->id) ?>">
     <? CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend class="hide-in-dialog">
