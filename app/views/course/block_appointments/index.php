@@ -7,6 +7,21 @@
     action="<?= $controller->url_for('course/block_appointments/save/' . $course_id, $editParams) ?>"
     method="post">
 
+<? if ($confirm_many): ?>
+    <?= MessageBox::info(sprintf(
+        _('Sie legen %s%u%s Termine an. Bitte kontrollieren Sie Ihre Eingaben '
+        . 'oder bestätigen Sie, dass die Termine angelegt werden sollen.'),
+        '<strong>',
+        $confirm_many,
+        '</strong>'
+    ), [
+        sprintf(
+            '<label><input type="checkbox" name="confirmed" value="1">%s</label>',
+            sprintf(_('Ja, ich möchte wirklich %u Termine anlegen.'), $confirm_many)
+        ),
+    ]) ?>
+<? endif; ?>
+
     <fieldset>
         <legend><?= _('Zeitraum') ?></legend>
         <label for="block_appointments_start_day" class="col-3">
