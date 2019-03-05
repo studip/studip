@@ -3,7 +3,7 @@
 
     <div id="preview_container">
     <? if ($is_downloadable): ?>
-        <? if ($file_ref->isImage()): ?>
+        <? if ($file_ref->isImage() && $file_ref->mime_type !== 'image/svg+xml'): ?>
             <img src="<?= htmlReady($file_ref->download_url) ?>" class="file_preview"
                  <? if ($file_ref->file) printf('type="%s"', $file_ref->mime_type); ?>>
         <? elseif ($file_ref->isAudio()): ?>
