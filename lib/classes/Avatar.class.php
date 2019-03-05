@@ -325,7 +325,7 @@ class Avatar {
     public function createFrom($filename) {
 
         if (!extension_loaded('gd')) {
-            throw new Exception(_("Es ist ein Fehler beim Bearbeiten des Bildes aufgetreten."));
+            throw new Exception(_('Es ist ein Fehler beim Bearbeiten des Bildes aufgetreten.') . ' (' . _('Fehlende GD-Lib') . ')');
         }
 
         set_error_handler(array(__CLASS__, 'error_handler'));
