@@ -194,7 +194,7 @@ class Course_RoomRequestsController extends AuthenticatedController
 
 
         $actions = new ActionsWidget();
-        $actions->addLink(_('Bearbeitung abbrechen'), $this->url_for('index/' . $this->course_id), Icon::create('decline', 'clickable'));
+        $actions->addLink(_('Bearbeitung abbrechen'), $this->url_for('course/room_requests/index/' . $this->course_id), Icon::create('decline', 'clickable'));
 
         if (!$request->isNew() && (getGlobalPerms($GLOBALS['user']->id) == 'admin' || ($GLOBALS['perm']->have_perm('admin') && count(getMyRoomRequests(null, null, true, $request->getId()))))) {
             $actions->addLink(_('Raumanfrage auflösen'),
@@ -271,7 +271,7 @@ class Course_RoomRequestsController extends AuthenticatedController
         if (Request::isGet()) {
             $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/');
             $template = $factory->open('course/room_requests/_del.php');
-            $template->action = $this->link_for('delete/' . $this->course_id, array('request_id' => $request->getid()));
+            $template->action = $this->link_for('course/room_requests/delete/' . $this->course_id, array('request_id' => $request->getid()));
             $template->question = sprintf(_('Möchten Sie die Raumanfrage "%s" löschen?'), $request->getTypeExplained());
             $this->flash['message'] = $template->render();
         } else {
@@ -383,23 +383,5 @@ class Course_RoomRequestsController extends AuthenticatedController
             }
         }
         return compact('search_result', 'search_by_properties');
-    }
-
-    /**
-     * Specialized link_for for this controller's actions.
-     *
-     * @param String $to     Target location (optional, defaults to current
-     *                       action)
-     * @param Array  $params Optional additional parameters (defaults to none)
-     */
-    public function link_for($to = '', $params = array())
-    {
-        $whereto = 'course/room_requests/';
-        if ($to === '') {
-            $whereto .= $this->current_action;
-        } else {
-            $whereto .= $to;
-        }
-        return parent::link_for($whereto, $params);
     }
 }

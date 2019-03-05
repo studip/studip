@@ -1,5 +1,5 @@
 <form method="POST" class="default" name="new_room_request"
-      action="<?= $this->controller->link_for('edit/' . $course_id, $url_params) ?>" <?= Request::isXhr() ? 'data-dialog="size=big"' : '' ?>>
+      action="<?= $this->controller->link_for('course/room_requests/edit/' . $course_id, $url_params) ?>" <?= Request::isXhr() ? 'data-dialog="size=big"' : '' ?>>
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
@@ -16,7 +16,7 @@
                 <? endforeach ?>
             </select>
         </label>
-        
+
         <div class="text-center" data-dialog-button>
 
         </div>
@@ -28,9 +28,9 @@
     <footer data-dialog-button>
         <? if (count($options)) : ?>
             <?= Studip\Button::create(_('Erstellen')) ?>
-            <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->link_for('index/' . $course_id)) ?>
+            <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->link_for('course/room_requests/index/' . $course_id)) ?>
         <? else : ?>
-            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->link_for('index/' . $course_id), array('data-dialog' => 'size=big')) ?>
+            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->link_for('course/room_requests/index/' . $course_id), array('data-dialog' => 'size=big')) ?>
         <? endif ?>
     </footer>
 </form>

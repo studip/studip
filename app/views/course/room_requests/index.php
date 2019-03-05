@@ -35,7 +35,7 @@ echo $flash['message'];
                 </td>
                 <td class="actions">
                     <a class="load-in-new-row"
-                       href="<?= $controller->link_for('info/' . $rr->getId()) ?>">
+                       href="<?= $controller->link_for('course/room_requests/info/' . $rr->getId()) ?>">
                         <?= Icon::create('info', 'clickable', ['title' => _('Weitere Informationen einblenden')])->asImg(16) ?>
                     </a>
                     <? $params = ['request_id' => $rr->getId()] ?>
@@ -47,7 +47,7 @@ echo $flash['message'];
 
                     <? $actionMenu = ActionMenu::get() ?>
                     <? $actionMenu->addLink(
-                        $controller->url_for('edit/' . $course_id, $params),
+                        $controller->url_for('course/room_requests/edit/' . $course_id, $params),
                         _('Diese Anfrage bearbeiten'),
                         Icon::create('edit', 'clickable', ['title' => _('Diese Anfrage bearbeiten')]),
                         $dialog
@@ -62,7 +62,7 @@ echo $flash['message'];
                     <? endif ?>
 
                     <? $actionMenu->addLink(
-                        $controller->url_for('delete/' . $course_id, ['request_id' => $rr->getId()]),
+                        $controller->url_for('course/room_requests/delete/' . $course_id, ['request_id' => $rr->getId()]),
                         _('Diese Anfrage zurückziehen'),
                         Icon::create('trash', 'clickable', ['title' => _('Diese Anfrage zurückziehen')])
                     ); ?>
