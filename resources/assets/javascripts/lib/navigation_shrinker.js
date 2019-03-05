@@ -1,23 +1,4 @@
-function setCookie(name, value, expiry_days) {
-    var chunks = [name + '=' + value],
-        date;
-    if (expiry_days !== undefined) {
-        date = new Date();
-        date.setTime(date.getTime() + expiry_days * 24 * 60 * 60 * 1000);
-
-        chunks.push('expires=' + date.toUTCString());
-    }
-    chunks.push(
-        'path=/' +
-            STUDIP.URLHelper.getURL('a', true)
-                .slice(0, -1)
-                .split('/')
-                .slice(3)
-                .join('/')
-    );
-
-    document.cookie = chunks.join(';');
-}
+import Cookie from './cookie.js';
 
 // Enable shrinking of navigation
 var shrinker = function() {
@@ -64,7 +45,7 @@ var shrinker = function() {
         $('> label > a', sink).attr('data-badge', total);
     }
 
-    setCookie('navigation-length', main.children(':not(.overflow)').length, 30);
+    Cookie.set('navigation-length', main.children(':not(.overflow)').length, 30);
 };
 
 export default shrinker;

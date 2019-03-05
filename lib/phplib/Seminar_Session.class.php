@@ -206,7 +206,7 @@ class Seminar_Session
         if (Config::get()->CACHING_ENABLE && $GLOBALS['CACHE_IS_SESSION_STORAGE']) {
             $this->that_class = 'CT_Cache';
         }
-        $this->cookie_path = $this->cookie_path ? : $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'];
+        $this->cookie_path = $this->cookie_path ?: $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'];
         $this->cookie_secure = $_SERVER['HTTPS'] === 'on';
         $this->name(get_class($this));
     }
@@ -220,7 +220,13 @@ class Seminar_Session
     function start()
     {
         $this->set_container();
-        session_set_cookie_params(0, $this->cookie_path, $this->cookie_domain, $this->cookie_secure, $this->cookie_httponly);
+        session_set_cookie_params(
+            0,
+            implode('/', array_map('rawurlencode', explode('/', $this->cookie_path))),
+            $this->cookie_domain,
+            $this->cookie_secure,
+            $this->cookie_httponly
+        );
         session_cache_limiter("nocache");
         //check for illegal cookiename
         if (isset($_COOKIE[$this->name])) {
@@ -323,7 +329,15 @@ class Seminar_Session
     function delete()
     {
         $cookie_params = session_get_cookie_params();
-        setCookie($this->name, '', 0, $cookie_params['path'], $cookie_params['domain'], $cookie_params['secure'], $cookie_params['httponly']);
+        setCookie(
+            $this->name,
+            '',
+            0,
+            implode('/', array_map('rawurlencode', explode('/', $cookie_params['path']))),
+            $cookie_params['domain'],
+            $cookie_params['secure'],
+            $cookie_params['httponly']
+        );
         $_COOKIE[$this->name] = "";
         $_SESSION = array();
         return session_destroy();
