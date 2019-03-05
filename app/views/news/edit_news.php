@@ -231,8 +231,8 @@
                             style="background-image: url('<?= Icon::create($area_data['icon'], 'info')->asImagePath() ?>');" label="<?=htmlReady($area_data['title'])?>">
                     <? foreach ($area_options_selected[$area_key] as $area_option_key => $area_option_title) : ?>
                         <option <?= (StudipNews::haveRangePermission('edit', $area_option_key) OR $may_delete) ? 'value="'.$area_option_key.'"' : 'disabled'?>
-                                <?=tooltip($area_option_title);?>>
-                            <?= htmlReady(mila($area_option_title))?>
+                                <?=tooltip((string) $area_option_title);?>>
+                            <?= htmlReady(mila((string) $area_option_title))?>
                         </option>
                     <? endforeach ?>
                     </optgroup>
