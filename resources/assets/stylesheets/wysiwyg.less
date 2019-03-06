@@ -10,6 +10,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
+ @import "mixins.less";
 
 /* configure look and feel of CKEditor's content area and toolbar */
 .animated-height-change {           /* content area in HTML source view mode */
@@ -165,4 +166,20 @@ a.cke_mathjax_doc[href] {
 .cke_editable ol ol {
     margin-top: 0;
     margin-bottom: 0;
+}
+
+.cke {
+    .cke_inner {
+        border-color: @light-gray-color-40;
+    }
+
+    &.cke_chrome:focus,
+    &.cke_chrome:active,
+    &.cke_chrome_focused {
+        outline: 0;
+
+        .cke_inner {
+            border-color: @brand-color-dark;
+        }
+    }
 }
