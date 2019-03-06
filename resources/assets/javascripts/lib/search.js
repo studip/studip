@@ -82,7 +82,7 @@ const Search = {
             // Iterate over each result category.
             $.each(json, function (name, value) {
                 // Create an <article> for category.
-                var category = $(`<article id="search-${name}" class="studip">`);
+                var category = $(`<article id="search-${name}" class="studip padding-less">`);
                 var header = $('<header>').appendTo(category);
                 var categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category);
                 var counter = 0;
