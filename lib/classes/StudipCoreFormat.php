@@ -495,10 +495,6 @@ class StudipCoreFormat extends TextFormat
         $email = $matches[2];
         $domain = $matches[3];
 
-        if (filter_var(gethostbyname($domain), FILTER_VALIDATE_IP) === false) {
-            return $matches[0];
-        }
-
         $intern = $domain === $_SERVER['HTTP_HOST'];
 
         return sprintf('<a class="%s" href="mailto:%s">%s</a>',
