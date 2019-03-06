@@ -112,7 +112,7 @@ Dialog.handlers.header['X-Location'] = function(location, options) {
     }
 
     Dialog.close(options);
-    document.location = location;
+    document.location = decodeURIComponent(location);
 
     return false;
 };

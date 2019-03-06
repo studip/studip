@@ -321,7 +321,7 @@ abstract class StudipController extends Trails_Controller
         }
 
         if ($from_dialog) {
-            $this->response->add_header('X-Location', $to);
+            $this->response->add_header('X-Location', rawurlencode($to));
             $this->render_nothing();
         } else {
             parent::redirect($to);
