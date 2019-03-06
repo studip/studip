@@ -1,27 +1,30 @@
 .content_title {
-  background-color: #e3eaf6;
-  background-image: linear-gradient(#cdd9ed, #e3eaf6 40%, #e3eaf6);
-  background-repeat: no-repeat;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cdd9ed', endColorstr='#e3eaf6', GradientType=0);
-  border-top: 1px solid @content-color;
-  line-height: 17pt;
-  height: 25px;
+    background-color: #e3eaf6;
+    background-image: linear-gradient(#cdd9ed, #e3eaf6 40%, #e3eaf6);
+    background-repeat: no-repeat;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cdd9ed', endColorstr='#e3eaf6', GradientType=0);
+    border-top: 1px solid @content-color;
+    line-height: 17pt;
+    height: 25px;
 }
 
-.content_body { background-color: #f8f8f8; }
+.content_body {
+    background-color: #f8f8f8;
+}
 
 .content_body_panel {
     background-color: #dfe2e9;
     border-left: 1px solid #ccc;
 }
 
-.content_seperator, .content_seperator td  { 
-  background-color: #adadad;
-  background-image: linear-gradient(#e0e0e0, #bcbcbc 15%, #adadad);
-  background-repeat: no-repeat;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e0e0e0', endColorstr='#adadad', GradientType=0);
-  border-top: 1px solid #c7c7c7;
-  height: 15px;
+.content_seperator,
+.content_seperator td  {
+    background-color: #adadad;
+    background-image: linear-gradient(#e0e0e0, #bcbcbc 15%, #adadad);
+    background-repeat: no-repeat;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e0e0e0', endColorstr='#adadad', GradientType=0);
+    border-top: 1px solid #c7c7c7;
+    height: 15px;
 }
 
 // Display formatted content as inline so we don't break any existing code
@@ -32,6 +35,19 @@
 .formatted-content {
     display: inline;
 
+    a {
+        word-break: break-all;
+
+        &.link-extern,
+        &.link-intern {
+            display: inline-block;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: top;
+        }
+    }
+
     pre {   // pre-formatted content breaks the Stud.IP Layout!
         white-space: pre-wrap;
     }
@@ -39,18 +55,18 @@
 
 // Emphasize tt tags a little bit so ##monospace## blocks will stick out.
 .formatted-content tt {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  padding: 0 0.5ex;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 0 0.5ex;
 }
 
-// Margin for lists in user content 
+// Margin for lists in user content
 .formatted-content ul,
 .formatted-content ol  {
-  margin: 0.5em 0;
-  ul,
-  ol {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0.5em 0;
+    ul,
+    ol {
+        margin-top: 0;
+        margin-bottom: 0;
   }
 }
