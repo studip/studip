@@ -31,6 +31,10 @@
     </div>
 
     <div id="search-no-result">
-        <?= MessageBox::warning(_('Leider wurden keine Ergebnisse gefunden.')); ?>
+        <?= MessageBox::warning(sprintf(
+            _('Leider konnten zu Ihrem Suchbegriff "%s" keine Treffer gefunden werden. '
+            . ' Haben Sie sich vielleicht verschrieben?'),
+            '<span class="searchterm"></span>'
+        )) ?>
     </div>
 </div>

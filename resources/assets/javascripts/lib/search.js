@@ -74,6 +74,7 @@ const Search = {
             // No results found...
             if (!$.isPlainObject(json) || $.isEmptyObject(json)) {
                 wrapper.removeClass('is-searching');
+                $('#search-no-result .searchterm').text(searchterm);
                 $('#search-no-result').show();
                 STUDIP.Search.setActiveCategory('show_all_categories');
                 return;
@@ -217,6 +218,7 @@ const Search = {
             {
                 STUDIP.Search.expandCategory(STUDIP.Search.getActiveCategory());
                 if (!STUDIP.Search.resultsInCategory) {
+                    $('#search-no-result .searchterm').text(searchterm);
                     $('#search-no-result').show();
                 }
             }

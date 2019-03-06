@@ -101,11 +101,9 @@ jQuery(function ($) {
         if (info.category && info.category !== 'show_all_categories') {
             url += `#${info.category}`;
         }
-        if (info.needle) {
-            url = STUDIP.URLHelper.getURL(url, {
-                q: info.needle
-            });
-        }
+        url = STUDIP.URLHelper.getURL(url, {
+            q: info.needle || cache.get('searchterm')
+        });
 
         // We need to put the history change on a timeout since category changes
         // occur more than once in a short period of time
