@@ -13,6 +13,7 @@ const GlobalSearch = {
         $('#globalsearch-icon').toggleClass('hidden-small-down', visible);
 
         if (!visible && cleanup) {
+            GlobalSearch.lastSearch = null;
             $('#globalsearch-searchbar').removeClass('has-value');
             $('#globalsearch-results').html('');
             $('#globalsearch-input').blur().val('');
