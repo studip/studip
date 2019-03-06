@@ -534,13 +534,13 @@ if ($change_object_schedules) {
                 $change_schedule_repeat_interval      = Request::int('change_schedule_repeat_interval');
 
                 if (Request::submitted('change_schedule_repeat_none')) {
-                    $change_schedule_repeat_end='';
-                    $change_schedule_repeat_month_of_year='';
-                    $change_schedule_repeat_day_of_month='';
-                    $change_schedule_repeat_week_of_month='';
-                    $change_schedule_repeat_day_of_week='';
-                    $change_schedule_repeat_quantity='';
-                    $change_schedule_repeat_interval='';
+                    $change_schedule_repeat_end           = null;
+                    $change_schedule_repeat_month_of_year = null;
+                    $change_schedule_repeat_day_of_month  = null;
+                    $change_schedule_repeat_week_of_month = null;
+                    $change_schedule_repeat_day_of_week   = null;
+                    $change_schedule_repeat_quantity      = null;
+                    $change_schedule_repeat_interval      = null;
                     if (($change_schedule_begin > $change_schedule_end) && (!$illegal_dates)) { //do this check again, if the user select's sevral days and give a repeat end < begin, so we have no repeatation
                         $illegal_dates=TRUE;
                         $msg -> addMsg(20);
@@ -550,65 +550,73 @@ if ($change_object_schedules) {
 
                 //repeat = several days
                 if (Request::submitted('change_schedule_repeat_severaldays')) {
-                    $change_schedule_repeat_end = mktime(date("G", $change_schedule_end), date("i", $change_schedule_end), 0, date("n", $change_schedule_begin), date("j", $change_schedule_begin)+1, date("Y", $change_schedule_begin));
-                    $change_schedule_repeat_month_of_year='';
-                    $change_schedule_repeat_day_of_month='';
-                    $change_schedule_repeat_week_of_month='';
-                    $change_schedule_repeat_day_of_week='';
-                    $change_schedule_repeat_quantity='';
-                    $change_schedule_repeat_interval='';
+                    $change_schedule_repeat_end           = strtotime('tomorrow', $change_schedule_end);
+                    $change_schedule_repeat_month_of_year = null;
+                    $change_schedule_repeat_day_of_month  = null;
+                    $change_schedule_repeat_week_of_month = null;
+                    $change_schedule_repeat_day_of_week   = null;
+                    $change_schedule_repeat_quantity      = null;
+                    $change_schedule_repeat_interval      = null;
                 }
 
                 //repeat = year
                 if (Request::submitted('change_schedule_repeat_year')) {
-                    $change_schedule_repeat_month_of_year=date("n", $change_schedule_begin);
-                    $change_schedule_repeat_day_of_month=date("j", $change_schedule_begin);
-                    $change_schedule_repeat_week_of_month='';
-                    $change_schedule_repeat_day_of_week='';
-                    if (!$change_schedule_repeat_quantity   )
+                    $change_schedule_repeat_month_of_year = date('n', $change_schedule_begin);
+                    $change_schedule_repeat_day_of_month  = date('j', $change_schedule_begin);
+                    $change_schedule_repeat_week_of_month = null;
+                    $change_schedule_repeat_day_of_week   = null;
+
+                    if (!$change_schedule_repeat_quantity) {
                         $change_schedule_repeat_quantity=-1;
-                    if (!$change_schedule_repeat_interval)
+                    }
+                    if (!$change_schedule_repeat_interval) {
                         $change_schedule_repeat_interval=1;
+                    }
                 }
 
                 //repeat = month
                 if (Request::submitted('change_schedule_repeat_month'))
                     if (!$change_schedule_repeat_week_of_month) {
-                        $change_schedule_repeat_month_of_year='';
-                        $change_schedule_repeat_day_of_month=date("j", $change_schedule_begin);
-                        $change_schedule_repeat_week_of_month='';
-                        $change_schedule_repeat_day_of_week='';
-                        if (!$change_schedule_repeat_quantity   )
-                            $change_schedule_repeat_quantity=-1;
-                        if (!$change_schedule_repeat_interval)
-                            $change_schedule_repeat_interval=1;
+                        $change_schedule_repeat_month_of_year = null;
+                        $change_schedule_repeat_day_of_month  = date('j', $change_schedule_begin);
+                        $change_schedule_repeat_week_of_month = null;
+                        $change_schedule_repeat_day_of_week   = null;
+
+                        if (!$change_schedule_repeat_quantity) {
+                            $change_schedule_repeat_quantity = -1;
+                        }
+                        if (!$change_schedule_repeat_interval) {
+                            $change_schedule_repeat_interval = 1;
+                        }
                     }
 
                 //repeat = week
                 if (Request::submitted('change_schedule_repeat_week')) {
-                    $change_schedule_repeat_month_of_year='';
-                    $change_schedule_repeat_day_of_month='';
-                    $change_schedule_repeat_week_of_month='';
-                    $change_schedule_repeat_quantity='';
-                    if (!$change_schedule_repeat_day_of_week)
-                        $change_schedule_repeat_day_of_week=1;
-                    if (!$change_schedule_repeat_quantity)
-                        $change_schedule_repeat_quantity=-1;
-                    if (!$change_schedule_repeat_interval)
-                        $change_schedule_repeat_interval=1;
+                    $change_schedule_repeat_month_of_year = null;
+                    $change_schedule_repeat_day_of_month  = null;
+                    $change_schedule_repeat_week_of_month = null;
+                    $change_schedule_repeat_quantity      = null;
+
+                    $change_schedule_repeat_quantity = -1;
+                    if (!$change_schedule_repeat_day_of_week) {
+                        $change_schedule_repeat_day_of_week = 1;
+                    }
+                    if (!$change_schedule_repeat_interval) {
+                        $change_schedule_repeat_interval = 1;
+                    }
                 }
 
                 //repeat = day
                 if (Request::submitted('change_schedule_repeat_day')) {
-                    $change_schedule_repeat_month_of_year='';
-                    $change_schedule_repeat_day_of_month='';
-                    $change_schedule_repeat_week_of_month='';
-                    $change_schedule_repeat_quantity='';
-                    $change_schedule_repeat_day_of_week='';
-                    if (!$change_schedule_repeat_quantity   )
-                        $change_schedule_repeat_quantity=-1;
-                    if (!$change_schedule_repeat_interval)
-                        $change_schedule_repeat_interval=1;
+                    $change_schedule_repeat_month_of_year = null;
+                    $change_schedule_repeat_day_of_month  = null;
+                    $change_schedule_repeat_week_of_month = null;
+                    $change_schedule_repeat_day_of_week   = null;
+
+                    $change_schedule_repeat_quantity = -1;
+                    if (!$change_schedule_repeat_interval) {
+                        $change_schedule_repeat_interval = 1;
+                    }
                 }
 
                 //give data to the assignobject
@@ -617,13 +625,13 @@ if ($change_object_schedules) {
                 $changeAssign->setAssignUserId(Request::option('change_schedule_assign_user_id'));
                 $changeAssign->setBegin($change_schedule_begin);
                 $changeAssign->setEnd($change_schedule_end);
-                $changeAssign->setRepeatEnd($change_schedule_repeat_end);
-                $changeAssign->setRepeatQuantity($change_schedule_repeat_quantity);
-                $changeAssign->setRepeatInterval($change_schedule_repeat_interval);
-                $changeAssign->setRepeatMonthOfYear($change_schedule_repeat_month_of_year);
-                $changeAssign->setRepeatDayOfMonth($change_schedule_repeat_day_of_month);
-                $changeAssign->setRepeatWeekOfMonth($change_schedule_repeat_week_of_month);
-                $changeAssign->setRepeatDayOfWeek($change_schedule_repeat_day_of_week);
+                $changeAssign->setRepeatEnd($change_schedule_repeat_end ?: null);
+                $changeAssign->setRepeatQuantity($change_schedule_repeat_quantity ?: null);
+                $changeAssign->setRepeatInterval($change_schedule_repeat_interval ?: null);
+                $changeAssign->setRepeatMonthOfYear($change_schedule_repeat_month_of_year ?: null);
+                $changeAssign->setRepeatDayOfMonth($change_schedule_repeat_day_of_month ?: null);
+                $changeAssign->setRepeatWeekOfMonth($change_schedule_repeat_week_of_month ?: null);
+                $changeAssign->setRepeatDayOfWeek($change_schedule_repeat_day_of_week ?: null);
                 $changeAssign->setCommentInternal(Request::get('comment_internal'));
 
                 //if isset quantity, we calculate the correct end date

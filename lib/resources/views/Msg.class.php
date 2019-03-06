@@ -5,9 +5,9 @@
 # Lifter010: TODO
 /**
 * Msg.class.php
-* 
+*
 * creates messages
-* 
+*
 *
 * @author       Cornelis Kater <ckater@gwdg.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -44,14 +44,14 @@ class Msg {
     var $msg;
     var $codes=array();
     var $params;
-    
-    /** 
+
+    /**
      * Constructor for resource-messages. Loads lib/resources/views/msg_resources.inc.php
      */
     function __construct() {
          include "lib/resources/views/msgs_resources.inc.php";
     }
-                
+
     /**
      * Adds the message defined by the submitted code to a queue
      *
@@ -65,9 +65,9 @@ class Msg {
             $this->params[] = $params;
         } else
             $this->params[] = array();
-            
+
     }
-    
+
     /**
      * Checks if there are any messages in the queue
      *
@@ -76,13 +76,13 @@ class Msg {
     function checkMsgs() {
         if ($this->codes)
             return TRUE;
-        else 
+        else
             return FALSE;
     }
-    
+
     /**
      * Displays all queued messages
-     * 
+     *
      * @param string $view_mode can be "line" for embedded messages, "window" for separate messages
      */
     function displayAllMsg($view_mode = "line") {
@@ -93,7 +93,7 @@ class Msg {
             foreach( $this->codes as $key => $message_id ) {
                 $messages[ $this->msg[$message_id]['mode'] ][] = vsprintf( $this->msg[$message_id]['msg'], $this->params[$key] );
             }
-                
+
             // messages alone in the wild
             if ($view_mode == 'window') {
                 // template with studip-layout surrounding the message
@@ -113,7 +113,7 @@ class Msg {
             }
         }
     }
-    
+
     /**
      * Display a single message
      *
@@ -136,8 +136,8 @@ class Msg {
             $template->set_attribute('title', $this->msg[$msg_code]["titel"]);
             echo $template->render();
 
-        } 
-        
+        }
+
         // "normal" messages
         else {
             $type = $this->msg[$msg_code]["mode"];

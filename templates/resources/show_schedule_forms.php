@@ -15,21 +15,21 @@ use Studip\Button,
 <input type="hidden" name="change_schedule_repeat_interval" value="<? echo $resAssign->getRepeatInterval() ?>">
 <input type="hidden" name="change_schedule_repeat_quantity" value="<? echo $resAssign->getRepeatQuantity() ?>">
 
-<table class="default">
+<table class="default nohover">
     <tbody>
         <tr>
             <td colspan="3" align="center">
             <? if (!empty($_SESSION['assign_object_has_holidays'][$resAssign->id])) : ?>
-        		<?  $holidays = "<br>" . htmlReady(implode(', ', $_SESSION['assign_object_has_holidays'][$resAssign->id])) . "<br>";    	        
-        	        if (count($_SESSION['assign_object_has_holidays'][$resAssign->id]) > 1) {
-        	            $msg = sprintf(_("Die Belegung überschneidet sich mit folgenden Feiertagen: %s Wollen Sie die Belegung dennoch speichern?"), $holidays);
-        	        } else {
-        	            $msg = sprintf(_("Die Belegung überschneidet sich mit folgendem Feiertag: %s Wollen Sie die Belegung dennoch speichern?"), $holidays);
-        	        }
-                ?>                
+                <?  $holidays = "<br>" . htmlReady(implode(', ', $_SESSION['assign_object_has_holidays'][$resAssign->id])) . "<br>";
+                    if (count($_SESSION['assign_object_has_holidays'][$resAssign->id]) > 1) {
+                        $msg = sprintf(_("Die Belegung überschneidet sich mit folgenden Feiertagen: %s Wollen Sie die Belegung dennoch speichern?"), $holidays);
+                    } else {
+                        $msg = sprintf(_("Die Belegung überschneidet sich mit folgendem Feiertag: %s Wollen Sie die Belegung dennoch speichern?"), $holidays);
+                    }
+                ?>
                 <?= MessageBox::error($msg . "<br>". Button::createAccept(_('JA!'), 'ignore_holidays') . ' ' . Button::createCancel(_('NEIN!'), 'no_ignore_holidays')) ?>
             <? endif; ?>
-            
+
             <? if ($resAssign->isNew()) : ?>
                 <?= MessageBox::info(_("Sie erstellen eine neue Belegung")) ?>
             <? endif; ?>
@@ -84,9 +84,9 @@ use Studip\Button,
             <td valign="top">
                 <?=_("Datum/erster Termin:")?><br>
             <? if ($lockedAssign) : ?>
-                <b><?=date("d.m.Y",$resAssign->getBegin()) ?></b>
+                <strong><?=strftime("%A, %x",$resAssign->getBegin()) ?></strong>
             <? else : ?>
-                <input name="changeTime" id="changeTime" size="8" value="<?=date('j.n.Y',$resAssign->getBegin())?>">
+                <input name="changeTime" data-date-picker size="8" value="<?=strftime('%x',$resAssign->getBegin())?>">
             <? endif; ?>
             </td>
 
@@ -114,7 +114,7 @@ use Studip\Button,
                     'm'  => array('name' => _('Monatlich'), 'action' => 'change_schedule_repeat_month'),
                     'y'  => array('name' => _('Jährlich'),  'action' => 'change_schedule_repeat_year')
                 ) ?>
-            
+
                 <? foreach ($repeat_buttons as $repeat_mode => $button) : ?>
                     <? if ($resAssign->getRepeatMode() == $repeat_mode) : ?>
                         <?= Button::createAccept($button['name'], $button['action']) ?>
@@ -147,7 +147,7 @@ use Studip\Button,
             if ($lockedAssign) :
                 echo "<b>".date("d.m.Y",$resAssign->getRepeatEnd())."</b>";
             else :
-            ?>  
+            ?>
                 <input name="changeRepeatTime" id="changeRepeatTime" value="<?if(mb_strlen($resAssign->getRepeatEnd())> 0) :?><?=date('j.n.Y',$resAssign->getRepeatEnd())?><?endif;?>">
                 <? if (($resAssign->getRepeatMode() != "y") && ($resAssign->getRepeatMode() != "sd")) : ?>
                     <input type="CHECKBOX" <? printf ("%s", ($resAssign->isRepeatEndSemEnd()) ? "checked" : "") ?> name="change_schedule_repeat_sem_end"> <?=_("Ende der Vorlesungszeit")?>
@@ -275,7 +275,7 @@ use Studip\Button,
         <tr>
             <td colspan="3" align="center"><br>&nbsp;
                 <?= Button::createAccept(_('Übernehmen'), 'submit') ?>
-                <?= LinkButton::CreateCancel(_('Abbrechen'), URLHelper::getURL('?cancel_edit_assign=1&quick_view_mode='. $view_mode)) ?>            
+                <?= LinkButton::CreateCancel(_('Abbrechen'), URLHelper::getURL('?cancel_edit_assign=1&quick_view_mode='. $view_mode)) ?>
                 <? if ($killButton) : ?>
                     <?= Button::create(_('Löschen'), 'kill_assign') ?>
                 <? endif; ?>
@@ -349,9 +349,9 @@ use Studip\Button,
                         printf ("<option value=\"%s\">%s  </option>", $key, htmlReady(my_substr($val, 0, 40)));
                     }
                     print "</select> ";
-                    echo Button::create(_('Verschieben'), 'send_change_resource', 
+                    echo Button::create(_('Verschieben'), 'send_change_resource',
                         array('title' => _("Die Belegung in den ausgewählten Raum verschieben")));
-                    echo Button::create(_('Neue Suche'), 'reset_room_search');                
+                    echo Button::create(_('Neue Suche'), 'reset_room_search');
                 } else {
                     ?>
                     <select name="select_change_resource[]" multiple size="10">
@@ -360,7 +360,7 @@ use Studip\Button,
                     <?}?>
                     </select>
                     </font>
-                    <?= Button::create(_('Kopieren'), 'send_change_resource', 
+                    <?= Button::create(_('Kopieren'), 'send_change_resource',
                         array('title' => _("Die Belegung in die ausgewählten Raum kopieren"))); ?>
                     <?= Button::create(_('Neue Suche'), 'reset_room_search'); ?>
                     <?
@@ -398,6 +398,5 @@ use Studip\Button,
 </table>
 </form>
  <script>
-    jQuery("#changeTime").datepicker();
     jQuery("#changeRepeatTime").datepicker();
 </script>
