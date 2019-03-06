@@ -999,13 +999,18 @@ if ((Request::quoted('add_type')) || (Request::option('delete_type')) || (Reques
 
 //Eigenschaften bearbeiten
 if (Request::submittedSome('_add_property', '_send_property_type') || Request::option('delete_property')) {
-    if ($globalPerm == 'admin') { //check for resources root or global root
+    if ($globalPerm === 'admin') { //check for resources root or global root
         if (Request::option('delete_property')) {
-            $query = "DELETE FROM resources_properties WHERE property_id = ?";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $query = "DELETE `resources_properties`,
+                             `resources_objects_properties`,
+                             `resources_requests_properties`
+                      FROM `resources_properties`
+                      LEFT JOIN `resources_objects_properties` USING (`property_id`)
+                      LEFT JOIN `resources_requests_properties` USING (`property_id`)
+                      WHERE `property_id` = ?";
+            DBManager::get()->execute($query, [
                 Request::option('delete_property')
-            ));
+            ]);
         }
 
         if (Request::submitted('_add_property')) {
