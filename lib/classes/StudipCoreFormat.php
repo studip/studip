@@ -152,7 +152,20 @@ class StudipCoreFormat extends TextFormat
             'callback' => 'StudipCoreFormat::markupMedia'
         ),
         'emails' => array(
-            'start'    => '(?<=\s|^|\>)(?:\[([^\n\f\]]+?)\])?([\w.!#%+-]+@([[:alnum:].-]+))(?=\s|$)',
+            'start'    => '(?xi:
+                # ensure block is preceded by whitspace, line start or closing
+                # tag
+                (?<=\s|^|\>)
+
+                # capture displayed text
+                (?:\[([^\n\f\]]+?)\])?
+
+                # capture actual email address
+                ([\w.!#%+-]+@([[:alnum:]-.]+\.[[:alnum:]-.]+))
+
+                # ensure block is succeeded by white space or line end
+                (?=\s|$)
+            )',
             'callback' => 'StudipCoreFormat::markupEmails'
         ),
         'htmlAnchor' => array(
