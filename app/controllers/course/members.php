@@ -1149,15 +1149,19 @@ class Course_MembersController extends AuthenticatedController
             $msgs = $this->members->setMemberStatus($users, $status, $next_status, 'upgrade');
 
             if ($msgs['success']) {
-                PageLayout::postSuccess(sprintf(_('Das Hochstufen auf den Status  %s von %s wurde erfolgreich durchgeführt'),
+                PageLayout::postSuccess(sprintf(
+                    _('Das Hochstufen auf den Status  %s von %s wurde erfolgreich durchgeführt'),
                     htmlReady($this->decoratedStatusGroups[$next_status]),
-                    htmlReady(join(', ', $msgs['success']))));
+                    htmlReady(join(', ', $msgs['success']))
+                ));
             }
 
             if ($msgs['no_tutor']) {
-                PageLayout::postError(sprintf(_('Das Hochstufen auf den Status  %s von %s konnte wegen fehlender Rechte nicht durchgeführt werden.'),
+                PageLayout::postError(sprintf(
+                    _('Das Hochstufen auf den Status %s von %s konnte nicht durchgeführt werden, weil die globale Rechtestufe "tutor" fehlt.') . ' ' . _('Bitte wenden Sie sich an den Support.'),
                     htmlReady($this->decoratedStatusGroups[$next_status]),
-                    htmlReady(join(', ', $msgs['no_tutor']))));
+                    htmlReady(join(', ', $msgs['no_tutor']))
+                ));
             }
         } else {
             PageLayout::postError(sprintf(_('Sie haben keine %s zum Hochstufen ausgewählt'), htmlReady($this->status_groups[$status])));
