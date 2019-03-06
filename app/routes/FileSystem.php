@@ -23,77 +23,10 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getFileRef($file_ref_id)
     {
-        //check if the file_id references a file reference object:
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
-        }
-
-        $user_id = \User::findCurrent()->id;
-
-        //check if the file reference is placed inside a folder.
-        //(must be present to check for permissions)
-        if (!$file_ref->folder) {
-            $this->halt(500, 'File reference has no folder!');
-        }
-
-        $folder_type = $file_ref->folder->getTypedFolder();
-        if (!$folder_type) {
-            $this->halt(500, "File reference's folder has no folder type!");
-        }
-
-        //check if the current user has the permissions to read this file reference:
-        if (!$folder_type->isReadable($user_id)) {
-            $this->halt(403, 'You are not permitted to read this file reference!');
-        }
-
-        $extended_data = \Request::int('extended', 0);
-        //the current user may read the file reference:
-        $result = $file_ref->toRawArray();
-
-
-        //add permissions for the user who called this REST route to the result:
-
-        //this code wouldn't be executed if the FileRef wasn't readable (see above):
-        $result['is_readable'] = true;
-
-        $result['is_downloadable'] = $folder_type->isFileDownloadable($file_ref->id, $user_id);
-        $result['is_editable'] = $folder_type->isFileEditable($file_ref->id, $user_id);
-        $result['is_writable'] = $folder_type->isFileWritable($file_ref->id, $user_id);
-        //Shortcuts:
-        $result['size'] = $file_ref->file->size;
-        $result['mime_type'] = $file_ref->file->mime_type;
-        $result['storage'] = $file_ref->file->storage;
-        if ($result['storage'] === "url") {
-            $result['url'] = $file_ref->file->url;
-        }
-
-        //maybe the user wants not just only the FileRef object's data
-        //but also data from related objects:
-        if ($extended_data) {
-            //In case more data are requested we can add a File,
-            //Folder and ContentTermsOfUse object
-
-            //folder does exist (since we checked for its existence above)
-            $result['folder'] = $file_ref->folder->toRawArray();
-
-            //file and owner might not exist, so we have to check that:
-            if($file_ref->file) {
-                $result['file'] = $file_ref->file->toRawArray();
-            }
-            if($file_ref->owner) {
-                $result['owner'] = $file_ref->owner->toRawArray();
-            }
-
-            //$result['license'] = $file_ref->license; //to be activated when licenses are defined
-
-            if($file_ref->terms_of_use) {
-                $result['terms_of_use'] =
-                    $file_ref->terms_of_use->toRawArray();
-            }
-        }
-
-        return $result;
+        return $this->filerefToJSON(
+            $this->requireFileRef($file_ref_id),
+            (bool) \Request::int('extended')
+        );
     }
 
     /**
@@ -103,40 +36,26 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getFileRefData($file_ref_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
+        $file_ref = $this->requireFileRef($file_ref_id);
+
+        // check if the current user has the permissions to read this file reference:
+        $user = \User::findCurrent();
+        if (!$file_ref->folder->getTypedFolder()->isFileDownloadable($file_ref_id, $user->id)) {
+            $this->error(403, "You may not download the file reference with the id {$file_ref_id}");
         }
 
-        if (!$file_ref->folder) {
-            $this->halt(500, 'File reference is not bound to a folder!');
+        // check if file exists:
+        if (!$file_ref->file) {
+            $this->error(500, 'File reference has no associated file object!');
         }
 
-        $folder_type = $file_ref->folder->getTypedFolder();
-        if (!$folder_type) {
-            $this->halt(500, "Cannot find folder type of the file reference's folder!");
-            return;
+        $data_path = $file_ref->file->getPath();
+        if (!file_exists($data_path)) {
+            $this->error(500, "File was not found in the operating system's file system!");
         }
 
-        $user_id = \User::findCurrent()->id;
-
-        //check if the current user has the permissions to read this file reference:
-        if ($folder_type->isReadable($user_id) && $folder_type->isFileDownloadable($file_ref_id, $user_id)) {
-            //if this code is executed we can read the file's data
-
-            //check if file exists:
-            if (!$file_ref->file) {
-                $this->halt(500, 'File reference has no associated file object!');
-            }
-
-            $data_path = $file_ref->file->getPath();
-            if (!file_exists($data_path)) {
-                $this->notFound("File was not found in the operating system's file system!");
-            }
-
-            $this->lastModified($file_ref->file->chdate);
-            $this->sendFile($data_path, ['filename' => $file_ref->name]);
-        }
+        $this->lastModified($file_ref->file->chdate);
+        $this->sendFile($data_path, ['filename' => $file_ref->name]);
     }
 
     /**
@@ -146,39 +65,24 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function updateFileData($file_ref_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
-        }
-
-        $user = \User::findCurrent();
-
-        //We only update the first file:
+        // We only update the first file:
         $uploaded_file = array_shift($this->data['_FILES']);
 
-        //FileManager::updateFileRef handles the whole file upload
-        //and does all the necessary security checks:
+        // FileManager::updateFileRef handles the whole file upload
+        // and does all the necessary security checks:
         $result = \FileManager::updateFileRef(
-            $file_ref,
-            $user,
+            $this->requireFileRef($file_ref_id),
+            \User::findCurrent(),
             $uploaded_file,
             true,
             false
         );
 
-        if ($result instanceof \FileRef) {
-            $file_ref_data = $result->toRawArray();
-            //Shortcuts:
-            $file_ref_data['size'] = $result->file->size;
-            $file_ref_data['mime_type'] = $result->file->mime_type;
-            $file_ref_data['storage'] = $result->file->storage;
-            if ($file_ref_data['storage'] === "url") {
-                $file_ref_data['url'] = $file_ref->file->url;
-            }
-            return $file_ref_data;
-        } else {
-            $this->halt(500, 'Error while updating a file reference: ' . implode(' ', $result));
+        if (!$result instanceof \FileRef) {
+            $this->error(500, 'Error while updating a file reference: ' . implode(' ', $result));
         }
+
+        return $this->filerefToJSON($result);
     }
 
     /**
@@ -188,35 +92,20 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function editFileRef($file_ref_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
-        }
-
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::editFileRef(
-            $file_ref,
-            $user,
+        $result = \FileManager::editFileRef(
+            $this->requireFileRef($file_ref_id),
+            \User::findCurrent(),
             $this->data['name'],
             $this->data['description'],
             $this->data['content_term_of_use_id'],
             $this->data['license']
         );
 
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while editing a file reference: ' . implode(' ', $errors));
+        if (!$result instanceof \FileRef) {
+            $this->error(500, 'Error while editing a file reference: ' . implode(' ', $result));
         }
 
-        $file_ref_data = $file_ref->toRawArray();
-        //Shortcuts:
-        $file_ref_data['size'] = $file_ref->file->size;
-        $file_ref_data['mime_type'] = $file_ref->file->mime_type;
-        $file_ref_data['storage'] = $file_ref->file->storage;
-        if ($file_ref_data['storage'] === "url") {
-            $file_ref_data['url'] = $file_ref->file->url;
-        }
-        return $file_ref_data;
+        return $this->filerefToJSON($result);
     }
 
     /**
@@ -226,39 +115,17 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function copyFileRef($file_ref_id, $destination_folder_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
+        $result = \FileManager::copyFileRef(
+            $this->requireFileRef($file_ref_id),
+            $this->requireFolder($destination_folder_id)->getTypedFolder(),
+            \User::findCurrent()
+        );
+
+        if (!$result instanceof \FileRef) {
+            $this->error(500, 'Error while copying a file reference: ' . implode(' ', $result));
         }
 
-        $destination_folder = \Folder::find($destination_folder_id);
-        if (!$destination_folder) {
-            $this->notFound('Destination folder not found!');
-        }
-
-        $destination_folder = $destination_folder->getTypedFolder();
-        if (!$destination_folder) {
-            $this->halt(500, 'Cannot find folder type of destination folder!');
-            return;
-        }
-
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::copyFileRef($file_ref, $destination_folder, $user);
-
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while copying a file reference: ' . implode(' ', $errors));
-        }
-
-        $file_ref_data = $file_ref->toRawArray();
-        //Shortcuts:
-        $file_ref_data['size'] = $file_ref->file->size;
-        $file_ref_data['mime_type'] = $file_ref->file->mime_type;
-        $file_ref_data['storage'] = $file_ref->file->storage;
-        if ($file_ref_data['storage'] === "url") {
-            $file_ref_data['url'] = $file_ref->file->url;
-        }
-        return $file_ref_data;
+        return $this->filerefToJSON($result);
     }
 
     /**
@@ -268,39 +135,17 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function moveFileRef($file_ref_id, $destination_folder_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
+        $result = \FileManager::moveFileRef(
+            $this->requireFileRef($file_ref_id),
+            $this->requireFolder($destination_folder_id)->getTypedFolder(),
+             \User::findCurrent()
+        );
+
+        if (!$result instanceof \FileRef) {
+            $this->error(500, 'Error while moving a file reference: ' . implode(' ', $result));
         }
 
-        $destination_folder = \Folder::find($destination_folder_id);
-        if (!$destination_folder) {
-            $this->notFound('Destination folder not found!');
-        }
-
-        $destination_folder = $destination_folder->getTypedFolder();
-        if (!$destination_folder) {
-            $this->halt(500, 'Cannot find folder type of destination folder!');
-            return;
-        }
-
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::moveFileRef($file_ref, $destination_folder, $user);
-
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while moving a file reference: ' . implode(' ', $errors));
-        }
-
-        $file_ref_data = $file_ref->toRawArray();
-        //Shortcuts:
-        $file_ref_data['size'] = $file_ref->file->size;
-        $file_ref_data['mime_type'] = $file_ref->file->mime_type;
-        $file_ref_data['storage'] = $file_ref->file->storage;
-        if ($file_ref_data['storage'] === "url") {
-            $file_ref_data['url'] = $file_ref->file->url;
-        }
-        return $file_ref_data;
+        return $this->filerefToJSON($result);
     }
 
     /**
@@ -310,20 +155,16 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function deleteFileRef($file_ref_id)
     {
-        $file_ref = \FileRef::find($file_ref_id);
-        if (!$file_ref) {
-            $this->notFound('File reference not found!');
+        $result = \FileManager::deleteFileRef(
+            $this->requireFileRef($file_ref_id),
+            \User::findCurrent()
+        );
+
+        if (!$result instanceof \FileRef) {
+            $this->error(500, 'Error while deleting a file reference: ' . implode(' ', $result));
         }
 
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::deleteFileRef($file_ref, $user);
-
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while deleting a file reference: ' . implode(' ', $errors));
-        }
-
-        $this->halt(200, 'OK');
+        $this->halt(200);
     }
 
     // FOLDER ROUTES:
@@ -343,70 +184,10 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getFolder($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
-        }
-
-        $folder_type = $folder->getTypedFolder();
-        if (!$folder_type) {
-            $this->halt(500, 'Folder type not found!');
-        }
-
-        $user_id = \User::findCurrent()->id;
-
-        $result['is_visible']  = $folder_type->isVisible($user_id);
-        $result['is_readable'] = $folder_type->isReadable($user_id);
-        $result['is_writable'] = $folder_type->isWritable($user_id);
-
-        //If the folder isn't readable by the user (given by user_id)
-        //the result parameter is_readable is set to false.
-        if ($result['is_readable']) {
-
-            $result = array_merge($result, $folder->toRawArray());
-            //The field "data_content" must be handled differently
-            //than the other fields since it contains JSON data.
-            $data_content = json_decode($folder->data_content);
-            $result['data_content'] = $data_content;
-
-            $subfolders = $folder->subfolders;
-
-            if ($subfolders) {
-                $result['subfolders'] = [];
-                foreach ($subfolders as $subfolder) {
-                    $subfolder_type = $subfolder->getTypedFolder();
-                    if ($subfolder_type->isVisible($user_id)) {
-                        //Here we must also take special care of the
-                        //"data_content" field.
-                        $subfolder_data = $subfolder->toRawArray();
-                        $subfolder_data['data_content'] = json_decode(
-                            $subfolder->data_content
-                        );
-                        $result['subfolders'][] = $subfolder_data;
-                    }
-                }
-            }
-
-            $file_refs = $folder_type->getFiles();
-            if ($file_refs) {
-                $result['file_refs'] = [];
-                foreach ($file_refs as $file_ref) {
-                    $file_ref_data = $file_ref->toRawArray();
-                    //Shortcuts:
-                    $file_ref_data['size'] = $file_ref->file->size;
-                    $file_ref_data['mime_type'] = $file_ref->file->mime_type;
-                    $file_ref_data['storage'] = $file_ref->file->storage;
-                    if ($file_ref_data['storage'] === "url") {
-                        $file_ref_data['url'] = $file_ref->file->url;
-                    }
-
-                    $result['file_refs'][] = $file_ref_data;
-                }
-            }
-
-        }
-
-        return $result;
+        return $this->folderToJSON(
+            $this->requireFolder($folder_id),
+            true
+        );
     }
 
     /**
@@ -415,24 +196,15 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function createNewFolder($parent_folder_id)
     {
-        $parent_folder = \Folder::find($parent_folder_id);
-        if (!$parent_folder) {
-            $this->notFound('Parent folder not found!');
-        }
+        $user   = \User::findCurrent();
+        $parent = $this->requireTypedFolder($parent_folder_id);
 
-        $parent_folder = $parent_folder->getTypedFolder();
-        if (!$parent_folder) {
-            $this->halt(500, 'Parent folder has an invalid folder type!');
-        }
-
-        $user = \User::findCurrent();
-
-        if (!$parent_folder->isWritable($user->id)) {
-            $this->halt(403, 'You are not permitted to create a subfolder in the parent folder!');
+        if (!$parent->isWritable($user->id)) {
+            $this->error(403, 'You are not permitted to create a subfolder in the parent folder!');
         }
 
         $result = \FileManager::createSubFolder(
-            $parent_folder,
+            $parent,
             $user,
             'StandardFolder', //to be extended
             $this->data['name'],
@@ -440,13 +212,12 @@ class FileSystem extends \RESTAPI\RouteMap
         );
 
         if (!$result instanceof \FolderType) {
-            $this->halt(500, 'Error while creating a folder: ' . implode(' ', $result));
+            $this->error(500, 'Error while creating a folder: ' . implode(' ', $result));
         }
 
-        $folder = \Folder::find($result->getId());
-        $folder_data = $folder->toRawArray();
-        $folder_data['data_content'] = json_decode($folder->data_content);
-        return $folder_data;
+        return $this->folderToJSON(
+            $this->requireFolder($result->getId())
+        );
     }
 
     /**
@@ -455,52 +226,26 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getFileRefsOfFolder($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
+        $folder = $this->requireFolder($folder_id);
+
+        $query = "folder_id = :folder_id ORDER BY name ASC";
+        $parameters[':folder_id'] = $folder->id;
+
+        if ($limit || $offset) {
+            $query .= " LIMIT :limit OFFSET :offset";
+            $parameters[':limit'] = $limit;
+            $parameters[':offset'] = $offset;
         }
 
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Folder type not found!');
-        }
+        $file_refs = \FileRef::findAndMapBySql(function (\FileRef $ref) {
+            return $this->filerefToJSON($ref);
+        }, $query, $parameters);
 
-        $user_id = \User::findCurrent()->id;
-
-        if (!$folder->isReadable($user_id)) {
-            $this->halt(403, 'You are not permitted to read this folder!');
-        }
-
-        $file_refs = \FileRef::findBySql(
-            'folder_id = :folder_id ORDER BY name ASC LIMIT :limit OFFSET :offset',
-            [
-                'folder_id' => $folder->id,
-                'limit' => $this->limit,
-                'offset' => $this->offset
-            ]
+        return $this->paginated(
+            $file_refs,
+            \FileRef::countByFolder_id($folder->id),
+            ['folder_id' => $folder->id]
         );
-
-        $total = \FileRef::countBySql('folder_id = :folder_id', [
-            'folder_id' => $folder->id
-        ]);
-
-        $result = [];
-        if ($file_refs) {
-            foreach ($file_refs as $file_ref) {
-                $file_ref_data = $file_ref->toRawArray();
-                //Shortcuts:
-                $file_ref_data['size'] = $file_ref->file->size;
-                $file_ref_data['mime_type'] = $file_ref->file->mime_type;
-                $file_ref_data['storage'] = $file_ref->file->storage;
-                if ($file_ref_data['storage'] === "url") {
-                    $file_ref_data['url'] = $file_ref->file->url;
-                }
-
-                $result[] = $file_ref_data;
-            }
-        }
-
-        return $this->paginated($result, $total, ['folder_id' => $folder->id]);
     }
 
 
@@ -510,52 +255,31 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getSubfoldersOfFolder($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
+        $user   = $this->requireUser();
+        $folder = $this->requireFolder($folder_id);
+
+        $query = "parent_id = :parent_id ORDER BY name ASC";
+        $parameters = [':parent_id' => $folder->id];
+
+        if ($this->limit || $this->offset) {
+            $query .= " LIMIT :limit OFFSET :offset";
+            $parameters[':limit']  = $this->limit;
+            $parameters[':offset'] = $this->offset;
         }
 
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Folder type not found!');
-        }
-
-        $user_id = \User::findCurrent()->id;
-
-        if(!$folder->isReadable($user_id)) {
-            $this->halt(403, 'You are not permitted to read this folder!');
-        }
-
-        $subfolders = \Folder::findBySql(
-            'parent_id = :parent_id ORDER BY name ASC LIMIT :limit OFFSET :offset',
-            [
-                'parent_id' => $folder->id,
-                'limit'     => $this->limit,
-                'offset'    => $this->offset,
-            ]
-        );
-
-        $total = \Folder::countBySql('parent_id = :parent_id', [
-            'parent_id' => $folder->id
-        ]);
-
-        $result = [];
-        if ($subfolders) {
-            foreach ($subfolders as $subfolder) {
-                $subfolder_type = $subfolder->getTypedFolder();
-                if ($subfolder_type->isVisible($user_id)) {
-                    //Here we must also take special care of the
-                    //"data_content" field.
-                    $subfolder_data = $subfolder->toRawArray();
-                    $subfolder_data['data_content'] = json_decode(
-                        $subfolder->data_content
-                    );
-                    $result[] = $subfolder_data;
-                }
+        $subfolders = \Folder::findAndMapBySql(function (\Folder $subfolder) use ($user) {
+            $type = $subfolder->getTypedFolder();
+            if (!$type || !$type->isVisible($user->id)) {
+                return false;
             }
-        }
+            return $this->folderToJSON($subfolder);
+        }, $query, $parameters);
 
-        return $this->paginated($result, $total, ['folder_id' => $folder->id]);
+        return $this->paginated(
+            array_filter($subfolders),
+            \Folder::countByParent_id($folder_id),
+            ['folder_id' => $folder_id]
+        );
     }
 
     /**
@@ -564,26 +288,14 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function getFolderPermissions($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
-        }
-
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Folder type not found!');
-        }
-
-        $user_id = \User::findCurrent()->id;
+        $user   = $this->requireUser();
+        $folder = $this->requireFolder($folder_id);
 
         // read permissions of the user and return them:
-        return [
+        return array_merge([
             'folder_id'   => $folder->id,
-            'user_id'     => $user_id,
-            'is_visible'  => $folder->isVisible($user_id),
-            'is_readable' => $folder->isReadable($user_id),
-            'is_writable' => $folder->isWritable($user_id),
-        ];
+            'user_id'     => $user->id,
+        ], $this->folderPermissionsToJSON($folder));
     }
 
     /**
@@ -593,29 +305,35 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function editFolder($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
+        if (isset($this->data['name']) && !$this->data['name']) {
+            $this->error(400, "The name for the folder with the id {$folder_id} must not be empty!");
         }
 
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Folder has an invalid folder type!');
+        $user = $this->requireUser();
+        $typed_folder = $this->requireTypedFolder($folder_id);
+
+        if (!$typed_folder->isEditable($user->id)) {
+            $this->error(403, "You may not edit the folder with id {$folder_id}!");
         }
 
-        $result = \FileManager::editFolder($folder, \User::findCurrent(), $this->data['name'], $this->data['description']);
-
-        if (!($result instanceof \FolderType)) {
-            $this->halt(500, 'Error while editing a folder: ' . implode(' ', $errors));
+        if (!$typed_folder instanceof \StandardFolder) {
+            $this->error(501, "Editing is only allowed for folders of type StandardFolder for now!");
         }
 
-        //We must get the result folder from the database to get updated data.
-        //Furthermore we can't use the FolderType object since it
-        //doesn't have the toRawArray method.
-        $result_folder = \Folder::find($result->getId());
-        $folder_data = $result_folder->toRawArray();
-        $folder_data['data_content'] = json_decode($result_folder->data_content);
-        return $folder_data;
+        if ($this->data['name']) {
+            $typed_folder->name = $this->data['name'];
+        }
+        if (isset($this->data['description'])) {
+            $typed_folder->description = $this->data['description'] ?: '';
+        }
+
+        if (!$typed_folder->store()) {
+            $this->error(500, "Could not store folder with id {$folder_id}!");
+        }
+
+        return $this->folderToJSON(
+            $this->requireFolder($folder_id)
+        );
     }
 
     /**
@@ -625,41 +343,19 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function copyFolder($folder_id, $destination_folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        $destination_folder = \Folder::find($destination_folder_id);
-
-        if (!$folder) {
-            $this->notFound('Source folder not found!');
-        }
-        if (!$destination_folder) {
-            $this->notFound('Destination folder not found!');
-        }
-
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Source folder type not found!');
-        }
-
-        $destination_folder = $destination_folder->getTypedFolder();
-        if (!$destination_folder) {
-            $this->halt(500, 'Destination folder type not found!');
-        }
-
-        $user = \User::findCurrent();
-
-        $result = \FileManager::copyFolder($folder, $destination_folder, $user);
+        $result = \FileManager::copyFolder(
+            $this->requireTypedFolder($folder_id),
+            $this->requireTypedFolder($destination_folder_id),
+            \User::findCurrent()
+        );
 
         if (!$result instanceof \FolderType) {
-            $this->halt(500, 'Error while copying a folder: ' . implode(' ', $result));
+            $this->error(500, 'Error while copying a folder: ' . implode(' ', $result));
         }
 
-        //We must get the result folder from the database to get updated data.
-        //Furthermore we can't use the FolderType object since it
-        //doesn't provide us with the toRawArray method.
-        $result_folder = \Folder::find($result->getId());
-        $folder_data = $result_folder->toRawArray();
-        $folder_data['data_content'] = json_decode($result_folder->data_content);
-        return $folder_data;
+        return $this->folderToJSON(
+            $this->requireFolder($result->getId())
+        );
     }
 
 
@@ -669,41 +365,19 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function moveFolder($folder_id, $destination_folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        $destination_folder = \Folder::find($destination_folder_id);
+        $result = \FileManager::moveFolder(
+            $this->requireTypedFolder($folder_id),
+            $this->requireTypedFolder($destination_folder_id),
+            \User::findCurrent()
+        );
 
-        if (!$folder) {
-            $this->notFound('Source folder not found!');
-        }
-        if (!$destination_folder) {
-            $this->notFound('Destination folder not found!');
-        }
-
-        $folder = $folder->getTypedFolder();
-        if (!$folder) {
-            $this->halt(500, 'Folder has an invalid folder type!');
+        if (!$result instanceof \FolderType) {
+            $this->error(500, 'Error while moving a folder: ' . implode(' ', $result));
         }
 
-        $destination_folder = $destination_folder->getTypedFolder();
-        if (!$destination_folder) {
-            $this->halt(500, 'Destination folder has an invalid folder type!');
-        }
-
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::moveFolder($folder, $destination_folder, $user);
-
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while moving a folder: ' . implode(' ', $errors));
-        }
-
-        //We must get the result folder from the database to get updated data.
-        //Furthermore we can't use the FolderType object since it
-        //doesn't provide us with the toRawArray method.
-        $result_folder = \Folder::find($folder->getId());
-        $folder_data = $result_folder->toRawArray();
-        $folder_data['data_content'] = json_decode($result_folder->data_content);
-        return $folder_data;
+        return $this->folderToJSON(
+            $this->requireFolder($folder_id)
+        );
     }
 
 
@@ -714,32 +388,19 @@ class FileSystem extends \RESTAPI\RouteMap
      */
     public function deleteFolder($folder_id)
     {
-        $folder = \Folder::find($folder_id);
-        if (!$folder) {
-            $this->notFound('Folder not found!');
+        $result = \FileManager::deleteFolder(
+            $this->requireTypedFolder($folder_id),
+            \User::findCurrent()
+        );
+
+        if (!$result instanceof \FolderType) {
+            $this->error(500, 'Error while deleting a folder: ' . implode(' ', $result));
         }
 
-        $folder_type = $folder->getTypedFolder();
-        if (!$folder_type) {
-            $this->halt(500, 'Folder type of folder not found!');
-        }
-
-        $user = \User::findCurrent();
-
-        $errors = \FileManager::deleteFolder($folder_type, $user);
-
-        if (!empty($errors)) {
-            $this->halt(500, 'Error while deleting a folder: ' . implode(' ', $errors));
-        }
-
-        $folder_data = $folder->toRawArray();
-        $folder_data['data_content'] = json_decode($folder->data_content);
-        return $folder_data;
+        $this->halt(200);
     }
 
-
     // RELATED OBJECT ROUTES:
-
 
     /**
      * Get a collection of all ContentTermsOfUse objects
@@ -753,15 +414,223 @@ class FileSystem extends \RESTAPI\RouteMap
             ['limit'  => $this->limit, 'offset' => $this->offset]
         );
 
-        $total = \ContentTermsOfUse::countBySql('1');
-
-        $result = [];
-        foreach ($objects as $object) {
-            $result[] = $object->toRawArray();
-        }
-
-        return $this->paginated($result, $total);
+        return $this->paginated(
+            array_map([$this, 'termsOfUseToJSON'], $objects),
+            \ContentTermsOfUse::countBySql('1')
+        );
     }
 
+    // UTILITY METHODS
 
+    /**
+     * Requires a valid user object.
+     * @return User object
+     */
+    private function requireUser()
+    {
+        return \User::findCurrent();
+    }
+
+    /**
+     * Requires a valid file reference object
+     * @param  mixed $id_or_object Either a file reference id or object
+     * @return FileRef object
+     */
+    private function requireFileRef($id_or_object)
+    {
+        if ($id_or_object instanceof \FileRef) {
+            $file_ref = $id_or_object;
+        } else {
+            //check if the file_id references a file reference object:
+            $file_ref = \FileRef::find($id_or_object);
+            if (!$file_ref) {
+                $this->notFound("File reference with id {$id_or_object} not found!");
+            }
+        }
+
+        // check if the file reference is placed inside a folder.
+        // (must be present to check for permissions)
+        if (!$file_ref->folder) {
+            $this->error(500, "File reference with id {$file_ref->id} has no folder!");
+        }
+
+        $typed_folder = $file_ref->folder->getTypedFolder();
+        if (!$typed_folder) {
+            $this->error(500, "The folder of file reference with id {$file_ref->id} has no folder type!");
+        }
+
+        //check if the current user has the permissions to read this file reference:
+        if (!$typed_folder->isReadable($this->requireUser()->id)) {
+            $this->error(403, "You are not permitted to read the file reference with id {$file_ref->id}!");
+        }
+
+        return $file_ref;
+    }
+
+    /**
+     * Converts a file reference object to JSON.
+     * @param  FileRef $ref      File reference object
+     * @param  boolean $extended Extended output? (includes folder, owner and terms of use)
+     * @return array representation for json encoding
+     */
+    private function filerefToJSON(\FileRef $ref, $extended = false)
+    {
+        $user = $this->requireUser();
+        $typed_folder = $ref->folder->getTypedFolder();
+
+        $result = array_merge($ref->toRawArray(), [
+            'size'      => (int) $ref->file->size,
+            'mime_type' => $ref->file->mime_type,
+            'storage'   => $ref->file->storage,
+
+            'is_readable'     => $typed_folder->isReadable($user->id),
+            'is_downloadable' => $typed_folder->isFileDownloadable($ref->id, $user->id),
+            'is_editable'     => $typed_folder->isFileEditable($ref->id, $user->id),
+            'is_writable'     => $typed_folder->isFileWritable($ref->id, $user->id),
+        ]);
+
+        $result['downloads'] = (int) $result['downloads'];
+        $result['mkdate']    = (int) $result['mkdate'];
+        $result['chdate']    = (int) $result['chdate'];
+
+        if ($result['storage'] === 'url') {
+            $result['url'] = $ref->file->url;
+        }
+
+        if ($extended) {
+            //folder does exist (since we checked for its existence above)
+            $result['folder'] = $this->folderToJSON($ref->folder);
+
+            if ($ref->owner) {
+                $result['owner'] = User::getMiniUser($this, $ref->owner);
+            }
+
+            //$result['license'] = $file_ref->license; //to be activated when licenses are defined
+
+            if ($ref->terms_of_use) {
+                $result['terms_of_use'] = $this->termsOfUseToJSON($ref->terms_of_use);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Requires a valid folder object
+     * @param  mixed $id_or_object Either a folder id or object
+     * @return Folder object
+     */
+    private function requireFolder($id_or_object)
+    {
+        if ($id_or_object instanceof \Folder) {
+            $folder = $id_or_object;
+        } else {
+            $folder = \Folder::find($id_or_object);
+            if (!$folder) {
+                $this->notFound("Folder with id {$id_or_object} not found!");
+            }
+        }
+
+        $typed_folder = $folder->getTypedFolder();
+        if (!$typed_folder) {
+            $this->error(500, "Cannot find folder type of folder with id {$folder->id}!");
+            return;
+        }
+
+        if (!$typed_folder->isReadable($this->requireUser()->id)) {
+            $this->error(403, "You are not allowed to read the contents of the folder with the id {$folder->id}!");
+        }
+
+        return $folder;
+    }
+
+    /**
+     * Requires a valid typed folder object
+     * @param  mixed $id_or_object Either a folder id or object
+     * @return FolderType instance
+     */
+    private function requireTypedFolder($id_or_object)
+    {
+        return $this->requireFolder($id_or_object)->getTypedFolder();
+    }
+
+    /**
+     * Converts a given folder to JSON.
+     * @param  Folder  $folder   Folder object
+     * @param  boolean $extended Extended output? (includes subfolders and file references)
+     * @return array representation for json encoding
+     */
+    private function folderToJSON(\Folder $folder, $extended = false)
+    {
+        $result = $this->folderPermissionsToJSON($folder);
+
+        if ($result['is_readable']) {
+            $result = array_merge($folder->toRawArray(), $result);
+
+            $result['mkdate'] = (int) $result['mkdate'];
+            $result['chdate'] = (int) $result['chdate'];
+
+            //The field "data_content" must be handled differently
+            //than the other fields since it contains JSON data.
+            $data_content = json_decode($folder->data_content);
+            $result['data_content'] = $data_content;
+
+            if ($extended) {
+                $user = $this->requireUser();
+
+                $result['subfolders'] = [];
+                foreach ($folder->subfolders as $subfolder) {
+                    if (!$subfolder->getTypedFolder()->isVisible($user->id)) {
+                        continue;
+                    }
+                    $result['subfolders'][] = $this->folderToJSON($subfolder);
+                }
+
+                $result['file_refs'] = [];
+                foreach ($folder->getTypedFolder()->getFiles() as $file_ref) {
+                    $result['file_refs'][] = $this->filerefToJSON($file_ref);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Converts permissions of a folder to JSON.
+     * @param  Folder $folder Folder object
+     * @param  User   $user   User object to check permissions against
+     * @return array representation for json encoding
+     */
+    private function folderPermissionsToJSON(\Folder $folder)
+    {
+        $user = $this->requireUser();
+        $type = $folder = $folder->getTypedFolder();
+        if (!$type) {
+            $this->error(500, 'Folder type not found!');
+        }
+
+        return [
+            'is_visible'  => $type->isVisible($user->id),
+            'is_readable' => $type->isReadable($user->id),
+            'is_writable' => $type->isWritable($user->id),
+        ];
+    }
+
+    /**
+     * Converts a terms of use object to JSON.
+     * @param  ContentTermsOfUse $object Object
+     * @return array representation for json encoding
+     */
+    private function termsOfUseToJSON(\ContentTermsOfUse $object)
+    {
+        $result = $object->toRawArray();
+
+        $result['is_default'] = (bool) $result['is_default'];
+
+        $result['mkdate'] = (int) $result['mkdate'];
+        $result['chdate'] = (int) $result['chdate'];
+
+        return $result;
+    }
 }

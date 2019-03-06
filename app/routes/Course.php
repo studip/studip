@@ -102,7 +102,6 @@ class Course extends \RESTAPI\RouteMap
         );
     }
 
-
     /**
      * Get the root file folder of a course.
      *
@@ -110,21 +109,17 @@ class Course extends \RESTAPI\RouteMap
      */
     public function getTopFolder($course_id)
     {
-        //first we check if the course exists:
-        $course = $this->requireCourse($course_id);
+        $top_folder = \Folder::findTopFolder(
+            $this->requireCourse($course_id)->id,
+            'course'
+        );
 
-        //then we can get the top folder:
-        $top_folder = \Folder::findTopFolder($course->id, 'course');
-
-        if ($top_folder) {
-            $file_system_api = new FileSystem();
-            return $file_system_api->getFolder($top_folder->id);
-        } else {
-            $this->halt(404, 'Folder not found!');
+        if (!$top_folder) {
+            $this->notFound("No folder found for course with id {$course_id}!");
         }
+
+        return (new FileSystem())->getFolder($top_folder->id);
     }
-
-
 
     /**************************************************/
     /* PRIVATE HELPER METHODS                         */

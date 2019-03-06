@@ -17,7 +17,7 @@ class User extends \RESTAPI\RouteMap
     {
         $avatar = \Avatar::getAvatar($user->id);
 
-        return array(
+        return [
             'id'              => $user->id,
             'href'            => $routemap->urlf('/user/%s', array(htmlReady($user->id))),
             'name'            => self::getNamesOfUser($user),
@@ -25,19 +25,19 @@ class User extends \RESTAPI\RouteMap
             'avatar_medium'   => $avatar->getURL(\Avatar::MEDIUM),
             'avatar_normal'   => $avatar->getURL(\Avatar::NORMAL),
             'avatar_original' => $avatar->getURL(\Avatar::ORIGINAL)
-        );
+        ];
     }
 
     public static function getNamesOfUser($user)
     {
-        $name = array(
+        $name = [
             'username'  => $user->username,
             'formatted' => $user->getFullName(),
             'family'    => $user->nachname,
             'given'     => $user->vorname,
             'prefix'    => $user->title_front,
             'suffix'    => $user->title_rear
-        );
+        ];
         return $name;
     }
 
@@ -200,28 +200,22 @@ class User extends \RESTAPI\RouteMap
      */
     public function getTopFolder($user_id)
     {
-        //first we check if the user exists:
         $user = \User::find($user_id);
-
-        if(!$user) {
-            $this->halt(404, 'User not found!');
+        if (!$user) {
+            $this->notFound("User with id {$user_id} not found!");
         }
 
-        if($user->id != \User::findCurrent()->id) {
-            $this->halt(403, "You are not allowed to see another user's personal file area!");
+        if ($user->id !== \User::findCurrent()->id) {
+            $this->error(403, 'You are not allowed to see another user\'s personal file area!');
         }
 
-        //then we can get the top folder:
         $top_folder = \Folder::findTopFolder($user->id, 'user');
 
-        $top_folder_type = $top_folder->getTypedFolder();
-
-
-        if(!$top_folder_type->isReadable(\User::findCurrent()->id)) {
-            $this->halt(403, 'You are not allowed to read the top folder of another user\'s file area!');
+        if (!$top_folder) {
+            $this->notFound("No folder found for user with id {$user_id}!");
         }
 
-        return $top_folder->toRawArray();
+        return (new FileSystem())->getFolder($top_folder->id);
     }
 
     /**
