@@ -92,8 +92,9 @@ class Cache {
     /**
      * @param string prefix Optional prefix for the cache
      */
-    constructor(prefix) {
-        this.prefix = 'studip.' + (prefix || '');
+    constructor(prefix, session_id) {
+        this.prefix     = 'studip.' + (prefix || '');
+        this.session_id = session_id;
     }
 
     /**
@@ -163,7 +164,7 @@ class Cache {
         cache.setItem(index, JSON.stringify({
             value: value,
             expires: expires ? new Date().getTime() + expires * 1000 : false,
-            session: session_id
+            session: this.session_id
         }));
     }
 
@@ -221,7 +222,7 @@ const CacheFacade = {
             }
         }
 
-        return new Cache(prefix);
+        return new Cache(prefix, session_id);
     }
 };
 
