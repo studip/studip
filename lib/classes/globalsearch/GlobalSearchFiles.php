@@ -157,7 +157,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 default:
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    $mycourses = "SELECT SQL_CALC_FOUND_ROWS `Seminar_id`
+                    $mycourses = "SELECT `Seminar_id`
                                   FROM `seminar_user`
                                   WHERE `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id);
 
@@ -172,12 +172,13 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                     return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
                                 r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
                             FROM `file_refs` r
-                            JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
                             JOIN `files` f ON (r.`file_id` = f.`id`)
-                            WHERE (fo.`range_id` IN ({$mycourses})
-                                   OR fo.`range_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
-                                   OR fo.`range_id` IN (" . DBManager::get()->quote($institutes) . ")
-                              ) AND (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
+                            JOIN `folders` fo
+                              ON (r.`folder_id` = fo.`id`) AND (
+                                  fo.`range_id` IN ({$mycourses})
+                                  OR fo.`range_id` IN (". DBManager::get()->quote($GLOBALS['user']->id) . "," . DBManager::get()->quote($institutes) . ")
+                              )
+                            WHERE (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
                             ORDER BY r.`chdate` DESC LIMIT " . $limit;
             }
         }
