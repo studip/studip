@@ -5,38 +5,38 @@
  */
 class I18NString
 {
-    
+
     /**
      * Text in default content language.
-     * 
+     *
      * @var string
      */
     protected $base;
-    
+
     /**
      * Text in additional languages.
-     * 
-     * @var array|null 
+     *
+     * @var array|null
      */
     protected $lang;
-    
+
     /**
      * Database info for id, table, field.
-     * 
+     *
      * @var array
      */
     protected $metadata;
-    
+
     /**
      * Holds the language the content is translated into.
-     * 
+     *
      * @var string
      */
     protected static $content_language = null;
 
     /**
      * Holds the language the content is translated into by default.
-     * 
+     *
      * @var string
      */
     protected static $default_language = null;
@@ -48,22 +48,19 @@ class I18NString
      * @param array     $lang   Text in additional languages.
      * @param array     $metadata Database info for id, table, field.
      */
-    public function __construct($base, $lang = null, $metadata = array())
+    public function __construct($base, $lang = null, $metadata = [])
     {
         $this->base = $base;
         $this->lang = $lang;
         $this->metadata = $metadata;
-        if ($this->metadata) {
-            $this->toArray();
-        }
     }
 
     /**
      * Return the text representation of this i18n field in selected language.
      * The language is selected by self::content_language (with precendence)
      * or by $_SESSION['_language'].
-     * 
-     * @returns string 
+     *
+     * @returns string
      */
     public function __toString()
     {
@@ -82,51 +79,51 @@ class I18NString
 
     /**
      * Sets the language the content is translated into.
-     * 
+     *
      * @param string $language
      */
     public static function setContentLanguage($language)
     {
         self::$content_language = $language;
     }
-    
+
     /**
      * Returns the language the contnet is translated into.
-     * 
+     *
      * @return string The language the content is translated into.
      */
     public static function getContentLanguage()
     {
         return self::$content_language ?: self::getDefaultLanguage();
     }
-    
+
     /**
      * Sets the default language the content is translated into. The default is
      * normally defined by the first entry in $GLOBALS['CONTENT_LANGUAGES'] (see
      * config_defaults.inc.php).
-     * 
+     *
      * @param string $language
      */
     public static function setDefaultLanguage($language = null)
     {
         self::$default_language = $language ?: key($GLOBALS['CONTENT_LANGUAGES']);
     }
-    
+
     /**
      * Returns the language all values are translated into by default. The
      * language ist normally defined in $GLOBALS['CONTENT_LANGUAGES'] (see
      * config_defaults.inc.php).
-     * 
+     *
      * @return string The default language all values are translated into.
      */
     public static function getDefaultLanguage()
     {
         return self::$default_language ?: key($GLOBALS['CONTENT_LANGUAGES']);
     }
-    
+
     /**
      * Sets the original (untranslated) value of this i18n field.
-     * 
+     *
      * @param string $text The original value.
      * @return string The original value.
      */
@@ -137,7 +134,7 @@ class I18NString
 
     /**
      * Sets all translations of this i18n field.
-     * 
+     *
      * @param array $lang An array with languages as keys and translations
      * as values.
      * @return array The array with translations.
@@ -149,7 +146,7 @@ class I18NString
 
     /**
      * Sets the metadata (database info for id, table, field) of this i18n field.
-     * 
+     *
      * @param array $metadata Database info for id, table, field.
      */
     public function setMetadata($metadata)
@@ -159,7 +156,7 @@ class I18NString
 
     /**
      * Return the string in the default content language.
-     * 
+     *
      * @return string String in default content language.
      */
     public function original()
@@ -170,18 +167,18 @@ class I18NString
     /**
      * Return the string in the specified additional language.
      *
-     * @param string The additional language. 
+     * @param string The additional language.
      * @return string The translated value.
      */
     public function translation($lang)
     {
         return $this->toArray()[$lang];
     }
-    
+
     /**
      * Returns the string in the specified language (additional languages and
      * default languages).
-     * 
+     *
      * @param string $lang Additional language or default language.
      * @return string The localized string.
      */
@@ -190,14 +187,14 @@ class I18NString
         if ($lang == self::getDefaultLanguage()) {
             return $this->base;
         }
-        
+
         return $this->translation($lang);
     }
 
     /**
      * Sets the translation for the given language. If the given language is
      * the default language, sets the original.
-     * 
+     *
      * @param type $text The translated or original value.
      * @param type $lang The additional or default language.
      * @return string The translated or original value.
@@ -208,14 +205,14 @@ class I18NString
         if ($lang == self::getDefaultLanguage()) {
             return $this->setOriginal($text);
         }
-        
+
         if (!Config::get()->CONTENT_LANGUAGES[$lang]) {
             throw new InvalidArgumentException('Language not configured.');
         }
-        
+
         return $this->lang[$lang] = $text;
     }
-    
+
     /**
      * Return an array containing the text in all additional languages.
      *
@@ -277,7 +274,7 @@ class I18NString
 
     /**
      * Removes all translations for this I18NString object.
-     * 
+     *
      */
     public function removeTranslations()
     {
@@ -287,7 +284,7 @@ class I18NString
 
     /**
      * Returns an I18NString object by given object_id, table and field.
-     * 
+     *
      * @param string $object_id The id of the object with i18n fields.
      * @param string $table The name of the table with the original values.
      * @param string $field The name of the i18n field.
@@ -313,7 +310,7 @@ class I18NString
 
     /**
      * Retrieves all translations of one field.
-     * 
+     *
      * @param string $object_id The id of the object with i18n fields.
      * @param string $table The name of the table with the original values.
      * @param string $field The name of the i18n field.
@@ -335,7 +332,7 @@ class I18NString
     /**
      * Retrieves all translations of all fields for given object (by id) and
      * table.
-     * 
+     *
      * @param string $object_id The id of the object with i18n fields.
      * @param string $table The name of the table with the original values.
      * @return array An array with all translations of all fields grouped by
@@ -346,11 +343,11 @@ class I18NString
         $db = DBManager::get();
         return $db->fetchGrouped("SELECT `field`, `lang`, `value` FROM `i18n` WHERE `object_id` = ? AND `table` = ?", [$object_id, $table]);
     }
-    
+
     /**
      * Removes all translations by given object id and table name. Accepts the
      * language as third parameter to remove only translations to this language.
-     * 
+     *
      * @param string $object_id The id of the sorm object.
      * @param string $table The table name.
      * @param string $lang Optional name of language.
