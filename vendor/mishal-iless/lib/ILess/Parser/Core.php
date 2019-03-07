@@ -839,7 +839,7 @@ class Core
 
             if ($isCall) {
                 // ILess\Variable
-                if (count($arg->value) == 1) {
+                if (@count($arg->value) == 1) {
                     $val = $arg->value[0];
                 }
             } else {
