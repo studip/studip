@@ -460,7 +460,7 @@ class ResourcesBrowse {
             $query = "SELECT a.resource_id, a.name, a.description
                       FROM resources_objects AS a
                       LEFT JOIN resources_objects AS b ON (b.parent_id = a.resource_id)
-                      WHERE a.parent_id = :parent_id AND (a.category_id IS NULL OR b.resource_id IS NOT NULL)
+                      WHERE a.parent_id = :parent_id AND b.resource_id IS NOT NULL
                       GROUP BY resource_id
                       ORDER BY name";
             $parameters[':parent_id'] = $this->open_object;
