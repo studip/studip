@@ -99,6 +99,8 @@ const Dialog = {
 
 // Handler for HTTP header X-Location: Relocate to another location
 Dialog.handlers.header['X-Location'] = function(location, options) {
+    location = decodeURIComponent(location);
+
     if (document.location.href === location) {
         document.location.reload(true);
     } else {
@@ -112,7 +114,7 @@ Dialog.handlers.header['X-Location'] = function(location, options) {
     }
 
     Dialog.close(options);
-    document.location = decodeURIComponent(location);
+    document.location = location;
 
     return false;
 };
