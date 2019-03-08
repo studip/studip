@@ -23,9 +23,6 @@
                 </div>
             </div>
         <? else : ?>
-            <label>
-                <?= _('Anmelderegeln erzeugen'); ?>
-            </label>
             <div>
                 <? if (!$is_locked['passwort'] && isset($activated_admission_rules['PasswordAdmission'])) : ?>
                     <?= Studip\LinkButton::create(_("Anmeldung mit Passwort"), $controller->url_for('/instant_course_set', ['type' => 'PasswordAdmission']), ['data-dialog' => '']) ?>
