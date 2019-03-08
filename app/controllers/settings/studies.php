@@ -53,7 +53,7 @@ class Settings_StudiesController extends Settings_SettingsController
     {
         $this->faecher              = StudyCourse::findBySQL('1 ORDER BY name');
         $this->abschluesse          = Abschluss::findBySQL('1 ORDER by name');
-        $this->available_institutes = Institute::getMyInstitutes();
+        $this->available_institutes = Institute::getInstitutes();
         $this->institutes           = $this->user->institute_memberships->filter(function ($a) {
             return $a->inst_perms === 'user';
         });
@@ -163,6 +163,9 @@ class Settings_StudiesController extends Settings_SettingsController
      */
     public function store_in_action()
     {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
         $this->check_ticket();
 
         $inst_delete = Request::optionArray('inst_delete');
