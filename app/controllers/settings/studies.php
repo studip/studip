@@ -64,6 +64,9 @@ class Settings_StudiesController extends Settings_SettingsController
      */
     public function store_sg_action()
     {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
         $this->check_ticket();
 
         $any_change = false;
