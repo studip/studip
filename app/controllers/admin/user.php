@@ -81,6 +81,7 @@ class Admin_UserController extends AuthenticatedController
         }
 
         //Datafields
+        $this->datafields = [];
         $datafields = DataField::getDataFields("user");
         foreach ($datafields as $datafield) {
             if ($datafield->accessAllowed()) {
