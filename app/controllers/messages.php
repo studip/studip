@@ -24,6 +24,10 @@ class MessagesController extends AuthenticatedController {
         PageLayout::setTitle(_('Nachrichten'));
         PageLayout::setHelpKeyword('Basis.InteraktionNachrichten');
 
+        if (in_array($action, ['overview', 'sent'])) {
+            $this->tags = Message::getUserTags();
+        }
+
         $this->setupSidebar($action);
     }
 
@@ -53,7 +57,6 @@ class MessagesController extends AuthenticatedController {
             Request::get("search")
         );
         $this->received   = true;
-        $this->tags       = Message::getUserTags();
         $this->message_id = $message_id;
         $this->settings   = UserConfig::get($GLOBALS['user']->id)->MESSAGING_SETTINGS;
     }
@@ -77,7 +80,6 @@ class MessagesController extends AuthenticatedController {
             Request::get("search")
         );
         $this->received   = false;
-        $this->tags       = Message::getUserTags();
         $this->message_id = $message_id;
         $this->settings   = UserConfig::get($GLOBALS['user']->id)->MESSAGING_SETTINGS;
 
@@ -924,16 +926,22 @@ class MessagesController extends AuthenticatedController {
         $folderwidget->forceRendering();
         $folderwidget->title = _('Schlagworte');
         $folderwidget->id    = 'messages-tags';
-        $folderwidget
-            ->addLink(_("Alle Nachrichten"), URLHelper::getURL("?"), null, array('class' => "tag"))
-            ->setActive(!Request::submitted("tag"));
-        if (empty($tags)) {
+        $folderwidget->addLink(
+            _('Alle Nachrichten'),
+            $this->url_for("messages/{$action}"),
+            null,
+            ['class' => 'tag']
+        )->setActive(!Request::submitted("tag"));
+        if (empty($this->tags)) {
             $folderwidget->style = 'display:none';
         } else {
-            foreach ($tags as $tag) {
-                $folderwidget
-                    ->addLink(ucfirst($tag), URLHelper::getURL("?", array('tag' => $tag)), null, array('class' => "tag"))
-                    ->setActive(Request::get("tag") === $tag);
+            foreach ($this->tags as $tag) {
+                $folderwidget->addLink(
+                    $tag,
+                    $this->url_for("messages/{$action}", compact('tag')),
+                    null,
+                    ['class' => 'tag']
+                )->setActive(Request::get('tag') === $tag);
             }
         }
 

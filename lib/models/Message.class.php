@@ -45,17 +45,20 @@ class Message extends SimpleORMap implements PrivacyObject
         ));
     }
 
-    static public function getUserTags($user_id = null)
+    public static function getUserTags($user_id = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
-        $statement = DBManager::get()->prepare("
-            SELECT DISTINCT tag FROM message_tags WHERE user_id = :user_id ORDER BY tag ASC
-        ");
-        $statement->execute(array('user_id' => $user_id));
-        return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+        $query = "SELECT DISTINCT tag
+                  FROM message_tags
+                  WHERE user_id = :user_id
+                  ORDER BY tag ASC";
+        return DBManager::get()->fetchFirst($query, [
+            ':user_id' => $user_id ?: $GLOBALS['user']->id,
+        ], function ($tag) {
+            return ucfirst($tag);
+        });
     }
 
-    static public function findNew($user_id, $receiver = true, $since = 0, $tag = null)
+    public static function findNew($user_id, $receiver = true, $since = 0, $tag = null)
     {
         if ($tag) {
             $messages_data = DBManager::get()->prepare("
@@ -250,15 +253,16 @@ class Message extends SimpleORMap implements PrivacyObject
      */
     public function getTags($user_id = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
-        $statement = DBManager::get()->prepare("
-            SELECT tag FROM message_tags WHERE message_id = :message_id AND user_id = :user_id ORDER BY tag ASC
-        ");
-        $statement->execute(array(
-            'message_id' => $this->getId(),
-            'user_id' => $user_id
-        ));
-        return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+        $query = "SELECT tag
+                  FROM message_tags
+                  WHERE message_id = :message_id AND user_id = :user_id
+                  ORDER BY tag ASC";
+        return DBManager::get()->fetchFirst($query, [
+            'message_id' => $this->id,
+            'user_id'    => $user_id ?: $GLOBALS['user']->id,
+        ], function ($tag) {
+            return ucfirst($tag);
+        });
     }
 
     public function addTag($tag, $user_id = null)
