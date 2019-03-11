@@ -23,7 +23,7 @@
 
                     <label>
                         <?= _('Titel') ?>
-                        <input class="size-l" type="text" name="name" style="width: 99%" value="<?= htmlReady($this->flash['new_entry_title']) ?>"
+                        <input class="size-l" type="text" name="name" style="width: 99%" value=""
                             <?= $constraint['depth'] == 1 ? 'required' : '' ?> placeholder="<?= _('Titel') ?>" tabindex="2">
                     </label>
                 <? elseif ($GLOBALS['user']->id == 'nobody') : ?>
@@ -36,7 +36,7 @@
                 <label>
                     <textarea class="add_toolbar wysiwyg size-l" data-textarea="new_entry" name="content" required tabindex="3"
                         placeholder="<?= _('Schreiben Sie hier Ihren Beitrag. Hilfe zu Formatierungen'
-                            . ' finden Sie rechts neben diesem Textfeld.') ?>"><?= wysiwygReady($this->flash['new_entry_content']) ?></textarea>
+                            . ' finden Sie rechts neben diesem Textfeld.') ?>"></textarea>
                 </label>
 
                 <? if (Config::get()->FORUM_ANONYMOUS_POSTINGS): ?>

@@ -116,7 +116,7 @@
 
 
             <? if (ForumPerm::has('add_entry', $constraint['seminar_id'])) : ?>
-                <?= Studip\LinkButton::create(_('Beitrag zitieren'), PluginEngine::getLink('coreforum/index/cite/' . $post['topic_id']), array(
+                <?= Studip\LinkButton::create(_('Beitrag zitieren'), PluginEngine::getURL('coreforum/index/index/' . $post['topic_id'] .'?cite=1'), array(
                     'onClick' => "javascript:STUDIP.Forum.citeEntry('". $post['topic_id'] ."'); return false;",
                     'class'   => !$perms['edit_closed'] ? 'hideWhenClosed' : '',
                     'style'   => !$can_edit_closed ? 'display: none' : ''

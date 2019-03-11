@@ -198,13 +198,13 @@ if ($section === 'index' && ForumPerm::has('pdfexport', $seminar_id)) {
         <div style="clear: right; text-align: center">
             <div class="button-group">
                 <? if ($constraint['depth'] <= 1 || ($constraint['closed'] == 0)) : ?>
-                    <?= Studip\LinkButton::create($button_face, PluginEngine::getLink('coreforum/index/new_entry/' . $topic_id),
+                    <?= Studip\LinkButton::create($button_face, PluginEngine::getURL('coreforum/index/index/'. $topic_id .'?answer=1'),
                         array('onClick' => 'STUDIP.Forum.answerEntry(); return false;',
                         'class' => 'hideWhenClosed',)) ?>
                 <? endif ?>
 
                 <? if ($constraint['depth'] > 1 && ($constraint['closed'] == 1)) : ?>
-                    <?= Studip\LinkButton::create($button_face, PluginEngine::getLink('coreforum/index/new_entry/' . $topic_id),
+                    <?= Studip\LinkButton::create($button_face, PluginEngine::getURL('coreforum/index/index/' . $topic_id. '?answer=1'),
                         array('onClick' => 'STUDIP.Forum.answerEntry(); return false;',
                             'class' => 'hideWhenClosed',
                             'style' => 'display:none;'
@@ -254,3 +254,13 @@ if ($section === 'index' && ForumPerm::has('pdfexport', $seminar_id)) {
 <? if ($flash['notify']) :
     ForumAbo::notify($flash['notify']);
 endif ?>
+
+<? if ($js == 'answer') : ?>
+<script>jQuery(function() {
+    STUDIP.Forum.answerEntry();
+});</script>
+<? elseif ($js == 'cite') : ?>
+<script>jQuery(function() {
+    STUDIP.Forum.citeEntry('<?= $cite_id ?>');
+});</script>
+<? endif ?>

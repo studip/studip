@@ -158,6 +158,14 @@ class IndexController extends ForumController
             $this->edit_posting = null;
         }
 
+        // trigger a javascript action, like creating an answer or citing a thread
+        if (Request::submitted('answer')) {
+            $this->js = 'answer';
+        } else if (Request::option('cite')) {
+            $this->js = 'cite';
+            $this->cite_id = $topic_id;
+        }
+
     }
 
     /**
@@ -701,53 +709,6 @@ class IndexController extends ForumController
     /* * * * * * * * * * * * * * * * * * * * * * * * * */
     /* * * *     C O N F I G - A C T I O N S     * * * */
     /* * * * * * * * * * * * * * * * * * * * * * * * * */
-
-    /**
-     * Show new-entry-form with submitted entry as cite
-     *
-     * @param string $topic_id the entry to cite from
-     */
-    function cite_action($topic_id)
-    {
-        ForumPerm::check('add_entry', $this->getId(), $topic_id);
-
-        if (ForumEntry::isClosed($topic_id) && !ForumPerm::has('edit_closed')) {
-            throw new AccessDeniedException(
-                _('Sie dürfen keinen Beitrag in einem geschlossenen Thema erstellen!')
-            );
-        }
-
-        $topic = ForumEntry::getConstraints($topic_id);
-
-        $this->flash['edit_entry'] = true;
-        $this->flash['new_entry_title'] = $topic['name'];
-
-        $author = $topic['anonymous'] ? _('Anonym') : $topic['author'];
-        $content = quotes_encode($topic['content'], $author);
-
-        $this->flash['new_entry_content'] = $content;
-
-        $this->redirect(PluginEngine::getLink('coreforum/index/index/'. $topic_id .'#create'));
-    }
-
-    /**
-     * Show new-entry-form for submitted topic
-     *
-     * @param string $topic_id hte id of the entry to add to
-     */
-    function new_entry_action($topic_id)
-    {
-        ForumPerm::check('add_entry', $this->getId(), $topic_id);
-
-        if (ForumEntry::isClosed($topic_id) && !ForumPerm::has('edit_closed')) {
-            throw new AccessDeniedException(
-                _('Sie dürfen keinen Beitrag in einem geschlossenen Thema erstellen!')
-            );
-        }
-
-        $this->flash['edit_entry'] = true;
-        $this->redirect(PluginEngine::getLink('coreforum/index/index/'. $topic_id .'#create'));
-    }
 
     /**
      * Add submitted category to current course
