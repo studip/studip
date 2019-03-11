@@ -285,9 +285,9 @@ if ($choose_module_form != '') {
                 if (is_array($configurations_copy[$GLOBALS['EXTERN_MODULE_TYPES'][$module_type]['module']])) {
                     foreach ($configurations_copy[$GLOBALS['EXTERN_MODULE_TYPES'][$module_type]['module']] as $config_id_copy => $config_data_copy) {
                         if ($print_module_name) {
-                            $choose_module_select .= '<option value="" class="nested-item-header">' . htmlReady($GLOBALS['EXTERN_MODULE_TYPES'][$module_type]['name']) . '</option>';
+                            $choose_module_select .= '<optgroup class="nested-item-header" label="' . htmlReady($GLOBALS['EXTERN_MODULE_TYPES'][$module_type]['name']) . '">';
                         }
-                        $choose_module_select .= '<option value="' . $config_id_copy . '" class="nested-item">&' . htmlReady($config_data_copy['name']) . '</option>';
+                        $choose_module_select .= '<option value="' . $config_id_copy . '" class="nested-item">' . htmlReady($config_data_copy['name']) . '</option>';
                         $print_module_name = FALSE;
                     }
                 }
