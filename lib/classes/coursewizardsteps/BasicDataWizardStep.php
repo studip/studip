@@ -126,17 +126,21 @@ class BasicDataWizardStep implements CourseWizardStep
                 if ($GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT && Request::isXhr()) {
                     $values['institute'] = $GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT;
                 } else {
-                    $highest_priority = -1;
-                    for ($counter = 0; $counter < count($institutes); $counter++) {
-                        $institute_user = InstituteMember::findBySQL(
-                            "user_id = ? AND Institut_id = ?",
-                            array($GLOBALS['user']->id,
-                                $institutes[$counter]['Institut_id'])
-                        )[0];
-                        if ($highest_priority < 0 || $highest_priority > $institute_user['priority']) {
-                            $highest_priority = $institute_user['priority'];
-                            $values['institute'] = $institutes[$counter]['Institut_id'];
+                    $user = User::find($GLOBALS['user']->id);
+
+                    // get default institute
+                    foreach ($user->institute_memberships as $institute_membership) {
+                        if ($institute_membership->inst_perms !== 'user') {
+                            if ($institute_membership->externdefault == 1) {
+                                $values['institute'] = $institute_membership->institut_id;
+                            }
                         }
+                    }
+
+                    // if for some reason no default institute has beend found, use the first one listed
+                    if (!$values['institute']) {
+                        $inst_membership = $user->institute_memberships[0];
+                        $values['institute'] = $inst_membership->institut_id;
                     }
                 }
             }
