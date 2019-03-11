@@ -1,7 +1,7 @@
 <form method="post" action="<?= $controller->url_for('course/timesrooms/saveStack/' . $cycle_id, $linkAttributes) ?>"
       class="default collapsable" data-dialog="size=big">
     <?= CSRFProtection::tokenTag()?>
-    <input type="hidden" name="method" value="edit">    
+    <input type="hidden" name="method" value="edit">
     <input type="hidden" name="checked_dates" value="<?= implode(',',$_SESSION['_checked_dates']); ?>">
 
     <fieldset>
@@ -55,6 +55,7 @@
         <label>
             <?= _('Art') ?>
             <select name="course_type" id="course_type" class="size-s">
+                <option value="no_change"><?= _('-- Keine Änderung --') ?></option>
                 <? foreach ($GLOBALS['TERMIN_TYP'] as $id => $value) : ?>
                     <option value="<?= $id ?>"><?= htmlReady($value['name']) ?></option>
                 <? endforeach ?>

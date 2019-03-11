@@ -732,10 +732,10 @@ class Course_TimesroomsController extends AuthenticatedController
                                                          '<strong>' . $date->toString() . '</strong>'));
                 }
 
-                if(Request::get('course_type')) {
+                if(Request::get('course_type') != 'no_change') {
                     $date->setDateType(Request::get('course_type'));
                     $date->store();
-                    $this->course->createMessage(sprintf(_("Der Art des Termins %s wurde geändert."), '<strong>' . $date->toString() . '</strong>'));
+                    $this->course->createMessage(sprintf(_("Die Art des Termins %s wurde geändert."), '<strong>' . $date->toString() . '</strong>'));
                 }
             }
         }
