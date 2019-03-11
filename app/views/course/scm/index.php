@@ -9,7 +9,7 @@
                 <? if ($scm->user): ?>
                     <?= sprintf(_('Zuletzt geändert von %s am %s'), ObjectdisplayHelper::link($scm->user), strftime('%x, %X', $scm->chdate)) ?>
                 <? else: ?>
-                    <?= sprintf(_('Zuletzt geändert am %s'), strftime('%x, %X', $scm->chdate)) ?>
+                    <?= ($scm->chdate!=null ? sprintf(_('Zuletzt geändert am %s'), strftime('%x, %X', $scm->chdate)) : '') ?>
                 <? endif; ?>
             </span>
             <? if ($priviledged): ?>

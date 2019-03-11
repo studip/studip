@@ -26,12 +26,14 @@ class CoreScm implements StudipModule {
             $temp = StudipScmEntry::findByRange_id($course_id, 'ORDER BY position ASC');
             $scms = SimpleORMapCollection::createFromArray($temp);
 
-            $navigation = new Navigation($scms->first()->tab_name ?: _('Informationen'));
+            $link = 'dispatch.php/course/scm';
+
+            $navigation = new Navigation($scms->first()->tab_name ?: _('Informationen'), $link);
             $navigation->setImage(Icon::create('infopage', 'info_alt'));
             $navigation->setActiveImage(Icon::create('infopage', 'info'));
 
             foreach ($scms as $scm) {
-                $scm_link = 'dispatch.php/course/scm/' . $scm->id;
+                $scm_link = $link .'/'. $scm->id;
                 $nav = new Navigation($scm['tab_name'], $scm_link);
                 $navigation->addSubNavigation($scm->id, $nav);
             }

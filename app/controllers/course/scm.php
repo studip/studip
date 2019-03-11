@@ -101,7 +101,7 @@ class Course_ScmController extends StudipController
         $this->scms = SimpleORMapCollection::createFromArray($temp);
         $this->scm  = $id ? $this->scms->find($id) : $this->scms->first();
 
-        if (!$this->scm) {
+        if (!$this->scm && $this->scms->count() > 0) {
             throw new Trails_Exception(404, _('Es konnte keine freie Informationsseite mit der angegebenen Id gefunden werden.'));
         }
 
@@ -112,7 +112,7 @@ class Course_ScmController extends StudipController
             )->includeTicket('studip_ticket');
         }
 
-        $this->set_title($this->scm->tab_name);
+        $this->set_title($this->scm->tab_name ?: 'Informationen');
         Navigation::activateItem('/course/scm/' . $this->scm->id);
     }
 
