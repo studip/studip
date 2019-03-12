@@ -105,7 +105,9 @@ class StartNavigation extends Navigation
             return;
         }
 
-        $sem_create_perm = in_array(get_config('SEM_CREATE_PERM'), array('root','admin','dozent')) ? get_config('SEM_CREATE_PERM') : 'dozent';
+        $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root','admin','dozent'])
+                         ? Config::get()->SEM_CREATE_PERM
+                         : 'dozent';
 
         // my courses
         if ($perm->have_perm('root')) {
@@ -118,14 +120,14 @@ class StartNavigation extends Navigation
             if (!$perm->have_perm('dozent')) {
                 $navigation->addSubNavigation('browse', new Navigation(_('Veranstaltung hinzufügen'), 'dispatch.php/search/courses'));
 
-                if ($perm->have_perm('autor') && get_config('STUDYGROUPS_ENABLE')) {
+                if ($perm->have_perm('autor') && Config::get()->STUDYGROUPS_ENABLE) {
                     $navigation->addSubNavigation('new_studygroup', new Navigation(_('Studiengruppe anlegen'), 'dispatch.php/course/wizard?studygroup=1'));
                 }
             } else {
                 if ($perm->have_perm($sem_create_perm)) {
                     $navigation->addSubNavigation('new_course', new Navigation(_('Neue Veranstaltung anlegen'), 'dispatch.php/course/wizard'));
                 }
-                if (get_config('STUDYGROUPS_ENABLE')) {
+                if (Config::get()->STUDYGROUPS_ENABLE) {
                     $navigation->addSubNavigation('new_studygroup', new Navigation(_('Studiengruppe anlegen'), 'dispatch.php/course/wizard?studygroup=1'));
                 }
 
@@ -142,7 +144,7 @@ class StartNavigation extends Navigation
                $navigation->addSubNavigation('new_course', new Navigation(_('Neue Veranstaltung anlegen'), 'dispatch.php/course/wizard'));
            }
 
-           if (get_config('STUDYGROUPS_ENABLE')) {
+           if (Config::get()->STUDYGROUPS_ENABLE) {
                $navigation->addSubNavigation('new_studygroup', new Navigation(_('Studiengruppe anlegen'), 'dispatch.php/course/wizard?studygroup=1'));
            }
 
@@ -156,7 +158,7 @@ class StartNavigation extends Navigation
         }
 
         // user administration
-        if ($perm->have_perm('root') || $perm->have_perm('admin') && !get_config('RESTRICTED_USER_MANAGEMENT')) {
+        if ($perm->have_perm('root') || $perm->have_perm('admin') && !Config::get()->RESTRICTED_USER_MANAGEMENT) {
             $navigation = new Navigation(_('Globale Benutzerverwaltung'), 'dispatch.php/admin/user');
             $this->addSubNavigation('admin_user', $navigation);
         }
@@ -170,10 +172,10 @@ class StartNavigation extends Navigation
         // administration of ressources
         if ($perm->have_perm('admin')) {
 
-            if (get_config('RESOURCES_ENABLE')) {
+            if (Config::get()->RESOURCES_ENABLE) {
                 $navigation = new Navigation(_('Verwaltung von Ressourcen'));
                 $navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', array('view' => 'resources')));
-                if ($perm->have_perm('admin') && get_config('RESOURCES_ALLOW_ROOM_REQUESTS')) {
+                if ($perm->have_perm('admin') && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
                     if (getGlobalPerms($GLOBALS['user']->id) !== 'admin') {
                         $resList = new ResourcesUserRoomsList($GLOBALS['user']->id, false, false);
                         $show_roomplanning = $resList->roomsExist();
@@ -203,11 +205,11 @@ class StartNavigation extends Navigation
         $navigation->addSubNavigation('online', new Navigation(_('Wer ist online?'), 'dispatch.php/online'));
         $navigation->addSubNavigation('contacts', new Navigation(_('Meine Kontakte'), 'dispatch.php/contact'));
         // study groups
-        if (get_config('STUDYGROUPS_ENABLE')) {
+        if (Config::get()->STUDYGROUPS_ENABLE) {
             $navigation->addSubNavigation('browse',new Navigation(_('Studiengruppen'), 'dispatch.php/studygroup/browse'));
         }
         // ranking
-        if (get_config('SCORE_ENABLE')) {
+        if (Config::get()->SCORE_ENABLE) {
             $navigation->addSubNavigation('score', new Navigation(_('Rangliste'), 'dispatch.php/score'));
             $this->addSubNavigation('community', $navigation);
         }
@@ -224,11 +226,11 @@ class StartNavigation extends Navigation
 
             $navigation = new Navigation(_('Mein Planer'));
 
-            if (get_config('CALENDAR_ENABLE')) {
+            if (Config::get()->CALENDAR_ENABLE) {
                 $navigation->addSubNavigation('calendar', new Navigation(_('Terminkalender'), 'dispatch.php/calendar/single'));
             }
 
-            if (get_config('SCHEDULE_ENABLE')) {
+            if (Config::get()->SCHEDULE_ENABLE) {
                 $navigation->addSubNavigation('schedule', new Navigation(_('Stundenplan'), 'dispatch.php/calendar/schedule'));
             }
 
@@ -236,32 +238,34 @@ class StartNavigation extends Navigation
         }
 
         // global search
-        $navigation = new Navigation(_('Suchen'), 'dispatch.php/search/courses');
-        $navigation->addSubNavigation('user', new Navigation(_('Personensuche'), 'browse.php'));
+        $navigation = new Navigation(_('Suchen'), 'dispatch.php/search/globalsearch');
         $navigation->addSubNavigation('course', new Navigation(_('Veranstaltungssuche'), 'dispatch.php/search/courses'));
+        if (Config::get()->RESOURCES_ENABLE) {
+            $navigation->addSubNavigation('resources', new Navigation(_('Ressourcen suchen'), 'resources.php?view=search&reset=TRUE'));
+        }
         $this->addSubNavigation('search', $navigation);
 
         // tools
         $navigation = new Navigation(_('Tools'));
         $navigation->addSubNavigation('news', new Navigation(_('Ankündigungen'), 'dispatch.php/news/admin_news'));
 
-        if (get_config('VOTE_ENABLE')) {
+        if (Config::get()->VOTE_ENABLE) {
             $navigation->addSubNavigation('vote', new Navigation(_('Umfragen und Tests'), 'dispatch.php/questionnaire/overview'));
             $navigation->addSubNavigation('evaluation',new Navigation(_('Evaluationen'), 'admin_evaluation.php', array('rangeID' => $username)));
         }
 
         // literature
-        if (get_config('LITERATURE_ENABLE')) {
+        if (Config::get()->LITERATURE_ENABLE) {
             $navigation->addSubNavigation('literature', new Navigation(_('Literatur'), 'dispatch.php/literature/edit_list.php', array('_range_id' => 'self')));
         }
 
         // elearning
-        if (get_config('ELEARNING_INTERFACE_ENABLE')) {
+        if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
             $navigation->addSubNavigation('elearning', new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts'));
         }
 
         // export
-        if (get_config('EXPORT_ENABLE') && $perm->have_perm('tutor')) {
+        if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor')) {
             $navigation->addSubNavigation('export', new Navigation(_('Export'), 'export.php'));
         }
 
