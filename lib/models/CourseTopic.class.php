@@ -24,72 +24,68 @@
  * @property User author belongs_to User
  * @property SimpleORMapCollection dates has_and_belongs_to_many CourseDate
  */
-
-class CourseTopic extends SimpleORMap {
-
-    static public function findByTermin_id($termin_id)
+class CourseTopic extends SimpleORMap
+{
+    public static function findByTermin_id($termin_id)
     {
         return self::findBySQL("INNER JOIN themen_termine USING (issue_id)
             WHERE themen_termine.termin_id = ?
             ORDER BY priority ASC",
-            array($termin_id)
+            [$termin_id]
         );
     }
 
-    static public function findBySeminar_id($seminar_id, $order_by = "ORDER BY priority")
+    public static function findBySeminar_id($seminar_id, $order_by = 'ORDER BY priority')
     {
         return parent::findBySeminar_id($seminar_id, $order_by);
     }
 
-    static public function findByTitle($seminar_id, $name)
+    public static function findByTitle($seminar_id, $name)
     {
-        return self::findOneBySQL("seminar_id = ? AND title = ?", array($seminar_id, $name));
+        return self::findOneBySQL("seminar_id = ? AND title = ?", [$seminar_id, $name]);
     }
 
-    static public function getMaxPriority($seminar_id)
+    public static function getMaxPriority($seminar_id)
     {
-        return DbManager::get()->fetchColumn("SELECT MAX(priority) FROM themen WHERE seminar_id=?", array($seminar_id));
+        return DBManager::get()->fetchColumn("SELECT MAX(priority) FROM themen WHERE seminar_id=?", [$seminar_id]);
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'themen';
-        $config['has_and_belongs_to_many']['dates'] = array(
+        $config['has_and_belongs_to_many']['dates'] = [
             'class_name' => 'CourseDate',
             'thru_table' => 'themen_termine',
-            'order_by' => 'ORDER BY date',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
-        );
-        $config['has_many']['folders'] = array(
+            'order_by'   => 'ORDER BY date',
+            'on_delete'  => 'delete',
+            'on_store'   => 'store'
+        ];
+        $config['has_many']['folders'] = [
             'class_name'  => 'Folder',
             'assoc_func' => 'findByTopic_id'
-        );
-        $config['belongs_to']['course'] = array(
+        ];
+        $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'seminar_id'
-        );
-        $config['belongs_to']['author'] = array(
+        ];
+        $config['belongs_to']['author'] = [
             'class_name'  => 'User',
             'foreign_key' => 'author_id'
-        );
+        ];
 
         $config['additional_fields']['forum_thread_url']['get'] = 'getForumThreadURL';
 
-        parent::configure($config);
-    }
+        $config['registered_callbacks']['before_create'][] = 'cbDefaultValues';
+        $config['registered_callbacks']['after_store'][] = 'cbUpdateConnectedContentModules';
+        $config['registered_callbacks']['before_delete'][] = 'cbUnlinkConnectedContentModules';
 
-    function __construct($id = null)
-    {
-        parent::__construct($id);
-        $this->registerCallback('before_create', 'cbDefaultValues');
-        $this->registerCallback('after_store', 'cbUpdateConnectedContentModules');
+        parent::configure($config);
     }
 
     /**
     * set or update connection with document folder
     */
-    function connectWithDocumentFolder()
+    public function connectWithDocumentFolder()
     {
         if ($this->seminar_id) {
             $document_module = Seminar::getInstance($this->seminar_id)->getSlotModule('documents');
@@ -114,7 +110,7 @@ class CourseTopic extends SimpleORMap {
     /**
     * set or update connection with forum thread
     */
-    function connectWithForumThread()
+    public function connectWithForumThread()
     {
         if ($this->seminar_id) {
             $forum_module = Seminar::getInstance($this->seminar_id)->getSlotModule('forum');
@@ -126,7 +122,7 @@ class CourseTopic extends SimpleORMap {
         return false;
     }
 
-    function getForumThreadURL()
+    public function getForumThreadURL()
     {
         if ($this->seminar_id) {
             $forum_module = Seminar::getInstance($this->seminar_id)->getSlotModule('forum');
@@ -144,6 +140,20 @@ class CourseTopic extends SimpleORMap {
                 $this->connectWithForumThread();
             }
         }
+    }
+
+    /**
+     * Removes link information for forum topic and remove forum topic as well
+     * if it is empty.
+     */
+    protected function cbUnlinkConnectedContentModules()
+    {
+        $query = "DELETE fei, fe
+                  FROM `forum_entries_issues` AS fei
+                  LEFT JOIN `forum_entries` AS fe
+                    ON fei.`topic_id` = fe.`topic_id` AND fe.`rgt` = fe.`lft` + 1
+                  WHERE `issue_id` = ?";
+        DBManager::get()->execute($query, [$this->id]);
     }
 
     protected function cbDefaultValues()

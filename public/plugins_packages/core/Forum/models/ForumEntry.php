@@ -968,7 +968,7 @@ class ForumEntry  implements PrivacyObject
         $post['name']    = $name;
         $post['content'] = $content;
 
-         NotificationCenter::postNotification('ForumAfterUpdate', $topic_id, $post);
+        NotificationCenter::postNotification('ForumAfterUpdate', $topic_id, $post);
     }
 
     /**
