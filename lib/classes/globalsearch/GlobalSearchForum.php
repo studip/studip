@@ -101,8 +101,12 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
      */
     public static function filter($data, $search)
     {
-        $user   = User::find($data['user_id']);
-        $course = Course::find($data['seminar_id']);
+        $user = self::fromCache("user/{$data['user_id']}", function () use ($data) {
+            return User::findFull($data['user_id']);
+        });
+        $course = self::fromCache("range/{$data['seminar_id']}", function () use ($data) {
+            return Course::find($data['seminar_id']);
+        });
 
         // Get name
         $name = _('Ohne Titel');
@@ -145,6 +149,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             'expandtext'  => _('Im Forum dieser Veranstaltung suchen'),
             'user'        => $temp
         ];
+
         return $result;
     }
 

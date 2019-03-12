@@ -34,23 +34,16 @@ class GlobalSearchController extends AuthenticatedController
         $async = Config::get()->GLOBALSEARCH_ASYNC_QUERIES;
 
         // Now load all modules
-        $modules = Config::get()->GLOBALSEARCH_MODULES;
+        $modules = GlobalSearchModule::getActiveSearchModules();
 
         $search = trim(Request::get('search'));
 
         $filter = json_decode(Request::get('filters'), true);
 
-        $result = $classes = [];
+        $result = [];
 
-        foreach ($modules as $className => $data) {
-            // Not active? Leave.
-            if (!$data['active']) {
-                continue;
-            }
-
-            $class = new $className();
-            $classes[$className] = $class;
-            $partSQL = $class->getSQL($search, $filter, $limit);
+        foreach ($modules as $className) {
+            $partSQL = $className::getSQL($search, $filter, $limit);
 
             // No valid sql? Leave.
             if (!$partSQL) {
@@ -83,12 +76,11 @@ class GlobalSearchController extends AuthenticatedController
                 continue;
             }
 
-
             // Walk through results
             $found = [];
             foreach ($entries as $one) {
                 // Filter item and add to result if necessary.
-                if ($item = $classes[$className]->filter($one, $search)) {
+                if ($item = $className::filter($one, $search)) {
                     $found[] = $item;
                 }
             }
@@ -99,8 +91,8 @@ class GlobalSearchController extends AuthenticatedController
             }
 
             $result[$className] = [
-                'name'       => $classes[$className]->getName(),
-                'fullsearch' => $classes[$className]->getSearchURL($search),
+                'name'       => $className::getName(),
+                'fullsearch' => $className::getSearchURL($search),
                 'content'    => $found,
                 // If we found more results than needed, indicate a "more" link
                 // for full search.
@@ -110,6 +102,8 @@ class GlobalSearchController extends AuthenticatedController
                 'plus'       => count($found) < $entries_count,
             ];
         }
+
+        GlobalSearchModule::clearCache();
 
         // Sort
         uksort($result, function($a, $b) use ($modules) {

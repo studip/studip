@@ -42,7 +42,6 @@ class GlobalSearchModules extends GlobalSearchModule
         // Prepare variables
         $needle   = DBManager::get()->quote("%{$search}%");
         $language = DBManager::get()->quote($language);
-        $limit    = Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE + 1;
 
         // Prepare status (according to user role)
         $status_cond = '1';
@@ -131,7 +130,7 @@ class GlobalSearchModules extends GlobalSearchModule
         }
 
         // Construct additional information
-        $additional = (float)$kp . ' ' . _('CP');
+        $additional = (float) $kp . ' ' . _('CP');
         if ($parts > 1) {
             $additional .= " ({$parts} " . _('Modulteile') . ")";
         }

@@ -9,9 +9,6 @@
  */
 class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFulltext
 {
-    // internal caching for already checked folders.
-    private static $checked = [];
-
     /**
      * Returns the displayname for this module
      *
@@ -103,8 +100,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             $course_ids = DBManager::get()->fetchFirst($mycourses);
 
             // Fetch all files from relevant courses.
-            return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
-                        r.`chdate`, fo.`range_id`, f.`mime_type`
+            return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, fo.`range_id`, f.`mime_type`
                     FROM `file_refs` r
                     JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
                     JOIN `files` f ON (r.`file_id` = f.`id`)
@@ -121,8 +117,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             switch ($GLOBALS['perm']->get_perm()) {
                 // Roots see all files, no matter where.
                 case 'root':
-                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
-                                r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, fo.`range_id`, f.`mime_type`
                             FROM `file_refs` r
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
                             JOIN `files` f ON (r.`file_id` = f.`id`)
@@ -136,8 +131,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                 case 'admin':
                     $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
 
-                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
-                                r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, fo.`range_id`, f.`mime_type`
                             FROM `file_refs` r
                             JOIN `folders` fo ON (r.`folder_id` = fo.`id`)
                             JOIN `files` f ON (r.`file_id` = f.`id`)
@@ -169,8 +163,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                             WHERE `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id);
                     }
 
-                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.`id`, r.`folder_id`, r.`name`, r.`description`,
-                                r.`chdate`, fo.`range_id`, f.`mime_type`, r.`user_id`
+                    return "SELECT SQL_CALC_FOUND_ROWS DISTINCT r.*, fo.`range_id`, f.`mime_type`
                             FROM `file_refs` r
                             JOIN `files` f ON (r.`file_id` = f.`id`)
                             JOIN `folders` fo
@@ -203,59 +196,50 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
      * @param $search
      * @return mixed
      */
-    public static function filter($fileref, $search)
+    public static function filter($data, $search)
     {
-        /*
-         * If folder wasn't already checked, get typed folder and add it to
-         * cache. This way, we don't need to query the database for folders
-         * that we already got files from.
-         */
-        if (!isset(self::$checked[$fileref['folder_id']])) {
-            self::$checked[$fileref['folder_id']] = Folder::find($fileref['folder_id'])
-                ->getTypedFolder();
+        $fileref = FileRef::buildExisting($data);
+
+        $folder = self::fromCache("folder/{$fileref->folder_id}", function () use ($fileref) {
+            return Folder::find($fileref->folder_id)->getTypedFolder();
+        });
+
+        if (!$folder->isFileDownloadable($fileref, $GLOBALS['user']->id)) {
+            return null;
         }
 
-        if (self::$checked[$fileref['folder_id']]->isFileDownloadable($fileref['id'], $GLOBALS['user']->id)) {
-
-            $range = ($fileref['range_id'] == $GLOBALS['user']->id ?
-                $GLOBALS['user']->id :
-                (Course::find($fileref['range_id']) ?:
-                    (Institute::find($fileref['range_id']) ?: null)));
-
-            $range = null;
-            $range_path = null;
-            if ($fileref['range_id'] == $GLOBALS['user']->id) {
-                $range = $GLOBALS['user'];
-                $range_path = '';
-            } else if ($course = Course::find($fileref['range_id'])) {
-                $range = $course;
-                $range_path = '/course';
-            } else if ($inst = Institute::find($fileref['range_id'])) {
-                $range = $inst;
-                $range_path = '/institute';
-            }
-
-            $user = User::find($fileref['user_id']);
-
-            return array(
-                'id'         => $fileref['id'],
-                'name'       => self::mark($fileref['name'], $search, true),
-                'url'        => URLHelper::getURL(
-                    "dispatch.php/file/details/{$fileref['id']}"
-                ),
-                'img'        => FileManager::getIconForMimeType($fileref['mime_type'], 'clickable')->asImagePath(),
-                'additional' => self::mark($range ? $range->getFullname() : '', $search, false),
-                'date'       => strftime('%x', $fileref['chdate']),
-                'expand'     => URLHelper::getURL(
-                    "dispatch.php{$range_path}/files/index/{$fileref['folder_id']}",
-                    ['cid' => $fileref['range_id']]
-                ),
-                'expandtext'  => _('In diesem Dateibereich suchen'),
-                'user'       => $user ? $user->getFullname() : _('unbekannt')
-            );
+        if ($data['range_id'] == $GLOBALS['user']->id) {
+            $range = $GLOBALS['user'];
+            $range_path = '';
+        } else {
+            $range = self::fromCache("range/{$data['range_id']}", function () use ($data) {
+                return Course::find($data['range_id'])
+                    ?: Institute::find($data['range_id'])
+                    ?: null;
+            });
+            $range_path = $range ? strtolower('/' . get_class($range)) : null;
         }
 
-        return null;
+        $user = self::fromCache("user/{$fileref->user_id}", function () use ($fileref) {
+            return User::findFull($fileref->user_id);
+        });
+
+        return [
+            'id'         => $fileref->id,
+            'name'       => self::mark($fileref->name, $search, true),
+            'url'        => URLHelper::getURL(
+                "dispatch.php/file/details/{$fileref->id}"
+            ),
+            'img'        => FileManager::getIconForMimeType($data['mime_type'])->asImagePath(),
+            'additional' => self::mark($range ? $range->getFullname() : '', $search, false),
+            'date'       => strftime('%x', $fileref['chdate']),
+            'expand'     => URLHelper::getURL(
+                "dispatch.php{$range_path}/files/index/{$fileref->folder_id}",
+                ['cid' => $data['range_id']]
+            ),
+            'expandtext'  => _('In diesem Dateibereich suchen'),
+            'user'       => $user ? $user->getFullname() : _('unbekannt')
+        ];
     }
 
     /**

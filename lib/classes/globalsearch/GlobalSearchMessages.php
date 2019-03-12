@@ -68,9 +68,24 @@ class GlobalSearchMessages extends GlobalSearchModule
     {
         $message = Message::buildExisting($message_id);
 
-        $additional = ($message->autor_id === '____%system%____'
-                    ? _('Systemnachricht')
-                    : ($message->author ? '<a href="' . URLHelper::getURL('dispatch.php/profile', ['username' => $message->author->username]) . '">' . self::mark($message->author->getFullname(), $search) . '</a>' : _('unbekannt')));
+        $username = $additional = _('unbekannt');
+        if ($message->autor_id === '____%system%____') {
+            $username  = _('System');
+            $additonal = _('Systemnachricht');
+        } else {
+            $user = self::fromCache("user/{$message->autor_id}", function () use ($message) {
+                return User::findFull($message->autor_id);
+            });
+
+            if ($user) {
+                $username = $user->getFullName();
+                $additional = sprintf(
+                    '<a href="%s">%s</a>',
+                    URLHelper::getLink('dispatch.php/profile', ['username' => $user->username]),
+                    self::mark($user->getFullname(), $search)
+                );
+            }
+        }
 
         $result = [
             'name'        => self::mark($message->subject, $search),
@@ -80,7 +95,7 @@ class GlobalSearchMessages extends GlobalSearchModule
             'description' => self::mark($message->message, $search, true),
             'additional'  => $additional,
             'expand'      => self::getSearchURL($search),
-            'user'        => $message->author ? $message->author->getFullName() : _('unbekannt')
+            'user'        => $username,
         ];
         return $result;
     }
