@@ -209,19 +209,42 @@ abstract class GlobalSearchModule
     public static function getActiveSearchModules()
     {
         $modules = Config::get()->GLOBALSEARCH_MODULES;
-        $modules = array_filter($modules, function ($data, $module) {
+
+        // TODO: Throw this away and activate the php7 code as soon as possible
+        foreach ($modules as $module => $data) {
             if ($module === 'GlobalSearchModules' && !MVV::isVisibleSearch()) {
-                return false;
+                unset($modules[$module]);
+                continue;
             }
 
             if (in_array($module, ['GlobalSearchResources', 'GlobalSearchRoomAssignments'])
                 && !Config::get()->RESOURCES_ENABLE)
             {
-                return false;
+                unset($modules[$module]);
+                continue;
             }
 
-            return $data['active'] && class_exists($module, true);
-        }, ARRAY_FILTER_USE_BOTH);
+            if (!$data['active'] || !class_exists($module, true)) {
+                unset($modules[$module]);
+                continue;
+            }
+        }
+
+        // PHP7
+        // $modules = array_filter($modules, function ($data, $module) {
+        //     if ($module === 'GlobalSearchModules' && !MVV::isVisibleSearch()) {
+        //         return false;
+        //     }
+        //
+        //     if (in_array($module, ['GlobalSearchResources', 'GlobalSearchRoomAssignments'])
+        //         && !Config::get()->RESOURCES_ENABLE)
+        //     {
+        //         return false;
+        //     }
+        //
+        //     return $data['active'] && class_exists($module, true);
+        // }, ARRAY_FILTER_USE_BOTH);
+
         return array_keys($modules);
     }
 }
