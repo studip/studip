@@ -1,5 +1,5 @@
 <form action="<?= $controller->url_for('profilemodules/update', compact('username')) ?>" method="post" class="default plus">
-    <?= '' // CSRFProtection::tokenTag() ?>
+    <?= CSRFProtection::tokenTag() ?>
 
 <? foreach ($list as $category => $pluginlist): ?>
     <article class="studip">
