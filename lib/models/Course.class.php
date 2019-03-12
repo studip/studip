@@ -398,7 +398,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
         $removed = array_diff($old, $ids);
 
         $this->study_areas = SimpleCollection::createFromArray(StudipStudyArea::findMany($ids));
-        if (!($this->store() === false)) {
+        if ($this->store() !== false) {
             NotificationCenter::postNotification('CourseDidChangeStudyArea', $this);
             $success = true;
             foreach ($added as $one) {
