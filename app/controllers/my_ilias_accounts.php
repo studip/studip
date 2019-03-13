@@ -53,7 +53,8 @@ class MyIliasAccountsController extends AuthenticatedController
         foreach (Config::get()->ILIAS_INTERFACE_SETTINGS as $ilias_index => $ilias_config) {
             if ($ilias_config['is_active']) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);
-
+                $this->ilias_list[$ilias_index]->soap_client->clearCache();
+                
                 if (Request::submitted('set_new_account') AND (Request::get('ilias_new_account_index') == $ilias_index)) {
                     CSRFProtection::verifyUnsafeRequest();
                     // set new user account
