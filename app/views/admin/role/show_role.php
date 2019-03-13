@@ -46,10 +46,8 @@ use Studip\Button, Studip\LinkButton;
             <col width="24px">
         </colgroup>
         <caption>
-            <?= sprintf(
-                _('Liste der Personen mit der Rolle "%s"'),
-                htmlReady($role->getRolename())
-            ) ?>
+            <?= sprintf(_('Liste der Benutzer mit der Rolle "%s"'),
+                        htmlReady($role->getRolename())) ?>
         <? if (!$role->getSystemtype()): ?>
             <div class="actions">
                 <?= $mps->render() ?>
@@ -108,17 +106,6 @@ use Studip\Button, Studip\LinkButton;
             </tr>
         <? endforeach; ?>
     <? endif; ?>
-        <? if ($implicit_count > 0): ?>
-            <tr>
-                <td></td>
-                <td colspan="5">
-                    <?= sprintf(
-                        _('+%u weitere, implizit zugewiesene Person(en)'),
-                        $implicit_count
-                    ) ?>
-                </td>
-            </tr>
-        <? endif; ?>
         </tbody>
         <tfoot>
             <tr>

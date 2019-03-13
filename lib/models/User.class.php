@@ -510,7 +510,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      */
     public function getRoles($with_implicit = false)
     {
-        return RolePersistence::getAssignedRoles($this->user_id, $with_implicit);
+        return RolePersistence::getAssignedRoles($this->user_id, $withimplicit);
     }
 
     /**
@@ -521,7 +521,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      */
     public function isFriendOf($another_user)
     {
-        return (bool) DBManager::get()->fetchColumn("SELECT 1 FROM contact WHERE owner_id=? AND user_id=?", array($this->user_id, $another_user->user_id));
+        return (bool)DBManager::get()->fetchColumn("SELECT 1 FROM contact WHERE owner_id=? AND user_id=?", array($this->user_id, $another_user->user_id));
     }
 
     /**

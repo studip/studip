@@ -1,6 +1,11 @@
 <?php
+# Lifter007: TODO
+# Lifter003: TODO
+# Lifter010: TODO
 /**
  * Role.class.php
+ *
+ * PHP version 5
  *
  * @author      Dennis Reil <dennis.reil@offis.de>
  * @author      Michael Riehemann <michael.riehemann@uni-oldenburg.de>
@@ -9,26 +14,30 @@
  * @copyright   2009 Stud.IP
  * @license     http://www.gnu.org/licenses/gpl.html GPL Licence 3
  */
+
+/**
+ * Rolle
+ *
+ */
 class Role
 {
-    const UNKNOWN_ROLE_ID = null;
-
     public $roleid;
     public $rolename;
     public $systemtype;
 
     /**
      * Constructor
+     *
      */
-    public function __construct($id = self::UNKNOWN_ROLE_ID, $name = '', $system = false)
+    public function __construct()
     {
-        $this->setRoleid($id);
-        $this->setRolename($name);
-        $this->setSystemtype($system);
+        $this->roleid = UNKNOWN_ROLE_ID;
+        $this->rolename = "";
+        $this->systemtype = false;
     }
 
     /**
-     * Returns the role's id.
+     * Enter description here...
      *
      * @return int
      */
@@ -38,7 +47,7 @@ class Role
     }
 
     /**
-     * Set the role's id.
+     * Enter description here...
      *
      * @param int $newid
      */
@@ -48,7 +57,7 @@ class Role
     }
 
     /**
-     * Returns the role's name.
+     * Enter description here...
      *
      * @return string
      */
@@ -58,7 +67,7 @@ class Role
     }
 
     /**
-     * Set the role's name.
+     * Enter description here...
      *
      * @param string $newrole
      */
@@ -68,7 +77,7 @@ class Role
     }
 
     /**
-     * Returns whether the role is a system role.
+     * Enter description here...
      *
      * @return boolean
      */
@@ -78,12 +87,14 @@ class Role
     }
 
     /**
-     * Sets whether the role is a system role.
+     * Enter description here...
      *
      * @param boolean $newtype
      */
     public function setSystemtype($newtype)
     {
-        $this->systemtype = (bool) $newtype;
+        $this->systemtype = $newtype;
     }
 }
+
+?>
