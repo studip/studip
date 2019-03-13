@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * start.php - start page controller
  *
  *
@@ -14,19 +14,18 @@
  * @category Stud.IP
  * @since    3.1
  */
-
 class StartController extends AuthenticatedController
 {
     /**
      * Callback function being called before an action is executed.
      */
-    function before_filter(&$action, &$args)
+    public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
 
         Navigation::activateItem('/start');
         PageLayout::setTabNavigation(NULL); // disable display of tabs
-        PageLayout::setHelpKeyword("Basis.Startseite"); // set keyword for new help
+        PageLayout::setHelpKeyword('Basis.Startseite'); // set keyword for new help
         PageLayout::setTitle(_('Startseite'));
     }
 
@@ -38,7 +37,7 @@ class StartController extends AuthenticatedController
      *
      * @return void
      */
-    function index_action($action = false, $widgetId = null)
+    public function index_action($action = false, $widgetId = null)
     {
         if (!WidgetHelper::hasUserWidgets($GLOBALS['user']->id)) {
             WidgetHelper::setInitialPositions();
@@ -51,71 +50,73 @@ class StartController extends AuthenticatedController
 
         $sidebar = Sidebar::get();
         $sidebar->setImage('sidebar/home-sidebar.png');
-        $sidebar->setTitle(_("Meine Startseite"));
+        $sidebar->setTitle(_('Meine Startseite'));
 
-        $nav = new NavigationWidget();
+        $nav = $sidebar->addWidget(new NavigationWidget());
         $nav->setTitle(_('Sprungmarken'));
         foreach (array_merge($this->left, $this->right) as $widget) {
-            $nav->addLink($widget->getPluginName(),
-                          $this->url_for('start#widget-' . $widget->widget_id));
+            $nav->addLink(
+                $widget->getPluginName(),
+                $this->url_for("start#widget-{$widget->widget_id}")
+            );
         }
-        $sidebar->addWidget($nav);
 
         // Show action to add widget only if not all widgets have already been added.
-        $actions = new ActionsWidget();
+        $actions = $sidebar->addWidget(new ActionsWidget());
 
         if (WidgetHelper::getAvailableWidgets($GLOBALS['user']->id)) {
-            $actions->addLink(_('Widgets hinzufügen'),
-                              $this->url_for('start/add'),
-                              Icon::create('add', 'clickable'))
-                    ->asDialog();
+            $actions->addLink(
+                _('Widgets hinzufügen'),
+                $this->url_for('start/add'),
+                Icon::create('add')
+            )->asDialog();
         }
 
-        $actions->addLink(_('Standard wiederherstellen'),
-                          $this->url_for('start/reset'),
-                          Icon::create('accept', 'clickable'));
-        $sidebar->addWidget($actions);
+        $actions->addLink(
+            _('Standard wiederherstellen'),
+            $this->url_for('start/reset'),
+            Icon::create('accept')
+        );
 
         // Root may set initial positions
         if ($GLOBALS['perm']->have_perm('root')) {
-            $settings = new ActionsWidget();
+            $settings = $sidebar->addWidget(new ActionsWidget());
             $settings->setTitle(_('Einstellungen'));
             $settings->addElement(new WidgetElement(_('Standard-Startseite bearbeiten:')));
             foreach ($GLOBALS['perm']->permissions as $permission => $useless) {
-                $settings->addElement(new LinkElement(
+                $settings->addLink(
                     ucfirst($permission),
-                    $this->url_for('start/edit_defaults/' . $permission),
-                    Icon::create('link-intern', 'clickable'), ['data-dialog' => '']
-                ));
+                    $this->url_for("start/edit_defaults/{$permission}"),
+                    Icon::create('link-intern')
+                )->asDialog();
             }
-
-            $sidebar->addWidget($settings);
         }
         if ($GLOBALS['perm']->get_perm() == 'user') {
-            PageLayout::postMessage(MessageBox::info(_('Sie haben noch nicht auf Ihre Bestätigungsmail geantwortet.'),
-                [
-                    _('Bitte holen Sie dies nach, um Stud.IP Funktionen wie das Belegen von Veranstaltungen nutzen zu können.'),
-                    sprintf(_('Bei Problemen wenden Sie sich an: %s'), '<a href="mailto:'.$GLOBALS['UNI_CONTACT'].'">'.$GLOBALS['UNI_CONTACT'].'</a>')
-                ]
-            ));
+            PageLayout::postInfo(_('Sie haben noch nicht auf Ihre Bestätigungsmail geantwortet.'), [
+                _('Bitte holen Sie dies nach, um Stud.IP Funktionen wie das Belegen von Veranstaltungen nutzen zu können.'),
+                sprintf(_('Bei Problemen wenden Sie sich an: %s'), '<a href="mailto:'.$GLOBALS['UNI_CONTACT'].'">'.$GLOBALS['UNI_CONTACT'].'</a>')
+            ]);
 
-            $details = Studip\LinkButton::create(_('Bestätigungsmail erneut verschicken'),
-                    $this->url_for('start/resend_validation_mail')
-                );
+            $details = Studip\LinkButton::create(
+                _('Bestätigungsmail erneut verschicken'),
+                $this->url_for('start/resend_validation_mail')
+            );
 
-            if(!StudipAuthAbstract::CheckField('auth_user_md5.Email', $GLOBALS['user']->auth_plugin) && !LockRules::check($GLOBALS['user']->id, 'email')) {
+            if (!StudipAuthAbstract::CheckField('auth_user_md5.Email', $GLOBALS['user']->auth_plugin) && !LockRules::check($GLOBALS['user']->id, 'email')) {
                 $details .= ' ';
-                $details .= Studip\LinkButton::create(_('Email-Adresse ändern'),
+                $details .= Studip\LinkButton::create(
+                    _('Email-Adresse ändern'),
                     $this->url_for('start/edit_mail_address'),
                     [
                         'data-dialog' => 'size=auto',
                         'title'       => _('Email-Adresse')
-                    ]);
+                    ]
+                );
             }
-            PageLayout::postMessage(MessageBox::info(
-                    sprintf(_('Haben Sie die Bestätigungsmail an Ihre Adresse "%s" nicht erhalten?'), htmlReady($GLOBALS['user']->Email)),
-                    [$details]
-            ));
+            PageLayout::postInfo(
+                sprintf(_('Haben Sie die Bestätigungsmail an Ihre Adresse "%s" nicht erhalten?'), htmlReady($GLOBALS['user']->Email)),
+                [$details]
+            );
         }
     }
 
@@ -157,7 +158,7 @@ class StartController extends AuthenticatedController
      */
     public function edit_defaults_action($permission)
     {
-        if (in_array($permission, array_keys($GLOBALS['perm']->permissions)) === false) {
+        if (!in_array($permission, array_keys($GLOBALS['perm']->permissions))) {
             throw new InvalidArgumentException('There is no such permission!');
         }
 
@@ -184,7 +185,7 @@ class StartController extends AuthenticatedController
     {
         $GLOBALS['perm']->check('root');
 
-        if (in_array($permission, array_keys($GLOBALS['perm']->permissions)) === false) {
+        if (!in_array($permission, array_keys($GLOBALS['perm']->permissions))) {
             throw new InvalidArgumentException('There is no such permission!');
         }
 
@@ -250,7 +251,7 @@ class StartController extends AuthenticatedController
         WidgetHelper::setInitialPositions();
 
         $message = _('Die Widgets wurden auf die Standardkonfiguration zurückgesetzt.');
-        PageLayout::postMessage(MessageBox::success($message));
+        PageLayout::postSuccess($message);
         $this->redirect('start');
     }
 
@@ -261,7 +262,11 @@ class StartController extends AuthenticatedController
      */
     public function storeNewOrder_action()
     {
-        WidgetHelper::storeNewPositions(Request::get('widget'), Request::get('position'), Request::get('column'));
+        WidgetHelper::storeNewPositions(
+            Request::get('widget'),
+            Request::get('position'),
+            Request::get('column')
+        );
         $this->render_nothing();
     }
 
@@ -272,11 +277,11 @@ class StartController extends AuthenticatedController
      */
     public function resend_validation_mail_action()
     {
-        if ($GLOBALS['perm']->get_perm() == 'user') {
+        if ($GLOBALS['perm']->get_perm() === 'user') {
             Seminar_Register_Auth::sendValidationMail($GLOBALS['user']);
-            PageLayout::postMessage(MessageBox::success(
+            PageLayout::postSuccess(
                 _('Die Bestätigungsmail wurde erneut verschickt.')
-            ));
+            );
         }
 
         $this->redirect('start');
@@ -290,11 +295,13 @@ class StartController extends AuthenticatedController
     public function edit_mail_address_action()
     {
         // only allow editing of mail-address here if user has not yet validated
-        if ($GLOBALS['perm']->get_perm() != 'user') {
+        if ($GLOBALS['perm']->get_perm() !== 'user') {
             $this->redirect('start');
             return;
         }
-        $this->restricted = (StudipAuthAbstract::CheckField('auth_user_md5.Email', $GLOBALS['user']->auth_plugin) && LockRules::check($GLOBALS['user']->id, 'email'));
+
+        $this->restricted = StudipAuthAbstract::CheckField('auth_user_md5.Email', $GLOBALS['user']->auth_plugin)
+                         && LockRules::check($GLOBALS['user']->id, 'email');
         $this->email = $GLOBALS['user']->Email;
     }
 

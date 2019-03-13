@@ -36,8 +36,6 @@ $perm->check('user');
 
 include 'lib/seminar_open.php'; // initialise Stud.IP-Session
 
-$hash = Seminar_Register_Auth::get_validation_hash($user->id);
-
 // hier wird noch mal berechnet, welches secret in der Bestaetigungsmail uebergeben wurde
 $secret = Request::option('secret');
 PageLayout::setHelpKeyword('Basis.AnmeldungMail');
@@ -59,7 +57,7 @@ else if (empty($secret)) {
 }
 
 // abuse (oder Volltrottel)
-else if ($secret != $hash) {
+else if (!Seminar_Register_Auth::validateSecret($secret, $user->id)) {
     $error = _('Der übergebene <em>Secret-Code</em> ist nicht korrekt.');
     $details = array();
     $details[] = _('Sie müssen unter dem Benutzernamen eingeloggt sein, für den Sie die Bestätigungsmail erhalten haben.');
@@ -74,7 +72,7 @@ else if ($secret != $hash) {
 }
 
 // alles paletti, Status ändern
-else if ($secret == $hash) {
+else {
     $query = "UPDATE auth_user_md5 SET perms = 'autor' WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
     $statement->execute(array($user->id));

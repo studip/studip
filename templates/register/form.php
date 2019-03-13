@@ -30,8 +30,7 @@ jQuery(document).ready(function() {
         <p><?= _('Bitte füllen Sie zur Anmeldung das Formular aus:') ?></p>
 
         <label for="username">
-            <?= _('Benutzername') ?>
-            <em class="required"></em>
+            <em class="required"><?= _('Benutzername') ?></em>
             <input type="text" name="username" id="username"
                    onchange="STUDIP.register.checkusername()"
                    value="<?= htmlReady($username) ?>"
@@ -41,16 +40,14 @@ jQuery(document).ready(function() {
         </label>
 
         <label for="password">
-            <?= _('Passwort') ?>
-            <em class="required"></em>
+            <em class="required"><?= _('Passwort') ?></em>
             <input type="password" name="password" id="password"
                    onchange="STUDIP.register.checkpassword()"
                    required maxlength="31">
         </label>
 
         <label for="password2">
-            <?= _('Passwortbestätigung') ?>
-            <em class="required"></em>
+            <em class="required"><?= _('Passwortbestätigung') ?></em>
             <input type="password" name="password2" id="password2"
                    onchange="STUDIP.register.checkpassword2()"
                    required maxlength="31">
@@ -91,7 +88,7 @@ jQuery(document).ready(function() {
         </section>
 
         <label for="first_name">
-            <?= _('Vorname') ?>
+            <em class="required"><?= _('Vorname') ?></em>
 
             <input type="text" name="Vorname" id="first_name"
                    onchange="STUDIP.register.checkVorname()"
@@ -100,7 +97,7 @@ jQuery(document).ready(function() {
         </label>
 
         <label for="last_name">
-            <?= _('Nachname') ?>
+            <em class="required"><?= _('Nachname') ?></em>
 
             <input type="text" name="Nachname" id="last_name"
                    onchange="STUDIP.register.checkNachname()"
@@ -140,7 +137,7 @@ jQuery(document).ready(function() {
 
 
         <label for="email">
-            <?= _('E-Mail') ?>
+            <em class="required"><?= _('E-Mail') ?></em>
         <? if (!trim($email_restriction)): ?>
             <input type="email" name="Email" id="email"
                    onchange="STUDIP.register.checkEmail()"
