@@ -14,7 +14,7 @@
 	<package>net.manuellemos.mimemessage</package>
 
 	<version>@(#) $Id: email_message.php,v 1.99 2013/09/08 22:44:46 mlemos Exp $</version>
-	<copyright>Copyright � (C) Manuel Lemos 1999-2004</copyright>
+	<copyright>Copyright © (C) Manuel Lemos 1999-2004</copyright>
 	<title>MIME E-mail message composing and sending</title>
 	<author>Manuel Lemos</author>
 	<authoraddress>mlemos-at-acm.org</authoraddress>
