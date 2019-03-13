@@ -278,9 +278,9 @@ class RolePersistence
      */
     public static function getAllRoleAssignments($user = null)
     {
-        $query = "SELECT `role_id`, `user_id`
+        $query = "SELECT `roleid`, `userid`
                   FROM `roles_user`
-                  WHERE `user_id` = IFNULL(?, `user_id`)";
+                  WHERE `userid` = IFNULL(?, `userid`)";
         return DBManager::get()->fetchPairs($query, [$user]);
     }
 
@@ -328,7 +328,7 @@ class RolePersistence
 
         $query = "DELETE FROM `roles_plugins`
                   WHERE `pluginid` = :plugin_id
-                    AND `role_id` = :role_id";
+                    AND `roleid` = :role_id";
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':plugin_id', $plugin_id);
 
