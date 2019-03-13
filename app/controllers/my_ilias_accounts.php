@@ -75,7 +75,7 @@ class MyIliasAccountsController extends AuthenticatedController
                 }
                 if (Request::get('ilias_update_account') == $ilias_index) {
                     // update user account
-                    if ($this->ilias_list[$ilias_index]->updateUser()) {
+                    if ($this->ilias_list[$ilias_index]->updateUser($GLOBALS['user'])) {
                         PageLayout::postSuccess(_("ILIAS-Account aktualisiert."));
                     }
                 }
