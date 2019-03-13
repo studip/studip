@@ -14,7 +14,7 @@
 	<package>net.manuellemos.mimemessage</package>
 
 	<version>@(#) $Id: email_message.php,v 1.99 2013/09/08 22:44:46 mlemos Exp $</version>
-	<copyright>Copyright © (C) Manuel Lemos 1999-2004</copyright>
+	<copyright>Copyright ï¿½ (C) Manuel Lemos 1999-2004</copyright>
 	<title>MIME E-mail message composing and sending</title>
 	<author>Manuel Lemos</author>
 	<authoraddress>mlemos-at-acm.org</authoraddress>
@@ -771,7 +771,7 @@ class email_message_class
 		if(!IsSet($has["message-id"])
 		&& $this->auto_message_id)
 		{
-			$sender = array();
+			$sender = $senders = array();
 			if(IsSet($has["return-path"]))
 				$sender[] = $has["return-path"];
 			if(IsSet($has["from"]))
