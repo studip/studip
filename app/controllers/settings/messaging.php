@@ -115,10 +115,6 @@ class Settings_MessagingController extends Settings_SettingsController
                 $this->user->smsforward_copy = 0;
                 $this->user->store();
 
-                $query = "UPDATE message_user SET folder = 0 WHERE user_id = ?";
-                $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($this->user->user_id));
-
                 $this->config->delete('MESSAGING_SETTINGS');
 
                 PageLayout::postSuccess(_('Ihre Einstellungen wurden erfolgreich zurückgesetzt.'));
