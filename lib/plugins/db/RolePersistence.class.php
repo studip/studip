@@ -447,8 +447,8 @@ class RolePersistence
     private static function getCacheKey($key = null)
     {
         return $key === null
-             ? self::ROLES_PLUGINS_CACHE_KEY . $key
-             : self::ROLES_CACHE_KEY;
+             ? self::ROLES_CACHE_KEY
+             : self::ROLES_PLUGINS_CACHE_KEY . $key;
     }
 
     private static function readCache($index = null)
