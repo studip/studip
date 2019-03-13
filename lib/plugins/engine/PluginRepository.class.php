@@ -74,8 +74,6 @@ class PluginRepository
             $cache->write($cache_key, $metadata, 3600);
         }
 
-        var_dump($url);
-
         $xml = new SimpleXMLElement($metadata);
 
         if (!isset($xml->plugin)) {

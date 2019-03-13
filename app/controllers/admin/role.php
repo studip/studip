@@ -1,5 +1,4 @@
 <?php
-# Lifter010: TODO
 /**
  * plugin.php - role administration controller
  *
@@ -14,7 +13,6 @@
  * @category    Stud.IP
  * @package     admin
  */
-
 class Admin_RoleController extends AuthenticatedController
 {
     /**
@@ -50,61 +48,12 @@ class Admin_RoleController extends AuthenticatedController
     }
 
     /**
-     * Validate ticket (passed via request environment).
-     * This method always checks Request::quoted('ticket').
-     *
-     * @throws InvalidArgumentException  if ticket is not valid
-     */
-    private function check_ticket()
-    {
-        if (!check_ticket(Request::option('studip_ticket'))) {
-            throw new InvalidArgumentException(_('Das Ticket für diese Aktion ist ungültig.'));
-        }
-
-    }
-
-    /**
-     * Get statistics about the given list of roles. This includes
-     * the number of users and the number of plugins with each role.
-     *
-     * @param array     list of Role objects
-     */
-    private function get_role_stats($roles)
-    {
-        // Prepare count users statement
-        $query = "SELECT COUNT(DISTINCT userid)
-                  FROM roles_user
-                  WHERE roleid = ? AND userid != 'nobody'";
-        $users_statement = DBManager::get()->prepare($query);
-
-        // Prepare count plugins statement
-        $query = "SELECT COUNT(*)
-                  FROM roles_plugins
-                  WHERE roleid = ?";
-        $plugins_statement = DBManager::get()->prepare($query);
-
-        foreach ($roles as $role) {
-            $roleid = $role->getRoleid();
-
-            $users_statement->execute(array($roleid));
-            $stats[$roleid]['users'] = $users_statement->fetchColumn();
-            $users_statement->closeCursor();
-
-            $plugins_statement->execute(array($roleid));
-            $stats[$roleid]['plugins'] = $plugins_statement->fetchColumn();
-            $plugins_statement->closeCursor();
-        }
-
-        return $stats;
-    }
-
-    /**
      * Display a list of all existing roles and some statistics.
      */
     public function index_action()
     {
         $this->roles = RolePersistence::getAllRoles();
-        $this->stats = $this->get_role_stats($this->roles);
+        $this->stats = RolePersistence::getStatistics();
     }
 
     /**
@@ -308,7 +257,7 @@ class Admin_RoleController extends AuthenticatedController
         $message = _('Die Rechteeinstellungen wurden gespeichert.');
         PageLayout::postSuccess($message);
 
-        $this->redirect('admin/role/assign_plugin_role/'.$pluginid);
+        $this->redirect("admin/role/assign_plugin_role/{$pluginid}");
     }
 
     /**
@@ -335,14 +284,13 @@ class Admin_RoleController extends AuthenticatedController
      *
      * @param integer   role id (optional)
      */
-    public function show_role_action($roleid = NULL)
+    public function show_role_action($roleid = null)
     {
-        $db = DBManager::get();
         $roleid = Request::int('role', $roleid);
 
         $this->roles = RolePersistence::getAllRoles();
 
-        if (isset($roleid)) {
+        if ($roleid) {
             $sql = "SELECT DISTINCT Vorname,Nachname,user_id,username,perms
                     FROM auth_user_md5
                     JOIN roles_user ON userid = user_id
@@ -363,6 +311,8 @@ class Admin_RoleController extends AuthenticatedController
                     unset($plugins[$id]);
                 }
             }
+
+            $this->implicit_count = RolePersistence::countImplicitUsers($roleid);
 
             $this->users   = $users;
             $this->plugins = $plugins;
@@ -386,13 +336,15 @@ class Admin_RoleController extends AuthenticatedController
             RolePersistence::assignRole($user, $role);
         }
 
-        $template = ngettext('Der Rolle wurde eine weitere Person hinzugefügt.',
-                             'Der Rolle wurden %u weitere Personen hinzugefügt.',
-                             count($ids));
+        $template = ngettext(
+            'Der Rolle wurde eine weitere Person hinzugefügt.',
+            'Der Rolle wurden %u weitere Personen hinzugefügt.',
+            count($ids)
+        );
         $message = sprintf($template, count($ids));
         PageLayout::postSuccess($message);
 
-        $this->redirect('admin/role/show_role/' . $role_id);
+        $this->redirect("admin/role/show_role/{$role_id}");
     }
 
     /**
@@ -410,13 +362,15 @@ class Admin_RoleController extends AuthenticatedController
             RolePersistence::deleteRoleAssignment($user, $role);
         }
 
-        $template = ngettext('Einer Person wurde die Rolle entzogen.',
-                             '%u Personen wurde die Rolle entzogen.',
-                             count($ids));
+        $template = ngettext(
+            'Einer Person wurde die Rolle entzogen.',
+            '%u Personen wurde die Rolle entzogen.',
+            count($ids)
+        );
         $message = sprintf($template, count($ids));
         PageLayout::postSuccess($message);
 
-        $this->redirect('admin/role/show_role/' . $role_id);
+        $this->redirect("admin/role/show_role/{$role_id}");
     }
 
     /**
@@ -436,14 +390,16 @@ class Admin_RoleController extends AuthenticatedController
                     RolePersistence::assignPluginRoles($id, array($role_id));
                 }
 
-                $template = ngettext('Der Rolle wurde ein weiteres Plugin hinzugefügt.',
-                                     'Der Rolle wurden %u weitere Plugins hinzugefügt.',
-                                     count($plugin_ids));
+                $template = ngettext(
+                    'Der Rolle wurde ein weiteres Plugin hinzugefügt.',
+                    'Der Rolle wurden %u weitere Plugins hinzugefügt.',
+                    count($plugin_ids)
+                );
                 $message = sprintf($template, count($plugin_ids));
                 PageLayout::postSuccess($message);
             }
 
-            $this->redirect('admin/role/show_role/' . $role_id);
+            $this->redirect("admin/role/show_role/{$role_id}");
         }
 
         $this->role_id = $role_id;
@@ -467,16 +423,18 @@ class Admin_RoleController extends AuthenticatedController
         $ids  = $this->getPlugins($role_id, $plugin_id);
 
         foreach ($ids as $id) {
-            RolePersistence::deleteAssignedPluginRoles($id, array($role_id));
+            RolePersistence::deleteAssignedPluginRoles($id, [$role_id]);
         }
 
-        $template = ngettext('Einem Plugin wurde die Rolle entzogen.',
-                             '%u Plugins wurde die Rolle entzogen.',
-                             count($ids));
+        $template = ngettext(
+            'Einem Plugin wurde die Rolle entzogen.',
+            '%u Plugins wurde die Rolle entzogen.',
+            count($ids)
+        );
         $message = sprintf($template, count($ids));
         PageLayout::postSuccess($message);
 
-        $this->redirect('admin/role/show_role/' . $role_id);
+        $this->redirect("admin/role/show_role/{$role_id}");
     }
 
     /**
@@ -509,7 +467,7 @@ class Admin_RoleController extends AuthenticatedController
         }
 
         // From url
-        return array($plugin_id);
+        return [$plugin_id];
     }
 
     /**
@@ -525,12 +483,12 @@ class Admin_RoleController extends AuthenticatedController
                   LEFT JOIN user_info AS ui ON (aum.user_id = ui.user_id)
                   LEFT JOIN roles_user AS ru ON (aum.user_id = ru.userid AND ru.roleid = {$role_id})
                   WHERE ru.userid IS NULL
-                     AND (username LIKE :input
-                     OR Vorname LIKE :input
-                     OR Nachname LIKE :input
-                     OR CONCAT(Vorname, ' ', Nachname) LIKE :input
-                     OR CONCAT(Nachname, ' ', Vorname) LIKE :input
-                     OR {$GLOBALS['_fullname_sql']['full_rev']} LIKE :input)
+                     AND (
+                         username LIKE :input
+                         OR CONCAT(Vorname, ' ', Nachname) LIKE :input
+                         OR CONCAT(Nachname, ' ', Vorname) LIKE :input
+                         OR {$GLOBALS['_fullname_sql']['full_rev']} LIKE :input
+                     )
                   ORDER BY fullname ASC";
         $url = URLHelper::getURL('dispatch.php/admin/role/add_user/' . $role_id . '/bulk');
         return MultiPersonSearch::get('add_role_users')
@@ -540,21 +498,21 @@ class Admin_RoleController extends AuthenticatedController
             ->setSearchObject(new SQLSearch($query, _('Nutzer suchen'), 'user_id'));
     }
 
-    function assign_role_institutes_action($role_id, $user_id)
+    public function assign_role_institutes_action($role_id, $user_id)
     {
         if (Request::submitted('add_institute') && $institut_id = Request::option('institute_id')) {
             $roles = RolePersistence::getAllRoles();
             $role = $roles[$role_id];
             $user = User::find($user_id);
             RolePersistence::assignRole($user, $role, Request::option('institute_id'));
-            PageLayout::postSuccess(_("Die Einrichtung wurde zugewiesen."));
+            PageLayout::postSuccess(_('Die Einrichtung wurde zugewiesen.'));
         }
         if ($remove_institut_id = Request::option('remove_institute')) {
             $roles = RolePersistence::getAllRoles();
             $role = $roles[$role_id];
             $user = User::find($user_id);
             RolePersistence::deleteRoleAssignment($user, $role, $remove_institut_id);
-            PageLayout::postSuccess(_("Die Einrichtung wurde entfernt."));
+            PageLayout::postSuccess(_('Die Einrichtung wurde entfernt.'));
 
         }
         $roles = RolePersistence::getAllRoles();
@@ -562,7 +520,8 @@ class Admin_RoleController extends AuthenticatedController
         $this->user = new User($user_id);
         $this->institutes = SimpleCollection::createFromArray(Institute::findMany(RolePersistence::getAssignedRoleInstitutes($user_id, $role_id)));
         $this->institutes->orderBy('name');
-        $this->qsearch = QuickSearch::get("institute_id", new StandardSearch("Institut_id"));
+        $this->qsearch = QuickSearch::get('institute_id', new StandardSearch('Institut_id'));
+
         if (Request::isXhr()) {
             $this->qsearch->withoutButton();
         }
@@ -574,26 +533,43 @@ class Admin_RoleController extends AuthenticatedController
         $sidebar->setTitle(PageLayout::getTitle() ?: _('Rollen'));
         $sidebar->setImage('sidebar/roles-sidebar.png');
 
-        $views = new ViewsWidget();
-        $views->addLink(_('Rollen verwalten'),
-                          $this->url_for('admin/role'))
-                ->setActive($action === 'index');
-        $views->addLink(_('Personenzuweisungen bearbeiten'),
-                          $this->url_for('admin/role/assign_role'))
-                ->setActive($action === 'assign_role');
-        $views->addLink(_('Pluginzuweisungen bearbeiten'),
-                          $this->url_for('admin/role/assign_plugin_role'))
-                ->setActive($action === 'assign_plugin_role');
-        $views->addLink(_('Rollenzuweisungen anzeigen'),
-                          $this->url_for('admin/role/show_role'))
-                ->setActive($action === 'show_role');
-        $sidebar->addWidget($views);
+        $views = $sidebar->addWidget(new ViewsWidget());
+        $views->addLink(
+            _('Rollen verwalten'),
+            $this->url_for('admin/role')
+        )->setActive($action === 'index');
+        $views->addLink(
+            _('Personenzuweisungen bearbeiten'),
+            $this->url_for('admin/role/assign_role')
+        )->setActive($action === 'assign_role');
+        $views->addLink(
+            _('Pluginzuweisungen bearbeiten'),
+            $this->url_for('admin/role/assign_plugin_role')
+        )->setActive($action === 'assign_plugin_role');
+        $views->addLink(
+            _('Rollenzuweisungen anzeigen'),
+            $this->url_for('admin/role/show_role')
+        )->setActive($action === 'show_role');
 
-        $actions = new ActionsWidget();
-        $actions->addLink(_('Neue Rolle anlegen'),
-                          $this->url_for('admin/role/add'),
-                          Icon::create('add', 'clickable'))
-                ->asDialog('size=auto');
-        $sidebar->addWidget($actions);
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Neue Rolle anlegen'),
+            $this->url_for('admin/role/add'),
+            Icon::create('add', 'clickable')
+        )->asDialog('size=auto');
+    }
+
+    /**
+     * Validate ticket (passed via request environment).
+     * This method always checks Request::quoted('ticket').
+     *
+     * @throws InvalidArgumentException  if ticket is not valid
+     */
+    private function check_ticket()
+    {
+        if (!check_ticket(Request::option('studip_ticket'))) {
+            throw new InvalidArgumentException(_('Das Ticket für diese Aktion ist ungültig.'));
+        }
+
     }
 }
