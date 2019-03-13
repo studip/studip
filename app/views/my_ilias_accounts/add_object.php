@@ -18,3 +18,10 @@
         <?= Studip\Button::createCancel(_('Abbrechen'), 'cancel', ['data-dialog' => 'close']) ?>
     </footer>
 </form>
+<script>
+jQuery(function ($) {
+    $('button[name=submit]').click(function () {
+        window.location.reload();
+    });
+});
+</script>
