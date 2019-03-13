@@ -566,30 +566,39 @@ class MessagesController extends AuthenticatedController {
     /**
      * Sends a message and redirects the user.
      */
-    public function send_action() {
-        PageLayout::setTitle(_("Nachricht verschicken"));
-        if (Request::isPost() && count(array_filter(Request::getArray("message_to"))) && Request::submitted("message_body")) {
+    public function send_action()
+    {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
+
+        PageLayout::setTitle(_('Nachricht verschicken'));
+
+        $recipients = array_filter(Request::getArray('message_to'));
+
+        if (count($recipients) === 0) {
+            PageLayout::postError(_('Sie haben nicht angegeben, wer die Nachricht empfangen soll!'));
+        } elseif (Request::submitted('message_id') && Message::exists(Request::option('message_id'))) {
+            PageLayout::postInfo(_('Diese Nachricht wurde bereits verschickt.'));
+        } elseif (Request::submitted('message_body')) {
             $messaging = new messaging();
-            $rec_uname = array();
-            foreach (Request::getArray("message_to") as $user_id) {
-                if ($user_id) {
-                    $rec_uname[] = get_username($user_id);
-                }
-            }
-            $messaging->send_as_email = Request::int("message_mail");
+            $rec_uname = User::findAndMapMany(function ($user) {
+                return $user->username;
+            }, $recipients);
+            $messaging->send_as_email = Request::int('message_mail');
             $messaging->insert_message(
-                Studip\Markup::purifyHtml(Request::get("message_body")),
+                Studip\Markup::purifyHtml(Request::get('message_body')),
                 $rec_uname,
                 $GLOBALS['user']->id,
                 '',
-                Request::option("message_id"),
+                Request::option('message_id'),
                 '',
                 null,
-                Request::get("message_subject"),
-                "",
+                Request::get('message_subject'),
+                '',
                 'normal',
-                trim(Request::get("message_tags")) ?: null,
-                Request::int("show_adressees", 0)
+                trim(Request::get('message_tags')) ?: null,
+                Request::int('show_adressees', 0)
             );
             if (Request::option('answer_to')) {
                 $old_message = Message::find(Request::option('answer_to'));
@@ -597,9 +606,11 @@ class MessagesController extends AuthenticatedController {
                     $old_message->markAsAnswered($GLOBALS['user']->id);
                 }
             }
-            PageLayout::postMessage(MessageBox::success(_("Nachricht wurde verschickt.")));
-        } else if (!count(array_filter(Request::getArray('message_to')))) {
-            PageLayout::postMessage(MessageBox::error(_('Sie haben nicht angegeben, wer die Nachricht empfangen soll!')));
+            PageLayout::postSuccess(_('Nachricht wurde verschickt.'));
+        }
+
+        if (!Request::isXhr()) {
+            $this->redirect('messages/overview');
         }
     }
 
