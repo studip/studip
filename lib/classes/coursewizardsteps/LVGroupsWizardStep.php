@@ -31,10 +31,10 @@ class LVGroupsWizardStep implements CourseWizardStep
         // retrieve class of step 1 from step registry
         $step_one_class = CourseWizardStepRegistry::findOneBySQL('number = 1 AND enabled = 1')
                 ->classname;
-        
+
         // store start time of semester selected in first step
         $course_start_time = $values[$step_one_class]['start_time'];
-        
+
         // We only need our own stored values here.
         $values = $values[__CLASS__];
 
@@ -62,9 +62,9 @@ class LVGroupsWizardStep implements CourseWizardStep
         } else {
             $open_nodes = !empty($values['open_lvg_nodes']) ? $values['open_lvg_nodes'] : array();
         }
-        
+
         $_SESSION[__CLASS__]['course_start_time'] = $course_start_time;
-        
+
         $tpl->set_attribute('open_lvg_nodes', $open_nodes);
         $tpl->set_attribute('selection', $selection);
         $tpl->set_attribute('selection_details', $selection_details);
@@ -150,7 +150,7 @@ class LVGroupsWizardStep implements CourseWizardStep
                     }
                 }
             }
-            
+
             // name of module maybe differs from original module title if it
             // is assigned to a Studiengangteilabschnitt
             if (is_a($c, 'Modul')) {
@@ -160,7 +160,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             } else {
                 $name = $c->getDisplayName();
             }
-            
+
             $level[] = array(
                 'id' => $c->id . '-' . $mvvid[1] . $i++,
                 'name' => $name,
@@ -186,7 +186,7 @@ class LVGroupsWizardStep implements CourseWizardStep
         if (!empty($selection)) {
             $selectedlvg = $selection->getLvGruppenIDs();
         }
-        
+
         $course = Course::findCurrent();
         if ($course) {
             $course_start = $course->start_time;
@@ -196,28 +196,28 @@ class LVGroupsWizardStep implements CourseWizardStep
             $course_start = $semester->beginn;
             $course_end = $semester->ende;
         }
-        
+
         $status_modul = [];
         foreach ($GLOBALS['MVV_MODUL']['STATUS']['values'] as $name => $status) {
             if ($status['public'] && $status['visible']) {
                 $status_modul[] = $name;
             }
         }
-        
+
         $status_version = [];
         foreach ($GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'] as $name => $status) {
             if ($status['public'] && $status['visible']) {
                 $status_version[] = $name;
             }
         }
-        
+
         $filter = [
             'mvv_modul.stat'          => $status_modul,
             'mvv_stgteilversion.stat' => $status_version,
             'start_sem.beginn'        => $course_end,
             'end_sem.ende'            => $course_start
         ];
-        
+
         foreach (Lvgruppe::findBySearchTerm($searchterm, $filter) as $area) {
             if (in_array($area->id, $selectedlvg)) {
                 continue;
@@ -247,7 +247,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             $course_start = $semester->beginn;
             $course_end = $semester->ende;
         }
-        
+
         $status_modul = [];
         foreach ($GLOBALS['MVV_MODUL']['STATUS']['values'] as $name => $status) {
             if ($status['public'] && $status['visible']) {
@@ -264,19 +264,19 @@ class LVGroupsWizardStep implements CourseWizardStep
                 $modul_end = Semester::find($modul->end)->ende ?: PHP_INT_MAX;
                 return ($modul_start <= $course_end && $modul_end >= $course_start);
             });
-        
+
         $status_version = [];
         foreach ($GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'] as $name => $status) {
             if ($status['public'] && $status['visible']) {
                 $status_version[] = $name;
             }
         }
-        
+
         ModuleManagementModelTreeItem::setObjectFilter('StgteilVersion',
             function ($version) use ($status_version) {
                 return in_array($version->stat, $status_version);
             });
-        
+
         $trails = $area->getTrails([
             'Modulteil',
             'StgteilabschnittModul',
@@ -284,7 +284,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             'StgteilVersion',
             'Studiengang']);
         $pathes = ModuleManagementModelTreeItem::getPathes($trails);
-        
+
         $factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'] . '/app/views');
         $html = $factory->render('course/lvgselector/entry_trails',
                 compact('area', 'pathes'));
@@ -385,7 +385,7 @@ class LVGroupsWizardStep implements CourseWizardStep
     {
         $ok = true;
         $errors = array();
-        
+
         // optional step if study areas step is activated and at least one area is assigned
         if (!count($values['StudyAreasWizardStep']['studyareas'])
                 && !count($values[__CLASS__]['lvgruppe_selection']['areas'])) {
@@ -408,16 +408,23 @@ class LVGroupsWizardStep implements CourseWizardStep
      */
     public function storeValues($course, $values)
     {
+        if ($this->is_locked($values)) {
+            throw new AccessDeniedException();
+        }
+
+        // Leave early if no values are set
+        if (!isset($values[__CLASS__]['lvgruppe_selection']['areas'])
+            || !is_array($values[__CLASS__]['lvgruppe_selection']['areas']))
+        {
+            return $course;
+        }
+
         $selection = new StudipLvgruppeSelection($course->id);
         foreach ($values[__CLASS__]['lvgruppe_selection']['areas'] as $lvg_id) {
             $area = Lvgruppe::find($lvg_id);
             $selection->add($area);
         }
-        if ($this->is_locked($values)) {
-            throw new AccessDeniedException();
-        } else {
-            LvGruppe::setLvgruppen($course->id, $selection->getLvgruppenIDs());
-        }
+        LvGruppe::setLvgruppen($course->id, $selection->getLvgruppenIDs());
 
         return $course;
     }
@@ -445,7 +452,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             }
         }
         $category = SeminarCategories::GetByTypeId($coursetype);
-        
+
         return (!$locked && $category->module);
     }
 
@@ -492,7 +499,7 @@ class LVGroupsWizardStep implements CourseWizardStep
                 $data[] = $a->id;
             }
         }
-        
+
         $values[__CLASS__]['lvgruppe_selection']['areas'] = $data;
         return $values;
     }
