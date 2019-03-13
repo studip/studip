@@ -16,8 +16,8 @@ define('FORMATTED_CONTENT_WRAPPER', '<div class="formatted-content">%s</div>');
 
 use Studip\Markup;
 
-function htmlReady($what, $trim = true, $br = false, $double_encode = true) {
-    return Markup::htmlReady((string) $what, $trim, $br, $double_encode);
+function htmlReady($what, $trim=TRUE, $br=FALSE, $double_encode=true) {
+    return Markup::htmlReady($what, $trim, $br, $double_encode);
 }
 
 /**
@@ -30,8 +30,8 @@ function htmlReady($what, $trim = true, $br = false, $double_encode = true) {
  * @param  boolean $double_encode  Encode existing HTML entities, if TRUE and wysiwyg editor disabled.
  * @return string         The converted string.
  */
-function wysiwygReady($what, $trim = true, $br = false, $double_encode = true) {
-    return Markup::wysiwygReady((string) $what, $trim, $br, $double_encode);
+function wysiwygReady($what, $trim=TRUE, $br=FALSE, $double_encode=true) {
+    return Markup::wysiwygReady($what, $trim, $br, $double_encode);
 }
 
 function jsReady ($what, $target) {
