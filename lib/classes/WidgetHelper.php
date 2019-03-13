@@ -180,6 +180,16 @@ class WidgetHelper
         return $widgets;
     }
 
+    /**
+     * Returns whether a user has any defined widgets.
+     * @param  string  $user_id User id
+     * @return boolean
+     */
+    public static function hasUserWidgets($user_id)
+    {
+        $query = "SELECT 1 FROM `widget_user` WHERE `range_id` = ?";
+        return (bool) DBManager::get()->fetchColumn($query, [$user_id]);
+    }
 
     /**
      * addWidgetUserConfig - creates user_config entry for widget newly added by a user
