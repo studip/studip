@@ -171,6 +171,7 @@ class WidgetHelper
         $statement->execute(array($id, $col));
         $widgets = array();
         while ($db_widget = $statement->fetch(PDO::FETCH_ASSOC)) {
+            PageLayout::postInfo($db_widget);
             if(!is_null($plugin_manager->getPluginById($db_widget['pluginid']))){
                 $widget = clone $plugin_manager->getPluginById($db_widget['pluginid']);
                 $widget->widget_id = $db_widget['id'];
