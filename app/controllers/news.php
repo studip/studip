@@ -178,7 +178,7 @@ class NewsController extends StudipController
             PageLayout::setTitle(_('Ankündigung bearbeiten'));
 
         // user has to have autor permission at least
-        if (!$GLOBALS['perm']->have_perm(autor)) {
+        if (!$GLOBALS['perm']->have_perm('autor')) {
             $this->set_status(401);
             return $this->render_nothing();
         }

@@ -27,13 +27,10 @@
     <input type="hidden" name="news_selectable_areas" value="<?=htmlReady(studip_json_encode($area_options_selectable))?>">
     <input type="hidden" name="news_selected_areas" value="<?=htmlReady(studip_json_encode($area_options_selected))?>">
 
-    <? if (count($_SESSION['messages'])) : ?>
-        <? $anker = ''; ?>
-    <? endif ?>
-
     <? if (Request::isXhr()) : ?>
         <? foreach (PageLayout::getMessages() as $msg) : ?>
             <?=$msg?>
+            <? $anker = ''; ?>
         <? endforeach ?>
     <? endif ?>
 
@@ -106,14 +103,13 @@
         </label>
     </fieldset>
 
-    <? if (count($comments)) : ?>
-    <fieldset <?= $news_isvisible['news_comments'] ? '' : 'class="collapsed"' ?>>
-        <legend class="news_category_header" id="news_comments">
-            <?=_("Kommentare zu dieser Ankündigung")?>
-        </legend>
-        <table class="default nohover">
-            <tbody>
-                <? if (is_array($comments) AND count($comments)) : ?>
+    <? if (is_array($comments) && count($comments)) : ?>
+        <fieldset <?= $news_isvisible['news_comments'] ? '' : 'class="collapsed"' ?>>
+            <legend class="news_category_header" id="news_comments">
+                <?=_("Kommentare zu dieser Ankündigung")?>
+            </legend>
+            <table class="default nohover">
+                <tbody>
                     <? foreach ($comments as $index => $comment): ?>
                         <?= $this->render_partial('../../templates/news/comment-box', compact('index', 'comment')) ?>
                     <? endforeach; ?>
@@ -127,17 +123,9 @@
                             </tr>
                         </tfoot>
                     <? endif ?>
-                <? else : ?>
-                    <tr>
-                        <td width="26"></td>
-                        <td colspan="2">
-                            <?= _('Zu dieser Ankündigung sind keine Kommentare vorhanden.') ?>
-                        </td>
-                    </tr>
-                <? endif ?>
-            </tbody>
-        </table>
-    </fieldset>
+                </tbody>
+            </table>
+        </fieldset>
     <? endif ?>
 
     <fieldset <?= $news_isvisible['news_areas'] ? '' : 'class="collapsed"' ?>>
@@ -209,9 +197,11 @@
             <?= Icon::create('arr_2left', 'clickable', ['title' => _('Bei den bereits ausgewählten Bereichen die markierten Bereiche entfernen')])->asInput(array('name'=>'news_remove_areas',)) ?>
         </div>
         <div class="news_area_selected">
-            <? foreach ($area_structure as $area_key => $area_data) :
-                $area_count += (int) count($area_options_selected[$area_key]);
-            endforeach ?>
+            <? foreach ($area_structure as $area_key => $area_data) : ?>
+                <? if (isset($area_options_selected[$area_key])) : ?>
+                    <? $area_count += count($area_options_selected[$area_key]) ?>
+                <? endif ?>
+            <? endforeach ?>
             <label>
             <div id="news_area_text">
                 <? if ($area_count == 0) : ?>
@@ -226,7 +216,7 @@
                     aria-label="<?= _('Bereiche, in denen die Ankündigung angezeigt wird') ?>"
                     ondblclick="jQuery('input[name=news_remove_areas]').click()">
             <? foreach ($area_structure as $area_key => $area_data) : ?>
-                <? if (count($area_options_selected[$area_key])) : ?>
+                <? if (isset($area_options_selected[$area_key]) && count($area_options_selected[$area_key])) : ?>
                     <optgroup class="news_area_title"
                             style="background-image: url('<?= Icon::create($area_data['icon'], 'info')->asImagePath() ?>');" label="<?=htmlReady($area_data['title'])?>">
                     <? foreach ($area_options_selected[$area_key] as $area_option_key => $area_option_title) : ?>
