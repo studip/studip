@@ -89,7 +89,7 @@ const Avatar = {
                 });
 
                 jQuery('#submit-avatar').on('click', function() {
-                    jQuery('#cropped-image').attr('value', Avatar.cropper.getCroppedCanvas().toDataURL());
+                    jQuery('#cropped-image').attr('value', Avatar.cropper.getCroppedCanvas().toDataURL('image/jpeg', 0.7));
                 });
             } else {
                 alert(jQuery(input).data('message-too-large'));
