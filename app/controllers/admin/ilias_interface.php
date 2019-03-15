@@ -139,6 +139,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                             'root_category' => '',
                             'user_prefix' => 'studip_',
                             'user_data_category' => '',
+                            'allow_change_account' => false,
                             'category_to_desktop' => false,
                             'cat_semester' => '',
                             'course_semester' => '',
@@ -312,9 +313,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                     if (Request::getInstance()->offsetExists('ilias_course_veranstaltungsnummer')) {
                         $this->ilias_configs[$index]['course_veranstaltungsnummer'] = Request::get('ilias_course_veranstaltungsnummer');
                     }
-                    if (Request::getInstance()->offsetExists('ilias_category_to_desktop')) {
-                        $this->ilias_configs[$index]['category_to_desktop'] = Request::get('ilias_category_to_desktop');
-                    }
+                    $this->ilias_configs[$index]['category_to_desktop'] = Request::get('ilias_category_to_desktop');
                     foreach ($this->modules_available as $module_index => $module_name) {
                         if (Request::get('ilias_modules_'.$module_index)) {
                             $this->ilias_configs[$index]['modules'][$module_index] = $module_name;
@@ -334,6 +333,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                 if (Request::getInstance()->offsetExists('ilias_author_role_name')) {
                     $this->ilias_configs[$index]['author_role_name'] = Request::get('ilias_author_role_name');
                     $this->ilias_configs[$index]['author_perm'] = Request::get('ilias_author_perm');
+                    $this->ilias_configs[$index]['allow_change_account'] = Request::get('ilias_allow_change_account');
 
                     //store config entry
                     Config::get()->store('ILIAS_INTERFACE_SETTINGS', $this->ilias_configs);

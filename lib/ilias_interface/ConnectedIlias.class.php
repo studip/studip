@@ -347,7 +347,7 @@ class ConnectedIlias
             $this->user->id = $user_id;
             $this->user->login = $this->ilias_config['user_prefix'].$this->user->studip_login;
 
-            $this->user->setConnection(IliasUser::USER_TYPE_CREATED, true);
+            $this->user->setConnection(IliasUser::USER_TYPE_CREATED);
             return true;
         }
         return false;
@@ -367,11 +367,15 @@ class ConnectedIlias
             return false;
         }
         $update_user = new IliasUser($this->index, $this->ilias_config['version'], $user->id);
+        // if user is manually connected don't update user data
+        if ($update_user->getUserType() == IliasUser::USER_TYPE_ORIGINAL) {
+            return true;
+        }
         $this->soap_client->setCachingStatus(false);
         $this->soap_client->clearCache();
         if ($update_user->isConnected() && $update_user->id && $this->soap_client->lookupUser($update_user->login)) {
             $user_data = $update_user->getUserArray();
-            $user_data["login"] = $update_user->login;
+            $user_data["login"] = $this->ilias_config['user_prefix'].$user_data["login"];
             
             // set role according to Stud.IP perm
             if ($user->perms == "root") {
@@ -382,6 +386,8 @@ class ConnectedIlias
 
             $user_id = $this->soap_client->addUser($user_data, $role_id);
             if ($user_id != false) {
+                $update_user->login = $user_data["login"];
+                $update_user->setConnection(IliasUser::USER_TYPE_CREATED);
                 return true;
             }
         }

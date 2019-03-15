@@ -14,6 +14,10 @@
         	<option value="root" <?=$ilias_config['author_perm'] == 'root' ? 'selected' : ''?>><?=_('root')?></option>
         </select>
     </label>
+    <label>
+        <input type="checkbox" name="ilias_allow_change_account" value="1" <?= $ilias_config['allow_change_account'] ? 'checked' : '' ?>>
+        <span><?= _('Stud.IP-User können sich bestehende ILIAS-Accounts manuell zuordnen') ?></span>
+    </label>
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Speichern'), 'submit') ?>
         <?= Studip\Button::createCancel(_('Abbrechen'), 'cancel', ['data-dialog' => 'close']) ?>

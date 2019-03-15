@@ -452,7 +452,31 @@ class IliasUser
         $this->is_connected = true;
         $this->readData();
     }
-
+    
+    /**
+     * remove connection for user-account
+     *
+     * deletes user-connection from database (only for manually connected user)
+     * @access public
+     */
+    function unsetConnection()
+    {
+        if ($this->getUserType() != self::USER_TYPE_ORIGINAL) {
+            return;
+        }
+        
+        $query = "DELETE FROM auth_extern WHERE studip_user_id = ? AND external_user_system_type = ? AND external_user_type = ?";
+        $statement = DBManager::get()->prepare($query);
+        $statement->execute(array(
+                        (string)$this->studip_id,
+                        (string)$this->index,
+                        (int)self::USER_TYPE_ORIGINAL,
+        ));
+        
+        $this->is_connected = false;
+        $this->readData();
+    }
+    
     /**
     * get connection-status
     *

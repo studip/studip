@@ -106,7 +106,7 @@
                 <td><?=$ilias->getName()?></td>
                 <td class="actions">
                     <? $actionMenu = ActionMenu::get() ?>
-                    <? $actionMenu->addButton(
+                    <? if ($ilias->ilias_config['allow_change_account'] && ($ilias->user->getUserType() === IliasUser::USER_TYPE_CREATED)) $actionMenu->addButton(
                             'new_account',
                             _('Account neu zuordnen'),
                             Icon::create('person+new', Icon::ROLE_CLICKABLE, [
@@ -119,12 +119,24 @@
                                 'data-dialog'  => 'size=auto;reload-on-close'
                             ])
                     ) ?>
-                    <? $actionMenu->addButton(
-                            'new_account',
+                    <? if ($ilias->ilias_config['allow_change_account'] && ($ilias->user->getUserType() === IliasUser::USER_TYPE_ORIGINAL)) $actionMenu->addButton(
+                            'change_account',
+                            _('Account-Zuordnung aufheben'),
+                            Icon::create('person+remove', Icon::ROLE_CLICKABLE, [
+                                'title'        => _('Account-Zuordnung aufeben'),
+                                'formaction'   => $controller->url_for('my_ilias_accounts/change_account/'.$ilias_index.'/remove'),
+                                'data-confirm' => 
+                                    sprintf(_('Möchten Sie wirklich die bestehende Zuordnung aufheben? Sie verlieren dadurch alle mit dem bestehenden Account verbundenen Inhalte und Lernfortschritte im System "%s".'),
+                                    htmlReady($ilias->getName())
+                                )
+                            ])
+                    ) ?>
+                    <? if ($ilias->user->getUserType() === IliasUser::USER_TYPE_CREATED) $actionMenu->addButton(
+                            'update_account',
                             _('Account aktualisieren'),
                             Icon::create('person+refresh', Icon::ROLE_CLICKABLE, [
-                                'title'        => _('Account neu zuordnen'),
-                                'formaction'   => $controller->url_for('my_ilias_accounts/index?ilias_update_account='.$ilias_index)
+                                'title'        => _('Account aktualisieren'),
+                                'formaction'   => $controller->url_for('my_ilias_accounts/change_account/'.$ilias_index.'/update')
                             ])
                     ) ?>
                     <?= $actionMenu->render() ?>

@@ -54,32 +54,6 @@ class MyIliasAccountsController extends AuthenticatedController
             if ($ilias_config['is_active']) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);
                 $this->ilias_list[$ilias_index]->soap_client->clearCache();
-                
-                if (Request::submitted('set_new_account') AND (Request::get('ilias_new_account_index') == $ilias_index)) {
-                    CSRFProtection::verifyUnsafeRequest();
-                    // set new user account
-                    if ($this->ilias_list[$ilias_index]->soap_client->checkPassword(Request::get('ilias_login'), Request::get('ilias_password'))) {
-                        // login data valid
-                        $user_id = $this->ilias_list[$ilias_index]->soap_client->lookupUser(Request::get('ilias_login'));
-                        if ($user_id) {
-                            $this->ilias_list[$ilias_index]->user->setUsername(Request::get('ilias_login'));
-                            $this->ilias_list[$ilias_index]->user->setPassword('');
-                            $this->ilias_list[$ilias_index]->user->setId($user_id);
-                            $this->ilias_list[$ilias_index]->user->setConnection(IliasUser::USER_TYPE_ORIGINAL);
-                            PageLayout::postSuccess(_("ILIAS-Account zugeordnet."));
-                            $this->ilias_list[$ilias_index]->soap_client->clearCache();
-                        }
-                    } else {
-                        // wrong login
-                        PageLayout::postError(_("Login fehlgeschlagen. Die Zuordnung konnte nicht geändert werden."));
-                    }
-                }
-                if (Request::get('ilias_update_account') == $ilias_index) {
-                    // update user account
-                    if ($this->ilias_list[$ilias_index]->updateUser($GLOBALS['user'])) {
-                        PageLayout::postSuccess(_("ILIAS-Account aktualisiert."));
-                    }
-                }
             }
         }
 
@@ -142,6 +116,51 @@ class MyIliasAccountsController extends AuthenticatedController
             $this->ilias_index = $index;
         }
     }
+
+    /**
+     * Change/update account for ILIAS installation
+     * @param $index Index of ILIAS installation
+     */
+    public function change_account_action($index, $mode)
+    {
+        $ilias_configs = Config::get()->ILIAS_INTERFACE_SETTINGS;
+        if ($ilias_configs[$index]['is_active']) {
+            $this->ilias = new ConnectedIlias($index);
+            $this->ilias_index = $index;
+            switch ($mode) {
+                case 'update' : 
+                    // update user account
+                    if ($this->ilias->updateUser($GLOBALS['user'])) {
+                        PageLayout::postSuccess(_("ILIAS-Account aktualisiert."));
+                    }
+                    break;
+                case 'add' : 
+                    // set new user account
+                    if ($this->ilias->soap_client->checkPassword(Request::get('ilias_login'), Request::get('ilias_password'))) {
+                        // login data valid
+                        $user_id = $this->ilias->soap_client->lookupUser(Request::get('ilias_login'));
+                        if ($user_id) {
+                            $this->ilias->user->setUsername(Request::get('ilias_login'));
+                            $this->ilias->user->setPassword('');
+                            $this->ilias->user->setId($user_id);
+                            $this->ilias->user->setConnection(IliasUser::USER_TYPE_ORIGINAL);
+                            PageLayout::postSuccess(_("ILIAS-Account zugeordnet."));
+                            $this->ilias->soap_client->clearCache();
+                        }
+                    } else {
+                        // wrong login
+                        PageLayout::postError(_("Login fehlgeschlagen. Die Zuordnung konnte nicht geändert werden."));
+                    }
+                    break;
+                case 'remove' : 
+                    $this->ilias->user->unsetConnection();
+                    PageLayout::postSuccess(_("Account-Zuordnung entfernt."));
+                    break;
+            }
+        }
+        $this->redirect($this->url_for('my_ilias_accounts/index'));
+    }
+
     /**
      * Redirect to ILIAS installation
      * @param $index Index of ILIAS installation
