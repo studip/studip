@@ -64,7 +64,10 @@ class Settings_StudiesController extends Settings_SettingsController
      */
     public function store_sg_action()
     {
-        CSRFProtection::verifyUnsafeRequest();
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
+        $this->check_ticket();
 
         $any_change = false;
 
@@ -141,7 +144,7 @@ class Settings_StudiesController extends Settings_SettingsController
                         }
                     }
                 }
-            }
+            }            
         }
 
         if ($any_change) {
@@ -160,7 +163,10 @@ class Settings_StudiesController extends Settings_SettingsController
      */
     public function store_in_action()
     {
-        CSRFProtection::verifyUnsafeRequest();
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
+        $this->check_ticket();
 
         $inst_delete = Request::optionArray('inst_delete');
         if (count($inst_delete) > 0) {

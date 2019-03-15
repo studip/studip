@@ -3,6 +3,7 @@
 <h2><?= _('Ich studiere folgende Fächer und Abschlüsse:') ?></h2>
 
 <form action="<?= $controller->url_for('settings/studies/store_sg') ?>" method="post" class="default">
+    <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
     <?= CSRFProtection::tokenTag() ?>
 
     <table class="default" id="select_fach_abschluss">
@@ -98,7 +99,7 @@
 
         <? if (count($user->studycourses) !== 0 && $allow_change['sg']): ?>
         <tr>
-            <td colspan="5" style="padding: 0px; text-align: right;">
+            <td colspan="<?= $modulemanagement_enabled ? '5' : '4' ?>" style="padding: 0px; text-align: right;">
                 <footer>
                     <?= Button::create(_('Übernehmen'), 'store_in', ['title' => _('Änderungen übernehmen')]) ?>
                 </footer>
@@ -112,6 +113,7 @@
 
 <? if ($allow_change['sg']): ?>
 <form action="<?= $controller->url_for('settings/studies/store_sg') ?>" method="post" class="default">
+    <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
