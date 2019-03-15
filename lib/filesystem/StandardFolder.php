@@ -119,7 +119,7 @@ class StandardFolder implements FolderType
      * @param string $user_id
      * @return bool
      */
-    private function isVisibleNonRecursive($user_id)
+    protected function isVisibleNonRecursive($user_id)
     {
         $visible = false;
 
