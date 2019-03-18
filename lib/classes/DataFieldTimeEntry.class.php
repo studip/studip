@@ -13,40 +13,15 @@ class DataFieldTimeEntry extends DataFieldEntry
     protected $template = 'time.php';
 
     /**
-     * Returns the number of html fields this datafield uses for input.
-     *
-     * @return int representing the number of html fields
-     */
-    public function numberOfHTMLFields()
-    {
-        return 2;
-    }
-
-    /**
      * Sets the value from a post request
      *
      * @param mixed $submitted_value The value from request
      */
     public function setValueFromSubmit($value)
     {
-        if (is_array($value) && count($value) === 2) {
-            $value = implode(':', $value);
+        if ($value) {
             parent::setValueFromSubmit($value);
         }
-    }
-
-    /**
-     * Returns the according input elements as html for this datafield
-     *
-     * @param String $name      Name prefix of the associated input
-     * @param Array  $variables Additional variables
-     * @return String containing the required html
-     */
-    public function getHTML($name = '', $variables = array())
-    {
-        return parent::getHTML($name, $variables + [
-            'values' => explode(':', $this->value)
-        ]);
     }
 
     /**

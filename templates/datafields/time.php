@@ -10,12 +10,7 @@
 
 <div style="white-space: nowrap;">
     <input type="text" name="<?= $name ?>[<?= $model->id ?>][]"
-           value="<?= $values[0] ?>" title="<?= _('Stunden') ?>"
-           maxlength="2" class="size-s no-hint"
-           <? if ($model->is_required) echo 'required'; ?>>
-    :
-    <input type="text" name="<?= $name ?>[<?= $model->id ?>][]"
-           value="<?= $values[1] ?>" title="<?= _('Minuten') ?>"
-           maxlength="2" class="size-s no-hint"
+           value="<?= $value ?>" title="<?= _('Uhrzeit') ?>"
+           maxlength="2" class="size-s no-hint has-time-picker"
            <? if ($model->is_required) echo 'required'; ?>>
 </div>
