@@ -44,10 +44,17 @@
 
             <span class="action-icons" <? if(ForumPerm::has('edit_area', $seminar_id)) : ?> id="tutorAreaIcons"<? endif ?> <?= Request::get('edit_area') != $entry['topic_id'] ? '' : 'style="display: none;"' ?>>
                 <? if (ForumPerm::has('edit_area', $seminar_id)) : ?>
-                <a href="<?= PluginEngine::getLink('coreforum/index/?edit_area=' . $entry['topic_id']) ?>"
-                    onClick="STUDIP.Forum.editArea('<?= $entry['topic_id'] ?>');return false;">
-                    <?= Icon::create('edit', 'clickable', ['title' => 'Name/Beschreibung des Bereichs ändern'])->asImg(16, ["class" => 'edit-area']) ?>
-                </a>
+                    <? if ($issue_id = ForumIssue::getIssueIdForThread($entry['topic_id'])) : ?>
+                    <a href="<?= URLHelper::getURL('dispatch.php/course/topics/edit/' . $issue_id) ?>">
+                        <?= tooltipIcon(_('Dieser Bereich ist einem Thema zugeordnet und kann hier nicht editiert werden. '
+                                . 'Die Angaben können im Ablaufplan angepasst werden.'), true) ?>
+                    </a>
+                    <? else: ?>
+                    <a href="<?= PluginEngine::getLink('coreforum/index/?edit_area=' . $entry['topic_id']) ?>"
+                        onClick="STUDIP.Forum.editArea('<?= $entry['topic_id'] ?>');return false;">
+                        <?= Icon::create('edit', 'clickable', ['title' => 'Name/Beschreibung des Bereichs ändern'])->asImg(16, ["class" => 'edit-area']) ?>
+                    </a>
+                    <? endif ?>
                 <? endif ?>
 
                 <? if (ForumPerm::has('remove_area', $seminar_id)) : ?>

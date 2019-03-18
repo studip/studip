@@ -31,6 +31,23 @@ class ForumIssue
         return ($stmt->fetchColumn());
     }
 
+
+    /**
+     * Get the id of the issue linked to the topic denoted by the passed id.
+     * 
+     * @param string $topic_id
+     * @return string  the id of the linked topic
+     */
+    static function getIssueIdForThread($topic_id)
+    {
+        $stmt = DBManager::get()->prepare("SELECT issue_id FROM forum_entries_issues
+            WHERE topic_id = ?");
+        $stmt->execute(array($topic_id));
+        
+        return ($stmt->fetchColumn());
+    }
+
+
     /**
      * Create/Update the linked posting for the passed issue_id
      *

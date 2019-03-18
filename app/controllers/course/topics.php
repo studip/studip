@@ -111,6 +111,8 @@ class Course_TopicsController extends AuthenticatedController
 
         if (Request::isXhr()) {
             PageLayout::setTitle($topic_id ? sprintf(_('Bearbeiten: %s'), $this->topic['title']) : _("Neues Thema erstellen"));
+        } else {
+            Navigation::activateItem('/course/schedule/topics');
         }
     }
 
