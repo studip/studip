@@ -81,10 +81,11 @@
             <?= \Studip\Button::createAccept(_("Speichern")) ?>
 
             <? if (!$topic->isNew()) : ?>
-                <?= \Studip\LinkButton::create(_("Löschen"),
-                    $controller->url_for('course/topics/delete/' . $topic->getId()), [
-                        'onClick' => "return window.confirm('"._("Wirklich löschen?")."');"
-                    ]) ?>
+                <?= \Studip\LinkButton::create(
+                    _('Löschen'),
+                    $controller->url_for('course/topics/delete/' . $topic->getId()),
+                    ['data-confirm' => _('Wirklich löschen?')]
+                ) ?>
             <? endif ?>
         </div>
     </footer>

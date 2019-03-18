@@ -88,10 +88,11 @@
                                     'data-dialog' => ''
                                 ]) ?>
 
-                            <?= \Studip\LinkButton::create(_("Löschen"),
-                                $controller->url_for('course/topics/delete/' . $topic->getId()), [
-                                    'onClick' => "return window.confirm('"._("Wirklich löschen?")."');"
-                                ]) ?>
+                            <?= Studip\LinkButton::create(
+                                _('Löschen'),
+                                $controller->url_for('course/topics/delete/' . $topic->getId()),
+                                ['data-confirm' => _('Wirklich löschen?')]
+                            ) ?>
 
                             <? if (!$cancelled_dates_locked && $topic->dates->count()) : ?>
                                 <?= \Studip\LinkButton::create(_("Alle Termine ausfallen lassen"), URLHelper::getURL("dispatch.php/course/cancel_dates", array('issue_id' => $topic->getId())), array('data-dialog' => '')) ?>
