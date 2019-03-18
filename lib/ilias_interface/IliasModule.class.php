@@ -60,6 +60,7 @@ class IliasModule
             $this->allowed_operations = [];
         }
         $this->is_offline = $module_data['offline'];
+        $this->siblings_count = $module_data['ref_count'];
     }
 
     /**

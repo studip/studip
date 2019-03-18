@@ -11,7 +11,7 @@
         <? endif ?>
         <? if ($ilias->isActive() && !$mode) : ?>
             <? if ($edit_permission) : ?>
-                <?= Studip\LinkButton::create(_('Entfernen'), $controller->url_for($module->getRoute('remove') . '?ilias_search=' . $ilias_search)) ?>
+                <?= Studip\LinkButton::create(_('Entfernen'), $controller->url_for($module->getRoute('remove') . '?ilias_search=' . $ilias_search), ['data-confirm' => $module->siblings_count < 2 ? sprintf(_('Dies ist die einzige Instanz des Objekts "%s". Durch das Entfernen aus dem Kurs wird das Objekt unwiderruflich gelöscht! Wollen Sie das Objekt wirklich löschen?'), $module->getTitle()) : sprintf(_('Wollen Sie das Objekt "%s" jetzt entfernen?'), $module->getTitle())]) ?>
             <? endif ?>
             <?= $module->isAllowed('start') ? Studip\LinkButton::create(_('Starten'), $controller->url_for($module->getRoute('start')), ['target' => '_blank', 'rel' => 'noopener noreferrer']) :'' ?>
             <?= $module->isAllowed('edit') ? Studip\LinkButton::create(_('Bearbeiten'), $controller->url_for($module->getRoute('edit')), ['target' => '_blank', 'rel' => 'noopener noreferrer']) :'' ?>
