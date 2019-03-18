@@ -72,15 +72,16 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     $this->author_permission = true;
                 }
                 $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $ilias_index);
-                $this->course_objects[$ilias_index] = $this->ilias_list[$ilias_index]->getModule($crs_id);
-//var_dump($crs_object);
-                if (!$crs_id || !$this->course_objects[$ilias_index]->isAllowed('start')) {
-                    $missing_course = true;
-                } else {
-                    $this->courses[$ilias_index] = $crs_id;
+                if ($crs_id) {
                     $this->ilias_list[$ilias_index]->checkUserCoursePermissions($crs_id);
-                    $this->ilias_list[$ilias_index]->updateCourseConnections($crs_id);
-                    $module_count += count($this->ilias_list[$ilias_index]->getCourseModules());
+                    $this->course_objects[$ilias_index] = $this->ilias_list[$ilias_index]->getModule($crs_id);
+                    if ($this->course_objects[$ilias_index]->isAllowed('start')) {
+                        $this->courses[$ilias_index] = $crs_id;
+                        $this->ilias_list[$ilias_index]->updateCourseConnections($crs_id);
+                        $module_count += count($this->ilias_list[$ilias_index]->getCourseModules());
+                    }
+                } else {
+                    $missing_course = true;
                 }
             }
         }
