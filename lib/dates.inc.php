@@ -202,7 +202,7 @@ function shrink_dates($dates) {
 
         if ((!$dates[$i]["conjuncted"]) || (!$dates[$i+1]["conjuncted"])) {
             $return_string .= ' ' . strftime('%A', $dates[$i]['start_time']) .'.';
-            $return_string .= date (" d.m.", $dates[$i]["start_time"]);
+            $return_string .= date (" d.m.y", $dates[$i]["start_time"]);
         }
 
         if ((!$conjuncted) && ($dates[$i+1]["conjuncted"])) {
