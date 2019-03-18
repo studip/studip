@@ -124,13 +124,13 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 $widget->addLink(
                         _('Neuen ILIAS-Kurs anlegen'),
                         $this->url_for('course/ilias_interface/add_object/new_course'),
-                        Icon::create('course+add', 'clickable'),
+                        Icon::create('seminar+add', 'clickable'),
                         ['data-dialog' => 'size=auto;reload-on-close']
                         );
                 $widget->addLink(
                         _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
                         $this->url_for('course/ilias_interface/add_object/assign_course'),
-                        Icon::create('course+add', 'clickable'),
+                        Icon::create('seminar+add', 'clickable'),
                         ['data-dialog' => 'size=auto;reload-on-close']
                         );
             }
@@ -146,7 +146,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 $widget->addLink(
                         sprintf(_('Verknüpfung zu %s entfernen'), $this->ilias_list[$ilias_index]->getName()),
                         $this->url_for('course/ilias_interface/remove_course/'.$ilias_index.'/'.$crs_id),
-                        Icon::create('remove', 'clickable'),
+                        Icon::create('seminar+remove', 'clickable'),
                         ['data-confirm' => sprintf(_('Verknüpfung zum Kurs in %s entfernen? Hierdurch werden auch die Verknüpfungen zu allen Objekten innerhalb des Kurses entfernt.'), $this->ilias_list[$ilias_index]->getName())]
                         );
             }

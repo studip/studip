@@ -1,8 +1,6 @@
 <form method="post">
 <? foreach($ilias_list as $ilias_index => $ilias) : ?>
-    <? if ($anker_target == $ilias_index) : ?>
-        <a name='anker'></a>
-    <? endif?>
+    <? if (!$GLOBALS['perm']->have_perm($ilias->ilias_config['author_perm'])) continue; ?>
     <table class="default">
         <caption>
             <?= sprintf(_('Meine Lernobjekte in %s'), $ilias->getName()) ?>
