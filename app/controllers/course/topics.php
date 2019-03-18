@@ -22,49 +22,46 @@ class Course_TopicsController extends AuthenticatedController
             if ($topic['seminar_id'] && ($topic['seminar_id'] !== Context::getId())) {
                 throw new AccessDeniedException();
             }
-            if (Request::submitted("delete_topic")) {
-                $topic->delete();
-                PageLayout::postSuccess(_('Thema gelöscht.'));
-            } else {
-                $topic['title']         = Request::get("title");
-                $topic['description']   = Studip\Markup::purifyHtml(Request::get("description"));
-                $topic['paper_related'] = (bool) Request::int('paper_related');
-                if ($topic->isNew()) {
-                    $topic['seminar_id'] = Context::getId();
-                }
-                $topic->store();
 
-                //change dates for this topic
-                $former_date_ids = $topic->dates->pluck("termin_id");
-                $new_date_ids = array_keys(Request::getArray("date"));
-                foreach (array_diff($former_date_ids, $new_date_ids) as $delete_termin_id) {
-                    $topic->dates->unsetByPk($delete_termin_id);
-                }
-                foreach (array_diff($new_date_ids, $former_date_ids) as $add_termin_id) {
-                    $date = CourseDate::find($add_termin_id);
-                    if ($date) {
-                        $topic->dates[] = $date;
-                    }
-                }
-                $topic->store();
-
-                if (Request::get("folder")) {
-                    $topic->connectWithDocumentFolder();
-                }
-
-                // create a connection to the module forum (can be anything)
-                // will update title and description automagically
-                if (Request::get("forumthread")) {
-                    $topic->connectWithForumThread();
-                }
-
-                if (Request::option("issue_id") === "new") {
-                    Request::set("open", $topic->getId());
-                }
-                PageLayout::postMessage(MessageBox::success(_("Thema gespeichert.")));
-                $this->redirect("course/topics/index");
+            $topic['title']         = Request::get("title");
+            $topic['description']   = Studip\Markup::purifyHtml(Request::get("description"));
+            $topic['paper_related'] = (bool) Request::int('paper_related');
+            if ($topic->isNew()) {
+                $topic['seminar_id'] = Context::getId();
             }
+            $topic->store();
+
+            //change dates for this topic
+            $former_date_ids = $topic->dates->pluck("termin_id");
+            $new_date_ids = array_keys(Request::getArray("date"));
+            foreach (array_diff($former_date_ids, $new_date_ids) as $delete_termin_id) {
+                $topic->dates->unsetByPk($delete_termin_id);
+            }
+            foreach (array_diff($new_date_ids, $former_date_ids) as $add_termin_id) {
+                $date = CourseDate::find($add_termin_id);
+                if ($date) {
+                    $topic->dates[] = $date;
+                }
+            }
+            $topic->store();
+
+            if (Request::get("folder")) {
+                $topic->connectWithDocumentFolder();
+            }
+
+            // create a connection to the module forum (can be anything)
+            // will update title and description automagically
+            if (Request::get("forumthread")) {
+                $topic->connectWithForumThread();
+            }
+
+            if (Request::option("issue_id") === "new") {
+                Request::set("open", $topic->getId());
+            }
+            PageLayout::postMessage(MessageBox::success(_("Thema gespeichert.")));
+            $this->redirect("course/topics/index");
         }
+
         if (Request::isPost() && Request::option("move_down")) {
             $topics = CourseTopic::findBySeminar_id(Context::getId());
             $mainkey = null;
@@ -99,6 +96,24 @@ class Course_TopicsController extends AuthenticatedController
         Navigation::activateItem('/course/schedule/topics');
         $this->topics = CourseTopic::findBySeminar_id(Context::getId());
         $this->cancelled_dates_locked = LockRules::Check(Context::getId(), 'cancelled_dates');
+    }
+
+    public function delete_action($topic_id)
+    {
+        if (!$GLOBALS['perm']->have_studip_perm("tutor", Context::getId())) {
+            throw new AccessDeniedException();
+        }
+
+        $topic = new CourseTopic($topic_id);
+
+        if ($topic['seminar_id'] && ($topic['seminar_id'] !== Context::getId())) {
+            throw new AccessDeniedException();
+        }
+
+        $topic->delete();
+        PageLayout::postSuccess(_('Thema gelöscht.'));
+
+        $this->redirect('course/topics');
     }
 
     public function edit_action($topic_id = null)

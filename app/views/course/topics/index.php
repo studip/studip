@@ -84,8 +84,14 @@
                     <div style="text-align: center;">
                         <? if ($GLOBALS['perm']->have_studip_perm("tutor", Context::getId())) : ?>
                             <?= \Studip\LinkButton::createEdit(_('Bearbeiten'),
-                                                               URLHelper::getURL("dispatch.php/course/topics/edit/".$topic->getId()),
-                                                               array('data-dialog' => '')) ?>
+                                $controller->url_for('course/topics/edit/' . $topic->getId()), [
+                                    'data-dialog' => ''
+                                ]) ?>
+
+                            <?= \Studip\LinkButton::create(_("Löschen"),
+                                $controller->url_for('course/topics/delete/' . $topic->getId()), [
+                                    'onClick' => "return window.confirm('"._("Wirklich löschen?")."');"
+                                ]) ?>
 
                             <? if (!$cancelled_dates_locked && $topic->dates->count()) : ?>
                                 <?= \Studip\LinkButton::create(_("Alle Termine ausfallen lassen"), URLHelper::getURL("dispatch.php/course/cancel_dates", array('issue_id' => $topic->getId())), array('data-dialog' => '')) ?>
