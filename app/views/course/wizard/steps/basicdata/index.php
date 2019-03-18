@@ -22,7 +22,8 @@
         <?= _('Semester') ?>
     </label>
     <select name="start_time" id="wizard-start-time" >
-        <?php foreach ($semesters as $semester) { ?>
+        <?php foreach (array_reverse($semesters) as $semester) { ?>
+            <? ($values['start_time'] < mktime()) ? (($semester->beginn <= mktime() && mktime() <= $semester->ende) ? $values['start_time'] = $semester->beginn : '' ): '' ?>
             <option value="<?= $semester->beginn ?>"<?= $semester->beginn == $values['start_time'] ? ' selected="selected"' : '' ?>>
                 <?= htmlReady($semester->name) ?>
             </option>
