@@ -35,20 +35,20 @@
             <?= _('Anzeige von') ?>
             <input class="has-date-picker" type="text" name="news_startdate"
                    aria-label="<?= _('Ankündigungen anzeigen, die ab diesem Datum sichtbar sind') ?>"
-                   value="<? if ($news_startdate) echo date('d.m.Y', $news_startdate); ?>">
+                   value="<?= $news_startdate ? date('d.m.Y', $news_startdate) : '' ?>">
         </label>
 
         <label class="col-1">
             <?= _('Anzeige bis') ?>
             <input class="has-date-picker" type="text" name="news_enddate"
                    aria-label="<?= _('Ankündigungen anzeigen, die vor diesem Datum sichtbar sind') ?>"
-                   value="<? if ($news_enddate) echo date('d.m.Y', $news_enddate); ?>">
+                   value="<?= $news_enddate ? date('d.m.Y', $news_enddate) : '' ?>">
         </label>
     </fieldset>
     <footer>
         <?= Button::create(_('Filter anwenden'), 'apply_news_filter', ['aria-label' => _('Liste mit Suchbegriff und/oder Zeitraum filtern')]) ?>
     <? if ($filter_text) : ?>
-        <?= Button::create(_('Auswahl aufheben'), 'reset_filter') ?>
+        <?= Button::create(_('Filter zurücksetzen'), 'reset_filter') ?>
     <? endif ?>
     </footer>
     <br>

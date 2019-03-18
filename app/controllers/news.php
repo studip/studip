@@ -475,8 +475,8 @@ class NewsController extends StudipController
         if (Request::submitted('reset_filter')) {
             $area_type = 'all';
             $this->news_searchterm = '';
-            $this->news_startdate = '';
-            $this->news_enddate = '';
+            $this->news_startdate  = time();
+            $this->news_enddate    = time();
         }
 
         // delete news
@@ -504,8 +504,9 @@ class NewsController extends StudipController
             if (mb_strlen(trim(Request::get('news_searchterm'))) >= 3) {
                 $this->news_searchterm = Request::get('news_searchterm');
             }
+
             $this->news_startdate = $this->getTimeStamp(Request::get('news_startdate'), 'start');
-            $this->news_enddate = $this->getTimeStamp(Request::get('news_enddate'), 'end');
+            $this->news_enddate   = $this->getTimeStamp(Request::get('news_enddate'), 'end') ?: time();
         }
         // fetch news list
         $this->news_items = StudipNews::getNewsRangesByFilter($GLOBALS['user']->id, $this->area_type, $this->news_searchterm, $this->news_startdate, $this->news_enddate, true, $limit+1);
