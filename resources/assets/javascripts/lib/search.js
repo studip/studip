@@ -194,15 +194,17 @@ const Search = {
         if (hasSubcourses) {
             // initially show the 'add' icon
             $(`<a href="#" id="show-subcourses-${result.id}" class="search-has-subcourses">`)
-                .click(function() {
+                .click(function(e) {
                     STUDIP.Search.showSubcourses(result.id);
+                    e.preventDefault();
                 })
                 .html(addIcon)
                 .appendTo(data);
             // initially hide the 'remove' icon
             $(`<a href="#" id="hide-subcourses-${result.id}" class="search-has-subcourses">`)
-                .click(function() {
+                .click(function(e) {
                     STUDIP.Search.hideSubcourses(result.id);
+                    e.preventDefault();
                 })
                 .html(removeIcon)
                 .appendTo(data)
