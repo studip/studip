@@ -24,12 +24,13 @@ const Search = {
      */
     doSearch: function (filter) {
 
-        var cache           = STUDIP.Search.getCache();
-        var searchterm      = $('#search-input').val().trim() || cache.get('searchterm');
-        var hasValue        = searchterm && searchterm.length >= 3;
-        var resultsDiv      = $('#search-results');
-        var limit           = 100;
-        var wrapper         = $('#search');
+        var cache        = STUDIP.Search.getCache();
+        var searchterm   = $('#search-input').val().trim() || cache.get('searchterm');
+        var hasValue     = searchterm && searchterm.length >= 3;
+        var resultsDiv   = $('#search-results');
+        var wrapper      = $('#search');
+        const data       = resultsDiv.data();
+        const limit      = 100;
 
         if (searchterm === '') {
             return;
@@ -79,8 +80,8 @@ const Search = {
 
             // Iterate over each result category.
             $.each(json, function (name, value) {
-                var category = STUDIP.Search.printCategory(name, value, resultsDiv);
-                category.appendTo(resultsDiv);
+                var category = STUDIP.Search.printCategory(name, value, data);
+                resultsDiv.append(category);
             });
 
             if (STUDIP.Search.getActiveCategory()
@@ -101,9 +102,9 @@ const Search = {
         });
     },
 
-    printCategory: function (name, value, resultsDiv) {
+    printCategory: function (name, value, data) {
         // Create an <article> for category.
-        var allResultsText  = resultsDiv.data('all-results');
+        var allResultsText  = data.allResults;
         var category = $(`<article id="search-${name}" class="studip padding-less">`);
         var header = $('<header>').appendTo(category);
         var categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category);
@@ -128,7 +129,7 @@ const Search = {
 
         // Process results and create corresponding entries.
         $.each(value.content, function (index, result) {
-            STUDIP.Search.printSingleResult(name, resultsDiv, result, counter, value.fullsearch, categoryBodyDiv);
+            STUDIP.Search.printSingleResult(name, data, result, counter, value.fullsearch, categoryBodyDiv);
             counter += 1;
         });
 
@@ -162,11 +163,11 @@ const Search = {
         return category;
     },
 
-    printSingleResult: function(categoryName, resultsDiv, result, counter, fullsearch, categoryBodyDiv) {
-        var resultsPerType  = resultsDiv.data('results-per-type');
+    printSingleResult: function(categoryName, data, result, counter, fullsearch, categoryBodyDiv) {
+        var resultsPerType  = data.resultsPerType;
         var hasSubcourses   = (categoryName === 'GlobalSearchMyCourses' || categoryName === 'GlobalSearchCourses') && result.has_children;
-        var addIcon         = resultsDiv.data('img-add');
-        var removeIcon      = resultsDiv.data('img-remove');
+        var addIcon         = data.imgAdd;
+        var removeIcon      = data.imgRemove;
         // Create single result entry.
         var single          = $('<section>');
         var data            = $('<div class="search-result-data">');
@@ -260,11 +261,11 @@ const Search = {
 
         if (hasSubcourses) {
             $.each(result.children,  function(key, child) {
-                var subcourse = STUDIP.Search.printSingleResult(name, resultsDiv, child, counter, fullsearch, categoryBodyDiv);
+                var subcourse = STUDIP.Search.printSingleResult(name, data, child, counter, fullsearch, categoryBodyDiv);
                 subcourse.addClass('search-is-subcourse');
                 subcourse.addClass(`search-subcourse-${result.id}`);
                 subcourse.hide();
-            }); 
+            });
         }
 
         return single;
@@ -292,9 +293,7 @@ const Search = {
      * Show all possible categories in the sidebar without result numbers.
      */
     resetSearchCategories: function () {
-        $('a').filter(function () {
-            return  this.id.match(/search_category_*/);
-        }).each(function () {
+        $('a[id^="search_category_"]').each(function () {
             var category = $(this).text();
             if (category.includes('(')) {
                 category = category.substr(0, category.indexOf('(') - 1);
@@ -307,18 +306,14 @@ const Search = {
      * Grey out all categories in the sidebar with no results.
      */
     greyOutSearchCategories: function () {
-        $('a').filter(function () {
-            return  this.id.match(/search_category_*/);
-        }).addClass('no-result');
+        $('a[id^="search_category_"]').addClass('no-result');
     },
 
     /**
      * Hide all select filters in the sidebar.
      */
     hideAllFilters: function () {
-        $('div').filter(function () {
-            return  this.id.match(/.*_filter/);
-        }).hide();
+        $('div[id$="_filter"]').hide();
     },
 
     /**
@@ -350,9 +345,7 @@ const Search = {
         cache.set('search_category', category);
         // remove all active classes
         $('#show_all_categories').closest('li').removeClass('active');
-        $('a').filter(function () {
-            return  this.id.match(/search_category_*/);
-        }).closest('li').removeClass('active');
+        $('a[id^="search_category_"]').closest('li').removeClass('active');
 
         // set clicked class active
         if (category === 'show_all_categories') {
@@ -375,9 +368,7 @@ const Search = {
         var category = STUDIP.Search.getActiveCategory();
         var filter = {category: category};
         var active_filters = filters[category];
-        $('select').filter(function () {
-            return this.id.match(/.*_select/);
-        }).each(function () {
+        $('select[id$="_select"]').each(function () {
             var selected = this.id.substr(0, this.id.lastIndexOf('_'));
             if ($.inArray(selected, active_filters) !== -1) {
                 filter[selected] = $('option:selected', this).val();
@@ -400,9 +391,7 @@ const Search = {
      * Reset all sidebar filters to their default value ('all').
      */
     resetFilters: function () {
-        $('select').filter(function () {
-            return this.id.match(/.*_select/);
-        }).val('').change();
+        $('select[id$="_select"]').val('').change();
     },
 
     /**
@@ -422,36 +411,27 @@ const Search = {
      * @param {string} category Category for which the link text should be toggled
      */
     toggleLinkText: function (category) {
-        if ($(`a#link_all_results_${category}`).is(':visible')) {
-            $(`a#link_all_results_${category}`).hide();
-            $(`a#link_results_${category}`).show();
-            $(`div#show-all-categories-${category}`).show();
-        } else {
-            $(`a#link_all_results_${category}`).show();
-            $(`a#link_results_${category}`).hide();
-            $(`div#show-all-categories-${category}`).hide();
-        }
+        var visible = $(`a#link_all_results_${category}`).is(':visible');
+        $(`a#link_all_results_${category}`).toggle(!visible);
+        $(`a#link_results_${category}`).toggle(visible);
+        $(`div#show-all-categories-${category}`).toggle(visible);
     },
 
     /**
      * When clicked on toggle the icon ('+' -> '-' and vice versa)
      * belonging to a parent course which has sub courses.
-     * 
+     *
      * @param {string} id parent course ID with add/remove Icon
      */
     toggleParentCourseIcon: function (id) {
-        if ($(`a#show-subcourses-${id}`).is(':visible')) {
-            $(`a#show-subcourses-${id}`).hide();
-            $(`a#hide-subcourses-${id}`).show();
-        } else {
-            $(`a#hide-subcourses-${id}`).hide();
-            $(`a#show-subcourses-${id}`).show();
-        }
+        var visible = $(`a#show-subcourses-${id}`).is(':visible');
+        $(`a#show-subcourses-${id}`).toggle(!visible);
+        $(`a#hide-subcourses-${id}`).toggle(visible);
     },
 
     /**
      * Shows all sub courses for a specific parent course.
-     * 
+     *
      * @param {string} id parent course ID with sub courses
      */
     showSubcourses: function (id) {
@@ -461,7 +441,7 @@ const Search = {
 
     /**
      * Hides all sub courses for a specific parent course.
-     * 
+     *
      * @param {string} id parent course ID with sub courses
      */
     hideSubcourses: function (id) {

@@ -159,7 +159,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             'url'           => URLHelper::getURL('dispatch.php/course/details/index/' . $course->id),
             'date'          => $semester->token ?: $semester->name,
             'dates'         => $turnus_string,
-            'has_children'  => (count($course->children) > 0 ? true : false),
+            'has_children'  => count($course->children) > 0,
             'children'      => $result_children,
             'additional'    => implode(', ',
                 array_filter(
