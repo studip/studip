@@ -106,8 +106,9 @@ class GlobalSearchController extends AuthenticatedController
         GlobalSearchModule::clearCache();
 
         // Sort
-        uksort($result, function($a, $b) use ($modules) {
-            return $modules[$a]['order'] - $modules[$b]['order'];
+        $positions = array_flip($modules);
+        uksort($result, function($a, $b) use ($positions) {
+            return $positions[$a] - $positions[$b];
         });
 
         // Send me an answer
