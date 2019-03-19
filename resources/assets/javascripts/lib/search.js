@@ -27,10 +27,7 @@ const Search = {
         var cache           = STUDIP.Search.getCache();
         var searchterm      = $('#search-input').val().trim() || cache.get('searchterm');
         var hasValue        = searchterm && searchterm.length >= 3;
-        var resultChunks    = $();
         var resultsDiv      = $('#search-results');
-        var resultsPerType  = resultsDiv.data('results-per-type');
-        var allResultsText  = resultsDiv.data('all-results');
         var limit           = 100;
         var wrapper         = $('#search');
 
@@ -82,136 +79,9 @@ const Search = {
 
             // Iterate over each result category.
             $.each(json, function (name, value) {
-                // Create an <article> for category.
-                var category = $(`<article id="search-${name}" class="studip padding-less">`);
-                var header = $('<header>').appendTo(category);
-                var categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category);
-                var counter = 0;
-                var isActive = STUDIP.Search.getActiveCategory() === name;
-
-                if (isActive) {
-                    STUDIP.Search.resultsInCategory = true;
-                }
-
-                // Create header name
-                $(`<h1 class="search-category" data-category="${name}">`)
-                    .append(`<a href="#">${value.name}</a>`)
-                    .appendTo(header);
-
-                if (value.more) {
-                    $(`<div id="show-all-categories-${name}" class="search-more-results">`)
-                        .append(`<a href="#">${allResultsText}</a>`)
-                        .toggle(isActive)
-                        .appendTo(header);
-                }
-
-                // Process results and create corresponding entries.
-                $.each(value.content, function (index, result) {
-                    // Create single result entry.
-                    var single      = $('<section>'),
-                        data        = $('<div class="search-result-data">'),
-                        details     = $('<div class="search-result-details">'),
-                        information = $('<div class="search-result-information">');
-
-                    if (counter >= resultsPerType) {
-                        single.addClass('search-extended-result');
-                    }
-                    var dataDialog = (name === 'GlobalSearchFiles' ? dataDialog = 'data-dialog' : dataDialog = '');
-                    var link = $(`<a href="${result.url}" ${dataDialog}>`)
-                        .appendTo(single);
-
-                    // Optional image...
-                    if (result.img !== null) {
-                        $('<div class="search-result-img hidden-tiny-down">')
-                            .append(`<img src="${result.img}">`)
-                            .appendTo(link);
-                    }
-
-                    link.append(data);
-
-                    // Name/title
-                    $('<div class="search-result-title">')
-                        .html(result.name)
-                        .appendTo(data);
-
-                    if (result.number !== null) {
-                        $('<div class="search-result-number">')
-                            .html(result.number)
-                            .appendTo(details);
-                    }
-
-                    // Details: Descriptional text
-                    if (result.description !== null) {
-                        $('<div class="search-result-description">')
-                            .html(result.description)
-                            .appendTo(details);
-                    }
-
-                    if (result.dates !== null) {
-                        $('<div class="search-result-dates">')
-                            .html(result.dates)
-                            .appendTo(details);
-                    }
-
-                    data.append(details);
-
-                    // Date/Time of entry
-                    if (result.date !== null) {
-                        $('<div class="search-result-time">')
-                            .html(result.date)
-                            .appendTo(information);
-                    }
-
-                    // Details: Additional information
-                    var additional = $('<div class="search-result-additional">');
-                    if (result.additional !== null) {
-                        additional.html(result.additional);
-
-                        // "Expand" attribute for further, result-related search
-                        // (e.g. search in course of found forum entry)
-                        if (result.expand !== null && result.expand !== value.fullsearch) {
-                            additional.wrapInner(`<a href="${result.expand}" title="${result.expandtext}">`);
-                        }
-                        additional.appendTo(information);
-                    }
-
-                    link.append(information);
-
-                    categoryBodyDiv.append(single);
-
-                    counter += 1;
-                });
-                $(`a#search_category_${name}`)
-                    .removeClass('no-result')
-                    .text(`${value.name}  (${counter}${value.plus ? '+' : ''})`);
-
-                // We have more search results than shown, provide link to
-                // full search if available.
-                if (value.more) {
-                    var footer = $('<footer class="search-more-results">');
-                    $(`<a id="link_all_results_${name}" href="#">`).text(`alle ${counter} ${value.name} anzeigen`)
-                        .click(function() {
-                            STUDIP.Search.toggleLinkText(name);
-                            STUDIP.Search.expandCategory(name);
-                            STUDIP.Search.setActiveCategory(name);
-                        })
-                        .toggle(!isActive)
-                        .appendTo(footer);
-                    $(`<a id="link_results_${name}" href="#">`).text(allResultsText).hide()
-                        .click(function() {
-                            STUDIP.Search.toggleLinkText(name);
-                            STUDIP.Search.showAllCategories(name);
-                            STUDIP.Search.setActiveCategory(name);
-                        })
-                        .toggle(isActive)
-                        .appendTo(footer);
-                    footer.appendTo(category);
-                }
-
-                resultChunks = resultChunks.add(category);
+                var category = STUDIP.Search.printCategory(name, value, resultsDiv);
+                category.appendTo(resultsDiv);
             });
-
-            resultsDiv.html(resultChunks);
 
             if (STUDIP.Search.getActiveCategory()
                 && STUDIP.Search.getActiveCategory() !== 'show_all_categories')
@@ -229,6 +99,175 @@ const Search = {
                 window.alert(error);
             }
         });
+    },
+
+    printCategory: function (name, value, resultsDiv) {
+        // Create an <article> for category.
+        var allResultsText  = resultsDiv.data('all-results');
+        var category = $(`<article id="search-${name}" class="studip padding-less">`);
+        var header = $('<header>').appendTo(category);
+        var categoryBodyDiv = $(`<div id="${name}-body">`).appendTo(category);
+        var counter = 0;
+        var isActive = STUDIP.Search.getActiveCategory() === name;
+
+        if (isActive) {
+            STUDIP.Search.resultsInCategory = true;
+        }
+
+        // Create header name
+        $(`<h1 class="search-category" data-category="${name}">`)
+            .append(`<a href="#">${value.name}</a>`)
+            .appendTo(header);
+
+        if (value.more) {
+            $(`<div id="show-all-categories-${name}" class="search-more-results">`)
+                .append(`<a href="#">${allResultsText}</a>`)
+                .toggle(isActive)
+                .appendTo(header);
+        }
+
+        // Process results and create corresponding entries.
+        $.each(value.content, function (index, result) {
+            STUDIP.Search.printSingleResult(name, resultsDiv, result, counter, value.fullsearch, categoryBodyDiv);
+            counter += 1;
+        });
+
+        $(`a#search_category_${name}`)
+            .removeClass('no-result')
+            .text(`${value.name}  (${counter}${value.plus ? '+' : ''})`);
+
+        // We have more search results than shown, provide link to
+        // full search if available.
+        if (value.more) {
+            var footer = $('<footer class="search-more-results">');
+            $(`<a id="link_all_results_${name}" href="#">`).text(`alle ${counter} ${value.name} anzeigen`)
+                .click(function() {
+                    STUDIP.Search.toggleLinkText(name);
+                    STUDIP.Search.expandCategory(name);
+                    STUDIP.Search.setActiveCategory(name);
+                })
+                .toggle(!isActive)
+                .appendTo(footer);
+            $(`<a id="link_results_${name}" href="#">`).text(allResultsText).hide()
+                .click(function() {
+                    STUDIP.Search.toggleLinkText(name);
+                    STUDIP.Search.showAllCategories(name);
+                    STUDIP.Search.setActiveCategory(name);
+                })
+                .toggle(isActive)
+                .appendTo(footer);
+            footer.appendTo(category);
+        }
+
+        return category;
+    },
+
+    printSingleResult: function(categoryName, resultsDiv, result, counter, fullsearch, categoryBodyDiv) {
+        var resultsPerType  = resultsDiv.data('results-per-type');
+        var hasSubcourses   = (categoryName === 'GlobalSearchMyCourses' || categoryName === 'GlobalSearchCourses') && result.has_children;
+        var addIcon         = resultsDiv.data('img-add');
+        var removeIcon      = resultsDiv.data('img-remove');
+        // Create single result entry.
+        var single          = $('<section>');
+        var data            = $('<div class="search-result-data">');
+        var details         = $('<div class="search-result-details">');
+        var information     = $('<div class="search-result-information">');
+
+        if (counter >= resultsPerType) {
+            single.addClass('search-extended-result');
+        }
+        var dataDialog = (categoryName === 'GlobalSearchFiles' ? dataDialog = 'data-dialog' : dataDialog = '');
+        var link = $(`<a href="${result.url}" ${dataDialog}>`)
+            .appendTo(single);
+
+        // Optional image...
+        if (result.img !== null) {
+            $('<div class="search-result-img hidden-tiny-down">')
+                .append(`<img src="${result.img}">`)
+                .appendTo(link);
+        }
+
+        link.append(data);
+
+        // add/remove icon for courses with sub courses
+        if (hasSubcourses) {
+            // initially show the 'add' icon
+            $(`<a href="#" id="show-subcourses-${result.id}" class="search-has-subcourses">`)
+                .click(function() {
+                    STUDIP.Search.showSubcourses(result.id);
+                })
+                .html(addIcon)
+                .appendTo(data);
+            // initially hide the 'remove' icon
+            $(`<a href="#" id="hide-subcourses-${result.id}" class="search-has-subcourses">`)
+                .click(function() {
+                    STUDIP.Search.hideSubcourses(result.id);
+                })
+                .html(removeIcon)
+                .appendTo(data)
+                .hide();
+        }
+
+        // Name/title
+        $('<div class="search-result-title">')
+            .html(result.name)
+            .appendTo(data);
+
+        if (result.number !== null) {
+            $('<div class="search-result-number">')
+                .html(result.number)
+                .appendTo(details);
+        }
+
+        // Details: Descriptional text
+        if (result.description !== null) {
+            $('<div class="search-result-description">')
+                .html(result.description)
+                .appendTo(details);
+        }
+
+        if (result.dates !== null) {
+            $('<div class="search-result-dates">')
+                .html(result.dates)
+                .appendTo(details);
+        }
+
+        data.append(details);
+
+        // Date/Time of entry
+        if (result.date !== null) {
+            $('<div class="search-result-time">')
+                .html(result.date)
+                .appendTo(information);
+        }
+
+        // Details: Additional information
+        var additional = $('<div class="search-result-additional">');
+        if (result.additional !== null) {
+            additional.html(result.additional);
+
+            // "Expand" attribute for further, result-related search
+            // (e.g. search in course of found forum entry)
+            if (result.expand !== null && result.expand !== fullsearch) {
+                additional.wrapInner(`<a href="${result.expand}" title="${result.expandtext}">`);
+            }
+            additional.appendTo(information);
+        }
+
+        link.append(information);
+
+        categoryBodyDiv.append(single);
+
+        if (hasSubcourses) {
+            $.each(result.children,  function(key, child) {
+                var subcourse = STUDIP.Search.printSingleResult(name, resultsDiv, child, counter, fullsearch, categoryBodyDiv);
+                subcourse.addClass('search-is-subcourse');
+                subcourse.addClass(`search-subcourse-${result.id}`);
+                subcourse.hide();
+            }); 
+        }
+
+        return single;
     },
 
     /**
@@ -357,6 +396,9 @@ const Search = {
         $(`#${filter}_select`).val(value);
     },
 
+    /**
+     * Reset all sidebar filters to their default value ('all').
+     */
     resetFilters: function () {
         $('select').filter(function () {
             return this.id.match(/.*_select/);
@@ -389,6 +431,42 @@ const Search = {
             $(`a#link_results_${category}`).hide();
             $(`div#show-all-categories-${category}`).hide();
         }
+    },
+
+    /**
+     * When clicked on toggle the icon ('+' -> '-' and vice versa)
+     * belonging to a parent course which has sub courses.
+     * 
+     * @param {string} id parent course ID with add/remove Icon
+     */
+    toggleParentCourseIcon: function (id) {
+        if ($(`a#show-subcourses-${id}`).is(':visible')) {
+            $(`a#show-subcourses-${id}`).hide();
+            $(`a#hide-subcourses-${id}`).show();
+        } else {
+            $(`a#hide-subcourses-${id}`).hide();
+            $(`a#show-subcourses-${id}`).show();
+        }
+    },
+
+    /**
+     * Shows all sub courses for a specific parent course.
+     * 
+     * @param {string} id parent course ID with sub courses
+     */
+    showSubcourses: function (id) {
+        STUDIP.Search.toggleParentCourseIcon(id);
+        $(`section.search-subcourse-${id}`).show();
+    },
+
+    /**
+     * Hides all sub courses for a specific parent course.
+     * 
+     * @param {string} id parent course ID with sub courses
+     */
+    hideSubcourses: function (id) {
+        STUDIP.Search.toggleParentCourseIcon(id);
+        $(`section.search-subcourse-${id}`).hide();
     },
 
     /**

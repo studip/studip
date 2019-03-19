@@ -26,6 +26,8 @@
         data-all-results="<?= _('Filter aufheben') ?>"
         data-searchterm="<?= htmlReady(Request::get('q')) ?>"
         data-category="<?= htmlReady(Request::get('category')) ?>"
+        data-img-add="<?= htmlReady(Icon::create('add')->asImg(['title' => _('Unterveranstaltungen anzeigen')])) ?>"
+        data-img-remove="<?= htmlReady(Icon::create('remove')->asImg(['title' => _('Unterveranstaltungen ausblenden')])) ?>"
         data-results-per-type="<?= Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE ?>"
         data-filters="<?= htmlReady(json_encode($filters)) ?>">
     </div>

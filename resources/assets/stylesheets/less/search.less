@@ -82,6 +82,10 @@ label.inactive-settings-category {
                 padding: 8px;
                 transition: background-color @transition-duration;
 
+                &.search-is-subcourse {
+                    padding-left: 30px;
+                }
+
                 &:not(:first-child) {
                     border-top: 1px solid @content-color-40;
                 }
@@ -117,6 +121,11 @@ label.inactive-settings-category {
                     flex: 1;
                     overflow: hidden;
                     margin-right: 6px;
+
+                    .search-has-subcourses {
+                        float: left;
+                        padding-right: 5px;
+                    }
 
                     .search-result-title {
                         font-size: @font-size-base;

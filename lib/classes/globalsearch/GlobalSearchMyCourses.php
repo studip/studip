@@ -115,14 +115,28 @@ class GlobalSearchMyCourses extends GlobalSearchModule
         $lecturers = $course->getMembersWithStatus('dozent');
         $semester = $course->start_semester;
 
+        // If you are not root, perhaps not all available subcourses are visible.
+        $visibleChildren = $course->children;
+        if (!$GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)) {
+            $visibleChildren = $visibleChildren->filter(function($c) {
+                return $c->visible;
+            });
+        }
+        $result_children = [];
+        foreach($visibleChildren as $child) {
+            $result_children[] = self::filter($child, $search);
+        }
+
         $result = [
-            'id'         => $course->id,
-            'number'     => self::mark($course->veranstaltungsnummer, $search),
-            'name'       => self::mark($course->getFullname(), $search),
-            'url'        => URLHelper::getURL('dispatch.php/course/details/index/' . $course->id),
-            'date'       => $semester->token ?: $semester->name,
-            'dates'      => $turnus_string,
-            'additional' => implode(', ',
+            'id'            => $course->id,
+            'number'        => self::mark($course->veranstaltungsnummer, $search),
+            'name'          => self::mark($course->getFullname(), $search),
+            'url'           => URLHelper::getURL('dispatch.php/course/details/index/' . $course->id),
+            'date'          => $semester->token ?: $semester->name,
+            'dates'         => $turnus_string,
+            'has_children'  => (count($course->children) > 0 ? true : false),
+            'children'      => $result_children,
+            'additional'    => implode(', ',
                 array_filter(
                     array_map(
                         function ($lecturer, $index) use ($search, $course) {
