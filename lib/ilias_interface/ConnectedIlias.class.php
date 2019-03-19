@@ -684,6 +684,9 @@ class ConnectedIlias
     {
         $object_data = $this->soap_client->getObjectByReference($module_id, $this->user->getId());
         $module = new IliasModule($module_id, $object_data, $this->index, $this->ilias_int_version);
+        if (!$module->isAllowed('start')) {
+            return false;
+        }
 
         $crs_id = IliasObjectConnections::getConnectionModuleId($studip_course_id, "crs", $this->index);
         $this->soap_client->setCachingStatus(false);
@@ -707,7 +710,7 @@ class ConnectedIlias
             // TODO: CHECK IF COPY/ADD IS ALLOWED
             $ref_id = $this->soap_client->copyObject($module_id, $crs_id);
         } elseif ($connection_mode == 'reference') {
-            $ref_id = $connected_cms[$this->cms_type]->soap_client->addReference($module_id, $crs_id);
+            $ref_id = $this->soap_client->addReference($module_id, $crs_id);
         }
         if (! $ref_id) {
             $this->error[] = _("Zuordnungs-Fehler: Lernobjekt konnte nicht angelegt werden.");

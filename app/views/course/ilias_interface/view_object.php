@@ -7,7 +7,7 @@
     <footer data-dialog-button>
         <? if ($ilias->isActive() && $mode && $edit_permission) : ?>
             <?= Studip\LinkButton::create(_('Zurück'), $controller->url_for('course/ilias_interface/add_object/'.$mode.'/'.$ilias_index.'?ilias_search=' . $ilias_search), $dialog ? ['data-dialog' => 'size=auto'] : []) ?>
-            <?= Studip\LinkButton::create(_('Hinzufügen'), $controller->url_for($module->getRoute('add') .'?ilias_search=' . $ilias_search)) ?>
+            <?= Studip\LinkButton::create(_('Hinzufügen'), $controller->url_for($module->getRoute('add') .'?ilias_search=' . $ilias_search), $dialog ? ['data-dialog' => ''] : []) ?>
         <? endif ?>
         <? if ($ilias->isActive() && !$mode) : ?>
             <? if ($edit_permission) : ?>

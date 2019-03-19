@@ -200,20 +200,25 @@ class Course_IliasInterfaceController extends AuthenticatedController
             throw new AccessDeniedException(_('Keine Berechtigung zum Bearbeiten der Lernobjekt-Zuordnungen.'));
 
         $this->ilias = new ConnectedIlias($index);
-
+        $this->module_id = Request::int('ilias_module_id');
+        $this->ilias_index = $index;
+        $module = $this->ilias->getModule(Request::int('ilias_module_id'));
         if (Request::submitted('remove_module')) {
-            $module = $this->ilias->getModule(Request::int('ilias_module_id'));
             if ($this->ilias->unsetCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType())) {
                 PageLayout::postInfo(_('Die Zuordnung wurde entfernt.'));
             }
-        } elseif (Request::submitted('add_module')) {
-            $module = $this->ilias->getModule(Request::int('ilias_module_id'));
+        } elseif (Request::get('ilias_add_mode') == 'copy') {
             if ($this->ilias->setCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType(), 'copy', '')) {
                 PageLayout::postInfo(_('Die Zuordnung wurde gespeichert.'));
             }
+        } elseif (Request::get('ilias_add_mode') == 'reference') {
+            if ($this->ilias->setCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType(), 'reference', '')) {
+                PageLayout::postInfo(_('Die Zuordnung wurde gespeichert.'));
+            }
         }
-
-        $this->redirect($this->url_for('course/ilias_interface'));
+        if (!Request::submitted('add_module')) {
+            $this->redirect($this->url_for('course/ilias_interface'));
+        }
     }
 
     /**

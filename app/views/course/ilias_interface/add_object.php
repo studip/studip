@@ -79,7 +79,8 @@
                             _('Hinzufügen'),
                             Icon::create('add', Icon::ROLE_CLICKABLE, [
                                 'title'        => _('Hinzufügen'),
-                                'formaction'   => $controller->url_for($module->getRoute('add'))
+                                'formaction'   => $controller->url_for($module->getRoute('add')),
+                                'data-dialog'  => ''
                             ])
                     ) ?>
                     <?= $actionMenu->render() ?>
