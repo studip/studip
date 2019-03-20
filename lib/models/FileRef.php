@@ -174,7 +174,7 @@ class FileRef extends SimpleORMap implements PrivacyObject
     public function getAuthorName()
     {
         if (isset($this->owner)) {
-            return $this->owner->nachname . ", " .$this->owner->vorname;
+            return $this->owner->nachname . ", " . $this->owner->vorname;
         }
         return $this->file->author_name;
     }
