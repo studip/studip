@@ -313,6 +313,7 @@ class ConnectedIlias
      */
     public function newUser()
     {
+        if (!$this->user->studip_login) return false;
         $user_data = $this->user->getUserArray();
         $user_data["login"] = $this->ilias_config['user_prefix'].$user_data["login"];
 
@@ -403,6 +404,7 @@ class ConnectedIlias
      */
     public function newUserCategory()
     {
+        if (!$this->user->studip_login) return false;
         $this->soap_client->setCachingStatus(false);
         $this->soap_client->clearCache();
 
@@ -818,6 +820,8 @@ class ConnectedIlias
                     if ($semester_ref_id) {
                         // store institute category
                         IliasObjectConnections::setConnection($seminar->start_semester->getId(), $semester_ref_id, "cat", $this->index);
+                    } else {
+                        $this->error[] = sprintf(_('ILIAS-Kategorie %s konnte nicht angelegt werden.'), $object_data["title"]);
                     }
                 }
                 if ($semester_ref_id) {
@@ -840,6 +844,8 @@ class ConnectedIlias
                     }
                     if ($institute_ref_id) {
                         $ref_id = $institute_ref_id;
+                    } else {
+                        $this->error[] = sprintf(_('ILIAS-Kategorie %s konnte nicht angelegt werden.'), $object_data["title"]);
                     }
                 }
             } elseif (($this->ilias_config['cat_semester'] == 'inner') || ($this->ilias_config['cat_semester'] == 'none')) {
@@ -857,6 +863,8 @@ class ConnectedIlias
                     if ($institute_ref_id) {
                         // store institute category
                         IliasObjectConnections::setConnection($home_institute->getId(), $institute_ref_id, "cat", $this->index);
+                    } else {
+                        $this->error[] = sprintf(_('ILIAS-Kategorie %s konnte nicht angelegt werden.'), $object_data["title"]);
                     }
                 }
                 if ($institute_ref_id) {
@@ -877,6 +885,8 @@ class ConnectedIlias
                         }
                         if ($institute_semester_ref_id) {
                             $ref_id = $institute_semester_ref_id;
+                        } else {
+                            $this->error[] = sprintf(_('ILIAS-Kategorie %s konnte nicht angelegt werden.'), $object_data["title"]);
                         }
                     }
                 }

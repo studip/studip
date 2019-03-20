@@ -110,7 +110,7 @@ class IliasSoap extends StudipSoapClient
             return false;
 
         $cache_index = md5($method . ":" . implode($params, "-"));
-        if (($this->caching_active == true) AND (isset($this->soap_cache[$cache_index]))) {
+        if (($this->caching_active == true) && (isset($this->soap_cache[$cache_index])) && ($method != 'login')) {
             $result = $this->soap_cache[$cache_index];
         } else {
             $result = $this->_call($method, $params);
