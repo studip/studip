@@ -17,6 +17,10 @@
         <span><?= _('Lehrende können Statusgruppen nach ILIAS übertragen') ?></span>
     </label>
     <label>
+        <input type="checkbox" name="ilias_interface_allow_change_course" value="1" <?= $ilias_interface_config['allow_change_course'] ? 'checked' : '' ?>>
+        <span><?= _('Lehrende können die Kursverknüpfung einer Veranstaltung ändern') ?></span>
+    </label>
+    <label>
         <input type="checkbox" name="ilias_interface_search_active" value="1" <?= $ilias_interface_config['search_active'] ? 'checked' : '' ?>>
         <span><?= _('Suche nach Lernobjekten verfügbar') ?></span>
     </label>

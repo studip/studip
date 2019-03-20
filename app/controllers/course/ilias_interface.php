@@ -46,6 +46,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->seminar_id = Context::getId();
         $this->edit_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id);
         $this->author_permission = false;
+        $this->change_course_permission = $GLOBALS['auth']->auth["perm"] == "root" || ($GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id) && $this->ilias_interface_config['allow_change_course']);
         $this->course_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id);
 
         $this->sidebar = Sidebar::get();
@@ -128,7 +129,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                         Icon::create('seminar+add', 'clickable'),
                         ['data-dialog' => 'size=auto;reload-on-close']
                         );
-                $widget->addLink(
+                if ($this->change_course_permission) $widget->addLink(
                         _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
                         $this->url_for('course/ilias_interface/add_object/assign_course'),
                         Icon::create('seminar+add', 'clickable'),
@@ -143,7 +144,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     Icon::create('link-extern', 'clickable'),
                     ['target' => '_blank', 'rel' => 'noopener noreferrer']
                     );
-            if ($this->edit_permission) {
+            if ($this->change_course_permission) {
                 $widget->addLink(
                         sprintf(_('Verknüpfung zu %s entfernen'), $this->ilias_list[$ilias_index]->getName()),
                         $this->url_for('course/ilias_interface/remove_course/'.$ilias_index.'/'.$crs_id),
