@@ -141,7 +141,6 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                             'user_prefix' => 'studip_',
                             'user_data_category' => '',
                             'allow_change_account' => false,
-                            'allow_change_course' => false,
                             'category_to_desktop' => false,
                             'cat_semester' => '',
                             'course_semester' => '',
