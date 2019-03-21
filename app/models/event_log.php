@@ -63,6 +63,7 @@ class EventLog
      */
     private function sql_event_filter ($action_id, $object_id, &$parameters = array())
     {
+        $filter = [];
         if (isset($action_id) && $action_id != 'all') {
             $filter[] = "action_id = :action_id";
             $parameters[':action_id'] = $action_id;
