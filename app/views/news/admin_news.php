@@ -60,7 +60,7 @@
 <? if ($news_items && count($news_items)) : ?>
     <? foreach ($area_structure as $type => $area_data) : ?>
         <? $last_title = 'none' ?>
-        <? if (ia_array($news_items[$type]) && count($news_items[$type])) : ?>
+        <? if (is_array($news_items[$type]) && count($news_items[$type])) : ?>
             <table class="default">
             <? if (!$area_type) : ?>
                 <caption>
