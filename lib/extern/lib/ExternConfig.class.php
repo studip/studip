@@ -306,9 +306,10 @@ class ExternConfig {
         $config_name = $config_name_prefix . $config_name_suffix;
         $all_config_names = "";
         
-        if (sizeof($configurations[$this->module_name])) {
-            foreach ($configurations[$this->module_name] as $configuration)
+        if (is_array($configurations[$this->module_name]) && count($configurations[$this->module_name])) {
+            foreach ($configurations[$this->module_name] as $configuration) {
                 $all_config_names .= $configuration['name'];
+            }
         }
         
         while(mb_stristr($all_config_names, $config_name)) {
