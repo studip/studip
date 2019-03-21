@@ -106,16 +106,17 @@ class IliasSoap extends StudipSoapClient
     function call($method, $params)
     {
         // return false if no session_id is given
-        if (($method != "login") AND ($method != "getInstallationInfoXML") AND ($method != "getClientInfoXML") AND ($params["sid"] == ""))
+        if ($method !== 'login' && $method !== 'getInstallationInfoXML' && $method !== 'getClientInfoXML' && $params['sid'] == '') {
             return false;
+        }
 
-        $cache_index = md5($method . ":" . implode($params, "-"));
-        if (($this->caching_active == true) && (isset($this->soap_cache[$cache_index])) && ($method != 'login')) {
+        $cache_index = md5($method . ':' . implode($params, '-'));
+        if ($this->caching_active && isset($this->soap_cache[$cache_index]) && $method !== 'login') {
             $result = $this->soap_cache[$cache_index];
         } else {
             $result = $this->_call($method, $params);
             // if Session is expired, re-login and try again
-            if (($method != "login") AND $this->soap_client->fault AND in_array(mb_strtolower($this->faultstring), array("session not valid","session invalid", "session idled")) ) {
+            if ($method !== 'login' && $this->soap_client->fault && in_array(mb_strtolower($this->faultstring), ['session not valid', 'session invalid', 'session idled'])) {
                 $caching_status = $this->caching_active;
                 $this->caching_active = false;
                 $params["sid"] = $this->getSID();
@@ -1575,4 +1576,3 @@ class IliasSoap extends StudipSoapClient
         return false;
     }
 }
-
