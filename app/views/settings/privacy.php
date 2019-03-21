@@ -78,8 +78,7 @@ use Studip\Button, Studip\LinkButton;
                             <? if ($search_visibility) echo 'checked'; ?>>
                     <?= _('auffindbar über die Personensuche') ?>
                 </label>
-            <? endif;
-              ?>
+            <? endif; ?>
             <? if (!$NOT_HIDEABLE_FIELDS[$user_perm]['email']): ?>
                 <label>
                     <input type="checkbox" name="email" value="1"
