@@ -173,7 +173,7 @@
                     aria-label="<?= _('Gefundene Bereiche, die der Ankündigung hinzugefügt werden können') ?>"
                     ondblclick="jQuery('input[name=news_add_areas]').click()">
             <? foreach ($area_structure as $area_key => $area_data) : ?>
-                <? if (isset($area_options_selectable[$area_key]) && count($area_options_selectable[$area_key])) : ?>
+                <? if (is_array($area_options_selectable[$area_key]) && count($area_options_selectable[$area_key])) : ?>
                     <optgroup class="news_area_title"
                             style="background-image: url('<?= Icon::create($area_data['icon'], 'info')->asImagePath() ?>');" label="<?=htmlReady($area_data['title'])?>">
                     <? foreach ($area_options_selectable[$area_key] as $area_option_key => $area_option_title) : ?>
