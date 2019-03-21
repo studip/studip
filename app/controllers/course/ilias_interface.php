@@ -204,7 +204,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->module_id = Request::int('ilias_module_id');
         $this->ilias_index = $index;
         $module = $this->ilias->getModule(Request::int('ilias_module_id'));
-        if ($module->isAllowed('edit') && $module->isAllowed('copy')) {
+        if ($module->isAllowed('edit') || $module->isAllowed('copy')) {
             $permission_level = $this->ilias->ilias_config['author_perm'];
         } else {
             $permission_level = '';
@@ -283,7 +283,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 if (strlen($this->ilias_search) > 2) {
                     $this->ilias_modules = $this->ilias->searchModules($this->ilias_search);
                     foreach ($this->ilias_modules as $search_module_id => $search_module_object) {
-                        if (!$search_module_object->isAllowed('copy')) {
+                        if (!$search_module_object->isAllowed('copy') && !$search_module_object->isAllowed('edit')) {
                             unset($this->ilias_modules[$search_module_id]);
                         }
                     }

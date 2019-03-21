@@ -694,8 +694,8 @@ class ConnectedIlias
         if (!$module->isAllowed('start')) {
             return false;
         }
-        if (!$module->isAllowed('copy')) {
-            $this->error[] = _("Keine Berechtignung zum Kopieren des Lernobjekts!");
+        if (!$module->isAllowed('copy') && !$module->isAllowed('edit')) {
+            $this->error[] = _("Keine Berechtigung zum Kopieren des Lernobjekts!");
             return false;
         }
         
