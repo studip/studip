@@ -396,7 +396,7 @@ class Admin_BannerController extends AuthenticatedController
      */
     protected function valid_date($h, $m, $d, $mo, $y)
     {
-        if ($h + $m + $d + $mo + $y == 0) {
+        if ((int)$h + (int)$m + (int)$d + (int)$mo + (int)$y === 0) {
             return 0; // 0= forever
         }
 
