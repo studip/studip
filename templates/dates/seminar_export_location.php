@@ -34,14 +34,16 @@ if (is_array($output_dates)) foreach ($output_dates as $dates) :
     endif;
 endforeach;
 
-if (sizeof($output) == 0) :
-  echo _("nicht angegeben");
-elseif (sizeof($output) == 1) :
-  echo array_pop(array_keys($output));
-else :
-    $pos = 1;
-    foreach ($output as $room => $dates) :
-        echo $room .': '. implode("\n", $dates) . (sizeof($output) > $pos ? ', ' : '') . "\n";
-        $pos++;
-    endforeach;
+if (is_array($output)) :
+    if (sizeof($output) == 0) :
+      echo _("nicht angegeben");
+    elseif (sizeof($output) == 1) :
+      echo array_pop(array_keys($output));
+    else :
+        $pos = 1;
+        foreach ($output as $room => $dates) :
+            echo $room .': '. implode("\n", $dates) . (sizeof($output) > $pos ? ', ' : '') . "\n";
+            $pos++;
+        endforeach;
+    endif;
 endif;
