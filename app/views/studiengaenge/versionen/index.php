@@ -1,4 +1,4 @@
-<? $count = count($versionen); ?>
+<? $count = isset($versionen) ? count($versionen) : 0; ?>
 <div class="mvv-version-content">
     <table class="default collapsable">
         <caption>
