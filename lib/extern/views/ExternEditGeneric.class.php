@@ -96,7 +96,7 @@ class ExternEditGeneric extends ExternEdit {
 
         if (is_array($title)) {
             $out = "";
-            for($i = 0; $i < sizeof($title); $i++) {
+            for($i = 0; $i < count($title); $i++) {
 
                 $invalidClass = $this->faulty_values[$form_name][$i] ? "class=\"invalid\" " : "";
 
@@ -158,7 +158,10 @@ class ExternEditGeneric extends ExternEdit {
         $form_name = $this->element_name . "_" . $attribute;
         $value = $this->getValue($attribute);
 
-        $size = sizeof($check_values);
+        $size = 0;
+        if(is_array($check_values)) {
+            $size = count($check_values);
+        }
         $out = "";
 
         if ($size > 1) {
@@ -246,7 +249,7 @@ class ExternEditGeneric extends ExternEdit {
         $out .= tooltipIcon($info);
 
         $out .= "<br>";
-        for ($i = 0; $i < sizeof($radio_values); $i++) {
+        for ($i = 0; $i < count($radio_values); $i++) {
             $out .= "<input type=\"radio\" name=\"$form_name\" value=\"{$radio_values[$i]}\"";
             if ($value == $radio_values[$i])
                 $out .= " checked";
@@ -283,7 +286,7 @@ class ExternEditGeneric extends ExternEdit {
         else
             $out .= "<select name=\"$form_name\" size=\"$size\">";
 
-        for ($i = 0; $i < sizeof($option_values); $i++) {
+        for ($i = 0; $i < count($option_values); $i++) {
             $out .= "<option value=\"{$option_values[$i]}\"";
             if ($multiple) {
                 if (in_array($option_values[$i], (array) $value)) {
