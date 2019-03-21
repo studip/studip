@@ -65,7 +65,7 @@
                                 'rel'          => 'noopener noreferrer'
                             ])
                     ) ?>
-                    <? if ($edit_permission) $actionMenu->addButton(
+                    <? if ($edit_permission && $module->isAllowed('delete')) $actionMenu->addButton(
                             'remove',
                             _('Entfernen'),
                             Icon::create('learnmodule+decline', Icon::ROLE_CLICKABLE, [

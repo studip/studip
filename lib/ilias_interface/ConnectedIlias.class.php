@@ -26,6 +26,7 @@ class ConnectedIlias
     const OPERATION_VISIBLE= 'visible';
     const OPERATION_READ= 'read';
     const OPERATION_WRITE= 'write';
+    const OPERATION_COPY= 'copy';
     const OPERATION_DELETE= 'delete';
 
     public $index;
@@ -693,7 +694,11 @@ class ConnectedIlias
         if (!$module->isAllowed('start')) {
             return false;
         }
-
+        if (!$module->isAllowed('copy')) {
+            $this->error[] = _("Keine Berechtignung zum Kopieren des Lernobjekts!");
+            return false;
+        }
+        
         $crs_id = IliasObjectConnections::getConnectionModuleId($studip_course_id, "crs", $this->index);
         $this->soap_client->setCachingStatus(false);
         $this->soap_client->clearCache();
@@ -713,7 +718,6 @@ class ConnectedIlias
         }
 
         if ($connection_mode == 'copy') {
-            // TODO: CHECK IF COPY/ADD IS ALLOWED
             $ref_id = $this->soap_client->copyObject($module_id, $crs_id);
         } elseif ($connection_mode == 'reference') {
             $ref_id = $this->soap_client->addReference($module_id, $crs_id);
@@ -725,8 +729,8 @@ class ConnectedIlias
         // set permissions for course roles
         $local_roles = $this->soap_client->getLocalRoles($crs_id);
         $member_operations = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ));
-        $admin_operations = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_DELETE));
-        $admin_operations_no_delete = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE));
+        $admin_operations = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY, self::OPERATION_DELETE));
+        $admin_operations_no_delete = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY));
         $admin_operations_readonly = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_DELETE));
         foreach ($local_roles as $key => $role_data) {
             // check only if local role is il_crs_member, -tutor or -admin
@@ -765,7 +769,6 @@ class ConnectedIlias
     public function unsetCourseModuleConnection($studip_course_id, $module_id, $module_type)
     {
         $this->soap_client->setCachingStatus(false);
-        // TODO: PREVENT DELETING LAST INSTANCE AND CONFIRMATION QUESTION
         $this->soap_client->deleteObject($module_id);
         IliasObjectConnections::unsetConnection($studip_course_id, $module_id, $module_type, $this->index);
     }

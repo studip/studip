@@ -204,12 +204,17 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->module_id = Request::int('ilias_module_id');
         $this->ilias_index = $index;
         $module = $this->ilias->getModule(Request::int('ilias_module_id'));
-        if (Request::submitted('remove_module')) {
+        if ($module->isAllowed('edit') && $module->isAllowed('copy')) {
+            $permission_level = $this->ilias->ilias_config['author_perm'];
+        } else {
+            $permission_level = '';
+        }
+        if (Request::submitted('remove_module') && $module->isAllowed('delete')) {
             if ($this->ilias->unsetCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType())) {
                 PageLayout::postInfo(_('Die Zuordnung wurde entfernt.'));
             }
         } elseif (Request::get('ilias_add_mode') == 'copy') {
-            if ($this->ilias->setCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType(), 'copy', '')) {
+            if ($this->ilias->setCourseModuleConnection($this->seminar_id, Request::int('ilias_module_id'), $module->getModuleType(), 'copy', $permission_level)) {
                 PageLayout::postInfo(_('Die Zuordnung wurde gespeichert.'));
             }
         } elseif (Request::get('ilias_add_mode') == 'reference') {
@@ -277,6 +282,11 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 $this->ilias_search = Request::quoted('ilias_search');
                 if (strlen($this->ilias_search) > 2) {
                     $this->ilias_modules = $this->ilias->searchModules($this->ilias_search);
+                    foreach ($this->ilias_modules as $search_module_id => $search_module_object) {
+                        if (!$search_module_object->isAllowed('copy')) {
+                            unset($this->ilias_modules[$search_module_id]);
+                        }
+                    }
                 } elseif (strlen($this->ilias_search) > 0) {
                     PageLayout::postInfo(_('Der Suchbegriff muss mindestens drei Zeichen lang sein.'));
                 }
