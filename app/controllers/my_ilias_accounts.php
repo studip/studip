@@ -172,6 +172,10 @@ class MyIliasAccountsController extends AuthenticatedController
             $this->ilias = new ConnectedIlias($index);
             $token = $this->ilias->user->getToken();
             $session_id = $this->ilias->soap_client->loginUser($this->ilias->user->getUsername(), $token);
+            if ($this->ilias->ilias_config['category_create_on_add_module'] && ! $module_id) {
+                $this->ilias->newUserCategory();
+                $module_id = $this->ilias->user->category;
+            }
             // display error message if session is invalid
             if (!$session_id) {
                 PageLayout::postError(sprintf(_("Automatischer Login für %s-Installation (Nutzername %s) fehlgeschlagen."),

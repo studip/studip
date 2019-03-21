@@ -87,7 +87,7 @@ class ConnectedIlias
                 NotificationCenter::addObserver($this, "updateUser", "UserDidUpdate");
             }
             // create user category if user has ILIAS author permission
-            if ($GLOBALS['perm']->have_perm($this->ilias_config['author_perm']) && ! $this->user->getCategory()) {
+            if ($GLOBALS['perm']->have_perm($this->ilias_config['author_perm']) && ! $this->ilias_config['category_create_on_add_module'] && ! $this->user->getCategory()) {
                 $this->soap_client->setCachingStatus(false);
                 $this->soap_client->clearCache();
                 $this->newUserCategory();

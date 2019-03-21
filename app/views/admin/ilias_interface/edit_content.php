@@ -16,6 +16,10 @@
     </label>
     <? endif ?>
     <label>
+        <input type="checkbox" name="ilias_category_create_on_add_module" value="1" <?= $ilias_config['category_create_on_add_module'] ? 'checked' : '' ?>>
+        <span><?= _('Persönliche ILIAS-Kategorie erst erzeugen, wenn Lernobjekte angelegt werden') ?></span>
+    </label>
+    <label>
         <input type="checkbox" name="ilias_category_to_desktop" value="1" <?= $ilias_config['category_to_desktop'] ? 'checked' : '' ?>>
         <span><?= _('Persönliche ILIAS-Kategorie auf den Schreibtisch legen') ?></span>
     </label>

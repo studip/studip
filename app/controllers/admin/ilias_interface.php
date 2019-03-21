@@ -141,6 +141,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                             'user_prefix' => 'studip_',
                             'user_data_category' => '',
                             'allow_change_account' => false,
+                            'category_create_on_add_module' => false,
                             'category_to_desktop' => false,
                             'cat_semester' => '',
                             'course_semester' => '',
@@ -314,6 +315,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                     if (Request::getInstance()->offsetExists('ilias_course_veranstaltungsnummer')) {
                         $this->ilias_configs[$index]['course_veranstaltungsnummer'] = Request::get('ilias_course_veranstaltungsnummer');
                     }
+                    $this->ilias_configs[$index]['category_create_on_add_module'] = Request::get('ilias_category_create_on_add_module');
                     $this->ilias_configs[$index]['category_to_desktop'] = Request::get('ilias_category_to_desktop');
                     foreach ($this->modules_available as $module_index => $module_name) {
                         if (Request::get('ilias_modules_'.$module_index)) {
