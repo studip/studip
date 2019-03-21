@@ -1272,7 +1272,7 @@ class Admin_UserController extends AuthenticatedController
             $this->sections['closed_courses'] = $closed_courses;
         }
 
-        if (count($seminar_wait)) {
+        if (is_array($seminar_wait) && count($seminar_wait)) {
             $this->sections['seminar_wait'] = $seminar_wait;
         }
 
