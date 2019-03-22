@@ -56,6 +56,9 @@ class Semester extends SimpleORMap
 
         $config['alias_fields']['token'] = 'semester_token';
 
+        $config['registered_callbacks']['after_store'][]  = 'refreshCache';
+        $config['registered_callbacks']['after_delete'][] = 'refreshCache';
+
         parent::configure($config);
     }
 
@@ -127,11 +130,30 @@ class Semester extends SimpleORMap
     {
         if (!is_array(self::$semester_cache) || $force_reload) {
             self::$semester_cache = array();
-            foreach(self::findBySql('1 ORDER BY beginn') as $semester){
-                self::$semester_cache[$semester->getId()] = $semester;
-                if ($semester->current) {
-                    self::$current_semester = $semester;
+            if (!$force_reload) {
+                $cache = StudipCacheFactory::getCache();
+                $semester_data_array = unserialize($cache->read('DB_SEMESTER_DATA'));
+                if ($semester_data_array) {
+                    foreach($semester_data_array as $semester_data) {
+                        $semester = self::buildExisting($semester_data);
+                        self::$semester_cache[$semester->getId()] = $semester;
+                        if ($semester->current) {
+                            self::$current_semester = $semester;
+                        }
+                    }
                 }
+            }
+            if (!count(self::$semester_cache)) {
+                $semester_data = array();
+                foreach (self::findBySql('1 ORDER BY beginn') as $semester) {
+                    self::$semester_cache[$semester->getId()] = $semester;
+                    if ($semester->current) {
+                        self::$current_semester = $semester;
+                    }
+                    $semester_data[] = $semester->toRawArray();
+                }
+                $cache = StudipCacheFactory::getCache();
+                $cache->write('DB_SEMESTER_DATA', serialize($semester_data));
             }
         }
         return self::$semester_cache;
@@ -340,5 +362,13 @@ class Semester extends SimpleORMap
             $only_these_fields = array_flip($fields);
         }
         return parent::toArray($only_these_fields);
+    }
+
+    /**
+     * Flushes the cache just after storing and deleting a semester
+     */
+    public function refreshCache()
+    {
+        StudipCacheFactory::getCache()->expire('DB_SEMESTER_DATA');
     }
 }
