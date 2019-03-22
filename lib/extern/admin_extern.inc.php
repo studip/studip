@@ -318,6 +318,7 @@ if ($choose_module_form != '') {
     }
 }
 else {
+    PageLayout::postInfo("test");
     echo "<blockquote>";
     echo _("Sie haben bereits für alle Module die maximale Anzahl von Konfigurationen angelegt. Um eine neue Konfiguration anzulegen, müssen Sie erst eine bestehende im gewünschten Modul löschen.");
     echo "</blockquote>\n";
