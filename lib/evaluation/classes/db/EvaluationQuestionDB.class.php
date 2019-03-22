@@ -115,11 +115,10 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
    * @access  public
    * @param   EvaluationQuestion   &$questionObject   The question object
    */
-  function save (&$questionObject) {
+  function save (&$questionObject)
+  {
     $db = DBManager::get();
-
-    if (EVAL_DEBUGLEVEL >= 1)
-      echo "DB: Speichere Fragenobjekt<br>\n";
+    
     if ($this->exists ($questionObject->getObjectID ())) {
       $sql =
    "UPDATE".

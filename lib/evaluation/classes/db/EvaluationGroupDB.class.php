@@ -117,9 +117,8 @@ class EvaluationGroupDB extends EvaluationObjectDB {
    * @param  object   EvaluationGroup  &$groupObject  The group to save
    * @throws  error
    */
-  function save (&$groupObject) {
-    if (EVAL_DEBUGLEVEL >= 1)
-      echo "DB: Speichere Gruppenobjekt<br>\n";
+  function save (&$groupObject)
+  {
     /* save group ---------------------------------------------------------- */
     if ($this->exists ($groupObject->getObjectID ())) {
         DBManager::get()->execute("

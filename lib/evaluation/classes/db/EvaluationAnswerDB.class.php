@@ -115,11 +115,8 @@ class EvaluationAnswerDB extends EvaluationObjectDB {
    * @param     EvaluationAnswer   &$answerObject       The answerobject
    * @throws    error
    */
-  function save (&$answerObject) {
-    $db = DBManager::get();
-
-    if (EVAL_DEBUGLEVEL >= 1)
-      echo "DB: Speichere Antwortobjekt<br>\n";
+  function save (&$answerObject)
+  {
     /* save answers -------------------------------------------------------- */
     DBManager::get()->execute(
             "REPLACE INTO evalanswer SET
