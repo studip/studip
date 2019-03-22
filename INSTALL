@@ -3,11 +3,11 @@ Aber auch ohne ist es halb so schlimm:
 es müssen lediglich ein paar Dateien kopiert werden und ein paar
 Programme laufen ;-)
 
-Vorausgesetzt wird ein Apache2 mit PHP-5.5 Modulen und eine MySQL 5.5 Datenbank.
+Vorausgesetzt wird ein Apache2 mit PHP-7.0 Modulen und eine MySQL 5.7.6 Datenbank.
 Was genau zu tun ist, steht in
-> doc/de/studip-installation-guide-de340.pdf
+> doc/de/studip-installation-guide-de-401.pdf
 
 Also reinsehen und ausprobieren... Viel Spass damit!
 You get in an try out. Have a lot of fun!
 
-- The StudIP Core Group <info@studip.de> 2018
+- The StudIP Core Group <info@studip.de> 2019

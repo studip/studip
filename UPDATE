@@ -9,11 +9,11 @@ Eingesetzt werden kann dieser ab einem Wechsel von Stud.IP 1.5.0-2 zu 1.6.0-1:
 - Datenbankaktualisierungen entweder über die Webschnittstelle:
   http://mein.server.de/studip/web_migrate.php
 - ODER über die Komandozeile:
-  studip-4.1/cli/migrate.php
+  studip-4.3/cli/migrate.php
   vornehmen.
 
 - ACHTUNG! Bei einem Upgrade von Version 3.x auf Version 4.x muss die alte
   Konfigurationsdatei config_local.inc.php noch im Konfigurationsverzeichnis liegen
   während die Migrationen ausgeführt werden.
 
-- The StudIP Core Group <info@studip.de> 2018
+- The StudIP Core Group <info@studip.de> 2019
