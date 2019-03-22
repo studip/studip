@@ -1099,7 +1099,7 @@ class EvalTemplateGUI {
  * @const EVAL_ROOT_TAG Specifies the string for taging root templates
  * @access public
  */
-define (EVAL_ROOT_TAG, "[R]");
+define ('EVAL_ROOT_TAG', "[R]");
 # ===================================================== end: define constants #
 
 # Include all required files ================================================ #
