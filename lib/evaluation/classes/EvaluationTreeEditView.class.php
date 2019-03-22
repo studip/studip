@@ -48,61 +48,61 @@ require_once EVAL_FILE_EVAL;
  * @const NO_TEMPLATE_GROUP  title of the template without temtplateID
  * @access private
  */
-define ("NO_TEMPLATE_GROUP", _("keine Vorlage"));
+define ('NO_TEMPLATE_GROUP', _('keine Vorlage'));
 
 /**
  * @const NO_TEMPLATE_GROUP_TITLE  title of questiongroup without title
  * @access private
  */
-define ("NO_QUESTION_GROUP_TITLE", _("*Fragenblock*"));
+define ('NO_QUESTION_GROUP_TITLE', _('*Fragenblock*'));
 
 /**
  * @const NO_TEMPLATE  title of a template without title
  * @access private
  */
-define ("NO_TEMPLATE", _("*unbekannt*"));
+define ('NO_TEMPLATE', _('*unbekannt*'));
 
 /**
  * @const NEW_EVALUATION_TITLE  title of a new question block
  * @access public
  */
-define ("NEW_EVALUATION_TITLE", _("Neue Evaluation"));
+define ('NEW_EVALUATION_TITLE', _('Neue Evaluation'));
 
 /**
  * @const FIRST_ARRANGMENT_BLOCK_TITLE  title of a new arrangment block
  * @access public
  */
-define ("FIRST_ARRANGMENT_BLOCK_TITLE", _("Erster Gruppierungsblock"));
+define ('FIRST_ARRANGMENT_BLOCK_TITLE', _('Erster Gruppierungsblock'));
 
 /**
  * @const NEW_ARRANGMENT_BLOCK_TITLE  title of a new arrangment block
  * @access private
  */
-define ("NEW_ARRANGMENT_BLOCK_TITLE", _("Neuer Gruppierungsblock"));
+define ('NEW_ARRANGMENT_BLOCK_TITLE', _('Neuer Gruppierungsblock'));
 
 /**
  * @const NEW_QUESTION_BLOCK_BLOCK_TITLE  title of a new question block
  * @access private
  */
-define ("NEW_QUESTION_BLOCK_BLOCK_TITLE", _("Neuer Fragenblock"));
+define ('NEW_QUESTION_BLOCK_BLOCK_TITLE', _('Neuer Fragenblock'));
 
 /**
  * @const ROOT_BLOCK  the root item
  * @access private
  */
-define ("ROOT_BLOCK", "root");
+define ('ROOT_BLOCK', 'root');
 
 /**
  * @const ARRANGMENT_BLOCK  the arrangment block item
  * @access private
  */
-define ("ARRANGMENT_BLOCK", ARRANGMENT_BLOCK);
+define ('ARRANGMENT_BLOCK', 'ARRANGMENT_BLOCK');
 
 /**
  * @const QUESTION_BLOCK  the question block item
  * @access private
  */
-define ("QUESTION_BLOCK", QUESTION_BLOCK);
+define ('QUESTION_BLOCK', 'QUESTION_BLOCK');
 
 # =============================================================== end: defines #
 
