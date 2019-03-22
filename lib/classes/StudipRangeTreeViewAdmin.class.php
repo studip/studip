@@ -84,11 +84,16 @@ class StudipRangeTreeViewAdmin extends TreeView{
         
         if (is_array($this->open_items)){
             foreach ($this->open_items as $key => $value) {
-                if ($key != 'root'){
+                if ($key != 'root') {
                     $tmp = $this->tree->getAdminRange($key);
-                    for ($i = 0; $i < count($tmp); ++$i) {
-                        if ($tmp[$i])
-                            $studip_object_status[$tmp[$i]] = ($user_perm == "root") ? 1 : -1;
+                    
+                    if(!empty($tmp)) {
+                        foreach($tmp as $i) {
+                            if($i) {
+                                $studip_object_status[$i] = ($user_perm == "root") ? 1 : -1;
+                            }
+                        }
+                        
                     }
                 }
             }
@@ -98,17 +103,25 @@ class StudipRangeTreeViewAdmin extends TreeView{
             foreach ($this->open_ranges as $key => $value) {
                 if ($key != 'root'){
                     $tmp = $this->tree->getAdminRange($key);
-                    for ($i = 0; $i < count($tmp); ++$i) {
-                        if ($tmp[$i]) {
-                            $studip_object_status[$tmp[$i]] = ($user_perm == "root") ? 1 : -1;
+                    
+                    if(!empty($tmp)) {
+                        foreach($tmp as $i) {
+                            if($i) {
+                                $studip_object_status[$i] = ($user_perm == "root") ? 1 : -1;
+                            }
                         }
                     }
+                   
                     $tmp = $this->tree->getAdminRange($this->tree->tree_data[$key]['parent_id']);
-                    for ($i = 0; $i < count($tmp); ++$i){
-                        if ($tmp[$i]) {
-                            $studip_object_status[$tmp[$i]] = ($user_perm == "root") ? 1 : -1;
+                   
+                    if(!empty($tmp)) {
+                        foreach($tmp as $i) {
+                            if ($i) {
+                                $studip_object_status[$i] = ($user_perm == "root") ? 1 : -1;
+                            }
                         }
                     }
+                   
                 }
             }
         }
@@ -684,7 +697,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
                             </option>
                             <? endif ?>
 
-                            <? if (count($this->search_result)) : ?>
+                            <? if (is_array($this->search_result) && count($this->search_result)) : ?>
                                 <? foreach ($this->search_result as $key => $value) : ?>
                                 <option value="<?= $key .':'. $value['studip_object'] ?>">
                                     <?= $value['name'] ?>

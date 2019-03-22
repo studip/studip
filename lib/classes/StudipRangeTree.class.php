@@ -112,24 +112,29 @@ class StudipRangeTree extends TreeAbstract {
     * @param    string  $item_id
     * @return   array   of primary keys from table "institute"
     */
-    function getAdminRange($item_id){
-        if (!$this->tree_data[$item_id])
+    function getAdminRange($item_id) {
+        if (!$this->tree_data[$item_id]) {
             return false;
+        }
+        
         $found = false;
         $ret = false;
         $next_link = $item_id;
-        while(($next_link = $this->getNextLink($next_link)) != 'root'){
-            if ($this->tree_data[$next_link]['studip_object'] == 'inst'){
+        
+        while(($next_link = $this->getNextLink($next_link)) != 'root') {
+            if ($this->tree_data[$next_link]['studip_object'] == 'inst') {
                 $found[] = $next_link;
             }
-            if ($this->tree_data[$next_link]['studip_object'] == 'fak'){
-                if (count($found)){
-                    for($i = 0; $i < count($found); ++$i){
-                        if ($this->tree_data[$found[$i]]['fakultaets_id'] == $this->tree_data[$next_link]['studip_object_id']){
-                            $ret[] = $this->tree_data[$found[$i]]['studip_object_id'];
+            
+            if ($this->tree_data[$next_link]['studip_object'] == 'fak') {
+                if (is_array($found) && count($found)) {
+                    foreach($found as $f) {
+                        if ($this->tree_data[$f]['fakultaets_id'] == $this->tree_data[$next_link]['studip_object_id']) {
+                            $ret[] = $this->tree_data[$f]['studip_object_id'];
                         }
                     }
-                $ret[] = $this->tree_data[$next_link]['studip_object_id'];
+                    
+                    $ret[] = $this->tree_data[$next_link]['studip_object_id'];
                 } else {
                     $ret[] = $this->tree_data[$next_link]['studip_object_id'];
                 }
@@ -137,9 +142,11 @@ class StudipRangeTree extends TreeAbstract {
             }
             $next_link = $this->tree_data[$next_link]['parent_id'];
         }
+        
         if (!$ret){
             $ret[] = $next_link;
         }
+        
         return $ret;
     }
     /**
