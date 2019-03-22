@@ -13,6 +13,11 @@
             /
             <?= relsize(memory_get_peak_usage(true), false) ?> mem
         ]
+        <? if ($GLOBALS['DEBUG_ALL_DB_QUERIES']) : ?>
+            <a href="" onClick="jQuery('#all_db_queries').toggle(); return false;">
+                <?= Icon::create("code", "info_alt")->asImg(16, ['class' => "text-bottom"]) ?>
+            </a>
+        <? endif ?>
     <? endif; ?>
     </div>
 <? endif; ?>
@@ -35,6 +40,22 @@
     </ul>
 <? endif; ?>
 </div>
+<? if ($GLOBALS['DEBUG_ALL_DB_QUERIES']) : ?>
+    <div style="display: none;" id="all_db_queries">
+        <table class="default">
+            <tbody>
+            <? foreach ((array) DBManager::get()->queries as $query) : ?>
+                <tr>
+                    <td><?= htmlReady($query['query']) ?></td>
+                    <? if ($GLOBALS['DEBUG_ALL_DB_QUERIES_WITH_TRACE']) : ?>
+                        <td><?= nl2br(htmlReady($query['trace'])) ?></td>
+                    <? endif ?>
+                </tr>
+            <? endforeach ?>
+            </tbody>
+        </table>
+    </div>
+<? endif ?>
 <script>
 STUDIP.Navigation = <?= json_encode(ResponsiveHelper::getNavigationArray(), JSON_PARTIAL_OUTPUT_ON_ERROR) ?: '[]' ?>;
 </script>

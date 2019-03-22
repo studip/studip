@@ -101,6 +101,7 @@ class StreamsController extends PluginController {
      * Displays the profile-stream with all threads by the given user.
      */
     public function profile_action() {
+        Navigation::activateItem("/profile/blubber");
         if (Request::get('extern')) {
             $this->user = BlubberExternalContact::find(Request::option('user_id'));
         } elseif (Request::option('user_id')) {

@@ -75,12 +75,15 @@ class LockRules {
      *
      * @param string $object_id id of course, institute or user
      * @param bool $renew if true, reloads the rule from database
+     * @param string|null $object_type : The type of object you want to check: "user", "sem" or "inst"
      * @return LockRule
      */
-    public static function getObjectRule($object_id, $renew = false)
+    public static function getObjectRule($object_id, $renew = false, $object_type = null)
     {
         if(!array_key_exists($object_id, self::$lockmap) || $renew) {
-            $object_type = get_object_type($object_id, words('sem inst user'));
+            if ($object_type === null) {
+                $object_type = get_object_type($object_id, words('sem inst user'));
+            }
             if ($object_type) {
                 $methodmap = array('sem'  => 'Seminar',
                                    'inst' => 'Institute',
@@ -104,11 +107,12 @@ class LockRules {
      *
      * @param string $object_id id of course, institute or user
      * @param string $attribute the name of an lockable attribute
+     * @param string|null $object_type : The type of object you want to check: "user", "sem" or "inst"
      * @return boolean true if attribute is locked for the current user
      */
-    public static function Check($object_id, $attribute)
+    public static function Check($object_id, $attribute, $object_type = null)
     {
-        $lr = self::getObjectRule($object_id);
+        $lr = self::getObjectRule($object_id, false, $object_type);
         if ($lr) {
             return $lr['attributes'][mb_strtolower($attribute)] == 1 && self::CheckLockRulePermission($object_id);
         } else {

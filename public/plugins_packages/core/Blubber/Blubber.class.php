@@ -11,6 +11,7 @@
 require_once __DIR__ . '/models/BlubberPosting.class.php';
 require_once __DIR__ . '/models/BlubberExternalContact.class.php';
 require_once __DIR__ . '/models/BlubberStream.class.php';
+require_once __DIR__ . '/models/BlubberProfileNavigation.php';
 require_once __DIR__ . '/models/StreamAvatar.class.php';
 
 class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
@@ -100,13 +101,13 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
             Navigation::getItem("/community")->setURL($nav->getURL());
         }
 
-        if (Navigation::hasItem("/profile") &&
-                $this->isActivated(get_userid(Request::username('username',
-                $GLOBALS['auth']->auth['uname'])), 'user')) {
-            $nav = new AutoNavigation(
+        if (Navigation::hasItem("/profile")) {
+            $nav = new BlubberProfileNavigation(
                 _('Blubber'),
                 PluginEngine::getURL($this, [], 'streams/profile')
             );
+            $this->isActivated(get_userid(Request::username('username',
+                $GLOBALS['auth']->auth['uname'])), 'user');
             Navigation::addItem("/profile/blubber", $nav);
         }
     }

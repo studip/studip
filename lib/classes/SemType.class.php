@@ -68,6 +68,7 @@ class SemType implements ArrayAccess
                 "chdate = UNIX_TIMESTAMP() " .
             "WHERE id = :id ".
         "");
+        StudipCacheFactory::getCache()->expire('DB_SEM_TYPES_ARRAY');
         return $statement->execute(array(
             'id' => $this->data['id'],
             'name' => $this->data['name'],
@@ -84,10 +85,11 @@ class SemType implements ArrayAccess
     public function delete() {
         if ($this->countSeminars() === 0) {
             $db = DBManager::get();
-            $statement = $db->prepare(
-                "DELETE FROM sem_types " .
-                "WHERE id = :id ".
-            "");
+            $statement = $db->prepare("
+                DELETE FROM sem_types 
+                WHERE id = :id 
+            ");
+            StudipCacheFactory::getCache()->expire('DB_SEM_TYPES_ARRAY');
             return $statement->execute(array(
                 'id' => $this->data['id']
             ));
@@ -173,26 +175,35 @@ class SemType implements ArrayAccess
         if (!is_array(self::$sem_types)) {
             $db = DBManager::get();
             self::$sem_types = array();
-            try {
-                $statement = $db->prepare(
-                    "SELECT * FROM sem_types ORDER BY id ASC " .
-                "");
-                $statement->execute();
-                $type_array = $statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($type_array as $sem_class) {
-                    self::$sem_types[$sem_class['id']] = new SemType($sem_class);
-                }
-            } catch (PDOException $e) {
-                //for use without or before migration 92
-                $type_array = $GLOBALS['SEM_TYPE_OLD_VAR'];
-                if (is_array($type_array)) {
-                    ksort($type_array);
-                    foreach ($type_array as $id => $type) {
-                        self::$sem_types[$id] = new SemType($type);
+
+            $cache = StudipCacheFactory::getCache();
+            $types_array = unserialize($cache->read('DB_SEM_TYPES_ARRAY'));
+            if (!$types_array) {
+                try {
+                    $statement = $db->prepare(
+                        "SELECT * FROM sem_types ORDER BY id ASC "
+                    );
+                    $statement->execute();
+                    $types_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+                    if ($types_array) {
+                        $cache = StudipCacheFactory::getCache();
+                        $cache->write('DB_SEM_TYPES_ARRAY', serialize($types_array));
                     }
-                } else {
-                    self::$sem_types[1] = new SemType(array('name' => 'default', 'class' => 1, 'id' => 1));
+                } catch (PDOException $e) {
+                    //for use without or before migration 92
+                    $type_array = $GLOBALS['SEM_TYPE_OLD_VAR'];
+                    if (is_array($type_array)) {
+                        ksort($type_array);
+                        foreach ($type_array as $id => $type) {
+                            self::$sem_types[$id] = new SemType($type);
+                        }
+                    } else {
+                        self::$sem_types[1] = new SemType(array('name' => 'default', 'class' => 1, 'id' => 1));
+                    }
                 }
+            }
+            foreach ($types_array as $sem_type) {
+                self::$sem_types[$sem_type['id']] = new SemType($sem_type);
             }
         }
         return self::$sem_types;
@@ -200,6 +211,7 @@ class SemType implements ArrayAccess
 
     static public function refreshTypes() {
         self::$sem_types = null;
+        StudipCacheFactory::getCache()->expire('DB_SEM_TYPES_ARRAY');
         return self::getTypes();
     }
 

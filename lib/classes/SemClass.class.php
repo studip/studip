@@ -404,6 +404,7 @@ class SemClass implements ArrayAccess
                 "chdate = UNIX_TIMESTAMP() " .
             "WHERE id = :id ".
         "");
+        StudipCacheFactory::getCache()->expire('DB_SEM_CLASSES_ARRAY');
         return $statement->execute(array(
             'id' => $this->data['id'],
             'name' => $this->data['name'],
@@ -474,10 +475,11 @@ class SemClass implements ArrayAccess
             }
             $GLOBALS['SEM_TYPE'] = SemType::getTypes();
             $db = DBManager::get();
-            $statement = $db->prepare(
-                "DELETE FROM sem_classes " .
-                "WHERE id = :id ".
-            "");
+            $statement = $db->prepare("
+                DELETE FROM sem_classes 
+                WHERE id = :id 
+            ");
+            StudipCacheFactory::getCache()->expire('DB_SEM_CLASSES_ARRAY');
             return $statement->execute(array(
                 'id' => $this->data['id']
             ));
@@ -589,26 +591,37 @@ class SemClass implements ArrayAccess
         if (!is_array(self::$sem_classes)) {
             $db = DBManager::get();
             self::$sem_classes = array();
-            try {
-                $statement = $db->prepare(
-                    "SELECT * FROM sem_classes ORDER BY id ASC " .
-                "");
-                $statement->execute();
-                $class_array = $statement->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($class_array as $sem_class) {
-                    self::$sem_classes[$sem_class['id']] = new SemClass($sem_class);
-                }
-            } catch (PDOException $e) {
-                //for use without or before migration 92
-                $class_array = $GLOBALS['SEM_CLASS_OLD_VAR'];
-                if (is_array($class_array)) {
-                    ksort($class_array);
-                    foreach ($class_array as $id => $class) {
-                        self::$sem_classes[$id] = new SemClass($class);
+
+            $cache = StudipCacheFactory::getCache();
+            $class_array = unserialize($cache->read('DB_SEM_CLASSES_ARRAY'));
+            if (!$class_array) {
+
+                try {
+                    $statement = $db->prepare(
+                        "SELECT * FROM sem_classes ORDER BY id ASC "
+                    );
+                    $statement->execute();
+                    $class_array = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+                    if ($class_array) {
+                        $cache = StudipCacheFactory::getCache();
+                        $cache->write('DB_SEM_CLASSES_ARRAY', serialize($class_array));
                     }
-                } else {
-                    self::$sem_classes[1] = self::getDefaultSemClass();
+                } catch (PDOException $e) {
+                    //for use without or before migration 92
+                    $class_array = $GLOBALS['SEM_CLASS_OLD_VAR'];
+                    if (is_array($class_array)) {
+                        ksort($class_array);
+                        foreach ($class_array as $id => $class) {
+                            self::$sem_classes[$id] = new SemClass($class);
+                        }
+                    } else {
+                        self::$sem_classes[1] = self::getDefaultSemClass();
+                    }
                 }
+            }
+            foreach ($class_array as $sem_class) {
+                self::$sem_classes[$sem_class['id']] = new SemClass($sem_class);
             }
         }
         return self::$sem_classes;

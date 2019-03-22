@@ -220,19 +220,22 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         } else {
             $this->data = array();
             $db = DBManager::get();
-            $version = new DBSchemaVersion();
-            if ($version->get() < 226) {
-                $query = "SELECT field, value, type, section, `range`, description, comment, is_default
-                          FROM `config`
-                          ORDER BY is_default DESC, section, field";
-            } else {
+
+            try {
                 $query = "SELECT config.field, IFNULL(config_values.value, config.value) AS value, type, section, `range`, description,
                                  config_values.comment, config_values.value IS NULL AS is_default
                           FROM config
                           LEFT JOIN config_values ON config.field = config_values.field AND range_id = 'studip'
                           ORDER BY section, config.field";
+                $rs = $db->query($query);
+            } catch (Exception $e) {
+                //if migration is smaller than 226 and Stud.IP needs to be migrated to version 4.1 or greater:
+                $query = "SELECT field, value, type, section, `range`, description, comment, is_default
+                          FROM `config`
+                          ORDER BY is_default DESC, section, field";
+                $rs = $db->query($query);
             }
-            $rs = $db->query($query);
+
             while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
                 // set the the type of the default entry for the modified entry
                 if (!empty($this->metadata[$row['field']])) {
