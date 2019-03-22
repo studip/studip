@@ -66,15 +66,10 @@ jQuery(function () {
 
     STUDIP.study_area_selection.initialize();
 
-    // validate forms
-    STUDIP.Forms.initialize();
-
     // autofocus for all browsers
     if (!("autofocus" in document.createElement("input"))) {
         jQuery('[autofocus]').first().focus();
     }
-
-    jQuery('.add_toolbar').addToolbar();
 
     if (document.createElement('textarea').style.resize === undefined) {
         jQuery('textarea.resizable').resizable({
@@ -82,6 +77,18 @@ jQuery(function () {
             minHeight: 50,
             zIndex: 1
         });
+    }
+});
+
+jQuery(document).on('studip-ready', function (event, type, data) {
+    jQuery('.add_toolbar').addToolbar();
+
+    // validate forms
+    STUDIP.Forms.initialize(data.dialog);
+
+    if (type === 'dialog-update' && MathJax !== undefined) {
+        // notify MathJax about new content
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub, data.dialog[0]]);
     }
 });
 
@@ -346,17 +353,6 @@ jQuery(document).on('click', '.course-admin td .course-completion', function () 
     }.bind(this));
 
     return false;
-});
-
-jQuery(document).on('dialog-update', function (event, data) {
-    jQuery('.add_toolbar').addToolbar();
-
-    STUDIP.Forms.initialize(data.dialog);
-
-    /* notify MathJax about new content*/
-    if (MathJax !== undefined) {
-        MathJax.Hub.Queue(['Typeset', MathJax.Hub, data.dialog[0]]);
-    }
 });
 
 // Global handler:

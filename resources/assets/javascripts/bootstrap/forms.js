@@ -78,9 +78,8 @@ $(document).on('focus', 'form.default [maxlength]:not(.no-hint)', function() {
 // This might lead to unexpected behaviour.
 
 // Ensure, every .submit-upon-select has an defaultSelected option.
-function setDefaultSelected(event) {
-    var is_dialog = event && event.hasOwnProperty('type') && event.type === 'dialog-update';
-    var target = is_dialog ? '.ui-dialog' : document;
+function setDefaultSelected(event, type) {
+    var target = type === 'dialog-update' ? '.ui-dialog' : document;
 
     $('.submit-upon-select', target).each(function() {
         var has_default_selected =
@@ -128,8 +127,7 @@ $(document)
             return false;
         }
     })
-    .ready(setDefaultSelected)
-    .on('dialog-update', setDefaultSelected);
+    .on('studip-ready', setDefaultSelected);
 
 // simulate formaction attribute for input[type=image] in IE11
 $(document).on('click', 'input[type=image][formaction]', function() {
@@ -297,8 +295,7 @@ function prepareSelect2() {
     });
 }
 
-$(document).ready(prepareSelect2);
-$(document).on('dialog-update', prepareSelect2);
+$(document).on('studip-ready', prepareSelect2);
 
 $(document)
     .on('change', 'select:not([multiple])', function() {

@@ -15,43 +15,40 @@ function handleOpenGraphSections() {
     });
 }
 
-$(document).ready(handleOpenGraphSections);
-$(document).on('dialog-update ajaxComplete', handleOpenGraphSections);
+$(document).on('studip-ready ajaxComplete', handleOpenGraphSections);
 
-$(document)
-    .on('click', '.opengraph-area .switcher button', function(event) {
-        var direction = $(this).is('.switch-left') ? 'left' : 'right',
-            current = $(this)
-                .closest('.opengraph-area')
-                .find('.opengraph:visible'),
-            switcher = $(this).closest('.switcher'),
-            buttons = {
-                left: $('.switch-left', switcher),
-                right: $('.switch-right', switcher)
-            };
+$(document).on('click', '.opengraph-area .switcher button', function (event) {
+    var direction = $(this).is('.switch-left') ? 'left' : 'right',
+        current = $(this)
+            .closest('.opengraph-area')
+            .find('.opengraph:visible'),
+        switcher = $(this).closest('.switcher'),
+        buttons = {
+            left: $('.switch-left', switcher),
+            right: $('.switch-right', switcher)
+        };
 
-        if (direction === 'left') {
-            current = current
-                .addClass('hidden')
-                .prev()
-                .removeClass('hidden');
-            buttons.left.attr('disabled', current.prev('.opengraph').length === 0);
-            buttons.right.attr('disabled', false);
-        } else {
-            current = current
-                .addClass('hidden')
-                .next()
-                .removeClass('hidden');
-            buttons.left.attr('disabled', false);
-            buttons.right.attr('disabled', current.next('.opengraph').length === 0);
-        }
+    if (direction === 'left') {
+        current = current
+            .addClass('hidden')
+            .prev()
+            .removeClass('hidden');
+        buttons.left.attr('disabled', current.prev('.opengraph').length === 0);
+        buttons.right.attr('disabled', false);
+    } else {
+        current = current
+            .addClass('hidden')
+            .next()
+            .removeClass('hidden');
+        buttons.left.attr('disabled', false);
+        buttons.right.attr('disabled', current.next('.opengraph').length === 0);
+    }
 
-        event.preventDefault();
-    })
-    .on('click', '.opengraph a.flash-embedder', function(event) {
-        var url = $(this).attr('href'),
-            template = _.template('<iframe width="100%" height="200px" frameborder="0" src="<%= url %>"></iframe>');
-        $(this).replaceWith(template({ url: url }));
+    event.preventDefault();
+}).on('click', '.opengraph a.flash-embedder', function (event) {
+    let url = $(this).attr('href');
+    let template = _.template('<iframe width="100%" height="200px" frameborder="0" src="<%= url %>"></iframe>');
+    $(this).replaceWith(template({ url: url }));
 
-        event.preventDefault();
-    });
+    event.preventDefault();
+});

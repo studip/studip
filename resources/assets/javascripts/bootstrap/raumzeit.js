@@ -17,8 +17,7 @@ function handleBlockAppointments() {
     });
 }
 
-$(document).ready(handleBlockAppointments);
-$(document).on('dialog-open dialog-update', handleBlockAppointments);
+$(document).on('studip-ready', handleBlockAppointments);
 
 $(document).on('change', 'select[name=room_sd]', function() {
     $('input[type=radio][name=room][value=room]').prop('checked', true);

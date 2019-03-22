@@ -173,3 +173,9 @@ $.extend($.expr[':'], {
         return result;
     }
 });
+
+$(document).ready(() => {
+    $(document).trigger('studip-ready', ['domready', {}]);
+}).on('dialog-update', (event, data) => {
+    $(document).trigger('studip-ready', ['dialog-update', data]);
+});

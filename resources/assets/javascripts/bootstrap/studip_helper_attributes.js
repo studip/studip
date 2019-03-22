@@ -50,8 +50,7 @@ $(document)
         $(proxy).trigger('update.proxy');
     });
 
-$(document).ready(connectProxyAndProxied);
-$(document).on('dialog-update refresh-handlers', connectProxyAndProxied);
+$(document).on('studip-ready refresh-handlers', connectProxyAndProxied);
 
 // Use a checkbox or radiobox as a toggle switch for the disabled attribute of
 // another set of elements. Define set of elements to disable/enable if item is
@@ -78,10 +77,7 @@ $(document)
                     .trigger('update.proxy');
             });
         });
-    })
-    .ready(() => {
-        $('[data-activates],[data-deactivates]').filter(':checked').trigger('change');
-    }).on('dialog-update', () => {
+    }).on('studip-ready-update', () => {
         $('[data-activates],[data-deactivates]').filter(':checked').trigger('change');
     });
 

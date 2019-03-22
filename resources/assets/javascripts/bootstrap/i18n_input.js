@@ -1,7 +1,3 @@
-$(document).ready(function() {
-    STUDIP.i18n.init();
-});
-
-$(document).on('dialog-update', function(event, data) {
+$(document).on('studip-ready', function(event, type, data) {
     STUDIP.i18n.init(data.dialog);
 });
