@@ -92,13 +92,14 @@ class ObjectConfig extends Config
                 $metadata[$field] = Config::get()->getMetadata($field);
             }
             $db = DBManager::get();
-            $version = new DBSchemaVersion();
-            if ($version->get() < 226) {
-                $query = 'SELECT field, value FROM user_config WHERE user_id = ';
-            } else {
+            try {
                 $query = 'SELECT field, value FROM config_values WHERE range_id = ';
+                $rs = $db->query($query . $db->quote($this->range_id));
+            } catch (Exception $e) {
+                //in case we have not migrated 226 yet:
+                $query = 'SELECT field, value FROM user_config WHERE user_id = ';
+                $rs = $db->query($query . $db->quote($this->range_id));
             }
-            $rs = $db->query($query . $db->quote($this->range_id));
             while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
                 switch ($metadata[$row['field']]['type']) {
                     case 'integer':
