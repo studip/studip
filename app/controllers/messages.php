@@ -177,6 +177,7 @@ class MessagesController extends AuthenticatedController {
 
         //flag to determine if the message is forwarded or not:
         $forward_message = false;
+        $quoted_message = false;
 
 
         //check if a receiver is given:
@@ -349,7 +350,42 @@ class MessagesController extends AuthenticatedController {
             if (!Request::get('forward')) {
                 //message is a reply message
                 if (Request::option("quote") === $old_message->getId()) {
-                    $this->default_message['message'] = quotes_encode($old_message['message']);
+                    $quoted_message = true;
+                    $message = _("-_-_ Ursprüngliche Nachricht _-_-");
+                    $message .= "\n" . _("Betreff") . ": " . $old_message['subject'];
+                    $message .= "\n" . _("Datum") . ": " . strftime('%x %X', $old_message['mkdate']);
+                    $message .= "\n" . _("Von") . ": " . get_fullname($old_message['autor_id']);
+                    $num_recipients = $old_message->getNumRecipients();
+                    if ($GLOBALS['user']->id == $old_message->autor_id) {
+                        $message .= "\n" . ($num_recipients == 1 ? _('An: Eine Person') : sprintf(_('An: %d Personen'), $num_recipients));
+                    } else {
+                        $message .= "\n";
+                        if($num_recipients > 1) {
+                            $message .= sprintf(
+                                ngettext(
+                                    'An: %1$s (und %2$d weitere/n)',
+                                    'An: %1$s (und %2$d weitere)',
+                                    $num_recipients
+                                ),
+                                $GLOBALS['user']->getFullName(),
+                                $num_recipients
+                            );
+                        } else {
+                            $message .= sprintf(
+                                _('An: %s'),
+                                $GLOBALS['user']->getFullName()
+                            );
+                        }
+                    }
+                    $message .= "\n\n";
+                    if (Studip\Markup::editorEnabled()) {
+                        $message = Studip\Markup::markupToHtml($message, false) . Studip\Markup::markupToHtml($old_message['message']);
+                    } else if (Studip\Markup::isHtml($old_message['message'])) {
+                        $message .= Studip\Markup::removeHtml($old_message['message']);
+                    } else {
+                        $message .= $old_message['message'];
+                    }
+                    $this->default_message['message'] = $message;
                 }
                 $this->default_message['subject'] = mb_substr($old_message['subject'], 0, 4) === "RE: " ? $old_message['subject'] : "RE: ".$old_message['subject'];
                 if ($old_message['autor_id'] !== $GLOBALS['user']->id) {
@@ -458,9 +494,14 @@ class MessagesController extends AuthenticatedController {
         }
         if (trim($settings['sms_sig'])) {
             if (Studip\Markup::editorEnabled()) {
-                $this->default_message['message'] .= Studip\Markup::markAsHtml('<br><hr>' . Studip\Markup::markupToHtml($settings['sms_sig']));
+                $sms_sig = Studip\Markup::markAsHtml('<br><hr>' . Studip\Markup::markupToHtml($settings['sms_sig']) . '<br>');
             } else {
-                $this->default_message['message'] .= "\n\n--\n" . $settings['sms_sig'];
+                $sms_sig =  "\n\n--\n" . $settings['sms_sig'] . "\n";
+            }
+            if ($forward_message || $quoted_message) {
+                $this->default_message['message'] = $sms_sig . $this->default_message['message'];
+            } else {
+                $this->default_message['message'] .= $sms_sig;
             }
         }
 
