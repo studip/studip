@@ -84,9 +84,9 @@
 <div align="center" data-dialog-button>
     <div class="button-group">
     <? if ($message['autor_id'] !== '____%system%____'): ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'quote' => $message->getId())) ?>" data-dialog="buttons"><?= \Studip\Button::create(_("Antworten"))?></a>
+        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'quote' => $message->getId())) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Antworten"))?></a>
     <? endif; ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'forward' => "rec")) ?>" data-dialog="buttons"><?= \Studip\Button::create(_("Weiterleiten"))?></a>
+        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'forward' => "rec")) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Weiterleiten"))?></a>
     </div>
     <a href="<?= URLHelper::getLink("dispatch.php/messages/print/".$message->getId()) ?>" class="print_action"><?= \Studip\Button::create(_("Drucken"))?></a>
     <form action="<?= $controller->url_for('messages/delete/' . $message->id) ?>" method="post" style="display: inline;">
