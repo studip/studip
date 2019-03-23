@@ -29,6 +29,11 @@ class WidgetHelper
     private static $activeWidget;
 
     /**
+     * Saves the widget data of a user
+     */
+    private static $userWidgets = array();
+
+    /**
      * Set the last active Widget
      * @param string $activeWidget
      */
@@ -331,28 +336,30 @@ class WidgetHelper
      */
     public static function hasWidget($user_id, $widget)
     {
-        if (ctype_digit($widget)) {
-            $query = "SELECT 1
-                      FROM widget_user
-                      WHERE range_id = :user_id AND pluginid = :widget";
-        } else {
-            $query = "SELECT 1
-                      FROM widget_user
-                      JOIN plugins USING (pluginid)
-                      WHERE range_id = :user_id
-                        AND pluginname IN (:widget, CONCAT(:widget, 'Widget'))
-                        AND plugintype = 'PortalPlugin'
-                        AND enabled = 'yes'";
+        if (!isset(self::$userWidgets[$user_id])) {
+            $statement = DBManager::get()->prepare("
+                SELECT * 
+                FROM widget_user
+                WHERE range_id = :user_id
+            ");
+            $statement->execute(array('user_id' => $user_id));
+            self::$userWidgets[$user_id] = $statement->fetchAll(PDO::FETCH_ASSOC);
         }
-        $statement = DBManager::get()->prepare($query);
-        $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':widget', $widget);
 
-        try {
-            $statement->execute();
-            return (bool)$statement->fetchColumn();
-        } catch (Exception $e) {
-            return false;
+        if (!ctype_digit($widget)) {
+            $plugin = PluginManager::getInstance()->getPlugin($widget) ?: PluginManager::getInstance()->getPlugin($widget . "Widget");
+            if ($plugin) {
+                $widget = $plugin->getPluginId();
+            } else {
+                return false;
+            }
         }
+
+        foreach (self::$userWidgets[$user_id] as $widget_user) {
+            if ($widget_user['pluginid'] == $widget) {
+                return true;
+            }
+        }
+        return false;
     }
 }
