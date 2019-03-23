@@ -27,6 +27,11 @@ class FooterNavigation extends Navigation
     {
         parent::initSubNavigation();
 
+        // sitemap
+        if (is_object($GLOBALS['user']) && $GLOBALS['user']->id !== 'nobody') {
+            $this->addSubNavigation('sitemap', new Navigation(_('Sitemap'), 'dispatch.php/sitemap/'));
+        }
+
         //studip
         $this->addSubNavigation('studip', new Navigation(_('Stud.IP'), 'http://www.studip.de/'));
 
