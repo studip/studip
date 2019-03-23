@@ -19,6 +19,7 @@ class ResponsiveHelper
     public static function getNavigationArray()
     {
         $navigation = [];
+        $activated  = [];
 
         $link_params = array_fill_keys(array_keys(URLHelper::getLinkParams()), null);
 
@@ -29,21 +30,24 @@ class ResponsiveHelper
 
             $image = $nav->getImage();
             $image_src = $image ? $image->copyWithRole('info_alt')->asImagePath() : false;
-            $item = array(
+            $item = [
                 'icon'   => $image_src ? self::getAssetsURL($image_src) : false,
                 'title'  => $nav->getTitle(),
                 'url'    => self::getURL($nav->getURL(), $link_params),
-                'active' => $nav->isActive(),
-            );
+            ];
+
+            if ($nav->isActive()) {
+                $activated[] = $path;
+            }
 
             if ($nav->getSubnavigation()) {
-                $item['children'] = self::getChildren($nav, $path);
+                $item['children'] = self::getChildren($nav, $path, $activated);
             }
 
             $navigation[$path] = $item;
         }
 
-        return $navigation;
+        return [$navigation, $activated];
     }
 
     /**
@@ -52,9 +56,10 @@ class ResponsiveHelper
      *
      * @param Navigation $navigation The navigation object
      * @param String     $path       Current path segment
+     * @param array      $activated  Activated items
      * @return Array containing the children (+ grandchildren...)
      */
-    protected static function getChildren(Navigation $navigation, $path)
+    protected static function getChildren(Navigation $navigation, $path, &$activated = [])
     {
         $children = array();
 
@@ -63,17 +68,22 @@ class ResponsiveHelper
                 continue;
             }
 
-            $item = array(
-                'title'  => $subnav->getTitle(),
-                'url'    => self::getURL($subnav->getURL()),
-                'active' => $subnav->isActive(),
-            );
+            $subpath = "{$path}/{$subpath}";
 
-            if ($subnav->getSubNavigation()) {
-                $item['children'] = self::getChildren($subnav, $path . '_' . $subpath);
+            $item = [
+                'title' => $subnav->getTitle(),
+                'url'   => self::getURL($subnav->getURL()),
+            ];
+
+            if ($subnav->isActive()) {
+                $activated[] = $subpath;
             }
 
-            $children[$path . '_' . $subpath] = $item;
+            if ($subnav->getSubNavigation()) {
+                $item['children'] = self::getChildren($subnav, $subpath);
+            }
+
+            $children[$subpath] = $item;
         }
 
         return $children;

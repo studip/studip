@@ -1,7 +1,7 @@
 var media_query = window.matchMedia('(max-width: 767px)');
 
 // Builds a dom element from a navigation object
-function buildMenu(navigation, path, id) {
+function buildMenu(navigation, path, id, activated) {
     var list = $('<ul>');
 
     if (id) {
@@ -11,34 +11,27 @@ function buildMenu(navigation, path, id) {
     // TODO: Templating?
     _.forEach(navigation, function(nav, node) {
         nav.url = STUDIP.URLHelper.getURL(nav.url, {}, true);
-        var subpath = path + '_' + node,
-            li = $('<li class="navigation-item">'),
-            title = $('<div class="nav-title">').appendTo(li),
-            link = $('<a>')
-                .text(nav.title)
-                .attr('href', nav.url)
-                .appendTo(title),
-            icon = nav.icon || false;
+        let subpath = path ? `${path}/${node}` : node;
+        let li = $('<li class="navigation-item">');
+        let title = $('<div class="nav-title">').appendTo(li);
+        let link = $(`<a href="${nav.url}">`).text(nav.title).appendTo(title);
 
-        if (icon) {
-            if (!icon.match(/^https?:\/\//)) {
-                icon = STUDIP.ASSETS_URL + icon;
+        if (nav.icon) {
+            if (!nav.icon.match(/^https?:\/\//)) {
+                nav.icon = STUDIP.ASSETS_URL + nav.icon;
             }
-            $('<img class="icon">')
-                .attr('src', icon)
-                .prependTo(link);
+            $(link).prepend(`<img class="icon" src="${nav.icon}">`)
         }
 
         if (nav.children) {
-            $('<input type="checkbox">')
-                .attr('id', subpath)
-                .prop('checked', nav.active)
+            let active = activated.indexOf(subpath) !== -1;
+            $(`<input type="checkbox" id="resp/${subpath}">`)
+                .prop('checked', active)
                 .appendTo(li);
-            $('<label class="nav-label">')
-                .attr('for', subpath)
-                .text(' ')
-                .appendTo(li);
-            li.append(buildMenu(nav.children, subpath));
+            li.append(
+                `<label class="nav-label" for="resp/${subpath}"> </label>`,
+                buildMenu(nav.children, subpath, false, activated)
+            );
         }
 
         list.append(li);
@@ -49,12 +42,16 @@ function buildMenu(navigation, path, id) {
 
 // Adds the responsive menu to the dom
 function addMenu() {
-    var wrapper = $('<div id="responsive-container">'),
-        menu = buildMenu(STUDIP.Navigation, 'resp', 'responsive-navigation');
-
-    $('<label for="responsive-toggle">').appendTo(wrapper);
-    $('<input type="checkbox" id="responsive-toggle">').appendTo(wrapper);
-    wrapper.append(menu);
+    let wrapper = $('<div id="responsive-container">').append(
+        '<label for="responsive-toggle">',
+        '<input type="checkbox" id="responsive-toggle">',
+        buildMenu(
+            STUDIP.Navigation.navigation,
+            false,
+            'responsive-navigation',
+            STUDIP.Navigation.activated
+        )
+    );
 
     $('<li>', { html: wrapper }).prependTo('#barBottomright > ul');
 }
@@ -79,47 +76,35 @@ function responsify() {
         });
     }
 
-    $('#responsive-navigation :checkbox')
-        .on('change', function() {
-            var li = $(this).closest('li');
-            if ($(this).is(':checked')) {
-                li.siblings()
-                    .find(':checkbox:checked')
-                    .prop('checked', false);
-            }
+    $('#responsive-navigation :checkbox').on('change', function () {
+        let li = $(this).closest('li');
+        if ($(this).is(':checked')) {
+            li.siblings().find(':checkbox:checked').prop('checked', false);
+        }
 
-            // Force redraw of submenu (at least ios safari/chrome would
-            // not show it without a forced redraw)
-            $(this)
-                .siblings('ul')
-                .hide(0, function() {
-                    $(this).show();
-                });
-        })
-        .reverse()
-        .trigger('change');
+        // Force redraw of submenu (at least ios safari/chrome would
+        // not show it without a forced redraw)
+        $(this).siblings('ul').hide(0, function () {
+            $(this).show();
+        });
+    }).reverse().trigger('change');
 
-    var sidebar_avatar_menu = $('<div class="sidebar-widget sidebar-avatar-menu">'),
-        avatar_menu = $('#header_avatar_menu'),
-        title = $('.action-menu-title', avatar_menu).text(),
-        list = $('<ul class="widget-list widget-links">');
-    $('<div class="sidebar-widget-header">')
-        .text(title)
-        .appendTo(sidebar_avatar_menu);
+    var sidebar_avatar_menu = $('<div class="sidebar-widget sidebar-avatar-menu">');
+    var avatar_menu = $('#header_avatar_menu');
+    var title = $('.action-menu-title', avatar_menu).text();
+    var list = $('<ul class="widget-list widget-links">');
+    $('<div class="sidebar-widget-header">').text(title).appendTo(sidebar_avatar_menu);
 
     $('.action-menu-item', avatar_menu).each(function() {
-        var src = $('img', this).attr('src'),
-            link = $('a', this).clone();
+        var src = $('img', this).attr('src');
+        var link = $('a', this).clone();
 
         link.find('img').remove();
 
-        $('<li>')
-            .append(link)
-            .css({
-                backgroundSize: '16px',
-                backgroundImage: 'url(' + src + ')'
-            })
-            .appendTo(list);
+        $('<li>').append(link).css({
+            backgroundSize: '16px',
+            backgroundImage: `url(${src})`
+        }).appendTo(list);
     });
 
     $('<div class="sidebar-widget-content">')
@@ -129,11 +114,7 @@ function responsify() {
     $('#layout-sidebar > .sidebar').prepend(sidebar_avatar_menu);
 }
 
-function setResponsiveDisplay(state) {
-    if (state === undefined) {
-        state = true;
-    }
-
+function setResponsiveDisplay(state = true) {
     $('html').toggleClass('responsive-display', state);
     STUDIP.Sidebar.setSticky(!state);
 
@@ -146,6 +127,14 @@ function setResponsiveDisplay(state) {
 
 // Build responsive menu on domready or resize
 $(document).ready(function() {
+    const cache = STUDIP.Cache.getInstance('responsive.');
+    if (STUDIP.Navigation.navigation !== undefined) {
+        cache.set('navigation', STUDIP.Navigation.navigation);
+        STUDIP.Cookie.set('responsive-navigation-hash', STUDIP.Navigation.hash);
+    } else {
+        STUDIP.Navigation.navigation = cache.get('navigation');
+    }
+
     if (media_query.matches) {
         responsify();
         setResponsiveDisplay();
@@ -159,29 +148,26 @@ $(document).ready(function() {
 });
 
 // Trigger search in responsive display
-$(document)
-    .on('click', '#quicksearch .quicksearchbutton', function() {
-        if ($('html').is(':not(.responsive-display)') || $('#quicksearch').is('.open')) {
-            return;
-        }
+$(document).on('click', '#quicksearch .quicksearchbutton', function() {
+    if ($('html').is(':not(.responsive-display)') || $('#quicksearch').is('.open')) {
+        return;
+    }
 
-        $('#quicksearch').addClass('open');
-        $('.quicksearchbox').focus();
+    $('#quicksearch').addClass('open');
+    $('.quicksearchbox').focus();
 
-        return false;
-    })
-    .on('blur', '#quicksearch.open .quicksearchbox', function() {
-        if (!this.value.trim().length) {
-            $('#quicksearch').removeClass('open');
-        }
-    })
-    .on('autocompleteopen', function(event) {
-        if ($(event.target).closest('#quicksearch').length === 0) {
-            return;
-        }
-        $('body > .ui-autocomplete').css({
-            left: 0,
-            right: 0,
-            boxSizing: 'border-box'
-        });
+    return false;
+}).on('blur', '#quicksearch.open .quicksearchbox', function() {
+    if (!this.value.trim().length) {
+        $('#quicksearch').removeClass('open');
+    }
+}).on('autocompleteopen', function(event) {
+    if ($(event.target).closest('#quicksearch').length === 0) {
+        return;
+    }
+    $('body > .ui-autocomplete').css({
+        left: 0,
+        right: 0,
+        boxSizing: 'border-box'
     });
+});
