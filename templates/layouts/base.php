@@ -117,9 +117,7 @@ if ($navigation) {
                 <?= htmlReady(PageLayout::getTitle()) ?>
                 <?= $public_hint ? '(' . htmlReady($public_hint) . ')' : '' ?>
             </div>
-            <? if (is_object($GLOBALS['perm']) && $GLOBALS['perm']->have_perm('autor')) : ?>
-            	<?= Helpbar::get()->render() ?>
-            <? endif; ?>
+
          </div>
 
         <div id="layout_container">

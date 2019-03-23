@@ -162,8 +162,15 @@ label[for="responsive-toggle"] {
 .media-breakpoint-small-down({
     #header, #flex-header, #barTopFont, #barTopMenu,
     #barBottomLeft .current_page, #barBottommiddle, #barBottomLeft, #barBottomArrow,
-    #tabs, #tabs2, .sidebar-image, #sidebar-navigation:not(.show), #barTopFont, #footer, .sidebar-widget-header {
+    #tabs, .sidebar-image, #sidebar-navigation:not(.show), #barTopFont, #footer, .sidebar-widget-header {
         display: none !important;
+    }
+    #layout_wrapper #layout_page .tabs_wrapper {
+        justify-content: flex-end;
+        .helpbar-container {
+            top: 0px;
+            right: 6px;
+        }
     }
     .responsive-hidden {
         display: none;

@@ -161,7 +161,18 @@
 
         min-width: @page-width;
 
-        #tabs, #tabs2 {                     // row 1 of layout_page
+        .tabs_wrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: space-between;
+            background-color: @dark-gray-color-10;
+            padding: 0 2px 0 7px;
+
+            border-top: 1px solid @dark-gray-color-40;
+            border-bottom: 1px solid @dark-gray-color-40;
+        }
+        #tabs {                     // row 1 of layout_page
             min-height: 30px;
             float: none;
             flex: 0 1 auto;

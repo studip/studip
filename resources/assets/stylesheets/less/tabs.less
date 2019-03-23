@@ -5,13 +5,13 @@ div.clear
 }
 
 // Common styles for both tab sets
-#tabs, #tabs2 {
+#tabs {
     line-height: 20px;
     min-height: 30px;
     float: none;
     flex: 0 1 auto;
     margin: 0;
-    background-color: @dark-gray-color-10;
+
 
     ul, li {
         list-style: none;
@@ -26,10 +26,7 @@ div.clear
 
 // Main tab set with the tabs sitting on top of the main content
 #tabs {
-    padding: 0 2px 0 7px;
-
-    border-top: 1px solid @dark-gray-color-40;
-    border-bottom: 1px solid @dark-gray-color-40;
+    padding-left: 0px;
 
     span { padding: 0; }
     .quiet img { opacity: 0.25; }
@@ -143,54 +140,4 @@ div.clear
     }
 }
 
-#tabs2 {
-    background-color: #fff;
 
-    padding: 0 2px 0 0;
-
-    span {
-        padding: 0;
-    }
-    .quiet img {
-        opacity: 0.25;
-    }
-
-    li {
-        background-color: #fff;
-        padding: 5px 5px 2px 5px;
-        margin-right: 0px;
-        margin-left: 10px;
-
-        &:last-child {
-            border-right: none;
-        }
-
-        &.current {
-            color: @base-color;
-        }
-
-        &:hover {
-            //background-color: @dark-gray-color-10;
-            border-bottom: 3px solid @dark-gray-color-20;
-            color: @base-color;
-        }
-
-        &.current {
-            border-bottom: 3px solid @dark-gray-color-80;
-            padding-top: 5px;
-            line-height: 20px;
-            a, span.quiet {
-                color: @base-color;
-            }
-        }
-    }
-    a, span.quiet {
-        color: #000;
-        float: left;
-        display: block;
-
-        padding-right: 0em;
-        white-space: nowrap;
-        height: 23px;
-    }
-}
