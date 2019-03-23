@@ -17,14 +17,14 @@
 <div style="margin-top:10px;margin-bottom:10px;">
 <?php echo formatReady($msg['message'])?>
 </div>
-<?php if (count($msg['attachments'])) : ?>
+<?php if (!empty($msg['attachments'])) : ?>
     <hr>
     <div style="font-weight:bold">
     <?php echo _("Dateianhänge:")?>
     </div>
     <?php foreach($msg['attachments'] as $one) : ?>
     <div>
-    <?php echo htmlReady($one['filename']) . ' (' . relsize($one['filesize'], false) . ')' ?>
+    <?php echo htmlReady($one['name']) . ' (' . relsize($one['size'], false) . ')' ?>
     </div>
     <?php endforeach;?>
 <?php endif;?>

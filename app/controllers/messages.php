@@ -688,10 +688,8 @@ class MessagesController extends AuthenticatedController {
                 join(', ', $message->getRecipients()->pluck('fullname')) :
                 $GLOBALS['user']->getFullname() . ' ' . sprintf(_('(und %d weitere)'), $message->getNumRecipients()-1);
 
-            if ($attachment_folder = Folder::findOneByRange_id($this->message->id)) {
-                $this->msg['attachments'] = array_map(
-                    function ($fileref) { return $fileref->file->toArray('name size'); },
-                    $attachment_folder->getFiles());
+            if ($attachment_folder = Folder::findOneByRange_id($message->id)) {
+                $this->msg['attachments'] = $attachment_folder->file_refs->toArray('name size');
             }
 
             PageLayout::setTitle($this->msg['subject']);
