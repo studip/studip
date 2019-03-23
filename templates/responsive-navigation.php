@@ -1,5 +1,8 @@
 <?php
-[$navigation, $activated] = ResponsiveHelper::getNavigationArray();
+list($navigation, $activated) = ResponsiveHelper::getNavigationArray();
+
+// TODO: PHP7
+// [$navigation, $activated] = ResponsiveHelper::getNavigationArray();
 $hash = md5(json_encode($navigation));
 
 $response = compact('activated');
