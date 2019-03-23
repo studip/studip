@@ -197,15 +197,15 @@ class NewsController extends StudipController
         // if form sent, get news data by post vars
         if (Request::get('news_isvisible')) {
             // visible categories, selected areas, topic, and body are utf8 encoded when sent via ajax
-            $this->news_isvisible = studip_json_decode(Request::get('news_isvisible'));
+            $this->news_isvisible = json_decode(Request::get('news_isvisible'), true);
             if (Request::isXhr()) {
-                $this->area_options_selected = studip_json_decode(Request::get('news_selected_areas'));
-                $this->area_options_selectable = studip_json_decode(Request::get('news_selectable_areas'));
+                $this->area_options_selected = json_decode(Request::get('news_selected_areas'), true);
+                $this->area_options_selectable = json_decode(Request::get('news_selectable_areas'), true);
                 $topic = Request::get('news_topic');
                 $body = transformBeforeSave(Studip\Markup::purifyHtml(Request::get('news_body')));
             } else {
-                $this->area_options_selected = studip_json_decode(Request::get('news_selected_areas'));
-                $this->area_options_selectable = studip_json_decode(Request::get('news_selectable_areas'));
+                $this->area_options_selected = json_decode(Request::get('news_selected_areas'), true);
+                $this->area_options_selectable = json_decode(Request::get('news_selectable_areas'), true);
                 $topic = Request::get('news_topic');
                 $body = transformBeforeSave(Studip\Markup::purifyHtml(Request::get('news_body')));
             }
@@ -273,7 +273,7 @@ class NewsController extends StudipController
                     $this->area_options_selected['inst'][$range['range_id']] = $range['name'];
                     break;
                 default:
-                    $this->area_options_selected[$range['type']][$range['range_id']] = $range['name'];
+                    $this->area_options_selected[$range['type']][$range['range_id']] = (string) $range['name'];
             }
         }
 

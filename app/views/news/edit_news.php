@@ -1,8 +1,8 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <? if(!empty($flash['question_text'])) : ?>
-    <? $form_content = array('news_isvisible' => htmlReady(studip_json_encode($news_isvisible)),
-              'news_selectable_areas' => htmlReady(studip_json_encode($area_options_selectable)),
-              'news_selected_areas' => htmlReady(studip_json_encode($area_options_selected)),
+    <? $form_content = array('news_isvisible' => htmlReady(json_encode($news_isvisible)),
+              'news_selectable_areas' => htmlReady(json_encode($area_options_selectable)),
+              'news_selected_areas' => htmlReady(json_encode($area_options_selected)),
               'news_basic_js' => '',
               'news_comments_js' => '',
               'news_areas_js' => '',
@@ -23,9 +23,9 @@
     <input type="hidden" name="news_basic_js" value="">
     <input type="hidden" name="news_comments_js" value="">
     <input type="hidden" name="news_areas_js" value="">
-    <input type="hidden" name="news_isvisible" value="<?=htmlReady(studip_json_encode($news_isvisible))?>">
-    <input type="hidden" name="news_selectable_areas" value="<?=htmlReady(studip_json_encode($area_options_selectable))?>">
-    <input type="hidden" name="news_selected_areas" value="<?=htmlReady(studip_json_encode($area_options_selected))?>">
+    <input type="hidden" name="news_isvisible" value="<?=htmlReady(json_encode($news_isvisible))?>">
+    <input type="hidden" name="news_selectable_areas" value="<?=htmlReady(json_encode($area_options_selectable))?>">
+    <input type="hidden" name="news_selected_areas" value="<?=htmlReady(json_encode($area_options_selected))?>">
 
     <? if (Request::isXhr()) : ?>
         <? foreach (PageLayout::getMessages() as $msg) : ?>
@@ -221,8 +221,8 @@
                             style="background-image: url('<?= Icon::create($area_data['icon'], 'info')->asImagePath() ?>');" label="<?=htmlReady($area_data['title'])?>">
                     <? foreach ($area_options_selected[$area_key] as $area_option_key => $area_option_title) : ?>
                         <option <?= (StudipNews::haveRangePermission('edit', $area_option_key) OR $may_delete) ? 'value="'.$area_option_key.'"' : 'disabled'?>
-                                <?=tooltip((string) $area_option_title);?>>
-                            <?= htmlReady(mila((string) $area_option_title))?>
+                                <?=tooltip($area_option_title);?>>
+                            <?= htmlReady(mila($area_option_title))?>
                         </option>
                     <? endforeach ?>
                     </optgroup>
