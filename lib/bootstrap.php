@@ -65,6 +65,15 @@ namespace {
     // default ASSETS_URL, customize if required
     $GLOBALS['ASSETS_URL'] = $ABSOLUTE_URI_STUDIP . 'assets/';
 
+    // if in dev mode and webpack dev server is running, adjust assets url
+    if (Studip\ENV === 'development') {
+        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+        if (@socket_connect($socket, '127.0.0.1', 8123)) {
+            $GLOBALS['ASSETS_URL'] = 'http://localhost:8123/';
+            socket_close($socket);
+        }
+    }
+
     require 'lib/classes/StudipFileloader.php';
     StudipFileloader::load('config_defaults.inc.php config_local.inc.php', $GLOBALS, compact('STUDIP_BASE_PATH', 'ABSOLUTE_URI_STUDIP', 'ASSETS_URL', 'CANONICAL_RELATIVE_PATH_STUDIP'), true);
 
