@@ -494,9 +494,9 @@ class MessagesController extends AuthenticatedController {
         }
         if (trim($settings['sms_sig'])) {
             if (Studip\Markup::editorEnabled()) {
-                $sms_sig = Studip\Markup::markAsHtml('<br><hr>' . Studip\Markup::markupToHtml($settings['sms_sig']) . '<br>');
+                $sms_sig = Studip\Markup::markAsHtml('<br><br><hr>' . Studip\Markup::markupToHtml($settings['sms_sig']) . '<br><br>');
             } else {
-                $sms_sig =  "\n\n--\n" . $settings['sms_sig'] . "\n";
+                $sms_sig =  "\n\n--\n" . $settings['sms_sig'] . "\n\n";
             }
             if ($forward_message || $quoted_message) {
                 $this->default_message['message'] = $sms_sig . $this->default_message['message'];
