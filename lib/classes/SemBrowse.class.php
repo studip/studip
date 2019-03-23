@@ -1271,10 +1271,8 @@ class SemBrowse {
                                         'option' => ''
                                     ], true));
                 case 'module':
-                    if (MVV::isVisibleSearch()) {
-                        return new Navigation(_('Suche im Modulverzeichnis'),
-                                URLHelper::getURL('dispatch.php/search/module'),null, true);
-                    }
+                    return new MVVSearchNavigation(_('Suche im Modulverzeichnis'),
+                            URLHelper::getURL('dispatch.php/search/module'),null, true);
             }
         } else {
             return new Navigation($option['title'][$language],

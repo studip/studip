@@ -48,8 +48,10 @@ class SearchNavigation extends Navigation
         $navigation_option = SemBrowse::getSearchOptionNavigation('sidebar');
 
         if ($navigation_option) {
-            $navigation = new Navigation(_('Veranstaltungen'),
-                    $navigation_option->getURL());
+            $navigation = new Navigation(
+                _('Veranstaltungen'),
+                $navigation_option->getURL()
+            );
             foreach (array_keys(Config::get()->COURSE_SEARCH_NAVIGATION_OPTIONS) as $name) {
                 $navigation_option = SemBrowse::getSearchOptionNavigation('sidebar', $name);
                 if ($navigation_option) {
