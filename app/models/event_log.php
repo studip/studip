@@ -1,24 +1,17 @@
 <?php
-# Lifter007: TODO
-# Lifter003: TODO
-# Lifter010: TODO
-/*
+/**
  * event_log.php - event logging admin model
  *
- * Copyright (c) 2009  Elmar Ludwig
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
+ * @author     Elmar Ludwig <ludwig@uos.de>
+ * @copyright  2009 Authors
+ * @license    GPL2 or any later version
  */
-
 class EventLog
 {
-    /*
+    /**
      * clean up old log events
      */
-    function cleanup_log_events ()
+    public function cleanup_log_events()
     {
         return LogEvent::deleteExpired();
     }
@@ -26,21 +19,21 @@ class EventLog
     /**
      * get object types available for query
      */
-    function get_object_types ()
+    public function get_object_types()
     {
-        return array(
+        return [
             'course'    => _('Veranstaltung'),
             'institute' => _('Einrichtung'),
             'user'      => _('Nutzer/-in'),
             'resource'  => _('Ressource'),
             'other'     => _('Sonstige (von Aktion abhängig)')
-        );
+        ];
     }
 
     /**
      * find objects matching the given string
      */
-    function find_objects ($type, $string, $action_name = null)
+    public function find_objects($type, $string, $action_name = null)
     {
         switch ($type) {
             case 'course':
@@ -61,7 +54,7 @@ class EventLog
     /**
      * build SQL query filter for selected action and object
      */
-    private function sql_event_filter ($action_id, $object_id, &$parameters = array())
+    private function sql_event_filter($action_id, $object_id, &$parameters = [])
     {
         $filter = [];
         if (isset($action_id) && $action_id != 'all') {
@@ -80,7 +73,7 @@ class EventLog
     /**
      * count number of log events for selected action
      */
-    function count_log_events ($action_id, $object_id)
+    public function count_log_events($action_id, $object_id)
     {
         $filter = $this->sql_event_filter($action_id, $object_id, $parameters);
         return LogEvent::countBySql($filter ?: '1', $parameters);
@@ -89,21 +82,21 @@ class EventLog
     /**
      * get log events (max. 50) for selected action, starting at offset
      */
-    function get_log_events ($action_id, $object_id, $offset)
+    public function get_log_events($action_id, $object_id, $offset)
     {
-        $offset = (int)$offset;
-        $filter = $this->sql_event_filter($action_id, $object_id, $parameters) ?: '1';
+        $offset = (int) $offset;
 
-        $log_events = LogEvent::findBySQL($filter . " ORDER BY mkdate DESC LIMIT {$offset}, 50",
-                $parameters);
+        $filter  = $this->sql_event_filter($action_id, $object_id, $parameters) ?: '1';
+        $filter .= " ORDER BY mkdate DESC, event_id DESC LIMIT {$offset}, 50";
+        $log_events = LogEvent::findBySQL($filter, $parameters);
 
         foreach ($log_events as $log_event) {
-            $events[] = array(
+            $events[] = [
                 'time'   => $log_event->mkdate,
                 'info'   => $log_event->formatEvent(),
                 'detail' => $log_event->info,
                 'debug'  => $log_event->dbg_info
-            );
+            ];
         }
 
         return $events;
@@ -112,11 +105,11 @@ class EventLog
     /**
      * get list of all available log actions
      */
-    function get_log_actions ()
+    public function get_log_actions()
     {
         $log_count = LogEvent::countByActions();
         $actions = LogAction::findBySQL('1 ORDER BY name');
-        $log_actions = array();
+        $log_actions = [];
         foreach ($actions as $action) {
             $log_actions[$action->getId()] = $action->toArray();
             $log_actions[$action->getId()]['log_count']
@@ -129,7 +122,7 @@ class EventLog
     /**
      * get all log actions with recorded events
      */
-    function get_used_log_actions ()
+    public function get_used_log_actions()
     {
         $actions = [];
         foreach (LogAction::getUsed() as $action) {
@@ -140,14 +133,13 @@ class EventLog
             }
             $actions[$log_group][$action_id] = $description;
         }
-//        asort($actions);
         return $actions;
     }
 
     /**
      * update log action in the database
      */
-    function update_log_action ($action_id, $description, $info_template, $active, $expires)
+    public function update_log_action($action_id, $description, $info_template, $active, $expires)
     {
         if ($description === '') {
             throw new InvalidArgumentException(_('Keine Beschreibung angegeben.'));
