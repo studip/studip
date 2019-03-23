@@ -429,6 +429,9 @@ class Markup
      */
     public static function markupToHtml($text, $trim = true, $mark = true)
     {
+        if (!trim($text)) {
+            return $text;
+        }
         if (self::isHtml($text)) {
             $is_fallback = self::isHtmlFallback($text);
             $text = self::purify($text, false);
