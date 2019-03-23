@@ -321,6 +321,10 @@ function get_fullname($user_id = "", $format = "full" , $htmlready = false)
         $user_id = $user->id;
     }
 
+    if (User::findCurrent()->id === $user_id) {
+        return User::findCurrent()->getFullName($format);
+    }
+
     $hash = md5($user_id . $format);
     if (!isset($cache[$hash])) {
         $query = "SELECT {$_fullname_sql[$format]}
