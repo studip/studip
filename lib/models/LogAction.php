@@ -27,13 +27,13 @@
  */
 class LogAction extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'log_actions';
-        $config['has_many']['events'] = array(
-            'class_name' => 'LogEvent',
-            'on_delete' => 'delete',
-        );
+        $config['has_many']['events'] = [
+            'class_name' => LogEvent::class,
+            'on_delete'  => 'delete',
+        ];
         parent::configure($config);
     }
 
@@ -44,7 +44,7 @@ class LogAction extends SimpleORMap
      */
     public function isActive()
     {
-        return $this->active ? true : false;
+        return (bool) $this->active;
     }
 
     /**
@@ -52,18 +52,30 @@ class LogAction extends SimpleORMap
      * The array contains the action_id and the description. It is ordered by
      * the first part of the actions name and the description.
      *
+     * @param bool $grouped Return array grouped by group name
      * @return array Assoc array of actions.
      */
-    public static function getUsed()
+    public static function getUsed($grouped = false)
     {
-        $db = DBManager::get();
-
         $sql = "SELECT action_id, description, SUBSTRING_INDEX(name, '_', 1) AS log_group
                 FROM log_actions WHERE EXISTS
                 (SELECT * FROM log_events WHERE log_events.action_id = log_actions.action_id)
                 ORDER BY log_group, description";
+        $result = DBManager::get()->fetchAll($sql);
 
-        $result = $db->query($sql);
-        return $result->fetchAll(PDO::FETCH_ASSOC);
+        if (!$grouped) {
+            return $result;
+        }
+
+        $actions = [];
+        foreach ($result as $action) {
+            extract($action);
+
+            if (!isset($actions[$log_group])) {
+                $actions[$log_group] = [];
+            }
+            $actions[$log_group][$action_id] = $description;
+        }
+        return $actions;
     }
 }

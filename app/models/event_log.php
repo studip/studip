@@ -67,7 +67,7 @@ class EventLog
             $parameters[':object_id'] = $object_id;
         }
 
-        return count($filter) ? join(' AND ', $filter) : '';
+        return count($filter) > 0 ? implode(' AND ', $filter) : '';
     }
 
     /**
@@ -117,47 +117,5 @@ class EventLog
         }
 
         return $log_actions;
-    }
-
-    /**
-     * get all log actions with recorded events
-     */
-    public function get_used_log_actions()
-    {
-        $actions = [];
-        foreach (LogAction::getUsed() as $action) {
-            extract($action);
-
-            if (!isset($actions[$log_group])) {
-                $actions[$log_group] = [];
-            }
-            $actions[$log_group][$action_id] = $description;
-        }
-        return $actions;
-    }
-
-    /**
-     * update log action in the database
-     */
-    public function update_log_action($action_id, $description, $info_template, $active, $expires)
-    {
-        if ($description === '') {
-            throw new InvalidArgumentException(_('Keine Beschreibung angegeben.'));
-        } else if ($info_template === '') {
-            throw new InvalidArgumentException(_('Kein Info-Template angegeben.'));
-        } else if ($expires < 0) {
-            throw new InvalidArgumentException(_('Ablaufzeit darf nicht negativ sein.'));
-        }
-
-        $action = LogAction::find($action_id);
-        if (!$action) {
-            throw new InvalidArgumentException(_('Unbekannte Aktion.'));
-        }
-
-        $action->description = $description;
-        $action->info_template = $info_template;
-        $action->active = $active;
-        $action->expires = $expires;
-        $action->store();
     }
 }
