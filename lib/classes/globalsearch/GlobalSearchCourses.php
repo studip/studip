@@ -47,6 +47,8 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
         $search = str_replace(' ', '% ', $search);
         $query = DBManager::get()->quote("%{$search}%");
 
+        $language = DBManager::get()->quote($_SESSION['_language']);
+
         // visibility
         if (!$GLOBALS['perm']->have_perm('admin')) {
             $visibility = "courses.`visible` = 1 AND ";
@@ -74,17 +76,23 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             }
         }
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.`Seminar_id`, courses.`start_time`, courses.`Name`,
+        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.`Seminar_id`, courses.`start_time`,
+                       IFNULL(`i18n`.`value`, courses.`Name`) AS `Name`,
                        courses.`VeranstaltungsNummer`, courses.`status`
-                FROM `seminare` courses
+                FROM `seminare` AS courses
+                LEFT JOIN `i18n`
+                  ON `i18n`.`object_id` = courses.`Seminar_id`
+                      AND `i18n`.`table` = 'seminare'
+                      AND `i18n`.`field` = 'name'
+                      AND `lang` = {$language}
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)
                 JOIN `seminar_user` u ON (u.`Seminar_id` = courses.`Seminar_id` AND u.`status` = 'dozent')
                 JOIN `auth_user_md5` a ON (a.`user_id` = u.`user_id`)
                 WHERE {$visibility}
                     (
-                        courses.`Name` LIKE {$query}
+                        IFNULL(`i18n`.`value`, courses.`Name`) LIKE {$query}
                         OR courses.`VeranstaltungsNummer` LIKE {$query}
-                        OR CONCAT_WS(' ', `sem_types`.`name`, courses.`Name`, `sem_types`.`name`) LIKE {$query}
+                        OR CONCAT_WS(' ', `sem_types`.`name`, IFNULL(`i18n`.`value`, courses.`Name`), `sem_types`.`name`) LIKE {$query}
                         OR a.`Nachname` LIKE {$query}
                         OR CONCAT_WS(' ', a.`Vorname`, a.`Nachname`) LIKE {$query}
                         OR CONCAT_WS(' ', a.`Nachname`, a.`Vorname`) LIKE {$query}
@@ -100,7 +108,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             $sql .= ", courses.`VeranstaltungsNummer`";
         }
 
-        $sql .= ", courses. `Name`";
+        $sql .= ", IFNULL(`i18n`.`value`, courses.`Name`)";
         $sql .= " LIMIT " . $limit;
 
         return $sql;
