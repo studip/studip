@@ -91,7 +91,7 @@
   @color: 'yellow';
 }
 
-.background-icon(@icon, @role, @size: 16, @append: 0) {
+.background-icon(@icon, @role: 'clickable', @size: 16, @append: 0) {
     .role2color(@role);
     @temp-icon: replace("@{color}/@{icon}", "\.(png|svg)$", '', g);
     @svg: "@{image-path}/icons/@{temp-icon}.svg";
