@@ -152,7 +152,11 @@
                 <? endforeach ?>
             </select>
 
-            <?= Icon::create('accept', 'clickable', ['title' => _('Vorauswahl anwenden')])->asInput(array('name'=>'area_search_preset',)) ?>
+            <?= Icon::create('accept')->asInput([
+                'name'           => 'area_search_preset',
+                'title'          => _('Vorauswahl anwenden'),
+                'formnovalidate' => '',
+            ]) ?>
         </label>
 
         <label class="with-action">
@@ -162,7 +166,11 @@
 
             <input name="area_search_term" class="news_search_term" type="text" placeholder="<?=_('Suchen')?>"
                    aria-label="<?= _('Suchbegriff') ?>">
-            <?= Icon::create('search', 'clickable', ['title' => _('Suche starten')])->asInput(array('name'=>'area_search',)) ?>
+            <?= Icon::create('search')->asInput([
+                'name'           => 'area_search',
+                'title'          => _('Suche starten'),
+                'formnovalidate' => '',
+            ]) ?>
         </label>
 
 
@@ -192,9 +200,17 @@
             <br>
             <br>
             <br>
-            <?= Icon::create('arr_2right', 'clickable', ['title' => _('In den Suchergebnissen markierte Bereiche der Ankündigung hinzufügen')])->asInput(array('name'=>'news_add_areas',)) ?>
+            <?= Icon::create('arr_2right')->asInput([
+                'name'           => 'news_add_areas',
+                'title'          => _('In den Suchergebnissen markierte Bereiche der Ankündigung hinzufügen'),
+                'formnovalidate' => '',
+            ]) ?>
             <br><br>
-            <?= Icon::create('arr_2left', 'clickable', ['title' => _('Bei den bereits ausgewählten Bereichen die markierten Bereiche entfernen')])->asInput(array('name'=>'news_remove_areas',)) ?>
+            <?= Icon::create('arr_2left')->asInput([
+                'name'           => 'news_remove_areas',
+                'title'          => _('Bei den bereits ausgewählten Bereichen die markierten Bereiche entfernen'),
+                'formnovalidate' => '',
+            ]) ?>
         </div>
         <div class="news_area_selected">
             <? foreach ($area_structure as $area_key => $area_data) : ?>
