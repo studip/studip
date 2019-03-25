@@ -100,27 +100,32 @@ use Studip\Button, Studip\LinkButton;
 
         <label class="col-3">
             <?=_('Abschluss')?>
-            <select name="degree">
+            <select name="degree[]" multiple class="nested-select">
                 <option value=""><?=_('Alle')?></option>
                 <? foreach($degrees as $degree) : ?>
-                    <option value="<?= $degree->id ?>" <?= $request['degree'] == $degree->id ? 'selected' : ''?>><?=htmlReady($degree->name)?></option>
+                    <option value="<?= $degree->id ?>"
+                        <?= !empty($request['degree']) && in_array($degree->id, $request['degree']) ? 'selected' : ''?>>
+                        <?=htmlReady($degree->name)?>
+                    </option>
                 <? endforeach ?>
             </select>
         </label>
 
         <label class="col-3">
             <?=_('Fach')?>
-            <select name="studycourse">
+            <select name="studycourse[]" multiple class="nested-select">
                 <option value=""><?=_('Alle')?></option>
                 <? foreach($studycourses as $studycourse) : ?>
-                    <option value="<?= $studycourse->id ?>" <?= $request['studycourse'] == $studycourse->id ? 'selected' : ''?>><?=htmlReady($studycourse->name)?></option>
+                    <option value="<?= $studycourse->id ?>"
+                        <?= !empty($request['studycourse']) && in_array($studycourse->id, $request['studycourse']) ? 'selected' : ''?>>
+                        <?=htmlReady($studycourse->name)?>
+                    </option>
                 <? endforeach ?>
             </select>
         </label>
 
         <label class="col-3">
             <?= _('Authentifizierung') ?>
-
             <select name="auth_plugins">
                <option value=""><?= _('Alle') ?></option>
            <? foreach (array_merge(['preliminary' => _('vorläufig')], $available_auth_plugins) as $key => $val): ?>
@@ -166,7 +171,19 @@ use Studip\Button, Studip\LinkButton;
         <? endif ?>
         </label>
     <? endforeach; ?>
-
+        <? if(!empty($roles)) :?>
+            <label class="col-3">
+                <?= _('Rollen')?>
+                <select name="roles[]" multiple class="nested-select">
+                    <option value=""><?=_('Alle')?></option>
+                    <? foreach($roles as $role) : ?>
+                        <option value="<?= $role->roleid ?>" <?=  !empty($request['roles']) && in_array($role->roleid, $request['roles']) ? 'selected' : '' ?>>
+                            <?= htmlReady($role->rolename) ?>
+                        </option>
+                    <? endforeach ?>
+                </select>
+            </label>
+        <? endif?>
         <label>
             <input type="checkbox" name="show_only_not_lectures" value="1"
                    <? if ($request['show_only_not_lectures']) echo 'checked'; ?>>

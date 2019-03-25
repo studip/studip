@@ -88,7 +88,12 @@ class Admin_UserController extends AuthenticatedController
                 $this->datafields[] = $datafield;
             }
         }
-
+    
+        // roles
+        $this->roles = array_filter(RolePersistence::getAllRoles(), function($role) {
+            return !$role->systemtype;
+        });
+        
         //wenn suche durchgeführt
         if (!empty($request)) {
             //suche mit datafields
@@ -115,7 +120,23 @@ class Admin_UserController extends AuthenticatedController
             $request['order']      = $this->order;
             $empty_search          = $request['perm'] === 'alle';
 
-            foreach (words('username vorname nachname email inaktiv locked show_only_not_lectures datafields inaktiv_tage institute studycourse degree userdomains auth_plugins') as $value) {
+            $values = [
+                'username',
+                'vorname',
+                'nachname',
+                'email',
+                'inaktiv',
+                'locked',
+                'show_only_not_lectures',
+                'datafields',
+                'inaktiv_tage',
+                'institute',
+                'studycourse',
+                'degree',
+                'userdomains',
+                'auth_plugins',
+            ];
+            foreach ($values as $value) {
                 if (!empty($request[$value])) {
                     $empty_search = false;
                     break;
@@ -171,6 +192,7 @@ class Admin_UserController extends AuthenticatedController
                 }
             }
         }
+        
         $this->degrees      = Abschluss::findBySQL('1 order by name');
         $this->studycourses = Fach::findBySQL('1 order by name');
         $this->userdomains  = UserDomain::getUserDomains();
@@ -183,7 +205,7 @@ class Admin_UserController extends AuthenticatedController
         if ($advanced
             || !empty($search_datafields)
             || (!empty($request)
-                && ($request['auth_plugins'] || $request['userdomains'] || $request['degree'] || $request['institute'] || $request['studycourse'] || $request['show_only_not_lectures'])
+                && ($request['auth_plugins'] || $request['userdomains'] || $request['degree'] || $request['institute'] || $request['studycourse'] || $request['show_only_not_lectures'] || !empty($request['roles']))
             )
         ) {
             $this->advanced = true;
@@ -230,7 +252,6 @@ class Admin_UserController extends AuthenticatedController
      */
     public function delete_action($user_id = null, $parent = '')
     {
-
         $delete_documents           = (bool) Request::int('documents');
         $delete_content_from_course = (bool) Request::int('coursecontent');
         $delete_personal_documents  = (bool) Request::int('personaldocuments');
@@ -574,8 +595,7 @@ class Admin_UserController extends AuthenticatedController
 
             $this->redirect('admin/user/edit/' . $user_id);
         }
-
-
+        
         $this->prelim = $this->user->auth_plugin === null;
         if ($this->prelim) {
             $this->available_auth_plugins['preliminary'] = _('vorläufig');
@@ -597,7 +617,7 @@ class Admin_UserController extends AuthenticatedController
         $this->userfields           = DataFieldEntry::getDataFieldEntries($user_id, 'user');
         $this->userdomains          = UserDomain::getUserDomainsForUser($user_id);
         if (LockRules::CheckLockRulePermission($user_id) && LockRules::getObjectRule($user_id)->description) {
-            PageLayout::postMessage(MessageBox::info(formatLinks(LockRules::getObjectRule($user_id)->description)));
+            PageLayout::postInfo(formatLinks(LockRules::getObjectRule($user_id)->description));
         }
 
         $user_domains      = UserDomain::getUserDomainsForUser($this->user->user_id);
@@ -1087,9 +1107,9 @@ class Admin_UserController extends AuthenticatedController
             $deleted = $user_stc->delete();
         }
         if ($deleted) {
-            PageLayout::postMessage(MessageBox::success(_('Die Zuordnung zum Studiengang wurde gelöscht.')));
+            PageLayout::postSuccess(_('Die Zuordnung zum Studiengang wurde gelöscht.'));
         } else {
-            PageLayout::postMessage(MessageBox::error(_('Die Zuordnung zum Studiengang konnte nicht gelöscht werden.')));
+            PageLayout::postError(_('Die Zuordnung zum Studiengang konnte nicht gelöscht werden.'));
         }
         $this->redirect('admin/user/edit/' . $user_id);
     }

@@ -302,129 +302,146 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     public static function search($attributes)
     {
         $params = [];
-
-        $query = "SELECT au.*,ui.*
-                  FROM auth_user_md5 au
-                  LEFT JOIN datafields_entries de ON (de.range_id = au.user_id)
-                  LEFT JOIN user_online uo ON (au.user_id = uo.user_id)
-                  LEFT JOIN user_info ui ON (au.user_id = ui.user_id)
-                  LEFT JOIN user_userdomains uud ON (au.user_id = uud.user_id)
-                  LEFT JOIN userdomains uds USING (userdomain_id)
-                  LEFT JOIN user_studiengang us ON (us.user_id = au.user_id)
-                  LEFT JOIN user_inst uis ON uis.user_id = au.user_id
-                  WHERE 1 ";
+        $joins  = [];
+        $where  = [];
+        
+        $query = "SELECT au.*, ui.*
+                  FROM `auth_user_md5` au
+                  LEFT JOIN `user_online` uo ON (au.`user_id` = uo.`user_id`)
+                  LEFT JOIN `user_info` ui ON (au.`user_id` = ui.`user_id`)";
+    
         if ($attributes['username']) {
-            $query .= "AND au.username like :username ";
+            $where[] =  "au.`username` like :username";
             $params[':username'] = self::searchParam($attributes['username']);
         }
-
+    
         if ($attributes['vorname']) {
-            $query .= "AND au.vorname like :vorname ";
+            $where[] = "au.`Vorname` LIKE :vorname";
             $params[':vorname'] = self::searchParam($attributes['vorname']);
         }
-
+    
         if ($attributes['nachname']) {
-            $query .= "AND au.nachname like :nachname ";
+            $where[] = "au.`Nachname` LIKE :nachname";
             $params[':nachname'] = self::searchParam($attributes['nachname']);
         }
-
+    
         if ($attributes['email']) {
-            $query .= "AND au.Email like :email ";
+            $where[] = "au.`Email` LIKE :email";
             $params[':email'] = self::searchParam($attributes['email']);
         }
-
+    
         //permissions
         if (!is_null($attributes['perm']) && $attributes['perm'] != 'alle') {
-            $query .= "AND au.perms =  :perms ";
+            $where[] = "au.`perms` = :perms";
             $params[':perms'] = $attributes['perm'];
         }
-
+    
         //locked user
         if ((int)$attributes['locked'] == 1) {
-            $query .= "AND au.locked = 1 ";
+            $where[] = "au.`locked` = 1";
         }
-
+    
         // show only users who are not lecturers
         if ($attributes['show_only_not_lectures']) {
-            $query .= "AND au.user_id NOT IN (SELECT user_id FROM seminar_user WHERE status = 'dozent') ";
+            $where[] = "au.`user_id` NOT IN (SELECT `user_id` FROM `seminar_user` WHERE `status` = 'dozent') ";
         }
-
+        
+        if ($attributes['auth_plugins']) {
+            $where[] = "IFNULL(`auth_plugin`, 'preliminary') = :auth_plugins ";
+            $params[':auth_plugins'] = $attributes['auth_plugins'];
+        }
+    
         //inactivity
         if (!is_null($attributes['inaktiv']) && $attributes['inaktiv'][0] != 'nie') {
             $comp = in_array(trim($attributes['inaktiv'][0]), ['=', '>', '<=']) ? $attributes['inaktiv'][0] : '=';
             $days = (int)$attributes['inaktiv'][1];
-            $query .= "AND uo.last_lifesign {$comp} UNIX_TIMESTAMP(TIMESTAMPADD(DAY, -{$days}, NOW())) ";
+            $where[] = "uo.`last_lifesign` {$comp} UNIX_TIMESTAMP(TIMESTAMPADD(DAY, -{$days}, NOW())) ";
         } elseif (!is_null($attributes['inaktiv'])) {
-            $query .= "AND uo.last_lifesign IS NULL ";
+            $where[] = "uo.`last_lifesign` IS NULL";
         }
-
+        
         //datafields
         if (!is_null($attributes['datafields']) && count($attributes['datafields']) > 0) {
+            $joins[] = "LEFT JOIN `datafields_entries` de ON (de.`range_id` = au.`user_id`)";
             foreach ($attributes['datafields'] as $id => $entry) {
-                $query .= "AND de.datafield_id = :df_id_". $id ." AND de.content LIKE :df_content_". $id ." ";
+                $where[] = "de.`datafield_id` = :df_id_". $id;
+                $where[] = "de.`content` LIKE :df_content_". $id;
                 $params[':df_id_' . $id] = $id;
                 $params[':df_content_' . $id] = $entry;
             }
         }
-
-        if ($attributes['auth_plugins']) {
-            $query .= "AND IFNULL(auth_plugin, 'preliminary') = :auth_plugins ";
-            $params[':auth_plugins'] = $attributes['auth_plugins'];
+    
+        // roles
+        if (!empty($attributes['roles'])) {
+            $joins[] = "LEFT JOIN `roles_user` ON roles_user.`userid` = au.`user_id`";
+            $where[] = "roles_user.`roleid` IN (:roles)";
+            $params[':roles'] = $attributes['roles'];
         }
-
+        
+        // userdomains
         if ($attributes['userdomains']) {
+            $joins[] = "LEFT JOIN `user_userdomains` uud ON (au.`user_id` = uud.`user_id`)";
+            $joins[] = "LEFT JOIN `userdomains` uds USING (`userdomain_id`)";
             if ($attributes['userdomains'] === 'null-domain') {
-                $query .= "AND userdomain_id IS NULL ";
+                $where[] = "`userdomain_id` IS NULL ";
             } else {
-                $query .= "AND userdomain_id = :userdomains ";
+                $where[] = "userdomain_id = :userdomains";
                 $params[':userdomains'] = $attributes['userdomains'];
             }
         }
-
-        if($attributes['degree']) {
-            $query .= "AND us.abschluss_id = :degree ";
-            $params[':degree'] = $attributes['degree'];
+    
+        // degree or studycourse
+        if (!empty($attributes['degree']) || !empty($attributes['studycourse'])) {
+            $joins[] = "LEFT JOIN `user_studiengang` us ON (us.`user_id` = au.`user_id`)";
+            if (!empty($attributes['degree'])) {
+                $where[] = "us.`abschluss_id` IN (:degree)";
+                $params[':degree'] = $attributes['degree'];
+            }
+            
+            if (!empty($attributes['studycourse'])) {
+                $where[] = "us.`fach_id` IN (:studycourse)";
+                $params[':studycourse'] = $attributes['studycourse'];
+            }
         }
-
-        if($attributes['studycourse']) {
-            $query .= "AND us.fach_id = :studycourse ";
-            $params[':studycourse'] = $attributes['studycourse'];
-        }
-
-        if($attributes['institute']) {
-            $query .= "AND uis.Institut_id = :institute ";
+    
+        if ($attributes['institute']) {
+            $joins[] = "LEFT JOIN `user_inst` uis ON uis.`user_id` = au.`user_id`";
+            $where[] = "uis.`Institut_id` = :institute";
             $params[':institute'] = $attributes['institute'];
         }
-
-        $query .= " GROUP BY au.user_id ";
+        
+        $query .= implode(' ', $joins);
+        $query .= " WHERE 1 AND ";
+        $query .= implode(' AND ', $where);
+        $query .= " GROUP BY au.`user_id` ";
 
         //sortieren
         switch ($attributes['sort']) {
             case "perms":
-                $query .= "ORDER BY au.perms {$attributes['order']}, au.username";
+                $query .= "ORDER BY au.`perms` {$attributes['order']}, au.`username`";
                 break;
             case "Vorname":
-                $query .= "ORDER BY au.Vorname {$attributes['order']}, au.Nachname";
+                $query .= "ORDER BY au.`Vorname` {$attributes['order']}, au.`Nachname`";
                 break;
             case "Nachname":
-                $query .= "ORDER BY au.Nachname {$attributes['order']}, au.Vorname";
+                $query .= "ORDER BY au.`Nachname` {$attributes['order']}, au.`Vorname`";
                 break;
             case "Email":
-                $query .= "ORDER BY au.Email {$attributes['order']}, au.username";
+                $query .= "ORDER BY au.`Email` {$attributes['order']}, au.`username`";
                 break;
             case "changed":
-                $query .= "ORDER BY uo.last_lifesign {$attributes['order']}, au.username";
+                $query .= "ORDER BY uo.`last_lifesign` {$attributes['order']}, au.`username`";
                 break;
             case "mkdate":
-                $query .= "ORDER BY ui.mkdate {$attributes['order']}, au.username";
+                $query .= "ORDER BY ui.`mkdate` {$attributes['order']}, au.`username`";
                 break;
             case "auth_plugin":
-                $query .= "ORDER BY auth_plugin {$attributes['order']}, au.username";
+                $query .= "ORDER BY `auth_plugin` {$attributes['order']}, au.`username`";
                 break;
             default:
-                $query .= " ORDER BY au.username {$attributes['order']}";
+                $query .= " ORDER BY au.`username` {$attributes['order']}";
         }
-
+        
         return DBManager::get()->fetchAll($query, $params, __CLASS__ . '::buildExisting');
     }
 
