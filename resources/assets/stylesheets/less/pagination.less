@@ -2,7 +2,8 @@
     position: absolute;
     left: -999em;
 }
-.pagination, .pagination li {
+.pagination,
+.pagination li {
     line-height: 1.2em;
     list-style: none;
     margin: 0;
@@ -11,29 +12,48 @@
 .pagination {
     li {
         display: inline-block;
-        &:before {
-            content:" | ";
-            font-weight: normal;
+
+        &:not(:first-of-type) {
+            &::before {
+                content: ' | ';
+                font-weight: normal;
+            }
         }
-        &:first-child:before { content: " "; }
     }
-    .current {
+
+    .divider--template {
+        display: none;
+    }
+
+    .pagination--link {
+        background-color: transparent;
+        border: 0;
+        color: @base-color;
+        cursor: pointer;
+        padding: 0;
+    }
+
+    .current .pagination--link {
         font-weight: bold;
-        a { color: #000; }
+        color: #000;
     }
-    .prev a, .next a {
-        .hide-text;
-        background-position: center;
-        background-repeat: no-repeat;
-        display: inline-block;
-        height: 16px;
-        width: 16px;
-        vertical-align: top;
+
+    .prev,
+    .next {
+        .pagination--link {
+            .hide-text;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: inline-block;
+            height: 16px;
+            width: 16px;
+            vertical-align: top;
+        }
     }
-    .prev a {
-        .background-icon('arr_1left', 'clickable');
+    .prev .pagination--link {
+        .background-icon('arr_1left');
     }
-    .next a {
-        .background-icon('arr_1right', 'clickable');
+    .next .pagination--link {
+        .background-icon('arr_1right');
     }
 }
