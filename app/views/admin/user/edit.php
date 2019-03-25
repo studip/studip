@@ -426,9 +426,8 @@ use Studip\Button, Studip\LinkButton;
             </ol>
         </section>
         <? endif ?>
-
-
-        <? if (sizeof($student_institutes)) : ?>
+        
+        <? if (isset($student_institutes) && count($student_institutes)) : ?>
         <section class="col-3">
             <ol class="default">
             <? foreach ($student_institutes as $i => $inst_membership) : ?>
@@ -480,9 +479,7 @@ use Studip\Button, Studip\LinkButton;
             <? endforeach; ?>
             </select>
         </label>
-
-
-        <? if (count($institutes) > 0) : ?>
+        <? if (isset($institutes) && count($institutes)) : ?>
         <section class="col-3">
             <ol class="default">
             <? foreach ($institutes as $i => $inst_membership) : ?>
