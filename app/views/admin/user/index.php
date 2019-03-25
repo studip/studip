@@ -123,6 +123,18 @@ use Studip\Button, Studip\LinkButton;
                 <? endforeach ?>
             </select>
         </label>
+        
+        <label class="col-3">
+            <?= _('Fachsemester') ?>
+            <select name="fachsem">
+                <option value=""><?= _('Alle') ?></option>
+                <? for ($i = 1; $i <= 50; $i += 1): ?>
+                    <option <?= $request['fachsem'] && (int)$request['fachsem'] === $i ? 'selected' : ''?>>
+                        <?= $i ?>
+                    </option>
+                <? endfor; ?>
+            </select>
+        </label>
 
         <label class="col-3">
             <?= _('Authentifizierung') ?>

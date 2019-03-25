@@ -391,7 +391,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         }
     
         // degree or studycourse
-        if (!empty($attributes['degree']) || !empty($attributes['studycourse'])) {
+        if (!empty($attributes['degree']) || !empty($attributes['studycourse']) || !empty($attributes['fachsem'])) {
             $joins[] = "LEFT JOIN `user_studiengang` us ON (us.`user_id` = au.`user_id`)";
             if (!empty($attributes['degree'])) {
                 $where[] = "us.`abschluss_id` IN (:degree)";
@@ -401,6 +401,11 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             if (!empty($attributes['studycourse'])) {
                 $where[] = "us.`fach_id` IN (:studycourse)";
                 $params[':studycourse'] = $attributes['studycourse'];
+            }
+            
+            if(!empty($attributes['fachsem'])) {
+                $where[] = 'us.`semester` = :fachsem';
+                $params[':fachsem'] = $attributes['fachsem'];
             }
         }
     

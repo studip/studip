@@ -133,6 +133,7 @@ class Admin_UserController extends AuthenticatedController
                 'institute',
                 'studycourse',
                 'degree',
+                'fachsem',
                 'userdomains',
                 'auth_plugins',
             ];
