@@ -137,12 +137,10 @@ class FilesController extends AuthenticatedController
         $sidebar->addWidget($actions);
 
         if ($folder->isWritable($GLOBALS['user']->id)) {
-            $uploadArea = new LinksWidget();
-            $uploadArea->setTitle(_("Dateien hinzufügen"));
-            $uploadArea->addElement(new WidgetElement(
-                    $this->render_template_as_string('files/upload-drag-and-drop'))
-            );
-            $sidebar->addWidget($uploadArea);
+            $sidebar->addWidget(new TemplateWidget(
+                _('Dateien hinzufügen'),
+                $this->get_template_factory()->open('files/upload-drag-and-drop')
+            ))->addLayoutCSSClass('hidden-medium-down');
         }
 
         if ($view) {
