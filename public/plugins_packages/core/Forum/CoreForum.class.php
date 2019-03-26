@@ -36,10 +36,11 @@ class CoreForum extends StudipPlugin implements ForumModule
      *
      * @param string $unconsumed_path  part of the dispatch path that was not consumed
      */
-    public function perform($unconsumed_path) {
+    public function perform($unconsumed_path)
+    {
         // Add JS and StyleSheet to header
-        PageLayout::addScript($this->getPluginURL() . '/javascript/forum.js');
-        self::addStylesheet('stylesheets/forum.less');
+        $this->addScript('javascript/forum.js');
+        $this->addStylesheet('stylesheets/forum.less');
 
         parent::perform($unconsumed_path);
     }
@@ -68,7 +69,7 @@ class CoreForum extends StudipPlugin implements ForumModule
     }
 
     /* interface method */
-    function getIconNavigation($course_id, $last_visit, $user_id = null)
+    public function getIconNavigation($course_id, $last_visit, $user_id = null)
     {
         if ($GLOBALS['perm']->have_studip_perm('user', $course_id)) {
             $num_entries = ForumVisit::getCount($course_id, ForumVisit::getVisit($course_id));
@@ -118,7 +119,7 @@ class CoreForum extends StudipPlugin implements ForumModule
         ForumAbo::removeForCourseAndUser($course_id, $user_id);
     }
 
-    function getInfoTemplate($course_id)
+    public function getInfoTemplate($course_id)
     {
         return null;
     }
@@ -127,7 +128,7 @@ class CoreForum extends StudipPlugin implements ForumModule
     /* * IMPLEMENTATION OF METHODS FROM FORUMMODULE-INTERFACE  * */
     /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-    function getLinkToThread($issue_id)
+    public function getLinkToThread($issue_id)
     {
         if ($topic_id = ForumIssue::getThreadIdForIssue($issue_id)) {
             return PluginEngine::getLink($this, array(), '/index/index/' . $topic_id);
@@ -136,34 +137,34 @@ class CoreForum extends StudipPlugin implements ForumModule
         return false;
     }
 
-    function setThreadForIssue($issue_id, $title, $content)
+    public function setThreadForIssue($issue_id, $title, $content)
     {
         ForumIssue::setThreadForIssue(Context::getId(), $issue_id, $title, $content);
     }
 
-    function getNumberOfPostingsForUser($user_id, $seminar_id = null)
+    public function getNumberOfPostingsForUser($user_id, $seminar_id = null)
     {
         return ForumEntry::countUserEntries($user_id, $seminar_id);
     }
 
-    function getNumberOfPostingsForIssue($issue_id)
+    public function getNumberOfPostingsForIssue($issue_id)
     {
         $topic_id = ForumIssue::getThreadIdForIssue($issue_id);
 
         return $topic_id ? ForumEntry::countEntries($topic_id) : 0;
     }
 
-    function getNumberOfPostingsForSeminar($seminar_id)
+    public function getNumberOfPostingsForSeminar($seminar_id)
     {
         return floor(ForumEntry::countEntries($seminar_id));
     }
 
-    function getNumberOfPostings()
+    public function getNumberOfPostings()
     {
         return ForumEntry::countAllEntries();
     }
 
-    function getEntryTableInfo()
+    public function getEntryTableInfo()
     {
         return array(
             'table'      => 'forum_entries',
@@ -174,27 +175,28 @@ class CoreForum extends StudipPlugin implements ForumModule
         );
     }
 
-    function getTopTenSeminars()
+    public function getTopTenSeminars()
     {
         return ForumEntry::getTopTenSeminars();
     }
 
-    function migrateUser($user_from, $user_to)
+    public function migrateUser($user_from, $user_to)
     {
         return ForumEntry::migrateUser($user_from, $user_to);
     }
 
-    function deleteContents($seminar_id)
+    public function deleteContents($seminar_id)
     {
         return ForumEntry::delete($seminar_id);
     }
 
-    function getDump($seminar_id)
+    public function getDump($seminar_id)
     {
         return ForumEntry::getDump($seminar_id);
     }
 
-    static function getDescription() {
+    public static function getDescription()
+    {
         return _('Textbasierte und zeit- und ortsunabhängige '.
             'Diskursmöglichkeit. Lehrende können parallel zu '.
             'Veranstaltungsthemen Fragen stellen, die von den Studierenden '.
