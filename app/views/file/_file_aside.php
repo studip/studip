@@ -7,8 +7,14 @@
         <caption><?= htmlReady($file_ref->name) ?></caption>
         <tbody>
             <tr>
+            <? if ($file_ref->is_link) : ?>
+                <td colspan="2">
+                    <?= _('Weblink') ?>
+                </td>
+            <? else: ?>
                 <td><?= _('Größe') ?></td>
                 <td><?= relSize($file_ref->size, false) ?></td>
+            <? endif; ?>
             </tr>
             <tr>
                 <td><?= _('Downloads') ?></td>
