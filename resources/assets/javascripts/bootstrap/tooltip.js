@@ -50,9 +50,10 @@ $(document).on('mouseenter mouseleave', '[data-tooltip]', function(event) {
         $('.studip-tooltip').not(data.tooltipObject).hide();
         data.tooltipObject.show();
     } else {
-        timeout = setTimeout(() => data.tooltipObject.hide(), tooltipDelay);
+        timeout = setTimeout(() => data.tooltipObject.hide(), delay);
     }
 }).on('mouseenter', '.studip-tooltip', () => {
+    console.log('cleared timeout');
     clearTimeout(timeout);
 }).on('mouseleave', '.studip-tooltip', function() {
     $(this).hide();
