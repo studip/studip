@@ -14,6 +14,8 @@ class Consultations extends Migration
                     `note` TEXT NOT NULL,
                     `size` TINYINT(2) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'How many people may book a slot',
                     `course_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NULL DEFAULT NULL,
+                    `mkdate` INT(11) UNSIGNED NOT NULL,
+                    `chdate` INT(11) UNSIGNED NOT NULL,
                     PRIMARY KEY (`block_id`),
                     KEY `teacher_id` (`teacher_id`)
                   ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC";
@@ -26,6 +28,8 @@ class Consultations extends Migration
                     `end_time` INT(11) UNSIGNED NOT NULL,
                     `note` TEXT NOT NULL,
                     `teacher_event_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NULL DEFAULT NULL,
+                    `mkdate` INT(11) UNSIGNED NOT NULL,
+                    `chdate` INT(11) UNSIGNED NOT NULL,
                     PRIMARY KEY (`slot_id`),
                     KEY `block_id` (`block_id`)
                   ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC";
@@ -37,6 +41,8 @@ class Consultations extends Migration
                     `user_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
                     `reason` TEXT NOT NULL,
                     `student_event_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NULL DEFAULT NULL,
+                    `mkdate` INT(11) UNSIGNED NOT NULL,
+                    `chdate` INT(11) UNSIGNED NOT NULL,
                     PRIMARY KEY (`booking_id`),
                     KEY `block_id` (`slot_id`),
                     KEY `user_id` (`user_id`)
@@ -140,39 +146,126 @@ class Consultations extends Migration
         // Migrate blocks
         $query = "INSERT INTO `consultation_blocks` (
                     `block_id`, `teacher_id`, `start`, `end`,
-                    `room`, `calendar_events`, `note`, `size`
-                  )
-                  SELECT `id`, `dozent_id`, `start_date`, `end_date`,
-                         `ort`, `in_calendar`, `note_on_schedule`, {$size_col}
+                    `room`, `calendar_events`, `note`, `size`,
+                    `mkdate`, `chdate`
+                ) VALUES (
+                    NULL, :teacher_id, :start, :end,
+                    :room, :calendar, :note, :size,
+                    UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
+                )";
+        $insert = DBManager::get()->prepare($query);
+
+        $blocks = [];
+
+        $query = "SELECT `id`, `dozent_id`,
+                         `ort`, `in_calendar`, `note_on_schedule`, {$size_col} AS `size`,
+                         `am`, `intervall`,
+                         FROM_UNIXTIME(`start_date`) AS start_date,
+                         FROM_UNIXTIME(`end_date`) AS end_date
                   FROM `SprechstundenTerminDesc`";
-        DBManager::get()->exec($query);
+        $statement = DBManager::get()->query($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+        foreach ($statement as $row) {
+            extract($row);
+
+            $start_date = strtotime($start_date);
+            $end_date   = strtotime($end_date);
+
+            $insert->bindValue(':teacher_id', $dozent_id);
+            $insert->bindValue(':room', $ort);
+            $insert->bindValue(':calendar', $in_calendar);
+            $insert->bindValue(':note', $note_on_schedule);
+            $insert->bindValue(':size', $size);
+
+            $current = $start_date;
+            while (date('w', $current) != $am) {
+                $current = strtotime('+1 day', $current);
+            }
+
+            $blocks[$id] = [];
+            while ($current <= $end_date) {
+                $start = $this->adjustTimestamp($current, $start_date);
+                $end   = $this->adjustTimestamp($current, $end_date);
+
+                $insert->bindValue(':start', $start);
+                $insert->bindValue(':end', $end);
+                $insert->execute();
+
+                $blocks[$id][] = [
+                    'start' => $start,
+                    'end'   => $end,
+                    'id'    => DBManager::get()->lastInsertId(),
+                ];
+
+                $current = strtotime("+{$intervall} weeks", $current);
+            }
+        }
 
         // Migrate slots
         $query = "INSERT INTO `consultation_slots` (
                     `slot_id`, `block_id`,
                     `start_time`,
                     `end_time`,
-                    `note`, `teacher_event_id`
-                  )
-                  SELECT szs.`id`, st.`desc_id`,
-                         st.`start_time` + szs.`position` * std.`dauer` * 60,
-                         st.`start_time` + (szs.`position` + 1) * std.`dauer` * 60,
-                         szs.`note_on_schedule`,
+                    `note`, `teacher_event_id`,
+                    `mkdate`, `chdate`
+                ) VALUES (
+                    :slot_id, :block_id, :start, :end, :note, :teacher_event_id,
+                    UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
+                )";
+        $insert = DBManager::get()->prepare($query);
+
+        $query = "SELECT szs.`id`, st.`desc_id`,
+                         szs.`position`, std.`dauer`,
+                         FROM_UNIXTIME(st.`start_time`) AS start_time,
+                         FROM_UNIXTIME(st.`end_time`) AS end_time,
+                         IFNULL(szs.`note_on_schedule`, '') AS `note`,
                          sa.`event_id_dozent`
                   FROM `SprechstundenTermin` AS st
                   JOIN `SprechstundenZeitSlot` AS szs ON szs.`termin_id` = st.`id`
                   JOIN `SprechstundenTerminDesc` AS std ON st.`desc_id` = std.`id`
                   LEFT JOIN `SprechstundenAnmeldung` AS sa ON sa.`zeitslot_id` = szs.`id`
                   GROUP BY szs.`id`";
-        DBManager::get()->exec($query);
+        $statement = DBManager::get()->query($query);
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        foreach ($statement as $row) {
+            extract($row);
+
+            // get block id
+            if (!isset($blocks[$desc_id])) {
+                continue;
+            }
+
+            $duration = $dauer * ($position - 1);
+            $start = strtotime("+{$duration} minutes", strtotime($start_time));
+            $end   = strtotime("+{$dauer} minutes", $start);
+
+            $block_id = false;
+            foreach ($blocks[$desc_id] as $block) {
+                if ($start <= $block['end'] && $end >= $block['start']) {
+                    $block_id = $block['id'];
+                    break;
+                }
+            }
+
+            $insert->bindValue(':slot_id', $id);
+            $insert->bindValue(':block_id', $block_id);
+            $insert->bindValue(':start', $start);
+            $insert->bindValue(':end', $end);
+            $insert->bindValue(':note', $note);
+            $insert->bindValue(':teacher_event_id', $event_id_dozent);
+            $insert->execute();
+        }
 
         // Migrate bookings
         $query = "INSERT INTO `consultation_bookings` (
                     `booking_id`, `slot_id`, `user_id`,
-                    `reason`, `student_event_id`
+                    `reason`, `student_event_id`,
+                    `mkdate`, `chdate`
                   )
                   SELECT `id`, `zeitslot_id`, `user_id`,
-                         `grund`, `event_id_student`
+                         `grund`, `event_id_student`,
+                         UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
                   FROM `SprechstundenAnmeldung`";
         DBManager::get()->exec($query);
 
@@ -200,5 +293,12 @@ class Consultations extends Migration
                   SET `enabled` = 'no'
                   WHERE `pluginclassname` = 'SprechstundenPlugin'";
         DBManager::get()->exec($query);
+    }
+
+    private function adjustTimestamp($current, $other)
+    {
+        $time = date('H:i', $other);
+        $current = strtotime("today {$time}", $current);
+        return $current;
     }
 }
