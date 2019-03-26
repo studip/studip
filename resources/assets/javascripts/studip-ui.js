@@ -377,7 +377,7 @@
             $(this.selector).filter(function () {
                 return $(this).data('time-picker-init') === undefined;
             }).each(function () {
-                $(this).data('time-picker-init', true).timepicker();
+                $(this).addClass('hasTimepicker').data('time-picker-init', true).timepicker();
             });
         },
         // Apply registered handlers. Take care: This happens upon before a

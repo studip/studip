@@ -83,10 +83,6 @@
     color: white;
 }
 
-.ui-datepicker-header .ui-icon {
-    background-image: url(../images/vendor/jquery-ui/ui-icons_ffffff_256x240.png);
-}
-
 .ui-accordion .ui-accordion-header {
     &,
     .ui-state-default,
@@ -119,14 +115,6 @@
     background-image: none;
 }
 
-.ui-datepicker-calendar .ui-state-active {
-    color: @brand-color-light;
-}
-
-.ui-datepicker-calendar .ui-state-active.ui-state-hover {
-    color: white;
-}
-
 .ui-autocomplete {
     border: 1px solid @dark-gray-color-45;
     padding: 1px;
@@ -152,4 +140,32 @@ textarea.ui-resizable-handle.ui-resizable-s {
     bottom: 0;
     cursor: s-resize;
     height: 12px;
+}
+
+// Date picker
+.ui-datepicker-header .ui-icon {
+    background-image: url(../images/vendor/jquery-ui/ui-icons_ffffff_256x240.png);
+}
+
+.ui-datepicker-calendar .ui-state-active {
+    color: @brand-color-light;
+}
+
+.ui-datepicker-calendar .ui-state-active.ui-state-hover {
+    color: white;
+}
+
+.hasDatepicker,
+[data-date-picker],
+.has-date-picker {
+    .background-icon('schedule', 'clickable');
+    background-position: right 3px center;
+    background-repeat: no-repeat;
+}
+.hasTimepicker,
+[data-time-picker],
+.has-time-picker {
+    .background-icon('date', 'clickable');
+    background-position: right 3px center;
+    background-repeat: no-repeat;
 }
