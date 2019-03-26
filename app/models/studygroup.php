@@ -286,7 +286,7 @@ class StudygroupModel
         $parameters[] = studygroup_sem_types();
 
         if (!$GLOBALS['perm']->have_perm('root')) {
-            $conditions[] = 'visible = 1';
+            $conditions[] = 's.visible = 1';
         }
 
         if (isset($search)) {
