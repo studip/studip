@@ -94,6 +94,8 @@ class Consultations extends Migration
                   )";
         DBManager::get()->exec($query);
 
+        SimpleORMap::expireTableScheme();
+
         $this->migratePlugin();
     }
 
@@ -228,6 +230,8 @@ class Consultations extends Migration
         $statement = DBManager::get()->query($query);
         $statement->setFetchMode(PDO::FETCH_ASSOC);
 
+
+        $used = [];
         foreach ($statement as $row) {
             extract($row);
 
@@ -248,6 +252,10 @@ class Consultations extends Migration
                 }
             }
 
+            if (!in_array($block_id, $used)) {
+                $used[] = $block_id;
+            }
+
             $insert->bindValue(':slot_id', $id);
             $insert->bindValue(':block_id', $block_id);
             $insert->bindValue(':start', $start);
@@ -256,6 +264,11 @@ class Consultations extends Migration
             $insert->bindValue(':teacher_event_id', $event_id_dozent);
             $insert->execute();
         }
+
+        // Remove empty blocks
+        $query = "DELETE FROM `consultation_blocks`
+                  WHERE `block_id` NOT IN (?)";
+        DBManager::get()->execute($query, [$used ?: '']);
 
         // Migrate bookings
         $query = "INSERT INTO `consultation_bookings` (
