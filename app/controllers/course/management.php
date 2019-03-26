@@ -58,14 +58,47 @@ class Course_ManagementController extends AuthenticatedController
         $sidebar = Sidebar::get();
         $sidebar->setImage('sidebar/admin-sidebar.png');
 
-        if (Course::findCurrent()) {
-            $links = new ActionsWidget();
-            foreach (Navigation::getItem('/course/admin/main') as $nav) {
-                if ($nav->isVisible(true)) {
-                    $links->addLink($nav->getTitle(), URLHelper::getURL($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $nav->getImage(), $nav->getLinkAttributes());
+        $course = Course::findCurrent();
+        if ($course) {
+            $actions = new ActionsWidget();
+            if ($GLOBALS['perm']->have_perm($sem_create_perm)) {
+                if (!LockRules::check($course->id, 'seminar_copy')) {
+                    $actions->addLink(
+                        _('Veranstaltung kopieren'),
+                        URLHelper::getURL($this->url_for('course/wizard/copy/'.$course->id), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        Icon::create('seminar+add')
+                    );
+                }
+
+                if (Config::get()->ALLOW_DOZENT_DELETE || $GLOBALS['perm']->have_perm('admin')) {
+                    $actions->addLink(
+                        _('Veranstaltung löschen'),
+                        URLHelper::getURL( $this->url_for('course/archive/confirm'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        Icon::create('seminar+remove')
+                    )->asDialog('size=auto');
+                }
+
+                if ((Config::get()->ALLOW_DOZENT_VISIBILITY || $GLOBALS['perm']->have_perm('admin')) && !LockRules::Check($course->id, 'seminar_visibility')) {
+                    $is_visible = $course->visible;
+                    if ($course->duration_time == -1 || $course->end_semester->visible) {
+                        $actions->addLink(
+                            _('Sichtbarkeit ändern') . ' (' .  ($is_visible ? _('sichtbar') : _('unsichtbar')) . ')',
+                            URLHelper::getURL($this->url_for('course/management/change_visibility'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                            Icon::create('visibility-' . ($is_visible ? 'visible' : 'invisible'))
+                        );
+                    }
+                }
+                if ($GLOBALS['perm']->have_perm('admin')) {
+                    $is_locked =$course->lock_rule;
+                    $actions->addLink(
+                        _('Sperrebene ändern') . ' (' .  ($is_locked ? _('gesperrt') : _('nicht gesperrt')) . ')',
+                        URLHelper::getURL($this->url_for('course/management/lock'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        Icon::create('lock-' . ($is_locked  ? 'locked' : 'unlocked'))
+                    )->asDialog('size=auto');
                 }
             }
-            $sidebar->addWidget($links);
+            $sidebar->addWidget($actions);
+
             // Entry list for admin upwards.
             if ($GLOBALS['perm']->have_studip_perm('admin', $GLOBALS['SessionSeminar'])) {
                 $list = new SelectWidget(_('Veranstaltungen'), '?#admin_top_links', 'cid');

@@ -68,14 +68,6 @@ class Course_StudyAreasController extends AuthenticatedController
             $sidebar->setImage('sidebar/admin-sidebar.png');
 
             if ($this->course) {
-                $links = new ActionsWidget();
-                foreach (Navigation::getItem('/course/admin/main') as $nav) {
-                    if ($nav->isVisible(true)) {
-                        $image = $nav->getImage();
-                        $links->addLink($nav->getTitle(), URLHelper::getURL($nav->getURL(), array('studip_ticket' => Seminar_Session::get_ticket())), $image);
-                    }
-                }
-                $sidebar->addWidget($links);
                 // Entry list for admin upwards.
                 if ($GLOBALS['perm']->have_studip_perm('admin', $GLOBALS['SessionSeminar'])) {
                     $list = new SelectWidget(_('Veranstaltungen'), '?#admin_top_links', 'cid');

@@ -75,37 +75,6 @@ class CoreAdmin implements StudipModule {
                 $item->setDescription(_('Vorlagen zur Erhebung weiterer Angaben von Teilnehmenden auswählen.'));
                 $navigation->addSubNavigation('additional_data', $item);
 
-                if ($GLOBALS['perm']->have_perm($sem_create_perm)) {
-                    if (!LockRules::check($course_id, 'seminar_copy')) {
-                        $item = new Navigation(_('Veranstaltung kopieren'), 'dispatch.php/course/wizard/copy/'.$course_id);
-                        $item->setImage(Icon::create('seminar+add'));
-                        $main->addSubNavigation('copy', $item);
-                    }
-
-                    if (Config::get()->ALLOW_DOZENT_DELETE || $GLOBALS['perm']->have_perm('admin')) {
-                        $item = new Navigation(_('Veranstaltung löschen'), 'dispatch.php/course/archive/confirm');
-                        $item->setImage(Icon::create('seminar+remove'));
-                        $main->addSubNavigation('archive', $item);
-                    }
-
-                    if ((Config::get()->ALLOW_DOZENT_VISIBILITY || $GLOBALS['perm']->have_perm('admin')) && !LockRules::Check($course_id, 'seminar_visibility')) {
-                        $course = Course::findCurrent();
-                        if ($course->duration_time == -1 || $course->end_semester->visible) {
-                            $is_visible = $course->visible;
-                            $item = new Navigation(_('Sichtbarkeit ändern') . ' (' .  ($is_visible ? _('sichtbar') : _('unsichtbar')) . ')', 'dispatch.php/course/management/change_visibility');
-                            $item->setImage(Icon::create('visibility-' . ($is_visible ? 'visible' : 'invisible')));
-                            $main->addSubNavigation('visibility', $item);
-                        }
-                    }
-                    if ($GLOBALS['perm']->have_perm('admin')) {
-                        $is_locked = Course::findCurrent()->lock_rule;
-                        $item = new Navigation(_('Sperrebene ändern') . ' (' .  ($is_locked ? _('gesperrt') : _('nicht gesperrt')) . ')', 'dispatch.php/course/management/lock');
-                        $item->setImage(Icon::create('lock-' . ($is_locked  ? 'locked' : 'unlocked')), ['data-dialog'=> 'size=auto']);
-                        $main->addSubNavigation('lock', $item);
-                    }
-
-                }
-
                 // show entry for simulated participant view
                 if (in_array($GLOBALS['perm']->get_studip_perm($course_id), words('tutor dozent'))) {
                     $item = new Navigation('Studierendenansicht simulieren', 'dispatch.php/course/change_view/set_changed_view');
