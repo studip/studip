@@ -22,7 +22,7 @@
     aria-labelledby="pagination-label-<?= $random_id ?>">
 <? if ($cur_page > 1): ?>
     <li class="prev">
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page - 1), $pageparams) ?>" rel="prev" <?= $dialog ?: ''?>>
+        <a class="pagination--link" href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page - 1), $pageparams) ?>" rel="prev" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Eine Seite') ?></span>
             <?= _('zurück') ?>
         </a>
@@ -33,7 +33,7 @@
     <li class="divider" data-skipped="<?= $last_page + 1 ?>-<?= $item - 1 ?>">&hellip;</li>
 <? endif; ?>
     <li <? if ($item == $cur_page) echo 'class="current"'; ?>>
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $item), $pageparams) ?>" <?= $dialog ?: ''?>>
+        <a class="pagination--link" href="<?= URLHelper::getLink(sprintf($pagelink, $item), $pageparams) ?>" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Seite') ?></span>
             <?= $item ?>
         </a>
@@ -44,7 +44,7 @@
 ?>
 <? if ($cur_page < $num_pages): ?>
     <li class="next">
-        <a href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page + 1), $pageparams) ?>" rel="next" <?= $dialog ?: ''?>>
+        <a class="pagination--link" href="<?= URLHelper::getLink(sprintf($pagelink, $cur_page + 1), $pageparams) ?>" rel="next" <?= $dialog ?: ''?>>
             <span class="audible"><?= _('Eine Seite') ?></span>
             <?= _('weiter') ?>
         </a>
