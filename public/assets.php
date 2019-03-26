@@ -16,52 +16,47 @@ require_once '../lib/bootstrap.php';
 
 // Obtain request information
 $uri = ltrim($_SERVER['PATH_INFO'], '/');
-list($type, $id) = explode('/', $uri);
+list($type, $id) = explode('/', $uri, 2);
 
 // Setup response
-$response = new RESTAPI\Response();
+$response = new Trails_Response();
 
 // Create response
 if (!$type || !$id) {
     // Invalid call
-    $response->status = 400;
-} elseif ($type !== 'css') {
+    $response->set_status(400);
+} elseif (!in_array($type, ['css', 'js'])) {
     // Invalid type
-    $response->status = 501;
+    $response->set_status(501);
 } elseif (!PluginAsset::exists($id)) {
     // Asset does not exist
-    $response->status = 404;
+    $response->set_status(404);
 } else {
     // Load asset
     $model = PluginAsset::find($id);
     if ($_SERVER['HTTP_IF_MODIFIED_SINCE'] && $model->chdate <= strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
         // Cached and still valid
-        $response->status = 304;
+        $response->set_status(304);
     } else {
         // Output asset
         $asset = new Assets\PluginAsset($model);
         try {
-            $response->body = $asset->getContent();
-        } catch (Exception $e) {
-            $response->body = false;
-        }
-        if ($response->body === false) {
-            // Could not obtain asset contents
-            $asset->delete();
-            $response->status = 500;
-        } else {
+            $response->set_body($asset->getContent());
+
             // Set appropriate header
-            $response['Content-Type']        = 'text/css';
-            $response['Content-Length']      = $model->size;
-            $response['Content-Disposition'] = 'inline; ' . encode_header_parameter('filename', $model->filename);
+            $response->add_header('Content-Type', $type === 'css' ? 'text/css' : 'application/javascript');
+            $response->add_header('Content-Length', $model->size);
+            $response->add_header('Content-Disposition', 'inline; ' . encode_header_parameter('filename', $model->filename));
 
             // Store cache information
             if (Studip\ENV !== 'development') {
-                $response['Last-Modified'] = gmdate('D, d M Y H:i:s', $model->chdate) . ' GMT';
-                $response['Expires']       = gmdate('D, d M Y H:i:s', $model->chdate + PluginAsset::CACHE_DURATION) . ' GMT';
+                $response->add_header('Last-Modified', gmdate('D, d M Y H:i:s', $model->chdate) . ' GMT');
+                $response->add_header('Expires', gmdate('D, d M Y H:i:s', $model->chdate + PluginAsset::CACHE_DURATION) . ' GMT');
             }
+        } catch (Exception $e) {
+            $asset->delete();
+            $response->set_status(500);
         }
     }
 }
 $response->output();
-
