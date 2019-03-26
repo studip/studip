@@ -98,7 +98,7 @@ class FileArchiveManager
                         //in a file in the archive:
                         $archive->addFromString(
                             $archive_fs_path . $file_ref->name . '.url',
-                            $url
+                            "[InternetShortcut]\nURL={$url}\n"
                         );
                         return true;
                     }
