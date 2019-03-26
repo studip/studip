@@ -9,6 +9,21 @@
 trait PluginAssetsTrait
 {
     /**
+     * Adds many stylesheeets at once.
+     * @param array  $filenames List of relative filenames
+     * @param array  $variables Optional array of variables to pass to the
+     *                           LESS compiler
+     * @param array  $link_attr Attributes to pass to the link elements
+     * @param string $path      Common path prefix for all filenames
+     */
+    protected function addStylesheets(array $filenames, array $variables = [], array $link_attr = [], $path = '')
+    {
+        foreach ($filenames as $filename) {
+            $this->addStylesheet("{$path}{$filename}", $variables, $link_attr);
+        }
+    }
+
+    /**
      * Includes given stylesheet in page, compiles less if neccessary
      *
      * @param string $filename Name of the stylesheet (css or less) to include
@@ -17,11 +32,11 @@ trait PluginAssetsTrait
      *                          LESS compiler
      * @param array  $link_attr Attributes to pass to the link element
      */
-    protected function addStylesheet($filename, $variables = [], $link_attr = [])
+    protected function addStylesheet($filename, array $variables = [], array $link_attr = [])
     {
         if (mb_substr($filename, -5) !== '.less') {
             PageLayout::addStylesheet(
-                "{$this->getPluginURL()}/{$filename}",
+                "{$this->getPluginURL()}/{$filename}?v={$this->getPluginVersion()}",
                 $link_attr
             );
             return;
@@ -37,18 +52,14 @@ trait PluginAssetsTrait
             throw new Exception('Could not locate LESS file "' . $filename . '"');
         }
 
-        // Get plugin version from metadata
-        $metadata = $this->getMetadata();
-        $plugin_version = $metadata['version'];
-
         // Get plugin id (or parent plugin id if any)
         $plugin_id = $this->plugin_info['depends'] ?: $this->getPluginId();
 
         // Get asset file from storage
-        $asset = Assets\Storage::getFactory()->createCSSFile($less_file, array(
+        $asset = Assets\Storage::getFactory()->createCSSFile($less_file, [
             'plugin_id'      => $this->plugin_info['depends'] ?: $this->getPluginId(),
-            'plugin_version' => $metadata['version'],
-        ));
+            'plugin_version' => $this->getPluginVersion(),
+        ]);
 
         // Compile asset if neccessary
         if ($asset->isNew()) {
@@ -72,12 +83,25 @@ trait PluginAssetsTrait
     }
 
     /**
+     * Adds many scripts at once.
+     * @param array  $filenames List of relative filenames
+     * @param array  $link_attr Attributes to pass to the script elements
+     * @param string $path      Common path prefix for all filenames
+     */
+    protected function addScripts(array $filenames, array $link_attr = [], $path = '')
+    {
+        foreach ($filenames as $filename) {
+            $this->addScript("{$path}{$filename}", $link_attr);
+        }
+    }
+
+    /**
      * Includes given script in page.
      *
      * @param string $filename  Name of script file
      * @param array  $link_attr Attributes to pass to the script element
      */
-    protected function addScript($filename, $link_attr = [])
+    protected function addScript($filename, array $link_attr = [])
     {
         PageLayout::addScript(
             "{$this->getPluginURL()}/{$filename}?v={$this->getPluginVersion()}",
