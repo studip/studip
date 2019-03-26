@@ -27,7 +27,7 @@ const News = {
             } else {
                 start    = $('#news_startdate').datepicker('getDate');
                 end      = $('#news_enddate').datepicker('getDate');
-                duration = (end - start) / (24 * 60 * 60 * 1000);
+                duration = Math.round((end - start) / (24 * 60 * 60 * 1000));
                 duration = Math.max(0, duration);
 
                 $('#news_duration').val(duration);
@@ -49,7 +49,7 @@ const News = {
             form_data  = $(this).serialize() + '&' + button + '=1';
 
             $(this).find('input[name=' + button + ']').showAjaxNotification('left');
-            STUDIP.News.update_dialog(id, form_route, form_data);
+            News.update_dialog(id, form_route, form_data);
         });
     },
 
@@ -57,14 +57,14 @@ const News = {
         $('.add_toolbar').addToolbar();
     },
 
-    get_dialog: function (id, route, from_x, from_y) {
+    get_dialog: function (id, route) {
         // initialize dialog
         $('body').append('<div id="' + id + '"></div>');
         $('#' + id).dialog({
             modal: true,
-            height: STUDIP.News.dialog_height,
+            height: News.dialog_height,
             title: 'Dialog wird geladen...'.toLocaleString(),
-            width: STUDIP.News.dialog_width
+            width: News.dialog_width
         });
 
         // load actual dialog content
@@ -72,31 +72,31 @@ const News = {
             $('#' + id).dialog('option', 'title', decodeURIComponent(xhr.getResponseHeader('X-Title')));
             $('#' + id).html(html);
             $('#' + id + '_content').css({
-                height : (STUDIP.News.dialog_height - 120) + 'px',
-                maxHeight: (STUDIP.News.dialog_height - 120) + 'px'
+                height : (News.dialog_height - 120) + 'px',
+                maxHeight: (News.dialog_height - 120) + 'px'
             });
             $('.ui-dialog-content').css('padding-right', '1px');
 
-            STUDIP.News.init_dialog();
-            STUDIP.News.init(id);
+            News.init_dialog();
+            News.init(id);
         }).fail(function () {
             window.alert('Fehler beim Aufruf des News-Controllers'.toLocaleString());
         });
     },
 
     update_dialog: function (id, route, form_data) {
-        if (!STUDIP.News.pending_ajax_request) {
-            STUDIP.News.pending_ajax_request = true;
+        if (!News.pending_ajax_request) {
+            News.pending_ajax_request = true;
 
             $.post(route, form_data, 'html').done(function (html) {
                 var obj;
 
-                STUDIP.News.pending_ajax_request = false;
+                News.pending_ajax_request = false;
                 if (html.length > 0) {
                     $('#' + id).html(html);
                     $('#' + id + '_content').css({
-                        'height' : (STUDIP.News.dialog_height - 120) + 'px',
-                        'maxHeight': (STUDIP.News.dialog_height - 120) + 'px'
+                        'height' : (News.dialog_height - 120) + 'px',
+                        'maxHeight': (News.dialog_height - 120) + 'px'
                     });
                     // scroll to anker
                     obj = $('a[name=anker]');
@@ -113,10 +113,10 @@ const News = {
                     }
                 }
 
-                STUDIP.News.init_dialog();
-                STUDIP.News.init(id);
+                News.init_dialog();
+                News.init(id);
             }).fail(function () {
-                STUDIP.News.pending_ajax_request = false;
+                News.pending_ajax_request = false;
                 window.alert('Fehler beim Aufruf des News-Controllers'.toLocaleString());
             });
         }
@@ -139,36 +139,5 @@ const News = {
         }
     }
 };
-
-$(document).ready(function () {
-    STUDIP.News.dialog_width = window.innerWidth * (1 / 2);
-    STUDIP.News.dialog_height = window.innerHeight - 60;
-    if (STUDIP.News.dialog_width < 550) {
-        STUDIP.News.dialog_width = 550;
-    }
-    if (STUDIP.News.dialog_height < 400) {
-        STUDIP.News.dialog_height = 400;
-    }
-    STUDIP.News.pending_ajax_request = false;
-
-    $(document).on('click', 'a[rel~="get_dialog"]', function (event) {
-        event.preventDefault();
-        STUDIP.News.get_dialog('news_dialog', $(this).attr('href'));
-    });
-
-    $(document).on('click', 'a[rel~="close_dialog"]', function (event) {
-        event.preventDefault();
-        $('#news_dialog').dialog('close');
-    });
-
-    // open/close categories without ajax-request
-    $(document).on('click', '.news_category_header', function (event) {
-        event.preventDefault();
-        STUDIP.News.toggle_category_view($(this).parent('div').attr('id'));
-    });
-    $(document).on('click', '.news_category_header input[type=image]', function (event) {
-        event.preventDefault();
-    });
-});
 
 export default News;
