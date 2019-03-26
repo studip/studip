@@ -33,7 +33,7 @@ class Compiler
      * @param Array  $variables Additional variables for the LESS compilation
      * @return String containing the generated CSS
      */
-    public static function compileLESS($less, $variables = array())
+    public static function compileLESS($less, $variables = [])
     {
         $less = self::getLESSPrefix() . $less;
 

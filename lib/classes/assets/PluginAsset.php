@@ -79,11 +79,11 @@ class PluginAsset implements Asset
      */
     public function getDownloadLink()
     {
-        $link = 'assets.php/css/' . $this->model->id;
+        $link = "assets.php/{$this->model->type}/{$this->model->id}";
         if (Studip\ENV === 'development') {
             $link .= '#' . $this->model->filename;
         }
-        return URLHelper::getLink($link, array(), true);
+        return URLHelper::getLink($link, [], true);
     }
 
     /**

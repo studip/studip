@@ -18,9 +18,32 @@ trait PluginAssetsTrait
      */
     protected function addStylesheets(array $filenames, array $variables = [], array $link_attr = [], $path = '')
     {
-        foreach ($filenames as $filename) {
-            $this->addStylesheet("{$path}{$filename}", $variables, $link_attr);
+        if (Studip\ENV === 'development') {
+            foreach ($filenames as $filename) {
+                $this->addStylesheet("{$path}{$filename}", $variables, $link_attr);
+            }
         }
+
+        $hash = substr(md5(serialize($filenames)), -8);
+        $filename = "combined-{$hash}.css";
+
+        // Get asset file from storage
+        $asset = Assets\Storage::getFactory()->createCSSFile(
+            $filename,
+            $this->createMetaData()
+        );
+
+        // Compile asset if neccessary
+        if ($asset->isNew()) {
+            $content = '';
+            foreach ($filenames as $filename) {
+                $file = $this->resolveFilename($filename, $path);
+                $content .= $this->readPluginAssetFile($file, $variables);
+            }
+            $asset->setContent($content);
+        }
+
+        $this->includeStyleAsset($asset, $link_attr);
     }
 
     /**
@@ -43,33 +66,25 @@ trait PluginAssetsTrait
         }
 
         // Create absolute path to less file
-        $less_file = $GLOBALS['ABSOLUTE_PATH_STUDIP']
-                   . $this->getPluginPath() . '/'
-                   . $filename;
-
-        // Fail if file does not exist
-        if (!file_exists($less_file)) {
-            throw new Exception('Could not locate LESS file "' . $filename . '"');
-        }
-
-        // Get plugin id (or parent plugin id if any)
-        $plugin_id = $this->plugin_info['depends'] ?: $this->getPluginId();
+        $less_file = $this->resolveFilename($filename);
 
         // Get asset file from storage
-        $asset = Assets\Storage::getFactory()->createCSSFile($less_file, [
-            'plugin_id'      => $this->plugin_info['depends'] ?: $this->getPluginId(),
-            'plugin_version' => $this->getPluginVersion(),
-        ]);
+        $asset = Assets\Storage::getFactory()->createCSSFile(
+            $less_file,
+            $this->createMetaData()
+        );
 
         // Compile asset if neccessary
         if ($asset->isNew()) {
-            $variables['plugin-path'] = $this->getPluginURL();
-
-            $less = file_get_contents($less_file);
-            $css  = Assets\Compiler::compileLESS($less, $variables);
+            $css = $this->readPluginAssetFile($less_file, $variables);
             $asset->setContent($css);
         }
 
+        $this->includeStyleAsset($asset, $link_attr);
+    }
+
+    private function includeStyleAsset(Assets\PluginAsset $asset, array $link_attr)
+    {
         // Include asset in page by reference or directly
         $download_uri = $asset->getDownloadLink();
         if ($download_uri === false) {
@@ -90,8 +105,39 @@ trait PluginAssetsTrait
      */
     protected function addScripts(array $filenames, array $link_attr = [], $path = '')
     {
-        foreach ($filenames as $filename) {
-            $this->addScript("{$path}{$filename}", $link_attr);
+        if (Studip\ENV === 'development') {
+            foreach ($filenames as $filename) {
+                $this->addScript("{$path}{$filename}", $link_attr);
+            }
+            return;
+        }
+
+        $hash = substr(md5(serialize($filenames)), -8);
+        $filename = "combined-{$hash}.js";
+
+        // Get asset file from storage
+        $asset = Assets\Storage::getFactory()->createJSFile(
+            $filename,
+            $this->createMetaData()
+        );
+
+        // Compile asset if neccessary
+        if ($asset->isNew()) {
+            $content = '';
+            foreach ($filenames as $filename) {
+                $file = $this->resolveFilename($filename, $path);
+                $content .= $this->readPluginAssetFile($file) . ';';
+            }
+            $asset->setContent($content);
+        }
+
+        // Include asset in page by reference or directly
+        $download_uri = $asset->getDownloadLink();
+        if ($download_uri === false) {
+            PageLayout::addHeadElement('script', $link_attr, $asset->getContent());
+        } else {
+            $link_attr['src'] = $download_uri;
+            PageLayout::addHeadElement('script', $link_attr);
         }
     }
 
@@ -107,5 +153,56 @@ trait PluginAssetsTrait
             "{$this->getPluginURL()}/{$filename}?v={$this->getPluginVersion()}",
             $link_attr
         );
+    }
+
+    /**
+     * Create metadata for plugin assets factory
+     * @return array
+     */
+    private function createMetaData()
+    {
+        return [
+            'plugin_id'      => $this->plugin_info['depends'] ?: $this->getPluginId(),
+            'plugin_version' => $this->getPluginVersion(),
+        ];
+    }
+
+    /**
+     * Resolves relative filename to absolute filename.
+     *
+     * @param  string $filename Relative filename
+     * @param  string $path     Optional relative path the file is stored in
+     * @return string
+     * @throws RuntimeException when absolute file is missing
+     */
+    private function resolveFilename($filename, $path = '')
+    {
+        $file = $GLOBALS['ABSOLUTE_PATH_STUDIP']
+              . $this->getPluginPath() . '/'
+              . "{$path}{$filename}";
+
+        // Fail if file does not exist
+        if (!file_exists($file)) {
+            throw new RuntimeException("Could not locate assets file '{$filename}'");
+        }
+
+        return $file;
+    }
+
+    /**
+     * Reads assets file (and compiles if neccessary).
+     * @param string $filename  Name of the file to read
+     * @param array  $variables Additional variables for compiler (if appropriate)
+     * @return string
+     */
+    private function readPluginAssetFile($filename, array $variables = [])
+    {
+        $contents = file_get_contents($filename);
+        if (mb_substr($filename, -5) === '.less') {
+            $contents = Assets\Compiler::compileLESS($contents, $variables + [
+                'plugin-path' => $this->getPluginURL(),
+            ]);
+        }
+        return $contents;
     }
 }

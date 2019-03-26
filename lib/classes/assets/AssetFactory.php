@@ -20,5 +20,14 @@ interface AssetFactory
      * @param Array  $metadata Potential metadata
      * @return Assets\Asset
      */
-    public function createCSSFile($filename, array $metadata = array());
+    public function createCSSFile($filename, array $metadata = []);
+
+    /**
+     * Restores or create a js file based on the given information.
+     *
+     * @param String $filename Filename of the original file
+     * @param Array  $metadata Potential metadata
+     * @return Assets\Asset
+     */
+    public function createJSFile($filename, array $metadata = []);
 }
