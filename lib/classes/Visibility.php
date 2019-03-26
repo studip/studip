@@ -33,16 +33,15 @@ class Visibility
      * @return boolean true if user is allowed to view content according to the
      * current visibilitysetting otherwise false;
      */
-    public static function verify($visibilityid, $ownerid = null, $userid = null)
+    public static function verify($visibilityid, $ownerid, $userid = null)
     {
+        // check if visiting user is given
+        self::getUser($userid);
 
         // root sees everything
         if ($GLOBALS['perm']->have_perm('root') || $ownerid === $userid) {
             return true;
         }
-
-        // check if visiting user is given
-        self::getUser($userid);
 
         if (isset(self::$verified[$visibilityid][$ownerid][$userid])) {
             return self::$verified[$visibilityid][$ownerid][$userid];
@@ -61,11 +60,11 @@ class Visibility
 
         // if we got a record we verify if the calling user is allowed to see what he wants to see
         if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($result['user_id'], $userid, $result['state']);
+            return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($userid, $ownerid, $result['state']);
         }
 
         // if db query fails something went wrong anyway so we use the default setting
-        return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($result['user_id'], $userid, constant(get_config('HOMEPAGE_VISIBILITY_DEFAULT')));
+        return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($userid, $ownerid, constant(get_config('HOMEPAGE_VISIBILITY_DEFAULT')));
     }
 
     /**
@@ -131,7 +130,7 @@ class Visibility
                    VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
         $stmt->execute(array($user, $parent, $category, $name, $default, $identifier, $pluginid));
-        NotificationCenter::postNotification('UserVisibilitySettingDidCreate', $user, $identifier); 
+        NotificationCenter::postNotification('UserVisibilitySettingDidCreate', $user, $identifier);
         return $db->lastInsertId();
     }
 
