@@ -24,9 +24,6 @@ class Module_ModuleController extends MVVController
 
     public function index_action()
     {
-        //set title
-        PageLayout::setTitle(_('Verwaltung der Module - Alle Module'));
-
         $this->initPageParams();
         $this->initSearchParams('module');
         $search_result = $this->getSearchResult('Modul');
@@ -72,7 +69,7 @@ class Module_ModuleController extends MVVController
         if (!empty($this->filter)) {
             $this->search_result['Modul'] = $this->module->pluck('id');
         }
-
+        $title = _('Verwaltung der Module - Alle Module');
         if (count($this->module) === 0) {
             if (count($this->filter) || $this->search_term) {
                 PageLayout::postInfo(_('Es wurden keine Module gefunden.'));
@@ -81,9 +78,11 @@ class Module_ModuleController extends MVVController
             }
         }
         $this->count = Modul::getCount($this->filter);
+        $title .= ' - ' . sprintf(ngettext('%s Modul', '%s Module', $this->count), $this->count);
         $this->show_sidebar_search = true;
         $this->show_sidebar_filter = true;
         $this->setSidebar();
+        PageLayout::setTitle($title);
     }
 
     public function modul_action($modul_id = null, $institut_id = null)
