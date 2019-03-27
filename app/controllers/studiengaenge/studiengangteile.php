@@ -73,17 +73,21 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         if (!isset($this->stgteil)) {
             $this->stgteil = StudiengangTeil::get($stgteil_id);
         }
+        
         if ($this->stgteil->isNew()) {
             $this->stgteil->setNewId();
             PageLayout::setTitle(_('Neuen Studiengangteil anlegen'));
             $success_message = ('Der Studiengangteil "%s" wurde angelegt.');
         } else {
-            PageLayout::setTitle(_('Studiengangteil bearbeiten'));
+            PageLayout::setTitle(
+                sprintf(_('Studiengangteil: %s bearbeiten'), htmlReady($this->stgteil->getDisplayName()))
+            );
             $success_message = _('Der Studiengangteil "%s" wurde geändert.');
             if ($this->stgteil->fach) {
                 $this->fach_id = $this->stgteil->fach->getId();
             }
         }
+        
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             $stored = false;
@@ -214,7 +218,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             // Nur Studiengangteile mit zugeordnetem Fach an dessen verantwortlicher
             // Einrichtung der User eine Rolle hat
             $perm_institutes = MvvPerm::getOwnInstitutes();
-            $filter = array();
+            $filter = [];
             if (count($perm_institutes)) {
                 $filter['mvv_fach_inst.institut_id'] = $perm_institutes;
             }

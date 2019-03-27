@@ -1,52 +1,48 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <?= $controller->jsUrl() ?>
 <? $perm = MvvPerm::get($stgteil)?>
-<h3>
-    <? if ($stgteil->isNew()) : ?>
-    <?= _('Neuer Studiengangteil') ?>
-    <? else : ?>
-    <?= sprintf(_('Studiengangteil: %s'), htmlReady($stgteil->getDisplayName())) ?>
-    <? endif; ?>
-</h3>
+
 <form class="default" action="<?= $controller->url_for('/stgteil', $stgteil->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend><?= _('Fach') ?></legend>
         <? if (is_array($faecher)) : ?>
-        <label>><?= sprintf(_('Mögliche Fächer im gewählten Fachbereich %s:'),
-                    '<strong>' . htmlReady($fachbereich->name) . '</strong>') ?>
-            <select name="fach_item">
-                <option value=""><?= _('-- bitte wählen --') ?></option>
-                <? foreach ($faecher as $fach) : ?>
-                <option value="<?= $fach->id ?>"><?= htmlReady($fach->name) ?></option>
-                <? endforeach; ?>
-            </select>
-        </label>
+            <label>
+                <?= sprintf(_('Mögliche Fächer im gewählten Fachbereich %s:'), '<strong>' . htmlReady($fachbereich->name) . '</strong>') ?>
+                <select name="fach_item">
+                    <option value=""><?= _('-- bitte wählen --') ?></option>
+                    <? foreach ($faecher as $fach) : ?>
+                    <option value="<?= $fach->id ?>"><?= htmlReady($fach->name) ?></option>
+                    <? endforeach; ?>
+                </select>
+            </label>
         <? else : ?>
-        <? if ($perm->haveFieldPerm('fach', MvvPerm::PERM_WRITE)) : ?>
-            <?= $search_fach->render() ?>
-            <? if (Request::submitted('search_fach')) : ?>
-                <?= Icon::create('refresh', 'clickable', ['name' => 'reset_fach', 'data-qs_id' => $search_fach_id])->asInput(); ?>
-            <? else : ?>
-                <?= Icon::create('search', 'clickable', ['name' => 'search_fach', 'data-qs_id' => $search_fach_id, 'data-qs_name' => $search_fach->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
-            <? endif; ?>
-        <? endif; ?>
-        <ul id="fach_target" class="mvv-assigned-items mvv-assign-single mvv-faecher">
-            <li class="mvv-item-list-placeholder"<?= ($stgteil->fach ? ' style="display: none;"' : '') ?>><?= _('Bitte ein Fach suchen und zuordnen.') ?></li>
-            <? if ($stgteil->fach) : ?>
-            <li id="fach_<?= $stgteil->fach->id ?>">
-                <div class="mvv-item-list-text">
-                    <?= htmlReady($stgteil->fach->name) ?>
-                </div>
-                <? if ($perm->haveFieldPerm('fach', MvvPerm::PERM_WRITE)) : ?>
-                <div class="mvv-item-list-buttons">
-                    <a href="#" class="mvv-item-remove"><?= Icon::create('trash', 'clickable', array('title' => _('Fach entfernen')))->asImg(); ?></a>
-                </div>
+            <? if ($perm->haveFieldPerm('fach', MvvPerm::PERM_WRITE)) : ?>
+                <?= $search_fach->render() ?>
+                <? if (Request::submitted('search_fach')) : ?>
+                    <?= Icon::create('refresh', 'clickable', ['name' => 'reset_fach', 'data-qs_id' => $search_fach_id])->asInput(); ?>
+                <? else : ?>
+                    <?= Icon::create('search', 'clickable', ['name' => 'search_fach', 'data-qs_id' => $search_fach_id, 'data-qs_name' => $search_fach->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
                 <? endif; ?>
-                <input type="hidden" name="fach_item" value="<?= $stgteil->fach->id ?>">
-            </li>
             <? endif; ?>
-        </ul>
+            <ul id="fach_target" class="mvv-assigned-items mvv-assign-single mvv-faecher">
+                <li class="mvv-item-list-placeholder"<?= ($stgteil->fach ? ' style="display: none;"' : '') ?>><?= _('Bitte ein Fach suchen und zuordnen.') ?></li>
+                <? if ($stgteil->fach) : ?>
+                <li id="fach_<?= $stgteil->fach->id ?>">
+                    <div class="mvv-item-list-text">
+                        <?= htmlReady($stgteil->fach->name) ?>
+                    </div>
+                    <? if ($perm->haveFieldPerm('fach', MvvPerm::PERM_WRITE)) : ?>
+                    <div class="mvv-item-list-buttons">
+                        <a href="#" class="mvv-item-remove">
+                            <?= Icon::create('trash', 'clickable', ['title' => _('Fach entfernen')])->asImg(); ?>
+                        </a>
+                    </div>
+                    <? endif; ?>
+                    <input type="hidden" name="fach_item" value="<?= $stgteil->fach->id ?>">
+                </li>
+                <? endif; ?>
+            </ul>
         <? endif; ?>
     </fieldset>
     <fieldset>
@@ -54,18 +50,19 @@
         <label><?= _('Kredit-Punkte') ?>
         <input <?= $perm->disable('kp') ?> type="text" name="kp" id="stgteil_kp" size="10" maxlength="50" value="<?= htmlReady($stgteil->kp) ?>">
         </label>
-        <label><?= _('Semesterzahl') ?>
-        <? if ($perm->haveFieldPerm('semester')) : ?>
-        <select name="semester" id="stgteil_semester">
-            <option value="">--</option>
-            <? for ($sem = 1; $sem < 21; $sem++) : ?>
-            <option value="<?= $sem ?>"<?= ($stgteil->semester == $sem ? ' selected' : '') ?>><?= $sem ?></option>
-            <? endfor; ?>
-        </select>
-        <? else : ?>
-        <?= htmlReady($stgteil->semester) ?>
-        <input type="hidden" name="semester" value="<?= $stgteil->semester ?>">
-        <? endif; ?>
+        <label>
+            <?= _('Semesterzahl') ?>
+            <? if ($perm->haveFieldPerm('semester')) : ?>
+                <select name="semester" id="stgteil_semester">
+                    <option value="">--</option>
+                    <? for ($sem = 1; $sem < 21; $sem++) : ?>
+                    <option value="<?= $sem ?>"<?= ($stgteil->semester == $sem ? ' selected' : '') ?>><?= $sem ?></option>
+                    <? endfor; ?>
+                </select>
+            <? else : ?>
+                <?= htmlReady($stgteil->semester) ?>
+                <input type="hidden" name="semester" value="<?= $stgteil->semester ?>">
+            <? endif; ?>
         </label>
     </fieldset>
     <fieldset>
@@ -89,11 +86,15 @@
             <? foreach ($stgteil->fachberater as $fachberater) : ?>
             <li id="fachberater_<?= $fachberater->getId() ?>"<?= $perm->haveFieldPerm('fachberater_assignments') ? 'class="sort_items"' : '' ?>>
                 <div class="mvv-item-list-text">
-                    <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' => $fachberater->username)) ?>"><?= htmlReady($fachberater->getFullname()) ?></a>
+                    <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $fachberater->username]) ?>">
+                        <?= htmlReady($fachberater->getFullname()) ?>
+                    </a>
                 </div>
                 <? if ($perm->haveFieldPerm('fachberater')) : ?>
                 <div class="mvv-item-list-buttons">
-                    <a href="#" class="mvv-item-remove"><?= Icon::create('trash', 'clickable', array('title' => _('Studienfachberater entfernen')))->asImg(); ?></a>
+                    <a href="#" class="mvv-item-remove">
+                        <?= Icon::create('trash', 'clickable', ['title' => _('Studienfachberater entfernen')])->asImg(); ?>
+                    </a>
                 </div>
                 <? endif; ?>
                 <input type="hidden" name="fachberater_items[]" value="<?= $fachberater->id ?>">
@@ -107,13 +108,13 @@
     <footer data-dialog-button>
     <? if ($stgteil->isNew()) : ?>
         <? if($perm->havePermCreate()) : ?>
-            <?= Button::createAccept(_('Anlegen'), 'store', array('title' => _('Abschluss anlegen'))) ?>
+            <?= Button::createAccept(_('Anlegen'), 'store', ['title' => _('Abschluss anlegen')]) ?>
         <? endif; ?>
     <? else : ?>
         <? if ($perm->havePermWrite()) : ?>
-            <?= Button::createAccept(_('Übernehmen'), 'store', array('title' => _('Änderungen übernehmen'))) ?>
+            <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
         <? endif; ?>
     <? endif; ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, array('title' => _('zurück zur Übersicht'))) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, ['title' => _('zurück zur Übersicht')]) ?>
     </footer>
 </form>
