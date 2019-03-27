@@ -1433,7 +1433,7 @@ class FileController extends AuthenticatedController
 
             if (count($file_area_objects) === 1 && is_a($file_area_objects[0], 'FileRef')) {
                 //we have only one file to deliver, so no need for zipping it:
-                $this->redirect($file_area_objects[0]->getDownloadURL());
+                $this->redirect($file_area_objects[0]->getDownloadURL('force_download'));
                 return;
             }
 
