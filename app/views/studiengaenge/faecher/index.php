@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <? foreach ($faecher as $fach): ?>
-            <tbody class="<?= $fach->count_stgteile ? '' : 'empty' ?> <?= (($details_id == $fach->id || sizeof($stgteil_ids)) ? 'not-collapsed' : 'collapsed') ?>">
+            <tbody class="<?= $fach->count_stgteile ? '' : 'empty' ?> <?= (($details_id == $fach->id || (isset($stgteil_ids) && sizeof($stgteil_ids))) ? 'not-collapsed' : 'collapsed') ?>">
                 <tr class="header-row <?= TextHelper::cycle('table_row_even', 'table_row_odd') ?>">
                     <td class="toggle-indicator">
                         <? if ($fach->count_stgteile) : ?>
@@ -37,7 +37,7 @@
                         <? endif; ?>
                     </td>
                 </tr>
-                <? if ($details_id == $fach->getId() || sizeof($stgteil_ids)) : ?>
+                <? if ($details_id == $fach->getId() || (isset($stgteil_ids) && sizeof($stgteil_ids))) : ?>
                     <tr class="loaded-details nohover">
                         <?= $this->render_partial('studiengaenge/studiengangteile/details_grouped', compact('stgteile')) ?>
                     </tr>
