@@ -104,27 +104,28 @@ div.index_container {
     }
 }
 
-body#index {
+#login {
     .messagebox {
         margin-bottom: -25px;
     }
 
-    div#layout_footer {
+    #layout_footer {
         position: relative;
         top: -33px;
     }
 }
 
-/* Mozilla specifics */
 @-moz-document url-prefix() {
     div.index_container {
         height: calc(100% - 145px);
     }
-    body#index {
+
+    #login {
         height: calc(100% - 34px);
-    }
-    body#index div#layout_footer {
-        position: inherit;
-        top: 0;
+
+        #layout_footer {
+            position: inherit;
+            top: 0;
+        }
     }
 }

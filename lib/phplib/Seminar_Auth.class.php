@@ -329,6 +329,8 @@ class Seminar_Auth
 
         $this->check_environment();
 
+        PageLayout::setBodyElementId('login');
+
         // load the default set of plugins
         PluginEngine::loadPlugins();
 
