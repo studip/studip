@@ -244,23 +244,35 @@ class SharedVersionController extends MVVController
         if (!isset($this->abschnitt)) {
             $this->abschnitt = StgteilAbschnitt::find($abschnitt_id);
         }
+        
         if (!$this->abschnitt) {
             $this->abschnitt = new StgteilAbschnitt();
             if (!isset($this->version)) {
                 $this->version = StgteilVersion::find(Request::option('version_id'));
             }
-            PageLayout::setTitle(_('Neuen Studiengangteil-Abschnitt anlegen'));
+            PageLayout::setTitle(
+                sprintf(_('Einen neuen Studiengangteil-Abschnitt für die Version "%s" anlegen.'),
+                    htmlReady($this->version->getDisplayName())
+                )
+            );
             $success_message = ('Der Studiengangteil-Abschnitt "%s" wurde angelegt.');
         } else {
             $this->version = $this->abschnitt->version;
-            PageLayout::setTitle(_('Studiengangteil-Abschnitt bearbeiten'));
+            PageLayout::setTitle(
+                sprintf(_('Studiengangteil-Abschnitt "%s" der Version "%s" bearbeiten.'),
+                    htmlReady($this->abschnitt->name),
+                    htmlReady($this->version->getDisplayName()))
+            );
             $success_message = _('Der Studiengangteil-Abschnitt "%s" wurde geändert.');
         }
+        
         if (!$this->version) {
             PageLayout::postError(_('Unbekannte Version.'));
             $this->redirect($this->url_for('/index'));
         }
+        
         $perm = MvvPerm::get($this->version);
+        
         if (!$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_READ)) {
             throw new Trails_Exception(403);
         }
@@ -268,6 +280,7 @@ class SharedVersionController extends MVVController
                 && !$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_CREATE)) {
             throw new Trails_Exception(403);
         }
+        
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             if (!$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_WRITE)) {
@@ -281,6 +294,7 @@ class SharedVersionController extends MVVController
             $this->abschnitt->ueberschrift = Request::i18n('ueberschrift')->trim();
             $this->abschnitt->verifyPermission();
             $stored = $this->abschnitt->store();
+            
             if ($stored !== false) {
                 if ($stored) {
                     PageLayout::postSuccess(sprintf($success_message,
