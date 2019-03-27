@@ -2,10 +2,6 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default collapsable">
-        <caption>
-            <?= _('Liste der Studiengangteile') ?>
-            <span class="actions"><? printf(_('%s Studiengangteile'), $count) ?></span>
-        </caption>
         <colgroup>
             <col>
             <col style="width: 40%;">
@@ -22,21 +18,21 @@
         </thead>
     <? if ($count) : ?>
         <? foreach ($stgteile as $stgteil): ?>
-            <tbody class="<? if (!$stgteil->count_versionen) echo 'empty' ?>  <?= $stgteil_id === $stgteil->getId() ? 'not-collapsed' : 'collapsed' ?>">
-                <tr class="header-row <?= TextHelper::cycle('table_row_even', 'table_row_odd') ?>">
+            <tbody class="<?php if (!$stgteil->count_versionen) echo 'empty' ?>  <?= $stgteil_id === $stgteil->getId() ? 'not-collapsed' : 'collapsed' ?>">
+                <tr class="header-row">
                     <td class="toggle-indicator">
                     <? if ($stgteil->count_versionen) : ?>
                         <a class="mvv-load-in-new-row"
                            href="<?= $controller->url_for('/details/' . $stgteil->getId()) ?>">
                             <?= htmlReady($stgteil->fach_name) ?>
                         <? if ($stgteil->count_fachberater) : ?>
-                            <?= Icon::create('community', 'info', ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
+                            <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
                         <? endif; ?>
                         </a>
                     <? else : ?>
                         <?= htmlReady($stgteil->fach_name) ?>
                         <? if ($stgteil->count_fachberater) : ?>
-                            <?= Icon::create('community', 'info', ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
+                            <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
                         <? endif; ?>
                     <? endif; ?>
                     </td>
@@ -49,28 +45,28 @@
                             <? $actionMenu->addLink(
                                 $controller->url_for('/version/' . $stgteil->getId()),
                                 _('Neue Version anlegen'),
-                                Icon::create('file+add', 'clickable', ['title' => _('Neue Version anlegen')])
+                                Icon::create('file+add', ['title' => _('Neue Version anlegen')])
                             ) ?>
                         <? endif; ?>
                         <? if (MvvPerm::havePermWrite($stgteil)) : ?>
                             <? $actionMenu->addLink(
                                 $controller->url_for('/stgteil/' . $stgteil->getId()),
                                 _('Studiengangteil bearbeiten'),
-                                Icon::create('edit', 'clickable', ['title' => _('Studiengangteil bearbeiten')])
+                                Icon::create('edit', ['title' => _('Studiengangteil bearbeiten')])
                             ) ?>
                         <? endif; ?>
                         <? if (MvvPerm::havePermCreate('StudiengangTeil')) : ?>
                             <? $actionMenu->addLink(
                                 $controller->url_for('/copy/' . $stgteil->getId()),
                                 _('Studiengangteil kopieren'),
-                                Icon::create('files', 'clickable', ['title' => _('Studiengangteil kopieren')])
+                                Icon::create('files', ['title' => _('Studiengangteil kopieren')])
                             ) ?>
                         <? endif; ?>
                         <? if (MvvPerm::havePermCreate($stgteil)) : ?>
                             <? $actionMenu->addButton(
                                 'delete_part',
                                 _('Studiengangteil löschen'),
-                                Icon::create('trash', 'clickable', [
+                                Icon::create('trash', [
                                     'title'        => _('Studiengangteil löschen'),
                                     'formaction'   => $controller->url_for('/delete/' . $stgteil->getId()),
                                     'data-confirm' => sprintf(_('Wollen Sie wirklich den Studiengangteil "%s" löschen?'), $stgteil->getDisplayName()),

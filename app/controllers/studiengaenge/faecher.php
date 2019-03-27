@@ -1,18 +1,9 @@
 <?php
 /**
- * faecher.php - Studiengaenge_FaecherController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
-
 
 require_once dirname(__FILE__) . '/studiengangteile.php';
 
@@ -20,8 +11,6 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
 {
     public function index_action()
     {
-        PageLayout::setTitle(_('Verwaltung der Studiengangteile - Studiengangteile gruppiert nach Fächern'));
-
         $this->initPageParams();
         $this->initSearchParams();
         
@@ -60,6 +49,11 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
         }
         $this->show_sidebar_search = true;
         $this->setSidebar();
+    
+        PageLayout::setTitle(sprintf(
+            _('Verwaltung der Studiengangteile - Studiengangteile gruppiert nach Fächern (%u)'),
+            $this->count
+        ));
     }
     
     /**
@@ -77,7 +71,7 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
         }
         $this->stgteile = StudiengangTeil::findByFach(
             $this->details_id,
-            array('mvv_stgteil.stgteil_id' => $this->getSearchResult('StudiengangTeil')),
+            ['mvv_stgteil.stgteil_id' => $this->getSearchResult('StudiengangTeil')],
             'zusatz,kp',
             'ASC'
         );

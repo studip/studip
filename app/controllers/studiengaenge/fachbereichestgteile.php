@@ -20,7 +20,7 @@ class Studiengaenge_FachbereichestgteileController extends Studiengaenge_Studien
 {
     public function index_action()
     {
-        PageLayout::setTitle(_('Studiengangteile gruppiert nach Fachbereichen'));
+        PageLayout::setTitle(_('Verwaltung der Studiengangteile - Studiengangteile gruppiert nach Fachbereichen'));
         
         $this->initPageParams();
         $this->initSearchParams();

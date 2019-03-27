@@ -1,10 +1,6 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default collapsable">
-        <caption>
-            <?= _('Studiengangteile nach Fächern gruppiert') ?>
-            <span class="actions"><? printf(_('%s Fächer'), $count) ?></span>
-        </caption>
         <colgroup>
             <col>
             <col style="width:1%;">
@@ -18,12 +14,12 @@
             </tr>
         </thead>
         <? foreach ($faecher as $fach): ?>
-            <tbody class="<?= $fach->count_stgteile ? '' : 'empty' ?> <?= (($details_id == $fach->id || (isset($stgteil_ids) && sizeof($stgteil_ids))) ? 'not-collapsed' : 'collapsed') ?>">
-                <tr class="header-row <?= TextHelper::cycle('table_row_even', 'table_row_odd') ?>">
+            <tbody class="<?= $fach->count_stgteile ? '' : 'empty' ?> <?= (($details_id === $fach->id || (isset($stgteil_ids) && sizeof($stgteil_ids))) ? 'not-collapsed' : 'collapsed') ?>">
+                <tr class="header-row">
                     <td class="toggle-indicator">
                         <? if ($fach->count_stgteile) : ?>
                             <a class="mvv-load-in-new-row"
-                               href="<?= $controller->url_for('/details_fach', $fach->id) ?>"><?= htmlReady($fach->name) ?></a>
+                               href="<?= $controller->url_for('/details_fach/' . $fach->id) ?>"><?= htmlReady($fach->name) ?></a>
                         <? else: ?>
                             <?= htmlReady($fach->name) ?>
                         <? endif; ?>
@@ -32,12 +28,12 @@
                     <td class="dont-hide actions">
                         <? if (MvvPerm::havePermCreate('StudiengangTeil')) : ?>
                             <a href="<?= $controller->url_for('/stgteil_fach', $fach->id) ?>">
-                                <?= Icon::create('file+add', 'clickable', ['title' => _('Neuen Studiengangteil für gewähltes Fach anlegen')])->asImg(); ?>
+                                <?= Icon::create('file+add', ['title' => _('Neuen Studiengangteil für gewähltes Fach anlegen')])->asImg(); ?>
                             </a>
                         <? endif; ?>
                     </td>
                 </tr>
-                <? if ($details_id == $fach->getId() || (isset($stgteil_ids) && sizeof($stgteil_ids))) : ?>
+                <? if ($details_id === $fach->getId() || (isset($stgteil_ids) && sizeof($stgteil_ids))) : ?>
                     <tr class="loaded-details nohover">
                         <?= $this->render_partial('studiengaenge/studiengangteile/details_grouped', compact('stgteile')) ?>
                     </tr>
