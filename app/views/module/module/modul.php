@@ -6,25 +6,13 @@ $perm_d = MvvPerm::get($deskriptor);
 if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
     $perm_d->setVariant($display_language);
 }
-$translations = $deskriptor->getAvailableTranslations();
 ?>
 <? if (!$def_lang) : ?>
 <script>
     MVV.PARENT_ID = '<?= $modul->getId() ?>';
 </script>
 <? endif; ?>
-<h1>
-    <? if ($modul->isNew()) : ?>
-    <?= _('Neues Modul') ?>
-    <? else : ?>
-        <? if (!in_array($display_language, $translations)) : ?>
-            <?= sprintf('Modul: <em>%s</em> in der Ausgabesprache <em>%s</em> neu anlegen.', $modul->getDisplayName(),
-                    $GLOBALS['MVV_MODUL_DESKRIPTOR']['SPRACHE']['values'][$display_language]['name']) ?>
-        <? else : ?>
-            <?= sprintf(_('Modul: %s'), htmlReady($modul->getDisplayName())) ?>
-        <? endif; ?>
-    <? endif; ?>
-</h1>
+
 <form id="modul_form" class="default" action="<?= $controller->url_for('/modul', $modul->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
