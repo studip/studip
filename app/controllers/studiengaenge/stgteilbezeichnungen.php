@@ -1,15 +1,7 @@
 <?php
 /**
- * stgteilbezeichnungen.php - Studiengaenge_StgteilbezeichnungenController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
@@ -25,7 +17,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
     public function index_action()
     {
         $this->stgteilbezeichnungen = StgteilBezeichnung::getAllEnriched();
-        PageLayout::setTitle(_('Alle Studiengangteil-Bezeichnungen'));
+        PageLayout::setTitle(
+            _('Alle Studiengangteil-Bezeichnungen') . ' - ' .
+            sprintf(ngettext('%u Bezeichnung', '%u Bezeichnungen', count($this->stgteilbezeichnungen)), count($this->stgteilbezeichnungen))
+        );
         $this->setSidebar();
     }
 
@@ -49,11 +44,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
             $action_widget->addLink(
                 _('Log-Einträge dieser Studiengangteil-Bezeichnung'),
                 $this->url_for('shared/log_event/show/' . $this->stgteilbezeichnung->id),
-                Icon::create('log', 'clickable'),
+                Icon::create('log'),
                 ['data-dialog' => '']
             );
         }
-
     }
     
     /**
@@ -94,8 +88,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
         CSRFProtection::verifyUnsafeRequest();
         $stgteilbezeichnung = StgteilBezeichnung::get($stgteilbezeichnung_id);
         if ($stgteilbezeichnung->count_studiengaenge) {
-            PageLayout::postError(sprintf(_('Löschen nicht möglich! Die Studiengangteil-Bezeichnung "%s" wird bereits verwendet!'),
-                htmlReady($stgteilbezeichnung->name)));
+            PageLayout::postError(sprintf(
+                _('Löschen nicht möglich! Die Studiengangteil-Bezeichnung "%s" wird bereits verwendet!'),
+                htmlReady($stgteilbezeichnung->name)
+            ));
         } else {
             $perm = MvvPerm::get($stgteilbezeichnung);
             if (!$perm->havePerm(MvvPerm::PERM_CREATE)) {
@@ -125,7 +121,7 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
             foreach ($orderedIds as $id) {
                 $stgteilbezeichnung = $stgteilbezeichnungen->find($id);
                 if ($stgteilbezeichnung) {
-                    if ($stgteilbezeichnung->position != $i) {
+                    if ($stgteilbezeichnung->position !== $i) {
                         $stgteilbezeichnung->position = $i;
                         $stgteilbezeichnung->store();
                     }
@@ -166,7 +162,7 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
             $widget->addLink(
                 _('Neue Studiengangteil-Bezeichnung'),
                 $this->url_for('/stgteilbezeichnung'),
-                Icon::create('add', 'clickable')
+                Icon::create('add')
             )->asDialog();
             $sidebar->addWidget($widget);
         }

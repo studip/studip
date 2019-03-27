@@ -2,10 +2,6 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table id="stgteilbezeichnungen" class="default sortable collapsable">
-        <caption>
-            <?= _('Studiengangteil-Bezeichnungen') ?>
-            <span class="actions"><? printf(_('%s Bezeichnungen'), count($stgteilbezeichnungen)) ?></span>
-        </caption>
         <colgroup>
             <col>
             <col style="width: 10%;">
@@ -24,7 +20,7 @@
         <? foreach ($stgteilbezeichnungen as $stgteilbezeichnung) : ?>
             <? $perm = MvvPerm::get($stgteilbezeichnung) ?>
             <tbody id="<?= $stgteilbezeichnung->id ?>"
-                   class="collapsed <? if ($perm->haveFieldPerm('position')) echo 'sort_items'; ?>">
+                   class="collapsed <?php if ($perm->haveFieldPerm('position')) echo 'sort_items'; ?>">
                 <tr class="header-row">
                     <td class="toggle-indicator">
                         <a class="mvv-load-in-new-row"
@@ -41,11 +37,11 @@
                     <td class="dont-hide actions">
                         <? if ($perm->havePermWrite()) : ?>
                             <a data-dialog href="<?= $controller->url_for('/stgteilbezeichnung/' . $stgteilbezeichnung->id) ?>">
-                                <?= Icon::create('edit', 'clickable', ['title' => _('Studiengangteil-Bezeichnung bearbeiten')])->asImg(); ?>
+                                <?= Icon::create('edit', ['title' => _('Studiengangteil-Bezeichnung bearbeiten')])->asImg(); ?>
                             </a>
                         <? endif; ?>
                         <? if ($perm->havePermCreate() && $stgteilbezeichnung->count_stgteile < 1) : ?>
-                            <?= Icon::create('trash', 'clickable', ['title' => _('Studiengangteil-Bezeichnung löschen')])
+                            <?= Icon::create('trash', ['title' => _('Studiengangteil-Bezeichnung löschen')])
                                 ->asInput([
                                     'formaction'   => $controller->url_for('/delete/' . $stgteilbezeichnung->id),
                                     'data-confirm' => sprintf(_('Wollen Sie wirklich die Studiengangteil-Bezeichnung "%s" löschen?'), htmlReady($stgteilbezeichnung->name)),]) ?>

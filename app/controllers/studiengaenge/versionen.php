@@ -56,7 +56,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
             case 'stgteile_fach' :
                 $this->chooser_filter['stgteile'] =
                     Request::option('id', $this->chooser_filter['stgteile']);
-                $this->redirect($this->url_for('/index', $this->chooser_filter['stgteile']));
+                $this->redirect($this->url_for('/index/' .  $this->chooser_filter['stgteile']));
                 return;
             default :
                 throw new Trails_Exception(400);
@@ -77,10 +77,13 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     protected function chooser_kategorien_fachbereich()
     {
-        foreach (AbschlussKategorie::findByFachbereich(
-            $this->chooser_filter['fachbereich']) as $kategorie) {
-            $this->lists['kategorien']['elements'][$kategorie->id] = array(
-                'name' => $kategorie->name);
+        $kategorien = AbschlussKategorie::findByFachbereich(
+            $this->chooser_filter['fachbereich']
+        );
+        foreach ($kategorien as $kategorie) {
+            $this->lists['kategorien']['elements'][$kategorie->id] = [
+                'name' => $kategorie->name
+            ];
         }
         $this->lists['kategorien']['headline'] = _('Abschluss-Kategorie');
         $this->lists['kategorien']['selected'] = $this->chooser_filter['kategorie'];
@@ -88,38 +91,41 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     protected function chooser_faecher_fachbereich()
     {
-        foreach (Fach::findByFachbereich(
-            $this->chooser_filter['fachbereich'], true) as $fach) {
-            $this->lists['faecher_fachbereich']['elements'][$fach->id] = array('name' => $fach->name);
+        $faecher = Fach::findByFachbereich($this->chooser_filter['fachbereich'], true);
+        foreach ($faecher as $fach) {
+            $this->lists['faecher_fachbereich']['elements'][$fach->id] = ['name' => $fach->name];
         }
         $this->lists['faecher_fachbereich']['headline'] = _('Fach');
-        $this->lists['faecher_fachbereich']['selected'] =
-                $this->chooser_filter['fach'];
+        $this->lists['faecher_fachbereich']['selected'] = $this->chooser_filter['fach'];
     }
 
     protected function chooser_studiengaenge_kategorie()
     {
-        foreach (Studiengang::findByAbschlussKategorieFachbereich(
+        $studiengaenge = Studiengang::findByAbschlussKategorieFachbereich(
             $this->chooser_filter['kategorie'],
-            $this->chooser_filter['fachbereich']) as $studiengang) {
-            $this->lists['studiengaenge']['elements'][$studiengang->id] = array(
-                'name' => $studiengang->name);
+            $this->chooser_filter['fachbereich']
+        );
+        foreach ($studiengaenge as $studiengang) {
+            $this->lists['studiengaenge']['elements'][$studiengang->id] = [
+                'name' => $studiengang->name
+            ];
         }
         $this->lists['studiengang']['headline'] = _('Studiengang');
-        $this->lists['studiengang']['selected'] =
-                $this->chooser_filter['studiengang'];
+        $this->lists['studiengang']['selected'] = $this->chooser_filter['studiengang'];
     }
 
     protected function chooser_stgabschnitte_studiengang()
     {
-        foreach (StudiengangStgteil::findByStudiengang(
-            $this->chooser_filter['studiengang']) as $stgteil) {
-            $this->lists['stg_abschnitte']['elements'][$stgteil->id] = array(
-                'name' => $stgteil->zusatz);
+        $stgteile = StudiengangStgteil::findByStudiengang(
+            $this->chooser_filter['studiengang']
+        );
+        foreach ($stgteile as $stgteil) {
+            $this->lists['stg_abschnitte']['elements'][$stgteil->id] = [
+                'name' => $stgteil->zusatz
+            ];
         }
         $this->lists['stg_abschnitte']['headline'] = _('Studiengangteil');
-        $this->lists['stg_abschnitte']['selected'] =
-                $this->chooser_filter['stg_abschnitt'];
+        $this->lists['stg_abschnitte']['selected'] = $this->chooser_filter['stg_abschnitt'];
     }
 
     protected function chooser_faecher_stgteil()
@@ -134,12 +140,14 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     protected function chooser_stgteile()
     {
-        foreach (StudiengangTeil::findByStudiengangStgteilBez(
+        $stgteile = StudiengangTeil::findByStudiengangStgteilBez(
             $this->chooser_filter['studiengang'],
-            $this->chooser_filter['stgteil']) as $stgteil) {
-            $this->lists['stgteile']['elements'][$stgteil->id] = array(
+            $this->chooser_filter['stgteil']
+        );
+        foreach ($stgteile as $stgteil) {
+            $this->lists['stgteile']['elements'][$stgteil->id] = [
                 'name' => $stgteil->getDisplayName()
-            );
+            ];
         }
         $this->lists['stgteile']['stop'] = 1;
         $this->lists['stgteile']['headline'] = _('Studiengangteil');
@@ -149,28 +157,28 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     protected function chooser_stgteile_fach()
     {
-        foreach (StudiengangTeil::findByFach($this->chooser_filter['fach'],
-                null, 'zusatz,kp', 'ASC') as $stgteil) {
-            $this->lists['stgteile_fach']['elements'][$stgteil->id] = array(
-                'name' => $stgteil->getDisplayName());
+        $stgteile = StudiengangTeil::findByFach(
+            $this->chooser_filter['fach'], null, 'zusatz,kp', 'ASC'
+        );
+        foreach ($stgteile as $stgteil) {
+            $this->lists['stgteile_fach']['elements'][$stgteil->id] = [
+                'name' => $stgteil->getDisplayName()
+            ];
         }
         $this->lists['stgteile_fach']['headline'] = _('Studiengangteil');
         $this->lists['stgteile_fach']['stop'] = 1;
-        $this->lists['stgteile_fach']['selected'] =
-                $this->chooser_filter['stgteil'];
+        $this->lists['stgteile_fach']['selected'] = $this->chooser_filter['stgteil'];
     }
 
     protected function chooser_index()
     {
-        $filter = array('mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes());
-        foreach (StudiengangTeil::getAssignedFachbereiche('name', 'ASC', $filter)
-                as $key => $fachbereich) {
-            $this->lists['index']['elements'][$key] = array(
-                'name' => $fachbereich['name']);
+        $filter = ['mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes()];
+        $fachbereiche = StudiengangTeil::getAssignedFachbereiche('name', 'ASC', $filter);
+        foreach ($fachbereiche as $key => $fachbereich) {
+            $this->lists['index']['elements'][$key] = ['name' => $fachbereich['name']];
         }
         $this->lists['index']['headline'] = _('Fachbereich');
-        $this->lists['index']['selected'] =
-                $this->chooser_filter['fachbereich'];
+        $this->lists['index']['selected'] = $this->chooser_filter['fachbereich'];
     }
 
     /**
@@ -204,9 +212,8 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     public function index_action($stgteil_id = null)
     {
-        $stgteil_id = Request::option('id',
-                $stgteil_id ?: $this->chooser_filter['stgteil']);
-        
+        $stgteil_id = Request::option('id', $stgteil_id ?: $this->chooser_filter['stgteil']);
+        PageLayout::setTitle(_('Versionen des gewählten Studiengangteils'));
         if ($stgteil_id) {
             $this->stgteil = StudiengangTeil::find($stgteil_id);
             if (!$this->stgteil) {
@@ -220,8 +227,9 @@ class Studiengaenge_VersionenController extends SharedVersionController
                 $sem_time_switch = Config::get()->getValue('SEMESTER_TIME_SWITCH');
                 // switch semester according to time switch
                 // (n weeks before next semester)
-                $current_sem = Semester::findByTimestamp(time()
-                        + $sem_time_switch * 7 * 24 * 3600);
+                $current_sem = Semester::findByTimestamp(
+                    time() + $sem_time_switch * 7 * 24 * 3600
+                );
                 if ($current_sem) {
                     $this->filter['start_sem.beginn'] = $current_sem->beginn;
                     $this->filter['end_sem.ende'] = $current_sem->beginn;
@@ -242,7 +250,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
             $this->sidebar_filter();
             $this->set_chooser();
         } else {
-            $this->chooser_filter = array();
+            $this->chooser_filter = [];
             $this->sessSet('chooser_filter', $this->chooser_filter);
             $this->setSidebar();
             $this->set_chooser();
@@ -286,7 +294,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
                 $widget->addLink(
                     _('Neue Version anlegen'),
                     $this->url_for('/version', $this->chooser_filter['stgteil']),
-                    Icon::create('file+add', 'clickable')
+                    Icon::create('file+add')
                 );
             }
         }
@@ -310,32 +318,34 @@ class Studiengaenge_VersionenController extends SharedVersionController
         $semesters = $semesters->orderBy('beginn desc');
 
         // Status
-        $filter = ['start_sem.beginn' => $this->filter['start_sem.beginn'],
-                'end_sem.ende' => $this->filter['end_sem.ende'],
-                'mvv_stgteilversion.stgteil_id' => $this->chooser_filter['stgteil']];
+        $filter = [
+            'start_sem.beginn'              => $this->filter['start_sem.beginn'],
+            'end_sem.ende'                  => $this->filter['end_sem.ende'],
+            'mvv_stgteilversion.stgteil_id' => $this->chooser_filter['stgteil']
+        ];
         $version_ids = StgteilVersion::findByFilter($filter);
 
         $status_results = [];
         foreach ($GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'] as $status => $values) {
             $count_status = StgteilVersion::countBySql(
-                    'version_id IN (?) AND stat = ? ', [$version_ids, $status]);
+                'version_id IN (?) AND stat = ? ', [$version_ids, $status]
+            );
             $status_results[$status] = [
-                    'name' => $values['name'],
-                    'count_objects' => $count_status];
+                'name'          => $values['name'],
+                'count_objects' => $count_status
+            ];
         }
         $count_status = StgteilVersion::countBySql(
-                    'version_id IN (?) AND stat IS NULL', [$version_ids]);
+            'version_id IN (?) AND stat IS NULL', [$version_ids]
+        );
         $status_results['__undefined__'] = ['count_objects' => $count_status];
 
         $filter_template = $template_factory->render('shared/filter', array(
             'semester' => $semesters,
             'selected_semester' => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
             'status' => $status_results,
-            'selected_status'
-                => $this->filter['mvv_stgteilversion.stat'],
-            'status_array'
-                => $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'],
-
+            'selected_status' => $this->filter['mvv_stgteilversion.stat'],
+            'status_array' => $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'],
             'action' => $this->url_for('/set_filter'),
             'action_reset' => $this->url_for('/reset_filter')
         ));
