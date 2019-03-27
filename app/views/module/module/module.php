@@ -1,6 +1,6 @@
 <? foreach ($module as $modul) : ?>
     <? $perm = MvvPerm::get($modul) ?>
-    <tbody class="<?= ($modul->count_modulteile ? '' : 'empty ') ?><?= ($modul_id = s == $modul->getId() ? 'not-collapsed' : 'collapsed') ?>">
+    <tbody class="<?= ($modul->count_modulteile ? '' : 'empty ') ?><?= ($modul_id === $modul->getId() ? 'not-collapsed' : 'collapsed') ?>">
         <? $ampel_icon = $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'][$modul->stat]['icon'] ?>
         <? $ampelstatus = $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'][$modul->stat]['name'] ?>
         <tr class="header-row" id="modul_<?= $modul->getId() ?>">
