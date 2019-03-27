@@ -48,7 +48,8 @@ class SharedVersionController extends MVVController
         
         $this->semester = Semester::getAll();
         $this->dokumente = $this->version->document_assignments;
-        $this->sessSet('dokument_target', array($this->version->getId(), 'StgteilVersion'));
+        $this->sessSet('dokument_target', [$this->version->getId(), 'StgteilVersion']);
+        
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             if (!MvvPerm::haveFieldPermVersionen($this->stgteil)) {
@@ -78,6 +79,7 @@ class SharedVersionController extends MVVController
             } catch (InvalidValuesException $e) {
                 PageLayout::postError(htmlReady($e->getMessage()));
             }
+            
             if ($stored !== false) {
                 if ($stored) {
                     PageLayout::postSuccess(sprintf($success_message,
@@ -110,12 +112,14 @@ class SharedVersionController extends MVVController
             $action_widget->addLink(
                 _('Vergleich mit anderer Version'),
                 $this->url_for('studiengaenge/versionen/diff_select', $this->version->getId()),
-                Icon::create('module', 'clickable'), array('data-dialog' => 'size=auto')
+                Icon::create('module', 'clickable'),
+                ['data-dialog' => 'size=auto']
             );
             if ($this->version->stat == 'planung' && MvvPerm::haveFieldPermStat($this->version)) {
                 $action_widget->addLink(_('Version genehmigen'),
                     $this->url_for('/approve', $this->stgteil->getId(), $this->version->getId()),
-                    Icon::create('accept', 'clickable'), array('data-dialog' => 'size=auto;buttons=false')
+                    Icon::create('accept', 'clickable'),
+                    ['data-dialog' => 'size=auto;buttons=false']
                 );
             }
             $action_widget->addLink(
@@ -198,19 +202,15 @@ class SharedVersionController extends MVVController
             PageLayout::addStylesheet('print.css');
             $factory = $this->get_template_factory();
             $template = $factory->open('studiengaenge/versionen/export');
-            $template->set_attributes(array(
-                'stgversion' => $version
-            ));
+            $template->set_attributes(['stgversion' => $version]);
 
             if ($type == 'pdf') {
                 $template->set_attribute('image_style', 'height: 6px; width: 8px;');
 
                 $doc = new ExportPDF();
-
                 $doc->addPage();
                 $doc->SetFont('helvetica', '', 8);
                 $doc->writeHTML($template->render(), false, false, true);
-
                 $doc->Output($version->getDisplayName() . '.pdf', 'D');
 
                 $this->render_nothing();
