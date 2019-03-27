@@ -16,16 +16,17 @@
 
 class SharedVersionController extends MVVController
 {
-
     public function version_action($stgteil_id, $version_id = null)
     {
         $this->stgteil = StudiengangTeil::find($stgteil_id);
         if (!$this->stgteil) {
             throw new Trails_Exception(404);
         }
+        
         if (!MvvPerm::haveFieldPermVersionen($this->stgteil, MvvPerm::PERM_READ)) {
             throw new Trails_Exception(403);
         }
+        
         if (!isset($this->version)) {
             $this->version = StgteilVersion::find($version_id);
             if (!$this->version) {
@@ -38,12 +39,13 @@ class SharedVersionController extends MVVController
 
         if ($this->version->isNew()) {
             $this->version->stat = 'planung';
-            PageLayout::setTitle(_('Neue Version des Studiengangteils anlegen'));
+            PageLayout::setTitle(sprintf(_('Neue Version für Studiengangteil: %s'), htmlReady($this->stgteil->getDisplayName())));
             $success_message = ('Die Version "%s" des Studiengangteils wurde angelegt.');
         } else {
-            PageLayout::setTitle(_('Version des Studiengangteils bearbeiten'));
+            PageLayout::setTitle(sprintf(_('Version: %s bearbeiten'), htmlReady($this->version->getDisplayName())));
             $success_message = _('Die Version "%s" des Studiengangteils wurde geändert.');
         }
+        
         $this->semester = Semester::getAll();
         $this->dokumente = $this->version->document_assignments;
         $this->sessSet('dokument_target', array($this->version->getId(), 'StgteilVersion'));

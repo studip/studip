@@ -25,7 +25,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
         parent::before_filter($action, $args);
         // set navigation
         Navigation::activateItem($this->me . '/studiengaenge/versionen');
-        $this->filter = $this->sessGet('filter', array());
+        $this->filter = $this->sessGet('filter', []);
         $this->action = $action;
 
         $this->chooser_filter = $this->sessGet(

@@ -1,13 +1,7 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <?= $controller->jsUrl() ?>
 <? $perm = MvvPerm::get($version) ?>
-<h3>
-    <? if ($version->isNew()) : ?>
-    <?= sprintf(_('Neue Version für Studiengangteil: %s'), htmlReady($stgteil->getDisplayName())) ?>
-    <? else : ?>
-    <?= sprintf(_('Version: %s'), htmlReady($version->getDisplayName())) ?>
-    <? endif; ?>
-</h3>
+
 <form class="default" action="<?= $controller->url_for('/version', $stgteil->id, $version->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
@@ -122,13 +116,13 @@
     <footer data-dialog-button>
         <? if ($version->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>
-            <?= Button::createAccept(_('Anlegen'), 'store', array('title' => _('Version anlegen'))) ?>
+            <?= Button::createAccept(_('Anlegen'), 'store', ['title' => _('Version anlegen')]) ?>
             <? endif; ?>
         <? else : ?>
             <? if ($perm->havePermWrite()) : ?>
-            <?= Button::createAccept(_('Übernehmen'), 'store', array('title' => _('Änderungen übernehmen'))) ?>
+            <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
             <? endif; ?>
         <? endif; ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, array('title' => _('zurück zur Übersicht'))) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, ['title' => _('zurück zur Übersicht')]) ?>
     </footer>
 </form>
