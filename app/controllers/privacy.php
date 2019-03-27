@@ -302,8 +302,7 @@ class PrivacyController extends AuthenticatedController
         if ($avatar->is_customized()) {
             $zip->addFile($avatar->getCustomAvatarPath('normal'), $user_id . '.png');
         }
-
-        // FIXME this will overwrite files with the same name in different folders
+        // add folder structure to zip
         foreach (FileRef::findByUser_id($user_id) as $fileref) {
             $storage->addFileRef($fileref);
         }
@@ -313,8 +312,9 @@ class PrivacyController extends AuthenticatedController
         }
 
         foreach ($storage->getFileData() as $file_data) {
+            $zip->addEmptyDir($file_data['zipDir']);
             if (isset($file_data['path'])) {
-                $zip->addFile($file_data['path'], $file_data['name']);
+                $zip->addFile($file_data['path'], $file_data['zipDir'] . $file_data['name']);
             } else {
                 $zip->addFromString($file_data['name'], $file_data['contents']);
             }
