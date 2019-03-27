@@ -910,7 +910,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 return;
             }
         }
-        PageLayout::setTitle($this->studiengang->getDisplayName());
+        PageLayout::setTitle(htmlReady($this->studiengang->getDisplayName()));
         $this->render_template('studiengaenge/studiengaenge/approve', $this->layout);
     }
 
