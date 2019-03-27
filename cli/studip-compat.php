@@ -2,19 +2,14 @@
 <?php
 require_once 'studip_cli_env.inc.php';
 
-// "Rules"/definitions for critical changes in 5.0
-$rules = [
-    'Token::is_valid' => 'Use #{yellow:Token::isValid($token, $user_id)} instead.',
-];
-
-
-$opts = getopt('fhnoc', array('filenames', 'help', 'non-recursive', 'verbose', 'no-color'));
+$opts = getopt('fhnoc', ['filenames', 'help', 'non-recursive', 'verbose', 'no-color']);
 
 if (isset($opts['h']) || isset($opts['help'])) {
-    fwrite(STDOUT, 'Stud.IP 5.0 compatibility scanner - Checks plugins for most issues' . PHP_EOL);
-    fwrite(STDOUT, '==================================================================' . PHP_EOL);
-    fwrite(STDOUT, 'Usage: ' . basename(__FILE__) . ' [OPTION] [FOLDER] ..' . PHP_EOL);
+    fwrite(STDOUT, 'Stud.IP compatibility scanner - Checks plugins for common issues' . PHP_EOL);
+    fwrite(STDOUT, '================================================================' . PHP_EOL);
+    fwrite(STDOUT, 'Usage: ' . basename(__FILE__) . ' [OPTION] [VERSION] [FOLDER] ..' . PHP_EOL);
     fwrite(STDOUT, PHP_EOL);
+    fwrite(STDOUT, '[VERSION] is optional, if not given all checks are applied.' . PHP_EOL);
     fwrite(STDOUT, '[FOLDER] will default to the plugins_packages folder.' . PHP_EOL);
     fwrite(STDOUT, 'Supply as many folders as you need.' . PHP_EOL);
     fwrite(STDOUT, PHP_EOL);
@@ -43,7 +38,12 @@ $verbose        = isset($opts['v']) || isset($opts['verbose']);
 $only_filenames = isset($opts['f']) || isset($opts['filenames']);
 $recursive      = !(isset($opts['n']) || isset($opts['non-recursive']));
 $no_colors      = isset($opts['c']) || isset($opts['no-color']);
-$folders        = $args ?: [];
+$version        = null;
+$folders        = array_values($args) ?: [];
+
+if (count($folders) > 0 && preg_match('/^\d+\.\d+$/', $folders[0])) {
+    $version = array_shift($folders);
+}
 
 // Prepare logging mechanism
 $log = function ($message) use ($no_colors) {
@@ -114,6 +114,20 @@ $reduce = function ($folder) {
     return $folder;
 };
 
+// Get rules
+if (!$version) {
+    $rules = [];
+    foreach (glob(__DIR__ . '/compatbility-rules/*.php') as $file) {
+        $version_rules = require $file;
+        $rules = array_merge($rules, $version_rules);
+    }
+} elseif (!file_exists(__DIR__ . "/compatibility-rules/studip-{$version}.php")) {
+    $log('#{red:No rules defined for Stud.IP version %s}', $version);
+    die;
+} else {
+    $rules = require __DIR__ . "/compatibility-rules/studip-{$version}.php";
+}
+
 // Prepare folders
 if (count($folders) === 0) {
     $folders = rtrim($GLOBALS['STUDIP_BASE_PATH'], '/') . '/public/plugins_packages';
@@ -175,13 +189,6 @@ foreach ($folders as $folder) {
                 foreach ($errors as $needle => $suggestion) {
                     $log('- #{cyan:%s} -> %s', $needle, $suggestion ?: '#{red:No suggestion available}');
                 }
-                // if ($show_matches) {
-                //     $variables = array_unique($matches[1]);
-                //     foreach ($variables as $variable) {
-                //         $log('>> #{cyan:%s}', $variable);
-                //         $log_if($show_occurences, $highlight($contents, $variable));
-                //     }
-                // }
             }
         }
     }
