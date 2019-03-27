@@ -617,10 +617,19 @@ class Module_ModuleController extends MVVController
                 htmlReady($GLOBALS['MVV_MODUL_DESKRIPTOR']['SPRACHE']['values'][$this->display_language]['name'])
             ));
         } else {
-            PageLayout::setTitle(_('Modulteil bearbeiten'));
-            $success_message = _('Der Modulteil "%s" wurde geändert.');
             $this->display_language = Request::option('display_language', $this->modulteil->getDefaultLanguage());
-
+            $this->translations = $this->deskriptor->getAvailableTranslations();
+    
+            if (!in_array($this->display_language, $this->translations)) {
+                PageLayout::setTitle(sprintf(
+                    _('Modulteil: <em>%s</em> in der Ausgabesprache <em>%s</em> neu anlegen.'),
+                    $this->modulteil->getDisplayName(),
+                    $GLOBALS['MVV_MODULTEIL_DESKRIPTOR']['SPRACHE']['values'][$this->display_language]['name']
+                ));
+            } else {
+                PageLayout::setTitle(sprintf(_('Modulteil: %s'), htmlReady($this->modulteil->getDisplayName())));
+            }
+            $success_message = _('Der Modulteil "%s" wurde geändert.');
             // sidebar widget for selecting language
             $template_factory = $this->get_template_factory();
             $sidebar = Sidebar::get();
@@ -904,7 +913,7 @@ class Module_ModuleController extends MVVController
     {
         $this->modulteil = Modulteil::find($modulteil_id);
         if (is_null($this->modulteil)) {
-            PageLayout::postError( _('Unbekannter Modulteil.'));
+            PageLayout::postError(_('Unbekannter Modulteil.'));
             $this->redirect($this->url_for('/index'));
             return;
         } else {

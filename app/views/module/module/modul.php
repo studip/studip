@@ -53,9 +53,9 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
         <div>
             <?= $search_modul->render(); ?>
             <? if (Request::submitted('search_modul')) : ?>
-                <?= Icon::create('refresh', 'clickable', ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
+                <?= Icon::create('refresh', ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
             <? else : ?>
-                <?= Icon::create('search', 'clickable', ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
+                <?= Icon::create('search', ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
             <? endif; ?>
         </div>
         <? endif; ?>
@@ -68,7 +68,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 </div>
                 <? if ($perm->haveFieldPerm('modul_variante', MvvPerm::PERM_WRITE)) : ?>
                 <div class="mvv-item-list-buttons">
-                    <a href="#" class="mvv-item-remove"><?= Icon::create('trash', 'clickable', array('title' => _(' entfernen')))->asImg(); ?></a>
+                    <a href="#" class="mvv-item-remove"><?= Icon::create('trash', array('title' => _(' entfernen')))->asImg(); ?></a>
                 </div>
                 <? endif; ?>
                 <input type="hidden" name="modul_item" value="<?= $modul->modul_variante->id ?>">
@@ -198,7 +198,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
         <? if ($def_lang && $perm->haveFieldPerm('responsible_institute', MvvPerm::PERM_WRITE)) : ?>
             <?= $search_responsible->render(); ?>
             <? if (Request::submitted('search_responsible')) : ?>
-                <?= Icon::create('refresh', 'clickable', ['name' => 'reset_responsible', 'data-qs_id' => $qs_id_responsible])->asInput(); ?>
+                <?= Icon::create('refresh', ['name' => 'reset_responsible', 'data-qs_id' => $qs_id_responsible])->asInput(); ?>
             <? else : ?>
                 <?= Icon::create('search', 'clickable', ['name' => 'search_responsible', 'data-qs_id' => $qs_id_responsible, 'data-qs_name' => $search_responsible->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
             <? endif; ?>
