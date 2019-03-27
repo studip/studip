@@ -79,9 +79,10 @@ class GarbageCollectorJob extends CronJob
             printf(_("Gelöschte Dateianhänge: %u") . "\n", count($unsent_attachment_folders));
         }
 
+        Token::deleteBySQL('expiration < UNIX_TIMESTAMP()');
         PersonalNotifications::doGarbageCollect();
 
-        \Studip\Activity\Activity::doGarbageCollect();
+        Studip\Activity\Activity::doGarbageCollect();
 
         // clean db cache
         $cache = new StudipDbCache();

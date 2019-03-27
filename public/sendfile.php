@@ -86,7 +86,7 @@ if ($type == 1) {
 
 //download ad hoc created files, always allowed
 if ($type == 4) {
-    $no_access = !(Token::is_valid(Request::option('token')) === $GLOBALS['user']->id);
+    $no_access = !Token::isValid(Request::option('token'), $GLOBALS['user']->id);
 }
 
 //if download not allowed throw exception to terminate script

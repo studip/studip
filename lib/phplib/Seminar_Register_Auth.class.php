@@ -181,7 +181,7 @@ class Seminar_Register_Auth extends Seminar_Auth
 
         // (re-)send the confirmation mail
         $to     = $user->email;
-        $token  = Token::generate($user->id, 7 * 24 * 60 * 60); // Link is valid for 1 week
+        $token  = Token::create(7 * 24 * 60 * 60, $user->id); // Link is valid for 1 week
         $url    = $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'email_validation.php?secret=' . $token;
         $mail   = new StudipMail();
         $abuse  = $mail->getReplyToEmail();
@@ -206,7 +206,6 @@ class Seminar_Register_Auth extends Seminar_Auth
      */
     public static function validateSecret($secret, $user_id)
     {
-        $valid = Token::is_valid($secret);
-        return $valid && $valid === $user_id;
+        return Token::isValid($secret, $user_id);
     }
 }

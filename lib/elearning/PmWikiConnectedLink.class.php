@@ -66,15 +66,13 @@ class PmWikiConnectedLink extends ConnectedLink
             $status = StudipInstituteHelper::get_user_status($username, $range_id);
         }
 
-        $token = new Token($GLOBALS['auth']->auth['uid']);
-
         ob_start(); ?>
         <form method="post" target="_blank" rel="noopener noreferrer"
               action="<?= $connected_cms[$this->cms_type]->content_module[$current_module]->link ?>">
 
             <?= CSRFProtection::tokenTag() ?>
             <input type='hidden'    name='authid'           value='<?= htmlReady($GLOBALS['auth']->auth['uname']) ?>'>
-            <input type='hidden'    name='authpw'           value='<?= htmlReady($token->get_string()) ?>'>
+            <input type='hidden'    name='authpw'           value='<?= htmlReady(Token::create()) ?>'>
             <input type='hidden'    name='_permission'  value='<?= htmlReady($status) ?>'>
             <input type='hidden'    name='_range_id'        value='<?= htmlReady($range_id) ?>'>
             <input type='hidden'    name='_server'          value='<?= htmlReady(Config::get()->STUDIP_INSTALLATION_ID) ?>'>

@@ -37,7 +37,7 @@ class TermsController extends AuthenticatedController
 
     private function redirectUser($target = null)
     {
-        if (Token::is_valid(Request::option('redirect_token') === $GLOBALS['user']->id) && Request::get('return_to')) {
+        if (Token::isValid(Request::option('redirect_token')) && Request::get('return_to')) {
             $target = Request::get('return_to') ;
         } else {
             $target = $target ?: 'dispatch.php/start';

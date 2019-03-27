@@ -251,9 +251,8 @@ class FileManager
         $download_file_name = null
     )
     {
-        $token = new Token($GLOBALS['user']->id);
         return URLHelper::getURL('sendfile.php', [
-            'token'          => (string)$token,
+            'token'          => Token::create(),
             'type'           => 4,
             'file_id'        => $temporary_file_name,
             'file_name'      => $download_file_name,

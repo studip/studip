@@ -54,7 +54,7 @@ if (!(Config::get()->ENABLE_REQUEST_NEW_PASSWORD_BY_USER && in_array('Standard',
         $message = _("Das Anfordern eines neuen Passwortes durch den Benutzer ist in dieser Stud.IP-Installation nicht möglich.");
     }
     PageLayout::postError(_("Passwortanforderung nicht möglich!"), [$message]);
-    
+
     $template                     = $GLOBALS['template_factory']->open('layouts/base.php');
     $template->content_for_layout = ob_get_clean();
     $template->infobox            = $infobox ? ['content' => $infobox] : null;
@@ -63,7 +63,11 @@ if (!(Config::get()->ENABLE_REQUEST_NEW_PASSWORD_BY_USER && in_array('Standard',
 }
 $msg        = [];
 $email      = '';
-$admin_link = sprintf(_("Leider ist ein Fehler aufgetreten. Bitte fordern Sie gegebenenfalls %sper E-Mail%s ein neues Passwort an."), "<a href=\"mailto:{$GLOBALS['UNI_CONTACT']}?subject=" . rawurlencode("Stud.IP Passwort vergessen - ".Config::get()->UNI_NAME_CLEAN) . "&amp;body=" . rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername: " . htmlReady($uname) . "\n") . "\">", "</a>");
+$admin_link = sprintf(
+    _("Leider ist ein Fehler aufgetreten. Bitte fordern Sie gegebenenfalls %sper E-Mail%s ein neues Passwort an."),
+    "<a href=\"mailto:{$GLOBALS['UNI_CONTACT']}?subject=" . rawurlencode("Stud.IP Passwort vergessen - ".Config::get()->UNI_NAME_CLEAN) . "&amp;body=" . rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername:\n") . "\">",
+    "</a>"
+);
 
 
 /*
@@ -80,31 +84,32 @@ if ($email != "") {
     } else {
         // Suche Benutzer über E-Mail-Adresse
         $userlist = User::findByEmail($email);
-        
+
         if (count($userlist) === 0) {
             // kein Benutzer mit eingegebener E-Mail
             $msg['error'][] = _("Es konnte kein Benutzer mit dieser E-Mail-Adresse<br>gefunden werden!");
             $msg['info'][]  = $admin_link;
         } elseif (count($userlist) === 1) {
             $one_user = current($userlist);
-            if ($one_user['auth_plugin'] != 'standard' || in_array($one_user['perms'], words('root admin'))) {
-                $msg['error'][] = sprintf(_("Ihr Passwort kann nur durch einen Adminstrator geändert werden. Bitte fordern Sie gegebenenfalls %sper E-Mail%s ein neues Passwort an."),
-                    "<a href=\"mailto:{$GLOBALS['UNI_CONTACT']}?subject=" . rawurlencode("Stud.IP Passwort vergessen - ".Config::get()->UNI_NAME_CLEAN) . "&amp;body=" . rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername: " . htmlReady($uname) . "\n") . "\">",
-                    "</a>");
+            if ($one_user->auth_plugin !== 'standard' || in_array($one_user->perms, ['root', 'admin'])) {
+                $msg['error'][] = sprintf(
+                    _("Ihr Passwort kann nur durch einen Adminstrator geändert werden. Bitte fordern Sie gegebenenfalls %sper E-Mail%s ein neues Passwort an."),
+                    "<a href=\"mailto:{$GLOBALS['UNI_CONTACT']}?subject=" . rawurlencode("Stud.IP Passwort vergessen - ".Config::get()->UNI_NAME_CLEAN) . "&amp;body=" . rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername: " . htmlReady($one_user->username) . "\n") . "\">",
+                    "</a>"
+                );
             } else {
                 // Bestätigungslink senden
                 $step          = 2;
                 $msg['info'][] = sprintf(_("In Kürze wird Ihnen eine E-Mail an die Adresse %s mit einem Bestätigungslink geschickt. Bitte beachten Sie die Hinweise in dieser E-Mail. Sollten Sie keine E-Mail erhalten haben, vergewissern Sie sich, ob diese evtl. in einem Spam-Ordner abgelegt wurde."), $one_user['Email']);
-                $username      = $one_user['username'];
-                $vorname       = $one_user['Vorname'];
-                $nachname      = $one_user['Nachname'];
-                $token         = new Token($one_user['user_id'], 24 * 60 * 60);
-                $id            = $token->get_token();
+                $username      = $one_user->username;
+                $vorname       = $one_user->vorname;
+                $nachname      = $one_user->nachname;
+                $id            = Token::create(24 * 60 * 60, $one_user->id);
                 // include language-specific subject and mailbody
-                $user_language = getUserLanguagePath($one_user['user_id']);
+                $user_language = getUserLanguagePath($one_user->id);
                 include("locale/$user_language/LC_MAILS/request_new_password_mail.inc.php");
-                
-                StudipMail::sendMessage($one_user['Email'], $subject, $mailbody);
+
+                StudipMail::sendMessage($one_user->email, $subject, $mailbody);
             }
         } else {
             // Mehrere Benutzer für E-Mail
@@ -128,8 +133,8 @@ if ($email != "") {
 if (Request::submitted('id')) {
     $token           = Request::option('id');
     $step            = 4;
-    $requesting_user = User::find(Token::is_valid($token));
-    
+    $requesting_user = User::find(Token::isValid($token));
+
     if ($requesting_user) {
         $user_management = new UserManagement($requesting_user['user_id']);
         if ($user_management->changePassword($user_management->generate_password(8))) {
@@ -165,4 +170,3 @@ echo $request_template->render();
 include 'lib/include/html_end.inc.php';
 
 page_close()
-?>
