@@ -29,7 +29,6 @@
                             <? endforeach; ?>
                         <? endif; ?>
                     </td>
-                    s
                     <td class="dont-hide actions" style="white-space: nowrap;">
                         <form method="post">
                             <?= CSRFProtection::tokenTag(); ?>
