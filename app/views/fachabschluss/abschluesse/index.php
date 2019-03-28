@@ -28,7 +28,7 @@
             <td style="text-align: center;" class="dont-hide"><?= $abschluss->count_faecher ?></td>
             <td class="dont-hide actions" style="white-space: nowrap;">
             <? if (MvvPerm::havePermWrite($abschluss)) : ?>
-                <a href="<?=$controller->url_for('/abschluss/s' . $abschluss->id)?>">
+                <a href="<?=$controller->url_for('/abschluss/' . $abschluss->id)?>">
                     <?= Icon::create('edit', Icon::ROLE_CLICKABLE, tooltip2(_('Abschluss bearbeiten')))->asImg(); ?>
                 </a>
             <? endif; ?>

@@ -40,9 +40,7 @@ class Fachabschluss_KategorienController extends MVVController
             null,
             $filter
         );
-        if (count($this->abschluss_kategorien) === 0) {
-            PageLayout::postInfo(_('Es wurden noch keine Abschluss-Kategorien angelegt.'));
-        }
+    
         PageLayout::setTitle(_('Abschluss-Kategorien mit verwendeten Abschlüssen'));
         $this->setSidebar();
     }

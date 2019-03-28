@@ -22,7 +22,7 @@ class MvvDokumentZuord extends ModuleManagementModel
     {
         $config['db_table'] = 'mvv_dokument_zuord';
 
-        $config['has_one']['document'] = array(
+        $config['belongs_to']['document'] = array(
             'class_name' => 'MvvDokument',
             'foreign_key' => 'dokument_id'
         );

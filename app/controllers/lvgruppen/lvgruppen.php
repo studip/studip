@@ -210,30 +210,29 @@ class Lvgruppen_LvgruppenController extends MVVController
 
     public function delete_action($lvgruppe_id)
     {
+        CSRFProtection::verifyUnsafeRequest();
         $lvgruppe = Lvgruppe::find($lvgruppe_id);
         if (!$lvgruppe) {
             throw new Exception(_('Unbekannte LV-Gruppe'));
         }
         $perm = MvvPerm::get($lvgruppe);
-        if (Request::submitted('yes')) {
-            CSRFProtection::verifyUnsafeRequest();
-            if ($lvgruppe->isNew()) {
-                PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden (unbekannte Lehrveranstaltungsgruppe).'));
-            } elseif (count($lvgruppe->courses) || count($lvgruppe->modulteile) || count($lvgruppe->archived_courses)) {
-                PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden, da sie mit Veranstaltungen oder Modulteilen verknüpft ist.'));
+        if ($lvgruppe->isNew()) {
+            PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden (unbekannte Lehrveranstaltungsgruppe).'));
+        } elseif (count($lvgruppe->courses) || count($lvgruppe->modulteile) || count($lvgruppe->archived_courses)) {
+            PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden, da sie mit Veranstaltungen oder Modulteilen verknüpft ist.'));
+        } else {
+            if ($perm->havePerm(MvvPerm::PERM_CREATE)) {
+                $name = $lvgruppe->getDisplayName();
+                $lvgruppe->delete();
+                PageLayout::postSuccess(sprintf(
+                    _('Die Lehrveranstaltungsgruppe "%s" wurde gelöscht.'),
+                    htmlReady($name)
+                ));
             } else {
-                if ($perm->havePerm(MvvPerm::PERM_CREATE)) {
-                    $name = $lvgruppe->getDisplayName();
-                    $lvgruppe->delete();
-                    PageLayout::postSuccess(sprintf(
-                        _('Die Lehrveranstaltungsgruppe "%s" wurde gelöscht.'),
-                        htmlReady($name)
-                    ));
-                } else {
-                    throw new Trails_Exception(403, _('Keine Berechtigung'));
-                }
+                throw new Trails_Exception(403, _('Keine Berechtigung'));
             }
         }
+    
         $this->redirect('lvgruppen/lvgruppen');
     }
 

@@ -267,7 +267,7 @@ class MvvDokument extends ModuleManagementModel
         foreach ((array) $dokument_ids as $dokument_id) {
             $dokument = $object->document_assignments->findOneBy('dokument_id', $dokument_id);
             if ($dokument) {
-                $dokument->kommentar = $annotations[$dokument_id]['kommentar']->trim();
+                $dokument->kommentar = trim($annotations[$dokument_id]['kommentar']);
                 $dokument->position = $pos++;
             } else {
                 $dokument = new MvvDokumentZuord();

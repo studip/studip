@@ -59,7 +59,7 @@
             <select<?= $perm->haveFieldPerm('fassung_nr') ? '' : ' disabled' ?> name="fassung_nr" id="fassung_nr" class="size-s">
                 <option value="">--</option>
             <? foreach (range(1, 30) as $nr) : ?>
-                <option<?= $nr == $version->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
+                <option<?= $nr === (int)$version->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
             <? endforeach; ?>
             </select>
             <? if (!$perm->haveFieldPerm('fassung_nr')) : ?>
@@ -68,7 +68,7 @@
             <select<?= $perm->haveFieldPerm('fassung_typ') ? '' : ' disabled' ?> name="fassung_typ">
                 <option value="0">--</option>
             <? foreach ($GLOBALS['MVV_STGTEILVERSION']['FASSUNG_TYP'] as $key => $entry) : ?>
-                <option value="<?= $key ?>"<?= $key == $version->fassung_typ ? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>
+                <option value="<?= $key ?>"<?= $key === $version->fassung_typ ? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>
             <? endforeach; ?>
             </select>
             <? if (!$perm->haveFieldPerm('fassung_typ')) : ?>

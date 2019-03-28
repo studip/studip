@@ -49,7 +49,7 @@
                     <?= htmlReady($studiengang->fassung_nr) ?>.
                 </span>
                 <span data-mvv-field="mvv_studiengang.fassung_typ">
-                <?= ($studiengang->fassung_typ == '0' ? '--' : htmlReady($GLOBALS['MVV_STUDIENGANG']['FASSUNG_TYP'][$studiengang->fassung_typ]['name'])) ?>
+                <?= ($studiengang->fassung_typ === '0' ? '--' : htmlReady($GLOBALS['MVV_STUDIENGANG']['FASSUNG_TYP'][$studiengang->fassung_typ]['name'])) ?>
                 </span>
             </td>
         </tr>
@@ -66,7 +66,7 @@
                 <strong><?= _('Studiengangteile') ?></strong>
             </td>
             <td colspan="2" data-mvv-field="mvv_studiengang.typ">
-                <? if($studiengang->typ != 'mehrfach') :?>
+                <? if($studiengang->typ !== 'mehrfach') :?>
                     <?= _('Diesem Studiengang wird ein Fach direkt zugewiesen') ?>
                 <? else: ?>
                     <?= _('Diesem Studiengang können mehrere Studiengangteile zugewiesen werden.') ?>

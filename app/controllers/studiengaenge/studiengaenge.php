@@ -106,6 +106,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->studiengang = Studiengang::get($studiengang_id);
         $this->semester = Semester::getAll();
         $this->dokumente = $this->studiengang->document_assignments;
+        
         $this->parent_id = $parent_id;
         
         if ($this->studiengang->isNew()) {
@@ -248,7 +249,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 $this->url_for('/export/' . $this->studiengang->getId(), ['pdf' => '1']),
                 Icon::create('file-pdf')
             );
-            if ($this->studiengang->stat == 'planung' && MvvPerm::haveFieldPermStat($this->studiengang)) {
+            if ($this->studiengang->stat === 'planung' && MvvPerm::haveFieldPermStat($this->studiengang)) {
                 $action_widget->addLink(_('Studiengang genehmigen'),
                     $this->url_for('/approve/' . $this->studiengang->getId()),
                     Icon::create('accept'),

@@ -154,7 +154,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                                                                                         id="mvv-field-modul-fassung_nr">
                         <option value="">--</option>
                         <? foreach (range(1, 30) as $nr) : ?>
-                            <option<?= $nr == $modul->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.
+                            <option<?= $nr === (int)$modul->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.
                             </option>
                         <? endforeach; ?>
                     </select>
@@ -166,7 +166,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                     name="fassung_typ">
                     <option value="0">--</option>
                     <? foreach ($GLOBALS['MVV_MODUL']['FASSUNG_TYP'] as $key => $entry) : ?>
-                        <option value="<?= $key ?>"<?= $key == $modul->fassung_typ ? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>
+                        <option value="<?= $key ?>"<?= $key === $modul->fassung_typ ? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>
                     <? endforeach; ?>
                     </select>
                     <? if (!$perm->haveFieldPerm('fassung_typ')) : ?>
@@ -176,8 +176,9 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             </label>
             <label id="mvv-field-modul-version">
                 <?= _('Version:') ?>
-                <input <?= $perm->disable("version") ?> type="text" name="version" id="version"
-                                                        value="<?= htmlReady($modul->version) ?>" maxlength="120">
+                <input <?= $perm->disable("version") ?>
+                        type="text" name="version" id="version" value="<?= htmlReady($modul->version) ?>"
+                        maxlength="120">
             </label>
         <? else: ?>
             <div id="mvv-field-modul-modul_start">

@@ -80,7 +80,7 @@
         <select<?= $perm->disable('fassung_nr') ?> name="fassung_nr" style="display: inline-block; width: 5em;">
             <option value="">--</option>
             <? foreach (range(1, 30) as $nr) : ?>
-                <option<?= $nr === $studiengang->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
+                <option<?= $nr === (int)$studiengang->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
             <? endforeach; ?>
         </select>
         <? if ($perm->haveFieldPerm('fassung_typ')): ?>
@@ -166,7 +166,10 @@
             <? endif; ?>
         </ul>
     </fieldset>
-    <?= $this->render_partial('shared/form_dokumente', ['perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE)]) ?>
+    <?= $this->render_partial('shared/form_dokumente', [
+        'dokumente' => $dokumente,
+        'perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE)
+    ]) ?>
     <fieldset>
         <legend><?= _('Status der Bearbeitung') ?></legend>
         <? if ($perm->haveFieldPerm('stat', MvvPerm::PERM_WRITE) && $studiengang->stat !== 'planung'): ?>

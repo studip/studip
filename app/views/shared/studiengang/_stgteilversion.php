@@ -22,7 +22,7 @@
                 <br>
                 <?= _('Fassung:') ?> 
                 <?= htmlReady($version->fassung_nr) ?>. 
-                <?= ($version->fassung_typ == '0' ? '--' : $GLOBALS['MVV_STGTEILVERSION']['FASSUNG_TYP'][$version->fassung_typ]['name']) ?>
+                <?= ($version->fassung_typ === '0' ? '--' : $GLOBALS['MVV_STGTEILVERSION']['FASSUNG_TYP'][$version->fassung_typ]['name']) ?>
             </td>
         </tr>
         <tr>
