@@ -18,8 +18,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
     {
         $this->stgteilbezeichnungen = StgteilBezeichnung::getAllEnriched();
         PageLayout::setTitle(
-            _('Alle Studiengangteil-Bezeichnungen') . ' - ' .
-            sprintf(ngettext('%u Bezeichnung', '%u Bezeichnungen', count($this->stgteilbezeichnungen)), count($this->stgteilbezeichnungen))
+            _('Alle Studiengangteil-Bezeichnungen')
+            . ' ('
+            . sprintf(ngettext('%u Bezeichnung', '%u Bezeichnungen', count($this->stgteilbezeichnungen)), count($this->stgteilbezeichnungen))
+            . ')'
         );
         $this->setSidebar();
     }

@@ -103,8 +103,10 @@ class Lvgruppen_LvgruppenController extends MVVController
         $sidebar->addWidget($widget);
     
         PageLayout::setTitle(
-            _('Verwaltung der Lehrveranstaltungsgruppen') .
-            sprintf(" (%s)", sprintf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $this->count), $this->count))
+            _('Verwaltung der Lehrveranstaltungsgruppen')
+            . ' ('
+            . sprintf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $this->count), $this->count)
+            . ')'
         );
     }
 
