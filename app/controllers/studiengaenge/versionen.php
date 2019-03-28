@@ -5,11 +5,10 @@
  * @since       3.5
  */
 
-require_once dirname(__FILE__) . '/shared_version.php';
+require_once __DIR__ . '/shared_version.php';
 
 class Studiengaenge_VersionenController extends SharedVersionController
 {
-
     public $chooser_filter = null;
 
     public function before_filter(&$action, &$args)
@@ -254,7 +253,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
         $this->stgteil = StudiengangTeil::find($stgteil_id);
         $this->versionen = StgteilVersion::findByStgteil($stgteil_id);
 
-        if (sizeof($this->versionen)) {
+        if (count($this->versionen)) {
             $this->stgteil_id = $stgteil_id;
             if (!Request::isXhr()) {
                 $this->perform_relayed('index');
@@ -278,7 +277,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
         $widget->addLink(
             _('Auswahl zurücksetzen'),
             $this->url_for('/reset'),
-            Icon::create('refresh', 'clickable')
+            Icon::create('refresh')
         );
         if ($this->chooser_filter['stgteil']) {
             $stgteil = StudiengangTeil::find($this->chooser_filter['stgteil']);
@@ -331,17 +330,19 @@ class Studiengaenge_VersionenController extends SharedVersionController
             'version_id IN (?) AND stat IS NULL', [$version_ids]
         );
         $status_results['__undefined__'] = ['count_objects' => $count_status];
-
-        $filter_template = $template_factory->render('shared/filter', array(
-            'semester' => $semesters,
-            'selected_semester' => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
-            'status' => $status_results,
-            'selected_status' => $this->filter['mvv_stgteilversion.stat'],
-            'status_array' => $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'],
-            'action' => $this->url_for('/set_filter'),
-            'action_reset' => $this->url_for('/reset_filter')
-        ));
-
+    
+        $filter_template = $template_factory->render('shared/filter',
+            [
+                'semester'          => $semesters,
+                'selected_semester' => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
+                'status'            => $status_results,
+                'selected_status'   => $this->filter['mvv_stgteilversion.stat'],
+                'status_array'      => $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'],
+                'action'            => $this->url_for('/set_filter'),
+                'action_reset'      => $this->url_for('/reset_filter')
+            ]
+        );
+    
         $sidebar = Sidebar::get();
         $widget = new SidebarWidget();
         $widget->setTitle('Filter');

@@ -5,17 +5,15 @@
  * @since       3.5
  */
 
-require_once dirname(__FILE__) . '/shared_version.php';
+require_once __DIR__ . '/shared_version.php';
 
 class Studiengaenge_StudiengangteileController extends SharedVersionController
 {
-
     protected $show_sidebar_search = false;
 
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        // set navigation
         Navigation::activateItem($this->me . '/studiengaenge/studiengangteile');
         $this->action = $action;
     }
@@ -35,7 +33,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         $this->order = $this->order ?: 'ASC';
         unset($filter['start_sem.beginn'], $filter['end_sem.ende']);
         //get data
-        if (sizeof($search_result)) {
+        if (count($search_result)) {
             $filter['stgteil_id'] = $search_result;
             $this->stgteile = StudiengangTeil::getAllEnriched(
                 $this->sortby, $this->order,
@@ -113,20 +111,22 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             }
         }
 
-        $query = 'SELECT fach_id, name FROM fach '
-            . 'WHERE name LIKE :input ORDER BY name ASC';
+        $query = 'SELECT fach_id, name FROM fach
+                WHERE name LIKE :input ORDER BY name ASC';
         $search = new SQLSearch($query, _('Fach suchen'), 'fach_id');
         $this->search_fach_id = md5(serialize($search));
         $this->search_fach = QuickSearch::get('fach', $search)
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
 
-        $query = 'SELECT user_id, '
-            . "CONCAT(Vorname, ' ', Nachname, ' (', username, ')') AS name "
-            . 'FROM auth_user_md5 '
-            . 'WHERE Nachname LIKE :input '
-            . 'OR username LIKE :input '
-            . "AND perms IN('autor', 'tutor', 'dozent', 'admin')";
+        $query = "
+            SELECT
+            user_id,
+            CONCAT(Vorname, ' ', Nachname, ' (', username, ')') AS name
+            FROM auth_user_md5
+            WHERE Nachname LIKE :input
+            OR username LIKE :input
+            AND perms IN('autor', 'tutor', 'dozent', 'admin')";
         $search = new SQLSearch($query, _('Studienfachberater suchen'));
         $this->search_fachberater_id = md5(serialize($search));
         $this->search_fachberater =
@@ -192,7 +192,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         $this->stgteil = StudiengangTeil::find($stgteil_id);
         $this->versionen = StgteilVersion::findByStgteil($stgteil_id);
 
-        if (sizeof($this->versionen)) {
+        if (count($this->versionen)) {
             $this->stgteil_id = $stgteil_id;
             if (!Request::isXhr()) {
                 $this->perform_relayed('index');
@@ -290,16 +290,15 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
      */
     private function sidebar_search()
     {
-        $query = "SELECT ms.stgteil_id, "
-                . "IF(ISNULL(ms.kp), CONCAT(mf.name, ' ', ms.zusatz),"
-                . "CONCAT(mf.name, ' ', ms.zusatz, ' (', "
-                . "ms.kp, ' CP', ')')) AS name "
-                . 'FROM mvv_stgteil ms '
-                . 'LEFT JOIN fach mf USING(fach_id) '
-                . 'WHERE ms.zusatz LIKE :input '
-                . 'OR mf.name LIKE :input';
-        $search_term =
-                $this->search_term ? $this->search_term : _('Studiengangteil suchen');
+        $query = "SELECT ms.stgteil_id,
+                    IF(ISNULL(ms.kp), CONCAT(mf.name, ' ', ms.zusatz),
+                    CONCAT(mf.name, ' ', ms.zusatz, ' (', ms.kp, ' CP', ')')) AS name
+                    FROM mvv_stgteil ms
+                    LEFT JOIN fach mf USING(fach_id)
+                    WHERE ms.zusatz LIKE :input
+                    OR mf.name LIKE :input";
+        
+        $search_term = $this->search_term ? $this->search_term : _('Studiengangteil suchen');
 
         $sidebar = Sidebar::get();
         $widget = new SearchWidget($this->url_for('/search'));
@@ -314,5 +313,4 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
-
 }

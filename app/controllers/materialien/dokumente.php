@@ -1,54 +1,35 @@
 <?php
 /**
- * dokumente.php - controller class for Dokumente
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-
-
 class Materialien_DokumenteController extends MVVController
 {
-
-    public $filter = array();
+    public $filter = [];
     private $show_sidebar_search = false;
 
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-
-        $this->filter = $this->sessGet('filter', array());
-
-        // set navigation
+    
+        $this->filter = $this->sessGet('filter', []);
+    
         Navigation::activateItem($this->me . '/materialien/dokumente');
         $this->action = $action;
-
-        if (Request::isXhr()) {
-            $this->set_layout(null);
-        }
-
     }
 
     public function index_action()
     {
-        PageLayout::setTitle(_('Verwaltung der Dokumente'));
-
         $this->initPageParams();
         $this->initSearchParams();
         
         $search_result = $this->getSearchResult('MvvDokument');
-
+    
         $this->filter = array_merge(
-            array('mvv_dokument.dokument_id' => $search_result),
-            (array) $this->filter
+            ['mvv_dokument.dokument_id' => $search_result],
+            (array)$this->filter
         );
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
@@ -74,6 +55,14 @@ class Materialien_DokumenteController extends MVVController
         $this->count = MvvDokument::getCount($this->filter);
         $this->show_sidebar_search = true;
         $this->setSidebar();
+    
+        PageLayout::setTitle(
+            _('Verlinkte Materialien/Dokumente')
+            . ' ('
+            . sprintf(ngettext('%s Dokument', '%s Dokumente', $this->count), $this->count)
+            . ')'
+        );
+    
     }
 
     public function details_action($dokument_id = null)
@@ -97,10 +86,13 @@ class Materialien_DokumenteController extends MVVController
     {
         $this->dokument = MvvDokument::get($dokument_id);
         if ($this->dokument->isNew()) {
-            PageLayout::setTitle(_("Neues Dokument anlegen"));
-            $success_message = _("Das Dokument <em>%s</em> wurde angelegt.");
+            PageLayout::setTitle(_('Neues Dokument anlegen'));
+            $success_message = _('Das Dokument <em>%s</em> wurde angelegt.');
         } else {
-            PageLayout::setTitle(_('Dokument bearbeiten'));
+            PageLayout::setTitle(sprintf(
+                _('Dokument: %s bearbeiten'),
+                htmlReady($this->dokument->getDisplayName())
+            ));
             $success_message = _('Das Dokument "%s" wurde geändert.');
         }
         $success = false;
@@ -122,7 +114,10 @@ class Materialien_DokumenteController extends MVVController
                 $success = true;
                 if (!Request::isXhr()) {
                     if ($stored) {
-                        PageLayout::postSuccess(sprintf($success_message, htmlReady($this->dokument->name)));
+                        PageLayout::postSuccess(sprintf(
+                            $success_message,
+                            htmlReady($this->dokument->name)
+                        ));
                     } else {
                         PageLayout::postInfo(_('Es wurden keine Änderungen vorgenommen.'));
                     }
@@ -134,12 +129,12 @@ class Materialien_DokumenteController extends MVVController
         if (Request::isXhr()) {
             if ($success) {
                 $ret = [
-                        'func' => "MVV.Content.addItemFromDialog",
-                        'payload' => [
-                            'target' => 'dokumente',
-                            'item_id' => $this->dokument->id,
-                            'item_name' => $this->dokument->getDisplayName()
-                        ]
+                    'func'    => "MVV.Content.addItemFromDialog",
+                    'payload' => [
+                        'target'    => 'dokumente',
+                        'item_id'   => $this->dokument->id,
+                        'item_name' => $this->dokument->getDisplayName()
+                    ]
                 ];
                 $this->response->add_header('X-Dialog-Close', 1);
                 $this->response->add_header('X-Dialog-Execute', json_encode($ret));
@@ -152,26 +147,31 @@ class Materialien_DokumenteController extends MVVController
         if (!$this->dokument->isNew()) {
             $sidebar = Sidebar::get();
             $action_widget = $sidebar->getWidget('actions');
-            $action_widget->addLink(_('Log-Einträge dieses Dokumentes'),
-                    $this->url_for('shared/log_event/show/Dokument', $this->dokument->id),
-                    Icon::create('log', 'clickable'))->asDialog();
+            $action_widget->addLink(
+                _('Log-Einträge dieses Dokumentes'),
+                $this->url_for('shared/log_event/show/Dokument/' . $this->dokument->id),
+                Icon::create('log')
+            )->asDialog();
         }
     }
 
     /**
      * Deletes a document
      */
-    function delete_action($dokument_id)
+    public function delete_action($dokument_id)
     {
         CSRFProtection::verifyUnsafeRequest();
         $dokument = MvvDokument::get($dokument_id);
         if ($dokument->isNew()) {
-            PageLayout::postError( _('Das Dokument kann nicht gelöscht werden (unbekanntes Dokument).'));
+            PageLayout::postError(_('Das Dokument kann nicht gelöscht werden (unbekanntes Dokument).'));
         } else {
             CSRFProtection::verifyUnsafeRequest();
             $name = $dokument->name;
             $dokument->delete();
-            PageLayout::postSuccess(sprintf(_('Das Dokument "%s" wurde gelöscht.'), htmlReady($name)));
+            PageLayout::postSuccess(sprintf(
+                _('Das Dokument "%s" wurde gelöscht.'),
+                htmlReady($name)
+            ));
         }
         $this->redirect($this->url_for('/index'));
     }
@@ -187,9 +187,11 @@ class Materialien_DokumenteController extends MVVController
         } else {
             $this->reset_search('dokumente');
             $this->reset_page();
-            $this->do_search('MvvDokument',
-                    trim(Request::get('dokument_suche_parameter')),
-                    Request::get('dokument_suche'), $this->filter);
+            $this->do_search(
+                'MvvDokument',
+                trim(Request::get('dokument_suche_parameter')),
+                Request::get('dokument_suche'), $this->filter
+            );
         }
         $this->redirect($this->url_for('/index'));
     }
@@ -222,7 +224,6 @@ class Materialien_DokumenteController extends MVVController
     public function reset_filter_action()
     {
         $this->filter = array();
-     //   $this->reset_search();
         $this->sessRemove('filter');
         $this->perform_relayed('index');
     }
@@ -231,8 +232,10 @@ class Materialien_DokumenteController extends MVVController
     {
         $dokument = MvvDokument::find($dokument_id);
         if ($dokument) {
-            $this->relation = MvvDokumentZuord::findOneBySQL('`dokument_id` = ? AND `range_id` = ? AND `object_type` = ?',
-                    [$object_id, $object_type, $dokument_id]);
+            $this->relation = MvvDokumentZuord::findOneBySQL(
+                '`dokument_id` = ? AND `range_id` = ? AND `object_type` = ?',
+                [$object_id, $object_type, $dokument_id]
+            );
             if (!$this->relation) {
                 $this->relation = new MvvDokumentZuord();
                 $this->relation->dokument_id = $dokument_id;
@@ -249,15 +252,16 @@ class Materialien_DokumenteController extends MVVController
      */
     protected function setSidebar()
     {
-
         $sidebar = Sidebar::get();
         $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
         
         $widget  = new ActionsWidget();
         if (MvvPerm::get('MvvDokument')->havePermCreate()) {
-            $widget->addLink( _('Neues Dokument anlegen'),
-                            $this->url_for('/dokument'),
-                            Icon::create('file+add', 'clickable'));
+            $widget->addLink(
+                _('Neues Dokument anlegen'),
+                $this->url_for('/dokument'),
+                Icon::create('file+add')
+            );
         }
         $sidebar->addWidget($widget);
 
@@ -278,22 +282,24 @@ class Materialien_DokumenteController extends MVVController
      */
     private function sidebar_search()
     {
-        $template_factory = $this->get_template_factory();
-        $query = 'SELECT dokument_id, name '
-                . 'FROM mvv_dokument '
-                . 'LEFT JOIN mvv_dokument_zuord USING(dokument_id) '
-                . 'WHERE (name LIKE :input '
-                . 'OR url LIKE :input) '
+        $query = 'SELECT dokument_id, name
+                FROM mvv_dokument
+                LEFT JOIN mvv_dokument_zuord USING(dokument_id)
+                WHERE (name LIKE :input
+                OR url LIKE :input) '
                 . ModuleManagementModel::getFilterSql($this->filter);
-        $search_term =
-                $this->search_term ? $this->search_term : _('Dokument suchen');
+        $search_term = $this->search_term ? $this->search_term : _('Dokument suchen');
 
         $sidebar = Sidebar::get();
         $widget = new SearchWidget($this->url_for('/search'));
-        $widget->addNeedle(_('Dokument suchen'), 'dokument_suche', true,
+        $widget->addNeedle(
+            _('Dokument suchen'),
+            'dokument_suche',
+            true,
             new SQLSearch($query, $search_term, 'dokument_id'),
             'function () { $(this).closest("form").submit(); }',
-            $this->search_term);
+            $this->search_term
+        );
         $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
@@ -305,16 +311,13 @@ class Materialien_DokumenteController extends MVVController
     {
         $template_factory = $this->get_template_factory();
         $filter_template = $template_factory->render('shared/filter',
-                    array(
-                        'zuordnungen'
-                            => MvvDokument::getAllRelations($this->search_result['MvvDokument']),
-                        'selected_zuordnung'
-                            => $this->filter['mvv_dokument_zuord.object_type'],
-                        'action' => $this->url_for(
-                                '/set_filter'),
-                        'action_reset' => $this->url_for(
-                                '/reset_filter')));
-
+            [
+                'zuordnungen'        => MvvDokument::getAllRelations($this->search_result['MvvDokument']),
+                'selected_zuordnung' => $this->filter['mvv_dokument_zuord.object_type'],
+                'action'             => $this->url_for('/set_filter'),
+                'action_reset'       => $this->url_for('/reset_filter')
+            ]);
+    
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
         $widget->setTitle('Filter');
@@ -343,16 +346,15 @@ class Materialien_DokumenteController extends MVVController
             case 'stgteilversion':
                 $version = StgteilVersion::get($id);
                 if ($version->isNew()) {
-                    $this->flash_set('error', dgettext('MVVPlugin', 'Unbekannte Version'));
+                    $this->flash_set('error', _('Unbekannte Version'));
                     $this->redirect('studiengaenge/studiengaenge');
                 }
-                $this->redirect('studiengaenge/studiengangteile/version/'
-                        . join('/', array($version->stgteil_id,
-                            $version->getId())));
+                $this->redirect(
+                    'studiengaenge/studiengangteile/version/' . join('/', [$version->stgteil_id, $version->getId()])
+                );
                 break;
             default:
                 $this->redirect('studiengaenge/studiengaenge/');
         }
     }
-    
 }

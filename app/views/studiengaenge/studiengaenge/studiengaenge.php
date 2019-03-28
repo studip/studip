@@ -1,9 +1,10 @@
 <? foreach ($studiengaenge as $studiengang) : ?>
     <? $perm = new MvvPerm($studiengang) ?>
-    <tbody class="<?= ($studiengang_id == $studiengang->id ? 'not-collapsed' : 'collapsed') ?>">
+    <tbody class="<?= ($studiengang_id === $studiengang->id ? 'not-collapsed' : 'collapsed') ?>">
         <tr class="table-header header-row" id="studiengang_<?= $studiengang->id ?>">
             <td class="toggle-indicator">
-                <a class="mvv-load-in-new-row" href="<?= $controller->url_for('/details_studiengang', $studiengang->id) ?>">
+                <a class="mvv-load-in-new-row"
+                   href="<?= $controller->url_for('/details_studiengang/' . $studiengang->id) ?>">
                     <? $ampel_icon = $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'][$studiengang->stat]['icon'] ?>
                     <? $ampelstatus = $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'][$studiengang->stat]['name'] ?>
                     <? if ($ampel_icon) : ?>
@@ -11,7 +12,16 @@
                     <? endif; ?>
                     <?= htmlReady($studiengang->name) ?> <?= (mb_strlen($studiengang->name_kurz) ? '(' . htmlReady($studiengang->name_kurz) . ')' : '') ?>
                     <? if ($studiengang->count_dokumente) : ?>
-                        <?= Icon::create('staple', 'info', ['title' => sprintf(ngettext('%s Dokument zugeordnet', '%s Dokumente zugeordnet', $studiengang->count_dokumente), $studiengang->count_dokumente), 'style' => 'vertical-align: text-top;']) ?>
+                        <?= Icon::create(
+                            'staple',
+                            Icon::ROLE_INFO,
+                            [
+                                'title' => sprintf(
+                                    ngettext('%s Dokument zugeordnet', '%s Dokumente zugeordnet', $studiengang->count_dokumente),
+                                    $studiengang->count_dokumente
+                                ),
+                                'style' => 'vertical-align: text-top;'
+                            ]) ?>
                     <? endif; ?>
                 </a>
             </td>
@@ -29,19 +39,19 @@
                 <form method="post">
                     <?= CSRFProtection::tokenTag(); ?>
                     <? $actionMenu = ActionMenu::get() ?>
-                    <? if ($studiengang->stat == 'planung' && MvvPerm::haveFieldPermStat($studiengang)) : ?>
+                    <? if ($studiengang->stat === 'planung' && MvvPerm::haveFieldPermStat($studiengang)) : ?>
                         <? $actionMenu->addLink(
-                                $controller->url_for('/approve', $studiengang->id),
-                                _('Studiengang genehmigen'),
-                                Icon::create('accept', 'clickable', ['title' => _('Studiengang genehmigen')]),
-                                ['data-dialog' => 'buttons=false'])
+                            $controller->url_for('/approve/' . $studiengang->id),
+                            _('Studiengang genehmigen'),
+                            Icon::create('accept', Icon::ROLE_CLICKABLE , ['title' => _('Studiengang genehmigen')]),
+                            ['data-dialog' => 'buttons=false'])
                         ?>
                     <? endif; ?>
                     <? if ($perm->havePerm(MvvPerm::PERM_WRITE)) : ?>
                         <? $actionMenu->addLink(
-                                $controller->url_for('/studiengang', $studiengang->id),
-                                _('Studiengang bearbeiten'),
-                                Icon::create('edit', 'clickable', ['title' => _('Studiengang bearbeiten')]))
+                            $controller->url_for('/studiengang/' . $studiengang->id),
+                            _('Studiengang bearbeiten'),
+                            Icon::create('edit', Icon::ROLE_CLICKABLE , ['title' => _('Studiengang bearbeiten')]))
                         ?>
                     <? endif; ?>
                     <? if ($perm->havePerm(MvvPerm::PERM_CREATE)) : ?>
@@ -49,9 +59,9 @@
                             <? $actionMenu->addButton(
                                 'delete',
                                 _('Studiengang löschen'),
-                                Icon::create('trash', 'clickable', tooltip2(_('Studiengang löschen'))),
+                                Icon::create('trash', Icon::ROLE_CLICKABLE ,tooltip2(_('Studiengang löschen'))),
                                 [
-                                    'formaction'   => $controller->url_for('/delete', $studiengang->id),
+                                    'formaction'   => $controller->url_for('/delete/' . $studiengang->id),
                                     'data-confirm' => sprintf(_('Wollen Sie wirklich den Studiengang "%s" löschen?'), $studiengang->name)
                                 ]
                             ) ?>
@@ -61,7 +71,7 @@
                 </form>
             </td>
         </tr>
-        <? if ($studiengang_id == $studiengang->id) : ?>
+        <? if ($studiengang_id === $studiengang->id) : ?>
             <? if ($studiengang->typ == 'mehrfach') : ?>
                 <tr class="loaded-details nohover">
                     <?= $this->render_partial('studiengaenge/studiengaenge/stgteil_bezeichnungen', compact('studiengang_id', 'studiengang', 'bez_stgteile', 'stgteile', 'stg_stgbez_id', 'search_stgteil', 'search')) ?>

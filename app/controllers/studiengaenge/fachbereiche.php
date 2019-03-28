@@ -5,17 +5,10 @@
  * @since       3.5
  */
 
-
 require_once dirname(__FILE__) . '/studiengaenge.php';
 
 class Studiengaenge_FachbereicheController extends Studiengaenge_StudiengaengeController
 {
-
-    public function before_filter(&$action, &$args)
-    {
-        parent::before_filter($action, $args); 
-   }
-    
     /**
      * Liste der Studiengänge gruppiert nach Fachbereiche (Fachbereich ist
      * die  verantwortliche Einrichtung des zugeordneten Faches, nicht die des
@@ -85,5 +78,4 @@ class Studiengaenge_FachbereicheController extends Studiengaenge_StudiengaengeCo
             $this->perform_relayed('index');
         }
     }
-    
 }

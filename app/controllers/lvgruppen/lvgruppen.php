@@ -1,23 +1,13 @@
 <?php
 /**
- * lvgruppen.php - controller class for LV-Gruppen
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- * 
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-
-
 class Lvgruppen_LvgruppenController extends MVVController
 {
-    public $filter = array();
+    public $filter = [];
     public $semester_filter = null;
     private $show_sidebar_search = false;
     private $show_sidebar_filter = false;
@@ -27,17 +17,14 @@ class Lvgruppen_LvgruppenController extends MVVController
         parent::before_filter($action, $args);
         // set navigation
         Navigation::activateItem($this->me . '/lvgruppen/lvgruppen');
-        $this->filter = $this->sessGet('filter', array());
+        $this->filter = $this->sessGet('filter', []);
         // set the selected semester, if not set use selected semester from
         // my courses or the current semester
-        $this->semester_filter = $this->sessGet('semester_filter',
-                $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE
-                    ?: Semester::findCurrent()->id);
+        $this->semester_filter = $this->sessGet(
+            'semester_filter',
+            $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE ?: Semester::findCurrent()->id
+        );
         $this->action = $action;
-
-        if (Request::isXhr()) {
-            $this->set_layout(null);
-        }
     }
 
     /**
@@ -46,8 +33,7 @@ class Lvgruppen_LvgruppenController extends MVVController
     public function index_action()
     {
         // set title
-        PageLayout::setTitle(_('Verwaltung der Lehrveranstaltungsgruppen'));
-
+        
         $this->initPageParams();
         $this->initSearchParams();
 
@@ -58,36 +44,40 @@ class Lvgruppen_LvgruppenController extends MVVController
         $own_institutes = MvvPerm::getOwnInstitutes();
         if (!$this->filter['mvv_modul_inst.institut_id']) {
             $this->filter['mvv_modul_inst.institut_id'] = $own_institutes;
-        } else if (sizeof($own_institutes)) {
+        } else if (count($own_institutes)) {
             $this->filter['mvv_modul_inst.institut_id'] = array_intersect(
-                    (array) $this->filter['mvv_modul_inst.institut_id'],
-                    $own_institutes);
+                (array)$this->filter['mvv_modul_inst.institut_id'],
+                $own_institutes
+            );
         }
 
         if (count($this->filter['mvv_modul_inst.institut_id'])) {
             $filter = array_merge(
-                array(
+                [
                     'mvv_lvgruppe.lvgruppe_id' => $search_result,
-                    'mvv_modul_inst.gruppe'    => 'hauptverantwortlich'),
-                (array) $this->filter);
+                    'mvv_modul_inst.gruppe'    => 'hauptverantwortlich'
+                ],
+                (array)$this->filter
+            );
         } else {
             $filter = array_merge(
-                array('mvv_lvgruppe.lvgruppe_id' => $search_result),
-                (array) $this->filter);
+                ['mvv_lvgruppe.lvgruppe_id' => $search_result],
+                (array)$this->filter);
         }
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
-        if ($this->semester_filter == 'no') {
+        if ($this->semester_filter === 'no') {
             $filter['seminare.seminar_id'] = '__undefined__';
         }
         $author_sql = null;
         $this->lvgruppen = Lvgruppe::getAllEnriched(
-                $this->sortby,
-                $this->order,
-                Lvgruppe::getFilterSql($filter, true, $author_sql),
-                self::$items_per_page,
-                self::$items_per_page * (($this->page ?: 1) - 1),
-                $this->semester_filter);
+            $this->sortby,
+            $this->order,
+            Lvgruppe::getFilterSql($filter, true, $author_sql),
+            self::$items_per_page,
+            self::$items_per_page * (($this->page ?: 1) - 1),
+            $this->semester_filter
+        );
         if (!empty($this->filter)) {
             $this->search_result['Lvgruppe'] = $this->lvgruppen->pluck('id');
         }
@@ -109,8 +99,13 @@ class Lvgruppen_LvgruppenController extends MVVController
         
         $widget->addLink( _('Lehrveranstaltungsgruppen mit Zuordnungen exportieren'),
                 $this->url_for('/export_xls'),
-                Icon::create('download', 'clickable'));
+                Icon::create('download'));
         $sidebar->addWidget($widget);
+    
+        PageLayout::setTitle(
+            _('Verwaltung der Lehrveranstaltungsgruppen') .
+            sprintf(" (%s)", sprintf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $this->count), $this->count))
+        );
     }
 
     public function details_action($lvgruppe_id = null)
@@ -121,22 +116,27 @@ class Lvgruppen_LvgruppenController extends MVVController
         }
 
         $this->display_semesters = [];
-        if ($this->semester_filter != 'all') {
+        if ($this->semester_filter !== 'all') {
             // show courses of the current and next semester
-            $this->courses = $this->lvgruppe->getAllAssignedCourses(false,
-                $this->semester_filter);
+            $this->courses = $this->lvgruppe->getAllAssignedCourses(
+                false,
+                $this->semester_filter
+            );
             $semester = Semester::find($this->semester_filter);
             if ($semester && $semester->getcurrent()) {
                 $this->next_sem = Semester::findNext();
                 $this->display_semesters[] = $this->next_sem;
                 $this->courses = array_merge($this->courses,
-                    $this->lvgruppe->getAllAssignedCourses(false, $this->next_sem->id));
+                    $this->lvgruppe->getAllAssignedCourses(false, $this->next_sem->id)
+                );
             }
             $this->current_sem = $semester;
             $this->display_semesters[] = $semester;
             // show only pathes to Studiengaenge valid in given semesters
-            $this->set_trails_filter(end($this->display_semesters)->beginn,
-                    reset($this->display_semesters)->ende);
+            $this->set_trails_filter(
+                end($this->display_semesters)->beginn,
+                reset($this->display_semesters)->ende
+            );
         } else {
             // show courses of all elapsed, current and next semesters
             $this->courses = $this->lvgruppe->getAllAssignedCourses();
@@ -147,11 +147,18 @@ class Lvgruppen_LvgruppenController extends MVVController
         }
 
         $this->sem_filter = $this->semester_filter;
-        
-        $this->trail_classes = words('Modulteil Modul StgteilAbschnitt StgteilVersion '
-                . 'Studiengang Fachbereich');
+    
+        $this->trail_classes = [
+            'Modulteil',
+            'Modul',
+            'StgteilAbschnitt',
+            'StgteilVersion',
+            'Studiengang',
+            'Fachbereich'
+        ];
         $this->trails = $this->lvgruppe->getTrails(
-                $this->trail_classes, MvvTreeItem::TRAIL_SHOW_INCOMPLETE);
+            $this->trail_classes, MvvTreeItem::TRAIL_SHOW_INCOMPLETE
+        );
 
         if (!Request::isXhr()){
             $this->perform_relayed('index');
@@ -170,12 +177,13 @@ class Lvgruppen_LvgruppenController extends MVVController
         } else {
             PageLayout::setTitle(_('Lehrveranstaltungsgruppe bearbeiten'));
             $success_message = _('Die Lehrveranstaltungsgruppe "%s" wurde gespeichert.');
-            $this->headline = sprintf(_('Lehrveranstaltungsgruppe "%s" bearbeiten.'),
-                $this->lvgruppe->getDisplayName());
+            $this->headline = sprintf(
+                _('Lehrveranstaltungsgruppe "%s" bearbeiten.'),
+                $this->lvgruppe->getDisplayName()
+            );
         }
         $this->cancel_url = $this->url_for('/index');
-        $this->submit_url = $this->url_for('/lvgruppe/'
-                . $this->lvgruppe->getId());
+        $this->submit_url = $this->url_for('/lvgruppe/' . $this->lvgruppe->getId());
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             $stored = false;
@@ -190,16 +198,17 @@ class Lvgruppen_LvgruppenController extends MVVController
             if ($stored !== false) {
                 $this->sessSet('sortby', 'chdate');
                 $this->sessSet('order', 'DESC');
-                PageLayout::postSuccess(
-                    sprintf($success_message, htmlReady($this->lvgruppe->getDisplayName()))
-                );
+                PageLayout::postSuccess(sprintf(
+                    $success_message,
+                    htmlReady($this->lvgruppe->getDisplayName())
+                ));
                 $this->relocate('/index');
                 return;
             }
         }
     }
 
-    function delete_action($lvgruppe_id)
+    public function delete_action($lvgruppe_id)
     {
         $lvgruppe = Lvgruppe::find($lvgruppe_id);
         if (!$lvgruppe) {
@@ -209,16 +218,17 @@ class Lvgruppen_LvgruppenController extends MVVController
         if (Request::submitted('yes')) {
             CSRFProtection::verifyUnsafeRequest();
             if ($lvgruppe->isNew()) {
-                PageLayout::postError( _('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden (unbekannte Lehrveranstaltungsgruppe).'));
-            } elseif (count($lvgruppe->courses)
-                    || count($lvgruppe->modulteile)
-                    || count($lvgruppe->archived_courses)) {
-                PageLayout::postError( _('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden, da sie mit Veranstaltungen oder Modulteilen verknüpft ist.'));
+                PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden (unbekannte Lehrveranstaltungsgruppe).'));
+            } elseif (count($lvgruppe->courses) || count($lvgruppe->modulteile) || count($lvgruppe->archived_courses)) {
+                PageLayout::postError(_('Die Lehrveranstaltungsgruppe kann nicht gelöscht werden, da sie mit Veranstaltungen oder Modulteilen verknüpft ist.'));
             } else {
                 if ($perm->havePerm(MvvPerm::PERM_CREATE)) {
                     $name = $lvgruppe->getDisplayName();
                     $lvgruppe->delete();
-                    PageLayout::postSuccess(sprintf(_('Die Lehrveranstaltungsgruppe "%s" wurde gelöscht.'), htmlReady($name)));
+                    PageLayout::postSuccess(sprintf(
+                        _('Die Lehrveranstaltungsgruppe "%s" wurde gelöscht.'),
+                        htmlReady($name)
+                    ));
                 } else {
                     throw new Trails_Exception(403, _('Keine Berechtigung'));
                 }
@@ -227,7 +237,7 @@ class Lvgruppen_LvgruppenController extends MVVController
         $this->redirect('lvgruppen/lvgruppen');
     }
 
-    function export_xls_action()
+    public function export_xls_action()
     {
         $this->initSearchParams();
         $this->initPageParams();
@@ -236,14 +246,17 @@ class Lvgruppen_LvgruppenController extends MVVController
 
         if (count($this->filter['mvv_modul_inst.institut_id'])) {
             $filter = array_merge(
-                array(
+                [
                     'mvv_lvgruppe.lvgruppe_id' => $search_result,
-                    'mvv_modul_inst.gruppe'    => 'hauptverantwortlich'),
-                (array) $this->filter);
+                    'mvv_modul_inst.gruppe'    => 'hauptverantwortlich'
+                ],
+                (array)$this->filter
+            );
         } else {
             $filter = array_merge(
-                array('mvv_lvgruppe.lvgruppe_id' => $search_result),
-                (array) $this->filter);
+                ['mvv_lvgruppe.lvgruppe_id' => $search_result],
+                (array)$this->filter
+            );
         }
 
         $this->lvgruppen = Lvgruppe::getAllEnriched(
@@ -254,8 +267,8 @@ class Lvgruppen_LvgruppenController extends MVVController
             null,
             $this->semester_filter
         );
-
-        if ($this->semester_filter == all) {
+        
+        if ($this->semester_filter === 'all') {
             $semester = Semester::getAll();
             $this->set_trails_filter(
                 end($semester)->beginn,
@@ -327,16 +340,18 @@ class Lvgruppen_LvgruppenController extends MVVController
         
         $widget = new SelectWidget(
             _('Verwendung in Semester:'),
-            $this->url_for('/set_filter', array('fachbereich_filter' => $selected_fachbereich)),
+            $this->url_for('/set_filter', ['fachbereich_filter' => $selected_fachbereich]),
             'semester_filter'
         );
 
-        $widget->addElement(new SelectElement('all', _('Alle'),
-                $this->semester_filter == 'all'), 'sem_select-all');
-        $widget->addElement(new SelectElement('no', _('Nicht verwendet'),
-                $this->semester_filter == 'no'), 'sem_select-no');
-        
-        foreach (array_reverse(Semester::getAll()) as $semester) {
+        $widget->addElement(
+            new SelectElement('all', _('Alle'), $this->semester_filter === 'all'), 'sem_select-all'
+        );
+        $widget->addElement(
+            new SelectElement('no', _('Nicht verwendet'), $this->semester_filter === 'no'), 'sem_select-no'
+        );
+        $semesters = array_reverse(Semester::getAll());
+        foreach ($semesters as $semester) {
             $widget->addElement(
                 new SelectElement(
                     $semester->semester_id, $semester->name,
@@ -351,20 +366,21 @@ class Lvgruppen_LvgruppenController extends MVVController
         if ($perm_institutes !== false) {
             $widget = new SelectWidget(
                 _('Verwendet von Fachbereich:'),
-                $this->url_for('/set_filter', array('semester_filter' => $this->semester_filter)),
+                $this->url_for('/set_filter', ['semester_filter' => $this->semester_filter]),
                 'fachbereich_filter'
             );
-             
+            
             $widget->class = 'institute-list';
-            $widget->addElement(new SelectElement('select-none',
-                    _('Alle'), $selected_fachbereich == ''));
-            $widget->addElement(new SelectElement('__undefined__',
-                    _('Nicht verwendet'), $selected_fachbereich == '__undefined__'));
+            $widget->addElement(
+                new SelectElement('select-none', _('Alle'), $selected_fachbereich === '')
+            );
+            $widget->addElement(
+                new SelectElement('__undefined__', _('Nicht verwendet'), $selected_fachbereich === '__undefined__')
+            );
 
             $institutes = Institute::getInstitutes();
             foreach ($institutes as $institute) {
-                if (!(count($perm_institutes) == 0
-                        || in_array($institute['Institut_id'], $perm_institutes))) {
+                if (!(count($perm_institutes) === 0 || in_array($institute['Institut_id'], $perm_institutes))) {
                     continue;
                 }
                 
@@ -378,7 +394,7 @@ class Lvgruppen_LvgruppenController extends MVVController
                 );
             
             }
-                    
+            
             $sidebar->addWidget($widget, 'fachbereich_filter');
         }
     }
@@ -389,14 +405,12 @@ class Lvgruppen_LvgruppenController extends MVVController
     public function set_filter_action()
     {
         // Zugeordnete Fachbereiche
-        $this->filter['mvv_modul_inst.institut_id'] = mb_strlen(Request::get('fachbereich_filter'))
-            ? Request::option('fachbereich_filter')
-            : null;
+        $this->filter['mvv_modul_inst.institut_id'] =
+            mb_strlen(Request::get('fachbereich_filter')) ? Request::option('fachbereich_filter') : null;
 
         // Semester
-        $this->semester_filter = mb_strlen(Request::get('semester_filter'))
-            ? Request::option('semester_filter')
-            : null;
+        $this->semester_filter =
+            mb_strlen(Request::get('semester_filter')) ? Request::option('semester_filter') : null;
 
         // store filter
         $this->reset_page();
@@ -407,7 +421,7 @@ class Lvgruppen_LvgruppenController extends MVVController
 
     public function reset_filter_action()
     {
-        $this->filter = array();
+        $this->filter = [];
         $this->sessRemove('filter');
         $this->semester_filter = null;
         $this->sessRemove('semester_filter');
@@ -428,10 +442,14 @@ class Lvgruppen_LvgruppenController extends MVVController
 
         $sidebar = Sidebar::get();
         $widget = new SearchWidget($this->url_for('lvgruppen/lvgruppen/search'));
-        $widget->addNeedle(_('LV-Gruppe suchen'), 'lvgruppe_suche', true,
+        $widget->addNeedle(
+            _('LV-Gruppe suchen'),
+            'lvgruppe_suche',
+            true,
             new SQLSearch($query, $search_term, 'lvgruppe_id'),
             'function () { $(this).closest("form").submit(); }',
-            $this->search_term);
+            $this->search_term
+        );
         $widget->setTitle(_('Suche'));
         $sidebar->addWidget($widget, 'search');
     }

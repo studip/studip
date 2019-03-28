@@ -29,7 +29,7 @@ class Module_ModuleController extends MVVController
         $search_result = $this->getSearchResult('Modul');
 
         // set default semester filter
-        if (!isset($this->filter['start_sem.beginn']) || !isset($this->filter['end_sem.ende'])) {
+        if (!isset($this->filter['start_sem.beginn'], $this->filter['end_sem.ende'])) {
             $sem_time_switch = Config::get()->SEMESTER_TIME_SWITCH;
             // switch semester according to time switch
             // (n weeks before next semester)
@@ -123,6 +123,7 @@ class Module_ModuleController extends MVVController
                 'display_language',
                 $this->modul->getDefaultLanguage()
             );
+            
             $this->deskriptor = $this->modul->getDeskriptor($this->display_language, true);
             $this->translations = $this->deskriptor->getAvailableTranslations();
             if (!in_array($this->display_language, $this->translations)) {
@@ -134,7 +135,9 @@ class Module_ModuleController extends MVVController
                     )
                 );
             } else {
-                PageLayout::setTitle(_('Modul: %s bearbeiten'), htmlReady($this->modul->getDisplayName()));
+                PageLayout::setTitle(sprintf(
+                    _('Modul: %s bearbeiten'), htmlReady($this->modul->getDisplayName())
+                ));
             }
             
             $success_message = _('Das Modul "%s" wurde geändert.');
@@ -301,23 +304,23 @@ class Module_ModuleController extends MVVController
             }
         }
 
-        $query = "SELECT modul_id, CONCAT(mmd.bezeichnung, ' (', code, ')')"
-            . 'as name FROM mvv_modul mm '
-            . 'LEFT JOIN mvv_modul_deskriptor mmd USING(modul_id) '
-            . 'WHERE (code LIKE :input OR mmd.bezeichnung LIKE :input) '
-            . 'AND mm.modul_id <> '
-            . DBManager::get()->quote($this->modul->id ?: '')
-            . ' ORDER BY name ASC';
+        $query = "SELECT modul_id, CONCAT(mmd.bezeichnung, ' (', code, ')') as name FROM mvv_modul mm
+                LEFT JOIN mvv_modul_deskriptor mmd USING(modul_id)
+                WHERE (code LIKE :input OR mmd.bezeichnung LIKE :input)
+                AND mm.modul_id <> " . DBManager::get()->quote($this->modul->id ?: ''). " ORDER BY name ASC";
         $sql_search_modul = new SQLSearch($query, _('Modul suchen'));
         $this->qs_id_module = md5(serialize($sql_search_modul));
         $this->search_modul =
                 QuickSearch::get('modul', $sql_search_modul)
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
-        
-        $sql_search_user = new PermissionSearch('user', _('Person suchen'),
-                'user_id',
-                ['permission' => words('tutor dozent admin'), 'exclude_user' => '']);
+    
+        $sql_search_user = new PermissionSearch(
+            'user',
+            _('Person suchen'),
+            'user_id',
+            ['permission' => words('tutor dozent admin'), 'exclude_user' => '']
+        );
         $this->qs_id_users = md5(serialize($sql_search_user));
         $qs_users = QuickSearch::get('users', $sql_search_user);
         $this->qs_frame_id_users = $qs_users->getId();
@@ -325,11 +328,10 @@ class Module_ModuleController extends MVVController
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
 
-        $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name '
-                . 'FROM Institute '
-                . 'LEFT JOIN range_tree ON (range_tree.item_id = Institute.Institut_id) '
-                . 'WHERE (Institute.Name LIKE :input '
-                . 'OR range_tree.name LIKE :input ) ';
+        $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name
+                    FROM Institute
+                    LEFT JOIN range_tree ON (range_tree.item_id = Institute.Institut_id)
+                    WHERE (Institute.Name LIKE :input OR range_tree.name LIKE :input )';
         if (count($own_institutes)) {
             $query .= 'AND Institut_id IN('
                     . DBManager::get()->quote($own_institutes) . ') ';
@@ -344,12 +346,12 @@ class Module_ModuleController extends MVVController
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
 
-        $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name '
-                . 'FROM Institute '
-                . 'LEFT JOIN range_tree ON (range_tree.item_id = Institute.Institut_id) '
-                . 'WHERE (Institute.Name LIKE :input '
-                . 'OR range_tree.name LIKE :input ) '
-                . ' ORDER BY Institute.Name';
+        $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name
+                FROM Institute
+                LEFT JOIN range_tree ON (range_tree.item_id = Institute.Institut_id)
+                WHERE (Institute.Name LIKE :input
+                OR range_tree.name LIKE :input )
+                ORDER BY Institute.Name';
         $sql_search_institutes = new SQLSearch($query, _('Einrichtung suchen'),
                 'Institut_id');
         $this->qs_id_institutes = md5(serialize($sql_search_institutes));
@@ -491,7 +493,7 @@ class Module_ModuleController extends MVVController
                 try {
                     $copy->verifyPermission();
                     // UOL: Don't validate
-                    $store = $copy->store(false);
+                    $copy->store(false);
                     PageLayout::postSuccess(sprintf(
                         _('Das Modul "%s" und alle zugehörigen Modulteile wurden kopiert!'),
                         htmlReady($modul->getDisplayName())
@@ -517,17 +519,31 @@ class Module_ModuleController extends MVVController
         if (Request::isXhr()) {
             if (Request::option('type') === 'modulteil') {
                 $parent = Modulteil::find(Request::option('id'));
-                $formatted_fields = words('voraussetzung kommentar
-                    kommentar_kapazitaet kommentar_wl_praesenz
-                    kommentar_wl_bereitung kommentar_wl_selbst
-                    kommentar_wl_pruef pruef_vorleistung pruef_leistung');
+                $formatted_fields = [
+                    'voraussetzung',
+                    'kommentar',
+                    'kommentar_kapazitaet',
+                    'kommentar_wl_praesenz',
+                    'kommentar_wl_bereitung',
+                    'kommentar_wl_selbst',
+                    'kommentar_wl_pruef',
+                    'pruef_vorleistung pruef_leistung'];
             } else {
                 $parent = Modul::find(Request::option('id'));
-                $formatted_fields = words('voraussetzung kompetenzziele inhalte
-                    literatur links kommentar kommentar_kapazitaet
-                    kommentar_wl_selbst
-                    kommentar_wl_pruef pruef_vorleistung pruef_leistung
-                    pruef_wiederholung ersatztext');
+                $formatted_fields = [
+                    'voraussetzung',
+                    'kompetenzziele',
+                    'inhalte',
+                    'literatur',
+                    'links',
+                    'kommentar',
+                    'kommentar_kapazitaet',
+                    'kommentar_wl_selbst',
+                    'kommentar_wl_pruef',
+                    'pruef_vorleistung',
+                    'pruef_leistung',
+                    'pruef_wiederholung ersatztext'
+                ];
             }
             if ($parent) {
                 $deskriptor_array = [];
@@ -610,6 +626,7 @@ class Module_ModuleController extends MVVController
             PageLayout::setTitle(_('Neuen Modulteil anlegen'));
             $success_message = ('Der Modulteil "%s" wurde angelegt.');
             $this->display_language = $this->modulteil->getDefaultLanguage();
+            $this->deskriptor = $this->modulteil->getDeskriptor($this->display_language, true);
             PageLayout::postInfo(sprintf(
                 _('Sie legen einen neuen Modulteil für das Modul <em>%s</em> an. Der Modulteil muss zunächst in der Ausgabesprache <em>%s</em> angelegt werden.'),
                 htmlReady($this->modul->getDisplayName()),
@@ -617,6 +634,7 @@ class Module_ModuleController extends MVVController
             ));
         } else {
             $this->display_language = Request::option('display_language', $this->modulteil->getDefaultLanguage());
+            $this->deskriptor = $this->modulteil->getDeskriptor($this->display_language, true);
             $this->translations = $this->deskriptor->getAvailableTranslations();
     
             if (!in_array($this->display_language, $this->translations)) {
@@ -647,7 +665,6 @@ class Module_ModuleController extends MVVController
             $widget->addElement($widget_element);
             $sidebar->addWidget($widget, 'languages');
         }
-        $this->deskriptor = $this->modulteil->getDeskriptor($this->display_language, true);
 
         $this->def_lang = $this->display_language === $this->modulteil->getDefaultLanguage();
 
@@ -835,11 +852,11 @@ class Module_ModuleController extends MVVController
     private function search_lvgruppe($modulteil_id)
     {
         //Quicksearch
-        $query = 'SELECT lvgruppe_id, name FROM '
-                . 'mvv_lvgruppe WHERE name LIKE :input '
-                . ' AND lvgruppe_id NOT IN(SELECT lvgruppe_id FROM '
-                . 'mvv_lvgruppe_modulteil WHERE modulteil_id = '
-                . DBManager::get()->quote($modulteil_id) . ')';
+        $query = 'SELECT lvgruppe_id, name
+                FROM mvv_lvgruppe WHERE name LIKE :input
+                AND lvgruppe_id NOT IN (
+                    SELECT lvgruppe_id FROM mvv_lvgruppe_modulteil WHERE modulteil_id = ' . DBManager::get()->quote($modulteil_id) .
+            ')';
         $search = new SQLSearch($query, _('LV-Gruppe suchen'));
         $this->qs_search_id = md5(serialize($search));
         $this->search = QuickSearch::get(
@@ -1025,17 +1042,18 @@ class Module_ModuleController extends MVVController
         $this->modul = Modul::find($modul_id);
         if ($this->modul) {
             // Modulsuche
-            $query = "SELECT mm.modul_id, CONCAT(mmd.bezeichnung, ', ',"
-                   . "IF(ISNULL(mm.code), '', mm.code),"
-                   . "IF(ISNULL(sd1.name), '', CONCAT(', ', IF(ISNULL(sd2.name),"
-                   . "CONCAT('ab ', sd1.name),CONCAT(sd1.name, ' - ', sd2.name))))) AS modul_name "
-                   . 'FROM mvv_modul mm LEFT JOIN mvv_modul_deskriptor mmd '
-                   . "ON mm.modul_id = mmd.modul_id "
-                   . "LEFT JOIN semester_data sd1 ON mm.start = sd1.semester_id "
-                   . 'LEFT JOIN semester_data sd2 ON mm.end = sd2.semester_id '
-                   . "WHERE (mm.code LIKE :input "
-                   . 'OR mmd.bezeichnung LIKE :input) '
-                   . 'AND mm.modul_id <> '
+            $query = "SELECT
+                    mm.modul_id,
+                    CONCAT(mmd.bezeichnung, ', ', IF(ISNULL(mm.code), '', mm.code),
+                    IF(ISNULL(sd1.name), '', CONCAT(', ', IF(ISNULL(sd2.name),
+                    CONCAT('ab ', sd1.name),CONCAT(sd1.name, ' - ', sd2.name))))) AS modul_name
+                    FROM mvv_modul mm LEFT JOIN mvv_modul_deskriptor mmd
+                    ON mm.modul_id = mmd.modul_id
+                    LEFT JOIN semester_data sd1 ON mm.start = sd1.semester_id
+                    LEFT JOIN semester_data sd2 ON mm.end = sd2.semester_id
+                    WHERE (mm.code LIKE :input
+                    OR mmd.bezeichnung LIKE :input)
+                    AND mm.modul_id <> "
                    . DBManager::get()->quote($this->modul->getId())
                    . " ORDER BY modul_name";
             $sql_search_modul = new SQLSearch($query, _('Modul suchen'), 'modul');
@@ -1327,9 +1345,7 @@ class Module_ModuleController extends MVVController
             ],
             $this->filter
         );
-
-        $modul_ids = Modul::findByFilter($modul_filter);
-
+        
         $template_factory = $this->get_template_factory();
         $template = $template_factory->open('shared/filter');
 
@@ -1402,5 +1418,4 @@ class Module_ModuleController extends MVVController
         $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
-
 }

@@ -34,7 +34,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
             PageLayout::setTitle(_('Neue Studiengangteil-Bezeichnung anlegen'));
         } else {
             $this->bezeichnung_id = $this->stgteilbezeichnung->getId();
-            PageLayout::setTitle(sprintf(_('Studiengangteil-Bezeichnung: %s bearbeiten'), htmlReady($this->stgteilbezeichnung->name)));
+            PageLayout::setTitle(sprintf(
+                _('Studiengangteil-Bezeichnung: %s bearbeiten'),
+                htmlReady($this->stgteilbezeichnung->name)
+            ));
         }
        
         $this->setSidebar();
@@ -75,7 +78,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
         }
     
         if ($stored !== false) {
-            PageLayout::postSuccess(sprintf($success_message, htmlReady($stgteilbezeichnung->name)));
+            PageLayout::postSuccess(sprintf(
+                $success_message,
+                htmlReady($stgteilbezeichnung->name)
+            ));
         }
         $this->relocate('studiengaenge/stgteilbezeichnungen');
     }

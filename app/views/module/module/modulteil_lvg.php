@@ -17,7 +17,7 @@
                                 <? $actionMenu->addLink(
                                     $controller->url_for('/lvgruppe/' . $modulteil->id . '/' . $lvgruppe->id),
                                     _('LV-Gruppe bearbeiten'),
-                                    Icon::create('edit', ['title' => _('LV-Gruppe bearbeiten')]),
+                                    Icon::create('edit', Icon::ROLE_CLICKABLE ,['title' => _('LV-Gruppe bearbeiten')]),
                                     [
                                         'data-dialog' => 'size=auto',
                                         'title'       => _('LV-Gruppe bearbeiten')
@@ -28,7 +28,7 @@
                                 <? $actionMenu->addButton(
                                     'delete',
                                     _('Zuordnung der LV-Gruppe löschen'),
-                                    Icon::create('trash', ['title' => _('Zuordnung der LV-Gruppe löschen')]),
+                                    Icon::create('trash', Icon::ROLE_CLICKABLE , ['title' => _('Zuordnung der LV-Gruppe löschen')]),
                                     [
                                         'formaction'   => $controller->url_for('/delete_lvgruppe/' . $modulteil->id . '/' . $lvgruppe->id),
                                         'data-confirm' => sprintf(
@@ -54,8 +54,8 @@
                             <input type="hidden" name="security_token" value="<?= $security_token ?>">
                             <div style="float: left; padding-right: 10px;"><?= _('LV-Gruppe hinzufügen:') ?></div>
                             <?= $search->render(); ?>
-                            <?= Icon::create('search', ['title' => _('LV-Gruppe suchen'), 'name' => 'search_stgteil', 'data-qs_name' => $search->getId(), 'data-qs_id' => $qs_search_id, 'data-qs_submit' => 'no', 'class' => 'mvv-qs-button'])->asInput(); ?>
-                            <?= Icon::create('accept', ['title' => _('LV-Gruppe zuordnen')])->asInput(['class' => 'mvv-submit', 'name' => 'add_lvgruppe']); ?>
+                            <?= Icon::create('search', Icon::ROLE_CLICKABLE , ['title' => _('LV-Gruppe suchen'), 'name' => 'search_stgteil', 'data-qs_name' => $search->getId(), 'data-qs_id' => $qs_search_id, 'data-qs_submit' => 'no', 'class' => 'mvv-qs-button'])->asInput(); ?>
+                            <?= Icon::create('accept', Icon::ROLE_CLICKABLE , ['title' => _('LV-Gruppe zuordnen')])->asInput(['class' => 'mvv-submit', 'name' => 'add_lvgruppe']); ?>
                             <input type="hidden" name="modulteil_id" value="<?= $modulteil_id ?>">
                         </form>
                     </td>

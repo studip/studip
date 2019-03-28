@@ -37,7 +37,7 @@
                                 <? $actionMenu->addLink(
                                     $controller->url_for('/lvgruppe/' . $modulteil->id),
                                     _('Neue LV-Gruppe anlegen'),
-                                    Icon::create('file+add', ['title' => _('Neue LV-Gruppe anlegen')]),
+                                    Icon::create('file+add', Icon::ROLE_CLICKABLE, ['title' => _('Neue LV-Gruppe anlegen')]),
                                     [
                                         'data-dialog' => 'size=normal',
                                         'title'       => _('Neue LV-Gruppe anlegen')
@@ -48,21 +48,21 @@
                                 <? $actionMenu->addLink(
                                     $controller->url_for('/modulteil/' . $modulteil->id),
                                     _('Modulteil bearbeiten'),
-                                    Icon::create('edit', ['title' => _('Modulteil bearbeiten')])
+                                    Icon::create('edit', Icon::ROLE_CLICKABLE, ['title' => _('Modulteil bearbeiten')])
                                 ) ?>
                             <? endif; ?>
                             <? if ($perm->havePermCreate()) : ?>
                                 <? $actionMenu->addLink(
                                     $controller->url_for('/copy_modulteil/' . $modulteil->id),
                                     _('Modulteil kopieren'),
-                                    Icon::create('files', ['title' => _('Modulteil kopieren')])
+                                    Icon::create('files', Icon::ROLE_CLICKABLE,['title' => _('Modulteil kopieren')])
                                 ) ?>
                             <? endif; ?>
                             <? if ($perm->havePermCreate()) : ?>
                                 <? $actionMenu->addButton(
                                     'delete',
                                     _('Modulteil löschen'),
-                                    Icon::create('trash', ['title' => _('Modulteil löschen')]),
+                                    Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _('Modulteil löschen')]),
                                     [
                                         'formaction'   => $controller->url_for('/delete_modulteil/' . $modulteil->id),
                                         'data-confirm' => sprintf(_('Wollen Sie wirklich den Modulteil "%s" löschen?'), $modulteil->getDisplayName())

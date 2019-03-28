@@ -6,12 +6,12 @@
         <div>
             <?= $search_modul->render(); ?>
             <? if (Request::submitted('search_modul')) : ?>
-                <?= Icon::create('refresh', 'clickable', ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
+                <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
             <? else : ?>
-                <?= Icon::create('search', 'clickable', ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button', 'data-qs_submit' => ''])->asInput(); ?>
+                <?= Icon::create('search', Icon::ROLE_CLICKABLE, ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button', 'data-qs_submit' => ''])->asInput(); ?>
             <? endif; ?>
             <input type="hidden" name="new_id" value="<?= $modul->id ?>">
-            <input name="modul_diff" class="mvv-submit" type="image" title="<?= _('Modul suchen') ?>" src="<?= Icon::create('accept', 'clickable')->asImagePath(); ?>">
+            <input name="modul_diff" class="mvv-submit" type="image" title="<?= _('Modul suchen') ?>" src="<?= Icon::create('accept')->asImagePath(); ?>">
         </div>
     </form>
 </div>
@@ -28,7 +28,7 @@
 <? endif; ?>
 </div>
 <? $variants = $modul->getVariants(); ?>
-<? if (sizeof($variants)) : ?>
+<? if (count($variants)) : ?>
 <div>
     <h4><?= _('Folgende Module sind Varianten dieses Moduls:') ?></h4>
     <ul>

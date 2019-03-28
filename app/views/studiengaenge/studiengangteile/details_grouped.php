@@ -17,26 +17,29 @@
                         <? $actionMenu = ActionMenu::get() ?>
                         <? if (MvvPerm::havePermWrite($stgteil)) : ?>
                             <? $actionMenu->addLink(
-                                    $controller->url_for('/stgteil/' . $stgteil->id),
-                                    _('Studiengangteil bearbeiten'),
-                                    Icon::create('edit', 'clickable', ['title' => _('Studiengangteil bearbeiten')]))
+                                $controller->url_for('/stgteil/' . $stgteil->id),
+                                _('Studiengangteil bearbeiten'),
+                                Icon::create('edit', Icon::ROLE_CLICKABLE , ['title' => _('Studiengangteil bearbeiten')]))
                             ?>
                         <? endif; ?>
                         <? if (MvvPerm::havePermCreate($stgteil)) : ?>
                             <? $actionMenu->addLink(
-                                    $controller->url_for('/copy/' . $stgteil->id),
-                                    _('Studiengangteil kopieren'),
-                                    Icon::create('files', 'clickable', ['title' => _('Studiengangteil kopieren')]))
+                                $controller->url_for('/copy/' . $stgteil->id),
+                                _('Studiengangteil kopieren'),
+                                Icon::create('files', Icon::ROLE_CLICKABLE , ['title' => _('Studiengangteil kopieren')]))
                             ?>
                         <? endif; ?>
                         <? if (MvvPerm::havePermCreate($stgteil)) : ?>
                             <? $actionMenu->addButton(
-                                    'delete_part',
-                                    _('Studiengangteil löschen'),
-                                    Icon::create('trash', 'clickable',
-                                            ['title'        => _('Studiengangteil löschen'),
-                                             'formaction'   => $controller->url_for('/delete', $stgteil->getId()),
-                                             'data-confirm' => sprintf(_('Wollen Sie wirklich den Studiengangteil "%s" löschen?'), htmlReady($stgteil->getDisplayName()))]))
+                                'delete_part',
+                                _('Studiengangteil löschen'),
+                                Icon::create(
+                                    'trash',
+                                    Icon::ROLE_CLICKABLE ,
+                                    ['title'        => _('Studiengangteil löschen'),
+                                     'formaction'   => $controller->url_for('/delete/' . $stgteil->getId()),
+                                     'data-confirm' => sprintf(_('Wollen Sie wirklich den Studiengangteil "%s" löschen?'), htmlReady($stgteil->getDisplayName()))]
+                                ))
                             ?>
                         <? endif; ?>
                         <?= $actionMenu->render() ?>

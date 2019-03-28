@@ -7,15 +7,9 @@
 <script>
     MVV.PARENT_ID = '<?= $dokument->getId() ?>';
 </script>
-<h1>
-    <? if ($dokument->isNew()) : ?>
-    <?= _('Neues Dokument') ?>
-    <? else : ?>
-    <?= sprintf(_('Dokument: %s'), htmlReady($dokument->getDisplayName())) ?>
-    <? endif; ?>
-</h1>
+
 <? $perm = MvvPerm::get($dokument) ?>
-<form class="default" action="<?= $controller->url_for('/dokument', $dokument->id) ?>" method="post"<?= Request::isXhr() ? ' data-dialog' : '' ?>>
+<form class="default" action="<?= $controller->url_for('/dokument/' . $dokument->id) ?>" method="post"<?= Request::isXhr() ? ' data-dialog' : '' ?>>
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend><?= _('Grunddaten') ?></legend>
@@ -38,13 +32,13 @@
     <footer data-dialog-button>
         <? if ($dokument->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>
-            <?= Button::createAccept(_('Anlegen'), 'store', array('title' => _('Dokument anlegen'))) ?>
+                <?= Button::createAccept(_('Anlegen'), 'store', ['title' => _('Dokument anlegen')]) ?>
             <? endif; ?>
         <? else : ?>
             <? if ($perm->havePermWrite()) : ?>
-            <?= Button::createAccept(_('Übernehmen'), 'store', array('title' => _('Änderungen übernehmen'))) ?>
+                <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
             <? endif; ?>
         <? endif; ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, array('title' => _('zurück zur Übersicht'))) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $cancel_url, ['title' => _('zurück zur Übersicht')]) ?>
     </footer>
 </form>

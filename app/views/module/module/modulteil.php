@@ -140,7 +140,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                         <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
                         <div class="mvv-item-list-buttons">
                             <a href="#" class="mvv-item-remove">
-                                <?= Icon::create('trash', ['title' => _('Sprache entfernen')])->asImg(); ?>
+                                <?= Icon::create('trash',  Icon::ROLE_CLICKABLE ,['title' => _('Sprache entfernen')])->asImg(); ?>
                             </a>
                         </div>
                         <input type="hidden" name="language_items[]" value="<?= $assigned_language->lang ?>">

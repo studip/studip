@@ -1,20 +1,11 @@
 <?php
 /**
- * fachbereichestgteile.php - Studiengaenge_FachbereichestgteileController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-
-require_once dirname(__FILE__) . '/studiengangteile.php';
+require_once __DIR__. '/studiengangteile.php';
 
 class Studiengaenge_FachbereichestgteileController extends Studiengaenge_StudiengangteileController
 {
@@ -56,7 +47,7 @@ class Studiengaenge_FachbereichestgteileController extends Studiengaenge_Studien
         $this->details_id = $fachbereich_id;
         $this->stgteile = StudiengangTeil::findByFachbereich(
             $this->details_id,
-            array('mvv_stgteil.stgteil_id' => $this->getSearchResult('StudiengangTeil')),
+            ['mvv_stgteil.stgteil_id' => $this->getSearchResult('StudiengangTeil')],
             'fach_name,zusatz,kp',
             'ASC'
         );

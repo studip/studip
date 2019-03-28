@@ -1,23 +1,14 @@
 <?php
 /**
- * institute.php - Module_InstituteController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-require_once dirname(__FILE__) . '/module.php';
+require_once __DIR__ . '/module.php';
 
 class Module_InstituteController extends Module_ModuleController
 {
-
     public $institut_id;
 
     public function before_filter(&$action, &$args)
@@ -45,14 +36,17 @@ class Module_InstituteController extends Module_ModuleController
         // Nur Module von verantwortlichen Einrichtungen an denen der User
         // eine Rolle hat
         $filter = array_merge(
-                array(
-                    'mvv_modul.modul_id' => $search_result,
-                    'mvv_modul_inst.gruppe' => 'hauptverantwortlich',
-                    'mvv_modul_inst.institut_id' => MvvPerm::getOwnInstitutes()),
-                (array) $this->filter);
-
+            [
+                'mvv_modul.modul_id'         => $search_result,
+                'mvv_modul_inst.gruppe'      => 'hauptverantwortlich',
+                'mvv_modul_inst.institut_id' => MvvPerm::getOwnInstitutes()
+            ],
+            (array)$this->filter
+        );
+    
         $this->institute = Modul::getAllAssignedInstitutes(
-                    $this->sortby, $this->order, $filter);
+            $this->sortby, $this->order, $filter
+        );
 
         $this->modul_ids = $search_result;
         $this->show_sidebar_search = true;
@@ -63,8 +57,7 @@ class Module_InstituteController extends Module_ModuleController
     /**
      * Shows all modules by a given institute that is responsible for them.
      */
-    public function details_action($modul_id = null,
-            $modulteil_id = null)
+    public function details_action($modul_id = null, $modulteil_id = null)
     {
         $institut = Institute::find(Request::option('institut_id'));
         if (!$institut) {
@@ -92,17 +85,20 @@ class Module_InstituteController extends Module_ModuleController
         $own_institutes = MvvPerm::getOwnInstitutes();
         if (count($own_institutes)) {
             $institute_filter = array_intersect($own_institutes,
-                    [$this->inst_id]);
+                [$this->inst_id]
+            );
         } else {
             $institute_filter = $this->inst_id;
         }
-
+    
         $filter = array_merge(
-                (array) $this->filter,
-                array(
-                    'mvv_modul.modul_id' => $search_result,
-                    'mvv_modul_inst.gruppe' => 'hauptverantwortlich',
-                    'mvv_modul_inst.institut_id' => $this->inst_id));
+            (array)$this->filter,
+            [
+                'mvv_modul.modul_id'         => $search_result,
+                'mvv_modul_inst.gruppe'      => 'hauptverantwortlich',
+                'mvv_modul_inst.institut_id' => $this->inst_id
+            ]
+        );
         $this->module = Modul::findByInstitut('bezeichnung', 'ASC', $filter);
 
         if (Request::isXhr()) {
@@ -115,5 +111,4 @@ class Module_InstituteController extends Module_ModuleController
             $this->redirect($this->url_for('/index'));
         }
     }
-
 }

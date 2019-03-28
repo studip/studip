@@ -1,29 +1,13 @@
 <?php
 /**
- * abschluesse.php - Studiengaenge_AbschluesseController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
+require_once __DIR__ . '/studiengaenge.php';
 
-require_once dirname(__FILE__) . '/studiengaenge.php';
-
-class Studiengaenge_AbschluesseController
-        extends Studiengaenge_StudiengaengeController
-{
-
-    public function before_filter(&$action, &$args)
-    {
-        parent::before_filter($action, $args);
-    }
+class Studiengaenge_AbschluesseController extends Studiengaenge_StudiengaengeController {
     
     /**
      * Liste der Studiengänge gruppiert nach Fachbereiche (Fachbereich ist
@@ -71,14 +55,15 @@ class Studiengaenge_AbschluesseController
         $this->abschluss_id = $abschluss->id;
         if (count($perm_institutes)) {
             $institutes_abschluss = array_intersect(
-                    array_keys($abschluss->getAssignedInstitutes()),
-                    $perm_institutes);
+                array_keys($abschluss->getAssignedInstitutes()),
+                $perm_institutes
+            );
             if (!count($institutes_abschluss)) {
                 throw new Trails_Exception(403);
             }
             $this->studiengaenge = SimpleORMapCollection::createFromArray(
-                Studiengang::findByAbschluss_id($this->abschluss_id))
-                    ->findBy('institut_id', $institutes_abschluss);
+                Studiengang::findByAbschluss_id($this->abschluss_id)
+            )->findBy('institut_id', $institutes_abschluss);
         } else {
             $this->studiengaenge = Studiengang::findByAbschluss_id($this->abschluss_id);
         }
@@ -106,5 +91,4 @@ class Studiengaenge_AbschluesseController
             $this->perform_relayed('index');
         }
     }
-    
 }

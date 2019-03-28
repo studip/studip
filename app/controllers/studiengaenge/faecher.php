@@ -5,7 +5,7 @@
  * @since       3.5
  */
 
-require_once dirname(__FILE__) . '/studiengangteile.php';
+require_once __DIR__ . '/studiengangteile.php';
 
 class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileController
 {
@@ -39,7 +39,7 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
                 self::$items_per_page * ($this->page - 1),
                 $filter
             );
-            if (sizeof($this->faecher) == 0) {
+            if (count($this->faecher) === 0) {
                 PageLayout::postInfo(_('Es wurden noch keine Studiengangteile angelegt.'));
             }
             $this->count = StudiengangTeil::getCountAssignedFaecher($filter);

@@ -53,7 +53,7 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('/approve/' . $modul->id),
                             _('Modul genehmigen'),
-                            Icon::create('accept', ['title' => _('Modul genehmigen')]),
+                            Icon::create('accept', Icon::ROLE_CLICKABLE, ['title' => _('Modul genehmigen')]),
                             ['data-dialog' => 'size=auto;']
                         ) ?>
                     <? endif; ?>
@@ -61,7 +61,7 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('/description', $modul->id),
                             _('Modulbeschreibung ansehen'),
-                            Icon::create('log', ['title' => _('Modulbeschreibung ansehen')]),
+                            Icon::create('log', Icon::ROLE_CLICKABLE,['title' => _('Modulbeschreibung ansehen')]),
                             [
                                 'data-dialog' => 'size=auto',
                                 'title'       => htmlReady($modul->getDisplayName())
@@ -72,21 +72,21 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('/modulteil', ['modul_id' => $modul->id]),
                             _('Modulteil anlegen'),
-                            Icon::create('file+add', ['title' => _('Modulteil anlegen')])
+                            Icon::create('file+add', Icon::ROLE_CLICKABLE,['title' => _('Modulteil anlegen')])
                         ) ?>
                     <? endif; ?>
                     <? if ($perm->havePermWrite()) : ?>
                         <? $actionMenu->addLink(
                             $controller->url_for('/modul/' . $modul->id),
                             _('Modul bearbeiten'),
-                            Icon::create('edit', ['title' => _('Modul bearbeiten')])
+                            Icon::create('edit', Icon::ROLE_CLICKABLE,['title' => _('Modul bearbeiten')])
                         ) ?>
                     <? endif; ?>
                     <? if ($perm->haveFieldPerm('copy_module', MvvPerm::PERM_CREATE)) : ?>
                         <? $actionMenu->addLink(
                             $controller->url_for('/copy_form', $modul->id),
                             _('Modul kopieren'),
-                            Icon::create('files', ['title' => _('Modul kopieren')]),
+                            Icon::create('files', Icon::ROLE_CLICKABLE,['title' => _('Modul kopieren')]),
                             ['data-dialog' => '']
                         ) ?>
                     <? endif; ?>
@@ -94,7 +94,7 @@
                         <? $actionMenu->addButton(
                             'delete',
                             _('Modul löschen'),
-                            Icon::create('trash', ['title' => _('Modul löschen')]),
+                            Icon::create('trash', Icon::ROLE_CLICKABLE,['title' => _('Modul löschen')]),
                             [
                                 'formaction'   => $controller->url_for('/delete/' . $modul->id),
                                 'data-confirm' => sprintf(_('Wollen Sie wirklich das Modul "%s" löschen?'), $modul->getDisplayName())

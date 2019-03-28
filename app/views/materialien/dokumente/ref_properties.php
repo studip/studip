@@ -10,7 +10,7 @@
         <?= _('Die Änderungen werden erst gespeichert, wenn das Hauptformular gespeichert wurde!') ?>
     </fieldset>
     <footer data-dialog-button>
-        <?= LinkButton::createAccept(_('Übernehmen'), '#dokumente_' . $relation->dokument_id, array('title' => _('Änderungen übernehmen'))) ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), '', array('title' => _('Bearbeitung abbrechen'))) ?>
+        <?= LinkButton::createAccept(_('Übernehmen'), '#dokumente_' . $relation->dokument_id, ['title' => _('Änderungen übernehmen')]) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), '', ['title' => _('Bearbeitung abbrechen')]) ?>
     </footer>
 </form>

@@ -25,11 +25,11 @@
                     <td class="dont-hide actions" style="white-space: nowrap;">
                     <? if (MvvPerm::haveFieldPermModul_zuordnungen($abschnitt, MvvPerm::PERM_WRITE)) : ?>
                         <a data-dialog="" href="<?= $controller->link_for('/modul_zuordnung', $assignment->id) ?>">
-                            <?= Icon::create('edit', 'clickable', tooltip2(_('Modulzuordnung bearbeiten')))->asImg(); ?>
+                            <?= Icon::create('edit', Icon::ROLE_CLICKABLE , tooltip2(_('Modulzuordnung bearbeiten')))->asImg(); ?>
                         </a>
                     <? endif; ?>
                     <? if (MvvPerm::havePermCreate($assignment)) : ?>
-                        <?= Icon::create('trash', 'clickable', tooltip2(_('Modulzuordnung löschen')))
+                        <?= Icon::create('trash', Icon::ROLE_CLICKABLE , tooltip2(_('Modulzuordnung löschen')))
                             ->asInput([
                                 'name'         => 'delete',
                                 'formaction'   => $controller->url_for('/delete_modul', $assignment->abschnitt_id, $assignment->modul_id),
@@ -52,9 +52,9 @@
                         <?= _('Modul hinzufügen') ?>
                         <?= CSRFProtection::tokenTag() ?>
                         <?= $search_modul_abschnitt->render(); ?>
-                        <?= Icon::create('search', 'clickable', ['title' => _('Modul suchen'), 'name' => 'search_stgteil', 'data-qs_name' => $search_modul_abschnitt->getId(), 'data-qs_id' => $qs_search_modul_abschnitt_id, 'data-qs_submit' => 'no',  'class' => 'mvv-qs-button'])->asInput(); ?>
+                        <?= Icon::create('search', Icon::ROLE_CLICKABLE, ['title' => _('Modul suchen'), 'name' => 'search_stgteil', 'data-qs_name' => $search_modul_abschnitt->getId(), 'data-qs_id' => $qs_search_modul_abschnitt_id, 'data-qs_submit' => 'no',  'class' => 'mvv-qs-button'])->asInput(); ?>
                         <input type="hidden" name="abschnitt_id" value="<?= $abschnitt->id ?>">
-                        <?= Icon::create('accept', 'clickable', tooltip2(_('Modul hinzufügen')))
+                        <?= Icon::create('accept',  Icon::ROLE_CLICKABLE , tooltip2(_('Modul hinzufügen')))
                             ->asInput(
                                 [
                                     'formaction'   => $controller->url_for('/add_modul', $version->id),

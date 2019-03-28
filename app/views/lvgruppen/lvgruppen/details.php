@@ -61,11 +61,11 @@
                     <span style="margin-left: 20%" onClick="jQuery('#mvv-lvgruppen-semester').find('.mvv-sem-hidden').slideToggle(); jQuery(this).find('span').toggle(); return false;">
                         <a href="<?= $controller->url_for('/details/' . $lvgruppe->id, array('all_sem' => 1)) ?>">
                             <span>
-                                <?= Icon::create('arr_1up', 'clickable', ['style' => 'vertical-align:text-bottom;'])->asImg(); ?>
+                                <?= Icon::create('arr_1up', Icon::ROLE_CLICKABLE, ['style' => 'vertical-align:text-bottom;'])->asImg(); ?>
                                 <?= _('Alle Semester anzeigen') ?>
                             </span>
                             <span style="display: none;">
-                                <?= Icon::create('arr_1down', 'clickable', ['style' => 'vertical-align:text-bottom;'])->asImg(); ?>
+                                <?= Icon::create('arr_1down', Icon::ROLE_CLICKABLE, ['style' => 'vertical-align:text-bottom;'])->asImg(); ?>
                                 <?= _('Nur aktuelle Semester anzeigen') ?>
                             </span>
                         </a>
@@ -73,7 +73,7 @@
                     <ul style="list-style-type:none;" id="mvv-lvgruppen-semester">
                         <? foreach ($display_semesters as $semester) : ?>
                             <? if ($courses[$semester->id]) : ?>
-                            	<? $show_sem = ($semester->id == $current_sem->id || $semester->id == $next_sem->id || Request::get('all_sem', 0))  ?>
+                            	<? $show_sem = ($semester->id === $current_sem->id || $semester->id === $next_sem->id || Request::get('all_sem', 0))  ?>
                                 <li<?= (!$show_sem ? ' style="display:none;" class="mvv-sem-hidden"' : '') ?>>
                                     <strong><?= htmlReady($semester->name) ?></strong>
                                     <ul style="list-style-type:none;">
@@ -136,7 +136,7 @@
                     <?= ' (' . get_username($lvgruppe->author_id) . ')' ?>
                 </td>
             </tr>
-            <? if ($lvgruppe->mkdate != $lvgruppe->chdate) : ?>
+            <? if ($lvgruppe->mkdate !== $lvgruppe->chdate) : ?>
             <tr>
                 <td><strong><?= _('Letzte Änderung am:') ?></strong></td>
                 <td>

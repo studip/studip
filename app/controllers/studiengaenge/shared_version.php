@@ -5,7 +5,6 @@
  * @since       3.5
  */
 
-
 class SharedVersionController extends MVVController
 {
     public function version_action($stgteil_id, $version_id = null)
@@ -31,10 +30,16 @@ class SharedVersionController extends MVVController
 
         if ($this->version->isNew()) {
             $this->version->stat = 'planung';
-            PageLayout::setTitle(sprintf(_('Neue Version für Studiengangteil: %s'), htmlReady($this->stgteil->getDisplayName())));
+            PageLayout::setTitle(sprintf(
+                _('Neue Version für Studiengangteil: %s'),
+                htmlReady($this->stgteil->getDisplayName())
+            ));
             $success_message = ('Die Version "%s" des Studiengangteils wurde angelegt.');
         } else {
-            PageLayout::setTitle(sprintf(_('Version: %s bearbeiten'), htmlReady($this->version->getDisplayName())));
+            PageLayout::setTitle(sprintf(
+                _('Version: %s bearbeiten'),
+                htmlReady($this->version->getDisplayName())
+            ));
             $success_message = _('Die Version "%s" des Studiengangteils wurde geändert.');
         }
         
@@ -74,12 +79,14 @@ class SharedVersionController extends MVVController
             
             if ($stored !== false) {
                 if ($stored) {
-                    PageLayout::postSuccess(sprintf($success_message,
-                            htmlReady($this->version->getDisplayName())));
+                    PageLayout::postSuccess(sprintf(
+                        $success_message,
+                            htmlReady($this->version->getDisplayName())
+                    ));
                 } else {
                     PageLayout::postInfo(_('Es wurden keine Änderungen vorgenommen.'));
                 }
-                $this->redirect($this->url_for('/abschnitte', $this->version->id));
+                $this->redirect($this->url_for('/abschnitte/' . $this->version->id));
                 return;
             }
         }
@@ -224,9 +231,10 @@ class SharedVersionController extends MVVController
         }
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
-            PageLayout::postSuccess(
-                sprintf(_('Version "%s" des Studiengangteils gelöscht!'), htmlReady($version->getDisplayName()))
-            );
+            PageLayout::postSuccess(sprintf(
+                _('Version "%s" des Studiengangteils gelöscht!'),
+                htmlReady($version->getDisplayName())
+            ));
             $version->delete();
         }
         $this->redirect($this->url_for('/index'));
@@ -243,19 +251,18 @@ class SharedVersionController extends MVVController
             if (!isset($this->version)) {
                 $this->version = StgteilVersion::find(Request::option('version_id'));
             }
-            PageLayout::setTitle(
-                sprintf(_('Einen neuen Studiengangteil-Abschnitt für die Version "%s" anlegen.'),
-                    htmlReady($this->version->getDisplayName())
-                )
-            );
+            PageLayout::setTitle(sprintf(
+                _('Einen neuen Studiengangteil-Abschnitt für die Version "%s" anlegen.'),
+                htmlReady($this->version->getDisplayName())
+            ));
             $success_message = ('Der Studiengangteil-Abschnitt "%s" wurde angelegt.');
         } else {
             $this->version = $this->abschnitt->version;
-            PageLayout::setTitle(
-                sprintf(_('Studiengangteil-Abschnitt "%s" der Version "%s" bearbeiten.'),
-                    htmlReady($this->abschnitt->name),
-                    htmlReady($this->version->getDisplayName()))
-            );
+            PageLayout::setTitle(sprintf(
+                _('Studiengangteil-Abschnitt "%s" der Version "%s" bearbeiten.'),
+                htmlReady($this->abschnitt->name),
+                htmlReady($this->version->getDisplayName())
+            ));
             $success_message = _('Der Studiengangteil-Abschnitt "%s" wurde geändert.');
         }
         
@@ -269,8 +276,7 @@ class SharedVersionController extends MVVController
         if (!$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_READ)) {
             throw new Trails_Exception(403);
         }
-        if ($this->abschnitt->isNew()
-                && !$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_CREATE)) {
+        if ($this->abschnitt->isNew() && !$perm->haveFieldPerm('abschnitte', MvvPerm::PERM_CREATE)) {
             throw new Trails_Exception(403);
         }
         
@@ -623,7 +629,7 @@ class SharedVersionController extends MVVController
         list($object_class, $id) = explode('_', Request::option('list_id'));
         $orderedIds = Request::getArray('newOrder');
         if (is_array($orderedIds)) {
-            if ($object_class == 'abschnitte') {
+            if ($object_class === 'abschnitte') {
                 $version = StgteilVersion::find($id);
                 if ($version) {
                     $i = 1;
@@ -638,7 +644,7 @@ class SharedVersionController extends MVVController
                         }
                     }
                 }
-            } else if ($object_class == 'module') {
+            } else if ($object_class === 'module') {
                 $abschnitt = StgteilAbschnitt::find($id);
                 if ($abschnitt) {
                     $i = 1;
@@ -748,5 +754,4 @@ class SharedVersionController extends MVVController
             $this->render_template('studiengaenge/versionen/approve');
         }
     }
-
 }

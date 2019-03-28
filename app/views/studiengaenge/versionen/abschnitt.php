@@ -1,7 +1,7 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <? $perm = MvvPerm::get($abschnitt) ?>
 
-<form class="default" action="<?= $controller->url_for('/abschnitt', $abschnitt->id) ?>" method="post">
+<form class="default" action="<?= $controller->url_for('/abschnitt/' . $abschnitt->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend><?= _('Grunddaten') ?></legend>
@@ -12,8 +12,9 @@
             <?= _('Kommentar') ?>
             <?= MvvI18N::textarea('kommentar', $abschnitt->kommentar, ['class' => 'add_toolbar resizable ui-resizable'])->checkPermission($abschnitt) ?>
             <label><?= _('Kreditpunkte') ?>
-                <input <?= $perm->disable('kp') ?> type="text" name="kp" id="kp"
-                                                   value="<?= htmlReady($abschnitt->kp) ?>" size="3" maxlength="2">
+                <input <?= $perm->disable('kp') ?>
+                        type="text" name="kp" id="kp"
+                        value="<?= htmlReady($abschnitt->kp) ?>" size="3" maxlength="2">
             </label>
             <label><?= _('Zwischenüberschrift') ?>
                 <?= MvvI18N::input('ueberschrift', $abschnitt->ueberschrift, ['maxlength' => '254'])->checkPermission($abschnitt) ?>

@@ -2,10 +2,6 @@
     <form method="post">
         <?= CSRFProtection::tokenTag() ?>
         <table class="default collapsable">
-            <caption>
-                <?= _('Verlinkte Materialien/Dokumente') ?>
-                <span class="actions"><? printf(ngettext('%s Dokument', '%s Dokumente', $count), $count) ?></span>
-            </caption>
             <colgroup>
                 <col>
                 <col style="width: 40%">
@@ -27,7 +23,7 @@
                     <tr class="header-row">
                         <td class="toggle-indicator">
                             <a class="mvv-load-in-new-row"
-                               href="<?= $controller->url_for('/details', $dokument->id) ?>"><?= htmlReady($dokument->name) ?></a>
+                               href="<?= $controller->url_for('/details/' . $dokument->id) ?>"><?= htmlReady($dokument->name) ?></a>
                         </td>
                         <td class="dont-hide">
                             <?= htmlReady($dokument->linktext) ?>
@@ -41,16 +37,16 @@
                         <td style="white-space: nowrap;" class="dont-hide actions">
                         <? $actionMenu = ActionMenu::get() ?>
                         <? $actionMenu->addLink(
-                            $controller->url_for('shared/log_event/show', $dokument->id),
+                            $controller->url_for('shared/log_event/show/' . $dokument->id),
                             _('Log-Einträge dieses Dokumentes'),
-                            Icon::create('log', 'clickable', ['title' => _('Log-Einträge dieses Dokumentes')]),
+                            Icon::create('log', Icon::ROLE_CLICKABLE, ['title' => _('Log-Einträge dieses Dokumentes')]),
                             ['data-dialog' => 'size=auto']
                         ) ?>
                         <? if ($perm->havePermWrite()) : ?>
                             <? $actionMenu->addLink(
                                 $controller->url_for('/dokument/' . $dokument->id),
                                 _('Dokument bearbeiten'),
-                                Icon::create('edit', 'clickable', ['title' => _('Dokument bearbeiten')])
+                                Icon::create('edit', Icon::ROLE_CLICKABLE, ['title' => _('Dokument bearbeiten')])
                             ) ?>
                         <? endif; ?>
                         <? if ($perm->havePermCreate()) : ?>
@@ -72,7 +68,7 @@
                             <? $actionMenu->addButton(
                                 'delete_file',
                                 _('Dokument löschen'),
-                                Icon::create('trash', 'clickable', ['title' => _('Dokument löschen')]),
+                                Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _('Dokument löschen')]),
                                 ['formaction'   => $controller->url_for('/delete/' . $dokument->id),
                                  'data-confirm' => $msg]
                             ) ?>
@@ -80,7 +76,7 @@
                         <?= $actionMenu->render() ?>
                         </td>
                     </tr>
-                    <? if ($dokument_id == $dokument->getId()) : ?>
+                    <? if ($dokument_id === $dokument->getId()) : ?>
                         <tr class="loaded-details nohover">
                             <?= $this->render_partial('materialien/dokumente/details', compact('dokument')) ?>
                         </tr>
@@ -91,7 +87,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="5" style="text-align: right">
-                            <?
+                            <?php
                             $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
                             $pagination->clear_attributes();
                             $pagination->set_attribute('perPage', MVVController::$items_per_page);

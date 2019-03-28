@@ -34,12 +34,13 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $search_result = $this->getSearchResult('Studiengang');
 
         // set default semester filter
-        if (!isset($this->filter['start_sem.beginn']) || !isset($this->filter['end_sem.ende'])) {
+        if (!isset($this->filter['start_sem.beginn'], $this->filter['end_sem.ende'])) {
             $sem_time_switch = Config::get()->getValue('SEMESTER_TIME_SWITCH');
             // switch semester according to time switch
             // (n weeks before next semester)
-            $current_sem = Semester::findByTimestamp(time()
-                    + $sem_time_switch * 7 * 24 * 3600);
+            $current_sem = Semester::findByTimestamp(
+                time() + $sem_time_switch * 7 * 24 * 3600
+            );
             if ($current_sem) {
                 $this->filter['start_sem.beginn'] = $current_sem->beginn;
                 $this->filter['end_sem.ende'] = $current_sem->beginn;
@@ -65,7 +66,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             self::$items_per_page * ($this->page - 1)
         );
         
-        if (count($this->studiengaenge) == 0) {
+        if (count($this->studiengaenge) === 0) {
             if (count($this->filter) || $this->search_term) {
                 $this->msg = _('Es wurden keine Studiengänge gefunden.');
             } else {
@@ -188,8 +189,10 @@ class Studiengaenge_StudiengaengeController extends MVVController
             }
             if ($stored !== false) {
                 if ($stored) {
-                    PageLayout::postSuccess(sprintf($success_message,
-                            htmlReady($this->studiengang->name)));
+                    PageLayout::postSuccess(sprintf(
+                        $success_message,
+                        htmlReady($this->studiengang->name)
+                    ));
                 } else {
                     PageLayout::postInfo(_('Es wurden keine Änderungen vorgenommen.'));
                 }
@@ -210,8 +213,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                     ->render();
 
         // Dokumente
-        $this->search_dokumente =
-                MvvDokument::getQuickSearch($this->dokumente->pluck('dokument_id'));
+        $this->search_dokumente = MvvDokument::getQuickSearch($this->dokumente->pluck('dokument_id'));
 
         // Einrichtung
         $this->institut = Fachbereich::find($this->studiengang->institut_id);
@@ -571,8 +573,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             } else {
                 if (Request::isPost()) {
                     CSRFProtection::verifyUnsafeRequest();
-                    if (!MvvPerm::haveFieldPermStudiengangteile($studiengang,
-                            MvvPerm::PERM_CREATE)) {
+                    if (!MvvPerm::haveFieldPermStudiengangteile($studiengang, MvvPerm::PERM_CREATE)) {
                         throw new Trails_Exception(403);
                     }
                     $stgteil_name = $stg_stgteil->stgteil_name;
@@ -843,24 +844,27 @@ class Studiengaenge_StudiengaengeController extends MVVController
      */
     private function sidebar_search()
     {
-        $query = 'SELECT DISTINCT mvv_studiengang.studiengang_id, '
-                . 'IF(LENGTH(mvv_studiengang.name_kurz), '
-                . 'CONCAT(mvv_studiengang.name_kurz, " (", mvv_abschl_kategorie.name, ")"), '
-                . 'CONCAT(mvv_studiengang.name, " (", mvv_abschl_kategorie.name, ")")) AS name '
-                . 'FROM mvv_studiengang '
-                . 'LEFT JOIN abschluss USING(abschluss_id)'
-                . 'LEFT JOIN mvv_abschl_zuord USING(abschluss_id) '
-                . 'LEFT JOIN mvv_abschl_kategorie USING(kategorie_id) ';
+        $query = 'SELECT DISTINCT mvv_studiengang.studiengang_id,
+                    IF(LENGTH(mvv_studiengang.name_kurz),
+                    CONCAT(mvv_studiengang.name_kurz, " (", mvv_abschl_kategorie.name, ")"),
+                    CONCAT(mvv_studiengang.name, " (", mvv_abschl_kategorie.name, ")")) AS name
+                FROM mvv_studiengang
+                LEFT JOIN abschluss USING(abschluss_id)
+                LEFT JOIN mvv_abschl_zuord USING(abschluss_id)
+                LEFT JOIN mvv_abschl_kategorie USING(kategorie_id) ';
         if ($this->filter) {
-            $query .= 'LEFT JOIN mvv_stg_stgteil USING(studiengang_id) '
-                . 'LEFT JOIN mvv_stgteil USING(stgteil_id) '
-                . 'LEFT JOIN mvv_fach_inst USING(fach_id) '
-                . 'LEFT JOIN semester_data start_sem '
-                . 'ON (mvv_studiengang.start = start_sem.semester_id) '
-                . 'LEFT JOIN semester_data end_sem '
-                . 'ON (mvv_studiengang.end = end_sem.semester_id) ';
-            $query .= 'WHERE (mvv_studiengang.name LIKE :input '
-                . 'OR mvv_studiengang.name_kurz LIKE :input) ';
+            $query .= '
+            LEFT JOIN mvv_stg_stgteil USING(studiengang_id)
+            LEFT JOIN mvv_stgteil USING(stgteil_id)
+            LEFT JOIN mvv_fach_inst USING(fach_id)
+            LEFT JOIN semester_data start_sem
+            ON (mvv_studiengang.start = start_sem.semester_id)
+            LEFT JOIN semester_data end_sem
+            ON (mvv_studiengang.end = end_sem.semester_id) ';
+            
+            $query .= 'WHERE (mvv_studiengang.name LIKE :input
+                OR mvv_studiengang.name_kurz LIKE :input) ';
+            
             $query .= ModuleManagementModel::getFilterSql($this->filter, false);
         }
 

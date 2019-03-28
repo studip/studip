@@ -1,19 +1,9 @@
 <?php
 /**
- * kategorien.php - controller class for Abschluss-Kategorien
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
-
-
 
 class Fachabschluss_KategorienController extends MVVController
 {
@@ -24,10 +14,6 @@ class Fachabschluss_KategorienController extends MVVController
         // set navigation
         Navigation::activateItem($this->me . '/fachabschluss/kategorien');
         $this->action = $action;
-
-        if (Request::isXhr()) {
-            $this->set_layout(null);
-        }
     }
 
     /**
@@ -45,8 +31,8 @@ class Fachabschluss_KategorienController extends MVVController
         // Nur Abschluss-Kategorien mit Abschlüssen, die Studiengängen zugeordnet
         // sind an deren Verantwortliche Einrichtung dem User eine Rolle
         // zugewiesen wurde
-        $filter = array('mvv_studiengang.institut_id' => MvvPerm::getOwnInstitutes());
-
+        $filter = ['mvv_studiengang.institut_id' => MvvPerm::getOwnInstitutes()];
+    
         $this->abschluss_kategorien = AbschlussKategorie::getAllEnriched(
             'position',
             'ASC',
@@ -54,10 +40,10 @@ class Fachabschluss_KategorienController extends MVVController
             null,
             $filter
         );
-        if (sizeof($this->abschluss_kategorien) == 0) {
+        if (count($this->abschluss_kategorien) === 0) {
             PageLayout::postInfo(_('Es wurden noch keine Abschluss-Kategorien angelegt.'));
         }
-        PageLayout::setTitle(_('Abschluss-Kategorien'));
+        PageLayout::setTitle(_('Abschluss-Kategorien mit verwendeten Abschlüssen'));
         $this->setSidebar();
     }
 
@@ -70,14 +56,17 @@ class Fachabschluss_KategorienController extends MVVController
         $this->dokumente = $this->abschluss_kategorie->document_assignments;
         if ($this->abschluss_kategorie->isNew()) {
             PageLayout::setTitle(_('Neue Abschluss-Kategorie anlegen'));
-            $success_message = ('Die Abschluss-Kategorie "%s" wurde angelegt.');
+            $success_message = _('Die Abschluss-Kategorie "%s" wurde angelegt.');
         } else {
-            PageLayout::setTitle(_('Abschluss-Kategorie bearbeiten'));
+            PageLayout::setTitle(sprintf(
+                _('Abschluss-Kategorie: %s bearbeiten'),
+                htmlReady($this->abschluss_kategorie->getDisplayName())
+            ));
             $success_message = _('Die Abschluss-Kategorie "%s" wurde geändert.');
         }
         $this->sessSet(
             'dokument_target',
-            array($this->abschluss_kategorie->getId(), 'AbschlussKategorie')
+            [$this->abschluss_kategorie->getId(), 'AbschlussKategorie']
         );
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
@@ -96,10 +85,10 @@ class Fachabschluss_KategorienController extends MVVController
                     Request::optionArray('dokumente_items'),
                     Request::getArray('dokumente_properties')
                 );
-
-                PageLayout::postSuccess(
-                    sprintf($success_message,htmlReady($this->abschluss_kategorie->name))
-                );
+    
+                PageLayout::postSuccess(sprintf(
+                    $success_message, htmlReady($this->abschluss_kategorie->name)
+                ));
                 $this->redirect($this->url_for('/index'));
                 return;
             }
@@ -118,7 +107,7 @@ class Fachabschluss_KategorienController extends MVVController
             $action_widget->addLink(
                 _('Log-Einträge dieser Kategorie'),
                 $this->url_for('shared/log_event/show/AbschlussKategorie', $this->abschluss_kategorie->getId()),
-                Icon::create('log', 'clickable')
+                Icon::create('log')
             )->asDialog();
         }
     }
@@ -130,7 +119,7 @@ class Fachabschluss_KategorienController extends MVVController
     {
         $abschluss_kategorie = new AbschlussKategorie($kategorie_id);
         if ($abschluss_kategorie->isNew()) {
-             PageLayout::postError( _('Unbekannte Abschluss-Kategorie'));
+             PageLayout::postError(_('Unbekannte Abschluss-Kategorie'));
         } else {
             if (Request::submitted('delete')) {
                 CSRFProtection::verifyUnsafeRequest();
@@ -138,16 +127,16 @@ class Fachabschluss_KategorienController extends MVVController
                     throw new Trails_Exception(403);
                 }
                 if (!count($abschluss_kategorie->abschluesse)) {
-                    PageLayout::postSuccess(
-                        sprintf(_('Abschluss-Kategorie "%s" gelöscht!'),
-                        htmlReady($abschluss_kategorie->name))
-                    );
+                    PageLayout::postSuccess(sprintf(
+                        _('Abschluss-Kategorie "%s" gelöscht!'),
+                        htmlReady($abschluss_kategorie->name)
+                    ));
                     $abschluss_kategorie->delete();
                 } else {
-                    PageLayout::postError(
-                        sprintf(_('Löschen nicht möglich! Die Abschluss-Kategorie "%s" ist noch Abschlüssen zugeordnet!'),
-                        htmlReady($abschluss_kategorie->name))
-                    );
+                    PageLayout::postError(sprintf(
+                        _('Löschen nicht möglich! Die Abschluss-Kategorie "%s" ist noch Abschlüssen zugeordnet!'),
+                        htmlReady($abschluss_kategorie->name)
+                    ));
                 }
             }
         }
@@ -161,12 +150,13 @@ class Fachabschluss_KategorienController extends MVVController
     {
         $list = Request::option('list_id');
         $orderedIds = Request::getArray('newOrder');
-        if ($list == 'abschluss_kategorien') {
+        if ($list === 'abschluss_kategorien') {
             if (!MvvPerm::get('AbschlussKategorie')->haveFieldPerm('position')) {
                 throw new Trails_Exception(403);
             }
             $kategorien = SimpleORMapCollection::createFromArray(
-                    AbschlussKategorie::findBySql('1 ORDER BY position'));
+                AbschlussKategorie::findBySql('1 ORDER BY position')
+            );
             if (is_array($orderedIds)) {
                 $i = 1;
                 foreach ($orderedIds as $id) {
@@ -246,10 +236,10 @@ class Fachabschluss_KategorienController extends MVVController
             $widget->addLink(
                 _('Neue Abschluss-Kategorie anlegen'),
                 $this->url_for('/kategorie'),
-                Icon::create('file+add', 'clickable')
+                Icon::create('file+add')
             );
             $sidebar->addWidget($widget);
         }
     }
-
+    
 }

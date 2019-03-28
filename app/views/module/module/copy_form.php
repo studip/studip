@@ -9,7 +9,7 @@
             <section>
                 <p>
                     <a href="<?= $controller->url_for('/modul/' . $modul->id) ?>">
-                        <?= Icon::create('edit', ['title' => _('Modul bearbeiten')]) ?>
+                        <?= Icon::create('edit', Icon::ROLE_CLICKABLE ,['title' => _('Modul bearbeiten')]) ?>
                         <strong><?= _('Aktuellste Version bearbeiten') ?></strong>
                     </a>
                 </p>
@@ -80,7 +80,7 @@
                     <a title="<?= _('Verwendet in Studiengängen') ?>"
                        href="<?= $controller->url_for('/assignments/' . $modul->id) ?>"
                        onclick="STUDIP.Dialog.fromURL(this.href, {title: this.title, resizable: true, id: 'stgteil_assignments'}); return false;">
-                        <?= Icon::create('info-circle', ['title' => _('Zuordnungen anzeigen')]) ?>
+                        <?= Icon::create('info-circle', Icon::ROLE_CLICKABLE , ['title' => _('Zuordnungen anzeigen')]) ?>
                     </a>
                 </p>
             </section>

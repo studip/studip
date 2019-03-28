@@ -86,7 +86,7 @@
                                 <? foreach ($relation as $rel) : ?>
                                     <? $related_object = $object_type::getEnriched($rel['range_id']) ?>
                                     <li>
-                                        <a href="<?= $this->controller->url_for('materialien/dokumente/dispatch', mb_strtolower($object_type), $rel['range_id']) ?>">
+                                        <a href="<?= $this->controller->url_for('materialien/dokumente/dispatch/' .  mb_strtolower($object_type), $rel['range_id']) ?>">
                                             <?= $related_object->getDisplayName() ?>
                                         </a>
                                     </li>

@@ -1,9 +1,5 @@
 <?= $controller->jsUrl() ?>
 <table class="default collapsable">
-    <caption>
-        <?= _('Liste der Studiengänge') ?>
-        <span class="actions"><? printf(_('%s Studiengänge'), $count) ?></span>
-    </caption>
     <colgroup>
         <col>
         <col style="width: 15%;">
@@ -24,7 +20,7 @@
             <tfoot>
                 <tr>
                     <td colspan="5" style="text-align: right;">
-
+                        
                         <?
                         $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
                         $pagination->clear_attributes();

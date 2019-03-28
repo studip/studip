@@ -1,29 +1,14 @@
 <?php
 /**
- * kategorien.php - Studiengaenge_KategorienController
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- *
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-
-require_once dirname(__FILE__) . '/studiengaenge.php';
+require_once __DIR__ . '/studiengaenge.php';
 
 class Studiengaenge_KategorienController extends Studiengaenge_StudiengaengeController
 {
-
-    public function before_filter(&$action, &$args)
-    {
-        parent::before_filter($action, $args);
-    }
-    
     /**
      * Liste der Studiengänge gruppiert nach Fachbereiche (Fachbereich ist
      * die  verantwortliche Einrichtung des zugeordneten Faches, nicht die des
@@ -46,14 +31,16 @@ class Studiengaenge_KategorienController extends Studiengaenge_StudiengaengeCont
             null,
             ['mvv_fach_inst.institut_id' => $perm_institutes]
         )->pluck('abschluss_id');
-        
+    
         $this->kategorien = AbschlussKategorie::getAllEnriched(
             $this->sortby,
             $this->order,
             null,
             null,
-            ['mvv_abschl_zuord.abschluss_id' => $abschluss_ids,
-             'mvv_studiengang.institut_id'   => $perm_institutes]
+            [
+                'mvv_abschl_zuord.abschluss_id' => $abschluss_ids,
+                'mvv_studiengang.institut_id'   => $perm_institutes
+            ]
         );
         
         if ($studiengang_id) {
@@ -111,5 +98,4 @@ class Studiengaenge_KategorienController extends Studiengaenge_StudiengaengeCont
             $this->perform_relayed('index');
         }
     }
-    
 }

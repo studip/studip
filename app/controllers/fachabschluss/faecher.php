@@ -1,37 +1,17 @@
 <?php
 /**
- * faecher.php - controller class for Faecher
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License, or (at your option) any later version.
- * 
  * @author      Peter Thienel <thienel@data-quest.de>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
- * @category    Stud.IP
+ * @license     GPL2 or any later version
  * @since       3.5
  */
 
-
-
-/**
- *
- *
- */
 class Fachabschluss_FaecherController extends MVVController
 {
-
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-
-        // set navigation
         Navigation::activateItem($this->me . '/fachabschluss/faecher');
         $this->action = $action;
-        if (Request::isXhr()) {
-            $this->set_layout(null);
-        }
     }
 
     /**
@@ -39,20 +19,25 @@ class Fachabschluss_FaecherController extends MVVController
      */
     public function index_action()
     {
-        //set title
-        PageLayout::setTitle(_('Verwaltung der Fächer'));
-
         $this->initPageParams();
 
         // Nur Fächer mit verantwortlichen Einrichtungen an denen der User
         // eine Rolle hat
-        $filter = array('mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes());
-        
+        $filter = ['mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes()];
+    
         $this->count = Fach::getCount($filter);
         
         if ($this->count < self::$items_per_page * ($this->page - 1)) {
             $this->page = 1;
         }
+    
+        PageLayout::setTitle(
+            _('Fächer mit verwendeten Abschlüssen')
+            . ' ('
+            . sprintf(ngettext('%s Fach', '%s Fächer', $this->count), $this->count)
+            . ')'
+        );
+        
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
         //get data
@@ -66,7 +51,7 @@ class Fachabschluss_FaecherController extends MVVController
         if (!isset($this->fach_id)) {
             $this->fach_id = null;
         }
-        if (count($this->faecher) == 0) {
+        if (count($this->faecher) === 0) {
             PageLayout::postInfo(_('Es wurden noch keine Fächer angelegt.'));
         }
 
@@ -102,7 +87,7 @@ class Fachabschluss_FaecherController extends MVVController
             PageLayout::setTitle(_('Neues Fach anlegen'));
             $success_message = _('Das Fach "%s" wurde angelegt.');
         } else {
-            PageLayout::setTitle(_('Fach bearbeiten'));
+            PageLayout::setTitle(sprintf(_('Fach: %s bearbeiten'), htmlReady($this->fach->getDisplayName())));
             $success_message = _('Das Fach "%s" wurde geändert.');
         }
         //save changes
@@ -122,7 +107,10 @@ class Fachabschluss_FaecherController extends MVVController
             if ($stored !== false) {
                 $this->sessSet('sortby', 'chdate');
                 $this->sessSet('order', 'DESC');
-                PageLayout::postSuccess(sprintf($success_message, htmlReady($this->fach->name)));
+                PageLayout::postSuccess(sprintf(
+                    $success_message,
+                    htmlReady($this->fach->name)
+                ));
                 $this->redirect($this->url_for('/index'));
                 return;
             }
@@ -143,8 +131,8 @@ class Fachabschluss_FaecherController extends MVVController
             $action_widget = $sidebar->getWidget('actions');
             $action_widget->addLink(
                 _('Log-Einträge dieses Faches'),
-                $this->url_for('shared/log_event/show/Fach', $this->fach->getId()),
-                Icon::create('log', 'clickable')
+                $this->url_for('shared/log_event/show/Fach/' . $this->fach->getId()),
+                Icon::create('log')
             )->asDialog();
         }
     }
@@ -158,11 +146,14 @@ class Fachabschluss_FaecherController extends MVVController
         if (Request::submitted('delete')) {
             CSRFProtection::verifyUnsafeRequest();
             if ($fach->isNew()) {
-                PageLayout::postError( _('Das Fach kann nicht gelöscht werden (unbekanntes Fach).'));
+                PageLayout::postError(_('Das Fach kann nicht gelöscht werden (unbekanntes Fach).'));
             } else {
                 $name = $fach->name;
                 $fach->delete();
-                PageLayout::postSuccess(sprintf(_('Das Fach "%s" wurde gelöscht.'), htmlReady($name)));
+                PageLayout::postSuccess(sprintf(
+                    _('Das Fach "%s" wurde gelöscht.'),
+                    htmlReady($name)
+                ));
             }
         }
         $this->redirect($this->url_for('/index'));
@@ -173,8 +164,8 @@ class Fachabschluss_FaecherController extends MVVController
      */
     public function fachbereiche_action()
     {
-        $filter = array('mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes());
-
+        $filter = ['mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes()];
+    
         $this->initPageParams('fachbereiche');
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
@@ -215,7 +206,7 @@ class Fachabschluss_FaecherController extends MVVController
             if ($response->headers['Location']) {
                 $this->redirect($response->headers['Location']);
             } else {
-              $this->relocate('fachabschluss/abschluesse/abschluss', $abschluss_id);
+              $this->relocate('fachabschluss/abschluesse/abschluss/' . $abschluss_id);
             }
         }
     }
@@ -232,11 +223,11 @@ class Fachabschluss_FaecherController extends MVVController
         $widget->addLink(
             _('Fächer mit zugeordneten Abschlüssen'),
             $this->url_for('/index')
-        )->setActive(in_array($this->action, words('index details')));
+        )->setActive(in_array($this->action, ['index', 'details']));
         $widget->addLink(
             _('Gruppierung nach Fachbereichen'),
             $this->url_for('/fachbereiche')
-        )->setActive(in_array($this->action, words('fachbereiche details_fachbereich')));
+        )->setActive(in_array($this->action, ['fachbereiche', 'details_fachbereich']));
 
         $sidebar->addWidget($widget);
 
@@ -245,7 +236,7 @@ class Fachabschluss_FaecherController extends MVVController
             $widget->addLink(
                 _('Neues Fach anlegen'),
                 $this->url_for('/fach'),
-                Icon::create('file+add', 'clickable')
+                Icon::create('file+add')
             );
             $sidebar->addWidget($widget);
         }
