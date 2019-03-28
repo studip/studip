@@ -274,7 +274,7 @@ class MvvDokument extends ModuleManagementModel
                 $dokument->dokument_id = $dokument_id;
                 $dokument->range_id = $object->id;
                 $dokument->object_type = get_class($object);
-                $dokument->kommentar = $annotations[$dokument_id]['kommentar']->trim;
+                $dokument->kommentar = trim($annotations[$dokument_id]['kommentar']);
                 $dokument->position = $pos++;
                 $object->document_assignments->append($dokument);
             }
