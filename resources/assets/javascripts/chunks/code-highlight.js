@@ -1,3 +1,5 @@
+import "highlight.js/styles/tomorrow.css"
+
 import hljs from "highlight.js/lib/highlight.js"
 
 hljs.registerLanguage('matlab', require('highlight.js/lib/languages/matlab'))

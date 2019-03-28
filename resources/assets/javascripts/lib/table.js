@@ -51,12 +51,12 @@ function enhanceSortableTable(table) {
 const Table = {
     enhanceSortableTable: function(table) {
         // async load the tablesorter, then enhance
-        import(/* webpackChunkName: "tablesorter" */ '../tablesorter')
+        import(/* webpackChunkName: "tablesorter" */ '../chunks/tablesorter')
             .then(function() {
                 enhanceSortableTable(table);
             })
             .catch(function(error) {
-                console.log('An error occurred while loading the tablesorter component', error);
+                console.error('An error occurred while loading the tablesorter component', error);
             });
     }
 };

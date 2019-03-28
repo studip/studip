@@ -23,11 +23,15 @@ const Markup = {
             MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
         },
         codehighlight: function(element) {
-            jQuery(document)
-                .find('pre.usercode:not(.hljs)')
-                .each(function(index, block) {
-                    hljs.highlightBlock(block);
-                });
+            jQuery('pre.usercode:not(.hljs)').each(function (index, block) {
+                // async load the tablesorter, then enhance
+                import(/* webpackChunkName: "code-highlight" */ '../chunks/code-highlight')
+                    .then(({default: hljs}) => {
+                        hljs.highlightBlock(block);
+                    }).catch((error) => {
+                        console.log('An error occurred while loading the code highlighting component', error);
+                    });
+            });
         }
     }
 };
