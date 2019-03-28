@@ -126,7 +126,6 @@ class PageLayout
             self::addStylesheet('studip-wysiwyg.css?v=' . $v);
             self::addScript('studip-wysiwyg.js?v=' . $v);
         }
-        self::addScript('mathjax/MathJax.js?config=TeX-AMS_HTML,default&v=' . $v);
     }
 
     /**

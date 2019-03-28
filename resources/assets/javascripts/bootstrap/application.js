@@ -83,13 +83,8 @@ jQuery(function () {
 jQuery(document).on('studip-ready', function (event, type, data) {
     jQuery('.add_toolbar').addToolbar();
 
-    // validate forms
     STUDIP.Forms.initialize(data.dialog);
-
-    if (type === 'dialog-update' && MathJax !== undefined) {
-        // notify MathJax about new content
-        MathJax.Hub.Queue(['Typeset', MathJax.Hub, data.dialog[0]]);
-    }
+    STUDIP.Markup.element(data.dialog || document);
 });
 
 
@@ -374,20 +369,6 @@ jQuery(document).on('click', 'a[data-behaviour~="ajax-toggle"]', function (event
 
     event.preventDefault();
 });
-
-/*override window.print to allow mathjax rendering to finish before printing*/
-(function (origPrint) {
-    window.print = function () {
-        if (typeof MathJax !== 'undefined') {
-            MathJax.Hub.Queue(
-                ["Delay", MathJax.Callback, 700],
-                origPrint
-            );
-        } else {
-            origPrint();
-        }
-    }
-})(window.print);
 
 /* Change open-variable on course-basicdata*/
 (function ($) {

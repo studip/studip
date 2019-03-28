@@ -218,6 +218,11 @@ class StudipCoreFormat extends TextFormat
             )',
             'callback' => 'StudipCoreFormat::markupLinks'
         ),
+        'tex' => [
+            'start'    => '\[tex\]',
+            'end'      => '\[\/tex\]',
+            'callback' => 'StudipCoreFormat::markupTexFormat'
+        ],
     );
 
     /**
@@ -668,4 +673,13 @@ class StudipCoreFormat extends TextFormat
     {
         return $matches[0];
     }
+
+    /**
+     * Stud.IP markup for tex tags
+     */
+    protected static function markupTexformat($markup, $matches, $contents)
+    {
+        return sprintf('<span class="math-tex">\\(%s\\)</span>', trim($contents));
+    }
+
 }
