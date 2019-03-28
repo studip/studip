@@ -161,7 +161,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                     <? if (!$perm->haveFieldPerm('fassung_nr')) : ?>
                         <input type="hidden" name="fassung_nr" value="<?= htmlReady($modul->fassung_nr) ?>">
                     <? endif; ?>
-                    <select<?= $perm->haveFieldPerm('fassung_typ') ? '' : ' disabled' ?>id="mvv-field-modul-fassung_typ"
+                    <select<?= $perm->haveFieldPerm('fassung_typ') ? '' : ' disabled' ?> id="mvv-field-modul-fassung_typ"
                     style="display: inline-block; max-width: 40em;"
                     name="fassung_typ">
                     <option value="0">--</option>
