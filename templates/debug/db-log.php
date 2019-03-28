@@ -44,7 +44,7 @@
                                 <?= $this->render_partial('debug/trace-row.php', $row) ?>
                             </li>
                         <? endforeach; ?>
-                        </ol>
+                        </ul>
                     </td>
                 <? endif ?>
                 </tr>
