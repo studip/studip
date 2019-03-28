@@ -63,7 +63,7 @@
                                     $relations
                                 );
                             } else {
-                                $msg = sprintf(_('Wollen Sie das Dokument "%s" wirklich löschen?'), $dokument->name);
+                                $msg = sprintf(_('Wollen Sie das Dokument "%s" wirklich löschen?'), htmlReady($dokument->name));
                             } ?>
                             <? $actionMenu->addButton(
                                 'delete_file',
