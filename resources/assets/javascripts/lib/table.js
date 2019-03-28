@@ -49,15 +49,8 @@ function enhanceSortableTable(table) {
 }
 
 const Table = {
-    enhanceSortableTable: function(table) {
-        // async load the tablesorter, then enhance
-        import(/* webpackChunkName: "tablesorter" */ '../chunks/tablesorter')
-            .then(function() {
-                enhanceSortableTable(table);
-            })
-            .catch(function(error) {
-                console.error('An error occurred while loading the tablesorter component', error);
-            });
+    enhanceSortableTable: function (table) {
+        STUDIP.loadChunk('tablesorter').then(() => enhanceSortableTable(table));
     }
 };
 

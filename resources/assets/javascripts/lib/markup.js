@@ -24,13 +24,9 @@ const Markup = {
         },
         codehighlight: function(element) {
             jQuery('pre.usercode:not(.hljs)').each(function (index, block) {
-                // async load the tablesorter, then enhance
-                import(/* webpackChunkName: "code-highlight" */ '../chunks/code-highlight')
-                    .then(({default: hljs}) => {
-                        hljs.highlightBlock(block);
-                    }).catch((error) => {
-                        console.log('An error occurred while loading the code highlighting component', error);
-                    });
+                STUDIP.loadChunk('code-highlight').then((hljs) => {
+                    hljs.highlightBlock(block);
+                });
             });
         }
     }
