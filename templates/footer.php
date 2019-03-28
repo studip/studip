@@ -40,21 +40,6 @@
     </ul>
 <? endif; ?>
 </div>
-<? if ($GLOBALS['DEBUG_ALL_DB_QUERIES']) : ?>
-    <div style="display: none;" id="all_db_queries">
-        <table class="default">
-            <tbody>
-            <? foreach ((array) DBManager::get()->queries as $query) : ?>
-                <tr>
-                    <td><?= htmlReady($query['query']) ?></td>
-                    <? if ($GLOBALS['DEBUG_ALL_DB_QUERIES_WITH_TRACE']) : ?>
-                        <td><?= nl2br(htmlReady($query['trace'])) ?></td>
-                    <? endif ?>
-                </tr>
-            <? endforeach ?>
-            </tbody>
-        </table>
-    </div>
-<? endif ?>
+<?= $this->render_partial('debug/db-log.php') ?>
 <?= $this->render_partial('responsive-navigation.php') ?>
 <!-- Ende Footer -->

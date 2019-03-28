@@ -23,7 +23,7 @@ class StudipPDO extends PDO
 
     // Counter for the queries sent to the database
     public $query_count = 0;
-    public $queries = array();
+    public $queries     = [];
 
     /**
      * Verifies that the given SQL query only contains a single statement.
@@ -42,17 +42,25 @@ class StudipPDO extends PDO
         // Count executed queries (this is placed here since this is the only
         // method that is executed on every call to the database)
         $this->query_count += 1;
+
         if ($GLOBALS['DEBUG_ALL_DB_QUERIES']) {
-            if ($GLOBALS['DEBUG_ALL_DB_QUERIES_WITH_TRACE']) {
-                ob_start();
-                debug_print_backtrace();
-                $trace = ob_get_contents();
-                ob_end_clean();
+            $trace = debug_backtrace();
+
+            $classes = [];
+            if (isset($trace[2]['class']) && $trace[2]['class'] === 'SimpleORMap') {
+                $classes[] = 'sorm';
             }
-            $this->queries[] = array(
-                'query' => $statement,
-                'trace' => $GLOBALS['DEBUG_ALL_DB_QUERIES_WITH_TRACE'] ? $trace : null
-            );
+            if (isset($trace[1]) && $trace[1]['function'] === 'prepare') {
+                $classes[] = 'prepared';
+            }
+
+            $this->queries[] = [
+                'query'   => implode("\n", array_filter(array_map('trim', explode("\n", $statement)))),
+                'classes' => implode(' ', $classes),
+                'trace'   => $GLOBALS['DEBUG_ALL_DB_QUERIES_WITH_TRACE']
+                           ? array_slice($trace, 2)
+                           : null,
+            ];
         }
     }
 
