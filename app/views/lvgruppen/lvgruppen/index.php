@@ -51,7 +51,10 @@
                                     Icon::create('trash', Icon::ROLE_CLICKABLE, tooltip2(_('Modulteil löschen'))),
                                     [
                                         'formaction'   => $controller->url_for('/delete', $lvgruppe->id),
-                                        'data-confirm' => sprintf(_('Wollen Sie wirklich die Lehrveranstaltungsgruppe "%s" löschen?'), $lvgruppe->getDisplayName())
+                                        'data-confirm' => sprintf(
+                                                _('Wollen Sie wirklich die Lehrveranstaltungsgruppe "%s" löschen?'),
+                                                htmlReady($lvgruppe->getDisplayName())
+                                        )
                                     ]
                                 ) ?>
                             <? endif; ?>

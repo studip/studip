@@ -11,7 +11,12 @@
                     <td class="actions">
                         <? if (MvvPerm::haveFieldPermStudiengangteil($studiengang, MVVPerm::PERM_CREATE)) : ?>
                             <? if ($stg_bez) : ?>
-                                <? $msg = sprintf(_('Wollen Sie die Zuordnung des Studiengangteils "%s" als "%s" zum Studiengang "%s" wirklich löschen?'), $stgteil->getDisplayName(), $stg_bez->getDisplayName(), $studiengang->getDisplayName()) ?>
+                                <? $msg = sprintf(
+                                        _('Wollen Sie die Zuordnung des Studiengangteils "%s" als "%s" zum Studiengang "%s" wirklich löschen?'),
+                                        htmlReady($stgteil->getDisplayName()),
+                                        htmlReady($stg_bez->getDisplayName()),
+                                        htmlReady($studiengang->getDisplayName())
+                                ) ?>
                                 <form action="<?= $controller->url_for('/delete_stgteilmf/' . $studiengang->id, $stgteil->id, $stg_bez->id) ?>"
                                       method="post">
                                     <?= CSRFProtection::tokenTag(); ?>
@@ -22,7 +27,11 @@
                                     )->asInput(['data-confirm' => htmlReady($msg)]); ?>
                                 </form>
                             <? else : ?>
-                                <? $msg = sprintf(_('Wollen Sie die Zuordnung des Studiengangteils "%s" zum Studiengang "%s" wirklich löschen?'), $stgteil->getDisplayName(), $studiengang->getDisplayName()) ?>
+                                <? $msg = sprintf(
+                                        _('Wollen Sie die Zuordnung des Studiengangteils "%s" zum Studiengang "%s" wirklich löschen?'),
+                                        htmlReady($stgteil->getDisplayName()),
+                                        htmlReady($studiengang->getDisplayName())
+                                ) ?>
                                 <form action="<?= $controller->url_for('/delete_stgteil/' . $studiengang->id, $stgteil->id) ?>"
                                       method="post">
                                     <?= CSRFProtection::tokenTag(); ?>

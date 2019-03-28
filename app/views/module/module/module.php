@@ -97,7 +97,10 @@
                             Icon::create('trash', Icon::ROLE_CLICKABLE,['title' => _('Modul löschen')]),
                             [
                                 'formaction'   => $controller->url_for('/delete/' . $modul->id),
-                                'data-confirm' => sprintf(_('Wollen Sie wirklich das Modul "%s" löschen?'), $modul->getDisplayName())
+                                'data-confirm' => sprintf(
+                                        _('Wollen Sie wirklich das Modul "%s" löschen?'),
+                                        htmlReady($modul->getDisplayName())
+                                )
                             ]
                         ) ?>
                     <? endif; ?>

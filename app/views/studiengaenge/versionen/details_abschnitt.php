@@ -33,7 +33,11 @@
                             ->asInput([
                                 'name'         => 'delete',
                                 'formaction'   => $controller->url_for('/delete_modul', $assignment->abschnitt_id, $assignment->modul_id),
-                                'data-confirm' => sprintf(_('Wollen Sie die Zuordnung des Moduls "%s" zum Studiengangteil-Abschnitt "%s" wirklich löschen?'), $assignment->modul->getDisplayName(), $abschnitt->getDisplayName())
+                                'data-confirm' => sprintf(
+                                        _('Wollen Sie die Zuordnung des Moduls "%s" zum Studiengangteil-Abschnitt "%s" wirklich löschen?'),
+                                        htmlReady($assignment->modul->getDisplayName()),
+                                        htmlReady($abschnitt->getDisplayName())
+                                )
                             ]); ?>
                     <? endif; ?>
                     </td>

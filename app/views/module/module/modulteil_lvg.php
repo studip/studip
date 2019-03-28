@@ -33,8 +33,8 @@
                                         'formaction'   => $controller->url_for('/delete_lvgruppe/' . $modulteil->id . '/' . $lvgruppe->id),
                                         'data-confirm' => sprintf(
                                             _('Wollen Sie wirklich die Lehrveranstaltungsgruppe "%s" vom Modulteil "%s" entfernen?'),
-                                            $lvgruppe->getDisplayName(),
-                                            $modulteil->getDisplayName()
+                                            htmlReady($lvgruppe->getDisplayName()),
+                                            htmlReady($modulteil->getDisplayName())
                                         )
                                     ]
                                 ) ?>

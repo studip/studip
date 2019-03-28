@@ -37,7 +37,10 @@
                 <?= Icon::create('trash', Icon::ROLE_CLICKABLE, tooltip2(_('Abschluss löschen')))->asInput(
                         [
                             'formaction'   => $controller->url_for('/delete/' . $abschluss->id),
-                            'data-confirm' => sprintf(_('Wollen Sie wirklich den Abschluss "%s" löschen?'), htmlReady($abschluss->name)),
+                            'data-confirm' => sprintf(
+                                _('Wollen Sie wirklich den Abschluss "%s" löschen?'),
+                                htmlReady($abschluss->name)
+                            ),
                             'name'         => 'delete'
                         ]); ?>
                 <? else : ?>
