@@ -97,6 +97,8 @@ class PageLayout
         self::addHeadElement('link', ['rel' => 'icon', 'type' => 'image/png', 'sizes' => '16x16', 'href' => Assets::image_path('favicon-16x16.png')]);
         self::addHeadElement('link', ['rel' => 'manifest', 'href' => Assets::image_path('manifest.json')]);
         self::addHeadElement('link', ['rel' => 'mask-icon', 'href' => Assets::image_path('safari-pinned-tab.svg')]);
+        self::addHeadElement('link', ['rel' => 'preload', 'href' => Assets::url('fonts/LatoLatin/LatoLatin-Regular.woff2'), 'as' => 'font', 'type' => 'font/woff2', 'crossorigin' => 'anonymous']);
+        self::addHeadElement('link', ['rel' => 'preload', 'href' => Assets::url('fonts/LatoLatin/LatoLatin-Bold.woff2'), 'as' => 'font', 'type' => 'font/woff2', 'crossorigin' => 'anonymous']);
         self::addHeadElement('meta', ['name' => 'TileColor', 'content' => '#2b5797']);
         self::addHeadElement('meta', ['name' => 'TileImage', 'content' => Assets::image_path('mstile-144x144.png')]);
         self::addHeadElement('meta', ['name' => 'msapplication-config', 'content' => Assets::image_path('browserconfig.xml')]);
