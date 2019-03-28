@@ -25,7 +25,8 @@ window.QRCode = QRCode
 import "./jquery-bundle.js"
 
 import "./init.js"
-import "./chunk-loader.js";
+import "./chunk-loader.js"
+
 import "./studip-ui.js"
 import "./bootstrap/tables.js"
 import "./bootstrap/studip_helper_attributes.js"

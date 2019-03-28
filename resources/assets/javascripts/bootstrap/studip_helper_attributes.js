@@ -1,8 +1,8 @@
 /**
  * This file provides a set of global handlers.
  */
-function connectProxyAndProxied() {
-    $(':checkbox[data-proxyfor]')
+function connectProxyAndProxied(event) {
+    $(':checkbox[data-proxyfor]', event.target)
         .each(function() {
             const proxy = $(this);
             const proxyId = proxy.uniqueId().attr('id');
@@ -50,49 +50,53 @@ $(document)
         $(proxy).trigger('update.proxy');
     });
 
-$(document).on('studip-ready refresh-handlers', connectProxyAndProxied);
+STUDIP.ready(connectProxyAndProxied);
+$(document).on('refresh-handlers', connectProxyAndProxied);
 
 // Use a checkbox or radiobox as a toggle switch for the disabled attribute of
 // another set of elements. Define set of elements to disable/enable if item is
 // neither :checked nor :indeterminate by a css selector in attribute
 // "data-activates" / "deactivates".
-$(document)
-    .on('change', '[data-activates],[data-deactivates]', function() {
-        if (!$(this).is(':checkbox,:radio')) {
+$(document).on('change', '[data-activates],[data-deactivates]', function() {
+    if (!$(this).is(':checkbox,:radio')) {
+        return;
+    }
+
+    ['activates', 'deactivates'].forEach((type) => {
+        var selector = $(this).data(type);
+        if (selector === undefined || $(this).prop('disabled')) {
             return;
         }
 
-        ['activates', 'deactivates'].forEach((type) => {
-            var selector = $(this).data(type);
-            if (selector === undefined || $(this).prop('disabled')) {
-                return;
-            }
-
-            var state = $(this).prop('checked') || $(this).prop('indeterminate') || false;
-            $(selector).each(function() {
-                var condition = $(this).data(`${type}Condition`),
-                    toggle = state && (!condition || $(condition).length > 0);
-                $(this)
-                    .attr('disabled', type === 'activates' ? !toggle : toggle)
-                    .trigger('update.proxy');
-            });
+        var state = $(this).prop('checked') || $(this).prop('indeterminate') || false;
+        $(selector).each(function() {
+            var condition = $(this).data(`${type}Condition`),
+                toggle = state && (!condition || $(condition).length > 0);
+            $(this)
+                .attr('disabled', type === 'activates' ? !toggle : toggle)
+                .trigger('update.proxy');
         });
-    }).on('studip-ready-update', () => {
-        $('[data-activates],[data-deactivates]').filter(':checked').trigger('change');
     });
+});
+
+STUDIP.ready((event) => {
+    $('[data-activates],[data-deactivates]', event.target)
+        .filter(':checked')
+        .trigger('change');
+});
 
 // Use a select as a toggle switch for the disabled attribute of another
 // element. Define element to disable if select has a value different from
 // an empty string by a css selector in attribute "data-activates".
-$(document)
-    .on('change update.proxy', 'select[data-activates]', function() {
-        var activates = $(this).data('activates'),
-            disabled = $(this).is(':disabled') || $(this).val().length === 0;
-        $(activates).attr('disabled', disabled);
-    })
-    .ready(function() {
-        $('select[data-activates]').trigger('change');
-    });
+$(document).on('change update.proxy', 'select[data-activates]', function() {
+    var activates = $(this).data('activates'),
+        disabled = $(this).is(':disabled') || $(this).val().length === 0;
+    $(activates).attr('disabled', disabled);
+});
+
+STUDIP.ready((event) => {
+    $('select[data-activates]', event.target).trigger('change');
+});
 
 // Enable the user to set the checked state on a subset of related
 // checkboxes by clicking the first checkbox of the subset and then

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(() => {
     $('a.get-course-members').on('click', function() {
         var dataEl = $('article#course-members-' + $(this).data('course-id')),
             url;

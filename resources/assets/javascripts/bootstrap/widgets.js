@@ -91,35 +91,32 @@ function getAddableWidgetList(url) {
     }).promise();
 }
 
-$(document)
-    .ready(function() {
-        $('#layout-sidebar').on('click', '.widget-add-toggle', function() {
-            getAddableWidgetList(this.href).done(function() {
-                $('#layout-sidebar').toggleClass('second-display');
-            });
-
-            return false;
+STUDIP.domReady(() => {
+    $('#layout-sidebar').on('click', '.widget-add-toggle', function() {
+        getAddableWidgetList(this.href).done(function() {
+            $('#layout-sidebar').toggleClass('second-display');
         });
-    })
-    .on('widget-add', function(event, jqxhr) {
-        var remove = jqxhr.getResponseHeader('X-Widget-Remove'),
-            widget_id = jqxhr.getResponseHeader('X-Widget-Id');
-        if (remove) {
-            $('.addable-widgets li:has([data-widget-id="' + widget_id + '"])').each(function() {
-                $('.ui-draggable', this).draggable('destroy');
-                $(this).slideUp(function() {
-                    $(this).remove();
-                });
-            });
-        }
-    })
-    .on('widget-remove', function(event, jqxhr) {
-        if (jqxhr.getResponseHeader('X-Refresh')) {
-            $('#layout-sidebar .sidebar-secondary-widget').remove();
-        }
-    })
-    .on('click', function(event) {
-        if ($(event.target).closest('.sidebar-secondary-widget').length === 0) {
-            $('#layout-sidebar').removeClass('second-display');
-        }
+
+        return false;
     });
+});
+$(document).on('widget-add', function(event, jqxhr) {
+    var remove = jqxhr.getResponseHeader('X-Widget-Remove'),
+        widget_id = jqxhr.getResponseHeader('X-Widget-Id');
+    if (remove) {
+        $('.addable-widgets li:has([data-widget-id="' + widget_id + '"])').each(function() {
+            $('.ui-draggable', this).draggable('destroy');
+            $(this).slideUp(function() {
+                $(this).remove();
+            });
+        });
+    }
+}).on('widget-remove', function(event, jqxhr) {
+    if (jqxhr.getResponseHeader('X-Refresh')) {
+        $('#layout-sidebar .sidebar-secondary-widget').remove();
+    }
+}).on('click', function(event) {
+    if ($(event.target).closest('.sidebar-secondary-widget').length === 0) {
+        $('#layout-sidebar').removeClass('second-display');
+    }
+});

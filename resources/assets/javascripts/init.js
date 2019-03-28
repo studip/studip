@@ -45,6 +45,7 @@ import QRCode from './lib/qr_code.js';
 import Questionnaire from './lib/questionnaire.js';
 import QuickSearch from './lib/quick_search.js';
 import Raumzeit from './lib/raumzeit.js';
+import {ready, domReady, dialogReady} from './lib/ready.js';
 import register from './lib/register.js';
 import RESTAPI, { api } from './lib/restapi.js';
 import Schedule from './lib/schedule.js';
@@ -133,5 +134,9 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     URLHelper,
     UserFilter,
     WidgetSystem,
-    wysiwyg
+    wysiwyg,
+
+    ready,
+    domReady,
+    dialogReady
 });

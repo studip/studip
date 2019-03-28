@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(() => {
     if ($('html').is(':not(.responsive-display)')) {
         STUDIP.startpage.init();
     }

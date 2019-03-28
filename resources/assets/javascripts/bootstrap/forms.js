@@ -78,22 +78,6 @@ $(document).on('focus', 'form.default [maxlength]:not(.no-hint)', function() {
 // This might lead to unexpected behaviour.
 
 // Ensure, every .submit-upon-select has an defaultSelected option.
-function setDefaultSelected(event, type) {
-    var target = type === 'dialog-update' ? '.ui-dialog' : document;
-
-    $('.submit-upon-select', target).each(function() {
-        var has_default_selected =
-            $('option', this).filter(function() {
-                return this.defaultSelected;
-            }).length > 0;
-        if (!has_default_selected) {
-            $('option', this)
-                .first()
-                .prop('defaultSelected', true);
-        }
-    });
-}
-
 $(document)
     .on('focus', 'select[onchange*="submit()"]', function() {
         $(this)
@@ -126,8 +110,22 @@ $(document)
                 .submit();
             return false;
         }
-    })
-    .on('studip-ready', setDefaultSelected);
+    });
+
+STUDIP.ready((event) => {
+    $('.submit-upon-select', event.target).each(function() {
+        var has_default_selected =
+            $('option', this).filter(function() {
+                return this.defaultSelected;
+            }).length > 0;
+        if (!has_default_selected) {
+            $('option', this)
+                .first()
+                .prop('defaultSelected', true);
+        }
+    });
+});
+
 
 // simulate formaction attribute for input[type=image] in IE11
 $(document).on('click', 'input[type=image][formaction]', function() {
@@ -240,7 +238,7 @@ function createSelect2(element) {
         .wrapAll(wrapper);
 }
 
-function prepareSelect2() {
+STUDIP.ready(function () {
     // Well, this is really nasty: Select2 can't determine the select
     // element's width if it is hidden (by itself or by it's parent).
     // This is due to the fact that elements are not rendered when hidden
@@ -293,9 +291,7 @@ function prepareSelect2() {
             .toggleClass('has-no-value', this.value === '')
             .blur();
     });
-}
-
-$(document).on('studip-ready', prepareSelect2);
+});
 
 $(document)
     .on('change', 'select:not([multiple])', function() {

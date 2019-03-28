@@ -12,4 +12,4 @@ $(document).on('touchstart', function (event) {
 $(window).on('resize', _.debounce(STUDIP.NavigationShrinker, 100));
 
 // Shrink on domready
-$(document).ready(STUDIP.NavigationShrinker);
+STUDIP.domReady(STUDIP.NavigationShrinker);

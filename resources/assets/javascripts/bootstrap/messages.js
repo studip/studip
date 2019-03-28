@@ -12,7 +12,7 @@ jQuery(document).on('dialog-open', '#messages .title a', function() {
     STUDIP.Messages.whenMessageIsShown(this);
 });
 
-jQuery(function() {
+STUDIP.domReady(() => {
     /*********** infinity-scroll in the overview ***********/
     if (jQuery('#messages').length > 0) {
         jQuery(window.document).on(

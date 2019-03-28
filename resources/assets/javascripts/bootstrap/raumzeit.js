@@ -3,7 +3,7 @@ STUDIP.Dialog.handlers.header['X-Raumzeit-Update-Times'] = function(json) {
     $('.course-admin #course-' + info.course_id + ' .raumzeit').html(info.html);
 };
 
-function handleBlockAppointments() {
+STUDIP.ready(function () {
     $('#block_appointments_days input').click(function() {
         var clicked_id = parseInt(this.id.split('_').pop(), 10);
         if (clicked_id === 0 || clicked_id === 1) {
@@ -15,9 +15,7 @@ function handleBlockAppointments() {
             $('#block_appointments_days_1').prop('checked', false);
         }
     });
-}
-
-$(document).on('studip-ready', handleBlockAppointments);
+});
 
 $(document).on('change', 'select[name=room_sd]', function() {
     $('input[type=radio][name=room][value=room]').prop('checked', true);
@@ -128,8 +126,8 @@ $(document).on('change', 'input[name="singledate[]"]', function() {
     STUDIP.Raumzeit.disableBookableRooms($('.bookable_rooms_action'));
 });
 
-$(document).on('ready', function() {
-    $('.bookable_rooms_action').show();
+STUDIP.ready((event) => {
+    $('.bookable_rooms_action', event.target).show();
 });
 
 $(document).on('change', '.datesBulkActions', function() {

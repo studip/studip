@@ -1,4 +1,4 @@
-jQuery(function ($) {
+STUDIP.domReady(() => {
     var cache = STUDIP.Search.getCache();
     // initially hide all filters except for the semester filter
     $('#reset-search').hide();

@@ -126,7 +126,7 @@ function setResponsiveDisplay(state = true) {
 }
 
 // Build responsive menu on domready or resize
-$(document).ready(function() {
+STUDIP.domReady(() => {
     const cache = STUDIP.Cache.getInstance('responsive.');
     if (STUDIP.Navigation.navigation !== undefined) {
         cache.set('navigation', STUDIP.Navigation.navigation);
@@ -145,7 +145,7 @@ $(document).ready(function() {
     media_query.addListener(function() {
         setResponsiveDisplay(media_query.matches);
     });
-});
+}, true);
 
 // Trigger search in responsive display
 $(document).on('click', '#quicksearch .quicksearchbutton', function() {

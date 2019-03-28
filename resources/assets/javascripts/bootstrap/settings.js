@@ -5,7 +5,7 @@ $(document).on('change', '[data-target]', function() {
     $(target).val(this.value);
 });
 
-$(document).ready(function() {
+STUDIP.domReady(() => {
     $('#edit_userdata').on('change', 'input[name^=email]', function() {
         var changed = false;
         $('#edit_userdata input[name^=email]').each(function() {

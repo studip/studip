@@ -29,16 +29,17 @@ if (window.MutationObserver !== undefined) {
     });
 } else {
     // Stores document height (we will need this to check for changes)
-    var doc_height,
-        heightChangeHandler = function() {
-            var curr_height = $(document).height();
-            if (doc_height !== curr_height) {
-                doc_height = curr_height;
-                $(document.body).trigger('sticky_kit:recalc');
-            }
-        };
+    var doc_height;
 
-    $(document).ready(function() {
+    function heightChangeHandler() {
+        var curr_height = $(document).height();
+        if (doc_height !== curr_height) {
+            doc_height = curr_height;
+            $(document.body).trigger('sticky_kit:recalc');
+        }
+    }
+
+    STUDIP.domReady(() => {
         doc_height = $(document).height();
     });
 
@@ -57,6 +58,6 @@ if (window.MutationObserver !== undefined) {
 }
 
 // Engage
-$(document).ready(function() {
-    STUDIP.Sidebar.setSticky();
+STUDIP.domReady(() => {
+    STUDIP.Sidebar.setSticky()
 });

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(function() {
     STUDIP.Statusgroups.ajax_endpoint = $('meta[name="statusgroups-ajax-movable-endpoint"]').attr('content');
     STUDIP.Statusgroups.apply();
 
@@ -46,14 +46,18 @@ $(document).ready(function() {
                 });
             }
         });
-}).on('studip-ready', function() {
+});
+
+STUDIP.ready(function() {
     $('.nestable').each(function() {
         $(this).nestable({
             rootClass: 'nestable',
             maxDepth: $(this).data('max-depth') || 5
         });
     });
-}).on('submit', '#order_form', function() {
+});
+
+$(document).on('submit', '#order_form', function() {
     let structure = $('.nestable').nestable('serialize');
     let json_data = JSON.stringify(structure);
     $('#ordering').val(json_data);

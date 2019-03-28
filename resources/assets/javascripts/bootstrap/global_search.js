@@ -1,4 +1,4 @@
-$(function() {
+STUDIP.domReady(() => {
     // Clear search term
     $('#globalsearch-clear').on('click', function() {
         var before = $('#globalsearch-input').val();

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(function() {
     if (window.MutationObserver !== undefined) {
         var observer = new window.MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {

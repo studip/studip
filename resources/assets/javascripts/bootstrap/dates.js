@@ -25,7 +25,7 @@ function createDraggable() {
     });
 }
 
-$(document).ready(function() {
+STUDIP.domReady(function () {
     if ($('body#course-dates-index').length === 0) {
         return;
     }

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(() => {
     STUDIP.News.dialog_width = window.innerWidth * (1 / 2);
     STUDIP.News.dialog_height = window.innerHeight - 60;
     if (STUDIP.News.dialog_width < 550) {

@@ -60,7 +60,7 @@ jQuery(document).on('click', '.messagebox .messagebox_buttons a', function () {
 /* ------------------------------------------------------------------------
  * application wide setup
  * ------------------------------------------------------------------------ */
-jQuery(function () {
+STUDIP.domReady(function () {
     // AJAX Indicator
     STUDIP.ajax_indicator = true;
 
@@ -80,18 +80,18 @@ jQuery(function () {
     }
 });
 
-jQuery(document).on('studip-ready', function (event, type, data) {
-    jQuery('.add_toolbar').addToolbar();
+STUDIP.ready((event) => {
+    jQuery('.add_toolbar', event.target).addToolbar();
 
-    STUDIP.Forms.initialize(data.dialog);
-    STUDIP.Markup.element(data.dialog || document);
+    STUDIP.Forms.initialize(event.target);
+    STUDIP.Markup.element(event.target);
 });
 
 
 /* ------------------------------------------------------------------------
  * application collapsable tablerows
  * ------------------------------------------------------------------------ */
-jQuery(function ($) {
+STUDIP.domReady(function () {
 
     $(document).on('focus', 'table.collapsable .toggler', function () {
         $(this).blur();
@@ -136,14 +136,11 @@ jQuery(function ($) {
         return false;
     });
 
-    $(document).ready(function () {
-        var elements = $('.load-in-new-row-open');
-        elements.click();
-        if (elements.length > 0) {
-            $(window).scrollTo(elements.first());
-        }
-    });
-
+    var elements = $('.load-in-new-row-open');
+    elements.click();
+    if (elements.length > 0) {
+        $(window).scrollTo(elements.first());
+    }
 });
 
 /* ------------------------------------------------------------------------
@@ -246,7 +243,7 @@ jQuery.extend(jQuery.ui.dialog.prototype.options, {
 }(jQuery))
 
 
-jQuery(function ($) {
+STUDIP.domReady(function () {
     $(document).on('click', 'a.print_action', function (event) {
         var url_to_print = this.href;
         $('<iframe/>', {
@@ -273,13 +270,13 @@ jQuery(document).on('change', 'select[data-copy-to]', function () {
     jQuery(target).val(value);
 });
 
-jQuery(document).ready(function ($) {
+STUDIP.domReady(function () {
     $('#checkAll').prop('checked', $('.sem_checkbox:checked').length !== 0);
 });
 
 // Fix horizontal scroll issue on domready, window load and window resize.
 // This also makes the header and footer sticky regarding horizontal scrolling.
-jQuery(document).ready(function () {
+STUDIP.domReady(function () {
     var page_margin = ($('#layout_page').outerWidth(true) - $('#layout_page').width()) / 2,
         content_margin = $('#layout_content').outerWidth(true) - $('#layout_content').innerWidth(),
         sidebar_width = $('#layout-sidebar').outerWidth(true);

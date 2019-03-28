@@ -1,3 +1,3 @@
-$(document).ready(function() {
+STUDIP.domReady(function () {
     STUDIP.Dialog.initialize();
 });

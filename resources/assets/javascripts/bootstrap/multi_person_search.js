@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(() => {
     STUDIP.MultiPersonSearch.init();
 
     // init form if it is loaded without ajax

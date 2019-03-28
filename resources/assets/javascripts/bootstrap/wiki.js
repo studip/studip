@@ -115,19 +115,19 @@ $(document).on('click', '#wiki button[name="submit-and-edit"]', function(event) 
     event.preventDefault();
 });
 
-$(document)
-    .on('keyup change', '#wiki textarea[name=body]', function() {
-        // Disable "save and edit" button if text was not changed
-        $('#wiki button[name="submit-and-edit"]').prop('disabled', this.value === this.defaultValue);
-    })
-    .ready(function() {
-        if (!STUDIP.editor_enabled) {
-            // Trigger above disable mechanism only when not using wysiwyg
-            $('#wiki textarea[name=body]').change();
-        } else {
-            $(document).off('keyup change', '#wiki textarea[name=body]');
-        }
-    });
+$(document).on('keyup change', '#wiki textarea[name=body]', function() {
+    // Disable "save and edit" button if text was not changed
+    $('#wiki button[name="submit-and-edit"]').prop('disabled', this.value === this.defaultValue);
+});
+
+STUDIP.domReady(() => {
+    if (!STUDIP.editor_enabled) {
+        // Trigger above disable mechanism only when not using wysiwyg
+        $('#wiki textarea[name=body]').change();
+    } else {
+        $(document).off('keyup change', '#wiki textarea[name=body]');
+    }
+});
 
 $(document).on('change', '#wiki-config .global-permissions :checkbox', function () {
     if ($(this).is(':checked')) {

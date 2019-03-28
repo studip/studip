@@ -1,4 +1,4 @@
-jQuery(function ($) {
+STUDIP.domReady(() => {
     if (STUDIP.editor_enabled) {
         // replace areas visible on page load
         replaceVisibleTextareas();

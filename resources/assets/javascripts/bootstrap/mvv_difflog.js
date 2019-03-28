@@ -1,4 +1,4 @@
-$(document).ready(function() {
+STUDIP.domReady(() => {
     $('del.diffdel').each(function() {
         var mvv_field = '';
 

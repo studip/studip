@@ -175,7 +175,7 @@ $.extend($.expr[':'], {
 });
 
 $(document).ready(() => {
-    $(document).trigger('studip-ready', ['domready', {}]);
+    STUDIP.ready.trigger('dom');
 }).on('dialog-update', (event, data) => {
-    $(document).trigger('studip-ready', ['dialog-update', data]);
+    STUDIP.ready.trigger('dialog', data.dialog);
 });

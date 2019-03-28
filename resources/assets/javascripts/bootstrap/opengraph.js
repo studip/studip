@@ -15,7 +15,8 @@ function handleOpenGraphSections() {
     });
 }
 
-$(document).on('studip-ready ajaxComplete', handleOpenGraphSections);
+STUDIP.ready(handleOpenGraphSections);
+$(document).on('ajaxComplete', handleOpenGraphSections);
 
 $(document).on('click', '.opengraph-area .switcher button', function (event) {
     var direction = $(this).is('.switch-left') ? 'left' : 'right',

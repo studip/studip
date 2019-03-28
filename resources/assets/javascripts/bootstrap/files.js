@@ -17,7 +17,7 @@ function searchMoreFiles(button) {
     return false;
 }
 
-$(function() {
+STUDIP.domReady(() => {
     $('form.drag-and-drop.files').on('dragover dragleave', function(event) {
         $(this).toggleClass('hovered', event.type === 'dragover');
         return false;
@@ -35,7 +35,7 @@ $(function() {
     });
 
     // workaround to wait for tables.js to be executed first
-    $(function() {
+    STUDIP.domReady(() => {
         if ($.fn.hasOwnProperty('filterTable')) {
             $('table.documents.flat').filterTable({
                 highlightClass: 'filter-match',

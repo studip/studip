@@ -1,4 +1,4 @@
 /*global jQuery, STUDIP */
-jQuery(function() {
+STUDIP.domReady(() => {
     STUDIP.Avatar.init('#avatar-upload');
 });

@@ -24,7 +24,6 @@ $(document)
     })
     .on('resize', function() {
         STUDIP.Lightbox.init();
-    })
-    .ready(function() {
-        STUDIP.Lightbox.init();
     });
+
+STUDIP.domReady(STUDIP.Lightbox.init);
