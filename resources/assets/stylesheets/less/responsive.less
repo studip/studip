@@ -124,14 +124,8 @@ label[for="responsive-toggle"] {
             display: none;
         }
     }
-    input:checked + label {
-        .icon('before', 'arr_1down', 'info_alt', 24);
-    }
-    .csstransforms & input:checked + label {
-        .icon('before', 'arr_1right', 'info_alt', 24);
-        &:before {
-            transform: rotate(90deg);
-        }
+    input:checked + label::before {
+        transform: rotate(90deg);
     }
 
     input:checked + label + ul {

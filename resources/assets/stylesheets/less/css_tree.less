@@ -72,14 +72,8 @@
         }
 
         &:checked {
-            + label {
-                .icon('before', 'arr_1down', 'clickable');
-                .csstransforms & {
-                    .icon('before', 'arr_1right', 'clickable');
-                    &:before {
-                        transform: rotate(90deg);
-                    }
-                }
+            + label::before {
+                transform: rotate(90deg);
             }
             ~ ul {
                 max-height: 10000px;

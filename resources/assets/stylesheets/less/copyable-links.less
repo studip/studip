@@ -11,14 +11,9 @@
     }
 }
 
-// Defines an css animation with vendor prefixes
-.animation(@arguments) {
-    animation: @arguments;
-}
-
 .copyable-link-animation {
     @animation-name: copyable-links-confirmation;
-    @animation-duration: 1.5s;
+    @animation-duration: 2s;
 
     // Position confirmation message above the link
     position: relative;
@@ -35,43 +30,32 @@
         .icon('before', 'check-circle', 'status-green', 16px, 5px);
     }
 
-    // Hide the link if no animations are available
-    html.no-cssanimations & {
-        a {
-            visibility: hidden;
-        }
+    // Flip the link and confirmation message along the x axis
+    a,
+    div {
+        backface-visibility: hidden;
+        pointer-events: none;
     }
 
-    // Flip the link and confirmation message along the x axis when animations
-    // are available
-    html.cssanimations & {
-        a,
-        div {
-            backface-visibility: hidden;
-            pointer-events: none;
-        }
+    a {
+        .keyframes(~"@{animation-name}-front", {
+            opacity: 1;
+            transform: rotateX(0);
+        }, {
+           opacity: 0;
+            transform: rotateX(180deg);
+        });
+        animation: ~"@{animation-name}-front" @animation-duration linear;
+    }
 
-        a {
-            .keyframes(~"@{animation-name}-front", {
-                opacity: 1;
-                transform: rotateX(0);
-            }, {
-               opacity: 0;
-                transform: rotateX(180deg);
-            });
-            .animation(~"@{animation-name}-front" @animation-duration linear);
-        }
-
-        div {
-            .keyframes(~"@{animation-name}-back", {
-                opacity: 0;
-                transform: rotateX(180deg);
-            }, {
-                opacity: 1;
-                transform: rotateX(0);
-            });
-            .animation(~"@{animation-name}-back" @animation-duration linear);
-        }
-
+    div {
+        .keyframes(~"@{animation-name}-back", {
+            opacity: 0;
+            transform: rotateX(180deg);
+        }, {
+            opacity: 1;
+            transform: rotateX(0);
+        });
+        animation: ~"@{animation-name}-back" @animation-duration linear;
     }
 }
