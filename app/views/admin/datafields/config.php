@@ -6,8 +6,7 @@
 
         <label>
             <?= _('Inhalte') ?>
-
-            <textarea name="typeparam"><?= htmlReady($struct->getTypeParam()) ?></textarea>
+            <textarea name="typeparam"><?="\n"?><?= htmlReady(rtrim($struct->getTypeParam()), false) ?></textarea>
         </label>
     </fieldset>
 

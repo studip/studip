@@ -1,7 +1,7 @@
 <form action="<?= $controller->url_for('admin/datafields/config/' . $struct->getID()) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
-    <input type="hidden" name="typeparam" value="<?= htmlReady($struct->getTypeParam()) ?>">
+    <input type="hidden" name="typeparam" value="<?= htmlReady(rtrim($struct->getTypeParam()), false) ?>">
 
     <fieldset>
         <legend><?= _('Vorschau') ?></legend>
