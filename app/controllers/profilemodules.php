@@ -63,7 +63,7 @@ class ProfileModulesController extends AuthenticatedController
             ];
         }
 
-        return $config['profile_plus'];
+        return array_merge(['hidden' => []], $config['profile_plus']);
     }
 
     private function storeConfig(array $config)
@@ -196,9 +196,19 @@ class ProfileModulesController extends AuthenticatedController
 
         $this->setupSidebar($list, $this->config);
 
-        $this->list = array_filter($list, function ($category) {
-            return !in_array($category, $this->config['hidden']);
-        }, ARRAY_FILTER_USE_KEY);
+        $this->list = [];
+        foreach ($list as $category => $value) {
+            if (!in_array($category, $this->config['hidden'])) {
+                $this->list[$category] = $value;
+            }
+        }
+
+        // TODO: Activate this as the dev board reliably speaks PHP7
+        //       and remove the above list creation
+
+        // $this->list = array_filter($list, function ($category) {
+        //     return !in_array($category, $this->config['hidden']);
+        // }, ARRAY_FILTER_USE_KEY);
     }
 
     /**
