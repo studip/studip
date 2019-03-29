@@ -26,4 +26,6 @@ $(document)
         STUDIP.Lightbox.init();
     });
 
-STUDIP.domReady(STUDIP.Lightbox.init);
+STUDIP.domReady(function () {
+    STUDIP.Lightbox.init();
+});
