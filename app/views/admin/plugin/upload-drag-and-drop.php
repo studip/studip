@@ -3,6 +3,6 @@
     <?= CSRFProtection::tokenTag() ?>
     <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
 
-    <?= _('Plugin via Drag and Drop installieren') ?>
+    <?= _('Plugin auswählen oder via Drag and Drop installieren') ?>
     <input type="file" name="upload_file">
 </form>

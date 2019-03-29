@@ -144,28 +144,20 @@ $sidebar->setTitle(_('Plugins'));
 $sidebar->setImage('sidebar/plugin-sidebar.png');
 
 if (Config::get()->PLUGINS_UPLOAD_ENABLE) {
-    $actions = new ActionsWidget();
-    $actions->addLink(
-        _('Weitere Plugins installieren'),
-        $controller->url_for('admin/plugin/search'),
-        Icon::create('add', 'clickable')
-    );
-    $actions->addLink(
-        _('Plugin von URL installieren'),
-        $controller->url_for('admin/plugin/edit_automaticupdate'),
-        Icon::create('download', 'clickable')
-    )->asDialog();
-    //$actions->addElement(new WidgetElement($this->render_partial('admin/plugin/upload-drag-and-drop')));
-    $sidebar->addWidget($actions);
-    $uploadArea = new LinksWidget();
-    $uploadArea->setTitle(_("Plugin hochladen"));
+    $uploadArea = $sidebar->addWidget(new LinksWidget());
+    $uploadArea->setTitle(_("Plugin als ZIP-Datei hochladen"));
     $uploadArea->addElement(new WidgetElement(
         $this->render_partial('admin/plugin/upload-drag-and-drop'))
     );
-    $sidebar->addWidget($uploadArea);
+
+    $sidebar->addWidget(new ActionsWidget())->addLink(
+        _('Plugin von URL installieren'),
+        $controller->url_for('admin/plugin/edit_automaticupdate'),
+        Icon::create('download')
+    )->asDialog();
 }
 
-$widget = new OptionsWidget();
+$widget = $sidebar->addWidget(new OptionsWidget());
 $widget->setTitle(_('Darstellungseinstellungen'));
 $widget->addSelect(
     _('Darstellung einschränken'),
@@ -197,8 +189,7 @@ if ($plugin_filter || ($core_filter ?: 'yes') !== 'yes') {
     $widget->addElement(new LinkElement(
         _('Zurücksetzen'),
         $controller->url_for('admin/plugin?reset_filter=1'),
-        Icon::create('refresh', 'clickable'),
+        Icon::create('refresh'),
         ['class' => 'options-radio']
     ));
 }
-$sidebar->addWidget($widget);

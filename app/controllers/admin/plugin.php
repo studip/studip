@@ -52,6 +52,23 @@ class Admin_PluginController extends AuthenticatedController
 
         $this->plugin_filter = $settings['plugin_filter'];
         $this->core_filter   = $settings['core_filter'];
+
+        $views = Sidebar::get()->addWidget(new ViewsWidget());
+        $views->addLink(
+            _('Pluginverwaltung'),
+            $this->indexURL(),
+            Icon::create('plugin')
+        )->setActive($action === 'index');
+        $views->addLink(
+            _('Weitere Plugins installieren'),
+            $this->searchURL(),
+            Icon::create('search')
+        )->setActive($action === 'search');
+        $views->addLink(
+            _('Vorhandene Plugins registrieren'),
+            $this->unregisteredURL(),
+            Icon::create('plugin+add')
+        )->setActive($action === 'unregistered');
     }
 
     /**
@@ -249,18 +266,12 @@ class Admin_PluginController extends AuthenticatedController
             uksort($search_results, 'strnatcasecmp');
         }
 
-        $this->search          = $search;
-        $this->search_results  = $search_results;
-        $this->plugins         = $plugins;
-        $this->unknown_plugins = $this->plugin_admin->scanPluginDirectory();
+        $this->search         = $search;
+        $this->search_results = $search_results;
+        $this->plugins        = $plugins;
 
         $actions = Sidebar::get()->addWidget(new LinksWidget());
         $actions->setTitle(_('Verweise'));
-        $actions->addLink(
-            _('Pluginverwaltung'),
-            $this->url_for('admin/plugin'),
-            Icon::create('plugin')
-        );
         $actions->addLink(
             _('Alle Plugins im Plugin-Marktplatz'),
             'http://plugins.studip.de/',
@@ -544,6 +555,11 @@ class Admin_PluginController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::error(_('Die Migration konnte nicht durchgeführt werden.')));
         }
         $this->redirect('admin/plugin?plugin_filter=' . $plugin_filter);
+    }
+
+    public function unregistered_action()
+    {
+        $this->unknown_plugins = $this->plugin_admin->scanPluginDirectory();
     }
 
     /**
