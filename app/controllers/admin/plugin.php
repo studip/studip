@@ -209,7 +209,7 @@ class Admin_PluginController extends AuthenticatedController
      */
     private function compare_score($plugin1, $plugin2)
     {
-        return ($plugin2['score'] ?: 0) - ($plugin1['score'] ?: 0);
+        return $plugin2['score'] - $plugin1['score'];
     }
 
     /**
@@ -228,7 +228,7 @@ class Admin_PluginController extends AuthenticatedController
             $repository = new PluginRepository();
             $search_results = $repository->getPlugins($search);
         } catch (Exception $ex) {
-            $search_results = array();
+            $search_results = [];
         }
 
         $plugins = PluginManager::getInstance()->getPluginInfos();
@@ -240,33 +240,33 @@ class Admin_PluginController extends AuthenticatedController
             }
         }
 
-        if ($search === NULL) {
+        if ($search === null) {
             // sort plugins by score
-            uasort($search_results, array($this, 'compare_score'));
+            uasort($search_results, [$this, 'compare_score']);
             $search_results = array_slice($search_results, 0, 6);
         } else {
             // sort plugins by name
             uksort($search_results, 'strnatcasecmp');
         }
 
-        $this->search         = $search;
-        $this->search_results = $search_results;
-        $this->plugins        = $plugins;
+        $this->search          = $search;
+        $this->search_results  = $search_results;
+        $this->plugins         = $plugins;
         $this->unknown_plugins = $this->plugin_admin->scanPluginDirectory();
 
-        $actions = new ActionsWidget();
+        $actions = Sidebar::get()->addWidget(new LinksWidget());
+        $actions->setTitle(_('Verweise'));
         $actions->addLink(
             _('Pluginverwaltung'),
             $this->url_for('admin/plugin'),
-            Icon::create('plugin', 'clickable')
+            Icon::create('plugin')
         );
         $actions->addLink(
             _('Alle Plugins im Plugin-Marktplatz'),
             'http://plugins.studip.de/',
-            Icon::create('export', 'clickable'),
+            Icon::create('export'),
             ['target' => '_blank', 'rel' => 'noopener noreferrer']
         );
-        Sidebar::Get()->addWidget($actions);
     }
 
     /**
