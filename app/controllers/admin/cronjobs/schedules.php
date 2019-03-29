@@ -57,16 +57,16 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
      *
      * @param int $page Which page to display
      */
-    public function index_action($page = 1)
+    public function index_action($page = 0)
     {
         $filter = $_SESSION['cronjob-filter'];
 
         $this->max_per_page   = Config::get()->ENTRIES_PER_PAGE;
         $this->total          = CronjobSchedule::countBySql('1');
         $this->total_filtered = CronjobSchedule::countBySql($filter['where']);
-        $this->page           = max(1, min($page, ceil($this->total_filtered / $this->max_per_page)));
+        $this->page           = $page;
 
-        $limit = sprintf(" LIMIT %u, %u", ($this->page - 1) * $this->max_per_page, $this->max_per_page);
+        $limit = sprintf(" LIMIT %u, %u", $this->page * $this->max_per_page, $this->max_per_page);
         $this->schedules = CronjobSchedule::findBySQL($filter['where'] . $limit);
 
         // Filters

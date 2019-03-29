@@ -94,7 +94,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <? foreach (array_slice($users['users'], ($page - 1) * $limit, $limit) as $user): ?>
+                    <? foreach (array_slice($users['users'], $page * $limit, $limit) as $user): ?>
                         <?= $this->render_partial('online/user-row', compact('user')) ?>
                     <? endforeach; ?>
                     </tbody>

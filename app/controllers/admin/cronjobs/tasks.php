@@ -49,13 +49,13 @@ class Admin_Cronjobs_TasksController extends AuthenticatedController
      *
      * @param int $page Which page to display
      */
-    public function index_action($page = 1)
+    public function index_action($page = 0)
     {
         $this->max_per_page = Config::get()->ENTRIES_PER_PAGE;
         $this->total        = CronjobTask::countBySql('1');
-        $this->page         = max(1, min($page, ceil($this->total / $this->max_per_page)));
+        $this->page         = $page;
 
-        $limit = sprintf(" LIMIT %u, %u", ($this->page - 1) * $this->max_per_page, $this->max_per_page);
+        $limit = sprintf(" LIMIT %u, %u", $this->page * $this->max_per_page, $this->max_per_page);
         $this->tasks = CronjobTask::findBySQL('1' . $limit);
 
         // Infobox image was produced from an image by Robbert van der Steeg

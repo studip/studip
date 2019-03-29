@@ -150,16 +150,9 @@
         </select>
         <?= Button::createAccept(_('Ausführen'), 'bulk') ?>
         <section style="float: right">
-        <?
-            $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
-            $pagination->set_attributes(array(
-                'perPage'      => $max_per_page,
-                'num_postings' => $total_filtered,
-                'page'         => $page,
-                'pagelink'     => $controller->url_for('admin/cronjobs/schedules/index/%u')
-            ));
-            echo $pagination->render();
-        ?>
+            <?= Pagination::create($total_filtered, $page, $max_per_page)->asLinks(function ($page) use ($controller) {
+                return $controller->index($page);
+            }) ?>
         </section>
     </footer>
 </form>
