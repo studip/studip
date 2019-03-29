@@ -1,6 +1,6 @@
 <? use Studip\Button; ?>
 
-<form action="<?= $controller->url_for('admin/cronjobs/tasks/bulk', $page) ?>" method="post" class="default">
+<form action="<?= $controller->bulk($pagination->getCurrentPage()) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
 <table class="default cronjobs">
@@ -27,7 +27,7 @@
         </tr>
     </thead>
     <tbody>
-<? for ($i = 0; $i < $max_per_page; $i += 1): ?>
+<? for ($i = 0; $i < $pagination->getPerPage(); $i += 1): ?>
     <? if (!isset($tasks[$i])): ?>
         <tr class="empty">
             <td colspan="6">&nbsp;</td>
@@ -42,26 +42,26 @@
             <td><?= $tasks[$i]->isCore() ? _('Kern') : _('Plugin') ?></td>
             <td style="text-align: center;">
             <? if ($tasks[$i]->active): ?>
-                <a href="<?= $controller->url_for('admin/cronjobs/tasks/deactivate', $tasks[$i]->task_id, $page) ?>" data-behaviour="ajax-toggle">
-                    <?= Icon::create('checkbox-checked', 'clickable', ['title' => _('Aufgabe deaktivieren')])->asImg() ?>
+                <a href="<?= $controller->deactivate($tasks[$i], $pagination->getCurrentPage()) ?>" data-behaviour="ajax-toggle">
+                    <?= Icon::create('checkbox-checked')->asImg(['title' => _('Aufgabe deaktivieren')]) ?>
                 </a>
             <? else: ?>
-                <a href="<?= $controller->url_for('admin/cronjobs/tasks/activate', $tasks[$i]->task_id, $page) ?>" data-behaviour="ajax-toggle">
-                    <?= Icon::create('checkbox-unchecked', 'clickable', ['title' => _('Aufgabe aktivieren')])->asImg() ?>
+                <a href="<?= $controller->activate($tasks[$i], $pagination->getCurrentPage()) ?>" data-behaviour="ajax-toggle">
+                    <?= Icon::create('checkbox-unchecked')->asImg(['title' => _('Aufgabe aktivieren')]) ?>
                 </a>
             <? endif; ?>
             </td>
             <td style="text-align: right">
             <? if ($tasks[$i]->valid): ?>
-                <a data-dialog href="<?= $controller->url_for('admin/cronjobs/tasks/execute', $tasks[$i]->task_id) ?>">
-                    <?= Icon::create('play', 'clickable', ['title' => _('Aufgabe ausführen')])->asImg() ?>
+                <a data-dialog href="<?= $controller->execute($tasks[$i]) ?>">
+                    <?= Icon::create('play')->asImg(['title' => _('Aufgabe ausführen')]) ?>
                 </a>
             <? endif; ?>
-                <a href="<?= $controller->url_for('admin/cronjobs/logs/task', $tasks[$i]->task_id) ?>">
-                    <?= Icon::create('log', 'clickable', ['title' => _('Log anzeigen')])->asImg() ?>
+                <a href="<?= $controller->link_for('admin/cronjobs/logs/task', $tasks[$i]) ?>">
+                    <?= Icon::create('log')->asImg(['title' => _('Log anzeigen')]) ?>
                 </a>
-                <a href="<?= $controller->url_for('admin/cronjobs/tasks/delete', $tasks[$i]->task_id, $page) ?>">
-                    <?= Icon::create('trash', 'clickable', ['title' => _('Aufgabe löschen')])->asImg() ?>
+                <a href="<?= $controller->link_for('admin/cronjobs/tasks/delete', $tasks[$i], $pagination->getCurrentPage()) ?>">
+                    <?= Icon::create('trash')->asImg(['title' => _('Aufgabe löschen')]) ?>
                 </a>
             </td>
         </tr>
@@ -79,7 +79,7 @@
         <?= Button::createAccept(_('Ausführen'), 'bulk') ?>
 
         <section style="float: right">
-            <?= Pagination::create($total_filtered, $page, $max_per_page)->asLinks(function ($page) use ($controller) {
+            <?= $pagination->asLinks(function ($page) use ($controller) {
                 return $controller->index($page);
             }) ?>
         </section>

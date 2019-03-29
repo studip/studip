@@ -51,12 +51,18 @@ class Admin_Cronjobs_TasksController extends AuthenticatedController
      */
     public function index_action($page = 0)
     {
-        $this->max_per_page = Config::get()->ENTRIES_PER_PAGE;
-        $this->total        = CronjobTask::countBySql('1');
-        $this->page         = $page;
+        $this->pagination = Pagination::create(
+            CronjobTask::countBySql('1'),
+            $page
+        );
 
-        $limit = sprintf(" LIMIT %u, %u", $this->page * $this->max_per_page, $this->max_per_page);
-        $this->tasks = CronjobTask::findBySQL('1' . $limit);
+        $this->page = $this->pagination->getCurrentPage();
+
+        $this->tasks = CronjobTask::findBySQL(sprintf(
+            "1 LIMIT %u, %u",
+            $this->pagination->getOffset(),
+            $this->pagination->getPerPage()
+        ));
 
         // Infobox image was produced from an image by Robbert van der Steeg
         // http://www.flickr.com/photos/robbie73/5924985913/
@@ -65,11 +71,19 @@ class Admin_Cronjobs_TasksController extends AuthenticatedController
         $sidebar->setImage('sidebar/admin-sidebar.png');
 
         // Aktionen
-        $actions = new ViewsWidget();
-        $actions->addLink(_('Cronjobs verwalten'),$this->url_for('admin/cronjobs/schedules'));
-        $actions->addLink(_('Aufgaben verwalten'),$this->url_for('admin/cronjobs/tasks'))->setActive(true);
-        $actions->addLink(_('Logs anzeigen'),$this->url_for('admin/cronjobs/logs'));
-        $sidebar->addWidget($actions);
+        $actions = $sidebar->addWidget(new ViewsWidget());
+        $actions->addLink(
+            _('Cronjobs verwalten'),
+            $this->url_for('admin/cronjobs/schedules')
+        );
+        $actions->addLink(
+            _('Aufgaben verwalten'),
+            $this->url_for('admin/cronjobs/tasks')
+        )->setActive(true);
+        $actions->addLink(
+            _('Logs anzeigen'),
+            $this->url_for('admin/cronjobs/logs')
+        );
     }
 
     /**

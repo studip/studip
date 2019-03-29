@@ -1,15 +1,13 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
-<form action="<?= $controller->link_for('admin/cronjobs/logs/filter') ?>"
-      method="post" class="cronjob-filters default">
-
+<form action="<?= $controller->filter() ?>" method="post" class="cronjob-filters default">
     <fieldset>
         <legend>
             <?= _('Darstellung einschränken') ?>
 
-        <? if ($total_filtered != $total): ?>
+        <? if ($pagination->getTotal() != $total): ?>
             <small>
-                <?= sprintf(_('Passend: %u von %u Logeinträgen'), $total_filtered, $total) ?>
+                <?= sprintf(_('Passend: %u von %u Logeinträgen'), $pagination->getTotal(), $total) ?>
             </small>
         <? endif; ?>
         </legend>
@@ -58,15 +56,17 @@
         </noscript>
 
         <? if (!empty($filter)): ?>
-            <?= LinkButton::createCancel(_('Zurücksetzen'),
-                                         $controller->url_for('admin/cronjobs/logs/filter'),
-                                         array('title' => _('Filter zurücksetzen'))) ?>
+            <?= LinkButton::createCancel(
+                _('Zurücksetzen'),
+                $controller->url_for('admin/cronjobs/logs/filter'),
+                ['title' => _('Filter zurücksetzen')]
+            ) ?>
         <? endif; ?>
     </footer>
 </form>
 
 
-<form action="<?= $controller->url_for('admin/cronjobs/logs/bulk', $page) ?>" method="post" class="default">
+<form action="<?= $controller->bulk($pagination->getCurrentPage()) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
 <table class="default cronjobs">
@@ -93,7 +93,7 @@
         </tr>
     </thead>
     <tbody>
-<? for ($i = 0; $i < $max_per_page; $i += 1): ?>
+<? for ($i = 0; $i < $pagination->getPerPage(); $i += 1): ?>
     <? if (!isset($logs[$i])): ?>
         <tr class="empty">
             <td colspan="6">&nbsp;</td>
@@ -108,19 +108,19 @@
             <td><?= htmlReady($logs[$i]->schedule->title ?: $logs[$i]->schedule->task->name) ?></td>
             <td>
             <? if ($logs[$i]->duration == -1): ?>
-                <?= Icon::create('question', 'inactive', ['title' => _('Läuft noch')])->asImg() ?>
+                <?= Icon::create('question', Icon::ROLE_INACTIVE)->asImg(['title' => _('Läuft noch')]) ?>
             <? elseif ($logs[$i]->exception === null): ?>
-                <?= Icon::create('accept', 'status-green', ['title' => _('Ja')])->asImg() ?>
+                <?= Icon::create('accept', Icon::ROLE_STATUS_GREEN)->asImg(['title' => _('Ja')]) ?>
             <? else: ?>
-                <?= Icon::create('decline', 'status-red', ['title' => _('Nein')])->asImg() ?>
+                <?= Icon::create('decline', Icon::ROLE_STATUS_RED)->asImg(['title' => _('Nein')]) ?>
             <? endif; ?>
             </td>
             <td style="text-align: right">
-                <a data-dialog href="<?= $controller->link_for('admin/cronjobs/logs/display', $logs[$i]->log_id, $page) ?>">
-                    <?= Icon::create('admin', 'clickable', ['title' => _('Logeintrag anzeigen')])->asImg() ?>
+                <a data-dialog href="<?= $controller->display($logs[$i], $pagination->getCurrentPage()) ?>">
+                    <?= Icon::create('admin')->asImg(['title' => _('Logeintrag anzeigen')]) ?>
                 </a>
-                <a href="<?= $controller->link_for('admin/cronjobs/logs/delete', $logs[$i]->log_id, $page) ?>">
-                    <?= Icon::create('trash', 'clickable', ['title' => _('Logeintrag löschen')])->asImg() ?>
+                <a href="<?= $controller->delete($logs[$i], $pagination->getCurrentPage()) ?>">
+                    <?= Icon::create('trash')->asImg(['title' => _('Logeintrag löschen')]) ?>
                 </a>
             </td>
         </tr>
@@ -136,7 +136,7 @@
         <?= Button::createAccept(_('Ausführen'), 'bulk') ?>
 
         <section style="float: right">
-            <?= Pagination::create($total_filtered, $page, $max_per_page)->asLinks(function ($page) use ($controller) {
+            <?= $pagination->asLinks(function ($page) use ($controller) {
                 return $controller->index($page);
             }) ?>
         </section>

@@ -60,14 +60,19 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
     {
         $filter = $_SESSION['cronlog-filter'];
 
-        $this->max_per_page   = Config::get()->ENTRIES_PER_PAGE;
-        $this->total          = CronjobLog::countBySql();
-        $this->total_filtered = CronjobLog::countBySql($filter['where']);
-        $this->page           = $page;
+        $this->total = CronjobLog::countBySql();
 
-        $order = " ORDER BY executed DESC";
-        $limit = sprintf(" LIMIT %u, %u", $this->page * $this->max_per_page, $this->max_per_page);
-        $this->logs = CronjobLog::findBySQL($filter['where'] . $order . $limit);
+        $this->pagination = Pagination::create(
+            CronjobLog::countBySql($filter['where']),
+            $page
+        );
+
+        $this->logs = CronjobLog::findBySQL(sprintf(
+            "%s ORDER BY executed DESC LIMIT %u, %u",
+            $filter['where'],
+            $this->pagination->getOffset(),
+            $this->pagination->getPerPage()
+        ));
 
         // Filters
         $this->schedules  = CronjobSchedule::findBySql('1');
@@ -81,11 +86,19 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
         $sidebar->setTitle(_('Cronjobs'));
         $sidebar->setImage('sidebar/admin-sidebar.png');
 
-        $actions = new ViewsWidget();
-        $actions->addLink(_('Cronjobs verwalten'),$this->url_for('admin/cronjobs/schedules'));
-        $actions->addLink(_('Aufgaben verwalten'),$this->url_for('admin/cronjobs/tasks'));
-        $actions->addLink(_('Logs anzeigen'),$this->url_for('admin/cronjobs/logs'))->setActive(true);
-        $sidebar->addWidget($actions);
+        $actions = $sidebar->addWidget(new ViewsWidget());
+        $actions->addLink(
+            _('Cronjobs verwalten'),
+            $this->url_for('admin/cronjobs/schedules')
+        );
+        $actions->addLink(
+            _('Aufgaben verwalten'),
+            $this->url_for('admin/cronjobs/tasks')
+        );
+        $actions->addLink(
+            _('Logs anzeigen'),
+            $this->url_for('admin/cronjobs/logs')
+        )->setActive(true);
     }
 
     /**

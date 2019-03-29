@@ -61,13 +61,19 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
     {
         $filter = $_SESSION['cronjob-filter'];
 
-        $this->max_per_page   = Config::get()->ENTRIES_PER_PAGE;
-        $this->total          = CronjobSchedule::countBySql('1');
-        $this->total_filtered = CronjobSchedule::countBySql($filter['where']);
-        $this->page           = $page;
+        $this->total = CronjobSchedule::countBySql('1');
 
-        $limit = sprintf(" LIMIT %u, %u", $this->page * $this->max_per_page, $this->max_per_page);
-        $this->schedules = CronjobSchedule::findBySQL($filter['where'] . $limit);
+        $this->pagination = Pagination::create(
+            CronjobSchedule::countBySql($filter['where']),
+            $page
+        );
+
+        $this->schedules = CronjobSchedule::findBySQL(sprintf(
+            "%s LIMIT %u, %u",
+            $filter['where'],
+            $this->pagination->getOffset(),
+            $this->pagination->getPerPage()
+        ));
 
         // Filters
         $this->tasks  = CronjobTask::findBySql('1');
@@ -79,17 +85,27 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
         $sidebar->setTitle(_('Cronjobs'));
         $sidebar->setImage('sidebar/date-sidebar.png');
 
-
         // Aktionen
-        $views = new ViewsWidget();
-        $views->addLink(_('Cronjobs verwalten'),$this->url_for('admin/cronjobs/schedules'))->setActive(true);
-        $views->addLink(_('Aufgaben verwalten'),$this->url_for('admin/cronjobs/tasks'));
-        $views->addLink(_('Logs anzeigen'),$this->url_for('admin/cronjobs/logs'));
-        $sidebar->addWidget($views);
+        $views = $sidebar->addWidget(new ViewsWidget());
+        $views->addLink(
+            _('Cronjobs verwalten'),
+            $this->url_for('admin/cronjobs/schedules')
+        )->setActive(true);
+        $views->addLink(
+            _('Aufgaben verwalten'),
+            $this->url_for('admin/cronjobs/tasks')
+        );
+        $views->addLink(
+            _('Logs anzeigen'),
+            $this->url_for('admin/cronjobs/logs')
+        );
 
-        $actions = new ActionsWidget();
-        $actions->addLink(_('Neuen Cronjob registrieren'),$this->url_for('admin/cronjobs/schedules/edit'), Icon::create('add', 'clickable'));
-        $sidebar->addWidget($actions);
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Neuen Cronjob registrieren'),
+            $this->editURL(),
+            Icon::create('add')
+        );
     }
 
     /**

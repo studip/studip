@@ -92,10 +92,46 @@ class Pagination
     }
 
     /**
+     * Returns the total number of entries.
+     * @return int
+     */
+    public function getTotal()
+    {
+        return $this->total;
+    }
+
+    /**
+     * Returns the current page
+     * @return int
+     */
+    public function getCurrentPage()
+    {
+        return $this->current_page;
+    }
+
+    /**
+     * Returns the current offset or skipped entries before the current page.
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->current_page * $this->per_page;
+    }
+
+    /**
+     * Returns the maximum number of entries per page.
+     * @return int
+     */
+    public function getPerPage()
+    {
+        return $this->per_page;
+    }
+
+    /**
      * Get total number of pages.
      * @return int
      */
-    private function getPageCount()
+    public function getPageCount()
     {
         return ceil($this->total / $this->per_page);
     }
