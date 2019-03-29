@@ -640,7 +640,7 @@ class Module_ModuleController extends MVVController
     
             if (!in_array($this->display_language, $this->translations)) {
                 PageLayout::setTitle(sprintf(
-                    _('Modulteil: <em>%s</em> in der Ausgabesprache <em>%s</em> neu anlegen.'),
+                    _('Modulteil: "%s" in der Ausgabesprache "%s" neu anlegen.'),
                     $this->modulteil->getDisplayName(),
                     $GLOBALS['MVV_MODULTEIL_DESKRIPTOR']['SPRACHE']['values'][$this->display_language]['name']
                 ));
