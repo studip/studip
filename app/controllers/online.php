@@ -57,7 +57,7 @@ class OnlineController extends AuthenticatedController
 
         $this->limit = Config::getInstance()->ENTRIES_PER_PAGE;
         $max_page    = ceil(count($this->users['users']) / $this->limit);
-        $this->page  = min(Request::int('page', 1), $max_page);
+        $this->page  = min(Request::int('page', 0), $max_page);
 
         // Setup sidebar
         $sidebar = Sidebar::get();

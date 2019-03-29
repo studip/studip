@@ -117,20 +117,8 @@
                 <? endif; ?>
                 <tfoot>
                 <tr>
-                    <td colspan="4">
-                        <? if (count($users['users']) > $limit): ?>
-                            <span class="actions">
-                            <?= $GLOBALS['template_factory']->render(
-                                'shared/pagechooser',
-                                array('perPage' => $limit,
-                                    'num_postings' => count($users['users']),
-                                    'page' => $page,
-                                    'pagelink' => 'dispatch.php/online?page=%s')
-                            ) ?>
-                        </span>
-                        <? else: ?>
-                            &nbsp;
-                        <? endif; ?>
+                    <td colspan="4" class="actions">
+                        <?= Pagination::create(count($users['users']), $page, $limit)->asLinks() ?>
                     </td>
                 </tr>
                 </tfoot>
