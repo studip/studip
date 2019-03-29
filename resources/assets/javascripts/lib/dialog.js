@@ -318,14 +318,14 @@ Dialog.fromURL = function(url, options) {
                 return result;
             });
 
+            Overlay.hide(0);
+
             if (advance) {
                 Dialog.show(response, options);
             }
         })
-        .always(function() {
-            if (Overlay) {
-                Overlay.hide();
-            }
+        .fail(() => {
+            Overlay.hide();
         });
 
     return true;

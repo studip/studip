@@ -51,7 +51,7 @@ Overlay.show = function(ajax, containment, secure, callback, delay) {
     }, delay);
 };
 
-Overlay.hide = function() {
+Overlay.hide = function(delay) {
     this.schedule(function() {
         if (this.element !== null) {
             this.element.remove();
@@ -60,7 +60,7 @@ Overlay.hide = function() {
 
         $('#layout_wrapper').removeClass('has-overlay');
         $(window).off('beforeunload.overlay');
-    });
+    }, delay);
 };
 
 // Secure the overlay
