@@ -1,6 +1,6 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
-<form class="default" action="<?= $controller->filter() ?>" method="post" class="cronjob-filters">
+<form action="<?= $controller->filter() ?>" method="post" class="default cronjob-filters">
     <fieldset>
         <legend>
             <?= _('Darstellung einschränken') ?>
@@ -48,6 +48,7 @@
         <noscript>
             <?= Button::create(_('Filtern')) ?>
         </noscript>
+
         <? if (!empty($filter)): ?>
             <?= LinkButton::createCancel(
                 _('Zurücksetzen'),
@@ -57,7 +58,7 @@
         <? endif; ?>
     </footer>
 </form>
-<!--  -->
+
 
 <form class="default" action="<?= $controller->bulk($pagination->getCurrentPage()) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
