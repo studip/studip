@@ -1,8 +1,5 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <? $perm = new MvvPerm($zuordnung) ?>
-<h3>
-    <?= _('Modulzuordnung bearbeiten') ?>
-</h3>
 <form class="default" action="<?= $controller->url_for('/modul_zuordnung', $zuordnung->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
