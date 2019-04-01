@@ -192,4 +192,30 @@ class Pagination
             'show_page' => $this->show_page,
         ]);
     }
+
+    /**
+     * Loads the slice of a sorm collection defined by this object.
+     *
+     * @param string $sorm_class Name of the SORM class
+     * @param string $condition  Condition to load objects by
+     * @param array  $parameters Additional parameters for the condition
+     * @return SimpleORMapCollection
+     * @throws
+     */
+    public function loadSORMCollection($sorm_class, $condition = '1', array $parameters = [])
+    {
+        if (!class_exists($sorm_class) || !is_a($sorm_class, 'SimpleORMap', true)) {
+            throw new RuntimeException('No valid SORM class given');
+        }
+
+        $sql = sprintf(
+            "{$condition} LIMIT %u, %u",
+            $this->getOffset(),
+            $this->getPerPage()
+        );
+
+        return SimpleORMapCollection::createFromArray(
+            $sorm_class::findBySQL($sql, $parameters)
+        );
+    }
 }
