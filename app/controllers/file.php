@@ -89,9 +89,7 @@ class FileController extends AuthenticatedController
 
                 //all files were uploaded successfully:
                 $storedFiles = [];
-                $default_license = ContentTermsOfUse::find(
-                    'UNDEF_LICENSE'
-                );
+                $default_license = ContentTermsOfUse::find(id);
 
                 foreach ($validatedFiles['files'] as $fileref) {
                     //If no terms of use is set for the file ref
