@@ -102,7 +102,7 @@
                                       $group->name
                                    )
                               ]),
-                              ['data-dialog' => null]
+                              ['data-dialog' => '']
                           )
                           ->addLink(
                               $controller->url_for('course/statusgroups/delete', $group->id),
