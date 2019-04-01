@@ -171,22 +171,27 @@ abstract class StudipController extends Trails_Controller
         }
 
         if ($this->has_action($this->current_action)) {
-            $reflection = new \ReflectionMethod($this, $this->current_action . '_action');
+            $reflection = new ReflectionMethod($this, $this->current_action . '_action');
             $parameters = $reflection->getParameters();
-            $parameters = array_slice($parameters, 0, count($args));
             foreach ($parameters as $i => $parameter) {
                 $class_type = $parameter->getClass();
 
-                if (!$class_type || !class_exists($class_type->name)) {
+                if (!$class_type
+                    || !class_exists($class_type->name)
+                    || !is_a($class_type->name, SimpleORMap::class, true))
+                {
                     continue;
                 }
 
-                if (is_a($class_type->name, 'SimpleORMap', true)) {
-                    $types[$i] = 'sorm';
-                    $class_infos[$i] = [
-                        'model' => $class_type->name,
-                        'var'   => $parameter->getName(),
-                    ];
+                $types[$i] = 'sorm';
+                $class_infos[$i] = [
+                    'model'    => $class_type->name,
+                    'var'      => $parameter->getName(),
+                    'optional' => $parameter->isOptional(),
+                ];
+
+                if ($parameter->isOptional() && !isset($args[$i])) {
+                    $args[$i] = $parameter->getDefaultValue();
                 }
             }
         }
@@ -212,7 +217,18 @@ abstract class StudipController extends Trails_Controller
                     $info = $class_infos[$i];
 
                     $reflection = new ReflectionClass($info['model']);
-                    $arg = $reflection->newInstanceArgs(explode(SimpleORMap::ID_SEPARATOR, $arg));
+                    $sorm = $reflection->newInstanceArgs(explode(
+                        SimpleORMap::ID_SEPARATOR,
+                        $arg == -1 ? null : $arg
+                    ));
+                    if (!$info['optional'] && $sorm->isNew()) {
+                        throw new Trails_Exception(
+                            404,
+                            "Parameter {$info['var']} could not be resolved with value {$arg}"
+                        );
+                    }
+
+                    $arg = $sorm;
                     if ($this->_autobind) {
                         $this->{$info['var']} =& $arg;
                     }
@@ -250,7 +266,7 @@ abstract class StudipController extends Trails_Controller
         // Map any sorm objects to their ids
         $args = array_map(function ($arg) {
             if (is_object($arg) && $arg instanceof SimpleORMap) {
-                return $arg->id;
+                return $arg->isNew() ? -1 : $arg->id;
             }
             return $arg;
         }, $args);
