@@ -1,36 +1,18 @@
 <?php
 /**
- * Admin_Cronjobs_SchedulesController - Controller class for the schedules of
- *                                      cronjobs
+ * Admin_Cronjobs_SchedulesController
+ *
+ * Controller class for the schedules of cronjobs
  *
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @license     GPL2 or any laterversion
  * @category    Stud.IP
  * @since       2.4
  */
-
-// +---------------------------------------------------------------------------+
-// This file is part of Stud.IP
-// schedules.php
-//
-// Copyright (C) 2013 Jan-Hendrik Willms <tleilax+studip@gmail.com>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+
-
 class Admin_Cronjobs_SchedulesController extends AuthenticatedController
 {
+    protected $_autobind = true;
+
     /**
      * Set up this controller.
      *
@@ -45,42 +27,13 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
         PageLayout::setTitle(_('Cronjob-Verwaltung') . ' - ' . _('Cronjobs'));
 
         if (empty($_SESSION['cronjob-filter'])) {
-            $_SESSION['cronjob-filter'] = array(
+            $_SESSION['cronjob-filter'] = [
                 'where'  => '1',
-                'values' => array(),
-            );
+                'values' => [],
+            ];
         }
-    }
 
-    /**
-     * Displays all available schedules according to the set filters.
-     *
-     * @param int $page Which page to display
-     */
-    public function index_action($page = 0)
-    {
-        $filter = $_SESSION['cronjob-filter'];
-
-        $this->total = CronjobSchedule::countBySql('1');
-
-        $this->pagination = Pagination::create(
-            CronjobSchedule::countBySql($filter['where']),
-            $page
-        );
-
-        $this->schedules = CronjobSchedule::findBySQL(sprintf(
-            "%s LIMIT %u, %u",
-            $filter['where'],
-            $this->pagination->getOffset(),
-            $this->pagination->getPerPage()
-        ));
-
-        // Filters
-        $this->tasks  = CronjobTask::findBySql('1');
-        $this->filter = $filter['values'];
-
-        // Infobox image was produced from an image by Robbert van der Steeg
-        // http://www.flickr.com/photos/robbie73/5924985913/
+        // Setup sidebar
         $sidebar = Sidebar::Get();
         $sidebar->setTitle(_('Cronjobs'));
         $sidebar->setImage('sidebar/date-sidebar.png');
@@ -109,15 +62,42 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
     }
 
     /**
+     * Displays all available schedules according to the set filters.
+     *
+     * @param int $page Which page to display
+     */
+    public function index_action($page = 0)
+    {
+        $filter = $_SESSION['cronjob-filter'];
+
+        $this->total = CronjobSchedule::countBySql('1');
+
+        $this->pagination = Pagination::create(
+            CronjobSchedule::countBySql($filter['where']),
+            $page
+        );
+
+        $this->schedules = $this->pagination->loadSORMCollection(
+            CronjobSchedule::class,
+            $filter['where']
+        );
+
+        // Filters
+        $this->tasks  = CronjobTask::findBySql('1');
+        $this->filter = $filter['values'];
+    }
+
+    /**
      * Displays a schedule.
      *
-     * @param String $id Id of the schedule in question
+     * @param CronjobSchedule $schedule Schedule to display
      */
-    public function display_action($id)
+    public function display_action(CronjobSchedule $schedule)
     {
-        if (!$this->schedule = CronjobSchedule::find($id)) {
-            PageLayout::postMessage(MessageBox::error(_('Es gibt keinen Cronjob mit dieser Id.')));
+        if (!$this->schedule) {
+            PageLayout::postError(_('Es gibt keinen Cronjob mit dieser Id.'));
             $this->redirect('admin/cronjobs/schedules');
+            return;
         }
 
         $title = sprintf(_('Cronjob "%s" anzeigen'), $this->schedule->title);
@@ -132,7 +112,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
     public function filter_action()
     {
         $filter     = array_filter(Request::optionArray('filter'));
-        $conditions = array();
+        $conditions = [];
 
         if (!empty($filter['type'])) {
             $conditions[] = "type = " . DBManager::get()->quote($filter['type']);
@@ -145,10 +125,10 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
             $conditions[] = "task_id = " . DBManager::get()->quote($filter['task_id']);
         }
 
-        $_SESSION['cronjob-filter'] = array(
+        $_SESSION['cronjob-filter'] = [
             'where'  => implode(' AND ' , $conditions) ?: '1',
             'values' => $filter,
-        );
+        ];
         $this->redirect('admin/cronjobs/schedules');
     }
 
@@ -158,7 +138,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
      * @param String $id   Id of the schedule in question (null to create)
      * @param int    $page Return to this page after editing (optional)
      */
-    public function edit_action($id = null, $page = 1)
+    public function edit_action(CronjobSchedule $schedule = null, $page = 0)
     {
         if (Request::submitted('store')) {
             $parameters = Request::getArray('parameters');
@@ -168,7 +148,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
             $schedule->description = Request::get('description');
             $schedule->active      = Request::int('active', 0);
             if ($schedule->isNew()) {
-                $schedule->task_id     = Request::option('task_id');
+                $schedule->task_id = Request::option('task_id');
             }
             $schedule->parameters  = $parameters[$schedule->task_id];
             $schedule->type        = Request::option('type') === 'once'
@@ -185,7 +165,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
                 $schedule->day         = $this->extractCronItem($temp['day']);
                 $schedule->month       = $this->extractCronItem($temp['month']);
                 $schedule->day_of_week = mb_strlen($temp['day_of_week']['value'])
-                                       ? (int)$temp['day_of_week']['value']
+                                       ? (int) $temp['day_of_week']['value']
                                        : null;
 
                 if ($schedule->active) {
@@ -194,27 +174,22 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
             }
             $schedule->store();
 
-            PageLayout::postMessage(MessageBox::success(_('Die Änderungen wurden gespeichert.')));
+            PageLayout::postSuccess(_('Die Änderungen wurden gespeichert.'));
             $this->redirect('admin/cronjobs/schedules/index/' . $page);
             return;
         }
 
         PageLayout::setTitle(_('Cronjob-Verwaltung') . ' - ' . _('Cronjob bearbeiten'));
 
-        // Infobox image was produced from an image by Robbert van der Steeg
-        // http://www.flickr.com/photos/robbie73/5924985913/
-        $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/date-sidebar.png');
-        $sidebar->setTitle(_('Cronjobs'));
+        $actions = Sidebar::get()->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Zurück zur Übersicht'),
+            $this->indexURL($page),
+            Icon::create('link-intern')
+        );
 
-        $actions = new ActionsWidget();
-        $actions->addLink(_('Zurück zur Übersicht'),$this->url_for('admin/cronjobs/schedules/index/' . $page), Icon::create('link-intern', 'clickable'));
-
-        $sidebar->addWidget($actions);
-
-        $this->page     = $page;
-        $this->tasks    = CronjobTask::findBySql('1');
-        $this->schedule = CronjobSchedule::find($id) ?: new CronjobSchedule();
+        $this->page  = $page;
+        $this->tasks = CronjobTask::findBySql('1');
     }
 
     /**
@@ -240,47 +215,47 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
     /**
      * Activates a schedule.
      *
-     * @param String $id Id of the schedule in question
-     * @param int    $page Return to this page after activating (optional)
+     * @param CronjobSchedule $schedule Schedule to activate
+     * @param int             $page Return to this page after activating (optional)
      */
-    public function activate_action($id, $page = 1)
+    public function activate_action(CronjobSchedule $schedule, $page = 0)
     {
-        CronjobSchedule::find($id)->activate();
+        $schedule->activate();
 
         if (!Request::isXhr()) {
-            PageLayout::postMessage(MessageBox::success(_('Der Cronjob wurde aktiviert.')));
+            PageLayout::postSuccess(_('Der Cronjob wurde aktiviert.'));
         }
-        $this->redirect('admin/cronjobs/schedules/index/' . $page . '#job-' . $id);
+        $this->redirect("admin/cronjobs/schedules/index/{$page}#job-{$schedule->id}");
     }
 
     /**
      * Deactivates a schedule.
      *
-     * @param String $id Id of the schedule in question
-     * @param int    $page Return to this page after deactivating (optional)
+     * @param CronjobSchedule $schedule Schedule to deactivate
+     * @param int             $page Return to this page after deactivating (optional)
      */
-    public function deactivate_action($id, $page = 1)
+    public function deactivate_action(CronjobSchedule $schedule, $page = 0)
     {
-        CronjobSchedule::find($id)->deactivate();
+        $schedule->deactivate();
 
         if (!Request::isXhr()) {
-            PageLayout::postMessage(MessageBox::success(_('Der Cronjob wurde deaktiviert.')));
+            PageLayout::postSuccess(_('Der Cronjob wurde deaktiviert.'));
         }
-        $this->redirect('admin/cronjobs/schedules/index/' . $page . '#job-' . $id);
+        $this->redirect("admin/cronjobs/schedules/index/{$page}#job-{$schedule->id}");
     }
 
     /**
      * Cancels/deletes a schedule.
      *
-     * @param String $id Id of the schedule in question
-     * @param int    $page Return to this page after canceling (optional)
+     * @param CronjobSchedule $schedule Schedule to cancel
+     * @param int             $page Return to this page after canceling (optional)
      */
-    public function cancel_action($id, $page = 1)
+    public function cancel_action(CronjobSchedule $schedule, $page = 0)
     {
-        CronjobSchedule::find($id)->delete();
+        $schedule->delete();
 
-        PageLayout::postMessage(MessageBox::success(_('Der Cronjob wurde gelöscht.')));
-        $this->redirect('admin/cronjobs/schedules/index/' . $page);
+        PageLayout::postSuccess(_('Der Cronjob wurde gelöscht.'));
+        $this->redirect("admin/cronjobs/schedules/index/{$page}");
     }
 
     /**
@@ -289,7 +264,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
      *
      * @param int    $page Return to this page afterwarsd (optional)
      */
-    public function bulk_action($page = 1)
+    public function bulk_action($page = 0)
     {
         $action    = Request::option('action');
         $ids       = Request::optionArray('ids');
@@ -311,12 +286,12 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
                                     '%u Cronjob(s) konnte(n) nicht aktiviert werden, da die entsprechende Aufgabe deaktiviert ist.',
                                     $failed);
                 $message = sprintf($message, $failed);
-                PageLayout::postMessage(MessageBox::info($message));
+                PageLayout::postInfo($message);
             }
 
             $n = count($schedules) - $failed;
             $message = sprintf(ngettext('%u Cronjob wurde aktiviert.', '%u Cronjobs wurden aktiviert.', $n), $n);
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postSuccess($message);
         } else if ($action === 'deactivate') {
             $schedules = array_filter($schedules, function ($item) { return $item->active; });
             foreach ($schedules as $schedule) {
@@ -325,7 +300,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
 
             $n = count($schedules);
             $message = sprintf(ngettext('%u Cronjob wurde deaktiviert.', '%u Cronjobs wurden deaktiviert.', $n), $n);
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postSuccess($message);
         } else if ($action === 'cancel') {
             foreach ($schedules as $schedule) {
                 $schedule->delete();
@@ -333,36 +308,9 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
 
             $n = count($schedules);
             $message = sprintf(ngettext('%u Cronjob wurde gelöscht.', '%u Cronjobs wurden gelöscht.', $n), $n);
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postSuccess($message);
         }
 
-        $this->redirect('admin/cronjobs/schedules/index/' . $page);
+        $this->redirect("admin/cronjobs/schedules/index/{$page}");
     }
-
-    /**
-     * Runs a schedule and returns the output.
-     *
-     * @param String $id Id of the schedule
-     */
-    public function testrun_action($id)
-    {
-        error_reporting(22519);
-        set_error_handler(function ($fehlercode, $fehlertext, $fehlerdatei, $fehlerzeile) {
-            switch ($fehlercode) {
-                case E_USER_ERROR:
-                    echo "ERROR: ".$fehlertext."\n in ".$fehlerdatei." , ".$fehlerzeile;
-                    die();
-                    break;
-                case E_USER_WARNING:
-                    echo "WARNING: ".$fehlertext."\n in ".$fehlerdatei." , ".$fehlerzeile;
-                    die();
-                    break;
-            }
-        });
-        $result = CronjobSchedule::find($id)->execute(true);
-        var_dump($result);
-        $this->render_nothing();
-    }
-
-
 }

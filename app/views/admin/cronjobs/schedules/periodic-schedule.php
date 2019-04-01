@@ -1,4 +1,4 @@
-<?
+<?php
 $cronify = function ($n) {
     if ($n === null) {
         return '*';

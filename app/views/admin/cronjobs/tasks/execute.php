@@ -3,7 +3,7 @@
 <pre><code><?= htmlReady($result ?: _('- Keine Ausgabe -')) ?></code></pre>
 <? else: ?>
 <p><?= htmlReady($task->description) ?></p>
-<form class="default" action="<?= $controller->url_for('admin/cronjobs/tasks/execute/' . $task->id) ?>" method="post" data-dialog="size=auto">
+<form class="default" action="<?= $controller->execute($task) ?>" method="post" data-dialog="size=auto">
 <? if (count($task->parameters)): ?>
     <?= $this->render_partial('admin/cronjobs/schedules/parameters') ?>
 <? endif; ?>

@@ -1,12 +1,12 @@
 <dl class="cronjob">
     <dt><?= _('Titel') ?></dt>
     <dd><?= htmlReady($schedule->title) ?></dd>
-    
+
 <? if ($schedule->description): ?>
     <dt><?= _('Beschreibung') ?></dt>
     <dd><?= htmlReady($schedule->description) ?></dd>
 <? endif; ?>
-        
+
     <dt><?= _('Aktiv') ?></dt>
     <dd><?= $schedule->active ? _('Ja') : _('Nein') ?></dd>
 
@@ -26,13 +26,13 @@
 
     <dt><?= _('Aufgabe') ?></dt>
     <dd><?= htmlReady($schedule->task->name) ?></dd>
-    
+
     <dt><?= _('Typ') ?></dt>
 <? if ($schedule->type === 'once'): ?>
     <dd>
         <?= sprintf(_('Einmalig am %s um %s'), date('d.m.Y', $schedule->next_execution), date('H:i', $schedule->next_execution)) ?>
     </dd>
-    
+
     <dt><?= _('Ausgeführt') ?>?</dt>
     <dd>
     <? if ($schedule->execution_count > 0): ?>
@@ -67,10 +67,10 @@
 </dl>
 
 <div data-dialog-button>>
-    <a href="<?= $controller->url_for('admin/cronjobs/logs/schedule', $schedule->schedule_id) ?>">
+    <a href="<?= $controller->link_for('admin/cronjobs/logs/schedule', $schedule) ?>">
         <?= _('Log anzeigen') ?>
     </a>
-    <a href="<?= $controller->url_for('admin/cronjobs/schedules/edit', $schedule->schedule_id) ?>">
+    <a href="<?= $controller->edit($schedule) ?>">
         <?= _('Cronjob bearbeiten') ?>
     </a>
 </div>

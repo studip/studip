@@ -1,35 +1,18 @@
-<?
+<?php
 /**
- * Admin_Cronjobs_LogsController - Controller class for the logs of cronjobs
+ * Admin_Cronjobs_LogsController
+ *
+ * Controller class for the logs of cronjobs
  *
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @license     GPL2 or any later version
  * @category    Stud.IP
  * @since       2.4
  */
-
-// +---------------------------------------------------------------------------+
-// This file is part of Stud.IP
-// logs.php
-//
-// Copyright (C) 2013 Jan-Hendrik Willms <tleilax+studip@gmail.com>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+
-
 class Admin_Cronjobs_LogsController extends AuthenticatedController
 {
+    protected $_autobind = true;
+
     /**
      * Set up this controller.
      *
@@ -44,11 +27,30 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
         PageLayout::setTitle(_('Cronjob-Verwaltung') . ' - ' . _('Log-Einträge'));
 
         if (empty($_SESSION['cronlog-filter'])) {
-            $_SESSION['cronlog-filter'] = array(
+            $_SESSION['cronlog-filter'] = [
                 'where'  => '1',
-                'values' => array(),
-            );
+                'values' => [],
+            ];
         }
+
+        // Setup sidebar
+        $sidebar = Sidebar::Get();
+        $sidebar->setTitle(_('Cronjobs'));
+        $sidebar->setImage('sidebar/admin-sidebar.png');
+
+        $actions = $sidebar->addWidget(new ViewsWidget());
+        $actions->addLink(
+            _('Cronjobs verwalten'),
+            $this->url_for('admin/cronjobs/schedules')
+        );
+        $actions->addLink(
+            _('Aufgaben verwalten'),
+            $this->url_for('admin/cronjobs/tasks')
+        );
+        $actions->addLink(
+            _('Logs anzeigen'),
+            $this->url_for('admin/cronjobs/logs')
+        )->setActive(true);
     }
 
     /**
@@ -67,38 +69,15 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
             $page
         );
 
-        $this->logs = CronjobLog::findBySQL(sprintf(
-            "%s ORDER BY executed DESC LIMIT %u, %u",
-            $filter['where'],
-            $this->pagination->getOffset(),
-            $this->pagination->getPerPage()
-        ));
+        $this->logs = $this->pagination->loadSORMCollection(
+            CronjobLog::class,
+            "{$filter['where']} ORDER BY executed DESC"
+        );
 
         // Filters
         $this->schedules  = CronjobSchedule::findBySql('1');
         $this->tasks      = CronjobTask::findBySql('1');
         $this->filter     = $filter['values'];
-
-        // Infobox image was produced from an image by Robbert van der Steeg
-        // http://www.flickr.com/photos/robbie73/5924985913/
-        // Aktionen
-        $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Cronjobs'));
-        $sidebar->setImage('sidebar/admin-sidebar.png');
-
-        $actions = $sidebar->addWidget(new ViewsWidget());
-        $actions->addLink(
-            _('Cronjobs verwalten'),
-            $this->url_for('admin/cronjobs/schedules')
-        );
-        $actions->addLink(
-            _('Aufgaben verwalten'),
-            $this->url_for('admin/cronjobs/tasks')
-        );
-        $actions->addLink(
-            _('Logs anzeigen'),
-            $this->url_for('admin/cronjobs/logs')
-        )->setActive(true);
     }
 
     /**
@@ -157,31 +136,27 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
     /**
      * Displays a log entry.
      *
-     * @param String $id Id of the log entry in question
+     * @param CronjobLog $log Log entry to display
      */
-    public function display_action($id)
+    public function display_action(CronjobLog $log)
     {
-        $this->log = CronjobLog::find($id);
-
-        $title = sprintf(_('Logeintrag für Cronjob "%s" anzeigen'),
-                         $this->log->schedule->title);
-
-        PageLayout::setTitle($title);
+        PageLayout::setTitle(sprintf(
+            _('Logeintrag für Cronjob "%s" anzeigen'),
+            $log->schedule->title
+        ));
     }
 
     /**
      * Deletes a log entry.
      *
-     * @param String $id Id of the schedule in question
+     * @param CronjobLog $log Log entry to delete
      */
-    public function delete_action($id, $page = 1)
+    public function delete_action(CronjobLog $log, $page = 0)
     {
-        CronjobLog::find($id)->delete();
+        $log->delete();
 
-        $message = sprintf(_('Der Logeintrag wurde gelöscht.'), $deleted);
-        PageLayout::postMessage(MessageBox::success($message));
-
-        $this->redirect('admin/cronjobs/logs/index/' . $page);
+        PageLayout::postSuccess(_('Der Logeintrag wurde gelöscht.'));
+        $this->redirect("admin/cronjobs/logs/index/{$page}");
     }
 
     /**
@@ -203,10 +178,10 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
 
             $n = count($logs);
             $message = sprintf(ngettext('%u Logeintrag wurde gelöscht.', '%u Logeinträge wurden gelöscht.', $n), $n);
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postSuccess($message);
         }
 
-        $this->redirect('admin/cronjobs/logs/index/' . $page);
+        $this->redirect("admin/cronjobs/logs/index/{$page}");
     }
 
 }

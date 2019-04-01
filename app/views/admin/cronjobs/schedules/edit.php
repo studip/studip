@@ -1,7 +1,7 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
-<?
-    $days_of_week = array(
+<?php
+    $days_of_week = [
         1 => _('Montag'),
         2 => _('Dienstag'),
         3 => _('Mittwoch'),
@@ -9,18 +9,17 @@
         5 => _('Freitag'),
         6 => _('Samstag'),
         7 => _('Sonntag'),
-    );
+    ];
 ?>
 
-
-<form action="<?= $controller->url_for('admin/cronjobs/schedules/edit', $schedule->schedule_id, $page) ?>" method="post" class="cronjobs-edit default">
+<form action="<?= $controller->edit($schedule, $page) ?>" method="post" class="cronjobs-edit default">
     <?= CSRFProtection::tokenTag() ?>
 
     <h1>
     <? if ($schedule->isNew()): ?>
         <?= _('Neuen Cronjob anlegen') ?>
     <? else: ?>
-        <?= sprintf(_('Cronjob "%s" bearbeiten'), $schedule->title) ?>
+        <?= htmlReady(sprintf(_('Cronjob "%s" bearbeiten'), $schedule->title)) ?>
     <? endif; ?>
     </h1>
 
@@ -235,6 +234,6 @@
 
     <footer class="buttons">
         <?= Button::createAccept(_('Speichern'), 'store') ?>
-        <?= LinkButton::createCancel('Abbrechen', $controller->url_for('admin/cronjobs/schedules')) ?>
+        <?= LinkButton::createCancel('Abbrechen', $controller->indexURL($page)) ?>
     </footer>
 </form>
