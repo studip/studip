@@ -533,7 +533,7 @@ class StudipSemTreeViewAdmin extends TreeView
             $rs = $view->get_query("view:SEM_TREE_GET_LONELY_FAK");
             $content .= "\n<p><form action=\"" . URLHelper::getLink($this->getSelf("cmd=InsertFak")) . "\" method=\"post\" class=\"default\">"
                 . CSRFProtection::tokenTag()
-                . '<div class="col-1"><label>'
+                . '<div><label>'
                 . _("Stud.IP-Fakultät einfügen")
                 . "\n<select style=\"width:200px;\" name=\"insert_fak\">";
             while($rs->next_record()){
