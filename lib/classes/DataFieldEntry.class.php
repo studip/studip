@@ -31,12 +31,23 @@ abstract class DataFieldEntry
     protected $language = '';
 
     /**
-     * Returns all supported datafield types
+     * Returns all supported datafield types.
      *
+     * @param string Object type of the datafield.
      * @return array of supported types
      */
-    public static function getSupportedTypes()
+    public static function getSupportedTypes($object_type = null)
     {
+        // no i18n fields for descriptors
+        if (in_array($object_type, ['moduldeskriptor', 'modulteildeskriptor'])) {
+            return array_diff(
+                self::$supported_types,
+                [
+                    'textlinei18n',
+                    'textareai18n',
+                    'textmarkupi18n'
+                ]);
+        }
         return self::$supported_types;
     }
 

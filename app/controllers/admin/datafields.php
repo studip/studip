@@ -61,19 +61,15 @@ class Admin_DatafieldsController extends AuthenticatedController
             );
         } else {
             $this->datafields_list = array(
-                'sem'          => DataField::getDataFields('sem'),
-                'inst'         => DataField::getDataFields('inst'),
-                'user'         => DataField::getDataFields('user'),
-                'userinstrole' => DataField::getDataFields('userinstrole'),
-                'usersemdata'  => DataField::getDataFields('usersemdata'),
-                'roleinstdata' => DataField::getDataFields('roleinstdata')
+                'sem'                 => DataField::getDataFields('sem'),
+                'inst'                => DataField::getDataFields('inst'),
+                'user'                => DataField::getDataFields('user'),
+                'userinstrole'        => DataField::getDataFields('userinstrole'),
+                'usersemdata'         => DataField::getDataFields('usersemdata'),
+                'roleinstdata'        => DataField::getDataFields('roleinstdata'),
+                'moduldeskriptor'     => DataField::getDataFields('moduldeskriptor'),
+                'modulteildeskriptor' => DataField::getDataFields('modulteildeskriptor')
             );
-
-            $this->datafields_list['moduldeskriptor'] =
-                    DataField::getDataFields('moduldeskriptor');
-            $this->datafields_list['modulteildeskriptor'] =
-                    DataField::getDataFields('modulteildeskriptor');
-
         }
 
         // set variables for view

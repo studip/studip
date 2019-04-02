@@ -23,7 +23,7 @@ use Studip\Button, Studip\LinkButton;
             <?= _('Feldtyp') ?>
 
             <select name="datafield_type" id="datafield_type">
-            <? foreach (DataFieldEntry::getSupportedTypes() as $param): ?>
+            <? foreach (DataFieldEntry::getSupportedTypes($item->object_type) as $param): ?>
                 <option <? if ($item->type === $param) echo 'selected'; ?>>
                      <?= htmlReady($param) ?>
                 </option>
