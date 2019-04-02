@@ -226,17 +226,17 @@ class ForumHelpers {
                     $document->addPage();
                 }
                 $first_page = false;
-                $document->addContent('<h1>'. _('Bereich') .': '. $entry['name_raw'] .'</h1>' . "\n");
+                $document->addContent('!! '. _('Bereich') . ": {$entry['name_raw']}\n");
                 $document->addContent($entry['content_raw']);
                 $document->addContent("\n\n");
             } else if ($entry['depth'] == 2) {
-                $document->addContent('<h2>'. _('Thema') .': '. $entry['name_raw'] .'</h2>' . "\n");
+                $document->addContent('! '. _('Thema') . ": {$entry['name_raw']}\n");
                 $document->addContent('%%' . sprintf(_('erstellt von %s am %s'), $author,
                     strftime('%A %d. %B %Y, %H:%M', (int)$entry['mkdate'])) . '%%' . "\n");
                 $document->addContent($entry['content_raw']);
                 $document->addContent("\n--\n");
             } else if ($entry['depth'] == 3) {
-                $document->addContent('**'.$entry['name_raw'] .'**' . "\n");
+                $document->addContent("**{$entry['name_raw']}**\n");
                 $document->addContent('%%' . sprintf(_('erstellt von %s am %s'), $author,
                     strftime('%A %d. %B %Y, %H:%M', (int)$entry['mkdate'])) . '%%' . "\n");
                 $document->addContent($entry['content_raw']);
