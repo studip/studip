@@ -49,7 +49,7 @@ class CalendarParserICalendar extends CalendarParser
      * @param String $data  The data to parse
      *
      */
-    public function parse($data, $ignore)
+    public function parse($data, $ignore = null)
     {
         global $_calendar_error, $PERS_TERMIN_KAT;
 
