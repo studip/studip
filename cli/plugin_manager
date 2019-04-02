@@ -109,6 +109,7 @@ if ($args) {
                 $schema_version = new DBSchemaVersion($manifest['pluginname']);
                 $migrator = new Migrator($plugindir . '/migrations', $schema_version);
                 $migrator->migrate_to(null);
+                SimpleORMap::expireTableScheme();
             }
 
             // now register the plugin in the database
@@ -179,6 +180,7 @@ if ($args) {
                             }
                         } else {
                             $migrator->migrate_to($target);
+                            SimpleORMap::expireTableScheme();
                         }
 
                         exit(0);
@@ -215,6 +217,7 @@ if ($args) {
                         $schema_version = new DBSchemaVersion($plugin['name']);
                         $migrator = new Migrator($plugindir . '/migrations', $schema_version);
                         $migrator->migrate_to(0);
+                        SimpleORMap::expireTableScheme();
                     }
 
                     echo 'Das Plugin '. $plugin['name'] .' wurde ausgetragen.' . "\n";

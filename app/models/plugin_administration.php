@@ -221,6 +221,7 @@ class PluginAdministration
             $schema_version = new DBSchemaVersion($pluginname);
             $migrator = new Migrator($plugindir . '/migrations', $schema_version);
             $migrator->migrate_to(null);
+            SimpleORMap::expireTableScheme();
         }
     }
 
