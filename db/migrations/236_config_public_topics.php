@@ -26,8 +26,6 @@ class ConfigPublicTopics extends Migration
                    FROM seminare WHERE public_topics = 1");
 
         $db->exec('ALTER TABLE seminare DROP public_topics');
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -42,7 +40,5 @@ class ConfigPublicTopics extends Migration
 
         $db->exec("DELETE config, config_values FROM config LEFT JOIN config_values USING(field)
                    WHERE field = 'COURSE_PUBLIC_TOPICS'");
-
-        SimpleORMap::expireTableScheme();
     }
 }

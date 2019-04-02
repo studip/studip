@@ -8,12 +8,12 @@
 
 class Tic6025Performance extends Migration
 {
-    function description()
+    public function description()
     {
         return _('Performance Tweaks');
     }
 
-    function up()
+    public function up()
     {
         $this->tryExecute("ALTER TABLE personal_notifications ADD INDEX (html_id)");
         $this->tryExecute("ALTER TABLE personal_notifications ADD INDEX (url(256))");
@@ -33,21 +33,14 @@ class Tic6025Performance extends Migration
 
         $this->tryExecute("ALTER TABLE `user_config` ADD INDEX (`field`, `value`(10))");
 
-        SimpleORMap::expireTableScheme();
-
     }
 
-    function tryExecute($sql)
+    private function tryExecute($sql)
     {
         try {
             DBManager::get()->exec($sql);
         } catch (PDOException $e) {
             $this->announce("sql failed: %s", $sql);
         }
-    }
-
-    function down()
-    {
-
     }
 }

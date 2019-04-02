@@ -11,8 +11,6 @@ class ExtendCourseCompletion extends Migration
                   SET `completion` = `completion` + 1
                   WHERE `completion` > 0";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -25,7 +23,5 @@ class ExtendCourseCompletion extends Migration
         $query = "ALTER TABLE `seminare`
                   CHANGE COLUMN `completion` `is_complete` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 }

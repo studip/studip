@@ -94,8 +94,6 @@ class Consultations extends Migration
                   )";
         DBManager::get()->exec($query);
 
-        SimpleORMap::expireTableScheme();
-
         $this->migratePlugin();
     }
 

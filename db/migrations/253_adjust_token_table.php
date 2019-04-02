@@ -17,8 +17,6 @@ class AdjustTokenTable extends Migration
                     MODIFY COLUMN `expiration` INT(11) UNSIGNED NOT NULL,
                     ADD PRIMARY KEY (`token`)";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -32,7 +30,5 @@ class AdjustTokenTable extends Migration
                     MODIFY COLUMN `expiration` INT(11) NOT NULL,
                     ADD PRIMARY KEY (`user_id`, `token`, `expiration`)";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 }

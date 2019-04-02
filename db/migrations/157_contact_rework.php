@@ -19,9 +19,9 @@ class ContactRework extends Migration
         DBManager::get()->exec("INSERT INTO `contact_new` SELECT `owner_id`,`user_id`, MAX(`calpermission`) FROM `contact` GROUP BY `owner_id`,`user_id`");
         DBManager::get()->exec("DROP TABLE `contact`");
         DBManager::get()->exec("RENAME TABLE `contact_new` TO `contact`");
+
         Config::get()->delete("FOAF_ENABLE");
         Config::get()->delete("FOAF_SHOW_IDENTITY");
-        Contact::expireTableScheme();
     }
 
     public function down()
@@ -45,5 +45,4 @@ class ContactRework extends Migration
             ) ENGINE=MyISAM;");
         DBManager::get()->exec("ALTER TABLE contact ADD COLUMN buddy tinyint(4) NOT NULL DEFAULT '1'");
     }
-
 }

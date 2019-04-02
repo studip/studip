@@ -19,8 +19,6 @@ class Tic8335PaperRelatedTopics extends Migration
         $query = "ALTER TABLE `themen`
                     ADD COLUMN `paper_related` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `priority`";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -31,8 +29,6 @@ class Tic8335PaperRelatedTopics extends Migration
 
         $query = "ALTER TABLE `themen` DROP COLUMN `paper_related`";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 
     private function hasColumn()

@@ -15,8 +15,6 @@ class ChangeOpengraphDataPk extends Migration
                   ADD COLUMN `opengraph_id` INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST,
                   ADD UNIQUE KEY `url` (`url`(512))";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -27,7 +25,5 @@ class ChangeOpengraphDataPk extends Migration
                   DROP COLUMN `opengraph_id`,
                   ADD PRIMARY KEY (`url`)";
         DBManager::get()->exec($query);
-
-        SimpleORMap::expireTableScheme();
     }
 }

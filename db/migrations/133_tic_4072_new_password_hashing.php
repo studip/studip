@@ -1,13 +1,12 @@
-<?
+<?php
 Class Tic4072NewPasswordHashing extends Migration {
 
-    function description()
+    public function description()
     {
         return 'hashes all existing passwords with new algo';
     }
 
-
-    function up()
+    public function up()
     {
         $db = DBManager::get();
         $db->exec("ALTER TABLE `auth_user_md5` CHANGE `password` `password` VARBINARY( 64 ) NOT NULL DEFAULT ''");
@@ -17,10 +16,9 @@ Class Tic4072NewPasswordHashing extends Migration {
             $new_pwd = $hasher->HashPassword($row['password']);
             $pwd_up->execute(array($new_pwd, $row['user_id']));
         }
-        SimpleORMap::expireTableScheme();
     }
 
-    function down()
+    public function down()
     {
         $db = DBManager::get();
         $db->exec("ALTER TABLE `auth_user_md5` CHANGE `password` `password` VARCHAR( 32 ) NOT NULL DEFAULT ''");

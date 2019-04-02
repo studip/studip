@@ -23,15 +23,11 @@ class Biest8034ConfigSwitchForChildInsts extends Migration
         ");
 
         $stmt->execute($config_data);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
     {
         DBManager::get()->exec("DELETE FROM config WHERE field = 'MY_INSTITUTES_INCLUDE_CHILDREN'");
         DBManager::get()->exec("DELETE FROM config_values WHERE field = 'MY_INSTITUTES_INCLUDE_CHILDREN'");
-
-        SimpleORMap::expireTableScheme();
     }
 }

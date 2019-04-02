@@ -109,7 +109,5 @@ class LtiConsumer extends Migration
                    WHERE pluginclassname = 'LtiToolModule'");
 
         $db->exec('DROP table lti_grade, lti_tool, lti_data');
-
-        SimpleORMap::expireTableScheme();
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 class Utf8Conversion extends Migration
 {
     public function description()
@@ -164,8 +163,6 @@ class Utf8Conversion extends Migration
 
         // drop helper-function
         $db->exec("DROP FUNCTION IF EXISTS entity_decode");
-
-        SimpleORMap::expireTableScheme();
     }
 
     private function legacy_studip_utf8encode($data)

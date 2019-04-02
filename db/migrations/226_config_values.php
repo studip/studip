@@ -74,8 +74,6 @@ class ConfigValues extends Migration
                    FROM seminare WHERE student_mailing = 1");
 
         $db->exec('ALTER TABLE seminare DROP student_mailing');
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -132,7 +130,5 @@ class ConfigValues extends Migration
                    ADD parent_id varchar(32) COLLATE latin1_bin NOT NULL DEFAULT '' AFTER config_id,
                    ADD position int(11) NOT NULL DEFAULT 0 AFTER section,
                    ADD message_template varchar(255) NOT NULL DEFAULT '' AFTER comment");
-
-        SimpleORMap::expireTableScheme();
     }
 }

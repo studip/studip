@@ -28,8 +28,6 @@ class StEP00299Statusgroups extends Migration
         DBManager::get()->execute("ALTER TABLE `statusgruppen`
             ADD `selfassign_start` INT NOT NULL DEFAULT 0 AFTER `selfassign`,
             ADD `selfassign_end` INT NOT NULL DEFAULT 0 AFTER `selfassign_start`");
-
-        SimpleORMap::expireTableScheme();
     }
 
     /**
@@ -38,8 +36,6 @@ class StEP00299Statusgroups extends Migration
     public function down()
     {
         DBManager::get()->execute("ALTER TABLE `statusgruppen` DROP `selfassign_start`");
-
-        SimpleORMap::expireTableScheme();
     }
 
 }

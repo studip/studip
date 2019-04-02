@@ -28,8 +28,6 @@ class Tic7804WikiPermissions extends Migration
                     edit_restricted TINYINT(1) NOT NULL DEFAULT 0,
                     PRIMARY KEY (range_id, keyword)
                    ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -42,7 +40,5 @@ class Tic7804WikiPermissions extends Migration
                    FROM config
                    LEFT JOIN config_values USING (field)
                    WHERE field = 'WIKI_COURSE_EDIT_RESTRICTED'");
-
-        SimpleORMap::expireTableScheme();
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 class DialogFromNotification extends Migration
 {
     public function description()
@@ -13,8 +12,6 @@ class DialogFromNotification extends Migration
             ALTER TABLE personal_notifications
             ADD `dialog` TINYINT NOT NULL DEFAULT '0' AFTER `avatar`
         ");
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -23,7 +20,5 @@ class DialogFromNotification extends Migration
             ALTER TABLE personal_notifications
             DROP `dialog`
         ");
-
-        SimpleORMap::expireTableScheme();
     }
 }

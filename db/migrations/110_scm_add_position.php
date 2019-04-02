@@ -1,13 +1,13 @@
 <?php
 class ScmAddPosition extends Migration
 {
-    function description()
+    public function description()
     {
         return 'Adds a new field "position" to the scm table in order to get '
               .'rid of an old, ugly-ish workaround that abused mkdate.';
     }
 
-    function up()
+    public function up()
     {
         $query = "ALTER TABLE `scm`
                   ADD COLUMN `position` INT(11) UNSIGNED NOT NULL DEFAULT 0";
@@ -35,12 +35,9 @@ class ScmAddPosition extends Migration
             $update_statement->bindValue(':scm_id', $row['scm_id']);
             $update_statement->execute();
         }
-        
-        // Expire orm cache, so the change can take effect
-        SimpleORMap::expireTableScheme();
     }
 
-    function down()
+    public function down()
     {
         $query = "ALTER TABLE `scm`
                   DROP COLUMN `position`";

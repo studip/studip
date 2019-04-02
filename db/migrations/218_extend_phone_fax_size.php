@@ -1,5 +1,4 @@
 <?php
-
 class ExtendPhoneFaxSize extends Migration
 {
     public function description()
@@ -17,8 +16,6 @@ class ExtendPhoneFaxSize extends Migration
                                          CHANGE privatcell privatcell varchar(255) NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE user_inst CHANGE Telefon Telefon varchar(255) NOT NULL DEFAULT '',
                                          CHANGE Fax Fax varchar(255) NOT NULL DEFAULT ''");
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -31,7 +28,5 @@ class ExtendPhoneFaxSize extends Migration
                                          CHANGE privatcell privatcell varchar(32) NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE user_inst CHANGE Telefon Telefon varchar(32) NOT NULL DEFAULT '',
                                          CHANGE Fax Fax varchar(32) NOT NULL DEFAULT ''");
-
-        SimpleORMap::expireTableScheme();
     }
 }

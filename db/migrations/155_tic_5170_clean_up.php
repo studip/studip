@@ -1,13 +1,12 @@
 <?php
-
-class Tic5170CleanUp extends Migration {
-
-    function description()
+class Tic5170CleanUp extends Migration
+{
+    public function description()
     {
         return 'cleans up a bit.';
     }
 
-    function up()
+    public function up()
     {
         $db = DbManager::get();
         $db->exec("ALTER TABLE `message` DROP `chat_id`, DROP `readed`");
@@ -22,13 +21,5 @@ class Tic5170CleanUp extends Migration {
         $db->exec("DROP TABLE rss_feeds");
         $db->exec("DELETE FROM user_visibility_settings WHERE plugin IS NOT NULL");
         $db->exec("DELETE FROM user_visibility_settings WHERE identifier = 'plugins'");
-        SimpleORMap::expireTableScheme();
     }
-
-    function down()
-    {
-
-    }
-
 }
-

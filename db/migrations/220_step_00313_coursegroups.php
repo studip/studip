@@ -13,8 +13,6 @@ class StEP00313Coursegroups extends Migration
             '%user ordnet Veranstaltung %sem(%affected) der Gruppe %sem(%coaffected) zu.', null);
         StudipLog::registerAction('SEM_DEL_FROM_GROUP', 'Veranstaltung aus Gruppe entfernen',
             '%user entfernt Veranstaltung %sem(%affected) aus der Gruppe %sem(%coaffected).', null);
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -24,7 +22,5 @@ class StEP00313Coursegroups extends Migration
 
         StudipLog::unregisterAction('SEM_ADD_TO_GROUP');
         StudipLog::unregisterAction('SEM_DEL_FROM_GROUP');
-
-        SimpleORMap::expireTableScheme();
     }
 }

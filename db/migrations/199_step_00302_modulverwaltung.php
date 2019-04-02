@@ -697,8 +697,6 @@ class Step00302Modulverwaltung extends Migration
         $db->exec("ALTER TABLE `user_studiengang` ADD `version_id` VARCHAR(32) "
                 . "NULL DEFAULT NULL AFTER `abschluss_id`");
 
-        SimpleORMap::expireTableScheme();
-
         // Step 3: LVGroup Assign
         if (!CourseWizardStepRegistry::findByClassName('LVGroupsWizardStep')) {
             CourseWizardStepRegistry::registerStep('LVGruppen', 'LVGroupsWizardStep', 3, true);
@@ -893,9 +891,6 @@ class Step00302Modulverwaltung extends Migration
         StudipLog::unregisterAction('MVV_STG_STGTEIL_NEW');
         StudipLog::unregisterAction('MVV_STG_STGTEIL_UPDATE');
         StudipLog::unregisterAction('MVV_STG_STGTEIL_DEL');
-
-
-        SimpleORMap::expireTableScheme();
     }
 
 }

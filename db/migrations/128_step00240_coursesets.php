@@ -4,12 +4,12 @@ require_once 'lib/classes/admission/CourseSet.class.php';
 
 class Step00240CourseSets extends Migration
 {
-    function description()
+    public function description()
     {
         return 'add tables needed for storing new admission related data';
     }
 
-    function up()
+    public function up()
     {
         $db = DBManager::get();
 
@@ -417,8 +417,6 @@ class Step00240CourseSets extends Migration
         }
         $db->exec("ALTER TABLE `seminar_user` ADD INDEX (`user_id`, `Seminar_id`, `status`)");
 
-        SimpleORMap::expireTableScheme();
-
         // Insert global configuration: who may edit course sets?
         $db->exec("INSERT IGNORE INTO `config`
             (`config_id`, `parent_id`, `field`, `value`, `is_default`,
@@ -443,7 +441,7 @@ class Step00240CourseSets extends Migration
             '', '')");
     }
 
-    function down()
+    public function down()
     {
         $db = DBManager::get();
         // delete all tables related with new admission structure
@@ -500,4 +498,3 @@ class Step00240CourseSets extends Migration
         return $cs;
     }
 }
-?>

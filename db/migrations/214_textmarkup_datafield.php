@@ -1,5 +1,4 @@
 <?php
-
 class TextmarkupDatafield extends Migration
 {
     public function description()
@@ -12,7 +11,6 @@ class TextmarkupDatafield extends Migration
         DBManager::get()->exec("ALTER TABLE datafields CHANGE type
                                 type ENUM('bool','textline','textarea','textmarkup','selectbox','date','time','email','phone','radio','combo','link','selectboxmultiple')
                                 NOT NULL DEFAULT 'textline'");
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -20,6 +18,5 @@ class TextmarkupDatafield extends Migration
         DBManager::get()->exec("ALTER TABLE datafields CHANGE type
                                 type ENUM('bool','textline','textarea','selectbox','date','time','email','phone','radio','combo','link','selectboxmultiple')
                                 NOT NULL DEFAULT 'textline'");
-        SimpleORMap::expireTableScheme();
     }
 }

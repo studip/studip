@@ -342,13 +342,10 @@ class Step00315MvvI18n extends Migration
                 'textareai18n','textmarkup','textmarkupi18n','selectbox',
                 'date','time','email','phone','radio','combo','link','selectboxmultiple')
             CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'textline'");
-        $db->execute("ALTER TABLE `datafields_entries`  
+        $db->execute("ALTER TABLE `datafields_entries`
                       ADD `lang` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' AFTER `sec_range_id`");
         $db->execute('ALTER TABLE `datafields_entries` '
                 . 'DROP PRIMARY KEY, ADD PRIMARY KEY (`datafield_id`, `range_id`, `sec_range_id`, `lang`)');
-
-        SimpleORMap::expireTableScheme();
-
     }
 
     public function down()
@@ -487,7 +484,7 @@ class Step00315MvvI18n extends Migration
 
         // mvv_modulteil_deskriptor
         $db->execute("ALTER TABLE `mvv_modulteil_deskriptor` ADD `sprache` VARCHAR(32) NULL DEFAULT NULL AFTER `modulteil_id`");
-        SimpleORMap::expireTableScheme();
+
         $languages = $db->fetchFirst("SELECT distinct `lang` FROM `i18n`");
         $stmt = $db->prepare("SELECT DISTINCT(`object_id`) FROM `i18n` WHERE `table` = 'mvv_modulteil_deskriptor' AND `lang` = ?");
         foreach ($languages as $language) {
@@ -510,7 +507,6 @@ class Step00315MvvI18n extends Migration
 
         // mvv_modul_deskriptor
         $db->execute("ALTER TABLE `mvv_modul_deskriptor` ADD `sprache` VARCHAR(32) NULL DEFAULT NULL AFTER `modul_id`");
-        SimpleORMap::expireTableScheme();
 
         $stmt = $db->prepare("SELECT DISTINCT(`object_id`) FROM `i18n` WHERE `table` = 'mvv_modul_deskriptor' AND `lang` = ?");
         foreach ($languages as $language) {
@@ -643,8 +639,6 @@ class Step00315MvvI18n extends Migration
         $db->execute('ALTER TABLE `datafields_entries` '
                 . 'DROP PRIMARY KEY, ADD PRIMARY KEY (`datafield_id`, `range_id`, `sec_range_id`) USING BTREE');
         $db->exec('ALTER TABLE `datafields_entries` DROP `lang`');
-
-        SimpleORMap::expireTableScheme();
     }
 
 }

@@ -50,7 +50,6 @@ class MigrateQuestionnaireQuestions extends Migration
             ADD  `etask_task_id` INT NOT NULL
             AFTER  `questionnaire_id`
         ");
-        SimpleORMap::expireTableScheme();
     }
 
     private function addQuestionTypeAndDataFromQuestionsTable()
@@ -60,7 +59,6 @@ class MigrateQuestionnaireQuestions extends Migration
             ADD  `questiondata` text NOT NULL AFTER  `questionnaire_id`,
             ADD  `questiontype` varchar(64) NOT NULL AFTER  `questionnaire_id`
         ");
-        SimpleORMap::expireTableScheme();
     }
 
     private function connectTaskToQuestion($taskID, $questionID)
@@ -260,7 +258,6 @@ class MigrateQuestionnaireQuestions extends Migration
             ALTER TABLE `questionnaire_questions`
             DROP `etask_task_id`
         ");
-        SimpleORMap::expireTableScheme();
     }
 
     private function removeQuestionTypeAndDataFromQuestionsTable()
@@ -270,7 +267,6 @@ class MigrateQuestionnaireQuestions extends Migration
             DROP `questiontype`,
             DROP `questiondata`
         ");
-        SimpleORMap::expireTableScheme();
     }
 
     private function unmigrateQuestion($questionAry)

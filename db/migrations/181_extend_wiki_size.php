@@ -1,5 +1,4 @@
 <?php
-
 class ExtendWikiSize extends Migration
 {
     public function description()
@@ -20,8 +19,6 @@ class ExtendWikiSize extends Migration
         $db->exec("ALTER TABLE wiki_links CHANGE from_keyword from_keyword varchar(255) BINARY NOT NULL DEFAULT '',
                                           CHANGE to_keyword to_keyword varchar(255) BINARY NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE wiki_locks CHANGE keyword keyword varchar(255) BINARY NOT NULL DEFAULT ''");
-
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -37,7 +34,5 @@ class ExtendWikiSize extends Migration
         $db->exec("ALTER TABLE wiki_links CHANGE from_keyword from_keyword char(128) BINARY NOT NULL DEFAULT '',
                                           CHANGE to_keyword to_keyword char(128) BINARY NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE wiki_locks CHANGE keyword keyword varchar(128) BINARY NOT NULL DEFAULT ''");
-
-        SimpleORMap::expireTableScheme();
     }
 }

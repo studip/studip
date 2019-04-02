@@ -1,14 +1,12 @@
 <?php
-
 class Step00223LockRules extends Migration
 {
-
-    function description()
+    public function description()
     {
         return 'Step00223: extend db table lock_rules';
     }
 
-    function up()
+    public function up()
     {
         $db = DBManager::get();
         $db->exec("ALTER TABLE `lock_rules` CHANGE `permission` `permission` ENUM( 'autor', 'tutor', 'dozent', 'admin', 'root' ) NOT NULL DEFAULT 'dozent'");
@@ -16,10 +14,9 @@ class Step00223LockRules extends Migration
         $db->exec("ALTER TABLE `lock_rules` ADD `user_id` VARCHAR( 32 ) NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE `user_info` ADD `lock_rule` VARCHAR( 32 ) NOT NULL DEFAULT ''");
         $db->exec("ALTER TABLE `Institute` ADD `lock_rule` VARCHAR( 32 ) NOT NULL DEFAULT ''");
-        SimpleORMap::expireTableScheme();
     }
 
-    function down()
+    public function down()
     {
         $db = DBManager::get();
         $db->exec("ALTER TABLE `lock_rules` CHANGE `permission` `permission` ENUM( 'tutor', 'dozent', 'admin', 'root' ) NOT NULL DEFAULT 'dozent'");
@@ -27,6 +24,5 @@ class Step00223LockRules extends Migration
         $db->exec("ALTER TABLE `lock_rules` DROP `user_id`");
         $db->exec("ALTER TABLE `user_info` DROP `lock_rule`");
         $db->exec("ALTER TABLE `Institute` DROP `lock_rule`");
-        SimpleORMap::expireTableScheme();
     }
 }

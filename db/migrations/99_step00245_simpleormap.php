@@ -1,20 +1,13 @@
 <?php
-
 class Step00245Simpleormap extends Migration
 {
-
-
-    function description()
+    public function description()
     {
         return 'refreshes cache for SimpleORMap';
     }
 
-    function up()
+    public function up()
     {
         SimpleORMap::expireTableScheme();
-    }
-
-    function down()
-    {
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 class AddEvaldate extends Migration
 {
     public function description()
@@ -12,7 +11,6 @@ class AddEvaldate extends Migration
         $db = DBManager::get();
 
         $db->exec('ALTER TABLE evalanswer_user ADD evaldate int(11) NOT NULL default 0');
-        SimpleORMap::expireTableScheme();
     }
 
     public function down()
@@ -20,6 +18,5 @@ class AddEvaldate extends Migration
         $db = DBManager::get();
 
         $db->exec('ALTER TABLE evalanswer_user DROP evaldate');
-        SimpleORMap::expireTableScheme();
     }
 }
