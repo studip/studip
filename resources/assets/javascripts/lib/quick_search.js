@@ -1,3 +1,4 @@
+/*jslint esversion: 6*/
 /* ------------------------------------------------------------------------
  * QuickSearch inputs
  * ------------------------------------------------------------------------ */
@@ -37,10 +38,12 @@ const QuickSearch = {
      * @return: void
      */
     autocomplete: function(name, url, func, disabled) {
-        if (typeof disabled === 'undefined' || disabled !== true) {
+        if (disabled === undefined || disabled !== true) {
             var appendTo = 'body';
-            if (jQuery('#' + name + '_frame').length) {
-                appendTo = '#' + name + '_frame';
+            if (jQuery(`#${name}_frame`).length > 0) {
+                appendTo = `#${name}_frame`;
+            } else if ($(`#${name}`).closest('.ui-dialog').length > 0) {
+                appendTo = $(`#${name}`).closest('.ui-dialog');
             }
             jQuery('#' + name).autocomplete({
                 delay: 500,
