@@ -980,7 +980,7 @@ class MessagesController extends AuthenticatedController {
             _('Alle Nachrichten'),
             $this->url_for("messages/{$action}"),
             null,
-            ['class' => 'tag']
+            ['class' => 'tag all-tags']
         )->setActive(!Request::submitted("tag"));
         if (empty($this->tags)) {
             $folderwidget->style = 'display:none';

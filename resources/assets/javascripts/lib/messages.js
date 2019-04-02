@@ -225,19 +225,21 @@ const Messages = {
         });
     },
     setAllTags: function(tags) {
-        var container = jQuery('#messages-tags ul').empty(),
-            template = _.template('<li><a href="<%= url %>" class="tag"><%= tag %></a></li>');
+        var container = $('#messages-tags ul');
+        var template = _.template('<li><a href="<%= url %>" class="tag"><%= tag %></a></li>');
 
-        jQuery.each(tags, function(index, tag) {
-            var html = template({
+        container.children('li:not(:has(.all-tags))').remove();
+
+        jQuery.each(tags, (index, tag) => {
+            let html = template({
                 url: STUDIP.URLHelper.getURL('dispatch.php/messages/overview', { tag: tag }),
                 tag: tag.charAt(0).toUpperCase() + tag.slice(1) // ucfirst
             });
-            jQuery(container).append(html);
+            $(container).append(html);
         });
-        jQuery('#messages-tags')
+        $('#messages-tags')
             .toggle(tags.length !== 0)
-            .find('li:has(.tag)')
+            .find('li:has(.tag):not(.ui-droppable)')
             .each(Messages.createDroppable);
     },
     createDroppable: function(element) {
