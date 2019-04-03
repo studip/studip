@@ -67,10 +67,26 @@ namespace {
 
     // if in dev mode and webpack dev server is running, adjust assets url
     if (Studip\ENV === 'development') {
+        $wds_config = json_decode(
+            file_get_contents("{$STUDIP_BASE_PATH}/config/webpack.dev-server.config.json")
+        );
+
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if (@socket_connect($socket, '127.0.0.1', 8123)) {
-            $GLOBALS['ASSETS_URL'] = 'http://localhost:8123/';
+        if (@socket_connect($socket, $wds_config->host, $wds_config->port)) {
             socket_close($socket);
+
+            $assets_url = sprintf(
+                "%s://%s:%u/%s/",
+                $wds_config->protocol,
+                $wds_config->host,
+                $wds_config->port,
+                basename(realpath(__DIR__ . '/..'))
+            );
+
+            $probe_headers = get_headers("{$assets_url}images/logos/studip-logo.svg");
+            if (strpos($probe_headers[0], '200') !== false) {
+                $GLOBALS['ASSETS_URL'] = $assets_url;
+            }
         }
     }
 
