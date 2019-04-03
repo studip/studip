@@ -54,6 +54,11 @@ class StudipFormat extends TextFormat
      */
     public static function addStudipMarkup($name, $start, $end, $callback, $before = null)
     {
+        // Assume null for empty string
+        if ($end === '') {
+            $end = null;
+        }
+
         $inserted = false;
         foreach (self::$studip_rules as $rule_name => $rule) {
             if ($rule_name === $before) {
@@ -66,9 +71,7 @@ class StudipFormat extends TextFormat
             }
         }
         if (!$inserted) {
-            self::$studip_rules[$name] = $end
-                    ? compact('start', 'end', 'callback')
-                    : compact('start', 'callback');
+            self::$studip_rules[$name] = compact('start', 'end', 'callback');
         }
     }
 
