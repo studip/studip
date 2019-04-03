@@ -149,7 +149,7 @@ class WidgetHelper
      */
     public static function setAsInitialPositions($range_id, $group)
     {
-        DBManager::get()->execute('DELETE FROM widget_default WHERE `perm` = ?', array($group));
+        DBManager::get()->execute("DELETE FROM widget_default WHERE `perm` = ?", array($group));
         DBManager::get()->execute('INSERT INTO widget_default (SELECT pluginid, col, position, ? as perm  FROM widget_user WHERE range_id = ?)', array($group, $range_id));
     }
 
@@ -158,7 +158,20 @@ class WidgetHelper
      */
     public static function setInitialPositions()
     {
-        DBManager::get()->execute('INSERT INTO widget_user (pluginid, position, range_id, col) (SELECT pluginid, position, ?, col as perm  FROM widget_default WHERE perm = ?)', array($GLOBALS['user']->id, $GLOBALS['perm']->get_perm()));
+        $query = "INSERT INTO widget_user (pluginid, position, range_id, col)
+                  SELECT pluginid, position, :user_id, col
+                  AS perm
+                  FROM widget_default
+                  WHERE perm = :perm
+
+                  UNION
+
+                  -- Dummy entry to allow no widgets
+                  SELECT -1, 0, :user_id, 2";
+        DBManager::get()->execute($query, [
+            ':user_id' => $GLOBALS['user']->id,
+            ':perm'    => $GLOBALS['perm']->get_perm(),
+        ]);
     }
 
     /**
@@ -338,7 +351,7 @@ class WidgetHelper
     {
         if (!isset(self::$userWidgets[$user_id])) {
             $statement = DBManager::get()->prepare("
-                SELECT * 
+                SELECT *
                 FROM widget_user
                 WHERE range_id = :user_id
             ");
