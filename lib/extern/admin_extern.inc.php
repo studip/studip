@@ -205,6 +205,10 @@ $module_types_ordered = ExternModule::GetOrderedModuleTypes();
 $choose_module_form = '';
 // remove global configuration
 array_shift($module_types_ordered);
+// count the total extern config
+$total_modules_conf = 0;
+$max_modules_conf = count($module_types_ordered) * $EXTERN_MAX_CONFIGURATIONS;
+
 foreach ($module_types_ordered as $i) {
     if (isset($configurations[$GLOBALS['EXTERN_MODULE_TYPES'][$i]['module']])
         && count($configurations[$GLOBALS['EXTERN_MODULE_TYPES'][$i]['module']]) < $EXTERN_MAX_CONFIGURATIONS
@@ -212,6 +216,7 @@ foreach ($module_types_ordered as $i) {
     {
         $choose_module_form .= "<option value=\"{$GLOBALS['EXTERN_MODULE_TYPES'][$i]['module']}\">"
                 . $GLOBALS['EXTERN_MODULE_TYPES'][$i]['name'] . "</option>\n";
+        $total_modules_conf += count($configurations[$GLOBALS['EXTERN_MODULE_TYPES'][$i]['module']]);
     }
     if (isset($configurations[$GLOBALS['EXTERN_MODULE_TYPES'][$i]["module"]])) {
         $have_config = TRUE;
@@ -317,12 +322,11 @@ if ($choose_module_form != '') {
         }
     }
 }
-else {
+elseif($total_modules_conf >= $max_modules_conf){
     echo "<blockquote>";
     echo _("Sie haben bereits für alle Module die maximale Anzahl von Konfigurationen angelegt. Um eine neue Konfiguration anzulegen, müssen Sie erst eine bestehende im gewünschten Modul löschen.");
     echo "</blockquote>\n";
 }
-
 
 if (!$have_config) {
     echo "<blockquote>\n";
