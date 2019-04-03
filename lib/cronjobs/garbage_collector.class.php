@@ -52,6 +52,11 @@ class GarbageCollectorJob extends CronJob
             $db->exec("DELETE FROM message WHERE message_id IN(" . $db->quote($to_delete) . ")");
         }
 
+        // Remove outdated opengraph urls
+        $query = "DELETE FROM `opengraphdata`
+                  WHERE `lastupdate` < UNIX_TIMESTAMP(NOW() - INTERVAL 1 WEEK)";
+        DBManager::get()->exec($query);
+
         //delete old attachments of non-sent and deleted messages:
         //A folder is old and not attached to a message when it has the
         //range type 'message', belongs to the folder type 'MessageFolder',
