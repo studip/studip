@@ -61,6 +61,5 @@ if (isset($_SERVER['argv'])) {
         }
     } else {
         $migrator->migrate_to($target);
-        SimpleORMap::expireTableScheme();
     }
 }

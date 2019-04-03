@@ -218,6 +218,9 @@ class Migrator
             $this->log("\n\nmigration: %s took %s s\n\n", $class, round(microtime(true) - $time_start, 3));
             $this->schema_version->set($this->is_down() ? $version - 1 : $version);
         }
+
+        // Reset SORM cache
+        SimpleORMap::expireTableScheme();
     }
 
     /**

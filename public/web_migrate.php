@@ -56,7 +56,6 @@ if (Request::submitted('start')) {
     $lock->lock(['timestamp' => time(), 'user_id' => $GLOBALS['user']->id]);
 
     $migrator->migrate_to($target);
-    SimpleORMap::expireTableScheme();
 
     $lock->release();
 
