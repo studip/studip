@@ -65,3 +65,12 @@ $(document).on('change', '#settings-notifications :checkbox', function() {
         this.checked = other.filter(':not(:checked)').length === 0;
     });
 });
+
+$(document).on('input', '#new_password', function() {
+    var message = $(this).data().message;
+    if (this.validity.patternMismatch) {
+        this.setCustomValidity(message);
+    } else {
+        this.setCustomValidity('');
+    }
+});
