@@ -1,5 +1,4 @@
 <?php
-# Lifter010: TODO
 NotificationCenter::postNotification('PageWillRender', $body_id ? : PageLayout::getBodyElementId());
 $navigation = PageLayout::getTabNavigation();
 $tab_root_path = PageLayout::getTabNavigationPath();
@@ -79,7 +78,7 @@ if ($navigation) {
     </script>
 </head>
 
-<body id="<?= $body_id ? $body_id : PageLayout::getBodyElementId() ?>">
+<body id="<?= $body_id ?: PageLayout::getBodyElementId() ?>">
 <div id="layout_wrapper">
     <? SkipLinks::insertContainer() ?>
     <? SkipLinks::addIndex(_("Hauptinhalt"), 'layout_content', 100, true) ?>
