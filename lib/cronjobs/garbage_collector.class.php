@@ -54,7 +54,7 @@ class GarbageCollectorJob extends CronJob
 
         // Remove outdated opengraph urls
         $query = "DELETE FROM `opengraphdata`
-                  WHERE `lastupdate` < UNIX_TIMESTAMP(NOW() - INTERVAL 1 WEEK)";
+                  WHERE `last_update` < UNIX_TIMESTAMP(NOW() - INTERVAL 1 WEEK)";
         DBManager::get()->exec($query);
 
         //delete old attachments of non-sent and deleted messages:
