@@ -404,14 +404,22 @@ class StudipLitList extends TreeAbstract implements PrivacyObject {
         return array("visible_list" => $rs->f("visible_list"),"invisible_list" => $rs->f("invisible_list"));
     }
 
-    function GetListsByRange($range_id, $format = 'default'){
+    public static function GetListsByRange($range_id, $format = 'default')
+    {
         $view = DbView::getView('literatur');
         $view->params[] = $range_id;
         $rs = $view->get_query("view:LIT_GET_LIST_BY_RANGE");
-        $list_ids = array();
+
+        $list_ids = [];
         while ($rs->next_record()){
-            if($format == 'default') $list_ids[$rs->f("list_id")] =  $rs->f("name");
-            if($format == 'form_options') $list_ids[] = array('name' => $rs->f("name"), 'value' => $rs->f("list_id"));
+            if ($format === 'default') {
+                $list_ids[$rs->f('list_id')] = $rs->f('name');
+            } elseif ($format === 'form_options') {
+                $list_ids[] = [
+                    'name' => $rs->f('name'),
+                    'value' => $rs->f('list_id')
+                ];
+            }
         }
         return $list_ids;
     }

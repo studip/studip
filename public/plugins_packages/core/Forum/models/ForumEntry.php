@@ -546,7 +546,7 @@ class ForumEntry  implements PrivacyObject
      * @param array $postings
      * @return array
      */
-    public function getLastPostings($postings)
+    public static function getLastPostings($postings)
     {
         foreach ($postings as $key => $posting) {
 
@@ -759,7 +759,7 @@ class ForumEntry  implements PrivacyObject
      *
      * @return array list of postings
      */
-    public function getLatestSince($parent_id, $start_date, $end_date)
+    public static function getLatestSince($parent_id, $start_date, $end_date)
     {
         $constraint = ForumEntry::getConstraints($parent_id);
 
@@ -978,7 +978,7 @@ class ForumEntry  implements PrivacyObject
      *
      * @return void
      */
-    public function delete($topic_id)
+    public static function delete($topic_id)
     {
         $post   = ForumEntry::getConstraints($topic_id);
         $parent = ForumEntry::getConstraints(ForumEntry::getParentTopicId($topic_id));
@@ -1205,7 +1205,7 @@ class ForumEntry  implements PrivacyObject
      *
      * @return void
      */
-    public function checkRootEntry($seminar_id)
+    public static function checkRootEntry($seminar_id)
     {
         setTempLanguage();
 

@@ -214,7 +214,9 @@ function kill_format ($text) {
     // remove Stud.IP markup
     $text = preg_replace("'\n?\r\n?'", "\n", $text);
     // wir wandeln [code] einfach in [pre][nop] um und sind ein Problem los ... :-)
-    $text = preg_replace_callback ( "|(\[/?code\])|isU", create_function('$a', 'return ($a[0] == "[code]")? "[pre][nop]":"[/nop][/pre]";'), $text);
+    $text = preg_replace_callback("|(\[/?code\])|isU", function ($a) {
+        return $a[0] === '[code]' ? '[pre][nop]' : '[/nop][/pre]';
+    }, $text);
 
     $pattern = array(
                     "'(^|\n)\!{1,4}(.+)$'m",      // Ueberschriften

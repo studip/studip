@@ -384,9 +384,9 @@ class StudipLitListViewAdmin extends TreeView
         return $content;
     }
 
-
-    function getTableRowForRootInLiteratur() {
-        $user_lists = $this->tree->GetListsByRange($GLOBALS['auth']->auth['uid']);
+    public function getTableRowForRootInLiteratur()
+    {
+        $user_lists = StudipLitList::GetListsByRange($GLOBALS['user']->id);
         $content = '';
         $content .= "\n<tr><td class=\"table_row_even\" align=\"left\">";
         $content .= "\n<form class=\"default\" name=\"userlist_form\" action=\"" . URLHelper::getLink($this->getSelf("cmd=CopyUserList")) . "\" method=\"POST\">";

@@ -590,12 +590,12 @@ class Visibility
      *
      * @return int Default visibility level.
      */
-    function get_default_homepage_visibility($user_id = null)
+    public static function get_default_homepage_visibility($user_id = null)
     {
         self::getUser($user_id);
         $query = "SELECT default_homepage_visibility FROM user_visibility WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
 
         /*
          * If we have no default visibility set by the user itself we load the
@@ -604,7 +604,7 @@ class Visibility
          * by a migration.
          */
         if (!$visibility = $statement->fetchColumn()) {
-            $def = Config::getInstance()->getValue('HOMEPAGE_VISIBILITY_DEFAULT');
+            $def = Config::get()->HOMEPAGE_VISIBILITY_DEFAULT;
             $consts = get_defined_constants();
             $visibility = $consts[$def];
         }
