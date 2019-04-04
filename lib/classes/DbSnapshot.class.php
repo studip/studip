@@ -36,7 +36,7 @@
  **/
 class DbSnapshot
 {
-    
+
     /**
      * the used db abstraction class
      *
@@ -101,7 +101,7 @@ class DbSnapshot
      * @var      boolean $debug
      */
     var $debug = false;
-    
+
     /**
      * Constructor
      *
@@ -117,9 +117,9 @@ class DbSnapshot
             $this->dbResult = $dbresult;
             $this->getSnapshot();
         }
-        
+
     }
-    
+
     function isDbResult()
     {
         if (!is_subclass_of($this->dbResult, $this->DbClass))
@@ -129,7 +129,7 @@ class DbSnapshot
 
         return true;
     }
-    
+
     public function getSnapshot()
     {
         if ($this->isDbResult()) {
@@ -148,7 +148,7 @@ class DbSnapshot
 
         return false;
     }
-    
+
     public function nextRow()
     {
         if (!$this->numRows)
@@ -163,7 +163,7 @@ class DbSnapshot
         else
             return false;
     }
-    
+
     public function resetPos()
     {
         $this->pos = false;
@@ -187,7 +187,7 @@ class DbSnapshot
 
         return ($row === false) ? $this->result[$this->pos] : $this->result[$row];
     }
-    
+
     public function getFieldList()
     {
         if (!$this->numRows)
@@ -199,7 +199,7 @@ class DbSnapshot
 
         return $ret;
     }
-    
+
     public function getField($field = 0)
     {
         if (!$this->numRows)
@@ -207,7 +207,7 @@ class DbSnapshot
 
         return ($this->pos === false) ? false : $this->result[$this->pos][$field];
     }
-    
+
     public function getRows($fieldname = 0)
     {
         if (!$this->numRows)
@@ -219,7 +219,7 @@ class DbSnapshot
 
         return $ret;
     }
-    
+
     public function getDistinctRows($fieldname)
     {
         if (!$this->isField($fieldname))
@@ -232,7 +232,7 @@ class DbSnapshot
 
         return $ret;
     }
-    
+
     public function sortRows($fieldname = 0, $order = "ASC", $stype = false)
     {
         if (!$this->numRows)
@@ -242,16 +242,19 @@ class DbSnapshot
             $sortfunc = ($order == "ASC") ? "asort" : "arsort";
             $sortfunc($sortfields, $stype);
         } else {
-            uasort($sortfields, create_function('$a,$b', '
-                    $a = mb_strtolower($a);
-                    $a = str_replace("ä","ae",$a);
-                    $a = str_replace("ö","oe",$a);
-                    $a = str_replace("ü","ue",$a);
-                    $b = mb_strtolower($b);
-                    $b = str_replace("ä","ae",$b);
-                    $b = str_replace("ö","oe",$b);
-                    $b = str_replace("ü","ue",$b);
-                    return strnatcasecmp($a,$b);'));
+            uasort($sortfields, function ($a,$b) {
+                $a = mb_strtolower($a);
+                $a = str_replace('ä', 'ae', $a);
+                $a = str_replace('ö', 'oe', $a);
+                $a = str_replace('ü', 'ue', $a);
+
+                $b = mb_strtolower($b);
+                $b = str_replace('ä', 'ae', $b);
+                $b = str_replace('ö', 'oe', $b);
+                $b = str_replace('ü', 'ue', $b);
+
+                return strnatcasecmp($a, $b);
+            });
             if ($order == "DESC") {
                 $sortfields = array_reverse($sortfields, true);
             }
@@ -265,7 +268,7 @@ class DbSnapshot
 
         return true;
     }
-    
+
     public function searchFields($fieldname, $searchstr)
     {
         if (!$this->numRows)
@@ -282,7 +285,7 @@ class DbSnapshot
 
         return $ret;
     }
-    
+
     public function getGroupedResult($group_by_field, $fields_to_group = null)
     {
         if (!$this->numRows)

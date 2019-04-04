@@ -386,18 +386,18 @@ class ExternSemBrowseTemplate extends SemBrowse {
             }
 
             switch ($this->sem_browse_data["group_by"]){
-                    case 0:
+                case 0:
                     krsort($group_by_data, SORT_NUMERIC);
                     break;
 
-                    case 1:
-                    uksort($group_by_data, create_function('$a,$b',
-                            '$the_tree = TreeAbstract::GetInstance("StudipSemTree", false);
-                            return (int)($the_tree->tree_data[$a]["index"] - $the_tree->tree_data[$b]["index"]);
-                            '));
+                case 1:
+                    uksort($group_by_data, function ($a, $b) {
+                        $the_tree = TreeAbstract::GetInstance('StudipSemTree', false);
+                        return $the_tree->tree_data[$a]['index'] - $the_tree->tree_data[$b]['index'];
+                    });
                     break;
 
-                    case 3:
+                case 3:
                     if ($order = $this->module->config->getValue("ReplaceTextSemType", "order")) {
                         foreach ((array) $order as $position) {
                             if (isset($group_by_data[$position]))
@@ -407,13 +407,17 @@ class ExternSemBrowseTemplate extends SemBrowse {
                         unset($group_by_data_tmp);
                     }
                     else {
-                        uksort($group_by_data, create_function('$a,$b',
-                                'global $SEM_CLASS,$SEM_TYPE;
-                                return strnatcasecmp($SEM_TYPE[$a]["name"]." (". $SEM_CLASS[$SEM_TYPE[$a]["class"]]["name"].")",
-                                                $SEM_TYPE[$b]["name"]." (". $SEM_CLASS[$SEM_TYPE[$b]["class"]]["name"].")");'));
+                        uksort($group_by_data, function ($a, $b) {
+                            global $SEM_CLASS,$SEM_TYPE;
+                            return strnatcasecmp(
+                                $SEM_TYPE[$a]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$a]['class']]['name'] . ')',
+                                $SEM_TYPE[$b]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$b]['class']]['name'] . ')'
+                            );
+                        });
                     }
                     break;
-                    default:
+
+                default:
                     uksort($group_by_data, 'strnatcasecmp');
                     break;
 

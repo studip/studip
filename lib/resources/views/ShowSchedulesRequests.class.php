@@ -183,9 +183,13 @@ class ShowSchedulesRequests extends ShowSchedules{
                     $events[$event->getId()] = $event;
                 }
             }
-            uasort($events, create_function('$a,$b', 'return $a->getBegin() < $b->getBegin() ? -1 : 1;'));
+            uasort($events, function ($a, $b) {
+                return $a->getBegin() - $b->getBegin();
+            });
             $check->checkOverlap($events, $result, "assign_id");
-            $assignObjectsWeek = array_filter($assignObjects, create_function('$a', 'return $a->getBegin() > '.$start_time.' && $a->getEnd() < '.$end_time.';'));
+            $assignObjectsWeek = array_filter($assignObjects, function ($a) use ($start_time, $end_time) {
+                return $a->getBegin() > $start_time && $a->getEnd() < $end_time;
+            });
             foreach($assignObjectsWeek as $ao){
                 $name = $ao->getOwnerName();
                 if($reqObj->getTerminId()){
@@ -205,7 +209,10 @@ class ShowSchedulesRequests extends ShowSchedules{
                     $color = 5;
                 }
                 foreach($ao->getEvents() as $event){
-                    $current_events = array_filter($events, create_function('$a', 'return date("wHi", $a->getBegin()) == '.date("wHi", $event->getBegin()).' && date("wHi", $a->getEnd()) == '.date("wHi", $event->getEnd()).';'));
+                    $current_events = array_filter($events, function ($a) use ($event) {
+                        return date('wHi', $a->getBegin()) == date('wHi', $event->getBegin())
+                            && date('wHi', $a->getEnd()) == date('wHi', $event->getEnd());
+                    });
                     if(count($current_events) > 1){
                         $ce = array_values($current_events);
                         $add_info .= '<br>' . sprintf(_("%s Termine, %s - %s"), count($ce), date("d.m", $ce[0]->getBegin()), date("d.m", $ce[count($ce) - 1]->getBegin()));

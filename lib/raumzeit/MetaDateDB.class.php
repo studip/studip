@@ -37,7 +37,7 @@
  */
 class MetaDateDB
 {
-    function has_dates($metadate_id, $seminar_id, $filterStart = 0, $filterEnd = 0)
+    public static function has_dates($metadate_id, $seminar_id, $filterStart = 0, $filterEnd = 0)
     {
         $query = "SELECT 1 FROM termine WHERE range_id = ? AND metadate_id = ?";
         $parameters = array($seminar_id, $metadate_id);

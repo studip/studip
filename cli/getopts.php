@@ -10,7 +10,7 @@
 
         License: Creative Commons Attribution 3.0 Unported License
         http://creativecommons.org/licenses/by/3.0/
-            
+
     */
 
     function getopts($params, $args=NULL, $raw=false){
@@ -28,46 +28,42 @@
         if(!is_bool($raw)){
             trigger_error('Invalid raw option', E_USER_ERROR);
         }
-    
-        // mb_substr, which returns '' in case of an empty mb_substr (usually false)
-        $mb_substr = create_function(
-            '$string,$start,$length=NULL', // is not used, only for definition
 
-            '$ret = call_user_func_array(\'mb_substr\', func_get_args());'.
-            'if($ret === false){'.
-            '   return \'\';'.
-            '}else{'.
-            '   return $ret;'.
-            '}'
-        );
+        // mb_substr, which returns '' in case of an empty mb_substr (usually false)
+        $mb_substr = function ($string, $start, $length = null) { // is not used, only for definition
+            $ret = call_user_func_array('mb_substr', func_get_args());
+            if ($ret === false){
+               return '';
+            } else {
+                return $ret;
+            }
+        };
 
         // get arg (either implicit or the following)
-        $get_arg = create_function(
-            '&$next,&$args,&$num', // pass by reference: num may be changed, others: performance
+        $get_arg = function (&$next, &$args, &$num) { // pass by reference: num may be changed, others: performance
+            if ($next !== true) {
+                return $next;
+            } elseif ($num + 1 >= count($args)){
+                return false;
+            } else {
+                $num += 1;
+                return $args[$num];
+            }
+        };
 
-            'if($next !== true){'.
-            '   return $next;'.
-            '}else if($num+1 >= count($args)){'.
-            '   return false;'.
-            '}else{'.
-            '   $num++;'.
-            '   return $args[$num];'.
-            '}'
-        );
-    
         // all types & subtypes
         $types_subtypes = array('S' => 'stcr', 'V' => 'smar', 'O' => 'smar', 'A' => 'sr');
-        
+
         // output
         $Ores = array();
         $Oerr = array();
         $Oags = array();
-        
+
         // parsed options
         $short = array();
         $long = array();
         $type = array();
-        
+
         // parse options
         foreach($params AS $opt => $names){
             if(is_string($names)){
@@ -76,7 +72,7 @@
             if(!is_array($names) || count($names) < 2){
                 trigger_error('Invalid type/name(s) to param "'.$opt.'"', E_USER_ERROR);
             }
-            
+
             $ty = array_shift($names);
             if(!is_string($ty) || mb_strlen($ty) < 1 || mb_strlen($ty) > 2){
                 trigger_error('Invalid type to param "'.$opt.'"', E_USER_ERROR);
@@ -94,7 +90,7 @@
                 }
             }
             $type[$opt] = $ty0.$ty1;
-            
+
             foreach($names AS $name){
                 if(!is_string($name)){
                     trigger_error('Invalid names to param "'.$opt.'"', E_USER_ERROR);
@@ -114,14 +110,14 @@
                     $short[$r[2]] = $opt;
                 }
             }
-            
+
             $Ores[$opt] = array();
         }
-        
+
         // parse arguments
         for($num=0; $num<count($args); $num++){
             $arg = $args[$num];
-            
+
             if($arg == '--'){
                 // end of options, copy all other args
                 $num++;
@@ -137,7 +133,7 @@
                 $Oags[] = $arg;
                 continue;
             }
-            
+
             // this arg is an option!
             if($arg[1] == '-'){
                 // long option
@@ -284,7 +280,7 @@
                         // (already done)
                     }
                     break;
-            
+
                 case 'Va':
                 case 'Oa':
                     // false if none, direct (string) if only one, array otherwise
@@ -304,16 +300,16 @@
                     // as array
                     // (already done)
                     break;
-            
+
                 }
             }
         }
-        
+
         // errors?
         if(count($Oerr) == 0){
             $Oerr = false;
         }
-        
+
         // result
         return array($Oerr, $Ores, $Oags);
     }

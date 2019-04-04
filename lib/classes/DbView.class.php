@@ -261,8 +261,8 @@ class DbView
 
     public function get_temp_table($sub_query)
     {
-        $id    = $this->get_uniqid();
-        $pk    = ($this->pk) ? "PRIMARY KEY($this->pk)" : "auto_" . $id . " INT NOT NULL AUTO_INCREMENT PRIMARY KEY";
+        $id    = self::get_uniqid();
+        $pk    = $this->pk ? "PRIMARY KEY($this->pk)" : "auto_" . $id . " INT NOT NULL AUTO_INCREMENT PRIMARY KEY";
         $query = "CREATE TEMPORARY TABLE temp_$id ($pk) ENGINE=$this->temp_table_type $sub_query";
         $this->db->query($query);
 
@@ -285,7 +285,7 @@ class DbView
         return $value_list;
     }
 
-    public function get_uniqid()
+    public static function get_uniqid()
     {
         mt_srand((double)microtime() * 1000000);
 

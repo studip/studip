@@ -5,12 +5,11 @@
 # Lifter010: TODO
 /**
 * ExternConfig.class.php
-* 
+*
 * Abstract class for storing configurations.
-* 
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
-* @access       public
 * @modulegroup  extern
 * @module       ExternConfig
 * @package  studip_extern
@@ -37,29 +36,30 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+
 
-class ExternConfig {
+class ExternConfig
+{
+    public $id = null;
+    public $config = [];
+    public $global_id = null;
+    public $module_type;
+    public $module_name;
+    public $config_name;
+    public $range_id;
 
-    var $id = NULL;
-    var $config = array();
-    var $global_id = NULL;
-    var $module_type;
-    var $module_name;
-    var $config_name;
-    var $range_id;
-
-    function GetInstance ($range_id, $module_name, $config_id = '') {
+    public static function GetInstance ($range_id, $module_name, $config_id = '')
+    {
         $class_name = 'ExternConfig' . ucfirst(mb_strtolower($GLOBALS['EXTERN_CONFIG_STORAGE_CONTAINER']));
         $instance = new $class_name($range_id, $module_name, $config_id);
         return $instance;
     }
-    
+
     /**
     *
     */
-    function __construct ($range_id, $module_name, $config_id = '') {
-        
-        if ($config_id != '') {
-            if ($configuration = ExternConfig::GetConfigurationMetaData($range_id, $config_id)) {
+    public function __construct ($range_id, $module_name, $config_id = '')
+    {
+        if ($config_id) {
+            if ($configuration = self::GetConfigurationMetaData($range_id, $config_id)) {
                 $this->id = $config_id;
                 $this->module_type = $configuration['type'];
                 $this->module_name = $configuration['module_name'];
@@ -79,55 +79,46 @@ class ExternConfig {
                 }
             }
         }
-        
     }
-    
-    /**
-    *
-    */
-    function getName () {
+
+    public function getName ()
+    {
         return $this->module_name;
     }
-    
-    /**
-    *
-    */
-    function getConfigName () {
+
+    public function getConfigName ()
+    {
         return $this->config_name;
     }
 
-    /**
-    *
-    */
-    function getType () {
+    public function getType ()
+    {
         global $EXTERN_MODULE_TYPES;
         foreach ($EXTERN_MODULE_TYPES as $key => $known_module) {
             if ($known_module['name'] == $this->module_type)
                 return $key;
         }
-        
+
         return FALSE;
     }
 
-    /**
-    *
-    */
-    function getTypeName () {
+    public function getTypeName ()
+    {
         return $this->module_type;
     }
 
-    /**
-    *
-    */
-    function &getConfiguration () {
+    public function &getConfiguration ()
+    {
         return $this->config;
     }
-    
-    function setConfiguration ($config) {
+
+    public function setConfiguration ($config)
+    {
         $this->config = $config;
     }
-    
-    function setDefaultConfiguration ($config) {
+
+    public function setDefaultConfiguration ($config)
+    {
         foreach ($config as $element_name => $element) {
             if (is_array($element)) foreach ($element as $attribute => $value) {
                 if ((string)$value{0} == '|') {
@@ -140,7 +131,7 @@ class ExternConfig {
 
         $this->id = $this->makeId();
         $this->config_name = $this->createConfigName($this->range_id);
-        
+
         // take the new configuration, write the name in the configuration
         // insert it into the database and store it (method of storaging deepends on
         // object type)
@@ -153,46 +144,36 @@ class ExternConfig {
             ExternModule::printError();
         }
     }
-    
-    /**
-    *
-    */
-    function getParameterNames () {}
 
-    /**
-    *
-    */
-    
-    function getAllParameterNames () {}
+    public function getParameterNames ()
+    {
+    }
 
-    /**
-    *
-    */
-    function getValue ($element_name, $attribute) {
-        
+    public function getAllParameterNames ()
+    {
+    }
+
+    public function getValue ($element_name, $attribute)
+    {
         return $this->config[$element_name][$attribute];
     }
 
-    /**
-    *
-    */
-    function setValue ($element_name, $attribute, $value) {
+    public function setValue ($element_name, $attribute, $value)
+    {
         if (is_array($value)) {
             ksort($value, SORT_NUMERIC);
         }
         $this->config[$element_name][$attribute] = $value;
     }
-    
-    /**
-    *
-    */
-    function getAttributes ($element_name, $tag, $second_set = FALSE) {
+
+    public function getAttributes ($element_name, $tag, $second_set = false)
+    {
         if (!is_array($this->config[$element_name])) {
             return '';
         }
-            
+
         $attributes = '';
-        
+
         reset($this->config);
         if ($second_set) {
             foreach ($this->config[$element_name] as $tag_attribute_name => $value) {
@@ -219,15 +200,18 @@ class ExternConfig {
                 }
             }
         }
-        
+
         return $attributes;
     }
-    
-    // Returns a complete HTML-tag with attributes
-    function getTag ($element_name, $tag, $second_set = FALSE) {
+
+    /**
+     * Returns a complete HTML-tag with attributes
+     */
+    public function getTag ($element_name, $tag, $second_set = false)
+    {
         return "<$tag" . $this->getAttributes($element_name, $tag, $second_set) . ">";
     }
-    
+
     /**
     * Restores a configuration with all registered elements and their attributes.
     * The restored configuration contains only the attributes of the current
@@ -238,14 +222,15 @@ class ExternConfig {
     * @param        string   $element_name  The name of the element
     * @param        string[]     $values        These values overwrites the values in current configuration
     */
-    function restore ($module, $element_name = '', $values = '') {
-        if ($values != '' && $module) {
+    public function restore($module, $element_name = '', $values = '')
+    {
+        if ($values && $module) {
             if ($element_name) {
                 $module_elements[$element_name] = $module->elements[$element_name];
             } else {
                 $module_elements = $module->elements;
             }
-        
+
             foreach ($module_elements as $element_name => $element_obj) {
                 if ($element_obj->isEditable()) {
                     $attributes = $element_obj->getAttributes();
@@ -264,76 +249,63 @@ class ExternConfig {
             }
         }
     }
-    
-    /**
-    *
-    */
-    function store () {
+
+    public function store ()
+    {
         $this->permCheck();
     }
-    
-    /**
-    *
-    */
-    function parse () {
-    
+
+    public function parse ()
+    {
     }
-    
-    /**
-    *
-    */
-    function makeId () {
+
+    public function makeId ()
+    {
         mt_srand((double) microtime() * 1000000);
-        
+
         return md5(uniqid(mt_rand(), 1));
     }
-    
-    /**
-    *
-    */
-    function getId () {
+
+    public function getId ()
+    {
         return $this->id;
     }
-    
-    /**
-    *
-    */
-    function createConfigName ($range_id) {
-        $configurations = ExternConfig::GetAllConfigurations($range_id, $this->module_type);
-        
+
+    public function createConfigName ($range_id)
+    {
+        $configurations = self::GetAllConfigurations($range_id, $this->module_type);
+
         $config_name_prefix = _("Konfiguration") . ' ';
         $config_name_suffix = 1;
         $config_name = $config_name_prefix . $config_name_suffix;
         $all_config_names = "";
-        
+
         if (is_array($configurations[$this->module_name]) && count($configurations[$this->module_name])) {
             foreach ($configurations[$this->module_name] as $configuration) {
                 $all_config_names .= $configuration['name'];
             }
         }
-        
+
         while(mb_stristr($all_config_names, $config_name)) {
             $config_name = $config_name_prefix . $config_name_suffix;
             $config_name_suffix++;
         }
-        
+
         return $config_name;
     }
-    
-    /**
-    *
-    */
-    function setGlobalConfig ($global_config, $registered_elements) {
+
+    public function setGlobalConfig ($global_config, $registered_elements)
+    {
         $this->global_id = $global_config->getId();
-        
+
         // the name of the global configuration has to be overwritten by the
         // the name of the main configuration
         $global_config->config['Main']['name'] = $this->config['Main']['name'];
-        
+
         // The Main-element is not a registered element, because it is part of every
         // module. So register it now.
         $registered_elements[] = 'Main';
-        
+
         foreach ($registered_elements as $name => $element) {
             if ((is_int($name) || !$name) && $this->config[$element]) {
                 foreach ($this->config[$element] as $attribute => $value) {
@@ -351,15 +323,17 @@ class ExternConfig {
             }
         }
     }
-    
-    protected function updateConfiguration () {
+
+    protected function updateConfiguration ()
+    {
         $stmt = DBManager::get()->prepare("UPDATE extern_config SET chdate = ?
             WHERE config_id = ? AND range_id = ?");
         return $stmt->execute(array(time(), $this->id, $this->range_id));
     }
-    
-    function insertConfiguration () {
-        $this->permCheck();        
+
+    public function insertConfiguration ()
+    {
+        $this->permCheck();
         $query = "SELECT COUNT(config_id) AS count FROM extern_config WHERE ";
         $query .= "range_id = ? AND config_type = ?";
         $parameters = array($this->range_id, $this->module_type);
@@ -367,13 +341,14 @@ class ExternConfig {
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         if ($row === false && $row['count'] > $GLOBALS['EXTERN_MAX_CONFIGURATIONS']) {
-            return FALSE;
+            return false;
         }
-        
+
         return true;
     }
-    
-    function deleteConfiguration () {
+
+    public function deleteConfiguration ()
+    {
         $query = "SELECT config_id FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ?";
         $parameters = array($this->id ,$this->range_id);
@@ -386,22 +361,22 @@ class ExternConfig {
             $parameters = array($this->id ,$this->range_id);
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
-    
-    function copy ($range_id) {
-        $copy_config = ExternConfig::GetInstance($range_id, $this->module_name);
+
+    public function copy ($range_id)
+    {
+        $copy_config = self::GetInstance($range_id, $this->module_name);
         $copy_config->setDefaultConfiguration($this->getConfiguration());
-        
+
         return $copy_config;
     }
-    
+
     /**
     * Returns an array of meta data for all configurations of an institute
     *
-    * @access   public
     * @param    string  $range_id
     * @param    string  $type optional parameter to check the right type of
     * the range_id (the right type of "Einrichtung" sem or fak)
@@ -409,15 +384,16 @@ class ExternConfig {
     * @return   array       ("name" the name of the configuration, "id" the config_id,
     * "is_default" TRUE if it is the default configuration)
     */
-    function GetAllConfigurations ($range_id, $type = NULL) {
-        $all_configs = array();
+    public static function GetAllConfigurations ($range_id, $type = null)
+    {
+        $all_configs = [];
         $query = "SELECT * FROM extern_config WHERE range_id = ? ";
-        $parameters = array($range_id);
+        $parameters = [$range_id];
         if ($type) {
             $query .= "AND config_type = ? ";
             $parameters[] = $type;
         }
-        
+
         $query .= 'ORDER BY name ASC';
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
@@ -425,15 +401,19 @@ class ExternConfig {
             // return registered modules only!
             $module = $GLOBALS['EXTERN_MODULE_TYPES'][$row['config_type']]['module'];
             if ($module) {
-                $all_configs[$module][$row['config_id']] = array('name' => $row['name'],
-                        'id' => $row['config_id'], 'is_default' => $row['is_standard']);
+                $all_configs[$module][$row['config_id']] = [
+                    'name'       => $row['name'],
+                    'id'         => $row['config_id'],
+                    'is_default' => $row['is_standard'],
+                ];
             }
         }
 
         return $all_configs;
     }
 
-    function GetConfigurationMetaData ($range_id, $config_id) {
+    public static function GetConfigurationMetaData ($range_id, $config_id)
+    {
         $query = "SELECT * FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ? ";
         $parameters = array($config_id, $range_id);
@@ -450,11 +430,11 @@ class ExternConfig {
         } else {
             return FALSE;
         }
-    
+
         return $config;
     }
-    
-    function ExistConfiguration ($range_id, $config_id)
+
+    public static function ExistConfiguration ($range_id, $config_id)
     {
         $query = "SELECT config_id
                   FROM extern_config
@@ -463,8 +443,9 @@ class ExternConfig {
         $statement->execute(array($config_id, $range_id));
         return $statement->fetchColumn() > 0;
     }
-    
-    function SetStandardConfiguration ($range_id, $config_id) {
+
+    public static function SetStandardConfiguration ($range_id, $config_id)
+    {
         $query = "SELECT config_type, is_standard FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ? ";
         $parameters = array($config_id, $range_id);
@@ -475,7 +456,7 @@ class ExternConfig {
             if ($row['is_standard'] == 0) {
                 $query = "SELECT config_id FROM extern_config WHERE range_id = ? ";
                 $query .= "AND is_standard=1 AND config_type=" . $row['config_type'];
-    
+
                 $params = array($range_id);
                 $state = DBManager::get()->prepare($query);
                 $state->execute($params);
@@ -483,7 +464,7 @@ class ExternConfig {
                 if ($res) {
                     $query = "UPDATE extern_config SET is_standard=0 WHERE config_id='";
                     $query .= $res['config_id'] . "'";
-        
+
                     $state = DBManager::get()->prepare($query);
                     $state->execute();
                     if ($state->rowCount() != 1) {
@@ -498,10 +479,10 @@ class ExternConfig {
                 if ($state->rowCount() != 1) {
                     return FALSE;
                 }
-            
+
                 return TRUE;
             }
-        
+
             $query = "UPDATE extern_config SET is_standard=1 WHERE config_id = ? ";
             $params = array($config_id);
             $state = DBManager::get()->prepare($query);
@@ -512,11 +493,12 @@ class ExternConfig {
         } else {
             return FALSE;
         }
-        
+
         return TRUE;
     }
-    
-    function DeleteAllConfigurations ($range_id) {
+
+    public static function DeleteAllConfigurations ($range_id)
+    {
         $query = "SELECT config_id FROM extern_config WHERE range_id = ?";
         $params = array($range_id);
         $state = DBManager::get()->prepare($query);
@@ -524,16 +506,17 @@ class ExternConfig {
         $i = 0;
         while($res = $state->fetch(PDO::FETCH_ASSOC))
         {
-            $config = ExternConfig::getInstance($range_id, '', $res['config_id']);
+            $config = self::getInstance($range_id, '', $res['config_id']);
             if ($config->deleteConfiguration()) {
                 $i++;
             }
-        }    
+        }
         return $i;
     }
 
-    
-    function GetInfo ($range_id, $config_id) {
+
+    public static function GetInfo ($range_id, $config_id)
+    {
         $query = "SELECT * FROM extern_config WHERE config_id = ? ";
         $query .= " AND range_id = ? ";
         $params = array($config_id, $range_id);
@@ -541,7 +524,7 @@ class ExternConfig {
         $state->execute($params);
         $res = $state->fetch(PDO::FETCH_ASSOC);
         if ($res) {
-            $global_config = ExternConfig::GetGlobalConfiguration($range_id);
+            $global_config = self::GetGlobalConfiguration($range_id);
             $module_type = $res['config_type'];
             $module = $GLOBALS["EXTERN_MODULE_TYPES"][$res['config_type']]["module"];
             $level = $GLOBALS["EXTERN_MODULE_TYPES"][$res['config_type']]["level"];
@@ -555,7 +538,7 @@ class ExternConfig {
             $sri .= "&lt;range id=\"$range_id\" /&gt;";
             $sri .= "\n&lt;/studip_remote_include&gt;";
             $link_sri = $GLOBALS["EXTERN_SERVER_NAME"] . 'extern.php?page_url=' . _("URL_DER_INCLUDE_SEITE");
-        
+
             if ($level) {
                 $link = $GLOBALS["EXTERN_SERVER_NAME"] . "extern.php?module=$module";
                 if ($global_config) {
@@ -577,7 +560,7 @@ class ExternConfig {
                 } else {
                     $link_br .= "&config_id=$config_id<br>&range_id=$range_id";
                 }
-            
+
                 $info = array("module_type" => $module_type, "module_name" => $module,
                     "name" => $res['name'], "make_date" => $make,
                     "change_date" => $change, "link" => $link, "link_stucture" => $link_structure,
@@ -589,28 +572,24 @@ class ExternConfig {
                     "change_date" => $change,   "sri" => $sri, "link_sri" => $link_sri,
                     "level" => $level);
             }
-        
+
             return $info;
         }
-    
-        return FALSE;   
-    }
 
-    function GetGlobalConfiguration ($range_id) {
-        $query = "SELECT config_id FROM extern_config WHERE range_id = ? ";
-        $query .= "AND config_type = 0 AND is_standard = 1";
-        $params = array($range_id);
-        $state = DBManager::get()->prepare($query);
-        $state->execute($params);
-        $res = $state->fetchColumn();
-        if ($res) {
-            return ($res);
-        }
-    
         return FALSE;
     }
 
-    function ChangeName ($range_id, $module_type, $config_id, $old_name, $new_name)
+    public static function GetGlobalConfiguration ($range_id)
+    {
+        $query = "SELECT config_id
+                  FROM extern_config
+                  WHERE range_id = ? AND config_type = 0 AND is_standard = 1";
+        $statement = DBManager::get()->prepare($query);
+        $statement->execute([$range_id]);
+        return $statement->fetchColumn() ?: false;
+    }
+
+    public static function ChangeName ($range_id, $module_type, $config_id, $old_name, $new_name)
     {
         $query = "SELECT 1
                   FROM extern_config
@@ -618,50 +597,48 @@ class ExternConfig {
         $statement = DBManager::get()->prepare($query);
         $statement->execute(array($range_id, $module_type, $new_name));
         if ($statement->fetchColumn()) {
-            return FALSE;
+            return false;
         }
-    
+
         $query = "UPDATE extern_config
-                  SET name = ?, chdate = UNIX_TIMESTAMP() 
+                  SET name = ?, chdate = UNIX_TIMESTAMP()
                   WHERE config_id = ? AND range_id = ? ";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_name, $config_id, $range_id));
+        $statement->execute([$new_name, $config_id, $range_id]);
         return $statement->rowCount() > 0;
     }
 
-    function GetConfigurationByName ($range_id, $module_type, $name) {
-        $query = "SELECT config_id FROM extern_config WHERE range_id = ? AND ";
-        $query .= "config_type = ? AND name = ? ";
-        $params = array($range_id, $module_type, $name);
-        $state = DBManager::get()->prepare($query);
-        $state->execute($params);
-        $res = $state->fetchColumn();
-        if ($res) {
-            return $res;
-        }
-    
-        return FALSE;
+    public static function GetConfigurationByName ($range_id, $module_type, $name)
+    {
+        $query = "SELECT config_id
+                  FROM extern_config
+                  WHERE range_id = ?
+                    AND config_type = ?
+                    AND name = ?";
+        $statement = DBManager::get()->prepare($query);
+        $statement->execute([$range_id, $module_type, $name]);
+        return $statement->fetchColumn() ?: false;
     }
-    
-    function GetStandardConfiguration ($range_id, $type) {
+
+    public static function GetStandardConfiguration ($range_id, $type)
+    {
         // pick the first one if none is explicitly marked
-        $query = "SELECT config_id FROM extern_config WHERE range_id = ? AND ";
-        $query .= "config_type = ? ORDER BY is_standard DESC, name";
-        $params = array($range_id, $type);
-        $state = DBManager::get()->prepare($query);
-        $state->execute($params);
-        $res = $state->fetchColumn();
-        if ($res) {
-            return $res;
-        }
-        return FALSE;
+        $query = "SELECT config_id
+                  FROM extern_config
+                  WHERE range_id = ?
+                    AND config_type = ?
+                  ORDER BY is_standard DESC, name";
+        $statement = DBManager::get()->prepare($query);
+        $statement->execute([$range_id, $type]);
+        return $statement->fetchColumn() ?: false;
     }
-    
-    function GetInstitutesWithConfigurations ($check_view = null) {
-        $inst_array = array();
-        $c_types = array();
+
+    public static function GetInstitutesWithConfigurations($check_view = null)
+    {
+        $inst_array = [];
+        $c_types = [];
         foreach ($GLOBALS['EXTERN_MODULE_TYPES'] as $id => $conf_type) {
-            if (is_null($check_view) || in_array($check_view, $conf_type['view'])) {
+            if ($check_view === null || in_array($check_view, $conf_type['view'])) {
                 $c_types[] = $id;
             }
         }
@@ -672,24 +649,29 @@ class ExternConfig {
                   WHERE i.Institut_id = ec.range_id AND ec.config_type IN (?)
                   ORDER BY Name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($c_types ?: ''));
+        $statement->execute([$c_types ?: '']);
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $inst_array[$row['Institut_id']] = array('institut_id' => $row['Institut_id'], 'fakultaets_id' => $row['fakultaets_id'], 'name' => $row['Name']);
+            $inst_array[$row['Institut_id']] = [
+                'institut_id'   => $row['Institut_id'],
+                'fakultaets_id' => $row['fakultaets_id'],
+                'name'          => $row['Name'],
+            ];
         }
         return $inst_array;
     }
-    
-    private function permCheck () {
+
+    private function permCheck ()
+    {
         // check for sufficient rights
-        if ($this->range_id == 'studip' && $GLOBALS['perm']->have_perm('root')) {
+        if ($this->range_id === 'studip' && $GLOBALS['perm']->have_perm('root')) {
             return true;
         }
         if ($GLOBALS['perm']->have_studip_perm('admin', $this->range_id)) {
             return true;
         }
-        
-        throw new Exception(_("Sie verfügen nicht über ausreichend Rechte für diese Aktion."));
+
+        throw new Exception(_('Sie verfügen nicht über ausreichend Rechte für diese Aktion.'));
     }
-    
+
 }

@@ -80,10 +80,11 @@ class StudipStudyAreaSelection {
      *
      * @return void
      */
-    private function sortAreas() {
-        $lambda = create_function('$a, $b', 'return strcoll($a->getPath(" · "), '.
-                                                           '$b->getPath(" · "));');
-        uasort($this->areas, $lambda);
+    private function sortAreas()
+    {
+        uasort($this->areas, function ($a, $b) {
+            return strcoll($a->getPath(' · '), $b->getPath(' · '));
+        });
     }
 
 

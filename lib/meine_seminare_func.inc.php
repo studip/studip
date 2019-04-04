@@ -80,39 +80,47 @@ function sort_groups($group_field, &$groups)
         break;
 
         case 'sem_tree_id':
-            uksort($groups, create_function('$a,$b',
-                '$the_tree = TreeAbstract::GetInstance("StudipSemTree", array("build_index" => true));
-                return (int)($the_tree->tree_data[$a]["index"] - $the_tree->tree_data[$b]["index"]);
-                '));
+            uksort($groups, function ($a, $b) {
+                $the_tree = TreeAbstract::GetInstance('StudipSemTree', ['build_index' => true]);
+                return $the_tree->tree_data[$a]['index'] - $the_tree->tree_data[$b]['index'];
+            });
         break;
 
         case 'sem_status':
-        uksort($groups, create_function('$a,$b',
-                'global $SEM_CLASS,$SEM_TYPE;
-                return strnatcasecmp($SEM_TYPE[$a]["name"]." (". $SEM_CLASS[$SEM_TYPE[$a]["class"]]["name"].")",
-                                    $SEM_TYPE[$b]["name"]." (". $SEM_CLASS[$SEM_TYPE[$b]["class"]]["name"].")");'));
-        break;
+            uksort($groups, function ($a, $b) {
+                global $SEM_CLASS,$SEM_TYPE;
+                return strnatcasecmp(
+                    $SEM_TYPE[$a]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$a]['class']]['name'] . ')',
+                    $SEM_TYPE[$b]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$b]['class']]['name'] . ')'
+                );
+            });
+            break;
 
         case 'dozent_id':
-        uksort($groups, create_function('$a,$b',
-                'return strnatcasecmp(str_replace(array("ä","ö","ü"), array("ae","oe","ue"), mb_strtolower(get_fullname($a, "no_title_short"))),
-                                    str_replace(array("ä","ö","ü"), array("ae","oe","ue"), mb_strtolower(get_fullname($b, "no_title_short"))));'));
-        break;
+            uksort($groups, function ($a,$b) {
+                $replacements = ['ä' => 'ae', 'ö' => 'oe', 'ü' => 'ue'];
+                return strnatcasecmp(
+                    str_replace(array_keys($replacements), array_values($replacements), mb_strtolower(get_fullname($a, 'no_title_short'))),
+                    str_replace(array_keys($replacements), array_values($replacements), mb_strtolower(get_fullname($b, 'no_title_short')))
+                );
+            });
+            break;
 
         default:
     }
 
     foreach ($groups as $key => $value) {
-        usort($value, create_function('$a,$b',
-        'if ($a["gruppe"] != $b["gruppe"]){
-            return (int)($a["gruppe"] - $b["gruppe"]);
-        } else {
-            if (Config::get()->IMPORTANT_SEMNUMBER) {
-                return strnatcasecmp($a["sem_nr"], $b["sem_nr"]);
+        usort($value, function ($a, $b) {
+            if ($a['gruppe'] != $b['gruppe']) {
+                return (int)($a['gruppe'] - $b['gruppe']);
             } else {
-                return strnatcmp($a["name"], $b["name"]);
+                if (Config::get()->IMPORTANT_SEMNUMBER) {
+                    return strnatcasecmp($a['sem_nr'], $b['sem_nr']);
+                } else {
+                    return strnatcmp($a['name'], $b['name']);
+                }
             }
-        }'));
+        });
         $groups[$key] = $value;
     }
     return true;

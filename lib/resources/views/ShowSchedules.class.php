@@ -244,7 +244,9 @@ class ShowSchedules
                                 $sem_obj = Seminar::GetInstance(Seminar::GetSemIdByDateId($event->getAssignUserId()));
                                 $date = new SingleDate($event->getAssignUserId());
                                 $dozenten = array_intersect_key($sem_obj->getMembers('dozent'), array_flip($date->getRelatedPersons()));
-                                $sem_doz_names = array_map(create_function('$a', 'return $a["Nachname"];'), array_slice($dozenten,0,3, true));
+                                $sem_doz_names = array_map(function ($a) {
+                                    return $a['Nachname'];
+                                }, array_slice($dozenten, 0, 3, true));
                                 $add_info = '(' . join(', ', $sem_doz_names) . ')';
                         }
                         if (!$print_view){
@@ -344,7 +346,9 @@ class ShowSchedules
                 $sem_obj = Seminar::GetInstance(Seminar::GetSemIdByDateId($event->getAssignUserId()));
                 $date = new SingleDate($event->getAssignUserId());
                 $dozenten = array_intersect_key($sem_obj->getMembers('dozent'), array_flip($date->getRelatedPersons()));
-                $sem_doz_names = array_map(create_function('$a', 'return $a["Nachname"];'), array_slice($dozenten,0,3, true));
+                $sem_doz_names = array_map(function ($a) {
+                    return $a['Nachname'];
+                }, array_slice($dozenten, 0, 3, true));
                 $add_info = '(' . join(', ', $sem_doz_names) . ')';
             }
             $schedule->addEvent(null, $event->getName(get_config('RESOURCES_SCHEDULE_EXPLAIN_USER_NAME')), $event->getBegin(), $event->getEnd(),

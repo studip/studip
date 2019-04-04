@@ -81,29 +81,29 @@ class StudipRangeTreeViewAdmin extends TreeView{
         $user_id = $GLOBALS['auth']->auth['uid'];
         $user_perm = $GLOBALS['auth']->auth['perm'];
         $studip_object_status = null;
-        
+
         if (is_array($this->open_items)){
             foreach ($this->open_items as $key => $value) {
                 if ($key != 'root') {
                     $tmp = $this->tree->getAdminRange($key);
-                    
+
                     if(!empty($tmp)) {
                         foreach($tmp as $i) {
                             if($i) {
                                 $studip_object_status[$i] = ($user_perm == "root") ? 1 : -1;
                             }
                         }
-                        
+
                     }
                 }
             }
         }
-        
+
         if (is_array($this->open_ranges)){
             foreach ($this->open_ranges as $key => $value) {
                 if ($key != 'root'){
                     $tmp = $this->tree->getAdminRange($key);
-                    
+
                     if(!empty($tmp)) {
                         foreach($tmp as $i) {
                             if($i) {
@@ -111,9 +111,9 @@ class StudipRangeTreeViewAdmin extends TreeView{
                             }
                         }
                     }
-                   
+
                     $tmp = $this->tree->getAdminRange($this->tree->tree_data[$key]['parent_id']);
-                   
+
                     if(!empty($tmp)) {
                         foreach($tmp as $i) {
                             if ($i) {
@@ -121,7 +121,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
                             }
                         }
                     }
-                   
+
                 }
             }
         }
@@ -440,7 +440,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
         if ($this->isItemAdmin($item_id)){
             $view = DbView::getView('range_tree');
             if (isset($cat_name['new_entry'])){
-                $view->params = array($view->get_uniqid(),$item_id,$cat_name['new_entry'],$cat_content['new_entry'],$cat_prio['new_entry']);
+                $view->params = array(DbView::get_uniqid(),$item_id,$cat_name['new_entry'],$cat_content['new_entry'],$cat_prio['new_entry']);
                 $rs = $view->get_query("view:CAT_INS_ALL");
                 if ($rs->affected_rows()){
                     $inserted = true;

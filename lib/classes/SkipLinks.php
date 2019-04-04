@@ -85,7 +85,9 @@ class SkipLinks
         $html = '';
         if (UserConfig::get($GLOBALS['user']->id)->getValue('SKIPLINKS_ENABLE') && $GLOBALS['auth']->is_authenticated() && sizeof(self::$links)) {
             Navigation::addItem('/skiplinks', new Navigation(''));
-            uasort(self::$links, create_function('$a, $b', 'return $a["position"] > $b["position"];'));
+            uasort(self::$links, function ($a, $b) {
+                return $a['position'] > $b['position'];
+            });
             $i = 1;
             $position = 0;
             $overwriteable = false;

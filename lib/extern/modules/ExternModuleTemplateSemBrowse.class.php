@@ -1196,26 +1196,29 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
 
         switch ($this->sem_browse_data['group_by']) {
             case 0:
-            krsort($group_by_data, SORT_NUMERIC);
-            break;
+                krsort($group_by_data, SORT_NUMERIC);
+                break;
 
             case 1:
-            uksort($group_by_data, create_function('$a,$b',
-            '$the_tree = TreeAbstract::GetInstance("StudipSemTree", false);
-            $the_tree->buildIndex();
-            return (int)($the_tree->tree_data[$a]["index"] - $the_tree->tree_data[$b]["index"]);
-            '));
-            break;
+                uksort($group_by_data, function ($a, $b) {
+                    $the_tree = TreeAbstract::GetInstance('StudipSemTree', false);
+                    $the_tree->buildIndex();
+                    return $the_tree->tree_data[$a]['index'] - $the_tree->tree_data[$b]['index'];
+                });
+                break;
 
             case 3:
-            uksort($group_by_data, create_function('$a,$b',
-            'global $SEM_CLASS,$SEM_TYPE;
-            return strnatcasecmp($SEM_TYPE[$a]["name"]." (". $SEM_CLASS[$SEM_TYPE[$a]["class"]]["name"].")",
-            $SEM_TYPE[$b]["name"]." (". $SEM_CLASS[$SEM_TYPE[$b]["class"]]["name"].")");'));
-            break;
+                uksort($group_by_data, function ($a,$b) {
+                    global $SEM_CLASS,$SEM_TYPE;
+                    return strnatcasecmp(
+                        $SEM_TYPE[$a]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$a]['class']]['name'] . ')',
+                        $SEM_TYPE[$b]['name'] . ' (' . $SEM_CLASS[$SEM_TYPE[$b]['class']]['name'] . ')'
+                    );
+                });
+                break;
             default:
-            uksort($group_by_data, 'strnatcasecmp');
-            break;
+                uksort($group_by_data, 'strnatcasecmp');
+                break;
         }
 
         return array($group_by_data, $sem_data);

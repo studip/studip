@@ -35,7 +35,8 @@ class StudipLvgruppeSelection {
      *
      * @return void
      */
-    function __construct($course_id = NULL) {
+    public function __construct($course_id = null)
+    {
         $this->selected = self::getRootItem();
         $this->showAll = FALSE;
 
@@ -48,13 +49,14 @@ class StudipLvgruppeSelection {
             $this->populateAreasForCourse($course_id);
         }
     }
-    
+
     /**
       * Returns the not really existing root of the tree.
       *
       * @return object     the root tree object
       */
-     public static function getRootItem() {
+     public static function getRootItem()
+     {
         $root = new MvvTreeRoot();
         return $root;
      }
@@ -66,7 +68,8 @@ class StudipLvgruppeSelection {
      *
      * @return void
      */
-    private function populateAreasForCourse($id) {
+    private function populateAreasForCourse($id)
+    {
         $lvgruppen = Lvgruppe::findBySeminar($id);
         $this->setLvgruppen($lvgruppen);
         $this->sortAreas();
@@ -79,18 +82,20 @@ class StudipLvgruppeSelection {
      *
      * @return void
      */
-    private function sortAreas() {
+    private function sortAreas()
+    {
         // MVV: sort by name of LvGruppe
-        $lambda = create_function('$a, $b', 'return strcoll($a->getDisplayName(), '.
-                                                           '$b->getDisplayName());');
-        uasort($this->areas, $lambda);
+        uasort($this->areas, function ($a, $b) {
+            return strcoll($a->getDisplayName(), $b->getDisplayName());
+        });
     }
 
 
     /**
      * @return string     the current search term
      */
-    public function getSearchKey() {
+    public function getSearchKey()
+    {
         return $this->searchKey;
     }
 
@@ -100,7 +105,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    public function setSearchKey($searchKey) {
+    public function setSearchKey($searchKey)
+    {
         $this->searchKey = (string) $searchKey;
 
         $this->clearSearchResult();
@@ -112,7 +118,8 @@ class StudipLvgruppeSelection {
      * @return bool       returns TRUE if the search key was set meaning that
      *                    we are currently searching; returns FALSE otherwise
      */
-    public function searched() {
+    public function searched()
+    {
         return $this->searchKey !== '';
     }
 
@@ -122,8 +129,9 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    public function clearSearchResult() {
-        $this->searchResult = NULL;
+    public function clearSearchResult()
+    {
+        $this->searchResult = null;
         return $this;
     }
 
@@ -133,7 +141,8 @@ class StudipLvgruppeSelection {
      *
      * @return array      an array of search results
      */
-    public function getSearchResult() {
+    public function getSearchResult()
+    {
 
         # no search key -> return empty array
         if ($this->searchKey === '') {
@@ -151,7 +160,8 @@ class StudipLvgruppeSelection {
         return $this->searchResult;
     }
 
-    public static function sortSearchResult($a, $b) {
+    public static function sortSearchResult($a, $b)
+    {
         // sort by display name
         return strcmp($a->getDisplayName(), $b->getDisplayName());
     }
@@ -160,19 +170,20 @@ class StudipLvgruppeSelection {
     /**
      * @return object     the currently selected lvgruppe
      */
-    function getSelected() {
+    public function getSelected()
+    {
         return $this->selected;
     }
 
 
     /**
      * Sets the selected tree item.
-     * 
+     *
      * @param  mixed $selected Either the id of a tree item to select or the
      * tree item object itself
      * @return object this instance
      */
-    function setSelected($selected, $type = null)
+    public function setSelected($selected, $type = null)
     {
         if (!is_object($selected) && !is_null($type)) {
             $reflection = new ReflectionClass($type);
@@ -193,7 +204,8 @@ class StudipLvgruppeSelection {
      * @return bool       returns TRUE if the subtrees should be expanded
      *                    completely or FALSE otherwise
      */
-    function getShowAll() {
+    public function getShowAll()
+    {
         return $this->showAll;
     }
 
@@ -203,7 +215,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    function setShowAll($showAll) {
+    public function setShowAll($showAll)
+    {
         $this->showAll = $showAll;
      //   $this->selected = new MvvTreeRoot();
         return $this;
@@ -215,7 +228,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    function toggleShowAll() {
+    public function toggleShowAll()
+    {
         $this->showAll = !$this->showAll;
         return $this;
     }
@@ -226,7 +240,8 @@ class StudipLvgruppeSelection {
      *
      * @return array      an array with IDs of the selected LV-Gruppen
      */
-    function getLvGruppenIDs() {
+    public function getLvGruppenIDs()
+    {
         return array_keys($this->areas);
     }
 
@@ -237,7 +252,8 @@ class StudipLvgruppeSelection {
      * @return array      an array of LV-Gruppen representing the selected
      *                    LV-Gruppen
      */
-    function getAreas() {
+    public function getAreas()
+    {
         return $this->areas;
     }
 
@@ -250,7 +266,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     the called instance itself
      */
-    function setLvgruppen($areas) {
+    public function setLvgruppen($areas)
+    {
         $this->areas = array();
         foreach ($areas as $area) {
             $this->add($area);
@@ -261,11 +278,12 @@ class StudipLvgruppeSelection {
 
     /**
      * Returns true if this LV-Gruppe is selected, false otherwise.
-     * 
+     *
      * @param  mixed      the id of a LV-Gruppe or the LV-Gruppe object itself
      * @return bool       returns true if selected, false otherwise
      */
-    function includes($area) {
+    public function includes($area)
+    {
         $id = is_object($area) ? $area->getId() : $area;
         return isset($this->areas[$id]);
     }
@@ -274,7 +292,8 @@ class StudipLvgruppeSelection {
     /**
      * @return integer    returns the number of the selected LV-Gruppen
      */
-    function size() {
+    public function size()
+    {
         return count($this->areas);
     }
 
@@ -286,7 +305,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    function add($area) {
+    public function add($area)
+    {
         # convert to an object
         if (!is_object($area)) {
             $area = Lvgruppe::find($area);
@@ -307,7 +327,8 @@ class StudipLvgruppeSelection {
      *
      * @return object     this instance
      */
-    function remove($area) {
+    public function remove($area)
+    {
         if (is_object($area)) {
             $area = $area->getId();
         }
@@ -324,7 +345,8 @@ class StudipLvgruppeSelection {
      *
      * @return array an array of MVV objects
      */
-    function getTrail() {
+    public function getTrail()
+    {
         $area = $this->selected;
         $trail = array(implode('_', (array) $area->getId()) => $area);
         while ($parent = $area->getTrailParent()) {

@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -87,13 +87,13 @@ class TreeAbstract {
     *
     * use this method if you need a reference to the tree object <br>
     * usage: <pre>$my_tree = StudipRangeTree::GetInstance("name_of_tree_class")</pre>
-    * @access public
-    * @static
+    *
     * @param    string  $class_name     the name of the used tree_class
     * @param    mixed   $args           argumentlist passed to the constructor in the tree_class (if needed)
     * @return   mixed   always an object, type is one of AbstractTree s childclasses
     */
-    function GetInstance($class_name, $args = null, $invalidate_cache = false){
+    public static function GetInstance($class_name, $args = null, $invalidate_cache = false)
+    {
         static $tree_instance;
 
         if ($args){
@@ -123,21 +123,21 @@ class TreeAbstract {
     * constructor
     *
     * do not use directly, call &GetInstance()
-    * @access private
     */
-    function __construct() {
+    private function __construct()
+    {
         $this->view = new DbView();
         $this->init();
-        }
+    }
 
     /**
     * initializes the tree
     *
     * stores all tree items in array $tree_data
     * must be overriden
-    * @access public
     */
-    function init(){
+    public function init()
+    {
         $this->tree_childs = array();
         $this->tree_num_childs = array();
         $this->tree_data = array();
@@ -149,15 +149,15 @@ class TreeAbstract {
     * store one item in tree_data array
     *
     * store one item in tree_data array
-    * @access   public
+    *
     * @param    string  $item_id
     * @param    string  $parent_id
     * @param    string  $name
     * @param    integer $priority
     *
     */
-
-    function storeItem($item_id,$parent_id,$name,$priority){
+    public function storeItem($item_id,$parent_id,$name,$priority)
+    {
         $this->tree_data[$item_id]["parent_id"] = $parent_id;
         $this->tree_data[$item_id]["priority"] = $priority;
         $this->tree_data[$item_id]["name"] = $name;
@@ -171,12 +171,11 @@ class TreeAbstract {
     *
     * build an index for sorting purpose
     *
-    * @access   public
     * @param    string  $item_id
     *
     */
-
-    function buildIndex($item_id = false){
+    public function buildIndex($item_id = false)
+    {
         if ($item_id === false && $this->index_offset > 0) {
             return;
         }
@@ -196,26 +195,23 @@ class TreeAbstract {
     /**
     * returns all direct kids
     *
-    *
-    * @access   public
     * @param    string  $item_id
     * @return   array
     */
-    function getKids($item_id){
-
+    public function getKids($item_id)
+    {
         return (is_array($this->tree_childs[$item_id])) ? $this->tree_childs[$item_id] : null;
     }
 
     /**
     * returns the number of all direct kids
     *
-    *
-    * @access   public
     * @param    string  $item_id
     * @param    bool    $in_recursion
     * @return   int
     */
-    function getNumKids($item_id){
+    public function getNumKids($item_id)
+    {
         if(!isset($this->tree_num_childs[$item_id])){
             $this->tree_num_childs[$item_id] = (is_array($this->tree_childs[$item_id])) ? count($this->tree_childs[$item_id]) : 0;
         }
@@ -225,12 +221,12 @@ class TreeAbstract {
     /**
     * returns all direct kids and kids of kids and so on...
     *
-    * @access   public
     * @param    string  $item_id
     * @param    bool    $in_recursion   only used in recursion
     * @return   array
     */
-    function getKidsKids($item_id, $in_recursion = false){
+    public function getKidsKids($item_id, $in_recursion = false)
+    {
         static $kidskids;
         if (!$kidskids || !$in_recursion){
             $kidskids = array();
@@ -249,13 +245,12 @@ class TreeAbstract {
     /**
     * returns the number of all kids and kidskids...
     *
-    *
-    * @access   public
     * @param    string  $item_id
     * @param    bool    $in_recursion
     * @return   int
     */
-    function getNumKidsKids($item_id, $in_recursion = false){
+    public function getNumKidsKids($item_id, $in_recursion = false)
+    {
         static $num_kidskids;
         if (!$num_kidskids || !$in_recursion){
             $num_kidskids = 0;
@@ -274,72 +269,76 @@ class TreeAbstract {
     /**
     * checks if item is the last kid
     *
-    * @access   public
     * @param    string  $item_id
     * @return   boolean
     */
-    function isLastKid($item_id){
+    public function isLastKid($item_id)
+    {
         $parent_id = $this->tree_data[$item_id]['parent_id'];
         $num_kids = $this->getNumKids($parent_id);
-        if (!$parent_id || !$num_kids)
+        if (!$parent_id || !$num_kids) {
             return false;
-        else
-            return ($this->tree_childs[$parent_id][$num_kids-1] == $item_id);
+        }
+        return $this->tree_childs[$parent_id][$num_kids-1] == $item_id;
     }
 
     /**
     * checks if item is the first kid
     *
-    * @access   public
     * @param    string  $item_id
     * @return   boolean
     */
-    function isFirstKid($item_id){
+    public function isFirstKid($item_id)
+    {
         $parent_id = $this->tree_data[$item_id]['parent_id'];
         $num_kids = $this->getNumKids($parent_id);
-        if (!$parent_id || !$num_kids)
+        if (!$parent_id || !$num_kids) {
             return false;
-        else
-            return ($this->tree_childs[$parent_id][0] == $item_id);
+        }
+        return $this->tree_childs[$parent_id][0] == $item_id;
     }
 
     /**
     * checks if given item is a kid or kidkid...of given ancestor
     *
     * checks if given item is a kid or kidkid...of given ancestor
-    * @access   public
+    *
     * @param    string  $ancestor_id
     * @param    string  $item_id
     * @return   boolean
     */
-    function isChildOf($ancestor_id,$item_id){
+    public function isChildOf($ancestor_id,$item_id)
+    {
         return in_array($item_id,$this->getKidsKids($ancestor_id));
     }
 
     /**
     * checks if item has one or more kids
     *
-    * @access   public
     * @param    string  $item_id
     * @return   boolean
     */
-    function hasKids($item_id){
-        return ($this->getNumKids($item_id)) ? true : false;
+    public function hasKids($item_id)
+    {
+        return $this->getNumKids($item_id) > 0;
     }
 
     /**
     * Returns tree path
     *
     * returns a string with the item and all parents separated with a slash
-    * @access   public
+    *
     * @param    string  $item_id
     * @return   string
     */
-    function getItemPath($item_id){
-        if (!$this->tree_data[$item_id])
+    public function getItemPath($item_id)
+    {
+        if (!$this->tree_data[$item_id]) {
             return false;
+        }
+
         $path = $this->tree_data[$item_id]['name'];
-        while($item_id && $item_id != "root"){
+        while($item_id && $item_id !== 'root') {
             $item_id = $this->tree_data[$item_id]['parent_id'];
             $path = $this->tree_data[$item_id]['name'] . " / " . $path;
         }
@@ -350,17 +349,17 @@ class TreeAbstract {
     * Returns tree path as array of item_id s
     *
     * returns an array containing all parents of given item
-    * @access   public
+    *
     * @param    string  $item_id
     * @return   array
     */
     public function getParents($item_id)
     {
         if (!$this->tree_data[$item_id]) {
-            return array();
+            return [];
         }
 
-        $result = array();
+        $result = [];
         while ($item_id && $item_id !== 'root') {
             $item_id   = $this->tree_data[$item_id]['parent_id'];
             $result[] = $item_id;
@@ -368,7 +367,8 @@ class TreeAbstract {
         return $result;
     }
 
-    function getShortPath($item_id, $length = null, $delimeter = ">", $offset = 0){
+    public function getShortPath($item_id, $length = null, $delimeter = ">", $offset = 0)
+    {
         if (!$this->tree_data[$item_id] || $item_id === 'root') {
             return false;
         }
@@ -383,17 +383,18 @@ class TreeAbstract {
     /**
     * Returns the maximum priority value from a parents child
     *
-    * @access   public
     * @param    string  $parent_id
     * @return   int
     */
-    function getMaxPriority($parent_id){
+    public function getMaxPriority($parent_id)
+    {
         $children = $this->getKids($parent_id);
         $last = $this->getNumKids($parent_id) - 1;
-        return (int)$this->tree_data[$children[$last]]['priority'];
+        return (int) $this->tree_data[$children[$last]]['priority'];
     }
 
-    function getNumEntries($item_id, $num_entries_from_kids = false){
+    public function getNumEntries($item_id, $num_entries_from_kids = false)
+    {
         if (!$num_entries_from_kids || !$this->hasKids($item_id)){
                 return $this->tree_data[$item_id]["entries"];
         } else {
@@ -401,7 +402,8 @@ class TreeAbstract {
         }
     }
 
-    function getNumEntriesKids($item_id, $in_recursion = false){
+    public function getNumEntriesKids($item_id, $in_recursion = false)
+    {
         static $num_entries;
         if (!$in_recursion){
             $num_entries = 0;
@@ -417,8 +419,10 @@ class TreeAbstract {
         return (!$in_recursion) ? $num_entries : null;
     }
 
-    function getValue($item_id, $field) {
-        return (isset($this->tree_data[$item_id][$field]) ? $this->tree_data[$item_id][$field] : null);
+    public function getValue($item_id, $field)
+    {
+        return isset($this->tree_data[$item_id][$field])
+             ? $this->tree_data[$item_id][$field]
+             : null;
     }
 }
-?>

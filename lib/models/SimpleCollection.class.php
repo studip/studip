@@ -106,7 +106,17 @@ class SimpleCollection extends StudipArrayObject
                 case '>':
                 case '<=':
                 case '>=':
-                    $op_func = create_function('$a,$b', 'return $a ' . $operator . ' $b;');
+                    $op_func = function ($a, $b) use ($operator) {
+                        if ($operator === '<') {
+                            return $a < $b;
+                        } elseif ($operator === '<=') {
+                            return $a <= $b;
+                        } elseif ($operator === '>=') {
+                            return $a >= $b;
+                        } elseif ($operator === '>') {
+                            return $a > $b;
+                        }
+                    };
                     $comp_func = function($a) use ($op_func, $args) {return $op_func($a, $args[0]);};
                 break;
                 case '><':

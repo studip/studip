@@ -51,9 +51,13 @@ class LockRules {
      */
     public static function getAdministrableSeminarRules($user_id)
     {
-        $filter = create_function('$lr',
-        'return ' . (int)($GLOBALS['perm']->get_perm($user_id) == 'root') . ' || (in_array($lr->user_id, array("'.$user_id.'")) && !in_array($lr->permission, array("root","admin")));');
-        return array_filter(LockRule::findAllByType('sem'), $filter);
+        return array_filter(LockRule::findAllByType('sem'), function ($rule) use ($user_id) {
+            return $GLOBALS['perm']->get_perm($user_id) === 'root'
+                || (
+                    $rule->user_id === $user_id
+                    && !in_array($rule->permission, ['root', 'admin'])
+                );
+        });
     }
 
     /**
@@ -65,9 +69,10 @@ class LockRules {
      */
     public static function getAvailableSeminarRules($user_id)
     {
-        $filter = create_function('$lr',
-        'return ' . (int)($GLOBALS['perm']->get_perm($user_id) == 'root') . ' || (!in_array($lr->permission, array("root","admin")));');
-        return array_filter(LockRule::findAllByType('sem'), $filter);
+        return array_filter(LockRule::findAllByType('sem'), function ($rule) use ($user_id) {
+            return $GLOBALS['perm']->get_perm($user_id) === 'root'
+                || !in_array($rule->permission, ['root', 'admin']);
+        });
     }
 
     /**
