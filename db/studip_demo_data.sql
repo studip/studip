@@ -2,8 +2,8 @@
 -- Daten für Tabelle `abschluss`
 --
 
-REPLACE INTO `abschluss` (`abschluss_id`, `name`, `beschreibung`, `mkdate`, `chdate`) VALUES('228234544820cdf75db55b42d1ea3ecc', 'Bachelor', '', 1311416359, 1311416359);
-REPLACE INTO `abschluss` (`abschluss_id`, `name`, `beschreibung`, `mkdate`, `chdate`) VALUES('c7f569e815a35cf24a515a0e67928072', 'Master', '', 1311416385, 1311416385);
+REPLACE INTO `abschluss` (`abschluss_id`, `name`, `beschreibung`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES('228234544820cdf75db55b42d1ea3ecc', 'Bachelor', '', '', '', 1311416359, 1311416359);
+REPLACE INTO `abschluss` (`abschluss_id`, `name`, `beschreibung`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES('c7f569e815a35cf24a515a0e67928072', 'Master', '', '', '', 1311416385, 1311416385);
 
 --
 -- Daten für Tabelle `auth_user_md5`
