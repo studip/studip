@@ -89,6 +89,7 @@ class Course_WizardController extends AuthenticatedController
         if ($number == 0) {
             $this->first_step = true;
         }
+
         if ($this->studygroup) {
             // Add special studygroup flag to set values.
             $this->setStepValues(
@@ -99,6 +100,7 @@ class Course_WizardController extends AuthenticatedController
         $this->values = $this->getValues();
         $this->content = $step->getStepTemplate($this->values, $number, $this->temp_id);
         $this->stepnumber = $number;
+
     }
 
     /**

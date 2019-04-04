@@ -51,7 +51,7 @@ class BasicDataWizardStep implements CourseWizardStep
             // Creates a studygroup.
             if ($values['studygroup']) {
                 // Get all studygroup types.
-                if ($class['studygroup_mode'] && !$class['course_creation_forbidden']) {
+                if ($class['studygroup_mode']) {
                     $typestruct[$class['name']][] = $type;
                 }
                 // Pre-set institute for studygroup assignment.

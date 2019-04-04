@@ -7,20 +7,25 @@
     <input type="text" name="name" id="wizard-name" maxlength="254" value="<?= $values['name'] ?>" required/>
 </label>
 
-<label class="col-3">
-    <span class="required"><?= _('Typ') ?></span>
-    <select name="coursetype" id="wizard-coursetype">
-        <?php foreach ($types as $class => $subtypes) { ?>
-            <optgroup label="<?= htmlReady($class) ?>">
-                <?php foreach ($subtypes as $type) { ?>
-                    <option value="<?= $type['id'] ?>"<?= $type['id'] == $values['coursetype'] ? ' selected="selected"' : '' ?>>
-                        <?= htmlReady($type['name']) ?>
-                    </option>
-                <?php } ?>
-            </optgroup>
-        <?php } ?>
-    </select>
-</label>
+<? if(count($types) > 1) : ?>
+    <label class="col-3">
+        <span class="required"><?= _('Typ') ?></span>
+        <select name="coursetype" id="wizard-coursetype">
+            <?php foreach ($types as $class => $subtypes) : ?>
+                <optgroup label="<?= htmlReady($class) ?>">
+                    <?php foreach ($subtypes as $type) : ?>
+                        <option value="<?= $type['id'] ?>"<?= $type['id'] == $values['coursetype'] ? ' selected="selected"' : '' ?>>
+                            <?= htmlReady($type['name']) ?>
+                        </option>
+                    <?php endforeach ?>
+                </optgroup>
+            <?php endforeach ?>
+        </select>
+    </label>
+<? else : ?>
+    <? $type = array_shift(array_values($types)) ?>
+    <input type="hidden" name="coursetype" value="<?= htmlReady($type[0]['id']) ?>">
+<? endif ?>
 
 
 <label class="col-3">
