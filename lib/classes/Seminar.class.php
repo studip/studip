@@ -2348,7 +2348,9 @@ class Seminar
             $query = "DELETE FROM seminar_user WHERE Seminar_id = ? AND user_id = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$this->id, $user_id]);
-
+            if ($statement->rowCount() === 0) {
+                return $this;
+            }
             // If this course is a child of another course...
             if ($this->parent_course) {
 
