@@ -348,18 +348,16 @@ function smile($text = '') {
 * @param        string  the text to convert
 * @return       string  convertet text
 */
-function symbol ($text = "")
+function symbol ($text = '')
 {
-    global $SYMBOL_SHORT;
-
-    if(empty($text))
+    if (!$text) {
         return $text;
+    }
 
-    $patterns = array();
-    $replaces = array();
+    $patterns = [];
+    $replaces = [];
     //symbols in short notation
-    reset($SYMBOL_SHORT);
-    while (list($key, $value) = each($SYMBOL_SHORT)) {
+    foreach ($GLOBALS['SYMBOL_SHORT'] as $key => $value) {
         $patterns[] = "'" . preg_quote($key) . "'m";
         $replaces[] = $value;
     }
