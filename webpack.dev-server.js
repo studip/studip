@@ -12,6 +12,7 @@ module.exports = merge(common, {
         publicPath: `${config.protocol}://${config.host}:${config.port}/${path.basename(__dirname)}`
     },
     devServer: {
+//        contentBase: path.join(__dirname, './public/assets'),
         compress: true,
         port: config.port,
         historyApiFallback: true,
@@ -21,14 +22,16 @@ module.exports = merge(common, {
         },
         // Serve static files with appropriate headers
         before: (app, server) => {
-            app.use(
-                `/${path.basename(__dirname)}/`,
-                express.static(path.join(__dirname, './public/assets/'), {
-                    setHeaders: (res, path) => {
-                        res.set('Access-Control-Allow-Origin', '*');
-                    }
-                })
-            );
+            ['flash', 'fonts', 'images', 'sounds'].forEach(type => {
+                app.use(
+                    `/${path.basename(__dirname)}/${type}/`,
+                    express.static(path.join(__dirname, `./public/assets/${type}/`), {
+                        setHeaders: (res, path) => {
+                            res.set('Access-Control-Allow-Origin', '*');
+                        }
+                    })
+                );
+            });
         }
     }
 });
