@@ -34,6 +34,7 @@
         // - needed to compute correct toolbar position when floating
         $('<div>')
         .attr('id', toolbar.attr('id') + '-placeholder')
+        .addClass('ckplaceholder')
         .insertBefore(toolbar);
 
         // configure shared spaces plug to use our toolbar
@@ -93,13 +94,13 @@
                 - $(window).scrollTop();
 
             // reposition floating toolbar
+            placeholder.css('height', $toolbar.height());
+
             $toolbar.css({
                 position: 'fixed',
                 top: Math.min(MARGIN, maxToolbarTop),
                 width: width
             });
-
-            placeholder.css('height', $toolbar.height());
 
         } else {
 
