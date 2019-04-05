@@ -17,7 +17,7 @@ class Score
     // How long is the duration of a score-block?
     const MEASURING_STEP = 1800; // half an hour
 
-    static function getScoreContent($persons)
+    public static function getScoreContent($persons)
     {
         $user_ids = array_keys($persons);
 
@@ -25,11 +25,11 @@ class Score
         $query = "SELECT nr.range_id as user_id, COUNT(*) AS newscount
                   FROM news_range AS nr
                   INNER JOIN news AS n ON (nr.news_id = n.news_id)
-                  WHERE nr.range_id IN (?) AND (? - n.date) <= n.expire
+                  WHERE nr.range_id IN (?) AND (UNIX_TIMESTAMP() - n.date) <= n.expire
                   GROUP BY nr.range_id
                   ORDER BY NULL";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_ids, gmmktime()));
+        $statement->execute([$user_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $persons[$row['user_id']]['newscount'] = $row['newscount'];
         }
@@ -38,11 +38,11 @@ class Score
         $query = "SELECT range_id as user_id, COUNT(*) AS eventcount
                   FROM calendar_event
                   INNER JOIN event_data ON (calendar_event.event_id = event_data.event_id AND class = 'PUBLIC')
-                  WHERE range_id IN (?) AND ? <= end
+                  WHERE range_id IN (?) AND UNIX_TIMESTAMP() <= end
                   GROUP BY range_id
                   ORDER BY NULL";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_ids, gmmktime()));
+        $statement->execute([$user_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $persons[$row['user_id']]['eventcount'] = $row['eventcount'];
         }
@@ -86,7 +86,7 @@ class Score
     * @return       string  the titel
     *
     */
-    static function getTitel($score, $gender = 0)
+    public static function getTitel($score, $gender = 0)
     {
         if ($score) {
             $logscore = floor(log10($score) / log10(2));
@@ -130,7 +130,7 @@ class Score
     * @return       integer the score
     *
     */
-    static function GetMyScore($user_or_id = null)
+    public static function GetMyScore($user_or_id = null)
     {
         $user = $user_or_id ? User::toObject($user_or_id) : User::findCurrent();
         $cache = StudipCacheFactory::getCache();
@@ -169,62 +169,60 @@ class Score
             $user->score = $score;
             $user->store();
         }
-        $cache->write("user_score_of_".$user->id, $score, 60 * 5);
+        $cache->write("user_score_of_{$user->id}", $score, 60 * 5);
 
         return $score;
     }
 
-    static protected function createTimestampQuery() {
-        $statements = array();
+    protected static function createTimestampQuery()
+    {
+        $statements = [];
         foreach (self::getActivityTables() as $table) {
             $statements[] = "SELECT "
-                . ($table['date_column'] ? : 'mkdate')
+                . ($table['date_column'] ?: 'mkdate')
                 . " AS mkdate FROM "
                 . $table['table']
                 . " WHERE "
-                . ($table['user_id_column'] ? : 'user_id')
+                . ($table['user_id_column'] ?: 'user_id')
                 . " = :user "
                 . ($table['where'] ? (' AND ' . $table['where']) : '');
         }
         return join(' UNION ', $statements);
     }
 
-    static protected function getActivityTables() {
-        $tables = array();
-        $tables[] = array('table' => "user_info");
-        $tables[] = array('table' => "comments");
-        $tables[] = array('table' => "file_refs");
-        $tables[] = array('table' => "forum_entries");
-        $tables[] = array('table' => "news");
-        $tables[] = array('table' => "seminar_user");
-        $tables[] = array(
-            'table' => "blubber",
-            'where' => "context_type != 'private'"
-        );
-        $tables[] = array(
-            'table' => "kategorien",
-            'user_id_column' => "range_id"
-        );
-        $tables[] = array(
-            'table' => "message",
-            'user_id_column' => "autor_id"
-        );
-        $tables[] = array(
-            'table' => "questionnaires"
-        );
-        $tables[] = array(
-            'table' => "questionnaire_answers",
-            'date_column' => "chdate"
-        );
-        $tables[] = array(
-            'table' => "questionnaire_anonymous_answers"
-        );
-        $tables[] = array(
-            'table' => "wiki",
-            'date_column' => "chdate"
-        );
+    protected static function getActivityTables()
+    {
+        $tables = [];
+        $tables[] = ['table' => 'user_info'];
+        $tables[] = ['table' => 'comments'];
+        $tables[] = ['table' => 'file_refs'];
+        $tables[] = ['table' => 'forum_entries'];
+        $tables[] = ['table' => 'news'];
+        $tables[] = ['table' => 'seminar_user'];
+        $tables[] = [
+            'table' => 'blubber',
+            'where' => "context_type != 'private'",
+        ];
+        $tables[] = [
+            'table'          => 'kategorien',
+            'user_id_column' => 'range_id',
+        ];
+        $tables[] = [
+            'table'          => 'message',
+            'user_id_column' => 'autor_id'
+        ];
+        $tables[] = ['table' => 'questionnaires'];
+        $tables[] = [
+            'table'       => 'questionnaire_answers',
+            'date_column' => 'chdate',
+        ];
+        $tables[] = ['table' => 'questionnaire_anonymous_answers'];
+        $tables[] = [
+            'table'       => 'wiki',
+            'date_column' => 'chdate'
+        ];
 
-        foreach (PluginManager::getInstance()->getPlugins("ScorePlugin") as $plugin) {
+        foreach (PluginManager::getInstance()->getPlugins('ScorePlugin') as $plugin) {
             foreach ((array) $plugin->getPluginActivityTables() as $table) {
                 if ($table['table']) {
                     $tables[] = $table;
