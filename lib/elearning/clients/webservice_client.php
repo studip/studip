@@ -6,22 +6,20 @@
 
 class WebserviceClient
 {
+    public static function instance($webservice_url, $classname)
+    {
+        static $instances = [];
+
+        if (!$instances[$classname . $webservice_url]) {
+            $instances[$classname . $webservice_url] = new $classname($webservice_url);
+        }
+
+        return $instances[$classname . $webservice_url];
+    }
 
     public function __construct()
     {
         trigger_error("this class can't be instantiated");
-    }
-
-    public function instance($webservice_url, $classname)
-    {
-        static $instances = array();
-
-        if (! $instances[$classname.$webservice_url])
-        {
-            $instances[$classname.$webservice_url] = new $classname($webservice_url);
-        }
-
-        return $instances[$classname.$webservice_url];
     }
 
     public function &call($method_name, &$args)
@@ -29,4 +27,3 @@ class WebserviceClient
         trigger_error("WebserviceCaller::WebserviceCaller::  call not defined");
     }
 }
-

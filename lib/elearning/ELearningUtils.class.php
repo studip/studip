@@ -17,31 +17,29 @@ use Studip\Button, Studip\LinkButton;
 class ELearningUtils
 {
     /**
-    * load class ConnectedCMS
-    *
-    * loads class ConnectedCMS for given system-type and creates an instance
-    * @access public
-    * @param string $cms system-type
-    */
-    function loadClass($cms)
+     * loads class ConnectedCMS for given system-type and creates an instance
+     *
+     * @param string $cms system-type
+     */
+    public static function loadClass($cms)
     {
-        global $connected_cms, $ELEARNING_INTERFACE_MODULES, $object_connections;
+        global $connected_cms, $ELEARNING_INTERFACE_MODULES;
 
-        if (! is_object($connected_cms[$cms]))
-        {
-            require_once ("lib/elearning/" . $ELEARNING_INTERFACE_MODULES[$cms]["CLASS_PREFIX"] . "ConnectedCMS.class.php");
-            $classname = $ELEARNING_INTERFACE_MODULES[$cms]["CLASS_PREFIX"] . "ConnectedCMS";
+        if (!is_object($connected_cms[$cms])) {
+            require_once "lib/elearning/{$ELEARNING_INTERFACE_MODULES[$cms]['CLASS_PREFIX']}ConnectedCMS.class.php";
+            $classname = "{$ELEARNING_INTERFACE_MODULES[$cms]['CLASS_PREFIX']}ConnectedCMS";
             $connected_cms[$cms] = new $classname($cms);
             $connected_cms[$cms]->initSubclasses();
         }
     }
 
-    function initElearningInterfaces(){
+    public static function initElearningInterfaces()
+    {
         global $ELEARNING_INTERFACE_MODULES, $connected_cms;
-        if(is_array($ELEARNING_INTERFACE_MODULES)){
-            foreach(array_keys($ELEARNING_INTERFACE_MODULES) as $cms){
-                if (ELearningUtils::isCMSActive($cms)) {
-                    ELearningUtils::loadClass($cms);
+        if (is_array($ELEARNING_INTERFACE_MODULES)) {
+            foreach (array_keys($ELEARNING_INTERFACE_MODULES) as $cms) {
+                if (self::isCMSActive($cms)) {
+                    self::loadClass($cms);
                 }
             }
         }
@@ -49,111 +47,114 @@ class ELearningUtils
     }
 
     /**
-    * get config-value
-    *
-    * gets config-value with given name from globals
-    * @access public
-    * @param string $name entry-name
-    * @param string $cms system-type
-    * @return boolean returns false if no cms is given
-    */
-    function getConfigValue($name, $cms)
+     * gets config-value with given name from globals
+     *
+     * @param string $name entry-name
+     * @param string $cms system-type
+     * @return boolean returns false if no cms is given
+     */
+    public static function getConfigValue($name, $cms)
     {
-        if ($cms != "")
-            return Config::get()->getValue("ELEARNING_INTERFACE_" . $cms . "_" . $name);
-        else
+        if (!$cms) {
             return false;
+        }
+        return Config::get()->getValue("ELEARNING_INTERFACE_{$cms}_{$name}");
     }
 
     /**
-    * set config-value
-    *
-    * writes config-value with given name and value to database
-    * @access public
-    * @param string $name entry-name
-    * @param string $value value
-    * @param string $cms system-type
-    */
-    function setConfigValue($name, $value, $cms)
+     * set config-value
+     *
+     * writes config-value with given name and value to database
+     *
+     * @param string $name entry-name
+     * @param string $value value
+     * @param string $cms system-type
+     */
+    public static function setConfigValue($name, $value, $cms)
     {
-        if ($cms != "") {
-            try {
-                Config::get()->store('ELEARNING_INTERFACE_' . $cms . '_' . $name, $value);
-            } catch(InvalidArgumentException $e) {
-                Config::get()->create('ELEARNING_INTERFACE_' . $cms . '_' . $name, ['value' => $value, 'type' => 'string']);
-            }
+        if (!$cms) {
+            return;
+        }
+
+        try {
+            Config::get()->store("ELEARNING_INTERFACE_{$cms}_{$name}", $value);
+        } catch (InvalidArgumentException $e) {
+            Config::get()->create("ELEARNING_INTERFACE_{$cms}_{$name}", [
+                'value' => $value,
+                'type'  => 'string',
+            ]);
         }
     }
 
     /**
-    * check cms-status
-    *
-    * checks if connected content-management-system is activated
-    * @access public
-    * @param string $cms system-type
-    */
-    function isCMSActive($cms = "")
+     * check cms-status
+     *
+     * checks if connected content-management-system is activated
+     *
+     * @param string $cms system-type
+     */
+    public static function isCMSActive($cms)
     {
-        if ($cms != "")
-            return Config::get()->getValue("ELEARNING_INTERFACE_" . $cms . "_ACTIVE");
+        return self::getConfigValue('ACTIVE', $cms);
     }
 
     /**
-    * get cms-selectbox
-    *
-    * returns a form to select a cms
-    * @access public
-    * @param string $message description-text
-    * @param boolean $check_active show only activated systems
-    * @return string returns html-code
-    */
-    function getCMSSelectbox($message, $check_active = true)
+     * get cms-selectbox
+     *
+     * returns a form to select a cms
+     *
+     * @param string $message description-text
+     * @param boolean $check_active show only activated systems
+     * @return string returns html-code
+     */
+    public static function getCMSSelectbox($message, $check_active = true)
     {
         global $ELEARNING_INTERFACE_MODULES, $cms_select, $search_key, $view;
-        if (! is_array($ELEARNING_INTERFACE_MODULES)) {
+        if (!is_array($ELEARNING_INTERFACE_MODULES)) {
             $msg = sprintf(_("Die ELearning-Schnittstelle ist nicht korrekt konfiguriert. Die Variable \"%s\" "
                             ."muss in der Konfigurationsdatei von Stud.IP erst mit den Verbindungsdaten angebundener "
                             ."Learning-Content-Management-Systeme aufgefüllt werden. Solange dies nicht geschehen "
                             ."ist, setzen Sie die Variable \"%s\" auf FALSE!"), "\$ELEARNING_INTERFACE_MODULES", "\$ELEARNING_INTERFACE_ENABLE");
-            PageLayout::postMessage(MessageBox::error($msg));
+            PageLayout::postError($msg);
             return false;
         }
-        $options = array();
-        foreach($ELEARNING_INTERFACE_MODULES as $cms => $cms_preferences) {
-            if (($check_active == false) OR (ELearningUtils::isCMSActive($cms))) {
-                $options[$cms] = $cms_preferences["name"];
+        $options = [];
+        foreach ($ELEARNING_INTERFACE_MODULES as $cms => $cms_preferences) {
+            if (!$check_active || self::isCMSActive($cms)) {
+                $options[$cms] = $cms_preferences['name'];
             }
         }
         $template = $GLOBALS['template_factory']->open('elearning/_cms_selectbox.php');
-        $template->set_attribute('cms_select', $cms_select);
-        $template->set_attribute('options', $options);
-        $template->set_attribute('search_key', $search_key);
-        $template->set_attribute('view', $view);
-        $template->set_attribute('message', $message);
+        $template->cms_select = $cms_select;
+        $template->options    = $options;
+        $template->search_key = $search_key;
+        $template->view       = $view;
+        $template->message    = $message;
         return $template->render();
     }
 
-    /**
-    * get moduletype-selectbox
-    *
-    * returns a form to select type for new contentmodule
-    * @access public
-    * @param string $cms system-type
-    * @return string returns html-code
-    */
-    function getTypeSelectbox($cms)
+     /**
+     * get moduletype-selectbox
+     *
+     * returns a form to select type for new contentmodule
+     *
+     * @param string $cms system-type
+     * @return string returns html-code
+     */
+    public static function getTypeSelectbox($cms)
     {
         global $ELEARNING_INTERFACE_MODULES;
         $options = array();
-        foreach($ELEARNING_INTERFACE_MODULES[$cms]["types"] as $type => $info) {
-            $options[$type] = $info["name"];
-            if (Request::get("module_type_" . $cms) == $type)
+        foreach ($ELEARNING_INTERFACE_MODULES[$cms]['types'] as $type => $info) {
+            $options[$type] = $info['name'];
+            if (Request::get("module_type_{$cms}") === $type) {
                 $selected = $type;
+            }
         }
         $template = $GLOBALS['template_factory']->open('elearning/_type_selectbox.php');
-        $template->set_attribute('options', $options);
-        $template->set_attribute('selected', $selected);
-        $template->set_attribute('cms', $cms);
+        $template->options  = $options;
+        $template->selected = $selected;
+        $template->cms      = $cms;
         return $template->render();
     }
 
@@ -161,18 +162,18 @@ class ELearningUtils
     * get searchfield
     *
     * returns a form to search for modules
-    * @access public
+    *
     * @param string $message description-text
     * @return string returns html-code
     */
-    function getSearchfield($message)
+    public static function getSearchfield($message)
     {
         global $cms_select, $search_key, $view;
         $template = $GLOBALS['template_factory']->open('elearning/_searchfield.php');
-        $template->set_attribute('cms_select', $cms_select);
-        $template->set_attribute('search_key', $search_key);
-        $template->set_attribute('view', $view);
-        $template->set_attribute('message', $message);
+        $template->cms_select = $cms_select;
+        $template->search_key = $search_key;
+        $template->view       = $view;
+        $template->message    = $message;
         return $template->render();
     }
 
@@ -180,11 +181,11 @@ class ELearningUtils
     * get form for new content-module
     *
     * returns a form to choose module-type and to create a new content-module
-    * @access public
+    *
     * @param string $cms system-type
     * @return string returns html-code
     */
-    function getNewModuleForm($cms)
+    public static function getNewModuleForm($cms)
     {
         global $ELEARNING_INTERFACE_MODULES, $connected_cms;
         if (sizeof($ELEARNING_INTERFACE_MODULES[$cms]["types"]) == 1)
@@ -210,12 +211,12 @@ class ELearningUtils
     * get form for external user-account
     *
     * returns a form for administration of external user-account
-    * @access public
+    *
     * @param string message message-string
     * @param string my_account_cms cms-type
     * @return string returns html-code
     */
-    function getMyAccountForm($message, $my_account_cms)
+    public static function getMyAccountForm($message, $my_account_cms)
     {
         global $connected_cms;
         $template = $GLOBALS['template_factory']->open('elearning/_my_account_form.php');
@@ -234,11 +235,11 @@ class ELearningUtils
     * get form for new user
     *
     * returns a form to add a user-account to connected cms
-    * @access public
+    *
     * @param string $new_account_cms system-type
     * @return string returns html-code
     */
-    function getNewAccountForm(&$new_account_cms)
+    public static function getNewAccountForm(&$new_account_cms)
     {
         global $connected_cms, $cms_select, $view, $current_module, $messages,
              $ELEARNING_INTERFACE_MODULES;
@@ -250,145 +251,147 @@ class ELearningUtils
         $ref_id = Request::get('ref_id');
         $module_type = Request::get('module_type');
 
-        ELearningUtils::loadClass($new_account_cms);
+        self::loadClass($new_account_cms);
 
         //Password was sent, but is to short
-        if (isset($ext_password_2) AND ! Request::submitted('go_back') AND Request::submitted('next') AND (mb_strlen($ext_password_2) < 6)) {
-            PageLayout::postMessage(MessageBox::error(_("Das Passwort muss mindestens 6 Zeichen lang sein!")));
+        if (isset($ext_password_2) && !Request::submitted('go_back') && Request::submitted('next') && mb_strlen($ext_password_2) < 6) {
+            PageLayout::postError(_('Das Passwort muss mindestens 6 Zeichen lang sein!'));
             $new_account_step--;
-        //Passwords doesn't match password repeat
-        } elseif (isset($ext_password_2) AND ! Request::submitted('go_back')  AND Request::submitted('next') AND ($ext_password != $ext_password_2)) {
-            PageLayout::postMessage(MessageBox::error(_("Das Passwort entspricht nicht der Passwort-Wiederholung!")));
+        } elseif (isset($ext_password_2) && ! Request::submitted('go_back') && Request::submitted('next') && $ext_password != $ext_password_2) {
+            //Passwords doesn't match password repeat
+            PageLayout::postError(_('Das Passwort entspricht nicht der Passwort-Wiederholung!'));
             $new_account_step--;
         }
 
         // Benutzername was sent
-        if (($ext_username != "") AND ! Request::submitted('go_back') AND Request::submitted('assign')) {
+        if ($ext_username && !Request::submitted('go_back') && Request::submitted('assign')) {
             $caching_status = $connected_cms[$new_account_cms]->soap_client->getCachingStatus();
             $connected_cms[$new_account_cms]->soap_client->setCachingStatus(false);
             if ($connected_cms[$new_account_cms]->user->verifyLogin($ext_username, $ext_password)) {
                 $is_verified = true;
-                PageLayout::postMessage(MessageBox::info(_("Der Account wurde zugeordnet.")));
+                PageLayout::postInfo(_('Der Account wurde zugeordnet.'));
                 $connected_cms[$new_account_cms]->user->setCategory("");
                 $connected_cms[$new_account_cms]->user->setUsername($ext_username);
                 $connected_cms[$new_account_cms]->user->setPassword($ext_password);
                 $connected_cms[$new_account_cms]->user->setConnection(USER_TYPE_ORIGINAL);
-                if ($ref_id != "") {
+                if ($ref_id) {
                     $connected_cms[$new_account_cms]->newContentModule($ref_id, $module_type, true);
                     $module_title = $connected_cms[$new_account_cms]->content_module[$current_module]->getTitle();
                     $module_links = $connected_cms[$new_account_cms]->link->getUserModuleLinks();
                 }
             } else {
                 $new_account_step = 1;
-                PageLayout::postMessage(MessageBox::error(_("Die eingegebenen Login-Daten sind nicht korrekt.")));
+                PageLayout::postError(_('Die eingegebenen Login-Daten sind nicht korrekt.'));
             }
             $connected_cms[$new_account_cms]->soap_client->setCachingStatus($caching_status);
         }
 
-        if (Request::submitted('start'))
+        if (Request::submitted('start')) {
             $new_account_step = 1;
+        }
         if (Request::submitted('go_back')) {
             $new_account_step--;
             if ($new_account_step < 1) {
-                $new_account_cms = "";
+                $new_account_cms = '';
                 return false;
             }
-        }
-        elseif (Request::submitted('next') OR Request::submitted('assign'))
+        } elseif (Request::submitted('next') || Request::submitted('assign')) {
             $new_account_step++;
+        }
 
-        if (($new_account_step == 2) AND Request::submitted('assign')) {
+        if ($new_account_step == 2 && Request::submitted('assign')) {
             // Assign existing Account
             $step = 'assign';
-        } elseif (($new_account_step == 2) AND Request::submitted('next')) {
+        } elseif ($new_account_step == 2 && Request::submitted('next')) {
             // Create new Account: ask for new password
             $step = 'new_account';
-        }
-        elseif (($new_account_step == 3) AND Request::submitted('next')) {
+        } elseif ($new_account_step == 3 && Request::submitted('next')) {
             // Create new Account
             $connected_cms[$new_account_cms]->user->setPassword($ext_password);
-            if ($connected_cms[$new_account_cms]->user->newUser() != false)
-            {
+            if ($connected_cms[$new_account_cms]->user->newUser()) {
                 $is_verified = true;
-                PageLayout::postMessage(MessageBox::info(sprintf(_("Der Account wurde erzeugt und zugeordnet. Ihr Loginname ist %s."), "<b>" . htmlReady($connected_cms[$new_account_cms]->user->getUsername()) . "</b>")));
-                if ($ref_id != "")
-                {
+                PageLayout::postInfo(sprintf(_("Der Account wurde erzeugt und zugeordnet. Ihr Loginname ist %s."), "<b>" . htmlReady($connected_cms[$new_account_cms]->user->getUsername()) . "</b>"));
+                if ($ref_id) {
                     $connected_cms[$new_account_cms]->newContentModule($ref_id, $module_type, true);
                     $module_title = $connected_cms[$new_account_cms]->content_module[$current_module]->getTitle();
                     $module_links = $connected_cms[$new_account_cms]->link->getUserModuleLinks();
                 }
             }
-        } elseif (! $is_verified) {
-            $output .= "<font size=\"-1\">";
-            if (Request::submitted('start'))
+        } elseif (!$is_verified) {
+            $output .= '<font size="-1">';
+            if (Request::submitted('start')) {
                 $messages["info"] = sprintf(_("Sie versuchen zum erstem Mal ein Lernmodul des angebundenen Systems %s zu starten. Bevor Sie das Modul nutzen können, muss Ihrem Stud.IP-Benutzeraccount ein Account im angebundenen System zugeordnet werden."), htmlReady($connected_cms[$new_account_cms]->getName())) . "<br><br>\n\n";
+            }
         }
         $template = $GLOBALS['template_factory']->open('elearning/_new_account_form.php');
-        $template->set_attribute('cms_title', htmlReady($connected_cms[$new_account_cms]->getName()));
-        $template->set_attribute('cms_select', $cms_select);
-        $template->set_attribute('module_title', $module_title);
-        $template->set_attribute('module_links', $module_links);
-        $template->set_attribute('module_type', $module_type);
-        $template->set_attribute('ref_id', $ref_id);
-        $template->set_attribute('ext_username', $ext_username);
-        $template->set_attribute('new_account_cms', $new_account_cms);
-        $template->set_attribute('new_account_step', $new_account_step);
-        $template->set_attribute('is_connected', $connected_cms[$new_account_cms]->user->isConnected());
-        $template->set_attribute('is_verified', $is_verified);
-        $template->set_attribute('step', $step);
-        if ($is_verified)
+        $template->cms_title        = htmlReady($connected_cms[$new_account_cms]->getName());
+        $template->cms_select       = $cms_select;
+        $template->module_title     = $module_title;
+        $template->module_links     = $module_links;
+        $template->module_type      = $module_type;
+        $template->ref_id           = $ref_id;
+        $template->ext_username     = $ext_username;
+        $template->new_account_cms  = $new_account_cms;
+        $template->new_account_step = $new_account_step;
+        $template->is_connected     = $connected_cms[$new_account_cms]->user->isConnected();
+        $template->is_verified      = $is_verified;
+        $template->step             = $step;
+
+        // TODO: Should this really be below the assignment?
+        if ($is_verified) {
             $new_account_cms = "";
+        }
 
         return $template->render();
     }
 
     /**
-    * get table-header for connected cms
-    *
-    * returns a table-header for connected cms
-    * @access public
-    * @param string $title table-title
-    * @return string returns html-code
-    */
-    function getCMSHeader($title)
+     * get table-header for connected cms
+     *
+     * returns a table-header for connected cms
+     *
+     * @param string $title table-title
+     * @return string returns html-code
+     */
+    public static function getCMSHeader($title)
     {
         $template = $GLOBALS['template_factory']->open('elearning/_cms_header.php');
-        $template->set_attribute('title', $title);
+        $template->title = $title;
         return $template->render();
     }
 
     /**
-    * get table-footer for connected cms
-    *
-    * returns a table-footer for connected cms
-    * @access public
-    * @param string $logo system-logo
-    * @return string returns html-code
-    */
-    function getCMSFooter($logo)
+     * get table-footer for connected cms
+     *
+     * returns a table-footer for connected cms
+     *
+     * @param string $logo system-logo
+     * @return string returns html-code
+     */
+    public static function getCMSFooter($logo)
     {
         $template = $GLOBALS['template_factory']->open('elearning/_cms_footer.php');
-        $template->set_attribute('logo', $logo);
+        $template->logo = $logo;
         return $template->render();
     }
 
     /**
-    * get headline for modules
-    *
-    * returns a table with a headline
-    * @access public
-    * @param string $title headline
-    * @return string returns html-code
-    */
-    function getModuleHeader($title)
+     * get headline for modules
+     *
+     * returns a table with a headline
+     *
+     * @param string $title headline
+     * @return string returns html-code
+     */
+    public static function getModuleHeader($title)
     {
         global $view, $cms_select, $search_key;
         $template = $GLOBALS['template_factory']->open('elearning/_module_header.php');
-        $template->set_attribute('title', $title);
-        $template->set_attribute('view', $view);
-        $template->set_attribute('cms_select', $cms_select);
-        $template->set_attribute('search_key', $search_key);
-        $template->set_attribute('all_open', $_SESSION['elearning_open_close']["all open"]);
+        $template->title      = $title;
+        $template->view       = $view;
+        $template->cms_select = $cms_select;
+        $template->search_key = $search_key;
+        $template->all_open   = $_SESSION['elearning_open_close']['all open'];
         return $template->render();
     }
 
@@ -396,78 +399,77 @@ class ELearningUtils
     * get Headline
     *
     * returns a table with a headline
-    * @access public
+    *
     * @param string $title headline
     * @return string returns html-code
     */
-    function getHeader($title)
+    public static function getHeader($title)
     {
         $template = $GLOBALS['template_factory']->open('elearning/_header.php');
-        $template->set_attribute('title', $title);
+        $template->title = $title;
         return $template->render();
     }
 
     /**
-    * save timestamp
-    *
-    * saves a timestamp for debugging and performance-check
-    * @access public
-    * @param string $stri description
-    */
-    function bench($stri)
+     * save timestamp
+     *
+     * saves a timestamp for debugging and performance-check
+     *
+     * @param string $stri description
+     */
+    public static function bench($stri)
     {
-        global $timearray;
-
-        list($usec, $sec) = explode(" ", microtime());
-        $t = ((float)$usec + (float)$sec);
-        $nr = sizeof($timearray);
-        $timearray[$nr]["zeit"] = $t;
-        $timearray[$nr]["name"] = $stri;
+        $GLOBALS['timearray'][] = [
+            'zeit' => microtime(true),
+            'name' => $stri,
+        ];
     }
 
     /**
-    * show benchmark
-    *
-    * shows saved timestamps with descriptions
-    * @access public
-    * @param string $stri description
-    */
-    function showbench()
+     * show benchmark
+     *
+     * shows saved timestamps with descriptions
+     *
+     * @param string $stri description
+     */
+    public static function showbench()
     {
         global $timearray;
         echo "<table><tr><td>Zeit (".$timearray[0]["name"].")</td><td align=\"right\"></td></tr>";
-        for ($i=1;$i<sizeof($timearray);$i++)
-        {
+        for ($i = 0; $i < count($timearray); $i++) {
             echo "<tr><td>".$timearray[$i]["name"].": </td><td align=\"right\">" . number_format(($timearray[$i]["zeit"]-$timearray[$i-1]["zeit"])*1000,2) . " msek</td></tr>";
         }
         echo "<tr><td>Gesamtzeit: </td><td align=\"right\">" . number_format(($timearray[$i-1]["zeit"]-$timearray[0]["zeit"])*1000,2)." msek</td></tr></table>";
     }
 
     /**
-    * delete cms-data
-    *
-    * deletes all data belonging to the specified cms from stud.ip database
-    * @access public
-    * @return boolean successful
-    */
-    function deleteCMSData($cms_type) {
+     * delete cms-data
+     *
+     * deletes all data belonging to the specified cms from stud.ip database
+     *
+     * @return boolean successful
+     */
+    public static function deleteCMSData($cms_type)
+    {
         $db = DBManager::get();
-        $db->exec("DELETE FROM auth_extern WHERE external_user_system_type = " . $db->quote($cms_type));
-        $db->exec("DELETE FROM object_contentmodules WHERE system_type =  " . $db->quote($cms_type));
+        $db->execute("DELETE FROM auth_extern WHERE external_user_system_type = ?", [$cms_type]);
+        $db->execute("DELETE FROM object_contentmodules WHERE system_type = ?", [$cms_type]);
+
         $config = Config::get();
-        foreach ($config->getFields('global' ,null , 'ELEARNING_INTERFACE_' . $cms_type) as $key) {
+        foreach ($config->getFields('global' ,null , "ELEARNING_INTERFACE_{$cms_type}") as $key) {
             $config->delete($key);
         }
     }
 
     /**
-    * get ilias courses
-    *
-    * creates output of ilias courses linked to the chosen seminar. also updates object-connections.
-    * @access public
-    * @return boolean successful
-    */
-    function getIliasCourses($sem_id) {
+     * get ilias courses
+     *
+     * creates output of ilias courses linked to the chosen seminar. also updates object-connections.
+     *
+     * @return boolean successful
+     */
+    public static function getIliasCourses($sem_id)
+    {
         global  $connected_cms, $messages, $view, $cms_select;
         $db = DBManager::get();
 
@@ -478,8 +480,8 @@ class ELearningUtils
         foreach ($rs as $row) $courses[$row['system_type']] = $row['module_id'];
         if (is_array($courses))
             foreach($courses as $system_type => $crs_id)
-                if (ELearningUtils::isCMSActive($system_type)) {
-                    ELearningUtils::loadClass($system_type);
+                if (self::isCMSActive($system_type)) {
+                    self::loadClass($system_type);
                     $connected_courses['courses'][$system_type] = array(
                         'url' => UrlHelper::getLink($connected_cms[$system_type]->link->cms_link . '?client_id=' . $connected_cms[$system_type]->getClientId() . '&cms_select=' . $system_type . '&ref_id=' . $crs_id . '&type=crs&target=start'),
                         'cms_name' => $connected_cms[$system_type]->getName());
@@ -516,10 +518,11 @@ class ELearningUtils
     * check db-integrity
     *
     * checks if there are broken links in the database
-    * @access public
+    *
     * @return boolean successful
     */
-    function checkIntegrity() {
+    public static function checkIntegrity()
+    {
         global $ELEARNING_INTERFACE_MODULES, $messages;
         $db = DBManager::get();
 
@@ -559,10 +562,10 @@ class ELearningUtils
 
         foreach ($cmsystems as $cms_type =>$data) {
             if ($ELEARNING_INTERFACE_MODULES[$cms_type]) {
-                $output .= ELearningUtils::getCMSHeader($ELEARNING_INTERFACE_MODULES[$cms_type]["name"]);
+                $output .= self::getCMSHeader($ELEARNING_INTERFACE_MODULES[$cms_type]["name"]);
                 $output .= "<table>";
                 $output .= "<tr><td colspan=\"2\">&nbsp;</td></tr>";
-                if (ELearningUtils::getConfigValue("ACTIVE", $cms_type)) {
+                if (self::isCMSActive($cms_type)) {
                     $output .= "<tr><td>" .  Icon::create('checkbox-checked', 'clickable')->asImg(['class' => 'text-top']) . "</td><td><b>". sprintf(_("Die Schnittstelle zum System %s ist aktiv."), $ELEARNING_INTERFACE_MODULES[$cms_type]["name"]) . "</b></td></tr>";
                     $output .= "<tr><td colspan=\"2\">&nbsp;</td></tr>";
                 }
@@ -579,10 +582,10 @@ class ELearningUtils
                     $output .= "<tr><td colspan=\"2\">". sprintf(_("%s Einträge in der config-Tabelle der Stud.IP-Datenbank."), $data["config"]) . "</td></tr>";
                 $output .= "<tr><td colspan=\"2\">&nbsp;</td></tr>";
                 $output .= "</table>";
-                $output .= ELearningUtils::getCMSFooter(($ELEARNING_INTERFACE_MODULES[$cms_type]["logo_file"] ? "<img src=\"".$ELEARNING_INTERFACE_MODULES[$cms_type]["logo_file"]."\" border=\"0\">" : $cms_type));
+                $output .= self::getCMSFooter(($ELEARNING_INTERFACE_MODULES[$cms_type]["logo_file"] ? "<img src=\"".$ELEARNING_INTERFACE_MODULES[$cms_type]["logo_file"]."\" border=\"0\">" : $cms_type));
             }
             else {
-                $output .= ELearningUtils::getCMSHeader("<font color=FF0000> Unbekanntes System: " . $cms_type . "</font>");
+                $output .= self::getCMSHeader("<font color=FF0000> Unbekanntes System: " . $cms_type . "</font>");
                 $output .= "<form method=\"POST\" action=\"" . URLHelper::getLink() . "\">";
                 $output .= CSRFProtection::tokenTag();
                 $output .= "<table>";
@@ -601,7 +604,7 @@ class ELearningUtils
                 $output .= "<tr><td colspan=\"2\">&nbsp;</td></tr>";
                 $output .= "</table>";
                 $output .= "</form>";
-                $output .= ELearningUtils::getCMSFooter('');
+                $output .= self::getCMSFooter('');
             }
             $output .= "<br>";
         }
@@ -609,4 +612,3 @@ class ELearningUtils
         return $output;
     }
 }
-?>
