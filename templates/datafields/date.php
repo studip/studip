@@ -12,6 +12,7 @@
     <input type="text" name="<?= $name ?>[<?= $model->id ?>]"
            class="no-hint"
            value="<? if ($value) echo date('d.m.Y ', $timestamp); ?>"
+           <?= !$entry->isEditable() ? "disabled" : "" ?>
            title="<?= _('Datum') ?>"
            style="width: 8em;"
            data-date-picker

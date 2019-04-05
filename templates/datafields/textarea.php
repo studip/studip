@@ -8,6 +8,7 @@
     <? endif ?>
 
     <textarea name="<?= $name ?>[<?= $model->id ?>]"
+              <?= !$entry->isEditable() ? "disabled" : "" ?>
               id="<?= $name ?>_<?= $model->id ?>"
               rows="6"
               <? if ($model->is_required) echo 'required'; ?>

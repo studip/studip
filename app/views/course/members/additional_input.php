@@ -7,9 +7,10 @@
         <p><?= formatReady($aux->description) ?></p>
 
         <? foreach ($datafields as $field): ?>
-            <? if ($field->getTypedDatafield()->isVisible() && $field->getTypedDatafield()->isEditable()): ?>
-                <? $editable = true; ?>
-
+            <? if ($field->getTypedDatafield()->isVisible()): ?>
+                <? if ($field->getTypedDatafield()->isEditable()) : ?>
+                    <? $editable = true; ?>
+                <? endif ?>
                 <?= $field->getTypedDatafield()->getHTML('aux'); ?>
             <? endif; ?>
         <? endforeach; ?>

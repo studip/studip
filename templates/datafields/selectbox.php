@@ -20,6 +20,7 @@
     ?>
     <select name="<?= $name ?>[<?= $model->id ?>]<? if ($multiple) echo '[]'; ?>"
             id="<?= $name ?>_<?= $model->id ?>"
+            <?= !$entry->isEditable() ? "disabled" : "" ?>
             <? if ($multiple) echo 'multiple'; ?>
             <? if ($model->is_required) echo 'required'; ?>>
     <? foreach ($type_param as $pkey => $pval): ?>

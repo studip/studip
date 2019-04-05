@@ -7,5 +7,13 @@
         <?= tooltipIcon($model->description) ?>
     <? endif ?>
 
-    <?= I18N::textarea($name, $value, ['required' => (bool) $model->is_required, 'locale_names' => $locale_names]) ?>
+    <? if ($entry->isEditable()) : ?>
+        <?= I18N::textarea($name, $value, ['required' => (bool) $model->is_required, 'locale_names' => $locale_names]) ?>
+    <? else : ?>
+        <textarea name="<?= $name ?>[<?= $model->id ?>]"
+              disabled
+              id="<?= $name ?>_<?= $model->id ?>"
+              rows="6"
+    ><?= htmlReady($value) ?></textarea>
+    <? endif ?>
 </label>

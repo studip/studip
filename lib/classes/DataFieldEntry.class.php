@@ -353,6 +353,7 @@ abstract class DataFieldEntry
     {
         $variables = array_merge(array(
             'name'  => $name,
+            'entry' => $this,
             'model' => $this->model,
             'value' => $this->getValue(),
         ), $variables);

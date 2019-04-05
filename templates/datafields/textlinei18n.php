@@ -7,5 +7,11 @@
         <?= tooltipIcon($model->description) ?>
     <? endif ?>
 
-    <?= I18N::input($name, $value, ['required' => (bool) $model->is_required, 'locale_names' => $locale_names]) ?>
+    <? if ($entry->isEditable()) : ?>
+        <?= I18N::input($name, $value, ['required' => (bool) $model->is_required, 'locale_names' => $locale_names]) ?>
+    <? else : ?>
+        <input type="text" name="<?= $name ?>[<?= $model->id ?>]"
+               value="<?= htmlReady($value) ?>" id="<?= $name ?>_<?= $model->id ?>"
+               disabled>
+    <? endif ?>
 </label>
