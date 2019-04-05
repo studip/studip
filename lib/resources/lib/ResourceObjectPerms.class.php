@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -41,37 +41,33 @@ ResourceObjectPerms, stellt Perms zum Ressourcen Object zur
 Verfuegung
 /*****************************************************************************/
 
-class ResourceObjectPerms {
+class ResourceObjectPerms
+{
+    public static function Factory($resource_id, $user_id = false)
+    {
+        static $object_pool = [];
 
-    function Factory($resource_id, $user_id = false){
-
-        static $object_pool;
-
-        if (!$user_id){
-            $user_id = $GLOBALS['auth']->auth['uid'];
+        if (!$user_id) {
+            $user_id = $GLOBALS['user']->id;
         }
-        if (is_object($object_pool[$user_id][$resource_id])){
-            return $object_pool[$user_id][$resource_id];
-        } else {
-            $object_pool[$user_id][$resource_id] = new ResourceObjectPerms($resource_id, $user_id);
-            return $object_pool[$user_id][$resource_id];
+        if (!is_object($object_pool[$user_id][$resource_id])) {
+            $object_pool[$user_id][$resource_id] = new self($resource_id, $user_id);
         }
+        return $object_pool[$user_id][$resource_id];
     }
 
-    var $user_id;
-    var $db;
-    var $db2;
-    var $resource_id;
-    var $perm_weight= array("admin" => 4, "tutor" => 2, "autor" => 1);
+    public $user_id;
+    public $db;
+    public $db2;
+    public $resource_id;
+    public $perm_weight= array('admin' => 4, 'tutor' => 2, 'autor' => 1);
 
 
-    function __construct($resource_id, $user_id='') {
+    public function __construct($resource_id, $user_id = '')
+    {
         global $user, $perm;
 
-        if ($user_id)
-            $this->user_id=$user_id;
-        else
-            $this->user_id=$user->id;
+        $this->user_id = $user_id ?: $GLOBALS['user']->id;
 
         $this->resource_id=$resource_id;
         if (!$this->resource_id){
@@ -180,41 +176,50 @@ class ResourceObjectPerms {
     }
 
     //private
-    function changePerm($new_perm) {
-        if ($new_perm == "dozent")
+    public function changePerm($new_perm)
+    {
+        if ($new_perm === 'dozent') {
             $new_perm = "tutor";
-        if ($this->perm_weight[$new_perm] > $this->perm_weight[$this->perm])
+        }
+        if ($this->perm_weight[$new_perm] > $this->perm_weight[$this->perm]) {
             $this->perm = $new_perm;
+        }
     }
 
-    function havePerm ($perm) {
-        if ($perm == "admin") {
-            if ($this->getUserPerm () == "admin")
-                return TRUE;
-        } elseif ($perm == "autor") {
-            if (($this->getUserPerm () == "admin") || ($this->getUserPerm () == "autor") || ($this->getUserPerm () == "tutor"))
-                return TRUE;
-        } elseif ($perm == "tutor") {
-            if (($this->getUserPerm () == "admin") || ($this->getUserPerm () == "tutor"))
-                return TRUE;
-        } else
-            return FALSE;
+    public function havePerm($perm)
+    {
+        if ($perm === 'admin') {
+            if ($this->getUserPerm() === 'admin')
+                return true;
+        } elseif ($perm === 'autor') {
+            if (in_array($this->getUserPerm(), ['admin', 'autor', 'tutor'])) {
+                return true;
+            }
+        } elseif ($perm === 'tutor') {
+            if (in_array($this->getUserPerm(), ['admin', 'tutor'])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    function getUserPerm () {
+    public function getUserPerm()
+    {
         return $this->perm;
     }
 
-    function getUserIsOwner () {
+    public function getUserIsOwner()
+    {
         return $this->owner;
     }
 
-    function getId () {
+    public function getId()
+    {
         return $this->resource_id;
     }
 
-    function getUserId () {
+    public function getUserId()
+    {
         return $this->user_id;
     }
-
 }
