@@ -415,7 +415,7 @@ class StudipArrayObject implements IteratorAggregate, ArrayAccess, Serializable,
                     $this->setIteratorClass($v);
                     break;
                 case 'protectedProperties':
-                    continue;
+                    break;
                 default:
                     $this->__set($k, $v);
             }

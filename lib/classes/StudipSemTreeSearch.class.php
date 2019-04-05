@@ -228,16 +228,12 @@ class StudipSemTreeSearch {
         return;
     }
 
-    function insertSelectedRanges($selected = null){
+    public function insertSelectedRanges($selected = null)
+    {
         if (!$selected){
-            $val = $this->form_name . "_chooser";
-            $$val = Request::quotedArray($this->form_name . "_chooser");
-            for ($i = 0; $i < count($$val); ++$i){
-                if($$val[$i]){
-                    $selected[] = $$val[$i];
-                }
-            }
+            $selected = array_filter(Request::quotedArray("{$this->form_name}_chooser"));
         }
+
         if (is_array($selected)){
             $count_intersect = count(array_intersect($selected,array_keys($this->selected)));
             if (count($this->selected) != $count_intersect || count($selected) != $count_intersect){
@@ -251,7 +247,5 @@ class StudipSemTreeSearch {
                 $this->selected = $new_selected;
             }
         }
-        return;
     }
 }
-?>
