@@ -28,7 +28,6 @@ namespace {
         . PATH_SEPARATOR . $STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'config'
         . PATH_SEPARATOR . get_include_path()
     );
-    !ini_get('register_globals') || require 'templates/register_globals_on.php';
 
     $ABSOLUTE_PATH_STUDIP = $STUDIP_BASE_PATH . '/public/';
 
