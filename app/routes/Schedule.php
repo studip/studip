@@ -11,15 +11,13 @@ namespace RESTAPI\Routes;
  */
 class Schedule extends \RESTAPI\RouteMap
 {
-
     /**
      * returns schedule for a given user and semester
      *
      * @get /user/:user_id/schedule/:semester_id
      * @get /user/:user_id/schedule
      */
-
-    public function getSchedule($user_id, $semester_id = NULL)
+    public function getSchedule($user_id, $semester_id = null)
     {
         if ($user_id !== $GLOBALS['user']->id) {
             $this->error(401);
@@ -35,20 +33,24 @@ class Schedule extends \RESTAPI\RouteMap
 
         $schedule_settings = \UserConfig::get($user_id)->SCHEDULE_SETTINGS;
         $days = $schedule_settings['glb_days'];
+        foreach ($days as $key => $day_number) {
+            $days[$key] = ($day_number + 6) % 7;
+        }
 
         $entries = \CalendarScheduleModel::getEntries(
             $user_id, $current_semester,
             $schedule_settings['glb_start_time'], $schedule_settings['glb_end_time'],
             $days,
-            $visible = false);
+            $visible = false
+        );
 
-       $json = array();
+       $json = [];
        foreach ($entries as $number_of_day => $schedule_of_day) {
-           $entries = array();
+           $entries = [];
            foreach ($schedule_of_day->entries as $entry) {
                $entries[$entry['id']] = self::entryToJson($entry);
            }
-           $json[$number_of_day + 1] = $entries;
+           $json[$number_of_day] = $entries;
        }
 
        $this->etag(md5(serialize($json)));
@@ -59,9 +61,8 @@ class Schedule extends \RESTAPI\RouteMap
 
     private static function entryToJson($entry)
     {
-        $json = array();
-
-        foreach (words("start end content title color type") as $key) {
+        $json = [];
+        foreach (['start', 'end', 'content', 'title', 'color', 'type'] as $key) {
             $json[$key] = $entry[$key];
         }
 
