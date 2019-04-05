@@ -61,7 +61,6 @@ class Avatar {
     /**
      * Holds the user's id
      *
-     * @access protected
      * @var string
      */
     protected $user_id;
@@ -70,7 +69,6 @@ class Avatar {
     /**
      * Holds the user's username
      *
-     * @access protected
      * @var string
      */
     protected $username;
@@ -79,12 +77,12 @@ class Avatar {
     /**
      * Returns an avatar object of the appropriate class.
      *
-     * @param    string    the user's id
-     * @param    string    the user's username (optional)
+     * @param string    the user's id
+     * @param string    the user's username (optional)
      *
-     * @return mixed     the user's avatar.
+     * @return Avatar the user's avatar.
      */
-    static function getAvatar($id)
+    public static function getAvatar($id)
     {
         $username = null;
 
@@ -98,28 +96,32 @@ class Avatar {
     /**
      * Returns an avatar object for "nobody".
      *
-     * @return mixed     the user's avatar.
+     * @return Avatar the user's avatar.
      */
-    static function getNobody() {
+    public static function getNobody()
+    {
         return new Avatar(Avatar::NOBODY, Avatar::NOBODY);
     }
 
 
-    function getAvatarDirectoryUrl() {
+    public function getAvatarDirectoryUrl()
+    {
         return $GLOBALS['DYNAMIC_CONTENT_URL'] . "/user";
     }
 
 
-    function getAvatarDirectoryPath() {
+    public function getAvatarDirectoryPath()
+    {
         return $GLOBALS['DYNAMIC_CONTENT_PATH'] . "/user";
     }
 
 
-    function getCustomAvatarUrl($size, $ext = 'png') {
+    public function getCustomAvatarUrl($size, $ext = 'png')
+    {
         $retina = $GLOBALS['auth']->auth['devicePixelRatio'] > 1.2;
         $size = $retina && file_exists($this->getCustomAvatarPath($size, 'png', true))
-            ? $size."@2x"
-            : $size;
+              ? $size."@2x"
+              : $size;
         return sprintf(
             '%s/%s_%s.%s?d=%s',
             $this->getAvatarDirectoryUrl(),
@@ -131,12 +133,15 @@ class Avatar {
     }
 
 
-    function getCustomAvatarPath($size, $ext = 'png', $retina = false) {
-        return sprintf('%s/%s_%s.%s',
-                                     $this->getAvatarDirectoryPath(),
-                                     $this->user_id,
-                                     $retina ? $size."@2x" : $size,
-                                     $ext);
+    public function getCustomAvatarPath($size, $ext = 'png', $retina = false)
+    {
+        return sprintf(
+            '%s/%s_%s.%s',
+            $this->getAvatarDirectoryPath(),
+            $this->user_id,
+            $retina ? $size."@2x" : $size,
+            $ext
+        );
     }
 
 
@@ -165,7 +170,8 @@ class Avatar {
      *
      * @return string    the absolute file path to the avatar
      */
-    function getFilename($size, $ext = 'png') {
+    public function getFilename($size, $ext = 'png')
+    {
         return $this->is_customized()
             ? $this->getCustomAvatarPath($size, $ext)
             : $this->getNobody()->getCustomAvatarPath($size, $ext);
@@ -181,7 +187,8 @@ class Avatar {
      * @return string    the URL to the user's picture
      */
     # TODO (mlunzena) in Url umbenennen
-    function getURL($size, $ext = 'png') {
+    public function getURL($size, $ext = 'png')
+    {
         return $this->is_customized()
             ? $this->getCustomAvatarUrl($size, $ext)
             : $this->getNobody()->getCustomAvatarUrl($size, $ext);
@@ -208,7 +215,8 @@ class Avatar {
      *
      * @return string CSS class to use for the avatar
      */
-    protected function getCssClass($size) {
+    protected function getCssClass($size)
+    {
         if (!isset($this->username)) {
             $this->username = htmlReady(get_username($this->user_id));
         }
@@ -226,8 +234,8 @@ class Avatar {
      *
      * @return string returns the HTML image tag
      */
-    function getImageTag($size = Avatar::MEDIUM, $opt = array()) {
-
+    public function getImageTag($size = Avatar::MEDIUM, $opt = [])
+    {
         $opt['src'] = $this->getURL($size);
 
         if (isset($opt['class'])) {
@@ -265,10 +273,9 @@ class Avatar {
      * @throws several Exceptions if the uploaded file does not satisfy the
      *                 requirements
      */
-    public function createFromUpload($userfile) {
-
+    public function createFromUpload($userfile)
+    {
         try {
-
             // Bilddatei ist zu groß
             if ($_FILES[$userfile]['size'] > self::MAX_FILE_SIZE) {
                 throw new Exception(sprintf(_("Die hochgeladene Bilddatei ist %s KB groß. Die maximale Dateigröße beträgt %s KB!"),
@@ -314,7 +321,6 @@ class Avatar {
         }
     }
 
-
     /**
      * Creates thumbnails from an image.
      *
@@ -322,8 +328,8 @@ class Avatar {
      *
      * @return void
      */
-    public function createFrom($filename) {
-
+    public function createFrom($filename)
+    {
         if (!extension_loaded('gd')) {
             throw new Exception(_('Es ist ein Fehler beim Bearbeiten des Bildes aufgetreten.') . ' (' . _('Fehlende GD-Lib') . ')');
         }
@@ -345,10 +351,9 @@ class Avatar {
 
     /**
      * Removes all uploaded pictures of a user.
-     *
-     * @return void
      */
-    function reset() {
+    public function reset()
+    {
         if ($this->is_customized()) {
             NotificationCenter::postNotification('AvatarWillDelete', $this->user_id);
             @unlink($this->getCustomAvatarPath(Avatar::ORIGINAL));
@@ -367,10 +372,9 @@ class Avatar {
      * Return the dimension of a size
      *
      * @param    string         the dimension of a size
-     *
      * @return array            a tupel of integers [width, height]
      */
-    function getDimension($size) {
+    public static function getDimension($size) {
         $dimensions = array(
             Avatar::NORMAL => array(250, 250),
             Avatar::MEDIUM => array(100, 100),
@@ -388,42 +392,43 @@ class Avatar {
      *
      * @return void
      */
-    private function resize($size, $filename, $retina = false) {
-
-        list($thumb_width, $thumb_height) = $this->getDimension($size);
+    private function resize($size, $filename, $retina = false)
+    {
+        list($thumb_width, $thumb_height) = self::getDimension($size);
         $thumb_width = $retina ? $thumb_width * 2 : $thumb_width;
         $thumb_height = $retina ? $thumb_height * 2 : $thumb_height;
 
         list($width, $height, $type) = getimagesize($filename);
 
         # create image resource from filename
-        $lookup = array(
-            IMAGETYPE_GIF    => "imagecreatefromgif",
-            IMAGETYPE_JPEG => "imagecreatefromjpeg",
-            IMAGETYPE_PNG    => "imagecreatefrompng");
+        $lookup = [
+            IMAGETYPE_GIF  => 'imagecreatefromgif',
+            IMAGETYPE_JPEG => 'imagecreatefromjpeg',
+            IMAGETYPE_PNG  => 'imagecreatefrompng',
+        ];
         if (!isset($lookup[$type])) {
             throw new Exception(_("Der Typ des Bilds wird nicht unterstützt."));
         }
         $image = $lookup[$type]($filename);
 
-        imagealphablending($image, FALSE);
-        imagesavealpha($image, TRUE);
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
 
         # resize image if needed
         if ($height > $thumb_height || $width > $thumb_width) {
             $factor = max($thumb_width / $width, $thumb_height / $height);
-            $resized_width = round($width * $factor);
+            $resized_width  = round($width * $factor);
             $resized_height = round($height * $factor);
         } else {
-            $resized_width    = $width;
+            $resized_width  = $width;
             $resized_height = $height;
         }
 
         $image = self::imageresize($image, $width, $height, $resized_width, $resized_height);
 
         $dst = imagecreatetruecolor($thumb_width, $thumb_height);
-        imagealphablending($dst, FALSE);
-        imagesavealpha($dst, TRUE);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
 
         $trans_colour = imagecolorallocatealpha($dst, 0, 0, 0, 127);
         imagefill($dst, 0, 0, $trans_colour);
@@ -432,31 +437,46 @@ class Avatar {
         $ypos = intval($thumb_height - $resized_height) >> 1;
         $xpos = intval($thumb_width - $resized_width) >> 1;
 
-        imagecopy($dst, $image, $xpos, $ypos, 0, 0,
-                            $resized_width, $resized_height);
+        imagecopy(
+            $dst, $image,
+            $xpos, $ypos,
+            0, 0,
+            $resized_width, $resized_height
+        );
 
         imagepng($dst, $this->getCustomAvatarPath($size, 'png', $retina));
     }
 
 
-    private function imageresize($image, $current_width, $current_height, $width, $height) {
+    private function imageresize($image, $current_width, $current_height, $width, $height)
+    {
         $image_resized = imagecreatetruecolor($width, $height);
 
-        imagealphablending($image_resized, FALSE);
-        imagesavealpha($image_resized, TRUE);
-        imagecopyresampled($image_resized, $image, 0, 0, 0, 0,
-                                             $width, $height, $current_width, $current_height);
+        imagealphablending($image_resized, false);
+        imagesavealpha($image_resized, true);
+        imagecopyresampled(
+            $image_resized, $image,
+            0, 0,
+            0, 0,
+            $width, $height,
+            $current_width, $current_height
+        );
 
         return $image_resized;
     }
 
 
-    public static function error_handler($errno, $errstr, $errfile, $errline) {
-
-        if (defined("E_RECOVERABLE_ERROR") &&
-                $errno == constant("E_RECOVERABLE_ERROR")) {
-            $message = sprintf('Recoverable error "%s" occured in file %s line %s.',
-                                                 $errstr, $errfile, $errline);
+    public static function error_handler($errno, $errstr, $errfile, $errline)
+    {
+        if (defined('E_RECOVERABLE_ERROR')
+            && $errno == constant('E_RECOVERABLE_ERROR'))
+        {
+            $message = sprintf(
+                'Recoverable error "%s" occured in file %s line %u.',
+                $errstr,
+                $errfile,
+                $errline
+            );
             throw new Exception($message);
         }
 
@@ -468,7 +488,7 @@ class Avatar {
      * Return the default title of the avatar.
      * @return string the default title
      */
-    function getDefaultTitle()
+    public function getDefaultTitle()
     {
         if ($this->user_id === Avatar::NOBODY) {
             return Avatar::NOBODY;
@@ -483,7 +503,8 @@ class Avatar {
      * Also set the user_id of avatar to nobody if not visible to current user.
      * @return boolean: true if visible
      */
-    protected function checkAvatarVisibility() {
+    protected function checkAvatarVisibility()
+    {
         $visible = Visibility::verify('picture', $this->user_id);
         if (!$visible) {
             $this->user_id = 'nobody';
