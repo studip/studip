@@ -175,7 +175,7 @@ class StudipLitSearch
         return $plugins[$plugin_name];
     }
 
-    public function GetAvailablePluginsOptions()
+    public static function GetAvailablePluginsOptions()
     {
         $ret = [];
         foreach (self::GetAvailablePlugins() as $value => $name) {
