@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter001: TEST
 # Lifter002: TODO
 # Lifter007: TODO
@@ -35,7 +35,8 @@
 * @author   André Noack <noack@data-quest.de>
 * @package
 */
-class StudipLitList extends TreeAbstract implements PrivacyObject {
+class StudipLitList extends TreeAbstract implements PrivacyObject
+{
 
     var $format_default = "**{authors}** - {dc_title} - %%{published}%%";
     var $cat_element;
@@ -424,7 +425,8 @@ class StudipLitList extends TreeAbstract implements PrivacyObject {
         return $list_ids;
     }
 
-    function GetFormattedListsByRange($range_id, $last_modified_since = false, $copy_link = true){
+    public static function GetFormattedListsByRange($range_id, $last_modified_since = false, $copy_link = true)
+    {
         $ret = false;
         $dbv = DbView::getView('literatur');
         $tree = TreeAbstract::GetInstance("StudipLitList", $range_id);
