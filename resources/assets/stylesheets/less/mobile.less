@@ -1,5 +1,6 @@
 .media-breakpoint-small-down({
   #layout_wrapper { min-width: 0 !important; }
+  #login div.index_container .messagebox,
   #index div.index_container .messagebox,
   #request_new_password div.index_container .messagebox,
   #web_migrate div.index_container .messagebox {
@@ -9,13 +10,16 @@
   }
 });
 
-.media-breakpoint-tiny-down({
+.media-breakpoint-medium-down({
     #barTopStudip img {
         height: 33px;
         margin-top: 5px;
         width: 153px;
     }
-    #login, #request_new_password, #web_migrate {
+    #index,
+    #login,
+    #request_new_password,
+    #web_migrate {
         div.index_container {
             display: flex;
             flex-direction: column;
