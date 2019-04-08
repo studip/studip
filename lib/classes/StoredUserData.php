@@ -78,15 +78,7 @@ class StoredUserData
                 $context
             );
         } else if ($fileref->file->getPath()) {
-            // add folder structure to zip
-            $folder = Folder::find($fileref->folder_id);
-            $zipDir = $folder->range_type . "/";
-            if($folder->parent_id){                
-                foreach($folder->getParents() as $parent){
-                    $zipDir .= ($parent->name) ?  $parent->name . "/" : ""  ;
-                }
-            }
-            $this->addFileAtPath($fileref->name, $fileref->file->getPath(),$zipDir, $context);
+            $this->addFileAtPath($fileref->name, $fileref->file->getPath(), $context);
         }
     }
 
@@ -96,12 +88,11 @@ class StoredUserData
      *
      * @param string      $name File name
      * @param string      $path File path
-     * @param string      $zipDir Optional Zip File Path Structure 
      * @param SimpleORMap $context Optional context
      */
-    public function addFileAtPath($name, $path, $zipDir = null, SimpleORMap $context = null)
+    public function addFileAtPath($name, $path, SimpleORMap $context = null)
     {
-        $this->addData('file', compact('name', 'path', 'zipDir'), $context);
+        $this->addData('file', compact('name', 'path'), $context);
     }
 
     /**

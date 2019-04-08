@@ -302,7 +302,7 @@ class PrivacyController extends AuthenticatedController
         if ($avatar->is_customized()) {
             $zip->addFile($avatar->getCustomAvatarPath('normal'), $user_id . '.png');
         }
-        // add folder structure to zip
+       
         foreach (FileRef::findByUser_id($user_id) as $fileref) {
             $storage->addFileRef($fileref);
         }
@@ -311,10 +311,54 @@ class PrivacyController extends AuthenticatedController
             $plugin->exportUserData($storage);
         }
 
-        foreach ($storage->getFileData() as $file_data) {
-            $zip->addEmptyDir($file_data['zipDir']);
+         // add numbering structure to zip
+        $source_files = $storage->getFileData();
+        
+        $file_names = array();
+        foreach ($source_files as $k => $file_data) {
+            $file_names[$file_data['name']][] = $k;
+        }
+        $fname_checker = array();
+        do {
+            $not_clear = false;
+            foreach ($file_names as $fname => $dups) {
+                $total_dups = count($dups);
+                if ($total_dups > 1 && !in_array($fname,$fname_checker)) {
+                    $name = pathinfo($fname)["filename"];
+                    $ext = pathinfo($fname)["extension"];
+                    for ($i = 1; $i < $total_dups; $i++) {
+                        $next = $name . "[$i]." . $ext ;
+                        $nodup = true;
+                        do {
+                            if (array_key_exists($next, $file_names)) {
+                                $next_origin_new_name = pathinfo($next)["filename"] . '-origin.' . pathinfo($next)["extension"];
+                                $file_names[$next_origin_new_name] = $file_names[$next];
+                                unset($file_names[$next]);
+                                $fname_checker[] = $next;
+                            } else {
+                                $nodup = false;
+                            }
+                        } while ($nodup);
+                        $file_names[$next][] = $dups[$i];
+                        $fname = $next;
+                        unset($file_names[$name . '.' . $ext][$i]);
+                    }
+                }
+            }
+            foreach ($file_names as $fname => $dups) {
+                $total_dups = count($dups);
+                if ($total_dups > 1) {
+                    $not_clear = true;
+                } else {
+                    $source_files[$dups[0]]['name'] = $fname;
+                }
+            }
+        } while ($not_clear);
+        
+
+        foreach ($source_files as $file_data) {
             if (isset($file_data['path'])) {
-                $zip->addFile($file_data['path'], $file_data['zipDir'] . $file_data['name']);
+                $zip->addFile($file_data['path'], $file_data['name']);
             } else {
                 $zip->addFromString($file_data['name'], $file_data['contents']);
             }
@@ -411,4 +455,6 @@ class PrivacyController extends AuthenticatedController
             ],
         ];
     }
+
+    
 }
