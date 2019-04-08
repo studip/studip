@@ -41,23 +41,26 @@ class Semester extends SimpleORMap
         $config['additional_fields']['current'] = true;
         $config['additional_fields']['past'] = true;
 
-        $config['additional_fields']['absolute_seminars_count'] = array(
+        $config['additional_fields']['absolute_seminars_count'] = [
             'get' => 'seminar_counter',
             'set' => false,
-        );
-        $config['additional_fields']['duration_seminars_count'] = array(
+        ];
+        $config['additional_fields']['duration_seminars_count'] = [
             'get' => 'seminar_counter',
             'set' => false,
-        );
-        $config['additional_fields']['continuous_seminars_count'] = array(
+        ];
+        $config['additional_fields']['continuous_seminars_count'] = [
             'get' => 'seminar_counter',
             'set' => false,
-        );
+        ];
 
         $config['alias_fields']['token'] = 'semester_token';
 
         $config['registered_callbacks']['after_store'][]  = 'refreshCache';
         $config['registered_callbacks']['after_delete'][] = 'refreshCache';
+
+        $config['i18n_fields']['name'] = true;
+        $config['i18n_fields']['description'] = true;
 
         parent::configure($config);
     }

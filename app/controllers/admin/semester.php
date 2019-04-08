@@ -74,8 +74,8 @@ class Admin_SemesterController extends AuthenticatedController
             CSRFProtection::verifyUnsafeRequest();
 
             // Extract values
-            $this->semester->name           = Request::get('name');
-            $this->semester->description    = Request::get('description');
+            $this->semester->name           = Request::i18n('name');
+            $this->semester->description    = Request::i18n('description');
             $this->semester->semester_token = Request::get('token');
             $this->semester->beginn         = $this->getTimeStamp('beginn');
             $this->semester->ende           = $this->getTimeStamp('ende', '23:59:59');
@@ -86,20 +86,20 @@ class Admin_SemesterController extends AuthenticatedController
             $errors = $this->validateSemester($this->semester);
 
             // If valid, try to store the semester
-            if (empty($errors) && $this->semester->isDirty() && !$this->semester->store()) {
+            if (!$errors && $this->semester->store() === false) {
                 $errors[] = _('Fehler bei der Speicherung Ihrer Daten. Bitte überprüfen Sie Ihre Angaben.');
             }
 
             // Output potential errors or show success message and relocate
             if (count($errors) === 1) {
                 $error = reset($errors);
-                PageLayout::postMessage(MessageBox::error($error));
+                PageLayout::postError($error);
             } elseif (!empty($errors)) {
                 $message = _('Ihre eingegebenen Daten sind ungültig.');
-                PageLayout::postMessage(MessageBox::error($message, $errors));
+                PageLayout::postError($message, $errors);
             } else {
                 $message = _('Das Semester wurde erfolgreich gespeichert.');
-                PageLayout::postMessage(MessageBox::success($message));
+                PageLayout::postSuccess($message);
 
                 $this->relocate('admin/semester');
             }

@@ -9,9 +9,10 @@
         <label>
             <?= _('Name des Semesters') ?>
 
-            <input required type="text" name="name" id="name"
-                   value="<?= htmlReady($semester->name) ?>"
-                   <? if (isset($errors['name'])) echo 'class="invalid"'; ?>>
+            <?= I18N::input('name', $semester->name, [
+                'id'    => 'name',
+                'class' => isset($errors['name']) ? 'invalid' : '',
+            ]) ?>
         </label>
 
         <label>
@@ -24,7 +25,9 @@
         <label>
             <?= _('Beschreibung') ?>
 
-            <textarea name="description" id="description"><?= htmlReady($semester->description) ?></textarea>
+            <?= I18N::textarea('description', $semester->description, [
+                'id' => 'description',
+            ]) ?>
         </label>
     </fieldset>
 
