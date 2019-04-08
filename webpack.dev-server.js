@@ -32,6 +32,17 @@ module.exports = merge(common, {
                     })
                 );
             });
+
+            ['ckeditor', 'mathjax'].forEach(vendor => {
+                app.use(
+                    `/${path.basename(__dirname)}/javascripts/${vendor}`,
+                    express.static(path.join(__dirname, `./public/assets/javascripts/${vendor}/`), {
+                        setHeaders: (res, path) => {
+                            res.set('Access-Control-Allow-Origin', '*');
+                        }
+                    })
+                );
+            });
         }
     }
 });
