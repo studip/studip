@@ -18,8 +18,9 @@
         <label>
             <?= _('Kürzel') ?>
 
-            <input type="text" name="token" id="token"
-                   value="<?= htmlReady($semester->semester_token) ?>">
+            <?= I18N::input('token', $semester->semester_token, [
+                'id' => 'token',
+            ]) ?>
         </label>
 
         <label>

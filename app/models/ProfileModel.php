@@ -103,19 +103,18 @@ class ProfileModel
         }
         $allcourses = new SimpleCollection(Course::findBySQL("INNER JOIN seminar_user USING(Seminar_id) WHERE user_id=? AND seminar_user.status='dozent' AND seminare.visible=1", array($this->current_user->id)));
         foreach (array_filter($semester) as $one) {
-            $courses[$one->name] =
-                $allcourses->filter(function ($c) use ($one) {
-                    if($c->duration_time != -1) {
-                        return $c->start_time <= $one->beginn && ($one->beginn <= ($c->start_time + $c->duration_time));
-                    } else {
-                        if($one->getcurrent()) {
-                            return $c;
-                        }
-                    }
+            $courses[(string) $one->name] = $allcourses->filter(function ($c) use ($one) {
+                if ($c->duration_time != -1) {
+                    return $c->start_time <= $one->beginn
+                        && $one->beginn <= $c->start_time + $c->duration_time;
+                } elseif ($one->getcurrent()) {
+                    return $c;
+                }
+                return false;
+            })->orderBy($field);
 
-                })->orderBy($field);
-            if (!$courses[$one->name]->count()) {
-                unset($courses[$one->name]);
+            if (!$courses[(string) $one->name]->count()) {
+                unset($courses[(string) $one->name]);
             }
         }
         return $courses;

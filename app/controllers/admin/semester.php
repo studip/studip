@@ -76,7 +76,7 @@ class Admin_SemesterController extends AuthenticatedController
             // Extract values
             $this->semester->name           = Request::i18n('name');
             $this->semester->description    = Request::i18n('description');
-            $this->semester->semester_token = Request::get('token');
+            $this->semester->semester_token = Request::i18n('token');
             $this->semester->beginn         = $this->getTimeStamp('beginn');
             $this->semester->ende           = $this->getTimeStamp('ende', '23:59:59');
             $this->semester->vorles_beginn  = $this->getTimeStamp('vorles_beginn');

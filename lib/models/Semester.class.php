@@ -61,6 +61,7 @@ class Semester extends SimpleORMap
 
         $config['i18n_fields']['name'] = true;
         $config['i18n_fields']['description'] = true;
+        $config['i18n_fields']['semester_token'] = true;
 
         parent::configure($config);
     }
