@@ -142,6 +142,7 @@ label[for="responsive-toggle"] {
     cursor: pointer;
     display: none;
     margin: 0 2px;
+    text-align: right;
     vertical-align: top;
 }
 
@@ -330,10 +331,19 @@ label[for="responsive-toggle"] {
     #request_new_password,
     #web_migrate {
         div.index_container {
+            height: calc(100% - 74px);
+            position: static;
+            top: 0;
+
+            div.messagebox,
             div.index_main {
-                margin-left: auto;
-                margin-right: auto;
+                margin: 1em auto;
             }
+        }
+
+        #background-desktop,
+        #background-mobile {
+            position: fixed;
         }
     }
 
@@ -341,6 +351,20 @@ label[for="responsive-toggle"] {
         display: block;
         min-width: 0;
         width: 100vw;
+    }
+});
+
+.media-breakpoint-tiny-down({
+    #index,
+    #login,
+    #request_new_password,
+    #web_migrate {
+        div.index_container {
+            div.messagebox,
+            div.index_main {
+                margin: 0 auto;
+            }
+        }
     }
 });
 

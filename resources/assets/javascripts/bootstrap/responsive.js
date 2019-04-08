@@ -74,6 +74,10 @@ function responsify() {
             $('#layout-sidebar').removeClass('visible-sidebar');
             $('#responsive-navigation').toggleClass('visible', this.checked);
         });
+    } else {
+        $('#responsive-toggle').on('change', function() {
+            $('#responsive-navigation').toggleClass('visible', this.checked);
+        });
     }
 
     $('#responsive-navigation :checkbox').on('change', function () {
@@ -145,7 +149,7 @@ STUDIP.domReady(() => {
     media_query.addListener(function() {
         setResponsiveDisplay(media_query.matches);
     });
-}, true);
+});
 
 // Trigger search in responsive display
 $(document).on('click', '#quicksearch .quicksearchbutton', function() {
