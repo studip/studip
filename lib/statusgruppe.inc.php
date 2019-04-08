@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter001: DONE
 # Lifter002: TODO
 # Lifter007: TODO
@@ -43,25 +43,24 @@
  * @param    string  $user_id
  * @return   array   (structure statusgruppe_id => name)
  */
-function GetAllStatusgruppen($parent, $check_user = null, $exclude = false)
-{
+function GetAllStatusgruppen($parent, $check_user = null, $exclude = false) {
     $query = "SELECT * FROM statusgruppen WHERE range_id = ? ORDER BY position";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent));
+    $statement->execute([$parent]);
     $groups = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    if (empty($groups)) {
+    if (!$groups) {
         return false;
     }
 
     $query = "SELECT visible FROM statusgruppe_user WHERE user_id = ? AND statusgruppe_id = ?";
     $presence = DBManager::get()->prepare($query);
 
-    $childs = array();
+    $childs = [];
     foreach ($groups as $group) {
         $user_there = $visible = $user_in_child = false;
 
-        $kids = getAllStatusgruppen($group['statusgruppe_id'], $check_user, $exclude);
+        $kids = GetAllStatusgruppen($group['statusgruppe_id'], $check_user, $exclude);
 
         if ($check_user) {
             $presence->execute(array($check_user, $group['statusgruppe_id']));
@@ -82,17 +81,17 @@ function GetAllStatusgruppen($parent, $check_user = null, $exclude = false)
         }
 
         if (!$check_user || !$exclude || $user_in_child || $user_there) {
-            $childs[$group['statusgruppe_id']] = array(
+            $childs[$group['statusgruppe_id']] = [
                 'role'          => Statusgruppen::build($group),
                 'visible'       => $visible,
                 'user_there'    => $user_there,
                 'user_in_child' => $user_in_child,
                 'child'         => $kids
-            );
+            ];
         }
     }
 
-    return is_array($childs) ? $childs : false;
+    return $childs ?: false;
 }
 
 
@@ -132,100 +131,64 @@ function GetRoleNames($roles, $level = 0, $pred = '', $all = false) {
 /**
  * @deprecated
  * @param $roles
- * @param $user_id
+ * @param $user_or_id
  * @param $default_entries
- * @param null $filter
  * @param int $level
  * @param string $pred
  * @return array
  */
-function get_role_data_recursive($roles, $user_id, &$default_entries, $filter = null, $level = 0, $pred = '') {
-    global $auth, $user, $has_denoted_fields;
+function get_role_data_recursive($roles, $user_or_id, $default_entries, $level = 0, $pred = '') {
+    if (!is_array($roles)) {
+        return '';
+    }
+
+    $user = $user_or_id instanceof User
+          ? $user_or_id
+          : User::find($user_or_id);
 
     $out = '';
-    $out_table = array();
 
-    if (is_array($roles))
     foreach ($roles as $role_id => $role) {
-
-        $the_user = User::find($user_id);
-
-        $role['name'] = $role['role']->getGenderedName($the_user);
-
-        $out_zw = '';
+        $role['name'] = $role['role']->getGenderedName($user);
 
         if ($pred != '') {
-            $new_pred = $pred.' > '.$role['name'];
+            $new_pred = "{$pred} > {$role['name']}";
         } else {
             $new_pred = $role['name'];
         }
 
-      $entries = DataFieldEntry::getDataFieldEntries(array($user_id, $role_id));
+        if ($role['user_there'] && $role['visible']) {
+            $out .= '<tr><td>'
+                 . Assets::img('forumgrau2.png')
+                 . '</td><td colspan="2"><b>'. htmlReady($new_pred) .'</b></td></tr>';
 
-        if ($role['user_there']) {
-            $out_zw .= '<tr><td>'
-                    .  Assets::img('forumgrau2.png')
-                    .  '</td><td colspan="2"><b>'. htmlReady($new_pred) .'</b></td></tr>';
-            $zw = '<td %class%></td><td %class%><font size="-1">'. htmlReady($new_pred) .'</font></td>';
-        }
-
-        $zw2 = '';
-        $has_value = false;
-
-        if (is_array($entries))
-        foreach ($entries as $id => $entry) {
-            $default = false;
-            if ($filter == null || in_array($id, $filter) === TRUE) {
+            $entries = DataFieldEntry::getDataFieldEntries([$user->id, $role_id]);
+            foreach ($entries as $id => $entry) {
                 if ($entry->getValue() == 'default_value') {
                     $value = $default_entries[$id]->getDisplayValue();
                     $default = true;
                 } else {
                     $value = $entry->getDisplayValue();
+                    $default = false;
                 }
 
                 $name = $entry->getName();
-                if ($role['user_there']) {
-                    $view = $entry->isVisible();
-                    $show_star = false;
-                    if (!$view && ($user_id == $user->id)) {
-                        $view = true;
-                        $show_star = true;
-                        $has_denoted_fields = true;
+
+                if ($entry->isVisible()) {
+                    if (trim($value) && !$default) {
+                        $out .= '<tr><td></td><td>'. htmlReady($name) .':</td><td>'.trim($value);
+                        $out .= '</td></tr>';
                     }
-
-                    if ($view) { // Sichtbarkeitsberechtigung
-                        $zw2 .= '<td %class%><font size="-1">'. trim($value);
-                        if ($show_star) $zw2 .= ' *';
-                        $zw2 .= '</font></td>';
-
-                        if (trim($value)) {
-                            $has_value = true;
-                            if (!$default) {
-                                $out_zw .= '<tr><td></td><td>'. htmlReady($name) .':&nbsp;&nbsp;</td><td>'.trim($value);
-                                if ($show_star) $out_zw .= ' *';
-                                $out_zw .= '</td></tr>';
-                            }
-                        }
-                    }   // Ende Sichtbarkeitsberechtigung
-
                 }
             }
-
         }
 
-        if ($role['user_there'] && $role['visible']) {
-            $out_table[] = $zw.$zw2;
-            $out .= $out_zw;
-        }
-
-        if ($role['child']) {
-            $back = get_role_data_recursive($role['child'], $user_id, $default_entries, $filter, $level+1, $new_pred);
-            $out .= $back['standard'];
-            $out_table = array_merge((array)$out_table, (array)$back['table']);
+        if ($role['child'] && $role['user_in_child']) {
+            $out .= get_role_data_recursive($role['child'], $user, $default_entries, $level + 1, $new_pred);
         }
     }
 
-    return array('standard' => $out, 'table' => $out_table);
+    return $out;
 }
 
 /**
@@ -236,14 +199,19 @@ function get_role_data_recursive($roles, $user_id, &$default_entries, $filter = 
  * @return array
  */
 function getFlattenedRoles($roles, $level = 0, $parent_name = false) {
-    if (!is_array($roles)) return array();
+    if (!is_array($roles)) {
+        return [];
+    }
 
-    $ret = array();
-
+    $ret = [];
     foreach ($roles as $id => $role) {
-        if (!isset($role['name'])) $role['name'] = $role['role']->getName();
+        if (!isset($role['name'])) {
+            $role['name'] = $role['role']->getName();
+        }
         $spaces = '';
-        for ($i = 0; $i < $level; $i++) $spaces .= '&nbsp;&nbsp;';
+        for ($i = 0; $i < $level; $i++) {
+            $spaces .= '&nbsp;&nbsp;';
+        }
 
         // generate an indented version of the role-name
         $role['name'] = $spaces . $role['name'];

@@ -77,14 +77,6 @@
             <? endforeach ?>
         <? endif ?>
         </dl>
-
-    <? if ($has_denoted_fields): ?>
-        <p>
-            <small>
-                * <?= _('Diese Felder sind nur für Sie und Administratoren sichtbar') ?>
-            </small>
-        </p>
-    <? endif ?>
     </section>
 
 </section>

@@ -117,10 +117,6 @@ class ProfileController extends AuthenticatedController
             }
         }
 
-        if ($this->current_user->user_id === $this->user->user_id && $GLOBALS['has_denoted_fields']) {
-            $this->has_denoted_fields = true;
-        }
-
         $show_admin = ($this->perm->have_perm('autor') && $this->user->user_id == $this->current_user->user_id)
                    || (isDeputyEditAboutActivated() && isDeputy($this->user->user_id, $this->current_user->user_id, true));
         if (Visibility::verify('news', $this->current_user->user_id) || $show_admin) {
@@ -504,7 +500,7 @@ class ProfileController extends AuthenticatedController
                 $default_entries
             );
 
-            $institutes[$id]['role'] = $data['standard'];
+            $institutes[$id]['role'] = $data;
         }
 
         return $institutes;

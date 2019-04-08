@@ -166,13 +166,13 @@ abstract class DataFieldEntry
             $rs = DBManager::get()->prepare($query);
             $rs->execute($parameters);
 
-            $entries = array();
+            $entries = [];
             while ($data = $rs->fetch(PDO::FETCH_ASSOC)) {
                 $datafield = DataField::buildExisting($data);
                 $entries[$data['datafield_id']] = DataFieldEntry::createDataFieldEntry($datafield, $range_id, $data['content']);
             }
         }
-        return $entries;
+        return $entries ?: [];
     }
 
     /**
