@@ -24,6 +24,7 @@ class ProfileNavigation extends Navigation
         parent::initItem();
 
         $this->setURL('dispatch.php/profile');
+        $this->setImage(Icon::create('person', Icon::ROLE_NAVIGATION));
     }
 
     /**
