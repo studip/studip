@@ -57,7 +57,7 @@ class PmWikiContentModule extends ContentModule
     {
         global $connected_cms, $view, $search_key, $cms_select, $current_module;
 
-        $args = array($GLOBALS['ELEARNING_INTERFACE_MODULES'][$this->cms_type]['soap_data']['api-key'], $this->id);
+        $args = [$GLOBALS['ELEARNING_INTERFACE_MODULES'][$this->cms_type]['soap_data']['api-key'], $this->id];
 
         $field_data = $connected_cms[$this->cms_type]->client->call('get_field_info', $args);
 
@@ -91,7 +91,7 @@ class PmWikiContentModule extends ContentModule
             $username = $GLOBALS['auth']->auth['uname'];
         }
 
-        $args = array($GLOBALS['ELEARNING_INTERFACE_MODULES'][$this->cms_type]['soap_data']['api-key'],$this->id, $username);
+        $args = [$GLOBALS['ELEARNING_INTERFACE_MODULES'][$this->cms_type]['soap_data']['api-key'],$this->id, $username];
 
         $authorized = $connected_cms[$this->cms_type]->client->call('field_accessable_by_user', $args);
 

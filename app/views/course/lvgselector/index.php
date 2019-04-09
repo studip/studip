@@ -62,10 +62,10 @@
                     <? $children = $node->getChildren(); ?>
                     <? if (count($children) || $node->isAssignable()) : ?>
                     <?= $this->render_partial('course/wizard/steps/lvgroups/_node',
-                        array('node' => $node, 'pos_id' => $pos_id++,
-                            'open_nodes' => $open_lvg_nodes ?: array(),
-                            'search_result' => $search_result ?: array(),
-                            'children' => $children)) ?>
+                        ['node' => $node, 'pos_id' => $pos_id++,
+                            'open_nodes' => $open_lvg_nodes ?: [],
+                            'search_result' => $search_result ?: [],
+                            'children' => $children]) ?>
                     <? endif; ?>
                 <? endforeach; ?>
                 </ul>

@@ -74,15 +74,15 @@ class Step102Datenfeldtypen extends Migration {
         continue;
       }
 
-      $struct = new DataFieldStructure(array('datafield_id' => $id));
+      $struct = new DataFieldStructure(['datafield_id' => $id]);
 
-      $mapping = array('text'     => 'textline',
+      $mapping = ['text'     => 'textline',
                         'textarea' => 'textarea',
                         'checkbox' => 'bool',
                         'select'   => 'selectbox',
                         'combo'    => 'combo',
                         'radio'    => 'radio',
-                        'date'     => 'date');
+                        'date'     => 'date'];
 
       if (!isset($mapping[$field['type']])) {
         # TODO (mlunzena) what to do?
@@ -91,7 +91,7 @@ class Step102Datenfeldtypen extends Migration {
       $type = $mapping[$field['type']];
       $type_param = '';
 
-      if (in_array($type, array('selectbox', 'combo', 'radio'))) {
+      if (in_array($type, ['selectbox', 'combo', 'radio'])) {
         $type_param = $this->get_type_param($field['options']);
       }
 
@@ -102,7 +102,7 @@ class Step102Datenfeldtypen extends Migration {
   }
 
   function get_type_param($options) {
-    $new_options = array();
+    $new_options = [];
     foreach ((array)$options as $key => $value) {
       if (is_string($value)) {
         $new_options[] = $value;

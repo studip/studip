@@ -63,11 +63,11 @@ class ExternEditModule extends ExternEditHtml {
         $widths = $this->getValue("width");
         $sort = $this->getValue("sort");
         if (!is_array($hide_fields["sort"]))
-            $hide_fields["sort"] = array();
+            $hide_fields["sort"] = [];
         if (!is_array($hide_fields["aliases"]))
-            $hide_fields["aliases"] = array();
+            $hide_fields["aliases"] = [];
         if (!is_array($hide))
-            $hide = array();
+            $hide = [];
 
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         $out .= "<tr>\n";
@@ -165,8 +165,8 @@ class ExternEditModule extends ExternEditHtml {
             $colspan = 4 - sizeof($hide);
             $title = _("Breite in:");
             $info = _("Wählen Sie hier, ob die Breiten der Tabellenspalten als Prozentwerte oder Pixel interpretiert werden sollen.");
-            $width_values = array("%", "");
-            $width_names = array(_("Prozent"), _("Pixel"));
+            $width_values = ["%", ""];
+            $width_names = [_("Prozent"), _("Pixel")];
             $out .= "<tr>\n";
             $out .= "<td><font size=\"2\">&nbsp;$title</font></td>";
             $out .= "<td colspan=\"$colspan\"><input type=\"radio\" name=\"{$this->element_name}_widthpp\" value=\"%\"";
@@ -188,7 +188,7 @@ class ExternEditModule extends ExternEditHtml {
 
     function editSort ($field_names, $hide_fields = NULL) {
         if (!is_array($hide_fields)) {
-            $hide_fields = array();
+            $hide_fields = [];
         }
         $sort = $this->getValue("sort");
 
@@ -256,9 +256,9 @@ class ExternEditModule extends ExternEditHtml {
         $groups_aliases = $this->getValue("groupsalias");
         $groups_visible = $this->getValue("groupsvisible");
         if (!is_array($groups_visible))
-            $groups_visible = array();
+            $groups_visible = [];
         if (!is_array($groups_aliases))
-            $groups_aliases = array();
+            $groups_aliases = [];
         if (sizeof(array_intersect(array_keys($groups_aliases),
                 array_keys($groups_db)))) {
             foreach ($groups_config as $group_config) {
@@ -385,10 +385,10 @@ class ExternEditModule extends ExternEditHtml {
 
                     // move up
                 $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
-                $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(array('name'=>$this->element_name.'_move_left['.$i.']','align'=>'middle',));
+                $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(['name'=>$this->element_name.'_move_left['.$i.']','align'=>'middle',]);
 
                 // move down
-                $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(array('name'=>$this->element_name.'_move_right['.$i.']','align'=>'middle',));
+                $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(['name'=>$this->element_name.'_move_right['.$i.']','align'=>'middle',]);
                 $out .= "</td>\n";
 
                 // visibility
@@ -427,9 +427,9 @@ class ExternEditModule extends ExternEditHtml {
         }
 
         $selected = $this->config->getValue($this->element_name, 'subjectareasselected');
-        $selector->selected = array();
-        $selector->sem_tree_ranges = array();
-        $selector->sem_tree_ids = array();
+        $selector->selected = [];
+        $selector->sem_tree_ranges = [];
+        $selector->sem_tree_ids = [];
         if (is_array($selected) && count($selected)) {
             foreach ($selected as $selected_id) {
                 $selector->selected[$selected_id] = TRUE;
@@ -443,8 +443,8 @@ class ExternEditModule extends ExternEditHtml {
         $selector->doSearch();
         $out .= "<table width=\"100%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\">\n";
         $out .= '<tr><td align="left" style="font-size: smaller;" width="100%" nowrap="nowrap" colspan="2">' . _("Suche") . ': ';
-        $out .= $selector->getSearchField(array('size' => 30 ,'style' => 'vertical-align:middle;'));
-        $out .= $selector->getSearchButton(array('style' => 'vertical-align:middle;'));
+        $out .= $selector->getSearchField(['size' => 30 ,'style' => 'vertical-align:middle;']);
+        $out .= $selector->getSearchButton(['style' => 'vertical-align:middle;']);
         $out .= '<br><span style="font-size: 0.9em;"> (' . sprintf(_("Geben Sie '%s' ein, um alle Studienbereiche zu finden."), '%%%') . ')</span>';
         if ($selector->num_search_result !== false){
             $out .= "<br><span style=\"font-size:smaller;\"><a name=\"anker\">&nbsp;&nbsp;</a>"
@@ -455,7 +455,7 @@ class ExternEditModule extends ExternEditHtml {
         $out .= '</td></tr>';
         $selector->form_name = $form_name_tmp;
         $out .= '<td nowrap="nowrap" width="80%">';
-        $out .= $selector->getChooserField(array('style' => 'width:98%;','size' => 15),
+        $out .= $selector->getChooserField(['style' => 'width:98%;','size' => 15],
                 70, 'subjectareasselected');
         $out .= '</td><td width="20%" style="vertical-align: top;">';
         $out .= tooltipIcon($info);
@@ -544,12 +544,12 @@ class ExternEditModule extends ExternEditHtml {
             . "ORDER BY Name");
         $selected = $this->config->getValue($this->element_name, 'institutesselected');
         if (!is_array($selected)) {
-            $selected = array();
+            $selected = [];
         }
 
         $out = '<div class="selectbox" style="width: 98%;" size="15">';
         while ($row_fak = $stm_fak->fetch(PDO::FETCH_ASSOC)) {
-            $stm_inst->execute(array($row_fak['Institut_id']));
+            $stm_inst->execute([$row_fak['Institut_id']]);
             $out .= sprintf('<div style="margin-top: 5px; font-weight: bold; color: red;">%s</div>', htmlReady(my_substr($row_fak['Name'], 0, 70)));
             $out .= '<div style="font-weight: bold; color: red;">';
             $out .= str_repeat("¯", 70);

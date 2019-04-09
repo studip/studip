@@ -6,7 +6,7 @@
 class HTMLPurifier_Injector_ClassifyTables extends HTMLPurifier_Injector
 {
     public $name = 'ClassifyTables';
-    public $needed = array('table' => array('class'));
+    public $needed = ['table' => ['class']];
 
     public function handleElement(&$token)
     {

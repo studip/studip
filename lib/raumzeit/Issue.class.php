@@ -46,7 +46,7 @@ class Issue {
     var $priority = 0;
     var $file = FALSE;
     var $folder_id = '';
-    var $messages = array();
+    var $messages = [];
     var $new = false;
     var $hasForum = false;
 
@@ -59,7 +59,7 @@ class Issue {
      *
      * returns NULL if both are unset
      */
-    function __construct($data = array()) {
+    function __construct($data = []) {
         global $user;
 
         if ($data['issue_id']) {
@@ -171,7 +171,7 @@ class Issue {
     function delete() {
         $dates = IssueDB::getDatesforIssue($this->issue_id);
 
-        $titles = array();
+        $titles = [];
         $title = '';
 
         foreach ($dates as $termin_id => $termin_data) {

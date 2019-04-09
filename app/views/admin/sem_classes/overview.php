@@ -29,7 +29,7 @@
             <td><?= $sem_class->countSeminars() ?></td>
             <td><?= date("j.n.Y H:i", $sem_class['chdate']) ?> <?= _("Uhr") ?></td>
             <td class="actions">
-                <a href="<?= URLHelper::getLink("dispatch.php/admin/sem_classes/details", array('id' => $id)) ?>" title="<?= _("Editieren dieser Veranstaltungskategorie") ?>">
+                <a href="<?= URLHelper::getLink("dispatch.php/admin/sem_classes/details", ['id' => $id]) ?>" title="<?= _("Editieren dieser Veranstaltungskategorie") ?>">
                 <?= Icon::create('edit', 'clickable')->asImg(['class' => "text-bottom"]) ?>
                 </a>
             </td>

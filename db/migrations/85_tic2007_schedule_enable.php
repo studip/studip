@@ -25,14 +25,14 @@ class Tic2007ScheduleEnable extends Migration
                     (MD5(:name), :name, :value, 1, :type, :range, :section, $time, $time, :description)
                 ");
 
-        $stmt->execute(array(
+        $stmt->execute([
             'name' => 'SCHEDULE_ENABLE',
             'description' => 'Schaltet ein oder aus, ob der Stundenplan global verfügbar ist.',
             'section' => 'modules',
             'range' => 'global',
             'type' => 'boolean',
             'value' => '1'
-        ));
+        ]);
     }
 
     /**

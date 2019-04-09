@@ -258,7 +258,7 @@ class Ilias3ConnectedCMS extends ConnectedCMS
     {
         global $connected_cms;
 
-        $types = array();
+        $types = [];
         foreach ($this->types as $type => $name)
         {
             $types[] = $type;
@@ -266,7 +266,7 @@ class Ilias3ConnectedCMS extends ConnectedCMS
         if ($this->user->getCategory() == false)
             return false;
         $result = $this->soap_client->getTreeChilds($this->user->getCategory(), $types, $connected_cms[$this->cms_type]->user->getId());
-        $obj_ids = array();
+        $obj_ids = [];
         if (is_array($result))
             foreach($result as $key => $object_data)
                 if (is_array($object_data["operations"]))
@@ -294,7 +294,7 @@ class Ilias3ConnectedCMS extends ConnectedCMS
     {
         global $connected_cms;
 
-        $types = array();
+        $types = [];
         foreach ($this->types as $type => $name)
         {
             $types[] = $type;

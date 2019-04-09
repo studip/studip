@@ -108,7 +108,7 @@ class CoursesetModel
         if ($selectedCourses) {
             $courses = array_merge($courses, $selectedCourses);
         }
-        $data = array();
+        $data = [];
         $callable = function ($course) use (&$data, $coursesetId) {
             $data[$course->id] = [
                 'seminar_id'           => $course->Seminar_id,
@@ -146,7 +146,7 @@ class CoursesetModel
      *
      * @return Array Found institutes.
      */
-    public static function getInstitutes($filter = array())
+    public static function getInstitutes($filter = [])
     {
         global $perm, $user;
 

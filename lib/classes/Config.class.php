@@ -22,12 +22,12 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
      * contains all config entries as field => value pairs
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
     /**
      * contains additional metadata for config fields
      * @var array
      */
-    protected $metadata = array();
+    protected $metadata = [];
 
     /**
      * returns singleton instance
@@ -218,7 +218,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         if ($data !== null) {
             $this->data = $data;
         } else {
-            $this->data = array();
+            $this->data = [];
             $db = DBManager::get();
 
             try {
@@ -298,7 +298,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         }
 
         if (isset($values['value'])) {
-            $value_entry = new ConfigValue(array($field, 'studip'));
+            $value_entry = new ConfigValue([$field, 'studip']);
             $old_value = $value_entry->isNew() ? $entry->value : $value_entry->value;
             $value_entry->value = $values['value'];
             if (isset($values['comment'])) {
@@ -319,7 +319,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         if ($ret) {
             $this->fetchData();
             if (isset($value_entry)) {
-               NotificationCenter::postNotification('ConfigValueDidChange', $this, array('field' => $field, 'old_value' => $old_value, 'new_value' => $value_entry->value));
+               NotificationCenter::postNotification('ConfigValueDidChange', $this, ['field' => $field, 'old_value' => $old_value, 'new_value' => $value_entry->value]);
             }
         }
         return $ret > 0;
@@ -332,7 +332,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
      * @throws InvalidArgumentException
      * @return Ambigous <NULL, ConfigEntry>
      */
-    public function create($field, $data = array())
+    public function create($field, $data = [])
     {
         if (!$field) {
             throw new InvalidArgumentException("config fieldname is mandatory");
@@ -360,8 +360,8 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         if (!$field) {
             throw new InvalidArgumentException("config fieldname is mandatory");
         }
-        ConfigValue::deleteBySql('field=?', array($field));
-        $deleted = ConfigEntry::deleteBySql('field=?', array($field));
+        ConfigValue::deleteBySql('field=?', [$field]);
+        $deleted = ConfigEntry::deleteBySql('field=?', [$field]);
         if ($deleted) {
             $this->fetchData();
         }

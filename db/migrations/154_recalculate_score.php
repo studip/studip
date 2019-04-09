@@ -64,12 +64,12 @@ class RecalculateScore extends Migration {
                 ) AS measurements
             ) AS dates";
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array(':user' => $user_id));
+        $stmt->execute([':user' => $user_id]);
         $score = $stmt->fetchColumn();
 
         $query = "UPDATE user_info SET score = ? WHERE user_id = ? AND score > 0";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($score, $user_id));
+        $statement->execute([$score, $user_id]);
 
         $cache->write("user_score_of_".$user_id, $score, 60 * 5);
 
@@ -78,7 +78,7 @@ class RecalculateScore extends Migration {
 
     private static function createTimestampQuery()
     {
-        $statements = array();
+        $statements = [];
         foreach (self::getActivityTables() as $table) {
             $statements[] = "SELECT "
                 . ($table['date_column'] ? : 'mkdate')
@@ -94,41 +94,41 @@ class RecalculateScore extends Migration {
 
     private static function getActivityTables()
     {
-        $tables = array();
-        $tables[] = array('table' => "user_info");
-        $tables[] = array('table' => "comments");
-        $tables[] = array('table' => "dokumente");
-        $tables[] = array('table' => "forum_entries");
-        $tables[] = array('table' => "news");
-        $tables[] = array('table' => "seminar_user");
-        $tables[] = array(
+        $tables = [];
+        $tables[] = ['table' => "user_info"];
+        $tables[] = ['table' => "comments"];
+        $tables[] = ['table' => "dokumente"];
+        $tables[] = ['table' => "forum_entries"];
+        $tables[] = ['table' => "news"];
+        $tables[] = ['table' => "seminar_user"];
+        $tables[] = [
             'table' => "blubber",
             'where' => "context_type != 'private'"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "kategorien",
             'user_id_column' => "range_id"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "message",
             'user_id_column' => "autor_id"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "vote",
             'user_id_column' => "range_id"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "voteanswers_user",
             'date_column' => "votedate"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "vote_user",
             'date_column' => "votedate"
-        );
-        $tables[] = array(
+        ];
+        $tables[] = [
             'table' => "wiki",
             'date_column' => "chdate"
-        );
+        ];
 
         foreach (PluginManager::getInstance()->getPlugins("ScorePlugin") as $plugin) {
             foreach ((array) $plugin->getPluginActivityTables() as $table) {

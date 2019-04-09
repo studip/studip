@@ -221,9 +221,9 @@ class Course_TopicsController extends AuthenticatedController
             throw new AccessDeniedException();
         }
         $this->topics = CourseTopic::findBySeminar_id(Request::option("seminar_id"));
-        $output = array(
+        $output = [
             'html' => $this->render_template_as_string("course/topics/_topiclist.php")
-        );
+        ];
         $this->render_json($output);
     }
 

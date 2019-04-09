@@ -34,7 +34,7 @@
                     <? $last_group = $buddy['group'];
                 endif;
                     ?>
-                    <?= $this->render_partial('online/user-row', array('user' => $buddy)) ?>
+                    <?= $this->render_partial('online/user-row', ['user' => $buddy]) ?>
                 <? endforeach; ?>
                 </tbody>
             <? else: ?>

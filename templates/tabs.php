@@ -5,7 +5,7 @@ foreach (Navigation::getItem("/")->getSubNavigation() as $path => $nav) {
         $path1 = $path;
     }
 }
-$ebene3 = array();
+$ebene3 = [];
 ?>
 <div class="tabs_wrapper">
     <? SkipLinks::addIndex(_('Erste Reiternavigation'), 'tabs', 10); ?>

@@ -28,7 +28,7 @@ class URLHelper
     /**
      * array of registered parameter values (initially empty)
      */
-    private static $params = array();
+    private static $params = [];
 
     /**
      * base URL for all links generated from relative URLs
@@ -167,7 +167,7 @@ class URLHelper
      */
     static function getURL ($url = '', $params = NULL, $ignore_registered_params = false)
     {
-        $link_params = $ignore_registered_params ? array() : self::$params;
+        $link_params = $ignore_registered_params ? [] : self::$params;
 
         list($url, $fragment) = explode('#', $url);
         list($url, $query)    = explode('?', $url);

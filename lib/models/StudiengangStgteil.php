@@ -22,22 +22,22 @@ class StudiengangStgteil extends ModuleManagementModel
     private $stgbez_name;
     private $stgbez_id;
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stg_stgteil';
         
-        $config['belongs_to']['studiengang'] = array(
+        $config['belongs_to']['studiengang'] = [
             'class_name' => 'Studiengang',
             'foreign_key' => 'studiengang_id'
-        );
-        $config['has_one']['stgteil_bezeichnung'] = array(
+        ];
+        $config['has_one']['stgteil_bezeichnung'] = [
             'class_name' => 'StgteilBezeichnung',
             'foreign_key' => 'stgteil_bez_id'
-        );
-        $config['belongs_to']['studiengangteil'] = array(
+        ];
+        $config['belongs_to']['studiengangteil'] = [
             'class_name' => 'StudiengangTeil',
             'foreign_key' => 'stgteil_id'
-        );
+        ];
         
         $config['additional_fields']['stgteil_name']['get'] =
             function($st) { return $st->stgteil_name; };
@@ -76,7 +76,7 @@ class StudiengangStgteil extends ModuleManagementModel
                 . 'LEFT JOIN fach mf USING(fach_id) '
                 . 'LEFT JOIN mvv_stgteil_bez msb USING(stgteil_bez_id) '
                 . 'WHERE mss.studiengang_id = ? AND mss.stgteil_id = ?',
-                array($id[0], $id[1]));
+                [$id[0], $id[1]]);
         if (sizeof($stg_stgteil)) {
             return $stg_stgteil->find(join('_', $id));
         }
@@ -95,7 +95,7 @@ class StudiengangStgteil extends ModuleManagementModel
             $sort = 'position', $order = 'ASC')
     {
         $sortby = self::createSortStatement($sortby, $order, 'position',
-                array('count_faecher'));
+                ['count_faecher']);
         return parent::getEnrichedByQuery('SELECT mst.*, msb.*, '
                 . 'COUNT(fach_id) as `count_faecher` '
                 . 'FROM mvv_stgteil mst '
@@ -103,7 +103,7 @@ class StudiengangStgteil extends ModuleManagementModel
                 . 'LEFT JOIN mvv_stgteil_bez msb USING(stgteil_bez_id) '
                 . 'WHERE studiengang_id = ? '
                 . 'GROUP BY mss.stgteil_id '
-                . 'ORDER BY ' . $sort, array($studiengang_id));
+                . 'ORDER BY ' . $sort, [$studiengang_id]);
     }
     
     /**
@@ -121,12 +121,12 @@ class StudiengangStgteil extends ModuleManagementModel
             return parent::getEnrichedByQuery('SELECT * FROM mvv_stg_stgteil WHERE '
                     . 'studiengang_id = ? AND stgteil_bez_id = ? '
                     . 'ORDER BY position, mkdate',
-                    array($studiengang_id, $bez_id));
+                    [$studiengang_id, $bez_id]);
         } else {
             return parent::getEnrichedByQuery('SELECT * FROM mvv_stg_stgteil WHERE '
                     . "studiengang_id = ? AND stgteil_bez_id = '' "
                     . 'ORDER BY position, mkdate',
-                    array($studiengang_id));
+                    [$studiengang_id]);
         }
     }
 

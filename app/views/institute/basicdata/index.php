@@ -132,8 +132,8 @@
         <input type="hidden" name="i_id" value="<?= $institute->id ?>">
         <?= Studip\Button::createAccept(_('Übernehmen'), 'i_edit') ?>
         <?= Studip\LinkButton::create(_('Löschen'),
-                                      $controller->url_for('institute/basicdata/index/' . $i_view, array('i_trykill' => 1)),
-                                      !$may_delete ? array('disabled' => '') : array()) ?>
+                                      $controller->url_for('institute/basicdata/index/' . $i_view, ['i_trykill' => 1]),
+                                      !$may_delete ? ['disabled' => ''] : []) ?>
         <? if (!$may_delete && mb_strlen($reason_txt) > 0): ?>
             <?= tooltipIcon($reason_txt, true) ?>
         <? endif; ?>

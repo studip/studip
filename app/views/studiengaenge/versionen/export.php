@@ -48,8 +48,8 @@
     <body>
         <div>
         <?
-            echo $this->render_partial('shared/version/_version', array('version' => $stgversion));
-            echo $this->render_partial('shared/version/_versionmodule', array('version' => $stgversion));
+            echo $this->render_partial('shared/version/_version', ['version' => $stgversion]);
+            echo $this->render_partial('shared/version/_versionmodule', ['version' => $stgversion]);
         ?>
         </div>
     </body>

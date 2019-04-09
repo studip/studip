@@ -85,9 +85,9 @@ switch ($view) {
             // tlx: What is this line good for?
             $title.=" - "._("Ebene").": ".getResourceObjectName($_SESSION['resources_data']["list_open"]);
 
-            $helpbar->setVariables(array(
+            $helpbar->setVariables([
                 'name' => getResourceObjectName($_SESSION['resources_data']['list_open'])
-            ));
+            ]);
 
             $widget = new OptionsWidget();
             $widget->addCheckbox(_('Untergeordnete Ebenen ausgeben'),
@@ -176,7 +176,7 @@ switch ($view) {
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
                          URLHelper::getURL('?view=view_schedule&print_view=1'), Icon::create('print', 'clickable'),
-                         array('target' => '_blank'));
+                         ['target' => '_blank']);
         $sidebar->addWidget($widget);
     break;
     case 'view_sem_schedule':
@@ -226,7 +226,7 @@ switch ($view) {
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
                          URLHelper::getURL('?view=view_sem_schedule&print_view=1'), Icon::create('print', 'clickable'),
-                         array('target' => '_blank'));
+                         ['target' => '_blank']);
         $sidebar->addWidget($widget);
     break;
     case 'view_group_schedule':
@@ -237,7 +237,7 @@ switch ($view) {
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
                          URLHelper::getURL('?view=view_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
-                         array('target' => '_blank'));
+                         ['target' => '_blank']);
         $sidebar->addWidget($widget);
     break;
     case 'view_group_schedule_daily':
@@ -248,7 +248,7 @@ switch ($view) {
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
                          URLHelper::getURL('?view=view_group_schedule_daily&print_view=1'), Icon::create('print', 'clickable'),
-                         array('target' => '_blank'));
+                         ['target' => '_blank']);
         $sidebar->addWidget($widget);
     break;
     //Reiter "Anpassen"
@@ -282,7 +282,7 @@ switch ($view) {
         $widget = new ActionsWidget();
         $widget->addLink(_('Ressourcen suchen'),
                          URLHelper::getURL('resources.php?view=search&quick_view_mode=no_nav'), Icon::create('search', 'clickable'),
-                         array('onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"));
+                         ['onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"]);
         $widget->addLink(_('Nachrichten zu zugewiesenen Anfragen versenden'),
                          URLHelper::getURL('?snd_closed_request_sms=TRUE'), Icon::create('mail', 'clickable'));
         $sidebar->addWidget($widget);
@@ -295,9 +295,9 @@ switch ($view) {
 
     break;
     case 'list_requests':
-        $helpbar->setVariables(array(
+        $helpbar->setVariables([
             'link' => URLHelper::getLink('resources.php?view=requests_start&cancel_edit_request_x=1'),
-        ));
+        ]);
         PageLayout::setTitle(_('Anfragenliste'));
         Navigation::activateItem('/resources/room_requests/list');
     break;
@@ -306,10 +306,10 @@ switch ($view) {
         $identifier = $perm->have_studip_perm('autor', Context::getId())
             ? 'resources/openobject_main_priviledged'
             : 'resources/openobject_main';
-        $helpbar->setVariables(array(
+        $helpbar->setVariables([
             'type'        => Context::getTypeName(),
             'member_type' => Context::isCourse() ? _('Teilnehmende') : _('Mitarbeiter/-in'),
-        ));
+        ]);
 
         PageLayout::setTitle(Context::getHeaderLine()." - "._("Ressourcenübersicht"));
         Navigation::activateItem('/course/resources/overview');
@@ -342,10 +342,10 @@ switch ($view) {
 
     case 'openobject_schedule':
         if ($_SESSION['resources_data']['actual_object']) {
-            $helpbar->setVariables(array(
+            $helpbar->setVariables([
                 'name'     => $currentObject->getName(),
                 'category' => $currentObject->getCategoryName(),
-            ));
+            ]);
         }
 
         PageLayout::setTitle(Context::getHeaderLine() . ' - ' . _('Ressourcenbelegung'));
@@ -353,10 +353,10 @@ switch ($view) {
     break;
     case 'openobject_assign':
         if ($_SESSION['resources_data']['actual_object']) {
-            $helpbar->setVariables(array(
+            $helpbar->setVariables([
                 'name'     => $currentObject->getName(),
                 'category' => $currentObject->getCategoryName(),
-            ));
+            ]);
         }
         PageLayout::setTitle(Context::getHeaderLine() . ' - ' . ('Belegung anzeigen/bearbeiten'));
         Navigation::activateItem('/course/resources/edit_assign');
@@ -368,7 +368,7 @@ switch ($view) {
         $widget = new ExportWidget();
         $widget->addLink(_('Druckansicht'),
                          URLHelper::getURL('?view=openobject_group_schedule&print_view=1'), Icon::create('print', 'clickable'),
-                         array('target' => '_blank'));
+                         ['target' => '_blank']);
         $sidebar->addWidget($widget);
     break;
     case 'view_requests_schedule':
@@ -379,7 +379,7 @@ switch ($view) {
         $widget->addLink(_('Semesterplan'),
                          URLHelper::getURL('resources.php?actual_object=' . $_SESSION['resources_data']['resolve_requests_one_res'] . '&quick_view=view_sem_schedule&quick_view_mode=no_nav'),
                          Icon::create('schedule', 'clickable'),
-                         array('onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"));
+                         ['onclick' => "window.open(this.href, '', 'scrollbars=yes,left=10,top=10,width=1000,height=680,resizable=yes');return false;"]);
         $sidebar->addWidget($widget);
     break;
     //default

@@ -93,8 +93,8 @@ class Utf8Conversion extends Migration
                 // $this->write('Converting table: ' . $data[0]);
 
                 $query = 'ALTER TABLE `'. $data[0] .'` ';
-                $change_query = array();
-                $update_query = array();
+                $change_query = [];
+                $update_query = [];
                 $table_data = $db->query("SHOW FULL COLUMNS FROM `{$data[0]}`")->fetchAll();
 
                 foreach ($table_data as $column) {
@@ -102,7 +102,7 @@ class Utf8Conversion extends Migration
 
                     // convert index columns to latin1_bin to save space and speed things up
                     if (mb_strpos($column['Type'], 'char') !== false) {
-                        $matches = array();
+                        $matches = [];
                         preg_match('/char\((.*)\)/', $column['Type'], $matches);
 
                         if ((int)$matches[1] <= 32) {
@@ -168,7 +168,7 @@ class Utf8Conversion extends Migration
     private function legacy_studip_utf8encode($data)
     {
         if (is_array($data)) {
-            $new_data = array();
+            $new_data = [];
             foreach ($data as $key => $value) {
                 $key = $this->legacy_studip_utf8encode($key);
                 $new_data[$key] = $this->legacy_studip_utf8encode($value);
@@ -181,7 +181,7 @@ class Utf8Conversion extends Migration
         } else {
             return mb_decode_numericentity(
                 mb_convert_encoding($data,'UTF-8', 'WINDOWS-1252'),
-                array(0x100, 0xffff, 0, 0xffff),
+                [0x100, 0xffff, 0, 0xffff],
                 'UTF-8'
             );
         }
@@ -193,7 +193,7 @@ class Utf8Conversion extends Migration
 
         // get primary keys
         $result = $db->query("SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY'");
-        $keys = array();
+        $keys = [];
 
         while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
             $keys[] = $data['Column_name'];
@@ -211,7 +211,7 @@ class Utf8Conversion extends Migration
 
                 $query = "UPDATE `$table` SET `$column` = ". $db->quote($json) ."\n WHERE ";
 
-                $where_query = array();
+                $where_query = [];
                 foreach ($keys as $key) {
                     $where_query[] = "`$key` = ". $db->quote($data[$key]);
                 }

@@ -79,9 +79,9 @@ abstract class SearchType
      *
      * @return array
      */
-    public function getResults($keyword, $contextual_data = array(), $limit = PHP_INT_MAX, $offset = 0) 
+    public function getResults($keyword, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0) 
     {
-        return array(array("", _("Die Suchklasse, die Sie verwenden, enthält keine Methode getResults.")));
+        return [["", _("Die Suchklasse, die Sie verwenden, enthält keine Methode getResults.")]];
     }
     
     /**

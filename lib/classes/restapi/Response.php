@@ -20,7 +20,7 @@ class Response implements \ArrayAccess
      * @param int    $status  HTTP status code, optional, defaults to 200
      * @param Array  $headers HTTP headers, optional, defaults to no headers
      */
-    public function __construct($body = '', $status = 200, $headers = array())
+    public function __construct($body = '', $status = 200, $headers = [])
     {
         $this->body = $body;
         $this->status = (int) $status;
@@ -100,7 +100,7 @@ class Response implements \ArrayAccess
      * @return string  the reason phrase for this response's status
      */
     public function reason() {
-        $reason = array(
+        $reason = [
             100 => 'Continue', 'Switching Protocols',
             200 => 'OK', 'Created', 'Accepted', 'Non-Authoritative Information',
                    'No Content', 'Reset Content', 'Partial Content',
@@ -115,7 +115,7 @@ class Response implements \ArrayAccess
                    'Expectation Failed',
             500 => 'Internal Server Error', 'Not Implemented', 'Bad Gateway',
                    'Service Unavailable', 'Gateway Timeout',
-                   'HTTP Version Not Supported');
+                   'HTTP Version Not Supported'];
 
         return isset($reason[$this->status]) ? $reason[$this->status] : '';
     }

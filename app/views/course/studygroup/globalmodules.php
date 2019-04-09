@@ -12,8 +12,8 @@ use Studip\Button, Studip\LinkButton;
 <?= $this->render_partial("course/studygroup/_feedback") ?>
 <? if (!$configured): ?>
     <?= MessageBox::error(_('Keine Veranstaltungsart für Studiengruppen gefunden'),
-        array(sprintf(_('Die Standardkonfiguration für Studiengruppen in der Datei <b>%s</b> fehlt oder ist unvollständig.'),
-                'config.inc.php'))) ?>
+        [sprintf(_('Die Standardkonfiguration für Studiengruppen in der Datei <b>%s</b> fehlt oder ist unvollständig.'),
+                'config.inc.php')]) ?>
 <? endif ?>
 <? if (!Config::getInstance()->getValue('STUDYGROUPS_ENABLE')):?>
     <?= MessageBox::info( _("Die Studiengruppen sind derzeit <b>nicht</b> aktiviert.")

@@ -60,7 +60,7 @@ class InstituteMember extends SimpleORMap implements PrivacyObject
             'on_store' => 'store',
             'foreign_key' =>
                 function($institute_member) {
-                    return array($institute_member);
+                    return [$institute_member];
                 }
         ];
 

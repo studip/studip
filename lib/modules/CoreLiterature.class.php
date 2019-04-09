@@ -34,7 +34,7 @@ class CoreLiterature implements StudipModule {
                 $navigation->addSubNavigation('search', new Navigation(_('Literatur suchen'), 'dispatch.php/literature/search?return_range=' . $course_id));
             }
             
-            return array('literature' => $navigation);
+            return ['literature' => $navigation];
         } else {
             return null;
         }
@@ -45,7 +45,7 @@ class CoreLiterature implements StudipModule {
      */ 
     function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Erstellung von Literaturlisten unter Verwendung von Katalogen'),
             'description' => _('Lehrende haben die Möglichkeit, '.
                 'veranstaltungsspezifische Literaturlisten entweder zu '.
@@ -67,14 +67,14 @@ class CoreLiterature implements StudipModule {
                                     'kopiert und sichtbar geschaltet werden. Je nach Anbindung kann im tatsächlichen '.
                                     'Buchbestand der Hochschule recherchiert werden.'),
             'icon' => Icon::create('literature', 'info'),
-            'screenshots' => array(
+            'screenshots' => [
                 'path' => 'plus/screenshots/Literatur',
-                'pictures' => array(
-                    0 => array('source' => 'Literatur_suchen.jpg', 'title' => _('Literatur suchen')),
-                    1 => array('source' => 'Literatur_in_Literaturliste_einfuegen.jpg', 'title' => _('Literatur in Literaturliste einfügen')),
-                    2 => array( 'source' => 'Literaturliste_in_der_Veranstaltung_anzeigen.jpg', 'title' => _('Literaturliste in der Veranstaltung anzeigen'))
-                )
-            )                        
-        );
+                'pictures' => [
+                    0 => ['source' => 'Literatur_suchen.jpg', 'title' => _('Literatur suchen')],
+                    1 => ['source' => 'Literatur_in_Literaturliste_einfuegen.jpg', 'title' => _('Literatur in Literaturliste einfügen')],
+                    2 => [ 'source' => 'Literaturliste_in_der_Veranstaltung_anzeigen.jpg', 'title' => _('Literaturliste in der Veranstaltung anzeigen')]
+                ]
+            ]                        
+        ];
      }
 }

@@ -46,7 +46,7 @@ class Institute_FilesController extends AuthenticatedController
                 _("Ordner bearbeiten"),
                 $this->url_for("file/edit_folder/".$this->topFolder->getId()),
                 Icon::create("edit", "clickable"),
-                array('data-dialog' => 1)
+                ['data-dialog' => 1]
             );
         }
 

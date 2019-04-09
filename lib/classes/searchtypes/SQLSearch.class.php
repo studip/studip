@@ -113,7 +113,7 @@ class SQLSearch extends SearchType
      *
      * @return string like "<img src="...avatar.jpg" ... >"
      */
-    public function getAvatarImageTag($id, $size = Avatar::SMALL, $options = array())
+    public function getAvatarImageTag($id, $size = Avatar::SMALL, $options = [])
     {
         switch ($this->avatarLike) {
             case "username":
@@ -141,15 +141,15 @@ class SQLSearch extends SearchType
      *
      * @return array  array(array(), ...)
      */
-    public function getResults($input, $contextual_data = array(), $limit = PHP_INT_MAX, $offset = 0)
+    public function getResults($input, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0)
     {
         $db = DBManager::get();
         $sql = $this->sql;
         if ($offset || $limit != PHP_INT_MAX) {
             $sql .= sprintf(' LIMIT %d, %d', $offset, $limit);
         }
-        $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-        $data = array();
+        $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+        $data = [];
         if (is_array($contextual_data)) {
             foreach ($contextual_data as $name => $value) {
                 if ($name !== "input" && mb_strpos($sql, ":".$name) !== false) {

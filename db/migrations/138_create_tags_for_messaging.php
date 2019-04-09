@@ -37,22 +37,22 @@ class CreateTagsForMessaging extends Migration
             ");
             foreach ((array) $config['folder']['in'] as $folder_id => $tag) {
                 if ($tag !== "dummy") {
-                    $statement->execute(array(
+                    $statement->execute([
                         'tag' => $tag,
                         'user_id' => $result['user_id'],
                         'folder_id' => $folder_id + 1,
                         'snd_rec' => "rec"
-                    ));
+                    ]);
                 }
             }
             foreach ((array) $config['folder']['out'] as $folder_id => $tag) {
                 if ($tag !== "dummy") {
-                    $statement->execute(array(
+                    $statement->execute([
                         'tag' => $tag,
                         'user_id' => $result['user_id'],
                         'folder_id' => $folder_id + 1,
                         'snd_rec' => "snd"
-                    ));
+                    ]);
                 }
             }
         }

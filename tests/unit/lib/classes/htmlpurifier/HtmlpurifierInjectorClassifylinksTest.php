@@ -49,7 +49,7 @@ class HTMLPurifier_Injector_ClassifyLinksTest extends PHPUnit_Framework_TestCase
     {
         # create purifier
         $config = \HTMLPurifier_Config::createDefault();
-        $config->set('AutoFormat.Custom', array('ClassifyLinks'));
+        $config->set('AutoFormat.Custom', ['ClassifyLinks']);
         $config->set('Cache.DefinitionImpl', null);
         $purifier = new \HTMLPurifier($config);
 
@@ -64,11 +64,11 @@ class HTMLPurifier_Injector_ClassifyLinksTest extends PHPUnit_Framework_TestCase
     public function dataProvider()
     {
         // domains of faked Stud.IP server
-        $domains = array(
+        $domains = [
             'org' => 'example.org/studip',
             'home' => 'example.org/~home',
             'net' => 'example.net/studip',
-        );
+        ];
 
         // return absolute URL for a path on one of the faked domains
         $url = function ($domainKey, $path) use (&$domains) {
@@ -85,32 +85,32 @@ class HTMLPurifier_Injector_ClassifyLinksTest extends PHPUnit_Framework_TestCase
         $ex = 'link-extern';
 
         // return test data
-        return array(
-            array(
+        return [
+            [
                 $url('org', 'index.php'),
                 $domains,
                 $a('http://www.google.de', '', 'Google'),
                 $a('http://www.google.de', $ex, 'Google')
-            ),
-            array(
+            ],
+            [
                 $url('org', 'index.php'),
                 $domains,
                 $a($url('org', 'index.php'), '', 'Main Page'),
                 $a($url('org', 'index.php'), $in, 'Main Page')
-            ),
-            array(
+            ],
+            [
                 $url('org', 'index.php'),
                 $domains,
                 $a($url('home', 'index.php'), '', 'Main Page'),
                 $a($url('home', 'index.php'), $in, 'Main Page')
-            ),
-            array(
+            ],
+            [
                 $url('org', 'index.php'),
                 $domains,
                 $a($url('net', 'index.php'), '', 'Main Page'),
                 $a($url('net', 'index.php'), $in, 'Main Page')
-            ),
-        );
+            ],
+        ];
     }
 
     public function tearDown()

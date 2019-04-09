@@ -33,9 +33,9 @@
 
 class SessionDecoder implements ArrayAccess, Countable, Iterator {
 
-    private $encoded_session = array();
-    private $decoded_session = array();
-    private $var_names = array();
+    private $encoded_session = [];
+    private $decoded_session = [];
+    private $var_names = [];
 
     /**
      * Usage:
@@ -67,9 +67,9 @@ class SessionDecoder implements ArrayAccess, Countable, Iterator {
         if(is_array($this->encoded_session)) {
             $this->var_names = array_keys($this->encoded_session);
         } else {
-            $this->encoded_session = array();
+            $this->encoded_session = [];
         }
-        $this->decoded_session = array();
+        $this->decoded_session = [];
 
         return count($this->encoded_session);
     }
@@ -143,7 +143,7 @@ class SessionDecoder implements ArrayAccess, Countable, Iterator {
      * @return array
      */
     private function sessionRealDecode($str) {
-        $ret = array();
+        $ret = [];
         $PS_DELIMITER = '|';
         $PS_UNDEF_MARKER = '!';
         $str = (string)$str;

@@ -94,7 +94,7 @@ class Calendar
      */
     public static function getGroups($user_id)
     {
-        $groups = array();
+        $groups = [];
         $calendar_owners = CalendarUser::getOwners($user_id)->pluck('owner_id');
         $sg_groups = SimpleORMapCollection::createFromArray(
                 Statusgruppen::findByRange_id($user_id))
@@ -103,7 +103,7 @@ class Calendar
         if (sizeof($calendar_owners)) {
             $sg_users = StatusgruppeUser::findBySQL(
                     'statusgruppe_id IN(?) AND user_id IN(?)',
-                    array($sg_groups, $calendar_owners));
+                    [$sg_groups, $calendar_owners]);
             foreach ($sg_users as $sg_user) {
                 $groups[$sg_user->group->id] = $sg_user->group;
             }
@@ -118,8 +118,8 @@ class Calendar
                 . "WHERE user_id = ? AND inst_perms IN ('admin','dozent','tutor','autor') "
                 . "ORDER BY Name ASC");
         $modules = new Modules();
-        $stmt->execute(array($user_id));
-        $active_calendar = array();
+        $stmt->execute([$user_id]);
+        $active_calendar = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($modules->isBit($row['modules'],
                     $modules->registered_modules['calendar']['id'])) {
@@ -155,11 +155,11 @@ class Calendar
                 . "aum.user_id FROM auth_user_md5 aum WHERE perms = 'dozent' "
                 . "ORDER BY fullname");
         $stmt->execute();
-        $lecturers = array();
+        $lecturers = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             if ($row['user_id'] != $GLOBALS['user']->id) {
-                $lecturers[] = array('name' => $row['fullname'],
-                    'username' => $row['username'], 'id' => $row['user_id']);
+                $lecturers[] = ['name' => $row['fullname'],
+                    'username' => $row['username'], 'id' => $row['user_id']];
             }
         }
         return $lecturers;
@@ -174,7 +174,7 @@ class Calendar
      */
     public static function getDefaultUserSettings($index = null)
     {
-        $default = array(
+        $default = [
             'view'              => 'week',
             'start'             => '9',
             'end'               => '20',
@@ -184,7 +184,7 @@ class Calendar
             'step_week_group'   => '3600',
             'step_day_group'    => '3600',
             'show_declined'     => '0'
-        );
+        ];
         return (is_null($index) ? $default : $default[$index]);
     }
 }

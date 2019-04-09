@@ -32,7 +32,7 @@ class Semester extends SimpleORMap
      *
      * @param Array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'semester_data';
 
@@ -133,7 +133,7 @@ class Semester extends SimpleORMap
     public static function getAll($force_reload = false)
     {
         if (!is_array(self::$semester_cache) || $force_reload) {
-            self::$semester_cache = array();
+            self::$semester_cache = [];
             if (!$force_reload) {
                 $cache = StudipCacheFactory::getCache();
                 $semester_data_array = unserialize($cache->read('DB_SEMESTER_DATA'));
@@ -148,7 +148,7 @@ class Semester extends SimpleORMap
                 }
             }
             if (!count(self::$semester_cache)) {
-                $semester_data = array();
+                $semester_data = [];
                 foreach (self::findBySql('1 ORDER BY beginn') as $semester) {
                     self::$semester_cache[$semester->getId()] = $semester;
                     if ($semester->current) {
@@ -288,7 +288,7 @@ class Semester extends SimpleORMap
 
         $i = 0;
 
-        $start_weeks = array();
+        $start_weeks = [];
         while ($timestamp < $end_date) {
             $start_weeks[$i] = sprintf(_('%u. Semesterwoche (ab %s)'),
                                        $i + 1,

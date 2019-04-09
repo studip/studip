@@ -37,30 +37,30 @@
             <li style="padding: 0px;" class="adressee">
                 <input type="hidden" name="attendees[]" value="<?= $event->owner->id ?>">
                 <span class="visual">
-                    <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' => $event->owner->username), true) ?>"><?= htmlReady($event->owner->getFullname()) ?></a>
+                    <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $event->owner->username], true) ?>"><?= htmlReady($event->owner->getFullname()) ?></a>
                 </span>
                 <a class="remove_adressee"><?= Icon::create('trash', 'clickable')->asImg(16, ['class' => 'text-bottom']) ?></a>
             </li>
             <? endif; ?>
-            <? $group_status = array(
+            <? $group_status = [
                 CalendarEvent::PARTSTAT_TENTATIVE => _('Abwartend'),
                 CalendarEvent::PARTSTAT_ACCEPTED => _('Angenommen'),
                 CalendarEvent::PARTSTAT_DECLINED => _('Abgelehnt'),
                 CalendarEvent::PARTSTAT_DELEGATED => _('Angenommen (keine Teilnahme)'),
-                CalendarEvent::PARTSTAT_NEEDS_ACTION => '') ?>
+                CalendarEvent::PARTSTAT_NEEDS_ACTION => ''] ?>
             <? foreach ($event->attendees as $attendee) : ?>
                 <? if ($attendee->owner) : ?>
                 <li style="padding: 0px;" class="adressee">
                     <input type="hidden" name="attendees[]" value="<?= htmlReady($attendee->owner->id) ?>">
                     <span class="visual">
-                        <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' => $attendee->owner->username), true) ?>"><?= htmlReady($attendee->owner->getFullname()) ?></a>
+                        <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $attendee->owner->username], true) ?>"><?= htmlReady($attendee->owner->getFullname()) ?></a>
                         <? if ($event->havePermission(Event::PERMISSION_OWN, $attendee->owner->id)) : ?>
                             (<?= _('Organisator') ?>)
                         <? elseif ($group_status[$attendee->group_status]) : ?>
                             (<?= $group_status[$attendee->group_status] ?>)
                         <? endif; ?>
                     </span>
-                    <a class="remove_adressee"><?= Icon::create('trash', 'clickable', array('title' => _('Teilnehmende/n entfernen')))->asImg(16, ['class' => 'text-bottom']) ?></a>
+                    <a class="remove_adressee"><?= Icon::create('trash', 'clickable', ['title' => _('Teilnehmende/n entfernen')])->asImg(16, ['class' => 'text-bottom']) ?></a>
                 </li>
                 <? endif; ?>
             <? endforeach ?>

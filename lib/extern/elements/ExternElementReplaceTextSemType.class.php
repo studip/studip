@@ -40,7 +40,7 @@
 
 class ExternElementReplaceTextSemType extends ExternElement {
 
-    var $attributes = array();
+    var $attributes = [];
     var $isset_visibilities = FALSE;
 
     /**
@@ -56,7 +56,7 @@ class ExternElementReplaceTextSemType extends ExternElement {
         $this->name = "ReplaceTextSemType";
         $this->real_name = _("Textersetzungen für Veranstaltungstypen");
         $this->description = _("Ersetzt die Bezeichnung der Veranstaltungstypen.");
-        $this->attributes = array('order', 'visibility');
+        $this->attributes = ['order', 'visibility'];
         for ($i = 1; $i <= sizeof($GLOBALS["SEM_CLASS"]); $i++) {
             $this->attributes[] = "class_" . $i;
         }
@@ -67,7 +67,7 @@ class ExternElementReplaceTextSemType extends ExternElement {
     */
     function getDefaultConfig () {
         global $SEM_TYPE, $SEM_CLASS;
-        $config = array();
+        $config = [];
         foreach ($SEM_CLASS as $class_index => $class) {
             foreach ($SEM_TYPE as $type_index => $type) {
                 if ($type["class"] == $class_index) {
@@ -97,7 +97,7 @@ class ExternElementReplaceTextSemType extends ExternElement {
         }
                     
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $table = '';
         if ($edit_form == '')

@@ -21,7 +21,7 @@
                 <td style="text-align: center;">
                     <? if (isset($fach[$teil_bezeichnung->id])) : ?>
                     <a href="<?= $controller->url_for($verlauf_url, $fach[$teil_bezeichnung->id], $teil_bezeichnung->id, $studiengang_id) ?>">
-                        <?= Icon::create('info-circle-full', 'clickable', array('title' => _('Studienverlaufsplan anzeigen')))->asImg(); ?>
+                        <?= Icon::create('info-circle-full', 'clickable', ['title' => _('Studienverlaufsplan anzeigen')])->asImg(); ?>
                     </a>
                     <? endif; ?>
                 </td>

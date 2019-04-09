@@ -38,12 +38,12 @@ require_once 'StudipLitSearchPluginAbstract.class.php';
 class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
 
     var $z_host;
-    var $z_options = array(); // ('user' => 'dummy', 'password' => 'bla', 'persistent' => true, 'piggyback' => true);
+    var $z_options = []; // ('user' => 'dummy', 'password' => 'bla', 'persistent' => true, 'piggyback' => true);
     var $z_id;
     var $z_syntax;
     var $z_start_range = 1;
     var $z_hits = 0;
-    var $z_profile = array(); // [attribute] => [name]
+    var $z_profile = []; // [attribute] => [name]
     var $z_timeout = 10;
     var $convert_umlaute = false;
     var $z_accession_bib = "";
@@ -55,59 +55,59 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
         parent::__construct();
         $this->z_hits =& $this->search_result['z_hits'];
         // UNIMARC mapping
-        $this->mapping['UNIMARC'] = array('001' => array('field' => 'accession_number', 'callback' => 'simpleMap', 'cb_args' => ''),
-                                '010' => array('field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'),
-                                '101' => array('field' => 'dc_language', 'callback' => 'simpleMap', 'cb_args' => '$a'),
-                                '200' => array('field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a $e' . chr(10) . '$f'),
-                                '210' => array( array('field' => 'dc_date', 'callback' => 'simpleMap', 'cb_args' => '$d-01-01'),
-                                                array('field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$c, $a')),
-                                '215' => array('field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a, $c'),
-                                '225' => array('field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a, $v'),
-                                '300' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Abstract: $a' . chr(10)),
-                                '328' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Dissertation note:$a' . chr(10)),
-                                '463' => array('field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$t, $v'),
-                                '606' => array('field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => ' $a '),
-                                '700' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'),
-                                '701' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                '702' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                '710' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'),
-                                '711' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                '712' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                '856' => array('field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'URL: $u '),
-                                );
+        $this->mapping['UNIMARC'] = ['001' => ['field' => 'accession_number', 'callback' => 'simpleMap', 'cb_args' => ''],
+                                '010' => ['field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'],
+                                '101' => ['field' => 'dc_language', 'callback' => 'simpleMap', 'cb_args' => '$a'],
+                                '200' => ['field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a $e' . chr(10) . '$f'],
+                                '210' => [ ['field' => 'dc_date', 'callback' => 'simpleMap', 'cb_args' => '$d-01-01'],
+                                                ['field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$c, $a']],
+                                '215' => ['field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a, $c'],
+                                '225' => ['field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a, $v'],
+                                '300' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Abstract: $a' . chr(10)],
+                                '328' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Dissertation note:$a' . chr(10)],
+                                '463' => ['field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$t, $v'],
+                                '606' => ['field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => ' $a '],
+                                '700' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'],
+                                '701' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                '702' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                '710' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'],
+                                '711' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                '712' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                '856' => ['field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'URL: $u '],
+                                ];
 
         //MARC mapping
-        $this->mapping['USMARC'] = array('001' => array('field' => 'accession_number', 'callback' => 'simpleMap', 'cb_args' => ''),
-                                        '008' => array( array('field' => 'dc_language', 'callback' => 'simpleFixFieldMap', 'cb_args' => array('start'=>34,'length'=>3)),
-                                                array('field' => 'dc_date', 'callback' => 'simpleFixFieldMap', 'cb_args' => array('start'=>7,'length'=>4,'template'=>'{result}-01-01'))),
-                                        '020' => array('field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'),
-                                        '245' => array('field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a $b $h'),
-                                        '264' => array('field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b'),
-                                        '256' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)),
-                                        '300' => array('field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a $b $c $e'),
-                                        '440' => array('field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a $v'),
-                                        '500' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)),
-                                        '502' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Dissertation note:$a' . chr(10)),
-                                        '518' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)),
-                                        '520' => array('field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)),
-                                        '533' => array('field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$n' . chr(10)),
-                                        '600' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '610' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '611' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '630' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '650' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => '$a'),
-                                        '651' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '652' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '653' => array('field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false),
-                                        '773' => array('field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$t, $g, $d'),
-                                        '100' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'),
-                                        '700' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a','dc_contributor','$a;')),
-                                        '110' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'),
-                                        '111' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                        '710' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                        '711' => array('field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => array('$a, $b','dc_contributor','$a, $b;')),
-                                        '856' => array('field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'URL: $u '),
-                                        );
+        $this->mapping['USMARC'] = ['001' => ['field' => 'accession_number', 'callback' => 'simpleMap', 'cb_args' => ''],
+                                        '008' => [ ['field' => 'dc_language', 'callback' => 'simpleFixFieldMap', 'cb_args' => ['start'=>34,'length'=>3]],
+                                                ['field' => 'dc_date', 'callback' => 'simpleFixFieldMap', 'cb_args' => ['start'=>7,'length'=>4,'template'=>'{result}-01-01']]],
+                                        '020' => ['field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'],
+                                        '245' => ['field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a $b $h'],
+                                        '264' => ['field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b'],
+                                        '256' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)],
+                                        '300' => ['field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a $b $c $e'],
+                                        '440' => ['field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a $v'],
+                                        '500' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)],
+                                        '502' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => 'Dissertation note:$a' . chr(10)],
+                                        '518' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)],
+                                        '520' => ['field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => '$a' . chr(10)],
+                                        '533' => ['field' => 'dc_description', 'callback' => 'simpleMap', 'cb_args' => '$n' . chr(10)],
+                                        '600' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '610' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '611' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '630' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '650' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => '$a'],
+                                        '651' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '652' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '653' => ['field' => 'dc_subject', 'callback' => 'simpleListMap', 'cb_args' => false],
+                                        '773' => ['field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$t, $g, $d'],
+                                        '100' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'],
+                                        '700' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a','dc_contributor','$a;']],
+                                        '110' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a, $b'],
+                                        '111' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                        '710' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                        '711' => ['field' => 'dc_creator', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b','dc_contributor','$a, $b;']],
+                                        '856' => ['field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'URL: $u '],
+                                        ];
     }
 
     function doSearch($search_values = false){
@@ -159,7 +159,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
         if($this->z_sort) yaz_sort($zid, $this->z_sort);
         yaz_element($zid, 'F');
         yaz_search($zid,"rpn", $rpn);
-        yaz_wait(($options = array('timeout' => $this->z_timeout)));
+        yaz_wait(($options = ['timeout' => $this->z_timeout]));
         if (yaz_errno($zid)){
             $error_msg = yaz_error($zid);
             if ($error_info = yaz_addinfo($zid)) {
@@ -191,7 +191,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
         if ($this->z_hits){
             $save_result = $this->search_result;
             $save_z_hits = $this->z_hits;
-            $this->search_result = array();
+            $this->search_result = [];
             $restore_result = true;
         }
         $rpn = '@attr 1=' . $this->z_accession_bib . ' ' . $accession_number ;
@@ -200,7 +200,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
                 $this->search_result = $save_result;
                 $this->z_hits = $save_z_hits;
         } else {
-            $this->search_result = array();
+            $this->search_result = [];
         }
         return $ret;
     }
@@ -278,7 +278,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
                 $code = (string)$field['tag'];
                 $data = (string)$field;
                 if (isset($plugin_mapping[$code])){
-                    $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : array($plugin_mapping[$code]);
+                    $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : [$plugin_mapping[$code]];
                     for ($j = 0; $j < count($mapping); ++$j){
                         $map_method = $mapping[$j]['callback'];
                         $this->$map_method($cat_element, $data, $mapping[$j]['field'], $mapping[$j]['cb_args']);
@@ -287,7 +287,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
             }
             foreach($xmlrecord->datafield as $field){
                 $code = (string)$field['tag'];
-                $data = array();
+                $data = [];
                 foreach($field->subfield as $subfield){
                     $subcode = (string)$subfield['code'];
                     if($subcode && !isset($data[$subcode])){
@@ -295,7 +295,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
                     }
                 }
                 if (isset($plugin_mapping[$code])){
-                    $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : array($plugin_mapping[$code]);
+                    $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : [$plugin_mapping[$code]];
                     for ($j = 0; $j < count($mapping); ++$j){
                         $map_method = $mapping[$j]['callback'];
                         $this->$map_method($cat_element, $data, $mapping[$j]['field'], $mapping[$j]['cb_args']);
@@ -362,7 +362,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
 
     function getSearchFields(){
         foreach ($this->z_profile as $attribute => $name){
-            $ret[] = array('name' => $name, 'value' => $attribute);
+            $ret[] = ['name' => $name, 'value' => $attribute];
         }
         return $ret;
     }
@@ -389,7 +389,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
     }
 
     function doResetSearch(){
-        $this->search_result = array();
+        $this->search_result = [];
         $this->z_hits = 0;
     }
 

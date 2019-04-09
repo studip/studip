@@ -46,7 +46,7 @@ class StudipComment extends SimpleORMap implements PrivacyObject
 
     static function NumCommentsForObject($object_id)
     {
-        return self::countBySql('object_id = ?', array($object_id));
+        return self::countBySql('object_id = ?', [$object_id]);
     }
 
     static function NumCommentsForObjectSinceLastVisit($object_id, $comments_since = 0, $exclude_user_id = null)
@@ -68,26 +68,26 @@ class StudipComment extends SimpleORMap implements PrivacyObject
                   WHERE object_id = ?
                   ORDER BY comments.mkdate";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id));
+        $statement->execute([$object_id]);
         return $statement->fetchAll(PDO::FETCH_BOTH);
     }
 
     static function DeleteCommentsByObject($object_ids)
     {
         if (!is_array($object_ids)) {
-            $object_ids = array($object_ids);
+            $object_ids = [$object_ids];
         }
         $where = "object_id IN (?)";
-        return self::deleteBySQL($where, array($object_ids));
+        return self::deleteBySQL($where, [$object_ids]);
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'comments';
-        $config['belongs_to']['news'] = array(
+        $config['belongs_to']['news'] = [
             'class_name' => 'StudipNews',
             'foreign_key' => 'object_id',
-        );
+        ];
         parent::configure($config);
     }
 

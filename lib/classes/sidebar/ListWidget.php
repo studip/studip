@@ -7,7 +7,7 @@ class ListWidget extends SidebarWidget
     /**
      * 
      */
-    protected $css_classes = array();
+    protected $css_classes = [];
 
     /**
      * 
@@ -34,13 +34,13 @@ class ListWidget extends SidebarWidget
      */
     public function removeCSSClass($css_class)
     {
-        $this->classes = array_diff($this->css_class, array($css_class));
+        $this->classes = array_diff($this->css_class, [$css_class]);
     }
 
     /**
      * 
      */
-    public function render($variables = array())
+    public function render($variables = [])
     {
         $this->template_variables['css_classes'] = $this->css_classes;
 

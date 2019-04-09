@@ -15,14 +15,14 @@ class Step00272Tours extends Migration
      */
     function up()
     {
-        Config::get()->create('TOURS_ENABLE', array(
+        Config::get()->create('TOURS_ENABLE', [
             'value' => 1, 
             'is_default' => 1, 
             'type' => 'boolean',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Aktiviert die Funktionen zum Anbieten von Touren in Stud.IP')
-            ));
+            ]);
         DBManager::get()->exec("CREATE TABLE IF NOT EXISTS `help_tours` (
                 `tour_id` char(32) NOT NULL,
                 `name` varchar(255) NOT NULL,

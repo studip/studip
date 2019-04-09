@@ -13,13 +13,13 @@ class ConfigPublicTopics extends Migration
         // migrate setting from seminare.public_topics
         $stmt = $db->prepare('INSERT INTO config (field, value, type, `range`, mkdate, chdate, description)
                               VALUES (:name, :value, :type, :range, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)');
-        $stmt->execute(array(
+        $stmt->execute([
             'name'        => 'COURSE_PUBLIC_TOPICS',
             'description' => 'Über diese Option können Sie die Themen einer Veranstaltung öffentlich einsehbar machen.',
             'range'       => 'course',
             'type'        => 'boolean',
             'value'       => '0'
-        ));
+        ]);
 
         $db->exec("INSERT INTO config_values (field, range_id, value, mkdate, chdate, comment)
                    SELECT 'COURSE_PUBLIC_TOPICS', Seminar_id, public_topics, mkdate, chdate, ''

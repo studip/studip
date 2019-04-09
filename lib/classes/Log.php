@@ -71,7 +71,7 @@ class Log
      * .
      * @var array
      */
-    private $log_level_names = array();
+    private $log_level_names = [];
 
     /**
      * if log_handler is a string
@@ -86,7 +86,7 @@ class Log
      *
      * @var array
      */
-    private static $instances = array();
+    private static $instances = [];
 
     /**
      * returns a log instance, identified by given name
@@ -218,12 +218,12 @@ class Log
             $formatted_message = date('c') . ' ['.$this->log_level_names[$level].'] ' . $message;
             if (is_callable($this->log_handler)) {
                 $log_handler = $this->log_handler;
-                return $log_handler(array('formatted' => $formatted_message,
+                return $log_handler(['formatted' => $formatted_message,
                                           'message' => $message,
                                           'level' => $level,
                                           'level_name' => $this->log_level_names[$level],
                                           'timestamp' => time()
-                                          ));
+                                          ]);
             } else {
                 $logfile = $this->log_handler;
                 $this->file = is_resource($this->file) ? $this->file : @fopen($logfile, 'ab');

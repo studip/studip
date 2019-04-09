@@ -1,7 +1,7 @@
 <? foreach(PageLayout::getMessages() as $pm) : ?>
     <?= $pm ?>
 <? endforeach; ?>
-<?= $form->getFormStart($controller->url_for('resources/helpers/resource_message/' . $resource->getId()), array('data-dialog' => '')) ?>
+<?= $form->getFormStart($controller->url_for('resources/helpers/resource_message/' . $resource->getId()), ['data-dialog' => '']) ?>
 <div style="font-weight:bold;padding-top:5px;">
 <?= $form->getFormFieldCaption('start_day')?>:
 </div>

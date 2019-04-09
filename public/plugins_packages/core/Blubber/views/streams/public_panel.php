@@ -9,14 +9,14 @@
         <? $author = $thread->getUser() ?>
         <? if ($author['user_id'] === $GLOBALS['user']->id) $i_shared = true ?>
         <a href="<?= URLHelper::getLink($author->getURL()) ?>">
-            <?= $author->getAvatar()->getImageTag(Avatar::MEDIUM, array('title' => $author->getName())) ?>
+            <?= $author->getAvatar()->getImageTag(Avatar::MEDIUM, ['title' => $author->getName()]) ?>
         </a>
     </li>
     <? foreach ($thread->getSharingUsers() as $user) : ?>
     <? if ($user['user_id'] === $GLOBALS['user']->id) $i_shared = true ?>
     <li>
         <a href="<?= URLHelper::getLink($user->getURL()) ?>">
-            <?= $user->getAvatar()->getImageTag(Avatar::MEDIUM, array('title' => $user->getName())) ?>
+            <?= $user->getAvatar()->getImageTag(Avatar::MEDIUM, ['title' => $user->getName()]) ?>
         </a>
     </li>
     <? endforeach ?>
@@ -32,7 +32,7 @@
     </p>
 <? else : ?>
     <div style="text-align: center">
-        <?= \Studip\LinkButton::create(_("Weitersagen rückgängig machen"), '#', array('onClick' => "STUDIP.Blubber.unshareBlubber('".$thread->getId()."'); return false;")) ?>
+        <?= \Studip\LinkButton::create(_("Weitersagen rückgängig machen"), '#', ['onClick' => "STUDIP.Blubber.unshareBlubber('".$thread->getId()."'); return false;"]) ?>
     </div>
 <? endif ?>
 <br><br>

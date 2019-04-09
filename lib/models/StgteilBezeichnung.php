@@ -20,7 +20,7 @@ class StgteilBezeichnung extends ModuleManagementModel
     private $count_stgteile;
     private $count_studiengaenge;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteil_bez';
         
@@ -60,7 +60,7 @@ class StgteilBezeichnung extends ModuleManagementModel
             $row_count = null, $offset = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'position',
-                array('count_studiengaenge', 'count_stgteile'));
+                ['count_studiengaenge', 'count_stgteile']);
         return parent::getEnrichedByQuery('
             SELECT msb.*, 
                 COUNT(DISTINCT studiengang_id) AS `count_studiengaenge`, 
@@ -70,7 +70,7 @@ class StgteilBezeichnung extends ModuleManagementModel
                 LEFT JOIN mvv_studiengang USING (studiengang_id) 
             GROUP BY stgteil_bez_id 
             ORDER BY ' . $sortby,
-            array(),
+            [],
             $row_count,
             $offset
         );
@@ -107,7 +107,7 @@ class StgteilBezeichnung extends ModuleManagementModel
             WHERE mss.studiengang_id = ? 
             GROUP BY stgteil_bez_id 
             ORDER BY position, mkdate',
-            array($studiengang_id)
+            [$studiengang_id]
         );
     }
     
@@ -122,7 +122,7 @@ class StgteilBezeichnung extends ModuleManagementModel
     public function validate()
     {
         $ret = parent::validate();
-        $messages = array();
+        $messages = [];
         $rejected = false;
 
         // The name must not be empty

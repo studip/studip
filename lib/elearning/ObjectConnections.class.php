@@ -42,14 +42,14 @@ class ObjectConnections
     {
         global $ELEARNING_INTERFACE_MODULES;
 
-        $this->object_connections = array();
+        $this->object_connections = [];
 
         $query = "SELECT system_type, module_type, module_id, chdate
                   FROM object_contentmodules
                   WHERE object_id = ?
                   ORDER BY chdate DESC";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->id));
+        $statement->execute([$this->id]);
 
         $module_count = 0;
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -111,7 +111,7 @@ class ObjectConnections
         if (isset($object_id)) {
             $query = "SELECT 1 FROM object_contentmodules WHERE object_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($object_id));
+            $statement->execute([$object_id]);
             return (bool)$statement->fetchColumn();
         }
     }
@@ -132,11 +132,11 @@ class ObjectConnections
                   FROM object_contentmodules
                   WHERE object_id = ? AND system_type = ? AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         return $statement->fetchColumn() ?: false;
     }
 
@@ -158,12 +158,12 @@ class ObjectConnections
                   WHERE object_id = ? AND module_id = ? AND system_type = ?
                     AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_module_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         $check = $statement->fetchColumn();
 
         if ($check) {
@@ -171,23 +171,23 @@ class ObjectConnections
                       SET module_type = ?, chdate = UNIX_TIMESTAMP()
                       WHERE object_id = ? AND module_id = ? AND system_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_module_type,
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms
-            ));
+            ]);
         } else {
             $query = "INSERT INTO object_contentmodules
                         (object_id, module_id, system_type, module_type, mkdate, chdate)
                       VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms,
                 $connection_module_type
-            ));
+            ]);
         }
         return true;
     }
@@ -210,12 +210,12 @@ class ObjectConnections
                   WHERE object_id = ? AND module_id = ? AND system_type = ?
                     AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_module_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         $check = $statement->fetchColumn();
 
 
@@ -224,12 +224,12 @@ class ObjectConnections
                       WHERE object_id = ? AND module_id = ? AND system_type = ?
                         AND module_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms,
                 $connection_module_type
-            ));
+            ]);
             return true;
         }
         return false;
@@ -241,7 +241,7 @@ class ObjectConnections
                   FROM object_contentmodules
                   WHERE object_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id));
+        $statement->execute([$object_id]);
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
@@ -250,7 +250,7 @@ class ObjectConnections
         $query = "DELETE FROM object_contentmodules
                   WHERE object_id = ? AND system_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id, $cms_type));
+        $statement->execute([$object_id, $cms_type]);
         return $statement->rowCount();
     }
 }

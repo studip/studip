@@ -43,12 +43,12 @@ class ScheduleWeekRequests extends ScheduleWeek {
     function __construct($start_hour = '', $end_hour = '', $show_days = '', $start_date = '', $show_dates = true) {
 
         parent::__construct($start_hour, $end_hour, $show_days, $start_date);
-        $this->categories[5] = array(
+        $this->categories[5] = [
                                 "bg-picture"   => Assets::image_path('calendar/category12_small.jpg'),
-                                "border-color" => "#d082b0");
-        $this->categories[6] = array(
+                                "border-color" => "#d082b0"];
+        $this->categories[6] = [
                                 "bg-picture"   => Assets::image_path('calendar/category10_small.jpg'),
-                                "border-color" => "#ffbd33");
+                                "border-color" => "#ffbd33"];
         $this->add_info_is_html = true;
 
     }

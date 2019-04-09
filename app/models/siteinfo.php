@@ -83,9 +83,9 @@ class Siteinfo {
                 ORDER BY position, detail_id ASC
                 LIMIT 1";
         $statement = DBManager::get()->prepare($sql);
-        $statement->execute(array(
+        $statement->execute([
             $rubric_id ?: null
-        ));
+        ]);
         return $statement->fetchColumn() ?: 0;
     }
 
@@ -183,22 +183,22 @@ class Siteinfo {
                 $rubric = DBManager::get()->lastInsertId();
                 $detail = 0;
         }
-        return array($rubric, $detail);
+        return [$rubric, $detail];
     }
 
     function delete($type,$id) {
         if($type=="rubric") {
             $query = "DELETE FROM siteinfo_details WHERE rubric_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($id));
+            $statement->execute([$id]);
 
             $query = "DELETE FROM siteinfo_rubrics WHERE rubric_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($id));
+            $statement->execute([$id]);
         } else {
             $query = "DELETE FROM siteinfo_details WHERE detail_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($id));
+            $statement->execute([$id]);
         }
     }
 }
@@ -214,24 +214,24 @@ class SiteinfoMarkupEngine {
     function __construct() {
         $this->db = DBManager::get();
         $this->template_factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'].'/app/views/siteinfo/markup/');
-        $this->siteinfoMarkup("/\(:version:\)/", array($this, 'version'));
-        $this->siteinfoMarkup("/\(:uniname:\)/", array($this, 'uniName'));
-        $this->siteinfoMarkup("/\(:unicontact:\)/", array($this, 'uniContact'));
+        $this->siteinfoMarkup("/\(:version:\)/", [$this, 'version']);
+        $this->siteinfoMarkup("/\(:uniname:\)/", [$this, 'uniName']);
+        $this->siteinfoMarkup("/\(:unicontact:\)/", [$this, 'uniContact']);
         $this->siteinfoMarkup("/\(:userinfo ([a-z_@\-]*):\)/", function ($m) {return $this->userinfo($m[1]);});
         $this->siteinfoMarkup("/\(:userlink ([a-z_@\-]*):\)/", function ($m) {return $this->userlink($m[1]);});
-        $this->siteinfoMarkup("/\(:rootlist:\)/", array($this, 'rootlist'));
-        $this->siteinfoMarkup("/\(:adminlist:\)/", array($this, 'adminlist'));
-        $this->siteinfoMarkup("/\(:coregroup:\)/", array($this, 'coregroup'));
+        $this->siteinfoMarkup("/\(:rootlist:\)/", [$this, 'rootlist']);
+        $this->siteinfoMarkup("/\(:adminlist:\)/", [$this, 'adminlist']);
+        $this->siteinfoMarkup("/\(:coregroup:\)/", [$this, 'coregroup']);
         $this->siteinfoMarkup("/\(:toplist ([a-z]*):\)/i", function ($m) {return $this->toplist($m[1]);});
         $this->siteinfoMarkup("/\(:indicator ([a-z_\-]*):\)/i", function ($m) {return $this->indicator($m[1]);});
-        $this->siteinfoMarkup("/\(:history:\)/", array($this, 'history'));
-        $this->siteinfoMarkup("/\(:terms:\)/", array($this, 'termsOfUse'));
+        $this->siteinfoMarkup("/\(:history:\)/", [$this, 'history']);
+        $this->siteinfoMarkup("/\(:terms:\)/", [$this, 'termsOfUse']);
         $this->siteinfoMarkup("'\[style=(&quot;)?(.*?)(&quot;)?\]\s*(.*?)\s*\[/style\]'s", function ($m) {return $this->style($m[2], $m[4]);});
     }
 
     function siteinfoMarkup($pattern, $replace) {
         //function to register markup for later processing
-        $this->siteinfo_directives[] = array($pattern, $replace);
+        $this->siteinfo_directives[] = [$pattern, $replace];
     }
 
     function siteinfoDirectives($str) {
@@ -266,7 +266,7 @@ class SiteinfoMarkupEngine {
                 LEFT JOIN user_info USING (user_id)
                 WHERE username = ? AND ".get_vis_query();
         $statement = DBManager::get()->prepare($sql);
-        $statement->execute(array($input));
+        $statement->execute([$input]);
         $temp = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($temp) == 1) {
@@ -287,7 +287,7 @@ class SiteinfoMarkupEngine {
                 LEFT JOIN user_info USING (user_id)
                 WHERE username = ? AND ".get_vis_query();
         $statement = DBManager::get()->prepare($sql);
-        $statement->execute(array($input));
+        $statement->execute([$input]);
         $temp = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($temp) == 1) {
@@ -355,7 +355,7 @@ class SiteinfoMarkupEngine {
             $remotefile = file_get_contents('http://develop.studip.de/studip/extern.php?module=Persons&config_id=8d1dafc3afca2bce6125d57d4119b631&range_id=4498a5bc62d7974d0a0ac3e97aca5296');
             $cache->write('coregroup', $remotefile);
         }
-        $out = str_replace(array('class="normal"','align="left"'), array("",""), $remotefile);
+        $out = str_replace(['class="normal"','align="left"'], ["",""], $remotefile);
         return $out;
     }
 
@@ -406,7 +406,7 @@ class SiteinfoMarkupEngine {
                 break;
             case "mostpostings":
                 $template->heading = _("die aktivsten Veranstaltungen (Postings der letzten zwei Wochen)");
-                $seminars = array();
+                $seminars = [];
 
                 // get TopTen of seminars from all ForumModules and add up the
                 // count for seminars with more than one active ForumModule
@@ -467,62 +467,62 @@ class SiteinfoMarkupEngine {
             return $found_in_cache;
         }
         $template = $this->template_factory->open('indicator');
-        $indicator['seminar_all'] = array("count" => array('count_table_rows','seminare'),
+        $indicator['seminar_all'] = ["count" => ['count_table_rows','seminare'],
                                           "title" => _("Aktive Veranstaltungen"),
-                                          "detail" => _("alle Veranstaltungen, die nicht archiviert wurden"));
-        $indicator['seminar_archived'] = array("count" => array('count_table_rows','archiv'),
+                                          "detail" => _("alle Veranstaltungen, die nicht archiviert wurden")];
+        $indicator['seminar_archived'] = ["count" => ['count_table_rows','archiv'],
                                                "title" => _("Archivierte Veranstaltungen"),
-                                               "detail" => _("alle Veranstaltungen, die archiviert wurden"));
-        $indicator['institute_secondlevel_all'] = array("query" => "SELECT COUNT(*) FROM Institute WHERE Institut_id != fakultaets_id",
+                                               "detail" => _("alle Veranstaltungen, die archiviert wurden")];
+        $indicator['institute_secondlevel_all'] = ["query" => "SELECT COUNT(*) FROM Institute WHERE Institut_id != fakultaets_id",
                                                         "title" => _("beteiligte Einrichtungen"),
-                                                        "detail" => _("alle Einrichtungen außer den Fakultäten"));
-        $indicator['institute_firstlevel_all'] = array("query" => "SELECT COUNT(*) FROM Institute WHERE Institut_id = fakultaets_id",
+                                                        "detail" => _("alle Einrichtungen außer den Fakultäten")];
+        $indicator['institute_firstlevel_all'] = ["query" => "SELECT COUNT(*) FROM Institute WHERE Institut_id = fakultaets_id",
                                                        "title" => _("beteiligte Fakultäten"),
-                                                       "detail" => _("alle Fakultäten"));
-        $indicator['user_admin'] = array("query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='admin'",
+                                                       "detail" => _("alle Fakultäten")];
+        $indicator['user_admin'] = ["query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='admin'",
                                          "title" => _("registrierte Administratoren"),
-                                         "detail" => "");
-        $indicator['user_dozent'] = array("query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='dozent'",
+                                         "detail" => ""];
+        $indicator['user_dozent'] = ["query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='dozent'",
                                           "title" => _("registrierte Dozenten"),
-                                          "detail" => "");
-        $indicator['user_tutor'] = array("query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='tutor'",
+                                          "detail" => ""];
+        $indicator['user_tutor'] = ["query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='tutor'",
                                          "title" => _("registrierte Tutoren"),
-                                         "detail" => "");
-        $indicator['user_autor'] = array("query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='autor'",
+                                         "detail" => ""];
+        $indicator['user_autor'] = ["query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='autor'",
                                          "title" => _("registrierte Autoren"),
-                                         "detail" => "");
-        $indicator['document'] = array("query" => "SELECT COUNT(*) FROM files WHERE storage='disk'",
+                                         "detail" => ""];
+        $indicator['document'] = ["query" => "SELECT COUNT(*) FROM files WHERE storage='disk'",
                                        "title" => _("Dokumente"),
-                                       "detail" => "");
-        $indicator['link'] = array("query" => "SELECT COUNT(*) FROM files WHERE storage='url'",
+                                       "detail" => ""];
+        $indicator['link'] = ["query" => "SELECT COUNT(*) FROM files WHERE storage='url'",
                                    "title" => _("verlinkte Dateien"),
-                                   "detail" => "");
-        $indicator['litlist'] = array("count" => array('count_table_rows','lit_list'),
+                                   "detail" => ""];
+        $indicator['litlist'] = ["count" => ['count_table_rows','lit_list'],
                                       "title" => _("Literaturlisten"),
                                       "detail" => "",
-                                      "constraint" => get_config('LITERATURE_ENABLE'));
-        $indicator['termin'] = array("count" => array('count_table_rows','termine'),
+                                      "constraint" => get_config('LITERATURE_ENABLE')];
+        $indicator['termin'] = ["count" => ['count_table_rows','termine'],
                                      "title" => _("Termine"),
-                                     "detail" => "");
-        $indicator['news'] = array("count" => array('count_table_rows','news'),
+                                     "detail" => ""];
+        $indicator['news'] = ["count" => ['count_table_rows','news'],
                                    "title" => _("Ankündigungen"),
-                                   "detail" => "");
-        $indicator['vote'] = array("count" => array('count_table_rows', 'questionnaires'),
+                                   "detail" => ""];
+        $indicator['vote'] = ["count" => ['count_table_rows', 'questionnaires'],
                                    "title" => _("Fragebögen"),
                                    "detail" => "",
-                                   "constraint" => get_config('VOTE_ENABLE'));
-        $indicator['evaluation'] = array("count" => array('count_table_rows','eval'),
+                                   "constraint" => get_config('VOTE_ENABLE')];
+        $indicator['evaluation'] = ["count" => ['count_table_rows','eval'],
                                          "title" => _("Evaluationen"),
                                          "detail" => "",
-                                         "constraint" => get_config('VOTE_ENABLE'));
-        $indicator['wiki_pages'] = array("query" => "SELECT COUNT(DISTINCT keyword) AS count FROM wiki",
+                                         "constraint" => get_config('VOTE_ENABLE')];
+        $indicator['wiki_pages'] = ["query" => "SELECT COUNT(DISTINCT keyword) AS count FROM wiki",
                                          "title" => _("Wiki-Seiten"),
                                          "detail" => "",
-                                         "constraint" => get_config('WIKI_ENABLE'));
-        $indicator['resource'] = array("count" => array('count_table_rows','resources_objects'),
+                                         "constraint" => get_config('WIKI_ENABLE')];
+        $indicator['resource'] = ["count" => ['count_table_rows','resources_objects'],
                                        "title" => _("Ressourcen-Objekte"),
                                        "detail" => _("von Stud.IP verwaltete Ressourcen wie Räume oder Geräte"),
-                                       "constraint" => Config::get()->RESOURCES_ENABLE);
+                                       "constraint" => Config::get()->RESOURCES_ENABLE];
 
         if ($key == 'posting') {
             $count = 0;

@@ -7,15 +7,15 @@ class CourseNumberFormatConfig extends Migration
     /**
      * new config options to install
      */
-    private $options = array(
-        array(
+    private $options = [
+        [
             'name'        => 'COURSE_NUMBER_FORMAT',
             'description' => 'Erlaubt das Eintragen eines regulären Ausdrucks zur Validierung einer Veranstaltungsnummer. Im Kommentarfeld kann ein entsprechender Hilfetext hinterlegt werden.',
             'section'     => 'global',
             'type'        => 'string',
             'value'       => ''
-        )
-    );
+        ]
+    ];
 
     /**
      * short description of this migration
@@ -53,7 +53,7 @@ class CourseNumberFormatConfig extends Migration
         $stmt = $db->prepare("DELETE FROM config WHERE field = :name");
 
         foreach ($this->options as $option) {
-            $stmt->execute(array('name' => $option['name']));
+            $stmt->execute(['name' => $option['name']]);
         }
     }
 }

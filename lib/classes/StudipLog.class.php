@@ -30,7 +30,7 @@ class StudipLog
         $log_action_name = mb_strtoupper($name);
         $log_action = LogAction::findByName($log_action_name);
         if ($log_action) {
-            return call_user_func_array('StudipLog::log', array_merge(array($log_action_name), $arguments));
+            return call_user_func_array('StudipLog::log', array_merge([$log_action_name], $arguments));
         }
         throw new BadMethodCallException('Unknown method called: '
                 . $log_action_name);
@@ -179,19 +179,19 @@ class StudipLog
      */
     public static function searchSeminar($needle)
     {
-        $result = array();
+        $result = [];
 
         // search for active seminars
         $courses = Course::findBySQL("VeranstaltungsNummer LIKE CONCAT('%', :needle, '%')
                      OR seminare.Name LIKE CONCAT('%', :needle, '%') ORDER BY start_time DESC",
-                array(':needle' => $needle));
+                [':needle' => $needle]);
 
         foreach ($courses as $course) {
             $title = sprintf('%s %s (%s)',
                              $course->VeranstaltungsNummer,
                              my_substr($course->name, 0, 40),
                              $course->start_semester->name);
-                $result[] = array($course->getId(), $title);
+                $result[] = [$course->getId(), $title];
         }
 
         // search deleted seminars
@@ -202,10 +202,10 @@ class StudipLog
                 ->pluck('action_id');
         $log_events_archived_seminar = LogEvent::findBySQL("info LIKE CONCAT('%', ?, '%')
                 AND action_id IN (?) ",
-                array($needle, $log_action_ids_archived_seminar));
+                [$needle, $log_action_ids_archived_seminar]);
         foreach ($log_events_archived_seminar as $log_event) {
             $title = sprintf('%s (%s)', my_substr($log_event->info, 0, 40), _('gelöscht'));
-            $result[] = array($log_event->affected_range_id, $title);
+            $result[] = [$log_event->affected_range_id, $title];
         }
 
         return $result;
@@ -220,12 +220,12 @@ class StudipLog
      */
     public static function searchInstitute($needle)
     {
-        $result = array();
+        $result = [];
 
         $institutes = Institute::findBySQL(
-                "name LIKE CONCAT('%', ?, '%') ORDER BY name", array($needle));
+                "name LIKE CONCAT('%', ?, '%') ORDER BY name", [$needle]);
         foreach ($institutes as $institute) {
-            $result[] = array($institute->getId(), my_substr($institute->name, 0, 28));
+            $result[] = [$institute->getId(), my_substr($institute->name, 0, 28)];
         }
 
         // search for deleted institutes
@@ -234,10 +234,10 @@ class StudipLog
         $log_action_delete_institute = LogAction::findOneByName('INST_DEL');
         $log_events_delete_institute = LogEvent::findBySQL(
                 "action_id = ? AND info LIKE CONCAT('%', ?, '%')",
-                array($log_action_delete_institute->getId(), $needle));
+                [$log_action_delete_institute->getId(), $needle]);
         foreach ($log_events_delete_institute as $log_event) {
             $title = sprintf('%s (%s)', $log_event->info, _('gelöscht'));
-            $result[] = array($log_event->affected_range_id, $title);
+            $result[] = [$log_event->affected_range_id, $title];
         }
 
         return $result;
@@ -305,14 +305,14 @@ class StudipLog
      */
     public static function searchResource($needle)
     {
-        $result = array();
+        $result = [];
 
         $query = "SELECT resource_id, name FROM resources_objects WHERE name LIKE CONCAT('%', ?, '%') ORDER by name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($needle));
+        $statement->execute([$needle]);
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = array($row['resource_id'], my_substr($row['name'], 0, 30));
+            $result[] = [$row['resource_id'], my_substr($row['name'], 0, 30)];
         }
 
         return $result;
@@ -361,6 +361,6 @@ class StudipLog
                     }
             }
         }
-        return array();
+        return [];
     }
 }

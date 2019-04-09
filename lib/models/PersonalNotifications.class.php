@@ -42,7 +42,7 @@ class PersonalNotifications extends SimpleORMap
     const GC_MAX_DAYS = 30; // Garbage collector removes notifications after 30 days
     const CACHE_DURATION = 86400; // 24 * 60 * 60 = 1 day
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'personal_notifications';
         $config['additional_fields']['more_unseen'] = true;
@@ -82,7 +82,7 @@ class PersonalNotifications extends SimpleORMap
                 LEFT JOIN personal_notifications_user USING(personal_notification_id)
                 WHERE mkdate < ?";
         $st = DBManager::get()->prepare($sql);
-        $st->execute(array(time() - self::GC_MAX_DAYS * 24 * 60 * 60));
+        $st->execute([time() - self::GC_MAX_DAYS * 24 * 60 * 60]);
     }
 
     /**
@@ -102,7 +102,7 @@ class PersonalNotifications extends SimpleORMap
     public static function add($user_ids, $url, $text, $html_id = null, $avatar = null, $dialog = false)
     {
         if (!is_array($user_ids)) {
-            $user_ids = array($user_ids);
+            $user_ids = [$user_ids];
         }
         if (!count($user_ids)) {
             return false;
@@ -164,7 +164,7 @@ class PersonalNotifications extends SimpleORMap
             $db_data = $cached;
         }
 
-        $notifications = array();
+        $notifications = [];
         foreach ($db_data as $data) {
             $notification = new PersonalNotifications();
             $notification->setData($data);
@@ -189,10 +189,10 @@ class PersonalNotifications extends SimpleORMap
         self::expireCache($user_id);
 
         $pn = new PersonalNotifications($notification_id);
-        $notification_users = PersonalNotificationsUser::findBySQL("INNER JOIN personal_notifications USING (personal_notification_id) WHERE user_id = :user_id AND seen = '0' AND personal_notifications.url = :url ", array(
+        $notification_users = PersonalNotificationsUser::findBySQL("INNER JOIN personal_notifications USING (personal_notification_id) WHERE user_id = :user_id AND seen = '0' AND personal_notifications.url = :url ", [
             'user_id' => $user_id,
             'url' => $pn['url']
-        ));
+        ]);
         foreach ($notification_users as $notification_user) {
             $notification_user['seen'] = 1;
             $notification_user->store();
@@ -212,9 +212,9 @@ class PersonalNotifications extends SimpleORMap
         }
         self::expireCache($user_id);
 
-        $notification_users = PersonalNotificationsUser::findBySQL("user_id = :user_id AND seen = '0'", array(
+        $notification_users = PersonalNotificationsUser::findBySQL("user_id = :user_id AND seen = '0'", [
             'user_id' => $user_id
-        ));
+        ]);
         foreach ($notification_users as $notification_user) {
             $notification_user['seen'] = 1;
             $notification_user->store();
@@ -236,10 +236,10 @@ class PersonalNotifications extends SimpleORMap
         }
         self::expireCache($user_id);
 
-        $notification_users = PersonalNotificationsUser::findBySQL("INNER JOIN personal_notifications USING (personal_notification_id) WHERE user_id = :user_id AND seen = '0' AND personal_notifications.html_id = :html_id ", array(
+        $notification_users = PersonalNotificationsUser::findBySQL("INNER JOIN personal_notifications USING (personal_notification_id) WHERE user_id = :user_id AND seen = '0' AND personal_notifications.html_id = :html_id ", [
             'user_id' => $user_id,
             'html_id' => $html_id
-        ));
+        ]);
         foreach ($notification_users as $notification_user) {
             $notification_user['seen'] = 1;
             $notification_user->store();
@@ -405,7 +405,7 @@ class PersonalNotifications extends SimpleORMap
     {
         return $GLOBALS['template_factory']
                 ->open('personal_notifications/notification.php')
-                ->render(array('notification' => $this));
+                ->render(['notification' => $this]);
     }
 
     /**
@@ -434,11 +434,11 @@ class PersonalNotifications extends SimpleORMap
                         AND u.seen = '0'
                         AND pn.url = :url";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 ':pn_id'   => $this->id,
                 ':user_id' => $GLOBALS['user']->id,
                 ':url'     => $this->url,
-            ));
+            ]);
             $this->unseen = 0 + $statement->fetchColumn();
         }
         return $this->unseen;

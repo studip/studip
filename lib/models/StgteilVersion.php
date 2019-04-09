@@ -20,35 +20,35 @@ class StgteilVersion extends ModuleManagementModelTreeItem
     private $count_abschnitte;
     private $count_dokumente;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteilversion';
 
-        $config['belongs_to']['studiengangteil'] = array(
+        $config['belongs_to']['studiengangteil'] = [
             'class_name' => 'StudiengangTeil',
             'foreign_key' => 'stgteil_id'
-        );
-        $config['has_many']['abschnitte'] = array(
+        ];
+        $config['has_many']['abschnitte'] = [
             'class_name' => 'StgteilAbschnitt',
             'assoc_foreign_key' => 'version_id',
             'order_by' => 'ORDER BY position,mkdate',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['documents'] = array(
+        ];
+        $config['has_many']['documents'] = [
             'class_name' => 'MvvDokument',
             'assoc_func' => 'findByObject',
             'assoc_func_params_func' => function ($version) {
                 return $version;
             }
-        );
-        $config['has_many']['document_assignments'] = array(
+        ];
+        $config['has_many']['document_assignments'] = [
             'class_name' => 'MvvDokumentZuord',
             'assoc_foreign_key' => 'range_id',
             'order_by' => 'ORDER BY position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
 
         $config['additional_fields']['count_abschnitte']['get'] =
             function($version) { return $version->count_abschnitte; };
@@ -92,7 +92,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
             WHERE msv.version_id = ? 
             GROUP BY version_id 
             ORDER BY mkdate',
-            array($version_id)
+            [$version_id]
         );
         if (count($version)) {
             return $version->find($version_id);
@@ -118,7 +118,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
             $filter = null, $row_count = null, $offset = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'start',
-                array('start', 'count_abschnitte', 'count_dokumente'));
+                ['start', 'count_abschnitte', 'count_dokumente']);
         return parent::getEnrichedByQuery("
             SELECT mvv_stgteilversion.*, 
                 start_sem.beginn AS start, 
@@ -135,7 +135,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
                 " . self::getFilterSql($filter, true) . "
             GROUP BY version_id 
             ORDER BY " . $sortby,
-            array(),
+            [],
             $row_count,
             $offset
         );
@@ -220,7 +220,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
                 LEFT JOIN semester_data sd ON msv.start_sem = sd.semester_id 
                 LEFT JOIN mvv_stgteilabschnitt msa USING(version_id) 
             WHERE abschnitt_id = ? ',
-            array($abschnitt_id)
+            [$abschnitt_id]
         );
         foreach ($versions as $version) {
             return $version;
@@ -330,7 +330,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
      */
     public function copy()
     {
-        $new_mvv_objects = array();
+        $new_mvv_objects = [];
         $new_version = clone $this;
         $new_version->setNew(true);
         $new_version->setNewId();
@@ -396,7 +396,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array(StudiengangTeil::get($this->getValue('stgteil_id')));
+        return [StudiengangTeil::get($this->getValue('stgteil_id'))];
     }
 
     /**
@@ -411,7 +411,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             if ($this->start_sem) {
                 $start_sem = Semester::find($this->start_sem);

@@ -27,14 +27,14 @@ class NewsWidget extends StudIPPlugin implements PortalPlugin
         $template->content = $response->body;
 
         if (StudipNews::CountUnread() > 0) {
-            $navigation = new Navigation('', PluginEngine::getLink($this, array(), 'read_all'));
+            $navigation = new Navigation('', PluginEngine::getLink($this, [], 'read_all'));
             $navigation->setImage(Icon::create('refresh', 'clickable', ["title" => _('Alle als gelesen markieren')]));
             $icons[] = $navigation;
         }
 
         if (Config::get()->NEWS_RSS_EXPORT_ENABLE) {
             if ($rss_id = StudipNews::GetRssIdFromRangeId('studip')) {
-                $navigation = new Navigation('', 'rss.php', array('id' => $rss_id));
+                $navigation = new Navigation('', 'rss.php', ['id' => $rss_id]);
                 $navigation->setImage(Icon::create('rss', 'clickable', ["title" => _('RSS-Feed')]));
                 $icons[] = $navigation;
             }

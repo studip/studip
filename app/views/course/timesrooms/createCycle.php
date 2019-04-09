@@ -10,7 +10,7 @@
         <label class="col-2">
             <?= _('Starttag') ?>
             <select name="day">
-                <? foreach (array(1, 2, 3, 4, 5, 6, 0) as $d): ?>
+                <? foreach ([1, 2, 3, 4, 5, 6, 0] as $d): ?>
                     <option
                         value="<?= $d ?>" <?= (Request::int('day') === $d) || (!is_null($cycle->start_time) && $cycle->weekday == $d) || ($d == 1) ? 'selected' : ''?>>
                         <?= getWeekday($d, false) ?>
@@ -129,7 +129,7 @@
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Speichern'), 'save') ?>
         <? if (Request::int('fromDialog')): ?>
-            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->url_for('course/timesrooms/index'), array('data-dialog' => 'size=big')) ?>
+            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->url_for('course/timesrooms/index'), ['data-dialog' => 'size=big']) ?>
         <? endif; ?>
     </footer>
 </form>

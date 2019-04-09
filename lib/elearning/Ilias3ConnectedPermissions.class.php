@@ -58,7 +58,7 @@ class Ilias3ConnectedPermissions extends ConnectedPermissions
             $roles = $this->getUserRoles();
             $connected_cms[$this->cms_type]->user->setRoles( $roles );
         }
-        $this->USER_OPERATIONS = array(OPERATION_VISIBLE, OPERATION_READ);
+        $this->USER_OPERATIONS = [OPERATION_VISIBLE, OPERATION_READ];
 //      $this->AUTHOR_OPERATIONS = array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_CREATE_LM, OPERATION_CREATE_TEST, OPERATION_CREATE_QUESTIONS, OPERATION_CREATE_FILE);
         $this->permissions_changed = false;
     }
@@ -200,7 +200,7 @@ class Ilias3ConnectedPermissions extends ConnectedPermissions
 
         if (is_array($connected_cms[$this->cms_type]->content_module[$current_module]->allowed_operations))
             return true;
-        $this->allowed_operations = array();
+        $this->allowed_operations = [];
         $this->tree_allowed_operations = $connected_cms[$this->cms_type]->soap_client->getObjectTreeOperations(
                     $module_id,
                     $connected_cms[$this->cms_type]->user->getId()

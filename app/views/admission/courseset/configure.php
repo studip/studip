@@ -6,9 +6,9 @@ Helpbar::get()->addPlainText(_('Info'), _('Sie können das Anmeldeset allen Einr
 Helpbar::get()->addPlainText(_('Sichtbarkeit'), _('Alle Veranstaltungen der Einrichtungen, an denen Sie mindestens Dozentenrechte haben, können zum Anmeldeset hinzugefügt werden.'));
 
 // Load assigned course IDs.
-$courseIds = $courseset ? $courseset->getCourses() : array();
+$courseIds = $courseset ? $courseset->getCourses() : [];
 // Load assigned user list IDs.
-$userlistIds = $courseset ? $courseset->getUserlists() : array();
+$userlistIds = $courseset ? $courseset->getUserlists() : [];
 
 if ($flash['error']) {
     echo MessageBox::error($flash['error']);
@@ -43,7 +43,7 @@ if ($flash['error']) {
         <div>
             <? $user = User::find($courseset->getUserId()) ?>
             <? if (isset($user)) : ?>
-                <a target="_blank" href="<?= $controller->url_for('profile', array('username' => $user->username)) ?>" >
+                <a target="_blank" href="<?= $controller->url_for('profile', ['username' => $user->username]) ?>" >
                     <?= htmlReady($user->getFullName()) ?> (<?= htmlReady($user->username) ?>)
                 </a>
             <? else : ?>
@@ -119,16 +119,16 @@ if ($flash['error']) {
                 <div>
                         <?= LinkButton::create(_('Ausgewählte Veranstaltungen konfigurieren'),
                             $controller->url_for('admission/courseset/configure_courses/' . $courseset->getId()),
-                            array('data-dialog' => 'size=big')
+                            ['data-dialog' => 'size=big']
                             ); ?>
                         <? if ($num_applicants = $courseset->getNumApplicants()) :?>
                         <?= LinkButton::create(sprintf(_('Liste der Anmeldungen (%s Nutzer)'), $num_applicants),
                             $controller->url_for('admission/courseset/applications_list/' . $courseset->getId()),
-                            array('data-dialog' => '')
+                            ['data-dialog' => '']
                             ); ?>
                         <?= LinkButton::create(_('Nachricht an alle Angemeldeten'),
                                 $controller->url_for('admission/courseset/applicants_message/' . $courseset->getId()),
-                                array('data-dialog' => '')
+                                ['data-dialog' => '']
                             ); ?>
                         <? endif ?>
                 </div>
@@ -154,7 +154,7 @@ if ($flash['error']) {
             <?php if ($courseset) { ?>
             <div id="rulelist">
                 <?php foreach ($courseset->getAdmissionRules() as $rule) { ?>
-                    <?= $this->render_partial('admission/rule/save', array('rule' => $rule)) ?>
+                    <?= $this->render_partial('admission/rule/save', ['rule' => $rule]) ?>
                 <?php } ?>
             </div>
             <?php } else { ?>
@@ -166,9 +166,9 @@ if ($flash['error']) {
             <div style="clear: both;">
                     <?= LinkButton::create(_('Anmelderegel hinzufügen'),
                         $controller->url_for('admission/rule/select_type' . ($courseset ? '/'.$courseset->getId() : '')),
-                        array(
+                        [
                             'onclick' => "return STUDIP.Admission.selectRuleType(this)"
-                            )
+                            ]
                         ); ?>
             </div>
         </div>
@@ -203,7 +203,7 @@ if ($flash['error']) {
             <div>
                     <?= LinkButton::create(_('Liste der Nutzer'),
                         $controller->url_for('admission/courseset/factored_users/' . $courseset->getId()),
-                        array('data-dialog' => '')
+                        ['data-dialog' => '']
                         ); ?>
             </div>
             <? endif ?>
@@ -227,11 +227,11 @@ if ($flash['error']) {
 
     <footer class="submit_wrapper" data-dialog-button>
         <?= CSRFProtection::tokenTag() ?>
-        <?= Button::createAccept(_('Speichern'), 'submit', $instant_course_set_view ? array('data-dialog' => '') : array()) ?>
+        <?= Button::createAccept(_('Speichern'), 'submit', $instant_course_set_view ? ['data-dialog' => ''] : []) ?>
         <?php if (Request::option('is_copy')) : ?>
             <?= LinkButton::createCancel(_('Abbrechen'),
                 URLHelper::getURL('dispatch.php/admission/courseset/delete/' . $courseset->getId(),
-                array('really' => 1))) ?>
+                ['really' => 1])) ?>
         <?php else : ?>
             <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admission/courseset')) ?>
         <?php endif ?>

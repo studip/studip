@@ -19,35 +19,35 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
     
     private $count_module;
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteilabschnitt';
     
-        $config['has_and_belongs_to_many']['module'] = array(
+        $config['has_and_belongs_to_many']['module'] = [
             'class_name' => 'Modul',
             'thru_table' => 'mvv_stgteilabschnitt_modul',
             'thru_key' => 'abschnitt_id',
             'thru_assoc_key' => 'modul_id',
             'order_by' => 'ORDER BY position,mkdate'
-        );
-        $config['belongs_to']['version'] = array(
+        ];
+        $config['belongs_to']['version'] = [
             'class_name' => 'StgteilVersion',
             'foreign_key' => 'version_id'
-        );
-        $config['has_many']['modul_zuordnungen'] = array(
+        ];
+        $config['has_many']['modul_zuordnungen'] = [
             'class_name' => 'StgteilabschnittModul',
             'assoc_foreign_key' => 'abschnitt_id',
             'order_by' => 'ORDER BY position,mkdate',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['modulteil_abschnitte'] = array(
+        ];
+        $config['has_many']['modulteil_abschnitte'] = [
             'class_name' => 'ModulteilStgteilabschnitt',
             'assoc_foreign_key' => 'abschnitt_id',
             'order_by' => 'ORDER BY fachsemester',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
         
         $config['additional_fields']['count_module']['get'] =
             function($fach) { return $fach->count_module; };
@@ -77,7 +77,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 . 'LEFT JOIN mvv_stgteilabschnitt_modul msm USING(abschnitt_id) '
                 . 'WHERE msa.abschnitt_id = ? '
                 . 'GROUP BY abschnitt_id',
-                array($abschnitt_id));
+                [$abschnitt_id]);
         if (sizeof($abschnitte)) {
             return $abschnitte[$abschnitt_id];
         }
@@ -99,7 +99,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 . 'LEFT JOIN mvv_stgteilabschnitt_modul msm USING(abschnitt_id) '
                 . 'WHERE msa.version_id = ? '
                 . 'GROUP BY abschnitt_id '
-                . 'ORDER BY position, chdate', array($version_id));
+                . 'ORDER BY position, chdate', [$version_id]);
     }
     
     /**
@@ -114,7 +114,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 . 'FROM mvv_stgteilabschnitt msa '
                 . 'LEFT JOIN mvv_stgteilabschnitt_modul msm USING(abschnitt_id) '
                 . 'WHERE msm.modul_id = ? '
-                . 'ORDER BY position, chdate', array($modul_id));
+                . 'ORDER BY position, chdate', [$modul_id]);
     }
     
     /**
@@ -142,7 +142,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         }
         if (!$this->modul_zuordnungen) {
             $this->modul_zuordnungen = SimpleORMapCollection::createFromArray(
-                    array($abschnitt_modul));
+                    [$abschnitt_modul]);
         } else {
             $this->modul_zuordnungen->append($abschnitt_modul);
         }
@@ -207,7 +207,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array(StgteilVersion::findByStgteilAbschnitt($this->getId()));
+        return [StgteilVersion::findByStgteilAbschnitt($this->getId())];
     }
     
     /**
@@ -258,7 +258,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         } else {
             //In case no responsible institutes can be
             //determined we must return an empty array:
-            return array();
+            return [];
         }
     }
     

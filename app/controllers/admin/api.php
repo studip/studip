@@ -18,11 +18,11 @@ class Admin_ApiController extends AuthenticatedController
         Navigation::activateItem('/admin/config/api');
         PageLayout::setTitle(_('API Verwaltung'));
 
-        $this->types = array(
+        $this->types = [
             'website' => _('Website'),
             'desktop' => _('Herkömmliches Desktopprogramm'),
             'mobile'  => _('Mobile App')
-        );
+        ];
 
         // Sidebar
         $views = new ViewsWidget();
@@ -61,10 +61,10 @@ class Admin_ApiController extends AuthenticatedController
     {
         $consumer = RESTAPI\Consumer\Base::find($id);
 
-        return array(
+        return [
             'Consumer Key = ' . $consumer->auth_key,
             'Consumer Secret = ' . $consumer->auth_secret,
-        );
+        ];
     }
 
     /**
@@ -92,7 +92,7 @@ class Admin_ApiController extends AuthenticatedController
                   : RESTAPI\Consumer\Base::create(Request::option('consumer_type') ?: 'oauth');
 
         if (Request::submitted('store')) {
-            $errors = array();
+            $errors = [];
 
             $consumer->active      = (bool) Request::int('active');
             $consumer->title       = Request::get('title');

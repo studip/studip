@@ -46,20 +46,20 @@ class ExternModuleNews extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->registered_elements = array(
+        $this->registered_elements = [
                                 'Body',
                                 'TableHeader',
                                 'TableHeadrow',
                                 'TableRow',
                                 'ContentNews',
                                 'LinkInternSimple' => 'LinkIntern',
-                                'StudipLink');
-        $this->data_fields = array('date', 'topic');
-        $this->field_names = array
-        (
+                                'StudipLink'];
+        $this->data_fields = ['date', 'topic'];
+        $this->field_names = 
+        [
                 _("Datum/Autor"),
                 _("Nachricht")
-        );
+        ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     

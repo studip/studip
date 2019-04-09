@@ -7,7 +7,7 @@ if ($settings['step_day'] >= 3600) {
 ?>
 <tr>
     <td class="precol1w" <?= $rowspan_precol ? ' colspan="2"' : '' ?>><?= _('Tag') ?></td>
-    <?= $this->render_partial('calendar/single/_day_dayevents', array('em' => $em)); ?>
+    <?= $this->render_partial('calendar/single/_day_dayevents', ['em' => $em]); ?>
 </tr>
 <? for ($i = $start / $settings['step_day']; $i < $end / $settings['step_day'] + 3600 / $settings['step_day']; $i++) : ?>
 <? $row = $i - $start / $settings['step_day']; ?>
@@ -23,6 +23,6 @@ if ($settings['step_day'] >= 3600) {
         <?= $minute ? $minute : '00' ?>
     </td>
     <? endif ?>
-    <?= $this->render_partial('calendar/single/_day_cell', array('events' => $calendar->events, 'start' => $start, 'em' => $em, 'row' => $row, 'i' => $i, 'step' => $settings['step_day'])); ?>
+    <?= $this->render_partial('calendar/single/_day_cell', ['events' => $calendar->events, 'start' => $start, 'em' => $em, 'row' => $row, 'i' => $i, 'step' => $settings['step_day']]); ?>
 </tr>
 <? endfor; ?>

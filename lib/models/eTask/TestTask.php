@@ -27,13 +27,13 @@ class TestTask extends \SimpleORMap
 
         $config['relationTypes'] = self::configureClassNames($config);
 
-        $config['belongs_to']['test'] = array(
+        $config['belongs_to']['test'] = [
             'class_name' => $config['relationTypes']['Test'],
-            'foreign_key' => 'test_id');
+            'foreign_key' => 'test_id'];
 
-        $config['belongs_to']['task'] = array(
+        $config['belongs_to']['task'] = [
             'class_name' => $config['relationTypes']['Task'],
-            'foreign_key' => 'task_id');
+            'foreign_key' => 'task_id'];
 
         $config['serialized_fields']['options'] = 'JSONArrayObject';
 

@@ -39,12 +39,12 @@ class UserFilterField
     /**
      * The set of valid compare operators.
      */
-    public $validCompareOperators = array();
+    public $validCompareOperators = [];
 
     /**
      * All valid values for this field.
      */
-    public $validValues = array();
+    public $validValues = [];
 
     /**
      * Which of the valid values is currently chosen?
@@ -62,7 +62,7 @@ class UserFilterField
     public $valuesDbNameField = '';
     public $userDataDbTable = '';
     public $userDataDbField = '';
-    public $relations = array();
+    public $relations = [];
 
     // --- OPERATIONS ---
 
@@ -80,10 +80,10 @@ class UserFilterField
      *
      */
     public function __construct($fieldId='') {
-        $this->validCompareOperators = array(
+        $this->validCompareOperators = [
             '=' => _('ist'),
             '!=' => _('ist nicht')
-        );
+        ];
         if ($this->valuesDbNameField) {
             // Get all available values from database.
             $stmt = DBManager::get()->query(
@@ -136,7 +136,7 @@ class UserFilterField
         // Delete condition data.
         $stmt = DBManager::get()->prepare("DELETE FROM `userfilter_fields`
             WHERE `field_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -148,7 +148,7 @@ class UserFilterField
         do {
             $newid = md5(uniqid(get_class($this).microtime(), true));
             $id = DBManager::get()->fetchColumn("SELECT `field_id`
-                FROM `userfilter_fields` WHERE `field_id`=?", array($newid));
+                FROM `userfilter_fields` WHERE `field_id`=?", [$newid]);
         } while ($id);
         return $newid;
     }
@@ -157,7 +157,7 @@ class UserFilterField
      * Reads all available UserFilterField subclasses and loads their definitions.
      */
     public static function getAvailableFilterFields() {
-        $fields = array();
+        $fields = [];
         // Load all PHP class files found in the condition field folder.
         foreach (glob(realpath(dirname(__FILE__).'/userfilter').'/*.class.php') as $file) {
             require_once($file);
@@ -229,18 +229,18 @@ class UserFilterField
      * @return Array All users that are affected by the current condition
      *               field.
      */
-    public function getUsers($restrictions=array()) {
+    public function getUsers($restrictions=[]) {
         $db = DBManager::get();
-        $users = array();
+        $users = [];
         // Standard query getting the values without respecting other values.
         $select = "SELECT DISTINCT `".$this->userDataDbTable."`.`user_id` ";
         $from = "FROM `".$this->userDataDbTable."` ";
         $where = "WHERE `".$this->userDataDbTable."`.`".$this->userDataDbField.
             "`".$this->compareOperator."?";
-        $parameters = array($this->value);
-        $joinedTables = array(
+        $parameters = [$this->value];
+        $joinedTables = [
             $this->userDataDbTable => true
-        );
+        ];
         // Check if there are restrictions given.
         foreach ($restrictions as $otherField => $restriction) {
             // We only take the value into consideration if it represents a valid restriction.
@@ -280,11 +280,11 @@ class UserFilterField
      * @return array The value(s) for this user.
      */
     public function getUserValues($userId, $additional = null) {
-        $result = array();
+        $result = [];
         $query = "SELECT DISTINCT `".$this->userDataDbField."` ".
             "FROM `".$this->userDataDbTable."` ".
             "WHERE `user_id`=?";
-        $parameters = array($userId);
+        $parameters = [$userId];
         // Additional requirements given...
         if (is_array($additional)) {
             foreach ($additional as $a_condition) {
@@ -340,7 +340,7 @@ class UserFilterField
     public function load() {
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `userfilter_fields` WHERE `field_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->conditionId = $data['filter_id'];
             $this->value = $data['value'];
@@ -408,8 +408,8 @@ class UserFilterField
             ON DUPLICATE KEY UPDATE `filter_id`=VALUES(`filter_id`),
             `type`=VALUES(`type`),`value`=VALUES(`value`),
             `compare_op`=VALUES(`compare_op`), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->conditionId, get_class($this),
-            $this->value, $this->compareOperator, time(), time()));
+        $stmt->execute([$this->id, $this->conditionId, get_class($this),
+            $this->value, $this->compareOperator, time(), time()]);
     }
 
     public function __clone()

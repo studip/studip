@@ -56,64 +56,64 @@
 
 
 // Tabelle mvv_modulteil_stgteilabschnitt
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'fachsemester' => array(
-            'planung' => array(
+    ],
+    'fields' => [
+        'fachsemester' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'differenzierung' => array(
-            'planung' => array(
+            ]
+        ],
+        'differenzierung' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];

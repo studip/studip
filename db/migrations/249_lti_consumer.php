@@ -76,13 +76,13 @@ class LtiConsumer extends Migration
         // install config settings
         $stmt = $db->prepare('INSERT INTO config (field, value, type, `range`, mkdate, chdate, description)
                               VALUES (:name, :value, :type, :range, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)');
-        $stmt->execute(array(
+        $stmt->execute([
             'name'        => 'LTI_TOOL_TITLE',
             'description' => 'Voreinstellung für den Titel des Reiters "LTI-Tool" im Kurs.',
             'range'       => 'course',
             'type'        => 'string',
             'value'       => 'LTI-Tool'
-        ));
+        ]);
 
         // migrate data from alija plugin
         $result = $db->query("SHOW TABLES LIKE 'alija_grade'");

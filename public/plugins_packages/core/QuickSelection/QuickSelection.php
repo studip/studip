@@ -25,10 +25,10 @@ class QuickSelection extends StudIPPlugin implements PortalPlugin
         $template = $template_factory->open('list');
         $template->navigation = $this->getFilteredNavigation($names);
 
-        $navigation = new Navigation('', PluginEngine::getLink($this, array(), 'configuration'));
-        $navigation->setImage(Icon::create('edit', 'clickable', ["title" => _('Konfigurieren')]), array('data-dialog'=>'size=auto'));
+        $navigation = new Navigation('', PluginEngine::getLink($this, [], 'configuration'));
+        $navigation->setImage(Icon::create('edit', 'clickable', ["title" => _('Konfigurieren')]), ['data-dialog'=>'size=auto']);
 
-        $template->icons = array($navigation);
+        $template->icons = [$navigation];
 
         return $template;
     }

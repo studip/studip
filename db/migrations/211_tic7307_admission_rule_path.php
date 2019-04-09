@@ -8,10 +8,10 @@ class TIC7307AdmissionRulePath extends Migration
         $stmt = DBManager::get()->prepare("UPDATE `admissionrules` SET `path` = :path WHERE `id` = :id");
 
         foreach (DBManager::get()->fetchAll("SELECT `id`, `ruletype` FROM `admissionrules` ORDER BY `id`") as $rule) {
-            $stmt->execute(array(
+            $stmt->execute([
                 'path' => 'lib/admissionrules/' . strtolower($rule['ruletype']),
                 'id' => $rule['id']
-            ));
+            ]);
         }
 
     }

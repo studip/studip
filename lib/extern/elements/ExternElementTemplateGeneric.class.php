@@ -41,7 +41,7 @@ require_once 'vendor/exTpl/Template.php';
 
 class ExternElementTemplateGeneric extends ExternElement {
 
-    var $attributes = array('template');
+    var $attributes = ['template'];
     var $markers;
     var $new_datafields = FALSE;
 
@@ -64,9 +64,9 @@ class ExternElementTemplateGeneric extends ExternElement {
     *
     */
     function getDefaultConfig () {
-        $config = array(
+        $config = [
             'template' => _("Geben Sie hier das Template ein.")
-        );
+        ];
 
         return $config;
     }
@@ -76,7 +76,7 @@ class ExternElementTemplateGeneric extends ExternElement {
         global $EXTERN_MODULE_TYPES;
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';
@@ -99,7 +99,7 @@ class ExternElementTemplateGeneric extends ExternElement {
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
 
-        $hidden = array($this->getName . '_chdate' => time());
+        $hidden = [$this->getName . '_chdate' => time()];
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName(), $hidden);
         $out = $edit_form->editContent($content_table, $submit);
@@ -111,8 +111,8 @@ class ExternElementTemplateGeneric extends ExternElement {
     function toString ($args = null) {
         $template = $this->config->getValue($this->getName(), 'template');
         $template = preg_replace(
-            array('/###([\w-]+)###/', '/<!--\s+BEGIN\s+([\w-]+)\s+-->/', '/<!--\s+END\s+[\w-]+\s+-->/'),
-            array('{% $1 %}', '{% foreach $1 %}', '{% endforeach %}'), $template);
+            ['/###([\w-]+)###/', '/<!--\s+BEGIN\s+([\w-]+)\s+-->/', '/<!--\s+END\s+[\w-]+\s+-->/'],
+            ['{% $1 %}', '{% foreach $1 %}', '{% endforeach %}'], $template);
         exTpl\Template::setTagMarkers('{%', '%}');
 
         try {

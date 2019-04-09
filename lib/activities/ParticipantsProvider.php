@@ -35,7 +35,7 @@ class ParticipantsProvider implements ActivityProvider
         $type = get_object_type($course_id);
 
         $activity = Activity::create(
-            array(
+            [
                 'provider'     => __CLASS__,
                 'context'      => ($type == 'sem') ? 'course' : 'institute',
                 'context_id'   => $course_id,
@@ -46,7 +46,7 @@ class ParticipantsProvider implements ActivityProvider
                 'object_id'    => $course_id,           // the id of the referenced object
                 'object_type'  => 'participants',       // type of activity object
                 'mkdate'       =>  time(),
-            )
+            ]
         );
 
     }
@@ -60,13 +60,13 @@ class ParticipantsProvider implements ActivityProvider
     {
         $activity->content = htmlReady($activity->content);
 
-        $url = \URLHelper::getUrl("dispatch.php/course/members/index", array('cid' => $activity->context_id));
+        $url = \URLHelper::getUrl("dispatch.php/course/members/index", ['cid' => $activity->context_id]);
 
         $route = \URLHelper::getURL('api.php/course/' . $activity->context_id, NULL, true);
 
-        $activity->object_url = array(
+        $activity->object_url = [
             $url => _('Zur Veranstaltung')
-        );
+        ];
 
         $activity->object_route = $route;
 

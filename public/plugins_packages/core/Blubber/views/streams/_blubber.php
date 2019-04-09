@@ -1,7 +1,7 @@
 <?
 $last_visit = object_get_visit(Context::getId(), "forum");
 BlubberPosting::$course_hashes = ($thread['context_type'] === "course" ? $thread['Seminar_id'] : false);
-$related_users = $thread['context_type'] === "private" ? $thread->getRelatedUsers() : array();
+$related_users = $thread['context_type'] === "private" ? $thread->getRelatedUsers() : [];
 $author = $thread->getUser();
 $author_name = $author->getName();
 $author_url = $author->getURL();
@@ -14,7 +14,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
         <input type="hidden" name="context_type" value="<?= $thread['Seminar_id'] === $thread['user_id'] ? "public" : "course" ?>">
     </div>
     <? if ($thread['context_type'] === "course") : ?>
-        <a href="<?= URLHelper::getLink("plugins.php/blubber/streams/forum", array('cid' => $thread['Seminar_id'])) ?>"
+        <a href="<?= URLHelper::getLink("plugins.php/blubber/streams/forum", ['cid' => $thread['Seminar_id']]) ?>"
             <? $title = get_object_name($thread['Seminar_id'], "sem") ?>
            title="<?= _("Veranstaltung")." ".htmlReady($title['name']) ?>"
            class="contextinfo"
@@ -74,7 +74,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
                             if ($url) {
                                 $sharingcontacts .= '<a href="'.$url.'" title="'.htmlReady($name).'">';
                             }
-                            $sharingcontacts .= $user->getAvatar()->getImageTag(Avatar::SMALL, array('title' => $name));
+                            $sharingcontacts .= $user->getAvatar()->getImageTag(Avatar::SMALL, ['title' => $name]);
                             if ($url) {
                                 $sharingcontacts .= '</a>';
                             }
@@ -103,7 +103,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
     <? endif ?>
     <div class="avatar">
         <? if ($author_url) : ?>
-        <a href="<?= URLHelper::getLink($author_url, array(), true) ?>">
+        <a href="<?= URLHelper::getLink($author_url, [], true) ?>">
             <? endif ?>
             <div style="background-image: url('<?= $author->getAvatar()->getURL(Avatar::MEDIUM)?>');" class="avatar_image"<?= $author->isNew() ? ' title="'._("Nicht registrierter Nutzer").'"' : "" ?>></div>
             <? if ($author_url) : ?>
@@ -112,7 +112,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
     </div>
     <div class="content_column">
         <div class="timer">
-            <a href="<?= URLHelper::getLink('plugins.php/blubber/streams/thread/' . $thread->getId(), array('cid' => $thread['Seminar_id'])) ?>"
+            <a href="<?= URLHelper::getLink('plugins.php/blubber/streams/thread/' . $thread->getId(), ['cid' => $thread['Seminar_id']]) ?>"
                    class="permalink"
                    title="<?= date("j.n.Y H:i", $thread['mkdate']) ?>">
                 <span class="time" data-timestamp="<?= (int) $thread['mkdate'] ?>">
@@ -137,7 +137,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
         </div>
         <div class="name">
             <? if ($author_url) : ?>
-            <a href="<?= URLHelper::getLink($author_url, array(), true) ?>">
+            <a href="<?= URLHelper::getLink($author_url, [], true) ?>">
                 <? endif ?>
                 <?= htmlReady($author_name) ?>
                 <? if ($author_url) : ?>
@@ -149,7 +149,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
         </div>
         <div class="additional_tags"><? foreach ($thread->getTags() as $tag) : ?>
                 <? if (mb_stripos($content, "#".$tag) === false) : ?>
-                    <? $link = $thread['context_type'] === "course" ? URLHelper::getLink("plugins.php/blubber/streams/forum", array('cid' => $thread['Seminar_id'], 'hash' => $tag)) : URLHelper::getLink("plugins.php/blubber/streams/global", array('hash' => $tag)) ?>
+                    <? $link = $thread['context_type'] === "course" ? URLHelper::getLink("plugins.php/blubber/streams/forum", ['cid' => $thread['Seminar_id'], 'hash' => $tag]) : URLHelper::getLink("plugins.php/blubber/streams/global", ['hash' => $tag]) ?>
                     <a href="<?= $link ?>"><?= htmlReady("#".$tag) ?></a>
                 <? endif ?>
             <? endforeach ?></div>
@@ -165,7 +165,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
                 </li>
             <? endif; ?>
             <? foreach (array_slice(array_reverse($postings), -3) as $posting) : ?>
-                <?= $this->render_partial("streams/comment.php", array('posting' => $posting, 'last_visit' => $last_visit)) ?>
+                <?= $this->render_partial("streams/comment.php", ['posting' => $posting, 'last_visit' => $last_visit]) ?>
             <? endforeach ?>
         <? endif;
     ?></ul>
@@ -176,7 +176,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
                 <input type="file"
                        style="display: none;"
                        multiple>
-                <?= Assets::img('ajax-indicator-black.svg', array('class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px")) ?>
+                <?= Assets::img('ajax-indicator-black.svg', ['class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px"]) ?>
                 <?= Icon::create('upload', 'clickable')->asImg(['class' => "text-bottom upload"]) ?>
             </label>
         </div>

@@ -48,24 +48,24 @@ class CoreForum extends StudipPlugin implements ForumModule
     /* interface method */
     public function getTabNavigation($course_id)
     {
-        $navigation = new Navigation(_('Forum'), PluginEngine::getURL($this, array(), 'index'));
+        $navigation = new Navigation(_('Forum'), PluginEngine::getURL($this, [], 'index'));
         $navigation->setImage(Icon::create('forum', 'info_alt'));
 
         // add main third-level navigation-item
-        $navigation->addSubNavigation('index', new Navigation(_('Übersicht'), PluginEngine::getURL($this, array(), 'index')));
+        $navigation->addSubNavigation('index', new Navigation(_('Übersicht'), PluginEngine::getURL($this, [], 'index')));
 
         if (ForumPerm::has('fav_entry', $course_id)) {
-            $navigation->addSubNavigation('newest', new Navigation(_("Neue Beiträge"), PluginEngine::getURL($this, array(), 'index/newest')));
-            $navigation->addSubNavigation('latest', new Navigation(_("Letzte Beiträge"), PluginEngine::getURL($this, array(), 'index/latest')));
-            $navigation->addSubNavigation('favorites', new Navigation(_('Gemerkte Beiträge'), PluginEngine::getURL($this, array(), 'index/favorites')));
+            $navigation->addSubNavigation('newest', new Navigation(_("Neue Beiträge"), PluginEngine::getURL($this, [], 'index/newest')));
+            $navigation->addSubNavigation('latest', new Navigation(_("Letzte Beiträge"), PluginEngine::getURL($this, [], 'index/latest')));
+            $navigation->addSubNavigation('favorites', new Navigation(_('Gemerkte Beiträge'), PluginEngine::getURL($this, [], 'index/favorites')));
 
             // mass-administrate the forum
             if (ForumPerm::has('admin', $course_id)) {
-                $navigation->addSubNavigation('admin', new Navigation(_('Administration'), PluginEngine::getURL($this, array(), 'admin')));
+                $navigation->addSubNavigation('admin', new Navigation(_('Administration'), PluginEngine::getURL($this, [], 'admin')));
             }
         }
 
-        return array('forum2' => $navigation);
+        return ['forum2' => $navigation];
     }
 
     /* interface method */
@@ -79,7 +79,7 @@ class CoreForum extends StudipPlugin implements ForumModule
             $text = 'Forum';
         }
 
-        $navigation = new Navigation('forum', PluginEngine::getURL($this, array(), 'index/enter_seminar'));
+        $navigation = new Navigation('forum', PluginEngine::getURL($this, [], 'index/enter_seminar'));
         $navigation->setBadgeNumber($num_entries);
 
         if ($num_entries > 0) {
@@ -103,7 +103,7 @@ class CoreForum extends StudipPlugin implements ForumModule
         $stmt = DBManager::get()->prepare("UPDATE forum_visits
             SET visitdate = UNIX_TIMESTAMP(), last_visitdate = UNIX_TIMESTAMP()
             WHERE user_id = ?");
-        $stmt->execute(array($user_id));
+        $stmt->execute([$user_id]);
     }
 
     /**
@@ -131,7 +131,7 @@ class CoreForum extends StudipPlugin implements ForumModule
     public function getLinkToThread($issue_id)
     {
         if ($topic_id = ForumIssue::getThreadIdForIssue($issue_id)) {
-            return PluginEngine::getLink($this, array(), '/index/index/' . $topic_id);
+            return PluginEngine::getLink($this, [], '/index/index/' . $topic_id);
         }
 
         return false;
@@ -166,13 +166,13 @@ class CoreForum extends StudipPlugin implements ForumModule
 
     public function getEntryTableInfo()
     {
-        return array(
+        return [
             'table'      => 'forum_entries',
             'content'    => 'content',
             'chdate'     => 'chdate',
             'seminar_id' => 'seminar_id',
             'user_id'    => 'user_id'
-        );
+        ];
     }
 
     public function getTopTenSeminars()

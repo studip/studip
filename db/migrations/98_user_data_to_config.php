@@ -6,13 +6,13 @@ class UserDataToConfig extends Migration
     function __construct()
     {
         parent::__construct();
-        $this->new_configs = array(
-        'calendar_user_control_data' => array('name'=>'CALENDAR_SETTINGS',
+        $this->new_configs = [
+        'calendar_user_control_data' => ['name'=>'CALENDAR_SETTINGS',
                                                'range'=>'user',
                                                'type'=>'array',
                                                'description'=>'persönliche Einstellungen des Kalenders',
                                                'value'=> json_encode(
-                                                   array(
+                                                   [
                                                     "view"             => "showweek",
                                                     "start"            => 9,
                                                     "end"              => 20,
@@ -22,15 +22,15 @@ class UserDataToConfig extends Migration
                                                     "holidays"         => TRUE,
                                                     "sem_data"         => TRUE,
                                                     "delete"           => 0
-                                                    ))
-                                               ),
+                                                    ])
+                                               ],
 
-        'my_messaging_settings' => array('name'=>'MESSAGING_SETTINGS',
+        'my_messaging_settings' => ['name'=>'MESSAGING_SETTINGS',
                                                'range'=>'user',
                                                'type'=>'array',
                                                'description'=>'persönliche Einstellungen Nachrichtenbereich',
                                                'value'=> json_encode(
-                                                   array(
+                                                   [
                                                     "show_only_buddys"             => FALSE,
                                                     "delete_messages_after_logout" => FALSE,
                                                     "timefilter"                   => '30d',
@@ -43,15 +43,15 @@ class UserDataToConfig extends Migration
                                                     "send_view"                    => FALSE,
                                                     "confirm_reading"              => 3,
                                                     "send_as_email"                => FALSE,
-                                                    "folder"                       => array('in' => array ('dummy'), 'out' => array ('dummy'))
-                                                    ))
-                                               ),
-        'forum' => array('name'=>'FORUM_SETTINGS',
+                                                    "folder"                       => ['in' =>  ['dummy'], 'out' =>  ['dummy']]
+                                                    ])
+                                               ],
+        'forum' => ['name'=>'FORUM_SETTINGS',
                                                'range'=>'user',
                                                'type'=>'array',
                                                'description'=>'persönliche Einstellungen Forum',
                                                'value'=> json_encode(
-                                                   array(
+                                                   [
                                                     'neuauf'      => false,
                                                     'rateallopen' => true,
                                                     'showimages'  => true,
@@ -59,58 +59,58 @@ class UserDataToConfig extends Migration
                                                     'themeview'   => 'mixed',
                                                     'presetview'  => 'mixed',
                                                     'shrink'      => 7 * 24 * 60 * 60, // = 1 Woche
-                                                   ))
-                                               ),
+                                                   ])
+                                               ],
 
-        'my_schedule_settings' => array('name'=>'SCHEDULE_SETTINGS',
+        'my_schedule_settings' => ['name'=>'SCHEDULE_SETTINGS',
                                                'range'=>'user',
                                                'type'=>'array',
                                                'description'=>'persönliche Einstellungen Stundenplan',
                                                'value'=> json_encode(
-                                                   array(
+                                                   [
                                                     "glb_start_time"=> 8,
                                                     "glb_end_time"  => 19,
-                                                    "glb_days"      => array ( 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 0 => 0, ),
+                                                    "glb_days"      =>  [ 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 0 => 0, ],
                                                     "glb_sem"       => null,
-                                                    "converted"     => true))
-                                               ),
+                                                    "converted"     => true])
+                                               ],
 
-        'homepage_cache_own' => array('name'=>'PROFILE_LAST_VISIT',
+        'homepage_cache_own' => ['name'=>'PROFILE_LAST_VISIT',
                                        'range'=>'user',
                                        'type'=>'integer',
                                        'description'=>'Zeitstempel des letzten Besuchs der Profilseite',
-                                       'value'=> 0),
-        'CurrentLogin' => array('name'=>'CURRENT_LOGIN_TIMESTAMP',
+                                       'value'=> 0],
+        'CurrentLogin' => ['name'=>'CURRENT_LOGIN_TIMESTAMP',
                                        'range'=>'user',
                                        'type'=>'integer',
                                        'description'=>'Zeitstempel des Logins',
-                                       'value'=> 0),
-        'LastLogin' => array('name'=>'LAST_LOGIN_TIMESTAMP',
+                                       'value'=> 0],
+        'LastLogin' => ['name'=>'LAST_LOGIN_TIMESTAMP',
                                        'range'=>'user',
                                        'type'=>'integer',
                                        'description'=>'Zeitstempel des vorherigen Logins',
-                                       'value'=> 0),
-        'my_studip_settings' => array('name' =>'PERSONAL_STARTPAGE',
+                                       'value'=> 0],
+        'my_studip_settings' => ['name' =>'PERSONAL_STARTPAGE',
                                        'range' => 'user',
                                        'type' => 'integer',
                                        'description' => 'Persönliche Startseite',
-                                       'value'=> 0),
-        '_my_sem_group_field' => array('name' =>'MY_COURSES_GROUPING',
+                                       'value'=> 0],
+        '_my_sem_group_field' => ['name' =>'MY_COURSES_GROUPING',
                                        'range' => 'user',
                                        'type' => 'string',
                                        'description' => 'Gruppierung der Veranstaltungsübersicht',
-                                       'value'=> ''),
-        '_my_sem_open' => array('name' =>'MY_COURSES_OPEN_GROUPS',
+                                       'value'=> ''],
+        '_my_sem_open' => ['name' =>'MY_COURSES_OPEN_GROUPS',
                                        'range' => 'user',
                                        'type' => 'array',
                                        'description' => 'geöffnete Gruppen der Veranstaltungsübersicht',
-                                       'value'=> '[]'),
-        '_my_admin_inst_id' => array('name' =>'MY_INSTITUTES_DEFAULT',
+                                       'value'=> '[]'],
+        '_my_admin_inst_id' => ['name' =>'MY_INSTITUTES_DEFAULT',
                                        'range' => 'user',
                                        'type' => 'string',
                                        'description' => 'Standard Einrichtung in der Veranstaltungsübersicht für Admins',
-                                       'value'=> ''),
-               );
+                                       'value'=> ''],
+               ];
     }
     function description()
     {
@@ -149,32 +149,32 @@ class UserDataToConfig extends Migration
             $user_id = $rs['sid'];
             $vars = @unserialize($rs['val']);
             if (is_array($vars)) {
-                foreach(array('my_messaging_settings','forum','my_schedule_settings','calendar_user_control_data') as $key) {
+                foreach(['my_messaging_settings','forum','my_schedule_settings','calendar_user_control_data'] as $key) {
                     $option = $this->new_configs[$key];
                     $defaults = json_decode($option['value'], true);
                     if (is_array($vars[$key])) {
                         $old_values = array_intersect_key((array)$vars[$key], $defaults);
                         $new_values = array_merge($defaults, $old_values);
-                        $check->execute(array($option['name'], $user_id));
-                        $stmt->execute(array(md5($option['name'].$user_id), $user_id, $option['name'], json_encode($new_values)));
+                        $check->execute([$option['name'], $user_id]);
+                        $stmt->execute([md5($option['name'].$user_id), $user_id, $option['name'], json_encode($new_values)]);
                     }
                 }
-                foreach(array('homepage_cache_own','CurrentLogin','LastLogin','_my_sem_group_field','_my_admin_inst_id') as $key) {
+                foreach(['homepage_cache_own','CurrentLogin','LastLogin','_my_sem_group_field','_my_admin_inst_id'] as $key) {
                     $option = $this->new_configs[$key];
                     if (isset($vars[$key])) {
-                        $check->execute(array($option['name'], $user_id));
-                        $stmt->execute(array(md5($option['name'].$user_id), $user_id, $option['name'], (string)$vars[$key]));
+                        $check->execute([$option['name'], $user_id]);
+                        $stmt->execute([md5($option['name'].$user_id), $user_id, $option['name'], (string)$vars[$key]]);
                     }
                 }
                 if (isset($vars['my_studip_settings']['startpage_redirect'])) {
                     $option = $this->new_configs['my_studip_settings'];
-                    $check->execute(array($option['name'], $user_id));
-                    $stmt->execute(array(md5($option['name'].$user_id), $user_id, $option['name'], (int)$vars['my_studip_settings']['startpage_redirect']));
+                    $check->execute([$option['name'], $user_id]);
+                    $stmt->execute([md5($option['name'].$user_id), $user_id, $option['name'], (int)$vars['my_studip_settings']['startpage_redirect']]);
                 }
                 if (isset($vars['_my_sem_open'])) {
                     $option = $this->new_configs['_my_sem_open'];
-                    $check->execute(array($option['name'], $user_id));
-                    $stmt->execute(array(md5($option['name'].$user_id), $user_id, $option['name'], json_encode($vars['_my_sem_open'])));
+                    $check->execute([$option['name'], $user_id]);
+                    $stmt->execute([md5($option['name'].$user_id), $user_id, $option['name'], json_encode($vars['_my_sem_open'])]);
                 }
             }
         }

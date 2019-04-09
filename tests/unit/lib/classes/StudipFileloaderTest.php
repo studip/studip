@@ -19,11 +19,11 @@ class StudipFileloaderTestCase extends PHPUnit_Framework_TestCase {
 
     function setUp() {
         ArrayFileStream::set_filesystem(
-            array(
-                'pathto' => array(
+            [
+                'pathto' => [
                     'config-1.php' => '<? $CONF = 17; '
                   , 'config-2.php' => '<? $CONF = 17 + $offset; '
-        )));
+        ]]);
 
     if (!stream_wrapper_register("var", "ArrayFileStream")) {
       new Exception("Failed to register protocol");
@@ -36,26 +36,26 @@ class StudipFileloaderTestCase extends PHPUnit_Framework_TestCase {
 
 
   function test_should_inject_vars() {
-      $container = array();
+      $container = [];
       StudipFileloader::load('var://pathto/config-1.php', $container);
-      $this->assertEquals(array('CONF' => 17), $container);
+      $this->assertEquals(['CONF' => 17], $container);
   }
 
   function test_should_inject_vars_twice() {
 
       foreach (range(1,2) as $i) {
-          $container = array();
+          $container = [];
           StudipFileloader::load('var://pathto/config-1.php', $container);
       }
-      $this->assertEquals(array('CONF' => 17), $container);
+      $this->assertEquals(['CONF' => 17], $container);
   }
 
   function test_should_use_optional_bindings()
   {
-      $container = array();
+      $container = [];
       $offset = 25;
       StudipFileloader::load('var://pathto/config-2.php', $container, compact('offset'));
-      $this->assertEquals(array('CONF' => 42), $container);
+      $this->assertEquals(['CONF' => 42], $container);
 
   }
 

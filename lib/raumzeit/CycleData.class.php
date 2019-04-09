@@ -44,13 +44,13 @@ class CycleData
      *
      * @var array
      */
-    private $alias = array(
+    private $alias = [
         'start_stunde' => 'start_hour',
         'end_stunde'   => 'end_hour',
         'day'          => 'weekday',
         'desc'         => 'description',
         'is_visible'   => 'is_visible'
-    );
+    ];
 
     /**
      * this is mostly filtered, see readSingleDates()
@@ -308,7 +308,7 @@ class CycleData
      */
     function readSingleDates($start = 0, $end = 0)
     {
-        $this->termine = array();
+        $this->termine = [];
         $termin_data = CycleDataDB::getTermine($this->metadate_id, $start, $end);
         if ($termin_data) {
             foreach ($termin_data as $val) {

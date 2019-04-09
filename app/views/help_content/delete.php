@@ -13,7 +13,7 @@
     <footer data-dialog-button>
         <?= CSRFProtection::tokenTag() ?>
         <? if ($via_ajax): ?>
-            <?= Button::create(_('Löschen'), 'delete_help_content', array('data-dialog' => '')) ?>
+            <?= Button::create(_('Löschen'), 'delete_help_content', ['data-dialog' => '']) ?>
         <? else: ?>
             <?= Button::create(_('Löschen'), 'delete_help_content') ?>
         <? endif; ?>

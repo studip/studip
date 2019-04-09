@@ -32,7 +32,7 @@ class ExternRangeLectureTree {
 
         $query = "SELECT item_id FROM range_tree WHERE studip_object_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->config->range_id));
+        $statement->execute([$this->config->range_id]);
         $this->root_id = $statement->fetchColumn();
 
         $this->start_item_id = $start_item_id ?: $this->root_id;

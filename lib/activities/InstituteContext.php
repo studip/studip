@@ -31,7 +31,7 @@ class InstituteContext extends Context
         if (!$this->provider) {
             $institute = $this->institute;
 
-            $module_names = array('forum', 'documents', 'wiki', 'literature');
+            $module_names = ['forum', 'documents', 'wiki', 'literature'];
 
             // get list of possible providers by checking the activated plugins and modules for the current institute
             $modules = new \Modules();

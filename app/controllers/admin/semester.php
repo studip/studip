@@ -117,10 +117,10 @@ class Admin_SemesterController extends AuthenticatedController
     {
         $ids = $id === 'bulk'
              ? Request::optionArray('ids')
-             : array($id);
+             : [$id];
 
         if (count($ids)) {
-            $errors  = array();
+            $errors  = [];
             $deleted = 0;
 
             $semesters = Semester::findMany($ids);
@@ -163,7 +163,7 @@ class Admin_SemesterController extends AuthenticatedController
     protected function validateSemester(Semester $semester)
     {
         // Validation, step 1: Check required values
-        $errors = array();
+        $errors = [];
         if (!$this->semester->name) {
             $errors['name'] = _('Sie müssen den Namen des Semesters angeben.');
         }
@@ -196,8 +196,8 @@ class Admin_SemesterController extends AuthenticatedController
         // Validation, step 3: Check overlapping with other semesters
         if (empty($errors)) {
             $all_semester = SimpleCollection::createFromArray(Semester::getAll())->findBy('id', $this->semester->id, '<>');
-            $collisions = $all_semester->findBy('beginn', array($this->semester->beginn, $this->semester->ende), '>=<=');
-            $collisions->merge($all_semester->findBy('ende', array($this->semester->beginn, $this->semester->ende), '>=<='));
+            $collisions = $all_semester->findBy('beginn', [$this->semester->beginn, $this->semester->ende], '>=<=');
+            $collisions->merge($all_semester->findBy('ende', [$this->semester->beginn, $this->semester->ende], '>=<='));
             if ($collisions->count()) {
                 $errors[] = sprintf(_('Der angegebene Zeitraum des Semester überschneidet sich mit einem anderen Semester (%s)'), join(', ', $collisions->pluck('name')));
             }

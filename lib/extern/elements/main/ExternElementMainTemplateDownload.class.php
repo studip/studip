@@ -46,13 +46,13 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'sort',
                 'lengthdesc', 'nameformat',
                 'nodatatext', 'dateformat', 'language', 'iconpic', 'icontxt',
                 'iconpdf', 'iconppt', 'iconxls', 'iconrtf', 'iconzip',
                 'icondefault'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -63,7 +63,7 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
     * 
     */
     function getDefaultConfig () {
-        $config = array(
+        $config = [
             "name" => "",
             "sort" => "|0|0|0|1|0|0",
             "lengthdesc" => "",
@@ -79,7 +79,7 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
             "iconrtf" => "",
             "iconzip" => "",
             "icondefault" => ""
-        );
+        ];
         
         return $config;
     }
@@ -100,7 +100,7 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         
         $headline = $edit_form->editHeadline(_("Name der Konfiguration"));
         $table = $edit_form->editName("name");
@@ -125,22 +125,22 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
         
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table .= $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
         
         $title = _("Datumsformat:");
         $info = _("Wählen Sie, wie Datumsangaben formatiert werden sollen.");
-        $values = array("%d. %b. %Y", "%d.%m.%Y", "%d.%m.%y", "%d. %B %Y", "%m/%d/%y");
-        $names = array(_("25. Nov. 2003"), _("25.11.2003"), _("25.11.03"),
-                _("25. November 2003"), _("11/25/03"));
+        $values = ["%d. %b. %Y", "%d.%m.%Y", "%d.%m.%y", "%d. %B %Y", "%m/%d/%y"];
+        $names = [_("25. Nov. 2003"), _("25.11.2003"), _("25.11.03"),
+                _("25. November 2003"), _("11/25/03")];
         $table .= $edit_form->editOptionGeneric("dateformat", $title, $info, $values, $names);
         
         $title = _("Sprache:");
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
-        $values = array("", "de_DE", "en_GB");
-        $names = array(_("keine Auswahl"), _("Deutsch"), _("Englisch"));
+        $values = ["", "de_DE", "en_GB"];
+        $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
         
         $title = _("Keine Dateien:");
@@ -151,9 +151,9 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
         $content_table .= $edit_form->editBlankContent();
         
         $headline = $edit_form->editHeadline(_("Eigene Icons"));
-        $icon_attributes = array("iconpic", "icontxt", "iconpdf", "iconppt",
-                "iconxls", "iconrtf", "iconzip", "icondefault");
-        $icon_titles = array(
+        $icon_attributes = ["iconpic", "icontxt", "iconpdf", "iconppt",
+                "iconxls", "iconrtf", "iconzip", "icondefault"];
+        $icon_titles = [
                 _("Bilder:"),
                 _("Text:"),
                 _("Adobe pdf:"),
@@ -162,8 +162,8 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
                 _("Rich Text (rtf):"),
                 _("ZIP-Dateien:"),
                 _("sonstige Dateien:")
-        );
-        $icon_infos = array(
+        ];
+        $icon_infos = [
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für Bild-Dateien dienen soll. Erlaubte Formate: jpg, png, gif. "),
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für Text-Dateien dienen soll. Erlaubte Formate: jpg, png, gif. "),
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für PDF-Dateien dienen soll. Erlaubte Formate: jpg, png, gif. "),
@@ -172,7 +172,7 @@ class ExternElementMainTemplateDownload extends ExternElementMain {
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für RTF-Dateien dienen soll. Erlaubte Formate: jpg, png, gif. "),
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für komprimierte Dateien dienen soll. Erlaubte Formate: jpg, png, gif. "),
                 _("Geben Sie die URL eines Bildes ein, dass als Icon für alle anderen Dateiformate dienen soll. ")
-        );
+        ];
         $info_add = _("Wenn Sie keine URL angeben, wird ein Standard-Icon ausgegeben.");
         
         $table = "";

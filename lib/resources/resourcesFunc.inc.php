@@ -115,11 +115,11 @@ function getLockPeriod($type, $timestamp1='', $timestamp2='')
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $arr = array(
+            $arr = [
                 $row['lock_begin'],
                 $row['lock_end'],
                 $row['lock_id']
-            );
+            ];
 
             $cache[$type][$timestamp1 / 60][$timestamp2 / 60] = $arr;
             return $arr;
@@ -160,7 +160,7 @@ function isLockPeriod($type, $timestamp = '')
                   WHERE type = ?
                     AND ? NOT BETWEEN lock_begin AND lock_end";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($type, $timestamp));
+        $statement->execute([$type, $timestamp]);
         $check = (bool)$statement->fetchColumn();
 
         $cache[$type][$timestamp % 60] = $check;
@@ -183,13 +183,13 @@ function changeLockableRecursiv ($resource_id, $state)
               SET lockable = ?
               WHERE resource_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($state, $resource_id));
+    $statement->execute([$state, $resource_id]);
 
     $query = "SELECT resource_id
               FROM resources_objects
               WHERE parent_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($resource_id));
+    $statement->execute([$resource_id]);
     while ($id = $statement->fetchColumn()) {
         changeLockableRecursiv($id, $state);
     }
@@ -226,7 +226,7 @@ function getGlobalPerms($user_id)
                   FROM resources_user_resources
                   WHERE user_id = ? AND resource_id = 'all'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $res_perm = $statement->fetchColumn() ?: 'autor';
     }
 
@@ -250,10 +250,10 @@ function getFormattedResult($result, $mode="bad", $bad_message_text = '', $good_
         $overlaps=FALSE;
         foreach ($result as $key=>$val)
             if ($val["overlap_assigns"] == TRUE) {
-                $overlaps[] = array("resource_id"=>$val["resource_id"], "overlap_assigns"=>$val["overlap_assigns"]);
+                $overlaps[] = ["resource_id"=>$val["resource_id"], "overlap_assigns"=>$val["overlap_assigns"]];
                 foreach ($val["overlap_assigns"] as $val2)
                     if ($val2["lock_id"])
-                        $locks[$val2["lock_id"]] = array ("begin" => $val2["lock_begin"], "end" => $val2["lock_end"]);
+                        $locks[$val2["lock_id"]] =  ["begin" => $val2["lock_begin"], "end" => $val2["lock_end"]];
             }
         if ($locks)
             sort ($locks);
@@ -334,7 +334,7 @@ function getDateAssigenedRoom($date_id)
               WHERE assign_user_id = ?
                 AND resources_categories.is_room = 1";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($date_id));
+    $statement->execute([$date_id]);
     return $statement->fetchColumn() ?: false;
 }
 
@@ -346,7 +346,7 @@ function getResourceObjectName($id)
 {
     $query = "SELECT name FROM resources_objects WHERE resource_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($id));
+    $statement->execute([$id]);
     return $statement->fetchColumn() ?: false;
 }
 
@@ -358,7 +358,7 @@ function getResourceObjectCategory($id)
 {
     $query = "SELECT category_id FROM resources_objects WHERE resource_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($id));
+    $statement->execute([$id]);
     return $statement->fetchColumn() ?: false;
 }
 
@@ -370,7 +370,7 @@ function getMyRoomRequests($user_id = '', $semester_id = null, $only_not_closed 
         $user_id = $user->id;
     }
 
-    $parameters = array();
+    $parameters = [];
 
     if ($only_not_closed) {
         $criteria = ' closed = 0 ';
@@ -401,7 +401,7 @@ function getMyRoomRequests($user_id = '', $semester_id = null, $only_not_closed 
                FROM resources_requests AS rr
                WHERE %s ";
 
-    $queries = array();
+    $queries = [];
     $queries[] = "SELECT request_id
                   FROM resources_requests AS rr
                   INNER JOIN termine t
@@ -420,18 +420,18 @@ function getMyRoomRequests($user_id = '', $semester_id = null, $only_not_closed 
                   INNER JOIN termine AS t ON (t.metadate_id = rr.metadate_id AND t.date > UNIX_TIMESTAMP() {$sem_criteria})
                   WHERE rr.metadate_id <> '' AND %s ";
 
-    $requests = array();
+    $requests = [];
     if ((getGlobalPerms($user_id) == 'admin')) {
         $query = sprintf($query0, $criteria);
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $requests[$row['request_id']] = array(
+            $requests[$row['request_id']] = [
                 'my_sem'      => true,
                 'my_res'      => mb_strlen($row['resource_id']) > 0,
                 'closed'      => $row['closed'],
                 'resource_id' => $row['resource_id'],
-            );
+            ];
         }
 
         foreach ($queries as $q) {
@@ -465,11 +465,11 @@ function getMyRoomRequests($user_id = '', $semester_id = null, $only_not_closed 
             $statement = DBManager::get()->prepare($query);
             $statement->execute($params);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $requests[$row['request_id']] = array(
+                $requests[$row['request_id']] = [
                     'my_res'      => true,
                     'closed'      => $row['closed'],
                     'resource_id' => $row['resource_id'],
-                );
+                ];
             }
 
             foreach ($queries as $q) {
@@ -557,7 +557,7 @@ function checkAvailableResources($id)
     //check if owner
     $query = "SELECT 1 FROM resources_objects WHERE owner_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($id));
+    $statement->execute([$id]);
     if ($statement->fetchColumn()) {
         return true;
     }
@@ -565,7 +565,7 @@ function checkAvailableResources($id)
     //or additional perms avaiable
     $query = "SELECT 1 FROM resources_user_resources WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($id));
+    $statement->execute([$id]);
     if ($statement->fetchColumn()) {
         return true;
     }
@@ -626,7 +626,7 @@ function search_administrable_seminars ($search_string = '', $user_id = '')
 
     if (!$search_string) {
         $search_sql = '1';
-        $parameters = array();
+        $parameters = [];
     } else {
         $search_sql = " Name LIKE CONCAT('%', :needle, '%') OR
                         Untertitel LIKE CONCAT('%', :needle, '%') OR
@@ -664,7 +664,7 @@ function search_administrable_seminars ($search_string = '', $user_id = '')
 
             // Return empty array if no institutes were found
             if (count($institute_ids) == 0) {
-                return array();
+                return [];
             }
 
             //...alle Seminare meiner Institute, in denen ich Admin bin....
@@ -720,10 +720,10 @@ function search_administrable_objects($search_string='', $user_id='', $sem=TRUE)
     }
 
     $user_global_perm = $perm->get_perm($user_id);
-    $my_objects = array();
-    $my_inst_ids = array();
+    $my_objects = [];
+    $my_inst_ids = [];
 
-    $search_sql = array();
+    $search_sql = [];
     if (!$search_string) {
         $caching = true;
         $search_sql['user']     = '1';
@@ -758,17 +758,17 @@ function search_administrable_objects($search_string='', $user_id='', $sem=TRUE)
     }
 
     if (getGlobalPerms($user_id) == 'admin') {
-        $my_objects['global'] = array(
+        $my_objects['global'] = [
             'name'  => _('Global'),
             'perms' => 'admin'
-        );
+        ];
     }
 
-    $my_objects[$user_id] = array(
+    $my_objects[$user_id] = [
         'name'  => 'aktueller Account (' . get_username($user_id) . ')',
         'art'   => _('Personen'),
         'perms' => 'admin'
-    );
+    ];
 
     if ($user_global_perm == 'admin') {
         //Alle meine Institute (Suche)...
@@ -830,8 +830,8 @@ function search_administrable_objects($search_string='', $user_id='', $sem=TRUE)
             }
         }
     } else {
-        $queries = array();
-        $parameters = array();
+        $queries = [];
+        $parameters = [];
         if ($search_string) {
             $parameters[':needle'] = $search_string;
         }
@@ -932,10 +932,10 @@ function search_my_objects ($search_string = '', $user_id = '', $sem = TRUE)
     global $user, $perm;
 
     if ($perm->have_perm('admin')){
-        return array();
+        return [];
     }
 
-    $queries = array();
+    $queries = [];
 
     //Alle meine Seminare
     if ($sem) {
@@ -962,7 +962,7 @@ function search_my_objects ($search_string = '', $user_id = '', $sem = TRUE)
                          Institute.Institut_id = :needle)
                   ORDER BY Name";
 
-    $my_objects = array();
+    $my_objects = [];
     foreach ($queries as $query) {
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':needle', $search_string ?: '_');
@@ -1008,7 +1008,7 @@ search_objects searches in all objects
 function search_objects($search_string = '', $user_id = '', $sem = TRUE)
 {
     global $_fullname_sql;
-    $queries = array();
+    $queries = [];
 
     //Alle Personen...
     $type = _('Personen');
@@ -1044,7 +1044,7 @@ function search_objects($search_string = '', $user_id = '', $sem = TRUE)
                      OR Institut_id = :needle
                   ORDER BY Name";
 
-    $result = array();
+    $result = [];
     foreach ($queries as $query) {
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':needle', $search_string);
@@ -1081,13 +1081,13 @@ function showSearchForm($name, $search_string='', $user_only=FALSE, $administrab
         }
 
         // We need the results grouped by 'art'
-        $temp = $my_objects ?: array();
-        $results = array();
+        $temp = $my_objects ?: [];
+        $results = [];
 
         foreach ($temp as $key => $val) {
             $art = $val['art'] ?: $val['name'];
             if (!isset($results[$art])) {
-                $results[$art] = array();
+                $results[$art] = [];
             }
             $results[$art][$key] = $val;
         }

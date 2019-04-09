@@ -75,10 +75,10 @@ class Ilias4ContentModule extends Ilias3ContentModule
             return false;
         }
         $local_roles = $connected_cms[$this->cms_type]->soap_client->getLocalRoles($crs_id);
-        $member_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ));
-        $admin_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE, OPERATION_DELETE));
-        $admin_operations_no_delete = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE));
-        $admin_operations_readonly = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_DELETE));
+        $member_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ]);
+        $admin_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE, OPERATION_DELETE]);
+        $admin_operations_no_delete = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE]);
+        $admin_operations_readonly = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ, OPERATION_DELETE]);
         foreach ($local_roles as $key => $role_data) {
             // check only if local role is il_crs_member, -tutor or -admin
             if (mb_strpos($role_data["title"], "il_crs_") === 0) {

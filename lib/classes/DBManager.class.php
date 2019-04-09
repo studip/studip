@@ -76,7 +76,7 @@ class DBManager
      */
     private function __construct()
     {
-        $this->connections = array();
+        $this->connections = [];
     }
 
 

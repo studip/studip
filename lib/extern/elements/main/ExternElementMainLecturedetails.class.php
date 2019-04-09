@@ -44,12 +44,12 @@ class ExternElementMainLecturedetails extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'genericdatafields', 'order', 'visible', 'aliases',
                 'aliaspredisc', 'aliasfirstmeeting', 'headlinerow', 'rangepathlevel',
                 'studipinfo',   'studiplink', 'studiplinktarget', 'wholesite',
                 'nameformat', 'urlcss', 'title', 'language', 'copyright', 'author'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -59,7 +59,7 @@ class ExternElementMainLecturedetails extends ExternElementMain {
     *
     */
     function getDefaultConfig () {
-        $config = array(
+        $config = [
             "name" => "",
             "order" => "|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15",
             "visible" => "|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1|1",
@@ -83,7 +83,7 @@ class ExternElementMainLecturedetails extends ExternElementMain {
             "copyright" => htmlReady(Config::get()->UNI_NAME_CLEAN
                     . " ({$GLOBALS['UNI_CONTACT']})"),
             "author" => ""
-        );
+        ];
 
         get_default_generic_datafields($config, "sem");
 
@@ -107,7 +107,7 @@ class ExternElementMainLecturedetails extends ExternElementMain {
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
 
         $headline = $edit_form->editHeadline(_("Name der Konfiguration"));
         $table = $edit_form->editName("name");
@@ -118,7 +118,7 @@ class ExternElementMainLecturedetails extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Allgemeine Angaben zum Tabellenaufbau"));
 
-        $table = $edit_form->editMainSettings($this->field_names, "", array("sort", "width", "widthpp"));
+        $table = $edit_form->editMainSettings($this->field_names, "", ["sort", "width", "widthpp"]);
 
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
@@ -146,8 +146,8 @@ class ExternElementMainLecturedetails extends ExternElementMain {
 
         $title = _("Bereichspfad ab Ebene:");
         $info = _("Wählen Sie, ab welcher Ebene der Bereichspfad ausgegeben werden soll.");
-        $values = array("1", "2", "3", "4", "5");
-        $names = array("1", "2", "3", "4", "5");
+        $values = ["1", "2", "3", "4", "5"];
+        $names = ["1", "2", "3", "4", "5"];
         $table .= $edit_form->editOptionGeneric("rangepathlevel", $title, $info, $values, $names);
 
         $title = _("Stud.IP-Info:");
@@ -158,14 +158,14 @@ class ExternElementMainLecturedetails extends ExternElementMain {
 
         $title = _("Stud.IP-Link:");
         $info = _("Ausgabe eines Links, der direkt zum Stud.IP-Administrationsbereich verweist.");
-        $value = array("top", "bottom", "0");
-        $names = array(_("oberhalb"), _("unterhalb der Tabelle"), _("ausblenden"));
+        $value = ["top", "bottom", "0"];
+        $names = [_("oberhalb"), _("unterhalb der Tabelle"), _("ausblenden")];
         $table .= $edit_form->editRadioGeneric("studiplink", $title, $info, $value, $names);
 
         $title = _("Stud.IP-Link-Ziel:");
         $info = _("Ziel des Stud.IP-Links. Entweder direkter Einsprung zur Anmeldeseite oder in den Administrationsbereich (nur für berechtigte Nutzer) der Veranstaltung");
-        $value = array("signin", "admin");
-        $names = array(_("Anmeldung"), _("Administrationsbereich"));
+        $value = ["signin", "admin"];
+        $names = [_("Anmeldung"), _("Administrationsbereich")];
         $table .= $edit_form->editRadioGeneric("studiplinktarget", $title, $info, $value, $names);
 
         $title = _("HTML-Header/Footer:");
@@ -176,15 +176,15 @@ class ExternElementMainLecturedetails extends ExternElementMain {
 
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table .= $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
         $title = _("Sprache:");
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
-        $values = array("", "de_DE", "en_GB");
-        $names = array(_("keine Auswahl"), _("Deutsch"), _("Englisch"));
+        $values = ["", "de_DE", "en_GB"];
+        $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
 
         $title = _("Stylesheet-Datei:");

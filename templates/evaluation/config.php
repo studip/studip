@@ -3,18 +3,18 @@
 
 use Studip\Button, Studip\LinkButton, Studip\ResetButton;
 
-$options = array(
+$options = [
      'show_total_stats'            => _('Zeige Gesamtstatistik an'),
      'show_graphics'               => _('Zeige Grafiken an'),
      'show_questions'              => _('Zeige Fragen an'),
      'show_group_headline'         => _('Zeige Gruppenüberschriften an'),
      'show_questionblock_headline' => _('Zeige Fragenblocküberschriften an'),
-);
+];
 
-$graphtypes = array(
-    'polscale_gfx_type' => array(
+$graphtypes = [
+    'polscale_gfx_type' => [
         'title'   => _('Grafiktyp für Polskalen'),
-        'options' => array(
+        'options' => [
             'bars'        => _('Balken'),
             'pie'         => _('Tortenstücke'),
             'lines'       => _('Linien'),
@@ -22,11 +22,11 @@ $graphtypes = array(
             'area'        => _('Bereich'),
             'points'      => _('Punkte'),
             'thinbarline' => _('Linienbalken'),
-        ),
-    ),
-    'likertscale_gfx_type' => array(
+        ],
+    ],
+    'likertscale_gfx_type' => [
         'title'   => _('Grafiktyp für Likertskalen'),
-        'options' => array(
+        'options' => [
             'bars'        => _('Balken'),
             'pie'         => _('Tortenstücke'),
             'lines'       => _('Linien'),
@@ -34,17 +34,17 @@ $graphtypes = array(
             'area'        => _('Bereich'),
             'points'      => _('Punkte'),
             'thinbarline' => _('Linienbalken'),
-        ),
-    ),
-    'mchoice_scale_gfx_type' => array(
+        ],
+    ],
+    'mchoice_scale_gfx_type' => [
         'title'   => _('Grafiktyp für Multiplechoice'),
-        'options' => array(
+        'options' => [
             'bars'        => _('Balken'),
             'points'      => _('Punkte'),
             'thinbarline' => _('Linienbalken'),
-        ),
-    ),
-);
+        ],
+    ],
+];
 ?>
 
 <form class="default" action="<?= URLHelper::getLink() ?>" method="post">

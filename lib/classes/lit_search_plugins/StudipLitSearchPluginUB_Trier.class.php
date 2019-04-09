@@ -33,16 +33,16 @@ class StudipLitSearchPluginUB_Trier extends StudipLitSearchPluginZ3950Abstract_A
         $this->description = "Universitätsbibliothek Trier";
         //$this->z_host = "tcp:ub-a18t.uni-trier.de:9991/TRI01";
         $this->z_host = "tcp:ub-a18.uni-trier.de:9991/TRI01";
-        $this->z_options = array('user' => 'z39studip', 'password' => 'ubtstudip');
+        $this->z_options = ['user' => 'z39studip', 'password' => 'ubtstudip'];
         $this->z_syntax = "USMARC";
         $this->convert_umlaute = true;
         $this->z_sort = '1=30 > 1=1 < 1=4 <';
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"),
                                     '4' => _("Titelstichwörter [TIT]"),
                                  '1004' => _("Person, Author [PER]"),
                                     '3' => _("Körperschaft [KOR]"),
                                    '46' => _("Schlagwörter [SLW]"),
-                                    '7' => _("ISBN [ISB]"));
+                                    '7' => _("ISBN [ISB]")];
     }
 }
 ?>

@@ -1,4 +1,4 @@
-<form action="<?= URLHelper::getLink($url, array(), true) ?>" method="<?= $method?>" class="selector-widget">
+<form action="<?= URLHelper::getLink($url, [], true) ?>" method="<?= $method?>" class="selector-widget">
     <?= ($method == 'post' ? CSRFProtection::tokenTag() : '') ?>
     <select name="<?=htmlReady($name)?>" class="sidebar-selectlist submit-upon-select text-top" size="<?= (int) $size ?: 8 ?>" aria-label="<?= _("Wählen Sie ein Objekt aus. Sie gelangen dann zur neuen Seite.") ?>">
     <? foreach ($elements as $element): ?>

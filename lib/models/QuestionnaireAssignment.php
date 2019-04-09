@@ -2,21 +2,21 @@
 
 class QuestionnaireAssignment extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'questionnaire_assignments';
-        $config['belongs_to']['questionnaire'] = array(
+        $config['belongs_to']['questionnaire'] = [
             'class_name'        => 'Questionnaire',
             'foreign_key'       => 'questionnaire_id',
             'assoc_foreign_key' => 'questionnaire_id',
-        );
+        ];
 
         parent::configure($config);
     }
 
     public static function findBySeminarAndQuestionnaire($seminar_id, $questionnaire_id)
     {
-        return self::findOneBySQL("questionnaire_id = ? AND range_id = ? AND range_type = 'course'", array($questionnaire_id, $seminar_id));
+        return self::findOneBySQL("questionnaire_id = ? AND range_id = ? AND range_type = 'course'", [$questionnaire_id, $seminar_id]);
     }
 
     /**

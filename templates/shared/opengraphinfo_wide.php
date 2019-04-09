@@ -18,12 +18,12 @@ if (Config::get()->LOAD_EXTERNAL_MEDIA === "proxy" && Seminar_Session::is_curren
 ?>
 <div class="opengraph <? if (count($videofiles) > 0) echo 'video'; ?> <? if (count($audiofiles) > 0) echo 'audio'; ?>">
 <? if ($og['image'] && count($videofiles) === 0): ?>
-    <a href="<?= URLHelper::getLink($og['url'], array(), false) ?>" class="image"
+    <a href="<?= URLHelper::getLink($og['url'], [], false) ?>" class="image"
        target="_blank" rel="noopener noreferrer"
        style="background-image:url(<?= htmlReady($media_url_func($og['image'])) ?>)">
     </a>
 <? endif; ?>
-    <a href="<?= URLHelper::getLink($og['url'], array(), false) ?>" class="info"
+    <a href="<?= URLHelper::getLink($og['url'], [], false) ?>" class="info"
        target="_blank" rel="noopener noreferrer">
         <strong><?= htmlReady($og['title']) ?></strong>
     <? if (!count($videofiles)) : ?>
@@ -32,7 +32,7 @@ if (Config::get()->LOAD_EXTERNAL_MEDIA === "proxy" && Seminar_Session::is_curren
     </a>
 <? if (count($videofiles)) : ?>
     <div class="video">
-    <? if (in_array($videofiles[0][1], array("text/html", "application/x-shockwave-flash"))) : ?>
+    <? if (in_array($videofiles[0][1], ["text/html", "application/x-shockwave-flash"])) : ?>
         <a href="<?= htmlReady($videofiles[0][0]) ?>"
            class="flash-embedder"
            style="background-image: url('<?= htmlReady($media_url_func($og['image'])) ?>');"
@@ -50,7 +50,7 @@ if (Config::get()->LOAD_EXTERNAL_MEDIA === "proxy" && Seminar_Session::is_curren
 <? endif ?>
 <? if (count($audiofiles)) : ?>
     <div class="audio">
-    <? if (in_array($audiofiles[0][1], array("text/html", "application/x-shockwave-flash"))) : ?>
+    <? if (in_array($audiofiles[0][1], ["text/html", "application/x-shockwave-flash"])) : ?>
         <a href="<?= htmlReady($audiofiles[0][0]) ?>"
            class="flash-embedder"
            style="background-image: url('<?= htmlReady($media_url_func($og['image'])) ?>');"

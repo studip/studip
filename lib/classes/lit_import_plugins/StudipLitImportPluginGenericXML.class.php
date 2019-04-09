@@ -60,10 +60,10 @@ class StudipLitImportPluginGenericXML extends StudipLitImportPluginAbstract {
             $records = $domTree->getElementsByTagName("eintrag");
             if (count($records)==0) $records = $domTree->getElementsByTagName("EINTRAG");
 
-            $fields_arr = array();
+            $fields_arr = [];
 
             foreach ($records as $record) {
-                $fields = array();
+                $fields = [];
                 $fields["catalog_id"] = "new_entry";
                 $fields["user_id"] = $auth->auth["uid"];
                 $dates = "";

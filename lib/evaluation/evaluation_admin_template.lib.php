@@ -362,7 +362,7 @@ class EvalTemplateGUI {
      $tdA = new HTM( "td" );
 
      $form = new HTM( "form" );
-     $form->attr( "action", URLHelper::getLink('', array('page' => 'edit', 'evalID' => $evalID, 'itemID' => $itemID) ));
+     $form->attr( "action", URLHelper::getLink('', ['page' => 'edit', 'evalID' => $evalID, 'itemID' => $itemID] ));
 
     $form->attr( "method", "post" );
     $form->html(CSRFProtection::tokenTag());
@@ -998,9 +998,9 @@ class EvalTemplateGUI {
    *                                                            'correct' => NO
    */
   function makeNewAnswer( ) {
-      return array( 'answer_id' => md5(uniqid(rand())),
+      return [ 'answer_id' => md5(uniqid(rand())),
           'text'      => rand()
-          );
+          ];
   }
 
 

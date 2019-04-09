@@ -24,21 +24,21 @@ class OpenPersonalFileAreas extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':id' => md5(uniqid('PERSONALDOCUMENT_OPEN_ACCESS')),
             ':field' => 'PERSONALDOCUMENT_OPEN_ACCESS',
             ':value' => (int) false,
             ':type' => 'boolean',
             ':description' => 'Schaltet die persönlichen Dateibereiche zur Einsicht für alle Nutzer frei',
-        ));
+        ]);
 
-        $statement->execute(array(
+        $statement->execute([
             ':id' => md5(uniqid('PERSONALDOCUMENT_OPEN_ACCESS_ROOT_PRIVILEDGED')),
             ':field' => 'PERSONALDOCUMENT_OPEN_ACCESS_ROOT_PRIVILEDGED',
             ':value' => (int) true,
             ':type' => 'boolean',
             ':description' => 'Erlaubt Root-Accounts das Verändern von persönlichen Dateibereiche im Namen fremder Nutzer',
-        ));
+        ]);
     }
 
     public function down()

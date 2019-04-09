@@ -6,7 +6,7 @@
             ?>
         </td>
         <td style="text-align: left">
-            <a href="<?= URLHelper::getLink('seminar_main.php', array('auswahl' => $group['seminar_id'])) ?>"
+            <a href="<?= URLHelper::getLink('seminar_main.php', ['auswahl' => $group['seminar_id']]) ?>"
                 <?= $group['lastvisitdate'] >= $group['chdate'] ? 'style="color: red;"' : '' ?>>
                 <?= htmlReady($group['name']) ?>
             </a>
@@ -28,31 +28,31 @@
                     <? if (isset($nav) && $nav->isVisible(true)) : ?>
                         <a href="<?=
                         UrlHelper::getLink('seminar_main.php',
-                            array('auswahl'     => $group['seminar_id'],
-                                  'redirect_to' => strtr($nav->getURL(), '?', '&'))) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
+                            ['auswahl'     => $group['seminar_id'],
+                                  'redirect_to' => strtr($nav->getURL(), '?', '&')]) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
                             <?= $nav->getImage()->asImg(20, $nav->getLinkAttributes()) ?>
                         </a>
                     <? elseif (is_string($key)) : ?>
-                        <?= Assets::img('blank.gif', array('width' => 20, 'height' => 20)); ?>
+                        <?= Assets::img('blank.gif', ['width' => 20, 'height' => 20]); ?>
                     <? endif ?>
                     <? echo ' ' ?>
                 <? endforeach ?>
             <? endif ?>
         </td>
         <td style="text-align: right">
-            <? if (in_array($group["user_status"], array("dozent", "tutor"))) : ?>
+            <? if (in_array($group["user_status"], ["dozent", "tutor"])) : ?>
                 <? $adminmodule = $group["sem_class"]->getModule("admin"); ?>
                 <? if ($adminmodule) : ?>
                     <? $adminnavigation = $adminmodule->getIconNavigation($group['seminar_id'], 0, $GLOBALS['user']->id); ?>
                 <? endif ?>
                 <? if ($adminnavigation) : ?>
-                    <a href="<?= URLHelper::getLink($adminnavigation->getURL(), array('cid' => $group['seminar_id'])) ?>">
+                    <a href="<?= URLHelper::getLink($adminnavigation->getURL(), ['cid' => $group['seminar_id']]) ?>">
                         <?= $adminnavigation->getImage()->asImg(20, $adminnavigation->getLinkAttributes())?>
                     </a>
                 <? endif ?>
 
             <? elseif ($group["binding"]) : ?>
-                <a href="<?= URLHelper::getLink('', array('auswahl' => $group['seminar_id'], 'cmd' => 'no_kill')) ?>">
+                <a href="<?= URLHelper::getLink('', ['auswahl' => $group['seminar_id'], 'cmd' => 'no_kill']) ?>">
                     <?= Icon::create('door-leave+decline', 'inactive', ['title' => _("Die Teilnahme ist bindend. Bitte wenden Sie sich an die Lehrenden.")])->asImg(20) ?>
                 </a>
             <?

@@ -328,7 +328,7 @@ class ExternConfig
     {
         $stmt = DBManager::get()->prepare("UPDATE extern_config SET chdate = ?
             WHERE config_id = ? AND range_id = ?");
-        return $stmt->execute(array(time(), $this->id, $this->range_id));
+        return $stmt->execute([time(), $this->id, $this->range_id]);
     }
 
     public function insertConfiguration ()
@@ -336,7 +336,7 @@ class ExternConfig
         $this->permCheck();
         $query = "SELECT COUNT(config_id) AS count FROM extern_config WHERE ";
         $query .= "range_id = ? AND config_type = ?";
-        $parameters = array($this->range_id, $this->module_type);
+        $parameters = [$this->range_id, $this->module_type];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -351,14 +351,14 @@ class ExternConfig
     {
         $query = "SELECT config_id FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ?";
-        $parameters = array($this->id ,$this->range_id);
+        $parameters = [$this->id ,$this->range_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetchColumn();
         if ($row !== false) {
             $query = "DELETE FROM extern_config WHERE config_id = ? ";
             $query .= "AND range_id = ?";
-            $parameters = array($this->id ,$this->range_id);
+            $parameters = [$this->id ,$this->range_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             return true;
@@ -416,16 +416,16 @@ class ExternConfig
     {
         $query = "SELECT * FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ? ";
-        $parameters = array($config_id, $range_id);
+        $parameters = [$config_id, $range_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
         if ($row) {
             $module_name = $GLOBALS['EXTERN_MODULE_TYPES'][$row['config_type']]['module'];
             if ($module_name) {
-                $config = array('name' => $row['name'], 'module_name' => $module_name,
+                $config = ['name' => $row['name'], 'module_name' => $module_name,
                         'id' => $row['config_id'], 'is_default' => $row['is_standard'],
-                        'type' => $row['config_type']);
+                        'type' => $row['config_type']];
             }
         } else {
             return FALSE;
@@ -440,7 +440,7 @@ class ExternConfig
                   FROM extern_config
                   WHERE config_id = ? AND range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($config_id, $range_id));
+        $statement->execute([$config_id, $range_id]);
         return $statement->fetchColumn() > 0;
     }
 
@@ -448,7 +448,7 @@ class ExternConfig
     {
         $query = "SELECT config_type, is_standard FROM extern_config WHERE config_id = ? ";
         $query .= "AND range_id = ? ";
-        $parameters = array($config_id, $range_id);
+        $parameters = [$config_id, $range_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -457,7 +457,7 @@ class ExternConfig
                 $query = "SELECT config_id FROM extern_config WHERE range_id = ? ";
                 $query .= "AND is_standard=1 AND config_type=" . $row['config_type'];
 
-                $params = array($range_id);
+                $params = [$range_id];
                 $state = DBManager::get()->prepare($query);
                 $state->execute($params);
                 $res = $state->fetch(PDO::FETCH_ASSOC);
@@ -473,7 +473,7 @@ class ExternConfig
                 }
             } else {
                 $query = "UPDATE extern_config SET is_standard=0 WHERE config_id = ? ";
-                $params = array($config_id);
+                $params = [$config_id];
                 $state = DBManager::get()->prepare($query);
                 $state->execute($params);
                 if ($state->rowCount() != 1) {
@@ -484,7 +484,7 @@ class ExternConfig
             }
 
             $query = "UPDATE extern_config SET is_standard=1 WHERE config_id = ? ";
-            $params = array($config_id);
+            $params = [$config_id];
             $state = DBManager::get()->prepare($query);
             $state->execute($params);
             if ($state->rowCount() != 1) {
@@ -500,7 +500,7 @@ class ExternConfig
     public static function DeleteAllConfigurations ($range_id)
     {
         $query = "SELECT config_id FROM extern_config WHERE range_id = ?";
-        $params = array($range_id);
+        $params = [$range_id];
         $state = DBManager::get()->prepare($query);
         $state->execute($params);
         $i = 0;
@@ -519,7 +519,7 @@ class ExternConfig
     {
         $query = "SELECT * FROM extern_config WHERE config_id = ? ";
         $query .= " AND range_id = ? ";
-        $params = array($config_id, $range_id);
+        $params = [$config_id, $range_id];
         $state = DBManager::get()->prepare($query);
         $state->execute($params);
         $res = $state->fetch(PDO::FETCH_ASSOC);
@@ -561,16 +561,16 @@ class ExternConfig
                     $link_br .= "&config_id=$config_id<br>&range_id=$range_id";
                 }
 
-                $info = array("module_type" => $module_type, "module_name" => $module,
+                $info = ["module_type" => $module_type, "module_name" => $module,
                     "name" => $res['name'], "make_date" => $make,
                     "change_date" => $change, "link" => $link, "link_stucture" => $link_structure,
                     "sri" => $sri, "sri_structure" => $sri_structure, "link_sri" => $link_sri,
-                    "level" => $level, "link_br" => $link_br);
+                    "level" => $level, "link_br" => $link_br];
             } else {
-                $info = array("module_type" => $module_type, "module_name" => $module_name,
+                $info = ["module_type" => $module_type, "module_name" => $module_name,
                     "name" =>$res['name'], "make_date" => $make,
                     "change_date" => $change,   "sri" => $sri, "link_sri" => $link_sri,
-                    "level" => $level);
+                    "level" => $level];
             }
 
             return $info;
@@ -595,7 +595,7 @@ class ExternConfig
                   FROM extern_config
                   WHERE range_id = ? AND config_type = ? AND name = ? ";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id, $module_type, $new_name));
+        $statement->execute([$range_id, $module_type, $new_name]);
         if ($statement->fetchColumn()) {
             return false;
         }

@@ -18,22 +18,22 @@ class Tic4520SemTreeDisplay extends Migration {
     }
 
     function up() {
-        Config::get()->create('COURSE_SEM_TREE_DISPLAY', array(
+        Config::get()->create('COURSE_SEM_TREE_DISPLAY', [
             'value' => 0,
             'is_default' => 0,
             'type' => 'boolean',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Zeigt den Studienbereichsbaum als Baum an')
-        ));
-        Config::get()->create('COURSE_SEM_TREE_CLOSED_LEVELS', array(
+        ]);
+        Config::get()->create('COURSE_SEM_TREE_CLOSED_LEVELS', [
             'value' => '[1]',
             'is_default' => '[1]',
             'type' => 'array',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Gibt an, welche Ebenen der Studienbereichszuordnung geschlossen bleiben sollen')
-        ));
+        ]);
     }
     
     function down() {

@@ -31,7 +31,7 @@
                 <?= _('Es wurden noch keine Ferien angelegt.') ?><br>
                 <?= Studip\LinkButton::create(_('Neue Ferien anlegen'),
                                               $controller->url_for('admin/holidays/edit'),
-                                              array('data-dialog' => 'size=auto')) ?>
+                                              ['data-dialog' => 'size=auto']) ?>
             <? endif; ?>
             </td>
         </tr>

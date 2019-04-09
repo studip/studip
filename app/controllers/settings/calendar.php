@@ -57,7 +57,7 @@ class Settings_CalendarController extends Settings_SettingsController
     {
         $this->check_ticket();
 
-        $this->config->store('CALENDAR_SETTINGS', array(
+        $this->config->store('CALENDAR_SETTINGS', [
             'view'            => Request::option('cal_view'),
             'start'           => Request::option('cal_start'),
             'end'             => Request::option('cal_end'),
@@ -69,7 +69,7 @@ class Settings_CalendarController extends Settings_SettingsController
             'delete'          => Request::option('cal_delete'),
             'step_week_group' => Request::option('cal_step_week_group'),
             'step_day_group'  => Request::option('cal_step_day_group')
-        ));
+        ]);
 
         PageLayout::postSuccess(_('Ihre Einstellungen wurden gespeichert'));
         $this->redirect('settings/calendar');

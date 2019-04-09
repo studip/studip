@@ -50,8 +50,8 @@ class StartNavigation extends Navigation
                 AND (
                     questionnaires.stopdate IS NULL OR questionnaires.stopdate > UNIX_TIMESTAMP() )
                 ");
-                $statement->execute(array('threshold' => $threshold,
-                    ':user_id' => $GLOBALS['user']->id));
+                $statement->execute(['threshold' => $threshold,
+                    ':user_id' => $GLOBALS['user']->id]);
                 $vote = (int) $statement->fetchColumn();
                 $query = "SELECT COUNT(IF(chdate > IFNULL(b.visitdate, :threshold) AND d.author_id != :user_id, a.eval_id, NULL))
                           FROM eval_range a
@@ -174,7 +174,7 @@ class StartNavigation extends Navigation
 
             if (Config::get()->RESOURCES_ENABLE) {
                 $navigation = new Navigation(_('Verwaltung von Ressourcen'));
-                $navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', array('view' => 'resources')));
+                $navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', ['view' => 'resources']));
                 if ($perm->have_perm('admin') && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
                     if (getGlobalPerms($GLOBALS['user']->id) !== 'admin') {
                         $resList = new ResourcesUserRoomsList($GLOBALS['user']->id, false, false);
@@ -183,11 +183,11 @@ class StartNavigation extends Navigation
                         $show_roomplanning = true;
                     }
                     if ($show_roomplanning) {
-                        $navigation->addSubNavigation('start_planning', new Navigation(_('Raumplanung'), 'resources.php?cancel_edit_request_x=1', array('view' => 'requests_start')));
+                        $navigation->addSubNavigation('start_planning', new Navigation(_('Raumplanung'), 'resources.php?cancel_edit_request_x=1', ['view' => 'requests_start']));
                     }
                 }
                 if (getGlobalPerms($GLOBALS['user']->id) == 'admin') {
-                    $navigation->addSubNavigation('edit_types', new Navigation(_('Anpassen'), 'resources.php', array('view' => 'edit_types')));
+                    $navigation->addSubNavigation('edit_types', new Navigation(_('Anpassen'), 'resources.php', ['view' => 'edit_types']));
                 }
                 $this->addSubNavigation('ressources', $navigation);
 
@@ -251,12 +251,12 @@ class StartNavigation extends Navigation
 
         if (Config::get()->VOTE_ENABLE) {
             $navigation->addSubNavigation('vote', new Navigation(_('Umfragen und Tests'), 'dispatch.php/questionnaire/overview'));
-            $navigation->addSubNavigation('evaluation',new Navigation(_('Evaluationen'), 'admin_evaluation.php', array('rangeID' => $username)));
+            $navigation->addSubNavigation('evaluation',new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $username]));
         }
 
         // literature
         if (Config::get()->LITERATURE_ENABLE) {
-            $navigation->addSubNavigation('literature', new Navigation(_('Literatur'), 'dispatch.php/literature/edit_list.php', array('_range_id' => 'self')));
+            $navigation->addSubNavigation('literature', new Navigation(_('Literatur'), 'dispatch.php/literature/edit_list.php', ['_range_id' => 'self']));
         }
 
         // elearning

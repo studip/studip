@@ -34,7 +34,7 @@
 
 require '../lib/bootstrap.php';
 
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 
 $perm->check('user');
 
@@ -64,11 +64,11 @@ $tmp_path_export = $GLOBALS['TMP_PATH'];
 export_tmp_gc();
 
 // Template vorhanden?
-$eval_templates = array();
+$eval_templates = [];
 $has_template   = 0;
 
-$pattern = array("'<img[\s]+[^>]*?src[\s]?=[\s\"\']+(.*?)[\"\']+.*?>'si");
-$replace = array("<fo:external-graphic src=\"url(\\1)\"/>");
+$pattern = ["'<img[\s]+[^>]*?src[\s]?=[\s\"\']+(.*?)[\"\']+.*?>'si"];
+$replace = ["<fo:external-graphic src=\"url(\\1)\"/>"];
 
 
 function do_template($column)
@@ -123,9 +123,9 @@ function do_graph($data, $evalquestion_id)
 
     if ($type == "pie") {
         // Beim pie muss das Array umgeformt werden. Bug in PHPlot?
-        $tmp = array();
-        $tmp2 = array();
-        $legend = array();
+        $tmp = [];
+        $tmp2 = [];
+        $legend = [];
         array_push($tmp,"Test");
         foreach($data as $k=>$d) {
             array_push($tmp, $d[1]);
@@ -138,9 +138,9 @@ function do_graph($data, $evalquestion_id)
 
     //Data Colors
     $graph->SetDataColors(
-        array("blue", "green", "yellow", "red", "PeachPuff", "orange", "pink", "lavender",
-            "navy", "peru", "salmon", "maroon", "magenta", "orchid", "ivory"),
-        array("black") //Border Colors
+        ["blue", "green", "yellow", "red", "PeachPuff", "orange", "pink", "lavender",
+            "navy", "peru", "salmon", "maroon", "magenta", "orchid", "ivory"],
+        ["black"] //Border Colors
     );
 
     if(!empty($data)) {
@@ -148,7 +148,7 @@ function do_graph($data, $evalquestion_id)
         $graph->SetPlotAreaWorld(NULL, 0); // y-achse bei 0 starten
         $graph->SetPrecisionY(0); //anzahl kommastellen y-achse
         $graph->SetYTickIncrement($max_x < 10 ? 1 : round($max_x/10));
-        $graph->SetPlotBgColor(array(222,222,222));
+        $graph->SetPlotBgColor([222,222,222]);
         $graph->SetDataType("text-data");
         $graph->SetFileFormat(Config::get()->EVAL_AUSWERTUNG_GRAPH_FORMAT);
         $graph->SetOutputFile($tmp_path_export."/evalsum".$evalquestion_id.$auth->auth["uid"].".".Config::get()->EVAL_AUSWERTUNG_GRAPH_FORMAT);
@@ -174,7 +174,7 @@ function freetype_answers ($parent_id, $anz_nutzer) {
               WHERE parent_id = ? AND `text` != ''
               ORDER BY position";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent_id));
+    $statement->execute([$parent_id]);
 
     while ($answer = $statement->fetchColumn()) {
         $counter++;
@@ -194,7 +194,7 @@ function user_answers_residual($parent_id)
               JOIN evalanswer_user USING (evalanswer_id)
               WHERE parent_id = ? AND residual = 1";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent_id));
+    $statement->execute([$parent_id]);
     return $statement->fetchColumn();
 }
 
@@ -202,7 +202,7 @@ function user_answers($evalanswer_id)
 {
     $query = "SELECT COUNT(*) FROM evalanswer_user WHERE evalanswer_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($evalanswer_id));
+    $statement->execute([$evalanswer_id]);
     return $statement->fetchColumn();
 }
 
@@ -210,27 +210,27 @@ function answers ($parent_id, $anz_nutzer, $question_type) {
     global $graph_switch, $auth, $ausgabeformat, $fo_file, $has_template, $pattern, $replace;
 
      // Rueckgabearray, damit die Daten noch aufzutrennen sind...
-        $ret_array = array("id"=>$parent_id,                         // Question-ID
+        $ret_array = ["id"=>$parent_id,                         // Question-ID
                            "txt"=>"",                                // HTML-Ausgabe
-                           "antwort_texte"=>array(),                 // Antwort-Texte
+                           "antwort_texte"=>[],                 // Antwort-Texte
                            "frage"=>"",                              // Frage-Text
                            "has_residual"=>0,                        // Enthaltungen?
                            "antwort_durchschnitt"=>"",               // Antwort-Durchschnitt
                            "summe_antworten"=>"",                    // Summe der Antworten
                            "anzahl_teilnehmer"=>$anz_nutzer,         // Anzahl der Teilnehmer dieser Frage
-                           "auswertung"=>array()                     // 1. Anzahl der Antworten zu einer Antwort
+                           "auswertung"=>[]                     // 1. Anzahl der Antworten zu einer Antwort
                                                                      // 2. Prozente einer Antwort
                                                                      // 3. Prozente einer Antwort ohne Enthaltungen
-                          );
+                          ];
 
-    $summary = array ();
+    $summary =  [];
 
     $query = "SELECT COUNT(*)
               FROM evalanswer
               JOIN evalanswer_user USING (evalanswer_id)
               WHERE parent_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent_id));
+    $statement->execute([$parent_id]);
     $answers_sum = $statement->fetchColumn();
 
     $antwort_nummer = 0;
@@ -242,7 +242,7 @@ function answers ($parent_id, $anz_nutzer, $question_type) {
 
     $query = "SELECT evalanswer_id, `text`, value, residual FROM evalanswer WHERE parent_id = ? ORDER BY position";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent_id));
+    $statement->execute([$parent_id]);
     while ($answer = $statement->fetch(PDO::FETCH_ASSOC)) {
         $antwort_nummer++;
         $answer_counter = user_answers($answer['evalanswer_id']);
@@ -261,10 +261,10 @@ function answers ($parent_id, $anz_nutzer, $question_type) {
         else $edit .= "                  <fo:table-cell ><fo:block font-size=\"8pt\">".$answer_counter." (".$prozente."%)</fo:block></fo:table-cell>\n";
         $edit .= "                </fo:table-row>\n";
 
-        array_push($summary, array($antwort_nummer."(".$prozente."%)",$answer_counter));
+        array_push($summary, [$antwort_nummer."(".$prozente."%)",$answer_counter]);
 
         array_push($ret_array["antwort_texte"], ($answer['text'] != "" ? $answer['text'] : $answer['value']));
-                array_push($ret_array["auswertung"], array($answer_counter, $prozente, ($answer['residual']==0 ? $prozente_wo_residual : null)));
+                array_push($ret_array["auswertung"], [$answer_counter, $prozente, ($answer['residual']==0 ? $prozente_wo_residual : null)]);
                 if ($has_residual) $ret_array["has_residual"] = 1;
 
     }
@@ -333,11 +333,11 @@ function groups ($parent_id) {
 
     $query = "SELECT evalgroup_id, child_type, title, template_id FROM evalgroup WHERE parent_id = ? ORDER BY position";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($parent_id));
+    $statement->execute([$parent_id]);
 
     while ($group = $statement->fetch(PDO::FETCH_ASSOC)) {
         // Heraussuchen, ob es sich um ein Freitext-Template handelt...
-        $freetext_statement->execute(array($group['template_id']));
+        $freetext_statement->execute([$group['template_id']]);
         $freetype = $freetext_statement->fetchColumn();
         $freetext_statement->closeCursor();
 
@@ -352,7 +352,7 @@ function groups ($parent_id) {
         } else {
             $local_counter += 1;
 
-            $type_statement->execute(array($group['evalgroup_id']));
+            $type_statement->execute([$group['evalgroup_id']]);
             $group_type = $type_statement->fetchColumn() ?: 'normal';
             $type_statement->closeCursor();
 
@@ -366,11 +366,11 @@ function groups ($parent_id) {
         if ($group['child_type'] == 'EvaluationQuestion') {
 
             $local_question_counter = 0;
-            $answer_arr = array();
+            $answer_arr = [];
 
-            $questions_statement->execute(array($group['evalgroup_id']));
+            $questions_statement->execute([$group['evalgroup_id']]);
             while ($question = $questions_statement->fetch(PDO::FETCH_ASSOC)) {
-                $question_users_statement->execute(array($question['evalquestion_id']));
+                $question_users_statement->execute([$question['evalquestion_id']]);
                 $question_users = $question_users_statement->fetchColumn();
                 $question_users_statement->closeCursor();
 
@@ -544,9 +544,9 @@ $query = "SELECT eval_id, title, author_id, anonymous
           FROM eval
           WHERE eval_id = ?";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array(
+$statement->execute([
     $eval_id
-));
+]);
 
 if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
     // Evaluation existiert auch...
@@ -556,7 +556,7 @@ if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
               JOIN eval_templates_eval AS te USING (template_id)
               WHERE te.eval_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($eval_id));
+    $statement->execute([$eval_id]);
     $eval_templates = $statement->fetch(PDO::FETCH_ASSOC);
 
     $has_template = !empty($eval_templates);
@@ -568,17 +568,17 @@ if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
 
     $query = "SELECT COUNT(DISTINCT user_id) FROM eval_user WHERE eval_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($eval_id));
+    $statement->execute([$eval_id]);
     $number_of_votes = $statement->fetchColumn();
 
     $query = "SELECT range_id FROM eval_range WHERE eval_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($eval_id));
+    $statement->execute([$eval_id]);
     $eval_ranges = $statement->fetchAll(PDO::FETCH_COLUMN);
 
-    $eval_ranges_names = array();
+    $eval_ranges_names = [];
     foreach ($eval_ranges as $eval_range) {
-      $o_type = get_object_type($eval_range, array('studip','user','sem','inst'));
+      $o_type = get_object_type($eval_range, ['studip','user','sem','inst']);
       switch($o_type) {
       case 'global':
           $name = _("Systemweite Evaluationen");

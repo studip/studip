@@ -38,7 +38,7 @@ function lastActivity ($sem_id)
     // Cache query generation
     static $query = null;
     if ($query === null) {
-        $queries = array(
+        $queries = [
             // Veranstaltungs-data
             "SELECT chdate FROM seminare WHERE Seminar_id = :id",
             // Folders
@@ -56,7 +56,7 @@ function lastActivity ($sem_id)
             "SELECT MAX(`date`) AS chdate FROM news_range LEFT JOIN news USING (news_id) WHERE range_id = :id",
             // Literature
             "SELECT MAX(chdate) AS chdate FROM lit_list WHERE range_id = :id",
-        );
+        ];
 
         // Votes
         if (get_config('VOTE_ENABLE')) {
@@ -104,7 +104,7 @@ function dump_sem($sem_id, $print_view = false)
               FROM seminare
               WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $seminar = $statement->fetch(PDO::FETCH_ASSOC);
 
     $sem_type = $seminar['status'];
@@ -154,7 +154,7 @@ function dump_sem($sem_id, $print_view = false)
               WHERE Seminar_id = ? AND status = 'dozent'
               ORDER BY position, Nachname, Vorname";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $teachers = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($teachers) > 0) {
         $title = get_title_for_status('dozent', count($teachers), $sem_type);
@@ -169,7 +169,7 @@ function dump_sem($sem_id, $print_view = false)
               WHERE Seminar_id = ? AND status = 'tutor'
               ORDER BY position, Nachname, Vorname";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $tutors = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($tutors) > 0) {
         $title = get_title_for_status('tutor', count($tutors), $sem_type);
@@ -207,7 +207,7 @@ function dump_sem($sem_id, $print_view = false)
               LEFT JOIN Institute AS c ON (c.Institut_id = b.fakultaets_id)
               WHERE a.seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $faculties = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($faculties) > 0) {
         $dumpRow(_('Fakultät(en):'), implode('<br>', array_map('htmlReady', $faculties)));
@@ -215,14 +215,14 @@ function dump_sem($sem_id, $print_view = false)
 
     //Studienbereiche
     if (isset($SEM_TYPE[$seminar['status']]) && $SEM_CLASS[$SEM_TYPE[$seminar['status']]['class']]['bereiche']) {
-        $sem_path = get_sem_tree_path($sem_id) ?: array();
+        $sem_path = get_sem_tree_path($sem_id) ?: [];
         $dumpRow(_('Studienbereiche') . ':', implode('<br>', array_map('htmlReady', $sem_path)));
     }
 
     $iid = $seminar['Institut_id'];
     $query = "SELECT Name FROM Institute WHERE Institut_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($iid));
+    $statement->execute([$iid]);
     $inst_name = $statement->fetchColumn();
     $dumpRow(_('Heimat-Einrichtung:'), $inst_name, true);
 
@@ -231,7 +231,7 @@ function dump_sem($sem_id, $print_view = false)
               LEFT JOIN Institute USING (institut_id)
               WHERE seminar_id = ? AND Institute.institut_id != ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id, $iid));
+    $statement->execute([$sem_id, $iid]);
     $other_institutes = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($other_institutes) > 0) {
         $title = (count($other_institutes) == 1)
@@ -246,7 +246,7 @@ function dump_sem($sem_id, $print_view = false)
     //Statistikfunktionen
     $query = "SELECT COUNT(*) FROM seminar_user WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $count = $statement->fetchColumn();
     $dumpRow(_('Anzahl der angemeldeten Personen:'), $count);
 
@@ -388,7 +388,7 @@ function dump_sem($sem_id, $print_view = false)
         foreach (words('dozent tutor autor user') as $key) {
             // die eigentliche Teil-Tabelle
 
-            $user_statement->execute(array($sem_id, $key));
+            $user_statement->execute([$sem_id, $key]);
             $users = $user_statement->fetchAll(PDO::FETCH_ASSOC);
             $user_statement->closeCursor();
 
@@ -451,7 +451,7 @@ function dumpRegularDatesSchedule($sem_id)
               WHERE range_id = ? AND date_typ IN {$presence_type_clause}
               ORDER BY date";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     return dumpScheduleTable($data, _('Ablaufplan'));
@@ -472,7 +472,7 @@ function dumpExtraDatesSchedule($sem_id)
               WHERE range_id = ? AND date_typ NOT IN {$presence_type_clause}
               ORDER BY date";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     return dumpScheduleTable($data, _('zusätzliche Termine'));
@@ -570,7 +570,7 @@ function in_archiv ($sem_id)
               FROM seminare
               WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
 
     $seminar_id     = $row['Seminar_id'];
@@ -599,7 +599,7 @@ function in_archiv ($sem_id)
     // das Heimatinstitut als erstes
     $query = "SELECT Name FROM Institute WHERE Institut_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($heimat_inst_id));
+    $statement->execute([$heimat_inst_id]);
     $institute = $statement->fetchColumn();
 
     // jetzt den Rest
@@ -608,7 +608,7 @@ function in_archiv ($sem_id)
               LEFT JOIN seminar_inst USING (institut_id)
               WHERE seminar_id = ? AND Institute.Institut_id != ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id, $heimat_inst_id));
+    $statement->execute([$seminar_id, $heimat_inst_id]);
     while ($temp = $statement->fetchColumn()) {
         $institute .= ', ' . $temp;
     }
@@ -619,7 +619,7 @@ function in_archiv ($sem_id)
               LEFT JOIN user_info USING (user_id)
               WHERE seminar_id = ? AND seminar_user.status = 'dozent'";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
     $dozenten = $statement->fetchColumn();
 
     $query = "SELECT fakultaets_id
@@ -627,7 +627,7 @@ function in_archiv ($sem_id)
               LEFT JOIN Institute USING (Institut_id)
               WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
     $fakultaet_id = $statement->fetchColumn();
 
     $query = "SELECT GROUP_CONCAT(DISTINCT c.Name SEPARATOR ' | ')
@@ -636,7 +636,7 @@ function in_archiv ($sem_id)
               LEFT JOIN Institute AS c ON (c.Institut_id = b.fakultaets_id)
               WHERE a.seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
     $fakultaet = $statement->fetchColumn();
 
     setTempLanguage();  // use DEFAULT_LANGUAGE for archiv-dumps
@@ -658,7 +658,7 @@ function in_archiv ($sem_id)
     $query = "INSERT IGNORE INTO archiv_user (seminar_id, user_id, status)
               SELECT Seminar_id, user_id, status FROM seminar_user WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
 
     // Eventuelle Vertretungen in der Veranstaltung haben weiterhin Zugriff mit Dozentenrechten
     if (get_config('DEPUTIES_ENABLE')) {
@@ -667,7 +667,7 @@ function in_archiv ($sem_id)
         $query = "INSERT IGNORE INTO archiv_user SET seminar_id = ?, user_id = ?, status = 'dozent'";
         $statement = DBManager::get()->prepare($query);
         foreach ($deputies as $deputy) {
-            $statement->execute(array($seminar_id, $deputy['user_id']));
+            $statement->execute([$seminar_id, $deputy['user_id']]);
         }
     }
 
@@ -767,7 +767,7 @@ function in_archiv ($sem_id)
               VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())";
     $statement = DBManager::get()->prepare($query);
-    $success = $statement->execute(array(
+    $success = $statement->execute([
         $seminar_id,
         $name ?: '',
         $untertitel ?: '',
@@ -784,7 +784,7 @@ function in_archiv ($sem_id)
         $forumdump ?: '',
         $wikidump ?: '',
         $studienbereiche ?: '',
-    ));
+    ]);
     if ($success) {
         NotificationCenter::postNotification('CourseDidArchive', $seminar_id);
     }

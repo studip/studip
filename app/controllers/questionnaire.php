@@ -23,7 +23,7 @@ class QuestionnaireController extends AuthenticatedController
             throw new AccessDeniedException("Only for logged in users.");
         }
         //Navigation::activateItem("/tools/questionnaire/overview");
-        $this->questionnaires = Questionnaire::findBySQL("user_id = ? ORDER BY mkdate DESC", array($GLOBALS['user']->id));
+        $this->questionnaires = Questionnaire::findBySQL("user_id = ? ORDER BY mkdate DESC", [$GLOBALS['user']->id]);
         foreach ($this->questionnaires as $questionnaire) {
             if (!$questionnaire['visible'] && $questionnaire->isRunning()) {
                 $questionnaire->start();
@@ -47,7 +47,7 @@ class QuestionnaireController extends AuthenticatedController
             throw new AccessDeniedException("Only for logged in users.");
         }
         Navigation::activateItem("/course/admin/questionnaires");
-        $this->questionnaires = Questionnaire::findBySQL("INNER JOIN questionnaire_assignments USING (questionnaire_id) WHERE questionnaire_assignments.range_id = ? AND questionnaire_assignments.range_type = ? ORDER BY questionnaires.mkdate DESC", array($GLOBALS['SessionSeminar'], $this->range_type));
+        $this->questionnaires = Questionnaire::findBySQL("INNER JOIN questionnaire_assignments USING (questionnaire_id) WHERE questionnaire_assignments.range_id = ? AND questionnaire_assignments.range_type = ? ORDER BY questionnaires.mkdate DESC", [$GLOBALS['SessionSeminar'], $this->range_type]);
         foreach ($this->questionnaires as $questionnaire) {
             if (!$questionnaire['visible'] && $questionnaire->isRunning()) {
                 $questionnaire->start();
@@ -146,14 +146,14 @@ class QuestionnaireController extends AuthenticatedController
                 if (Request::isAjax()) {
                     $this->questionnaire->restore();
                     $this->questionnaire->resetRelation("assignments");
-                    $output = array(
+                    $output = [
                             'questionnaire_id' => $this->questionnaire->getId(),
                             'overview_html' => $this->render_template_as_string("questionnaire/_overview_questionnaire.php"),
                             'widget_html' => $this->questionnaire->isStarted()
                                 ? $this->render_template_as_string("questionnaire/_widget_questionnaire.php")
                                 : "",
                             'message' => $message->__toString()
-                    );
+                    ];
                     $this->response->add_header("X-Dialog-Close", 1);
                     $this->response->add_header("X-Dialog-Execute", "STUDIP.Questionnaire.updateOverviewQuestionnaire");
                     $this->render_json($output);
@@ -255,9 +255,9 @@ class QuestionnaireController extends AuthenticatedController
         $template = $this->get_template_factory()->open("questionnaire/_question.php");
         $template->set_attribute("question", $this->question);
 
-        $output = array(
+        $output = [
             'html' => $template->render()
-        );
+        ];
         $this->render_json($output);
     }
 
@@ -278,7 +278,7 @@ class QuestionnaireController extends AuthenticatedController
                     }
                     $answer['user_id'] = $GLOBALS['user']->id;
                     if (!$answer['answerdata']) {
-                        $answer['answerdata'] = array();
+                        $answer['answerdata'] = [];
                     }
                     if ($this->questionnaire['anonymous']) {
                         $answer['user_id'] = 'anonymous';
@@ -296,7 +296,7 @@ class QuestionnaireController extends AuthenticatedController
                     $anonymous_answer->store();
                 }
                 if (!$answered_before && !$this->questionnaire['anonymous'] && ($this->questionnaire['user_id'] !== $GLOBALS['user']->id)) {
-                    $url = URLHelper::getURL("dispatch.php/questionnaire/evaluate/" . $this->questionnaire->getId(), array(), true);
+                    $url = URLHelper::getURL("dispatch.php/questionnaire/evaluate/" . $this->questionnaire->getId(), [], true);
                     PersonalNotifications::add(
                         $this->questionnaire['user_id'],
                         $url,
@@ -389,10 +389,10 @@ class QuestionnaireController extends AuthenticatedController
         if (!$this->questionnaire->isEditable()) {
             throw new AccessDeniedException("Der Fragebogen ist nicht exportierbar.");
         }
-        $csv = array(array(_("Nummer"), _("Benutzername"), _("Nachname"), _("Vorname"), _("Email")));
+        $csv = [[_("Nummer"), _("Benutzername"), _("Nachname"), _("Vorname"), _("Email")]];
 
-        $results = array();
-        $user_ids = array();
+        $results = [];
+        $user_ids = [];
 
         foreach ($this->questionnaire->questions as $question) {
             $result = (array) $question->getResultArray();
@@ -407,9 +407,9 @@ class QuestionnaireController extends AuthenticatedController
         foreach ($user_ids as $key => $user_id) {
             $user = User::find($user_id);
             if ($user) {
-                $csv_line = array($key + 1, $user['username'], $user['Nachname'], $user['Vorname'], $user['Email']);
+                $csv_line = [$key + 1, $user['username'], $user['Nachname'], $user['Vorname'], $user['Email']];
             } else {
-                $csv_line = array($key + 1, $user_id, '', '', '');
+                $csv_line = [$key + 1, $user_id, '', '', ''];
             }
 
             foreach ($results as $result) {
@@ -513,13 +513,13 @@ class QuestionnaireController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::success(_("Die Bereichszuweisungen wurden gespeichert.")));
             $this->questionnaire->restore();
             $this->questionnaire->resetRelation("assignments");
-            $output = array(
+            $output = [
                 'func' => "STUDIP.Questionnaire.updateOverviewQuestionnaire",
-                'payload' => array(
+                'payload' => [
                     'questionnaire_id' => $this->questionnaire->getId(),
                     'html' => $this->render_template_as_string("questionnaire/_overview_questionnaire.php")
-                )
-            );
+                ]
+            ];
             $this->response->add_header("X-Dialog-Execute", json_encode($output));
         }
         PageLayout::setTitle(sprintf(_("Bereiche für Fragebogen: %s"), $this->questionnaire->title));
@@ -532,7 +532,7 @@ class QuestionnaireController extends AuthenticatedController
         }
         $this->range_id = $range_id;
         $this->range_type = $range_type;
-        if (in_array($this->range_id, array("public", "start"))) {
+        if (in_array($this->range_id, ["public", "start"])) {
             $this->range_type = "static";
         }
         $statement = DBManager::get()->prepare("
@@ -544,10 +544,10 @@ class QuestionnaireController extends AuthenticatedController
                 AND startdate <= UNIX_TIMESTAMP()
             ORDER BY questionnaires.mkdate DESC
         ");
-        $statement->execute(array(
+        $statement->execute([
             'range_id' => $this->range_id,
             'range_type' => $this->range_type
-        ));
+        ]);
         $this->questionnaire_data = $statement->fetchAll(PDO::FETCH_ASSOC);
         $stopped_visible = 0;
         foreach ($this->questionnaire_data as $i => $questionnaire) {

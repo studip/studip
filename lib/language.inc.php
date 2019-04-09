@@ -101,7 +101,7 @@ function getUserLanguage($uid)
     // try to get preferred language from user, fallback to default
     $query = "SELECT preferred_language FROM user_info WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($uid));
+    $statement->execute([$uid]);
     $language = $statement->fetchColumn() ?: Config::get()->DEFAULT_LANGUAGE;
 
     return $language;

@@ -46,7 +46,7 @@ abstract class Base extends \SimpleORMap
     /**
      * Stores all known consumer types
      */
-    protected static $known_types = array();
+    protected static $known_types = [];
 
     /**
      * Add a consumer type to the list of consumer types

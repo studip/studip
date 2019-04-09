@@ -24,12 +24,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 require '../lib/bootstrap.php';
 
-page_open(array(
+page_open([
     'sess' => 'Seminar_Session',
     'auth' => 'Seminar_Auth',
     'perm' => 'Seminar_Perm',
     'user' => 'Seminar_User'
-));
+]);
 $auth->login_if($auth->auth['uid'] == 'nobody');
 $perm->check('user');
 // nobody hat hier nix zu suchen...
@@ -45,7 +45,7 @@ PageLayout::setTitle(_('Bestätigung der E-Mail-Adresse'));
 if ($perm->have_perm('autor')) {
     $info = sprintf(_('Sie haben schon den Status <b>%s</b> im System.
                        Eine Aktivierung des Accounts ist nicht mehr nötig, um Schreibrechte zu bekommen'), $auth->auth['perm']);
-    $details = array();
+    $details = [];
     $details[] = sprintf('<a href="%s">%s</a>', URLHelper::getLink('index.php'), _('zurück zur Startseite'));
     $message = MessageBox::info($info, $details);
 }
@@ -59,7 +59,7 @@ else if (empty($secret)) {
 // abuse (oder Volltrottel)
 else if (!Seminar_Register_Auth::validateSecret($secret, $user->id)) {
     $error = _('Der übergebene <em>Secret-Code</em> ist nicht korrekt.');
-    $details = array();
+    $details = [];
     $details[] = _('Sie müssen unter dem Benutzernamen eingeloggt sein, für den Sie die Bestätigungsmail erhalten haben.');
     $details[] = _('Und Sie müssen den vollständigen Link aus der Bestätigungsmail in die Adresszeile Ihres Browsers kopieren.');
     $message = MessageBox::error($error, $details);
@@ -75,15 +75,15 @@ else if (!Seminar_Register_Auth::validateSecret($secret, $user->id)) {
 else {
     $query = "UPDATE auth_user_md5 SET perms = 'autor' WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user->id));
+    $statement->execute([$user->id]);
     if ($statement->rowCount() == 0) {
         $error = _('Fehler! Bitte wenden Sie sich an den Systemadministrator.');
-        $details = array($query);
+        $details = [$query];
         $message = MessageBox::error($error, $details);
     } else {
         $success = _('Ihr Status wurde erfolgreich auf <em>autor</em> gesetzt.<br>
                       Damit dürfen Sie in den meisten Veranstaltungen schreiben, für die Sie sich anmelden.');
-        $details = array();
+        $details = [];
         $details[] = _('Einige Veranstaltungen erfordern allerdings bei der Anmeldung die Eingabe eines Passwortes.
                         Dieses Passwort erfahren Sie von den Lehrenden der Veranstaltung.');
         $message = MessageBox::success($success, $details);

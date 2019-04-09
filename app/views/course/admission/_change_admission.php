@@ -7,7 +7,7 @@
     <?= addHiddenFields($k, $v) ?>
 <? endforeach ?>
 <footer data-dialog-button>
-    <?= Studip\Button::create(_("Ja"), $button_yes, array('data-dialog' => ''))?>
-    <?= Studip\Button::create(_("Nein"), $button_no, array('data-dialog' => ''))?>
+    <?= Studip\Button::create(_("Ja"), $button_yes, ['data-dialog' => ''])?>
+    <?= Studip\Button::create(_("Nein"), $button_no, ['data-dialog' => ''])?>
 </footer>
 </form>

@@ -5,22 +5,22 @@ class Step00205GroupCalendar extends Migration
     /**
      * new config options to install
      */
-    private $options_new = array(
-        array(
+    private $options_new = [
+        [
             'name' => 'CALENDAR_GROUP_ENABLE',
             'description' => 'Schaltet die Gruppenterminkalender-Funktionen ein.',
             'section' => 'modules',
             'type' => 'boolean',
             'value' => '0'
-        ),
-        array(
+        ],
+        [
             'name' => 'COURSE_CALENDAR_ENABLE',
             'description' => 'Kalender als Inhaltselement in Veranstaltungen.',
             'section' => 'modules',
             'type' => 'boolean',
             'value' => '0'
-        )
-    );
+        ]
+    ];
 
     /**
      * short description of this migration
@@ -60,7 +60,7 @@ class Step00205GroupCalendar extends Migration
         $stmt = $db->prepare("DELETE FROM config WHERE field = :name");
 
         foreach ($options as $option) {
-            $stmt->execute(array('name' => $option['name']));
+            $stmt->execute(['name' => $option['name']]);
         }
     }
 

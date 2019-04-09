@@ -61,7 +61,7 @@ class TreeAbstract {
     * @access public
     * @var array    $tree_data
     */
-    var $tree_data = array();
+    var $tree_data = [];
     /**
     * array containing the direct childs of all items
     *
@@ -69,7 +69,7 @@ class TreeAbstract {
     * @access private
     * @var array    $tree_childs
     */
-    var $tree_childs = array();
+    var $tree_childs = [];
 
     /**
     * array containing the number of direct childs of all items
@@ -78,7 +78,7 @@ class TreeAbstract {
     * @access private
     * @var array    $tree_num_childs
     */
-    var $tree_num_childs = array();
+    var $tree_num_childs = [];
 
     var $index_offset = 0;
 
@@ -138,11 +138,11 @@ class TreeAbstract {
     */
     public function init()
     {
-        $this->tree_childs = array();
-        $this->tree_num_childs = array();
-        $this->tree_data = array();
+        $this->tree_childs = [];
+        $this->tree_num_childs = [];
+        $this->tree_data = [];
         $this->index_offset = 0;
-        $this->tree_data['root'] = array('parent_id' => null, 'name' => &$this->root_name, 'index' => 0);
+        $this->tree_data['root'] = ['parent_id' => null, 'name' => &$this->root_name, 'index' => 0];
     }
 
     /**
@@ -229,7 +229,7 @@ class TreeAbstract {
     {
         static $kidskids;
         if (!$kidskids || !$in_recursion){
-            $kidskids = array();
+            $kidskids = [];
         }
         $num_kids = $this->getNumKids($item_id);
         if ($num_kids){

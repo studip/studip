@@ -19,7 +19,7 @@ class StudipDbCache implements StudipCache
         $db = DBManager::get();
 
         $stmt = $db->prepare('DELETE FROM cache WHERE cache_key = ?');
-        $stmt->execute(array($arg));
+        $stmt->execute([$arg]);
     }
 
     /**
@@ -40,7 +40,7 @@ class StudipDbCache implements StudipCache
         $db = DBManager::get();
 
         $stmt = $db->prepare('DELETE FROM cache WHERE expires < ?');
-        $stmt->execute(array(time()));
+        $stmt->execute([time()]);
     }
 
     /**
@@ -56,7 +56,7 @@ class StudipDbCache implements StudipCache
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT content FROM cache WHERE cache_key = ? AND expires > ?');
-        $stmt->execute(array($arg, time()));
+        $stmt->execute([$arg, time()]);
         $result = $stmt->fetchColumn();
 
         return $result !== false ? unserialize($result) : false;
@@ -76,6 +76,6 @@ class StudipDbCache implements StudipCache
         $db = DBManager::get();
 
         $stmt = $db->prepare('REPLACE INTO cache VALUES(?, ?, ?)');
-        $stmt->execute(array($name, serialize($content), time() + $expires));
+        $stmt->execute([$name, serialize($content), time() + $expires]);
     }
 }

@@ -9,10 +9,10 @@
                         <? if ($mod == 'NONAVARROWS') : ?>
                             &nbsp;
                         <? else : ?>
-                            <a href="<?= $controller->url_for($href, array('imt' => mktime(12, 0, 0, date('n', $imt), 1, date('Y', $imt) - 1))) ?>">
+                            <a href="<?= $controller->url_for($href, ['imt' => mktime(12, 0, 0, date('n', $imt), 1, date('Y', $imt) - 1)]) ?>">
                                <?= Icon::create('arr_2left', 'clickable', ['title' => _('Ein Jahr zurück')])->asImg() ?>
                             </a>
-                            <a href="<?= $controller->url_for($href, array('imt' => mktime(12, 0, 0, date('n', $imt) - 1, 1, date('Y', $imt)))) ?>">
+                            <a href="<?= $controller->url_for($href, ['imt' => mktime(12, 0, 0, date('n', $imt) - 1, 1, date('Y', $imt))]) ?>">
                                 <?= Icon::create('arr_1left', 'clickable', ['title' => _('Einen Monat zurück')])->asImg() ?>
                             </a>
                         <? endif; ?>
@@ -24,10 +24,10 @@
                         <? if ($mod == 'NONAVARROWS') : ?>
                             &nbsp;
                         <? else : ?>
-                            <a href="<?= $controller->url_for($href, array('imt' => mktime(12, 0, 0, date('n', $imt) + 1, 1, date('Y', $imt)))) ?>">
+                            <a href="<?= $controller->url_for($href, ['imt' => mktime(12, 0, 0, date('n', $imt) + 1, 1, date('Y', $imt))]) ?>">
                                 <?= Icon::create('arr_1right', 'clickable', ['title' => _('Einen Monat vor')])->asImg() ?>
                             </a>
-                            <a href="<?= $controller->url_for($href, array('imt' => mktime(12, 0, 0, date('n', $imt), 1, date('Y', $imt) + 1))) ?>">
+                            <a href="<?= $controller->url_for($href, ['imt' => mktime(12, 0, 0, date('n', $imt), 1, date('Y', $imt) + 1)]) ?>">
                                 <?= Icon::create('arr_2right', 'clickable', ['title' => _('Ein Jahr vor')])->asImg() ?>
                             </a>
                         <? endif; ?>
@@ -41,7 +41,7 @@
         <td class="blank">
             <table class="blank">
                 <tr>
-                    <? $week_days = array(39092400, 39178800, 39265200, 39351600, 39438000, 39524400, 39610800); ?>
+                    <? $week_days = [39092400, 39178800, 39265200, 39351600, 39438000, 39524400, 39610800]; ?>
                     <? foreach ($week_days as $week_day) : ?>
                     <td align="center" class="precol2w" width="25">
                         <?= strftime('%a', $week_day) ?>
@@ -95,12 +95,12 @@
                     <? $aday = '<span class="current">'.$aday.'</span>' ?>
                 <? endif; ?>
                 <? if (($j + 1) % 7 == 0) : ?>
-                    <a class="<?= $style ?>sday" href="<?= $controller->url_for($href, array('atime' => $i)) ?>" <?= $hday['name'] ? tooltip($hday['name']) : '' ?> <?= $js_inc ?>>
+                    <a class="<?= $style ?>sday" href="<?= $controller->url_for($href, ['atime' => $i]) ?>" <?= $hday['name'] ? tooltip($hday['name']) : '' ?> <?= $js_inc ?>>
                         <?= $aday ?>
                     </a>
                 </td>
                 <td class="lightmonth" style="text-align: center; width: 25px; height: 25px;">
-                    <a href="<?= $controller->url_for('calendar/single/week/', array('atime' => $i)) ?>">
+                    <a href="<?= $controller->url_for('calendar/single/week/', ['atime' => $i]) ?>">
                         <span class="kwmin"><?= strftime('%V', $i) ?></span>
                     </a>
                 </td>
@@ -108,18 +108,18 @@
                 <? else : ?>
                     <? switch ($hday['col']) {
                         case 1:
-                            ?><a class="<?= $style ?>day" href="<?= $controller->url_for($href, array('atime' => $i)) ?>" <?= tooltip($hday['name']) . $js_inc ?>>
+                            ?><a class="<?= $style ?>day" href="<?= $controller->url_for($href, ['atime' => $i]) ?>" <?= tooltip($hday['name']) . $js_inc ?>>
                                <?= $aday ?>
                             </a><?
                             break;
                         case 2:
                         case 3;
-                            ?><a class="<?= $style ?>hday" href="<?= $controller->url_for($href, array('atime' => $i)) ?>" <?= tooltip($hday['name']) . $js_inc ?>>
+                            ?><a class="<?= $style ?>hday" href="<?= $controller->url_for($href, ['atime' => $i]) ?>" <?= tooltip($hday['name']) . $js_inc ?>>
                                 <?= $aday ?>
                             </a><?
                             break;
                         default:
-                            ?><a class="<?= $style ?>day" href="<?= $controller->url_for($href, array('atime' => $i)) ?>" <?= $js_inc ?>>
+                            ?><a class="<?= $style ?>day" href="<?= $controller->url_for($href, ['atime' => $i]) ?>" <?= $js_inc ?>>
                                 <?= $aday ?>
                             </a>
                     <?}?>

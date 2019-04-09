@@ -47,12 +47,12 @@ class ContactController extends AuthenticatedController
         foreach ($mps->getAddedUsers() as $userId) {
             $user_to_add = User::find($userId);
             if ($user_to_add) {
-                $new_contact = array(
+                $new_contact = [
                     'owner_id' => User::findCurrent()->id,
-                    'user_id'  => $user_to_add->id);
+                    'user_id'  => $user_to_add->id];
                 if ($filter && $this->group) {
-                    $new_contact['group_assignments'][] = array('statusgruppe_id' => $this->group->id,
-                                                                'user_id'         => $user_to_add->id);
+                    $new_contact['group_assignments'][] = ['statusgruppe_id' => $this->group->id,
+                                                                'user_id'         => $user_to_add->id];
                 }
                 $imported += (bool)Contact::import($new_contact)->store();
             }
@@ -80,7 +80,7 @@ class ContactController extends AuthenticatedController
         $this->allContacts = $contacts;
 
         // Retrive first letter and store in that contactgroup
-        $this->contacts = array();
+        $this->contacts = [];
         foreach ($contacts as $contact) {
             $this->contacts[mb_strtoupper(SimpleCollection::translitLatin1($contact->nachname[0]))][] = $contact;
         }
@@ -124,7 +124,7 @@ class ContactController extends AuthenticatedController
     public function remove_action($group = null)
     {
         CSRFProtection::verifyUnsafeRequest();
-        $contact = Contact::find(array(User::findCurrent()->id, User::findByUsername(Request::username('user'))->id));
+        $contact = Contact::find([User::findCurrent()->id, User::findByUsername(Request::username('user'))->id]);
         if ($contact) {
             if ($group) {
                 $contact->group_assignments->unsetBy('statusgruppe_id', $group);
@@ -215,7 +215,7 @@ class ContactController extends AuthenticatedController
         // Groups
         $actions = new ActionsWidget();
         $actions->addLink(_('Neue Gruppe anlegen'), $this->url_for('contact/editGroup'), Icon::create('group3+add', 'clickable'))->asDialog('size=auto');
-        $actions->addLink(_('Nachricht an alle'), $this->url_for('messages/write', array('rec_uname' => $this->allContacts->pluck('username'))), Icon::create('mail', 'clickable'))->asDialog();
+        $actions->addLink(_('Nachricht an alle'), $this->url_for('messages/write', ['rec_uname' => $this->allContacts->pluck('username')]), Icon::create('mail', 'clickable'))->asDialog();
         $actions->addLink(_('E-Mail an alle'), URLHelper::getURL('mailto:' . join(',', $this->allContacts->pluck('email'))), Icon::create('mail', 'clickable'));
         $actions->addLink(_('Alle vCards herunterladen'), $this->url_for('contact/vcard/' . $this->filter), Icon::create('vcard', 'clickable'));
         $sidebar->addWidget($actions);

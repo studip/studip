@@ -81,7 +81,7 @@ class WebserviceAccessRule extends SimpleORMap
         return $access;
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'webservice_access_rules';
         $config['serialized_fields']['ip_range'] = 'CSVArrayObject';

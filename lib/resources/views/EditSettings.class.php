@@ -46,7 +46,7 @@ class EditSettings
                   FROM resources_objects
                   WHERE category_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($category_id));
+        $statement->execute([$category_id]);
         return $statement->fetchColumn();
     }
 
@@ -56,7 +56,7 @@ class EditSettings
                   FROM resources_categories_properties
                   WHERE property_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($property_id));
+        $statement->execute([$property_id]);
         return $statement->fetchColumn();
     }
 
@@ -91,7 +91,7 @@ class EditSettings
                       WHERE category_id = ?
                       ORDER BY name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($category_id));
+            $statement->execute([$category_id]);
         }
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -103,7 +103,7 @@ class EditSettings
                   WHERE type = ?
                   ORDER BY lock_begin";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($type));
+        $statement->execute([$type]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -150,10 +150,10 @@ class EditSettings
     function showSettingsForms()
     {
         $template = $GLOBALS['template_factory']->open('resources/edit_settings');
-        $template->locks      = array(
+        $template->locks      = [
             'edit'   => $this->selectLocks('edit'),
             'assign' => $this->selectLocks('assign'),
-        );
+        ];
         echo $template->render();
     }
 }

@@ -47,7 +47,7 @@ class CoreParticipants implements StudipModule
      */
     public function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Liste aller Teilnehmenden einschließlich Nachrichtenfunktionen'),
             'description' => _('Die Teilnehmenden werden gruppiert nach ihrer '.
                 'jeweiligen Funktion in einer Tabelle gelistet. Für Lehrende '.
@@ -80,6 +80,6 @@ class CoreParticipants implements StudipModule
                     ['source' => 'Rundmail_an_alle_TeilnehmerInnen_einer_Veranstaltung.jpg', 'title' => _('Rundmail an alle Teilnehmdenden einer Veranstaltung')],
                 ]
             ],
-        );
+        ];
     }
 }

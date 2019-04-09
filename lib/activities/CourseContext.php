@@ -32,7 +32,7 @@ class CourseContext extends Context
         if (!$this->provider) {
             $course = $this->course;
 
-            $module_names = array('forum', 'participants', 'documents', 'wiki', 'schedule', 'literature');
+            $module_names = ['forum', 'participants', 'documents', 'wiki', 'schedule', 'literature'];
 
             // get list of possible providers by checking the activated plugins
             // and modules for the current seminar

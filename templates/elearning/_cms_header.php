@@ -2,7 +2,7 @@
     <tr>
         <td class="table_header" align="left" valign="middle" colspan="4">
             <b><?=htmlReady($title)?></b>
-            <?= Assets::img('blank.gif', array('height' => 25)) ?>
+            <?= Assets::img('blank.gif', ['height' => 25]) ?>
         </td>
     </tr>
     <tr>

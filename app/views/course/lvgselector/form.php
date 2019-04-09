@@ -38,10 +38,10 @@
 
     <? if ($selection->searched()) : ?>
       <a href="<?= URLHelper::getLink(isset($url) ? $url : '',
-                      array('lvgruppe_selection[rewind_button]' => 1,
+                      ['lvgruppe_selection[rewind_button]' => 1,
                             'lvgruppe_selection[last_selected]' => $selected,
-                           'lvgruppe_selection[showall]' => (int) $selection->getShowAll())) ?>">
-        <?= Icon::create('refresh', 'clickable', array())->asImg(); ?>
+                           'lvgruppe_selection[showall]' => (int) $selection->getShowAll()]) ?>">
+        <?= Icon::create('refresh', 'clickable', [])->asImg(); ?>
       </a>
 
       <? if (!sizeof($selection->getSearchResult())) : ?>
@@ -51,7 +51,7 @@
         <? TextHelper::reset_cycle(); $show_path = TRUE; $show_link = FALSE; ?>
         <? foreach ($selection->getSearchResult() as $area) : ?>
             <? // MVV: show LvGruppen with complete trails only ?>
-            <? $pathes = ModuleManagementModelTreeItem::getPathes($area->getTrails(array('Modulteil', 'StgteilabschnittModul',  'StgteilAbschnitt', 'StgteilVersion', 'Studiengang'))); ?>
+            <? $pathes = ModuleManagementModelTreeItem::getPathes($area->getTrails(['Modulteil', 'StgteilabschnittModul',  'StgteilAbschnitt', 'StgteilVersion', 'Studiengang'])); ?>
             <? if (count($pathes)) : ?>
           <div class="<?= TextHelper::cycle('odd', 'even') ?>">
             <?= $this->render_partial('course/lvgselector/entry', compact('area', 'show_path', 'show_link', 'pathes')); ?>

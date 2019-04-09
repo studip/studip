@@ -15,7 +15,7 @@
 <? if ($node->required_children): ?>
     <ul>
     <? foreach ($node->required_children as $child): ?>
-        <?= $this->render_partial('study_area/tree.php', array('node' => $child, 'open' => $open, 'layer' => $layer + 1)) ?>
+        <?= $this->render_partial('study_area/tree.php', ['node' => $child, 'open' => $open, 'layer' => $layer + 1]) ?>
     <? endforeach; ?>
     </ul>
 <? endif; ?>

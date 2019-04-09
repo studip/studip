@@ -1,6 +1,6 @@
 <?php
     $lastSemester = null;
-    $allSemesters = array();
+    $allSemesters = [];
     foreach ($dates as $key => $date) {
         $currentSemester = Semester::findByTimestamp($date['date']);
         if ($currentSemester && (
@@ -11,7 +11,7 @@
             $lastSemester = $currentSemester;
         }
     }
-    $lostDateKeys = array();
+    $lostDateKeys = [];
 
     if (!count($dates)) {
         PageLayout::postMessage(

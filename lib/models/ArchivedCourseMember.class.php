@@ -33,17 +33,17 @@ class ArchivedCourseMember extends SimpleORMap implements PrivacyObject
         return self::findByUser_id($user_id);
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'archiv_user';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['belongs_to']['course'] = array(
+        ];
+        $config['belongs_to']['course'] = [
             'class_name' => 'ArchivedCourse',
             'foreign_key' => 'seminar_id',
-        );
+        ];
         parent::configure($config);
     }
 

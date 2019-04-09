@@ -15,7 +15,7 @@
 class CourseMarkedEvent extends CourseEvent
 {
 
-    protected static function configure($config= array())
+    protected static function configure($config= [])
     {
         parent::configure($config);
     }
@@ -36,12 +36,12 @@ class CourseMarkedEvent extends CourseEvent
                 . 'WHERE schedule_seminare.user_id = :user_id AND schedule_seminare.visible = 1 '
                 . 'AND seminar_user.seminar_id IS NULL AND date BETWEEN :start AND :end '
                 . 'ORDER BY date ASC');
-        $stmt->execute(array(
+        $stmt->execute([
             ':user_id' => $user_id,
             ':start'   => $start->getTimestamp(),
             ':end'     => $end->getTimestamp()
-        ));
-        $event_collection = array();
+        ]);
+        $event_collection = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $event = new CourseMarkedEvent();
             $event->setData($row);

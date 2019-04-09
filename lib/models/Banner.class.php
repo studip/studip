@@ -32,7 +32,7 @@
 
 class Banner extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'banner_ads';
         parent::configure($config);
@@ -56,15 +56,15 @@ class Banner extends SimpleORMap
         // drawn and the banner with the highest offset smaller than
         // this number is chosen
 
-        $banners = array();
+        $banners = [];
         $sum = 0;
         // collect banners to consider, build banners array
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $sum += pow(2, $row['priority']);
-            $banners[] = array(
+            $banners[] = [
                 'ad_id'  => $row['ad_id'],
                 'offset' => $sum
-            );
+            ];
         }
 
         // draw random number and select banner
@@ -91,7 +91,7 @@ class Banner extends SimpleORMap
         $statement = DBManager::get()->query($query);
         $ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
-        $banners = array();
+        $banners = [];
         foreach ($ids as $id) {
             $banners[$id] = new Banner($id);
         }
@@ -154,10 +154,10 @@ class Banner extends SimpleORMap
             return $this->target;
         }
         if ($this->target_type === 'seminar') {
-            return URLHelper::getLink('dispatch.php/course/details/', array('sem_id' => $this->target));
+            return URLHelper::getLink('dispatch.php/course/details/', ['sem_id' => $this->target]);
         }
         if ($this->target_type === 'user') {
-            return URLHelper::getLink('dispatch.php/profile', array('username' => $this->target));
+            return URLHelper::getLink('dispatch.php/profile', ['username' => $this->target]);
         }
         if ($this->target_type === 'inst') {
             return URLHelper::getLink(
@@ -174,12 +174,12 @@ class Banner extends SimpleORMap
      *
      * @return string
      */
-    public function toImg($attributes = array())
+    public function toImg($attributes = [])
     {
-        $attr = array(
+        $attr = [
             'src'    => $GLOBALS['DYNAMIC_CONTENT_URL'] . '/banner/' . $this->banner_path,
             'border' => '0',
-        );
+        ];
         if ($this->alttext) {
             $attr['title'] = $attr['alt'] = $this->alttext;
         }

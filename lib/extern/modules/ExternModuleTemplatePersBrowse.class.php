@@ -44,19 +44,19 @@ require_once 'lib/dates.inc.php';
 
 class ExternModuleTemplatePersBrowse extends ExternModule {
 
-    public $markers = array();
-    private $approved_params = array();
+    public $markers = [];
+    private $approved_params = [];
     private $range_tree;
-    private $global_markers = array();
+    private $global_markers = [];
 
     /**
     *
     */
     public function __construct ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array(
+        $this->data_fields = [
                 'Nachname', 'Telefon', 'raum', 'Email', 'sprechzeiten'
-        );
-        $this->registered_elements = array(
+        ];
+        $this->registered_elements = [
                 'SelectInstitutes',
                 'LinkInternListCharacters' => 'LinkInternTemplate',
                 'LinkInternListInstitutes' => 'LinkInternTemplate',
@@ -65,18 +65,18 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
                 'TemplateListInstitutes' => 'TemplateGeneric',
                 'TemplateListPersons' => 'TemplateGeneric',
                 'TemplateMain' => 'TemplateGeneric'
-        );
+        ];
 
-        $this->field_names = array
-        (
+        $this->field_names = 
+        [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
                 _("Email"),
                 _("Sprechzeiten")
-        );
+        ];
 
-        $this->approved_params = array('item_id', 'initiale');
+        $this->approved_params = ['item_id', 'initiale'];
 
         $this->range_tree = TreeAbstract::GetInstance('StudipRangeTree');
 
@@ -85,11 +85,11 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
 
     public function setup () {
         $this->elements['LinkInternListCharacters']->real_name = _("Verlinkung der alpabetischen Liste zur Personenliste");
-        $this->elements['LinkInternListCharacters']->link_module_type = array(16);
+        $this->elements['LinkInternListCharacters']->link_module_type = [16];
         $this->elements['LinkInternListInstitutes']->real_name = _("Verlinkung der Einrichtungsliste zur Personenliste");
-        $this->elements['LinkInternListInstitutes']->link_module_type = array(16);
+        $this->elements['LinkInternListInstitutes']->link_module_type = [16];
         $this->elements['LinkInternPersondetails']->real_name = _("Verlinkung der Personenliste zum Modul MitarbeiterInnendetails");
-        $this->elements['LinkInternPersondetails']->link_module_type = array(2, 14);
+        $this->elements['LinkInternPersondetails']->link_module_type = [2, 14];
         $this->elements['TemplateMain']->real_name = _("Haupttemplate");
         $this->elements['TemplateListInstitutes']->real_name = _("Einrichtungsliste");
         $this->elements['TemplateListPersons']->real_name = _("Personenliste");
@@ -110,63 +110,63 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
 
     public function getMarkerDescription ($element_name) {
 
-        $markers['TemplateMain'] = array(
-            array('__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")),
-            array('###CHARACTER###', ''),
-            array('###INSTNAME###', ''),
-            array('<!-- BEGIN PERS_BROWSER -->', ''),
-            array('###LISTCHARACTERS###', _("Auflistung der Anfangsbuchstaben")),
-            array('###LISTINSTITUTES###', _("Auflistung der Einrichtungen")),
-            array('###LISTPERSONS###', _("Auflistung der gefundenen Personen")),
-            array('<!-- END PERS_BROWSER -->', '')
-        );
+        $markers['TemplateMain'] = [
+            ['__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")],
+            ['###CHARACTER###', ''],
+            ['###INSTNAME###', ''],
+            ['<!-- BEGIN PERS_BROWSER -->', ''],
+            ['###LISTCHARACTERS###', _("Auflistung der Anfangsbuchstaben")],
+            ['###LISTINSTITUTES###', _("Auflistung der Einrichtungen")],
+            ['###LISTPERSONS###', _("Auflistung der gefundenen Personen")],
+            ['<!-- END PERS_BROWSER -->', '']
+        ];
 
-        $markers['TemplateListInstitutes'] = array(
-            array('<!-- BEGIN LIST_INSTITUTES -->', ''),
-            array('<!-- BEGIN INSTITUTE -->', ''),
-            array('###INSTITUTE_NAME###', _("Name der Einrichtung (erster Level im Einrichtungsbaum)")),
-            array('###INSTITUTE_COUNT_USER###', _("Anzahl der Personen innerhalb der Einrichtung (und untergeordneten Einrichtungen)")),
-            array('###URL_LIST_PERSONS###', _("URL zur Personenlist mit diesem Anfangsbuchstaben")),
-            array('<!-- END INSTITUTE -->', ''),
-            array('<!-- END LIST_INSTITUTES -->', '')
-        );
+        $markers['TemplateListInstitutes'] = [
+            ['<!-- BEGIN LIST_INSTITUTES -->', ''],
+            ['<!-- BEGIN INSTITUTE -->', ''],
+            ['###INSTITUTE_NAME###', _("Name der Einrichtung (erster Level im Einrichtungsbaum)")],
+            ['###INSTITUTE_COUNT_USER###', _("Anzahl der Personen innerhalb der Einrichtung (und untergeordneten Einrichtungen)")],
+            ['###URL_LIST_PERSONS###', _("URL zur Personenlist mit diesem Anfangsbuchstaben")],
+            ['<!-- END INSTITUTE -->', ''],
+            ['<!-- END LIST_INSTITUTES -->', '']
+        ];
 
-        $markers['TemplateListCharacters'] = array(
-            array('<!-- BEGIN LIST_CHARACTERS -->', ''),
-            array('<!-- BEGIN CHARACTER -->', ''),
-            array('###CHARACTER_USER###', _("Anfangsbuchstabe der Namen zur Verlinkung nach alpabetische Übersicht")),
-            array('###CHARACTER_COUNT_USER###', _("Anzahl der Personennamen mit diesem Anfangsbuchstaben")),
-            array('###URL_LIST_PERSONS###', _("URL zur Personenlist mit diesem Anfangsbuchstaben")),
-            array('<!-- END CHARACTER -->', ''),
-            array('<!-- END LIST_CHARACTERS -->', '')
-        );
+        $markers['TemplateListCharacters'] = [
+            ['<!-- BEGIN LIST_CHARACTERS -->', ''],
+            ['<!-- BEGIN CHARACTER -->', ''],
+            ['###CHARACTER_USER###', _("Anfangsbuchstabe der Namen zur Verlinkung nach alpabetische Übersicht")],
+            ['###CHARACTER_COUNT_USER###', _("Anzahl der Personennamen mit diesem Anfangsbuchstaben")],
+            ['###URL_LIST_PERSONS###', _("URL zur Personenlist mit diesem Anfangsbuchstaben")],
+            ['<!-- END CHARACTER -->', ''],
+            ['<!-- END LIST_CHARACTERS -->', '']
+        ];
 
-        $markers['TemplateListPersons'] = array(
-            array('<!-- BEGIN LIST_PERSONS -->', ''),
-            array('<!-- BEGIN NO-PERSONS -->', ''),
-            array('<!-- END NO-PERSONS -->', ''),
-            array('<!-- BEGIN PERSONS -->', ''),
-            array('<!-- BEGIN PERSON -->', ''),
-            array('###FULLNAME###', ''),
-            array('###LASTNAME###', ''),
-            array('###FIRSTNAME###', ''),
-            array('###TITLEFRONT###', ''),
-            array('###TITLEREAR###', ''),
-            array('###PERSONDETAIL-HREF###', ''),
-            array('###USERNAME###', ''),
-            array('###INSTNAME###', ''),
-            array('###PHONE###', ''),
-            array('###ROOM###', ''),
-            array('###EMAIL###', ''),
-            array('###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)")),
-            array('###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)")),
-            array('###OFFICEHOURS###', ''),
-            array('###PERSON-NO###', ''),
+        $markers['TemplateListPersons'] = [
+            ['<!-- BEGIN LIST_PERSONS -->', ''],
+            ['<!-- BEGIN NO-PERSONS -->', ''],
+            ['<!-- END NO-PERSONS -->', ''],
+            ['<!-- BEGIN PERSONS -->', ''],
+            ['<!-- BEGIN PERSON -->', ''],
+            ['###FULLNAME###', ''],
+            ['###LASTNAME###', ''],
+            ['###FIRSTNAME###', ''],
+            ['###TITLEFRONT###', ''],
+            ['###TITLEREAR###', ''],
+            ['###PERSONDETAIL-HREF###', ''],
+            ['###USERNAME###', ''],
+            ['###INSTNAME###', ''],
+            ['###PHONE###', ''],
+            ['###ROOM###', ''],
+            ['###EMAIL###', ''],
+            ['###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)")],
+            ['###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)")],
+            ['###OFFICEHOURS###', ''],
+            ['###PERSON-NO###', ''],
             $this->insertDatafieldMarkers('user', $markers, 'TemplateList'),
-            array('<!-- END PERSON -->', ''),
-            array('<!-- END PERSONS -->', ''),
-            array('<!-- END LIST_PERSONS -->', '')
-        );
+            ['<!-- END PERSON -->', ''],
+            ['<!-- END PERSONS -->', ''],
+            ['<!-- END LIST_PERSONS -->', '']
+        ];
 
         return $markers[$element_name];
     }
@@ -177,13 +177,13 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         }
 
         if (trim($this->config->getValue('TemplateListInstitutes', 'template'))) {
-            $content['PERS_BROWSER']['LISTINSTITUTES'] = $this->elements['TemplateListInstitutes']->toString(array('content' => $this->getContentListInstitutes(), 'subpart' => 'LIST_INSTITUTES'));
+            $content['PERS_BROWSER']['LISTINSTITUTES'] = $this->elements['TemplateListInstitutes']->toString(['content' => $this->getContentListInstitutes(), 'subpart' => 'LIST_INSTITUTES']);
         }
         if (trim($this->config->getValue('TemplateListCharacters', 'template'))) {
-            $content['PERS_BROWSER']['LISTCHARACTERS'] = $this->elements['TemplateListCharacters']->toString(array('content' => $this->getContentListCharacters(), 'subpart' => 'LIST_CHARACTERS'));
+            $content['PERS_BROWSER']['LISTCHARACTERS'] = $this->elements['TemplateListCharacters']->toString(['content' => $this->getContentListCharacters(), 'subpart' => 'LIST_CHARACTERS']);
         }
         if (trim($this->config->getValue('TemplateListPersons', 'template'))) {
-            $content['PERS_BROWSER']['LISTPERSONS'] = $this->elements['TemplateListPersons']->toString(array('content' => $this->getContentListPersons(), 'subpart' => 'LIST_PERSONS'));
+            $content['PERS_BROWSER']['LISTPERSONS'] = $this->elements['TemplateListPersons']->toString(['content' => $this->getContentListPersons(), 'subpart' => 'LIST_PERSONS']);
         }
         // set super global markers
         $content['__GLOBAL__'] = $this->global_markers;
@@ -198,7 +198,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         $selected_item_ids = $this->config->getValue('SelectInstitutes', 'institutesselected');
         // at least one institute has to be selected in the configuration
         if (!is_array($selected_item_ids)) {
-            return array();
+            return [];
         }
 
         $sort = $this->config->getValue('Main', 'sort');
@@ -293,12 +293,12 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
                     implode("','", $this->config->getValue('Main', 'instperms')));
             }
         } else {
-            return array();
+            return [];
         }
 
         $rows = DBManager::get()->fetchAll($query);
 
-        $user_list = array();
+        $user_list = [];
         foreach ($rows as $row) {
             if (!isset($user_list[$row['user_id']])) {
                 $user_list[$row['user_id']] = $row['user_id'] . $row['Institut_id'];
@@ -306,7 +306,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         }
 
         if (count($user_list) === 0) {
-            return array();
+            return [];
         }
 
         $query = sprintf(
@@ -332,7 +332,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             $content['PERSONS']['PERSON'][$j]['FIRSTNAME'] = ExternModule::ExtHtmlReady($row['Vorname']);
             $content['PERSONS']['PERSON'][$j]['TITLEFRONT'] = ExternModule::ExtHtmlReady($row['title_front']);
             $content['PERSONS']['PERSON'][$j]['TITLEREAR'] = ExternModule::ExtHtmlReady($row['title_rear']);
-            $content['PERSONS']['PERSON'][$j]['PERSONDETAIL-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(array('link_args' => 'username=' . $row['username']));
+            $content['PERSONS']['PERSON'][$j]['PERSONDETAIL-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(['link_args' => 'username=' . $row['username']]);
             $content['PERSONS']['PERSON'][$j]['USERNAME'] = $row['username'];
             $content['PERSONS']['PERSON'][$j]['INSTNAME'] = ExternModule::ExtHtmlReady($row['Name']);
             $content['PERSONS']['PERSON'][$j]['PHONE'] = ExternModule::ExtHtmlReady($row['Telefon']);
@@ -377,13 +377,13 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         $selected_item_ids = $this->config->getValue('SelectInstitutes', 'institutesselected');
         // at least one institute has to be selected in the configuration
         if (!is_array($selected_item_ids)) {
-            return array();
+            return [];
         }
-        $content = array();
+        $content = [];
 
         // at least one institute has to be selected in the configuration
         if (!is_array($selected_item_ids)) {
-            return array();
+            return [];
         }
         $dbv = DbView::getView('sem_tree');
         if ($this->config->getValue('Main', 'onlylecturers')) {
@@ -438,9 +438,9 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         $selected_item_ids = $this->config->getValue('SelectInstitutes', 'institutesselected');
         // at least one institute has to be selected in the configuration
         if (!is_array($selected_item_ids)) {
-            return array();
+            return [];
         }
-        $content = array();
+        $content = [];
 
         $first_levels = $this->range_tree->getKids('root');
     //  var_dump($first_levels);
@@ -499,10 +499,10 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             while ($row_count = $state->fetch(PDO::FETCH_ASSOC)) {
 
                 if ($row_count['count_user'] > 0) {
-                    $content['LIST_INSTITUTES']['INSTITUTE'][] = array(
+                    $content['LIST_INSTITUTES']['INSTITUTE'][] = [
                         'INSTITUTE_NAME' => ExternModule::ExtHtmlReady($row['Name']),
                         'INSTITUTE_COUNT_USER' => $row_count['count_user'],
-                        'URL_LIST_PERSONS' => $this->getLinkToModule('LinkInternListInstitutes', array('item_id' => $row['Institut_id'])));
+                        'URL_LIST_PERSONS' => $this->getLinkToModule('LinkInternListInstitutes', ['item_id' => $row['Institut_id']])];
                 }
             }
         }
@@ -515,7 +515,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateMain']->toString(array('content' => $this->getContent($args), 'subpart' => 'PERS_BROWSE'));
+        echo $this->elements['TemplateMain']->toString(['content' => $this->getContent($args), 'subpart' => 'PERS_BROWSE']);
 
     }
 
@@ -524,7 +524,7 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateMain']->toString(array('content' => $this->getContent(), 'subpart' => 'PERS_BROWSE', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateMain']->toString(['content' => $this->getContent(), 'subpart' => 'PERS_BROWSE', 'hide_markers' => FALSE]);
 
     }
 

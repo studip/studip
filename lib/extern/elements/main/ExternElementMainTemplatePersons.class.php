@@ -45,10 +45,10 @@ class ExternElementMainTemplatePersons extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'sort', 'groupsalias', 'groupsvisible', 'grouping',
                 'nameformat', 'defaultadr', 'genericdatafields'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -64,7 +64,7 @@ class ExternElementMainTemplatePersons extends ExternElementMain {
         else
             $groups = '';
         
-        $config = array(
+        $config = [
             'name' => '',
             'sort' => '|1|0|0|0|0',
             'groupsalias' => '',
@@ -72,7 +72,7 @@ class ExternElementMainTemplatePersons extends ExternElementMain {
             'nameformat' => '',
         //  'nodatatext' => '',
             'defaultadr' => ''
-        );
+        ];
         
         return $config;
     }
@@ -131,9 +131,9 @@ class ExternElementMainTemplatePersons extends ExternElementMain {
         
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer, Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer, Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
         
         $title = _("Standard-Adresse:");

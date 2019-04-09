@@ -44,7 +44,7 @@ use BadMethodCallException;
 class Router
 {
     // instances are cached here
-    protected static $instances = array();
+    protected static $instances = [];
 
     /**
      * Returns (and if neccessary, initializes) a (cached) router object for an
@@ -81,10 +81,10 @@ class Router
     }
 
     // registered routes by method and uri template
-    protected $routes = array();
+    protected $routes = [];
 
     // registered content renderers
-    protected $renderers = array();
+    protected $renderers = [];
 
     // identified or forced content renderer
     protected $content_renderer = false;
@@ -93,13 +93,13 @@ class Router
     protected $default_renderer = false;
 
     // registered conditions
-    protected $conditions = array();
+    protected $conditions = [];
 
     // registered descriptions
-    protected $descriptions = array();
+    protected $descriptions = [];
 
     // registered consumers
-    protected $consumers = array();
+    protected $consumers = [];
 
     // associated permissions
     protected $permissions = false;
@@ -137,7 +137,7 @@ class Router
      * @return Router  returns itself to allow chaining
      * @throws Exception  if passed HTTP request method is not supported
      */
-    public function register($request_method, $uri_template, $handler, $conditions = array(), $source = 'unknown')
+    public function register($request_method, $uri_template, $handler, $conditions = [], $source = 'unknown')
     {
         // Normalize method and test whether it's supported
         $request_method = mb_strtolower($request_method);
@@ -147,7 +147,7 @@ class Router
 
         // Initialize routes storage for this method if neccessary
         if (!isset($this->routes[$request_method])) {
-            $this->routes[$request_method] = array();
+            $this->routes[$request_method] = [];
         }
 
         // Normalize uri template (always starts with a slash)
@@ -266,7 +266,7 @@ class Router
         // describe a single route
         else {
             if (!isset($this->descriptions[$uri_template])) {
-                $this->descriptions[$uri_template] = array();
+                $this->descriptions[$uri_template] = [];
             }
             if (isset($this->routes[$method][$uri_template])) {
                 $this->descriptions[$uri_template][$method] = $description;
@@ -298,20 +298,20 @@ class Router
     {
         $this->setupRoutes();
 
-        $result = array();
+        $result = [];
         foreach ($this->routes as $method => $routes) {
             foreach ($routes as $uri => $route) {
                 if ($check_access && !$this->permissions->check($uri, $method)) {
                     continue;
                 }
                 if (!isset($result[$uri])) {
-                    $result[$uri] = array();
+                    $result[$uri] = [];
                 }
                 if ($describe) {
-                    $result[$uri][$method] = array(
+                    $result[$uri][$method] = [
                         'description' => $this->descriptions[$uri][$method] ?: null,
                         'source'      => $route['source'] ?: 'unknown',
-                    );
+                    ];
                 } else {
                     $result[$uri][] = $method;
                 }
@@ -521,7 +521,7 @@ class Router
     protected function matchRoute($uri, $method, $content_renderer)
     {
         $matched    = null;
-        $parameters = array();
+        $parameters = [];
         if (isset($this->routes[$method])) {
             if ($content_renderer->extension() && mb_strpos($uri, $content_renderer->extension()) !== false) {
                 $uri = mb_substr($uri, 0, -mb_strlen($content_renderer->extension()));
@@ -543,7 +543,7 @@ class Router
                 }
             }
         }
-        return array($matched, $parameters);
+        return [$matched, $parameters];
     }
 
     /**

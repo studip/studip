@@ -64,7 +64,7 @@ class iCalController extends StudipController
             }
             $content = join($export->getExport());
             if (mb_stripos($_SERVER['HTTP_USER_AGENT'], 'google-calendar') !== false) {
-                $content = str_replace(array('CLASS:PRIVATE','CLASS:CONFIDENTIAL'), 'CLASS:PUBLIC', $content);
+                $content = str_replace(['CLASS:PRIVATE','CLASS:CONFIDENTIAL'], 'CLASS:PUBLIC', $content);
             }
             $this->response->add_header('Content-Type', 'text/calendar;charset=utf-8');
             $this->response->add_header('Content-Disposition', 'attachment; filename="studip.ics"');

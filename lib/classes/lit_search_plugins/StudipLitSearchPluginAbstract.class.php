@@ -35,9 +35,9 @@
 **/
 class StudipLitSearchPluginAbstract {
 
-    var $error_msg = array();
+    var $error_msg = [];
     var $description;
-    var $search_result = array();
+    var $search_result = [];
     var $class_name;
     var $sess_var_name;
 
@@ -65,7 +65,7 @@ class StudipLitSearchPluginAbstract {
     }
 
     function doResetSearch(){
-        $this->search_result = array();
+        $this->search_result = [];
     }
 
     function getNumHits(){
@@ -89,7 +89,7 @@ class StudipLitSearchPluginAbstract {
     }
 
     function addError($type, $msg){
-        $this->error_msg[] = array('type' => $type, 'msg' => $msg);
+        $this->error_msg[] = ['type' => $type, 'msg' => $msg];
         return true;
     }
 

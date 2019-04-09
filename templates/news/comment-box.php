@@ -17,7 +17,7 @@
         </td>
         <td width="20">
         <? if ($comments_admin): ?>
-            <?= Icon::create('trash', 'clickable', ['title' => _('Kommentar entfernen')])->asInput(array('name'=>'news_delete_comment_'.$comment['comment_id'])) ?>
+            <?= Icon::create('trash', 'clickable', ['title' => _('Kommentar entfernen')])->asInput(['name'=>'news_delete_comment_'.$comment['comment_id']]) ?>
         <? endif ?>
         </td>
     </tr>

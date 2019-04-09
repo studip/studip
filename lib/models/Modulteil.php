@@ -21,7 +21,7 @@ class Modulteil extends ModuleManagementModelTreeItem
 
     private $count_lvgruppen;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil';
 
@@ -111,7 +111,7 @@ class Modulteil extends ModuleManagementModelTreeItem
                 WHERE mmt.modul_id = ? 
                 GROUP BY modulteil_id 
                 ORDER BY position, mmt.mkdate',
-            array($modul_id)
+            [$modul_id]
         );
     }
 
@@ -129,7 +129,7 @@ class Modulteil extends ModuleManagementModelTreeItem
                     LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id) 
                 WHERE mlm.lvgruppe_id = ? 
                 ORDER BY position',
-            array($lvgruppe_id)
+            [$lvgruppe_id]
         );
     }
 
@@ -274,7 +274,7 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array(Modul::get($this->getValue('modul_id')));
+        return [Modul::get($this->getValue('modul_id'))];
     }
 
     /**
@@ -284,7 +284,7 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function assignLanguagesOfInstruction($languages)
     {
-        $assigned_languages = array();
+        $assigned_languages = [];
         $languages_flipped = array_flip($languages);
         foreach ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['values'] as $key => $language) {
             if (isset($languages_flipped[$key])) {
@@ -321,7 +321,7 @@ class Modulteil extends ModuleManagementModelTreeItem
 
     public function getResponsibleInstitutes()
     {
-        $institutes = array();
+        $institutes = [];
         $modul_insts = ModulInst::findByModul($this->modul_id, 'hauptverantwortlich');
         foreach ($modul_insts as $modul_inst) {
             $institute = Institute::find($modul_inst->institut_id);
@@ -345,7 +345,7 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function getAssignedCoursesBySemester($semester_id, $only_visible = true)
     {
-        $courses = array();
+        $courses = [];
         foreach ($this->lvgruppen as $lvgruppe) {
             $lvg_courses = $lvgruppe->getAssignedCoursesBySemester($semester_id, $only_visible);
             foreach ($lvg_courses as $course) {

@@ -39,11 +39,11 @@
 
 class ExternElementRangeTreeLevelName extends ExternElement {
 
-    var $attributes = array("aliases", "table_bgcolor",
+    var $attributes = ["aliases", "table_bgcolor",
                 "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style", "td_height", "td_align", "td_valign", "td_bgcolor",
                 "td_class", "td_style", "font_face", "font_size", "font_color",
-                "font_class", "font_style");
+                "font_class", "font_style"];
 
     /**
     * Constructor
@@ -75,7 +75,7 @@ class ExternElementRangeTreeLevelName extends ExternElement {
         global $INST_TYPE;
         
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';

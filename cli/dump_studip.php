@@ -33,7 +33,7 @@ require_once 'studip_cli_env.inc.php';
 function exec_or_die($cmd) {
     exec($cmd . ' 2>&1',$output,$ok);
     if ($ok > 0) {
-        fwrite(STDOUT,join("\n", array_merge(array($cmd), $output)) . "\n");
+        fwrite(STDOUT,join("\n", array_merge([$cmd], $output)) . "\n");
         exit(1);
     }
 }

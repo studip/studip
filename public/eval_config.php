@@ -37,12 +37,12 @@
 
     require '../lib/bootstrap.php';
 
-    page_open(array(
+    page_open([
         'sess' => 'Seminar_Session',
         'auth' => 'Seminar_Auth',
         'perm' => 'Seminar_Perm',
         'user' => 'Seminar_User'
-    ));
+    ]);
 
     $perm->check('user');
 
@@ -77,7 +77,7 @@
             $query = "INSERT INTO eval_templates_eval (eval_id, template_id)
                       VALUES (?, ?)";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($eval_id, $template_id));
+            $statement->execute([$eval_id, $template_id]);
         }
 
         $show_questions              = Request::int('show_questions');
@@ -105,12 +105,12 @@
                                           likertscale_gfx_type = VALUES(likertscale_gfx_type),
                                           mchoice_scale_gfx_type = VALUES(mchoice_scale_gfx_type)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $template_id, $GLOBALS['user']->id,
             $show_questions, $show_total_stats, $show_graphics,
             $show_questionblock_headline, $show_group_headline,
             $polscale_gfx_type, $likertscale_gfx_type, $mchoice_scale_gfx_type
-        ));
+        ]);
 
         PageLayout::postMessage(MessageBox::success(_('Die Auswertungskonfiguration wurde gespeichert.')));
     }
@@ -123,7 +123,7 @@
               JOIN eval_templates_eval AS te USING (template_id)
               WHERE te.eval_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($eval_id));
+    $statement->execute([$eval_id]);
     $templates = $statement->fetch(PDO::FETCH_ASSOC);
 
     // Open, populate and render template

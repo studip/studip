@@ -42,9 +42,9 @@ class BlubberProvider implements ActivityProvider
 
         $route = \URLHelper::getURL('api.php/blubber/posting/' . $activity->object_id, NULL, true);
 
-        $activity->object_url = array(
+        $activity->object_url = [
             $url => _('Zum Blubberstream')
-        );
+        ];
 
         $activity->object_route = $route;
 
@@ -64,7 +64,7 @@ class BlubberProvider implements ActivityProvider
         $verb = $is_new ? 'created' : 'edited';
 
         $activity = Activity::create(
-            array(
+            [
                 'provider'     => __CLASS__,
                 'context'      => $context,
                 'context_id'   => $context_id,
@@ -76,7 +76,7 @@ class BlubberProvider implements ActivityProvider
                 'object_id'    => $blubb['topic_id'], // the id of the referenced object
                 'object_type'  => 'blubber',          // type of activity object
                 'mkdate'       => $blubb['chdate']
-            )
+            ]
         );
 
     }

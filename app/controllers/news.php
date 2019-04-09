@@ -92,7 +92,7 @@ class NewsController extends StudipController
                     $news->deleteRange($range);
                     $news->store();
                 } else {
-                    $this->question = createQuestion(_('Ankündigung wirklich aus diesem Bereich entfernen?'), array('remove_news' => $news_id, 'news_range' => $range, 'confirm' => true));
+                    $this->question = createQuestion(_('Ankündigung wirklich aus diesem Bereich entfernen?'), ['remove_news' => $news_id, 'news_range' => $range, 'confirm' => true]);
                 }
             }
         }
@@ -104,7 +104,7 @@ class NewsController extends StudipController
                 if (Request::get('confirm')) {
                     $news->delete();
                 } else {
-                    $this->question = createQuestion(_('Ankündigung wirklich löschen?'), array('delete_news' => $news_id, 'confirm' => true));
+                    $this->question = createQuestion(_('Ankündigung wirklich löschen?'), ['delete_news' => $news_id, 'confirm' => true]);
                 }
             }
         }
@@ -259,7 +259,7 @@ class NewsController extends StudipController
             $news->date   = strtotime(date('Y-m-d'));// + 12*60*60;
             $news->expire = 7 * 24 * 60 * 60;
             if ($context_range && $context_range !== 'template') {
-                $add_range = new NewsRange(array('', $context_range));
+                $add_range = new NewsRange(['', $context_range]);
                 $ranges[] = $add_range->toArray();
             }
         }
@@ -329,8 +329,8 @@ class NewsController extends StudipController
         if (Request::submitted('delete_marked_comments')) {
             $this->anker = 'news_comments';
             $this->flash['question_text'] = delete_comments(Request::optionArray('mark_comments'));
-            $this->flash['question_param'] = array('mark_comments' => Request::optionArray('mark_comments'),
-                                                   'delete_marked_comments' => 1);
+            $this->flash['question_param'] = ['mark_comments' => Request::optionArray('mark_comments'),
+                                                   'delete_marked_comments' => 1];
             // reload comments
             if (!$this->flash['question_text']) {
                 $this->comments = StudipComment::GetCommentsForObject($id);
@@ -344,8 +344,8 @@ class NewsController extends StudipController
                 if (Request::submitted('news_delete_comment_'.$comment['comment_id'])) {
                     $this->anker = 'news_comments';
                     $this->flash['question_text'] = delete_comments($comment['comment_id']);
-                    $this->flash['question_param'] = array('mark_comments' => array($comment['comment_id']),
-                                                           'delete_marked_comments' => 1);
+                    $this->flash['question_param'] = ['mark_comments' => [$comment['comment_id']],
+                                                           'delete_marked_comments' => 1];
                 }
             }
         }
@@ -463,7 +463,7 @@ class NewsController extends StudipController
         $GLOBALS['perm']->check('user');
 
         // initialize
-        $news_result = array();
+        $news_result = [];
         $limit = 100;
         if (Request::get('news_filter') === 'set') {
             $this->news_searchterm = Request::option('news_filter_term');
@@ -488,14 +488,14 @@ class NewsController extends StudipController
 
         // delete news
         if (Request::submitted('remove_marked_news')) {
-            $remove_ranges = array();
+            $remove_ranges = [];
             foreach (Request::optionArray('mark_news') as $mark_id) {
                 list($news_id, $range_id) = explode('_', $mark_id);
                 $remove_ranges[$news_id][] = $range_id;
             }
             $this->flash['question_text'] = remove_news($remove_ranges);
-            $this->flash['question_param'] = array('mark_news' => Request::optionArray('mark_news'),
-                                                   'remove_marked_news' => 1);
+            $this->flash['question_param'] = ['mark_news' => Request::optionArray('mark_news'),
+                                                   'remove_marked_news' => 1];
         }
         // apply filter
         if (Request::submitted('apply_news_filter')) {
@@ -564,9 +564,9 @@ class NewsController extends StudipController
                 foreach($this->news_items[$type] as $key => $news) {
                     // has trash icon been clicked?
                     if (Request::submitted('news_remove_' . $news['object']->news_id . '_' . $news['range_id']) && Request::isPost()) {
-                        $this->flash['question_text'] = remove_news(array($news['object']->news_id => $news['range_id']));
-                        $this->flash['question_param'] = array('mark_news' => array($news['object']->news_id.'_'.$news['range_id']),
-                                                               'remove_marked_news' => 1);
+                        $this->flash['question_text'] = remove_news([$news['object']->news_id => $news['range_id']]);
+                        $this->flash['question_param'] = ['mark_news' => [$news['object']->news_id.'_'.$news['range_id']],
+                                                               'remove_marked_news' => 1];
                     }
                     // check if result set too big
                     $counter++;
@@ -662,7 +662,7 @@ class NewsController extends StudipController
     private function search_area($term)
     {
         global $perm;
-        $result = array();
+        $result = [];
         if (mb_strlen($term) < 3) {
             PageLayout::postError(_('Der Suchbegriff muss mindestens drei Zeichen lang sein.'));
             return $result;

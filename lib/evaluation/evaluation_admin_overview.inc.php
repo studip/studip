@@ -128,7 +128,7 @@ if ( $templates_search ) {
       $foundTr->addContent ($foundTd);
       $foundTable->addContent ($foundTr);
 
-      $foundTable->addContent ($lib->createGroupTitle (array (
+      $foundTable->addContent ($lib->createGroupTitle ( [
                          " ",
                          _("Titel"),
 #                        " ",
@@ -139,7 +139,7 @@ if ( $templates_search ) {
                          _("Ansehen"),
                          _("Kopieren"),
                         " "
-                         ), YES, "public_template"));
+                         ], YES, "public_template"));
       foreach ($evalIDArray as $number => $evalID) {
          $eval = new Evaluation ($evalID);
          $foundTable->addContent ($lib->createEvalRow ($eval, $number, "public_template", NO, YES));
@@ -169,7 +169,7 @@ $templateTr->addContent ($templateTd);
 $templateTable->addContent ($templateTr);
 
 if (!empty ($evalIDArray)) {
-   $templateTable->addContent ($lib->createGroupTitle (array (
+   $templateTable->addContent ($lib->createGroupTitle ( [
                   " ",
                   _("Titel"),
                   _("Freigeben"),
@@ -177,7 +177,7 @@ if (!empty ($evalIDArray)) {
                   " ",
                   " ",
                   _("Bearbeiten"),
-                  _("Löschen")), YES, "user_template" ));
+                  _("Löschen")], YES, "user_template" ));
    foreach ($evalIDArray as $number => $evalID) {
       $eval = new Evaluation ($evalID);
       $open = ($openID == $evalID);
@@ -279,14 +279,14 @@ $b->addContent(_("Noch nicht gestartete Evaluationen: "));
 $td->addContent ($b);
 
 if (!empty ($evalIDArray)) {
-   $td->addContent ($lib->createGroupTitle (array (_("Titel"),
+   $td->addContent ($lib->createGroupTitle ( [_("Titel"),
                      _("Autor"),
                      _("Startdatum"),
                      _("Status"),
                      "",
                      _("Bearbeiten"),
                      _("Löschen"),
-             "")));
+             ""]));
    foreach ($evalIDArray as $number => $evalID) {
       $eval = new Evaluation ($evalID);
       $open = ($openID == $evalID);
@@ -315,14 +315,14 @@ $b = new HTML ("b");
 $b->addContent(_("Laufende Evaluationen:"));
 $td->addContent ($b);
 if (!empty ($evalIDArray)) {
-   $td->addContent ($lib->createGroupTitle (array (_("Titel"),
+   $td->addContent ($lib->createGroupTitle ( [_("Titel"),
                   _("Autor"),
                   _("Ablaufdatum"),
                   _("Status"),
                   "",
                   _("Exportieren"),
                   _("Löschen"),
-          _("Auswertung"))));
+          _("Auswertung")]));
    foreach ($evalIDArray as $number => $evalID) {
       $eval = new Evaluation ($evalID);
       $open = ($openID == $evalID);
@@ -350,14 +350,14 @@ $b->addContent(_("Beendete Evaluationen:"));
 $td->addContent ($b);
 
 if (!empty ($evalIDArray)) {
-   $td->addContent ($lib->createGroupTitle (array (_("Titel"),
+   $td->addContent ($lib->createGroupTitle ( [_("Titel"),
                   _("Autor"),
                   "",
                   _("Status"),
                   "",
                   _("Exportieren"),
                   _("Löschen"),
-          _("Auswertung"))));
+          _("Auswertung")]));
    foreach ($evalIDArray as $number => $evalID) {
       $eval = new Evaluation ($evalID);
       $open = ($openID == $evalID);

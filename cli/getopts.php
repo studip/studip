@@ -52,17 +52,17 @@
         };
 
         // all types & subtypes
-        $types_subtypes = array('S' => 'stcr', 'V' => 'smar', 'O' => 'smar', 'A' => 'sr');
+        $types_subtypes = ['S' => 'stcr', 'V' => 'smar', 'O' => 'smar', 'A' => 'sr'];
 
         // output
-        $Ores = array();
-        $Oerr = array();
-        $Oags = array();
+        $Ores = [];
+        $Oerr = [];
+        $Oags = [];
 
         // parsed options
-        $short = array();
-        $long = array();
-        $type = array();
+        $short = [];
+        $long = [];
+        $type = [];
 
         // parse options
         foreach($params AS $opt => $names){
@@ -111,7 +111,7 @@
                 }
             }
 
-            $Ores[$opt] = array();
+            $Ores[$opt] = [];
         }
 
         // parse arguments
@@ -311,7 +311,7 @@
         }
 
         // result
-        return array($Oerr, $Ores, $Oags);
+        return [$Oerr, $Ores, $Oags];
     }
 
 ?>

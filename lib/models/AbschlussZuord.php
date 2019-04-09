@@ -18,18 +18,18 @@
 class AbschlussZuord extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_abschl_zuord';
         
-        $config['belongs_to']['abschluss'] = array(
+        $config['belongs_to']['abschluss'] = [
             'class_name' => 'Abschluss',
             'foreign_key' => 'abschluss_id'
-        );
-        $config['belongs_to']['kategorie'] = array(
+        ];
+        $config['belongs_to']['kategorie'] = [
             'class_name' => 'AbschlussKategorie',
             'foreign_key' => 'kategorie_id'
-        );
+        ];
         
         parent::configure($config);
     }

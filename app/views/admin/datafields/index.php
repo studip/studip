@@ -3,8 +3,8 @@
 ?>
 <? if (isset($flash['delete'])): ?>
     <?= createQuestion(sprintf(_('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'), $flash['delete']['name']),
-                       array('delete' => 1),
-                       array('back' => 1),
+                       ['delete' => 1],
+                       ['back' => 1],
                        $controller->url_for('admin/datafields/delete'.'/' . $flash['delete']['datafield_id'])); ?>
 <? endif; ?>
 

@@ -14,7 +14,7 @@ use Studip\Button, Studip\LinkButton;
             <label class="col-1">
                 <?= _("Tag") ?>
                 <select name="entry_day" class="size-s">
-                <? foreach (array(1,2,3,4,5,6,7) as $index) : ?>
+                <? foreach ([1,2,3,4,5,6,7] as $index) : ?>
                     <option value="<?= $index ?>" <?= (isset($show_entry['day']) && $show_entry['day'] == $index) ? 'selected="selected"' : '' ?>><?= getWeekDay($index%7, false) ?></option>
                 <? endforeach ?>
                 </select>
@@ -55,20 +55,20 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Speichern'), array('style' => 'margin-right: 20px')) ?>
+        <?= Button::createAccept(_('Speichern'), ['style' => 'margin-right: 20px']) ?>
 
         <? if ($show_entry['id']) : ?>
             <?= LinkButton::create(
                     _('Löschen'),
                     $controller->url_for('calendar/schedule/delete/'. $show_entry['id']),
-                    array('style' => 'margin-right: 20px')) ?>
+                    ['style' => 'margin-right: 20px']) ?>
         <? endif ?>
 
         <? if ($show_entry) : ?>
             <?= LinkButton::createCancel(
                     _('Abbrechen'),
                     $controller->url_for('calendar/schedule'),
-                    array('onclick' => 'STUDIP.Schedule.cancelNewEntry(); STUDIP.Calendar.click_in_progress = false;return false;')) ?>
+                    ['onclick' => 'STUDIP.Schedule.cancelNewEntry(); STUDIP.Calendar.click_in_progress = false;return false;']) ?>
         <? else: ?>
             <?= LinkButton::createCancel(_('Abbrechen'), 'javascript:STUDIP.Schedule.cancelNewEntry()') ?>
         <? endif ?>

@@ -30,7 +30,7 @@ class CoreWiki implements StudipModule {
             $navigation->addSubNavigation('show', new Navigation(_('Wiki-Startseite'), 'wiki.php?view=show'));
             $navigation->addSubNavigation('listnew', new Navigation(_('Neue Seiten'), 'wiki.php?view=listnew'));
             $navigation->addSubNavigation('listall', new Navigation(_('Alle Seiten'), 'wiki.php?view=listall'));
-            return array('wiki' => $navigation);
+            return ['wiki' => $navigation];
         } else {
             return null;
         }
@@ -41,7 +41,7 @@ class CoreWiki implements StudipModule {
      */
     function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Gemeinsames asynchrones Erstellen und Bearbeiten von Texten'),
             'description' => _('Im Wiki-Web oder kurz "Wiki" können '.
                 'verschiedene Autor/-innen gemeinsam Texte, Konzepte und andere '.
@@ -74,12 +74,12 @@ class CoreWiki implements StudipModule {
                                     'PDF-Datei ist integriert.'),
             'category' => _('Kommunikation und Zusammenarbeit'),
             'icon' => Icon::create('wiki', 'info'),
-            'screenshots' => array(
+            'screenshots' => [
                 'path' => 'plus/screenshots/Wiki-Web',
-                'pictures' => array(
-                    0 => array( 'source' => 'Gemeinsam_erstellte_Texte.jpg', 'title' => 'Gemeinsam erstellte Texte')
-                )
-            )
-        );
+                'pictures' => [
+                    0 => [ 'source' => 'Gemeinsam_erstellte_Texte.jpg', 'title' => 'Gemeinsam erstellte Texte']
+                ]
+            ]
+        ];
     }
 }

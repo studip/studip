@@ -83,12 +83,12 @@ class Step291Questionnaires extends Migration
         ");
 
         //now import old data into new tables:
-        $resultvisibility_mapping = array(
+        $resultvisibility_mapping = [
             'ever' => 'always',
             'delivery' => 'always',
             'end' => 'afterending',
             'never' => 'never'
-        );
+        ];
         $all_votes = DBManager::get()->prepare("
             SELECT vote.* FROM vote INNER JOIN auth_user_md5 ON user_id = author_id
         ");
@@ -100,8 +100,8 @@ class Step291Questionnaires extends Migration
             $questionnaire->setId($vote['vote_id']);
             $questionnaire['user_id'] = $vote['author_id'];
             $questionnaire['startdate'] = $vote['startdate'];
-            $questionnaire['stopdate'] = $vote['stopdate'] ?: (in_array($vote['state'], array("stopvis", "stopinvis")) ? time() : null);
-            $questionnaire['visible'] = in_array($vote['state'], array("active", "stopvis")) ? 1 : 0; // stopvis new active stopinvis
+            $questionnaire['stopdate'] = $vote['stopdate'] ?: (in_array($vote['state'], ["stopvis", "stopinvis"]) ? time() : null);
+            $questionnaire['visible'] = in_array($vote['state'], ["active", "stopvis"]) ? 1 : 0; // stopvis new active stopinvis
             $questionnaire['anonymous'] = $vote['anonymous'];
             $questionnaire['resultvisibility'] = $resultvisibility_mapping[$vote['resultvisibility']];
             $questionnaire['editanswers'] = $vote['changeable'];
@@ -121,8 +121,8 @@ class Step291Questionnaires extends Migration
                         $answer['chdate'] = 1; //damit man nicht aus dem chdate auf die user_id schließen kann
                         $answer['mkdate'] = 1; //mkdate genauso
                         $answer['question_id'] = $question['id'];
-                        $answerdata = array();
-                        $answers = array($answer_id);
+                        $answerdata = [];
+                        $answers = [$answer_id];
                         foreach ($answers as $key => $answer_data) {
                             $answers[$key] = $question['mapping'][$answer_data];
                         }
@@ -141,9 +141,9 @@ class Step291Questionnaires extends Migration
                     FROM vote_user
                     WHERE vote_id = :vote_id
                 ");
-                $statement->execute(array(
+                $statement->execute([
                     'vote_id' => $vote['vote_id']
-                ));
+                ]);
                 foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $anonymous_vote) {
                     $anonymous_answer = new QuestionnaireAnonymousAnswer();
                     $anonymous_answer['questionnaire_id'] = $questionnaire->getId();
@@ -160,14 +160,14 @@ class Step291Questionnaires extends Migration
                     WHERE answer_id IN (?)
                     GROUP BY user_id
                 ");
-                $statement->execute(array(array_keys($question['mapping'])));
+                $statement->execute([array_keys($question['mapping'])]);
                 foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $answer_data) {
                     $answer = new QuestionnaireAnswer();
                     $answer['user_id'] = $answer_data['user_id'];
                     $answer['chdate'] = $answer_data['votedate'];
                     $answer['mkdate'] = $answer_data['votedate'];
                     $answer['question_id'] = $question['id'];
-                    $answerdata = array();
+                    $answerdata = [];
                     $answers = explode(" ", $answer_data['answers']);
                     foreach ($answers as $key => $answer_data) {
                         $answers[$key] = $question['mapping'][$answer_data];
@@ -222,19 +222,19 @@ class Step291Questionnaires extends Migration
     {
         $database = DBManager::get();
 
-        $data = array(
+        $data = [
             'question_id' => md5(uniqid('questionnaire_questions', 1)),
             'questionnaire_id' => $questionnaireId,
             'questiontype' => $vote['type'] === "vote" ? "Vote" : "Test",
             'position' => 1,
             'chdate' => $vote['chdate'],
             'mkdate' => $vote['mkdate']
-        );
+        ];
 
-        $questiondata = array(
+        $questiondata = [
             'multiplechoice' => $vote['multiplechoice'],
             'question' => $vote['question'],
-        );
+        ];
 
         //Antwortmöglichkeiten vorsehen:
         $optionsStatement = $database->prepare("
@@ -243,10 +243,10 @@ class Step291Questionnaires extends Migration
                 WHERE vote_id = ?
                 ORDER BY position ASC
             ");
-        $optionsStatement->execute(array($vote['vote_id']));
+        $optionsStatement->execute([$vote['vote_id']]);
         $options = $optionsStatement->fetchAll(PDO::FETCH_ASSOC);
-        $mapping = array();
-        $counter = array();
+        $mapping = [];
+        $counter = [];
         foreach ($options as $key => $option) {
             $questiondata['options'][] = $option['answer'];
             $mapping[$option['answer_id']] = $key + 1;
@@ -265,11 +265,11 @@ class Step291Questionnaires extends Migration
         ");
         $insertStmt->execute($data);
 
-        return array(
+        return [
             'id' => $data['question_id'],
             'multiplechoice' => $questiondata['multiplechoice'],
             'mapping' => $mapping,
             'counter' => $counter
-        );
+        ];
     }
 }

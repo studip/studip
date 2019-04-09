@@ -88,7 +88,7 @@ class Ilias4ConnectedLink extends Ilias3ConnectedLink
             $output .= "&nbsp;" . Button::create(_('Entfernen'), 'remove');
         } elseif ($connected_cms[$this->cms_type]->content_module[$current_module]->isAllowed(OPERATION_WRITE)) {
             $output .= "<div align=\"left\">";
-            if ($connected_cms[$this->cms_type]->content_module[$current_module]->isAllowed(OPERATION_COPY) AND (! in_array($connected_cms[$this->cms_type]->content_module[$current_module]->module_type, array("lm", "htlm", "sahs", "cat", "crs", "dbk")))) {
+            if ($connected_cms[$this->cms_type]->content_module[$current_module]->isAllowed(OPERATION_COPY) AND (! in_array($connected_cms[$this->cms_type]->content_module[$current_module]->module_type, ["lm", "htlm", "sahs", "cat", "crs", "dbk"]))) {
                 $output .= "<input type=\"CHECKBOX\" name=\"copy_object\" value=\"1\">";
                 $output .= _("Als Kopie anlegen") . "&nbsp;";
                 $output .= Icon::create('info-circle', 'inactive', ['title' => _('Wenn Sie diese Option wählen, wird eine identische Kopie als eigenständige Instanz des Lernmoduls erstellt. Anderenfalls wird ein Link zum Lernmodul gesetzt.')])->asImg();

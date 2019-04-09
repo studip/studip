@@ -13,12 +13,12 @@
 
 <?
     $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
-    $pagination->set_attributes(array(
+    $pagination->set_attributes([
         'perPage'      => $entries_per_page,
         'num_postings' => $entries,
         'page'         => $page,
         'pagelink'     => $controller->url_for('bb/index/%u')
-    ));
+    ]);
     echo $pagination->render();
 ?>
 <br><br>

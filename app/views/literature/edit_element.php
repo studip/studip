@@ -1,6 +1,6 @@
 <section id="lit_edit_element">
     <?= $form->getFormStart(URLHelper::getLink('dispatch.php/literature/edit_element?_catalog_id=' . $catalog_id),
-        array('class' => 'default', 'data-dialog' => '')) ?>
+        ['class' => 'default', 'data-dialog' => '']) ?>
     <fieldset>
         <legend><?= ($element->isNewEntry()) ? _("Neuer Eintrag") : _('Eintrag') ?></legend>
 
@@ -56,17 +56,17 @@
             <?= $form->getFormButton('send') . ($element->isNewEntry() ? '' : $form->getFormButton('delete')) ?>
         <? elseif ($catalog_id != 'new_entry') : ?>
             <?= Studip\LinkButton::create(_('Kopie erstellen'), URLHelper::getURL('dispatch.php/literature/edit_element?cmd=clone_entry&_catalog_id=' . $catalog_id),
-                array('title' => _('Eine Kopie dieses Eintrages anlegen'), 'data-dialog' => '')) ?>
+                ['title' => _('Eine Kopie dieses Eintrages anlegen'), 'data-dialog' => '']) ?>
         <? endif ?>
         <? if ($catalog_id != "new_entry") : ?>
-            <?= Assets::img('blank.gif', array('size' => '15@28')) ?>
+            <?= Assets::img('blank.gif', ['size' => '15@28']) ?>
             <?= Studip\LinkButton::create(_('Verfügbarkeit'), URLHelper::getURL('dispatch.php/literature/edit_element?cmd=check_entry&_catalog_id=' . $catalog_id),
-                array('title' => _('Verfügbarkeit überprüfen'), 'data-dialog' => '')) ?>
+                ['title' => _('Verfügbarkeit überprüfen'), 'data-dialog' => '']) ?>
         <? endif ?>
         <? if ($catalog_id != "new_entry" && !$clipboard->isInClipboard($catalog_id)) : ?>
-            <?= Assets::img('blank.gif', array('size' => '15@28')) ?>
+            <?= Assets::img('blank.gif', ['size' => '15@28']) ?>
             <?= Studip\LinkButton::create(_('Merkliste'), URLHelper::getURL('dispatch.php/literature/edit_element?cmd=in_clipboard&_catalog_id=' . $catalog_id),
-                array('title' => _('Eintrag in Merkliste aufnehmen'), 'data-dialog' => '')) ?>
+                ['title' => _('Eintrag in Merkliste aufnehmen'), 'data-dialog' => '']) ?>
         <? endif ?>
     </footer>
 

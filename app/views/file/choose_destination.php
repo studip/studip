@@ -1,5 +1,5 @@
 <?php
-$options = array();
+$options = [];
 /*if (Request::get('to_plugin')) {
     $options['to_plugin'] = Request::get('to_plugin');
 }*/

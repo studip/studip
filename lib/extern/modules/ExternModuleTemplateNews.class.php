@@ -45,20 +45,20 @@ require_once 'lib/statusgruppe.inc.php';
 
 class ExternModuleTemplateNews extends ExternModule {
 
-    var $markers = array();
-    var $args = array('seminar_id');
+    var $markers = [];
+    var $args = ['seminar_id'];
 
     /**
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
 
-        $this->data_fields = array();
-        $this->registered_elements = array(
+        $this->data_fields = [];
+        $this->registered_elements = [
                 'LinkInternTemplate',
                 'TemplateGeneric'
-        );
-        $this->field_names = array();
+        ];
+        $this->field_names = [];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
@@ -74,7 +74,7 @@ class ExternModuleTemplateNews extends ExternModule {
 
         $this->elements['TemplateGeneric']->real_name = _("Template");
         // Set internal link to module 'staff details'
-        $this->elements['LinkInternTemplate']->link_module_type = array(2, 14);
+        $this->elements['LinkInternTemplate']->link_module_type = [2, 14];
         $this->elements['LinkInternTemplate']->real_name = _("Verlinkung zum Modul MitarbeiterInnendetails");
 
     }
@@ -88,65 +88,65 @@ class ExternModuleTemplateNews extends ExternModule {
     }
 
     function getMarkerDescription ($element_name) {
-        $markers['TemplateGeneric'][] = array('__GLOBAL__', '');
-        $markers['TemplateGeneric'][] = array('###STUDIP-LINK###','');
-        $markers['TemplateGeneric'][] = array('###NEWS-COUNT###', _('Anzahl aller sichtbaren News'));
-        $markers['TemplateGeneric'][] = array('###ARCHIV-NEWS-COUNT###', _('Anzahl aller archivierten News'));
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NO-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('###NO-NEWS_TEXT###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END NO-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN ALL-NEWS -->', _('Alle sichtbaren News'));
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN SINGLE-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('###NEWS_DATE###', '');
-        $markers['TemplateGeneric'][] = array('###NEWS_TOPIC###', '');
-        $markers['TemplateGeneric'][] = array('###NEWS_BODY###', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NEWS_ADMIN-MESSAGE -->', '');
-        $markers['TemplateGeneric'][] = array('###NEWS_ADMIN-MESSAGE###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END NEWS_ADMIN-MESSAGE -->', '');
-        $markers['TemplateGeneric'][] = array('###NEWS_NO###', '');
-        $markers['TemplateGeneric'][] = array('###FULLNAME###', _("Vollständiger Name des Autors."));
-        $markers['TemplateGeneric'][] = array('###LASTNAME###', _("Nachname des Autors."));
-        $markers['TemplateGeneric'][] = array('###FIRSTNAME###', _("Vorname des Autors."));
-        $markers['TemplateGeneric'][] = array('###TITLEFRONT###', _("Titel des Autors (vorangestellt)."));
-        $markers['TemplateGeneric'][] = array('###TITLEREAR###', _("Titel des Autors (nachgestellt)."));
-        $markers['TemplateGeneric'][] = array('###PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###USERNAME###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END SINGLE-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END ALL-NEWS -->', _('Ende aller sichtbaren News'));
+        $markers['TemplateGeneric'][] = ['__GLOBAL__', ''];
+        $markers['TemplateGeneric'][] = ['###STUDIP-LINK###',''];
+        $markers['TemplateGeneric'][] = ['###NEWS-COUNT###', _('Anzahl aller sichtbaren News')];
+        $markers['TemplateGeneric'][] = ['###ARCHIV-NEWS-COUNT###', _('Anzahl aller archivierten News')];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NO-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['###NO-NEWS_TEXT###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END NO-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN ALL-NEWS -->', _('Alle sichtbaren News')];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN SINGLE-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['###NEWS_DATE###', ''];
+        $markers['TemplateGeneric'][] = ['###NEWS_TOPIC###', ''];
+        $markers['TemplateGeneric'][] = ['###NEWS_BODY###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NEWS_ADMIN-MESSAGE -->', ''];
+        $markers['TemplateGeneric'][] = ['###NEWS_ADMIN-MESSAGE###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END NEWS_ADMIN-MESSAGE -->', ''];
+        $markers['TemplateGeneric'][] = ['###NEWS_NO###', ''];
+        $markers['TemplateGeneric'][] = ['###FULLNAME###', _("Vollständiger Name des Autors.")];
+        $markers['TemplateGeneric'][] = ['###LASTNAME###', _("Nachname des Autors.")];
+        $markers['TemplateGeneric'][] = ['###FIRSTNAME###', _("Vorname des Autors.")];
+        $markers['TemplateGeneric'][] = ['###TITLEFRONT###', _("Titel des Autors (vorangestellt).")];
+        $markers['TemplateGeneric'][] = ['###TITLEREAR###', _("Titel des Autors (nachgestellt).")];
+        $markers['TemplateGeneric'][] = ['###PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###USERNAME###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END SINGLE-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END ALL-NEWS -->', _('Ende aller sichtbaren News')];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN ALL-ARCHIV-NEWS -->', _('Alle archivierten News'));
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN SINGLE-ARCHIVE-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_NEWS_DATE###', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_NEWS_TOPIC###', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_NEWS_BODY###', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN ARCHIV-NEWS-ADMIN-MESSAGE -->', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV-NEWS_ADMIN-MESSAGE###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END ARCHIV-NEWS-ADMIN-MESSAGE -->', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_NEWS_NO###', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_FULLNAME###', _("Vollständiger Name des Autors."));
-        $markers['TemplateGeneric'][] = array('###ARCHIV_LASTNAME###', _("Nachname des Autors."));
-        $markers['TemplateGeneric'][] = array('###ARCHIV_FIRSTNAME###', _("Vorname des Autors."));
-        $markers['TemplateGeneric'][] = array('###ARCHIV_TITLEFRONT###', _("Titel des Autors (vorangestellt)."));
-        $markers['TemplateGeneric'][] = array('###ARCHIV_TITLEREAR###', _("Titel des Autors (nachgestellt)."));
-        $markers['TemplateGeneric'][] = array('###ARCHIV_PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###ARCHIV_USERNAME###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END SINGLE-ARCHIVE-NEWS -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END ALL-ARCHIV-NEWS -->', _('Ende aller archivierten News'));
-        $markers['TemplateGeneric'][] = array('<!-- END NEWS -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN ALL-ARCHIV-NEWS -->', _('Alle archivierten News')];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN SINGLE-ARCHIVE-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_NEWS_DATE###', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_NEWS_TOPIC###', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_NEWS_BODY###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN ARCHIV-NEWS-ADMIN-MESSAGE -->', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV-NEWS_ADMIN-MESSAGE###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END ARCHIV-NEWS-ADMIN-MESSAGE -->', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_NEWS_NO###', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_FULLNAME###', _("Vollständiger Name des Autors.")];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_LASTNAME###', _("Nachname des Autors.")];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_FIRSTNAME###', _("Vorname des Autors.")];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_TITLEFRONT###', _("Titel des Autors (vorangestellt).")];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_TITLEREAR###', _("Titel des Autors (nachgestellt).")];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###ARCHIV_USERNAME###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END SINGLE-ARCHIVE-NEWS -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END ALL-ARCHIV-NEWS -->', _('Ende aller archivierten News')];
+        $markers['TemplateGeneric'][] = ['<!-- END NEWS -->', ''];
 
         return $markers[$element_name];
     }
 
     function getContent ($args = NULL, $raw = FALSE)
     {
-        $content = array();
+        $content = [];
         $error_message = "";
 
         // stimmt die übergebene range_id?
         $query = "SELECT 1 FROM Institute WHERE Institut_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->config->range_id));
+        $statement->execute([$this->config->range_id]);
         if (!$statement->fetchColumn()) {
             $error_message = $GLOBALS['EXTERN_ERROR_MESSAGE'];
         }
@@ -199,7 +199,7 @@ class ExternModuleTemplateNews extends ExternModule {
                           LEFT JOIN user_info AS ui USING (user_id)
                           WHERE aum.user_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($news_detail['user_id']));
+                $statement->execute([$news_detail['user_id']]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 if ($temp) {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['FULLNAME'] = ExternModule::ExtHtmlReady($temp['fullname']);
@@ -208,7 +208,7 @@ class ExternModuleTemplateNews extends ExternModule {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['TITLEFRONT'] = ExternModule::ExtHtmlReady($temp['title_front']);
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['TITLEREAR'] = ExternModule::ExtHtmlReady($temp['title_rear']);
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['USERNAME'] = $temp['username'];
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(array('link_args' => 'username=' . $temp['username']));
+                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $temp['username']]);
                 }
                 $i++;
             }
@@ -240,7 +240,7 @@ class ExternModuleTemplateNews extends ExternModule {
                           LEFT JOIN user_info AS ui USING (user_id)
                           WHERE aum.user_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($news_detail['user_id']));
+                $statement->execute([$news_detail['user_id']]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 if ($temp) {
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_FULLNAME'] = ExternModule::ExtHtmlReady($temp['fullname']);
@@ -249,7 +249,7 @@ class ExternModuleTemplateNews extends ExternModule {
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_TITLEFRONT'] = ExternModule::ExtHtmlReady($temp['title_front']);
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_TITLEREAR'] = ExternModule::ExtHtmlReady($temp['title_rear']);
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_USERNAME'] = $temp['username'];
-                    $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(array('link_args' => 'username=' . $temp['username']));
+                    $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $temp['username']]);
                 }
                 $j++;
             }
@@ -264,7 +264,7 @@ class ExternModuleTemplateNews extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent(), 'subpart' => 'NEWS'));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent(), 'subpart' => 'NEWS']);
 
     }
 
@@ -273,7 +273,7 @@ class ExternModuleTemplateNews extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent(), 'subpart' => 'NEWS', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent(), 'subpart' => 'NEWS', 'hide_markers' => FALSE]);
 
     }
 

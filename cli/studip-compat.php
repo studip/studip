@@ -47,7 +47,7 @@ if (count($folders) > 0 && preg_match('/^\d+\.\d+$/', $folders[0])) {
 
 // Prepare logging mechanism
 $log = function ($message) use ($no_colors) {
-    $ansi = array(
+    $ansi = [
         'off'        => 0,
         'bold'       => 1,
         'italic'     => 3,
@@ -71,7 +71,7 @@ $log = function ($message) use ($no_colors) {
         'magenta_bg' => 45,
         'cyan_bg'    => 46,
         'white_bg'   => 47
-    );
+    ];
 
     $message = trim($message);
 

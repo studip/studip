@@ -67,7 +67,7 @@ class ShowObject {
                   WHERE ro.resource_id = ?
                   ORDER BY rp.name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->resObject->getId()));
+        $statement->execute([$this->resObject->getId()]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 

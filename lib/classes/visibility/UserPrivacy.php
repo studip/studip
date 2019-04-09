@@ -44,10 +44,10 @@ class UserPrivacy
     {
         if (!isset($this->profileSettings)) {
             // if the default categories have not been created, do this now
-            if (User_Visibility_Settings::countBySQL('user_id = ? AND category = 0', array($this->user->id)) == 0) {
+            if (User_Visibility_Settings::countBySQL('user_id = ? AND category = 0', [$this->user->id]) == 0) {
                 Visibility::createDefaultCategories($this->user->id);
             }
-            $this->profileSettings = User_Visibility_Settings::findBySQL("user_id = ? AND parent_id = 0 AND identifier <> 'plugins'", array($this->user->id));
+            $this->profileSettings = User_Visibility_Settings::findBySQL("user_id = ? AND parent_id = 0 AND identifier <> 'plugins'", [$this->user->id]);
             foreach ($this->profileSettings as $i => $vis) {
                 $vis->loadChildren();
                 // remap child settings to default categories
@@ -71,14 +71,14 @@ class UserPrivacy
                         }
 
                         $child = $idmap[$key] ?: new User_Visibility_Settings();
-                        $child->setData(array(
+                        $child->setData([
                             'user_id'    => $this->user->id,
                             'parent_id'  => $vis->id,
                             'category'   => 1,
                             'name'       => $element['name'],
                             'state'      => $element['visibility'],
                             'identifier' => $key
-                        ));
+                        ]);
                         $child->store();
                         $child->parent = $vis;
                         $child->setDisplayed();
@@ -125,7 +125,7 @@ class UserPrivacy
         if ($db == null) {
             $db = DBManager::get();
         }
-        $params = array();
+        $params = [];
         $sql = "UPDATE user_visibility_settings SET state = ? WHERE visibilityid = ? ";
         $params[] = $state;
         $params[] = $key;
@@ -148,7 +148,7 @@ class UserPrivacy
         $result['row_colspan'] = $privacy_states->count();
         $result['header_names'] = $privacy_states->getAllNames();
         $result['states'] = $privacy_states->getAllKeys();
-        $result['entry'] = array();
+        $result['entry'] = [];
         foreach ($this->getProfileSettings() as $child) {
             $child->getHTMLArgs($result['entry']);
         }

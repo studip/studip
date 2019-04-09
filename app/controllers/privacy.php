@@ -201,7 +201,7 @@ class PrivacyController extends AuthenticatedController
             $data = $table['table_content'];
             if ($data) {
                 $headers = array_keys($data[0]);
-                $csvdata = array();
+                $csvdata = [];
                 foreach ($data as $row) {
                     $csvdata[] = array_values($row);
                 }
@@ -314,11 +314,11 @@ class PrivacyController extends AuthenticatedController
          // add numbering structure to zip
         $source_files = $storage->getFileData();
         
-        $file_names = array();
+        $file_names = [];
         foreach ($source_files as $k => $file_data) {
             $file_names[$file_data['name']][] = $k;
         }
-        $fname_checker = array();
+        $fname_checker = [];
         do {
             $not_clear = false;
             foreach ($file_names as $fname => $dups) {

@@ -64,7 +64,7 @@ function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse =
 
     $stmt = DBManager::get()->prepare("SELECT * FROM admission_seminar_user
             WHERE seminar_id = ? AND user_id = ?");
-    $stmt->execute(array($seminar_id, $user_id));
+    $stmt->execute([$seminar_id, $user_id]);
     if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // copy the studycourse from admission_seminar_user
         if ($copy_studycourse && $data['studiengang_id']) {
@@ -94,7 +94,7 @@ function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse =
     $stmt = DBManager::get()->prepare('INSERT IGNORE INTO seminar_user
         (Seminar_id, user_id, status, comment, gruppe, mkdate)
         VALUES (?, ?, ?, ?, ?, ?)');
-    $stmt->execute(array($seminar_id, $user_id, $status, $admission_comment, $colour_group, $mkdate));
+    $stmt->execute([$seminar_id, $user_id, $status, $admission_comment, $colour_group, $mkdate]);
 
     NotificationCenter::postNotification('UserDidEnterCourse', $seminar_id, $user_id);
 
@@ -102,7 +102,7 @@ function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse =
         // delete the entries, user is now in the seminar
         $stmt = DBManager::get()->prepare('DELETE FROM admission_seminar_user
             WHERE user_id = ? AND seminar_id = ?');
-        $stmt->execute(array($user_id, $seminar_id));
+        $stmt->execute([$user_id, $seminar_id]);
 
         //renumber the waiting/accepted/lot list, a user was deleted from it
         renumber_admission($seminar_id);
@@ -150,7 +150,7 @@ function renumber_admission ($seminar_id, $send_message = TRUE)
                   WHERE seminar_id = ? AND status = 'awaiting'
                   ORDER BY position";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar->id));
+        $statement->execute([$seminar->id]);
         $user_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         // Prepare statement that updates the position
@@ -162,7 +162,7 @@ function renumber_admission ($seminar_id, $send_message = TRUE)
         $position = 1;
         //Liste neu numerieren
         foreach ($user_ids as $user_id) {
-            $update_statement->execute(array($position, $user_id, $seminar->id));
+            $update_statement->execute([$position, $user_id, $seminar->id]);
 
             //User benachrichten
             if ($update_statement->rowCount() && Config::get()->NOTIFY_ON_WAITLIST_ADVANCE && $send_message) {
@@ -229,7 +229,7 @@ function normal_update_admission($seminar_id, $send_message = TRUE)
                       ORDER BY position
                       LIMIT " . (int)$count;
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($seminar->getId()));
+            $statement->execute([$seminar->getId()]);
             $temp = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($temp as $row) {
@@ -241,11 +241,11 @@ function normal_update_admission($seminar_id, $send_message = TRUE)
                                 (user_id, Seminar_id, status, gruppe, mkdate)
                               VALUES (?, ?, 'autor', ?, UNIX_TIMESTAMP())";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array(
+                    $statement->execute([
                         $row['user_id'],
                         $seminar->getId(),
                         $group
-                    ));
+                    ]);
                     $affected = $statement->rowCount();
 
                     NotificationCenter::postNotification('UserDidEnterCourse', $seminar->getId(), $row['user_id']);
@@ -254,10 +254,10 @@ function normal_update_admission($seminar_id, $send_message = TRUE)
                               SET status = 'accepted'
                               WHERE user_id = ? AND seminar_id = ?";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array(
+                    $statement->execute([
                         $row['user_id'],
                         $seminar->getId()
-                    ));
+                    ]);
                     $affected = $statement->rowCount();
                 }
                 if ($affected > 0) {
@@ -267,10 +267,10 @@ function normal_update_admission($seminar_id, $send_message = TRUE)
                         $query = "DELETE FROM admission_seminar_user
                                   WHERE user_id = ? AND seminar_id = ?";
                         $statement = DBManager::get()->prepare($query);
-                        $statement->execute(array(
+                        $statement->execute([
                             $row['user_id'],
                             $seminar->getId()
-                        ));
+                        ]);
                         $affected = $statement->rowCount();
                     } else {
                         $affected = 0;
@@ -319,12 +319,12 @@ function admission_seminar_user_insert($user_id, $seminar_id, $status, $studieng
                     (user_id, seminar_id, status, mkdate, comment)
                   VALUES (?, ?, ?, UNIX_TIMESTAMP(), ?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $user_id,
             $seminar_id,
             $status,
             $comment
-        ));
+        ]);
         return $statement->rowCount();
     } elseif ($status == 'awaiting') {
         $query = "INSERT INTO admission_seminar_user
@@ -333,12 +333,12 @@ function admission_seminar_user_insert($user_id, $seminar_id, $status, $studieng
                   FROM admission_seminar_user
                   WHERE seminar_id = ? AND status != 'accepted'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $user_id,
             $seminar_id,
             $comment,
             $seminar_id
-        ));
+        ]);
     }
     return admission_seminar_user_get_position($user_id, $seminar_id);
 }
@@ -360,7 +360,7 @@ function admission_seminar_user_get_position($user_id, $seminar_id)
               FROM admission_seminar_user
               WHERE user_id = ? AND seminar_id = ? AND status='awaiting'";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id, $seminar_id));
+    $statement->execute([$user_id, $seminar_id]);
     $position = $statement->fetchColumn();
 
     return $position == 'na' ? true : $position;

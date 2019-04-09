@@ -59,7 +59,7 @@ class Step00247ForumDataMigration extends Migration
     static function activatePlugin($seminar_id, $plugin_id) {
         $stmt = DBManager::get()->prepare("INSERT IGNORE INTO plugins_activated
             (`pluginid`, `poiid`, `state`) VALUES (?, ?, 'on')");
-        $stmt->execute(array($plugin_id, 'sem' . $seminar_id));
+        $stmt->execute([$plugin_id, 'sem' . $seminar_id]);
     }
 
     static function migrateIssues($seminar_id)
@@ -68,14 +68,14 @@ class Step00247ForumDataMigration extends Migration
             LEFT JOIN px_topics p ON (p.topic_id = t.issue_id)
             WHERE p.topic_id IS NOT NULL
                 AND p.Seminar_id = ?");
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         $stmt_insert = DBManager::get()->prepare("INSERT IGNORE INTO forum_entries_issues
             (topic_id, issue_id) 
             VALUES (?, ?)");
 
         while ($topic_id = $stmt->fetchColumn()) {
-            $stmt_insert->execute(array($topic_id, $topic_id));
+            $stmt_insert->execute([$topic_id, $topic_id]);
         }
     }
 
@@ -83,7 +83,7 @@ class Step00247ForumDataMigration extends Migration
     {
         $stmt = DBManager::get()->prepare("SELECT * FROM object_user_visits
             WHERE object_id = ? AND type = 'forum'");
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
         
         // do not overwrite any existing visit-timestamps, they are more
         //  accuarate than the one from object_user_visits
@@ -92,19 +92,19 @@ class Step00247ForumDataMigration extends Migration
             VALUES (?, ?, ?, ?)");
         
         while ($data = $stmt->fetch()) {
-            $stmt_insert->execute(array($data['user_id'], $data['object_id'], 
-                $data['visitdate'], $data['last_visitdate']));
+            $stmt_insert->execute([$data['user_id'], $data['object_id'], 
+                $data['visitdate'], $data['last_visitdate']]);
         }
     }
 
     static function getList($seminar_id, $get_childs = true)
     {
-        $ret = array();
+        $ret = [];
 
         $stmt = DBManager::get()->prepare("SELECT * FROM px_topics
             WHERE Seminar_id = ? AND topic_id = root_id
             ORDER BY mkdate ASC");
-        $stmt->execute(array($seminar_id, $parent_id));
+        $stmt->execute([$seminar_id, $parent_id]);
         
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // set depth-level
@@ -129,24 +129,24 @@ class Step00247ForumDataMigration extends Migration
         $stmt = DBManager::get()->prepare("SELECT * FROM px_topics
             WHERE Seminar_id = ? AND parent_id = ?
             ORDER BY mkdate ASC");
-        $stmt->execute(array($seminar_id, $parent_id));
+        $stmt->execute([$seminar_id, $parent_id]);
         
         return $stmt->fetchAll();
     }
 
     static function getChilds($seminar_id, $parent_id, $level = 1)
     {
-        $ret = array();
+        $ret = [];
         
         $stmt = DBManager::get()->prepare("SELECT * FROM px_topics
             WHERE Seminar_id = ? AND parent_id = ?
             ORDER BY mkdate ASC");
-        $stmt->execute(array($seminar_id, $parent_id));
+        $stmt->execute([$seminar_id, $parent_id]);
         $entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($entries as $data)  {
             // use a queue to prevent max-nesting problems
-            $queue = array();
+            $queue = [];
             $queue[] = $data;
             $ret[] = $data;
 
@@ -155,7 +155,7 @@ class Step00247ForumDataMigration extends Migration
                 $checkfor = array_shift($queue);
 
                 // get childs (if any)
-                $stmt->execute(array($seminar_id, $checkfor['topic_id']));
+                $stmt->execute([$seminar_id, $checkfor['topic_id']]);
                 $childs = $stmt->fetchAll();
 
                 if (!empty($childs)) {
@@ -177,7 +177,7 @@ class Step00247ForumDataMigration extends Migration
     static function migrateEntries($seminar_id)
     {
             foreach (self::getList($seminar_id, false) as $element) {
-                self::insert(array(
+                self::insert([
                     'topic_id'    => $element['topic_id'],
                     'seminar_id'  => $seminar_id,
                     'user_id'     => $element['user_id'],
@@ -187,12 +187,12 @@ class Step00247ForumDataMigration extends Migration
                     'author_host' => $element['author_host'],
                     'mkdate'      => $element['mkdate'],
                     'chdate'      => $element['chdate']
-                ), $seminar_id);
+                ], $seminar_id);
 
                 //echo $element['name'] . '<br>';
                 
                 foreach (self::getEntries($seminar_id, $element['topic_id']) as $child1) {
-                    self::insert(array(
+                    self::insert([
                         'topic_id'    => $child1['topic_id'],
                         'seminar_id'  => $seminar_id,
                         'user_id'     => $child1['user_id'],
@@ -202,11 +202,11 @@ class Step00247ForumDataMigration extends Migration
                         'author_host' => $child1['author_host'],
                         'mkdate'      => $child1['mkdate'],
                         'chdate'      => $child1['chdate']
-                    ), $element['topic_id']);
+                    ], $element['topic_id']);
 
                     //echo '&bullet; ' . $child1['name'] . '<br>';
                     foreach(self::getChilds($seminar_id, $child1['topic_id']) as $child2) {
-                        self::insert(array(
+                        self::insert([
                             'topic_id'    => $child2['topic_id'],
                             'seminar_id'  => $seminar_id,
                             'user_id'     => $child2['user_id'],
@@ -216,7 +216,7 @@ class Step00247ForumDataMigration extends Migration
                             'author_host' => $child2['author_host'],
                             'mkdate'      => $child2['mkdate'],
                             'chdate'      => $child2['chdate']
-                        ), $child1['topic_id']);
+                        ], $child1['topic_id']);
                         
                         //echo '&bullet; &bullet;' . $child2['name'] . '<br>';
                     }
@@ -227,14 +227,14 @@ class Step00247ForumDataMigration extends Migration
    
     static function flattenList($list)
     {
-        $new_list = array();
-        $zw = array();
+        $new_list = [];
+        $zw = [];
 
         foreach ($list as $element) {
             if ($element['level'] == 0) {
                 if (!empty($zw)) {
                     $new_list[] = $zw;
-                    $zw = array();
+                    $zw = [];
                 }
                 
                 $zw = $element;
@@ -262,9 +262,9 @@ class Step00247ForumDataMigration extends Migration
             (topic_id, seminar_id, user_id, name, content, mkdate, chdate, author,
                 author_host, lft, rgt, depth, anonymous)
             VALUES (? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute(array($data['topic_id'], $data['seminar_id'], $data['user_id'],
+        $stmt->execute([$data['topic_id'], $data['seminar_id'], $data['user_id'],
             $data['name'], $data['content'], $data['mkdate'], $data['chdate'], $data['author'], $data['author_host'] ?: '',
-            $constraint['rgt'], $constraint['rgt'] + 1, $constraint['depth'] + 1, 0));
+            $constraint['rgt'], $constraint['rgt'] + 1, $constraint['depth'] + 1, 0]);
     }
     
     static function getConstraints($topic_id)
@@ -272,7 +272,7 @@ class Step00247ForumDataMigration extends Migration
         // look up the range of postings
         $range_stmt = DBManager::get()->prepare("SELECT *
             FROM forum_entries WHERE topic_id = ?");
-        $range_stmt->execute(array($topic_id));
+        $range_stmt->execute([$topic_id]);
         if (!$data = $range_stmt->fetch(PDO::FETCH_ASSOC)) {
             return false;
         }
@@ -288,18 +288,18 @@ class Step00247ForumDataMigration extends Migration
         // check, if the root entry in the topic tree exists
         $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_entries
             WHERE topic_id = ?");
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
         if ($stmt->fetchColumn() == 0) {
             $stmt = DBManager::get()->prepare("INSERT INTO forum_entries
                 (topic_id, seminar_id, name, mkdate, chdate, lft, rgt, depth)
                 VALUES (?, ?, 'Übersicht', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 1, 0)");
-            $stmt->execute(array($seminar_id, $seminar_id));
+            $stmt->execute([$seminar_id, $seminar_id]);
         }
 
         // make sure, that the category "Allgemein" exists
         $stmt = DBManager::get()->prepare("REPLACE INTO forum_categories
             (category_id, seminar_id, entry_name) VALUES (?, ?, 'Allgemein')");
-        $stmt->execute(array($seminar_id, $seminar_id));
+        $stmt->execute([$seminar_id, $seminar_id]);
     }
 
     function down()

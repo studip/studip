@@ -27,7 +27,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Auswählen'), 'selectrole', array('title' => _('Rolle auswählen')))?>
+        <?= Button::create(_('Auswählen'), 'selectrole', ['title' => _('Rolle auswählen')])?>
     </footer>
 </form>
 
@@ -124,9 +124,9 @@ use Studip\Button, Studip\LinkButton;
             <tr>
                 <td colspan="6">
                     <?= _('Alle markierten Einträge') ?>
-                    <?= Studip\Button::create(_('Löschen'), 'delete', array(
+                    <?= Studip\Button::create(_('Löschen'), 'delete', [
                             'data-confirm' => _('Sollen den markierten Personen wirklich die Rolle entzogen werden?'),
-                    )) ?>
+                    ]) ?>
                 </td>
             </tr>
         </tfoot>
@@ -205,9 +205,9 @@ use Studip\Button, Studip\LinkButton;
             <tr>
                 <td colspan="6">
                     <?= _('Alle markierten Einträge') ?>
-                    <?= Studip\Button::create(_('Löschen'), 'delete', array(
+                    <?= Studip\Button::create(_('Löschen'), 'delete', [
                             'data-confirm' => _('Sollen den markierten Plugins wirklich die Rolle entzogen werden?'),
-                    )) ?>
+                    ]) ?>
                 </td>
             </tr>
         </tfoot>

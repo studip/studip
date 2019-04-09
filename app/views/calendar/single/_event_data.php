@@ -62,7 +62,7 @@
                     <?= LinkButton::create(_('Löschen'), $controller->url_for('calendar/single/delete/' . implode('/', $event->getId()))) ?>
                     <? endif; ?>
                     <? if (!Request::isXhr()) : ?>
-                    <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, array($event->getStart()))) ?>
+                    <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, [$event->getStart()])) ?>
                     <? endif; ?>
                 </div>
                 <? endif; ?>
@@ -92,7 +92,7 @@
             <? endif; ?>
             <? if (!Request::isXhr()) : ?>
             <div style="text-align: center;" data-dialog-button>
-                <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, array($event->getStart()))) ?>
+                <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, [$event->getStart()])) ?>
             </div>
             <? endif; ?>
         <? endif; ?>

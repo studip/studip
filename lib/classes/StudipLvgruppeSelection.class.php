@@ -40,7 +40,7 @@ class StudipLvgruppeSelection {
         $this->selected = self::getRootItem();
         $this->showAll = FALSE;
 
-        $this->areas = array();
+        $this->areas = [];
 
         $this->searchKey = '';
         $this->clearSearchResult();
@@ -146,7 +146,7 @@ class StudipLvgruppeSelection {
 
         # no search key -> return empty array
         if ($this->searchKey === '') {
-            return array();
+            return [];
         }
 
         if (is_null($this->searchResult)) {
@@ -154,7 +154,7 @@ class StudipLvgruppeSelection {
             foreach ($lvgruppen as $lvgruppe) {
                 $this->searchResult[$lvgruppe->id] = $lvgruppe;
             }
-            usort($this->searchResult, array(__CLASS__, 'sortSearchResult'));
+            usort($this->searchResult, [__CLASS__, 'sortSearchResult']);
         }
 
         return $this->searchResult;
@@ -268,7 +268,7 @@ class StudipLvgruppeSelection {
      */
     public function setLvgruppen($areas)
     {
-        $this->areas = array();
+        $this->areas = [];
         foreach ($areas as $area) {
             $this->add($area);
         }
@@ -348,7 +348,7 @@ class StudipLvgruppeSelection {
     public function getTrail()
     {
         $area = $this->selected;
-        $trail = array(implode('_', (array) $area->getId()) => $area);
+        $trail = [implode('_', (array) $area->getId()) => $area];
         while ($parent = $area->getTrailParent()) {
             $trail[implode('_', (array) $parent->getId())] = $parent;
             $area = $parent;

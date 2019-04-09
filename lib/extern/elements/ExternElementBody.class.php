@@ -39,8 +39,8 @@
 
 class ExternElementBody extends ExternElement {
 
-    var $attributes = array("body_bgcolor", "body_text", "body_link", "body_vlink",
-            "body_alink", "body_background", "body_class", "body_style");
+    var $attributes = ["body_bgcolor", "body_text", "body_link", "body_vlink",
+            "body_alink", "body_background", "body_class", "body_style"];
 
     /**
     * Constructor

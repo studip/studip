@@ -76,7 +76,7 @@ class Admin_HolidaysController extends AuthenticatedController
             $this->holiday->beginn      = $this->getTimeStamp('beginn');
             $this->holiday->ende        = $this->getTimeStamp('ende', '23:59:59');
 
-            $errors = array();
+            $errors = [];
             if (!$this->holiday->name) {
                 $errors[] = _('Bitte geben Sie einen Namen ein.');
             }
@@ -109,7 +109,7 @@ class Admin_HolidaysController extends AuthenticatedController
     {
         $ids = $id === 'bulk'
              ? Request::optionArray('ids')
-             : array($id);
+             : [$id];
 
         if (count($ids)) {
             $holidays = SemesterHoliday::findMany($ids);
@@ -154,19 +154,19 @@ class Admin_HolidaysController extends AuthenticatedController
 
         $views = new ViewsWidget();
         $views->addLink(_('Alle Einträge'),
-                        $this->url_for('admin/holidays', array('filter' => null)))
+                        $this->url_for('admin/holidays', ['filter' => null]))
               ->setActive(!$this->filter);
         $views->addLink(_('Aktuelle/zukünftige Einträge'),
-                        $this->url_for('admin/holidays', array('filter' => 'current')))
+                        $this->url_for('admin/holidays', ['filter' => 'current']))
               ->setActive($this->filter === 'current');
         $views->addLink(_('Vergangene Einträge'),
-                        $this->url_for('admin/holidays', array('filter' => 'past')))
+                        $this->url_for('admin/holidays', ['filter' => 'past']))
               ->setActive($this->filter === 'past');
         $sidebar->addWidget($views);
 
         $links = new ActionsWidget();
         $links->addLink(_('Neue Ferien anlegen'),
-                        $this->url_for('admin/holidays/edit', array('filter' => null)),
+                        $this->url_for('admin/holidays/edit', ['filter' => null]),
                         Icon::create('add', 'clickable'))
               ->asDialog('size=auto');
         $sidebar->addWidget($links);

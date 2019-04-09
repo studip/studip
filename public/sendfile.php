@@ -39,10 +39,10 @@
 ob_start();
 require '../lib/bootstrap.php';
 
-page_open(array("sess" => "Seminar_Session",
+page_open(["sess" => "Seminar_Session",
                 "auth" => "Seminar_Default_Auth",
                 "perm" => "Seminar_Perm",
-                "user" => "Seminar_User"));
+                "user" => "Seminar_User"]);
 
 include 'lib/seminar_open.php';
 
@@ -59,7 +59,7 @@ if($type < 0 || $type > 7) $type = 0;
 $no_access = true;
 
 //download from course or institute or document is a message attachement
-if (in_array($type, array(0, 6, 7))) {
+if (in_array($type, [0, 6, 7])) {
     if ($file_ref = FileRef::find($file_id)) {
         $folder = $file_ref->folder->getTypedFolder();
         $no_access = !$folder->isFileDownloadable($file_ref, $GLOBALS['user']->id);
@@ -69,14 +69,14 @@ if (in_array($type, array(0, 6, 7))) {
 if ($type == 1) {
     $query = "SELECT seminar_id FROM archiv WHERE archiv_file_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($file_id));
+    $statement->execute([$file_id]);
     $archiv_seminar_id = $statement->fetchColumn();
     if ($archiv_seminar_id) {
         $no_access = !archiv_check_perm($archiv_seminar_id);
     } else {
         $query = "SELECT seminar_id FROM archiv WHERE archiv_protected_file_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($file_id));
+        $statement->execute([$file_id]);
         $archiv_seminar_id = $statement->fetchColumn();
         if ($archiv_seminar_id) {
             $no_access = !in_array(archiv_check_perm($archiv_seminar_id), words('tutor dozent admin'));

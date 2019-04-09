@@ -85,7 +85,7 @@ class ConnectedUser
                   FROM auth_extern
                   WHERE studip_user_id = ? AND external_user_system_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->studip_id, $this->cms_type));
+        $statement->execute([$this->studip_id, $this->cms_type]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$data) {
@@ -119,7 +119,7 @@ class ConnectedUser
                   LEFT JOIN  user_info USING (user_id)
                   WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->studip_id));
+        $statement->execute([$this->studip_id]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$data) {
@@ -485,7 +485,7 @@ class ConnectedUser
                            external_user_id = VALUES(external_user_id),
                            external_user_type = VALUES(external_user_type)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             (string)$this->studip_id,
             (string)$this->id,
             (string)$this->login,
@@ -493,7 +493,7 @@ class ConnectedUser
             (string)$this->category,
             (string)$this->cms_type,
             (int)$this->type,
-        ));
+        ]);
 
         $this->is_connected = true;
         $this->readData();

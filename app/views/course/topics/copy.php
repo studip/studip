@@ -27,7 +27,7 @@
 
     <div id="topiclist">
     <? if (Request::option("seminar_id")) : ?>
-        <?= $this->render_partial("_topiclist.php", array('topics' => CourseTopic::findBySeminar_id(Request::option("seminar_id")))) ?>
+        <?= $this->render_partial("_topiclist.php", ['topics' => CourseTopic::findBySeminar_id(Request::option("seminar_id"))]) ?>
     <? endif ?>
     </div>
 

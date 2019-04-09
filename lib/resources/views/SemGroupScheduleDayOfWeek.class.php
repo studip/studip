@@ -43,7 +43,7 @@ class SemGroupScheduleDayOfWeek extends ScheduleView
     var $categories;
 
     //Kontruktor
-    public function __construct($start_hour = '', $end_hour = '', $rooms_to_show = array(), $start_date = '', $dow = 1)
+    public function __construct($start_hour = '', $end_hour = '', $rooms_to_show = [], $start_date = '', $dow = 1)
     {
 
         foreach ($rooms_to_show as $id => $room_id) {

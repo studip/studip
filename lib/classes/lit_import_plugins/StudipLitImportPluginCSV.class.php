@@ -50,7 +50,7 @@ class StudipLitImportPluginCSV extends StudipLitImportPluginAbstract {
             $msg = &$_msg;
             if ($data) {
 
-            $fields_arr = array();
+            $fields_arr = [];
             $lines = explode("\n",$data);
             foreach ($lines as $line) {
                 if (mb_strlen($line)>0) {
@@ -64,7 +64,7 @@ class StudipLitImportPluginCSV extends StudipLitImportPluginAbstract {
                         6. Beschreibung
                         7. ISBN
                     */
-                                $fields = array();
+                                $fields = [];
                                 $fields["catalog_id"] = "new_entry";
                                 $fields["user_id"] = $auth->auth["uid"];
 

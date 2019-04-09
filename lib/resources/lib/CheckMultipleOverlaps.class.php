@@ -78,7 +78,7 @@ class CheckMultipleOverlaps
                 throw new RuntimeException(__METHOD__ . ' could not add resource without time range');
             }
             $this->resource_ids[] = $resource_id;
-            $parameters = array();
+            $parameters = [];
             $query = "SELECT DISTINCT assign_id
                 FROM resources_assign ra
                 LEFT JOIN resources_temporary_events rte USING(assign_id,resource_id)
@@ -108,11 +108,11 @@ class CheckMultipleOverlaps
             return false;
         }
         if (count($this->resource_ids) == 0) {
-            $result = array();
+            $result = [];
             return;
         }
 
-        $parameters = $assign_ids = array();
+        $parameters = $assign_ids = [];
         $cases = '';
         foreach (array_values($events) as $i => $obj) {
             $cases .= "WHEN begin < :end{$i} AND end > :begin{$i} THEN :id{$i} ";
@@ -143,14 +143,14 @@ class CheckMultipleOverlaps
             $index = ($index_mode == 'assign_id')
                    ? $events[$row['event_id']]->getAssignId()
                    : $events[$row['event_id']]->getAssignUserId();
-            $result[$row['resource_id']][$index][] = array(
+            $result[$row['resource_id']][$index][] = [
                 'begin'     => $row['begin'],
                 'end'       => $row['end'],
                 'assign_id' => $row['assign_id'],
                 'event_id'  => $row['event_id'],
                 'own_begin' => $events[$row['event_id']]->getBegin(),
                 'own_end'   => $events[$row['event_id']]->getEnd(),
-            );
+            ];
         }
     }
 }

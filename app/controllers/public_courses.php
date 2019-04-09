@@ -90,11 +90,11 @@ class PublicCoursesController extends AuthenticatedController
     protected function get_seminar_navigations($seminars)
     {
         if (empty($seminars)) {
-            return array();
+            return [];
         }
 
         foreach ($seminars as $id => $seminar) {
-            $seminar['navigations'] = array();
+            $seminar['navigations'] = [];
 
             foreach (words('forum files news scm schedule wiki vote literature') as $key) {
                 $seminar['navigations'][$key] = false;
@@ -113,7 +113,7 @@ class PublicCoursesController extends AuthenticatedController
                   AND folder_type IN ('RootFolder', 'StandardFolder')
                   GROUP BY range_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_ids));
+        $statement->execute([$seminar_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $nav = new Navigation('files', 'dispatch.php/course/files/index');
             $nav->setImage(Icon::create('files', 'inactive', ["title" => sprintf(_('%s Dokumente'),$row['count'])]));
@@ -128,7 +128,7 @@ class PublicCoursesController extends AuthenticatedController
                   GROUP BY range_id
                   HAVING count > 0";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_ids));
+        $statement->execute([$seminar_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $nav = new Navigation('news', '');
             $nav->setImage(Icon::create('news', 'inactive', ["title" => sprintf(_('%s Ankündigungen'),$row['count'])]));
@@ -141,7 +141,7 @@ class PublicCoursesController extends AuthenticatedController
                   WHERE range_id IN (?)
                   GROUP BY range_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_ids));
+        $statement->execute([$seminar_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $nav = new Navigation('scm', 'dispatch.php/course/scm');
             $nav->setImage(Icon::create('infopage', 'inactive', ["title" => sprintf(_('%s Einträge'),$row['count'])]));
@@ -154,7 +154,7 @@ class PublicCoursesController extends AuthenticatedController
                   WHERE range_id IN (?) AND visibility = 1
                   GROUP BY range_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_ids));
+        $statement->execute([$seminar_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $nav = new Navigation('literature', 'dispatch.php/course/literatur');
             $nav->setImage(Icon::create('literature', 'inactive', ["title" => sprintf(_('%s Literaturlisten'),$row['count'])]));
@@ -167,7 +167,7 @@ class PublicCoursesController extends AuthenticatedController
                   WHERE range_id IN (?)
                   GROUP BY range_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_ids));
+        $statement->execute([$seminar_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $nav = new Navigation('schedule', 'dispatch.php/course/dates');
             $nav->setImage(Icon::create('schedule', 'inactive', ["title" => sprintf(_('%s Termine'),$row['count'])]));
@@ -181,7 +181,7 @@ class PublicCoursesController extends AuthenticatedController
                       WHERE range_id IN (?)
                       GROUP BY range_id";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($seminar_ids));
+            $statement->execute([$seminar_ids]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $nav = new Navigation('wiki', 'wiki.php');
                 $nav->setImage(Icon::create('wiki', 'inactive', ["title" => sprintf(_('%s WikiSeiten'),$row['count'])]));
@@ -198,7 +198,7 @@ class PublicCoursesController extends AuthenticatedController
                           AND questionnaire_assignments.range_id IN (?)
                       GROUP BY questionnaire_assignments.range_id ";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($seminar_ids));
+            $statement->execute([$seminar_ids]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $nav = new Navigation('vote', '#vote');
                 $nav->setImage(Icon::create('vote', 'inactive', ["title" => sprintf(_('%s Umfrage(n)'),$row['count'])]));

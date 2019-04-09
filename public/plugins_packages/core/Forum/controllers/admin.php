@@ -27,14 +27,14 @@ class AdminController extends ForumController
         $list = ForumEntry::getList('flat', $this->getId());
 
         // sort by cat
-        $new_list = array();
+        $new_list = [];
         // iterate over all categories and add the belonging areas to them
         foreach ($categories = ForumCat::getListWithAreas($this->getId(), false) as $category) {
             if ($category['topic_id']) {
                 $new_list[$category['category_id']][$category['topic_id']] = $list['list'][$category['topic_id']];
                 unset($list['list'][$category['topic_id']]);
             } else if (ForumPerm::has('add_area', $this->seminar_id)) {
-                $new_list[$category['category_id']] = array();
+                $new_list[$category['category_id']] = [];
             }
             $this->categories[$category['category_id']] = $category['entry_name'];
         }

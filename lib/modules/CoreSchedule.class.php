@@ -12,7 +12,7 @@
 class CoreSchedule implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
-        $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", array('auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates")));
+        $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", ['auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates"]));
         $navigation->setImage(Icon::create('schedule', 'inactive'));
         return $navigation;
     }
@@ -32,7 +32,7 @@ class CoreSchedule implements StudipModule {
         $navigation->addSubNavigation('dates', new Navigation(_('Termine'), "dispatch.php/course/dates"));
         $navigation->addSubNavigation('topics', new Navigation(_('Themen'), "dispatch.php/course/topics"));
 
-        return array('schedule' => $navigation);
+        return ['schedule' => $navigation];
     }
 
     /** 
@@ -40,7 +40,7 @@ class CoreSchedule implements StudipModule {
      */ 
     function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Anzeige aller Termine der Veranstaltung'),
             'description' => _('Der Ablaufplan listet alle Präsenz-, '.
                 'E-Learning-, Klausur-, Exkursions- und sonstige '.
@@ -61,13 +61,13 @@ class CoreSchedule implements StudipModule {
                                     'inhaltlichen Einstimmung der Studierenden können Lehrende den Terminen ' .
                                     'Themen hinzufügen, die z. B. eine Kurzbeschreibung der Inhalte darstellen.'),          
             'icon' => Icon::create('schedule', 'info'),
-            'screenshots' => array(
+            'screenshots' => [
                 'path' => 'plus/screenshots/Ablaufplan',
-                'pictures' => array(
-                    0 => array('source' => 'Termine_mit_Themen.jpg', 'title' => _('Termine mit Themen')),
-                    1 => array( 'source' => 'Thema_bearbeiten_und_einem_Termin_zuordnen.jpg', 'title' => _('Thema bearbeiten und einem Termin zuordnen'))
-                )
-            )
-        );
+                'pictures' => [
+                    0 => ['source' => 'Termine_mit_Themen.jpg', 'title' => _('Termine mit Themen')],
+                    1 => [ 'source' => 'Thema_bearbeiten_und_einem_Termin_zuordnen.jpg', 'title' => _('Thema bearbeiten und einem Termin zuordnen')]
+                ]
+            ]
+        ];
     }
 }

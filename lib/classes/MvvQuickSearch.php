@@ -12,7 +12,7 @@ class MvvQuickSearch extends SQLSearch
         parent::__construct($query, $title, $avatarLike);
     }
     
-    public function getResults($input, $contextual_data = array(),
+    public function getResults($input, $contextual_data = [],
             $limit = PHP_INT_MAX, $offset = 0)
     {
         $qs_id = md5(serialize($this));
@@ -35,7 +35,7 @@ class MvvQuickSearch extends SQLSearch
                         . $result_txt
                         . '</span>';
             }
-            $results[sizeof($results)] = array('', '');
+            $results[sizeof($results)] = ['', ''];
         }
         return $results;
     }

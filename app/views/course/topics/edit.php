@@ -59,7 +59,7 @@
             <? if (count($localtopics)) : ?>
             (
                 <? foreach ($localtopics as $key => $localtopic) : ?>
-                    <a href="<?= URLHelper:: getLink("dispatch.php/course/topics/index", array('open' => $localtopic->getId())) ?>">
+                    <a href="<?= URLHelper:: getLink("dispatch.php/course/topics/index", ['open' => $localtopic->getId()]) ?>">
                         <?= Icon::create('topic', 'clickable')->asImg(['class' => "text-bottom"]) ?>
                         <?= htmlReady($localtopic['title']) ?>
                     </a>

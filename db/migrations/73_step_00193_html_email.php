@@ -25,14 +25,14 @@ class Step00193HtmlEmail extends Migration
                     (MD5(:name), :name, :value, 1, :type, :range, :section, $time, $time, :description)
                 ");
 
-        $stmt->execute(array(
+        $stmt->execute([
             'name' => 'MAIL_AS_HTML',
             'description' => 'Benachrichtigungen werden im HTML-Format versandt',
             'section' => '',
             'range' => 'user',
             'type' => 'boolean',
             'value' => 0
-        ));
+        ]);
     }
 
     /**

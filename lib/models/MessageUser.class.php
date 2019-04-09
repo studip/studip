@@ -26,17 +26,17 @@
 
 class MessageUser extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'message_user';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['belongs_to']['message'] = array(
+        ];
+        $config['belongs_to']['message'] = [
             'class_name' => 'Message',
             'foreign_key' => 'message_id',
-        );
+        ];
         $config['registered_callbacks']['after_store'][] = 'cleanUpTags';
         $config['registered_callbacks']['after_delete'][] = 'cleanUpTags';
 
@@ -50,12 +50,12 @@ class MessageUser extends SimpleORMap implements PrivacyObject
 
     public static function findSentByMessageId($message_id)
     {
-        return self::findOneBySQL("message_id=? AND snd_rec='snd'", array($message_id));
+        return self::findOneBySQL("message_id=? AND snd_rec='snd'", [$message_id]);
     }
 
     public static function findReceivedByMessageId($message_id)
     {
-        return self::findBySQL("message_id=? AND snd_rec='rec'", array($message_id));
+        return self::findBySQL("message_id=? AND snd_rec='rec'", [$message_id]);
     }
 
     public function cleanUpTags($callback)

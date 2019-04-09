@@ -48,7 +48,7 @@ class AddScheduleTable extends Migration
             $md = @unserialize($data['metadata_dates']);
             if (is_array($md['turnus_data'])) {
                 foreach ($md['turnus_data'] as $cycle) {
-                    $stmt->execute(array($data['user_id'], $data['range_id'], $cycle['metadate_id']));
+                    $stmt->execute([$data['user_id'], $data['range_id'], $cycle['metadate_id']]);
                 }
             }
         }

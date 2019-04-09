@@ -42,8 +42,8 @@ use Studip\Button, Studip\LinkButton;
 class ExternEdit {
 
     var $config;
-    var $form_values = array();
-    var $faulty_values = array();
+    var $form_values = [];
+    var $faulty_values = [];
     var $element_name = "main";
     var $is_post_vars = FALSE;
     var $edit_element;

@@ -27,7 +27,7 @@
 require '../lib/bootstrap.php';
 
 ob_start();
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", 'user' => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", 'user' => "Seminar_User"]);
 $perm->check("autor");
 include 'lib/seminar_open.php'; // initialise Stud.IP-Session
 
@@ -53,7 +53,7 @@ if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
             PageLayout::postError($message, $details);
             $template = $GLOBALS['template_factory']->open('layouts/base.php');
             $template->content_for_layout = ob_get_clean();
-            $template->infobox = $infobox ? array('content' => $infobox) : null;
+            $template->infobox = $infobox ? ['content' => $infobox] : null;
             echo $template->render();
             page_close();
             die;

@@ -19,7 +19,7 @@ class StudipCacheOperation extends SimpleORMap
      *
      * @param Array $config The config settings
      */
-    public static function configure($config = array())
+    public static function configure($config = [])
     {
         $config['db_table'] = 'cache_operations';
 
@@ -38,7 +38,7 @@ class StudipCacheOperation extends SimpleORMap
         self::findEachBySQL(function ($item) use ($cache) {
             $parameters = unserialize($item->parameters);
             array_unshift($parameters, $item->cache_key);
-            call_user_func_array(array($cache, $item->operation), $parameters);
+            call_user_func_array([$cache, $item->operation], $parameters);
 
             $item->delete();
         }, '1 ORDER BY chdate ASC');

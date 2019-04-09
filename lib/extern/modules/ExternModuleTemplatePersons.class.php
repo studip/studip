@@ -42,28 +42,28 @@ require_once 'lib/user_visible.inc.php';
 
 class ExternModuleTemplatePersons extends ExternModule {
 
-    var $markers = array();
+    var $markers = [];
 
     /**
     *
     */
     function __construct ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array(
+        $this->data_fields = [
                 'Nachname', 'Telefon', 'raum', 'Email', 'sprechzeiten'
-        );
-        $this->registered_elements = array(
+        ];
+        $this->registered_elements = [
                 'LinkInternTemplate',
                 'TemplateGeneric'
-        );
+        ];
 
-        $this->field_names = array
-        (
+        $this->field_names = 
+        [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
                 _("Email"),
                 _("Sprechzeiten")
-        );
+        ];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
@@ -71,7 +71,7 @@ class ExternModuleTemplatePersons extends ExternModule {
     function setup () {
         $this->elements['TemplateGeneric']->real_name = _("Template");
         // Set internal link to module 'staff details'
-        $this->elements['LinkInternTemplate']->link_module_type = array(2, 14);
+        $this->elements['LinkInternTemplate']->link_module_type = [2, 14];
         $this->elements['LinkInternTemplate']->real_name = _("Verlinkung zum Modul MitarbeiterInnendetails");
 
     }
@@ -87,42 +87,42 @@ class ExternModuleTemplatePersons extends ExternModule {
     }
 
     function getMarkerDescription ($element_name) {
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN PERSONS -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN PERSONS -->', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NO-PERSONS -->', '');
-        $markers['TemplateGeneric'][] = array('###NO-LECTURES-TEXT###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END NO-PERSONS -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NO-PERSONS -->', ''];
+        $markers['TemplateGeneric'][] = ['###NO-LECTURES-TEXT###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END NO-PERSONS -->', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN GROUP -->', '');
-        $markers['TemplateGeneric'][] = array('###GROUPTITLE###', '');
-        $markers['TemplateGeneric'][] = array('###GROUPTITLE-SUBSTITUTE###', '');
-        $markers['TemplateGeneric'][] = array('###GROUP-NO###', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN GROUP -->', ''];
+        $markers['TemplateGeneric'][] = ['###GROUPTITLE###', ''];
+        $markers['TemplateGeneric'][] = ['###GROUPTITLE-SUBSTITUTE###', ''];
+        $markers['TemplateGeneric'][] = ['###GROUP-NO###', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN PERSON -->', '');
-        $markers['TemplateGeneric'][] = array('###FULLNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LASTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###FIRSTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEFRONT###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEREAR###', '');
-        $markers['TemplateGeneric'][] = array('###PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###USERNAME###', '');
-        $markers['TemplateGeneric'][] = array('###IMAGE-URL-NORMAL###', _('Nutzerbild (groß)'));
-        $markers['TemplateGeneric'][] = array('###IMAGE-URL-MEDIUM###', _('Nutzerbild (mittel)'));
-        $markers['TemplateGeneric'][] = array('###IMAGE-URL-SMALL###', _('Nutzerbild (klein)'));
-        $markers['TemplateGeneric'][] = array('###PHONE###', '');
-        $markers['TemplateGeneric'][] = array('###ROOM###', '');
-        $markers['TemplateGeneric'][] = array('###EMAIL###', '');
-        $markers['TemplateGeneric'][] = array('###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)"));
-        $markers['TemplateGeneric'][] = array('###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)"));
-        $markers['TemplateGeneric'][] = array('###HOMEPAGE-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###OFFICEHOURS###', '');
-        $markers['TemplateGeneric'][] = array('###PERSON-NO###', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN PERSON -->', ''];
+        $markers['TemplateGeneric'][] = ['###FULLNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LASTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###FIRSTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEFRONT###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEREAR###', ''];
+        $markers['TemplateGeneric'][] = ['###PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###USERNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###IMAGE-URL-NORMAL###', _('Nutzerbild (groß)')];
+        $markers['TemplateGeneric'][] = ['###IMAGE-URL-MEDIUM###', _('Nutzerbild (mittel)')];
+        $markers['TemplateGeneric'][] = ['###IMAGE-URL-SMALL###', _('Nutzerbild (klein)')];
+        $markers['TemplateGeneric'][] = ['###PHONE###', ''];
+        $markers['TemplateGeneric'][] = ['###ROOM###', ''];
+        $markers['TemplateGeneric'][] = ['###EMAIL###', ''];
+        $markers['TemplateGeneric'][] = ['###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)")];
+        $markers['TemplateGeneric'][] = ['###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)")];
+        $markers['TemplateGeneric'][] = ['###HOMEPAGE-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###OFFICEHOURS###', ''];
+        $markers['TemplateGeneric'][] = ['###PERSON-NO###', ''];
         $this->insertDatafieldMarkers('user', $markers, 'TemplateGeneric');
         $this->insertDatafieldMarkers('userinstrole', $markers, 'TemplateGeneric');
-        $markers['TemplateGeneric'][] = array('<!-- END PERSON -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- END PERSON -->', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- END GROUP -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END PERSONS -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- END GROUP -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END PERSONS -->', ''];
 
         return $markers[$element_name];
     }
@@ -185,11 +185,11 @@ class ExternModuleTemplatePersons extends ExternModule {
                 $query .= " AND ".get_ext_vis_query()." ORDER BY ";
                 $query .= "s.position ASC, su.position ASC";
             }
-            $parameters = array($this->config->getValue('Main', 'groupsvisible'), $this->config->range_id);
+            $parameters = [$this->config->getValue('Main', 'groupsvisible'), $this->config->range_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $row = $statement->fetch(PDO::FETCH_ASSOC);
-            $visible_groups = array('');
+            $visible_groups = [''];
         }
 
         // generic data fields
@@ -216,7 +216,7 @@ class ExternModuleTemplatePersons extends ExternModule {
                 $query .= 'LEFT JOIN user_info USING(user_id) LEFT JOIN user_inst ui USING(user_id) ';
                 $query .= "WHERE su.statusgruppe_id = ? AND ".get_ext_vis_query()." AND Institut_id = ? $query_order";
 
-                $parameters = array($group_id, $this->config->range_id );
+                $parameters = [$group_id, $this->config->range_id ];
                 $statement = DBManager::get()->prepare($query);
                 $statement->execute($parameters);
                 $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -263,7 +263,7 @@ class ExternModuleTemplatePersons extends ExternModule {
                             $query .= "user_inst ui USING(user_id) WHERE aum.user_id = '" . $row['user_id'];
                             $query .= "' AND ".get_ext_vis_query()." AND Institut_id = ? " ;
                             $statement2 = DBManager::get()->prepare($query);
-                            $params = array($this->config->range_id);
+                            $params = [$this->config->range_id];
                             $statement2->execute($params);
                             $db_out = $statement2->fetch(PDO::FETCH_ASSOC);
                         } else {
@@ -276,7 +276,7 @@ class ExternModuleTemplatePersons extends ExternModule {
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['TITLEFRONT'] = ExternModule::ExtHtmlReady($db_out['title_front']);
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['TITLEREAR'] = ExternModule::ExtHtmlReady($db_out['title_rear']);
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['PERSONDETAIL-HREF'] =
-                        $this->elements['LinkInternTemplate']->createUrl(array('link_args' => 'username=' . $db_out['username'] . ($grouping ? '&group_id=' . $group_id : '')));
+                        $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $db_out['username'] . ($grouping ? '&group_id=' . $group_id : '')]);
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['USERNAME'] = $db_out['username'];
 
                     if (Visibility::verify('picture', $row['user_id']) == 5) {
@@ -322,9 +322,9 @@ class ExternModuleTemplatePersons extends ExternModule {
                             $k++;
                         }
 
-                        $localEntries = DataFieldEntry::getDataFieldEntries(array($db_out['user_id'], $instituts_id), 'userinstrole');
+                        $localEntries = DataFieldEntry::getDataFieldEntries([$db_out['user_id'], $instituts_id], 'userinstrole');
                         if ($grouping) {
-                            $roleEntries = DataFieldEntry::getDataFieldEntries(array($db_out['user_id'], $group_id), 'userinstrole');
+                            $roleEntries = DataFieldEntry::getDataFieldEntries([$db_out['user_id'], $group_id], 'userinstrole');
                             $roleEntries = array_filter($roleEntries, function($val) { return $val->getValue() !== 'default_value'; });
                             $localEntries = $roleEntries + $localEntries;
                         }
@@ -353,7 +353,7 @@ class ExternModuleTemplatePersons extends ExternModule {
         if (!$language = $this->config->getValue("Main", "language"))
             $language = "de_DE";
         init_i18n($language);
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent($args), 'subpart' => 'PERSONS'));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent($args), 'subpart' => 'PERSONS']);
 
     }
 
@@ -362,7 +362,7 @@ class ExternModuleTemplatePersons extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent(), 'subpart' => 'PERSONS', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent(), 'subpart' => 'PERSONS', 'hide_markers' => FALSE]);
 
     }
 

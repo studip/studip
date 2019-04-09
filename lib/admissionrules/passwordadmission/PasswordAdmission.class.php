@@ -59,7 +59,7 @@ class PasswordAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `passwordadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -124,7 +124,7 @@ class PasswordAdmission extends AdmissionRule
     public function load() {
         $stmt = DBManager::get()->prepare("SELECT * FROM `passwordadmissions`
             WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
             $this->startTime = $current['start_time'];
@@ -144,7 +144,7 @@ class PasswordAdmission extends AdmissionRule
      */
     public function ruleApplies($userId, $courseId)
     {
-        $errors = array();
+        $errors = [];
         if ($this->checkTimeFrame()) {
             if (Request::get('pwarule_password') === null) {
                 $errors[] = _('Die Eingabe eines Passwortes ist erforderlich.');
@@ -200,8 +200,8 @@ class PasswordAdmission extends AdmissionRule
             `message`=VALUES(`message`), `start_time`=VALUES(`start_time`),
             `end_time`=VALUES(`end_time`), `password`=VALUES(`password`),
             `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message, (int)$this->startTime, (int)$this->endTime, $this->password,
-            time(), time()));
+        $stmt->execute([$this->id, $this->message, (int)$this->startTime, (int)$this->endTime, $this->password,
+            time(), time()]);
         return $this;
     }
 

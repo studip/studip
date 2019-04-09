@@ -19,7 +19,7 @@ class NavigationWidget extends LinksWidget
      * @param mixed  $index  Index to use for the element
      * @return String
      */
-    public function &addLink($label, $url, $icon = null, $attributes = array(), $index = null)
+    public function &addLink($label, $url, $icon = null, $attributes = [], $index = null)
     {
         return parent::addLink($label, $url, null, $attributes, $index);
     }

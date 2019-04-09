@@ -43,7 +43,7 @@ class StudipLitSearchPluginHAAB_Weimar extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = 'Herzogin Anna Amalia Bibliothek Weimar';
         $this->z_host = "sru.gbv.de:20010/opac-de-32";
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"),
                     '4' => _("Titelstichwörter [TIT]"),
                     '5' => _("Serienstichwörter [SER]"),
                     '21' => _("alle Klassifikationen [SYS]"),
@@ -55,7 +55,7 @@ class StudipLitSearchPluginHAAB_Weimar extends StudipLitSearchPluginGvk
                     '5040' => _("Schlagwörter [SLW]"),
                     '8062' => _("alle Titelanfänge [TAF]"),
                     '8580' => _("Verlagsort, Verlag [PUB]")
-                    );
+                    ];
     }
 }
 ?>

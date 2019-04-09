@@ -19,7 +19,7 @@ use Studip\Button, Studip\LinkButton;
 
     <footer>
         <?= Button::create(_('Suchen'), 'suchen', ['title' => _('Suche starten')])?>
-        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('admin/plugin/search'), array('title' => _('Suche zurücksetzen')))?>
+        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('admin/plugin/search'), ['title' => _('Suche zurücksetzen')])?>
     </footer>
 </form>
 

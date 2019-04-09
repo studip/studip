@@ -50,7 +50,7 @@ class Admin_AutoinsertController extends AuthenticatedController
                 $this->sem_search = Request::get('sem_search');
                 $this->sem_select = Request::option('sem_select');
                 $search = new SeminarSearch();
-                $this->seminar_search = $search->getResults(Request::get('sem_search'), array('search_sem_sem' => Request::option('sem_select')));
+                $this->seminar_search = $search->getResults(Request::get('sem_search'), ['search_sem_sem' => Request::option('sem_select')]);
                 if (count($this->seminar_search) == 0) {
                     $this->flash['message'] = _("Es wurden keine Veranstaltungen gefunden.");
                 }
@@ -61,13 +61,13 @@ class Admin_AutoinsertController extends AuthenticatedController
         $seminare = AutoInsert::getAllSeminars();
         $this->auto_sems = $seminare;
 
-        $domains = array();
-        $domains [] = array('id'   => 'keine',
-            'name' => _('Ohne Domain'));
+        $domains = [];
+        $domains [] = ['id'   => 'keine',
+            'name' => _('Ohne Domain')];
         foreach (UserDomain::getUserDomains() as $domain) {
-            $domains[] = array(
+            $domains[] = [
                 'id'   => $domain->getId(),
-                'name' => $domain->getName());
+                'name' => $domain->getName()];
         }
 
         $this->userdomains = $domains;
@@ -169,14 +169,14 @@ class Admin_AutoinsertController extends AuthenticatedController
 
                 //messagebox
                 $text = sprintf(
-                        _('Es wurden %u von %u möglichen Personen in die Veranstaltung %s eingetragen.'), $real_users, count($user_ids), sprintf('<a href="%s">%s</a>', URLHelper::getLink('dispatch.php/course/details/', array('cid' => $seminar->getId())), htmlReady($seminar->getName()))
+                        _('Es wurden %u von %u möglichen Personen in die Veranstaltung %s eingetragen.'), $real_users, count($user_ids), sprintf('<a href="%s">%s</a>', URLHelper::getLink('dispatch.php/course/details/', ['cid' => $seminar->getId()]), htmlReady($seminar->getName()))
                 );
                 if ($real_users > 0) {
                     $this->flash['success'] = $text;
                 } else {
                     $this->flash['message'] = $text;
                 }
-                $this->flash['detail'] = array(_('Etwaige Abweichungen der Personenzahlen enstehen durch bereits vorhandene bzw. wieder ausgetragene Personen.'));
+                $this->flash['detail'] = [_('Etwaige Abweichungen der Personenzahlen enstehen durch bereits vorhandene bzw. wieder ausgetragene Personen.')];
                 $this->redirect('admin/autoinsert/manual');
             }
         }
@@ -196,7 +196,7 @@ class Admin_AutoinsertController extends AuthenticatedController
         if (Request::get('sem_search') and Request::get('sem_select')) {
             if (Request::get('sem_search')) {
                 $search = new SeminarSearch('number-name');
-                $this->seminar_search = $search->getResults(Request::get('sem_search'), array('search_sem_sem' => $this->sem_select));
+                $this->seminar_search = $search->getResults(Request::get('sem_search'), ['search_sem_sem' => $this->sem_select]);
                 if (count($this->seminar_search) == 0) {
                     $this->flash['message'] = _("Es wurden keine Veranstaltungen gefunden.");
                 }
@@ -205,19 +205,19 @@ class Admin_AutoinsertController extends AuthenticatedController
             }
         }
 
-        $this->values = array();
+        $this->values = [];
         foreach ($this->filtertype as $type) {
             $this->values[$type] = UserLookup::getValuesForType($type);
         }
 
-        $this->available_filtertypes = array(
+        $this->available_filtertypes = [
             'fach'         => _('Studienfach'),
             'abschluss'    => _('Studienabschluss'),
             'fachsemester' => _('Studienfachsemester'),
             'institut'     => _('Einrichtung'),
             'status'       => _('Statusgruppe'),
             'domain'       => _('Domäne')
-        );
+        ];
     }
 
     /**
@@ -230,13 +230,13 @@ class Admin_AutoinsertController extends AuthenticatedController
         $filters = array_filter(Request::getArray('filter'));
 
         if (empty($filters)) {
-            $data = array('error' => _('Keine Filterkriterien gewählt'));
+            $data = ['error' => _('Keine Filterkriterien gewählt')];
         } else {
             $userlookup = new UserLookup();
             foreach ($filters as $type => $values) {
                 $userlookup->setFilter($type, $values);
             }
-            $data = array('users' => count($userlookup->execute()));
+            $data = ['users' => count($userlookup->execute())];
         }
         $this->set_content_type('application/json;charset=utf-8');
         return $this->render_text(json_encode($data));

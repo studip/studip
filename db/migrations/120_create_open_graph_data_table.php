@@ -19,14 +19,14 @@ class CreateOpenGraphDataTable extends Migration
             ) ENGINE=MyISAM
         ");
         $options[] =
-            array(
+            [
             'name'        => 'OPENGRAPH_ENABLE',
             'type'        => 'boolean',
             'value'       => '1',
             'range'       => 'global',
             'section'     => 'global',
             'description' => 'De-/Aktiviert OpenGraph-Informationen und deren Abrufen.'
-            );
+            ];
 
         $stmt = DBManager::get()->prepare("
                 INSERT IGNORE INTO config

@@ -67,7 +67,7 @@ class Settings_DeputiesController extends Settings_SettingsController
 
         $deputies = getDeputies($this->user->user_id, true);
 
-        $exclude_users = array($this->user->user_id);
+        $exclude_users = [$this->user->user_id];
         if (is_array($deputies)) {
             $exclude_users = array_merge($exclude_users, array_map(function ($d) {
                 return $d['user_id'];
@@ -77,9 +77,9 @@ class Settings_DeputiesController extends Settings_SettingsController
         $this->deputies = $deputies;
 
         $this->search = new PermissionSearch('user', _('Vor-, Nach- oder Benutzername'),
-            'user_id', array('permission'   => getValidDeputyPerms(),
+            'user_id', ['permission'   => getValidDeputyPerms(),
                              'exclude_user' => $exclude_users
-            ));
+            ]);
 
         $sidebar = Sidebar::Get();
         $sidebar->setTitle(PageLayout::getTitle());
@@ -104,10 +104,10 @@ class Settings_DeputiesController extends Settings_SettingsController
         CSRFProtection::verifyRequest();
 
         $mp = MultiPersonSearch::load('settings_add_deputy');
-        $msg = array(
-            'error'   => array(),
-            'success' => array(),
-        );
+        $msg = [
+            'error'   => [],
+            'success' => [],
+        ];
         foreach ($mp->getAddedUsers() as $_user_id) {
             if (isDeputy($_user_id, $this->user->user_id)) {
                 $msg['error'][] = sprintf(_('%s ist bereits als Vertretung eingetragen.'), get_fullname($_user_id, 'full'));

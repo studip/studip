@@ -90,7 +90,7 @@ class ShowSemSchedules extends ShowSchedules {
             <tr>
                 <td rowspan="2">&nbsp;</td>
                 <td valign="bottom">
-                    <?=SemesterData::GetSemesterSelector(array('name' => 'sem_schedule_choose', 'class' => 'submit-upon-select'), $this->semester['semester_id'],'semester_id',false)?>
+                    <?=SemesterData::GetSemesterSelector(['name' => 'sem_schedule_choose', 'class' => 'submit-upon-select'], $this->semester['semester_id'],'semester_id',false)?>
                     <?= Button::create(_('Auswählen'), 'jump') ?>
                 </td>
                 <td valign="middle">
@@ -182,7 +182,7 @@ class ShowSemSchedules extends ShowSchedules {
             $assign_events = new AssignEventList ($a_start_time, $a_end_time, $this->resource_id, '', '', TRUE, 'semschedulesingle');
             $num = 1;
             while ($event = $assign_events->nextEvent()) {
-                if(in_array($event->repeat_mode, array('d','m','y'))){
+                if(in_array($event->repeat_mode, ['d','m','y'])){
                     $assign = AssignObject::Factory($event->getAssignId());
                     switch($event->repeat_mode){
                         case 'd':
@@ -238,9 +238,9 @@ class ShowSemSchedules extends ShowSchedules {
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']["schedule_time_range"]) || ($_SESSION['resources_data']["schedule_time_range"] == 1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1]) ?>">
                         <?= Icon::create('arr_2up', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                     </a>
                 <? endif; ?>
@@ -275,9 +275,9 @@ class ShowSemSchedules extends ShowSchedules {
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']['schedule_time_range']) || ($_SESSION['resources_data']['schedule_time_range'] == -1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1]) ?>">
                         <?= Icon::create('arr_2down', 'clickable', ['title' => _('Spätere Belegungen anzeigen')])->asImg() ?>
                     </a>
                 <? endif; ?>

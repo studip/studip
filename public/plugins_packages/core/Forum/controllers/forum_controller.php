@@ -8,7 +8,7 @@ class ForumController extends StudipController {
         $args = func_get_args();
 
         # find params
-        $params = array();
+        $params = [];
         if (is_array(end($args))) {
             $params = array_pop($args);
         }
@@ -36,7 +36,7 @@ class ForumController extends StudipController {
      */
     function before_filter(&$action, &$args)
     {
-        $this->validate_args($args, array('option', 'option'));
+        $this->validate_args($args, ['option', 'option']);
 
         parent::before_filter($action, $args);
 
@@ -46,7 +46,7 @@ class ForumController extends StudipController {
         PageLayout::setHelpKeyword('Basis.Forum');
         PageLayout::setTitle(Context::getHeaderLine() .' - '. _('Forum'));
 
-        $this->AVAILABLE_DESIGNS = array('web20', 'studip');
+        $this->AVAILABLE_DESIGNS = ['web20', 'studip'];
         if ($GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'] && $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'] != '/') {
             $this->picturepath = $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP'] .'/'. $this->dispatcher->trails_root . '/img';
         } else {

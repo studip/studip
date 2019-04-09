@@ -61,7 +61,7 @@ class messaging
                   WHERE message_id = ? AND user_id = ? AND deleted = '0'";
 
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($message_id, $user_id));
+        $statement->execute([$message_id, $user_id]);
 
         if ($statement->rowCount() == 0) {
             return false;
@@ -69,7 +69,7 @@ class messaging
 
         $query = "SELECT 1 FROM message_user WHERE message_id = ? AND deleted = '0'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($message_id));
+        $statement->execute([$message_id]);
         if (!$statement->fetchColumn()) {
             $this->remove_message($message_id);
 
@@ -101,7 +101,7 @@ class messaging
                   LEFT JOIN message_user USING(message_id)
                   WHERE message.message_id IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         return $statement->rowCount() > 0;
     }
 
@@ -118,7 +118,7 @@ class messaging
 
         $query = "SELECT message_id FROM message_user WHERE user_id = ? AND deleted = '0'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $message_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($message_ids as $message_id) {
@@ -135,13 +135,13 @@ class messaging
     {
         $query = "SELECT email_forward FROM user_info WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($userid));
+        $statement->execute([$userid]);
         $setting = $statement->fetchColumn();
 
         if ($setting == 1) {
             return false;
         }
-        if (in_array($setting, array(2, 3))) {
+        if (in_array($setting, [2, 3])) {
             return $setting;
         }
         return $GLOBALS['MESSAGING_FORWARD_DEFAULT'];
@@ -176,7 +176,7 @@ class messaging
         setTempLanguage($rec_user_id);
 
         $title_prefix = Config::get()->MAIL_USE_SUBJECT_PREFIX ? '[Stud.IP - ' . Config::get()->UNI_NAME_CLEAN . '] ' : '';
-        $title = $title_prefix . kill_format(str_replace(array("\r", "\n"), '', $subject));
+        $title = $title_prefix . kill_format(str_replace(["\r", "\n"], '', $subject));
 
         if ($snd_user_id != "____%system%____") {
             $sender = User::find($snd_user_id);
@@ -184,7 +184,7 @@ class messaging
             $snd_fullname = $sender->getFullName();
             $reply_to = $sender->Email;
         }
-        $attachments = array();
+        $attachments = [];
         if ($GLOBALS['ENABLE_EMAIL_ATTACHMENTS'] && $msg->attachment_folder) {
             $attachments = $msg->attachment_folder->file_refs;
             $size_of_attachments = array_sum($attachments->pluck('size')) ?: 0;
@@ -292,14 +292,14 @@ class messaging
         $query = "INSERT INTO message (message_id, autor_id, subject, message, show_adressees, priority, mkdate)
                   VALUES (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $tmp_message_id,
             $snd_user_id,
             $subject,
             $message,
             (int) $show_adressees,
             $priority,
-        ));
+        ]);
         // insert snd
         $insert_tags = DBManager::get()->prepare("
             INSERT IGNORE INTO message_tags
@@ -312,29 +312,29 @@ class messaging
         $query = "INSERT INTO message_user (message_id, user_id, snd_rec, deleted, mkdate)
                   VALUES (?, ?, 'snd', ?, UNIX_TIMESTAMP())";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $tmp_message_id,
             $snd_user_id,
             $set_deleted ? 1 : 0,                  // save message?
-        ));
+        ]);
         if ($tags) {
             is_array($tags) || $tags = explode(" ", (string) $tags);
             foreach ($tags as $tag) {
-                $insert_tags->execute(array(
+                $insert_tags->execute([
                     'message_id' => $tmp_message_id,
                     'user_id' => $snd_user_id,
                     'tag' => mb_strtolower($tag)
-                ));
+                ]);
             }
         }
 
         // heben wir kein array bekommen, machen wir einfach eins ...
         if (!is_array($rec_uname)) {
-            $rec_uname = array($rec_uname);
+            $rec_uname = [$rec_uname];
         }
 
         // wir bastelen ein neues array, das die user_id statt des user_name enthaelt
-        $rec_id = array();
+        $rec_id = [];
         foreach ($rec_uname as $one) {
             $rec_id[] = User::findByUsername($one)->user_id;
         }
@@ -360,7 +360,7 @@ class messaging
             ? User::find($user_id)->getFullName() . ' (' . User::find($user_id)->username . ')'
             : 'Stud.IP-System';
         foreach ($rec_id as $one) {
-            $insert->execute(array($tmp_message_id, $one, $one == $snd_user_id ? 1 : 0));
+            $insert->execute([$tmp_message_id, $one, $one == $snd_user_id ? 1 : 0]);
             if ($GLOBALS['MESSAGING_FORWARD_AS_EMAIL']) {
                 // mail to original receiver
                 $mailstatus_original = $this->user_wants_email($one);
@@ -370,22 +370,22 @@ class messaging
             }
             if ($tags) {
                 foreach ($tags as $tag) {
-                    $insert_tags->execute(array(
+                    $insert_tags->execute([
                         'message_id' => $tmp_message_id,
                         'user_id' => $one,
                         'tag' => mb_strtolower($tag)
-                    ));
+                    ]);
                 }
             }
         }
 
         // Obtain all users that should receive a notification
-        $user_ids = array_diff($rec_id, array($user_id));
+        $user_ids = array_diff($rec_id, [$user_id]);
 
         // Create notifications
         PersonalNotifications::add(
             $user_ids,
-            URLHelper::getUrl("dispatch.php/messages/read/$tmp_message_id", array('cid' => null)),
+            URLHelper::getUrl("dispatch.php/messages/read/$tmp_message_id", ['cid' => null]),
             sprintf(_('Sie haben eine Nachricht von %s erhalten!'), $snd_name),
             'message_'.$tmp_message_id,
             Icon::create('mail', 'clickable'),

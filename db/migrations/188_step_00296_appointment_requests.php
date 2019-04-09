@@ -6,15 +6,15 @@ class Step00296AppointmentRequests extends Migration
     /**
      * new config options to install
      */
-    private $options_new = array(
-        array(
+    private $options_new = [
+        [
             'name' => 'CALENDAR_GRANT_ALL_INSERT',
             'description' => 'Ermöglicht das Eintragen von Terminen in alle Nutzerkalender, ohne Beachtung des Rechtesystems.',
             'section' => 'modules',
             'type' => 'boolean',
             'value' => '0'
-        )
-    );
+        ]
+    ];
 
     /**
      * short description of this migration
@@ -56,7 +56,7 @@ class Step00296AppointmentRequests extends Migration
         $stmt = $db->prepare("DELETE FROM config WHERE field = :name");
 
         foreach ($options as $option) {
-            $stmt->execute(array('name' => $option['name']));
+            $stmt->execute(['name' => $option['name']]);
         }
     }
 

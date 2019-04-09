@@ -55,7 +55,7 @@ abstract class AdmissionRule
     /**
      * courseset siblings of this rule
      */
-    public $siblings = array();
+    public $siblings = [];
 
     /**
      * Are siblings set manually?
@@ -109,7 +109,7 @@ abstract class AdmissionRule
         // Delete rule assignment to coursesets.
         $stmt = DBManager::get()->prepare("DELETE FROM `courseset_rule`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -135,7 +135,7 @@ abstract class AdmissionRule
      */
     public function getAffectedUsers()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -146,7 +146,7 @@ abstract class AdmissionRule
      */
     public static function getAvailableAdmissionRules($activeOnly = true)
     {
-        $rules = array();
+        $rules = [];
         $where = ($activeOnly ? " WHERE `active`=1" : "");
         $data = DBManager::get()->query("SELECT * FROM `admissionrules`".$where.
             " ORDER BY `id` ASC");
@@ -156,12 +156,12 @@ abstract class AdmissionRule
                 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . DIRECTORY_SEPARATOR . $current['path']);
                 try {
                     $rule = new $className();
-                    $rules[$className] = array(
+                    $rules[$className] = [
                             'id' => $current['id'],
                             'name' => $className::getName(),
                             'description' => $className::getDescription(),
                             'active' => $current['active']
-                        );
+                        ];
                 } catch (Exception $e) {
                 }
             }
@@ -193,10 +193,10 @@ abstract class AdmissionRule
      */
     public static final function getInputFrame()
     {
-        return array(
+        return [
             $GLOBALS['template_factory']->open('admission/rules/input_start')->render(),
             $GLOBALS['template_factory']->open('admission/rules/input_end')->render()
-        );
+        ];
     }
 
     /**
@@ -290,7 +290,7 @@ abstract class AdmissionRule
      */
     public function ruleApplies($userId, $courseId)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -377,7 +377,7 @@ abstract class AdmissionRule
      */
     public function validate($data)
     {
-        $errors = array();
+        $errors = [];
         if ($data['start_date'] && $data['end_date'] && strtotime($data['end_date']) < strtotime($data['start_date'])) {
             $errors[] = _('Das Enddatum darf nicht vor dem Startdatum liegen.');
         }
@@ -402,7 +402,7 @@ abstract class AdmissionRule
         if ($this->siblings_override) {
             return false;
         }
-        $this->siblings = array();
+        $this->siblings = [];
         if ($this->courseSetId != '') {
             $cs = new CourseSet($this->courseSetId);
             foreach ($cs->getAdmissionRules() as $rule_id => $rule) {
@@ -427,7 +427,7 @@ abstract class AdmissionRule
      * set sibling rules
      *
      */
-    public function setSiblings($siblings = array())
+    public function setSiblings($siblings = [])
     {
         $this->siblings_override = true;
         $this->siblings = $siblings;
@@ -444,7 +444,7 @@ abstract class AdmissionRule
         if (is_object($admission_rule)) {
             $admission_rule = get_class($admission_rule);
         }
-        return AdmissionRuleCompatibility::exists(array(get_class($this), $admission_rule));
+        return AdmissionRuleCompatibility::exists([get_class($this), $admission_rule]);
     }
 
     public function __clone()

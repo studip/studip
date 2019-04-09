@@ -19,14 +19,14 @@ class StringManipulationTest extends PHPUnit_Framework_TestCase
 
     public function camelCaseProvider()
     {
-        return array(
-            array('foo bar', 'fooBar'),
-            array('lorem (ipsum) dolor', 'loremIpsumDolor'),
-            array('test with numbers 1 2 3 4', 'testWithNumbers1234'),
-            array('path/definitions/converted', 'pathDefinitionsConverted'),
+        return [
+            ['foo bar', 'fooBar'],
+            ['lorem (ipsum) dolor', 'loremIpsumDolor'],
+            ['test with numbers 1 2 3 4', 'testWithNumbers1234'],
+            ['path/definitions/converted', 'pathDefinitionsConverted'],
 
-            array('foo bar', 'FooBar', true),
-        );
+            ['foo bar', 'FooBar', true],
+        ];
     }
 
     /**
@@ -40,11 +40,11 @@ class StringManipulationTest extends PHPUnit_Framework_TestCase
 
     public function snake_case_provider()
     {
-        return array(
-            array('foo bar', 'foo_bar'),
-            array('lorem (ipsum) dolor', 'lorem_ipsum_dolor'),
-            array('test with numbers 1 2 3 4', 'test_with_numbers_1_2_3_4'),
-            array('path/definitions/converted', 'path_definitions_converted'),
-        );
+        return [
+            ['foo bar', 'foo_bar'],
+            ['lorem (ipsum) dolor', 'lorem_ipsum_dolor'],
+            ['test with numbers 1 2 3 4', 'test_with_numbers_1_2_3_4'],
+            ['path/definitions/converted', 'path_definitions_converted'],
+        ];
     }
 }

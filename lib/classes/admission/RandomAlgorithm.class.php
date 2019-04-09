@@ -45,14 +45,14 @@ class RandomAlgorithm extends AdmissionAlgorithm
     private function distributeByCourses($courseSet)
     {
         Log::DEBUG('start seat distribution for course set: ' . $courseSet->getId());
-        $groups_quota = array();
+        $groups_quota = [];
         $conditional_rule = array_pop(
             array_filter($courseSet->getAdmissionRules(), function ($r) {
                 return $r instanceof ConditionalAdmission
                     && count($r->getConditionGroups());
             })
         );
-        $conditiongroups = $conditional_rule ? $conditional_rule->getConditionGroups() : array();
+        $conditiongroups = $conditional_rule ? $conditional_rule->getConditionGroups() : [];
         if (count($conditiongroups)) {
             foreach (array_keys($conditiongroups) as $group_id) {
                 $groups_quota[$group_id] = $conditional_rule->getQuota($group_id);
@@ -61,7 +61,7 @@ class RandomAlgorithm extends AdmissionAlgorithm
             $groups_quota[] = 100;
         }
         foreach ($courseSet->getCourses() as $course_id) {
-            $waiting_users = array();
+            $waiting_users = [];
             $course = Course::find($course_id);
             $free_seats_course = $course->getFreeSeats();
             foreach ($groups_quota as $group_id => $quota) {
@@ -155,13 +155,13 @@ class RandomAlgorithm extends AdmissionAlgorithm
                                                    )
                                          );
         //unlucky users get a bonus for the next round
-        $bonus_users = array();
+        $bonus_users = [];
 
         //users / courses für later waitlist distribution
-        $waiting_users = array();
+        $waiting_users = [];
 
         //number of already distributed seats for users
-        $distributed_users = array();
+        $distributed_users = [];
 
         $prio_mapper = function ($users, $course_id) use ($claiming_users) {
             $mapper = function ($u) use ($course_id) {
@@ -170,14 +170,14 @@ class RandomAlgorithm extends AdmissionAlgorithm
             return array_filter(array_map($mapper, array_intersect_key($claiming_users, array_flip($users))));
         };
 
-        $groups_quota = array();
+        $groups_quota = [];
         $conditional_rule = array_pop(
             array_filter($courseSet->getAdmissionRules(), function ($r) {
                 return $r instanceof ConditionalAdmission
                     && count($r->getConditionGroups());
             })
         );
-        $conditiongroups = $conditional_rule ? $conditional_rule->getConditionGroups() : array();
+        $conditiongroups = $conditional_rule ? $conditional_rule->getConditionGroups() : [];
         if (count($conditiongroups)) {
             foreach (array_keys($conditiongroups) as $group_id) {
                 $groups_quota[$group_id] = $conditional_rule->getQuota($group_id);
@@ -200,7 +200,7 @@ class RandomAlgorithm extends AdmissionAlgorithm
                 $course = Course::find($course_id);
                 $free_seats_course = $course->getFreeSeats();
                 foreach ($groups_quota as $group_id => $quota) {
-                    $current_claiming = array();
+                    $current_claiming = [];
                     //find users with current prio for this course, if they still need a place
                     foreach ($claiming_users as $user_id => $prio_courses) {
                         $condition_ok = true;
@@ -408,16 +408,16 @@ class RandomAlgorithm extends AdmissionAlgorithm
      */
     public function countParticipatingUsers($course_ids, $user_ids)
     {
-        $distributed_users = array();
+        $distributed_users = [];
         $sum = function($r) use (&$distributed_users) {
             $distributed_users[$r['user_id']] += $r['c'];
         };
         $db = DbManager::get();
         $db->fetchAll("SELECT user_id, COUNT(*) as c FROM seminar_user
             WHERE seminar_id IN(?) AND user_id IN(?) AND status IN (?) GROUP BY user_id",
-            array($course_ids, $user_ids, array('user', 'autor')), $sum);
+            [$course_ids, $user_ids, ['user', 'autor']], $sum);
         $db->fetchAll("SELECT user_id, COUNT(*) as c FROM admission_seminar_user
-            WHERE seminar_id IN(?) AND user_id IN(?) GROUP BY user_id", array($course_ids, $user_ids), $sum);
+            WHERE seminar_id IN(?) AND user_id IN(?) GROUP BY user_id", [$course_ids, $user_ids], $sum);
         return $distributed_users;
     }
 

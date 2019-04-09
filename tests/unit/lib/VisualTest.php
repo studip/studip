@@ -21,10 +21,10 @@ class VisualFunctionsTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        static $config = array(
+        static $config = [
             'LOAD_EXTERNAL_MEDIA' => 'allow',
             'OPENGRAPH_ENABLE'    => false,
-        );
+        ];
 
         Config::set(new Config($config));
 
@@ -45,7 +45,7 @@ class VisualFunctionsTest extends PHPUnit_Framework_TestCase
 
     public function testHtmlReady()
     {
-        $pairs = array(
+        $pairs = [
           'abc'    => 'abc',
           'äöü'    => 'äöü',
           '<'      => '&lt;',
@@ -55,7 +55,7 @@ class VisualFunctionsTest extends PHPUnit_Framework_TestCase
           '&#039;' => '&amp;#039;',
           ''       => '',
           NULL     => NULL
-        );
+        ];
 
         foreach ($pairs as $string => $expected) {
           $this->assertEquals($expected, htmlReady($string));

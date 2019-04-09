@@ -121,7 +121,7 @@ class Test extends QuestionnaireQuestion implements QuestionType
 
     public function getResultArray()
     {
-        $output = array();
+        $output = [];
 
         $taskAnswers = $this->etask->task['answers'];
 
@@ -158,7 +158,7 @@ class Test extends QuestionnaireQuestion implements QuestionType
         $numTaskAnswers = count($task['answers']);
         $resultsUsers = array_fill(0, $numTaskAnswers, []);
         if ($answersToCheck && !is_array($answersToCheck)) {
-            $answersToCheck = array($answersToCheck);
+            $answersToCheck = [$answersToCheck];
         }
         $answersToCheck = is_array($answersToCheck) ? $answersToCheck : $this->answers->findBy('user_id', $userId);
 

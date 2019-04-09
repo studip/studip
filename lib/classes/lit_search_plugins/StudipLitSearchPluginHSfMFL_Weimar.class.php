@@ -43,7 +43,7 @@ class StudipLitSearchPluginHSfMFL_Weimar extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = 'Bibliothek der Hochschule für Musik Franz Liszt Weimar';
         $this->z_host = "sru.gbv.de/opac-de-wim8";
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"),
                     '4' => _("Titelstichwörter [TIT]"),
                     '5' => _("Serienstichwörter [SER]"),
                     '21' => _("alle Klassifikationen [SYS]"),
@@ -55,7 +55,7 @@ class StudipLitSearchPluginHSfMFL_Weimar extends StudipLitSearchPluginGvk
                     '5040' => _("Schlagwörter [SLW]"),
                     '8062' => _("alle Titelanfänge [TAF]"),
                     '8580' => _("Verlagsort, Verlag [PUB]")
-                    );
+                    ];
     }
 }
 ?>

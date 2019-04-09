@@ -28,13 +28,13 @@ class FunctionsTest extends PHPUnit_Framework_TestCase
     function testWords()
     {
         $string = "one two three";
-        $this->assertEquals(array('one', 'two', 'three'), words($string));
+        $this->assertEquals(['one', 'two', 'three'], words($string));
     }
 
     function testWordsWithEmptyString()
     {
         $string = "";
-        $this->assertEquals(array(), words($string));
+        $this->assertEquals([], words($string));
     }
 
     function testArrayFlatten()

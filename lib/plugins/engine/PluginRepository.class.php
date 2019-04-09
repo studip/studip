@@ -19,7 +19,7 @@ class PluginRepository
     /**
      * list and meta data of available plugins
      */
-    private $plugins = array();
+    private $plugins = [];
 
     /**
      * Initialize a new PluginRepository and read meta data from
@@ -144,7 +144,7 @@ class PluginRepository
      */
     public function getPlugins($search = NULL)
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->plugins as $name => $data) {
             if ($search === NULL || $search === '' ||

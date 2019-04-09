@@ -21,7 +21,7 @@ class DatafieldCondition extends UserFilterField
 
     public static function getParameterizedTypes()
     {
-        $ret = array();
+        $ret = [];
         try {
             foreach (DataField::findBySQL("object_type='user' AND (object_class & (1|2|4|8) OR object_class IS NULL) AND is_userfilter = 1 ORDER BY priority") as $df) {
                 $ret[__CLASS__ . '_' . $df->id] = utf8_encode(chr(160)) . _("Datenfeld") . ': ' . $df->name;
@@ -34,12 +34,12 @@ class DatafieldCondition extends UserFilterField
      */
     public function __construct($typeparam, $fieldId = '')
     {
-        $this->validCompareOperators = array(
+        $this->validCompareOperators = [
             '>=' => _('mindestens'),
             '<=' => _('höchstens'),
             '=' => _('ist'),
             '!=' => _('ist nicht')
-        );
+        ];
         if ($fieldId) {
             $this->id = $fieldId;
             $this->load();
@@ -56,7 +56,7 @@ class DatafieldCondition extends UserFilterField
         }
         $typed_df = DataFieldEntry::createDataFieldEntry($df);
         if ($typed_df instanceof DataFieldBoolEntry) {
-            $this->validValues = array(1 => _('Ja'), 0 => _('Nein'));
+            $this->validValues = [1 => _('Ja'), 0 => _('Nein')];
             unset($this->validCompareOperators['>=']);
             unset($this->validCompareOperators['<=']);
             unset($this->validCompareOperators['!=']);
@@ -84,17 +84,17 @@ class DatafieldCondition extends UserFilterField
         return $this->datafield_name;
     }
 
-    public function getUsers($restrictions = array())
+    public function getUsers($restrictions = [])
     {
         $db = DBManager::get();
-        $users = array();
+        $users = [];
         // Standard query getting the values without respecting other values.
         $select = "SELECT user_id FROM
                     auth_user_md5 LEFT JOIN
                   datafields_entries ON range_id = user_id AND datafield_id = ?
                   WHERE perms IN ('user','autor','tutor','dozent') AND IFNULL(content, ?)
                   " . $this->compareOperator . " ?";
-        $users = $db->fetchFirst($select, array($this->datafield_id, $this->null_yields,$this->value));
+        $users = $db->fetchFirst($select, [$this->datafield_id, $this->null_yields,$this->value]);
         return $users;
     }
 
@@ -109,8 +109,8 @@ class DatafieldCondition extends UserFilterField
     {
         $result = DBManager::get()->fetchColumn(
             "SELECT content FROM datafields_entries
-            WHERE datafield_id = ? AND range_id = ?", array($this->datafield_id, $userId));
-        return array($result === null || $result === false ? $this->null_yields : $result);
+            WHERE datafield_id = ? AND range_id = ?", [$this->datafield_id, $userId]);
+        return [$result === null || $result === false ? $this->null_yields : $result];
     }
 
     /**
@@ -120,7 +120,7 @@ class DatafieldCondition extends UserFilterField
     {
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `userfilter_fields` WHERE `field_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->conditionId = $data['filter_id'];
             $this->value = $data['value'];
@@ -157,8 +157,8 @@ class DatafieldCondition extends UserFilterField
             ON DUPLICATE KEY UPDATE `filter_id`=VALUES(`filter_id`),
             `type`=VALUES(`type`),`value`=VALUES(`value`),
             `compare_op`=VALUES(`compare_op`), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->conditionId, get_class($this).'_'.$this->datafield_id,
-            $this->value, $this->compareOperator, time(), time()));
+        $stmt->execute([$this->id, $this->conditionId, get_class($this).'_'.$this->datafield_id,
+            $this->value, $this->compareOperator, time(), time()]);
     }
 }
 

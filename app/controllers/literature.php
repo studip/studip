@@ -33,11 +33,11 @@ class LiteratureController extends AuthenticatedController
             throw new AccessDeniedException(_('Die Literaturverwaltung ist nicht aktiviert.'));
         }
 
-        $this->attributes['textarea'] = array('style' => 'width:98%','rows'=>2);
-        $this->attributes['select'] = array();
-        $this->attributes['date'] = array();
-        $this->attributes['combo'] = array('style' => 'width:45%; display: inline;');
-        $this->attributes['lit_select'] = array('style' => 'font-size:8pt;width:100%');
+        $this->attributes['textarea'] = ['style' => 'width:98%','rows'=>2];
+        $this->attributes['select'] = [];
+        $this->attributes['date'] = [];
+        $this->attributes['combo'] = ['style' => 'width:45%; display: inline;'];
+        $this->attributes['lit_select'] = ['style' => 'font-size:8pt;width:100%'];
     }
 
     /**
@@ -143,8 +143,8 @@ class LiteratureController extends AuthenticatedController
         if ( ($this->lists = $_the_tree->getListIds()) && $_the_clipboard->getNumElements()){
             for ($i = 0; $i < count($this->lists); ++$i){
                 $_the_clip_form->form_fields['clip_cmd']['options'][]
-                = array('name' => my_substr(sprintf(_("In \"%s\" eintragen"), $_the_tree->tree_data[$this->lists[$i]]['name']),0,50),
-                'value' => 'ins_' . $this->lists[$i]);
+                = ['name' => my_substr(sprintf(_("In \"%s\" eintragen"), $_the_tree->tree_data[$this->lists[$i]]['name']),0,50),
+                'value' => 'ins_' . $this->lists[$i]];
             }
         }
 
@@ -338,8 +338,8 @@ class LiteratureController extends AuthenticatedController
             $_the_clipboard->insertElement($_catalog_id);
         }
 
-        $_the_clip_form->form_fields['clip_cmd']['options'][] = array('name' => _("In Merkliste eintragen"), 'value' => 'ins');
-        $_the_clip_form->form_fields['clip_cmd']['options'][] = array('name' => _("Markierten Eintrag bearbeiten"), 'value' => 'edit');
+        $_the_clip_form->form_fields['clip_cmd']['options'][] = ['name' => _("In Merkliste eintragen"), 'value' => 'ins'];
+        $_the_clip_form->form_fields['clip_cmd']['options'][] = ['name' => _("Markierten Eintrag bearbeiten"), 'value' => 'edit'];
 
         if ($_the_form->IsClicked("reset") || Request::option('cmd') == "new_entry"){
             $_the_form->doFormReset();
@@ -350,8 +350,8 @@ class LiteratureController extends AuthenticatedController
                 PageLayout::postInfo(sprintf(_("Sie können diesen Eintrag nicht löschen, da er noch in %s Literaturlisten referenziert wird."),$_the_element->reference_count));
             } else {
                 PageLayout::postInfo(_("Wollen Sie diesen Eintrag wirklich löschen?"),
-                    [Studip\LinkButton::createAccept(_('Ja'), URLHelper::getURL('?cmd=delete_element&_catalog_id=' . $_catalog_id), array('title' =>  _('löschen')))
-                            .Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?_catalog_id=' . $_catalog_id), array('title' =>  _('abbrechen')))]);
+                    [Studip\LinkButton::createAccept(_('Ja'), URLHelper::getURL('?cmd=delete_element&_catalog_id=' . $_catalog_id), ['title' =>  _('löschen')])
+                            .Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?_catalog_id=' . $_catalog_id), ['title' =>  _('abbrechen')])]);
             }
         }
 

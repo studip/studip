@@ -50,7 +50,7 @@ class SingleDateDB
 
             $query = "SELECT assign_id FROM resources_assign WHERE assign_user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($termin->getTerminID()));
+            $statement->execute([$termin->getTerminID()]);
             $assign_id = $statement->fetchColumn();
 
             if ($assign_id) {
@@ -72,10 +72,10 @@ class SingleDateDB
             $statement = DBManager::get()->prepare($query);
 
             foreach ($issueIDs as $val) {
-                $statement->execute(array(
+                $statement->execute([
                     $termin->getTerminID(),
                     $val
-                ));
+                ]);
             }
         }
 
@@ -132,33 +132,33 @@ class SingleDateDB
 
         $query = "DELETE FROM termin_related_persons WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin->getTerminId()));
+        $statement->execute([$termin->getTerminId()]);
 
         if (count($termin->related_persons)
-                && (count($termin->related_persons) < CourseMember::countBySQL("Seminar_id = ? AND status = 'dozent'", array($termin->range_id)))) {
+                && (count($termin->related_persons) < CourseMember::countBySQL("Seminar_id = ? AND status = 'dozent'", [$termin->range_id]))) {
             $query = "INSERT IGNORE INTO termin_related_persons (range_id, user_id) VALUES (?, ?)";
             $statement = DBManager::get()->prepare($query);
 
             foreach ($termin->getRelatedPersons() as $user_id) {
-                $statement->execute(array(
+                $statement->execute([
                     $termin->getTerminId(),
                     $user_id
-                ));
+                ]);
             }
         }
 
         $query = "DELETE FROM termin_related_groups WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin->getTerminId()));
+        $statement->execute([$termin->getTerminId()]);
         if (count($termin->related_groups)
-                && (count($termin->related_groups) < Statusgruppen::countBySQL("range_id = ?", array($termin->range_id)))) {
+                && (count($termin->related_groups) < Statusgruppen::countBySQL("range_id = ?", [$termin->range_id]))) {
             $query = "INSERT IGNORE INTO termin_related_groups (termin_id, statusgruppe_id) VALUES (?, ?)";
             $statement = DBManager::get()->prepare($query);
             foreach ($termin->getRelatedGroups() as $statusgruppe_id) {
-                $statement->execute(array(
+                $statement->execute([
                     $termin->getTerminId(),
                     $statusgruppe_id
-                ));
+                ]);
             }
         }
 
@@ -178,7 +178,7 @@ class SingleDateDB
                   GROUP BY termine.termin_id
                   ORDER BY NULL";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         if ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
             $result['related_persons'] = array_filter(explode(',', $result['related_persons']));
             $result['related_groups'] = array_filter(explode(',', $result['related_groups']));
@@ -195,7 +195,7 @@ class SingleDateDB
                   GROUP BY termin_id
                   ORDER BY NULL";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         if ($result = $statement->fetch(PDO::FETCH_ASSOC)) {
             $result['related_persons'] = array_filter(explode(',', $result['related_persons']));
             $result['related_groups'] = array_filter(explode(',', $result['related_groups']));
@@ -248,7 +248,7 @@ class SingleDateDB
                   LEFT JOIN resources_assign ON (assign_user_id = termin_id)
                   WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         return $statement->fetchColumn() ?: false;
     }
 
@@ -256,7 +256,7 @@ class SingleDateDB
     {
         $query = "SELECT request_id FROM resources_requests WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         return $statement->fetchColumn() ?: false;
     }
 
@@ -268,7 +268,7 @@ class SingleDateDB
                   WHERE termin_id = ?
                     AND issue_id IS NOT NULL AND issue_id != '' ORDER BY t.priority, t.title";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         return $result ?: null;
@@ -278,7 +278,7 @@ class SingleDateDB
     {
         $query = "DELETE FROM themen_termine WHERE termin_id = ? AND issue_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id, $issue_id));
+        $statement->execute([$termin_id, $issue_id]);
 
         return true;
     }
@@ -287,7 +287,7 @@ class SingleDateDB
     {
         $query = "DELETE FROM resources_requests WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
 
         return true;
     }
@@ -296,11 +296,11 @@ class SingleDateDB
     {
         $query = "DELETE FROM ex_termine WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($course_id));
+        $statement->execute([$course_id]);
 
         $query = "SELECT termin_id FROM termine WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($course_id));
+        $statement->execute([$course_id]);
 
         $termine = 0;
         while ($termin_id = $statement->fetchColumn()) {

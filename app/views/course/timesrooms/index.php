@@ -26,7 +26,7 @@
     <div data-dialog-button>
     <?= Studip\LinkButton::create(_('Raumanfrage erstellen'), 
             $controller->url_for('course/room_requests/edit/' . $course->id,
-            array('cid' => $course->id, 'new_room_request_type' => 'course', 'origin' => 'admin_courses')),
-            array('data-dialog' => 'size=big')) ?>
+            ['cid' => $course->id, 'new_room_request_type' => 'course', 'origin' => 'admin_courses']),
+            ['data-dialog' => 'size=big']) ?>
     </div>
 <? endif; ?>

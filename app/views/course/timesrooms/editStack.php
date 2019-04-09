@@ -103,7 +103,7 @@
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Änderungen speichern'), 'save') ?>
         <? if (Request::int('fromDialog')) : ?>
-            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->url_for('course/timesrooms/index'), array('data-dialog' => 'size=big')) ?>
+            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->url_for('course/timesrooms/index'), ['data-dialog' => 'size=big']) ?>
         <? endif ?>
     </footer>
 </form>

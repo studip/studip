@@ -1,7 +1,7 @@
 <? if ($selected_status || $selected_kategorie || $selected_abschluss || $selected_fachbereich || $selected_zuordnung || $selected_institut || $selected_semester != $default_semester) : ?>
 <div style="width: 100%; text-align: right;">
     <a href="<?= $action_reset ?>">
-        <?= Icon::create('refresh', 'clickable', array('title' => _('Filter zurücksetzen')))->asImg(); ?>
+        <?= Icon::create('refresh', 'clickable', ['title' => _('Filter zurücksetzen')])->asImg(); ?>
         <?= _('Zurücksetzen') ?>
     </a>
 </div>

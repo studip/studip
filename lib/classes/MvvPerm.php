@@ -307,7 +307,7 @@ class MvvPerm {
             return self::PERM_ADMIN;
         }
         if (is_null($institut_id)) {
-            $inst_ids = array();
+            $inst_ids = [];
             foreach ($mvv_object->getResponsibleInstitutes() as $inst) {
                 if ($inst) {
                     $inst_ids[] = $inst->getId();
@@ -316,7 +316,7 @@ class MvvPerm {
                 }
             }
         } else {
-            $inst_ids = array();
+            $inst_ids = [];
             foreach (Institute::findMany((array) $institut_id) as $inst) {
                 $inst_ids[] = $inst->getId();
                 // the user have permission if he is assigned to the faculty
@@ -415,7 +415,7 @@ class MvvPerm {
     {
         $field = 'datafields';
         $df_id = $df_entry->datafield_id;
-        $field_perm = $this->getFieldPerm(array($field, $df_id));
+        $field_perm = $this->getFieldPerm([$field, $df_id]);
         return $field_perm >= $perm;
     }
 
@@ -447,7 +447,7 @@ class MvvPerm {
                 return $ins ? $ins->getId() : null;
             }, $this->mvv_object->getResponsibleInstitutes());
         } else {
-            $institut_ids = is_array($institut_id) ? $institut_id : array($institut_id);
+            $institut_ids = is_array($institut_id) ? $institut_id : [$institut_id];
         }
         $status = $this->mvv_object->getStatus();
         self::getPrivileges($mvv_table);
@@ -608,20 +608,20 @@ class MvvPerm {
         }
 
         if (self::$user_role_institutes[$user_id] === null) {
-            $institutes = array();
+            $institutes = [];
             foreach ($roles as $role) {
                 
                 // don't check system roles or roles not related to MVV
                 if (stripos($role->rolename, 'MVV') !== 0) continue;
                 
                 if ($role->rolename === 'MVVAdmin' || $GLOBALS['perm']->have_perm('root')) {
-                    $institutes = array();
+                    $institutes = [];
                     break;
                 }
                 $institutes_assigned_role = RolePersistence::getAssignedRoleInstitutes($user_id, $role->roleid);
                 if (count($institutes_assigned_role) === 1) {
                     // this role is globally defined for this user
-                    $institutes = array();
+                    $institutes = [];
                     break;
                 }
                 $institutes = array_merge((array) $institutes, array_filter(
@@ -634,10 +634,10 @@ class MvvPerm {
                 $stmt = DBManager::get()->prepare('SELECT DISTINCT(Institut_id) '
                         . 'FROM Institute WHERE Institut_id IN (:inst_ids) '
                         . 'OR fakultaets_id IN (:inst_ids)');
-                $stmt->execute(array('inst_ids' => $institutes));
+                $stmt->execute(['inst_ids' => $institutes]);
                 self::$user_role_institutes[$user_id] = $stmt->fetchAll(PDO::FETCH_COLUMN);
             } else {
-                self::$user_role_institutes[$user_id] = array();
+                self::$user_role_institutes[$user_id] = [];
             }
         }
         return self::$user_role_institutes[$user_id];

@@ -71,7 +71,7 @@ $aliases_groups = $this->config->getValue('Main', 'groupsalias');
 $order          = $this->config->getValue('Main', 'order');
 $sort           = $this->config->getValue('Main', 'sort');
 
-$query_order = array();
+$query_order = [];
 foreach ($sort as $key => $position) {
     if ($position > 0) {
         $query_order[$position] = $this->data_fields[$key];
@@ -91,13 +91,13 @@ if (!$nameformat = $this->config->getValue('Main', 'nameformat')) {
 $grouping = $this->config->getValue('Main', 'grouping');
 if (!$grouping) {
     if (Request::get('visible_groups')) {
-        $groups_ids = array(Request::get('visible_groups'));
+        $groups_ids = [Request::get('visible_groups')];
     } else {
         $groups_ids = $this->config->getValue('Main', 'groupsvisible');
     }
     $ext_vis_query = get_ext_vis_query();
 
-    $range_ids = array($range_id);
+    $range_ids = [$range_id];
     if (Request::option('aggregation')) {
         $i = Institute::find($range_id);
         $children = $i->sub_institutes->pluck('institut_id');
@@ -126,15 +126,15 @@ if (!$grouping) {
                    ORDER BY s.position ASC, su.position ASC";
     }
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(
+    $statement->execute([
         $groups_ids ?: '',
         $range_ids
-    ));
+    ]);
     $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     // Ensure the main loop will only get executed once since we already
     // have all the neccessary data
-    $visible_groups = array('');
+    $visible_groups = [''];
 }
 
 // generic data fields
@@ -168,7 +168,7 @@ foreach ($visible_groups as $group_id => $group) {
                     AND {$ext_vis_query}
                   {$query_order}";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($group_id, $range_id));
+        $statement->execute([$group_id, $range_id]);
         $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         $position = array_search($group_id, $all_groups);
@@ -180,7 +180,7 @@ foreach ($visible_groups as $group_id => $group) {
     if (count($rows) > 0) {
 
         if ($grouping && $repeat_headrow == 'beneath') {
-            $out .= $this->elements['TableGroup']->toString(array('content' => htmlReady($group)));
+            $out .= $this->elements['TableGroup']->toString(['content' => htmlReady($group)]);
         }
 
         if ($repeat_headrow || $first_loop) {
@@ -188,10 +188,10 @@ foreach ($visible_groups as $group_id => $group) {
         }
 
         if ($grouping && $repeat_headrow != 'beneath') {
-            $out .= $this->elements['TableGroup']->toString(array('content' => htmlReady($group)));
+            $out .= $this->elements['TableGroup']->toString(['content' => htmlReady($group)]);
         }
 
-        $range_ids = array($range_id);
+        $range_ids = [$range_id];
         if (Request::option('aggregation')) {
             $i = Institute::find($range_id);
             $children = $i->sub_institutes->pluck('institut_id');
@@ -211,7 +211,7 @@ foreach ($visible_groups as $group_id => $group) {
                           WHERE aum.user_id = ? AND externdefault = 1
                             AND {$ext_vis_query}";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($row['user_id']));
+                $statement->execute([$row['user_id']]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 
                 if ($temp) {
@@ -228,26 +228,26 @@ foreach ($visible_groups as $group_id => $group) {
                               WHERE aum.user_id = ? AND Institut_id IN (?)
                                 AND {$ext_vis_query}";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($row['user_id'], $range_ids));
+                    $statement->execute([$row['user_id'], $range_ids]);
                     $row = $statement->fetch(PDO::FETCH_ASSOC);
                 }
             }
 
             $email = get_visible_email($row['user_id']);
-            $data['content'] = array(
-                'Nachname'     => $this->elements['LinkIntern']->toString(array(
+            $data['content'] = [
+                'Nachname'     => $this->elements['LinkIntern']->toString([
                                       'content'   => htmlReady($row['fullname']),
                                       'module'    => 'Persondetails',
                                       'link_args' => 'username=' . $row['username']
-                                  )),
+                                  ]),
                 'Telefon'      => htmlReady($row['Telefon']),
                 'sprechzeiten' => htmlReady($row['sprechzeiten']),
                 'raum'         => htmlReady($row['raum']),
-                'Email'        => $this->elements['Link']->toString(array(
+                'Email'        => $this->elements['Link']->toString([
                                       'content' => htmlReady($email),
                                       'link'    => 'mailto:' . htmlReady($email)
-                                  ))
-            );
+                                  ])
+            ];
 
             // generic data fields
             if (is_array($generic_datafields)) {
@@ -262,4 +262,4 @@ foreach ($visible_groups as $group_id => $group) {
     }
 }
 
-$this->elements['TableHeader']->printout(array('content' => $out));
+$this->elements['TableHeader']->printout(['content' => $out]);

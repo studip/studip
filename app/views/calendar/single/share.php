@@ -27,7 +27,7 @@
             <section>
                 <?=  _('Verschicken Sie die Export-Adresse als Email:') ?>
                 <input type="email" name="email" value="<?= htmlReady($GLOBALS['user']->email) ?>" required="required">
-                <?= Button::create(_('Abschicken'), 'submit_email', array('title' => _('Abschicken'))) ?>
+                <?= Button::create(_('Abschicken'), 'submit_email', ['title' => _('Abschicken')]) ?>
             </section>
 
             <section>
@@ -46,13 +46,13 @@
         <? if (!$short_id) : ?>
             <?= Button::create(_('Adresse generieren'), 'new_id') ?>
         <? else :?>
-            <?= Button::create(_('Neue Adresse generieren'), 'new_id', array(
+            <?= Button::create(_('Neue Adresse generieren'), 'new_id', [
                 'title' => _('Achtung: Die alte Adresse wird damit ungültig!')
-            )) ?>
+            ]) ?>
 
-            <?= Button::create(_('Adresse löschen'), 'delete_id', array(
+            <?= Button::create(_('Adresse löschen'), 'delete_id', [
                 title => _('Ein Zugriff auf Ihre Termine über diese Adresse ist dann nicht mehr möglich!')
-            )) ?>
+            ]) ?>
         <? endif ?>
 
         <? if (!Request::isXhr()) : ?>

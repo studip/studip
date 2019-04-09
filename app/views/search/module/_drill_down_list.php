@@ -2,7 +2,7 @@
 <div style="width: 100%; text-align:right;">
     <a href="<?= $controller->url_for('search/module/reset_drilldown') ?>">
     <?= _('Auswahl aufheben') ?>
-    <?= Icon::create('decline', 'clickable', array('title' => _('Auswahl aufheben')))->asImg(); ?>
+    <?= Icon::create('decline', 'clickable', ['title' => _('Auswahl aufheben')])->asImg(); ?>
     </a>
 </div>
 <? endif; ?>
@@ -44,10 +44,10 @@
         <ul style="list-style-type:none; margin:0; padding:0;">
             <? foreach ($lists[$act_list]['objects'] as $object) : ?>
             <li style="margin:5px 0;">
-                <a href="<?= $controller->url_for('search/module/drilldown', array('type' => get_class($object), 'id' => $object->getId())) ?>">
+                <a href="<?= $controller->url_for('search/module/drilldown', ['type' => get_class($object), 'id' => $object->getId()]) ?>">
                 <?= htmlReady($object->getDisplayName()) . ' (' . $object->count_module . ')' ?>
                 <? if ($object->getId() == $drill_down_id) : ?>
-                    <?= Icon::create('accept', 'clickable', array('title' => _('Bereich ausgewählt')))->asImg(); ?>
+                    <?= Icon::create('accept', 'clickable', ['title' => _('Bereich ausgewählt')])->asImg(); ?>
                 <? endif; ?>
                 </a>
             </li>

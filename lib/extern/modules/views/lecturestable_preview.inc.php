@@ -79,10 +79,10 @@ $repeat_headrow = $this->config->getValue("Main", "repeatheadrow");
 $out = "";
 if ($this->config->getValue("Main", "addinfo")) {
     $group_by_name = $this->config->getValue("Main", "aliasesgrouping");
-    $out = $this->elements["InfoCountSem"]->toString(array("content" => "&nbsp;2" .
+    $out = $this->elements["InfoCountSem"]->toString(["content" => "&nbsp;2" .
             $this->config->getValue("Main", "textlectures") . ", " .
             $this->config->getValue("Main", "textgrouping") .
-            $group_by_name[3]));
+            $group_by_name[3]]);
 }
 
 $i = 0;
@@ -99,7 +99,7 @@ foreach ($data_group as $group) {
     }
 
     if ($repeat_headrow == "beneath" && ($group1 != $group2)) {
-        $out .= $this->elements["Grouping"]->toString(array("content" => $group1));
+        $out .= $this->elements["Grouping"]->toString(["content" => $group1]);
         $out .= $this->elements["TableHeadrow"]->toString();
         $group2 = $group1;
     }
@@ -110,15 +110,15 @@ foreach ($data_group as $group) {
     if ($repeat_headrow != "beneath" && ($group1 != $group2)) {
         if ($repeat_headrow && !$first_loop)
             $out .= $this->elements["TableHeadrow"]->toString();
-        $out .= $this->elements["Grouping"]->toString(array("content" => $group1));
+        $out .= $this->elements["Grouping"]->toString(["content" => $group1]);
         $group2 = $group1;
     }
 
-    $out .= $this->elements["TableRow"]->toString(array("content" => $data_sem[$i++],
-            "data_fields" => $this->data_fields));
+    $out .= $this->elements["TableRow"]->toString(["content" => $data_sem[$i++],
+            "data_fields" => $this->data_fields]);
 
     $first_loop = FALSE;
 }
-$this->elements["TableHeader"]->printout(array("content" => $out));
+$this->elements["TableHeader"]->printout(["content" => $out]);
 
 ?>

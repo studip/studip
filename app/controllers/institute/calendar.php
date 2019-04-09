@@ -18,7 +18,7 @@
 class Institute_CalendarController extends AuthenticatedController
 {
 
-    private $calendar_settings = array();
+    private $calendar_settings = [];
     private $institute_id;
 
     # see Trails_Controller#before_filter

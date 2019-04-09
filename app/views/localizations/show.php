@@ -1,6 +1,6 @@
 <?php
 
-$translations = array(
+$translations = [
     // app/controllers/messages.php
     'Wirklich %s Nachrichten löschen?' => _('Wirklich %s Nachrichten löschen?'),
 
@@ -223,7 +223,7 @@ $translations = array(
     'vorm.' => _('vorm.'),
     'nachm.' => _('nachm.'),
 
-);
+];
 
 ?>
 <?= json_encode($translations) ?>

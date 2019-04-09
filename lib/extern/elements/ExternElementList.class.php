@@ -39,7 +39,7 @@
 
 class ExternElementList extends ExternElement {
 
-    var $attributes = array("ul_class", "ul_style", "li_class", "li_style", "margin");
+    var $attributes = ["ul_class", "ul_style", "li_class", "li_style", "margin"];
 
     /**
     * Constructor
@@ -59,7 +59,7 @@ class ExternElementList extends ExternElement {
             $edit_form = "", $anker = "") {
             
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';

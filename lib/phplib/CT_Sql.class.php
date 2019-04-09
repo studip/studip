@@ -50,7 +50,7 @@ class CT_Sql {
         } else {
             $stmt = $db->prepare(sprintf("REPLACE INTO %s ( val, sid ) VALUES (?, ?)", $this->database_table));
         }
-        $stmt->execute(array($str, $id));
+        $stmt->execute([$str, $id]);
         return $stmt->rowCount();
     }
     
@@ -82,7 +82,7 @@ class CT_Sql {
     function ac_set_changed($id, $name = null, $timestamp){
         $db = DBManager::get();
         $stmt = $db->prepare(sprintf("UPDATE %s SET changed = FROM_UNIXTIME(?) WHERE sid  = ?", $this->database_table));
-        $stmt->execute(array($timestamp, $id));
+        $stmt->execute([$timestamp, $id]);
         return $stmt->rowCount();
     }
     

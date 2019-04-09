@@ -114,10 +114,10 @@ class BlubberExternalContact extends SimpleORMap implements BlubberContact
                 "AND external_contact_id = :contact_id " .
                 "AND left_follows_right = '1' " .
         "");
-        $statement->execute(array(
+        $statement->execute([
             'user_id' => $user_id,
             'contact_id' => $this->getId()
-        ));
+        ]);
         return (bool) $statement->fetch(PDO::FETCH_COLUMN, 0);
     }
 }

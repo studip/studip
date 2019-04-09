@@ -10,12 +10,12 @@
 
             <div class="<?= TextHelper::cycle('odd', 'even') ?>">
                 <?= $this->render_partial('course/lvgselector/entry',
-                                          array('area' => $child,
-                                                'show_link' => $has_children)) ?>
+                                          ['area' => $child,
+                                                'show_link' => $has_children]) ?>
             </div>
 
             <? if ($selection->getShowAll() && $has_children) : ?>
-                <?= $this->render_partial('course/lvgselector/subtree', array('subtree' => $child)) ?>
+                <?= $this->render_partial('course/lvgselector/subtree', ['subtree' => $child]) ?>
             <? endif ?>
 
         </li>

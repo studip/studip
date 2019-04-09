@@ -55,7 +55,7 @@ class Score
                   GROUP BY range_id
                   ORDER BY NULL";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_ids));
+        $statement->execute([$user_ids]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $persons[$row['user_id']]['litcount'] = $row['litcount'];
         }
@@ -69,7 +69,7 @@ class Score
                       GROUP BY questionnaire_assignments.range_id
                       ORDER BY NULL";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user_ids));
+            $statement->execute([$user_ids]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $persons[$row['user_id']]['votecount'] = $row['votecount'];
             }
@@ -163,7 +163,7 @@ class Score
             ) as dates
         ";
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array(':user' => $user->id));
+        $stmt->execute([':user' => $user->id]);
         $score = $stmt->fetchColumn();
         if ($user->score && $user->score != $score) {
             $user->score = $score;

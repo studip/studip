@@ -22,7 +22,7 @@ class UserPermissions
     {
         $user_id = $user_id ?: $GLOBALS['user']->id;
         
-        static $cache = array();
+        static $cache = [];
         if (!isset($cache[$user_id])) {
             $cache[$user_id] = new self($user_id);
         }
@@ -31,7 +31,7 @@ class UserPermissions
     }
 
     private $user_id;
-    private $permissions = array();
+    private $permissions = [];
 
     /**
      * Creates the actual permission object (for a certain user).
@@ -133,7 +133,7 @@ class UserPermissions
      */
     public function getConsumers()
     {
-        $result = array();
+        $result = [];
         foreach ($this->permissions as $consumer_id => $granted) {
             if (!$granted) {
                 continue;

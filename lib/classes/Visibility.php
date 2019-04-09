@@ -129,7 +129,7 @@ class Visibility
         $sql = "INSERT INTO user_visibility_settings (`user_id`, `parent_id`, `category`, `name`, `state`, `identifier`, `plugin`)
                    VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($user, $parent, $category, $name, $default, $identifier, $pluginid));
+        $stmt->execute([$user, $parent, $category, $name, $default, $identifier, $pluginid]);
         NotificationCenter::postNotification('UserVisibilitySettingDidCreate', $user, $identifier);
         return $db->lastInsertId();
     }
@@ -199,7 +199,7 @@ class Visibility
             $default_join
             WHERE `identifier`= ? );";
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($identifier, $category, $name, $pluginid, $parent_identifier));
+        $stmt->execute([$identifier, $category, $name, $pluginid, $parent_identifier]);
         NotificationCenter::postNotification('UserVisibilitySettingDidCreate', 'all', $identifier);
     }
 
@@ -235,7 +235,7 @@ class Visibility
         $sql = "SELECT state FROM user_visibility_settings WHERE visibilityid = ?";
         $db = DBManager::get();
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($visibilityid));
+        $stmt->execute([$visibilityid]);
         if ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
             return $vs->getDescription($result['state']);
         }
@@ -355,7 +355,7 @@ class Visibility
         $sql = "SELECT `visibilityid` FROM user_visibility_settings WHERE `user_id` = ? AND `identifier` = ?";
         $db = DBManager::get();
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($user, $ident));
+        $stmt->execute([$user, $ident]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
             return $result['visibilityid'];
@@ -576,7 +576,7 @@ class Visibility
             $sql = "UPDATE user_visibility_settings SET `state` = ? WHERE `user_id`= ?";
             $db = DBManager::get();
             $st = $db->prepare($sql);
-            $st->execute(array($state, $user));
+            $st->execute([$state, $user]);
             return true;
         } catch (Exception $ex) {
             return false;

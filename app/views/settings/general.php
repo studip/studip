@@ -1,12 +1,12 @@
 <?
-$start_pages = array(
+$start_pages = [
     '' => _('keine'),
      1 => _('Meine Veranstaltungen'),
      3 => _('Mein Stundenplan'),
      5 => _('Mein Terminkalender'),
      4 => _('Mein Adressbuch'),
      6 => _('Mein globaler Blubberstream'),
-);
+];
 ?>
 
 <form method="post" action="<?= $controller->url_for('settings/general/store') ?>" class="default">

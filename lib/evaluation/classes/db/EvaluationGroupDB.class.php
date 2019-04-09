@@ -81,7 +81,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
     $row = DBManager::get()->fetchOne("
         SELECT * FROM evalgroup
         WHERE evalgroup_id = ?
-        ORDER BY position ", array($groupObject->getObjectID()));
+        ORDER BY position ", [$groupObject->getObjectID()]);
 
     if (count($row)==0)
       return $this->throwError (1,
@@ -131,14 +131,14 @@ class EvaluationGroupDB extends EvaluationObjectDB {
                 mandatory       = ?
             WHERE
                 evalgroup_id    = ?
-            ", array((string)$groupObject->getTitle(),
+            ", [(string)$groupObject->getTitle(),
                      (string)$groupObject->getText(),
                      (string)$groupObject->getChildType(),
                      (int)$groupObject->getPosition (),
                      (string)$groupObject->getTemplateID(),
                      (int)$groupObject->isMandatory(),
                      (string)$groupObject->getObjectID()
-             ));
+             ]);
     } else {
         DBManager::get()->execute("
             INSERT INTO evalgroup SET
@@ -150,7 +150,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
                 mandatory       = ?,
                 template_id     = ?,
                 position        = ?
-            ", array(
+            ", [
                      (string)$groupObject->getObjectID(),
                      (string)$groupObject->getParentID(),
                      (string)$groupObject->getTitle(),
@@ -159,7 +159,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
                      (int)$groupObject->isMandatory(),
                      (string)$groupObject->getTemplateID(),
                      (int)$groupObject->getPosition()
-            ));
+            ]);
     }
     /* ------------------------------------------------------ end: groupsave */
   } // saved
@@ -172,7 +172,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
    * @throws  error
    */
   function delete (&$groupObject) {
-    DBManager::get()->execute("DELETE FROM evalgroup WHERE evalgroup_id = ?", array($groupObject->getObjectID()));
+    DBManager::get()->execute("DELETE FROM evalgroup WHERE evalgroup_id = ?", [$groupObject->getObjectID()]);
   } // deleted
 
   /**
@@ -182,7 +182,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
    * @return  bool     YES if exists
    */
   function exists ($groupID) {
-    $result = DBManager::get()->fetchColumn("SELECT 1 FROM evalgroup WHERE evalgroup_id = ?", array($groupID));
+    $result = DBManager::get()->fetchColumn("SELECT 1 FROM evalgroup WHERE evalgroup_id = ?", [$groupID]);
     return (bool)$result;
   }
 
@@ -195,7 +195,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
       $result = DBManager::get()->fetchFirst("
         SELECT evalgroup_id FROM evalgroup
         WHERE parent_id = ?
-        ORDER BY position", array($parentObject->getObjectID()));
+        ORDER BY position", [$parentObject->getObjectID()]);
 
       if (($loadChildren = $parentObject->loadChildren) == EVAL_LOAD_NO_CHILDREN)
          $loadChildren = EVAL_LOAD_NO_CHILDREN;
@@ -230,7 +230,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
     */
     function getChildType ($objectID) {
         $result = DBManager::get()->fetchColumn("
-            SELECT child_type FROM evalgroup WHERE evalgroup_id = ?", array($objectID));
+            SELECT child_type FROM evalgroup WHERE evalgroup_id = ?", [$objectID]);
         if ($result) return $result;
         return NULL;
     }
@@ -243,7 +243,7 @@ class EvaluationGroupDB extends EvaluationObjectDB {
    */
   function getParentID ($objectID) {
     return DBManager::get()->fetchColumn("
-            SELECT parent_id FROM evalgroup WHERE evalgroup_id = ?", array($objectID));
+            SELECT parent_id FROM evalgroup WHERE evalgroup_id = ?", [$objectID]);
   }
 # ===================================================== end: public functions #
 

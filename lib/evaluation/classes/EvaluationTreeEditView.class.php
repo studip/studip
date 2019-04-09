@@ -187,8 +187,8 @@ function __construct( $itemID = ROOT_BLOCK, $evalID = NULL ){
     $this->itemInstance = $this->getInstance ($this->itemID);
     $this->changed = false;
 
-    $this->tree = TreeAbstract::GetInstance ( "EvaluationTree", array('evalID' => $this->evalID,
-                                                                        'load_mode' => EVAL_LOAD_ALL_CHILDREN));
+    $this->tree = TreeAbstract::GetInstance ( "EvaluationTree", ['evalID' => $this->evalID,
+                                                                        'load_mode' => EVAL_LOAD_ALL_CHILDREN]);
 
     # filter out an old session itemID ======================================= #
     if (is_array($this->tree->tree_data) && !is_null($itemID) ){
@@ -340,7 +340,7 @@ function showEvalTree(){
         . " "
         . LinkButton::createCancel(_('Abbrechen'),
                 $this->getSelf('abbort_move=1'),
-                array('title' => _('abbrechen'))));
+                ['title' => _('abbrechen')]));
 
     $td->addContent ($font);
     $tr->addContent ($td);
@@ -390,7 +390,7 @@ function showEvalTree(){
 */
 function showTree($itemID = ROOT_BLOCK, $start = NULL){
 
-    $items = array();
+    $items = [];
     if (!is_array($itemID)){
         $items[0] = $itemID;
 
@@ -1361,11 +1361,11 @@ function execCommandAssertDeleteItem(){
     $this->msg[$this->itemID] .= "<br><br>"
         . LinkButton::createAccept(_('JA!'),
                 $this->getSelf('cmd[DeleteItem]=1'),
-                array('title' => _('Löschen')))
+                ['title' => _('Löschen')])
         . "&nbsp;"
         . LinkButton::createCancel(_('NEIN!'),
                 $this->getSelf('cmd[Cancel]=1'),
-                array('title' => _('Abbrechen')))
+                ['title' => _('Abbrechen')])
         . "\n";
 
     return false;
@@ -2071,7 +2071,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
     $buttons = "&nbsp;"
         . Button::create(_('Übernehmen'),
                 'cmd[UpdateItem]',
-                array('title' => _('Die Veränderungen innerhalb des Blockes speichern.')));
+                ['title' => _('Die Veränderungen innerhalb des Blockes speichern.')]);
 
     $infotext .= "\n"
         . _("- die Veränderungen dieses Blocks speichern.");
@@ -2081,7 +2081,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
     $buttons .= $seperator
         . Button::create(_('Erstellen'),
                 'cmd[AddGroup]',
-                array( 'title' => _('Einen neuen Gruppierungsblock erstellen.')));
+                [ 'title' => _('Einen neuen Gruppierungsblock erstellen.')]);
     $infotext .= "\n"
         . _("- einen neuen Gruppierungsblock innerhalb dieses Blockes erstellen, in welchem Sie weitere Gruppierungs- oder Fragenblöcke anlegen können.");
    }
@@ -2093,7 +2093,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
         . $this->createTemplateSelection()
         . Button::create(_('Erstellen'),
                 'cmd[AddQGroup]',
-                array( 'title' => _('Einen neuen Fragenblock mit der ausgewählten Antwortenvorlage erstellen.')));
+                [ 'title' => _('Einen neuen Fragenblock mit der ausgewählten Antwortenvorlage erstellen.')]);
     $infotext .= "\n"
         . _("- einen neuen Fragenblock innherhalb dieses Blockes erstellen. Geben Sie dazu bitte eine Antwortenvorlage an, welche für alle Fragen des neuen Fragenblockes verwendet wird.");
    }
@@ -2125,7 +2125,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
     $buttons .= $seperator
         . Button::create(_('verschieben'),
                 'create_moveItemID',
-                array('title' => _('Diesen Block verschieben.')));
+                ['title' => _('Diesen Block verschieben.')]);
 #       . $a->createContent ();
     $infotext .= "\n"
         . _("- diesen Block zum Verschieben markieren.");
@@ -2149,7 +2149,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
         : $seperator;
     $buttons .=  Button::create(_('Löschen'),
             'cmd[AssertDeleteItem]',
-            array('title' => _('Diesen Block (und alle seine Unterblöcke) löschen..')));
+            ['title' => _('Diesen Block (und alle seine Unterblöcke) löschen..')]);
 #   $buttons .= $button->createContent ();
 
     $infotext .= "\n"
@@ -2170,7 +2170,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
 
         $a_content = LinkButton::createCancel(_('Abbrechen'),
                 URLHelper::getURL(EVAL_FILE_ADMIN. "?evalID=").$this->tree->eval->getObjectID()."&abort_creation_button=1",
-                array('title' => _("Erstellung einer Evaluation abbrechen")));
+                ['title' => _("Erstellung einer Evaluation abbrechen")]);
 
         $buttons .= $seperator
             . $a_content;
@@ -2236,14 +2236,14 @@ function createFormNew($show = ARRANGMENT_BLOCK){
         . "&nbsp;"
         . Button::create(_('Erstellen'),
                 'cmd[AddGroup]',
-                array('title' => _('Einen neuen Gruppierungsblock erstellen')));
+                ['title' => _('Einen neuen Gruppierungsblock erstellen')]);
 
     $qgroup_selection = _("Fragenblock mit")
         . "&nbsp;"
         . $this->createTemplateSelection()
         . Button::create(_('Erstellen'),
                 'cmd[AddQGroup]',
-                array('title' => _('Einen neuen Fragenblock erstellen')));
+                ['title' => _('Einen neuen Fragenblock erstellen')]);
 
     $seperator = "&nbsp;|&nbsp;";
 
@@ -2280,7 +2280,7 @@ function createFormNew($show = ARRANGMENT_BLOCK){
 
         $a_content = LinkButton::createCancel(_('Abbrechen'),
                 URLHelper::getURL(EVAL_FILE_ADMIN . "?evalID=".$this->tree->eval->getObjectID()."&abort_creation_button=1"),
-                array('title' => _("Erstellung einer Evaluation abbrechen")));
+                ['title' => _("Erstellung einer Evaluation abbrechen")]);
 
         $cancel .= $a_content;
 
@@ -2403,13 +2403,13 @@ function createUpdateButton ( $mode = NULL ){
 //      . "   <input type=hidden name=\"cmd\" value=\"UpdateItem\">\n"
         . Button::create(_('Übernehmen'),
                 'cmd[UpdateItem]',
-                array('title' => _('Änderungen übernehmen.')));
+                ['title' => _('Änderungen übernehmen.')]);
 
     if($mode == NULL){
         $button .= "&nbsp;&nbsp;|&nbsp;&nbsp;"._("Diesen Block")."&nbsp;"
             . Button::create(_('Löschen'),
                     'cmd[AssertDeleteItem]',
-                    array('title', _('Diesen Block und alle seine Unterblöcke löschen.')));
+                    ['title', _('Diesen Block und alle seine Unterblöcke löschen.')]);
     }
 
     $button .= "  </td>\n"
@@ -2586,7 +2586,7 @@ function createQuestionFeatures(){
     $td->addContent (" ");
     $td->addHTMLContent (Button::create(_('Zuweisen'),
             'cmd[ChangeTemplate]',
-            array('title' => _('Eine andere Antwortenvorlage für diesen Fragenblock auswählen'))));
+            ['title' => _('Eine andere Antwortenvorlage für diesen Fragenblock auswählen')]));
     $tr->addContent ($td);
     $table->addContent ($tr);
 
@@ -2926,7 +2926,7 @@ function createQuestionForm(){
     $td2->addHTMLContent (
         Button::create(_('Hinzufügen'),
                 'cmd[AddQuestions]',
-                array('title' => _('Fragen hinzufügen')))
+                ['title' => _('Fragen hinzufügen')])
             );
 
     $tr2->addContent($td2);
@@ -2942,7 +2942,7 @@ function createQuestionForm(){
     $td2->addHTMLContent (
         Button::create(_('Löschen'),
                 'cmd[DeleteQuestions]',
-                array('title' => _('Markierte Fragen löschen')))
+                ['title' => _('Markierte Fragen löschen')])
         );
 
     $tr2->addContent ($td2);
@@ -3076,10 +3076,10 @@ function createTemplateSelection ( $selected = NULL ){
 
     $question_show          = new EvaluationQuestionDB();
     $arrayOfTemplateIDs     = $question_show->getTemplateID ($user->id);
-    $arrayOfPolTemplates    = array();
-    $arrayOfSkalaTemplates  = array();
-    $arrayOfNormalTemplates = array();
-    $arrayOfFreetextTemplates = array();
+    $arrayOfPolTemplates    = [];
+    $arrayOfSkalaTemplates  = [];
+    $arrayOfNormalTemplates = [];
+    $arrayOfFreetextTemplates = [];
 
    if (is_array ($arrayOfTemplateIDs)){
     foreach($arrayOfTemplateIDs as $templateID){
@@ -3097,25 +3097,25 @@ function createTemplateSelection ( $selected = NULL ){
        switch( $questiontyp ) {
 
          case EVALQUESTION_TYPE_POL:
-          array_push($arrayOfPolTemplates, array($question->getObjectID(),
-            ($questiontext)));
+          array_push($arrayOfPolTemplates, [$question->getObjectID(),
+            ($questiontext)]);
           break;
 
          case EVALQUESTION_TYPE_LIKERT:
-          array_push($arrayOfSkalaTemplates, array($question->getObjectID(),
-            ($questiontext)));
+          array_push($arrayOfSkalaTemplates, [$question->getObjectID(),
+            ($questiontext)]);
           break;
 
          case EVALQUESTION_TYPE_MC:
           $answer = $question->getNextChild ();
           if ( $answer && $answer->isFreetext() )
-            array_push($arrayOfFreetextTemplates, array(
+            array_push($arrayOfFreetextTemplates, [
                 $question->getObjectID(),
-                ($questiontext)));
+                ($questiontext)]);
           else
-             array_push($arrayOfNormalTemplates, array(
+             array_push($arrayOfNormalTemplates, [
                 $question->getObjectID(),
-                ($questiontext)));
+                ($questiontext)]);
           break;
         }
     }
@@ -3234,8 +3234,8 @@ function getInstance ( $itemID ){
     if ($itemID == ROOT_BLOCK || $itemID == $this->evalID)
         return ROOT_BLOCK;
     else {
-        $tree = TreeAbstract::GetInstance ( "EvaluationTree", array('evalID' => $this->evalID,
-                                                                        'load_mode' => EVAL_LOAD_FIRST_CHILDREN));
+        $tree = TreeAbstract::GetInstance ( "EvaluationTree", ['evalID' => $this->evalID,
+                                                                        'load_mode' => EVAL_LOAD_FIRST_CHILDREN]);
         $group = &$tree->getGroupObject($itemID);
         $childtype = $group->getChildType();
 

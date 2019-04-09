@@ -42,7 +42,7 @@ Msg, class for all the msg stuff
 
 class Msg {
     var $msg;
-    var $codes=array();
+    var $codes=[];
     var $params;
 
     /**
@@ -64,7 +64,7 @@ class Msg {
         if (is_array($params)) {
             $this->params[] = $params;
         } else
-            $this->params[] = array();
+            $this->params[] = [];
 
     }
 
@@ -87,7 +87,7 @@ class Msg {
      */
     function displayAllMsg($view_mode = "line") {
         if ( is_array( $this->codes ) ) {
-            $messages = array();
+            $messages = [];
 
             // sort message by type (error, info, success) to show them bundled
             foreach( $this->codes as $key => $message_id ) {
@@ -122,7 +122,7 @@ class Msg {
      * @param mixed $params an array of paramaters to be placed into the message
      *
      */
-    function displayMsg($msg_code, $view_mode = "line", $params=array()) {
+    function displayMsg($msg_code, $view_mode = "line", $params=[]) {
         // messages alone in the wild
         if ($view_mode == "window") {
             $message[$this->msg[$msg_code]['mode']][] = vsprintf($this->msg[$msg_code]['msg'], $params);

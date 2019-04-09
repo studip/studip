@@ -100,7 +100,7 @@ class Course_ElearningController extends AuthenticatedController
             $connected_modules = $object_connections->getConnections();
         }
         $this->module_count = 0;
-        $content_modules_list = array();
+        $content_modules_list = [];
         if ($object_connections->isConnected()) {
             $caching_active = true;
             foreach ($connected_modules as $key => $connection) {
@@ -110,7 +110,7 @@ class Course_ElearningController extends AuthenticatedController
 
                     $connected_cms[$connection["cms"]]->newContentModule($connection["id"], $connection["type"], true);
                     $connected_modules[$key]['title'] = $connected_cms[$connection["cms"]]->content_module[$connection["id"]]->getTitle();
-                    $title_tmp[$key] = str_replace(array('ä','ö','ü','ß'),array('ae','oe','ue','ss'),mb_strtolower($connected_modules[$key]['title']));
+                    $title_tmp[$key] = str_replace(['ä','ö','ü','ß'],['ae','oe','ue','ss'],mb_strtolower($connected_modules[$key]['title']));
                     $type_tmp[$key] = array_search($connection['type'], array_keys($GLOBALS['ELEARNING_INTERFACE_MODULES'][$connection["cms"]]['types']));
                     $class_tmp[$key] = $GLOBALS['ELEARNING_INTERFACE_MODULES'][$connection["cms"]]["CLASS_PREFIX"];
                 }
@@ -218,9 +218,9 @@ class Course_ElearningController extends AuthenticatedController
 
         $connected_modules = $object_connections->getConnections();
         $this->module_count = 0;
-        $content_modules_list = array();
-        $user_modules_list = array();
-        $search_modules_list = array();
+        $content_modules_list = [];
+        $user_modules_list = [];
+        $search_modules_list = [];
         if ($object_connections->isConnected()) {
             $caching_active = true;
             foreach ($connected_modules as $key => $connection) {
@@ -230,7 +230,7 @@ class Course_ElearningController extends AuthenticatedController
 
                     $connected_cms[$connection["cms"]]->newContentModule($connection["id"], $connection["type"], true);
                     $connected_modules[$key]['title'] = $connected_cms[$connection["cms"]]->content_module[$connection["id"]]->getTitle();
-                    $title_tmp[$key] = str_replace(array('ä','ö','ü','ß'),array('ae','oe','ue','ss'),mb_strtolower($connected_modules[$key]['title']));
+                    $title_tmp[$key] = str_replace(['ä','ö','ü','ß'],['ae','oe','ue','ss'],mb_strtolower($connected_modules[$key]['title']));
                     $type_tmp[$key] = array_search($connection['type'], array_keys($GLOBALS['ELEARNING_INTERFACE_MODULES'][$connection["cms"]]['types']));
                     $class_tmp[$key] = $GLOBALS['ELEARNING_INTERFACE_MODULES'][$connection["cms"]]["CLASS_PREFIX"];
                 }
@@ -307,7 +307,7 @@ class Course_ElearningController extends AuthenticatedController
                                   WHERE module_type = 'crs' AND system_type = ? AND seminar_user.status = 'dozent'";
                     }
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($this->cms_select));
+                    $statement->execute([$this->cms_select]);
                     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                         if ($GLOBALS['perm']->have_studip_perm('dozent', $row['object_id'])) {
                             $existing_courses[$row['object_id']] = my_substr($row['Name'],0,60)." ".sprintf(_("(Kurs-ID %s)"), $row['module_id']);

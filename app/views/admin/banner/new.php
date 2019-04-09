@@ -64,13 +64,13 @@
 
         <label>
             <?= _('Anzeigen ab') ?>
-            <?= $this->render_partial('admin/banner/datetime-picker', array('prefix' => 'start_')) ?>
+            <?= $this->render_partial('admin/banner/datetime-picker', ['prefix' => 'start_']) ?>
         </label>
 
 
         <label>
             <?= _('Anzeigen bis')?>
-            <?= $this->render_partial('admin/banner/datetime-picker', array('prefix' => 'end_')) ?>
+            <?= $this->render_partial('admin/banner/datetime-picker', ['prefix' => 'end_']) ?>
         </label>
 
         <label>

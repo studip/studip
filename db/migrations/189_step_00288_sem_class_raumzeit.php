@@ -31,7 +31,7 @@ class Step00288SemClassRaumzeit extends Migration
             $sem_class->set('show_raumzeit', '0');
             $sem_class->set('schedule', 'CoreSchedule');
             $modules = $sem_class->getModules();
-            $modules['CoreSchedule'] = array('activated' => '1', 'sticky' => '0');
+            $modules['CoreSchedule'] = ['activated' => '1', 'sticky' => '0'];
             $sem_class->setModules($modules);
             $sem_class->store();
         } catch (Exception $e) { }

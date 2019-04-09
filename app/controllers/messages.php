@@ -95,7 +95,7 @@ class MessagesController extends AuthenticatedController {
             Request::get("tag"),
             Request::get("search")
         );
-        $this->output = array('messages' => array(), "more" => 0);
+        $this->output = ['messages' => [], "more" => 0];
         if (count($messages) > Request::int("limit")) {
             $this->output["more"] = 1;
             array_pop($messages);
@@ -105,11 +105,11 @@ class MessagesController extends AuthenticatedController {
         foreach ($messages as $message) {
             $this->output['messages'][] = $template_factory
                                             ->open("messages/_message_row.php")
-                                            ->render(array('message'    => $message,
+                                            ->render(['message'    => $message,
                                                            'controller' => $this,
                                                            'received'   => (bool) Request::int("received"),
                                                            'settings'   => $this->settings
-                                                    ));
+                                                    ]);
         }
 
         $this->render_json($this->output);
@@ -226,7 +226,7 @@ class MessagesController extends AuthenticatedController {
         //check if the message shall be sent to all members of an institute:
         if(Request::get('inst_id') && $GLOBALS['perm']->have_perm('admin')) {
             $query = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms != 'user'";
-            $this->default_message->receivers = DBManager::get()->fetchAll($query, array(Request::option('inst_id')), 'MessageUser::build');
+            $this->default_message->receivers = DBManager::get()->fetchAll($query, [Request::option('inst_id')], 'MessageUser::build');
         }
 
         //check if the message shall be sent to all (or some) members of a course:
@@ -336,13 +336,13 @@ class MessagesController extends AuthenticatedController {
         }
 
         if (!$this->default_message->receivers->count() && is_array($_SESSION['sms_data']['p_rec'])) {
-            $this->default_message->receivers = DBManager::get()->fetchAll("SELECT user_id,'rec' as snd_rec FROM auth_user_md5 WHERE username IN(?) ORDER BY Nachname,Vorname", array($_SESSION['sms_data']['p_rec']), 'MessageUser::build');
+            $this->default_message->receivers = DBManager::get()->fetchAll("SELECT user_id,'rec' as snd_rec FROM auth_user_md5 WHERE username IN(?) ORDER BY Nachname,Vorname", [$_SESSION['sms_data']['p_rec']], 'MessageUser::build');
             unset($_SESSION['sms_data']);
         }
 
         //check if the message is a reply or if it shall be forwarded:
         if (Request::option("answer_to")) {
-            $this->default_message->receivers = array();
+            $this->default_message->receivers = [];
             $old_message = new Message(Request::option("answer_to"));
             if (!$old_message->permissionToRead()) {
                 throw new AccessDeniedException("Message is not for you.");
@@ -390,12 +390,12 @@ class MessagesController extends AuthenticatedController {
                 $this->default_message['subject'] = mb_substr($old_message['subject'], 0, 4) === "RE: " ? $old_message['subject'] : "RE: ".$old_message['subject'];
                 if ($old_message['autor_id'] !== $GLOBALS['user']->id) {
                     $user = new MessageUser();
-                    $user->setData(array('user_id' => $old_message['autor_id'], 'snd_rec' => "rec"));
+                    $user->setData(['user_id' => $old_message['autor_id'], 'snd_rec' => "rec"]);
                     $this->default_message->receivers[] = $user;
                 } else {
                     foreach ($old_message->receivers as $old_receivers) {
                         $user = new MessageUser();
-                        $user->setData(array('user_id' => $old_receivers['user_id'], 'snd_rec' => "rec"));
+                        $user->setData(['user_id' => $old_receivers['user_id'], 'snd_rec' => "rec"]);
                         $this->default_message->receivers[] = $user;
                     }
                 }
@@ -707,13 +707,13 @@ class MessagesController extends AuthenticatedController {
             $message->markAsRead($GLOBALS['user']->id);
         }
 
-        $messageuser = new MessageUser(array($GLOBALS['user']->id, $message_id, "snd"));
+        $messageuser = new MessageUser([$GLOBALS['user']->id, $message_id, "snd"]);
         $success = 0;
         if (!$messageuser->isNew()) {
             $messageuser['deleted'] = 1;
             $success = $messageuser->store();
         }
-        $messageuser = new MessageUser(array($GLOBALS['user']->id, $message_id, "rec"));
+        $messageuser = new MessageUser([$GLOBALS['user']->id, $message_id, "rec"]);
         if (!$messageuser->isNew()) {
             $messageuser['deleted'] = 1;
             $success += $messageuser->store();
@@ -757,11 +757,11 @@ class MessagesController extends AuthenticatedController {
                 ORDER BY message_user.mkdate DESC
                 LIMIT ".(int) $offset .", ".(int) $limit ."
             ");
-            $messages_data->execute(array(
+            $messages_data->execute([
                 'me' => $GLOBALS['user']->id,
                 'tag' => $tag,
                 'sender_receiver' => $received ? "rec" : "snd"
-            ));
+            ]);
         } elseif($search) {
 
             $suchmuster = '/".*"/U';
@@ -792,7 +792,7 @@ class MessagesController extends AuthenticatedController {
             } else {
                 $search_sql = "";
                 foreach ($_searchfor as $val) {
-                    $tmp_sql = array();
+                    $tmp_sql = [];
                     if (Request::get("search_autor")) {
                         $tmp_sql[] = "CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE ".DBManager::get()->quote("%".$val."%")." ";
                     }
@@ -820,10 +820,10 @@ class MessagesController extends AuthenticatedController {
                 ORDER BY message_user.mkdate DESC
                 LIMIT ".(int) $offset .", ".(int) $limit ."
             ");
-            $messages_data->execute(array(
+            $messages_data->execute([
                 'me' => $GLOBALS['user']->id,
                 'sender_receiver' => $received ? "rec" : "snd"
-            ));
+            ]);
         } else {
             $messages_data = DBManager::get()->prepare("
                 SELECT message.*
@@ -835,13 +835,13 @@ class MessagesController extends AuthenticatedController {
                 ORDER BY message_user.mkdate DESC
                 LIMIT ".(int) $offset .", ".(int) $limit ."
             ");
-            $messages_data->execute(array(
+            $messages_data->execute([
                 'me' => $GLOBALS['user']->id,
                 'sender_receiver' => $received ? "rec" : "snd"
-            ));
+            ]);
         }
         $messages_data->setFetchMode(PDO::FETCH_ASSOC);
-        $messages = array();
+        $messages = [];
         foreach ($messages_data as $data) {
             $messages[] = Message::buildExisting($data);
         }
@@ -857,10 +857,10 @@ class MessagesController extends AuthenticatedController {
             throw new AccessDeniedException(_('Mailanhänge sind nicht erlaubt.'));
         }
         $file = $_FILES['file'];
-        $output = array(
+        $output = [
             'name' => $file['name'],
             'size' => $file['size']
-        );
+        ];
 
         $message_id = Request::option('message_id');
         $output['message_id'] = $message_id;
@@ -929,7 +929,7 @@ class MessagesController extends AuthenticatedController {
     public function delete_tag_action()
     {
         CSRFProtection::verifyUnsafeRequest();
-        DbManager::get()->execute("DELETE FROM message_tags WHERE user_id=? AND tag LIKE ?", array($GLOBALS['user']->id, Request::get('tag')));
+        DbManager::get()->execute("DELETE FROM message_tags WHERE user_id=? AND tag LIKE ?", [$GLOBALS['user']->id, Request::get('tag')]);
         PageLayout::postMessage(MessageBox::success(_('Schlagwort gelöscht!')));
         $this->redirect('messages/overview');
     }

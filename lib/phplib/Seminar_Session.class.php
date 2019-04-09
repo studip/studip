@@ -131,16 +131,16 @@ class Seminar_Session
         }
         $state = false;
         if (is_object($GLOBALS['user'])) {
-            $state = in_array($GLOBALS['user']->id, array('nobody', 'form')) ? 'nobody' : 'authenticated';
+            $state = in_array($GLOBALS['user']->id, ['nobody', 'form']) ? 'nobody' : 'authenticated';
         } else {
             $sid = $_COOKIE[__CLASS__];
             if ($sid) {
                 $session_vars = self::get_session_vars($sid);
                 $session_auth = $session_vars['auth']->auth;
-                if ($session_auth['uid'] && !in_array($session_auth['uid'], array('nobody', 'form'))) {
+                if ($session_auth['uid'] && !in_array($session_auth['uid'], ['nobody', 'form'])) {
                     $state = 'authenticated';
                 } else {
-                    $state = in_array($session_auth['uid'], array('nobody', 'form')) ? 'nobody' : false;
+                    $state = in_array($session_auth['uid'], ['nobody', 'form']) ? 'nobody' : false;
                 }
             }
         }
@@ -273,12 +273,12 @@ class Seminar_Session
                 $this->that = new $name;
                 $this->that->ac_start();
                 // set custom session handlers
-                session_set_save_handler(array($this, 'open'),
-                    array($this, 'close'),
-                    array($this, 'thaw'),
-                    array($this, 'freeze'),
-                    array($this, 'del'),
-                    array($this, 'gc')
+                session_set_save_handler([$this, 'open'],
+                    [$this, 'close'],
+                    [$this, 'thaw'],
+                    [$this, 'freeze'],
+                    [$this, 'del'],
+                    [$this, 'gc']
                 );
                 break;
 
@@ -299,16 +299,16 @@ class Seminar_Session
     /**
      * @param array $keep_session_vars
      */
-    function regenerate_session_id($keep_session_vars = array())
+    function regenerate_session_id($keep_session_vars = [])
     {
-        $keep = array();
+        $keep = [];
         if (is_array($_SESSION)) {
             foreach (array_keys($_SESSION) as $k) {
                 if (in_array($k, $keep_session_vars)) {
                     $keep[$k] = $_SESSION[$k];
                 }
             }
-            $_SESSION = array();
+            $_SESSION = [];
         }
         $this->delete();
         $this->start();
@@ -339,7 +339,7 @@ class Seminar_Session
             $cookie_params['httponly']
         );
         $_COOKIE[$this->name] = "";
-        $_SESSION = array();
+        $_SESSION = [];
         return session_destroy();
     }
 

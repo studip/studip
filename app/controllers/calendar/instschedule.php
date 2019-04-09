@@ -85,10 +85,10 @@ class Calendar_InstscheduleController extends AuthenticatedController
         URLHelper::addLinkParam('zoom', $zoom);
         URLHelper::addLinkParam('semester_id', $this->current_semester['semester_id']);
 
-        $style_parameters = array(
+        $style_parameters = [
             'whole_height' => $this->calendar_view->getOverallHeight(),
             'entry_height' => $this->calendar_view->getHeight()
-        );
+        ];
 
         $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views');
         PageLayout::addStyle($factory->render('calendar/stylesheet', $style_parameters));
@@ -97,18 +97,18 @@ class Calendar_InstscheduleController extends AuthenticatedController
             PageLayout::addStylesheet('print.css');
 
             // remove all stylesheets that are not used for printing to have a more reasonable printing preview
-            PageLayout::addHeadElement('script', array(), "$('head link[media=screen]').remove();");
+            PageLayout::addHeadElement('script', [], "$('head link[media=screen]').remove();");
         } else {
-            PageLayout::addStylesheet('print.css', array('media' => 'print'));
+            PageLayout::addStylesheet('print.css', ['media' => 'print']);
         }
 
         Helpbar::Get()->addPlainText(_('Information'), _('Der Stundenplan zeigt die regelmäßigen Veranstaltungen dieser Einrichtung.'), Icon::create('info'));
 
         $views = new ViewsWidget();
-        $views->addLink(_('klein'), URLHelper::getURL('', array('zoom' => 0)))->setActive($zoom == 0);
-        $views->addLink(_('mittel'), URLHelper::getURL('', array('zoom' => 2)))->setActive($zoom == 2);
-        $views->addLink(_('groß'), URLHelper::getURL('', array('zoom' => 4)))->setActive($zoom == 4);
-        $views->addLink(_('extra groß'), URLHelper::getURL('', array('zoom' => 7)))->setActive($zoom == 7);
+        $views->addLink(_('klein'), URLHelper::getURL('', ['zoom' => 0]))->setActive($zoom == 0);
+        $views->addLink(_('mittel'), URLHelper::getURL('', ['zoom' => 2]))->setActive($zoom == 2);
+        $views->addLink(_('groß'), URLHelper::getURL('', ['zoom' => 4]))->setActive($zoom == 4);
+        $views->addLink(_('extra groß'), URLHelper::getURL('', ['zoom' => 7]))->setActive($zoom == 7);
 
         Sidebar::Get()->addWidget($views);
         $actions = new ActionsWidget();
@@ -124,7 +124,7 @@ class Calendar_InstscheduleController extends AuthenticatedController
             $actions->addLink(_("Darstellung ändern"),
                 $this->url_for('calendar/schedule/settings'),
                 Icon::create('admin', 'clickable'),
-                array('data-dialog' => '')
+                ['data-dialog' => '']
             );
 
             // only show this setting if we have indeed a faculty where children might exist
@@ -166,7 +166,7 @@ class Calendar_InstscheduleController extends AuthenticatedController
 
         // strucutre of an id: seminar_id-cycle_id
         // we do not need the cycle id here, so we trash it.
-        $seminar_list = array();
+        $seminar_list = [];
 
         foreach (explode(',', $seminars) as $seminar) {
             $zw = explode('-', $seminar);
@@ -176,8 +176,8 @@ class Calendar_InstscheduleController extends AuthenticatedController
         $this->start = mb_substr($start, 0, 2) .':'. mb_substr($start, 2, 2);
         $this->end   = mb_substr($end, 0, 2) .':'. mb_substr($end, 2, 2);
 
-        $day_names  = array(_("Montag"),_("Dienstag"),_("Mittwoch"),
-            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag"));
+        $day_names  = [_("Montag"),_("Dienstag"),_("Mittwoch"),
+            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag")];
 
         $this->day   = $day_names[(int)$day];
 

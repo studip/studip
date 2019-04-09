@@ -3,35 +3,35 @@
 <article class="studip toggle <?=($is_new ? 'new' : '')?>" id="<?= $evaluation->id ?>" data-visiturl="<?=URLHelper::getScriptLink('dispatch.php/vote/visit')?>">
     <header>
         <h1>
-            <a href="<?= ContentBoxHelper::switchhref($evaluation->id, array('contentbox_type' => 'eval')) ?>">
+            <a href="<?= ContentBoxHelper::switchhref($evaluation->id, ['contentbox_type' => 'eval']) ?>">
                 <?= htmlReady($evaluation->title) ?>
             </a>
         </h1>
         <nav>
-            <a href="<?= $evaluation->author ? URLHelper::getLink('dispatch.php/profile', array('username' => $evaluation->author->username)) : '' ?>">
+            <a href="<?= $evaluation->author ? URLHelper::getLink('dispatch.php/profile', ['username' => $evaluation->author->username]) : '' ?>">
                 <?= $evaluation->author ? htmlReady($evaluation->author->getFullName()) : '' ?>
             </a> |
             <?= strftime("%d.%m.%Y", $evaluation->mkdate) ?>
             <? if ($admin): ?>
-                <a title="<?= _("Evaluation bearbeiten") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', array('openID' => $evaluation->id, 'rangeID' => $range_id)) ?>">
+                <a title="<?= _("Evaluation bearbeiten") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', ['openID' => $evaluation->id, 'rangeID' => $range_id]) ?>">
                     <?= Icon::create('admin', 'clickable')->asImg() ?>
                 </a>
                 <? if (!$evaluation->enddate || $evaluation->enddate > time()): ?>
-                    <a title="<?= _("Evaluation stoppen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', array('evalID' => $evaluation->id, 'evalAction' => 'stop')) ?>">
+                    <a title="<?= _("Evaluation stoppen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', ['evalID' => $evaluation->id, 'evalAction' => 'stop']) ?>">
                         <?= Icon::create('pause', 'clickable')->asImg() ?>
                     </a>
                 <? else: ?>
-                    <a title="<?= _("Evaluation fortsetzen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', array('evalID' => $evaluation->id, 'evalAction' => 'continue')) ?>">
+                    <a title="<?= _("Evaluation fortsetzen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', ['evalID' => $evaluation->id, 'evalAction' => 'continue']) ?>">
                         <?= Icon::create('play', 'clickable')->asImg() ?>
                     </a>
                 <? endif; ?>
-                <a title="<?= _("Evaluation löschen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', array('evalID' => $evaluation->id, 'evalAction' => 'delete_request')) ?>">
+                <a title="<?= _("Evaluation löschen") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', ['evalID' => $evaluation->id, 'evalAction' => 'delete_request']) ?>">
                     <?= Icon::create('trash', 'clickable')->asImg() ?>
                 </a>
-                <a title="<?= _("Evaluation exportieren") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', array('evalID' => $evaluation->id, 'evalAction' => 'export_request')) ?>">
+                <a title="<?= _("Evaluation exportieren") ?>" href="<?= URLHelper::getLink('admin_evaluation.php', ['evalID' => $evaluation->id, 'evalAction' => 'export_request']) ?>">
                     <?= Icon::create('export', 'clickable')->asImg() ?>
                 </a>
-                <a title="<?= _("Evaluation auswerten") ?>" href="<?= URLHelper::getLink('eval_summary.php', array('eval_id' => $evaluation->id)) ?>">
+                <a title="<?= _("Evaluation auswerten") ?>" href="<?= URLHelper::getLink('eval_summary.php', ['eval_id' => $evaluation->id]) ?>">
                     <?= Icon::create('vote', 'clickable')->asImg() ?>
                 </a>
             <? endif; ?>
@@ -41,7 +41,7 @@
         <?= formatReady($evaluation->text); ?>
     </section>
     <section>
-        <?= \Studip\LinkButton::create(_('Anzeigen'), URLHelper::getURL('show_evaluation.php', array('evalID' => $evaluation->id)), array('data-dialog' => '', 'target' => '_blank')) ?>
+        <?= \Studip\LinkButton::create(_('Anzeigen'), URLHelper::getURL('show_evaluation.php', ['evalID' => $evaluation->id]), ['data-dialog' => '', 'target' => '_blank']) ?>
     </section>
     <footer>
         <p>

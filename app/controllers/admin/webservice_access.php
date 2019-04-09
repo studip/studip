@@ -86,7 +86,7 @@ class Admin_WebserviceAccessController extends AuthenticatedController
             $rule->ip_range = trim(Request::get('ws_rule_ip_range'));
             $rule->type = trim(Request::get('ws_rule_type'));
 
-            $msg = array();
+            $msg = [];
 
             if (mb_strlen($rule->api_key) < 5) {
                 $msg['error'][] = _("Bitte geben Sie einen API-Key mit min. 5 Zeichen an.");
@@ -146,7 +146,7 @@ class Admin_WebserviceAccessController extends AuthenticatedController
      */
     function get_all_rules()
     {
-        $this->ws_rules = array();
+        $this->ws_rules = [];
         foreach (WebserviceAccessRule::findAll() as $rule) {
             $this->ws_rules[$rule->id] = $rule;
         }

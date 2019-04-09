@@ -32,14 +32,14 @@ class Cronjob extends \CronJob
      */
     public static function getParameters()
     {
-        return array(
-            'verbose' => array(
+        return [
+            'verbose' => [
                 'type' => 'boolean',
                 'default' => false,
                 'status' => 'optional',
                 'description' => _('Sollen Ausgaben erzeugt werden'),
-            ),
-        );
+            ],
+        ];
     }
 
     /**

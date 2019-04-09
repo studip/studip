@@ -10,7 +10,7 @@ class Helpbar extends WidgetContainer
 {
     protected $open = false;
     protected $should_render = true;
-    protected $variables = array();
+    protected $variables = [];
     protected $ignore_db = false;
 
     /**
@@ -69,13 +69,13 @@ class Helpbar extends WidgetContainer
      * @param array $variables Variables to interpolate into the string(s)
      * @return mixed Either an interpolated string or an array of such
      */
-    protected function interpolate($string, $variables = array())
+    protected function interpolate($string, $variables = [])
     {
         if (is_array($string)) {
-            return array_map(array($this, 'interpolate'), $string, array_pad(array(), count($string), $variables));
+            return array_map([$this, 'interpolate'], $string, array_pad([], count($string), $variables));
         }
 
-        $replaces = array();
+        $replaces = [];
         foreach ($variables as $needle => $replace)
         {
             $replaces['#{' . $needle . '}'] = $replace;
@@ -150,7 +150,7 @@ class Helpbar extends WidgetContainer
      * @param mixed  $target     The target attribute of the link element
      * @param array  $attributes Additional attribute for the link element
      */
-    public function addLink($label, $url, $icon = false, $target = false, $attributes = array())
+    public function addLink($label, $url, $icon = false, $target = false, $attributes = [])
     {
         $id = md5($url);
 
@@ -174,7 +174,7 @@ class Helpbar extends WidgetContainer
      * @param mixed  $target     The target attribute of the link element
      * @param array  $attributes Additional attribute for the link element
      */
-    public function insertLink($label, $url, $icon = false, $target = false, $attributes = array())
+    public function insertLink($label, $url, $icon = false, $target = false, $attributes = [])
     {
         $id = md5($url);
 

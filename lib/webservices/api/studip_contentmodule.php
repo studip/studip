@@ -20,7 +20,7 @@ class StudipContentmoduleHelper
                               LEFT JOIN object_contentmodules oc
                               ON (s.Seminar_id = oc.object_id)
                               WHERE oc.module_id = ? AND oc.system_type = ?');
-        $stmt->execute(array($module_id, $system_type));
+        $stmt->execute([$module_id, $system_type]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -33,7 +33,7 @@ class StudipContentmoduleHelper
                               LEFT JOIN object_contentmodules oc
                               ON (i.Institut_id = oc.object_id)
                               WHERE oc.module_id = ? AND oc.system_type = ?');
-        $stmt->execute(array($module_id, $system_type));
+        $stmt->execute([$module_id, $system_type]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

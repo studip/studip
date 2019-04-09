@@ -78,13 +78,13 @@ class Ilias4Soap extends Ilias3Soap
 </User>
 </Users>";
 
-        $param = array(
+        $param = [
             'sid' => $this->getSID(),
             'folder_id' => -1,
             'usr_xml' => $usr_xml,
             'conflict_role' => 1,
             'send_account_mail' => 0
-        );
+        ];
         $result = $this->call('importUsers', $param);
 
         $s = simplexml_load_string($result);
@@ -112,10 +112,10 @@ class Ilias4Soap extends Ilias3Soap
 
         $xml = "<Settings source_id=\"$source_id\" target_id=\"$target_id\" default_action=\"COPY\"/>";
 
-        $param = array(
+        $param = [
             'sid' => $this->getSID(),
             'xml' => $xml
-        );
+        ];
         return $this->call('copyObject', $param);
     }
 
@@ -130,10 +130,10 @@ class Ilias4Soap extends Ilias3Soap
      */
     function getPath($ref_id)
     {
-        $param = array(
+        $param = [
             'sid' => $this->getSID(),
             'ref_id' => $ref_id
-        );
+        ];
         $result = $this->call('getPathForRefId', $param);
 
         if ($result) {
@@ -162,10 +162,10 @@ class Ilias4Soap extends Ilias3Soap
      */
     function getRawPath($ref_id)
     {
-        $param = array(
+        $param = [
             'sid' => $this->getSID(),
             'ref_id' => $ref_id
-        );
+        ];
         $result = $this->call('getPathForRefId', $param);
 
         if ($result) {

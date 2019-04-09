@@ -43,7 +43,7 @@ class PluginAdministration
             $files = scandir($packagedir);
             if (count($files) === 3) {
                 foreach ($files as $file) {
-                    if (!in_array($file, array(".",".."))) {
+                    if (!in_array($file, [".",".."])) {
                         $tmpplugindir .= "/" . $file;
                     }
                 }
@@ -191,7 +191,7 @@ class PluginAdministration
 
         // delete database if needed
         $this->deleteDBSchema($plugindir, $manifest);
-        PluginAsset::deleteBySQL('plugin_id = ?', array($plugin['id']));
+        PluginAsset::deleteBySQL('plugin_id = ?', [$plugin['id']]);
 
         rmdirr($plugindir);
     }
@@ -282,7 +282,7 @@ class PluginAdministration
     public function getInstitutes()
     {
         $db = DBManager::get();
-        $institutes = array();
+        $institutes = [];
 
         $sql = 'SELECT Institut_id, Name, fakultaets_id, Institut_id = fakultaets_id AS is_fak
                 FROM Institute ORDER BY is_fak DESC, Name';
@@ -293,9 +293,9 @@ class PluginAdministration
             $fak_id = $row['fakultaets_id'];
 
             if ($inst_id == $fak_id) {
-                $institutes[$inst_id] = array('name' => $row['Name']);
+                $institutes[$inst_id] = ['name' => $row['Name']];
             } else {
-                $institutes[$fak_id]['children'][$inst_id] = array('name' => $row['Name']);
+                $institutes[$fak_id]['children'][$inst_id] = ['name' => $row['Name']];
             }
         }
 
@@ -311,7 +311,7 @@ class PluginAdministration
     {
         $plugin_manager = PluginManager::getInstance();
         $plugin_infos   = $plugin_manager->getPluginInfos();
-        $plugin_types   = array();
+        $plugin_types   = [];
 
         foreach ($plugin_infos as $plugin) {
             $plugin_types = array_merge($plugin_types, $plugin['type']);
@@ -332,7 +332,7 @@ class PluginAdministration
     {
         $default_repository = new PluginRepository();
         $plugin_manager = PluginManager::getInstance();
-        $update_info = array();
+        $update_info = [];
 
         foreach ($plugins as $plugin) {
             $repository = $default_repository;
@@ -365,7 +365,7 @@ class PluginAdministration
      */
     public function getMigrationInfo()
     {
-        $info = array();
+        $info = [];
         $plugin_manager = PluginManager::getInstance();
         $plugins = $plugin_manager->getPluginInfos();
         $basepath = get_config('PLUGINS_PATH');
@@ -411,7 +411,7 @@ class PluginAdministration
      */
     public function scanPluginDirectory()
     {
-        $found = array();
+        $found = [];
         $basepath = get_config('PLUGINS_PATH');
         $plugin_manager = PluginManager::getInstance();
         $iterator = new RegexIterator(

@@ -102,12 +102,12 @@ class Admin_PluginController extends AuthenticatedController
             );
 
             // Read current information from local files
-            $update_info = array();
+            $update_info = [];
             $plugin_manager = PluginManager::getInstance();
             foreach ($plugins as $plugin) {
                 $plugin_path = get_config('PLUGINS_PATH') . '/' . $plugin['path'];
                 $manifest    = $plugin_manager->getPluginManifest($plugin_path);
-                $update_info[$plugin['id']] = array('version' => $manifest['version']);
+                $update_info[$plugin['id']] = ['version' => $manifest['version']];
             }
             return $update_info;
         }
@@ -445,7 +445,7 @@ class Admin_PluginController extends AuthenticatedController
         $update_info = $this->plugin_admin->getUpdateInfo($plugins);
 
         $update = $this->flash['update'];
-        $update_status = array();
+        $update_status = [];
 
         // update each plugin in turn
         foreach ($update as $id) {
@@ -587,7 +587,7 @@ class Admin_PluginController extends AuthenticatedController
     {
         $this->plugin = $plugin_id
                         ? PluginManager::getInstance()->getPluginInfoById($plugin_id)
-                        : array();
+                        : [];
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
             $this->check_ticket();
@@ -602,11 +602,11 @@ class Admin_PluginController extends AuthenticatedController
                     automatic_update_secret = :secret
                 WHERE pluginid = :id
             ");
-            $statement->execute(array(
+            $statement->execute([
                 'id' => $plugin_id,
                 'url' => Request::get("automatic_update_url"),
                 'secret' => Request::get("use_security_token") ? $token : null
-            ));
+            ]);
             PageLayout::postMessage(MessageBox::success(_("Daten gespeichert.")));
             if (Request::get("use_security_token")) {
                 PageLayout::postMessage(MessageBox::info(_("Unten können Sie den Security Token jetzt heraus kopieren.")));

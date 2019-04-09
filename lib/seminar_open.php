@@ -74,7 +74,7 @@ $user_did_login = false;
 // session init starts here
 if ($_SESSION['SessionStart'] == 0) {
     $_SESSION['SessionStart'] = time();
-    $_SESSION['object_cache'] = array();
+    $_SESSION['object_cache'] = [];
 
     // try to get accepted languages from browser
     if (!isset($_SESSION['_language']))

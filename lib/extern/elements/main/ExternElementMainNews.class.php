@@ -45,12 +45,12 @@ class ExternElementMainNews extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'order', 'visible', 'aliases', 'width',
                 'width_pp', 'sort', 'studiplink', 'wholesite', 'nameformat',
                 'dateformat', 'language',   'urlcss', 'title', 'nodatatext',
                 'copyright', 'author', 'showdateauthor', 'notauthorlink'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -61,7 +61,7 @@ class ExternElementMainNews extends ExternElementMain {
     */
     function getDefaultConfig () {
         
-        $config = array(
+        $config = [
             "name" => "",
             "order" => "|0|1",
             "visible" => "|1|1",
@@ -82,7 +82,7 @@ class ExternElementMainNews extends ExternElementMain {
             "author" => "",
             "showdateauthor" => "0",
             "notauthorlink" => ""
-        );
+        ];
         
         return $config;
     }
@@ -112,12 +112,12 @@ class ExternElementMainNews extends ExternElementMain {
         $headline = $edit_form->editHeadline(_("Allgemeine Angaben zum Tabellenaufbau"));
         
         $edit_function = $this->edit_function;
-        $table = $edit_form->$edit_function($this->field_names, array());
+        $table = $edit_form->$edit_function($this->field_names, []);
         
         $title = _("Datum/Autor anzeigen:");
         $info = _("Anzeige von Datum und Autor, nur Datum oder nur Autor in der Spalte Datum/Autor.");
-        $values = array("0", "date", "author");
-        $names = array(_("Datum und Autor"), _("nur Datum"), ("nur Autor"));
+        $values = ["0", "date", "author"];
+        $names = [_("Datum und Autor"), _("nur Datum"), ("nur Autor")];
         $table .= $edit_form->editRadioGeneric("showdateauthor", $title, $info, $values, $names);
         
         $title = _("Autorenname nicht verlinken:");
@@ -133,28 +133,28 @@ class ExternElementMainNews extends ExternElementMain {
         
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev", "last");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."), _("Meyer"));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev", "last"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."), _("Meyer")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
         
         $title = _("Datumsformat:");
         $info = _("Wählen Sie, wie Datumsangaben formatiert werden sollen.");
-        $values = array("%d. %b. %Y", "%d.%m.%Y", "%d.%m.%y", "%d. %B %Y", "%m/%d/%y");
-        $names = array(_("25. Nov. 2003"), "25.11.2003", "25.11.03",
-                _("25. November 2003"), "11/25/03");
+        $values = ["%d. %b. %Y", "%d.%m.%Y", "%d.%m.%y", "%d. %B %Y", "%m/%d/%y"];
+        $names = [_("25. Nov. 2003"), "25.11.2003", "25.11.03",
+                _("25. November 2003"), "11/25/03"];
         $table .= $edit_form->editOptionGeneric("dateformat", $title, $info, $values, $names);
         
         $title = _("Sprache:");
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
-        $values = array("", "de_DE", "en_GB");
-        $names = array(_("keine Auswahl"), _("Deutsch"), _("Englisch"));
+        $values = ["", "de_DE", "en_GB"];
+        $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
         
         $title = _("Stud.IP-Link:");
         $info = _("Ausgabe eines Links, der direkt zum Stud.IP-Administrationsbereich verweist.");
-        $values = array("top", "bottom", "0");
-        $names = array(_("oberhalb"), _("unterhalb der Tabelle"), _("ausblenden"));
+        $values = ["top", "bottom", "0"];
+        $names = [_("oberhalb"), _("unterhalb der Tabelle"), _("ausblenden")];
         $table .= $edit_form->editRadioGeneric("studiplink", $title, $info, $values, $names);
         
         $title = _("HTML-Header/Footer:");

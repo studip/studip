@@ -96,7 +96,7 @@ class SemBrowse {
             if ($this->search_obj->new_search_button_clicked) {
                 $this->show_result = false;
                 $this->sem_browse_data['sset'] = false;
-                $this->sem_browse_data['search_result'] = array();
+                $this->sem_browse_data['search_result'] = [];
             }
         }
 
@@ -166,7 +166,7 @@ class SemBrowse {
             if ($this->search_obj->found_rows) {
                 $this->sem_browse_data['search_result'] = array_flip($this->search_obj->search_result->getRows('seminar_id'));
             } else {
-                $this->sem_browse_data['search_result'] = array();
+                $this->sem_browse_data['search_result'] = [];
             }
             $this->show_result = true;
             $this->sem_browse_data['show_entries'] = false;
@@ -269,7 +269,7 @@ class SemBrowse {
         if (is_array($sem_ids)) {
             $this->sem_browse_data['search_result'] = array_flip($sem_ids);
         } else {
-            $this->sem_browse_data['search_result'] = array();
+            $this->sem_browse_data['search_result'] = [];
         }
     }
 
@@ -300,7 +300,7 @@ class SemBrowse {
             $sem_ids = $db_snap->getRows('Seminar_id');
             $this->sem_browse_data['search_result'] = array_flip($sem_ids);
         } else {
-            $this->sem_browse_data['search_result'] = array();
+            $this->sem_browse_data['search_result'] = [];
         }
     }
 
@@ -561,7 +561,7 @@ class SemBrowse {
         } elseif ($this->search_obj->search_button_clicked
                 && !$this->search_obj->new_search_button_clicked) {
             if ($this->search_obj->found_rows === false) {
-                $details = array(_('Der Suchbegriff fehlt oder ist zu kurz'));
+                $details = [_('Der Suchbegriff fehlt oder ist zu kurz')];
             }
             if ($details) {
                 PageLayout::postError(_('Ihre Suche ergab keine Treffer'), $details);
@@ -716,7 +716,7 @@ class SemBrowse {
                         $worksheet1->write_string($row, 1, mb_convert_encoding($seminar_number, 'WINDOWS-1252'), $data_format);
                         $worksheet1->write_string($row, 2, mb_convert_encoding($temp_turnus_string, 'WINDOWS-1252'), $data_format);
 
-                        $doz_name = array();
+                        $doz_name = [];
                         $c = 0;
                         reset($sem_data[$seminar_id]['fullname']);
                         foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {
@@ -895,7 +895,7 @@ class SemBrowse {
                 uksort($group_by_data, 'strnatcasecmp');
         }
 
-        return array($group_by_data, $sem_data);
+        return [$group_by_data, $sem_data];
     }
 
     /**
@@ -946,7 +946,7 @@ class SemBrowse {
                 if ($seminar_obj->admission_prelim) $sem_name .= ', ' . _('Zutritt auf Anfrage');
                 $sem_name .= ')';
                 $row .= '<td width="1%" class="hidden-tiny-down">';
-                $row .= StudygroupAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, array('title' => htmlReady($seminar_obj->getName())));
+                $row .= StudygroupAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, ['title' => htmlReady($seminar_obj->getName())]);
                 $row .= '</td>';
             } else {
                 $sem_number_start = key($sem_data[$seminar_id]['sem_number']);
@@ -1035,7 +1035,7 @@ class SemBrowse {
             }
             $row .= '</td>';
             $row .= '<td align="right">(';
-            $doz_name = array();
+            $doz_name = [];
             $c = 0;
             reset($sem_data[$seminar_id]['fullname']);
             foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {

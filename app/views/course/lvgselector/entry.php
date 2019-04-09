@@ -18,8 +18,8 @@ $expand_id = $area->hasChildren() ? $id : implode('_', (array) $area->getTrailPa
      data-id="<?= htmlReady($expand_id) ?>" data-course_id="<?= htmlReady($course_id) ?>"
      data-type="<?= get_class($area) ?>"
      href="<?= URLHelper::getLink(isset($url) ? $url : '',
-                   array('lvgruppe_selection[selected]' => htmlReady($expand_id),
-                       'lvgruppe_selection[type]' => get_class($area))) ?>">
+                   ['lvgruppe_selection[selected]' => htmlReady($expand_id),
+                       'lvgruppe_selection[type]' => get_class($area)]) ?>">
     <?= $name ?>
   </a>
     <? if (isset($pathes) && count($pathes)) : ?>

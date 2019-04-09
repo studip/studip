@@ -45,14 +45,14 @@ class CronjobTask extends SimpleORMap
      *
      * @param Array $config Optional configuration passed from derived class
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'cronjobs_tasks';
-        $config['has_many']['schedules'] = array(
+        $config['has_many']['schedules'] = [
             'class_name' => 'CronjobSchedule',
             'on_delete'  => 'delete',
             'on_store'   => 'store'
-        );
+        ];
 
         $config['registered_callbacks']['after_initialize'][] = 'loadClass';
 
@@ -99,7 +99,7 @@ class CronjobTask extends SimpleORMap
      * @param String $last_result Result of last executions
      * @param Array  $parameters  Parameters to pass to the task
      */
-    public function engage($last_result, $parameters = array())
+    public function engage($last_result, $parameters = [])
     {
         if ($this->valid) {
             $task = new $this->class;
@@ -133,7 +133,7 @@ class CronjobTask extends SimpleORMap
                 return preg_replace('/(_Cronjob)?(\.class)?\.php$/', '', basename($this->filename))
                      . ' (' . _('fehlerhaft') . ')';
             } elseif ($field === 'parameters') {
-                return array();
+                return [];
             }
         }
         return parent::getValue($field);
@@ -151,7 +151,7 @@ class CronjobTask extends SimpleORMap
      * @return CronjobSchedule The generated schedule object.
      */
     public function scheduleOnce($timestamp, $priority = CronjobSchedule::PRIORITY_NORMAL,
-                                 $parameters = array())
+                                 $parameters = [])
     {
         return CronjobScheduler::scheduleOnce($this->id, $timestamp, $priority, $parameters);
     }
@@ -188,7 +188,7 @@ class CronjobTask extends SimpleORMap
     public function schedulePeriodic($minute = null, $hour = null,
                                      $day = null, $month = null, $day_of_week = null,
                                      $priority = CronjobSchedule::PRIORITY_NORMAL,
-                                     $parameters = array())
+                                     $parameters = [])
     {
         return CronjobScheduler::schedulePeriodic($this->id, $minute, $hour, $day, $month,
                                                   $day_of_week, $priority, $parameters);

@@ -57,7 +57,7 @@ abstract class Interactable
         if (0 === strncasecmp($name, 'create', 6)) {
 
             # instantiate button from arguments
-            $interactable = call_user_func_array(array(get_called_class(), 'create'), $args);
+            $interactable = call_user_func_array([get_called_class(), 'create'], $args);
             # but customize with class from $name:
             $class = self::hyphenate(mb_substr($name, 6));
 
@@ -109,7 +109,7 @@ abstract class Interactable
      *
      * @return returns a Interactable element
      */
-    static function create($label = NULL, $trait = NULL, $attributes = array())
+    static function create($label = NULL, $trait = NULL, $attributes = [])
     {
         $argc = func_num_args();
 
@@ -123,7 +123,7 @@ abstract class Interactable
         // in the latter case, use parameter $trait as attributes
         // and use the default for name
         if ($argc === 2 && is_array($trait)) {
-            list($attributes, $trait) = array($trait, NULL);
+            list($attributes, $trait) = [$trait, NULL];
         }
 
         $called = get_called_class();
@@ -154,9 +154,9 @@ abstract class Interactable
      * @param string $trait      the specific trait of the current element
      * @param array  $attributes the attributes of the button element
      */
-    static function createAccept($label = NULL, $trait = NULL, $attributes = array())
+    static function createAccept($label = NULL, $trait = NULL, $attributes = [])
     {
-        $args = func_num_args() ? func_get_args() : array(_('Übernehmen'));
+        $args = func_num_args() ? func_get_args() : [_('Übernehmen')];
         return self::__callStatic(__FUNCTION__, $args);
     }
 
@@ -170,9 +170,9 @@ abstract class Interactable
      * @param string $trait      the specific trait of the current element
      * @param array  $attributes the attributes of the button element
      */
-    static function createEdit($label = NULL, $trait = NULL, $attributes = array())
+    static function createEdit($label = NULL, $trait = NULL, $attributes = [])
     {
-        $args = func_num_args() ? func_get_args() : array(_('Bearbeiten'));
+        $args = func_num_args() ? func_get_args() : [_('Bearbeiten')];
         return self::__callStatic(__FUNCTION__, $args);
     }
 
@@ -186,9 +186,9 @@ abstract class Interactable
      * @param string $trait      the specific trait of the current element
      * @param array  $attributes the attributes of the button element
      */
-    static function createCancel($label = NULL, $trait = NULL, $attributes = array())
+    static function createCancel($label = NULL, $trait = NULL, $attributes = [])
     {
-        $args = func_num_args() ? func_get_args() : array(_('Abbrechen'));
+        $args = func_num_args() ? func_get_args() : [_('Abbrechen')];
         return self::__callStatic(__FUNCTION__, $args);
     }
 

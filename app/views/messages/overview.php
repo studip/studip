@@ -7,7 +7,7 @@
 <input type="hidden" name="search_content" id="search_content" value="<?= htmlReady(Request::get("search_content")) ?>">
 
 <? if (Request::get("tag")) : ?>
-    <form action="<?= $controller->url_for('messages/delete_tag', array('tag' => Request::get("tag"))) ?>" method="post" id="delete_tags_form">
+    <form action="<?= $controller->url_for('messages/delete_tag', ['tag' => Request::get("tag")]) ?>" method="post" id="delete_tags_form">
         <?= CSRFProtection::tokenTag() ?>
     </form>
 <? endif ?>
@@ -54,11 +54,11 @@
                 <tr>
                     <td colspan="8">
                         <? if (Request::int("offset") > 0) : ?>
-                        <a title="<?= _("zurück") ?>" href="<?= URLHelper::getLink("?", array('offset' => Request::int("offset") - $messageBufferCount > 0 ? Request::int("offset") - $messageBufferCount : null)) ?>"><?= Icon::create('arr_1left', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
+                        <a title="<?= _("zurück") ?>" href="<?= URLHelper::getLink("?", ['offset' => Request::int("offset") - $messageBufferCount > 0 ? Request::int("offset") - $messageBufferCount : null]) ?>"><?= Icon::create('arr_1left', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
                         <? endif ?>
                         <? if ($more) : ?>
                         <div style="float:right">
-                            <a title="<?= _("weiter") ?>" href="<?= URLHelper::getLink("?", array('offset' => Request::int("offset") + $messageBufferCount)) ?>"><?= Icon::create('arr_1right', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
+                            <a title="<?= _("weiter") ?>" href="<?= URLHelper::getLink("?", ['offset' => Request::int("offset") + $messageBufferCount]) ?>"><?= Icon::create('arr_1right', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
                         </div>
                         <? endif ?>
                     </td>
@@ -73,11 +73,11 @@
                 <tr>
                     <td colspan="7">
                         <? if (Request::int("offset") > 0) : ?>
-                            <a title="<?= _("zurück") ?>" href="<?= URLHelper::getLink("?", array('offset' => Request::int("offset") - $messageBufferCount > 0 ? Request::int("offset") - $messageBufferCount : null)) ?>"><?= Icon::create('arr_1left', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
+                            <a title="<?= _("zurück") ?>" href="<?= URLHelper::getLink("?", ['offset' => Request::int("offset") - $messageBufferCount > 0 ? Request::int("offset") - $messageBufferCount : null]) ?>"><?= Icon::create('arr_1left', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
                         <? endif ?>
                         <? if ($more) : ?>
                             <div style="float:right">
-                                <a title="<?= _("weiter") ?>" href="<?= URLHelper::getLink("?", array('offset' => Request::int("offset") + $messageBufferCount)) ?>"><?= Icon::create('arr_1right', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
+                                <a title="<?= _("weiter") ?>" href="<?= URLHelper::getLink("?", ['offset' => Request::int("offset") + $messageBufferCount]) ?>"><?= Icon::create('arr_1right', 'clickable')->asImg(["class" => "text-bottom"]) ?></a>
                             </div>
                         <? endif ?>
                     </td>

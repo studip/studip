@@ -39,17 +39,17 @@ class StudipForm {
 
     var $form_name;
 
-    var $field_attributes_default = array();
+    var $field_attributes_default = [];
 
-    var $form_fields = array();
+    var $form_fields = [];
 
-    var $form_buttons = array();
+    var $form_buttons = [];
 
     var $persistent_values = true;
 
-    var $form_values = array();
+    var $form_values = [];
 
-    var $value_changed = array();
+    var $value_changed = [];
 
 
     static function TimestampToSQLDate($tstamp){
@@ -262,7 +262,7 @@ class StudipForm {
         if(count($date_values)==3){
             $value = $date_values[2]. '.' . $date_values[1]. '.' .$date_values[0];
         }
-        $ret .= $this->getFormFieldText($name, array_merge(array('size'=>11,'maxlength'=>11), (array)$attributes), $value);
+        $ret .= $this->getFormFieldText($name, array_merge(['size'=>11,'maxlength'=>11], (array)$attributes), $value);
         $ret .='<script>jQuery("#'.$this->form_name.'_'.$name.'").datepicker();</script>';
         return $ret;
     }
@@ -271,9 +271,9 @@ class StudipForm {
         $date_values = explode(":", $default); //hh:mm
         $ret = '<div id="' . $attributes['id'] .'"><section class="hgroup">';
         unset($attributes['id']);
-        $ret .= $this->getFormFieldText($name . "_hours", array_merge(array('size'=>2,'maxlength'=>2), (array)$attributes), $date_values[0]);
+        $ret .= $this->getFormFieldText($name . "_hours", array_merge(['size'=>2,'maxlength'=>2], (array)$attributes), $date_values[0]);
         $ret .= "\n" . $this->form_fields[$name]['separator'];
-        $ret .= $this->getFormFieldText($name . "_minutes", array_merge(array('size'=>2,'maxlength'=>2), (array)$attributes), $date_values[1]);
+        $ret .= $this->getFormFieldText($name . "_minutes", array_merge(['size'=>2,'maxlength'=>2], (array)$attributes), $date_values[1]);
         $ret .= '</section></div>';
         return $ret;
     }
@@ -298,7 +298,7 @@ class StudipForm {
         for ($i = 0; $i < count($options); ++$i){
             $options_name = (is_array($options[$i])) ? $options[$i]['name'] : $options[$i];
             $options_value = (is_array($options[$i])) ? $options[$i]['value'] : $options[$i];
-            $options_attributes = (is_array($options[$i])) ? $options[$i]['attributes'] : array();
+            $options_attributes = (is_array($options[$i])) ? $options[$i]['attributes'] : [];
             $selected = false;
             if ((is_array($default) && in_array("" . $options_value, $default))
             || (!is_array($default) && ($default == "" . $options_value))){
@@ -316,7 +316,7 @@ class StudipForm {
     }
 
     function getFormFieldSelectBox($name, $attributes, $default){
-        $box_attributes = $this->form_fields[$name]['box_attributes'] ? $this->form_fields[$name]['box_attributes'] : array();
+        $box_attributes = $this->form_fields[$name]['box_attributes'] ? $this->form_fields[$name]['box_attributes'] : [];
         $ret = "\n<div class=\"selectbox\" ".$this->getAttributes($box_attributes)." >";
         $ret .= "\n<fieldset id=\"{$attributes['id']}\">";
         unset($attributes['id']);
@@ -338,7 +338,7 @@ class StudipForm {
         for ($i = 0; $i < count($options); ++$i) {
             $options_name = (is_array($options[$i])) ? $options[$i]['name'] : $options[$i];
             $options_value = (is_array($options[$i])) ? $options[$i]['value'] : $options[$i];
-            $options_attributes = (is_array($options[$i])) ? $options[$i]['attributes'] : array();
+            $options_attributes = (is_array($options[$i])) ? $options[$i]['attributes'] : [];
             $selected = false;
             if ((is_array($default) && in_array("" . $options_value, $default))
             || (!is_array($default) && ($default == "" . $options_value))){
@@ -367,8 +367,8 @@ class StudipForm {
         unset($attributes['id']);
         $combo_text_name = $this->form_fields[$name]['text'];
         $combo_select_name = $this->form_fields[$name]['select'];
-        $select_attributes = array('onChange' => "document.{$this->form_name}.{$this->form_name}_{$combo_text_name}.value="
-        ."document.{$this->form_name}.{$this->form_name}_{$combo_select_name}.options[document.{$this->form_name}.{$this->form_name}_{$combo_select_name}.selectedIndex].text; ");
+        $select_attributes = ['onChange' => "document.{$this->form_name}.{$this->form_name}_{$combo_text_name}.value="
+        ."document.{$this->form_name}.{$this->form_name}_{$combo_select_name}.options[document.{$this->form_name}.{$this->form_name}_{$combo_select_name}.selectedIndex].text; "];
         if (is_array($attributes)){
             $select_attributes = array_merge((array)$select_attributes, (array)$attributes);
         }
@@ -385,7 +385,7 @@ class StudipForm {
         return $ret;
     }
 
-    function getFormButton($name, $attributes = array()){
+    function getFormButton($name, $attributes = []){
         if (is_array($this->form_buttons[$name]['attributes'])) {
             $attributes = array_merge((array)$attributes, (array)$this->form_buttons[$name]['attributes']);
         }
@@ -405,7 +405,7 @@ class StudipForm {
             $ret = Assets::input($this->form_buttons[$name]['type'],
                                  tooltip2($this->form_buttons[$name]['info'])
                                  + (array)$attributes
-                                 + array('name' => $this->form_name . '_' . $name));
+                                 + ['name' => $this->form_name . '_' . $name]);
         }
         return $ret;
     }
@@ -462,7 +462,7 @@ class StudipForm {
     }
 
     function getFormFieldsByName($only_editable = false){
-        $ret = array();
+        $ret = [];
         foreach ($this->form_fields as $name => $detail){
             if( !($only_editable && ($detail['type'] == 'noform' || $detail['disabled'])) ){
                 $ret[] = $name;

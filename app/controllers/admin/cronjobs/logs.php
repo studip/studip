@@ -87,7 +87,7 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
     public function filter_action()
     {
         $filter     = array_filter(Request::optionArray('filter'));
-        $conditions = array();
+        $conditions = [];
 
         if (!empty($filter['status'])) {
             $conditions[] = ($filter['status'] === 'passed')
@@ -106,10 +106,10 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
             $conditions[] = "schedule_id IN (" . DBManager::get()->quote($schedule_ids). ")";
         }
 
-        $_SESSION['cronlog-filter'] = array(
+        $_SESSION['cronlog-filter'] = [
             'where'  => implode(" AND " , $conditions) ?: '1',
             'values' => $filter,
-        );
+        ];
         $this->redirect('admin/cronjobs/logs');
     }
 

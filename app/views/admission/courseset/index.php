@@ -25,7 +25,7 @@ if ($coursesets) {
         <td><?= count($courseset->getCourses()) ?></td>
         <td>
         <div style="width:100px;text-align:right;white-space: nowrap">
-            <a class="load-in-new-row" href="<?= $controller->link_for('', array('course_set_details' => $courseset->getId())); ?>">
+            <a class="load-in-new-row" href="<?= $controller->link_for('', ['course_set_details' => $courseset->getId()]); ?>">
                 <?= Icon::create('info', 'clickable', ['title' => _('Weitere Informationen einblenden')])->asImg() ?>
             </a>
             <? if ($courseset->isUserAllowedToEdit($GLOBALS['user']->id)) : ?>
@@ -40,7 +40,7 @@ if ($coursesets) {
                     onclick="return STUDIP.Dialogs.showConfirmDialog('<?=
                         sprintf(_('Soll das Anmeldeset %s wirklich gelöscht werden?'), htmlReady($courseset->getName())) ?>', '<?=
                         URLHelper::getURL('dispatch.php/admission/courseset/delete/'.
-                        $courseset->getId(), array('really' => 1)) ?>')">
+                        $courseset->getId(), ['really' => 1]) ?>')">
                     <?= Icon::create('trash', 'clickable', ['title' => _('Anmeldeset löschen')])->asImg(16, ["alt" => _('Anmeldeset löschen')]); ?>
                 </a>
              <? endif ?>

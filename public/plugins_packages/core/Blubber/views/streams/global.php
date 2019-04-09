@@ -30,14 +30,14 @@
         <div class="context_selector select" title="<?= _("Kontext der Nachricht auswählen") ?>">
             <? $width = "50" ?>
             <?= Icon::create("blubber", "clickable")->asImg($width, ['class' => "select click"]) ?>
-            <?= Assets::img($plugin->getPluginURL()."/assets/images/public_blue.svg", array('class' => "public click", 'height' => $width."px")) ?>
+            <?= Assets::img($plugin->getPluginURL()."/assets/images/public_blue.svg", ['class' => "public click", 'height' => $width."px"]) ?>
             <?= Icon::create("group3", "clickable")->asImg($width, ['class' => "private click"]) ?>
             <?= Icon::create("seminar", "clickable")->asImg($width, ['class' => "seminar click"]) ?>
         </div>
         <textarea id="new_posting" placeholder="<?= _("Schreib was, frag was.") ?>" aria-label="<?= _("Schreib was, frag was.") ?>"><?= ($search ? htmlReady("#".$search)." " : "").(Request::get("mention") ? "@".htmlReady(Request::username("mention")).", " : "") ?></textarea>
         <label title="<?= _("Datei hochladen") ?>" class="uploader">
             <input type="file" style="display: none;" multiple>
-            <?= Assets::img('ajax-indicator-black.svg', array('class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px")) ?>
+            <?= Assets::img('ajax-indicator-black.svg', ['class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px"]) ?>
             <?= Icon::create('upload', 'clickable')->asImg(['class' => "text-bottom upload"]) ?>
         </label>
     </div>
@@ -50,7 +50,7 @@
                 <tr onMousedown="$('#context_type').val('public'); $('#threadwriter .context_selector').removeAttr('class').addClass('public context_selector'); $(this).parent().find('.selected').removeClass('selected'); $(this).addClass('selected'); ">
                     <td style="text-align: center; width: 15%">
                         <label>
-                            <?= Assets::img($plugin->getPluginURL()."/assets/images/public.svg", array('class' => "text-bottom", 'height' => "32px")) ?>
+                            <?= Assets::img($plugin->getPluginURL()."/assets/images/public.svg", ['class' => "text-bottom", 'height' => "32px"]) ?>
                             <br>
                             <?= _("Öffentlich") ?>
                         </label>
@@ -138,10 +138,10 @@
 
 <ul id="blubber_threads" class="globalstream" aria-live="polite" aria-relevant="additions">
     <? foreach ($threads as $thread) : ?>
-    <?= $this->render_partial("streams/_blubber.php", array('thread' => $thread)) ?>
+    <?= $this->render_partial("streams/_blubber.php", ['thread' => $thread]) ?>
     <? endforeach ?>
     <? if ($more_threads) : ?>
-    <li class="more"><?= Assets::img("ajax_indicator_small.gif", array('alt' => "loading")) ?></li>
+    <li class="more"><?= Assets::img("ajax_indicator_small.gif", ['alt' => "loading"]) ?></li>
     <? endif ?>
 </ul>
 

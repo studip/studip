@@ -43,7 +43,7 @@ if (Request::get('copymode')) {
             <tr>
                 <td>
                     <a href="<?= $controller->link_for('/choose_folder_from_institute/', array_merge($options, ['Institut_id' => $institut['Institut_id']])) ?>" data-dialog>
-                        <?= InstituteAvatar::getAvatar($institut['Institut_id'])->getImageTag(Avatar::MEDIUM, array('style' => 'width: 50px; height: 50px;')) ?>
+                        <?= InstituteAvatar::getAvatar($institut['Institut_id'])->getImageTag(Avatar::MEDIUM, ['style' => 'width: 50px; height: 50px;']) ?>
                     </a>
                 </td>
                 <td>

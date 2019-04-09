@@ -23,7 +23,7 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
      * 
      * @var array
      */
-    public static $TRAIL_DEFAULT = array(
+    public static $TRAIL_DEFAULT = [
         'MvvCourse',
         'Lvgruppe',
         'Modulteil',
@@ -35,7 +35,7 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
         'Studiengang',
         'Abschluss',
         'AbschlussKategorie'
-        );
+        ];
     
     /**
      * An array of functions to filter mvv objects during path creation.
@@ -43,7 +43,7 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
      * 
      * @var array
      */
-    protected static $object_filter = array(); 
+    protected static $object_filter = []; 
     
     /**
      * @see MvvTreeItem::getTrailParentId()
@@ -83,7 +83,7 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
         }
         
         if (empty($trails) && in_array($class_name, $types)) {
-            $trails = array(array($class_name => $this));
+            $trails = [[$class_name => $this]];
         }
         
         return $trails;
@@ -143,7 +143,7 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
     public static function getPathes($trails, $delimiter = ' · ',
             $display_options = self::DISPLAY_DEFAULT)
     {
-        $pathes =  array();
+        $pathes =  [];
         foreach ($trails as $trail) {
             $pathes[] = join($delimiter, array_map(
                     function($a) use ($display_options) {
@@ -163,11 +163,11 @@ abstract class ModuleManagementModelTreeItem extends ModuleManagementModel imple
      */
     public static function filterTrails($trails, $filter_objects)
     {
-        $filtered_trails = array();
-        $trail_keys = array();
+        $filtered_trails = [];
+        $trail_keys = [];
         foreach ($trails as $trail) {
-            $temp_trail = array();
-            $temp_keys = array();
+            $temp_trail = [];
+            $temp_keys = [];
             foreach ($trail as $trail_object) {
                 if (in_array(get_class($trail_object), $filter_objects)) {
                     $temp_keys[] = $trail_object->getId();

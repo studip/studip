@@ -43,16 +43,16 @@ class SeminarSearch extends SearchType
      * @param int $offset return results starting from this row (default: 0)
      * @return array
      */
-     public function getResults($keyword, $contextual_data = array(), $limit = PHP_INT_MAX, $offset = 0) {
+     public function getResults($keyword, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0) {
          $search_helper = new StudipSemSearchHelper();
          $search_helper->setParams(
-             array(
+             [
                  'quick_search' => $keyword,
                  'qs_choose' => $contextual_data['search_sem_qs_choose'] ? $contextual_data['search_sem_qs_choose'] : 'all',
                  'sem' => isset($contextual_data['search_sem_sem']) ? $contextual_data['search_sem_sem'] : 'all',
                  'category' => $contextual_data['search_sem_category'],
                  'scope_choose' => $contextual_data['search_sem_scope_choose'],
-                 'range_choose' => $contextual_data['search_sem_range_choose']),
+                 'range_choose' => $contextual_data['search_sem_range_choose']],
              !(is_object($GLOBALS['perm'])
                  && $GLOBALS['perm']->have_perm(
                      Config::Get()->SEM_VISIBILITY_PERM)));
@@ -60,7 +60,7 @@ class SeminarSearch extends SearchType
          $result = $search_helper->getSearchResultAsArray();
 
          if (empty($result)) {
-             return array();
+             return [];
          }
 
          $query = "SELECT s.Seminar_id, CONCAT_WS(' ', s.VeranstaltungsNummer, s.name, CONCAT(' (', 
@@ -79,9 +79,9 @@ class SeminarSearch extends SearchType
              $query .= " ORDER BY IFNULL(sem2.beginn, sem1.beginn) DESC, s.Name";
          }
          $statement = DBManager::get()->prepare($query);
-         $statement->execute(array(
+         $statement->execute([
             array_slice($result, $offset, $limit) ?: ''
-         ));
+         ]);
          return $statement->fetchAll(PDO::FETCH_NUM);
      }
 

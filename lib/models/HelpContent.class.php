@@ -60,13 +60,13 @@ class HelpContent extends SimpleORMap {
             $language = 'de';
         $version = Config::get()->getValue('HELP_CONTENT_CURRENT_VERSION');
         if (!$version)
-            return array();
+            return [];
         $route = get_route($route);
         $query = "SELECT *
                   FROM help_content
                   WHERE route LIKE CONCAT(?, '%') AND language = ? AND visible = 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($route, $language));
+        $statement->execute([$route, $language]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
         foreach ($ret as $index => $data)
             if (! match_route($data['route'], $route))
@@ -86,7 +86,7 @@ class HelpContent extends SimpleORMap {
                   FROM help_content
                   WHERE content_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
         return current(HelpContent::GetContentObjects($ret));
     }
@@ -100,7 +100,7 @@ class HelpContent extends SimpleORMap {
      */
     public static function GetContentByFilter($term = '')
     {
-        $params = array();
+        $params = [];
         $condition = '';
         if (mb_strlen(trim($term)) >= 3) { 
             $condition =  "WHERE content LIKE CONCAT('%', ?, '%')";
@@ -123,13 +123,13 @@ class HelpContent extends SimpleORMap {
      */
     public static function GetConflicts()
     {
-        $conflicts = array();
+        $conflicts = [];
         $query = "SELECT content_id AS idx, help_content.*
                   FROM help_content
                   WHERE installation_id = ?
                   ORDER BY route";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(Config::get()->STUDIP_INSTALLATION_ID));
+        $statement->execute([Config::get()->STUDIP_INSTALLATION_ID]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
         foreach ($ret as $index => $data) {
             $query = "SELECT content_id AS idx, help_content.*
@@ -137,10 +137,10 @@ class HelpContent extends SimpleORMap {
                       WHERE global_content_id = ? AND language = ? AND studip_version >= ? AND installation_id <> ?
                       ORDER BY studip_version DESC LIMIT 1";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($data['global_content_id'], $data['language'], $data['studip_version'], Config::get()->STUDIP_INSTALLATION_ID));
+            $statement->execute([$data['global_content_id'], $data['language'], $data['studip_version'], Config::get()->STUDIP_INSTALLATION_ID]);
             $ret2 = $statement->fetchGrouped(PDO::FETCH_ASSOC);
             if (count($ret2)) {
-                $conflicts[] = HelpContent::GetContentObjects(array_merge(array($index => $data), $ret2));
+                $conflicts[] = HelpContent::GetContentObjects(array_merge([$index => $data], $ret2));
             }
         }
         return $conflicts;
@@ -154,7 +154,7 @@ class HelpContent extends SimpleORMap {
      */
     public static function GetContentObjects($content_result)
     {
-        $objects = array();
+        $objects = [];
         if (is_array($content_result)){
             foreach($content_result as $id => $result){
                 $objects[$id] = new HelpContent();
@@ -170,7 +170,7 @@ class HelpContent extends SimpleORMap {
      * 
      * @param array $config           configuration 
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'help_content';
         

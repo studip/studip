@@ -46,34 +46,34 @@ class ExternModulePersondetails extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array(
-                'contact' => array(
+        $this->data_fields = [
+                'contact' => [
                     'raum', 'Telefon', 'Fax', 'Email',
-                    'Home', 'sprechzeiten'),
-                'content' => array(
+                    'Home', 'sprechzeiten'],
+                'content' => [
                     'head', 'lebenslauf', 'schwerp', 'lehre',
-                    'news', 'termine', 'publi', 'kategorien'/*, 'literature' */)
-        );
-        $this->registered_elements = array(
+                    'news', 'termine', 'publi', 'kategorien'/*, 'literature' */]
+        ];
+        $this->registered_elements = [
                 'Body', 'TableHeader', 'PersondetailsHeader', 'Contact',
                 'PersondetailsLectures', 'TableParagraph', 'TableParagraphHeadline',
                 'TableParagraphSubHeadline', 'TableParagraphText', 'List',/* 'LitList',*/
                 'LinkIntern', 'StudipLink'
-        );
-        $this->args = array('username', 'seminar_id');
-        $this->field_names = array
-        (
-            "contact" => array
-            (
+        ];
+        $this->args = ['username', 'seminar_id'];
+        $this->field_names = 
+        [
+            "contact" => 
+            [
                 _("Raum"),
                 _("Telefon"),
                 _("Fax"),
                 _("Email"),
                 _("Homepage"),
                 _("Sprechzeiten")
-            ),
-            "content" => array
-            (
+            ],
+            "content" => 
+            [
                 _("Name, Anschrift, Kontakt"),
                 _("Lebenslauf"),
                 _("Schwerpunkte"),
@@ -83,8 +83,8 @@ class ExternModulePersondetails extends ExternModule {
                 _("Publikationen"),
                 _("eigene Kategorien")/*,
                 _("Literaturlisten")*/
-            )
-        );
+            ]
+        ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     

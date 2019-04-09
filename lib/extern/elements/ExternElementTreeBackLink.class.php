@@ -39,11 +39,11 @@
 
 class ExternElementTreeBackLink extends ExternElement {
 
-    var $attributes = array("linktext", "image", "table_bgcolor",
+    var $attributes = ["linktext", "image", "table_bgcolor",
                 "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style", "td_height", "td_align", "td_valign", "td_bgcolor",
                 "td_class", "td_style", "font_face", "font_size", "font_color",
-                "font_class", "font_style");
+                "font_class", "font_style"];
 
     /**
     * Constructor
@@ -62,7 +62,7 @@ class ExternElementTreeBackLink extends ExternElement {
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';

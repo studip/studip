@@ -26,11 +26,11 @@ class PermissionCondition extends UserFilterField
 
         parent::__construct($fieldId);
 
-        $this->validValues = array(
+        $this->validValues = [
             'autor' => _('Student/in'),
             'tutor' => _('Tutor/in'),
             'dozent' => _('Lehrende/r')
-        );
+        ];
     }
 
     /**

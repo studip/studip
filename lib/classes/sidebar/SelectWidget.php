@@ -41,7 +41,7 @@ class SelectWidget extends SidebarWidget
             $url = str_replace('?' . $query , '', $url);
             parse_str(html_entity_decode($query) ?: '', $query_params);
         } else {
-            $query_params = array();
+            $query_params = [];
         }
 
         $this->template_variables['url']    = URLHelper::getLink($url);
@@ -119,7 +119,7 @@ class SelectWidget extends SidebarWidget
      */
     public function render($variables = [])
     {
-        $attributes = array();
+        $attributes = [];
         foreach ((array) $this->template_variables['attributes'] as $key => $value) {
             $attributes[] = sprintf('%s="%s"', htmlReady($key), htmlReady($value));
         }

@@ -163,7 +163,7 @@
     <? endif ?>
 
     <footer data-dialog-button>
-        <?= \Studip\Button::create(_('Abschicken'), null, array('onclick' => "STUDIP.Messages.checkAdressee();")) ?>
+        <?= \Studip\Button::create(_('Abschicken'), null, ['onclick' => "STUDIP.Messages.checkAdressee();"]) ?>
     </footer>
 
 </form>

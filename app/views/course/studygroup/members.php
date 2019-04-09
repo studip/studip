@@ -1,28 +1,28 @@
 <?= $this->render_partial("course/studygroup/_feedback", compact('anzahl', 'page', 'sem_id')) ?>
 
 <? if (count($moderators) > 0): ?>
-    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', array(
+    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', [
         'title'          => $sem_class['title_dozent_plural'] ?: _('Gruppenadministrator/-innen'),
         'sem_id'         => $sem_id,
         'members'        => $moderators,
         'moderator_list' => true
-    )) ?>
+    ]) ?>
 <? endif ?>
 
 <? if (count($tutors) > 0): ?>
-    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', array(
+    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', [
         'title'   => $sem_class['title_tutor_plural'] ?: _('Moderator/-innen'),
         'sem_id'  => $sem_id,
         'members' => $tutors
-    )) ?>
+    ]) ?>
 <? endif ?>
 
 <? if (count($autors) > 0): ?>
-    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', array(
+    <?= $this->render_partial('course/studygroup/_members_' . $view . '.php', [
         'title'   => $sem_class['title_autor_plural'] ?: _('Mitglieder'),
         'sem_id'  => $sem_id,
         'members' => $autors
-    )) ?>
+    ]) ?>
 <? endif ?>
 
 

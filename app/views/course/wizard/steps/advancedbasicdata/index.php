@@ -1,4 +1,4 @@
-<?= $this->render_partial('basicdata/index.php', array('value' => $value)) ?>
+<?= $this->render_partial('basicdata/index.php', ['value' => $value]) ?>
 
 <section>
     <label for="wizard-subtitle">

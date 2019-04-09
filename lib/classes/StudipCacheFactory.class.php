@@ -92,15 +92,15 @@ class StudipCacheFactory
 
         $cfg = self::getConfig();
 
-        $cfg->create('cache_class', array(
+        $cfg->create('cache_class', [
             'comment' => 'Pfad der Datei, die die StudipCache-Klasse enthält',
-            'value'   => $class));
-        $cfg->create('cache_class_file', array(
+            'value'   => $class]);
+        $cfg->create('cache_class_file', [
             'comment' => 'Klassenname des zu verwendenden StudipCaches',
-            'value'   => $file));
-        $cfg->create('cache_init_args', array(
+            'value'   => $file]);
+        $cfg->create('cache_init_args', [
             'comment' => 'JSON-kodiertes Array von Argumenten für die Instanziierung der StudipCache-Klasse',
-            'value'   => $arguments));
+            'value'   => $arguments]);
 
         $cfg->store('cache_class', $class);
         $cfg->store('cache_class_file', $file);
@@ -224,7 +224,7 @@ class StudipCacheFactory
     public static function retrieveConstructorArguments()
     {
         $cfg_args = self::getConfig()->getValue('cache_init_args');
-        return isset($cfg_args) ? json_decode($cfg_args, TRUE) : array();
+        return isset($cfg_args) ? json_decode($cfg_args, TRUE) : [];
     }
 
     /**

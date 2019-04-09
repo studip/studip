@@ -35,7 +35,7 @@ class Icon
 
     protected $shape;
     protected $role;
-    protected $attributes = array();
+    protected $attributes = [];
 
 
     /**
@@ -98,7 +98,7 @@ class Icon
      *                           rendering in a view
      * @return Icon object
      */
-    public static function create($shape, $role = Icon::DEFAULT_ROLE, $attributes = array())
+    public static function create($shape, $role = Icon::DEFAULT_ROLE, $attributes = [])
     {
         // $role may be omitted
         if (is_array($role)) {
@@ -120,7 +120,7 @@ class Icon
      *                           this icon regardless of its later
      *                           rendering in a view
      */
-    public function __construct($shape, $role = Icon::DEFAULT_ROLE, array $attributes = array())
+    public function __construct($shape, $role = Icon::DEFAULT_ROLE, array $attributes = [])
     {
 
         // only defined roles

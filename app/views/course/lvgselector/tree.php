@@ -10,7 +10,7 @@
 <? foreach ($trail as $id => $area) : ?>
   <ul>
     <li class="trail_element">
-      <?= $this->render_partial('course/lvgselector/entry', array('area' => $area, 'show_link' => $area !== $last)) ?>
+      <?= $this->render_partial('course/lvgselector/entry', ['area' => $area, 'show_link' => $area !== $last]) ?>
 
       <? if ($area === $last) : ?>
         <input type="image" name="lvgruppe_selection[showall_button]" title="<?= _('Alle Unterebenen einblenden') ?>" src="<?= Assets::image_path('sem_tree.gif') ?>">
@@ -18,7 +18,7 @@
 <? endforeach ?>
 
 <?= $this->render_partial('course/lvgselector/subtree',
-                          array('subtree' => $selection->getSelected())); ?>
+                          ['subtree' => $selection->getSelected()]); ?>
 
 <? foreach ($trail as $id => $area) : ?>
     </li>

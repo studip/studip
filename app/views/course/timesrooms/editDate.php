@@ -49,7 +49,7 @@
                         </option>
                     <? endforeach ?>
                 </select>
-                <?= Icon::create('room-clear', 'clickable', array('class' => "bookable_rooms_action", 'title' => _("Nur buchbare Räume anzeigen"))); ?>
+                <?= Icon::create('room-clear', 'clickable', ['class' => "bookable_rooms_action", 'title' => _("Nur buchbare Räume anzeigen")]); ?>
             </label>
         <? endif; ?>
         <label class="horizontal">
@@ -172,14 +172,14 @@
         <? if (Request::int('fromDialog')) : ?>
             <?= Studip\LinkButton::create(_('Zurück zur Übersicht'),
                                           $controller->url_for('course/timesrooms',
-                                                               array('fromDialog' => 1, 'contentbox_open' => $date->metadate_id)),
-                                          array('data-dialog' => 'size=big')) ?>
+                                                               ['fromDialog' => 1, 'contentbox_open' => $date->metadate_id]),
+                                          ['data-dialog' => 'size=big']) ?>
         <? endif ?>
         <? if (Request::isXhr() && !$locked && Config::get()->RESOURCES_ENABLE && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS): ?>
             <?= Studip\LinkButton::create(_('Raumanfrage erstellen'),
                                           $controller->url_for('course/room_requests/edit/' . $course->id,
-                                                               array_merge($params, array('origin' => 'course_timesrooms'))),
-                                          array('data-dialog' => 'size=big')) ?>
+                                                               array_merge($params, ['origin' => 'course_timesrooms'])),
+                                          ['data-dialog' => 'size=big']) ?>
         <? endif ?>
     </footer>
 </form>

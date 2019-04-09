@@ -39,7 +39,7 @@
                     $lecturers = array();
                 }
                 */
-                $lecturers = array();
+                $lecturers = [];
             ?>
             <? if (count($lecturers)) : ?>
                 <optgroup style="font-weight:bold;" label="<?= _('Dozentenkalender:') ?>">

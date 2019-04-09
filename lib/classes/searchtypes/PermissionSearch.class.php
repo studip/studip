@@ -31,7 +31,7 @@ class PermissionSearch extends SQLSearch {
      * in this search. array("input_name" => "placeholder_in_sql_query")
      * @return void
      */
-    public function __construct($search, $title = "", $avatarLike = "user_id", $presets = array()) {
+    public function __construct($search, $title = "", $avatarLike = "user_id", $presets = []) {
         $this->search = $search;
         $this->presets = $presets;
         $this->title = $title;
@@ -50,7 +50,7 @@ class PermissionSearch extends SQLSearch {
      * @param offset int: return results starting from this row (default: 0)
      * @return array: array(array(), ...)
      */
-    public function getResults($input, $contextual_data = array(), $limit = PHP_INT_MAX, $offset = 0) {
+    public function getResults($input, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0) {
         $db = DBManager::get();
         $sql = $this->getSQL();
         if ($offset || $limit != PHP_INT_MAX) {
@@ -65,7 +65,7 @@ class PermissionSearch extends SQLSearch {
             if ($name !== "input" && mb_strpos($sql, ":".$name) !== false) {
                 if (is_array($value)) {
                     if (count($value)) {
-                        $sql = str_replace(":".$name, implode(',', array_map(array($db, 'quote'), $value)), $sql);
+                        $sql = str_replace(":".$name, implode(',', array_map([$db, 'quote'], $value)), $sql);
                     } else {
                          $sql = str_replace(":".$name, "''", $sql);
                     }
@@ -75,8 +75,8 @@ class PermissionSearch extends SQLSearch {
             }
         }
 
-        $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-        $data = array();
+        $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+        $data = [];
         $data[":input"] = "%".$input."%";
         $statement->execute($data);
         $results = $statement->fetchAll();

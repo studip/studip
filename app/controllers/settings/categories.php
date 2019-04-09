@@ -45,7 +45,7 @@ class Settings_CategoriesController extends Settings_SettingsController
     {
         $categories = Kategorie::findByUserId($this->user->user_id);
 
-        $visibilities = array();
+        $visibilities = [];
         $hidden_count = 0;
         foreach ($categories as $index => $category) {
             $visibilities[$category->kategorie_id] = Visibility::getStateDescription('kat_' . $category->kategorie_id, $this->user->user_id);
@@ -60,7 +60,7 @@ class Settings_CategoriesController extends Settings_SettingsController
         $this->hidden_count = $hidden_count;
         $this->visibilities = $visibilities;
         $this->verify       = $verify_action
-                            ? array('action' => $verify_action, 'id' => $verify_id)
+                            ? ['action' => $verify_action, 'id' => $verify_id]
                             : false;
 
         $sidebar = Sidebar::get();

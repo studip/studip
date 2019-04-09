@@ -20,7 +20,7 @@ class SessionGcJob extends CronJob
         return _('Entfernt abgelaufene session Daten');
     }
 
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         $sess = new Seminar_Session();
         $sess->set_container();

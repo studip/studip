@@ -55,14 +55,14 @@ class PurgeCacheJob extends CronJob
      */
     public static function getParameters()
     {
-        return array(
-            'verbose' => array(
+        return [
+            'verbose' => [
                 'type'        => 'boolean',
                 'default'     => false,
                 'status'      => 'optional',
                 'description' => _('Sollen Ausgaben erzeugt werden (sind später im Log des Cronjobs sichtbar)'),
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -84,7 +84,7 @@ class PurgeCacheJob extends CronJob
      *                          "verbose" which toggles verbose output while
      *                          purging the cache.
      */
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         $cache = new StudipFileCache();
         $cache->purge(empty($parameters['verbose']));

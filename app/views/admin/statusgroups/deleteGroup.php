@@ -11,7 +11,7 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Löschen'), 'confirm', array('data-dialog-button' => '')) ?>
-        <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/statusgroups/index'), array('data-dialog-button' => '', 'data-dialog' => 'close')) ?>
+        <?= Studip\Button::createAccept(_('Löschen'), 'confirm', ['data-dialog-button' => '']) ?>
+        <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/statusgroups/index'), ['data-dialog-button' => '', 'data-dialog' => 'close']) ?>
     </footer>
 </form>

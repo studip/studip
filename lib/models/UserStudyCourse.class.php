@@ -36,8 +36,8 @@ class UserStudyCourse extends SimpleORMap implements PrivacyObject
                             LEFT JOIN abschluss USING (abschluss_id)
                             LEFT JOIN fach USING (fach_id)
                             WHERE user_id = ? ORDER BY studycourse_name,degree_name");
-        $st->execute(array($user_id));
-        $ret = array();
+        $st->execute([$user_id]);
+        $ret = [];
         while ($row = $st->fetch(PDO::FETCH_ASSOC)) {
             $ret[] = self::buildExisting($row);
         }
@@ -46,26 +46,26 @@ class UserStudyCourse extends SimpleORMap implements PrivacyObject
 
     public static function findByStudyCourseAndDegree($study_course_id, $degree_id)
     {
-        return self::findBySql("fach_id = ? AND abschluss_id = ?", array($study_course_id, $degree_id));
+        return self::findBySql("fach_id = ? AND abschluss_id = ?", [$study_course_id, $degree_id]);
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'user_studiengang';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['belongs_to']['degree'] = array(
+        ];
+        $config['belongs_to']['degree'] = [
             'class_name' => 'Abschluss',
             'foreign_key' => 'abschluss_id',
-        );
-        $config['belongs_to']['studycourse'] = array(
+        ];
+        $config['belongs_to']['studycourse'] = [
             'class_name' => 'Fach',
             'foreign_key' => 'fach_id',
-        );
-        $config['additional_fields']['degree_name'] = array();
-        $config['additional_fields']['studycourse_name'] = array();
+        ];
+        $config['additional_fields']['degree_name'] = [];
+        $config['additional_fields']['studycourse_name'] = [];
         parent::configure($config);
     }
 

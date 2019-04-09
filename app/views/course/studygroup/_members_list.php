@@ -20,18 +20,18 @@
         <tr <? if ($last_visitdate <= $m['mkdate'] && $GLOBALS['perm']->have_studip_perm('tutor', $sem_id)) echo 'class="new-member"'; ?>>
             <td>
                 <a class="member-avatar"
-                   href="<?= $controller->url_for('profile', array('username' => $m['username'])) ?>">
+                   href="<?= $controller->url_for('profile', ['username' => $m['username']]) ?>">
                     <?= Avatar::getAvatar($m['user_id'])
                               ->getImageTag(Avatar::SMALL, tooltip2($fullname)) ?>
                 </a>
             </td>
             <td>
-                <a href="<?= $controller->url_for('profile', array('username' => $m['username'])) ?>">
+                <a href="<?= $controller->url_for('profile', ['username' => $m['username']]) ?>">
                     <?= htmlReady($fullname) ?>
                 </a>
             </td>
             <td class="actions">
-                <a href="<?= $controller->url_for('messages/write', array('rec_uname' => $m['username'])) ?>"
+                <a href="<?= $controller->url_for('messages/write', ['rec_uname' => $m['username']]) ?>"
                    data-dialog="size=50%">
                     <?= Icon::create('mail', 'clickable', ['title' => _('Nachricht schreiben')])->asImg(20) ?>
                 </a>

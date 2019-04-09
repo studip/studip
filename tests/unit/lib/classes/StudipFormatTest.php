@@ -71,7 +71,7 @@ class StudipFormatTest extends PHPUnit_Framework_TestCase
     {
         $markup = new StudipCoreFormat();
         $index = 0;
-        forEach (array(
+        forEach ([
             '<p>' . PHP_EOL
             . '- single item' . PHP_EOL
             . '</p>'
@@ -90,7 +90,7 @@ class StudipFormatTest extends PHPUnit_Framework_TestCase
             . '<li>list</li>'
             . '</ul>'
             . '</p>'
-        ) as $in => $out) {
+        ] as $in => $out) {
             ++$index;
             $this->assertEquals($out, $markup->format($in), 'test number ' . $index);
         }
@@ -100,7 +100,7 @@ class StudipFormatTest extends PHPUnit_Framework_TestCase
     {
         $markup = new StudipCoreFormat();
         $index = 0;
-        forEach (array(
+        forEach ([
             '|a|table' . PHP_EOL
             =>
             '<table class="content">'
@@ -114,7 +114,7 @@ class StudipFormatTest extends PHPUnit_Framework_TestCase
             . '<tr><td>this</td><td>is a</td><td>table</td></tr>'
             . '<tr><td>with</td><td>two</td><td>rows</td></tr>'
             . '</table>'
-        ) as $in => $out) {
+        ] as $in => $out) {
             ++$index;
             $this->assertEquals($out, $markup->format($in), 'test number ' . $index);
         }

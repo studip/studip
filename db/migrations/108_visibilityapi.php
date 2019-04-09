@@ -25,11 +25,11 @@ class Visibilityapi extends Migration {
         $stmt = $db->prepare($sql);
         $stmt->execute();
 
-        $category = array('Studien-/Einrichtungsdaten' => 'studdata',
+        $category = ['Studien-/Einrichtungsdaten' => 'studdata',
             'Private Daten' => 'privatedata',
             'Zusätzliche Datenfelder' => 'additionaldata',
             'Eigene Kategorien' => 'owncategory',
-            'Allgemeine Daten' => 'commondata');
+            'Allgemeine Daten' => 'commondata'];
 
         $result = $db->query("SELECT value FROM config WHERE field = 'HOMEPAGE_VISIBILITY_DEFAULT' ORDER BY is_default LIMIT 1");
         $default_visibility = constant($result->fetchColumn());

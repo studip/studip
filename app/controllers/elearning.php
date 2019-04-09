@@ -39,7 +39,7 @@ class ElearningController extends AuthenticatedController
 
         $this->cms_select = Request::quoted('cms_select');
         $GLOBALS['cms_select'] = $this->cms_select;
-        $this->cms_list = array();
+        $this->cms_list = [];
         if ($_SESSION['elearning_open_close']["type"] != "user") {
             unset($_SESSION['elearning_open_close']);
         }
@@ -95,14 +95,14 @@ class ElearningController extends AuthenticatedController
 
                 foreach ($connection_status as $type => $msg) {
                     if ($msg["error"] != "") {
-                        PageLayout::postMessage(MessageBox::error(_("Es traten Probleme bei der Anbindung einzelner Lermodule auf. Bitte wenden Sie sich an Ihren Systemadministrator."), array($cms .': ' . $msg["error"])));
+                        PageLayout::postMessage(MessageBox::error(_("Es traten Probleme bei der Anbindung einzelner Lermodule auf. Bitte wenden Sie sich an Ihren Systemadministrator."), [$cms .': ' . $msg["error"]]));
                         $GLOBALS["ELEARNING_INTERFACE_" . $cms . "_ACTIVE"] = false;
                     }
                 }
             }
         }
 
-        $connected_cms = array();
+        $connected_cms = [];
         // prepare cms list
         foreach($GLOBALS['ELEARNING_INTERFACE_MODULES'] as $cms => $cms_preferences) {
             if (ELearningUtils::isCMSActive($cms) AND $cms_preferences["auth_necessary"]) {
@@ -110,7 +110,7 @@ class ElearningController extends AuthenticatedController
                 $this->cms_list[$cms] = $cms_preferences;
                 $this->cms_list[$cms]['name'] = $connected_cms[$cms]->getName();
                 $this->cms_list[$cms]['logo'] = $connected_cms[$cms]->getLogo();
-                $this->cms_list[$cms]['modules'] = array();
+                $this->cms_list[$cms]['modules'] = [];
                 if ($this->new_account_cms != $cms)
                     $this->cms_list[$cms]['show_account_form'] = $cms_preferences;
                 if ($GLOBALS["module_type_" . $cms] != "")

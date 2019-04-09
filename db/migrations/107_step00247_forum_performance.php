@@ -19,13 +19,13 @@ class Step00247ForumPerformance extends Migration
             SET latest_chdate = ? WHERE topic_id = ?");
 
         while ($data = $db->fetch(PDO::FETCH_ASSOC)) {
-            $stmt->execute(array($data['lft'], $data['rgt'], $data['seminar_id']));
+            $stmt->execute([$data['lft'], $data['rgt'], $data['seminar_id']]);
             $chdate = $stmt->fetchColumn();
 
             if ($chdate) {
-                $stmt_update->execute(array($chdate, $data['topic_id']));
+                $stmt_update->execute([$chdate, $data['topic_id']]);
             } else {
-                $stmt_update->execute(array($data['chdate'], $data['topic_id']));
+                $stmt_update->execute([$data['chdate'], $data['topic_id']]);
             }
         }
     }

@@ -49,15 +49,15 @@ class StudipSemTreeSearch {
 
     var $seminar_id;
 
-    var $institut_id = array();
+    var $institut_id = [];
 
-    var $sem_tree_ranges = array();
+    var $sem_tree_ranges = [];
 
-    var $sem_tree_ids = array();
+    var $sem_tree_ids = [];
 
-    var $selected = array();
+    var $selected = [];
 
-    var $search_result = array();
+    var $search_result = [];
 
     function __construct($seminar_id,$form_name = "search_sem_tree", $auto_search = true){
         $this->view = DbView::getView('sem_tree');
@@ -76,9 +76,9 @@ class StudipSemTreeSearch {
     }
 
     function init(){
-        $this->sem_tree_ranges = array();
-        $this->sem_tree_ids = array();
-        $this->selected = array();
+        $this->sem_tree_ranges = [];
+        $this->sem_tree_ids = [];
+        $this->selected = [];
         $this->view->params[0] = $this->seminar_id;
         $rs = $this->view->get_query("view:SEMINAR_SEM_TREE_GET_IDS");
         while($rs->next_record()){
@@ -121,7 +121,7 @@ class StudipSemTreeSearch {
 
     function prepRangePath($path, $cols) {
         $parts=explode(">",$path);
-        $paths=array();
+        $paths=[];
         $currpath="";
         foreach ($parts as $part) {
             if (mb_strlen($part)>$cols) {
@@ -144,7 +144,7 @@ class StudipSemTreeSearch {
         return $paths;
     }
 
-    function getChooserField($attributes = array(), $cols = 70, $field_name = 'chooser'){
+    function getChooserField($attributes = [], $cols = 70, $field_name = 'chooser'){
         if ($this->institut_id){
             $this->getExpectedRanges();
         }
@@ -179,7 +179,7 @@ class StudipSemTreeSearch {
     }
 
 
-    function getSearchField($attributes = array()){
+    function getSearchField($attributes = []){
         $ret = "\n<input type=\"text\" name=\"{$this->form_name}_search_field\"";
         foreach ($attributes as $key => $value){
             $ret .= " " . $key . "=\"" . htmlReady($value) ."\"";
@@ -188,7 +188,7 @@ class StudipSemTreeSearch {
         return $ret;
     }
 
-    function getSearchButton($attributes = array())
+    function getSearchButton($attributes = [])
     {
         $ret = Icon::create('search', 'clickable', ['title' => _('Suche nach Studienbereichen starten')])
                 ->asInput(["type" => "image", "class" => "middle", "name" => $this->form_name . "_do_search"]);

@@ -43,7 +43,7 @@ class LinkButton extends Interactable
             $this->attributes['tabindex'] = '0';
         }
 
-        $attributes = array();
+        $attributes = [];
         ksort($this->attributes);
         foreach ($this->attributes as $k => $v) {
             $attributes[] = sprintf(' %s="%s"', $k, htmlReady($v));

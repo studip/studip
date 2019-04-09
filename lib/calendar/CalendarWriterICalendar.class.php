@@ -81,15 +81,15 @@ class CalendarWriteriCalendar extends CalendarWriter
     public function write(Event &$event)
     {
 
-        $match_pattern_1 = array('\\', '\n', ';', ',');
-        $replace_pattern_1 = array('\\\\', '\\n', '\;', '\,');
-        $match_pattern_2 = array('\\', '\n', ';');
-        $replace_pattern_2 = array('\\\\', '\\n', '\;');
+        $match_pattern_1 = ['\\', '\n', ';', ','];
+        $replace_pattern_1 = ['\\\\', '\\n', '\;', '\,'];
+        $match_pattern_2 = ['\\', '\n', ';'];
+        $replace_pattern_2 = ['\\\\', '\\n', '\;'];
 
         $result = "BEGIN:VEVENT" . $this->newline;
 
         foreach ($event->getProperties() as $name => $value) {
-            $params = array();
+            $params = [];
             $params_str = '';
 
             if ($name === 'SUMMARY') {
@@ -413,7 +413,7 @@ class CalendarWriteriCalendar extends CalendarWriter
      */
     public function _exportRecurrence($value)
     {
-        $rrule = array();
+        $rrule = [];
         // the last day of week in a MONTHLY or YEARLY recurrence in the
         // Stud.IP calendar is 5, in iCalendar it is -1
         if ($value['sinterval'] == '5')
@@ -483,9 +483,9 @@ class CalendarWriteriCalendar extends CalendarWriter
      */
     public function _exportWdays($value)
     {
-        $wdays_map = array('1' => 'MO', '2' => 'TU', '3' => 'WE', '4' => 'TH', '5' => 'FR',
-            '6' => 'SA', '7' => 'SU');
-        $wdays = array();
+        $wdays_map = ['1' => 'MO', '2' => 'TU', '3' => 'WE', '4' => 'TH', '5' => 'FR',
+            '6' => 'SA', '7' => 'SU'];
+        $wdays = [];
         preg_match_all('/(\d)/', $value, $matches);
         foreach ($matches[1] as $match) {
             $wdays[] = $wdays_map[$match];
@@ -496,7 +496,7 @@ class CalendarWriteriCalendar extends CalendarWriter
 
     public function _exportExdate($value, $param)
     {
-        $exdates = array();
+        $exdates = [];
         $date_times = explode(',', $value);
         foreach ($date_times as $date_time) {
             if ($param == 'DATE-TIME')
@@ -584,7 +584,7 @@ class CalendarWriteriCalendar extends CalendarWriter
         $stmt = DBManager::get()->prepare('SELECT email FROM Institute i '
                 . 'LEFT JOIN user_inst ui USING(institut_id) '
                 . 'WHERE i.Institut_id = fakultaets_id AND user_id = ?');
-        $stmt->execute(array($user_id));
+        $stmt->execute([$user_id]);
         return $stmt->fetchColumn();
     }
 

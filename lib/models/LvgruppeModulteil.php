@@ -18,18 +18,18 @@
 class LvgruppeModulteil extends ModuleManagementModel
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_lvgruppe_modulteil';
     
-        $config['belongs_to']['lvgruppe'] = array(
+        $config['belongs_to']['lvgruppe'] = [
             'class_name' => 'Lvgruppe',
             'foreign_key' => 'lvgruppe_id'
-        );
-        $config['belongs_to']['modulteil'] = array(
+        ];
+        $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
             'foreign_key' => 'modulteil_id'
-        );
+        ];
         
         $config['alias_fields']['flexnow_id'] = 'fn_id';
         

@@ -22,7 +22,7 @@ class User_Visibility_Settings extends SimpleORMap
     public $parent;
     
     // children of the visibility
-    public $children = array();
+    public $children = [];
     
     // determines if the option is displayed in settings
     public $displayed = false;
@@ -43,7 +43,7 @@ class User_Visibility_Settings extends SimpleORMap
             $userid = $userid ? : $GLOBALS['user']->id;
 
             // Return the first (and only) matching visibility setting
-            return self::findOneBySQL('user_id = ? AND identifier = ? LIMIT 1', array($userid, $id));
+            return self::findOneBySQL('user_id = ? AND identifier = ? LIMIT 1', [$userid, $id]);
         }
     }
 
@@ -52,7 +52,7 @@ class User_Visibility_Settings extends SimpleORMap
      */
     public function loadChildren()
     {
-        $this->children = User_Visibility_Settings::findBySQL("user_id = ? AND parent_id = ? ", array($this->user_id, $this->visibilityid));
+        $this->children = User_Visibility_Settings::findBySQL("user_id = ? AND parent_id = ? ", [$this->user_id, $this->visibilityid]);
         foreach ($this->children as $child) {
             $child->parent = $this;
             $child->loadChildren();

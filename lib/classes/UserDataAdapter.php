@@ -78,7 +78,7 @@ class UserDataAdapter implements ArrayAccess, Countable, IteratorAggregate
       */
     public function setData($data, $reset = false)
     {
-        $adapted_data = array();
+        $adapted_data = [];
         foreach ($data as $k => $v) {
             $adapted_data[$this->adaptOffset($k)] = $v;
         }

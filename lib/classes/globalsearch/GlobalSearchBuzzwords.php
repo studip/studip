@@ -15,7 +15,7 @@ class GlobalSearchBuzzwords extends SimpleORMap
      * SimpleORMap metadata.
      * @param array $config configuration for SORM.
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'globalsearch_buzzwords';
         $config['additional_fields']['rightsname'] = true;

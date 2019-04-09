@@ -24,11 +24,11 @@ class RepairStatusgroupUserNumberation extends Migration {
         $result = DBManager::get()->query($sql);
         $update = DBManager::get()->prepare($update_sql);
         while ($group = $result->fetch(PDO::FETCH_COLUMN)) {
-            $userStmt->execute(array($group));
+            $userStmt->execute([$group]);
             $realPosition = 0;
             while ($user = $userStmt->fetch(PDO::FETCH_ASSOC)) {
                 if ($user['position'] != $realPosition++) {
-                    $update->execute(array($realPosition - 1, $group, $user['user_id']));
+                    $update->execute([$realPosition - 1, $group, $user['user_id']]);
                 }
             }
         }

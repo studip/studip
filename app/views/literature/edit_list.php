@@ -46,10 +46,10 @@ $widget->addLink(
 ob_start();
 ?>
 <?=$clip_form->getFormStart(URLHelper::getLink($treeview->getSelf())); ?>
-<?=$clip_form->getFormField("clip_content", array_merge(array('size' => $clipboard->getNumElements()),(array) $attributes['lit_select']))?>
+<?=$clip_form->getFormField("clip_content", array_merge(['size' => $clipboard->getNumElements()],(array) $attributes['lit_select']))?>
 <?=$clip_form->getFormField("clip_cmd", $attributes['lit_select'])?>
 <div align="center">
-<?=$clip_form->getFormButton("clip_ok",array('style'=>'vertical-align:middle;margin:3px;'))?>
+<?=$clip_form->getFormButton("clip_ok",['style'=>'vertical-align:middle;margin:3px;'])?>
 </div>
 <?= $clip_form->getFormEnd(); ?>
 <?

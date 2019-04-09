@@ -7,12 +7,12 @@
 <? // folgende Zeile auskommentieren (siehe _attendees.php). ?>
 <? $show_members_visiter = true; ?>
 <? if ($show_members && $show_members_visiter) : ?>
-    <? $group_status = array(
+    <? $group_status = [
         CalendarEvent::PARTSTAT_TENTATIVE => _('Abwartend'),
         CalendarEvent::PARTSTAT_ACCEPTED => _('Angenommen'),
         CalendarEvent::PARTSTAT_DECLINED => _('Abgelehnt'),
         CalendarEvent::PARTSTAT_DELEGATED => _('Angenommen (keine Teilnahme)'),
-        CalendarEvent::PARTSTAT_NEEDS_ACTION => '') ?>
+        CalendarEvent::PARTSTAT_NEEDS_ACTION => ''] ?>
     <div>
         <b><?= _('Teilnehmende:') ?></b>
         <?= implode(', ', $event->attendees->map(

@@ -23,14 +23,14 @@ class GarbageCollectorJob extends CronJob
 
     public static function getParameters()
     {
-        return array(
-            'verbose' => array(
+        return [
+            'verbose' => [
                 'type'        => 'boolean',
                 'default'     => false,
                 'status'      => 'optional',
                 'description' => _('Sollen Ausgaben erzeugt werden (sind später im Log des Cronjobs sichtbar)'),
-            ),
-        );
+            ],
+        ];
     }
 
     public function setUp()
@@ -38,7 +38,7 @@ class GarbageCollectorJob extends CronJob
 
     }
 
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         $db = DBManager::get();
 
@@ -94,7 +94,7 @@ class GarbageCollectorJob extends CronJob
         $cache->purge();
 
         // Remove old plugin assets
-        PluginAsset::deleteBySQL('chdate < ?', array(time() - PluginAsset::CACHE_DURATION));
+        PluginAsset::deleteBySQL('chdate < ?', [time() - PluginAsset::CACHE_DURATION]);
 
         // Remove expired oauth server nonces
         $query = "DELETE FROM `oauth_server_nonce`

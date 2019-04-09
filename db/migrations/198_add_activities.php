@@ -48,16 +48,16 @@ class AddActivities extends Migration
 
         if ($old_id !== false) {
             $stmt = $db->prepare("DELETE FROM plugins WHERE pluginid = ?");
-            $stmt->execute(array($old_id));
+            $stmt->execute([$old_id]);
 
             $stmt = $db->prepare("DELETE FROM plugins_activated WHERE pluginid = ?");
-            $stmt->execute(array($old_id));
+            $stmt->execute([$old_id]);
 
             $stmt = $db->prepare("DELETE FROM plugins_default_activations WHERE pluginid = ?");
-            $stmt->execute(array($old_id));
+            $stmt->execute([$old_id]);
 
             $stmt = $db->prepare("DELETE FROM roles_plugins WHERE pluginid = ?");
-            $stmt->execute(array($old_id));
+            $stmt->execute([$old_id]);
         }
 
         // Activate Widget
@@ -69,7 +69,7 @@ class AddActivities extends Migration
         $stmt = $db->prepare("INSERT INTO plugins
             (pluginclassname, pluginpath, pluginname, plugintype, enabled, navigationpos)
             VALUES (?, ?, ?, 'PortalPlugin', 'yes', ?)");
-        $stmt->execute(array($classname, 'core/'.$classname, $classname, $navpos));
+        $stmt->execute([$classname, 'core/'.$classname, $classname, $navpos]);
 
         // get id of newly created plugin (
         $plugin_id = $db->query("SELECT pluginid FROM plugins
@@ -79,7 +79,7 @@ class AddActivities extends Migration
         $stmt = $db->prepare("INSERT INTO roles_plugins
             (roleid, pluginid) VALUES (?, ?)");
         foreach (range(1, 6) as $role_id) {
-            $stmt->execute(array($role_id, $plugin_id));
+            $stmt->execute([$role_id, $plugin_id]);
         }
     }
 
@@ -97,16 +97,16 @@ class AddActivities extends Migration
             WHERE pluginclassname = 'ActivityFeed'")->fetchColumn();
 
         $stmt = $db->prepare("DELETE FROM plugins WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = $db->prepare("DELETE FROM widget_default WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = $db->prepare("DELETE FROM widget_user WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = $db->prepare("DELETE FROM roles_plugins WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $db->exec("DROP TABLE `activities`");
 

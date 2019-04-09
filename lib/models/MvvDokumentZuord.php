@@ -18,14 +18,14 @@
 class MvvDokumentZuord extends ModuleManagementModel
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_dokument_zuord';
 
-        $config['belongs_to']['document'] = array(
+        $config['belongs_to']['document'] = [
             'class_name' => 'MvvDokument',
             'foreign_key' => 'dokument_id'
-        );
+        ];
 
         $config['i18n_fields']['kommentar'] = true;
         
@@ -65,7 +65,7 @@ class MvvDokumentZuord extends ModuleManagementModel
         }
 
         $sql = 'range_id = ? AND object_type = ? ORDER BY position,mkdate';
-        return self::findBySQL($sql, array($object->getId(), get_class($object)));
+        return self::findBySQL($sql, [$object->getId(), get_class($object)]);
     }
 
 }

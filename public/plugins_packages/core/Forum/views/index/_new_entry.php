@@ -48,20 +48,20 @@
             </fieldset>
 
             <footer>
-                <?= Studip\Button::createAccept(_('Beitrag erstellen'), array('tabindex' => '3')) ?>
+                <?= Studip\Button::createAccept(_('Beitrag erstellen'), ['tabindex' => '3']) ?>
 
-                <?= Studip\LinkButton::createCancel(_('Abbrechen'), '', array(
+                <?= Studip\LinkButton::createCancel(_('Abbrechen'), '', [
                     'onClick' => "return STUDIP.Forum.cancelNewEntry();",
-                    'tabindex' => '4')) ?>
+                    'tabindex' => '4']) ?>
 
-                <?= Studip\LinkButton::create(_('Vorschau'), "javascript:STUDIP.Forum.preview('new_entry', 'new_entry_preview');", array('tabindex' => '5', 'class' => 'js')) ?>
+                <?= Studip\LinkButton::create(_('Vorschau'), "javascript:STUDIP.Forum.preview('new_entry', 'new_entry_preview');", ['tabindex' => '5', 'class' => 'js']) ?>
             </footer>
 
             <input type="hidden" name="parent" value="<?= $topic_id ?>">
             <input type="text" name="nixda" style="display: none;">
         </form>
 
-        <?= $this->render_partial('index/_preview', array('preview_id' => 'new_entry_preview')) ?>
+        <?= $this->render_partial('index/_preview', ['preview_id' => 'new_entry_preview']) ?>
         <br>
     </div>
 </script>

@@ -98,7 +98,7 @@ class AssignEvent {
 
     function getOwnerType() {
         if ($this->getAssignUserId()){
-            $type = get_object_type($this->getAssignUserId(), array('date','user'));
+            $type = get_object_type($this->getAssignUserId(), ['date','user']);
             return $type;
         } else {
             return false;

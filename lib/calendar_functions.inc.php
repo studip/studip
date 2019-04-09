@@ -143,7 +143,7 @@ function holiday ($tmstamp, $mod = "") {
     }
 
     if ($name)
-        return array("name" => $name, "col" => $col);
+        return ["name" => $name, "col" => $col];
 
     return FALSE;
 }

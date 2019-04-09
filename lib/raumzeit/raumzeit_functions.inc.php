@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 function getAllSortedSingleDates(&$sem) {
     $turnus = $sem->getFormattedTurnusDates();
 
-    $termine = array();
+    $termine = [];
     foreach ($sem->metadate->cycles as $metadate_id => $val) {
         $termine = array_merge($termine, $sem->getSingleDatesForCycle($metadate_id));
     }
@@ -49,7 +49,7 @@ function getAllSortedSingleDates(&$sem) {
 function raumzeit_send_cancel_message($comment, $dates)
 {
     if (!is_array($dates)) {
-        $dates = array($dates);
+        $dates = [$dates];
     }
     $course = Course::find($dates[0]->range_id);
     if ($course) {

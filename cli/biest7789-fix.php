@@ -15,7 +15,7 @@ ini_set('default_charset', 'utf-8');
 function legacy_studip_utf8encode($data)
 {
     if (is_array($data)) {
-        $new_data = array();
+        $new_data = [];
         foreach ($data as $key => $value) {
             $key = legacy_studip_utf8encode($key);
             $new_data[$key] = legacy_studip_utf8encode($value);
@@ -28,7 +28,7 @@ function legacy_studip_utf8encode($data)
     } else {
         return mb_decode_numericentity(
             mb_convert_encoding($data,'UTF-8', 'WINDOWS-1252'),
-            array(0x100, 0xffff, 0, 0xffff),
+            [0x100, 0xffff, 0, 0xffff],
             'UTF-8'
         );
     }
@@ -45,7 +45,7 @@ function convert_to_json($table, $column, $where = null)
 
     // get primary keys
     $result = $db->query("SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY'");
-    $keys = array();
+    $keys = [];
 
     while ($data = $result->fetch(PDO::FETCH_ASSOC)) {
         $keys[] = $data['Column_name'];
@@ -74,7 +74,7 @@ function convert_to_json($table, $column, $where = null)
 
             $query = "UPDATE `$table` SET `$column` = ". $db->quote($json) ."\n WHERE ";
 
-            $where_query = array();
+            $where_query = [];
             foreach ($keys as $key) {
                 $where_query[] = "`$key` = ". $db->quote($data[$key]);
             }

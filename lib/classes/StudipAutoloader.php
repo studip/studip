@@ -42,19 +42,19 @@
  */
 class StudipAutoloader
 {
-    public static $autoload_paths = array();
-    public static $class_lookup = array();
+    public static $autoload_paths = [];
+    public static $class_lookup = [];
 
     // List of all possible file extensions that are tested when trying to
     // find a class. This list should be ordered by the probability that
     // a file has this extension (often used extensions first) so that the
     // file is found quickly and unneccessary, costly calls to file_exists()
     // can be avoided.
-    protected static $file_extensions = array(
+    protected static $file_extensions = [
         '.class.php',
         '.php',
         '.interface.php',
-    );
+    ];
 
     /**
      * Registers the StudipAutoloader as an autoloader.

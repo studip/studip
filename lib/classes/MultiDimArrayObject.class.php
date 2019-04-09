@@ -15,9 +15,9 @@ class MultiDimArrayObject extends StudipArrayObject
      * @param int    $flags
      * @param string $iteratorClass
      */
-    public function __construct($input = array(), $flags = self::STD_PROP_LIST, $iteratorClass = 'ArrayIterator')
+    public function __construct($input = [], $flags = self::STD_PROP_LIST, $iteratorClass = 'ArrayIterator')
     {
-        parent::__construct(array(), $flags, $iteratorClass);
+        parent::__construct([], $flags, $iteratorClass);
         $this->exchangeArray($input);
     }
 
@@ -62,7 +62,7 @@ class MultiDimArrayObject extends StudipArrayObject
      */
     public function getArrayCopy()
     {
-        $ret = array();
+        $ret = [];
         foreach($this->storage as $key => $value) {
             if ($value instanceOf StudipArrayObject) {
                 $ret[$key] = $value->getArrayCopy();
@@ -110,7 +110,7 @@ class MultiDimArrayObject extends StudipArrayObject
             $data = $data->getArrayCopy();
         }
         if (is_array($data)) {
-            $new_data = array();
+            $new_data = [];
             foreach ($data as $key => $value) {
                 $new_value = $this->recursiveArrayToArrayObjects($value);
                 if (is_array($new_value)) {

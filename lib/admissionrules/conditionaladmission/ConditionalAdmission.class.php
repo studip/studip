@@ -23,22 +23,22 @@ class ConditionalAdmission extends AdmissionRule
     /**
      * All conditions that must be fulfilled for successful admission.
      */
-    public $conditions = array();
+    public $conditions = [];
 
     /**
      * Grouped conditions that must be fulfilled for successful admission.
      */
-    public $conditiongroups = array();
+    public $conditiongroups = [];
 
     /**
      * Conditions that must be fulfilled for successful admission.
      */
-    public $ungrouped_conditions = array();
+    public $ungrouped_conditions = [];
 
     /**
      * Quota for grouped conditions
      */
-    public $quota = array();
+    public $quota = [];
 
     /**
      * Are condition groups allowed?
@@ -48,7 +48,7 @@ class ConditionalAdmission extends AdmissionRule
     /**
      * courseset siblings of this rule
      */
-    public $siblings = array();
+    public $siblings = [];
 
     // --- OPERATIONS ---
 
@@ -99,7 +99,7 @@ class ConditionalAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `conditionaladmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete all associated conditions...
         foreach ($this->ungrouped_conditions as $condition) {
             $condition->delete();
@@ -113,7 +113,7 @@ class ConditionalAdmission extends AdmissionRule
         $stmt = DBManager::get()->prepare("DELETE `admission_condition`, `admission_conditiongroup` FROM `admission_condition`
             LEFT JOIN `admission_conditiongroup` USING( `conditiongroup_id`)
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -124,7 +124,7 @@ class ConditionalAdmission extends AdmissionRule
      */
     public function getAffectedUsers()
     {
-        $users = array();
+        $users = [];
         foreach ($this->ungrouped_conditions as $condition) {
             $users = array_intersect($users, $condition->getAffectedUsers());
         }
@@ -224,7 +224,7 @@ class ConditionalAdmission extends AdmissionRule
         // Load basic data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `conditionaladmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
             $this->startTime = $current['start_time'];
@@ -232,7 +232,7 @@ class ConditionalAdmission extends AdmissionRule
             // Retrieve conditions.
             $stmt = DBManager::get()->prepare("SELECT *
                 FROM `admission_condition` LEFT JOIN `admission_conditiongroup` USING (`conditiongroup_id`) WHERE `rule_id`=?");
-            $stmt->execute(array($this->id));
+            $stmt->execute([$this->id]);
             $conditions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($conditions as $condition) {
                 $currentCondition = new UserFilter($condition['filter_id']);
@@ -276,7 +276,7 @@ class ConditionalAdmission extends AdmissionRule
                $this->ungrouped_conditions[$condition_id] = $condition;
            }
        }
-       $this->conditiongroups = array();
+       $this->conditiongroups = [];
     }
 
     /**
@@ -314,7 +314,7 @@ class ConditionalAdmission extends AdmissionRule
      */
     public function ruleApplies($userId, $courseId)
     {
-        $failed = array();
+        $failed = [];
         // Check for rule validity time frame.
         if ($this->checkTimeFrame()) {
             // Check all configured conditions.
@@ -322,7 +322,7 @@ class ConditionalAdmission extends AdmissionRule
                 if (!$condition->isFulfilled($userId)) {
                     $failed[] = $this->getMessage($condition->toString());
                 } else {
-                    $failed = array();
+                    $failed = [];
                     break;
                 }
             }
@@ -331,13 +331,13 @@ class ConditionalAdmission extends AdmissionRule
                     if (!$condition->isFulfilled($userId)) {
                         $failed[] = $this->getMessage($condition->toString());
                     } else {
-                        $failed = array();
+                        $failed = [];
                         break 2;
                     }
                 }
             }
         } else {
-            $failed = array();
+            $failed = [];
         }
         return $failed;
     }
@@ -354,10 +354,10 @@ class ConditionalAdmission extends AdmissionRule
     {
         UserFilterField::getAvailableFilterFields();
         parent::setAllData($data);
-        $this->conditions = array();
-        $this->ungrouped_conditions = array();
-        $this->conditiongroups = array();
-        $this->quota = array();
+        $this->conditions = [];
+        $this->ungrouped_conditions = [];
+        $this->conditiongroups = [];
+        $this->quota = [];
         foreach ($data['conditions'] as $ser_con) {
             $condition = ObjectBuilder::build($ser_con, 'UserFilter');
             $this->addCondition($condition, $data['conditiongroup_'.$condition->getId()], $data['quota_'.$data['conditiongroup_'.$condition->getId()]]);
@@ -393,8 +393,8 @@ class ConditionalAdmission extends AdmissionRule
             `start_time`=VALUES(`start_time`),
             `end_time`=VALUES(`end_time`),
             `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message, (int)$this->startTime,
-            (int)$this->endTime, time(), time()));
+        $stmt->execute([$this->id, $this->message, (int)$this->startTime,
+            (int)$this->endTime, time(), time()]);
         // prepare condition data.
         $keys = array_keys($this->ungrouped_conditions);
         foreach ($this->conditiongroups as $conditiongroup_id => $conditions) {
@@ -405,8 +405,8 @@ class ConditionalAdmission extends AdmissionRule
         $stmt = DBManager::get()->prepare("SELECT `filter_id`, `conditiongroup_id` FROM
             `admission_condition` WHERE `rule_id`=? AND `filter_id` NOT IN ('".
                 implode("', '", $keys)."')");
-        $stmt->execute(array($this->id));
-        $groups = array();
+        $stmt->execute([$this->id]);
+        $groups = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $entry) {
             $current = new UserFilter($entry['filter_id']);
             $current->delete();
@@ -416,10 +416,10 @@ class ConditionalAdmission extends AdmissionRule
             WHERE `rule_id`='".$this->id."' AND `filter_id` NOT IN ('".
                     implode("', '", $keys)."')");
         // Store all conditions.
-        $queries = array();
-        $parameters = array();
-        $groupqueries = array();
-        $groupparameters = array();
+        $queries = [];
+        $parameters = [];
+        $groupqueries = [];
+        $groupparameters = [];
         foreach ($this->ungrouped_conditions as $condition) {
             // Store each ungrouped condition...
             $condition->store();
@@ -493,7 +493,7 @@ class ConditionalAdmission extends AdmissionRule
             $errors[] = _('Es muss mindestens eine Auswahlbedingung angegeben werden.');
             return $errors;
         }
-        $quota = array();
+        $quota = [];
         $quota_total = 0;
         $grouped = 0;
         $ungrouped = 0;
@@ -537,14 +537,14 @@ class ConditionalAdmission extends AdmissionRule
     {
         $this->id = md5(uniqid(get_class($this)));
         $this->courseSetId = null;
-        $cloned_conditions = array();
+        $cloned_conditions = [];
         foreach ($this->ungrouped_conditions as $condition) {
             $dolly = clone $condition;
             $cloned_conditions[$dolly->id] = $dolly;
         }
         $this->ungrouped_conditions = $cloned_conditions;
-        $cloned_conditiongroups = array();
-        $cloned_quota = array();
+        $cloned_conditiongroups = [];
+        $cloned_quota = [];
         foreach ($this->conditiongroups as $conditiongroup_id => $conditions) {
             $cloned_conditiongroup_id = md5(uniqid($conditiongroup_id));
             $cloned_quota[$cloned_conditiongroup_id] = $this->quota[$conditiongroup_id];
@@ -557,7 +557,7 @@ class ConditionalAdmission extends AdmissionRule
         $this->quota = $cloned_quota;
     }
 
-    public function setSiblings($siblings = array())
+    public function setSiblings($siblings = [])
     {
         parent::setSiblings($siblings);
         $this->conditiongroups_allowed = null;

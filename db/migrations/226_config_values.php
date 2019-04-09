@@ -61,13 +61,13 @@ class ConfigValues extends Migration
         // migrate setting from seminare.student_mailing
         $stmt = $db->prepare('INSERT INTO config (field, value, type, `range`, mkdate, chdate, description)
                               VALUES (:name, :value, :type, :range, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)');
-        $stmt->execute(array(
+        $stmt->execute([
             'name'        => 'COURSE_STUDENT_MAILING',
             'description' => 'Über diese Option können Sie Studierenden das Schreiben von Nachrichten an alle anderen Teilnehmer der Veranstaltung erlauben.',
             'range'       => 'course',
             'type'        => 'boolean',
             'value'       => '0'
-        ));
+        ]);
 
         $db->exec("INSERT INTO config_values (field, range_id, value, mkdate, chdate, comment)
                    SELECT 'COURSE_STUDENT_MAILING', Seminar_id, student_mailing, mkdate, chdate, ''

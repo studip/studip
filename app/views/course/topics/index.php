@@ -95,7 +95,7 @@
                             ) ?>
 
                             <? if (!$cancelled_dates_locked && $topic->dates->count()) : ?>
-                                <?= \Studip\LinkButton::create(_("Alle Termine ausfallen lassen"), URLHelper::getURL("dispatch.php/course/cancel_dates", array('issue_id' => $topic->getId())), array('data-dialog' => '')) ?>
+                                <?= \Studip\LinkButton::create(_("Alle Termine ausfallen lassen"), URLHelper::getURL("dispatch.php/course/cancel_dates", ['issue_id' => $topic->getId()]), ['data-dialog' => '']) ?>
                             <? endif ?>
                             <? if ($key > 0) : ?>
                                 <form action="<?=$controller->link_for()?>" method="post" style="display: inline;">
@@ -130,19 +130,19 @@ $sidebar->setImage('sidebar/date-sidebar.png');
 $actions = new ActionsWidget();
 $actions->addLink(_("Alle Themen aufklappen"),
                   null, Icon::create('arr_1down', 'clickable'),
-                  array('onClick' => "jQuery('table.withdetails > tbody > tr:not(.details):not(.open) > :first-child a').click(); return false;"));
+                  ['onClick' => "jQuery('table.withdetails > tbody > tr:not(.details):not(.open) > :first-child a').click(); return false;"]);
 if ($GLOBALS['perm']->have_studip_perm("tutor", Context::getId())) {
     $actions->addLink(
         _("Neues Thema erstellen"),
         URLHelper::getURL("dispatch.php/course/topics/edit"),
         Icon::create('add', 'clickable'),
-        array('data-dialog' => "buttons")
+        ['data-dialog' => "buttons"]
     );
     $actions->addLink(
         _("Themen aus Veranstaltung kopieren"),
         URLHelper::getURL("dispatch.php/course/topics/copy"),
         Icon::create('topic+add', 'clickable'),
-        array('data-dialog' => "buttons")
+        ['data-dialog' => "buttons"]
     );
 }
 $sidebar->addWidget($actions);

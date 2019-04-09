@@ -234,7 +234,7 @@ class Messages extends \RESTAPI\RouteMap
 
         // sender
         $sender = $message->getSender();
-        $json['sender'] = $this->urlf('/user/%s', array($message->author->id));
+        $json['sender'] = $this->urlf('/user/%s', [$message->author->id]);
 
         // recipients
         if ($my_roles['snd']) {
@@ -243,7 +243,7 @@ class Messages extends \RESTAPI\RouteMap
                 $json['recipients'][] = $this->urlf('/user/%s', [$r->user_id]);
             }
         } else {
-            $json['recipients'] = array($this->urlf('/user/%s', [$user_id]));
+            $json['recipients'] = [$this->urlf('/user/%s', [$user_id])];
         }
 
         // attachments

@@ -67,8 +67,8 @@ class DateFormatter {
 
     private static function wrapDateWithArray($date)
     {
-        $dates = array();
-        $dates['termin'] = array($date);
+        $dates = [];
+        $dates['termin'] = [$date];
         return $dates;
     }
 

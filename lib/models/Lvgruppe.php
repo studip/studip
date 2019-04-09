@@ -22,28 +22,28 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     private $count_modulteile;
     private $count_semester;
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_lvgruppe';
         
-        $config['has_and_belongs_to_many']['modulteile'] = array(
+        $config['has_and_belongs_to_many']['modulteile'] = [
             'class_name' => 'Modulteil',
             'thru_table' => 'mvv_lvgruppe_modulteil',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_and_belongs_to_many']['courses'] = array(
+        ];
+        $config['has_and_belongs_to_many']['courses'] = [
             'class_name' => 'Course',
             'thru_table' => 'mvv_lvgruppe_seminar',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_and_belongs_to_many']['archived_courses'] = array(
+        ];
+        $config['has_and_belongs_to_many']['archived_courses'] = [
             'class_name' => 'ArchivedCourse',
             'thru_table' => 'mvv_lvgruppe_seminar',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
         
         $config['additional_fields']['count_seminare']['get'] =
             function($lvgruppe) { return $lvgruppe->count_seminare; };
@@ -97,8 +97,8 @@ class Lvgruppe extends ModuleManagementModelTreeItem
             $semester_id = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'name',
-                array('count_seminare', 'count_modulteile', 'count_archiv'));
-        $params = array();
+                ['count_seminare', 'count_modulteile', 'count_archiv']);
+        $params = [];
         if (!is_null($filter)) {
             $filter_sql = is_array($filter)
                     ? self::getFilterSql($filter, true) : $filter;
@@ -116,8 +116,8 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                         . 'OR (seminare.duration_time = -1)))'
                         . 'AND (start_sem.beginn <= :ende AND '
                         . 'IF(ISNULL(end_sem.ende), 1, end_sem.ende >= :beginn)) ';
-                $params = array(':beginn' => $semester->beginn,
-                    ':ende' => $semester->ende);
+                $params = [':beginn' => $semester->beginn,
+                    ':ende' => $semester->ende];
                 $semester_join = 'LEFT JOIN mvv_modul ON mvv_modul.modul_id = mvv_modulteil.modul_id '
                 . 'LEFT JOIN semester_data as start_sem ON start_sem.semester_id = mvv_modul.start '
                 . 'LEFT JOIN semester_data as end_sem ON end_sem.semester_id = mvv_modul.end ';   
@@ -182,8 +182,8 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                         . 'OR (seminare.duration_time = -1)))'
                         . 'AND (start_sem.beginn <= :ende AND '
                         . 'IF(ISNULL(end_sem.ende), 1, end_sem.ende >= :beginn)) ';
-                $params = array(':beginn' => $semester->beginn,
-                    ':ende' => $semester->ende);
+                $params = [':beginn' => $semester->beginn,
+                    ':ende' => $semester->ende];
                 $semester_join = 'LEFT JOIN mvv_modul ON mvv_modul.modul_id = mvv_modulteil.modul_id '
                 . 'LEFT JOIN semester_data as start_sem ON start_sem.semester_id = mvv_modul.start '
                 . 'LEFT JOIN semester_data as end_sem ON end_sem.semester_id = mvv_modul.end ';
@@ -241,7 +241,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'OR mvv_modul_deskriptor.bezeichnung LIKE :search_term) '
                 . $filter_sql
                 . 'GROUP BY lvgruppe_id '
-                . 'ORDER BY `name`', array(':search_term' => $term));
+                . 'ORDER BY `name`', [':search_term' => $term]);
     }
     
     /**
@@ -256,7 +256,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'FROM mvv_lvgruppe mlg '
                 . 'INNER JOIN mvv_lvgruppe_modulteil mlm USING(lvgruppe_id) '
                 . 'WHERE mlm.modulteil_id = ? '
-                . 'ORDER BY `position`,`mkdate`', array($modulteil_id));
+                . 'ORDER BY `position`,`mkdate`', [$modulteil_id]);
     }
     
     /**
@@ -271,7 +271,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'FROM mvv_lvgruppe mlg '
                 . 'INNER JOIN mvv_lvgruppe_seminar mls USING(lvgruppe_id) '
                 . 'WHERE mls.seminar_id = ? '
-                . 'ORDER BY `name`', array($seminar_id));
+                . 'ORDER BY `name`', [$seminar_id]);
     }
     
     /**
@@ -286,7 +286,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
             $order = 'ASC', $filter = null, $row_count = null, $offset = null)
     {
         $sortby = Fachbereich::createSortStatement($sortby, $order, 'name',
-                array('count_module'));
+                ['count_module']);
         return Fachbereich::getEnrichedByQuery('SELECT Institute.*, '
                 . 'Institute.Name as `name`, '
                 . 'Institute.Institut_id AS institut_id, '
@@ -298,7 +298,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'ON mvv_modul_inst.institut_id = Institute.Institut_id '
                 . Fachbereich::getFilterSql($filter, true)
                 . 'GROUP BY institut_id ORDER BY ' . $sortby
-                , array(), $row_count, $offset);
+                , [], $row_count, $offset);
     }
     
     /**
@@ -309,7 +309,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
      */
     public function addSeminar($seminar_id)
     {
-        return LvgruppeSeminar::get(array($this->getId(), $seminar_id))
+        return LvgruppeSeminar::get([$this->getId(), $seminar_id])
                 ->store();
     }
     
@@ -341,7 +341,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
      */
     public function removeSeminar($seminar_id)
     {
-        return LvgruppeSeminar::get(array($this->getId(), $seminar_id))
+        return LvgruppeSeminar::get([$this->getId(), $seminar_id])
                 ->delete();
     }
     
@@ -366,7 +366,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
      */
     public function getChildren()
     {
-        return array();
+        return [];
     }
     
     /**
@@ -418,27 +418,27 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'OR (sem.start_time <= :semester_beginn AND sem.duration_time = -1)) ';
             if ($only_visible === false) {
                 $stmt = DBManager::get()->prepare($sql);
-                $stmt->execute(array(
+                $stmt->execute([
                     ':id' => $this->getId(),
                     ':semester_beginn' => $semester->beginn,
                     ':semester_ende' => $semester->ende
-                ));
+                ]);
             } else if ($only_visible === true) {
                 $stmt = DBManager::get()->prepare($sql . ' AND sem.visible = 1 ');
-                $stmt->execute(array(
+                $stmt->execute([
                     ':id' => $this->getId(),
                     ':semester_beginn' => $semester->beginn,
                     ':semester_ende' => $semester->ende
-                ));
+                ]);
             } else {
                 $user_perm = $GLOBALS['perm']->get_perm($only_visible);
                 if ($user_perm == 'root') {
                     $stmt = DBManager::get()->prepare($sql);
-                    $stmt->execute(array(
+                    $stmt->execute([
                         ':id' => $this->getId(),
                         ':semester_beginn' => $semester->beginn,
                         ':semester_ende' => $semester->ende
-                    ));
+                    ]);
                 } else if ($user_perm == 'admin') {
                     $perm_institute_ids = [];
                     foreach (Institute::getMyInstitutes($only_visible) as $perm_institute) {
@@ -447,12 +447,12 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                     $stmt = DBManager::get()->prepare($sql
                         . 'AND (sem.visible = 1 OR (sem.visible = 0 '
                         . 'AND sem.institut_id IN (:perm_institutes))) ');
-                    $stmt->execute(array(
+                    $stmt->execute([
                         ':id' => $this->getId(),
                         ':semester_beginn' => $semester->beginn,
                         ':semester_ende' => $semester->ende,
                         ':perm_institutes' => $perm_institute_ids
-                    ));
+                    ]);
                 } else {
                     $stmt = DBManager::get()->prepare('SELECT seminar_id, Name, '
                         . 'VeranstaltungsNummer, sem.visible FROM seminare sem '
@@ -464,17 +464,17 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                         . 'OR (sem.start_time BETWEEN :semester_beginn AND :semester_ende) '
                         . 'OR (sem.start_time <= :semester_beginn AND sem.duration_time = -1)) '
                         . 'AND (sem.visible = 1 OR (sem.visible = 0 AND seminar_user.user_id = :user_id))');
-                    $stmt->execute(array(
+                    $stmt->execute([
                         ':id' => $this->getId(),
                         ':semester_beginn' => $semester->beginn,
                         ':semester_ende' => $semester->ende,
                         ':user_id' => $only_visible
-                    ));
+                    ]);
                 }
             }
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        return array();
+        return [];
     }
     
     /**
@@ -486,12 +486,12 @@ class Lvgruppe extends ModuleManagementModelTreeItem
      */
     public function getAllAssignedCourses($only_visible = false, $semester_id = null)
     {   
-        $sem_start_times = array();
+        $sem_start_times = [];
         
         if ($semester_id) {
             $semester = Semester::find($semester_id);
             if (!$semester) {
-                return array();
+                return [];
             }
             $sem_start_times[$semester->id] = $semester->beginn;
         } else {
@@ -502,7 +502,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                     , $sem_start_times);
         }
         $visible_sql = $only_visible ? ' AND visible = 1' : '';
-        $courses = array();
+        $courses = [];
         $stmt = DBManager::get()->prepare('SELECT seminar_id, Name, '
                 . 'VeranstaltungsNummer, visible, INTERVAL(start_time,'
                 . join(',', $sem_start_times)
@@ -515,7 +515,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'WHERE lvgruppe_id = ? ' . $visible_sql
                 . ' AND start_time <= ' . end($sem_start_times)
                 . ' ORDER BY sem_number DESC, Name');
-        $stmt->execute(array($this->getId()));
+        $stmt->execute([$this->getId()]);
         $sem_ids = array_keys($sem_start_times);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $course) {
             if ($course['sem_number'] == 0) $course['sem_number'] = 1;
@@ -538,7 +538,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'INNER JOIN archiv USING(seminar_id) '
                 . 'WHERE lvgruppe_id = ? '
                 . 'ORDER BY start_time ASC');
-        $stmt->execute(array($this->getId()));
+        $stmt->execute([$this->getId()]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -577,7 +577,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             
             // The name of the Fach must be longer than 4 characters

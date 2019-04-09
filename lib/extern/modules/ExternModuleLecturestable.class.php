@@ -47,9 +47,9 @@ class ExternModuleLecturestable extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array('VeranstaltungsNummer', 'Name', 'Untertitel', 'status', 'Ort',
-            'art', 'zeiten', 'dozent');
-        $this->registered_elements = array(
+        $this->data_fields = ['VeranstaltungsNummer', 'Name', 'Untertitel', 'status', 'Ort',
+            'art', 'zeiten', 'dozent'];
+        $this->registered_elements = [
             'ReplaceTextSemType',
             'SelectSubjectAreas',
             'Body',
@@ -59,8 +59,8 @@ class ExternModuleLecturestable extends ExternModule {
             'TableHeadrow',
             'TableRow',
             'SemLink' => 'LinkIntern',
-            'LecturerLink' => 'LinkIntern');
-        $this->field_names = array(
+            'LecturerLink' => 'LinkIntern'];
+        $this->field_names = [
                 _("Veranstaltungsnummer"),
                 _("Name"),
                 _("Untertitel"),
@@ -69,7 +69,7 @@ class ExternModuleLecturestable extends ExternModule {
                 _("Art"),
                 _("Zeiten"),
                 _("Lehrende")
-        );
+        ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     

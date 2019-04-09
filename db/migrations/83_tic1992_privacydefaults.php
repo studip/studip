@@ -3,36 +3,36 @@
 class tic1992PrivacyDefaults extends Migration
 {
 
-    static $config_entries = array(
+    static $config_entries = [
         // Private chat room visible per default?
-        array(
+        [
             'name'        => 'CHAT_VISIBILITY_DEFAULT',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Ist der private Chatraum sichtbar, falls der Nutzer nichts anderes eingestellt hat?'
-        ),
+        ],
         // E-Mail address visible per default?
-        array(
+        [
             'name'        => 'EMAIL_VISIBILITY_DEFAULT',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Ist die eigene Emailadresse sichtbar, falls der Nutzer nichts anderes eingestellt hat?'
-        ),
+        ],
         // Private chat room visible per default?
-        array(
+        [
             'name'        => 'ONLINE_VISIBILITY_DEFAULT',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Sind Nutzer sichtbar in der Wer ist online-Liste, falls sie nichts anderes eingestellt haben?'
-        ),
+        ],
         // Private chat room visible per default?
-        array(
+        [
             'name'        => 'SEARCH_VISIBILITY_DEFAULT',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Sind Nutzer auffindbar in der Personensuche, falls sie nichts anderes eingestellt haben?'
-        )
-    );
+        ]
+    ];
 
     function description()
     {
@@ -46,7 +46,7 @@ class tic1992PrivacyDefaults extends Migration
 
         // insert new configuration entries
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']));
+            $query->execute([$entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']]);
         }
 
         // remove old default entry with user id 'studip'
@@ -60,7 +60,7 @@ class tic1992PrivacyDefaults extends Migration
         $query = $db->prepare("DELETE FROM `config` WHERE `field` = ?");
 
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name']));
+            $query->execute([$entry['name']]);
         }
 
         // insert default values

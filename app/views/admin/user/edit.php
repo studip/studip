@@ -586,7 +586,7 @@ use Studip\Button, Studip\LinkButton;
 
                 <? if ($entry->isEditable() && !LockRules::Check($user->user_id, $entry->getId())) : ?>
                     <section class="col-3">
-                    <?= $entry->getHTML('datafields', array('tooltip' => $text)) ?>
+                    <?= $entry->getHTML('datafields', ['tooltip' => $text]) ?>
                 </section>
                 <? else : ?>
                     <section class="col-3">

@@ -40,9 +40,9 @@
 
 class ExternElementTableHeadrow extends ExternElement {
 
-    var $attributes = array("tr_class", "tr_style", "th_height", "th_align",
+    var $attributes = ["tr_class", "tr_style", "th_height", "th_align",
             "th_valign", "th_bgcolor", "th_bgcolor2_", "th_zebrath_", "th_class", "th_style",
-            "font_face", "font_size", "font_color", "font_class", "font_style");
+            "font_face", "font_size", "font_color", "font_class", "font_style"];
 
     /**
     * Constructor

@@ -18,14 +18,14 @@ class Tic4163AddStudipShortname extends Migration {
     }
 
     function up() {
-        Config::get()->create('STUDIP_SHORT_NAME', array(
+        Config::get()->create('STUDIP_SHORT_NAME', [
             'value' => 'Stud.IP',
             'is_default' => 'Stud.IP',
             'type' => 'string',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Studip Kurzname')
-        ));
+        ]);
     }
     
     function down() {

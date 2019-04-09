@@ -32,7 +32,7 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
     {
 
         $actions = new ActionsWidget();
-        $actions->addLink(_("Export"), $this->url_for('admission/restricted_courses', array('csv' => 1)), Icon::create('file-excel+export', 'clickable'));
+        $actions->addLink(_("Export"), $this->url_for('admission/restricted_courses', ['csv' => 1]), Icon::create('file-excel+export', 'clickable'));
         Sidebar::get()->addWidget($actions);
         Sidebar::get()->setImage('sidebar/admin-sidebar.png');
 
@@ -68,7 +68,7 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
             $_SESSION[get_class($this)][$param] = $this->$param;
         }
         if (Request::get('csv')) {
-            $captions = array(_("Anmeldeset"),
+            $captions = [_("Anmeldeset"),
                     _("Nummer"),
                     _("Name"),
                     _("max. Teilnehmende"),
@@ -78,10 +78,10 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
                     _("Anzahl Warteliste"),
                     _("Platzverteilung"),
                     _("Startzeitpunkt"),
-                    _("Endzeitpunkt"));
-            $data = array();
+                    _("Endzeitpunkt")];
+            $data = [];
             foreach ($this->courses as $course) {
-                $row = array();
+                $row = [];
                 $row[] = $course['cs_name'];
                 $row[] = $course['course_number'];
                 $row[] = $course['course_name'];
@@ -132,7 +132,7 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
                   GROUP BY seminar_id";
         $count1_statement = DBManager::get()->prepare($query);
 
-        $parameters = array();
+        $parameters = [];
 
         $sql = "SELECT seminare.seminar_id,seminare.Name as course_name,seminare.VeranstaltungsNummer as course_number,
                 admission_prelim, admission_turnout,seminar_courseset.set_id
@@ -156,18 +156,18 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
 
         $statement = DBManager::get()->prepare($sql);
         $statement->execute($parameters);
-        $csets = array();
-        $ret = array();
+        $csets = [];
+        $ret = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $seminar_id = $row['seminar_id'];
             $ret[$seminar_id] = $row;
 
-            $count0_statement->execute(array($seminar_id));
+            $count0_statement->execute([$seminar_id]);
             $count = $count0_statement->fetchColumn();
 
             $ret[$seminar_id]['count_teilnehmer']     = $count;
 
-            $count1_statement->execute(array($seminar_id));
+            $count1_statement->execute([$seminar_id]);
             $counts = $count1_statement->fetch(PDO::FETCH_ASSOC);
 
             $ret[$seminar_id]['count_prelim'] = (int)$counts['count2'];
@@ -207,7 +207,7 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
         ORDER BY a.Name, num_sem DESC";
         $institute_statement = DBManager::get()->prepare($query);
 
-        $parameters = array();
+        $parameters = [];
         if ($perm->have_perm('root')) {
             $query = "SELECT COUNT(*) FROM courseset_rule
                       INNER JOIN seminar_courseset on seminar_courseset.set_id=courseset_rule.set_id
@@ -216,11 +216,11 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
             $statement = DBManager::get()->query($query);
             $num_sem = $statement->fetchColumn();
 
-            $_my_inst['all'] = array(
+            $_my_inst['all'] = [
                 'name'    => _('alle'),
                 'is_fak'  => true,
                 'num_sem' => $num_sem,
-            );
+            ];
             $query = "SELECT a.Institut_id, a.Name, 1 AS is_fak, COUNT(courseset_rule.type) AS num_sem
             FROM Institute AS a
             LEFT JOIN seminare ON (seminare.Institut_id = a.Institut_id {$seminare_condition})
@@ -246,20 +246,20 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
         $temp = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($temp as $row) {
-            $_my_inst[$row['Institut_id']] = array(
+            $_my_inst[$row['Institut_id']] = [
                     'name'    => $row['Name'],
                     'is_fak'  => $row['is_fak'],
                     'num_sem' => $row['num_sem']
-            );
+            ];
             if ($row["is_fak"] && $row["inst_perms"] != 'dozent') {
-                $institute_statement->execute(array($row['Institut_id']));
+                $institute_statement->execute([$row['Institut_id']]);
                 $alle = $institute_statement->fetchAll();
                 if (count($alle)) {
-                    $_my_inst[$row['Institut_id'] . '_all'] = array(
+                    $_my_inst[$row['Institut_id'] . '_all'] = [
                             'name'    => sprintf(_('[Alle unter %s]'), $row['Name']),
                             'is_fak'  => 'all',
                             'num_sem' => $row['num_sem']
-                    );
+                    ];
 
                     $num_inst = 0;
                     $num_sem_alle = $row['num_sem'];
@@ -270,11 +270,11 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
                             $num_inst += 1;
                             $num_sem_alle += $institute['num_sem'];
                         }
-                        $_my_inst[$institute['Institut_id']] = array(
+                        $_my_inst[$institute['Institut_id']] = [
                                 'name'    => $institute['Name'],
                                 'is_fak'  => 0,
                                 'num_sem' => $institute["num_sem"]
-                        );
+                        ];
                     }
                     $_my_inst[$row['Institut_id']]['num_inst']          = $num_inst;
                     $_my_inst[$row['Institut_id'] . '_all']['num_inst'] = $num_inst;

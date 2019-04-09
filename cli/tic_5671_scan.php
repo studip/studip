@@ -2,7 +2,7 @@
 <?php
 require_once 'studip_cli_env.inc.php';
 
-$opts = getopt('fhnosv', array('filenames', 'help', 'non-recursive', 'occurences', 'matches', 'verbose'));
+$opts = getopt('fhnosv', ['filenames', 'help', 'non-recursive', 'occurences', 'matches', 'verbose']);
 
 if (isset($opts['h']) || isset($opts['help'])) {
     fwrite(STDOUT, 'TIC 5671 Scanner - Scans files for occurences of globalized config items' . PHP_EOL);
@@ -40,11 +40,11 @@ $only_filenames  = isset($opts['f']) || isset($opts['filenames']);
 $show_occurences = $verbose || isset($opts['o']) || isset($opts['occurences']);
 $show_matches    = $show_occurences || isset($opts['m']) || isset($opts['matches']);
 $recursive       = !(isset($opts['n']) || isset($opts['recursive']));
-$folders         = $args ?: array($GLOBALS['STUDIP_BASE_PATH']);
+$folders         = $args ?: [$GLOBALS['STUDIP_BASE_PATH']];
 
 // Prepare logging mechanism
 $log = function ($message) {
-    $ansi = array(
+    $ansi = [
         'off'        => 0,
         'bold'       => 1,
         'italic'     => 3,
@@ -68,7 +68,7 @@ $log = function ($message) {
         'magenta_bg' => 45,
         'cyan_bg'    => 46,
         'white_bg'   => 47
-    );
+    ];
     
     $message = trim($message);
 
@@ -101,7 +101,7 @@ $log_if = function ($condition, $message) use ($log) {
 $highlight = function ($content, $variable) {
     $lines = explode("\n", $content);
     
-    $result = array();
+    $result = [];
     foreach ($lines as $index => $line) {
         if (mb_strpos($line, $variable) === false) {
             continue;

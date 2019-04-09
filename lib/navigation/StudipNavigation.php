@@ -87,7 +87,7 @@ class StudipNavigation extends Navigation
         if (get_config('RESOURCES_ENABLE')) {
             require_once 'lib/resources/resourcesFunc.inc.php';
             //TODO: suboptimal, es sollte eine ResourcesNavigation geben
-            $navigation = new Navigation(_('Ressourcen'), 'resources.php', array('view' => 'resources'));
+            $navigation = new Navigation(_('Ressourcen'), 'resources.php', ['view' => 'resources']);
 
             if (is_object($user) && (getGlobalPerms($user->id)=='admin' || checkAvailableResources($user->id))) {
                 $navigation->setImage(Icon::create('resources', 'navigation', ["title" => _('Zur Ressourcenverwaltung')]));
@@ -106,14 +106,14 @@ class StudipNavigation extends Navigation
         // login / logout
         if (!is_object($user) && $user->id === 'nobody') {
             if (in_array('CAS', $GLOBALS['STUDIP_AUTH_PLUGIN'])) {
-                $links->addSubNavigation('login_cas', new Navigation(_('Login CAS'), Request::url(), array('again' => 'yes', 'sso' => 'cas')));
+                $links->addSubNavigation('login_cas', new Navigation(_('Login CAS'), Request::url(), ['again' => 'yes', 'sso' => 'cas']));
             }
 
             if (in_array('Shib', $GLOBALS['STUDIP_AUTH_PLUGIN'])) {
-                $links->addSubNavigation('login_shib', new Navigation(_('Login Shibboleth'), Request::url(), array('again' => 'yes', 'sso' => 'shib')));
+                $links->addSubNavigation('login_shib', new Navigation(_('Login Shibboleth'), Request::url(), ['again' => 'yes', 'sso' => 'shib']));
             }
 
-            $links->addSubNavigation('login', new Navigation(_('Login'), Request::url(), array('again' => 'yes')));
+            $links->addSubNavigation('login', new Navigation(_('Login'), Request::url(), ['again' => 'yes']));
         }
 
         $this->addSubNavigation('links', $links);

@@ -31,12 +31,12 @@ class PluginManager
     /**
      * cache of activated plugins by context
      */
-    private $plugins_activated_cache = array();
+    private $plugins_activated_cache = [];
 
     /**
      * cache of plugin default activations
      */
-    private $plugins_default_activations_cache = array();
+    private $plugins_default_activations_cache = [];
 
     /**
      * Returns the PluginManager singleton instance.
@@ -58,7 +58,7 @@ class PluginManager
     private function __construct ()
     {
         $this->readPluginInfos();
-        $this->plugin_cache = array();
+        $this->plugin_cache = [];
         $this->rolemgmt = new RolePersistence();
     }
 
@@ -76,14 +76,14 @@ class PluginManager
     private function readPluginInfos ()
     {
         $db = DBManager::get();
-        $this->plugins = array();
+        $this->plugins = [];
 
         $result = $db->query('SELECT * FROM plugins ORDER BY pluginname');
 
         foreach ($result as $plugin) {
             $id = (int) $plugin['pluginid'];
 
-            $this->plugins[$id] = array(
+            $this->plugins[$id] = [
                 'id'                      => $id,
                 'name'                    => $plugin['pluginname'],
                 'class'                   => $plugin['pluginclassname'],
@@ -95,7 +95,7 @@ class PluginManager
                 'core'                    => $plugin['pluginpath'] === '' || strpos($plugin['pluginpath'], 'core/') === 0,
                 'automatic_update_url'    => $plugin['automatic_update_url'],
                 'automatic_update_secret' => $plugin['automatic_update_secret']
-            );
+            ];
         }
     }
 
@@ -201,11 +201,11 @@ class PluginManager
                 . "FROM plugins_activated "
                 . "WHERE range_type IN ('sem', 'inst') AND range_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($context));
+            $statement->execute([$context]);
             $this->plugins_activated_cache[$context] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
         }
         $state = $this->plugins_activated_cache[$context][$id];
-        if (get_object_type($context, array('sem')) === 'sem') {
+        if (get_object_type($context, ['sem']) === 'sem') {
             if ($state === null) {
                 if (!isset($this->plugins_default_activations_cache[$context])) {
                     $query = "SELECT pluginid, 1 as state "
@@ -213,7 +213,7 @@ class PluginManager
                         . "JOIN seminar_inst ON (institutid = institut_id) "
                         . "WHERE seminar_id = ?";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($context));
+                    $statement->execute([$context]);
                     $this->plugins_default_activations_cache[$context] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
                 }
                 $inst_default = $this->plugins_default_activations_cache[$context][$id];
@@ -247,7 +247,7 @@ class PluginManager
                 . "FROM plugins_activated "
                 . "WHERE range_type = 'user' AND range_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($userId));
+            $statement->execute([$userId]);
             $this->plugins_activated_cache[$userId] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
         }
@@ -277,7 +277,7 @@ class PluginManager
 
         $stmt = $db->prepare('REPLACE INTO plugins_activated (pluginid, range_type, range_id, state)
                               VALUES (?, ?, ?, ?)');
-        return $stmt->execute(array($id, $context, $rangeId, $state));
+        return $stmt->execute([$id, $context, $rangeId, $state]);
     }
 
     /**
@@ -312,9 +312,9 @@ class PluginManager
 
         $stmt = $db->prepare("INSERT INTO plugins_default_activations
                               (pluginid, institutid) VALUES (?,?)");
-        $this->plugins_default_activations_cache = array();
+        $this->plugins_default_activations_cache = [];
         foreach ($institutes as $instid) {
-            $stmt->execute(array($id, $instid));
+            $stmt->execute([$id, $instid]);
         }
     }
 
@@ -376,7 +376,7 @@ class PluginManager
     private function getPluginType ($class, $path)
     {
         $plugin_class = $this->loadPlugin($class, $path);
-        $types = array();
+        $types = [];
 
         if ($plugin_class) {
             $plugin_base = new ReflectionClass('StudIPPlugin');
@@ -421,7 +421,7 @@ class PluginManager
             $sql = 'UPDATE plugins SET pluginname = ?, pluginpath = ?,
                                        plugintype = ? WHERE pluginid = ?';
             $stmt = $db->prepare($sql);
-            $stmt->execute(array($name, $path, join(',', $type), $id));
+            $stmt->execute([$name, $path, join(',', $type), $id]);
 
             $this->plugins[$id]['name'] = $name;
             $this->plugins[$id]['path'] = $path;
@@ -443,10 +443,10 @@ class PluginManager
                     plugintype, navigationpos, dependentonid
                 ) VALUES (?,?,?,?,?,?)';
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($name, $class, $path, join(',', $type), $position, $depends));
+        $stmt->execute([$name, $class, $path, join(',', $type), $position, $depends]);
         $id = $db->lastInsertId();
 
-        $this->plugins[$id] = array(
+        $this->plugins[$id] = [
             'id'          => $id,
             'name'        => $name,
             'class'       => $class,
@@ -455,7 +455,7 @@ class PluginManager
             'enabled'     => false,
             'position'    => $position,
             'depends'     => $depends
-        );
+        ];
 
         $this->readPluginInfos();
 
@@ -482,8 +482,8 @@ class PluginManager
             $db->exec("DELETE FROM roles_plugins WHERE pluginid = '$id'");
 
             unset($this->plugins[$id]);
-            $this->plugins_default_activations_cache = array();
-            $this->plugins_activated_cache = array();
+            $this->plugins_default_activations_cache = [];
+            $this->plugins_activated_cache = [];
         }
     }
 
@@ -525,7 +525,7 @@ class PluginManager
      */
     public function getPluginInfos ($type = NULL)
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->plugins as $id => $plugin) {
             if ($type === NULL || in_array($type, $plugin['type'])) {
@@ -633,9 +633,9 @@ class PluginManager
     {
         $user = $GLOBALS['user']->id ?: 'nobody';
         $plugin_info = $this->getPluginInfos($type);
-        $plugins = array();
+        $plugins = [];
 
-        usort($plugin_info, array('self', 'positionCompare'));
+        usort($plugin_info, ['self', 'positionCompare']);
 
         foreach ($plugin_info as $info) {
             $activated = $context == NULL
@@ -662,7 +662,7 @@ class PluginManager
     public function getPluginManifest($plugindir)
     {
         $manifest = @file($plugindir . '/plugin.manifest');
-        $result = array();
+        $result = [];
 
         if ($manifest === false) {
             return NULL;

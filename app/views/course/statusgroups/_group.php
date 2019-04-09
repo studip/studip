@@ -19,7 +19,7 @@
                         href="<?= $controller->url_for('course/statusgroups/groupinfo', $group->id) ?>"
                         data-dialog="size=auto">
                     <?= Icon::create('info-circle', 'clickable',
-                        array('title' => sprintf(_('Informationen zu %s'), htmlReady($group->name)))) ?></a>
+                        ['title' => sprintf(_('Informationen zu %s'), htmlReady($group->name))]) ?></a>
             <?php endif ?>
         </h1>
         <nav>
@@ -39,23 +39,23 @@
                 <?php if ($group->id != 'nogroup' && $joinable) : ?>
                     <a href="<?= $controller->url_for('course/statusgroups/join', $group->id) ?>">
                         <?= Icon::create('door-enter', 'clickable',
-                            array('title' => sprintf(_('Mitglied von Gruppe %s werden'),
-                                htmlReady($group->name)))) ?></a>
+                            ['title' => sprintf(_('Mitglied von Gruppe %s werden'),
+                                htmlReady($group->name))]) ?></a>
                 <?php elseif ($group->id != 'nogroup' && $group->selfassign &&
                     $group->selfassign_start > time()) : ?>
                     <?= Icon::create('door-enter', 'inactive',
-                        array('title' => sprintf(_('Der Eintrag in diese Gruppe ist möglich ab %s.'),
-                            date('d.m.Y H:i', $group->selfassign_start)))) ?>
+                        ['title' => sprintf(_('Der Eintrag in diese Gruppe ist möglich ab %s.'),
+                            date('d.m.Y H:i', $group->selfassign_start))]) ?>
                 <?php elseif ($group->id != 'nogroup' && $group->selfassign &&
                     $group->selfassign_end && $group->selfassign_end < time()) : ?>
                     <?= Icon::create('door-enter', 'inactive',
-                        array('title' => sprintf(_('Der Eintrag in diese Gruppe war möglich bis %s.'),
-                            date('d.m.Y H:i', $group->selfassign_end)))) ?>
+                        ['title' => sprintf(_('Der Eintrag in diese Gruppe war möglich bis %s.'),
+                            date('d.m.Y H:i', $group->selfassign_end))]) ?>
                 <?php elseif ($group->id != 'nogroup' && $group->userMayLeave($GLOBALS['user']->id)) : ?>
                     <a href="<?= $controller->url_for('course/statusgroups/leave', $group->id) ?>">
                         <?= Icon::create('door-leave', 'clickable',
-                            array('title' => sprintf(_('Aus Gruppe %s austragen'),
-                                htmlReady($group->name)))) ?></a>
+                            ['title' => sprintf(_('Aus Gruppe %s austragen'),
+                                htmlReady($group->name))]) ?></a>
                 <?php endif ?>
             <?php endif ?>
             <?php if ($is_tutor) : ?>
@@ -88,7 +88,7 @@
                                   ->setExecuteURL($controller->url_for('course/statusgroups/add_member/' .
                                                 $group->id))
                                   ->addQuickfilter(_('Veranstaltungsteilnehmende'),
-                                                $allmembers ? $allmembers->pluck('user_id') : array())
+                                                $allmembers ? $allmembers->pluck('user_id') : [])
                                   ->addQuickfilter(_('Teilnehmende ohne Gruppenzuordnung'),
                                       $nogroupmembers)
                           )
@@ -116,11 +116,11 @@
                               ['data-confirm' => _('Soll die Gruppe wirklich gelöscht werden?')]
                           ) ?>
                 <?php else : ?>
-                    <a href="<?= $controller->url_for('messages/write', array(
+                    <a href="<?= $controller->url_for('messages/write', [
                         'filter' => 'not_grouped',
                         'course_id' => $course_id,
                         'default_subject' => htmlReady($course_title).' ('.htmlReady($group->name).')'
-                    )) ?>" data-dialog="size=auto;">
+                    ]) ?>" data-dialog="size=auto;">
                         <?= Icon::create('mail', 'clickable', [
                                 'title' => _('Nachricht an alle nicht zugeordneten Personen schicken')
                         ])->asImg(20) ?></a>

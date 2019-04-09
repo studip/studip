@@ -117,7 +117,7 @@ foreach ($order as $position) {
         if ($first_loop) {
             echo "<table" . $this->config->getAttributes("TableHeader", "table") . ">\n";
             if ($this->config->getValue("Main", "studiplink") == "top") {
-                $args = array("width" => "100%", "height" => "40", "link" => "");
+                $args = ["width" => "100%", "height" => "40", "link" => ""];
                 echo "<tr><td width=\"100%\">\n";
                 $this->elements["StudipLink"]->printout($args);
                 echo "</td></tr>";
@@ -181,7 +181,7 @@ else {
 }
 
 if ($this->config->getValue("Main", "studiplink") == "bottom") {
-    $args = array("width" => "100%", "height" => "40", "link" => "");
+    $args = ["width" => "100%", "height" => "40", "link" => ""];
     echo "<tr><td width=\"100%\">\n";
     $this->elements["StudipLink"]->printout($args);
     echo "</td></tr>";

@@ -40,7 +40,7 @@
 
 class ExternElementTableFooter extends ExternElement {
 
-    var $attributes = array();
+    var $attributes = [];
 
     /**
     * Constructor

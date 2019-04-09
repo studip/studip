@@ -179,9 +179,9 @@ class Contacts extends \RESTAPI\RouteMap
         $group = $this->requireContactGroup($group_id);
         $contacts = $group->members->limit($this->offset, $this->limit);
 
-        $json = array();
+        $json = [];
         foreach ($contacts as $contact) {
-            $url = $this->urlf('/contact_group/%s/members/%s', array($group_id, $contact->user_id));
+            $url = $this->urlf('/contact_group/%s/members/%s', [$group_id, $contact->user_id]);
             $json[$url] = User::getMiniUser($this, $contact->user);
         }
 
@@ -206,12 +206,12 @@ class Contacts extends \RESTAPI\RouteMap
             $this->halt(204);
         }
 
-        $new_contact = array(
+        $new_contact = [
             'owner_id' => $GLOBALS['user']->id,
-            'user_id'  => $user->id);
+            'user_id'  => $user->id];
 
-        $new_contact['group_assignments'][] = array('statusgruppe_id' => $group->id,
-                                                    'user_id'         => $user->id);
+        $new_contact['group_assignments'][] = ['statusgruppe_id' => $group->id,
+                                                    'user_id'         => $user->id];
 
         $success = (bool)\Contact::import($new_contact)->store();
 
@@ -271,7 +271,7 @@ class Contacts extends \RESTAPI\RouteMap
     }
 
     private function contactsToJSON($contacts) {
-        $result = array();
+        $result = [];
         foreach ($contacts as $contact) {
             $result[] = User::getMiniUser($this, $contact);
         }
@@ -280,9 +280,9 @@ class Contacts extends \RESTAPI\RouteMap
 
     private function contactGroupsToJSON($contact_groups)
     {
-        $result = array();
+        $result = [];
         foreach ($contact_groups as $cg) {
-            $url = $this->urlf('/contact_group/%s', array(htmlReady($cg->id)));
+            $url = $this->urlf('/contact_group/%s', [htmlReady($cg->id)]);
             $result[$url] = $this->contactGroupToJSON($cg);
         }
         return $result;
@@ -290,12 +290,12 @@ class Contacts extends \RESTAPI\RouteMap
 
     private function contactGroupToJSON($group)
     {
-        $json = array(
+        $json = [
             'id'             => $group->id,
             'name'           => $group->name,
-            'contacts'       => $this->urlf('/contact_group/%s/members', array(htmlReady($group->id))),
+            'contacts'       => $this->urlf('/contact_group/%s/members', [htmlReady($group->id)]),
             'contacts_count' => sizeof($group->members)
-        );
+        ];
         return $json;
     }
 }

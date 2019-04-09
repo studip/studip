@@ -85,7 +85,7 @@ class FilesController extends AuthenticatedController
                 _('Ordner bearbeiten'),
                 $this->url_for('file/edit_folder/'.$folder->getId()),
                 Icon::create("edit", "clickable"),
-                array('data-dialog' => 1)
+                ['data-dialog' => 1]
             );
         }
 
@@ -102,11 +102,11 @@ class FilesController extends AuthenticatedController
                 _('Datei hinzufügen'),
                 '#',
                 Icon::create('file+add', 'clickable'),
-                array('onClick' => "STUDIP.Files.openAddFilesWindow(); return false;")
+                ['onClick' => "STUDIP.Files.openAddFilesWindow(); return false;"]
             );
         }
 
-        $config_urls = array();
+        $config_urls = [];
         foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) {
             $url = $plugin->filesystemConfigurationURL();
             if ($url) {

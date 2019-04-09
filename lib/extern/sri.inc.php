@@ -68,7 +68,7 @@ xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
 xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
 xml_parse_into_struct($parser, $sri_matches[2], $xml_values, $xml_tags);
 
-$allowed_xml_tags = array("module", "range", "config", "sem", "global");
+$allowed_xml_tags = ["module", "range", "config", "sem", "global"];
 
 foreach ($allowed_xml_tags as $xml_tag) {
     if ($xml_tags[$xml_tag]) {

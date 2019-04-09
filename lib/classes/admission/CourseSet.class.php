@@ -22,7 +22,7 @@ class CourseSet
     /**
      * Admission rules that are applied to the courses belonging to this set.
      */
-    protected $admissionRules = array();
+    protected $admissionRules = [];
 
     /**
      * Seat distribution algorithm.
@@ -33,7 +33,7 @@ class CourseSet
      * IDs of courses that are aggregated into this set. The array is in the
      * form ($courseId1 => true, $courseId2 => true).
      */
-    protected $courses = array();
+    protected $courses = [];
 
     /**
      * Has the seat distribution algorithm already been executed?
@@ -53,7 +53,7 @@ class CourseSet
     /**
      * Which Stud.IP institute does the course set belong to?
      */
-    protected $institutes = array();
+    protected $institutes = [];
 
     /**
      * Some display name for this course set.
@@ -73,7 +73,7 @@ class CourseSet
     /*
      * Lists of users who are treated differently on seat distribution
      */
-    protected $userlists = array();
+    protected $userlists = [];
 
     // --- OPERATIONS ---
 
@@ -84,7 +84,7 @@ class CourseSet
         // Autoload admission rules.
         AdmissionRule::getAvailableAdmissionRules();
         // Define autoload function for admission rules.
-        spl_autoload_register(array('UserFilterField', 'getAvailableFilterFields'));
+        spl_autoload_register(['UserFilterField', 'getAvailableFilterFields']);
         if ($setId) {
             $this->load();
         }
@@ -160,7 +160,7 @@ class CourseSet
      * @return Array Optional error messages from rules if something went wrong.
      */
     public function checkAdmission($userId, $courseId) {
-        $errors = array();
+        $errors = [];
         foreach ($this->admissionRules as $rule) {
             // All rules must be fulfilled.
             $ruleCheck = $rule->ruleApplies($userId, $courseId);
@@ -177,7 +177,7 @@ class CourseSet
      * @return CourseSet
      */
     public function clearAdmissionRules() {
-        $this->admissionRules = array();
+        $this->admissionRules = [];
         return $this;
     }
 
@@ -189,11 +189,11 @@ class CourseSet
         // Delete institute associations.
         $stmt = DBManager::get()->prepare("DELETE FROM `courseset_institute`
             WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete course associations.
         $stmt = DBManager::get()->prepare("DELETE FROM `seminar_courseset`
             WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete all rules...
         foreach ($this->admissionRules as $rule) {
             $rule->delete();
@@ -201,20 +201,20 @@ class CourseSet
         // ... and their association to the current course set.
         $stmt = DBManager::get()->prepare("DELETE FROM `courseset_rule`
             WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete associations to user lists.
         $stmt = DBManager::get()->prepare("DELETE FROM `courseset_factorlist`
             WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete course set data.
         $stmt = DBManager::get()->prepare("DELETE FROM `coursesets`
             WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         /*
          * Delete waiting lists
          */
         foreach ($this->courses as $id => $assigned) {
-            AdmissionApplication::deleteBySQL("status='awaiting' AND seminar_id=?", array($id));
+            AdmissionApplication::deleteBySQL("status='awaiting' AND seminar_id=?", [$id]);
         }
         //Delete priorities
         AdmissionPriority::unsetAllPriorities($this->getId());
@@ -248,7 +248,7 @@ class CourseSet
         NotificationCenter::postNotification('CourseSetAlgorithmWillStart', $state, $this->getId());
         $this->hasAlgorithmRun = (bool)$state;
         $db = DbManager::get();
-        $ok = $db->execute("UPDATE coursesets SET algorithm_run = ? WHERE set_id = ?", array($this->hasAlgorithmRun, $this->getId()));
+        $ok = $db->execute("UPDATE coursesets SET algorithm_run = ? WHERE set_id = ?", [$this->hasAlgorithmRun, $this->getId()]);
         if ($ok) {
             NotificationCenter::postNotification('CourseSetAlgorithmDidStart', $state, $this->getId());
         }
@@ -324,7 +324,7 @@ class CourseSet
      */
     public function getAllowedUserCount()
     {
-        $users = array();
+        $users = [];
         foreach ($this->admissionRules as $rule) {
             $users = array_merge($users, $rule->getAffectedUsers());
         }
@@ -353,7 +353,7 @@ class CourseSet
                   FROM `seminar_courseset`
                   WHERE `set_id` = ?";
         $stmt = DBManager::get()->prepare($query);
-        $stmt->execute(array($courseSetId));
+        $stmt->execute([$courseSetId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -363,7 +363,7 @@ class CourseSet
      * @param String $instituteId
      * @return Array
      */
-    public static function getCoursesetsByInstituteId($instituteId, $filter = array()) {
+    public static function getCoursesetsByInstituteId($instituteId, $filter = []) {
         $query = "SELECT DISTINCT ci.*
             FROM `courseset_institute` ci
             JOIN `coursesets` c ON (ci.`set_id`=c.`set_id`)
@@ -371,7 +371,7 @@ class CourseSet
             LEFT JOIN seminar_courseset sc ON c.set_id = sc.set_id
             LEFT JOIN seminare s ON s.seminar_id = sc.seminar_id
             WHERE ci.`institute_id`=?";
-        $parameters = array($instituteId);
+        $parameters = [$instituteId];
         if (!$GLOBALS['perm']->have_perm('admin')) {
             $query .= " AND (c.`private`=0 OR c.`user_id`=?)";
             $parameters[] = $GLOBALS['user']->id;
@@ -404,7 +404,7 @@ class CourseSet
      * @param array $filter
      * @return Array
      */
-    public static function getGlobalCoursesets($filter = array()) {
+    public static function getGlobalCoursesets($filter = []) {
         $query = "SELECT DISTINCT c.set_id
             FROM coursesets c
             LEFT JOIN courseset_institute ci ON ci.`set_id`=c.`set_id`
@@ -412,7 +412,7 @@ class CourseSet
             LEFT JOIN seminar_courseset sc ON c.set_id = sc.set_id
             LEFT JOIN seminare s ON s.seminar_id = sc.seminar_id
             WHERE ci.institute_id IS NULL";
-        $parameters = array();
+        $parameters = [];
         $query .= " AND (c.`private`=0 OR c.`user_id`=?)";
         $parameters[] = $GLOBALS['user']->id;
         if ($filter['course_set_name']) {
@@ -512,7 +512,7 @@ class CourseSet
         $db = DBManager::get();
         $timestamp = $db->fetchColumn("SELECT MAX(start_time + duration_time)
                  FROM seminare WHERE duration_time <> -1
-                 AND seminar_id IN(?)", array($this->getCourses()));
+                 AND seminar_id IN(?)", [$this->getCourses()]);
         $semester = Semester::findByTimestamp($timestamp);
         if (!$semester) {
             $semester = $_SESSION['_default_sem'] ? Semester::find($_SESSION['_default_sem']) : Semester::findCurrent();
@@ -542,7 +542,7 @@ class CourseSet
     {
         $stmt = DBManager::get()->prepare("SELECT `set_id`
             FROM `seminar_courseset` WHERE `seminar_id`=?");
-        $stmt->execute(array($courseId));
+        $stmt->execute([$courseId]);
         $set_id = $stmt->fetchColumn();
         if ($set_id) {
             return new CourseSet($set_id);
@@ -559,7 +559,7 @@ class CourseSet
     public static function getSetForRule($rule_id)
     {
         $set_id = DBManager::get()->fetchColumn("SELECT `set_id`
-            FROM `courseset_rule` WHERE `rule_id`=?", array($rule_id));
+            FROM `courseset_rule` WHERE `rule_id`=?", [$rule_id]);
         if ($set_id) {
             return new CourseSet($set_id);
         }
@@ -579,7 +579,7 @@ class CourseSet
 
     public function getUserFactorList()
     {
-        $factored_users = array();
+        $factored_users = [];
         foreach ($this->getUserLists() as $ul_id) {
             $user_list = new AdmissionUserList($ul_id);
             $factored_users = array_merge($factored_users,
@@ -608,7 +608,7 @@ class CourseSet
         // Load basic data.
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `coursesets` WHERE set_id=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->name = $data['name'];
             $this->infoText = $data['infotext'];
@@ -630,24 +630,24 @@ class CourseSet
             WHERE courseset_institute.set_id = ?
             ORDER BY Institute.Name ASC
         ");
-        $stmt->execute(array($this->id));
-        $this->institutes = array();
+        $stmt->execute([$this->id]);
+        $this->institutes = [];
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->institutes[$data['institute_id']] = true;
         }
         // Load courses.
         $stmt = DBManager::get()->prepare(
             "SELECT seminar_id FROM `seminar_courseset` WHERE set_id=?");
-        $stmt->execute(array($this->id));
-        $this->courses = array();
+        $stmt->execute([$this->id]);
+        $this->courses = [];
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->courses[$data['seminar_id']] = true;
         }
         // Load admission rules.
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `courseset_rule` WHERE set_id=?");
-        $stmt->execute(array($this->id));
-        $this->admissionRules = array();
+        $stmt->execute([$this->id]);
+        $this->admissionRules = [];
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if (class_exists($data['type'])) {
                 $this->admissionRules[$data['rule_id']] =
@@ -657,8 +657,8 @@ class CourseSet
         // Load assigned user lists.
         $stmt = DBManager::get()->prepare("SELECT `factorlist_id`
             FROM `courseset_factorlist` WHERE `set_id`=?");
-        $stmt->execute(array($this->id));
-        $this->userlists = array();
+        $stmt->execute([$this->id]);
+        $this->userlists = [];
         while ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->userlists[$current['factorlist_id']] = true;
         }
@@ -721,7 +721,7 @@ class CourseSet
      * @return CourseSet
      */
     public function setAdmissionRules($newRules) {
-        $this->admissionRules = array();
+        $this->admissionRules = [];
         foreach ($newRules as $newRule) {
             $rule = ObjectBuilder::build($newRule, 'AdmissionRule');
             $this->addAdmissionRule($rule);
@@ -766,7 +766,7 @@ class CourseSet
      * @return CourseSet
      */
     public function setInstitutes($newIds) {
-        $this->institutes = array();
+        $this->institutes = [];
         $this->addInstitutes($newIds);
         return $this;
     }
@@ -811,7 +811,7 @@ class CourseSet
      * @return CourseSet
      */
     public function setUserlists($newIds) {
-        $this->userlists = array();
+        $this->userlists = [];
         foreach ($newIds as $newId) {
             $this->addUserlist($newId);
         }
@@ -853,8 +853,8 @@ class CourseSet
             `name`=VALUES(`name`), `infotext`=VALUES(`infotext`),
             `algorithm`=VALUES(`algorithm`), `algorithm_run`=VALUES(`algorithm_run`), `private`=VALUES(`private`),
             `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->user_id, $this->name, $this->infoText,
-            get_class($this->algorithm), $this->hasAlgorithmRun(), intval($this->private), time(), time()));
+        $stmt->execute([$this->id, $this->user_id, $this->name, $this->infoText,
+            get_class($this->algorithm), $this->hasAlgorithmRun(), intval($this->private), time(), time()]);
         // Delete removed institute assignments from database.
         DBManager::get()->exec("DELETE FROM `courseset_institute`
             WHERE `set_id`='".$this->id."' AND `institute_id` NOT IN ('".
@@ -864,44 +864,44 @@ class CourseSet
             $stmt = DBManager::get()->prepare("INSERT IGNORE INTO `courseset_institute`
                 (`set_id`, `institute_id`, `mkdate`)
                 VALUES (?, ?, ?)");
-            $stmt->execute(array($this->id, $institute, time()));
+            $stmt->execute([$this->id, $institute, time()]);
         }
         // log removed course assignments.
         DBManager::get()->fetchAll("SELECT seminar_id,set_id FROM `seminar_courseset`
-            WHERE `set_id` = ? AND `seminar_id` NOT IN (?)", array($this->id, count($this->courses) ? array_keys($this->courses) : ''),
+            WHERE `set_id` = ? AND `seminar_id` NOT IN (?)", [$this->id, count($this->courses) ? array_keys($this->courses) : ''],
             function ($row) {
                 StudipLog::log('SEM_CHANGED_ACCESS', $row['seminar_id'],
                 null, 'Entfernung von Anmeldeset', sprintf('Anmeldeset: %s', $row['set_id']));
                 //Delete priorities
                 AdmissionPriority::unsetAllPrioritiesForCourse($row['seminar_id']);
-                Course::buildExisting(array('seminar_id' => $row['seminar_id']))->triggerChdate();
+                Course::buildExisting(['seminar_id' => $row['seminar_id']])->triggerChdate();
             });
         //removed course assignments
         DBManager::get()->execute("DELETE FROM `seminar_courseset`
-            WHERE `set_id` = ? AND `seminar_id` NOT IN (?)", array($this->id, count($this->courses) ? array_keys($this->courses) : ''));
+            WHERE `set_id` = ? AND `seminar_id` NOT IN (?)", [$this->id, count($this->courses) ? array_keys($this->courses) : '']);
         //log removing other associations
         DBManager::get()->execute("SELECT seminar_id,set_id FROM `seminar_courseset`
-            WHERE `set_id` <> ? AND `seminar_id` IN (?)", array($this->id, array_keys($this->courses)),
+            WHERE `set_id` <> ? AND `seminar_id` IN (?)", [$this->id, array_keys($this->courses)],
             function ($row) {
                 StudipLog::log('SEM_CHANGED_ACCESS', $row['seminar_id'],
                 null, 'Entfernung von Anmeldeset', sprintf('Anmeldeset: %s', $row['set_id']));
                 //Delete priorities
                 AdmissionPriority::unsetAllPrioritiesForCourse($row['seminar_id']);
-                Course::buildExisting(array('seminar_id' => $row['seminar_id']))->triggerChdate();
+                Course::buildExisting(['seminar_id' => $row['seminar_id']])->triggerChdate();
             });
         //Delete other associations, only one set possible
         DBManager::get()->execute("DELETE FROM `seminar_courseset`
-            WHERE `set_id` <> ? AND `seminar_id` IN (?)", array($this->id, array_keys($this->courses)));
+            WHERE `set_id` <> ? AND `seminar_id` IN (?)", [$this->id, array_keys($this->courses)]);
         // Store associated course IDs.
         foreach ($this->courses as $course => $associated) {
             $stmt = DBManager::get()->prepare("INSERT IGNORE INTO `seminar_courseset`
                 (`set_id`, `seminar_id`, `mkdate`)
                 VALUES (?, ?, ?)");
-            $stmt->execute(array($this->id, $course, time()));
+            $stmt->execute([$this->id, $course, time()]);
             if ($stmt->rowCount()) {
                 StudipLog::log('SEM_CHANGED_ACCESS', $course,
                 null, 'Zuordnung zu Anmeldeset', sprintf('Anmeldeset: %s', $this->id));
-                Course::buildExisting(array('seminar_id' => $course))->triggerChdate();
+                Course::buildExisting(['seminar_id' => $course])->triggerChdate();
             }
         }
 
@@ -914,7 +914,7 @@ class CourseSet
             $stmt = DBManager::get()->prepare("INSERT IGNORE INTO `courseset_factorlist`
                 (`set_id`, `factorlist_id`, `mkdate`)
                 VALUES (?, ?, ?)");
-            $stmt->execute(array($this->id, $list, time()));
+            $stmt->execute([$this->id, $list, time()]);
         }
         // Delete removed admission rules from database.
         $stmt = DBManager::get()->query("SELECT `rule_id`, `type` FROM `courseset_rule`
@@ -934,11 +934,11 @@ class CourseSet
                 (`set_id`, `rule_id`, `type`, `mkdate`)
                 VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE
                 `type`=VALUES(`type`)");
-            $stmt->execute(array($this->id, $rule->getId(), get_class($rule), time()));
+            $stmt->execute([$this->id, $rule->getId(), get_class($rule), time()]);
         }
         //fix free access courses
         if (count($this->courses)) {
-            DBManager::get()->execute("UPDATE seminare SET Lesezugriff=1,Schreibzugriff=1 WHERE seminar_id IN(?)", array(array_keys($this->courses)));
+            DBManager::get()->execute("UPDATE seminare SET Lesezugriff=1,Schreibzugriff=1 WHERE seminar_id IN(?)", [array_keys($this->courses)]);
         }
         //create general log
         $this->log_store();
@@ -981,15 +981,15 @@ class CourseSet
     public function toString($short=false) {
         $tpl = $GLOBALS['template_factory']->open('admission/courseset/info');
         $tpl->set_attribute('courseset', $this);
-        $institutes = array();
+        $institutes = [];
         if (!$short) {
             $institutes = Institute::findAndMapMany(function($i) {return $i->name;}, array_keys($this->institutes), 'ORDER BY Name');
             $tpl->set_attribute('institutes', $institutes);
         }
         if (!$short || $this->hasAdmissionRule('LimitedAdmission')) {
             $courses = Course::findAndMapMany(function($c) {
-                return array('id' => $c->id,
-                             'name' => $c->getFullname('number-name-semester'));
+                return ['id' => $c->id,
+                             'name' => $c->getFullname('number-name-semester')];
             },
                 array_keys($this->courses),
                 'ORDER BY start_time,VeranstaltungsNummer,Name');
@@ -1080,10 +1080,10 @@ class CourseSet
             $locked_insert = $db->prepare("INSERT INTO lockedadmissions (rule_id,message,mkdate,chdate) VALUES (?,'Die Anmeldung ist gesperrt',UNIX_TIMESTAMP(),UNIX_TIMESTAMP())");
             $locked_set_id = md5(uniqid('coursesets',1));
             $name = 'Anmeldung gesperrt (global)';
-            $cs_insert->execute(array($locked_set_id,'',$name,'',1,time(),time()));
+            $cs_insert->execute([$locked_set_id,'',$name,'',1,time(),time()]);
             $locked_rule_id = md5(uniqid('lockedadmissions',1));
-            $locked_insert->execute(array($locked_rule_id));
-            $cs_r_insert->execute(array($locked_set_id,$locked_rule_id,'LockedAdmission'));
+            $locked_insert->execute([$locked_rule_id]);
+            $cs_r_insert->execute([$locked_set_id,$locked_rule_id,'LockedAdmission']);
         }
         return $locked_set_id;
     }
@@ -1091,11 +1091,11 @@ class CourseSet
     public static function addCourseToSet($set_id, $course_id)
     {
         $db = DBManager::get();
-        $ok = $db->execute("INSERT IGNORE INTO seminar_courseset (set_id,seminar_id,mkdate) VALUES (?,?,UNIX_TIMESTAMP())", array($set_id, $course_id));
+        $ok = $db->execute("INSERT IGNORE INTO seminar_courseset (set_id,seminar_id,mkdate) VALUES (?,?,UNIX_TIMESTAMP())", [$set_id, $course_id]);
         if ($ok) {
             StudipLog::log('SEM_CHANGED_ACCESS', $course_id,
                 null, 'Zuordnung zu Anmeldeset', sprintf('Anmeldeset: %s', $set_id));
-                Course::buildExisting(array('seminar_id' => $course_id))->triggerChdate();
+                Course::buildExisting(['seminar_id' => $course_id])->triggerChdate();
         }
         return $ok;
     }
@@ -1103,23 +1103,23 @@ class CourseSet
     public static function removeCourseFromSet($set_id, $course_id)
     {
         $db = DBManager::get();
-        $ok =  $db->execute("DELETE FROM seminar_courseset WHERE set_id=? AND seminar_id=? LIMIT 1", array($set_id, $course_id));
+        $ok =  $db->execute("DELETE FROM seminar_courseset WHERE set_id=? AND seminar_id=? LIMIT 1", [$set_id, $course_id]);
         if ($ok) {
             StudipLog::log('SEM_CHANGED_ACCESS', $course_id,
                 null, 'Entfernung von Anmeldeset', sprintf('Anmeldeset: %s', $set_id));
             //Delete priorities
             AdmissionPriority::unsetAllPrioritiesForCourse($course_id);
-            Course::buildExisting(array('seminar_id' => $course_id))->triggerChdate();
+            Course::buildExisting(['seminar_id' => $course_id])->triggerChdate();
         }
         return $ok;
     }
 
     public function __clone()
     {
-        $this->courses = array();
+        $this->courses = [];
         $this->id = null;
         $this->user_id = null;
-        $cloned_rules = array();
+        $cloned_rules = [];
         foreach ($this->admissionRules as $key => $rule) {
             $dolly = clone $rule;
             $cloned_rules[$dolly->id] = $dolly;

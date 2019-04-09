@@ -14,7 +14,7 @@ function get_group_names($group_field, $groups)
     global $SEM_TYPE, $SEM_CLASS;
     $groupcount = 1;
     if ($group_field == 'sem_tree_id') {
-        $the_tree = TreeAbstract::GetInstance("StudipSemTree", array("build_index" => true));
+        $the_tree = TreeAbstract::GetInstance("StudipSemTree", ["build_index" => true]);
     }
     if ($group_field == 'sem_number') {
         $all_semester = SemesterData::GetSemesterArray();
@@ -150,12 +150,12 @@ function correct_group_sem_number(&$groups, &$my_obj)
             if ($values['obj_type'] == 'sem' && $values['sem_number'] != $values['sem_number_end']){
                 if ($values['sem_number_end'] == -1 && $values['sem_number'] < $current_sem) {
                     unset($groups[$values['sem_number']][$seminar_id]);
-                    fill_groups($groups, $current_sem, array('seminar_id' => $seminar_id, 'name' => $values['name'], 'gruppe' => $values['gruppe']));
+                    fill_groups($groups, $current_sem, ['seminar_id' => $seminar_id, 'name' => $values['name'], 'gruppe' => $values['gruppe']]);
                     if (!count($groups[$values['sem_number']])) unset($groups[$values['sem_number']]);
                 } else {
                     $to_sem = $values['sem_number_end'];
                     for ($i = $values['sem_number']; $i <= $to_sem; ++$i){
-                        fill_groups($groups, $i, array('seminar_id' => $seminar_id, 'name' => $values['name'], 'gruppe' => $values['gruppe']));
+                        fill_groups($groups, $i, ['seminar_id' => $seminar_id, 'name' => $values['name'], 'gruppe' => $values['gruppe']]);
                     }
                 }
                 if ($GLOBALS['user']->cfg->getValue('SHOWSEM_ENABLE')){
@@ -204,7 +204,7 @@ function fill_groups(&$groups, $group_key, $group_entry)
     if (is_null($group_key)){
         $group_key = 'not_grouped';
     }
-    $group_entry['name'] = str_replace(array("ä","ö","ü"), array("ae","oe","ue"), mb_strtolower($group_entry['name']));
+    $group_entry['name'] = str_replace(["ä","ö","ü"], ["ae","oe","ue"], mb_strtolower($group_entry['name']));
     if (!is_array($groups[$group_key]) || (is_array($groups[$group_key]) && !in_array($group_entry, $groups[$group_key]))){
         $groups[$group_key][$group_entry['seminar_id']] = $group_entry;
         return true;
@@ -378,7 +378,7 @@ function get_my_obj_values (&$my_obj, $user_id)
                     }
                 }
 
-                $nav->setImage($image, array('title' => $title));
+                $nav->setImage($image, ['title' => $title]);
             }
 
             $my_obj[$object_id]['scm'] = $nav;
@@ -505,10 +505,10 @@ function get_my_obj_values (&$my_obj, $user_id)
 
             GROUP BY my.object_id ORDER BY NULL
         ");
-        $statement->execute(array(
+        $statement->execute([
             'user_id' => $user_id,
             'threshold' => $threshold
-        ));
+        ]);
 
         while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $object_id = $row['object_id'];
@@ -670,12 +670,12 @@ function get_my_obj_values (&$my_obj, $user_id)
  */
 function getValidGroupingFields()
 {
-    return array(
+    return [
         'not_grouped',
         'sem_number',
         'sem_tree_id',
         'sem_status',
         'gruppe',
         'dozent_id'
-    );
+    ];
 }

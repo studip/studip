@@ -2,14 +2,14 @@
 class Step00199ForcedCourseGrouping extends Migration
 {
 
-    static $config_entries = array(
-        array(
+    static $config_entries = [
+        [
             'name'        => 'MY_COURSES_FORCE_GROUPING',
             'type'        => 'string',
             'value'       => 'sem_number',
             'description' => 'Legt fest, ob die persönliche Veranstaltungsübersicht systemweit zwangsgruppiert werden soll, wenn keine eigene Gruppierung eingestellt ist. Werte: not_grouped, sem_number, sem_tree_id, sem_status, gruppe, dozent_id.'
-        )
-    );
+        ]
+    ];
 
     function description()
     {
@@ -23,7 +23,7 @@ class Step00199ForcedCourseGrouping extends Migration
 
         // insert new configuration entries
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']));
+            $query->execute([$entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']]);
         }
     }
 
@@ -33,7 +33,7 @@ class Step00199ForcedCourseGrouping extends Migration
         $query = $db->prepare("DELETE FROM `config` WHERE `config_id` = MD5(?)");
 
         foreach (self::$config_entries as $entry) {
-            $query->execute(array(md5($entry['name'])));
+            $query->execute([md5($entry['name'])]);
         }
     }
 }

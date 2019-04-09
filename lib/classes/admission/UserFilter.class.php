@@ -24,7 +24,7 @@ class UserFilter
     /**
      * All condition fields that form this condition.
      */
-    public $fields = array();
+    public $fields = [];
 
     /**
      * Unique identifier for this condition.
@@ -72,7 +72,7 @@ class UserFilter
         // Delete condition data.
         $stmt = DBManager::get()->prepare("DELETE FROM `userfilter`
             WHERE `filter_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete all defined condition fields.
         foreach ($this->fields as $field) {
             $field->delete();
@@ -88,7 +88,7 @@ class UserFilter
         do {
             $newid = md5(uniqid(get_class($this).microtime(), true));
             $id = DBManager::get()->fetchColumn("SELECT `filter_id`
-                FROM `userfilter` WHERE `filter_id`=?", array($newid));
+                FROM `userfilter` WHERE `filter_id`=?", [$newid]);
         } while ($id);
         return $newid;
     }
@@ -123,16 +123,16 @@ class UserFilter
         $users = null;
         foreach ($this->fields as $field) {
             // Check if restrictions for the field value must be taken into consideration.
-            $restrictions = array();
+            $restrictions = [];
             foreach ($field->relations as $className => $related) {
                 if ($other = $this->hasField($className)) {
                     if ($other->getValue()) {
-                        $restrictions[$className] = array(
+                        $restrictions[$className] = [
                             'table' => $other->userDataDbTable,
                             'field' => $other->userDataDbField,
                             'compare' => $other->getCompareOperator(),
                             'value' => $other->getValue()
-                        );
+                        ];
                     }
                 }
             }
@@ -182,14 +182,14 @@ class UserFilter
         // Load basic condition data.
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `userfilter` WHERE `filter_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->id = $data['filter_id'];
             // Load the associated condition fields.
             $stmt = DBManager::get()->prepare(
                 "SELECT `field_id`, `type` FROM `userfilter_fields`
                 WHERE `filter_id`=?");
-            $stmt->execute(array($this->id));
+            $stmt->execute([$this->id]);
             while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 /*
                  * Create instance of appropriate UserFilterField subclass.
@@ -236,7 +236,7 @@ class UserFilter
             (`filter_id`, `mkdate`, `chdate`)
             VALUES (?, ?, ?)
             ON DUPLICATE KEY UPDATE `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, time(), time()));
+        $stmt->execute([$this->id, time(), time()]);
         // Delete removed condition fields from DB.
         DBManager::get()->exec("DELETE FROM `userfilter_fields`
             WHERE `filter_id`='".$this->id."' AND `field_id` NOT IN ('".
@@ -260,7 +260,7 @@ class UserFilter
     public function __clone()
     {
         $this->id = md5(uniqid(get_class($this)));
-        $cloned_fields= array();
+        $cloned_fields= [];
         foreach ($this->fields as $field) {
             $dolly = clone $field;
             $dolly->conditionId = $this->id;

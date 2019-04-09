@@ -1,15 +1,15 @@
-<? if (!is_array($highlight)) $highlight = array(); ?>
+<? if (!is_array($highlight)) $highlight = []; ?>
 <? $is_new =  ((isset($visitdate) && $post['mkdate'] >= $visitdate) || !(isset($visitdate))) ?>
 <? if (!$constraint) $constraint = ForumEntry::getConstraints (ForumEntry::getParentTopicId($post['topic_id'])) ?>
 
 <? $can_edit_closed = !ForumEntry::isClosed($constraint['topic_id'])
         || (ForumEntry::isClosed($constraint['topic_id']) && ForumPerm::has('edit_closed', $constraint['seminar_id'])) ?>
 
-<? $perms = array(
+<? $perms = [
     'edit'         => ForumPerm::hasEditPerms($post['topic_id']),
     'edit_closed'  => ForumPerm::has('edit_closed', $constraint['seminar_id']),
     'remove_entry' => ForumPerm::has('remove_entry', $constraint['seminar_id']),
-) ?>
+] ?>
 
 <!-- Anker, um zu diesem Posting springen zu können -->
 <a name="<?= $post['topic_id'] ?>"></a>
@@ -33,13 +33,13 @@
                     <?= strftime($time_format_string_short, (int)$post['mkdate']) ?>
                 <? elseif (!$post['user_id']) : ?>
                     <?= Avatar::getAvatar('nobody')->getImageTag(Avatar::SMALL,
-                        array('title' => _('Stud.IP'))) ?>
+                        ['title' => _('Stud.IP')]) ?>
                     <?= _('von Stud.IP erstellt') ?>,
                     <?= strftime($time_format_string_short, (int)$post['mkdate']) ?>
                 <? else : ?>
-                <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' =>  get_username($post['user_id']))) ?>">
+                <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' =>  get_username($post['user_id'])]) ?>">
                     <?= Avatar::getAvatar($post['user_id'])->getImageTag(Avatar::SMALL,
-                        array('title' => get_username($post['user_id']))) ?>
+                        ['title' => get_username($post['user_id'])]) ?>
 
                     <? if ($post['user_id'] == 'nobody' && $post['author']) : ?>
                         <?= htmlReady($post['author']) ?>,
@@ -70,7 +70,7 @@
             <? endif ?>
 
             <span data-show-topic="<?= $post['topic_id'] ?>">
-                <a href="<?= PluginEngine::getLink('coreforum/index/index/' . $post['topic_id'] .'?'. http_build_query(array('highlight' => $highlight)) ) ?>#<?= $post['topic_id'] ?>">
+                <a href="<?= PluginEngine::getLink('coreforum/index/index/' . $post['topic_id'] .'?'. http_build_query(['highlight' => $highlight]) ) ?>#<?= $post['topic_id'] ?>">
                 <? if ($show_full_path) : ?>
                     <?= ForumHelpers::highlight(htmlReady(implode(' >> ', ForumEntry::getFlatPathToPosting($post['topic_id']))), $highlight) ?>
                 <? elseif ($post['depth'] < 3) : ?>
@@ -103,10 +103,10 @@
         <span data-edit-topic="<?= $post['topic_id'] ?>" <?= ($edit_posting == $post['topic_id']) ? '' : 'style="display: none;"' ?>>
             <!-- Buttons für den Bearbeitungsmodus -->
             <?= Studip\Button::createAccept(_('Änderungen speichern'), '',
-                array('onClick' => "STUDIP.Forum.saveEntry('". $post['topic_id'] ."'); return false;")) ?>
+                ['onClick' => "STUDIP.Forum.saveEntry('". $post['topic_id'] ."'); return false;"]) ?>
 
             <?= Studip\LinkButton::createCancel(_('Abbrechen'), PluginEngine::getLink('coreforum/index/index/'. $post['topic_id'] .'#'. $post['topic_id']),
-                array('onClick' => "STUDIP.Forum.cancelEditEntry('". $post['topic_id'] ."'); return false;")) ?>
+                ['onClick' => "STUDIP.Forum.cancelEditEntry('". $post['topic_id'] ."'); return false;"]) ?>
 
             <?= Studip\LinkButton::create(_('Vorschau'), "javascript:STUDIP.Forum.preview('". $post['topic_id'] ."', 'preview_". $post['topic_id'] ."');") ?>
         </span>
@@ -116,20 +116,20 @@
 
 
             <? if (ForumPerm::has('add_entry', $constraint['seminar_id'])) : ?>
-                <?= Studip\LinkButton::create(_('Beitrag zitieren'), PluginEngine::getURL('coreforum/index/index/' . $post['topic_id'] .'?cite=1'), array(
+                <?= Studip\LinkButton::create(_('Beitrag zitieren'), PluginEngine::getURL('coreforum/index/index/' . $post['topic_id'] .'?cite=1'), [
                     'onClick' => "javascript:STUDIP.Forum.citeEntry('". $post['topic_id'] ."'); return false;",
                     'class'   => !$perms['edit_closed'] ? 'hideWhenClosed' : '',
                     'style'   => !$can_edit_closed ? 'display: none' : ''
-                )) ?>
+                ]) ?>
             <? endif ?>
 
             <? if ($perms['edit']) : ?>
                 <?= Studip\LinkButton::create(_('Beitrag bearbeiten'), PluginEngine::getUrl('coreforum/index/index/'
-                      . $post['topic_id'] .'/?edit_posting=' . $post['topic_id']), array(
+                      . $post['topic_id'] .'/?edit_posting=' . $post['topic_id']), [
                           'onClick' => "STUDIP.Forum.editEntry('". $post['topic_id'] ."'); return false;",
                           'class'   => !$perms['edit_closed'] ? 'hideWhenClosed' : '',
                           'style'   => !$can_edit_closed ? 'display: none' : ''
-                )) ?>
+                ]) ?>
             <? endif ?>
 
             <span <?= (!$perms['edit_close'] && !$perms['remove_entry']) ? 'class="hideWhenClosed"': '' ?>
@@ -140,17 +140,17 @@
                 <? if ($constraint['depth'] == $post['depth']) : /* this is not only a posting, but a thread */ ?>
                     <? $confirmText = _('Wenn Sie diesen Beitrag löschen wird ebenfalls das gesamte Thema gelöscht. Sind Sie sicher, dass Sie das tun möchten?')  ?>
                     <?= Studip\LinkButton::create(_('Thema löschen'), $confirmLink,
-                        array('onClick' => "STUDIP.Forum.showDialog('$confirmText', '$confirmLinkApproved'); return false;")) ?>
+                        ['onClick' => "STUDIP.Forum.showDialog('$confirmText', '$confirmLinkApproved'); return false;"]) ?>
                 <? else : ?>
                     <? $confirmText = _('Möchten Sie diesen Beitrag wirklich löschen?') ?>
                     <?= Studip\LinkButton::create(_('Beitrag löschen'), $confirmLink,
-                        array('onClick' => "STUDIP.Forum.showDialog('$confirmText', '$confirmLinkApproved'); return false;")) ?>
+                        ['onClick' => "STUDIP.Forum.showDialog('$confirmText', '$confirmLinkApproved'); return false;"]) ?>
                 <? endif ?>
             </span>
 
             <? if (ForumPerm::has('forward_entry', $seminar_id)) : ?>
             <?= Studip\LinkButton::create(_('Beitrag weiterleiten'),
-                    "javascript:STUDIP.Forum.forwardEntry('". $post['topic_id'] ."')", array('class' => 'js')) ?>
+                    "javascript:STUDIP.Forum.forwardEntry('". $post['topic_id'] ."')", ['class' => 'js']) ?>
             <? endif ?>
         </span>
             </div>
@@ -163,7 +163,7 @@
         <dl class="postprofile">
             <dt>
                 <? if (!Config::get()->WYSIWYG): ?>
-                    <?= $this->render_partial('index/_smiley_favorites', array('textarea_id' => $post['topic_id'])) ?>
+                    <?= $this->render_partial('index/_smiley_favorites', ['textarea_id' => $post['topic_id']]) ?>
                 <? endif; ?>
             </dt>
         </dl>
@@ -179,9 +179,9 @@
             <? if (!$post['anonymous'] || $post['user_id'] == $GLOBALS['user']->id || $GLOBALS['perm']->have_perm('root')): ?>
             <dt>
                 <? if ($post['user_id'] != 'nobody' && $post['user_id']) : ?>
-                <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' => get_username($post['user_id']))) ?>">
+                <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => get_username($post['user_id'])]) ?>">
                     <?= Avatar::getAvatar($post['user_id'])->getImageTag(Avatar::MEDIUM,
-                        array('title' => get_username($post['user_id']))) ?>
+                        ['title' => get_username($post['user_id'])]) ?>
                 </a>
                 <br>
                 <? endif ?>
@@ -203,7 +203,7 @@
                         <?= Icon::create('community', 'info', ['title' => _('Offline')])->asImg() ?>
                     <? endif ?>
 
-                    <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' => get_username($post['user_id'])))?>">
+                    <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => get_username($post['user_id'])])?>">
                         <span class="username" data-profile="<?= $post['topic_id'] ?>">
                             <?= htmlReady(get_fullname($post['user_id'])) ?>
                         </span>
@@ -232,7 +232,7 @@
             <dd class="posting_icons">
                 <!-- Favorit -->
                 <span id="favorite_<?= $post['topic_id'] ?>">
-                    <?= $this->render_partial('index/_favorite', array('topic_id' => $post['topic_id'], 'favorite' => $post['fav'])) ?>
+                    <?= $this->render_partial('index/_favorite', ['topic_id' => $post['topic_id'], 'favorite' => $post['fav']]) ?>
                 </span>
 
                 <!-- Permalink -->
@@ -243,7 +243,7 @@
 
                 <!-- Like -->
                 <span class="likes" id="like_<?= $post['topic_id'] ?>">
-                    <?= $this->render_partial('index/_like', array('topic_id' => $post['topic_id'])) ?>
+                    <?= $this->render_partial('index/_like', ['topic_id' => $post['topic_id']]) ?>
                 </span>
             </dd>
 
@@ -267,4 +267,4 @@
 </div>
 </form>
 
-<?= $this->render_partial('index/_preview', array('preview_id' => 'preview_' . $post['topic_id'])) ?>
+<?= $this->render_partial('index/_preview', ['preview_id' => 'preview_' . $post['topic_id']]) ?>

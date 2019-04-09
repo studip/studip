@@ -68,7 +68,7 @@ class CSRFProtection
      */
     private static function isSafeRequestMethod()
     {
-        return in_array(Request::method(), array('GET', 'HEAD'));
+        return in_array(Request::method(), ['GET', 'HEAD']);
     }
 
     /**

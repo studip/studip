@@ -85,11 +85,11 @@ global $ex_type, $o_mode, $xml_file_id, $format, $choose, $xslt_files, $export_e
  */
 function encode_utf8_for_rtf($utf8_text)
 {
-    $utf8_patterns = array(
+    $utf8_patterns = [
       "[\xC0-\xDF][\x80-\xBF]",
       "[\xE0-\xEF][\x80-\xBF]{2}",
       "[\xF0-\xF7][\x80-\xBF]{3}",
-    );
+    ];
     $unicode_text = $utf8_text;
 
     foreach($utf8_patterns as $pattern) {
@@ -176,7 +176,7 @@ if (!CheckParamRUN()) {
         $export_weiter_button .= "<input type=\"hidden\" name=\"xml_file_id\" value=\"" . htmlReady($xml_file_id) . "\">";
         $export_weiter_button .= "<input type=\"hidden\" name=\"xslt_filename\" value=\"" . htmlReady($xslt_filename) . "\">";
         if (Request::option('jump'))
-            $export_weiter_button .= '<center>' . LinkButton::create('<< ' . _('Zurück'), URLHelper::getURL('seminar_main.php', array('auswahl' => $range_id, 'redirect_to' => $jump))) . "<br>";
+            $export_weiter_button .= '<center>' . LinkButton::create('<< ' . _('Zurück'), URLHelper::getURL('seminar_main.php', ['auswahl' => $range_id, 'redirect_to' => $jump])) . "<br>";
         else
             $export_weiter_button .= "<center>" . Button::create('<< ' . _('Zurück'), 'back') . "<br>";
         $export_weiter_button .= "</center></form>";

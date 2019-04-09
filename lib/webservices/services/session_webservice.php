@@ -23,17 +23,17 @@ class SessionService extends AccessControlledService
     function __construct()
     {
     $this->add_api_method('is_session_valid',
-                          array('string', 'string'),
+                          ['string', 'string'],
                           'bool',
                           'checks if session-id is valid');
 
     $this->add_api_method('get_session_username',
-                          array('string', 'string'),
+                          ['string', 'string'],
                           'string',
                           'returns username for session-id');
 
     $this->add_api_method('get_prefixed_session_username',
-                          array('string', 'string'),
+                          ['string', 'string'],
                           'string',
                           'returns prefixed username for session-id');
     }

@@ -3,7 +3,7 @@
 <? if (!$em['term'][$row]) : ?>
     <? if ($calendar->havePermission(Calendar::PERMISSION_WRITABLE)) : ?>
     <td class="calendar-day-edit <?= $class_cell ?>" <?= ($em['max_cols'] > 0 ? ' colspan="' . ($em['max_cols'] + 1) . '"' : '') ?>>
-        <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), array('atime' => $atime_new)) ?>">+</a>
+        <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), ['atime' => $atime_new]) ?>">+</a>
     </td>
     <? else : ?>
     <td class="calendar-day-edit <?= $class_cell ?>" <?= ($em['max_cols'] > 0 ? ' colspan="' . ($em['max_cols'] + 1) . '"' : '') ?>>
@@ -22,8 +22,8 @@
                 </div>
                 <? endif ?>
                 <div class="calendar-day-event-title">
-                    <a title="<?= _('Termin bearbeiten') ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId() . '/' . $event->event_id, array('atime' => $atime_new, 'evtype' => $event->getType())) ?>"><?= htmlReady($event->getTitle()) ?></a>
-                    <?= $this->render_partial('calendar/single/_tooltip', array('event' => $mapped_event)) ?>
+                    <a title="<?= _('Termin bearbeiten') ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId() . '/' . $event->event_id, ['atime' => $atime_new, 'evtype' => $event->getType()]) ?>"><?= htmlReady($event->getTitle()) ?></a>
+                    <?= $this->render_partial('calendar/single/_tooltip', ['event' => $mapped_event]) ?>
                 </div>
             </td>
         <? elseif ($event == '#') : ?>
@@ -33,7 +33,7 @@
         <? elseif ($event == '') : ?>
             <? if ($calendar->havePermission(Calendar::PERMISSION_WRITABLE)) : ?>
                 <td class="calendar-day-edit <?= $class_cell ?>"<?= ($em['cspan'][$row][$j] > 1 ? ' colspan="' . $em['cspan'][$row][$j] . '"' : '') ?>>
-                    <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), array('atime' => $atime_new)) ?>">+</a>
+                    <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), ['atime' => $atime_new]) ?>">+</a>
                 </td>
             <? else : ?>
                 <td class="calendar-day-edit <?= $class_cell ?>"<?= ($em['cspan'][$row][$j] > 1 ? ' colspan="' . $em['cspan'][$row][$j] . '"' : '') ?>></td>
@@ -46,7 +46,7 @@
 <? if ($link_notset) : ?>
     <? if ($calendar->havePermission(Calendar::PERMISSION_WRITABLE)) : ?>
         <td class="calendar-day-edit <?= $class_cell ?>">
-            <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), array('atime' => $atime_new)) ?>">+</a>
+            <a title="<?= strftime(_('Neuer Termin am %x, %R Uhr'), $atime_new) ?>" href="<?= $controller->url_for('calendar/single/edit/' . $calendar->getRangeId(), ['atime' => $atime_new]) ?>">+</a>
         </td>
     <? else : ?>
         <td class="calendar-day-edit <?= $class_cell ?>"></td>

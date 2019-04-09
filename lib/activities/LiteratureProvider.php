@@ -24,9 +24,9 @@ class LiteratureProvider implements ActivityProvider
             $url = \URLHelper::getUrl("dispatch.php/literature/edit_list?cid={$activity->context_id}&view=literatur_sem&open_item={$activity->object_id}#anchor");
             $route = null;
 
-            $activity->object_url = array(
+            $activity->object_url = [
                 $url => _('Zur Literaturliste in der Veranstaltung')
-            );
+            ];
 
             $activity->object_route = $route;
 
@@ -34,9 +34,9 @@ class LiteratureProvider implements ActivityProvider
             $url = \URLHelper::getUrl("dispatch.php/literature/edit_list?cid={$activity->context_id}&view=literatur_sem&open_item={$activity->object_id}#anchor");
             $route= null;
 
-            $activity->object_url = array(
+            $activity->object_url = [
                 $url => _('Zur Literaturliste in der Einrichtung')
-            );
+            ];
 
             $activity->object_route = $route;
         }
@@ -114,7 +114,7 @@ class LiteratureProvider implements ActivityProvider
 
         if (isset($verb)) {
             $activity = Activity::create(
-                array(
+                [
                     'provider'     => __CLASS__,
                     'context'      => ($type == 'sem') ? 'course' : 'institute',
                     'context_id'   => $range_id,
@@ -125,7 +125,7 @@ class LiteratureProvider implements ActivityProvider
                     'object_id'    => $list_id,         // the id of the referenced object
                     'object_type'  => 'literaturelist', // type of activity object
                     'mkdate'       =>  $mkdate
-                )
+                ]
             );
         }
 

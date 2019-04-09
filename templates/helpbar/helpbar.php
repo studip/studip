@@ -10,9 +10,9 @@
         <? foreach ($widgets as $index => $widget): ?>
             <li>
             <? if ($widget->icon): ?>
-                <?= is_string($widget->icon) ? Assets::img($widget->icon, array('class' => 'helpbar-widget-icon')) : $widget->icon->asImg(['class' => 'helpbar-widget-icon']) ?>
+                <?= is_string($widget->icon) ? Assets::img($widget->icon, ['class' => 'helpbar-widget-icon']) : $widget->icon->asImg(['class' => 'helpbar-widget-icon']) ?>
             <? endif; ?>
-                <?= $widget->render(array('base_class' => 'helpbar'))?>
+                <?= $widget->render(['base_class' => 'helpbar'])?>
                 <div class="helpbar-widget-admin-icons">
                 <? if ($widget->edit_link): ?>
                     <a href="<?=$widget->edit_link?>" data-dialog="size=auto;reload-on-close">

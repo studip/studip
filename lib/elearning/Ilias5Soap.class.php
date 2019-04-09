@@ -45,7 +45,7 @@ class Ilias5Soap extends Ilias4Soap
         {
             $result = $this->_call($method, $params);
             // if Session is expired, re-login and try again
-            if (($method != "login") AND $this->soap_client->fault AND in_array(mb_strtolower($this->faultstring), array("session not valid","session invalid", "session idled")) )
+            if (($method != "login") AND $this->soap_client->fault AND in_array(mb_strtolower($this->faultstring), ["session not valid","session invalid", "session idled"]) )
             {
                 $caching_status = $this->caching_active;
                 $this->caching_active = false;
@@ -73,17 +73,17 @@ class Ilias5Soap extends Ilias4Soap
     {
         global $ELEARNING_INTERFACE_MODULES, $connected_cms;
         if ($this->user_type == "admin") {
-            $param = array(
+            $param = [
                 'client' => $ELEARNING_INTERFACE_MODULES[$this->cms_type]["soap_data"]["client"],
                 'username' => $ELEARNING_INTERFACE_MODULES[$this->cms_type]["soap_data"]["username"],
                 'password' => $ELEARNING_INTERFACE_MODULES[$this->cms_type]["soap_data"]["password"]
-                );
+                ];
             $result = $this->call('login', $param);
         } elseif ($this->user_type == "user") {
-            $param = array(
+            $param = [
                 'sid' => $this->admin_sid,
                 'user_id' => $connected_cms[$this->cms_type]->user->getId()
-                );
+                ];
             $result = $this->call('loginStudipUser', $param);
         }
         if ($this->user_type == "admin")
@@ -103,11 +103,11 @@ class Ilias5Soap extends Ilias4Soap
     function checkPassword($username, $password)
     {
         global $ELEARNING_INTERFACE_MODULES, $connected_cms;
-        $param = array(
+        $param = [
             'client' => $ELEARNING_INTERFACE_MODULES[$this->cms_type]["soap_data"]["client"],
             'username' => $username,
             'password' => $password
-        );
+        ];
         $result = $this->call('login', $param);
         return $result;
     }

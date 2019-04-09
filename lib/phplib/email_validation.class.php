@@ -154,12 +154,12 @@ class email_validation_class
             return(0);
         $user=$this->Tokenize($email,"@");
         $domain=$this->Tokenize("");
-        $hosts=$weights=array();
+        $hosts=$weights=[];
         $getmxrr=$this->getmxrr;
         if(function_exists($getmxrr)
         && $getmxrr($domain,$hosts,$weights))
         {
-            $mxhosts=array();
+            $mxhosts=[];
             for($host=0;$host<count($hosts);$host++)
                 $mxhosts[$weights[$host]]=$hosts[$host];
             KSort($mxhosts);

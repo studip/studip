@@ -69,7 +69,7 @@ class OptionsWidget extends ListWidget
      * @param mixed  $selected_option Currently selected option
      * @param array  $attributes      Additional attributes
      */
-    public function addSelect($label, $url, $name, $options, $selected_option = false, $attributes = array())
+    public function addSelect($label, $url, $name, $options, $selected_option = false, $attributes = [])
     {
         $widget = new SelectWidget($label, $url, $name);
         $widget->layout = false;

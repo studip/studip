@@ -36,7 +36,7 @@
 
     <footer data-dialog-button>
         <? if ($ajax): ?>
-            <?= \Studip\Button::create(_('Speichern'), 'confirm', array('data-dialog-button' => true)) ?>
+            <?= \Studip\Button::create(_('Speichern'), 'confirm', ['data-dialog-button' => true]) ?>
         <? else: ?>
             <?= \Studip\Button::create(_('Speichern'), 'confirm') ?>
             <?= \Studip\Button::create(_('Abbrechen'), $name . '_button_abort') ?>

@@ -42,7 +42,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Übernehmen'), 'ok', array('title' => _('Einstellungen übernehmen'))) ?>
+        <?= Button::create(_('Übernehmen'), 'ok', ['title' => _('Einstellungen übernehmen')]) ?>
     </footer>
 
 
@@ -90,7 +90,7 @@ use Studip\Button, Studip\LinkButton;
             </table>
 
         <footer>
-            <?= Button::create(_('Übernehmen'), 'ok', array('title' => _('Einstellungen übernehmen'))) ?>
+            <?= Button::create(_('Übernehmen'), 'ok', ['title' => _('Einstellungen übernehmen')]) ?>
         </footer>
         <? endif ?>
 

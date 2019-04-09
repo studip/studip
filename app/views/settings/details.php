@@ -80,10 +80,10 @@
                 <? endif; ?>
 
                     <? if ($entry->isEditable() && !LockRules::check($user->user_id, $entry->getId())): ?>
-                        <?= $entry->getHTML('datafields', array(
+                        <?= $entry->getHTML('datafields', [
                             'tooltip'   => $entry->isVisible($user->perms) ? '' : _('Systemfeld (für die Person selbst nicht sichtbar)'),
                             'important' => true
-                        )) ?>
+                        ]) ?>
                     <? else: ?>
                         <?= htmlReady($entry->getName()) ?>
 

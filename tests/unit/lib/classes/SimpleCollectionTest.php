@@ -28,11 +28,11 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $data[] = array('id' => 1, 'vorname' => 'Ândré', 'nachname' => 'Noack', 'perm' => 'dozent');
-        $data[] = array('id' => 2, 'vorname' => 'Stefan', 'nachname' => 'Suchi', 'perm' => 'dozent');
-        $data[] = array('id' => 10, 'vorname' => 'Élmar', 'nachname' => 'Ludwig', 'perm' => 'admin');
-        $data[] = array('id' => 11, 'vorname' => 'Jan-Hendrik', 'nachname' => 'Wilms', 'perm' => 'tutor');
-        $data[] = array('id' => 15, 'vorname' => 'Nico', 'nachname' => 'Müller', 'perm' => 'root');
+        $data[] = ['id' => 1, 'vorname' => 'Ândré', 'nachname' => 'Noack', 'perm' => 'dozent'];
+        $data[] = ['id' => 2, 'vorname' => 'Stefan', 'nachname' => 'Suchi', 'perm' => 'dozent'];
+        $data[] = ['id' => 10, 'vorname' => 'Élmar', 'nachname' => 'Ludwig', 'perm' => 'admin'];
+        $data[] = ['id' => 11, 'vorname' => 'Jan-Hendrik', 'nachname' => 'Wilms', 'perm' => 'tutor'];
+        $data[] = ['id' => 15, 'vorname' => 'Nico', 'nachname' => 'Müller', 'perm' => 'root'];
 
         $a = new SimpleCollection();
         $this->assertInstanceOf('SimpleCollection', $a);
@@ -54,7 +54,7 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testArrayAccess($a)
     {
-        $newval = array('id' => 17, 'vorname' => 'Till', 'nachname' => 'Glöggler', 'perm' => 'root');
+        $newval = ['id' => 17, 'vorname' => 'Till', 'nachname' => 'Glöggler', 'perm' => 'root'];
         $a[] = $newval;
         $last = count($a) - 1;
         $this->assertEquals(17, $a[$last]->id);
@@ -90,7 +90,7 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
         $test = $a->findBy('id', 1);
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(1, $test);
-        $test = $a->findBy('id', array(1,2));
+        $test = $a->findBy('id', [1,2]);
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(2, $test);
         $test = $a->findBy('id', '1', '==');
@@ -111,10 +111,10 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
         $test = $a->findBy('id', 5, '>=');
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(3, $test);
-        $test = $a->findBy('id', array(10,15), '><');
+        $test = $a->findBy('id', [10,15], '><');
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(1, $test);
-        $test = $a->findBy('id', array(10,15), '>=<=');
+        $test = $a->findBy('id', [10,15], '>=<=');
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(3, $test);
         $test = $a->findBy('vorname', 'andre', '%=');
@@ -154,10 +154,10 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testPluck($a)
     {
-        $expected = array(1, 2, 10, 11, 15);
+        $expected = [1, 2, 10, 11, 15];
         $this->assertEquals($expected, $a->pluck('id'));
-        $expected = array(array(1, 'dozent'), array(2, 'dozent'), array(10, 'admin'),array(11, 'tutor'), array(15, 'root'));
-        $this->assertEquals($expected, $a->pluck(array('id', 'perm')));
+        $expected = [[1, 'dozent'], [2, 'dozent'], [10, 'admin'],[11, 'tutor'], [15, 'root']];
+        $this->assertEquals($expected, $a->pluck(['id', 'perm']));
 
     }
 
@@ -166,14 +166,14 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testToGroupedArray($a)
     {
-        $expected = array();
-        $expected[1] = array('nachname' => 'Noack');
-        $expected[2] = array('nachname' => 'Suchi');
-        $expected[10] = array('nachname' => 'Ludwig');
-        $expected[11] = array('nachname' => 'Wilms');
-        $expected[15] = array('nachname' => 'Müller');
-        $this->assertEquals($expected, $a->toGroupedArray('id', array('nachname')));
-        $expected = array();
+        $expected = [];
+        $expected[1] = ['nachname' => 'Noack'];
+        $expected[2] = ['nachname' => 'Suchi'];
+        $expected[10] = ['nachname' => 'Ludwig'];
+        $expected[11] = ['nachname' => 'Wilms'];
+        $expected[15] = ['nachname' => 'Müller'];
+        $this->assertEquals($expected, $a->toGroupedArray('id', ['nachname']));
+        $expected = [];
         $expected['dozent'] = 2;
         $expected['admin'] = 1;
         $expected['tutor'] = 1;
@@ -188,12 +188,12 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testLimit($a)
     {
-        $expected = array(1, 2);
+        $expected = [1, 2];
         $this->assertEquals($expected, $a->limit(2)->pluck('id'));
-        $expected = array(3 => 11, 4 => 15);
+        $expected = [3 => 11, 4 => 15];
         $this->assertEquals($expected, $a->limit(3,2)->pluck('id'));
         $this->assertEquals($expected, $a->limit(-2)->pluck('id'));
-        $expected = array(2 => 10);
+        $expected = [2 => 10];
         $this->assertEquals($expected, $a->limit(2,-2)->pluck('id'));
     }
 
@@ -203,31 +203,31 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testOrderBy($a)
     {
-        $expected = array( 'Wilms',
+        $expected = [ 'Wilms',
                             'Suchi',
                             'Noack',
                             'Müller',
                             'Ludwig'
-        );
+        ];
         $this->assertEquals($expected, array_values($a->orderBy('nachname desc')->pluck('nachname')));
         $this->assertEquals(array_reverse($expected), array_values($a->orderBy('nachname asc')->pluck('nachname')));
-        $expected = array (
+        $expected =  [
                         'Jan-Hendrik',
                         'Nico',
                         'Stefan',
                         'Ândré',
                         'Élmar'
-        );
+        ];
         $this->assertEquals($expected, array_values($a->orderBy('vorname asc', SORT_STRING)->pluck('vorname')));
-        $expected = array (
+        $expected =  [
                          'Ândré',
                          'Élmar',
                          'Jan-Hendrik',
                          'Nico',
                          'Stefan'
-        );
+        ];
         $this->assertEquals($expected, array_values($a->orderBy('vorname asc', SORT_LOCALE_STRING)->pluck('vorname')));
-        $expected = array(1,2,10,11,15);
+        $expected = [1,2,10,11,15];
         $this->assertEquals($expected, array_values($a->orderBy('id asc', SORT_NUMERIC)->pluck('id')));
     }
 
@@ -247,12 +247,12 @@ class SimpleCollectionTest extends PHPUnit_Framework_TestCase
      */
     public function testMerge($a)
     {
-        $data[] = array('id' => 19, 'vorname' => 'Marcus', 'nachname' => 'Eibrink-Lunzenauer', 'perm' => 'dozent');
-        $data[] = array('id' => 20, 'vorname' => 'Rasmus', 'nachname' => 'Fuhse', 'perm' => 'root');
+        $data[] = ['id' => 19, 'vorname' => 'Marcus', 'nachname' => 'Eibrink-Lunzenauer', 'perm' => 'dozent'];
+        $data[] = ['id' => 20, 'vorname' => 'Rasmus', 'nachname' => 'Fuhse', 'perm' => 'root'];
 
         $a->merge(new SimpleCollection($data));
         $this->assertCount(7, $a);
-        $expected = array(1,2,10,11,15,19,20);
+        $expected = [1,2,10,11,15,19,20];
         $this->assertEquals($expected, array_values($a->orderBy('id asc', SORT_NUMERIC)->pluck('id')));
     }
 }

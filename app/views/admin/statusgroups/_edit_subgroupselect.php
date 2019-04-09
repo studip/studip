@@ -4,6 +4,6 @@
         <?= $preset ?><?= htmlReady($group->name) ?>
     </option>
     <? if($group->children): ?>
-        <?= $this->render_partial("admin/statusgroups/_edit_subgroupselect.php", array('groups' => $group->children, 'selected' => $selected, 'level' => $level + 1)) ?>
+        <?= $this->render_partial("admin/statusgroups/_edit_subgroupselect.php", ['groups' => $group->children, 'selected' => $selected, 'level' => $level + 1]) ?>
     <? endif; ?>
 <? endforeach; ?>

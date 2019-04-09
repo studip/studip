@@ -46,7 +46,7 @@ class ExternModuleLectures extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->registered_elements = array(
+        $this->registered_elements = [
             'ReplaceTextSemType',
             'SelectSubjectAreas',
             'Body',
@@ -55,8 +55,8 @@ class ExternModuleLectures extends ExternModule {
             'Grouping' => 'TableGroup',
             'LecturesInnerTable',
             'SemLink' => 'LinkIntern',
-            'LecturerLink' => 'LinkIntern');
-        $this->args = array('group');
+            'LecturerLink' => 'LinkIntern'];
+        $this->args = ['group'];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     

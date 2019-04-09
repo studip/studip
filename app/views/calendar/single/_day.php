@@ -17,7 +17,7 @@ $max_columns = $em['max_cols'] ?: 1;
 
 <nav class="calendar-nav">
     <span style="white-space: nowrap;">
-        <a href="<?= $controller->url_for('calendar/single/day', array('atime' => strtotime('-1 day', $atime))) ?>">
+        <a href="<?= $controller->url_for('calendar/single/day', ['atime' => strtotime('-1 day', $atime)]) ?>">
             <?= Icon::create('arr_1left', 'clickable', ['title' => _('Einen Tag zurück')])->asImg(16, ['style' => 'vertical-align: text-top;']) ?>
             <span class="hidden-tiny-down">
                 <?= strftime(_('%x'), strtotime('-1 day', $calendar->getStart())) ?>
@@ -33,7 +33,7 @@ $max_columns = $em['max_cols'] ?: 1;
     <?= $this->render_partial('calendar/single/_calhead', compact('calendar', 'atime', 'calType', 'calLabel')) ?>
 
     <span style="white-space: nowrap;">
-        <a href="<?= $controller->url_for('calendar/single/day', array('atime' => strtotime('+1 day', $atime))) ?>">
+        <a href="<?= $controller->url_for('calendar/single/day', ['atime' => strtotime('+1 day', $atime)]) ?>">
             <span class="hidden-tiny-down">
                 <?= strftime(_('%x'), strtotime('+1 day', $calendar->getStart())) ?>
             </span>
@@ -58,7 +58,7 @@ $max_columns = $em['max_cols'] ?: 1;
         <? if ($start > 0) : ?>
         <tr>
             <td align="center"<?= $settings['step_day'] < 3600 ? ' colspan="2"' : '' ?>>
-                <a href="<?= $controller->url_for('calendar/single/day', array('atime' => ($atime - (date('G', $atime) * 3600 - $start + 3600)))) ?>">
+                <a href="<?= $controller->url_for('calendar/single/day', ['atime' => ($atime - (date('G', $atime) * 3600 - $start + 3600))]) ?>">
                     <?= Icon::create('arr_1up', 'clickable', ['title' => _('Früher')])->asImg() ?>
                 </a>
             </td>
@@ -68,13 +68,13 @@ $max_columns = $em['max_cols'] ?: 1;
         <? endif; ?>
     </thead>
     <tbody>
-        <?= $this->render_partial('calendar/single/_day_table', array('start' => $start, 'end' => $end, 'em' => $em)) ?>
+        <?= $this->render_partial('calendar/single/_day_table', ['start' => $start, 'end' => $end, 'em' => $em]) ?>
     </tbody>
     <tfoot>
     <? if ($end / 3600 < 23) : ?>
         <tr>
             <td align="center"<?= $settings['step_day'] < 3600 ? ' colspan="2"' : '' ?>>
-                <a href="<?= $controller->url_for('calendar/single/day', array('atime' => ($atime + $end - date('G', $atime) * 3600 + 3600))) ?>">
+                <a href="<?= $controller->url_for('calendar/single/day', ['atime' => ($atime + $end - date('G', $atime) * 3600 + 3600)]) ?>">
                     <?= Icon::create('arr_1down', 'clickable', ['title' => _('Später')])->asImg() ?>
                 </a>
             </td>

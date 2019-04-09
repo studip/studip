@@ -19,7 +19,7 @@ class Biest6024FixHelpToursEn extends Migration {
     	
     	//correct all first help_tour_steps
     	
-    	$new_first_steps = array(  		
+    	$new_first_steps = [  		
     	    '7af1e1fb7f53c910ba9f42f43a71c723' => "This tour provides an overview of the supplied search options.\r\n\r\To proceed, please click \"Continue\" in the lower-right corner.",
     		'c89ce8e097f212e75686f73cc5008711' => "This tour provides an overview of the participant administration\'s options.\r\n\rTo proceed, please click \"Continue\" in the lower-right corner.",
     		'de1fbce508d01cbd257f9904ff8c3b43' => "This tour provides a general overview of the profile page\'s structure.\r\n\rTo proceed, please click \"Continue\" in the lower-right corner.",
@@ -34,7 +34,7 @@ class Biest6024FixHelpToursEn extends Migration {
     		'588effa83da976a889a68c152bcabc90' => "This tour provides an overview of the functionality of \"Blubber\".\r\n\rTo proceed, please click \"Continue\" in the lower-right corner.",
     		'd9913517f9c81d2c0fa8362592ce5d0e' => "This tour provides an overview of the functionality of \"Blubber\".\r\n\rTo proceed, please click \"Continue\" in the lower-right corner.",
     		'05434e40601a9a2a7f5fa8208ae148c1' => "This tour provides an overview of the personal document manager.\r\n\rTo proceed, please click \"Continue\" in the lower-right corner."
-      	);
+      	];
     	
     	foreach($new_first_steps as $key => $value) {
     	    $update = "UPDATE help_tour_steps

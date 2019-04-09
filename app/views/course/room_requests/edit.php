@@ -11,8 +11,8 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Speichern und zurück zur Übersicht'), 'save_close', array('title' => _('Speichern und zurück zur Übersicht'))) ?>
-        <?= Button::create(_('Übernehmen'), 'save', array('title' => _('Änderungen speichern'))) ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->link_for('course/room_requests/index/' . $course_id), array('title' => _('Abbrechen'))) ?>
+        <?= Button::createAccept(_('Speichern und zurück zur Übersicht'), 'save_close', ['title' => _('Speichern und zurück zur Übersicht')]) ?>
+        <?= Button::create(_('Übernehmen'), 'save', ['title' => _('Änderungen speichern')]) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->link_for('course/room_requests/index/' . $course_id), ['title' => _('Abbrechen')]) ?>
     </footer>
 </form>

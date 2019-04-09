@@ -46,11 +46,11 @@ class ExternElementMainGlobal extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'semstart', 'semrange', 'semswitch',
                 'nameformat', 'language', 'wholesite', 'urlcss', 'copyright', 'author',
                 'defaultadr'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -61,7 +61,7 @@ class ExternElementMainGlobal extends ExternElementMain {
     */
     function getDefaultConfig () {
 
-        $config = array(
+        $config = [
             "name" => "",
             "semstart" => "",
             "semrange" => "",
@@ -74,7 +74,7 @@ class ExternElementMainGlobal extends ExternElementMain {
                     . " ({$GLOBALS['UNI_CONTACT']})"),
             "author" => '',
             "defaultadr" => '0'
-        );
+        ];
 
         return $config;
     }
@@ -109,16 +109,16 @@ class ExternElementMainGlobal extends ExternElementMain {
         $info = _("Geben Sie das erste anzuzeigende Semester an. Die Angaben \"vorheriges\", \"aktuelles\" und \"nächstes\" beziehen sich immer auf das laufende Semester und werden automatisch angepasst.");
         $current_sem = get_sem_num_sem_browse();
         if ($current_sem === FALSE) {
-            $names = array(_("keine Auswahl"), _("aktuelles"), _("nächstes"));
-            $values = array("", "current", "next");
+            $names = [_("keine Auswahl"), _("aktuelles"), _("nächstes")];
+            $values = ["", "current", "next"];
         }
         else if ($current_sem === TRUE) {
-            $names = array(_("keine Auswahl"), _("vorheriges"), _("aktuelles"));
-            $values = array("", "previous", "current");
+            $names = [_("keine Auswahl"), _("vorheriges"), _("aktuelles")];
+            $values = ["", "previous", "current"];
         }
         else {
-            $names = array(_("keine Auswahl"), _("vorheriges"), _("aktuelles"), "nächstes");
-            $values = array("", "previous", "current", "next");
+            $names = [_("keine Auswahl"), _("vorheriges"), _("aktuelles"), "nächstes"];
+            $values = ["", "previous", "current", "next"];
         }
         foreach ($semester_data as $sem_num => $sem) {
             $names[] = $sem["name"];
@@ -128,8 +128,8 @@ class ExternElementMainGlobal extends ExternElementMain {
 
         $title = _("Anzahl der anzuzeigenden Semester:");
         $info = _("Geben Sie an, wieviele Semester (ab o.a. Startsemester) angezeigt werden sollen.");
-        $names = array(_("keine Auswahl"));
-        $values = array("");
+        $names = [_("keine Auswahl")];
+        $values = [""];
         $i = 1;
         foreach ($semester_data as $sem_num => $sem) {
             $names[] = $i++;
@@ -139,10 +139,10 @@ class ExternElementMainGlobal extends ExternElementMain {
 
         $title = _("Umschalten des aktuellen Semesters:");
         $info = _("Geben Sie an, wieviele Wochen vor Semesterende automatisch auf das nächste Semester umgeschaltet werden soll.");
-        $names = array(_("keine Auswahl"), _("am Semesterende"), _("1 Woche vor Semesterende"));
+        $names = [_("keine Auswahl"), _("am Semesterende"), _("1 Woche vor Semesterende")];
         for ($i = 2; $i < 13; $i++)
             $names[] = sprintf(_("%s Wochen vor Semesterende"), $i);
-        $values = array("", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
+        $values = ["", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
         $table .= $edit_form->editOptionGeneric("semswitch", $title, $info, $values, $names);
 
         $content_table .= $edit_form->editContentTable($headline, $table);
@@ -152,15 +152,15 @@ class ExternElementMainGlobal extends ExternElementMain {
 
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
         $title = _("Sprache:");
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
-        $values = array("", "de_DE", "en_GB");
-        $names = array(_("keine Auswahl"), _("Deutsch"), _("Englisch"));
+        $values = ["", "de_DE", "en_GB"];
+        $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
 
         $title = _("Standard-Adresse:");

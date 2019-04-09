@@ -138,7 +138,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                 }
             }
 
-            return array('ilias_interface' => $navigation);
+            return ['ilias_interface' => $navigation];
         } else {
             return null;
         }
@@ -149,7 +149,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
      */
     public function getMetadata()
     {
-        return array(
+        return [
             'summary'          => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
             'description'      => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus ' .
                 'einer ILIAS-Installation (ILIAS-Version >= 5.3.8) in Stud.IP zur Verfügung ' .
@@ -166,6 +166,6 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                 'einer ILIAS-Installation (> 5.3.8) in Stud.IP zur Verfügung ' .
                 'zu stellen. Lehrende haben die Möglichkeit, in ' .
                 'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.'),
-        );
+        ];
     }
 }

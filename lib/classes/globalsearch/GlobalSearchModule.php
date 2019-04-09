@@ -116,7 +116,7 @@ abstract class GlobalSearchModule
         if ($found) {
             // Check for overlength
             if ($longtext && mb_strlen($result) > $maxlength) {
-                $start = max(array(0, mb_stripos($result, '<mark>') - 20));
+                $start = max([0, mb_stripos($result, '<mark>') - 20]);
                 return '[...]' . mb_substr($result, $start, $maxlength) . '[...]';
             }
 
@@ -137,7 +137,7 @@ abstract class GlobalSearchModule
         if ($found) {
             // Check for overlength
             if ($longtext && mb_strlen($result) > $maxlength) {
-                $start = max(array(0, mb_stripos($result, '<mark>') - 20));
+                $start = max([0, mb_stripos($result, '<mark>') - 20]);
                 $space = mb_stripos($result, ' ', $start);
                 $start = $space < $start + 20 ? $space : $start;
                 return '[...]' . mb_substr($result, $start, $maxlength) . '[...]';
@@ -192,7 +192,7 @@ abstract class GlobalSearchModule
             // return just the sem_types.id (which is equal to seminare.status)
             return substr($sem_class, $pos + 1);
         } else {
-            $type_ids = array();
+            $type_ids = [];
             // return an array containing all sem_types belonging to the chosen sem_class
             $class = $classes[$sem_class];
             foreach ($class->getSemTypes() as $types_id => $types) {

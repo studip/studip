@@ -32,12 +32,12 @@ class Tic6188ViewResourceOccupation extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'RESOURCES_ALLOW_VIEW_RESOURCE_OCCUPATION',
             ':value' => '1',
             ':type'  => 'boolean',
             ':description' => 'Dürfen alle Nutzer Ressourcenbelegungen einsehen?',
-        ));
+        ]);
     }
 
     /**

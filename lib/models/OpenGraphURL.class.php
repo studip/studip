@@ -33,7 +33,7 @@ class OpenGraphURL extends SimpleORMap
      *
      * @param Array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'opengraphdata';
         $config['serialized_fields']['data'] = 'JSONArrayObject';
@@ -129,25 +129,25 @@ class OpenGraphURL extends SimpleORMap
                 $currentEncoding = 'UTF-8';
             }
 
-            $context = stream_context_create(array(
-                'http' => array(
+            $context = stream_context_create([
+                'http' => [
                     'method' => 'GET',
                     'header' => sprintf("User-Agent: Stud.IP v%s OpenGraph Parser\r\n", $GLOBALS['SOFTWARE_VERSION']),
-                ),
-            ));
+                ],
+            ]);
 
             $content = file_get_contents($this['url'], false, $context);
-            $content = mb_encode_numericentity($content, array(0x80, 0xffff, 0, 0xffff), $currentEncoding);
+            $content = mb_encode_numericentity($content, [0x80, 0xffff, 0, 0xffff], $currentEncoding);
             $old_libxml_error = libxml_use_internal_errors(true);
             $doc = new DOMDocument();
             $doc->loadHTML($content);
             libxml_use_internal_errors($old_libxml_error);
 
             $metatags = $doc->getElementsByTagName('meta');
-            $reservedTags = array('url', 'chdate', 'mkdate', 'last_update', 'is_opengraph', 'data');
+            $reservedTags = ['url', 'chdate', 'mkdate', 'last_update', 'is_opengraph', 'data'];
             $isOpenGraph = false;
-            $ogTags = array();
-            $data = array();
+            $ogTags = [];
+            $data = [];
             foreach ($metatags as $tag) {
                 $key = false;
                 if ($tag->hasAttribute('property')
@@ -162,7 +162,7 @@ class OpenGraphURL extends SimpleORMap
                 }
                 if ($key) {
                     $content = $tag->getAttribute('content');
-                    $data[] = array('og:'.$key => $content);
+                    $data[] = ['og:'.$key => $content];
                     $ogTags[$key] = $content;
                     $isOpenGraph = true;
                 }
@@ -242,10 +242,10 @@ class OpenGraphURL extends SimpleORMap
      */
     protected function getMediaFiles($type)
     {
-        $files = array();
-        $media = array();
-        $secure_media = array();
-        $media_types = array();
+        $files = [];
+        $media = [];
+        $secure_media = [];
+        $media_types = [];
         foreach ($this['data'] as $meta) {
             foreach ($meta as $key => $value) {
                 switch ($key) {
@@ -266,11 +266,11 @@ class OpenGraphURL extends SimpleORMap
         }
         if ($_SERVER['HTTPS'] === 'on' && count($secure_media)) {
             foreach ($secure_media as $index => $url) {
-                $files[] = array($url, $media_types[$index]);
+                $files[] = [$url, $media_types[$index]];
             }
         } else {
             foreach ($media as $index => $url) {
-                $files[] = array($url, $media_types[$index]);
+                $files[] = [$url, $media_types[$index]];
             }
         }
         return $files;

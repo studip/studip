@@ -47,12 +47,12 @@
         <? if ($event instanceof CalendarEvent
                 && get_config('CALENDAR_GROUP_ENABLE')
                 && $calendar->getRange() == Calendar::RANGE_USER) : ?>
-            <? $group_status = array(
+            <? $group_status = [
                     CalendarEvent::PARTSTAT_TENTATIVE => _('Abwartend'),
                     CalendarEvent::PARTSTAT_ACCEPTED => _('Angenommen'),
                     CalendarEvent::PARTSTAT_DECLINED => _('Abgelehnt'),
                     CalendarEvent::PARTSTAT_DELEGATED => _('Angenommen (keine Teilnahme)'),
-                    CalendarEvent::PARTSTAT_NEEDS_ACTION => '') ?>
+                    CalendarEvent::PARTSTAT_NEEDS_ACTION => ''] ?>
             <? $show_members = $event->attendees->findOneBy('range_id',
                     $calendar->getRangeId(), '!=') ?>
             <? // Entkommentieren, wenn Mitglieder eines Termins sichtbar sein

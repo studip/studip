@@ -6,7 +6,7 @@
 class HTMLPurifier_Injector_LinkifyEmail extends HTMLPurifier_Injector
 {
     public $name = 'LinkifyEmail';
-    public $needed = array('a' => array('href'));
+    public $needed = ['a' => ['href']];
 
     public function handleText(&$token) {
         if (!$this->allowsElement('a')) return;
@@ -19,7 +19,7 @@ class HTMLPurifier_Injector_LinkifyEmail extends HTMLPurifier_Injector
         // e-mail regex comes from Drupal 7, see http://api.drupal.org/_filter_url, adapted to match only mails with tld part
         $bits = preg_split('#([A-Za-z0-9._-]+@(?:[A-Za-z0-9._+-]+\.[A-Za-z]{2,64}\b))#S', $token->data, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $token = array();
+        $token = [];
 
         // $i = index
         // $c = count
@@ -29,7 +29,7 @@ class HTMLPurifier_Injector_LinkifyEmail extends HTMLPurifier_Injector
                 if ($bits[$i] === '') continue;
                 $token[] = new HTMLPurifier_Token_Text($bits[$i]);
             } else {
-                $token[] = new HTMLPurifier_Token_Start('a', array('href' => 'mailto:' . $bits[$i]));
+                $token[] = new HTMLPurifier_Token_Start('a', ['href' => 'mailto:' . $bits[$i]]);
                 $token[] = new HTMLPurifier_Token_Text($bits[$i]);
                 $token[] = new HTMLPurifier_Token_End('a');
             }

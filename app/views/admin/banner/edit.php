@@ -69,17 +69,17 @@
                         <label>
                             <?= _('Anzeigen ab:') ?>
 
-                            <?= $this->render_partial('admin/banner/datetime-picker', array(
+                            <?= $this->render_partial('admin/banner/datetime-picker', [
                                     'prefix'    => 'start_',
-                                    'timestamp' => $banner['startdate'])) ?>
+                                    'timestamp' => $banner['startdate']]) ?>
                         </label>
 
                         <label>
                             <?= _('Anzeigen bis:') ?>
 
-                            <?= $this->render_partial('admin/banner/datetime-picker', array(
+                            <?= $this->render_partial('admin/banner/datetime-picker', [
                                     'prefix'    => 'end_',
-                                    'timestamp' => $banner['enddate'])) ?>
+                                    'timestamp' => $banner['enddate']]) ?>
                         </label>
 
                         <label>

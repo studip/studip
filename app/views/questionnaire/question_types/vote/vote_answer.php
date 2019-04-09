@@ -2,13 +2,13 @@
 $etask = $vote->etask;
 
 $taskAnswers = $etask->task['answers'];
-$indexMap = count($taskAnswers) ? range(0, count($taskAnswers) - 1) : array();
+$indexMap = count($taskAnswers) ? range(0, count($taskAnswers) - 1) : [];
 if ($etask->options['randomize']) {
     shuffle($indexMap);
 }
 
 $response = $vote->getMyAnswer();
-$responseData = $response['answerdata'] ? $response['answerdata']->getArrayCopy() : array();
+$responseData = $response['answerdata'] ? $response['answerdata']->getArrayCopy() : [];
 ?>
 
 <h3>

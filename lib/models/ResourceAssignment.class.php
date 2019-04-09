@@ -37,22 +37,22 @@
 
 class ResourceAssignment extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'resources_assign';
-        $config['belongs_to']['resource'] = array(
+        $config['belongs_to']['resource'] = [
             'class_name' => 'ResourceObject',
             'foreign_key' => 'resource_id',
             'assoc_func' => 'Factory'
-        );
-        $config['belongs_to']['date'] = array(
+        ];
+        $config['belongs_to']['date'] = [
             'class_name' => 'CourseDate',
             'foreign_key' => 'assign_user_id',
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'assign_user_id',
-        );
+        ];
         parent::configure($config);
     }
 
@@ -76,7 +76,7 @@ class ResourceAssignment extends SimpleORMap
         }
 
         // create object and set (new) values
-        $assignObject = new AssignObject(array(
+        $assignObject = new AssignObject([
             $this->id,
             $this->resource_id,
             $this->assign_user_id,
@@ -91,7 +91,7 @@ class ResourceAssignment extends SimpleORMap
             $this->repeat_week_of_month,
             $this->repeat_day_of_week,
             $this->comment_internal
-        ));
+        ]);
 
 
         if (!$this->isNew()) {

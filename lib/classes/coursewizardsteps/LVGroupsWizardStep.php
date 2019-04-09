@@ -60,7 +60,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             // because we get in trouble if the semester has changed
             $open_nodes = [];
         } else {
-            $open_nodes = !empty($values['open_lvg_nodes']) ? $values['open_lvg_nodes'] : array();
+            $open_nodes = !empty($values['open_lvg_nodes']) ? $values['open_lvg_nodes'] : [];
         }
 
         $_SESSION[__CLASS__]['course_start_time'] = $course_start_time;
@@ -91,7 +91,7 @@ class LVGroupsWizardStep implements CourseWizardStep
         if (self::isCourseId($course_id)) {
             $selection = new StudipLvgruppeSelection($course_id);
         } else {
-            $lvgruppen = array();
+            $lvgruppen = [];
             if (isset($GLOBALS['sem_create_data'])
                 && isset($GLOBALS['sem_create_data']['sem_lvgruppen'])) {
                     $lvgruppen = $GLOBALS['sem_create_data']['sem_lvgruppen'];
@@ -115,9 +115,9 @@ class LVGroupsWizardStep implements CourseWizardStep
 
     public function getLVGroupTreeLevel($parentId, $parentClass)
     {
-        $level = array();
-        $children = array();
-        $searchtree = array();
+        $level = [];
+        $children = [];
+        $searchtree = [];
 
         $course = Course::findCurrent();
         if ($course) {
@@ -161,14 +161,14 @@ class LVGroupsWizardStep implements CourseWizardStep
                 $name = $c->getDisplayName();
             }
 
-            $level[] = array(
+            $level[] = [
                 'id' => $c->id . '-' . $mvvid[1] . $i++,
                 'name' => $name,
                 'has_children' => $c->hasChildren(),
                 'parent' => $c->getTrailParentId(),
                 'assignable' => $c->isAssignable(),
                 'mvvclass' => get_class($c)
-            );
+            ];
         }
 
         if (Request::isXhr()) {
@@ -180,9 +180,9 @@ class LVGroupsWizardStep implements CourseWizardStep
 
     public function searchLVGroupTree($searchterm)
     {
-        $result = array();
+        $result = [];
         $selection = self::get_selection(Request::get('cid'));
-        $selectedlvg = array();
+        $selectedlvg = [];
         if (!empty($selection)) {
             $selectedlvg = $selection->getLvGruppenIDs();
         }
@@ -225,10 +225,10 @@ class LVGroupsWizardStep implements CourseWizardStep
 
             $factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'] . '/app/views');
             $html = $factory->render('course/wizard/steps/lvgroups/lvgroup_searchentry', compact('area', 'inlist'));
-            $data = array(
+            $data = [
                 'id' => $area->id,
                 'html_string' => $html
-            );
+            ];
             $result[] = $data;
         }
         return json_encode($result);
@@ -289,10 +289,10 @@ class LVGroupsWizardStep implements CourseWizardStep
         $html = $factory->render('course/lvgselector/entry_trails',
                 compact('area', 'pathes'));
 
-        $data = array(
+        $data = [
             'id' => $area->id,
             'html_string' => $html
-        );
+        ];
         if (Request::isXhr()) {
             return json_encode($data);
         } else {
@@ -308,10 +308,10 @@ class LVGroupsWizardStep implements CourseWizardStep
         $factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'] . '/app/views');
         $html = $factory->render('course/wizard/steps/lvgroups/lvgroup_entry', compact('area'));
 
-        $data = array(
+        $data = [
             'id' => $area->id,
             'html_string' => $html
-        );
+        ];
         return json_encode($data);
     }
 
@@ -356,7 +356,7 @@ class LVGroupsWizardStep implements CourseWizardStep
             }
 
             if (isset($lvgruppe_selection['remove'])) {
-                $new_areas = array();
+                $new_areas = [];
                 foreach ($lvgruppe_selection['areas'] as $area) {
                     if(!key_exists($area, $lvgruppe_selection['remove'])) {
                         $new_areas[] = $area;
@@ -384,7 +384,7 @@ class LVGroupsWizardStep implements CourseWizardStep
     public function validate($values)
     {
         $ok = true;
-        $errors = array();
+        $errors = [];
 
         // optional step if study areas step is activated and at least one area is assigned
         if (!count($values['StudyAreasWizardStep']['studyareas'])
@@ -474,7 +474,7 @@ class LVGroupsWizardStep implements CourseWizardStep
                 LEFT JOIN Institute c ON (c.Institut_id = b.Institut_id)
                 WHERE a.user_id = ? AND a.inst_perms='admin' AND NOT ISNULL(b.Institut_id)
                 AND c.Institut_id = ? LIMIT 1");
-            $st->execute(array($GLOBALS['user']->id, $inst_id));
+            $st->execute([$GLOBALS['user']->id, $inst_id]);
             return !((bool) $st->fetchColumn());
         }
         return !$perm->have_studip_perm($access_right, $inst_id);
@@ -488,7 +488,7 @@ class LVGroupsWizardStep implements CourseWizardStep
      */
     public function copy($course, $values)
     {
-        $data = array();
+        $data = [];
         $selection = new StudipLvgruppeSelection($course->id);
         foreach ($selection->getAreas() as $a) {
             /*

@@ -36,16 +36,16 @@ class Admin_BannerController extends AuthenticatedController
         PageLayout::setTitle(_('Verwaltung der Banner'));
 
         // Define banner target types
-        $this->target_types = array(
+        $this->target_types = [
             'url'     => _('URL'),
             'seminar' => _('Veranstaltung'),
             'inst'    => _('Einrichtung'),
             'user'    => _('Person'),
             'none'    => _('Kein Verweis'),
-        );
+        ];
 
         // Define banner priorities
-        $this->priorities = array(
+        $this->priorities = [
              0 => '0 (' . _('nicht anzeigen') . ')',
              1 => '1 (' . _('sehr niedrig') . ')',
              2 => '2',
@@ -57,7 +57,7 @@ class Admin_BannerController extends AuthenticatedController
              8 => '8',
              9 => '9',
             10 => '10 (' . _('sehr hoch') . ')',
-        );
+        ];
 
         //Infobox
         $this->setSidebar();
@@ -110,7 +110,7 @@ class Admin_BannerController extends AuthenticatedController
                 $target = Request::get('target');
             }
 
-            $errors = array();
+            $errors = [];
 
             //upload file
             $upload = $_FILES['imgfile'];
@@ -234,7 +234,7 @@ class Admin_BannerController extends AuthenticatedController
 
             $priority = Request::int('priority');
 
-            $errors = array();
+            $errors = [];
 
             $upload = $_FILES['imgfile'];
             if (!$upload['name']) {
@@ -349,7 +349,7 @@ class Admin_BannerController extends AuthenticatedController
      * @param String $img_name name of the image
      * @todo Relocate this function into the model?
      */
-    private function bannerupload($img, $img_size, $img_name, &$errors = array())
+    private function bannerupload($img, $img_size, $img_name, &$errors = [])
     {
         if (!$img_name) { //keine Datei ausgewählt!
             return false;

@@ -189,7 +189,7 @@ function decodeHTML ($string) {
 function preg_call_format_signature($username, $timestamp) {
     $fullname = get_fullname_from_uname($username);
     $date = strftime('%x, %X', $timestamp);
-    return '<span style="font-size: 75%">-- <a href="'.URLHelper::getLink('dispatch.php/profile', array('username' => $username)).'">'.htmlReady($fullname).'</a> '.htmlReady($date).'</span>';
+    return '<span style="font-size: 75%">-- <a href="'.URLHelper::getLink('dispatch.php/profile', ['username' => $username]).'">'.htmlReady($fullname).'</a> '.htmlReady($date).'</span>';
 }
 
 
@@ -218,7 +218,7 @@ function kill_format ($text) {
         return $a[0] === '[code]' ? '[pre][nop]' : '[/nop][/pre]';
     }, $text);
 
-    $pattern = array(
+    $pattern = [
                     "'(^|\n)\!{1,4}(.+)$'m",      // Ueberschriften
                     "'(\n|\A)(-|=)+ (.+)$'m",     // Aufzaehlungslisten
                     "'%%(\S|\S.*?\S)%%'s",        // ML-kursiv
@@ -239,21 +239,21 @@ function kill_format ($text) {
             //      "'\[quote=.+?quote\]'is",    // quoting
                     "'(\s):[^\s]+?:(\s)'s"              // smileys
 
-                    );
-    $replace = array(
+                    ];
+    $replace = [
                     "\\1\\2", "\\1\\3",
                     "\\1", "\\1", "\\1", "\\1", "\\1", "\\1",
                     "\\1", "\\1", "\\1", "\n\\1\n", "", "\\1",'[nop] [/nop]',
                     //"\\2",
                     '$1 ($2)',
                      //"",
-                      '$1$2');
+                      '$1$2'];
     $callback = function ($c) {
         return function ($m) use ($c) {
             return $m[1] . mb_substr(str_replace($c, ' ', $m[2]), 0, -1);
         };
     };
-    $pattern_callback = array(
+    $pattern_callback = [
         "'(^|\s)%(?!%)(\S+%)+'" => $callback('%'),     // SL-kursiv
         "'(^|\s)\*(?!\*)(\S+\*)+'" => $callback('*') ,  // SL-fett
         "'(^|\s)_(?!_)(\S+_)+'" => $callback('_'),     // SL-unterstrichen
@@ -262,7 +262,7 @@ function kill_format ($text) {
         "'(^|\s)-(?!-)(\S+-)+'" => $callback('-'),     // SL-kleiner
         "'(^|\s)>(?!>)(\S+>)+'" => $callback('>'),     // SL-hochgestellt
         "'(^|\s)<(?!<)(\S+<)+'" => $callback('<'),     // SL-tiefgestellt);
-    );
+    ];
 
     if (preg_match_all("'\[nop\](.+)\[/nop\]'isU", $text, $matches)) {
         $text = preg_replace($pattern, $replace, $text);
@@ -286,9 +286,9 @@ function isURL($url) {
 
 function isLinkIntern($url) {
     $pum = @parse_url(TransformInternalLinks($url));
-    return in_array($pum['scheme'], array('https', 'http', NULL), true)
-        && in_array($pum['host'], array($_SERVER['SERVER_NAME'], NULL), true)
-        && in_array($pum['port'], array($_SERVER['SERVER_PORT'], NULL), true)
+    return in_array($pum['scheme'], ['https', 'http', NULL], true)
+        && in_array($pum['host'], [$_SERVER['SERVER_NAME'], NULL], true)
+        && in_array($pum['port'], [$_SERVER['SERVER_PORT'], NULL], true)
         && mb_strpos($pum['path'], $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP']) === 0;
 }
 
@@ -486,7 +486,7 @@ function printhead($breite, $left, $link, $open, $new, $icon, $titel, $zusatz,
     $img = $open === 'close'
          ? 'forumgrau2.png'
          : 'forumgraurunt2.png';
-    $attr = array();
+    $attr = [];
 
     if ($link) {
         // TODO [tlx] What is addon used for? This seems to lead to invalid html
@@ -583,7 +583,7 @@ function tooltip ($text, $with_alt = TRUE, $with_popup = FALSE) {
  */
 function tooltip2($text, $with_alt = TRUE, $with_popup = FALSE) {
 
-    $ret = array();
+    $ret = [];
 
     if ($with_popup) {
         $ret['onClick'] = "alert('".JSReady($text, "alert")."');";

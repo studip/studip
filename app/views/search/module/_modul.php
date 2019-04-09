@@ -2,7 +2,7 @@
     <tr class="table-header header-row" id="modul_<?= $modul->id ?>">
         <td>
             <a style="display: inline; background-image: none; padding-left: 5px; " data-dialog title="<?= htmlReady($modul->getDisplayName(ModuleManagementModel::DISPLAY_CODE | ModuleManagementModel::DISPLAY_SEMESTER)) . ' (' . _('Vollständige Modulbeschreibung') . ')' ?>" href="<?= $controller->url_for('shared/modul/description/' . $modul->id) ?>">
-                <?= Icon::create('log', 'clickable', array('title' => _('Vollständige Modulbeschreibung')))->asImg(); ?>
+                <?= Icon::create('log', 'clickable', ['title' => _('Vollständige Modulbeschreibung')])->asImg(); ?>
             </a>
         </td>
         <? if (count($modul->getAssignedCoursesBySemester($selected_semester->id, $GLOBALS['user']->id))) : ?>

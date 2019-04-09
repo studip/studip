@@ -65,7 +65,7 @@ class FileLock
      *
      * @param Array $data Additional information to bestore with the lock
      */
-    public function lock($data = array())
+    public function lock($data = [])
     {
         $data['timestamp'] = time();
         file_put_contents($this->filename, json_encode($data));

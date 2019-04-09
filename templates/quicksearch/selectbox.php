@@ -27,7 +27,7 @@ if ($withButton) : ?>
 </select>
 <? if ($withButton) : ?>
     <? if ($box_align !== "left") : ?>
-    <?= Icon::create('refresh', 'clickable', ['title' => _('Suche zurücksetzen')])->asInput(array('name'=>$reset_button_name?:'','class'=>'text-bottom',)) ?>
+    <?= Icon::create('refresh', 'clickable', ['title' => _('Suche zurücksetzen')])->asInput(['name'=>$reset_button_name?:'','class'=>'text-bottom',]) ?>
 <? endif ?>
     </div>
 <? endif ?>

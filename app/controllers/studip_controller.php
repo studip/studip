@@ -25,12 +25,12 @@ abstract class StudipController extends Trails_Controller
 
         if ($this->with_session) {
             # open session
-            page_open(array(
+            page_open([
                 'sess' => 'Seminar_Session',
                 'auth' => $this->allow_nobody ? 'Seminar_Default_Auth' : 'Seminar_Auth',
                 'perm' => 'Seminar_Perm',
                 'user' => 'Seminar_User'
-            ));
+            ]);
 
             // show login-screen, if authentication is "nobody"
             $GLOBALS['auth']->login_if((Request::get('again') || !$this->allow_nobody) && $GLOBALS['user']->id == 'nobody');
@@ -314,7 +314,7 @@ abstract class StudipController extends Trails_Controller
      */
     public function link_for($to = ''/* , ... */)
     {
-        return htmlReady(call_user_func_array(array($this, 'url_for'), func_get_args()));
+        return htmlReady(call_user_func_array([$this, 'url_for'], func_get_args()));
     }
 
     /**
@@ -333,7 +333,7 @@ abstract class StudipController extends Trails_Controller
         $from_dialog = Request::isDialog();
 
         if (func_num_args() > 1 || $from_dialog) {
-            $to = call_user_func_array(array($this, 'url_for'), func_get_args());
+            $to = call_user_func_array([$this, 'url_for'], func_get_args());
         }
 
         if ($from_dialog) {
@@ -422,7 +422,7 @@ abstract class StudipController extends Trails_Controller
         $controller->layout = null;
         $controller->parent_controller = $this;
         array_unshift($args, $unconsumed);
-        return call_user_func_array(array($controller, 'perform_relayed'), $args);
+        return call_user_func_array([$controller, 'perform_relayed'], $args);
     }
 
     /**

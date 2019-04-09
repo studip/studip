@@ -17,7 +17,7 @@
 
 class Search_ModuleController extends MVVController
 {
-    private $drill_down_filter = array();
+    private $drill_down_filter = [];
 
     public function before_filter(&$action, &$args)
     {
@@ -135,7 +135,7 @@ class Search_ModuleController extends MVVController
         $sidebar = Sidebar::get();
 
         $widget = new SelectWidget(_('Semesterauswahl'),
-            $this->url_for('',array('sterm' => $this->sterm)), 'sem_select');
+            $this->url_for('',['sterm' => $this->sterm]), 'sem_select');
         $options = [];
         $semester = SemesterData::GetSemesterArray();
         unset($semester[0]);
@@ -161,8 +161,8 @@ class Search_ModuleController extends MVVController
                 || count($drill_down['faecher']['objects'])) {
 
             $widget = new SelectWidget(_('Studiengänge'),
-                $this->url_for('',array('sterm' => $this->sterm, 'type' => 'Studiengang')), 'id');
-            $options = array(0 => 'Alle');
+                $this->url_for('',['sterm' => $this->sterm, 'type' => 'Studiengang']), 'id');
+            $options = [0 => 'Alle'];
             if(!empty($drill_down['studiengaenge']['objects'])){
                 foreach ($drill_down['studiengaenge']['objects'] as $studiengang) {
                     $options[$studiengang->studiengang_id] = $studiengang->name;
@@ -174,8 +174,8 @@ class Search_ModuleController extends MVVController
 
 
             $widget = new SelectWidget(_('Fächer'),
-                $this->url_for('',array('sterm' => $this->sterm, 'type' => 'Fach')), 'id');
-            $options = array(0 => 'Alle');
+                $this->url_for('',['sterm' => $this->sterm, 'type' => 'Fach']), 'id');
+            $options = [0 => 'Alle'];
             if(!empty($drill_down['faecher']['objects'])){
                 foreach ($drill_down['faecher']['objects'] as $fach) {
                     $options[$fach->fach_id] = $fach->name;
@@ -187,9 +187,9 @@ class Search_ModuleController extends MVVController
 
 
             $widget = new SelectWidget(_('Verantwortliche Einrichtungen'),
-                $this->url_for('',array('sterm' => $this->sterm, 'type' => 'Fachbereich')), 'id');
+                $this->url_for('',['sterm' => $this->sterm, 'type' => 'Fachbereich']), 'id');
             $widget->class = 'institute-list';
-            $options = array(0 => 'Alle');
+            $options = [0 => 'Alle'];
             $widget->addElement(new SelectElement(0, _('Alle')), 'select-all');
             if(!empty($drill_down['institutes']['objects'])){
                 foreach ($drill_down['institutes']['objects'] as $institut) {
@@ -217,7 +217,7 @@ class Search_ModuleController extends MVVController
             $this->module = Modul::getAllEnriched('code, bezeichnung', 'ASC',
                     self::$items_per_page,
                     self::$items_per_page * (($this->page ?: 1) - 1),
-                    array('mvv_modul.modul_id' => $this->search_result['Modul']));
+                    ['mvv_modul.modul_id' => $this->search_result['Modul']]);
         }
     }
 
@@ -266,7 +266,7 @@ class Search_ModuleController extends MVVController
 
         $this->modul = Modul::find($modul_id);
         $courses = $this->getSemesterCourses($this->modul);
-        $this->semester_select = array();
+        $this->semester_select = [];
         // only valid (semesters between start and end of module)
         // semesters for selector
         // $sem_valid = false;
@@ -310,7 +310,7 @@ class Search_ModuleController extends MVVController
     private function drilldown()
     {
         $object_type = $this->drill_down_type;
-        if (in_array($object_type, array('Studiengang', 'Fach', 'Fachbereich'))) {
+        if (in_array($object_type, ['Studiengang', 'Fach', 'Fachbereich'])) {
             $selected_object = $object_type::find($this->drill_down_id);
             if ($selected_object) {
                 $this->drill_down_filter = $selected_object->getRelatedModules(true,
@@ -344,8 +344,8 @@ class Search_ModuleController extends MVVController
                 . 'mvv_modul_user LEFT JOIN auth_user_md5 USING(user_id) '
                 . 'WHERE Vorname LIKE ? OR Nachname LIKE ? '
                 . ' OR username LIKE ?');
-        $stmt->execute(array($term, $term, $term));
-        $ret = array();
+        $stmt->execute([$term, $term, $term]);
+        $ret = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $module) {
             $ret[$module['modul_id']][] = $module['user_id'];
         }
@@ -420,7 +420,7 @@ class Search_ModuleController extends MVVController
     private function search_faecher()
     {
         $term = '%' . $this->sterm . '%';
-        $ret = array();
+        $ret = [];
         $modul_public_status = ModuleManagementModel::getPublicStatus('Modul');
         $version_public_status =
                 ModuleManagementModel::getPublicStatus('StgteilVersion');
@@ -460,16 +460,16 @@ class Search_ModuleController extends MVVController
                     . 'WHERE mmu.modul_id IN (?) '
                     . 'GROUP BY modul_id '
                     . 'ORDER BY count_module DESC');
-            $stmt->execute(array($modul_ids));
+            $stmt->execute([$modul_ids]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        return array();
+        return [];
     }
 
     private function drilldown_institutes($modul_ids)
     {
         if (is_array($modul_ids) && count($modul_ids)) {
-            $fabs = array();
+            $fabs = [];
             foreach ($modul_ids as $modul_id) {
                 $modul = Modul::find($modul_id);
                 foreach ($modul->getResponsibleInstitutes() as $fab) {
@@ -478,7 +478,7 @@ class Search_ModuleController extends MVVController
             }
             return SimpleORMapCollection::createFromArray($fabs);
         }
-        return array();
+        return [];
     }
 
     private function drilldown_faecher($modul_ids)
@@ -486,7 +486,7 @@ class Search_ModuleController extends MVVController
         if (is_array($modul_ids) && count($modul_ids)) {
             return Fach::findPublicByModule($modul_ids);
         }
-        return array();
+        return [];
     }
 
     private function drilldown_studiengaenge($modul_ids)
@@ -494,7 +494,7 @@ class Search_ModuleController extends MVVController
         if (is_array($modul_ids) && count($modul_ids)) {
             return Studiengang::findByModule($modul_ids);
         }
-        return array();
+        return [];
     }
 
     public function reset_action()
@@ -520,7 +520,7 @@ class Search_ModuleController extends MVVController
 
         $this->modul = Modul::get($modul_id);
         $courses = $this->getSemesterCourses($this->modul);
-        $this->semester_select = array();
+        $this->semester_select = [];
         // only valid (semesters between start and end of module)
         // semesters for selector
         // $sem_valid = false;
@@ -572,7 +572,7 @@ class Search_ModuleController extends MVVController
     private function getSemesterCourses($modul)
     {
         $semester = Semester::getAll();
-        $courses = array();
+        $courses = [];
         foreach ($modul->modulteile as $modulteil) {
             foreach ($modulteil->lvgruppen as $lvgruppe) {
                 $courses = array_merge($courses,

@@ -9,7 +9,7 @@ $error_message = "";
 // stimmt die übergebene range_id?
 $query = "SELECT 1 FROM Institute WHERE Institut_id = ?";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array($this->config->range_id));
+$statement->execute([$this->config->range_id]);
 if (!$statement->fetchColumn()) {
     $error_message = $GLOBALS["EXTERN_ERROR_MESSAGE"];
 }
@@ -42,15 +42,15 @@ if ($this->config->getValue("Main", "studiplink")) {
 
     $studip_link = URLHelper::getLink('dispatch.php/institute/overview?again=yes&cid='. $this->config->range_id);
     if ($this->config->getValue("Main", "studiplink") == "top") {
-        $args = array("width" => "100%",
-        "height" => "40", "link" => $studip_link);
+        $args = ["width" => "100%",
+        "height" => "40", "link" => $studip_link];
         echo "<tr><td width=\"100%\">\n";
         $this->elements["StudipLink"]->printout($args);
         echo "</td></tr>";
     }
     $table_attr = $this->config->getAttributes("TableHeader", "table");
-    $pattern = array("/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/");
-    $replace = array("width=\"100%\"", "");
+    $pattern = ["/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/"];
+    $replace = ["width=\"100%\"", ""];
     $table_attr = preg_replace($pattern, $replace, $table_attr);
     echo "<tr><td width=\"100%\">\n<table$table_attr>\n";
 }
@@ -88,10 +88,10 @@ else {
         }
 
         // Mitarbeiter/in am Institut
-        $statement->execute(array(
+        $statement->execute([
             $this->config->range_id,
             $news_detail['user_id']
-        ));
+        ]);
         $institute_user = $statement->fetchColumn() ?: 0;
         $statement->closeCursor();
 
@@ -102,10 +102,10 @@ else {
             if ($not_author_link || !$institute_user)
                 $author_name = htmlReady(get_fullname($news_detail["user_id"], $nameformat));
             else
-                $author_name = $this->elements["LinkInternSimple"]->toString(array(
+                $author_name = $this->elements["LinkInternSimple"]->toString([
                                         "content" => htmlReady(get_fullname($news_detail["user_id"], $nameformat)),
                                         "link_args" => "username=" . get_username($news_detail['user_id']),
-                                        "module" => "Persondetails"));
+                                        "module" => "Persondetails"]);
         }
 
         switch ($show_date_author) {
@@ -119,9 +119,9 @@ else {
                 $data["content"]["date"] = strftime($dateform, $news_detail["date"]) . "<br>" . $author_name;
         }
 
-        $data["content"]["topic"] = $this->elements["ContentNews"]->toString(array("content" =>
-                                    array("topic" => htmlReady($news_detail["topic"]),
-                                    "body" => formatReady($content, TRUE, TRUE))));
+        $data["content"]["topic"] = $this->elements["ContentNews"]->toString(["content" =>
+                                    ["topic" => htmlReady($news_detail["topic"]),
+                                    "body" => formatReady($content, TRUE, TRUE)]]);
 
         $this->elements["TableRow"]->printout($data);
     }
@@ -130,8 +130,8 @@ else {
 }
 if ($this->config->getValue("Main", "studiplink")) {
     if ($this->config->getValue("Main", "studiplink") == "bottom") {
-        $args = array("width" => "100%",
-        "height" => "40", "link" => $studip_link);
+        $args = ["width" => "100%",
+        "height" => "40", "link" => $studip_link];
         echo "</td></tr>\n<tr><td width=\"100%\">\n";
         $this->elements["StudipLink"]->printout($args);
     }

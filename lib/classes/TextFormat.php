@@ -55,11 +55,11 @@ class TextFormat
      *
      * @param array $markup_rules   list of markup rules
      */
-    public function __construct($markup_rules = array())
+    public function __construct($markup_rules = [])
     {
         $this->markup_rules = $markup_rules;
         $this->start_regexp = NULL;
-        $this->rule_stack = array();
+        $this->rule_stack = [];
     }
 
     /**
@@ -167,7 +167,7 @@ class TextFormat
             }
             array_unshift($parts, NULL);
         } else {
-            $parts = array(NULL, array($text, 0));
+            $parts = [NULL, [$text, 0]];
         }
 
         return $this->formatParts($text, $parts);

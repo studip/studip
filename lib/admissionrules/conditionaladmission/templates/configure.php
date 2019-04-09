@@ -28,7 +28,7 @@ use Studip\Button, Studip\LinkButton;
             <div class="condition_list">
                 <?=_('Kontingent:')?> <input type="text" name="quota" size="5"> <?=_('Prozent')?>
             </div>
-            <?= Button::create(_('Kontingent aufheben'), 'ungroup_conditions', array('class' => 'ungroup_conditions', 'onclick' => 'return STUDIP.UserFilter.ungroupConditions(this)')) ?>
+            <?= Button::create(_('Kontingent aufheben'), 'ungroup_conditions', ['class' => 'ungroup_conditions', 'onclick' => 'return STUDIP.UserFilter.ungroupConditions(this)']) ?>
         </div>
         <? else: ?>
             <? $rule->removeConditiongroups(); ?>
@@ -54,7 +54,7 @@ use Studip\Button, Studip\LinkButton;
         </div>
         <? if ($rule->conditiongroupsAllowed()): ?>
             <input type="hidden" name="conditiongroups_allowed" value="1">
-            <?= Button::create(_('Kontingent erstellen'), 'group_conditions', array('class' => 'group_conditions', 'onclick' => 'return STUDIP.UserFilter.groupConditions()', 'style' => $rule->getUngroupedConditions() ? '' : 'display: none')) ?>
+            <?= Button::create(_('Kontingent erstellen'), 'group_conditions', ['class' => 'group_conditions', 'onclick' => 'return STUDIP.UserFilter.groupConditions()', 'style' => $rule->getUngroupedConditions() ? '' : 'display: none']) ?>
             <? foreach ($rule->getConditiongroups() as $conditiongroup_id => $conditiongroup): ?>
             <div class="grouped_conditions" id="conditiongroup_<?=$conditiongroup_id?>" style="margin-bottom: 5px">
                 <div class="condition_list">
@@ -72,7 +72,7 @@ use Studip\Button, Studip\LinkButton;
                         </div>
                     <? endforeach; ?>
                 </div>
-                <?= Button::create(_('Kontingent aufheben'), 'ungroup_conditions', array('class' => 'ungroup_conditions', 'onclick' => 'return STUDIP.UserFilter.ungroupConditions(this)')) ?>
+                <?= Button::create(_('Kontingent aufheben'), 'ungroup_conditions', ['class' => 'ungroup_conditions', 'onclick' => 'return STUDIP.UserFilter.ungroupConditions(this)']) ?>
             </div>
             <? endforeach; ?>
         <? endif; ?>

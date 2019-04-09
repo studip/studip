@@ -44,7 +44,7 @@ class StudipLitSearchPluginUB_Erfurt extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = 'Online-Katalog der Universitäts- und Forschungsbibliothek Erfurt/Gotha';
         $this->z_host = "sru.gbv.de/opac-de-547";
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"),
                     '4' => _("Titelstichwörter [TIT]"),
                     '5' => _("Serienstichwörter [SER]"),
                     '21' => _("alle Klassifikationen [SYS]"),
@@ -56,7 +56,7 @@ class StudipLitSearchPluginUB_Erfurt extends StudipLitSearchPluginGvk
                     '5040' => _("Schlagwörter [SLW]"),
                     '8062' => _("alle Titelanfänge [TAF]"),
                     '8580' => _("Verlagsort, Verlag [PUB]")
-                    );
+                    ];
     }
 }
 ?>

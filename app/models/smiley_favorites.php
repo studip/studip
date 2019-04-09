@@ -15,7 +15,7 @@
 class SmileyFavorites
 {
     private $user_id;
-    private $favorites = array();
+    private $favorites = [];
     
     /**
      * Initializes an user's favorites
@@ -28,7 +28,7 @@ class SmileyFavorites
 
         $query = "SELECT smiley_favorite FROM user_info WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->user_id));
+        $statement->execute([$this->user_id]);
         $favorite_string = $statement->fetchColumn() ?: '';
         $this->favorites = explode(',', $favorite_string);
         $this->favorites = array_filter($this->favorites);
@@ -49,7 +49,7 @@ class SmileyFavorites
      *
      * @param Array $favorites Ids of the user's favored smileys
      */
-    function set($favorites = array())
+    function set($favorites = [])
     {
         $favorite_string = implode(',', $favorites);
         if (mb_strlen($favorite_string) > 255) {
@@ -58,7 +58,7 @@ class SmileyFavorites
 
         DBManager::get()
             ->prepare("UPDATE user_info SET smiley_favorite = ? WHERE user_id = ?")
-            ->execute(array($favorite_string, $this->user_id));
+            ->execute([$favorite_string, $this->user_id]);
 
         $this->favorites = $favorites;
     }
@@ -92,7 +92,7 @@ class SmileyFavorites
         if ($favorite) {
             $favorites[] = $smiley_id;
         } else {
-            $favorites = array_diff($favorites, array($smiley_id));
+            $favorites = array_diff($favorites, [$smiley_id]);
         }
         $this->set($favorites);
 
@@ -124,11 +124,11 @@ class SmileyFavorites
      */
     static function getUsage()
     {
-        $usage = array();
+        $usage = [];
         
         $query = "SELECT user_id, smiley_favorite FROM user_info WHERE smiley_favorite != ''";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array());
+        $statement->execute([]);
         $temp = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
         foreach ($temp as $user_id => $favorite_string) {
@@ -158,7 +158,7 @@ class SmileyFavorites
         
         $query = "SELECT user_id, smiley_favorite FROM user_info WHERE smiley_favorite != ''";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array());
+        $statement->execute([]);
         $temp = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
         $changed = 0;

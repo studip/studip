@@ -38,7 +38,7 @@ class OAuth extends Base
         if (OAuthRequestVerifier::requestIsSigned() && $request_type !== 'request') {
             $user_id = false;
 
-            $parameters = (in_array($_SERVER['REQUEST_METHOD'], array('GET', 'POST')))
+            $parameters = (in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST']))
                         ? null
                         : $GLOBALS['_' . $_SERVER['REQUEST_METHOD']];
 
@@ -121,7 +121,7 @@ class OAuth extends Base
      */
     protected function before_store()
     {
-        static $mapping = array(
+        static $mapping = [
             'auth_key'    => 'consumer_key',
             'auth_secret' => 'consumer_secret',
             'active'      => 'enabled',
@@ -134,9 +134,9 @@ class OAuth extends Base
             'notes'       => 'application_notes',
             'type'        => 'application_type',
             'commercial'  => 'application_commercial',
-        );
+        ];
 
-        $consumer = array();
+        $consumer = [];
         foreach ($mapping as $from => $to) {
             $consumer[$to] = $this->$from;
         }

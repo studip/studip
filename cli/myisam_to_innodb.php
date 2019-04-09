@@ -12,7 +12,7 @@ $engines = DBManager::get()->fetchAll("SHOW ENGINES");
 $innodb = false;
 foreach ($engines as $e) {
     // InnoDB is found and enabled.
-            if ($e['Engine'] == 'InnoDB' && in_array(mb_strtolower($e['Support']), array('default', 'yes'))) {
+            if ($e['Engine'] == 'InnoDB' && in_array(mb_strtolower($e['Support']), ['default', 'yes'])) {
         $innodb = true;
         break;
     }
@@ -24,7 +24,7 @@ if ($innodb) {
     $version = $data[0];
 
     // Tables to ignore on engine conversion.
-    $ignore_tables = array();
+    $ignore_tables = [];
 
 
 
@@ -34,10 +34,10 @@ if ($innodb) {
         FROM `information_schema`.TABLES
         WHERE TABLE_SCHEMA=:database AND ENGINE=:oldengine
         ORDER BY TABLE_NAME",
-        array(
+        [
             ':database' => $DB_STUDIP_DATABASE,
             ':oldengine' => 'MyISAM',
-        ));
+        ]);
 
             /*
              * lit_catalog needs fulltext indices which InnoDB doesn't support

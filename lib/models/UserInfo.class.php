@@ -49,7 +49,7 @@ class UserInfo extends SimpleORMap
     const GENDER_FEMALE = 2;
     const GENDER_DIVERSE = 3;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'user_info';
         $config['i18n_fields']['hobby'] = true;

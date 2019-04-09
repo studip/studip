@@ -27,12 +27,12 @@ class PreferentialAdmission extends AdmissionRule
      * conditions. These lists are created on seat distribution in the course
      * set and are deleted immediately after.
      */
-    public $userlists = array();
+    public $userlists = [];
 
     /**
      * Conditions for selecting the favored people in seat distribution.
      */
-    public $conditions = array();
+    public $conditions = [];
 
     /**
      * Should higher semesters of study be favored?
@@ -115,7 +115,7 @@ class PreferentialAdmission extends AdmissionRule
                 FROM `priorities`
                 WHERE `set_id` = ?
                 GROUP BY `priority`
-            ) t", array($courseset->getId()));
+            ) t", [$courseset->getId()]);
         $users = $this->getAffectedUsers();
 
         // No study semester variation, just put all users together.
@@ -180,7 +180,7 @@ class PreferentialAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `prefadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete all associated conditions...
         foreach ($this->conditions as $condition) {
             $condition->delete();
@@ -188,7 +188,7 @@ class PreferentialAdmission extends AdmissionRule
         // ... and their connection to this rule.
         $stmt = DBManager::get()->prepare("DELETE FROM `prefadmission_condition`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -199,7 +199,7 @@ class PreferentialAdmission extends AdmissionRule
      */
     public function getAffectedUsers()
     {
-        $users = array();
+        $users = [];
         if ($this->conditions) {
             // Get users from all specified conditions.
             foreach ($this->conditions as $condition) {
@@ -261,7 +261,7 @@ class PreferentialAdmission extends AdmissionRule
      * @param array $exclude user IDs to exclude
      * @return array Users with their maximal semester of study.
      */
-    public function getSemesterGroups($users, $considerConditions, $exclude = array())
+    public function getSemesterGroups($users, $considerConditions, $exclude = [])
     {
         /*
          * Get all selected condition values so that the study semester
@@ -269,8 +269,8 @@ class PreferentialAdmission extends AdmissionRule
          * value for a user's study semester, but the one that is assigned
          * to a given subject and degree.
          */
-        $queryParts = array();
-        $values = array($users);
+        $queryParts = [];
+        $values = [$users];
         if ($exclude) {
             $values[] = $exclude;
         }
@@ -321,7 +321,7 @@ class PreferentialAdmission extends AdmissionRule
             $query .= " AND ((".implode(") OR (", $queryParts)."))";
         }
         $query .= " GROUP BY `user_id` ORDER BY `semester`, `user_id`";
-        $groups = array();
+        $groups = [];
         foreach (DBManager::get()->fetchAll($query, $values) as $entry) {
             if (intval($entry['semester'])) {
                 $groups[intval($entry['semester'])][] = $entry['user_id'];
@@ -354,13 +354,13 @@ class PreferentialAdmission extends AdmissionRule
         // Load basic data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `prefadmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->favorSemester = $current['favor_semester'];
             // Retrieve conditions.
             $stmt = DBManager::get()->prepare("SELECT *
                 FROM `prefadmission_condition` WHERE `rule_id`=?");
-            $stmt->execute(array($this->id));
+            $stmt->execute([$this->id]);
             $conditions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             foreach ($conditions as $condition) {
                 $currentCondition = new UserFilter($condition['condition_id']);
@@ -392,7 +392,7 @@ class PreferentialAdmission extends AdmissionRule
      */
     public function ruleApplies($userId, $courseId)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -408,7 +408,7 @@ class PreferentialAdmission extends AdmissionRule
         UserFilterField::getAvailableFilterFields();
         parent::setAllData($data);
         $this->favorSemester = (bool) $data['favor_semester'];
-        $this->conditions = array();
+        $this->conditions = [];
         if ($data['conditions']) {
             foreach ($data['conditions'] as $condition) {
                 $this->addCondition(ObjectBuilder::build($condition, 'UserFilter'));
@@ -464,20 +464,20 @@ class PreferentialAdmission extends AdmissionRule
             VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             `favor_semester`=VALUES(`favor_semester`),
             `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->favorSemester, time(), time()));
+        $stmt->execute([$this->id, $this->favorSemester, time(), time()]);
         // Delete removed conditions from DB.
         $entries = DBManager::get()->fetchAll("SELECT `condition_id` FROM
             `prefadmission_condition` WHERE `rule_id`=? AND `condition_id` NOT IN (?)",
-            array($this->id, array_keys($this->conditions)));
+            [$this->id, array_keys($this->conditions)]);
         foreach ($entries as $entry) {
             $current = new UserFilter($entry['condition_id']);
             $current->delete();
         }
         DBManager::get()->execute("DELETE FROM `prefadmission_condition`
-            WHERE `rule_id`=? AND `condition_id` NOT IN (?)", array($this->id, array_keys($this->conditions)));
+            WHERE `rule_id`=? AND `condition_id` NOT IN (?)", [$this->id, array_keys($this->conditions)]);
         // Store all conditions.
-        $queries = array();
-        $parameters = array();
+        $queries = [];
+        $parameters = [];
         if ($this->conditions) {
             foreach ($this->conditions as $condition) {
                 // Store each condition...
@@ -529,7 +529,7 @@ class PreferentialAdmission extends AdmissionRule
     {
         $this->id = md5(uniqid(get_class($this)));
         $this->courseSetId = null;
-        $cloned_conditions = array();
+        $cloned_conditions = [];
         foreach ($this->conditions as $condition) {
             $dolly = clone $condition;
             $cloned_conditions[$dolly->id] = $dolly;

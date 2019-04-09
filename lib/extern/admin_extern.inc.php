@@ -258,7 +258,7 @@ if ($choose_module_form != '') {
         echo "<footer>" . Button::create(_("Anlegen")) . "</footer>\n";
         echo "</form><br>\n";
 
-        $conf_institutes = ExternConfig::GetInstitutesWithConfigurations(($GLOBALS['perm']->have_perm('root') && Request::option('view') == 'extern_global') ? 'global' : array('inst', 'fak'));
+        $conf_institutes = ExternConfig::GetInstitutesWithConfigurations(($GLOBALS['perm']->have_perm('root') && Request::option('view') == 'extern_global') ? 'global' : ['inst', 'fak']);
         if (sizeof($conf_institutes)) {
             echo '<form method="post" action="' . URLHelper::getLink('?com=copychoose') . '" class="default">';
             echo CSRFProtection::tokenTag();

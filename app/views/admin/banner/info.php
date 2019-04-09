@@ -48,19 +48,19 @@
         <tr>
             <td><?= _('Anzeigen ab:')?></td>
             <td>
-                <?= $this->render_partial('admin/banner/datetime-picker', array(
+                <?= $this->render_partial('admin/banner/datetime-picker', [
                         'prefix'    => 'start_',
                         'timestamp' => $banner['startdate'],
-                        'disabled'  => true)) ?>
+                        'disabled'  => true]) ?>
             </td>
         </tr>
         <tr>
             <td><?= _('Anzeigen bis:') ?></td>
             <td>
-                <?= $this->render_partial('admin/banner/datetime-picker', array(
+                <?= $this->render_partial('admin/banner/datetime-picker', [
                         'prefix'    => 'end_',
                         'timestamp' => $banner['enddate'],
-                        'disabled'  => true)) ?>
+                        'disabled'  => true]) ?>
             </td>
         </tr>
         <tr>

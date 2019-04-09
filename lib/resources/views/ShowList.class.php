@@ -173,7 +173,7 @@ class ShowList extends ShowTreeRow{
                     }
                 }
                 if ($simple_perms && $resObject->isRoom()) {
-                    $edit .= LinkButton::create(_('Benachrichtigung'), UrlHelper::getScriptURL('dispatch.php/resources/helpers/resource_message/' . $resObject->id), array('data-dialog' => ''));
+                    $edit .= LinkButton::create(_('Benachrichtigung'), UrlHelper::getScriptURL('dispatch.php/resources/helpers/resource_message/' . $resObject->id), ['data-dialog' => '']);
                 }
                 if ($view_mode == 'no_nav') {
                     $edit .= LinkButton::create(_('Eigenschaften'), URLHelper::getURL('?show_object=' . $resObject->id
@@ -217,7 +217,7 @@ class ShowList extends ShowTreeRow{
         $query .= " ORDER BY ro.name";
 
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($start_id));
+        $statement->execute([$start_id]);
         $resource_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         //if we have an empty result
@@ -237,7 +237,7 @@ class ShowList extends ShowTreeRow{
             //in weitere Ebene abtauchen
             if (($this->recurse_levels == -1) || ($level + 1 < $this->recurse_levels)) {
                 //Untergeordnete Objekte laden
-                $statement->execute(array($resource_id));
+                $statement->execute([$resource_id]);
 
                 while ($id = $statement->fetchColumn()) {
                     $this->showListObjects($id, $level + 1, $result_count);
@@ -266,7 +266,7 @@ class ShowList extends ShowTreeRow{
             $search_only = $this->getResourcesSearchRange($search_array['resources_search_range']);
         }
 
-        $parameters = array();
+        $parameters = [];
         if ($search_array['properties']) {
             $query = "SELECT a.resource_id, COUNT(a.resource_id) AS resource_id_count
                       FROM resources_objects_properties AS a
@@ -277,7 +277,7 @@ class ShowList extends ShowTreeRow{
             }
             $query .= " WHERE ";
 
-            $conditions = array();
+            $conditions = [];
             $i = 0;
             foreach ($search_array['properties'] as $key => $val) {
                 // if ($val == 'on') {
@@ -401,7 +401,7 @@ class ShowList extends ShowTreeRow{
 
                 $assObj->setRepeatDayOfWeek($day_of_week);
                 // set time range for checks
-                $multiOverlaps->setAutoTimeRange(Array($assObj));
+                $multiOverlaps->setAutoTimeRange([$assObj]);
                 // generate and get the events represented by assign object
                 $events = $assObj->getEvents();
 
@@ -444,14 +444,14 @@ class ShowList extends ShowTreeRow{
 
     function getResourcesSearchRange($resource_id)
     {
-        static $children = array();
+        static $children = [];
 
         $query = "SELECT resource_id
                   FROM resources_objects
                   WHERE parent_id = ?
                   ORDER BY name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($resource_id));
+        $statement->execute([$resource_id]);
         $to_add = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($to_add as $rid) {

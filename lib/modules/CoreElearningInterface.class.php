@@ -42,7 +42,7 @@ class CoreElearningInterface implements StudipModule {
                 $navigation->addSubNavigation('edit', new Navigation(_('Lernmodule hinzufügen / entfernen'), 'dispatch.php/course/elearning/edit?seminar_id=' . $course_id));
             }
 
-            return array('elearning' => $navigation);
+            return ['elearning' => $navigation];
         } else {
             return null;
         }
@@ -53,7 +53,7 @@ class CoreElearningInterface implements StudipModule {
      */
     function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Zugang zu extern erstellten Lernmodulen'),
             'description' => _('Über diese Schnittstelle ist es möglich, '.
                 'Selbstlerneinheiten, die in externen Programmen erstellt '.
@@ -74,6 +74,6 @@ class CoreElearningInterface implements StudipModule {
                                     'zu stellen. Ein häufig angebundenes System ist ILIAS. Besteht eine '.
                                     'Anbindung zu einem ILIAS-System, haben Lehrende die Möglichkeit, in '.
                                     'ILIAS Selbstlerneinheiten zu erstellen und in Stud.IP bereit zu stellen.')
-        );
+        ];
     }
 }

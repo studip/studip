@@ -86,7 +86,7 @@ class ObjectConfig extends Config
         if ($data !== null) {
             $this->data = $data;
         } else {
-            $this->data = array();
+            $this->data = [];
             foreach(Config::get()->getFields($this->range_type) as $field) {
                 $this->data[$field] = Config::get()->$field;
                 $metadata[$field] = Config::get()->getMetadata($field);
@@ -154,7 +154,7 @@ class ObjectConfig extends Config
      */
     public function store($field, $value)
     {
-        $entry = new ConfigValue(array($field, $this->range_id));
+        $entry = new ConfigValue([$field, $this->range_id]);
         $this->data[$field] = $value;
 
         // Check if entry is default and if so, delete it
@@ -190,7 +190,7 @@ class ObjectConfig extends Config
      */
     public function delete($field)
     {
-        $entry = ConfigValue::find(array($field, $this->range_id));
+        $entry = ConfigValue::find([$field, $this->range_id]);
         if ($entry !== null) {
             if ($ret = $entry->delete()) {
                 $this->data[$field] = Config::get()->$field;

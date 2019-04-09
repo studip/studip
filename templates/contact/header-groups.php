@@ -25,7 +25,7 @@
         </td>
     <? foreach ($groups as $group_id => $name): ?>
         <td nobreak class="<? if ($filter == $group_id) echo 'active'; ?><? if (!$sizes[$group_id]) echo ' empty'; ?>">
-            <a href="<?= URLHelper::getLink('', compact('view') + array('filter' => $group_id)) ?>"
+            <a href="<?= URLHelper::getLink('', compact('view') + ['filter' => $group_id]) ?>"
                 <?= $tooltip($sizes[$group_id]) ?>
             >
                 <?= htmlReady($name) ?>

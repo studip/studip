@@ -31,7 +31,7 @@ class ConfigEntry extends SimpleORMap
      *
      * @param array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'config';
         parent::configure($config);

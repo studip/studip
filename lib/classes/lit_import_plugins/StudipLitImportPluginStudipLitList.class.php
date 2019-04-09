@@ -50,7 +50,7 @@ class StudipLitImportPluginStudipLitList extends StudipLitImportPluginAbstract {
             $msg = &$_msg;
             if ($data) {
 
-            $fields_arr = array();
+            $fields_arr = [];
             $lines = explode("\n",$data);
             $count = 0;
             foreach ($lines as $line) {
@@ -59,7 +59,7 @@ class StudipLitImportPluginStudipLitList extends StudipLitImportPluginAbstract {
                     if ($count<3) continue;
                     $parts = explode("\t",$line);
 
-                                $fields = array();
+                                $fields = [];
                                 $fields["catalog_id"] = "new_entry";
                                 $fields["user_id"] = $auth->auth["uid"];
 

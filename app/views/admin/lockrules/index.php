@@ -49,7 +49,7 @@
                         <?= Icon::create('trash', 'clickable', [
                                 'title' => _('Diese Regel löschen'),
                                 'style' => 'vertical-align: middle'
-                            ])->asInput(array('data-confirm'=>$msg,'formaction'=>$controller->url_for('admin/lockrules/delete/'.$rule->lock_id))) ?>
+                            ])->asInput(['data-confirm'=>$msg,'formaction'=>$controller->url_for('admin/lockrules/delete/'.$rule->lock_id)]) ?>
                     </td>
                 </tr>
             <? endforeach; ?>

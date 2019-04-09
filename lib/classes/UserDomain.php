@@ -44,7 +44,7 @@ class UserDomain
         } else {
             $sql = "SELECT name FROM userdomains WHERE userdomain_id = :id";
             $statement = DBManager::get()->prepare($sql);
-            $statement->execute(array(':id' => $id));
+            $statement->execute([':id' => $id]);
             if (($row = $statement->fetch())) {
                 $this->name = $row['name'];
             }
@@ -93,19 +93,19 @@ class UserDomain
         
         $query = "SELECT * FROM userdomains WHERE userdomain_id = :id ";
         $statement = $db->prepare($query);
-        $statement->execute(array(':id' => $this->id));
+        $statement->execute([':id' => $this->id]);
         
         if (($row = $statement->fetch())) {
             $query = "UPDATE userdomains SET name = :name "
                     . "WHERE userdomain_id = :id ";
             $statement = $db->prepare($query);
-            $statement->execute(array(':name' => $this->name, ':id' => $this->id));
+            $statement->execute([':name' => $this->name, ':id' => $this->id]);
             NotificationCenter::postNotification('UserDomainDidUpdate', $this->id, $GLOBALS['user']->id); 
         } else {
                 $query = "INSERT INTO userdomains (userdomain_id, name) "
                         . "VALUES (:id, :name)";
             $statement = $db->prepare($query);
-            $statement->execute(array(':id' => $this->id, ':name' => $this->name));
+            $statement->execute([':id' => $this->id, ':name' => $this->name]);
             NotificationCenter::postNotification('UserDomainDidCreate', $this->id, $GLOBALS['user']->id); 
         }
     }
@@ -117,7 +117,7 @@ class UserDomain
     {
         $query = "DELETE FROM userdomains WHERE userdomain_id = :id ";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':id' => $this->id));
+        $statement->execute([':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainDidDelete', $this->id, $GLOBALS['user']->id);
 
     }
@@ -128,7 +128,7 @@ class UserDomain
      */
     public static function getUserDomains ()
     {
-        $domains = array();
+        $domains = [];
         $statement = DBManager::get()->prepare("SELECT * FROM userdomains ORDER BY name");
         $statement->execute();
         foreach ($statement->fetchAll() as $row) {
@@ -146,7 +146,7 @@ class UserDomain
         $query = "INSERT IGNORE INTO user_userdomains (user_id, userdomain_id) "
                 . "VALUES (:user_id, :id)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':user_id' => $user_id, ':id' => $this->id));
+        $statement->execute([':user_id' => $user_id, ':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainUserDidCreate', $this->id, $user_id);
     }
 
@@ -160,7 +160,7 @@ class UserDomain
                 . "AND userdomain_id = :id";
                 
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':user_id' => $user_id, ':id' => $this->id));
+        $statement->execute([':user_id' => $user_id, ':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainUserDidDelete', $this->id, $user_id);
     }
 
@@ -172,9 +172,9 @@ class UserDomain
     {
         $query = "SELECT user_id FROM user_userdomains WHERE userdomain_id = :id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':id' => $this->id));
+        $statement->execute([':id' => $this->id]);
         
-        $users = array();
+        $users = [];
         foreach ($statement->fetchAll() as $row) {
             $users[] = $row['user_id'];
         }
@@ -192,9 +192,9 @@ class UserDomain
                 . "WHERE user_userdomains.user_id = :user_id ORDER BY name";
         
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':user_id' => $user_id));
+        $statement->execute([':user_id' => $user_id]);
         
-        $domains = array();
+        $domains = [];
         foreach ($statement->fetchAll() as $row) {
             $domains[] = new UserDomain($row['userdomain_id'], $row['name']);
         }
@@ -208,7 +208,7 @@ class UserDomain
     public static function removeUserDomainsForUser ($user_id)
     {
         $statement = DBManager::get()->prepare("DELETE FROM user_userdomains WHERE user_id = :user_id");
-        $statement->execute(array(':user_id' => $user_id));
+        $statement->execute([':user_id' => $user_id]);
         NotificationCenter::postNotification('UserDomainUserDidDelete', 'all', $user_id);
     }
 
@@ -220,7 +220,7 @@ class UserDomain
         $query = "INSERT IGNORE INTO seminar_userdomains (seminar_id, userdomain_id) "
                 . "VALUES (:seminar_id, :id)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':seminar_id' => $seminar_id, ':id' => $this->id));
+        $statement->execute([':seminar_id' => $seminar_id, ':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainSeminarDidCreate', $this->id, $seminar_id);
     }
 
@@ -233,7 +233,7 @@ class UserDomain
                 . "WHERE seminar_id = :seminar_id AND "
                 . "userdomain_id = :id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':seminar_id' => $seminar_id, ':id' => $this->id));
+        $statement->execute([':seminar_id' => $seminar_id, ':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainSeminarDidDelete', $this->id, $seminar_id);
     }
 
@@ -245,9 +245,9 @@ class UserDomain
     {
         $query = "SELECT seminar_id FROM seminar_userdomains WHERE userdomain_id = :id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':id' => $this->id));
+        $statement->execute([':id' => $this->id]);
     
-        $seminars = array();
+        $seminars = [];
         foreach ($statement->fetchAll() as $row) {
             $seminars[] = $row['seminar_id'];
         }
@@ -264,9 +264,9 @@ class UserDomain
         $query = "SELECT * FROM userdomains JOIN seminar_userdomains USING (userdomain_id) "
                 . "WHERE seminar_userdomains.seminar_id = :seminar_id ORDER BY name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':seminar_id' => $seminar_id));
+        $statement->execute([':seminar_id' => $seminar_id]);
         
-        $domains = array();
+        $domains = [];
         foreach ($statement->fetchAll() as $row) {
             $domains[] = new UserDomain($row['userdomain_id'], $row['name']);
         }
@@ -281,7 +281,7 @@ class UserDomain
     {
         $query = "DELETE FROM seminar_userdomains WHERE seminar_id = :seminar_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(':seminar_id' => $seminar_id));
+        $statement->execute([':seminar_id' => $seminar_id]);
         NotificationCenter::postNotification('UserDomainSeminarDidDelete', 'all', $seminar_id);
     }
 }

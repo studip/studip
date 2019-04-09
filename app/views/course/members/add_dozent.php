@@ -19,8 +19,8 @@
                 <td>
                     <?=
                         QuickSearch::get('new_dozent', $search)
-                        ->withButton(array('reset_button_name' => 'reset_dozent', 
-                            'search_button_name' => 'search_dozent'))
+                        ->withButton(['reset_button_name' => 'reset_dozent', 
+                            'search_button_name' => 'search_dozent'])
                         ->render();
                     ?>  
                     <input type="hidden" name="seminar_id" value="<?= $course_id ?>">
@@ -28,7 +28,7 @@
 
                 <td>
 <?= Button::createAccept(_('Eintragen'), 'add_dozent', 
-        array('title' => sprintf(_("als %s eintragen"),  htmlReady($decoratedStatusGroups['dozent'])))) ?>
+        ['title' => sprintf(_("als %s eintragen"),  htmlReady($decoratedStatusGroups['dozent']))]) ?>
 <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/members/index')) ?>
                 </td>
             </tr>

@@ -73,7 +73,7 @@ class Institute_BasicdataController extends AuthenticatedController
             $message              = _('Sind Sie sicher, dass Sie diese Einrichtung löschen wollen?');
             $post['i_kill']       = 1;
             $post['studipticket'] = get_ticket();
-            $this->question = createQuestion2($message, $post, array(), $this->url_for('institute/basicdata/delete/' . $i_view));
+            $this->question = createQuestion2($message, $post, [], $this->url_for('institute/basicdata/delete/' . $i_view));
         }
 
         $lockrule = LockRules::getObjectRule($i_view);
@@ -85,10 +85,10 @@ class Institute_BasicdataController extends AuthenticatedController
         $institute = new Institute($i_view === 'new' ? null : $i_view);
 
         //add the free administrable datafields
-        $datafields = array();
+        $datafields = [];
         $localEntries = DataFieldEntry::getDataFieldEntries($institute->id, 'inst');
         if ($localEntries) {
-            $invalidEntries = $this->flash['invalid_entries'] ?: array();
+            $invalidEntries = $this->flash['invalid_entries'] ?: [];
             foreach ($localEntries as $entry) {
                 if (!$entry->isVisible()) {
                     continue;
@@ -98,20 +98,20 @@ class Institute_BasicdataController extends AuthenticatedController
                 if (in_array($entry->getId(), $invalidEntries)) {
                     $color = '#ff0000';
                 }
-                $datafields[] = array(
+                $datafields[] = [
                     'color' => $color,
                     'value' => ($GLOBALS['perm']->have_perm($entry->isEditable())
                                 && !LockRules::Check($institute['Institut_id'], $entry->getId()))
                              ? $entry->getHTML('datafields')
                              : $entry->getDisplayValue(),
-                );
+                ];
             }
         }
 
         // Read faculties if neccessary
         if (count($institute->sub_institutes) === 0) {
             if ($GLOBALS['perm']->have_perm('root')) {
-                $this->faculties = Institute::findBySQL('Institut_id = fakultaets_id ORDER BY Name ASC', array($i_view));
+                $this->faculties = Institute::findBySQL('Institut_id = fakultaets_id ORDER BY Name ASC', [$i_view]);
             } else {
                 $temp = User::find($GLOBALS['user']->id)
                             ->institute_memberships->findBy('inst_perms', 'admin')
@@ -210,14 +210,14 @@ class Institute_BasicdataController extends AuthenticatedController
             }
 
             // Does an institute with the given name already exist in the given faculty?
-            if ($institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = ?', array($institute->name, $institute->fakultaets_id)) !== null) {
+            if ($institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = ?', [$institute->name, $institute->fakultaets_id]) !== null) {
                 $message = sprintf(_('Die Einrichtung "%s" existiert bereits innerhalb der angegebenen Fakultät!'), $institute->name);
                 PageLayout::postMessage(MessageBox::error($message));
                 return $this->redirect('institute/basicdata/index/new');
             }
 
             // Does a faculty with the given name already exist
-            if (!$institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = Institut_id', array($institute->name)) !== null) {
+            if (!$institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = Institut_id', [$institute->name]) !== null) {
                 $message = sprintf(_('Die Fakultät "%s" existiert bereits!'), $institute->name);
                 PageLayout::postMessage(MessageBox::error($message));
                 return $this->redirect('institute/basicdata/index/new');
@@ -240,7 +240,7 @@ class Institute_BasicdataController extends AuthenticatedController
 
             // Save datafields
             $datafields = Request::getArray('datafields');
-            $invalidEntries = array();
+            $invalidEntries = [];
             $datafields_stored = 0;
             foreach (DataFieldEntry::getDataFieldEntries($institute->id, 'inst') as $entry) {
                 if (isset($datafields[$entry->getId()])) {
@@ -294,7 +294,7 @@ class Institute_BasicdataController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::success($message));
         }
 
-        $this->redirect('institute/basicdata/index/' . $institute->id, array('cid' => $institute->id));
+        $this->redirect('institute/basicdata/index/' . $institute->id, ['cid' => $institute->id]);
     }
 
     /**
@@ -354,7 +354,7 @@ class Institute_BasicdataController extends AuthenticatedController
         if (!$institute->delete()) {
             PageLayout::postMessage(MessageBox::error(_('Die Einrichtung konnte nicht gelöscht werden.')));
         } else {
-            $details = array();
+            $details = [];
 
             // logging - put institute's name in info - it's no longer derivable from id afterwards
             StudipLog::log('INST_DEL', $i_id, NULL, $i_name);
@@ -388,10 +388,10 @@ class Institute_BasicdataController extends AuthenticatedController
             //updating range_tree
             $query = "UPDATE range_tree SET name = ?, studip_object = '', studip_object_id = '' WHERE studip_object_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 _('(in Stud.IP gelöscht)'),
                 $i_id,
-            ));
+            ]);
             if (($db_ar = $statement->rowCount()) > 0) {
                 $details[] = sprintf(_('%u Bereiche im Einrichtungsbaum angepasst.'), $db_ar);
             }
@@ -406,10 +406,10 @@ class Institute_BasicdataController extends AuthenticatedController
 
             //kill all wiki-pages
             $removed_wiki_pages = 0;
-            foreach (array('', '_links', '_locks') as $area) {
+            foreach (['', '_links', '_locks'] as $area) {
                 $query = "DELETE FROM wiki{$area} WHERE range_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($i_id));
+                $statement->execute([$i_id]);
                 $removed_wiki_pages += $statement->rowCount();
             }
             if ($removed_wiki_pages > 0) {

@@ -45,13 +45,13 @@ class StudipLitSearchPluginUlb extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = "Universitäts- und Landesbibliothek (ULB)";
         $this->z_host = "sru.gbv.de/opac-de-3";
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"), '2' => _("Körperschaftsname [KOS]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"), '2' => _("Körperschaftsname [KOS]"),
                                 '3' => _("Kongress [KNS]"),'4' => _("Titelstichwörter [TIT]"),
                                 '5' => _("Serienstichwörter [SER]"), '7' => _("ISBN [ISB]"),
                                 '8' => _("ISSN [ISS]"), '12' => _("PICA Prod.-Nr [PPN]"),
                                 '21' => _("alle Klassifikationen [SYS]"), '1004' => _("Person, Author [PER]"),
                                 '1005' => _("Körperschaften [KOR]"), '1006' => _("Kongresse [KON]"),
-                                '1007' => _("alle Nummern [NUM]"));
+                                '1007' => _("alle Nummern [NUM]")];
     }
 }
 ?>

@@ -18,7 +18,7 @@ class Activity extends \SimpleORMap
 
     const GC_MAX_DAYS = 366; // Garbage collector removes activities after 366 days
 
-    private static $allowed_verbs = array(
+    private static $allowed_verbs = [
         'answered',
         'attempted',
         'attended',
@@ -34,12 +34,12 @@ class Activity extends \SimpleORMap
         'shared',
         'sent',
         'voided'
-    );
+    ];
 
     /**
      * {@inheritdoc}
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'activities';
         $config['additional_fields']['object_url'] = ['get' => 'getUrlList'];
@@ -97,7 +97,7 @@ class Activity extends \SimpleORMap
      */
     public function getUrlList()
     {
-        return $this->object_url ?: array();
+        return $this->object_url ?: [];
     }
 
     /**
@@ -128,7 +128,7 @@ class Activity extends \SimpleORMap
      */
     public function verbToText()
     {
-        $translation = array(
+        $translation = [
             'answered'    => _('beantwortete %s'),
             'attempted'   => _('versuchte %s'),
             'attended'    => _('nahm teil an %s'),
@@ -144,7 +144,7 @@ class Activity extends \SimpleORMap
             'shared'      => _('teilte %s'),
             'sent'        => _('sendete %s'),
             'voided'      => _('löschte %s')
-        );
+        ];
 
         return ($translation[$this->verb]);
     }
@@ -157,8 +157,8 @@ class Activity extends \SimpleORMap
     {
         $stmt = \DBManager::get()->prepare('DELETE FROM activities WHERE mkdate < ?');
 
-        $stmt->execute(array(
-            time() - self::GC_MAX_DAYS * 24 * 60 * 60)
+        $stmt->execute([
+            time() - self::GC_MAX_DAYS * 24 * 60 * 60]
         );
 
         //Expire Cache

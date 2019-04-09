@@ -52,89 +52,89 @@
  *  
  */
 
-$privileges = array(
+$privileges = [
     /**
      * This object has no different status. So only the default declarations are
      * required.
      */
-    'default_table' => array(
+    'default_table' => [
         'MVVEntwickler'     => 7,
         'MVVRedakteur'      => 1,
         'MVVTranslator'     => 3,
         'MVVFreigabe'       => 7,
         'MVVLvGruppenAdmin' => 7
-    ),
-    'default_fields' => array(
+    ],
+    'default_fields' => [
         'MVVEntwickler'     => 1,
         'MVVRedakteur'      => 1,
         'MVVTranslator'     => 1,
         'MVVFreigabe'       => 1,
         'MVVLvGruppenAdmin' => 7
-    ),
-    'fields' => array(
-        'name' => array(
-            'default' => array(
+    ],
+    'fields' => [
+        'name' => [
+            'default' => [
                 'MVVEntwickler'     => 3,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 3,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'name_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'name_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler'     => 3,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 3,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'alttext' => array(
-            'default' => array(
+            ]
+        ],
+        'alttext' => [
+            'default' => [
                 'MVVEntwickler'     => 3,
                 'MVVRedakteur'      => 3,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 3,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'alttext_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'alttext_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler'     => 3,
                 'MVVRedakteur'      => 3,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 3,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
+            ]
+        ],
         // relations
-        'modulteile' => array(
-            'default' => array(
+        'modulteile' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'courses' => array(
-            'default' => array(
+            ]
+        ],
+        'courses' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'archived_courses' => array(
-            'default' => array(
+            ]
+        ],
+        'archived_courses' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1,
                 'MVVLvGruppenAdmin' => 7
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];

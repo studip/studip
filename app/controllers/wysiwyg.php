@@ -390,7 +390,7 @@ class WysiwygController extends AuthenticatedController
      *
      * @return object Global settings.
      */
-    private function getGlobalSettings($arguments = array())
+    private function getGlobalSettings($arguments = [])
     {
         $subgroup = array_shift($arguments);
         if (($subgroup !== null && $subgroup !== '') || count($arguments) > 0) {
@@ -414,7 +414,7 @@ class WysiwygController extends AuthenticatedController
      *
      * @return object User's settings.
      */
-    private function getUserSettings($arguments = array())
+    private function getUserSettings($arguments = [])
     {
         // NOTE simulate a list of users containing only the current
         // user until this is implemented correctly

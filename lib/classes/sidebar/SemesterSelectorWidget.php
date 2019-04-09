@@ -37,7 +37,7 @@ class SemesterSelectorWidget extends SelectWidget
      * Populates and renders the widget according to the previously made
      * settings.
      */
-    public function render($variables = array())
+    public function render($variables = [])
     {
         $current_id = Request::get($this->template_variables['name']);
         if (!$current_id && !$this->include_all) {

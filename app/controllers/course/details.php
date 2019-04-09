@@ -52,7 +52,7 @@ class Course_DetailsController extends AuthenticatedController
 
         if ($this->course->getSemClass()->offsetGet('studygroup_mode')) {
             if ($GLOBALS['perm']->have_studip_perm('autor', $this->course->id)) { // participants may see seminar_main
-                $link = URLHelper::getUrl('seminar_main.php', array('auswahl' => $this->course->id));
+                $link = URLHelper::getUrl('seminar_main.php', ['auswahl' => $this->course->id]);
             } else {
                 $link = URLHelper::getUrl('dispatch.php/course/studygroup/details/' . $this->course->id, [
                     'send_from_search_page' => $this->send_from_search_page,
@@ -120,11 +120,11 @@ class Course_DetailsController extends AuthenticatedController
                     return (bool) $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
                 });
 
-            $trail_classes = array('Modulteil', 'StgteilabschnittModul', 'StgteilAbschnitt', 'StgteilVersion');
+            $trail_classes = ['Modulteil', 'StgteilabschnittModul', 'StgteilAbschnitt', 'StgteilVersion'];
             $mvv_object_pathes = MvvCourse::get($this->course->getId())->getTrails($trail_classes);
             if ($mvv_object_pathes) {
                 if (Config::get()->COURSE_SEM_TREE_DISPLAY) {
-                    $this->mvv_tree = array();
+                    $this->mvv_tree = [];
                     foreach ($mvv_object_pathes as $mvv_object_path) {
                         // show only complete pathes
                         if (count($mvv_object_path) == 4) {
@@ -155,7 +155,7 @@ class Course_DetailsController extends AuthenticatedController
                     foreach ($mvv_object_pathes as $mvv_object_path) {
                         // show only complete pathes
                         if (count($mvv_object_path) == 4) {
-                            $mvv_object_names = array();
+                            $mvv_object_names = [];
                             $modul_id = '';
                             foreach ($mvv_object_path as $mvv_object) {
                                 if ($mvv_object instanceof StgteilabschnittModul) {
@@ -163,7 +163,7 @@ class Course_DetailsController extends AuthenticatedController
                                 }
                                 $mvv_object_names[] = $mvv_object->getDisplayName();
                             }
-                            $this->mvv_pathes[] = array($modul_id => $mvv_object_names);
+                            $this->mvv_pathes[] = [$modul_id => $mvv_object_names];
                         }
                     }
                 }

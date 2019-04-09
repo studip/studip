@@ -48,7 +48,7 @@ if (Config::get()->CALENDAR_ENABLE) {
 
 class ExternModuleTemplatePersondetails extends ExternModule {
 
-    public $markers = array();
+    public $markers = [];
     private $user_id;
     private $user_perm;
     private $visibilities;
@@ -57,9 +57,9 @@ class ExternModuleTemplatePersondetails extends ExternModule {
     *
     */
     public function __construct ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array();
+        $this->data_fields = [];
         if (get_config('CALENDAR_ENABLE')) {
-            $this->registered_elements = array(
+            $this->registered_elements = [
                 'PersondetailsLectures' => 'PersondetailsLecturesTemplate',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
                 'LitList',
@@ -69,9 +69,9 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 'TemplateAppointments' => 'TemplateGeneric',
                 'TemplateLitList' => 'TemplateGeneric',
                 'TemplateOwnCategories' => 'TemplateGeneric'
-            );
+            ];
         } else {
-            $this->registered_elements = array(
+            $this->registered_elements = [
                 'PersondetailsLectures' => 'PersondetailsLecturesTemplate',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
                 'LitList',
@@ -80,13 +80,13 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 'TemplateNews' => 'TemplateGeneric',
                 'TemplateLitList' => 'TemplateGeneric',
                 'TemplateOwnCategories' => 'TemplateGeneric'
-            );
+            ];
         }
-        if (in_array(get_object_type($range_id), array('global'))) {
+        if (in_array(get_object_type($range_id), ['global'])) {
             array_unshift($this->registered_elements, 'SelectInstitutes');
         }
-        $this->field_names = array();
-        $this->args = array('username', 'seminar_id', 'group_id');
+        $this->field_names = [];
+        $this->args = ['username', 'seminar_id', 'group_id'];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
 
@@ -96,7 +96,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
 
         // setup module properties
         $this->elements['LinkInternLecturedetails']->real_name = _("Link zum Modul Veranstaltungsdetails");
-        $this->elements['LinkInternLecturedetails']->link_module_type = array(4, 13);
+        $this->elements['LinkInternLecturedetails']->link_module_type = [4, 13];
         $this->elements['PersondetailsLectures']->real_name = _("Einstellungen für Lehrveranstaltungen");
         $this->elements['LitList']->real_name = _("Einstellungen für Literaturlisten");
         $this->elements['TemplateMain']->real_name = _("Haupttemplate");
@@ -107,7 +107,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         }
         $this->elements['TemplateLitList']->real_name = _("Template für Literaturlisten");
         $this->elements['TemplateOwnCategories']->real_name = _("Template für eigene Kategorien");
-        if (in_array(get_object_type($this->config->range_id), array('global'))) {
+        if (in_array(get_object_type($this->config->range_id), ['global'])) {
             $this->elements['SelectInstitutes']->real_name = _("Einschränkung auf Institute/Einrichtungen");
         }
     }
@@ -131,125 +131,125 @@ class ExternModuleTemplatePersondetails extends ExternModule {
     }
 
     public function getMarkerDescription ($element_name) {
-        $markers['TemplateMain'][] = array('__GLOBAL__', _("Globale Variablen (gültig im gesamten Template)."));
-        $markers['TemplateMain'][] = array('###STUDIP-EDIT-HREF###', '');
+        $markers['TemplateMain'][] = ['__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")];
+        $markers['TemplateMain'][] = ['###STUDIP-EDIT-HREF###', ''];
 
-        $markers['TemplateMain'][] = array('<!-- BEGIN PERSONDETAILS -->', '');
-        $markers['TemplateMain'][] = array('###FULLNAME###', '');
-        $markers['TemplateMain'][] = array('###LASTNAME###', '');
-        $markers['TemplateMain'][] = array('###FIRSTNAME###', '');
-        $markers['TemplateMain'][] = array('###TITLEFRONT###', '');
-        $markers['TemplateMain'][] = array('###TITLEREAR###', '');
-        $markers['TemplateMain'][] = array('###USERNAME###', '');
-        $markers['TemplateMain'][] = array('###STATUSGROUPS###', _("Kommaseparierte Liste mit Statusgruppen"));
-        $markers['TemplateMain'][] = array('###IMAGE-HREF###', '');
-        $markers['TemplateMain'][] = array('###INST-NAME###', '');
-        $markers['TemplateMain'][] = array('###INST-HREF###', '');
-        $markers['TemplateMain'][] = array('###STREET###', '');
-        $markers['TemplateMain'][] = array('###ZIPCODE###', '');
-        $markers['TemplateMain'][] = array('###EMAIL###', '');
-        $markers['TemplateMain'][] = array('###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)"));
-        $markers['TemplateMain'][] = array('###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)"));
-        $markers['TemplateMain'][] = array('###ROOM###', '');
-        $markers['TemplateMain'][] = array('###PHONE###', '');
-        $markers['TemplateMain'][] = array('###FAX###', '');
-        $markers['TemplateMain'][] = array('###HOMEPAGE-HREF###', '');
-        $markers['TemplateMain'][] = array('###OFFICE-HOURS###', '');
-        $markers['TemplateMain'][] = array('###RESEARCH-INTERESTS###', '');
-        $markers['TemplateMain'][] = array('###CV###', _("Lebenslauf"));
-        $markers['TemplateMain'][] = array('###PUBLICATIONS###', '');
-        $markers['TemplateMain'][] = array('###OFFICE-HOURS###', '');
+        $markers['TemplateMain'][] = ['<!-- BEGIN PERSONDETAILS -->', ''];
+        $markers['TemplateMain'][] = ['###FULLNAME###', ''];
+        $markers['TemplateMain'][] = ['###LASTNAME###', ''];
+        $markers['TemplateMain'][] = ['###FIRSTNAME###', ''];
+        $markers['TemplateMain'][] = ['###TITLEFRONT###', ''];
+        $markers['TemplateMain'][] = ['###TITLEREAR###', ''];
+        $markers['TemplateMain'][] = ['###USERNAME###', ''];
+        $markers['TemplateMain'][] = ['###STATUSGROUPS###', _("Kommaseparierte Liste mit Statusgruppen")];
+        $markers['TemplateMain'][] = ['###IMAGE-HREF###', ''];
+        $markers['TemplateMain'][] = ['###INST-NAME###', ''];
+        $markers['TemplateMain'][] = ['###INST-HREF###', ''];
+        $markers['TemplateMain'][] = ['###STREET###', ''];
+        $markers['TemplateMain'][] = ['###ZIPCODE###', ''];
+        $markers['TemplateMain'][] = ['###EMAIL###', ''];
+        $markers['TemplateMain'][] = ['###EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)")];
+        $markers['TemplateMain'][] = ['###EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)")];
+        $markers['TemplateMain'][] = ['###ROOM###', ''];
+        $markers['TemplateMain'][] = ['###PHONE###', ''];
+        $markers['TemplateMain'][] = ['###FAX###', ''];
+        $markers['TemplateMain'][] = ['###HOMEPAGE-HREF###', ''];
+        $markers['TemplateMain'][] = ['###OFFICE-HOURS###', ''];
+        $markers['TemplateMain'][] = ['###RESEARCH-INTERESTS###', ''];
+        $markers['TemplateMain'][] = ['###CV###', _("Lebenslauf")];
+        $markers['TemplateMain'][] = ['###PUBLICATIONS###', ''];
+        $markers['TemplateMain'][] = ['###OFFICE-HOURS###', ''];
 
-        $markers['TemplateMain'][] = array('<!-- BEGIN ALL-INST -->', '');
-        $markers['TemplateMain'][] = array('<!-- BEGIN SINGLE-INST -->', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-NAME###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-HREF###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-STREET###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-ZIPCODE###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-EMAIL###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)"));
-        $markers['TemplateMain'][] = array('###SINGLE-INST-EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)"));
-        $markers['TemplateMain'][] = array('###SINGLE-INST-ROOM###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-PHONE###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-FAX###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-HOMEPAGE-HREF###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-OFFICE-HOURS###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-RESEARCH-INTERESTS###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-CV###', _("Lebenslauf"));
-        $markers['TemplateMain'][] = array('###SINGLE-INST-PUBLICATIONS###', '');
-        $markers['TemplateMain'][] = array('###SINGLE-INST-OFFICE-HOURS###', '');
-        $markers['TemplateMain'][] = array('<!-- END SINGLE-INST -->', '');
-        $markers['TemplateMain'][] = array('<!-- END ALL-INST -->', '');
+        $markers['TemplateMain'][] = ['<!-- BEGIN ALL-INST -->', ''];
+        $markers['TemplateMain'][] = ['<!-- BEGIN SINGLE-INST -->', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-NAME###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-HREF###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-STREET###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-ZIPCODE###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-EMAIL###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-EMAIL-LOCAL###', _("Der local-part der E-Mail-Adresse (vor dem @-Zeichen)")];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-EMAIL-DOMAIN###', _("Der domain-part der E-Mail-Adresse (nach dem @-Zeichen)")];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-ROOM###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-PHONE###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-FAX###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-HOMEPAGE-HREF###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-OFFICE-HOURS###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-RESEARCH-INTERESTS###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-CV###', _("Lebenslauf")];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-PUBLICATIONS###', ''];
+        $markers['TemplateMain'][] = ['###SINGLE-INST-OFFICE-HOURS###', ''];
+        $markers['TemplateMain'][] = ['<!-- END SINGLE-INST -->', ''];
+        $markers['TemplateMain'][] = ['<!-- END ALL-INST -->', ''];
 
         $this->insertDatafieldMarkers('user', $markers, 'TemplateMain');
         $this->insertDatafieldMarkers('userinstrole', $markers, 'TemplateMain');
         $this->insertPluginMarkers('HomepagePlugin', $markers, 'TemplateMain');
-        $markers['TemplateMain'][] = array('###LECTURES###', _("Inhalt aus dem Template für Veranstaltungen"));
-        $markers['TemplateMain'][] = array('###NEWS###', _("Inhalt aus dem Template für News"));
-        $markers['TemplateMain'][] = array('###LITERATURE###', _("Inhalt aus dem Template für Literaturlisten"));
-        $markers['TemplateMain'][] = array('###APPOINTMENTS###', _("Inhalt aus dem Template für Termine"));
-        $markers['TemplateMain'][] = array('###OWNCATEGORIES###', _("Inhalt aus dem Template für eigene Kategorien"));
-        $markers['TemplateMain'][] = array('<!-- END PERSONDETAILS -->', '');
+        $markers['TemplateMain'][] = ['###LECTURES###', _("Inhalt aus dem Template für Veranstaltungen")];
+        $markers['TemplateMain'][] = ['###NEWS###', _("Inhalt aus dem Template für News")];
+        $markers['TemplateMain'][] = ['###LITERATURE###', _("Inhalt aus dem Template für Literaturlisten")];
+        $markers['TemplateMain'][] = ['###APPOINTMENTS###', _("Inhalt aus dem Template für Termine")];
+        $markers['TemplateMain'][] = ['###OWNCATEGORIES###', _("Inhalt aus dem Template für eigene Kategorien")];
+        $markers['TemplateMain'][] = ['<!-- END PERSONDETAILS -->', ''];
 
-        $markers['TemplateLectures'][] = array('<!-- BEGIN LECTURES -->', '');
-        $markers['TemplateLectures'][] = array('<!-- BEGIN SEMESTER -->', '');
-        $markers['TemplateLectures'][] = array('###NAME###', '');
-        $markers['TemplateLectures'][] = array('<!-- BEGIN LECTURE -->', '');
-        $markers['TemplateLectures'][] = array('###TITLE###', '');
-        $markers['TemplateLectures'][] = array('###SUBTITLE###', '');
-        $markers['TemplateLectures'][] = array('###NUMBER###', _("Die Veranstaltungsnummer"));
-        $markers['TemplateLectures'][] = array('###LECTUREDETAILS-HREF###', '');
-        $markers['TemplateLectures'][] = array('<!-- END LECTURE -->', '');
-        $markers['TemplateLectures'][] = array('<!-- END SEMESTER -->', '');
-        $markers['TemplateLectures'][] = array('<!-- END LECTURES -->', '');
+        $markers['TemplateLectures'][] = ['<!-- BEGIN LECTURES -->', ''];
+        $markers['TemplateLectures'][] = ['<!-- BEGIN SEMESTER -->', ''];
+        $markers['TemplateLectures'][] = ['###NAME###', ''];
+        $markers['TemplateLectures'][] = ['<!-- BEGIN LECTURE -->', ''];
+        $markers['TemplateLectures'][] = ['###TITLE###', ''];
+        $markers['TemplateLectures'][] = ['###SUBTITLE###', ''];
+        $markers['TemplateLectures'][] = ['###NUMBER###', _("Die Veranstaltungsnummer")];
+        $markers['TemplateLectures'][] = ['###LECTUREDETAILS-HREF###', ''];
+        $markers['TemplateLectures'][] = ['<!-- END LECTURE -->', ''];
+        $markers['TemplateLectures'][] = ['<!-- END SEMESTER -->', ''];
+        $markers['TemplateLectures'][] = ['<!-- END LECTURES -->', ''];
 
-        $markers['TemplateNews'][] = array('<!-- BEGIN NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN NO-NEWS -->', '');
-        $markers['TemplateNews'][] = array('###NEWS_NO-NEWS-TEXT###', '');
-        $markers['TemplateNews'][] = array('<!-- END NO-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN ALL-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN SINGLE-NEWS -->', '');
-        $markers['TemplateNews'][] = array('###NEWS_TOPIC###', '');
-        $markers['TemplateNews'][] = array('###NEWS_BODY###', '');
-        $markers['TemplateNews'][] = array('###NEWS_DATE###', '');
-        $markers['TemplateNews'][] = array('###NEWS_ADMIN-MESSAGE###', '');
-        $markers['TemplateNews'][] = array('###NEWS_NO###', '');
-        $markers['TemplateNews'][] = array('<!-- END SINGLE-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- END ALL-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- END NEWS -->', '');
+        $markers['TemplateNews'][] = ['<!-- BEGIN NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN NO-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['###NEWS_NO-NEWS-TEXT###', ''];
+        $markers['TemplateNews'][] = ['<!-- END NO-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN ALL-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN SINGLE-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['###NEWS_TOPIC###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_BODY###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_DATE###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_ADMIN-MESSAGE###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_NO###', ''];
+        $markers['TemplateNews'][] = ['<!-- END SINGLE-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- END ALL-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- END NEWS -->', ''];
 
         if (get_config('CALENDAR_ENABLE')) {
-            $markers['TemplateAppointments'][] = array('<!-- BEGIN APPOINTMENTS -->', '');
-            $markers['TemplateAppointments'][] = array('###LIST-START###', _("Startdatum der Terminliste"));
-            $markers['TemplateAppointments'][] = array('###LIST-END###', _("Enddatum der Terminliste"));
-            $markers['TemplateAppointments'][] = array('<!-- BEGIN NO-APPOINTMENTS -->', '');
-            $markers['TemplateAppointments'][] = array('###NO-APPOINTMENTS-TEXT###', '');
-            $markers['TemplateAppointments'][] = array('<!-- END NO-APPOINTMENTS -->', '');
-            $markers['TemplateAppointments'][] = array('<!-- BEGIN ALL-APPOINTMENTS -->', '');
-            $markers['TemplateAppointments'][] = array('<!-- BEGIN SINGLE-APPOINTMENT -->', '');
-            $markers['TemplateAppointments'][] = array('###DATE###', _("Start und Endzeit oder ganztägig"));
-            $markers['TemplateAppointments'][] = array('###BEGIN###', '');
-            $markers['TemplateAppointments'][] = array('###END###', '');
-            $markers['TemplateAppointments'][] = array('###TITLE###', '');
-            $markers['TemplateAppointments'][] = array('###DESCRIPTION###', '');
-            $markers['TemplateAppointments'][] = array('###LOCATION###', '');
-            $markers['TemplateAppointments'][] = array('###REPETITION###', '');
-            $markers['TemplateAppointments'][] = array('###CATEGORY###', '');
-            $markers['TemplateAppointments'][] = array('###PRIORITY###', '');
-            $markers['TemplateAppointments'][] = array('<!-- END SINGLE-APPOINTMENT -->', '');
-            $markers['TemplateAppointments'][] = array('<!-- END ALL-APPOINTMENTS -->', '');
-            $markers['TemplateAppointments'][] = array('<!-- END APPOINTMENTS -->', '');
+            $markers['TemplateAppointments'][] = ['<!-- BEGIN APPOINTMENTS -->', ''];
+            $markers['TemplateAppointments'][] = ['###LIST-START###', _("Startdatum der Terminliste")];
+            $markers['TemplateAppointments'][] = ['###LIST-END###', _("Enddatum der Terminliste")];
+            $markers['TemplateAppointments'][] = ['<!-- BEGIN NO-APPOINTMENTS -->', ''];
+            $markers['TemplateAppointments'][] = ['###NO-APPOINTMENTS-TEXT###', ''];
+            $markers['TemplateAppointments'][] = ['<!-- END NO-APPOINTMENTS -->', ''];
+            $markers['TemplateAppointments'][] = ['<!-- BEGIN ALL-APPOINTMENTS -->', ''];
+            $markers['TemplateAppointments'][] = ['<!-- BEGIN SINGLE-APPOINTMENT -->', ''];
+            $markers['TemplateAppointments'][] = ['###DATE###', _("Start und Endzeit oder ganztägig")];
+            $markers['TemplateAppointments'][] = ['###BEGIN###', ''];
+            $markers['TemplateAppointments'][] = ['###END###', ''];
+            $markers['TemplateAppointments'][] = ['###TITLE###', ''];
+            $markers['TemplateAppointments'][] = ['###DESCRIPTION###', ''];
+            $markers['TemplateAppointments'][] = ['###LOCATION###', ''];
+            $markers['TemplateAppointments'][] = ['###REPETITION###', ''];
+            $markers['TemplateAppointments'][] = ['###CATEGORY###', ''];
+            $markers['TemplateAppointments'][] = ['###PRIORITY###', ''];
+            $markers['TemplateAppointments'][] = ['<!-- END SINGLE-APPOINTMENT -->', ''];
+            $markers['TemplateAppointments'][] = ['<!-- END ALL-APPOINTMENTS -->', ''];
+            $markers['TemplateAppointments'][] = ['<!-- END APPOINTMENTS -->', ''];
         }
 
         $markers['TemplateLitList'] = $this->elements['LitList']->getMarkerDescription('LitList');
 
-        $markers['TemplateOwnCategories'][] = array('<!-- BEGIN OWNCATEGORIES -->', '');
-        $markers['TemplateOwnCategories'][] = array('<!-- BEGIN OWNCATEGORY -->', '');
-        $markers['TemplateOwnCategories'][] = array('###OWNCATEGORY_TITLE###', '');
-        $markers['TemplateOwnCategories'][] = array('###OWNCATEGORY_CONTENT###', '');
-        $markers['TemplateOwnCategories'][] = array('###OWNCATEGORY_NO###', _("Laufende Nummer"));
-        $markers['TemplateOwnCategories'][] = array('<!-- END OWNCATEGORY -->', '');
-        $markers['TemplateOwnCategories'][] = array('<!-- END OWNCATEGORIES -->', '');
+        $markers['TemplateOwnCategories'][] = ['<!-- BEGIN OWNCATEGORIES -->', ''];
+        $markers['TemplateOwnCategories'][] = ['<!-- BEGIN OWNCATEGORY -->', ''];
+        $markers['TemplateOwnCategories'][] = ['###OWNCATEGORY_TITLE###', ''];
+        $markers['TemplateOwnCategories'][] = ['###OWNCATEGORY_CONTENT###', ''];
+        $markers['TemplateOwnCategories'][] = ['###OWNCATEGORY_NO###', _("Laufende Nummer")];
+        $markers['TemplateOwnCategories'][] = ['<!-- END OWNCATEGORY -->', ''];
+        $markers['TemplateOwnCategories'][] = ['<!-- END OWNCATEGORIES -->', ''];
 
         return $markers[$element_name];
     }
@@ -267,7 +267,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $row = false;
         $global_view = false;
         $dbv = new DbView();
-        if (in_array(get_object_type($this->config->range_id), array('global'))) {
+        if (in_array(get_object_type($this->config->range_id), ['global'])) {
             $global_view = true;
             $selected_item_ids = $this->config->getValue('SelectInstitutes', 'institutesselected');
             // at least one institute has to be selected in the configuration
@@ -299,10 +299,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                     $dbv->sem_number_end_sql,
                     implode("','", $selected_item_ids),
                     get_ext_vis_query()));
-                $stm->execute(array($username));
+                $stm->execute([$username]);
                 // user is not a lecturer
                 if (!$row = $stm->fetch()) {
-                    return array();
+                    return [];
                 }
             } else {
                 // have user the status dozent at an institute in the list of accepted institutes
@@ -315,10 +315,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                     . "AND ui.externdefault = 1 "
                     . "AND %s",
                     implode("','", $selected_item_ids), get_ext_vis_query()));
-                $stm->execute(array($username));
+                $stm->execute([$username]);
                 // user is not dozent at an institute that is in the list of accepted institutes
                 if (!$row = $stm->fetch()) {
-                    return array();
+                    return [];
                 }
             }
         }
@@ -333,7 +333,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             . "LEFT JOIN auth_user_md5 aum USING(user_id) "
             . "WHERE i.Institut_id = ? "
             . "AND aum.username = ? AND ui.inst_perms IN ('autor','tutor','dozent') AND " . get_ext_vis_query());
-        $stm_inst->execute(array($instituts_id, $username));
+        $stm_inst->execute([$instituts_id, $username]);
 
         // Mitarbeiter/in am Heimatinstitut des Seminars
         if (!$row = $stm_inst->fetch(PDO::FETCH_ASSOC) && $sem_id) {
@@ -344,7 +344,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "LEFT JOIN auth_user_md5 aum USING(user_id) "
                 . "WHERE s.Seminar_id = ? "
                 . "AND aum.username = ? AND ui.inst_perms = 'dozent' AND " . get_ext_vis_query());
-            $stm_inst->execute(array($sem_id, $username));
+            $stm_inst->execute([$sem_id, $username]);
             if ($row = $stm_inst->fetch(PDO::FETCH_ASSOC)) {
                 $instituts_id = $row['Institut_id'];
             }
@@ -360,7 +360,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "LEFT JOIN auth_user_md5 aum USING(user_id) "
                 . "WHERE s.Seminar_id = ? "
                 . "AND si.institut_id != ? AND ui.inst_perms = 'dozent' AND aum.username = ? AND " . get_ext_vis_query());
-            $stm_inst->execute(array($sem_id, $intituts_id, $username));
+            $stm_inst->execute([$sem_id, $intituts_id, $username]);
             if ($row = $stm_inst->fetch(PDO::FETCH_ASSOC)) {
                 $instituts_id = $row['institut_id'];
             }
@@ -376,7 +376,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "WHERE username = ? "
                 . "AND perms = 'dozent' AND su.seminar_id = ? AND su.status = 'dozent' AND %s"
                 , $GLOBALS['_fullname_sql'][$nameformat], get_ext_vis_query()));
-            $stm->execute(array($username, $sem_id));
+            $stm->execute([$username, $sem_id]);
             $row = $stm->fetch(PDO::FETCH_ASSOC);
         } elseif ($global_view || $this->config->getValue('Main', 'defaultaddr')) {
             $stm = DBManager::get()->prepare(sprintf(
@@ -390,7 +390,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "WHERE ui.inst_perms IN ('autor','tutor','dozent') "
                 . "AND aum.username = ? AND ui.externdefault = 1 AND %s"
                 , $GLOBALS['_fullname_sql'][$nameformat], get_ext_vis_query()));
-            $stm->execute(array($username));
+            $stm->execute([$username]);
             $row = $stm->fetch(PDO::FETCH_ASSOC);
             if (!$row) {
                 $stm = DBManager::get()->prepare(sprintf(
@@ -404,7 +404,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                     . "WHERE ui.inst_perms IN ('autor','tutor','dozent') "
                     . "AND aum.username = ? AND i.Institut_id = ? AND %s"
                     , $GLOBALS['_fullname_sql'][$nameformat], get_ext_vis_query()));
-                $stm->execute(array($username, $instituts_id));
+                $stm->execute([$username, $instituts_id]);
                 $row = $stm->fetch(PDO::FETCH_ASSOC);
             } else {
                 $instituts_id = $row['Institut_id'];
@@ -421,13 +421,13 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "WHERE ui.inst_perms IN ('autor','tutor','dozent') "
                 . "AND aum.username = ? AND i.Institut_id = ? AND %s"
                 , $GLOBALS['_fullname_sql'][$nameformat], get_ext_vis_query()));
-            $stm->execute(array($username, $instituts_id));
+            $stm->execute([$username, $instituts_id]);
             $row = $stm->fetch(PDO::FETCH_ASSOC);
         }
 
         // the user with the given username does not fulfill the conditions above
         if (!$row) {
-            return array();
+            return [];
         }
 
         // Alle Einrichtungen hohlen
@@ -442,7 +442,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "WHERE ui.inst_perms IN ('autor','tutor','dozent') "
                 . "AND aum.username = ?"
                 , $GLOBALS['_fullname_sql'][$nameformat]));
-        $stm->execute(array($username));
+        $stm->execute([$username]);
         $allRows = $stm->fetchAll();
 
         $this->user_id = $row['user_id'];
@@ -522,9 +522,9 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 $k++;
             }
 
-            $localEntries = DataFieldEntry::getDataFieldEntries(array($this->user_id, $instituts_id), 'userinstrole');
+            $localEntries = DataFieldEntry::getDataFieldEntries([$this->user_id, $instituts_id], 'userinstrole');
             if (isset($group_id)) {
-                $roleEntries = DataFieldEntry::getDataFieldEntries(array($this->user_id, $group_id), 'userinstrole');
+                $roleEntries = DataFieldEntry::getDataFieldEntries([$this->user_id, $group_id], 'userinstrole');
                 $roleEntries = array_filter($roleEntries, function($val) { return $val->getValue() !== 'default_value'; });
                 $localEntries = $roleEntries + $localEntries;
             }
@@ -563,17 +563,17 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $content['PERSONDETAILS']['PUBLICATIONS'] = ExternModule::ExtFormatReady($row['publi']);
         }
 
-        $content['PERSONDETAILS']['LECTURES'] = $this->elements['TemplateLectures']->toString(array('content' => $this->getContentLectures(), 'subpart' => 'LECTURES'));
+        $content['PERSONDETAILS']['LECTURES'] = $this->elements['TemplateLectures']->toString(['content' => $this->getContentLectures(), 'subpart' => 'LECTURES']);
         if (Visibility::verify('news', $this->user_id)) {
-            $content['PERSONDETAILS']['NEWS'] = $this->elements['TemplateNews']->toString(array('content' => $this->getContentNews(), 'subpart' => 'NEWS'));
+            $content['PERSONDETAILS']['NEWS'] = $this->elements['TemplateNews']->toString(['content' => $this->getContentNews(), 'subpart' => 'NEWS']);
         }
         if (Visibility::verify('dates', $this->user_id)) {
-            $content['PERSONDETAILS']['APPOINTMENTS'] = $this->elements['TemplateAppointments']->toString(array('content' => $this->getContentAppointments(), 'subpart' => 'APPOINTMENTS'));
+            $content['PERSONDETAILS']['APPOINTMENTS'] = $this->elements['TemplateAppointments']->toString(['content' => $this->getContentAppointments(), 'subpart' => 'APPOINTMENTS']);
         }
         if (Visibility::verify('literature', $this->user_id)) {
-            $content['PERSONDETAILS']['LITERATURE'] = $this->elements['TemplateLitList']->toString(array('content' => $this->elements['LitList']->getContent(array('user_id' => $this->user_id)), 'subpart' => 'LITLISTS'));
+            $content['PERSONDETAILS']['LITERATURE'] = $this->elements['TemplateLitList']->toString(['content' => $this->elements['LitList']->getContent(['user_id' => $this->user_id]), 'subpart' => 'LITLISTS']);
         }
-        $content['PERSONDETAILS']['OWNCATEGORIES'] = $this->elements['TemplateOwnCategories']->toString(array('content' => $this->getContentOwnCategories(), 'subpart' => 'OWNCATEGORIES'));
+        $content['PERSONDETAILS']['OWNCATEGORIES'] = $this->elements['TemplateOwnCategories']->toString(['content' => $this->getContentOwnCategories(), 'subpart' => 'OWNCATEGORIES']);
 
         return $content;
     }
@@ -584,7 +584,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             . "FROM kategorien "
             . "WHERE range_id = ? "
             . "ORDER BY priority");
-        $stm->execute(array($this->user_id));
+        $stm->execute([$this->user_id]);
         $i = 0;
         while ($row = $stm->fetch(PDO::FETCH_ASSOC)) {
             if (Visibility::verify('kat_'.$row['kategorie_id'], $this->user_id)) {
@@ -624,7 +624,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
 
     private function getContentAppointments () {
         if (get_config('CALENDAR_ENABLE')) {
-            $events = SingleCalendar::getEventList($this->user_id, time(), time() + 60 * 60 * 24 * 7, null, array('class' => 'PUBLIC'), array('CalendarEvent'));
+            $events = SingleCalendar::getEventList($this->user_id, time(), time() + 60 * 60 * 24 * 7, null, ['class' => 'PUBLIC'], ['CalendarEvent']);
             $content['APPOINTMENTS']['LIST-START'] = ExternModule::ExtHtmlReady(strftime($this->config->getValue('Main', 'dateformat') . ' %X', time()));
             $content['APPOINTMENTS']['LIST-END'] = ExternModule::ExtHtmlReady(strftime($this->config->getValue('Main', 'dateformat') . ' %X', time() + 60 * 60 * 24 * 7));
             if (sizeof($events)) {
@@ -665,10 +665,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         // old hard coded $SEMESTER-array starts with index 1
         array_unshift($all_semester, 0);
 
-        $types = array();
+        $types = [];
         $semclass = $this->config->getValue('PersondetailsLectures', 'semclass');
         if (is_null($semclass)) {
-            $semclass = array(1);
+            $semclass = [1];
         }
             if (in_array($type["class"], $semclass)) {
             }
@@ -703,10 +703,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $last_sem = sizeof($all_semester) - 1;
         }
 
-        $types = array();
+        $types = [];
         $semclass = $this->config->getValue('PersondetailsLectures', 'semclass');
         if (is_null($semclass)) {
-            $semclass = array(1);
+            $semclass = [1];
         }
         foreach ($GLOBALS["SEM_TYPE"] as $key => $type) {
             if (in_array($type["class"], $semclass)) {
@@ -724,7 +724,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
 
         $i = 0;
         for (;$current_sem <= $last_sem; $last_sem--) {
-            $stm->execute(array($this->user_id, $all_semester[$last_sem]['beginn'], $all_semester[$last_sem]['beginn'], $types ?: ''));
+            $stm->execute([$this->user_id, $all_semester[$last_sem]['beginn'], $all_semester[$last_sem]['beginn'], $types ?: '']);
             $result = $stm->fetchAll();
 
             if ($result && sizeof($result)) {
@@ -739,7 +739,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 $k = 0;
                 foreach ($result as $row) {
                     $content['LECTURES']['SEMESTER'][$i]['LECTURE'][$k]['TITLE'] = ExternModule::ExtHtmlReady($row['Name']);
-                    $content['LECTURES']['SEMESTER'][$i]['LECTURE'][$k]['LECTUREDETAILS-HREF'] = $this->elements['LinkInternLecturedetails']->createUrl(array('link_args' => 'seminar_id=' . $row['Seminar_id']));
+                    $content['LECTURES']['SEMESTER'][$i]['LECTURE'][$k]['LECTUREDETAILS-HREF'] = $this->elements['LinkInternLecturedetails']->createUrl(['link_args' => 'seminar_id=' . $row['Seminar_id']]);
                     if (trim($row['Untertitel']) != '') {
                         $content['LECTURES']['SEMESTER'][$i]['LECTURE'][$k]['SUBTITLE'] = ExternModule::ExtHtmlReady($row['Untertitel']);
                     }
@@ -759,7 +759,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateMain']->toString(array('content' => $this->getContent($args), 'subpart' => 'PERSONDETAILS'));
+        echo $this->elements['TemplateMain']->toString(['content' => $this->getContent($args), 'subpart' => 'PERSONDETAILS']);
 
     }
 
@@ -768,7 +768,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateMain']->toString(array('content' => $this->getContent(), 'subpart' => 'PERSONDETAILS', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateMain']->toString(['content' => $this->getContent(), 'subpart' => 'PERSONDETAILS', 'hide_markers' => FALSE]);
 
     }
 

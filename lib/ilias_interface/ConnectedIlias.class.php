@@ -53,20 +53,20 @@ class ConnectedIlias
     {
         // load settings
         $this->index = $index;
-        $this->error = array();
-        $this->global_roles = array(4,5,14);
+        $this->error = [];
+        $this->global_roles = [4,5,14];
         $this->loadSettings();
-        $this->crs_roles = array(
+        $this->crs_roles = [
                         "autor" => "member",
                         "tutor" => "tutor",
                         "dozent" => "admin",
                         "admin" => "admin",
                         "root" => "admin"
-        );
-        $this->user_operations = array(self::OPERATION_VISIBLE, self::OPERATION_READ);
-        $this->operations = array();
-        $this->course_modules = array();
-        $this->user_modules = array();
+        ];
+        $this->user_operations = [self::OPERATION_VISIBLE, self::OPERATION_READ];
+        $this->operations = [];
+        $this->course_modules = [];
+        $this->user_modules = [];
 
         // set ILIAS version as integer value
         $this->ilias_int_version = $this->getIntVersion($this->ilias_config['version']);
@@ -147,7 +147,7 @@ class ConnectedIlias
      */
     public static function getIliasInfo($url)
     {
-        $info = array();
+        $info = [];
         // check if url exists
         $check = @get_headers($url . 'login.php');
         if (strpos($check[0], '200') === false) {
@@ -173,14 +173,14 @@ class ConnectedIlias
     public function getSoapMethods()
     {
         // fetch all available SOAP methods
-        $soap_methods = array();
-        if (is_callable(array($this->soap_client->soap_client, '__getfunctions'))) {
+        $soap_methods = [];
+        if (is_callable([$this->soap_client->soap_client, '__getfunctions'])) {
             $soap_methods_raw = $this->soap_client->soap_client->__getfunctions();
             foreach ($soap_methods_raw as $method) {
                 $method_array = explode(' ', $method);
                 preg_match_all('/\${1}[^, )]*/', $method, $param_array);
                 preg_match('/[^(]*/', $method_array[1], $method_name);
-                $soap_methods[$method_name[0]] = array();
+                $soap_methods[$method_name[0]] = [];
                 foreach ($param_array[0] as $par) {
                     $soap_methods[$method_name[0]][] = substr($par, 1);
                 }
@@ -192,7 +192,7 @@ class ConnectedIlias
                 $method_array = explode(' ', $method);
                 preg_match_all('/\${1}[^, )]*/', $method, $param_array);
                 preg_match('/[^(]*/', $method_array[1], $method_name);
-                $soap_methods[$method_name[0]] = array();
+                $soap_methods[$method_name[0]] = [];
                 foreach ($param_array[0] as $par) {
                     $soap_methods[$method_name[0]][] = substr($par, 1);;
                 }
@@ -428,7 +428,7 @@ class ConnectedIlias
             $this->user->category = $this->soap_client->addObject($object_data, $this->ilias_config['user_data_category']);
         }
         if ($this->ilias_config['category_to_desktop'] && $this->user->category) {
-            $this->soap_client->addDesktopItems($this->user->getId(), array($this->user->category));
+            $this->soap_client->addDesktopItems($this->user->getId(), [$this->user->category]);
         }
 
         // store data
@@ -502,7 +502,7 @@ class ConnectedIlias
      */
     public static function getsupportedModuleTypes()
     {
-        return array(
+        return [
 //                        'cat'  => _('Kategorie'),
 //                        'crs'  => _('Kurs'),
                         'webr' => _('Weblink'),
@@ -513,7 +513,7 @@ class ConnectedIlias
                         'tst'  => _('Test'),
                         'svy'  => _('Umfrage'),
                         'exc'  => _('Übung')
-        );
+        ];
     }
 
     /**
@@ -562,15 +562,15 @@ class ConnectedIlias
         if (count($this->user_modules)) {
             return $this->user_modules;
         }
-        $types = array();
+        $types = [];
         foreach ($this->getAllowedModuleTypes() as $type => $name) {
             $types[] = $type;
         }
         if ($this->user->getCategory() == false) {
-            return array();
+            return [];
         }
         $result = $this->soap_client->getTreeChilds($this->user->getCategory(), $types, $this->user->getId());
-        $obj_ids = array();
+        $obj_ids = [];
         if (is_array($result)) {
             foreach($result as $key => $object_data) {
                 $this->user_modules[$key] = new IliasModule($key, $object_data, $this->index, $this->ilias_int_version);
@@ -625,7 +625,7 @@ class ConnectedIlias
         if (is_array($result))
             return $result;
             else
-                return array();
+                return [];
     }
 
     /**
@@ -644,7 +644,7 @@ class ConnectedIlias
 
         if (is_array($result)) {
             $check = DBManager::get()->prepare("SELECT 1 FROM object_contentmodules WHERE object_id = ? AND module_id = ? AND system_type = ? AND module_type = ?");
-            $found = array();
+            $found = [];
             $added = 0;
             $deleted = 0;
             $messages["info"] .= "<b>".sprintf(_("Aktualisierung der Zuordnungen zum System \"%s\":"), $this->getName()) . "</b><br>";
@@ -652,7 +652,7 @@ class ConnectedIlias
                 if (($data['accessInfo'] == 'granted') || ($this->ilias_interface_config['show_offline'] && $data['offline'])) {
                     $this->course_modules[$ref_id] = new IliasModule($ref_id, $data, $this->index, $this->ilias_int_version);
                 }
-                $check->execute(array(Context::getId(), $ref_id, $this->index, $data["type"]));
+                $check->execute([Context::getId(), $ref_id, $this->index, $data["type"]]);
                 if (!$check->fetch()) {
                     $messages["info"] .= sprintf(_("Zuordnung zur Lerneinheit \"%s\" wurde hinzugefügt."), ($data["title"])) . "<br>";
                     IliasObjectConnections::setConnection(Context::getId(), $ref_id, $data["type"], $this->index);
@@ -661,7 +661,7 @@ class ConnectedIlias
                 $found[] = $ref_id . '_' . $data["type"];
             }
             $to_delete = DBManager::get()->prepare("SELECT module_id,module_type FROM object_contentmodules WHERE module_type <> 'crs' AND object_id = ? AND system_type = ? AND CONCAT_WS('_', module_id,module_type) NOT IN (?)");
-            $to_delete->execute(array(Context::getId(), $this->index, count($found) ? $found : array('')));
+            $to_delete->execute([Context::getId(), $this->index, count($found) ? $found : ['']]);
             while ($row = $to_delete->fetch(PDO::FETCH_ASSOC)) {
                 IliasObjectConnections::unsetConnection(Context::getId(), $row["module_id"], $row["module_type"], $this->index);
                 $deleted++;
@@ -728,10 +728,10 @@ class ConnectedIlias
         }
         // set permissions for course roles
         $local_roles = $this->soap_client->getLocalRoles($crs_id);
-        $member_operations = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ));
-        $admin_operations = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY, self::OPERATION_DELETE));
-        $admin_operations_no_delete = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY));
-        $admin_operations_readonly = $this->getOperationArray(array(self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_DELETE));
+        $member_operations = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ]);
+        $admin_operations = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY, self::OPERATION_DELETE]);
+        $admin_operations_no_delete = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY]);
+        $admin_operations_readonly = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_DELETE]);
         foreach ($local_roles as $key => $role_data) {
             // check only if local role is il_crs_member, -tutor or -admin
             if (mb_strpos($role_data["title"], "il_crs_") === 0) {
@@ -1025,7 +1025,7 @@ class ConnectedIlias
      */
     public function getUserModuleViewPermission($module_id)
     {
-        $this->allowed_operations = array();
+        $this->allowed_operations = [];
         $this->tree_allowed_operations = $this->soap_client->getObjectTreeOperations(
                     $module_id,
                     $this->user->getId()
@@ -1074,7 +1074,7 @@ class ConnectedIlias
             $this->operations = $this->soap_client->getOperations();
         }
 
-        $ops_array = array();
+        $ops_array = [];
         if (is_array($operation)) {
             foreach ($operation as $key => $operation_name) {
                 $ops_array[] = $this->operations[$operation_name];
@@ -1188,11 +1188,11 @@ class ConnectedIlias
     */
     public function searchModules($search_key)
     {
-        $types = array();
+        $types = [];
         foreach ($this->getAllowedModuleTypes() as $type => $name) {
             $types[] = $type;
         }
-        $search_modules = array();
+        $search_modules = [];
 
         $result = $this->soap_client->searchObjects($types, $search_key, "and", $this->user->getId());
         if ($result) {

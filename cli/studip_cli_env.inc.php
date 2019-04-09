@@ -41,7 +41,7 @@ function CliErrorHandler($errno, $errstr, $errfile, $errline) {
 
 function parse_msg_to_clean_text($long_msg,$separator="§") {
     $msg = explode ($separator,$long_msg);
-    $ret = array();
+    $ret = [];
     for ($i=0; $i < count($msg); $i=$i+2) {
         if ($msg[$i+1]) $ret[] = trim(decodeHTML(preg_replace ("'<[\/\!]*?[^<>]*?>'si", "", $msg[$i+1])));
     }
@@ -65,9 +65,9 @@ URLHelper::setBaseUrl($ABSOLUTE_URI_STUDIP);
 
 //cli scripts run always as faked (Stud.IP) root
 $auth = new Seminar_Auth();
-$auth->auth = array('uid' => 'cli',
+$auth->auth = ['uid' => 'cli',
                     'uname' => 'cli',
-                    'perm' => 'root');
+                    'perm' => 'root'];
 
 $faked_root = new User();
 $faked_root->user_id = 'cli';

@@ -17,10 +17,10 @@
                 <table>
                     <tr>
                         <td>
-                            <?= SemesterData::GetSemesterSelector(array(
+                            <?= SemesterData::GetSemesterSelector([
                                     'name' => 'tools_requests_sem_choose',
                                     'class' => 'submit-upon-select'
-                                ), $this->semester_id, 'semester_id',false) ?>
+                                ], $this->semester_id, 'semester_id',false) ?>
                             <?= Button::create(_('Semester auswählen'), 'tools_requests_sem_choose_button') ?>
                             <br>
                             <select name="tools_requests_sem_type_choose" class="submit-upon-select">

@@ -187,7 +187,7 @@ class Sidebar extends WidgetContainer
             $navigation = Navigation::getItem('/');
         }
 
-        $breadcrumbs = array();
+        $breadcrumbs = [];
         foreach ($navigation as $idx => $nav) {
             if ($nav->isActive()) {
                 $breadcrumbs[$idx] = $nav;

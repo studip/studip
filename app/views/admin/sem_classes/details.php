@@ -48,7 +48,7 @@
 
             <ul id="sem_type_list">
                 <? foreach ($sem_class->getSemTypes() as $id => $sem_type) : ?>
-                <?= $this->render_partial("admin/sem_classes/_sem_type.php", array('sem_type' => $sem_type)) ?>
+                <?= $this->render_partial("admin/sem_classes/_sem_type.php", ['sem_type' => $sem_type]) ?>
                 <? endforeach ?>
             </ul>
             <div class="add">
@@ -66,7 +66,7 @@
 
 
 
-        <? foreach (array("dozent","tutor","autor") as $role) : ?>
+        <? foreach (["dozent","tutor","autor"] as $role) : ?>
         <section>
             <?= sprintf(_("Titel der %s"), $GLOBALS['DEFAULT_TITLE_FOR_STATUS'][$role][1]) ?>
 
@@ -206,20 +206,20 @@
         <legend>
             <?= _("Inhaltselemente") ?>
         </legend>
-        <? $container = array(
-            'overview' => array('name' => _("Übersicht")),
-            'admin' => array('name' => _("Verwaltung")),
-            'forum' => array('name' => _("Forum")),
-            'participants' => array('name' => _("Teilnehmendenseite")),
-            'documents' => array('name' => _("Dateibereich")),
-            'schedule' => array('name' => _("Terminseite")),
-            'literature' => array('name' => _("Literaturübersicht")),
-            'scm' => array('name' => _("Freie Informationen")),
-            'wiki' => array('name' => _("Wiki")),
-            'resources' => array('name' => _("Ressourcen")),
-            'calendar' => array('name' => _("Kalender")),
-            'elearning_interface' => array('name' => _("Lernmodule"))
-        );
+        <? $container = [
+            'overview' => ['name' => _("Übersicht")],
+            'admin' => ['name' => _("Verwaltung")],
+            'forum' => ['name' => _("Forum")],
+            'participants' => ['name' => _("Teilnehmendenseite")],
+            'documents' => ['name' => _("Dateibereich")],
+            'schedule' => ['name' => _("Terminseite")],
+            'literature' => ['name' => _("Literaturübersicht")],
+            'scm' => ['name' => _("Freie Informationen")],
+            'wiki' => ['name' => _("Wiki")],
+            'resources' => ['name' => _("Ressourcen")],
+            'calendar' => ['name' => _("Kalender")],
+            'elearning_interface' => ['name' => _("Lernmodule")]
+        ];
         ?>
         <? foreach ($container as $container_id => $container_attributes) : ?>
 
@@ -228,13 +228,13 @@
             <div class="droparea limited<?= $sem_class->getSlotModule($container_id) !== null ? " full" : "" ?>">
                 <? if ($sem_class->getSlotModule($container_id) !== null) : ?>
                     <?= $this->render_partial("admin/sem_classes/content_plugin.php",
-                        array(
+                        [
                             'plugin' => $modules[$sem_class->getSlotModule($container_id)],
                             'sem_class' => $sem_class,
                             'plugin_id' => $sem_class->getSlotModule($container_id),
                             'activated' => $sem_class['modules'][$sem_class->getSlotModule($container_id)]['activated'],
                             'sticky' => $sem_class['modules'][$sem_class->getSlotModule($container_id)]['sticky']
-                        )
+                        ]
                     )?>
                 <? unset($modules[$sem_class->getSlotModule($container_id)]) ?>
                 <? endif ?>
@@ -249,13 +249,13 @@
                 <? $module_attribute = $sem_class->getModuleMetadata($module_name); ?>
                 <? if (is_numeric($module_info['id'])) : ?>
                     <?= $this->render_partial("admin/sem_classes/content_plugin.php",
-                        array(
+                        [
                             'plugin' => $module_info,
                             'sem_class' => $sem_class,
                             'plugin_id' => $module_name,
                             'activated' => $sem_class['modules'][$module_name]['activated'],
                             'sticky' => $sem_class['modules'][$module_name]['sticky']
-                        )
+                        ]
                     )?>
                 <? endif ?>
                 <? endforeach ?>
@@ -269,13 +269,13 @@
                     $module_id = $module_info['id'];
                     if (!is_numeric($module_id) && !$sem_class['modules'][$module_id]['activated']) {
                         echo $this->render_partial("admin/sem_classes/content_plugin.php",
-                            array(
+                            [
                                 'plugin' => $module_info,
                                 'sem_class' => $sem_class,
                                 'plugin_id' => $module_id,
                                 'activated' => $sem_class['modules'][$module_id]['activated'],
                                 'sticky' => $sem_class['modules'][$module_id]['sticky']
-                            )
+                            ]
                         );
                     }
                 } ?>
@@ -286,10 +286,10 @@
     <footer>
         <div id="message_below"></div>
 
-        <?= Studip\Button::create(_("Speichern"), "save", array('onClick' => "STUDIP.admin_sem_class.saveData(); return false;"))?>
+        <?= Studip\Button::create(_("Speichern"), "save", ['onClick' => "STUDIP.admin_sem_class.saveData(); return false;"])?>
         <? if ($sem_class->countSeminars() === 0) : ?>
             <input type="hidden" name="delete_sem_class" value="<?= Request::int("id") ?>">
-            <?= Studip\Button::create(_("Löschen"), "delete", array('onClick' => "return window.confirm('"._("Wirklich löschen?")."');"))?>
+            <?= Studip\Button::create(_("Löschen"), "delete", ['onClick' => "return window.confirm('"._("Wirklich löschen?")."');"])?>
         <? endif ?>
     </footer>
 </form>
@@ -298,8 +298,8 @@
 <div id="sem_type_delete_question" style="display: none;">
     <p class="info"><?= _("Wirklich den Veranstaltungstyp löschen?") ?></p>
     <input type="hidden" id="sem_type_for_deletion">
-    <?= Studip\LinkButton::create(_("Löschen"), array('onclick' => "STUDIP.admin_sem_class.delete_sem_type(); return false;")) ?>
-    <?= Studip\LinkButton::create(_("Abbrechen"), array('onclick' => "jQuery(this).closest('#sem_type_delete_question').dialog('close'); return false;")) ?>
+    <?= Studip\LinkButton::create(_("Löschen"), ['onclick' => "STUDIP.admin_sem_class.delete_sem_type(); return false;"]) ?>
+    <?= Studip\LinkButton::create(_("Abbrechen"), ['onclick' => "jQuery(this).closest('#sem_type_delete_question').dialog('close'); return false;"]) ?>
 </div>
 
 

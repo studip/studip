@@ -61,7 +61,7 @@ use Studip\Button, Studip\LinkButton;
             <tfoot>
             <tr>
                 <td colspan="<?= 2 + (int)$edit_about_enabled ?>">
-                    <?= Button::create(_('Übernehmen'), 'store', array('title' => _('Änderungen speichern'))) ?>
+                    <?= Button::create(_('Übernehmen'), 'store', ['title' => _('Änderungen speichern')]) ?>
                 </td>
             </tr>
             </tfoot>

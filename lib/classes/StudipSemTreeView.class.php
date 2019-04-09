@@ -47,7 +47,7 @@ class StudipSemTreeView extends TreeView {
         $this->root_content = $GLOBALS['UNI_INFO'];
         $args = null;
         if ($sem_number){
-            $args = array('sem_number' => $sem_number);
+            $args = ['sem_number' => $sem_number];
         }
         parent::__construct("StudipSemTree", $args); //calling the baseclass constructor
     }
@@ -90,7 +90,7 @@ class StudipSemTreeView extends TreeView {
         echo "\n<table width=\"99%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
         if ($this->start_item_id != 'root'){
             echo "\n<tr><td class=\"printhead\" align=\"left\" valign=\"top\">" . $this->getSemPath()
-            . Assets::img('forumleer.gif', array('size' => '1@20')) . "</td></tr>";
+            . Assets::img('forumleer.gif', ['size' => '1@20']) . "</td></tr>";
         }
         echo "\n<tr><td class=\"blank\"  align=\"left\" valign=\"top\">";
         $this->showTree($this->start_item_id);
@@ -121,7 +121,7 @@ class StudipSemTreeView extends TreeView {
         $head .= ($this->open_items[$item_id])? URLHelper::getLink($this->getSelf("close_item={$item_id}")) . "\"" . tooltip(_("Dieses Element schließen"),true) . ">"
                                             : URLHelper::getLink($this->getSelf("open_item={$item_id}")) . "\"" . tooltip(_("Dieses Element öffnen"),true) . ">";
         $head .= Icon::create($this->open_items[$item_id] ? 'arr_1down' : 'arr_1right', 'clickable');
-        $head .= (!$this->open_items[$item_id]) ? Assets::img('forumleer.gif', array('size' => '5')) : "";
+        $head .= (!$this->open_items[$item_id]) ? Assets::img('forumleer.gif', ['size' => '5']) : "";
         $head .= "</a>";
         if ($this->tree->hasKids($item_id)){
             $head .= Icon::create('folder-full', 'clickable', ['title' => $this->open_ranges[$item_id]?_('Alle Unterelemente schliessen'):_('Alle Unterelemente öffnen')])->asImg(16, ['class' => 'text-top']);

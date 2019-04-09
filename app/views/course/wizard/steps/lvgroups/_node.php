@@ -9,7 +9,7 @@
     <label onclick="return MVV.CourseWizard.getTreeChildren('<?= htmlReady($id) ?>', true, '<?= htmlReady(get_class($node)) ?>')"
            for="<?= htmlReady($id) ?>" class="undecorated">
         <a href="<?= URLHelper::getLink($no_js_url,
-            array('open_node' => $id, 'open_nodes' => json_encode($open_nodes))) ?>">
+            ['open_node' => $id, 'open_nodes' => json_encode($open_nodes)]) ?>">
         <?= htmlReady($node->getDisplayname()) ?>
         </a>
     </label>
@@ -21,10 +21,10 @@
                 <? $children = $child->getChildren(); ?>
                 <? if (count($children) || $child->isAssignable()) : ?>
                 <?= $this->render_partial('course/wizard/steps/lvgroups/_node',
-                    array('node' => $child, 'stepnumber' => $stepnumber,
-                        'pos_id' => $pos_id . '_' . $i++, 'open_nodes' => $open_nodes ?: array(),
-                        'search_result' => $search_result ?: array(),
-                        'children' => $children)) ?>
+                    ['node' => $child, 'stepnumber' => $stepnumber,
+                        'pos_id' => $pos_id . '_' . $i++, 'open_nodes' => $open_nodes ?: [],
+                        'search_result' => $search_result ?: [],
+                        'children' => $children]) ?>
                 <? endif; ?>
             <? endforeach ?>
         <? endif; ?>

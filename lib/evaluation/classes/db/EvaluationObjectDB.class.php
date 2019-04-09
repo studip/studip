@@ -82,8 +82,8 @@ class EvaluationObjectDB extends DatabaseObject {
        if ($rangeID == "studip") {
            return _("Systemweite Evaluationen");
        }
-       $o_type = get_object_type($rangeID, array('sem','user','inst'));
-       if (in_array($o_type, array('sem','inst','fak'))) {
+       $o_type = get_object_type($rangeID, ['sem','user','inst']);
+       if (in_array($o_type, ['sem','inst','fak'])) {
            $name = Context::getHeaderLine();
            if ($name != NULL) {
                if ( $html_decode )
@@ -187,19 +187,19 @@ class EvaluationObjectDB extends DatabaseObject {
    * @param  string  $rangeID   RangeID of actual page
    */
   function getValidRangeIDs (&$permObj, &$userObj, $rangeID) {
-    $range_ids = array ();
+    $range_ids =  [];
     $username = get_username ($userObj->id);
 
-    $range_ids += array ($username => array ("name" =>
-                 _("Profil")));
+    $range_ids +=  [$username =>  ["name" =>
+                 _("Profil")]];
 
     /* is root ------------------------------------------------------------ */
     if ($permObj->have_perm ("root")) {
-      $range_ids += array ("studip" => array ("name" => _("Stud.IP-System")));
+      $range_ids +=  ["studip" =>  ["name" => _("Stud.IP-System")]];
       if (($adminRange = $this->getRangename ($rangeID)) &&
           $rangeID != $userObj->id)
-   $range_ids += array ($rangeID => array ("name" =>
-                    $adminRange));
+   $range_ids +=  [$rangeID =>  ["name" =>
+                    $adminRange]];
     }
     /* ---------------------------------------------------------- end: root */
 
@@ -207,8 +207,8 @@ class EvaluationObjectDB extends DatabaseObject {
     else if ($permObj->have_perm ("admin")) {
    if (($adminRange = $this->getRangename ($rangeID)) &&
        $rangeID != $userObj->id) {
-       $range_ids += array ($rangeID => array ("name" =>
-                   $adminRange));
+       $range_ids +=  [$rangeID =>  ["name" =>
+                   $adminRange]];
    }
     }
     /* --------------------------------------------------------- end: admin */
@@ -241,7 +241,7 @@ class EvaluationObjectDB extends DatabaseObject {
       $rangeIDs     = $eval->getRangeIDs();
 
       if ( !is_array ($rangeIDs) ) {
-         $rangeIDs  = array ($rangeIDs);
+         $rangeIDs  =  [$rangeIDs];
       }
 
       foreach ($eval->getRangeIDs() as $rangeID) {
@@ -270,7 +270,7 @@ class EvaluationObjectDB extends DatabaseObject {
 
     $db = DBManager::get();
 
-    $template_ids = array ();
+    $template_ids =  [];
 
     /* ask database ------------------------------------------------------- */
     $sql =
@@ -297,7 +297,7 @@ class EvaluationObjectDB extends DatabaseObject {
       "ORDER BY".
       " title";
 
-    return $db->fetchFirst($sql, array(':current_user' => $user->id, ':search_string' => '%' . $searchString . '%'));
+    return $db->fetchFirst($sql, [':current_user' => $user->id, ':search_string' => '%' . $searchString . '%']);
   } // returned templateIDs
 
 
@@ -314,7 +314,7 @@ class EvaluationObjectDB extends DatabaseObject {
 
     $db = DBManager::get();
 
-    $eval_ids = array ();
+    $eval_ids =  [];
 
     /* check input -------------------------------------------------------- */
     if (!empty ($rangeID) && !is_scalar ($rangeID))
@@ -386,7 +386,7 @@ class EvaluationObjectDB extends DatabaseObject {
 
     $sql .= " ORDER BY chdate DESC";
 
-    $eval_ids = $db->fetchFirst($sql, array($param));
+    $eval_ids = $db->fetchFirst($sql, [$param]);
 
     return $eval_ids;
   } // returned evalIDs

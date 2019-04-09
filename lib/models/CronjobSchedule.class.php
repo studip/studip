@@ -57,19 +57,19 @@ class CronjobSchedule extends SimpleORMap
     const PRIORITY_NORMAL = 'normal';
     const PRIORITY_HIGH   = 'high';
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'cronjobs_schedules';
 
-        $config['belongs_to']['task'] = array(
+        $config['belongs_to']['task'] = [
             'class_name'  => 'CronjobTask',
             'foreign_key' => 'task_id',
-        );
-        $config['has_many']['logs'] = array(
+        ];
+        $config['has_many']['logs'] = [
             'class_name' => 'CronjobLog',
             'on_delete'  => 'delete',
             'on_store'   => 'store',
-        );
+        ];
 
         $config['registered_callbacks']['before_store'][]     = 'cbJsonifyParameters';
         $config['registered_callbacks']['after_store'][]      = 'cbJsonifyParameters';
@@ -86,7 +86,7 @@ class CronjobSchedule extends SimpleORMap
      */
     public static function getPriorities()
     {
-        $mapping = array();
+        $mapping = [];
         $mapping[self::PRIORITY_LOW]    = _('niedrig');
         $mapping[self::PRIORITY_NORMAL] = _('normal');
         $mapping[self::PRIORITY_HIGH]   = _('hoch');
@@ -127,8 +127,8 @@ class CronjobSchedule extends SimpleORMap
         if ($type === 'before_store' && !is_string($this->parameters)) {
             $this->parameters = json_encode($this->parameters ?: null);
         }
-        if (in_array($type, array('after_initialize', 'after_store')) && is_string($this->parameters)) {
-            $this->parameters = json_decode($this->parameters, true) ?: array();
+        if (in_array($type, ['after_initialize', 'after_store']) && is_string($this->parameters)) {
+            $this->parameters = json_decode($this->parameters, true) ?: [];
         }
     }
 

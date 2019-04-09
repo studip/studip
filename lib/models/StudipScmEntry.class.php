@@ -26,17 +26,17 @@
 
 class StudipScmEntry extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'scm';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name'  => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['belongs_to']['course'] = array(
+        ];
+        $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'range_id',
-        );
+        ];
 
         parent::configure($config);
     }

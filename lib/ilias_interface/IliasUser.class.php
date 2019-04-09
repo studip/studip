@@ -81,7 +81,7 @@ class IliasUser
                   FROM auth_extern
                   WHERE studip_user_id = ? AND external_user_system_type = ? ORDER BY external_user_type DESC";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->studip_id, $this->index));
+        $statement->execute([$this->studip_id, $this->index]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$data) {
@@ -113,7 +113,7 @@ class IliasUser
                   LEFT JOIN  user_info USING (user_id)
                   WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->studip_id));
+        $statement->execute([$this->studip_id]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$data) {
@@ -439,7 +439,7 @@ class IliasUser
                            external_user_category = VALUES(external_user_category),
                            external_user_id = VALUES(external_user_id)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             (string)$this->studip_id,
             (string)$this->id,
             (string)$this->login,
@@ -447,7 +447,7 @@ class IliasUser
             (string)$this->category,
             (string)$this->index,
             (int)$this->type,
-        ));
+        ]);
 
         $this->is_connected = true;
         $this->readData();
@@ -467,11 +467,11 @@ class IliasUser
         
         $query = "DELETE FROM auth_extern WHERE studip_user_id = ? AND external_user_system_type = ? AND external_user_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
                         (string)$this->studip_id,
                         (string)$this->index,
                         (int)self::USER_TYPE_ORIGINAL,
-        ));
+        ]);
         
         $this->is_connected = false;
         $this->readData();
@@ -501,13 +501,13 @@ class IliasUser
         $query = "UPDATE `auth_extern` SET `external_user_token` = ?, `external_user_token_valid_until` = ? 
                             WHERE `auth_extern`.`studip_user_id` = ? AND `auth_extern`.`external_user_system_type` = ? AND `auth_extern`.`external_user_type` = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
                         $token,
                         time() + 600,
                         (string)$this->studip_id,
                         (string)$this->index,
                         (int)$this->type
-        ));
+        ]);
         return $token;
     }
 }

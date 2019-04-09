@@ -53,7 +53,7 @@ class CourseMemberAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `coursememberadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -97,7 +97,7 @@ class CourseMemberAdmission extends AdmissionRule
         // Load data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `coursememberadmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetchOne()) {
             $this->message = $current['message'];
             $this->startTime = $current['start_time'];
@@ -115,7 +115,7 @@ class CourseMemberAdmission extends AdmissionRule
      * @return Array
      */
     public function ruleApplies($userId, $courseId) {
-        $errors = array();
+        $errors = [];
         if ($this->checkTimeFrame()) {
             $user = User::find($userId);
             $is_member = $user->course_memberships->findOneBy('seminar_id', $this->mandatory_course_id);
@@ -151,8 +151,8 @@ class CourseMemberAdmission extends AdmissionRule
             `end_time`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE `start_time`=VALUES(`start_time`),
             `end_time`=VALUES(`end_time`),message=VALUES(message),course_id=VALUES(course_id),modus=VALUES(modus), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message,$this->mandatory_course_id, (int)$this->modus, (int)$this->startTime,
-            (int)$this->endTime,  time(), time()));
+        $stmt->execute([$this->id, $this->message,$this->mandatory_course_id, (int)$this->modus, (int)$this->startTime,
+            (int)$this->endTime,  time(), time()]);
     }
 
     /**

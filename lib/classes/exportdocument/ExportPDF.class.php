@@ -115,7 +115,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
                 list(, $status) = explode(' ', $headers[0]);
 
                 $url = $headers['Location'] ?: $headers['location'] ?: $url;
-            } while (in_array($status, array(300, 301, 302, 303, 305, 307)));
+            } while (in_array($status, [300, 301, 302, 303, 305, 307]));
 
             $status = $status ?: 404;
 
@@ -209,8 +209,8 @@ class ExportPDF extends TCPDF implements ExportDocument {
         // setting defaults
         $this->SetCreator('Stud.IP - ' . $this->config->getValue('UNI_NAME_CLEAN'));
         // set header and footer fonts
-        $this->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', 8));
-        $this->setFooterFont(Array(PDF_FONT_NAME_DATA, '', 8));
+        $this->setHeaderFont([PDF_FONT_NAME_MAIN, '', 8]);
+        $this->setFooterFont([PDF_FONT_NAME_DATA, '', 8]);
         // set default monospaced font
         $this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
         //set margins
@@ -258,7 +258,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
      * @param string $ht string to print as title on document header
      * @param string $hs string to print on document header
      */
-    public function setHeaderData($ln = '', $lw = 0, $ht = '', $hs = '', $tc = array(), $lc = array()) {
+    public function setHeaderData($ln = '', $lw = 0, $ht = '', $hs = '', $tc = [], $lc = []) {
         $logo_path = get_config("PDF_LOGO");
         if (!$ln) {
             $ln = $logo_path ? $logo_path : '../../../../public/assets/images/logos/logoklein.png';
@@ -339,7 +339,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
      */
     protected function getDomains()
     {
-        $this->domains = array();
+        $this->domains = [];
         $host_url_parsed = @parse_url($GLOBALS['ABSOLUTE_URI_STUDIP']);
         if (isset($GLOBALS['STUDIP_DOMAINS'])) {
             $this->domains = $GLOBALS['STUDIP_DOMAINS'];

@@ -13,11 +13,11 @@
 endif ?>
 
 <? if (!ForumAbo::has($constraint['topic_id'])) : ?>
-    <?= Studip\LinkButton::create($text, $url, array(
+    <?= Studip\LinkButton::create($text, $url, [
         'title' => _('Wenn sie diesen Bereich abonnieren, erhalten Sie eine '
                 . 'Stud.IP-interne Nachricht sobald in diesem Bereich '
                 . 'ein neuer Beitrag erstellt wurde.'),
-        'onClick' => $js)) ?>
+        'onClick' => $js]) ?>
 <? else : ?>
-    <?= Studip\LinkButton::create(_('Nicht mehr abonnieren'), $url, array('onClick' => $js)) ?>
+    <?= Studip\LinkButton::create(_('Nicht mehr abonnieren'), $url, ['onClick' => $js]) ?>
 <? endif; ?>

@@ -32,7 +32,7 @@
                 <td style="text-align: right; vertical-align: bottom;">
                     <input type="hidden" name="lock_id[]" value="<?= $lock['lock_id'] ?>">
 
-                    <?= Icon::create('accept', 'clickable', ['title' => _('Diesen Eintrag speichern')])->asInput(array('name'=>'lock_sent','class'=>'text-top',)) ?>
+                    <?= Icon::create('accept', 'clickable', ['title' => _('Diesen Eintrag speichern')])->asInput(['name'=>'lock_sent','class'=>'text-top',]) ?>
                     <a href="<?= URLHelper::getLink('?kill_lock=' . $lock['lock_id']) ?>">
                         <?= Icon::create('trash', 'clickable')->asImg(['class' => 'text-top', 'title' => _('Diesen Eintrag löschen')]) ?>
                     </a>

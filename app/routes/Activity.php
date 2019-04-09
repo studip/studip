@@ -35,7 +35,7 @@ class Activity extends \RESTAPI\RouteMap
         }
 
 
-        $contexts = array();
+        $contexts = [];
 
         $user = \User::find($user_id);
 
@@ -81,7 +81,7 @@ class Activity extends \RESTAPI\RouteMap
             if ($scrollfrom > $max_age){
                 $end = $scrollfrom;
                 $start = strtotime('-1 day', $end);
-                $data = array();
+                $data = [];
 
                 $backtrack = 1;
 
@@ -133,10 +133,10 @@ class Activity extends \RESTAPI\RouteMap
         $data = $stream->toArray();
 
         foreach ($data as $key => $act) {
-            $actor = array(
+            $actor = [
                 'type' => $data[$key]['actor_type'],
                 'id'   => $data[$key]['actor_id']
-            );
+            ];
 
             if ($data[$key]['actor_type'] == 'user') {
                 $a_user = \User::findFull($data[$key]['actor_id']);

@@ -33,10 +33,10 @@
     </tr>
 <? endif; ?>
 <? foreach ($members as $member):
-        $default_entries = DataFieldEntry::getDataFieldEntries(array($member->user_id, $institute->id));
+        $default_entries = DataFieldEntry::getDataFieldEntries([$member->user_id, $institute->id]);
 
         if ($group) {
-            $role_entries = DataFieldEntry::getDataFieldEntries(array($member->user_id, $group->id));
+            $role_entries = DataFieldEntry::getDataFieldEntries([$member->user_id, $group->id]);
         }
 ?>
     <tr>

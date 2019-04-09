@@ -49,7 +49,7 @@ class HelpTour extends SimpleORMap
     /**
      *
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'help_tours';
         $config['has_one']['settings'] = [
@@ -81,14 +81,14 @@ class HelpTour extends SimpleORMap
      */
     public static function GetHelpbarTourData()
     {
-        $visible_tours = array();
+        $visible_tours = [];
         $route = get_route();
         $tours = HelpTour::getToursByRoute($route);
         foreach($tours as $index => $tour) {
             if ($tour->isVisible() && ($tour->settings->access !== 'link')) {
                 $visible_tours[$index] = $tour;
                 if (in_array($tour->settings->access, ['autostart', 'autostart_once']) && !$GLOBALS['user']->cfg->TOUR_AUTOSTART_DISABLE) {
-                    $user_visit = new HelpTourUser(array($tour->tour_id, $GLOBALS['user']->user_id));
+                    $user_visit = new HelpTourUser([$tour->tour_id, $GLOBALS['user']->user_id]);
                     if ($tour->settings->access === 'autostart_once' && $user_visit->isNew()) {
                         $active_tour_id = $tour->tour_id;
                         $active_tour_step_nr = 1;
@@ -187,7 +187,7 @@ class HelpTour extends SimpleORMap
                   WHERE installation_id = ?
                   ORDER BY name ASC";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(Config::get()->STUDIP_INSTALLATION_ID));
+        $statement->execute([Config::get()->STUDIP_INSTALLATION_ID]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
         foreach ($ret as $index => $data) {
             $query = "SELECT tour_id AS idx, help_tours.*
@@ -207,7 +207,7 @@ class HelpTour extends SimpleORMap
             ]);
             $ret2 = $statement->fetchGrouped(PDO::FETCH_ASSOC);
             if (count($ret2) > 0) {
-                $conflicts[] = HelpTour::GetTourObjects(array_merge(array($index => $data), $ret2));
+                $conflicts[] = HelpTour::GetTourObjects(array_merge([$index => $data], $ret2));
             }
         }
         return $conflicts;

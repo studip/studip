@@ -108,7 +108,7 @@ class AuthorObject {
     /* --------------------------------------------------- end: errorhandler */
 
     /* Set default values -------------------------------------------------- */
-    $this->errorArray       = array ();
+    $this->errorArray       =  [];
     /* ------------------------------------------------------- end: defaults */
   }
 
@@ -196,7 +196,7 @@ class AuthorObject {
    * @access public
    */
   public function resetErrors () {
-    $this->errorArray = array ();
+    $this->errorArray =  [];
   }
 
   /**
@@ -211,14 +211,14 @@ class AuthorObject {
   public function throwError ($errcode, $errstring, $errline = 0, $errfile = 0,
                $errtype = ERROR_NORMAL) {
     if (!is_array ($this->errorArray))
-      $this->errorArray = array ();
+      $this->errorArray =  [];
 
     array_push ($this->errorArray,
-        array ("code" => $errcode,
+         ["code" => $errcode,
                "string" => $errstring,
                "file" => $errfile,
                "line" => $errline,
-               "type" => $errtype)
+               "type" => $errtype]
         );
     if ($errtype == ERROR_CRITICAL) {
      @mail ($this->getAuthorEmail (),

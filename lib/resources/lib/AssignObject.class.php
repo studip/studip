@@ -321,7 +321,7 @@ class AssignObject
 
     public function getEvents()
     {
-        $this->events = array();
+        $this->events = [];
         create_assigns($this, $this);
         return $this->events;
     }
@@ -358,10 +358,10 @@ class AssignObject
             foreach ($this->events as $obj) {
                 $lock = getLockPeriod('assign', $obj->getBegin(), $obj->getEnd());
                 if ($lock) {
-                    $locks[$lock[2]] = array(
+                    $locks[$lock[2]] = [
                         'lock_begin' => $lock[0],
                         'lock_end'   => $lock[1],
-                    );
+                    ];
                 }
             }
             if ($locks) {
@@ -408,14 +408,14 @@ class AssignObject
             foreach ($events as $obj) {
                 $lock = getLockPeriod('assign', $obj->getBegin(), $obj->getEnd());
                 if ($lock) {
-                    $overlaps[] = array(
+                    $overlaps[] = [
                         'begin'      => $obj->getBegin(),
                         'end'        =>$obj->getEnd(),
                         'lock'       => TRUE,
                         'lock_begin' =>$lock[0],
                         'lock_end'   =>$lock[1],
                         'lock_id'    =>$lock[2],
-                    );
+                    ];
                 }
             }
             if ($overlaps) {
@@ -426,14 +426,14 @@ class AssignObject
         //check for regular overlaps
         if (!$resObject->getMultipleAssign()) { //when multiple assigns are allowed, we need no check...
             $multiChecker = new CheckMultipleOverlaps();
-            $multiChecker->setAutoTimeRange(Array($this));
+            $multiChecker->setAutoTimeRange([$this]);
             $multiChecker->addResource($this->resource_id);
-            $check_events = Array();
+            $check_events = [];
             foreach ($events as $evtObj) {
                 $check_events[$evtObj->getId()] = $evtObj;
             }
             $multiChecker->checkOverlap($check_events, $result);
-            $overlaps = Array();
+            $overlaps = [];
 
             if (is_array($result[$this->resource_id][$this->id])) {
                 foreach($result[$this->resource_id][$this->id] as $overlapping_event) {
@@ -649,10 +649,10 @@ class AssignObject
                     WHERE assign_id = ?");
             }
 
-            $result = $stmt->execute(array($this->resource_id, $tmp_assign_user_id, $this->user_free_name, $this->begin,
+            $result = $stmt->execute([$this->resource_id, $tmp_assign_user_id, $this->user_free_name, $this->begin,
                 $this->end, $this->repeat_end, $this->repeat_quantity, $this->repeat_interval,
                 $this->repeat_month_of_year, $this->repeat_day_of_month, $this->repeat_week_of_month,
-                $this->repeat_day_of_week, $mkdate, $this->comment_internal, $this->id));
+                $this->repeat_day_of_week, $mkdate, $this->comment_internal, $this->id]);
 
             if ($result > 0) {
                 // LOGGING
@@ -711,11 +711,11 @@ class AssignObject
         // delete old events
         $stmt = DBManager::get()->prepare("DELETE FROM resources_temporary_events
             WHERE assign_id = ?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
 
         // get the events and keep resources_temporary_events up-to-date under all circumstances
         $events = $this->getEvents();
-        $sql = array();
+        $sql = [];
         $now = time();
 
         foreach ($events as $event) {
@@ -781,8 +781,8 @@ class AssignObject
 
     public function getCopyForResource($resource_id)
     {
-        $new_assign = new AssignObject(array(null, $resource_id));
-        foreach(array(  'assign_user_id',
+        $new_assign = new AssignObject([null, $resource_id]);
+        foreach([  'assign_user_id',
                         'user_free_name',
                         'begin',
                         'end',
@@ -794,7 +794,7 @@ class AssignObject
                         'repeat_day_of_month',
                         'repeat_week_of_month',
                         'repeat_day_of_week',
-                        'comment_internal') as $prop) {
+                        'comment_internal'] as $prop) {
             $new_assign->$prop = $this->$prop;
         }
         return $new_assign;

@@ -38,9 +38,9 @@ class CoreStudygroupAdmin implements StudipModule {
                     $navigation->addSubNavigation('evaluation', $item);
                 }
             }
-            return array('admin' => $navigation);
+            return ['admin' => $navigation];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -49,6 +49,6 @@ class CoreStudygroupAdmin implements StudipModule {
      */
     function getMetadata()
     {
-         return array();
+         return [];
     }
 }

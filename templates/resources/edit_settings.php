@@ -40,7 +40,7 @@
         </label>
         <br>
 
-        <?= $this->render_partial('resources/display_locks', array('locks' => $locks['edit'])) ?>
+        <?= $this->render_partial('resources/display_locks', ['locks' => $locks['edit']]) ?>
 
         <?= LinkButton::create(_('Neue Sperrzeit anlegen'), URLHelper::getLink('?create_lock=edit')) ?>
     </fieldset>
@@ -56,7 +56,7 @@
         </label>
         <br>
 
-        <?= $this->render_partial('resources/display_locks', array('locks' => $locks['assign'])) ?>
+        <?= $this->render_partial('resources/display_locks', ['locks' => $locks['assign']]) ?>
 
         <?= LinkButton::create(_('Neue Sperrzeit anlegen'), URLHelper::getLink('?create_lock=assign')) ?>
     </fieldset>

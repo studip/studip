@@ -18,7 +18,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Suchen'), 'search', array('title' => _('Benutzer suchen')))?>
+        <?= Button::create(_('Suchen'), 'search', ['title' => _('Benutzer suchen')])?>
     </footer>
     <? else: ?>
         <label>
@@ -34,8 +34,8 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Auswählen'), 'select', array('title' => _('Benutzer auswählen')))?>
-        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('admin/role/assign_role'), array('title' => _('Suche zurücksetzen')))?>
+        <?= Button::create(_('Auswählen'), 'select', ['title' => _('Benutzer auswählen')])?>
+        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('admin/role/assign_role'), ['title' => _('Suche zurücksetzen')])?>
     </footer>
     <? endif ?>
 </form>
@@ -113,7 +113,7 @@ use Studip\Button, Studip\LinkButton;
                 </td>
                 <td class="actions">
                     <a href="<?= $controller->link_for('/assign_role_institutes/' . $assignedrole->getRoleid() . '/' . $currentuser->id) ?>" data-dialog="size=auto;reload-on-close">
-                        <?= Icon::create('edit', 'clickable')->asImg(array('title' => _('Einrichtungszuordnung bearbeiten'))) ?>
+                        <?= Icon::create('edit', 'clickable')->asImg(['title' => _('Einrichtungszuordnung bearbeiten')]) ?>
                     </a>
                 </td>
             </tr>

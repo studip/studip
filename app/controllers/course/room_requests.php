@@ -36,7 +36,7 @@ class Course_RoomRequestsController extends AuthenticatedController
         //Navigation in der Veranstaltung:
         Navigation::activateItem('/course/admin/room_requests');
 
-        if (!get_object_type($this->course_id, array('sem')) ||
+        if (!get_object_type($this->course_id, ['sem']) ||
             SeminarCategories::GetBySeminarId($this->course_id)->studygroup_mode ||
             !$perm->have_studip_perm("tutor", $this->course_id)
         ) {
@@ -54,12 +54,12 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function index_action()
     {
-        $this->url_params = array();
+        $this->url_params = [];
         if (Request::get('origin') !== null) {
             $this->url_params['origin'] = Request::get('origin');
         }
 
-        $room_requests = RoomRequest::findBySQL('seminar_id = ? ORDER BY seminar_id, metadate_id, termin_id', array($this->course_id));
+        $room_requests = RoomRequest::findBySQL('seminar_id = ? ORDER BY seminar_id, metadate_id, termin_id', [$this->course_id]);
         $this->room_requests = $room_requests;
         $this->request_id = Request::option('request_id');
 
@@ -141,7 +141,7 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         $attributes = self::process_form($request);
 
-        $this->params = array('request_id' => $request->getId());
+        $this->params = ['request_id' => $request->getId()];
         $this->params['fromDialog'] = Request::get('fromDialog');
         if (Request::get('origin') !== null) {
             $this->params['origin'] = Request::get('origin');
@@ -198,9 +198,9 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         if (!$request->isNew() && (getGlobalPerms($GLOBALS['user']->id) == 'admin' || ($GLOBALS['perm']->have_perm('admin') && count(getMyRoomRequests(null, null, true, $request->getId()))))) {
             $actions->addLink(_('Raumanfrage auflösen'),
-                URLHelper::getURL('resources.php', array('view'           => 'edit_request',
+                URLHelper::getURL('resources.php', ['view'           => 'edit_request',
                                                           'single_request' => $request->getId()
-                )),
+                ]),
                 Icon::create('admin', 'clickable'));
         }
 
@@ -229,21 +229,21 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function new_action()
     {
-        $options = array();
-        $this->url_params = array();
+        $options = [];
+        $this->url_params = [];
         if (Request::get('origin') !== null) {
             $this->url_params['origin'] = Request::get('origin');
         }
         if (!RoomRequest::existsByCourse($this->course_id)) {
-            $options[] = array('value' => 'course',
+            $options[] = ['value' => 'course',
                                'name'  => _('alle regelmäßigen und unregelmäßigen Termine der Veranstaltung')
-            );
+            ];
         }
         foreach (SeminarCycleDate::findBySeminar($this->course_id) as $cycle) {
             if (!RoomRequest::existsByCycle($cycle->getId())) {
                 $name = _("alle Termine einer regelmäßigen Zeit");
                 $name .= ' (' . $cycle->toString('full') . ')';
-                $options[] = array('value' => 'cycle_' . $cycle->getId(), 'name' => $name);
+                $options[] = ['value' => 'cycle_' . $cycle->getId(), 'name' => $name];
             }
         }
         foreach (SeminarDB::getSingleDates($this->course_id) as $date) {
@@ -251,7 +251,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $name = _("Einzeltermin der Veranstaltung");
                 $termin = new SingleDate($date['termin_id']);
                 $name .= ' (' . $termin->toString() . ')';
-                $options[] = array('value' => 'date_' . $date['termin_id'], 'name' => $name);
+                $options[] = ['value' => 'date_' . $date['termin_id'], 'name' => $name];
             }
         }
         $this->options = $options;
@@ -271,7 +271,7 @@ class Course_RoomRequestsController extends AuthenticatedController
         if (Request::isGet()) {
             $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/');
             $template = $factory->open('course/room_requests/_del.php');
-            $template->action = $this->link_for('course/room_requests/delete/' . $this->course_id, array('request_id' => $request->getid()));
+            $template->action = $this->link_for('course/room_requests/delete/' . $this->course_id, ['request_id' => $request->getid()]);
             $template->question = sprintf(_('Möchten Sie die Raumanfrage "%s" löschen?'), $request->getTypeExplained());
             $this->flash['message'] = $template->render();
         } else {
@@ -331,9 +331,9 @@ class Course_RoomRequestsController extends AuthenticatedController
             ) {
                 $tmp_search_result = $request->searchRoomsToRequest(Request::get('search_exp_room'), Request::submitted('search_properties'));
                 $search_by_properties = Request::submitted('search_properties');
-                $search_result = array();
+                $search_result = [];
                 if (count($tmp_search_result)) {
-                    $timestamps = $events = array();
+                    $timestamps = $events = [];
                     foreach ($request->getAffectedDates() as $date) {
                         $timestamps[] = $date->date;
                         $timestamps[] = $date->end_time;
@@ -341,7 +341,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                         $event = new AssignEvent($assign_id, $date->date, $date->end_time, $date->room_assignment->resource_id, null);
                         $events[$event->getId()] = $event;
                     }
-                    $check_result = array();
+                    $check_result = [];
                     if (count($events)) {
                         $checker = new CheckMultipleOverlaps();
                         $checker->setTimeRange(min($timestamps), max($timestamps));

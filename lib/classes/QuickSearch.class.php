@@ -83,7 +83,7 @@ class QuickSearch
     private $withButton;        //if true, the field will be displayed with a looking-glass-button to click on
     private $specialBeschriftung;
     private $selectBox = true;
-    private $withAttributes = array();
+    private $withAttributes = [];
     private $box_width = "233"; //width of the box withButton
     private $box_align = "right";//align of the lookingglass in the withButton-box
     private $autocomplete_disabled = false;
@@ -177,7 +177,7 @@ class QuickSearch
         } else {
             $this->search = NULL;
         }
-        $this->setAttributes(array());
+        $this->setAttributes([]);
     }
 
     /**
@@ -188,7 +188,7 @@ class QuickSearch
      *
      * @return QuickSearch
      */
-    public function withButton($design = array())
+    public function withButton($design = [])
     {
         $this->withButton = true;
         if (isset($design['width'])) {
@@ -384,7 +384,7 @@ class QuickSearch
             $template->set_attribute('defaultID', $this->defaultID);
             $template->set_attribute('defaultName', $this->defaultName);
             $template->set_attribute('inputClass', $this->inputClass);
-            $template->set_attribute('withAttributes', $this->withAttributes ? $this->withAttributes : array());
+            $template->set_attribute('withAttributes', $this->withAttributes ? $this->withAttributes : []);
             $template->set_attribute('jsfunction', $this->jsfunction);
             $template->set_attribute('autocomplete_disabled', Config::get()->getValue("AJAX_AUTOCOMPLETE_DISABLED") || $this->autocomplete_disabled);
             $template->set_attribute('count_QS', self::$count_QS);
@@ -435,11 +435,11 @@ class QuickSearch
                 $results = $this->search->getResults($request, $_REQUEST);
             } catch (Exception $exception) {
                 //Der Programmierer will ja seine Fehler sehen:
-                return array(array("", $exception->getMessage()));
+                return [["", $exception->getMessage()]];
             }
             return $results;
         } else {
-            $result = array(array("", _("Kein korrektes Suchobjekt angegeben.")));
+            $result = [["", _("Kein korrektes Suchobjekt angegeben.")]];
             return $result;
         }
     }

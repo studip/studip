@@ -36,7 +36,7 @@ class IcalExport
     {
         $length = self::$id_length;
         $ret = '';
-        $rejected = array(
+        $rejected = [
             'A' => 2,
             'E' => 2,
             'I' => 2,
@@ -46,7 +46,7 @@ class IcalExport
             'e' => 2,
             'i' => 2,
             'o' => 2,
-            'u' => 2);
+            'u' => 2];
         while ($length--) {
             while (1) {
                 $rnd = rand(48, 122);

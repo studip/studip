@@ -29,7 +29,7 @@ class Kategorie extends SimpleORMap
      *
      * @param array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'kategorien';
         parent::configure($config);
@@ -56,7 +56,7 @@ class Kategorie extends SimpleORMap
     {
         $query = "UPDATE kategorien SET priority = priority + 1 WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         return $statement->rowCount() > 0;
     }
 }

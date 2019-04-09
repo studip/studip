@@ -7,7 +7,7 @@
         <? $author = $thread->getUser() ?>
         <? if ($author['user_id'] === $GLOBALS['user']->id) $i_shared = true ?>
         <a href="<?= URLHelper::getLink($author->getURL()) ?>">
-            <?= $author->getAvatar()->getImageTag(Avatar::MEDIUM, array('title' => $author->getName())) ?>
+            <?= $author->getAvatar()->getImageTag(Avatar::MEDIUM, ['title' => $author->getName()]) ?>
         </a>
     </li>
     <? foreach ($thread->getRelatedUsers() as $user_id) : ?>
@@ -15,7 +15,7 @@
     <li>
         <? $user = new BlubberUser($user_id) ?>
         <a href="<?= URLHelper::getLink($user->getURL()) ?>">
-            <?= $user->getAvatar()->getImageTag(Avatar::MEDIUM, array('title' => $user->getName())) ?>
+            <?= $user->getAvatar()->getImageTag(Avatar::MEDIUM, ['title' => $user->getName()]) ?>
         </a>
     </li>
     <? endif ?>

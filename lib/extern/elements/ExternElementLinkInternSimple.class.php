@@ -44,8 +44,8 @@ require_once 'ExternElementLinkIntern.class.php';
 // use of global configurations
 class ExternElementLinkInternSimple extends ExternElement {
 
-    var $attributes = array("font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style", "config", "srilink", "externlink");
+    var $attributes = ["font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style", "config", "srilink", "externlink"];
     var $link_module_type;
 
     /**
@@ -60,8 +60,8 @@ class ExternElementLinkInternSimple extends ExternElement {
         $this->name = "LinkIntern";
         $this->real_name = _("Links");
         $this->description = _("Eigenschaften der Schrift für Links.");
-        $this->headlines = array(_("Schriftformatierung"), _("Linkformatierung"),
-                _("Verlinkung zum Modul"));
+        $this->headlines = [_("Schriftformatierung"), _("Linkformatierung"),
+                _("Verlinkung zum Modul")];
     }
     
     /**
@@ -80,10 +80,10 @@ class ExternElementLinkInternSimple extends ExternElement {
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
-        $attributes = array("font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style");
-        $headlines = array("font" => $this->headlines[0],
-                "a" => $this->headlines[1]);
+        $attributes = ["font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style"];
+        $headlines = ["font" => $this->headlines[0],
+                "a" => $this->headlines[1]];
         $content_table = $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
         
@@ -100,8 +100,8 @@ class ExternElementLinkInternSimple extends ExternElement {
                 $names[] = $config["name"];
         }
         else {
-            $values = array();
-            $names = array();
+            $values = [];
+            $names = [];
         }
         array_unshift($values, "");
         array_unshift($names, _("Standardkonfiguration"));

@@ -92,7 +92,7 @@ class Blubber extends \RESTAPI\RouteMap
     public function getProfileBlubber($user_id)
     {
         $stream  = \BlubberStream::getProfileStream($user_id);
-        return $this->getStreamBlubberRestResource($stream, array("user_id" => $user_id));
+        return $this->getStreamBlubberRestResource($stream, ["user_id" => $user_id]);
     }
 
 
@@ -154,7 +154,7 @@ class Blubber extends \RESTAPI\RouteMap
                 $this->error(401);
             }
         }
-        return $this->getStreamBlubberRestResource($stream, array('user_id' => $stream['user_id'], 'stream_id' => $stream_id));
+        return $this->getStreamBlubberRestResource($stream, ['user_id' => $stream['user_id'], 'stream_id' => $stream_id]);
     }
 
     /**
@@ -171,10 +171,10 @@ class Blubber extends \RESTAPI\RouteMap
         $total   = $stream->fetchNumberOfThreads();
         $threads = $stream->fetchThreads((int) $this->offset, (int) $this->limit ?: null, $this->stream_time ?: null);
 
-        $json = array();
+        $json = [];
 
         foreach ($threads as $thread) {
-            $url = $this->urlf('/blubber/posting/%s', array($thread->getId()));
+            $url = $this->urlf('/blubber/posting/%s', [$thread->getId()]);
             $json[$url] = $this->blubberPostingtoJSON($thread);
         }
 
@@ -278,17 +278,17 @@ class Blubber extends \RESTAPI\RouteMap
                 "mkdate = UNIX_TIMESTAMP() " .
             "");
 
-            $statement->execute(array(
+            $statement->execute([
                 'user_id' => $GLOBALS['user']->id,
                 'thread_id' => $blubber->getId()
-            ));
+            ]);
 
             if (is_array($this->data['private_adressees'])) {
                 foreach ($this->data['private_adressees'] as $user_id) {
-                    $statement->execute(array(
+                    $statement->execute([
                         'user_id' => $user_id,
                         'thread_id' => $blubber->getId()
-                    ));
+                    ]);
                 }
             }
         }
@@ -317,16 +317,16 @@ class Blubber extends \RESTAPI\RouteMap
 
         $comments = $thread->getChildren($this->offset, $this->limit);
 
-        $json = array();
+        $json = [];
 
         foreach ($comments as $comment) {
-            $url = $this->urlf('/blubber/comment/%s', array($comment->getId()));
+            $url = $this->urlf('/blubber/comment/%s', [$comment->getId()]);
             $json[$url] = $this->blubberPostingtoJSON($comment);
         }
 
         $this->etag(md5(serialize($json)));
 
-        return $this->paginated($json, $thread->getNumberOfChildren(), array('blubber_id' => $blubber_id));
+        return $this->paginated($json, $thread->getNumberOfChildren(), ['blubber_id' => $blubber_id]);
     }
 
     /**
@@ -460,7 +460,7 @@ class Blubber extends \RESTAPI\RouteMap
      */
     private function blubberPostingtoJSON($posting)
     {
-        $result = array(
+        $result = [
             'blubber_id'   => $posting->getId(),
             'root_id'      => $posting['root_id'],
             'author'       => User::getMiniUser($this, $posting->getUser()),
@@ -469,21 +469,21 @@ class Blubber extends \RESTAPI\RouteMap
             'content_html' => formatReady($posting['description']),
             'mkdate'       => $posting['mkdate'],
             'chdate'       => $posting['chdate']
-        );
+        ];
 
         if ($posting->isThread()) {
 
-            $sharer_ids = array();
+            $sharer_ids = [];
             foreach ($posting->getSharingUsers() as $sharer) {
-                $sharer_ids[] = $this->urlf('/user/%s', array($sharer['user_id']));
+                $sharer_ids[] = $this->urlf('/user/%s', [$sharer['user_id']]);
             }
 
-            $result = array_merge($result, array(
-                'comments'       => $this->urlf('/blubber/posting/%s/comments', array($posting->getId())),
+            $result = array_merge($result, [
+                'comments'       => $this->urlf('/blubber/posting/%s/comments', [$posting->getId()]),
                 'comments_count' => $posting->getNumberOfChildren(),
                 'reshares'       => $sharer_ids,
                 'tags'           => $posting->getTags()
-            ));
+            ]);
 
             if($posting['context_type'] == 'course') {
                 $result['course_id'] = $posting->seminar_id;

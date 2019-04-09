@@ -207,7 +207,7 @@ function setDeputyHomepageRights($user_id, $range_id, $rights) {
  * all permissions between minimum and "admin"
  */
 function getValidDeputyPerms($min_perm_only = false) {
-    $permission = $min_perm_only ? 'tutor' : array('tutor', 'dozent');
+    $permission = $min_perm_only ? 'tutor' : ['tutor', 'dozent'];
     return $permission;
 }
 
@@ -252,7 +252,7 @@ function getMyDeputySeminarsQuery($type, $sem_number_sql, $sem_number_end_sql, $
         // My courses list
         case 'meine_sem':
             $threshold = object_get_visit_threshold();
-            $fields = array(
+            $fields = [
                 "seminare.VeranstaltungsNummer AS sem_nr",
                 "CONCAT(seminare.Name, ' ["._("Vertretung")."]') AS Name",
                 "seminare.Seminar_id",
@@ -267,11 +267,11 @@ function getMyDeputySeminarsQuery($type, $sem_number_sql, $sem_number_end_sql, $
                 "admission_prelim",
                 "$sem_number_sql as sem_number",
                 "$sem_number_end_sql as sem_number_end"
-            );
-            $joins = array(
+            ];
+            $joins = [
                     "JOIN seminare ON (deputies.range_id=seminare.Seminar_id)",
                     "LEFT JOIN object_user_visits ouv ON (ouv.object_id=deputies.range_id AND ouv.user_id='$user->id' AND ouv.type='sem')"
-                );
+                ];
             $where = " WHERE deputies.user_id = '$user->id'";
             if (Config::get()->MY_COURSES_ENABLE_STUDYGROUPS && !$studygroups) {
                 $where .= " AND seminare.status != 99";
@@ -283,7 +283,7 @@ function getMyDeputySeminarsQuery($type, $sem_number_sql, $sem_number_end_sql, $
         // Grouping and notification settings for my courses
         case 'gruppe':
         case 'notification':
-            $fields = array(
+            $fields = [
                      "seminare.VeranstaltungsNummer AS sem_nr",
                      "CONCAT(seminare.Name, ' ["._("Vertretung")."]') AS Name",
                      "seminare.Seminar_id",
@@ -292,24 +292,24 @@ function getMyDeputySeminarsQuery($type, $sem_number_sql, $sem_number_end_sql, $
                      "seminare.visible",
                      "$sem_number_sql as sem_number",
                      "$sem_number_end_sql as sem_number_end"
-            );
-            $joins = array(
+            ];
+            $joins = [
                     "JOIN seminare ON (deputies.range_id=seminare.Seminar_id)"
-                );
+                ];
             $where = " WHERE deputies.user_id = '$user->id'";
             break;
         // Notification mail sending from client script
         case 'notification_cli':
-            $fields = array(
+            $fields = [
                 "aum.user_id",
                 "aum.username",
                 $GLOBALS['_fullname_sql']['full']." AS fullname",
                 "aum.Email"
-            );
-            $joins = array(
+            ];
+            $joins = [
                 "INNER JOIN auth_user_md5 aum ON (deputies.user_id=aum.user_id)",
                 "LEFT JOIN user_info ui ON (ui.user_id=deputies.user_id)"
-            );
+            ];
             $where = " WHERE deputies.notification != 0";
             break;
     }

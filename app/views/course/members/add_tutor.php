@@ -15,15 +15,15 @@
             <tr>
                 <td>
                     <?= QuickSearch::get('new_tutor', $search)
-                        ->withButton(array('reset_button_name' => 'reset_tutor', 
-                            'search_button_name' => 'search_tutor'))
+                        ->withButton(['reset_button_name' => 'reset_tutor', 
+                            'search_button_name' => 'search_tutor'])
                         ->render(); ?>  
                     <input type="hidden" name="seminar_id" value="<?= $course_id ?>">
                 </td>
                 <td>
                 <?= Button::createAccept(_('Eintragen'), 'add_tutor', 
-                        array('title' => sprintf(_('als %s eintragen'), 
-                                htmlReady($decoratedStatusGroups['tutor'])))) ?>
+                        ['title' => sprintf(_('als %s eintragen'), 
+                                htmlReady($decoratedStatusGroups['tutor']))]) ?>
                 <?= LinkButton::createCancel(_('Abbrechen'), 
                         $controller->url_for('course/members/index')) ?>
                 </td>

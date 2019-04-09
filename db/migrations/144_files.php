@@ -142,13 +142,13 @@ class files extends Migration
                   VALUES (:id, :field, :value, 1, :type, 'global', 'files', UNIX_TIMESTAMP(),
                           UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             ':id' => md5(uniqid('PERSONALDOCUMENT_ENABLE')),
             ':field' => 'PERSONALDOCUMENT_ENABLE',
             ':value' => (int) false,
             ':type' => 'boolean',
             ':description' => 'Aktiviert den persoenlichen Dateibereich',
-        ));
+        ]);
 
         $query = "INSERT IGNORE INTO `doc_usergroup_config`
                      (`id`, `usergroup`, `upload_quota`, `upload_unit`,
@@ -157,7 +157,7 @@ class files extends Migration
                            :quotaUnit, :isGroupConfig)";
 
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             ':id' => '1',
             ':group' => 'default',
             ':uploadQuota' => '5242880',
@@ -165,15 +165,15 @@ class files extends Migration
             ':quota' => '52428800',
             ':quotaUnit' => 'MB',
             ':isGroupConfig' => '1'
-        ));
+        ]);
 
         $query = "INSERT IGNORE INTO `doc_filetype` (`type`) VALUES (:type)";
 
         $statement = DBManager::get()->prepare($query);
         foreach (words('exe com pif bat scr') as $value) {
-            $statement->execute(array(
+            $statement->execute([
                 ':type' => $value
-            ));
+            ]);
         }
     }
 

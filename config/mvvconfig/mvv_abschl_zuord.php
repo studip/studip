@@ -55,66 +55,66 @@
 
 
 // Tabelle mvv_abschl_zuord
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 7
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        ),
-        'ausgelaufen' => array(
+        ],
+        'ausgelaufen' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 1
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'kategorie_id' => array(
-            'default' => array(
+    ],
+    'fields' => [
+        'kategorie_id' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'abschluss_id' => array(
-            'default' => array(
+            ]
+        ],
+        'abschluss_id' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'position' => array(
-            'default' => array(
+            ]
+        ],
+        'position' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];

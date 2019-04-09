@@ -334,7 +334,7 @@ class Avatar {
             throw new Exception(_('Es ist ein Fehler beim Bearbeiten des Bildes aufgetreten.') . ' (' . _('Fehlende GD-Lib') . ')');
         }
 
-        set_error_handler(array(__CLASS__, 'error_handler'));
+        set_error_handler([__CLASS__, 'error_handler']);
 
         NotificationCenter::postNotification('AvatarWillCreate', $this->user_id);
         copy($filename, $this->getCustomAvatarPath(Avatar::ORIGINAL));
@@ -375,11 +375,11 @@ class Avatar {
      * @return array            a tupel of integers [width, height]
      */
     public static function getDimension($size) {
-        $dimensions = array(
-            Avatar::NORMAL => array(250, 250),
-            Avatar::MEDIUM => array(100, 100),
-            Avatar::SMALL  => array(25, 25)
-        );
+        $dimensions = [
+            Avatar::NORMAL => [250, 250],
+            Avatar::MEDIUM => [100, 100],
+            Avatar::SMALL  => [25, 25]
+        ];
         return $dimensions[$size];
     }
 

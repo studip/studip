@@ -38,7 +38,7 @@ if (!match_route('web_migrate.php')) {
             ]) ?>
         <? endif; ?>
         <div class="index_main">
-            <form class="default" name="login" method="post" action="<?= URLHelper::getLink(Request::url(), array('cancel_login' => NULL)) ?>">
+            <form class="default" name="login" method="post" action="<?= URLHelper::getLink(Request::url(), ['cancel_login' => NULL]) ?>">
                 <header>
                     <h1 style="margin: 0; padding-bottom:10px;">
                         <?=_('Herzlich willkommen!')?>

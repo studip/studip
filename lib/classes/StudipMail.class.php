@@ -223,7 +223,7 @@ class StudipMail
     public function addRecipient($mail, $name = '', $type = 'To')
     {
         $type = ucfirst($type);
-        $type = in_array($type, array('To', 'Cc', 'Bcc')) ? $type : 'To';
+        $type = in_array($type, ['To', 'Cc', 'Bcc']) ? $type : 'To';
         if (!isset($this->recipients[$mail]) || $this->recipients[$mail]['type'] !== 'To') {
             $this->recipients[$mail] = compact('mail', 'name', 'type');
         }
@@ -411,7 +411,7 @@ class StudipMail
                 $text_message = _('Diese Nachricht ist im HTML-Format verfasst. Sie benötigen eine E-Mail-Anwendung, die das HTML-Format anzeigen kann.');
             }
             $transporter->CreateQuotedPrintableTextPart($transporter->WrapText($text_message), "", $text_part);
-            $transporter->AddAlternativeMultipart($part = array($text_part, $html_part));
+            $transporter->AddAlternativeMultipart($part = [$text_part, $html_part]);
         } else {
             $transporter->AddQuotedPrintableTextPart($this->getBodyText());
         }

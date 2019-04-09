@@ -2,11 +2,11 @@
 $current_page = _('Fehler');
 
 $title = _('Fehler! Bitte wenden Sie sich an Ihren Systemadministrator.');
-$details = array(htmlReady($exception->getMessage()));
+$details = [htmlReady($exception->getMessage())];
 
 if (Studip\ENV == 'development') {
     $title = "Houston, we've got a problem.";
-    $details = array(display_exception($exception, true, true));
+    $details = [display_exception($exception, true, true)];
 }
 ?>
     <?= MessageBox::exception($title, $details) ?>

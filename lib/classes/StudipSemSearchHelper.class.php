@@ -27,23 +27,23 @@
 class StudipSemSearchHelper {
     
     public static function GetQuickSearchFields(){
-        return array(   'all' =>_("alles"),
+        return [   'all' =>_("alles"),
                         'title_lecturer_number' => _("Titel") . ', ' . _("Lehrende") . ', ' . _("Nummer"),
                         'title' => _("Titel"),
                         'sub_title' => _("Untertitel"),
                         'lecturer' => _("Lehrende"),
                         'number' => _("Nummer"),
                         'comment' => _("Kommentar"),
-                        'scope' => _("Bereich"));
+                        'scope' => _("Bereich")];
     }
     
     private $search_result;
     private $found_rows = false;
-    private $params = array();
+    private $params = [];
     private $visible_only;
     
     function __construct($form = null, $visible_only = null){
-        $params = array();
+        $params = [];
         if($form instanceof StudipForm){
             foreach($form->getFormFieldsByName(true) as $name){
                 $params[$name] = $form->getFormFieldValue($name);
@@ -144,7 +144,7 @@ class StudipSemSearchHelper {
             $view->params[4] = "%".trim($this->params['lecturer'])."%";
             $result = $view->get_query("view:SEM_SEARCH_LECTURER");
 
-            $lecturers = array();
+            $lecturers = [];
             while ($result->next_record()) {
                 $lecturers[] = $result->f('user_id');
             }
@@ -217,7 +217,7 @@ class StudipSemSearchHelper {
         if($this->search_result instanceof DBSnapshot && $this->search_result->numRows){
             return array_unique($this->search_result->getRows('seminar_id'));
         } else {
-            return array();
+            return [];
         }
     }
 }

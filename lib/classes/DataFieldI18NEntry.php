@@ -80,7 +80,7 @@ abstract class DataFieldI18NEntry extends DataFieldEntry
      * @param Array  $variables Additional variables
      * @return String containing the required html
      */
-    public function getHTML($name = '', $variables = array())
+    public function getHTML($name = '', $variables = [])
     {
         return parent::getHTML($name, $variables + [
             'locale_names' => $this->getLocaleNames($name)
@@ -139,10 +139,10 @@ abstract class DataFieldI18NEntry extends DataFieldEntry
         }
 
         if ($result) {
-            NotificationCenter::postNotification('DatafieldDidUpdate', $this, array(
+            NotificationCenter::postNotification('DatafieldDidUpdate', $this, [
                 'changed'   => $result,
                 'old_value' => $old_value,
-            ));
+            ]);
         }
 
         return $result;

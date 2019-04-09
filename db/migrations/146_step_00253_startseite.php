@@ -61,7 +61,7 @@ class Step00253startseite extends Migration
         $stmt = DBManager::get()->prepare("INSERT INTO plugins
             (pluginclassname, pluginpath, pluginname, plugintype, enabled, navigationpos)
             VALUES (?, ?, ?, 'PortalPlugin', 'yes', ?)");
-        $stmt->execute(array($classname, 'core/'.$classname, $classname, $navpos));
+        $stmt->execute([$classname, 'core/'.$classname, $classname, $navpos]);
 
         // get id of newly created plugin (we purposely do not use PDO::lastInserId())
         $plugin_id = DBManager::get()->query("SELECT pluginid FROM plugins
@@ -71,7 +71,7 @@ class Step00253startseite extends Migration
         $stmt = DBManager::get()->prepare("INSERT INTO roles_plugins
             (roleid, pluginid) VALUES (?, ?)");
         foreach (range(1, 6) as $role_id) {
-            $stmt->execute(array($role_id, $plugin_id));
+            $stmt->execute([$role_id, $plugin_id]);
         }
     }
     
@@ -82,7 +82,7 @@ class Step00253startseite extends Migration
             $stmt = DBManager::get()->prepare("INSERT INTO widget_default
                 (`pluginid`, `col`, `position`, `perm`) VALUES (?, ?, ?, ?)");
             foreach (words("user autor tutor dozent admin root") as $perm) {
-               $stmt->execute(array($plugin_id, 0, $key, $perm));
+               $stmt->execute([$plugin_id, 0, $key, $perm]);
             }
         }
     }
@@ -93,15 +93,15 @@ class Step00253startseite extends Migration
             WHERE pluginclassname = '$classname'")->fetchColumn();
 
         $stmt = DBManager::get()->prepare("DELETE FROM plugins WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = DBManager::get()->prepare("DELETE FROM widget_default WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = DBManager::get()->prepare("DELETE FROM widget_user WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
 
         $stmt = DBManager::get()->prepare("DELETE FROM roles_plugins WHERE pluginid = ?");
-        $stmt->execute(array($widget_id));
+        $stmt->execute([$widget_id]);
     }
 }

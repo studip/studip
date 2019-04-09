@@ -163,7 +163,7 @@ class EvaluationObject extends StudipObject {
     $this->parentObject   = $parentObject;
     $this->loadChildren   = $loadChildren;
     $this->db             = NULL;
-    $this->childObjects   = array ();
+    $this->childObjects   =  [];
     $this->numberChildren = 0;
     $this->title          = "";
     $this->text           = "";
@@ -276,7 +276,7 @@ class EvaluationObject extends StudipObject {
     * @param   string   $childID   The child id
     */
    function removeChildID ($childID) {
-      $temp         = array ();
+      $temp         =  [];
       $childRemoved = NO;
       
       while ($child = &$this->getNextChild ()) {
@@ -481,9 +481,9 @@ class EvaluationObject extends StudipObject {
      * @access  public
      */
    function getSpecialChildobjects (&$object, $instanceof, $reset = false) {
-      static $specialchildobjects = array ();
+      static $specialchildobjects =  [];
       if ($reset == YES) {
-         $specialchildobjects = array ();
+         $specialchildobjects =  [];
       }
       
       if ($object->x_instanceof () == $instanceof) {

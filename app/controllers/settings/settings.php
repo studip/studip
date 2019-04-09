@@ -18,7 +18,7 @@ require_once 'lib/messaging.inc.php';
 class Settings_SettingsController extends AuthenticatedController
 {
     // Stores message which shall be send to the user via email
-    protected $private_messages = array();
+    protected $private_messages = [];
 
     /**
      * Sets up the controller
@@ -109,7 +109,7 @@ class Settings_SettingsController extends AuthenticatedController
     public function url_for($to = ''/*, ...*/)
     {
         $arguments  = func_get_args();
-        $parameters = is_array(end($arguments)) ? array_pop($arguments) : array();
+        $parameters = is_array(end($arguments)) ? array_pop($arguments) : [];
         $url        = call_user_func_array('parent::url_for', $arguments);
         return URLHelper::getURL($url, $parameters);
     }
@@ -163,12 +163,12 @@ class Settings_SettingsController extends AuthenticatedController
         $column = end(explode('.', $field));
         $attribute = $attribute ?: mb_strtolower($column);
 
-        $global_mapping = array(
+        $global_mapping = [
             'email'    => 'ALLOW_CHANGE_EMAIL',
             'name'     => 'ALLOW_CHANGE_NAME',
             'title'    => 'ALLOW_CHANGE_TITLE',
             'username' => 'ALLOW_CHANGE_USERNAME',
-        );
+        ];
 
         if (isset($global_mapping[$attribute]) and !Config::get()->{$global_mapping[$attribute]}) {
             return false;

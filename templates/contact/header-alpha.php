@@ -31,7 +31,7 @@
             <td nobreak align="center" class="<? if ($filter == $chr) echo 'active'; ?><? if (!$sizes[$chr]) echo ' empty'; ?>"
                 <?= $tooltip($sizes[$chr]) ?>
             >
-                <a href="<?= URLHelper::getLink('', array('view' => $view, 'filter' => $chr)) ?>">
+                <a href="<?= URLHelper::getLink('', ['view' => $view, 'filter' => $chr]) ?>">
                     <?= $chr ?>
                 </a>
             </td>

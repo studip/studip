@@ -388,9 +388,9 @@ class ShowSchedules
             <tr>
                 <td class="hidden" align="center" valign="bottom">&nbsp;
                 <? if ((!$_SESSION['resources_data']["schedule_time_range"]) || ($_SESSION['resources_data']["schedule_time_range"] == 1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1]) ?>">
                         <?= Icon::create('arr_2up', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                     </a>
                 <? endif; ?>
@@ -420,9 +420,9 @@ class ShowSchedules
             <tr>
                 <td class="hidden" align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']['schedule_time_range']) || ($_SESSION['resources_data']['schedule_time_range'] == -1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1]) ?>">
                         <?= Icon::create('arr_2down', 'clickable', ['title' => _('Spätere Belegungen anzeigen')])->asImg() ?>
                     </a>
                 <? endif; ?>
@@ -442,7 +442,7 @@ class ShowSchedules
     {
         $schedule = new ScheduleWeek();
         $cats = $schedule->categories;
-        $eventcat_names = array(
+        $eventcat_names = [
             'na'   => _('Keine'),
             'd'    => _('Täglich'),
             'w'    => ucfirst(_('wöchentlich')),
@@ -450,7 +450,7 @@ class ShowSchedules
             'm'    => _('Monatlich'),
             'y'    => _('Jährlich'),
             'meta' => _('Einzeltermin zu regelmäßigen Veranstaltungszeiten')
-        );
+        ];
         $sidebar = Sidebar::get();
         $legende_widget = new SidebarWidget();
         $legende_widget->setTitle(_('Art der Wiederholung'));

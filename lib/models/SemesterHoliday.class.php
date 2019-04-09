@@ -28,7 +28,7 @@ class SemesterHoliday extends SimpleORMap
      *
      * @param Array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'semester_holiday';
         $config['additional_fields']['current'] = true;
@@ -59,7 +59,7 @@ class SemesterHoliday extends SimpleORMap
      */
     public static function findByTimestampRange($timestamp_start, $timestamp_end)
     {
-        $ret = array();
+        $ret = [];
         if ($timestamp_start < $timestamp_end) {
             foreach(self::getAll() as $holiday) {
                if ($holiday->beginn >= $timestamp_start && $holiday->ende <= $timestamp_end) {
@@ -91,7 +91,7 @@ class SemesterHoliday extends SimpleORMap
     public static function getAll($force_reload = false)
     {
         if (!is_array(self::$holiday_cache) || $force_reload) {
-            self::$holiday_cache = array();
+            self::$holiday_cache = [];
             foreach(self::findBySql('1 ORDER BY beginn') as $holiday){
                 self::$holiday_cache[$holiday->getId()] = $holiday;
             }
@@ -123,10 +123,10 @@ class SemesterHoliday extends SimpleORMap
         // Check all defined vaciation times
         foreach (SemesterHoliday::getAll() as $val) {
             if ($val->beginn <= $time && $val->ende >= $time) {
-                return array(
+                return [
                     'name' => $val->name,
                     'col' => 3,
-                );
+                ];
             }
         }
 

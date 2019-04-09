@@ -132,7 +132,7 @@ class StudipAuthShib extends StudipAuthSSO
         $pos = mb_strpos($user, '@');
 
         if ($pos !== false) {
-            return array(mb_substr($user, $pos + 1));
+            return [mb_substr($user, $pos + 1)];
         }
 
         return NULL;

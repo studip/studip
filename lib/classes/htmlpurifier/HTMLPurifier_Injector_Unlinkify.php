@@ -6,7 +6,7 @@
 class HTMLPurifier_Injector_Unlinkify extends HTMLPurifier_Injector
 {
     public $name = 'Unlinkify';
-    public $needed = array('a' => 'href', 'img' => 'src');
+    public $needed = ['a' => 'href', 'img' => 'src'];
 
     private $sanitizer;
     private $config;

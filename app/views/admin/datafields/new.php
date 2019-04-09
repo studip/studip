@@ -144,7 +144,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Anlegen'), 'anlegen', array('title' => _('Neues Datenfeld anlegen'))) ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/datafields'), array('title' => _('Zurück zur Übersicht'))) ?>
+        <?= Button::createAccept(_('Anlegen'), 'anlegen', ['title' => _('Neues Datenfeld anlegen')]) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/datafields'), ['title' => _('Zurück zur Übersicht')]) ?>
     </footer>
 </form>

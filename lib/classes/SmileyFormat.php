@@ -18,21 +18,21 @@ class SmileyFormat extends TextFormat
     
     function __construct()
     {
-        $rules = array();
+        $rules = [];
 
         // Smiley rule
-        $rules['smileys'] = array(
+        $rules['smileys'] = [
             'start'    => self::REGEXP,
             'callback' => 'SmileyFormat::smiley'
-        );
+        ];
 
         // Smiley short notation rule
         $needles = array_keys(Smiley::getShort());
         $needles = array_map('preg_quote', $needles);
-        $rules['smileys_short'] = array(
+        $rules['smileys_short'] = [
             'start'    => '(>|^|\s)(' . implode('|', $needles) . ')(?=$|<|\s)',
             'callback' => 'SmileyFormat::short'
-        );
+        ];
 
         parent::__construct($rules);
     }

@@ -39,8 +39,8 @@
  */
 class SemClass implements ArrayAccess
 {
-    protected $data = array();
-    static protected $slots = array(
+    protected $data = [];
+    static protected $slots = [
         "overview",
         "forum",
         "admin",
@@ -53,8 +53,8 @@ class SemClass implements ArrayAccess
         "resources",
         "calendar",
         "elearning_interface"
-    );
-    static protected $core_modules = array(
+    ];
+    static protected $core_modules = [
         "CoreOverview",
         "CoreAdmin",
         "CoreStudygroupAdmin",
@@ -69,11 +69,11 @@ class SemClass implements ArrayAccess
         "CoreResources",
         "CoreCalendar",
         "CoreElearningInterface"
-    );
+    ];
     static protected $sem_classes = null;
 
     static public function getDefaultSemClass() {
-        $data = array(
+        $data = [
             'name' => "Fehlerhafte Seminarklasse!",
             'overview' => "CoreOverview",
             'forum' => "CoreForum",
@@ -90,7 +90,7 @@ class SemClass implements ArrayAccess
             'modules' => '{"CoreOverview":{"activated":1,"sticky":1},"CoreAdmin":{"activated":1,"sticky":1}, "CoreResources":{"activated":1,"sticky":0}}',
             'visible' => 1,
             'is_group' => false
-        );
+        ];
         return new SemClass($data);
     }
 
@@ -106,13 +106,13 @@ class SemClass implements ArrayAccess
         // fall back to 'default' if modules are not defined
         $type = isset($INST_MODULES[$type]) ? $type : 'default';
 
-        $data = array(
+        $data = [
             'name'                => 'Generierte Standardinstitutsklasse',
             'visible'             => 1,
             'overview'            => 'CoreOverview', // always available
             'admin'               => 'CoreAdmin'     // always available
-        );
-        $slots = array(
+        ];
+        $slots = [
             'forum'               => 'CoreForum',
             'documents'           => 'CoreDocuments',
             'literature'          => 'CoreLiterature',
@@ -122,15 +122,15 @@ class SemClass implements ArrayAccess
             'calendar'            => 'CoreCalendar',
             'elearning_interface' => 'CoreElearningInterface',
             'personal'            => 'personal'
-        );
-        $modules = array(
-            'CoreOverview'        => array('activated' => 1, 'sticky' => 1),
-            'CoreAdmin'           => array('activated' => 1, 'sticky' => 1)
-        );
+        ];
+        $modules = [
+            'CoreOverview'        => ['activated' => 1, 'sticky' => 1],
+            'CoreAdmin'           => ['activated' => 1, 'sticky' => 1]
+        ];
 
         foreach ($slots as $slot => $module) {
             $data[$slot] = $module;
-            $modules[$module] = array('activated' => (int) $INST_MODULES[$type][$slot], 'sticky' => 0);
+            $modules[$module] = ['activated' => (int) $INST_MODULES[$type][$slot], 'sticky' => 0];
         }
         $data['modules'] = json_encode($modules);
 
@@ -147,7 +147,7 @@ class SemClass implements ArrayAccess
         $db = DBManager::get();
         if (is_int($data)) {
             $statement = $db->prepare("SELECT * FROM sem_classes WHERE id = :id ");
-            $statement->execute(array('id' => $data));
+            $statement->execute(['id' => $data]);
             $this->data = $statement->fetch(PDO::FETCH_ASSOC);
         } else {
             $this->data = $data;
@@ -155,7 +155,7 @@ class SemClass implements ArrayAccess
         if ($this->data['modules']) {
             $this->data['modules'] = self::object2array(json_decode($this->data['modules']));
         } else {
-            $this->data['modules'] = array();
+            $this->data['modules'] = [];
         }
     }
 
@@ -323,13 +323,13 @@ class SemClass implements ArrayAccess
         if ($module) {
             return (array) $module->getTabNavigation($course_id ? $course_id : Context::getId());
         } else {
-            return array();
+            return [];
         }
     }
 
     public function getSemTypes()
     {
-        $types = array();
+        $types = [];
         foreach (SemType::getTypes() as $id => $type) {
             if ($type['class'] == $this->data['id']) {
                 $types[$id] = $type;
@@ -405,7 +405,7 @@ class SemClass implements ArrayAccess
             "WHERE id = :id ".
         "");
         StudipCacheFactory::getCache()->expire('DB_SEM_CLASSES_ARRAY');
-        return $statement->execute(array(
+        return $statement->execute([
             'id' => $this->data['id'],
             'name' => $this->data['name'],
             'description' => $this->data['description'],
@@ -456,7 +456,7 @@ class SemClass implements ArrayAccess
             'admission_type_default' => (int)$this->data['admission_type_default'],
             'show_raumzeit' => (int) $this->data['show_raumzeit'],
             'is_group' => (int) $this->data['is_group']
-        ));
+        ]);
     }
 
     /**
@@ -480,9 +480,9 @@ class SemClass implements ArrayAccess
                 WHERE id = :id 
             ");
             StudipCacheFactory::getCache()->expire('DB_SEM_CLASSES_ARRAY');
-            return $statement->execute(array(
+            return $statement->execute([
                 'id' => $this->data['id']
-            ));
+            ]);
         } else {
             return false;
         }
@@ -590,7 +590,7 @@ class SemClass implements ArrayAccess
     {
         if (!is_array(self::$sem_classes)) {
             $db = DBManager::get();
-            self::$sem_classes = array();
+            self::$sem_classes = [];
 
             $cache = StudipCacheFactory::getCache();
             $class_array = unserialize($cache->read('DB_SEM_CLASSES_ARRAY'));

@@ -70,9 +70,9 @@ class Institute_MembersController extends AuthenticatedController
 
         // Bind parameters
         if ($this->admin_view) {
-            $accepted_columns = array('Nachname', 'inst_perms');
+            $accepted_columns = ['Nachname', 'inst_perms'];
         } else {
-            $accepted_columns = array('Nachname');
+            $accepted_columns = ['Nachname'];
         }
 
         $this->sortby = Request::option('sortby');
@@ -113,13 +113,13 @@ class Institute_MembersController extends AuthenticatedController
         }
 
         // Create structure chunks from defaults datafields
-        $default_fields = array(
+        $default_fields = [
             'raum'         => _('Raum'),
             'sprechzeiten' => _('Sprechzeiten'),
             'telefon'      => _('Telefon'),
             'email'        => _('E-Mail'),
             'homepage'     => _('Homepage')
-        );
+        ];
 
         $this->datafields_list = DataField::getDataFields('userinstrole');
 
@@ -138,15 +138,15 @@ class Institute_MembersController extends AuthenticatedController
 
         foreach ($default_fields as $key => $name) {
             if (in_array($key, $dview)) {
-                $this->struct[$key] = array('name' => $name, 'width' => '10%');
+                $this->struct[$key] = ['name' => $name, 'width' => '10%'];
             }
         }
         foreach ($this->datafields_list as $entry) {
             if (in_array($entry->id, $dview) === TRUE) {
-                $this->struct[$entry->id] = array (
+                $this->struct[$entry->id] =  [
                     'name' => $entry->name,
                     'width' => '10%'
-                );
+                ];
             }
         }
 
@@ -182,12 +182,12 @@ class Institute_MembersController extends AuthenticatedController
                 ];
             }
         } elseif ($this->type == 'status') {
-            $inst_permissions = array(
+            $inst_permissions = [
                 'admin'  => _('Admin'),
                 'dozent' => _('Lehrende'),
                 'tutor'  => _('Tutor/-in'),
                 'autor'  => _('Studierende')
-            );
+            ];
 
             foreach ($inst_permissions as $key => $permission) {
                 $institut_members = $this->institute->members->filter(function ($member) use ($key) {
@@ -491,10 +491,10 @@ class Institute_MembersController extends AuthenticatedController
         $table_structure = array_merge($table_structure, (array)$additional_structure);
 
         if ($this->admin_view || $GLOBALS['perm']->have_studip_perm('autor', $this->institute->id)) {
-            $table_structure['actions'] = array(
+            $table_structure['actions'] = [
                 'name' => _('Aktionen'),
                 'width' => '5%'
-            );
+            ];
         }
 
         return $table_structure;

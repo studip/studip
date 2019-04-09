@@ -40,14 +40,14 @@
 
 class ExternElementContact extends ExternElement {
 
-    var $attributes = array("order", "visible", "aliases", "headline", "adradd", "table_width",
+    var $attributes = ["order", "visible", "aliases", "headline", "adradd", "table_width",
                 "table_align", "table_border", "table_bgcolor", "table_bordercolor", "table_cellpadding",
                 "table_cellspacing", "table_class", "table_style", "tr_class",
                 "tr_style", "td_height", "td_align", "td_valign", "td_bgcolor", "td_class", "td_style",
                 "fonttitle_face", "fonttitle_size", "fonttitle_color", "fonttitle_class",
                 "fonttitle_style", "fontcontent_face", "fontcontent_size", "fontcontent_color",
                 "fontcontent_class", "fontcontent_style", "hidepersname", "hideinstname", "separatelinks",
-                "showinstgroup", "defaultadr");
+                "showinstgroup", "defaultadr"];
     
     /**
     * Constructor
@@ -61,7 +61,7 @@ class ExternElementContact extends ExternElement {
     
     function getDefaultConfig () {
         
-        $config = array(
+        $config = [
             "order" => "|0|1|2|3|4|5",
             "visible" => "|1|1|1|1|1|1",
             "aliases" => "|"._("Raum:")."|"._("Telefon:")."|"._("Fax:")."|"._("Email:")."|"
@@ -73,7 +73,7 @@ class ExternElementContact extends ExternElement {
             "separatelinks" => "",
             "showinstgroup" => "",
             "defaultadr" => ""
-        );
+        ];
         
         return $config;
     }
@@ -94,8 +94,8 @@ class ExternElementContact extends ExternElement {
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
         $headline = $edit_form->editHeadline(_("Aufbau der Adress- und Kontakt-Tabelle"));
-        $field_names = array(_("Raum"), _("Telefon"), _("Fax"), _("Email"), _("Homepage"), _("Sprechzeiten"));
-        $table = $edit_form->editMainSettings($field_names, "", array("width", "sort", "widthpp"));
+        $field_names = [_("Raum"), _("Telefon"), _("Fax"), _("Email"), _("Homepage"), _("Sprechzeiten")];
+        $table = $edit_form->editMainSettings($field_names, "", ["width", "sort", "widthpp"]);
         
         $title = _("Überschrift:");
         $info = _("Überschrift der Kontakt-Daten");
@@ -115,8 +115,8 @@ class ExternElementContact extends ExternElement {
         
         $title = _("Einrichtungsname:");
         $info = _("Anzeige des Einrichtungsnamens. Der Name kann auch als Link auf die in Stud.IP angegebene URL (unter Grunddaten der Einrichtung) angezeigt werden.");
-        $values = array('1', '0', 'link');
-        $names = array(_("nicht anzeigen"), _("anzeigen"), _("als Link anzeigen"));
+        $values = ['1', '0', 'link'];
+        $names = [_("nicht anzeigen"), _("anzeigen"), _("als Link anzeigen")];
         $table .= $edit_form->editRadioGeneric('hideinstname', $title, $info, $values, $names);
         
         $title = _("Email und Hompage getrennt:");
@@ -130,18 +130,18 @@ class ExternElementContact extends ExternElement {
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
         
-        $attributes = array("table_width", "table_align",
+        $attributes = ["table_width", "table_align",
                 "table_border", "table_bgcolor", "table_bordercolor", "table_cellpadding",
                 "table_cellspacing", "table_class", "table_style", "tr_class", "tr_style",
-                "td_height", "td_align", "td_valign", "td_bgcolor", "td_class", "td_style");
+                "td_height", "td_align", "td_valign", "td_bgcolor", "td_class", "td_style"];
         $content_table .= $edit_form->getEditFormContent($attributes);
         $content_table .= $edit_form->editBlankContent();
         
-        $attributes = array("fonttitle_face", "fonttitle_size", "fonttitle_color", "fonttitle_class",
+        $attributes = ["fonttitle_face", "fonttitle_size", "fonttitle_color", "fonttitle_class",
                 "fonttitle_style", "fontcontent_face", "fontcontent_size", "fontcontent_color",
-                "fontcontent_class", "fontcontent_style");
-        $headlines = array("fonttitle" => _("Schriftformatierung der Überschrift"),
-                "fontcontent" => _("Schriftformatierung des Inhalts"));
+                "fontcontent_class", "fontcontent_style"];
+        $headlines = ["fonttitle" => _("Schriftformatierung der Überschrift"),
+                "fontcontent" => _("Schriftformatierung des Inhalts")];
         $content_table .= $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
                 

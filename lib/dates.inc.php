@@ -153,7 +153,7 @@ function veranstaltung_beginn_from_metadata($reg_irreg, $sem_begin, $start_woche
  * Returns an array, where each element is one condensed entry. (f.e. 10.6 - 14.6 8:00 - 12:00,)
  */
 function shrink_dates($dates) {
-    $ret = array();
+    $ret = [];
 
     // First step: Clean out all duplicate dates (the dates are sorted)
     foreach ($dates as $key => $date) {
@@ -245,7 +245,7 @@ function vorbesprechung ($seminar_id, $type = 'standard')
               WHERE range_id = ? AND date_typ = '2'
               ORDER BY date";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
     $termin_id = $statement->fetchColumn();
 
     if (!$termin_id) {
@@ -317,7 +317,7 @@ function get_semester($seminar_id, $start_sem_only=FALSE)
 {
     $query = "SELECT start_time, duration_time FROM seminare WHERE seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id));
+    $statement->execute([$seminar_id]);
     $temp = $statement->fetch(PDO::FETCH_ASSOC);
 
     $return_string = get_sem_name($temp['start_time']);
@@ -361,7 +361,7 @@ function delete_date($termin_id, $topic_delete = TRUE, $folder_move = TRUE, $sem
     ## Und den Termin selbst loeschen
     $query = "DELETE FROM termine WHERE termin_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($termin_id));
+    $statement->execute([$termin_id]);
 
     if ($statement->rowCount() && Config::get()->RESOURCES_ENABLE) {
         $insertAssign = new VeranstaltungResourcesAssign($sem_id);
@@ -392,7 +392,7 @@ function delete_range_of_dates($range_id, $topics = FALSE)
     ## Termine finden...
     $query = "SELECT termin_id FROM termine WHERE range_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($range_id));
+    $statement->execute([$range_id]);
 
     while ($termin_id = $statement->fetchColumn()) {       // ...und nacheinander...
         delete_date($termin_id, $topics, true, $range_id);
@@ -414,7 +414,7 @@ function isSchedule ($sem_id, $presence_dates_only = TRUE, $clearcache = FALSE)
     }
 
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id));
+    $statement->execute([$sem_id]);
 
     return $statement->fetchColumn();
 }
@@ -486,7 +486,7 @@ function getPresenceTypes() {
  */
 function getFormattedRooms($rooms, $link = false)
 {
-    $room_list = array();
+    $room_list = [];
 
     if (is_array($rooms)) {
         foreach ($rooms as $room_id => $count) {
@@ -513,7 +513,7 @@ function getFormattedRooms($rooms, $link = false)
  * @return array  an array of room snippets
  */
 function getPlainRooms($rooms) {
-    $room_list = array();
+    $room_list = [];
 
     if (is_array($rooms)) {
         foreach ($rooms as $room_id => $count) {

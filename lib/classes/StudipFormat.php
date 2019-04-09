@@ -17,7 +17,7 @@ class StudipFormat extends TextFormat
     /**
      * list of global Stud.IP markup rules
      */
-    private static $studip_rules = array();
+    private static $studip_rules = [];
 
     /**
      * Returns the list of global Stud.IP markup rules as an array.

@@ -623,8 +623,8 @@ class Course_GroupingController extends AuthenticatedController
                     && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE)
                 {
                     foreach (Deputy::findByRange_id($user) as $deputy) {
-                        if (!Deputy::exists(array($parent_id, $deputy->user_id)) &&
-                                !CourseMember::exists(array($parent_id, $deputy->user_id)))
+                        if (!Deputy::exists([$parent_id, $deputy->user_id]) &&
+                                !CourseMember::exists([$parent_id, $deputy->user_id]))
                         {
                             $d = new Deputy();
                             $d->range_id = $parent_id;
@@ -639,8 +639,8 @@ class Course_GroupingController extends AuthenticatedController
         // Deputies.
         if (Config::get()->DEPUTIES_ENABLE) {
             foreach (Deputy::findByRange_id($child_id) as $deputy) {
-                if (!Deputy::exists(array($parent_id, $deputy->user_id))
-                    && !CourseMember::exists(array($parent_id, $deputy->user_id)))
+                if (!Deputy::exists([$parent_id, $deputy->user_id])
+                    && !CourseMember::exists([$parent_id, $deputy->user_id]))
                 {
                     $d = new Deputy();
                     $d->range_id = $parent_id;

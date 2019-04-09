@@ -45,7 +45,7 @@ require_once 'lib/object.inc.php';
  */
 class StudipNews extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'news';
         $config['has_many']['news_ranges'] = [
@@ -83,7 +83,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             $query .= "ORDER BY date DESC, chdate DESC, topic ASC";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
 
         return ($as_objects ? StudipNews::GetNewsObjects($ret) : $ret);
@@ -116,7 +116,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             $query .= "ORDER BY date DESC, chdate DESC";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
 
         return $as_objects ? StudipNews::GetNewsObjects($ret) : $ret;
@@ -291,7 +291,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                       FROM news_rss_range
                       WHERE rss_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($rss_id));
+            $statement->execute([$rss_id]);
             $ret = $statement->fetch(PDO::FETCH_ASSOC);
 
             if (count($ret)) {
@@ -311,7 +311,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
     {
         $query = "SELECT rss_id FROM news_rss_range WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         return $statement->fetchColumn();
     }
 
@@ -340,7 +340,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
     {
         $query = "DELETE FROM news_rss_range WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         return $statement->rowCount();
     }
 
@@ -502,7 +502,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
     public function addRange($range_id)
     {
         if (!$this->issetRange($range_id)) {
-            $range = new NewsRange(array($this->getId(), $range_id));
+            $range = new NewsRange([$this->getId(), $range_id]);
             if ($range->isNew()) {
                 $range->range_id = $range_id;
                 $range->news_id = $this->getId();

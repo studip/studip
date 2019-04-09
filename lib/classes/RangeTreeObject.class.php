@@ -133,7 +133,7 @@ class RangeTreeObject {
     */
     function getInstKids($as_value_list = false){
         $all_kids = $this->tree->getKidsKids($this->tree_item_id);
-        $inst_kids = array();
+        $inst_kids = [];
         for ($i = 0; $i < count($all_kids); ++$i){
             if ($this->tree->tree_data[$all_kids[$i]]['studip_object'] == 'inst'){
                 $inst_kids[] = $this->tree->tree_data[$all_kids[$i]]['studip_object_id'];
@@ -152,7 +152,7 @@ class RangeTreeObject {
     */
     function getFakKids($as_value_list = false){
         $all_kids = $this->tree->getKidsKids($this->tree_item_id);
-        $fak_kids = array();
+        $fak_kids = [];
         for ($i = 0; $i < count($all_kids); ++$i){
             if ($this->tree->tree_data[$all_kids[$i]]['studip_object'] == 'fak'){
                 $inst_kids[] = $this->tree->tree_data[$all_kids[$i]]['studip_object_id'];
@@ -205,9 +205,9 @@ class RangeTreeObject {
     function initItemDetail(){
         if ($type = $this->item_data['studip_object']){
             $view = DbView::getView('range_tree');
-            $view->params = array($this->tree->studip_objects[$type]['table'],
+            $view->params = [$this->tree->studip_objects[$type]['table'],
                                 $this->tree->studip_objects[$type]['pk'],
-                                $this->item_data['studip_object_id']);
+                                $this->item_data['studip_object_id']];
             $snap = new DbSnapshot($view->get_query("view:TREE_OBJECT_DETAIL"));
             if ($snap->numRows){
                 $fields = $snap->getFieldList();

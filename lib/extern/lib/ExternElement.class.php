@@ -45,7 +45,7 @@ class ExternElement {
     var $attributes;
     var $real_name;
     var $description;
-    var $headlines = array();
+    var $headlines = [];
 
 
     /**
@@ -96,7 +96,7 @@ class ExternElement {
     *
     */
     function getDefaultConfig () {
-        $config = array();
+        $config = [];
 
         reset($this->attributes);
         foreach ($this->attributes as $attribute)
@@ -143,7 +143,7 @@ class ExternElement {
             $edit_form = "", $anker = "") {
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         $out = "";
         if ($edit_form == "")
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
@@ -263,9 +263,9 @@ class ExternElement {
             case "show_group" :
                 $groups = get_all_statusgruppen($this->config->range_id);
                 if (!groups) {
-                    $this->config->setValue($this->name, 'groupsvisible', array());
+                    $this->config->setValue($this->name, 'groupsvisible', []);
                 } else if (is_array($value)) {
-                    $groups_visible = array();
+                    $groups_visible = [];
                     foreach ($value as $group_id => $checked) {
                         if ($checked) {
                             $groups_visible[] = $group_id;
@@ -288,7 +288,7 @@ class ExternElement {
                 if (!$visible) {
                     $visible = array_keys(get_all_statusgruppen($this->config->range_id));
                 }
-                $visible = array_diff($visible, array($value));
+                $visible = array_diff($visible, [$value]);
                 $this->config->setValue($this->name, "groupsvisible", $visible);
                 Request::set("{$this->name}_groupsvisible", array_values($visible));
                 break;
@@ -305,7 +305,7 @@ class ExternElement {
     */
     function checkFormValues () {
 
-        $fault = array();
+        $fault = [];
 
         $_POST['Main_copyright'] = htmlReady(decodeHTML(
                 $_POST['Main_copyright']));
@@ -326,7 +326,7 @@ class ExternElement {
             if (is_array($_POST[$form_name])) {
                 $value = $_POST[$form_name];
             } else {
-                $value = array($_POST[$form_name]);
+                $value = [$_POST[$form_name]];
             }
 
             $splitted_attribute = explode("_", $attribute);

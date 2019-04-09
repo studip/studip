@@ -55,7 +55,7 @@ class DeleteResourcesUser
         if ($this->range_id) {
             $query = "SELECT assign_id FROM resources_assign WHERE assign_user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->range_id));
+            $statement->execute([$this->range_id]);
             while ($assign_id = $statement->fetchColumn()) {
                 AssignObject::Factory($assign_id)->delete();
             }
@@ -66,7 +66,7 @@ class DeleteResourcesUser
                       LEFT JOIN resources_assign AS ra ON (ra.assign_user_id = t.termin_id)
                       WHERE range_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->range_id));
+            $statement->execute([$this->range_id]);
             while ($assign_id = $statement->fetchColumn()) {
                 AssignObject::Factory($assign_id)->delete();
             }
@@ -97,7 +97,7 @@ class DeleteResourcesUser
     {
         $query = "DELETE FROM resources_user_resources WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->range_id));
+        $statement->execute([$this->range_id]);
     }
 
     //private
@@ -105,7 +105,7 @@ class DeleteResourcesUser
     {
         $query = "SELECT resource_id FROM resources_objects WHERE owner_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->range_id));
+        $statement->execute([$this->range_id]);
         while ($resource_id = $statement->fetchColumn()) {
             ResourceObject::Factory($resource_id)->delete();
         }

@@ -284,7 +284,7 @@ class Admin_ConfigurationController extends AuthenticatedController
 
         // Add section selector when not in user mode
         if ($range_type === 'global') {
-            $options = array();
+            $options = [];
             foreach (ConfigurationModel::getConfig() as $key => $value) {
                 $options[$key] = $key ?: '- ' . _('Ohne Kategorie') . ' -';
             }

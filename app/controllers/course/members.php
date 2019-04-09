@@ -70,7 +70,7 @@ class Course_MembersController extends AuthenticatedController
 
         // Get the max-page-value for the pagination
         $this->max_per_page = Config::get()->ENTRIES_PER_PAGE;
-        $this->status_groups = array(
+        $this->status_groups = [
             'dozent' => get_title_for_status('dozent', 2),
             'tutor' => get_title_for_status('tutor', 2),
             'autor' => get_title_for_status('autor', 2),
@@ -78,15 +78,15 @@ class Course_MembersController extends AuthenticatedController
             'accepted' => get_title_for_status('accepted', 2),
             'awaiting' => _("Wartende Personen"),
             'claiming' => _("Wartende Personen")
-        );
+        ];
 
         // StatusGroups for the view
-        $this->decoratedStatusGroups = array(
+        $this->decoratedStatusGroups = [
             'dozent' => get_title_for_status('dozent', 1),
             'autor' => get_title_for_status('autor', 1),
             'tutor' => get_title_for_status('tutor', 1),
             'user' => get_title_for_status('user', 1)
-        );
+        ];
 
         //check for admission / waiting list
         update_admission($this->course_id);
@@ -222,9 +222,9 @@ class Course_MembersController extends AuthenticatedController
             throw new AccessDeniedException();
         }
 
-        $course_member = CourseMember::find(array($this->course_id, $user_id));
+        $course_member = CourseMember::find([$this->course_id, $user_id]);
         if (!$course_member) {
-            $course_member = AdmissionApplication::find(array($user_id, $this->course_id));
+            $course_member = AdmissionApplication::find([$user_id, $this->course_id]);
         }
         if (is_null($course_member)) {
             throw new Trails_Exception(400);
@@ -255,9 +255,9 @@ class Course_MembersController extends AuthenticatedController
         }
 
         CSRFProtection::verifyUnsafeRequest();
-        $course_member = CourseMember::find(array($this->course_id, $user_id));
+        $course_member = CourseMember::find([$this->course_id, $user_id]);
         if (!$course_member) {
-            $course_member = AdmissionApplication::find(array($user_id, $this->course_id));
+            $course_member = AdmissionApplication::find([$user_id, $this->course_id]);
         }
         if (!Request::submitted('save') || is_null($course_member)) {
             throw new Trails_Exception(400);
@@ -452,28 +452,28 @@ class Course_MembersController extends AuthenticatedController
         } else {
             global $perm;
             if ($perm->have_perm('root')) {
-                $parameters = array(
-                    'semtypes' => studygroup_sem_types() ?: array(),
-                    'exclude' => array(Context::getId()),
+                $parameters = [
+                    'semtypes' => studygroup_sem_types() ?: [],
+                    'exclude' => [Context::getId()],
                     'semesters' => array_map(function ($s) { return $s->semester_id; }, Semester::getAll())
-                );
+                ];
             } else if ($perm->have_perm('admin')) {
-                $parameters = array(
-                    'semtypes' => studygroup_sem_types() ?: array(),
+                $parameters = [
+                    'semtypes' => studygroup_sem_types() ?: [],
                     'institutes' => array_map(function ($i) {
                         return $i['Institut_id'];
                     }, Institute::getMyInstitutes()),
-                    'exclude' => array(Context::getId()),
+                    'exclude' => [Context::getId()],
                     'semesters' => array_map(function ($s) { return $s->semester_id; }, Semester::getAll())
-                );
+                ];
 
             } else {
-                $parameters = array(
+                $parameters = [
                     'userid' => $GLOBALS['user']->id,
-                    'semtypes' => studygroup_sem_types() ?: array(),
-                    'exclude' => array(Context::getId()),
+                    'semtypes' => studygroup_sem_types() ?: [],
+                    'exclude' => [Context::getId()],
                     'semesters' => array_map(function ($s) { return $s->semester_id; }, Semester::getAll())
-                );
+                ];
             }
             $coursesearch = MyCoursesSearch::get('Seminar_id', $GLOBALS['perm']->get_perm(), $parameters);
             $this->search = QuickSearch::get('course_id', $coursesearch)
@@ -561,9 +561,9 @@ class Course_MembersController extends AuthenticatedController
                     $users[] = User::find($user)->username;
                 }
             }
-            $_SESSION['sms_data'] = array();
+            $_SESSION['sms_data'] = [];
             $_SESSION['sms_data']['p_rec'] = array_filter($users);
-            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', array('default_subject' => $this->getSubject(), 'tmpsavesnd' => 1)));
+            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', ['default_subject' => $this->getSubject(), 'tmpsavesnd' => 1]));
         } else {
             if (Request::isXhr()) {
                 $this->response->add_header('X-Dialog-Close', '1');
@@ -605,7 +605,7 @@ class Course_MembersController extends AuthenticatedController
         // prepare CSV-Lines
         $messaging = new messaging();
         $csv_request = preg_split('/(\n\r|\r\n|\n|\r)/', trim(Request::get('csv_import')));
-        $csv_mult_founds = array();
+        $csv_mult_founds = [];
         $csv_count_insert = 0;
         $csv_count_multiple = 0;
         $datafield_id = null;
@@ -1228,7 +1228,7 @@ class Course_MembersController extends AuthenticatedController
             throw new AccessDeniedException();
         }
 
-        $users = array();
+        $users = [];
         if (!empty($this->flash['users'])) {
             $users = array_keys(array_filter($this->flash['users']));
         }
@@ -1326,7 +1326,7 @@ class Course_MembersController extends AuthenticatedController
         // Fetch datafields for the user
         $course = Course::findCurrent();
         $member = $course->members->findOneBy('user_id', $GLOBALS['user']->id);
-        $this->datafields = $member ? $course->aux->getMemberData($member) : array();
+        $this->datafields = $member ? $course->aux->getMemberData($member) : [];
         // We need aux data in the view
         $this->aux = $course->aux;
 
@@ -1354,7 +1354,7 @@ class Course_MembersController extends AuthenticatedController
      */
     private function getUserVisibility()
     {
-        $member = CourseMember::find(array($this->course_id, $this->user_id));
+        $member = CourseMember::find([$this->course_id, $this->user_id]);
 
         $visibility = $member->visible;
         $status = $member->status;
@@ -1423,17 +1423,17 @@ class Course_MembersController extends AuthenticatedController
 
                     // create new search for dozent
                     $searchtype = new PermissionSearch(
-                            $search_template, sprintf(_("%s suchen"), get_title_for_status('dozent', 1, $sem->status)), "user_id", array('permission' => 'dozent',
-                            'exclude_user' => array(),
-                            'institute' => $sem_institutes)
+                            $search_template, sprintf(_("%s suchen"), get_title_for_status('dozent', 1, $sem->status)), "user_id", ['permission' => 'dozent',
+                            'exclude_user' => [],
+                            'institute' => $sem_institutes]
                     );
 
 
                     // quickfilter: dozents of institut
                     $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'dozent'";
                     $db = DBManager::get();
-                    $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-                    $statement->execute(array(Seminar::getInstance($this->course_id)->getInstitutId()));
+                    $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                    $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
                     $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                     // add "add dozent" to infobox
@@ -1461,16 +1461,16 @@ class Course_MembersController extends AuthenticatedController
 
                     // create new search for tutor
                     $searchType = new PermissionSearch(
-                            $search_template, sprintf(_('%s suchen'), get_title_for_status('tutor', 1, $sem->status)), 'user_id', array('permission' => array('dozent', 'tutor'),
-                        'exclude_user' => array(),
-                        'institute' => $sem_institutes)
+                            $search_template, sprintf(_('%s suchen'), get_title_for_status('tutor', 1, $sem->status)), 'user_id', ['permission' => ['dozent', 'tutor'],
+                        'exclude_user' => [],
+                        'institute' => $sem_institutes]
                     );
 
                     // quickfilter: tutors of institut
                     $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'tutor'";
                     $db = DBManager::get();
-                    $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-                    $statement->execute(array(Seminar::getInstance($this->course_id)->getInstitutId()));
+                    $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                    $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
                     $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                     // add "add tutor" to infobox
@@ -1504,8 +1504,8 @@ class Course_MembersController extends AuthenticatedController
                 // quickfilter: tutors of institut
                 $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'autor'";
                 $db = DBManager::get();
-                $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-                $statement->execute(array(Seminar::getInstance($this->course_id)->getInstitutId()));
+                $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
                 $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                 // add "add autor" to infobox
@@ -1669,17 +1669,17 @@ class Course_MembersController extends AuthenticatedController
         $autoren = $filtered_members['autor']->toArray('user_id username vorname nachname visible mkdate');
 
 
-        $header = array(_('Titel'), _('Vorname'), _('Nachname'), _('Titel2'), _('Nutzernamen'), _('Privatadr'), _('Privatnr'), _('E-Mail'), _('Anmeldedatum'), _('Studiengänge'));
-        $data = array($header);
-        foreach (array($dozenten, $tutoren, $autoren) as $usergroup) {
+        $header = [_('Titel'), _('Vorname'), _('Nachname'), _('Titel2'), _('Nutzernamen'), _('Privatadr'), _('Privatnr'), _('E-Mail'), _('Anmeldedatum'), _('Studiengänge')];
+        $data = [$header];
+        foreach ([$dozenten, $tutoren, $autoren] as $usergroup) {
             foreach ($usergroup as $dozent) {
-                $line = array(
+                $line = [
                     '',
                     $dozent['Vorname'],
                     $dozent['Nachname'],
                     '',
                     $dozent['username']
-                );
+                ];
                 $data[] = $line;
             }
         }

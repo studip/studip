@@ -16,7 +16,7 @@ class CoreOverview implements StudipModule {
     }
 
     function getTabNavigation($course_id) {
-        $object_type = get_object_type($course_id, array('sem', 'inst'));
+        $object_type = get_object_type($course_id, ['sem', 'inst']);
         if ($object_type === 'sem') {
             $course = Course::find($course_id);
             $sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$course->status]['class']] ?: SemClass::getDefaultSemClass();
@@ -42,13 +42,13 @@ class CoreOverview implements StudipModule {
                 $navigation->addSubNavigation('details', new Navigation(_('Details'), 'dispatch.php/course/details/'));
             }
         }
-        return array('main' => $navigation);
+        return ['main' => $navigation];
     }
 
     /**
      * @see StudipModule::getMetadata()
      */
     function getMetadata() {
-         return array();
+         return [];
      }
 }

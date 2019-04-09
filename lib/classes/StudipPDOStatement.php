@@ -30,7 +30,7 @@ class StudipPDOStatement implements IteratorAggregate
         $this->db = $db;
         $this->query = $query;
         $this->options = $options;
-        $this->params = array();
+        $this->params = [];
     }
 
     /**
@@ -66,7 +66,7 @@ class StudipPDOStatement implements IteratorAggregate
             $parameter = ':' . $parameter;
         }
 
-        $this->params[$parameter] = array('value' => &$variable, 'type' => $data_type);
+        $this->params[$parameter] = ['value' => &$variable, 'type' => $data_type];
         return true;
     }
 
@@ -80,7 +80,7 @@ class StudipPDOStatement implements IteratorAggregate
             $parameter = ':' . $parameter;
         }
 
-        $this->params[$parameter] = array('value' => $value, 'type' => $data_type);
+        $this->params[$parameter] = ['value' => $value, 'type' => $data_type];
         return true;
     }
 
@@ -89,7 +89,7 @@ class StudipPDOStatement implements IteratorAggregate
      */
     public function __call($name, array $arguments)
     {
-        $callable = array($this->stmt, $name);
+        $callable = [$this->stmt, $name];
         if (!is_callable($callable)) {
             throw new BadMethodCallException();
         }
@@ -130,7 +130,7 @@ class StudipPDOStatement implements IteratorAggregate
         // build the actual query string and prepared statement
         if ($emulate_prepare) {
             $this->count = 1;
-            $query = preg_replace_callback('/\?|:\w+/', array($this, 'replaceParam'), $this->query);
+            $query = preg_replace_callback('/\?|:\w+/', [$this, 'replaceParam'], $this->query);
         } else {
             $query = $this->query;
         }
@@ -147,7 +147,7 @@ class StudipPDOStatement implements IteratorAggregate
         // set up column bindings on the actual statement
         if (isset($this->columns)) {
             foreach ($this->columns as $args) {
-                call_user_func_array(array($this->stmt, 'bindColumn'), $args);
+                call_user_func_array([$this->stmt, 'bindColumn'], $args);
             }
         }
 
@@ -239,6 +239,6 @@ class StudipPDOStatement implements IteratorAggregate
     public function fetchOne()
     {
         $data = $this->fetch(PDO::FETCH_ASSOC);
-        return $data ?: array();
+        return $data ?: [];
     }
 }

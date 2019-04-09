@@ -8,11 +8,11 @@
         <nav>
     <? if ($admin): ?>
         <? if ($isProfile): ?>
-        <a href="<?= URLHelper::getLink('dispatch.php/calendar/single/edit/' . $termin->id, array('source_page' => 'dispatch.php/profile')) ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/calendar/single/edit/' . $termin->id, ['source_page' => 'dispatch.php/profile']) ?>">
             <?= Icon::create('add', 'clickable')->asImg(['class' => 'text-bottom']) ?>
         </a>
         <? else: ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/course/timesrooms", array('cid' => $range_id)) ?>">
+        <a href="<?= URLHelper::getLink("dispatch.php/course/timesrooms", ['cid' => $range_id]) ?>">
             <?= Icon::create('admin', 'clickable')->asImg(['class' => 'text-bottom']) ?>
         </a>
         <? endif; ?>
@@ -22,7 +22,7 @@
   <? if($termine): ?>
 
     <? foreach ($termine as $termin): ?>
-        <?= $this->render_partial('calendar/contentbox/_termin.php', array('termin' => $termin)); ?>
+        <?= $this->render_partial('calendar/contentbox/_termin.php', ['termin' => $termin]); ?>
     <? endforeach; ?>
 <? else: ?>
     <section>

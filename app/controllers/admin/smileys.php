@@ -156,11 +156,11 @@ class Admin_SmileysController extends AuthenticatedController
         $result = Smiley::refresh();
 
         $message = sprintf(_('%u Operationen wurden durchgeführt.'), array_sum($result));
-        $details = array(
+        $details = [
             sprintf(_('%d Smileys aktualisiert'), $result['update']),
             sprintf(_('%d Smileys eingefügt'), $result['insert']),
             sprintf(_('%d Smileys gelöscht'), $result['delete'])
-        );
+        ];
         if (isset($result['favorites'])) {
             $details[] = sprintf(_('%d Favoriten geändert'), $result['favorites']);
         }
@@ -280,13 +280,13 @@ class Admin_SmileysController extends AuthenticatedController
         }
         $widget->addElement($group);
         
-        $groups = array(
+        $groups = [
             'all'   => _('Alle'),
             'top20' => _('Top 20'),
             'used'  => _('Benutzte'),
             'none'  => _('Nicht benutzte'),
             'short' => _('Nur mit Kürzel')
-        );
+        ];
         $group = new SelectGroupElement(_('Gruppiert'));
         foreach ($groups as $key => $label) {
             $option = new SelectElement($key, $label);

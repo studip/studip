@@ -27,7 +27,7 @@ class LinksWidget extends ListWidget
      * @param bool   $active Pass true if the link is currently active,
      *                       defaults to false
      */
-    public function &addLink($label, $url, $icon = null, $attributes = array(), $index = null)
+    public function &addLink($label, $url, $icon = null, $attributes = [], $index = null)
     {
         if ($index === null) {
             $index = 'link-' . md5($url);

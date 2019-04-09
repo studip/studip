@@ -56,7 +56,7 @@ class Settings_AccountController extends Settings_SettingsController
     {
         $this->check_ticket();
 
-        $errors = $info = $success = array();
+        $errors = $info = $success = [];
         $logout = false;
 
         //erstmal die "unwichtigen" Daten

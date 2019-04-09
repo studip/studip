@@ -38,7 +38,7 @@ class CleanObjectUserVisits extends CronJob
      */
     public static function getParameters()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -47,7 +47,7 @@ class CleanObjectUserVisits extends CronJob
      * @param mixed $last_result Result returned from the last execution
      * @param Array $parameters  Defined parameters
      */
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         if (Config::get()->NEW_INDICATOR_THRESHOLD) {
             $query = "DELETE FROM `object_user_visits`

@@ -65,7 +65,7 @@ $kill_list = array_unique($kill_list);
 
 $query = "SELECT * FROM auth_user_md5 WHERE username IN (?)";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array($kill_list ?: ''));
+$statement->execute([$kill_list ?: '']);
 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     $kill_user[$row['username']] = $row;
 }

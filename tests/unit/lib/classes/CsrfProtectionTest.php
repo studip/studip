@@ -24,7 +24,7 @@ class CSRFProtectionTokenTest extends PHPUnit_Framework_TestCase
             session_id("test-session");
         }
         $this->original_session = $_SESSION;
-        $_SESSION = array();
+        $_SESSION = [];
     }
 
     function tearDown()
@@ -48,7 +48,7 @@ class CSRFProtectionTokenTest extends PHPUnit_Framework_TestCase
     {
         $token1 = CSRFProtection::token();
 
-        $_SESSION = array();
+        $_SESSION = [];
 
         $token2 = CSRFProtection::token();
 
@@ -76,9 +76,9 @@ class CSRFRequestTest extends PHPUnit_Framework_TestCase
         if (session_id() === '') {
             session_id("test-session");
         }
-        $this->original_state = array($_SESSION, $_POST, $_SERVER);
-        $_SESSION = array();
-        $_POST = array();
+        $this->original_state = [$_SESSION, $_POST, $_SERVER];
+        $_SESSION = [];
+        $_POST = [];
         $this->token = CSRFProtection::token();
         $_SERVER['HTTP_X_REQUESTED_WITH'] = null;
     }

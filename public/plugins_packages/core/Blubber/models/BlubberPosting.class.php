@@ -47,9 +47,9 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
     public static function markupHashtags($markup, $matches)
     {
         if (self::$course_hashes) {
-            $url = URLHelper::getLink("plugins.php/Blubber/streams/forum", array('hash' => $matches[2], 'cid' => self::$course_hashes));
+            $url = URLHelper::getLink("plugins.php/Blubber/streams/forum", ['hash' => $matches[2], 'cid' => self::$course_hashes]);
         } else {
-            $url = URLHelper::getLink("plugins.php/Blubber/streams/global", array('hash' => $matches[2]));
+            $url = URLHelper::getLink("plugins.php/Blubber/streams/global", ['hash' => $matches[2]]);
         }
         return $matches[1].'<a href="'.$url.'" class="hashtag">#'.htmlReady($matches[2]).'</a>';
     }
@@ -77,7 +77,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             $statement = DBManager::get()->prepare(
                 "SELECT user_id FROM auth_user_md5 WHERE CONCAT(Vorname, ' ', Nachname) = :name " .
             "");
-            $statement->execute(array('name' => $name));
+            $statement->execute(['name' => $name]);
             $user_id = $statement->fetch(PDO::FETCH_COLUMN, 0);
             if ($user_id) {
                 $user = new BlubberUser($user_id);
@@ -85,7 +85,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 $statement = DBManager::get()->prepare(
                     "SELECT external_contact_id FROM blubber_external_contact WHERE name = ? " .
                 "");
-                $statement->execute(array($name));
+                $statement->execute([$name]);
                 $user_id = $statement->fetch(PDO::FETCH_COLUMN, 0);
                 $user = BlubberExternalContact::find($user_id);
             }
@@ -99,11 +99,11 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                     "external_contact = :extern, " .
                     "mkdate = UNIX_TIMESTAMP() " .
             "");
-            $statement->execute(array(
+            $statement->execute([
                 'user_id' => $user->getId(),
                 'topic_id' => $posting['root_id'],
                 'extern' => is_a($user, "BlubberExternalContact") ? 1 : 0
-            ));
+            ]);
             return str_replace($matches[1], '['.$user->getName().']'.$user->getURL().' ', $matches[0]);
         } else {
             return $markup->quote($matches[0]);
@@ -128,7 +128,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "AND plugins_activated.state = 1 " .
             "ORDER BY seminare.start_time ASC, seminare.name ASC " .
         "");
-        $statement->execute(array('user_id' => $GLOBALS['user']->id, 'blubber_id' => $blubber_plugin_info['id']));
+        $statement->execute(['user_id' => $GLOBALS['user']->id, 'blubber_id' => $blubber_plugin_info['id']]);
         return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
@@ -144,7 +144,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "WHERE owner_id = :user_id " .
                 "AND buddy = '1' " .
         "");
-        $statement->execute(array('user_id' => $GLOBALS['user']->id));
+        $statement->execute(['user_id' => $GLOBALS['user']->id]);
         $contact_ids = (array) $statement->fetchAll(PDO::FETCH_COLUMN, 0);
         $contact_ids[] = $GLOBALS['user']->id;
         return $contact_ids;
@@ -162,7 +162,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "WHERE studip_user_id = :user_id " .
                 "AND left_follows_right = '1' " .
         "");
-        $statement->execute(array('user_id' => $GLOBALS['user']->id));
+        $statement->execute(['user_id' => $GLOBALS['user']->id]);
         return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
@@ -230,10 +230,10 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "WHERE topic_id = :id " .
                 "ORDER BY tag ASC " .
             "");
-            $get_tags->execute(array('id' => $this->getId()));
+            $get_tags->execute(['id' => $this->getId()]);
             return $get_tags->fetchAll(PDO::FETCH_COLUMN, 0);
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -255,7 +255,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "FROM blubber_tags " .
             "WHERE blubber_tags.topic_id = :topic_id " .
         "");
-        $get_old_hashtags->execute(array('topic_id' => $this['root_id']));
+        $get_old_hashtags->execute(['topic_id' => $this['root_id']]);
         $old_hashtags = $get_old_hashtags->fetchAll(PDO::FETCH_COLUMN, 0);
 
         $get_current_hashtags = DBManager::get()->prepare(
@@ -263,9 +263,9 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "FROM blubber " .
             "WHERE blubber.root_id = :topic_id " .
         "");
-        $get_current_hashtags->execute(array('topic_id' => $this['root_id']));
+        $get_current_hashtags->execute(['topic_id' => $this['root_id']]);
         $entries = $get_current_hashtags->fetchAll(PDO::FETCH_COLUMN, 0);
-        $current_tags = array();
+        $current_tags = [];
         foreach ($entries as $entry) {
             preg_match_all("/".BlubberPosting::$hashtags_regexp."/", $entry, $hashtags);
             $hashtags = $hashtags[2];
@@ -279,10 +279,10 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "AND tag = :tag " .
         "");
         foreach (array_diff($old_hashtags, $current_tags) as $delete_tag) {
-            $delete_tag_statement->execute(array(
+            $delete_tag_statement->execute([
                 'topic_id' => $this['root_id'],
                 'tag' => $delete_tag
-            ));
+            ]);
             $deleted += $delete_tag_statement->rowCount();
         }
         $insert_statement = DBManager::get()->prepare(
@@ -291,10 +291,10 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "tag = :tag " .
         "");
         foreach (array_diff($current_tags, $old_hashtags) as $insert_tag) {
-            $insert_statement->execute(array(
+            $insert_statement->execute([
                 'topic_id' => $this['root_id'],
                 'tag' => $insert_tag
-            ));
+            ]);
             $inserted += $insert_statement->rowCount();
         }
         if ($deleted || $inserted) {
@@ -326,7 +326,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
         if ($this->isThread()) {
             return self::findBySQL(
                 "root_id = ? AND parent_id != '0' ORDER BY mkdate DESC ".($limit > 0 ? "LIMIT ".(int) $offset .", ".(int) $limit : ""),
-                array($this->getId())
+                [$this->getId()]
             );
         } else {
             return false;
@@ -347,7 +347,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "WHERE root_id = ? " .
                     "AND parent_id != '0' " .
             "");
-            $statement->execute(array($this->getId()));
+            $statement->execute([$this->getId()]);
             return $statement->fetch(PDO::FETCH_COLUMN, 0);
         } else {
             return 0;
@@ -363,7 +363,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
         $id = $this->getId();
         $root_id = $this['root_id'];
         NotificationCenter::postNotification("PostingWillDelete", $this);
-        foreach ((array) self::findBySQL("parent_id = ? ", array($id)) as $child_posting) {
+        foreach ((array) self::findBySQL("parent_id = ? ", [$id]) as $child_posting) {
             $child_posting->delete();
         }
         $success = parent::delete();
@@ -377,7 +377,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "item_id = :item_id, " .
                 "mkdate = UNIX_TIMESTAMP() " .
         "");
-        $delete_stmt->execute(array('item_id' => $id));
+        $delete_stmt->execute(['item_id' => $id]);
         if ($id !== $root_id) {
             $thread = new BlubberPosting($root_id);
             $thread['chdate'] = time();
@@ -387,7 +387,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "DELETE FROM blubber_tags " .
                 "WHERE topic_id = :topic_id " .
             "");
-            $delete_hashtags->execute(array('topic_id' => $id));
+            $delete_hashtags->execute(['topic_id' => $id]);
         }
         return $success;
     }
@@ -439,7 +439,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "WHERE user_id = :user_id " .
                 "AND topic_id = :topic_id " .
         "");
-        $statement->execute(array('user_id' => $user_id, 'topic_id' => $this['root_id']));
+        $statement->execute(['user_id' => $user_id, 'topic_id' => $this['root_id']]);
         return (bool) $statement->fetch(PDO::FETCH_COLUMN, 0);
     }
 
@@ -457,7 +457,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             "WHERE topic_id = :topic_id " .
             "ORDER BY auth_user_md5.Nachname ASC, auth_user_md5.Vorname ASC " .
         "");
-        $statement->execute(array('topic_id' => $this['root_id']));
+        $statement->execute(['topic_id' => $this['root_id']]);
         return (array) $statement->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
@@ -473,7 +473,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             $statement = DBManager::get()->prepare(
                 "SELECT * FROM blubber_external_contact WHERE external_contact_id = ? " .
             "");
-            $statement->execute(array($this['user_id']));
+            $statement->execute([$this['user_id']]);
             $data = $statement->fetch(PDO::FETCH_ASSOC);
             if (class_exists($data['contact_type'])) {
                 $user = new $data['contact_type']();
@@ -497,14 +497,14 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
     public function getSharingUsers()
     {
         if ($this['context_type'] !== "public") {
-            return array();
+            return [];
         }
         $get_shares = DBManager::get()->prepare(
             "SELECT * FROM blubber_reshares WHERE topic_id = ? " .
         "");
-        $get_shares->execute(array($this['root_id']));
+        $get_shares->execute([$this['root_id']]);
         $shares = $get_shares->fetchAll(PDO::FETCH_ASSOC);
-        $users = array();
+        $users = [];
         foreach ($shares as $share) {
             $users[] = $share['external_contact']
                 ? BlubberExternalContact::find($share['user_id'])
@@ -533,11 +533,11 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 "external_contact = :external_contact, " .
                 "chdate = UNIX_TIMESTAMP() " .
         "");
-        $success = $share->execute(array(
+        $success = $share->execute([
             'topic_id' => $this['root_id'],
             'user_id' => $user_id,
             'external_contact' => $external_user
-        ));
+        ]);
         if ($success) {
             $thread = $this->isThread() ? $this : BlubberPosting::find($this['root_id']);
             $thread['chdate'] = time();
@@ -545,7 +545,7 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
             if (!$thread['external_contact']) {
                 $url = URLHelper::getURL(
                     "plugins.php/blubber/streams/thread/".$thread->getId(),
-                    array('cid' => $thread['context_type'] === "course" ? $thread['Seminar_id'] : null, 'reshared' => 1),
+                    ['cid' => $thread['context_type'] === "course" ? $thread['Seminar_id'] : null, 'reshared' => 1],
                     true
                 );
                 PersonalNotifications::add(
@@ -575,11 +575,11 @@ class BlubberPosting extends SimpleORMap implements PrivacyObject
                 AND user_id = :user_id
                 AND external_contact = :external_contact
         ");
-        $success = $unshare->execute(array(
+        $success = $unshare->execute([
             'topic_id' => $this['root_id'],
             'user_id' => $user_id,
             'external_contact' => $external_user
-        ));
+        ]);
         if ($success) {
             $thread = $this->isThread() ? $this : BlubberPosting::find($this['root_id']);
             $thread['chdate'] = time();

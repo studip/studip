@@ -45,7 +45,7 @@ class Course_StudygroupController extends AuthenticatedController
         if (isset($GLOBALS['user']->cfg->STUDYGROUP_VIEWS)) {
             $user_cfg = json_decode($GLOBALS['user']->cfg->STUDYGROUP_VIEWS, true);
         } else {
-            $user_cfg = array();
+            $user_cfg = [];
         }
 
         // Obtain default view
@@ -187,7 +187,7 @@ class Course_StudygroupController extends AuthenticatedController
         global $perm;
 
         $admin  = $perm->have_perm('admin');
-        $errors = array();
+        $errors = [];
 
         CSRFProtection::verifyUnsafeRequest();
 
@@ -244,7 +244,7 @@ class Course_StudygroupController extends AuthenticatedController
             $this->redirect('course/studygroup/new/');
         } // add a new founder
         else if ($admin && Request::submitted('add_founder')) {
-            $founders = array(Request::option('choose_founder'));
+            $founders = [Request::option('choose_founder')];
 
             $this->flash['founders'] = $founders;
             $this->flash['create']   = true;
@@ -274,9 +274,9 @@ class Course_StudygroupController extends AuthenticatedController
             } else {
                 $query     = "SELECT 1 FROM seminare WHERE name = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     Request::get('groupname'),
-                ));
+                ]);
                 if ($statement->fetchColumn()) {
                     $errors[] = _("Eine Veranstaltung/Studiengruppe mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen Namen");
                 }
@@ -330,7 +330,7 @@ class Course_StudygroupController extends AuthenticatedController
                         $stmt = DBManager::get()->prepare("INSERT INTO seminar_user
                             (seminar_id, user_id, status, gruppe)
                             VALUES (?, ?, 'dozent', 8)");
-                        $stmt->execute(array($sem->id, $user_id));
+                        $stmt->execute([$sem->id, $user_id]);
                     }
 
                     $this->founders          = null;
@@ -341,7 +341,7 @@ class Course_StudygroupController extends AuthenticatedController
                     $query     = "INSERT INTO seminar_user (seminar_id, user_id, status, gruppe)
                               VALUES (?, ?, 'dozent', 8)";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($sem->id, $user_id));
+                    $statement->execute([$sem->id, $user_id]);
                 }
 
                 // de-/activate modules
@@ -470,7 +470,7 @@ class Course_StudygroupController extends AuthenticatedController
 
         // if we are permitted to edit the studygroup get some data...
         if ($perm->have_studip_perm('dozent', $id)) {
-            $errors    = array();
+            $errors    = [];
             $admin     = $perm->have_studip_perm('admin', $id);
             $founders  = StudygroupModel::getFounders($id);
             $sem       = new Seminar($id);
@@ -499,10 +499,10 @@ class Course_StudygroupController extends AuthenticatedController
                 } else {
                     $query     = "SELECT 1 FROM seminare WHERE name = ? AND Seminar_id != ?";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array(
+                    $statement->execute([
                         Request::get('groupname'),
                         $id,
-                    ));
+                    ]);
                     if ($statement->fetchColumn()) {
                         $errors[] = _("Eine Veranstaltung/Studiengruppe mit diesem Namen existiert bereits. Bitte wählen Sie einen anderen Namen");
                     }
@@ -700,7 +700,7 @@ class Course_StudygroupController extends AuthenticatedController
                 _('Nachricht an alle Gruppenmitglieder verschicken'),
                 $this->url_for('course/studygroup/message/?cid=' . $course->id),
                 Icon::create('mail', 'clickable'),
-                array('data-dialog' => 1)
+                ['data-dialog' => 1]
             );
         }
         if ($actions->hasElements()) {
@@ -875,7 +875,7 @@ class Course_StudygroupController extends AuthenticatedController
         if ($perm->have_studip_perm('dozent', $id)) {
 
             if ($approveDelete && check_ticket(Request::get('studip_ticket'))) {
-                $messages = array();
+                $messages = [];
                 $sem      = new Seminar($id);
                 $sem->delete();
                 if ($messages = $sem->getStackedMessages()) {
@@ -940,7 +940,7 @@ class Course_StudygroupController extends AuthenticatedController
 
         $query     = "SELECT COUNT(*) FROM seminare WHERE status IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(studygroup_sem_types()));
+        $statement->execute([studygroup_sem_types()]);
 
         // set variables for view
         $this->can_deactivate = $statement->fetchColumn() == 0;
@@ -971,7 +971,7 @@ class Course_StudygroupController extends AuthenticatedController
         }
 
         if ($errors) {
-            $this->flash['messages']  = array('error' => array('title' => 'Die Studiengruppen konnten nicht aktiviert werden!', 'details' => $errors));
+            $this->flash['messages']  = ['error' => ['title' => 'Die Studiengruppen konnten nicht aktiviert werden!', 'details' => $errors]];
             $this->flash['institute'] = Request::get('institute');
             $this->flash['terms']     = Request::get('terms');
         }
@@ -1007,7 +1007,7 @@ class Course_StudygroupController extends AuthenticatedController
 
         $query     = "SELECT COUNT(*) FROM seminare WHERE status IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(studygroup_sem_types()));
+        $statement->execute([studygroup_sem_types()]);
 
         if (($count = $statement->fetchColumn()) != 0) {
             PageLayout::postError(sprintf(
@@ -1040,7 +1040,7 @@ class Course_StudygroupController extends AuthenticatedController
             $subject = sprintf(_("[Studiengruppe: %s]"), $sem->getFullname());
         }
 
-        $this->redirect($this->url_for('messages/write', array('course_id' => $id, 'default_subject' => $subject, 'filter' => 'all', 'emailrequest' => 1)));
+        $this->redirect($this->url_for('messages/write', ['course_id' => $id, 'default_subject' => $subject, 'filter' => 'all', 'emailrequest' => 1]));
     }
 
 

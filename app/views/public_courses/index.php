@@ -67,7 +67,7 @@
                     <?= $navigation->getImageTag() ?>
                 </a>
             <? else: ?>
-                <?= Assets::img('blank.gif', array('width' => 16, 'height' => 16)) ?>
+                <?= Assets::img('blank.gif', ['width' => 16, 'height' => 16]) ?>
             <? endif; ?>
         <? endforeach; ?>
             </td>

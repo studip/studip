@@ -480,7 +480,7 @@ class Navigation implements IteratorAggregate
      */
     protected function initSubNavigation()
     {
-        $this->subnav = array();
+        $this->subnav = [];
     }
 
     /**

@@ -111,7 +111,7 @@ class EvaluationAnswer extends EvaluationObject {
     
     $this->value           = 0;
     $this->rows            = 0;
-    $this->users           = array ();
+    $this->users           =  [];
     $this->userNum         = 0;
     $this->userNumIterator = 0;
     $this->residual        = NO;

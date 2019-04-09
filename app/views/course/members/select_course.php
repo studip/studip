@@ -27,6 +27,6 @@
 
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Abschicken'), 'submit') ?>
-        <?= Studip\Button::createCancel(_('Abbrechen'), 'cancel', array('data-dialog' => 'close')) ?>
+        <?= Studip\Button::createCancel(_('Abbrechen'), 'cancel', ['data-dialog' => 'close']) ?>
     </footer>
 </form>

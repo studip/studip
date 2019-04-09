@@ -72,7 +72,7 @@ class SearchNavigation extends Navigation
 
             // browse resources
             if (Config::get()->RESOURCES_ENABLE) {
-                $navigation = new Navigation(_('Ressourcen'), 'resources.php', array('view' => 'search', 'reset' => 'TRUE'));
+                $navigation = new Navigation(_('Ressourcen'), 'resources.php', ['view' => 'search', 'reset' => 'TRUE']);
                 $this->addSubNavigation('resources', $navigation);
             }
         }

@@ -88,7 +88,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
         return null;
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'seminare';
         $config['has_many']['topics'] = [
@@ -132,7 +132,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
-        $config['has_many']['datafields'] = array(
+        $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_func' => 'findByModel',
             'assoc_foreign_key' => function ($model, $params) {
@@ -143,7 +143,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
             },
             'on_delete' => 'delete',
             'on_store'  => 'store',
-        );
+        ];
         $config['has_many']['cycles'] = [
             'class_name' => 'SeminarCycleDate',
             'assoc_func' => 'findBySeminar',

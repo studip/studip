@@ -5,7 +5,7 @@
 <? endif; ?>
 <form id="calendar-manage-access" data-dialog="" method="post" action="<?= $controller->url_for('calendar/single/store_permissions/' . $calendar->getRangeId()) ?>">
     <? CSRFProtection::tokenTag() ?>
-    <? $perms = array(1 => _('Keine'), 2 => _('Lesen'), 4 => _('Schreiben')) ?>
+    <? $perms = [1 => _('Keine'), 2 => _('Lesen'), 4 => _('Schreiben')] ?>
     <table class="default">
         <caption>
             <?= htmlReady($title) ?>
@@ -81,7 +81,7 @@
                             <?= $perms[$own_perms[$user->user_id]] ?>
                         </td>
                         <td class="actions">
-                            <a title="<?= _('Benutzer entfernen') ?>" onClick="STUDIP.CalendarDialog.removeUser(this);" href="<?= $controller->url_for('calendar/single/remove_user/' . $calendar->getRangeId() . $filter, array('user_id' => $user->user_id)) ?>">
+                            <a title="<?= _('Benutzer entfernen') ?>" onClick="STUDIP.CalendarDialog.removeUser(this);" href="<?= $controller->url_for('calendar/single/remove_user/' . $calendar->getRangeId() . $filter, ['user_id' => $user->user_id]) ?>">
                                 <?= Icon::create('person+remove', 'clickable')->asImg() ?>
                             </a>
                         </td>

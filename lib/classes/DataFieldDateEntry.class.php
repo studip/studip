@@ -55,7 +55,7 @@ class DataFieldDateEntry extends DataFieldEntry
      * @param Array  $variables Additional variables
      * @return String containing the required html
      */
-    public function getHTML($name = '', $variables = array())
+    public function getHTML($name = '', $variables = [])
     {
         return parent::getHTML($name, $variables + [
             'timestamp' => strtotime(trim($this->value)),

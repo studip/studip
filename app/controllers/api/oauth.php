@@ -15,10 +15,10 @@ class Api_OauthController extends StudipController
         parent::before_filter($action, $args);
 
         # initialize Stud.IP-Session
-        page_open(array('sess' => 'Seminar_Session',
+        page_open(['sess' => 'Seminar_Session',
                         'auth' => 'Seminar_Default_Auth',
                         'perm' => 'Seminar_Perm',
-                        'user' => 'Seminar_User'));
+                        'user' => 'Seminar_User']);
 
         $this->set_layout(null);
     }

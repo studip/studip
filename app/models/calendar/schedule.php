@@ -37,18 +37,18 @@ class CalendarScheduleModel
             $stmt = DBManager::get()->prepare("UPDATE schedule
                 SET start = ?, end = ?, day = ?, title = ?, content = ?, color = ?, user_id = ?
                 WHERE id = ?");
-            $stmt->execute(array($data['start'], $data['end'], $data['day'], $data['title'],
-                $data['content'], $data['color'], $data['user_id'], $data['id']));
+            $stmt->execute([$data['start'], $data['end'], $data['day'], $data['title'],
+                $data['content'], $data['color'], $data['user_id'], $data['id']]);
 
-            NotificationCenter::postNotification('ScheduleDidUpdate', $GLOBALS['user']->id, array('values' => $data));
+            NotificationCenter::postNotification('ScheduleDidUpdate', $GLOBALS['user']->id, ['values' => $data]);
 
         } else {
             $stmt = DBManager::get()->prepare("INSERT INTO schedule
                 (start, end, day, title, content, color, user_id)
                 VALUES (?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute(array($data['start'], $data['end'], $data['day'], $data['title'],
-                $data['content'], $data['color'], $data['user_id']));
-            NotificationCenter::postNotification('ScheduleDidCreate', $GLOBALS['user']->id, array('values' => $data));
+            $stmt->execute([$data['start'], $data['end'], $data['day'], $data['title'],
+                $data['content'], $data['color'], $data['user_id']]);
+            NotificationCenter::postNotification('ScheduleDidCreate', $GLOBALS['user']->id, ['values' => $data]);
         }
     }
 
@@ -63,7 +63,7 @@ class CalendarScheduleModel
         $stmt = DBManager::get()->prepare("REPLACE INTO schedule_seminare
             (seminar_id, user_id, metadate_id, color) VALUES(?, ? ,?, ?)");
 
-        $stmt->execute(array($data['id'], $GLOBALS['user']->id, $data['cycle_id'], $data['color']));
+        $stmt->execute([$data['id'], $GLOBALS['user']->id, $data['cycle_id'], $data['color']]);
         NotificationCenter::postNotification('ScheduleSeminarDidCreate', $GLOBALS['user']->id, $data['cycle_id']);
     }
 
@@ -77,7 +77,7 @@ class CalendarScheduleModel
     {
         $stmt = DBManager::get()->prepare("DELETE FROM schedule
             WHERE id = ? AND user_id = ?");
-        $stmt->execute(array($id, $GLOBALS['user']->id));
+        $stmt->execute([$id, $GLOBALS['user']->id]);
         NotificationCenter::postNotification('ScheduleDidDelete', $GLOBALS['user']->id, $id);
     }
 
@@ -98,7 +98,7 @@ class CalendarScheduleModel
      */
     static function getScheduleEntries($user_id, $start_hour, $end_hour, $id = false)
     {
-        $ret = array();
+        $ret = [];
 
         // fetch user-generated entries
         if (!$id) {
@@ -110,11 +110,11 @@ class CalendarScheduleModel
                 )");
             $start = $start_hour * 100;
             $end   = $end_hour   * 100;
-            $stmt->execute(array($user_id, $start, $end, $start, $start, $end, $end));
+            $stmt->execute([$user_id, $start, $end, $start, $start, $end, $end]);
         } else {
             $stmt = DBManager::get()->prepare("SELECT * FROM schedule
                 WHERE user_id = ? AND id = ?");
-            $stmt->execute(array($user_id, $id));
+            $stmt->execute([$user_id, $id]);
         }
 
         $entries = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -153,7 +153,7 @@ class CalendarScheduleModel
      */
     static function getSeminarEntry($seminar_id, $user_id, $cycle_id = false, $semester = false)
     {
-        $ret = array();
+        $ret = [];
         $filterStart = 0;
         $filterEnd   = 0;
 
@@ -166,7 +166,7 @@ class CalendarScheduleModel
         $sem = new Seminar($seminar_id);
         foreach ($sem->getCycles() as $cycle) {
             if (!$cycle_id || $cycle->getMetaDateID() == $cycle_id) {
-                $entry = array();
+                $entry = [];
 
                 $entry['id'] = $seminar_id .'-'. $cycle->getMetaDateId();
                 $entry['cycle_id'] = $cycle->getMetaDateId();
@@ -194,7 +194,7 @@ class CalendarScheduleModel
                 }
 
                 // add the lecturer
-                $lecturers = array();
+                $lecturers = [];
                 $members = $sem->getMembers('dozent');
 
                 foreach ($members as $member) {
@@ -215,19 +215,19 @@ class CalendarScheduleModel
                 // check the settings for this entry
                 $db = DBManager::get();
                 $stmt = $db->prepare('SELECT user_id FROM seminar_user WHERE Seminar_id = ? AND user_id = ?');
-                $stmt->execute(array($sem->getId(), $user_id));
+                $stmt->execute([$sem->getId(), $user_id]);
                 $entry['type'] = $stmt->fetchColumn() ? 'sem' : 'virtual';
 
                 $stmt = $db->prepare('SELECT * FROM schedule_seminare WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?');
-                $stmt->execute(array($sem->getId(), $user_id, $cycle->getMetaDateId()));
+                $stmt->execute([$sem->getId(), $user_id, $cycle->getMetaDateId()]);
                 $details = $stmt->fetch();
 
                 if ($entry['type'] == 'virtual') {
                     $entry['color'] = $details['color'] ? $details['color'] : DEFAULT_COLOR_VIRTUAL;
-                    $entry['icons'][] = array(
+                    $entry['icons'][] = [
                         'image' => 'virtual.png',
                         'title' => _("Dies ist eine vorgemerkte Veranstaltung")
-                    );
+                    ];
                 } else {
                     $entry['color'] = $details['color'] ? $details['color'] : DEFAULT_COLOR_SEM;
                 }
@@ -240,24 +240,24 @@ class CalendarScheduleModel
                     $bind_url = URLHelper::getLink('dispatch.php/calendar/schedule/bind/'
                               . $seminar_id . '/' . $cycle->getMetaDateId() . '/?show_hidden=1');
 
-                    $entry['icons'][] = array(
+                    $entry['icons'][] = [
                         'url'   => $bind_url,
                         'image' => Icon::create('visibility-invisible', 'info_alt')->asImagePath(16),
                         'onClick' => "function(id) { window.location = '". $bind_url ."'; }",
                         'title' => _("Diesen Eintrag wieder einblenden"),
-                    );
+                    ];
                 }
 
                 // show a hide-icon if the entry is not virtual
                 else if ($entry['type'] != 'virtual') {
                     $unbind_url = URLHelper::getLink('dispatch.php/calendar/schedule/unbind/'
                                 . $seminar_id . '/' . $cycle->getMetaDateId());
-                    $entry['icons'][] = array(
+                    $entry['icons'][] = [
                         'url'     => $unbind_url,
                         'image'   => Icon::create('visibility-visible', 'info_alt')->asImagePath(16),
                         'onClick' => "function(id) { window.location = '". $unbind_url ."'; }",
                         'title'   => _("Diesen Eintrag ausblenden"),
-                    );
+                    ];
 
                 }
 
@@ -278,7 +278,7 @@ class CalendarScheduleModel
     {
         $stmt = DBManager::get()->prepare($query = "DELETE FROM schedule_seminare
             WHERE user_id = ? AND seminar_id = ?");
-        $stmt->execute(array($user_id, $seminar_id));
+        $stmt->execute([$user_id, $seminar_id]);
         NotificationCenter::postNotification('ScheduleSeminarDidDelete', $GLOBALS['user']->id, $seminar_id);
     }
 
@@ -299,18 +299,18 @@ class CalendarScheduleModel
      */
     static function getSeminarEntries($user_id, $semester, $start_hour, $end_hour, $show_hidden = false)
     {
-        $seminars = array();
+        $seminars = [];
 
         // get all virtually added seminars
         $stmt = DBManager::get()->prepare("SELECT * FROM schedule_seminare as c
             LEFT JOIN seminare as s ON (s.Seminar_id = c.Seminar_id)
             WHERE c.user_id = ? AND s.start_time = ?");
-        $stmt->execute(array($user_id, $semester['beginn']));
+        $stmt->execute([$user_id, $semester['beginn']]);
 
         while ($entry = $stmt->fetch()) {
-            $seminars[$entry['seminar_id']] = array(
+            $seminars[$entry['seminar_id']] = [
                 'Seminar_id' => $entry['seminar_id']
-            );
+            ];
         }
 
         // fetch seminar-entries
@@ -325,12 +325,12 @@ class CalendarScheduleModel
         $stmt->execute();
 
         while ($entry = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $seminars[$entry['Seminar_id']] = array(
+            $seminars[$entry['Seminar_id']] = [
                 'Seminar_id' => $entry['Seminar_id']
-            );
+            ];
         }
 
-        $ret = array();
+        $ret = [];
         foreach ($seminars as $data) {
             $entries = self::getSeminarEntry($data['Seminar_id'], $user_id, false, $semester);
 
@@ -368,7 +368,7 @@ class CalendarScheduleModel
      */
     static function getSeminarEntriesForInstitute($user_id, $semester, $start_hour, $end_hour, $institute_id)
     {
-        $ret = array();
+        $ret = [];
 
         // fetch seminar-entries
         $visibility_perms = $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'));
@@ -420,7 +420,7 @@ class CalendarScheduleModel
      */
     static function getSeminarCycleId(Seminar $seminar, $start, $end, $day)
     {
-        $ret = array();
+        $ret = [];
 
         $day = ($day + 1) % 7;
 
@@ -448,7 +448,7 @@ class CalendarScheduleModel
         $stmt = DBManager::get()->prepare("SELECT visible
             FROM schedule_seminare
             WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?");
-        $stmt->execute(array($seminar_id, $GLOBALS['user']->id, $cycle_id));
+        $stmt->execute([$seminar_id, $GLOBALS['user']->id, $cycle_id]);
         if (!$data = $stmt->fetch()) {
             return true;
         } else {
@@ -543,10 +543,10 @@ class CalendarScheduleModel
      * @return array
      */
     static function addDayChooser($entries, $days, $controller = 'schedule') {
-        $day_names  = array(_("Montag"),_("Dienstag"),_("Mittwoch"),
-            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag"));
+        $day_names  = [_("Montag"),_("Dienstag"),_("Mittwoch"),
+            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag")];
 
-        $ret = array();
+        $ret = [];
 
         foreach ($days as $day) {
             if (!isset($entries[$day])) {
@@ -579,7 +579,7 @@ class CalendarScheduleModel
     {
         $stmt = DBManager::get()->prepare("SELECT * FROM schedule_seminare
             WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?");
-        $stmt->execute(array($seminar_id, $GLOBALS['user']->id, $cycle_id));
+        $stmt->execute([$seminar_id, $GLOBALS['user']->id, $cycle_id]);
 
         if ($stmt->fetch()) {
             $stmt = DBManager::get()->prepare("UPDATE schedule_seminare
@@ -591,7 +591,7 @@ class CalendarScheduleModel
                 VALUES(?, ?, ?, ?)");
         }
 
-        $stmt->execute(array($visible ? '1' : '0', $seminar_id, $GLOBALS['user']->id, $cycle_id));
+        $stmt->execute([$visible ? '1' : '0', $seminar_id, $GLOBALS['user']->id, $cycle_id]);
 
     }
 
@@ -609,7 +609,7 @@ class CalendarScheduleModel
             LEFT JOIN schedule_seminare as sc ON (su.Seminar_id = sc.seminar_id
                 AND sc.user_id = su.user_id AND sc.metadate_id = ?)
             WHERE su.Seminar_id = ? AND su.user_id = ?");
-        $stmt->execute(array($cycle_id, $seminar_id, $GLOBALS['user']->id));
+        $stmt->execute([$cycle_id, $seminar_id, $GLOBALS['user']->id]);
 
         // if we are participant of the seminar, just hide the entry
         if ($data = $stmt->fetch()) {
@@ -622,14 +622,14 @@ class CalendarScheduleModel
                     (seminar_id, user_id, metadate_id, visible)
                     VALUES(?, ?, ?, 0)");
             }
-            $stmt->execute(array($seminar_id, $GLOBALS['user']->id, $cycle_id));
+            $stmt->execute([$seminar_id, $GLOBALS['user']->id, $cycle_id]);
         }
 
         // otherwise delete the entry
         else {
             $stmt = DBManager::get()->prepare("DELETE FROM schedule_seminare
                 WHERE seminar_id = ? AND user_id = ?");
-            $stmt->execute(array($seminar_id, $GLOBALS['user']->id));
+            $stmt->execute([$seminar_id, $GLOBALS['user']->id]);
             NotificationCenter::postNotification('ScheduleSeminarDidDelete', $GLOBALS['user']->id, $seminar_id);
         }
     }
@@ -647,7 +647,7 @@ class CalendarScheduleModel
             SET visible = 1
             WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?");
 
-        $stmt->execute(array($seminar_id, $GLOBALS['user']->id, $cycle_id));
+        $stmt->execute([$seminar_id, $GLOBALS['user']->id, $cycle_id]);
     }
 
     /**
@@ -667,7 +667,7 @@ class CalendarScheduleModel
 
         // convert old settings, if necessary (mein_stundenplan.php)
         if (!$schedule_settings['converted']) {
-            $schedule_settings['glb_days'] = array(0, 1, 2, 3, 4);
+            $schedule_settings['glb_days'] = [0, 1, 2, 3, 4];
             $schedule_settings['converted'] = true;
         }
 

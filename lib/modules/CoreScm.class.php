@@ -13,7 +13,7 @@ class CoreScm implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('SCM_ENABLE')) {
-            $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", array('auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates")));
+            $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", ['auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates"]));
             $navigation->setImage(Icon::create('schedule', 'inactive'));
             return $navigation;
         } else {
@@ -38,7 +38,7 @@ class CoreScm implements StudipModule {
                 $navigation->addSubNavigation($scm->id, $nav);
             }
 
-            return array('scm' => $navigation);
+            return ['scm' => $navigation];
         } else {
             return null;
         }
@@ -49,7 +49,7 @@ class CoreScm implements StudipModule {
      */ 
     function getMetadata()
     {
-        return array(
+        return [
             'summary' => _('Die Lehrenden bestimmen, wie Titel und Inhalt dieser Seite aussehen.'),
             'description' => _('Die Freie Informationsseite ist eine Seite, '.
                 'die sich die Lehrenden nach ihren speziellen Anforderungen '.
@@ -76,13 +76,13 @@ class CoreScm implements StudipModule {
                                     'Literatur. Sie kann aber auch für andere beliebige Zusatzinformationen (Links, Protokolle '.
                                     'etc.) verwendet werden.'),
             'icon' => Icon::create('infopage', 'info'),
-            'screenshots' => array(
+            'screenshots' => [
                 'path' => 'plus/screenshots/Freie_Informationsseite',
-                'pictures' => array(
-                    0 => array('source' => 'Zwei_Eintraege_mit_Inhalten_zur_Verfuegung_stellen.jpg', 'title' => _('Zwei Einträge mit Inhalten zur Verfügung stellen')),
-                    1 => array( 'source' => 'Neue_Informationsseite_anlegen.jpg', 'title' => _('Neue Informationsseite anlegen'))
-                )
-            )       
-        );
+                'pictures' => [
+                    0 => ['source' => 'Zwei_Eintraege_mit_Inhalten_zur_Verfuegung_stellen.jpg', 'title' => _('Zwei Einträge mit Inhalten zur Verfügung stellen')],
+                    1 => [ 'source' => 'Neue_Informationsseite_anlegen.jpg', 'title' => _('Neue Informationsseite anlegen')]
+                ]
+            ]       
+        ];
     }
 }

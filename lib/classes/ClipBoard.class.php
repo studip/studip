@@ -44,20 +44,20 @@ class ClipBoard {
     var $form_name = "clipboard_form";
     var $msg;
     //querys for different object_types
-    var $elements_query = array (
+    var $elements_query =  [
                 "sem" => "SELECT Seminar_id, Name  FROM Seminare WHERE Seminar_id  IN (?) ORDER BY Name",
                 "user" => "SELECT user_id, CONCAT(Nachname, ', ', Vorname) AS name FROM auth_user_md5 WHERE user_id  IN (?) ORDER BY name",
                 "inst" => "SELECT Institut_id, Name  FROM Institute WHERE Institut_id  IN (?) ORDER BY Name",
                 "date" => "SELECT termin_id, content  FROM termine WHERE termin_id IN (?) ORDER BY content",
                 "res" => "SELECT resource_id, name  FROM resources_objects WHERE resource_id  IN (?) ORDER BY name"
-                );
-    var $object_types_short = array(
+                ];
+    var $object_types_short = [
                 "sem" => "S",
                 "user" => "N",
                 "inst" => "E",
                 "date" => "T",
                 "res" => "R"
-                );
+                ];
 
 
 
@@ -76,7 +76,7 @@ class ClipBoard {
 
     public function insertElement($id_to_insert, $object_type){
         if (!is_array($id_to_insert)){
-            $id_to_insert = array($id_to_insert);
+            $id_to_insert = [$id_to_insert];
         }
         $inserted = 0;
         foreach ($id_to_insert as $object_id){
@@ -96,7 +96,7 @@ class ClipBoard {
 
     public function deleteElement($id_to_delete){
         if (!is_array($id_to_delete)){
-            $id_to_delete = array($id_to_delete);
+            $id_to_delete = [$id_to_delete];
         }
         $deleted = 0;
         foreach ($id_to_delete as $clip_obj_id){
@@ -136,10 +136,10 @@ class ClipBoard {
                     }
 
                     $statement = DBManager::get()->prepare($this->elements_query[$object_type]);
-                    $statement->execute(array($object_elements));
+                    $statement->execute([$object_elements]);
 
                     while ($row = $statement->fetch(PDO::FETCH_NUM)) {
-                        $returned_elements[$row[0]] = array("name" => $row[1], "type" => $object_type);
+                        $returned_elements[$row[0]] = ["name" => $row[1], "type" => $object_type];
                         $this->elements[$row[0]] = $object_type;
                     }
                 }
@@ -166,9 +166,9 @@ class ClipBoard {
 
     public function setFormObject(){
         $form_name = $this->form_name;
-        $form_fields['clip_content'] = array('type' => 'select', 'multiple' => true, 'options_callback' => array($this, "getClipOptions"));
-        $form_fields['clip_cmd'] = array('type' => 'select', 'options' => array(array('name' => _("Aus Merkliste löschen"), 'value' => 'del')));
-        $form_buttons['clip_ok'] = array('type' => 'accept', 'caption' => _('OK'), 'info' => _("Gewählte Aktion starten"));
+        $form_fields['clip_content'] = ['type' => 'select', 'multiple' => true, 'options_callback' => [$this, "getClipOptions"]];
+        $form_fields['clip_cmd'] = ['type' => 'select', 'options' => [['name' => _("Aus Merkliste löschen"), 'value' => 'del']]];
+        $form_buttons['clip_ok'] = ['type' => 'accept', 'caption' => _('OK'), 'info' => _("Gewählte Aktion starten")];
         if (!is_object($this->form_obj)){
             $this->form_obj = new StudipForm($form_fields, $form_buttons, $form_name, false);
         } else {
@@ -178,15 +178,15 @@ class ClipBoard {
     }
 
     public function getClipOptions($caller, $name){
-        $options = array();
+        $options = [];
         $cols = 40;
         if ($elements = $this->getElements()){
             foreach ($elements as $clip_obj_id => $object_data){
-                $options[] = array('name' => $this->object_types_short[$object_data["type"]].": ". my_substr($object_data["name"],0,$cols), 'value' => $clip_obj_id);
+                $options[] = ['name' => $this->object_types_short[$object_data["type"]].": ". my_substr($object_data["name"],0,$cols), 'value' => $clip_obj_id];
             }
         } else {
-            $options[] = array('name' => ("Ihre Merkliste ist leer!"), 'value' => 0);
-            $options[] = array('name' => str_repeat("¯",floor($cols * .8)) , 'value' => 0);
+            $options[] = ['name' => ("Ihre Merkliste ist leer!"), 'value' => 0];
+            $options[] = ['name' => str_repeat("¯",floor($cols * .8)) , 'value' => 0];
         }
         return $options;
     }
@@ -198,13 +198,13 @@ class ClipBoard {
         if ($title) {
             echo '<div align="center"><b>' . _('Merkliste:') . '</b></div>';
         }
-        echo $this->form_obj->getFormField("clip_content", array_merge(array('size' => $this->getNumElements()), array('style' => 'font-size:8pt;width:' . $width)));
-        echo $this->form_obj->getFormField("clip_cmd", array('style' => 'font-size:8pt;width:' . $width));
+        echo $this->form_obj->getFormField("clip_content", array_merge(['size' => $this->getNumElements()], ['style' => 'font-size:8pt;width:' . $width]));
+        echo $this->form_obj->getFormField("clip_cmd", ['style' => 'font-size:8pt;width:' . $width]);
 
         echo '<div align="center">';
-        print $this->form_obj->getFormButton("clip_ok", array('style'=>'vertical-align:middle;margin:3px;'));
+        print $this->form_obj->getFormButton("clip_ok", ['style'=>'vertical-align:middle;margin:3px;']);
         if ($this->form_obj->form_buttons['clip_reload']) {
-            print $this->form_obj->getFormButton("clip_reload", array('style'=>'vertical-align:middle;margin:3px;'));
+            print $this->form_obj->getFormButton("clip_reload", ['style'=>'vertical-align:middle;margin:3px;']);
         }
         echo '</div>';
     }

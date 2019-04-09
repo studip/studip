@@ -19,7 +19,7 @@ if ($navigation) {
                 $nav->getTitle(),
                 URLHelper::getURL($nav->getURL()),
                 null,
-                array('id' => $nav_id)
+                ['id' => $nav_id]
             );
             $link->setActive($nav->isActive());
             if (!$nav->isEnabled()) {
@@ -88,7 +88,7 @@ if ($navigation) {
 
     <div id="layout_page">
         <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
-            <?= $this->render_partial('change_view', array('changed_status' => $_SESSION['seminar_change_view_'.Context::getId()])) ?>
+            <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>
         <? endif ?>
 
         <? if (PageLayout::isHeaderEnabled() /*&& isset($navigation)*/) : ?>

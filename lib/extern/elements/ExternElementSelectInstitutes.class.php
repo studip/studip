@@ -39,7 +39,7 @@
 
 class ExternElementSelectInstitutes extends ExternElement {
 
-    public $attributes = array();
+    public $attributes = [];
 
     /**
     * Constructor
@@ -53,14 +53,14 @@ class ExternElementSelectInstitutes extends ExternElement {
         $this->name = "SelectInstitutes";
         $this->real_name = _("Auswahl der anzuzeigenden Institute/Einrichtungen");
         $this->description = _("Sie können hier die Institute/Einrichtungen auswählen, die auf der externen Seite ausgegeben werden sollen.");
-        $this->attributes = array('institutesselected');
+        $this->attributes = ['institutesselected'];
     }
     
     /**
     * 
     */
     public function getDefaultConfig () {
-        $config = array('institutesselected' => '|');
+        $config = ['institutesselected' => '|'];
         
         return $config;
     }
@@ -68,7 +68,7 @@ class ExternElementSelectInstitutes extends ExternElement {
     public function toStringEdit ($post_vars = '', $faulty_values = '', $edit_form = '', $anker = '') {
                             
         if ($faulty_values == '') {
-            $faulty_values = array();
+            $faulty_values = [];
         }
         $out = '';
         $table = '';

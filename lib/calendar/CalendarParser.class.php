@@ -18,7 +18,7 @@
 
 class CalendarParser
 {
-    private $events = array();
+    private $events = [];
     protected $components;
     private $type;
     private $number_of_events;

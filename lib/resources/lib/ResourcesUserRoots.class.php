@@ -97,15 +97,15 @@ class ResourcesUserRoots {
                       WHERE owner_id IN (?)
                       ORDER BY level DESC, name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 array_keys($my_objects)
-            ));
+            ]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $my_resources[$row['resource_id']] = array(
+                $my_resources[$row['resource_id']] = [
                     'root_id'   => $row['root_id'],
                     'parent_id' => $row['parent_id'],
                     'level'     => $row['level']
-                );
+                ];
                 $roots[$row['root_id']][] = $row['resource_id'];
             }
 
@@ -116,15 +116,15 @@ class ResourcesUserRoots {
                       WHERE user_id IN ('all', ?)
                       ORDER BY level DESC, name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 array_keys($my_objects)
-            ));
+            ]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $my_resources[$row['resource_id']] = array(
+                $my_resources[$row['resource_id']] = [
                     'root_id'   => $row['root_id'],
                     'parent_id' => $row['parent_id'],
                     'level'     => $row['level']
-                );
+                ];
                 $roots[$row['root_id']][] = $row['resource_id'];
             }
 
@@ -138,14 +138,14 @@ class ResourcesUserRoots {
                             $this->my_roots[$key] = $key;
                         } else {
                             //there are more than 2 resources in one thread...
-                            $statement->execute(array($key));
+                            $statement->execute([$key]);
                             $superordinated_id = $statement->fetchColumn();
                             $statement->closeCursor();
 
                             $top        = FALSE;
                             $last_found = $key;
                             while (!$top && $superordinated_id) {
-                                $statement->execute(array($superordinated_id));
+                                $statement->execute([$superordinated_id]);
                                 $parent_id = $statement->fetchColumn();
                                 $statement->closeCursor();
 
@@ -165,7 +165,7 @@ class ResourcesUserRoots {
                 }
             }
             if (is_array($this->my_roots)) {
-                $this->my_roots = DBManager::get()->fetchPairs("SELECT resource_id a, resource_id b FROM resources_objects WHERE resource_id IN (?) ORDER BY name", array($this->my_roots));
+                $this->my_roots = DBManager::get()->fetchPairs("SELECT resource_id a, resource_id b FROM resources_objects WHERE resource_id IN (?) ORDER BY name", [$this->my_roots]);
             }
         }
     }

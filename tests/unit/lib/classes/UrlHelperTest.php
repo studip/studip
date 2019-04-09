@@ -40,13 +40,13 @@ class URLHelperTest extends PHPUnit_Framework_TestCase
 
     public function testAddLinkParam ()
     {
-        $this->assertEquals(array(), URLHelper::getLinkParams());
+        $this->assertEquals([], URLHelper::getLinkParams());
 
         URLHelper::addLinkParam('foo', 'bar');
-        $this->assertEquals(array('foo' => 'bar'), URLHelper::getLinkParams());
+        $this->assertEquals(['foo' => 'bar'], URLHelper::getLinkParams());
 
         URLHelper::addLinkParam('answer', 42);
-        $this->assertEquals(array('foo' => 'bar', 'answer' => '42'),
+        $this->assertEquals(['foo' => 'bar', 'answer' => '42'],
                             URLHelper::getLinkParams());
     }
 
@@ -73,7 +73,7 @@ class URLHelperTest extends PHPUnit_Framework_TestCase
     public function testGetURL ()
     {
         URLHelper::addLinkParam('null', NULL);
-        URLHelper::addLinkParam('empty', array());
+        URLHelper::addLinkParam('empty', []);
         URLHelper::addLinkParam('foo', 'bar');
 
         $url = 'abc?a=b&c=d#top';
@@ -81,7 +81,7 @@ class URLHelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, URLHelper::getURL($url));
 
         $url = 'abc#top';
-        $params = array('a' => 'b', 'c' => 'd');
+        $params = ['a' => 'b', 'c' => 'd'];
         $expected = 'abc?foo=bar&a=b&c=d#top';
         $this->assertEquals($expected, URLHelper::getURL($url, $params));
 
@@ -90,17 +90,17 @@ class URLHelperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, URLHelper::getURL($url));
 
         $url = 'abc';
-        $params = array('foo' => 'test');
+        $params = ['foo' => 'test'];
         $expected = 'abc?foo=test';
         $this->assertEquals($expected, URLHelper::getURL($url, $params));
 
         $url = 'abc?baz=on';
-        $params = array('baz' => 'off');
+        $params = ['baz' => 'off'];
         $expected = 'abc?foo=bar&baz=off';
         $this->assertEquals($expected, URLHelper::getURL($url, $params));
 
         $url = 'abc?foo=baz';
-        $params = array('foo' => 'test');
+        $params = ['foo' => 'test'];
         $expected = 'abc?foo=test';
         $this->assertEquals($expected, URLHelper::getURL($url, $params));
     }

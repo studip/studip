@@ -75,7 +75,7 @@ class Settings_DetailsController extends Settings_SettingsController
             }
         }
 
-        $mapping = array(
+        $mapping = [
             'telefon'    => 'privatnr',
             'cell'       => 'privatcell',
             'anschrift'  => 'privadr',
@@ -85,10 +85,10 @@ class Settings_DetailsController extends Settings_SettingsController
             'lebenslauf' => 'lebenslauf',
             'schwerp'    => 'schwerp',
             'publi'      => 'publi',
-        );
+        ];
 
         // Visibilitymapping Remove in Stud.IP 3.0 with a migration
-        $vis_mapping = array(
+        $vis_mapping = [
             'telefon'    => 'private_phone',
             'cell'       => 'private_cell',
             'anschrift'  => 'privadr',
@@ -98,9 +98,9 @@ class Settings_DetailsController extends Settings_SettingsController
             'lebenslauf' => 'lebenslauf',
             'schwerp'    => 'schwerp',
             'publi'      => 'publi',
-        );
+        ];
 
-        $settingsname = array(
+        $settingsname = [
             'telefon'    => _('Private Telefonnummer'),
             'cell'       => _('Private Handynummer'),
             'anschrift'  => _('Private Adresse'),
@@ -110,7 +110,7 @@ class Settings_DetailsController extends Settings_SettingsController
             'lebenslauf' => _('Lebenslauf'),
             'schwerp'    => _('Arbeitsschwerpunkte'),
             'publi'      => _('Publikationen'),
-        );
+        ];
 
         foreach ($mapping as $key => $column) {
             if (!Request::submitted($key)) {
@@ -118,7 +118,7 @@ class Settings_DetailsController extends Settings_SettingsController
             }
 
             $value = Request::get($key);
-            if (in_array($key, array('hobby', 'lebenslauf', 'schwerp', 'publi'))) {
+            if (in_array($key, ['hobby', 'lebenslauf', 'schwerp', 'publi'])) {
                 // purify HTML input for these fields if wysiwyg is used
                 $value = Studip\Markup::purifyHtml(Request::i18n($key));
             }
@@ -130,7 +130,7 @@ class Settings_DetailsController extends Settings_SettingsController
         }
 
         $datafields_changed = false;
-        $errors = array();
+        $errors = [];
 
         $datafields = DataFieldEntry::getDataFieldEntries($this->user->user_id, 'user');
         $data       = Request::getArray('datafields');

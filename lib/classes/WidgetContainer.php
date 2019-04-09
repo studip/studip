@@ -43,7 +43,7 @@ abstract class WidgetContainer
     /**
      * Contains the widgets of the container
      */
-    protected $widgets = array();
+    protected $widgets = [];
     
     /**
      * Add a widget to the container.
@@ -78,7 +78,7 @@ abstract class WidgetContainer
         
         $inserted = false;
         
-        $widgets = array();
+        $widgets = [];
         foreach ($this->widgets as $idx => $wdgt) {
             if ($idx === $before_index) {
                 $inserted = true;
@@ -89,7 +89,7 @@ abstract class WidgetContainer
 
         if (!$inserted) {
             if ($before_index === ':first') {
-                $widgets = array_merge(array($index => $widget), $widgets);
+                $widgets = array_merge([$index => $widget], $widgets);
             } else {
                 $widgets[$index] = $widget;
             }

@@ -9,7 +9,7 @@ use Studip\Button, Studip\LinkButton;
     </legend>
     <label>
         <?= _('Semester:') ?>
-        <?=SemesterData::GetSemesterSelector(array('name' => 'sem_select', 'id' => 'sem_select', 'class' => 'user_form'), $sem_select, 'key', true)?>
+        <?=SemesterData::GetSemesterSelector(['name' => 'sem_select', 'id' => 'sem_select', 'class' => 'user_form'], $sem_select, 'key', true)?>
     </label>
     <label>
         <?= _('Veranstaltung:') ?>

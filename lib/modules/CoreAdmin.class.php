@@ -47,7 +47,7 @@ class CoreAdmin implements StudipModule {
 
                 $current_course = Course::find($course_id);
                 if ($current_course && $current_course->getSemClass()->offsetGet('module')) {
-                    $item = new Navigation(_('LV-Gruppen'), 'dispatch.php/course/lvgselector/index/' . $course_id, array('list' => 'TRUE'));
+                    $item = new Navigation(_('LV-Gruppen'), 'dispatch.php/course/lvgselector/index/' . $course_id, ['list' => 'TRUE']);
                     $item->setImage(Icon::create('learnmodule'));
                     $item->setDescription(_('Zuordnung der Veranstaltung zu Lehrveranstaltungsgruppen um die Einordnung innerhalb des Modulverzeichnisses festzulegen.'));
                     $navigation->addSubNavigation('lvgruppen', $item);
@@ -129,9 +129,9 @@ class CoreAdmin implements StudipModule {
                 }
             }
 
-            return array('admin' => $navigation);
+            return ['admin' => $navigation];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -140,6 +140,6 @@ class CoreAdmin implements StudipModule {
      */
     function getMetadata()
     {
-        return array();
+        return [];
     }
 }

@@ -91,7 +91,7 @@ class EvaluationExportManagerCSV extends EvaluationExportManager {
     */
    function __construct($evalID) {
     /* Set default values ------------------------------------------------- */
-    register_shutdown_function(array(&$this, "_EvaluationExportManagerCSV"));
+    register_shutdown_function([&$this, "_EvaluationExportManagerCSV"]);
     ini_set('memory_limit', '256M');
     parent::__construct($evalID);
     $this->setAuthorEmail ("mail@AlexanderWillner.de");
@@ -227,7 +227,7 @@ class EvaluationExportManagerCSV extends EvaluationExportManager {
     */
    function exportContent () {
       $counter = 0;
-      $answers = array();
+      $answers = [];
       $db = DBManager::get();
       $stmt = $db->prepare("SELECT user_id,text,value,position,residual,
                     MAX(evaldate) as evaldate,
@@ -237,7 +237,7 @@ class EvaluationExportManagerCSV extends EvaluationExportManager {
                     USING ( evalanswer_id )
                     WHERE parent_id = ? GROUP BY user_id");
       foreach ($this->evalquestions as $evalquestion) {
-          $stmt->execute(array($evalquestion->getObjectID()));
+          $stmt->execute([$evalquestion->getObjectID()]);
           $answers[$evalquestion->getObjectID()] = $stmt->fetchGrouped();
       }
 

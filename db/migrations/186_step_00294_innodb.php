@@ -32,7 +32,7 @@ class StEP00294InnoDB extends Migration
         $innodb = false;
         foreach ($engines as $e) {
             // InnoDB is found and enabled.
-            if ($e['Engine'] == 'InnoDB' && in_array(strtolower($e['Support']), array('default', 'yes'))) {
+            if ($e['Engine'] == 'InnoDB' && in_array(strtolower($e['Support']), ['default', 'yes'])) {
                 $innodb = true;
                 break;
             }
@@ -42,7 +42,7 @@ class StEP00294InnoDB extends Migration
             $start = microtime(true);
 
             // Tables to ignore on engine conversion.
-            $ignore_tables = array();
+            $ignore_tables = [];
 
             // Get version of database system (MySQL/MariaDB/Percona)
             $data = DBManager::get()->fetchFirst("SELECT VERSION() AS version");
@@ -55,10 +55,10 @@ class StEP00294InnoDB extends Migration
                 FROM `information_schema`.TABLES
                 WHERE TABLE_SCHEMA=:database AND ENGINE=:oldengine
                 ORDER BY TABLE_NAME",
-                array(
+                [
                     ':database' => $DB_STUDIP_DATABASE,
                     ':oldengine' => 'MyISAM',
-                ));
+                ]);
 
             /*
              * lit_catalog needs fulltext indices which InnoDB doesn't support
@@ -158,10 +158,10 @@ class StEP00294InnoDB extends Migration
             FROM `information_schema`.TABLES
             WHERE TABLE_SCHEMA=:database AND ENGINE=:oldengine
             ORDER BY TABLE_NAME",
-            array(
+            [
                 ':database' => $DB_STUDIP_DATABASE,
                 ':oldengine' => 'InnoDB'
-            ));
+            ]);
 
         // Prepare query for table conversion.
         $stmt = DBManager::get()->prepare("ALTER TABLE `:table` ENGINE=:newengine");

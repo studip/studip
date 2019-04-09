@@ -128,31 +128,31 @@ class SemClassesConvertIntoDb extends Migration
                 Sie diese Einstellungen erst, nachdem diese Migration durchgeführt wurde!');
         }
 
-        $slots = array(
-            'forum'               => array('module' => 'CoreForum'),
-            'documents'           => array('module' => 'CoreDocuments'),
-            'schedule'            => array('module' => 'CoreSchedule'),
-            'participants'        => array('module' => 'CoreParticipants'),
-            'scm'                 => array('module' => 'CoreScm', 'config' => 'SCM_ENABLE'),
-            'literature'          => array('module' => 'CoreLiterature', 'config' => 'LITERATURE_ENABLE'),
-            'wiki'                => array('module' => 'CoreWiki', 'config' => 'WIKI_ENABLE'),
-            'resources'           => array('module' => 'CoreResources', 'config' => 'RESOURCES_ENABLE'),
-            'calendar'            => array('module' => 'CoreCalendar', 'config' => 'COURSE_CALENDAR_ENABLE'),
-            'elearning_interface' => array('module' => 'CoreElearningInterface', 'config' => 'ELEARNING_INTERFACE_ENABLE')
-        );
+        $slots = [
+            'forum'               => ['module' => 'CoreForum'],
+            'documents'           => ['module' => 'CoreDocuments'],
+            'schedule'            => ['module' => 'CoreSchedule'],
+            'participants'        => ['module' => 'CoreParticipants'],
+            'scm'                 => ['module' => 'CoreScm', 'config' => 'SCM_ENABLE'],
+            'literature'          => ['module' => 'CoreLiterature', 'config' => 'LITERATURE_ENABLE'],
+            'wiki'                => ['module' => 'CoreWiki', 'config' => 'WIKI_ENABLE'],
+            'resources'           => ['module' => 'CoreResources', 'config' => 'RESOURCES_ENABLE'],
+            'calendar'            => ['module' => 'CoreCalendar', 'config' => 'COURSE_CALENDAR_ENABLE'],
+            'elearning_interface' => ['module' => 'CoreElearningInterface', 'config' => 'ELEARNING_INTERFACE_ENABLE']
+        ];
 
         $studygroup_settings = $this->getStudygroupSettings();
 
         foreach ($SEM_CLASS as $id => $sem_class) {
-            $modules = $settings = array();
+            $modules = $settings = [];
             $modules['overview'] = 'CoreOverview';
-            $settings['CoreOverview'] = array('activated' => 1, 'sticky' => 1);
+            $settings['CoreOverview'] = ['activated' => 1, 'sticky' => 1];
 
             if ($sem_class['studygroup_mode']) {
                 $modules['admin'] = 'CoreStudygroupAdmin';
-                $settings['CoreStudygroupAdmin'] = array('activated' => 1, 'sticky' => 1);
+                $settings['CoreStudygroupAdmin'] = ['activated' => 1, 'sticky' => 1];
                 $modules['participants'] = 'CoreStudygroupParticipants';
-                $settings['CoreStudygroupParticipants'] = array('activated' => 1, 'sticky' => 1);
+                $settings['CoreStudygroupParticipants'] = ['activated' => 1, 'sticky' => 1];
 
                 foreach ($studygroup_settings as $slot => $activated) {
                     if (isset($slots[$slot])) {
@@ -161,21 +161,21 @@ class SemClassesConvertIntoDb extends Migration
 
                         if ($activated && (!isset($core_module_config) || $GLOBALS[$core_module_config])) {
                             $modules[$slot] = $core_module_name;
-                            $settings[$core_module_name] = array(
+                            $settings[$core_module_name] = [
                                 'activated' => 0,
                                 'sticky'    => 0
-                            );
+                            ];
                         }
                     } else if ($slot !== 'chat') {
-                        $settings[$slot] = array(
+                        $settings[$slot] = [
                             'activated' => 0,
                             'sticky'    => $activated ? 0 : 1
-                        );
+                        ];
                     }
                 }
             } else {
                 $modules['admin'] = 'CoreAdmin';
-                $settings['CoreAdmin'] = array('activated' => 1, 'sticky' => 1);
+                $settings['CoreAdmin'] = ['activated' => 1, 'sticky' => 1];
 
                 foreach ($slots as $slot => $core_module) {
                     $core_module_name = $core_module['module'];
@@ -183,10 +183,10 @@ class SemClassesConvertIntoDb extends Migration
 
                     if (!isset($core_module_config) || $GLOBALS[$core_module_config]) {
                         $modules[$slot] = $core_module_name;
-                        $settings[$core_module_name] = array(
+                        $settings[$core_module_name] = [
                             'activated' => $sem_class[$slot] ? 1 : 0,
                             'sticky'    => 0
-                        );
+                        ];
                     }
                 }
             }
@@ -201,7 +201,7 @@ class SemClassesConvertIntoDb extends Migration
                 }
             }
 
-            $success = $statement->execute(array(
+            $success = $statement->execute([
                 'id' => $id,
                 'name' => $sem_class['name'],
                 'compact_mode' => $sem_class['compact_mode'],
@@ -240,7 +240,7 @@ class SemClassesConvertIntoDb extends Migration
                 'title_tutor_plural' => $title_tutor_plural ? $title_tutor_plural : null,
                 'title_autor' => $title_autor ? $title_autor : null,
                 'title_autor_plural' => $title_autor_plural ? $title_autor_plural : null
-            ));
+            ]);
         }
 
         $statement = $db->prepare(
@@ -252,11 +252,11 @@ class SemClassesConvertIntoDb extends Migration
                 "mkdate = UNIX_TIMESTAMP()"
         );
         foreach ($SEM_TYPE as $id => $sem_type) {
-            $success = $statement->execute(array(
+            $success = $statement->execute([
                 'id' => $id,
                 'name' => $sem_type['name'],
                 'class' => $sem_type['class']
-            ));
+            ]);
         }
 
         $statement = $db->prepare("DELETE FROM config WHERE field = 'STUDYGROUP_SETTINGS'");
@@ -264,7 +264,7 @@ class SemClassesConvertIntoDb extends Migration
     }
 
     protected function getStudygroupSettings() {
-        $studygroup_settings = array();
+        $studygroup_settings = [];
         foreach (words($GLOBALS['STUDYGROUP_SETTINGS']) as $key => $value) {
             $value = explode(':', $value);
             if ($value[0] != 'participants') {

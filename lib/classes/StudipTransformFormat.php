@@ -18,16 +18,16 @@ class StudipTransformFormat extends TextFormat
     /**
      * list of global Stud.IP transform markup rules
      */
-    private static $studip_rules = array(
-        'signature' => array(
+    private static $studip_rules = [
+        'signature' => [
             'start'    => '(?<!~)~~~(?!~)',
             'callback' => 'StudipTransformFormat::markupSignature'
-        )
-        ,'nop' => array(
+        ]
+        ,'nop' => [
             'start'    => '\[nop\](.*?)\[\/nop\]',
             'callback' => 'StudipTransformFormat::markupNoFormat'
-        ),        
-    );
+        ],        
+    ];
 
     /**
      * Returns the list of global Stud.IP markup rules as an array.

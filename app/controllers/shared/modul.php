@@ -55,14 +55,14 @@ class Shared_ModulController extends AuthenticatedController
                 $currentSemester = SemesterData::getSemesterData($semester_id);
             }
 
-            $this->modulVerantwortung = array();
+            $this->modulVerantwortung = [];
             foreach ($modul->assigned_users as $user) {
                 $this->modulVerantwortung[$user->gruppe][] = $user;
             }
 
             $sws = 0;
             $institut = new Institute($modul->responsible_institute->institut_id);
-            $modulTeileData = array();
+            $modulTeileData = [];
             foreach ($modul->modulteile as $modulTeil) {
 
                 $modulTeilDeskriptor = $modulTeil->getDeskriptor($display_language);
@@ -73,7 +73,7 @@ class Shared_ModulController extends AuthenticatedController
 
                 $name_kurz = sprintf('%s %d', $num_bezeichnung, $modulTeil->nummer);
 
-                $modulTeileData[$modulTeil->getId()] = array(
+                $modulTeileData[$modulTeil->getId()] = [
                     'name' => $modulTeil->getDisplayName(),
                     'name_kurz' => $name_kurz,
                     'voraussetzung' => $modulTeilDeskriptor->voraussetzung,
@@ -81,17 +81,17 @@ class Shared_ModulController extends AuthenticatedController
                     'pruef_vorleistung' => $modulTeilDeskriptor->pruef_vorleistung,
                     'kommentar' => $modulTeilDeskriptor->kommentar,
                     'kapazitaet' => $modulTeil->kapazitaet,
-                    'lvGruppen' => array()
-                );
+                    'lvGruppen' => []
+                ];
 
                 $lvGruppen = Lvgruppe::findByModulteil($modulTeil->getId());
                 foreach ($lvGruppen as $lvGruppe) {
                     $ids = array_column($lvGruppe->getAssignedCoursesBySemester($currentSemester['semester_id'], $GLOBALS['user']->id), 'seminar_id');
                     $courses = Course::findMany($ids, 'order by Veranstaltungsnummer, Name');
-                    $modulTeileData[$modulTeil->getId()]['lvGruppen'][$lvGruppe->getId()] = array(
+                    $modulTeileData[$modulTeil->getId()]['lvGruppen'][$lvGruppe->getId()] = [
                         'courses' => $courses,
                         'alt_texte' => $lvGruppe->alttext
-                    );
+                    ];
                 }
             }
             $this->modulTeile = $modulTeileData;

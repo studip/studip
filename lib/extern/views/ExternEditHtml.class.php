@@ -238,7 +238,7 @@ class ExternEditHtml extends ExternEditGeneric {
         $form_name = $this->element_name . "_" . $attribute;
         $value = $this->getValue($attribute);
 
-        $colors = array(_("keine Auswahl") => "", "aliceblue" => "#F0F8FF", "antiquewhite" => "#FAEBD7",
+        $colors = [_("keine Auswahl") => "", "aliceblue" => "#F0F8FF", "antiquewhite" => "#FAEBD7",
                   "aquamarine" => "#7FFFD4", "azure" => "#F0FFFF", "beige" => "#F5F5DC",
                             "blueviolet" => "#8A2BE2", "brown" => "#A52A2A", "burlywood" => "#DEB887",
                             "cadetblue" => "#5F9EA0", "chartreuse" => "#7FFF00",
@@ -288,7 +288,7 @@ class ExternEditHtml extends ExternEditGeneric {
                             "slategray" => "#708090", "snow" => "#FFFAFA", "springgreen" => "#00FF7F",
                             "steelblue" => "#4682B4", "tan" => "#D2B48C", "thistle" => "#D8BFD8",
                             "tomato" => "#FF6347", "turquoise" => "#40E0D0", "violet" => "#EE82EE",
-                            "wheat" => "#F5DEB3", "whitesmoke" => "#F5F5F5", "yellowgreen" => "#9ACD32");
+                            "wheat" => "#F5DEB3", "whitesmoke" => "#F5F5F5", "yellowgreen" => "#9ACD32"];
 
         $invalidClass = $this->faulty_values[$form_name][0] ? "class=\"invalid\" " : "";
 
@@ -434,12 +434,12 @@ class ExternEditHtml extends ExternEditGeneric {
         $form_name = $this->element_name . "_" . $attribute;
         $value = $this->getValue($attribute);
 
-        $align_types = array(
+        $align_types = [
             "" => _("keine Auswahl"),
             "left" => _("linksbündig"),
             "right" => _("rechtsbündig"),
           "center" => _("zentriert")
-        );
+        ];
         $invalidClass = $this->faulty_values[$form_name][0] ? "class=\"invalid\" " : "";
 
         $out = "<label $invalidClass>";
@@ -472,12 +472,12 @@ class ExternEditHtml extends ExternEditGeneric {
         $form_name = $this->element_name . "_" . $attribute;
         $value = $this->getValue($attribute);
 
-        $valign_types = array(
+        $valign_types = [
             "" => _("keine Auswahl"),
             "top" => _("obenbündig"),
             "bottom" => _("untenbündig"),
           "center" => _("zentriert")
-        );
+        ];
         $invalidClass = $this->faulty_values[$form_name][0] ? "class=\"invalid\" " : "";
 
         $out = "<label $invalidClass>";
@@ -507,8 +507,8 @@ class ExternEditHtml extends ExternEditGeneric {
     function editSize ($attribute) {
         $info = _("Geben Sie die relative Schriftgröße an.");
         $title = _("Schriftgröße:");
-        $values = array("", "1", "2", "3", "4", "5", "6", "7");
-        $names = array(_("keine Auswahl"), "1", "2", "3", "4", "5", "6", "7");
+        $values = ["", "1", "2", "3", "4", "5", "6", "7"];
+        $names = [_("keine Auswahl"), "1", "2", "3", "4", "5", "6", "7"];
 
         return $this->editOptionGeneric($attribute, $title, $info, $values, $names, 1, FALSE);
     }
@@ -581,8 +581,8 @@ class ExternEditHtml extends ExternEditGeneric {
         $info = _("Aktivieren Sie einen vertikalen oder horizontalen Zebra-Effekt für Tabellenzeilen/-spalten. ");
         $info .= _("Geben Sie hierfür eine zweite Hintergrundfarbe an.");
         $title = _("Zebra-Effekt:");
-        $names = array(_("aus"), _("horizontal"), _("vertikal"));
-        $values = array("", "HORIZONTAL", "VERTICAL");
+        $names = [_("aus"), _("horizontal"), _("vertikal")];
+        $values = ["", "HORIZONTAL", "VERTICAL"];
 
         return $this->editRadioGeneric($attribute, $title, $info, $values, $names);
     }
@@ -598,8 +598,8 @@ class ExternEditHtml extends ExternEditGeneric {
         $info = _("Aktivieren Sie einen Zebra-Effekt für die Spaltenüberschriften. ");
         $info .= _("Geben Sie hierfür eine zweite Hintergrundfarbe an.");
         $title = _("Zebra-Effekt:");
-        $names = array(_("aus"), _("an"));
-        $values = array("", "1");
+        $names = [_("aus"), _("an")];
+        $values = ["", "1"];
 
         return $this->editRadioGeneric($attribute, $title, $info, $values, $names);
     }

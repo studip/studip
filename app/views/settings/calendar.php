@@ -1,30 +1,30 @@
 <?
 use Studip\Button, Studip\LinkButton;
 
-$cal_views = array(
+$cal_views = [
     'day'   => _('Tagesansicht'),
     'week'  => _('Wochenansicht'),
     'month' => _('Monatsansicht'),
     'year'  => _('Jahresansicht'),
-);
-$cal_deletes = array(
+];
+$cal_deletes = [
     12 => _('12 Monate nach Ablauf'),
      6 => _('6 Monate nach Ablauf'),
      3 => _('3 Monate nach Ablauf'),
      0 => _('nie'),
-);
-$cal_step_days = array(
+];
+$cal_step_days = [
      600 => _('10 Minuten'),
      900 => _('15 Minuten'),
     1800 => _('30 Minuten'),
     3600 => _('1 Stunde'),
     7200 => _('2 Stunden'),
-);
-$cal_step_weeks = array(
+];
+$cal_step_weeks = [
     1800 => _('30 Minuten'),
     3600 => _('1 Stunde'),
     7200 => _('2 Stunden'),
-);
+];
 ?>
 
 <form method="post" action="<?= $controller->url_for('settings/calendar/store') ?>" class="default">
@@ -154,6 +154,6 @@ $cal_step_weeks = array(
             <input type="hidden" name="atime" value="<?= Request::option('atime') ?>">
         <? endif ?>
         <input type="hidden" name="view" value="calendar">
-        <?= Button::createAccept(_('Übernehmen'), array('title' => _('Änderungen übernehmen'))) ?>
+        <?= Button::createAccept(_('Übernehmen'), ['title' => _('Änderungen übernehmen')]) ?>
     </footer>
 </form>

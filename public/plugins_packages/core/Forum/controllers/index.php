@@ -105,14 +105,14 @@ class IndexController extends ForumController
             }
 
             if ($this->constraint['depth'] == 0) {  // BEREICHE
-                $new_list = array();
+                $new_list = [];
                 // iterate over all categories and add the belonging areas to them
                 foreach ($categories = ForumCat::getListWithAreas($this->getId(), false) as $category) {
                     if ($category['topic_id']) {
                         $new_list[$category['category_id']][$category['topic_id']] = $list['list'][$category['topic_id']];
                         unset($list['list'][$category['topic_id']]);
                     } else if (ForumPerm::has('add_area', $this->seminar_id)) {
-                        $new_list[$category['category_id']] = array();
+                        $new_list[$category['category_id']] = [];
                     }
                     $this->categories[$category['category_id']] = $category['entry_name'];
                 }
@@ -137,7 +137,7 @@ class IndexController extends ForumController
 
             } else if ($this->constraint['depth'] == 1) {   // THREADS
                 if (!empty($list['list'])) {
-                    $this->list = array($list['list']);
+                    $this->list = [$list['list']];
                 }
             }
             $this->number_of_entries = $list['count'];
@@ -305,13 +305,13 @@ class IndexController extends ForumController
         $this->show_full_path    = true;
 
         // parse filter-options
-        foreach (array('search_title', 'search_content', 'search_author') as $option) {
+        foreach (['search_title', 'search_content', 'search_author'] as $option) {
             $this->options[$option] = Request::option($option);
         }
 
         $this->searchfor = Request::get('searchfor');
         if (mb_strlen($this->searchfor) < 3) {
-            $this->flash['messages'] = array('error' => _('Ihr Suchbegriff muss mindestens 3 Zeichen lang sein und darf nur Buchstaben und Zahlen enthalten!'));
+            $this->flash['messages'] = ['error' => _('Ihr Suchbegriff muss mindestens 3 Zeichen lang sein und darf nur Buchstaben und Zahlen enthalten!')];
         } else {
             // get search-results
             $list = ForumEntry::getSearchResults($this->getId(), $this->searchfor, $this->options);
@@ -321,7 +321,7 @@ class IndexController extends ForumController
             $this->highlight         = $list['highlight'];
 
             if (empty($this->postings)) {
-                $this->flash['messages'] = array('info' => _('Es wurden keine Beiträge gefunden, die zu Ihren Suchkriterien passen!'));
+                $this->flash['messages'] = ['info' => _('Es wurden keine Beiträge gefunden, die zu Ihren Suchkriterien passen!')];
             }
         }
 
@@ -395,7 +395,7 @@ class IndexController extends ForumController
             $fullname = get_fullname($GLOBALS['user']->id);
         }
 
-        ForumEntry::insert(array(
+        ForumEntry::insert([
             'topic_id'    => $new_id,
             'seminar_id'  => $this->getId(),
             'user_id'     => $GLOBALS['user']->id,
@@ -404,7 +404,7 @@ class IndexController extends ForumController
             'author'      => $fullname,
             'author_host' => ($GLOBALS['user']->id == 'nobody') ? getenv('REMOTE_ADDR') : '',
             'anonymous'   => Config::get()->FORUM_ANONYMOUS_POSTINGS ? Request::get('anonymous') ? : 0 : 0
-        ), $parent_id);
+        ], $parent_id);
 
         $this->flash['notify'] = $new_id;
 
@@ -431,16 +431,16 @@ class IndexController extends ForumController
                 // only delete directly if passed by ajax, otherwise ask for confirmation
                 if (Request::isXhr() || Request::get('approve_delete')) {
                     ForumEntry::delete($topic_id);
-                    $this->flash['messages'] = array('success' => sprintf(_('Der Eintrag %s wurde gelöscht!'), $topic['name']));
+                    $this->flash['messages'] = ['success' => sprintf(_('Der Eintrag %s wurde gelöscht!'), $topic['name'])];
                 } else {
-                    $this->flash['messages'] = array('info_html' =>
+                    $this->flash['messages'] = ['info_html' =>
                         sprintf(_('Sind sie sicher dass Sie den Eintrag %s löschen möchten?'), $topic['name'])
                         . '<br>'. \Studip\LinkButton::createAccept(_('Ja'), PluginEngine::getUrl('coreforum/index/delete_entry/'. $topic_id .'?approve_delete=1'))
                         . \Studip\LinkButton::createCancel(_('Nein'), PluginEngine::getUrl('coreforum/index/index/'. ForumEntry::getParentTopicId($topic_id) .'/'. $page))
-                    );
+                    ];
                 }
             } else {
-                $this->flash['messages'] = array('success' => _('Sie können nicht die gesamte Veranstaltung löschen!'));
+                $this->flash['messages'] = ['success' => _('Sie können nicht die gesamte Veranstaltung löschen!')];
             }
         }
 
@@ -477,10 +477,10 @@ class IndexController extends ForumController
         }
 
         if (Request::isXhr()) {
-            $this->render_text(json_encode(array(
+            $this->render_text(json_encode([
                 'name'    => htmlReady($name),
                 'content' => formatReady($content)
-            )));
+            ]));
         } else {
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $topic_id .'#'. $topic_id));
         }
@@ -558,9 +558,9 @@ class IndexController extends ForumController
                 break;
 
             case 'search':
-                $optionlist = array();
+                $optionlist = [];
 
-                foreach (array('search_title', 'search_content', 'search_author') as $option) {
+                foreach (['search_title', 'search_content', 'search_author'] as $option) {
                     if (Request::option($option)) {
                         $optionlist[] = $option .'='. 1;
                     }
@@ -632,7 +632,7 @@ class IndexController extends ForumController
         if (Request::isXhr()) {
             $this->render_text(MessageBox::success($success_text));
         } else {
-            $this->flash['messages'] = array('success' => $success_text);
+            $this->flash['messages'] = ['success' => $success_text];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $redirect . '/' . $page));
         }
     }
@@ -655,7 +655,7 @@ class IndexController extends ForumController
         if (Request::isXhr()) {
             $this->render_text(MessageBox::success($success_text));
         } else {
-            $this->flash['messages'] = array('success' => $success_text);
+            $this->flash['messages'] = ['success' => $success_text];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $redirect . '/' . $page));
         }
     }
@@ -678,7 +678,7 @@ class IndexController extends ForumController
         if (Request::isXhr()) {
             $this->render_text(MessageBox::success($success_text));
         } else {
-            $this->flash['messages'] = array('success' => $success_text);
+            $this->flash['messages'] = ['success' => $success_text];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $redirect . '/' . $page));
         }
     }
@@ -701,7 +701,7 @@ class IndexController extends ForumController
         if (Request::isXhr()) {
             $this->render_text(MessageBox::success($success_text));
         } else {
-            $this->flash['messages'] = array('success' => $success_text);
+            $this->flash['messages'] = ['success' => $success_text];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $redirect . '/' . $page));
         }
     }
@@ -732,7 +732,7 @@ class IndexController extends ForumController
         ForumPerm::checkCategoryId($this->getId(), $category_id);
         ForumPerm::check('remove_category', $this->getId());
 
-        $this->flash['messages'] = array('success' => _('Die Kategorie wurde gelöscht!'));
+        $this->flash['messages'] = ['success' => _('Die Kategorie wurde gelöscht!')];
         ForumCat::remove($category_id, $this->getId());
 
         if (Request::isXhr()) {
@@ -757,7 +757,7 @@ class IndexController extends ForumController
             $this->render_nothing();
         } else {
             ForumCat::setName($category_id, Request::get('name'));
-            $this->flash['messages'] = array('success' => _('Der Name der Kategorie wurde geändert.'));
+            $this->flash['messages'] = ['success' => _('Der Name der Kategorie wurde geändert.')];
             $this->redirect(PluginEngine::getLink('coreforum/index/index#cat_' . $category_id));
         }
 
@@ -800,7 +800,7 @@ class IndexController extends ForumController
                 case 1:  $msg = _('Sie haben diesen Bereich abonniert.');break;
                 default: $msg = _('Sie haben dieses Thema abonniert');break;
             }
-            $this->flash['messages'] = array('success' => $msg .' '. _('Sie werden nun über jeden neuen Beitrag informiert.'));
+            $this->flash['messages'] = ['success' => $msg .' '. _('Sie werden nun über jeden neuen Beitrag informiert.')];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $topic_id));
         }
     }
@@ -820,7 +820,7 @@ class IndexController extends ForumController
             $this->constraint = ForumEntry::getConstraints($topic_id);
             $this->render_template('index/_abo_link');
         } else {
-            $this->flash['messages'] = array('success' => _('Abonnement aufgehoben.'));
+            $this->flash['messages'] = ['success' => _('Abonnement aufgehoben.')];
             $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $topic_id));
         }
     }

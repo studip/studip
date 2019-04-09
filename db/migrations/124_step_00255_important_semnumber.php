@@ -13,14 +13,14 @@ class Step00255ImportantSemnumber extends Migration {
      * perform this migration
      */
     function up() {
-        Config::get()->create('IMPORTANT_SEMNUMBER', array(
+        Config::get()->create('IMPORTANT_SEMNUMBER', [
             'value' => 0, 
             'is_default' => 0, 
             'type' => 'boolean',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Zeigt die Veranstaltungsnummer prominenter in der Suche und auf der Meine Veranstaltungen Seite an')
-            ));
+            ]);
     }
 
     /**

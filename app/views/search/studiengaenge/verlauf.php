@@ -54,7 +54,7 @@
                                     <?= htmlReady($abschnitt['name']) ?><br/><?= $abschnitt['creditPoints'] ? $abschnitt['creditPoints'] . ' ' . _('CP') : '' ?>
                                     <? if (trim($abschnitt['kommentar'])) : ?>
                                         <a data-dialog title="<?= sprintf(_('%s (Kommentar)'), htmlReady($abschnitt['name'])) ?>" href="<?= $controller->url_for('search/studiengaenge/kommentar', $abschnitt_id) ?>">
-                                            <?= Icon::create('item', 'clickable', array('title' => _('Zusatzinformationen zum Studiengangsabschnitt')))->asImg(); ?>
+                                            <?= Icon::create('item', 'clickable', ['title' => _('Zusatzinformationen zum Studiengangsabschnitt')])->asImg(); ?>
                                         </a>
                                     <? endif; ?>
                                 </td>
@@ -65,7 +65,7 @@
                                    <? // Anzeige der alternativen Bezeichnung aus mvv_stgteilabschnitt_modul ?>
                                     <? $abschnitt_modul = StgteilabschnittModul::findOneBySQL('`abschnitt_id` = ? AND `modul_id` = ?', [$abschnitt_id, $modul_id]); ?>
                                     <a data-dialog title="<?= htmlReady($modul['name']) . ' (' . _('Vollständige Modulbeschreibung') . ')' ?>" href="<?= $controller->url_for('shared/modul/description/' . $modul_id, ['display_language' => ModuleManagementModel::getLanguage()]) ?>">
-                                        <?= Icon::create('log', 'clickable', array('title' => _('Vollständige Modulbeschreibung')))->asImg(); ?>
+                                        <?= Icon::create('log', 'clickable', ['title' => _('Vollständige Modulbeschreibung')])->asImg(); ?>
                                     </a>
                                     <? if($modul['veranstaltungen']):?>                          
                                     <a data-dialog href="<?= $controller->url_for('shared/modul/overview', $modul_id, $active_sem->getId(), ['display_language' => ModuleManagementModel::getLanguage()])  ?>">

@@ -55,7 +55,7 @@ class MarkupTest extends PHPUnit_Framework_TestCase
     {
         Config::set(new Config(['WYSIWYG' => true]));
 
-        foreach (array(
+        foreach ([
             'plain text' => 'plain text',
             '<p>paragraph only</p>' => 'paragraph only',
 
@@ -82,7 +82,7 @@ class MarkupTest extends PHPUnit_Framework_TestCase
             => '[ https://example.org/image.png ]',
             '<p>link <a href="http://example.org">Example-Domain</a> and picture <img src="https://example.org/image.png"></p>'
             => 'link [ http://example.org ]Example-Domain and picture [ https://example.org/image.png ]'
-        ) as $in => $out) {
+        ] as $in => $out) {
             $this->assertEquals($out, Studip\Markup::removeHtml(Studip\Markup::markAsHtml($in)));
         }
     }
@@ -94,7 +94,7 @@ class MarkupTest extends PHPUnit_Framework_TestCase
         ->disableOriginalConstructor()
         ->getMock();
 
-        $properties = array();
+        $properties = [];
 
         $configStub->expects($this->any())
         ->method('__get')
@@ -124,11 +124,11 @@ class MarkupTest extends PHPUnit_Framework_TestCase
         $proxiedWikipediaLogo = $proxy . 'http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fmeta%2F0%2F08%2FWikipedia-logo-v2_1x.png';
 
         # domains
-        $domains = array(
+        $domains = [
             'org' => 'example.org/studip',
             'home' => 'example.org/~home',
             'net' => 'example.net/studip',
-        );
+        ];
 
         $getUrl = function ($domainKey, $path) use (&$domains) {
             return 'http://' . $domains[$domainKey] . '/' . $path;
@@ -136,57 +136,57 @@ class MarkupTest extends PHPUnit_Framework_TestCase
 
         # run various tests
         $index = 0;
-        foreach (array(
-            array(
+        foreach ([
+            [
                 'in' => $getUrl('org', 'image.jpg'),
                 'exception' => $invalidInternalLink,
                 'uri' => $getUrl('org', 'index.php'),
                 'domains' => $domains,
                 'externalMedia' => 'allow'
-            ),
-            array(
+            ],
+            [
                 'in' => $getUrl('org', $sendfile),
                 'out' => $getUrl('org', $sendfile),
                 'uri' => $getUrl('org', 'index.php'),
                 'domains' => $domains,
                 'externalMedia' => 'allow'
-            ),
-            array(
+            ],
+            [
                 'in' => $getUrl('org', $sendfile),
                 'out' => $getUrl('home', $sendfile),
                 'uri' => $getUrl('home', $wiki),
                 'domains' => $domains,
                 'externalMedia' => 'allow'
-            ),
-            array(
+            ],
+            [
                 'in' => $getUrl('org', $sendfile),
                 'out' => $getUrl('net', $sendfile),
                 'uri' => $getUrl('net', $wiki),
                 'domains' => $domains,
                 'externalMedia' => 'allow'
-            ),
-            array(
+            ],
+            [
                 'in' => $wikipediaLogo,
                 'out' => $wikipediaLogo,
                 'uri' => $getUrl('org', $wiki),
                 'domains' => $domains,
                 'externalMedia' => 'allow'
-            ),
-            array(
+            ],
+            [
                 'in' => $wikipediaLogo,
                 'exception' => $externalMediaDenied,
                 'uri' => $getUrl('org', $wiki),
                 'domains' => $domains,
                 'externalMedia' => 'deny'
-            ),
-            array(
+            ],
+            [
                 'in' => $wikipediaLogo,
                 'out' => $getUrl('org', $proxiedWikipediaLogo),
                 'uri' => $getUrl('org', $wiki),
                 'domains' => $domains,
                 'externalMedia' => 'proxy'
-            ),
-        ) as $test) {
+            ],
+        ] as $test) {
             $index++;
 
             # fake Stud.IP web server set-up

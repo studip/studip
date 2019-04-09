@@ -36,14 +36,14 @@ class Admin_LockrulesController extends AuthenticatedController
             $this->lock_rule_type = 'sem';
         }
         if ($this->lock_rule_type == 'sem') {
-            $this->lock_rule_permissions = $GLOBALS['perm']->have_perm('root') ? array('tutor','dozent','admin','root') : array('tutor','dozent');
+            $this->lock_rule_permissions = $GLOBALS['perm']->have_perm('root') ? ['tutor','dozent','admin','root'] : ['tutor','dozent'];
         } elseif ($this->lock_rule_type == 'inst') {
-            $this->lock_rule_permissions = array('admin','root');
+            $this->lock_rule_permissions = ['admin','root'];
         } elseif ($this->lock_rule_type == 'user') {
-            $this->lock_rule_permissions = array('tutor','dozent','admin','root');
+            $this->lock_rule_permissions = ['tutor','dozent','admin','root'];
         }
 
-        $this->rule_type_names = array('sem' => _('Veranstaltung'), 'inst' => _('Einrichtung'), 'user' => _('Person'));
+        $this->rule_type_names = ['sem' => _('Veranstaltung'), 'inst' => _('Einrichtung'), 'user' => _('Person')];
 
         $this->sidebar = Sidebar::Get();
         $this->sidebar->setTitle(_('Sperrebenen'));
@@ -61,7 +61,7 @@ class Admin_LockrulesController extends AuthenticatedController
         $this->sidebar->addWidget($actions);
         if ($GLOBALS['perm']->have_perm('root')) {
             $list = new SelectWidget(_('Bereichsauswahl'), $this->url_for('admin/lockrules'), 'lock_rule_type');
-            foreach (array('sem' => _('Veranstaltung'), 'inst' => _('Einrichtung'), 'user' => _('Nutzer')) as $type => $desc) {
+            foreach (['sem' => _('Veranstaltung'), 'inst' => _('Einrichtung'), 'user' => _('Nutzer')] as $type => $desc) {
                 $list->addElement(new SelectElement($type, $desc, Request::get('lock_rule_type') == $type), 'lock_rule_type-' . $type);
             }
             $this->sidebar->addWidget($list);

@@ -59,8 +59,8 @@ class Course_PlusController extends AuthenticatedController
             $_SESSION['admin_modules_data']["orig_bin"] = $this->modules->getBin($id);
             $_SESSION['admin_modules_data']["changed_bin"] = $this->modules->getBin($id);
             $_SESSION['admin_modules_data']["range_id"] = $id;
-            $_SESSION['admin_modules_data']["conflicts"] = array();
-            $_SESSION['plugin_toggle'] = array();
+            $_SESSION['admin_modules_data']["conflicts"] = [];
+            $_SESSION['plugin_toggle'] = [];
         }
 
         if (Config::get()->RESOURCES_ENABLED && !checkAvailableResources($id)) {
@@ -167,12 +167,12 @@ class Course_PlusController extends AuthenticatedController
 
             if ($key == 'Sonstiges') continue;
             $widget->addCheckbox($key, $_SESSION['plus']['Kategorie'][$key],
-                URLHelper::getLink('?', array(md5('cat_' . $key) => 1, 'displaystyle' => 'category')), URLHelper::getLink('?', array(md5('cat_' . $key) => 0, 'displaystyle' => 'category')));
+                URLHelper::getLink('?', [md5('cat_' . $key) => 1, 'displaystyle' => 'category']), URLHelper::getLink('?', [md5('cat_' . $key) => 0, 'displaystyle' => 'category']));
 
         }
 
         $widget->addCheckbox(_('Sonstiges'), $_SESSION['plus']['Kategorie']['Sonstiges'],
-            URLHelper::getLink('?', array(md5('cat_Sonstiges') => 1, 'displaystyle' => 'category')), URLHelper::getLink('?', array(md5('cat_Sonstiges') => 0, 'displaystyle' => 'category')));
+            URLHelper::getLink('?', [md5('cat_Sonstiges') => 1, 'displaystyle' => 'category']), URLHelper::getLink('?', [md5('cat_Sonstiges') => 0, 'displaystyle' => 'category']));
 
         $sidebar->addWidget($widget, "Kategorien");
 
@@ -181,18 +181,18 @@ class Course_PlusController extends AuthenticatedController
 
         if ($_SESSION['plus']['View'] == 'openall') {
             $widget->addLink(_("Alles zuklappen"),
-                URLHelper::getURL('?', array('mode' => 'closeall')), Icon::create('assessment', 'clickable'));
+                URLHelper::getURL('?', ['mode' => 'closeall']), Icon::create('assessment', 'clickable'));
         } else {
             $widget->addLink(_("Alles aufklappen"),
-                URLHelper::getURL('?', array('mode' => 'openall')), Icon::create('assessment', 'clickable'));
+                URLHelper::getURL('?', ['mode' => 'openall']), Icon::create('assessment', 'clickable'));
         }
 
         if ($_SESSION['plus']['displaystyle'] == 'category') {
             $widget->addLink(_("Alphabetische Anzeige ohne Kategorien"),
-                    URLHelper::getURL('?', array('displaystyle' => 'alphabetical')), Icon::create('assessment', 'clickable'));
+                    URLHelper::getURL('?', ['displaystyle' => 'alphabetical']), Icon::create('assessment', 'clickable'));
         } else {
             $widget->addLink(_("Anzeige nach Kategorien"),
-                    URLHelper::getURL('?', array('displaystyle' => 'category')), Icon::create('assessment', 'clickable'));
+                    URLHelper::getURL('?', ['displaystyle' => 'category']), Icon::create('assessment', 'clickable'));
         }
 
         $sidebar->addWidget($widget, "aktion");
@@ -206,8 +206,8 @@ class Course_PlusController extends AuthenticatedController
     private function getSortedList(Range $context)
     {
 
-        $list = array();
-        $cat_index = array();
+        $list = [];
+        $cat_index = [];
 
         foreach (PluginEngine::getPlugins('StandardPlugin') as $plugin) {
             if (!$plugin->isActivatableForContext($context)) {
@@ -257,7 +257,7 @@ class Course_PlusController extends AuthenticatedController
 
                 if ($this->sem_class) $studip_module = $this->sem_class->getModule($mod);
 
-                $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : array());
+                $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
 
                 $indcat = isset($info['category']) ? $info['category'] : 'Sonstiges';
                 if(!array_key_exists($indcat, $cat_index)) array_push($cat_index, $indcat);
@@ -282,9 +282,9 @@ class Course_PlusController extends AuthenticatedController
             }
         }
 
-        $sortedcats['Lehr- und Lernorganisation'] = array();
-        $sortedcats['Kommunikation und Zusammenarbeit'] = array();
-        $sortedcats['Inhalte und Aufgabenstellungen'] = array();
+        $sortedcats['Lehr- und Lernorganisation'] = [];
+        $sortedcats['Kommunikation und Zusammenarbeit'] = [];
+        $sortedcats['Inhalte und Aufgabenstellungen'] = [];
 
         foreach ($list as $cat_key => $cat_val) {
             ksort($cat_val);
@@ -353,7 +353,7 @@ class Course_PlusController extends AuthenticatedController
                         }
                     }
 
-                    $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : array());
+                    $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
                     $info ["category"] = $info ["category"] ? : 'Sonstiges';
 
                     if (!isset($_SESSION['plus']) || $_SESSION['plus']['Kategorie'][$info ["category"]]) {
@@ -500,7 +500,7 @@ class Course_PlusController extends AuthenticatedController
                         $anchor = '#p_' . $plugin->getPluginId();
                     }
                 }
-                $_SESSION['plugin_toggle'] = array();
+                $_SESSION['plugin_toggle'] = [];
             }
             if ($changes) {
                 $this->redirect($this->url_for('course/plus/index/' . $seminar_id . $anchor));

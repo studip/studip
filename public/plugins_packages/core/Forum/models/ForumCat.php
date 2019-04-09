@@ -19,7 +19,7 @@ class ForumCat extends SimpleORMap
      *
      * @param array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'forum_categories';
         parent::configure($config);
@@ -41,7 +41,7 @@ class ForumCat extends SimpleORMap
             . ($exclude_null ? 'AND fce.topic_id IS NOT NULL ' : '')
             . "ORDER BY fc.pos ASC, fce.pos ASC");
 
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -58,7 +58,7 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("SELECT fc.entry_name FROM forum_categories AS fc
             LEFT JOIN forum_categories_entries AS fce USING (category_id)
             WHERE fce.topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
 
         return $stmt->fetchColumn();
     }
@@ -80,7 +80,7 @@ class ForumCat extends SimpleORMap
 
         $category_id = md5(uniqid(rand()));
 
-        $stmt->execute(array($category_id, $seminar_id, $name));
+        $stmt->execute([$category_id, $seminar_id, $name]);
 
         return $category_id;
     }
@@ -99,14 +99,14 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("DELETE FROM
             forum_categories
             WHERE category_id = ?");
-        $stmt->execute(array($category_id));
+        $stmt->execute([$category_id]);
 
         // set all entries to default category
         $stmt = DBManager::get()->prepare("UPDATE
             forum_categories_entries
             SET category_id = ?, pos = 999
             WHERE category_id = ?");
-        $stmt->execute(array($seminar_id, $category_id));
+        $stmt->execute([$seminar_id, $category_id]);
     }
 
 
@@ -121,7 +121,7 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("UPDATE
             forum_categories
             SET pos = ? WHERE category_id = ?");
-        $stmt->execute(array($pos, $category_id));
+        $stmt->execute([$pos, $category_id]);
     }
 
 
@@ -138,19 +138,19 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("DELETE FROM
             forum_categories_entries
             WHERE topic_id = ?");
-        $stmt->execute(array($area_id));
+        $stmt->execute([$area_id]);
 
         // add area to this category, make sure it is at the end
         $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM
             forum_categories_entries
             WHERE category_id = ?");
-        $stmt->execute(array($category_id));
+        $stmt->execute([$category_id]);
         $new_pos = $stmt->fetchColumn() + 1;
 
         $stmt = DBManager::get()->prepare("REPLACE INTO
             forum_categories_entries
             (category_id, topic_id, pos) VALUES (?, ?, ?)");
-        $stmt->execute(array($category_id, $area_id, $new_pos));
+        $stmt->execute([$category_id, $area_id, $new_pos]);
     }
 
 
@@ -164,7 +164,7 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("DELETE FROM
             forum_categories_entries
             WHERE topic_id = ?");
-        $stmt->execute(array($area_id));
+        $stmt->execute([$area_id]);
     }
 
 
@@ -179,7 +179,7 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("UPDATE
             forum_categories_entries
             SET pos = ? WHERE topic_id = ?");
-        $stmt->execute(array($pos, $area_id));
+        $stmt->execute([$pos, $area_id]);
     }
 
 
@@ -194,7 +194,7 @@ class ForumCat extends SimpleORMap
         $stmt = DBManager::get()->prepare("UPDATE
             forum_categories
             SET entry_name = ? WHERE category_id = ?");
-        $stmt->execute(array($name, $category_id));
+        $stmt->execute([$name, $category_id]);
     }
 
     /**
@@ -208,7 +208,7 @@ class ForumCat extends SimpleORMap
     {
         $stmt = DBManager::get()->prepare("SELECT * FROM forum_categories
             WHERE category_id = ?");
-        $stmt->execute(array($category_id));
+        $stmt->execute([$category_id]);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -237,14 +237,14 @@ class ForumCat extends SimpleORMap
                 WHERE seminar_id = ? AND depth = 1 AND (
                     fce.category_id = ? OR fce.category_id IS NULL
                 ) ORDER BY category_id DESC, pos ASC" . $limit);
-            $stmt->execute(array($category_id, $category_id));
+            $stmt->execute([$category_id, $category_id]);
         } else {
             $stmt = DBManager::get()->prepare("SELECT forum_entries.* FROM forum_categories_entries
                 LEFT JOIN forum_entries USING(topic_id)
                 WHERE category_id = ?
                 ORDER BY pos ASC" . $limit);
 
-            $stmt->execute(array($category_id));
+            $stmt->execute([$category_id]);
         }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

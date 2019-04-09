@@ -10,7 +10,7 @@
                 </a>
                 <? if (count($nav->getSubNavigation())) : ?>
                     <?= $this->render_partial('sitemap/navigation',
-                            array('navigation' => $nav, 'needs_image' => false, 'style' => 'normal')) ?>
+                            ['navigation' => $nav, 'needs_image' => false, 'style' => 'normal']) ?>
                 <? endif ?>
             </li>
         <? endif ?>

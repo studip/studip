@@ -25,14 +25,14 @@ class Tic1422Pagination extends Migration
                     (MD5(:name), :name, :value, 1, :type, :range, :section, $time, $time, :description)
                 ");
 
-        $stmt->execute(array(
+        $stmt->execute([
             'name' => 'ENTRIES_PER_PAGE',
             'description' => 'Anzahl von Einträgen pro Seite',
             'section' => 'global',
             'range' => 'global',
             'type' => 'integer',
             'value' => 20
-        ));
+        ]);
     }
 
     /**

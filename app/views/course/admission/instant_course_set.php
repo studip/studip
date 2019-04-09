@@ -15,6 +15,6 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::create(_("Speichern"), 'save', array('data-dialog' => ''))?>
+        <?= Studip\Button::create(_("Speichern"), 'save', ['data-dialog' => ''])?>
     </footer>
 </form>

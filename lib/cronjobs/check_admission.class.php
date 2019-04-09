@@ -77,13 +77,13 @@ class CheckAdmissionJob extends CronJob
                         echo ++$i . ' ' . $courseset->getId() . ' : ' . $courseset->getName() . chr(10);
                         $applicants = AdmissionPriority::getPriorities($set_id);
                         $courses = SimpleCollection::createFromArray(Course::findMany($courseset->getCourses()))->toGroupedArray('seminar_id', words('name veranstaltungsnummer'));
-                        $captions = array(_("Nachname"), _("Vorname"), _("Nutzername"),_('Nutzer-ID'), _('Veranstaltung-ID'), _("Veranstaltung"), _("Nummer"), _("Priorität"));
-                        $data = array();
+                        $captions = [_("Nachname"), _("Vorname"), _("Nutzername"),_('Nutzer-ID'), _('Veranstaltung-ID'), _("Veranstaltung"), _("Nummer"), _("Priorität")];
+                        $data = [];
                         $users = User::findEachMany(function($user) use ($courses,$applicants,&$data) {
                             $app_courses = $applicants[$user->id];
                             asort($app_courses);
                             foreach ($app_courses as $course_id => $prio) {
-                                $row = array();
+                                $row = [];
                                 $row[] = $user->nachname;
                                 $row[] = $user->vorname;
                                 $row[] = $user->username;

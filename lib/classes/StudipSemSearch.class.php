@@ -59,37 +59,37 @@ class StudipSemSearch {
 
     var $override_sem = false;
 
-    var $attributes_default = array('style' => 'width:100%;');
+    var $attributes_default = ['style' => 'width:100%;'];
 
-    var $search_scopes = array();
-    var $search_ranges = array();
+    var $search_scopes = [];
+    var $search_ranges = [];
     var $search_sem_class = 'all';
 
     var $visible_only = false;
 
     function __construct($form_name = "search_sem", $auto_search = true, $visible_only = false, $sem_class = 'all'){
 
-        $search_fields = array('title' => array('type' => 'text'),
-                                'sub_title' => array('type' => 'text'),
-                                'number' => array('type' => 'text'),
-                                'comment' => array('type' => 'text'),
-                                'lecturer' => array('type' => 'text'),
-                                'scope' => array('type' => 'text'),
-                                'quick_search' => array('type' => 'text'),
-                                'type' => array('type' => 'select', 'default_value' => 'all', 'max_length' => 35,'options_callback' => array($this, 'getSelectOptions')),
-                                'sem' => array('type' => 'select', 'default_value' => 'all','options_callback' => array($this, 'getSelectOptions')),
-                                'category' => array('type' => 'select', 'default_value' => 'all', 'max_length' => 50,'options_callback' => array($this, 'getSelectOptions')),
-                                'combination' => array('type' => 'select', 'default_value' => 'AND','options_callback' => array($this, 'getSelectOptions')),
-                                'scope_choose' => array('type' => 'select', 'default_value' => 'root', 'max_length' => 45,'options_callback' => array($this, 'getSelectOptions')),
-                                'range_choose' => array('type' => 'select', 'default_value' => 'root', 'max_length' => 45,'options_callback' => array($this, 'getSelectOptions')),
-                                'qs_choose' => array('type' => 'select',
+        $search_fields = ['title' => ['type' => 'text'],
+                                'sub_title' => ['type' => 'text'],
+                                'number' => ['type' => 'text'],
+                                'comment' => ['type' => 'text'],
+                                'lecturer' => ['type' => 'text'],
+                                'scope' => ['type' => 'text'],
+                                'quick_search' => ['type' => 'text'],
+                                'type' => ['type' => 'select', 'default_value' => 'all', 'max_length' => 35,'options_callback' => [$this, 'getSelectOptions']],
+                                'sem' => ['type' => 'select', 'default_value' => 'all','options_callback' => [$this, 'getSelectOptions']],
+                                'category' => ['type' => 'select', 'default_value' => 'all', 'max_length' => 50,'options_callback' => [$this, 'getSelectOptions']],
+                                'combination' => ['type' => 'select', 'default_value' => 'AND','options_callback' => [$this, 'getSelectOptions']],
+                                'scope_choose' => ['type' => 'select', 'default_value' => 'root', 'max_length' => 45,'options_callback' => [$this, 'getSelectOptions']],
+                                'range_choose' => ['type' => 'select', 'default_value' => 'root', 'max_length' => 45,'options_callback' => [$this, 'getSelectOptions']],
+                                'qs_choose' => ['type' => 'select',
                                                     'default_value' => 'title_lecturer_number',
-                                                    'options_callback' => array($this, 'getSelectOptions')
-                                                    )
-                                );
-        $search_buttons = array('do_search' => array('caption' => _("Suchen"), 'info' => _("Suche starten")),
-                                'sem_change' => array('caption' => _('Auswählen'), 'info' => _("anderes Semester auswählen")),
-                                'new_search' => array('caption' => _('Neue Suche'), 'info' =>_("Neue Suche starten")));
+                                                    'options_callback' => [$this, 'getSelectOptions']
+                                                    ]
+                                ];
+        $search_buttons = ['do_search' => ['caption' => _("Suchen"), 'info' => _("Suche starten")],
+                                'sem_change' => ['caption' => _('Auswählen'), 'info' => _("anderes Semester auswählen")],
+                                'new_search' => ['caption' => _('Neue Suche'), 'info' =>_("Neue Suche starten")]];
         //workaround: Qicksearch ändert den Namen des Eingabefeldes
         if (Request::get("search_sem_quick_search_parameter")) {
             Request::set('search_sem_quick_search', Request::get("search_sem_quick_search_parameter"));
@@ -121,47 +121,47 @@ class StudipSemSearch {
     }
 
     function getSelectOptions($caller, $name){
-        $options = array();
+        $options = [];
         if ($name == "combination"){
-            $options = array(array('name' =>_("UND"),'value' => 'AND'),array('name' => _("ODER"), 'value' => 'OR'));
+            $options = [['name' =>_("UND"),'value' => 'AND'],['name' => _("ODER"), 'value' => 'OR']];
         } elseif ($name == "sem"){
-            $options = array(array('name' =>_("alle"),'value' => 'all'));
+            $options = [['name' =>_("alle"),'value' => 'all']];
             for ($i = count($this->sem_dates) -1 ; $i >= 0; --$i){
-                $options[] = array('name' => $this->sem_dates[$i]['name'], 'value' => $i);
+                $options[] = ['name' => $this->sem_dates[$i]['name'], 'value' => $i];
             }
         } elseif ($name == "type"){
-            $options = array(array('name' =>_("alle"),'value' => 'all'));
+            $options = [['name' =>_("alle"),'value' => 'all']];
             foreach($GLOBALS['SEM_TYPE'] as $type_key => $type_value){
                 if($this->search_sem_class == 'all' || $type_value['class'] == $this->search_sem_class){
-                    $options[] = array('name' => $type_value['name'] . " (". $GLOBALS['SEM_CLASS'][$type_value['class']]['name'] .")",
-                                        'value' => $type_key);
+                    $options[] = ['name' => $type_value['name'] . " (". $GLOBALS['SEM_CLASS'][$type_value['class']]['name'] .")",
+                                        'value' => $type_key];
                 }
             }
         } elseif ($name == "category"){
-            $options = array(array('name' =>_("alle"),'value' => 'all'));
+            $options = [['name' =>_("alle"),'value' => 'all']];
             foreach($GLOBALS['SEM_CLASS'] as $class_key => $class_value){
-                $options[] = array('name' => $class_value['name'],
-                                        'value' => $class_key);
+                $options[] = ['name' => $class_value['name'],
+                                        'value' => $class_key];
                 }
         } elseif ($name == "scope_choose"){
             if(!is_object($this->sem_tree)){
                 $this->sem_tree = TreeAbstract::GetInstance("StudipSemTree", false);
             }
-            $options = array(array('name' => $this->sem_tree->root_name, 'value' => 'root'));
+            $options = [['name' => $this->sem_tree->root_name, 'value' => 'root']];
             for($i = 0; $i < count($this->search_scopes); ++$i){
-                $options[] = array('name' => $this->sem_tree->tree_data[$this->search_scopes[$i]]['name'], 'value' => $this->search_scopes[$i]);
+                $options[] = ['name' => $this->sem_tree->tree_data[$this->search_scopes[$i]]['name'], 'value' => $this->search_scopes[$i]];
             }
         } elseif ($name == "range_choose"){
             if(!is_object($this->range_tree)){
                 $this->range_tree = TreeAbstract::GetInstance("StudipRangeTree", false);
             }
-            $options = array(array('name' => $this->range_tree->root_name, 'value' => 'root'));
+            $options = [['name' => $this->range_tree->root_name, 'value' => 'root']];
             for($i = 0; $i < count($this->search_ranges); ++$i){
-                $options[] = array('name' => $this->range_tree->tree_data[$this->search_ranges[$i]]['name'], 'value' => $this->search_ranges[$i]);
+                $options[] = ['name' => $this->range_tree->tree_data[$this->search_ranges[$i]]['name'], 'value' => $this->search_ranges[$i]];
             }
         } elseif ($name == "qs_choose"){
             foreach(StudipSemSearchHelper::GetQuickSearchFields() as $key => $value){
-                $options[] = array('name' => $value, 'value' => $key);
+                $options[] = ['name' => $value, 'value' => $key];
             }
         }
         return $options;

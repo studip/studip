@@ -19,11 +19,11 @@ class Api_AuthorizationsController extends AuthenticatedController
         Navigation::activateItem('/profile/settings/api');
         PageLayout::setTitle(_('Applikationen'));
 
-        $this->types = array(
+        $this->types = [
             'website' => _('Website'),
             'program' => _('Herkömmliches Desktopprogramm'),
             'app'     => _('Mobile App')
-        );
+        ];
     }
 
     /**
@@ -32,11 +32,11 @@ class Api_AuthorizationsController extends AuthenticatedController
     public function index_action()
     {
         $this->consumers = RESTAPI\UserPermissions::get($GLOBALS['user']->id)->getConsumers();
-        $this->types = array(
+        $this->types = [
             'website' => _('Website'),
             'program' => _('Herkömmliches Desktopprogramm'),
             'app'     => _('Mobile App')
-        );
+        ];
 
         $widget = new SidebarWidget();
         $widget->setTitle(_('Informationen'));

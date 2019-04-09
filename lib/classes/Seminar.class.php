@@ -27,12 +27,12 @@ class Seminar
 {
     var $issues = null;                 // Array of Issue
     var $irregularSingleDates = null;   // Array of SingleDates
-    var $messages = array();            // occured errors, infos, and warnings
+    var $messages = [];            // occured errors, infos, and warnings
     var $semester = null;
     var $filterStart = 0;
     var $filterEnd = 0;
     var $hasDatesOutOfDuration = -1;
-    var $message_stack = array();
+    var $message_stack = [];
 
     var $user_number = 0;//?
     var $commands; //?
@@ -44,7 +44,7 @@ class Seminar
 
     private $_metadate = null;               // MetaDate
 
-    private $alias = array(
+    private $alias = [
         'seminar_number' => 'VeranstaltungsNummer',
         'subtitle' => 'Untertitel',
         'description' => 'Beschreibung',
@@ -58,7 +58,7 @@ class Seminar
         'participants' => 'teilnehmer',
         'requirements' => 'vorrausetzungen',
         'orga' => 'lernorga',
-    );
+    ];
 
     private $course = null;
 
@@ -151,13 +151,13 @@ class Seminar
 
     public function __call($method, $params)
     {
-        return call_user_func_array(array($this->course, $method), $params);
+        return call_user_func_array([$this->course, $method], $params);
     }
 
     public static function GetSemIdByDateId($date_id)
     {
         $stmt = DBManager::get()->prepare("SELECT range_id FROM termine WHERE termin_id = ? LIMIT 1");
-        $stmt->execute(array($date_id));
+        $stmt->execute([$date_id]);
         return $stmt->fetchColumn();
     }
 
@@ -174,7 +174,7 @@ class Seminar
 
     public function getMembers($status = 'dozent')
     {
-        $ret = array();
+        $ret = [];
         foreach($this->course->getMembersWithStatus($status) as $m) {
             $ret[$m->user_id]['user_id'] = $m->user_id;
             $ret[$m->user_id]['username'] = $m->username;
@@ -192,7 +192,7 @@ class Seminar
 
     public function getAdmissionMembers($status = 'awaiting')
     {
-        $ret = array();
+        $ret = [];
         foreach($this->course->admission_applicants->findBy('status', $status)->orderBy('position nachname') as $m) {
             $ret[$m->user_id]['user_id'] = $m->user_id;
             $ret[$m->user_id]['username'] = $m->username;
@@ -294,7 +294,7 @@ class Seminar
             return false;
         }
 
-        return DateFormatter::formatDateWithAllRooms(array('termin' => $dates), $return_mode);
+        return DateFormatter::formatDateWithAllRooms(['termin' => $dates], $return_mode);
     }
 
     /**
@@ -321,7 +321,7 @@ class Seminar
         if (!$data || !$data[$sub_key]) {
             $cycles = $this->metadate->getCycleData();
             $dates = $this->getSingleDates($filter, $filter);
-            $rooms = array();
+            $rooms = [];
 
             foreach (array_keys($cycles) as $id) {
                 if ($this->filterStart && $this->filterEnd
@@ -393,7 +393,7 @@ class Seminar
          * if (! $return_string = $cache->read($cache_key))
          * {
          */
-        return $this->getDatesExport(array('short' => $short, 'shrink' => true));
+        return $this->getDatesExport(['short' => $short, 'shrink' => true]);
 
         // activate this with StEP 00077
         // $cache->write($cache_key, $return_string, 60*60);
@@ -403,7 +403,7 @@ class Seminar
     public function getFormattedTurnusDates($short = FALSE)
     {
         if ($cycles = $this->metadate->getCycles()) {
-            $return_string = array();
+            $return_string = [];
             foreach ($cycles as $id => $c) {
                 $return_string[$id] = $c->toString($short);
                 //hmm tja...
@@ -590,7 +590,7 @@ class Seminar
                 }
 
                 foreach ($this->metadate->cycles as $key => $val) {
-                    $this->metadate->createSingleDates(array('metadate_id' => $key, 'startAfterTimeStamp' => $startAfterTimeStamp));
+                    $this->metadate->createSingleDates(['metadate_id' => $key, 'startAfterTimeStamp' => $startAfterTimeStamp]);
                     $this->metadate->cycles[$key]->termine = NULL;  // emtpy the SingleDates for each cycle, so that SingleDates, which were not in the current view, are not loaded and therefore should not be visible
                 }
             }
@@ -648,7 +648,7 @@ class Seminar
                 return TRUE;
             }
         }
-        $this->irregularSingleDates = array();
+        $this->irregularSingleDates = [];
 
         if ($filter) {
             $data = SeminarDB::getSingleDates($this->id, $this->filterStart, $this->filterEnd);
@@ -681,7 +681,7 @@ class Seminar
         if (!$include_deleted_dates) {
             return $this->irregularSingleDates;
         } else {
-            $deleted_dates = array();
+            $deleted_dates = [];
             foreach (SeminarDB::getDeletedSingleDates($this->getId(), $this->filterStart, $this->filterEnd) as $val) {
                 $termin = new SingleDate();
                 $termin->fillValuesFromArray($val);
@@ -719,7 +719,7 @@ class Seminar
     public function readIssues($force = false)
     {
         if (!is_array($this->issues) || $force) {
-            $this->issues = array();
+            $this->issues = [];
             $data = SeminarDB::getIssues($this->id);
 
             foreach ($data as $val) {
@@ -830,30 +830,30 @@ class Seminar
     public function getStackedMessages()
     {
         if ( is_array( $this->message_stack ) ) {
-            $ret = array();
+            $ret = [];
 
             // cycle through message types and set title and details appropriate
             foreach ($this->message_stack as $type => $messages ) {
                 switch ( $type ) {
                     case 'error':
-                        $ret['error'] = array(
+                        $ret['error'] = [
                             'title'   => _("Es sind Fehler/Probleme aufgetreten!"),
                             'details' => $this->message_stack['error']
-                        );
+                        ];
                         break;
 
                     case 'info':
-                        $ret['info'] = array(
+                        $ret['info'] = [
                             'title'   => implode('<br>', $this->message_stack['info']),
-                            'details' => array()
-                        );
+                            'details' => []
+                        ];
                         break;
 
                     case 'success':
-                        $ret['success'] = array(
+                        $ret['success'] = [
                             'title'   => _("Ihre Änderungen wurden gespeichert!"),
                             'details' => $this->message_stack['success']
-                        );
+                        ];
                         break;
                 }
             }
@@ -931,7 +931,7 @@ class Seminar
         return true;
     }
 
-    public function addCycle($data = array())
+    public function addCycle($data = [])
     {
         $new_id = $this->metadate->addCycle($data);
         if($new_id){
@@ -958,7 +958,7 @@ class Seminar
      *
      * @return void
      */
-    public function editCycle($data = array())
+    public function editCycle($data = [])
     {
         $cycle = $this->metadate->cycles[$data['cycle_id']];
         $new_start = mktime($data['start_stunde'], $data['start_minute']);
@@ -982,7 +982,7 @@ class Seminar
             // if the timeslot exceeds the previous one and has some booked rooms
             // they would be lost, so ask the user for permission to do so.
             if (!$data['really_change'] && $has_bookings) {
-                $link_params = array(
+                $link_params = [
                     'editCycle_x' => '1',
                     'editCycle_y' => '1',
                     'cycle_id' => $data['cycle_id'],
@@ -992,7 +992,7 @@ class Seminar
                     'end_minute' => $data['end_minute'],
                     'day' => $data['day'],
                     'really_change' => 'true'
-                );
+                ];
                 $question = _("Wenn Sie die regelmäßige Zeit auf %s ändern, verlieren Sie die Raumbuchungen für alle in der Zukunft liegenden Termine!")
                     ."\n". _("Sind Sie sicher, dass Sie die regelmäßige Zeit ändern möchten?");
                 $question_time = '**'. strftime('%A', $data['day']) .', '. $data['start_stunde'] .':'. $data['start_minute']
@@ -1272,7 +1272,7 @@ class Seminar
     {
         if (is_array($this->issues)) {
 
-            $sorter = array();
+            $sorter = [];
             foreach ($this->issues as $id => $issue) {
                 $sorter[$id] = $issue->getPriority();
             }
@@ -1535,7 +1535,7 @@ class Seminar
                         $info[$i]['export'] = $cycle->toString('long').' ('.$semester['name'].')';
                         $info[$i]['weekend'] = ($cycle->getDay() == 6 || $cycle->getDay() == 0);
                         $this->applyTimeFilter($semester['beginn'], $semester['ende']);
-                        $raum = $this->getDatesTemplate('dates/seminar_predominant_html', array('cycle_id' => $metadate_id));
+                        $raum = $this->getDatesTemplate('dates/seminar_predominant_html', ['cycle_id' => $metadate_id]);
                         if ($raum) {
                             $info[$i]['name'] .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$raum;
                             $room_stat = $this->getStatOfNotBookedRooms($cycle->getMetadateId());
@@ -1623,14 +1623,14 @@ class Seminar
         } else {    // we have a single date
             $termin = new SingleDate($singledate);
             $groups[0]['termin_ids'][$termin->getSingleDateID()] = TRUE;
-            $info[0]['name']   = $this->getDatesTemplate('dates/date_html', array('date' => $termin));
+            $info[0]['name']   = $this->getDatesTemplate('dates/date_html', ['date' => $termin]);
             $info[0]['export'] = $termin->toString();
             $info[0]['raum']   = $termin->resource_id;
             $info[0]['weekend'] = (date('w', $termin->getStartTime()) == 6 || date('w', $termin->getStartTime()) == 0);
             $first_event = $termin->getStartTime();
         }
 
-        return array('first_event' => $first_event, 'groups' => $groups, 'info' => $info);
+        return ['first_event' => $first_event, 'groups' => $groups, 'info' => $info];
     }
 
     /**
@@ -1717,7 +1717,7 @@ class Seminar
     {
         $args = func_get_args();
         array_unshift($args, $this->id);
-        return call_user_func_array(array("Seminar", "getNumberOfParticipantsBySeminarId"), $args);
+        return call_user_func_array(["Seminar", "getNumberOfParticipantsBySeminarId"], $args);
     }
 
     /**
@@ -1745,14 +1745,14 @@ class Seminar
                                FROM seminar_user
                                WHERE Seminar_id = ?
                                GROUP BY Seminar_id");
-        $stmt1->execute(array($sem_id));
+        $stmt1->execute([$sem_id]);
         $numbers = $stmt1->fetch(PDO::FETCH_ASSOC);
 
         $stmt2 = $db->prepare("SELECT COUNT(*) as anzahl
                                FROM admission_seminar_user
                                WHERE seminar_id = ?
                                AND status = 'accepted'");
-        $stmt2->execute(array($sem_id));
+        $stmt2->execute([$sem_id]);
         $acceptedUsers = $stmt2->fetch(PDO::FETCH_ASSOC);
 
 
@@ -1764,7 +1764,7 @@ class Seminar
             $count += $acceptedUsers["anzahl"];
         }
 
-        $participant_count = array();
+        $participant_count = [];
         $participant_count['total']     = $count;
         $participant_count['lecturers'] = $numbers['anz_dozent'] ? (int) $numbers['anz_dozent'] : 0;
         $participant_count['tutors']    = $numbers['anz_tutor']  ? (int) $numbers['anz_tutor']  : 0;
@@ -1796,7 +1796,7 @@ class Seminar
             "FROM seminar_sem_tree ".
             "WHERE seminar_id=?");
 
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
@@ -1876,7 +1876,7 @@ class Seminar
         // Alle Benutzer aus dem Seminar rauswerfen.
         $query = "DELETE FROM seminar_user WHERE Seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
         if (($db_ar = $statement->rowCount()) > 0) {
             $this->createMessage(sprintf(_("%s Teilnehmende und Lehrende archiviert."), $db_ar));
         }
@@ -1884,12 +1884,12 @@ class Seminar
         // Alle Benutzer aus Wartelisten rauswerfen
         $query = "DELETE FROM admission_seminar_user WHERE seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
 
         // Alle beteiligten Institute rauswerfen
         $query = "DELETE FROM seminar_inst WHERE Seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
         if (($db_ar = $statement->rowCount()) > 0) {
             $this->createMessage(sprintf(_("%s Zuordnungen zu Einrichtungen archiviert."), $db_ar));
         }
@@ -1940,7 +1940,7 @@ class Seminar
         // Freie Seite zu diesem Seminar löschen
         $query = "DELETE FROM scm WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
         if (($db_ar = $statement->rowCount()) > 0) {
             $this->createMessage(_("Freie Seite der Veranstaltung archiviert."));
         }
@@ -1964,18 +1964,18 @@ class Seminar
         //kill all wiki-pages
         $query = "DELETE FROM wiki WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
         if (($db_wiki = $statement->rowCount()) > 0) {
             $this->createMessage(sprintf(_("%s Wiki-Seiten archiviert."), $db_wiki));
         }
 
         $query = "DELETE FROM wiki_links WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
 
         $query = "DELETE FROM wiki_locks WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
 
         // remove wiki page config
         WikiPageConfig::deleteBySQL('range_id = ?', [$s_id]);
@@ -1995,7 +1995,7 @@ class Seminar
         // kill virtual seminar-entries in calendar
         $query = "DELETE FROM schedule_seminare WHERE seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
 
         if(get_config('ELEARNING_INTERFACE_ENABLE')){
             global $connected_cms;
@@ -2019,7 +2019,7 @@ class Seminar
                   LEFT JOIN semester_data ON (seminare.start_time = semester_data.beginn)
                   WHERE seminare.Seminar_id='$s_id'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($s_id));
+        $statement->execute([$s_id]);
         $semlogname = $statement->fetchColumn() ?: sprintf('unknown sem_id: %s', $s_id);
 
         StudipLog::log("SEM_ARCHIVE",$s_id,NULL,$semlogname);
@@ -2058,7 +2058,7 @@ class Seminar
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    public function getDatesHTML($params = array())
+    public function getDatesHTML($params = [])
     {
         return $this->getDatesTemplate('dates/seminar_html.php', $params);
     }
@@ -2071,7 +2071,7 @@ class Seminar
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    public function getDatesExport($params = array())
+    public function getDatesExport($params = [])
     {
         return $this->getDatesTemplate('dates/seminar_export.php', $params);
     }
@@ -2084,7 +2084,7 @@ class Seminar
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    public function getDatesXML($params = array())
+    public function getDatesXML($params = [])
     {
         return $this->getDatesTemplate('dates/seminar_xml.php', $params);
     }
@@ -2098,7 +2098,7 @@ class Seminar
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    public function getDatesTemplate($template, $params = array())
+    public function getDatesTemplate($template, $params = [])
     {
         if (!$template instanceof Flexi_Template && is_string($template)) {
             $template = $GLOBALS['template_factory']->open($template);
@@ -2158,7 +2158,7 @@ class Seminar
      * @param institutes array: array of Institut_id's
      * @return bool:  if something changed
      */
-    public function setInstitutes($institutes = array())
+    public function setInstitutes($institutes = [])
     {
         if (is_array($institutes)) {
             $institutes[] = $this->institut_id;
@@ -2166,7 +2166,7 @@ class Seminar
 
             $query = "SELECT institut_id FROM seminar_inst WHERE seminar_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->id));
+            $statement->execute([$this->id]);
             $old_inst = $statement->fetchAll(PDO::FETCH_COLUMN);
 
             $todelete = array_diff($old_inst, $institutes);
@@ -2177,7 +2177,7 @@ class Seminar
             foreach($todelete as $inst) {
                 $tmp_instname= get_object_name($inst, 'inst');
                 StudipLog::log('CHANGE_INSTITUTE_DATA', $this->id, $inst, 'Die beteiligte Einrichtung "'. $tmp_instname['name'] .'" wurde gelöscht.');
-                $statement->execute(array($this->id, $inst));
+                $statement->execute([$this->id, $inst]);
                 NotificationCenter::postNotification('SeminarInstitutionDidDelete', $inst, $this->id);
 
             }
@@ -2190,7 +2190,7 @@ class Seminar
             foreach($toinsert as $inst) {
                 $tmp_instname= get_object_name($inst, 'inst');
                 StudipLog::log('CHANGE_INSTITUTE_DATA', $this->id, $inst, 'Die beteiligte Einrichtung "'. $tmp_instname['name'] .'" wurde hinzugefügt.');
-                $statement->execute(array($this->id, $inst));
+                $statement->execute([$this->id, $inst]);
                 NotificationCenter::postNotification('SeminarInstitutionDidCreate', $inst, $this->id);
             }
             if ($todelete || $toinsert) {
@@ -2213,13 +2213,13 @@ class Seminar
     public function addMember($user_id, $status = 'autor', $force = false)
     {
 
-        if (in_array($GLOBALS['perm']->get_perm($user_id), array("admin", "root"))) {
+        if (in_array($GLOBALS['perm']->get_perm($user_id), ["admin", "root"])) {
             $this->createError(_("Admin und Root dürfen nicht Mitglied einer Veranstaltung sein."));
             return false;
         }
         $db = DBManager::get();
 
-        $rangordnung = array_flip(array('user', 'autor', 'tutor', 'dozent'));
+        $rangordnung = array_flip(['user', 'autor', 'tutor', 'dozent']);
         if ($rangordnung[$status] > $rangordnung['autor'] && SeminarCategories::getByTypeId($this->status)->only_inst_user) {
             //überprüfe, ob im richtigen Institut:
             $user_institute_stmt = $db->prepare(
@@ -2227,7 +2227,7 @@ class Seminar
                 "FROM user_inst " .
                 "WHERE user_id = :user_id " .
                 "");
-            $user_institute_stmt->execute(array('user_id' => $user_id));
+            $user_institute_stmt->execute(['user_id' => $user_id]);
             $user_institute = $user_institute_stmt->fetchAll(PDO::FETCH_COLUMN, 0);
 
             if (!in_array($this->institut_id, $user_institute) && !count(array_intersect($user_institute, $this->getInstitutes()))) {
@@ -2240,36 +2240,36 @@ class Seminar
         if (!$force) {
             $query = "SELECT status FROM seminar_user WHERE user_id = ? AND Seminar_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user_id, $this->id));
+            $statement->execute([$user_id, $this->id]);
             $old_status = $statement->fetchColumn();
         }
 
         $query = "SELECT MAX(position) + 1 FROM seminar_user WHERE status = ? AND Seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($status, $this->id));
+        $statement->execute([$status, $this->id]);
         $new_position = $statement->fetchColumn();
 
         $query = "SELECT COUNT(*) FROM seminar_user WHERE Seminar_id = ? AND status = 'dozent'";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->id));
+        $statement->execute([$this->id]);
         $numberOfTeachers = $statement->fetchColumn();
 
         if (!$old_status) {
             $query = "INSERT INTO seminar_user (Seminar_id, user_id, status, position, gruppe, visible, mkdate)
                       VALUES (?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP())";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $this->id,
                 $user_id,
                 $status,
                 $new_position ?: 0,
                 (int)select_group($this->getSemesterStartTime()),
                 in_array($status, words('tutor dozent')) ? 'yes' : 'unknown',
-            ));
+            ]);
             // delete the entries, user is now in the seminar
             $stmt = DBManager::get()->prepare('DELETE FROM admission_seminar_user
                                             WHERE user_id = ? AND seminar_id = ?');
-            $stmt->execute(array($user_id, $this->getId()));
+            $stmt->execute([$user_id, $this->getId()]);
             if ($stmt->rowCount()) {
                 //renumber the waiting/accepted/lot list, a user was deleted from it
                 renumber_admission($this->getId());
@@ -2299,25 +2299,25 @@ class Seminar
                       SET status = ?, visible = IFNULL(?, visible), position = ?
                       WHERE Seminar_id = ? AND user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $status,
                 in_array($status, words('tutor dozent')) ? 'yes' : null,
                 $new_position,
                 $this->id,
                 $user_id,
-            ));
+            ]);
 
             if ($old_status === 'dozent') {
                 $query = "SELECT termin_id FROM termine WHERE range_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($this->id));
+                $statement->execute([$this->id]);
                 $termine = $statement->fetchAll(PDO::FETCH_COLUMN);
 
                 $query = "DELETE FROM termin_related_persons WHERE range_id = ? AND user_id = ?";
                 $statement = DBManager::get()->prepare($query);
 
                 foreach ($termine as $termin_id) {
-                    $statement->execute(array($termin_id, $user_id));
+                    $statement->execute([$termin_id, $user_id]);
                 }
             }
             NotificationCenter::postNotification("CourseDidChangeMember", $this, $user_id);
@@ -2436,7 +2436,7 @@ class Seminar
         $statement = DBManager::get()->prepare($query);
 
         foreach(array_values($members) as $num => $member) {
-            $statement->execute(array($num, $this->id, $member));
+            $statement->execute([$num, $this->id, $member]);
         }
 
         return $this;
@@ -2450,11 +2450,11 @@ class Seminar
                 "WHERE user_id = :user_id " .
                 "AND Seminar_id = :seminar_id " .
                 "");
-            $statement->execute(array(
+            $statement->execute([
                 'user_id' => $user_id,
                 'seminar_id' => $this->getId(),
                 'label' => $label
-            ));
+            ]);
             NotificationCenter::postNotification("CourseDidChangeMemberLabel", $this);
         }
     }
@@ -2470,7 +2470,7 @@ class Seminar
      */
     public function getEnrolmentInfo($user_id)
     {
-        $info = array();
+        $info = [];
         $user = User::find($user_id);
         if ($this->getSemClass()->isGroup()) {
             $info['enrolment_allowed'] = false;
@@ -2682,8 +2682,8 @@ class Seminar
     {
         $cs = $this->getCourseSet();
         return ($cs && $cs->hasAdmissionRule('TimedAdmission')) ?
-            array('start_time' => $cs->getAdmissionRule('TimedAdmission')->getStartTime(),
-                  'end_time' => $cs->getAdmissionRule('TimedAdmission')->getEndTime()) : array();
+            ['start_time' => $cs->getAdmissionRule('TimedAdmission')->getStartTime(),
+                  'end_time' => $cs->getAdmissionRule('TimedAdmission')->getEndTime()] : [];
     }
 
     /**
@@ -2715,7 +2715,7 @@ class Seminar
      */
     public function addToWaitlist($user_id, $which_end = 'last')
     {
-        if (AdmissionApplication::exists(array($user_id, $this->id)) || CourseMember::find(array($this->id, $user_id))) {
+        if (AdmissionApplication::exists([$user_id, $this->id]) || CourseMember::find([$this->id, $user_id])) {
             return false;
         }
         switch ($which_end) {
@@ -2724,7 +2724,7 @@ class Seminar
                 $maxpos = DBManager::get()->fetchColumn("SELECT MAX(`position`)
                     FROM `admission_seminar_user`
                     WHERE `seminar_id`=?
-                        AND `status`='awaiting'", array($this->id));
+                        AND `status`='awaiting'", [$this->id]);
                 $waitpos = $maxpos+1;
                 break;
             // Prepend users to waitlist start.
@@ -2734,7 +2734,7 @@ class Seminar
                 DBManager::get()->execute("UPDATE `admission_seminar_user`
                         SET `position`=`position`+1
                         WHERE `seminar_id`=?
-                            AND `status`='awaiting'", array($this->id));
+                            AND `status`='awaiting'", [$this->id]);
                 $waitpos = 1;
         }
         $new_admission_member = new AdmissionApplication();

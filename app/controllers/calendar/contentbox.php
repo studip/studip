@@ -33,11 +33,11 @@ class Calendar_ContentboxController extends StudipController {
         // To array fallback of $range_id
         if (!is_array($range_id)) {
             $this->single = true;
-            $range_id = array($range_id);
+            $range_id = [$range_id];
         }
 
         foreach ($range_id as $id) {
-            switch (get_object_type($id, array('user', 'sem'))) {
+            switch (get_object_type($id, ['user', 'sem'])) {
                 case 'user':
                     $this->parseUser($id);
                     $this->userRange = true;
@@ -51,7 +51,7 @@ class Calendar_ContentboxController extends StudipController {
         // Check permission to edit
         if ($this->single) {
             $this->admin = $range_id[0] == $GLOBALS['user']->id
-                || (get_object_type($range_id[0], array('sem')) === 'sem' && $GLOBALS['perm']->have_studip_perm('tutor', $range_id[0]));
+                || (get_object_type($range_id[0], ['sem']) === 'sem' && $GLOBALS['perm']->have_studip_perm('tutor', $range_id[0]));
             // Set range_id
             $this->range_id = $range_id[0];
         }
@@ -71,11 +71,11 @@ class Calendar_ContentboxController extends StudipController {
 
     private function parseSeminar($id) {
         $course = Course::find($id);
-        $dates = $course->getDatesWithExdates()->findBy('end_time', array($this->start, $this->start + $this->timespan), '><');
+        $dates = $course->getDatesWithExdates()->findBy('end_time', [$this->start, $this->start + $this->timespan], '><');
         foreach ($dates as $courseDate) {
 
             // Build info
-            $info = array();
+            $info = [];
             if ($courseDate->dozenten[0]) {
                 $info[_('Durchführende Dozenten')] = join(', ', $courseDate->dozenten->getFullname());
             }
@@ -84,7 +84,7 @@ class Calendar_ContentboxController extends StudipController {
             }
 
             // Store for view
-            $this->termine[] = array(
+            $this->termine[] = [
                 'id' => $courseDate->id,
                 'chdate' => $courseDate->chdate,
                 'title' => $courseDate->getFullname() . ($courseDate->topics[0] ? ', ' . join(', ', $courseDate->topics->getValue('title')) : ""),
@@ -92,17 +92,17 @@ class Calendar_ContentboxController extends StudipController {
                 'topics' => $courseDate->topics->toArray('title description'),
                 'room' => $courseDate->getRoomName(),
                 'info' => $info
-            );
+            ];
         }
     }
 
     private function parseUser($id) {
-        $restrictions = ($GLOBALS['user']->id == $id ? array() : array('CLASS' => 'PUBLIC'));
+        $restrictions = ($GLOBALS['user']->id == $id ? [] : ['CLASS' => 'PUBLIC']);
         $events = SingleCalendar::getEventList($id, $this->start,
                 $this->start + $this->timespan, null, $restrictions);
 
         // Prepare termine
-        $this->termine = array();
+        $this->termine = [];
 
         foreach ($events as $termin) {
             // Adjust title
@@ -128,7 +128,7 @@ class Calendar_ContentboxController extends StudipController {
             }
 
             // Store for view
-            $this->termine[] = array(
+            $this->termine[] = [
                 'id' => $termin->id,
                 'type' => get_class($termin),
                 'range_id' => $termin->range_id,
@@ -137,12 +137,12 @@ class Calendar_ContentboxController extends StudipController {
                 'title' => $title,
                 'description' => $termin->getDescription(),
                 'room' => $termin->getLocation(),
-                'info' => array(
+                'info' => [
                     _('Kategorie') => $termin->toStringCategories(),
                     _('Priorität') => $termin->toStringPriority(),
                     _('Sichtbarkeit') => $termin->toStringAccessibility(),
-                    _('Wiederholung') => $termin->toStringRecurrence())
-            );
+                    _('Wiederholung') => $termin->toStringRecurrence()]
+            ];
         }
     }
 

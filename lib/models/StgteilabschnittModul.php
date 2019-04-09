@@ -18,18 +18,18 @@
 class StgteilabschnittModul extends ModuleManagementModelTreeItem
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteilabschnitt_modul';
 
-        $config['belongs_to']['modul'] = array(
+        $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'modul_id'
-        );
-        $config['belongs_to']['abschnitt'] = array(
+        ];
+        $config['belongs_to']['abschnitt'] = [
             'class_name' => 'StgteilAbschnitt',
             'foreign_key' => 'abschnitt_id'
-        );
+        ];
         
         $config['i18n_fields']['bezeichnung'] = true;
 
@@ -107,7 +107,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
          . 'ON (mvv_stgteilabschnitt.version_id = mvv_stgteilversion.version_id) '
          . 'WHERE mvv_stgteilabschnitt_modul.abschnitt_id = ? '
          . self::getFilterSql($filter)
-         . ' ORDER BY position, mkdate', array($abschnitt_id));
+         . ' ORDER BY position, mkdate', [$abschnitt_id]);
     }
 
     /**
@@ -121,7 +121,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
     public function getFachsemester($modulteil_id, $fachsemester)
     {
         return ModulteilStgteilabschnitt::find(
-                array($modulteil_id, $this->abschnitt_id, $fachsemester));
+                [$modulteil_id, $this->abschnitt_id, $fachsemester]);
     }
 
     /**
@@ -132,7 +132,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
      */
     public function getAllFachsemester($modulteil_id)
     {
-        $ret = array();
+        $ret = [];
         $modulteil_abschnitte = ModulteilStgteilabschnitt::findBySql(
                 'modulteil_id = ' . DBManager::get()->quote($modulteil_id)
                 . ' AND abschnitt_id = '
@@ -191,7 +191,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
                 . 'FROM mvv_lvgruppe ml '
                 . 'LEFT JOIN mvv_lvgruppe_modulteil USING(lvgruppe_id) '
                 . 'LEFT JOIN mvv_modulteil USING(modulteil_id) '
-                . 'WHERE modul_id = ? ', array($this->modul_id));
+                . 'WHERE modul_id = ? ', [$this->modul_id]);
         return $ret;
     }
 
@@ -208,7 +208,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array(StgteilAbschnitt::find($this->abschnitt_id));
+        return [StgteilAbschnitt::find($this->abschnitt_id)];
     }
 
      /**

@@ -70,7 +70,7 @@ function get_object_name($range_id, $object_type)
     if ($object_type == "sem") {
         $query = "SELECT status, Name FROM seminare WHERE Seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($SEM_TYPE[$row['status']]['name'] == $SEM_TYPE_MISC_NAME) {
@@ -85,7 +85,7 @@ function get_object_name($range_id, $object_type)
     } else if ($object_type == 'inst' || $object_type == 'fak') {
         $query = "SELECT type, Name FROM Institute WHERE Institut_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         $type = $INST_TYPE[$row['type']]['name'];
@@ -189,7 +189,7 @@ function closeObject()
  *                 "fak" (Fakultaeten), "group" (Statusgruppe), "dokument" (Dateien)
  *
  */
-function get_object_type($id, $check_only = array())
+function get_object_type($id, $check_only = [])
 {
     static $object_type_cache;
 
@@ -209,14 +209,14 @@ function get_object_type($id, $check_only = array())
     }
 
     // Tests for specific types
-    $tests = array(
+    $tests = [
         'sem'        => "SELECT 1 FROM seminare WHERE Seminar_id = ?",
         'date'       => "SELECT 1 FROM termine WHERE termin_id = ?",
         'user'       => "SELECT 1 FROM auth_user_md5 WHERE user_id = ?",
         'group'      => "SELECT 1 FROM statusgruppen WHERE statusgruppe_id = ?",
         'dokument'   => "SELECT 1 FROM file_refs WHERE id = ?",
         'range_tree' => "SELECT 1 FROM range_tree WHERE item_id = ?",
-    );
+    ];
 
     // Test for every type if no specific types are provided
     $check_all = !count($check_only);
@@ -225,7 +225,7 @@ function get_object_type($id, $check_only = array())
     foreach ($tests as $key => $query) {
         if ($check_all || in_array($key, $check_only)) {
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($id));
+            $statement->execute([$id]);
 
             if ($statement->fetchColumn()) {
                 return $object_type_cache[$id] = $key;
@@ -237,7 +237,7 @@ function get_object_type($id, $check_only = array())
     if ($check_all || in_array('inst', $check_only) || in_array('fak', $check_only)) {
         $query = "SELECT Institut_id = fakultaets_id FROM Institute WHERE Institut_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
 
         $is_fak = $statement->fetchColumn();
         if ($is_fak !== false) {
@@ -332,7 +332,7 @@ function get_fullname($user_id = "", $format = "full" , $htmlready = false)
                   LEFT JOIN user_info USING (user_id)
                   WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $cache[$hash] = $statement->fetchColumn() ?: _('unbekannt');
     }
 
@@ -364,7 +364,7 @@ function get_fullname_from_uname($uname = "", $format = "full", $htmlready = fal
                   LEFT JOIN user_info USING (user_id)
                   WHERE username = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($uname));
+        $statement->execute([$uname]);
         $cache[$hash] = $statement->fetchColumn() ?: _('unbekannt');
     }
 
@@ -384,7 +384,7 @@ function get_fullname_from_uname($uname = "", $format = "full", $htmlready = fal
  */
 function get_username($user_id = "")
 {
-    static $cache = array();
+    static $cache = [];
     global $auth;
 
     if (!$user_id || $user_id == $auth->auth['uid']) {
@@ -394,7 +394,7 @@ function get_username($user_id = "")
     if (!isset($cache[$user_id])) {
         $query = "SELECT username FROM auth_user_md5 WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $cache[$user_id] = $statement->fetchColumn();
     }
 
@@ -415,7 +415,7 @@ function get_username($user_id = "")
  */
 function get_userid($username = "")
 {
-    static $cache = array();
+    static $cache = [];
     global $auth;
 
     if (!$username || $username == $auth->auth['uname']) {
@@ -426,7 +426,7 @@ function get_userid($username = "")
     if (!isset($cache[$username])) {
         $query = "SELECT user_id FROM auth_user_md5 WHERE username = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($username));
+        $statement->execute([$username]);
         $cache[$username] = $statement->fetchColumn();
     }
 
@@ -544,7 +544,7 @@ function re_sort_dozenten($s_id, $position)
               SET position = position - 1
               WHERE Seminar_id = ? AND status = 'dozent' AND position > ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($s_id, $position));
+    $statement->execute([$s_id, $position]);
 }
 
 /**
@@ -562,7 +562,7 @@ function re_sort_tutoren($s_id, $position)
               SET position = position - 1
               WHERE Seminar_id = ? AND status = 'tutor' AND position > ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($s_id, $position));
+    $statement->execute([$s_id, $position]);
 }
 
 /**
@@ -580,7 +580,7 @@ function get_next_position($status, $seminar_id)
               FROM seminar_user
               WHERE Seminar_id = ? AND status = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($seminar_id, $status));
+    $statement->execute([$seminar_id, $status]);
 
    return $statement->fetchColumn() ?: 0;
 }
@@ -633,7 +633,7 @@ function archiv_check_perm($seminar_id)
     if (!is_array($archiv_perms)){
         $query = "SELECT seminar_id, status FROM archiv_user WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($u_id));
+        $statement->execute([$u_id]);
         $archiv_perms = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
         if ($perm->have_perm("admin")){
@@ -642,7 +642,7 @@ function archiv_check_perm($seminar_id)
                       INNER JOIN archiv ON (heimat_inst_id = institut_id)
                       WHERE user_inst.user_id = ? AND user_inst.inst_perms = 'admin'";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($u_id));
+            $statement->execute([$u_id]);
             $temp_perms = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
             $archiv_perms = array_merge($archiv_perms, $temp_perms);
@@ -654,7 +654,7 @@ function archiv_check_perm($seminar_id)
                       INNER JOIN archiv ON (archiv.heimat_inst_id = Institute.institut_id)
                       WHERE user_inst.user_id = ? AND user_inst.inst_perms = 'admin'";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($u_id));
+            $statement->execute([$u_id]);
             $temp_perms = $statement->fetchGrouped(PDO::FETCH_COLUMN);
 
             $archiv_perms = array_merge($archiv_perms, $temp_perms);
@@ -692,11 +692,11 @@ function get_users_online($active_time = 5, $name_format = 'full_rev')
               WHERE last_lifesign > ? AND uo.user_id <> ?
               ORDER BY {$GLOBALS['_fullname_sql'][$name_format]} ASC";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(
+    $statement->execute([
         $GLOBALS['user']->id,
         time() - $active_time * 60,
         $GLOBALS['user']->id,
-    ));
+    ]);
     $online = $statement->fetchGrouped();
 
     // measure users online
@@ -793,7 +793,7 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
         return $name;
     };
 
-    $search_result = array();
+    $search_result = [];
     $show_sem_sql1 = ",s.start_time,sd1.name AS startsem,IF(s.duration_time=-1, '"._("unbegrenzt")."', sd2.name) AS endsem ";
     $show_sem_sql2 = "LEFT JOIN semester_data sd1 ON (start_time BETWEEN sd1.beginn AND sd1.ende)
                       LEFT JOIN semester_data sd2 ON (start_time + duration_time BETWEEN sd2.beginn AND sd2.ende)";
@@ -807,12 +807,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                       WHERE CONCAT(Vorname, ' ', Nachname, ' ', username) LIKE CONCAT('%', ?, '%')
                       ORDER BY Nachname, Vorname";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($search_str));
+            $statement->execute([$search_str]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $search_result[$row['user_id']] = array(
+                $search_result[$row['user_id']] = [
                     'type' => 'user',
                     'name' => $row['name'],
-                );
+                ];
             }
         }
 
@@ -825,14 +825,14 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                ? sprintf($query, $show_sem_sql1, $show_sem_sql2)
                : sprintf($query, '', '');
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($search_str));
+        $statement->execute([$search_str]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Seminar_id']] = array(
+            $search_result[$row['Seminar_id']] = [
                 'type'      => 'sem',
                 'name'      => $formatName($row),
                 'starttime' => $row['start_time'],
                 'startsem'  => $row['startsem'],
-            );
+            ];
         }
 
         $query = "SELECT Institut_id, Name, IF(Institut_id = fakultaets_id, 'fak', 'inst') AS type
@@ -840,12 +840,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                   WHERE Name LIKE CONCAT('%', ?, '%')
                   ORDER BY Name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($search_str));
+        $statement->execute([$search_str]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Institut_id']] = array(
+            $search_result[$row['Institut_id']] = [
                 'type' => $row['type'],
                 'name' => $row['Name'],
-            );
+            ];
         }
     } elseif ($search_str && $perm->have_perm('admin')) {
         $_hidden = _('(versteckt)');
@@ -858,14 +858,14 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                ? sprintf($query, $show_sem_sql1, $show_sem_sql2)
                : sprintf($query, '', '');
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user->id, $search_str));
+        $statement->execute([$user->id, $search_str]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Seminar_id']] = array(
+            $search_result[$row['Seminar_id']] = [
                 'type'      => 'sem',
                 'name'      => $formatName($row),
                 'starttime' => $row['start_time'],
                 'startsem'  => $row['startsem'],
-            );
+            ];
         }
 
         $query = "SELECT b.Institut_id, b.Name
@@ -875,12 +875,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                     AND a.institut_id != b.fakultaets_id AND b.Name LIKE CONCAT('%', ?, '%')
                   ORDER BY Name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user->id, $search_str));
+        $statement->execute([$user->id, $search_str]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Institut_id']] = array(
+            $search_result[$row['Institut_id']] = [
                 'type' => 'inst',
                 'name' => $row['Name'],
-            );
+            ];
         }
         if ($perm->is_fak_admin()) {
             $_hidden = _('(versteckt)');
@@ -896,14 +896,14 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                    ? sprintf($query, $show_sem_sql1, $show_sem_sql2)
                    : sprintf($query, '', '');
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user->id, $search_str));
+            $statement->execute([$user->id, $search_str]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $search_result[$row['Seminar_id']] = array(
+                $search_result[$row['Seminar_id']] = [
                     'type'      => 'sem',
                     'name'      => $formatName($row),
                     'starttime' => $row['start_time'],
                     'startsem'  => $row['startsem'],
-                );
+                ];
             }
 
             $query = "SELECT c.Institut_id, c.Name
@@ -914,12 +914,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                         AND c.Name LIKE CONCAT('%', ?, '%')
                       ORDER BY Name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user->id, $search_str));
+            $statement->execute([$user->id, $search_str]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $search_result[$row['Institut_id']] = array(
+                $search_result[$row['Institut_id']] = [
                     'type' => 'inst',
                     'name' => $row['Name'],
-                );
+                ];
             }
 
             $query = "SELECT b.Institut_id, b.Name
@@ -929,12 +929,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                         AND b.Name LIKE CONCAT('%', ?, '%')
                       ORDER BY Name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user->id, $search_str));
+            $statement->execute([$user->id, $search_str]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-                $search_result[$row['Institut_id']] = array(
+                $search_result[$row['Institut_id']] = [
                     'type' => 'inst',
                     'name' => $row['Name'],
-                );
+                ];
             }
         }
     } elseif ($perm->have_perm('tutor') || $perm->have_perm('autor')) {
@@ -949,14 +949,14 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                ? sprintf($query, $show_sem_sql1, $show_sem_sql2)
                : sprintf($query, '', '');
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user->id));
+        $statement->execute([$user->id]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Seminar_id']] = array(
+            $search_result[$row['Seminar_id']] = [
                 'type'      => 'sem',
                 'name'      => $formatName($row),
                 'starttime' => $row['start_time'],
                 'startsem'  => $row['startsem'],
-            );
+            ];
         }
 
         $query = "SELECT Institut_id, b.Name,
@@ -966,12 +966,12 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                   WHERE a.user_id = ? AND a.inst_perms IN ('dozent','tutor')
                   ORDER BY Name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user->id));
+        $statement->execute([$user->id]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Institut_id']] = array(
+            $search_result[$row['Institut_id']] = [
                 'name' => $row['Name'],
                 'type' => $row['type'],
-            );
+            ];
         }
     }
 
@@ -988,14 +988,14 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                ? sprintf($query, $show_sem_sql1, $show_sem_sql2)
                : sprintf($query, '', '');
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user->id));
+        $statement->execute([$user->id]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $search_result[$row['Seminar_id']] = array(
+            $search_result[$row['Seminar_id']] = [
                 'type'      => 'sem',
                 'name'      => $formatName($row),
                 'starttime' => $row['start_time'],
                 'startsem'  => $row['startsem'],
-            );
+            ];
         }
         if (isDeputyEditAboutActivated()) {
             $query = "SELECT a.user_id, a.username, 'user' AS type,
@@ -1006,9 +1006,9 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                       WHERE d.user_id = ?
                       ORDER BY name ASC";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $user->id
-            ));
+            ]);
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $search_result[$row['user_id']] = $row;
             }
@@ -1104,7 +1104,7 @@ function studip_utf8decode($data)
 function legacy_studip_utf8decode($data)
 {
     if (is_array($data)) {
-        $new_data = array();
+        $new_data = [];
         foreach ($data as $key => $value) {
             $key = legacy_studip_utf8decode($key);
             $new_data[$key] = legacy_studip_utf8decode($value);
@@ -1115,7 +1115,7 @@ function legacy_studip_utf8decode($data)
     if (!preg_match('/[\200-\377]/', $data)) {
         return $data;
     } else {
-        $windows1252 = array(
+        $windows1252 = [
             "\x80" => '&#8364;',
             "\x81" => '&#65533;',
             "\x82" => '&#8218;',
@@ -1147,13 +1147,13 @@ function legacy_studip_utf8decode($data)
             "\x9C" => '&#339;',
             "\x9D" => '&#65533;',
             "\x9E" => '&#382;',
-            "\x9F" => '&#376;');
+            "\x9F" => '&#376;'];
         return str_replace(
             array_values($windows1252),
             array_keys($windows1252),
             utf8_decode(mb_encode_numericentity(
                 $data,
-                array(0x100, 0xffff, 0, 0xffff),
+                [0x100, 0xffff, 0, 0xffff],
                 'UTF-8'
             ))
         );
@@ -1239,7 +1239,7 @@ function get_title_for_status($type, $count, $sem_type = NULL)
     } else if (isset($DEFAULT_TITLE_FOR_STATUS[$type])) {
         $title = $DEFAULT_TITLE_FOR_STATUS[$type];
     } else {
-        $title = array('unbekannt', 'unbekannt');
+        $title = ['unbekannt', 'unbekannt'];
     }
 
     return ngettext($title[0], $title[1], $count);
@@ -1274,7 +1274,7 @@ function is_internal_url($url)
  */
 function studygroup_sem_types()
 {
-    $result = array();
+    $result = [];
 
     foreach ($GLOBALS['SEM_TYPE'] as $id => $sem_type) {
         if ($GLOBALS['SEM_CLASS'][$sem_type['class']]['studygroup_mode']) {
@@ -1294,14 +1294,14 @@ function studygroup_sem_types()
  *
  * @return string the inputs of type hidden as html
  */
-function addHiddenFields($variable, $data, $parent = array())
+function addHiddenFields($variable, $data, $parent = [])
 {
     if (is_array($data)) {
         foreach($data as $key => $value) {
             if (is_array($value)) {
-                $ret .= addHiddenFields($variable, $value, array_merge($parent, array($key)));
+                $ret .= addHiddenFields($variable, $value, array_merge($parent, [$key]));
             } else {
-                $ret.= '<input type="hidden" name="'. htmlReady($variable .'['. implode('][', array_merge($parent, array($key))) .']').'" value="'. htmlReady($value) .'">' ."\n";
+                $ret.= '<input type="hidden" name="'. htmlReady($variable .'['. implode('][', array_merge($parent, [$key])) .']').'" value="'. htmlReady($value) .'">' ."\n";
             }
         }
     } else {
@@ -1348,25 +1348,25 @@ function array_flatten($ary)
 function reltime($timestamp, $verbose = true, $displayed_levels = 1, $tolerance = 5)
 {
     if ($verbose) {
-        $glue = array(', ', _(' und '));
-        $levels = array(
-            array(60, _('%u Sekunde'), _('%u Sekunden')),
-            array(60, _('%u Minute'),  _('%u Minuten')),
-            array(24, _('%u Stunde'),  _('%u Stunden')),
-            array(30, _('%u Tag'),     _('%u Tagen')),
-            array(12, _('%u Monat'),   _('%u Monaten')),
-            array(99, _('%u Jahr'),    _('%u Jahren')),
-        );
+        $glue = [', ', _(' und ')];
+        $levels = [
+            [60, _('%u Sekunde'), _('%u Sekunden')],
+            [60, _('%u Minute'),  _('%u Minuten')],
+            [24, _('%u Stunde'),  _('%u Stunden')],
+            [30, _('%u Tag'),     _('%u Tagen')],
+            [12, _('%u Monat'),   _('%u Monaten')],
+            [99, _('%u Jahr'),    _('%u Jahren')],
+        ];
     } else {
-        $glue = array('', '');
-        $levels = array(
-            array(60, _('%us'),   _('%us')),
-            array(60, _('%umin'), _('%umin')),
-            array(24, _('%uh'),   _('%uh')),
-            array(30, _('%ud'),   _('%ud')),
-            array(12, _('%uM'),   _('%uM')),
-            array(99, _('%uy'),   _('%uy')),
-        );
+        $glue = ['', ''];
+        $levels = [
+            [60, _('%us'),   _('%us')],
+            [60, _('%umin'), _('%umin')],
+            [24, _('%uh'),   _('%uh')],
+            [30, _('%ud'),   _('%ud')],
+            [12, _('%uM'),   _('%uM')],
+            [99, _('%uy'),   _('%uy')],
+        ];
     }
 
     $now   = time();
@@ -1376,7 +1376,7 @@ function reltime($timestamp, $verbose = true, $displayed_levels = 1, $tolerance 
         return _('jetzt');
     }
 
-    $chunks = array();
+    $chunks = [];
     for ($i = 0; $i < count($levels) && $diff > 0; $i++) {
         $remainder = $diff % $levels[$i][0];
         if ($remainder > 0) {
@@ -1420,7 +1420,7 @@ function reltime($timestamp, $verbose = true, $displayed_levels = 1, $tolerance 
  */
 function relsize($size, $verbose = true, $displayed_levels = 1, $glue = ', ', $truncate = false)
 {
-    $units = array(
+    $units = [
         'B' => 'Byte',
         'kB' => 'Kilobyte',
         'MB' => 'Megabyte',
@@ -1430,9 +1430,9 @@ function relsize($size, $verbose = true, $displayed_levels = 1, $glue = ', ', $t
         'EB' => 'Exabyte',
         'ZB' => 'Zettabyte',
         'YB' => 'Yottabyte',
-    );
+    ];
 
-    $result = array();
+    $result = [];
     foreach ($units as $short => $long) {
         $remainder = $size % 1024;
 
@@ -1452,14 +1452,14 @@ function relsize($size, $verbose = true, $displayed_levels = 1, $glue = ', ', $t
         $template = key($result);
         $size     = array_pop($result);
 
-        $result = array(
+        $result = [
             $template => $size + $fraction / 1024,
-        );
+        ];
     } elseif ($displayed_levels > 0) {
         $result = array_slice($result, -$displayed_levels);
     }
 
-    $display = array();
+    $display = [];
     foreach ($result as $template => $size) {
         if ($truncate || $size - floor($size) < 0.1) {
             $template = str_replace('%.1f', '%u', $template);
@@ -1524,7 +1524,7 @@ function match_route($requested_route, $current_route = '')
         return true;
     }
     // extract vars and check if they are set accordingly
-    $vars = array();
+    $vars = [];
     parse_str($route_parts[1], $vars);
     if (!count($vars)) {
         return false;
@@ -1637,7 +1637,7 @@ function strtosnakecase($string) {
  * @return int number of rows
  */
 function count_table_rows($table) {
-    $stat = DbManager::get()->fetchOne("SHOW TABLE STATUS LIKE ?", array($table));
+    $stat = DbManager::get()->fetchOne("SHOW TABLE STATUS LIKE ?", [$table]);
     return (int)$stat['Rows'];
 }
 
@@ -1685,7 +1685,7 @@ function array_to_csv($data, $filename = null, $caption = null, $delimiter = ';'
     }
     foreach ($data as $row) {
         if (is_array($caption)) {
-            $fields = array();
+            $fields = [];
             foreach(array_keys($caption) as $fieldname) {
                 $fields[] = $row[$fieldname];
             }
@@ -1758,7 +1758,7 @@ function rmdirr($dirname){
  */
 function get_mime_type($filename)
 {
-    static $mime_types = array(
+    static $mime_types = [
         // archive types
         'gz'   => 'application/x-gzip',
         'tgz'  => 'application/x-gzip',
@@ -1805,7 +1805,7 @@ function get_mime_type($filename)
         'ogv'  => 'video/ogg',
         'mp4'  => 'video/mp4',
         'webm' => 'video/webm',
-    );
+    ];
 
     $extension = mb_strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 

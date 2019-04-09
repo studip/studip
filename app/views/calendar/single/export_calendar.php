@@ -6,7 +6,7 @@
 <? else : ?>
     <? SkipLinks::addIndex(_('Termine exportieren'), 'main_content', 100); ?>
 <? endif; ?>
-<form action="<?= $controller->url_for('calendar/single/export_calendar/' . $calendar->getRangeId(), array('atime' => $atime, 'last_view' => $last_view)) ?>" method="post" name="sync_form" id="calendar_sync" class="default">
+<form action="<?= $controller->url_for('calendar/single/export_calendar/' . $calendar->getRangeId(), ['atime' => $atime, 'last_view' => $last_view]) ?>" method="post" name="sync_form" id="calendar_sync" class="default">
     <fieldset>
         <legend>
             <?= sprintf(_('Termine exportieren')) ?>
@@ -43,7 +43,7 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Termine exportieren'), 'export', array('title' => _('Termine exportieren'))) ?>
+        <?= Button::createAccept(_('Termine exportieren'), 'export', ['title' => _('Termine exportieren')]) ?>
 
         <? if (!Request::isXhr()) : ?>
             <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view)) ?>

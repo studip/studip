@@ -41,8 +41,8 @@ class SingleDate
     var $messages        = NULL;
     var $content         = '';
     var $room_request    = NULL;
-    var $related_persons = array();
-    var $related_groups  = array();
+    var $related_persons = [];
+    var $related_groups  = [];
 
     /**
      * Return the SingleDate instance of the given id
@@ -270,7 +270,7 @@ class SingleDate
                 foreach ($issue_ids as $issue_id) {
                     // delete this issue
                     unset($this->issues[$issue_id]);
-                    $issue = new Issue(array('issue_id' => $issue_id));
+                    $issue = new Issue(['issue_id' => $issue_id]);
                     $issue->delete();
                 }
             }
@@ -391,8 +391,8 @@ class SingleDate
         $this->raum = $daten['raum'];
         $this->content = $daten['content'];
         $this->update = true;
-        $this->related_persons = is_array($daten['related_persons']) ? $daten['related_persons'] : array();
-        $this->related_groups = is_array($daten['related_groups']) ? $daten['related_groups'] : array();
+        $this->related_persons = is_array($daten['related_persons']) ? $daten['related_persons'] : [];
+        $this->related_groups = is_array($daten['related_groups']) ? $daten['related_groups'] : [];
 
         return true;
     }
@@ -825,7 +825,7 @@ class SingleDate
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    function getDatesHTML($params = array())
+    function getDatesHTML($params = [])
     {
         $template = $GLOBALS['template_factory']->open('dates/date_html.php');
         $template->set_attributes($params);
@@ -841,7 +841,7 @@ class SingleDate
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    function getDatesExport($params = array())
+    function getDatesExport($params = [])
     {
         $template = $GLOBALS['template_factory']->open('dates/date_export.php');
         $params['link'] = false;
@@ -858,7 +858,7 @@ class SingleDate
      *
      * @author Till Glöggler <tgloeggl@uos.de>
      */
-    function getDatesXML($params = array())
+    function getDatesXML($params = [])
     {
         $template = $GLOBALS['template_factory']->open('dates/date_xml.php');
         $template->set_attributes($params);
@@ -933,7 +933,7 @@ class SingleDate
      */
     public function clearRelatedPersons()
     {
-        $this->related_persons = array();
+        $this->related_persons = [];
     }
 
     /**
@@ -987,7 +987,7 @@ class SingleDate
      */
     public function clearRelatedGroups()
     {
-        $this->related_groups = array();
+        $this->related_groups = [];
         $this->messages['success'][] = _('Die beteiligten Gruppen wurden zurückgesetzt!');
     }
 }

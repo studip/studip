@@ -30,13 +30,13 @@ class Step216AutomatisiertesEintragen extends Migration
         ");
 
         $options[] =
-            array(
+            [
             'name'        => 'AUTO_INSERT_SEM_PARTICIPANTS_VIEW_PERM',
             'type'        => 'string',
             'value'       => 'tutor',
             'section'     => 'global',
             'description' => 'Ab welchem Status soll in Veranstaltungen mit automatisch eingetragenen Nutzern der Teilnehmerreiter zu sehen sein?'
-            );
+            ];
 
         $stmt = DBManager::get()->prepare("
                 INSERT IGNORE INTO config
@@ -58,7 +58,7 @@ class Step216AutomatisiertesEintragen extends Migration
             (:seminar_id, 'dozent')
             ");
             foreach ($GLOBALS['AUTO_INSERT_SEM'] as $seminar_id) {
-                $stmt->execute(array('seminar_id' => $seminar_id));
+                $stmt->execute(['seminar_id' => $seminar_id]);
             }
         }
     }

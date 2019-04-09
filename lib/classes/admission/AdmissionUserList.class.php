@@ -28,7 +28,7 @@ class AdmissionUserList
     /**
      * Conditions for automatic user selection.
      */
-    public $conditions = array();
+    public $conditions = [];
 
     /**
      * A factor for seat distribution algorithm ("1" means normal algorithm,
@@ -50,7 +50,7 @@ class AdmissionUserList
     /**
      * All user IDs that are on this list.
      */
-    public $users = array();
+    public $users = [];
 
     // --- OPERATIONS ---
 
@@ -167,10 +167,10 @@ class AdmissionUserList
      * @return array
      */
     public static function getUserLists($userId) {
-        $result = array();
+        $result = [];
         $stmt = DBManager::get()->prepare("SELECT `list_id` FROM `admissionfactor` WHERE ".
             "`owner_id`=? ORDER BY `name` ASC");
-        $stmt->execute(array($userId));
+        $stmt->execute([$userId]);
         $lists = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($lists as $list) {
             $result[$list['list_id']] = new AdmissionUserList($list['list_id']);
@@ -196,7 +196,7 @@ class AdmissionUserList
         // Load basic data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `admissionfactor` WHERE `list_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->factor = $current['factor'];
             $this->name = $current['name'];
@@ -254,7 +254,7 @@ class AdmissionUserList
      * @return AdmissionUserList
      */
     public function setConditions($conditions) {
-        $this->conditions = array();
+        $this->conditions = [];
         foreach ($conditions as $condition) {
             $this->addCondition($condition);
         }
@@ -305,7 +305,7 @@ class AdmissionUserList
      */
     public function setUsers($newUsers)
     {
-        $this->users = array();
+        $this->users = [];
         foreach ($newUsers as $userId) {
             $this->addUser($userId);
         }
@@ -332,8 +332,8 @@ class AdmissionUserList
             VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             `name`=VALUES(`name`), `factor`=VALUES(`factor`),
             `owner_id`=VALUES(`owner_id`), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->name, $this->factor,
-            $this->ownerId, time(), time()));
+        $stmt->execute([$this->id, $this->name, $this->factor,
+            $this->ownerId, time(), time()]);
         // Clear all old user assignments to this list.
         DBManager::get()->exec("DELETE FROM `user_factorlist` WHERE `list_id`='".
             $this->id."' AND `user_id` NOT IN ('".
@@ -344,7 +344,7 @@ class AdmissionUserList
                 (`list_id`, `user_id`, `mkdate`)
                 VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE
                 `user_id`=VALUES(`user_id`)");
-            $stmt->execute(array($this->id, $userId, time()));
+            $stmt->execute([$this->id, $userId, time()]);
         }
         return $this;
     }

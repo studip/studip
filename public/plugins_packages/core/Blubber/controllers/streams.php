@@ -49,7 +49,7 @@ class StreamsController extends PluginController {
         if (Request::get("hash")) {
             $this->search = Request::get("hash");
             $globalstream = new BlubberStream();
-            $globalstream->filter_hashtags = array(Request::get("hash"));
+            $globalstream->filter_hashtags = [Request::get("hash")];
         }
         $this->threads = $globalstream->fetchThreads(0, $this->max_threads + 1);
         $this->more_threads = count($this->threads) > $this->max_threads;
@@ -87,7 +87,7 @@ class StreamsController extends PluginController {
         $this->tags = $coursestream->fetchTags();
         if (Request::get("hash")) {
             $this->search = "#".Request::get("hash");
-            $coursestream->filter_hashtags = array(Request::get("hash"));
+            $coursestream->filter_hashtags = [Request::get("hash")];
         }
         $this->threads = $coursestream->fetchThreads(0, $this->max_threads + 1);
         $this->more_threads = count($this->threads) > $this->max_threads;
@@ -145,10 +145,10 @@ class StreamsController extends PluginController {
         }
         BlubberPosting::$course_hashes = $thread['context_type'] === "course" ? $thread['Seminar_id'] : false;
 
-        $output = array(
+        $output = [
             'more' => false,
-            'comments' => array()
-        );
+            'comments' => []
+        ];
 
 
         if (Request::option('count') !== 'all') {
@@ -169,11 +169,11 @@ class StreamsController extends PluginController {
             $template = $factory->open("streams/comment.php");
             $template->set_attribute('posting', $posting);
             $template->set_attribute('course_id', $thread['Seminar_id']);
-            $output['comments'][] = array(
+            $output['comments'][] = [
                 'content' => $template->render(),
                 'mkdate' => $posting['mkdate'],
                 'posting_id' => $posting->getId()
-            );
+            ];
         }
         $this->render_json($output);
     }
@@ -200,7 +200,7 @@ class StreamsController extends PluginController {
                 $stream = new BlubberStream($context_id);
                 break;
         }
-        $output = array();
+        $output = [];
         $offset = $this->max_threads * Request::int("offset");
         $limit = $this->max_threads + 1;
         $stream_time = Request::int("stream_time");
@@ -210,19 +210,19 @@ class StreamsController extends PluginController {
         if ($output['more']) {
             $threads = array_slice($threads, 0, $this->max_threads);
         }
-        $output['threads'] = array();
+        $output['threads'] = [];
         $factory = new Flexi_TemplateFactory($this->plugin->getPluginPath()."/views");
         foreach ($threads as $posting) {
             $template = $factory->open("streams/_blubber.php");
             $template->set_attribute('thread', $posting);
             $template->set_attribute('course_id', Context::getId());
             $template->set_attribute('controller', $this);
-            $output['threads'][] = array(
+            $output['threads'][] = [
                 'content' => $template->render(),
                 'discussion_time' => $posting['discussion_time'],
                 'mkdate' => $posting['mkdate'],
                 'posting_id' => $posting->getId()
-            );
+            ];
         }
         $this->render_json($output);
     }
@@ -243,7 +243,7 @@ class StreamsController extends PluginController {
             }
         }
         BlubberPosting::$course_hashes = ($context_type === "course" ? $context : false);
-        $output = array();
+        $output = [];
         $thread = new BlubberPosting(Request::option("thread"));
         $thread['seminar_id'] = $context_type === "course" ? $context : $GLOBALS['user']->id;
         $thread['context_type'] = $context_type;
@@ -290,10 +290,10 @@ class StreamsController extends PluginController {
                         "topic_id = :thread_id, " .
                         "mkdate = UNIX_TIMESTAMP() " .
                 "");
-                $statement->execute(array(
+                $statement->execute([
                     'user_id' => $GLOBALS['user']->id,
                     'thread_id' => $thread->getId()
-                ));
+                ]);
                 $contact_groups = Request::getArray("contact_groups");
                 foreach ($contact_groups as $gruppe_id) {
                     $users = DBManager::get()->query(
@@ -304,10 +304,10 @@ class StreamsController extends PluginController {
                             "AND statusgruppe_user.statusgruppe_id = ".DBManager::get()->quote($gruppe_id)." " .
                     "")->fetchAll(PDO::FETCH_COLUMN, 0);
                     foreach ($users as $user_id) {
-                        $statement->execute(array(
+                        $statement->execute([
                             'user_id' => $user_id,
                             'thread_id' => $thread->getId()
-                        ));
+                        ]);
                         //Meldung oder nicht Meldung, das ist hier die Frage.
                     }
                 }
@@ -452,7 +452,7 @@ class StreamsController extends PluginController {
         }
         BlubberPosting::$course_hashes = ($thread['context_type'] === "course" ? $thread['Seminar_id'] : false);
         if (!$thread->isNew() && $thread['Seminar_id'] === $context) {
-            $output = array();
+            $output = [];
             $posting = new BlubberPosting();
             $posting['context_type'] = $thread['context_type'];
             $posting['seminar_id'] = $thread['Seminar_id'];
@@ -491,7 +491,7 @@ class StreamsController extends PluginController {
             $output['posting_id'] = $posting->getId();
 
             //Notifications:
-            $user_ids = array();
+            $user_ids = [];
             if ($thread['user_id'] && $thread['user_id'] !== $GLOBALS['user']->id) {
                 $user_ids[] = $thread['user_id'];
             }
@@ -510,7 +510,7 @@ class StreamsController extends PluginController {
                     $user_id,
                     PluginEngine::getURL(
                         $this->plugin,
-                        array('cid' => $thread['context_type'] === "course" ? $thread['Seminar_id'] : null),
+                        ['cid' => $thread['context_type'] === "course" ? $thread['Seminar_id'] : null],
                         "streams/thread/".$thread->getId()
                     ),
                     sprintf(_("%s hat einen Kommentar geschrieben"), get_fullname()),
@@ -522,9 +522,9 @@ class StreamsController extends PluginController {
 
             $this->render_json($output);
         } else {
-            $this->render_json(array(
+            $this->render_json([
                 'error' => "Konnte thread nicht zuordnen."
-            ));
+            ]);
         }
     }
 
@@ -541,7 +541,7 @@ class StreamsController extends PluginController {
             throw new AccessDeniedException();
         }
 
-        $output = array();
+        $output = [];
 
         foreach ($_FILES as $file) {
 
@@ -714,24 +714,24 @@ class StreamsController extends PluginController {
                         "external_contact_id = :contact_id, " .
                         "left_follows_right = '1' " .
                 "");
-                $success = $statement->execute(array(
+                $success = $statement->execute([
                     'user_id' => $GLOBALS['user']->id,
                     'contact_id' => $user->getId()
-                ));
+                ]);
                 if ($success) {
                     NotificationCenter::postNotification('BlubberExternalContactDidAdd', $user);
                 }
             } else {
-                Contact::import(array(
+                Contact::import([
                 'owner_id' => User::findCurrent()->id,
-                'user_id' => $user->id)
+                'user_id' => $user->id]
                     )->store();
             }
         }
-        $this->render_json(array(
+        $this->render_json([
             'success' => 1,
             'message' => (string) MessageBox::success(_("Kontakt hinzugefügt"))
-        ));
+        ]);
     }
 
     public function custom_action($stream_id)
@@ -784,10 +784,10 @@ class StreamsController extends PluginController {
 
             //Pool-rules
             $this->stream['pool_courses'] = Request::get("pool_courses_check")
-                ? (in_array("all", Request::getArray("pool_courses")) ? array("all") : Request::getArray("pool_courses"))
+                ? (in_array("all", Request::getArray("pool_courses")) ? ["all"] : Request::getArray("pool_courses"))
                 : null;
             $this->stream['pool_groups'] = Request::get("pool_groups_check")
-                ? (in_array("all", Request::getArray("pool_groups")) ? array("all") : Request::getArray("pool_groups"))
+                ? (in_array("all", Request::getArray("pool_groups")) ? ["all"] : Request::getArray("pool_groups"))
                 : null;
             $this->stream['pool_hashtags'] = Request::get("pool_hashtags_check")
                 ? preg_split("/\s+/", Request::get("pool_hashtags"), null, PREG_SPLIT_NO_EMPTY)
@@ -806,10 +806,10 @@ class StreamsController extends PluginController {
                 ? Request::getArray("filter_type")
                 : null;
             $this->stream['filter_courses'] = Request::get("filter_courses_check")
-                ? (in_array("all", Request::getArray("filter_courses")) ? array("all") : Request::getArray("filter_courses"))
+                ? (in_array("all", Request::getArray("filter_courses")) ? ["all"] : Request::getArray("filter_courses"))
                 : null;
             $this->stream['filter_groups'] = Request::get("filter_groups_check")
-                ? (in_array("all", Request::getArray("filter_groups")) ? array("all") : Request::getArray("filter_groups"))
+                ? (in_array("all", Request::getArray("filter_groups")) ? ["all"] : Request::getArray("filter_groups"))
                 : null;
             $this->stream['filter_hashtags'] = Request::get("filter_hashtags_check")
                 ? preg_split("/\s+/", Request::get("filter_hashtags"), null, PREG_SPLIT_NO_EMPTY)
@@ -839,7 +839,7 @@ class StreamsController extends PluginController {
                 StreamAvatar::getAvatar($this->stream->getId())->createFromUpload("image");
             }
             if ($new) {
-                $this->redirect(PluginEngine::getURL($this->plugin, array(), "streams/custom/".$this->stream->getId()));
+                $this->redirect(PluginEngine::getURL($this->plugin, [], "streams/custom/".$this->stream->getId()));
             } else {
                 PageLayout::postMessage(MessageBox::success(_("Stream wurde gespeichert.")));
             }
@@ -866,17 +866,17 @@ class StreamsController extends PluginController {
                 $path = "streams/custom/".$stream->getId();
             }
         }
-        $this->redirect(PluginEngine::getURL($this->plugin, array(), $path));
+        $this->redirect(PluginEngine::getURL($this->plugin, [], $path));
     }
 
     public function get_streams_threadnumber_action() {
         $stream = new BlubberStream();
         //Pool-rules
         $stream['pool_courses'] = Request::get("pool_courses_check")
-            ? (in_array("all", Request::getArray("pool_courses")) ? array("all") : Request::getArray("pool_courses"))
+            ? (in_array("all", Request::getArray("pool_courses")) ? ["all"] : Request::getArray("pool_courses"))
             : null;
         $stream['pool_groups'] = Request::get("pool_groups_check")
-            ? (in_array("all", Request::getArray("pool_groups")) ? array("all") : Request::getArray("pool_groups"))
+            ? (in_array("all", Request::getArray("pool_groups")) ? ["all"] : Request::getArray("pool_groups"))
             : null;
         $stream['pool_hashtags'] = Request::get("pool_hashtags_check")
             ? preg_split("/\s+/", Request::get("pool_hashtags"), null, PREG_SPLIT_NO_EMPTY)
@@ -895,10 +895,10 @@ class StreamsController extends PluginController {
             ? Request::getArray("filter_type")
             : null;
         $stream['filter_courses'] = Request::get("filter_courses_check")
-            ? (in_array("all", Request::getArray("filter_courses")) ? array("all") : Request::getArray("filter_courses"))
+            ? (in_array("all", Request::getArray("filter_courses")) ? ["all"] : Request::getArray("filter_courses"))
             : null;
         $stream['filter_groups'] = Request::get("filter_groups_check")
-            ? (in_array("all", Request::getArray("filter_groups")) ? array("all") : Request::getArray("filter_groups"))
+            ? (in_array("all", Request::getArray("filter_groups")) ? ["all"] : Request::getArray("filter_groups"))
             : null;
         $stream['filter_hashtags'] = Request::get("filter_hashtags_check")
             ? preg_split("/\s+/", Request::get("filter_hashtags"), null, PREG_SPLIT_NO_EMPTY)
@@ -981,9 +981,9 @@ class StreamsController extends PluginController {
     }
 
     public function get_possible_mentions_action() {
-        $output = array(
-            array('id' => 1, 'name' => "Rasmus", "avatar" => null)
-        );
+        $output = [
+            ['id' => 1, 'name' => "Rasmus", "avatar" => null]
+        ];
         $this->render_json($output);
     }
 
@@ -997,7 +997,7 @@ class StreamsController extends PluginController {
             foreach ($tags as $tag) {
                 $cloud->addLink(
                     "#".$tag['tag'],
-                    URLHelper::getURL("plugins.php/blubber/streams/$context", array('hash' => $tag['tag'])),
+                    URLHelper::getURL("plugins.php/blubber/streams/$context", ['hash' => $tag['tag']]),
                     ceil(10 * $tag['counter'] / $maximum)
                 );
             }

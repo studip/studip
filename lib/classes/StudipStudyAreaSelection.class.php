@@ -49,7 +49,7 @@ class StudipStudyAreaSelection {
         $this->selected = StudipStudyArea::getRootArea();
         $this->showAll = FALSE;
 
-        $this->areas = array();
+        $this->areas = [];
 
         $this->searchKey = '';
         $this->clearSearchResult();
@@ -139,13 +139,13 @@ class StudipStudyAreaSelection {
 
         # no search key -> return empty array
         if ($this->searchKey === '') {
-            return array();
+            return [];
         }
 
         # not memoized yet, do so now
         if (is_null($this->searchResult)) {
             $this->searchResult = StudipStudyArea::search($this->searchKey);
-            usort($this->searchResult, array(__CLASS__, 'sortSearchResult'));
+            usort($this->searchResult, [__CLASS__, 'sortSearchResult']);
         }
 
         return $this->searchResult;
@@ -243,7 +243,7 @@ class StudipStudyAreaSelection {
      * @return object     the called instance itself
      */
     function setAreas($areas) {
-        $this->areas = array();
+        $this->areas = [];
         foreach ($areas as $area) {
             $this->add($area);
         }
@@ -321,7 +321,7 @@ class StudipStudyAreaSelection {
      */
     function getTrail() {
         $area = $this->selected;
-        $trail = array($area->getID() => $area);
+        $trail = [$area->getID() => $area];
         while ($parent = $area->getParent()) {
             $trail[$parent->getID()] = $parent;
             $area = $parent;

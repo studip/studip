@@ -39,13 +39,13 @@ class LinkButtonTestCase extends PHPUnit_Framework_TestCase
     function testCreateWithLabelAndArray()
     {
         $this->assertEquals('<a a="1" b="2" class="button" href="?" tabindex="0">yes</a>',
-                            '' . LinkButton::create('yes', array('a' => 1, 'b' => 2)));
+                            '' . LinkButton::create('yes', ['a' => 1, 'b' => 2]));
     }
 
     function testCreateWithLabelUrlAndArray()
     {
         $this->assertEquals('<a a="1" b="2" class="button" href="http://example.net" tabindex="0">yes</a>',
-                            '' . LinkButton::create('yes', 'http://example.net', array('a' => 1, 'b' => 2)));
+                            '' . LinkButton::create('yes', 'http://example.net', ['a' => 1, 'b' => 2]));
     }
 
     function testCreateAccept()
@@ -69,6 +69,6 @@ class LinkButtonTestCase extends PHPUnit_Framework_TestCase
     function testCreateWithInsaneArguments()
     {
         $this->assertEquals('<a class="button" href="http://example.net?m=&amp;m=" mad="&lt;S&gt;tu&quot;ff" tabindex="0">&gt;ok&lt;</a>',
-                            '' . LinkButton::create('>ok<', 'http://example.net?m=&m=', array('mad' => '<S>tu"ff')));
+                            '' . LinkButton::create('>ok<', 'http://example.net?m=&m=', ['mad' => '<S>tu"ff']));
     }
 }

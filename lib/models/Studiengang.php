@@ -23,51 +23,51 @@ class Studiengang extends ModuleManagementModelTreeItem
     private $kategorie_name;
     private $count_module;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_studiengang';
 
-        $config['belongs_to']['abschluss'] = array(
+        $config['belongs_to']['abschluss'] = [
             'class_name' => 'Abschluss',
             'foreign_key' => 'abschluss_id'
-        );
-        $config['has_and_belongs_to_many']['studiengangteile'] = array(
+        ];
+        $config['has_and_belongs_to_many']['studiengangteile'] = [
             'class_name' => 'StudiengangTeil',
             'thru_table' => 'mvv_stg_stgteil',
             'thru_key' => 'studiengang_id',
             'thru_assoc_key' => 'stgteil_id'
-        );
-        $config['has_many']['stgteil_assignments'] = array(
+        ];
+        $config['has_many']['stgteil_assignments'] = [
             'class_name' => 'StudiengangStgteil',
             'foreign_key' => 'studiengang_id',
             'order_by' => 'ORDER BY position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_and_belongs_to_many']['stgteil_bezeichnungen'] = array(
+        ];
+        $config['has_and_belongs_to_many']['stgteil_bezeichnungen'] = [
             'class_name' => 'StgteilBezeichnung',
             'thru_table' => 'mvv_stg_stgteil',
             'thru_key' => 'studiengang_id',
             'thru_assoc_key' => 'stgteil_bez_id',
             'order_by' => 'GROUP BY stgteil_bez_id ORDER BY position'
-        );
-        $config['has_many']['documents'] = array(
+        ];
+        $config['has_many']['documents'] = [
             'class_name' => 'MvvDokument',
             'assoc_func' => 'findByObject',
             'assoc_func_params_func' => function ($stg) { return $stg; }
-        );
-        $config['has_many']['document_assignments'] = array(
+        ];
+        $config['has_many']['document_assignments'] = [
             'class_name' => 'MvvDokumentZuord',
             'assoc_foreign_key' => 'range_id',
             'order_by' => 'ORDER BY position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_one']['responsible_institute'] = array(
+        ];
+        $config['has_one']['responsible_institute'] = [
             'class_name' => 'Fachbereich',
             'foreign_key' => 'institut_id',
             'assoc_foreign_key' => 'institut_id'
-        );
+        ];
 
         $config['additional_fields']['count_dokumente']['get'] =
             function($stg) { return $stg->count_dokumente; };
@@ -105,7 +105,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             SELECT ms.* 
             FROM mvv_studiengang ms 
             WHERE ms.abschluss_id = ?',
-            array($abschluss_id)
+            [$abschluss_id]
         );
     }
 
@@ -126,7 +126,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 LEFT JOIN mvv_stgteil USING(stgteil_id)
             WHERE mvv_studiengang.abschluss_id = ? AND mvv_stgteil.fach_id = ?
             ' . self::getFilterSql($filter),
-            array($abschluss_id, $fach_id)
+            [$abschluss_id, $fach_id]
         );
     }
 
@@ -153,7 +153,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             WHERE mfi.institut_id = ? 
                 GROUP BY studiengang_id 
                 ORDER BY name',
-            array($fachbereich_id)
+            [$fachbereich_id]
         );
     }
 
@@ -175,7 +175,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             WHERE maz.kategorie_id = ? 
             GROUP BY studiengang_id 
             ORDER BY name',
-            array($kategorie_id)
+            [$kategorie_id]
         );
     }
 
@@ -203,7 +203,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             WHERE maz.kategorie_id = ? AND mfi.institut_id = ? 
             GROUP BY studiengang_id 
             ORDER BY name',
-            array($kategorie_id, $fachbereich_id)
+            [$kategorie_id, $fachbereich_id]
         );
     }
 
@@ -220,7 +220,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             FROM mvv_studiengang ms 
                 LEFT JOIN mvv_stg_stgteil mss USING(studiengang_id) 
             WHERE mss.stgteil_id = ? ',
-            array($stgteil_id)
+            [$stgteil_id]
         );
     }
 
@@ -250,11 +250,11 @@ class Studiengang extends ModuleManagementModelTreeItem
                     AND ms.stat IN (?) 
                 GROUP BY studiengang_id 
                 ORDER BY count_module DESC',
-                array(
+                [
                     $modul_ids,
                     StgteilVersion::getPublicStatus(),
                     Studiengang::getPublicStatus()
-                )
+                ]
             );
         } else {
             return parent::getEnrichedByQuery('
@@ -267,7 +267,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 WHERE msm.modul_id IN (?) 
                 GROUP BY studiengang_id 
                 ORDER BY count_module DESC',
-                    array($modul_ids));
+                    [$modul_ids]);
         }
     }
 
@@ -285,7 +285,7 @@ class Studiengang extends ModuleManagementModelTreeItem
     public static function toArrayFachbereichAbschlussKategorie($fachbereich_id,
             $kategorie_id)
     {
-        $studiengaenge = array();
+        $studiengaenge = [];
         $query = '
             SELECT ms.studiengang_id, ms.name 
             FROM mvv_studiengang ms 
@@ -298,7 +298,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             GROUP BY studiengang_id 
             ORDER BY name';
         $stmt = DBManager::get()->prepare($query);
-        $stmt->execute(array($kategorie_id, $fachbereich_id));
+        $stmt->execute([$kategorie_id, $fachbereich_id]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $studiengang) {
             $studiengaenge[$studiengang['studiengang_id']] = $studiengang;
         }
@@ -349,7 +349,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             " . self::getFilterSql($filter, true) . "
             GROUP BY studiengang_id 
             ORDER BY " . $sortby,
-            array(),
+            [],
             $row_count,
             $offset
         );
@@ -404,7 +404,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 LEFT JOIN mvv_stgteil mst USING (stgteil_id) 
             WHERE ms.studiengang_id = ? 
             GROUP BY studiengang_id',
-            array($studiengang_id)
+            [$studiengang_id]
         );
         if (sizeof($studiengaenge)) {
             return $studiengaenge->find($studiengang_id);
@@ -456,7 +456,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 ON Institute.fakultaets_id = faculties.Institut_id 
                 '. Fachbereich::getFilterSql($filter, true) . '
             GROUP BY Institute.Institut_id 
-            ORDER BY name', array());
+            ORDER BY name', []);
     }
 
     /**
@@ -522,7 +522,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 '. self::getFilterSql($filter) . '
             GROUP BY studiengang_id 
             ORDER BY `name`',
-            array((array) $studiengang_ids)
+            [(array) $studiengang_ids]
         );
     }
 
@@ -534,7 +534,7 @@ class Studiengang extends ModuleManagementModelTreeItem
      * @param array $studiengang_ids
      * @return array
      */
-    public static function findStatusByIds($studiengang_ids = array())
+    public static function findStatusByIds($studiengang_ids = [])
     {
         if (is_array($studiengang_ids) && sizeof($studiengang_ids)) {
             $stmt = DBManager::get()->prepare("
@@ -542,7 +542,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                     COUNT(studiengang_id) AS count_objects 
                 FROM mvv_studiengang WHERE studiengang_id IN (?) 
                 GROUP BY stat");
-            $stmt->execute(array($studiengang_ids));
+            $stmt->execute([$studiengang_ids]);
         } else {
             $stmt = DBManager::get()->prepare("
                 SELECT IFNULL(stat, '__undefined__') AS stat, 
@@ -553,12 +553,12 @@ class Studiengang extends ModuleManagementModelTreeItem
             $stmt->execute();
         }
 
-        $result = array();
+        $result = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $status) {
-            $result[$status['stat']] = array(
+            $result[$status['stat']] = [
                 'name' => $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'][$status['stat']]['name'],
                 'count_objects' => $status['count_objects']
-            );
+            ];
         }
         return $result;
     }
@@ -620,8 +620,8 @@ class Studiengang extends ModuleManagementModelTreeItem
                 WHERE studiengang_id = ? 
                     AND msv.stat IN (?) 
                     AND mm.stat IN(?) ';
-            $params = array($this->getId(), StgteilVersion::getPublicStatus(),
-            Modul::getPublicStatus());
+            $params = [$this->getId(), StgteilVersion::getPublicStatus(),
+            Modul::getPublicStatus()];
         } else {
             $query = '
                 SELECT DISTINCT modul_id 
@@ -631,7 +631,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 INNER JOIN mvv_stgteilabschnitt_modul USING (abschnitt_id) 
                 INNER JOIN mvv_modul mm USING(modul_id) 
                 WHERE studiengang_id = ? ';
-            $params = array($this->getId());
+            $params = [$this->getId()];
         }
         if (is_array($modul_ids)) {
             $query .= ' AND mm.modul_id IN (?)';
@@ -676,7 +676,7 @@ class Studiengang extends ModuleManagementModelTreeItem
     public function getResponsibleInstitutes()
     {
         if ($this->responsible_institute) {
-            return array($this->responsible_institute);
+            return [$this->responsible_institute];
         }
         return parent::getResponsibleInstitutes();
     }
@@ -730,7 +730,7 @@ class Studiengang extends ModuleManagementModelTreeItem
     public function getParents($mode = null)
     {
         $fachbereich = Fachbereich::find($this->institut_id);
-        return array($fachbereich);
+        return [$fachbereich];
     }
 
     /**
@@ -745,7 +745,7 @@ class Studiengang extends ModuleManagementModelTreeItem
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             // The name of the studiengang must be longer than 4 characters
             if (mb_strlen($this->isI18nField('name')
@@ -769,7 +769,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             if ($this->abschluss_id) {
                 $stmt = DBManager::get()->prepare('SELECT abschluss_id '
                         . 'FROM abschluss WHERE abschluss_id = ?');
-                $stmt->execute(array($this->abschluss_id));
+                $stmt->execute([$this->abschluss_id]);
                 if (!$stmt->fetch()) {
                     $ret['abschluss_id'] = true;
                     $messages[] = _('Unbekannter Abschluss.');
@@ -783,7 +783,7 @@ class Studiengang extends ModuleManagementModelTreeItem
             if ($this->institut_id) {
                 $stmt = DBManager::get()->prepare('SELECT institut_id '
                         . 'FROM Institute WHERE Institut_id = ?');
-                $stmt->execute(array($this->institut_id));
+                $stmt->execute([$this->institut_id]);
                 if (!$stmt->fetch()) {
                     $ret['institut_id'] = true;
                     $messages[] = _('Unbekannte Einrichtung.');

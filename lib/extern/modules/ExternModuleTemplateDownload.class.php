@@ -45,28 +45,28 @@ require_once 'lib/statusgruppe.inc.php';
 
 class ExternModuleTemplateDownload extends ExternModule {
 
-    var $markers = array();
-    var $args = array('seminar_id');
+    var $markers = [];
+    var $args = ['seminar_id'];
 
     /**
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
 
-        $this->data_fields = array("icon", "filename", "description", "mkdate",
-                             "filesize", "fullname");
-        $this->registered_elements = array(
+        $this->data_fields = ["icon", "filename", "description", "mkdate",
+                             "filesize", "fullname"];
+        $this->registered_elements = [
                 'LinkInternTemplate', 'TemplateGeneric'
-        );
+        ];
 
-        $this->field_names = array (
+        $this->field_names =  [
                 _("Icon"),
                 _("Dateiname"),
                 _("Beschreibung"),
                 _("Datum"),
                 _("Größe"),
                 _("Upload durch")
-        );
+        ];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
@@ -81,7 +81,7 @@ class ExternModuleTemplateDownload extends ExternModule {
     //  $this->elements["LinkIntern"]->real_name = _("Link zum Modul MitarbeiterInnendetails");
 
         $this->elements['TemplateGeneric']->real_name = _("Template");
-        $this->elements['LinkInternTemplate']->link_module_type = array(2, 14);
+        $this->elements['LinkInternTemplate']->link_module_type = [2, 14];
         $this->elements['LinkInternTemplate']->real_name = _("Link zum Modul MitarbeiterInnendetails");
 
     }
@@ -96,41 +96,41 @@ class ExternModuleTemplateDownload extends ExternModule {
     }
 
     function getMarkerDescription ($element_name) {
-        $markers['TemplateGeneric'][] = array('__GLOBAL__', _("Globale Variablen (gültig im gesamten Template)."));
-        $markers['TemplateGeneric'][] = array('###FILES-COUNT###', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN DOWNLOAD -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NO-FILES -->', '');
-        $markers['TemplateGeneric'][] = array('###NO-FILES-TEXT###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END NO-FILES -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN FILES -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN FILE -->', '');
-        $markers['TemplateGeneric'][] = array('###FILE_NAME###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_FILE-NAME###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_SIZE###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_NO###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_DESCRIPTION###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_UPLOAD-DATE###', '');
-        $markers['TemplateGeneric'][] = array('###FULLNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LASTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###FIRSTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEFRONT###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEREAR###', '');
-        $markers['TemplateGeneric'][] = array('###PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###USERNAME###', '');
+        $markers['TemplateGeneric'][] = ['__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")];
+        $markers['TemplateGeneric'][] = ['###FILES-COUNT###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN DOWNLOAD -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NO-FILES -->', ''];
+        $markers['TemplateGeneric'][] = ['###NO-FILES-TEXT###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END NO-FILES -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN FILES -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN FILE -->', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_NAME###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_FILE-NAME###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_SIZE###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_NO###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_DESCRIPTION###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_UPLOAD-DATE###', ''];
+        $markers['TemplateGeneric'][] = ['###FULLNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LASTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###FIRSTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEFRONT###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEREAR###', ''];
+        $markers['TemplateGeneric'][] = ['###PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###USERNAME###', ''];
         $this->insertDatafieldMarkers('user', $markers, 'TemplateGeneric');
-        $markers['TemplateGeneric'][] = array('###FILE_HREF###', '');
-        $markers['TemplateGeneric'][] = array('###FILE_ICON-HREF###', '');
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN PERSONDETAIL-LINK -->');
-        $markers['TemplateGeneric'][] = array('###LINK_FULLNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LINK_LASTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LINK_FIRSTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LINK_TITLEFRONT###', '');
-        $markers['TemplateGeneric'][] = array('###LINK_TITLEREAR###', '');
-        $markers['TemplateGeneric'][] = array('###LINK_PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END PERSONDETAIL-LINK -->');
-        $markers['TemplateGeneric'][] = array('<!-- END FILE -->');
-        $markers['TemplateGeneric'][] = array('<!-- END FILES -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END DOWNLOAD -->', '');
+        $markers['TemplateGeneric'][] = ['###FILE_HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###FILE_ICON-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN PERSONDETAIL-LINK -->'];
+        $markers['TemplateGeneric'][] = ['###LINK_FULLNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LINK_LASTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LINK_FIRSTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LINK_TITLEFRONT###', ''];
+        $markers['TemplateGeneric'][] = ['###LINK_TITLEREAR###', ''];
+        $markers['TemplateGeneric'][] = ['###LINK_PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END PERSONDETAIL-LINK -->'];
+        $markers['TemplateGeneric'][] = ['<!-- END FILE -->'];
+        $markers['TemplateGeneric'][] = ['<!-- END FILES -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END DOWNLOAD -->', ''];
 
         return $markers[$element_name];
     }
@@ -138,9 +138,9 @@ class ExternModuleTemplateDownload extends ExternModule {
     function getContent ($args = NULL, $raw = FALSE) {
         $error_message = "";
         if (!$args) {
-            $args = array();
+            $args = [];
         }
-        $content = array();
+        $content = [];
 
         // check for valid range_id
         if(!$this->checkRangeId($this->config->range_id)) {
@@ -152,7 +152,7 @@ class ExternModuleTemplateDownload extends ExternModule {
             $query = "SELECT Lesezugriff FROM seminare s LEFT JOIN seminar_inst si ";
             $query .= "USING(seminar_id) WHERE s.seminar_id = ? ";
             $query .= "AND si.institut_id = ?";
-            $params = array($seminar_id, $this->config->range_id);
+            $params = [$seminar_id, $this->config->range_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($params);
             $row = $statement->fetchColumn();
@@ -239,12 +239,12 @@ class ExternModuleTemplateDownload extends ExternModule {
                 $content['FILES']['FILE'][$i]['LASTNAME'] = ExternModule::ExtHtmlReady($downloadable_file_ref->nachname);
                 $content['FILES']['FILE'][$i]['TITLEFRONT'] = ExternModule::ExtHtmlReady($downloadable_file_ref->title_front);
                 $content['FILES']['FILE'][$i]['TITLEREAR'] = ExternModule::ExtHtmlReady($downloadable_file_ref->title_rear);
-                $content['FILES']['FILE'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(array('link_args' => 'username=' . $downloadable_file_ref->username));
+                $content['FILES']['FILE'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $downloadable_file_ref->username]);
 
                 // if user is member of a group then link name to details page
                 $link_persondetail = '';
                 if (GetRoleNames(GetAllStatusgruppen($this->config->range_id, $downloadable_file_ref->user_id))) {
-                    $content['FILES']['FILE'][$i]['PERSONDETAIL-LINK']['LINK_PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(array('link_args' => 'username=' . $downloadable_file_ref->username));
+                    $content['FILES']['FILE'][$i]['PERSONDETAIL-LINK']['LINK_PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $downloadable_file_ref->username]);
                     $content['FILES']['FILE'][$i]['PERSONDETAIL-LINK']['LINK_FULLNAME'] = ExternModule::ExtHtmlReady($downloadable_file_ref->fullname);
                     $content['FILES']['FILE'][$i]['PERSONDETAIL-LINK']['LINK_FIRSTNAME'] = ExternModule::ExtHtmlReady($downloadable_file_ref->vorname);
                     $content['FILES']['FILE'][$i]['PERSONDETAIL-LINK']['LINK_LASTNAME'] = ExternModule::ExtHtmlReady($downloadable_file_ref->nachname);
@@ -271,7 +271,7 @@ class ExternModuleTemplateDownload extends ExternModule {
             //}while($row = $statement->fetch(PDO::FETCH_ASSOC));
             }
         }
-        $content = array('DOWNLOAD' => $content);
+        $content = ['DOWNLOAD' => $content];
         $content['__GLOBAL__']['FILES-COUNT'] = $i;
 
         return $content;
@@ -282,7 +282,7 @@ class ExternModuleTemplateDownload extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent($args), 'subpart' => 'DOWNLOAD'));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent($args), 'subpart' => 'DOWNLOAD']);
 
     }
 
@@ -291,7 +291,7 @@ class ExternModuleTemplateDownload extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent($args), 'subpart' => 'DOWNLOAD', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent($args), 'subpart' => 'DOWNLOAD', 'hide_markers' => FALSE]);
 
     }
 

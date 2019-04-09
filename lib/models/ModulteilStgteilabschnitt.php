@@ -18,18 +18,18 @@
 class ModulteilStgteilabschnitt extends ModuleManagementModel
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil_stgteilabschnitt';
     
-        $config['belongs_to']['modulteil'] = array(
+        $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
             'foreign_key' => 'modulteil_id'
-        );
-        $config['belongs_to']['abschnitt'] = array(
+        ];
+        $config['belongs_to']['abschnitt'] = [
             'class_name' => 'StgteilAbschnitt',
             'foreign_key' => 'abschnitt_id'
-        );
+        ];
         
         parent::configure($config);
     }

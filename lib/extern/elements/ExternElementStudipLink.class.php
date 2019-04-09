@@ -40,8 +40,8 @@
 
 class ExternElementStudipLink extends ExternElement {
 
-    var $attributes = array("linktext", "imageurl", "image", "a_class", "a_style", "font_face",
-            "font_size", "font_color", "font_class", "font_style", "align");
+    var $attributes = ["linktext", "imageurl", "image", "a_class", "a_style", "font_face",
+            "font_size", "font_color", "font_class", "font_style", "align"];
 
     /**
     * Constructor
@@ -62,12 +62,12 @@ class ExternElementStudipLink extends ExternElement {
     */
     function getDefaultConfig () {
 
-        $config = array(
+        $config = [
             "linktext" => _("Daten ändern"),
             "imageurl" => "",
             "image" => "1",
             "align" => "left"
-        );
+        ];
 
         return $config;
     }
@@ -76,7 +76,7 @@ class ExternElementStudipLink extends ExternElement {
             $edit_form = "", $anker = "") {
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';

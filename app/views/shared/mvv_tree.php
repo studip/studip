@@ -16,7 +16,7 @@
     <? endif; ?>
     <? if ($current['class'] != 'Modulteil') : ?>
         <ul>
-            <?= $this->render_partial('shared/mvv_tree.php', array('tree' => $tree, 'node' => $current['id'])) ?>
+            <?= $this->render_partial('shared/mvv_tree.php', ['tree' => $tree, 'node' => $current['id']]) ?>
         </ul>
     <? endif; ?>
 </li>

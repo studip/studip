@@ -24,8 +24,8 @@
 
 class CalendarWeekView extends CalendarView
 {
-    protected $days       = array(1,2,3,4,5);
-    protected static $day_names  = array("Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag");
+    protected $days       = [1,2,3,4,5];
+    protected static $day_names  = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag","Sonntag"];
     
 
 

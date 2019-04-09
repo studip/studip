@@ -239,7 +239,7 @@
     </fieldset>
 
     <footer>
-        <?= \Studip\Button::createAccept(_("Speichern"), array()) ?>
+        <?= \Studip\Button::createAccept(_("Speichern"), []) ?>
     </footer>
 </form>
 
@@ -253,6 +253,6 @@ if ($streamAvatar->is_customized()) {
 
 $actions = new ActionsWidget();
 if (!$stream->isNew()) {
-    $actions->addLink(_("Diesen Stream löschen"), PluginEngine::getURL($plugin, array(), 'streams/delete/'.$stream->getId()), Icon::create("trash", "clickable"), array('onclick' => "return window.confirm('"._("Wirklich löschen?")."');"));
+    $actions->addLink(_("Diesen Stream löschen"), PluginEngine::getURL($plugin, [], 'streams/delete/'.$stream->getId()), Icon::create("trash", "clickable"), ['onclick' => "return window.confirm('"._("Wirklich löschen?")."');"]);
 }
 $sidebar->addWidget($actions);

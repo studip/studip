@@ -63,7 +63,7 @@ class SidebarWidget extends Widget
      *
      * @return String The THML code of the rendered sidebar widget
      */
-    public function render($variables = array())
+    public function render($variables = [])
     {
         return parent::render($variables);
     }

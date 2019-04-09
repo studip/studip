@@ -10,7 +10,7 @@
     <b><?= htmlReady($semester) ?></b><br>
 
         <? foreach ($seminar as $one) :?>
-            <a href="<?= URLHelper::getScriptLink('dispatch.php/course/details', array('sem_id' => $one->id))?>">
+            <a href="<?= URLHelper::getScriptLink('dispatch.php/course/details', ['sem_id' => $one->id])?>">
                 <?= htmlReady($one->getFullname('number-name')) ?>
                 <? if ($one->start_semester !== $one->end_semester) : ?>
                     (<?= htmlReady($one->getFullname('sem-duration-name')) ?>)

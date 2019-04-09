@@ -44,9 +44,9 @@
     <?php if ($folder = $group->getFolder()) : ?>
         <p>
             <?= formatReady(sprintf(_('Zu dieser Gruppe gehört ein [Dateiordner]%s .'),
-                URLHelper::getURL('dispatch.php/course/files/index/' . $folder->id, array(
+                URLHelper::getURL('dispatch.php/course/files/index/' . $folder->id, [
                     'cid' => $course_id,
-                )))) ?>
+                ]))) ?>
         </p>
     <?php endif ?>
 

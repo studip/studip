@@ -22,17 +22,17 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     private $stgteil_name;
     private $count_fachberater;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteil';
 
-        $config['has_many']['versionen'] = array(
+        $config['has_many']['versionen'] = [
             'class_name' => 'StgteilVersion',
             'assoc_foreign_key' => 'stgteil_id',
             'on_delete' => 'delete'
-        );
+        ];
         // All assigned Studienfachberater
-        $config['has_and_belongs_to_many']['fachberater'] = array(
+        $config['has_and_belongs_to_many']['fachberater'] = [
             'class_name' => 'User',
             'thru_table' => 'mvv_fachberater',
             'thru_key' => 'stgteil_id',
@@ -40,30 +40,30 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             'order_by' => 'ORDER BY position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['fachberater_assignments'] = array(
+        ];
+        $config['has_many']['fachberater_assignments'] = [
             'class_name' => 'Fachberater',
             'assoc_foreign_key' => 'stgteil_id',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
         // The assigned Fach
-        $config['belongs_to']['fach'] = array(
+        $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
             'foreign_key' => 'fach_id'
-        );
-        $config['has_and_belongs_to_many']['studiengang'] = array(
+        ];
+        $config['has_and_belongs_to_many']['studiengang'] = [
             'class_name' => 'Studiengang',
             'thru_table' => 'mvv_stg_stgteil',
             'thru_key' => 'stgteil_id',
             'thru_assoc_key' => 'studiengang_id'
-        );
-        $config['has_many']['studiengang_assignments'] = array(
+        ];
+        $config['has_many']['studiengang_assignments'] = [
             'class_name' => 'StudiengangStgteil',
             'assoc_foreign_key' => 'stgteil_id',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
 
 
         $config['additional_fields']['count_versionen']['get'] =
@@ -95,7 +95,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
      */
     public function assignFachberater($users)
     {
-        $all_fachberater = array();
+        $all_fachberater = [];
         if (count($users)) {
             $position = 1;
             foreach ($users as $user) {
@@ -215,7 +215,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             FROM `mvv_stgteil`
                 LEFT JOIN `fach` USING(`fach_id`)
             WHERE `mvv_stgteil`.`stgteil_id` = ?",
-                array($stgteil_id));
+                [$stgteil_id]);
         if (sizeof($stgteil)) {
             return $stgteil->find($stgteil_id);
         }
@@ -255,7 +255,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 . 'LEFT JOIN mvv_stgteilversion USING(stgteil_id) '
                 . self::getFilterSql($filter, true)
                 . 'GROUP BY mvv_stgteil.stgteil_id '
-                . 'ORDER BY ' . $sortby, array(), $row_count, $offset);
+                . 'ORDER BY ' . $sortby, [], $row_count, $offset);
     }
 
     /**
@@ -290,7 +290,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             $sort = 'stgteil_position, stgteil_chdate', $order = 'ASC')
     {
         $sort = self::createSortStatement($sort, $order, 'chdate',
-                array('stgteil_position', 'stgteil_chdate'));
+                ['stgteil_position', 'stgteil_chdate']);
         return parent::getEnrichedByQuery(
                 'SELECT mst.*, msb.*, mss.position AS `stgteil_position`, '
                 . 'mss.chdate AS `stgteil_chdate`'
@@ -299,7 +299,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 . 'LEFT JOIN mvv_stgteil mst USING(stgteil_id) '
                 . 'LEFT JOIN fach mf USING(fach_id) '
                 . 'WHERE studiengang_id = ? '
-                . 'ORDER BY ' . $sort, array($studiengang_id));
+                . 'ORDER BY ' . $sort, [$studiengang_id]);
     }
 
     /**
@@ -317,7 +317,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             $sort = 'chdate', $order = 'DESC')
     {
         $sort = self::createSortStatement($sort, $order, 'chdate');
-        $params = array($fach_id);
+        $params = [$fach_id];
         return parent::getEnrichedByQuery(
             'SELECT `mvv_stgteil`.*
                 FROM `mvv_stgteil`
@@ -343,8 +343,8 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             $sort = 'chdate', $order = 'DESC')
     {
         $sort = self::createSortStatement($sort, $order, 'chdate',
-                array('fach_name'));
-        $params = array($fachbereich_id);
+                ['fach_name']);
+        $params = [$fachbereich_id];
         return parent::getEnrichedByQuery('
             SELECT `mvv_stgteil`.*, `fach`.`name` AS `fach_name`
                 FROM `mvv_stgteil`
@@ -372,7 +372,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 words('name stgteile'))
                 ? $sortby : 'name');
         $order = ($order != 'DESC' ? ' ASC' : ' DESC');
-        $fachbereiche = array();
+        $fachbereiche = [];
         $db = DBManager::get();
         $stmt = $db->prepare('
             SELECT
@@ -412,7 +412,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 WHERE `mvv_stg_stgteil`.`studiengang_id` = ?
                     AND `mvv_stg_stgteil`.`stgteil_bez_id` = ?
                 ORDER BY `position`, `chdate`',
-                array($studiengang_id, $stgteil_bez_id));
+                [$studiengang_id, $stgteil_bez_id]);
     }
 
     /**
@@ -438,7 +438,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 WHERE (`mvv_stgteil`.`zusatz` LIKE ?
                     OR `fach`.`name` LIKE ?) ' .
                 self::getFilterSql($filter) .
-                'GROUP BY `stgteil_id` ORDER BY `fach`.`name`', array($term, $term));
+                'GROUP BY `stgteil_id` ORDER BY `fach`.`name`', [$term, $term]);
     }
 
     /**
@@ -468,7 +468,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             if (!is_object($this->fach)) {
                 $ret['fach'] = true;
@@ -498,7 +498,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     {
         return array_map(function ($fb) {
             return new Institute($fb['institut_id']);
-        }, self::getAssignedFachbereiche('name', 'ASC', array('mvv_stgteil.stgteil_id' => $this->getId())));
+        }, self::getAssignedFachbereiche('name', 'ASC', ['mvv_stgteil.stgteil_id' => $this->getId()]));
     }
 
 }

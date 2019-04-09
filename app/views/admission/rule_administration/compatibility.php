@@ -36,7 +36,7 @@
                         <td>
                             <input type="checkbox" name="compat[<?= $class ?>][]"
                                    value="<?= $compat_class ?>"<?=
-                                    in_array($compat_class, $matrix[$class] ?: array()) ? ' checked' : ''?>>
+                                    in_array($compat_class, $matrix[$class] ?: []) ? ' checked' : ''?>>
                         </td>
                     <?php endforeach ?>
                 </tr>

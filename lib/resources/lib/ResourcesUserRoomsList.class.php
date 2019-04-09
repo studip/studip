@@ -42,7 +42,7 @@ ResourcesUserRoomsList, creates a list for all resources for one user
 
 class ResourcesUserRoomsList {
     var $user_id;       // userId from PhpLib (String)
-    var $resources = array();       // the results
+    var $resources = [];       // the results
     var $return_objects;    // should the complete objects be returned?
     var $only_rooms;    // we can do this stuff for rooms ar for all resources
     
@@ -105,7 +105,7 @@ class ResourcesUserRoomsList {
                   LEFT JOIN resources_categories USING (category_id)
                   WHERE parent_id IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($resource_list));
+        $statement->execute([$resource_list]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if (!$this->only_rooms || ($this->only_rooms && $row['is_room'])) {
                 $this->insertResource($row['resource_id'], $row['name'], $row['lockable']);
@@ -161,9 +161,9 @@ class ResourcesUserRoomsList {
                           LEFT JOIN resources_categories USING (category_id)
                           WHERE owner_id IN (?)";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     array_keys($my_objects)
-                ));
+                ]);
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     if (!$this->only_rooms || ($this->only_rooms && $row['is_room'])) {
                         $this->insertResource($row['resource_id'], $row['name'], $row['lockable']);
@@ -177,9 +177,9 @@ class ResourcesUserRoomsList {
                           LEFT JOIN resources_categories USING (category_id)
                           WHERE resources_user_resources.user_id IN (?)";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     array_keys($my_objects)
-                ));
+                ]);
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     if (!isset($my_resources[$row['resource_id']])){
                         if (!$this->only_rooms || ($this->only_rooms && $row['is_room'])) {
@@ -234,7 +234,7 @@ class ResourcesUserRoomsList {
     function next() {
         if (is_array($this->resources))
             if(list($id,$name) = each($this->resources))
-                return array("name" => $name, "resource_id" => $id);
+                return ["name" => $name, "resource_id" => $id];
         return FALSE;
     }
 

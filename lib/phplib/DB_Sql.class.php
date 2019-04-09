@@ -24,7 +24,7 @@ class DB_Sql {
     public $Halt_On_Error = "yes"; ## "yes" (halt with message), "no" (ignore errors quietly), "report" (ignore errror, but spit a warning)
 
     /* public: result array and current row number */
-    public $Record   = array();
+    public $Record   = [];
     public $Row;
     public $RowCount;
     public $ColumnCount;
@@ -141,7 +141,7 @@ class DB_Sql {
     function metadata($table='',$full=false) {
         $count = 0;
         $id    = 0;
-        $res   = array();
+        $res   = [];
 
         /*
         * Due to compatibility problems with Table we changed the behavior

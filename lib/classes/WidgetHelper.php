@@ -21,7 +21,7 @@ class WidgetHelper
     /**
      * array of submitted widget parameter values
      */
-    private static $params = array();
+    private static $params = [];
 
     /**
      * array of submitted widget parameter values
@@ -31,7 +31,7 @@ class WidgetHelper
     /**
      * Saves the widget data of a user
      */
-    private static $userWidgets = array();
+    private static $userWidgets = [];
 
     /**
      * Set the last active Widget
@@ -54,7 +54,7 @@ class WidgetHelper
     {
         $query = "SELECT position FROM widget_user where id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($pluginid));
+        $statement->execute([$pluginid]);
         $pos = $statement->fetchColumn();
 
         return $pos;
@@ -70,17 +70,17 @@ class WidgetHelper
     public static function storeNewPositions($widget, $position, $column)
     {
         $db = DBManager::get();
-        $oldWidget = $db->fetchOne("SELECT position,col FROM widget_user WHERE id = ? AND range_id = ?", array($widget, $GLOBALS['user']->id));
+        $oldWidget = $db->fetchOne("SELECT position,col FROM widget_user WHERE id = ? AND range_id = ?", [$widget, $GLOBALS['user']->id]);
         if ($oldWidget) {
 
             // Push all entries in the new column one position away
-            $db->execute("UPDATE widget_user SET position = position + 1 WHERE range_id = ? AND col = ? AND position >= ?", array($GLOBALS['user']->id, $column, $position));
+            $db->execute("UPDATE widget_user SET position = position + 1 WHERE range_id = ? AND col = ? AND position >= ?", [$GLOBALS['user']->id, $column, $position]);
 
             // Insert element
-            $db->execute("UPDATE widget_user SET position = ?, col = ? WHERE id = ? ", array($position, $column, $widget));
+            $db->execute("UPDATE widget_user SET position = ?, col = ? WHERE id = ? ", [$position, $column, $widget]);
 
             // Move positions in old column
-            $db->execute("UPDATE widget_user SET position = position - 1 WHERE col = ? AND range_id = ? AND position > ?", array($oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position']));
+            $db->execute("UPDATE widget_user SET position = position - 1 WHERE col = ? AND range_id = ? AND position > ?", [$oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position']]);
         }
     }
 
@@ -100,7 +100,7 @@ class WidgetHelper
                   $pos = intVal($pos);
                   $query = "REPLACE INTO widget_user (`pluginid`, `position`, `range_id`) VALUES (?,?,?);";
                   $statement = DBManager::get()->prepare($query);
-                  $statement->execute(array($id, $pos, $range_id));
+                  $statement->execute([$id, $pos, $range_id]);
              }
         }
     }
@@ -117,14 +117,14 @@ class WidgetHelper
     public static function storeInitialPositions($col, $ids, $perm)
     {
         $stmt = DBManager::get()->prepare('DELETE FROM widget_default WHERE `perm` = ? AND `col` = ?;');
-        $stmt->execute(array($perm, $col));
+        $stmt->execute([$perm, $col]);
 
         if (is_array($ids)) {
             foreach ($ids as $id => $pos) {
                 if ($id) {
                     $pos = intVal($pos);
                     $stmt = DBManager::get()->prepare("REPLACE INTO widget_default (`pluginid`,`col`, `position`, `perm`) VALUES (?,?,?,?);");
-                    $stmt->execute(array($id, $col, $pos, $perm));
+                    $stmt->execute([$id, $col, $pos, $perm]);
                 }
             }
 
@@ -138,7 +138,7 @@ class WidgetHelper
     {
         return DBManager::get()->fetchGroupedPairs("SELECT col, pluginid, position FROM widget_default "
                 . "WHERE perm = ? "
-                . "ORDER BY col ASC, position ASC", array($perm));
+                . "ORDER BY col ASC, position ASC", [$perm]);
     }
 
     /**
@@ -149,8 +149,8 @@ class WidgetHelper
      */
     public static function setAsInitialPositions($range_id, $group)
     {
-        DBManager::get()->execute("DELETE FROM widget_default WHERE `perm` = ?", array($group));
-        DBManager::get()->execute('INSERT INTO widget_default (SELECT pluginid, col, position, ? as perm  FROM widget_user WHERE range_id = ?)', array($group, $range_id));
+        DBManager::get()->execute("DELETE FROM widget_default WHERE `perm` = ?", [$group]);
+        DBManager::get()->execute('INSERT INTO widget_default (SELECT pluginid, col, position, ? as perm  FROM widget_user WHERE range_id = ?)', [$group, $range_id]);
     }
 
     /**
@@ -186,8 +186,8 @@ class WidgetHelper
         $plugin_manager = PluginManager::getInstance();
         $query = "SELECT * FROM widget_user WHERE range_id=? AND col = ? ORDER BY position";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id, $col));
-        $widgets = array();
+        $statement->execute([$id, $col]);
+        $widgets = [];
         while ($db_widget = $statement->fetch(PDO::FETCH_ASSOC)) {
             if(!is_null($plugin_manager->getPluginById($db_widget['pluginid']))){
                 $widget = clone $plugin_manager->getPluginById($db_widget['pluginid']);
@@ -254,7 +254,7 @@ class WidgetHelper
         $query = "DELETE FROM widget_user WHERE id = ? AND range_id = ?";
         $statement = DBManager::get()->prepare($query);
 
-        return $statement->execute(array($id, $range_id));
+        return $statement->execute([$id, $range_id]);
     }
 
     /**
@@ -293,7 +293,7 @@ class WidgetHelper
     {
         $query = "SELECT `pluginid` FROM `widget_user` WHERE `id`=?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         $pid = $statement->fetch(PDO::FETCH_ASSOC);
 
         $plugin_manager = PluginManager::getInstance();
@@ -327,10 +327,10 @@ class WidgetHelper
         $all_widgets = PluginEngine::getPlugins('PortalPlugin');
 
         $used_widgets = is_null($user_id)
-                ? array()
-                : DBManager::get()->fetchFirst("SELECT `pluginid` FROM `widget_user` WHERE `range_id`=? ORDER BY `pluginid`", array($user_id));
+                ? []
+                : DBManager::get()->fetchFirst("SELECT `pluginid` FROM `widget_user` WHERE `range_id`=? ORDER BY `pluginid`", [$user_id]);
 
-        $available = array();
+        $available = [];
         foreach ($all_widgets as $widget) {
             if (!in_array($widget->getPluginId(), $used_widgets)) {
                 $available[$widget->getPluginId()] = $widget;
@@ -355,7 +355,7 @@ class WidgetHelper
                 FROM widget_user
                 WHERE range_id = :user_id
             ");
-            $statement->execute(array('user_id' => $user_id));
+            $statement->execute(['user_id' => $user_id]);
             self::$userWidgets[$user_id] = $statement->fetchAll(PDO::FETCH_ASSOC);
         }
 

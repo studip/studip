@@ -46,7 +46,7 @@ try {
     // set default page title
     PageLayout::setTitle($plugin->getPluginName());
 
-    if (is_callable(array($plugin, 'initialize'))) {
+    if (is_callable([$plugin, 'initialize'])) {
       $plugin->initialize();
     }
 

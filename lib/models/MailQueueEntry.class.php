@@ -26,7 +26,7 @@
  */
 class MailQueueEntry extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mail_queue_entries';
         $config['serialized_fields']['mail'] = 'JSONArrayObject';

@@ -203,7 +203,7 @@ class TreeView {
     * @param    string  $item_id
     */
     function showTree($item_id = "root"){
-    $items = array();
+    $items = [];
     if (!is_array($item_id)){
         $items[0] = $item_id;
         $this->start_item_id = $item_id;
@@ -244,7 +244,7 @@ class TreeView {
                 $parent_id = $this->tree->tree_data[$parent_id]['parent_id'];
                 if ($this->tree->isLastKid($parent_id))
                     $level_output = "<td class=\"blank tree-indent\" valign=\"top\" width=\"10\" nowrap>"
-                                  . Assets::img('forumleer.gif', array('size' => '10@20'))
+                                  . Assets::img('forumleer.gif', ['size' => '10@20'])
                                   . "</td>" . $level_output; //nothing
                 else
                     $level_output = "<td class=\"blank tree-indent\" valign=\"top\" nowrap>"
@@ -268,7 +268,7 @@ class TreeView {
         echo "\n<td class=\"printhead\" nowrap width=\"1\" valign=\"middle\">";
         if ($this->anchor == $item_id)
             echo "<a name=\"anchor\">";
-        echo Assets::img('forumleer.gif', array('size' => '1@20'));
+        echo Assets::img('forumleer.gif', ['size' => '1@20']);
         if ($this->anchor == $item_id)
             echo "</a>";
         echo "\n</td><td class=\"printhead\" align=\"left\" width=\"99%\" nowrap valign=\"bottom\">";
@@ -289,20 +289,20 @@ class TreeView {
     function printItemDetails($item_id){
         if (!$this->tree->hasKids($item_id) || !$this->open_ranges[$item_id] || $item_id == $this->start_item_id)
             $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumleer.gif') . "\">"
-                          . Assets::img('forumleer.gif', array('size' => '10@20'))
+                          . Assets::img('forumleer.gif', ['size' => '10@20'])
                           . "</td>" . $level_output;
         else
             $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumstrich.gif') . "\">"
-                          . Assets::img('forumleer.gif', array('size' => '10@20'))
+                          . Assets::img('forumleer.gif', ['size' => '10@20'])
                           . "</td>" . $level_output;
 
         if (($this->tree->isLastKid($item_id) && !($item_id == $this->start_item_id)) || (!$this->open_ranges[$item_id] && $item_id == $this->start_item_id) || ($item_id == $this->start_item_id && !$this->tree->hasKids($item_id)))
             $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumleer.gif') . "\">"
-                          . Assets::img('forumleer.gif', array('size' => '10@20'))
+                          . Assets::img('forumleer.gif', ['size' => '10@20'])
                           . "</td>" . $level_output;
         else
             $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumstrich.gif') ."\">"
-                          . Assets::img('forumleer.gif', array('size' => '10@20'))
+                          . Assets::img('forumleer.gif', ['size' => '10@20'])
                           . "</td>" . $level_output;
         if ($item_id != $this->start_item_id){
             $parent_id = $item_id;
@@ -310,11 +310,11 @@ class TreeView {
                 $parent_id = $this->tree->tree_data[$parent_id]['parent_id'];
                 if ($this->tree->isLastKid($parent_id))
                     $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumleer.gif') . "\">"
-                                  . Assets::img('forumleer.gif', array('size' => '10@20'))
+                                  . Assets::img('forumleer.gif', ['size' => '10@20'])
                                   . "</td>" . $level_output; //nothing
                 else
                     $level_output = "<td class=\"blank\" background=\"" . Assets::image_path('forumstrich.gif') . "\">"
-                                  . Assets::img('forumleer.gif', array('size' => '10@20'))
+                                  . Assets::img('forumleer.gif', ['size' => '10@20'])
                                   . "</td>" . $level_output; //vertical line
             }
         }

@@ -30,7 +30,7 @@ class Course_AdmissionController extends AuthenticatedController
 
         Navigation::activateItem('/course/admin/admission');
 
-        if (!get_object_type($this->course_id, array('sem')) ||
+        if (!get_object_type($this->course_id, ['sem']) ||
             SeminarCategories::GetBySeminarId($this->course_id)->studygroup_mode ||
             !$perm->have_studip_perm("tutor", $this->course_id)) {
             throw new Trails_Exception(403);
@@ -86,19 +86,19 @@ class Course_AdmissionController extends AuthenticatedController
             foreach (CourseSet::getCoursesetsByInstituteId($this->course->institut_id) as $cs) {
                 $cs = new CourseSet($cs['set_id']);
                 if ($cs->isUserAllowedToAssignCourse($this->user_id, $this->course_id)) {
-                    $available_coursesets[] = array('id' => $cs->getId(),
+                    $available_coursesets[] = ['id' => $cs->getId(),
                                                     'name' => $cs->getName(),
                                                     'chdate' => $cs->chdate,
-                                                    'my_own' => $cs->getUserId() === $GLOBALS['user']->id);
+                                                    'my_own' => $cs->getUserId() === $GLOBALS['user']->id];
                 }
             }
             foreach (CourseSet::getglobalCoursesets() as $cs) {
                 $cs = new CourseSet($cs['set_id']);
                 if ($cs->isUserAllowedToAssignCourse($this->user_id, $this->course_id)) {
-                    $available_coursesets[] = array('id' => $cs->getId(),
+                    $available_coursesets[] = ['id' => $cs->getId(),
                                                     'name' => $cs->getName(),
                                                     'chdate' => $cs->chdate,
-                                                    'my_own' => $cs->getUserId() === $GLOBALS['user']->id);
+                                                    'my_own' => $cs->getUserId() === $GLOBALS['user']->id];
                 }
             }
             $available_coursesets = $available_coursesets->findBy('chdate', strtotime('-1 year'), '>');
@@ -142,7 +142,7 @@ class Course_AdmissionController extends AuthenticatedController
                 if ($this->course->admission_prelim == 1 && $this->course->getNumParticipants() && Request::submitted('change_admission_prelim_yes')) {
                     $num_moved = 0;
                     $seminar = new Seminar($this->course_id);
-                    foreach ($this->course->members->findBy('status', array('user','autor'))->pluck('user_id') as $user_id) {
+                    foreach ($this->course->members->findBy('status', ['user','autor'])->pluck('user_id') as $user_id) {
                         $seminar->addPreliminaryMember($user_id);
                         $num_moved += ($seminar->deleteMember($user_id) !== false);
                         setTempLanguage($user_id);
@@ -381,7 +381,7 @@ class Course_AdmissionController extends AuthenticatedController
         if (!$question) {
             $this->redirect($this->url_for('/index'));
         } else {
-            $this->request = array('change_course_set_unassign' => 1);
+            $this->request = ['change_course_set_unassign' => 1];
             $this->button_yes = 'change_course_set_unassign_yes';
             PageLayout::postMessage(MessageBox::info($question));
             $this->render_template('course/admission/_change_admission.php');
@@ -393,7 +393,7 @@ class Course_AdmissionController extends AuthenticatedController
         $cs = new CourseSet(Request::option('set_id'));
         if ($cs->getId()) {
             $template = $GLOBALS['template_factory']->open('shared/tooltip');
-            $this->render_text($template->render(array('text' => $cs->toString(true))));
+            $this->render_text($template->render(['text' => $cs->toString(true)]));
         } else {
             $this->render_nothing();
         }
@@ -439,7 +439,7 @@ class Course_AdmissionController extends AuthenticatedController
                         $course_set->setPrivate(true);
                         $course_set->addAdmissionRule($rule);
                         $course_set->setAlgorithm(new RandomAlgorithm());//TODO
-                        $course_set->setCourses(array($this->course_id));
+                        $course_set->setCourses([$this->course_id]);
                         if ($another_rule) {
                             $course_set->addAdmissionRule($another_rule);
                         }

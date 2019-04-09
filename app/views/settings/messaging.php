@@ -1,15 +1,15 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
 <?
-    $send_as_email = array(
+    $send_as_email = [
         1 => _('nie'),
         2 => _('immer'),
         3 => _('wenn vom Absender gewünscht'),
-    );
-    $mail_formats = array(
+    ];
+    $mail_formats = [
         0 => _('Text'),
         1 => _('HTML'),
-    );
+    ];
 ?>
 
 <form action="<?= $controller->url_for('settings/messaging') ?>" method="post" class="default">
@@ -108,7 +108,7 @@
 
 
     <footer>
-        <?= Button::createAccept(_('Übernehmen'), 'store', array('title' => _('Änderungen übernehmen'))) ?>
-        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('settings/messaging/verify/reset'), array('title' => _('Einstellungen zurücksetzen'))) ?>
+        <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
+        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('settings/messaging/verify/reset'), ['title' => _('Einstellungen zurücksetzen')]) ?>
     </footer>
 </form>

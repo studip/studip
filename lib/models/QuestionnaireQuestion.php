@@ -4,22 +4,22 @@ use eTask\Task;
 
 class QuestionnaireQuestion extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'questionnaire_questions';
-        $config['belongs_to']['questionnaire'] = array(
+        $config['belongs_to']['questionnaire'] = [
             'class_name' => 'Questionnaire',
             'foreign_key' => 'questionnaire_id'
-        );
-        $config['has_many']['answers'] = array(
+        ];
+        $config['has_many']['answers'] = [
             'class_name' => 'QuestionnaireAnswer',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['belongs_to']['etask'] = array(
+        ];
+        $config['belongs_to']['etask'] = [
             'class_name' => '\\eTask\\Task',
             'foreign_key' => 'etask_task_id'
-        );
+        ];
         parent::configure($config);
     }
 
@@ -31,9 +31,9 @@ class QuestionnaireQuestion extends SimpleORMap
             WHERE questionnaire_id = ?
             ORDER BY position ASC
         ");
-        $statement->execute(array($questionnaire_id));
+        $statement->execute([$questionnaire_id]);
         $data = $statement->fetchAll();
-        $questions = array();
+        $questions = [];
         foreach ($data as $questionnaire_data) {
 
             if (!$task = Task::find($questionnaire_data['etask_task_id'])) {
@@ -75,10 +75,10 @@ class QuestionnaireQuestion extends SimpleORMap
             WHERE question_id = :question_id
                 AND user_id = :me
         ");
-        $statement->execute(array(
+        $statement->execute([
             'question_id' => $this->getId(),
             'me' => $user_id
-        ));
+        ]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
         if ($data) {
             return QuestionnaireAnswer::buildExisting($data);

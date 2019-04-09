@@ -40,7 +40,7 @@ class MyInstitutesController extends AuthenticatedController
             if (Request::get('cmd') == 'kill' && $ticket_check && Request::get('cmd') != 'back') {
                 $query     = "DELETE FROM user_inst WHERE user_id = ? AND Institut_id = ? AND inst_perms = 'user'";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($GLOBALS['user']->id, $inst_id));
+                $statement->execute([$GLOBALS['user']->id, $inst_id]);
 
                 if ($statement->rowCount() > 0) {
                     PageLayout::postMessage(MessageBox::success(sprintf(_("Die Zuordnung zur Einrichtung %s wurde aufgehoben."), "<b>" . htmlReady($institut->name) . "</b>")));

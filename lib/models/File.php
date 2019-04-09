@@ -32,7 +32,7 @@ class File extends SimpleORMap
     /**
      * @param array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'files';
         $config['belongs_to']['owner'] = [

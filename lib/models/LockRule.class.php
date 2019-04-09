@@ -89,7 +89,7 @@ class LockRule extends SimpleORMap
         return self::findByObject_type($type, " ORDER BY name");
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'lock_rules';
         $config['serialized_fields']['attributes'] = 'JSONArrayObject';

@@ -12,12 +12,12 @@ class Step00283UpdateCalendarSettings extends Migration {
         DBManager::get()->exec("ALTER TABLE `calendar_event` ADD `mkdate` INT NOT NULL AFTER `group_status`");
         DBManager::get()->exec("UPDATE calendar_event ce LEFT JOIN event_data ed USING(event_id) SET ce.mkdate = ed.mkdate");
 
-        $replace = array(
+        $replace = [
             'showlist' => 'list',
             'showday' => 'day',
             'showweek' => 'week',
             'showmonth' => 'month',
-            'showyear' => 'year');
+            'showyear' => 'year'];
         $res = DBManager::get()->query("SELECT user_id FROM `user_config` WHERE field = 'CALENDAR_SETTINGS'");
         $default_settings = Calendar::getDefaultUserSettings();
         Config::get()->store('CALENDAR_SETTINGS', $default_settings);
@@ -36,13 +36,13 @@ class Step00283UpdateCalendarSettings extends Migration {
         DBManager::get()->execute("ALTER TABLE `event_data` CHANGE `author_id` `autor_id` VARCHAR(32) NOT NULL");
         DBManager::get()->execute("ALTER TABLE `calendar_event` DROP `mkdate`");
 
-        $replace = array(
+        $replace = [
             'list' => 'showlist',
             'day' => 'showday',
             'week' => 'showweek',
             'month' => 'showmonth',
-            'year' => 'showyear');
-        $default_settings = array(
+            'year' => 'showyear'];
+        $default_settings = [
             'view' => 'week',
             'start' => '9',
             'end' => '20',
@@ -52,7 +52,7 @@ class Step00283UpdateCalendarSettings extends Migration {
             'delete' => '0',
             'step_week_group' => '3600',
             'step_day_group' => '3600'
-        );
+        ];
         $res = DBManager::get()->query("SELECT user_id FROM `user_config` WHERE field = 'CALENDAR_SETTINGS'");
         foreach ($res as $row) {
             $config = UserConfig::get($row['user_id']);

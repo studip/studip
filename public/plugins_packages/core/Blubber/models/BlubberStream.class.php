@@ -24,7 +24,7 @@ require_once __DIR__ . '/StreamAvatar.class.php';
  */
 class BlubberStream extends SimpleORMap {
 
-    public $filter_threads = array();
+    public $filter_threads = [];
     public $max_age = null;
 
     protected static function configure($config = [])
@@ -40,7 +40,7 @@ class BlubberStream extends SimpleORMap {
         parent::configure($config);
     }
 
-    static public function create($pool = array(), $filter = array()) {
+    static public function create($pool = [], $filter = []) {
         $stream = new BlubberStream();
         foreach ($pool as $key => $pool_variable) {
             $stream['pool_'.$key] = $pool_variable;
@@ -60,7 +60,7 @@ class BlubberStream extends SimpleORMap {
         $user_id OR $user_id = $GLOBALS['user']->id;
         return self::findBySQL(
             "user_id = ? ORDER BY name ASC ",
-            array($user_id)
+            [$user_id]
         );
     }
 
@@ -71,8 +71,8 @@ class BlubberStream extends SimpleORMap {
     static public function getGlobalStream($user_id = null) {
         $user_id OR $user_id = $GLOBALS['user']->id;
         $stream = new BlubberStream();
-        $stream['pool_courses'] = array();
-        $stream['pool_groups'] = array();
+        $stream['pool_courses'] = [];
+        $stream['pool_groups'] = [];
         $stream['sort'] = "age";
         $stream->max_age = strtotime('-1 year');
         $stream->user_id = $user_id;
@@ -86,7 +86,7 @@ class BlubberStream extends SimpleORMap {
      */
     static public function getCourseStream($course_id) {
         $stream = new BlubberStream();
-        $stream['pool_courses'] = array($course_id);
+        $stream['pool_courses'] = [$course_id];
         $stream['sort'] = "activity";
         return $stream;
     }
@@ -98,8 +98,8 @@ class BlubberStream extends SimpleORMap {
      */
     static public function getProfileStream($user_id) {
         $stream = new BlubberStream();
-        $stream['filter_users'] = array($user_id);
-        $stream['filter_type'] = array("public");
+        $stream['filter_users'] = [$user_id];
+        $stream['filter_type'] = ["public"];
         $stream['sort'] = "age";
         return $stream;
     }
@@ -111,7 +111,7 @@ class BlubberStream extends SimpleORMap {
      */
     static public function getThreadStream($topic_id) {
         $stream = new BlubberStream();
-        $stream->filter_threads = is_array($topic_id) ? $topic_id : array($topic_id);
+        $stream->filter_threads = is_array($topic_id) ? $topic_id : [$topic_id];
         return $stream;
     }
 
@@ -141,32 +141,32 @@ class BlubberStream extends SimpleORMap {
     {
         $this->content['pool_courses'] = $this->content['pool_courses']
                 ? explode(",", $this->content['pool_courses'])
-                : array();
+                : [];
         $this->content['pool_groups'] = $this->content['pool_groups']
                 ? explode(",", $this->content['pool_groups'])
-                : array();
+                : [];
         $this->content['pool_hashtags'] = $this->content['pool_hashtags']
                 ? explode(" ", $this->content['pool_hashtags'])
-                : array();
+                : [];
 
         $this->content['filter_type'] = $this->content['filter_type']
                 ? explode(",", $this->content['filter_type'])
-                : array();
+                : [];
         $this->content['filter_courses'] = $this->content['filter_courses']
                 ? explode(",", $this->content['filter_courses'])
-                : array();
+                : [];
         $this->content['filter_groups'] = $this->content['filter_groups']
                 ? explode(",", $this->content['filter_groups'])
-                : array();
+                : [];
         $this->content['filter_users'] = $this->content['filter_users']
                 ? explode(",", $this->content['filter_users'])
-                : array();
+                : [];
         $this->content['filter_hashtags'] = $this->content['filter_hashtags']
                 ? explode(" ", $this->content['filter_hashtags'])
-                : array();
+                : [];
         $this->content['filter_nohashtags'] = $this->content['filter_nohashtags']
                 ? explode(" ", $this->content['filter_nohashtags'])
-                : array();
+                : [];
         return true;
     }
 
@@ -186,7 +186,7 @@ class BlubberStream extends SimpleORMap {
         $statement = DBManager::get()->prepare($sql);
         $statement->execute($parameters);
         $posting_data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $postings = array();
+        $postings = [];
         foreach ($posting_data as $data) {
             $posting = new BlubberPosting($data['topic_id']);
             $postings[] = $posting;
@@ -219,7 +219,7 @@ class BlubberStream extends SimpleORMap {
         $statement = DBManager::get()->prepare($sql);
         $statement->execute($parameters);
         $posting_data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        $postings = array();
+        $postings = [];
         foreach ($posting_data as $data) {
             $posting = new BlubberPosting();
             $posting->setData($data);
@@ -243,7 +243,7 @@ class BlubberStream extends SimpleORMap {
      */
     public function fetchTags($since = null, $limit = null) {
         list($sql, $parameters) = $this->getThreadsSql();
-        $sql = strtr($sql, array('FROM blubber ' => 'FROM blubber INNER JOIN blubber_tags bt1 USING(topic_id) '));
+        $sql = strtr($sql, ['FROM blubber ' => 'FROM blubber INNER JOIN blubber_tags bt1 USING(topic_id) ']);
         $statement = DBManager::get()->prepare(
             "SELECT blubber_tags.tag, SUM(1) AS counter " .
             "FROM (".$sql.") AS threads " .
@@ -298,7 +298,7 @@ class BlubberStream extends SimpleORMap {
                           )." " .
             (($offset or $limit) ? "LIMIT ".(int) $offset.", ".(int) $limit." " : " ") .
         "";
-        return array($sql, $parameters);
+        return [$sql, $parameters];
     }
 
     /**
@@ -329,7 +329,7 @@ class BlubberStream extends SimpleORMap {
                 (count($filter_sql) ? implode(" AND ", $filter_sql)." " : "") .
             "ORDER BY comment.chdate " .
         "";
-        return array($sql, $parameters);
+        return [$sql, $parameters];
     }
 
     /**
@@ -338,9 +338,9 @@ class BlubberStream extends SimpleORMap {
      * @return array(array $pool_sql, array $filter_sql, array $parameter)
      */
     protected function getSqlParts() {
-        $pool_sql = array();
-        $filter_sql = array();
-        $parameters = array();
+        $pool_sql = [];
+        $filter_sql = [];
+        $parameters = [];
 
         if (count($this['pool_courses'])) {
             $pool_courses = $this->getCourses($this['pool_courses']);
@@ -401,7 +401,7 @@ class BlubberStream extends SimpleORMap {
             }
         }
         if (count($this['filter_groups']) > 0 or count($this['filter_users']) > 0) {
-            $filter_users = array();
+            $filter_users = [];
             if (count($this['filter_groups']) > 0) {
                 $filter_users = $this->getUsersByGroups($this['filter_groups']);
                 $filter_users[] = $this->user_id;
@@ -430,7 +430,7 @@ class BlubberStream extends SimpleORMap {
             $filter_sql[] = "blubber.mkdate > :max_age ";
             $parameters['max_age'] = $this->max_age;
         }
-        return array($pool_sql, $filter_sql, $parameters);
+        return [$pool_sql, $filter_sql, $parameters];
     }
 
     /**
@@ -447,7 +447,7 @@ class BlubberStream extends SimpleORMap {
                     "FROM blubber_follower " .
                     "WHERE left_follows_right = '1' " .
             "");
-            $statement->execute(array('me' => $this->user_id));
+            $statement->execute(['me' => $this->user_id]);
             return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
         } elseif(count($groups)) {
             $statement = DBManager::get()->prepare(
@@ -457,10 +457,10 @@ class BlubberStream extends SimpleORMap {
                 "WHERE statusgruppen.range_id = :me " .
                     "AND statusgruppen.statusgruppe_id IN (:groups) " .
             "");
-            $statement->execute(array(
+            $statement->execute([
                 'me' => $this->user_id,
                 'groups' => $groups
-            ));
+            ]);
             return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
         }
     }
@@ -493,14 +493,14 @@ class BlubberStream extends SimpleORMap {
      */
     protected function getMyCourses() {
         if ($GLOBALS['perm']->have_perm("admin", $this->user_id)) {
-            return array();
+            return [];
         }
-        $mandatory_classes = array();
-        $standard_classes = array();
-        $forbidden_classes = array();
-        $mandatory_types = array();
-        $standard_types = array();
-        $forbidden_types = array();
+        $mandatory_classes = [];
+        $standard_classes = [];
+        $forbidden_classes = [];
+        $mandatory_types = [];
+        $standard_types = [];
+        $forbidden_types = [];
         foreach (SemClass::getClasses() as $key => $class) {
             $blubber_setting = $class->getModuleMetadata("Blubber");
             if ($class->isModuleMandatory("Blubber")) {
@@ -524,7 +524,7 @@ class BlubberStream extends SimpleORMap {
                 $forbidden_types[] = $key;
             }
         }
-        $is_deputy = get_config('DEPUTIES_ENABLE') && DBManager::get()->fetchColumn("SELECT 1 FROM deputies WHERE user_id=? LIMIT 1", array($this->user_id));
+        $is_deputy = get_config('DEPUTIES_ENABLE') && DBManager::get()->fetchColumn("SELECT 1 FROM deputies WHERE user_id=? LIMIT 1", [$this->user_id]);
         $blubber_plugin_info = PluginManager::getInstance()->getPluginInfo('Blubber');
         $statement = DBManager::get()->prepare("
             SELECT seminare.Seminar_id
@@ -552,10 +552,10 @@ class BlubberStream extends SimpleORMap {
                 AND plugins_activated.state IS NULL
                 AND seminare.status NOT IN (:forbidden_types)
         ");
-        $parameter = array('me' => $this->user_id);
+        $parameter = ['me' => $this->user_id];
         $parameter['mandatory_types'] = count($mandatory_types) ? $mandatory_types : null;
         $parameter['standard_types'] = count($standard_types) ? $standard_types : null;
-        $parameter['forbidden_types'] = count($forbidden_types) ? $forbidden_types : array(-1);
+        $parameter['forbidden_types'] = count($forbidden_types) ? $forbidden_types : [-1];
         $parameter['blubber_plugin_id'] = $blubber_plugin_info['id'];
         $statement->execute($parameter);
         $my_courses = $statement->fetchFirst();

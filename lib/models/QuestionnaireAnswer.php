@@ -2,12 +2,12 @@
 
 class QuestionnaireAnswer extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'questionnaire_answers';
-        $config['belongs_to']['question'] = array(
+        $config['belongs_to']['question'] = [
             'class_name' => 'QuestionnaireQuestion'
-        );
+        ];
         $config['serialized_fields']['answerdata'] = "JSONArrayObject";
         parent::configure($config);
     }

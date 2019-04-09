@@ -62,65 +62,65 @@ class SetupCronjobs extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'CRONJOBS_ENABLE',
             ':value' => (int)false,
             ':type'  => 'boolean',
             ':description' => 'Schaltet die Cronjobs an',
-        ));
+        ]);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'CRONJOBS_ESCALATION',
             ':value' => 300,
             ':type'  => 'integer',
             ':description' => 'Gibt an, nach wievielen Sekunden ein Cronjob als steckengeblieben angesehen wird',
-        ));
+        ]);
 
         // Add default cron tasks and schedules
-        $default_data = array(
-            array(
+        $default_data = [
+            [
                 'filename'    => 'lib/cronjobs/cleanup_log.class.php',
                 'class'       => 'CleanupLogJob',
                 'priority'    => 'normal',
                 'hour'        => 2,
                 'minute'      => 13,
-            ),
-            array(
+            ],
+            [
                 'filename'    => 'lib/cronjobs/purge_cache.class.php',
                 'class'       => 'PurgeCacheJob',
                 'priority'    => 'low',
                 'hour'        => null,
                 'minute'      => -30,
-            ),
-            array(
+            ],
+            [
                 'filename'    => 'lib/cronjobs/send_mail_notifications.class.php',
                 'class'       => 'SendMailNotificationsJob',
                 'priority'    => 'high',
                 'hour'        => 1,
                 'minute'      => 7,
-            ),
-            array(
+            ],
+            [
                 'filename'    => 'lib/cronjobs/check_admission.class.php',
                 'class'       => 'CheckAdmissionJob',
                 'priority'    => 'normal',
                 'hour'        => null,
                 'minute'      => -30,
-            ),
-            array(
+            ],
+            [
                 'filename'    => 'lib/cronjobs/garbage_collector.class.php',
                 'class'       => 'GarbageCollectorJob',
                 'priority'    => 'normal',
                 'hour'        => 2,
                 'minute'      => 33,
-            ),
-            array(
+            ],
+            [
                 'filename'    => 'lib/cronjobs/session_gc.class.php',
                 'class'       => 'SessionGcJob',
                 'priority'    => 'normal',
                 'hour'        => 3,
                 'minute'      => 13,
-            ),
-        );
+            ],
+        ];
 
         $query = "INSERT IGNORE INTO `cronjobs_tasks`
                     (`task_id`, `filename`, `class`, `active`)
@@ -139,20 +139,20 @@ class SetupCronjobs extends Migration
         foreach ($default_data as $row) {
             $task_id = md5(uniqid('task', true));
 
-            $task_statement->execute(array(
+            $task_statement->execute([
                 ':task_id'  => $task_id,
                 ':filename' => $row['filename'],
                 ':class'    => $row['class'],
-            ));
+            ]);
 
             $schedule_id = md5(uniqid('schedule', true));
-            $schedule_statement->execute(array(
+            $schedule_statement->execute([
                 ':schedule_id' => $schedule_id,
                 ':task_id'     => $task_id,
                 ':priority'    => $row['priority'],
                 ':hour'        => $row['hour'],
                 ':minute'      => $row['minute'],
-            ));
+            ]);
         }
     }
 

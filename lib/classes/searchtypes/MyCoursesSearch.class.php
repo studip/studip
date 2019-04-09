@@ -37,7 +37,7 @@ class MyCoursesSearch extends StandardSearch
     public function __construct(
         $search,
         $perm_level = 'dozent',
-        $parameters = array(),
+        $parameters = [],
         $additional_sql_conditions = ''
     )
     {
@@ -70,7 +70,7 @@ class MyCoursesSearch extends StandardSearch
      * @param offset int: return results starting from this row (default: 0)
      * @return array: array(array(), ...)
      */
-    public function getResults($input, $contextual_data = array(), $limit = PHP_INT_MAX, $offset = 0)
+    public function getResults($input, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0)
     {
         $db = DBManager::get();
         $sql = $this->getSQL();
@@ -84,7 +84,7 @@ class MyCoursesSearch extends StandardSearch
             if ($name !== "input" && mb_strpos($sql, ":".$name) !== false) {
                 if (is_array($value)) {
                     if (count($value)) {
-                        $sql = str_replace(":".$name, implode(',', array_map(array($db, 'quote'), $value)), $sql);
+                        $sql = str_replace(":".$name, implode(',', array_map([$db, 'quote'], $value)), $sql);
                     } else {
                         $sql = str_replace(":".$name, "''", $sql);
                     }
@@ -93,8 +93,8 @@ class MyCoursesSearch extends StandardSearch
                 }
             }
         }
-        $statement = $db->prepare($sql, array(PDO::FETCH_NUM));
-        $data = array();
+        $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+        $data = [];
         $data[":input"] = "%".$input."%";
         $statement->execute($data);
         $results = $statement->fetchAll();

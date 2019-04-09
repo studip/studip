@@ -55,346 +55,346 @@
 
 
 // Tabelle mvv_modulteil
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 7
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 3,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 7
-        ),
-        'ausgelaufen' => array(
+        ],
+        'ausgelaufen' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 1
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'modul_id' => array(
-            'planung' => array(
+    ],
+    'fields' => [
+        'modul_id' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'position' => array(
-            'planung' => array(
+            ]
+        ],
+        'position' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'flexnow_modul' => array(
-            'planung' => array(
+            ]
+        ],
+        'flexnow_modul' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'nummer' => array(
-            'planung' => array(
+            ]
+        ],
+        'nummer' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'num_bezeichnung' => array(
-            'planung' => array(
+            ]
+        ],
+        'num_bezeichnung' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'lernlehrform' => array(
-            'planung' => array(
+            ]
+        ],
+        'lernlehrform' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'semester' => array(
-            'planung' => array(
+            ]
+        ],
+        'semester' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'kapazitaet' => array(
-            'planung' => array(
+            ]
+        ],
+        'kapazitaet' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'kp' => array(
-            'planung' => array(
+            ]
+        ],
+        'kp' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'sws' => array(
-            'planung' => array(
+            ]
+        ],
+        'sws' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'wl_praesenz' => array(
-            'planung' => array(
+            ]
+        ],
+        'wl_praesenz' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'wl_bereitung' => array(
-            'planung' => array(
+            ]
+        ],
+        'wl_bereitung' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'wl_selbst' => array(
-            'planung' => array(
+            ]
+        ],
+        'wl_selbst' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'wl_pruef' => array(
-            'planung' => array(
+            ]
+        ],
+        'wl_pruef' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'anteil_note' => array(
-            'planung' => array(
+            ]
+        ],
+        'anteil_note' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'ausgleichbar' => array(
-            'planung' => array(
+            ]
+        ],
+        'ausgleichbar' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'pflicht' => array(
-            'planung' => array(
+            ]
+        ],
+        'pflicht' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
+            ]
+        ],
          // verknüpfte Objekte
-        'lvgruppen' => array(
-            'default' => array(
+        'lvgruppen' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1,
                 'MVVLvGruppenAdmin' => 1
-            ),
-            'planung' => array(
+            ],
+            'planung' => [
                 'MVVEntwickler'     => 7,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 1,
                 'MVVLvGruppenAdmin' => 7
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler'     => 7,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 7,
                 'MVVLvGruppenAdmin' => 7
-            )
-        ),
-        'deskriptoren' => array(
-            'default' => array(
+            ]
+        ],
+        'deskriptoren' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 1
-            ),
-            'planung' => array(
+            ],
+            'planung' => [
                 'MVVEntwickler'     => 7,
                 'MVVRedakteur'      => 7,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 1
-            )
-        ),
-        'abschnitte' => array(
-            'default' => array(
+            ]
+        ],
+        'abschnitte' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 1
-            ),
-            'planung' => array(
+            ],
+            'planung' => [
                 'MVVEntwickler'     => 7,
                 'MVVRedakteur'      => 7,
                 'MVVTranslator'     => 3,
                 'MVVFreigabe'       => 1
-            )
-        ),
-        'languages' => array(
-            'default' => array(
+            ]
+        ],
+        'languages' => [
+            'default' => [
                 'MVVEntwickler'     => 1,
                 'MVVRedakteur'      => 1,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1
-            ),
-            'planung' => array(
+            ],
+            'planung' => [
                 'MVVEntwickler'     => 7,
                 'MVVRedakteur'      => 7,
                 'MVVTranslator'     => 1,
                 'MVVFreigabe'       => 1
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];

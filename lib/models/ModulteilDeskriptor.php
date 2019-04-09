@@ -17,16 +17,16 @@
 class ModulteilDeskriptor extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil_deskriptor';
         
-        $config['belongs_to']['modulteil'] = array(
+        $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
             'foreign_key' => 'modulteil_id'
-        );
+        ];
         
-        $config['has_many']['datafields'] = array(
+        $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_foreign_key' =>
                 function($model, $params) {
@@ -37,9 +37,9 @@ class ModulteilDeskriptor extends ModuleManagementModel
             'on_store' => 'store',
             'foreign_key' =>
                 function($m) {
-                    return array($m);
+                    return [$m];
                 }
-        );
+        ];
         
         $config['i18n_fields']['bezeichnung'] = true;
         $config['i18n_fields']['voraussetzung'] = true;

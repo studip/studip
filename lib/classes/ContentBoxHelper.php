@@ -27,7 +27,7 @@ class ContentBoxHelper {
     public static function classes($id, $is_new = false) {
         
         // Init
-        $classes = array();
+        $classes = [];
         
         // Check if open
         if (Request::get('contentbox_open') == $id) {
@@ -50,7 +50,7 @@ class ContentBoxHelper {
      * @param Array $params other needed parameters
      * @return String Url to open the contentbox
      */
-    public static function switchhref($id, $params = array()) {
+    public static function switchhref($id, $params = []) {
         if (Request::get('contentbox_open') != $id || $params) {
             $params['contentbox_open'] = $id;
         } else {
@@ -66,7 +66,7 @@ class ContentBoxHelper {
      * @param Array $params other needed parameters
      * @return String Url to the contentbox
      */
-    public static function href($id, $params = array()) {
+    public static function href($id, $params = []) {
         $params['contentbox_open'] = $id;
         return URLHelper::getURL("#$id", $params);
     }

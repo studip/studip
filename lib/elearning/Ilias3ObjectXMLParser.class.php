@@ -37,7 +37,7 @@
 
 class Ilias3ObjectXMLParser extends Ilias3SaxParser
 {
-    var $object_data = array();
+    var $object_data = [];
 
     /**
     * Constructor
@@ -56,7 +56,7 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
 
     function getObjectData()
     {
-        return $this->object_data ? $this->object_data : array();
+        return $this->object_data ? $this->object_data : [];
     }
 
     /**

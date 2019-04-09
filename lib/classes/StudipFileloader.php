@@ -19,7 +19,7 @@ class StudipFileloader
      *                             the scope before loading
      * @param bool $_allow_overwrite allow overwriting of injected
      */
-    public static function load($_filename, &$_container, $_injected = array(), $_allow_overwrite = false)
+    public static function load($_filename, &$_container, $_injected = [], $_allow_overwrite = false)
     {
         extract($_injected);
 

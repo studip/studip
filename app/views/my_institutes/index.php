@@ -1,9 +1,9 @@
 <? if (isset($flash['decline_inst'])) : ?>
     <?=
     createQuestion(sprintf(_('Wollen Sie sich aus dem/der %s wirklich austragen?'),
-            htmlReady($flash['name'])), array('cmd' => 'kill', 'studipticket' => $flash['studipticket']),
-        array('cmd'          => 'back',
-              'studipticket' => $flash['studipticket']),
+            htmlReady($flash['name'])), ['cmd' => 'kill', 'studipticket' => $flash['studipticket']],
+        ['cmd'          => 'back',
+              'studipticket' => $flash['studipticket']],
         $controller->url_for(sprintf('my_institutes/decline_inst/%s', $flash['inst_id']))); ?>
 <? endif ?>
 
@@ -51,7 +51,7 @@
                 </td>
 
                 <td style="text-align: left">
-                    <a href="<?= URLHelper::getLink('dispatch.php/institute/overview', array('auswahl' => $instid)) ?>">
+                    <a href="<?= URLHelper::getLink('dispatch.php/institute/overview', ['auswahl' => $instid]) ?>">
                         <?= htmlReady($GLOBALS['INST_TYPE'][$values["type"]]["name"] . ": " . $values["name"]) ?>
                     </a>
                 </td>
@@ -62,12 +62,12 @@
                             <? if (isset($nav) && $nav->isVisible(true)) : ?>
                                 <a href="<?=
                                 UrlHelper::getLink('dispatch.php/institute/overview',
-                                    array('auswahl'     => $instid,
-                                          'redirect_to' => strtr($nav->getURL(), '?', '&'))) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
+                                    ['auswahl'     => $instid,
+                                          'redirect_to' => strtr($nav->getURL(), '?', '&')]) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
                                     <?= $nav->getImage()->asImg(20, $nav->getLinkAttributes()) ?>
                                 </a>
                             <? elseif (is_string($key)) : ?>
-                                <?= Assets::img('blank.gif', array('widtd' => 20, 'height' => 20)); ?>
+                                <?= Assets::img('blank.gif', ['widtd' => 20, 'height' => 20]); ?>
                             <? endif ?>
                         <? endforeach ?>
                     <? endif ?>
@@ -79,7 +79,7 @@
                             <?= Icon::create('door-leave', 'inactive', ['title' => _("aus der Einrichtung austragen")])->asImg(20) ?>
                         </a>
                     <? else : ?>
-                        <?= Assets::img('blank.gif', array('size' => '20')) ?>
+                        <?= Assets::img('blank.gif', ['size' => '20']) ?>
                     <? endif ?>
                 </td>
             </tr>

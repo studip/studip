@@ -52,7 +52,7 @@ class AdminNavigation extends Navigation
             }
         }
 
-        $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, array('root', 'admin', 'dozent')) ? Config::get()->SEM_CREATE_PERM : 'dozent';
+        $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root', 'admin', 'dozent']) ? Config::get()->SEM_CREATE_PERM : 'dozent';
 
         // global config / user administration
         if (!Config::get()->RESTRICTED_USER_MANAGEMENT || $perm->have_perm('root')) {

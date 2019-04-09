@@ -22,7 +22,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Auswählen'), 'select', array('title' => _('Plugin auswählen'))) ?>
+        <?= Button::create(_('Auswählen'), 'select', ['title' => _('Plugin auswählen')]) ?>
     </footer>
 </form>
 

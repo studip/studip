@@ -71,11 +71,11 @@ class SingleCalendar
         if (!is_object($this->range_object)) {
             throw new AccessDeniedException();
         }
-        $range_map = array(
+        $range_map = [
             'User' => Calendar::RANGE_USER,
             'Course' => Calendar::RANGE_SEM,
             'Institute' => Calendar::RANGE_INST
-        );
+        ];
         $this->range = $range_map[get_class($this->range_object)];
         if ($this->range == Calendar::RANGE_INST
                 || $this->range == Calendar::RANGE_SEM) {
@@ -101,7 +101,7 @@ class SingleCalendar
         $start = !is_null($start) ? $start : $this->start;
         $end = !is_null($end) ? $end : $this->end;
         if (!is_array($class_names)) {
-            $class_names = array('CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent');
+            $class_names = ['CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent'];
         }
         $events = $this->events->getArrayCopy();
         foreach ($class_names as $type) {
@@ -125,13 +125,13 @@ class SingleCalendar
      * @param array $attendee_ids The user ids of the attendees.
      * @return bool|int The number of stored events or false if an error occured.
      */
-    public function storeEvent(CalendarEvent $event, $attendee_ids = array())
+    public function storeEvent(CalendarEvent $event, $attendee_ids = [])
     {
         $attendee_ids = array_filter($attendee_ids, function($id) {
             return trim($id) != '';
         });
         if (!$attendee_ids) {
-            $attendee_ids = array($GLOBALS['user']->id);
+            $attendee_ids = [$GLOBALS['user']->id];
         }
         if (count($attendee_ids) == 1) {
             if (!$this->havePermission(Calendar::PERMISSION_WRITABLE)) {
@@ -169,8 +169,8 @@ class SingleCalendar
     private function storeAttendeeEvents(CalendarEvent $event, $attendee_ids)
     {
         $ret = 0;
-        $new_attendees = array();
-        $recipient_ids = array();
+        $new_attendees = [];
+        $recipient_ids = [];
         $is_new = false;
         foreach ($attendee_ids as $attendee_id) {
             if (trim($attendee_id)) {
@@ -183,7 +183,7 @@ class SingleCalendar
                 if ($attendee_calendar->havePermission(Calendar::PERMISSION_WRITABLE)
                         || Config::get()->CALENDAR_GRANT_ALL_INSERT) {
                     $attendee_event = new CalendarEvent(
-                            array($attendee_calendar->getRangeId(), $event->event_id));
+                            [$attendee_calendar->getRangeId(), $event->event_id]);
                     $attendee_event->event = $event->event;
                     $is_new = $attendee_event->isNew();
                     if ($is_new) {
@@ -206,7 +206,7 @@ class SingleCalendar
         }
 
         $events_delete = CalendarEvent::findBySQL('event_id = ? AND range_id NOT IN(?)',
-                array($event->event_id, $new_attendees));
+                [$event->event_id, $new_attendees]);
         foreach ($events_delete as $event_delete) {
             $calendar = new SingleCalendar($event_delete->range_id);
             $calendar->deleteEvent($event_delete);
@@ -269,11 +269,11 @@ class SingleCalendar
     public function getEvent($event_id = null, $class_names = null)
     {
         if (!is_array($class_names)) {
-            $class_names = array('CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent');
+            $class_names = ['CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent'];
         }
         foreach ($class_names as $type) {
             if ($type == 'CalendarEvent') {
-                $event = CalendarEvent::find(array($this->getRangeId(), $event_id));
+                $event = CalendarEvent::find([$this->getRangeId(), $event_id]);
             } else {
                 $event = $type::find($event_id);
             }
@@ -297,7 +297,7 @@ class SingleCalendar
         $event_data->start = $now;
         $event_data->end = $now + 3600;
         $calendar_event = new CalendarEvent();
-        $calendar_event->setId(array($this->getRangeId(), $event_data->getId()));
+        $calendar_event->setId([$this->getRangeId(), $event_data->getId()]);
         $calendar_event->event = $event_data;
         return $calendar_event;
     }
@@ -359,7 +359,7 @@ class SingleCalendar
      */
     public function getPermissionByUser($user_id = null)
     {
-        static $user_permission = array();
+        static $user_permission = [];
 
         $user_id = $user_id ?: $GLOBALS['user']->id;
         $id = $user_id . $this->getRangeId();
@@ -381,7 +381,7 @@ class SingleCalendar
                 }
                  *
                  */
-                $cal_user = CalendarUser::find(array($this->getRangeId(), $user_id));
+                $cal_user = CalendarUser::find([$this->getRangeId(), $user_id]);
                 if ($cal_user) {
                     switch ($cal_user->permission) {
                         case 1 :
@@ -545,7 +545,7 @@ class SingleCalendar
 
         $recipient_unames = is_array($recipient_ids)
                 ? array_map('get_username', $recipient_ids)
-                : array(get_username($event->range_id));
+                : [get_username($event->range_id)];
 
         $message->insert_message($msg_text, $recipient_unames,
                 '____%system%____', '', '', '', '', $subject);
@@ -562,7 +562,7 @@ class SingleCalendar
     {
         if (!is_object($calendar_event)) {
             $calendar_event = CalendarEvent::find(
-                    array($this->getRangeId(), $calendar_event));
+                    [$this->getRangeId(), $calendar_event]);
         }
         if (!$calendar_event
             || !is_a($calendar_event, 'CalendarEvent')
@@ -592,7 +592,7 @@ class SingleCalendar
                     CalendarEvent::findEachBySQL(function ($ce) use ($deleted) {
                         $calendar = new SingleCalendar($ce->range_id);
                         $deleted += $calendar->deleteEvent($ce);
-                    }, 'event_id = ?', array($event_message->event_id));
+                    }, 'event_id = ?', [$event_message->event_id]);
                 }
                 return $deleted;
             } else if ($this->getRange() == Calendar::RANGE_SEM) {
@@ -640,7 +640,7 @@ class SingleCalendar
         }
         $recipient_unames = is_array($recipient_ids)
                 ? array_map('get_username', $recipient_ids)
-                : array(get_username($event->range_id));
+                : [get_username($event->range_id)];
         $message->insert_message($msg_text, $recipient_unames,
                 '____%system%____', '', '', '', '', $subject);
     }
@@ -662,7 +662,7 @@ class SingleCalendar
         $user_id = $user_id ?: $GLOBALS['user']->id;
         $end_time = mktime(12, 0, 0, date('n', $end), date('j', $end), date('Y', $end));
         $start_day = date('j', $start);
-        $events = array();
+        $events = [];
         do {
             $time = mktime(12, 0, 0, date('n', $start), $start_day, date('Y', $start));
             $start_day++;
@@ -691,7 +691,7 @@ class SingleCalendar
     {
         $user_id = $user_id ?: $GLOBALS['user']->id;
         if (!is_array($class_names)) {
-            $class_names = array('CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent');
+            $class_names = ['CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent'];
         }
 
         $day = date('Y-m-d-', $time);
@@ -713,7 +713,7 @@ class SingleCalendar
         $dow = date('w', $calendar->getStart());
         $month = date('n', $calendar->getStart());
         $year = date('Y', $calendar->getStart());
-        $events_created = array();
+        $events_created = [];
 
         foreach ($calendar->events as $event) {
             if (!$calendar->havePermission(Calendar::PERMISSION_READABLE, $user_id)
@@ -938,7 +938,7 @@ class SingleCalendar
     public function getListCountEvents($class_names = null, $user_id = null, $restrictions = null)
     {
         if (!is_array($class_names)) {
-            $class_names = array('CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent');
+            $class_names = ['CalendarEvent', 'CourseEvent', 'CourseCancelledEvent', 'CourseMarkedEvent'];
         }
         $end = $this->getEnd();
         $start = $this->getStart();
@@ -946,7 +946,7 @@ class SingleCalendar
         $end_ts = mktime(12, 0, 0, date('n', $end), date('j', $end), date('Y', $end));
         $start_ts = mktime(12, 0, 0, date('n', $start), date('j', $start), date('Y', $start));
         $this->getEvents($class_names)->sortEvents();
-        $daylist = array();
+        $daylist = [];
         $this->ts = mktime(12, 0, 0, 1, 1, $year);
         foreach ($this->events as $event) {
             if (!$event->havePermission(Event::PERMISSION_CONFIDENTIAL, $user_id)) {
@@ -1223,7 +1223,7 @@ class SingleCalendar
         $start += $dst_offset;
         $end += $dst_offset;
 
-        $term = array();
+        $term = [];
         $em = $this->adapt_events($start, $end, $step);
         $max_cols = 0;
         // calculate maximum number of columns
@@ -1277,7 +1277,7 @@ class SingleCalendar
             }
             $i = $row + $start / $step;
         }
-        $rows = array();
+        $rows = [];
         for ($i = $start / $step; $i < $end / $step + 3600 / $step; $i++) {
             $row = $i - $start / $step;
             $cspan_0 = 0;
@@ -1391,8 +1391,8 @@ class SingleCalendar
      */
     public function adapt_events($start, $end, $step = 900)
     {
-        $tmp_events = array();
-        $map_events = array();
+        $tmp_events = [];
+        $map_events = [];
         for ($i = 0; $i < sizeof($this->events); $i++) {
             $event = $this->events[$i];
             if (($event->getEnd() > $this->getStart() + $start)
@@ -1424,16 +1424,16 @@ class SingleCalendar
         }
 
         uasort($tmp_events, function($a, $b) {return $a->start - $b->start;});
-        $map = array();
+        $map = [];
         foreach (array_keys($tmp_events) as $key) {
             $map[] = $map_events[$key];
         }
 
-        return array(
+        return [
             'events' => array_values($tmp_events),
             'map' => $map,
             'day_events' => $tmp_day_event,
-            'day_map' => $map_day_events);
+            'day_map' => $map_day_events];
     }
 
 }

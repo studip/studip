@@ -32,17 +32,17 @@ class LogEvent extends SimpleORMap implements PrivacyObject
 
     protected $formatted_text = '';
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'log_events';
-        $config['belongs_to']['action'] = array(
+        $config['belongs_to']['action'] = [
             'class_name' => 'LogAction',
             'foreign_key' => 'action_id',
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id',
-        );
+        ];
         parent::configure($config);
     }
 
@@ -82,18 +82,18 @@ class LogEvent extends SimpleORMap implements PrivacyObject
     public function formatEvent()
     {
         $text = $this->formatObject();
-        $patterns = array(
+        $patterns = [
             '/%affected/',
             '/%coaffected/',
             '/%info/',
             '/%dbg_info/'
-        );
-        $replacements = array(
+        ];
+        $replacements = [
             $this->affected_range_id,
             $this->coaffected_range_id,
             htmlReady($this->info),
             htmlReady($this->dbg_info)
-        );
+        ];
         $replace_callbacks = [
             '/%sem\(%affected\)/',
             '/%sem\(%coaffected\)/',
@@ -190,7 +190,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
         }
         return sprintf('<a href="%s">%s %s (%s)</a>',
                        URLHelper::getLink('dispatch.php/course/details',
-                               array('sem_id' => $course->getId())),
+                               ['sem_id' => $course->getId()]),
                        htmlReady($course->VeranstaltungsNummer),
                        htmlReady(my_substr($course->name, 0, 100)),
                        htmlReady($course->start_semester->name));
@@ -213,7 +213,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
 
         return sprintf('<a href="%s">%s</a>',
                        URLHelper::getLink('dispatch.php/institute/overview',
-                               array('auswahl' => $institute->getId())),
+                               ['auswahl' => $institute->getId()]),
                        htmlReady(my_substr($institute->name, 0, 100)));
     }
 
@@ -295,9 +295,9 @@ class LogEvent extends SimpleORMap implements PrivacyObject
         $course = Course::find($group->range_id);
         return sprintf(
             '<a href="%s">%s</a>',
-            URLHelper::getLink('dispatch.php/course/statusgroups', array(
+            URLHelper::getLink('dispatch.php/course/statusgroups', [
                 'contentbox_open' => $group->getId()
-            )),
+            ]),
             htmlReady($group->name. ($course ? " (VA: ".$course->name.")" : ""))
         );
     }

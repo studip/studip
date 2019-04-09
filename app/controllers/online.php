@@ -37,7 +37,7 @@ class OnlineController extends AuthenticatedController
         if (!isset($this->settings['show_groups'])) {
             $query = "SELECT 1 FROM statusgruppen WHERE range_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($GLOBALS['user']->id));
+            $statement->execute([$GLOBALS['user']->id]);
             $has_contact_groups = $statement->fetchColumn();
 
             $this->settings['show_groups'] = $has_contact_groups;
@@ -49,7 +49,7 @@ class OnlineController extends AuthenticatedController
      **/
     public function index_action()
     {
-        $this->contact_count = Contact::countBySQL('owner_id=?', array(User::findCurrent()->id)); // Total number of contacts
+        $this->contact_count = Contact::countBySQL('owner_id=?', [User::findCurrent()->id]); // Total number of contacts
 
         $this->users           = $this->getOnlineUsers($this->settings['show_groups']);
         $this->showOnlyBuddies = $this->settings['show_only_buddys'];
@@ -162,7 +162,7 @@ class OnlineController extends AuthenticatedController
         $total = count($temp);
 
         // Filter invisible users
-        $visible    = array();
+        $visible    = [];
         $my_domains = UserDomain::getUserDomainsForUser($GLOBALS['user']->id);
 
         foreach ($temp as $username => $user) {
@@ -199,7 +199,7 @@ class OnlineController extends AuthenticatedController
                       ORDER BY statusgruppen.position ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':user_id', $GLOBALS['user']->id);
-            $statement->bindValue(':buddy_ids', $buddy_ids ?: array(''), StudipPDO::PARAM_ARRAY);
+            $statement->bindValue(':buddy_ids', $buddy_ids ?: [''], StudipPDO::PARAM_ARRAY);
             $statement->execute();
             $grouped = $statement->fetchGrouped();
 

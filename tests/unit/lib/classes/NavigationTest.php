@@ -78,7 +78,7 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         $navigation = new Navigation('test', 'foo.php');
         $this->assertEquals($navigation->getURL(), 'foo.php');
 
-        $navigation->setURL('bar.php', array('fuzz' => 'yes'));
+        $navigation->setURL('bar.php', ['fuzz' => 'yes']);
         $this->assertEquals('bar.php?fuzz=yes', $navigation->getURL());
         $this->assertTrue($navigation->isEnabled());
 
@@ -99,7 +99,7 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         $nav3 = new Navigation('baz', 'baz.php');
         $nav4 = new Navigation('egg', 'egg.php');
         $this->assertNull($navigation->getURL());
-        $this->assertEquals(array(), $navigation->getSubNavigation());
+        $this->assertEquals([], $navigation->getSubNavigation());
 
         $navigation->addSubNavigation('a1', $nav1);
         $navigation->addSubNavigation('a2', $nav2);
@@ -107,7 +107,7 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         $nav2->addSubNavigation('b1', $nav4);
         $this->assertFalse($navigation->isActive());
         $this->assertEquals('bar.php', $navigation->getURL());
-        $this->assertEquals(array('a1' => $nav1, 'a2' => $nav2, 'a3' => $nav3),
+        $this->assertEquals(['a1' => $nav1, 'a2' => $nav2, 'a3' => $nav3],
                             $navigation->getSubNavigation());
 
         $nav4->setActive(true);
@@ -120,9 +120,9 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         $navigation->removeSubNavigation('a1');
         $nav2->insertSubNavigation('a1', $nav1, '');
         $this->assertEquals('baz.php', $navigation->getURL());
-        $this->assertEquals(array('a3' => $nav3, 'a2' => $nav2),
+        $this->assertEquals(['a3' => $nav3, 'a2' => $nav2],
                             $navigation->getSubNavigation());
-        $this->assertEquals(array('b1' => $nav4, 'a1' => $nav1),
+        $this->assertEquals(['b1' => $nav4, 'a1' => $nav1],
                             $nav2->getSubNavigation());
     }
 
@@ -143,7 +143,7 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(Navigation::hasItem('/test/a2'));
         $this->assertFalse(Navigation::getItem('/test')->isActive());
         $this->assertEquals('bar.php', Navigation::getItem('/test')->getURL());
-        $this->assertEquals(array('a1' => $nav1, 'a2' => $nav2, 'a3' => $nav3),
+        $this->assertEquals(['a1' => $nav1, 'a2' => $nav2, 'a3' => $nav3],
                             Navigation::getItem('/test')->getSubNavigation());
 
         Navigation::activateItem('/test/a2/b1');
@@ -156,9 +156,9 @@ class NavigationTest extends PHPUnit_Framework_TestCase
         Navigation::removeItem('/test/a1');
         Navigation::insertItem('/test/a2/a1', $nav1, '');
         $this->assertEquals('baz.php', Navigation::getItem('/test')->getURL());
-        $this->assertEquals(array('a3' => $nav3, 'a2' => $nav2),
+        $this->assertEquals(['a3' => $nav3, 'a2' => $nav2],
                             Navigation::getItem('/test')->getSubNavigation());
-        $this->assertEquals(array('b1' => $nav4, 'a1' => $nav1),
+        $this->assertEquals(['b1' => $nav4, 'a1' => $nav1],
                             Navigation::getItem('/test/a2')->getSubNavigation());
     }
 

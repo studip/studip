@@ -30,7 +30,7 @@ class EvaluationController extends AuthenticatedController
             $eval_db = new EvaluationDB();
             $this->evaluations = StudipEvaluation::findMany($eval_db->getEvaluationIDs($range_id, EVAL_STATE_ACTIVE));
         } else {
-            $this->evaluations = array();
+            $this->evaluations = [];
         }
         // Check if we got expired
         if (Request::get('show_expired')) {

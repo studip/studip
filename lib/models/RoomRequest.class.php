@@ -32,52 +32,52 @@
  */
 class RoomRequest extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'resources_requests';
-        $config['belongs_to']['user'] = array(
+        $config['belongs_to']['user'] = [
             'class_name'  => 'User',
             'foreign_key' => 'user_id'
-        );
-        $config['belongs_to']['course'] = array(
+        ];
+        $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'seminar_id'
-        );
-        $config['belongs_to']['cycle'] = array(
+        ];
+        $config['belongs_to']['cycle'] = [
             'class_name'  => 'SeminarCycleDate',
             'foreign_key' => 'metadate_id'
-        );
-        $config['belongs_to']['date'] = array(
+        ];
+        $config['belongs_to']['date'] = [
             'class_name'  => 'CourseDate',
             'foreign_key' => 'termin_id'
-        );
-        $config['belongs_to']['resource'] = array(
+        ];
+        $config['belongs_to']['resource'] = [
             'class_name' => 'ResourceObject',
             'foreign_key' => 'resource_id',
             'assoc_func' => 'Factory'
-        );
+        ];
         $config['registered_callbacks']['after_initialize'][] = 'cbInitProperties';
         parent::configure($config);
     }
 
-    private $properties = array();          //the assigned property-requests
+    private $properties = [];          //the assigned property-requests
     public $last_search_result_count;          //the number of found rooms from last executed search
     private $properties_changed = false;
     private $default_seats;
 
     public static function findByCourse($seminar_id)
     {
-        return self::findOneBySql("termin_id = '' AND metadate_id = '' AND seminar_id = ?", array($seminar_id));
+        return self::findOneBySql("termin_id = '' AND metadate_id = '' AND seminar_id = ?", [$seminar_id]);
     }
 
     public static function findByDate($termin_id)
     {
-        return self::findOneBySql("termin_id = ?", array($termin_id));
+        return self::findOneBySql("termin_id = ?", [$termin_id]);
     }
 
     public static function findByCycle($metadate_id)
     {
-        return self::findOneBySql("metadate_id = ?", array($metadate_id));
+        return self::findOneBySql("metadate_id = ?", [$metadate_id]);
     }
 
     public static function existsByCourse($seminar_id, $is_open = false)
@@ -165,7 +165,7 @@ class RoomRequest extends SimpleORMap
 
     public function getAvailableProperties()
     {
-        $available_properties = array();
+        $available_properties = [];
         if ($this->category_id) {
             $db = DBManager::get();
 
@@ -173,7 +173,7 @@ class RoomRequest extends SimpleORMap
                                 FROM resources_categories_properties a
                                 LEFT JOIN resources_properties b USING (property_id)
                                 WHERE requestable = 1 AND category_id = ?");
-            if ($st->execute(array($this->category_id))) {
+            if ($st->execute([$this->category_id])) {
                 $available_properties = array_map('array_shift', $st->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP));
             }
         }
@@ -238,7 +238,7 @@ class RoomRequest extends SimpleORMap
 
     private function inititalizeProperties()
     {
-        $this->properties = array();
+        $this->properties = [];
         $this->properties_changed = true;
         if ($this->default_seats) {
             foreach ($this->getAvailableProperties() as $key=>$val) {
@@ -291,7 +291,7 @@ class RoomRequest extends SimpleORMap
             $this->properties_changed = true;
         }
         if ($value) {
-            $this->properties[$property_id] = array("state" => $value);
+            $this->properties[$property_id] = ["state" => $value];
         } else {
             $this->properties[$property_id] = false;
         }
@@ -374,7 +374,7 @@ class RoomRequest extends SimpleORMap
         $db = DBManager::get();
         $result = $db->query( $query );
 
-        $found = array();
+        $found = [];
 
         foreach( $result as $res ){
             if ($res["name"]) {
@@ -394,7 +394,7 @@ class RoomRequest extends SimpleORMap
                                 FROM resources_requests_properties a
                                 LEFT JOIN resources_properties b USING (property_id)
                                 WHERE a.request_id=? ");
-            if ($st->execute(array($this->getId()))) {
+            if ($st->execute([$this->getId()])) {
                 $this->properties = array_map('array_shift', $st->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP));
                 $this->properties_changed = false;
             }
@@ -633,7 +633,7 @@ class RoomRequest extends SimpleORMap
         $ret = '';
         if ($this->termin_id) {
             $ret = _("Einzeltermin der Veranstaltung");
-            if (get_object_type($this->termin_id, array('date'))) {
+            if (get_object_type($this->termin_id, ['date'])) {
                 $termin = new SingleDate($this->termin_id);
                 $ret .= chr(10) . '(' . $termin->toString() . ')';
             }
@@ -644,9 +644,9 @@ class RoomRequest extends SimpleORMap
             }
         } elseif ($this->seminar_id) {
             $ret =  _("alle regelmäßigen und unregelmäßigen Termine der Veranstaltung");
-            if (get_object_type($this->seminar_id, array('sem'))) {
+            if (get_object_type($this->seminar_id, ['sem'])) {
                 $course = new Seminar($this->seminar_id);
-                $ret .= chr(10) . ' (' . $course->getDatesExport(array('short' => true, 'shrink' => true)) . ')';
+                $ret .= chr(10) . ' (' . $course->getDatesExport(['short' => true, 'shrink' => true]) . ')';
             }
         } else {
             $ret = _("Kein Typ zugewiesen");
@@ -671,7 +671,7 @@ class RoomRequest extends SimpleORMap
         $db = DBManager::get();
         $sql = "SELECT mkdate FROM resources_requests_user_status WHERE request_id=? AND user_id=?";
         $st = $db->prepare($sql);
-        $st->execute(array($this->request_id, $user_id));
+        $st->execute([$this->request_id, $user_id]);
         return $st->fetchColumn();
     }
 
@@ -684,13 +684,13 @@ class RoomRequest extends SimpleORMap
             $sql = "DELETE FROM resources_requests_user_status WHERE request_id=? AND user_id=?";
         }
         $st = $db->prepare($sql);
-        $st->execute(array($this->request_id, $user_id));
+        $st->execute([$this->request_id, $user_id]);
         return $st->rowCount();
     }
 
     public function getAffectedDates()
     {
-        $dates = array();
+        $dates = [];
         switch ($this->getType()) {
             case 'date':
                 $dates[] = $this->date;

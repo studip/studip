@@ -63,7 +63,7 @@ class Course_LvgselectorController extends AuthenticatedController
         if ($this->lvgruppen_not_allowed) {
             return $this->render_text(MessageBox::info(_('Für diesen Veranstaltungstyp ist die Zuordnung zu Lehrveranstaltungsgruppen nicht vorgesehen.')));
         }
-        $this->open_lvg_nodes = array();
+        $this->open_lvg_nodes = [];
         if (Request::submitted('open_nodes')) {
             $already_open_nodes = (array)json_decode(Request::get('open_nodes'));
             foreach ($already_open_nodes as $open_lvgnode) {
@@ -127,7 +127,7 @@ class Course_LvgselectorController extends AuthenticatedController
         $stepNumber = Request::int('step');
         $method = Request::get('method');
         $parameters = Request::getArray('parameter');
-        $result = call_user_func_array(array('LVGroupsWizardStep', $method), $parameters);
+        $result = call_user_func_array(['LVGroupsWizardStep', $method], $parameters);
         if (is_array($result) || is_object($result)) {
             $this->render_json($result);
         } else {
@@ -146,10 +146,10 @@ class Course_LvgselectorController extends AuthenticatedController
     {
         $mvvid = explode('-', $id);
         $this->area = Lvgruppe::find($mvvid[0]);
-        $data = array(
+        $data = [
             'id' => $this->area->id,
             'html_string' => $this->render_template_as_string('course/lvgselector/entry_trails')
-        );
+        ];
         if (Request::isXhr()) {
             return json_encode($data);
         } else {
@@ -252,7 +252,7 @@ class Course_LvgselectorController extends AuthenticatedController
                                 LEFT JOIN Institute c ON (b.Institut_id=c.fakultaets_id)
                                 LEFT JOIN seminare d ON (d.Institut_id=c.Institut_id)
                                 WHERE a.user_id = ? AND a.inst_perms='admin' AND d.Seminar_id = ? LIMIT 1");
-                   $st->execute(array($GLOBALS['user']->id, $course_id));
+                   $st->execute([$GLOBALS['user']->id, $course_id]);
                     if ($st->fetchColumn()) {
                         return false;
                     }

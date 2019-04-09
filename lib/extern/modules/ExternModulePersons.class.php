@@ -46,21 +46,21 @@ class ExternModulePersons extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array(
+        $this->data_fields = [
                 'Nachname', 'Telefon', 'raum', 'Email', 'sprechzeiten'
-        );
-        $this->registered_elements = array(
+        ];
+        $this->registered_elements = [
                 'Body', 'TableHeader', 'TableHeadrow', 'TableGroup',
                 'TableRow', 'Link', 'LinkIntern', 'TableFooter'
-        );
-        $this->field_names = array
-        (
+        ];
+        $this->field_names = 
+        [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
                 _("Email"),
                 _("Sprechzeiten")
-        );
+        ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     
@@ -70,7 +70,7 @@ class ExternModulePersons extends ExternModule {
         $this->data_fields = array_merge((array)$this->data_fields, (array)$config_datafields);
         
         // setup module properties
-        $this->elements["LinkIntern"]->link_module_type = array(2, 14);
+        $this->elements["LinkIntern"]->link_module_type = [2, 14];
         $this->elements["LinkIntern"]->real_name = _("Link zum Modul MitarbeiterInnendetails");
         $this->elements["Link"]->real_name = _("Email-Link");
     }

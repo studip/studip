@@ -48,7 +48,7 @@ use Studip\Button, Studip\LinkButton;
 
             <div class="hgroup">
                 <select name="inaktiv" class="size-s">
-                <? foreach(array('<=' => '>=', '=' => '=', '>' => '<', 'nie' =>_('nie')) as $i => $one): ?>
+                <? foreach(['<=' => '>=', '=' => '=', '>' => '<', 'nie' =>_('nie')] as $i => $one): ?>
                     <option value="<?= htmlready($i) ?>" <?= ($request['inaktiv'][0] === $i) ? 'selected' : '' ?>>
                         <?= htmlReady($one) ?>
                     </option>

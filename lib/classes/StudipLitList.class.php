@@ -79,26 +79,26 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
         $rs = $this->view->get_query("view:LIT_GET_LIST_BY_RANGE");
         while ($rs->next_record()){
             $list_ids[] =  $rs->f("list_id");
-            $this->tree_data[$rs->f("list_id")] = array("user_id" => $rs->f("user_id"),
+            $this->tree_data[$rs->f("list_id")] = ["user_id" => $rs->f("user_id"),
                                                     "format" => ($rs->f("format")) ? $rs->f("format") : $this->format_default,
                                                     "chdate" => $rs->f("chdate"),
                                                     "fullname" => $rs->f("fullname"),
                                                     "username" => $rs->f("username"),
                                                     "visibility" => $rs->f("visibility"),
-                                                    );
+                                                    ];
             $this->storeItem($rs->f("list_id"), "root", $rs->f("name"), $rs->f("priority"));
         }
         if (is_array($list_ids)){
             $this->view->params[0] = $list_ids;
             $rs = $this->view->get_query("view:LIT_GET_LIST_CONTENT");
             while ($rs->next_record()){
-                $this->tree_data[$rs->f("list_element_id")] = array("user_id" => $rs->f("user_id"),
+                $this->tree_data[$rs->f("list_element_id")] = ["user_id" => $rs->f("user_id"),
                                                     "note" => $rs->f("note"),
                                                     "chdate" => $rs->f("chdate"),
                                                     "catalog_id" => $rs->f("catalog_id"),
                                                     "username" => $rs->f("username"),
                                                     "fullname" => $rs->f("fullname")
-                                                    );
+                                                    ];
                 $this->storeItem($rs->f("list_element_id"), $rs->f("list_id"), $rs->f("short_name"), $rs->f("priority"));
             }
         }
@@ -188,10 +188,10 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
         $priority = $this->getMaxPriority($list_id);
         foreach ($catalog_ids as $cat_id){
             if ($cat_id){
-                $inserted += $this->insertElement(array('catalog_id' => $cat_id, 'list_id' => $list_id,
+                $inserted += $this->insertElement(['catalog_id' => $cat_id, 'list_id' => $list_id,
                                                         'list_element_id' => $this->getNewListElementId(),
                                                         'user_id' => $GLOBALS['auth']->auth['uid'],
-                                                        'note' => '', 'priority' => ++$priority));
+                                                        'note' => '', 'priority' => ++$priority]);
             }
         }
         return $inserted;
@@ -213,11 +213,11 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
                 $name     = $this->tree_data[$list_element_id]['name'];
                 $range_id = (isset($fields['range_id'])) ? $fields['range_id'] : $this->range_id;
 
-                NotificationCenter::postNotification('LitListElementDidUpdate', array(
+                NotificationCenter::postNotification('LitListElementDidUpdate', [
                     'list_id'  => $list_id,
                     'name'     => $name,
                     'range_id' =>  $range_id
-                ));
+                ]);
 
                 $this->triggerListChdate($list_id);
             }
@@ -241,11 +241,11 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
                 $list_id  = $fields['list_id'] ?: $this->tree_data[$list_element_id]['parent_id'];
                 $range_id = (isset($fields['range_id'])) ? $fields['range_id'] : $this->range_id;
 
-                NotificationCenter::postNotification('LitListElementDidInsert', array(
+                NotificationCenter::postNotification('LitListElementDidInsert', [
                     'list_id'  => $list_id,
                     'name'     => '',
                     'range_id' =>  $range_id
-                ));
+                ]);
 
                 $this->triggerListChdate($this->tree_data[$list_element_id]['parent_id']);
             }
@@ -261,11 +261,11 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
         if ($ar = $rs->affected_rows()){
             $list_id = $this->tree_data[$element_id]['parent_id'];
 
-            NotificationCenter::postNotification('LitListElementDidDelete', array(
+            NotificationCenter::postNotification('LitListElementDidDelete', [
                 'list_id'  => $list_id,
                 'name'     => $this->tree_data[$element_id]['name'],
                 'range_id' =>  $this->range_id
-            ));
+            ]);
 
             $this->triggerListChdate($list_id);
         }
@@ -284,11 +284,11 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
             $this->view->params[] = $list_id;
             $rs = $this->view->get_query("view:LIT_UPD_LIST");
 
-            NotificationCenter::postNotification('LitListDidUpdate', array(
+            NotificationCenter::postNotification('LitListDidUpdate', [
                 'list_id'  => $list_id,
                 'range_id' => $this->range_id,
                 'name'     => $this->tree_data[$list_id]['name']
-            ));
+            ]);
 
             return $rs->affected_rows();
         } else {
@@ -308,11 +308,11 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
             $this->view->params[] = $list_id;
             $rs = $this->view->get_query("view:LIT_INS_LIST");
 
-            NotificationCenter::postNotification('LitListDidCreate', array(
+            NotificationCenter::postNotification('LitListDidCreate', [
                 'list_id'  => $list_id,
                 'range_id' => $this->range_id,
                 'name'     => $fields['name']
-            ));
+            ]);
 
             return $rs->affected_rows();
         } else {
@@ -322,18 +322,18 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
 
     function deleteList($list_id){
         $deleted = 0;
-        $this->view->params[] = array($list_id);
+        $this->view->params[] = [$list_id];
         $rs = $this->view->get_query("view:LIT_DEL_LIST");
         $deleted += $rs->affected_rows();
-        $this->view->params[] = array($list_id);
+        $this->view->params[] = [$list_id];
         $rs = $this->view->get_query("view:LIT_DEL_LIST_CONTENT_ALL");
         $deleted += $rs->affected_rows();
 
-        NotificationCenter::postNotification('LitListDidDelete', array(
+        NotificationCenter::postNotification('LitListDidDelete', [
             'list_id'  => $list_id,
             'range_id' => $this->range_id,
             'name'     => $this->tree_data[$list_id]['name']
-        ));
+        ]);
 
         return $deleted;
     }
@@ -346,10 +346,10 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
     }
 
     function GetTabbedList($range_id, $list_id){
-        $end_note_map = array(  'dc_type' => 'Reference Type', 'dc_title' => 'Title', 'dc_creator' => 'Author',
+        $end_note_map = [  'dc_type' => 'Reference Type', 'dc_title' => 'Title', 'dc_creator' => 'Author',
                                 'year' => 'Year', 'dc_contributor' => 'Secondary Author', 'dc_publisher' => 'Publisher',
                                 'dc_identifier' => 'ISBN/ISSN', 'dc_source' => 'Original Publication', 'dc_subject' => 'Keywords',
-                                'dc_description' => 'Abstract', 'accession_number' => 'Accession Number', 'note' => 'Notes', 'external_link' => 'URL');
+                                'dc_description' => 'Abstract', 'accession_number' => 'Accession Number', 'note' => 'Notes', 'external_link' => 'URL'];
         $dbv = DbView::getView('literatur');
         $tree = TreeAbstract::GetInstance("StudipLitList", $range_id);
         $ret = "*Generic\n";
@@ -369,7 +369,7 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
                     && ($value == '' || !in_array($value, $tree->cat_element->fields['dc_type']['select_list']))){
                         $value = "Book";
                     }
-                    $value = str_replace(array("\n","\r","\t"),'',$value);
+                    $value = str_replace(["\n","\r","\t"],'',$value);
                     $ret .= $value . "\t";
                 }
                 $ret .= "\n";
@@ -402,7 +402,7 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
         $dbv->params[0] = $range_id;
         $rs = $dbv->get_query("view:LIT_GET_LIST_COUNT_BY_RANGE");
         $rs->next_record();
-        return array("visible_list" => $rs->f("visible_list"),"invisible_list" => $rs->f("invisible_list"));
+        return ["visible_list" => $rs->f("visible_list"),"invisible_list" => $rs->f("invisible_list")];
     }
 
     public static function GetListsByRange($range_id, $format = 'default')

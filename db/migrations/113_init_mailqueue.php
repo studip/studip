@@ -33,19 +33,19 @@ class InitMailqueue extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'MAILQUEUE_ENABLE',
             ':value' => "0",
             ':type'  => 'boolean',
             ':description' => 'Aktiviert bzw. deaktiviert die Mailqueue',
-        ));
+        ]);
 
         // Add default cron tasks and schedules
-        $new_job = array(
+        $new_job = [
             'filename'    => 'lib/cronjobs/send_mail_queue.class.php',
             'class'       => 'SendMailQueueJob',
             'priority'    => 'normal'
-        );
+        ];
 
         $query = "INSERT IGNORE INTO `cronjobs_tasks`
                     (`task_id`, `filename`, `class`, `active`)
@@ -64,20 +64,20 @@ class InitMailqueue extends Migration
         
         $task_id = md5(uniqid('task', true));
 
-        $task_statement->execute(array(
+        $task_statement->execute([
             ':task_id'  => $task_id,
             ':filename' => $new_job['filename'],
             ':class'    => $new_job['class'],
-        ));
+        ]);
 
         $schedule_id = md5(uniqid('schedule', true));
-        $schedule_statement->execute(array(
+        $schedule_statement->execute([
             ':schedule_id' => $schedule_id,
             ':task_id'     => $task_id,
             ':priority'    => $new_job['priority'],
             ':hour'        => $new_job['hour'],
             ':minute'      => $new_job['minute'],
-        ));
+        ]);
     }
 
     function down()

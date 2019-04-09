@@ -17,16 +17,16 @@
 class ModulDeskriptor extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modul_deskriptor';
     
-        $config['belongs_to']['modul'] = array(
+        $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'modul_id'
-        );
+        ];
         
-        $config['has_many']['datafields'] = array(
+        $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_foreign_key' =>
                 function($model, $params) {
@@ -37,9 +37,9 @@ class ModulDeskriptor extends ModuleManagementModel
             'on_store' => 'store',
             'foreign_key' =>
                 function($m) {
-                    return array($m);
+                    return [$m];
                 }
-        );
+        ];
         
         $config['i18n_fields']['verantwortlich'] = true;
         $config['i18n_fields']['bezeichnung'] = true;
@@ -96,7 +96,7 @@ class ModulDeskriptor extends ModuleManagementModel
     
     public function getResponsibleInstitutes()
     {
-        $institutes = array();
+        $institutes = [];
         $modul_insts = ModulInst::findByModul($this->modul_id, 'hauptverantwortlich');
         foreach ($modul_insts as $modul_inst) {
             $institute = Institute::find($modul_inst->institut_id);

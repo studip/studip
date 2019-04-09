@@ -65,7 +65,7 @@ class Course_ManagementController extends AuthenticatedController
                 if (!LockRules::check($course->id, 'seminar_copy')) {
                     $actions->addLink(
                         _('Veranstaltung kopieren'),
-                        URLHelper::getURL($this->url_for('course/wizard/copy/'.$course->id), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        URLHelper::getURL($this->url_for('course/wizard/copy/'.$course->id), ['studip_ticket' => Seminar_Session::get_ticket()]),
                         Icon::create('seminar+add')
                     );
                 }
@@ -73,7 +73,7 @@ class Course_ManagementController extends AuthenticatedController
                 if (Config::get()->ALLOW_DOZENT_DELETE || $GLOBALS['perm']->have_perm('admin')) {
                     $actions->addLink(
                         _('Veranstaltung löschen'),
-                        URLHelper::getURL( $this->url_for('course/archive/confirm'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        URLHelper::getURL( $this->url_for('course/archive/confirm'), ['studip_ticket' => Seminar_Session::get_ticket()]),
                         Icon::create('seminar+remove')
                     )->asDialog('size=auto');
                 }
@@ -83,7 +83,7 @@ class Course_ManagementController extends AuthenticatedController
                     if ($course->duration_time == -1 || $course->end_semester->visible) {
                         $actions->addLink(
                             _('Sichtbarkeit ändern') . ' (' .  ($is_visible ? _('sichtbar') : _('unsichtbar')) . ')',
-                            URLHelper::getURL($this->url_for('course/management/change_visibility'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                            URLHelper::getURL($this->url_for('course/management/change_visibility'), ['studip_ticket' => Seminar_Session::get_ticket()]),
                             Icon::create('visibility-' . ($is_visible ? 'visible' : 'invisible'))
                         );
                     }
@@ -92,7 +92,7 @@ class Course_ManagementController extends AuthenticatedController
                     $is_locked =$course->lock_rule;
                     $actions->addLink(
                         _('Sperrebene ändern') . ' (' .  ($is_locked ? _('gesperrt') : _('nicht gesperrt')) . ')',
-                        URLHelper::getURL($this->url_for('course/management/lock'), array('studip_ticket' => Seminar_Session::get_ticket())),
+                        URLHelper::getURL($this->url_for('course/management/lock'), ['studip_ticket' => Seminar_Session::get_ticket()]),
                         Icon::create('lock-' . ($is_locked  ? 'locked' : 'unlocked'))
                     )->asDialog('size=auto');
                 }
@@ -163,7 +163,7 @@ class Course_ManagementController extends AuthenticatedController
             return;
         }
 
-        $this->all_lock_rules    = array_merge(array(array('name' => ' -- ' . _("keine Sperrebene") . ' -- ', 'lock_id' => 'none')), LockRule::findAllByType('sem'));
+        $this->all_lock_rules    = array_merge([['name' => ' -- ' . _("keine Sperrebene") . ' -- ', 'lock_id' => 'none']], LockRule::findAllByType('sem'));
         $this->current_lock_rule = LockRule::find($course->lock_rule);
     }
 

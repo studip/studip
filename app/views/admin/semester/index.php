@@ -37,7 +37,7 @@
                 <?= _('Es wurden noch keine Semester angelegt.') ?><br>
                 <?= Studip\LinkButton::create(_('Neues Semester anlegen'),
                                               $controller->url_for('admin/semester/edit'),
-                                              array('data-dialog' => 'size=auto')) ?>
+                                              ['data-dialog' => 'size=auto']) ?>
             <? endif; ?>
             </td>
         </tr>

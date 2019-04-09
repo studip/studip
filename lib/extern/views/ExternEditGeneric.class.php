@@ -53,12 +53,12 @@ class ExternEditGeneric extends ExternEdit {
     * @param string info The info text.
     */
     function editFaceGeneric ($attribute, $title, $info) {
-        $faces = array(
+        $faces = [
             "" => _("keine Auswahl"),
             "Arial,Helvetica,sans-serif" => _("serifenlose Schrift"),
           "Times,Times New Roman,serif" => _("Serifenschrift"),
             "Courier,Courier New,monospace" => _("diktengleiche Schrift")
-        );
+        ];
         $form_name = $this->element_name . "_" . $attribute;
         $value = $this->getValue($attribute);
 

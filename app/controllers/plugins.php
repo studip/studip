@@ -9,7 +9,7 @@ class PluginsController extends StudipController
 {
     public function trigger_automaticupdate_action($class)
     {
-        $output = array();
+        $output = [];
         if (Request::isPost()) {
             $plugin =  PluginManager::getInstance()->getPluginInfo($class);
             $low_cost_secret = md5(Config::get()->STUDIP_INSTALLATION_ID.$plugin['id']);

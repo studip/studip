@@ -9,7 +9,7 @@
     <? if (Request::int('fromDialog')): ?>
         <?= Studip\LinkButton::create(_('Zurück zur Übersicht'),
               $controller->url_for('course/timesrooms/index'),
-              array('data-dialog' => 'size=big')) ?>
+              ['data-dialog' => 'size=big']) ?>
     <? endif; ?>
     </footer>
 </form>

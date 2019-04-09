@@ -44,7 +44,7 @@ class IssueDB {
                   FROM themen
                   WHERE issue_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($issue_id));
+        $statement->execute([$issue_id]);
         return $statement->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -58,7 +58,7 @@ class IssueDB {
                         (issue_id, seminar_id, author_id, title, description, mkdate, chdate, priority)
                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $issue->issue_id,
                 $issue->seminar_id,
                 $issue->author_id,
@@ -67,13 +67,13 @@ class IssueDB {
                 $issue->mkdate,
                 $issue->chdate,
                 $issue->priority
-            ));
+            ]);
         } else {
             $query = "UPDATE themen
                       SET seminar_id = ?, author_id = ?, title = ?, description = ?, mkdate = ?, priority = ?
                       WHERE issue_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $issue->seminar_id,
                 $issue->author_id,
                 $issue->title,
@@ -81,22 +81,22 @@ class IssueDB {
                 $issue->mkdate,
                 $issue->priority,
                 $issue->issue_id
-            ));
+            ]);
 
             if ($statement->rowCount()) {
                 $query = "UPDATE themen SET chdate = UNIX_TIMESTAMP() WHERE issue_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($issue->issue_id));
+                $statement->execute([$issue->issue_id]);
 
                 $query = "SELECT termin_id FROM themen_termine WHERE issue_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($issue->issue_id));
+                $statement->execute([$issue->issue_id]);
                 $termin_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
                 if (count($termin_ids) > 0) {
                     $query = "UPDATE termine SET chdate = UNIX_TIMESTAMP() WHERE termin_id IN (?)";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($termin_ids));
+                    $statement->execute([$termin_ids]);
                 }
             }
 
@@ -108,18 +108,18 @@ class IssueDB {
     {
         $query = "DELETE FROM themen WHERE issue_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($issue_id));
+        $statement->execute([$issue_id]);
 
         $query = "DELETE FROM themen_termine WHERE issue_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($issue_id));
+        $statement->execute([$issue_id]);
     }
 
     function isIssue($issue_id)
     {
         $query = "SELECT 1 FROM themen WHERE issue_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($issue_id));
+        $statement->execute([$issue_id]);
         return (bool)$statement->fetchColumn();
     }
 
@@ -131,9 +131,9 @@ class IssueDB {
                   WHERE issue_id = ?
                   ORDER BY `date` ASC";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($issue_id));
+        $statement->execute([$issue_id]);
 
-        $ret = array();
+        $ret = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $ret[$row['termin_id']] = $row;
         }
@@ -144,7 +144,7 @@ class IssueDB {
     {
         $query = "SELECT issue_id FROM themen WHERE seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($course_id));
+        $statement->execute([$course_id]);
         $themen = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($themen as $issue_id) {

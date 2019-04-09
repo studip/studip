@@ -17,7 +17,7 @@ class CourseEvent extends CourseDate implements Event
     private $properties = null;
     private $permission_user_id = null;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['alias_fields']['event_id'] = 'termin_id';
         $config['alias_fields']['start'] = 'date';
@@ -74,12 +74,12 @@ class CourseEvent extends CourseDate implements Event
                 . 'SELECT metadate_id FROM schedule_seminare '
                 . 'WHERE user_id = :user_id AND visible = 0) ) '
                 . 'ORDER BY date ASC');
-        $stmt->execute(array(
+        $stmt->execute([
             ':user_id' => $user_id,
             ':start'   => $start->getTimestamp(),
             ':end'     => $end->getTimestamp()
-        ));
-       $event_collection = array();
+        ]);
+       $event_collection = [];
        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
            $event = new CourseEvent();
            $event->setData($row);
@@ -128,7 +128,7 @@ class CourseEvent extends CourseDate implements Event
                 if (sizeof($group_ids)) {
                     $member = StatusgruppeUser::findBySQL(
                             'statusgruppe_id IN(?) AND user_id = ?',
-                            array($group_ids, $user_id));
+                            [$group_ids, $user_id]);
                     $check_related = sizeof($member) > 0;
                 } else {
                     $check_related = true;
@@ -148,7 +148,7 @@ class CourseEvent extends CourseDate implements Event
         if ($this->havePermission(Event::PERMISSION_READABLE)) {
             $category = $GLOBALS['TERMIN_TYP'][$this->getCategory()]['name'];
         }
-        return $as_array ? array($category) : $category;
+        return $as_array ? [$category] : $category;
     }
 
     /**
@@ -172,8 +172,8 @@ class CourseEvent extends CourseDate implements Event
      */
     public function getRecurrence($index = null)
     {
-        $rep = array('ts' => 0, 'linterval' => 0, 'sinterval' => 0, 'wdays' => '',
-            'month' => 0, 'day' => 0, 'rtype' => 'SINGLE', 'duration' => 1);
+        $rep = ['ts' => 0, 'linterval' => 0, 'sinterval' => 0, 'wdays' => '',
+            'month' => 0, 'day' => 0, 'rtype' => 'SINGLE', 'duration' => 1];
         return $index ? $rep[$index] : $rep;
     }
 
@@ -424,7 +424,7 @@ class CourseEvent extends CourseDate implements Event
     public function getProperties()
     {
         if ($this->properties === null) {
-            $this->properties = array(
+            $this->properties = [
                 'DTSTART' => $this->getStart(),
                 'DTEND' => $this->getEnd(),
                 'SUMMARY' => $this->getTitle(),
@@ -443,7 +443,7 @@ class CourseEvent extends CourseDate implements Event
                 'EXDATE' => '',
                 'EVENT_TYPE' => 'sem',
                 'STATUS' => 'CONFIRMED',
-                'DTSTAMP' => time());
+                'DTSTAMP' => time()];
         }
         return $this->properties;
     }

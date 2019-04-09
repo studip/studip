@@ -127,7 +127,7 @@
         <label>
             <?= _('Priorität') ?>
 
-            <? $priority_names = array(_('Keine Angabe'), _('Hoch'), _('Mittel'), _('Niedrig')) ?>
+            <? $priority_names = [_('Keine Angabe'), _('Hoch'), _('Mittel'), _('Niedrig')] ?>
             <select name="priority" id="priority" size="1">
                 <? foreach ($priority_names as $key => $priority) : ?>
                 <option value="<?= $key ?>"<?= $key == $event->getPriority() ? ' selected' : '' ?>><?= $priority ?></option>
@@ -188,7 +188,7 @@
                     <div class="rec-content" id="rec-content-daily">
                         <div class="hgroup">
                             <label>
-                                <input type="radio" name="type_daily" value="day"<?= in_array($rec_type, array('daily', 'xdaily')) ? ' checked' : '' ?>>
+                                <input type="radio" name="type_daily" value="day"<?= in_array($rec_type, ['daily', 'xdaily']) ? ' checked' : '' ?>>
                                 <?= sprintf(_('Jeden %s. Tag'), '<input type="text" size="3" name="linterval_d" value="' . $linterval . '">') ?>
                             </label>
                         </div>
@@ -200,14 +200,14 @@
                     </div>
                 </li>
                 <li>
-                    <? $wdays = array(
+                    <? $wdays = [
                         '1' => _('Montag'),
                         '2' => _('Dienstag'),
                         '3' => _('Mittwoch'),
                         '4' => _('Donnerstag'),
                         '5' => _('Freitag'),
                         '6' => _('Samstag'),
-                        '7' => _('Sonntag')) ?>
+                        '7' => _('Sonntag')] ?>
                     <label class="rec-label" for="rec-weekly">
                         <input type="radio" class="rec-select" id="rec-weekly" name="recurrence" value="weekly"<?= $event->getRecurrence('rtype') == 'WEEKLY' ? ' checked' : '' ?>>
                         <?= _('Wöchentlich') ?>
@@ -230,12 +230,12 @@
                     </div>
                 </li>
                 <li>
-                    <? $mdays = array(
+                    <? $mdays = [
                         '1' => _('Ersten'),
                         '2' => _('Zweiten'),
                         '3' => _('Dritten'),
                         '4' => _('Vierten'),
-                        '5' => _('Letzten')) ?>
+                        '5' => _('Letzten')] ?>
                     <? $mdays_options = '' ?>
                     <? $mday_selected = $event->getRecurrence('sinterval') ?>
                     <? foreach ($mdays as $key => $mday) :
@@ -262,7 +262,7 @@
                     <div class="rec-content" id="rec-content-monthly">
                         <div class="hgroup">
                             <label>
-                                <input type="radio" value="day" name="type_m"<?= in_array($rec_type, array('mday_monthly', 'mday_xmonthly')) ? ' checked' : '' ?>>
+                                <input type="radio" value="day" name="type_m"<?= in_array($rec_type, ['mday_monthly', 'mday_xmonthly']) ? ' checked' : '' ?>>
                                 <? $mday = $event->getRecurrence('day') ?: date('j', $event->getStart()) ?>
                                 <?= sprintf(_('Wiederholt am %s. jeden %s. Monat'),
                                     '<input type="text" name="day_m" size="2" value="'
@@ -273,7 +273,7 @@
                         </div>
                         <div class="hgroup">
                             <label>
-                                <input type="radio" value="wday" name="type_m"<?= in_array($rec_type, array('xwday_xmonthly', 'lastwday_xmonthly', 'xwday_monthly', 'lastwday_monthly')) ? ' checked' : '' ?>>
+                                <input type="radio" value="wday" name="type_m"<?= in_array($rec_type, ['xwday_xmonthly', 'lastwday_xmonthly', 'xwday_monthly', 'lastwday_monthly']) ? ' checked' : '' ?>>
                                 <?= sprintf(_('Jeden %s alle %s Monate'),
                                     '<select size="1" name="sinterval_m">' . $mdays_options . '</select>'
                                     . '<select size="1" name="wday_m">' . $wdays_options . '</select>',
@@ -284,7 +284,7 @@
                     </div>
                 </li>
                 <li>
-                    <? $months = array(
+                    <? $months = [
                         '1' => _('Januar'),
                         '2' => _('Februar'),
                         '3' => _('März'),
@@ -296,7 +296,7 @@
                         '9' => _('September'),
                         '10' => _('Oktober'),
                         '11' => _('November'),
-                        '12' => _('Dezember')) ?>
+                        '12' => _('Dezember')] ?>
                     <? $months_options = '' ?>
                     <? $month_selected = $event->getRecurrence('month') ?: date('n', $event->getStart()) ?>
                     <? foreach ($months as $key => $month) :
@@ -324,7 +324,7 @@
 
                         <div class="hgroup">
                             <label>
-                                <input type="radio" value="wday" name="type_y"<?= in_array($rec_type, array('xwday_month_yearly', 'lastwday_month_yearly')) ? ' checked' : '' ?>>
+                                <input type="radio" value="wday" name="type_y"<?= in_array($rec_type, ['xwday_month_yearly', 'lastwday_month_yearly']) ? ' checked' : '' ?>>
                                 <?= sprintf(_('Jeden %s im %s'),
                                     '<select size="1" name="sinterval_y">' . $mdays_options . '</select>'
                                     . '<select size="1" name="wday_y">' . $wdays_options . '</select>',
@@ -401,7 +401,7 @@
     <? endif; ?>
 
     <footer data-dialog-button>
-        <?= Button::create(_('Speichern'), 'store', array('title' => _('Termin speichern'))) ?>
+        <?= Button::create(_('Speichern'), 'store', ['title' => _('Termin speichern')]) ?>
 
         <? if (!$event->isNew()) : ?>
         <? if ($event->getRecurrence('rtype') != 'SINGLE') : ?>
@@ -410,7 +410,7 @@
         <?= LinkButton::create(_('Löschen'), $controller->url_for('calendar/single/delete/' . implode('/', $event->getId()))) ?>
         <? endif; ?>
         <? if (!Request::isXhr()) : ?>
-        <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, array($event->getStart()))) ?>
+        <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, [$event->getStart()])) ?>
         <? endif; ?>
     </footer>
 </form>

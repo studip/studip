@@ -18,7 +18,7 @@ $author_url = $author->getURL();
 <li class="comment posting<?= $posting['mkdate'] > $last_visit ? " new" : "" ?>" id="posting_<?= $posting->getId() ?>" mkdate="<?= htmlReady($posting['mkdate']) ?>" data-autor="<?= htmlReady($posting['user_id']) ?>">
     <div class="avatar">
         <? if ($author_url) : ?>
-        <a href="<?= URLHelper::getLink($author_url, array(), true) ?>">
+        <a href="<?= URLHelper::getLink($author_url, [], true) ?>">
         <? endif ?>
             <div style="background-image: url('<?= $author->getAvatar()->getURL(Avatar::MEDIUM)?>');" class="avatar_image"<?= $author->isNew() ? ' title="'._("Nicht registrierter Nutzer").'"' : "" ?>></div>
         <? if ($author_url) : ?>
@@ -46,7 +46,7 @@ $author_url = $author->getURL();
         </div>
         <div class="name">
             <? if ($author_url) : ?>
-            <a href="<?= URLHelper::getLink($author_url, array(), true) ?>">
+            <a href="<?= URLHelper::getLink($author_url, [], true) ?>">
             <? endif ?>
                 <?= htmlReady($author_name) ?>
             <? if ($author_url) : ?>

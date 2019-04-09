@@ -30,7 +30,7 @@
     <? endif; ?>
     <td>
     <?= $this->render_partial('course/members/_studycourse.php',
-                array('studycourses' => new SimpleCollection(UserStudyCourse::findByUser($m->user_id)))) ?>
+                ['studycourses' => new SimpleCollection(UserStudyCourse::findByUser($m->user_id))]) ?>
     </td>
 <? endif ?>
     <td class="memberactions">

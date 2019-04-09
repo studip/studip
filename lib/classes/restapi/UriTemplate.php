@@ -9,7 +9,7 @@ namespace RESTAPI;
  */
 class UriTemplate
 {
-    public function __construct($uri_template, $conditions = array())
+    public function __construct($uri_template, $conditions = [])
     {
         $this->uri_template = $uri_template;
         $this->conditions = $conditions;
@@ -34,7 +34,7 @@ class UriTemplate
     public function match($uri, &$parameters = null)
     {
         // Initialize parameters array
-        $parameters = array();
+        $parameters = [];
 
         // Split and normalize uri and template
         $given = array_filter(explode('/', $uri), 'mb_strlen');
@@ -64,7 +64,7 @@ class UriTemplate
 
             } elseif ($actual !== $rule) {
                 // Elements do not match
-                $parameters = array();
+                $parameters = [];
                 return false;
             }
         }
@@ -76,7 +76,7 @@ class UriTemplate
     public function inject($params)
     {
         // Initialize parameters array
-        $parameters = array();
+        $parameters = [];
 
         // Split and normalize template
         $rules = array_filter(explode('/', $this->uri_template));

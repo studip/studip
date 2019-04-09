@@ -31,7 +31,7 @@ use Studip\Button;
             <tr>
                 <td>
                     <?= Avatar::getAvatar($resObject->getOwnerId())->getImageTag(Avatar::SMALL,
-                        array('style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true)))); ?>
+                        ['style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true))]); ?>
                 </td>
                 <td>
                     <a href="<?= $resObject->getOwnerLink() ?>"><?= htmlReady($resObject->getOwnerName(true)) ?></a>
@@ -74,7 +74,7 @@ use Studip\Button;
                     <tr>
                         <td>
                             <?= Avatar::getAvatar($user_id)->getImageTag(Avatar::SMALL,
-                                array('style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true, $user_id)))); ?>
+                                ['style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true, $user_id))]); ?>
                         </td>
                         <td>
                             <input type="hidden" name="change_user_id[]" value="<?= $user_id ?>">
@@ -177,7 +177,7 @@ use Studip\Button;
             <tr>
                 <td></td>
                 <td colspan="4" style="text-align: center">
-                    <?= Button::create(_('Übernehmen'), array('title' => _('Zuweisen'))) ?>
+                    <?= Button::create(_('Übernehmen'), ['title' => _('Zuweisen')]) ?>
                 </td>
             </tr>
             </tfoot>

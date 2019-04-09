@@ -142,7 +142,7 @@ class CronjobScheduler
      * @return CronjobSchedule The generated schedule object.
      */
     public function scheduleOnce($task_id, $timestamp, $priority = CronjobSchedule::PRIORITY_NORMAL,
-                                 $parameters = array())
+                                 $parameters = [])
     {
         $schedule = new CronjobSchedule();
         $schedule->type           = 'once';
@@ -193,7 +193,7 @@ class CronjobScheduler
     public function schedulePeriodic($task_id, $minute = null, $hour = null,
                                      $day = null, $month = null, $day_of_week = null,
                                      $priority = CronjobSchedule::PRIORITY_NORMAL,
-                                     $parameters = array())
+                                     $parameters = [])
     {
         $schedule = new CronjobSchedule();
         $schedule->type       = 'periodic';
@@ -317,10 +317,10 @@ class CronjobScheduler
 
             // Activate the file lock and store the current timestamp,
             // schedule id and according log id in it
-            $this->lock->lock(array(
+            $this->lock->lock([
                 'schedule_id' => $schedule->schedule_id,
                 'log_id'      => $log->log_id,
-            ));
+            ]);
 
             // Start capturing output and measuring duration
             ob_start();

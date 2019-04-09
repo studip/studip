@@ -53,11 +53,11 @@ class LimitedAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `limitedadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         // Delete all custom max numbers.
         $stmt = DBManager::get()->prepare("DELETE FROM `userlimits`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -75,7 +75,7 @@ class LimitedAdmission extends AdmissionRule
         $maxNumber = $this->maxNumber;
         $stmt = DBManager::get()->prepare("SELECT `maxnumber`
             FROM `userlimits` WHERE rule_id=? AND user_id=?");
-        $stmt->execute(array($this->id, $userId));
+        $stmt->execute([$this->id, $userId]);
         // The user has given some custom number.
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Custom number must be smaller than rule max number.
@@ -140,7 +140,7 @@ class LimitedAdmission extends AdmissionRule
     public function load() {
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `limitedadmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
             $this->startTime = $current['start_time'];
@@ -160,17 +160,17 @@ class LimitedAdmission extends AdmissionRule
      */
     public function ruleApplies($userId, $courseId)
     {
-        $errors = array();
+        $errors = [];
         // Check for rule validity time frame.
         if ($this->checkTimeFrame()) {
             // How many courses from this set has the user already registered for?
             $db = DBManager::get();
             $number = $db->fetchColumn("SELECT COUNT(*)
                 FROM `seminar_user` WHERE `user_id`=? AND `status` IN ('user', 'autor') AND `Seminar_id` IN (
-                    SELECT `Seminar_id` FROM `seminar_courseset` WHERE `set_id`=?)", array($userId, $this->courseSetId));
+                    SELECT `Seminar_id` FROM `seminar_courseset` WHERE `set_id`=?)", [$userId, $this->courseSetId]);
             $number += $db->fetchColumn("SELECT COUNT(*)
                 FROM `admission_seminar_user` WHERE `user_id`=? AND `Seminar_id` IN (
-                    SELECT `Seminar_id` FROM `seminar_courseset` WHERE `set_id`=?)", array($userId, $this->courseSetId));
+                    SELECT `Seminar_id` FROM `seminar_courseset` WHERE `set_id`=?)", [$userId, $this->courseSetId]);
             // Check if the number is smaller than admission rule limit
             if (!($number <
                     $this->getMaxNumber())) {
@@ -208,8 +208,8 @@ class LimitedAdmission extends AdmissionRule
             (`rule_id`, `user_id`, `maxnumber`, `mkdate`, `chdate`)
             VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             `maxnumber`=VALUES(`maxnumber`), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $userId,
-            min($this->maxNumber, $maxNumber), time(), time()));
+        $stmt->execute([$this->id, $userId,
+            min($this->maxNumber, $maxNumber), time(), time()]);
         return $this;
     }
 
@@ -237,8 +237,8 @@ class LimitedAdmission extends AdmissionRule
             `message`=VALUES(`message`), `start_time`=VALUES(`start_time`),
             `end_time`=VALUES(`end_time`), `maxnumber`=VALUES(`maxnumber`),
             `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message, (int)$this->startTime,
-            (int)$this->endTime, $this->maxNumber, time(), time()));
+        $stmt->execute([$this->id, $this->message, (int)$this->startTime,
+            (int)$this->endTime, $this->maxNumber, time(), time()]);
         return $this;
     }
 

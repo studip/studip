@@ -40,7 +40,7 @@
 
 class ExternElementPersondetailsHeader extends ExternElement {
 
-    var $attributes = array("table_width", "table_align", "table_border", "table_bgcolor",
+    var $attributes = ["table_width", "table_align", "table_border", "table_bgcolor",
                 "table_bordercolor", "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style", "tr_class", "tr_style", "headlinetd_height", "headlinetd_align",
                 "headlinetd_valign", "headlinetd_bgcolor", "headlinetd_class", "headlinetd_style",
@@ -48,7 +48,7 @@ class ExternElementPersondetailsHeader extends ExternElement {
                 "picturetd_class", "picturetd_style", "contacttd_width", "contacttd_align",
                 "contacttd_valign", "contacttd_bgcolor", "contacttd_class", "contacttd_style",
                 "font_face", "font_size", "font_color", "font_class", "font_style", "img_align",
-                "img_border", "img_width", "img_height", "hidename");
+                "img_border", "img_width", "img_height", "hidename"];
     
     /**
     * Constructor
@@ -65,14 +65,14 @@ class ExternElementPersondetailsHeader extends ExternElement {
     }
     
     function getDefaultConfig () {
-        $config = array(
+        $config = [
             "table_width" => "100%",
             "table_border" => "0",
             "table_bordercolor" => "",
             "table_cellpadding" => "0",
             "table_cellspacing" => "0",
             "hidename" => ""
-        );
+        ];
         
         return $config;
     }
@@ -101,20 +101,20 @@ class ExternElementPersondetailsHeader extends ExternElement {
         $content_table = $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
         
-        $attributes = array("table_width", "table_align", "table_border", "table_bgcolor",
+        $attributes = ["table_width", "table_align", "table_border", "table_bgcolor",
                 "table_bordercolor", "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style", "tr_class", "tr_style", "headlinetd_height", "headlinetd_align",
                 "headlinetd_valign", "headlinetd_bgcolor", "headlinetd_class", "headlinetd_style",
                 "font_face", "font_size", "font_color", "font_class", "font_style",
                 "picturetd_width", "picturetd_align", "picturetd_valign", "picturetd_bgcolor",
                 "picturetd_class", "picturetd_style", "contacttd_width", "contacttd_align",
-                "contacttd_valign", "contacttd_bgcolor", "contacttd_class", "contacttd_style",);
-        $headlines = array("table" => _("Tabelle Seitenkopf/Bild (HTML-Tag &lt;table&gt;)"),
+                "contacttd_valign", "contacttd_bgcolor", "contacttd_class", "contacttd_style",];
+        $headlines = ["table" => _("Tabelle Seitenkopf/Bild (HTML-Tag &lt;table&gt;)"),
                 "tr" => _("Tabellenzeile Name (HTML-Tag &lt;tr&gt;)"),
                 "headlinetd" => _("Tabellenzelle Name (HTML-Tag &lt;td&gt;)"),
                 "font" => _("Schriftformatierung Name (HTML-Tag &lt;font&gt;)"),
                 "picturetd" => _("Tabellenzelle Bild (HTML-Tag &lt;td&gt;)"),
-                "contacttd" => _("Tabellenzelle Kontakt (HTML-Tag &lt;td&gt;)"));
+                "contacttd" => _("Tabellenzelle Kontakt (HTML-Tag &lt;td&gt;)")];
         $content_table .= $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
         
@@ -122,9 +122,9 @@ class ExternElementPersondetailsHeader extends ExternElement {
         
         $title = _("Ausrichtung:");
         $info = _("Ausrichtung des Bildes.");
-        $names = array(_("zentriert"), _("linksbündig"), _("rechtsbündig"),
-                _("obenbündig"), _("untenbündig"));
-        $values = array("center", "left", "right", "top", "bottom");
+        $names = [_("zentriert"), _("linksbündig"), _("rechtsbündig"),
+                _("obenbündig"), _("untenbündig")];
+        $values = ["center", "left", "right", "top", "bottom"];
         $table = $edit_form->editOptionGeneric("img_align", $title, $info, $values, $names);
         
         $title = _("Rahmenbreite:");

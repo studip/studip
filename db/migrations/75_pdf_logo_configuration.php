@@ -16,13 +16,13 @@ class PdfLogoConfiguration extends Migration
     function up()
     {
         $options[] =
-            array(
+            [
             'name'        => 'PDF_LOGO',
             'type'        => 'string',
             'value'       => '',
             'section'     => 'global',
             'description' => 'Geben Sie hier den absoluten Pfad auf Ihrem Server (also ohne http) zu einem Logo an, das bei PDF-Exporten im Kopfbereich verwendet wird.'
-            );
+            ];
 
         $stmt = DBManager::get()->prepare("
                 INSERT IGNORE INTO config

@@ -34,7 +34,7 @@
 
 class ResourcesOpenObjectGroups {
     
-    private $groups = array();
+    private $groups = [];
     private $range_type;
     private $range_name;
     private static $instances;
@@ -60,7 +60,7 @@ class ResourcesOpenObjectGroups {
     }
     
     function createGroups(){
-        $resources = array();
+        $resources = [];
         $db = DBManager::get();
         $st = $db->prepare("SELECT resource_id
             FROM resources_objects
@@ -69,7 +69,7 @@ class ResourcesOpenObjectGroups {
             SELECT resource_id
             FROM resources_user_resources 
             WHERE user_id = ?");
-        if($st->execute(array($this->range_id, $this->range_id))){
+        if($st->execute([$this->range_id, $this->range_id])){
             while($resource_id = $st->fetchColumn()){
                 $resources[] = $resource_id;
                 $resources = array_merge($resources, $this->getResourcesChildren($resource_id));
@@ -94,7 +94,7 @@ class ResourcesOpenObjectGroups {
     
     function getResourcesChildren($resource_id, $in_recursion = false){
         static $resources;
-        if(!$in_recursion) $resources = array();
+        if(!$in_recursion) $resources = [];
         $rs = DBManager::get()->query("SELECT resource_id FROM resources_objects 
             WHERE parent_id='$resource_id'");
         foreach($rs->fetchAll(PDO::FETCH_COLUMN, 0) as $resource_id){
@@ -105,7 +105,7 @@ class ResourcesOpenObjectGroups {
     }
     
     function getAllResources(){
-        $ret = array();
+        $ret = [];
         foreach($this->groups as $group) $ret = array_merge($ret, $group['resources']);
         return $ret;
     }
@@ -115,7 +115,7 @@ class ResourcesOpenObjectGroups {
     }
     
     function getGroupContent($id){
-        return (isset($this->groups[$id]) ? $this->groups[$id]['resources'] : array());
+        return (isset($this->groups[$id]) ? $this->groups[$id]['resources'] : []);
     }
     
     function getGroupCount($id){

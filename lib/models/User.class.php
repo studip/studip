@@ -73,7 +73,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     /**
      *
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['has_many']['course_memberships'] = [
             'class_name' => 'CourseMember',
@@ -99,7 +99,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $config['has_many']['datafields'] = [
             'class_name'  => 'DatafieldEntryModel',
             'foreign_key' => function ($user) {
-                return array($user);
+                return [$user];
             },
             'assoc_foreign_key' => function ($model, $params) {
                 $model->setValue('range_id', $params[0]->id);
@@ -199,7 +199,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 FROM auth_user_md5
                 LEFT JOIN user_info USING (user_id)
                 WHERE user_id = ?";
-        $data = DbManager::get()->fetchOne($sql, array($id));
+        $data = DbManager::get()->fetchOne($sql, [$id]);
         if ($data) {
             return self::buildExisting($data);
         }
@@ -218,7 +218,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 FROM auth_user_md5
                 LEFT JOIN user_info USING (user_id)
                 WHERE user_id IN (?) " . $order_by;
-        $data = DbManager::get()->fetchAll($sql, array($ids), 'User::buildExisting');
+        $data = DbManager::get()->fetchAll($sql, [$ids], 'User::buildExisting');
         return $data;
     }
 
@@ -247,7 +247,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                     AND content = :value";
         $search = DBManager::get()->prepare($query);
         $search->execute(compact('datafield_id', 'value'));
-        $users = array();
+        $users = [];
         foreach ($search->fetchAll(PDO::FETCH_COLUMN) as $user_id) {
             $users[] = new User($user_id);
         }
@@ -543,7 +543,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      */
     public function isFriendOf($another_user)
     {
-        return (bool) DBManager::get()->fetchColumn("SELECT 1 FROM contact WHERE owner_id=? AND user_id=?", array($this->user_id, $another_user->user_id));
+        return (bool) DBManager::get()->fetchColumn("SELECT 1 FROM contact WHERE owner_id=? AND user_id=?", [$this->user_id, $another_user->user_id]);
     }
 
     /**
@@ -677,7 +677,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         if (is_array(json_decode($homepage_visibility, true))) {
             $homepage_visibility = json_decode($homepage_visibility, true);
         } else {
-            $homepage_visibility = array();
+            $homepage_visibility = [];
         }
 
         // News
@@ -993,7 +993,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     {
         NotificationCenter::postNotification('UserWillMigrate', $old_id, $new_id);
 
-        $messages = array();
+        $messages = [];
 
         //Identitätsrelevante Daten migrieren
         if ($identity) {
@@ -1001,21 +1001,21 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             self::removeDoubles('seminar_user', 'Seminar_id', $new_id, $old_id);
             $query = "UPDATE IGNORE seminar_user SET user_id = ? WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             self::removeDoubles('admission_seminar_user', 'seminar_id', $new_id, $old_id);
             $query = "UPDATE IGNORE admission_seminar_user SET user_id = ? WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Persönliche Infos
             $query = "DELETE FROM user_info WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id));
+            $statement->execute([$new_id]);
 
             $query = "UPDATE IGNORE user_info SET user_id = ? WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Migrate registration timestamp by creating a new empty user info
             // entry
@@ -1029,18 +1029,18 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             self::removeDoubles('user_studiengang', 'fach_id', $new_id, $old_id);
             $query = "UPDATE IGNORE user_studiengang SET user_id = ? WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Eigene Kategorien
             $query = "UPDATE IGNORE kategorien SET range_id = ? WHERE range_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Institute
             self::removeDoubles('user_inst', 'Institut_id', $new_id, $old_id);
             $query = "UPDATE IGNORE user_inst SET user_id = ? WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Generische Datenfelder zusammenführen (bestehende Einträge des
             // "neuen" Nutzers werden dabei nicht überschrieben)
@@ -1063,7 +1063,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             });
 
             # Datenfelder des alten Nutzers leeren
-            $old_user->datafields = array();
+            $old_user->datafields = [];
             $old_user->store();
 
             //
@@ -1071,7 +1071,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             //Buddys
             $query = "UPDATE IGNORE contact SET owner_id = ? WHERE owner_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($new_id, $old_id));
+            $statement->execute([$new_id, $old_id]);
 
             // Avatar
             $old_avatar = Avatar::getAvatar($old_id);
@@ -1101,159 +1101,159 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         // TODO (mlunzena) should post a notification
         $query = "UPDATE IGNORE file_refs SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE files SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE folders SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Kalender
         $query = "UPDATE IGNORE calendar_event SET range_id = ? WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE calendar_user SET owner_id = ? WHERE owner_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE calendar_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE event_data SET author_id = ? WHERE author_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE event_data SET editor_id = ? WHERE editor_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Archiv
         self::removeDoubles('archiv_user', 'seminar_id', $new_id, $old_id);
         $query = "UPDATE IGNORE archiv_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Evaluationen
         $query = "UPDATE IGNORE eval SET author_id = ? WHERE author_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         self::removeDoubles('eval_user', 'eval_id', $new_id, $old_id);
         $query = "UPDATE IGNORE eval_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE evalanswer_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Kategorien
         $query = "UPDATE IGNORE kategorien SET range_id = ? WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Literatur
         $query = "UPDATE IGNORE lit_catalog SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE lit_list SET range_id = ? WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Nachrichten (Interne)
         $query = "UPDATE IGNORE message SET autor_id = ? WHERE autor_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         self::removeDoubles('message_user', 'message_id', $new_id, $old_id);
         $query = "UPDATE IGNORE message_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // News
         $query = "UPDATE IGNORE news SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE news_range SET range_id = ? WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Informationsseiten
         $query = "UPDATE IGNORE scm SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Statusgruppeneinträge
         self::removeDoubles('statusgruppe_user', 'statusgruppe_id', $new_id, $old_id);
         $query = "UPDATE IGNORE statusgruppe_user SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         // Termine
         $query = "UPDATE IGNORE termine SET autor_id = ? WHERE autor_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Votings
         $query = "UPDATE IGNORE questionnaires SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE questionnaire_assignments SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE questionnaire_assignments SET range_id = ? WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         self::removeDoubles('questionnaire_anonymous_answers', 'questionnaire_id', $new_id, $old_id);
         $query = "UPDATE IGNORE questionnaire_anonymous_answers SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         self::removeDoubles('questionnaire_answers', 'question_id', $new_id, $old_id);
         $query = "UPDATE IGNORE questionnaire_answers SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Wiki
         $query = "UPDATE IGNORE wiki SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         $query = "UPDATE IGNORE wiki_locks SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Adressbucheinträge
         $query = "UPDATE IGNORE contact SET owner_id = ? WHERE owner_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         //Blubber
         $query = "UPDATE IGNORE blubber SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
         $query = "UPDATE IGNORE blubber_follower SET studip_user_id = ? WHERE studip_user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
         $query = "UPDATE IGNORE blubber_mentions SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
         $query = "UPDATE IGNORE blubber_reshares SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
         $query = "UPDATE IGNORE blubber_streams SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
 
         NotificationCenter::postNotification('UserDidMigrate', $old_id, $new_id);
 
@@ -1273,13 +1273,13 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      */
     private static function removeDoubles($table, $field, $new_id, $old_id)
     {
-        $items = array();
+        $items = [];
 
         $query = "SELECT a.{$field} AS field_item
                   FROM {$table} AS a, {$table} AS b
                   WHERE a.user_id = ? AND b.user_id = ? AND a.{$field} = b.{$field}";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($new_id, $old_id));
+        $statement->execute([$new_id, $old_id]);
         $results = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($results as $value) {

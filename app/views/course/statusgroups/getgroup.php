@@ -34,13 +34,13 @@
                 <th <?= ($sort_by == 'nachname' && $sort_group == $group->id) ?
                     sprintf('class="sort%s"', $order) : '' ?>>
                     <a href="<?= URLHelper::getLink('#' . $group->id,
-                        array(
+                        [
                             'sortby' => 'nachname',
                             'sort_group' => $group->id,
                             'order' => $group->id && $sort_by == 'nachname' ?
                                 ($order == 'desc' ? 'asc' : 'desc') : 'desc',
                             'contentbox_open' => $group->id
-                        )) ?>">
+                        ]) ?>">
                         <?=_('Nachname, Vorname')?>
                     </a>
                 </th>
@@ -48,13 +48,13 @@
                     <? if ($group->id !== 'nogroup'): ?>
                         <th <?= ($sort_by == 'mkdate' && $sort_group == $group->id) ? sprintf('class="sort%s"', $order) : '' ?>>
                             <a href="<?= URLHelper::getLink('#' . $group->id,
-                                array(
+                                [
                                     'sortby' => 'mkdate',
                                     'sort_group' => $group->id,
                                     'order' => $group->id && $sort_by == 'mkdate' ?
                                         ($order == 'desc' ? 'asc' : 'desc') : 'desc',
                                     'contentbox_open' => $group->id
-                                )) ?>">
+                                ]) ?>">
                                 <?= _('Anmeldedatum') ?>
                             </a>
                         </th>
@@ -70,7 +70,7 @@
             <? $i = 1; $invisible = 0; foreach ($members as $m) : ?>
                 <? if ($is_tutor || $m->user_id == $GLOBALS['user']->id || $m->visible != 'no') : ?>
                     <?= $this->render_partial('course/statusgroups/_member',
-                        array('m' => $m, 'i' => $i++, 'is_tutor' => $is_tutor, 'is_locked' => $is_locked)); ?>
+                        ['m' => $m, 'i' => $i++, 'is_tutor' => $is_tutor, 'is_locked' => $is_locked]); ?>
                 <? else : $invisible++; endif ?>
             <? endforeach ?>
         </tbody>
@@ -101,7 +101,7 @@
                             </label>
                             <input type="hidden" name="source" value="<?= $group->id ?>">
                             <?= Studip\Button::create(_('Ausführen'), 'batch_members['.$group->id.']',
-                                array('data-dialog' => 'size=auto')) ?>
+                                ['data-dialog' => 'size=auto']) ?>
                         </div>
                     <? endif ?>
                 </td>

@@ -53,7 +53,7 @@ function export_form($range_id, $ex_type = "", $filename = "", $format = "", $fi
     $export_string .= "</select>";
 
     $export_string .= "</td><td align=\"right\" class=\"table_row_even\">";
-    $export_string .= Button::create(_('Export'), 'export', array('title' => _('Diese Daten Exportieren')));
+    $export_string .= Button::create(_('Export'), 'export', ['title' => _('Diese Daten Exportieren')]);
 
     $export_string .= "<input type=\"hidden\" name=\"range_id\" value=\"$range_id\">";
     $export_string .= "<input type=\"hidden\" name=\"o_mode\" value=\"choose\">";
@@ -96,7 +96,7 @@ function export_form_sidebar($range_id, $ex_type = "", $filename = "", $format =
     }
     $export_string .= "</select>";
 
-    $export_string .= Button::create(_('Export'), 'export', array('title' => _('Daten Exportieren')));
+    $export_string .= Button::create(_('Export'), 'export', ['title' => _('Daten Exportieren')]);
     $export_string .= "<input type=\"hidden\" name=\"range_id\" value=\"$range_id\">";
     $export_string .= "<input type=\"hidden\" name=\"o_mode\" value=\"choose\">";
     $export_string .= "<input type=\"hidden\" name=\"page\" value=\"1\">";
@@ -128,11 +128,11 @@ function export_link($range_id, $ex_type = "", $filename = "", $format = "", $ch
 
     $export_string = '<a href="';
     if ($choose != "")
-        $export_string .= URLHelper::getLink('export.php', array('range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' => $filename, 'format' => $format, 'choose' => $choose, 'o_mode' => $o_mode, 'filter' => $filter, 'jump' => $i_page));
+        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' => $filename, 'format' => $format, 'choose' => $choose, 'o_mode' => $o_mode, 'filter' => $filter, 'jump' => $i_page]);
     elseif ($ex_type != "")
-        $export_string .= URLHelper::getLink('export.php', array('range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' =>  $filename, 'o_mode' => 'choose', 'filter' => $filter));
+        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' =>  $filename, 'o_mode' => 'choose', 'filter' => $filter]);
     else
-        $export_string .= URLHelper::getLink('export.php', array('range_id' => $range_id, 'o_mode' => 'start'));
+        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'o_mode' => 'start']);
 
     $export_string .= '">' . ($content ? $content : _("Diese Daten exportieren"));
     $export_string .= '</a>';

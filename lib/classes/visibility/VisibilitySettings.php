@@ -28,23 +28,23 @@ require_once 'visibilitySettings/Extern.php';
  */
 class VisibilitySettings
 {
-    public static $CLASSES = array(
+    public static $CLASSES = [
         'Visibility_Me',
         'Visibility_Buddies',
         'Visibility_Domain',
         'Visibility_Studip',
         'Visibility_Extern'
-    );
+    ];
 
     /**
      * @var array all visibilitystates 
      */
-    public $states = array();
+    public $states = [];
     
      /**
      * @var array all names of all states
      */   
-    private $names = array();
+    private $names = [];
     
     /**
      * I/O is expensive. Therefore we make the whole class sessionwide singleton

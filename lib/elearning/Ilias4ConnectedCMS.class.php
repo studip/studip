@@ -70,7 +70,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
         if (is_array($result))
             return $result;
         else
-            return array();
+            return [];
     }
 
     /**
@@ -97,12 +97,12 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
 
         if (is_array($result)) {
             $check = $db->prepare("SELECT 1 FROM object_contentmodules WHERE object_id = ? AND module_id = ? AND system_type = ? AND module_type = ?");
-            $found = array();
+            $found = [];
             $added = 0;
             $deleted = 0;
             $messages["info"] .= "<b>".sprintf(_("Aktualisierung der Zuordnungen zum System \"%s\":"), $this->getName()) . "</b><br>";
             foreach($result as $ref_id => $data) {
-                $check->execute(array(Context::getId(), $ref_id, $this->cms_type, $data["type"]));
+                $check->execute([Context::getId(), $ref_id, $this->cms_type, $data["type"]]);
                 if (!$check->fetch()) {
                     $messages["info"] .= sprintf(_("Zuordnung zur Lerneinheit \"%s\" wurde hinzugefügt."), ($data["title"])) . "<br>";
                     ObjectConnections::setConnection(Context::getId(), $ref_id, $data["type"], $this->cms_type);
@@ -111,7 +111,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
                 $found[] = $ref_id . '_' . $data["type"];
             }
             $to_delete = $db->prepare("SELECT module_id,module_type FROM object_contentmodules WHERE module_type <> 'crs' AND object_id = ? AND system_type = ? AND CONCAT_WS('_', module_id,module_type) NOT IN (?)");
-            $to_delete->execute(array(Context::getId(), $this->cms_type, count($found) ? $found : array('')));
+            $to_delete->execute([Context::getId(), $this->cms_type, count($found) ? $found : ['']]);
             while ($row = $to_delete->fetch(PDO::FETCH_ASSOC)) {
                 ObjectConnections::unsetConnection(Context::getId(), $row["module_id"], $row["module_type"], $this->cms_type);
                 $deleted++;
@@ -241,7 +241,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
         $cat = $this->soap_client->getObjectByReference( $this->main_category_node_id );
         $user_cat = $this->soap_client->getObjectByReference( $this->user_category_node_id );
         $title = $this->link->getModuleLink($user_cat["title"], $this->user_category_node_id, "cat");
-        $ldap_options = array();
+        $ldap_options = [];
         foreach (StudipAuthAbstract::GetInstance() as $plugin) {
             if ($plugin instanceof StudipAuthLdap) {
                 $ldap_options[] = '<option '.($plugin->plugin_name == $this->ldap_enable ? 'selected' : '').'>' . $plugin->plugin_name . '</option>';
@@ -262,7 +262,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
         $template->set_attribute('user_role_template_name', ELearningUtils::getConfigValue("user_role_template_name", $this->cms_type));
         $template->set_attribute('user_role_template_id', $this->user_role_template_id);
         $template->set_attribute('encrypt_passwords', $encrypt_passwords);
-        $template->set_attribute('ldap_options', count($ldap_options) ? join("\n", array_merge(array('<option></option>'), $ldap_options)) : '');
+        $template->set_attribute('ldap_options', count($ldap_options) ? join("\n", array_merge(['<option></option>'], $ldap_options)) : '');
         $template->set_attribute('module_types', $module_types);
         echo $template->render();
     }

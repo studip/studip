@@ -36,13 +36,13 @@ class ButtonTestCase extends PHPUnit_Framework_TestCase
     function testCreateWithLabelAndArray()
     {
         $this->assertEquals('<button type="submit" a="1" b="2" class="button" name="yes">yes</button>',
-                            '' . Button::create('yes', array('a' => 1, 'b' => 2)));
+                            '' . Button::create('yes', ['a' => 1, 'b' => 2]));
     }
 
     function testCreateWithLabelNameAndArray()
     {
         $this->assertEquals('<button type="submit" a="1" b="2" class="button" name="aName">yes</button>',
-                            '' . Button::create('yes', 'aName', array('a' => 1, 'b' => 2)));
+                            '' . Button::create('yes', 'aName', ['a' => 1, 'b' => 2]));
     }
 
     function testCreateAccept()
@@ -66,6 +66,6 @@ class ButtonTestCase extends PHPUnit_Framework_TestCase
     function testCreateWithInsaneArguments()
     {
         $this->assertEquals('<button type="submit" class="button" mad="&lt;S&gt;tu&quot;ff" name="m&amp;m">&gt;ok&lt;</button>',
-                            '' . Button::create('>ok<', 'm&m', array('mad' => '<S>tu"ff')));
+                            '' . Button::create('>ok<', 'm&m', ['mad' => '<S>tu"ff']));
     }
 }

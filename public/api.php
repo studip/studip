@@ -19,10 +19,10 @@
 namespace {
     require_once '../lib/bootstrap.php';
 
-    page_open(array('sess' => 'Seminar_Session',
+    page_open(['sess' => 'Seminar_Session',
                     'auth' => 'Seminar_Default_Auth',
                     'perm' => 'Seminar_Perm',
-                    'user' => 'Seminar_User'));
+                    'user' => 'Seminar_User']);
 }
 
 namespace RESTAPI {
@@ -104,11 +104,11 @@ namespace RESTAPI {
             if ($GLOBALS['user']->id !== $user->id) {
 
                 $GLOBALS['auth'] = new Seminar_Auth();
-                $GLOBALS['auth']->auth = array(
+                $GLOBALS['auth']->auth = [
                     'uid'   => $user->user_id,
                     'uname' => $user->username,
                     'perm'  => $user->perms,
-                );
+                ];
 
                 $GLOBALS['user'] = new Seminar_User($user->user_id);
 

@@ -38,7 +38,7 @@ class Step00286CourseWizard extends Migration
                 VALUES
                     (MD5(:name), :name, :value, 1, :type, :range, :section, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)
                 ",
-                array(
+                [
                  'name' => 'STUDYGROUP_ACCEPTANCE_TEXT',
                  'value' => _('Die Moderatorinnen und ' .
                     'Moderatoren der Studiengruppe können Ihren ' .
@@ -50,7 +50,7 @@ class Step00286CourseWizard extends Migration
                 'section' => 'studygroups',
                 'description' => _('Text, der angezeigt wird, wenn man sich ' .
                     'in eine zugriffsbeschränkte Studiengruppe eintragen möchte')
-                )
+                ]
             );
         }
     }

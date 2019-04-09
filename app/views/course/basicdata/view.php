@@ -13,7 +13,7 @@ use Studip\Button, Studip\LinkButton;
 
 $dialog_attr = Request::isXhr() ? ' data-dialog="size=50%"' : '';
 
-$message_types = array('msg' => "success", 'error' => "error", 'info' => "info");
+$message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
 ?>
 
 <? if (is_array($flash['msg'])) foreach ($flash['msg'] as $msg) : ?>
@@ -37,7 +37,7 @@ $message_types = array('msg' => "success", 'error' => "error", 'info' => "info")
             </span>
             <?= $attribute['description'] ? tooltipIcon($attribute['description']) : '' ?>
 
-            <?= $this->render_partial("course/basicdata/_input", array('input' => $attribute)) ?>
+            <?= $this->render_partial("course/basicdata/_input", ['input' => $attribute]) ?>
         </label>
     <? endforeach; ?>
 <? endif; ?>
@@ -71,7 +71,7 @@ $message_types = array('msg' => "success", 'error' => "error", 'info' => "info")
             <? $name = get_object_name($inst['value'], 'inst'); ?>
              <?= htmlReady($name['name']) ?>
         <? else: ?>
-            <?= $this->render_partial('course/basicdata/_input', array('input' => $inst)) ?>
+            <?= $this->render_partial('course/basicdata/_input', ['input' => $inst]) ?>
         <? endif; ?>
         </label>
     <? endforeach; ?>
@@ -298,7 +298,7 @@ $message_types = array('msg' => "success", 'error' => "error", 'info' => "info")
 <? else: ?>
     <? foreach ($descriptions as $description): ?>
         <? if ($description['type'] == 'datafield'): ?>
-            <?= $this->render_partial('course/basicdata/_input', array('input' => $description)) ?>
+            <?= $this->render_partial('course/basicdata/_input', ['input' => $description]) ?>
         <? else : ?>
         <label>
             <span <?= $description['must'] ? 'class="required"' : '' ?>>
@@ -309,7 +309,7 @@ $message_types = array('msg' => "success", 'error' => "error", 'info' => "info")
                 <?= tooltipIcon($description['description'])?>
             <? endif?>
 
-            <?= $this->render_partial('course/basicdata/_input', array('input' => $description)) ?>
+            <?= $this->render_partial('course/basicdata/_input', ['input' => $description]) ?>
         </label>
         <? endif ?>
     <? endforeach; ?>

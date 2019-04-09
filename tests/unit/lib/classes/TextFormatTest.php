@@ -29,7 +29,7 @@ function markupHeading($markup, $matches)
 
 function markupText($markup, $matches, $contents)
 {
-    static $tag = array(
+    static $tag = [
         '**' => 'b',
         '%%' => 'i',
         '__' => 'u',
@@ -39,7 +39,7 @@ function markupText($markup, $matches, $contents)
         '>>' => 'sup',
         '<<' => 'sub',
         '{-' => 'strike'
-    );
+    ];
 
     $key = $matches[0];
 
@@ -48,7 +48,7 @@ function markupText($markup, $matches, $contents)
 
 function markupSimple($markup, $matches)
 {
-    static $tag = array(
+    static $tag = [
         '*' => 'b',
         '%' => 'i',
         '_' => 'u',
@@ -57,7 +57,7 @@ function markupSimple($markup, $matches)
         '-' => 'small',
         '>' => 'sup',
         '<' => 'sub'
-    );
+    ];
 
     $key = $matches[0][0];
     $text = str_replace($key, ' ', $matches[1]);

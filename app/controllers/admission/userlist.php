@@ -38,7 +38,7 @@ class Admission_UserListController extends AuthenticatedController
      * Show the user lists the current user has access to.
      */
     public function index_action() {
-        $this->userlists = array();
+        $this->userlists = [];
         foreach (AdmissionUserList::getUserLists($GLOBALS['user']->id) as $list) {
             $this->userlists[$list->getId()] = $list;
         }
@@ -71,7 +71,7 @@ class Admission_UserListController extends AuthenticatedController
                 $this->userlist->setFactor($this->flash['factor']);
             }
             if ($this->flash['users'] || $this->flash['deleted_member']) {
-                $this->users = User::findMany($this->flash['cleared_users'] ?: $this->flash['users'] ?: array());
+                $this->users = User::findMany($this->flash['cleared_users'] ?: $this->flash['users'] ?: []);
             }
         }
         usort($this->users, function($a, $b) {
@@ -87,10 +87,10 @@ class Admission_UserListController extends AuthenticatedController
         });
         $uids = array_map(function($u) { return $u->id; }, $this->users);
         $this->userSearch = new PermissionSearch('user', 'Person hinzufügen', 'user_id',
-            array(
-                'permission' => array('user', 'autor', 'tutor', 'dozent'),
+            [
+                'permission' => ['user', 'autor', 'tutor', 'dozent'],
                 'exclude_user' => $uids
-            ));
+            ]);
 
         $this->flash['listusers'] = $uids;
     }

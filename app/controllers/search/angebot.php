@@ -66,19 +66,19 @@ class Search_AngebotController extends MVVController
         }
         ksort($faecher_sort, SORT_LOCALE_STRING);
 
-        $result = array();
-        $chars = array();
+        $result = [];
+        $chars = [];
         foreach ($faecher_sort as $fach) {
             $char = mb_substr($fach->name, 0, 1);
 
             foreach ($fach->abschluesse as $abschluss) {
                 if (count(Studiengang::findByFachAbschluss($fach->getId(), $abschluss->getId(), $filter))) {
-                    $result[$char][] = array(
+                    $result[$char][] = [
                         'abschluss_id' => $abschluss->getId(),
                         'fach_id' => $fach->getId(),
                         'name' => sprintf('%s - %s', $fach->name,
                                 $abschluss->getDisplayName())
-                    );
+                    ];
                 }
             }
 
@@ -112,17 +112,17 @@ class Search_AngebotController extends MVVController
             return null;
         }
         $name = $abschluss_kategorie->name;
-        $faecher = array();
+        $faecher = [];
 
-        $result = array();
+        $result = [];
         foreach ($faecher as $fach) {
             foreach ($fach->abschluesse as $abschluss) {
                 $kategorie = AbschlussKategorie::findByAbschluss($abschluss->getId());
-                $result [$fach->name][$kategorie->getId()] = array(
+                $result [$fach->name][$kategorie->getId()] = [
                     'abschluss_id' => $abschluss->getId(),
                     'fach_id' => $fach->getId(),
                     'name' => sprintf('%s - %s (%s)', $fach->name, $abschluss->name, $abschluss->name_kurz)
-                );
+                ];
             }
         }
 

@@ -95,8 +95,8 @@ class Search_CoursesController extends AuthenticatedController
             foreach ($this->sem_browse_obj->group_by_fields as $i => $field) {
                 $grouping->addRadioButton(
                     $field['name'],
-                    URLHelper::getLink('?', array('group_by' => $i,
-                        'keep_result_set' => 1)),
+                    URLHelper::getLink('?', ['group_by' => $i,
+                        'keep_result_set' => 1]),
                     $_SESSION['sem_browse_data']['group_by'] == $i
                 );
             }

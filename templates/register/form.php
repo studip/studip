@@ -15,7 +15,7 @@ jQuery(document).ready(function() {
 </script>
 
 <? if (isset($username)): ?>
-    <?= MessageBox::error(_("Bei der Registrierung ist ein Fehler aufgetreten!"), array($error_msg, _("Bitte korrigieren Sie Ihre Eingaben und versuchen Sie es erneut"))) ?>
+    <?= MessageBox::error(_("Bei der Registrierung ist ein Fehler aufgetreten!"), [$error_msg, _("Bitte korrigieren Sie Ihre Eingaben und versuchen Sie es erneut")]) ?>
 <? endif; ?>
 
 <h1><?= _('Stud.IP - Registrierung') ?></h1>

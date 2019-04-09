@@ -49,7 +49,7 @@ use Studip\Button, Studip\LinkButton;
     <footer>
         <?= Button::create(_('Umwandeln'),
                            'umwandeln',
-                           array('title' => _('Den ersten Benutzer in den zweiten Benutzer migrieren'))) ?>
+                           ['title' => _('Den ersten Benutzer in den zweiten Benutzer migrieren')]) ?>
         <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user/index')) ?>
     </footer>
 </form>

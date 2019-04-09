@@ -35,7 +35,7 @@
     </head>
     <body>
         <div>
-        <? echo $this->render_partial('shared/studiengang/_studiengang', array('studiengang' => $studiengang, 'url' => $this->plugin->getPluginUrl() . '/public/')); ?>
+        <? echo $this->render_partial('shared/studiengang/_studiengang', ['studiengang' => $studiengang, 'url' => $this->plugin->getPluginUrl() . '/public/']); ?>
         <? if (count($studiengang->studiengangteile)) : ?>
             <h1><?= _('Studiengangteile') ?></h1>
             <? if (count($studiengang->stgteil_bezeichnungen)) : ?>
@@ -43,12 +43,12 @@
                     <h2><?= $stgteilbez->name; ?></h2>
                     <? $stg_stgteile = $studiengang->stgteil_assignments->findBy('stgteil_bez_id', $stgteilbez->id); ?>
                     <? foreach ($stg_stgteile as $stg_stgteil) : ?>
-                        <?= $this->render_partial('shared/studiengang/_studiengangteil', array('stgteil' => $stg_stgteil->studiengangteil)); ?>
+                        <?= $this->render_partial('shared/studiengang/_studiengangteil', ['stgteil' => $stg_stgteil->studiengangteil]); ?>
                     <? endforeach; ?>
                 <? endforeach; ?>
             <? else : ?>
                 <? foreach($studiengang->studiengangteile as $stgteil) :?>
-                    <? echo $this->render_partial('shared/studiengang/_studiengangteil', array('stgteil' => $stgteil)); ?>
+                    <? echo $this->render_partial('shared/studiengang/_studiengangteil', ['stgteil' => $stgteil]); ?>
                 <? endforeach; ?>
             <? endif; ?>
         <? endif; ?>

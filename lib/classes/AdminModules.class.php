@@ -114,7 +114,7 @@ class AdminModules extends ModulesNotification {
     public function getModuleWikiExistingItems($range_id) {
         $query = "SELECT COUNT(keyword) FROM wiki WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         return $statement->fetchColumn();
     }
 
@@ -128,7 +128,7 @@ class AdminModules extends ModulesNotification {
         // check if existing items are available
         $query = "SELECT COUNT(scm_id) FROM scm WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         $existingItems = $statement->fetchColumn();
 
         global $user, $SCM_PRESET;
@@ -141,12 +141,12 @@ class AdminModules extends ModulesNotification {
                . "VALUES (?, ?, ?, ?, '', UNIX_TIMESTAMP(), UNIX_TIMESTAMP())";
         DBManager::get()
             ->prepare($query)
-            ->execute(array(
+            ->execute([
                 md5(uniqid('simplecontentmodule')),
                 $range_id,
                 $GLOBALS['user']->id,
                 $GLOBALS['SCM_PRESET'][1]['name']
-            ));
+            ]);
     }
 
     public function getModuleElearning_interfaceExistingItems($range_id) {
@@ -170,6 +170,6 @@ class AdminModules extends ModulesNotification {
 
     public function getModuleCalendarExistingItems($range_id)
     {
-        return CalendarEvent::countBySql('range_id = ?', array($range_id));
+        return CalendarEvent::countBySql('range_id = ?', [$range_id]);
     }
 }

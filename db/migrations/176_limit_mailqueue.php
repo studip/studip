@@ -16,12 +16,12 @@ class LimitMailqueue extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'MAILQUEUE_SEND_LIMIT',
             ':value' => "0",
             ':type'  => 'integer',
             ':description' => 'Wieviele Mails soll die Mailqueue maximal auf einmal an den Mailserver schicken. 0 für unendlich viele.',
-        ));
+        ]);
     }
 
     function down()

@@ -27,7 +27,7 @@ class UpdateInformationCase extends PHPUnit_Framework_TestCase
 
 
     function test_setgetinformation() {
-        $old_data = array('test' => "TestValue");
+        $old_data = ['test' => "TestValue"];
         UpdateInformation::setInformation("test.myfunc", $old_data);
         UpdateInformation::setInformation("test.myfunc2", "strangedata");
         $new_data = UpdateInformation::getInformation();

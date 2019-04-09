@@ -23,7 +23,7 @@ class Semester extends \RESTAPI\RouteMap
         $total = count($semesters);
         $semesters = array_slice($semesters, $this->offset, $this->limit);
 
-        $json = array();
+        $json = [];
         foreach ($semesters as $semester) {
             $url = $this->urlf('/semester/%s', $semester['semester_id']);
             $json[$url] = $this->semesterToJSON($semester);

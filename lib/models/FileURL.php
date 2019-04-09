@@ -15,7 +15,7 @@
  */
 class FileURL extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'file_urls';
         $config['belongs_to']['file'] = [

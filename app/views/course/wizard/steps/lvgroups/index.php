@@ -56,9 +56,9 @@
                 <? $pos_id = 1; ?>
                 <? foreach ((array) $tree as $node) : ?>
                 <?= $this->render_partial('lvgroups/_node',
-                        array('node' => $node, 'pos_id' => $pos_id++,
-                            'open_nodes' => $open_lvg_nodes ?: array(),
-                            'search_result' => $search_result ?: array())) ?>
+                        ['node' => $node, 'pos_id' => $pos_id++,
+                            'open_nodes' => $open_lvg_nodes ?: [],
+                            'search_result' => $search_result ?: []]) ?>
                 <? endforeach; ?>
                 </ul>
             </li>

@@ -52,16 +52,16 @@ class ExternSemBrowseTable extends SemBrowse {
         $all_semester = SemesterData::getAllSemesterData();
         array_unshift($all_semester, 0);
 
-        $this->group_by_fields = array( array('name' => _("Semester"), 'group_field' => 'sem_number'),
-                                        array('name' => _("Bereich"), 'group_field' => 'bereich'),
-                                        array('name' => _("Lehrende"), 'group_field' => 'fullname', 'unique_field' => 'username'),
-                                        array('name' => _("Typ"), 'group_field' => 'status'),
-                                        array('name' => _("Einrichtung"), 'group_field' => 'Institut', 'unique_field' => 'Institut_id'));
+        $this->group_by_fields = [ ['name' => _("Semester"), 'group_field' => 'sem_number'],
+                                        ['name' => _("Bereich"), 'group_field' => 'bereich'],
+                                        ['name' => _("Lehrende"), 'group_field' => 'fullname', 'unique_field' => 'username'],
+                                        ['name' => _("Typ"), 'group_field' => 'status'],
+                                        ['name' => _("Einrichtung"), 'group_field' => 'Institut', 'unique_field' => 'Institut_id']];
 
         $this->module = $module;
         $this->sem_browse_data["group_by"] = $this->module->config->getValue("Main", "grouping");
         $this->sem_dates = $all_semester;
-        $this->sem_dates[0] = array("name" => sprintf(_("vor dem %s"),$this->sem_dates[1]['name']));
+        $this->sem_dates[0] = ["name" => sprintf(_("vor dem %s"),$this->sem_dates[1]['name'])];
 
         // reorganize the $SEM_TYPE-array
         foreach ($SEM_CLASS as $key_class => $class) {
@@ -135,7 +135,7 @@ class ExternSemBrowseTable extends SemBrowse {
                     $the_tree =& $this->sem_tree->tree;
                 }
                 $the_tree->buildIndex();
-                $selected_ranges = array_merge(array($stid), $the_tree->getKidsKids($stid));
+                $selected_ranges = array_merge([$stid], $the_tree->getKidsKids($stid));
             }
             if (!$this->module->config->getValue('SelectSubjectAreas', 'selectallsubjectareas')
                     && count($selected_ranges)) {
@@ -151,9 +151,9 @@ class ExternSemBrowseTable extends SemBrowse {
             // show only selected SemTypes
             $selected_semtypes = $this->module->config->getValue('ReplaceTextSemType', 'visibility');
             if (Request::get('semstatus')) {
-                $selected_semtypes = array(Request::get('semstatus'));
+                $selected_semtypes = [Request::get('semstatus')];
             }
-            $sem_types_array = array();
+            $sem_types_array = [];
             if (count($selected_semtypes)) {
                 for ($i = 0; $i < count($selected_semtypes); $i++) {
                     if ($selected_semtypes[$i] == '1') {
@@ -216,7 +216,7 @@ class ExternSemBrowseTable extends SemBrowse {
             $group_by_data = $snap->getGroupedResult($group_field, $data_fields);
             $sem_data = $snap->getGroupedResult("Seminar_id");
             if ($this->sem_browse_data['group_by'] == 0){
-                $group_by_duration = $snap->getGroupedResult("sem_number_end", array("sem_number","Seminar_id"));
+                $group_by_duration = $snap->getGroupedResult("sem_number_end", ["sem_number","Seminar_id"]);
                 foreach ($group_by_duration as $sem_number_end => $detail){
                     if ($sem_number_end != -1 && ($detail['sem_number'][$sem_number_end - 1] && count($detail['sem_number']) == 1)){
                         continue;
@@ -314,7 +314,7 @@ class ExternSemBrowseTable extends SemBrowse {
                 $info .= ", " . $this->module->config->getValue("Main", "textgrouping");
                 $group_by_name = $this->module->config->getValue("Main", "aliasesgrouping");
                 $info .= $group_by_name[$this->sem_browse_data['group_by']];
-                $out = $this->module->elements["InfoCountSem"]->toString(array("content" => $info));
+                $out = $this->module->elements["InfoCountSem"]->toString(["content" => $info]);
             }
             else
                 $out = "";
@@ -326,7 +326,7 @@ class ExternSemBrowseTable extends SemBrowse {
                 $group_content = $this->getGroupContent($the_tree, $group_field);
 
                 if ($repeat_headrow == "beneath") {
-                    $out .= $this->module->elements["Grouping"]->toString(array("content" => $group_content));
+                    $out .= $this->module->elements["Grouping"]->toString(["content" => $group_content]);
                     $out .= $this->module->elements["TableHeadrow"]->toString();
                 }
 
@@ -336,7 +336,7 @@ class ExternSemBrowseTable extends SemBrowse {
                 if ($repeat_headrow != "beneath") {
                     if ($repeat_headrow && !$first_loop)
                         $out .= $this->module->elements["TableHeadrow"]->toString();
-                    $out .= $this->module->elements["Grouping"]->toString(array("content" => $group_content));
+                    $out .= $this->module->elements["Grouping"]->toString(["content" => $group_content]);
                 }
                 $first_loop = FALSE;
 
@@ -353,7 +353,7 @@ class ExternSemBrowseTable extends SemBrowse {
                         }
 
                         //create Turnus field
-                        $data["content"]["zeiten"] = Seminar::GetInstance($seminar_id)->getDatesExport(array('show_room' => true));
+                        $data["content"]["zeiten"] = Seminar::GetInstance($seminar_id)->getDatesExport(['show_room' => true]);
                         //Shorten, if string too long
                         if (mb_strlen($data["content"]["zeiten"]) >70) {
                             $data["content"]["zeiten"] = mb_substr($data["content"]["zeiten"], 0,
@@ -372,14 +372,14 @@ class ExternSemBrowseTable extends SemBrowse {
                             foreach ($doz_name as $index => $value) {
                                 if ($i == 4) {
                                     $data["content"]["dozent"] .= $this->module->elements["LecturerLink"]->toString(
-                                        array("module" => "Lecturedetails", "link_args" => "seminar_id=$seminar_id",
-                                        "content" => "..."));
+                                        ["module" => "Lecturedetails", "link_args" => "seminar_id=$seminar_id",
+                                        "content" => "..."]);
                                     break;
                                 }
                                 $data["content"]["dozent"] .= $this->module->elements["LecturerLink"]->toString(
-                                        array("module" => "Persondetails", "link_args" => "username="
+                                        ["module" => "Persondetails", "link_args" => "username="
                                         . $doz_uname[$index] . "&seminar_id=$seminar_id",
-                                        "content" =>  htmlReady($value)));
+                                        "content" =>  htmlReady($value)]);
                                 if ($i != count($doz_name) - 1) {
                                     $data["content"]["dozent"] .= ", ";
                                 }
@@ -388,8 +388,8 @@ class ExternSemBrowseTable extends SemBrowse {
                         }
 
                         $data["content"]["Name"] = $this->module->elements["SemLink"]->toString(
-                                array("module" => "Lecturedetails", "link_args" => "seminar_id=$seminar_id",
-                                "content" => htmlReady($sem_name)));
+                                ["module" => "Lecturedetails", "link_args" => "seminar_id=$seminar_id",
+                                "content" => htmlReady($sem_name)]);
                         $data["content"]["VeranstaltungsNummer"] =
                                 htmlReady(key($sem_data[$seminar_id]["VeranstaltungsNummer"]));
                         $data["content"]["Untertitel"] = htmlReady(key($sem_data[$seminar_id]["Untertitel"]));
@@ -428,7 +428,7 @@ class ExternSemBrowseTable extends SemBrowse {
                 }
             }
             ob_end_clean();
-            $this->module->elements["TableHeader"]->printout(array("content" => $out));
+            $this->module->elements["TableHeader"]->printout(["content" => $out]);
         }
     }
 

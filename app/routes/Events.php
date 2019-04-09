@@ -47,14 +47,14 @@ class Events extends \RESTAPI\RouteMap
             'CourseMarkedEvent',
         ]);
 
-        $json = array();
+        $json = [];
         $events = array_slice($list, $this->offset, $this->limit); ;
         foreach ($events as $event) {
             $singledate = new SingleDate($event->id);
 
-            $course_uri = $this->urlf('/course/%s', array(htmlReady($event->getSeminarId())));
+            $course_uri = $this->urlf('/course/%s', [htmlReady($event->getSeminarId())]);
 
-            $json[] = array(
+            $json[] = [
                 'event_id'    => $event->id,
                 'course'      => $course_uri,
                 'start'       => $event->getStart(),
@@ -64,7 +64,7 @@ class Events extends \RESTAPI\RouteMap
                 'categories'  => $event->toStringCategories() ?: '',
                 'room'        => html_entity_decode(strip_tags($singledate->getRoom() ?: $singledate->getFreeRoomText() ?: '')),
                 'canceled'    => $singledate->isHoliday() ?: false,
-            );
+            ];
         }
 
         $this->etag(md5(serialize($json)));
@@ -118,20 +118,20 @@ class Events extends \RESTAPI\RouteMap
         $dates = getAllSortedSingleDates($seminar);
         $total = sizeof($dates);
 
-        $events = array();
+        $events = [];
         foreach (array_slice($dates, $this->offset, $this->limit) as $date) {
 
             // get issue titles
-            $issue_titles = array();
+            $issue_titles = [];
             if (is_array($issues = $date->getIssueIDs())) {
                 foreach ($issues as $is) {
-                    $issue = new Issue(array('issue_id' => $is));
+                    $issue = new Issue(['issue_id' => $is]);
                     $issue_titles[] = $issue->getTitle();
                 }
             }
 
             $room = self::getRoomForSingleDate($date);
-            $events[] = array(
+            $events[] = [
                 'event_id'    => $date->getSingleDateID(),
                 'start'       => $date->getStartTime(),
                 'end'         => $date->getEndTime(),
@@ -141,7 +141,7 @@ class Events extends \RESTAPI\RouteMap
                 'room'        => $room ?: '',
                 'deleted'     => $date->isExTermin(),
                 'canceled'    => $date->isHoliday() ?: false,
-            );
+            ];
         }
 
         $this->etag(md5(serialize($events)));

@@ -38,11 +38,11 @@ class Message extends SimpleORMap implements PrivacyObject
             AND snd_rec = 'rec' AND deleted = 0
             AND readed = :other_flag";
         $statement = DBManager::get()->prepare($query);
-        return $statement->execute(array(
+        return $statement->execute([
             'user_id' => $user_id ?: $GLOBALS['user']->id,
             'flag' => $state_of_flag ? 1 : 0,
             'other_flag' => $state_of_flag ? 0 : 1
-        ));
+        ]);
     }
 
     public static function getUserTags($user_id = null)
@@ -73,12 +73,12 @@ class Message extends SimpleORMap implements PrivacyObject
                     AND message_user.mkdate > :since
                 ORDER BY message_user.mkdate ASC
             ");
-            $messages_data->execute(array(
+            $messages_data->execute([
                 'me' => $user_id,
                 'tag' => $tag,
                 'sender_receiver' => $receiver ? "rec" : "snd",
                 'since' => $since
-            ));
+            ]);
         } else {
             $messages_data = DBManager::get()->prepare("
                 SELECT message.*
@@ -89,45 +89,45 @@ class Message extends SimpleORMap implements PrivacyObject
                     AND message_user.mkdate > :since
                 ORDER BY message_user.mkdate ASC
             ");
-            $messages_data->execute(array(
+            $messages_data->execute([
                 'me' => $user_id,
                 'sender_receiver' => $receiver ? "rec" : "snd",
                 'since' => $since
-            ));
+            ]);
         }
         $messages_data->setFetchMode(PDO::FETCH_ASSOC);
-        $messages = array();
+        $messages = [];
         foreach ($messages_data as $data) {
             $messages[] = Message::buildExisting($data);
         }
         return $messages;
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'message';
-        $config['belongs_to']['author'] = array(
+        $config['belongs_to']['author'] = [
             'class_name' => 'User',
             'foreign_key' => 'autor_id'
-        );
-        $config['has_one']['originator'] = array(
+        ];
+        $config['has_one']['originator'] = [
             'class_name' => 'MessageUser',
             'assoc_func' => 'findSentByMessageId',
             'on_store' => 'store',
             'on_delete' => 'delete'
-        );
-        $config['has_many']['receivers'] = array(
+        ];
+        $config['has_many']['receivers'] = [
             'class_name' => 'MessageUser',
             'assoc_func' => 'findReceivedByMessageId',
             'on_store' => 'store',
             'on_delete' => 'delete'
-        );
-        $config['has_one']['attachment_folder'] = array(
+        ];
+        $config['has_one']['attachment_folder'] = [
             'class_name' => 'Folder',
             'assoc_foreign_key' => 'range_id',
             'on_store' => 'store',
             'on_delete' => 'delete'
-        );
+        ];
         parent::configure($config);
     }
 
@@ -145,14 +145,14 @@ class Message extends SimpleORMap implements PrivacyObject
                     LEFT JOIN user_info ui USING (user_id)
                     WHERE message_id = ? AND snd_rec = 'rec'
                     ORDER BY Nachname, Vorname";
-            $params = array($this->id);
+            $params = [$this->id];
         } else {
             $sql = "SELECT user_id,vorname,nachname,username,title_front,title_rear,perms,motto
                     FROM auth_user_md5 AS aum
                     LEFT JOIN user_info ui USING (user_id)
                     WHERE aum.user_id IN (?)
                     ORDER BY Nachname, Vorname";
-            $params = array($this->receivers->pluck('user_id'));
+            $params = [$this->receivers->pluck('user_id')];
         }
         $db = DbManager::get();
         return new SimpleCollection(
@@ -172,7 +172,7 @@ class Message extends SimpleORMap implements PrivacyObject
 
     public function getNumRecipients()
     {
-        return MessageUser::countBySQL("message_id=? AND snd_rec='rec'", array($this->id));
+        return MessageUser::countBySQL("message_id=? AND snd_rec='rec'", [$this->id]);
     }
 
     public function markAsRead($user_id)
@@ -189,11 +189,11 @@ class Message extends SimpleORMap implements PrivacyObject
     private function markAs($user_id, $state_of_flag)
     {
         $changed = 0;
-        $mu = array();
+        $mu = [];
         if ($user_id == $this->autor_id) {
             $mu[] = $this->originator;
         }
-        $receiver = MessageUser::findOneBySQL("message_id = ? AND user_id = ? AND snd_rec ='rec'", array($this->id, $user_id));
+        $receiver = MessageUser::findOneBySQL("message_id = ? AND user_id = ? AND snd_rec ='rec'", [$this->id, $user_id]);
         if ($receiver) {
             $mu[] = $receiver;
         }
@@ -206,7 +206,7 @@ class Message extends SimpleORMap implements PrivacyObject
 
     public function markAsAnswered($user_id)
     {
-        $mu = MessageUser::findOneBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd')", array($this->id, $user_id));
+        $mu = MessageUser::findOneBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd')", [$this->id, $user_id]);
         if ($mu) {
             $mu->answered = 1;
             return $mu->store();
@@ -216,13 +216,13 @@ class Message extends SimpleORMap implements PrivacyObject
     public function isRead($user_id = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
-        return (bool)MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND readed = 1", array($this->message_id, $user_id));
+        return (bool)MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND readed = 1", [$this->message_id, $user_id]);
     }
 
     public function isAnswered($user_id = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
-        return (bool)MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND answered = 1", array($this->message_id, $user_id));
+        return (bool)MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND answered = 1", [$this->message_id, $user_id]);
     }
 
     public static function send($sender, $recipients, $subject, $message)
@@ -243,7 +243,7 @@ class Message extends SimpleORMap implements PrivacyObject
     public function permissionToRead($user_id = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
-        return (bool) MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND deleted = 0", array($this->message_id, $user_id));
+        return (bool) MessageUser::countBySQL("message_id = ? AND user_id = ? AND snd_rec IN('rec','snd') AND deleted = 0", [$this->message_id, $user_id]);
     }
 
     /**
@@ -277,11 +277,11 @@ class Message extends SimpleORMap implements PrivacyObject
             ON DUPLICATE KEY
                 UPDATE chdate = UNIX_TIMESTAMP()
         ");
-        return $statement->execute(array(
+        return $statement->execute([
             'message_id' => $this->getId(),
             'user_id' => $user_id,
             'tag' => mb_strtolower($tag)
-        ));
+        ]);
     }
 
     public function removeTag($tag, $user_id = null)
@@ -293,11 +293,11 @@ class Message extends SimpleORMap implements PrivacyObject
                 AND user_id = :user_id
                 AND tag = :tag
         ");
-        return $statement->execute(array(
+        return $statement->execute([
             'message_id' => $this->getId(),
             'user_id' => $user_id,
             'tag' => mb_strtolower($tag)
-        ));
+        ]);
     }
 
     public function getNumAttachments()
@@ -311,7 +311,7 @@ class Message extends SimpleORMap implements PrivacyObject
      */
     public function removeIfOrphaned()
     {
-        if (!MessageUser::countBySQL("message_id = ? AND snd_rec IN('rec','snd') AND deleted = 0", array($this->message_id))) {
+        if (!MessageUser::countBySQL("message_id = ? AND snd_rec IN('rec','snd') AND deleted = 0", [$this->message_id])) {
             return (bool)$this->delete();
         }
         return false;

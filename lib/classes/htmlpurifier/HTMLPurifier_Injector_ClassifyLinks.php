@@ -7,7 +7,7 @@
 class HTMLPurifier_Injector_ClassifyLinks extends HTMLPurifier_Injector
 {
     public $name = 'ClassifyLinks';
-    public $needed = array('a' => array('href', 'class', 'target'));
+    public $needed = ['a' => ['href', 'class', 'target']];
 
     public function handleElement(&$token)
     {

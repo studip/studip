@@ -18,7 +18,7 @@ class SelectGroupElement extends SelectElement
      * @param String $label  Label content of the element
      * @param Array $elements SelectElement-Objects for Optgroup
      */
-    public function __construct($label, $elements = array())
+    public function __construct($label, $elements = [])
     {
         $this->label    = $label;
         $this->elements = $elements;

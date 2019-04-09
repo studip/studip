@@ -30,11 +30,11 @@ class Seminar_DetailsController extends MVVController
 
     public function show_module_pathes_action($seminar_id)
     {
-        $trail_classes = array(
+        $trail_classes = [
             'Modulteil',
             'StgteilabschnittModul',
             'StgteilAbschnitt',
-            'StgteilVersion');
+            'StgteilVersion'];
         $this->mvv_pathes = MvvCourse::get($seminar_id)->getTrails($trail_classes);
     }
 

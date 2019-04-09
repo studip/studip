@@ -38,7 +38,7 @@ class SendMailQueueJob extends CronJob
      * this case we don't care at all.
      * @param array $parameters : not needed here
      */
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         $status_messages = MailQueueEntry::sendAll(
             Config::get()->MAILQUEUE_SEND_LIMIT,

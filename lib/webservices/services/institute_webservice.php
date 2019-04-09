@@ -23,13 +23,13 @@ class InstituteService extends AccessControlledService
     function __construct()
     {
     $this->add_api_method('get_admins_for_institute',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets admins for institute');
 
     $this->add_api_method('get_lecturers_for_institute',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets lecturers for institute');
     }
 

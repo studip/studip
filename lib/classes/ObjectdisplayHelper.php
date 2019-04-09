@@ -49,30 +49,30 @@ class ObjectdisplayHelper {
         /**
          * If you want to add an object to the helper simply add to this array
          */
-        $mapping = array(
-            'User' => array(
+        $mapping = [
+            'User' => [
                 'link' => function($obj) {
-            return URLHelper::getLink('dispatch.php/profile', array('username' => $obj->username));
+            return URLHelper::getLink('dispatch.php/profile', ['username' => $obj->username]);
         },
                 'name' => function($obj) {
             return htmlReady($obj->getFullname());
         },
                 'avatar' => function($obj) {
-            return Avatar::getAvatar($obj->id, $obj->username)->getImageTag(Avatar::SMALL,array('title' => htmlReady($obj->getFullname('no_title'))));
+            return Avatar::getAvatar($obj->id, $obj->username)->getImageTag(Avatar::SMALL,['title' => htmlReady($obj->getFullname('no_title'))]);
         }
-            ),
-            'Course' => array(
+            ],
+            'Course' => [
                 'link' => function($obj) {
-            return URLHelper::getLink('seminar_main.php', array('auswahl' => $obj->id));
+            return URLHelper::getLink('seminar_main.php', ['auswahl' => $obj->id]);
         },
                 'name' => function($obj) {
             return htmlReady($obj->name);
         },
                 'avatar' => function($obj) {
-            return CourseAvatar::getAvatar($obj->id)->getImageTag($size = CourseAvatar::SMALL,array('title' => htmlReady($obj->name)));
+            return CourseAvatar::getAvatar($obj->id)->getImageTag($size = CourseAvatar::SMALL,['title' => htmlReady($obj->name)]);
         }
-            )
-        );
+            ]
+        ];
 
         /*
          * Some php magic to call the right function if it exists

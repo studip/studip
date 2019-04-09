@@ -19,7 +19,7 @@
 
 require '../lib/bootstrap.php';
 
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 $auth->login_if($auth->auth['uid'] == 'nobody');
 
 $perm->check("autor");
@@ -36,6 +36,6 @@ if (Config::get()->RESOURCES_ENABLE) {
     
     $template = $GLOBALS['template_factory']->open('layouts/base.php');
     $template->content_for_layout = ob_get_clean();
-    $template->infobox = $infobox ? array('content' => $infobox) : null;
+    $template->infobox = $infobox ? ['content' => $infobox] : null;
     echo $template->render();
 }

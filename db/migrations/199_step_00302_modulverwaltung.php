@@ -508,7 +508,7 @@ class Step00302Modulverwaltung extends Migration
         $stmt = DBManager::get()->query("SELECT pluginid FROM plugins WHERE "
                 . "pluginname = 'Modulverwaltung'");
         $plugin_id = $stmt->fetchColumn();
-        $role_ids = array();
+        $role_ids = [];
 
         if ($plugin_id !== false) {
 
@@ -543,7 +543,7 @@ class Step00302Modulverwaltung extends Migration
             ");
 
             $roles = RolePersistence::getAllRoles();
-            $role_ids = array();
+            $role_ids = [];
             foreach ($roles as $r) {
                 if (in_array($r->getRolename(), words('MVVAdmin MVVFreigabe MVVEntwickler MVVRedakteur MVVTranslator MVVLvGruppenAdmin'))) {
                     $role_ids[] = $r->getRoleid();

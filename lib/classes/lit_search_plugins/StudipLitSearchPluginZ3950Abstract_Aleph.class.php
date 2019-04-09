@@ -40,24 +40,24 @@ class StudipLitSearchPluginZ3950Abstract_Aleph extends StudipLitSearchPluginZ395
     function __construct() {
         parent::__construct();
         $mapping =
-                                   array('001' => array('field' => 'accession_number', 'callback' => 'idMap', 'cb_args' => FALSE),
+                                   ['001' => ['field' => 'accession_number', 'callback' => 'idMap', 'cb_args' => FALSE],
                                          // übergeordneter Band
-                                         '760' => array('field' => 'dc_title', 'callback' => 'search_superbook', 'cb_args' => '$o'),
+                                         '760' => ['field' => 'dc_title', 'callback' => 'search_superbook', 'cb_args' => '$o'],
                                          // Titel
-                                         '245' => array (array('field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a - $b'),
-                                                array('field' => 'dc_contributor', 'callback' => 'simpleMap', 'cb_args' => '$c')),
+                                         '245' =>  [['field' => 'dc_title', 'callback' => 'simpleMap', 'cb_args' => '$a - $b'],
+                                                ['field' => 'dc_contributor', 'callback' => 'simpleMap', 'cb_args' => '$c']],
                                          // Autor
-                                         '100' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'),
+                                         '100' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'],
                                          // alle weitere Autoren
-                                         '700' => array('field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'),
+                                         '700' => ['field' => 'dc_creator', 'callback' => 'simpleMap', 'cb_args' => '$a'],
 
-                                         '433' => array('field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a'),
+                                         '433' => ['field' => 'dc_format', 'callback' => 'simpleMap', 'cb_args' => '$a'],
 
-                                         '260' => array (array('field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b, '),
-                                                 array('field' => 'dc_date', 'callback' => 'notEmptyMap', 'cb_args' => array('$c-01-01','dummy','dummy'))),
-                                         '020' => array('field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'),
-                                         '907' => array('field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => '$s;')
-                                        );
+                                         '260' =>  [['field' => 'dc_publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b, '],
+                                                 ['field' => 'dc_date', 'callback' => 'notEmptyMap', 'cb_args' => ['$c-01-01','dummy','dummy']]],
+                                         '020' => ['field' => 'dc_identifier', 'callback' => 'simpleMap', 'cb_args' => 'ISBN: $a'],
+                                         '907' => ['field' => 'dc_subject', 'callback' => 'simpleMap', 'cb_args' => '$s;']
+                                        ];
         foreach ($mapping as $k => $v) {
             $this->mapping['USMARC'][$k] = $v;
         }
@@ -105,7 +105,7 @@ class StudipLitSearchPluginZ3950Abstract_Aleph extends StudipLitSearchPluginZ395
     {
         $result = $data['a'];
 
-        $result = str_replace(array('<','>'),'',$result);
+        $result = str_replace(['<','>'],'',$result);
         $result = trim($result);
 
         // Untergeordneter Band -> Supertitel hinzufügen
@@ -120,7 +120,7 @@ class StudipLitSearchPluginZ3950Abstract_Aleph extends StudipLitSearchPluginZ395
     function simpleMap($cat_element, $data, $field, $args){
         if (is_array($data)) {
             foreach($data as $key => $value){
-                $data1[$key] = str_replace(array('<','>'),'',$value);
+                $data1[$key] = str_replace(['<','>'],'',$value);
             }
         }
         parent::simpleMap($cat_element, $data1, $field, $args);

@@ -2,27 +2,27 @@
 
 class Step00198Deputies extends Migration
 {
-    static $config_entries = array(
+    static $config_entries = [
         // Do users with status "dozent" always have to be visible?
-        array(
+        [
             'name'        => 'DEPUTIES_ENABLE',
             'type'        => 'boolean',
             'value'       => 0,
             'description' => 'Legt fest, ob die Funktion Vertretung aktiviert ist.'
-        ),
-        array(
+        ],
+        [
             'name'        => 'DEPUTIES_DEFAULTENTRY_ENABLE',
             'type'        => 'boolean',
             'value'       => 0,
             'description' => 'Dürfen Lehrende Standardvertretungen festlegen? Diese werden automatisch bei Hinzufügen der Lehrenden als Vertretung in Veranstaltungen eingetragen.'
-        ),
-        array(
+        ],
+        [
             'name'        => 'DEPUTIES_EDIT_ABOUT_ENABLE',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Dürfen Lehrende ihren Standardvertretungen erlauben, ihr Profil zu bearbeiten?'
-        )
-    );
+        ]
+    ];
 
     function description()
     {
@@ -42,7 +42,7 @@ class Step00198Deputies extends Migration
 
         // insert new configuration entries
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']));
+            $query->execute([$entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']]);
         }
 
         $db->exec("CREATE TABLE `deputies` ( ".

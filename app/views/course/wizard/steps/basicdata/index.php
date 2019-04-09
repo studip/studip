@@ -93,7 +93,7 @@
         <?php foreach ($values['participating'] as $id => $assigned) : ?>
             <?php if ($inst = Institute::find($id)) : ?>
                 <?= $this->render_partial('basicdata/_institute',
-                    array('class' => 'institute', 'inst' => $inst)) ?>
+                    ['class' => 'institute', 'inst' => $inst]) ?>
             <?php endif ?>
         <?php endforeach ?>
     </div>
@@ -118,7 +118,7 @@
         <?php foreach ($values['lecturers'] as $id => $assigned) : ?>
             <?php if ($user = User::find($id)) : ?>
                 <?= $this->render_partial('basicdata/_user',
-                    array('class' => 'lecturer', 'inputname' => 'lecturers', 'user' => $user)) ?>
+                    ['class' => 'lecturer', 'inputname' => 'lecturers', 'user' => $user]) ?>
             <?php endif ?>
         <?php endforeach ?>
     </div>
@@ -145,7 +145,7 @@
             <?php if ($user = User::find($id)) : ?>
                 <?php if (!in_array($id, array_keys($values['lecturers']))) : ?>
                     <?= $this->render_partial('basicdata/_user',
-                        array('class' => 'deputy', 'inputname' => 'deputies', 'user' => $user)) ?>
+                        ['class' => 'deputy', 'inputname' => 'deputies', 'user' => $user]) ?>
                 <?php endif ?>
             <?php endif ?>
         <?php endforeach ?>
@@ -173,7 +173,7 @@
         <?php foreach ($values['tutors'] as $id => $assigned) : ?>
             <?php if ($user = User::find($id)) : ?>
                 <?= $this->render_partial('basicdata/_user',
-                    array('class' => 'tutor', 'inputname' => 'tutors', 'user' => $user)) ?>
+                    ['class' => 'tutor', 'inputname' => 'tutors', 'user' => $user]) ?>
             <?php endif ?>
         <?php endforeach ?>
     </div>

@@ -9,7 +9,7 @@ if (!isset($show_room)) :
 endif;
 
 if (!empty($dates['regular']['turnus_data']) || !empty($dates['irregular'])) :
-  $output = array();
+  $output = [];
   if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turnus_data'] as $cycle) :
     $first_date = sprintf(_("ab %s"), strftime('%x', $cycle['first_date']['date']));
     if ($cycle['cycle'] == 1) :
@@ -24,10 +24,10 @@ if (!empty($dates['regular']['turnus_data']) || !empty($dates['irregular'])) :
 
     if ($show_room) :
         $cycle_output .= $this->render_partial('dates/_seminar_rooms',
-            array(
+            [
                 'assigned' => $cycle['assigned_rooms'],
                 'freetext' => $cycle['freetext_rooms'],
-                'plain'    => true)
+                'plain'    => true]
         );
     endif;
 
@@ -36,7 +36,7 @@ if (!empty($dates['regular']['turnus_data']) || !empty($dates['irregular'])) :
 
   echo implode(", \n", $output);
 
-  $freetext_rooms = array();
+  $freetext_rooms = [];
 
   if (is_array($dates['irregular'])):
     foreach ($dates['irregular'] as $date) :

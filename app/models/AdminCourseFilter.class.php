@@ -52,7 +52,7 @@ class AdminCourseFilter
 {
     static protected $instance = null;
     public $max_show_courses = 500;
-    public $settings = array();
+    public $settings = [];
 
     /**
      * returns an AdminCourseFilter singleton object
@@ -115,9 +115,9 @@ class AdminCourseFilter
      */
     public function initSettings()
     {
-        $this->settings = array();
+        $this->settings = [];
 
-        $this->settings['query']['select'] = array(
+        $this->settings['query']['select'] = [
             'Institut' => "Institute.Name",
             'teilnehmer' => "(SELECT COUNT(seminar_id)
                           FROM seminar_user
@@ -132,22 +132,22 @@ class AdminCourseFilter
                           FROM resources_requests
                           WHERE seminar_id = seminare.Seminar_id)",
             'course_set' => "(SELECT set_id FROM seminar_courseset WHERE seminar_id = seminare.Seminar_id LIMIT 1)"
-        );
-        $this->settings['query']['joins'] = array(
-            'Institute' => array(
+        ];
+        $this->settings['query']['joins'] = [
+            'Institute' => [
                 'join' => "INNER JOIN",
                 'on' => "seminare.Institut_id = Institute.Institut_id"
-            ),
-            'sem_types' => array(
+            ],
+            'sem_types' => [
                 'join' => "LEFT JOIN",
                 'on' => "sem_types.id = seminare.status"
-            ),
-            'sem_classes' => array(
+            ],
+            'sem_classes' => [
                 'join' => "LEFT JOIN",
                 'on' => "sem_classes.id = sem_types.class"
-            )
-        );
-        $this->settings['query']['where'] = array();
+            ]
+        ];
+        $this->settings['query']['where'] = [];
         $this->settings['query']['orderby'] = Config::get()->IMPORTANT_SEMNUMBER ? "seminare.veranstaltungsnummer, seminare.name" : "seminare.name";
     }
 
@@ -204,11 +204,11 @@ class AdminCourseFilter
 
     public function filterByDozent($user_ids)
     {
-        $this->settings['query']['joins']['dozenten'] = array(
+        $this->settings['query']['joins']['dozenten'] = [
             'join' => "INNER JOIN",
             'table' => "seminar_user",
             'on' => "dozenten.Seminar_id = seminare.Seminar_id AND dozenten.status = 'dozent'"
-        );
+        ];
         if (is_array($user_ids)) {
             $this->settings['query']['where']['dozenten'] = "dozenten.user_id IN (:dozenten_ids)";
             $this->settings['parameter']['dozenten_ids'] = $user_ids;
@@ -227,16 +227,16 @@ class AdminCourseFilter
      */
     public function filterBySearchstring($text)
     {
-        $this->settings['query']['joins']['dozenten'] = array(
+        $this->settings['query']['joins']['dozenten'] = [
             'join' => "INNER JOIN",
             'table' => "seminar_user",
             'on' => "dozenten.Seminar_id = seminare.Seminar_id AND dozenten.status = 'dozent'"
-        );
-        $this->settings['query']['joins']['dozentendata'] = array(
+        ];
+        $this->settings['query']['joins']['dozentendata'] = [
             'join' => "INNER JOIN",
             'table' => "auth_user_md5",
             'on' => "dozenten.user_id = dozentendata.user_id"
-        );
+        ];
         $this->settings['query']['where']['search'] = "(CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, seminare.Untertitel, dozentendata.Nachname) LIKE :search
             OR CONCAT(dozentendata.Nachname, ', ', dozentendata.Vorname) LIKE :search
             OR CONCAT_WS(' ', dozentendata.Vorname, dozentendata.Nachname) LIKE :search
@@ -275,7 +275,7 @@ class AdminCourseFilter
      *                          by plugins if necessary. Can be omitted.
      * @return $this
      */
-    public function where($where, $parameter = array(), $id = null)
+    public function where($where, $parameter = [], $id = null)
     {
         if (!$id) {
             $id = md5($where);
@@ -296,7 +296,7 @@ class AdminCourseFilter
     {
         NotificationCenter::postNotification("AdminCourseFilterWillQuery", $this);
         if (empty($this->settings['query']['where'])) {
-            return array();
+            return [];
         }
         $statement = DBManager::get()->prepare($this->createQuery());
         $statement->execute($this->settings['parameter']);
@@ -328,13 +328,13 @@ class AdminCourseFilter
         $count_courses = $this->countCourses();
         if ($count_courses && $count_courses <= $this->max_show_courses) {
             $settings = $this->settings;
-            $this->settings['query']['select'] = array();
+            $this->settings['query']['select'] = [];
             $this->settings['query']['orderby'] = Config::get()->IMPORTANT_SEMNUMBER ? 'seminare.veranstaltungsnummer, seminare.name' : 'seminare.name';
             $ret = $this->getCourses(false);
             $this->settings = $settings;
             return $ret;
         }
-        return array();
+        return [];
     }
 
     /**

@@ -55,100 +55,100 @@
 
 
 // Tabelle mvv_stgteil
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 7,
         'MVVRedakteur'  => 3,
         'MVVTranslator' => 3,
         'MVVFreigabe'   => 1
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 7
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 3,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 7
-        ),
-        'ausgelaufen' => array(
+        ],
+        'ausgelaufen' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 1
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'fach_id' => array(
-            'default' => array(
+    ],
+    'fields' => [
+        'fach_id' => [
+            'default' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'kp' => array(
-            'default' => array(
+            ]
+        ],
+        'kp' => [
+            'default' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'semester' => array(
-            'default' => array(
+            ]
+        ],
+        'semester' => [
+            'default' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'zusatz' => array(
-            'default' => array(
+            ]
+        ],
+        'zusatz' => [
+            'default' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'zusatz_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'zusatz_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
+            ]
+        ],
         // verknüpfte Objekte
-        'fachberater_assignments' => array(
-            'default' => array(
+        'fachberater_assignments' => [
+            'default' => [
                 'MVVEntwickler' => 7,
                 'MVVRedakteur'  => 7,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 7
-            )
-        ),
-        'versionen' => array(
-            'default' => array(
+            ]
+        ],
+        'versionen' => [
+            'default' => [
                 'MVVEntwickler' => 7,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 7
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];
       

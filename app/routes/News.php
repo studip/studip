@@ -151,7 +151,7 @@ class News extends \RESTAPI\RouteMap
 
         $news = new \StudipNews();
         $news->setData(
-            array(
+            [
                 'user_id'        => $GLOBALS['user']->id,
                 'author'         => $GLOBALS['user']->getFullName(),
                 'topic'          => trim(@$this->data['topic']),
@@ -159,7 +159,7 @@ class News extends \RESTAPI\RouteMap
                 'date'           => time(),
                 'expire'         => isset($this->data['expire']) ? intval($this->data['expire']) : 2 * 7 * 24 * 60 * 60,
                 'allow_comments' => isset($this->data['allow_comments']) ? intval($this->data['allow_comments']) : 0
-            ));
+            ]);
         $news->addRange($range_id);
 
         if ($errors = $this->validateNews($news)) {
@@ -185,11 +185,11 @@ class News extends \RESTAPI\RouteMap
         $comments = $this->requireNews($news_id)->comments->orderBy("mkdate asc");
 
         $total = count($comments);
-        $json = array();
+        $json = [];
         foreach ($comments->limit($this->offset, $this->limit) as $comment) {
             $tmp = $comment->toArray("comment_id object_id user_id content mkdate chdate");
             $tmp['content_html'] = htmlReady($comment->content);
-            $json[$this->urlf('/comment/%s', array(htmlReady($comment->id)))] = $tmp;
+            $json[$this->urlf('/comment/%s', [htmlReady($comment->id)])] = $tmp;
         }
 
         $this->etag(md5(serialize($json)));
@@ -232,11 +232,11 @@ class News extends \RESTAPI\RouteMap
 
         $comment = new \StudipComment();
         $comment->setData(
-            array(
+            [
                 'object_id' => $news_id,
                 'user_id'   => $GLOBALS['user']->id,
                 'content'   => $content
-            ));
+            ]);
 
         if (!$comment->store()) {
             $this->halt(500, 'Could not create comment.');
@@ -278,20 +278,20 @@ class News extends \RESTAPI\RouteMap
         $total = count($news);
         $news = array_slice($news, $this->offset, $this->limit);
 
-        $json = array();
+        $json = [];
         foreach ($news as $n) {
-            $json[$this->urlf('/news/%s', array($n->id))] = $this->newsToJson($n);
+            $json[$this->urlf('/news/%s', [$n->id])] = $this->newsToJson($n);
         }
 
-        return array($json, $total);
+        return [$json, $total];
     }
 
     private function validateNews($news)
     {
-        $errors = array();
+        $errors = [];
 
         $retain = $_SESSION['messages'];
-        $_SESSION['messages'] = array();
+        $_SESSION['messages'] = [];
 
         if (!$news->validate()) {
             foreach ($_SESSION['messages'] as $message_box) {
@@ -330,19 +330,19 @@ class News extends \RESTAPI\RouteMap
         $json['chdate_uid'] = trim($json['chdate_uid']);
 
         if ($news->allow_comments) {
-            $json['comments'] = $this->urlf('/news/%s/comments', array($news->id));
+            $json['comments'] = $this->urlf('/news/%s/comments', [$news->id]);
             $json['comments_count'] = sizeof($news->comments);
         }
 
-        $json['ranges'] = array();
+        $json['ranges'] = [];
         foreach ($news->news_ranges as $range) {
             if (self::checkRangePermission($range->range_id, $GLOBALS['user']->id)) {
                 switch ($range->type) {
                 case 'global': $url = $this->url('/studip/news'); break;
-                case 'sem':    $url = $this->urlf('/course/%s/news', array($range->range_id)); break;
-                case 'user':   $url = $this->urlf('/user/%s/news', array($range->range_id)); break;
-                case 'inst':   $url = $this->urlf('/TODO/%s/news', array($range->range_id)); break;
-                case 'fak':    $url = $this->urlf('/TODO/%s/news', array($range->range_id)); break;
+                case 'sem':    $url = $this->urlf('/course/%s/news', [$range->range_id]); break;
+                case 'user':   $url = $this->urlf('/user/%s/news', [$range->range_id]); break;
+                case 'inst':   $url = $this->urlf('/TODO/%s/news', [$range->range_id]); break;
+                case 'fak':    $url = $this->urlf('/TODO/%s/news', [$range->range_id]); break;
                 }
 
                 $json['ranges'][] = $url;
@@ -367,8 +367,8 @@ class News extends \RESTAPI\RouteMap
     {
         $json = $comment->toArray(words("comment_id mkdate chdate content"));
         $json['content_html'] = formatReady($json['content']);
-        $json['author']       = $this->urlf('/user/%s', array($comment->user_id));
-        $json['news']         = $this->urlf('/news/%s', array($comment->object_id));
+        $json['author']       = $this->urlf('/user/%s', [$comment->user_id]);
+        $json['news']         = $this->urlf('/news/%s', [$comment->object_id]);
         return $json;
     }
 }

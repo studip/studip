@@ -43,7 +43,7 @@ class Admission_RuleController extends AuthenticatedController
         $this->ruleType = $ruleType;
         // Check if rule data has been given via request.
         if (Request::getArray('rules')) {
-            $rule_siblings = array();
+            $rule_siblings = [];
             foreach (Request::getManyObjects('rules', 'AdmissionRule') as $rule) {
                 if ($ruleType == get_class($rule) && $rule->getId() == Request::get('ruleId')) {
                     $this->rule = $rule;

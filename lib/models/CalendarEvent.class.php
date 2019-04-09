@@ -115,7 +115,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
         return null;
     }
 
-    public static function deleteBySQL($where, $params = array())
+    public static function deleteBySQL($where, $params = [])
     {
         $ret = parent::deleteBySQL($where, $params);
         EventData::garbageCollect();
@@ -133,7 +133,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
         $event_data = EventData::findOneByuid($uid);
         if ($event_data) {
             if ($range_id) {
-                return self::find(array($range_id, $event_data->getId()));
+                return self::find([$range_id, $event_data->getId()]);
             }
             return self::findByevent_id($event_data->getId());
         }
@@ -164,7 +164,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
     {
         global $PERS_TERMIN_KAT;
 
-        $categories = array();
+        $categories = [];
         if ($this->havePermission(Event::PERMISSION_READABLE,
                 $this->permission_user_id)) {
             if ($this->event->categories) {
@@ -212,7 +212,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public function getRecurrence($index = null)
     {
-        $recurrence = array(
+        $recurrence = [
             'ts' => $this->event->ts ?: mktime(12, 0, 0, date('n', $this->getStart()), date('j',
                 $this->getStart()), date('Y', $this->getStart())),
             'linterval' => $this->event->linterval,
@@ -224,7 +224,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
             'duration' => $this->event->duration,
             'count' => $this->event->count,
             'expire' => $this->event->expire ?: Calendar::CALENDAR_END
-        );
+        ];
         if ($index) {
             if (in_array($index, array_keys($recurrence))) {
                 return $recurrence[$index];
@@ -259,7 +259,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
             case 'SINGLE':
                 $ts = mktime(12, 0, 0, date('n', $start),
                         date('j', $start), date('Y', $start));
-                $rrule = array($ts, 0, 0, '', 0, 0, 'SINGLE', $duration);
+                $rrule = [$ts, 0, 0, '', 0, 0, 'SINGLE', $duration];
                 break;
             case 'DAILY':
                 $r_rule['linterval'] = $r_rule['linterval'] ? intval($r_rule['linterval']) : 1;
@@ -269,7 +269,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                     $r_rule['expire'] = mktime(23, 59, 59, date('n', $start), date('j', $start)
                             + ($r_rule['count'] - 1) * $r_rule['linterval'], date('Y', $start));
                 }
-                $rrule = array($ts, $r_rule['linterval'], 0, '', 0, 0, 'DAILY', $duration);
+                $rrule = [$ts, $r_rule['linterval'], 0, '', 0, 0, 'DAILY', $duration];
                 break;
             case 'WEEKLY':
                 $r_rule['linterval'] = $r_rule['linterval'] ? intval($r_rule['linterval']) : 1;
@@ -282,8 +282,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                                 date('j', $start) + ($r_rule['linterval'] * 7 * ($r_rule['count'] - 1)),
                                 date('Y', $start));
                     }
-                    $rrule = array($ts, $r_rule['linterval'], 0, strftime('%u', $start),
-                        0, 0, 'WEEKLY', $duration);
+                    $rrule = [$ts, $r_rule['linterval'], 0, strftime('%u', $start),
+                        0, 0, 'WEEKLY', $duration];
                 } else {
                     $ts = mktime(12, 0, 0, date('n', $start),
                             date('j', $start) + (7 - (strftime('%u', $start) - 1))
@@ -323,8 +323,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         $r_rule['expire'] = mktime(23, 59, 59, date('n', $expire_ts),
                                 date('j', $expire_ts), date('Y', $expire_ts));
                     }
-                    $rrule = array($ts, $r_rule['linterval'], 0, $r_rule['wdays'],
-                        0, 0, 'WEEKLY', $duration);
+                    $rrule = [$ts, $r_rule['linterval'], 0, $r_rule['wdays'],
+                        0, 0, 'WEEKLY', $duration];
                 }
                 break;
             case 'MONTHLY':
@@ -335,8 +335,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                 if (!$r_rule['day'] && !$r_rule['sinterval'] && !$r_rule['wdays']) {
                     $amonth = date('n', $start) + $r_rule['linterval'];
                     $ts = mktime(12, 0, 0, $amonth, date('j', $start), date('Y', $start));
-                    $rrule = array($ts, $r_rule['linterval'], 0, '', 0,
-                        date('j', $start), 'MONTHLY', $duration);
+                    $rrule = [$ts, $r_rule['linterval'], 0, '', 0,
+                        date('j', $start), 'MONTHLY', $duration];
                 } else if (!$r_rule['sinterval'] && !$r_rule['wdays']) {
                     if ($r_rule['day'] < date('j', $start)) {
                         $amonth = date('n', $start) + $r_rule['linterval'];
@@ -344,8 +344,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         $amonth = date('n', $start);
                     }
                     $ts = mktime(12, 0, 0, $amonth, $r_rule['day'], date('Y', $start));
-                    $rrule = array($ts, $r_rule['linterval'], 0, '', 0,
-                        $r_rule['day'], 'MONTHLY', $duration);
+                    $rrule = [$ts, $r_rule['linterval'], 0, '', 0,
+                        $r_rule['day'], 'MONTHLY', $duration];
                 } else if (!$r_rule['day']) {
                     $amonth = date('n', $start);
                     $adate = mktime(12, 0, 0, $amonth, 1,
@@ -380,8 +380,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         }
                     }
                     $ts = $adate;
-                    $rrule = array($ts, $r_rule['linterval'], $r_rule['sinterval'],
-                        $r_rule['wdays'], 0, 0, 'MONTHLY', $duration);
+                    $rrule = [$ts, $r_rule['linterval'], $r_rule['sinterval'],
+                        $r_rule['wdays'], 0, 0, 'MONTHLY', $duration];
                 }
 
                 if ($r_rule['count']) {
@@ -393,8 +393,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                 if (!$r_rule['month'] && !$r_rule['day'] && !$r_rule['sinterval'] && !$r_rule['wdays']) {
                     $ts = mktime(12, 0, 0, date('n', $start),
                             date('j', $start), date('Y', $start) + 1);
-                    $rrule = array($ts, 1, 0, '', date('n', $start),
-                        date('j', $start), 'YEARLY', $duration);
+                    $rrule = [$ts, 1, 0, '', date('n', $start),
+                        date('j', $start), 'YEARLY', $duration];
                 } else if (!$r_rule['sinterval'] && !$r_rule['wdays']) {
                     if (!$r_rule['day']) {
                         $r_rule['day'] = date('j', $start);
@@ -405,8 +405,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         $ts = mktime(12, 0, 0, $r_rule['month'], $r_rule['day'],
                                 date('Y', $start) + 1);
                     }
-                    $rrule = array($ts, 1, 0, '', $r_rule['month'],
-                        $r_rule['day'], 'YEARLY', $duration);
+                    $rrule = [$ts, 1, 0, '', $r_rule['month'],
+                        $r_rule['day'], 'YEARLY', $duration];
                 } else if (!$r_rule['day']) {
                     $ayear = date('Y', $start);
                     do {
@@ -427,8 +427,8 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         $ts = $adate;
                         $ayear++;
                     } while ($ts <= mktime(12, 0, 0, date('n', $start), date('j', $start), date('Y', $start)));
-                    $rrule = array($ts, 1, $r_rule['sinterval'], $r_rule['wdays'],
-                        $r_rule['month'], 0, 'YEARLY', $duration);
+                    $rrule = [$ts, 1, $r_rule['sinterval'], $r_rule['wdays'],
+                        $r_rule['month'], 0, 'YEARLY', $duration];
                 }
 
                 if ($r_rule['count']) {
@@ -439,7 +439,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
             default :
                 $ts = mktime(12, 0, 0, date('n', $start),
                         date('j', $start), date('Y', $start));
-                $rrule = array($ts, 0, 0, '', 0, 0, 'SINGLE', $duration);
+                $rrule = [$ts, 0, 0, '', 0, 0, 'SINGLE', $duration];
                 $r_rule['count'] = 0;
         }
 
@@ -468,9 +468,9 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
     public function toStringRecurrence($only_type = false)
     {
         $rrule = $this->getRecurrence();
-        $replace = array(_('Montag') . ', ', _('Dienstag') . ', ', _('Mittwoch') . ', ',
-            _('Donnerstag') . ', ', _('Freitag') . ', ', _('Samstag') . ', ', _('Sonntag') . ', ');
-        $search = array('1', '2', '3', '4', '5', '6', '7');
+        $replace = [_('Montag') . ', ', _('Dienstag') . ', ', _('Mittwoch') . ', ',
+            _('Donnerstag') . ', ', _('Freitag') . ', ', _('Samstag') . ', ', _('Sonntag') . ', '];
+        $search = ['1', '2', '3', '4', '5', '6', '7'];
         $wdays = str_replace($search, $replace, $rrule['wdays']);
         $wdays = mb_substr($wdays, 0, -2);
 
@@ -535,9 +535,9 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                 }
                 break;
             case 'YEARLY':
-                $month_names = array(_('Januar'), _('Februar'), _('März'), _('April'), _('Mai'),
+                $month_names = [_('Januar'), _('Februar'), _('März'), _('April'), _('Mai'),
                     _('Juni'), _('Juli'), _('August'), _('September'), _('Oktober'),
-                    _('November'), _('Dezember'));
+                    _('November'), _('Dezember')];
                 if ($rrule['day']) {
                     $type = 'mday_month_yearly';
                     $text = sprintf(_('Der Termin wird jeden %s. %s wiederholt.'),
@@ -614,7 +614,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public function getExceptions()
     {
-        $exceptions = array();
+        $exceptions = [];
         if (trim($this->event->exceptions)) {
             $exceptions = explode(',', $this->event->exceptions);
         }
@@ -628,7 +628,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public function setExceptions($exceptions)
     {
-        $exc = array();
+        $exc = [];
         if (is_array($exceptions)) {
             $exc = array_map(function ($exception) {
                 $exception = intval($exception);
@@ -814,7 +814,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
             }
 
             if ($category == 0 && trim($this->event->categories)) {
-                $categories = array();
+                $categories = [];
                 $i = 1;
                 foreach ($PERS_TERMIN_KAT as $pers_cat) {
                     $categories[mb_strtolower($pers_cat['name'])] = $i++;
@@ -873,7 +873,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
     public function setAccessibility($class)
     {
         $class = mb_strtoupper($class);
-        if (in_array($class, array('PUBLIC', 'PRIVATE', 'CONFIDENTIAL'))) {
+        if (in_array($class, ['PUBLIC', 'PRIVATE', 'CONFIDENTIAL'])) {
             $this->event->class = $class;
         } else {
             $this->event->class = 'PRIVATE';
@@ -950,21 +950,21 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
         switch ($permission) {
             case Calendar::PERMISSION_OWN :
             case Calendar::PERMISSION_ADMIN :
-                $options = array(
+                $options = [
                     // SEMBBS nur private und vertrauliche Termine
                     'PUBLIC' => _('Öffentlich'),
                     'PRIVATE' => _('Privat'),
                     'CONFIDENTIAL' => _('Vertraulich')
-                );
+                ];
                 break;
             case Calendar::PERMISSION_WRITABLE :
-                $options = array(
+                $options = [
                     'PRIVATE' => _('Privat'),
                     'CONFIDENTIAL' => _('Vertraulich')
-                );
+                ];
                 break;
             default :
-                $options = array();
+                $options = [];
         }
         return $options;
     }
@@ -995,7 +995,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public function getType()
     {
-        return get_object_type($this->range_id, array('user', 'sem', 'inst', 'fak'));
+        return get_object_type($this->range_id, ['user', 'sem', 'inst', 'fak']);
     }
 
     /**
@@ -1065,7 +1065,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
     public function getProperties()
     {
         if ($this->properties === null) {
-            $this->properties = array(
+            $this->properties = [
                 'DTSTART' => $this->getStart(),
                 'DTEND' => $this->getEnd(),
                 'SUMMARY' => stripslashes($this->getTitle()),
@@ -1085,7 +1085,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                 'EVENT_TYPE' => 'cal',
                 'STUDIP_AUTHOR_ID' => $this->event->author_id,
                 'STUDIP_EDITOR_ID' => $this->event->editor_id,
-                'STUDIP_GROUP_STATUS' => $this->group_status);
+                'STUDIP_GROUP_STATUS' => $this->group_status];
         }
         return $this->properties;
     }
@@ -1191,7 +1191,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
      */
     public function getPermission($user_id = null)
     {
-        static $permissions = array();
+        static $permissions = [];
 
         if (is_null($user_id)) {
             $user_id = $this->permission_user_id ?: $GLOBALS['user']->id;
@@ -1256,7 +1256,7 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                     $permission = Event::PERMISSION_READABLE;
                 }
                 $calendar_user = CalendarUser::find(
-                        array($this->user->getId(), $user_id));
+                        [$this->user->getId(), $user_id]);
                 if ($calendar_user) {
                     if ($accessibility == 'CONFIDENTIAL') {
                         if ($this->event->calendars->findOneBy('range_id', $user_id)) {

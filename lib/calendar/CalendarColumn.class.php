@@ -19,7 +19,7 @@ class CalendarColumn {
     protected static $number = 0;
     protected $title = "";
     protected $id = "";
-    public    $entries = array();
+    public    $entries = [];
     protected $url = "";
     protected $grouped    = false;
 
@@ -135,7 +135,7 @@ class CalendarColumn {
      * @param array  $entries_array
      * @return CalendarColumn
      */
-    public function addEntries($entries_array = array()) {
+    public function addEntries($entries_array = []) {
         foreach ($entries_array as $entry_array) {
             $this->addEntry($entry_array);
         }
@@ -166,7 +166,7 @@ class CalendarColumn {
      * @return CalendarColumn
      */
     public function eraseEntries() {
-        $this->entries = array();
+        $this->entries = [];
         return $this;
     }
 
@@ -200,7 +200,7 @@ class CalendarColumn {
         $day = $this->getTitle();
 
         $entries_for_column = $this->getEntries();
-        $result = array();
+        $result = [];
 
         // 1st step - group all entries with the same duration
         foreach ($entries_for_column as $entry_id => $entry) {
@@ -264,7 +264,7 @@ class CalendarColumn {
     {
         $entries_for_column = $this->getEntries();
 
-        $result = array();
+        $result = [];
         $column = 0;
 
         // 2nd step - optimize the groups
@@ -318,7 +318,7 @@ class CalendarColumn {
      * @return array 
      */
     public function getMatrix() {
-        $group_matrix = array();
+        $group_matrix = [];
         foreach ($this->getGroupedEntries() as $groups) {
             foreach ($groups as $group) {
                 if (is_array($group[0])) {

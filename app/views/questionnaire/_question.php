@@ -3,11 +3,11 @@
     <legend>
         <div style="float: right; padding-top: 3px; padding-right: 5px;">
             <a href="" onClick="var that = this; STUDIP.Dialog.confirm('<?= _("Wirklich löschen?") ?>', function () { jQuery(that).closest('fieldset').remove(); }); return false;" title="<?= sprintf(_("%s löschen"), htmlReady($class::getName())) ?>">
-                <?= Icon::create("trash", "clickable")->asImg("20px", array('class' => "text-bottom")) ?>
+                <?= Icon::create("trash", "clickable")->asImg("20px", ['class' => "text-bottom"]) ?>
             </a>
         </div>
         <div>
-            <?= $class::getIcon()->asImg("20px", array('class' => "text-bottom")) ?>
+            <?= $class::getIcon()->asImg("20px", ['class' => "text-bottom"]) ?>
             <?= htmlReady($class::getName()) ?>
         </div>
 

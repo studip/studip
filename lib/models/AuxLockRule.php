@@ -29,16 +29,16 @@ class AuxLockRule extends SimpleORMap
     /**
      * Cache to avoid loading datafields for a user more than once
      */
-    private $datafieldCache = array();
+    private $datafieldCache = [];
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'aux_lock_rules';
-        $config['belongs_to']['course'] = array(
+        $config['belongs_to']['course'] = [
             'class_name' => 'Course',
             'foreign_key' => 'lock_id',
             'assoc_foreign_key' => 'aux_lock_rule',
-        );
+        ];
         $config['additional_fields']['datafields'] = true;
         $config['additional_fields']['order'] = true;
         parent::configure($config);
@@ -95,24 +95,24 @@ class AuxLockRule extends SimpleORMap
             $course = $this->course;
         }
 
-        $mapping = array(
+        $mapping = [
             'vadozent' => join(', ', $course->members->findBy('status', 'dozent')->getUserFullname()),
             'vasemester' => $course->start_semester->name,
             'vatitle' => $course->name,
             'vanr' => $course->VeranstaltungsNummer,
-        );
-        $head_mapping = array(
+        ];
+        $head_mapping = [
             'vadozent' => _('Dozenten'),
             'vasemester' => _('Semester'),
             'vatitle' => _('Veranstaltungstitel'),
             'vanr' => _('Veranstaltungsnummer'),
-        );
+        ];
 
         // start collecting entries
         $result['head']['name'] = _('Name');
 
         // get all autors and users
-        foreach ($course->members->findBy('status', array('autor', 'user'))->orderBy('nachname,vorname') as $member) {
+        foreach ($course->members->findBy('status', ['autor', 'user'])->orderBy('nachname,vorname') as $member) {
             $new['name'] = $member->getUserFullName('full_rev');
 
             // get all datafields
@@ -173,9 +173,9 @@ class AuxLockRule extends SimpleORMap
                      $field = current(DatafieldEntryModel::findByModel(User::find($member->user_id), $fieldID));
                  }
                  if ($field) {
-                     $range_id = $field->sec_range_id ? array($field->range_id, $field->sec_range_id) : $field->range_id;
+                     $range_id = $field->sec_range_id ? [$field->range_id, $field->sec_range_id] : $field->range_id;
                      $typed_df = DataFieldEntry::createDataFieldEntry($field->datafield, $range_id, $field->getValue('content'));
-                     return array($field->name => $typed_df);
+                     return [$field->name => $typed_df];
                  }
              }
          }

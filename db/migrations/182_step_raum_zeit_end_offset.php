@@ -13,7 +13,7 @@ class StepRaumZeitEndOffset extends Migration
         //CHANGE route entry in help_content from raumzeit.php to new dispatch.php/course/timesrooms
         $query = 'UPDATE `help_content` SET route = :new WHERE route = :old';
         $stm = DBManager::get()->prepare($query);
-        $stm->execute(array(':new' => 'dispatch.php/course/timesrooms', ':old' => 'raumzeit.php'));
+        $stm->execute([':new' => 'dispatch.php/course/timesrooms', ':old' => 'raumzeit.php']);
     }
 
     public function down()
@@ -23,6 +23,6 @@ class StepRaumZeitEndOffset extends Migration
         //CHANGE route entry in help_content from dispatch.php/course/timesrooms back to raumzeit.php
         $query = 'UPDATE `help_content` SET route = :old WHERE route = :new';
         $stm = DBManager::get()->prepare($query);
-        $stm->execute(array(':new' => 'dispatch.php/course/timesrooms', ':old' => 'raumzeit.php'));
+        $stm->execute([':new' => 'dispatch.php/course/timesrooms', ':old' => 'raumzeit.php']);
     }
 }

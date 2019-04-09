@@ -21,7 +21,7 @@
                 <h4><?= htmlReady($current_head) ?></h4>
             <? endif ?>
             <a href="<?= URLHelper::getLink('dispatch.php/profile',
-                                             array('username' => $admin['username']))
+                                             ['username' => $admin['username']])
                       ?>"><?= htmlReady($admin['fullname'])?></a>, E-Mail:<?= formatLinks($admin['Email']) ?><br>
             <? $i++ ?>
         <? endforeach ?>

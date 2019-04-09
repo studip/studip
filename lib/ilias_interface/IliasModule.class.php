@@ -276,7 +276,7 @@ class IliasModule
                   FROM auth_extern
                   WHERE external_user_id = ? AND external_user_system_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->owner, $this->ilias_index));
+        $statement->execute([$this->owner, $this->ilias_index]);
         $data = $statement->fetch(PDO::FETCH_ASSOC);
         if ($data) {
             $this->author_studip = User::find($data['studip_user_id']);

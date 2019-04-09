@@ -100,7 +100,7 @@
                         <tbody id="<?= $metadate_id ?>-<?= $semester_id ?>">
                         <? foreach ($termine as $termin) : ?>
                             <?= $this->render_partial('course/timesrooms/_cycleRow.php',
-                                    array('termin' => $termin, 'class_ids' => 'ids-regular')) ?>
+                                    ['termin' => $termin, 'class_ids' => 'ids-regular']) ?>
                         <? endforeach ?>
                         </tbody>
                     <? endforeach ?>
@@ -119,10 +119,10 @@
                                         <select name="method" class="datesBulkActions actionForAllRegular_<?= $metadate_id ?>">
                                             <?= $this->render_partial('course/timesrooms/_stack_actions.php') ?>
                                         </select>
-                                        <?= Studip\Button::create(_('Ausführen'), 'run', array(
+                                        <?= Studip\Button::create(_('Ausführen'), 'run', [
                                                 'class' => 'actionForAllRegular_' . $metadate_id,
                                                 'data-dialog' => 'size=big'
-                                        )) ?>
+                                        ]) ?>
                                     </td>
                                 </tr>
                             </tfoot>

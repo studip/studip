@@ -25,7 +25,7 @@ use Studip\Button, Studip\LinkButton;
         </label>
 
         <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id)) : ?>
-            <?= $this->render_partial("course/studygroup/_replace_founder", array('tutors' => $tutors)) ?>
+            <?= $this->render_partial("course/studygroup/_replace_founder", ['tutors' => $tutors]) ?>
         <? endif; ?>
 
         <section>
@@ -93,7 +93,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::createAccept(_('Übernehmen'), array('title' => _("Änderungen übernehmen"))); ?>
+        <?= Button::createAccept(_('Übernehmen'), ['title' => _("Änderungen übernehmen")]); ?>
         <?= LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('seminar_main.php')); ?>
     </footer>
 </form>

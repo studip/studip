@@ -4,7 +4,7 @@
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
-$topics = array();
+$topics = [];
 echo "
 <script type=\"text/javascript\">
 <!--

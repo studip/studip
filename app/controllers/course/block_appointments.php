@@ -29,7 +29,7 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $course_id = $args[0];
 
         $this->course_id = Request::option('cid', $course_id);
-        if (!get_object_type($this->course_id, array('sem')) ||
+        if (!get_object_type($this->course_id, ['sem']) ||
             SeminarCategories::GetBySeminarId($this->course_id)->studygroup_mode ||
             !$GLOBALS['perm']->have_studip_perm("tutor", $this->course_id)
         ) {
@@ -47,7 +47,7 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         if (!Request::isXhr() && Navigation::hasItem('/course/admin/timesrooms')) {
             Navigation::activateItem('/course/admin/timesrooms');
         }
-        $this->linkAttributes   = array('fromDialog' => Request::int('fromDialog') ? 1 : 0);
+        $this->linkAttributes   = ['fromDialog' => Request::int('fromDialog') ? 1 : 0];
         $this->start_ts         = strtotime('this monday');
         $this->request          = $this->flash['request'] ?: $_SESSION['block_appointments'];
         $this->confirm_many     = isset($this->flash['confirm_many']) ? $this->flash['confirm_many'] : false;
@@ -60,7 +60,7 @@ class Course_BlockAppointmentsController extends AuthenticatedController
      */
     public function save_action($course_id)
     {
-        $errors = array();
+        $errors = [];
 
         $start_day = strtotime(Request::get('block_appointments_start_day'));
         $end_day = strtotime(Request::get('block_appointments_end_day'));

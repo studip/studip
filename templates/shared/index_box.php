@@ -8,7 +8,7 @@
         <tr>
             <td class="table_header_bold" style="font-weight: bold;">
                 <? if (isset($icon_url)): ?>
-                    <?= Assets::img($icon_url, array('class' => 'middle')) ?>
+                    <?= Assets::img($icon_url, ['class' => 'middle']) ?>
                 <? endif ?>
                 <?= htmlReady($title) ?>
             </td>

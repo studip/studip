@@ -50,7 +50,7 @@ class ForumPerm {
      */
     static function has($perm, $seminar_id, $user_id = null)
     {
-        static $permissions = array();
+        static $permissions = [];
 
         // if no user-id is passed, use the current user (for your convenience)
         if (!$user_id) {
@@ -153,7 +153,7 @@ class ForumPerm {
      */
     static function hasEditPerms($topic_id)
     {
-        static $perms = array();
+        static $perms = [];
 
         if (!$perms[$topic_id]) {
             // find out if the posting is the last in the thread
@@ -161,7 +161,7 @@ class ForumPerm {
 
             $stmt = DBManager::get()->prepare("SELECT user_id, seminar_id
                 FROM forum_entries WHERE topic_id = ?");
-            $stmt->execute(array($topic_id));
+            $stmt->execute([$topic_id]);
 
             $data = $stmt->fetch();
 

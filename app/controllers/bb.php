@@ -25,14 +25,14 @@ class BbController extends AuthenticatedController {
     {
         $this->entries_per_page = Request::int('entries_per_page', 20);
 
-        $images = array();
+        $images = [];
         
         foreach (scandir($GLOBALS['DYNAMIC_CONTENT_PATH'] . '/user') as $file) {
             if (mb_strpos($file, '_normal.png') !== FALSE && $file !== 'nobody_normal.png') {
-                $images[] = array(
+                $images[] = [
                 'time'     => @filemtime($GLOBALS['DYNAMIC_CONTENT_PATH'] . '/user/'.$file),
                 'file'     => $file,
-                'user_id'  => mb_substr($file, 0, mb_strrpos($file, '_')));
+                'user_id'  => mb_substr($file, 0, mb_strrpos($file, '_'))];
             }
         }
         

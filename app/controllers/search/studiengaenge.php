@@ -78,8 +78,8 @@ class Search_StudiengaengeController extends MVVController
             }
         }
 
-        $studiengaenge_abschluss = array();
-        $abschluesse = array();
+        $studiengaenge_abschluss = [];
+        $abschluesse = [];
         foreach ($studiengaenge_sort as $studiengang) {
             if (in_array($studiengang->stat, $status_filter)) {
                 $abschluss = Abschluss::find($studiengang->abschluss_id);
@@ -122,11 +122,11 @@ class Search_StudiengaengeController extends MVVController
         $faecher = Fach::findByStudiengang($this->studiengang->id);
         $this->studiengangTeilBezeichnungen = $this->studiengang->stgteil_bezeichnungen;
 
-        $this->data = array();
-        $this->fachNamen = array();
+        $this->data = [];
+        $this->fachNamen = [];
         foreach ($faecher as $fach) {
             $this->fachNamen[$fach->id] = $fach->getDisplayName();
-            $this->data[$fach->id] = array();
+            $this->data[$fach->id] = [];
             foreach ($this->studiengangTeilBezeichnungen as $studiengangTeilBezeichnung) {
 
                 $schnittpunkte = StudiengangTeil::findByStudiengangStgteilBez(
@@ -171,7 +171,7 @@ class Search_StudiengaengeController extends MVVController
             // Einfach-Studiengang mit Ausprägungen
             // (unterschiedliche Studiengangteile direkt am Studiengang, ohne
             // Studiengangteil-Bezeichnungen)
-            $this->data = array();
+            $this->data = [];
             foreach ($studiengangTeile as $teil) {
                 $filter = function ($version) {
                     return $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
@@ -236,17 +236,17 @@ class Search_StudiengaengeController extends MVVController
             }
 
             $abschnitte = StgteilAbschnitt::findByStgteilVersion($this->cur_version_id);
-            $abschnitteData = array();
-            $fachsemesterData = array();
+            $abschnitteData = [];
+            $fachsemesterData = [];
             foreach ($abschnitte as $abschnitt) {
-                $abschnitteData[$abschnitt->id] = array(
+                $abschnitteData[$abschnitt->id] = [
                     'name' => $abschnitt->getDisplayName(),
                     'creditPoints' => $abschnitt->kp,
                     'zwischenUeberschrift' => $abschnitt->ueberschrift,
-                    'module' => array(),
+                    'module' => [],
                     'rowspan' => 0,
                     'kommentar' => $abschnitt->kommentar
-                );
+                ];
 
                 foreach ($abschnitt->modul_zuordnungen as $abschnitt_modul) {
 
@@ -262,10 +262,10 @@ class Search_StudiengaengeController extends MVVController
                        continue;
                     }
 
-                    $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id] = array(
+                    $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id] = [
                         'name' => $abschnitt_modul->getDisplayName(),
-                        'modulTeile' => array()
-                    );
+                        'modulTeile' => []
+                    ];
                     $countcourses = 0;
                     foreach ($abschnitt_modul->modul->modulteile as $teil) {
                         $lvg = Lvgruppe::findByModulteil($teil->id);
@@ -281,11 +281,11 @@ class Search_StudiengaengeController extends MVVController
 
                         $fachSemester = $abschnitt_modul->getAllFachSemester($teil->id);
 
-                        $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]['modulTeile'][$teil->id] = array(
+                        $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]['modulTeile'][$teil->id] = [
                             'name' => $teil->getDisplayName(),
                             'position' => $teil->position,
-                            'fachsemester' => array()
-                        );
+                            'fachsemester' => []
+                        ];
                         $abschnitteData[$abschnitt->id]['rowspan']++;
                         foreach ($fachSemester as $fachsem) {
                             $fachsemesterData[$fachsem->fachsemester] = $fachsem->fachsemester;

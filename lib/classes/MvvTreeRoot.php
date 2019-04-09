@@ -39,7 +39,7 @@ class MvvTreeRoot implements MvvTreeItem
      */
     public function getChildren()
     {
-        $institute = array();
+        $institute = [];
         $stmt = DBManager::get()->prepare('SELECT DISTINCT inst.fakultaets_id '
                 . 'FROM mvv_modul_inst mmi '
                 . 'INNER JOIN mvv_modul USING(modul_id) '
@@ -50,7 +50,7 @@ class MvvTreeRoot implements MvvTreeItem
                 . 'WHERE mmi.gruppe = ? '
                 . 'ORDER BY fak.name ASC');
         
-        $stmt->execute(array('hauptverantwortlich'));
+        $stmt->execute(['hauptverantwortlich']);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $institut) {
             $institute[$institut['fakultaets_id']] =
                     new Fachbereich($institut['fakultaets_id']);
@@ -89,7 +89,7 @@ class MvvTreeRoot implements MvvTreeItem
      */
     public function getParents($mode = null)
     {
-        return array();
+        return [];
     }
     
     /**
@@ -123,7 +123,7 @@ class MvvTreeRoot implements MvvTreeItem
         }
         
         if (empty($trails) && in_array($class_name, $types)) {
-            $trails = array(array($class_name => $this));
+            $trails = [[$class_name => $this]];
         }
         
         return $trails;

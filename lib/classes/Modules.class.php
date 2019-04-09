@@ -38,21 +38,21 @@
 
 
 class Modules {
-    var $registered_modules = array(
-        'overview' => array('id' => 20, 'const' => '', 'sem' => true, 'inst' => false),
-        'admin' => array('id' => 17, 'const' => '', 'sem' => true, 'inst' => false),
-        'forum' => array('id' => 0, 'const' => '', 'sem' => true, 'inst' => true),
-        'documents' => array('id' => 1, 'const' => '', 'sem' => true, 'inst' => true),
-        'schedule' => array('id' => 2, 'const' => '', 'sem' => true, 'inst' => false),
-        'participants' => array('id' => 3, 'const' => '', 'sem' => true, 'inst' => false),
-        'personal' => array('id' => 4, 'const' => '', 'sem' => false, 'inst' => true),
-        'literature' => array('id' => 5, 'const' => 'LITERATURE_ENABLE', 'sem' => true, 'inst' => true),
-        'wiki' => array('id' => 8, 'const' => 'WIKI_ENABLE', 'sem' => true, 'inst' => true),
-        'scm' => array('id' => 12, 'const' => 'SCM_ENABLE', 'sem' => true, 'inst' => true),
-        'elearning_interface' => array('id' => 13, 'const' => 'ELEARNING_INTERFACE_ENABLE', 'sem' => true, 'inst' => true),
-        'calendar' => array('id' => 16, 'const' => 'COURSE_CALENDAR_ENABLE', 'sem' => true, 'inst' => true),
-        'resources' => array('id' => 21, 'const' => 'RESOURCES_ENABLE', 'sem' => true, 'inst' => true)
-    );
+    var $registered_modules = [
+        'overview' => ['id' => 20, 'const' => '', 'sem' => true, 'inst' => false],
+        'admin' => ['id' => 17, 'const' => '', 'sem' => true, 'inst' => false],
+        'forum' => ['id' => 0, 'const' => '', 'sem' => true, 'inst' => true],
+        'documents' => ['id' => 1, 'const' => '', 'sem' => true, 'inst' => true],
+        'schedule' => ['id' => 2, 'const' => '', 'sem' => true, 'inst' => false],
+        'participants' => ['id' => 3, 'const' => '', 'sem' => true, 'inst' => false],
+        'personal' => ['id' => 4, 'const' => '', 'sem' => false, 'inst' => true],
+        'literature' => ['id' => 5, 'const' => 'LITERATURE_ENABLE', 'sem' => true, 'inst' => true],
+        'wiki' => ['id' => 8, 'const' => 'WIKI_ENABLE', 'sem' => true, 'inst' => true],
+        'scm' => ['id' => 12, 'const' => 'SCM_ENABLE', 'sem' => true, 'inst' => true],
+        'elearning_interface' => ['id' => 13, 'const' => 'ELEARNING_INTERFACE_ENABLE', 'sem' => true, 'inst' => true],
+        'calendar' => ['id' => 16, 'const' => 'COURSE_CALENDAR_ENABLE', 'sem' => true, 'inst' => true],
+        'resources' => ['id' => 21, 'const' => 'RESOURCES_ENABLE', 'sem' => true, 'inst' => true]
+    ];
 
     function __construct() {
     }
@@ -65,7 +65,7 @@ class Modules {
 
     function getLocalModules($range_id, $range_type = '', $modules = false, $type = false) {
         if (!$range_type) {
-            $range_type = get_object_type($range_id, array('sem','inst'));
+            $range_type = get_object_type($range_id, ['sem','inst']);
         }
 
         if ($modules === false || $type === false) {
@@ -75,7 +75,7 @@ class Modules {
                 $query = "SELECT modules, type as status FROM Institute WHERE Institut_id = ? ";
             }
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($range_id));
+            $statement->execute([$range_id]);
             $data = $statement->fetch(PDO::FETCH_ASSOC);
             if ($type === false) {
                 $type = $data['status'];
@@ -114,7 +114,7 @@ class Modules {
 
         $bitmask = 0;
         if (!$range_type) {
-            $range_type = get_object_type($range_id, array('sem','inst'));
+            $range_type = get_object_type($range_id, ['sem','inst']);
         }
 
         if ($type === false) {
@@ -124,7 +124,7 @@ class Modules {
                 $query = "SELECT type FROM Institute WHERE Institut_id = ?";
             }
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($range_id));
+            $statement->execute([$range_id]);
             $type = $statement->fetchColumn();
         }
 
@@ -155,7 +155,7 @@ class Modules {
             $query = "SELECT modules FROM Institute WHERE Institut_id = ?";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id));
+        $statement->execute([$range_id]);
         $modules = $statement->fetchColumn();
 
         if ($modules === null || $modules === false) {
@@ -178,7 +178,7 @@ class Modules {
             $query = "UPDATE Institute SET modules = ? WHERE Institut_id = ?";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($bitmask, $range_id));
+        $statement->execute([$bitmask, $range_id]);
         return (bool)$statement->rowCount();
     }
 
@@ -194,10 +194,10 @@ class Modules {
             $query = "UPDATE Institute SET modules = ? WHERE Institut_id = ?";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $this->getDefaultBinValue($range_id, $range_type),
             $range_id
-        ));
+        ]);
         return (bool)$statement->rowCount();
     }
 
@@ -224,7 +224,7 @@ class Modules {
             $query = "UPDATE Institute SET modules = ? WHERE Institut_id = ?";
         }
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($bitmask, $range_id));
+        $statement->execute([$bitmask, $range_id]);
         return (bool)$statement->rowCount();
     }
 

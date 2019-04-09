@@ -22,7 +22,7 @@ class XML_RPC_WebserviceClient extends WebserviceClient
 
     public function &call($method_name, &$args)
     {
-        $xmlrpc_args = array();
+        $xmlrpc_args = [];
         foreach ($args as $arg)
         {
                 $xmlrpc_args[] = php_xmlrpc_encode($arg);

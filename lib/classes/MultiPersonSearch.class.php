@@ -26,9 +26,9 @@ class MultiPersonSearch {
     private $description = "";
     private $executeURL;
     private $jsFunction = null;
-    private $quickfilterIds = array();
-    private $defaultSelectableUsersIDs = array();
-    private $defaultSelectedUsersIDs = array();
+    private $quickfilterIds = [];
+    private $defaultSelectableUsersIDs = [];
+    private $defaultSelectedUsersIDs = [];
     private $searchObject = null;
     private $additionalHMTL = "";
     private $navigationItem = "";
@@ -83,14 +83,14 @@ class MultiPersonSearch {
      * @return array containing all new persons
      */
     public function getAddedUsers() {
-        return $_SESSION['multipersonsearch'][$this->name]['added'] ? : array();
+        return $_SESSION['multipersonsearch'][$this->name]['added'] ? : [];
     }
 
     /**
      * saves the added persons to $_SESSION.
      */
     public function saveAddedUsersToSession() {
-        $addedUsers = array();
+        $addedUsers = [];
         foreach (Request::optionArray($this->name . '_selectbox') as $selected) {
             if (!in_array($selected, $_SESSION['multipersonsearch'][$this->name]['defaultSelectedUsersIDs'])) {
                 $addedUsers[] = $selected;
@@ -115,7 +115,7 @@ class MultiPersonSearch {
      * saves the removed persons to $_SESSION.
      */
     public function saveRemovedUsersToSession() {
-        $removedUsers = array();
+        $removedUsers = [];
         foreach ($this->defaultSelectedUsersIDs as $default) {
             if (!in_array($default, Request::optionArray($this->name . '_selectbox'))) {
                 $removedUsers[] = $default;
@@ -316,7 +316,7 @@ class MultiPersonSearch {
      */
     public function setDefaultSelectableUser($userArray) {
         $userArray = array_unique($userArray);
-        $this->defaultSelectableUsersIDs = array();
+        $this->defaultSelectableUsersIDs = [];
         if (is_array($userArray)) {
             foreach ($userArray as $userId) {
                 $this->defaultSelectableUsersIDs[] = $userId;
@@ -341,7 +341,7 @@ class MultiPersonSearch {
      */
     public function setDefaultSelectedUser($userArray) {
         $userArray = array_unique($userArray);
-        $this->defaultSelectedUsersIDs = array();
+        $this->defaultSelectedUsersIDs = [];
         if (is_array($userArray)) {
             foreach ($userArray as $userId) {
                 $this->defaultSelectedUsersIDs[]  = $userId;
@@ -422,8 +422,8 @@ class MultiPersonSearch {
      * @return MultiPersonSearch
      */
     public function addQuickfilter($title, $userArray) {
-        $users = array();
-        $usersIds = array();
+        $users = [];
+        $usersIds = [];
         if (is_array($userArray)) {
             foreach ($userArray as $userId) {
                 $usersIds[]  = $userId;
@@ -441,7 +441,7 @@ class MultiPersonSearch {
      */
     public function getQuickfilterIds() {
         if ($this->quickfilterIds == null)
-            return array();
+            return [];
         return $this->quickfilterIds;
     }
 
@@ -451,7 +451,7 @@ class MultiPersonSearch {
      * @return MultiPersonSearch
      */
     public function clearQuickfilters() {
-        $this->quickfilterIds = array();
+        $this->quickfilterIds = [];
 
         return $this;
     }

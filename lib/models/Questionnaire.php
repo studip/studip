@@ -5,24 +5,24 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
 
     public $answerable;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'questionnaires';
-        $config['has_many']['questions'] = array(
+        $config['has_many']['questions'] = [
             'class_name' => 'QuestionnaireQuestion',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['assignments'] = array(
+        ];
+        $config['has_many']['assignments'] = [
             'class_name' => 'QuestionnaireAssignment',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['anonymousanswers'] = array(
+        ];
+        $config['has_many']['anonymousanswers'] = [
             'class_name' => 'QuestionnaireAnonymousAnswer',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
         parent::configure($config);
     }
 
@@ -34,9 +34,9 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
                 FROM questionnaire_anonymous_answers
                 WHERE questionnaire_id = :questionnaire_id
             ");
-            $statement->execute(array(
+            $statement->execute([
                 'questionnaire_id' => $this->getId()
-            ));
+            ]);
            return $statement->fetch(PDO::FETCH_COLUMN, 0);
         } else {
             $statement = DBManager::get()->prepare("
@@ -45,9 +45,9 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
                     INNER JOIN questionnaire_questions ON (questionnaire_answers.question_id = questionnaire_questions.question_id)
                 WHERE questionnaire_id = :questionnaire_id
             ");
-            $statement->execute(array(
+            $statement->execute([
                 'questionnaire_id' => $this->getId()
-            ));
+            ]);
             $answers_total = $statement->fetch(PDO::FETCH_COLUMN, 0);
 
             return count($this->questions) ? $answers_total / count($this->questions) : 1;
@@ -71,10 +71,10 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
             WHERE user_id = :user_id
                 AND questionnaire_id = :questionnaire_id
         ");
-        $statement->execute(array(
+        $statement->execute([
             'user_id' => $user_id,
             'questionnaire_id' => $this->getId()
-        ));
+        ]);
         return (bool) $statement->fetch(PDO::FETCH_COLUMN, 0);
     }
 
@@ -88,7 +88,7 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
             ORDER BY questionnaire_answers.chdate DESC
             LIMIT 1
         ");
-        $statement->execute(array($this->getId()));
+        $statement->execute([$this->getId()]);
         return $statement->fetch(PDO::FETCH_COLUMN, 0);
     }
 

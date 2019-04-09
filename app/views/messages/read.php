@@ -13,7 +13,7 @@
             <? if ($message['autor_id'] === '____%system%____'): ?>
                 <?= _('Stud.IP') ?>
             <? else: ?>
-                <a href="<?= URLHelper::getLink("dispatch.php/profile", array('username' => get_username($message["autor_id"]))) ?>"><?= htmlReady(get_fullname($message["autor_id"])) ?></a>
+                <a href="<?= URLHelper::getLink("dispatch.php/profile", ['username' => get_username($message["autor_id"])]) ?>"><?= htmlReady(get_fullname($message["autor_id"])) ?></a>
             <? endif; ?>
             </td>
         </tr>
@@ -27,7 +27,7 @@
                 <ul class="list-csv" id="adressees">
                 <? foreach ($message->getRecipients() as $message_user) : ?>
                     <li>
-                        <a href="<?= URLHelper::getLink("dispatch.php/profile", array('username' => $message_user["username"])) ?>">
+                        <a href="<?= URLHelper::getLink("dispatch.php/profile", ['username' => $message_user["username"]]) ?>">
                             <?= htmlReady($message_user['fullname']) ?><!-- avoid extra space before ::after
                      --></a><!--
                  --></li>
@@ -46,7 +46,7 @@
                 <form id="message-tags" action="<?= $controller->url_for('messages/tag/' . $message->id) ?>" method="post" data-dialog>
                 <? foreach ($message->getTags() as $tag) : ?>
                     <span>
-                        <a href="<?= URLHelper::getLink("?", array('tag' => $tag)) ?>" class="message-tag" title="<?= _("Alle Nachrichten zu diesem Schlagwort") ?>">
+                        <a href="<?= URLHelper::getLink("?", ['tag' => $tag]) ?>" class="message-tag" title="<?= _("Alle Nachrichten zu diesem Schlagwort") ?>">
                             <?= htmlReady($tag) ?>
                         </a>
                         <?= Icon::create('trash', 'clickable', ['title' => _("Schlagwort entfernen")])->asInput(["class" => 'text-bottom', "name" => 'remove_tag', "value" => htmlReady($tag)]) ?>
@@ -84,15 +84,15 @@
 <div align="center" data-dialog-button>
     <div class="button-group">
     <? if ($message['autor_id'] !== '____%system%____'): ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'quote' => $message->getId())) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Antworten"))?></a>
+        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", ['answer_to' => $message->getId(), 'quote' => $message->getId()]) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Antworten"))?></a>
     <? endif; ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", array('answer_to' => $message->getId(), 'forward' => "rec")) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Weiterleiten"))?></a>
+        <a href="<?= URLHelper::getLink("dispatch.php/messages/write", ['answer_to' => $message->getId(), 'forward' => "rec"]) ?>" data-dialog="width=700;height=700"><?= \Studip\Button::create(_("Weiterleiten"))?></a>
     </div>
     <a href="<?= URLHelper::getLink("dispatch.php/messages/print/".$message->getId()) ?>" class="print_action"><?= \Studip\Button::create(_("Drucken"))?></a>
     <form action="<?= $controller->url_for('messages/delete/' . $message->id) ?>" method="post" style="display: inline;">
         <input type="hidden" name="studip-ticket" value="<?= get_ticket() ?>">
-        <?= \Studip\Button::create(_("Löschen"), 'delete', array(
+        <?= \Studip\Button::create(_("Löschen"), 'delete', [
                 'onClick' => 'return window.confirm("' . _('Nachricht wirklich löschen?') . '");',
-        ))?>
+        ])?>
     </form>
 </div>

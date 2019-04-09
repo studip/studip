@@ -77,13 +77,13 @@ class ForumVisit {
     static function setVisitdates($seminar_id) {
         $stmt = DBManager::get()->prepare('SELECT visitdate FROM forum_visits
             WHERE user_id = ? AND seminar_id = ?');
-        $stmt->execute(array($GLOBALS['user']->id, $seminar_id));
+        $stmt->execute([$GLOBALS['user']->id, $seminar_id]);
         $visitdate = $stmt->fetchColumn();
         
         $stmt = DBManager::get()->prepare("REPLACE INTO forum_visits
             (user_id, seminar_id, visitdate, last_visitdate)
             VALUES (?, ?, UNIX_TIMESTAMP(), ?)");
-        $stmt->execute(array($GLOBALS['user']->id, $seminar_id, $visitdate));
+        $stmt->execute([$GLOBALS['user']->id, $seminar_id, $visitdate]);
         
     }
 
@@ -99,30 +99,30 @@ class ForumVisit {
      */
     private static function getVisitDates($seminar_id)
     {
-        static $visit = array();
+        static $visit = [];
         
         // no costly checking for root or nobody necessary
         if ($GLOBALS['perm']->have_perm('root') || $GLOBALS['user']->id == 'nobody') {
             $tstamp = mktime(23, 59, 00, date('m'), 31, date('y'));
-            return array('visit' => $tstamp, 'last_visitdate' => $tstamp);
+            return ['visit' => $tstamp, 'last_visitdate' => $tstamp];
         }
 
         if (!isset($visit[$seminar_id])) {
-            $visit[$seminar_id] = array();
+            $visit[$seminar_id] = [];
         }
         if (!isset($visit[$seminar_id][$GLOBALS['user']->id])) {
             $stmt = DBManager::get()->prepare("SELECT visitdate, last_visitdate FROM forum_visits
                 WHERE seminar_id = ? AND user_id = ?");
-            $stmt->execute(array($seminar_id, $GLOBALS['user']->id));
+            $stmt->execute([$seminar_id, $GLOBALS['user']->id]);
             $visit[$seminar_id][$GLOBALS['user']->id] = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // no entry for this seminar yet present
             if (!$visit[$seminar_id][$GLOBALS['user']->id]) { 
                 // set visitdate to current time
-                $visit[$seminar_id][$GLOBALS['user']->id] = array(
+                $visit[$seminar_id][$GLOBALS['user']->id] = [
                     'visit'      => time() - ForumVisit::LAST_VISIT_MAX,
                     'last_visitdate' => time() - ForumVisit::LAST_VISIT_MAX
-                );
+                ];
             }
             
             // prevent visit-dates from being older than LAST_VISIT_MAX allows

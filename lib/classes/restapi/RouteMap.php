@@ -204,7 +204,7 @@ abstract class RouteMap
      *                            for the current route.
      * @param array $query_params Optional query parameters.
      */
-    public function paginated($data, $total, $uri_params = array(), $query_params = array())
+    public function paginated($data, $total, $uri_params = [], $query_params = [])
     {
         $uri = $this->url($this->route['uri_template']->inject($uri_params), $query_params);
 
@@ -253,9 +253,9 @@ abstract class RouteMap
      */
     public function collect($data)
     {
-        $collection = array(
+        $collection = [
             'collection' => $data
-        );
+        ];
         if ($this->pagination) {
             extract($this->pagination);
 
@@ -266,13 +266,13 @@ abstract class RouteMap
 
             $pagination = compact('total', 'offset', 'limit');
             if ($total > $limit) {
-                $links = array();
+                $links = [];
 
-                foreach (array(
+                foreach ([
                              'first' => 0,
                              'previous' => max(0, $offset - $limit),
                              'next' => min($max, $offset + $limit),
-                             'last' => $max)
+                             'last' => $max]
                          as $key => $offset)
                 {
                     $links[$key] = \URLHelper::getURL($uri_format, compact('offset', 'limit'));
@@ -299,11 +299,11 @@ abstract class RouteMap
     }
 
     // media-types that we know how to process
-    private static $mediaTypes = array(
+    private static $mediaTypes = [
         'application/json' => 'parseJson',
         'application/x-www-form-urlencoded' => 'parseFormEncoded',
         'multipart/form-data' => 'parseMultipartFormdata'
-    );
+    ];
 
     // cache the request body
     private static $_request_body;
@@ -342,7 +342,7 @@ abstract class RouteMap
     private static function parseMultipartFormdata($input)
     {
 
-        $data = array();
+        $data = [];
         if (Request::isPost()) {
             foreach ($_POST as $key => $value) {
                 $data[$key] = $value;
@@ -363,12 +363,12 @@ abstract class RouteMap
             $part = ltrim($part, "\r\n");
             list($head, $body) = explode("\r\n\r\n", $part, 2);
 
-            $tmpheaders = $headers = array();
+            $tmpheaders = $headers = [];
             foreach (explode("\r\n", $head) as $headline) {
                 if (preg_match('/^[^\s]/', $headline)) {
                     $lineIsHeader = preg_match('/([^:]+):\s*(.*)$/', $headline, $matches);
                     if ($lineIsHeader) {
-                        $tmpheaders[] = array('index' => mb_strtolower(trim($matches[1])), 'value' => trim($matches[2]));
+                        $tmpheaders[] = ['index' => mb_strtolower(trim($matches[1])), 'value' => trim($matches[2])];
                     }
                 } else {
                     //noch zur letzten Zeile hinzuzählen
@@ -398,9 +398,9 @@ abstract class RouteMap
                 default:
                     //nothing to do
             }
-            $matches = array();
+            $matches = [];
             preg_match("/name=([^;\s]*)/i", $headers['content-disposition'], $matches);
-            $name = str_replace(array("'", '"'), '', $matches[1]);
+            $name = str_replace(["'", '"'], '', $matches[1]);
             if (!$contentType) {
                 $data[$name] = mb_substr($body, 0, mb_strlen($body) - 2);
             } else {
@@ -412,22 +412,22 @@ abstract class RouteMap
                         $data = array_merge($data, self::parseFormEncoded($body));
                         break;
                     default:
-                        $matches = array();
+                        $matches = [];
                         preg_match("/filename=([^;\s]*)/i", $headers['content-disposition'], $matches);
                         if (!$matches[1]) {
                             preg_match('/filename=([^;\s]*)/i', $headers['content-type'], $matches);
                         }
-                        $filename = str_replace(array("'", '"'), '', $matches[1]);
+                        $filename = str_replace(["'", '"'], '', $matches[1]);
                         $tmp_name = $GLOBALS['TMP_PATH']."/uploadfile_".md5(uniqid());
                         $handle = fopen($tmp_name, 'wb');
                         $filesize = fwrite($handle, $body, (mb_strlen($body) - 2));
                         fclose($handle);
-                        $data['_FILES'][$name] = array(
+                        $data['_FILES'][$name] = [
                             'name' => $filename,
                             'type' => $contentType,
                             'tmp_name' => $tmp_name,
                             'size' => $filesize
-                        );
+                        ];
                 }
             }
         }
@@ -470,7 +470,7 @@ abstract class RouteMap
      *
      * @return array  the headers of the current response
      */
-    public function headers($headers = array())
+    public function headers($headers = [])
     {
         if (sizeof($headers)) {
             $this->response->headers = array_merge($this->response->headers, $headers);
@@ -515,7 +515,7 @@ abstract class RouteMap
      * @param string $mime_type  a string describing a MIME type like 'application/json'
      * @param array  $params     optional parameters as described above
      */
-    public function contentType($mime_type, $params = array())
+    public function contentType($mime_type, $params = [])
     {
         if (!isset($params['charset'])) {
             $params['charset'] = 'utf-8';
@@ -527,7 +527,7 @@ abstract class RouteMap
 
         if (sizeof($params)) {
             $mime_type .= mb_strpos($mime_type, ';') !== FALSE ? ', ' : ';';
-            $ps = array();
+            $ps = [];
             foreach ($params as $k => $v) {
                 $ps[] = $k . '=' . $v;
             }
@@ -551,7 +551,7 @@ abstract class RouteMap
      */
     public function error($status, $body = null)
     {
-        $this->halt($status, array(), $body);
+        $this->halt($status, [], $body);
     }
 
 
@@ -641,7 +641,7 @@ abstract class RouteMap
      *                     RouteMap::cacheControl which is always
      *                     automatically called using the computed max_age
      */
-    public function expires($amount, $cache_control = array())
+    public function expires($amount, $cache_control = [])
     {
         $time = time() + $amount;
         $max_age = $amount;
@@ -704,16 +704,16 @@ abstract class RouteMap
     public function halt(/* [status], [headers], [body] */)
     {
         $args   = func_get_args();
-        $result = array();
+        $result = [];
 
-        $constraints = array(
+        $constraints = [
             'status'  => 'is_int',
             'headers' => 'is_array',
             'body'    => function ($i) { return isset($i); } // #existy
-        );
+        ];
         foreach ($constraints as $state => $constraint) {
             if ($constraint(current($args))) {
-                call_user_func(array($this, $state), array_shift($args));
+                call_user_func([$this, $state], array_shift($args));
             }
         }
 
@@ -816,7 +816,7 @@ abstract class RouteMap
         $this->response['Location'] = $this->url($url);
 
         $args = array_slice(func_get_args(), 1);
-        call_user_func_array(array($this, 'halt'), $args);
+        call_user_func_array([$this, 'halt'], $args);
     }
 
 
@@ -841,7 +841,7 @@ abstract class RouteMap
      * @param array  $opts   optional; specify the content type,
      *                       disposition and filename
      */
-    public function sendFile($_path, $opts = array())
+    public function sendFile($_path, $opts = [])
     {
         $path = realpath($_path);
 
@@ -994,7 +994,7 @@ abstract class RouteMap
      * @return Array of all extracted conditions with the variable name
      *         as key and pattern to match as value
      */
-    protected function extractConditions($docblock, $conditions = array())
+    protected function extractConditions($docblock, $conditions = [])
     {
         if (!empty($docblock->tags['condition'])) {
             foreach ($docblock->tags['condition'] as $condition) {

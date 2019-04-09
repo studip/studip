@@ -223,7 +223,7 @@ class Materialien_DokumenteController extends MVVController
 
     public function reset_filter_action()
     {
-        $this->filter = array();
+        $this->filter = [];
         $this->sessRemove('filter');
         $this->perform_relayed('index');
     }

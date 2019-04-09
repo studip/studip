@@ -39,30 +39,30 @@ class StudipStudyArea extends SimpleORMap
     /**
      * This is required, if the nodes are added backwards
      */
-    public $required_children = array();
+    public $required_children = [];
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'sem_tree';
-        $config['has_many']['_children'] = array(
+        $config['has_many']['_children'] = [
             'class_name' => 'StudipStudyArea',
             'assoc_foreign_key' => 'parent_id',
             'assoc_func' => 'findByParent',
             'on_delete' => 'delete',
             'on_store' => 'store',
-        );
-        $config['has_and_belongs_to_many']['courses'] = array(
+        ];
+        $config['has_and_belongs_to_many']['courses'] = [
             'class_name' => 'Course',
             'thru_table' => 'seminar_sem_tree',
-        );
-        $config['belongs_to']['institute'] = array(
+        ];
+        $config['belongs_to']['institute'] = [
             'class_name' => 'Institute',
             'foreign_key' => 'studip_object_id',
-        );
-        $config['belongs_to']['_parent'] = array(
+        ];
+        $config['belongs_to']['_parent'] = [
             'class_name' => 'StudipStudyArea',
             'foreign_key' => 'parent_id',
-        );
+        ];
         parent::configure($config);
     }
 
@@ -243,7 +243,7 @@ class StudipStudyArea extends SimpleORMap
     public function getPath($separator = NULL)
     {
 
-        $path = array();
+        $path = [];
 
         $area = $this;
         while ($area) {
@@ -399,7 +399,7 @@ class StudipStudyArea extends SimpleORMap
         INNER JOIN sem_tree st2 ON st2.studip_object_id = i.Institut_id
         WHERE i.Name LIKE :searchTerm )
         ORDER BY priority";
-        return self::findBySql($query, array('searchTerm' => "%$searchTerm%"));
+        return self::findBySql($query, ['searchTerm' => "%$searchTerm%"]);
     }
 
     /**
@@ -413,7 +413,7 @@ class StudipStudyArea extends SimpleORMap
         // create the dummy root
         $root = static::getRootArea();
 
-        $hashmap = array();
+        $hashmap = [];
 
         $i = 0;
 
@@ -421,7 +421,7 @@ class StudipStudyArea extends SimpleORMap
         while ($nodes && $i < 99) {
 
             //clear cache
-            $newNodes = array();
+            $newNodes = [];
 
             //process nodes on this level
             foreach ($nodes as $node) {

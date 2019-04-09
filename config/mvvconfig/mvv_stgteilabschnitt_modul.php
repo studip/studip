@@ -56,106 +56,106 @@
 
 
 // Tabelle mvv_stgteilabschnitt_modul
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 3
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 7,
             'MVVRedakteur'  => 3,
             'MVVTranslator' => 3,
             'MVVFreigabe'   => 3
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 7,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'position' => array(
-            'planung' => array(
+    ],
+    'fields' => [
+        'position' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'flexnow_modul' => array(
-            'planung' => array(
+            ]
+        ],
+        'flexnow_modul' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'modulcode' => array(
-            'planung' => array(
+            ]
+        ],
+        'modulcode' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'bezeichnung' => array(
-            'planung' => array(
+            ]
+        ],
+        'bezeichnung' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ],
+            'genehmigt' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'bezeichnung_i18n[en_GB]' => array(
-            'planung' => array(
-                'MVVEntwickler' => 3,
-                'MVVRedakteur'  => 3,
-                'MVVTranslator' => 3,
-                'MVVFreigabe'   => 3
-            ),
-            'genehmigt' => array(
+            ]
+        ],
+        'bezeichnung_i18n[en_GB]' => [
+            'planung' => [
                 'MVVEntwickler' => 3,
                 'MVVRedakteur'  => 3,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        )
-    )
-);
+            ],
+            'genehmigt' => [
+                'MVVEntwickler' => 3,
+                'MVVRedakteur'  => 3,
+                'MVVTranslator' => 3,
+                'MVVFreigabe'   => 3
+            ]
+        ]
+    ]
+];

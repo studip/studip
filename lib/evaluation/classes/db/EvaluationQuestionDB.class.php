@@ -88,7 +88,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
       " evalquestion_id = ? ".
       "ORDER BY".
       " position ";
-    $row = $db->fetchOne($query, array($questionObject->getObjectID ()));
+    $row = $db->fetchOne($query, [$questionObject->getObjectID ()]);
 
     if (!count($row))
       return $this->throwError (1,
@@ -144,14 +144,14 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
    " evalquestion_id = ?";
 ;
     }
-    $db->execute($sql, array(
+    $db->execute($sql, [
         (string)$questionObject->getParentID(),
         (string)$questionObject->getType(),
         (int)$questionObject->getPosition(),
         (string)$questionObject->getText(),
         (int)$questionObject->isMultiplechoice(),
         $questionObject->getObjectID()
-        ));
+        ]);
   } // saved
 
 
@@ -170,7 +170,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
       " evalquestion ".
       "WHERE".
       " evalquestion_id = ?";
-    $db->execute($sql, array($questionObject->getObjectID ()));
+    $db->execute($sql, [$questionObject->getObjectID ()]);
     /* ------------------------------------------------------- end: deleting */
   } // deleted
 
@@ -191,7 +191,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
       " evalquestion ".
       "WHERE".
       " evalquestion_id = ?";
-    $result = $db->fetchColumn($sql, array($questionID));
+    $result = $db->fetchColumn($sql, [$questionID]);
 
     return (bool)$result;
   }
@@ -216,7 +216,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
        " AND ".
        " parent_id = ?";
 
-    $result = $db->fetchColumn($sql, array($questionTitle,$userID));
+    $result = $db->fetchColumn($sql, [$questionTitle,$userID]);
 
     return (bool)$result;
   }
@@ -239,7 +239,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
       " parent_id = ? ".
       "ORDER BY".
       " position";
-    $result = $db->fetchFirst($sql, array($parentObject->getObjectID ()));
+    $result = $db->fetchFirst($sql, [$parentObject->getObjectID ()]);
 
     $loadChildren = $parentObject->loadChildren == EVAL_LOAD_ALL_CHILDREN
          ? EVAL_LOAD_ALL_CHILDREN
@@ -283,7 +283,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
       " evalquestion ".
       "WHERE".
       " evalquestion_id = ?";
-    $result = $db->fetchColumn($sql, array($objectID));
+    $result = $db->fetchColumn($sql, [$objectID]);
     return $result;
   }
 
@@ -316,7 +316,7 @@ class EvaluationQuestionDB extends EvaluationObjectDB {
             "OR ".
             " parent_id = '0' ORDER BY text";
       $sql .= " ";
-      return $db->fetchFirst($sql, array($userID));
+      return $db->fetchFirst($sql, [$userID]);
       }
   }
 

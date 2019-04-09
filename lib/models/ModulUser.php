@@ -17,18 +17,18 @@
 class ModulUser extends ModuleManagementModel
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modul_user';
 
-        $config['belongs_to']['modul'] = array(
+        $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'modul_id'
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id'
-        );
+        ];
 
         parent::configure($config);
     }
@@ -43,9 +43,9 @@ class ModulUser extends ModuleManagementModel
      */
     public static function findByModul($modul_id, $group = null)
     {
-        $users = array();
-        $params = is_null($group) ? array($modul_id)
-                : array($modul_id, $group);
+        $users = [];
+        $params = is_null($group) ? [$modul_id]
+                : [$modul_id, $group];
         foreach (parent::getEnrichedByQuery('SELECT mmu.* '
                 . 'FROM mvv_modul_user mmu '
                 . 'JOIN auth_user_md5 aum USING (user_id) '

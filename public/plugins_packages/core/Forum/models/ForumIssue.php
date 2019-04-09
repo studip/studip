@@ -26,7 +26,7 @@ class ForumIssue
     {
         $stmt = DBManager::get()->prepare("SELECT topic_id FROM forum_entries_issues
             WHERE issue_id = ?");
-        $stmt->execute(array($issue_id));
+        $stmt->execute([$issue_id]);
 
         return ($stmt->fetchColumn());
     }
@@ -42,7 +42,7 @@ class ForumIssue
     {
         $stmt = DBManager::get()->prepare("SELECT issue_id FROM forum_entries_issues
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
         
         return ($stmt->fetchColumn());
     }
@@ -67,7 +67,7 @@ class ForumIssue
 
             $topic_id = md5(uniqid(rand()));
 
-            ForumEntry::insert(array(
+            ForumEntry::insert([
                 'topic_id'    => $topic_id,
                 'seminar_id'  => $seminar_id,
                 'user_id'     => $GLOBALS['user']->id,
@@ -75,11 +75,11 @@ class ForumIssue
                 'content'     => $content,
                 'author'      => get_fullname($GLOBALS['user']->id),
                 'author_host' => ($GLOBALS['user']->id == 'nobody') ? getenv('REMOTE_ADDR') : ''
-            ), $seminar_id);
+            ], $seminar_id);
 
             $stmt = DBManager::get()->prepare("INSERT INTO forum_entries_issues
                 (issue_id, topic_id) VALUES (?, ?)");
-            $stmt->execute(array($issue_id, $topic_id));
+            $stmt->execute([$issue_id, $topic_id]);
         }
     }
 
@@ -93,6 +93,6 @@ class ForumIssue
     {
         $stmt = DBManager::get()->prepare("DELETE FROM forum_entries_issues
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
     }
 }

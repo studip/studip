@@ -47,7 +47,7 @@ use Studip\Button, Studip\LinkButton;
         <section class="settings">
             <?= _("Angezeigte Wochentage") ?>
 
-            <? foreach (array(1,2,3,4,5,6,0) as $day) : ?>
+            <? foreach ([1,2,3,4,5,6,0] as $day) : ?>
                 <label>
                     <input type="checkbox" name="days[]" value="<?= $day ?>"
                         <?= in_array($day, $settings['glb_days']) !== false ? 'checked="checked"' : '' ?>>
@@ -59,7 +59,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createSuccess(_('Speichern'), array('onclick' => "return STUDIP.Calendar.validateNumberOfDays();")) ?>
+        <?= Button::createSuccess(_('Speichern'), ['onclick' => "return STUDIP.Calendar.validateNumberOfDays();"]) ?>
         <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('calendar/schedule/#')) ?>
     </footer>
 </form>

@@ -54,16 +54,16 @@
 
 
 // Tabelle mvv_fach
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 3,
         'MVVFreigabe'   => 3
-    ),
+    ],
     /*
     'table' => array(
         'planung' => array(
@@ -87,94 +87,94 @@ $privileges = array(
     ),
      * 
      */
-    'default_fields' => array(
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'name' => array(
-            'default' => array(
+    ],
+    'fields' => [
+        'name' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'name_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_kurz' => array(
-            'default' => array(
+            ]
+        ],
+        'name_kurz' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_kurz_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'name_kurz_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'beschreibung' => array(
-            'default' => array(
+            ]
+        ],
+        'beschreibung' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'beschreibung_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'beschreibung_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'schlagworte' => array(
-            'default' => array(
+            ]
+        ],
+        'schlagworte' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
+            ]
+        ],
         // verknüpfte Objekte
-        'departments' => array(
-            'default' => array(
+        'departments' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'studiengangteile' => array(
-            'default' => array(
+            ]
+        ],
+        'studiengangteile' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'abschluesse' => array(
-            'default' => array(
+            ]
+        ],
+        'abschluesse' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];
       

@@ -16,7 +16,7 @@
 
 class InvalidValuesException extends Exception
 {
-    private $checked = array();
+    private $checked = [];
     
     /**
      * Constructor

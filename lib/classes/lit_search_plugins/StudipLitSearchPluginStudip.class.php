@@ -53,7 +53,7 @@ class StudipLitSearchPluginStudip extends StudipLitSearchPluginAbstract{
         }
         $this->dbv->params[] = $sql;
         $rs = $this->dbv->get_query("view:LIT_SEARCH_CATALOG");
-        $this->search_result = array();
+        $this->search_result = [];
         while ($rs->next_record()){
             $this->search_result[] = $rs->f('catalog_id');
         }
@@ -98,14 +98,14 @@ class StudipLitSearchPluginStudip extends StudipLitSearchPluginAbstract{
     }
 
     function getSearchFields(){
-        return array(array('name' => _("Titel,Autor,Schlagwort"), 'value' => "dc_title,dc_creator,dc_contributor,dc_subject"),
-                    array('name' => _("Titel"), 'value' => "dc_title"),
-                    array('name' => _("Autor"), 'value' => "dc_creator,dc_contributor"),
-                    array('name' => _("Schlagwort"), 'value' => "dc_subject"),
-                    array('name' => _("Inhalt"), 'value' => "dc_description"),
-                    array('name' => _("Verlagsort, Verlag"), 'value' => "dc_publisher"),
-                    array('name' => _("Identifikation"), 'value' => "dc_identifier")
-                );
+        return [['name' => _("Titel,Autor,Schlagwort"), 'value' => "dc_title,dc_creator,dc_contributor,dc_subject"],
+                    ['name' => _("Titel"), 'value' => "dc_title"],
+                    ['name' => _("Autor"), 'value' => "dc_creator,dc_contributor"],
+                    ['name' => _("Schlagwort"), 'value' => "dc_subject"],
+                    ['name' => _("Inhalt"), 'value' => "dc_description"],
+                    ['name' => _("Verlagsort, Verlag"), 'value' => "dc_publisher"],
+                    ['name' => _("Identifikation"), 'value' => "dc_identifier"]
+                ];
 
     }
 

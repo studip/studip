@@ -29,7 +29,7 @@ class CoreResources implements StudipModule {
             $navigation->addSubNavigation('view_details', new Navigation(_('Details'), 'resources.php?view=openobject_details'));
             $navigation->addSubNavigation('view_schedule', new Navigation(_('Belegung'), 'resources.php?view=openobject_schedule'));
             $navigation->addSubNavigation('edit_assign', new Navigation(_('Belegungen bearbeiten'), 'resources.php?view=openobject_assign'));
-            return array('resources' => $navigation);
+            return ['resources' => $navigation];
         } else {
             return null;
         }
@@ -40,6 +40,6 @@ class CoreResources implements StudipModule {
      */ 
     function getMetadata()
     {
-         return array();
+         return [];
     }
 }

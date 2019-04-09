@@ -7,7 +7,7 @@
         </h1>
         <nav>
         <? if ($admin): ?>
-            <a href="<?= URLHelper::getLink('admin_evaluation.php', array('rangeID' => $range_id)) ?>">
+            <a href="<?= URLHelper::getLink('admin_evaluation.php', ['rangeID' => $range_id]) ?>">
                 <?= Icon::create('edit', 'clickable')->asImg(); ?>
             </a>
         <? endif; ?>
@@ -20,7 +20,7 @@
         </section>
     <? else: ?>
         <? foreach ($evaluations as $evaluation): ?>
-            <?= $this->render_partial('evaluation/_evaluation.php', array('evaluation' => $evaluation)); ?>
+            <?= $this->render_partial('evaluation/_evaluation.php', ['evaluation' => $evaluation]); ?>
         <? endforeach; ?>
     <? endif; ?>
 </article>

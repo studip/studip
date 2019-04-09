@@ -61,7 +61,7 @@ class ResponsiveHelper
      */
     protected static function getChildren(Navigation $navigation, $path, &$activated = [])
     {
-        $children = array();
+        $children = [];
 
         foreach ($navigation->getSubNavigation() as $subpath => $subnav) {
             if (!$subnav->isVisible()) {

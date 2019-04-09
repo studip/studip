@@ -14,28 +14,28 @@ class NewsProvider implements ActivityProvider
     {
         switch ($activity->context) {
             case 'course':
-                return array(
+                return [
                     \URLHelper::getUrl('dispatch.php/course/overview/?cid=' . $activity->context_id . '&contentbox_type=news&contentbox_open=' . $activity->object_id) => _('Ankündigungen in der Veranstaltung')
-                );
+                ];
             break;
 
             case 'institute':
-                return array(
+                return [
                     \URLHelper::getUrl('dispatch.php/institute/overview?auswahl=' . $activity->context_id) => _('Ankündigungen in der Einrichtung')
-                );
+                ];
             break;
 
             case 'system':
-                return array(
+                return [
                     \URLHelper::getUrl('dispatch.php/start?contentbox_type=news&contentbox_open='. $news->getId() .'#'. $news->getId()) => _('Ankündigungen auf der Startseite')
-                );
+                ];
             break;
 
             case 'user':
-                return array(
+                return [
                     \URLHelper::getUrl('dispatch.php/profile/?username='. get_username($activity->context_id)
                         . '&contentbox_type=news&contentbox_open='. $news->getId() .'#'. $news->getId()) => _('Ankündigungen auf der Profilseite')
-                );
+                ];
             break;
         }
     }
@@ -49,7 +49,7 @@ class NewsProvider implements ActivityProvider
     public function postActivity($event, $news)
     {
         // delete any old activities for this id
-        $activities = Activity::findBySql('object_id = ?', array($news->id));
+        $activities = Activity::findBySql('object_id = ?', [$news->id]);
 
         foreach ($activities as $activity) {
             $activity->delete();
@@ -79,7 +79,7 @@ class NewsProvider implements ActivityProvider
             }
             if (isset($context)) {
                 $activity = Activity::create(
-                    array(
+                    [
                         'provider'    => __CLASS__,
                         'context'     => $context,
                         'context_id'  => $context_id,
@@ -90,7 +90,7 @@ class NewsProvider implements ActivityProvider
                         'object_id'   => $news->id,      // the id of the referenced object
                         'object_type' => 'news',         // type of activity object
                         'mkdate'      => $mkdate
-                    )
+                    ]
                 );
             }
 

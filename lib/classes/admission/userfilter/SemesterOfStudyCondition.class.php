@@ -31,23 +31,23 @@ class SemesterOfStudyCondition extends UserFilterField
      */
     public function __construct($fieldId='') {
         parent::__construct($fieldId);
-        $this->validValues = array();
-        $this->relations = array(
-            'DegreeCondition' => array(
+        $this->validValues = [];
+        $this->relations = [
+            'DegreeCondition' => [
                 'local_field' => 'abschluss_id',
                 'foreign_field' => 'abschluss_id'
-            ),
-            'SubjectCondition' => array(
+            ],
+            'SubjectCondition' => [
                 'local_field' => 'fach_id',
                 'foreign_field' => 'fach_id'
-            )
-        );
-        $this->validCompareOperators = array(
+            ]
+        ];
+        $this->validCompareOperators = [
             '>=' => _('mindestens'),
             '<=' => _('höchstens'),
             '=' => _('ist'),
             '!=' => _('ist nicht')
-        );
+        ];
         // Initialize to some value in case there are no semester numbers.
         $maxsem = 15;
         // Calculate the maximal available semester.

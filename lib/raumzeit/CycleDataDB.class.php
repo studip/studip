@@ -57,7 +57,7 @@ class CycleDataDB
                       WHERE metadate_id = ? AND termine.date BETWEEN ? AND ?
                       GROUP BY termine.termin_id
                       ORDER BY NULL";
-            $parameters = array($metadate_id, $start, $end);
+            $parameters = [$metadate_id, $start, $end];
         } else {
             $query = "SELECT termine.*, r.resource_id, GROUP_CONCAT(DISTINCT trp.user_id) AS related_persons, GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
                       FROM termine
@@ -67,12 +67,12 @@ class CycleDataDB
                       WHERE metadate_id = ?
                       GROUP BY termine.termin_id
                       ORDER BY NULL";
-            $parameters = array($metadate_id);
+            $parameters = [$metadate_id];
         }
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
 
-        $ret = array();
+        $ret = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $data = $row;
             $data['related_persons'] = array_filter(explode(',', $data['related_persons']));
@@ -88,7 +88,7 @@ class CycleDataDB
                       WHERE metadate_id = ? AND `date` BETWEEN ? AND ?
                       GROUP BY ex_termine.termin_id
                       ORDER BY NULL";
-            $parameters = array($metadate_id, $start, $end);
+            $parameters = [$metadate_id, $start, $end];
         } else {
             $query = "SELECT ex_termine.*, GROUP_CONCAT(DISTINCT trp.user_id) AS related_persons, GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
                       FROM ex_termine
@@ -97,7 +97,7 @@ class CycleDataDB
                       WHERE metadate_id = ?
                       GROUP BY ex_termine.termin_id
                       ORDER BY NULL";
-            $parameters = array($metadate_id);
+            $parameters = [$metadate_id];
         }
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
@@ -142,7 +142,7 @@ class CycleDataDB
                   FROM termine
                   WHERE metadate_id = ? AND `date` > ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($metadate_id, $timestamp));
+        $statement->execute([$metadate_id, $timestamp]);
         while ($termin_id = $statement->fetchColumn()) {
             $termin = new SingleDate($termin_id);
             $termin->delete($keepIssues);
@@ -153,11 +153,11 @@ class CycleDataDB
 
         $query = "DELETE FROM termine WHERE metadate_id = ? AND `date` > ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($metadate_id, $timestamp));
+        $statement->execute([$metadate_id, $timestamp]);
 
         $query = "DELETE FROM ex_termine WHERE metadate_id = ? AND `date` > ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($metadate_id, $timestamp));
+        $statement->execute([$metadate_id, $timestamp]);
 
         return $count;
     }
@@ -181,7 +181,7 @@ class CycleDataDB
                       WHERE termine.metadate_id = ? AND resource_id != ''
                       GROUP BY resource_id
                       ORDER BY c DESC";
-            $parameters = array($metadate_id);
+            $parameters = [$metadate_id];
         } else {
             $query = "SELECT resource_id, COUNT(resource_id) AS c
                       FROM termine
@@ -189,7 +189,7 @@ class CycleDataDB
                       WHERE termine.metadate_id = ? AND termine.date BETWEEN ? AND ?
                       GROUP BY resource_id
                       ORDER BY c DESC";
-            $parameters = array($metadate_id, $filterStart, $filterEnd);
+            $parameters = [$metadate_id, $filterStart, $filterEnd];
         }
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
@@ -215,7 +215,7 @@ class CycleDataDB
                       WHERE termine.metadate_id = ? AND assign_user_id IS NULL
                       GROUP BY raum
                       ORDER BY c DESC";
-            $parameters = array($metadate_id);
+            $parameters = [$metadate_id];
         } else {
             $query = "SELECT raum, COUNT(raum) AS c
                       FROM termine
@@ -224,7 +224,7 @@ class CycleDataDB
                         AND termine.date BETWEEN ? AND ?
                       GROUP BY raum
                       ORDER BY c DESC";
-            $parameters = array($metadate_id, $filterStart, $filterEnd);
+            $parameters = [$metadate_id, $filterStart, $filterEnd];
         }
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
@@ -246,7 +246,7 @@ class CycleDataDB
                   ORDER BY `date` ASC
                   LIMIT 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($metadate_id));
+        $statement->execute([$metadate_id]);
         return $statement->fetch(PDO::FETCH_ASSOC);
     }
 }

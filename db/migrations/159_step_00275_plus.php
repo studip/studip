@@ -12,9 +12,9 @@ class Step00275Plus extends Migration {
             (config_id, field, value, is_default, `type`, `range`, mkdate, chdate, description, comment)
             VALUES
             (MD5(:name), :name, :value, 1, 'array', 'user', UNIX_TIMESTAMP(),  UNIX_TIMESTAMP(), :description, '')
-            ", array('name' => 'PLUS_SETTINGS',
+            ", ['name' => 'PLUS_SETTINGS',
                      'value' => '[]',
-                     'description' => 'Nutzer Konfiguration für Plusseite'));
+                     'description' => 'Nutzer Konfiguration für Plusseite']);
     }
 
     function down() {

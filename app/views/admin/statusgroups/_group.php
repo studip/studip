@@ -65,7 +65,7 @@
         </tr>
     </thead>
     <tbody>
-        <?= $this->render_partial('admin/statusgroups/_members.php', array('group' => $group)) ?>
+        <?= $this->render_partial('admin/statusgroups/_members.php', ['group' => $group]) ?>
     </tbody>
 </table>
 
@@ -73,7 +73,7 @@
 <ul class='tree-seperator'>
     <li>
     <? foreach ($group->children as $child): ?>
-        <?= $this->render_partial('admin/statusgroups/_group.php', array('group' => $child)) ?>
+        <?= $this->render_partial('admin/statusgroups/_group.php', ['group' => $child]) ?>
     <? endforeach ?>
     </li>
 </ul>

@@ -77,7 +77,7 @@ class EditResourceData {
                   WHERE ro.resource_id = ?
                   ORDER BY rp.name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->resObject->getId()));
+        $statement->execute([$this->resObject->getId()]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -96,7 +96,7 @@ class EditResourceData {
         }
 
         foreach (array_keys($faculties) as $fakultaets_id) {
-            $faculties[$fakultaets_id]['institutes'] = array();
+            $faculties[$fakultaets_id]['institutes'] = [];
         }
 
         $query = "SELECT fakultaets_id, Institut_id, Name
@@ -104,9 +104,9 @@ class EditResourceData {
                   WHERE fakultaets_id IN (?) AND fakultaets_id != Institut_id
                   ORDER BY Name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             array_keys($faculties),
-        ));
+        ]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $faculties[$row['fakultaets_id']]['institutes'][$row['Institut_id']] = $row['Name'];
         }
@@ -119,7 +119,7 @@ class EditResourceData {
     {
         $query = "SELECT user_id, perms FROM resources_user_resources WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->resObject->getId()));
+        $statement->execute([$this->resObject->getId()]);
         return $statement->fetchGrouped(PDO::FETCH_COLUMN);
     }
 
@@ -264,10 +264,10 @@ class EditResourceData {
          * * * * T E M P L A T E * * * *
          * * * * * * * * * * * * * * * */
         
-        $template->set_attributes(array(
+        $template->set_attributes([
             'resObject' => $this->resObject,
             'user'      => $GLOBALS['user']
-        ));
+        ]);
 
         echo $template->render(compact('admin_perms', 'owner_perms', 'ObjectPerms', 'selectPerms' ));
     }

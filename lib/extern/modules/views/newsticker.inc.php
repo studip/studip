@@ -19,14 +19,14 @@ function textlist() {
 
 newsticker_tl = new textlist(";
 
-$topics = array();
+$topics = [];
 $query = "SELECT news.topic
           FROM news_range
           LEFT JOIN news USING (news_id)
           WHERE range_id LIKE ? AND UNIX_TIMESTAMP() BETWEEN date AND date + expire
           ORDER BY date DESC";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array($this->config->range_id));
+$statement->execute([$this->config->range_id]);
 while ($topic = $statement->fetchColumn()) {
     $topics[] = sprintf("'%s'", addslashes($topic));
 }

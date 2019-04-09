@@ -18,7 +18,7 @@ if (get_config('BANNER_ADS_ENABLE')) {
 ?>
 
 <div class="start-widgetcontainer">
-    <? foreach (array($left, $right) as $column): ?>
+    <? foreach ([$left, $right] as $column): ?>
         <ul class="portal-widget-list">
             <? foreach ($column as $widget): ?>
                 <li class="studip-widget-wrapper" id="<?= $widget->widget_id ?>">

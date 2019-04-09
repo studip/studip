@@ -133,7 +133,7 @@
                 <?= _('Anonym') ?>
             <? endif; ?>
             <? if (!$entry['anonymous'] || $entry['user_id'] == $GLOBALS['user']->id || $GLOBALS['perm']->have_perm('root')): ?>
-                <a href="<?= UrlHelper::getLink('dispatch.php/profile', array('username' => get_username($entry['user_id']))) ?>">
+                <a href="<?= UrlHelper::getLink('dispatch.php/profile', ['username' => get_username($entry['user_id'])]) ?>">
                     <?= htmlReady(($temp_user = User::find($entry['user_id'])) ? $temp_user->getFullname() : $entry['author']) ?>
                 </a>
                 <? endif; ?>
@@ -159,7 +159,7 @@
                 <?= _('Anonym') ?>
             <? endif; ?>
             <? if (!$entry['last_posting']['anonymous'] || $entry['last_posting']['user_id'] == $GLOBALS['user']->id || $GLOBALS['perm']->have_perm('root')): ?>
-            <a href="<?= UrlHelper::getLink('dispatch.php/profile', array('username' => $entry['last_posting']['username'])) ?>">
+            <a href="<?= UrlHelper::getLink('dispatch.php/profile', ['username' => $entry['last_posting']['username']]) ?>">
                 <?= htmlReady(($temp_user = User::find($entry['last_posting']['user_id'])) ? $temp_user->getFullname() : $entry['last_posting']['user_fullname']) ?>
             </a>
             <? endif; ?>

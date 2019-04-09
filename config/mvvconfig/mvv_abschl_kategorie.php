@@ -55,116 +55,116 @@
 
 
 // Tabelle mvv_abschl_kategorie
-$privileges = array(
-    'lock_status' => array(
+$privileges = [
+    'lock_status' => [
         'ausgelaufen'
-    ),
-    'default_table' => array(
+    ],
+    'default_table' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 3,
         'MVVFreigabe'   => 7
-    ),
-    'table' => array(
-        'planung' => array(
+    ],
+    'table' => [
+        'planung' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        ),
-        'genehmigt' => array(
+        ],
+        'genehmigt' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 7
-        ),
-        'ausgelaufen' => array(
+        ],
+        'ausgelaufen' => [
             'MVVEntwickler' => 1,
             'MVVRedakteur'  => 1,
             'MVVTranslator' => 1,
             'MVVFreigabe'   => 1
-        )
-    ),
-    'default_fields' => array(
+        ]
+    ],
+    'default_fields' => [
         'MVVEntwickler' => 1,
         'MVVRedakteur'  => 1,
         'MVVTranslator' => 1,
         'MVVFreigabe'   => 1
-    ),
-    'fields' => array(
-        'name' => array(
-            'default' => array(
+    ],
+    'fields' => [
+        'name' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'name_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_kurz' => array(
-            'default' => array(
+            ]
+        ],
+        'name_kurz' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'name_kurz_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'name_kurz_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'beschreibung' => array(
-            'default' => array(
+            ]
+        ],
+        'beschreibung' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'beschreibung_i18n[en_GB]' => array(
-            'default' => array(
+            ]
+        ],
+        'beschreibung_i18n[en_GB]' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 3,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'position' => array(
-            'default' => array(
+            ]
+        ],
+        'position' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
+            ]
+        ],
         // verknüpfte Objekte
-        'abschluss_assignments' => array(
-            'default' => array(
+        'abschluss_assignments' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        ),
-        'document_assignments' => array(
-            'default' => array(
+            ]
+        ],
+        'document_assignments' => [
+            'default' => [
                 'MVVEntwickler' => 1,
                 'MVVRedakteur'  => 1,
                 'MVVTranslator' => 1,
                 'MVVFreigabe'   => 3
-            )
-        )
-    )
-);
+            ]
+        ]
+    ]
+];
       

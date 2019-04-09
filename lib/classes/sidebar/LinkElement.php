@@ -36,7 +36,7 @@ class LinkElement extends WidgetElement implements ArrayAccess
      */
     protected static function parseAttributes($text)
     {
-        $attributes = array();
+        $attributes = [];
         $pattern = '#(?(DEFINE)
                        (?<name>[a-zA-Z][a-zA-Z0-9-:]*)
                        (?<value_double>"[^"]+")
@@ -71,7 +71,7 @@ class LinkElement extends WidgetElement implements ArrayAccess
      * @param Icon $icon       Icon for the link
      * @param array  $attributes HTML-attributes for the a-tag in an associative array.
      */
-    public function __construct($label, $url, \Icon $icon = null, $attributes = array())
+    public function __construct($label, $url, \Icon $icon = null, $attributes = [])
     {
         parent::__construct();
 

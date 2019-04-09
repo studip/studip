@@ -2,7 +2,7 @@
 $seminar = get_object_name($topic['seminar_id'], 'sem');
 array_pop($path); // last element is the entry itself
 
-$message = array(
+$message = [
    'header' => sprintf(
         _('Im Forum der Veranstaltung **%s** gibt es einen neuen Beitrag unter **%s** von **%s**'),
         $seminar['name'],
@@ -20,7 +20,7 @@ $message = array(
         .'&again=yes#'
         . $topic['topic_id']
     )
-);
+];
 
 // since we've possibly got a mixup of HTML and Stud.IP markup,
 // create a pure HTML message step by step

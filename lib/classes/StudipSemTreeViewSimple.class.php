@@ -117,7 +117,7 @@ class StudipSemTreeViewSimple
     {
         $num_kids = $this->tree->getNumKids($item_id);
         $all_kids = $this->tree->getKids($item_id);
-        $kids = array();
+        $kids = [];
         if(!$GLOBALS['perm']->have_perm(Config::GetInstance()->getValue('SEM_TREE_SHOW_EMPTY_AREAS_PERM')) && $num_kids){
             foreach($all_kids as $kid){
                 if($this->tree->getNumKids($kid) || $this->tree->getNumEntries($kid,true)) $kids[] = $kid;

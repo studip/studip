@@ -56,28 +56,28 @@ class CleanupLogJob extends CronJob
      */
     public static function getParameters()
     {
-        return array(
-            'cronjobs' => array(
+        return [
+            'cronjobs' => [
                 'type'        => 'boolean',
                 'default'     => true,
                 'status'      => 'optional',
                 'description' => _('Sollen die Logeinträge für Cronjobs auch gelöscht werden'),
-            ),
-            'cronjobs-success' => array(
+            ],
+            'cronjobs-success' => [
                 'type'        => 'integer',
                 'default'     => 7,
                 'status'      => 'optional',
                 'description' => _('Nach wievielen Tagen sollen Logeinträge für '
                                   .'erfolgreiche Cronjobs gelöscht werden (0 für nie)'),
-            ),
-            'cronjobs-error' => array(
+            ],
+            'cronjobs-error' => [
                 'type'        => 'integer',
                 'default'     => 28,
                 'status'      => 'optional',
                 'description' => _('Nach wievielen Tagen sollen Logeinträge für '
                                   .'fehlgeschlagene Cronjobs gelöscht werden (0 für nie)'),
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -96,7 +96,7 @@ class CleanupLogJob extends CronJob
      * @param Array $parameters Parameters for this cronjob instance which
      *                          were defined during scheduling.
      */
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         $event_log = new EventLog();
         $event_log->cleanup_log_events();

@@ -87,15 +87,15 @@ class CourseAvatarTestCase extends PHPUnit_Framework_TestCase
   }
 
   function setUpFS() {
-    ArrayFileStream::set_filesystem(array(
-      'dynamic' => array(
-        'course' => array(
+    ArrayFileStream::set_filesystem([
+      'dynamic' => [
+        'course' => [
           $this->avatar_id . '_normal.png' => '',
           $this->avatar_id . '_medium.png' => '',
           $this->avatar_id . '_small.png' => '',
-        ),
-      ),
-    ));
+        ],
+      ],
+    ]);
 
     if (!stream_wrapper_register("var", "ArrayFileStream")) {
       new Exception("Failed to register protocol");

@@ -38,12 +38,12 @@ class CalendarInstscheduleModel
      */
     static function getSeminarEntry($seminar_id, $user_id, $cycle_id = false)
     {
-        $ret = array();
+        $ret = [];
 
         $sem = new Seminar($seminar_id);
         foreach ($sem->getCycles() as $cycle) {
             if (!$cycle_id || $cycle->getMetaDateID() == $cycle_id) {
-                $entry = array();
+                $entry = [];
 
                 $entry['id'] = $seminar_id;
                 $entry['cycle_id'] = $cycle->getMetaDateId();
@@ -91,7 +91,7 @@ class CalendarInstscheduleModel
         // fetch seminar-entries, show invisible seminars if the user has enough perms
         $visibility_perms = $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'));
 
-        $inst_ids = array();
+        $inst_ids = [];
         $institut = new Institute($institute_id);
 
         if (!$institut->isFaculty() || $GLOBALS['user']->cfg->MY_INSTITUTES_INCLUDE_CHILDREN) {

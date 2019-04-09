@@ -61,7 +61,7 @@ class StudipAuthLdapReadAndBind extends StudipAuthLdap {
             $this->error_msg = sprintf(_("Anmeldung von %s fehlgeschlagen."),$this->reader_dn) . $this->getLdapError();
             return false;
         }
-        if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), array('dn')))){
+        if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), ['dn']))){
             $this->error_msg = _("Durchsuchen des LDAP Baumes fehlgeschlagen.") .$this->getLdapError();
             return false;
         }

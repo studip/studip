@@ -28,8 +28,8 @@ class TIC6655AdmissionRuleCompatibility extends Migration
             ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
 
         // Initial DB entries, taken from former class variables ($allowed_combinations).
-        $compat = array(
-            'ConditionalAdmission' => array(
+        $compat = [
+            'ConditionalAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'LimitedAdmission',
@@ -37,8 +37,8 @@ class TIC6655AdmissionRuleCompatibility extends Migration
                 'PasswordAdmission',
                 'PreferentialAdmission',
                 'TimedAdmission'
-            ),
-            'CourseMemberAdmission' => array(
+            ],
+            'CourseMemberAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'LimitedAdmission',
@@ -46,45 +46,45 @@ class TIC6655AdmissionRuleCompatibility extends Migration
                 'PasswordAdmission',
                 'PreferentialAdmission',
                 'TimedAdmission'
-            ),
-            'LimitedAdmission' => array(
+            ],
+            'LimitedAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'ParticipantRestrictedAdmission',
                 'PasswordAdmission',
                 'PreferentialAdmission',
                 'TimedAdmission'
-            ),
-            'ParticipantRestrictedAdmission' => array(
+            ],
+            'ParticipantRestrictedAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'LimitedAdmission',
                 'PreferentialAdmission',
                 'TimedAdmission'
-            ),
-            'PasswordAdmission' => array(
+            ],
+            'PasswordAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'PreferentialAdmission',
                 'TimedAdmission',
-            ),
-            'PreferentialAdmission' => array(
+            ],
+            'PreferentialAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'LimitedAdmission',
                 'ParticipantRestrictedAdmission',
                 'PasswordAdmission',
                 'TimedAdmission'
-            ),
-            'TimedAdmission' => array(
+            ],
+            'TimedAdmission' => [
                 'ConditionalAdmission',
                 'CourseMemberAdmission',
                 'LimitedAdmission',
                 'ParticipantRestrictedAdmission',
                 'PasswordAdmission',
                 'PreferentialAdmission'
-            )
-        );
+            ]
+        ];
 
         $stmt = DBManager::get()->prepare("INSERT IGNORE INTO `admissionrule_compat`
                         (`rule_type`, `compat_rule_type`, `mkdate`, `chdate`)
@@ -92,7 +92,7 @@ class TIC6655AdmissionRuleCompatibility extends Migration
 
         foreach ($compat as $type => $compat_types) {
             foreach ($compat_types as $c) {
-                $stmt->execute(array('ruletype' => $type, 'compat' => $c));
+                $stmt->execute(['ruletype' => $type, 'compat' => $c]);
             }
         }
     }

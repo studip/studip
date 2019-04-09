@@ -44,26 +44,26 @@ require_once 'lib/statusgruppe.inc.php';
 
 class ExternModuleDownload extends ExternModule {
 
-    var $field_names = array();
-    var $data_fields = array("icon", "filename", "description", "mkdate",
-                             "filesize", "fullname");
-    var $registered_elements = array("Body", "TableHeader", "TableHeadrow",
-                                                                     "TableRow", "Link", "LinkIntern", "TableFooter");
-    var $args = array('seminar_id');
+    var $field_names = [];
+    var $data_fields = ["icon", "filename", "description", "mkdate",
+                             "filesize", "fullname"];
+    var $registered_elements = ["Body", "TableHeader", "TableHeadrow",
+                                                                     "TableRow", "Link", "LinkIntern", "TableFooter"];
+    var $args = ['seminar_id'];
 
     /**
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->field_names = array
-        (
+        $this->field_names = 
+        [
                 _("Icon"),
                 _("Dateiname"),
                 _("Beschreibung"),
                 _("Datum"),
                 _("Größe"),
                 _("Upload durch")
-        );
+        ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
 
@@ -114,7 +114,7 @@ class ExternModuleDownload extends ExternModule {
             $query .= "USING(seminar_id) WHERE s.seminar_id = ? ";
             $query .= "AND si.institut_id = ?";
 
-            $parameters = array($seminar_id, $this->config->range_id);
+            $parameters = [$seminar_id, $this->config->range_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -168,10 +168,10 @@ class ExternModuleDownload extends ExternModule {
 
         if ($error_message) {
             // use one column and set it visible to display error_message
-            $this->config->setValue('Main', 'order', array('0'));
-            $this->config->setValue('Main', 'visible', array('1'));
-            $this->config->setValue('Main', 'width', array('100%'));
-            $out = $this->elements['TableRow']->toString(array('content' => array('' => $error_message)));
+            $this->config->setValue('Main', 'order', ['0']);
+            $this->config->setValue('Main', 'visible', ['1']);
+            $this->config->setValue('Main', 'width', ['100%']);
+            $out = $this->elements['TableRow']->toString(['content' => ['' => $error_message]]);
         } else {
 
             $table_row_data["data_fields"] = $this->data_fields;
@@ -183,13 +183,13 @@ class ExternModuleDownload extends ExternModule {
                 $download_link = $downloadable_file_ref->download_url;
 
                 // Aufbereiten der Daten
-                $table_row_data["content"] = array(
+                $table_row_data["content"] = [
                     "icon"        => sprintf("<a href=\"%s\">%s</a>",
                                              $download_link,
                                              $icon->asImg()),
 
-                    "filename"    => $this->elements["Link"]->toString(array("content" =>
-                                                        htmlReady($downloadable_file_ref->name), "link" => $download_link)),
+                    "filename"    => $this->elements["Link"]->toString(["content" =>
+                                                        htmlReady($downloadable_file_ref->name), "link" => $download_link]),
 
                     "description" => htmlReady(mila_extern($downloadable_file_ref->description,
                                                      $this->config->getValue("Main", "lengthdesc"))),
@@ -199,13 +199,13 @@ class ExternModuleDownload extends ExternModule {
                     "filesize"    => $downloadable_file_ref->size > 1048576 ? round($downloadable_file_ref->size / 1048576, 1) . " MB"
                         : round($downloadable_file_ref->size / 1024, 1) . " kB",
 
-                );
+                ];
                 // if user is member of a group then link name to details page
                 if (GetRoleNames(GetAllStatusgruppen($this->config->range_id, $downloadable_file_ref['user_id']))) {
                     $table_row_data['content']['fullname'] =
-                            $this->elements['LinkIntern']->toString(array('content' =>
+                            $this->elements['LinkIntern']->toString(['content' =>
                             htmlReady($downloadable_file_ref->fullname), 'module' => 'Persondetails',
-                            'link_args' => 'username=' . $downloadable_file_ref->username));
+                            'link_args' => 'username=' . $downloadable_file_ref->username]);
                 } else {
                     $table_row_data['content']['fullname'] = htmlReady($downloadable_file_ref->fullname);
                 }
@@ -213,45 +213,45 @@ class ExternModuleDownload extends ExternModule {
             }
         }
 
-        return $this->elements["TableHeader"]->toString(array("content" => $out));
+        return $this->elements["TableHeader"]->toString(["content" => $out]);
     }
 
     function toStringPreview () {
         $time = time();
         // preview data
-        $data[] = array("dokument_id" => 1, "description" => _("Das ist eine Text-Datei."),
+        $data[] = ["dokument_id" => 1, "description" => _("Das ist eine Text-Datei."),
             "filename" => "text_file.txt", "mkdate" => ($time - 100000), "chdate" => ($time - 50000),
-            "filesize" => 26378, "Vorname" => "Julius", "Nachname" => "Rodman");
-        $data[] = array("dokument_id" => 2, "description" => _("Das ist eine Powerpoint-Datei."),
+            "filesize" => 26378, "Vorname" => "Julius", "Nachname" => "Rodman"];
+        $data[] = ["dokument_id" => 2, "description" => _("Das ist eine Powerpoint-Datei."),
             "filename" => "powerpoint_file.ppt", "mkdate" => ($time - 200000), "chdate" => ($time - 150000),
-            "filesize" => 263784, "Vorname" => "William", "Nachname" => "Wilson");
-        $data[] = array("dokument_id" => 3, "description" => _("Das ist eine ZIP-Datei."),
+            "filesize" => 263784, "Vorname" => "William", "Nachname" => "Wilson"];
+        $data[] = ["dokument_id" => 3, "description" => _("Das ist eine ZIP-Datei."),
             "filename" => "zip_file.zip", "mkdate" => ($time - 300000), "chdate" => ($time - 250000),
-            "filesize" => 63784, "Vorname" => "August", "Nachname" => "Bedloe");
-        $data[] = array("dokument_id" => 4, "description" => _("Das ist eine Excel-Datei."),
+            "filesize" => 63784, "Vorname" => "August", "Nachname" => "Bedloe"];
+        $data[] = ["dokument_id" => 4, "description" => _("Das ist eine Excel-Datei."),
             "filename" => "excel_file.txt", "mkdate" => ($time - 400000), "chdate" => ($time - 350000),
-            "filesize" => 23784, "Vorname" => "Ernst", "Nachname" => "Waldemar");
-        $data[] = array("dokument_id" => 5, "description" => _("Das ist eine Bild-Datei."),
+            "filesize" => 23784, "Vorname" => "Ernst", "Nachname" => "Waldemar"];
+        $data[] = ["dokument_id" => 5, "description" => _("Das ist eine Bild-Datei."),
             "filename" => "bild_jpeg_file.jpg", "mkdate" => ($time - 500000), "chdate" => ($time - 450000),
-            "filesize" => 53784, "Vorname" => "Absalom", "Nachname" => "Hicks");
-        $data[] = array("dokument_id" => 6, "description" => _("Das ist ein Dokument im Microsoft Rich-Text-Format."),
+            "filesize" => 53784, "Vorname" => "Absalom", "Nachname" => "Hicks"];
+        $data[] = ["dokument_id" => 6, "description" => _("Das ist ein Dokument im Microsoft Rich-Text-Format."),
             "filename" => "microsoft_rtf_file.rtf", "mkdate" => ($time - 600000), "chdate" => ($time - 550000),
-            "filesize" => 563784, "Vorname" => "Dirk", "Nachname" => "Peters");
-        $data[] = array("dokument_id" => 7, "description" => _("Das ist ein Adobe PDF-Dokument."),
+            "filesize" => 563784, "Vorname" => "Dirk", "Nachname" => "Peters"];
+        $data[] = ["dokument_id" => 7, "description" => _("Das ist ein Adobe PDF-Dokument."),
             "filename" => "adobe_pdf_file.pdf", "mkdate" => ($time - 700000), "chdate" => ($time - 650000),
-            "filesize" => 13784, "Vorname" => "Augustus", "Nachname" => "Barnard");
-        $data[] = array("dokument_id" => 8, "description" => _("Und noch ein ZIP-Archiv."),
+            "filesize" => 13784, "Vorname" => "Augustus", "Nachname" => "Barnard"];
+        $data[] = ["dokument_id" => 8, "description" => _("Und noch ein ZIP-Archiv."),
             "filename" => "gnu_zip_file.tar.gz", "mkdate" => ($time - 800000), "chdate" => ($time - 750000),
-            "filesize" => 2684, "Vorname" => "Gordon", "Nachname" => "Pym");
-        $data[] = array("dokument_id" => 9, "description" => _("Eine weitere Text-Datei."),
+            "filesize" => 2684, "Vorname" => "Gordon", "Nachname" => "Pym"];
+        $data[] = ["dokument_id" => 9, "description" => _("Eine weitere Text-Datei."),
             "filename" => "text2_file.txt", "mkdate" => ($time - 900000), "chdate" => ($time - 850000),
-            "filesize" => 123784, "Vorname" => "Hans", "Nachname" => "Pfaal");
-        $data[] = array("dokument_id" => 10, "description" => _("Ein Bild im PNG-Format."),
+            "filesize" => 123784, "Vorname" => "Hans", "Nachname" => "Pfaal"];
+        $data[] = ["dokument_id" => 10, "description" => _("Ein Bild im PNG-Format."),
             "filename" => "picture_png_file.png", "mkdate" => ($time - 1000000), "chdate" => ($time - 950000),
-            "filesize" => 813784, "Vorname" => "John", "Nachname" => "Greely");
-        $data[] = array("dokument_id" => 11, "description" => _("Eine anderes Format."),
+            "filesize" => 813784, "Vorname" => "John", "Nachname" => "Greely"];
+        $data[] = ["dokument_id" => 11, "description" => _("Eine anderes Format."),
             "filename" => "good_music.mp3", "mkdate" => ($time - 1150000), "chdate" => ($time - 653900),
-            "filesize" => 934651, "Vorname" => "Augustus", "Nachname" => "Barnard");
+            "filesize" => 934651, "Vorname" => "Augustus", "Nachname" => "Barnard"];
 
         $table_row_data["data_fields"] = $this->data_fields;
         $out = $this->elements["TableHeadrow"]->toString();
@@ -306,7 +306,7 @@ class ExternModuleDownload extends ExternModule {
                 $picture_file = $icon;
 
             // Aufbereiten der Daten
-            $table_row_data["content"] = array(
+            $table_row_data["content"] = [
                 "icon"        => $this->elements["Link"]->toString(
                     [
                         "content" => is_string($picture_file)
@@ -314,8 +314,8 @@ class ExternModuleDownload extends ExternModule {
                                      : $picture_file->asImg(),
                         "link"    => ""]),
 
-                "filename"    => $this->elements["Link"]->toString(array("content" =>
-                                                    htmlReady($db["filename"]), "link" => "")),
+                "filename"    => $this->elements["Link"]->toString(["content" =>
+                                                    htmlReady($db["filename"]), "link" => ""]),
 
                 "description" => htmlReady(mila_extern($db["description"],
                                                     $this->config->getValue("Main", "lengthdesc"))),
@@ -326,13 +326,13 @@ class ExternModuleDownload extends ExternModule {
                                                     : round($db["filesize"] / 1024, 1) . " kB",
 
                 "fullname"    => $this->elements["LinkIntern"]->toString(
-                                                    array("content" => htmlReady($db["Vorname"]." ".$db["Nachname"])))
+                                                    ["content" => htmlReady($db["Vorname"]." ".$db["Nachname"])])
 
-            );
+            ];
             $out .= $this->elements["TableRow"]->toString($table_row_data);
         }
 
-        return $this->elements["TableHeader"]->toString(array("content" => $out));
+        return $this->elements["TableHeader"]->toString(["content" => $out]);
     }
 
 

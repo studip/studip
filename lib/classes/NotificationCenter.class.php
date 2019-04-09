@@ -39,7 +39,7 @@ class NotificationCenter
     /**
      * array of registered notification observers
      */
-    private static $observers = array();
+    private static $observers = [];
 
     /**
      * Register an object to be notified. The same object may be
@@ -66,8 +66,8 @@ class NotificationCenter
         }
 
         self::$observers[$event][] =
-            array('predicate' => $predicate ?: NULL,
-                  'observer'  => array($observer, $method));
+            ['predicate' => $predicate ?: NULL,
+                  'observer'  => [$observer, $method]];
     }
 
     /**
@@ -84,7 +84,7 @@ class NotificationCenter
         if ($event === NULL) {
             $events = array_keys(self::$observers);
         } else if (isset(self::$observers[$event])) {
-            $events = array($event);
+            $events = [$event];
         } else {
             return;
         }

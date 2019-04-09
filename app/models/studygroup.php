@@ -400,7 +400,7 @@ class StudygroupModel
                 WHERE `Seminar_id` = ? AND `user_id` = ?";
 
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array($semid, $userid));
+        $stmt->execute([$semid, $userid]);
 
         return (bool)$stmt->fetchColumn();
     }

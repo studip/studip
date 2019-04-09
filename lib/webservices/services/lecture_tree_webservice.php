@@ -26,15 +26,15 @@ class LectureTreeService extends AccessControlledService
     function __construct()
     {
         $this->add_api_method('get_seminars_by_sem_tree_id',
-                                                        array('string',
+                                                        ['string',
                                                                     'string',
-                                                                    'string'),
-                                                        array('Studip_Seminar_Info'));
+                                                                    'string'],
+                                                        ['Studip_Seminar_Info']);
     }
 
     function get_seminars_by_sem_tree_id_action($api_key, $sem_tree_id, $term_id)
     {
-        $seminar_infos = array();
+        $seminar_infos = [];
 
         $seminar_ids = StudipLectureTreeHelper::get_seminars_by_sem_tree_id($sem_tree_id, $term_id);
 
@@ -52,7 +52,7 @@ class LectureTreeService extends AccessControlledService
             $seminar_info = new Studip_Seminar_Info();
             $seminar_info->title = $sem_obj->getName();
             $seminar_info->lecturers = $lecturers;
-            $seminar_info->turnus = $sem_obj->getDatesTemplate('dates/seminar_export', array('semester_id' => $term_id));
+            $seminar_info->turnus = $sem_obj->getDatesTemplate('dates/seminar_export', ['semester_id' => $term_id]);
             $seminar_info->lecture_number = $sem_obj->seminar_number;
 
             $seminar_infos [] = $seminar_info;

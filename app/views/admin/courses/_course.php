@@ -26,13 +26,13 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
                 <?= $course->getCompletionIcon()->asImg(['title' => _('Bearbeitungsstatus kann nicht von Ihnen geändert werden.')]) ?>
             <? endif ?>
         <? else: ?>
-            <?= CourseAvatar::getAvatar($semid)->getImageTag(Avatar::SMALL, array('title' => htmlReady(trim($values['Name'])))) ?>
+            <?= CourseAvatar::getAvatar($semid)->getImageTag(Avatar::SMALL, ['title' => htmlReady(trim($values['Name']))]) ?>
         <? endif; ?>
         </td>
         <? if (in_array('number', $view_filter)) : ?>
             <td>
                 <? if ($GLOBALS['perm']->have_studip_perm('autor', $semid)) : ?>
-                <a href="<?= URLHelper::getLink('seminar_main.php', array('auswahl' => $semid)) ?>">
+                <a href="<?= URLHelper::getLink('seminar_main.php', ['auswahl' => $semid]) ?>">
                     <? endif ?>
                     <?= htmlReady($values["VeranstaltungsNummer"]) ?>
                     <? if ($GLOBALS['perm']->have_studip_perm('autor', $semid)) : ?>
@@ -43,7 +43,7 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
         <? if (in_array('name', $view_filter)) : ?>
             <td>
                 <? if ($GLOBALS['perm']->have_studip_perm("autor", $semid)) : ?>
-                <a href="<?= URLHelper::getLink('seminar_main.php', array('auswahl' => $semid)) ?>">
+                <a href="<?= URLHelper::getLink('seminar_main.php', ['auswahl' => $semid]) ?>">
                     <? endif ?>
                     <?= htmlReady(trim($values['Name'])) ?>
                     <? if ($GLOBALS['perm']->have_studip_perm("autor", $semid)) : ?>
@@ -95,7 +95,7 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
         <? endif?>
         <? if (in_array('requests', $view_filter)) : ?>
             <td style="text-align: center;">
-                <a title="<?=_('Raumanfragen')?>" href="<?= URLHelper::getLink('dispatch.php/course/room_requests', array('cid' => $semid))?>">
+                <a title="<?=_('Raumanfragen')?>" href="<?= URLHelper::getLink('dispatch.php/course/room_requests', ['cid' => $semid])?>">
                     <?= $values['requests'] ?>
                 </a>
             </td>
@@ -108,21 +108,21 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
         <? endif ?>
         <? if (in_array('members', $view_filter)) : ?>
             <td style="text-align: center;">
-                <a title="<?=_('Teilnehmende')?>" href="<?= URLHelper::getLink('dispatch.php/course/members', array('cid' => $semid))?>">
+                <a title="<?=_('Teilnehmende')?>" href="<?= URLHelper::getLink('dispatch.php/course/members', ['cid' => $semid])?>">
                     <?= $values["teilnehmer"] ?>
                 </a>
             </td>
         <? endif ?>
         <? if (in_array('waiting', $view_filter)) : ?>
             <td style="text-align: center;">
-                <a title="<?=_('Teilnehmende auf der Warteliste')?>" href="<?= URLHelper::getLink('dispatch.php/course/members', array('cid' => $semid))?>">
+                <a title="<?=_('Teilnehmende auf der Warteliste')?>" href="<?= URLHelper::getLink('dispatch.php/course/members', ['cid' => $semid])?>">
                     <?= $values["waiting"] ?>
                 </a>
             </td>
         <? endif ?>
         <? if (in_array('preliminary', $view_filter)) : ?>
             <td style="text-align: center;">
-                <a title="<?=_('Vorläufige Anmeldungen') ?>" href="<?= URLHelper::getLink('dispatch.php/course/members', array('cid' => $semid))?>">
+                <a title="<?=_('Vorläufige Anmeldungen') ?>" href="<?= URLHelper::getLink('dispatch.php/course/members', ['cid' => $semid])?>">
                     <?= $values['prelim'] ?>
                 </a>
             </td>
@@ -134,14 +134,14 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
                         <? if (isset($nav) && $nav->isVisible(true)) : ?>
                             <a href="<?=
                             UrlHelper::getLink('seminar_main.php',
-                                array('auswahl'     => $semid,
-                                    'redirect_to' => strtr($nav->getURL(), '?', '&'))) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
+                                ['auswahl'     => $semid,
+                                    'redirect_to' => strtr($nav->getURL(), '?', '&')]) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
                                 <?= $nav->getImage()->asImg(20, $nav->getLinkAttributes()) ?>
                             </a>
                         <? elseif (is_string($key)) : ?>
                             <?=
-                            Assets::img('blank.gif', array('width'  => 20,
-                                'height' => 20)); ?>
+                            Assets::img('blank.gif', ['width'  => 20,
+                                'height' => 20]); ?>
                         <? endif ?>
                         <? echo ' ' ?>
                     <? endforeach ?>
@@ -196,12 +196,12 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
                     \Studip\LinkButton::create(
                         $actions[$selected_action]['title'],
                         URLHelper::getURL(sprintf($actions[$selected_action]['url'], $semid),
-                            ($actions[$selected_action]['params'] ? $actions[$selected_action]['params'] : array())),
-                        ($actions[$selected_action]['attributes'] ? $actions[$selected_action]['attributes'] : array())
+                            ($actions[$selected_action]['params'] ? $actions[$selected_action]['params'] : [])),
+                        ($actions[$selected_action]['attributes'] ? $actions[$selected_action]['attributes'] : [])
                     ) ?>
                 <? endif ?>
             <? elseif ($GLOBALS['perm']->have_studip_perm('tutor', $semid)) : ?>
-                <? $lockrules = array(
+                <? $lockrules = [
                     '2' => "sem_tree",
                     '3' => "room_time",
                     '11' => "seminar_copy",
@@ -209,14 +209,14 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
                     '16' => "seminar_archive",
                     '17' => "admission_type",
                     '18' => 'room_time'
-                ) ?>
+                ] ?>
                 <? if ($GLOBALS['perm']->have_studip_perm("admin", $semid) || !isset($lockrules[$selected_action]) || !LockRules::Check($semid, $lockrules[$selected_action])) : ?>
                     <?=
                     \Studip\LinkButton::create(
                         $actions[$selected_action]['title'],
                         URLHelper::getURL(sprintf($actions[$selected_action]['url'], $semid),
-                            ($actions[$selected_action]['params'] ? $actions[$selected_action]['params'] : array())),
-                        ($actions[$selected_action]['attributes'] ? $actions[$selected_action]['attributes'] : array())
+                            ($actions[$selected_action]['params'] ? $actions[$selected_action]['params'] : [])),
+                        ($actions[$selected_action]['attributes'] ? $actions[$selected_action]['attributes'] : [])
                     ) ?>
                 <? endif ?>
             <? endif ?>

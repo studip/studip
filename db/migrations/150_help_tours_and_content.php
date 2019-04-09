@@ -19,14 +19,14 @@ class HelpToursAndContent extends Migration
         $version = '3.1';
         // see migrate_help_content.php
         if (!Config::get()->getValue('HELP_CONTENT_CURRENT_VERSION')) {
-            Config::get()->create('HELP_CONTENT_CURRENT_VERSION', array(
+            Config::get()->create('HELP_CONTENT_CURRENT_VERSION', [
                 'value' => $version,
                 'is_default' => 0,
                 'type' => 'string',
                 'range' => 'global',
                 'section' => 'global',
                 'description' => _('Aktuelle Version der Helpbar-Einträge in Stud.IP')
-                ));
+                ]);
         } else {
             Config::get()->store('HELP_CONTENT_CURRENT_VERSION', $version);
         }

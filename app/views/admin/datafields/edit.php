@@ -168,7 +168,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Übernehmen'), 'uebernehmen', array('title' => _('Änderungen übernehmen')))?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/datafields/index/'.$item->type.'#'.$item->type), array('title' => _('Zurück zur Übersicht')))?>
+        <?= Button::createAccept(_('Übernehmen'), 'uebernehmen', ['title' => _('Änderungen übernehmen')])?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/datafields/index/'.$item->type.'#'.$item->type), ['title' => _('Zurück zur Übersicht')])?>
     </footer>
 </form>

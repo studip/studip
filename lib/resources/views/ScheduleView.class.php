@@ -39,7 +39,7 @@
 
 class ScheduleView
 {
-    var $events = array();              //the events that will be shown
+    var $events = [];              //the events that will be shown
     var $cell_allocations;          //internal Array
     var $start_hour;            //First hour to display from
     var $end_hour;              //Last hout to display to
@@ -72,18 +72,18 @@ class ScheduleView
         $this->base_date = strtotime('today 0:00:00', $this->start_date);
 
         //the categories configuration (color's and bg-image)
-        $this->categories = array(
-            "0" => array('bg-picture'   => Assets::image_path('calendar/category3_small.jpg'),
-                         'border-color' => '#5C2D64'),  // is now obsolete
-            "1" => array('bg-picture'   => Assets::image_path('calendar/category5_small.jpg'),
-                         'border-color' => '#505064'),
-            "2" => array('bg-picture'   => Assets::image_path('calendar/category9_small.jpg'),
-                         'border-color' => '#957C29'),
-            "3" => array('bg-picture'   => Assets::image_path('calendar/category11_small.jpg'),
-                         'border-color' => '#66954F'),
-            "4" => array('bg-picture'   => Assets::image_path('calendar/category13_small.jpg'),
-                         'border-color' => '#951408'),
-        );
+        $this->categories = [
+            "0" => ['bg-picture'   => Assets::image_path('calendar/category3_small.jpg'),
+                         'border-color' => '#5C2D64'],  // is now obsolete
+            "1" => ['bg-picture'   => Assets::image_path('calendar/category5_small.jpg'),
+                         'border-color' => '#505064'],
+            "2" => ['bg-picture'   => Assets::image_path('calendar/category9_small.jpg'),
+                         'border-color' => '#957C29'],
+            "3" => ['bg-picture'   => Assets::image_path('calendar/category11_small.jpg'),
+                         'border-color' => '#66954F'],
+            "4" => ['bg-picture'   => Assets::image_path('calendar/category13_small.jpg'),
+                         'border-color' => '#951408'],
+        ];
     }
 
     public function addEvent($column, $name, $start_time, $end_time, $link = '', $add_info = '', $category = 0)
@@ -119,13 +119,13 @@ class ScheduleView
 
         $id = md5(uniqid("rss",1));
         if( ($collision_id = $this->checkCollision($sort_index,$category)) ){
-            $this->events[$collision_id]['collisions'][] = array('name' => $name, 'link' => $link,'add_info' => $add_info);
+            $this->events[$collision_id]['collisions'][] = ['name' => $name, 'link' => $link,'add_info' => $add_info];
             if ($end_time > $this->events[$collision_id]['end_time']) {
                 $this->events[$collision_id]['rows'] = $rows;
                 $this->events[$collision_id]['end_time'] = $end_time;
             }
         } else {
-            $this->events[$id]=array (
+            $this->events[$id]= [
                         "sort_index" => $sort_index,
                         "id" =>$id,
                         "rows" => $rows,
@@ -135,7 +135,7 @@ class ScheduleView
                         "link" => $link,
                         "add_info" => $add_info,
                         "category" => $category
-                        );
+                        ];
         }
     }
 
@@ -280,7 +280,7 @@ class ScheduleView
                     $m=0;
                     if ($this->cell_allocations[$idx]) {
                         while ($cs = each ($this->cell_allocations [$idx])) {
-                            $cell_content[]=array("id"=>$cs[0], "start_cell"=>$cs[1]);
+                            $cell_content[]=["id"=>$cs[0], "start_cell"=>$cs[1]];
                         }
                     }
                     if (!$this->cell_allocations[$idx] || $cell_content[0]['start_cell']) {

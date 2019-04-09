@@ -51,7 +51,7 @@
             </td>
 
             <td>
-                <a href="<?= URLHelper::getLink('dispatch.php/course/details/', array('sem_id' => $wait['seminar_id'], 'send_from_search_page' => 'dispatch.php/my_courses/index', 'send_from_search' => 'TRUE')) ?>">
+                <a href="<?= URLHelper::getLink('dispatch.php/course/details/', ['sem_id' => $wait['seminar_id'], 'send_from_search_page' => 'dispatch.php/my_courses/index', 'send_from_search' => 'TRUE']) ?>">
                     <?= htmlReady($seminar_name) ?>
                 </a>
                 <?php if ($wait['status'] == 'claiming') : ?>
@@ -91,7 +91,7 @@
                         <?= Icon::create('door-leave+decline', 'inactive', ['title' => _("Die Teilnahme ist bindend. Bitte wenden Sie sich an die Lehrenden.")])->asImg(20) ?>
                     </a>
                 <?  else : ?>
-                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $wait['seminar_id']), array('cmd' => 'suppose_to_kill_admission')) ?>">
+                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $wait['seminar_id']), ['cmd' => 'suppose_to_kill_admission']) ?>">
                         <?= Icon::create('door-leave', 'inactive', ['title' => _("aus der Veranstaltung abmelden")])->asImg(20) ?>
                     </a>
                 <? endif ?>

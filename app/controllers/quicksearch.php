@@ -80,24 +80,24 @@ class QuicksearchController extends AuthenticatedController
 
         $results = $this->search->getResults($needle, $form_data, $limit);
 
-        $output = array();
+        $output = [];
         foreach ($results as $result) {
-            $formatted = array(
+            $formatted = [
                 'item_id'          => $result[0],
                 'item_name'        => $this->highlight($needle, $result[1]),
                 'item_description' => '',
                 'item_search_name' => $result[1],
-            );
+            ];
 
             if ($this->search instanceof StandardSearch && $this->search->extendedLayout) {
-                $formatted['item_name'] = $this->search->getAvatarImageTag($result[0], Avatar::MEDIUM, array('title' => '')) . $formatted['item_name'];
+                $formatted['item_name'] = $this->search->getAvatarImageTag($result[0], Avatar::MEDIUM, ['title' => '']) . $formatted['item_name'];
                 if($result[3]) {
                     $formatted['item_description'] = sprintf('%s (%s)', $result[2], $result[3]);
                 } else {
                     $formatted['item_description'] = $result[2];
                 }
             } else if ($this->search instanceof SearchType) {
-                 $formatted['item_name'] = $this->search->getAvatarImageTag($result[0], Avatar::SMALL, array('title' => '')) . $formatted['item_name'];
+                 $formatted['item_name'] = $this->search->getAvatarImageTag($result[0], Avatar::SMALL, ['title' => '']) . $formatted['item_name'];
             }
             $output[] = $formatted;
         }

@@ -19,7 +19,7 @@ class User extends \RESTAPI\RouteMap
 
         return [
             'id'              => $user->id,
-            'href'            => $routemap->urlf('/user/%s', array(htmlReady($user->id))),
+            'href'            => $routemap->urlf('/user/%s', [htmlReady($user->id)]),
             'name'            => self::getNamesOfUser($user),
             'avatar_small'    => $avatar->getURL(\Avatar::SMALL),
             'avatar_medium'   => $avatar->getURL(\Avatar::MEDIUM),
@@ -66,7 +66,7 @@ class User extends \RESTAPI\RouteMap
         if (is_array(json_decode($visibilities, true))) {
             $visibilities = json_decode($visibilities, true);
         } else {
-            $visibilities = array();
+            $visibilities = [];
         }
 
         $get_field = function ($field, $visibility) use ($user_id, $user, $visibilities) {
@@ -80,7 +80,7 @@ class User extends \RESTAPI\RouteMap
 
         $avatar = \Avatar::getAvatar($user_id);
 
-        $user = array(
+        $user = [
             'user_id'         => $user_id,
             'username'        => $user['username'],
             'name'            => self::getNamesOfUser($user),
@@ -93,10 +93,10 @@ class User extends \RESTAPI\RouteMap
             'phone'           => $get_field('privatnr', 'private_phone'),
             'homepage'        => $get_field('Home', 'homepage'),
             'privadr'         => strip_tags($get_field('privadr', 'privadr')),
-        );
+        ];
 
         // Data fields
-        $datafields = array();
+        $datafields = [];
         foreach (\DataFieldEntry::getDataFieldEntries($user_id, 'user') as $entry) {
             if (!$entry->isVisible()) {
                 continue;
@@ -104,12 +104,12 @@ class User extends \RESTAPI\RouteMap
             if (!\Visibility::verify($entry->getID(), $user_id)) {
                 continue;
             }
-            $datafields[] = array(
+            $datafields[] = [
                 'type'  => $entry->getType(),
                 'id'    => $entry->getId(),
                 'name'  => $entry->getName(),
                 'value' => $entry->getValue(),
-            );
+            ];
         }
         $user['datafields'] = $datafields;
 

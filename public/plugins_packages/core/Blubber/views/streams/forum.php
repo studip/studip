@@ -30,7 +30,7 @@
         <textarea id="new_posting" placeholder="<?= _("Schreib was, frag was.") ?>"><?= $search ? htmlReady($search) : "" ?></textarea>
         <label title="<?= _("Datei hochladen") ?>" class="uploader">
             <input type="file" style="display: none;" multiple>
-            <?= Assets::img('ajax-indicator-black.svg', array('class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px")) ?>
+            <?= Assets::img('ajax-indicator-black.svg', ['class' => "text-bottom uploading", 'width' => "16px", 'height' => "16px"]) ?>
             <?= Icon::create('upload', 'clickable')->asImg(['class' => "text-bottom upload"]) ?>
         </label>
     </div>
@@ -57,7 +57,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><?= \Studip\Button::create(_("abschicken"), array('onclick' => "STUDIP.Blubber.submitAnonymousPosting();")) ?></td>
+                <td><?= \Studip\Button::create(_("abschicken"), ['onclick' => "STUDIP.Blubber.submitAnonymousPosting();"]) ?></td>
             </tr>
         </tbody>
     </table>
@@ -66,10 +66,10 @@
 <? endif ?>
 <ul id="blubber_threads" class="coursestream" aria-live="polite" aria-relevant="additions">
     <? foreach ($threads as $thread) : ?>
-    <?= $this->render_partial("streams/_blubber.php", array('thread' => $thread)) ?>
+    <?= $this->render_partial("streams/_blubber.php", ['thread' => $thread]) ?>
     <? endforeach ?>
     <? if ($more_threads) : ?>
-    <li class="more"><?= Assets::img("ajax_indicator_small.gif", array('alt' => "loading")) ?></li>
+    <li class="more"><?= Assets::img("ajax_indicator_small.gif", ['alt' => "loading"]) ?></li>
     <? endif ?>
 </ul>
 

@@ -83,8 +83,8 @@ class EvaluationTreeShowUser {
      */
     function __construct( $evalID ) {
 
-    $this->tree = TreeAbstract::GetInstance( "EvaluationTree", array('evalID' => $evalID,
-                                                                    'load_mode' => EVAL_LOAD_ALL_CHILDREN));
+    $this->tree = TreeAbstract::GetInstance( "EvaluationTree", ['evalID' => $evalID,
+                                                                    'load_mode' => EVAL_LOAD_ALL_CHILDREN]);
 
     }
 
@@ -96,7 +96,7 @@ class EvaluationTreeShowUser {
      * @param   string  ID of the start item, shouldnt be needed.
      */
     function showTree( $item_id = "root" ) {
-    $items = array();
+    $items = [];
 
     if( ! is_array($item_id) ) {
         $items[0] = $item_id;
@@ -142,7 +142,7 @@ class EvaluationTreeShowUser {
         /* a little space to indent subgroups */
         $level_output .=
         "<td valign=\"top\" width=\"".INDENT_PIXELS."\" height=\"1\" nowrap>".
-        Assets::img('forumleer.gif', array('size' => INDENT_PIXELS . '@1')).
+        Assets::img('forumleer.gif', ['size' => INDENT_PIXELS . '@1']).
         "</td>";
     }
 
@@ -199,7 +199,7 @@ class EvaluationTreeShowUser {
         echo "</td>";
 
         echo "<td width=\"1\">\n";
-        echo Assets::img('forumleer.gif', array('size' => '2@1'));
+        echo Assets::img('forumleer.gif', ['size' => '2@1']);
         echo "</td>\n";
 
     } else {
@@ -231,7 +231,7 @@ class EvaluationTreeShowUser {
 
         /* a little space to indent subgroups */
         $level_output = "<td width=\"".INDENT_PIXELS."\">".
-        Assets::img('forumleer.gif', array('size' => INDENT_PIXELS . '@1')).
+        Assets::img('forumleer.gif', ['size' => INDENT_PIXELS . '@1']).
         "</td>".
         $level_output;
     }

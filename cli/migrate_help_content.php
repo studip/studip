@@ -40,7 +40,7 @@ if (!$argv[2]){
 
 $query = "SELECT * FROM help_content WHERE studip_version = ? LIMIT 1";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array($argv[1]));
+$statement->execute([$argv[1]]);
 $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
 if (count($ret)) {
     trigger_error('Helpbar content already present for this version!', E_USER_ERROR);
@@ -59,7 +59,7 @@ if ($json === null) {
 
 foreach ($json as $row) {
     if (!is_array($row['text']))
-        $row['text'] = array($row['text']);
+        $row['text'] = [$row['text']];
         if (!$row['label'])
             $row['label'] = '';
         if (!$row['icon'])
@@ -69,19 +69,19 @@ foreach ($json as $row) {
         $query = "INSERT INTO help_content (content_id, language, label, icon, content, route, studip_version, position, custom, visible, author_id, installation_id, mkdate)
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 1, '', ?, UNIX_TIMESTAMP())";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(md5(uniqid(rand(), true)), $argv[2], ($index == 0 ? $row['label'] : ''), ($index == 0 ? $row['icon'] : ''), $text, $row['route'], $argv[1], $count[$argv[2].$row['route']], Config::get()->STUDIP_INSTALLATION_ID));
+        $statement->execute([md5(uniqid(rand(), true)), $argv[2], ($index == 0 ? $row['label'] : ''), ($index == 0 ? $row['icon'] : ''), $text, $row['route'], $argv[1], $count[$argv[2].$row['route']], Config::get()->STUDIP_INSTALLATION_ID]);
     }
 }
 if (count($count)) {
     if (!Config::get()->getValue('HELP_CONTENT_CURRENT_VERSION'))
-        Config::get()->create('HELP_CONTENT_CURRENT_VERSION', array(
+        Config::get()->create('HELP_CONTENT_CURRENT_VERSION', [
             'value' => $argv[1],
             'is_default' => 0,
             'type' => 'string',
             'range' => 'global',
             'section' => 'global',
             'description' => _('Aktuelle Version der Helpbar-Einträge in Stud.IP')
-            ));
+            ]);
     else
         Config::get()->store('HELP_CONTENT_CURRENT_VERSION', $argv[1]);
 }

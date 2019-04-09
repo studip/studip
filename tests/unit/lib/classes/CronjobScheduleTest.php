@@ -27,7 +27,7 @@ class ScheduleTest extends PHPUnit_Framework_TestCase
     {
         date_default_timezone_set('Europe/Berlin');
 
-        StudipTestHelper::set_up_tables(array('cronjobs_schedules'));
+        StudipTestHelper::set_up_tables(['cronjobs_schedules']);
     }
 
     function tearDown()

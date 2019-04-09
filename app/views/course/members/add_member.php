@@ -18,7 +18,7 @@
                 </td>
                 <td style="width: 30%; text-align: left">
                     <?= QuickSearch::get("new_autor", $search)
-                            ->withButton(array('reset_button_name' => 'reset_autor', 'search_button_name' => 'search_autor'))
+                            ->withButton(['reset_button_name' => 'reset_autor', 'search_button_name' => 'search_autor'])
                             ->render();
                     ?>
                     <input type="hidden" name="cid" value="<?= $course_id ?>">
@@ -27,7 +27,7 @@
 
                 </td>
                 <td style="width: 20%; text-align: right">
-                    <?= Button::createAccept(_('Eintragen'), 'add_autor', array('title' => sprintf(_("als %s eintragen"), $decoratedStatusGroups['autor']) )) ?>
+                    <?= Button::createAccept(_('Eintragen'), 'add_autor', ['title' => sprintf(_("als %s eintragen"), $decoratedStatusGroups['autor']) ]) ?>
                 </td>
             </tr>
         </tbody>
@@ -75,7 +75,7 @@
             </td>
             <td style="width: 20%; text-align: right">
                 <?= Button::createAccept(_('Eintragen'), 'add_member_list',
-                        array('title' => sprintf(_("als %s eintragen"), htmlReady($decoratedStatusGroups['autor'])))) ?>
+                        ['title' => sprintf(_("als %s eintragen"), htmlReady($decoratedStatusGroups['autor']))]) ?>
             </td>
         </tr>
     </tbody>

@@ -21,7 +21,7 @@
             <? endif; ?>
         </td>
         <td class="actions">
-            <?= $this->render_partial("vote/_actions.php", array('vote' => $vote)) ?>
+            <?= $this->render_partial("vote/_actions.php", ['vote' => $vote]) ?>
         </td>
     </tr>
 <? endforeach; ?>

@@ -153,10 +153,10 @@ class Calendar_ScheduleController extends AuthenticatedController
             }
         }
 
-        $style_parameters = array(
+        $style_parameters = [
             'whole_height' => $this->calendar_view->getOverallHeight(),
             'entry_height' => $this->calendar_view->getHeight()
-        );
+        ];
 
         $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views');
         PageLayout::addStyle($factory->render('calendar/stylesheet', $style_parameters), 'screen, print');
@@ -166,9 +166,9 @@ class Calendar_ScheduleController extends AuthenticatedController
             PageLayout::addStylesheet('print.css');
 
             // remove all stylesheets that are not used for printing to have a more reasonable printing preview
-            PageLayout::addHeadElement('script', array(), "$('head link[media=screen]').remove();");
+            PageLayout::addHeadElement('script', [], "$('head link[media=screen]').remove();");
         } else {
-            PageLayout::addStylesheet('print.css', array('media' => 'print'));
+            PageLayout::addStylesheet('print.css', ['media' => 'print']);
         }
 
         $this->show_hidden    = $show_hidden;
@@ -215,9 +215,9 @@ class Calendar_ScheduleController extends AuthenticatedController
         }
 
         if ($error) {
-            $this->flash['messages'] = array('error' =>
-                array(_("Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!"))
-             );
+            $this->flash['messages'] = ['error' =>
+                [_("Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!")]
+             ];
         } else {
             $data['title']   = Request::get('entry_title');
             $data['content'] = Request::get('entry_content');
@@ -248,10 +248,10 @@ class Calendar_ScheduleController extends AuthenticatedController
             $this->response->add_header('Content-Type', 'text/html; charset=utf-8');
             $this->layout = null;
 
-            $this->entry = array(
+            $this->entry = [
                 'id' => $id,
                 'cycle_id' => $cycle_id
-            );
+            ];
 
             if ($cycle_id) {
                 $this->show_entry = array_pop(CalendarScheduleModel::getSeminarEntry($id, $GLOBALS['user']->id, $cycle_id));
@@ -264,10 +264,10 @@ class Calendar_ScheduleController extends AuthenticatedController
                 $this->render_template('calendar/schedule/_entry_schedule');
             }
         } else {
-            $this->flash['entry'] = array(
+            $this->flash['entry'] = [
                 'id' => $id,
                 'cycle_id' => $cycle_id
-            );
+            ];
 
             $this->redirect('calendar/schedule/');
         }
@@ -311,7 +311,7 @@ class Calendar_ScheduleController extends AuthenticatedController
 
         // strucutre of an id: seminar_id-cycle_id
         // we do not need the cycle id here, so we trash it.
-        $seminar_list = array();
+        $seminar_list = [];
 
         foreach (explode(',', $seminars) as $seminar) {
             $zw = explode('-', $seminar);
@@ -323,8 +323,8 @@ class Calendar_ScheduleController extends AuthenticatedController
         $this->start    = $start;
         $this->end      = $end;
 
-        $day_names  = array(_("Montag"),_("Dienstag"),_("Mittwoch"),
-            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag"));
+        $day_names  = [_("Montag"),_("Dienstag"),_("Mittwoch"),
+            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag")];
 
         $this->day        = (int)$day;
         $this->day_name   = $day_names[$this->day];
@@ -354,11 +354,11 @@ class Calendar_ScheduleController extends AuthenticatedController
      */
     function editseminar_action($seminar_id, $cycle_id)
     {
-        $data = array(
+        $data = [
             'id'       => $seminar_id,
             'cycle_id' => $cycle_id,
             'color'    => Request::get('entry_color')
-        );
+        ];
 
         CalendarScheduleModel::storeSeminarEntry($data);
 
@@ -375,11 +375,11 @@ class Calendar_ScheduleController extends AuthenticatedController
     {
         $sem = Seminar::getInstance($seminar_id);
         foreach ($sem->getCycles() as $cycle) {
-            $data = array(
+            $data = [
                 'id'       => $seminar_id,
                 'cycle_id' => $cycle->getMetaDateId(),
                 'color'    => false
-            );
+            ];
 
             CalendarScheduleModel::storeSeminarEntry($data);
         }
@@ -479,12 +479,12 @@ class Calendar_ScheduleController extends AuthenticatedController
             $end_hour    = Request::int('end_hour');
             $days        = Request::getArray('days');
         }
-        $this->my_schedule_settings = array(
+        $this->my_schedule_settings = [
             'glb_start_time' => $start_hour,
             'glb_end_time'   => $end_hour,
             'glb_days'       => $days,
             'converted'      => true
-        );
+        ];
 
         if ($semester_id) {
             $this->my_schedule_settings['semester_id'] = $semester_id;

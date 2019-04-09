@@ -41,12 +41,12 @@ require_once 'ExternElementTemplateGeneric.class.php';
      
 class ExternElementLitList extends ExternElement {
 
-    var $attributes = array('div_style_change', 'div_class_change', 'span_style_name', 'span_class_name',
-            'showlastchange', 'formatting');
-    var $marker_structure = array(
-            'LITLIST' => array(
-                    'LILIST_ITEM' => array('LITLIST_ITEM_ELEMENT'),
-                    'LITLIST_NAME'));
+    var $attributes = ['div_style_change', 'div_class_change', 'span_style_name', 'span_class_name',
+            'showlastchange', 'formatting'];
+    var $marker_structure = [
+            'LITLIST' => [
+                    'LILIST_ITEM' => ['LITLIST_ITEM_ELEMENT'],
+                    'LITLIST_NAME']];
     var $rendered_content = '';
     
     /**
@@ -65,20 +65,20 @@ class ExternElementLitList extends ExternElement {
     }
     
     function getMarkerDescription ($element_name) {
-        $markers['LitList'] = array(
-            array('<!-- BEGIN LITLISTS -->', ''),
-            array('<!-- BEGIN LITLIST -->', ''),
-            array('###LITLIST_FULLNAME###',''),
-            array('###LITLIST_NAME###',''),
-            array('###LITLIST_CHANGE-DATE###',''),
-            array('<!-- BEGIN LITLIST_ITEM -->',''),
-            array('###LITLIST_ITEM_FULLNAME###',''),
-            array('###LITLIST_ITEM_ELEMENT###',''),
-            array('###LITLIST_ITEM_CHANGE-DATE###',''),
-            array('<!-- END LITLIST_ITEM -->',''),
-            array('<!-- END LITLIST -->',''),
-            array('<!-- END LITLISTS -->','')
-        );
+        $markers['LitList'] = [
+            ['<!-- BEGIN LITLISTS -->', ''],
+            ['<!-- BEGIN LITLIST -->', ''],
+            ['###LITLIST_FULLNAME###',''],
+            ['###LITLIST_NAME###',''],
+            ['###LITLIST_CHANGE-DATE###',''],
+            ['<!-- BEGIN LITLIST_ITEM -->',''],
+            ['###LITLIST_ITEM_FULLNAME###',''],
+            ['###LITLIST_ITEM_ELEMENT###',''],
+            ['###LITLIST_ITEM_CHANGE-DATE###',''],
+            ['<!-- END LITLIST_ITEM -->',''],
+            ['<!-- END LITLIST -->',''],
+            ['<!-- END LITLISTS -->','']
+        ];
         return $markers[$element_name];
     }
         
@@ -86,7 +86,7 @@ class ExternElementLitList extends ExternElement {
             $edit_form = "", $anker = "") {
             
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';
@@ -96,9 +96,9 @@ class ExternElementLitList extends ExternElement {
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
         
-        $edit_form_headlines = array(
+        $edit_form_headlines = [
                 'div_change' => _("Bereich mit Änderungsdatum und Name (HTML-Tag &lt;div&gt;)"),
-                'span_name' => _("Formatierung des Namens (HTML-Tag &lt;span&gt;)"));
+                'span_name' => _("Formatierung des Namens (HTML-Tag &lt;span&gt;)")];
         $content_table = $edit_form->getEditFormContent($this->attributes, $edit_form_headlines);
         $content_table .= $edit_form->editBlankContent();
         
@@ -140,7 +140,7 @@ class ExternElementLitList extends ExternElement {
     function getContent ($args) {
         global $_fullname_sql;
         
-        $content = array();
+        $content = [];
         $dbv = DbView::getView('literatur');
         if (is_array($args) && isset($args['user_id'])) {
             $tree = TreeAbstract::GetInstance("StudipLitList", $args['user_id']);

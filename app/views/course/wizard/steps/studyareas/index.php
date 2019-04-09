@@ -15,7 +15,7 @@
             <?php foreach ($assigned as $element) : ?>
             <?= $element->name ?>
             <?= $this->render_partial('studyareas/_assigned_node',
-                    array('element' => $element, 'studyareas' => $values['studyareas'])) ?>
+                    ['element' => $element, 'studyareas' => $values['studyareas']]) ?>
             <?php endforeach ?>
             </ul>
         </li>
@@ -55,10 +55,10 @@
                 <ul>
                 <?php foreach ($tree as $node) : ?>
                 <?= $this->render_partial('studyareas/_node',
-                        array('node' => $node, 'stepnumber' => $stepnumber,
+                        ['node' => $node, 'stepnumber' => $stepnumber,
                             'temp_id' => $temp_id, 'values' => $values,
-                            'open_nodes' => $open_nodes ?: array(),
-                            'search_result' => $search_result ?: array())) ?>
+                            'open_nodes' => $open_nodes ?: [],
+                            'search_result' => $search_result ?: []]) ?>
                 <?php endforeach ?>
                 </ul>
             </li>

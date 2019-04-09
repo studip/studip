@@ -167,7 +167,7 @@ $cell_steps = $cell_height / 60;
                             if ($max == 1) $this->width = '98';
 
                             if ($calendar_view->isGrouped()) {
-                                echo $this->render_partial('calendar/entries/grouped_entry', array('day' => $column->getId()));
+                                echo $this->render_partial('calendar/entries/grouped_entry', ['day' => $column->getId()]);
                             } else {
                                 echo $this->render_partial('calendar/entries/entry');
                             }

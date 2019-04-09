@@ -126,12 +126,12 @@ class StudipRangeTreeViewAdmin extends TreeView{
             }
         }
         if (is_array($studip_object_status) && $user_perm != 'root'){
-            $view->params = array(array_keys($studip_object_status), $user_id);
+            $view->params = [array_keys($studip_object_status), $user_id];
             $rs = $view->get_query("view:TREE_INST_STATUS");
             while ($rs->next_record()){
                 $studip_object_status[$rs->f("Institut_id")] = 1;
             }
-            $view->params = array(array_keys($studip_object_status), $user_id);
+            $view->params = [array_keys($studip_object_status), $user_id];
             $rs = $view->get_query("view:TREE_FAK_STATUS");
             while ($rs->next_record()){
                 $studip_object_status[$rs->f("Fakultaets_id")] = 1;
@@ -179,7 +179,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
         }
         $view = DbView::getView('range_tree');
         for ($i = 0; $i < count($items_to_order); ++$i){
-            $view->params = array($i, $items_to_order[$i]);
+            $view->params = [$i, $items_to_order[$i]];
             $rs = $view->get_query("view:TREE_UPD_PRIO");
         }
         $this->mode = "";
@@ -366,7 +366,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
             && ($item_to_move != $item_id) && ($this->tree->tree_data[$item_to_move]['parent_id'] != $item_id)
             && !$this->tree->isChildOf($item_to_move,$item_id)){
             $view = DbView::getView('range_tree');
-            $view->params = array($item_id, count($this->tree->getKids($item_id)), $item_to_move);
+            $view->params = [$item_id, count($this->tree->getKids($item_id)), $item_to_move];
             $rs = $view->get_query("view:TREE_MOVE_ITEM");
             if ($rs->affected_rows()){
                     $this->msg[$item_to_move] = "msg§" . _("Element wurde verschoben.");
@@ -385,7 +385,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
         $item_id = Request::option('item_id');
         $direction = Request::quoted('direction');
         $cat_id = Request::option('cat_id');
-        $items_to_order = array();
+        $items_to_order = [];
         if ($this->isItemAdmin($item_id)){
             $range_object = RangeTreeObject::GetInstance($item_id);
             $categories =& $range_object->getCategories();
@@ -405,7 +405,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
             }
             $view = DbView::getView('range_tree');
             for ($i = 0; $i < count($items_to_order); ++$i){
-                $view->params = array($i,$items_to_order[$i]);
+                $view->params = [$i,$items_to_order[$i]];
                 $rs = $view->get_query("view:CAT_UPD_PRIO");
             }
             $this->msg[$item_id] = "msg§" . _("Datenfelder wurden neu geordnet");
@@ -420,8 +420,8 @@ class StudipRangeTreeViewAdmin extends TreeView{
             $range_object = RangeTreeObject::GetInstance($item_id);
             $this->edit_cat_snap =& $range_object->getCategories();
             $this->edit_cat_snap->result[$this->edit_cat_snap->numRows] =
-                array("kategorie_id" => "new_entry", "range_id" => $item_id, "name" => "Neues Datenfeld", "content" => "Neues Datenfeld",
-                        "priority" => $this->edit_cat_snap->numRows);
+                ["kategorie_id" => "new_entry", "range_id" => $item_id, "name" => "Neues Datenfeld", "content" => "Neues Datenfeld",
+                        "priority" => $this->edit_cat_snap->numRows];
             ++$this->edit_cat_snap->numRows;
             $this->edit_cat_item_id = $item_id;
             $this->mode = "NewCat";
@@ -440,7 +440,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
         if ($this->isItemAdmin($item_id)){
             $view = DbView::getView('range_tree');
             if (isset($cat_name['new_entry'])){
-                $view->params = array(DbView::get_uniqid(),$item_id,$cat_name['new_entry'],$cat_content['new_entry'],$cat_prio['new_entry']);
+                $view->params = [DbView::get_uniqid(),$item_id,$cat_name['new_entry'],$cat_content['new_entry'],$cat_prio['new_entry']];
                 $rs = $view->get_query("view:CAT_INS_ALL");
                 if ($rs->affected_rows()){
                     $inserted = true;
@@ -448,7 +448,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
                 unset($cat_name['new_entry']);
             }
             foreach ($cat_name as $key => $value){
-                $view->params = array($value,$cat_content[$key],$key);
+                $view->params = [$value,$cat_content[$key],$key];
                 $rs = $view->get_query("view:CAT_UPD_CONTENT");
                 if ($rs->affected_rows()){
                     ++$updated;
@@ -528,7 +528,7 @@ class StudipRangeTreeViewAdmin extends TreeView{
         if ($this->isItemAdmin($item_id)){
             $content .= LinkButton::create(_("Neues Objekt"),
                 URLHelper::getURL($this->getSelf("cmd=NewItem&item_id=$item_id")),
-                array('title' => _("Innerhalb dieser Ebene ein neues Element einfügen")));
+                ['title' => _("Innerhalb dieser Ebene ein neues Element einfügen")]);
         }
 
         if ($this->isParentAdmin($item_id) && $item_id !=$this->start_item_id && $item_id != "root"){
@@ -793,10 +793,10 @@ class StudipRangeTreeViewAdmin extends TreeView{
         $content = "";
         if ($this->msg[$item_id]){
             $msg = explode("§", $this->msg[$item_id]);
-            $pics = array(
+            $pics = [
                 'error' => Icon::create('decline', 'attention'),
                 'info'  => Icon::create('exclaim', 'inactive'),
-                'msg'   => Icon::create('accept', 'accept'));
+                'msg'   => Icon::create('accept', 'accept')];
             $content = "\n<tr><td colspan=\"{$colspan}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"2\" width=\"100%\" style=\"font-size:10pt\">
                         <tr><td class=\"blank\" align=\"center\" width=\"25\">" .  $pics[$msg[0]]->asImg(['class' => 'text-top']) . "</td>
                         <td class=\"blank\" align=\"left\">" . $msg[1] . "</td></tr>

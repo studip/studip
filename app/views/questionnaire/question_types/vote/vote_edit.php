@@ -7,7 +7,7 @@
               required><?= isset($etask->description) ? wysiwygReady($etask->description) : '' ?></textarea>
 </label>
 
-<? $emptyAnswerTemplate =  $this->render_partial('questionnaire/question_types/vote/_answer', array('vote' => $vote, 'answer' => []))?>
+<? $emptyAnswerTemplate =  $this->render_partial('questionnaire/question_types/vote/_answer', ['vote' => $vote, 'answer' => []])?>
 <ol class="clean options" data-optiontemplate="<?= htmlReady($emptyAnswerTemplate) ?>">
     <? if (isset($etask->task['answers'])) {
         foreach ($etask->task['answers'] as $answer) {

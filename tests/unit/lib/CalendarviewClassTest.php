@@ -71,11 +71,11 @@ class CalendarViewCase extends PHPUnit_Framework_TestCase {
     public function test_negative_addEntry() {
         $this->setExpectedException('InvalidArgumentException');
         $view = new CalendarView();
-        $entry = array(
+        $entry = [
             'title' => "Test Eintrag",
             'start' => "0800",
             'end' => "0900"
-        );
+        ];
         $view->addEntry($entry);
     }
 
@@ -83,11 +83,11 @@ class CalendarViewCase extends PHPUnit_Framework_TestCase {
         $view = new CalendarView();
         $id = 3;
         $view->addColumn("Montag", "", $id);
-        $entry = array(
+        $entry = [
             'title' => "Test Eintrag",
             'start' => "0800",
             'end' => "0900"
-        );
+        ];
         $view->addEntry($entry);
         $entries = $view->getEntries();
         $this->assertInternalType("array", $entries);

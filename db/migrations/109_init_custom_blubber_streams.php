@@ -64,10 +64,10 @@ class InitCustomBlubberStreams extends Migration {
                 $match = trim($match[0]);
                 $tag = $match[0] === "#" ? substr($match, 1) : $match;
                 if ($tag) {
-                    $insert_statement->execute(array(
+                    $insert_statement->execute([
                         'topic_id' => $blubber['root_id'],
                         'tag' => strtolower($tag)
-                    ));
+                    ]);
                 }
             }
         }

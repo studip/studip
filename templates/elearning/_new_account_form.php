@@ -154,7 +154,7 @@
 
     <center>
     <?=Button::create('<< ' . _('Zurück'), 'go_back')?>
-    <?=Button::create(_('Zuordnen'), 'assign', array('title' => _('Bestehenden Account zuordnen')))?>
+    <?=Button::create(_('Zuordnen'), 'assign', ['title' => _('Bestehenden Account zuordnen')])?>
     <? if (! $is_connected) : ?>
         <?=Button::create(_('Weiter') . ' >>', 'next')?>
     <? endif ?>

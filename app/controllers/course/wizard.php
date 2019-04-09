@@ -20,7 +20,7 @@ class Course_WizardController extends AuthenticatedController
     /**
      * @var Array steps the wizard has to execute in order to create a new course.
      */
-    public $steps = array();
+    public $steps = [];
 
     public function before_filter (&$action, &$args)
     {
@@ -94,7 +94,7 @@ class Course_WizardController extends AuthenticatedController
             // Add special studygroup flag to set values.
             $this->setStepValues(
                 get_class($step),
-                array_merge($this->getValues(get_class($step)), array('studygroup' => 1))
+                array_merge($this->getValues(get_class($step)), ['studygroup' => 1])
             );
         }
         $this->values = $this->getValues();
@@ -114,7 +114,7 @@ class Course_WizardController extends AuthenticatedController
         $this->temp_id = $temp_id;
         // Get request data and store it in session.
         $iterator = Request::getInstance()->getIterator();
-        $values = array();
+        $values = [];
         while ($iterator->valid()) {
             $values[$iterator->key()] = $iterator->current();
             $iterator->next();
@@ -182,7 +182,7 @@ class Course_WizardController extends AuthenticatedController
                 } else {
                     if ($this->course = $this->createCourse()) {
                         // A studygroup has been created.
-                        if (in_array($this->course->status, studygroup_sem_types() ?: array())) {
+                        if (in_array($this->course->status, studygroup_sem_types() ?: [])) {
                             $message = MessageBox::success(
                                 sprintf(_('Die Studien-/Arbeitsgruppe "%s" wurde angelegt. ' .
                                     'Sie können sie direkt hier weiter verwalten.'),
@@ -264,7 +264,7 @@ class Course_WizardController extends AuthenticatedController
         $stepNumber = Request::int('step');
         $method = Request::get('method');
         $parameters = Request::getArray('parameter');
-        $result = call_user_func_array(array($this->getStep($stepNumber), $method), $parameters);
+        $result = call_user_func_array([$this->getStep($stepNumber), $method], $parameters);
         if (is_array($result) || is_object($result)) {
             $this->render_json($result);
         } else {
@@ -277,7 +277,7 @@ class Course_WizardController extends AuthenticatedController
     {
         $this->temp_id = $temp_id;
         $stepclass = $this->steps[$step_number]['classname'];
-        $result = $this->getStep($step_number)->alterValues($this->getValues() ?: array());
+        $result = $this->getStep($step_number)->alterValues($this->getValues() ?: []);
         $this->setStepValues($stepclass, $result);
         $this->redirect($this->url_for('course/wizard/step', $step_number, $this->temp_id));
     }
@@ -291,7 +291,7 @@ class Course_WizardController extends AuthenticatedController
             throw new AccessDeniedException(_("Sie dürfen diese Veranstaltung nicht kopieren"));
         }
         $course = Course::find($id);
-        $values = array();
+        $values = [];
         for ($i = 0 ; $i < sizeof($this->steps) ; $i++) {
             $step = $this->getStep($i);
             $values = $step->copy($course, $values);
@@ -299,7 +299,7 @@ class Course_WizardController extends AuthenticatedController
         $values['source_id'] = $course->id;
         $this->initialize();
         $_SESSION['coursewizard'][$this->temp_id] = $values;
-        $this->redirect($this->url_for('course/wizard/step/0/' . $this->temp_id, array('cid' => '')));
+        $this->redirect($this->url_for('course/wizard/step/0/' . $this->temp_id, ['cid' => '']));
     }
 
     /**
@@ -308,7 +308,7 @@ class Course_WizardController extends AuthenticatedController
     private function initialize()
     {
         $temp_id = md5(uniqid(microtime()));
-        $_SESSION['coursewizard'][$temp_id] = array();
+        $_SESSION['coursewizard'][$temp_id] = [];
         $this->temp_id = $temp_id;
     }
 
@@ -416,9 +416,9 @@ class Course_WizardController extends AuthenticatedController
     private function getValues($classname='')
     {
         if ($classname) {
-            return $_SESSION['coursewizard'][$this->temp_id][$classname] ?: array();
+            return $_SESSION['coursewizard'][$this->temp_id][$classname] ?: [];
         } else {
-            return $_SESSION['coursewizard'][$this->temp_id] ?: array();
+            return $_SESSION['coursewizard'][$this->temp_id] ?: [];
         }
     }
 

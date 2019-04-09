@@ -52,10 +52,10 @@ class ExternModuleLecturedetails extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->data_fields = array('subtitle', 'lecturer', 'art', 'status', 'description',
+        $this->data_fields = ['subtitle', 'lecturer', 'art', 'status', 'description',
             'location', 'semester', 'time', 'number', 'teilnehmer', 'requirements',
-            'lernorga', 'leistung', 'range_path', 'misc', 'ects');
-        $this->registered_elements = array(
+            'lernorga', 'leistung', 'range_path', 'misc', 'ects'];
+        $this->registered_elements = [
             'ReplaceTextSemType',
             'Body',
             'TableHeader',
@@ -64,9 +64,9 @@ class ExternModuleLecturedetails extends ExternModule {
             'Content' => 'TableParagraphText',
             'LinkInternSimple' => 'LinkIntern',
             'StudipInfo',
-            'StudipLink');
-        $this->args = array('seminar_id');
-        $this->field_names = array(
+            'StudipLink'];
+        $this->args = ['seminar_id'];
+        $this->field_names = [
                 _("Untertitel"),
                 _("Lehrende"),
                 _("Veranstaltungsart"),
@@ -82,7 +82,7 @@ class ExternModuleLecturedetails extends ExternModule {
                 _("Leistungsnachweis"),
                 _("Bereichseinordnung"),
                 _("Sonstiges"),
-                _("ECTS-Punkte"));
+                _("ECTS-Punkte")];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
 
@@ -133,7 +133,7 @@ class ExternModuleLecturedetails extends ExternModule {
         $out = "";
         $this->seminar_id = $args["seminar_id"];
         $query = "SELECT * FROM seminare WHERE Seminar_id = ?";
-        $parameters = array($this->seminar_id);
+        $parameters = [$this->seminar_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -155,15 +155,15 @@ class ExternModuleLecturedetails extends ExternModule {
                 $query = "SELECT $name_sql AS name, username, position FROM seminar_user su LEFT JOIN
                         auth_user_md5 USING(user_id) LEFT JOIN user_info USING(user_id)
                         WHERE su.Seminar_id = ? AND su.status='dozent' ORDER BY position, username";
-                $parameters = array($this->seminar_id);
+                $parameters = [$this->seminar_id];
                 $statement = DBManager::get()->prepare($query);
                 $statement->execute($parameters);
                 while ($res = $statement->fetch(PDO::FETCH_ASSOC)) {
                     $data["lecturer"][] = $this->elements["LinkInternSimple"]->toString(
-                            array("module" => "Persondetails",
+                            ["module" => "Persondetails",
                             "link_args" => "username=" . $res['username']
                             . "&seminar_id=" . $this->seminar_id,
-                            "content" => $res['name'] ));
+                            "content" => $res['name'] ]);
                 }
                 if (is_array($data["lecturer"]))
                     $data["lecturer"] = implode(", ", $data["lecturer"]);
@@ -365,7 +365,7 @@ class ExternModuleLecturedetails extends ExternModule {
             $data["leistung"] = $data_sem["leistung"];
 
         if ($visible[++$j]) {
-            $pathes = array($data_sem["range_path"]);
+            $pathes = [$data_sem["range_path"]];
             if (is_array($pathes)) {
                 $pathes_values = array_values($pathes);
                 if ($this->config->getValue("Main", "range") == "long")
@@ -416,45 +416,45 @@ class ExternModuleLecturedetails extends ExternModule {
                 }
             }
             if ($this->config->getValue("Main", "studiplink") == "top") {
-                $args = array("width" => "100%", "height" => "40", "link" => $studip_link);
+                $args = ["width" => "100%", "height" => "40", "link" => $studip_link];
                 $out .= "<tr><td width=\"100%\">\n";
                 $out .= $this->elements["StudipLink"]->toString($args);
                 $out .= "</td></tr>";
             }
             $table_attr = $this->config->getAttributes("TableHeader", "table");
-            $pattern = array("/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/");
-            $replace = array("width=\"100%\"", "");
+            $pattern = ["/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/"];
+            $replace = ["width=\"100%\"", ""];
             $table_attr = preg_replace($pattern, $replace, $table_attr);
             $out .= "<tr><td width=\"100%\">\n<table$table_attr>";
         }
         else
             $out .= "<table" . $this->config->getAttributes("TableHeader", "table") . ">";
 
-        $out .= $this->elements["SemName"]->toString(array("content" => $data["name"]));
+        $out .= $this->elements["SemName"]->toString(["content" => $data["name"]]);
 
         if ($this->config->getValue("Main", "headlinerow")) {
             foreach ($order as $position) {
                 if ($visible[$position] && $data[$this->data_fields[$position]]) {
                     $out .= $this->elements["Headline"]->toString(
-                            array("content" => $aliases[$position]));
+                            ["content" => $aliases[$position]]);
                     $out .= $this->elements["Content"]->toString(
-                            array("content" => $data[$this->data_fields[$position]]));
+                            ["content" => $data[$this->data_fields[$position]]]);
                 }
             }
         }
         else {
             foreach ($order as $position) {
                 if ($visible[$position] && $data[$this->data_fields[$position]]) {
-                    $out .= $this->elements["Content"]->toString(array("content" =>
+                    $out .= $this->elements["Content"]->toString(["content" =>
                             $this->config->getTag("Headline", "font") . $aliases[$position] .
-                            "</font>" . $data[$this->data_fields[$position]]));
+                            "</font>" . $data[$this->data_fields[$position]]]);
                 }
             }
         }
 
         if ($this->config->getValue("Main", "studipinfo")) {
-            $out .= $this->elements["Headline"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "headline")));
+            $out .= $this->elements["Headline"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "headline")]);
             $out .= $this->toStringStudipInfo($preview);
         }
 
@@ -462,7 +462,7 @@ class ExternModuleLecturedetails extends ExternModule {
 
         if ($this->config->getValue("Main", "studiplink")) {
             if ($this->config->getValue("Main", "studiplink") == "bottom") {
-                $args = array("width" => "100%", "height" => "40", "link" => $studip_link);
+                $args = ["width" => "100%", "height" => "40", "link" => $studip_link];
                 $out .= "</td></tr>\n<tr><td width=\"100%\">\n";
                 $out .= $this->elements["StudipLink"]->toString($args);
             }
@@ -475,39 +475,39 @@ class ExternModuleLecturedetails extends ExternModule {
     // private
     function toStringStudipInfo ($preview) {
         if ($preview) {
-            $studip_info = $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "homeinst") . "&nbsp;"));
+            $studip_info = $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "homeinst") . "&nbsp;"]);
             $studip_info .= sprintf("<a href=\"\"%s>%s</a><br>\n",
                     $this->config->getAttributes("LinkInternSimple", "a"),
                     _("Heimatinstitut"));
 
-            $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "involvedinst") . "&nbsp;"));
+            $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "involvedinst") . "&nbsp;"]);
             $studip_info .= str_repeat(_("Beteiligte Institute") . " ", 5) . "<br>\n";
 
-            $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "countuser") . "&nbsp;"));
+            $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "countuser") . "&nbsp;"]);
             $studip_info .= "23<br>\n";
 
-            $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "countpostings") . "&nbsp;"));
+            $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "countpostings") . "&nbsp;"]);
             $studip_info .= "42<br>\n";
 
-            $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "countdocuments") . "&nbsp;"));
+            $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "countdocuments") . "&nbsp;"]);
             $studip_info .= "7<br>\n";
         }
         else {
             $query="SELECT i.Institut_id, i.Name, i.url FROM seminare LEFT JOIN Institute i
                                     USING(institut_id) WHERE Seminar_id = ?";
-            $parameters = array($this->seminar_id);
+            $parameters = [$this->seminar_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $res = $statement->fetch(PDO::FETCH_ASSOC);
             $own_inst = $res['Institut_id'];
 
-            $studip_info = $this->elements["StudipInfo"]->toString(array("content" =>
-                    $this->config->getValue("StudipInfo", "homeinst") . "&nbsp;"));
+            $studip_info = $this->elements["StudipInfo"]->toString(["content" =>
+                    $this->config->getValue("StudipInfo", "homeinst") . "&nbsp;"]);
 
             if ($res['url']) {
                 $link_inst = htmlReady($res['url']);
@@ -526,7 +526,7 @@ class ExternModuleLecturedetails extends ExternModule {
 
             $query = "SELECT Name, url FROM seminar_inst LEFT JOIN Institute i USING(institut_id)
                                     WHERE seminar_id = ? AND i.institut_id!='$own_inst'";
-            $parameters = array($this->seminar_id);
+            $parameters = [$this->seminar_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $involved_insts = NULL;
@@ -548,20 +548,20 @@ class ExternModuleLecturedetails extends ExternModule {
 
             if ($involved_insts) {
                 $involved_insts = implode(", ", $involved_insts);
-                $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                        $this->config->getValue("StudipInfo", "involvedinst") . "&nbsp;"));
+                $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                        $this->config->getValue("StudipInfo", "involvedinst") . "&nbsp;"]);
                 $studip_info .= $involved_insts . "<br>\n";
             }
 
             $query = "SELECT count(*) as count_user FROM seminar_user WHERE Seminar_id = ?";
-            $parameters = array($this->seminar_id);
+            $parameters = [$this->seminar_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $res = $statement->fetch(PDO::FETCH_ASSOC);
 
             if ($res['count_user']) {
-                $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                            $this->config->getValue("StudipInfo", "countuser") . "&nbsp;"));
+                $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                            $this->config->getValue("StudipInfo", "countuser") . "&nbsp;"]);
                 $studip_info .= $res['count_user'] . "<br>\n";
             }
 
@@ -572,8 +572,8 @@ class ExternModuleLecturedetails extends ExternModule {
             }
 
             if ($postings) {
-                $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                            $this->config->getValue("StudipInfo", "countpostings") . "&nbsp;"));
+                $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                            $this->config->getValue("StudipInfo", "countpostings") . "&nbsp;"]);
                 $studip_info .= $postings . "<br>\n";
             }
 
@@ -583,19 +583,19 @@ class ExternModuleLecturedetails extends ExternModule {
                   WHERE range_id = ? AND range_type = 'course'
             AND folder_type IN ('RootFolder', 'StandardFolder')
                   GROUP BY range_id";
-            $parameters = array($this->seminar_id);
+            $parameters = [$this->seminar_id];
             $statement = DBManager::get()->prepare($query);
             $statement->execute($parameters);
             $res = $statement->fetch(PDO::FETCH_ASSOC);
 
             if ($res['count_documents']) {
-                $studip_info .= $this->elements["StudipInfo"]->toString(array("content" =>
-                            $this->config->getValue("StudipInfo", "countdocuments") . "&nbsp;"));
+                $studip_info .= $this->elements["StudipInfo"]->toString(["content" =>
+                            $this->config->getValue("StudipInfo", "countdocuments") . "&nbsp;"]);
                 $studip_info .= $res['count_documents'] . "\n";
             }
         }
 
-        return $this->elements["Content"]->toString(array("content" => $studip_info));
+        return $this->elements["Content"]->toString(["content" => $studip_info]);
     }
 
 }

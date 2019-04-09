@@ -39,7 +39,7 @@ class MetaDate
     var $seminar_id          = '';
     var $seminarStartTime    = 0;
     var $seminarDurationTime = 0;
-    var $cycles              = Array();
+    var $cycles              = [];
 
     /**
      * Constructor
@@ -174,7 +174,7 @@ class MetaDate
      * @param CycleData $cycle
      * @return boolean
      */
-    function setCycleData($data = array(), $cycle)
+    function setCycleData($data = [], $cycle)
     {
         $cycle->seminar_id = $this->getSeminarId();
         if ($last_one = array_pop(array_keys($this->cycles))) {
@@ -219,7 +219,7 @@ class MetaDate
      * @param bool $create_single_dates
      * @return string|boolean metadate_id of created cycle
      */
-    function addCycle($data = array(), $create_single_dates = true)
+    function addCycle($data = [], $create_single_dates = true)
     {
         $data['day'] = (int)$data['day'];
         $data['start_stunde'] = (int)$data['start_stunde'];
@@ -244,7 +244,7 @@ class MetaDate
      * @param array assoc, see CycleData, metadate_id must be in $data['cycle_id']
      * @return number|boolean
      */
-    function editCycle($data = array())
+    function editCycle($data = [])
     {
         $cycle = $this->cycles[$data['cycle_id']];
         $new_start = mktime((int)$data['start_stunde'], (int)$data['start_minute']);
@@ -274,8 +274,8 @@ class MetaDate
         } else {
             if ($this->setCycleData($data, $cycle)) {
                 // collect all existing themes (issues) for this cycle:
-                $issues = array();
-                $issue_objects = array();
+                $issues = [];
+                $issue_objects = [];
                 $singledate_count = 0;
 
                 // loop through the single dates and look for themes (issues)
@@ -289,9 +289,9 @@ class MetaDate
                 // remove all SingleDates in the future for this CycleData
                 $count = CycleDataDB::deleteNewerSingleDates($data['cycle_id'], time(), true);
                 // create new SingleDates
-                $this->createSingleDates(array('metadate_id'         => $cycle->getMetaDateId(),
+                $this->createSingleDates(['metadate_id'         => $cycle->getMetaDateId(),
                                                'startAfterTimeStamp' => time()
-                ));
+                ]);
 
                 // clear all loaded SingleDates so no odd ones remain. The Seminar-Class will load them fresh when needed
                 $cycle->termine = NULL;
@@ -366,7 +366,7 @@ class MetaDate
      */
     function store()
     {
-        $old_cycle_dates = array();
+        $old_cycle_dates = [];
         foreach (SeminarCycleDate::findBySeminar($this->seminar_id) as $c) {
             $old_cycle_dates[$c->getId()] = $c;
         }
@@ -387,7 +387,7 @@ class MetaDate
      */
     function restore()
     {
-        $this->cycles = array();
+        $this->cycles = [];
         foreach (SeminarCycleDate::findBySeminar($this->seminar_id) as $c) {
             $this->cycles[$c->getId()] = new CycleData($c);
         }
@@ -420,7 +420,7 @@ class MetaDate
      */
     function getCycleData($show_invisibles = false)
     {
-        $ret = array();
+        $ret = [];
 
         foreach ($this->cycles as $val) {
             if ($val->is_visible || $show_invisibles) {
@@ -523,7 +523,7 @@ class MetaDate
             $startAfterTimeStamp = 0;
         }
 
-        $ret = array();
+        $ret = [];
 
         $all_semester = SemesterData::getAllSemesterData();
 
@@ -585,8 +585,8 @@ class MetaDate
      */
     function getVirtualSingleDatesForSemester($metadate_id, $sem_begin, $sem_end, $startAfterTimeStamp, $corr)
     {
-        $dates = array();
-        $dates_to_delete = array();
+        $dates = [];
+        $dates_to_delete = [];
 
         // loads the singledates of the by metadate_id denoted regular time-entry into the object
         $this->readSingleDates($metadate_id);
@@ -675,7 +675,7 @@ class MetaDate
 
             if (!$dateExists) {
 
-                $termin = new SingleDate(array('seminar_id' => $this->seminar_id));
+                $termin = new SingleDate(['seminar_id' => $this->seminar_id]);
 
                 $all_holiday = SemesterHoliday::getAll(); // fetch all Holidays
                 foreach ($all_holiday as $val2) {
@@ -708,7 +708,7 @@ class MetaDate
 
         } while ($end_time < $sem_end);
 
-        return array('dates' => $dates, 'dates_to_delete' => $dates_to_delete);
+        return ['dates' => $dates, 'dates_to_delete' => $dates_to_delete];
     }
 
     /**
@@ -722,7 +722,7 @@ class MetaDate
      */
     function getVirtualMetaAssignObjects($metadate_id, $resource_id)
     {
-        $ret = array();
+        $ret = [];
         foreach ($this->getVirtualSingleDates($metadate_id) as $semester_id => $dates_for_semester) {
             list($dates, $dates_to_delete) = array_values($dates_for_semester);
             foreach ($dates as $d) {

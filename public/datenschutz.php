@@ -16,12 +16,12 @@
 
 require '../lib/bootstrap.php';
 
-page_open(array(
+page_open([
     'sess' => 'Seminar_Session',
     'auth' => 'Seminar_Default_Auth',
     'perm' => 'Seminar_Perm',
     'user' => 'Seminar_User'
-));
+]);
 
 // set up user session
 include 'lib/seminar_open.php';

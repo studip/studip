@@ -35,13 +35,13 @@
 **/
 class StudipLitCatElement {
 
-    var $fields = array();
+    var $fields = [];
     var $dbv;
     var $form_obj = null;
     var $form_name = "lit_element_form";
     var $init_form;
     var $classname = "StudipLitCatElement";
-    var $persistent_slots = array("fields");
+    var $persistent_slots = ["fields"];
 
     public function __construct($catalog_id = false, $with_form = false)
     {
@@ -54,87 +54,87 @@ class StudipLitCatElement {
     }
 
     function initFields(){
-        $this->fields = array(
-                        'dc_title'  =>  array(  'caption'   => _("Titel"),
+        $this->fields = [
+                        'dc_title'  =>  [  'caption'   => _("Titel"),
                                                 'info'  => _("Titel der Quelle; der vom Verfasser, Urheber oder Verleger vergebene Namen der Ressource"),
                                                 'len'   => 255,
                                                 'type'  => 'text',
-                                                'mandatory' => true),
-                        'dc_creator'=>  array(  'caption'   => _("Verfasser oder Urheber"),
+                                                'mandatory' => true],
+                        'dc_creator'=>  [  'caption'   => _("Verfasser oder Urheber"),
                                                 'info'  => _("Die Person(en) oder Organisation(en), die den intellektuellen Inhalt verantworten. Z.B. Autoren bei Textdokumenten; Künstler, Photographen bzw. auch andere Bezeichnungen wie Komponist und Maler bei graphischen Dokumenten."),
                                                 'len'   => 255,
                                                 'type'  => 'text',
-                                                'mandatory' => true),
-                        'dc_subject'=>  array(  'caption'   => _("Thema und Stichwörter"),
+                                                'mandatory' => true],
+                        'dc_subject'=>  [  'caption'   => _("Thema und Stichwörter"),
                                                 'info'  => _("Thema, Schlagwort, Stichwort. Das Thema der Ressource bzw. Stichwörter oder Phrasen, die das Thema oder den Inhalt beschreiben"),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_description'=>array('caption'   => _("Inhaltliche Beschreibung"),
+                                                'type'  => 'text'],
+                        'dc_description'=>['caption'   => _("Inhaltliche Beschreibung"),
                                                 'info'  => _("Kurze Inhaltswiedergabe, Beschreibung, Abstract"),
                                                 'len'   => 65535,
-                                                'type'  => 'text'),
-                        'dc_publisher'=>array(  'caption'=> _("Verleger, Herausgeber"),
+                                                'type'  => 'text'],
+                        'dc_publisher'=>[  'caption'=> _("Verleger, Herausgeber"),
                                                 'info'  => _("Die Einrichtung, die verantwortet, daß diese Ressource in dieser Form zur Verfügung steht, wie z.B. ein Verleger, ein Herausgeber, eine Universität oder eine korporatives Unternehmen."),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_contributor'=>array('caption'=> _("Weitere beteiligten Personen und Körperschaften"),
+                                                'type'  => 'text'],
+                        'dc_contributor'=>['caption'=> _("Weitere beteiligten Personen und Körperschaften"),
                                                 'info'  => _("Sonstige an der Erstellung und Veröffentlichung der Ressource beteiligte Personen oder Organisationen"),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                       'dc_date' => array( 'caption'=> _("Datum"),
+                                                'type'  => 'text'],
+                       'dc_date' => [ 'caption'=> _("Datum"),
                                                 'info'  => _("Das Datum, an dem die Ressource in der gegenwärtigen Form zugänglich gemacht wurde."),
                                                 'len'   => 11,
                                                 'type'  => 'datepicker',
-                                                'mandatory' => true),
-                        'dc_type'   =>  array(  'caption'=> _("Ressourcenart"),
+                                                'mandatory' => true],
+                        'dc_type'   =>  [  'caption'=> _("Ressourcenart"),
                                                 'info'  => _("Die Art der Ressource, z.B. Homepage, Roman, Gedicht, Arbeitsbericht, technischer Bericht, Essay, Wörterbuch\n(Die Vorgaben entsprechen den EndNote Referenz Typen)"),
                                                 'len'   => 255,
                                                 'type'  => 'text',
-                                                'select_list' => array('','Book','Manuscript','Magazine Article','Conference Proceedings','Report','Computer Program','Audiovisual Material','Artwork','Patent','Bill','Case','Journal Article','Book Section','Edited Book','Newspaper Article','Thesis','Personal Communication','Electronic Source','Film or Broadcast','Map','Hearing','Statute')),
-                        'dc_format' =>  array(  'caption'=> _("Format"),
+                                                'select_list' => ['','Book','Manuscript','Magazine Article','Conference Proceedings','Report','Computer Program','Audiovisual Material','Artwork','Patent','Bill','Case','Journal Article','Book Section','Edited Book','Newspaper Article','Thesis','Personal Communication','Electronic Source','Film or Broadcast','Map','Hearing','Statute']],
+                        'dc_format' =>  [  'caption'=> _("Format"),
                                                 'info'  => _("Hier wird das datentechnische Format der Ressource eingetragen, z.B. Text/HTML, ASCII, Postscript-Datei, ausführbare Anwendung, JPEG-Bilddatei etc. Grundsätzlich können Formate auch physische Medieneinheiten wie Bücher, Zeitschriften oder andere nichtelektronische Medien mit einschließen."),
                                                 'len'   => 255,
                                                 'type'  => 'text',
-                                                'select_list' => array('','text/html','application/pdf')),
-                        'dc_identifier' =>array('caption'=> _("Ressourcen-Identifikation"),
+                                                'select_list' => ['','text/html','application/pdf']],
+                        'dc_identifier' =>['caption'=> _("Ressourcen-Identifikation"),
                                                 'info'  => _("Weltweit eindeutige Kennzeichnung, z.B. URL oder ISBN"),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_source' =>  array(  'caption'=> _("Quelle"),
+                                                'type'  => 'text'],
+                        'dc_source' =>  [  'caption'=> _("Quelle"),
                                                 'info'  => _("Bei nichtoriginären Beiträgen die Quelle bzw. das Original"),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_language'=> array(  'caption'=> _("Sprache"),
+                                                'type'  => 'text'],
+                        'dc_language'=> [  'caption'=> _("Sprache"),
                                                 'info'  => _("Hier wird die Sprache des intellektuellen Inhalts dieser Ressource vermerkt."),
                                                 'len'   => 255,
                                                 'type'  => 'text',
-                                                'select_list'=> array('','ger','eng','fre','ita','spa')),
-                        'dc_relation'=> array(  'caption'=> _("Beziehung zu anderen Ressourcen"),
+                                                'select_list'=> ['','ger','eng','fre','ita','spa']],
+                        'dc_relation'=> [  'caption'=> _("Beziehung zu anderen Ressourcen"),
                                                 'info'  => _("Die Angabe in diesem Feld ermöglicht es, Verbindungen unter verschiedenen Ressourcen darzustellen, die einen formalen Bezug zu anderen Ressourcen haben, aber als eigenständige Ressourcen existieren."),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_coverage'=> array(  'caption'=> _("Räumliche und zeitliche Maßangaben"),
+                                                'type'  => 'text'],
+                        'dc_coverage'=> [  'caption'=> _("Räumliche und zeitliche Maßangaben"),
                                                 'info'  => _("Hier werden Angaben zur räumlichen Bestimmung (z.B. geographische Koordinaten) und zeitlichen Gültigkeit eingetragen, die die Ressource charakterisieren."),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'dc_rights' =>  array(  'caption'=> _("Rechtliche Bedingungen"),
+                                                'type'  => 'text'],
+                        'dc_rights' =>  [  'caption'=> _("Rechtliche Bedingungen"),
                                                 'info'  => _("Verweis auf die Nutzungsbedingungen entsprechend dem Urheberrecht"),
                                                 'len'   => 255,
-                                                'type'  => 'text'),
-                        'accession_number'=>array('caption' => _("Zugriffsnummer"),
+                                                'type'  => 'text'],
+                        'accession_number'=>['caption' => _("Zugriffsnummer"),
                                                 'info'  => _("Die Zugriffsnummer eines Bibliothekssystems, über die diese Quelle identifiziert werden kann. z.B. PICA Prod Nummer oder die Signatur einer Bibliothek."),
                                                 'len'   => 100,
-                                                'type'  => 'text'),
-                        'lit_plugin'=>  array(  'caption'   => _("Verweis auf externes Bibliothekssystem"),
+                                                'type'  => 'text'],
+                        'lit_plugin'=>  [  'caption'   => _("Verweis auf externes Bibliothekssystem"),
                                                 'info'  => _("Der Name des externen Bibliothekssystems, in das über einen Weblink verzweigt werden kann."),
                                                 'len'   => 100,
                                                 'type'  => 'select',
-                                                'options'=> StudipLitSearch::GetAvailablePluginsOptions()),
-                        'catalog_id' => array(  'type'  => 'text'),
-                        'user_id'   =>  array(  'type'  =>  'text'),
-                        'mkdate'    =>  array(  'type'  =>  'int'),
-                        'chdate'    =>  array(  'type'  =>  'int'),
-                        );
+                                                'options'=> StudipLitSearch::GetAvailablePluginsOptions()],
+                        'catalog_id' => [  'type'  => 'text'],
+                        'user_id'   =>  [  'type'  =>  'text'],
+                        'mkdate'    =>  [  'type'  =>  'int'],
+                        'chdate'    =>  [  'type'  =>  'int'],
+                        ];
     }
 
     function getElementData($catalog_id = false){
@@ -179,22 +179,22 @@ class StudipLitCatElement {
     }
 
     function setFormObject(){
-        $form_fields = array();
+        $form_fields = [];
         $form_name = $this->form_name;
         if($this->isNewEntry()){
-            $this->fields['default_lit_list'] = array('caption' => _("Eintrag in diese Literaturliste"),
+            $this->fields['default_lit_list'] = ['caption' => _("Eintrag in diese Literaturliste"),
                                                 'info'  => _("Wählen Sie hier eine persönliche Literaturliste aus, in die der neue Eintrag aufgenommen werden soll."),
                                                 'len'   => 255,
                                                 'type'  => 'select',
-                                                'options'=> array_merge(array('---'), (array)StudipLitList::GetListsByRange($GLOBALS['user']->id, 'form_options')));
+                                                'options'=> array_merge(['---'], (array)StudipLitList::GetListsByRange($GLOBALS['user']->id, 'form_options'))];
         }
         foreach ($this->fields as $field_name => $field_detail){
 
             if ($field_detail['caption']){
                 if ($field_detail['select_list']){
-                    $form_fields[$field_name . "_select"] = array('type' => 'select','options' => $field_detail['select_list']);
-                    $form_fields[$field_name . "_text"] = array('type' => 'text');
-                    $form_fields[$field_name] = array('type' => 'combo', 'text' => $field_name . "_text", 'select' => $field_name . "_select", 'separator' => '&nbsp;');
+                    $form_fields[$field_name . "_select"] = ['type' => 'select','options' => $field_detail['select_list']];
+                    $form_fields[$field_name . "_text"] = ['type' => 'text'];
+                    $form_fields[$field_name] = ['type' => 'combo', 'text' => $field_name . "_text", 'select' => $field_name . "_select", 'separator' => '&nbsp;'];
                 } else {
                     $form_fields[$field_name]['type'] = $field_detail['type'];
                     if ($field_detail['type'] == 'text' && $field_detail['len'] > 100){
@@ -209,11 +209,11 @@ class StudipLitCatElement {
                 $form_fields[$field_name]['default_value'] = $field_detail['value'];
             }
         }
-        $form_fields['catalog_id'] = array('type' => 'hidden', 'default_value' => $this->fields['catalog_id']['value']);
-        $form_buttons = array('send' => array('type' => 'accept', 'caption' => _('speichern'), 'info' => _("Änderungen speichern")),
-                            'reset' => array('caption' => _('zurücksetzen'), 'info' => _("Änderungen zurücksetzen")),
-                            'delete' => array('caption' => _('löschen'), 'info' => _("Eintrag löschen"))
-                    );
+        $form_fields['catalog_id'] = ['type' => 'hidden', 'default_value' => $this->fields['catalog_id']['value']];
+        $form_buttons = ['send' => ['type' => 'accept', 'caption' => _('speichern'), 'info' => _("Änderungen speichern")],
+                            'reset' => ['caption' => _('zurücksetzen'), 'info' => _("Änderungen zurücksetzen")],
+                            'delete' => ['caption' => _('löschen'), 'info' => _("Eintrag löschen")]
+                    ];
         if (!is_object($this->form_obj)){
             $this->form_obj = new StudipForm($form_fields, $form_buttons, $form_name);
         } else {
@@ -237,7 +237,7 @@ class StudipLitCatElement {
     }
 
     function getValues(){
-        $ret = array();
+        $ret = [];
         foreach ($this->fields as $name => $value){
             $ret[$name] = $value['value'];
         }
@@ -284,10 +284,10 @@ class StudipLitCatElement {
         if ($rs->affected_rows()){
             if($default_list_entry && $default_list_entry != '---'){
                 $list = TreeAbstract::GetInstance("StudipLitList", $GLOBALS['user']->id);
-                $list->insertElement(array('catalog_id' => $this->getValue('catalog_id'), 'list_id' => $default_list_entry,
+                $list->insertElement(['catalog_id' => $this->getValue('catalog_id'), 'list_id' => $default_list_entry,
                                             'list_element_id' => $list->getNewListElementId(),
                                             'user_id' => $GLOBALS['user']->id,
-                                            'note' => '', 'priority' => ($list->getMaxPriority($default_list_entry) + 1) ));
+                                            'note' => '', 'priority' => ($list->getMaxPriority($default_list_entry) + 1) ]);
             }
         }
         return $rs->affected_rows();

@@ -86,7 +86,7 @@ class SimpleCollection extends StudipArrayObject
             $comp_func = function ($a) use ($args, $operator) {return $operator($a, $args);};
         } else {
             if (!is_array($args)) {
-                $args = array($args);
+                $args = [$args];
             }
             switch ($operator) {
                 case '==':
@@ -196,18 +196,18 @@ class SimpleCollection extends StudipArrayObject
         if (!preg_match('/[\200-\377]/', $text)) {
             return $text;
         }
-        $text = str_replace(array('ä','A','ö','Ö','ü','Ü','ß'), array('a','A','o','O','u','U','s'), $text);
-        $text = str_replace(array('À','Á','Â','Ã','Å','Æ'), 'A' , $text);
-        $text = str_replace(array('à','á','â','ã','å','æ'), 'a' , $text);
-        $text = str_replace(array('È','É','Ê','Ë'), 'E' , $text);
-        $text = str_replace(array('è','é','ê','ë'), 'e' , $text);
-        $text = str_replace(array('Ì','Í','Î','Ï'), 'I' , $text);
-        $text = str_replace(array('ì','í','î','ï'), 'i' , $text);
-        $text = str_replace(array('Ò','Ó','Õ','Ô','Ø'), 'O' , $text);
-        $text = str_replace(array('ò','ó','ô','õ','ø'), 'o' , $text);
-        $text = str_replace(array('Ù','Ú','Û'), 'U' , $text);
-        $text = str_replace(array('ù','ú','û'), 'u' , $text);
-        $text = str_replace(array('Ç','ç','Ð','Ñ','Ý','ñ','ý','ÿ'), array('C','c','D','N','Y','n','y','y') , $text);
+        $text = str_replace(['ä','A','ö','Ö','ü','Ü','ß'], ['a','A','o','O','u','U','s'], $text);
+        $text = str_replace(['À','Á','Â','Ã','Å','Æ'], 'A' , $text);
+        $text = str_replace(['à','á','â','ã','å','æ'], 'a' , $text);
+        $text = str_replace(['È','É','Ê','Ë'], 'E' , $text);
+        $text = str_replace(['è','é','ê','ë'], 'e' , $text);
+        $text = str_replace(['Ì','Í','Î','Ï'], 'I' , $text);
+        $text = str_replace(['ì','í','î','ï'], 'i' , $text);
+        $text = str_replace(['Ò','Ó','Õ','Ô','Ø'], 'O' , $text);
+        $text = str_replace(['ò','ó','ô','õ','ø'], 'o' , $text);
+        $text = str_replace(['Ù','Ú','Û'], 'U' , $text);
+        $text = str_replace(['ù','ú','û'], 'u' , $text);
+        $text = str_replace(['Ç','ç','Ð','Ñ','Ý','ñ','ý','ÿ'], ['C','c','D','N','Y','n','y','y'] , $text);
         return $text;
     }
 
@@ -216,7 +216,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @param mixed $data array or closure to fill collection
      */
-    function __construct($data = array())
+    function __construct($data = [])
     {
         parent::__construct();
         $this->finder = $data instanceof Closure ? $data : null;
@@ -247,7 +247,7 @@ class SimpleCollection extends StudipArrayObject
         $args = func_get_args();
         return $this->map( function ($a) use ($args) {
             if (method_exists($a, 'toArray')) {
-                return call_user_func_array(array($a, 'toArray'), $args);
+                return call_user_func_array([$a, 'toArray'], $args);
             }
             if (method_exists($a, 'getArrayCopy')) {
                 return $a->getArrayCopy();
@@ -325,7 +325,7 @@ class SimpleCollection extends StudipArrayObject
         if (is_callable($this->finder)) {
             $data = call_user_func($this->finder);
             $this->exchangeArray($data);
-            $this->deleted->exchangeArray(array());
+            $this->deleted->exchangeArray([]);
             return $this->last_count = $this->count();
         }
     }
@@ -401,7 +401,7 @@ class SimpleCollection extends StudipArrayObject
      */
     function map(Closure $func)
     {
-        $results = array();
+        $results = [];
         foreach ($this->storage as $key => $value) {
             $results[$key] = call_user_func($func, $value, $key);
         }
@@ -418,7 +418,7 @@ class SimpleCollection extends StudipArrayObject
      */
     function filter(Closure $func = null, $limit = null)
     {
-        $results = array();
+        $results = [];
         $found = 0;
         foreach ($this->storage as $key => $value) {
             if (call_user_func($func, $value, $key)) {
@@ -444,7 +444,7 @@ class SimpleCollection extends StudipArrayObject
             $columns = words($columns);
         }
         $func = function($r) use ($columns) {
-            $result = array();
+            $result = [];
             foreach ($columns as $c) {
                 $result[] = $r[$c];
             }
@@ -469,13 +469,13 @@ class SimpleCollection extends StudipArrayObject
      */
     function toGroupedArray($group_by = 'id', $only_these_fields = null, Closure $group_func = null)
     {
-        $result = array();
+        $result = [];
         if (is_string($only_these_fields)) {
             $only_these_fields = words($only_these_fields);
         }
         foreach ($this->toArray() as $record) {
             $key = $record[$group_by];
-            $ret = array();
+            $ret = [];
             if (is_array($only_these_fields)) {
                 $result[$key][] = array_intersect_key($record, array_flip($only_these_fields));
             } else {
@@ -612,7 +612,7 @@ class SimpleCollection extends StudipArrayObject
             $sort_locale = true;
         }
 
-        $sorter = array();
+        $sorter = [];
         foreach (explode(',', $order) as $one) {
             $sorter[] = array_values(array_filter(array_map('trim', explode(' ', $one))));
         }
@@ -674,10 +674,10 @@ class SimpleCollection extends StudipArrayObject
      * @param array $params parameters for methodcall
      * @return array of all return values
      */
-    function sendMessage($method, $params = array()) {
-        $results = array();
+    function sendMessage($method, $params = []) {
+        $results = [];
         foreach ($this->storage as $record) {
-            $results[] = call_user_func_array(array($record, $method), $params);
+            $results[] = call_user_func_array([$record, $method], $params);
         }
         return $results;
     }

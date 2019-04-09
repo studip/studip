@@ -26,7 +26,7 @@ class LinkCloudWidget extends LinksWidget
      * @param bool   $active Pass true if the link is currently active,
      *                       defaults to false
      */
-    public function &addLink($label, $url, $icon = null, $attributes = array(), $index = null)
+    public function &addLink($label, $url, $icon = null, $attributes = [], $index = null)
     {
         $content = sprintf('<a href="%s" class="%s">%s</a>',
                            $url,

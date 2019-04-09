@@ -60,7 +60,7 @@ class SimpleOrMapNodbTest extends PHPUnit_Framework_TestCase
 {
     function setUp()
     {
-        StudipTestHelper::set_up_tables(array('auth_user_md5'));
+        StudipTestHelper::set_up_tables(['auth_user_md5']);
     }
 
     function tearDown()
@@ -123,7 +123,7 @@ class SimpleOrMapNodbTest extends PHPUnit_Framework_TestCase
         $a->jsondata[] = [1,2,3];
         $this->assertInstanceOf('JSONArrayObject', $a->jsondata[2]);
         $this->assertEquals('["test1","test2",[1,2,3]]', (string)$a->jsondata);
-        $a->jsondata[2][] = array('test3' => 'test3');
+        $a->jsondata[2][] = ['test3' => 'test3'];
         $this->assertEquals('["test1","test2",[1,2,3,{"test3":"test3"}]]', (string)$a->jsondata);
     }
 

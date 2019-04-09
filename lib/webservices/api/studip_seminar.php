@@ -42,7 +42,7 @@ class StudipSeminarHelper
         $stmt = $db->prepare('SELECT status FROM seminar_user
                               JOIN auth_user_md5 USING(user_id)
                               WHERE Seminar_id = ? AND username = ?');
-        $stmt->execute(array($seminar_id, $username));
+        $stmt->execute([$seminar_id, $username]);
 
         $status = $stmt->fetchColumn();
 
@@ -65,12 +65,12 @@ class StudipSeminarHelper
             $query = 'SELECT username FROM auth_user_md5
                       JOIN seminar_user USING(user_id)
                       WHERE Seminar_id = ?';
-            $params = array($seminar_id);
+            $params = [$seminar_id];
         } else {
             $query = 'SELECT username FROM auth_user_md5
                       JOIN seminar_user USING(user_id)
                       WHERE Seminar_id = ? AND status = ?';
-            $params = array($seminar_id, $status);
+            $params = [$seminar_id, $status];
         }
 
         $stmt = $db->prepare($query);
@@ -84,7 +84,7 @@ class StudipSeminarHelper
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT Institut_id FROM seminare WHERE Seminar_id = ?');
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         return $stmt->fetchColumn();
     }
@@ -94,14 +94,14 @@ class StudipSeminarHelper
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT institut_id FROM seminar_inst WHERE seminar_id = ?');
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     function get_all_institutes($seminar_id)
     {
-        $institute_list = array_unique(array_merge(array(StudipSeminarHelper::get_main_institute($seminar_id)),
+        $institute_list = array_unique(array_merge([StudipSeminarHelper::get_main_institute($seminar_id)],
                                                    StudipSeminarHelper::get_additional_institutes($seminar_id)));
         return $institute_list;
     }
@@ -109,7 +109,7 @@ class StudipSeminarHelper
     function get_admins_for_seminar($seminar_id)
     {
         $all_institutes = StudipSeminarHelper::get_all_institutes($seminar_id);
-        $admins = array();
+        $admins = [];
 
         foreach ($all_institutes as $institute) {
             $admins = array_merge($admins, StudipInstituteHelper::get_admins_upward_recursive($institute));
@@ -127,7 +127,7 @@ class StudipSeminarHelper
         $stmt = $db->prepare('SELECT st.name FROM statusgruppen st
                               JOIN seminare s ON (st.range_id = s.Seminar_id)
                               WHERE s.Seminar_id = ?');
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -135,14 +135,14 @@ class StudipSeminarHelper
     function get_seminar_group_members($seminar_id, $group_name)
     {
         $db = DBManager::get();
-        $result = array();
+        $result = [];
 
         $stmt = $db->prepare('SELECT au.username FROM statusgruppen st
                               JOIN seminare s ON (st.range_id = s.Seminar_id)
                               JOIN statusgruppe_user su USING(statusgruppe_id)
                               JOIN auth_user_md5 au USING(user_id)
                               WHERE s.Seminar_id = ? AND st.name = ?');
-        $stmt->execute(array($seminar_id, $group_name));
+        $stmt->execute([$seminar_id, $group_name]);
 
         foreach ($stmt as $row) {
             $result[] = Studip_User::find_by_user_name($row['username']);

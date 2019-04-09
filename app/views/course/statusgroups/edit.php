@@ -63,7 +63,7 @@
                     <article class="<?= ContentBoxHelper::classes($c->id) ?>" id="<?= $c->id ?>">
                         <header>
                             <h1>
-                                <a href="<?= ContentBoxHelper::href($c->id, array('contentbox_type' => 'news')) ?>">
+                                <a href="<?= ContentBoxHelper::href($c->id, ['contentbox_type' => 'news']) ?>">
                                     <?= htmlReady($c->toString()) ?>
                                 </a>
                             </h1>

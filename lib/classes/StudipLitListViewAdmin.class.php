@@ -132,7 +132,7 @@ class StudipLitListViewAdmin extends TreeView
         $user_id = $GLOBALS['auth']->auth['uid'];
         if ($this->mode != "NewItem"){
             if (Request::get('edit_note')){
-                $affected_rows = $this->tree->updateElement(array('list_element_id' => $item_id, 'note' => Request::quoted('edit_note'), 'user_id' => $user_id));
+                $affected_rows = $this->tree->updateElement(['list_element_id' => $item_id, 'note' => Request::quoted('edit_note'), 'user_id' => $user_id]);
                 if ($affected_rows){
                     PageLayout::postSuccess(_("Anmerkung wurde geändert."));
                 } else {
@@ -140,7 +140,7 @@ class StudipLitListViewAdmin extends TreeView
                 }
             } else if ( Request::get('edit_format') ) {
 
-                $affected_rows = $this->tree->updateList(array('list_id' => $item_id,'format' => Request::quoted('edit_format'),'name' => Request::quoted('edit_name'),'visibility' => Request::quoted('edit_visibility'), 'user_id' => $user_id));
+                $affected_rows = $this->tree->updateList(['list_id' => $item_id,'format' => Request::quoted('edit_format'),'name' => Request::quoted('edit_name'),'visibility' => Request::quoted('edit_visibility'), 'user_id' => $user_id]);
                 if ($affected_rows){
                     PageLayout::postSuccess(_("Listeneigenschaften wurden geändert."));
                 } else {
@@ -149,7 +149,7 @@ class StudipLitListViewAdmin extends TreeView
             }
         } else {
             $priority = $this->tree->getMaxPriority($parent_id) + 1;
-            $affected_rows = $this->tree->insertList(array('list_id' => $item_id,'priority' => $priority, 'format' => Request::quoted('edit_format'),'visibility' => Request::quoted('edit_visibility'), 'name' => Request::quoted('edit_name'),'user_id' => $user_id));
+            $affected_rows = $this->tree->insertList(['list_id' => $item_id,'priority' => $priority, 'format' => Request::quoted('edit_format'),'visibility' => Request::quoted('edit_visibility'), 'name' => Request::quoted('edit_name'),'user_id' => $user_id]);
             if ($affected_rows){
                 $this->mode = "";
                 $this->anchor = $item_id;
@@ -195,7 +195,7 @@ class StudipLitListViewAdmin extends TreeView
         $item_id = Request::option('item_id');
         $user_id = $GLOBALS['auth']->auth['uid'];
         $visibility = ($this->tree->tree_data[$item_id]['visibility']) ? 0 : 1;
-        if ($this->tree->updateList(array('list_id' => $item_id, 'visibility' => $visibility, 'user_id' => $user_id))){
+        if ($this->tree->updateList(['list_id' => $item_id, 'visibility' => $visibility, 'user_id' => $user_id])){
             PageLayout::postSuccess(_("Die Sichtbarkeit der Liste wurde geändert."));
         } else {
             PageLayout::postError(_("Die Sichtbarkeit konnte nicht geändert werden."));
@@ -224,9 +224,9 @@ class StudipLitListViewAdmin extends TreeView
         }
         for ($i = 0; $i < count($items_to_order); ++$i){
             if ($this->tree->isElement($item_id)){
-                $this->tree->updateElement(array('priority' => $i, 'list_element_id' => $items_to_order[$i]));
+                $this->tree->updateElement(['priority' => $i, 'list_element_id' => $items_to_order[$i]]);
             } else {
-                $this->tree->updateList(array('priority' => $i, 'list_id' => $items_to_order[$i]));
+                $this->tree->updateList(['priority' => $i, 'list_id' => $items_to_order[$i]]);
             }
         }
         $this->mode = "";
@@ -246,9 +246,9 @@ class StudipLitListViewAdmin extends TreeView
         });
         foreach($kids as $pos => $kid_id){
             if ($this->tree->isElement($kid_id)){
-                $this->tree->updateElement(array('priority' => $pos, 'list_element_id' => $kid_id));
+                $this->tree->updateElement(['priority' => $pos, 'list_element_id' => $kid_id]);
             } else {
-                $this->tree->updateList(array('priority' => $pos, 'list_id' => $kid_id));
+                $this->tree->updateList(['priority' => $pos, 'list_id' => $kid_id]);
             }
         }
         $this->mode = "";
@@ -301,14 +301,14 @@ class StudipLitListViewAdmin extends TreeView
     function execCommandNewItem(){
         $item_id = Request::option('item_id');
         $new_item_id = md5(uniqid("listblubb",1));
-        $this->tree->tree_data[$new_item_id] = array(
+        $this->tree->tree_data[$new_item_id] = [
             'chdate' => time(),
             'format'=> $this->tree->format_default,
             'user_id' => $GLOBALS['auth']->auth['uid'],
             'username' => $GLOBALS['auth']->auth['uname'],
             'fullname' => get_fullname($GLOBALS['auth']->auth['uid'],'no_title_short'),
             'visibility' => 0
-        );
+        ];
         $this->tree->storeItem($new_item_id, $item_id, _("Neue Liste"),$this->tree->getMaxPriority($item_id) + 1);
         $this->anchor = $new_item_id;
         $this->edit_item_id = $new_item_id;
@@ -402,7 +402,7 @@ class StudipLitListViewAdmin extends TreeView
             }
         }
         $content .= "\n</select></label></fieldset><footer>"
-                 . Button::create(_('Kopie erstellen'), array('title' => _('Eine Kopie der ausgewähkten Liste erstellen')))
+                 . Button::create(_('Kopie erstellen'), ['title' => _('Eine Kopie der ausgewähkten Liste erstellen')])
                  . "</footer></form></td></tr>";
 
         return $content;
@@ -482,7 +482,7 @@ class StudipLitListViewAdmin extends TreeView
     function getNewLiteratureButton($item_id){
         $content = LinkButton::create(_('Neue Literaturliste'),
             URLHelper::getURL($this->getSelf('cmd=NewItem&item_id='.$item_id)),
-            array('title' => _('Eine neue Literaturliste anlegen')));
+            ['title' => _('Eine neue Literaturliste anlegen')]);
 
         return $content;
     }
@@ -490,7 +490,7 @@ class StudipLitListViewAdmin extends TreeView
     function getEditFormatingButton($item_id){
         $content = LinkButton::create(_('Bearbeiten'),
             URLHelper::getURL($this->getSelf('cmd=EditItem&item_id='.$item_id)),
-            array('title' => _("Dieses Element bearbeiten")));
+            ['title' => _("Dieses Element bearbeiten")]);
         $content .= "&nbsp;";
 
         return $content;
@@ -499,7 +499,7 @@ class StudipLitListViewAdmin extends TreeView
     function getEditLiteratureEntryButton($item_id){
         $content = LinkButton::create(_('Anmerkung'),
             URLHelper::getURL($this->getSelf('cmd=EditItem&item_id='. $item_id)),
-            array('title' => _('Dieses Element bearbeiten')));
+            ['title' => _('Dieses Element bearbeiten')]);
         $content .= "&nbsp;";
 
         return $content;
@@ -508,7 +508,7 @@ class StudipLitListViewAdmin extends TreeView
     function getDetailsButton($item_id){
         $content = LinkButton::create(_('Details'),
             URLHelper::getURL('dispatch.php/literature/edit_element?_catalog_id='.$this->tree->tree_data[$item_id]['catalog_id']),
-            array('title' => _('Detailansicht dieses Eintrages ansehen.'), 'data-dialog' => ''));
+            ['title' => _('Detailansicht dieses Eintrages ansehen.'), 'data-dialog' => '']);
         $content .= "&nbsp;";
 
         return $content;
@@ -517,7 +517,7 @@ class StudipLitListViewAdmin extends TreeView
     function getCopyListButton($item_id){
         $content = LinkButton::create(_('Kopie erstellen'),
             URLHelper::getURL($this->getSelf('cmd=CopyList&item_id='.$item_id)),
-            array('title' => _('Eine Kopie dieser Liste erstellen')));
+            ['title' => _('Eine Kopie dieser Liste erstellen')]);
         $content .= "&nbsp;";
 
         return $content;
@@ -526,7 +526,7 @@ class StudipLitListViewAdmin extends TreeView
     function getSortButton($item_id){
         $content = LinkButton::create(_('Sortieren'),
             URLHelper::getURL($this->getSelf('cmd=SortKids&item_id='.$item_id)),
-            array('title' => _('Elemente dieser Liste alphabetisch sortieren')));
+            ['title' => _('Elemente dieser Liste alphabetisch sortieren')]);
         $content .= "&nbsp;";
 
         return $content;
@@ -561,7 +561,7 @@ class StudipLitListViewAdmin extends TreeView
     function getDeleteButton($item_id, $cmd){
         $content = LinkButton::create(_('Löschen'),
             URLHelper::getURL($this->getSelf('cmd='.$cmd.'&item_id='.$item_id)),
-            array('title' => _('Dieses Element löschen')));
+            ['title' => _('Dieses Element löschen')]);
         $content .= '&nbsp;';
 
         return $content;
@@ -570,7 +570,7 @@ class StudipLitListViewAdmin extends TreeView
     function getToClipboardButton($item_id){
         $content = LinkButton::create(_('Merkliste'),
             URLHelper::getURL($this->getSelf('cmd=InClipboard&item_id='.$item_id)),
-            array('title' => _('Eintrag in Merkliste aufnehmen')));
+            ['title' => _('Eintrag in Merkliste aufnehmen')]);
         $content .= '&nbsp;';
 
         return $content;
@@ -679,11 +679,11 @@ class StudipLitListViewAdmin extends TreeView
 
         $content .= '</fieldset>';
         $content .= '<footer><div class="button-group">'
-                    . Button::createAccept(_('Speichern'),array(
-                        'title' => _("Einstellungen speichern")))
+                    . Button::createAccept(_('Speichern'),[
+                        'title' => _("Einstellungen speichern")])
                     . LinkButton::createCancel(_('Abbrechen'),
                         URLHelper::getURL($this->getSelf("cmd=Cancel&item_id=".$this->edit_item_id)),
-                        array('Aktion abbrechen' => _('Aktion abbrechen')))
+                        ['Aktion abbrechen' => _('Aktion abbrechen')])
                     . '</div></footer>';
         $content .= "\n</form>";
 
@@ -694,10 +694,10 @@ class StudipLitListViewAdmin extends TreeView
         $content = "";
         if ($this->msg[$item_id]){
             $msg = explode("§",$this->msg[$item_id]);
-            $pics = array(
+            $pics = [
                 'error' => Icon::create('decline', 'attention'),
                 'info'  => Icon::create('info', 'info'),
-                'msg'   => Icon::create('accept', 'accept'));
+                'msg'   => Icon::create('accept', 'accept')];
             $content = "\n<tr><td colspan=\"{$colspan}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"2\" width=\"100%\">
                         <tr><td align=\"center\" width=\"25\">" . $pics[$msg[0]]->asImg() . "</td>
                         <td align=\"left\">" . $msg[1] . "</td></tr>

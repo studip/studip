@@ -69,7 +69,7 @@ function object_set_visit($object_id, $type, $user_id = '')
     $query = "INSERT INTO object_user_visits (object_id, user_id, type, visitdate, last_visitdate)
               VALUES (?, ?, ?, UNIX_TIMESTAMP(), ?) ON DUPLICATE KEY UPDATE visitdate=UNIX_TIMESTAMP(), last_visitdate=?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($object_id, $user_id, $type, $last_visit, $last_visit));
+    $statement->execute([$object_id, $user_id, $type, $last_visit, $last_visit]);
 
     return object_get_visit($object_id, $type, FALSE, false, $user_id, true);
 }
@@ -110,7 +110,7 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
               FROM object_user_visits
               WHERE object_id = ? AND user_id = ? AND type = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($object_id, $user_id, $type));
+    $statement->execute([$object_id, $user_id, $type]);
     $temp = $statement->fetch(PDO::FETCH_ASSOC);
 
     if ($temp) {
@@ -125,7 +125,7 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
                   FROM object_user_visits
                   WHERE object_id = ? AND user_id = ? AND type IN ('sem', 'inst')";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($open_object_id, $user_id));
+        $statement->execute([$open_object_id, $user_id]);
         $temp = $statement->fetch(PDO::FETCH_ASSOC);
 
         if ($temp) {
@@ -160,7 +160,7 @@ function object_kill_visits($user_id, $object_ids = false)
     }
 
     $query      = "DELETE FROM object_user_visits WHERE ";
-    $parameters = array();
+    $parameters = [];
 
     if ($user_id) {
         $query       .= "user_id = ?";
@@ -171,7 +171,7 @@ function object_kill_visits($user_id, $object_ids = false)
 
     if ($object_ids) {
         if (!is_array($object_ids)) {
-            $object_ids = array($object_ids);
+            $object_ids = [$object_ids];
         }
         $query       .= " AND object_id IN (?)";
         $parameters[] = $object_ids;
@@ -196,11 +196,11 @@ function object_add_view ($object_id)
               ON DUPLICATE KEY UPDATE views = views + 1,
                                       chdate = UNIX_TIMESTAMP()";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($object_id));
+    $statement->execute([$object_id]);
 
     $query = "SELECT views FROM object_views WHERE object_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($object_id));
+    $statement->execute([$object_id]);
     return $statement->fetchColumn();
 }
 
@@ -209,7 +209,7 @@ function object_kill_views($object_id)
     if (!empty($object_id)) {
         $query = "DELETE FROM object_views WHERE object_id IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id));
+        $statement->execute([$object_id]);
         return $statement->rowCount();
     } else {
         return 0;
@@ -220,6 +220,6 @@ function object_return_views ($object_id)
 {
     $query = "SELECT views FROM object_views WHERE object_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($object_id));
+    $statement->execute([$object_id]);
     return $statement->fetchColumn() ?: 0;
 }

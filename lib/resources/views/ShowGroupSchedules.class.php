@@ -79,7 +79,7 @@ class ShowGroupSchedules extends ShowSemSchedules {
                 <tr>
                     <td rowspan="2">&nbsp;</td>
                     <td valign="top">
-                        <?= SemesterData::GetSemesterSelector(array('name' => 'sem_schedule_choose', 'class' => 'submit-upon-select'), $this->semester['semester_id'],'semester_id',false)?>
+                        <?= SemesterData::GetSemesterSelector(['name' => 'sem_schedule_choose', 'class' => 'submit-upon-select'], $this->semester['semester_id'],'semester_id',false)?>
                         <?= Button::create(_('Auswählen'), 'jump') ?><br>
                         <label>
                         <input type="radio" onChange="document.schedule_form.submit()" style="vertical-align:bottom" <?=($this->timespan == 'course_time' ? 'checked' : '')?> name="sem_time_choose" value="course_time">
@@ -181,7 +181,7 @@ class ShowGroupSchedules extends ShowSemSchedules {
                     while ($event = $assign_events->nextEvent()) {
                         //mehrtägige nur am passenden Tag anzeigen
                         if ($event->repeat_mode == 'sd' && date('N', $event->begin) != $this->dow) continue;
-                        if(in_array($event->repeat_mode, array('w','d','m','y'))){
+                        if(in_array($event->repeat_mode, ['w','d','m','y'])){
                             if(strftime('%u', $event->getBegin()) != $this->dow) continue;
                             $assign = AssignObject::Factory($event->getAssignId());
                             switch($event->repeat_mode){
@@ -250,9 +250,9 @@ class ShowGroupSchedules extends ShowSemSchedules {
                 <tr>
                     <td align="center" valign="bottom">
                     <? if ((!$_SESSION['resources_data']["schedule_time_range"]) || ($_SESSION['resources_data']["schedule_time_range"] == 1)): ?>
-                        <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                        <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                                   'quick_view_mode' => $view_mode,
-                                                                  'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1)) ?>">
+                                                                  'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1]) ?>">
                                <?= Icon::create('arr_2up', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>
@@ -288,9 +288,9 @@ class ShowGroupSchedules extends ShowSemSchedules {
                 <tr>
                     <td align="center" valign="bottom">
                     <? if ((!$_SESSION['resources_data']['schedule_time_range']) || ($_SESSION['resources_data']['schedule_time_range'] == -1)): ?>
-                        <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                        <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                                   'quick_view_mode' => $view_mode,
-                                                                  'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1)) ?>">
+                                                                  'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1]) ?>">
                                <?= Icon::create('arr_2down', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>

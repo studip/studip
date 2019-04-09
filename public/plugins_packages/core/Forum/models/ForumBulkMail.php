@@ -42,7 +42,7 @@ class ForumBulkMail extends Messaging {
 
             if (empty($this->bulk_mail[md5($message)][getenv('LANG')])) {
 
-                $title = "[Stud.IP - " . Config::get()->UNI_NAME_CLEAN . "] ".stripslashes(kill_format(str_replace(array("\r","\n"), '', $subject)));
+                $title = "[Stud.IP - " . Config::get()->UNI_NAME_CLEAN . "] ".stripslashes(kill_format(str_replace(["\r","\n"], '', $subject)));
 
                 if ($snd_user_id != "____%system%____") {
                     $sender = User::find($snd_user_id);
@@ -60,14 +60,14 @@ class ForumBulkMail extends Messaging {
                 $template->rec_fullname = $receiver->getFullname();
                 $mailhtml = $template->render();
 
-                $this->bulk_mail[md5($message)][getenv('LANG')] = array(
+                $this->bulk_mail[md5($message)][getenv('LANG')] = [
                     'text'       => $mailmessage,
                     'html'       => $mailhtml,
                     'title'      => $title,
                     'reply_to'   => $reply_to,
                     'message_id' => $message_id,
-                    'users'      => array()
-                );
+                    'users'      => []
+                ];
             }
 
             $this->bulk_mail[md5($message)][getenv('LANG')]['users'][$receiver->id] = $receiver->email;

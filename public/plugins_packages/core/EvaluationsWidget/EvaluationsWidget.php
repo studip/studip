@@ -47,7 +47,7 @@ class EvaluationsWidget extends StudIPPlugin implements PortalPlugin
             if ($GLOBALS['perm']->have_perm('root')) {
                 $navigation = new Navigation('', 'dispatch.php/questionnaire/overview');
                 $navigation->setImage(Icon::create('add', 'clickable', ["title" => _('Umfragen bearbeiten')]));
-                $template->icons = array($navigation);
+                $template->icons = [$navigation];
             }
             return $template;
         }

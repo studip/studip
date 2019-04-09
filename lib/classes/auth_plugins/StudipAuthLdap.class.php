@@ -64,8 +64,8 @@ class StudipAuthLdap extends StudipAuthAbstract {
     {
         if (isset($this->ldap_filter)) {
             list($user, $domain) = explode('@', $username);
-            $search = array('%u', '%U', '%d', '%%');
-            $replace = array($username, $user, $domain, '%');
+            $search = ['%u', '%U', '%d', '%%'];
+            $replace = [$username, $user, $domain, '%'];
 
             return str_replace($search, $replace, $this->ldap_filter);
         }
@@ -101,7 +101,7 @@ class StudipAuthLdap extends StudipAuthAbstract {
                 $this->error_msg =_("Anonymer Bind fehlgeschlagen.") . $this->getLdapError();
                 return false;
             }
-            if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), array('dn')))){
+            if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), ['dn']))){
                 $this->error_msg = _("Anonymes Durchsuchen des LDAP Baumes fehlgeschlagen.") .$this->getLdapError();
                 return false;
             }
@@ -213,7 +213,7 @@ class StudipAuthLdap extends StudipAuthAbstract {
             $this->error = _("Anonymer Bind fehlgeschlagen.") . $this->getLdapError();
             return false;
         }
-        if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), array('dn')))){
+        if (!($result = @ldap_search($this->conn, $this->base_dn, $this->getLdapFilter($username), ['dn']))){
             $this->error =  _("Anonymes Durchsuchen des LDAP Baumes fehlgeschlagen.") .$this->getLdapError();
             return false;
         }

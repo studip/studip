@@ -165,7 +165,7 @@ class EvaluationGroup extends EvaluationObject {
    * @param    string   $templateID   The template id
    */
    function setTemplateID ($templateID) {
-      $newQuestionTexts = array ();
+      $newQuestionTexts =  [];
 
 #      if ($templateID == $this->templateID)
 #         return; // for performance reasons

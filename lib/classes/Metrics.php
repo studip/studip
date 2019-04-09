@@ -196,7 +196,7 @@ class Metrics {
 
         // call every MetricPlugin
         foreach (self::$metricPlugins as $plugin) {
-            call_user_func_array(array($plugin, $message), array($stat, $value, $sampleRate));
+            call_user_func_array([$plugin, $message], [$stat, $value, $sampleRate]);
         }
     }
 }

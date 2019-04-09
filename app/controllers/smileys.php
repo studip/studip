@@ -91,10 +91,10 @@ class SmileysController extends AuthenticatedController
 
         if (Request::isXhr()) {
             $this->response->add_header('Content-Type', 'application/json');
-            $this->render_text(json_encode(array(
+            $this->render_text(json_encode([
                 'state'   => $state,
                 'message' => $msg_box,
-            )));
+            ]));
         } else {
             PageLayout::postMessage($msg_box);
             $this->redirect('smileys/index/' . $view . '#smiley' . $id);

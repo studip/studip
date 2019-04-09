@@ -23,11 +23,11 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
         $template->scrolledfrom = strtotime('+1 day');
         $template->config = WidgetHelper::getWidgetUserConfig($GLOBALS['user']->id, 'ACTIVITY_FEED');
 
-        $navigation = new Navigation('', PluginEngine::getLink($this, array(), 'configuration'));
-        $navigation->setImage(Icon::create('edit', 'clickable', ["title" => _('Konfigurieren')]), array('data-dialog'=>'size=auto'));
+        $navigation = new Navigation('', PluginEngine::getLink($this, [], 'configuration'));
+        $navigation->setImage(Icon::create('edit', 'clickable', ["title" => _('Konfigurieren')]), ['data-dialog'=>'size=auto']);
         $icons[] = $navigation;
 
-        $navigation = new Navigation('', '#', array('cid' => null));
+        $navigation = new Navigation('', '#', ['cid' => null]);
         $navigation->setImage(Icon::create('headache+visibility-visible', 'clickable'));
         $navigation->setLinkAttributes([
             'id'    => 'toggle-user-activities',
@@ -35,7 +35,7 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
         ]);
         $icons[] = $navigation;
 
-        $navigation = new Navigation('', '#', array('cid' => null));
+        $navigation = new Navigation('', '#', ['cid' => null]);
         $navigation->setImage(Icon::create('no-activity', 'clickable'));
         $navigation->setLinkAttributes([
             'id'    => 'toggle-all-activities',
@@ -75,10 +75,10 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
     public function save_action()
     {
         if (get_config('ACTIVITY_FEED') === NULL) {
-            Config::get()->create('ACTIVITY_FEED', array(
+            Config::get()->create('ACTIVITY_FEED', [
                 'range' => 'user',
                 'type' => 'array',
-                'description' => 'Einstellungen des Activity-Widgets')
+                'description' => 'Einstellungen des Activity-Widgets']
             );
         }
 
@@ -99,14 +99,14 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
      */
     private function getAllModules()
     {
-        $modules = array();
+        $modules = [];
 
-        $modules['system'] = array(
+        $modules['system'] = [
             'news'         => _('Ankündigungen'),
             'blubber'      => _('Blubber')
-        );
+        ];
 
-        $modules[\Context::COURSE] = array(
+        $modules[\Context::COURSE] = [
             'forum'        => _('Forum'),
             'participants' => _('Teilnehmende'),
             'documents'    => _('Dateien'),
@@ -115,7 +115,7 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
             'literature'   => _('Literatur'),
             'news'         => _('Ankündigungen'),
             'blubber'      => _('Blubber')
-        );
+        ];
 
         $modules[\Context::INSTITUTE] = $modules[\Context::COURSE];
         unset($modules[\Context::INSTITUTE]['participants']);
@@ -129,11 +129,11 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
             }
         }
 
-        $modules[\Context::USER] = array(
+        $modules[\Context::USER] = [
             'message'      => _('Nachrichten'),
             'news'         => _('Ankündigungen'),
             'blubber'      => _('Blubber'),
-        );
+        ];
 
         $homepage_plugins = \PluginEngine::getPlugins('HomepagePlugin');
         foreach ($homepage_plugins as $plugin) {
@@ -161,12 +161,12 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
         $template->config = WidgetHelper::getWidgetUserConfig($GLOBALS['user']->id, 'ACTIVITY_FEED');
         $template->plugin = $this;
         $template->modules = $this->getAllModules();
-        $template->context_translations = array(
+        $template->context_translations = [
             \Context::COURSE    => _('Veranstaltungen'),
             \Context::INSTITUTE => _('Einrichtungen'),
             \Context::USER      => _('Persönlich'),
             'system'            => _('Global')
-        );
+        ];
 
         PageLayout::setTitle(_('Aktivitäten konfigurieren'));
         header('X-Title: ' . rawurlencode(PageLayout::getTitle()));

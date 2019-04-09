@@ -46,7 +46,7 @@ class LockedAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `lockedadmissions` 
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -85,7 +85,7 @@ class LockedAdmission extends AdmissionRule
     public function load() {
         $stmt = DBManager::get()->prepare("SELECT * FROM `lockedadmissions`
             WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
         }
@@ -103,7 +103,7 @@ class LockedAdmission extends AdmissionRule
     public function ruleApplies($userId, $courseId)
     {
         // YOU CANNOT PASS!
-        return array($this->getMessage());
+        return [$this->getMessage()];
     }
 
     /**
@@ -115,7 +115,7 @@ class LockedAdmission extends AdmissionRule
             (`rule_id`, `message`, `mkdate`, `chdate`)
             VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE
             `message`=VALUES(`message`), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message, time(), time()));
+        $stmt->execute([$this->id, $this->message, time(), time()]);
         return $this;
     }
 

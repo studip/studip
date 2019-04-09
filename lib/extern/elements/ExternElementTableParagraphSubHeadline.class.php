@@ -39,9 +39,9 @@
 
 class ExternElementTableParagraphSubHeadline extends ExternElement {
 
-    var $attributes = array("tr_class", "tr_style", "td_height", "td_align",
+    var $attributes = ["tr_class", "tr_style", "td_height", "td_align",
             "td_valign", "td_bgcolor", "td_class", "td_style", "font_face",
-            "font_size", "font_color", "font_class", "font_style", "margin");
+            "font_size", "font_color", "font_class", "font_style", "margin"];
 
     /**
     * Constructor
@@ -61,7 +61,7 @@ class ExternElementTableParagraphSubHeadline extends ExternElement {
             $edit_form = "", $anker = "") {
             
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';

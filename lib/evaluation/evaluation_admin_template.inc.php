@@ -86,7 +86,7 @@ if( empty($template_answers) ) {
    for( $i=0; $i<5; $i++ )
        $template_answers[$i] = $lib->makeNewAnswer();
     else
-   $template_answers = array();
+   $template_answers = [];
 }
 if(!$template_id){
       $template_id = Request::option('template_id');
@@ -354,10 +354,10 @@ if( !$command || $command == "back" ) {
 
     $question_show = new EvaluationQuestionDB();
     $arrayOfTemplateIDs = $question_show->getTemplateID ($myuserid);
-    $arrayOfPolTemplates = array();
-    $arrayOfSkalaTemplates = array();
-    $arrayOfNormalTemplates = array();
-    $arrayOfFreeTemplates = array();
+    $arrayOfPolTemplates = [];
+    $arrayOfSkalaTemplates = [];
+    $arrayOfNormalTemplates = [];
+    $arrayOfFreeTemplates = [];
 
     foreach($arrayOfTemplateIDs as $templateID) {
    $questionload = new EvaluationQuestion ($templateID,
@@ -377,19 +377,19 @@ if( !$command || $command == "back" ) {
 
        case EVALQUESTION_TYPE_POL:
       array_push($arrayOfPolTemplates,
-            array($questionload->getObjectID(), $text));
+            [$questionload->getObjectID(), $text]);
       break;
        case EVALQUESTION_TYPE_LIKERT:
       array_push($arrayOfSkalaTemplates,
-            array($questionload->getObjectID(),$text));
+            [$questionload->getObjectID(),$text]);
       break;
        case EVALQUESTION_TYPE_MC:
       if ($answer->isFreetext ()) {
           array_push($arrayOfFreeTemplates,
-                array($questionload->getObjectID(), $text));
+                [$questionload->getObjectID(), $text]);
       } else {
           array_push($arrayOfNormalTemplates,
-                array($questionload->getObjectID(),$text));
+                [$questionload->getObjectID(),$text]);
       }
       break;
        }
@@ -414,7 +414,7 @@ if( !$command || $command == "back" ) {
     $form->attr( "action", URLHelper::getLink("?page=edit&evalID=".$evalID));
     $form->attr( "method", "post" );
     $form->html(CSRFProtection::tokenTag());
-    $form->cont( Button::create(_('zurück'), 'template_back_button', array('title' => _('Zurück zur Auswahl'))) );
+    $form->cont( Button::create(_('zurück'), 'template_back_button', ['title' => _('Zurück zur Auswahl')]) );
     $td->cont( $form );
 
     /* on the fly info message -------------------------------------------- */

@@ -83,7 +83,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     public function testPostNotification()
     {
 
-        $user_data = array(42);
+        $user_data = [42];
         $this->observer->expects($this->exactly(4))
             ->method('update')
             ->with("foo", $this->subject, $user_data);
@@ -211,7 +211,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     public function testWildCardObserver()
     {
         // prepare fixtures
-        $user_data = array(42);
+        $user_data = [42];
         $subject = new stdClass();
 
         // register observer
@@ -231,7 +231,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     public function testLikeObserver()
     {
         // prepare fixtures
-        $user_data = array(42);
+        $user_data = [42];
         $subject = new stdClass();
 
         // register observer

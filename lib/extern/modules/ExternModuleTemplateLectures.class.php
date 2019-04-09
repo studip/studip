@@ -44,25 +44,25 @@ require_once 'lib/dates.inc.php';
 
 class ExternModuleTemplateLectures extends ExternModule {
 
-    var $markers = array();
-    var $args = array('seminar_id');
+    var $markers = [];
+    var $args = ['seminar_id'];
 
     /**
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
 
-        $this->data_fields = array('VeranstaltungsNummer', 'Name', 'Untertitel', 'status', 'Ort',
-            'art', 'zeiten', 'dozent');
-        $this->registered_elements = array(
+        $this->data_fields = ['VeranstaltungsNummer', 'Name', 'Untertitel', 'status', 'Ort',
+            'art', 'zeiten', 'dozent'];
+        $this->registered_elements = [
                 'ReplaceTextSemType',
                 'SelectSubjectAreas',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
                 'LinkInternPersondetails' => 'LinkInternTemplate',
                 'TemplateGeneric'
-        );
-        $this->field_names = array
-        (
+        ];
+        $this->field_names = 
+        [
                 _("Veranstaltungsnummer"),
                 _("Name"),
                 _("Untertitel"),
@@ -71,7 +71,7 @@ class ExternModuleTemplateLectures extends ExternModule {
                 _("Art"),
                 _("Zeiten"),
                 _("Lehrende")
-        );
+        ];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
@@ -86,9 +86,9 @@ class ExternModuleTemplateLectures extends ExternModule {
     //  $this->elements["LinkIntern"]->real_name = _("Link zum Modul MitarbeiterInnendetails");
 
         $this->elements['LinkInternLecturedetails']->real_name = _("Link zum Modul Veranstaltungsdetails");
-        $this->elements['LinkInternLecturedetails']->link_module_type = array(4, 13);
+        $this->elements['LinkInternLecturedetails']->link_module_type = [4, 13];
         $this->elements['LinkInternPersondetails']->real_name = _("Verlinkung zum Modul MitarbeiterInnendetails");
-        $this->elements['LinkInternPersondetails']->link_module_type = array(2, 14);
+        $this->elements['LinkInternPersondetails']->link_module_type = [2, 14];
         $this->elements['TemplateGeneric']->real_name = _("Template");
         $this->elements['TemplateGeneric']->link_module_type = 2;
 
@@ -104,49 +104,49 @@ class ExternModuleTemplateLectures extends ExternModule {
     }
 
     function getMarkerDescription ($element_name) {
-        $markers['TemplateGeneric'][] = array('__GLOBAL__', _("Globale Variablen (gültig im gesamten Template)."));
-        $markers['TemplateGeneric'][] = array('###LECTURES-COUNT###', '');
-        $markers['TemplateGeneric'][] = array('###LECTURES-SUBSTITUTE-GROUPED-BY###', '');
-        $markers['TemplateGeneric'][] = array('###START_SEMESTER###', _('Name des Startsemesters'));
+        $markers['TemplateGeneric'][] = ['__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")];
+        $markers['TemplateGeneric'][] = ['###LECTURES-COUNT###', ''];
+        $markers['TemplateGeneric'][] = ['###LECTURES-SUBSTITUTE-GROUPED-BY###', ''];
+        $markers['TemplateGeneric'][] = ['###START_SEMESTER###', _('Name des Startsemesters')];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN LECTURES -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN LECTURES -->', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN NO-LECTURES -->', '');
-        $markers['TemplateGeneric'][] = array('###NO-LECTURES-TEXT###', '');
-        $markers['TemplateGeneric'][] = array('<!-- END NO-LECTURES -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN NO-LECTURES -->', ''];
+        $markers['TemplateGeneric'][] = ['###NO-LECTURES-TEXT###', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END NO-LECTURES -->', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN GROUP -->', '');
-        $markers['TemplateGeneric'][] = array('###GROUP###', '');
-        $markers['TemplateGeneric'][] = array('###GROUP-NO###', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN GROUP -->', ''];
+        $markers['TemplateGeneric'][] = ['###GROUP###', ''];
+        $markers['TemplateGeneric'][] = ['###GROUP-NO###', ''];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN LECTURE -->', '');
-        $markers['TemplateGeneric'][] = array('###TITLE###', '');
-        $markers['TemplateGeneric'][] = array('###LECTUREDETAILS-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###SUBTITLE###', '');
-        $markers['TemplateGeneric'][] = array('###NUMBER###', _("Die Veranstaltungsnummer"));
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN LECTURE -->', ''];
+        $markers['TemplateGeneric'][] = ['###TITLE###', ''];
+        $markers['TemplateGeneric'][] = ['###LECTUREDETAILS-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###SUBTITLE###', ''];
+        $markers['TemplateGeneric'][] = ['###NUMBER###', _("Die Veranstaltungsnummer")];
 
-        $markers['TemplateGeneric'][] = array('<!-- BEGIN LECTURERS -->', '');
-        $markers['TemplateGeneric'][] = array('###FULLNAME###', '');
-        $markers['TemplateGeneric'][] = array('###LASTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###FIRSTNAME###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEFRONT###', '');
-        $markers['TemplateGeneric'][] = array('###TITLEREAR###', '');
-        $markers['TemplateGeneric'][] = array('###PERSONDETAIL-HREF###', '');
-        $markers['TemplateGeneric'][] = array('###LECTURER-NO###', '');
-        $markers['TemplateGeneric'][] = array('###UNAME###', _("Stud.IP-Username"));
-        $markers['TemplateGeneric'][] = array('<!-- END LECTURERS -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- BEGIN LECTURERS -->', ''];
+        $markers['TemplateGeneric'][] = ['###FULLNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###LASTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###FIRSTNAME###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEFRONT###', ''];
+        $markers['TemplateGeneric'][] = ['###TITLEREAR###', ''];
+        $markers['TemplateGeneric'][] = ['###PERSONDETAIL-HREF###', ''];
+        $markers['TemplateGeneric'][] = ['###LECTURER-NO###', ''];
+        $markers['TemplateGeneric'][] = ['###UNAME###', _("Stud.IP-Username")];
+        $markers['TemplateGeneric'][] = ['<!-- END LECTURERS -->', ''];
 
-        $markers['TemplateGeneric'][] = array('###ROOM###', '');
-        $markers['TemplateGeneric'][] = array('###FORM###', _("Die Veranstaltungsart"));
-        $markers['TemplateGeneric'][] = array('###SEMTYPE###', '');
-        $markers['TemplateGeneric'][] = array('###SEMTYPE-SUBSTITUTE###', '');
-        $markers['TemplateGeneric'][] = array('###SEMESTER###', '');
-        $markers['TemplateGeneric'][] = array('###CYCLE###', '');
+        $markers['TemplateGeneric'][] = ['###ROOM###', ''];
+        $markers['TemplateGeneric'][] = ['###FORM###', _("Die Veranstaltungsart")];
+        $markers['TemplateGeneric'][] = ['###SEMTYPE###', ''];
+        $markers['TemplateGeneric'][] = ['###SEMTYPE-SUBSTITUTE###', ''];
+        $markers['TemplateGeneric'][] = ['###SEMESTER###', ''];
+        $markers['TemplateGeneric'][] = ['###CYCLE###', ''];
         $this->insertDatafieldMarkers('sem', $markers, 'TemplateGeneric');
 
-        $markers['TemplateGeneric'][] = array('<!-- END LECTURE -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END GROUP -->', '');
-        $markers['TemplateGeneric'][] = array('<!-- END LECTURES -->', '');
+        $markers['TemplateGeneric'][] = ['<!-- END LECTURE -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END GROUP -->', ''];
+        $markers['TemplateGeneric'][] = ['<!-- END LECTURES -->', ''];
 
         return $markers[$element_name];
     }
@@ -165,7 +165,7 @@ class ExternModuleTemplateLectures extends ExternModule {
         init_i18n($language);
 
         ob_start();
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent(), 'subpart' => 'LECTURES'));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent(), 'subpart' => 'LECTURES']);
         ob_end_flush();
 
     }
@@ -175,7 +175,7 @@ class ExternModuleTemplateLectures extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateGeneric']->toString(array('content' => $this->getContent(), 'subpart' => 'LECTURES', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateGeneric']->toString(['content' => $this->getContent(), 'subpart' => 'LECTURES', 'hide_markers' => FALSE]);
 
     }
 
@@ -194,16 +194,16 @@ class ExternSemBrowseTemplate extends SemBrowse {
         $all_semester = SemesterData::getAllSemesterData();
         array_unshift($all_semester, 0);
 
-        $this->group_by_fields = array( array('name' => _("Semester"), 'group_field' => 'sem_number'),
-                                        array('name' => _("Bereich"), 'group_field' => 'bereich'),
-                                        array('name' => _("Lehrende"), 'group_field' => 'fullname', 'unique_field' => 'username'),
-                                        array('name' => _("Typ"), 'group_field' => 'status'),
-                                        array('name' => _("Einrichtung"), 'group_field' => 'Institut', 'unique_field' => 'Institut_id'));
+        $this->group_by_fields = [ ['name' => _("Semester"), 'group_field' => 'sem_number'],
+                                        ['name' => _("Bereich"), 'group_field' => 'bereich'],
+                                        ['name' => _("Lehrende"), 'group_field' => 'fullname', 'unique_field' => 'username'],
+                                        ['name' => _("Typ"), 'group_field' => 'status'],
+                                        ['name' => _("Einrichtung"), 'group_field' => 'Institut', 'unique_field' => 'Institut_id']];
 
         $this->module = $module;
         $this->sem_browse_data["group_by"] = $this->module->config->getValue("Main", "grouping");
         $this->sem_dates = $all_semester;
-        $this->sem_dates[0] = array("name" => sprintf(_("vor dem %s"),$this->sem_dates[1]['name']));
+        $this->sem_dates[0] = ["name" => sprintf(_("vor dem %s"),$this->sem_dates[1]['name'])];
 
         // reorganize the $SEM_TYPE-array
         foreach ($SEM_CLASS as $key_class => $class) {
@@ -281,7 +281,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
 
             // show only selected SemTypes
             $selected_semtypes = $this->module->config->getValue('ReplaceTextSemType', 'visibility');
-            $sem_types_array = array();
+            $sem_types_array = [];
             if (count($selected_semtypes)) {
                 for ($i = 0; $i < count($selected_semtypes); $i++) {
                     if ($selected_semtypes[$i] == '1') {
@@ -337,7 +337,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
             $group_by_data = $snap->getGroupedResult($group_field, $data_fields);
             $sem_data = $snap->getGroupedResult("Seminar_id");
             if ($this->sem_browse_data['group_by'] == 0){
-                $group_by_duration = $snap->getGroupedResult("sem_number_end", array("sem_number","Seminar_id"));
+                $group_by_duration = $snap->getGroupedResult("sem_number_end", ["sem_number","Seminar_id"]);
                 foreach ($group_by_duration as $sem_number_end => $detail){
                     if ($sem_number_end != -1 && ($detail['sem_number'][$sem_number_end - 1] && count($detail['sem_number']) == 1)){
                         continue;
@@ -455,7 +455,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
                         $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['SEMESTER'] = $sem_semester;
 
                         // create turnus field
-                        $sem_turnus = Seminar::getInstance($seminar_id)->getDatesExport(array('show_room' => true));
+                        $sem_turnus = Seminar::getInstance($seminar_id)->getDatesExport(['show_room' => true]);
 
                         $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['CYCLE'] = ExternModule::ExtHtmlReady($sem_turnus);
 
@@ -471,7 +471,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
                             array_multisort($doz_position, $doz_name, $doz_uname);
                             $k = 0;
                             foreach ($doz_name as $index => $value) {
-                                $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTURERS'][$k]['PERSONDETAIL-HREF'] = $this->module->elements['LinkInternPersondetails']->createUrl(array('link_args' => 'username=' . $doz_uname[$index]));
+                                $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTURERS'][$k]['PERSONDETAIL-HREF'] = $this->module->elements['LinkInternPersondetails']->createUrl(['link_args' => 'username=' . $doz_uname[$index]]);
                                 $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTURERS'][$k]['FULLNAME'] = ExternModule::ExtHtmlReady($doz_name[$index]);
                                 $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTURERS'][$k]['LASTNAME'] = ExternModule::ExtHtmlReady($doz_lastname[$index]);
                                 $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTURERS'][$k]['FIRSTNAME'] = ExternModule::ExtHtmlReady($doz_firstname[$index]);
@@ -483,7 +483,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
                             }
                         }
 
-                        $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTUREDETAILS-HREF'] = $this->module->elements['LinkInternLecturedetails']->createUrl(array('link_args' => 'seminar_id=' . $seminar_id));
+                        $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['LECTUREDETAILS-HREF'] = $this->module->elements['LinkInternLecturedetails']->createUrl(['link_args' => 'seminar_id=' . $seminar_id]);
                         $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['NUMBER'] = ExternModule::ExtHtmlReady(key($sem_data[$seminar_id]['VeranstaltungsNummer']));
                         $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['SUBTITLE'] = ExternModule::ExtHtmlReady(key($sem_data[$seminar_id]['Untertitel']));
                         $aliases_sem_type = $this->module->config->getValue('ReplaceTextSemType', 'class_' . $SEM_TYPE[key($sem_data[$seminar_id]['status'])]['class']);

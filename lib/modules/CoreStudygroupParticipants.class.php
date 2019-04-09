@@ -21,7 +21,7 @@ class CoreStudygroupParticipants implements StudipModule {
         $navigation = new Navigation(_('Teilnehmende'), "dispatch.php/course/studygroup/members/".$course_id);
         $navigation->setImage(Icon::create('persons', 'info_alt'));
         $navigation->setActiveImage(Icon::create('persons', 'info'));
-        return array('members' => $navigation);
+        return ['members' => $navigation];
     }
 
     /** 
@@ -29,6 +29,6 @@ class CoreStudygroupParticipants implements StudipModule {
      */ 
     function getMetadata()
     {
-         return array();
+         return [];
     }
 }

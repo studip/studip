@@ -2,7 +2,7 @@
 # Lifter010: TODO
 $color_background = Color::brighten($entry[0]['color'], 20);
 
-$title = $heading = $ids = array();
+$title = $heading = $ids = [];
 
 // check, if at least one entry is visible
 $show = false;

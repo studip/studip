@@ -34,10 +34,10 @@
 
 class SeminarCategories {
 
-    private static $seminar_categories = array();
+    private static $seminar_categories = [];
 
-    private $sem_class_data = array();
-    private $sem_type_data = array();
+    private $sem_class_data = [];
+    private $sem_type_data = [];
 
     /**
      * Enter description here...
@@ -63,7 +63,7 @@ class SeminarCategories {
      * @return unknown
      */
     public static function GetAll(){
-        $ret = array();
+        $ret = [];
         foreach($GLOBALS['SEM_CLASS'] as $id => $sem_class){
             $ret[] = self::get($id);
         }

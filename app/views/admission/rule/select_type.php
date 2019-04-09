@@ -22,9 +22,9 @@
 
     <footer data-dialog-button>
         <?= CSRFProtection::tokenTag() ?>
-        <?= Button::create(_('Weiter >>'), 'configure', array(
+        <?= Button::create(_('Weiter >>'), 'configure', [
             'onclick' => "return $('input[name=ruletype]:checked').val() ? STUDIP.Admission.configureRule($('input[name=ruletype]:checked').val(), '".
-                $controller->url_for('admission/rule/configure')."') : false")) ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admission/courseset/configure'), array('onclick' => "STUDIP.Admission.closeDialog('configurerule'); return false;")) ?>
+                $controller->url_for('admission/rule/configure')."') : false"]) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admission/courseset/configure'), ['onclick' => "STUDIP.Admission.closeDialog('configurerule'); return false;"]) ?>
     </footer>
 </form>

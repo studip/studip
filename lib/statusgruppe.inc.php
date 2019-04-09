@@ -63,7 +63,7 @@ function GetAllStatusgruppen($parent, $check_user = null, $exclude = false) {
         $kids = GetAllStatusgruppen($group['statusgruppe_id'], $check_user, $exclude);
 
         if ($check_user) {
-            $presence->execute(array($check_user, $group['statusgruppe_id']));
+            $presence->execute([$check_user, $group['statusgruppe_id']]);
             $present = $presence->fetchColumn();
             $presence->closeCursor();
 
@@ -104,7 +104,7 @@ function GetAllStatusgruppen($parent, $check_user = null, $exclude = false) {
  * @return array|null
  */
 function GetRoleNames($roles, $level = 0, $pred = '', $all = false) {
-    $out = array();
+    $out = [];
 
     if (is_array($roles))
     foreach ($roles as $role_id => $role) {

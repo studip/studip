@@ -68,10 +68,10 @@ class AssignObjectPerms {
                       FROM resources_assign
                       WHERE assign_user_id = ? AND assign_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $this->user_id,
                 $this->assign_id
-            ));
+            ]);
             $this->owner = (bool)$statement->fetchColumn();
 
             if ($this->owner) {
@@ -83,7 +83,7 @@ class AssignObjectPerms {
         if ($this->perm != "admin") {
             $query = "SELECT resource_id FROM resources_assign WHERE assign_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->assign_id));
+            $statement->execute([$this->assign_id]);
             $resource_id = $statement->fetchColumn();
 
             if ($resource_id) {

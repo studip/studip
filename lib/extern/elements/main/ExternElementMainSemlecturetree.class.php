@@ -45,12 +45,12 @@ class ExternElementMainSemLectureTree extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'table_width', 'table_align', 'table_border', 'table_bgcolor',
                 'table_bordercolor', 'table_cellpadding', 'table_cellspacing', 'table_class',
                 'table_style', 'wholesite', 'urlcss', 'title', 'bodystyle',
                 'bodyclass'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -61,7 +61,7 @@ class ExternElementMainSemLectureTree extends ExternElementMain {
     */
     function getDefaultConfig () {
         
-        $config = array();
+        $config = [];
         
         return $config;
     }
@@ -87,10 +87,10 @@ class ExternElementMainSemLectureTree extends ExternElementMain {
         
         $content_table .= $this->getSRIFormContent($edit_form);
         
-        $attributes = array("table_width", "table_align", "table_border", "table_bgcolor",
+        $attributes = ["table_width", "table_align", "table_border", "table_bgcolor",
                 "table_bordercolor", "table_cellpadding", "table_cellspacing", "table_class",
-                "table_style");
-        $headline = array("table" => _("Umschließende Tabelle"));
+                "table_style"];
+        $headline = ["table" => _("Umschließende Tabelle")];
         $content_table .= $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
         

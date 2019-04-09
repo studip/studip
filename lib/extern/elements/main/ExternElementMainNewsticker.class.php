@@ -46,9 +46,9 @@ class ExternElementMainNewsticker extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'rows', 'length', 'pause', 'frequency',
-                'starttext', 'endtext', 'nodatatext', 'automaticstart', 'jsonly', 'style');
+                'starttext', 'endtext', 'nodatatext', 'automaticstart', 'jsonly', 'style'];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -59,7 +59,7 @@ class ExternElementMainNewsticker extends ExternElementMain {
     */
     function getDefaultConfig () {
 
-        $config = array(
+        $config = [
             "name" => "",
             "rows" => "3",
             "length" => "40",
@@ -70,7 +70,7 @@ class ExternElementMainNewsticker extends ExternElementMain {
             "nodatatext" => _("Keine aktuellen News"),
             "automaticstart" => "1",
             "style" => ""
-        );
+        ];
 
         return $config;
     }

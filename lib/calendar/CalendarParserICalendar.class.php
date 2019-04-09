@@ -31,7 +31,7 @@ class CalendarParserICalendar extends CalendarParser
 
     public function getCount($data)
     {
-        $matches = array();
+        $matches = [];
         if (is_null($this->count)) {
             // Unfold any folded lines
             $data = preg_replace('/\x0D?\x0A[\x20\x09]/', '', $data);
@@ -54,7 +54,7 @@ class CalendarParserICalendar extends CalendarParser
         global $_calendar_error, $PERS_TERMIN_KAT;
 
         // match categories
-        $studip_categories = array();
+        $studip_categories = [];
         $i = 1;
         foreach ($PERS_TERMIN_KAT as $cat) {
             $studip_categories[mb_strtolower($cat['name'])] = $i++;
@@ -88,13 +88,13 @@ class CalendarParserICalendar extends CalendarParser
             // Parse the remain attributes
 
             if (preg_match_all('/(.*):(.*)(\r|\n)+/', $v_event, $matches)) {
-                $properties = array();
-                $check = array();
+                $properties = [];
+                $check = [];
                 foreach ($matches[0] as $property) {
                     preg_match('/([^;^:]*)((;[^:]*)?):(.*)/', $property, $parts);
                     $tag = $parts[1];
                     $value = $parts[4];
-                    $params = array();
+                    $params = [];
 
                     // skip seminar events
                     if ((!$this->import_sem) && $tag == 'UID') {
@@ -132,7 +132,7 @@ class CalendarParserICalendar extends CalendarParser
                             break;
 
                         case 'CATEGORIES':
-                            $categories = array();
+                            $categories = [];
                             $properties['STUDIP_CATEGORY'] = null;
                             foreach (explode(',', $value) as $category) {
                                 if (!$studip_categories[mb_strtolower($category)]) {
@@ -190,10 +190,10 @@ class CalendarParserICalendar extends CalendarParser
                             break;
 
                         case 'EXDATE':
-                            $properties[$tag] = array();
+                            $properties[$tag] = [];
                             // comma seperated dates
-                            $values = array();
-                            $dates = array();
+                            $values = [];
+                            $dates = [];
                             preg_match_all('/,([^,]*)/', ',' . $value, $values);
                             foreach ($values[1] as $value) {
                                 if (array_key_exists('VALUE', $params)) {
@@ -218,8 +218,8 @@ class CalendarParserICalendar extends CalendarParser
 
                         // Period of time fields
                         case 'FREEBUSY':
-                            $values = array();
-                            $periods = array();
+                            $values = [];
+                            $periods = [];
                             preg_match_all('/,([^,]*)/', ',' . $value, $values);
                             foreach ($values[1] as $value) {
                                 $periods[] = $this->_parsePeriod($value);
@@ -280,7 +280,7 @@ class CalendarParserICalendar extends CalendarParser
                 }
 
                 if (!$properties['RRULE']['rtype'])
-                    $properties['RRULE'] = array('rtype' => 'SINGLE');
+                    $properties['RRULE'] = ['rtype' => 'SINGLE'];
 
                 if (!$properties['LAST-MODIFIED'])
                     $properties['LAST-MODIFIED'] = $properties['CREATED'];
@@ -353,9 +353,9 @@ class CalendarParserICalendar extends CalendarParser
         $start = $this->_parseDateTime($matches[0]);
 
         if ($duration = $this->_parseDuration($matches[1])) {
-            return array('start' => $start, 'duration' => $duration);
+            return ['start' => $start, 'duration' => $duration];
         } else if ($end = $this->_parseDateTime($matches[1])) {
-            return array('start' => $start, 'end' => $end);
+            return ['start' => $start, 'end' => $end];
         }
     }
 
@@ -485,7 +485,7 @@ class CalendarParserICalendar extends CalendarParser
         global $_calendar_error;
 
         if (preg_match_all('/([A-Za-z]*?)=([^;]*);?/', $text, $matches, PREG_SET_ORDER)) {
-            $r_rule = array();
+            $r_rule = [];
 
             foreach ($matches as $match) {
                 switch ($match[1]) {
@@ -556,8 +556,8 @@ class CalendarParserICalendar extends CalendarParser
         global $_calendar_error;
 
         preg_match_all('/(-?\d{1,2})?(MO|TU|WE|TH|FR|SA|SU),?/', $text, $matches, PREG_SET_ORDER);
-        $wdays_map = array('MO' => '1', 'TU' => '2', 'WE' => '3', 'TH' => '4', 'FR' => '5',
-            'SA' => '6', 'SU' => '7');
+        $wdays_map = ['MO' => '1', 'TU' => '2', 'WE' => '3', 'TH' => '4', 'FR' => '5',
+            'SA' => '6', 'SU' => '7'];
         $wdays = "";
         $sinterval = null;
         foreach ($matches as $match) {
@@ -574,7 +574,7 @@ class CalendarParserICalendar extends CalendarParser
             }
         }
 
-        return $wdays ? array('wdays' => $wdays, 'sinterval' => $sinterval) : false;
+        return $wdays ? ['wdays' => $wdays, 'sinterval' => $sinterval] : false;
     }
 
     private function _parseByMonthDay($text)

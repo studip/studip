@@ -25,41 +25,41 @@ class StudipLitSearch
 
         URLHelper::bindLinkParam("_start_result",$this->start_result);
 
-        $this->form_template = array('search_term'  =>  array('type' => 'text', 'caption' => _("Suchbegriff"), 'info' => _("Bitte geben Sie hier einen beliebigen Suchbegriff ein.")),
-                                    'search_field'  =>  array('type' => 'select', 'caption' => _("Suchfeld"), 'info' => _("Mögliche Suchfelder"),
-                                                            'options_callback' => array($this,"getSearchFields")),
-                                    'search_truncate'=> array('type' => 'select', 'caption' => _("Trunkieren"), 'info' => _("Wenn Sie eine der Trunkierungsoptionen wählen, werden alle Treffer angezeigt, die mit dem Suchbegriff beginnen (Rechts trunkieren) bzw. enden (Links trunkieren)."),
-                                                            'options' => array(array('name' => _("Nein"), "value" => 'none'),
-                                                                                array('name' => _("Rechts trunkieren"), "value" => 'right'),
-                                                                                /*array('name' => _("Links trunkieren"), "value" => 'left')*/)),
-                                    'search_operator'=> array('type' => 'radio', 'options' => array(array('name' =>_("UND"),'value' => 'AND'),
-                                                                                                    array('name' =>_("ODER"),'value' => 'OR'),
-                                                                                                    array('name' =>_("NICHT"),'value' => 'NOT')),
-                                                            'caption' => _("Verknüpfung") ,'info'=>_("Wählen Sie eine Verknüpfungsart"), 'separator' => "&nbsp;", 'default_value' => "AND")
-                                    );
+        $this->form_template = ['search_term'  =>  ['type' => 'text', 'caption' => _("Suchbegriff"), 'info' => _("Bitte geben Sie hier einen beliebigen Suchbegriff ein.")],
+                                    'search_field'  =>  ['type' => 'select', 'caption' => _("Suchfeld"), 'info' => _("Mögliche Suchfelder"),
+                                                            'options_callback' => [$this,"getSearchFields"]],
+                                    'search_truncate'=> ['type' => 'select', 'caption' => _("Trunkieren"), 'info' => _("Wenn Sie eine der Trunkierungsoptionen wählen, werden alle Treffer angezeigt, die mit dem Suchbegriff beginnen (Rechts trunkieren) bzw. enden (Links trunkieren)."),
+                                                            'options' => [['name' => _("Nein"), "value" => 'none'],
+                                                                                ['name' => _("Rechts trunkieren"), "value" => 'right'],
+                                                                                /*array('name' => _("Links trunkieren"), "value" => 'left')*/]],
+                                    'search_operator'=> ['type' => 'radio', 'options' => [['name' =>_("UND"),'value' => 'AND'],
+                                                                                                    ['name' =>_("ODER"),'value' => 'OR'],
+                                                                                                    ['name' =>_("NICHT"),'value' => 'NOT']],
+                                                            'caption' => _("Verknüpfung") ,'info'=>_("Wählen Sie eine Verknüpfungsart"), 'separator' => "&nbsp;", 'default_value' => "AND"]
+                                    ];
         $search_plugins = $this->getAvailablePlugins();
         $preferred_plugin = $this->getPreferredPlugin();
         $i = 0;
         if ($preferred_plugin && isset($search_plugins[$preferred_plugin])) {
-            $search_plugin_options[] = array('name' => $search_plugins[$preferred_plugin], 'value' => $preferred_plugin);
+            $search_plugin_options[] = ['name' => $search_plugins[$preferred_plugin], 'value' => $preferred_plugin];
         }
         foreach ($search_plugins as $plugin_name => $plugin_displayname) {
             if ($preferred_plugin != $plugin_name) {
-                $search_plugin_options[] = array('name' => $plugin_displayname , 'value' => $plugin_name);
+                $search_plugin_options[] = ['name' => $plugin_displayname , 'value' => $plugin_name];
             } else {
                 unset($search_plugins[$plugin_name]);
                 $search_plugins[$plugin_name] = $plugin_displayname;
             }
         }
-        $outer_form_fields = array('search_plugin' => array('type' => 'select', 'caption' => _("Welchen Katalog durchsuchen ?"),
-                                                            'options' => $search_plugin_options, 'default_value' => $search_plugin_options[0]['value']),
-                                    'search_term_count' => array('type' => 'hidden', 'default_value' => 1)
-                                    );
-        $outer_form_buttons = array('search' => array('caption' => _('Suchen'), 'info' => _("Suche starten")),
-                                    'reset' => array('caption' => _('Zurücksetzen'), 'info' => _("Suche zurücksetzen")),
-                                    'change' => array('caption' => _('Auswählen'), 'info' => _("Anderen Katalog auswählen")),
-                                    'search_add' => array('caption' => _('Hinzufügen'), 'info' => _("Suchfeld hinzufügen")),
-                                    'search_sub' => array('caption' => _('Entfernen'), 'info' => _("Suchfeld entfernen")));
+        $outer_form_fields = ['search_plugin' => ['type' => 'select', 'caption' => _("Welchen Katalog durchsuchen ?"),
+                                                            'options' => $search_plugin_options, 'default_value' => $search_plugin_options[0]['value']],
+                                    'search_term_count' => ['type' => 'hidden', 'default_value' => 1]
+                                    ];
+        $outer_form_buttons = ['search' => ['caption' => _('Suchen'), 'info' => _("Suche starten")],
+                                    'reset' => ['caption' => _('Zurücksetzen'), 'info' => _("Suche zurücksetzen")],
+                                    'change' => ['caption' => _('Auswählen'), 'info' => _("Anderen Katalog auswählen")],
+                                    'search_add' => ['caption' => _('Hinzufügen'), 'info' => _("Suchfeld hinzufügen")],
+                                    'search_sub' => ['caption' => _('Entfernen'), 'info' => _("Suchfeld entfernen")]];
 
         $this->outer_form = new StudipForm($outer_form_fields,$outer_form_buttons,"lit_search");
 

@@ -18,14 +18,14 @@
 
 class Admin_DatafieldsController extends AuthenticatedController
 {
-    public $user_status = array(
+    public $user_status = [
         'user'   =>  1,
         'autor'  =>  2,
         'tutor'  =>  4,
         'dozent' =>  8,
         'admin'  => 16,
         'root'   => 32,
-    );
+    ];
 
     /**
      * Common tasks for all actions.
@@ -56,11 +56,11 @@ class Admin_DatafieldsController extends AuthenticatedController
     public function index_action($class = null)
     {
         if ($this->class_filter) {
-            $this->datafields_list = array(
+            $this->datafields_list = [
                 $this->class_filter => DataField::getDataFields($this->class_filter),
-            );
+            ];
         } else {
-            $this->datafields_list = array(
+            $this->datafields_list = [
                 'sem'                 => DataField::getDataFields('sem'),
                 'inst'                => DataField::getDataFields('inst'),
                 'user'                => DataField::getDataFields('user'),
@@ -69,7 +69,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 'roleinstdata'        => DataField::getDataFields('roleinstdata'),
                 'moduldeskriptor'     => DataField::getDataFields('moduldeskriptor'),
                 'modulteildeskriptor' => DataField::getDataFields('modulteildeskriptor')
-            );
+            ];
         }
 
         // set variables for view

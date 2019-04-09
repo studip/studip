@@ -130,7 +130,7 @@ class ForumEntry  implements PrivacyObject
     public static function getEditInfo($description) {
         if (preg_match('/<admin_msg autor="([^"]*)" chdate="([^"]*)">\s*$/i', $description, $matches)) {
             // wurde schon mal editiert
-            return array('author' => $matches[1], 'time' => $matches[2]);
+            return ['author' => $matches[1], 'time' => $matches[2]];
         }
         return false;
     }
@@ -200,7 +200,7 @@ class ForumEntry  implements PrivacyObject
         // look up the range of postings
         $range_stmt = DBManager::get()->prepare("SELECT *
             FROM forum_entries WHERE topic_id = ?");
-        $range_stmt->execute(array($topic_id));
+        $range_stmt->execute([$topic_id]);
         if (!$data = $range_stmt->fetch(PDO::FETCH_ASSOC)) {
             return false;
             // throw new Exception("Could not find entry with id >>$topic_id<< in forum_entries, " . __FILE__ . " on line " . __LINE__);
@@ -244,7 +244,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("SELECT topic_id
             FROM forum_entries WHERE lft >= ? AND rgt <= ?
                 AND seminar_id = ?");
-        $stmt->execute(array($constraints['lft'], $constraints['rgt'], $constraints['seminar_id']));
+        $stmt->execute([$constraints['lft'], $constraints['rgt'], $constraints['seminar_id']]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -295,7 +295,7 @@ class ForumEntry  implements PrivacyObject
             WHERE lft > ? AND rgt < ? AND seminar_id = ?
                 AND mkdate >= ?
             ORDER BY mkdate ASC LIMIT 1");
-        $stmt->execute(array($constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $visitdate));
+        $stmt->execute([$constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $visitdate]);
         $last_unread = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $last_unread ? $last_unread['topic_id'] : null;
@@ -316,7 +316,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("SELECT * FROM forum_entries
             WHERE lft > ? AND rgt < ? AND seminar_id = ?
             ORDER BY mkdate DESC LIMIT 1");
-        $stmt->execute(array($constraint['lft'], $constraint['rgt'], $constraint['seminar_id']));
+        $stmt->execute([$constraint['lft'], $constraint['rgt'], $constraint['seminar_id']]);
 
         if (!$data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             return false;
@@ -336,11 +336,11 @@ class ForumEntry  implements PrivacyObject
     public static function getPathToPosting($topic_id)
     {
         $data = ForumEntry::getConstraints($topic_id);
-        $ret = array();
+        $ret = [];
 
         $stmt = DBManager::get()->prepare("SELECT * FROM forum_entries
             WHERE lft <= ? AND rgt >= ? AND seminar_id = ? ORDER BY lft ASC");
-        $stmt->execute(array($data['lft'], $data['rgt'], $data['seminar_id']));
+        $stmt->execute([$data['lft'], $data['rgt'], $data['seminar_id']]);
 
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $ret[$data['topic_id']] = $data;
@@ -393,7 +393,7 @@ class ForumEntry  implements PrivacyObject
      */
     public static function parseEntries($postings)
     {
-        $posting_list = array();
+        $posting_list = [];
 
         // retrieve the postings
         foreach ($postings as $data) {
@@ -405,7 +405,7 @@ class ForumEntry  implements PrivacyObject
                 $desc_short = $desc_short;
             }
 
-            $posting_list[$data['topic_id']] = array(
+            $posting_list[$data['topic_id']] = [
                 'author'          => $data['author'],
                 'topic_id'        => $data['topic_id'],
                 'name'            => formatReady($data['name']),
@@ -424,7 +424,7 @@ class ForumEntry  implements PrivacyObject
                 'closed'          => $data['closed'],
                 'sticky'          => $data['sticky'],
                 'seminar_id'      => $data['seminar_id']
-            );
+            ];
         } // retrieve the postings
 
         return $posting_list;
@@ -484,7 +484,7 @@ class ForumEntry  implements PrivacyObject
                 . ($depth > 2 ? " OR forum_entries.topic_id = ". DBManager::get()->quote($parent_id) : '')
                 . $add
                 . " ORDER BY forum_entries.mkdate $sort_order");
-            $count_stmt->execute(array($GLOBALS['user']->id, $seminar_id, $constraint['lft'], $constraint['rgt']));
+            $count_stmt->execute([$GLOBALS['user']->id, $seminar_id, $constraint['lft'], $constraint['rgt']]);
             $count = $count_stmt->fetchColumn();
         } else {
             $count_stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_entries
@@ -495,7 +495,7 @@ class ForumEntry  implements PrivacyObject
                 . ($depth > 2 ? " OR forum_entries.topic_id = ". DBManager::get()->quote($parent_id) : '')
                 . ') '. $add
                 . " ORDER BY forum_entries.mkdate $sort_order");
-            $count_stmt->execute(array($GLOBALS['user']->id, $depth, $seminar_id, $constraint['lft'], $constraint['rgt']));
+            $count_stmt->execute([$GLOBALS['user']->id, $depth, $seminar_id, $constraint['lft'], $constraint['rgt']]);
             $count = $count_stmt->fetchColumn();
         }
 
@@ -517,7 +517,7 @@ class ForumEntry  implements PrivacyObject
                 . $add
                 . " ORDER BY forum_entries.mkdate $sort_order"
                 . ($limit ? " LIMIT $start, $limit" : ''));
-            $stmt->execute(array($GLOBALS['user']->id, $seminar_id, $constraint['lft'], $constraint['rgt']));
+            $stmt->execute([$GLOBALS['user']->id, $seminar_id, $constraint['lft'], $constraint['rgt']]);
         } else {
             $stmt = DBManager::get()->prepare("SELECT forum_entries.*, IF(ou.topic_id IS NOT NULL, 'fav', NULL) as fav
                     FROM forum_entries
@@ -528,14 +528,14 @@ class ForumEntry  implements PrivacyObject
                 . ') '. $add
                 . " ORDER BY forum_entries.mkdate $sort_order"
                 . ($limit ? " LIMIT $start, $limit" : ''));
-            $stmt->execute(array($GLOBALS['user']->id, $depth, $seminar_id, $constraint['lft'], $constraint['rgt']));
+            $stmt->execute([$GLOBALS['user']->id, $depth, $seminar_id, $constraint['lft'], $constraint['rgt']]);
         }
 
         if (!$stmt) {
             throw new Exception("Error while retrieving postings in " . __FILE__ . " on line " . __LINE__);
         }
 
-        return array('list' => ForumEntry::parseEntries($stmt->fetchAll(PDO::FETCH_ASSOC)), 'count' => $count);
+        return ['list' => ForumEntry::parseEntries($stmt->fetchAll(PDO::FETCH_ASSOC)), 'count' => $count];
     }
 
 
@@ -599,7 +599,7 @@ class ForumEntry  implements PrivacyObject
                 $postings = $list['list'];
 
                 $postings = ForumEntry::getLastPostings($postings);
-                return array('list' => $postings, 'count' => $list['count']);
+                return ['list' => $postings, 'count' => $list['count']];
 
                 break;
 
@@ -627,7 +627,7 @@ class ForumEntry  implements PrivacyObject
                 $postings = ForumEntry::parseEntries($postings);
                 $postings = ForumEntry::getLastPostings($postings);
 
-                return array('list' => $postings, 'count' => $count);
+                return ['list' => $postings, 'count' => $count];
                 break;
 
             case 'postings':
@@ -673,7 +673,7 @@ class ForumEntry  implements PrivacyObject
 
 
                 // return results
-                return array('list' => $postings, 'count' => $stmt_count->fetchColumn());
+                return ['list' => $postings, 'count' => $stmt_count->fetchColumn()];
                 break;
 
             case 'latest':
@@ -696,7 +696,7 @@ class ForumEntry  implements PrivacyObject
                         AND lft > ? AND rgt < ?) "
                     . ($depth > 2 ? " OR forum_entries.topic_id = ". DBManager::get()->quote($parent_id) : '')
                     . " ORDER BY forum_entries.lft ASC");
-                $stmt->execute(array($seminar_id, $constraint['lft'], $constraint['rgt']));
+                $stmt->execute([$seminar_id, $constraint['lft'], $constraint['rgt']]);
 
                 return ForumEntry::parseEntries($stmt->fetchAll(PDO::FETCH_ASSOC));
                 break;
@@ -707,15 +707,15 @@ class ForumEntry  implements PrivacyObject
                 $stmt = DBManager::get()->prepare("SELECT SQL_CALC_FOUND_ROWS * FROM forum_entries
                     WHERE lft > ? AND rgt < ? AND seminar_id = ? AND depth = ?
                     ORDER BY name ASC");
-                $stmt->execute(array($constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $constraint['depth'] + 1));
+                $stmt->execute([$constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $constraint['depth'] + 1]);
 
                 $count = DBManager::get()->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-                $posting_list = array();
+                $posting_list = [];
 
                 // speed up things a bit by leaving out the formatReady fields
                 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
-                    $posting_list[$data['topic_id']] = array(
+                    $posting_list[$data['topic_id']] = [
                         'author'          => $data['author'],
                         'topic_id'        => $data['topic_id'],
                         'name_raw'        => $data['name'],
@@ -729,10 +729,10 @@ class ForumEntry  implements PrivacyObject
                         'fav'             => ($data['fav'] == 'fav'),
                         'depth'           => $data['depth'],
                         'seminar_id'      => $data['seminar_id']
-                    );
+                    ];
                 }
 
-                return array('list' => $posting_list, 'count' => $count);
+                return ['list' => $posting_list, 'count' => $count];
                 break;
 
             case 'depth_to_large':
@@ -741,11 +741,11 @@ class ForumEntry  implements PrivacyObject
                 $stmt = DBManager::get()->prepare("SELECT SQL_CALC_FOUND_ROWS * FROM forum_entries
                     WHERE lft > ? AND rgt < ? AND seminar_id = ? AND depth > 3
                     ORDER BY name ASC");
-                $stmt->execute(array($constraint['lft'], $constraint['rgt'], $constraint['seminar_id']));
+                $stmt->execute([$constraint['lft'], $constraint['rgt'], $constraint['seminar_id']]);
 
                 $count = DBManager::get()->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-                return array('list' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'count' => $count);
+                return ['list' => $stmt->fetchAll(PDO::FETCH_ASSOC), 'count' => $count];
                 break;
         }
     }
@@ -767,7 +767,7 @@ class ForumEntry  implements PrivacyObject
             WHERE lft > ? AND rgt < ? AND seminar_id = ?
                 AND mkdate BETWEEN ? AND ?
             ORDER BY name ASC");
-        $stmt->execute(array($constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $start_date, $end_date));
+        $stmt->execute([$constraint['lft'], $constraint['rgt'], $constraint['seminar_id'], $start_date, $end_date]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -808,13 +808,13 @@ class ForumEntry  implements PrivacyObject
         }
 
         // make an SQL-statement out of the searchstring
-        $search_string = array();
+        $search_string = [];
         foreach ($_searchfor as $key => $val) {
             if (!$val) {
                 unset($_searchfor[$key]);
             } else {
                 $search_word = '%'. $val .'%';
-                $zw_search_string = array();
+                $zw_search_string = [];
                 if ($options['search_title']) {
                     $zw_search_string[] .= "name LIKE " . DBManager::get()->quote($search_word);
                 }
@@ -836,12 +836,12 @@ class ForumEntry  implements PrivacyObject
         if (!empty($search_string)) {
             $add = "AND (" . implode(' AND ', $search_string) . ")";
             return array_merge(
-                array('highlight' => $_searchfor),
+                ['highlight' => $_searchfor],
                 ForumEntry::getEntries($parent_id, ForumEntry::WITH_CHILDS, $add, 'DESC', $start)
             );
         }
 
-        return array('num_postings' => 0, 'list' => array());
+        return ['num_postings' => 0, 'list' => []];
     }
 
     /**
@@ -885,7 +885,7 @@ class ForumEntry  implements PrivacyObject
             $stmt = DBManager::get()->prepare("SELECT COUNT(*)
                 FROM forum_entries
                 WHERE user_id = ? AND seminar_id = IFNULL(?, seminar_id)");
-            $stmt->execute(array($user_id, $seminar_id));
+            $stmt->execute([$user_id, $seminar_id]);
 
             $entries[$user_id] = $stmt->fetchColumn();
         }
@@ -926,9 +926,9 @@ class ForumEntry  implements PrivacyObject
             (topic_id, seminar_id, user_id, name, content, mkdate, latest_chdate,
                 chdate, author, author_host, lft, rgt, depth, anonymous)
             VALUES (? ,?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), ?, ?, ?, ?, ?, ?)");
-        $stmt->execute(array($data['topic_id'], $data['seminar_id'], $data['user_id'],
+        $stmt->execute([$data['topic_id'], $data['seminar_id'], $data['user_id'],
             $data['name'], transformBeforeSave($data['content']), $data['author'], $data['author_host'],
-            $constraint['rgt'], $constraint['rgt'] + 1, $constraint['depth'] + 1, $data['anonymous'] ? : 0));
+            $constraint['rgt'], $constraint['rgt'] + 1, $constraint['depth'] + 1, $data['anonymous'] ? : 0]);
 
         // update "latest_chdate" for easier sorting of actual threads
         DBManager::get()->exec("UPDATE forum_entries SET latest_chdate = UNIX_TIMESTAMP()
@@ -958,7 +958,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("UPDATE forum_entries
             SET name = ?, content = ?, chdate = UNIX_TIMESTAMP(), latest_chdate = UNIX_TIMESTAMP()
             WHERE topic_id = ?");
-        $stmt->execute(array($name, transformBeforeSave($content), $topic_id));
+        $stmt->execute([$name, transformBeforeSave($content), $topic_id]);
 
         // update "latest_chdate" for easier sorting of actual threads
         $parent_id = ForumEntry::getParentTopicId($topic_id);
@@ -989,10 +989,10 @@ class ForumEntry  implements PrivacyObject
         // get all entry-ids to delete them from the category-reference-table
         $stmt = DBManager::get()->prepare("SELECT topic_id FROM forum_entries
             WHERE seminar_id = ? AND lft >= ? AND rgt <= ? AND depth = 1");
-        $stmt->execute(array($post['seminar_id'], $post['lft'], $post['rgt']));
+        $stmt->execute([$post['seminar_id'], $post['lft'], $post['rgt']]);
         $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-        if ($ids != false && !is_array($ids)) $ids = array($ids);
+        if ($ids != false && !is_array($ids)) $ids = [$ids];
 
         if (!empty($ids)) {
             $stmt = DBManager::get()->prepare("DELETE FROM forum_categories_entries
@@ -1005,32 +1005,32 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("DELETE FROM forum_entries
             WHERE seminar_id = ? AND lft >= ? AND rgt <= ?");
 
-        $stmt->execute(array($post['seminar_id'], $post['lft'], $post['rgt']));
+        $stmt->execute([$post['seminar_id'], $post['lft'], $post['rgt']]);
 
         // update lft and rgt
         $diff = $post['rgt'] - $post['lft'] + 1;
         $stmt = DBManager::get()->prepare("UPDATE forum_entries SET lft = lft - $diff
             WHERE lft > ? AND seminar_id = ?");
-        $stmt->execute(array($post['rgt'], $post['seminar_id']));
+        $stmt->execute([$post['rgt'], $post['seminar_id']]);
 
         $stmt = DBManager::get()->prepare("UPDATE forum_entries SET rgt = rgt - $diff
             WHERE rgt > ? AND seminar_id = ?");
-        $stmt->execute(array($post['rgt'], $post['seminar_id']));
+        $stmt->execute([$post['rgt'], $post['seminar_id']]);
 
 
         // set the latest_chdate to the latest child's chdate
         $stmt = DBManager::get()->prepare("SELECT chdate FROM forum_entries
             WHERE lft > ? AND rgt < ? AND seminar_id = ?
             ORDER BY chdate DESC LIMIT 1");
-        $stmt->execute(array($parent['lft'], $parent['rgt'], $parent['seminar_id']));
+        $stmt->execute([$parent['lft'], $parent['rgt'], $parent['seminar_id']]);
         $chdate = $stmt->fetchColumn();
 
         $stmt_insert = DBManager::get()->prepare("UPDATE forum_entries
             SET chdate = ? WHERE topic_id = ?");
         if ($chdate) {
-            $stmt_insert->execute(array($chdate, $parent['topic_id']));
+            $stmt_insert->execute([$chdate, $parent['topic_id']]);
         } else {
-            $stmt_insert->execute(array($parent['chdate'], $parent['topic_id']));
+            $stmt_insert->execute([$parent['chdate'], $parent['topic_id']]);
         }
     }
 
@@ -1146,7 +1146,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("UPDATE forum_entries
             SET closed = 1
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
     }
 
     /**
@@ -1162,7 +1162,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("UPDATE forum_entries
             SET closed = 0
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
     }
 
     /**
@@ -1178,7 +1178,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("UPDATE forum_entries
             SET sticky = 1
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
     }
 
     /**
@@ -1194,7 +1194,7 @@ class ForumEntry  implements PrivacyObject
         $stmt = DBManager::get()->prepare("UPDATE forum_entries
             SET sticky = 0
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
     }
 
     /**
@@ -1212,28 +1212,28 @@ class ForumEntry  implements PrivacyObject
         // check, if the root entry in the topic tree exists
         $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_entries
             WHERE topic_id = ? AND seminar_id = ?");
-        $stmt->execute(array($seminar_id, $seminar_id));
+        $stmt->execute([$seminar_id, $seminar_id]);
         if ($stmt->fetchColumn() == 0) {
             $stmt = DBManager::get()->prepare("INSERT INTO forum_entries
                 (topic_id, seminar_id, name, mkdate, chdate, lft, rgt, depth)
                 VALUES (?, ?, 'Übersicht', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 0, 1, 0)");
-            $stmt->execute(array($seminar_id, $seminar_id));
+            $stmt->execute([$seminar_id, $seminar_id]);
         }
 
 
         // make sure, that the category "Allgemein" exists
         $stmt = DBManager::get()->prepare("INSERT IGNORE INTO forum_categories
             (category_id, seminar_id, entry_name) VALUES (?, ?, ?)");
-        $stmt->execute(array($seminar_id, $seminar_id, _('Allgemein')));
+        $stmt->execute([$seminar_id, $seminar_id, _('Allgemein')]);
 
         // make sure that the default area "Allgemeine Diskussionen" exists, if there is nothing else present
         $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_entries
             WHERE seminar_id = ? AND depth = 1");
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         // add default area
         if ($stmt->fetchColumn() == 0) {
-            $data = array(
+            $data = [
                 'topic_id'    => md5(uniqid()),
                 'seminar_id'  => $seminar_id,
                 'user_id'     => '',
@@ -1241,7 +1241,7 @@ class ForumEntry  implements PrivacyObject
                 'content'     => _('Hier ist Raum für allgemeine Diskussionen'),
                 'author'      => '',
                 'author_host' => ''
-            );
+            ];
             ForumEntry::insert($data, $seminar_id);
         }
 
@@ -1284,19 +1284,19 @@ class ForumEntry  implements PrivacyObject
     public static function migrateUser($user_from, $user_to)
     {
         $stmt = DBManager::get()->prepare("UPDATE forum_entries SET user_id = ? WHERE user_id = ?");
-        $stmt->execute(array($user_to, $user_from));
+        $stmt->execute([$user_to, $user_from]);
 
         $stmt = DBManager::get()->prepare("UPDATE IGNORE forum_favorites SET user_id = ? WHERE user_id = ?");
-        $stmt->execute(array($user_to, $user_from));
+        $stmt->execute([$user_to, $user_from]);
 
         $stmt = DBManager::get()->prepare("UPDATE IGNORE forum_visits SET user_id = ? WHERE user_id = ?");
-        $stmt->execute(array($user_to, $user_from));
+        $stmt->execute([$user_to, $user_from]);
 
         $stmt = DBManager::get()->prepare("UPDATE IGNORE forum_likes SET user_id = ? WHERE user_id = ?");
-        $stmt->execute(array($user_to, $user_from));
+        $stmt->execute([$user_to, $user_from]);
 
         $stmt = DBManager::get()->prepare("UPDATE IGNORE forum_abo_users SET user_id = ? WHERE user_id = ?");
-        $stmt->execute(array($user_to, $user_from));
+        $stmt->execute([$user_to, $user_from]);
     }
 
     /**

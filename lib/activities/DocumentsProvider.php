@@ -31,16 +31,16 @@ class DocumentsProvider implements ActivityProvider
             $url = \URLHelper::getUrl("dispatch.php/course/files/flat?cid={$activity->context_id}");
             $route = \URLHelper::getURL('api.php/file/' . $activity->object_id, NULL, true);
 
-            $activity->object_url = array(
+            $activity->object_url = [
                 $url => _('Zum Dateibereich der Veranstaltung')
-            );
+            ];
         } elseif ($activity->context == "institute") {
             $url = \URLHelper::getUrl("dispatch.php/institute/files/flat?cid={$activity->context_id}");
             $route= null;
 
-            $activity->object_url = array(
+            $activity->object_url = [
                 $url => _('Zum Dateibereich der Einrichtung')
-            );
+            ];
         }
 
         $activity->object_route = $route;
@@ -107,7 +107,7 @@ class DocumentsProvider implements ActivityProvider
 
         if (isset($verb)) {
             $activity = Activity::create(
-                array(
+                [
                     'provider'     => __CLASS__,
                     'context'      => $type,
                     'context_id'   => $course_id,
@@ -118,7 +118,7 @@ class DocumentsProvider implements ActivityProvider
                     'object_id'    => $file_id,    // the id of the referenced object
                     'object_type'  => 'documents', // type of activity object
                     'mkdate'       =>  $mkdate
-                )
+                ]
             );
         }
     }

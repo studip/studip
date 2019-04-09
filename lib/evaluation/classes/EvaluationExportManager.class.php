@@ -130,7 +130,7 @@ class EvaluationExportManager extends AuthorObject {
     */
    function __construct($evalID) {
     /* Set default values ------------------------------------------------- */
-    register_shutdown_function(array(&$this, "_EvaluationExportManager"));
+    register_shutdown_function([&$this, "_EvaluationExportManager"]);
 
     parent::__construct();
     $this->setAuthorEmail ("mail@AlexanderWillner.de");
@@ -141,7 +141,7 @@ class EvaluationExportManager extends AuthorObject {
     $this->filehandle    = "";
     $this->evalID        = $evalID;
     $this->eval          = new Evaluation ($evalID, NULL, EVAL_LOAD_FIRST_CHILDREN);
-    $this->evalquestions = array ();
+    $this->evalquestions =  [];
     $this->extension     = EVALEXPORT_EXTENSION;
 
     $this->createNewFile ();
@@ -182,7 +182,7 @@ class EvaluationExportManager extends AuthorObject {
          $this->users = EvaluationDB::getUserVoted ($this->eval->getObjectID ());
       } else {
          $questions = $this->eval->getSpecialChildobjects ($this->eval, INSTANCEOF_EVALQUESTION);
-         $questionIDs = array ();
+         $questionIDs =  [];
          foreach ($questions as $question) {
             array_push ($questionIDs , $question->getObjectID ());
          }

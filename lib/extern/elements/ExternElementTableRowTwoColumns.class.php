@@ -39,11 +39,11 @@
 
 class ExternElementTableRowTwoColumns extends ExternElement {
 
-    var $attributes = array("tr_height", "tr_class", "tr_style", "td1_align",
+    var $attributes = ["tr_height", "tr_class", "tr_style", "td1_align",
             "td1_valign", "td1_bgcolor", "td1_class", "td1_style", "font1_face",
             "font1_size", "td1width", "font1_color", "font1_class", "font1_style",
             "td2_align", "td2_valign", "td2_bgcolor", "td2_class", "td2_style",
-            "font2_face", "font2_size", "font2_color", "font2_class", "font2_style");
+            "font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
             
     /**
     * Constructor
@@ -58,9 +58,9 @@ class ExternElementTableRowTwoColumns extends ExternElement {
         $this->real_name = _("Zeile mit zwei Spalten");
         $this->description = _("Angaben zur Formatierung einer Tabellenzeile mit zwei Spalten.");
         
-        $this->headlines = array(_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Linke Spalte &lt;td&gt;"),
+        $this->headlines = [_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Linke Spalte &lt;td&gt;"),
             _("Linke Spalte &lt;font&gt;"), _("Rechte Spalte &lt;td&gt;"),
-            _("Rechte Spalte &lt;font&gt;"));
+            _("Rechte Spalte &lt;font&gt;")];
     }
     
     /**
@@ -77,8 +77,8 @@ class ExternElementTableRowTwoColumns extends ExternElement {
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
-        $attributes = array("tr_height", "tr_class", "tr_style");
-        $headline = array("tr" => $this->headlines[0]);
+        $attributes = ["tr_height", "tr_class", "tr_style"];
+        $headline = ["tr" => $this->headlines[0]];
         $content_table = $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
         
@@ -97,11 +97,11 @@ class ExternElementTableRowTwoColumns extends ExternElement {
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
         
-        $attributes = array("font1_face",   "font1_size","font1_color", "font1_class",
+        $attributes = ["font1_face",   "font1_size","font1_color", "font1_class",
                 "font1_style", "td2_align", "td2_valign", "td2_bgcolor", "td2_class",
-                "td2_style", "font2_face", "font2_size", "font2_color", "font2_class", "font2_style");
-        $headline = array("font1" => $this->headlines[2], "td2" => $this->headlines[3],
-                "font2" => $this->headlines[4]);
+                "td2_style", "font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
+        $headline = ["font1" => $this->headlines[2], "td2" => $this->headlines[3],
+                "font2" => $this->headlines[4]];
         $content_table .= $edit_form->getEditFormContent($attributes, $headline);
         
         $submit = $edit_form->editSubmit($this->config->getName(),

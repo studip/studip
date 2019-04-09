@@ -286,7 +286,7 @@ class Request implements ArrayAccess, IteratorAggregate
 
         return (isset($request[$param]) && is_array($request[$param]))
             ? $request[$param]
-            : array();
+            : [];
     }
 
     /**
@@ -522,8 +522,8 @@ class Request implements ArrayAccess, IteratorAggregate
      */
     public static function extract($what)
     {
-        $extract = array();
-        $return = array();
+        $extract = [];
+        $return = [];
         foreach (explode(',', $what) as $one) {
             $extract[] = array_values(array_filter(array_map('trim', explode(' ', $one))));
         }

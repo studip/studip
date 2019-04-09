@@ -15,7 +15,7 @@ class PluginAsset extends SimpleORMap
      *
      * @param Array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'plugin_assets';
 

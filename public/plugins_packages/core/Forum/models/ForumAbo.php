@@ -30,7 +30,7 @@ class ForumAbo
 
         $stmt = DBManager::get()->prepare("REPLACE INTO forum_abo_users
             (topic_id, user_id) VALUEs (?, ?)");
-        $stmt->execute(array($topic_id, $user_id));
+        $stmt->execute([$topic_id, $user_id]);
     }
 
     /**
@@ -46,7 +46,7 @@ class ForumAbo
 
         $stmt = DBManager::get()->prepare("DELETE FROM forum_abo_users
             WHERE topic_id = ? AND user_id = ?");
-        $stmt->execute(array($topic_id, $user_id));
+        $stmt->execute([$topic_id, $user_id]);
     }
 
     /**
@@ -64,7 +64,7 @@ class ForumAbo
 
         $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_abo_users
             WHERE topic_id = ? AND user_id = ?");
-        $stmt->execute(array($topic_id, $user_id));
+        $stmt->execute([$topic_id, $user_id]);
 
         return $stmt->fetchColumn() > 0 ? true : false;
     }
@@ -131,7 +131,7 @@ class ForumAbo
                 $user_id,
                 UrlHelper::getUrl(
                     'plugins.php/coreforum/index/index/' . $topic['topic_id'] . '#' . $topic['topic_id'],
-                    array('cid' => $topic['seminar_id']),
+                    ['cid' => $topic['seminar_id']],
                     true
                 ),
                 $notification,

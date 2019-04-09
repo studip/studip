@@ -31,11 +31,11 @@ $proxy->response_timeout = 300;
 
 echo "Creating Karl May.\n";
 $user = $proxy->create_user('secret',
-  array('user_name'  => 'kmay', 
+  ['user_name'  => 'kmay', 
         'first_name' => 'Karl', 
         'last_name'  => 'May', 
         'email'      => 'marcus.lunzenauer@uos.de', 
-        'permission' => 'user'));
+        'permission' => 'user']);
 printf("  success: %s\n", var_export($user, TRUE));
 
 

@@ -40,40 +40,40 @@ require_once 'lib/deputies_functions.inc.php';
 
 class ModulesNotification extends Modules {
 
-    var $registered_notification_modules = array();
+    var $registered_notification_modules = [];
     var $subject;
 
     function __construct () {
         parent::__construct();
-        $this->registered_notification_modules['news'] = array(
+        $this->registered_notification_modules['news'] = [
                 'id' => 25, 'const' => '', 'sem' => TRUE, 'inst' => TRUE,
-                'mes' => TRUE, 'name' => _("Ankündigungen"));
-        $this->registered_notification_modules['votes'] = array(
+                'mes' => TRUE, 'name' => _("Ankündigungen")];
+        $this->registered_notification_modules['votes'] = [
                 'id' => 26, 'const' => '', 'sem' => TRUE, 'inst' => FALSE,
-                'mes' => TRUE, 'name' => _("Umfragen und Tests"));
-        $this->registered_notification_modules['basic_data'] = array(
+                'mes' => TRUE, 'name' => _("Umfragen und Tests")];
+        $this->registered_notification_modules['basic_data'] = [
                 'id' => 27, 'const' => '', 'sem' => TRUE, 'inst' => FALSE,
-                'mes' => TRUE, 'name' => _("Grunddaten der Veranstaltung"));
-        $this->registered_notification_modules['plugins'] = array(
+                'mes' => TRUE, 'name' => _("Grunddaten der Veranstaltung")];
+        $this->registered_notification_modules['plugins'] = [
             'id' => 28, 'const' => '', 'sem' => TRUE, 'inst' => FALSE,
-            'mes' => TRUE, 'name' => _("Plugins der Veranstaltung"));
+            'mes' => TRUE, 'name' => _("Plugins der Veranstaltung")];
         $this->subject = _("Stud.IP Benachrichtigung");
-        $extend_modules = array(
-                "forum" => array('mes' => TRUE, 'name' =>  _("Forum")),
-                "documents" => array('mes' => TRUE, 'name' => _("Dateiordner")),
-                "schedule" => array('mes' => TRUE, 'name' => _("Ablaufplan")),
-                "participants" => array('mes' => TRUE, 'name' => _("Teilnehmende")),
-                "personal" => array('mes' => FALSE, 'name' => _("Personal")),
-                "literature" => array('mes' => TRUE, 'name' => _("Literatur")),
-                "wiki" => array('mes' => TRUE, 'name' => _("Wiki-Web")),
-                "scm" => array('mes' => TRUE, 'name' => _("Freie Informationsseite")),
-                "elearning_interface" => array('mes' => TRUE, 'name' => _("Lernmodule")));
+        $extend_modules = [
+                "forum" => ['mes' => TRUE, 'name' =>  _("Forum")],
+                "documents" => ['mes' => TRUE, 'name' => _("Dateiordner")],
+                "schedule" => ['mes' => TRUE, 'name' => _("Ablaufplan")],
+                "participants" => ['mes' => TRUE, 'name' => _("Teilnehmende")],
+                "personal" => ['mes' => FALSE, 'name' => _("Personal")],
+                "literature" => ['mes' => TRUE, 'name' => _("Literatur")],
+                "wiki" => ['mes' => TRUE, 'name' => _("Wiki-Web")],
+                "scm" => ['mes' => TRUE, 'name' => _("Freie Informationsseite")],
+                "elearning_interface" => ['mes' => TRUE, 'name' => _("Lernmodule")]];
         $this->registered_modules = array_merge_recursive($this->registered_modules,
                 $extend_modules);
     }
 
     function getGlobalEnabledNotificationModules ($range) {
-        $enabled_modules = array();
+        $enabled_modules = [];
         foreach ($this->registered_modules as $name => $data) {
             if ($data[$range] && $data['mes'] && $this->checkGlobal($name)) {
                 $enabled_modules[$name] = $data;
@@ -92,7 +92,7 @@ class ModulesNotification extends Modules {
     }
 
     function getAllNotificationModules () {
-        $modules = array();
+        $modules = [];
         foreach ($this->registered_modules as $name => $data) {
             if ($data['mes']) {
                 $modules[$name] = $data;
@@ -125,9 +125,9 @@ class ModulesNotification extends Modules {
                 return FALSE;
             }
             if ($range == 'sem') {
-                $update_seminar_user->execute(array($sum, $range_id, $user_id));
+                $update_seminar_user->execute([$sum, $range_id, $user_id]);
                 if (get_config('DEPUTIES_ENABLE') && !$update_seminar_user->rowCount()) {
-                    $update_deputies->execute(array($sum, $range_id, $user_id));
+                    $update_deputies->execute([$sum, $range_id, $user_id]);
                 }
             } else {
                 return FALSE;
@@ -146,11 +146,11 @@ class ModulesNotification extends Modules {
             return false;
         }
 
-        $settings = array();
+        $settings = [];
 
         $query = "SELECT Seminar_id, notification FROM seminar_user WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $settings[$row['Seminar_id']] = $row['notification'];
         }
@@ -161,7 +161,7 @@ class ModulesNotification extends Modules {
                    . "JOIN seminare s ON (d.range_id=s.Seminar_id) "
                    . "WHERE d.user_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($user_id));
+            $statement->execute([$user_id]);
 
             while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $settings[$row['range_id']] = $row['notification'];
@@ -177,7 +177,7 @@ class ModulesNotification extends Modules {
             $user_id = $GLOBALS['user']->id;
         }
 
-        $my_sem = array();
+        $my_sem = [];
         $query = "SELECT s.Seminar_id, s.Name, s.chdate, s.start_time, s.modules, s.status as sem_status, su.status,s.admission_prelim, su.notification, IFNULL(visitdate, :threshold) AS visitdate "
                . "FROM seminar_user su "
                . "LEFT JOIN seminare s USING (Seminar_id) "
@@ -198,7 +198,7 @@ class ModulesNotification extends Modules {
             $seminar_id = $row['Seminar_id'];
             $modules = $this->getLocalModules($seminar_id, 'sem', $row['modules'], $row['sem_status']);
             $modulesInt = array_sum($modules); //korrigiert wg. SemClass::isSlotMandatory() Kram
-            $my_sem[$seminar_id] = array(
+            $my_sem[$seminar_id] = [
                     'name'       => $row['Name'],
                     'chdate'     => $row['chdate'],
                     'start_time' => $row['start_time'],
@@ -210,7 +210,7 @@ class ModulesNotification extends Modules {
                     'sem_status' => $row['sem_status'],
                     'status' => $row['status'],
                     'prelim'     => $row['admission_prelim'],
-                    );
+                    ];
             unset( $seminar_id );
             unset( $modules );
             unset( $modulesInt );
@@ -223,11 +223,11 @@ class ModulesNotification extends Modules {
 
         get_my_obj_values($my_sem, $user_id);
 
-        $news = array();
+        $news = [];
         foreach ($my_sem as $seminar_id => $s_data) {
             $m_notification = ($s_data['modulesInt'] + $m_extended)
                     & $s_data['notification'];
-            $n_data = array();
+            $n_data = [];
             foreach ($m_enabled_modules as $m_name => $m_data) {
                 if ($this->isBit($m_notification, $m_data['id'])) {
                     if ($m_name != 'plugins') {
@@ -267,7 +267,7 @@ class ModulesNotification extends Modules {
             $template_text = $GLOBALS['template_factory']->open('mail/notification_text');
             $template_text->set_attribute('news', $news);
             $template_text->set_attribute('sso', $auth_plugin);
-            return array('text' => $template_text->render(), 'html' => $template->render());;
+            return ['text' => $template_text->render(), 'html' => $template->render()];;
         } else {
             return FALSE;
         }
@@ -306,10 +306,10 @@ class ModulesNotification extends Modules {
         global $SEM_CLASS, $SEM_TYPE;
         $text = '';
         $sem_class = $SEM_CLASS[$SEM_TYPE[$r_data['sem_status']]["class"]];
-        $slot_mapper = array(
+        $slot_mapper = [
                 'files' => "documents",
                 'elearning' => "elearning_interface"
-            );
+            ];
         if ($sem_class) {
             $slot = isset($slot_mapper[$m_name]) ? $slot_mapper[$m_name] : $m_name;
             $module = $sem_class->getModule($slot);
@@ -430,7 +430,7 @@ class ModulesNotification extends Modules {
     }
 
     function generateModulesArrayFromModulesInteger( $bitmaskint ){
-        $array = array();
+        $array = [];
         $bitmask = str_split( strrev( decbin( $bitmaskint ) ) );
         foreach( $this->registered_modules as $name => $module ){
             $array[ $name ] = ( $bitmask[ $module[ "id" ] ] == "1" );

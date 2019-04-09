@@ -23,15 +23,15 @@ class MvvDokument extends ModuleManagementModel
      */
     private $count_zuordnungen;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_dokument';
 
-        $config['has_many']['assignments'] = array(
+        $config['has_many']['assignments'] = [
             'class_name' => 'MvvDokumentZuord',
             'assoc_foreign_key' => 'dokument_id',
             'on_delete' => 'delete'
-        );
+        ];
 
         $config['additional_fields']['count_zuordnungen']['get'] =
             function($dokument) { return $dokument->count_zuordnungen; };
@@ -71,9 +71,9 @@ class MvvDokument extends ModuleManagementModel
                 FROM mvv_dokument md 
                 INNER JOIN mvv_dokument_zuord mdz USING(dokument_id) 
                 WHERE mdz.range_id = ? 
-                ' . self::getFilterSql(array('mdz.object_type' => get_class($object))) . '
+                ' . self::getFilterSql(['mdz.object_type' => get_class($object)]) . '
             ORDER BY mdz.position',
-            array($object->id)
+            [$object->id]
         );
     }
 
@@ -90,7 +90,7 @@ class MvvDokument extends ModuleManagementModel
             FROM mvv_dokument md 
                 LEFT JOIN mvv_dokument_zuord mdz USING (dokument_id)
             WHERE mdz.object_type = ?',
-            array($object_type)
+            [$object_type]
         );
     }
 
@@ -111,7 +111,7 @@ class MvvDokument extends ModuleManagementModel
             $row_count = null, $offset = null, $filter = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'chdate',
-                array('count_zuordnungen'));
+                ['count_zuordnungen']);
         return parent::getEnrichedByQuery('
             SELECT mvv_dokument.*, 
                 COUNT(mvv_dokument_zuord.range_id) AS `count_zuordnungen` 
@@ -120,7 +120,7 @@ class MvvDokument extends ModuleManagementModel
                 ' . self::getFilterSql($filter, true) . '
                 GROUP BY mvv_dokument.dokument_id 
                 ORDER BY ' . $sortby,
-            array(),
+            [],
             $row_count,
             $offset
         );
@@ -174,14 +174,14 @@ class MvvDokument extends ModuleManagementModel
      */
     public function getRelations()
     {
-        $zuordnungen = array();
+        $zuordnungen = [];
         $stmt = DBManager::get()->prepare('
             SELECT mdz.* 
             FROM mvv_dokument_zuord AS mdz 
             WHERE dokument_id = ? 
             ORDER BY object_type ASC
         ');
-        $stmt->execute(array($this->getID()));
+        $stmt->execute([$this->getID()]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $zuord) {
             $zuordnungen[$zuord['object_type']][$zuord['range_id']] = $zuord;
         }
@@ -201,7 +201,7 @@ class MvvDokument extends ModuleManagementModel
             WHERE dokument_id = ? 
             GROUP BY dokument_id
         ');
-        $stmt->execute(array($this->getId()));
+        $stmt->execute([$this->getId()]);
         $result = $stmt->fetchColumn();
         return ($result ? $result : 0);
     }
@@ -216,11 +216,11 @@ class MvvDokument extends ModuleManagementModel
      */
     public function getRelationByObject($object_id, $object_type)
     {
-        return MvvDokumentZuord::get(array(
+        return MvvDokumentZuord::get([
             $this->getId(),
             $object_id,
             $object_type
-        ));
+        ]);
     }
 
     /**
@@ -230,15 +230,15 @@ class MvvDokument extends ModuleManagementModel
      * @param array $dokument_ids Ids of the documents.
      * @return array References ordered by object types.
      */
-    public static function getAllRelations($dokument_ids = array())
+    public static function getAllRelations($dokument_ids = [])
     {
-        $zuordnungen = array();
+        $zuordnungen = [];
         if (empty($dokument_ids)) {
             $where = '';
             $params = null;
         } else {
             $where = 'WHERE mdz.dokument_id IN(?) ';
-            $params = array($dokument_ids);
+            $params = [$dokument_ids];
         }
         $stmt = DBManager::get()->prepare('
             SELECT mdz.* 
@@ -260,7 +260,7 @@ class MvvDokument extends ModuleManagementModel
      * @param array $dokument_ids Array of document object ids.
      * @param array $annotations Array of annotations to the assignment.
      */
-    public static function updateDocuments($object, $dokument_ids, $annotations = array()) {
+    public static function updateDocuments($object, $dokument_ids, $annotations = []) {
         $assigned_documents = $object->document_assignments->pluck('dokument_id');
         $removed_documents = array_diff($assigned_documents, $dokument_ids);
         $pos = 1;
@@ -293,7 +293,7 @@ class MvvDokument extends ModuleManagementModel
             WHERE range_id = ? 
                 AND object_type = ?
         ');
-        $stmt->execute(array($object->getId(), get_class($object)));
+        $stmt->execute([$object->getId(), get_class($object)]);
         if ($stmt->rowCount()) {
             $object->is_dirty = true;
         }
@@ -305,7 +305,7 @@ class MvvDokument extends ModuleManagementModel
      * @param array $exclude Ids of documents excluded from search.
      * @return array Array with quick search id and quick search html.
      */
-    public static function getQuickSearch($exclude = array())
+    public static function getQuickSearch($exclude = [])
     {
         $query = "
             SELECT dokument_id, name FROM mvv_dokument 
@@ -326,7 +326,7 @@ class MvvDokument extends ModuleManagementModel
         $ret = parent::validate();
         if ($this->isDirty()) {
             $rejected = false;
-            $messages = array();
+            $messages = [];
 
             // The name of the Dokument must be longer than 4 characters
             if (mb_strlen($this->name) < 4) {

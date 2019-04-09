@@ -159,7 +159,7 @@ class Course_DatesController extends AuthenticatedController
 
             $start_date = strtotime(Request::get('startDate'));
 
-            $errors = array();
+            $errors = [];
             if (!$start_date) {
                 $errors[] = _('Bitte geben Sie ein korretes Datum an!');
             } else {
@@ -326,7 +326,7 @@ class Course_DatesController extends AuthenticatedController
         $date = new CourseDate(Request::option('termin_id'));
         $date->removeTopic($topic);
 
-        $output = array();
+        $output = [];
         $this->render_json($output);
     }
 
@@ -337,7 +337,7 @@ class Course_DatesController extends AuthenticatedController
 
         $termine = getAllSortedSingleDates($sem);
 
-        $dates = array();
+        $dates = [];
 
         if (is_array($termine) && sizeof($termine) > 0) {
             foreach ($termine as $singledate_id => $singledate) {
@@ -349,7 +349,7 @@ class Course_DatesController extends AuthenticatedController
                         $description = trim(join("\n\n", array_map(function ($tid) use ($themen) {return $themen[$tid]->getDescription();}, $tmp_ids)));
                     }
 
-                    $dates[] = array(
+                    $dates[] = [
                         'date'  => $singledate->toString(),
                         'title' => $title,
                         'description' => $description,
@@ -358,18 +358,18 @@ class Course_DatesController extends AuthenticatedController
                         'groups' => $singledate->getRelatedGroups(),
                         'room' => $singledate->getRoom() ?: $singledate->raum,
                         'type' => $GLOBALS['TERMIN_TYP'][$singledate->getDateType()]['name']
-                    );
+                    ];
                 } elseif ($singledate->getComment()) {
-                    $dates[] = array(
+                    $dates[] = [
                         'date'  => $singledate->toString(),
                         'title' => _('fällt aus') . ' (' . _('Kommentar:') . ' ' . $singledate->getComment() . ')',
                         'description' => '',
                         'start' => $singledate->getStartTime(),
-                        'related_persons' => array(),
-                        'groups' => array(),
+                        'related_persons' => [],
+                        'groups' => [],
                         'room' => '',
                         'type' => $GLOBALS['TERMIN_TYP'][$singledate->getDateType()]['name']
-                    );
+                    ];
                 }
             }
         }
@@ -382,7 +382,7 @@ class Course_DatesController extends AuthenticatedController
         $template->group_count = count($this->course->statusgruppen);
         $content = $template->render();
 
-        $content = mb_encode_numericentity($content, array(0x80, 0xffff, 0, 0xffff), 'utf-8');
+        $content = mb_encode_numericentity($content, [0x80, 0xffff, 0, 0xffff], 'utf-8');
         $filename = FileManager::cleanFileName($this->course['name'] . '-' . _('Ablaufplan') . '.doc');
 
         $this->set_content_type(get_mime_type($filename));
@@ -403,7 +403,7 @@ class Course_DatesController extends AuthenticatedController
         $dates = getAllSortedSingleDates($sem);
         $issues = $sem->getIssues();
 
-        $columns = array(
+        $columns = [
             _('Wochentag'),
             _('Termin'),
             _('Beginn'),
@@ -416,9 +416,9 @@ class Course_DatesController extends AuthenticatedController
             _('Raum'),
             _('Raumbeschreibung'),
             _('Sitzplätze')
-        );
+        ];
 
-        $data = array($columns);
+        $data = [$columns];
 
         foreach ($dates as $date) {
             // FIXME this should not be necessary, see https://develop.studip.de/trac/ticket/8101
@@ -426,7 +426,7 @@ class Course_DatesController extends AuthenticatedController
                 continue;
             }
 
-            $row = array();
+            $row = [];
             $row[] = strftime('%A', $date->date);
             $row[] = strftime('%x', $date->date);
             $row[] = strftime('%H:%M', $date->date);

@@ -76,7 +76,7 @@ foreach ($faculties as $faculty) {
 
     $export_pagecontent .= " value=\"" . $faculty['Institut_id'] . "\">" . htmlReady(my_substr($faculty['Name'], 0, 60)) . "</option>";
 
-    $inst_statement->execute(array($faculty['Institut_id']));
+    $inst_statement->execute([$faculty['Institut_id']]);
     while ($institute = $inst_statement->fetch(PDO::FETCH_ASSOC)) {
         $export_pagecontent .= sprintf("<option value=\"%s\" class=\"nested-item\"", $institute['Institut_id']);
         if ($range_id == $institute['Institut_id'] && $range_id != $faculty['Institut_id']) {
@@ -112,7 +112,7 @@ $export_pagecontent .="<label>". _("Aus welchem Semester sollen die Daten export
 if (!isset($ex_sem)) {
     $ex_sem = (Semester::findCurrent() ? Semester::findCurrent()->getId() : null);
 }
-$export_pagecontent .= SemesterData::GetSemesterSelector(array('name' => 'ex_sem'), $ex_sem, 'semester_id', true);
+$export_pagecontent .= SemesterData::GetSemesterSelector(['name' => 'ex_sem'], $ex_sem, 'semester_id', true);
 $export_pagecontent .="</label>";
 
 $export_pagecontent .="<label>". _("Welche Arten von Veranstaltungen sollen exportiert werden? ") . "<br>";

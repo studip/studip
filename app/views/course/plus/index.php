@@ -80,7 +80,7 @@ foreach ($available_modules as $category => $pluginlist) {
                 $studip_module = $sem_class->getModule($sem_class->getSlotModule($val['modulkey']));
             }
 
-            $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($modul['metadata'] ? $modul['metadata'] : array());
+            $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($modul['metadata'] ? $modul['metadata'] : []);
             $pluginname = isset($info['displayname']) ? $info['displayname'] : $modul['name'];
             $getModuleXxExistingItems = "getModule" . $val['modulkey'] . "ExistingItems";
 
@@ -177,8 +177,8 @@ foreach ($available_modules as $category => $pluginlist) {
                     </div>
 
                     <!-- inhaltlöschenbutton -->
-                    <? if ($val['type'] == 'plugin' && method_exists($plugin, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), array('style' => 'float:right; z-index: 1;')); ?>
-                    <? if ($val['type'] == 'modul' && $studip_module instanceOf StudipModule && method_exists($studip_module, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), array('style' => 'float:right; z-index: 1;')); ?>
+                    <? if ($val['type'] == 'plugin' && method_exists($plugin, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), ['style' => 'float:right; z-index: 1;']); ?>
+                    <? if ($val['type'] == 'modul' && $studip_module instanceOf StudipModule && method_exists($studip_module, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), ['style' => 'float:right; z-index: 1;']); ?>
 
                 </div>
 

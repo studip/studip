@@ -22,7 +22,7 @@ use Studip\Button, Studip\LinkButton;
 
             </fieldset>
             <footer>
-                <?= Button::createAccept(_('Hochladen'), array('onClick' => 'return STUDIP.OldUpload.upload_start(jQuery(this).closest(\'form\'))'))?>
+                <?= Button::createAccept(_('Hochladen'), ['onClick' => 'return STUDIP.OldUpload.upload_start(jQuery(this).closest(\'form\'))'])?>
                 <?= LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?cancel_x=true'))?>
             </footer>
 

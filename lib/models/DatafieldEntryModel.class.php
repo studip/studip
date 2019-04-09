@@ -37,7 +37,7 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
      */
     public static function findByModel(SimpleORMap $model, $datafield_id = null)
     {
-        $mask = array("user" => 1, "autor" => 2, "tutor" => 4, "dozent" => 8, "admin" => 16, "root" => 32);
+        $mask = ["user" => 1, "autor" => 2, "tutor" => 4, "dozent" => 8, "admin" => 16, "root" => 32];
 
         if (is_a($model, "Course")) {
             $object_class = SeminarCategories::GetByTypeId($model->status)->id;
@@ -90,24 +90,24 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
         if ($object_type === 'moduldeskriptor' || $object_type === 'modulteildeskriptor') {
             // find datafields by language (string)
             $query .= "AND (LOCATE(?, object_class) OR object_class IS NULL) $one_datafield ORDER BY priority";
-            $params = array(
+            $params = [
                 (string) $range_id,
                 (string) $sec_range_id,
                 $object_type,
-                (string) $object_class);
+                (string) $object_class];
         } else {
             // find datafields by perms or status (int)
             $query .= "AND ((object_class & ?) OR object_class IS NULL) $one_datafield ORDER BY priority";
-            $params = array(
+            $params = [
                 (string) $range_id,
                 (string) $sec_range_id,
                 $object_type,
-                (int) $object_class);
+                (int) $object_class];
         }
 
         $st = DBManager::get()->prepare($query);
         $st->execute($params);
-        $ret = array();
+        $ret = [];
         $c = 0;
         $df_entry = new DatafieldEntryModel();
         $df_entry_i18n = new DatafieldEntryModelI18N();
@@ -140,14 +140,14 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
         return $ret;
     }
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'datafields_entries';
-        $config['belongs_to']['datafield'] = array(
+        $config['belongs_to']['datafield'] = [
             'class_name' => 'DataField',
             'foreign_key' => 'datafield_id'
-        );
-        $config['additional_fields']['name'] = array('datafield', 'name');
+        ];
+        $config['additional_fields']['name'] = ['datafield', 'name'];
         parent::configure($config);
     }
 

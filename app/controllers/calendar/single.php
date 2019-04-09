@@ -33,20 +33,20 @@ class Calendar_SingleController extends Calendar_CalendarController
             $actions->addLink(_('Termin anlegen'),
                         $this->url_for('calendar/single/edit'),
                         Icon::create('add', 'clickable'),
-                        array('data-dialog' => 'size=auto'));
+                        ['data-dialog' => 'size=auto']);
             if ($calendar->havePermission(Calendar::PERMISSION_OWN)) {
                 if (get_config('CALENDAR_GROUP_ENABLE')) {
                     $actions->addLink(_('Kalender freigeben'),
                             $this->url_for('calendar/single/manage_access'),
                             Icon::create('community', 'clickable'),
-                            array('id' => 'calendar-open-manageaccess',
+                            ['id' => 'calendar-open-manageaccess',
                                 'data-dialog' => '',
-                                'data-dialogname' => 'manageaccess'));
+                                'data-dialogname' => 'manageaccess']);
                 }
                 $actions->addLink(_('Veranstaltungstermine'),
                         $this->url_for('calendar/single/seminar_events'),
                         Icon::create('seminar', 'clickable'),
-                        array('data-dialog' => 'size=auto'));
+                        ['data-dialog' => 'size=auto']);
             }
             $sidebar->addWidget($actions);
         }
@@ -55,17 +55,17 @@ class Calendar_SingleController extends Calendar_CalendarController
             $export->addLink(_('Termine exportieren'),
                         $this->url_for('calendar/single/export_calendar'),
                         Icon::create('download', 'clickable'),
-                        array('data-dialog' => 'size=auto'))
+                        ['data-dialog' => 'size=auto'])
                     ->setActive($active == 'export_calendar');
             $export->addLink(_('Termine importieren'),
                         $this->url_for('calendar/single/import'),
                         Icon::create('upload', 'clickable'),
-                        array('data-dialog' => 'size=auto'))
+                        ['data-dialog' => 'size=auto'])
                     ->setActive($active == 'import');
             $export->addLink(_('Kalender teilen'),
                         $this->url_for('calendar/single/share'),
                         Icon::create('group2', 'clickable'),
-                        array('data-dialog' => 'size=auto'))
+                        ['data-dialog' => 'size=auto'])
                     ->setActive($active == 'share');
             $sidebar->addWidget($export);
         }
@@ -203,11 +203,11 @@ class Calendar_SingleController extends Calendar_CalendarController
         if (Request::submitted('export')) {
             $export = new CalendarExportFile(new CalendarWriterICalendar());
             if (Request::get('event_type') == 'user') {
-                $types = array('CalendarEvent');
+                $types = ['CalendarEvent'];
             } else if (Request::get('event_type') == 'course') {
-                $types = array('CourseEvent', 'CourseCancelledEvent');
+                $types = ['CourseEvent', 'CourseCancelledEvent'];
             } else {
-                $types = array('CalendarEvent', 'CourseEvent', 'CourseCancelledEvent');
+                $types = ['CalendarEvent', 'CourseEvent', 'CourseCancelledEvent'];
             }
             if (Request::get('export_time') == 'date') {
                 $exstart = $this->parseDateTime(Request::get('export_start'));
@@ -311,14 +311,14 @@ class Calendar_SingleController extends Calendar_CalendarController
         $this->filter_groups = Statusgruppen::findByRange_id(
                 $this->calendar->getRangeId());
 
-        $this->users = array();
+        $this->users = [];
         $this->group_filter_selected = Request::option('group_filter', 'list');
         if ($this->group_filter_selected != 'list') {
             $contact_group = Statusgruppen::find($this->group_filter_selected);
-            $calendar_users = array();
+            $calendar_users = [];
             foreach ($contact_group->members as $member) {
                 $calendar_users[] = new CalendarUser(
-                        array($this->calendar->getRangeId(), $member->user_id));
+                        [$this->calendar->getRangeId(), $member->user_id]);
             }
             $this->calendar_users =
                         SimpleORMapCollection::createFromArray($calendar_users);
@@ -327,10 +327,10 @@ class Calendar_SingleController extends Calendar_CalendarController
             $this->calendar_users = $all_calendar_users;
         }
 
-        $this->own_perms = array();
+        $this->own_perms = [];
         foreach ($this->calendar_users as $calendar_user) {
             $other_user = CalendarUser::find(
-                    array($calendar_user->user_id, $this->calendar->getRangeId()));
+                    [$calendar_user->user_id, $this->calendar->getRangeId()]);
             if ($other_user) {
                 $this->own_perms[$calendar_user->user_id] = $other_user->permission;
             } else {
@@ -377,7 +377,7 @@ class Calendar_SingleController extends Calendar_CalendarController
             $user_to_add = User::find($user_id);
             if ($user_to_add) {
                 $calendar_user = new CalendarUser(
-                        array($this->calendar->getRangeId(), $user_to_add->id));
+                        [$this->calendar->getRangeId(), $user_to_add->id]);
                 if ($calendar_user->isNew()) {
                     $calendar_user->permission = Calendar::PERMISSION_READABLE;
                     $added += $calendar_user->store();
@@ -407,7 +407,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         $user_id = $user_id ?: Request::option('user_id');
         $this->calendar = new SingleCalendar($this->range_id);
         $calendar_user = new CalendarUser(
-                    array($this->calendar->getRangeId(), $user_id));
+                    [$this->calendar->getRangeId(), $user_id]);
         if (!$calendar_user->isNew()) {
             $name = $calendar_user->user->getFullname();
             $calendar_user->delete();
@@ -433,7 +433,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         $write = 0;
         $submitted_permissions = Request::intArray('perm');
         foreach ($submitted_permissions as $user_id => $new_perm) {
-            $calendar_user = new CalendarUser(array($this->calendar->getRangeId(), $user_id));
+            $calendar_user = new CalendarUser([$this->calendar->getRangeId(), $user_id]);
             if (!$calendar_user->isNew() && $new_perm == 1) {
                 $deleted += $calendar_user->delete();
                 $new_perm = 0;
@@ -474,7 +474,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         }
         $this->redirect($this->url_for('calendar/single/manage_access/'
                 . $this->calendar->getRangeId(),
-                array('group_filter' => Request::option('group_filter', 'list'))));
+                ['group_filter' => Request::option('group_filter', 'list')]));
     }
 
     public function seminar_events_action($order_by = null, $order = 'asc')
@@ -494,11 +494,11 @@ class Calendar_SingleController extends Calendar_CalendarController
         }
         $this->group_field = 'sem_number';
         // Needed parameters for selecting courses
-        $params = array('group_field'         => $this->group_field,
+        $params = ['group_field'         => $this->group_field,
                         'order_by'            => $order_by,
                         'order'               => $order,
                         'studygroups_enabled' => false,
-                        'deputies_enabled'    => false);
+                        'deputies_enabled'    => false];
 
         $this->sem_courses  = MyRealmModel::getPreparedCourses($sem, $params);
 
@@ -508,7 +508,7 @@ class Calendar_SingleController extends Calendar_CalendarController
 
         $this->bind_calendar = SimpleCollection::createFromArray(
                 CourseMember::findBySQL('user_id = ? AND bind_calendar = 1',
-                    array($GLOBALS['user']->id)))->pluck('seminar_id');
+                    [$GLOBALS['user']->id]))->pluck('seminar_id');
 
     }
 
@@ -519,7 +519,7 @@ class Calendar_SingleController extends Calendar_CalendarController
             $selected_sems = Request::intArray('selected_sem');
             $courses = SimpleORMapCollection::createFromArray(
                     CourseMember::findBySQL('user_id = ? AND Seminar_id IN (?)',
-                    array($GLOBALS['user']->id, array_keys($selected_sems))));
+                    [$GLOBALS['user']->id, array_keys($selected_sems)]));
             $courses->each(function ($a) use ($selected_sems) {
                 $a->bind_calendar = $selected_sems[$a->seminar_id];
                 $a->store();

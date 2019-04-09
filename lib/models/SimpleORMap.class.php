@@ -22,12 +22,12 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * table row data
      * @var array $content
      */
-    protected $content = array();
+    protected $content = [];
     /**
      * table row data
      * @var array $content_db
      */
-    protected $content_db = array();
+    protected $content_db = [];
     /**
      * new state of entry
      * @var boolean $is_new
@@ -58,13 +58,13 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * default values for columns
      * @var array $default_values
      */
-    protected $default_values = array();
+    protected $default_values = [];
 
     /**
      * list of columns to deserialize
      * @var array key is name of column, value is name of ArrayObject class
      */
-    protected $serialized_fields = array();
+    protected $serialized_fields = [];
 
      /**
      * db table metadata
@@ -77,77 +77,77 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @see self::configure()
      * @var array $config;
      */
-    protected static $config = array();
+    protected static $config = [];
 
     /**
      * aliases for columns
      * alias => column
      * @var array $alias_fields
      */
-    protected $alias_fields = array();
+    protected $alias_fields = [];
 
     /**
      * multi-language fields
      * name => boolean
      * @var array $i18n_fields
      */
-    protected $i18n_fields = array();
+    protected $i18n_fields = [];
 
     /**
      * additional computed fields
      * name => callable
      * @var array $additional_fields
      */
-    protected $additional_fields = array();
+    protected $additional_fields = [];
 
     /**
      * stores instantiated related objects
      * @var array $relations
      */
-    protected $relations = array();
+    protected $relations = [];
 
     /**
      * 1:n relation
      * @var array $has_many
      */
-    protected $has_many = array();
+    protected $has_many = [];
 
     /**
      * 1:1 relation
      * @var array $has_one
      */
-    protected $has_one = array();
+    protected $has_one = [];
 
     /**
      * n:1 relations
      * @var array $belongs_to
      */
-    protected $belongs_to = array();
+    protected $belongs_to = [];
 
     /**
      * n:m relations
      * @var array $has_and_belongs_to_many
      */
-    protected $has_and_belongs_to_many = array();
+    protected $has_and_belongs_to_many = [];
 
     /**
      * callbacks
      * @var array $registered_callbacks
      */
-    protected $registered_callbacks = array();
+    protected $registered_callbacks = [];
 
     /**
      * contains an array of all used identifiers for fields
      * (db columns + aliased columns + additional columns + relations)
      * @var array $known_slots
      */
-    protected $known_slots = array();
+    protected $known_slots = [];
 
     /**
      * reserved indentifiers, fields with those names must not have an explicit getXXX() method
      * @var array $reserved_slots
      */
-    protected static $reserved_slots = array('value','newid','iterator','tablemetadata', 'relationvalue','wherequery','relationoptions','data','new','id');
+    protected static $reserved_slots = ['value','newid','iterator','tablemetadata', 'relationvalue','wherequery','relationoptions','data','new','id'];
 
     /**
      * assoc array used to map SORM callback to NotificationCenter
@@ -156,21 +156,21 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      *
      * @var array $notification_map
      */
-    protected $notification_map = array();
+    protected $notification_map = [];
 
     /**
      * assoc array for storing values for additional fields
      *
      * @var array $additional_data
      */
-    protected $additional_data = array();
+    protected $additional_data = [];
 
     /**
      * assoc array for mapping get/set Methods
      *
      * @var array $getter_setter_map
      */
-    protected $getter_setter_map = array();
+    protected $getter_setter_map = [];
 
     /**
      * set configuration data from subclass
@@ -178,7 +178,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array $config configuration data
      * @return void
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $class = get_called_class();
 
@@ -201,8 +201,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             if (count($config['pk']) === 1) {
                 $config['alias_fields']['id'] = $config['pk'][0];
             } else {
-                $config['additional_fields']['id'] = array('get' => '_getId',
-                                                           'set' => '_setId');
+                $config['additional_fields']['id'] = ['get' => '_getId',
+                                                           'set' => '_setId'];
             }
         }
         if (isset($config['additional_fields'])) {
@@ -215,10 +215,10 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                     if (!$relation_field || !$relation) {
                         throw new UnexpectedValueException('no relation found for autoget/set additional field: ' . $a_field);
                     }
-                    $config['additional_fields'][$a_field] = array('get'            => '_getAdditionalValueFromRelation',
+                    $config['additional_fields'][$a_field] = ['get'            => '_getAdditionalValueFromRelation',
                                                                    'set'            => '_setAdditionalValue',
                                                                    'relation'       => $relation,
-                                                                   'relation_field' => $relation_field);
+                                                                   'relation_field' => $relation_field];
                 }
             }
         }
@@ -230,7 +230,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             }
         }
 
-        foreach (array('has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many') as $type) {
+        foreach (['has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many'] as $type) {
             if (is_array($config[$type])) {
                 foreach (array_keys($config[$type]) as $one) {
                     $config['relations'][$one] = null;
@@ -293,7 +293,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                 $config['registered_callbacks']['after_delete'][] = 'cbI18N';
             }
         } else {
-            $config['i18n_fields'] = array();
+            $config['i18n_fields'] = [];
         }
 
         array_unshift($config['registered_callbacks']['after_initialize'], 'cbAfterInitialize');
@@ -347,13 +347,13 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         if (!isset(self::$schemes[$db_table])) {
             $db = DBManager::get()->query("SHOW COLUMNS FROM $db_table");
             while($rs = $db->fetch(PDO::FETCH_ASSOC)){
-                $db_fields[mb_strtolower($rs['Field'])] = array(
+                $db_fields[mb_strtolower($rs['Field'])] = [
                                                             'name' => $rs['Field'],
                                                             'null' => $rs['Null'],
                                                             'default' => $rs['Default'],
                                                             'type' => $rs['Type'],
                                                             'extra' => $rs['Extra']
-                                                            );
+                                                            ];
                 if ($rs['Key'] == 'PRI'){
                     $pk[] = mb_strtolower($rs['Field']);
                 }
@@ -373,7 +373,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
     {
         StudipCacheFactory::getCache()->expire('DB_TABLE_SCHEMES');
         self::$schemes = null;
-        self::$config = array();
+        self::$config = [];
     }
 
     /**
@@ -406,7 +406,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         $db_table = static::config('db_table');
         $class = get_called_class();
         $record = new $class();
-        call_user_func_array(array($record, 'setId'), func_get_args());
+        call_user_func_array([$record, 'setId'], func_get_args());
         $where_query = $record->getWhereQuery();
         if ($where_query) {
             $query = "SELECT 1 FROM `$db_table` WHERE "
@@ -423,7 +423,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array params for query
      * @return number
      */
-    public static function countBySql($sql = 1, $params = array())
+    public static function countBySql($sql = 1, $params = [])
     {
         $db_table = static::config('db_table');
         $db = DBManager::get();
@@ -494,8 +494,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
     public static function import($data)
     {
         $class = get_called_class();
-        $record_data = array();
-        $relation_data = array();
+        $record_data = [];
+        $relation_data = [];
         foreach ($data as $key => $value) {
             if (is_array($value)) {
                 $relation_data[$key] = $value;
@@ -514,11 +514,11 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             foreach ($relation_data as $relation => $data) {
                 $options = $record->getRelationOptions($relation);
                 if ($options['type'] == 'has_one') {
-                    $record->{$relation} = call_user_func(array($options['class_name'], 'import'), $data);
+                    $record->{$relation} = call_user_func([$options['class_name'], 'import'], $data);
                 }
                 if ($options['type'] == 'has_many' || $options['type'] == 'has_and_belongs_to_many') {
                     foreach ($data as $one) {
-                        $current = call_user_func(array($options['class_name'], 'import'), $one);
+                        $current = call_user_func([$options['class_name'], 'import'], $one);
                         if ($options['type'] == 'has_many') {
                             $foreign_key_value = call_user_func($options['assoc_func_params_func'], $record);
                             call_user_func($options['assoc_foreign_key_setter'], $current, $foreign_key_value);
@@ -546,7 +546,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array parameters for query
      * @return array array of "self" objects
      */
-    public static function findBySQL($sql, $params = array())
+    public static function findBySQL($sql, $params = [])
     {
         $db_table = static::config('db_table');
         $class = get_called_class();
@@ -557,7 +557,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             $sql = 'WHERE ' . $sql;
         }
         $sql = "SELECT `" . $db_table . "`.* FROM `" . $db_table . "` " . $sql;
-        $ret = array();
+        $ret = [];
         $stmt = DBManager::get()->prepare($sql);
         $stmt->execute($params);
         $stmt->setFetchMode(PDO::FETCH_INTO , $record);
@@ -576,7 +576,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array parameters for query
      * @return SimpleORMap|NULL
      */
-    public static function findOneBySQL($where, $params = array())
+    public static function findOneBySQL($where, $params = [])
     {
         if (mb_stripos($where, 'LIMIT') === false) {
             $where .= " LIMIT 1";
@@ -608,8 +608,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         WHERE `$thru_table`.`$thru_key` = ? " . $options['order_by'];
         $db = DBManager::get();
         $st = $db->prepare($sql);
-        $st->execute(array($foreign_key_value));
-        $ret = array();
+        $st->execute([$foreign_key_value]);
+        $ret = [];
         $st->setFetchMode(PDO::FETCH_INTO , $record);
         $record->setNew(false);
         while ($record = $st->fetch()) {
@@ -627,7 +627,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array sql statement parameters
      * @return integer number of found records
      */
-    public static function findEachBySQL($callable, $sql, $params = array())
+    public static function findEachBySQL($callable, $sql, $params = [])
     {
         $db_table = static::config('db_table');
         $class = get_called_class();
@@ -657,7 +657,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param string order by clause
      * @return array
      */
-    public static function findMany($pks = array(), $order = '', $order_params = array())
+    public static function findMany($pks = [], $order = '', $order_params = [])
     {
         $db_table = static::config('db_table');
         $pk = static::config('pk');
@@ -677,7 +677,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param string $order order by sql
      * @return integer number of found records
      */
-    public static function findEachMany($callable, $pks = array(), $order = '', $order_params = array())
+    public static function findEachMany($callable, $pks = [], $order = '', $order_params = [])
     {
         $db_table = static::config('db_table');
         $pk = static::config('pk');
@@ -698,9 +698,9 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array sql statement parameters
      * @return array return values of callback
      */
-    public static function findAndMapBySQL($callable, $where, $params = array())
+    public static function findAndMapBySQL($callable, $where, $params = [])
     {
-        $ret = array();
+        $ret = [];
         $calleach = function($m) use (&$ret, $callable) {
             $ret[] = $callable($m);
         };
@@ -717,9 +717,9 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param string $order order by sql
      * @return array return values of callback
      */
-    public static function findAndMapMany($callable, $pks = array(), $order = '', $order_params = array())
+    public static function findAndMapMany($callable, $pks = [], $order = '', $order_params = [])
     {
-        $ret = array();
+        $ret = [];
         $calleach = function($m) use (&$ret, $callable) {
             $ret[] = $callable($m);
         };
@@ -740,7 +740,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param array $params parameters for query
      * @return number
      */
-    public static function deleteBySQL($where, $params = array())
+    public static function deleteBySQL($where, $params = [])
     {
         $killeach = function($record) {$record->delete();};
         return static::findEachBySQL($killeach, $where, $params);
@@ -762,7 +762,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         }
         if (is_array($id_or_object)) {
             $pk = static::config('pk');
-            $key_values = array();
+            $key_values = [];
             foreach($pk as $key) {
                 if (array_key_exists($key, $id_or_object)) {
                     $key_values[] = $id_or_object[$key];
@@ -778,7 +778,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         } else {
             $id = $id_or_object;
         }
-        return call_user_func(array($class, 'find'), $id);
+        return call_user_func([$class, 'find'], $id);
     }
 
     /**
@@ -796,23 +796,23 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         $db_fields = static::config('db_fields');
         $name = mb_strtolower($name);
         $class = get_called_class();
-        $param_arr = array();
+        $param_arr = [];
         $where = '';
-        $where_param = is_array($arguments[0]) ? $arguments[0] : array($arguments[0]);
+        $where_param = is_array($arguments[0]) ? $arguments[0] : [$arguments[0]];
         $prefix = mb_strstr($name, 'by', true);
         $field = mb_substr($name, mb_strlen($prefix)+2);
         switch ($prefix) {
             case 'findone':
                 $order = $arguments[1];
                 $param_arr[0] =& $where;
-                $param_arr[1] = array($where_param);
+                $param_arr[1] = [$where_param];
                 $method = 'findonebysql';
                 break;
             case 'find':
             case 'findmany':
                 $order = $arguments[1];
                 $param_arr[0] =& $where;
-                $param_arr[1] = array($where_param);
+                $param_arr[1] = [$where_param];
                 $method = 'findbysql';
                 break;
             case 'findeach':
@@ -820,13 +820,13 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                 $order = $arguments[2];
                 $param_arr[0] = $arguments[0];
                 $param_arr[1] =& $where;
-                $param_arr[2] = array($where_param);
+                $param_arr[2] = [$where_param];
                 $method = 'findeachbysql';
                 break;
             case 'count':
             case 'delete':
                 $param_arr[0] =& $where;
-                $param_arr[1] = array($where_param);
+                $param_arr[1] = [$where_param];
                 $method = "{$prefix}bysql";
                 break;
             default:
@@ -837,7 +837,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         }
         if (isset($db_fields[$field])) {
             $where = "`$db_table`.`$field` IN(?) " . $order;
-            return call_user_func_array(array($class, $method), $param_arr);
+            return call_user_func_array([$class, $method], $param_arr);
         }
         throw new BadMethodCallException("Method $class::$name not found");
     }
@@ -898,8 +898,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _getAdditionalValueFromRelation($field)
     {
-        list($relation, $relation_field) = array($this->additional_fields[$field]['relation'],
-                                                $this->additional_fields[$field]['relation_field']);
+        list($relation, $relation_field) = [$this->additional_fields[$field]['relation'],
+                                                $this->additional_fields[$field]['relation_field']];
         if (!array_key_exists($field, $this->additional_data)) {
             $this->_setAdditionalValue($field, $this->getRelationValue($relation, $relation_field));
         }
@@ -915,8 +915,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function _setAdditionalValueFromRelation($field, $value)
     {
-        list($relation, $relation_field) = array($this->additional_fields[$field]['relation'],
-                $this->additional_fields[$field]['relation_field']);
+        list($relation, $relation_field) = [$this->additional_fields[$field]['relation'],
+                $this->additional_fields[$field]['relation_field']];
         $this->$relation->$field = $value;
         unset($this->additional_data[$field]);
         return $this->_getAdditionalValueFromRelation($field);
@@ -972,7 +972,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         }
         //unset all relations for now
         //TODO: maybe a deep copy of all belonging objects is more appropriate
-        foreach(array('has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many') as $type) {
+        foreach(['has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many'] as $type) {
             foreach (array_keys($this->{$type}) as $one) {
                 $this->relations[$one] = null;
             }
@@ -1085,8 +1085,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     function getRelationOptions($relation)
     {
-        $options = array();
-        foreach(array('has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many') as $type) {
+        $options = [];
+        foreach(['has_many', 'belongs_to', 'has_one', 'has_and_belongs_to_many'] as $type) {
             if (isset($this->{$type}[$relation])) {
                 $options = self::$config[get_class($this)][$type][$relation] ?: $this->{$type}[$relation];
                 if (!isset($options['type'])) {
@@ -1108,12 +1108,12 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     function getTableMetadata()
     {
-        return array('fields' => $this->db_fields,
+        return ['fields' => $this->db_fields,
                      'pk' => $this->pk,
                      'table' => $this->db_table,
                      'additional_fields' => $this->additional_fields,
                      'alias_fields' => $this->alias_fields,
-                     'relations' => array_keys($this->relations));
+                     'relations' => array_keys($this->relations)];
     }
 
     /**
@@ -1195,7 +1195,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     function toArray($only_these_fields = null)
     {
-        $ret = array();
+        $ret = [];
         if (is_string($only_these_fields)) {
             $only_these_fields = words($only_these_fields);
         }
@@ -1226,7 +1226,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     function toRawArray($only_these_fields = null)
     {
-        $ret = array();
+        $ret = [];
         if (is_string($only_these_fields)) {
             $only_these_fields = words($only_these_fields);
         }
@@ -1276,7 +1276,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             $only_these_fields = $this->known_slots;
         }
         $ret = $this->toArray($only_these_fields);
-        $relations = array();
+        $relations = [];
         if (is_array($only_these_fields)) {
             foreach ($only_these_fields as $key => $value) {
                 if (!is_array($value) &&
@@ -1302,7 +1302,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                     $ret[$relation_name] =
                             $this->{$relation_name}->
                                             sendMessage('toArrayRecursive',
-                                            array($relation_only_these_fields));
+                                            [$relation_only_these_fields]);
                 }
             }
         }
@@ -1322,7 +1322,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         $field = mb_strtolower($field);
         if (in_array($field, $this->known_slots)) {
             if (isset($this->getter_setter_map[$field]['get'])) {
-                return call_user_func(array($this, $this->getter_setter_map[$field]['get']));
+                return call_user_func([$this, $this->getter_setter_map[$field]['get']]);
             }
             if (array_key_exists($field, $this->content)) {
                 return  $this->content[$field];
@@ -1331,9 +1331,9 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                 return $this->relations[$field];
             } elseif (isset($this->additional_fields[$field]['get'])) {
                 if ($this->additional_fields[$field]['get'] instanceof Closure) {
-                    return call_user_func_array($this->additional_fields[$field]['get'], array($this, $field));
+                    return call_user_func_array($this->additional_fields[$field]['get'], [$this, $field]);
                 } else {
-                    return call_user_func(array($this, $this->additional_fields[$field]['get']), $field);
+                    return call_user_func([$this, $this->additional_fields[$field]['get']], $field);
                 }
             }
         } else {
@@ -1407,7 +1407,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
          $ret = false;
          if (in_array($field, $this->known_slots)) {
              if (isset($this->getter_setter_map[$field]['set'])) {
-                 return call_user_func(array($this, $this->getter_setter_map[$field]['set']), $value);
+                 return call_user_func([$this, $this->getter_setter_map[$field]['set']], $value);
              }
              if (array_key_exists($field, $this->content)) {
                  if (array_key_exists($field, $this->serialized_fields)) {
@@ -1419,9 +1419,9 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                  }
              } elseif (isset($this->additional_fields[$field]['set'])) {
                  if ($this->additional_fields[$field]['set'] instanceof Closure) {
-                     return call_user_func_array($this->additional_fields[$field]['set'], array($this, $field, $value));
+                     return call_user_func_array($this->additional_fields[$field]['set'], [$this, $field, $value]);
                  } else {
-                     return call_user_func(array($this, $this->additional_fields[$field]['set']), $field, $value);
+                     return call_user_func([$this, $this->additional_fields[$field]['set']], $field, $value);
                  }
              } elseif (array_key_exists($field, $this->relations)) {
                  $options = $this->getRelationOptions($field);
@@ -1444,7 +1444,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                  }
                  if ($options['type'] == 'has_many' || $options['type'] == 'has_and_belongs_to_many') {
                      if (is_array($value) || $value instanceof Traversable) {
-                         $new_ids = array();
+                         $new_ids = [];
                          $old_ids = $this->{$field}->pluck('id');
                          foreach ($value as $current) {
                              if (!is_a($current, $options['class_name'])) {
@@ -1668,7 +1668,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
     function getWhereQuery()
     {
         $where_query = null;
-        $pk_not_set = array();
+        $pk_not_set = [];
         foreach ($this->pk as $key) {
             $pk = $this->content_db[$key] ?: $this->content[$key];
             if (isset($pk)) {
@@ -1711,7 +1711,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                 return true;
             }
         }
-        $this->setData(array(), true);
+        $this->setData([], true);
         $this->setNew(true);
         if (isset($id)) {
             $this->setId($id);
@@ -1819,27 +1819,27 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                     $foreign_key_value = call_user_func($options['assoc_func_params_func'], $this);
                     if ($options['type'] === 'has_one') {
                         call_user_func($options['assoc_foreign_key_setter'], $this->{$relation}, $foreign_key_value);
-                        $ret = call_user_func(array($this->{$relation}, 'store'));
+                        $ret = call_user_func([$this->{$relation}, 'store']);
                     } elseif ($options['type'] === 'has_many') {
                         foreach ($this->{$relation} as $r) {
                             call_user_func($options['assoc_foreign_key_setter'], $r, $foreign_key_value);
                         }
-                        $ret += array_sum(call_user_func(array($this->{$relation}, 'sendMessage'), 'store'));
-                        $ret += array_sum(call_user_func(array($this->{$relation}->getDeleted(), 'sendMessage'), 'delete'));
+                        $ret += array_sum(call_user_func([$this->{$relation}, 'sendMessage'], 'store'));
+                        $ret += array_sum(call_user_func([$this->{$relation}->getDeleted(), 'sendMessage'], 'delete'));
                     } else {
-                        call_user_func(array($this->{$relation}, 'sendMessage'), 'store');
+                        call_user_func([$this->{$relation}, 'sendMessage'], 'store');
                         $to_delete = array_filter($this->{$relation}->getDeleted()->pluck($options['assoc_foreign_key']));
                         $to_insert = array_filter($this->{$relation}->pluck($options['assoc_foreign_key']));
                         $sql = "DELETE FROM `" . $options['thru_table'] ."` WHERE `" . $options['thru_key'] ."` = ? AND `" . $options['thru_assoc_key'] . "` = ?";
                         $st = DBManager::get()->prepare($sql);
                         foreach ($to_delete as $one_value) {
-                            $st->execute(array($foreign_key_value, $one_value));
+                            $st->execute([$foreign_key_value, $one_value]);
                             $ret += $st->rowCount();
                         }
                         $sql = "INSERT IGNORE INTO `" . $options['thru_table'] ."` SET `" . $options['thru_key'] ."` = ?, `" . $options['thru_assoc_key'] . "` = ?";
                         $st = DBManager::get()->prepare($sql);
                         foreach ($to_insert as $one_value) {
-                            $st->execute(array($foreign_key_value, $one_value));
+                            $st->execute([$foreign_key_value, $one_value]);
                             $ret += $st->rowCount();
                         }
                     }
@@ -1889,7 +1889,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
             $this->is_deleted = true;
             $this->applyCallbacks('after_delete');
         }
-        $this->setData(array(), true);
+        $this->setData([], true);
         return $ret;
     }
 
@@ -1916,16 +1916,16 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                         $this->initRelation($relation);
                         if (isset($this->relations[$relation])) {
                             if ($options['type'] === 'has_one') {
-                                $ret += call_user_func(array($this->{$relation}, 'delete'));
+                                $ret += call_user_func([$this->{$relation}, 'delete']);
                             } elseif ($options['type'] === 'has_many') {
-                                $ret += array_sum(call_user_func(array($this->{$relation}, 'sendMessage'), 'delete'));
+                                $ret += array_sum(call_user_func([$this->{$relation}, 'sendMessage'], 'delete'));
                             }
                         }
                     } else {
                         $foreign_key_value = call_user_func($options['assoc_func_params_func'], $this);
                         $sql = "DELETE FROM `" . $options['thru_table'] ."` WHERE `" . $options['thru_key'] ."` = ?";
                         $st = DBManager::get()->prepare($sql);
-                        $st->execute(array($foreign_key_value));
+                        $st->execute([$foreign_key_value]);
                         $ret += $st->rowCount();
                     }
                 }
@@ -1942,7 +1942,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     protected function initializeContent()
     {
-        $this->content = array();
+        $this->content = [];
         foreach (array_keys($this->db_fields) as $field) {
             $this->content[$field] = null;
             $this->content_db[$field] = null;
@@ -1959,7 +1959,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         foreach (array_keys($this->relations) as $one) {
             $this->relations[$one] = null;
         }
-        $this->additional_data = array();
+        $this->additional_data = [];
     }
 
     /**
@@ -2038,20 +2038,20 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         }
         if ($this->relations[$relation] === null) {
             $options = $this->getRelationOptions($relation);
-            $to_call = array($options['class_name'], $options['assoc_func']);
+            $to_call = [$options['class_name'], $options['assoc_func']];
             if (!is_callable($to_call)) {
                 throw new RuntimeException('assoc_func: ' . join('::', $to_call) . ' is not callable.' );
             }
             $params = $options['assoc_func_params_func'];
             if ($options['type'] === 'has_many') {
-                $records = function($record) use ($to_call, $params, $options) {$p = (array)$params($record); return call_user_func_array($to_call, array_merge(count($p) ? $p : array(null), array($options['order_by'])));};
+                $records = function($record) use ($to_call, $params, $options) {$p = (array)$params($record); return call_user_func_array($to_call, array_merge(count($p) ? $p : [null], [$options['order_by']]));};
                 $this->relations[$relation] = new SimpleORMapCollection($records, $options, $this);
             } elseif ($options['type'] === 'has_and_belongs_to_many') {
-                $records = function($record) use ($to_call, $params, $options) {$p = (array)$params($record); return call_user_func_array($to_call, array_merge(count($p) ? $p : array(null), array($options)));};
+                $records = function($record) use ($to_call, $params, $options) {$p = (array)$params($record); return call_user_func_array($to_call, array_merge(count($p) ? $p : [null], [$options]));};
                 $this->relations[$relation] = new SimpleORMapCollection($records, $options, $this);
             } else {
                 $p = (array)$params($this);
-                $records = call_user_func_array($to_call, count($p) ? $p : array(null));
+                $records = call_user_func_array($to_call, count($p) ? $p : [null]);
                 $result = is_array($records) ? $records[0] : $records;
                 $this->relations[$relation] = $result;
             }
@@ -2086,10 +2086,10 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         foreach ($this->registered_callbacks[$type] as $cb) {
             if ($cb instanceof Closure) {
                 $function =  $cb;
-                $params = array($this, $type, $cb);
+                $params = [$this, $type, $cb];
             } else {
-                $function = array($this, $cb);
-                $params = array($type);
+                $function = [$this, $cb];
+                $params = [$type];
             };
             $ok = call_user_func_array($function, $params);
             if ($ok === false) {
@@ -2260,7 +2260,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
     {
 
         if ($type == 'before_store') {
-            $i18ncontent = array();
+            $i18ncontent = [];
             foreach (array_keys($this->i18n_fields) as $field) {
                 if ($this->content[$field] instanceof I18NString) {
                     $i18ncontent[$field] = $this->content[$field];

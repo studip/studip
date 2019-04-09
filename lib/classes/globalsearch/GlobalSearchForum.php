@@ -132,7 +132,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             'id'          => $data['topic_id'],
             'name'        => $name,
             'url'         => URLHelper::getURL('plugins.php/coreforum/index/index/' . $data['topic_id'] .
-                '#' . $data['topic_id'], array('cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id'])
+                '#' . $data['topic_id'], ['cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id']]
             ),
             'img'         => CourseAvatar::getAvatar($course->id)->getUrl(Avatar::MEDIUM),
             'date'        => strftime('%x', $data['chdate']),

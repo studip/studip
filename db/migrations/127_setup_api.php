@@ -185,19 +185,19 @@ class SetupApi extends Migration
                           UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field' => 'API_ENABLED',
             ':value' => (int)false,
             ':type'  => 'boolean',
             ':description' => 'Schaltet die REST-API an',
-        ));
+        ]);
 
-        $statement->execute(array(
+        $statement->execute([
             ':field'       => 'API_OAUTH_AUTH_PLUGIN',
             ':value'       => 'Standard',
             ':type'        => 'string',
             ':description' => 'Definiert das für OAuth verwendete Authentifizierungsverfahren',
-        ));
+        ]);
     }
 
     function down()

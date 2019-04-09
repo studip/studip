@@ -8,14 +8,14 @@ $start = microtime(true);
 global $DB_STUDIP_DATABASE;
 
 // Tables to ignore on engine conversion.
-$ignore_tables = array();
+$ignore_tables = [];
 
 // Check if InnoDB is enabled in database server.
 $engines = DBManager::get()->fetchAll("SHOW ENGINES");
 $innodb = false;
 foreach ($engines as $e) {
     // InnoDB is found and enabled.
-    if ($e['Engine'] == 'InnoDB' && in_array(mb_strtolower($e['Support']), array('default', 'yes'))) {
+    if ($e['Engine'] == 'InnoDB' && in_array(mb_strtolower($e['Support']), ['default', 'yes'])) {
         $innodb = true;
         break;
     }
@@ -47,11 +47,11 @@ if ($innodb) {
                 WHERE TABLE_SCHEMA=:database AND ENGINE=:engine
                     AND ROW_FORMAT IN (:rowformats)
                 ORDER BY TABLE_NAME",
-                array(
+                [
                     ':database' => $DB_STUDIP_DATABASE,
                     ':engine' => 'InnoDB',
-                    ':rowformats' => array('Compact', 'Redundant')
-                ));
+                    ':rowformats' => ['Compact', 'Redundant']
+                ]);
 
             $newformat = 'DYNAMIC';
 

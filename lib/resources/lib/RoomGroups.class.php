@@ -39,7 +39,7 @@
 class RoomGroups {
 
     private static $room_group_object;
-    private $groups = array();
+    private $groups = [];
 
     public static function GetInstance($refresh_cache = false){
         if ($refresh_cache){
@@ -69,7 +69,7 @@ class RoomGroups {
                 foreach ($room_groups as $key => $value){
                     $rooms = array_intersect($value['rooms'], $my_rooms);
                     if (count($rooms)){
-                        $this->groups[] = array('name' => $value['name'], 'resources' => $rooms);
+                        $this->groups[] = ['name' => $value['name'], 'resources' => $rooms];
                     }
                 }
             }
@@ -107,7 +107,7 @@ class RoomGroups {
     }
 
     function getGroupContent($id){
-        return (isset($this->groups[$id]) ? $this->groups[$id]['resources'] : array());
+        return (isset($this->groups[$id]) ? $this->groups[$id]['resources'] : []);
     }
 
     function getGroupCount($id){

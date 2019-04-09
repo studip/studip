@@ -44,26 +44,26 @@ require_once 'lib/dates.inc.php';
 
 class ExternModuleTemplateLecturedetails extends ExternModule {
 
-    var $markers = array();
-    var $args = array('seminar_id');
+    var $markers = [];
+    var $args = ['seminar_id'];
 
     /**
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
 
-        $this->data_fields = array('subtitle', 'lecturer', 'art', 'status', 'description',
+        $this->data_fields = ['subtitle', 'lecturer', 'art', 'status', 'description',
             'location', 'semester', 'time', 'number', 'teilnehmer', 'requirements',
-            'lernorga', 'leistung', 'range_path', 'misc', 'ects');
-        $this->registered_elements = array(
+            'lernorga', 'leistung', 'range_path', 'misc', 'ects'];
+        $this->registered_elements = [
                 'ReplaceTextSemType',
                 'LinkInternPersondetails' => 'LinkInternTemplate',
                 'TemplateLectureData' => 'TemplateGeneric',
                 'TemplateNews' => 'TemplateGeneric',
                 'TemplateStudipData' => 'TemplateGeneric'
-        );
-        $this->field_names = array
-        (
+        ];
+        $this->field_names = 
+        [
                 _("Untertitel"),
                 _("Lehrende"),
                 _("Veranstaltungsart"),
@@ -80,7 +80,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                 _("Bereichseinordnung"),
                 _("Sonstiges"),
                 _("ECTS-Punkte")
-        );
+        ];
 
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
@@ -95,7 +95,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
     //  $this->elements["LinkIntern"]->real_name = _("Link zum Modul MitarbeiterInnendetails");
 
         $this->elements['LinkInternPersondetails']->real_name = _("Verlinkung zum Modul MitarbeiterInnendetails");
-        $this->elements['LinkInternPersondetails']->link_module_type = array(2, 14);
+        $this->elements['LinkInternPersondetails']->link_module_type = [2, 14];
         $this->elements['TemplateLectureData']->real_name = _("Haupttemplate");
         $this->elements['TemplateNews']->real_name = _("Template für News");
         $this->elements['TemplateStudipData']->real_name = _("Template für statistische Daten aus Stud.IP");
@@ -114,115 +114,115 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
     }
 
     function getMarkerDescription ($element_name) {
-        $markers['TemplateLectureData'][] = array('__GLOBAL__', _("Globale Variablen (gültig im gesamten Template)."));
-        $markers['TemplateLectureData'][] = array('###STUDIP-EDIT-HREF###', '');
-        $markers['TemplateLectureData'][] = array('###STUDIP-REGISTER-HREF###', '');
+        $markers['TemplateLectureData'][] = ['__GLOBAL__', _("Globale Variablen (gültig im gesamten Template).")];
+        $markers['TemplateLectureData'][] = ['###STUDIP-EDIT-HREF###', ''];
+        $markers['TemplateLectureData'][] = ['###STUDIP-REGISTER-HREF###', ''];
 
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN LECTUREDETAILS -->', '');
-        $markers['TemplateLectureData'][] = array('###TITLE###', '');
-        $markers['TemplateLectureData'][] = array('###SUBTITLE###', '');
-        $markers['TemplateLectureData'][] = array('###SEMESTER###', '');
-        $markers['TemplateLectureData'][] = array('###CYCLE###', '');
-        $markers['TemplateLectureData'][] = array('###ROOM###', '');
-        $markers['TemplateLectureData'][] = array('###NUMBER###', _("Die Veranstaltungsnummer"));
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN LECTUREDETAILS -->', ''];
+        $markers['TemplateLectureData'][] = ['###TITLE###', ''];
+        $markers['TemplateLectureData'][] = ['###SUBTITLE###', ''];
+        $markers['TemplateLectureData'][] = ['###SEMESTER###', ''];
+        $markers['TemplateLectureData'][] = ['###CYCLE###', ''];
+        $markers['TemplateLectureData'][] = ['###ROOM###', ''];
+        $markers['TemplateLectureData'][] = ['###NUMBER###', _("Die Veranstaltungsnummer")];
 
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN LECTURERS -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN LECTURER -->', '');
-        $markers['TemplateLectureData'][] = array('###FULLNAME###', '');
-        $markers['TemplateLectureData'][] = array('###LASTNAME###', '');
-        $markers['TemplateLectureData'][] = array('###FIRSTNAME###', '');
-        $markers['TemplateLectureData'][] = array('###TITLEFRONT###', '');
-        $markers['TemplateLectureData'][] = array('###TITLEREAR###', '');
-        $markers['TemplateLectureData'][] = array('###PERSONDETAILS-HREF###', '');
-        $markers['TemplateLectureData'][] = array('###LECTURER-NO###', '');
-        $markers['TemplateLectureData'][] = array('###UNAME###', '');
-        $markers['TemplateLectureData'][] = array('<!-- END LECTURER -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- END LECTURERS -->', '');
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN LECTURERS -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN LECTURER -->', ''];
+        $markers['TemplateLectureData'][] = ['###FULLNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###LASTNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###FIRSTNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###TITLEFRONT###', ''];
+        $markers['TemplateLectureData'][] = ['###TITLEREAR###', ''];
+        $markers['TemplateLectureData'][] = ['###PERSONDETAILS-HREF###', ''];
+        $markers['TemplateLectureData'][] = ['###LECTURER-NO###', ''];
+        $markers['TemplateLectureData'][] = ['###UNAME###', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END LECTURER -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END LECTURERS -->', ''];
 
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN TUTORS -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN TUTOR -->', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_FULLNAME###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_LASTNAME###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_FIRSTNAME###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_TITLEFRONT###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_TITLEREAR###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_PERSONDETAILS-HREF###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR-NO###', '');
-        $markers['TemplateLectureData'][] = array('###TUTOR_UNAME###', '');
-        $markers['TemplateLectureData'][] = array('<!-- END TUTOR -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- END TUTORS -->', '');
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN TUTORS -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN TUTOR -->', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_FULLNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_LASTNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_FIRSTNAME###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_TITLEFRONT###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_TITLEREAR###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_PERSONDETAILS-HREF###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR-NO###', ''];
+        $markers['TemplateLectureData'][] = ['###TUTOR_UNAME###', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END TUTOR -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END TUTORS -->', ''];
 
-        $markers['TemplateLectureData'][] = array('###PRELIM-DISCUSSION###', '');
-        $markers['TemplateLectureData'][] = array('###SEMTYPE-SUBSTITUTE###', '');
-        $markers['TemplateLectureData'][] = array('###SEMTYPE###', '');
-        $markers['TemplateLectureData'][] = array('###FORM###', _("Die Veranstaltungsart"));
-        $markers['TemplateLectureData'][] = array('###PARTICIPANTS###', '');
-        $markers['TemplateLectureData'][] = array('###DESCRIPTION###', '');
-        $markers['TemplateLectureData'][] = array('###MISC###', _("Sonstiges"));
-        $markers['TemplateLectureData'][] = array('###REQUIREMENTS###', '');
-        $markers['TemplateLectureData'][] = array('###ORGA###', _("Organisationsform"));
-        $markers['TemplateLectureData'][] = array('###LEISTUNGSNACHWEIS###', _("Leistungsnachweis"));
-        $markers['TemplateLectureData'][] = array('###FORM###', '');
-        $markers['TemplateLectureData'][] = array('###ECTS###', '');
-        $markers['TemplateLectureData'][] = array('###PRELIM-DISCUSSION###', '');
-        $markers['TemplateLectureData'][] = array('###FIRST-MEETING###', '');
+        $markers['TemplateLectureData'][] = ['###PRELIM-DISCUSSION###', ''];
+        $markers['TemplateLectureData'][] = ['###SEMTYPE-SUBSTITUTE###', ''];
+        $markers['TemplateLectureData'][] = ['###SEMTYPE###', ''];
+        $markers['TemplateLectureData'][] = ['###FORM###', _("Die Veranstaltungsart")];
+        $markers['TemplateLectureData'][] = ['###PARTICIPANTS###', ''];
+        $markers['TemplateLectureData'][] = ['###DESCRIPTION###', ''];
+        $markers['TemplateLectureData'][] = ['###MISC###', _("Sonstiges")];
+        $markers['TemplateLectureData'][] = ['###REQUIREMENTS###', ''];
+        $markers['TemplateLectureData'][] = ['###ORGA###', _("Organisationsform")];
+        $markers['TemplateLectureData'][] = ['###LEISTUNGSNACHWEIS###', _("Leistungsnachweis")];
+        $markers['TemplateLectureData'][] = ['###FORM###', ''];
+        $markers['TemplateLectureData'][] = ['###ECTS###', ''];
+        $markers['TemplateLectureData'][] = ['###PRELIM-DISCUSSION###', ''];
+        $markers['TemplateLectureData'][] = ['###FIRST-MEETING###', ''];
 
         $this->insertDatafieldMarkers('sem', $markers, 'TemplateLectureData');
 
-        $markers['TemplateLectureData'][] = array('###NEWS###', _("Inhalt aus dem Template für News"));
-        $markers['TemplateLectureData'][] = array('###STUDIP-DATA###', 'Inhalt aus dem Template für statistische Daten aus Stud.IP');
+        $markers['TemplateLectureData'][] = ['###NEWS###', _("Inhalt aus dem Template für News")];
+        $markers['TemplateLectureData'][] = ['###STUDIP-DATA###', 'Inhalt aus dem Template für statistische Daten aus Stud.IP'];
 
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN RANGE-PATHES -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN RANGE-PATH -->', '');
-        $markers['TemplateLectureData'][] = array('###PATH###', '');
-        $markers['TemplateLectureData'][] = array('<!-- END RANGE-PATH -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- END RANGE-PATHES -->', '');
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN RANGE-PATHES -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN RANGE-PATH -->', ''];
+        $markers['TemplateLectureData'][] = ['###PATH###', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END RANGE-PATH -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END RANGE-PATHES -->', ''];
 
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN MODULES -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- BEGIN MODULE -->', '');
-        $markers['TemplateLectureData'][] = array('###PATH###', _('Modulzuordnungen der Veranstaltung'));
-        $markers['TemplateLectureData'][] = array('<!-- END MODULE -->', '');
-        $markers['TemplateLectureData'][] = array('<!-- END MODULES -->', '');
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN MODULES -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- BEGIN MODULE -->', ''];
+        $markers['TemplateLectureData'][] = ['###PATH###', _('Modulzuordnungen der Veranstaltung')];
+        $markers['TemplateLectureData'][] = ['<!-- END MODULE -->', ''];
+        $markers['TemplateLectureData'][] = ['<!-- END MODULES -->', ''];
 
-        $markers['TemplateLectureData'][] = array('<!-- END LECTUREDETAILS -->');
+        $markers['TemplateLectureData'][] = ['<!-- END LECTUREDETAILS -->'];
 
-        $markers['TemplateNews'][] = array('<!-- BEGIN NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN NO-NEWS -->', '');
-        $markers['TemplateNews'][] = array('###NEWS_NO-NEWS-TEXT###', '');
-        $markers['TemplateNews'][] = array('<!-- END NO-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN ALL-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- BEGIN SINGLE-NEWS -->', '');
-        $markers['TemplateNews'][] = array('###NEWS_TOPIC###', '');
-        $markers['TemplateNews'][] = array('###NEWS_BODY###', '');
-        $markers['TemplateNews'][] = array('###NEWS_DATE###', '');
-        $markers['TemplateNews'][] = array('###NEWS_ADMIN-MESSAGE###', '');
-        $markers['TemplateNews'][] = array('###NEWS_NO###', '');
-        $markers['TemplateNews'][] = array('###FULLNAME###', _("Vollständiger Name des Autors."));
-        $markers['TemplateNews'][] = array('###LASTNAME###', _("Nachname des Autors."));
-        $markers['TemplateNews'][] = array('###FIRSTNAME###', _("Vorname des Autors."));
-        $markers['TemplateNews'][] = array('###TITLEFRONT###', _("Titel des Autors (vorangestellt)."));
-        $markers['TemplateNews'][] = array('###TITLEREAR###', _("Titel des Autors (nachgestellt)."));
-        $markers['TemplateNews'][] = array('###PERSONDETAIL-HREF###', '');
-        $markers['TemplateNews'][] = array('###USERNAME###', '');
-        $markers['TemplateNews'][] = array('<!-- END SINGLE-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- END ALL-NEWS -->', '');
-        $markers['TemplateNews'][] = array('<!-- END NEWS -->', '');
+        $markers['TemplateNews'][] = ['<!-- BEGIN NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN NO-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['###NEWS_NO-NEWS-TEXT###', ''];
+        $markers['TemplateNews'][] = ['<!-- END NO-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN ALL-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- BEGIN SINGLE-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['###NEWS_TOPIC###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_BODY###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_DATE###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_ADMIN-MESSAGE###', ''];
+        $markers['TemplateNews'][] = ['###NEWS_NO###', ''];
+        $markers['TemplateNews'][] = ['###FULLNAME###', _("Vollständiger Name des Autors.")];
+        $markers['TemplateNews'][] = ['###LASTNAME###', _("Nachname des Autors.")];
+        $markers['TemplateNews'][] = ['###FIRSTNAME###', _("Vorname des Autors.")];
+        $markers['TemplateNews'][] = ['###TITLEFRONT###', _("Titel des Autors (vorangestellt).")];
+        $markers['TemplateNews'][] = ['###TITLEREAR###', _("Titel des Autors (nachgestellt).")];
+        $markers['TemplateNews'][] = ['###PERSONDETAIL-HREF###', ''];
+        $markers['TemplateNews'][] = ['###USERNAME###', ''];
+        $markers['TemplateNews'][] = ['<!-- END SINGLE-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- END ALL-NEWS -->', ''];
+        $markers['TemplateNews'][] = ['<!-- END NEWS -->', ''];
 
-        $markers['TemplateStudipData'][] = array('<!-- BEGIN STUDIP-DATA -->', '');
-        $markers['TemplateStudipData'][] = array('###HOME-INST-NAME###', '');
-        $markers['TemplateStudipData'][] = array('###HOME-INST-HREF###', '');
-        $markers['TemplateStudipData'][] = array('###COUNT-USER###', '');
-        $markers['TemplateStudipData'][] = array('###COUNT-POSTINGS###', '');
-        $markers['TemplateStudipData'][] = array('###COUNT-DOCUMENTS###', '');
+        $markers['TemplateStudipData'][] = ['<!-- BEGIN STUDIP-DATA -->', ''];
+        $markers['TemplateStudipData'][] = ['###HOME-INST-NAME###', ''];
+        $markers['TemplateStudipData'][] = ['###HOME-INST-HREF###', ''];
+        $markers['TemplateStudipData'][] = ['###COUNT-USER###', ''];
+        $markers['TemplateStudipData'][] = ['###COUNT-POSTINGS###', ''];
+        $markers['TemplateStudipData'][] = ['###COUNT-DOCUMENTS###', ''];
 
-        $markers['TemplateStudipData'][] = array('<!-- BEGIN INVOLVED-INSTITUTES -->', '');
-        $markers['TemplateStudipData'][] = array('<!-- BEGIN INVOLVED-INSTITUTE -->', '');
-        $markers['TemplateStudipData'][] = array('###INVOLVED-INSTITUTE_HREF###', '');
-        $markers['TemplateStudipData'][] = array('###INVOLVED-INSTITUTE_NAME###', '');
-        $markers['TemplateStudipData'][] = array('<!-- END INVOLVED-INSTITUTE -->', '');
-        $markers['TemplateStudipData'][] = array('<!-- END INVOLVED-INSTITUTES -->', '');
+        $markers['TemplateStudipData'][] = ['<!-- BEGIN INVOLVED-INSTITUTES -->', ''];
+        $markers['TemplateStudipData'][] = ['<!-- BEGIN INVOLVED-INSTITUTE -->', ''];
+        $markers['TemplateStudipData'][] = ['###INVOLVED-INSTITUTE_HREF###', ''];
+        $markers['TemplateStudipData'][] = ['###INVOLVED-INSTITUTE_NAME###', ''];
+        $markers['TemplateStudipData'][] = ['<!-- END INVOLVED-INSTITUTE -->', ''];
+        $markers['TemplateStudipData'][] = ['<!-- END INVOLVED-INSTITUTES -->', ''];
 
-        $markers['TemplateStudipData'][] = array('<!-- END STUDIP-DATA -->', '');
+        $markers['TemplateStudipData'][] = ['<!-- END STUDIP-DATA -->', ''];
 
         return $markers[$element_name];
     }
@@ -276,12 +276,12 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             $l = 0;
             foreach ($lecturers as $lecturer) {
                 $query = "SELECT {$GLOBALS['_fullname_sql'][$name_sql]} AS name, username, Vorname, Nachname, title_rear, title_front FROM auth_user_md5 aum LEFT JOIN user_info ui USING(user_id) WHERE aum.user_id = ?";
-                $parameters = array($lecturer);
+                $parameters = [$lecturer];
                 $state = DBManager::get()->prepare($query);
                 $state->execute($parameters);
                 $rowlec = $state->fetch(PDO::FETCH_ASSOC);
                 if ($rowlec !== false) {
-                    $content['LECTUREDETAILS']['LECTURERS']['LECTURER'][$l]['PERSONDETAILS-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(array('link_args' => 'username=' . $rowlec['username']));
+                    $content['LECTUREDETAILS']['LECTURERS']['LECTURER'][$l]['PERSONDETAILS-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(['link_args' => 'username=' . $rowlec['username']]);
                     $content['LECTUREDETAILS']['LECTURERS']['LECTURER'][$l]['FULLNAME'] = ExternModule::ExtHtmlReady($rowlec['name']);
                     $content['LECTUREDETAILS']['LECTURERS']['LECTURER'][$l]['FIRSTNAME'] = ExternModule::ExtHtmlReady($rowlec['Vorname']);
                     $content['LECTUREDETAILS']['LECTURERS']['LECTURER'][$l]['LASTNAME'] = ExternModule::ExtHtmlReady($rowlec['Nachname']);
@@ -298,12 +298,12 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             $l = 0;
             foreach ($tutors as $tutor) {
                 $query = "SELECT {$GLOBALS['_fullname_sql'][$name_sql]} AS name, username, Vorname, Nachname, title_rear, title_front FROM auth_user_md5 aum LEFT JOIN user_info ui USING(user_id) WHERE aum.user_id = ?";
-                $parameters = array($tutor);
+                $parameters = [$tutor];
                 $state = DBManager::get()->prepare($query);
                 $state->execute($parameters);
                 $rowtut = $state->fetch(PDO::FETCH_ASSOC);
                 if ($rowtut !== false) {
-                    $content['LECTUREDETAILS']['TUTORS']['TUTOR'][$l]['TUTOR_PERSONDETAILS-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(array('link_args' => 'username=' . $rowtut['username']));
+                    $content['LECTUREDETAILS']['TUTORS']['TUTOR'][$l]['TUTOR_PERSONDETAILS-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(['link_args' => 'username=' . $rowtut['username']]);
                     $content['LECTUREDETAILS']['TUTORS']['TUTOR'][$l]['TUTOR_FULLNAME'] = ExternModule::ExtHtmlReady($rowtut['name']);
                     $content['LECTUREDETAILS']['TUTORS']['TUTOR'][$l]['TUTOR_FIRSTNAME'] = ExternModule::ExtHtmlReady($rowtut['Vorname']);
                     $content['LECTUREDETAILS']['TUTORS']['TUTOR'][$l]['TUTOR_LASTNAME'] = ExternModule::ExtHtmlReady($rowtut['Nachname']);
@@ -386,7 +386,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                 }
 
                 foreach ($mvv_paths as $mvv_path) {
-                    $content['LECTUREDETAILS']['MODULES']['MODULE'][] = array('PATH' => ExternModule::ExtHtmlReady($mvv_path));
+                    $content['LECTUREDETAILS']['MODULES']['MODULE'][] = ['PATH' => ExternModule::ExtHtmlReady($mvv_path)];
                 }
             }
 
@@ -450,7 +450,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                           LEFT JOIN user_info AS ui USING (user_id)
                           WHERE aum.user_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($news_detail['user_id']));
+                $statement->execute([$news_detail['user_id']]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 if ($temp) {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['FULLNAME'] = ExternModule::ExtHtmlReady($temp['fullname']);
@@ -459,7 +459,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['TITLEFRONT'] = ExternModule::ExtHtmlReady($temp['title_front']);
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['TITLEREAR'] = ExternModule::ExtHtmlReady($temp['title_rear']);
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['USERNAME'] = $temp['username'];
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(array('link_args' => 'username=' . $temp['username']));
+                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternPersondetails']->createUrl(['link_args' => 'username=' . $temp['username']]);
                 }
                 $i++;
             }
@@ -469,7 +469,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
 
     function getStudipData () {
         $query = "SELECT i.Institut_id, i.Name, i.url FROM seminare LEFT JOIN Institute i USING(institut_id) WHERE Seminar_id = ?";
-        $parameters = array($this->seminar_id);
+        $parameters = [$this->seminar_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -503,7 +503,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
         }
 
         $query = "SELECT count(*) as count_user FROM seminar_user WHERE Seminar_id = ?";
-        $parameters = array($this->seminar_id);
+        $parameters = [$this->seminar_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -526,7 +526,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                   WHERE range_id = ? AND range_type = 'course'
             AND folder_type IN ('RootFolder', 'StandardFolder')
                   GROUP BY range_id";
-        $parameters = array($this->seminar_id);
+        $parameters = [$this->seminar_id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
@@ -537,7 +537,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             $content['STUDIP-DATA']['COUNT-DOCUMENTS'] = '0';
         }
 
-        return $this->elements['TemplateStudipData']->toString(array('content' => $content, 'subpart' => 'STUDIP-DATA'));
+        return $this->elements['TemplateStudipData']->toString(['content' => $content, 'subpart' => 'STUDIP-DATA']);
     }
 
     function printout ($args) {
@@ -545,7 +545,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateLectureData']->toString(array('content' => $this->getContent($args), 'subpart' => 'LECTUREDETAILS'));
+        echo $this->elements['TemplateLectureData']->toString(['content' => $this->getContent($args), 'subpart' => 'LECTUREDETAILS']);
 
     }
 
@@ -554,7 +554,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             $language = "de_DE";
         init_i18n($language);
 
-        echo $this->elements['TemplateLectureData']->toString(array('content' => $this->getContent(array()), 'subpart' => 'LECTUREDETAILS', 'hide_markers' => FALSE));
+        echo $this->elements['TemplateLectureData']->toString(['content' => $this->getContent([]), 'subpart' => 'LECTUREDETAILS', 'hide_markers' => FALSE]);
 
     }
 

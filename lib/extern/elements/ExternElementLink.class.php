@@ -39,8 +39,8 @@
 
 class ExternElementLink extends ExternElement {
 
-    var $attributes = array("font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style");
+    var $attributes = ["font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style"];
 
     /**
     * Constructor

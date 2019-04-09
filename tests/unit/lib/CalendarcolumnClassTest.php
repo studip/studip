@@ -64,15 +64,15 @@ class CalendarColumnCase extends PHPUnit_Framework_TestCase {
     }
 
     function test_set_url() {
-        $url = URLHelper::getURL("dispatch.php/profile", array("username" => get_username()));
+        $url = URLHelper::getURL("dispatch.php/profile", ["username" => get_username()]);
         $column = CalendarColumn::create()->setURL($url);
         $this->assertEquals($url, $column->getURL());
     }
 
     function test_add_entry() {
-        $entry = array('start' => "0800", 'end' => "1000", 'title' => "test_title");
+        $entry = ['start' => "0800", 'end' => "1000", 'title' => "test_title"];
         $column = CalendarColumn::create()->addEntry($entry);
-        $entry = array('start' => "1200", 'end' => "1230", 'title' => "test_title_number_2");
+        $entry = ['start' => "1200", 'end' => "1230", 'title' => "test_title_number_2"];
         $column->addEntry($entry);
         $entries = $column->getEntries();
         $this->assertInternalType("array", $entries);
@@ -84,25 +84,25 @@ class CalendarColumnCase extends PHPUnit_Framework_TestCase {
 
     function test_wrong_entry() {
         $this->setExpectedException('InvalidArgumentException');
-        $entry1 = array('start' => "0800", 'end' => "1000");
-        $entry2 = array('start' => "1000", 'title' => "test_title");
-        $entry3 = array('end' => "1500", 'title' => "test_title");
+        $entry1 = ['start' => "0800", 'end' => "1000"];
+        $entry2 = ['start' => "1000", 'title' => "test_title"];
+        $entry3 = ['end' => "1500", 'title' => "test_title"];
         $column = CalendarColumn::create()->addEntry($entry1);
         $column = CalendarColumn::create()->addEntry($entry2);
         $column = CalendarColumn::create()->addEntry($entry3);
     }
 
     function test_add_entries() {
-        $entries = array(
-            array('start' => "0800", 'end' => "1000", 'title' => "test_title"),
-            array('start' => "1200", 'end' => "1400", 'title' => "test_title")
-        );
+        $entries = [
+            ['start' => "0800", 'end' => "1000", 'title' => "test_title"],
+            ['start' => "1200", 'end' => "1400", 'title' => "test_title"]
+        ];
         $column = CalendarColumn::create()->addEntries($entries);
         $this->assertInternalType('array', $column->getEntries());
     }
 
     function test_erase_entries() {
-        $entry = array('start' => "0800", 'end' => "1000", 'title' => "test_title");
+        $entry = ['start' => "0800", 'end' => "1000", 'title' => "test_title"];
         $column = CalendarColumn::create()->addEntry($entry);
         $column->eraseEntries();
         $entries = $column->getEntries();

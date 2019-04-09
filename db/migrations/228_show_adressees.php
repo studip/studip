@@ -2,16 +2,16 @@
 
 class ShowAdressees extends Migration
 {
-    private $options = array(
-        array(
+    private $options = [
+        [
             'name'        => 'SHOW_ADRESSEES_LIMIT',
             'description' => 'Ab wievielen Adressaten dürfen diese aus datenschutzgründen nicht mehr angezeigt werden in einer empfangenen Nachricht?',
             'section'     => 'global',
             'range'       => 'global',
             'type'        => 'integer',
             'value'       => '20'
-        )
-    );
+        ]
+    ];
 
     public function description()
     {
@@ -37,7 +37,7 @@ class ShowAdressees extends Migration
         $stmt = $db->prepare("DELETE FROM config WHERE field = :name");
 
         foreach ($this->options as $option) {
-            $stmt->execute(array('name' => $option['name']));
+            $stmt->execute(['name' => $option['name']]);
         }
         DBManager::get()->exec("
             ALTER TABLE message

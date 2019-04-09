@@ -133,7 +133,7 @@ class Evaluation extends EvaluationObject implements PrivacyObject
     $this->setAuthorName ("Alexander Willner");
     $this->instanceof = INSTANCEOF_EVAL;
 
-    $this->rangeID      = array ();
+    $this->rangeID      =  [];
     $this->startdate    = NULL;
     $this->stopdate     = NULL;
     $this->timespan     = NULL;
@@ -347,7 +347,7 @@ class Evaluation extends EvaluationObject implements PrivacyObject
     * @param   string   $rangeID   The range id
     */
    function removeRangeID ($rangeID) {
-      $temp = array ();
+      $temp =  [];
       while ($oldRangeID = $this->getNextRangeID ()) {
          if ($oldRangeID != $rangeID) {
             array_push ($temp, $oldRangeID);

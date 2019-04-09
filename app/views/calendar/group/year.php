@@ -2,7 +2,7 @@
     <tr>
         <td colspan="3" style="text-align: center; vertical-align: middle;">
             <div style="text-align: left; display: inline-block; width: 20%; white-space: nowrap;">
-                <a href="<?= $controller->url_for('calendar/group/year', array('atime' => strtotime('-1 year', $atime))) ?>">
+                <a href="<?= $controller->url_for('calendar/group/year', ['atime' => strtotime('-1 year', $atime)]) ?>">
                     <?= Icon::create('arr_2left', 'clickable', ['title' => _('Ein Jahr zurück')])->asImg(16, ['style' => 'vertical-align: text-bottom;']) ?>
                     <?= strftime('%Y', strtotime('-1 year', $atime)) ?>
                 </a>
@@ -11,7 +11,7 @@
                 <?= date('Y', $calendars[0]->getStart()) ?>
             </div>
             <div style="text-align: right; display: inline-block; width: 20%; white-space: nowrap;">
-                <a href="<?= $controller->url_for('calendar/group/year', array('atime' => strtotime('+1 year', $atime))) ?>">
+                <a href="<?= $controller->url_for('calendar/group/year', ['atime' => strtotime('+1 year', $atime)]) ?>">
                     <?= strftime('%Y', strtotime('+1 year', $atime)) ?>
                     <?= Icon::create('arr_2right', 'clickable', ['title' => _('Ein Jahr vor')])->asImg(16, ['style' => 'vertical-align: text-bottom;']) ?>
                 </a>
@@ -21,7 +21,7 @@
     <tr>
         <td colspan="3" class="blank">
             <table style="width: 100%;">
-            <? $days_per_month = array(31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+            <? $days_per_month = [31, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
                 if (date('L', $calendars[0]->getStart())) {
                     $days_per_month[2]++;
                 }
@@ -30,7 +30,7 @@
             <? for ($i = 1; $i < 13; $i++) : ?>
                     <?  $ts_month += ( $days_per_month[$i] - 1) * 86400; ?>
                     <td style="text-align: center; width: 8%;">
-                        <a class="calhead" href="<?= $controller->url_for('calendar/group/month', array('atime' => $calendars[0]->getStart() + $ts_month)) ?>">
+                        <a class="calhead" href="<?= $controller->url_for('calendar/group/month', ['atime' => $calendars[0]->getStart() + $ts_month]) ?>">
                             <?= strftime('%B', $ts_month); ?>
                         </a>
                     </td>
@@ -58,7 +58,7 @@
                                 <td<?= $day_class ?>>
                             <? endif; ?>
                             <? $tooltip = $this->render_partial('calendar/group/_tooltip_year',
-                                    array('aday' => $aday, 'calendars' => $calendars, 'count_lists' => $count_lists)) ?> 
+                                    ['aday' => $aday, 'calendars' => $calendars, 'count_lists' => $count_lists]) ?> 
                             <? if (trim($tooltip)) : ?>
                                 <table style="width: 100%;">
                                     <tr>
@@ -69,24 +69,24 @@
                             <? $hday = holiday($aday); ?>
                             <? if ($hday['col'] == '1') : ?>
                                 <? if (date('w', $aday) == '0') : ?>
-                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                     <? $count++; ?>
                                 <? else : ?>
-                                    <a style="font-weight:bold;" class="day" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="day" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                 <? endif; ?>
                             <? elseif ($hday['col'] == '2' || $hday['col'] == '3') : ?>
                                 <? if (date('w', $aday) == '0') : ?>
-                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                     <? $count++; ?>
                                 <? else : ?>
-                                    <a style="font-weight:bold;" class="hday" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="hday" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                 <? endif; ?>
                             <? else : ?>
                                 <? if (date('w', $aday) == '0') : ?>
-                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="sday" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                     <? $count++; ?>
                                 <? else : ?>
-                                    <a style="font-weight:bold;" class="day" href="<?= $controller->url_for('calendar/group/day', array('atime' => $aday)) ?>"><?= $i ?></a> <?= $weekday; ?>
+                                    <a style="font-weight:bold;" class="day" href="<?= $controller->url_for('calendar/group/day', ['atime' => $aday]) ?>"><?= $i ?></a> <?= $weekday; ?>
                                 <? endif; ?>
                             <? endif; ?>
                             <? if (trim($tooltip)) : ?>
@@ -110,7 +110,7 @@
             <? for ($i = 1; $i < 13; $i++) : ?>
                 <? $ts_month += ( $days_per_month[$i] - 1) * 86400; ?>
                 <td align="center" width="8%">
-                    <a class="calhead" href="<?= $controller->url_for('calendar/group/month', array('atime' => $calendars[0]->getStart() + $ts_month)) ?>">
+                    <a class="calhead" href="<?= $controller->url_for('calendar/group/month', ['atime' => $calendars[0]->getStart() + $ts_month]) ?>">
                         <?= strftime('%B', $ts_month); ?>
                     </a>
                 </td>

@@ -17,141 +17,141 @@ class StudipCoreFormat extends TextFormat
     /**
      * list of global Stud.IP markup rules
      */
-    private static $studip_rules = array(
+    private static $studip_rules = [
 
         // heading level 1-4
-        'heading' => array(
+        'heading' => [
             'start'    => '^(!{1,4})([^\n]+)\n*',
             'callback' => 'StudipCoreFormat::markupHeading'
-        ),
+        ],
 
         // horizontal rule
-        'hrule' => array(
+        'hrule' => [
             'start'    => '^--(\d?)$',
             'callback' => 'StudipCoreFormat::markupHorizontalRule'
-        ),
+        ],
 
         // list and table
-        'list' => array(
+        'list' => [
             'start'    => '(^[=-]+ [^\n]+\n?)+',
             'callback' => 'StudipCoreFormat::markupList'
-        ),
-        'table' => array(
+        ],
+        'table' => [
             'start'    => '(^\|[^\n]*\|[^\n]*\n?)+',
             'callback' => 'StudipCoreFormat::markupTable'
-        ),
+        ],
 
         // block indent
-        'indent' => array(
+        'indent' => [
             'start'    => '(^  [^\n]+\n?)+',
             'callback' => 'StudipCoreFormat::markupIndent'
-        ),
+        ],
 
         // basic text formatting
-        'bold' => array(
+        'bold' => [
             'start'    => '\*\*',
             'end'      => '\*\*',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'italics' => array(
+        ],
+        'italics' => [
             'start'    => '%%',
             'end'      => '%%',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'underline' => array(
+        ],
+        'underline' => [
             'start'    => '__',
             'end'      => '__',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'verb' => array(
+        ],
+        'verb' => [
             'start'    => '##',
             'end'      => '##',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'big' => array(
+        ],
+        'big' => [
             'start'    => '(\+\+)+',
             'end'      => '(\+\+)+',
             'callback' => 'StudipCoreFormat::markupTextSize'
-        ),
-        'small' => array(
+        ],
+        'small' => [
             'start'    => '(--)+',
             'end'      => '(--)+',
             'callback' => 'StudipCoreFormat::markupTextSize'
-        ),
-        'super' => array(
+        ],
+        'super' => [
             'start'    => '&gt;&gt;',
             'end'      => '&gt;&gt;',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'sub' => array(
+        ],
+        'sub' => [
             'start'    => '&lt;&lt;',
             'end'      => '&lt;&lt;',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
-        'strike' => array(
+        ],
+        'strike' => [
             'start'    => '\{-',
             'end'      => '-\}',
             'callback' => 'StudipCoreFormat::markupText'
-        ),
+        ],
 
         // basic text formatting (simple form)
-        'simple_bold' => array(
+        'simple_bold' => [
             'start'    => '(?<=\s|^)\*(\S+)\*(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_italics' => array(
+        ],
+        'simple_italics' => [
             'start'    => '(?<=\s|^)%(\S+)%(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_underline' => array(
+        ],
+        'simple_underline' => [
             'start'    => '(?<=\s|^)_(\S+)_(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_verb' => array(
+        ],
+        'simple_verb' => [
             'start'    => '(?<=\s|^)#(\S+)#(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_big' => array(
+        ],
+        'simple_big' => [
             'start'    => '(?<=\s|^)\+(\S+)\+(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_small' => array(
+        ],
+        'simple_small' => [
             'start'    => '(?<=\s|^)-(\S+)-(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_super' => array(
+        ],
+        'simple_super' => [
             'start'    => '(?<=\s|^)&gt;(\S+)&gt;(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
-        'simple_sub' => array(
+        ],
+        'simple_sub' => [
             'start'    => '(?<=\s|^)&lt;(\S+)&lt;(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupTextSimple'
-        ),
+        ],
 
         // preformatted text, quote, nop and code
-        'pre' => array(
+        'pre' => [
             'start'    => '\[pre\]',
             'end'      => '\[\/pre\]',
             'callback' => 'StudipCoreFormat::markupPreformat'
-        ),
-        'quote' => array(
+        ],
+        'quote' => [
             'start'    => '\[quote(=.*?)?\]',
             'end'      => '\[\/quote\]',
             'callback' => 'StudipCoreFormat::markupQuote'
-        ),
-        'nop' => array(
+        ],
+        'nop' => [
             'start'    => '\[nop\](.*?)\[\/nop\]',
             'callback' => 'StudipCoreFormat::markupNoFormat'
-        ),
-        'code' => array(
+        ],
+        'code' => [
             'start'    => '\[code(=.*?)?\](.*?)\[\/code\]',
             'callback' => 'StudipCoreFormat::markupCode'
-        ),
-        'media' => array(
+        ],
+        'media' => [
             'start'    => '\[(img|flash|audio|video)(.*?)\](.*?)(?=\s|$)',
             'callback' => 'StudipCoreFormat::markupMedia'
-        ),
-        'emails' => array(
+        ],
+        'emails' => [
             'start'    => '(?xi:
                 # ensure block is preceded by whitspace, line start or closing
                 # tag
@@ -167,15 +167,15 @@ class StudipCoreFormat extends TextFormat
                 (?=\s|$)
             )',
             'callback' => 'StudipCoreFormat::markupEmails'
-        ),
-        'htmlAnchor' => array(
+        ],
+        'htmlAnchor' => [
             # avoid replacing html links by studip's links-markup
             # match <a ...="..."> ... </a>
             'start' => '(?xi: <\s* a (?:\s(?:\s* \w+ \s*=\s* "[^"]*" )*)? \s*>)',
             'end' => '(?xi: <\s* \/\s* a \s*>)',
             'callback' => 'StudipCoreFormat::htmlAnchor'
-        ),
-        'htmlImg' => array(
+        ],
+        'htmlImg' => [
             # avoid replacing img links by studip's links-markup
             # match <img ...="..." />
             'start' => '(?xi:
@@ -194,8 +194,8 @@ class StudipCoreFormat extends TextFormat
                 \s*\/?\s*>
             )',
             'callback' => 'StudipCoreFormat::htmlImg'
-        ),
-        'links' => array(
+        ],
+        'links' => [
             // markup: [text]url
             //
             // To set URLs apart from normal text, scheme and host are
@@ -217,13 +217,13 @@ class StudipCoreFormat extends TextFormat
                 )
             )',
             'callback' => 'StudipCoreFormat::markupLinks'
-        ),
+        ],
         'tex' => [
             'start'    => '\[tex\]',
             'end'      => '\[\/tex\]',
             'callback' => 'StudipCoreFormat::markupTexFormat'
         ],
-    );
+    ];
 
     /**
      * Returns the list of global Stud.IP markup rules as an array.
@@ -330,7 +330,7 @@ class StudipCoreFormat extends TextFormat
      */
     protected static function markupText($markup, $matches, $contents)
     {
-        static $tag = array(
+        static $tag = [
             '**' => 'strong',
             '%%' => 'em',
             '__' => 'u',
@@ -338,7 +338,7 @@ class StudipCoreFormat extends TextFormat
             '&gt;&gt;' => 'sup',
             '&lt;&lt;' => 'sub',
             '{-' => 's'
-        );
+        ];
 
         $key = $matches[0];
 
@@ -350,10 +350,10 @@ class StudipCoreFormat extends TextFormat
      */
     protected static function markupTextSize($markup, $matches, $contents)
     {
-        static $tag = array(
+        static $tag = [
             '++' => 'big',
             '--' => 'small',
-        );
+        ];
 
         $key = $matches[1];
         $level = mb_strlen($matches[0]) / 2;
@@ -368,7 +368,7 @@ class StudipCoreFormat extends TextFormat
      */
     protected static function markupTextSimple($markup, $matches)
     {
-        static $tag = array(
+        static $tag = [
             '*' => 'strong',
             '%' => 'em',
             '_' => 'u',
@@ -377,7 +377,7 @@ class StudipCoreFormat extends TextFormat
             '-' => 'small',
             '>' => 'sup',
             '<' => 'sub'
-        );
+        ];
 
         $key = $matches[0][0];
         $text = str_replace($key, ' ', $matches[1]);
@@ -549,11 +549,11 @@ class StudipCoreFormat extends TextFormat
             }
         }
 
-        $format_strings = array(
+        $format_strings = [
             'img' => '<img src="%s" style="%s" title="%s" alt="%s">',
             'audio' => '<audio src="%s" style="%s" title="%s" alt="%s" controls></audio>',
             'video' => '<video src="%s" style="%s" title="%s" alt="%s" controls></video>'
-        );
+        ];
 
         $url = TransformInternalLinks($url);
         $pu = @parse_url($url);
@@ -570,7 +570,7 @@ class StudipCoreFormat extends TextFormat
         }
         $LOAD_EXTERNAL_MEDIA = Config::GetInstance()->getValue('LOAD_EXTERNAL_MEDIA');
         if ($intern
-            && !in_array($pu['first_target'], array('sendfile.php','download','assets','pictures'))
+            && !in_array($pu['first_target'], ['sendfile.php','download','assets','pictures'])
             && !($pu['first_target'] === 'dispatch.php' && mb_strpos($pu['path'], 'dispatch.php/document/download') !== false))
         {
             return $matches[0];

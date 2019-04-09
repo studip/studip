@@ -25,7 +25,7 @@ class MultipersonsearchController extends AuthenticatedController
         $searchterm = str_replace(',', ' ', $searchterm);
         $searchterm = preg_replace('/\s+/u', ' ', $searchterm);
 
-        $result = array();
+        $result = [];
         // execute searchobject if searchterm is at least 3 chars long
         if (mb_strlen($searchterm) >= 3) {
             $mp = MultiPersonSearch::load($name);
@@ -119,8 +119,8 @@ class MultipersonsearchController extends AuthenticatedController
         $this->name = Request::get("name");
         $mp = MultiPersonSearch::load($this->name);
 
-        $this->selectableUsers = array();
-        $this->selectedUsers = array();
+        $this->selectableUsers = [];
+        $this->selectedUsers = [];
         $this->search = Request::get("freesearch");
         $this->additionHTML = $mp->getAdditionHTML();
         $previousSelectableUsers = studip_json_decode(Request::get('search_persons_selectable_hidden'));
@@ -142,7 +142,7 @@ class MultipersonsearchController extends AuthenticatedController
             $this->selectedUsers = User::findMany($previousSelectedUsers);
             $searchterm = Request::get('freesearch');
             $searchObject = $mp->getSearchObject();
-            $result = array_map(function($r) {return $r['user_id'];}, $searchObject->getResults($searchterm, array(), 50));
+            $result = array_map(function($r) {return $r['user_id'];}, $searchObject->getResults($searchterm, [], 50));
             $this->selectableUsers = User::findMany($result);
 
             // remove already selected users
@@ -193,7 +193,7 @@ class MultipersonsearchController extends AuthenticatedController
         // save
         elseif (Request::submitted('save')) {
             // find added users
-            $addedUsers = array();
+            $addedUsers = [];
             $defaultSelectedUsersIDs = $searchObject = $mp->getDefaultSelectedUsersIDs();
             foreach ($previousSelectedUsers as $selected) {
                 if (!in_array($selected, $defaultSelectedUsersIDs)) {
@@ -201,7 +201,7 @@ class MultipersonsearchController extends AuthenticatedController
                 }
             }
             // find removed users
-            $removedUsers = array();
+            $removedUsers = [];
             foreach ($defaultSelectedUsersIDs as $default) {
                 if (!in_array($default, $previousSelectedUsers)) {
                     $removedUsers[] = $default;
@@ -220,7 +220,7 @@ class MultipersonsearchController extends AuthenticatedController
             $this->defaultSelectableUsersIDs = $mp->getDefaultSelectableUsersIDs();
             $this->defaultSelectedUsersIDs = $mp->getDefaultSelectedUsersIDs();
             $this->selectableUsers = User::findMany($this->defaultSelectableUsersIDs);
-            $this->selectedUsers = array();
+            $this->selectedUsers = [];
         }
 
         // save selected/selectable users in hidden form fields

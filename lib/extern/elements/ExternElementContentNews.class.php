@@ -39,10 +39,10 @@
 
 class ExternElementContentNews extends ExternElement {
 
-    var $attributes = array("fonttopic_size", "fonttopic_face", "fonttopic_color",
+    var $attributes = ["fonttopic_size", "fonttopic_face", "fonttopic_color",
             "fonttopic_class", "fonttopic_style","divtopic_align", "divtopic_class",
             "divtopic_style", "fontbody_size", "fontbody_face", "fontbody_color",
-            "fontbody_class", "fontbody_style", "divbody_align", "divbody_class", "divbody_style");
+            "fontbody_class", "fontbody_style", "divbody_align", "divbody_class", "divbody_style"];
 
     /**
     * Constructor
@@ -69,14 +69,14 @@ class ExternElementContentNews extends ExternElement {
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
-        $attributes = array("fonttopic_size", "fonttopic_face", "fonttopic_color",
+        $attributes = ["fonttopic_size", "fonttopic_face", "fonttopic_color",
             "fonttopic_class", "fonttopic_style","divtopic_align", "divtopic_class",
             "divtopic_style", "fontbody_size", "fontbody_face", "fontbody_color",
-            "fontbody_class", "fontbody_style", "divbody_align", "divbody_class", "divbody_style");
-        $headlines = array("fonttopic" => _("Schriftformatierung News-Titel (HTML-Tag &lt;font&gt;)"),
+            "fontbody_class", "fontbody_style", "divbody_align", "divbody_class", "divbody_style"];
+        $headlines = ["fonttopic" => _("Schriftformatierung News-Titel (HTML-Tag &lt;font&gt;)"),
                 "divtopic" => _("Ausrichtung News-Titel (HTML-Tag &lt;div&gt;)"),
                 "fontbody" => _("Schriftformatierung News-Beschreibung (HTML-Tag &lt;font&gt;)"),
-                "divbody" => _("Ausrichtung News-Beschreibung (HTML-Tag &lt;div&gt;)"));
+                "divbody" => _("Ausrichtung News-Beschreibung (HTML-Tag &lt;div&gt;)")];
         $content_table = $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
         

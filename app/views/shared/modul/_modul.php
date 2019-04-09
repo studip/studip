@@ -53,7 +53,7 @@
         <tr>
             <td><strong><?= _('Verwendet in Studiengängen / Semestern') ?></strong></td>
             <td>
-                <? $trails = $modul->getTrails(array('StgteilAbschnitt', 'StgteilVersion', 'Studiengang')); ?>
+                <? $trails = $modul->getTrails(['StgteilAbschnitt', 'StgteilVersion', 'Studiengang']); ?>
                 <? if (count($trails)) : ?>
                     <? $pathes = $modul->getPathes($trails, ' > ') ?>
                     <? if (count($pathes) > 9) : ?>
@@ -66,7 +66,7 @@
                              'SELECT `mvv_stgteilabschnitt_modul`.`abschnitt_id`  '
                            . 'FROM mvv_stgteilabschnitt_modul LEFT JOIN mvv_stgteilabschnitt USING(abschnitt_id) '
                            . 'WHERE modul_id = ? AND version_id = ?');
-                       $statement->execute(array($modul->getId(), $version));
+                       $statement->execute([$modul->getId(), $version]);
                        $res = $statement->fetchOne();
                        $affect_id = $res['abschnitt_id'];
                     ?>
@@ -85,19 +85,19 @@
             <td><strong><?= _('Modulverantwortliche/r') ?></strong></td>
             <td>
                 <?
-                $modulVerantwortung = array();
+                $modulVerantwortung = [];
                 foreach (ModulUser::findByModul($modul->getId()) as $users) {
                     foreach ($users as $user) {
                         if (!isset($modulVerantwortung[$user->gruppe])) {
-                            $modulVerantwortung[$user->gruppe] = array(
+                            $modulVerantwortung[$user->gruppe] = [
                                 'name' => $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$user->gruppe]['name'],
-                                'users' => array()
-                            );
+                                'users' => []
+                            ];
                         }
-                        $modulVerantwortung[$user->gruppe]['users'][$user->user_id] = array(
+                        $modulVerantwortung[$user->gruppe]['users'][$user->user_id] = [
                             'name' => get_fullname($user->user_id),
                             'id' => $user->user_id
-                        );
+                        ];
                     }
                 }
                 ?>
@@ -167,7 +167,7 @@
             <td>
                 <? if ($type !== 3) : ?>
                     <? $nummer_modulteil = 1; ?>
-                    <? $note = array(); ?>
+                    <? $note = []; ?>
                     <? foreach ($modul->modulteile as $modulteil): ?>
                         <? // Für die Kenntlichmachung der Modulteile in Listen die Nummer des
                         // Modulteils und den ausgewählten Namen verwenden.

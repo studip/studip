@@ -117,13 +117,13 @@ class Studip_User {
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT * FROM auth_user_md5 WHERE username = ?');
-        $stmt->execute(array($user_name));
+        $stmt->execute([$user_name]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $result = NULL;
 
         if ($row) {
-            $user = array();
+            $user = [];
             foreach (self::get_fields() as $old => $new) {
                 $user[$new] = $row[array_pop(explode('.', $old))];
             }
@@ -145,13 +145,13 @@ class Studip_User {
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT * FROM auth_user_md5 WHERE user_id = ?');
-        $stmt->execute(array($user_id));
+        $stmt->execute([$user_id]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $result = NULL;
 
         if ($row) {
-            $user = array();
+            $user = [];
             foreach (self::get_fields() as $old => $new) {
                 $user[$new] = $row[array_pop(explode('.', $old))];
             }
@@ -173,7 +173,7 @@ class Studip_User {
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT username FROM auth_user_md5 WHERE perms = ?');
-        $stmt->execute(array($status));
+        $stmt->execute([$status]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -185,14 +185,14 @@ class Studip_User {
      */
     function get_fields()
     {
-        $fields = array('auth_user_md5.user_id'  => 'id',
+        $fields = ['auth_user_md5.user_id'  => 'id',
                         'auth_user_md5.username' => 'user_name',
                         'auth_user_md5.Vorname'  => 'first_name',
                         'auth_user_md5.Nachname' => 'last_name',
                         'auth_user_md5.Email'    => 'email',
                         'auth_user_md5.perms'    => 'permission',
                         'auth_user_md5.auth_plugin' => 'auth_plugin',
-                        'auth_user_md5.visible' => 'visibility');
+                        'auth_user_md5.visible' => 'visibility'];
         return $fields;
     }
 }

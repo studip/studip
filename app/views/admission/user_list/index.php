@@ -27,7 +27,7 @@ if ($userlists) {
             onclick="return STUDIP.Dialogs.showConfirmDialog('<?=
                 sprintf(_('Soll die Nutzerliste %s wirklich gelöscht werden?'), htmlReady($list->getName())) ?>', '<?=
                 URLHelper::getURL('dispatch.php/admission/userlist/delete/'.
-                $list->getId(), array('really' => 1)) ?>')">
+                $list->getId(), ['really' => 1]) ?>')">
             <?= Icon::create('trash', 'clickable', ['title' => _('Personenliste löschen')]) ?>
         </a>
     </div>

@@ -1,8 +1,8 @@
 <? if (isset($flash['decline_course'])) : ?>
     <?=
-    createQuestion($flash['message'], array('cmd' => $flash['cmd'], 'studipticket' => $flash['studipticket']),
-        array('cmd'          => 'back',
-              'studipticket' => $flash['studipticket']),
+    createQuestion($flash['message'], ['cmd' => $flash['cmd'], 'studipticket' => $flash['studipticket']],
+        ['cmd'          => 'back',
+              'studipticket' => $flash['studipticket']],
         $controller->url_for(sprintf('my_courses/decline/%s', $flash['course_id']))); ?>
 <? endif ?>
 
@@ -63,10 +63,10 @@
         <? endforeach ?>
     </div>
 <? else : ?>
-    <?= PageLayout::postMessage(MessageBox::info(_('Es wurden keine Veranstaltungen gefunden. Mögliche Ursachen:'), array(
+    <?= PageLayout::postMessage(MessageBox::info(_('Es wurden keine Veranstaltungen gefunden. Mögliche Ursachen:'), [
         sprintf(_('Sie haben zur Zeit keine Veranstaltungen belegt, an denen Sie teilnehmen können.<br>Bitte nutzen Sie %s<b>Veranstaltung suchen / hinzufügen</b>%s um sich für Veranstaltungen anzumelden.'),'<a href="' . URLHelper::getLink('dispatch.php/search/courses') . '">', '</a>'),
         _('In dem ausgewählten <b>Semester</b> wurden keine Veranstaltungen belegt.').'<br>'._('Wählen Sie links im <b>Semesterfilter</b> ein anderes Semester aus')
-    )))?>
+    ]))?>
 <? endif ?>
 <? if (count($my_bosses)) : ?>
     <?= $this->render_partial('my_courses/_deputy_bosses'); ?>

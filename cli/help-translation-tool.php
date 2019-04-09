@@ -49,10 +49,10 @@ function po_escape($string) {
  * @return String Unescaped string
  */
 function po_unescape($string) {
-    $replaces = array(
+    $replaces = [
         '\\"' => '"',
         '\\n' => "\n",
-    );
+    ];
     $string = str_replace(array_keys($replaces), array_values($replaces), $string);
     return $string;
 }
@@ -99,7 +99,7 @@ function po_stringify($string) {
  * @return String Id of the entity
  */
 function get_id($version, $language, $message, $route, $index, $position) {
-    static $ids = array();
+    static $ids = [];
 
     if ($index < 3) {
         // Entity is help content
@@ -224,14 +224,14 @@ if (!isset($_SERVER['argv'], $_SERVER['argc']) || $_SERVER['argc'] < 2) {
 }
 
 // Parse command line options
-$opts = array(
+$opts = [
     'short' => 'v:l:f',
-    'long'  => array(
+    'long'  => [
         'force',
         'version:',
         'language:'
-    )
-);
+    ]
+];
 $options  = getopt($opts['short'], $opts['long']);
 $force    = isset($options['f']) || isset($options['force']);
 $version  = @$options['version'] ?: @$options['v']
@@ -240,7 +240,7 @@ $version  = @$options['version'] ?: @$options['v']
 $language = @$options['language'] ?: @$options['l'] ?: mb_substr(Config::get()->DEFAULT_LANGUAGE, 0, 2);
 
 // Remove option from arguments
-$remove = array();
+$remove = [];
 foreach (str_split($opts['short']) as $opt) {
     if ($opt !== ':') {
         $remove[] = '-' . $opt;
@@ -419,11 +419,11 @@ if ($_SERVER['argv'][1] === 'export') {
     // This routine will probably break for any .po file that differs from the
     // ones created in transifex.
     // This is just supposed to work, not to be beautiful. ;)
-    $messages = array();
+    $messages = [];
     $context    = '';
     $id         = '';
     $content    = '';
-    $occurences = array();
+    $occurences = [];
     $last       = false;
     $count      = 0;
     while (!feof($fp) && $row = fgets($fp)) {
@@ -458,7 +458,7 @@ if ($_SERVER['argv'][1] === 'export') {
             $context    = '';
             $id         = '';
             $content    = '';
-            $occurences = array();
+            $occurences = [];
             $last       = false;
         } else {
             printf('Parse error at line %u.' . "\n", $count);
@@ -470,7 +470,7 @@ if ($_SERVER['argv'][1] === 'export') {
     fclose($fp);
 
     // Parse meta information (no context & no id = item at '#')
-    $meta = array();
+    $meta = [];
     foreach (explode("\n", $messages['#']['content']) as $row) {
         $row = trim($row);
         if (!$row) {
@@ -487,7 +487,7 @@ if ($_SERVER['argv'][1] === 'export') {
 
     // Define db queries for each type (see comment block at the top of
     // this file, type is distinguished by the line number / 10000)
-    $queries = array();
+    $queries = [];
     $queries[1] = "INSERT INTO help_content (content_id, language, label, icon, content, route, studip_version, position, custom, installation_id, mkdate)
                    VALUES (:id, :language, :content, 'info', '', :route, :version, :position, 0, '', UNIX_TIMESTAMP())
                    ON DUPLICATE KEY UPDATE label = VALUES(label)";
@@ -511,7 +511,7 @@ if ($_SERVER['argv'][1] === 'export') {
                    ON DUPLICATE KEY UPDATE content = VALUES(content)";
 
     // Prepare statements and prebind version and language
-    $statements = array_map(array(DBManager::get(), 'prepare'), $queries);
+    $statements = array_map([DBManager::get(), 'prepare'], $queries);
     foreach ($statements as $index => $statement) {
         $statement->bindValue(':version', $version);
         $statement->bindValue(':language', $language);

@@ -40,8 +40,8 @@
 
 require '../lib/bootstrap.php';
 
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth",
-        "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth",
+        "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 $perm->check("admin");
 
 PageLayout::setHelpKeyword("Basis.EinrichtungenVerwaltenExterneSeiten");
@@ -56,7 +56,7 @@ if (Config::get()->EXTERN_ENABLE) {
         [_("Modul \"externe Seiten\" nicht eingebunden")]);
     $template = $GLOBALS['template_factory']->open('layouts/base.php');
     $template->content_for_layout = ob_get_clean();
-    $template->infobox = $infobox ? array('content' => $infobox) : null;
+    $template->infobox = $infobox ? ['content' => $infobox] : null;
     echo $template->render();
     
     page_close();

@@ -8,13 +8,13 @@ class ConfigAjaxAutocompleteDisabled extends Migration {
 
     function up() {
         $options[] =
-            array(
+            [
             'name'        => 'AJAX_AUTOCOMPLETE_DISABLED',
             'type'        => 'boolean',
             'value'       => 0,
             'section'     => '',
             'description' => 'Sollen alle QuickSearches deaktiviertes Autocomplete haben? Wenn es zu Performanceproblemen kommt, kann es sich lohnen, diese Variable auf true zu stellen.'
-            );
+            ];
 
         $stmt = DBManager::get()->prepare("
                 INSERT IGNORE INTO config

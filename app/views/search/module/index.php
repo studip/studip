@@ -6,7 +6,7 @@
         <input type="hidden" name="do_search" value="1">
         <?= Button::create('Suche') ?>
         <? if ($sterm) : ?>
-            <?= LinkButton::create('Zurücksetzen', $controller->url_for('search/module/reset'), array('title' => _('Suche zurücksetzen'))); ?>
+            <?= LinkButton::create('Zurücksetzen', $controller->url_for('search/module/reset'), ['title' => _('Suche zurücksetzen')]); ?>
         <? endif; ?>
     </form>
 </div>
@@ -39,7 +39,7 @@
         </tr>
     </thead>
 <? foreach ($module as $modul) : ?>
-    <?= $this->render_partial('search/module/_modul', array('modul' => $modul)); ?>
+    <?= $this->render_partial('search/module/_modul', ['modul' => $modul]); ?>
 <? endforeach; ?>
     <tfoot>
         <tr>

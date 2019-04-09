@@ -33,7 +33,7 @@ class Visibility_Buddies extends VisibilityAbstract
             return false;
         }
 
-        return $user_id == $other_id || Contact::CountBySQL("user_id=? AND owner_id=?", array($user_id, $other_id));
+        return $user_id == $other_id || Contact::CountBySQL("user_id=? AND owner_id=?", [$user_id, $other_id]);
     }
 }
 ?>

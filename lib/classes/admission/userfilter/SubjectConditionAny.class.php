@@ -34,10 +34,10 @@ class SubjectConditionAny extends UserFilterField
     public function __construct($fieldId = '')
     {
         parent::__construct($fieldId);
-        $this->validCompareOperators = array(
+        $this->validCompareOperators = [
             '!=' => ' '
-        );
-        $this->validValues = array('' => ' ');
+        ];
+        $this->validValues = ['' => ' '];
     }
 
     /**

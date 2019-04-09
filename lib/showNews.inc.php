@@ -37,7 +37,7 @@ function delete_comments($delete_comments_array = '')
     $text = '';
     $confirmed = false;
     if (! is_array($delete_comments_array))
-        $delete_comments_array = array($delete_comments_array);
+        $delete_comments_array = [$delete_comments_array];
     if (Request::submitted('yes') AND Request::isPost()) {
         CSRFProtection::verifySecurityToken();
         $confirmed = true;
@@ -83,7 +83,7 @@ function delete_news($delete_news_array)
     $text = '';
     $confirmed = false;
     if (! is_array($delete_news_array))
-        $delete_news_array = array($delete_news_array);
+        $delete_news_array = [$delete_news_array];
     if (Request::submitted('yes') AND Request::isPost()) {
         CSRFProtection::verifySecurityToken();
         $confirmed = true;
@@ -129,7 +129,7 @@ function delete_news($delete_news_array)
 function remove_news($remove_array)
 {
     $confirmed = false;
-    $question_text = array();
+    $question_text = [];
     if (! is_array($remove_array))
         return false;
     if (Request::submitted('yes') AND Request::isPost()) {
@@ -140,7 +140,7 @@ function remove_news($remove_array)
         $remove_news = new StudipNews($news_id);
         $remove_news_title = $remove_news->getValue('topic');
         if (! is_array($ranges))
-            $ranges = array($ranges);
+            $ranges = [$ranges];
         // should we delete news completely
         if (count($ranges) == count($remove_news->getRanges())) {
             $text = delete_news($news_id);

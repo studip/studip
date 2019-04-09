@@ -53,7 +53,7 @@ class BrowseNavigation extends Navigation
         global $user, $perm;
 
         parent::initSubNavigation();
-        $sem_create_perm = in_array(get_config('SEM_CREATE_PERM'), array('root', 'admin', 'dozent')) ? get_config('SEM_CREATE_PERM') : 'dozent';
+        $sem_create_perm = in_array(get_config('SEM_CREATE_PERM'), ['root', 'admin', 'dozent']) ? get_config('SEM_CREATE_PERM') : 'dozent';
 
 
         // my courses

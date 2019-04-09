@@ -51,8 +51,8 @@ class ForumHelpers {
             return $text;
         }
 
-        $data = array();
-        $treffer = array();
+        $data = [];
+        $treffer = [];
 
         // split text at every tag
         $pattern = '/<[^<]*>/U';

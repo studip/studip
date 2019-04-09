@@ -50,7 +50,7 @@ require_once 'lib/statusgruppe.inc.php';
 * @return   array   (structure statusgruppe_id => name)
 */
 function get_all_statusgruppen ($range_id) {
-    $ret = array();
+    $ret = [];
     $roles = getFlattenedRoles(getAllStatusgruppen($range_id));
 
     foreach ($roles as $id => $role) {
@@ -74,7 +74,7 @@ function get_all_statusgruppen ($range_id) {
 * @return   array       (structure statusgruppe_id => name)
 */
 function get_statusgruppen_by_id ($range_id, $ids) {
-    $ret = array();
+    $ret = [];
     $groups = get_all_statusgruppen($range_id);
 
     foreach ($ids as $id) {
@@ -100,7 +100,7 @@ function mila_extern ($string, $length) {
 function get_start_item_id ($object_id) {
 
     $query = "SELECT item_id FROM range_tree WHERE studip_object_id=?";
-    $parameters = array($object_id);
+    $parameters = [$object_id];
     $statement = DBManager::get()->prepare($query);
     $statement->execute($parameters);
     $row = $statement->fetchColumn();
@@ -140,7 +140,7 @@ function update_generic_datafields (&$config, &$data_fields, &$field_names, $obj
     if ($generic_datafields = get_generic_datafields($object_type)) {
         $config_datafields = $config->getValue("Main", "genericdatafields");
         if (!is_array($config_datafields))
-            $config_datafields = array();
+            $config_datafields = [];
 
         $visible = (array) $config->getValue("Main", "visible");
         $order = (array) $config->getValue("Main", "order");
@@ -153,7 +153,7 @@ function update_generic_datafields (&$config, &$data_fields, &$field_names, $obj
             $swapped_datafields = array_flip($config_datafields);
             $swapped_order = array_flip($order);
             $offset = sizeof($data_fields) - sizeof($config_datafields);
-            $deleted = array();
+            $deleted = [];
             foreach ($diff_generic_datafields as $datafield) {
                 $deleted[] = $offset + $swapped_datafields[$datafield];
                 unset($visible[$offset + $swapped_datafields[$datafield]]);
@@ -236,7 +236,7 @@ function enable_sri ($i_id, $enable) {
         $query = "UPDATE Institute SET srienabled = 0 WHERE Institut_id = ?";
     }
      $statement = DBManager::get()->prepare($query);
-     $statement->execute(array( $i_id ));
+     $statement->execute([ $i_id ]);
 
 }
 
@@ -247,7 +247,7 @@ function sri_is_enabled ($i_id) {
         }
         $query = "SELECT srienabled FROM Institute WHERE Institut_id = ? AND srienabled = 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array( $i_id ));
+        $statement->execute([ $i_id ]);
         $row = $statement->fetchColumn();
         if ($row) {
             return 1;
@@ -270,7 +270,7 @@ function download_config($range_id, $config_id, $module) {
     // check, if we have an external configuration with the given ids
     $stmt = DBManager::get()->prepare("SELECT COUNT(*) as c FROM extern_config 
         WHERE config_id = ? AND range_id = ?");
-    $stmt->execute(array($config_id, $range_id));
+    $stmt->execute([$config_id, $range_id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // show download-content

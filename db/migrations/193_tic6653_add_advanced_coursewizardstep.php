@@ -18,6 +18,6 @@ class Tic6653AddAdvancedCoursewizardstep extends Migration
     function down()
     {
         CourseWizardStepRegistry::deleteBySQL('classname = :name', 
-                array(':name' => 'AdvancedBasicDataWizardStep'));
+                [':name' => 'AdvancedBasicDataWizardStep']);
     }
 }

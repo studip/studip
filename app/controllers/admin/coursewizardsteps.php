@@ -63,7 +63,7 @@ class Admin_CourseWizardStepsController extends AuthenticatedController
             $this->step->number = 0;
             $this->step->enabled = false;
 
-            $this->availableClasses = array();
+            $this->availableClasses = [];
             foreach (get_declared_classes() as $className) {
                 if (is_a($className, "CourseWizardStep", true)
                         && $className !== "CourseWizardStep") {
@@ -102,7 +102,7 @@ class Admin_CourseWizardStepsController extends AuthenticatedController
                 if (!class_exists($classname)) {
                     PageLayout::postError(sprintf(_('Die angegebene PHP-Klasse "%s" wurde nicht gefunden.'), htmlReady($classname)));
                 // Class found, now check if it implements the interface definition for wizard steps.
-                } else if (!in_array('CourseWizardStep', class_implements($classname) ?: array())) {
+                } else if (!in_array('CourseWizardStep', class_implements($classname) ?: [])) {
                     PageLayout::postError(sprintf(_('Die angegebene PHP-Klasse "%s" implementiert nicht das Interface CourseWizardStep.'),
                         htmlReady($classname)));
                 // All ok, create new database entry.

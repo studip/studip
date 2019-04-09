@@ -30,7 +30,7 @@ class SimpleORMapCollection extends SimpleCollection
      * relation options
      * @var array
      */
-    protected $relation_options = array();
+    protected $relation_options = [];
 
     /**
      * creates a collection from an array of objects
@@ -73,7 +73,7 @@ class SimpleORMapCollection extends SimpleCollection
     {
         $this->relation_options = $options;
         $this->related_record = $record;
-        parent::__construct($finder === null ? array() : $finder);
+        parent::__construct($finder === null ? [] : $finder);
     }
 
     /**
@@ -151,7 +151,7 @@ class SimpleORMapCollection extends SimpleCollection
                 }
             }
             $this->exchangeArray($data);
-            $this->deleted->exchangeArray(array());
+            $this->deleted->exchangeArray([]);
             return $this->last_count = $this->count();
         }
     }
@@ -182,7 +182,7 @@ class SimpleORMapCollection extends SimpleCollection
      */
     public function toGroupedArray($group_by = 'id', $only_these_fields = null, Closure $group_func = null)
     {
-        $result = array();
+        $result = [];
         foreach ($this as $record) {
             $key = $record->getValue($group_by);
             if (is_array($key)) {

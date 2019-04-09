@@ -38,7 +38,7 @@ class Ilias3ConnectedUser extends ConnectedUser
             $this->newUser(true);
             $this->readData();
         }
-        $this->roles = array($connected_cms[$cms]->roles[$perm->get_perm($this->studip_id)]);
+        $this->roles = [$connected_cms[$cms]->roles[$perm->get_perm($this->studip_id)]];
     }
 
     function readData()
@@ -52,7 +52,7 @@ class Ilias3ConnectedUser extends ConnectedUser
                 if($user_id !== false) {
                     $query = "DELETE FROM auth_extern WHERE studip_user_id = ? LIMIT 1";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($this->studip_id));
+                    $statement->execute([$this->studip_id]);
                 }
                 $this->id = '';
                 $this->login = '';
@@ -65,7 +65,7 @@ class Ilias3ConnectedUser extends ConnectedUser
                 if(!$cat){
                     $query = "UPDATE auth_extern SET external_user_category = '' WHERE studip_user_id = ? LIMIT 1";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($this->studip_id));
+                    $statement->execute([$this->studip_id]);
 
                     $this->category = '';
                 }
@@ -281,7 +281,7 @@ class Ilias3ConnectedUser extends ConnectedUser
         }
         $query = "DELETE FROM auth_extern WHERE studip_user_id = ? LIMIT 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->studip_id));
+        $statement->execute([$this->studip_id]);
 
         $ret['auth_extern_deleted'] = $statement->rowCount();
         return $ret;

@@ -58,7 +58,7 @@ class ParticipantRestrictedAdmission extends AdmissionRule
      */
     public function delete() {
         if ($this->prio_exists) {
-            $set_id = DBManager::get()->fetchColumn("SELECT set_id FROM courseset_rule WHERE rule_id = ? LIMIT 1", array($this->id));
+            $set_id = DBManager::get()->fetchColumn("SELECT set_id FROM courseset_rule WHERE rule_id = ? LIMIT 1", [$this->id]);
             //Delete priorities
             AdmissionPriority::unsetAllPriorities($set_id);
         }
@@ -66,7 +66,7 @@ class ParticipantRestrictedAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `participantrestrictedadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -114,12 +114,12 @@ class ParticipantRestrictedAdmission extends AdmissionRule
         // Load data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `participantrestrictedadmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
             $this->distributionTime = $current['distribution_time'];
             if ($current['distribution_time'] > 0) {
-                $this->prio_exists = DBManager::get()->fetchColumn("SELECT 1 FROM courseset_rule INNER JOIN priorities USING(set_id) WHERE rule_id = ? LIMIT 1", array($this->id));
+                $this->prio_exists = DBManager::get()->fetchColumn("SELECT 1 FROM courseset_rule INNER JOIN priorities USING(set_id) WHERE rule_id = ? LIMIT 1", [$this->id]);
             }
         }
     }
@@ -178,8 +178,8 @@ class ParticipantRestrictedAdmission extends AdmissionRule
             ON DUPLICATE KEY UPDATE
             `distribution_time`=VALUES(`distribution_time`),
              message=VALUES(message), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, (string)$this->message,
-            (int)$this->distributionTime, time(), time()));
+        $stmt->execute([$this->id, (string)$this->message,
+            (int)$this->distributionTime, time(), time()]);
     }
 
     /**

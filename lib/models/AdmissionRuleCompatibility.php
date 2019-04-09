@@ -22,7 +22,7 @@
 class AdmissionRuleCompatibility extends SimpleORMap
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'admissionrule_compat';
         parent::configure($config);
@@ -32,7 +32,7 @@ class AdmissionRuleCompatibility extends SimpleORMap
     {
         $types = AdmissionRule::getAvailableAdmissionRules(false);
 
-        $matrix = array();
+        $matrix = [];
         foreach ($types as $class => $data) {
             $compat = self::findByRule_type($class);
 

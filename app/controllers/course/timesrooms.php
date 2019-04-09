@@ -116,16 +116,16 @@ class Course_TimesroomsController extends AuthenticatedController
         Helpbar::get()->addPlainText(_('Grün'), _('Alle Termine haben eine Raumbuchung.'));
 
         if (Request::isXhr()) {
-            $this->show = array(
+            $this->show = [
                 'regular'     => true,
                 'irregular'   => true,
                 'roomRequest' => false,
-            );
+            ];
         }
-        $this->linkAttributes   = array('fromDialog' => Request::isXhr() ? 1 : 0);
+        $this->linkAttributes   = ['fromDialog' => Request::isXhr() ? 1 : 0];
         $this->semester         = array_reverse(Semester::getAll());
         $this->current_semester = Semester::findCurrent();
-        $this->cycle_dates      = array();
+        $this->cycle_dates      = [];
         $matched                = [];
 
         foreach ($this->course->cycles as $cycle) {
@@ -137,14 +137,14 @@ class Course_TimesroomsController extends AuthenticatedController
 
                     if ($sem->beginn <= $val->date && $sem->ende >= $val->date) {
                         if (!isset($this->cycle_dates[$cycle->metadate_id])) {
-                            $this->cycle_dates[$cycle->metadate_id] = array(
+                            $this->cycle_dates[$cycle->metadate_id] = [
                                 'cycle'        => $cycle,
-                                'dates'        => array(),
-                                'room_request' => array(),
-                            );
+                                'dates'        => [],
+                                'room_request' => [],
+                            ];
                         }
                         if (!isset($this->cycle_dates[$cycle->metadate_id]['dates'][$sem->id])) {
-                            $this->cycle_dates[$cycle->metadate_id]['dates'][$sem->id] = array();
+                            $this->cycle_dates[$cycle->metadate_id]['dates'][$sem->id] = [];
                         }
                         $this->cycle_dates[$cycle->metadate_id]['dates'][$sem->id][] = $val;
                         if ($val->getRoom()) {
@@ -224,7 +224,7 @@ class Course_TimesroomsController extends AuthenticatedController
                 } else {
                     $course->setEndSemester($end_semester);
                 }
-                $old_start_weeks = isset($course->start_semester) ? $course->start_semester->getStartWeeks($course->duration_time) : array();
+                $old_start_weeks = isset($course->start_semester) ? $course->start_semester->getStartWeeks($course->duration_time) : [];
                 // If the new duration includes the current semester, we set the semester-chooser to the current semester
                 if ($current_semester->beginn >= $course->getStartSemester() && $current_semester->beginn <= $course->getEndSemesterVorlesEnde()) {
                     $course->setFilter($current_semester->beginn);
@@ -492,12 +492,12 @@ class Course_TimesroomsController extends AuthenticatedController
         $_SESSION['_checked_dates'] = Request::getArray('single_dates');
         if (empty($_SESSION['_checked_dates']) && isset($_SESSION['_checked_dates'])) {
             PageLayout::postError(_('Sie haben keine Termine ausgewählt!'));
-            $this->redirect($this->url_for('course/timesrooms/index', array('contentbox_open' => $cycle_id)));
+            $this->redirect($this->url_for('course/timesrooms/index', ['contentbox_open' => $cycle_id]));
 
             return;
         }
 
-        $this->linkAttributes = array('fromDialog' => Request::int('fromDialog') ? 1 : 0);
+        $this->linkAttributes = ['fromDialog' => Request::int('fromDialog') ? 1 : 0];
 
         switch (Request::get('method')) {
             case 'edit':
@@ -594,7 +594,7 @@ class Course_TimesroomsController extends AuthenticatedController
      */
     private function saveCanceledStack()
     {
-        $deleted_dates = array();
+        $deleted_dates = [];
         $cancel_comment = trim(Request::get('cancel_comment'));
         $cancel_send_message = Request::int('cancel_send_message');
 
@@ -642,7 +642,7 @@ class Course_TimesroomsController extends AuthenticatedController
             foreach ($singledates as $singledate) {
                 if ($action === 'add') {
                     if (count($course_lectures) === count($persons)) {
-                        $singledate->dozenten = array();
+                        $singledate->dozenten = [];
                     } else {
                         foreach ($persons as $person) {
                             if (!count($singledate->dozenten->findBy('id', $person->id))) {
@@ -650,7 +650,7 @@ class Course_TimesroomsController extends AuthenticatedController
                             }
                         }
                         if (count($singledate->dozenten) === count($course_lectures)) {
-                            $singledate->dozenten = array();
+                            $singledate->dozenten = [];
                         }
                     }
 
@@ -677,7 +677,7 @@ class Course_TimesroomsController extends AuthenticatedController
             foreach ($singledates as $singledate) {
                 if ($group_action === 'add') {
                     if (count($course_groups) === count($groups)) {
-                        $singledate->statusgruppen = array();
+                        $singledate->statusgruppen = [];
                     } else {
 
                         foreach ($groups as $group) {
@@ -686,7 +686,7 @@ class Course_TimesroomsController extends AuthenticatedController
                             }
                         }
                         if (count($singledate->statusgruppen) === count($course_groups)) {
-                            $singledate->statusgruppen = array();
+                            $singledate->statusgruppen = [];
                         }
                     }
                     $groups_changed = true;
@@ -758,7 +758,7 @@ class Course_TimesroomsController extends AuthenticatedController
         } else {
             $ids = $this->cycle->dates->pluck('termin_id');
 
-            $count              = ResourceAssignment::countBySQL('assign_user_id IN (?)', array($ids ?: ''));
+            $count              = ResourceAssignment::countBySQL('assign_user_id IN (?)', [$ids ?: '']);
             $this->has_bookings = $count > 0;
         }
 
@@ -766,11 +766,11 @@ class Course_TimesroomsController extends AuthenticatedController
         $duration = $this->course->duration_time;
         if ($duration == -1) { // course with endless lifespan
             $end_semester = Semester::findBySQL('beginn >= :beginn ORDER BY beginn',
-                                                array(':beginn' => $this->course->getStartSemester()));
+                                                [':beginn' => $this->course->getStartSemester()]);
         } else if ($duration > 0) { // course over more than one semester
             $end_semester = Semester::findBySQL('beginn >= :beginn AND beginn <= :ende ORDER BY beginn',
-                                                array(':beginn' => $this->course->getStartSemester(),
-                                                      ':ende'   => $this->course->getEndSemester()));
+                                                [':beginn' => $this->course->getStartSemester(),
+                                                      ':ende'   => $this->course->getEndSemester()]);
         } else { // one semester course
             $end_semester[] = $this->course->start_semester;
         }
@@ -778,7 +778,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->start_weeks = $this->course->start_semester->getStartWeeks($duration);
 
         if (!empty($end_semester)) {
-            $this->end_semester_weeks = array();
+            $this->end_semester_weeks = [];
 
             foreach ($end_semester as $sem) {
 
@@ -787,10 +787,10 @@ class Course_TimesroomsController extends AuthenticatedController
 
                 foreach ($this->start_weeks as $key => $week) {
                     if (mb_strpos($week, mb_substr($weeks[0], -15)) !== false) {
-                        $this->end_semester_weeks['start'][] = array('value' => $key, 'label' => sprintf(_('Anfang %s'), $sem->name));
+                        $this->end_semester_weeks['start'][] = ['value' => $key, 'label' => sprintf(_('Anfang %s'), $sem->name)];
                     }
                     if (mb_strpos($week, mb_substr($weeks[count($weeks) - 1], -15)) !== false) {
-                        $this->end_semester_weeks['ende'][] = array('value' => $key, 'label' => sprintf(_('Ende %s'), $sem->name));
+                        $this->end_semester_weeks['ende'][] = ['value' => $key, 'label' => sprintf(_('Ende %s'), $sem->name)];
                     }
                     foreach ($weeks as $val) {
                         if (mb_strpos($week, mb_substr($val, -15)) !== false) {
@@ -801,7 +801,7 @@ class Course_TimesroomsController extends AuthenticatedController
             }
 
             if (count($end_semester) > 1) {
-                $this->end_semester_weeks['ende'][] = array('value' => -1, 'label' => _('Alle Semester'));
+                $this->end_semester_weeks['ende'][] = ['value' => -1, 'label' => _('Alle Semester')];
             }
         }
     }
@@ -982,7 +982,7 @@ class Course_TimesroomsController extends AuthenticatedController
             }
         }
         $this->displayMessages();
-        $this->redirect($this->url_for('course/timesrooms/index', array('contentbox_open' => $termin->metadate_id)));
+        $this->redirect($this->url_for('course/timesrooms/index', ['contentbox_open' => $termin->metadate_id]));
     }
 
     /**
@@ -1064,7 +1064,7 @@ class Course_TimesroomsController extends AuthenticatedController
      * @param Array $messages Messages to display (optional, defaults to
      *                        potential stored messages on course object)
      */
-    private function displayMessages(array $messages = array())
+    private function displayMessages(array $messages = [])
     {
         $messages = $messages ?: $this->course->getStackedMessages();
         foreach ((array)$messages as $type => $msg) {

@@ -34,12 +34,12 @@ class Step00192PageLayout extends Migration
                     (MD5(:name), :name, :value, 1, :type, :section, $time, $time, :description)
                 ");
 
-        $stmt->execute(array(
+        $stmt->execute([
             'name' => 'HTML_HEAD_TITLE',
             'description' => 'Angezeigter Titel in der Kopfzeile des Browsers',
             'section' => 'global',
             'type' => 'string',
             'value' => 'Stud.IP'
-        ));
+        ]);
     }
 }

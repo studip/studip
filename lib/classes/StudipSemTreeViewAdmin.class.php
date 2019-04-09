@@ -41,7 +41,7 @@ use Studip\Button, Studip\LinkButton;
 */
 class StudipSemTreeViewAdmin extends TreeView
 {
-    var $admin_ranges = array();
+    var $admin_ranges = [];
 
     /**
     * constructor
@@ -119,16 +119,16 @@ class StudipSemTreeViewAdmin extends TreeView
         $sorted_items_stmt = DBManager::get()->prepare(
             'SELECT * FROM sem_tree LEFT JOIN Institute ON studip_object_id = Institut_id WHERE parent_id = :parent_id ORDER BY IF(studip_object_id, Institute.name, sem_tree.name)'
         );
-        $sorted_items_stmt->execute(array(
+        $sorted_items_stmt->execute([
             'parent_id' => $item_id,
-        ));
+        ]);
         $sorted_items = $sorted_items_stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($sorted_items as $priority => $data) {
             $update_priority_stmt = DBManager::get()->prepare('UPDATE sem_tree SET priority = :priority WHERE sem_tree_id = :sem_tree_id');
-            $update_priority_stmt->execute(array(
+            $update_priority_stmt->execute([
                 'priority' => $priority,
                 'sem_tree_id' => $data['sem_tree_id']
-            ));
+            ]);
         }
         $this->msg[$item_id] = 'info§' . _('Die Einträge im Bereich wurden alphabetisch sortiert.');
 
@@ -154,7 +154,7 @@ class StudipSemTreeViewAdmin extends TreeView
         }
         $view = DbView::getView('sem_tree');
         for ($i = 0; $i < count($items_to_order); ++$i){
-            $view->params = array($i, $items_to_order[$i]);
+            $view->params = [$i, $items_to_order[$i]];
             $rs = $view->get_query("view:SEM_TREE_UPD_PRIO");
         }
         $this->mode = "";
@@ -232,11 +232,11 @@ class StudipSemTreeViewAdmin extends TreeView
             . "<br>" . _("Wollen Sie diese Bereiche wirklich löschen?") . "<br>"
             . LinkButton::createAccept(_('JA!'),
                     URLHelper::getURL($this->getSelf('cmd=DeleteItem&item_id='.$item_id)),
-                    array('title' => _('löschen')))
+                    ['title' => _('löschen')])
             . "&nbsp;"
             . LinkButton::createCancel(_('NEIN!'),
                     URLHelper::getURL($this->getSelf('cmd=Cancel&item_id='. $item_id)),
-                    array('title' => _('abbrechen')));
+                    ['title' => _('abbrechen')]);
         }
         return false;
     }
@@ -285,7 +285,7 @@ class StudipSemTreeViewAdmin extends TreeView
         && ($item_to_move != $item_id) && ($this->tree->tree_data[$item_to_move]['parent_id'] != $item_id)
         && !$this->tree->isChildOf($item_to_move,$item_id)){
             $view = DbView::getView('sem_tree');
-            $view->params = array($item_id, count($this->tree->getKids($item_id)), $item_to_move);
+            $view->params = [$item_id, count($this->tree->getKids($item_id)), $item_to_move];
             $rs = $view->get_query("view:SEM_TREE_MOVE_ITEM");
             if ($rs->affected_rows()){
                 $this->msg[$item_to_move] = "msg§" . _("Bereich wurde verschoben.");
@@ -355,7 +355,7 @@ class StudipSemTreeViewAdmin extends TreeView
         if($this->isItemAdmin("root") && Request::quoted('insert_fak')){
             $view = DbView::getView('sem_tree');
             $item_id = $view->get_uniqid();
-            $view->params = array($item_id,'root','',$this->tree->getNumKids('root')+1,'',Request::quoted('insert_fak'),0);
+            $view->params = [$item_id,'root','',$this->tree->getNumKids('root')+1,'',Request::quoted('insert_fak'),0];
             $rs = $view->get_query("view:SEM_TREE_INS_ITEM");
             if ($rs->affected_rows()){
                 $this->tree->init();
@@ -386,7 +386,7 @@ class StudipSemTreeViewAdmin extends TreeView
         }
         if ($this->isItemAdmin($item_id)){
             if (($sem_aktion[0] == 'del' || $sem_aktion[1] == 'del') && count($marked_sem)){
-                $not_deleted = array();
+                $not_deleted = [];
                 foreach($marked_sem as $key => $seminar_id){
                     $seminar = new Seminar($seminar_id);
                     if(count($seminar->getStudyAreas()) == 1){
@@ -500,31 +500,31 @@ class StudipSemTreeViewAdmin extends TreeView
             if ($this->isItemAdmin($item_id) ){
                 $content .= LinkButton::create(_('Neues Objekt'),
                         URLHelper::getURL($this->getSelf('cmd=NewItem&item_id='.$item_id)),
-                        array('title' => _('Innerhalb dieser Ebene ein neues Element einfügen'))) . '&nbsp;';
+                        ['title' => _('Innerhalb dieser Ebene ein neues Element einfügen')]) . '&nbsp;';
                 $content .= LinkButton::create(_('Sortieren'),
                         URLHelper::getURL($this->getSelf('cmd=OrderItemsAlphabetically&sort_id='.$item_id)),
-                        array('title' => _('Sortiert die untergeordneten Elemente alphabetisch'))) . '&nbsp;';
+                        ['title' => _('Sortiert die untergeordneten Elemente alphabetisch')]) . '&nbsp;';
             }
             if ($this->isParentAdmin($item_id) && $item_id != "root"){
                 $content .= LinkButton::create(_('Bearbeiten'),
                         URLHelper::getURL($this->getSelf('cmd=EditItem&item_id=' . $item_id)),
-                        array('title' => 'Dieses Element bearbeiten')) . '&nbsp;';
+                        ['title' => 'Dieses Element bearbeiten']) . '&nbsp;';
 
                 $content .= LinkButton::create(_('Löschen'),
                         URLHelper::getURL($this->getSelf('cmd=AssertDeleteItem&item_id=' . $item_id)),
-                        array('title' => _('Dieses Element löschen'))) . '&nbsp;';
+                        ['title' => _('Dieses Element löschen')]) . '&nbsp;';
 
                 if ($this->move_item_id == $item_id && ($this->mode == "MoveItem" || $this->mode == "CopyItem")){
                     $content .= LinkButton::create(_('Abbrechen'),
                             URLHelper::getURL($this->getSelf('cmd=Cancel&item_id=' . $item_id)),
-                            array('title' => _('Verschieben / Kopieren abbrechen'))) . '&nbsp;';
+                            ['title' => _('Verschieben / Kopieren abbrechen')]) . '&nbsp;';
                 } else {
                     $content .= LinkButton::create(_('Verschieben'),
                             URLHelper::getURL($this->getSelf('cmd=MoveItem&item_id='.$item_id)),
-                            array('title' => _('Dieses Element in eine andere Ebene verschieben'))) . '&nbsp;';
+                            ['title' => _('Dieses Element in eine andere Ebene verschieben')]) . '&nbsp;';
                     $content .= LinkButton::create(_('Kopieren'),
                             URLHelper::getURL($this->getSelf('cmd=CopyItem&item_id='.$item_id)),
-                            array('title' => _('Dieses Element in eine andere Ebene kopieren')));
+                            ['title' => _('Dieses Element in eine andere Ebene kopieren')]);
                 }
             }
         }
@@ -539,7 +539,7 @@ class StudipSemTreeViewAdmin extends TreeView
             while($rs->next_record()){
                 $content .= "\n<option value=\"" . $rs->f("Institut_id") . "\">" . htmlReady(my_substr($rs->f("Name"),0,50)) . "</option>";
             }
-            $content .= "</select></label></div><div class=\"col-1\"> " . Button::create(_('Eintragen'), array('title' => _("Fakultät einfügen"))) . "</div></form></p>";
+            $content .= "</select></label></div><div class=\"col-1\"> " . Button::create(_('Eintragen'), ['title' => _("Fakultät einfügen")]) . "</div></form></p>";
         }
         $content .= "</td></tr></table>";
 
@@ -580,7 +580,7 @@ class StudipSemTreeViewAdmin extends TreeView
         $content .= CSRFProtection::tokenTag();
         $group_by_data = $snap->getGroupedResult("sem_number", "seminar_id");
         $sem_data = $snap->getGroupedResult("seminar_id");
-        $group_by_duration = $snap->getGroupedResult("sem_number_end", array("sem_number","seminar_id"));
+        $group_by_duration = $snap->getGroupedResult("sem_number_end", ["sem_number","seminar_id"]);
         foreach ($group_by_duration as $sem_number_end => $detail){
             if ($sem_number_end != -1 && ($detail['sem_number'][$sem_number_end] && count($detail['sem_number']) == 1)){
                 continue;
@@ -658,7 +658,7 @@ class StudipSemTreeViewAdmin extends TreeView
             }
         }
         $content .= "<tr><td class=\"table_row_even\" colspan=\"2\">"
-            . LinkButton::create(_('Auswählen'), array('title' => _('Auswahl umkehren'), 'onClick' => 'invert_selection(\''. $form_name .'\');return false;'))
+            . LinkButton::create(_('Auswählen'), ['title' => _('Auswahl umkehren'), 'onClick' => 'invert_selection(\''. $form_name .'\');return false;'])
             . "</td><td class=\"table_row_even\" align=\"right\"><div class=\"hgroup\">
         <select name=\"sem_aktion\" style=\"margin-right: 1em;\" " . tooltip(_("Aktion auswählen"),true) . ">
         <option value=\"mark\">" . _("in Merkliste übernehmen") . "</option>";
@@ -666,7 +666,7 @@ class StudipSemTreeViewAdmin extends TreeView
             $content .= "<option value=\"del_mark\">" . _("löschen und in Merkliste übernehmen") . "</option>
             <option value=\"del\">" . _("löschen") . "</option>";
         }
-        $content .= "</select>" . Button::createAccept(_('OK'), array('title' => _("Gewählte Aktion starten")))
+        $content .= "</select>" . Button::createAccept(_('OK'), ['title' => _("Gewählte Aktion starten")])
                  . "</div></td></tr> </form>";
         return $content;
     }
@@ -718,10 +718,10 @@ class StudipSemTreeViewAdmin extends TreeView
             </fieldset>
 
             <footer>
-                <?= Button::createAccept(_('Absenden'), array('title' => _('Einstellungen übernehmen'))) ?>
+                <?= Button::createAccept(_('Absenden'), ['title' => _('Einstellungen übernehmen')]) ?>
                 <?= LinkButton::createCancel(_('Abbrechen'),
                     URLHelper::getURL($this->getSelf('cmd=Cancel&item_id='.$buttonlink_id)),
-                    array('title' => _('Aktion abbrechen')))
+                    ['title' => _('Aktion abbrechen')])
                 ?>
             </footer>
         </form>
@@ -790,10 +790,10 @@ class StudipSemTreeViewAdmin extends TreeView
         $content = "";
         if ($this->msg[$item_id]){
             $msg = explode("§",$this->msg[$item_id]);
-            $pics = array(
+            $pics = [
                 'error' => Icon::create('decline', 'attention'),
                 'info'  => Icon::create('exclaim', 'inactive'),
-                'msg'   => Icon::create('accept', 'accept'));
+                'msg'   => Icon::create('accept', 'accept')];
             $content = "\n<tr><td colspan=\"{$colspan}\"><table border=\"0\" cellspacing=\"0\" cellpadding=\"2\" width=\"100%\" style=\"font-size:10pt\">
                         <tr><td class=\"blank\" align=\"center\" width=\"25\">" .  $pics[$msg[0]]->asImg(['class' => 'text-top']) . "</td>
             <td class=\"blank\" align=\"left\">" . $msg[1] . "</td></tr>

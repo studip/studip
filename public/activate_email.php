@@ -11,7 +11,7 @@ use Studip\Button, Studip\LinkButton;
 
 ob_start();
 
-page_open(array('sess' => 'Seminar_Session', 'auth' => 'Seminar_Default_Auth', 'perm' => 'Seminar_Perm', 'user' => 'Seminar_User'));
+page_open(['sess' => 'Seminar_Session', 'auth' => 'Seminar_Default_Auth', 'perm' => 'Seminar_Perm', 'user' => 'Seminar_User']);
 
 function head($headline, $red=False) {
     echo sprintf('<h1>%s</h1>', $headline);
@@ -68,13 +68,13 @@ if(Request::get('key') !== null) {
 
     $db = DBManager::get();
     $sth = $db->prepare("SELECT validation_key FROM auth_user_md5 WHERE user_id=?");
-    $sth->execute(array($uid));
+    $sth->execute([$uid]);
     $result = $sth->fetch();
     $key = $result['validation_key'];
     
     if(Request::quoted('key') == $key) {
         $sth = $db->prepare("UPDATE auth_user_md5 SET validation_key='' WHERE user_id=?");
-        $sth->execute(array($uid));
+        $sth->execute([$uid]);
         unset($_SESSION['semi_logged_in']);
         head(PageLayout::getTitle());
         PageLayout::postSuccess(_('Ihre E-Mail-Adresse wurde erfolgreich geändert.'));

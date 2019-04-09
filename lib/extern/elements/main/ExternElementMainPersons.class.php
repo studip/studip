@@ -44,12 +44,12 @@ class ExternElementMainPersons extends ExternElementMain {
     *
     */
     function __construct($module_name, &$data_fields, &$field_names, &$config) {
-        $this->attributes = array(
+        $this->attributes = [
                 'name', 'genericdatafields', 'order', 'visible', 'aliases', 'width',
                 'width_pp', 'sort', 'groupsalias', 'groupsvisible', 'grouping', 'wholesite',
                 'nameformat', 'repeatheadrow', 'urlcss', 'title', 'bodystyle', 'bodyclass',
                 'copyright', 'author', 'defaultadr'
-        );
+        ];
         $this->real_name = _("Grundeinstellungen");
         $this->description = _("In den Grundeinstellungen können Sie allgemeine Daten des Moduls ändern.");
         parent::__construct($module_name, $data_fields, $field_names, $config);
@@ -64,7 +64,7 @@ class ExternElementMainPersons extends ExternElementMain {
         else
             $groups = "";
         
-        $config = array(
+        $config = [
             "name" => "",
             "order" => "|0|1|2|3|4",
             "visible" => "|1|1|1|1|1",
@@ -87,7 +87,7 @@ class ExternElementMainPersons extends ExternElementMain {
                     . " ({$GLOBALS['UNI_CONTACT']})"),
             "author" => "",
             "defaultadr" => ''
-        );
+        ];
         
         get_default_generic_datafields($config, "user");
         
@@ -122,7 +122,7 @@ class ExternElementMainPersons extends ExternElementMain {
         $edit_function = $this->edit_function;
         for ($i = 5; $i < sizeof($this->field_names); $i++)
             $hide_sort[] = $i;
-        $table = $edit_form->$edit_function($this->field_names, array('sort' => $hide_sort));
+        $table = $edit_form->$edit_function($this->field_names, ['sort' => $hide_sort]);
         
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
@@ -150,15 +150,15 @@ class ExternElementMainPersons extends ExternElementMain {
         
         $title = _("Namensformat:");
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
-        $values = array("", "no_title_short", "no_title", "no_title_rev", "full", "full_rev");
-        $names = array(_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer, Peter"),
-                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr."));
+        $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
+        $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer, Peter"),
+                _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
         $title = _("Spaltenüberschriften wiederholen:");
         $info = _("Wiederholung der Spaltenüberschriften über oder unter der Gruppierungszeile.");
-        $values = array("above", "beneath", "");
-        $names = array(_("über"), _("unter Gruppenname"), _("keine"));
+        $values = ["above", "beneath", ""];
+        $names = [_("über"), _("unter Gruppenname"), _("keine")];
         $table .= $edit_form->editRadioGeneric("repeatheadrow", $title, $info, $values, $names);
         
         $title = _("Standard-Adresse:");

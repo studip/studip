@@ -119,7 +119,7 @@ class Vote extends QuestionnaireQuestion implements QuestionType
 
     public function getResultArray()
     {
-        $output = array();
+        $output = [];
 
         $taskAnswers = $this->etask->task['answers'];
 

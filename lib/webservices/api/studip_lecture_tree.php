@@ -23,7 +23,7 @@ class StudipLectureTreeHelper
                               JOIN seminare s ON (st.seminar_id = s.Seminar_id)
                               WHERE st.sem_tree_id = ?  AND s.start_time <= ?
                               AND (s.start_time + s.duration_time >= ? OR duration_time = -1)');
-        $stmt->execute(array($sem_tree_id, $semester['beginn'], $semester['beginn']));
+        $stmt->execute([$sem_tree_id, $semester['beginn'], $semester['beginn']]);
 
         return $stmt->fetchAll();
     }
@@ -33,7 +33,7 @@ class StudipLectureTreeHelper
         $stack = (array) $sem_tree_id;
         $info = StudipLectureTreeHelper::get_info_for_sem_tree_id($sem_tree_id);
 
-        $name_parts = array();
+        $name_parts = [];
 
         while(($current = array_pop($stack))) {
             $info = StudipLectureTreeHelper::get_info_for_sem_tree_id($current);
@@ -55,14 +55,14 @@ class StudipLectureTreeHelper
                               LEFT JOIN Institute i ON (st.studip_object_id = i.Institut_id)
                               WHERE st.sem_tree_id = ?
                               GROUP BY st.sem_tree_id");
-        $stmt->execute(array($sem_tree_id));
+        $stmt->execute([$sem_tree_id]);
 
         return $stmt->fetchAll();
     }
 
     function get_subtree($sem_tree_id)
     {
-        $stack = $collected = array($sem_tree_id);
+        $stack = $collected = [$sem_tree_id];
 
         while ($current = array_pop($stack)) {
             $local_tree = StudipLectureTreeHelper::get_local_tree($current);
@@ -78,7 +78,7 @@ class StudipLectureTreeHelper
         $db = DBManager::get();
 
         $subtree_entries = StudipLectureTreeHelper::get_subtree($sem_tree_id);
-        $subtree_entries = array_map(array($db, 'quote'), $subtree_entries);
+        $subtree_entries = array_map([$db, 'quote'], $subtree_entries);
 
         $stmt = $db->prepare('SELECT COUNT(sst.seminar_id) AS seminar_count
                               FROM seminar_sem_tree sst
@@ -95,7 +95,7 @@ class StudipLectureTreeHelper
         $db = DBManager::get();
 
         $stmt = $db->prepare('SELECT sem_tree_id FROM sem_tree WHERE parent_id = ? ORDER BY priority');
-        $stmt->execute(array($sem_tree_id));
+        $stmt->execute([$sem_tree_id]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

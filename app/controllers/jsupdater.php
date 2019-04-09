@@ -110,11 +110,11 @@ class JsupdaterController extends AuthenticatedController
      */
     protected function coreInformation()
     {
-        $data = array();
+        $data = [];
         if (PersonalNotifications::isActivated()) {
             $notifications = PersonalNotifications::getMyNotifications();
             if ($notifications && count($notifications)) {
-                $ret = array();
+                $ret = [];
                 foreach ($notifications as $notification) {
                     $info = $notification->toArray();
                     $info['html'] = $notification->getLiElement();
@@ -122,7 +122,7 @@ class JsupdaterController extends AuthenticatedController
                 }
                 $data['PersonalNotifications.newNotifications'] = $ret;
             } else {
-                $data['PersonalNotifications.newNotifications'] = array();
+                $data['PersonalNotifications.newNotifications'] = [];
             }
         }
         $page_info = Request::getArray("page_info");
@@ -137,7 +137,7 @@ class JsupdaterController extends AuthenticatedController
             foreach ($messages as $message) {
                 $data['Messages.newMessages']['messages'][$message->getId()] = $template_factory
                         ->open("messages/_message_row.php")
-                        ->render(compact("message") + array('controller' => $this));
+                        ->render(compact("message") + ['controller' => $this]);
             }
         }
         if (is_array($page_info['Questionnaire']['questionnaire_ids'])) {
@@ -147,9 +147,9 @@ class JsupdaterController extends AuthenticatedController
                     $template = $this->get_template_factory()->open("questionnaire/evaluate");
                     $template->set_layout(null);
                     $template->set_attribute("questionnaire", $questionnaire);
-                    $data['Questionnaire.updateQuestionnaireResults'][$questionnaire->getId()] = array(
+                    $data['Questionnaire.updateQuestionnaireResults'][$questionnaire->getId()] = [
                         'html' => $template->render()
-                    );
+                    ];
                 }
             }
         }

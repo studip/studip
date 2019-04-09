@@ -20,7 +20,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
     private $count_objects;
     private $count_module;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'Institute';
 
@@ -71,8 +71,8 @@ class Fachbereich extends ModuleManagementModelTreeItem
                 . 'WHERE msv.stat IN(?) '
                 . 'AND ms.stat In (?) AND mm.stat IN(?) '
                 . 'GROUP BY Institut_id';
-        $params = array(StgteilVersion::getPublicStatus(),
-                Studiengang::getPublicStatus(), Modul::getPublicStatus());
+        $params = [StgteilVersion::getPublicStatus(),
+                Studiengang::getPublicStatus(), Modul::getPublicStatus()];
         return parent::getEnrichedByQuery($query, $params);
     }
 
@@ -100,8 +100,8 @@ class Fachbereich extends ModuleManagementModelTreeItem
                     . 'INNER JOIN mvv_modul mm USING(modul_id) '
                     . 'WHERE mfi.institut_id = ? AND msv.stat IN(?) '
                     . 'AND ms.stat In (?) AND mm.stat IN(?)';
-            $params = array($this->getId(), StgteilVersion::getPublicStatus(),
-                    Studiengang::getPublicStatus(), Modul::getPublicStatus());
+            $params = [$this->getId(), StgteilVersion::getPublicStatus(),
+                    Studiengang::getPublicStatus(), Modul::getPublicStatus()];
         } else {
             $query = 'SELECT DISTINCT modul_id FROM mvv_fach_inst '
                     . 'INNER JOIN mvv_stgteil USING(fach_id) '
@@ -110,7 +110,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
                     . 'INNER JOIN mvv_stgteilabschnitt_modul USING(abschnitt_id)'
                     . 'INNER JOIN mvv_modul mm USING(modul_id) '
                     . 'WHERE institut_id = ? ';
-            $params = array($this->getId());
+            $params = [$this->getId()];
         }
         if ($modul_ids) {
             $query .= ' AND mm.modul_id IN (?)';
@@ -150,7 +150,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -165,8 +165,8 @@ class Fachbereich extends ModuleManagementModelTreeItem
             . 'INNER JOIN mvv_abschl_zuord USING(abschluss_id) '
             . 'INNER JOIN mvv_abschl_kategorie mak USING(kategorie_id) '
             . 'WHERE ins.Institut_id = ? OR ins.fakultaets_id = ? '
-            . 'ORDER BY mak.name', array($this->getId(),
-                $this->getValue('fakultaets_id')));
+            . 'ORDER BY mak.name', [$this->getId(),
+                $this->getValue('fakultaets_id')]);
 
     }
 
@@ -200,7 +200,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
         return $this->getId() == $this->getValue('fakultaets_id');
     }
 
-    public static function getFilterStudiengaengeEinrichtung($studiengang_ids = array())
+    public static function getFilterStudiengaengeEinrichtung($studiengang_ids = [])
     {
         return parent::getEnrichedByQuery('SELECT Institute.*, '
                 . 'COUNT(mvv_studiengaenge.studiengang_id) '
@@ -214,8 +214,8 @@ class Fachbereich extends ModuleManagementModelTreeItem
                 . 'WHERE fak.Institut_id = fak.fakultaets_id '
                 . 'AND fak.Institut_id = inst.fakultaets_id '
                 . parent::getFilterSql(
-                        array('mvv_studiengang.studiengang_id'
-                            => $studiengang_ids))
+                        ['mvv_studiengang.studiengang_id'
+                            => $studiengang_ids])
                 . 'GROUP BY inst.Institut_id '
                 . 'ORDER BY is_fak DESC, fak_name ASC, inst_name ASC');
     }
@@ -241,7 +241,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
                 . 'LEFT JOIN Institute ON mvv_fach_inst.institut_id = Institute.Institut_id '
                 . parent::getFilterSql($filter, true)
                 . 'GROUP BY Institut_id '
-                . 'ORDER BY ' . $sortby, array());
+                . 'ORDER BY ' . $sortby, []);
     }
 
     /**

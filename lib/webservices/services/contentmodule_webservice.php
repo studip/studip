@@ -23,13 +23,13 @@ class ContentmoduleService extends AccessControlledService
     function __construct()
     {
     $this->add_api_method('find_seminars_using_contentmodule',
-                          array('string', 'string', 'string'),
-                          array('string'),
+                          ['string', 'string', 'string'],
+                          ['string'],
                           '');
 
     $this->add_api_method('find_institutes_using_contentmodule',
-                          array('string', 'string', 'string'),
-                          array('string'),
+                          ['string', 'string', 'string'],
+                          ['string'],
                           '');
 
     }

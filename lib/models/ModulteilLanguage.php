@@ -18,14 +18,14 @@
 class ModulteilLanguage extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil_language';
     
-        $config['belongs_to']['modulteil'] = array(
+        $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
             'foreign_key' => 'modulteil_id'
-        );
+        ];
         
         $config['alias_fields']['language'] = 'lang';
         
@@ -41,13 +41,13 @@ class ModulteilLanguage extends ModuleManagementModel
      */
     public static function findByModulteil($modulteil_id)
     {
-        $languages = array();
+        $languages = [];
         $modulteil_languages = parent::getEnrichedByQuery('
                 SELECT * 
                 FROM mvv_modulteil_language 
                 WHERE modulteil_id = ? 
                 ORDER BY position, mkdate',
-            array($modulteil_id)
+            [$modulteil_id]
         );
         foreach ($modulteil_languages as $language) {
             $languages[$language->lang] = $language;
@@ -66,7 +66,7 @@ class ModulteilLanguage extends ModuleManagementModel
         $languages = $GLOBALS['MVV_MODULTEIL']['SPRACHE']['values'];
         if (!$languages[$this->lang]) {
             $ret['languages'] = true;
-            $messages = array(_('Unbekannte Unterrichtssprache'));
+            $messages = [_('Unbekannte Unterrichtssprache')];
             throw new InvalidValuesException(join("\n", $messages), $ret);
         }
         return $ret;

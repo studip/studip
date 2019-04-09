@@ -37,7 +37,7 @@ class StudyAreasWizardStep implements CourseWizardStep
             $tree = $this->buildPartialSemTree(StudipStudyArea::backwards(StudipStudyArea::findMany($values['studyareas'])));
             $tpl->set_attribute('assigned', $tree);
         } else {
-            $tpl->set_attribute('assigned', array());
+            $tpl->set_attribute('assigned', []);
         }
         $tpl->set_attribute('values', $values);
 
@@ -143,7 +143,7 @@ class StudyAreasWizardStep implements CourseWizardStep
         // We only need our own stored values here.
         $values = $values[__CLASS__];
         $ok = true;
-        $errors = array();
+        $errors = [];
         if (!$values['studyareas']) {
             $ok = false;
             $errors[] = _('Die Veranstaltung muss mindestens einem Studienbereich zugeordnet sein.');
@@ -205,7 +205,7 @@ class StudyAreasWizardStep implements CourseWizardStep
      */
     public function copy($course, $values)
     {
-        $data = array();
+        $data = [];
         foreach ($course->study_areas as $a) {
             /*
              * Check if areas assigned to given course are
@@ -221,17 +221,17 @@ class StudyAreasWizardStep implements CourseWizardStep
 
     public function getSemTreeLevel($parentId)
     {
-        $level = array();
+        $level = [];
         $children = StudipStudyArea::findByParent($parentId);
         foreach ($children as $c) {
             if (!$c->isHidden()) {
-                $level[] = array(
+                $level[] = [
                     'id' => $c->sem_tree_id,
                     'name' => (string) $c->getName(),
                     'has_children' => $c->hasChildren(),
                     'parent' => $parentId,
                     'assignable' => $c->isAssignable()
-                );
+                ];
             }
         }
         if (Request::isXhr()) {
@@ -243,7 +243,7 @@ class StudyAreasWizardStep implements CourseWizardStep
 
     public function searchSemTree($searchterm, $id_only=false)
     {
-        $result = array();
+        $result = [];
         $search = StudipStudyArea::search($searchterm);
         $search = array_filter($search, function($a) { return !$a->isHidden(); });
         $root = StudipStudyArea::backwards($search);
@@ -257,29 +257,29 @@ class StudyAreasWizardStep implements CourseWizardStep
 
     public function getAncestorTree($id)
     {
-        $result = array();
+        $result = [];
         $node = StudipStudyArea::find($id);
-        $root = StudipStudyArea::backwards(array($node));
+        $root = StudipStudyArea::backwards([$node]);
         $result = $this->buildPartialSemTree($root);
         return json_encode($result);
     }
 
     private function buildPartialSemTree($node, $id_only=false) {
-        $children = array();
+        $children = [];
         foreach ($node->required_children as $c)
         {
             if ($id_only) {
                 $children[] = $c->id;
                 $children = array_merge($children, $this->buildPartialSemTree($c, $id_only));
             } else {
-                $data = array(
+                $data = [
                     'id' => $c->id,
                     'name' => (string)$c->name,
                     'has_children' => $c->hasChildren(),
                     'parent' => $node->id,
                     'assignable' => $c->isAssignable(),
                     'children' => $this->buildPartialSemTree($c)
-                );
+                ];
                 $children[] = $data;
             }
         }

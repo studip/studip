@@ -137,7 +137,7 @@ class Assets
      * Do not use this to render icons. Use the more appropiate class
      * Icon for this.
      */
-    static function img($source, $opt = array())
+    static function img($source, $opt = [])
     {
         if (!$source) {
             return '';
@@ -178,7 +178,7 @@ class Assets
      * Do not use this to render icons. Use the more appropiate class
      * Icon for this.
      */
-    static function input($source, $opt = array())
+    static function input($source, $opt = [])
     {
 
         if (!$source) {
@@ -247,7 +247,7 @@ class Assets
         foreach (func_get_args() as $source) {
             $source = Assets::javascript_path($source);
             $html .= Assets::content_tag('script', '',
-                array('src' => $source));
+                ['src' => $source]);
             $html .= "\n";
         }
 
@@ -289,14 +289,14 @@ class Assets
         $sourceOptions = (func_num_args() > 1 &&
             is_array($sources[func_num_args() - 1]))
             ? array_pop($sources)
-            : array();
+            : [];
 
         $html = '';
         foreach ($sources as $source) {
             $source = Assets::stylesheet_path($source);
-            $opt = array_merge(array('rel' => 'stylesheet',
+            $opt = array_merge(['rel' => 'stylesheet',
                     'media' => 'screen',
-                    'href' => $source),
+                    'href' => $source],
                 $sourceOptions);
             $html .= Assets::tag('link', $opt) . "\n";
         }
@@ -358,7 +358,7 @@ class Assets
      *
      * @return string
      */
-    private static function tag($name, $options = array(), $open = FALSE)
+    private static function tag($name, $options = [], $open = FALSE)
     {
         if (!$name)
             return '';
@@ -376,7 +376,7 @@ class Assets
      *
      * @return type <description>
      */
-    private static function content_tag($name, $content = '', $options = array())
+    private static function content_tag($name, $content = '', $options = [])
     {
         if (!$name) return '';
         return '<' . $name . ' ' . arrayToHtmlAttributes($options) . '>' .
@@ -406,7 +406,7 @@ class Assets
       )
     /x', $stringOrArray, $matches, PREG_SET_ORDER);
 
-        $attributes = array();
+        $attributes = [];
         foreach ($matches as $val)
             $attributes[$val[1]] = $val[3];
 

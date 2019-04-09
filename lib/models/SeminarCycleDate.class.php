@@ -59,7 +59,7 @@ class SeminarCycleDate extends SimpleORMap
     public static function findByTermin($termin_id)
     {
         return self::findOneBySql("metadate_id=(SELECT metadate_id FROM termine WHERE termin_id = ? "
-                                  . "UNION SELECT metadate_id FROM ex_termine WHERE termin_id = ? )", array($termin_id, $termin_id));
+                                  . "UNION SELECT metadate_id FROM ex_termine WHERE termin_id = ? )", [$termin_id, $termin_id]);
     }
 
     /**
@@ -67,34 +67,34 @@ class SeminarCycleDate extends SimpleORMap
      *
      * @param Array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'seminar_cycle_dates';
-        $config['belongs_to']['course'] = array('class_name' => 'Course');
-        $config['has_one']['room_request'] = array(
+        $config['belongs_to']['course'] = ['class_name' => 'Course'];
+        $config['has_one']['room_request'] = [
             'class_name' => 'RoomRequest',
             'on_store'   => 'store',
             'on_delete'  => 'delete',
-        );
-        $config['has_many']['dates'] = array(
+        ];
+        $config['has_many']['dates'] = [
             'class_name' => 'CourseDate',
             'on_delete'  => 'delete',
             'on_store'   => 'store',
             'order_by'   => 'ORDER BY date'
-        );
+        ];
 
-        $config['has_many']['exdates'] = array(
+        $config['has_many']['exdates'] = [
             'class_name' => 'CourseExDate',
             'on_delete'  => 'delete',
             'on_store'   => 'store',
             'order_by'   => 'ORDER BY date'
-        );
+        ];
 
-        $config['additional_fields']['start_hour'] = array('get' => 'getTimeFraction', 'set' => 'setTimeFraction');
-        $config['additional_fields']['start_minute'] = array('get' => 'getTimeFraction', 'set' => 'setTimeFraction');
-        $config['additional_fields']['end_hour'] = array('get' => 'getTimeFraction', 'set' => 'setTimeFraction');
-        $config['additional_fields']['end_minute'] = array('get' => 'getTimeFraction', 'set' => 'setTimeFraction');
-        $config['additional_fields']['is_visible'] = array('get' => 'getIsVisible');
+        $config['additional_fields']['start_hour'] = ['get' => 'getTimeFraction', 'set' => 'setTimeFraction'];
+        $config['additional_fields']['start_minute'] = ['get' => 'getTimeFraction', 'set' => 'setTimeFraction'];
+        $config['additional_fields']['end_hour'] = ['get' => 'getTimeFraction', 'set' => 'setTimeFraction'];
+        $config['additional_fields']['end_minute'] = ['get' => 'getTimeFraction', 'set' => 'setTimeFraction'];
+        $config['additional_fields']['is_visible'] = ['get' => 'getIsVisible'];
         parent::configure($config);
     }
 
@@ -106,11 +106,11 @@ class SeminarCycleDate extends SimpleORMap
      */
     protected function getTimeFraction($field)
     {
-        if (in_array($field, array('start_hour', 'start_minute'))) {
+        if (in_array($field, ['start_hour', 'start_minute'])) {
             list($start_hour, $start_minute) = explode(':', $this->start_time);
             return (int)$$field;
         }
-        if (in_array($field, array('end_hour', 'end_minute'))) {
+        if (in_array($field, ['end_hour', 'end_minute'])) {
             list($end_hour, $end_minute) = explode(':', $this->end_time);
             return (int)$$field;
         }
@@ -180,7 +180,7 @@ class SeminarCycleDate extends SimpleORMap
             $template['full'] .= '%s';
         }
         $template['full'] .= '%s';
-        $cycles = array(_('wöchentlich'), _('zweiwöchentlich'), _('dreiwöchentlich'));
+        $cycles = [_('wöchentlich'), _('zweiwöchentlich'), _('dreiwöchentlich')];
         $day = getWeekDay($this->weekday, $format == 'short');
         $result = sprintf($template[$format],
             $day,
@@ -201,7 +201,7 @@ class SeminarCycleDate extends SimpleORMap
      */
     public function getAllDates()
     {
-        $dates = array();
+        $dates = [];
         foreach ($this->exdates as $date) {
             $dates[] = $date;
         }
@@ -230,7 +230,7 @@ class SeminarCycleDate extends SimpleORMap
 
         if ($result) {
             $stmt = DBManager::get()->prepare('DELETE FROM schedule_seminare WHERE metadate_id = :metadate_id');
-            $stmt->execute(array('metadate_id' => $metadate_id));
+            $stmt->execute(['metadate_id' => $metadate_id]);
 
             StudipLog::log('SEM_DELETE_CYCLE', $seminar_id, null, $cycle_info);
         }
@@ -375,7 +375,7 @@ class SeminarCycleDate extends SimpleORMap
     private function generateNewDates($old_cycle)
     {
         $course = Course::find($this->seminar_id);
-        $topics = array();
+        $topics = [];
         //collect topics for existing future dates (CourseDate)
         foreach ($this->getAllDates() as $date) {
             if ($date->end_time >= time()) {
@@ -444,7 +444,7 @@ class SeminarCycleDate extends SimpleORMap
     private function createTerminSlots($startAfterTimeStamp = 0)
     {
         $course = Course::find($this->seminar_id);
-        $ret = array();
+        $ret = [];
 
         if ($startAfterTimeStamp == 0) {
             $startAfterTimeStamp = $course->start_semester->vorles_beginn;
@@ -464,7 +464,7 @@ class SeminarCycleDate extends SimpleORMap
         }
 
         $semester = Semester::findBySQL('beginn <= :ende AND ende >= :start',
-                array('start' => $startAfterTimeStamp, 'ende' => $sem_end));
+                ['start' => $startAfterTimeStamp, 'ende' => $sem_end]);
 
         foreach ($semester as $val) {
                 $ret[$val['semester_id']] = $this->createSemesterTerminSlots($val['vorles_beginn'], $val['vorles_ende'], $startAfterTimeStamp);
@@ -485,8 +485,8 @@ class SeminarCycleDate extends SimpleORMap
     private function createSemesterTerminSlots($sem_begin, $sem_end, $startAfterTimeStamp)
     {
 
-        $dates = array();
-        $dates_to_delete = array();
+        $dates = [];
+        $dates_to_delete = [];
 
         // The currently existing singledates for the by metadate_id denoted  regular time-entry
         //$existingSingleDates =& $this->cycles[$metadate_id]->getSingleDates();
@@ -607,7 +607,7 @@ class SeminarCycleDate extends SimpleORMap
         if ($this->cycle != 0) {
             return $this->calculateTurnusDates($dates, $turnus_offset);
         }
-        return array('dates' => $dates, 'dates_to_delete' => $dates_to_delete);
+        return ['dates' => $dates, 'dates_to_delete' => $dates_to_delete];
     }
 
 
@@ -621,8 +621,8 @@ class SeminarCycleDate extends SimpleORMap
     public function calculateTurnusDates($dates, $turnus_offset)
     {
         $week_count = 0 + $turnus_offset;
-        $dates_to_store = array();
-        $dates_to_delete = array();
+        $dates_to_store = [];
+        $dates_to_delete = [];
         foreach ($dates as $date) {
 
             if ($this->cycle == 1 && $week_count % 2 != 0 && $week_count > 0) {
@@ -638,7 +638,7 @@ class SeminarCycleDate extends SimpleORMap
             }
             $week_count++;
         }
-        return array('dates' => $dates_to_store, 'dates_to_delete' => $dates_to_delete);
+        return ['dates' => $dates_to_store, 'dates_to_delete' => $dates_to_delete];
     }
 
     /**
@@ -655,7 +655,7 @@ class SeminarCycleDate extends SimpleORMap
                   WHERE range_id = ? AND (`date` NOT BETWEEN ? AND ?)
                     AND NOT (metadate_id IS NULL OR metadate_id = '')";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_id, $start, $end));
+        $statement->execute([$seminar_id, $start, $end]);
         $ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($ids as $id) {
@@ -668,7 +668,7 @@ class SeminarCycleDate extends SimpleORMap
             // remove all assigns for the dates in question
             $query = "SELECT assign_id FROM resources_assign WHERE assign_user_id IN (?)";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($ids));
+            $statement->execute([$ids]);
 
             while ($id = $statement->fetchColumn()) {
                 AssignObject::Factory($assign_id)->delete();
@@ -679,7 +679,7 @@ class SeminarCycleDate extends SimpleORMap
                   WHERE range_id = ? AND (`date` NOT BETWEEN ? AND ?)
                     AND NOT (metadate_id IS NULL OR metadate_id = '')";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_id, $start, $end));
+        $statement->execute([$seminar_id, $start, $end]);
     }
 
     /**

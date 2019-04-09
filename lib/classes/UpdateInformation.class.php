@@ -21,7 +21,7 @@
  */
 class UpdateInformation
 {
-    protected static $infos = array();
+    protected static $infos = [];
     protected static $collecting = null;
     protected static $request = null;
 
@@ -46,7 +46,7 @@ class UpdateInformation
         if (self::$request === null) {
             self::$request = Request::getArray('page_info');
         }
-        return self::$request ?: array();
+        return self::$request ?: [];
     }
 
     /**

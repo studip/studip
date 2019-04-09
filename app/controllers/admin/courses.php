@@ -46,14 +46,14 @@ class Admin_CoursesController extends AuthenticatedController
         $activeDatafields = $userSelectedElements['datafields'];
 
         if (!$activeDatafields) {
-            return array();
+            return [];
         }
 
         //Ok, we have a list of active datafields whose value may be searched for.
         //We must check for the request parameters (df_$DATAFIELD_ID)
         //and return their IDs with a value.
 
-        $searchedDatafields = array();
+        $searchedDatafields = [];
 
         foreach ($activeDatafields as $activeField) {
             $requestParamValue = Request::get('df_'.$activeField);
@@ -90,7 +90,7 @@ class Admin_CoursesController extends AuthenticatedController
                     (bool)Request::get('df_'.$datafield->id, false),
                     URLHelper::getLink(
                         'dispatch.php/admin/courses/index',
-                        array('df_'.$datafield->id => '1')
+                        ['df_'.$datafield->id => '1']
                     ),
                     URLHelper::getLink(
                         'dispatch.php/admin/courses/index'
@@ -111,18 +111,18 @@ class Admin_CoursesController extends AuthenticatedController
                     . 'GROUP BY content;'
                 );
 
-                $statement->execute(array('datafieldId' => $datafield->id));
+                $statement->execute(['datafieldId' => $datafield->id]);
                 $result = $statement->fetchAll();
 
 
-                $options = array();
+                $options = [];
                 foreach ($result as $row) {
                     $options[$row[0]] = $row[0];
                 }
 
                 if ($options) {
                     $options = array_merge(
-                        array(' ' => _('(keine Auswahl)')),
+                        [' ' => _('(keine Auswahl)')],
                         $options
                     );
                     $selectWidget = new OptionsWidget($datafield->name);
@@ -258,7 +258,7 @@ class Admin_CoursesController extends AuthenticatedController
 
         //"export as Excel" is always visible:
         if ($this->sem_create_perm) {
-            $params = array();
+            $params = [];
 
             if ($GLOBALS['user']->cfg->ADMIN_COURSES_SEARCHTEXT) {
                 $params['search'] = $GLOBALS['user']->cfg->ADMIN_COURSES_SEARCHTEXT;
@@ -337,7 +337,7 @@ class Admin_CoursesController extends AuthenticatedController
      */
     public function index_action()
     {
-        $this->sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, array('root', 'admin', 'dozent'))
+        $this->sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root', 'admin', 'dozent'])
             ? Config::get()->SEM_CREATE_PERM
             : 'dozent';
 
@@ -364,37 +364,37 @@ class Admin_CoursesController extends AuthenticatedController
         $this->sortby = $GLOBALS['user']->cfg->MEINE_SEMINARE_SORT;
         $this->sortFlag = $GLOBALS['user']->cfg->MEINE_SEMINARE_SORT_FLAG ?: 'ASC';
 
-        $this->courses = $this->getCourses(array(
+        $this->courses = $this->getCourses([
             'sortby'      => $this->sortby,
             'sortFlag'    => $this->sortFlag,
             'view_filter' => $this->view_filter,
             'typeFilter'  => $config_my_course_type_filter,
             'datafields' => $this->getDatafieldFilters()
-        ), Request::get('display') === 'all');
+        ], Request::get('display') === 'all');
 
         if (in_array('contents', $this->view_filter)) {
-            $this->nav_elements = MyRealmModel::calc_nav_elements(array($this->courses));
+            $this->nav_elements = MyRealmModel::calc_nav_elements([$this->courses]);
         }
         // get all available teacher for infobox-filter
         // filter by selected teacher
         $_SESSION['MY_COURSES_LIST'] = array_map(function ($c, $id) {
-            return array('Name'       => $c['Name'],
-                         'Seminar_id' => $id);
+            return ['Name'       => $c['Name'],
+                         'Seminar_id' => $id];
         }, array_values($this->courses), array_keys($this->courses));
 
 
         $this->all_lock_rules = new SimpleCollection(array_merge(
-            array(array(
+            [[
                 'name'    => '--' . _("keine Sperrebene") . '--',
                 'lock_id' => 'none'
-            )),
+            ]],
             LockRule::findAllByType('sem')
         ));
         $this->aux_lock_rules = array_merge(
-            array(array(
+            [[
                 'name'    => '--' . _("keine Zusatzangaben") . '--',
                 'lock_id' => 'none'
-            )),
+            ]],
             AuxLockRules::getAllLockRules()
         );
 
@@ -432,7 +432,7 @@ class Admin_CoursesController extends AuthenticatedController
                 Update or create an entry for the current user
                 in the user configuration table.
             */
-            $activeArray = array();
+            $activeArray = [];
             if ($searchActive) {
                 $activeArray['search'] = true;
             }
@@ -470,7 +470,7 @@ class Admin_CoursesController extends AuthenticatedController
             $this->userSelectedElements = $this->getActiveElements();
 
             //add the last activity for each Course object:
-            $this->lastActivities = array();
+            $this->lastActivities = [];
         }
     }
 
@@ -490,19 +490,19 @@ class Admin_CoursesController extends AuthenticatedController
         $sortby = $GLOBALS['user']->cfg->getValue('MEINE_SEMINARE_SORT');
         $config_my_course_type_filter = $GLOBALS['user']->cfg->getValue('MY_COURSES_TYPE_FILTER');
 
-        $courses = $this->getCourses(array(
+        $courses = $this->getCourses([
             'sortby'      => $sortby,
             'sortFlag'    => 'asc',
             'typeFilter'  => $config_my_course_type_filter,
             'view_filter' => $filter_config,
-        ), true);
+        ], true);
 
         $view_filters = $this->getViewFilters();
 
-        $data = array();
+        $data = [];
         foreach ($courses as $course_id => $course) {
             $sem = new Seminar(Course::buildExisting($course));
-            $row = array();
+            $row = [];
 
             if (in_array('number', $filter_config)) {
                 $row['number'] = $course['VeranstaltungsNummer'];
@@ -519,10 +519,10 @@ class Admin_CoursesController extends AuthenticatedController
             }
 
             if (in_array('room_time', $filter_config)) {
-                $_room = $sem->getDatesExport(array(
+                $_room = $sem->getDatesExport([
                     'semester_id' => $this->semester->id,
                     'show_room'   => true
-                ));
+                ]);
                 $row['room_time'] = $_room ?: _('nicht angegeben');
             }
 
@@ -569,7 +569,7 @@ class Admin_CoursesController extends AuthenticatedController
             $data[$course_id] = $row;
         }
 
-        $captions = array();
+        $captions = [];
         foreach ($filter_config as $index) {
             $captions[$index] = $view_filters[$index];
         }
@@ -634,7 +634,7 @@ class Admin_CoursesController extends AuthenticatedController
         }
         $result = false;
         $courses = Request::getArray('lock_sem');
-        $errors = array();
+        $errors = [];
 
         if (!empty($courses)) {
             foreach ($courses as $course_id => $value) {
@@ -772,7 +772,7 @@ class Admin_CoursesController extends AuthenticatedController
         $result = false;
         $courses = Request::getArray('lock_sem');
         $lock_sem_forced = Request::getArray('lock_sem_forced');
-        $errors = array();
+        $errors = [];
         if (!empty($courses)) {
             foreach ($courses as $course_id => $value) {
                 if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
@@ -823,7 +823,7 @@ class Admin_CoursesController extends AuthenticatedController
             $filters = $this->getFilterConfig();
 
             if ($state) {
-                $filters = array_diff($filters, array($filter));
+                $filters = array_diff($filters, [$filter]);
             } else {
                 $filters[] = $filter;
             }
@@ -894,13 +894,13 @@ class Admin_CoursesController extends AuthenticatedController
             $this->selected_action = 1;
         }
 
-        $this->courses = $this->getCourses(array(
+        $this->courses = $this->getCourses([
             'sortby'      => $this->sortby,
             'sortFlag'    => $this->sortFlag,
             'view_filter' => $this->view_filter,
             'datafields' => $this->getDatafieldFilters(),
             'parent_course' => $course_id
-        ));
+        ]);
 
         $this->parent = $course_id;
 
@@ -915,84 +915,84 @@ class Admin_CoursesController extends AuthenticatedController
     {
         // array for the avaiable modules
         $sem_filter = $this->semester ? $this->semester->beginn : 'all';
-        $actions = array(
-            1 => array(
+        $actions = [
+            1 => [
                 'name'       => _('Grunddaten'),
                 'title'      => _('Grunddaten'),
                 'url'        => 'dispatch.php/course/basicdata/view?cid=%s',
                 'attributes' => ['data-dialog' => 'size=big'],
-            ),
-            2 => array(
+            ],
+            2 => [
                 'name'       => _('Studienbereiche'),
                 'title'      => _('Studienbereiche'),
                 'url'        => 'dispatch.php/course/study_areas/show/?cid=%s&from=admin/courses',
                 'attributes' => ['data-dialog' => 'size=big'],
-            ),
-            3 => array(
+            ],
+            3 => [
                 'name'       => _('Zeiten/Räume'),
                 'title'      => _('Zeiten/Räume'),
                 'url'        => 'dispatch.php/course/timesrooms/index?cid=%s',
                 'attributes' => ['data-dialog' => 'size=big'],
-                'params'     => array(
+                'params'     => [
                     'newFilter' => $sem_filter,
                     'cmd'       => 'applyFilter'
-                ),
-            ),
-            8 => array(
+                ],
+            ],
+            8 => [
                 'name'      => _('Sperrebene'),
                 'title'     => _('Sperrebenen'),
                 'url'       => 'dispatch.php/admin/courses/set_lockrule',
                 'multimode' => true
-            ),
-            9 => array(
+            ],
+            9 => [
                 'name'      => _('Sichtbarkeit'),
                 'title'     => _('Sichtbarkeit'),
                 'url'       => 'dispatch.php/admin/courses/set_visibility',
                 'multimode' => true
-            ),
-            10 => array(
+            ],
+            10 => [
                 'name'      => _('Zusatzangaben'),
                 'title'     => _('Zusatzangaben'),
                 'url'       => 'dispatch.php/admin/courses/set_aux_lockrule',
                 'multimode' => true
-            ),
-            11 => array(
+            ],
+            11 => [
                 'name'       => _('Veranstaltung kopieren'),
                 'title'      => _('Kopieren'),
                 'url'        => 'dispatch.php/course/wizard/copy/%s',
                 'attributes' => ['data-dialog' => 'size=big'],
-            ),
-            14 => array(
+            ],
+            14 => [
                 'name'       => 'Zugangsberechtigungen',
                 'title'      => _('Zugangsberechtigungen'),
                 'url'        => 'dispatch.php/course/admission?cid=%s',
                 'attributes' => ['data-dialog' => 'size=big'],
-            ),
-            16 => array(
+            ],
+            16 => [
                 'name'       => _('Löschen'),
                 'title'      => _('Löschen'),
                 'url'        => 'dispatch.php/course/archive/confirm',
                 'multimode'  => true
-            ),
-            17 => array(
+            ],
+            17 => [
                 'name'      => _('Gesperrte Veranstaltungen'),
                 'title'     => _('Einstellungen speichern'),
                 'url'       => 'dispatch.php/admin/courses/set_locked',
                 'multimode' => true
-            ),
-            18 => array(
+            ],
+            18 => [
                 'name'       => _('Startsemester'),
                 'title'      => _('Startsemester'),
                 'url'        => 'dispatch.php/course/timesrooms/editSemester?cid=%s&origin=admin_courses',
                 'attributes' => ['data-dialog' => 'size=400'],
-            ),
-            19 => array(
+            ],
+            19 => [
                 'name'       => _('LV-Gruppen'),
                 'title'      => _('LV-Gruppen'),
                 'url'        => 'dispatch.php/course/lvgselector?cid=%s&from=admin/courses',
                 'attributes' => ['data-dialog' => 'size=big'],
-            ),
-        );
+            ],
+        ];
 
         if (!$GLOBALS['perm']->have_perm('admin')) {
             unset($actions[8]);
@@ -1006,23 +1006,23 @@ class Admin_CoursesController extends AuthenticatedController
         }
 
         if (Config::get()->RESOURCES_ENABLE && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
-            $actions[4] = array(
+            $actions[4] = [
                 'name'  => 'Raumanfragen',
                 'title' => _('Raumanfragen'),
                 'url'   => 'dispatch.php/course/room_requests/index?cid=%s&origin=admin_courses',
                 'attributes' => ['data-dialog' => 'size=big'],
-            );
+            ];
         }
         ksort($actions);
 
         foreach (PluginManager::getInstance()->getPlugins('AdminCourseAction') as $plugin) {
-            $actions[get_class($plugin)] = array(
+            $actions[get_class($plugin)] = [
                 'name'      => $plugin->getPluginName(),
                 'title'     => $plugin->getPluginName(),
                 'url'       => $plugin->getAdminActionURL(),
                 'attributes' => ['data-dialog' => 'size=big'],
                 'multimode' => $plugin->useMultimode()
-            );
+            ];
         }
 
         if (is_null($selected)) {
@@ -1039,7 +1039,7 @@ class Admin_CoursesController extends AuthenticatedController
      */
     private function getViewFilters()
     {
-        $views = array(
+        $views = [
             'number'        => _('Nr.'),
             'name'          => _('Name'),
             'type'          => _('Veranstaltungstyp'),
@@ -1052,7 +1052,7 @@ class Admin_CoursesController extends AuthenticatedController
             'preliminary'   => _('Vorläufige Anmeldungen'),
             'contents'      => _('Inhalt'),
             'last_activity' => _('Letzte Aktivität'),
-        );
+        ];
         foreach (PluginManager::getInstance()->getPlugins("AdminCourseContents") as $plugin) {
             foreach ($plugin->adminAvailableContents() as $index => $label) {
                 $views[$plugin->getPluginId() . "_" . $index] = $label;
@@ -1069,7 +1069,7 @@ class Admin_CoursesController extends AuthenticatedController
      * @param display_all : boolean should we show all courses or check for a limit of 500 courses?
      * @return Array of courses
      */
-    private function getCourses($params = array(), $display_all = false)
+    private function getCourses($params = [], $display_all = false)
     {
         // Init
         if ($GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT === "all") {
@@ -1114,18 +1114,18 @@ class Admin_CoursesController extends AuthenticatedController
                 if ($datafield) {
                     //enable filtering by datafield values:
                     //and use the where-clause for each datafield:
-                    $filter->settings['query']['joins']['de_'.$field_id] = array(
+                    $filter->settings['query']['joins']['de_'.$field_id] = [
                         'table' => "datafields_entries",
                         'join' => "LEFT JOIN",
                         'on' => "seminare.seminar_id = de_".$field_id.".range_id"
-                    );
+                    ];
                     $filter->where("(de_".$field_id.".datafield_id = :fieldId_".$field_id." "
                         . "AND de_".$field_id.".content = :fieldValue_".$field_id.") "
                         . ($datafield['default_value'] == $value ? " OR (de_".$field_id.".content IS NULL)" : "")." ",
-                        array(
+                        [
                             'fieldId_'.$field_id => $field_id,
                             'fieldValue_'.$field_id => $value
-                        )
+                        ]
                     );
                 }
             }
@@ -1136,9 +1136,9 @@ class Admin_CoursesController extends AuthenticatedController
         // Get only children of given course
         if ($params['parent_course']) {
             $filter->where("parent_course = :parent",
-                array(
+                [
                     'parent' => $params['parent_course']
-                )
+                ]
             );
         }
 
@@ -1171,7 +1171,7 @@ class Admin_CoursesController extends AuthenticatedController
         if ($this->count_courses && ($this->count_courses <= $filter->max_show_courses || $display_all)) {
             $courses = $filter->getCourses();
         } else {
-            return array();
+            return [];
         }
 
         if (in_array('contents', $params['view_filter'])) {
@@ -1226,12 +1226,12 @@ class Admin_CoursesController extends AuthenticatedController
         $teachers   = CourseMember::findByCourseAndStatus($course_id, 'dozent');
         $collection = SimpleCollection::createFromArray($teachers);
         return $collection->map(function (CourseMember $teacher) {
-            return array(
+            return [
                 'user_id'  => $teacher->user_id,
                 'username' => $teacher->username,
                 'Nachname' => $teacher->nachname,
                 'fullname' => $teacher->getUserFullname('no_title_rev'),
-            );
+            ];
         });
     }
 
@@ -1240,9 +1240,9 @@ class Admin_CoursesController extends AuthenticatedController
      * Adds view filter to the sidebar
      * @param array $configs
      */
-    private function setViewWidget($configs = array())
+    private function setViewWidget($configs = [])
     {
-        $configs         = $configs ?: array();
+        $configs         = $configs ?: [];
         $checkbox_widget = new OptionsWidget();
         $checkbox_widget->setTitle(_('Darstellungsfilter'));
 
@@ -1354,7 +1354,7 @@ class Admin_CoursesController extends AuthenticatedController
     {
         $sidebar = Sidebar::get();
         $this->url = $this->url_for('admin/courses/set_course_type');
-        $this->types = array();
+        $this->types = [];
         $this->selected = $selected;
 
         $list = new SelectWidget(
@@ -1414,9 +1414,9 @@ class Admin_CoursesController extends AuthenticatedController
             WHERE (Institute.Institut_id = :institut_id OR Institute.fakultaets_id = :institut_id)
                 AND auth_user_md5.perms = 'dozent'
             ORDER BY auth_user_md5.Nachname ASC, auth_user_md5.Vorname ASC
-        ", array(
+        ", [
             'institut_id' => $GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT
-        ),
+        ],
         function ($data) {
             $ret['user_id'] = $data['user_id'];
             unset($data['user_id']);

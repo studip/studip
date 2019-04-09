@@ -53,12 +53,12 @@ class WikiRemoveCamelCase extends Migration
             DBManager::get()->prepare(
                 'UPDATE wiki SET body=?'
                 . ' WHERE range_id=? AND keyword=? AND version=?'
-            )->execute(array(
+            )->execute([
                 $this->fixWikiLinks($wiki_page['body']),
                 $wiki_page['range_id'],
                 $wiki_page['keyword'],
                 $wiki_page['version']
-            ));
+            ]);
         }
     }
 

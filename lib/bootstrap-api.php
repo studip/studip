@@ -23,12 +23,12 @@ namespace RESTAPI {
         $router->registerRenderer(new Renderer\DebugRenderer);
     }
 
-    OAuthStore::instance('PDO', array(
+    OAuthStore::instance('PDO', [
         'dsn' => 'mysql:host=' . $GLOBALS['DB_STUDIP_HOST']
                    . ';dbname=' . $GLOBALS['DB_STUDIP_DATABASE'],
         'username' => $GLOBALS['DB_STUDIP_USER'],
         'password' => $GLOBALS['DB_STUDIP_PASSWORD']
-    ));
+    ]);
 
     // Register default consumers
     Consumer\Base::addType('http', 'RESTAPI\\Consumer\\HTTP');

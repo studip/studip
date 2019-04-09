@@ -126,7 +126,7 @@ class Step00247Forum extends Migration
         $stmt = DBManager::get()->prepare("INSERT INTO plugins
             (pluginclassname, pluginpath, pluginname, plugintype, enabled, navigationpos)
             VALUES ('CoreForum', 'core/Forum', 'Forum', 'ForumModule,StandardPlugin,StudipModule', 'yes', ?)");
-        $stmt->execute(array($navpos));
+        $stmt->execute([$navpos]);
 
         // get id of newly created plugin (we purposely do not use PDO::lastInserId())
         $plugin_id = DBManager::get()->query("SELECT pluginid FROM plugins
@@ -136,7 +136,7 @@ class Step00247Forum extends Migration
         $stmt = DBManager::get()->prepare("INSERT INTO roles_plugins
             (roleid, pluginid) VALUES (?, ?)");
         foreach (range(1,7) as $role_id) {
-            $stmt->execute(array($role_id, $plugin_id));
+            $stmt->execute([$role_id, $plugin_id]);
         }
 
 

@@ -66,21 +66,21 @@ class CourseExDate extends SimpleORMap implements PrivacyObject
      *
      * @param Array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'ex_termine';
-        $config['belongs_to']['author'] = array(
+        $config['belongs_to']['author'] = [
             'class_name'  => 'User',
             'foreign_key' => 'autor_id'
-        );
-        $config['belongs_to']['course'] = array(
+        ];
+        $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'range_id'
-        );
-        $config['belongs_to']['cycle'] = array(
+        ];
+        $config['belongs_to']['cycle'] = [
             'class_name'  => 'SeminarCycleDate',
             'foreign_key' => 'metadate_id'
-        );
+        ];
 
         $dummy_relation = function () { return new SimpleCollection(); };
         $dummy_null = function () { return null; };

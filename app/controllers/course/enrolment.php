@@ -36,7 +36,7 @@ class Course_EnrolmentController extends AuthenticatedController
             $this->redirect($this->url_for('/apply/' . $action));
             return false;
         }
-        if (!get_object_type($this->course_id, array('sem'))) {
+        if (!get_object_type($this->course_id, ['sem'])) {
             throw new Trails_Exception(400);
         }
         $course = Seminar::GetInstance($this->course_id);
@@ -46,7 +46,7 @@ class Course_EnrolmentController extends AuthenticatedController
             (in_array($enrolment_info['cause'], words('root courseadmin member'))
                 || ($enrolment_info['cause'] == 'free_access' && $GLOBALS['user']->id == 'nobody'))
         ) {
-            $redirect_url = UrlHelper::getUrl('seminar_main.php', array('auswahl' => $this->course_id));
+            $redirect_url = UrlHelper::getUrl('seminar_main.php', ['auswahl' => $this->course_id]);
             if (Request::isXhr()) {
                 $this->response->add_header('X-Location', $redirect_url);
                 $this->render_nothing();
@@ -61,7 +61,7 @@ class Course_EnrolmentController extends AuthenticatedController
         }
         PageLayout::setTitle($course->getFullname() . " - " . _("Veranstaltungsanmeldung"));
         if (Request::submitted('cancel')) {
-            $this->redirect(URLHelper::getURL('dispatch.php/course/details/', array('sem_id' => $this->course_id)));
+            $this->redirect(URLHelper::getURL('dispatch.php/course/details/', ['sem_id' => $this->course_id]));
         }
     }
 

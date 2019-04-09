@@ -123,10 +123,10 @@ class Admin_IliasInterfaceController extends AuthenticatedController
         $this->valid_url = false;
         $this->ilias_version = '';
         $this->ilias_version_date = '';
-        $this->clients = array();
+        $this->clients = [];
         if ($index == 'new') {
             // default values
-            $this->ilias_config = array(
+            $this->ilias_config = [
                             'is_active' => false,
                             'name' => '',
                             'version' => '',
@@ -146,12 +146,12 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                             'cat_semester' => '',
                             'course_semester' => '',
                             'course_veranstaltungsnummer' => false,
-                            'modules' => array(),
+                            'modules' => [],
 
                             'author_role_name' => 'Author',
                             'author_role' => '',
                             'author_perm' => 'tutor'
-            );
+            ];
 
             // fetch existing indicies from previously connected ILIAS installations
             $this->existing_indices = ConnectedIlias::getExistingIndices();
@@ -205,13 +205,13 @@ class Admin_IliasInterfaceController extends AuthenticatedController
         } else {
             $this->valid_url = true;
             $this->ilias_config = $this->ilias_configs[$index];
-            $ldap_options = array();
+            $ldap_options = [];
             foreach (StudipAuthAbstract::GetInstance() as $plugin) {
                 if ($plugin instanceof StudipAuthLdap) {
                     $ldap_options[] = '<option '.($plugin->plugin_name == $this->ilias_config['ldap_enable'] ? 'selected' : '').'>' . $plugin->plugin_name . '</option>';
                 }
             }
-            $this->ldap_options = count($ldap_options) ? join("\n", array_merge(array('<option></option>'), $ldap_options)) : '';
+            $this->ldap_options = count($ldap_options) ? join("\n", array_merge(['<option></option>'], $ldap_options)) : '';
             if (Request::get('ilias_name')) {
                 $this->ilias_config['name'] = Request::get('ilias_name');
                 $this->ilias_config['url'] = Request::get('ilias_url');

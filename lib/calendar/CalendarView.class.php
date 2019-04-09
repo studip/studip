@@ -43,14 +43,14 @@
 class CalendarView
 {
 
-    protected $entries        = array();
-    protected $entry_columns  = array();
+    protected $entries        = [];
+    protected $entry_columns  = [];
     protected $height         = 40;
     protected $grouped        = false;
     protected $start_hour     = 8;
     protected $end_hour       = 21;
     protected $insertFunction = "";
-    protected $templates      = array();
+    protected $templates      = [];
     protected $read_only      = false;
 
     static protected $number_of_instances = 1;
@@ -74,7 +74,7 @@ class CalendarView
      * @param  mixed  $entries     an array of entries (see above)
      * @param  string $controller  the name of the controller. Used to create links.
      */
-    public function __construct($entries = array())
+    public function __construct($entries = [])
     {
         if (!is_array($entries)) {
             throw new Exception('You need to pass some entries to the CalendarView!');
@@ -204,12 +204,12 @@ class CalendarView
      *
      * @return string
      */
-    public function render($params = array())
+    public function render($params = [])
     {
-        $style_parameters = array(
+        $style_parameters = [
             'whole_height' => $this->getOverallHeight(),
             'entry_height' => $this->getHeight()
-        );
+        ];
         $factory = new Flexi_TemplateFactory(dirname(__file__).'/../../app/views');
         PageLayout::addStyle($factory->render('calendar/stylesheet', $style_parameters));
 
@@ -232,7 +232,7 @@ class CalendarView
      */
     public function getEntries()
     {
-        $this->sorted_entries = array();
+        $this->sorted_entries = [];
         foreach ($this->getColumns() as $entry_column) {
             $this->sorted_entries['day_'. $entry_column->getId()] = $entry_column->getGroupedEntries();
         }
@@ -247,7 +247,7 @@ class CalendarView
      */
     public function getMatrix()
     {
-        $matrix = array();
+        $matrix = [];
         foreach ($this->getColumns() as $day => $entry_column) {
             $matrix['day_'.$day] = $entry_column->getMatrix();
         }
@@ -263,7 +263,7 @@ class CalendarView
      */
     public function getRange()
     {
-        return array($this->start_hour, $this->end_hour);
+        return [$this->start_hour, $this->end_hour];
     }
 
     /**

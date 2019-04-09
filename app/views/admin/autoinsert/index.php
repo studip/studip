@@ -10,7 +10,7 @@ use Studip\Button, Studip\LinkButton;
 <? elseif (isset($flash['success'])): ?>
     <?= MessageBox::success($flash['success'], $flash['success_detail']) ?>
 <? elseif (isset($flash['delete'])): ?>
-    <?= createQuestion(_('Wollen Sie die Zuordnung der Veranstaltung zum automatischen Eintragen wirklich löschen?'),  array('delete' => 1), array('back' => 1), $controller->url_for('admin/autoinsert/delete') .'/'. $flash['delete']) ?>
+    <?= createQuestion(_('Wollen Sie die Zuordnung der Veranstaltung zum automatischen Eintragen wirklich löschen?'),  ['delete' => 1], ['back' => 1], $controller->url_for('admin/autoinsert/delete') .'/'. $flash['delete']) ?>
 <? endif; ?>
 
 <h2>
@@ -18,7 +18,7 @@ use Studip\Button, Studip\LinkButton;
 </h2>
 <form class="default" action="<?= $controller->url_for('admin/autoinsert') ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <?= $this->render_partial("admin/autoinsert/_search.php", array('semester_data' => $semester_data)) ?>
+    <?= $this->render_partial("admin/autoinsert/_search.php", ['semester_data' => $semester_data]) ?>
 </form>
 
 <? if (is_array($seminar_search) && count($seminar_search) > 0): ?>
@@ -91,9 +91,9 @@ use Studip\Button, Studip\LinkButton;
                 </a>
             </td>
 
-            <?= $this->render_partial("admin/autoinsert/_status.php", array('status' => 'dozent', 'auto_sem' => $auto_sem,'domains'=>$userdomains)) ?>
-            <?= $this->render_partial("admin/autoinsert/_status.php", array('status' => 'tutor', 'auto_sem' => $auto_sem,'domains'=>$userdomains)) ?>
-            <?= $this->render_partial("admin/autoinsert/_status.php", array('status' => 'autor', 'auto_sem' => $auto_sem,'domains'=>$userdomains)) ?>
+            <?= $this->render_partial("admin/autoinsert/_status.php", ['status' => 'dozent', 'auto_sem' => $auto_sem,'domains'=>$userdomains]) ?>
+            <?= $this->render_partial("admin/autoinsert/_status.php", ['status' => 'tutor', 'auto_sem' => $auto_sem,'domains'=>$userdomains]) ?>
+            <?= $this->render_partial("admin/autoinsert/_status.php", ['status' => 'autor', 'auto_sem' => $auto_sem,'domains'=>$userdomains]) ?>
             <td align="right">
                 <a href="<?=$controller->url_for('admin/autoinsert/delete')?>/<?= $auto_sem['seminar_id'] ?>">
                     <?= Icon::create('trash', 'clickable', ['title' => _('Veranstaltung entfernen'), 'class' => 'text-top'])->asImg() ?>

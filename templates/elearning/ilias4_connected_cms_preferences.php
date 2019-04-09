@@ -88,6 +88,6 @@ if ($messages["error"] != "") {
         </tr>
     </tbody>
 </table>
-<div style="text-align: center"><?= Button::create(_('Übernehmen'), 'submit', array('title' =>_("Einstellungen übernehmen")))?>
+<div style="text-align: center"><?= Button::create(_('Übernehmen'), 'submit', ['title' =>_("Einstellungen übernehmen")])?>
 </div>
 <div style="margin-top: 2em;"><?=$module_types?></div>

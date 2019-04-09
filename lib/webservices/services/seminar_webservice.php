@@ -23,41 +23,41 @@ class SeminarService extends AccessControlledService
     function __construct()
     {
     $this->add_api_method('get_participants',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets participants for seminar');
     $this->add_api_method('get_users_for_seminar',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all users for seminar');
     $this->add_api_method('get_authors_for_seminar',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all authors for seminar');
     $this->add_api_method('get_tutors_for_seminar',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all tutors for seminar');
     $this->add_api_method('get_lecturers_for_seminar',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all lecturers for seminar');
     $this->add_api_method('get_admins_for_seminar',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all admins for seminar');
     $this->add_api_method('get_seminar_groups',
-                          array('string', 'string'),
-                          array('string'),
+                          ['string', 'string'],
+                          ['string'],
                           'gets all groups for seminar');
     $this->add_api_method('get_seminar_group_members',
-                          array('string', 'string', 'string'),
-                          array('string'),
+                          ['string', 'string', 'string'],
+                          ['string'],
                                                     'gets all group members for seminar');
 
     $this->add_api_method('validate_seminar_permission',
-                          array('string', 'string', 'string', 'string'),
-                          array('string'),
+                          ['string', 'string', 'string', 'string'],
+                          ['string'],
                                                     'validates permissions in seminar');
 
   #  $this->add_api_method('validate_institute_permission',

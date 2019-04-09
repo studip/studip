@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 require '../lib/bootstrap.php';
 
 ob_start();
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 
 include 'lib/seminar_open.php'; // initialise Stud.IP-Session
 
@@ -50,7 +50,7 @@ if (Request::option('select_sem')) {
 }
 
 $show_semester = Request::option('select_sem', $_SESSION['_default_sem']);
-$sem_browse_obj = new SemBrowse(array('group_by' => 0));
+$sem_browse_obj = new SemBrowse(['group_by' => 0]);
 $sem_browse_obj->sem_browse_data['default_sem'] = "all";
 $sem_browse_obj->sem_number = false;
 $sem_browse_obj->target_url = "dispatch.php/course/details/";  //teilt der nachfolgenden Include mit, wo sie die Leute hinschicken soll
@@ -83,7 +83,7 @@ case "s":
     $intro_text = sprintf(_("Alle Veranstaltungen der Einrichtung: <b>%s</b>"), htmlReady(Institute::find($id)->name));
     $excel_text = strip_tags(DecodeHtml($intro_text));
 
-    $parameters = array($id);
+    $parameters = [$id];
     if ($show_semester) {
         $query = "SELECT seminar_inst.seminar_id
                   FROM seminar_inst
@@ -138,7 +138,7 @@ $grouping->setTitle(_("Anzeige gruppieren:"));
 foreach ($sem_browse_obj->group_by_fields as $i => $field){
     $grouping->addLink(
         $field['name'],
-        URLHelper::getURL('?', array('group_by' => $i)),
+        URLHelper::getURL('?', ['group_by' => $i]),
         $group_by == $i ? Icon::create('arr_1right', 'attention') : null
     );
 }
@@ -150,9 +150,9 @@ if (get_config('EXPORT_ENABLE') && $perm->have_perm("tutor")) {
     if ($level == "s") {
         $export->addLink(
             _("Diese Daten exportieren"),
-            URLHelper::getURL("export.php", array('range_id' => Context::getId(),
+            URLHelper::getURL("export.php", ['range_id' => Context::getId(),
                 'o_mode' => 'choose', 'ex_type' => "veranstaltung",
-                'xslt_filename' => Context::get()->Name, 'ex_sem' => $show_semester)),
+                'xslt_filename' => Context::get()->Name, 'ex_sem' => $show_semester]),
             Icon::create('download', 'info')
         );
         $export->addLink(
@@ -164,7 +164,7 @@ if (get_config('EXPORT_ENABLE') && $perm->have_perm("tutor")) {
     if ($level == "sbb") {
         $export->addLink(
             _("Diese Daten exportieren"),
-            URLHelper::getURL("export.php", array('range_id' => $id, 'o_mode' => 'choose', 'ex_type' => "veranstaltung", 'xslt_filename' => $id, 'ex_sem' => $show_semester)),
+            URLHelper::getURL("export.php", ['range_id' => $id, 'o_mode' => 'choose', 'ex_type' => "veranstaltung", 'xslt_filename' => $id, 'ex_sem' => $show_semester]),
             Icon::create('download', 'info')
         );
         $export->addLink(

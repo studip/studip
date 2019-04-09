@@ -30,76 +30,76 @@ class Modul extends ModuleManagementModelTreeItem
      */
     private $count_modulteile;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modul';
 
-        $config['has_one']['deskriptoren'] = array(
+        $config['has_one']['deskriptoren'] = [
             'class_name' => 'ModulDeskriptor',
             'assoc_foreign_key' => 'modul_id',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['modulteile'] = array(
+        ];
+        $config['has_many']['modulteile'] = [
             'class_name' => 'Modulteil',
             'assoc_foreign_key' => 'modul_id',
             'on_delete' => 'delete',
             'on_store' => 'store',
             'order_by' => 'ORDER BY position'
-        );
+        ];
         // Ist Novellierung von (quelle)
-        $config['has_one']['modul_quelle'] = array(
+        $config['has_one']['modul_quelle'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'quelle'
-        );
+        ];
         // Ist Variante von (variante)
-        $config['has_one']['modul_variante'] = array(
+        $config['has_one']['modul_variante'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'variante'
-        );
+        ];
         // hauptverantwortliche Einrichtung
-        $config['has_one']['responsible_institute'] = array(
+        $config['has_one']['responsible_institute'] = [
             'class_name' => 'ModulInst',
             'assoc_func' => 'findPrimarilyResponsibleInstitute',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
         // beteiligte Einrichtungen
-        $config['has_many']['assigned_institutes'] = array(
+        $config['has_many']['assigned_institutes'] = [
             'class_name' => 'ModulInst',
             'assoc_func' => 'findOtherResponsibleInstitutes',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['assigned_users'] = array(
+        ];
+        $config['has_many']['assigned_users'] = [
             'class_name' => 'ModulUser',
             'assoc_foreign_key' => 'modul_id',
             'order_by' => 'ORDER BY gruppe,position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_many']['abschnitte_modul'] = array(
+        ];
+        $config['has_many']['abschnitte_modul'] = [
             'class_name' => 'StgteilabschnittModul',
             'assoc_foreign_key' => 'modul_id',
             'order_by' => 'ORDER BY position,mkdate',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_and_belongs_to_many']['abschnitte'] = array(
+        ];
+        $config['has_and_belongs_to_many']['abschnitte'] = [
             'class_name' => 'StgteilAbschnitt',
             'thru_table' => 'mvv_stgteilabschnitt_modul',
             'thru_key' => 'modul_id',
             'thru_assoc_key' => 'abschnitt_id',
             'order_by' => 'ORDER BY position,mkdate'
-        );
+        ];
         // Assigned languages of instruction
-        $config['has_many']['languages'] = array(
+        $config['has_many']['languages'] = [
             'class_name' => 'ModulLanguage',
             'assoc_foreign_key' => 'modul_id',
             'order_by' => 'ORDER BY position,mkdate',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
+        ];
 
         $config['additional_fields']['count_modulteile']['get'] =
                 function ($modul) { return $modul->count_modulteile; };
@@ -150,10 +150,10 @@ class Modul extends ModuleManagementModelTreeItem
                     ON (mvv_modul.modul_id = mvv_modul_inst.modul_id 
                         AND mvv_modul_inst.gruppe = ?) 
             WHERE mvv_modul.modul_id = ?',
-            array(
+            [
                 'hauptverantwortlich',
                 $modul_id
-            )
+            ]
         );
 
         if (sizeof($modul)) {
@@ -198,7 +198,7 @@ class Modul extends ModuleManagementModelTreeItem
                 . self::getFilterSql($filter, true) . '
                 GROUP BY modul_id 
                 ORDER BY ' . $sortby,
-            array('hauptverantwortlich'),
+            ['hauptverantwortlich'],
             $row_count,
             $offset
         );
@@ -225,7 +225,7 @@ class Modul extends ModuleManagementModelTreeItem
                     ON (mvv_modul.end = end_sem.semester_id) '
                 . self::getFilterSql($filter, true);
         $db = DBManager::get()->prepare($query);
-        $db->execute(array('hauptverantwortlich'));
+        $db->execute(['hauptverantwortlich']);
         return $db->fetchColumn(0);
     }
 
@@ -257,7 +257,7 @@ class Modul extends ModuleManagementModelTreeItem
                 LEFT JOIN mvv_lvgruppe_modulteil USING (lvgruppe_id) 
                 LEFT JOIN mvv_modulteil USING (modulteil_id) 
             WHERE modul_id = ? ',
-            array($this->getId())
+            [$this->getId()]
         );
     }
 
@@ -403,7 +403,7 @@ class Modul extends ModuleManagementModelTreeItem
      * @param array $institut_ids Array of institute ids.
      */
     public function assignInstitutes($institut_ids) {
-        $institutes = array();
+        $institutes = [];
         foreach ($institut_ids as $pos => $institut_id) {
             $modul_inst = new ModulInst();
             $modul_inst->modul_id = $this->id;
@@ -421,7 +421,7 @@ class Modul extends ModuleManagementModelTreeItem
      * @param array $grouped_user_ids Array of user ids grouped by usergroup.
      */
     public function assignUsers($grouped_user_ids) {
-        $assigned_users = array();
+        $assigned_users = [];
 
         foreach (array_keys($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values']) as $group) {
             $position = 1;
@@ -453,7 +453,7 @@ class Modul extends ModuleManagementModelTreeItem
      */
     public function getGroupedAssignedUsers()
     {
-        $grouped_users = array();
+        $grouped_users = [];
         foreach ($this->assigned_users as $user) {
             if ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$user->gruppe]) {
                 $grouped_users[$user->gruppe][] = $user;
@@ -471,7 +471,7 @@ class Modul extends ModuleManagementModelTreeItem
      */
     public function assignLanguagesOfInstruction($languages)
     {
-        $assigned_languages = array();
+        $assigned_languages = [];
         $languages_flipped = array_flip($languages);
         foreach ($GLOBALS['MVV_MODUL']['SPRACHE']['values'] as $key => $language) {
             if (isset($languages_flipped[$key])) {
@@ -495,7 +495,7 @@ class Modul extends ModuleManagementModelTreeItem
         if ($this->responsible_institute) {
             $inst = Institute::find($this->responsible_institute->institut_id);
             if ($inst) {
-                return array($inst);
+                return [$inst];
             }
         }
         return parent::getResponsibleInstitutes();
@@ -617,7 +617,7 @@ class Modul extends ModuleManagementModelTreeItem
                 WHERE mvv_stgteilabschnitt_modul.abschnitt_id = ? '
                 . self::getFilterSql($filter) . '
                 ORDER BY position, mkdate',
-            array($abschnitt_id)
+            [$abschnitt_id]
         );
     }
 
@@ -638,10 +638,10 @@ class Modul extends ModuleManagementModelTreeItem
      * @return array Array of Module.
      */
     public static function findByInstitut($sortby = 'chdate', $order = 'ASC',
-            $filter = array(), $row_count = null, $offset = null)
+            $filter = [], $row_count = null, $offset = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'chdate',
-                array('count_modulteile', 'bezeichnung'));
+                ['count_modulteile', 'bezeichnung']);
         return parent::getEnrichedByQuery('
                 SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung, 
                     COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile 
@@ -659,7 +659,7 @@ class Modul extends ModuleManagementModelTreeItem
                 . self::getFilterSql($filter, true) .'
                 GROUP BY modul_id 
                 ORDER BY ' . $sortby,
-            array(),
+            [],
             $row_count,
             $offset
         );
@@ -680,7 +680,7 @@ class Modul extends ModuleManagementModelTreeItem
                 LEFT JOIN mvv_modulteil mmt USING(modul_id) 
                 LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id) 
             WHERE mlm.lvgruppe_id = ? ',
-            array($lvgruppe_id)
+            [$lvgruppe_id]
         );
     }
 
@@ -693,10 +693,10 @@ class Modul extends ModuleManagementModelTreeItem
      * @return object a SimpleORMapColection of institutes.
      */
     public static function getAssignedInstitutes($sortby = 'name',
-            $order = 'ASC', $modul_ids = array())
+            $order = 'ASC', $modul_ids = [])
     {
         return self::getAllAssignedInstitutes($sortby, $order,
-                array('mvv_modul.modul_id' => $modul_ids));
+                ['mvv_modul.modul_id' => $modul_ids]);
     }
 
     /**
@@ -712,7 +712,7 @@ class Modul extends ModuleManagementModelTreeItem
             $order = 'ASC', $filter = null, $row_count = null, $offset = null)
     {
         $sortby = Fachbereich::createSortStatement($sortby, $order, 'name',
-                array('count_objects'));
+                ['count_objects']);
         return Fachbereich::getEnrichedByQuery('
                 SELECT Institute.*, 
                     Institute.Name as `name`, 
@@ -728,7 +728,7 @@ class Modul extends ModuleManagementModelTreeItem
                         ON (mvv_modul.end = end_sem.semester_id) 
                 '.Fachbereich::getFilterSql($filter, true).'
                 GROUP BY institut_id ORDER BY ' . $sortby,
-                array(),
+                [],
             $row_count,
             $offset
         );
@@ -753,7 +753,7 @@ class Modul extends ModuleManagementModelTreeItem
                 FROM mvv_modul WHERE modul_id IN (?) 
                 GROUP BY stat
             ");
-            $stmt->execute(array($modul_ids));
+            $stmt->execute([$modul_ids]);
         } else {
             $stmt = DBManager::get()->prepare("
                 SELECT IFNULL(stat, '__undefined__') AS stat, 
@@ -763,12 +763,12 @@ class Modul extends ModuleManagementModelTreeItem
             $stmt->execute();
         }
 
-        $result = array();
+        $result = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $status) {
-            $result[$status['stat']] = array(
+            $result[$status['stat']] = [
                 'name' => $GLOBALS['MVV_MODUL']['STATUS']['values'][$status['stat']]['name'],
                 'count_objects' => $status['count_module']
-            );
+            ];
         }
         return $result;
     }
@@ -815,7 +815,7 @@ class Modul extends ModuleManagementModelTreeItem
      */
     public function getVariants()
     {
-        $variants = array();
+        $variants = [];
         foreach (Modul::findBySql('variante = '
                 . DBManager::get()->quote($this->getId())) as $variant) {
             $variants[$variant->getId()] = $variant;
@@ -853,7 +853,7 @@ class Modul extends ModuleManagementModelTreeItem
                         AND msv.stat IN (:stat) 
                     GROUP BY mm.modul_id
                 ');
-                $stmt->execute(array(':term' => $term, ':stat' => $public_status));
+                $stmt->execute([':term' => $term, ':stat' => $public_status]);
                 return $stmt->fetchAll(PDO::FETCH_COLUMN);
             }
         } else {
@@ -864,17 +864,17 @@ class Modul extends ModuleManagementModelTreeItem
                 WHERE code LIKE :term OR mmd.bezeichnung LIKE :term 
                 GROUP BY modul_id
             ');
-            $stmt->execute(array(':term' => $term));
+            $stmt->execute([':term' => $term]);
             return $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
-        return array();
+        return [];
     }
 
     public function validate()
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             if ($this->variante) {
                 $variante = Modul::find($this->variante);
@@ -998,7 +998,7 @@ class Modul extends ModuleManagementModelTreeItem
                 WHERE mm.stat IN (:stat) 
                     AND msv.stat IN (:stat) LIMIT 1
             ');
-            $stmt->execute(array(':term' => $term, ':stat' => $public_status));
+            $stmt->execute([':term' => $term, ':stat' => $public_status]);
             return (bool)$stmt->fetchColumn();
         }
         return false;
@@ -1018,7 +1018,7 @@ class Modul extends ModuleManagementModelTreeItem
      */
     public function getAssignedCoursesBySemester($semester_id, $only_visible = true)
     {
-        $courses = array();
+        $courses = [];
         foreach ($this->modulteile as $modulteil) {
             $mt_courses = $modulteil->getAssignedCoursesBySemester($semester_id, $only_visible);
             foreach ($mt_courses as $course) {

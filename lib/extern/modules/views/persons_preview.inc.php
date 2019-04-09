@@ -40,25 +40,25 @@
 $data_name = _("Name Name");
 $data_room = _("Raum 21");
 $data_office_hours = _("jeden Tag, 13.00 - 14.00");
-$group_data[] = array("group_name" => _("Gruppe A"), "persons" => array(
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com"),
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-895638", "email" => "name.name@email.com"),
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com")));
-$group_data[] =  array("group_name" => _("Gruppe B"), "persons" => array(
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com"),
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com"),
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com")));
-$group_data[] =  array("group_name" => "Gruppe C", "persons" => array(
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com"),
-array("name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
-        "telefon" => "38-374982", "email" => "name.name@email.com")));
+$group_data[] = ["group_name" => _("Gruppe A"), "persons" => [
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"],
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-895638", "email" => "name.name@email.com"],
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"]]];
+$group_data[] =  ["group_name" => _("Gruppe B"), "persons" => [
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"],
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"],
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"]]];
+$group_data[] =  ["group_name" => "Gruppe C", "persons" => [
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"],
+["name" => $data_name, "raum" => $data_room, "sprechzeiten" => $data_office_hours,
+        "telefon" => "38-374982", "email" => "name.name@email.com"]]];
 
 $repeat_headrow = $this->config->getValue("Main", "repeatheadrow");
 $order = $this->config->getValue("Main", "order");
@@ -134,7 +134,7 @@ foreach ($group_data as $groups) {
     $i = 0;
     foreach ($groups["persons"] as $data) {
     
-        $wert_daten = array(
+        $wert_daten = [
             "Nachname"         => sprintf("<a href=\"\"%s><font%s>%s</font></a>",
                                                 $this->config->getAttributes("LinkIntern", "a"),
                                                 $this->config->getAttributes("LinkIntern", "font"),
@@ -157,7 +157,7 @@ foreach ($group_data as $groups) {
                                                 $this->config->getAttributes("Link", "a"),
                                                 $this->config->getAttributes("Link", "font"),
                                                 $data["email"])
-        );
+        ];
         
         // "horizontal zebra"
         if ($zebra_td == "HORIZONTAL") {

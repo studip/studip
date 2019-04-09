@@ -33,10 +33,10 @@ class Wiki extends \RESTAPI\RouteMap
         $total = sizeof($pages);
         $pages = $pages->limit($this->offset, $this->limit);
 
-        $linked_pages = array();
+        $linked_pages = [];
         foreach ($pages as $page) {
-            $url = $this->urlf('/course/%s/wiki/%s', array($course_id, htmlReady($page['keyword'])));
-            $linked_pages[$url] = $this->wikiPageToJson($page, array("content"));
+            $url = $this->urlf('/course/%s/wiki/%s', [$course_id, htmlReady($page['keyword'])]);
+            $linked_pages[$url] = $this->wikiPageToJson($page, ["content"]);
         }
 
         $this->etag(md5(serialize($linked_pages)));
@@ -72,7 +72,7 @@ class Wiki extends \RESTAPI\RouteMap
 
         $last_version = \WikiPage::findLatestPage($course_id, $keyword);
         if (!$last_version) {
-            $last_version = new \WikiPage(array($course_id, $keyword, 0));
+            $last_version = new \WikiPage([$course_id, $keyword, 0]);
         }
 
         if (!$last_version->isEditableBy($user_id = $GLOBALS['user']->id)) {
@@ -99,7 +99,7 @@ class Wiki extends \RESTAPI\RouteMap
     private function requirePage($course_id, $keyword, $version)
     {
         if ($version) {
-            $page = \WikiPage::find(array($course_id, $keyword, $version));
+            $page = \WikiPage::find([$course_id, $keyword, $version]);
         } else {
             $page = \WikiPage::findLatestPage($course_id, $keyword);
         }
@@ -115,7 +115,7 @@ class Wiki extends \RESTAPI\RouteMap
         return $page;
     }
 
-    private function wikiPageToJson($page, $without = array())
+    private function wikiPageToJson($page, $without = [])
     {
         $json = $page->toArray(words("range_id keyword chdate version"));
 

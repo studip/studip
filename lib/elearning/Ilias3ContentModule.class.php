@@ -50,7 +50,7 @@ class Ilias3ContentModule extends ContentModule
         {
             // If User has no external Account, show module and link to user-assignment
             if (! $connected_cms[$this->cms_type]->user->isConnected())
-                $this->allowed_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ) );
+                $this->allowed_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ] );
 
             //set module data
             $this->setObjectId($object_data["obj_id"]);
@@ -69,7 +69,7 @@ class Ilias3ContentModule extends ContentModule
         {
             // If module doesn't exist, show errormessage
             $this->createDummyForErrormessage("not found");
-            $this->allowed_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_DELETE) );
+            $this->allowed_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ, OPERATION_DELETE] );
         }
     }
 
@@ -180,8 +180,8 @@ class Ilias3ContentModule extends ContentModule
         $ref_id = $this->getId();
         $ref_id = $connected_cms[$this->cms_type]->soap_client->addReference($this->id, $crs_id);
         $local_roles = $connected_cms[$this->cms_type]->soap_client->getLocalRoles($crs_id);
-        $member_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ));
-        $admin_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray(array(OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE));
+        $member_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ]);
+        $admin_operations = $connected_cms[$this->cms_type]->permissions->getOperationArray([OPERATION_VISIBLE, OPERATION_READ, OPERATION_WRITE]);
         foreach ($local_roles as $key => $role_data){
             // check only if local role is il_crs_member, -tutor or -admin
             if (mb_strpos($role_data["title"], "il_crs_") === 0) {
@@ -263,7 +263,7 @@ class Ilias3ContentModule extends ContentModule
     {
         global $connected_cms;
 
-        $this->allowed_operations = array();
+        $this->allowed_operations = [];
         foreach($operation_array as $key => $operation)
         {
 //          echo "O$operation = I".$connected_cms[$this->cms_type]->permissions->getOperation[$operation]."<br>";

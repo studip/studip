@@ -1,32 +1,32 @@
 <? 
 $abschnitte = StgteilAbschnitt::findByStgteilVersion($version->getId());
-$abschnitteData = array();
-$fachsemesterData = array();
+$abschnitteData = [];
+$fachsemesterData = [];
 foreach ($abschnitte as $abschnitt) {
-    $abschnitteData[$abschnitt->getId()] = array(
+    $abschnitteData[$abschnitt->getId()] = [
             'name' => $abschnitt->getDisplayName(),
             'creditPoints' => $abschnitt->kp,
             'zwischenUeberschrift' => $abschnitt->ueberschrift,
             'kommentar' => $abschnitt->kommentar,
-            'module' => array(),
+            'module' => [],
             'rowspan' => 0
-    );
+    ];
     //$module = Modul::findByStgteilAbschnitt($abschnitt->getId());
     $abschnitt_module = $abschnitt->getModulAssignments();
     foreach ($abschnitt_module as $abschnitt_modul) {
 
-        $abschnitteData[$abschnitt->getId()]['module'][$abschnitt_modul->modul->getId()] = array(
+        $abschnitteData[$abschnitt->getId()]['module'][$abschnitt_modul->modul->getId()] = [
                 'name' => $abschnitt_modul->getDisplayName(),
-                'modulTeile' => array()
-        );
+                'modulTeile' => []
+        ];
         
         foreach ($abschnitt_modul->modul->modulteile as $teil) {
             $fachSemester = $abschnitt_modul->getAllFachSemester($teil->getId());
 
-            $abschnitteData[$abschnitt->getId()]['module'][$abschnitt_modul->modul->getId()]['modulTeile'][$teil->getId()] = array(
+            $abschnitteData[$abschnitt->getId()]['module'][$abschnitt_modul->modul->getId()]['modulTeile'][$teil->getId()] = [
                     'name' => $teil->getDisplayName(),
-                    'fachsemester' => array()
-            );
+                    'fachsemester' => []
+            ];
             $abschnitteData[$abschnitt->getId()]['rowspan']++;
             foreach ($fachSemester as $fachsem) {
                 $fachsemesterData[$fachsem->fachsemester] = $fachsem->fachsemester;
@@ -79,7 +79,7 @@ foreach ($abschnitte as $abschnitt) {
                             <?= htmlReady($abschnitt_modul->getDisplayName()) ?>
                         </a>
                         <a data-dialog title="<?= htmlReady($modul['name']) . ' (' . _('Vollständige Modulbeschreibung') . ')' ?>" href="<?= URLHelper::getLink('shared/modul/description/' . $modul_id) ?>">
-                            <?= Icon::create('info-circle', 'clickable', array())->asImg(); ?>
+                            <?= Icon::create('info-circle', 'clickable', [])->asImg(); ?>
                         </a>
                     </td>
                     <? endif;?>   

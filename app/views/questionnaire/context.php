@@ -32,10 +32,10 @@
                     <label>
                         <input type="checkbox" name="remove_sem[]" value="<?= htmlReady($assignment['range_id']) ?>" style="display: none;">
                         <? $course = Course::find($assignment['range_id']) ?>
-                        <a href="<?= URLHelper::getLink("seminar_main.php", array('auswahl' => $course->getId())) ?>">
+                        <a href="<?= URLHelper::getLink("seminar_main.php", ['auswahl' => $course->getId()]) ?>">
                             <?= htmlReady((Config::get()->IMPORTANT_SEMNUMBER ? $course->veranstaltungsnummer." " : "").$course->name) ?>
                         </a>
-                        <?= Icon::create("trash", "clickable")->asimg("20px", array('class' => "text-bottom", 'title' => _("Zuweisung zur Veranstaltung aufheben."))) ?>
+                        <?= Icon::create("trash", "clickable")->asimg("20px", ['class' => "text-bottom", 'title' => _("Zuweisung zur Veranstaltung aufheben.")]) ?>
                     </label>
                 </li>
             <? endif ?>

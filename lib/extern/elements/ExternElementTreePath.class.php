@@ -39,8 +39,8 @@
 
 class ExternElementTreePath extends ExternElement {
 
-    var $attributes = array("delimiter", "font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style");
+    var $attributes = ["delimiter", "font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style"];
 
     /**
     * Constructor
@@ -59,7 +59,7 @@ class ExternElementTreePath extends ExternElement {
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';

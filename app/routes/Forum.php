@@ -31,10 +31,10 @@ class Forum extends \RESTAPI\RouteMap
         $total      = sizeof($categories);
         $categories = array_splice($categories, (int)$this->offset, (int)$this->limit ?: 10);
 
-        $json = array();
+        $json = [];
         foreach ($categories as $cat) {
             $json_cat = $cat->toArray();
-            $uri = $this->urlf('/forum_category/%s', array(htmlReady($json_cat['category_id'])));
+            $uri = $this->urlf('/forum_category/%s', [htmlReady($json_cat['category_id'])]);
             $json_cat['course_id'] = $json_cat['seminar_id'];
             $json[$uri] = $this->categoryToJson($json_cat);
         }
@@ -319,7 +319,7 @@ class Forum extends \RESTAPI\RouteMap
             unset($children['list'][$entry_id]);
         }
 
-        $entry['children'] = array();
+        $entry['children'] = [];
         foreach (array_values($children['list']) as $childentry) {
             $entry['children'][] = $this->convertEntry($childentry);
         }
@@ -329,14 +329,14 @@ class Forum extends \RESTAPI\RouteMap
 
     public function convertEntry($raw)
     {
-        $entry = array();
+        $entry = [];
         foreach(words("topic_id mkdate chdate anonymous depth") as $key) {
             $entry[$key] = $raw[$key];
         }
 
         $entry['subject']      = $raw['name'];
-        $entry['user']         = $this->urlf('/user/%s', array($raw['user_id']));
-        $entry['course']       = $this->urlf('/course/%s', array($raw['seminar_id']));
+        $entry['user']         = $this->urlf('/user/%s', [$raw['user_id']]);
+        $entry['course']       = $this->urlf('/course/%s', [$raw['seminar_id']]);
         $entry['content_html'] = \ForumEntry::getContentAsHtml($raw['content']);
         $entry['content']      = \ForumEntry::killEdit($raw['content']);
 
@@ -353,7 +353,7 @@ class Forum extends \RESTAPI\RouteMap
     {
         $topic_id  = self::generateID();
 
-        $data = array(
+        $data = [
             'topic_id'    => $topic_id,
             'seminar_id'  => $course_id,
             'user_id'     => $GLOBALS['user']->id,
@@ -362,7 +362,7 @@ class Forum extends \RESTAPI\RouteMap
             'author'      => $GLOBALS['user']->getFullName(),
             'author_host' => $_SERVER['REMOTE_ADDR'],
             'anonymous'   => (int) $anonymous
-        );
+        ];
         \ForumEntry::insert($data, $parent_id);
 
         return $topic_id;
@@ -370,7 +370,7 @@ class Forum extends \RESTAPI\RouteMap
 
     private function findCategory($category_id)
     {
-        $result = array();
+        $result = [];
 
         if ($cat = \ForumCat::get($category_id)) {
             $result = $cat;
@@ -387,10 +387,10 @@ class Forum extends \RESTAPI\RouteMap
     {
         $json = $category;
 
-        $json['course'] = $this->urlf('/course/%s', array(htmlReady($json['course_id'])));
+        $json['course'] = $this->urlf('/course/%s', [htmlReady($json['course_id'])]);
         unset($json['course_id']);
 
-        $json['areas'] = $this->urlf('/forum_category/%s/areas', array($json['category_id']));
+        $json['areas'] = $this->urlf('/forum_category/%s/areas', [$json['category_id']]);
         $json['areas_count'] = $this->countAreas($json['category_id']);
 
         return $json;
@@ -406,10 +406,10 @@ class Forum extends \RESTAPI\RouteMap
         $offset = (int) $offset;
         $limit  = (int) $limit;
 
-        $areas = array();
+        $areas = [];
 
         foreach (\ForumCat::getAreas($category_id, $offset, $limit) as $area) {
-            $url = $this->urlf('/forum_entry/%s', array(htmlReady($area['topic_id'])));
+            $url = $this->urlf('/forum_entry/%s', [htmlReady($area['topic_id'])]);
             $areas[$url] = $this->convertEntry($area);
         }
 

@@ -16,7 +16,7 @@ require_once __DIR__ . '/models/StreamAvatar.class.php';
 
 class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
 
-    public $config = array();
+    public $config = [];
 
     /**
      * Constructor of Plugin : adds Navigation and collects information for javascript-update.
@@ -26,7 +26,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
         if (UpdateInformation::isCollecting()) {
             $data = Request::getArray("page_info");
             if (mb_stripos(Request::get("page"), "plugins.php/blubber") !== false && isset($data['Blubber'])) {
-                $output = array();
+                $output = [];
                 switch ($data['Blubber']['stream']) {
                     case "global":
                         $stream = BlubberStream::getGlobalStream();
@@ -61,13 +61,13 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
                     }
                     BlubberPosting::$course_hashes = ($thread['user_id'] !== $thread['Seminar_id'] ? $thread['Seminar_id'] : false);
                     $template->set_attribute("course_id", $data['Blubber']['seminar_id']);
-                    $output['postings'][] = array(
+                    $output['postings'][] = [
                         'posting_id' => $new_posting['topic_id'],
                         'discussion_time' => $new_posting['discussion_time'],
                         'mkdate' => $new_posting['mkdate'],
                         'root_id' => $new_posting['root_id'],
                         'content' => $template->render()
-                    );
+                    ];
                 }
                 UpdateInformation::setInformation("Blubber.getNewPosts", $output);
 
@@ -87,16 +87,16 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
             }
         }
         if (Navigation::hasItem("/community")) {
-            $nav = new Navigation($this->getDisplayTitle(), PluginEngine::getURL($this, array(), "streams/global"));
-            $nav->addSubNavigation("global", new AutoNavigation(_("Globaler Stream"), PluginEngine::getURL($this, array(), "streams/global")));
+            $nav = new Navigation($this->getDisplayTitle(), PluginEngine::getURL($this, [], "streams/global"));
+            $nav->addSubNavigation("global", new AutoNavigation(_("Globaler Stream"), PluginEngine::getURL($this, [], "streams/global")));
             foreach (BlubberStream::findMine() as $stream) {
-                $url = PluginEngine::getURL($this, array(), "streams/custom/".$stream->getId());
+                $url = PluginEngine::getURL($this, [], "streams/custom/".$stream->getId());
                 $nav->addSubNavigation($stream->getId(), new AutoNavigation($stream['name'], $url));
                 if ($stream['defaultstream']) {
                     $nav->setURL($url);
                 }
             }
-            $nav->addSubNavigation("add", new AutoNavigation(_("Neuen Stream erstellen"), PluginEngine::getURL($this, array(), "streams/edit")));
+            $nav->addSubNavigation("add", new AutoNavigation(_("Neuen Stream erstellen"), PluginEngine::getURL($this, [], "streams/edit")));
             Navigation::insertItem("/community/blubber", $nav, "online");
             Navigation::getItem("/community")->setURL($nav->getURL());
         }
@@ -118,9 +118,9 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
      * @return \AutoNavigation
      */
     public function getTabNavigation($course_id) {
-        $tab = new AutoNavigation($this->getDisplayTitle(), PluginEngine::getLink($this, array(), "streams/forum"));
+        $tab = new AutoNavigation($this->getDisplayTitle(), PluginEngine::getLink($this, [], "streams/forum"));
         $tab->setImage(Icon::create('blubber', 'info_alt'));
-        return array('blubberforum' => $tab);
+        return ['blubberforum' => $tab];
     }
 
     /**
@@ -135,7 +135,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin, SystemPlugin {
         if (!$user_id) {
             $user_id = $GLOBALS['user']->id;
         }
-        $icon = new AutoNavigation($this->getDisplayTitle(), PluginEngine::getLink($this, array(), "streams/forum"));
+        $icon = new AutoNavigation($this->getDisplayTitle(), PluginEngine::getLink($this, [], "streams/forum"));
         $db = DBManager::get();
         $last_own_posting_time = (int) $db->query(
             "SELECT mkdate " .

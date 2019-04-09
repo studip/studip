@@ -9,7 +9,7 @@ use Studip\Button, Studip\LinkButton;
 require '../lib/bootstrap.php';
 
 ob_start();
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 $perm->check("admin");
 
 require_once 'lib/dbviews/literatur.view.php';
@@ -28,7 +28,7 @@ function get_lit_admin_ids($user_id = false)
 
     $query = "SELECT range_id FROM admin_perms WHERE perms = 'lit_admin' AND user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id ?: $GLOBALS['user']->id));
+    $statement->execute([$user_id ?: $GLOBALS['user']->id]);
     return $statement->fetchAll(PDO::FETCH_COLUMN);
 }
 
@@ -70,7 +70,7 @@ if(Request::option('_check_plugin'))
 $element = new StudipLitCatElement();
 
 if (Request::option('cmd') == 'check' && !isset($_check_list)){
-    Request::set('_check_list',array());
+    Request::set('_check_list',[]);
 }
 
 //my_session_var(array('_semester_id','_inst_id','_anker_id','_open','_lit_data','_lit_data_id','_check_list','_check_plugin'));
@@ -176,7 +176,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
 
                 // Prepare and execute statement that obtains a list of
                 // all institutes and faculties the user has access to
-                $parameters = array();
+                $parameters = [];
                 if ($auth->auth['perm'] == 'root'){
                     $query = "SELECT a.Institut_id, a.Name, 1 AS is_fak, COUNT(DISTINCT catalog_id) AS anzahl
                               FROM Institute AS a
@@ -229,7 +229,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                             $_is_fak = true;
                         }
 
-                        $institute_statement->execute(array($institute['Institut_id']));
+                        $institute_statement->execute([$institute['Institut_id']]);
                         while ($row = $institute_statement->fetch(PDO::FETCH_ASSOC)) {
                             printf("<option value=\"%s\" %s class=\"nested-item\">%s </option>\n",
                                    $row['Institut_id'],
@@ -277,10 +277,10 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
             ?>
         </select>
 
-        <?= Button::create(_('Verfügbarkeit'), array('title' => _("Alle markierten Einträge im ausgewählten Katalog suchen"), 'style' => "vertical-align:middle")) ?>
+        <?= Button::create(_('Verfügbarkeit'), ['title' => _("Alle markierten Einträge im ausgewählten Katalog suchen"), 'style' => "vertical-align:middle"]) ?>
 
         <span style="display: inline-block; margin-left: 1em">
-            <?= LinkButton::create(_('Auswählen'), URLHelper::getURL('?cmd=markall'), array('title' => _("Alle Einträge markieren"))) ?>
+            <?= LinkButton::create(_('Auswählen'), URLHelper::getURL('?cmd=markall'), ['title' => _("Alle Einträge markieren")]) ?>
         </span>
     </div>
 
@@ -333,7 +333,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
         $_SESSION['_lit_data_id'] = md5($sql . '#' . Request::option('_inst_id'));
 
         $statement = DBManager::get()->prepare($sql);
-        $statement->execute(array(Request::option('_inst_id')));
+        $statement->execute([Request::option('_inst_id')]);
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $_SESSION['_lit_data'][$row['catalog_id']] = $row;
         }
@@ -387,12 +387,12 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                 echo "\n</tr></table>";
                 if (!is_array($_SESSION['_lit_data'][$cid]['sem_data'])){
                     $statement = DBManager::get()->prepare($sql2);
-                    $statement->execute(array(
+                    $statement->execute([
                         Request::option('_inst_id'),
                         $element->getValue('catalog_id')
-                    ));
+                    ]);
 
-                    $_SESSION['_lit_data'][$cid]['sem_data'] = array();
+                    $_SESSION['_lit_data'][$cid]['sem_data'] = [];
                     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                         $_SESSION['_lit_data'][$cid]['sem_data'][$row['Seminar_id']] = $row;
                     }
@@ -404,11 +404,11 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                               WHERE status = 'dozent' AND seminar_id IN (?)
                               ORDER BY position, Nachname, Vorname";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array(
+                    $statement->execute([
                         array_keys($_SESSION['_lit_data'][$cid]['sem_data'])
-                    ));
+                    ]);
 
-                    $_SESSION['_lit_data'][$cid]['doz_data'] = array();
+                    $_SESSION['_lit_data'][$cid]['doz_data'] = [];
                     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                         $_SESSION['_lit_data'][$cid]['doz_data'][$row['user_id']] = $row;
                     }
@@ -418,9 +418,9 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                     $content = "";
                     $estimated_p = 0;
                     $participants = 0;
-                    $edit .= LinkButton::create(_('Verfügbarkeit'), URLHelper::getURL('?_catalog_id=' . $element->getValue('catalog_id') . '#anker'), array('title' => _("Verfügbarkeit überprüfen")));
+                    $edit .= LinkButton::create(_('Verfügbarkeit'), URLHelper::getURL('?_catalog_id=' . $element->getValue('catalog_id') . '#anker'), ['title' => _("Verfügbarkeit überprüfen")]);
                     $edit .= "&nbsp;";
-                    $edit .= LinkButton::create(_('Details'), 'dispatch.php/literature/edit_element.php?_catalog_id=' . $element->getValue('catalog_id'), array('title' => _("Detailansicht dieses Eintrages ansehen.")));
+                    $edit .= LinkButton::create(_('Details'), 'dispatch.php/literature/edit_element.php?_catalog_id=' . $element->getValue('catalog_id'), ['title' => _("Detailansicht dieses Eintrages ansehen.")]);
                     $edit .= "&nbsp;";
                     echo "\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
                     $content .= "<b>" . _("Titel:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_title"),true,true) . "<br>";
@@ -501,7 +501,7 @@ $sidebar = Sidebar::Get();
 $links = new ActionsWidget();
 $links->addLink(_("Druckansicht"),
     URLHelper::getURL("lit_overview_print_view.php"), Icon::create('print', 'clickable'),
-    array('class' => 'print_action', 'target' => '_blank'));
+    ['class' => 'print_action', 'target' => '_blank']);
 $sidebar->addWidget($links);
 $layout = $GLOBALS['template_factory']->open('layouts/base');
 $layout->content_for_layout = ob_get_clean();

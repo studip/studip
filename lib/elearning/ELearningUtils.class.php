@@ -144,7 +144,7 @@ class ELearningUtils
     public static function getTypeSelectbox($cms)
     {
         global $ELEARNING_INTERFACE_MODULES;
-        $options = array();
+        $options = [];
         foreach ($ELEARNING_INTERFACE_MODULES[$cms]['types'] as $type => $info) {
             $options[$type] = $info['name'];
             if (Request::get("module_type_{$cms}") === $type) {
@@ -195,8 +195,8 @@ class ELearningUtils
 
         if ($link == false)
             return false;
-        $types = array();
-        $cms_types = array();
+        $types = [];
+        $cms_types = [];
         foreach ($ELEARNING_INTERFACE_MODULES as $cms_type => $cms_data)
             $cms_types["module_type_" . $cms_type] = Request::option("module_type_" . $cms_type);
         $template = $GLOBALS['template_factory']->open('elearning/_new_module_form.php');
@@ -482,9 +482,9 @@ class ELearningUtils
             foreach($courses as $system_type => $crs_id)
                 if (self::isCMSActive($system_type)) {
                     self::loadClass($system_type);
-                    $connected_courses['courses'][$system_type] = array(
+                    $connected_courses['courses'][$system_type] = [
                         'url' => UrlHelper::getLink($connected_cms[$system_type]->link->cms_link . '?client_id=' . $connected_cms[$system_type]->getClientId() . '&cms_select=' . $system_type . '&ref_id=' . $crs_id . '&type=crs&target=start'),
-                        'cms_name' => $connected_cms[$system_type]->getName());
+                        'cms_name' => $connected_cms[$system_type]->getName()];
                     $course_output[] = "<a href=\"" . UrlHelper::getLink($connected_cms[$system_type]->link->cms_link . "?" . "client_id=" . $connected_cms[$system_type]->getClientId() . "&cms_select=" . $system_type . "&ref_id=" . $crs_id . "&type=crs&target=start") . "\" target=\"_blank\" rel=\"noopener noreferrer\">".sprintf(_("Kurs in %s"), htmlReady($connected_cms[$system_type]->getName()))."</a>";
                     // gegebenenfalls zugeordnete Module aktualisieren
                     if (Request::option('update')) {
@@ -526,7 +526,7 @@ class ELearningUtils
         global $ELEARNING_INTERFACE_MODULES, $messages;
         $db = DBManager::get();
 
-        foreach ($ELEARNING_INTERFACE_MODULES as $cms_type =>$data) $cmsystems[$cms_type] = array();
+        foreach ($ELEARNING_INTERFACE_MODULES as $cms_type =>$data) $cmsystems[$cms_type] = [];
 
         $config = Config::get();
         foreach ($config->getFields('global' ,null , 'ELEARNING_INTERFACE_') as $key) {

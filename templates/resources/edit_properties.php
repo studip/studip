@@ -1,12 +1,12 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 
 <?
-$types = array(
+$types = [
     'bool'   => _('Zustand'),
     'num'    => _('einzeiliges Textfeld'),
     'text'   => _('mehrzeiliges Textfeld'),
     'select' => _('Auswahlfeld'),
-)
+]
 ?>
 
 <form method="post" action="<?= URLHelper::getLink() ?>" class="default">
@@ -138,7 +138,7 @@ $types = array(
             <? if (($property['depTyp']==0) && !$type['system']): ?>
                 <?= LinkButton::create(_('Löschen'), URLHelper::getURL('?delete_property=' . $property['property_id'])) ?>
             <? else: ?>
-                <?= Button::create(_('Löschen'), array('disabled' => 'disabled')) ?>
+                <?= Button::create(_('Löschen'), ['disabled' => 'disabled']) ?>
             <? endif; ?>
             </td>
         </tr>

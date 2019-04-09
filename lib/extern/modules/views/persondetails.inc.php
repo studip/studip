@@ -23,7 +23,7 @@ $query = "SELECT 1
           WHERE Institut_id = ? AND aum.username = ?
             AND ui.inst_perms IN ('autor', 'tutor', 'dozent') AND {$ext_vis_query}";
 $statement = DBManager::get()->prepare($query);
-$statement->execute(array($instituts_id, $username));
+$statement->execute([$instituts_id, $username]);
 $temp = $statement->fetchColumn();
 
 // Mitarbeiter/in am Heimatinstitut des Seminars
@@ -35,7 +35,7 @@ if (!$temp && $sem_id) {
               WHERE s.Seminar_id = ? AND aum.username = ?
                 AND ui.inst_perms = 'dozent' AND {$ext_vis_query}";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id, $username));
+    $statement->execute([$sem_id, $username]);
     $temp = $statement->fetchColumn();
 
     if ($temp) {
@@ -53,7 +53,7 @@ if (!$temp && $sem_id) {
               WHERE s.Seminar_id = ? AND si.institut_id != ?
                 AND ui.inst_perms = 'dozent' AND aum.username = ? AND {$ext_vis_query}";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($sem_id, $instituts_id, $username));
+    $statement->execute([$sem_id, $instituts_id, $username]);
     $temp = $statement->fetchColumn();
 
     if ($temp) {
@@ -74,7 +74,7 @@ if (!$temp && $sem_id) {
               WHERE username = ? AND perms = 'dozent' AND su.seminar_id = ?
                 AND su.status = 'dozent' AND {$ext_vis_query}";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($username, $sem_id));
+    $statement->execute([$username, $sem_id]);
     $row = $statement->fetch(PDO::FETCH_ASSOC);
 } else {
     $base_query = "SELECT i.Institut_id, i.Name, i.Strasse, i.Plz, i.url, ui.*, aum.*,
@@ -91,21 +91,21 @@ if (!$temp && $sem_id) {
         $query  = $base_query;
         $query .= "aum.username = ? AND ui.externdefault = 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($username));
+        $statement->execute([$username]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$row) {
             $query  = $base_query;
             $query .= "aum.username = ? AND i.Institut_id = ? AND ui.inst_perms IN ('autor', 'tutor', 'dozent')";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($username, $instituts_id));
+            $statement->execute([$username, $instituts_id]);
             $row = $statement->fetch(PDO::FETCH_ASSOC);
         }
     } else {
         $query  = $base_query;
         $query .= "aum.username = ? AND i.Institut_id = ? AND ui.inst_perms IN ('autor', 'tutor', 'dozent')";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($username, $instituts_id));
+        $statement->execute([$username, $instituts_id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
     }
 }
@@ -131,7 +131,7 @@ echo "<table" . $this->config->getAttributes("TableHeader", "table") . ">\n";
 $studip_link = $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'dispatch.php/settings/account';
 $studip_link .= "?username=$username&login=yes";
 if ($this->config->getValue("Main", "studiplink") == "top") {
-    $args = array("width" => "100%", "height" => "40", "link" => $studip_link);
+    $args = ["width" => "100%", "height" => "40", "link" => $studip_link];
     echo "<tr><td width=\"100%\">\n";
     $this->elements["StudipLink"]->printout($args);
     echo "</td></tr>";
@@ -206,7 +206,7 @@ foreach ($order as $position) {
 }
 
 if ($this->config->getValue("Main", "studiplink") == "bottom") {
-    $args = array("width" => "100%", "height" => "40", "link" => $studip_link);
+    $args = ["width" => "100%", "height" => "40", "link" => $studip_link];
     echo "<tr><td width=\"100%\">\n";
     $this->elements["StudipLink"]->printout($args);
     echo "</td></tr>";
@@ -232,7 +232,7 @@ function news (&$module, $row, $alias_content, $text_div, $text_div_end)
                   WHERE nr.range_id = ? AND user_id = nr.range_id
                     AND UNIX_TIMESTAMP() BETWEEN date AND date + expire";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($row['user_id']));
+        $statement->execute([$row['user_id']]);
         $news = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($news) > 0) {
@@ -275,8 +275,8 @@ function termine (&$module, $row, $alias_content, $text_div, $text_div_end)
         }
 
         $event_list = SingleCalendar::getEventList($row['user_id'], time(),
-                time() + 60 * 60 * 24 * 7, null, array('class' => 'PUBLIC'),
-                array('CalendarEvent'));
+                time() + 60 * 60 * 24 * 7, null, ['class' => 'PUBLIC'],
+                ['CalendarEvent']);
         if (sizeof($event_list)) {
             echo "<tr><td width=\"100%\">\n";
             echo "<table" . $module->config->getAttributes("TableParagraph", "table") . ">\n";
@@ -318,7 +318,7 @@ function kategorien (&$module, $row, $alias_content, $text_div, $text_div_end)
               WHERE username = ?
               ORDER BY priority";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($row['username']));
+    $statement->execute([$row['username']]);
     while ($category = $statement->fetch(PDO::FETCH_ASSOC)) {
         if (Visibility::verify('kat_'.$category['kategorie_id'], $row['user_id'])) {
             echo "<tr><td width=\"100%\">\n";
@@ -360,10 +360,10 @@ function lehre (&$module, $row, $alias_content, $text_div, $text_div_end)
         $list_div_end = '';
     }
 
-    $types = array();
+    $types = [];
     $semclass = $module->config->getValue('PersondetailsLectures', 'semclass');
     if (is_null($semclass)) {
-        $semclass = array(1);
+        $semclass = [1];
     }
     foreach ($GLOBALS['SEM_TYPE'] as $key => $type) {
         if (in_array($type['class'], $semclass)) {
@@ -454,9 +454,9 @@ function lehre (&$module, $row, $alias_content, $text_div, $text_div_end)
                     if (Config::get()->IMPORTANT_SEMNUMBER && $item['VeranstaltungsNummer']) {
                         $name = $item['VeranstaltungsNummer'].' '.$name;
                     }
-                    $out .= $module->elements["LinkIntern"]->toString(array("module" => "Lecturedetails",
+                    $out .= $module->elements["LinkIntern"]->toString(["module" => "Lecturedetails",
                             "link_args" => "seminar_id=" . $item['Seminar_id'],
-                            "content" => htmlReady($name, TRUE)));
+                            "content" => htmlReady($name, TRUE)]);
                     if ($item['Untertitel'] != '') {
                         $out .= "<font" . $module->config->getAttributes("TableParagraphText", "font") . "><br>";
                         $out .= htmlReady($item['Untertitel'], TRUE) . "</font>\n";
@@ -471,9 +471,9 @@ function lehre (&$module, $row, $alias_content, $text_div, $text_div_end)
                     if ($j) {
                         $out .= '<br>';
                     }
-                    $out .= $module->elements['LinkIntern']->toString(array('module' => 'Lecturedetails',
+                    $out .= $module->elements['LinkIntern']->toString(['module' => 'Lecturedetails',
                             'link_args' => 'seminar_id=' . $item['Seminar_id'],
-                            'content' => htmlReady($item['Name'], TRUE)));
+                            'content' => htmlReady($item['Name'], TRUE)]);
                     if ($item['Untertitel'] != '') {
                         $out .= "<font" . $module->config->getAttributes("TableParagraphText", "font") . ">";
                         $out .= "<br>" . htmlReady($item['Untertitel'], TRUE) . "</font>\n";

@@ -29,11 +29,11 @@
 
         <label>
             <?=_("Veranstaltungen aus diesem Semester:")?>
-            <?=SemesterData::GetSemesterSelector(array('name'=>'select_semester_id'), $current_semester_id, 'semester_id', false)?>
+            <?=SemesterData::GetSemesterSelector(['name'=>'select_semester_id'], $current_semester_id, 'semester_id', false)?>
         </label>
     </fieldset>
 
     <footer>
-        <?= Studip\Button::create(_('Auswählen'), 'choose_institut', array('title' => _("Einrichtung auswählen"))) ?>
+        <?= Studip\Button::create(_('Auswählen'), 'choose_institut', ['title' => _("Einrichtung auswählen")]) ?>
     </footer>
 </form>

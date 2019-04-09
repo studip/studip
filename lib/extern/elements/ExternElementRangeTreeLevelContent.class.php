@@ -39,11 +39,11 @@
 
 class ExternElementRangeTreeLevelContent extends ExternElement {
 
-    var $attributes = array("mapping", "aliases", "table_bgcolor",
+    var $attributes = ["mapping", "aliases", "table_bgcolor",
                 "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style", "td_height", "td_align", "td_valign", "td_bgcolor",
                 "td_class", "td_style", "font_face", "font_size", "font_color",
-                "font_class", "font_style");
+                "font_class", "font_style"];
 
     /**
     * Constructor
@@ -71,7 +71,7 @@ class ExternElementRangeTreeLevelContent extends ExternElement {
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
         if ($faulty_values == '')
-            $faulty_values = array();   
+            $faulty_values = [];   
         $out = '';
         $tag_headline = '';
         $table = '';
@@ -83,7 +83,7 @@ class ExternElementRangeTreeLevelContent extends ExternElement {
         
         $headline = $edit_form->editHeadline(_("Bezeichnungen"));
         $info = _("Geben Sie eine alternative Bezeichnung ein.");
-        $names = array(_("Stra&szlig;e"), _("Ort"), _("Telefon"), _("Fax"), _("Email"), _("Homepage"));
+        $names = [_("Stra&szlig;e"), _("Ort"), _("Telefon"), _("Fax"), _("Email"), _("Homepage")];
         $content = $edit_form->editTextfieldGeneric("aliases", $names, $info, 30, 60);
         
         $content_table = $edit_form->editContentTable($headline, $content);

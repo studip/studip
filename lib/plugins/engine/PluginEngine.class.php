@@ -24,8 +24,8 @@ class PluginEngine
         }
         $pos = mb_strpos($dispatch_to, '/');
         return $pos === FALSE
-            ? array($dispatch_to, '')
-            : array(mb_substr($dispatch_to, 0, $pos), mb_substr($dispatch_to, $pos + 1));
+            ? [$dispatch_to, '']
+            : [mb_substr($dispatch_to, 0, $pos), mb_substr($dispatch_to, $pos + 1)];
     }
 
     /**
@@ -91,8 +91,8 @@ class PluginEngine
     public static function sendMessage($type, $method /* ... */)
     {
         $args = func_get_args();
-        array_splice($args, 1, 0, array(NULL));
-        return call_user_func_array(array(__CLASS__, 'sendMessageWithContext'), $args);
+        array_splice($args, 1, 0, [NULL]);
+        return call_user_func_array([__CLASS__, 'sendMessageWithContext'], $args);
     }
 
     /**
@@ -110,9 +110,9 @@ class PluginEngine
     {
         $args = func_get_args();
         $args = array_slice($args, 3);
-        $results = array();
+        $results = [];
         foreach (self::getPlugins($type, $context) as $plugin) {
-            $results[] = call_user_func_array(array($plugin, $method), $args);
+            $results[] = call_user_func_array([$plugin, $method], $args);
         }
         return $results;
     }
@@ -125,7 +125,7 @@ class PluginEngine
     * @param bool $ignore_registered_params do not add registered params
     * @return a link to the current plugin with the additional $params
     */
-    public static function getURL($plugin, $params = array(), $cmd = 'show', $ignore_registered_params = false)
+    public static function getURL($plugin, $params = [], $cmd = 'show', $ignore_registered_params = false)
     {
         if (is_null($plugin)) {
             throw new InvalidArgumentException(_('Es wurde kein Plugin gewählt.'));
@@ -146,7 +146,7 @@ class PluginEngine
     * @param bool $ignore_registered_params do not add registeredparams
     * @return a link to the current plugin with the additional $params
     */
-    public static function getLink($plugin, $params = array(), $cmd = 'show', $ignore_registered_params = false)
+    public static function getLink($plugin, $params = [], $cmd = 'show', $ignore_registered_params = false)
     {
         return htmlReady(self::getURL($plugin, $params, $cmd, $ignore_registered_params));
     }

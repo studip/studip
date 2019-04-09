@@ -44,8 +44,8 @@ class StudipLitImportPluginEndNote extends StudipLitImportPluginAbstract {
     function parse($data){
         // Disable entity load
         $this->loadEntities = libxml_disable_entity_loader(true);
-        $suche = array ("'<style[^>]*?>'si","'</style>'si");
-            $ersetze = array ("","");
+        $suche =  ["'<style[^>]*?>'si","'</style>'si"];
+            $ersetze =  ["",""];
         if ($suche && $ersetze && $data)
                         $data = preg_replace($suche, $ersetze, $data);
 
@@ -65,10 +65,10 @@ class StudipLitImportPluginEndNote extends StudipLitImportPluginAbstract {
                     $records = $domTree->getElementsByTagname("record");
                     if (count($records)==0) $records = $domTree->getElementsByTagname("RECORD");
 
-            $fields_arr = array();
+            $fields_arr = [];
 
                     foreach ($records as $record) {
-                            $fields = array();
+                            $fields = [];
                             $fields["catalog_id"] = "new_entry";
                             $fields["user_id"] = $auth->auth["uid"];
                             $dates = "";

@@ -22,15 +22,15 @@ class ForumProvider implements ActivityProvider
 
         $activity->content = formatReady($post['content']);
 
-        $url = \PluginEngine::getURL('CoreForum', array(), 'index/index/' . $post['topic_id']
+        $url = \PluginEngine::getURL('CoreForum', [], 'index/index/' . $post['topic_id']
                     .'?cid='. $post['seminar_id'] .'&highlight_topic='. $post['topic_id']
                     .'#'. $post['topic_id']);
 
         $route = \URLHelper::getURL('api.php/forum_entry/' . $post['topic_id'], NULL, true);
 
-        $activity->object_url = array(
+        $activity->object_url = [
             $url => _('Zum Forum der Veranstaltung')
-        );
+        ];
 
         $activity->object_route = $route;
 

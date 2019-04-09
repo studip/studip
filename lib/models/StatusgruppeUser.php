@@ -26,18 +26,18 @@
  */
 class StatusgruppeUser extends SimpleORMap implements PrivacyObject
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'statusgruppe_user';
-        $config['belongs_to']['group'] = array(
+        $config['belongs_to']['group'] = [
             'class_name' => 'Statusgruppen',
             'foreign_key' => 'statusgruppe_id',
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id',
-        );
-        $config['has_many']['datafields'] = array(
+        ];
+        $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'foreign_key' => function($group_member) {
                 return [$group_member];
@@ -49,7 +49,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
             'assoc_func' => 'findByModel',
             'on_delete' => 'delete',
             'on_store'  => 'store',
-        );
+        ];
 
         $config['additional_fields']['vorname']     = ['user', 'vorname'];
         $config['additional_fields']['nachname']    = ['user', 'nachname'];
@@ -73,7 +73,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
 
     public function getUserFullname($format = "full")
     {
-        return User::build(array_merge(array('motto' => ''), $this->toArray('vorname nachname username title_front title_rear')))->getFullname($format);
+        return User::build(array_merge(['motto' => ''], $this->toArray('vorname nachname username title_front title_rear')))->getFullname($format);
     }
 
     /**
@@ -83,7 +83,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
      */
     public function avatar()
     {
-        return Avatar::getAvatar($this->user_id, $this->user->username)->getImageTag(Avatar::SMALL, array('title' => htmlReady($this->name())));
+        return Avatar::getAvatar($this->user_id, $this->user->username)->getImageTag(Avatar::SMALL, ['title' => htmlReady($this->name())]);
     }
 
     /**
@@ -94,7 +94,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
         if ($this->isNew()) {
             $sql = "SELECT MAX(position)+1 FROM statusgruppe_user WHERE statusgruppe_id = ?";
             $stmt = DBManager::get()->prepare($sql);
-            $stmt->execute(array($this->statusgruppe_id));
+            $stmt->execute([$this->statusgruppe_id]);
             $this->position = $stmt->fetchColumn() ?: 0;
 
             StudipLog::log(
@@ -115,7 +115,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
         // Resort members
         $query = "UPDATE statusgruppe_user SET position = position - 1 WHERE statusgruppe_id = ? AND position > ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->statusgruppe_id, $this->position));
+        $statement->execute([$this->statusgruppe_id, $this->position]);
 
         StudipLog::log(
             "STATUSGROUP_REMOVE_USER",

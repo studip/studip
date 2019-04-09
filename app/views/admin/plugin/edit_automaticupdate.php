@@ -47,7 +47,7 @@ if ($_SERVER['HTTPS'] == 'on' && $_SERVER['SERVER_PORT'] != 443 ||
         </p>
         <label>
             <?= _("URL") ?>
-            <input type="text" readonly value="<?= htmlReady(URLHelper::getURL("dispatch.php/plugins/trigger_automaticupdate/".$plugin['class'], array('s' => md5(Config::get()->STUDIP_INSTALLATION_ID.$plugin['id'])), true)) ?>">
+            <input type="text" readonly value="<?= htmlReady(URLHelper::getURL("dispatch.php/plugins/trigger_automaticupdate/".$plugin['class'], ['s' => md5(Config::get()->STUDIP_INSTALLATION_ID.$plugin['id'])], true)) ?>">
         </label>
         <? if ($plugin['automatic_update_secret']) : ?>
         <label>

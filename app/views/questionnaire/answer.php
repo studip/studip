@@ -38,16 +38,16 @@
 
     <div data-dialog-button style="text-align: center;">
         <? if ($questionnaire->isAnswerable()) : ?>
-            <?= \Studip\Button::create(_("Speichern"), 'questionnaire_answer', array('onClick' => "return STUDIP.Questionnaire.beforeAnswer.call(this);")) ?>
+            <?= \Studip\Button::create(_("Speichern"), 'questionnaire_answer', ['onClick' => "return STUDIP.Questionnaire.beforeAnswer.call(this);"]) ?>
         <? endif ?>
         <? if ($questionnaire->resultsVisible()) : ?>
-            <?= \Studip\LinkButton::create(_("Ergebnisse anzeigen"), URLHelper::getURL("dispatch.php/questionnaire/evaluate/".$questionnaire->getId()), array('data-dialog' => "1")) ?>
+            <?= \Studip\LinkButton::create(_("Ergebnisse anzeigen"), URLHelper::getURL("dispatch.php/questionnaire/evaluate/".$questionnaire->getId()), ['data-dialog' => "1"]) ?>
         <? endif ?>
         <? if ($questionnaire->isEditable() && (!$questionnaire->isRunning() || !$questionnaire->countAnswers())) : ?>
-            <?= \Studip\LinkButton::create(_("Bearbeiten"), URLHelper::getURL("dispatch.php/questionnaire/edit/".$questionnaire->getId()), array('data-dialog' => "1")) ?>
+            <?= \Studip\LinkButton::create(_("Bearbeiten"), URLHelper::getURL("dispatch.php/questionnaire/edit/".$questionnaire->getId()), ['data-dialog' => "1"]) ?>
         <? endif ?>
         <? if ($questionnaire->isCopyable()) : ?>
-            <?= \Studip\LinkButton::create(_("Kopieren"), URLHelper::getURL("dispatch.php/questionnaire/copy/".$questionnaire->getId()), array('data-dialog' => "1")) ?>
+            <?= \Studip\LinkButton::create(_("Kopieren"), URLHelper::getURL("dispatch.php/questionnaire/copy/".$questionnaire->getId()), ['data-dialog' => "1"]) ?>
         <? endif ?>
         <? if ($questionnaire->isEditable() && (!$questionnaire->isRunning())) : ?>
             <?= \Studip\LinkButton::create(_("Starten"), URLHelper::getURL("dispatch.php/questionnaire/start/".$questionnaire->getId(), in_array($range_type, ['course', 'insitute']) ? ['redirect' => $range_type . "/overview"] : [])) ?>

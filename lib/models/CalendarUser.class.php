@@ -16,19 +16,19 @@
 class CalendarUser extends SimpleORMap
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'calendar_user';
 
-        $config['has_one']['owner'] = array(
+        $config['has_one']['owner'] = [
             'class_name' => 'User',
             'foreign_key' => 'owner_id',
             'assoc_foreign_key' => 'user_id'
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id'
-        );
+        ];
 
         $config['additional_fields']['nachname']['get'] = function ($cu) {
             return $cu->user->nachname;
@@ -55,33 +55,33 @@ class CalendarUser extends SimpleORMap
 
     public static function getUsers($user_id, $permission = null)
     {
-        $permission_array = array(Calendar::PERMISSION_READABLE,
-                Calendar::PERMISSION_WRITABLE);
+        $permission_array = [Calendar::PERMISSION_READABLE,
+                Calendar::PERMISSION_WRITABLE];
         if (!$permission) {
             $permission = $permission_array;
         } else if (!in_array($permission, $permission_array)) {
             throw new InvalidArgumentException(
                 'Calendar permission must be of type PERMISSION_READABLE or PERMISSION_WRITABLE.');
         } else {
-            $permission = array($permission);
+            $permission = [$permission];
         }
         return SimpleORMapCollection::createFromArray(CalendarUser::findBySQL(
                 'owner_id = ? AND permission IN(?)',
-                array($user_id, $permission)));
+                [$user_id, $permission]));
 
     }
 
     public static function getOwners($user_id, $permission = null)
     {
-        $permission_array = array(Calendar::PERMISSION_READABLE,
-                Calendar::PERMISSION_WRITABLE);
+        $permission_array = [Calendar::PERMISSION_READABLE,
+                Calendar::PERMISSION_WRITABLE];
         if (!$permission) {
             $permission = $permission_array;
         } else if (!in_array($permission, $permission_array)) {
             throw new InvalidArgumentException(
                 'Calendar permission must be of type PERMISSION_READABLE or PERMISSION_WRITABLE.');
         } else {
-            $permission = array($permission);
+            $permission = [$permission];
         }
         $statement = DBManager::get()->prepare("
             SELECT *
@@ -91,11 +91,11 @@ class CalendarUser extends SimpleORMap
                 AND calendar_user.permission IN (:permission)
             ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname
         ");
-        $statement->execute(array(
+        $statement->execute([
             'user_id' => $user_id,
             'permission' => $permission
-        ));
-        $calendar_users = array();
+        ]);
+        $calendar_users = [];
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $data) {
             $calendar_users[] = CalendarUser::buildExisting($data);
         }

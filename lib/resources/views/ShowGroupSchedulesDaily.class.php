@@ -151,7 +151,7 @@ class ShowGroupSchedulesDaily extends ShowSemSchedules
                 $assign_events = new AssignEventList ($start_time, $end_time, $resource_id, '', '', TRUE, $_SESSION['resources_data']['show_repeat_mode']);
                 while ($event=$assign_events->nextEvent()) {
                     $repeat_mode = $event->getRepeatMode(true);
-                    if (in_array($repeat_mode, array('w','d','m','y'))) {
+                    if (in_array($repeat_mode, ['w','d','m','y'])) {
                         $assign = AssignObject::Factory($event->getAssignId());
                         switch($event->repeat_mode){
                             case 'd':
@@ -182,8 +182,8 @@ class ShowGroupSchedulesDaily extends ShowSemSchedules
                     } else {
                         $add_info = '';
                     }
-                    if (in_array($event->getOwnerType(), array('sem','date'))) {
-                        $sem_doz_names = array();
+                    if (in_array($event->getOwnerType(), ['sem','date'])) {
+                        $sem_doz_names = [];
                         $c = 0;
                         if ($event->getOwnerType() == 'sem') {
                             $sem_obj = Seminar::GetInstance($event->getAssignUserId());
@@ -242,9 +242,9 @@ class ShowGroupSchedulesDaily extends ShowSemSchedules
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']["schedule_time_range"]) || ($_SESSION['resources_data']["schedule_time_range"] == 1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1]) ?>">
                            <?= Icon::create('arr_2up', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                     </a>
                 <? endif; ?>
@@ -273,9 +273,9 @@ class ShowGroupSchedulesDaily extends ShowSemSchedules
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']['schedule_time_range']) || ($_SESSION['resources_data']['schedule_time_range'] == -1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1]) ?>">
                         <?= Icon::create('arr_2down', 'clickable', ['title' => _('Spätere Belegungen anzeigen')])->asImg() ?>
                     </a>
                 <? endif; ?>

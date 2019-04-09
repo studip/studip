@@ -40,10 +40,10 @@
 
 class ExternElementLecturesInnerTable extends ExternElement {
 
-    var $attributes = array("tr_class", "tr_style", "td_bgcolor", "td_bgcolor2_",
+    var $attributes = ["tr_class", "tr_style", "td_bgcolor", "td_bgcolor2_",
             "td_class", "td_style", "td1_height", "td1_align", "td1_valign",
             "td2_height", "td2_align", "td2_valign", "td2width", "font2_face",
-            "font2_size", "font2_color", "font2_class", "font2_style", "td3_align");
+            "font2_size", "font2_color", "font2_class", "font2_style", "td3_align"];
             
     /**
     * Constructor
@@ -58,9 +58,9 @@ class ExternElementLecturesInnerTable extends ExternElement {
         $this->real_name = _("Veranstaltungsname/Zeiten(Termine)/Lehrende");
         $this->description = _("Formatierung von Veranstaltungsname/Zeiten(Termine)/Lehrenden in der Veranstaltungsübersicht.");
         
-        $this->headlines = array(_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Angaben zum HTML-Tag &lt;td&gt;"),
+        $this->headlines = [_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Angaben zum HTML-Tag &lt;td&gt;"),
             _("Ausrichtung Veranstaltungsname"), _("Ausrichtung Zeiten(Termine)/Lehrenden"),
-            _("Schrift Zeiten(Termine)/Lehrende (HTML-Tag &lt;font&gt;)"));
+            _("Schrift Zeiten(Termine)/Lehrende (HTML-Tag &lt;font&gt;)")];
     }
     
     /**
@@ -77,9 +77,9 @@ class ExternElementLecturesInnerTable extends ExternElement {
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
         
-        $attributes = array("tr_class", "tr_style", "td_bgcolor", "td_bgcolor2_",
-                "td_class", "td_style");
-        $headline = array("tr" => $this->headlines[0], "td" => $this->headlines[1]);
+        $attributes = ["tr_class", "tr_style", "td_bgcolor", "td_bgcolor2_",
+                "td_class", "td_style"];
+        $headline = ["tr" => $this->headlines[0], "td" => $this->headlines[1]];
         $content_table = $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
         
@@ -102,14 +102,14 @@ class ExternElementLecturesInnerTable extends ExternElement {
         
         $title = _("Horizontale Ausrichtung Zeiten:");
         $info = _("Wählen Sie aus der Auswahlliste die Art der horizontalen Ausrichtung.");
-        $values = array("left", "right", "center");
-        $names = array(_("linksbündig"), _("rechtsbündig"), _("zentriert"));
+        $values = ["left", "right", "center"];
+        $names = [_("linksbündig"), _("rechtsbündig"), _("zentriert")];
         $table .= $edit_form->editOptionGeneric("td2_align", $title, $info, $values, $names);
         
         $title = _("Horizontale Ausrichtung Lehrende:");
         $info = _("Wählen Sie aus der Auswahlliste die Art der horizontalen Ausrichtung.");
-        $values = array("left", "right", "center");
-        $names = array(_("linksbündig"), _("rechtsbündig"), _("zentriert"));
+        $values = ["left", "right", "center"];
+        $names = [_("linksbündig"), _("rechtsbündig"), _("zentriert")];
         $table .= $edit_form->editOptionGeneric("td3_align", $title, $info, $values, $names);
         
         $table .= $edit_form->editValign("td2_valign");
@@ -117,8 +117,8 @@ class ExternElementLecturesInnerTable extends ExternElement {
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
         
-        $attributes = array("font2_face", "font2_size", "font2_color", "font2_class", "font2_style");
-        $headline = array("font2" => $this->headlines[4]);
+        $attributes = ["font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
+        $headline = ["font2" => $this->headlines[4]];
         $content_table .= $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
     

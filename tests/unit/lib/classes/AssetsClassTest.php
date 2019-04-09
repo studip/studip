@@ -167,21 +167,21 @@ class AssetsHelpersTestCase extends PHPUnit_Framework_TestCase
   function test_img_should_respect_alt_attribute() {
     $expected = '<img alt="logo" src="'.STATIC_ASSETS_URL.'images/logo.png">';
     $this->assertEquals($expected,
-                        Assets::img('logo.png', array('alt' => 'logo')));
+                        Assets::img('logo.png', ['alt' => 'logo']));
   }
 
 
   function test_img_should_respect_size_attribute() {
     $expected = '<img alt="Logo" height="20" src="'.STATIC_ASSETS_URL.'images/logo.png" width="10">';
     $this->assertEquals($expected,
-                        Assets::img('logo.png', array('size' => '10@20')));
+                        Assets::img('logo.png', ['size' => '10@20']));
   }
 
 
   function test_img_should_respect_other_attributes() {
     $expected = '<img a="1" alt="Logo" b="2" src="'.STATIC_ASSETS_URL.'images/logo.png">';
     $this->assertEquals($expected,
-                        Assets::img('logo.png', array('a' => '1', 'b' => 2)));
+                        Assets::img('logo.png', ['a' => '1', 'b' => 2]));
   }
 
 
@@ -223,6 +223,6 @@ class AssetsHelpersTestCase extends PHPUnit_Framework_TestCase
     $expected  = '<link href="'.STATIC_ASSETS_URL.'stylesheets/blue.css" media="all" rel="stylesheet">' . "\n";
     $expected .= '<link href="'.STATIC_ASSETS_URL.'stylesheets/green.css" media="all" rel="stylesheet">' . "\n";
     $expected .= '<link href="'.STATIC_ASSETS_URL.'stylesheets/red.css" media="all" rel="stylesheet">' . "\n";
-    $this->assertEquals($expected, Assets::stylesheet('blue', 'green', 'red', array('media' => 'all')));
+    $this->assertEquals($expected, Assets::stylesheet('blue', 'green', 'red', ['media' => 'all']));
   }
 }

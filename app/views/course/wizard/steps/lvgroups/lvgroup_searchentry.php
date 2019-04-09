@@ -6,7 +6,7 @@ $_id = htmlReady(implode('_', (array) $area->getId()));
 
 <? if (!$inlist) : ?>
    <?= Icon::create('arr_2left', 'sort')->asInput(["name" => 'assign['.$_id.']', "onclick" => "return MVV.CourseWizard.assignNode('".$_id."')",
-       "class" => in_array($_id,$values['studyareas']?:array())?'hidden-no-js':'']) ?>
+       "class" => in_array($_id,$values['studyareas']?:[])?'hidden-no-js':'']) ?>
 <? endif; ?>
    <?/*  <span class="lvgruppe_selection_expand">*/?>
     <?= htmlReady($area->getDisplayName()) ?>

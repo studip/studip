@@ -49,9 +49,9 @@
     </fieldset>
     <div data-dialog-button >
         <? if ($perm_abschnitt >= MvvPerm::PERM_WRITE) : ?>
-            <?= Button::createAccept(_('Übernehmen'), 'store', array('title' => _('Änderungen übernehmen'))) ?>
+            <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
         <? endif; ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('/modulteile', $abschnitt_modul->abschnitt->id), array('title' => _('zurück zur Übersicht'))) ?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('/modulteile', $abschnitt_modul->abschnitt->id), ['title' => _('zurück zur Übersicht')]) ?>
     </div>
 </form>
 <script>

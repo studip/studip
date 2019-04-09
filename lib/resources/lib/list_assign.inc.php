@@ -49,7 +49,7 @@ function list_restore_assign(&$assEvtLst, $resource_id, $begin, $end, $user_id =
     }
 
     //create the query
-    $parameters = array();
+    $parameters = [];
 
     $query = "SELECT assign_id
               FROM resources_assign ";
@@ -271,11 +271,11 @@ function create_assigns($assign_object, &$assEvtLst, $begin=0, $end=0, $filter =
 
 function isFiltered($filter, $mode)
 {
-    $filters = array(   // filter rules (a filter consists of one or more repeat_modes)
-        "all"=>array("na", "sd", "meta", "d", "m", "y", "w"),
-        "single"=>array("na", "sd"),
-        "repeated"=>array("meta", "d","m", "y", "w"),
-        "semschedulesingle" => array('na','sd','d','m','y'));
+    $filters = [   // filter rules (a filter consists of one or more repeat_modes)
+        "all"=>["na", "sd", "meta", "d", "m", "y", "w"],
+        "single"=>["na", "sd"],
+        "repeated"=>["meta", "d","m", "y", "w"],
+        "semschedulesingle" => ['na','sd','d','m','y']];
     if ($filter) {
         return !in_array($mode, $filters[$filter]);
     } else {
@@ -319,7 +319,7 @@ function createNormalizedAssigns($resource_id, $begin, $end, $explain_user_name 
     }
     $statement->execute();
 
-    $events = array();
+    $events = [];
     while ($assign_id = $statement->fetchColumn()) {
         if($a_obj->restore($assign_id)) {
             $seminar_id = $sem_doz_names = false;
@@ -331,9 +331,9 @@ function createNormalizedAssigns($resource_id, $begin, $end, $explain_user_name 
                 $seminar_id = $metadate->seminar_id;
                 $sem_obj = Seminar::GetInstance($seminar_id);
 
-                $teacher_statement->execute(array(
+                $teacher_statement->execute([
                     $metadate->getId()
-                ));
+                ]);
                 $r_dozenten = $teacher_statement->fetchAll(PDO::FETCH_COLUMN);
                 $teacher_statement->closeCursor();
 
@@ -348,7 +348,7 @@ function createNormalizedAssigns($resource_id, $begin, $end, $explain_user_name 
             if($repmode == 'meta'){
                 $event_id = getNormalizedEventId($a_obj->getBegin(),$a_obj->getEnd(),$seminar_id);
                 if (!isset($events[$event_id])){
-                    $events[$event_id] = array('begin' => $a_obj->getBegin(),
+                    $events[$event_id] = ['begin' => $a_obj->getBegin(),
                                                 'end' => $a_obj->getEnd(),
                                                 'assign_id' => $a_obj->getId(),
                                                 'assign_user_id' => $a_obj->getAssignUserId(),
@@ -358,11 +358,11 @@ function createNormalizedAssigns($resource_id, $begin, $end, $explain_user_name 
                                                 'seminar_id' => $seminar_id,
                                                 'name' => $a_obj->getUserName(false,$explain_user_name),
                                                 'sem_doz_names' => $sem_doz_names
-                                                );
+                                                ];
 
                 }
             } else if ($repmode == 'w'){
-                $events[$a_obj->getId()] = array('begin' => $a_obj->getBegin(),
+                $events[$a_obj->getId()] = ['begin' => $a_obj->getBegin(),
                                                 'end' => $a_obj->getEnd(),
                                                 'assign_id' => $a_obj->getId(),
                                                 'assign_user_id' => $a_obj->getAssignUserId(),
@@ -371,7 +371,7 @@ function createNormalizedAssigns($resource_id, $begin, $end, $explain_user_name 
                                                 'is_meta' => 0,
                                                 'name' => $a_obj->getUserName(true,$explain_user_name),
                                                 'sem_doz_names' => $sem_doz_names
-                                                );
+                                                ];
             }
 
         }

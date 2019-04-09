@@ -61,13 +61,13 @@ class MediaProxy
                   FROM media_cache
                   WHERE id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
 
         if ($row = $statement->fetch()) {
             if ($row['expires'] > time()) {
                 return $row;
             } else {
-                $this->removeCacheEntries(array($id));
+                $this->removeCacheEntries([$id]);
             }
         }
 
@@ -226,7 +226,7 @@ class MediaProxy
         $db = DBManager::get();
 
         $stmt = $db->prepare('INSERT INTO media_cache (id, type, chdate, expires) VALUES (?,?,?,?)');
-        $stmt->execute(array($id, $type, strftime('%F %T', $chdate), strftime('%F %T', $expires)));
+        $stmt->execute([$id, $type, strftime('%F %T', $chdate), strftime('%F %T', $expires)]);
     }
 
     /**
@@ -237,7 +237,7 @@ class MediaProxy
         $db = DBManager::get();
 
         $stmt = $db->prepare("DELETE FROM media_cache WHERE id IN (?)");
-        $stmt->execute(array($ids ?: ''));
+        $stmt->execute([$ids ?: '']);
 
         foreach ($ids as $id) {
             @unlink($this->getCacheFile($id));

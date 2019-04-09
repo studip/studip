@@ -21,13 +21,13 @@ class Calendar_GroupController extends Calendar_CalendarController
         $actions->addLink(_('Termin anlegen'),
                           $this->url_for('calendar/group/edit'),
                           Icon::create('add', 'clickable'),
-            array('data-dialog' => 'size=auto'));
+            ['data-dialog' => 'size=auto']);
         $actions->addLink(_('Kalender freigeben'),
                 $this->url_for('calendar/single/manage_access/' . $GLOBALS['user']->id,
-                               array('group_filter' => $this->range_id)),
+                               ['group_filter' => $this->range_id]),
                           Icon::create('community', 'clickable'),
-                          array('id' => 'calendar-open-manageaccess',
-                                'data-dialog' => '', 'data-dialogname' => 'manageaccess'));
+                          ['id' => 'calendar-open-manageaccess',
+                                'data-dialog' => '', 'data-dialogname' => 'manageaccess']);
         $sidebar->addWidget($actions);
     }
 
@@ -59,7 +59,7 @@ class Calendar_GroupController extends Calendar_CalendarController
             $this->attendee_ids = array_intersect($calendar_owners, $members);
             $this->attendee_ids[] = $GLOBALS['user']->id;
             if ($user_id && in_array($user_id, $this->attendee_ids)) {
-                $this->attendee_ids = array($user_id);
+                $this->attendee_ids = [$user_id];
             }
         }
 
@@ -95,7 +95,7 @@ class Calendar_GroupController extends Calendar_CalendarController
             if (!$this->event->havePermission(Event::PERMISSION_WRITABLE)
                     || $this->event instanceof CourseEvent) {
                 $this->redirect($this->url_for('calendar/single/event/' . implode('/',
-                        array($this->range_id, $this->event->event_id))));
+                        [$this->range_id, $this->event->event_id])));
                 return null;
             }
             $this->attendees = $this->event->attendees;
@@ -160,11 +160,11 @@ class Calendar_GroupController extends Calendar_CalendarController
                     exit;
                 } else {
                     PageLayout::postMessage(MessageBox::success(_('Der Termin wurde nicht geändert.')));
-                    $this->relocate('calendar/group/' . $this->last_view, array('atime' => $this->atime));
+                    $this->relocate('calendar/group/' . $this->last_view, ['atime' => $this->atime]);
                 }
             } else {
                 PageLayout::postMessage(MessageBox::success(_('Der Termin wurde gespeichert.')));
-                $this->relocate('calendar/group/' . $this->last_view, array('atime' => $this->atime));
+                $this->relocate('calendar/group/' . $this->last_view, ['atime' => $this->atime]);
             }
         } else {
             $this->createSidebar('edit', $this->calendar);

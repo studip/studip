@@ -25,7 +25,7 @@ require 'studip_cli_env.inc.php';
  * @return bool indicating whether the file should be skipped or not
  */
 function should_skip_file($filename, $realfile) {
-    $exclude = array(
+    $exclude = [
         'locale/*',
         'node_modules/*',
         'public/assets/*',
@@ -33,14 +33,14 @@ function should_skip_file($filename, $realfile) {
         'public/plugins_packages/*',
         'test/*',
         'vendor/*',
-    );
-    $include = array(
+    ];
+    $include = [
         'public/plugins_packages/core*',
-    );
-    $mime_types = array(
+    ];
+    $mime_types = [
         'text/*',
         'application/javascript',
-    );
+    ];
 
     // Check if the file should be excluded, depending on it's path.
     $matching_pattern = null;
@@ -98,7 +98,7 @@ function extract_strings($file) {
     $regexp   = '/(?:\'([^\']+)\'|"([^"]+)")\\.toLocaleString\\(\\s*\\)/';
 
     if (preg_match_all($regexp, $contents, $matches, PREG_SET_ORDER)) {
-        $result = array();
+        $result = [];
         foreach ($matches as $match) {
             $result[] = $match[1] ?: $match[2];
         }
@@ -119,7 +119,7 @@ function extract_strings($file) {
  *               the text strings the file contains.
  */
 function find_strings_in_dir($directory, $base = null) {
-    $result = array();
+    $result = [];
 
     $base = rtrim($base ?: $directory, '/') . '/';
 
@@ -146,7 +146,7 @@ function find_strings_in_dir($directory, $base = null) {
 $occurences = find_strings_in_dir(realpath(__DIR__ . '/..'));
 
 // Remove duplicates
-$hashes = array();
+$hashes = [];
 foreach ($occurences as $file => $strings) {
     foreach ($strings as $index => $string) {
         $hash = md5($string);

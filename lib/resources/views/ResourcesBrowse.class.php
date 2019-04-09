@@ -129,17 +129,17 @@ class ResourcesBrowse {
                   WHERE resource_id = ? ORDER BY name";
         $statement = DBManager::get()->prepare($query);
 
-        $result_arr = array();
+        $result_arr = [];
         while ($id) {
-            $statement->execute(array($id));
+            $statement->execute([$id]);
             $object = $statement->fetch(PDO::FETCH_ASSOC);
             $statement->closeCursor();
 
-            $result_arr[] = array(
+            $result_arr[] = [
                 'id'       => $object['resource_id'],
                 'name'     => $object['name'],
                 'owner_id' => $object['owner_id']
-            );
+            ];
             $id = $object['parent_id'];
         }
 
@@ -447,11 +447,11 @@ class ResourcesBrowse {
     //private
     function browseLevels()
     {
-        $parameters = array();
+        $parameters = [];
         if ($this->open_object) {
             $query = "SELECT parent_id FROM resources_objects WHERE resource_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->open_object));
+            $statement->execute([$this->open_object]);
             $temp = $statement->fetchColumn();
             if ($temp != '0') {
                 $way_back = $temp;
@@ -494,7 +494,7 @@ class ResourcesBrowse {
 
                 $query = "SELECT 1 FROM resources_objects WHERE parent_id IN (?)";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($ids));
+                $statement->execute([$ids]);
                 $sublevels = $statement->fetchColumn() > 0;
             }
         }

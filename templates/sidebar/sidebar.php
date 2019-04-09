@@ -2,7 +2,7 @@
     <section class="sidebar">
 <? if ($image): ?>
         <div class="sidebar-image <? if ($avatar) echo 'sidebar-image-with-context'; ?>">
-            <?= Assets::img($image, array('alt' => '')) ?>
+            <?= Assets::img($image, ['alt' => '']) ?>
         <? if ($avatar) : ?>
             <div class="sidebar-context">
                 <? if ($avatar->is_customized()) : ?>
@@ -20,7 +20,7 @@
 <? endif; ?>
 
     <? foreach ($widgets as $index => $widget): ?>
-        <?= $widget->render(array('base_class' => 'sidebar')) ?>
+        <?= $widget->render(['base_class' => 'sidebar']) ?>
     <? endforeach; ?>
     </section>
 </div>

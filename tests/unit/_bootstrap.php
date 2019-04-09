@@ -89,7 +89,7 @@ if (!class_exists('PHPUnit_Framework_TestCase')) {
 // create "fake" cache class
 if (!class_exists('StudipArrayCache')) {
     class StudipArrayCache implements StudipCache {
-        public $data = array();
+        public $data = [];
 
         function expire($key)
         {
@@ -98,7 +98,7 @@ if (!class_exists('StudipArrayCache')) {
 
         function flush()
         {
-            $this->data = array();
+            $this->data = [];
         }
 
         function read($key)
@@ -120,7 +120,7 @@ if (!class_exists('StudipTestHelper')) {
         static function set_up_tables($tables)
         {
             // first step, set fake cache
-            $testconfig = new Config(array('cache_class' => 'StudipArrayCache'));
+            $testconfig = new Config(['cache_class' => 'StudipArrayCache']);
             Config::set($testconfig);
             StudipCacheFactory::setConfig($testconfig);
 
@@ -131,19 +131,19 @@ if (!class_exists('StudipTestHelper')) {
             // second step, expire table scheme
             SimpleORMap::expireTableScheme();
 
-            $schemes = array();
+            $schemes = [];
 
             foreach ($tables as $db_table) {
                 include TEST_FIXTURES_PATH."simpleormap/$db_table.php";
-                $db_fields = $pk = array();
+                $db_fields = $pk = [];
                 foreach ($result as $rs) {
-                    $db_fields[mb_strtolower($rs['name'])] = array(
+                    $db_fields[mb_strtolower($rs['name'])] = [
                         'name'    => $rs['name'],
                         'null'    => $rs['null'],
                         'default' => $rs['default'],
                         'type'    => $rs['type'],
                         'extra'   => $rs['extra']
-                    );
+                    ];
                     if ($rs['key'] == 'PRI'){
                         $pk[] = mb_strtolower($rs['name']);
                     }

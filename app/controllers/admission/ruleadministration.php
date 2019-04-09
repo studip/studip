@@ -82,8 +82,8 @@ class Admission_RuleAdministrationController extends AuthenticatedController
             FROM `admissionrule_inst` ai
             JOIN `admissionrules` r ON (ai.`rule_id`=r.`id`)
             WHERE r.`ruletype`=?");
-        $stmt->execute(array($ruleType));
-        $this->activated = array();
+        $stmt->execute([$ruleType]);
+        $this->activated = [];
         $globally = true;
         $atInst = false;
         while ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -107,21 +107,21 @@ class Admission_RuleAdministrationController extends AuthenticatedController
         if (Request::submitted('submit')) {
             $success = false;
             $stmt = DBManager::get()->prepare("UPDATE `admissionrules` SET `active`=? WHERE `ruletype`=?");
-            $success = $stmt->execute(array((bool) Request::get('enabled'), $ruleType));
+            $success = $stmt->execute([(bool) Request::get('enabled'), $ruleType]);
             // Get corresponding rule id.
             $stmt = DBManager::get()->prepare("SELECT `id` FROM `admissionrules` WHERE `ruletype`=? LIMIT 1");
-            $success = $stmt->execute(array($ruleType));
+            $success = $stmt->execute([$ruleType]);
             if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 if (Request::get('enabled')) {
                     $stmt = DBManager::get()->prepare("DELETE FROM `admissionrule_inst`
                         WHERE `rule_id` IN (SELECT `id` FROM `admissionrules` WHERE `ruletype`=?);");
-                    $success = $stmt->execute(array($ruleType));
+                    $success = $stmt->execute([$ruleType]);
                     if (Request::get(activated) == 'inst') {
                         $institutes = Request::getArray('institutes');
                         $query = "INSERT INTO `admissionrule_inst`
                             (`rule_id`, `institute_id`, `mkdate`)
                             VALUES ";
-                        $params = array();
+                        $params = [];
                         $first = true;
                         foreach ($institutes as $institute) {
                             if ($first) {
@@ -156,8 +156,8 @@ class Admission_RuleAdministrationController extends AuthenticatedController
 
         $values = Request::getArray('compat');
 
-        $to_delete = array();
-        $new = array();
+        $to_delete = [];
+        $new = [];
         foreach ($matrix as $type => $compat) {
             /*
              * Get entries that are in database, but not in request.
@@ -184,12 +184,12 @@ class Admission_RuleAdministrationController extends AuthenticatedController
         }
 
         $success = 0;
-        $fail = array();
+        $fail = [];
 
         // Process the entries that will be deleted.
         foreach ($to_delete as $type => $compat) {
             foreach ($compat as $ctype) {
-                $entry = AdmissionRuleCompatibility::find(array($type, $ctype));
+                $entry = AdmissionRuleCompatibility::find([$type, $ctype]);
 
                 if ($entry->delete()) {
                     $success++;

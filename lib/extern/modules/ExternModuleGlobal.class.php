@@ -46,8 +46,8 @@ class ExternModuleGlobal extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->registered_elements = array
-            (
+        $this->registered_elements = 
+            [
                 'PageBodyGlobal' => 'Body',
                 'MainTableHeaderGlobal' => 'TableHeader',
                 'InnerTableHeaderGlobal' => 'TableHeader',
@@ -59,7 +59,7 @@ class ExternModuleGlobal extends ExternModule {
                 'Headline2TextGlobal' => 'Link',
                 'TextGlobal' => 'Link',
                 'LinksGlobal' => 'Link'
-            );
+            ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
     
@@ -79,23 +79,23 @@ class ExternModuleGlobal extends ExternModule {
         $this->elements["TextGlobal"]->real_name = _("Schrift");
         $this->elements["LinksGlobal"]->real_name = _("Links");
         
-        $this->elements["MainTableHeadrowGlobal"]->attributes = array("tr_class", "tr_style",
+        $this->elements["MainTableHeadrowGlobal"]->attributes = ["tr_class", "tr_style",
                 "th_height", "th_align", "th_valign", "th_bgcolor", "th_bgcolor2_",
-                "th_zebrath_", "th_class", "th_style");
-        $this->elements["TableGrouprowGlobal"]->attributes = array("tr_class", "tr_style",
+                "th_zebrath_", "th_class", "th_style"];
+        $this->elements["TableGrouprowGlobal"]->attributes = ["tr_class", "tr_style",
                 "td_height", "td_align", "td_valign", "td_bgcolor", "td_bgcolor_2", "td_class",
-                "td_style");
-        $this->elements["TableRowGlobal"]->attributes = array("tr_class", "tr_style",
+                "td_style"];
+        $this->elements["TableRowGlobal"]->attributes = ["tr_class", "tr_style",
                 "td_height", "td_align", "td_valign", "td_bgcolor", "td_bgcolor2_",
-                "td_zebratd_", "td_class", "td_style");
-        $this->elements["TableHeadrowTextGlobal"]->attributes = array("font_size", "font_face",
-                "font_color", "font_class", "font_style");
-        $this->elements["Headline1TextGlobal"]->attributes = array("font_size", "font_face",
-                "font_color", "font_class", "font_style");
-        $this->elements["Headline2TextGlobal"]->attributes = array("font_size", "font_face",
-                "font_color", "font_class", "font_style");
-        $this->elements["TextGlobal"]->attributes = array("font_size", "font_face",
-                "font_color", "font_class", "font_style");
+                "td_zebratd_", "td_class", "td_style"];
+        $this->elements["TableHeadrowTextGlobal"]->attributes = ["font_size", "font_face",
+                "font_color", "font_class", "font_style"];
+        $this->elements["Headline1TextGlobal"]->attributes = ["font_size", "font_face",
+                "font_color", "font_class", "font_style"];
+        $this->elements["Headline2TextGlobal"]->attributes = ["font_size", "font_face",
+                "font_color", "font_class", "font_style"];
+        $this->elements["TextGlobal"]->attributes = ["font_size", "font_face",
+                "font_color", "font_class", "font_style"];
         
     }
     

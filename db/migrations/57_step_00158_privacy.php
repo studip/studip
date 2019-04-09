@@ -5,26 +5,26 @@ require_once(realpath(dirname(__FILE__).'/../../lib/user_visible.inc.php'));
 class Step00158Privacy extends Migration
 {
 
-    static $config_entries = array(
+    static $config_entries = [
         // Do users with status "dozent" always have to be visible?
-        array(
+        [
             'name'        => 'DOZENT_ALWAYS_VISIBLE',
             'type'        => 'boolean',
             'value'       => 1,
             'description' => 'Legt fest, ob Personen mit Dozentenrechten immer global sichtbar sind und das auch nicht selbst ändern können.'
         // What is the default visibility for unconfigured homepage elements?
-        ), array(
+        ], [
             'name'        => 'HOMEPAGE_VISIBILITY_DEFAULT',
             'type'        => 'string',
             'value'       => 'VISIBILITY_STUDIP',
             'description' => 'Standardsichtbarkeit für Homepageelemente, falls der Benutzer nichts anderes eingestellt hat. Gültige Werte sind: VISIBILITY_ME, VISIBILITY_BUDDIES, VISIBILITY_DOMAIN, VISIBILITY_STUDIP, VISIBILITY_EXTERN'
-        ), array(
+        ], [
             'name'        => 'FORUM_ANONYMOUS_POSTINGS',
             'type'        => 'boolean',
             'value'       => 0,
             'description' => 'Legt fest, ob Forenbeiträge anonym verfasst werden dürfen (Root sieht aber immer den Urheber).'
-        )
-    );
+        ]
+    ];
 
     function description()
     {
@@ -38,7 +38,7 @@ class Step00158Privacy extends Migration
 
         // insert new configuration entries
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']));
+            $query->execute([$entry['name'], $entry['name'], $entry['value'], $entry['type'], $entry['description']]);
         }
 
         // create database table for privacy settings
@@ -57,7 +57,7 @@ class Step00158Privacy extends Migration
 
         // transfer hidden categories to privacy settings
         $data = $db->query("SELECT * FROM `kategorien` WHERE hidden=1");
-        $categories = array();
+        $categories = [];
         // aggregate all categories by their owner...
         while ($category = $data->fetch()) {
             $categories[$category['range_id']]['kat_'.$category['kategorie_id']] = VISIBILITY_ME;
@@ -80,7 +80,7 @@ class Step00158Privacy extends Migration
         $query = $db->prepare("DELETE FROM `config` WHERE `field` = ?");
 
         foreach (self::$config_entries as $entry) {
-            $query->execute(array($entry['name']));
+            $query->execute([$entry['name']]);
         }
 
         // add "hidden" field to user categories...

@@ -25,9 +25,9 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $_POST['s_x'] = '0';
         $_GET['f']    = 'root@studip';
 
-        $_GET['v1']  = array('1', '2.4', '3,7');
-        $_POST['v2'] = array('on\'e', 'two', 'thr33');
-        $_GET['v3']  = array('root@studip', 'hotte.testfreund', 42, '!"$%&/()');
+        $_GET['v1']  = ['1', '2.4', '3,7'];
+        $_POST['v2'] = ['on\'e', 'two', 'thr33'];
+        $_GET['v3']  = ['root@studip', 'hotte.testfreund', 42, '!"$%&/()'];
 
         if (get_magic_quotes_gpc()) {
             $_GET  = Request::addslashes($_GET);
@@ -70,10 +70,10 @@ class RequestTest extends PHPUnit_Framework_TestCase
     public function testSetParam ()
     {
         Request::set('yyy', 'xyzzy');
-        Request::set('zzz', array(1, 2));
+        Request::set('zzz', [1, 2]);
 
         $this->assertSame(Request::get('yyy'), 'xyzzy');
-        $this->assertSame(Request::getArray('zzz'), array(1, 2));
+        $this->assertSame(Request::getArray('zzz'), [1, 2]);
     }
 
     public function testStringParam ()
@@ -131,48 +131,48 @@ class RequestTest extends PHPUnit_Framework_TestCase
 
     public function testStringArrayParam ()
     {
-        $this->assertSame(Request::getArray('null'), array());
-        $this->assertSame(Request::getArray('b'), array());
-        $this->assertSame(Request::getArray('v1'), array('1', '2.4', '3,7'));
-        $this->assertSame(Request::getArray('v2'), array('on\'e', 'two', 'thr33'));
+        $this->assertSame(Request::getArray('null'), []);
+        $this->assertSame(Request::getArray('b'), []);
+        $this->assertSame(Request::getArray('v1'), ['1', '2.4', '3,7']);
+        $this->assertSame(Request::getArray('v2'), ['on\'e', 'two', 'thr33']);
 
-        $this->assertSame(Request::quotedArray('null'), array());
-        $this->assertSame(Request::quotedArray('b'), array());
-        $this->assertSame(Request::quotedArray('v1'), array('1', '2.4', '3,7'));
-        $this->assertSame(Request::quotedArray('v2'), array('on\\\'e', 'two', 'thr33'));
+        $this->assertSame(Request::quotedArray('null'), []);
+        $this->assertSame(Request::quotedArray('b'), []);
+        $this->assertSame(Request::quotedArray('v1'), ['1', '2.4', '3,7']);
+        $this->assertSame(Request::quotedArray('v2'), ['on\\\'e', 'two', 'thr33']);
     }
 
     public function testOptionArrayParam ()
     {
-        $this->assertSame(Request::optionArray('null'), array());
-        $this->assertSame(Request::optionArray('a'), array());
-        $this->assertSame(Request::optionArray('v1'), array('1'));
-        $this->assertSame(Request::optionArray('v2'), array(1 => 'two', 2 => 'thr33'));
+        $this->assertSame(Request::optionArray('null'), []);
+        $this->assertSame(Request::optionArray('a'), []);
+        $this->assertSame(Request::optionArray('v1'), ['1']);
+        $this->assertSame(Request::optionArray('v2'), [1 => 'two', 2 => 'thr33']);
     }
 
     public function testIntArrayParam ()
     {
-        $this->assertSame(Request::intArray('null'), array());
-        $this->assertSame(Request::intArray('c'), array());
-        $this->assertSame(Request::intArray('v1'), array(1, 2, 3));
-        $this->assertSame(Request::intArray('v2'), array(0, 0, 0));
+        $this->assertSame(Request::intArray('null'), []);
+        $this->assertSame(Request::intArray('c'), []);
+        $this->assertSame(Request::intArray('v1'), [1, 2, 3]);
+        $this->assertSame(Request::intArray('v2'), [0, 0, 0]);
     }
 
     public function testFloatArrayParam ()
     {
-        $this->assertSame(Request::floatArray('null'), array());
-        $this->assertSame(Request::floatArray('c'), array());
-        $this->assertSame(Request::floatArray('v1'), array(1.0, 2.4, 3.7));
-        $this->assertSame(Request::floatArray('v2'), array(0.0, 0.0, 0.0));
+        $this->assertSame(Request::floatArray('null'), []);
+        $this->assertSame(Request::floatArray('c'), []);
+        $this->assertSame(Request::floatArray('v1'), [1.0, 2.4, 3.7]);
+        $this->assertSame(Request::floatArray('v2'), [0.0, 0.0, 0.0]);
     }
 
     public function testUsernameArrayParam ()
     {
-        $this->assertSame(Request::usernameArray('null'), array());
-        $this->assertSame(Request::usernameArray('a'), array());
-        $this->assertSame(Request::usernameArray('v1'), array());
-        $this->assertSame(Request::usernameArray('v2'), array(2 => 'thr33'));
-        $this->assertSame(Request::usernameArray('v3'), array('root@studip', 'hotte.testfreund'));
+        $this->assertSame(Request::usernameArray('null'), []);
+        $this->assertSame(Request::usernameArray('a'), []);
+        $this->assertSame(Request::usernameArray('v1'), []);
+        $this->assertSame(Request::usernameArray('v2'), [2 => 'thr33']);
+        $this->assertSame(Request::usernameArray('v3'), ['root@studip', 'hotte.testfreund']);
     }
 
     public function testSubmitted ()

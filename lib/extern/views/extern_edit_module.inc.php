@@ -80,7 +80,7 @@ if (!$module)
 $element_command = FALSE;
 $edit = Request::option('edit');
 if ($edit) {
-    $element_commands = array('show', 'hide', 'move_left', 'move_right', 'show_group', 'hide_group', 'do_search_x');
+    $element_commands = ['show', 'hide', 'move_left', 'move_right', 'show_group', 'hide_group', 'do_search_x'];
     foreach ($element_commands as $element_command) {
         $element_command_form = $edit . "_" . $element_command;
         if ($_POST[$element_command_form]) {
@@ -103,7 +103,7 @@ $edit_open = "";
 
 foreach ($elements as $element) {
     if ($edit == $element->getName()) {
-        $edit_open = array("$edit" => (Request::option('com') != 'close'));
+        $edit_open = ["$edit" => (Request::option('com') != 'close')];
     }
 }
 if (Request::option('com') == 'new' || Request::option('com') == 'edit' || Request::option('com') == 'open' || Request::option('com') == 'close') {

@@ -40,9 +40,9 @@
 
 class ExternElementTableGroup extends ExternElement {
 
-    var $attributes = array("tr_class", "tr_style", "td_height", "td_align",
+    var $attributes = ["tr_class", "tr_style", "td_height", "td_align",
             "td_valign", "td_bgcolor", "td_bgcolor_2", "td_class", "td_style",
-            "font_face", "font_size", "font_color", "font_class", "font_style");
+            "font_face", "font_size", "font_color", "font_class", "font_style"];
 
     /**
     * Constructor

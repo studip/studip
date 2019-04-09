@@ -105,7 +105,7 @@ function getLatestVersion($keyword, $range_id) {
               ORDER BY version DESC
               LIMIT 1";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($keyword, $range_id));
+    $statement->execute([$keyword, $range_id]);
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -122,7 +122,7 @@ function getFirstVersion($keyword, $range_id) {
               ORDER BY version ASC
               LIMIT 1";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($keyword, $range_id));
+    $statement->execute([$keyword, $range_id]);
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
@@ -225,7 +225,7 @@ function getLock($keyword, $user_id)
               WHERE range_id = ? AND keyword = ? AND user_id != ?
               ORDER BY chdate DESC";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(Context::getId(), $keyword, $user_id));
+    $statement->execute([Context::getId(), $keyword, $user_id]);
     $locks = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     $lockstring = '';
@@ -258,7 +258,7 @@ function setWikiLock($db, $user_id, $range_id, $keyword) {
     $query = "REPLACE INTO wiki_locks (user_id, range_id, keyword, chdate)
               VALUES (?, ?, ?, UNIX_TIMESTAMP())";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id, $range_id, $keyword));
+    $statement->execute([$user_id, $range_id, $keyword]);
 }
 
 
@@ -278,14 +278,14 @@ function releaseLocks($keyword)
               FROM wiki_locks
               WHERE range_id = ? AND keyword = ? AND chdate < UNIX_TIMESTAMP(NOW() - INTERVAL 30 MINUTE)";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(Context::getId(), $keyword));
+    $statement->execute([Context::getId(), $keyword]);
 
     while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-        $release_statement->execute(array(
+        $release_statement->execute([
             $row['range_id'],
             $row['keyword'],
             $row['chdate'],
-        ));
+        ]);
     }
 }
 
@@ -301,7 +301,7 @@ function releasePageLocks($keyword, $user_id)
     $query = "DELETE FROM wiki_locks
               WHERE range_id = ? AND keyword = ? AND user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(Context::getId(), $keyword, $user_id));
+    $statement->execute([Context::getId(), $keyword, $user_id]);
 }
 
 
@@ -336,7 +336,7 @@ function getBacklinks($keyword)
               FROM wiki_links
               WHERE range_id = ? AND to_keyword = ? AND from_keyword != 'toc'";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(Context::getId(), $keyword));
+    $statement->execute([Context::getId(), $keyword]);
     return $statement->fetchAll(PDO::FETCH_COLUMN);
 }
 
@@ -357,7 +357,7 @@ function refreshBacklinks($keyword, $str)
     // first delete all links
     $query = "DELETE FROM wiki_links WHERE range_id = ? AND from_keyword = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array(Context::getId(), $keyword));
+    $statement->execute([Context::getId(), $keyword]);
 
     // then reinsert those (still) existing
     $wikiLinkList = getWikiLinks($str);
@@ -367,7 +367,7 @@ function refreshBacklinks($keyword, $str)
         $statement = DBManager::get()->prepare($query);
 
         foreach ($wikiLinkList as $key => $value) {
-            $statement->execute(array(Context::getId(), $keyword, $value));
+            $statement->execute([Context::getId(), $keyword, $value]);
         }
     }
 }
@@ -659,7 +659,7 @@ function listPages($mode, $sortby = NULL)
         );
     }
 
-    showPageFrameEnd(array());
+    showPageFrameEnd([]);
 }
 
 /**
@@ -855,7 +855,7 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
     $widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
     Sidebar::get()->addWidget($widget);
 
-    showPageFrameEnd(array());
+    showPageFrameEnd([]);
 }
 
 /**
@@ -882,11 +882,11 @@ function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
     $locks=getLock($keyword, $user_id);
     $cont='';
     if ($locks && $lock['user_id'] !== $user_id) {
-        $message = MessageBox::info(sprintf(_("Die Seite wird eventuell von %s bearbeitet."), htmlReady($locks)), array(_("Wenn Sie die Seite trotzdem ändern, kann ein Versionskonflikt entstehen."), _("Es werden dann beide Versionen eingetragen und müssen von Hand zusammengeführt werden."),  _("Klicken Sie auf Abbrechen, um zurückzukehren.")));
+        $message = MessageBox::info(sprintf(_("Die Seite wird eventuell von %s bearbeitet."), htmlReady($locks)), [_("Wenn Sie die Seite trotzdem ändern, kann ein Versionskonflikt entstehen."), _("Es werden dann beide Versionen eingetragen und müssen von Hand zusammengeführt werden."),  _("Klicken Sie auf Abbrechen, um zurückzukehren.")]);
         PageLayout::postMessage($message);
     }
     if ($keyword === 'toc') {
-        $message = MessageBox::info(_("Sie bearbeiten die QuickLinks."), array(_("Verwenden Sie Aufzählungszeichen (-, --, ---), um Verweise auf Seiten hinzuzufügen.")));
+        $message = MessageBox::info(_("Sie bearbeiten die QuickLinks."), [_("Verwenden Sie Aufzählungszeichen (-, --, ---), um Verweise auf Seiten hinzuzufügen.")]);
         PageLayout::postMessage($message);
         if (!$body) {
             $body=_("- WikiWikiWeb\n- BeispielSeite\n-- UnterSeite1\n-- UnterSeite2");
@@ -1027,7 +1027,7 @@ function exportWiki() {
     PageLayout::postMessage($message);
 
     print '<div style="text-align: center;">';
-    print LinkButton::create( _('Weiter'). ' >>' , URLHelper::getURL("?view=wikiprintall"), array('id'=>'wiki_export','title'=>_('Seiten exportieren'),'target'=>'_blank' ));
+    print LinkButton::create( _('Weiter'). ' >>' , URLHelper::getURL("?view=wikiprintall"), ['id'=>'wiki_export','title'=>_('Seiten exportieren'),'target'=>'_blank' ]);
     echo '</div>'; // end of content area
     showPageFrameEnd();
 }
@@ -1361,7 +1361,7 @@ function get_toc_toggler() {
     $toc=getWikiPage("toc",0);
     if (!$toc) return '';
     $cont="";
-    $ToggleText=array(_("verstecken"),_("anzeigen"));
+    $ToggleText=[_("verstecken"),_("anzeigen")];
     $cont.="<script type=\"text/javascript\">
         function toggle(obj) {
             var elstyle = document.getElementById(obj).style;
@@ -1419,7 +1419,7 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
         // 2. replace all html tags with  \007\007
         // 3. highlight
         // 4. replace all \007\007 with corresponding saved tags
-        $founds = array();
+        $founds = [];
         preg_match_all("/<[^>].*>/U", $content, $founds);
         $content = preg_replace("/<[^>].*>/U", "\007\007", $content);
         $content = preg_replace("/(".preg_quote(htmlReady($hilight), "/").")/i", "<span style='background-color:#FFFF88'>\\1</span>", $content, -1);
@@ -1450,7 +1450,7 @@ function showDiffs($keyword, $versions_since)
               WHERE keyword = ? AND range_id = ?
               ORDER BY version DESC";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($keyword, Context::getId()));
+    $statement->execute([$keyword, Context::getId()]);
     $versions = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     if (count($versions) === 0) {
@@ -1518,7 +1518,7 @@ function do_diff($strlines1,$strlines2)
 }
 
 function toDiffLineArray($lines, $who) {
-    $dla = array();
+    $dla = [];
     $lines = explode("\n",preg_replace("/\r/",'',$lines));
     foreach ($lines as $l) {
         $dla[] = new DiffLine($l, $who);
@@ -1546,7 +1546,7 @@ function showComboDiff($keyword, $db=NULL)
         if ($wd2) {
             $diffarray2 = toDiffLineArray($wd2['body'], $wd2['user_id']);
             $newarray = $differ->arr_compare("diff", $diffarray1, $diffarray2);
-            $diffarray1=array();
+            $diffarray1=[];
             foreach ($newarray as $i) {
                 if ($i->status["diff"] != "-") {
                     $diffarray1[]=$i;
@@ -1557,7 +1557,7 @@ function showComboDiff($keyword, $db=NULL)
     }
     $legend="<table>";
     $count=0;
-    $authors=array();
+    $authors=[];
     foreach ($diffarray1 as $i) {
         if ($i && !in_array($i->who, $authors)) {
             $authors[]=$i->who;
@@ -1614,16 +1614,16 @@ function showComboDiff($keyword, $db=NULL)
     getDiffPageInfobox($keyword);
 
     // help texts
-    $help = array(
+    $help = [
         _('Die Ansicht zeigt den Verlauf der Textänderungen einer Wiki-Seite '.
           'mit einer Übersicht, welche Autor/-innen welche Textänderungen ' .
-          'vorgenommen haben.'));
+          'vorgenommen haben.')];
     Helpbar::get()->ignoreDatabaseContents();
     Helpbar::get()->addPlainText('', $help);
 }
 
 function create_color($index) {
-    $shades=array("e","b","d","a","c","9","8","7","6","5");
+    $shades=["e","b","d","a","c","9","8","7","6","5"];
     if ($index>70) {
         $index=$index%70;
     }
@@ -1671,8 +1671,8 @@ class line_diff
     function set_str($key,$str1,$str2)
     {
         $this->key = $key;
-        $this->arr1 = array();
-        $this->arr2 = array();
+        $this->arr1 = [];
+        $this->arr2 = [];
         $str1 = preg_replace("/\r/",'',$str1);
         $str2 = preg_replace("/\r/",'',$str2);
         foreach (explode("\n",$str1) as $line)
@@ -1716,7 +1716,7 @@ class line_diff
 
         if ($this->m == 0 or $this->n == 0) // no need compare.
         {
-            $this->result = array(array('x'=>0,'y'=>0));
+            $this->result = [['x'=>0,'y'=>0]];
             return;
         }
 
@@ -1736,13 +1736,13 @@ class line_diff
 
         $delta = $this->n - $this->m; // must be >=0;
 
-        $fp = array();
-        $this->path = array();
+        $fp = [];
+        $this->path = [];
 
         for ($p = -($this->m + 1); $p <= ($this->n + 1); $p++)
         {
             $fp[$p] = -1;
-            $this->path[$p] = array();
+            $this->path[$p] = [];
         }
 
         for ($p = 0;; $p++)
@@ -1781,13 +1781,13 @@ class line_diff
             and $this->arr1[$x + 1]->compare($this->arr2[$y + 1]))
         {
             $x++; $y++;
-            $this->path[$k][] = array('x'=>$x,'y'=>$y); //
+            $this->path[$k][] = ['x'=>$x,'y'=>$y]; //
         }
         return $y;
     }
     function toArray()
     {
-        $arr = array();
+        $arr = [];
         if ($this->reverse) //
         {
             $_x = 'y'; $_y = 'x'; $_m = $this->n; $arr1 =& $this->arr2; $arr2 =& $this->arr1;
@@ -1799,7 +1799,7 @@ class line_diff
 
         $x = $y = 1;
         $this->add_count = $this->delete_count = 0;
-        $this->pos[] = array('x'=>$this->m,'y'=>$this->n); // sentinel
+        $this->pos[] = ['x'=>$this->m,'y'=>$this->n]; // sentinel
         foreach ($this->pos as $pos)
         {
             $this->delete_count += ($pos[$_x] - $x);
@@ -1838,7 +1838,7 @@ class DiffLine
     function __construct($text, $who=NULL)
     {
         $this->text = "$text\n";
-        $this->status = array();
+        $this->status = [];
         $this->who = $who;
     }
     function compare($obj)

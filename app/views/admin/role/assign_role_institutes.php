@@ -30,7 +30,7 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::create(_('Einrichtung hinzufügen'), "add_institute", array("rel" => "lightbox")) ?>
+        <?= Studip\Button::create(_('Einrichtung hinzufügen'), "add_institute", ["rel" => "lightbox"]) ?>
         <?= Studip\LinkButton::createCancel(_('Schließen'), $controller->url_for('/assign_role/' . $user->id), [
             'data-dialog-button' => '',
             'data-dialog' => 'size=auto;reload-on-close'

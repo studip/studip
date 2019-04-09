@@ -40,7 +40,7 @@ class UserService extends AccessControlledService {
     */
    static function parse_msg_to_clean_text($long_msg,$separator="§") {
        $msg = explode ($separator,$long_msg);
-       $ret = array();
+       $ret = [];
        for ($i=0; $i < count($msg); $i=$i+2) {
            if ($msg[$i+1]) $ret[] = trim(decodeHTML(preg_replace ("'<[\/\!]*?[^<>]*?>'si", "", $msg[$i+1])));
        }
@@ -49,23 +49,23 @@ class UserService extends AccessControlledService {
 
    function __construct() {
        $this->add_api_method('create_user',
-           array('', 'Studip_User'),
+           ['', 'Studip_User'],
            'Studip_User',
            'creates a new user');
        $this->add_api_method('find_user_by_user_name',
-           array('', ''),
+           ['', ''],
            'Studip_User',
            'finds a user by username');
        $this->add_api_method('update_user',
-           array('', 'Studip_User'),
+           ['', 'Studip_User'],
            'Studip_User',
            'updates user');
        $this->add_api_method('delete_user',
-           array('', ''),
+           ['', ''],
            true,
            'deletes user with given username');
        $this->add_api_method('check_credentials',
-           array('', '', ''),
+           ['', '', ''],
            true,
            'checks if given username and password match');
    }
@@ -86,9 +86,9 @@ class UserService extends AccessControlledService {
        global $auth, $user, $perm;
 
        $auth = new Seminar_Auth();
-       $auth->auth = array('uid' => 'ws',
+       $auth->auth = ['uid' => 'ws',
           'uname' => 'ws',
-          'perm' => 'root');
+          'perm' => 'root'];
        $faked_root = new User();
        $faked_root->user_id = 'ws';
        $faked_root->username = 'ws';

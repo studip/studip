@@ -1,9 +1,9 @@
 <?php
 # Lifter010: TODO
 $is_locked = $input['locked'] ? 'disabled readonly' : '';
-$is_locked_array = $input['locked'] ? array('disabled' => true, 'readonly' => true) : array();
-$is_required_array = $input['must'] ? array('required' => true) : array();
-$is_pattern_array = $input['pattern'] ? array('pattern' => $input['pattern']) : array();
+$is_locked_array = $input['locked'] ? ['disabled' => true, 'readonly' => true] : [];
+$is_required_array = $input['must'] ? ['required' => true] : [];
+$is_pattern_array = $input['pattern'] ? ['pattern' => $input['pattern']] : [];
 if ($input['type'] === "text") : ?>
     <? if ($input['i18n']) : ?>
         <?= I18N::input($input['name'], $input['value'], $is_locked_array + $is_required_array + $is_pattern_array) ?>
@@ -54,7 +54,7 @@ if ($input['type'] === "multiselect") : ?>
     <select <?=$is_locked ?> name="<?= $input['name'] ?>" multiple class="nested-select" <? if ($input['must']) echo 'required'; ?>>
     <? if ($input['choices']) : foreach ($input['choices'] as $choice_value => $choice_name) : ?>
         <option value="<?= htmlReady($choice_value) ?>"<?=
-            in_array($choice_value, is_array($input['value']) ? $input['value'] : array($input['value']))
+            in_array($choice_value, is_array($input['value']) ? $input['value'] : [$input['value']])
             ? " selected"
             : "" ?>><?= htmlReady($choice_name) ?></option>
     <? endforeach; endif; ?>

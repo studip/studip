@@ -8,7 +8,7 @@ $columns   = min(3, ceil($count / 5));
 $max       = $columns ? floor($count / $columns) : 0;
 $spillover = $columns ? $count % $columns : 0;
 
-$data = array();
+$data = [];
 for ($i = 0; $i < $columns; $i++) {
     $num = $max + (int)($spillover > 0);
 

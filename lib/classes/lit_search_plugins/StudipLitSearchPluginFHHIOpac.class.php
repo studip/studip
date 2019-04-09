@@ -44,12 +44,12 @@ class StudipLitSearchPluginFHHIOpac extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = "Bibliotheken der Fachhochschule Hildesheim/Holzminden/Göttingen";
         $this->z_host = "sru.gbv.de/opac-de-hil3";
-        $this->z_profile = array('1016' => _("Basisindex [ALL]"), '4' => _("Titelstichwörter [TIT]"),
+        $this->z_profile = ['1016' => _("Basisindex [ALL]"), '4' => _("Titelstichwörter [TIT]"),
                                 '5' => _("Serienstichwörter [SER]"), '21' => _("alle Klassifikationen [SYS]"),
                                 '1004' => _("Person, Author [PER]"), '1005' => _("Körperschaften [KOR]"),
                                 '1006' => _("Kongresse [KON]"), '1007' => _("alle Nummern [NUM]"),
                                 '5040' => _("Schlagwörter [SLW]"),'8062' => _("alle Titelanfänge [TAF]"),
-                                '8580' => _("Verlagsort, Verlag [PUB]"), '54' => _("Signatur [SGN]"));
+                                '8580' => _("Verlagsort, Verlag [PUB]"), '54' => _("Signatur [SGN]")];
 //                              );
     }
 }

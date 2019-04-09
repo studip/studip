@@ -46,36 +46,36 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
      */
     private $count_objects;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'abschluss';
 
-        $config['belongs_to']['category'] = array(
+        $config['belongs_to']['category'] = [
             'class_name' => 'AbschlussKategorie',
             'assoc_func' => 'findByAbschluss'
-        );
+        ];
 
-        $config['has_one']['category_assignment'] = array(
+        $config['has_one']['category_assignment'] = [
             'class_name' => 'AbschlussZuord',
             'assoc_foreign_key' => 'abschluss_id',
             'on_store' => 'store',
             'on_delete' => 'delete'
-        );
-        $config['has_many']['faecher'] = array(
+        ];
+        $config['has_many']['faecher'] = [
             'class_name' => 'Fach',
             'assoc_func' => 'findByAbschluss'
-        );
-        $config['has_many']['studiengaenge'] = array(
+        ];
+        $config['has_many']['studiengaenge'] = [
             'class_name' => 'Studiengang',
             'assoc_foreign_key' => 'abschluss_id'
-        );
-        $config['has_and_belongs_to_many']['professions'] = array(
+        ];
+        $config['has_and_belongs_to_many']['professions'] = [
             'class_name' => 'Fach',
             'thru_table' => 'user_studiengang',
             'thru_key' => 'abschluss_id',
             'thru_assoc_key' => 'fach_id',
             'order_by' => 'GROUP BY fach_id ORDER BY name'
-        );
+        ];
 
         $config['additional_fields']['count_faecher']['get'] =
                 function($abschluss) { return $abschluss->count_faecher; };
@@ -119,7 +119,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
             $row_count = null, $offset = null, $filter = null)
     {
         $sortby = self::createSortStatement($sortby, $order, 'chdate',
-                array('kategorie_name', 'count_faecher', 'count_studiengaenge'));
+                ['kategorie_name', 'count_faecher', 'count_studiengaenge']);
         return parent::getEnrichedByQuery('
                 SELECT abschluss.*, mvv_abschl_kategorie.name AS `kategorie_name`,
                     COUNT(DISTINCT mvv_stgteil.fach_id) AS `count_faecher`,
@@ -134,7 +134,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 ' . self::getFilterSql($filter, true) . '
                 GROUP BY abschluss_id
                 ORDER BY ' . $sortby,
-        array(), $row_count, $offset);
+        [], $row_count, $offset);
     }
 
     /**
@@ -179,7 +179,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
             WHERE mst.fach_id = ?
             GROUP BY ma.abschluss_id
             ORDER BY name',
-            array($fach_id)
+            [$fach_id]
         );
     }
 
@@ -207,14 +207,14 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
      * @return array An array of Abschluesse with number of assigned
      * Studiengaenge.
      */
-    public static function findByStudiengaenge($studiengang_ids = array())
+    public static function findByStudiengaenge($studiengang_ids = [])
     {
         return parent::getEnrichedByQuery('
             SELECT ma.*,
                 COUNT(studiengang_id) AS count_objects
             FROM abschluss AS ma
                 INNER JOIN mvv_studiengang USING (abschluss_id)
-            ' . self::getFilterSql(array('mvv_studiengang.studiengang_id' => $studiengang_ids), true) . '
+            ' . self::getFilterSql(['mvv_studiengang.studiengang_id' => $studiengang_ids], true) . '
             GROUP BY ma.abschluss_id
             ORDER BY ma.name');
     }
@@ -237,7 +237,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 INNER JOIN mvv_fach_inst AS mfi USING (fach_id)
             WHERE mfi.institut_id = ?
             ORDER BY name',
-            array($fachbereich_id)
+            [$fachbereich_id]
         );
     }
 
@@ -259,7 +259,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 INNER JOIN mvv_stgteilabschnitt_modul AS msm USING (abschnitt_id)
             WHERE msm.modul_id = ?
             ORDER BY msm.position',
-            array($modul_id)
+            [$modul_id]
         );
     }
 
@@ -311,7 +311,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
      */
     public function getAssignedInstitutes()
     {
-        $institute = array();
+        $institute = [];
 
         $stmt = DBManager::get()->prepare('
             SELECT inst.*
@@ -320,7 +320,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
             WHERE ms.abschluss_id = ? '
         );
 
-        $stmt->execute(array($this->getId()));
+        $stmt->execute([$this->getId()]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $institut) {
             $institute[$institut['Institut_id']] =
                     new Fachbereich($institut['Institut_id']);
@@ -379,7 +379,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
                 LEFT JOIN mvv_stg_stgteil USING (stgteil_id)
                 LEFT JOIN mvv_studiengang USING (studiengang_id)
             WHERE abschluss_id = ? ',
-            array($this->getId())
+            [$this->getId()]
         );
     }
 
@@ -397,7 +397,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
     public function getParents($mode = null)
     {
         $abschluss_kategorie = AbschlussKategorie::findByAbschluss($this->getId());
-        return $abschluss_kategorie ? array($abschluss_kategorie) : array();
+        return $abschluss_kategorie ? [$abschluss_kategorie] : [];
 
     }
 
@@ -406,7 +406,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
         $ret = parent::validate();
         if ($this->isDirty()) {
             $rejected = false;
-            $messages = array();
+            $messages = [];
 
             if (!$this->category_assignment) {
                 $ret['category_assignment'] = true;
@@ -448,7 +448,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
     {
         $stmt = DBManager::get()->prepare('SELECT COUNT(DISTINCT user_id) '
                 . 'FROM user_studiengang WHERE abschluss_id = ?');
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         return $stmt->fetchColumn();
     }
 
@@ -460,7 +460,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
             WHERE fach_id = ?
                 AND abschluss_id = ?'
         );
-        $stmt->execute(array($studycourse_id, $this->id));
+        $stmt->execute([$studycourse_id, $this->id]);
         return $stmt->fetchColumn();
     }
 

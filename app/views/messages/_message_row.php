@@ -29,12 +29,12 @@
         <? if ($num_recipients > 1) : ?>
             <?= sprintf(_("%s Personen"), $num_recipients) ?>
         <? else : ?>
-        <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' =>  get_username($message->receivers[0]['user_id']))) ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' =>  get_username($message->receivers[0]['user_id'])]) ?>">
             <?= htmlReady(get_fullname($message->receivers[0]['user_id'])) ?>
         </a>
         <? endif ?>
     <? else: ?>
-        <a href="<?= URLHelper::getLink('dispatch.php/profile', array('username' =>  get_username($message['autor_id']))) ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' =>  get_username($message['autor_id'])]) ?>">
             <?= htmlReady(get_fullname($message['autor_id'])) ?>
         </a>
     <? endif; ?>
@@ -42,7 +42,7 @@
     <td><?= date("d.m.Y H:i", $message['mkdate']) ?></td>
     <td class="tag-container hidden-small-down">
     <? foreach ($message->getTags() as $tag) : ?>
-        <a href="<?= URLHelper::getLink("?", array('tag' => $tag)) ?>" class="message-tag" title="<?= _("Alle Nachrichten zu diesem Schlagwort") ?>">
+        <a href="<?= URLHelper::getLink("?", ['tag' => $tag]) ?>" class="message-tag" title="<?= _("Alle Nachrichten zu diesem Schlagwort") ?>">
             <?= htmlReady(ucfirst($tag)) ?>
         </a>
     <? endforeach ?>

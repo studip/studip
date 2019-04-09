@@ -24,7 +24,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
     public function __construct($contexts, Filter $filter)
     {
         if (!is_array($contexts)) {
-            $contexts = array($contexts);
+            $contexts = [$contexts];
         }
 
         foreach ($contexts as $context) {
@@ -40,7 +40,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
         //fetch avaible contextes in given timespan
         $available_contexts = \DBManager::get()->fetchGroupedPairs(
             "SELECT DISTINCT context,context_id FROM activities WHERE mkdate BETWEEN ? AND ?",
-            array($filter->getStartDate(), $filter->getEndDate()));
+            [$filter->getStartDate(), $filter->getEndDate()]);
 
         //fetch activities only for contextes with known activities
         $activities = array_flatten(array_values(array_filter(array_map(
@@ -52,7 +52,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
             }, $contexts))
         ));
 
-        $new_activities = array();
+        $new_activities = [];
 
         foreach ($activities as $activity) {
             // generate an id for the activity, considering some basic object parameters
@@ -130,7 +130,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function toArray()
     {
-        $activities = array();
+        $activities = [];
 
         foreach ($this as $key => $activity) {
             $activities[$key] = $activity->toArray();
@@ -142,7 +142,7 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
             $class       = $activity->provider;
             $object_text = $class::getLexicalField();
 
-            if (in_array($activity->actor_id, array('____%system%____', 'system')) !== false) {
+            if (in_array($activity->actor_id, ['____%system%____', 'system']) !== false) {
                 $actor = _('Stud.IP');
             } elseif ($activity->actor_type === 'anonymous') {
                 $actor = _('Anonym');

@@ -340,7 +340,7 @@ class MyRealmModel
                             );
                         }
                     }
-                    $nav->setImage($image, array('title' => $title));
+                    $nav->setImage($image, ['title' => $title]);
                 }
 
                 return $nav;
@@ -729,7 +729,7 @@ class MyRealmModel
      */
     public static function getPluginNavigationForSeminar($seminar_id, $sem_class, $user_id, $visitdate)
     {
-        $plugin_navigation = array();
+        $plugin_navigation = [];
         $plugins = PluginEngine::getPlugins('StandardPlugin', $seminar_id);
 
         foreach ($plugins as $plugin) {
@@ -745,7 +745,7 @@ class MyRealmModel
     /**
      * Get all courses vor given user in selected semesters
      */
-    public static function getCourses($min_sem_key, $max_sem_key, $params = array())
+    public static function getCourses($min_sem_key, $max_sem_key, $params = [])
     {
         // init
         $order_by          = $params['order_by'];
@@ -771,12 +771,12 @@ class MyRealmModel
 
         // search for your own courses
         // Filtering by Semester
-        $courses = Course::findThru($GLOBALS['user']->id, array(
+        $courses = Course::findThru($GLOBALS['user']->id, [
             'thru_table'        => 'seminar_user',
             'thru_key'          => 'user_id',
             'thru_assoc_key'    => 'seminar_id',
             'assoc_foreign_key' => 'seminar_id'
-        ));
+        ]);
 
         if ($deputies_enabled) {
             $datas = self::getDeputies($GLOBALS['user']->id);
@@ -811,7 +811,7 @@ class MyRealmModel
                   JOIN seminare ON range_id = seminar_id
                   WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $data;
     }
@@ -821,14 +821,14 @@ class MyRealmModel
     {
         $query     = "SELECT gruppe FROM deputies WHERE range_id = ? AND user_id=?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($range_id, $GLOBALS['user']->id));
+        $statement->execute([$range_id, $GLOBALS['user']->id]);
         return $statement->fetch(PDO::FETCH_COLUMN);
     }
 
     public static function getSelectedSemesters($sem = 'all')
     {
         $sem_data = Semester::getAllAsArray();
-        $semesters = array();
+        $semesters = [];
         foreach ($sem_data as $sem_key => $one_sem) {
             $current_sem = $sem_key;
             if (!$one_sem['past']) break;
@@ -847,7 +847,7 @@ class MyRealmModel
         }
 
         // Get the needed semester
-        if (!in_array($sem, array('all', 'current', 'future', 'last', 'lastandnext'))) {
+        if (!in_array($sem, ['all', 'current', 'future', 'last', 'lastandnext'])) {
             $semesters[] = SemesterData::GetSemesterIndexById($sem);
         } else {
             switch ($sem) {
@@ -876,7 +876,7 @@ class MyRealmModel
         return $semesters;
     }
 
-    public static function getPreparedCourses($sem = "all", $params = array())
+    public static function getPreparedCourses($sem = "all", $params = [])
     {
         $semesters   = self::getSelectedSemesters($sem);
         $current_semester_nr = SemesterData::GetSemesterIndexById(@Semester::findCurrent()->id);
@@ -885,7 +885,7 @@ class MyRealmModel
         $group_field = $params['group_field'];
         $courses     = self::getCourses($min_sem_key, $max_sem_key, $params);
         $show_semester_name = UserConfig::get($GLOBALS['user']->id)->SHOWSEM_ENABLE;
-        $sem_courses = array();
+        $sem_courses = [];
 
         $param_array = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible ';
         $param_array .= 'chdate admission_binding modules admission_prelim';
@@ -1189,9 +1189,9 @@ class MyRealmModel
             $function = 'check' . ucfirst($key);
 
             if (method_exists(__CLASS__, $function)) {
-                $params = array(&$my_obj_values,
+                $params = [&$my_obj_values,
                                 $user_id,
-                                $object_id);
+                                $object_id];
                 if (strcmp($key, 'participants') === 0) {
                     array_push($params, false);
                 }
@@ -1246,7 +1246,7 @@ class MyRealmModel
         $statement = DBManager::get()->prepare(
             "SELECT id FROM sem_classes WHERE name = :name"
         );
-        $statement->execute(array('name' => 'Studiengruppen'));
+        $statement->execute(['name' => 'Studiengruppen']);
         $result = $statement->fetch(PDO::FETCH_COLUMN);
         return $result;
     }
@@ -1325,8 +1325,8 @@ class MyRealmModel
             INNER JOIN coursesets USING (set_id)
             WHERE priorities.user_id = ?
             ORDER BY coursesets.name, priorities.priority";
-        $claiming = DBManager::get()->fetchAll($sql, array($user_id));
-        $csets    = array();
+        $claiming = DBManager::get()->fetchAll($sql, [$user_id]);
+        $csets    = [];
         foreach ($claiming as $k => $claim) {
             if (!$csets[$claim['set_id']]) {
                 $csets[$claim['set_id']] = new CourseSet($claim['set_id']);
@@ -1356,7 +1356,7 @@ class MyRealmModel
             "INNER JOIN seminare USING(seminar_id) " .
             "WHERE user_id = ? " .
             "ORDER BY admission_seminar_user.status, name");
-        $stmt->execute(array($user_id));
+        $stmt->execute([$user_id]);
 
         $waitlists = array_merge($claiming, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
@@ -1376,7 +1376,7 @@ class MyRealmModel
             return null;
         }
         $insts      = new SimpleCollection($memberShips);
-        $institutes = array();
+        $institutes = [];
         $insts->filter(function ($a) use (&$institutes) {
             $array                   = $a->institute->toArray();
             $array['perms']          = $a->inst_perms;
@@ -1527,7 +1527,7 @@ class MyRealmModel
 
     public static function getStudygroups()
     {
-        $courses = array();
+        $courses = [];
         $modules = new Modules();
 
         $studygroups = User::findCurrent()
@@ -1563,8 +1563,8 @@ class MyRealmModel
     {
         $query     = "SELECT 1 FROM admission_seminar_user WHERE user_id = ? AND seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($GLOBALS['user']->id,
-                                  $course_id));
+        $statement->execute([$GLOBALS['user']->id,
+                                  $course_id]);
         $present = $statement->fetchColumn();
         return $present;
     }

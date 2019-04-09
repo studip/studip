@@ -32,17 +32,17 @@
  */
 class StudipEvaluation extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'eval';
-        $config['belongs_to']['author'] = array(
+        $config['belongs_to']['author'] = [
             'class_name' => 'User',
             'foreign_key' => 'author_id'
-        );
-        $config['has_and_belongs_to_many']['participants'] = array(
+        ];
+        $config['has_and_belongs_to_many']['participants'] = [
             'class_name' => 'User',
             'thru_table' => 'eval_user'
-        );
+        ];
         $config['additional_fields']['enddate'] = true;
         parent::configure($config);
     }
@@ -54,12 +54,12 @@ class StudipEvaluation extends SimpleORMap
      * @return Array All evaluations for that range
      */
     public static function findByRange_id($range_id) {
-        return self::findThru($range_id, array(
+        return self::findThru($range_id, [
             'thru_table'        => 'eval_range',
             'thru_key'          => 'range_id',
             'thru_assoc_key'    => 'eval_id',
             'assoc_foreign_key' => 'eval_id'
-        ));
+        ]);
     }
     
     /**
@@ -78,6 +78,6 @@ class StudipEvaluation extends SimpleORMap
     }
 
     function getNumberOfVotes () {
-        return DBManager::get()->fetchColumn("SELECT count(DISTINCT user_id) FROM eval_user WHERE eval_id = ?", array($this->id));
+        return DBManager::get()->fetchColumn("SELECT count(DISTINCT user_id) FROM eval_user WHERE eval_id = ?", [$this->id]);
 }
 }

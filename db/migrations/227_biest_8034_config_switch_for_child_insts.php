@@ -8,12 +8,12 @@ class Biest8034ConfigSwitchForChildInsts extends Migration
 
     public function up()
     {
-        $config_data = array('name' =>'MY_INSTITUTES_INCLUDE_CHILDREN',
+        $config_data = ['name' =>'MY_INSTITUTES_INCLUDE_CHILDREN',
            'range' => 'user',
            'type' => 'boolean',
            'description' => 'Sollen untergeordnete Institute mit angezeigt werden in der Veranstaltungsübersicht für Admins?',
            'value'=> 0
-        );
+        ];
 
         $stmt = DBManager::get()->prepare("
             REPLACE INTO config

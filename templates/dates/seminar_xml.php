@@ -1,11 +1,11 @@
 <?
-$turnus_list = array(
+$turnus_list = [
     0 => _("wöchentlich"),
     1 => _("zweiwöchentlich"),
     2 => _("dreiwöchentlich")
-);
+];
 
-$output = array();
+$output = [];
 
 if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turnus_data'] as $cycle) :
 
@@ -37,7 +37,7 @@ if (is_array($cycle['assigned_rooms'])){
     <wochentag><?= getWeekDay(date('w', $date['start_time']),false) ?></wochentag>
     <zeit><?= date('H:i', $date['start_time']) ?>-<?= date('H:i', $date['end_time']) ?></zeit>
     <raum>
-        <gebucht><?= htmlReady(implode(', ', getPlainRooms(array($date['resource_id'] => 1)))) ?></gebucht>
+        <gebucht><?= htmlReady(implode(', ', getPlainRooms([$date['resource_id'] => 1]))) ?></gebucht>
         <freitext><?= htmlReady($date['raum']) ?></freitext>
     </raum>
 </raumzeit>

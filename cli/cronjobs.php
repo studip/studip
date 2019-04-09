@@ -15,12 +15,12 @@ require_once 'studip_cli_env.inc.php';
 $argc = $_SERVER['argc'];
 $argv = $_SERVER['argv'];
 
-$opts = getopt('hl', array('help', 'list'));
+$opts = getopt('hl', ['help', 'list']);
 
 if (isset($opts['l']) || isset($opts['list'])) {
     $tasks = CronjobTask::findBySql('1');
     foreach ($tasks as $task) {
-        $description = call_user_func(array($task->class, 'getDescription'));
+        $description = call_user_func([$task->class, 'getDescription']);
         fwrite(STDOUT, sprintf('%s %s' . PHP_EOL, $task->id, $description));
     }
     exit(0);

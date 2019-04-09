@@ -19,7 +19,7 @@ class StudipCacheProxy implements StudipCache
      *                                 an array but a space seperated string
      *                                 is also valid)
      */
-    public function __construct(StudipCache $cache, $proxy_these = array('expire'))
+    public function __construct(StudipCache $cache, $proxy_these = ['expire'])
     {
         if (!is_array($proxy_these)) {
             $proxy_these = words($proxy_these);
@@ -40,8 +40,8 @@ class StudipCacheProxy implements StudipCache
     {
         if (in_array('expire', $this->proxy_these)) {
             try {
-                $operation = new StudipCacheOperation(array($key, 'expire'));
-                $operation->parameters = serialize(array());
+                $operation = new StudipCacheOperation([$key, 'expire']);
+                $operation->parameters = serialize([]);
                 $operation->store();
             } catch (Exception $e) {
             }
@@ -57,8 +57,8 @@ class StudipCacheProxy implements StudipCache
     {
         if (in_array('flush', $this->proxy_these)) {
             try {
-                $operation = new StudipCacheOperation(array('', 'flush'));
-                $operation->parameters = serialize(array());
+                $operation = new StudipCacheOperation(['', 'flush']);
+                $operation->parameters = serialize([]);
                 $operation->store();
             } catch (Exception $e) {
             }
@@ -90,8 +90,8 @@ class StudipCacheProxy implements StudipCache
     {
         if (in_array('write', $this->proxy_these)) {
             try {
-                $operation = new StudipCacheOperation(array($key, 'write'));
-                $operation->parameters = serialize(array($content, $expires));
+                $operation = new StudipCacheOperation([$key, 'write']);
+                $operation->parameters = serialize([$content, $expires]);
                 $operation->store();
             } catch (Exception $e) {
             }

@@ -49,12 +49,12 @@ class CourseCancelledEvent extends CourseEvent
                 . 'SELECT metadate_id FROM schedule_seminare '
                 . 'WHERE user_id = :user_id AND visible = 0) ) '
                 . 'ORDER BY date ASC');
-        $stmt->execute(array(
+        $stmt->execute([
             ':user_id' => $user_id,
             ':start'   => $start->getTimestamp(),
             ':end'     => $end->getTimestamp()
-        ));
-        $event_collection = array();
+        ]);
+        $event_collection = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $event = new CourseCancelledEvent();
             $event->setData($row);

@@ -56,7 +56,7 @@ use Studip\Button,
                         <br>
                         <?= sprintf(_("Um die Belegung zu verändern, ändern Sie diese auf der Seite %sZeiten / Räume%s der Veranstaltung"),
                                     Icon::create('schedule', 'info')->asImg() . "&nbsp;" .
-                                    "<a href=" . URLHelper::getURL("dispatch.php/course/timesrooms", array('cid' => $seminarID)) . "onClick=\"return check_opener(this)\">",
+                                    "<a href=" . URLHelper::getURL("dispatch.php/course/timesrooms", ['cid' => $seminarID]) . "onClick=\"return check_opener(this)\">",
                                     "</a>");
                         ?>
                     <? endif; ?>
@@ -70,7 +70,7 @@ use Studip\Button,
                         <br>
                         <?= sprintf(_("Um die Belegung zu verändern, ändern Sie bitte den Termin auf der Seite %sZeiten / Räume%s der Veranstaltung"),
                                    Icon::create('schedule', 'info')->asImg() . "&nbsp;" .
-                                   "<a href=" . URLHelper::getURL("dispatch.php/course/timesrooms", array('cid' => $seminarID)) ." onClick=\"return check_opener(this)\">",
+                                   "<a href=" . URLHelper::getURL("dispatch.php/course/timesrooms", ['cid' => $seminarID]) ." onClick=\"return check_opener(this)\">",
                                    "</a>");
                         ?>
                     <? endif ?>
@@ -106,14 +106,14 @@ use Studip\Button,
                 endif;
                 ?>
             <? else : ?>
-                <? $repeat_buttons = array(
-                    'na' => array('name' => _('Keine'), 'action' => 'change_schedule_repeat_none'),
-                    'd'  => array('name' => _('Täglich'), 'action' => 'change_schedule_repeat_day'),
-                    'w'  => array('name' => ucfirst(_('wöchentlich')), 'action' => 'change_schedule_repeat_week'),
-                    'sd' => array('name' => _('Mehrtägig'), 'action' => 'change_schedule_repeat_severaldays'),
-                    'm'  => array('name' => _('Monatlich'), 'action' => 'change_schedule_repeat_month'),
-                    'y'  => array('name' => _('Jährlich'),  'action' => 'change_schedule_repeat_year')
-                ) ?>
+                <? $repeat_buttons = [
+                    'na' => ['name' => _('Keine'), 'action' => 'change_schedule_repeat_none'],
+                    'd'  => ['name' => _('Täglich'), 'action' => 'change_schedule_repeat_day'],
+                    'w'  => ['name' => ucfirst(_('wöchentlich')), 'action' => 'change_schedule_repeat_week'],
+                    'sd' => ['name' => _('Mehrtägig'), 'action' => 'change_schedule_repeat_severaldays'],
+                    'm'  => ['name' => _('Monatlich'), 'action' => 'change_schedule_repeat_month'],
+                    'y'  => ['name' => _('Jährlich'),  'action' => 'change_schedule_repeat_year']
+                ] ?>
 
                 <? foreach ($repeat_buttons as $repeat_mode => $button) : ?>
                     <? if ($resAssign->getRepeatMode() == $repeat_mode) : ?>
@@ -350,7 +350,7 @@ use Studip\Button,
                     }
                     print "</select> ";
                     echo Button::create(_('Verschieben'), 'send_change_resource',
-                        array('title' => _("Die Belegung in den ausgewählten Raum verschieben")));
+                        ['title' => _("Die Belegung in den ausgewählten Raum verschieben")]);
                     echo Button::create(_('Neue Suche'), 'reset_room_search');
                 } else {
                     ?>
@@ -361,7 +361,7 @@ use Studip\Button,
                     </select>
                     </font>
                     <?= Button::create(_('Kopieren'), 'send_change_resource',
-                        array('title' => _("Die Belegung in die ausgewählten Raum kopieren"))); ?>
+                        ['title' => _("Die Belegung in die ausgewählten Raum kopieren")]); ?>
                     <?= Button::create(_('Neue Suche'), 'reset_room_search'); ?>
                     <?
                 }
@@ -382,7 +382,7 @@ use Studip\Button,
             </td>
             <td valign="top">
             <?
-            if (!in_array($resAssign->getRepeatMode(), array('na','sd'))) :
+            if (!in_array($resAssign->getRepeatMode(), ['na','sd'])) :
                 ?>
                 <b><?=_("Regelmäßige Belegung in Einzeltermine umwandeln:")?></b><br><br>
                 <?=_("Nutzen Sie diese Funktion, um eine Terminserie in Einzeltermine umzuwandeln. Diese Einzeltermine können dann getrennt bearbeitet werden.");?>

@@ -24,11 +24,11 @@ class Resources_HelpersController extends AuthenticatedController
         }
         $select_options = Request::optionArray('rooms');
         $rooms = array_filter($select_options, function($v) {return mb_strlen($v) === 32;});
-        $events = array();
-        $dates = array();
-        $timestamps = array();
+        $events = [];
+        $dates = [];
+        $timestamps = [];
         if (count(Request::getArray('new_date'))) {
-            $new_date = array();
+            $new_date = [];
             foreach (Request::getArray('new_date') as $one) {
                 if ($one['name'] == 'startDate') {
                     $dmy = explode('.', $one['value']);
@@ -60,7 +60,7 @@ class Resources_HelpersController extends AuthenticatedController
             }
         }
         if (count($events)) {
-            $result = array();
+            $result = [];
             $checker = new CheckMultipleOverlaps();
             $checker->setTimeRange(min($timestamps), max($timestamps));
             foreach($rooms as $room) $checker->addResource($room);
@@ -100,17 +100,17 @@ class Resources_HelpersController extends AuthenticatedController
         }
             $this->resource = new ResourceObject($resource_id);
             $title = sprintf(_("Nutzer von %s benachrichtigen"),htmlReady($this->resource->getName()));
-            $form_fields['start_day'] = array('type' => 'text', 'size' => '10', 'required' => true, 'caption' => _("Belegungen berücksichtigen von"));
-            $form_fields['start_day']['attributes'] = array('onMouseOver' => 'jQuery(this).datepicker();this.blur();', 'onChange' => '$(this).closest("form").submit();');
+            $form_fields['start_day'] = ['type' => 'text', 'size' => '10', 'required' => true, 'caption' => _("Belegungen berücksichtigen von")];
+            $form_fields['start_day']['attributes'] = ['onMouseOver' => 'jQuery(this).datepicker();this.blur();', 'onChange' => '$(this).closest("form").submit();'];
             $form_fields['start_day']['default_value'] = strftime('%x');
-            $form_fields['end_day'] = array('type' => 'text', 'size' => '10', 'required' => true, 'caption' => _("Belegungen berücksichtigen bis"));
-            $form_fields['end_day']['attributes'] = array('onMouseOver' => 'jQuery(this).datepicker();this.blur();', 'onChange' => '$(this).closest("form").submit();');
+            $form_fields['end_day'] = ['type' => 'text', 'size' => '10', 'required' => true, 'caption' => _("Belegungen berücksichtigen bis")];
+            $form_fields['end_day']['attributes'] = ['onMouseOver' => 'jQuery(this).datepicker();this.blur();', 'onChange' => '$(this).closest("form").submit();'];
             $form_fields['end_day']['default_value'] = strftime('%x', strtotime('+6 months'));
-            $form_fields['subject'] = array('type' => 'text', 'size' => '200','attributes' => array('style' => 'width:100%'), 'required' => true, 'caption' => _("Betreff"));
+            $form_fields['subject'] = ['type' => 'text', 'size' => '200','attributes' => ['style' => 'width:100%'], 'required' => true, 'caption' => _("Betreff")];
             $form_fields['subject']['default_value'] = $this->resource->getName();
-            $form_fields['message'] = array('caption' => _("Nachricht"), 'type' => 'textarea', 'required' => true, 'attributes' => array('rows' => 4, 'style' => 'width:100%'));
+            $form_fields['message'] = ['caption' => _("Nachricht"), 'type' => 'textarea', 'required' => true, 'attributes' => ['rows' => 4, 'style' => 'width:100%']];
 
-            $form_buttons['save_close'] = array('caption' => _('OK'), 'info' => _("Benachrichtigung verschicken und Dialog schließen"));
+            $form_buttons['save_close'] = ['caption' => _('OK'), 'info' => _("Benachrichtigung verschicken und Dialog schließen")];
 
             $form = new StudipForm($form_fields, $form_buttons, 'resource_message', false);
 
@@ -118,7 +118,7 @@ class Resources_HelpersController extends AuthenticatedController
             $end_time = strtotime($form->getFormFieldValue('end_day'));
 
             $assign_events = new AssignEventList($start_time, $end_time, $resource_id, '', '', TRUE, 'all');
-            $rec = array();
+            $rec = [];
             while ($event = $assign_events->nextEvent()) {
                 if ($owner_type = $event->getOwnerType()) {
                     if ($owner_type == 'date') {
@@ -151,7 +151,7 @@ class Resources_HelpersController extends AuthenticatedController
                 PageLayout::postMessage(MessageBox::error(sprintf(_("Im Zeitraum %s - %s wurden keine Belegungen gefunden!"), strftime('%x', $start_time), strftime('%x', $end_time))));
                 $this->no_receiver = true;
             } else {
-                $submessage = array();
+                $submessage = [];
                 foreach ($rec as $username => $slots) {
                     $submessage[] = get_fullname_from_uname($username, 'full_rev_username', true) . ' '. sprintf(_('(%s Belegungen)'), count($slots));
                 }
@@ -163,9 +163,9 @@ class Resources_HelpersController extends AuthenticatedController
 
     public function export_requestlist_action()
     {
-        $data[] = array(_('V.-Nummer'), _('Titel'), _('Dozenten'), _('Anfrager'), _('Startsemester'), _('Datum der Erstellung'),
+        $data[] = [_('V.-Nummer'), _('Titel'), _('Dozenten'), _('Anfrager'), _('Startsemester'), _('Datum der Erstellung'),
             _('Datum der letzten Änderung'), _('angeforderte Belegungszeiten'), _('gewünschte Raumeigenschaften'), _('angeforderter Raum'),
-            _('Teilnehmendenanzahl'), _('Kommentar des Anfragenden'));
+            _('Teilnehmendenanzahl'), _('Kommentar des Anfragenden')];
 
         $resources_data = unserialize($_SESSION['resources_data']);
 
@@ -180,7 +180,7 @@ class Resources_HelpersController extends AuthenticatedController
                     $title = $semObj->getName();
                 }
                 //lecturer
-                $lec = array();
+                $lec = [];
                 foreach ($semObj->getMembers('dozent') as $doz) {
                     $lec[] = $doz['fullname'];
                 }
@@ -198,7 +198,7 @@ class Resources_HelpersController extends AuthenticatedController
                 $dateChanged = strftime('%Y-%m-%d %H:%M:%S', $reqObj->chdate);
 
                 // requested time slots:
-                $timeslot = array();
+                $timeslot = [];
                 $dates = $semObj->getGroupedDates($reqObj->getTerminId(), $reqObj->getMetadateId());
                 if ($dates['first_event']) {
                     if (is_array($dates['info']) && sizeof($dates['info']) > 0) {
@@ -255,7 +255,7 @@ class Resources_HelpersController extends AuthenticatedController
                 $comment = $reqObj->getComment();
 
                 //csv export
-                $data[] = array($no, $title, $lec, $rp, $start, $date, $dateChanged, $time, $roomReq, $room, $people, $comment);
+                $data[] = [$no, $title, $lec, $rp, $start, $date, $dateChanged, $time, $roomReq, $room, $people, $comment];
             }
         }
 

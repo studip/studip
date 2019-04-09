@@ -45,7 +45,7 @@ class SeminarDB
                   WHERE themen.seminar_id = ?
                   ORDER BY priority";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_id));
+        $statement->execute([$seminar_id]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -58,7 +58,7 @@ class SeminarDB
                   LEFT JOIN resources_assign ON (assign_user_id = termine.termin_id)
                   WHERE termine.range_id = ?
                     AND (metadate_id IS NULL OR metadate_id = '')";
-        $parameters = array($seminar_id);
+        $parameters = [$seminar_id];
 
         if ($start != 0 || $end != 0) {
             $query .= " AND termine.date BETWEEN ? AND ?";
@@ -70,7 +70,7 @@ class SeminarDB
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
 
-        $ret = array();
+        $ret = [];
         while ($data = $statement->fetch(PDO::FETCH_ASSOC)) {
             if ($data['related_persons']) {
                 $data['related_persons'] = explode(',', $data['related_persons']);
@@ -87,19 +87,19 @@ class SeminarDB
 
     public static function getStatOfNotBookedRooms($cycle_id, $seminar_id, $filterStart = 0, $filterEnd = 0)
     {
-        $stat = array(
+        $stat = [
             'booked'         => 0,
             'open'           => 0,
-            'open_rooms'     => array(),
+            'open_rooms'     => [],
             'declined'       => 0,
-            'declined_dates' => array(),
-        );
+            'declined_dates' => [],
+        ];
 
         $query = "SELECT termine.*, resources_assign.resource_id
                   FROM termine
                   LEFT JOIN resources_assign ON (assign_user_id = termin_id)
                   WHERE range_id = ? AND metadate_id = ?";
-        $parameters = array($seminar_id, $cycle_id);
+        $parameters = [$seminar_id, $cycle_id];
 
         if ($filterStart != 0 || $filterEnd != 0) {
             $query .= " AND date >= ? AND end_time <= ?";
@@ -125,7 +125,7 @@ class SeminarDB
                   FROM termine t
                   LEFT JOIN resources_requests AS rr ON (t.termin_id = rr.termin_id)
                   WHERE range_id = ? AND t.metadate_id = ? AND closed = 3";
-        $parameters = array($seminar_id, $cycle_id);
+        $parameters = [$seminar_id, $cycle_id];
 
         if ($filterStart != 0 && $filterEnd != 0) {
             $query .= " AND date >= ? AND end_time <= ?";
@@ -150,7 +150,7 @@ class SeminarDB
                   FROM termine AS t
                   LEFT JOIN resources_requests AS rr ON (t.termin_id = rr.termin_id)
                   WHERE seminar_id = ? AND t.metadate_id = ? AND closed = 0";
-        $parameters = array($seminar_id, $cycle_id);
+        $parameters = [$seminar_id, $cycle_id];
 
         if ($filterStart > 0 || $filterEnd > 0) {
             $query .= " AND `date` >= ? AND end_time <= ?";
@@ -168,20 +168,20 @@ class SeminarDB
                   FROM termine
                   WHERE range_id = ? AND `date` NOT BETWEEN ? AND ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_id, $start, $end));
+        $statement->execute([$seminar_id, $start, $end]);
         return $statement->fetchColumn();
     }
 
     public static function getFirstDate($seminar_id)
     {
-        $termine = array();
+        $termine = [];
 
         $query = "SELECT termin_id, date, end_time
                     FROM termine
                     WHERE range_id = ?
                     ORDER BY date";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($seminar_id));
+        $statement->execute([$seminar_id]);
 
         $start = 0;
         $end = 0;
@@ -199,14 +199,14 @@ class SeminarDB
 
     public static function getNextDate($seminar_id)
     {
-        $termin = array();
+        $termin = [];
 
         $query = "SELECT termin_id, date, end_time
                   FROM termine
                   WHERE range_id = ? AND date > UNIX_TIMESTAMP(NOW() - INTERVAL 1 HOUR)
                   ORDER BY date, end_time";
         $stmt = DBManager::get()->prepare($query);
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         $start = 0;
         while ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -216,7 +216,7 @@ class SeminarDB
             }
         }
 
-        $ex_termin = array();
+        $ex_termin = [];
 
         $query = "SELECT termin_id
                   FROM ex_termine
@@ -225,7 +225,7 @@ class SeminarDB
                   ORDER BY date
                   LIMIT 1";
         $stmt = DBManager::get()->prepare($query);
-        $stmt->execute(array($seminar_id));
+        $stmt->execute([$seminar_id]);
 
         while ($termin_id = $stmt->fetchColumn()) {
             $ex_termin[] = $termin_id;
@@ -246,14 +246,14 @@ class SeminarDB
                   WHERE seminar_id = ?
                     AND (termin_id = '' OR termin_id IS NULL)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
 
         return true;
     }
 
     public static function getDeletedSingleDates($seminar_id, $start = 0, $end = 0)
     {
-        $ret = array();
+        $ret = [];
         if (($start != 0) || ($end != 0)) {
             $query = "SELECT ex_termine.*, GROUP_CONCAT(trp.user_id) AS related_persons, GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
                       FROM ex_termine
@@ -264,7 +264,7 @@ class SeminarDB
                       AND `date` BETWEEN ? AND ?
                       GROUP BY ex_termine.termin_id
                       ORDER BY date";
-            $parameters = array($seminar_id, $start, $end);
+            $parameters = [$seminar_id, $start, $end];
         } else {
             $query = "SELECT ex_termine.*, GROUP_CONCAT(trp.user_id) AS related_persons, GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
                       FROM ex_termine
@@ -274,7 +274,7 @@ class SeminarDB
                         AND (metadate_id IS NULL OR metadate_id = '')
                       GROUP BY ex_termine.termin_id
                       ORDER BY date";
-            $parameters = array($seminar_id);
+            $parameters = [$seminar_id];
         }
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);

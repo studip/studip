@@ -48,7 +48,7 @@ $user = new Seminar_User('nobody');
 $auth = new Seminar_Default_Auth();
 $perm = new Seminar_Perm();
 
-$AVAILABLE_SERVICES = array('UserService', 'SessionService', 'SeminarService', 'ContentmoduleService', 'LectureTreeService', 'InstituteService');
+$AVAILABLE_SERVICES = ['UserService', 'SessionService', 'SeminarService', 'ContentmoduleService', 'LectureTreeService', 'InstituteService'];
 
 $AVAILABLE_SERVICES =
     array_merge($AVAILABLE_SERVICES,

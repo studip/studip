@@ -40,14 +40,14 @@
 
 class CronjobLog extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'cronjobs_logs';
 
-        $config['belongs_to']['schedule'] = array(
+        $config['belongs_to']['schedule'] = [
             'class_name'  => 'CronjobSchedule',
             'foreign_key' => 'schedule_id',
-        );
+        ];
 
 
         parent::configure($config);

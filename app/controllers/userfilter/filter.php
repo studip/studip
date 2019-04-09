@@ -54,7 +54,7 @@ class Userfilter_FilterController extends AuthenticatedController
         $fields = Request::getArray('field');
         $compareOps = Request::getArray('compare_operator');
         $values = Request::getArray('value');
-        $data = array();
+        $data = [];
         for ($i=0 ; $i<sizeof($fields) ; $i++) {
             $current = $fields[$i];
             if ($this->conditionFields[$current]) {

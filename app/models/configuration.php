@@ -17,7 +17,7 @@ class ConfigurationModel
     public static function getConfig($section = null, $name = null)
     {
         $config = Config::get();
-        $allconfigs = array();
+        $allconfigs = [];
         foreach ($config->getFields('global', $section, $name) as $field) {
             $metadata = $config->getMetadata($field);
             $metadata['value'] = $config->$field;
@@ -37,7 +37,7 @@ class ConfigurationModel
     public static function searchUserConfiguration($user_id = null)
     {
         $config = Config::get();
-        $allconfigs = array();
+        $allconfigs = [];
         if (isset($user_id)) {
             $user = User::find($user_id);
 
@@ -97,7 +97,7 @@ class ConfigurationModel
     public static function searchCourseConfiguration($range_id = null)
     {
         $config = Config::get();
-        $allconfigs = array();
+        $allconfigs = [];
         if (isset($range_id)) {
             $course = Course::find($range_id);
 

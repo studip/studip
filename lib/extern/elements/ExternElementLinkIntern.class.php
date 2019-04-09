@@ -39,8 +39,8 @@
 
 class ExternElementLinkIntern extends ExternElement {
 
-    var $attributes = array("font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style", "config", "srilink", "externlink");
+    var $attributes = ["font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style", "config", "srilink", "externlink"];
     var $link_module_type;
 
     /**
@@ -72,10 +72,10 @@ class ExternElementLinkIntern extends ExternElement {
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
 
-        $attributes = array("font_size", "font_face", "font_color", "font_class", "font_style",
-            "a_class", "a_style");
-        $headlines = array("font" => _("Schriftformatierung"),
-                "a" => _("Linkformatierung"));
+        $attributes = ["font_size", "font_face", "font_color", "font_class", "font_style",
+            "a_class", "a_style"];
+        $headlines = ["font" => _("Schriftformatierung"),
+                "a" => _("Linkformatierung")];
         $content_table = $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
 
@@ -94,8 +94,8 @@ class ExternElementLinkIntern extends ExternElement {
         $headline = $edit_form->editHeadline(_("Verlinkung zum Modul"));
         $title = _("Konfiguration:");
         $info = _("Der Link ruft das Modul mit der gewählten Konfiguration auf. Wählen Sie \"Standard\", um die von Ihnen gesetzte Standardkonfiguration zu benutzen. Ist für das aufgerufene Modul noch keine Konfiguration erstellt worden, wird die Stud.IP-Default-Konfiguration verwendet.");
-        $values = array();
-        $names = array();
+        $values = [];
+        $names = [];
         $spacer = '';
         $first_module = TRUE;
         foreach ((array) $this->link_module_type as $module_type) {

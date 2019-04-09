@@ -44,7 +44,7 @@ class StudipLitSearchPluginTIBUBOpac extends StudipLitSearchPluginGvk
         parent::__construct();
         $this->description = "Technische Informationsbibliothek / Universitätsbibliothek Hannover";
         $this->z_host = "sru.gbv.de/opac-de-89";
-        $this->z_profile = array('1016' => _("alle Wörter [ALL]"),
+        $this->z_profile = ['1016' => _("alle Wörter [ALL]"),
                      '1004' => _("Person, Autor [PER]"),
                      '4' => _("Titelstichwörter [TIT]"),
                      '5' => _("Stichwörter Serie/Zeitschrift [SER]"),
@@ -52,7 +52,7 @@ class StudipLitSearchPluginTIBUBOpac extends StudipLitSearchPluginGvk
                      '46' => _("Schlagwörter [SWW]"),
                      '54' => _("Signatur [SGN]"),
                      '1007' => _("alle Nummern (ISBN, ISSN ...) [NUM]")
-        ); /* '4' => _("Titelanfänge [TAF]"),
+        ]; /* '4' => _("Titelanfänge [TAF]"),
            herausgenommen, da keine Unterscheidung anhand von Wort oder Phrase durchgeführt wird.
            */
     }

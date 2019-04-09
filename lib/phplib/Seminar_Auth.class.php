@@ -28,7 +28,7 @@ class Seminar_Auth
     /**
      * @var array
      */
-    protected $persistent_slots = array("auth", "classname");
+    protected $persistent_slots = ["auth", "classname"];
 
     /**
      * @var string
@@ -49,7 +49,7 @@ class Seminar_Auth
     /**
      * @var array
      */
-    public $auth = array(); ## Data array
+    public $auth = []; ## Data array
 
     /**
      *
@@ -120,7 +120,7 @@ class Seminar_Auth
                 # Check for user supplied automatic login procedure
                 if ($uid = $this->auth_preauth()) {
                     $this->auth["uid"] = $uid;
-                    $sess->regenerate_session_id(array('auth', '_language', 'phpCAS'));
+                    $sess->regenerate_session_id(['auth', '_language', 'phpCAS']);
                     $sess->freeze();
                     $GLOBALS['user'] = new Seminar_User($this->auth['uid']);
                     return true;
@@ -170,7 +170,7 @@ class Seminar_Auth
                     case "log":
                         if ($uid = $this->auth_validatelogin()) {
                             $this->auth["uid"] = $uid;
-                            $keep_session_vars = array('auth', 'forced_language', '_language');
+                            $keep_session_vars = ['auth', 'forced_language', '_language'];
                             if ($this->auth['perm'] === 'root') {
                                 $keep_session_vars[] = 'plugins_disabled';
                             }
@@ -225,7 +225,7 @@ class Seminar_Auth
      */
     function unauth()
     {
-        $this->auth = array();
+        $this->auth = [];
         $this->auth["uid"] = "";
         $this->auth["perm"] = "";
     }
@@ -264,7 +264,7 @@ class Seminar_Auth
     {
         $cfg = Config::GetInstance();
         //check if the user got kicked meanwhile, or if user is locked out
-        if ($this->auth['uid'] && !in_array($this->auth['uid'], array('form', 'nobody'))) {
+        if ($this->auth['uid'] && !in_array($this->auth['uid'], ['form', 'nobody'])) {
             $user = $GLOBALS['user']->id == $this->auth['uid'] ? $GLOBALS['user'] : User::find($this->auth['uid']);
             if (!$user->username || $user->locked) {
                 $this->unauth();
@@ -352,7 +352,7 @@ class Seminar_Auth
         PageLayout::setHelpKeyword('Basis.AnmeldungLogin');
         $header_template = $GLOBALS['template_factory']->open('header');
         $header_template->current_page = _('Login');
-        $header_template->link_params = array('cancel_login' => 1);
+        $header_template->link_params = ['cancel_login' => 1];
 
         include 'lib/include/html_head.inc.php';
         echo $header_template->render();

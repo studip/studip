@@ -24,7 +24,7 @@ class ForumLike {
         $stmt = DBManager::get()->prepare("REPLACE INTO
             forum_likes (topic_id, user_id)
             VALUES (?, ?)");
-        $stmt->execute(array($topic_id, $GLOBALS['user']->id));
+        $stmt->execute([$topic_id, $GLOBALS['user']->id]);
     
         // get posting owner
         $data = ForumEntry::getConstraints($topic_id);
@@ -50,7 +50,7 @@ class ForumLike {
     static function dislike($topic_id) {
         $stmt = DBManager::get()->prepare("DELETE FROM forum_likes
             WHERE topic_id = ? AND user_id = ?");
-        $stmt->execute(array($topic_id, $GLOBALS['user']->id));        
+        $stmt->execute([$topic_id, $GLOBALS['user']->id]);        
     }
     
     /**
@@ -65,7 +65,7 @@ class ForumLike {
             LEFT JOIN auth_user_md5 USING (user_id)
             LEFT JOIN user_info USING (user_id)
             WHERE topic_id = ?");
-        $stmt->execute(array($topic_id));
+        $stmt->execute([$topic_id]);
         
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -89,7 +89,7 @@ class ForumLike {
                 WHERE forum_entries.user_id = ?
                     AND forum_likes.topic_id IS NOT NULL
                     AND forum_likes.user_id != ?");
-            $stmt->execute(array($user_id, $user_id));
+            $stmt->execute([$user_id, $user_id]);
 
             $entries[$user_id] = $stmt->fetchColumn();
         }

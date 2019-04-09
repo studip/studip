@@ -41,7 +41,7 @@ require_once 'ExternElementLinkIntern.class.php';
 
 class ExternElementLinkInternTemplate extends ExternElementLinkIntern {
 
-    var $attributes = array('config', 'srilink', 'externlink');
+    var $attributes = ['config', 'srilink', 'externlink'];
     var $link_module_type;
 
     /**

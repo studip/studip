@@ -53,7 +53,7 @@ class StudipLitClipBoard {
 
     function insertElement($id_to_insert){
         if (!is_array($id_to_insert)){
-            $id_to_insert = array($id_to_insert);
+            $id_to_insert = [$id_to_insert];
         }
         $inserted = 0;
         foreach ($id_to_insert as $catalog_id){
@@ -73,7 +73,7 @@ class StudipLitClipBoard {
 
     function deleteElement($id_to_delete){
         if (!is_array($id_to_delete)){
-            $id_to_delete = array($id_to_delete);
+            $id_to_delete = [$id_to_delete];
         }
         $deleted = 0;
         foreach ($id_to_delete as $catalog_id){
@@ -132,9 +132,9 @@ class StudipLitClipBoard {
 
     function setFormObject(){
         $form_name = $this->form_name;
-        $form_fields['clip_content'] = array('type' => 'select', 'multiple' => true, 'options_callback' => array($this, "getClipOptions"));
-        $form_fields['clip_cmd'] = array('type' => 'select', 'options' => array(array('name' => _("Aus Merkliste löschen"), 'value' => 'del')));
-        $form_buttons['clip_ok'] = array('type' => 'accept', 'caption' => _('OK'), 'info' => _("Gewählte Aktion starten"));
+        $form_fields['clip_content'] = ['type' => 'select', 'multiple' => true, 'options_callback' => [$this, "getClipOptions"]];
+        $form_fields['clip_cmd'] = ['type' => 'select', 'options' => [['name' => _("Aus Merkliste löschen"), 'value' => 'del']]];
+        $form_buttons['clip_ok'] = ['type' => 'accept', 'caption' => _('OK'), 'info' => _("Gewählte Aktion starten")];
         if (!is_object($this->form_obj)){
             $this->form_obj = new StudipForm($form_fields, $form_buttons, $form_name, false);
         } else {
@@ -144,15 +144,15 @@ class StudipLitClipBoard {
     }
 
     function getClipOptions($caller, $name){
-        $options = array();
+        $options = [];
         $cols = 40;
         if ($elements = $this->getElements()){
             foreach ($elements as $catalog_id => $title){
-                $options[] = array('name' => my_substr($title,0,$cols), 'value' => $catalog_id);
+                $options[] = ['name' => my_substr($title,0,$cols), 'value' => $catalog_id];
             }
         } else {
-            $options[] = array('name' => ("Ihre Merkliste ist leer!"), 'value' => 0);
-            $options[] = array('name' => str_repeat("¯",floor($cols * .8)) , 'value' => 0);
+            $options[] = ['name' => ("Ihre Merkliste ist leer!"), 'value' => 0];
+            $options[] = ['name' => str_repeat("¯",floor($cols * .8)) , 'value' => 0];
         }
         return $options;
     }

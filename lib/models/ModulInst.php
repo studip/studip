@@ -18,18 +18,18 @@
 class ModulInst extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modul_inst';
     
-        $config['belongs_to']['institute'] = array(
+        $config['belongs_to']['institute'] = [
             'class_name' => 'Fachbereich',
             'foreign_key' => 'institut_id'
-        );
-        $config['belongs_to']['modul'] = array(
+        ];
+        $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
             'foreign_key' => 'modul_id'
-        );
+        ];
         
         parent::configure($config);
     }
@@ -44,9 +44,9 @@ class ModulInst extends ModuleManagementModel
      */
     public static function findByModul($modul_id, $group = null)
     {
-        $params = is_null($group) ? array($modul_id)
-                : array($modul_id, $group);
-        $ret = array();
+        $params = is_null($group) ? [$modul_id]
+                : [$modul_id, $group];
+        $ret = [];
         $modul_insts = parent::getEnrichedByQuery('
             SELECT mmi.* 
             FROM mvv_modul_inst mmi 
@@ -71,7 +71,7 @@ class ModulInst extends ModuleManagementModel
     {
         return self::findOneBySql(
             "modul_id = ? AND `gruppe` = 'hauptverantwortlich'",
-            array($modul_id)
+            [$modul_id]
         );
     }
     
@@ -85,7 +85,7 @@ class ModulInst extends ModuleManagementModel
     {
         return self::findBySql(
             "modul_id = ? AND `gruppe` != 'hauptverantwortlich' ORDER BY `position`",
-            array($modul_id)
+            [$modul_id]
         );
     }
     

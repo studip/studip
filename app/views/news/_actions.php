@@ -41,12 +41,12 @@ if ($new['allow_comments']) :
         <?= Icon::create('edit', 'clickable')->asImg(); ?>
     </a>
     <? if ($new->havePermission('unassign', $range)): ?>
-        <a href=" <?= URLHelper::getLink('', array('remove_news' => $new->id, 'news_range' => $range)) ?>" >
+        <a href=" <?= URLHelper::getLink('', ['remove_news' => $new->id, 'news_range' => $range]) ?>" >
             <?= Icon::create('remove', 'clickable')->asImg(); ?>
         </a>
     <? endif; ?>
     <? if ($new->havePermission('delete')): ?>
-        <a href=" <?= URLHelper::getLink('', array('delete_news' => $new->id)) ?>" >
+        <a href=" <?= URLHelper::getLink('', ['delete_news' => $new->id]) ?>" >
             <?= Icon::create('trash', 'clickable')->asImg(); ?>
         </a>
     <? endif; ?>

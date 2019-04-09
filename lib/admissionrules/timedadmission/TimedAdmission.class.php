@@ -55,7 +55,7 @@ class TimedAdmission extends AdmissionRule
         // Delete rule data.
         $stmt = DBManager::get()->prepare("DELETE FROM `timedadmissions`
             WHERE `rule_id`=?");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
     }
 
     /**
@@ -115,7 +115,7 @@ class TimedAdmission extends AdmissionRule
         // Load data.
         $stmt = DBManager::get()->prepare("SELECT *
             FROM `timedadmissions` WHERE `rule_id`=? LIMIT 1");
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $this->message = $current['message'];
             $this->startTime = $current['start_time'];
@@ -131,7 +131,7 @@ class TimedAdmission extends AdmissionRule
      * @return Array
      */
     public function ruleApplies($userId, $courseId) {
-        $errors = array();
+        $errors = [];
         if (!$this->checkTimeFrame()) {
             $errors[] = $this->getMessage();
         }
@@ -202,8 +202,8 @@ class TimedAdmission extends AdmissionRule
             `end_time`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE `start_time`=VALUES(`start_time`),
             `end_time`=VALUES(`end_time`),message=VALUES(message), `chdate`=VALUES(`chdate`)");
-        $stmt->execute(array($this->id, $this->message, (int)$this->startTime,
-            (int)$this->endTime, time(), time()));
+        $stmt->execute([$this->id, $this->message, (int)$this->startTime,
+            (int)$this->endTime, time(), time()]);
     }
 
     /**

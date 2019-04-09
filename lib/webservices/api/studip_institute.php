@@ -21,7 +21,7 @@ class StudipInstituteHelper
         $stmt = $db->prepare('SELECT au.username FROM user_inst ui
                               JOIN auth_user_md5 au USING(user_id)
                               WHERE ui.inst_perms = ? AND ui.Institut_id = ?');
-        $stmt->execute(array($status, $institute_id));
+        $stmt->execute([$status, $institute_id]);
 
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -33,7 +33,7 @@ class StudipInstituteHelper
         $stmt = $db->prepare('SELECT ui.inst_perms FROM user_inst ui
                               JOIN auth_user_md5 au USING(user_id)
                               WHERE au.username = ? AND ui.Institut_id = ?');
-        $stmt->execute(array($username, $institute_id));
+        $stmt->execute([$username, $institute_id]);
 
         return $stmt->fetchColumn();
     }
@@ -65,7 +65,7 @@ class StudipInstituteHelper
         $stmt = $db->prepare('SELECT i2.Institut_id FROM Institute i
                               JOIN Institute i2 ON (i.fakultaets_id = i2.Institut_id)
                               WHERE i.Institut_id = ? AND i2.fakultaets_id != ?');
-        $stmt->execute(array($institute_id, $institute_id));
+        $stmt->execute([$institute_id, $institute_id]);
 
         return $stmt->fetchColumn();
     }

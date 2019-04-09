@@ -34,7 +34,7 @@ class Admin_SemClassesController extends AuthenticatedController
             $statement = DBManager::get()->prepare(
                 "SELECT 1 FROM sem_classes WHERE name = :name"
             );
-            $statement->execute(array('name' => Request::get("add_name")));
+            $statement->execute(['name' => Request::get("add_name")]);
             $duplicate = $statement->fetchColumn();
             if ($duplicate) {
                 $message = sprintf(_("Es existiert bereits eine Veranstaltungskategorie mit dem Namen \"%s\""),
@@ -46,7 +46,7 @@ class Admin_SemClassesController extends AuthenticatedController
                     "INSERT INTO sem_classes SET name = :name, mkdate = UNIX_TIMESTAMP(), chdate = UNIX_TIMESTAMP() " .
                 "");
                 NotificationCenter::postNotification('SeminarClassDidCreate', Request::get("add_name"), $GLOBALS['user']->id);
-                $statement->execute(array('name' => Request::get("add_name")));
+                $statement->execute(['name' => Request::get("add_name")]);
                 $id = DBManager::get()->lastInsertId();
                 if (Request::get("add_like")) {
                     $sem_class = clone $GLOBALS['SEM_CLASS'][Request::get("add_like")];
@@ -54,7 +54,7 @@ class Admin_SemClassesController extends AuthenticatedController
                     $sem_class->set('id', $id);
                     $sem_class->store();
                 }
-                $this->redirect(URLHelper::getURL($this->url_for('admin/sem_classes/details'), array('id' => $id)));
+                $this->redirect(URLHelper::getURL($this->url_for('admin/sem_classes/details'), ['id' => $id]));
                 PageLayout::postMessage(MessageBox::success(_("Veranstaltungskategorie wurde erstellt.")));
                 $GLOBALS['SEM_CLASS'] = SemClass::refreshClasses();
             }
@@ -64,22 +64,22 @@ class Admin_SemClassesController extends AuthenticatedController
     public function details_action()
     {
         Navigation::activateItem("/admin/locations/sem_classes");
-        $modules = array(
-            'CoreOverview' => array('id' => "CoreOverview", 'name' => _("Kern-Übersicht"), 'enabled' => true),
-            'CoreAdmin' => array('id' => "CoreAdmin", 'name' => _("Kern-Verwaltung"), 'enabled' => true),
-            'CoreForum' => array('id' => "CoreForum", 'name' => _("Kern-Forum"), 'enabled' => true),
-            'CoreStudygroupAdmin' => array('id' => "CoreStudygroupAdmin", 'name' => _("Studiengruppen-Verwaltung"), 'enabled' => true),
-            'CoreDocuments' => array('id' => "CoreDocuments", 'name' => _("Kern-Dateibereich"), 'enabled' => true),
-            'CoreSchedule' => array('id' => "CoreSchedule", 'name' => _("Kern-Termine"), 'enabled' => true),
-            'CoreParticipants' => array('id' => "CoreParticipants", 'name' => _("Kern-Teilnehmende"), 'enabled' => true),
-            'CoreStudygroupParticipants' => array('id' => "CoreStudygroupParticipants", 'name' => _("Kern-Studiengruppen-Teilnehmende"), 'enabled' => true),
-            'CoreLiterature' => array('id' => "CoreLiterature", 'name' => _("Kern-Literatur"), 'enabled' => true),
-            'CoreScm' => array('id' => "CoreScm", 'name' => _("Kern-Freie-Informationen"), 'enabled' => true),
-            'CoreWiki' => array('id' => "CoreWiki", 'name' => _("Kern-Wiki"), 'enabled' => true),
-            'CoreResources' => array('id' => "CoreResources", 'name' => _("Kern-Ressourcen"), 'enabled' => true),
-            'CoreCalendar' => array('id' => "CoreCalendar", 'name' => _("Kern-Kalender"), 'enabled' => true),
-            'CoreElearningInterface' => array('id' => "CoreElearningInterface", 'name' => _("Kern-Lernmodule"), 'enabled' => true)
-        );
+        $modules = [
+            'CoreOverview' => ['id' => "CoreOverview", 'name' => _("Kern-Übersicht"), 'enabled' => true],
+            'CoreAdmin' => ['id' => "CoreAdmin", 'name' => _("Kern-Verwaltung"), 'enabled' => true],
+            'CoreForum' => ['id' => "CoreForum", 'name' => _("Kern-Forum"), 'enabled' => true],
+            'CoreStudygroupAdmin' => ['id' => "CoreStudygroupAdmin", 'name' => _("Studiengruppen-Verwaltung"), 'enabled' => true],
+            'CoreDocuments' => ['id' => "CoreDocuments", 'name' => _("Kern-Dateibereich"), 'enabled' => true],
+            'CoreSchedule' => ['id' => "CoreSchedule", 'name' => _("Kern-Termine"), 'enabled' => true],
+            'CoreParticipants' => ['id' => "CoreParticipants", 'name' => _("Kern-Teilnehmende"), 'enabled' => true],
+            'CoreStudygroupParticipants' => ['id' => "CoreStudygroupParticipants", 'name' => _("Kern-Studiengruppen-Teilnehmende"), 'enabled' => true],
+            'CoreLiterature' => ['id' => "CoreLiterature", 'name' => _("Kern-Literatur"), 'enabled' => true],
+            'CoreScm' => ['id' => "CoreScm", 'name' => _("Kern-Freie-Informationen"), 'enabled' => true],
+            'CoreWiki' => ['id' => "CoreWiki", 'name' => _("Kern-Wiki"), 'enabled' => true],
+            'CoreResources' => ['id' => "CoreResources", 'name' => _("Kern-Ressourcen"), 'enabled' => true],
+            'CoreCalendar' => ['id' => "CoreCalendar", 'name' => _("Kern-Kalender"), 'enabled' => true],
+            'CoreElearningInterface' => ['id' => "CoreElearningInterface", 'name' => _("Kern-Lernmodule"), 'enabled' => true]
+        ];
 
         $plugin_infos = PluginManager::getInstance()->getPluginInfos("StandardPlugin");
 
@@ -130,9 +130,9 @@ class Admin_SemClassesController extends AuthenticatedController
         if (!count($sem_class->getSemTypes())) {
             $notice = "<br>"._("Beachten Sie, dass es noch keine Veranstaltungstypen gibt!");
         }
-        $output = array(
+        $output = [
             'html' => (string) MessageBox::success(_("Änderungen wurden gespeichert."." ".'<a href="'.URLHelper::getLink("dispatch.php/admin/sem_classes/overview").'">'._("Zurück zur Übersichtsseite.").'</a>').$notice)
-        );
+        ];
         $this->render_json($output);
     }
 
@@ -146,10 +146,10 @@ class Admin_SemClassesController extends AuthenticatedController
                     "mkdate = UNIX_TIMESTAMP(), " .
                     "chdate = UNIX_TIMESTAMP() " .
             "");
-            $statement->execute(array(
+            $statement->execute([
                 'name' => $name,
                 'sem_class' => Request::get("sem_class")
-            ));
+            ]);
             NotificationCenter::postNotification('SeminarTypeDidCreate', $name, $GLOBALS['user']->id);
             $id = DBManager::get()->lastInsertId();
             $GLOBALS['SEM_TYPE'] = SemType::refreshTypes();

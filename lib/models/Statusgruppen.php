@@ -38,26 +38,26 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
 {
     public $keep_children = false;
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'statusgruppen';
-        $config['has_many']['members'] = array(
+        $config['has_many']['members'] = [
             'class_name'        => 'StatusgruppeUser',
             'assoc_foreign_key' => 'statusgruppe_id',
             'on_delete'         => 'delete',
             'order_by'          => 'ORDER BY position ASC',
-        );
-        $config['has_and_belongs_to_many']['dates'] = array(
+        ];
+        $config['has_and_belongs_to_many']['dates'] = [
             'class_name' => 'CourseDate',
             'thru_table' => 'termin_related_groups',
             'order_by'   => 'ORDER BY date',
             'on_delete'  => 'delete', // TODO: This might cause trouble
             'on_store'   => 'store'
-        );
-        $config['belongs_to']['parent'] = array(
+        ];
+        $config['belongs_to']['parent'] = [
             'class_name'  => 'Statusgruppen',
             'foreign_key' => 'range_id',
-        );
+        ];
         $config['additional_fields']['children'] = true;
 
         $config['default_values']['position'] = null;
@@ -83,13 +83,13 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
 
     public function getChildren()
     {
-        $result = Statusgruppen::findBySQL('range_id = ? ORDER BY position', array($this->id));
-        return $result ?: array();
+        $result = Statusgruppen::findBySQL('range_id = ? ORDER BY position', [$this->id]);
+        return $result ?: [];
     }
 
     public function getDatafields()
     {
-        return DataFieldEntry::getDataFieldEntries(array($this->range_id, $this->statusgruppe_id), 'roleinstdata');
+        return DataFieldEntry::getDataFieldEntries([$this->range_id, $this->statusgruppe_id], 'roleinstdata');
     }
 
     public function setDatafields($data)
@@ -145,7 +145,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function getFullGenderedPaths($user_id, $seperator = " > ", $pre = "")
     {
-        $result = array();
+        $result = [];
         $name = $pre
               ? $pre . $seperator . $this->getGenderedName($user_id)
               : $this->getGenderedName($user_id);
@@ -216,7 +216,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public static function getUserRoles($context, $user)
     {
-        $roles = array();
+        $roles = [];
         $groups = self::findByRange_id($context);
         foreach ($groups as $group) {
             $roles = array_merge($roles, $group->getFullGenderedPaths($user));
@@ -234,7 +234,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     {
         $query = "SELECT id FROM folders WHERE folder_type = 'CourseGroupFolder' AND range_id = ? AND data_content LIKE ? LIMIT 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->range_id, '%"group":"' . $this->id. '"%'));
+        $statement->execute([$this->range_id, '%"group":"' . $this->id. '"%']);
         return $statement->fetchColumn();
     }
 
@@ -290,7 +290,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function findTopics()
     {
-        $topics = array();
+        $topics = [];
         foreach ($this->dates as $d) {
             foreach ($d->topics as $t) {
                 // Assign topics with ID as key so we get unique entries.
@@ -306,7 +306,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function findLecturers()
     {
-        $lecturers = array();
+        $lecturers = [];
         foreach ($this->dates as $d) {
             foreach ($d->dozenten as $d) {
                 // Assign topics with ID as key so we get unique entries.
@@ -350,7 +350,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function removeAllUsers()
     {
-        StatusgruppeUser::deleteBySQL('statusgruppe_id = ?', array($this->id));
+        StatusgruppeUser::deleteBySQL('statusgruppe_id = ?', [$this->id]);
     }
 
     /**
@@ -388,7 +388,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
         if ($check && !$this->userMayJoin($user_id)) {
             return false;
         }
-        $user = new StatusgruppeUser(array($this->id, $user_id));
+        $user = new StatusgruppeUser([$this->id, $user_id]);
 
         // set up default datafield values for institute groups
         if ($user->isNew() && !Course::find($this->range_id)) {
@@ -436,7 +436,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     {
         $sql = "SELECT 1 FROM statusgruppe_user JOIN statusgruppen USING (statusgruppe_id) WHERE selfassign = 2 AND range_id = ? AND user_id = ?";
         $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute(array($this->range_id, $user_id));
+        $stmt->execute([$this->range_id, $user_id]);
         return $stmt->fetchColumn();
     }
 
@@ -479,7 +479,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function moveUser($user_id, $pos)
     {
-        $statususer = new StatusgruppeUser(array($this->id, $user_id));
+        $statususer = new StatusgruppeUser([$this->id, $user_id]);
         if ($pos > $statususer->position) {
             $sql = "UPDATE statusgruppe_user SET position = position - 1 WHERE statusgruppe_id = ? AND position > ? AND position <= ?";
         } else {
@@ -487,11 +487,11 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
         }
         $db = DBManager::get();
         $stmt = $db->prepare($sql);
-        $stmt->execute(array($this->id, $statususer->position, $pos));
+        $stmt->execute([$this->id, $statususer->position, $pos]);
 
         $sql2 = "UPDATE statusgruppe_user SET position = ? WHERE statusgruppe_id = ? AND user_id = ?";
         $stmt2 = $db->prepare($sql2);
-        $stmt2->execute(array($pos, $this->id, $statususer->user_id));
+        $stmt2->execute([$pos, $this->id, $statususer->user_id]);
     }
 
     /**
@@ -554,7 +554,7 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
         if ($this->position === null) {
             $sql = "SELECT MAX(position) FROM statusgruppen WHERE range_id = ?";
             $stmt = DBManager::get()->prepare($sql);
-            $stmt->execute(array($this->range_id));
+            $stmt->execute([$this->range_id]);
             $this->position = 1 + $stmt->fetchColumn();
         }
     }

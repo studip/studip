@@ -39,9 +39,9 @@
 
 class ExternElementSelectSubjectAreas extends ExternElement {
 
-    var $attributes = array();
+    var $attributes = [];
     var $selector;
-    var $all_ranges = array();
+    var $all_ranges = [];
 
     /**
     * Constructor
@@ -55,7 +55,7 @@ class ExternElementSelectSubjectAreas extends ExternElement {
         $this->name = "SelectSubjectAreas";
         $this->real_name = _("Auswahl der anzuzeigenden Studienbereiche");
         $this->description = _("Sie können hier die Studienbereiche auswählen, die auf der externen Seite ausgegeben werden sollen.");
-        $this->attributes = array('subjectareasselected', 'selectallsubjectareas', 'reverseselection');
+        $this->attributes = ['subjectareasselected', 'selectallsubjectareas', 'reverseselection'];
 
     }
 
@@ -76,7 +76,7 @@ class ExternElementSelectSubjectAreas extends ExternElement {
             $edit_form = "", $anker = "") {
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         $out = '';
         $table = '';
         if ($edit_form == '')

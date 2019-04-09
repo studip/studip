@@ -117,7 +117,7 @@ if ($visible[++$j])
     $data["leistung"] = $data_sem["leistung"];
 
 if ($visible[++$j]) {
-    $pathes = array($data_sem["range_path"]);
+    $pathes = [$data_sem["range_path"]];
     if (is_array($pathes)) {
         $pathes_values = array_values($pathes);
         if ($this->config->getValue("Main", "range") == "long")
@@ -146,14 +146,14 @@ if ($this->config->getValue("Main", "studiplink")) {
 
 
     if ($this->config->getValue("Main", "studiplink") == "top") {
-        $args = array("width" => "100%", "height" => "40", "link" => "");
+        $args = ["width" => "100%", "height" => "40", "link" => ""];
         echo "<tr><td width=\"100%\">\n";
         $this->elements["StudipLink"]->printout($args);
         echo "</td></tr>";
     }
     $table_attr = $this->config->getAttributes("TableHeader", "table");
-    $pattern = array("/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/");
-    $replace = array("width=\"100%\"", "");
+    $pattern = ["/width=\"[0-9%]+\"/", "/align=\"[a-z]+\"/"];
+    $replace = ["width=\"100%\"", ""];
     $table_attr = preg_replace($pattern, $replace, $table_attr);
     echo "<tr><td width=\"100%\">\n<table$table_attr>\n";
 }
@@ -251,7 +251,7 @@ echo "</table>\n";
 
 if ($this->config->getValue("Main", "studiplink")) {
     if ($this->config->getValue("Main", "studiplink") == "bottom") {
-        $args = array("width" => "100%", "height" => "40", "link" => "");
+        $args = ["width" => "100%", "height" => "40", "link" => ""];
         echo "</td></tr>\n<tr><td width=\"100%\">\n";
         $this->elements["StudipLink"]->printout($args);
     }

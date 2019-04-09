@@ -71,14 +71,14 @@ class SendMailNotificationsJob extends CronJob
      */
     public static function getParameters()
     {
-        return array(
-            'verbose' => array(
+        return [
+            'verbose' => [
                 'type'        => 'boolean',
                 'default'     => false,
                 'status'      => 'optional',
                 'description' => _('Sollen Ausgaben erzeugt werden (sind später im Log des Cronjobs sichtbar)'),
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -92,7 +92,7 @@ class SendMailNotificationsJob extends CronJob
      *                          "verbose" which toggles verbose output while
      *                          purging the cache.
      */
-    public function execute($last_result, $parameters = array())
+    public function execute($last_result, $parameters = [])
     {
         global $user;
 

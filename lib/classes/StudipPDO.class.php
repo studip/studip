@@ -149,7 +149,7 @@ class StudipPDO extends PDO
             case PDO::PARAM_INT:
                 return (int) $value;
             case StudipPDO::PARAM_ARRAY:
-                return is_array($value) && count($value) ? join(',', array_map(array($this, 'quote'), $value)) : 'NULL';
+                return is_array($value) && count($value) ? join(',', array_map([$this, 'quote'], $value)) : 'NULL';
             case StudipPDO::PARAM_COLUMN:
                 return preg_replace('/\\W/', '', $value);
             default:
@@ -188,7 +188,7 @@ class StudipPDO extends PDO
             $stmt = parent::query($statement);
         }
 
-        $studip_stmt = new StudipPDOStatement($this, $statement, array());
+        $studip_stmt = new StudipPDOStatement($this, $statement, []);
         $studip_stmt->setStatement($stmt);
         return $studip_stmt;
     }
@@ -199,7 +199,7 @@ class StudipPDO extends PDO
      * @param string    SQL statement
      * @return object   PDOStatement object
      */
-    public function prepare($statement, $driver_options = array())
+    public function prepare($statement, $driver_options = [])
     {
         $this->verify($statement);
         return new StudipPDOStatement($this, $statement, $driver_options);
@@ -211,7 +211,7 @@ class StudipPDO extends PDO
      * @param string    SQL statement
      * @return object   PDOStatement object
      */
-    public function prepareStatement($statement, $driver_options = array())
+    public function prepareStatement($statement, $driver_options = [])
     {
         return parent::prepare($statement, $driver_options);
     }
@@ -248,7 +248,7 @@ class StudipPDO extends PDO
         $st = $this->prepare($statement);
         $st->execute($input_parameters);
         if (is_callable($callable)) {
-            $data = array();
+            $data = [];
             $st->setFetchMode(PDO::FETCH_ASSOC);
             foreach ($st as $key => $row) {
                 $data[$key] = call_user_func($callable, $row, $key);

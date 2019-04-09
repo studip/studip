@@ -18,18 +18,18 @@
 class FachFachbereich extends ModuleManagementModel
 {
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_fach_inst';
         
-        $config['belongs_to']['fach'] = array(
+        $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
             'foreign_key' => 'fach_id'
-        );
-        $config['belongs_to']['fachbereich'] = array(
+        ];
+        $config['belongs_to']['fachbereich'] = [
             'class_name' => 'Fachbereich',
             'foreign_key' => 'institut_id'
-        );
+        ];
         
         parent::configure($config);
     }
@@ -44,8 +44,8 @@ class FachFachbereich extends ModuleManagementModel
      */
     public static function findByFach($fach_id)
     {
-        $params = array($fach_id);
-        $ret = array();
+        $params = [$fach_id];
+        $ret = [];
         $fach_insts = parent::getEnrichedByQuery('SELECT mfi.* '
                 . 'FROM mvv_fach_inst mfi '
                 . 'WHERE mfi.fach_id = ? '

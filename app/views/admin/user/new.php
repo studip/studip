@@ -204,7 +204,7 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Speichern'),'speichern', array('title' => _('Einen neuen Benutzer anlegen')))?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user/?reset'), array('name' => 'abort'))?>
+        <?= Button::createAccept(_('Speichern'),'speichern', ['title' => _('Einen neuen Benutzer anlegen')])?>
+        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user/?reset'), ['name' => 'abort'])?>
     </footer>
 </form>

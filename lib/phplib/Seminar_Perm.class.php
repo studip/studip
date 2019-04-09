@@ -19,22 +19,22 @@ class Seminar_Perm
     /**
      * @var array
      */
-    public $permissions = array(
+    public $permissions = [
         "user"   => 1,
         "autor"  => 3,
         "tutor"  => 7,
         "dozent" => 15,
         "admin"  => 31,
         "root"   => 63
-    );
+    ];
     /**
      * @var array
      */
-    private $studip_perms = array();
+    private $studip_perms = [];
     /**
      * @var array
      */
-    private $fak_admins = array();
+    private $fak_admins = [];
 
     /**
      * @return Seminar_Perm
@@ -150,7 +150,7 @@ class Seminar_Perm
                           FROM user_inst
                           LEFT JOIN seminare USING (Institut_id)
                           WHERE inst_perms='admin' AND user_id = ? AND seminare.Seminar_id = ? LIMIT 1");
-            $st->execute(array($user_id, $range_id));
+            $st->execute([$user_id, $range_id]);
             if ($st->fetchColumn()) {
                 $status = "admin";
             } else {
@@ -159,7 +159,7 @@ class Seminar_Perm
                             LEFT JOIN Institute c ON (b.Institut_id=c.fakultaets_id)
                             LEFT JOIN seminare d ON (d.Institut_id=c.Institut_id)
                             WHERE a.user_id = ? AND a.inst_perms='admin' AND d.Seminar_id = ? LIMIT 1");
-                $st->execute(array($user_id, $range_id));
+                $st->execute([$user_id, $range_id]);
                 if ($st->fetchColumn()) {
                     $status = "admin";
                 } else {
@@ -167,7 +167,7 @@ class Seminar_Perm
                                 LEFT JOIN Institute b ON(a.Institut_id=b.fakultaets_id)
                                 WHERE user_id = ? AND a.inst_perms='admin'
                                 AND b.Institut_id = ? LIMIT 1");
-                    $st->execute(array($user_id, $range_id));
+                    $st->execute([$user_id, $range_id]);
                     if ($st->fetchColumn()) {
                         $status = "admin";
                     }
@@ -188,7 +188,7 @@ class Seminar_Perm
         } else {
             $st = $db->prepare("SELECT status FROM seminar_user
                           WHERE user_id = ? AND Seminar_id = ?");
-            $st->execute(array($user_id, $range_id));
+            $st->execute([$user_id, $range_id]);
             if ($status = $st->fetchColumn()) {
                 if (in_array($status, words('dozent tutor')) && isset($_SESSION['seminar_change_view_' . $range_id])) {
                     $status = $_SESSION['seminar_change_view_' . $range_id];
@@ -196,7 +196,7 @@ class Seminar_Perm
             } else {
                 $st = $db->prepare("SELECT inst_perms FROM user_inst
                               WHERE user_id = ? AND Institut_id = ?");
-                $st->execute(array($user_id, $range_id));
+                $st->execute([$user_id, $range_id]);
                 $status = $st->fetchColumn();
             }
         }
@@ -260,7 +260,7 @@ class Seminar_Perm
                 "LEFT JOIN user_inst AS b USING (Institut_id) " .
                 "WHERE a.user_id = ? AND a.inst_perms = 'admin' " .
                 "  AND b.user_id = ? AND b.inst_perms IN ('autor', 'tutor', 'dozent')");
-            $stmt->execute(array($user_id, $range_id));
+            $stmt->execute([$user_id, $range_id]);
 
             if ($stmt->fetchColumn()) {
                 $status = 'admin';
@@ -270,7 +270,7 @@ class Seminar_Perm
                     "LEFT JOIN user_inst b ON b.Institut_id = i.Institut_id " .
                     "WHERE a.user_id = ? AND a.inst_perms = 'admin' " .
                     "  AND b.user_id = ? AND b.inst_perms != 'user'");
-                $stmt->execute(array($user_id, $range_id));
+                $stmt->execute([$user_id, $range_id]);
 
                 if ($stmt->fetchColumn()) {
                     $status = 'admin';
@@ -318,7 +318,7 @@ class Seminar_Perm
             $st = $db->prepare("SELECT a.Institut_id FROM user_inst a
                           LEFT JOIN Institute b ON(a.Institut_id=b.Institut_id AND b.Institut_id=b.fakultaets_id)
                           WHERE a.user_id = ? AND a.inst_perms='admin' AND NOT ISNULL(b.Institut_id) LIMIT 1");
-            $st->execute(array($user_id));
+            $st->execute([$user_id]);
             return $this->fak_admins[$user_id] = (bool)$st->fetchColumn();
         }
     }
@@ -341,7 +341,7 @@ class Seminar_Perm
         $db = DBManager::get();
         $st = $db->prepare("SELECT 1 FROM user_inst
                             WHERE user_id = ? AND inst_perms <> 'user' LIMIT 1");
-        $st->execute(array($user_id));
+        $st->execute([$user_id]);
         return (bool)$st->fetchColumn();
     }
 }

@@ -52,7 +52,7 @@ class CalendarNavigation extends Navigation
         // calendar
         $atime = $atime ? intval($atime) : Request::int($atime);
         if (get_config('CALENDAR_ENABLE')) {
-            $navigation = new Navigation(_('Terminkalender'), 'dispatch.php/calendar/single', array('self' => 1));
+            $navigation = new Navigation(_('Terminkalender'), 'dispatch.php/calendar/single', ['self' => 1]);
             $this->addSubNavigation('calendar', $navigation);
         }
     }

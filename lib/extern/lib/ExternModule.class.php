@@ -44,11 +44,11 @@ class ExternModule {
     var $type = NULL;
     var $name;
     var $config;
-    var $registered_elements = array();
-    var $elements = array();
-    var $field_names = array();
-    var $data_fields = array();
-    var $args = array();
+    var $registered_elements = [];
+    var $elements = [];
+    var $field_names = [];
+    var $data_fields = [];
+    var $args = [];
     private static $is_raw_output = false;
 
 
@@ -154,7 +154,7 @@ class ExternModule {
     *
     */
     function getDefaultConfig () {
-        $default_config = array();
+        $default_config = [];
 
         if ($default_config = $this->getRangeDefaultConfig('global')) {
             return $default_config;
@@ -170,7 +170,7 @@ class ExternModule {
 
     function getRangeDefaultConfig ($range_id = 'global') {
         $query = "SELECT config_type FROM extern_config WHERE config_id = ? AND range_id = ?";
-        $parameters = array($this->getName(), $range_id );
+        $parameters = [$this->getName(), $range_id ];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetchColumn();
@@ -268,7 +268,7 @@ class ExternModule {
     *
     */
     function checkFormValues ($element_name = "") {
-        $faulty_values = array();
+        $faulty_values = [];
 
         if ($element_name == "") {
             foreach ($this->elements as $element) {
@@ -372,7 +372,7 @@ class ExternModule {
     function updateGenericDatafields ($element_name, $object_type) {
         $datafields_config = $this->config->getValue($element_name, 'genericdatafields');
         if (!is_array($datafields_config)) {
-            $datafields_config = array();
+            $datafields_config = [];
         }
         $datafields = get_generic_datafields($object_type);
         foreach ((array) $datafields['ids'] as $df) {
@@ -387,7 +387,7 @@ class ExternModule {
     function insertDatafieldMarkers ($object_type, &$markers, $element_name) {
         $datafields_config = $this->config->getValue($element_name, 'genericdatafields');
         if (!is_array($datafields_config)) {
-            $datafields_config = array();
+            $datafields_config = [];
         }
         /*
         $datafields_obj = new DataFields();
@@ -404,7 +404,7 @@ class ExternModule {
         $i = 1;
         foreach ((array) $datafields_config as $df_id) {
             if (isset($datafields['ids_names'][$df_id])) {
-                $markers[$element_name][] = array("###DATAFIELD_$i###", $datafields['ids_names'][$df_id]);
+                $markers[$element_name][] = ["###DATAFIELD_$i###", $datafields['ids_names'][$df_id]];
             }
             $i++;
         }
@@ -415,7 +415,7 @@ class ExternModule {
 
         foreach ($plugin_manager->getPluginInfos($plugin_type) as $plugin) {
             $keyname = 'PLUGIN_' . mb_strtoupper($plugin['name']);
-            $markers[$element_name][] = array("###$keyname###", $plugin['description']);
+            $markers[$element_name][] = ["###$keyname###", $plugin['description']];
         }
     }
 
@@ -445,7 +445,7 @@ class ExternModule {
     }
 
     public static function GetOrderedModuleTypes () {
-        $order = array();
+        $order = [];
         foreach ($GLOBALS['EXTERN_MODULE_TYPES'] as $key => $module) {
             $order[$GLOBALS['EXTERN_MODULE_TYPES'][$key]['order']] = $key;
         }
@@ -458,7 +458,7 @@ class ExternModule {
             $module_params = $this->getModuleParams();
             $params = array_merge($module_params, $params);
         }
-        $query_parts = array();
+        $query_parts = [];
         if (is_array($params)) {
             $param_key = 'ext_' . mb_strtolower($this->name);
             foreach ($params as $name => $value) {
@@ -497,7 +497,7 @@ class ExternModule {
             if ($linked_element_id) {
                 $config_meta_data = ExternConfig::GetConfigurationMetaData($this->config->range_id, $linked_element_id);
             } else {
-                $config_meta_data = array('module_name' => $this->config->module_name);
+                $config_meta_data = ['module_name' => $this->config->module_name];
             }
             if (is_array($config_meta_data)) {
                 $module = $config_meta_data['module_name'];
@@ -521,7 +521,7 @@ class ExternModule {
     function getModuleParams ($params = null) {
         $param_key = 'ext_' . mb_strtolower($this->name);
         if (is_array($_REQUEST[$param_key])) {
-            $ret = array();
+            $ret = [];
             if (is_null($params)) {
                 if (is_array($_GET[$param_key])) {
                     foreach ($_GET[$param_key] as $key => $value) {
@@ -545,7 +545,7 @@ class ExternModule {
             }
             return $ret;
         }
-        return array();
+        return [];
     }
 
     /**

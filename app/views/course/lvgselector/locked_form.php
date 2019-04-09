@@ -15,7 +15,7 @@
         <? endif ?>
         <ul id="lvgruppe_selection_selected">
         <? foreach ($selection->getAreas() as $area) : ?>
-           <?= $this->render_partial('course/lvgselector/selected_entry', array('area' => $area)) ?>
+           <?= $this->render_partial('course/lvgselector/selected_entry', ['area' => $area]) ?>
         <? endforeach ?>
         </ul>
     </div>

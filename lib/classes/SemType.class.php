@@ -25,7 +25,7 @@ if (isset($GLOBALS['SEM_TYPE'])) {
  */
 class SemType implements ArrayAccess
 {
-    protected $data = array();
+    protected $data = [];
     static protected $sem_types = null;
 
     /**
@@ -37,7 +37,7 @@ class SemType implements ArrayAccess
         $db = DBManager::get();
         if (is_int($data)) {
             $statement = $db->prepare("SELECT * FROM sem_types WHERE id = :id ");
-            $statement->execute(array('id' => $data));
+            $statement->execute(['id' => $data]);
             $this->data = $statement->fetch(PDO::FETCH_ASSOC);
         } else {
             $this->data = $data;
@@ -51,7 +51,7 @@ class SemType implements ArrayAccess
     public function countSeminars() {
         $db = DBManager::get();
         $statement = $db->prepare("SELECT COUNT(*) FROM seminare WHERE status = :sem_type ");
-        $statement->execute(array('sem_type' => $this->data['id']));
+        $statement->execute(['sem_type' => $this->data['id']]);
         return (int) $statement->fetch(PDO::FETCH_COLUMN, 0);
     }
 
@@ -69,11 +69,11 @@ class SemType implements ArrayAccess
             "WHERE id = :id ".
         "");
         StudipCacheFactory::getCache()->expire('DB_SEM_TYPES_ARRAY');
-        return $statement->execute(array(
+        return $statement->execute([
             'id' => $this->data['id'],
             'name' => $this->data['name'],
             'class' => $this->data['class']
-        ));
+        ]);
     }
 
     /**
@@ -90,9 +90,9 @@ class SemType implements ArrayAccess
                 WHERE id = :id 
             ");
             StudipCacheFactory::getCache()->expire('DB_SEM_TYPES_ARRAY');
-            return $statement->execute(array(
+            return $statement->execute([
                 'id' => $this->data['id']
-            ));
+            ]);
         } else {
             return false;
         }
@@ -135,9 +135,9 @@ class SemType implements ArrayAccess
         switch ($offset) {
             case "name":
                 return gettext($this->data['name']);
-            case in_array($offset, array("title_dozent", "title_tutor", "title_autor")):
+            case in_array($offset, ["title_dozent", "title_tutor", "title_autor"]):
                 $sem_class = $this->getClass();
-                $title = array($sem_class[$offset], $sem_class[$offset.'_plural']);
+                $title = [$sem_class[$offset], $sem_class[$offset.'_plural']];
                 return $title[0] || $title[1] ? $title : $this->data[$offset];
         }
         //ansonsten
@@ -174,7 +174,7 @@ class SemType implements ArrayAccess
     static public function getTypes() {
         if (!is_array(self::$sem_types)) {
             $db = DBManager::get();
-            self::$sem_types = array();
+            self::$sem_types = [];
 
             $cache = StudipCacheFactory::getCache();
             $types_array = unserialize($cache->read('DB_SEM_TYPES_ARRAY'));
@@ -198,7 +198,7 @@ class SemType implements ArrayAccess
                             self::$sem_types[$id] = new SemType($type);
                         }
                     } else {
-                        self::$sem_types[1] = new SemType(array('name' => 'default', 'class' => 1, 'id' => 1));
+                        self::$sem_types[1] = new SemType(['name' => 'default', 'class' => 1, 'id' => 1]);
                     }
                 }
             }

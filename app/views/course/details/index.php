@@ -77,7 +77,7 @@
             <tr>
                 <td><strong><?= _("Heimat-Einrichtung") ?></strong></td>
                 <td>
-                    <a href="<?= URLHelper::getScriptLink("dispatch.php/institute/overview", array('auswahl' => $course->institut_id)) ?>">
+                    <a href="<?= URLHelper::getScriptLink("dispatch.php/institute/overview", ['auswahl' => $course->institut_id]) ?>">
                         <?= htmlReady($course->home_institut->name) ?>
                     </a>
                 </td>
@@ -92,7 +92,7 @@
                                     ->findBy('institut_id', $course->institut_id, '<>')
                                     ->orderBy('name')
                                     ->map(function($i) {
-                                        return sprintf('<a href="%s">%s</a>', URLHelper::getScriptLink("dispatch.php/institute/overview", array('auswahl' => $i->id))
+                                        return sprintf('<a href="%s">%s</a>', URLHelper::getScriptLink("dispatch.php/institute/overview", ['auswahl' => $i->id])
                                                                             , htmlReady($i->name));
                             })
                     ) ?>
@@ -252,7 +252,7 @@
             <ul class="list-csv">
             <? foreach ($lecturers as $lecturer) : ?>
                 <li>
-                    <a href="<?= URLHelper::getScriptLink('dispatch.php/profile', array('username' => $lecturer['username'])) ?>">
+                    <a href="<?= URLHelper::getScriptLink('dispatch.php/profile', ['username' => $lecturer['username']]) ?>">
                         <?= htmlReady($lecturer->getUserFullname() . ($lecturer->label ? " (" . $lecturer->label . ")" : "")) ?>
                     </a>
                 </li>
@@ -273,7 +273,7 @@
             <ul class="list-csv">
             <? foreach ($tutors as $tutor) : ?>
                 <li>
-                    <a href="<?= URLHelper::getScriptLink('dispatch.php/profile', array('username' => $tutor['username'])) ?>">
+                    <a href="<?= URLHelper::getScriptLink('dispatch.php/profile', ['username' => $tutor['username']]) ?>">
                         <?= htmlReady($tutor->getUserFullname() . ($tutor->label ? " (" . $tutor->label . ")" : "")) ?>
                     </a>
                 </li>
@@ -308,7 +308,7 @@
         <h1><?= _('Veranstaltungsort') ?> / <?= _('Veranstaltungszeiten')?></h1>
     </header>
     <section>
-        <?= $sem->getDatesTemplate('dates/seminar_html_location', array('ort' => $course->ort, 'disable_list_shrinking' => true)) ?>
+        <?= $sem->getDatesTemplate('dates/seminar_html_location', ['ort' => $course->ort, 'disable_list_shrinking' => true]) ?>
     </section>
 </article>
 <? if ($this->studymodules) : ?>
@@ -342,7 +342,7 @@
         </header>
         <section>
             <ul class="collapsable css-tree">
-                <?= $this->render_partial('study_area/tree.php', array('node' => $studyAreaTree, 'open' => true, 'dont_open' => Config::get()->COURSE_SEM_TREE_CLOSED_LEVELS)) ?>
+                <?= $this->render_partial('study_area/tree.php', ['node' => $studyAreaTree, 'open' => true, 'dont_open' => Config::get()->COURSE_SEM_TREE_CLOSED_LEVELS]) ?>
             </ul>
         </section>
     </article>
@@ -376,7 +376,7 @@ if ($mvv_tree) : ?>
         </header>
         <section>
             <ul class="collapsable css-tree">
-                <?= $this->render_partial('shared/mvv_tree.php', array('tree' => $mvv_tree, 'node' => 'start', 'id_sfx' => $id_sfx)) ?>
+                <?= $this->render_partial('shared/mvv_tree.php', ['tree' => $mvv_tree, 'node' => 'start', 'id_sfx' => $id_sfx]) ?>
             </ul>
         </section>
     </article>
@@ -391,7 +391,7 @@ if ($mvv_tree) : ?>
             <ul class="list-unstyled">
                 <? foreach ($mvv_pathes as $mvv_path) : ?>
                 <li>
-                    <a data-dialog href="<?= URLHelper::getScriptLink('dispatch.php/search/module/overview/' . reset(array_keys($mvv_path)) . '/', array('sem_select' => $mvv_end_semester_id)) ?>">
+                    <a data-dialog href="<?= URLHelper::getScriptLink('dispatch.php/search/module/overview/' . reset(array_keys($mvv_path)) . '/', ['sem_select' => $mvv_end_semester_id]) ?>">
                         <?= htmlReady(implode(' > ', reset(array_values($mvv_path)))) ?>
                     </a>
                 </li>

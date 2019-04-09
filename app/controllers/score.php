@@ -81,7 +81,7 @@ class ScoreController extends AuthenticatedController
         $result = DBManager::get()->fetchAll($query);
         $count = DBManager::get()->fetchColumn("SELECT FOUND_ROWS()");
 
-        $persons = array();
+        $persons = [];
         foreach ($result as $row) {
             $row['is_king'] = StudipKing::is_king($row['user_id'], true);
             $persons[$row['user_id']] = $row;

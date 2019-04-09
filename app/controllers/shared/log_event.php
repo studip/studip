@@ -32,7 +32,7 @@ class Shared_LogEventController extends MVVController
         $this->start = (int) Request::int('start');
         $this->format = Request::quoted('format');
         $this->num_entries = 0;
-        $this->log_events = array();
+        $this->log_events = [];
         
         $this->num_entries += $event_log->count_log_events('all', $this->object_id);  
         if ($this->num_entries) {
@@ -72,8 +72,8 @@ class Shared_LogEventController extends MVVController
     
     private function order_events_by_date($event_array)
     {
-        $ordered_events = array();
-        $log_events = array();        
+        $ordered_events = [];
+        $log_events = [];        
         foreach ($event_array as $levent) {
             $ordered_events[$levent['time']][] = $levent;
         }        
@@ -132,14 +132,14 @@ class Shared_LogEventController extends MVVController
                         WHERE `info` = ? 
                         " . $search_action . " 
                         ORDER BY `mkdate` DESC");
-                $statement->execute(array($mvv_field));
+                $statement->execute([$mvv_field]);
                 $res = $statement->fetchOne();
                 if ($res) {
                     //$user = get_fullname($res['user_id'], "full", true);
                     $user = get_username($res['user_id']);
                     $fields = explode('.',$mvv_field);
                     $field = count($fields) > 1 ? $fields[1] : $mvv_field;
-                    echo json_encode(array("user"=> $user ,"time"=> date('d.m.Y - H:i:s', $res['mkdate']), "field" => $field));
+                    echo json_encode(["user"=> $user ,"time"=> date('d.m.Y - H:i:s', $res['mkdate']), "field" => $field]);
                 }
             }
             die();

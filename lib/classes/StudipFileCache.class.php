@@ -50,7 +50,7 @@ class StudipFileCache implements StudipCache
      * @throws exception if the directory does not exist or could not be
      *         created
      */
-    public function __construct($args = array())
+    public function __construct($args = [])
     {
         $this->dir = $args['dir']
                   ?: $GLOBALS['CACHING_FILECACHE_PATH']

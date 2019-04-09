@@ -19,7 +19,7 @@
 
 require '../lib/bootstrap.php';
 
-page_open(array('sess' => 'Seminar_Session', 'auth' => 'Seminar_Default_Auth', 'perm' => 'Seminar_Perm', 'user' => 'Seminar_User'));
+page_open(['sess' => 'Seminar_Session', 'auth' => 'Seminar_Default_Auth', 'perm' => 'Seminar_Perm', 'user' => 'Seminar_User']);
 
 $auth->login_if(Request::get('again') && ($auth->auth['uid'] == 'nobody'));
 
@@ -38,7 +38,7 @@ if ($auth->is_authenticated() && $user->id != 'nobody') {
     if (mb_strlen($_SESSION['forced_language'])) {
         $query = "UPDATE user_info SET preferred_language = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($_SESSION['forced_language'], $user->id));
+        $statement->execute([$_SESSION['forced_language'], $user->id]);
 
         $_SESSION['_language'] = $_SESSION['forced_language'];
     }
@@ -73,7 +73,7 @@ $index_nobody_template = $GLOBALS['template_factory']->open('index_nobody');
 $cache = StudipCacheFactory::getCache();
 $stat = $cache->read('LOGINFORM_STATISTICS');
 if (!is_array($stat)) {
-    $stat = array();
+    $stat = [];
     $stat['num_active_courses'] = Course::countBySQL();
     $stat['num_registered_users'] = User::countBySQL();
     $cache->write('LOGINFORM_STATISTICS', $stat, 3600);

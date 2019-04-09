@@ -37,7 +37,7 @@ class IliasAuthController extends StudipController
             $authenticated = true;
         }
         $query = "SELECT external_user_token_valid_until FROM auth_extern WHERE external_user_name = ? AND external_user_token = ?";
-        $result = DBManager::get()->fetchOne($query, array(Request::get('login'), Request::get('password')));
+        $result = DBManager::get()->fetchOne($query, [Request::get('login'), Request::get('password')]);
         if (count($result)) {
             if ($result['external_user_token_valid_until'] > time()) {
                 $authenticated = true;

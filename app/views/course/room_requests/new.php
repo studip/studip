@@ -30,7 +30,7 @@
             <?= Studip\Button::create(_('Erstellen')) ?>
             <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->link_for('course/room_requests/index/' . $course_id)) ?>
         <? else : ?>
-            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->link_for('course/room_requests/index/' . $course_id), array('data-dialog' => 'size=big')) ?>
+            <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->link_for('course/room_requests/index/' . $course_id), ['data-dialog' => 'size=big']) ?>
         <? endif ?>
     </footer>
 </form>

@@ -39,9 +39,9 @@
 
 class ExternElementTableParagraph extends ExternElement {
 
-    var $attributes = array("table_width", "table_align", "table_valign", "table_border",
+    var $attributes = ["table_width", "table_align", "table_valign", "table_border",
             "table_bgcolor", "table_bordercolor", "table_cellpadding", "table_cellspacing",
-            "table_class", "table_style");
+            "table_class", "table_style"];
 
     /**
     * Constructor

@@ -57,7 +57,7 @@
                             <td><?= $course['veranstaltungsnummer']?></td>
                         <? endif?>
                         <td style="text-align: left">
-                            <a href="<?= URLHelper::getLink('seminar_main.php', array('auswahl' => $course['seminar_id'])) ?>"
+                            <a href="<?= URLHelper::getLink('seminar_main.php', ['auswahl' => $course['seminar_id']]) ?>"
                                 <?= $course['visitdate'] <= $course['chdate'] ? 'style="color: red;"' : '' ?>>
                                 <?= htmlReady($course['name']) ?>
                                 <?= ($course['is_deputy'] ? ' ' . _('[Vertretung]') : '');?>
@@ -74,7 +74,7 @@
                                     <?= Icon::create('info-circle', 'inactive')->asImg(20, $params) ?>
                                 </a>
                             <? else : ?>
-                                <?= Assets::img('blank.gif', array('width'  => 20, 'height' => 20)); ?>
+                                <?= Assets::img('blank.gif', ['width'  => 20, 'height' => 20]); ?>
                             <? endif ?>
                         </td>
                         <td style="text-align: center;">
@@ -94,10 +94,10 @@
         </div>
     </form>
 <? else : ?>
-    <?= PageLayout::postMessage(MessageBox::info(_('Es wurden keine Veranstaltungen gefunden. Mögliche Ursachen:'), array(
+    <?= PageLayout::postMessage(MessageBox::info(_('Es wurden keine Veranstaltungen gefunden. Mögliche Ursachen:'), [
         sprintf(_('Sie haben zur Zeit keine Veranstaltungen belegt, an denen Sie teilnehmen können.<br>Bitte nutzen Sie %s<b>Veranstaltung suchen / hinzufügen</b>%s um sich für Veranstaltungen anzumelden.'),'<a href="' . URLHelper::getLink('dispatch.php/search/courses') . '">', '</a>'),
         _('In dem ausgewählten <b>Semester</b> wurden keine Veranstaltungen belegt.').'<br>'._('Wählen Sie links im <b>Semesterfilter</b> ein anderes Semester aus')
-    )))?>
+    ]))?>
 <? endif ?>
 <? if (is_array($my_bosses) && count($my_bosses)) : ?>
     <?= $this->render_partial('my_courses/_deputy_bosses'); ?>

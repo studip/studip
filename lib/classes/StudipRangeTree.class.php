@@ -52,8 +52,8 @@ class StudipRangeTree extends TreeAbstract {
         DbView::addView('range_tree');
 
         $this->root_name = Config::get()->UNI_NAME_CLEAN;
-        $this->studip_objects['inst'] = array('pk' => 'Institut_id', 'table' => 'Institute');
-        $this->studip_objects['fak'] = array('pk' => 'Institut_id', 'table' => 'Institute');
+        $this->studip_objects['inst'] = ['pk' => 'Institut_id', 'table' => 'Institute'];
+        $this->studip_objects['fak'] = ['pk' => 'Institut_id', 'table' => 'Institute'];
         if (isset($args['sem_number']) ){
             $this->sem_number = array_map('intval', $args['sem_number']);
         }
@@ -80,9 +80,9 @@ class StudipRangeTree extends TreeAbstract {
             if ($db->f("studip_object")){
                 $item_name = $db->f("studip_object_name");
             }
-            $this->tree_data[$db->f("item_id")] = array("studip_object" => $db->f("studip_object"),
+            $this->tree_data[$db->f("item_id")] = ["studip_object" => $db->f("studip_object"),
                                                     "studip_object_id" => $db->f("studip_object_id"),
-                                                    "fakultaets_id" => $db->f("fakultaets_id"),"entries" => 0);
+                                                    "fakultaets_id" => $db->f("fakultaets_id"),"entries" => 0];
             $this->storeItem($db->f("item_id"), $db->f("parent_id"), $item_name, $db->f("priority"));
         }
     }
@@ -195,21 +195,21 @@ class StudipRangeTree extends TreeAbstract {
 
     function InsertItem($item_id, $parent_id, $item_name, $priority,$studip_object,$studip_object_id){
         $view = new DbView();
-        $view->params = array($item_id,$parent_id,$item_name,$priority,$studip_object,$studip_object_id);
+        $view->params = [$item_id,$parent_id,$item_name,$priority,$studip_object,$studip_object_id];
         $rs = $view->get_query("view:TREE_INS_ITEM");
         return $rs->affected_rows();
     }
 
     function UpdateItem($item_name,$studip_object,$studip_object_id,$item_id){
         $view = new DbView();
-        $view->params = array($item_name,$studip_object,$studip_object_id,$item_id);
+        $view->params = [$item_name,$studip_object,$studip_object_id,$item_id];
         $rs = $view->get_query("view:TREE_UPD_ITEM");
         return $rs->affected_rows();
     }
 
     function DeleteItems($items_to_delete){
         $view = new DbView();
-        $view->params[0] = (is_array($items_to_delete)) ? $items_to_delete : array($items_to_delete);
+        $view->params[0] = (is_array($items_to_delete)) ? $items_to_delete : [$items_to_delete];
         $view->auto_free_params = false;
         $rs = $view->get_query("view:TREE_DEL_ITEM");
         $deleted['items'] = $rs->affected_rows();

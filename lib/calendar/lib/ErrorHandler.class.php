@@ -35,7 +35,7 @@ class ErrorHandler
     public function __construct()
     {
 
-        $this->errors = array();
+        $this->errors = [];
         $this->status = ErrorHandler::ERROR_NORMAL;
         $this->_is_instantiated = true;
     }
@@ -74,9 +74,9 @@ class ErrorHandler
 
     public function getAllErrors()
     {
-        $status = array(ErrorHandler::ERROR_FATAL, ErrorHandler::ERROR_CRITICAL, ErrorHandler::ERROR_WARNING,
-            ErrorHandler::ERROR_MESSAGE, ErrorHandler::ERROR_NORMAL);
-        $errors = array();
+        $status = [ErrorHandler::ERROR_FATAL, ErrorHandler::ERROR_CRITICAL, ErrorHandler::ERROR_WARNING,
+            ErrorHandler::ERROR_MESSAGE, ErrorHandler::ERROR_NORMAL];
+        $errors = [];
         foreach ($status as $stat) {
             if (is_array($this->errors[$stat])) {
                 $errors = array_merge($errors, $this->errors[$stat]);
@@ -116,7 +116,7 @@ class ErrorHandler
 
     public function throwSingleError($index, $status, $message, $file = '', $line = '')
     {
-        static $index_list = array();
+        static $index_list = [];
 
         if ($index_list[$index] != 1) {
             $this->throwError($status, $message, $file, $line);

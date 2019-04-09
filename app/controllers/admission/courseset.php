@@ -60,7 +60,7 @@ class Admission_CoursesetController extends AuthenticatedController
             return $this->render_text($courseset->toString());
         }
         $this->ruleTypes = AdmissionRule::getAvailableAdmissionRules(false);
-        $this->coursesets = array();
+        $this->coursesets = [];
         foreach (words('current_institut_id current_rule_types set_name_prefix current_semester_id current_rule_types') as $param) {
             $this->$param = $_SESSION[get_class($this)][$param];
         }
@@ -98,7 +98,7 @@ class Admission_CoursesetController extends AuthenticatedController
             $institutes[] = $institut_id;
             $institutes = array_merge($institutes, Institute::find($institut_id)->sub_institutes->pluck('institut_id'));
         } else {
-            $institutes = array($institut_id);
+            $institutes = [$institut_id];
         }
 
         foreach ($institutes as $one) {
@@ -136,7 +136,7 @@ class Admission_CoursesetController extends AuthenticatedController
             if ($coursesetId) {
                 // Load course set data.
                 $this->courseset = new CourseSet($coursesetId);
-                $this->myInstitutes = array();
+                $this->myInstitutes = [];
                 $selectedInstitutes = $this->courseset->getInstituteIds();
                 foreach ($selectedInstitutes as $id => $selected) {
                     $this->myInstitutes[$id] = new Institute($id);
@@ -144,14 +144,14 @@ class Admission_CoursesetController extends AuthenticatedController
                 $this->selectedInstitutes = $this->myInstitutes;
                 $selectedCourses = $this->courseset->getCourses();
                 if (!$this->instant_course_set_view) {
-                    $allCourses = CoursesetModel::getInstCourses(array_keys($this->selectedInstitutes), $coursesetId, array(), $this->courseset->getSemester());
+                    $allCourses = CoursesetModel::getInstCourses(array_keys($this->selectedInstitutes), $coursesetId, [], $this->courseset->getSemester());
                     $this->selectedSemester = $this->courseset->getSemester();
                 }
             } else {
-                $this->myInstitutes = array();
-                $this->selectedInstitutes = array();
-                $allCourses = array();
-                $selectedCourses = array();
+                $this->myInstitutes = [];
+                $this->selectedInstitutes = [];
+                $allCourses = [];
+                $selectedCourses = [];
                 $this->selectedSemester = $_SESSION['_default_sem'] ?: Semester::findCurrent()->semester_id;
             }
             Config::get()->AJAX_AUTOCOMPLETE_DISABLED = false;
@@ -159,7 +159,7 @@ class Admission_CoursesetController extends AuthenticatedController
                 ->withoutButton()
                 ->render();
         } else {
-            $this->myInstitutes = array();
+            $this->myInstitutes = [];
             $myInstitutes = Institute::getMyInstitutes();
             foreach ($myInstitutes as $institute) {
                 $this->myInstitutes[$institute['Institut_id']] = $institute;
@@ -168,20 +168,20 @@ class Admission_CoursesetController extends AuthenticatedController
                 // Load course set data.
                 $this->courseset = new CourseSet($coursesetId);
                 $selectedInstitutes = $this->courseset->getInstituteIds();
-                $this->selectedInstitutes = array();
+                $this->selectedInstitutes = [];
                 foreach ($selectedInstitutes as $id => $selected) {
                     $this->selectedInstitutes[$id] = new Institute($id);
                 }
                 $selectedCourses = $this->courseset->getCourses();
                 if (!$this->instant_course_set_view) {
-                    $allCourses = CoursesetModel::getInstCourses(array_keys($this->selectedInstitutes), $coursesetId, array(), $this->courseset->getSemester(), $this->onlyOwnCourses);
+                    $allCourses = CoursesetModel::getInstCourses(array_keys($this->selectedInstitutes), $coursesetId, [], $this->courseset->getSemester(), $this->onlyOwnCourses);
                     $this->selectedSemester = $this->courseset->getSemester();
                 }
             } else {
                 $this->selectedSemester = $_SESSION['_default_sem'] ?: Semester::findCurrent()->semester_id;
                 $this->selectedInstitutes = $this->myInstitutes;
-                $allCourses = CoursesetModel::getInstCourses(array_keys($this->myInstitutes), $coursesetId, array(), $this->selectedSemester, $this->onlyOwnCourses);
-                $selectedCourses = array();
+                $allCourses = CoursesetModel::getInstCourses(array_keys($this->myInstitutes), $coursesetId, [], $this->selectedSemester, $this->onlyOwnCourses);
+                $selectedCourses = [];
             }
         }
         // If an institute search has been conducted, we need to consider parameters from flash.
@@ -198,7 +198,7 @@ class Admission_CoursesetController extends AuthenticatedController
                 $institutes = $this->flash['institutes'];
                 $this->courseset->setInstitutes($institutes);
                 if ($GLOBALS['perm']->have_perm('root')) {
-                    $this->myInstitutes = array();
+                    $this->myInstitutes = [];
                     foreach ($institutes as $id) {
                         $this->myInstitutes[$id] = new Institute($id);
                         $this->selectedInstitutes[$id] = $this->myInstitutes[$id];
@@ -268,7 +268,7 @@ class Admission_CoursesetController extends AuthenticatedController
             $this->flash['private'] = (bool) Request::get('private');
             $this->flash['semester'] = Request::option('semester');
             if (Request::submitted('add_institute')) {
-                $this->flash['institutes'] = array_merge($this->flash['institutes'], array(Request::option('institute_id')));
+                $this->flash['institutes'] = array_merge($this->flash['institutes'], [Request::option('institute_id')]);
             } else {
                 $this->flash['institute_id'] = Request::get('institute_id');
                 $this->flash['institute_id_parameter'] = Request::get('institute_id_parameter');
@@ -344,7 +344,7 @@ class Admission_CoursesetController extends AuthenticatedController
      */
     public function instcourses_action($coursesetId='') {
         CSRFProtection::verifyUnsafeRequest();
-        $this->selectedCourses = array();
+        $this->selectedCourses = [];
         //autoload
         $courseset = new CourseSet();
         if ($coursesetId && !Request::getArray('courses')) {
@@ -363,7 +363,7 @@ class Admission_CoursesetController extends AuthenticatedController
     public function institutes_action() {
         CSRFProtection::verifyUnsafeRequest();
         $this->myInstitutes = Institute::getMyInstitutes();
-        $this->selectedInstitutes = array();
+        $this->selectedInstitutes = [];
         foreach(Request::getArray('institutes') as $institute) {
             $this->selectedInstitutes[$institute] = new Institute($institute);
         }
@@ -387,8 +387,8 @@ class Admission_CoursesetController extends AuthenticatedController
         $this->set_id = $courseset->getId();
         $this->courses = Course::findMany($courseset->getCourses(), "ORDER BY VeranstaltungsNummer, Name");
         $this->applications = AdmissionPriority::getPrioritiesStats($courseset->getId());
-        $distinct_members = array();
-        $multi_members = array();
+        $distinct_members = [];
+        $multi_members = [];
         foreach($this->courses as $course) {
             $all_members = $course->members->findBy('status', words('user autor'))->pluck('user_id');
             $all_members = array_merge($all_members, $course->admission_applicants->findBy('status', words('accepted awaiting'))->pluck('user_id'));
@@ -443,8 +443,8 @@ class Admission_CoursesetController extends AuthenticatedController
             }
         }
         if (in_array($csv, words('download_all_members download_multi_members'))) {
-            $liste = array();
-            $multi_members = $all_participants = array();
+            $liste = [];
+            $multi_members = $all_participants = [];
             foreach($this->courses as $course) {
                 $participants = $course->members->findBy('status', words('user autor'))->toGroupedArray('user_id', words('username vorname nachname email status'));
                 $participants += $course->admission_applicants->findBy('status', words('accepted awaiting'))->toGroupedArray('user_id', words('username vorname nachname email status'));
@@ -453,11 +453,11 @@ class Admission_CoursesetController extends AuthenticatedController
                     $multi_members[$one][] = $course->name . ($course->veranstaltungsnummer ? '|'. $course->veranstaltungsnummer : '');
                 }
                 foreach ($participants as $user_id => $part) {
-                    $liste[] = array($part['username'], $part['vorname'], $part['nachname'], $part['email'], $course->name . ($course->veranstaltungsnummer ? '|'. $course->veranstaltungsnummer : '') , $part['status']);
+                    $liste[] = [$part['username'], $part['vorname'], $part['nachname'], $part['email'], $course->name . ($course->veranstaltungsnummer ? '|'. $course->veranstaltungsnummer : '') , $part['status']];
                 }
             }
             if ($csv == 'download_all_members') {
-                $captions = array(_("Username"), _("Vorname"), _("Nachname"), _("Email"), _("Veranstaltung"), _("Status"));
+                $captions = [_("Username"), _("Vorname"), _("Nachname"), _("Email"), _("Veranstaltung"), _("Status")];
                 if (count($liste)) {
                     $tmpname = md5(uniqid('tmp'));
                     if (array_to_csv($liste, $GLOBALS['TMP_PATH'].'/'.$tmpname, $captions)) {
@@ -471,20 +471,20 @@ class Admission_CoursesetController extends AuthenticatedController
                     }
                 }
             } else {
-                $liste = array();
+                $liste = [];
                 $multi_members = array_filter($multi_members, function ($a) {return count($a) > 1;});
                 $c = 0;
-                $max_count = array();
+                $max_count = [];
                 foreach ($multi_members as $user_id => $courses) {
                     $member = $all_participants[$user_id];
-                    $liste[$c] = array($member['username'], $member['vorname'], $member['nachname'], $member['email']);
+                    $liste[$c] = [$member['username'], $member['vorname'], $member['nachname'], $member['email']];
                     foreach ($courses as  $one) {
                         $liste[$c][] = $one;
                     }
                     $max_count[] = count($courses);
                     $c++;
                 }
-                $captions = array(_("Nutzername"), _("Vorname"), _("Nachname"), _("Email"));
+                $captions = [_("Nutzername"), _("Vorname"), _("Nachname"), _("Email")];
                 foreach (range(1,max($max_count)) as $num) {
                     $captions[] = _("Veranstaltung") . ' ' . $num;
                 }
@@ -582,12 +582,12 @@ class Admission_CoursesetController extends AuthenticatedController
             );
         };
         foreach ($users as $user) {
-            $row = array();
+            $row = [];
             $app_courses = $applicants[$user->id];
             asort($app_courses);
 
             foreach ($app_courses as $course_id => $prio) {
-                $row = array();
+                $row = [];
                 $row[] = $user->nachname;
                 $row[] = $user->vorname;
                 $row[] = $user->username;
@@ -623,14 +623,14 @@ class Admission_CoursesetController extends AuthenticatedController
     {
         $courseset = new CourseSet($set_id);
         $applicants = AdmissionPriority::getPriorities($set_id);
-        $_SESSION['sms_data'] = array();
+        $_SESSION['sms_data'] = [];
         $_SESSION['sms_data']['p_rec'] = User::findAndMapMany(function ($u) {
             return $u->username;
         }, array_unique(array_keys($applicants)));
         $this->redirect(URLHelper::getURL('dispatch.php/messages/write',
-            array('default_subject' => _("Anmeldung:") . ' ' . $courseset->getName(),
+            ['default_subject' => _("Anmeldung:") . ' ' . $courseset->getName(),
                   'emailrequest'    => 1
-            )
+            ]
         ));
     }
 
@@ -653,7 +653,7 @@ class Admission_CoursesetController extends AuthenticatedController
             }
         }
         $this->redirect(URLHelper::getURL('dispatch.php/admission/courseset/configure/' .
-            $cloned_courseset->getId(), array('is_copy' => 1)));
+            $cloned_courseset->getId(), ['is_copy' => 1]));
     }
 
     /**
@@ -679,7 +679,7 @@ class Admission_CoursesetController extends AuthenticatedController
                 GROUP BY seminar_id";
         $count1_statement = DBManager::get()->prepare($query);
 
-        $parameters = array();
+        $parameters = [];
 
         $sql = "SELECT seminare.seminar_id,seminare.Name as course_name,seminare.VeranstaltungsNummer as course_number,
                 admission_prelim, admission_turnout,seminar_courseset.set_id
@@ -708,12 +708,12 @@ class Admission_CoursesetController extends AuthenticatedController
             $seminar_id = $row['seminar_id'];
             $ret[$seminar_id] = $row;
 
-            $count0_statement->execute(array($seminar_id));
+            $count0_statement->execute([$seminar_id]);
             $count = $count0_statement->fetchColumn();
 
             $ret[$seminar_id]['count_teilnehmer']     = $count;
 
-            $count1_statement->execute(array($seminar_id));
+            $count1_statement->execute([$seminar_id]);
             $counts = $count1_statement->fetch(PDO::FETCH_ASSOC);
 
             $ret[$seminar_id]['count_prelim'] = (int)$counts['count2'];

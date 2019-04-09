@@ -39,14 +39,14 @@ class IliasObjectConnections
     */
     function readData()
     {
-        $this->object_connections = array();
+        $this->object_connections = [];
 
         $query = "SELECT system_type, module_type, module_id, chdate
                   FROM object_contentmodules
                   WHERE object_id = ?
                   ORDER BY chdate DESC";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->id));
+        $statement->execute([$this->id]);
 
         $module_count = 0;
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
@@ -109,7 +109,7 @@ class IliasObjectConnections
         if ($object_id && $index) {
             $query = "SELECT 1 FROM object_contentmodules WHERE object_id = ? AND system_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($object_id, $index));
+            $statement->execute([$object_id, $index]);
             return (bool)$statement->fetchColumn();
         }
     }
@@ -127,7 +127,7 @@ class IliasObjectConnections
         if ($object_id) {
             $query = "SELECT 1 FROM object_contentmodules WHERE object_id = ? AND module_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($object_id, 'crs'));
+            $statement->execute([$object_id, 'crs']);
             return (bool)$statement->fetchColumn();
         } else {
             return false;
@@ -150,11 +150,11 @@ class IliasObjectConnections
                   FROM object_contentmodules
                   WHERE object_id = ? AND system_type = ? AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         return $statement->fetchColumn() ?: false;
     }
 
@@ -176,12 +176,12 @@ class IliasObjectConnections
                   WHERE object_id = ? AND module_id = ? AND system_type = ?
                     AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_module_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         $check = $statement->fetchColumn();
 
         if ($check) {
@@ -189,23 +189,23 @@ class IliasObjectConnections
                       SET module_type = ?, chdate = UNIX_TIMESTAMP()
                       WHERE object_id = ? AND module_id = ? AND system_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_module_type,
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms
-            ));
+            ]);
         } else {
             $query = "INSERT INTO object_contentmodules
                         (object_id, module_id, system_type, module_type, mkdate, chdate)
                       VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP())";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms,
                 $connection_module_type
-            ));
+            ]);
         }
         return true;
     }
@@ -228,12 +228,12 @@ class IliasObjectConnections
                   WHERE object_id = ? AND module_id = ? AND system_type = ?
                     AND module_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $connection_object_id,
             $connection_module_id,
             $connection_cms,
             $connection_module_type
-        ));
+        ]);
         $check = $statement->fetchColumn();
 
 
@@ -242,12 +242,12 @@ class IliasObjectConnections
                       WHERE object_id = ? AND module_id = ? AND system_type = ?
                         AND module_type = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $connection_object_id,
                 $connection_module_id,
                 $connection_cms,
                 $connection_module_type
-            ));
+            ]);
             return true;
         }
         return false;
@@ -259,7 +259,7 @@ class IliasObjectConnections
                   FROM object_contentmodules
                   WHERE object_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id));
+        $statement->execute([$object_id]);
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
@@ -268,7 +268,7 @@ class IliasObjectConnections
         $query = "DELETE FROM object_contentmodules
                   WHERE object_id = ? AND system_type = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($object_id, $cms_type));
+        $statement->execute([$object_id, $cms_type]);
         return $statement->rowCount();
     }
 }

@@ -18,18 +18,18 @@
 class Fachberater extends ModuleManagementModel
 {
 
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_fachberater';
     
-        $config['belongs_to']['studiengangteil'] = array(
+        $config['belongs_to']['studiengangteil'] = [
             'class_name' => 'Studiengangteil',
             'foreign_key' => 'stgteil_id'
-        );
-        $config['belongs_to']['user'] = array(
+        ];
+        $config['belongs_to']['user'] = [
             'class_name' => 'User',
             'foreign_key' => 'user_id'
-        );
+        ];
         
         parent::configure($config);
     }

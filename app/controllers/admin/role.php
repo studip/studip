@@ -297,7 +297,7 @@ class Admin_RoleController extends AuthenticatedController
                     WHERE roleid = ?
                     ORDER BY Nachname, Vorname";
             $statement = DBManager::get()->prepare($sql);
-            $statement->execute(array($roleid));
+            $statement->execute([$roleid]);
 
             $users = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach ($users as $key => $user) {
@@ -387,7 +387,7 @@ class Admin_RoleController extends AuthenticatedController
 
             if (count($plugin_ids) > 0) {
                 foreach ($plugin_ids as $id) {
-                    RolePersistence::assignPluginRoles($id, array($role_id));
+                    RolePersistence::assignPluginRoles($id, [$role_id]);
                 }
 
                 $template = ngettext(
@@ -453,7 +453,7 @@ class Admin_RoleController extends AuthenticatedController
         }
 
         // From url
-        return array($user_id);
+        return [$user_id];
     }
 
     /**

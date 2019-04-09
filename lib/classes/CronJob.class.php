@@ -48,7 +48,7 @@ abstract class CronJob
      * @param Array $parameters Parameters for this cronjob instance which
      *                          were defined during scheduling.
      */
-    abstract public function execute($last_result, $parameters = array());
+    abstract public function execute($last_result, $parameters = []);
 
     /**
      * Returns a list of available parameters for this cronjob.
@@ -90,7 +90,7 @@ abstract class CronJob
      */
     public static function getParameters()
     {
-        return array();
+        return [];
     }
 
     /**

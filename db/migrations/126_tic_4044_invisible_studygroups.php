@@ -12,14 +12,14 @@ class Tic4044InvisibleStudygroups extends Migration {
      * perform this migration
      */
     function up() {
-        Config::get()->create('STUDYGROUPS_INVISIBLE_ALLOWED', array(
+        Config::get()->create('STUDYGROUPS_INVISIBLE_ALLOWED', [
             'value' => 0, 
             'is_default' => 0, 
             'type' => 'boolean',
             'range' => 'global',
             'section' => 'studygroups',
             'description' => _('Ermöglicht unsichtbare Studiengruppen')
-            ));
+            ]);
     }
 
     /**

@@ -68,7 +68,7 @@ abstract class ModuleManagementModel extends SimpleORMap
     const DISPLAY_KATEGORIE = 128;
 
 
-    protected static $filter_params = array();
+    protected static $filter_params = [];
     protected $is_dirty = false;
     private static $language = null;
     protected static $perm_object = null;
@@ -475,12 +475,12 @@ abstract class ModuleManagementModel extends SimpleORMap
      * @param int $offset Offset where the result set starts
      * @return object SimpleOrMapCollection with all found objects or empty array
      */
-    public static function getEnrichedByQuery($query = null, $params = array(),
+    public static function getEnrichedByQuery($query = null, $params = [],
             $row_count = null, $offset = null)
     {
-        $enriched = array();
+        $enriched = [];
         $params = array_merge($params, self::$filter_params);
-        self::$filter_params = array();
+        self::$filter_params = [];
         if (!is_null($query)) {
             if (!is_null($row_count)) {
                 $limit_sql = ' LIMIT ?';
@@ -575,7 +575,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function getFilterSql($filter, $where = false, $or_sql = null)
     {
-        $sql_parts = array();
+        $sql_parts = [];
         foreach ((array) $filter as $col => $val) {
             $col = trim($col);
             if (is_array($val)) {
@@ -635,7 +635,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      * @return string|null the verified sort fields
      */
     protected static function checkSortFields($sort, $standard_field = null,
-            $additional_fields = array())
+            $additional_fields = [])
     {
         if (!is_array($sort)) {
             $sort = explode(',', $sort);
@@ -660,7 +660,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      * @return string The sort query part.
      */
     protected static function createSortStatement($sort, $order = 'ASC',
-            $standard_field = null, $additional_fields = array())
+            $standard_field = null, $additional_fields = [])
     {
         $order = (mb_strtoupper(trim($order)) != 'DESC' ? ' ASC' : ' DESC');
         if (!is_array($sort)) {
@@ -825,7 +825,7 @@ abstract class ModuleManagementModel extends SimpleORMap
     {
         $class_name = $class_name ?: get_called_class();
         $class_name = 'MVV_' . mb_strtoupper($class_name);
-        $public_status = array();
+        $public_status = [];
         if (is_array($GLOBALS[$class_name]['STATUS']['values'])) {
             foreach ($GLOBALS[$class_name]['STATUS']['values'] as $key => $status) {
                 if ($status['public']) {
@@ -871,7 +871,7 @@ abstract class ModuleManagementModel extends SimpleORMap
 
     public function getResponsibleInstitutes()
     {
-        return array();
+        return [];
     }
 
     /**

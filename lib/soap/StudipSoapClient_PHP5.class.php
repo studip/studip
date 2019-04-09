@@ -17,7 +17,7 @@ class StudipSoapClient
     function __construct($path)
     {
         try {
-            $this->soap_client = new SoapClient($path, array('trace' => 0));
+            $this->soap_client = new SoapClient($path, ['trace' => 0]);
         } catch (SoapFault $fault) {
             $this->error = "<b>Soap Constructor Error</b><br>" . $fault->faultcode . ": ".$fault->faultstring."<br><br>";
         }
@@ -32,7 +32,7 @@ class StudipSoapClient
                 $result = $this->soap_client->__soapCall($method, $params);
             } catch  (SoapFault $fault) {
                 $this->faultstring = $fault->faultstring;
-                if (!in_array(mb_strtolower($this->faultstring), array("session not valid","session invalid", "session idled"))) {
+                if (!in_array(mb_strtolower($this->faultstring), ["session not valid","session invalid", "session idled"])) {
                     $this->error .= "<hr><font size=\"-1\"><b>" . sprintf(_("SOAP-Fehler, Funktion \"%s\":"), $method) . "</b> " . $fault->faultstring . " (" .  $fault->faultcode . ")<br>".print_r($params,1).'</font><hr>';
                     error_log($this->error);
                 }

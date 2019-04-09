@@ -10,13 +10,13 @@ class StEP00331IliasInterface extends Migration
     function up()
     {
         $db = DBManager::get();
-        $ilias_interface_config = array(
+        $ilias_interface_config = [
                         'moduletitle' => _('ILIAS'),
                         'edit_moduletitle' => false,
                         'search_active' => true,
                         'show_offline' => false,
                         'cache' => true
-        );
+        ];
         $sql = "INSERT IGNORE INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES ('ILIAS_INTERFACE_BASIC_SETTINGS', ?, 'array', 'global', 'modules', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '')";
         $db->execute($sql, [json_encode($ilias_interface_config)]);
         $sql = "INSERT IGNORE INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES ('ILIAS_INTERFACE_SETTINGS', '[]', 'array', 'global', 'modules', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), '')";

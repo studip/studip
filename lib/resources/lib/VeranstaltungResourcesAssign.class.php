@@ -60,7 +60,7 @@ class VeranstaltungResourcesAssign {
 
         $query = "SELECT termin_id FROM termine WHERE range_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->seminar_id));
+        $statement->execute([$this->seminar_id]);
         while ($termin_id = $staetment->fetchColumn()) {
             $result = array_merge((array)$result, (array)$this->changeDateAssign($termin_id));
         }
@@ -123,7 +123,7 @@ class VeranstaltungResourcesAssign {
                       WHERE termin_id = ?
                       ORDER BY date, content";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($termin_id));
+            $statement->execute([$termin_id]);
             if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                 $assign_id = $row['assign_id'];
                 $begin     = $row['date'];
@@ -172,13 +172,13 @@ class VeranstaltungResourcesAssign {
                         $overlaps = $obj->checkOverlap($check_locks);
 
                     if ($overlaps)
-                        $result[$obj->getId()]=array("overlap_assigns"=>$overlaps, "resource_id"=>$obj->getResourceId());
+                        $result[$obj->getId()]=["overlap_assigns"=>$overlaps, "resource_id"=>$obj->getResourceId()];
                     $i++;
 
                     if ((!$check_only) && (!$overlaps)) {
                         $obj->setCommentInternal(Request::get('comment_internal'));
                         $obj->create();
-                        $result[$obj->getId()]=array("overlap_assigns"=>FALSE, "resource_id"=>$obj->getResourceId());
+                        $result[$obj->getId()]=["overlap_assigns"=>FALSE, "resource_id"=>$obj->getResourceId()];
                     }
 
                 }
@@ -198,7 +198,7 @@ class VeranstaltungResourcesAssign {
                   WHERE termin_id = ?
                   ORDER BY date, content";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
 
         if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if (!$begin) {
@@ -250,13 +250,13 @@ class VeranstaltungResourcesAssign {
                 $overlaps = $changeAssign->checkOverlap($check_locks);
 
             if ($overlaps) {
-                $result[$changeAssign->getId()]=array("overlap_assigns"=>$overlaps, "resource_id"=>$resource_id, "termin_id"=>$termin_id);
+                $result[$changeAssign->getId()]=["overlap_assigns"=>$overlaps, "resource_id"=>$resource_id, "termin_id"=>$termin_id];
                 $this->killDateAssign($termin_id);
             }
 
             if ((!$check_only) && (!$overlaps)) {
                 $changeAssign->store();
-                $result[$changeAssign->getId()]=array("overlap_assigns"=>FALSE, "resource_id"=>$resource_id, "termin_id"=>$termin_id);
+                $result[$changeAssign->getId()]=["overlap_assigns"=>FALSE, "resource_id"=>$resource_id, "termin_id"=>$termin_id];
                 //Raumanfrage als bearbeitet markieren, wenn vorhanden
                 if(Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS){
                     $request = new RoomRequest(RoomRequest::existsByDate($termin_id));
@@ -275,7 +275,7 @@ class VeranstaltungResourcesAssign {
             if (!$begin) {
                 $query = "SELECT date, end_time FROM termine WHERE termin_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($termin_id));
+                $statement->execute([$termin_id]);
                 if ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     $begin = $row['date'];
                     $end   = $row['end_time'];
@@ -293,11 +293,11 @@ class VeranstaltungResourcesAssign {
                     $overlaps = $createAssign->checkOverlap($check_locks);
 
                 if ($overlaps)
-                    $result[$createAssign->getId()]=array("overlap_assigns"=>$overlaps, "resource_id"=>$resource_id, "termin_id"=>$termin_id);
+                    $result[$createAssign->getId()]=["overlap_assigns"=>$overlaps, "resource_id"=>$resource_id, "termin_id"=>$termin_id];
 
                 if ((!$check_only) && (!$overlaps)) {
                     $createAssign->create();
-                    $result[$createAssign->getId()]=array("overlap_assigns"=>FALSE, "resource_id"=>$resource_id, "termin_id"=>$termin_id);
+                    $result[$createAssign->getId()]=["overlap_assigns"=>FALSE, "resource_id"=>$resource_id, "termin_id"=>$termin_id];
                 }
             }
         }
@@ -316,14 +316,14 @@ class VeranstaltungResourcesAssign {
                   LEFT JOIN resources_categories USING (category_id)
                   WHERE assign_user_id = ? AND resources_categories.is_room = 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         while ($assign_id = $statement->fetchColumn()) {
             AssignObject::Factory($assign_id)->delete();
         }
 
         $query = "SELECT request_id FROM resources_requests WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($termin_id));
+        $statement->execute([$termin_id]);
         while ($request_id = $statement->fetchColumn()) {
             $killRequest = new RoomRequest ($request_id);
             $killRequest->delete();
@@ -343,7 +343,7 @@ class VeranstaltungResourcesAssign {
                   WHERE resources_assign.assign_user_id = ?
                     AND resources_categories.is_room = 1";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->seminar_id));
+        $statement->execute([$this->seminar_id]);
         while ($assign_id = $statement->fetchColumn()) {
             AssignObject::Factory($assign_id)->delete();
         }

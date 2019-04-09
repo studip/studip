@@ -3,7 +3,7 @@ use Studip\Button, Studip\LinkButton;
 SkipLinks::addIndex(_('Termine importieren'), 'main_content', 100);
 ?>
 <form action="<?= $controller->url_for('calendar/single/import/'
-        . $calendar->getRangeId(), array('atime' => $atime, 'last_view' => $last_view)) ?>" method="post" enctype="multipart/form-data" class="default">
+        . $calendar->getRangeId(), ['atime' => $atime, 'last_view' => $last_view]) ?>" method="post" enctype="multipart/form-data" class="default">
 
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
@@ -25,7 +25,7 @@ SkipLinks::addIndex(_('Termine importieren'), 'main_content', 100);
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Termine importieren'), 'import', array('title' => _('Termine importieren'))) ?>
+        <?= Button::createAccept(_('Termine importieren'), 'import', ['title' => _('Termine importieren')]) ?>
         <? if (!Request::isXhr()) : ?>
         <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view)) ?>
         <? endif; ?>

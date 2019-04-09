@@ -11,7 +11,7 @@ class Widget
     /**
      * Contains the elements of the widget.
      */
-    protected $elements = array();
+    protected $elements = [];
 
     /**
      * Contains the template used to render the widget.
@@ -21,7 +21,7 @@ class Widget
     /**
      * Contains additional template variables
      */
-    protected $template_variables = array();
+    protected $template_variables = [];
 
     /**
      * Layout for this widget
@@ -36,7 +36,7 @@ class Widget
     /**
      * @var array classes for the layout <div> around the widget
      */
-    protected $layout_css_classes = array();
+    protected $layout_css_classes = [];
 
     /**
      * Add an element to the widget.
@@ -65,7 +65,7 @@ class Widget
         
         $inserted = false;
         
-        $elements = array();
+        $elements = [];
         foreach ($this->elements as $idx => $elmnt) {
             if ($idx === $index) {
                 $inserted = true;
@@ -193,7 +193,7 @@ class Widget
      */
     public function removeLayoutCSSClass($css_class)
     {
-        $this->layout_classes = array_diff($this->layout_css_class, array($css_class));
+        $this->layout_classes = array_diff($this->layout_css_class, [$css_class]);
     }
 
     /**
@@ -202,7 +202,7 @@ class Widget
      *
      * @return String The THML code of the rendered sidebar widget
      */
-    public function render($variables = array())
+    public function render($variables = [])
     {
         $content = '';
 

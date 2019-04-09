@@ -26,31 +26,31 @@ class Color {
      * 
      * @var array
      */
-    static $colorstrings = array(
-        'aqua'           => array(0, 255, 255, 1),
-        'azure'          => array(240, 255, 255, 1),
-        'blue'           => array(0, 0, 255, 1),
-        'cyan'           => array(0, 255, 255, 1),
-        'darkblue'       => array(0, 0, 139, 1),
-        'darkred'        => array(139, 0, 0, 1),
-        'gold'           => array(255, 215, 0, 1),
-        'gray'           => array(128, 128, 128, 1),
-        'indigo'         => array(75, 0, 130, 1),
-        'lightsteelblue' => array(176, 196, 222, 1),
-        'lightyellow'    => array(255, 255, 224, 1),
-        'lime'           => array(0, 255, 0, 1),
-        'magenta'        => array(255, 0, 255, 1),
-        'navy'           => array(0, 0, 128, 1),
-        'olive'          => array(128, 128, 0, 1),
-        'orange'         => array(255, 165, 0, 1),
-        'pink'           => array(255, 192, 203, 1),
-        'red'            => array(255, 0, 0, 1),
-        'purple'         => array(128, 0, 128, 1),
-        'violet'         => array(238, 130, 238, 1),
-        'yellow'         => array(255, 255, 0, 1),
-        'black'          => array(0, 0, 0, 1),
-        'white'          => array(255, 255, 255, 1)
-    );
+    static $colorstrings = [
+        'aqua'           => [0, 255, 255, 1],
+        'azure'          => [240, 255, 255, 1],
+        'blue'           => [0, 0, 255, 1],
+        'cyan'           => [0, 255, 255, 1],
+        'darkblue'       => [0, 0, 139, 1],
+        'darkred'        => [139, 0, 0, 1],
+        'gold'           => [255, 215, 0, 1],
+        'gray'           => [128, 128, 128, 1],
+        'indigo'         => [75, 0, 130, 1],
+        'lightsteelblue' => [176, 196, 222, 1],
+        'lightyellow'    => [255, 255, 224, 1],
+        'lime'           => [0, 255, 0, 1],
+        'magenta'        => [255, 0, 255, 1],
+        'navy'           => [0, 0, 128, 1],
+        'olive'          => [128, 128, 0, 1],
+        'orange'         => [255, 165, 0, 1],
+        'pink'           => [255, 192, 203, 1],
+        'red'            => [255, 0, 0, 1],
+        'purple'         => [128, 0, 128, 1],
+        'violet'         => [238, 130, 238, 1],
+        'yellow'         => [255, 255, 0, 1],
+        'black'          => [0, 0, 0, 1],
+        'white'          => [255, 255, 255, 1]
+    ];
 
     /**
      * converts a css-hex-color into a rgba-quadruple
@@ -109,11 +109,11 @@ class Color {
         $l = $matches[2];
         $m2 = ($l <= 0.5) ? $l * ($s + 1) : $l + $s - $l*$s;
         $m1 = $l * 2 - $m2;
-        return array(self::_color_hue2rgb($m1, $m2, $h + 0.33333),
+        return [self::_color_hue2rgb($m1, $m2, $h + 0.33333),
             self::_color_hue2rgb($m1, $m2, $h),
             self::_color_hue2rgb($m1, $m2, $h - 0.33333),
             1.0
-        );
+        ];
     }
 
     static private function _color_hue2rgb($m1, $m2, $h) {
@@ -157,7 +157,7 @@ class Color {
      */
     static function opacity($color, $opacity) {
         list($color, $format) = self::_normalize($color);
-        if (in_array($format, array("hex", "rgb"))) {
+        if (in_array($format, ["hex", "rgb"])) {
             $format = "rgba";
         } elseif ($format = "hsl") {
             $format = "hsla";
@@ -217,7 +217,7 @@ class Color {
             $format = "rgb"; //we don't want colors as strings like "red"
             $arr = self::$colorstrings[mb_strtolower($color)];
         }
-        return array($arr, $format);
+        return [$arr, $format];
     }
 
     /**
@@ -364,7 +364,7 @@ class Color {
             if (0 > $H) $H += 1;
             if (1 < $H) $H -= 1;
         }
-        return array($H, $S, $L);
+        return [$H, $S, $L];
     }
 
 }

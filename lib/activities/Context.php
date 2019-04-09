@@ -74,7 +74,7 @@ abstract class Context
             },
             'context = ? AND context_id = ?  AND mkdate >= ? AND mkdate <= ? ORDER BY mkdate DESC'
             ,
-            array($this->getContextType(), $this->getRangeId(), $filter->getStartDate(), $filter->getEndDate()));
+            [$this->getContextType(), $this->getRangeId(), $filter->getStartDate(), $filter->getEndDate()]);
         return array_filter($activities);
     }
 
@@ -99,7 +99,7 @@ abstract class Context
      */
     protected function filterProvider($providers, Filter $filter)
     {
-        $filtered_providers = array();
+        $filtered_providers = [];
 
         if (empty($filter->getType())) {
             $filtered_providers = $providers;

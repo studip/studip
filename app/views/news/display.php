@@ -19,7 +19,7 @@
             </a>
         <? endif; ?>
         <? if ($rss_id): ?>
-            <a href="<?= URLHelper::getLink('rss.php', array('id' => $rss_id)) ?>">
+            <a href="<?= URLHelper::getLink('rss.php', ['id' => $rss_id]) ?>">
                 <?= Icon::create('rss', 'clickable', ['title' => _('RSS-Feed')])->asImg() ?>
             </a>
         <? endif; ?>
@@ -31,13 +31,13 @@
     <article class="studip toggle <?= ContentBoxHelper::classes($new->id, $is_new) ?>" id="<?= $new->id ?>" data-visiturl="<?=URLHelper::getScriptLink('dispatch.php/news/visit')?>">
         <header>
             <h1>
-                <a href="<?= ContentBoxHelper::href($new->id, array('contentbox_type' => 'news')) ?>">
+                <a href="<?= ContentBoxHelper::href($new->id, ['contentbox_type' => 'news']) ?>">
                     <?= Icon::create('news', 'clickable')->asImg(); ?>
                     <?= htmlReady($new['topic']); ?>
                 </a>
             </h1>
             <nav>
-                <?= $this->render_partial('news/_actions.php', array('new' => $new, 'range' => $range)) ?>
+                <?= $this->render_partial('news/_actions.php', ['new' => $new, 'range' => $range]) ?>
             </nav>
         </header>
         <section>
@@ -45,7 +45,7 @@
                 <?= formatReady($new['body']) ?>
             </article>
         </section>
-        <?= $this->render_partial('news/_comments.php', array('new' => $new, 'range' => $range)) ?>
+        <?= $this->render_partial('news/_comments.php', ['new' => $new, 'range' => $range]) ?>
     </article>
     <? endforeach; ?>
     <? if (!$news): ?>

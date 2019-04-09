@@ -46,7 +46,7 @@
         <? endforeach ?>
     <? endif ?>
         <?= Studip\Button::create(_('Zurück'), 'back',
-            $dialog ? array('data-dialog' => 'size=50%') : array()) ?>
+            $dialog ? ['data-dialog' => 'size=50%'] : []) ?>
         <?= Studip\Button::createAccept(_('Veranstaltung anlegen'), 'create') ?>
     </footer>
 </form>

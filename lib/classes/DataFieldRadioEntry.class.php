@@ -29,7 +29,7 @@ class DataFieldRadioEntry extends DataFieldSelectboxEntry
      * @param Array  $variables Additional variables
      * @return String containing the required html
      */
-    public function getHTML($name = '', $variables = array())
+    public function getHTML($name = '', $variables = [])
     {
         return parent::getHTML($name, $variables + [
             'type_param' => $this->type_param,

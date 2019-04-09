@@ -1,5 +1,5 @@
 <div id="activityEdit">
-    <form id="configure_activity" action="<?= PluginEngine::getURL($plugin, array(), 'save') ?>" method="post" class="default" data-dialog>
+    <form id="configure_activity" action="<?= PluginEngine::getURL($plugin, [], 'save') ?>" method="post" class="default" data-dialog>
         <fieldset>
             <legend><?= _("Anzuzeigende Bereiche:") ?></legend>
 

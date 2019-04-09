@@ -57,7 +57,7 @@ class ExternConfigDb extends ExternConfig {
             $stmt = DBManager::get()->prepare("UPDATE extern_config
                 SET config = ?, chdate = UNIX_TIMESTAMP()
                 WHERE config_id = ? AND range_id = ?");
-            $stmt->execute($data = array($serialized_config, $this->id, $this->range_id));
+            $stmt->execute($data = [$serialized_config, $this->id, $this->range_id]);
 
             return($this->updateConfiguration());
         } else {
@@ -72,7 +72,7 @@ class ExternConfigDb extends ExternConfig {
     */
     function parse () {
         $query = "SELECT config FROM extern_config WHERE config_id = ?";
-        $parameters = array($this->id);
+        $parameters = [$this->id];
         $statement = DBManager::get()->prepare($query);
         $statement->execute($parameters);
         $row = $statement->fetchColumn();
@@ -91,9 +91,9 @@ class ExternConfigDb extends ExternConfig {
          $time = time();
          $query = "INSERT INTO extern_config VALUES (?,?,?,?,0,?,?,?)";
          $statement = DBManager::get()->prepare($query);
-         $statement->execute(array($this->id, $this->range_id, $this->module_type,
+         $statement->execute([$this->id, $this->range_id, $this->module_type,
                 $this->config_name, $serialized_config, $time, $time
-            ));
+            ]);
             if (!$statement->rowCount()) {
                 return FALSE;
             }

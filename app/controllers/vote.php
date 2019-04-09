@@ -48,7 +48,7 @@ class VoteController extends AuthenticatedController {
             $eval_db = new EvaluationDB();
             $this->evaluations = StudipEvaluation::findMany($eval_db->getEvaluationIDs($range_id, EVAL_STATE_ACTIVE));
         } else {
-            $this->evaluations = array();
+            $this->evaluations = [];
         }
         $show_votes[] = 'active';
         // Check if we got expired
@@ -60,7 +60,7 @@ class VoteController extends AuthenticatedController {
             }
         }
 
-        $this->votes = Vote::findBySQL('range_id = ? AND state IN (?) ORDER BY mkdate desc', array($range_id,$show_votes));
+        $this->votes = Vote::findBySQL('range_id = ? AND state IN (?) ORDER BY mkdate desc', [$range_id,$show_votes]);
         $this->visit();
 
         }

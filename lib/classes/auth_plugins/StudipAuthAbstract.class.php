@@ -158,23 +158,23 @@ class StudipAuthAbstract {
 
                     if ($exp_d > 0 && $exp_d < time()) {
                         $error .= _("Dieses Benutzerkonto ist abgelaufen.<br> Wenden Sie sich bitte an die Administration.") . "<BR>";
-                        return array('uid' => false, 'error' => $error);
+                        return ['uid' => false, 'error' => $error];
                     } else if ($locked == "1") {
                         $error .= _("Dieser Benutzer ist gesperrt! Wenden Sie sich bitte an die Administration.") . "<BR>";
-                        return array('uid' => false, 'error' => $error);
+                        return ['uid' => false, 'error' => $error];
                     } else if ($key != '') {
-                        return array('uid' => $uid, 'user' => $user, 'error' => $error, 'need_email_activation' => $uid);
+                        return ['uid' => $uid, 'user' => $user, 'error' => $error, 'need_email_activation' => $uid];
                     } else if ($checkIPRange && !self::CheckIPRange()) {
                         $error .= _("Der Login in Ihren Account ist aus diesem Netzwerk nicht erlaubt.") . "<BR>";
-                        return array('uid' => false, 'error' => $error);
+                        return ['uid' => false, 'error' => $error];
                     }
                 }
-                return array('uid' => $uid, 'user' => $user, 'error' => $error, 'is_new_user' => $object->is_new_user);
+                return ['uid' => $uid, 'user' => $user, 'error' => $error, 'is_new_user' => $object->is_new_user];
             } else {
                 $error .= (($object->error_head) ? ("<b>" . $object->error_head . ":</b> ") : "") . $object->error_msg . "<br>";
             }
         }
-        return array('uid' => $uid, 'error' => $error);
+        return ['uid' => $uid, 'error' => $error];
     }
 
     /**
@@ -194,12 +194,12 @@ class StudipAuthAbstract {
         $found = false;
         foreach ($plugins as $object) {
             if ($found = $object->isUsedUsername($username)) {
-                return array('found' => $found,'error' => $error);
+                return ['found' => $found,'error' => $error];
             } else {
                 $error .= (($object->error_head) ? ("<b>" . $object->error_head . ":</b> ") : "") . $object->error_msg . "<br>";
             }
         }
-        return array('found' => $found,'error' => $error);
+        return ['found' => $found,'error' => $error];
     }
     /**
     * static method to check for a mapped field
@@ -445,12 +445,12 @@ class StudipAuthAbstract {
                     $table = $split[0];
                     $field = $split[1];
                     if ($table == 'auth_user_md5' || $table == 'user_info') {
-                        $mapped_value = call_user_func(array($this, $value['callback']),$value['map_args']);
+                        $mapped_value = call_user_func([$this, $value['callback']],$value['map_args']);
                         if (isset($mapped_value)) {
                             $user->setValue($field, $mapped_value);
                         }
                     } else {
-                        call_user_func(array($this, $value['callback']),array($table,$field,$user,$value['map_args']));
+                        call_user_func([$this, $value['callback']],[$table,$field,$user,$value['map_args']]);
                     }
                 }
             }

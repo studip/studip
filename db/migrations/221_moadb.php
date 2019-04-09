@@ -143,7 +143,7 @@ class Moadb extends Migration
 
         $db->exec("SET autocommit=0");
         //top folder courses
-        $institute_folders = array();
+        $institute_folders = [];
         foreach ($db->query("SELECT DISTINCT i.institut_id as new_range_id,i.name FROM `folder` f INNER JOIN `Institute` i ON i.institut_id = f.seminar_id") as $folder) {
             $folder['folder_id'] = md5(uniqid('folders', true));
             $folder['range_id'] = '';
@@ -168,7 +168,7 @@ class Moadb extends Migration
         $db->exec("COMMIT");
 
 
-        $seminar_folders = array();
+        $seminar_folders = [];
         foreach ($db->query("SELECT DISTINCT s.seminar_id as new_range_id,s.name FROM  `seminare` s INNER JOIN `folder` f ON s.Seminar_id = f.seminar_id") as $folder) {
             $folder['folder_id'] = md5(uniqid('folders', true));
             $folder['range_id'] = '';
@@ -240,8 +240,8 @@ class Moadb extends Migration
                 time(),
                 time()
             ]);
-            $this->migratePersonalFiles($db->fetchAll("SELECT file_id,id,storage_id,mime_type,user_id,filename,description,mkdate,chdate,downloads,size FROM `_files` inner join _file_refs using(file_id) WHERE parent_id = ? and storage_id<>''", array($user_id)), $personal_folder_id);
-            $subfolders = $db->fetchAll("SELECT file_id as folder_id,user_id,'{$personal_folder_id}' as range_id,name,description,mkdate,chdate FROM _file_refs INNER JOIN _files USING(file_id) WHERE storage_id='' AND parent_id = ?", array($user_id));
+            $this->migratePersonalFiles($db->fetchAll("SELECT file_id,id,storage_id,mime_type,user_id,filename,description,mkdate,chdate,downloads,size FROM `_files` inner join _file_refs using(file_id) WHERE parent_id = ? and storage_id<>''", [$user_id]), $personal_folder_id);
+            $subfolders = $db->fetchAll("SELECT file_id as folder_id,user_id,'{$personal_folder_id}' as range_id,name,description,mkdate,chdate FROM _file_refs INNER JOIN _files USING(file_id) WHERE storage_id='' AND parent_id = ?", [$user_id]);
             foreach ($subfolders as $one) {
                 $this->migratePersonalFolder($one, $user_id);
             }
@@ -393,13 +393,13 @@ class Moadb extends Migration
         $folder_type = $folder_type == 'StandardFolder' && isset($folder['permission']) && $folder['permission'] != 7 ? 'PermissionEnabledFolder' : $folder_type;
         $data_content = $data_content == '' && isset($folder['permission']) && $folder['permission'] != 7 ? json_encode(['permission' => $folder['permission']]): $data_content;
         if (isset($folder['range_id'])) {
-            $insert_folder->execute(array($folder['folder_id'], $folder['user_id'], $folder['range_id'], $range_id, $range_type, $folder_type, $folder['name'], $data_content, (string)$folder['description'], $folder['mkdate'], $folder['chdate']));
+            $insert_folder->execute([$folder['folder_id'], $folder['user_id'], $folder['range_id'], $range_id, $range_type, $folder_type, $folder['name'], $data_content, (string)$folder['description'], $folder['mkdate'], $folder['chdate']]);
         }
-        $subfolders = $db->fetchAll("SELECT * FROM folder WHERE range_id = ?", array($folder['folder_id']));
+        $subfolders = $db->fetchAll("SELECT * FROM folder WHERE range_id = ?", [$folder['folder_id']]);
         foreach ($subfolders as $one) {
             $this->migrateFolder($one, $range_id, $range_type, 'StandardFolder');
         }
-        $this->migrateFiles($db->fetchAll("SELECT * FROM dokumente WHERE range_id = ?", array($folder['folder_id'])), $folder['folder_id']);
+        $this->migrateFiles($db->fetchAll("SELECT * FROM dokumente WHERE range_id = ?", [$folder['folder_id']]), $folder['folder_id']);
 
 
 
@@ -411,7 +411,7 @@ class Moadb extends Migration
         $insert_file_ref = $db->prepare("INSERT INTO `file_refs` (`id`, `file_id`, `folder_id`, `downloads`, `description`, `content_terms_of_use_id`, `user_id`, `name`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $insert_file = $db->prepare("INSERT INTO `files` (`id`, `user_id`, `mime_type`, `name`, `size`, `storage`, `author_name`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $insert_file_url = $db->prepare("INSERT INTO `file_urls` (`file_id`, `url`) VALUES (?, ?)");
-        $filenames = array();
+        $filenames = [];
         foreach ($files as $one) {
             $c = 0;
             $filename = $one['filename'];
@@ -425,7 +425,7 @@ class Moadb extends Migration
                 $filename = $name . '['.++$c.']' . ($ext ? '.' . $ext : '');
             }
             $filenames[] = $filename;
-            $insert_file_ref->execute(array(
+            $insert_file_ref->execute([
                 $one['dokument_id'],
                 $one['dokument_id'],
                 $folder_id,
@@ -436,10 +436,10 @@ class Moadb extends Migration
                 $filename,
                 $one['mkdate'],
                 $one['chdate']
-            ));
-            $insert_file->execute(array($one['dokument_id'], $one['user_id'], get_mime_type($one['filename']), $filename, $one['filesize'], $one['url'] ? 'url' : 'disk', $one['author_name'], $one['mkdate'], $one['chdate']));
+            ]);
+            $insert_file->execute([$one['dokument_id'], $one['user_id'], get_mime_type($one['filename']), $filename, $one['filesize'], $one['url'] ? 'url' : 'disk', $one['author_name'], $one['mkdate'], $one['chdate']]);
             if ($one['url']) {
-                $insert_file_url->execute(array($one['dokument_id'], $one['url']));
+                $insert_file_url->execute([$one['dokument_id'], $one['url']]);
             }
         }
     }
@@ -460,11 +460,11 @@ class Moadb extends Migration
             $folder['mkdate'],
             $folder['chdate']
         ]);
-        $subfolders = $db->fetchAll("SELECT file_id as folder_id,user_id,parent_id as range_id,name,description,mkdate,chdate FROM _file_refs INNER JOIN _files USING(file_id) WHERE storage_id='' AND parent_id = ?", array($folder['folder_id']));
+        $subfolders = $db->fetchAll("SELECT file_id as folder_id,user_id,parent_id as range_id,name,description,mkdate,chdate FROM _file_refs INNER JOIN _files USING(file_id) WHERE storage_id='' AND parent_id = ?", [$folder['folder_id']]);
         foreach ($subfolders as $one) {
             $this->migratePersonalFolder($one, $range_id);
         }
-        $this->migratePersonalFiles($db->fetchAll("SELECT file_id,id,storage_id,mime_type,user_id,filename,description,mkdate,chdate,downloads,size FROM `_files` inner join _file_refs using(file_id) WHERE parent_id = ? and storage_id<>''", array($folder['folder_id'])), $folder['folder_id']);
+        $this->migratePersonalFiles($db->fetchAll("SELECT file_id,id,storage_id,mime_type,user_id,filename,description,mkdate,chdate,downloads,size FROM `_files` inner join _file_refs using(file_id) WHERE parent_id = ? and storage_id<>''", [$folder['folder_id']]), $folder['folder_id']);
 
 
     }
@@ -474,7 +474,7 @@ class Moadb extends Migration
         $db = DBManager::get();
         $insert_file_ref = $db->prepare("INSERT INTO `file_refs` (`id`, `file_id`, `folder_id`, `downloads`, `description`, `content_terms_of_use_id`, `user_id`, `name`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $insert_file = $db->prepare("INSERT INTO `files` (`id`, `user_id`, `mime_type`, `name`, `size`, `storage`, `author_name`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $filenames = array();
+        $filenames = [];
         foreach ($files as $one) {
             $c = 0;
             $filename = $one['filename'];
@@ -488,7 +488,7 @@ class Moadb extends Migration
                 $filename = $name . '['.++$c.']' . ($ext ? '.' . $ext : '');
             }
             $filenames[] = $filename;
-            $insert_file_ref->execute(array(
+            $insert_file_ref->execute([
                 $one['id'],
                 $one['storage_id'],
                 $folder_id,
@@ -499,8 +499,8 @@ class Moadb extends Migration
                 $filename,
                 $one['mkdate'],
                 $one['chdate']
-            ));
-            $insert_file->execute(array($one['storage_id'], $one['user_id'], $one['mime_type'], $filename, $one['size'], 'disk', '', $one['mkdate'], $one['chdate']));
+            ]);
+            $insert_file->execute([$one['storage_id'], $one['user_id'], $one['mime_type'], $filename, $one['size'], 'disk', '', $one['mkdate'], $one['chdate']]);
             $new_path = $GLOBALS['UPLOAD_PATH'] . '/' . substr($one['storage_id'], 0, 2) . '/' . $one['storage_id'];
             $old_path = $GLOBALS['USER_DOC_PATH'] . '/' . $one['user_id'] . '/' . $one['storage_id'];
             @rename($old_path, $new_path);

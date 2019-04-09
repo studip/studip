@@ -110,7 +110,7 @@ class ResourceObject
     {
         $query = "SELECT resource_id FROM resources_objects WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->id));
+        $statement->execute([$this->id]);
         $check = $statement->fetchColumn();
 
         if ($check) {
@@ -302,7 +302,7 @@ class ResourceObject
 
         $query = "SELECT Name FROM Institute WHERE Institut_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         $name = $statement->fetchColumn();
 
         if ($name) {
@@ -343,7 +343,7 @@ class ResourceObject
             case 'sem':
                 $query = "SELECT Name FROM seminare WHERE Seminar_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array($id));
+                $statement->execute([$id]);
                 $name = $statement->fetchColumn();
 
                 if ($name) {
@@ -450,12 +450,12 @@ class ResourceObject
         }
         $query .= " ORDER BY b.name";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $this->id,
             $this->category_id
-        ));
+        ]);
 
-        $temp = array();
+        $temp = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $temp[] = sprintf('%s: %s',
                               $row['name'],
@@ -477,10 +477,10 @@ class ResourceObject
                       WHERE resource_id = ? AND c.category_id = ? AND b.system = 2
                       ORDER BY b.name";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $this->id,
                 $this->category_id
-            ));
+            ]);
             $this->my_state = $statement->fetchColumn() ?: null;
         }
         return $this->my_state ?: false;
@@ -504,7 +504,7 @@ class ResourceObject
                       WHERE parent_id = ?
                       LIMIT 1";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->id));
+            $statement->execute([$this->id]);
             $this->is_parent = ($statement->fetchColumn() > 0) ?: null;
         }
         return (!is_null($this->is_parent));
@@ -518,7 +518,7 @@ class ResourceObject
                       WHERE resource_id = ?
                       LIMIT 1";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->id));
+            $statement->execute([$this->id]);
             $this->is_assigned = ($statement->fetchColumn() > 0) ?: null;
         }
         return (!is_null($this->is_assigned));
@@ -532,7 +532,7 @@ class ResourceObject
                       LEFT JOIN resources_categories USING (category_id)
                       WHERE resource_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array($this->id));
+            $statement->execute([$this->id]);
             $this->is_room = ($statement->fetchColumn() > 0) ?: null;
         }
         return (!is_null($this->is_room));
@@ -557,7 +557,7 @@ class ResourceObject
         $query = "DELETE FROM resources_objects_properties
                   WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         return $statement->rowCount() > 0;
     }
 
@@ -567,11 +567,11 @@ class ResourceObject
                     (resource_id, property_id, state)
                   VALUES (?, ?, ?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $this->id,
             $property_id,
             $state ?: ''
-        ));
+        ]);
         return $statement->rowCount() > 0;
     }
 
@@ -580,10 +580,10 @@ class ResourceObject
         $query = "DELETE FROM resources_user_resources
                   WHERE user_id = ? AND resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $user_id,
             $this->id
-        ));
+        ]);
         return $statement->rowCount() > 0;
     }
 
@@ -598,10 +598,10 @@ class ResourceObject
                   FROM resources_user_resources
                   WHERE user_id = ? AND resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array(
+        $statement->execute([
             $user_id,
             $this->id
-        ));
+        ]);
         $check = $statement->fetchColumn();
 
         //neuer Eintrag
@@ -613,11 +613,11 @@ class ResourceObject
                         (perms, user_id, resource_id)
                       VALUES (?, ?, ?)";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $perms,
                 $user_id,
                 $this->id
-            ));
+            ]);
             return $statement->rowCount() > 0;
         }
 
@@ -627,11 +627,11 @@ class ResourceObject
                       SET perms = ?
                       WHERE user_id = ? AND resource_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute(array(
+            $statement->execute([
                 $perms,
                 $user_id,
                 $this->id
-            ));
+            ]);
             return $statement->rowCount() > 0;
         }
 
@@ -649,7 +649,7 @@ class ResourceObject
                   LEFT JOIN resources_categories AS rc USING (category_id)
                   WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (!$row) {
@@ -690,7 +690,7 @@ class ResourceObject
                 } else {
                     $query = "SELECT level FROM resources_objects WHERE resource_id = ?";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($this->parent_id));
+                    $statement->execute([$this->parent_id]);
                     $level = $statement->fetchColumn() + 1;
                 }
 
@@ -701,7 +701,7 @@ class ResourceObject
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
                                   UNIX_TIMESTAMP(), UNIX_TIMESTAMP())";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     $this->id,
                     $this->root_id,
                     $this->parent_id,
@@ -714,7 +714,7 @@ class ResourceObject
                     $this->lockable,
                     $this->multiple_assign,
                     $this->requestable
-                ));
+                ]);
                 $affected_rows = $statement->rowCount();
             } else {
                 $query = "UPDATE resources_objects
@@ -724,7 +724,7 @@ class ResourceObject
                               requestable = ?
                           WHERE resource_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     $this->root_id,
                     $this->parent_id,
                     $this->category_id,
@@ -736,7 +736,7 @@ class ResourceObject
                     $this->multiple_assign,
                     $this->requestable,
                     $this->id
-                ));
+                ]);
                 $affected_rows = $statement->rowCount();
 
                 if ($affected_rows) {
@@ -744,7 +744,7 @@ class ResourceObject
                               SET chdate = UNIX_TIMESTAMP()
                               WHERE resource_id = ?";
                     $statement = DBManager::get()->prepare($query);
-                    $statement->execute(array($this->id));
+                    $statement->execute([$this->id]);
                 }
             }
 
@@ -768,7 +768,7 @@ class ResourceObject
 
         $query = "SELECT assign_id FROM resources_assign WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
         while ($assign_id = $statement->fetchColumn()) {
             AssignObject::Factory($assign_id)->delete();
         }
@@ -787,7 +787,7 @@ class ResourceObject
 
         $query = "SELECT assign_id FROM resources_assign WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($this->id));
+        $statement->execute([$this->id]);
 
         while ($assign_id = $statement->fetchColumn()) {
             AssignObject::Factory($assign_id)->updateResourcesTemporaryEvents();
@@ -802,7 +802,7 @@ class ResourceObject
         $query = "DELETE FROM resources_user_resources
                   WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
     }
 
     public function deleteResourceRecursive($id)
@@ -810,7 +810,7 @@ class ResourceObject
         //subcurse to subordinated resource-levels
         $query = "SELECT resource_id FROM resources_objects WHERE parent_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
 
         while ($resource_id = $statement->fetchColumn()) {
             $this->deleteResourceRecursive($resource_id);
@@ -822,12 +822,12 @@ class ResourceObject
 
         $query = "DELETE FROM resources_objects WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($id));
+        $statement->execute([$id]);
     }
 
     public function getPathArray($include_self = false)
     {
-        $result_arr = array();
+        $result_arr = [];
 
         $id = $this->getId();
         if ($include_self) {
@@ -840,7 +840,7 @@ class ResourceObject
         $statement = DBManager::get()->prepare($query);
 
         while ($id) {
-            $statement->execute(array($id));
+            $statement->execute([$id]);
             $temp = $statement->fetch(PDO::FETCH_ASSOC);
             $statement->closeCursor();
 

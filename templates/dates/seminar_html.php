@@ -18,7 +18,7 @@
         endif;
     endif;
 
-    $output = array();
+    $output = [];
 
     if (is_array($dates['regular']['turnus_data']))
         foreach ($dates['regular']['turnus_data'] as $cycle) :
@@ -28,10 +28,10 @@
                 $cycle_output .= ', <i>' . htmlReady($cycle['desc']) . '</i>';
 
             if ($show_room) :
-                $cycle_output .= $this->render_partial('dates/_seminar_rooms', array('assigned' => $cycle['assigned_rooms'],
+                $cycle_output .= $this->render_partial('dates/_seminar_rooms', ['assigned' => $cycle['assigned_rooms'],
                     'freetext' => $cycle['freetext_rooms'],
                     'link' => $link
-                ));
+                ]);
             endif;
 
             $output[] = $cycle_output;
@@ -40,7 +40,7 @@
     echo implode('<br>', $output);
     echo sizeof($output) ? '<br>' : '';
 
-    $freetext_rooms = array();
+    $freetext_rooms = [];
 
     if (is_array($dates['irregular'])):
         foreach ($dates['irregular'] as $date) :
@@ -111,7 +111,7 @@
     if ($link_to_dates) :
         ?>
         <br>
-        <?= sprintf(_("Details zu allen Terminen im %sAblaufplan%s"), '<a href="' . URLHelper::getLink('seminar_main.php', array('auswahl' => $seminar_id, 'redirect_to' => 'dispatch.php/course/dates')) . '">', '</a>')
+        <?= sprintf(_("Details zu allen Terminen im %sAblaufplan%s"), '<a href="' . URLHelper::getLink('seminar_main.php', ['auswahl' => $seminar_id, 'redirect_to' => 'dispatch.php/course/dates']) . '">', '</a>')
         ?><?
     endif;
 endif;

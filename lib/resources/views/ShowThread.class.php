@@ -68,12 +68,12 @@ class ShowThread extends ShowTreeRow {
                   FROM resources_objects
                   WHERE resource_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($root_id));
+        $statement->execute([$root_id]);
         $resource_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($resource_ids as $resource_id) {
             //Untergeordnete Objekte laden
-            $children_statement->execute(array($resource_id));
+            $children_statement->execute([$resource_id]);
             $children = $children_statement->fetchAll(PDO::FETCH_COLUMN);
             $children_statement->closeCursor();
 
@@ -141,7 +141,7 @@ class ShowThread extends ShowTreeRow {
 
                 if ($edit_structure_object==$resObject->id) {
                     $content.= "<br><textarea name=\"change_description\" rows=3 cols=40>".htmlReady($resObject->getDescription())."</textarea><br>";
-                    $content .= Button::create(_('Übernehmen'), 'send', array('value' => _('Änderungen speichern')));
+                    $content .= Button::create(_('Übernehmen'), 'send', ['value' => _('Änderungen speichern')]);
                     $content .= LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?cancel_edit=' . $resObject->id));
                     $content.= "<input type=\"hidden\" name=\"change_structure_object\" value=\"".$resObject->getId()."\">";
                     $open="open";
@@ -163,7 +163,7 @@ class ShowThread extends ShowTreeRow {
 
                 if ($perms === 'admin') {
                     if ($resObject->isRoom()) {
-                        $edit .= LinkButton::create(_('Benachrichtigung'), UrlHelper::getScriptURL('dispatch.php/resources/helpers/resource_message/' . $resObject->id), array('data-dialog' => ''));
+                        $edit .= LinkButton::create(_('Benachrichtigung'), UrlHelper::getScriptURL('dispatch.php/resources/helpers/resource_message/' . $resObject->id), ['data-dialog' => '']);
                     }
                     $edit .= "&nbsp;&nbsp;&nbsp;&nbsp;";
                     $edit .= LinkButton::create(_('Neues Objekt'), URLHelper::getURL('?create_object=' . $resObject->id));

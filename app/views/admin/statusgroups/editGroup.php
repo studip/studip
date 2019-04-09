@@ -59,7 +59,7 @@
                 <option value="<?= htmlReady(Context::getId()) ?>">
                     - <?= _('Hauptebene') ?> -
                 </option>
-                <?= $this->render_partial("admin/statusgroups/_edit_subgroupselect.php", array('groups' => $groups, 'selected' => $group, 'level' => 0)) ?>
+                <?= $this->render_partial("admin/statusgroups/_edit_subgroupselect.php", ['groups' => $groups, 'selected' => $group, 'level' => 0]) ?>
             </select>
         </label>
     </fieldset>

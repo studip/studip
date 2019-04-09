@@ -34,7 +34,7 @@
                 <?= $offset + $index + 1 ?>.
             </td>
             <td>
-                <?= Avatar::getAvatar($person['user_id'], $person['username'])->getImageTag(Avatar::SMALL, array('title' => $person['fullname'])) ?>
+                <?= Avatar::getAvatar($person['user_id'], $person['username'])->getImageTag(Avatar::SMALL, ['title' => $person['fullname']]) ?>
             </td>
             <td>
                 <a href="<?= URLHelper::getLink('dispatch.php/profile?username='. $person['username']) ?>">
@@ -46,7 +46,7 @@
             </td>
             <td class="hidden-small-down" >
             <?
-            $content = Assets::img('blank.gif', array('width' => 16)) . ' ';
+            $content = Assets::img('blank.gif', ['width' => 16]) . ' ';
 
             // News
             if ($news = $person['newscount']) {
@@ -57,7 +57,7 @@
                     Icon::create('news', 'clickable', ['title' => $tmp])->asImg()
                 );
             } else {
-                $content .= Assets::img('blank.gif', array('width' => 16)) . ' ';
+                $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
             }
 
             // Votes
@@ -69,7 +69,7 @@
                     Icon::create('vote', 'clickable', ['title' => $tmp])->asImg()
                 );
             } else {
-                $content .= Assets::img('blank.gif', array('width' => 16)) . ' ';
+                $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
             }
 
             // Termine
@@ -81,7 +81,7 @@
                     Icon::create('schedule', 'clickable', ['title' => $tmp])->asImg()
                 );
             } else {
-                $content .= Assets::img('blank.gif', array('width' => 16)) . ' ';
+                $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
             }
 
             // Literaturangaben
@@ -93,7 +93,7 @@
                     Icon::create('literature', 'clickable', ['title' => $tmp])->asImg()
                 );
             } else {
-                $content .= Assets::img('blank.gif', array('width' => 16)) . ' ';
+                $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
             }
 
             echo $content;
@@ -115,11 +115,11 @@
     <tfoot>
         <tr>
             <td colspan="7" style="text-align: right">
-                <?= $GLOBALS['template_factory']->render('shared/pagechooser', array(
+                <?= $GLOBALS['template_factory']->render('shared/pagechooser', [
                         'perPage'      => $max_per_page,
                         'num_postings' => $numberOfPersons,
                         'page'         => $page,
-                        'pagelink'     => 'dispatch.php/score/%u')) ?>
+                        'pagelink'     => 'dispatch.php/score/%u']) ?>
             </td>
         </tr>
     </tfoot>

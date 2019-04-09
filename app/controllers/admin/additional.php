@@ -52,7 +52,7 @@ class Admin_AdditionalController extends AuthenticatedController
             // purge data
             if (Request::submitted('delete')) {
                 $stmt = DBManager::get()->prepare('DELETE FROM datafields_entries WHERE sec_range_id = ?');
-                $stmt->execute(array($this->course->id));
+                $stmt->execute([$this->course->id]);
             }
 
             if ($this->course->store()) {
@@ -66,7 +66,7 @@ class Admin_AdditionalController extends AuthenticatedController
 
         // Fetch data
         $stmt = DBManager::get()->prepare('SELECT COUNT(*) FROM datafields_entries WHERE sec_range_id = ?');
-        $stmt->execute(array($this->course->id));
+        $stmt->execute([$this->course->id]);
         $this->count = $stmt->fetchColumn();
         $this->list = AuxLockRule::findBySQL('1=1');
     }

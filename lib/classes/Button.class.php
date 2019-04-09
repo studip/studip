@@ -40,7 +40,7 @@ class Button extends Interactable
         // add "button" to attribute @class
         @$this->attributes['class'] .= ' button';
 
-        $attributes = array();
+        $attributes = [];
         ksort($this->attributes);
         foreach ($this->attributes as $k => $v) {
             $attributes[] = sprintf(' %s="%s"', $k, htmlReady($v));

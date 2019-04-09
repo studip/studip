@@ -30,7 +30,7 @@ class CSVArrayObject extends StudipArrayObject
     function __construct($input)
     {
         if (is_string($input)) {
-            $input = mb_strlen($input) ? array_map('trim', explode(',', $input)) : array();
+            $input = mb_strlen($input) ? array_map('trim', explode(',', $input)) : [];
         }
         parent::__construct((array)$input);
     }

@@ -71,7 +71,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
                   ORDER BY keyword ASC";
 
         $st = DBManager::get()->prepare($query);
-        $st->execute(array($course_id));
+        $st->execute([$course_id]);
         $ids = $st->fetchAll(PDO::FETCH_NUM);
 
         $pages = new SimpleORMapCollection();

@@ -74,8 +74,8 @@ $FOP_SH_CALL = "/usr/bin/fop";                        //path to fop
 
 $EXTERN_SERVER_NAME = "";                               //define name, if you use special setup
 
-$ELEARNING_INTERFACE_MODULES = array(
-    "ilias5" => array(
+$ELEARNING_INTERFACE_MODULES = [
+    "ilias5" => [
         "name" => "ILIAS 5",
         "ABSOLUTE_PATH_ELEARNINGMODULES" => "http://<your Ilias installation>/",
         "ABSOLUTE_PATH_SOAP" => "http://<your Ilias installation>/webservice/soap/server.php?wsdl",
@@ -85,42 +85,42 @@ $ELEARNING_INTERFACE_MODULES = array(
         "USER_PREFIX" => "",
         "target_file" => "studip_referrer.php",
         "logo_file" => "assets/images/logos/ilias_logo.png",
-        "soap_data" => array(
+        "soap_data" => [
                         "username" => "<username>",     //this credentials are used to communicate with your Ilias 3 installation over SOAP
                         "password" => "<password>",
-                        "client" => "<ilias client id>"),
-        "types" => array(
-                   "webr" => array("name" => "ILIAS-Link", "icon" => "learnmodule"),
-                   "htlm" => array("name" => "HTML-Lerneinheit", "icon" => "learnmodule"),
-                   "sahs" => array("name" => "SCORM/AICC-Lerneinheit", "icon" => "learnmodule"),
-                   "lm" => array("name" => "ILIAS-Lerneinheit", "icon" => "learnmodule"),
-                   "glo" => array("name" => "ILIAS-Glossar", "icon" => "learnmodule"),
-                   "tst" => array("name" => "ILIAS-Test", "icon" => "learnmodule"),
-                   "svy" => array("name" => "ILIAS-Umfrage", "icon" => "learnmodule"),
-                   "exc" => array("name" => "ILIAS-Übung", "icon" => "learnmodule")
-                   ),
-        "global_roles" => array(4,5,14), // put here the ilias role-ids for User, Guest and Anonymous
-        "roles" =>  array(
+                        "client" => "<ilias client id>"],
+        "types" => [
+                   "webr" => ["name" => "ILIAS-Link", "icon" => "learnmodule"],
+                   "htlm" => ["name" => "HTML-Lerneinheit", "icon" => "learnmodule"],
+                   "sahs" => ["name" => "SCORM/AICC-Lerneinheit", "icon" => "learnmodule"],
+                   "lm" => ["name" => "ILIAS-Lerneinheit", "icon" => "learnmodule"],
+                   "glo" => ["name" => "ILIAS-Glossar", "icon" => "learnmodule"],
+                   "tst" => ["name" => "ILIAS-Test", "icon" => "learnmodule"],
+                   "svy" => ["name" => "ILIAS-Umfrage", "icon" => "learnmodule"],
+                   "exc" => ["name" => "ILIAS-Übung", "icon" => "learnmodule"]
+                   ],
+        "global_roles" => [4,5,14], // put here the ilias role-ids for User, Guest and Anonymous
+        "roles" =>  [
                         "autor" => "4",
                         "tutor" => "4",
                         "dozent" => "4",
                         "admin" => "4",
                         "root" => "2"
-                        ),
-        "crs_roles" =>  array(
+                        ],
+        "crs_roles" =>  [
                         "autor" => "member",
                         "tutor" => "tutor",
                         "dozent" => "admin",
                         "admin" => "admin",
                         "root" => "admin"
-                        )
-        )
-    );
+                        ]
+        ]
+    ];
 
 // example entry for wikifarm as server for elearning modules
 // remember to activate studip-webservices with WEBSERVICES_ENABLE and to set STUDIP_INSTALLATION_ID
 
-$ELEARNING_INTERFACE_MODULES["pmwiki-farm"] =   array(
+$ELEARNING_INTERFACE_MODULES["pmwiki-farm"] =   [
                         "name" => "Wikifarm",
                         "ABSOLUTE_PATH_ELEARNINGMODULES" => "http://<your PmWiki farm server>/<path to wiki fields>/",
 
@@ -134,32 +134,32 @@ $ELEARNING_INTERFACE_MODULES["pmwiki-farm"] =   array(
                         "field_script" => "field.php",
                         "logo_file" => $ASSETS_URL."/images/logos/pmwiki-32.gif",
 
-                        "soap_data" => array(
+                        "soap_data" => [
               "api-key" => "<api-key for wiki webservices>",
-            ),
-                        "types" =>  array(
-              "wiki" => array("name" => "PmWiki-Lernmodul", "icon" => "learnmodule"),
-            )
-);
+            ],
+                        "types" =>  [
+              "wiki" => ["name" => "PmWiki-Lernmodul", "icon" => "learnmodule"],
+            ]
+];
 
 $ELEARNING_INTERFACE_MODULES["loncapa"] =
-array(
+[
     "name" => "LonCapa",
     "ABSOLUTE_PATH_ELEARNINGMODULES" => "http://127.0.0.1/loncapa",
     "CLASS_PREFIX" => "LonCapa",
     "auth_necessary" => false,
     "logo_file" => "assets/images/logos/lon-capa.gif",
-    "types" =>  array(
-        "loncapa" => array("name" => "LonCapa-Lernmodul",
-                           "icon" => "learnmodule"),
-        )
-);
+    "types" =>  [
+        "loncapa" => ["name" => "LonCapa-Lernmodul",
+                           "icon" => "learnmodule"],
+        ]
+];
 
 $PLUGINS_UPLOAD_ENABLE = TRUE;      //Upload of Plugins is enabled
 
-$PLUGIN_REPOSITORIES = array(
+$PLUGIN_REPOSITORIES = [
     'http://plugins.studip.de/plugins.xml',
-);
+];
 
 /*domain name and path translation
 ----------------------------------------------------------------
@@ -196,14 +196,14 @@ $MAIL_TRANSPORT = "smtp";
 leave blank or try 127.0.0.1 if localhost is also the mailserver
 ignore if you don't use smtp as transport*/
 $MAIL_HOST_NAME = "";                               //which mailserver should we use? (must allow mail-relaying from $MAIL_LOCALHOST, defaults to SERVER_NAME)
-$MAIL_SMTP_OPTIONS = array(
+$MAIL_SMTP_OPTIONS = [
     'port' => 25,
     'user' => '',
     'password' => '',
     'authentication_mechanism' => '',
     'ssl' => 0,
     'start_tls' => 0
-    );
+    ];
 
 $MAIL_LOCALHOST = "";                               //name of the mail sending machine (the web server) defaults to SERVER_NAME
 $MAIL_CHARSET = "";                                 //character set of mail body, defaults to WINDOWS-1252
@@ -228,9 +228,9 @@ $MAIL_ATTACHMENTS_MAX_SIZE = 10;                             //maximum size of a
 /*language settings
 ----------------------------------------------------------------*/
 
-$INSTALLED_LANGUAGES["de_DE"] = array ("path"=>"de", "picture"=>"lang_de.gif", "name"=>"Deutsch");
-$INSTALLED_LANGUAGES["en_GB"] = array ("path"=>"en", "picture"=>"lang_en.gif", "name"=>"English");
-$CONTENT_LANGUAGES['de_DE'] = array('picture' => 'lang_de.gif', 'name' => 'Deutsch');
+$INSTALLED_LANGUAGES["de_DE"] =  ["path"=>"de", "picture"=>"lang_de.gif", "name"=>"Deutsch"];
+$INSTALLED_LANGUAGES["en_GB"] =  ["path"=>"en", "picture"=>"lang_en.gif", "name"=>"English"];
+$CONTENT_LANGUAGES['de_DE'] = ['picture' => 'lang_de.gif', 'name' => 'Deutsch'];
 //$CONTENT_LANGUAGES['en_GB'] = array('picture' => 'lang_en.gif', 'name' => 'English');
 
 $_language_domain = "studip";  // the name of the language file. Should not be changed except in cases of individual translations or special terms.
@@ -243,7 +243,7 @@ If the catalog your plugin is designed for offers the possibility to create a li
 could provide the link here. Place templates for the needed attributes in curly braces. (see examples below)*/
 
 //standard plugin, searches in Stud.IP Database (table lit_catalog), you should leave this one enabled !
-$_lit_search_plugins[] = array('name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => '');
+$_lit_search_plugins[] = ['name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => ''];
 
 //Plugins derived from Z3950Abstract, used for querying Z39.50 Servers
 //only activate these plugins, if your Version of PHP supports the YAZ extension!
@@ -335,7 +335,7 @@ $STUDIP_AUTH_PLUGIN[] = "Standard";
 // $STUDIP_AUTH_PLUGIN[] = "Shib";
 // $STUDIP_AUTH_PLUGIN[] = "IP";
 
-$STUDIP_AUTH_CONFIG_STANDARD = array("error_head" => "intern");
+$STUDIP_AUTH_CONFIG_STANDARD = ["error_head" => "intern"];
 /*
 $STUDIP_AUTH_CONFIG_LDAPREADANDBIND = array("host" => "localhost",
                                         "base_dn" => "dc=studip,dc=de",

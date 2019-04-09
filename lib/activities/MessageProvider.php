@@ -28,13 +28,13 @@ class MessageProvider implements ActivityProvider
 
         $activity->content = formatReady($message->message);
 
-        $url = \URLHelper::getUrl("dispatch.php/messages/read/{$message->id}", array('cid' => null));
+        $url = \URLHelper::getUrl("dispatch.php/messages/read/{$message->id}", ['cid' => null]);
 
         $route = \URLHelper::getURL('api.php/message/' . $message->id, NULL, true);
 
-        $activity->object_url = array(
+        $activity->object_url = [
             $url => _('Zur Nachricht')
-        );
+        ];
 
         $activity->object_route = $route;
 
@@ -54,7 +54,7 @@ class MessageProvider implements ActivityProvider
 
             // activity for receipent
             $activity = Activity::create(
-                array(
+                [
                     'provider'     => __CLASS__,
                     'context'      => 'user',
                     'context_id'   => $rec_id,
@@ -65,7 +65,7 @@ class MessageProvider implements ActivityProvider
                     'object_id'    => $message_id,      // the id of the referenced object
                     'object_type'  => 'message',        // type of activity object
                     'mkdate'       => time()
-                )
+                ]
             );
         }
 

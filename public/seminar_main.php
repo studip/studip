@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 require '../lib/bootstrap.php';
 
 ob_start();
-page_open(array("sess" => "Seminar_Session", "auth" => "Seminar_Default_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"));
+page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Default_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 $auth->login_if(Request::get('again') && ($auth->auth["uid"] == "nobody"));
 
 if (Request::option('auswahl')) {
@@ -71,7 +71,7 @@ if (Request::get('redirect_to')) {
         throw new Exception('Invalid redirection');
     }
 
-    header('Location: '.URLHelper::getURL($new_query, array('cid' => $course_id)));
+    header('Location: '.URLHelper::getURL($new_query, ['cid' => $course_id]));
     die;
 }
 

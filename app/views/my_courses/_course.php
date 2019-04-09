@@ -68,7 +68,7 @@
                     </a>
                     <?
                 else : ?>
-                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $course['seminar_id']), array('cmd' => 'suppose_to_kill')) ?>">
+                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $course['seminar_id']), ['cmd' => 'suppose_to_kill']) ?>">
                         <?= Icon::create('door-leave', 'inactive', ['title' => _("aus der Veranstaltung abmelden")])->asImg(20) ?>
                     </a>
                 <? endif ?>
@@ -78,13 +78,13 @@
         <td class="hidden-small-down">
             <? if (!$sem_class['studygroup_mode']) : ?>
                 <a data-dialog href="<?= $controller->url_for(sprintf('course/details/index/%s', $course['seminar_id']),
-                                                              array('from' => $controller->url_for('my_courses/index'))) ?>">
+                                                              ['from' => $controller->url_for('my_courses/index')]) ?>">
                     <? $params = tooltip2(_("Veranstaltungsdetails")); ?>
                     <? $params['style'] = 'cursor: pointer'; ?>
                     <?= Icon::create('info-circle', 'inactive')->asImg(20, $params) ?>
                 </a>
             <? else : ?>
-                <?= Assets::img('blank.gif', array('width'  => 20, 'height' => 20)); ?>
+                <?= Assets::img('blank.gif', ['width'  => 20, 'height' => 20]); ?>
             <? endif ?>
         </td>
         <td style="text-align: left; white-space: nowrap;" class="hidden-small-down">
@@ -93,14 +93,14 @@
                     <? if (isset($nav) && $nav->isVisible(true)) : ?>
                         <a href="<?=
                         UrlHelper::getLink('seminar_main.php',
-                            array('auswahl'     => $course['seminar_id'],
-                                  'redirect_to' => strtr($nav->getURL(), '?', '&'))) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
+                            ['auswahl'     => $course['seminar_id'],
+                                  'redirect_to' => strtr($nav->getURL(), '?', '&')]) ?>" <?= $nav->hasBadgeNumber() ? 'class="badge" data-badge-number="' . intval($nav->getBadgeNumber()) . '"' : '' ?>>
                             <?= $nav->getImage()->asImg(20, $nav->getLinkAttributes()) ?>
                         </a>
                     <? elseif (is_string($key)) : ?>
                         <?=
-                        Assets::img('blank.gif', array('width'  => 20,
-                                                       'height' => 20)); ?>
+                        Assets::img('blank.gif', ['width'  => 20,
+                                                       'height' => 20]); ?>
                     <? endif ?>
                     <? echo ' ' ?>
                 <? endforeach ?>
@@ -116,7 +116,7 @@
                 <? endif ?>
 
                 <? if ($adminnavigation) : ?>
-                    <a href="<?= URLHelper::getLink($adminnavigation->getURL(), array('cid' => $course['seminar_id'])) ?>">
+                    <a href="<?= URLHelper::getLink($adminnavigation->getURL(), ['cid' => $course['seminar_id']]) ?>">
                         <?= $adminnavigation->getImage()->asImg(20, $adminnavigation->getLinkAttributes()) ?>
                     </a>
                 <? endif ?>

@@ -51,7 +51,7 @@ class StudipLock
         if (self::$current !== null) {
             throw new UnexpectedValueException(sprintf('could not acquire new lock, %s still active'));
         }
-        $ok = DBManager::get()->fetchColumn("SELECT GET_LOCK(?,?)", array(self::lockname($lockname), $timeout));
+        $ok = DBManager::get()->fetchColumn("SELECT GET_LOCK(?,?)", [self::lockname($lockname), $timeout]);
         if ($ok) {
             self::$current = $lockname;
         }
@@ -66,7 +66,7 @@ class StudipLock
      */
     public static function isFree($lockname)
     {
-        return DBManager::get()->fetchColumn("SELECT IS_FREE_LOCK(?)", array(self::lockname($lockname)));
+        return DBManager::get()->fetchColumn("SELECT IS_FREE_LOCK(?)", [self::lockname($lockname)]);
     }
     
     /**
@@ -77,7 +77,7 @@ class StudipLock
     public static function release()
     {
         if (self::$current) {
-            return DBManager::get()->fetchColumn("SELECT RELEASE_LOCK(?)", array(self::lockname(self::$current)));
+            return DBManager::get()->fetchColumn("SELECT RELEASE_LOCK(?)", [self::lockname(self::$current)]);
         }
     }
     

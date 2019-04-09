@@ -16,7 +16,7 @@ class MembersModel
         $query = "UPDATE admission_seminar_user SET visible = '?' WHERE user_id = ? AND seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
 
-        return $statement->execute(array($status, $user_id, $this->course_id));
+        return $statement->execute([$status, $user_id, $this->course_id]);
     }
 
     public function setVisibilty($user_id, $status)
@@ -25,14 +25,14 @@ class MembersModel
         $query = "UPDATE seminar_user SET visible = ? WHERE user_id = ? AND Seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
 
-        $statement->execute(array($status, $user_id, $this->course_id));
+        $statement->execute([$status, $user_id, $this->course_id]);
 
         return $statement->rowCount();
     }
 
     public function setMemberStatus($members, $status, $next_status, $direction)
     {
-        $msgs = array();
+        $msgs = [];
         $query = 'UPDATE seminar_user SET status = ?, position = ? WHERE Seminar_id = ? AND user_id = ? AND status = ?';
         $pleasure_statement = DBManager::get()->prepare($query);
 
@@ -70,7 +70,7 @@ class MembersModel
                         $next_pos = 0;
                     }
 
-                    $pleasure_statement->execute(array($next_status, $next_pos, $this->course_id, $user_id, $status));
+                    $pleasure_statement->execute([$next_status, $next_pos, $this->course_id, $user_id, $status]);
 
                     if ($pleasure_statement->rowCount()) {
                         if ($next_status == 'autor') {
@@ -121,7 +121,7 @@ class MembersModel
             if ($cs) {
                 $prio_delete = AdmissionPriority::unsetPriority($cs->getId(), $user_id, $this->course_id);
             }
-            $db->execute(array($this->course_id, $user_id, $status));
+            $db->execute([$this->course_id, $user_id, $status]);
             if ($db->rowCount() > 0 || $prio_delete) {
                 setTempLanguage($user_id);
                 if ($status !== 'accepted') {
@@ -282,9 +282,9 @@ class MembersModel
      */
     public function sendToCourse($users, $target_course_id, $move = false)
     {
-        $msg = array();
+        $msg = [];
         foreach ($users as $user) {
-            if (!CourseMember::exists(array($target_course_id, $user))) {
+            if (!CourseMember::exists([$target_course_id, $user])) {
                 $target_course = new Seminar($target_course_id);
                 if ($target_course->addMember($user)) {
                     if ($move) {
@@ -321,7 +321,7 @@ class MembersModel
                  ORDER BY Nachname, Vorname";
         $db = DBManager::get()->prepare($query);
 
-        $db->execute(array($this->course_id, $nachname, $vorname, $vorname));
+        $db->execute([$this->course_id, $nachname, $vorname, $vorname]);
 
         return $db->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -344,7 +344,7 @@ class MembersModel
                    AND username LIKE ?
                  ORDER BY Nachname, Vorname";
         $db = DBManager::get()->prepare($query);
-        $db->execute(array($this->course_id, $username));
+        $db->execute([$this->course_id, $username]);
 
         return $db->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -368,7 +368,7 @@ class MembersModel
                    AND de.datafield_id = ? AND de.content = ?
                  ORDER BY Nachname, Vorname";
         $db = DBManager::get()->prepare($query);
-        $db->execute(array($this->course_id, $datafield_id, $nachname));
+        $db->execute([$this->course_id, $datafield_id, $nachname]);
         return $db->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -422,7 +422,7 @@ class MembersModel
         }
 
         $cs = CourseSet::getSetForCourse($this->course_id);
-        $claiming = array();
+        $claiming = [];
         if (is_object($cs) && !$cs->hasAlgorithmRun()) {
             foreach (AdmissionPriority::getPrioritiesByCourse($cs->getId(), $this->course_id) as $user_id => $p) {
                 $user = User::find($user_id);
@@ -505,7 +505,7 @@ class MembersModel
         $query = "SELECT position FROM seminar_user WHERE user_id = ?";
         $position_statement = DBManager::get()->prepare($query);
 
-        $position_statement->execute(array($user_id));
+        $position_statement->execute([$user_id]);
         $pos = $position_statement->fetchColumn();
         $position_statement->closeCursor();
 
@@ -543,15 +543,15 @@ class MembersModel
     function checkUserVisibility()
     {
         $st = DBManager::get()->prepare("SELECT COUNT(*) FROM seminar_user WHERE visible = 'unknown' AND Seminar_id = ?");
-        $st->execute(array($this->course_id));
+        $st->execute([$this->course_id]);
         if ($st->fetchColumn()) {
             $st = DBManager::get()->prepare("UPDATE seminar_user SET visible = 'yes' WHERE status IN ('tutor', 'dozent') AND Seminar_id = ?");
-            $st->execute(array($this->course_id));
+            $st->execute([$this->course_id]);
 
             $st = DBManager::get()->prepare("UPDATE seminar_user su INNER JOIN auth_user_md5 aum USING(user_id)
                 SET su.visible=IF(aum.visible IN('no','never') OR (aum.visible='unknown' AND " . (int)!Config::get()->USER_VISIBILITY_UNKNOWN . "), 'no','yes')
                 WHERE Seminar_id = ? AND su.visible='unknown'");
-            $st->execute(array($this->course_id));
+            $st->execute([$this->course_id]);
         }
     }
 

@@ -43,7 +43,7 @@ class StudipLitSearchPluginRkhan extends StudipLitSearchPluginGvk {
         parent::__construct();
         $this->description = "Gesamtkatalog Hannover";
         $this->z_host = "sru.gbv.de/rk-han";
-        $this->z_profile = array('1016' => _("Alle Wörter [ALL]"),
+        $this->z_profile = ['1016' => _("Alle Wörter [ALL]"),
                      '4' => _("Titel (Stichwort) [TIT]"),
                      '21' => _("Schlagwörter [SLW]"),
                      '5' => _("Serie, Zeitschrift (Phrase) [GTI]"),
@@ -58,7 +58,7 @@ class StudipLitSearchPluginRkhan extends StudipLitSearchPluginGvk {
                      '1018' => _("Ort,Verlag (Stichwort) [PUB]"),
                      '20' => _("Basisklassifikation [BKL]"),
                      '12' => _("PICA Prod.-Nr. [PPN]")
-                    ); /*  '5' => _("Serie, Zeitschrift (Stichwort) [SER]"),
+                    ]; /*  '5' => _("Serie, Zeitschrift (Stichwort) [SER]"),
                            herausgenommen, da #5 standardmäßig auf Phrase gemappt ist und eine Stichwortsuche nicht möglich ist.
                            Eine Stichwortsuche müsste über das Structure-Attribut (#4=2) kenntlich gemacht werden. Dies wird aber
                            von Stud.IP nicht unterstützt.

@@ -45,10 +45,10 @@ class Course_ScmController extends StudipController
         parent::before_filter($action, $args);
 
         // open session
-        page_open(array('sess' => 'Seminar_Session',
+        page_open(['sess' => 'Seminar_Session',
                         'auth' => 'Seminar_Default_Auth',
                         'perm' => 'Seminar_Perm',
-                        'user' => 'Seminar_User'));
+                        'user' => 'Seminar_User']);
 
         // set up user session
         include 'lib/seminar_open.php';
@@ -125,7 +125,7 @@ class Course_ScmController extends StudipController
         $this->scm->user_id = $GLOBALS['user']->id;
         $this->scm->chdate  = time();
 
-        $this->first_entry = StudipScmEntry::countBySql('range_id = ?', array(Context::getId())) == 0;
+        $this->first_entry = StudipScmEntry::countBySql('range_id = ?', [Context::getId()]) == 0;
 
         $this->set_title(_('Neue Informationsseite anlegen'));
 

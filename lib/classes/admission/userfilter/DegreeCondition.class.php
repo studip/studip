@@ -29,12 +29,12 @@ class DegreeCondition extends UserFilterField
      */
     public function __construct($fieldId='') {
         parent::__construct($fieldId);
-        $this->relations = array(
-            'SubjectCondition' => array(
+        $this->relations = [
+            'SubjectCondition' => [
                 'local_field' => 'fach_id',
                 'foreign_field' => 'fach_id'
-            )
-        );
+            ]
+        ];
     }
 
     /**

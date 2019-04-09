@@ -4,9 +4,9 @@
 <? endif ?>
 <?= MessageBox::info(_('Geben Sie den gewünschten Raum und/oder Raumeigenschaften an. Ihre Raumanfrage wird von der
                     zuständigen Raumverwaltung bearbeitet.'),
-    array(_('<b>Achtung:</b> Um später einen passenden Raum für Ihre Veranstaltung zu bekommen,
+    [_('<b>Achtung:</b> Um später einen passenden Raum für Ihre Veranstaltung zu bekommen,
         geben Sie bitte <span style="text-decoration: underline">immer</span> die gewünschten Eigenschaften mit an!')
-    )) ?>
+    ]) ?>
 
 <section class="times-rooms-grid ">
     <section>

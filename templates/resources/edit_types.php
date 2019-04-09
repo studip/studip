@@ -2,7 +2,7 @@
 
 <?
     //the avaiable object-icons for every category
-    $availableIcons = array (1=>"cont_res1.gif",2=> "cont_res2.gif",3=> "cont_res3.gif", 4=>"cont_res4.gif",5=> "cont_res5.gif");
+    $availableIcons =  [1=>"cont_res1.gif",2=> "cont_res2.gif",3=> "cont_res3.gif", 4=>"cont_res4.gif",5=> "cont_res5.gif"];
 ?>
 
 <form method="POST" action="<?= URLHelper::getLink() ?>#a" class="default">
@@ -96,7 +96,7 @@
                         <col width="6%">
                     </colgroup>
                     <tbody>
-                <? $tmp_resvis = array();
+                <? $tmp_resvis = [];
                    foreach ($type['properties'] as $property):
                         //schon zugewiesene Properties merken
                         $tmp_resvis[] = $property['property_id'];
@@ -170,9 +170,9 @@
             <? if ($type['depRes'] == 0 && !$type['system']): ?>
                 <?= LinkButton::create(_('Löschen'), URLHelper::getURL('?delete_type=' .$type['category_id'])) ?>
             <? else: ?>
-                <?= Button::create(_('Löschen'), array(
+                <?= Button::create(_('Löschen'), [
                         'disabled' => 'disabled',
-                        'title' => _('Dieser Typ kann nicht gelöscht werden, da er von Ressourcen verwendet wird!'))
+                        'title' => _('Dieser Typ kann nicht gelöscht werden, da er von Ressourcen verwendet wird!')]
                     ) ?>
             <? endif; ?>
                 <br>

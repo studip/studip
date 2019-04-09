@@ -32,7 +32,7 @@
  */
 class DataField extends SimpleORMap implements PrivacyObject
 {
-    protected static $permission_masks = array(
+    protected static $permission_masks = [
         'user'   => 1,
         'autor'  => 2,
         'tutor'  => 4,
@@ -40,25 +40,25 @@ class DataField extends SimpleORMap implements PrivacyObject
         'admin'  => 16,
         'root'   => 32,
         'self'   => 64,
-    );
+    ];
 
     /**
      * Configures this model.
      *
      * @param Array $config Configuration array
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'datafields';
-        $config['has_many']['entries'] = array(
+        $config['has_many']['entries'] = [
             'class_name' => 'DatafieldEntryModel',
             'on_delete'  => 'delete',
-        );
-        $config['has_many']['visibility_settings'] = array(
+        ];
+        $config['has_many']['visibility_settings'] = [
             'class_name'        => 'User_Visibility_Settings',
             'assoc_foreign_key' => 'identifier',
             'on_delete'         => 'delete',
-        );
+        ];
         parent::configure($config);
     }
 
@@ -74,8 +74,8 @@ class DataField extends SimpleORMap implements PrivacyObject
      */
     public static function getDataFields($objectType = null, $objectClass = '', $includeNullClass = false)
     {
-        $conditions = array();
-        $parameters = array();
+        $conditions = [];
+        $parameters = [];
 
         if ($objectType !== null) {
             $conditions[] = 'object_type = ?';
@@ -83,7 +83,7 @@ class DataField extends SimpleORMap implements PrivacyObject
         }
 
         if ($objectClass) {
-            $condition = array('object_class & ?');
+            $condition = ['object_class & ?'];
             if ($includeNullClass) {
                 $condition[] = 'object_class IS NULL';
             }
@@ -105,7 +105,7 @@ class DataField extends SimpleORMap implements PrivacyObject
      */
     public static function getDataClass()
     {
-        return array(
+        return [
             'sem'                 => _('Veranstaltungen'),
             'inst'                => _('Einrichtungen'),
             'user'                => _('Benutzer'),
@@ -114,7 +114,7 @@ class DataField extends SimpleORMap implements PrivacyObject
             'roleinstdata'        => _('Rollen in Einrichtungen'),
             'moduldeskriptor'     => _('Moduldeskriptor'),
             'modulteildeskriptor' => _('Modulteildeskriptor')
-        );
+        ];
     }
 
     /**
@@ -138,7 +138,7 @@ class DataField extends SimpleORMap implements PrivacyObject
      */
     public static function getReadableUserClass($class)
     {
-        $result = array();
+        $result = [];
         foreach (self::$permission_masks as $perm => $mask) {
             if ($class & $mask) {
                 $result[] = $perm;
@@ -289,7 +289,7 @@ class DataField extends SimpleORMap implements PrivacyObject
      */
     public function count()
     {
-        return DatafieldEntryModel::countBySQL('datafield_id = ?', array($this->id));
+        return DatafieldEntryModel::countBySQL('datafield_id = ?', [$this->id]);
     }
 
     /**

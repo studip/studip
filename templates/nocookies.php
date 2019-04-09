@@ -3,10 +3,10 @@
 ?>
 
 <div style="width: 750px; margin: auto;">
-    <?= MessageBox::error(_("Cookies sind nicht aktiviert!"), array(
+    <?= MessageBox::error(_("Cookies sind nicht aktiviert!"), [
         _("Die Anmeldung für Stud.IP ist nur möglich, wenn Sie das Setzen von Cookies erlauben!"),
         sprintf(_("Bitte ändern Sie die Einstellungen Ihres Browsers und wiederholen Sie den %sLogin%s"), "<a href=\"".$_SERVER['REQUEST_URI']."\">", "</a>")
-    )) ?>
+    ]) ?>
 </div>
 <table class="blank" width="750" align="center" border="0" cellpadding="0" cellspacing="0">
 <tr>

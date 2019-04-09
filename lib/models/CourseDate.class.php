@@ -137,7 +137,7 @@ class CourseDate extends SimpleORMap implements PrivacyObject
         return self::findBySQL("INNER JOIN themen_termine USING (termin_id)
             WHERE themen_termine.issue_id = ?
             ORDER BY date ASC",
-            array($issue_id)
+            [$issue_id]
         );
     }
 
@@ -175,7 +175,7 @@ class CourseDate extends SimpleORMap implements PrivacyObject
         return self::findBySQL("INNER JOIN `termin_related_groups` USING (`termin_id`)
             WHERE `termin_related_groups`.`statusgruppe_id` = ?
             ORDER BY `date` ASC",
-            array($group_id)
+            [$group_id]
         );
     }
 

@@ -39,7 +39,7 @@
 
 class ExternElementMain extends ExternElement {
 
-    var $attributes = array();
+    var $attributes = [];
     var $edit_function;
     
     
@@ -97,7 +97,7 @@ class ExternElementMain extends ExternElement {
                 $this->config->getName(), $this->config->getId(), TRUE);
         
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         
         $edit_function = $this->edit_function;
         $table = $edit_form->$edit_function($this->field_names);

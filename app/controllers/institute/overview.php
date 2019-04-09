@@ -43,7 +43,7 @@ class Institute_OverviewController extends AuthenticatedController
             $new_query = $where_to . '?' . join('&', $query_parts);
             page_close();
             $new_query = preg_replace('/[^:0-9a-z+_\-.#?&=\/]/i', '', $new_query);
-            header('Location: '.URLHelper::getURL($new_query, array('cid' => $this->institute_id)));
+            header('Location: '.URLHelper::getURL($new_query, ['cid' => $this->institute_id]));
             die;
         }
 
@@ -66,10 +66,10 @@ class Institute_OverviewController extends AuthenticatedController
         if (get_config('NEWS_RSS_EXPORT_ENABLE') && $this->institute_id){
             $rss_id = StudipNews::GetRssIdFromRangeId($this->institute_id);
             if ($rss_id) {
-                PageLayout::addHeadElement('link', array('rel'   => 'alternate',
+                PageLayout::addHeadElement('link', ['rel'   => 'alternate',
                                                          'type'  => 'application/rss+xml',
                                                          'title' => 'RSS',
-                                                         'href'  => 'rss.php?id='.$rss_id));
+                                                         'href'  => 'rss.php?id='.$rss_id]);
             }
         }
 
@@ -79,14 +79,14 @@ class Institute_OverviewController extends AuthenticatedController
         if (Config::get()->ALLOW_SELFASSIGN_INSTITUTE && $GLOBALS['user']->id !== 'nobody' && !$GLOBALS['perm']->have_perm('admin')) {
             $widget = new ActionsWidget();
             if (! $GLOBALS['perm']->have_studip_perm('user', $this->institute_id)) {
-                $url = URLHelper::getURL('dispatch.php/institute/overview', array(
+                $url = URLHelper::getURL('dispatch.php/institute/overview', [
                     'follow_inst' => 'on'
-                ));
+                ]);
                 $widget->addLink(_('Einrichtung abonnieren'), $url);
             } elseif (! $GLOBALS['perm']->have_studip_perm('autor', $this->institute_id)) {
-                $url = URLHelper::getURL('dispatch.php/institute/overview', array(
+                $url = URLHelper::getURL('dispatch.php/institute/overview', [
                     'follow_inst' => 'off'
-                ));
+                ]);
                 $widget->addLink(_('Austragen aus der Einrichtung'), $url);
             }
             $this->sidebar->addWidget($widget);
@@ -96,31 +96,31 @@ class Institute_OverviewController extends AuthenticatedController
                           (user_id, Institut_id, inst_perms)
                           VALUES (?, ?, 'user')";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     $GLOBALS['user']->user_id,
                     $this->institute_id
-                ));
+                ]);
                 if ($statement->rowCount() > 0) {
                     StudipLog::log('INST_USER_ADD', $this->institute_id, $GLOBALS['user']->user_id, 'user');
                     NotificationCenter::postNotification('UserInstitutionDidCreate', $this->institute_id, $GLOBALS['user']->user_id);
 
                     PageLayout::postMessage(MessageBox::success(_("Sie haben die Einrichtung abonniert.")));
-                    header('Location: '.URLHelper::getURL('', array('cid' => $this->institute_id)));
+                    header('Location: '.URLHelper::getURL('', ['cid' => $this->institute_id]));
                     die;
                 }
             } elseif (! $GLOBALS['perm']->have_studip_perm('autor', $this->institute_id) AND (Request::option('follow_inst') == 'off')) {
                 $query = "DELETE FROM user_inst
                           WHERE user_id = ?  AND Institut_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute(array(
+                $statement->execute([
                     $GLOBALS['user']->user_id,
                     $this->institute_id
-                ));
+                ]);
                 if ($statement->rowCount() > 0) {
                     StudipLog::log('INST_USER_DEL', $this->institute_id, $GLOBALS['user']->user_id, 'user');
                     NotificationCenter::postNotification('UserInstitutionDidDelete', $this->institute_id, $GLOBALS['user']->user_id);
                     PageLayout::postMessage(MessageBox::success(_("Sie haben sich aus der Einrichtung ausgetragen.")));
-                    header('Location: '.URLHelper::getURL('', array('cid' => $this->institute_id)));
+                    header('Location: '.URLHelper::getURL('', ['cid' => $this->institute_id]));
                     die;
                 }
             }

@@ -58,7 +58,7 @@ if (isset($_COOKIE['navigation-length'])) {
                 <li id="quicksearch_item">
                     <script>
                         var selectSem = function (seminar_id, name) {
-                            document.location = "<?= URLHelper::getURL("dispatch.php/course/details/", array("send_from_search" => 1, "send_from_search_page" => URLHelper::getURL("dispatch.php/search/courses?keep_result_set=1")))  ?>&sem_id=" + seminar_id;
+                            document.location = "<?= URLHelper::getURL("dispatch.php/course/details/", ["send_from_search" => 1, "send_from_search_page" => URLHelper::getURL("dispatch.php/search/courses?keep_result_set=1")])  ?>&sem_id=" + seminar_id;
                         };
                     </script>
                     <?= $GLOBALS['template_factory']->render('globalsearch/searchbar') ?>
@@ -139,7 +139,7 @@ if (isset($_COOKIE['navigation-length'])) {
 <!-- Start Header -->
 <div id="flex-header">
     <!--<div id='barTopLogo'>
-        <?= Assets::img('logos/logoneu.jpg', array('alt' => 'Logo Uni Göttingen')) ?>
+        <?= Assets::img('logos/logoneu.jpg', ['alt' => 'Logo Uni Göttingen']) ?>
     </div>
      -->
 

@@ -63,7 +63,7 @@ class GlobalSearchResources extends GlobalSearchModule
      */
     public static function filter($res, $search)
     {
-        return array(
+        return [
             'name' => self::mark($res['name'], $search),
             'url'  => URLHelper::getURL('resources.php', [
                 'view'        => 'view_schedule',
@@ -72,7 +72,7 @@ class GlobalSearchResources extends GlobalSearchModule
             'img'        => Icon::create('resources', 'clickable')->asImagePath(),
             'additional' => self::mark($res['description'], $search),
             'expand'     => self::getSearchURL($search),
-        );
+        ];
     }
 
     /**

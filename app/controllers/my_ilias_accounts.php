@@ -49,7 +49,7 @@ class MyIliasAccountsController extends AuthenticatedController
 
         PageLayout::setTitle(_("Meine Lernobjekte und ILIAS-Accounts"));
 
-        $this->ilias_list = array();
+        $this->ilias_list = [];
         foreach (Config::get()->ILIAS_INTERFACE_SETTINGS as $ilias_index => $ilias_config) {
             if ($ilias_config['is_active']) {
                 $this->ilias_list[$ilias_index] = new ConnectedIlias($ilias_index);

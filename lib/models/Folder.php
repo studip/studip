@@ -398,7 +398,7 @@ class Folder extends SimpleORMap
      */
     public function getParents()
     {
-        $path = array();
+        $path = [];
         $current = $this;
         while ($current) {
             $path[] = $current;

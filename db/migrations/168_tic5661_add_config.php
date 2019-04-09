@@ -16,7 +16,7 @@ class Tic5661AddConfig extends Migration
                     (`config_id`, `field`, `value`, `is_default`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`)
                 VALUES
                     (MD5(:name), :name, :value, 1, :type, :range, :section, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)
-                ", array(
+                ", [
                     'name'        => 'NEW_INDICATOR_THRESHOLD',
                     'value'       => '180',
                     'type'        => 'integer',
@@ -26,7 +26,7 @@ class Tic5661AddConfig extends Migration
                         . 'angesehen und nicht mehr rot markiert werden '
                         . 'soll (0 angeben, um nur das tatsächliche Alter) '
                         . 'zu betrachten.',
-            )
+            ]
         );
     }
 

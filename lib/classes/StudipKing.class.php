@@ -51,7 +51,7 @@ class StudipKing {
     static function is_king($user_id, $textual = FALSE)
     {
         $kings = self::get_kings();
-        $result = isset($kings[$user_id]) ? $kings[$user_id] : array();
+        $result = isset($kings[$user_id]) ? $kings[$user_id] : [];
         if ($textual) {
             foreach ($result as $type => $amount) {
                 $result[$type] = self::textual_representation($type, $amount);
@@ -82,12 +82,12 @@ class StudipKing {
     private static function get_kings_uncached()
     {
         $types = words('files forum news voter votes wiki');
-        $kings = array();
+        $kings = [];
         foreach ($types as $type) {
             $method = "{$type}_kings";
             foreach (self::$method() as $user_id => $amount) {
                 if (!isset($kings[$user_id])) {
-                    $kings[$user_id] = array();
+                    $kings[$user_id] = [];
                 }
                 $kings[$user_id][$type] = $amount;
             }
@@ -97,7 +97,7 @@ class StudipKing {
 
     private static function select_kings($sql)
     {
-        $result = array();
+        $result = [];
         $stmt = DBManager::get()->query($sql . " ORDER BY num DESC LIMIT 0," . self::NUM_KINGS);
         foreach ($stmt as $row) {
             $result[$row["id"]] = $row["num"];
@@ -112,7 +112,7 @@ class StudipKing {
 
     private static function forum_kings()
     {
-        $kings = array();
+        $kings = [];
 
         // sum up postings for all users from all ForumModules available
         foreach (PluginEngine::getPlugins('ForumModule') as $plugin) {
@@ -157,14 +157,14 @@ class StudipKing {
 
     private static function textual_representation($type, $amount)
     {
-        $alt_text = array(
+        $alt_text = [
             'files'            => _('%d hochgeladene Dateien'),
             'forum'            => _('%d Forums-Beiträge'),
             'wiki'             => _('%d Wiki-Beiträge'),
             'voter'            => _('%d abgegebene Stimmen'),
             'votes'            => _('%d bekommene Stimmen'),
             'news'             => _('%d eingestellte Ankündigungen')
-        );
+        ];
         return sprintf($alt_text[$type], $amount);
     }
 }

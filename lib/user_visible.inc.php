@@ -44,7 +44,7 @@ function get_visibility_by_id ($user_id)
 
     $query = "SELECT visible FROM auth_user_md5 WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id));
+    $statement->execute([$user_id]);
     $visible = $statement->fetchColumn();
 
     return get_visibility_by_state($visible, $user_id);
@@ -65,7 +65,7 @@ function get_visibility_by_username ($username)
 
     $query = "SELECT visible, user_id FROM auth_user_md5 WHERE username = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($username));
+    $statement->execute([$username]);
     $temp = $statement->fetch(PDO::FETCH_ASSOC);
 
     return get_visibility_by_state($temp['visible'], $temp['user_id']);
@@ -178,7 +178,7 @@ function vis_chooser($vis, $new = false, $id = false) {
     if ($vis == '') {
         $vis = 'unknown';
     }
-    $txt = array();
+    $txt = [];
     $txt[] = sprintf('<select name="visible"%s>', $id ? 'id="' . htmlReady($id) . '"' : '');
     $txt[] = '<option value="global"'.($vis === "global" ? " selected" : "").'>'._("global").'</option>';
     $txt[] = '<option value="always"'.($vis === "always" ? " selected" : "").'>'._("immer").'</option>';
@@ -206,13 +206,13 @@ function first_decision($userid) {
     if ($vis_cmd == "apply" && ($vis_state == "global" || $vis_state == "yes" || $vis_state == "no")) {
         $query = "UPDATE auth_user_md5 SET visible = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($vis_state, $userid));
+        $statement->execute([$vis_state, $userid]);
         return;
     }
 
     $query = "SELECT visible FROM auth_user_md5 WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($userid));
+    $statement->execute([$userid]);
     $visiblity = $statement->fetchColumn();
 
     if ($visiblity != 'unknown') {
@@ -260,7 +260,7 @@ function get_local_visibility_by_id($user_id, $context, $return_user_perm=false)
               LEFT JOIN user_visibility AS u USING (user_id)
               WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id));
+    $statement->execute([$user_id]);
     $data = $statement->fetch(PDO::FETCH_ASSOC);
 
     if ($context === 'homepage') {
@@ -290,10 +290,10 @@ function get_local_visibility_by_id($user_id, $context, $return_user_perm=false)
         } else {
             // Give also user's permission level.
             if ($return_user_perm) {
-                $result = array(
+                $result = [
                     'perms' => $data['perms'],
                     $context => $data[$context]
-                );
+                ];
             } else {
                 $result = $data[$context];
             }
@@ -353,7 +353,7 @@ function is_element_visible_for_user($user_id, $owner_id, $element_visibility) {
                 }
                 break;
             case VISIBILITY_BUDDIES:
-                if (Contact::CountBySQL("user_id=? AND owner_id=?", array($user_id, $owner_id))) {
+                if (Contact::CountBySQL("user_id=? AND owner_id=?", [$user_id, $owner_id])) {
                     $is_visible = true;
                 }
                 break;
@@ -406,7 +406,7 @@ function get_default_homepage_visibility($user_id)
 {
     $query = "SELECT default_homepage_visibility FROM user_visibility WHERE user_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute(array($user_id));
+    $statement->execute([$user_id]);
     $visibility = $statement->fetchColumn();
 
     if (intval($visibility) != 0) {
@@ -438,7 +438,7 @@ function get_visible_email($user_id) {
     if (get_local_visibility_by_id($user_id, 'email')) {
         $query = "SELECT Email FROM auth_user_md5 WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
         $result = $statement->fetchColumn();
     // User's email is not visible
     } else if ($GLOBALS['perm']->get_perm($user_id) == 'dozent') {
@@ -449,7 +449,7 @@ function get_visible_email($user_id) {
                   WHERE u.user_id = ? AND u.inst_perms != 'user'
                   ORDER BY u.priority";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($user_id));
+        $statement->execute([$user_id]);
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             if (!$result || $row['externdefault']) {

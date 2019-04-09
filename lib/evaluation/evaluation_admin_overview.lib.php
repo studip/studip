@@ -229,8 +229,8 @@ class EvalOverview {
                 $content[0] = $eval->getFullname() ? $eval->getFullname() : " ";
                 $content[1] = $eval->getChangedate() == NULL ? " " : date("d.m.Y", $eval->getChangedate());
 
-                $button = LinkButton::create(_('Vorschau'), URLHelper::getURL('show_evaluation.php?evalID=' . $evalID . '&isPreview=' . YES), array('title' => _('Vorschau dieser öffentlichen Evaluationsvorlage.'),
-                            'onClick' => 'openEval(\'' . $evalID . '\'); return false;'));
+                $button = LinkButton::create(_('Vorschau'), URLHelper::getURL('show_evaluation.php?evalID=' . $evalID . '&isPreview=' . YES), ['title' => _('Vorschau dieser öffentlichen Evaluationsvorlage.'),
+                            'onClick' => 'openEval(\'' . $evalID . '\'); return false;']);
                 $div = new HTML("div");
                 $div->addHTMLContent($button);
                 $content[4] = $div;
@@ -262,11 +262,11 @@ class EvalOverview {
                 $shareButton->addAttr("title", $isShared ? _("Die Freigabe für diese Evaluationsvorlage entziehen") : _("Diese Evaluationsvorlage öffentlich freigeben"));
 
                 $content[0] = $shareButton;
-                $content[3] = Button::create(_('Kopie erstellen'), 'copy_own_template_button', array('title' => _('Evaluationsvorlage kopieren')));
+                $content[3] = Button::create(_('Kopie erstellen'), 'copy_own_template_button', ['title' => _('Evaluationsvorlage kopieren')]);
 
-                $content[4] = LinkButton::create(_('Bearbeiten'), URLHelper::getURL("admin_evaluation.php?page=edit&evalID=" . $evalID), array('title' => _('Evaluation bearbeiten')));
+                $content[4] = LinkButton::create(_('Bearbeiten'), URLHelper::getURL("admin_evaluation.php?page=edit&evalID=" . $evalID), ['title' => _('Evaluation bearbeiten')]);
 
-                $content[5] = Button::create(_('Löschen'), 'delete_request_button', array('title' => _('Evaluation löschen')));
+                $content[5] = Button::create(_('Löschen'), 'delete_request_button', ['title' => _('Evaluation löschen')]);
                 break;
 
             case EVAL_STATE_NEW:
@@ -274,11 +274,11 @@ class EvalOverview {
                 $content[0] = $eval->getFullname() ? $eval->getFullname() : " ";
                 $content[1] = $startDate;
                 if (!$no_buttons) {
-                    $content[2] = Button::create(_('Start'), 'start_button', array('title' => _('Evaluation starten')));
+                    $content[2] = Button::create(_('Start'), 'start_button', ['title' => _('Evaluation starten')]);
 
-                    $content[4] = LinkButton::create(_('Bearbeiten'), URLHelper::getURL("admin_evaluation.php?page=edit&evalID=" . $evalID), array('title' => _('Evaluation bearbeiten')));
+                    $content[4] = LinkButton::create(_('Bearbeiten'), URLHelper::getURL("admin_evaluation.php?page=edit&evalID=" . $evalID), ['title' => _('Evaluation bearbeiten')]);
 
-                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', array('title' => _('Evaluation löschen')));
+                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', ['title' => _('Evaluation löschen')]);
                 }
                 break;
 
@@ -287,14 +287,14 @@ class EvalOverview {
                 $content[0] = $eval->getFullname() ? $eval->getFullname() : " ";
                 $content[1] = $stopDate;
                 if (!$no_buttons) {
-                    $content[2] = Button::createCancel(_('Stop'), 'stop_button', array('title' => _('Evaluation stoppen')));
+                    $content[2] = Button::createCancel(_('Stop'), 'stop_button', ['title' => _('Evaluation stoppen')]);
                     ;
                     // Kann hier noch optimiert werden, da hasVoted () immer einen DB-Aufruf startet
-                    $content[3] = ($eval->hasVoted()) ? Button::create(_('Zurücksetzen'), 'restart_request_button', array('title' => _('Evaluation zurücksetzen'))) : Button::create(_('Zurücksetzen'), 'restart_confirmed_button', array('title' => _('Evaluation zurücksetzen')));
-                    $content[4] = Button::create(_('Export'), 'export_request_button', array('title' => _('Evaluation exportieren')));
-                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', array('title' => _('Evaluation löschen')));
+                    $content[3] = ($eval->hasVoted()) ? Button::create(_('Zurücksetzen'), 'restart_request_button', ['title' => _('Evaluation zurücksetzen')]) : Button::create(_('Zurücksetzen'), 'restart_confirmed_button', ['title' => _('Evaluation zurücksetzen')]);
+                    $content[4] = Button::create(_('Export'), 'export_request_button', ['title' => _('Evaluation exportieren')]);
+                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', ['title' => _('Evaluation löschen')]);
                     //$content[6] = EvalCommon::createSubmitButton ("auswertung", _("Auswertung"), "export_gfx_request_button");
-                    $content[6] = LinkButton::create(_('Auswertung'), URLHelper::getURL("eval_summary.php?eval_id=" . $evalID), array('title' => _('Auswertung')));
+                    $content[6] = LinkButton::create(_('Auswertung'), URLHelper::getURL("eval_summary.php?eval_id=" . $evalID), ['title' => _('Auswertung')]);
                 }
                 break;
 
@@ -303,12 +303,12 @@ class EvalOverview {
                 $content[0] = $eval->getFullname() ? $eval->getFullname() : " ";
                 //$content[1] = $eval->isVisible() ? "yes" : "no";
                 if (!$no_buttons) {
-                    $content[2] = Button::create(_('Fortsetzen'), 'continue_button', array('title' => _('Evaluation fortsetzen')));
-                    $content[3] = ($eval->hasVoted()) ? Button::create(_('Zurücksetzen'), 'restart_request_button', array('title' => _('Evaluation zurücksetzen'))) : Button::create(_('Zurücksetzen'), 'restart_confirmed_button', array('title' => _('Evaluation zurücksetzen')));
-                    $content[4] = Button::create(_('Export'), 'export_request_button', array('title' => _('Evaluation exportieren')));
-                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', array('title' => _('Evaluation löschen')));
+                    $content[2] = Button::create(_('Fortsetzen'), 'continue_button', ['title' => _('Evaluation fortsetzen')]);
+                    $content[3] = ($eval->hasVoted()) ? Button::create(_('Zurücksetzen'), 'restart_request_button', ['title' => _('Evaluation zurücksetzen')]) : Button::create(_('Zurücksetzen'), 'restart_confirmed_button', ['title' => _('Evaluation zurücksetzen')]);
+                    $content[4] = Button::create(_('Export'), 'export_request_button', ['title' => _('Evaluation exportieren')]);
+                    $content[5] = Button::create(_('Löschen'), 'delete_request_button', ['title' => _('Evaluation löschen')]);
                     //$content[6] = EvalCommon::createSubmitButton ("auswertung", _("Auswertung"), "export_gfx_request_button");
-                    $content[6] = LinkButton::create(_('Auswertung'), URLHelper::getURL("eval_summary.php?eval_id=" . $evalID), array('title' => _('Auswertung')));
+                    $content[6] = LinkButton::create(_('Auswertung'), URLHelper::getURL("eval_summary.php?eval_id=" . $evalID), ['title' => _('Auswertung')]);
                 }
                 break;
         }
@@ -517,7 +517,7 @@ class EvalOverview {
 
             $td2->addContent(new HTMLEmpty("br"));
 
-            $saveButton = Button::create(_('Übernehmen'), 'save_button', array('title' => _('Einstellungen speichern')));
+            $saveButton = Button::create(_('Übernehmen'), 'save_button', ['title' => _('Einstellungen speichern')]);
             $td2->addContent($saveButton);
         } else {
             $td2->addHTMLContent($this->createRuntimeSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
@@ -525,7 +525,7 @@ class EvalOverview {
             $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
             $td2->addContent(new HTMLEmpty("br"));
 
-            $saveButton = Button::create(_('Übernehmen'), 'save_button', array('title' => _('Einstellungen speichern')));
+            $saveButton = Button::create(_('Übernehmen'), 'save_button', ['title' => _('Einstellungen speichern')]);
 
             $td2->addContent($saveButton);
         }
@@ -650,7 +650,7 @@ class EvalOverview {
         $rangeIDs = $this->db->getValidRangeIDs($this->perm, $this->user, $currentRangeID);
         /* add the currently shown range if neccessary */
         if (is_array($rangeIDs) && !in_array($currentRangeID, array_keys($rangeIDs))) {
-            $rangeIDs[$currentRangeID] = array("name" => $this->db->getRangename($currentRangeID));
+            $rangeIDs[$currentRangeID] = ["name" => $this->db->getRangename($currentRangeID)];
         }
 
         foreach ($rangeIDs as $rangeID => $object) {
@@ -671,7 +671,7 @@ class EvalOverview {
         $form->addContent($select);
         $form->addHTMLContent('</label>');
         $form->addContent(" ");
-        $form->addContent(Button::create(_('Anzeigen'), array('title' => _('Evaluationen aus gewähltem Bereich anzeigen'))));
+        $form->addContent(Button::create(_('Anzeigen'), ['title' => _('Evaluationen aus gewähltem Bereich anzeigen')]));
         $form->addContent(new HTMLempty("br"));
 
         /* search field for showing ranges (admin/root) */
@@ -684,7 +684,7 @@ class EvalOverview {
             $input->addAttr("size", "30");
             $form->addContent($input);
             $form->addHTMLContent('</label>');
-            $form->addContent(Button::create(_('Suchen'), 'search_showrange_button', array('title' => _('Weitere Bereiche suchen'))));
+            $form->addContent(Button::create(_('Suchen'), 'search_showrange_button', ['title' => _('Weitere Bereiche suchen')]));
         }
 
         $form->addHTMLContent('</fieldset>');
@@ -719,7 +719,7 @@ class EvalOverview {
         $form->addHTMLContent('</label>');
 
         $form->addHTMLContent('</fieldset><footer>');
-        $form->addContent(Button::create(_('Suchen'), 'search_template_button', array('title' => _('Öffentliche Vorlage suchen'))));
+        $form->addContent(Button::create(_('Suchen'), 'search_template_button', ['title' => _('Öffentliche Vorlage suchen')]));
         $form->addHTMLContent('</footer>');
 
         return $form;
@@ -1450,14 +1450,14 @@ class EvalOverview {
     function createSafeguard($sign, $text, $mode = NULL, $evalID = NULL, $showrangeID = NULL, $referer = NULL) {
         //TODO: auf messagebox bzw. createQuestion umstellen!!!
 
-        $label = array(
+        $label = [
             "referer" => _("Zum vorherigen Bereich zurückkehren."),
             "yes" => _("Ja!"),
             "no" => _("Nein!"),
             "delete" => _("Löschen."),
             "template" => _("Zu den eigenen Evaluationsvorlagen verschieben."),
             "cancel" => _("Abbrechen.")
-        );
+        ];
 
         $html = "   <table align=\"center\" width=\"100%\" border=0 cellpadding=3 cellspacing=0>\n" // class=\"table_row_even\"
                 . "   <tr>\n"
@@ -1469,7 +1469,7 @@ class EvalOverview {
             } elseif ($sign == 'ausruf') {
                 $sign = 'messagebox/question.png';
             }
-            $html .= Assets::img($sign, array('class' => 'middle'));
+            $html .= Assets::img($sign, ['class' => 'middle']);
         }
 
         $html .="    </td>\n";
@@ -1496,21 +1496,21 @@ class EvalOverview {
         if ($request) {
 
             $html .= LinkButton::createAccept(_("Ja"), URLHelper::getURL('admin_evaluation.php?evalAction=' . $value1 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID),
-                        array('title' => $label["yes"])) . "\n";
+                        ['title' => $label["yes"]]) . "\n";
             $html .= LinkButton::createCancel(_("Nein"), URLHelper::getURL('admin_evaluation.php?evalAction=' . $value2 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID),
-                        array('title' => $label["no"])) . "\n";
+                        ['title' => $label["no"]]) . "\n";
         }
 
         if ($mode == "unlink_delete_request") {
             $add_cancel = !$referer ? : "&referer=" . $referer;
-            $links = array(
+            $links = [
                 URLHelper::getURL('admin_evaluation.php?evalAction=delete_confirmed&evalID=' . $evalID . '&rangeID=' . $showrangeID),
                 URLHelper::getURL('admin_evaluation.php?evalAction=unlink_delete_aborted&evalID=' . $evalID . '&rangeID=' . $showrangeID),
                 URLHelper::getURL('admin_evaluation.php?evalAction=unlink_and_move&evalID=' . $evalID . '&rangeID=' . $showrangeID . $add_cancel)
-            );
-            $html .= LinkButton::create(_('Löschen'), $links[0], array('title' => $label["delete"])) . "\n";
-            $html .= LinkButton::create(_('Verschieben'), $links[1], array('title' => $label["template"])) . "\n";
-            $html .= LinkButton::createCancel(_('Abbrechen'), $links[2], array('title' => $label["cancel"])) . "\n";
+            ];
+            $html .= LinkButton::create(_('Löschen'), $links[0], ['title' => $label["delete"]]) . "\n";
+            $html .= LinkButton::create(_('Verschieben'), $links[1], ['title' => $label["template"]]) . "\n";
+            $html .= LinkButton::createCancel(_('Abbrechen'), $links[2], ['title' => $label["cancel"]]) . "\n";
             $html .= "<br><br>";
         }
 
@@ -1697,7 +1697,7 @@ class EvalOverview {
                 $startDate = ($startMode == "immediate") ? time() : $startDate;
 
                 $html .= "&nbsp;";
-                $html .= Icon::create('refresh', 'clickable', ['title' => _('Endzeitpunkt neu berechnen')])->asInput(array('name'=>'save2_button','align'=>'middle',));
+                $html .= Icon::create('refresh', 'clickable', ['title' => _('Endzeitpunkt neu berechnen')])->asInput(['name'=>'save2_button','align'=>'middle',]);
                 $html .= sprintf(_(" (<b>%s</b> um <b>%s</b> Uhr)"), strftime("%d.%m.%Y", $startDate + $timeSpan), strftime("%H:%M", $startDate + $timeSpan));
             }
             $html .= "</td></tr>";
@@ -1744,9 +1744,9 @@ class EvalOverview {
             $results = $evalDB->search_range("");
 
         if ($globalperm == "root") {
-            $results["studip"] = array("type" => "system", "name" => _("Systemweite Evaluationen"));
+            $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } elseif ($globalperm == "dozent" || $globalperm == "autor" || $globalperm == "admin") {
-            $results[$user->id] = array("type" => "user", "name" => _("Profil"));
+            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
         }
 
         if ($globalperm == "dozent" || $globalperm == "autor" || Request::get("search"))
@@ -1754,27 +1754,27 @@ class EvalOverview {
 
 
         if ($globalperm == "autor")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
-                "sem" => _("Veranstaltung"));
+                "sem" => _("Veranstaltung")];
         elseif ($globalperm == "dozent")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
-                "inst" => _("Einrichtung"));
+                "inst" => _("Einrichtung")];
         elseif ($globalperm == "admin")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
-                "fak" => _("Fakultät"));
+                "fak" => _("Fakultät")];
         elseif ($globalperm == "root")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
                 "fak" => _("Fakultät"),
-                "system" => _("System"));
+                "system" => _("System")];
 
 
         // zugewiesene Bereiche
@@ -1894,7 +1894,7 @@ class EvalOverview {
             foreach ($results as $k => $v) {
                 while (list($type_key, $type_value) = each($range_types)) {
                     if ($v["type"] == $type_key)
-                        $ranges["$type_key"][] = array("id" => $k, "name" => $v["name"]);
+                        $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                 }
                 reset($range_types);
             }
@@ -2055,7 +2055,7 @@ class EvalOverview {
             $input->addAttr("value", "" . Request::get("search") . "");
             $td->addContent($input);
 
-            $td->addContent(Button::create(_('Suchen'), 'search_range_button', array('title' => _('Bereiche suchen'))));
+            $td->addContent(Button::create(_('Suchen'), 'search_range_button', ['title' => _('Bereiche suchen')]));
             $tr->addContent($td);
 
             $table->addContent($tr);
@@ -2074,35 +2074,35 @@ class EvalOverview {
         $results = $evalDB->search_range($search);
 
         if ($globalperm == "root") {
-            $results["studip"] = array("type" => "system", "name" => _("Systemweite Evaluationen"));
+            $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } else {
-            $results[$user->id] = array("type" => "user", "name" => _("Profil"));
+            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
         }
 
         if ($globalperm == "dozent" || $globalperm == "autor" || $search)
             $showsearchresults = 1;
 
         if ($globalperm == "admin")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
-                "fak" => _("Fakultät"));
+                "fak" => _("Fakultät")];
 
         elseif ($globalperm == "root")
-            $range_types = array(
+            $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
                 "fak" => _("Fakultät"),
-                "system" => _("System"));
+                "system" => _("System")];
 
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
                 while (list($type_key, $type_value) = each($range_types)) {
                     if ($v["type"] == $type_key)
-                        $ranges["$type_key"][] = array("id" => $k, "name" => $v["name"]);
+                        $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                 }
                 reset($range_types);
             }

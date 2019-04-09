@@ -67,26 +67,26 @@ $MAIL_ATTACHMENTS_MAX_SIZE = 10;                             //maximum size of a
 /*language settings
 ----------------------------------------------------------------*/
 
-$CONTENT_LANGUAGES['en_GB'] = array('picture' => 'lang_en.gif', 'name' => 'English');
+$CONTENT_LANGUAGES['en_GB'] = ['picture' => 'lang_en.gif', 'name' => 'English'];
 
 /*literature search plugins
 ----------------------------------------------------------------
 */
 
 //standard plugin, searches in Stud.IP Database (table lit_catalog), you should leave this one enabled !
-$_lit_search_plugins[] = array('name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => '');
+$_lit_search_plugins[] = ['name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => ''];
 
 //Plugins derived from Z3950Abstract, used for querying Z39.50 Servers
 //only activate these plugins, if your Version of PHP supports the YAZ extension!
 
 /* Gemeinsamer Verbundkatalog - GVK */
-$_lit_search_plugins[] = array('name' => "Gvk",'display_name' =>'Gemeinsamer Verbundkatalog', 'link' => 'http://gso.gbv.de/DB=2.1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
+$_lit_search_plugins[] = ['name' => "Gvk",'display_name' =>'Gemeinsamer Verbundkatalog', 'link' => 'http://gso.gbv.de/DB=2.1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
 
 /* Niedersächsische Staats- und Universitätsbibliothek Göttingen, OPAC */
-$_lit_search_plugins[] = array('name' => "SUBGoeOpac",'display_name' => "Opac der SUB Göttingen" , 'link' => 'http://goopc4.sub.uni-goettingen.de:8080/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
+$_lit_search_plugins[] = ['name' => "SUBGoeOpac",'display_name' => "Opac der SUB Göttingen" , 'link' => 'http://goopc4.sub.uni-goettingen.de:8080/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
 
 /* Göttinger Gesamtkatalog (Regionalkatalog Göttingen) */
-$_lit_search_plugins[] = array('name' => 'Rkgoe', 'display_name' =>'Regionalkatalog Göttingen', 'link' => 'http://gso.gbv.de/DB=2.90/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
+$_lit_search_plugins[] = ['name' => 'Rkgoe', 'display_name' =>'Regionalkatalog Göttingen', 'link' => 'http://gso.gbv.de/DB=2.90/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
 
 
 
@@ -97,21 +97,21 @@ $_lit_search_plugins[] = array('name' => 'Rkgoe', 'display_name' =>'Regionalkata
 $STUDIP_AUTH_PLUGIN[] = "Standard";
 $STUDIP_AUTH_PLUGIN[] = "Shib";
 
-$STUDIP_AUTH_CONFIG_STANDARD = array("error_head" => "intern");
+$STUDIP_AUTH_CONFIG_STANDARD = ["error_head" => "intern"];
 
-$STUDIP_AUTH_CONFIG_SHIB = array(
+$STUDIP_AUTH_CONFIG_SHIB = [
     // SessionInitator URL for remote SP
     'session_initiator' => 'https://shib-sp.uni-osnabrueck.de/secure/studip-sp.php',
     // validation URL for remote SP
     'validate_url'      => 'https://shib-sp.uni-osnabrueck.de/auth/studip-sp.php',
     // standard user data mapping
-    'user_data_mapping' => array(
-        'auth_user_md5.username' => array('callback' => 'dummy', 'map_args' => ''),
-        'auth_user_md5.password' => array('callback' => 'dummy', 'map_args' => ''),
-        'auth_user_md5.Vorname' => array('callback' => 'getUserData', 'map_args' => 'givenname'),
-        'auth_user_md5.Nachname' => array('callback' => 'getUserData', 'map_args' => 'sn'),
-        'auth_user_md5.Email' => array('callback' => 'getUserData', 'map_args' => 'mail')
-    )
-);
+    'user_data_mapping' => [
+        'auth_user_md5.username' => ['callback' => 'dummy', 'map_args' => ''],
+        'auth_user_md5.password' => ['callback' => 'dummy', 'map_args' => ''],
+        'auth_user_md5.Vorname' => ['callback' => 'getUserData', 'map_args' => 'givenname'],
+        'auth_user_md5.Nachname' => ['callback' => 'getUserData', 'map_args' => 'sn'],
+        'auth_user_md5.Email' => ['callback' => 'getUserData', 'map_args' => 'mail']
+    ]
+];
 $PHPASS_USE_PORTABLE_HASH = true;
 

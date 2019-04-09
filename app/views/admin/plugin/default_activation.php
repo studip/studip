@@ -38,8 +38,8 @@ use Studip\Button, Studip\LinkButton;
     </fieldset>
 
     <footer>
-        <?= Button::create(_('Übernehmen'),'save', array('title' => _('Einstellungen speichern')))?>
+        <?= Button::create(_('Übernehmen'),'save', ['title' => _('Einstellungen speichern')])?>
         &nbsp;
-        <?= LinkButton::create('<< ' . _("Zurück"), $controller->url_for('admin/plugin'), array('title' => _('Zurück zur Plugin-Verwaltung')))?>
+        <?= LinkButton::create('<< ' . _("Zurück"), $controller->url_for('admin/plugin'), ['title' => _('Zurück zur Plugin-Verwaltung')])?>
     </footer>
 </form>

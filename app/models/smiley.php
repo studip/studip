@@ -109,14 +109,14 @@ class Smiley
     static function getByIds($ids)
     {
         if (empty($ids)) {
-            return array();
+            return [];
         }
         $query = "SELECT smiley_id AS id, smiley_name AS name, smiley_width AS width, smiley_height AS height, "
                . " short_name AS short, smiley_counter AS `count`, short_counter AS short_count, "
                . " fav_counter AS fav_count, mkdate, chdate "
                . " FROM smiley WHERE smiley_id IN (?)";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($ids));
+        $statement->execute([$ids]);
         return $statement->fetchAll(PDO::FETCH_CLASS, 'Smiley');
     }
 
@@ -134,7 +134,7 @@ class Smiley
                . " fav_counter AS fav_count, mkdate, chdate "
                . " FROM smiley WHERE smiley_name = ?";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute(array($name));
+        $statement->execute([$name]);
         return $statement->fetchObject('Smiley') ?: new self;
     }
 
@@ -167,7 +167,7 @@ class Smiley
             }
             DBManager::get()
                 ->prepare("DELETE FROM smiley WHERE smiley_id IN (?)")
-                ->execute(array($id));
+                ->execute([$id]);
         }
     }
 
@@ -187,10 +187,10 @@ class Smiley
                . " fav_counter = VALUES(fav_counter), chdate = VALUES(chdate)";
         DBManager::get()
             ->prepare($query)
-            ->execute(array(
+            ->execute([
                $this->id, $this->name, $this->width, $this->height, $this->short,
                $this->count, $this->short_count, $this->fav_count
-            ));
+            ]);
         if (empty($this->id)) {
             $this->id = DBManager::get()->lastInsertId();
         }
@@ -376,28 +376,28 @@ class Smiley
     {
         // Tabellen, die nach Smileys durchsucht werden sollen
         // Format: array( array (Tabelle, Feld), array (Tabelle, Feld), ... )
-        $table_data = array(
-            array('datafields_entries','content'),
-            array('kategorien', 'content'),
-            array('message', 'message'),
-            array('news', 'body'),
-            array('scm', 'content'),
-            array('user_info', 'hobby'),
-            array('user_info', 'lebenslauf'),
-            array('user_info', 'publi'),
-            array('user_info', 'schwerp'),
-            array('wiki', 'body'),
-            array('forum_entries', 'content')
-        );
+        $table_data = [
+            ['datafields_entries','content'],
+            ['kategorien', 'content'],
+            ['message', 'message'],
+            ['news', 'body'],
+            ['scm', 'content'],
+            ['user_info', 'hobby'],
+            ['user_info', 'lebenslauf'],
+            ['user_info', 'publi'],
+            ['user_info', 'schwerp'],
+            ['wiki', 'body'],
+            ['forum_entries', 'content']
+        ];
 
         // add tables from ForumModules to count for
         foreach (PluginEngine::getPlugins('ForumModule') as $plugin) {
             $table = $plugin->getEntryTableInfo();
-            $table_data[] = array($table['table'], $table['content']);
+            $table_data[] = [$table['table'], $table['content']];
         }
 
         // search in all tables
-        $usage = array();
+        $usage = [];
         foreach ($table_data as $table) {
             // only fetch entries which have some content, otherwise the while-loop will fail
             $query = "SELECT ? AS txt FROM ? WHERE LENGTH(?) > 0"; // $table1, $table0
@@ -409,7 +409,7 @@ class Smiley
             $statement->bindParam(1, $table[1], StudipPDO::PARAM_COLUMN);
             $statement->bindParam(2, $table[0], StudipPDO::PARAM_COLUMN);
             $statement->bindParam(3, $table[1], StudipPDO::PARAM_COLUMN);
-            $statement->execute(array());
+            $statement->execute([]);
 
             // and all entrys
             while ($txt = $statement->fetchColumn()) {
@@ -418,7 +418,7 @@ class Smiley
                     for ($k = 0; $k < count($matches[2]); $k++) {
                         $name = $matches[2][$k];
                         if (!isset($usage[$name])) {
-                            $usage[$name] = array('count' => 0, 'short_count' => 0, 'favorites' => 0);
+                            $usage[$name] = ['count' => 0, 'short_count' => 0, 'favorites' => 0];
                         }
                         $usage[$name]['count'] += 1;
                     }
@@ -428,7 +428,7 @@ class Smiley
                     $regexp = '/(\>|^|\s)' . preg_quote($code) . '(?=$|\<|\s)/u';
                     if ($count = preg_match_all($regexp, $txt, $matches)) {
                         if (!isset($usage[$name])) {
-                            $usage[$name] = array('count' => 0, 'short_count' => 0, 'favorites' => 0);
+                            $usage[$name] = ['count' => 0, 'short_count' => 0, 'favorites' => 0];
                         }
                         $usage[$name]['short_count'] += $count;
                     }
@@ -441,7 +441,7 @@ class Smiley
             $favorite_usage = SmileyFavorites::getUsage();
             foreach ($favorite_usage as $name => $count) {
                 if (!isset($usage[$name])) {
-                    $usage[$name] = array('count' => 0, 'short_count' => 0, 'favorites' => 0);
+                    $usage[$name] = ['count' => 0, 'short_count' => 0, 'favorites' => 0];
                 }
                 $usage[$name]['favorites'] = $count;
             }
@@ -501,15 +501,15 @@ class Smiley
      */
     static function refresh($smiley_file = null)
     {
-        $counts = array(
+        $counts = [
             'insert'    => 0,
             'update'    => 0
-        );
+        ];
 
         if ($filename === null) {
             $files = glob(self::getFilename('*'));
         } else {
-            $files = array($smiley_file);
+            $files = [$smiley_file];
         }
 
         foreach ($files as $file) {

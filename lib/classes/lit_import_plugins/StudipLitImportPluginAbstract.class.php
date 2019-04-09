@@ -36,7 +36,7 @@
 class StudipLitImportPluginAbstract {
 
     var $class_name;
-    var $error_msg = array();
+    var $error_msg = [];
         var $data; // Data
     var $num_entries;
     var $xmlfile;
@@ -131,7 +131,7 @@ class StudipLitImportPluginAbstract {
     // Sollte nicht ueberschrieben werden
     function importEntries($field_arr, $range_id){
         if (is_array($field_arr)) {
-            $catalog_ids = array();
+            $catalog_ids = [];
             foreach ($field_arr as $fields) {
                 if ($fields["dc_title"]!="") {
                     $litCatElement = new StudipLitCatElement();
@@ -145,7 +145,7 @@ class StudipLitImportPluginAbstract {
             if (count($catalog_ids)>0) {
                 $lit_list = TreeAbstract::GetInstance("StudipLitList", $range_id);
                 $lit_list_id = md5(uniqid("sdlfhaldfhuizhsdhg",1));
-                $fields = array();
+                $fields = [];
                 $fields["list_id"]  = $lit_list_id;
                 $fields["name"]     = _("Neue importierte Liste vom")." ".strftime("%x %X");
                 $fields["user_id"]  = $GLOBALS['user']->id;
@@ -193,7 +193,7 @@ class StudipLitImportPluginAbstract {
     }
 
     function addError($type, $msg){
-        $this->error_msg[] = array('type' => $type, 'msg' => $msg);
+        $this->error_msg[] = ['type' => $type, 'msg' => $msg];
         return true;
     }
 

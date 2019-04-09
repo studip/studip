@@ -44,7 +44,7 @@ class Seminar_User
     {
         if ($this->id && $this->id != 'nobody') {
             $stmt = DBManager::get()->prepare("SELECT last_lifesign FROM user_online WHERE user_id = ?");
-            $stmt->execute(array($this->id));
+            $stmt->execute([$this->id]);
             return $stmt->fetchColumn();
         }
     }
@@ -74,7 +74,7 @@ class Seminar_User
     {
         if ($this->id && $this->id != 'nobody') {
             $stmt = DBManager::get()->prepare("DELETE FROM user_online WHERE user_id = ?");
-            $stmt->execute(array($this->id));
+            $stmt->execute([$this->id]);
             return $stmt->rowCount();
         }
     }

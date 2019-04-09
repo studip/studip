@@ -138,8 +138,8 @@ class ShowSchedulesRequests extends ShowSchedules{
         while ($event=$assign_events->nextEvent()) {
             $repeat_mode = $event->getRepeatMode(TRUE);
             $add_info = '';
-            if (in_array($event->getOwnerType(), array('sem','date'))){
-                $sem_doz_names = array();
+            if (in_array($event->getOwnerType(), ['sem','date'])){
+                $sem_doz_names = [];
                 if ($event->getOwnerType() == 'sem'){
                     $sem_obj = Seminar::GetInstance($event->getAssignUserId());
                 } else {
@@ -157,7 +157,7 @@ class ShowSchedulesRequests extends ShowSchedules{
         foreach($_SESSION['resources_data']["requests_working_on"] as $req){
             if($_SESSION['resources_data']['skip_closed_requests'] && $req['closed']) continue;
             $reqObj = RoomRequest::find($req["request_id"]);
-            $assignObjects = array();
+            $assignObjects = [];
             if ($reqObj) {
                 $semResAssign = new VeranstaltungResourcesAssign($reqObj->getSeminarId());
                 if ($reqObj->getType() == 'date' && $_SESSION['resources_data']["show_repeat_mode_requests"] != 'repeated') {
@@ -176,8 +176,8 @@ class ShowSchedulesRequests extends ShowSchedules{
             $check = new CheckMultipleOverlaps();
             $check->setAutoTimeRange($assignObjects);
             $check->addResource($this->resource_id);
-            $events = array();
-            $result = array();
+            $events = [];
+            $result = [];
             foreach ($assignObjects as $ao) {
                 foreach ($ao->getEvents() as $event) {
                     $events[$event->getId()] = $event;
@@ -217,7 +217,7 @@ class ShowSchedulesRequests extends ShowSchedules{
                         $ce = array_values($current_events);
                         $add_info .= '<br>' . sprintf(_("%s Termine, %s - %s"), count($ce), date("d.m", $ce[0]->getBegin()), date("d.m", $ce[count($ce) - 1]->getBegin()));
                     }
-                    $overlaps = array();
+                    $overlaps = [];
                     if(count($result)){
                         foreach(array_map('array_shift', $result[$this->resource_id]) as $one){
                             if(isset($current_events[$one['event_id']])) $overlaps[] = $one;
@@ -265,9 +265,9 @@ class ShowSchedulesRequests extends ShowSchedules{
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']["schedule_time_range"]) || ($_SESSION['resources_data']["schedule_time_range"] == 1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : -1]) ?>">
                         <?= Icon::create('arr_2up', 'clickable', ['title' => _('Frühere Belegungen anzeigen')])->asImg(['class' => 'middle']) ?>
                     </a>
                 <? endif; ?>
@@ -298,9 +298,9 @@ class ShowSchedulesRequests extends ShowSchedules{
             <tr>
                 <td align="center" valign="bottom">
                 <? if ((!$_SESSION['resources_data']['schedule_time_range']) || ($_SESSION['resources_data']['schedule_time_range'] == -1)): ?>
-                    <a href="<?= URLHelper::getLink('', array('quick_view' => $this->used_view,
+                    <a href="<?= URLHelper::getLink('', ['quick_view' => $this->used_view,
                                                               'quick_view_mode' => $view_mode,
-                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1)) ?>">
+                                                              'time_range' => $_SESSION['resources_data']['schedule_time_range'] ? 'FALSE' : 1]) ?>">
                         <?= Icon::create('arr_2down', 'clickable', ['title' => _('Spätere Belegungen anzeigen')])->asImg() ?>
                     </a>
                 <? endif; ?>

@@ -24,7 +24,7 @@ class CoreCalendar implements StudipModule {
             $navigation = new Navigation(_('Kalender'), 'dispatch.php/calendar/single/');
             $navigation->setImage(Icon::create('schedule', 'info_alt'));
             $navigation->setActiveImage(Icon::create('schedule', 'info'));
-            return array('calendar' => $navigation);
+            return ['calendar' => $navigation];
         } else {
             return null;
         }
@@ -35,6 +35,6 @@ class CoreCalendar implements StudipModule {
      */ 
     function getMetadata()
     {
-        return array();
+        return [];
     }
 }

@@ -2,11 +2,11 @@
 <form action="" method="post">
     <div>
         <b><?= _('Eigener Teilnahmestatus') ?>:</b>
-        <? $group_status = array(
+        <? $group_status = [
             CalendarEvent::PARTSTAT_TENTATIVE => _('Abwartend'),
             CalendarEvent::PARTSTAT_ACCEPTED => _('Angenommen'),
             CalendarEvent::PARTSTAT_DECLINED => _('Abgelehnt'),
-            CalendarEvent::PARTSTAT_DELEGATED => _('Angenommen (keine Teilnahme)')) ?>
+            CalendarEvent::PARTSTAT_DELEGATED => _('Angenommen (keine Teilnahme)')] ?>
         <ul>
         <? foreach ($group_status as $value => $name) : ?>
             <ul class="list-unstyled">
@@ -37,12 +37,12 @@
         <? endif; ?>
     <? endif; ?>
     <div style="text-align: center;" data-dialog-button>
-        <?= Button::create(_('Speichern'), 'store', array('title' => _('Termin speichern'))) ?>
+        <?= Button::create(_('Speichern'), 'store', ['title' => _('Termin speichern')]) ?>
         <? if ($event->havePermission(Event::PERMISSION_DELETABLE)) : ?>
         <?= LinkButton::create(_('Löschen'), $controller->url_for('calendar/single/delete/' . implode('/', $event->getId()))) ?>
         <? endif; ?>
         <? if (!Request::isXhr()) : ?>
-        <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, array($event->getStart()))) ?>
+        <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view, [$event->getStart()])) ?>
         <? endif; ?>
     </div>
 </form>

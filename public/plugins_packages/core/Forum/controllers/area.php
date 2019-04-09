@@ -20,7 +20,7 @@ class AreaController extends ForumController
         $name    = Request::get('name', _('Kein Titel'));
         $content = Request::get('content');
 
-        ForumEntry::insert(array(
+        ForumEntry::insert([
             'topic_id'    => $new_id,
             'seminar_id'  => $this->getId(),
             'user_id'     => $GLOBALS['user']->id,
@@ -28,13 +28,13 @@ class AreaController extends ForumController
             'content'     => $content,
             'author'      => get_fullname($GLOBALS['user']->id),
             'author_host' => ($GLOBALS['user']->id == 'nobody') ? getenv('REMOTE_ADDR') : ''
-        ), $this->getId());
+        ], $this->getId());
 
         ForumCat::addArea($category_id, $new_id);
 
         if (Request::isXhr()) {
             $this->set_layout(null);
-            $this->entry = array_pop(ForumEntry::parseEntries(array(ForumEntry::getEntry($new_id))));
+            $this->entry = array_pop(ForumEntry::parseEntries([ForumEntry::getEntry($new_id)]));
             $this->visitdate = ForumVisit::getLastVisit($this->getId());
         } else {
             $this->redirect(PluginEngine::getLink('coreforum/index/index/'));
@@ -47,10 +47,10 @@ class AreaController extends ForumController
 
         if (Request::isAjax()) {
             ForumEntry::update($area_id, Request::get('name'), Request::get('content'));
-            $this->render_json(array('content' => ForumEntry::killFormat(ForumEntry::killEdit(Request::get('content')))));
+            $this->render_json(['content' => ForumEntry::killFormat(ForumEntry::killEdit(Request::get('content')))]);
         } else {
             ForumEntry::update($area_id, Request::get('name'), Request::get('content'));
-            $this->flash['messages'] = array('success' => _('Die Änderungen am Bereich wurden gespeichert.'));
+            $this->flash['messages'] = ['success' => _('Die Änderungen am Bereich wurden gespeichert.')];
             $this->redirect(PluginEngine::getLink('coreforum/index/index'));
         }
 

@@ -26,7 +26,7 @@ class CoreDocuments implements StudipModule
         $newFilesNavigation = new Navigation(_('Dateien'), 'dispatch.php/' . $range_type . '/files');
         $newFilesNavigation->setImage(Icon::create('files', 'info_alt'));
         $newFilesNavigation->setActiveImage(Icon::create('files', 'info'));
-        return array('files' => $newFilesNavigation);
+        return ['files' => $newFilesNavigation];
     }
 
     /**
@@ -34,7 +34,7 @@ class CoreDocuments implements StudipModule
      */
     function getMetadata()
     {
-        return array(
+        return [
             'summary'          => _('Austausch von Dateien'),
             'description'      => _('Im Dateibereich können Dateien sowohl von ' .
                 'Lehrenden als auch von Studierenden hoch- bzw. ' .
@@ -64,16 +64,16 @@ class CoreDocuments implements StudipModule
                 'können Im Dateibereich bestimmte Rechte (r, w, x, f) für Studierende, wie z.B. das ' .
                 'Leserecht (r), festgelegt werden.'),
             'icon'             => Icon::create('files', 'info'),
-            'screenshots'      => array(
+            'screenshots'      => [
                 'path'     => 'plus/screenshots/Dateibereich_-_Dateiordnerberechtigung',
-                'pictures' => array(
-                    0 => array('source' => 'Ordneransicht_mit_geoeffnetem_Ordner.jpg', 'title' => _('Ordneransicht mit geöffnetem Ordner')),
-                    1 => array('source' => 'Ordneransicht_mit_Dateiinformationen.jpg', 'title' => _('Ordneransicht mit Dateiinformationen')),
-                    2 => array('source' => 'Neuen_Ordner_erstellen.jpg', 'title' => _('Neuen Ordner erstellen')),
-                    3 => array('source' => 'Ordner_zum_Hausaufgabenordner_umwandeln.jpg', 'title' => _('Ordner zum Hausaufgabenordner umwandeln')),
-                    4 => array('source' => 'Ansicht_alle_Dateien.jpg', 'title' => _('Ansicht alle Dateien'))
-                )
-            )
-        );
+                'pictures' => [
+                    0 => ['source' => 'Ordneransicht_mit_geoeffnetem_Ordner.jpg', 'title' => _('Ordneransicht mit geöffnetem Ordner')],
+                    1 => ['source' => 'Ordneransicht_mit_Dateiinformationen.jpg', 'title' => _('Ordneransicht mit Dateiinformationen')],
+                    2 => ['source' => 'Neuen_Ordner_erstellen.jpg', 'title' => _('Neuen Ordner erstellen')],
+                    3 => ['source' => 'Ordner_zum_Hausaufgabenordner_umwandeln.jpg', 'title' => _('Ordner zum Hausaufgabenordner umwandeln')],
+                    4 => ['source' => 'Ansicht_alle_Dateien.jpg', 'title' => _('Ansicht alle Dateien')]
+                ]
+            ]
+        ];
     }
 }

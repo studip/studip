@@ -16,14 +16,14 @@ class SkiplinksEnableConfiguration extends Migration
     function up()
     {
         $options[] =
-            array(
+            [
             'name'        => 'SKIPLINKS_ENABLE',
             'type'        => 'boolean',
             'value'       => '',
             'range'       => 'user',
             'section'     => 'privacy',
             'description' => 'Wählen Sie diese Option, um Skiplinks beim ersten Drücken der Tab-Taste anzuzeigen (Systemdefault).'
-            );
+            ];
 
         $stmt = DBManager::get()->prepare("
                 INSERT IGNORE INTO config

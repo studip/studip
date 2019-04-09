@@ -9,7 +9,7 @@ foreach ($dir as $fileinfo) {
         echo $class . "\n";
         $model = new $class;
         $meta = $model->getTableMetaData();
-        $props = array();
+        $props = [];
         foreach ($meta['fields'] as $field => $info) {
             $name = mb_strtolower($field);
             $props[$name] = '@property string ' . $name;

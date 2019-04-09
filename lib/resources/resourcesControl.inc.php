@@ -33,12 +33,12 @@ require_once 'lib/resources/views/Msg.class.php';
 $_SESSION['resources_data'] = @unserialize($_SESSION['resources_data']);
 if (empty($_SESSION['resources_data'])) {
     $temp_semester = SemesterData::getCurrentSemesterData() ?: end(SemesterData::getAllSemesterData());
-    $_SESSION['resources_data'] = array(
+    $_SESSION['resources_data'] = [
         'view'                     => 'search',
         'view_mode'                => false,
         'sem_schedule_semester_id' => $temp_semester['semester_id'],
         'sem_schedule_timespan'    => 'course_time'
-    );
+    ];
 }
 
 $globalPerm = getGlobalPerms($user->id);
@@ -76,15 +76,15 @@ $resources_nav = Navigation::getItem('/resources');
 
 // Reiter "Uebersicht"
 $navigation = new Navigation(_('Übersicht'));
-$navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', array('view' => 'resources')));
+$navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', ['view' => 'resources']));
 
 if (get_config('RESOURCES_ENABLE_GROUPING')) {
-    $navigation->addSubNavigation('group_schedule_daily', new Navigation(_('Gruppen-Belegungspläne'), 'resources.php', array('view' => 'view_group_schedule_daily')));
-    $navigation->addSubNavigation('group_schedule', new Navigation(_('Gruppen-Belegungspläne (Semester)'), 'resources.php', array('view' => 'view_group_schedule')));
+    $navigation->addSubNavigation('group_schedule_daily', new Navigation(_('Gruppen-Belegungspläne'), 'resources.php', ['view' => 'view_group_schedule_daily']));
+    $navigation->addSubNavigation('group_schedule', new Navigation(_('Gruppen-Belegungspläne (Semester)'), 'resources.php', ['view' => 'view_group_schedule']));
 }
 
 if (get_config('RESOURCES_ALLOW_CREATE_TOP_LEVEL') || getGlobalPerms($user->id) == 'admin') {
-    $navigation->addSubNavigation('create_entry', new Navigation(_('Neue Hierarchieebene erzeugen'), 'resources.php#a', array('view' => 'create_hierarchie')));
+    $navigation->addSubNavigation('create_entry', new Navigation(_('Neue Hierarchieebene erzeugen'), 'resources.php#a', ['view' => 'create_hierarchie']));
 }
 
 $resources_nav->addSubNavigation('view', $navigation);
@@ -92,32 +92,32 @@ $resources_nav->addSubNavigation('view', $navigation);
 // Reiter "Listen"
 if ($_SESSION['resources_data']['list_open']) {
     $navigation = new Navigation(_('Liste'));
-    $navigation->addSubNavigation('show', new Navigation(_('Listenausgabe'), 'resources.php#a', array('view' => 'lists')));
+    $navigation->addSubNavigation('show', new Navigation(_('Listenausgabe'), 'resources.php#a', ['view' => 'lists']));
     $resources_nav->addSubNavigation('lists', $navigation);
 }
 
 // Reiter "Objekt"
 if ($_SESSION['resources_data']['actual_object']) {
     $navigation = new Navigation(_('Ressource'));
-    $navigation->addSubNavigation('view_details', new Navigation(_('Eigenschaften'), 'resources.php', array('view' => 'view_details')));
+    $navigation->addSubNavigation('view_details', new Navigation(_('Eigenschaften'), 'resources.php', ['view' => 'view_details']));
 
     if ($ActualObjectPerms->havePerm('admin')) {
-        $navigation->addSubNavigation('edit_properties', new Navigation(_('Eigenschaften bearbeiten'), 'resources.php', array('view' => 'edit_object_properties')));
-        $navigation->addSubNavigation('edit_perms', new Navigation(_('Rechte bearbeiten'), 'resources.php', array('view' => 'edit_object_perms')));
+        $navigation->addSubNavigation('edit_properties', new Navigation(_('Eigenschaften bearbeiten'), 'resources.php', ['view' => 'edit_object_properties']));
+        $navigation->addSubNavigation('edit_perms', new Navigation(_('Rechte bearbeiten'), 'resources.php', ['view' => 'edit_object_perms']));
     }
 
     if (getResourceObjectCategory($_SESSION['resources_data']['actual_object']) &&
             ResourceObject::isScheduleViewAllowed($_SESSION['resources_data']['actual_object'])) {
-        $navigation->addSubNavigation('view_schedule', new Navigation(_('Belegungsplan'), 'resources.php', array('view' => 'view_schedule')));
+        $navigation->addSubNavigation('view_schedule', new Navigation(_('Belegungsplan'), 'resources.php', ['view' => 'view_schedule']));
 
         if (get_config('RESOURCES_ENABLE_SEM_SCHEDULE')) {
-            $navigation->addSubNavigation('view_sem_schedule', new Navigation(_('Semester-Belegungsplan'), 'resources.php', array('view' => 'view_sem_schedule')));
+            $navigation->addSubNavigation('view_sem_schedule', new Navigation(_('Semester-Belegungsplan'), 'resources.php', ['view' => 'view_sem_schedule']));
         }
 
         if ($ActualObjectPerms->havePerm('autor')) {
-            $navigation->addSubNavigation('edit_assign', new Navigation(_('Belegung bearbeiten'), 'resources.php', array('view' => 'edit_object_assign')));
+            $navigation->addSubNavigation('edit_assign', new Navigation(_('Belegung bearbeiten'), 'resources.php', ['view' => 'edit_object_assign']));
         } else {
-            $navigation->addSubNavigation('edit_assign', new Navigation(_('Belegung anzeigen'), 'resources.php', array('view' => 'edit_object_assign')));
+            $navigation->addSubNavigation('edit_assign', new Navigation(_('Belegung anzeigen'), 'resources.php', ['view' => 'edit_object_assign']));
         }
     }
 
@@ -129,11 +129,11 @@ if ($perm->have_perm('admin')) {
     $resList = new ResourcesUserRoomsList($user_id, TRUE, FALSE);
     if ($resList->roomsExist() && get_config('RESOURCES_ALLOW_ROOM_REQUESTS')) {
         $navigation = new Navigation(_('Raumplanung'));
-        $navigation->addSubNavigation('start', new Navigation(_('Übersicht'), 'resources.php?cancel_edit_request_x=1', array('view' => 'requests_start')));
+        $navigation->addSubNavigation('start', new Navigation(_('Übersicht'), 'resources.php?cancel_edit_request_x=1', ['view' => 'requests_start']));
 
-        $edit_nav = new Navigation(_('Anfragen bearbeiten'), 'resources.php', array('view' => 'edit_request'));
-        $list_nav = new Navigation(_('Anfragenliste'), 'resources.php', array('view' => 'list_requests'));
-        $view_nav = new Navigation(_('Anfragenplan'), 'resources.php', array('view' => 'view_requests_schedule'));
+        $edit_nav = new Navigation(_('Anfragen bearbeiten'), 'resources.php', ['view' => 'edit_request']);
+        $list_nav = new Navigation(_('Anfragenliste'), 'resources.php', ['view' => 'list_requests']);
+        $view_nav = new Navigation(_('Anfragenplan'), 'resources.php', ['view' => 'view_requests_schedule']);
         $navigation->addSubNavigation('edit', $edit_nav);
         $navigation->addSubNavigation('list', $list_nav);
         $navigation->addSubNavigation('schedule', $view_nav);
@@ -165,12 +165,12 @@ if ($perm->have_perm('admin')) {
 // Reiter "Anpassen": Grundlegende Einstellungen fuer alle Ressourcen Admins
 if ((getGlobalPerms($user->id) == 'admin') || ($perm->have_perm('root'))) {
     $navigation = new Navigation(_('Anpassen'));
-    $navigation->addSubNavigation('edit_types', new Navigation(_('Typen verwalten'), 'resources.php', array('view' => 'edit_types')));
-    $navigation->addSubNavigation('edit_properties', new Navigation(_('Eigenschaften verwalten'), 'resources.php', array('view' => 'edit_properties')));
-    $navigation->addSubNavigation('edit_settings', new Navigation(_('globale Einstellungen verwalten'), 'resources.php', array('view' => 'edit_settings')));
+    $navigation->addSubNavigation('edit_types', new Navigation(_('Typen verwalten'), 'resources.php', ['view' => 'edit_types']));
+    $navigation->addSubNavigation('edit_properties', new Navigation(_('Eigenschaften verwalten'), 'resources.php', ['view' => 'edit_properties']));
+    $navigation->addSubNavigation('edit_settings', new Navigation(_('globale Einstellungen verwalten'), 'resources.php', ['view' => 'edit_settings']));
 
     if ($perm->have_perm('root')) {
-        $navigation->addSubNavigation('edit_perms', new Navigation(_('globale Rechte verwalten'), 'resources.php', array('view' => 'edit_perms')));
+        $navigation->addSubNavigation('edit_perms', new Navigation(_('globale Rechte verwalten'), 'resources.php', ['view' => 'edit_perms']));
     }
 
     $resources_nav->addSubNavigation('settings', $navigation);

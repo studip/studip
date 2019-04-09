@@ -22,17 +22,17 @@
  */
 class Degree extends SimpleORMap
 {
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'abschluss';
         
-        $config['has_and_belongs_to_many']['professions'] = array(
+        $config['has_and_belongs_to_many']['professions'] = [
             'class_name' => 'StudyCourse',
             'thru_table' => 'user_studiengang',
             'thru_key' => 'abschluss_id',
             'thru_assoc_key' => 'fach_id',
             'order_by' => 'GROUP BY fach_id ORDER BY name'
-        );
+        ];
         
         $config['additional_fields']['count_user']['get'] = 'countUser';
         
@@ -43,7 +43,7 @@ class Degree extends SimpleORMap
     {
         $stmt = DBManager::get()->prepare('SELECT COUNT(DISTINCT user_id) '
                 . 'FROM user_studiengang WHERE abschluss_id = ?');
-        $stmt->execute(array($this->id));
+        $stmt->execute([$this->id]);
         return $stmt->fetchColumn();
     }
     
@@ -52,7 +52,7 @@ class Degree extends SimpleORMap
         $stmt = DBManager::get()->prepare('SELECT COUNT(DISTINCT user_id) '
                 . 'FROM user_studiengang '
                 . 'WHERE fach_id = ? AND abschluss_id = ?');
-        $stmt->execute(array($studycourse_id, $this->id));
+        $stmt->execute([$studycourse_id, $this->id]);
         return $stmt->fetchColumn();
     }
     

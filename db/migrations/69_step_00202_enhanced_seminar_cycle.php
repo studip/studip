@@ -12,13 +12,13 @@ class Step00202EnhancedSeminarCycle extends Migration
     {
         $db = DBManager::get();
         $options[] =
-        array(
+        [
             'name'        => 'ALLOW_METADATE_SORTING',
             'type'        => 'boolean',
             'value'       => 0,
             'section'     => 'permissions',
             'description' => 'Soll es erlaubt sein, dass regelmäßige Zeiten einer Veranstaltung frei sortiert werden können?'
-            );
+            ];
 
         $stmt = $db->prepare("
                 INSERT IGNORE INTO config
@@ -57,7 +57,7 @@ class Step00202EnhancedSeminarCycle extends Migration
             if (is_array($md['turnus_data'])) {
                 foreach ($md['turnus_data'] as $c) {
                     if ($c['metadate_id']) {
-                        $stmt->execute(array($c['metadate_id'],
+                        $stmt->execute([$c['metadate_id'],
                                             $row['Seminar_id'],
                                             sprintf('%02s:%02s', (int)$c['start_stunde'], (int)$c['start_minute']),
                                             sprintf('%02s:%02s', (int)$c['end_stunde'], (int)$c['end_minute']),
@@ -67,7 +67,7 @@ class Step00202EnhancedSeminarCycle extends Migration
                                             (int)$md['start_woche'],
                                             $row['mkdate'],
                                             $row['chdate']
-                                            )
+                                            ]
                                          );
                     }
                 }

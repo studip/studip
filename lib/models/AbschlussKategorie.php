@@ -42,34 +42,34 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
      */
     private $count_objects;
     
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_abschl_kategorie';
         
-        $config['has_many']['documents'] = array(
+        $config['has_many']['documents'] = [
             'class_name' => 'MvvDokument',
             'assoc_func' => 'findByObject',
             'assoc_func_params_func' => function ($ak) { return $ak; }
-        );
-        $config['has_many']['document_assignments'] = array(
+        ];
+        $config['has_many']['document_assignments'] = [
             'class_name' => 'MvvDokumentZuord',
             'assoc_foreign_key' => 'range_id',
             'order_by' => 'ORDER BY position',
             'on_delete' => 'delete',
             'on_store' => 'store'
-        );
-        $config['has_and_belongs_to_many']['abschluesse'] = array(
+        ];
+        $config['has_and_belongs_to_many']['abschluesse'] = [
             'class_name' => 'Abschluss',
             'thru_table' => 'mvv_abschl_zuord',
             'thru_key' => 'kategorie_id',
             'thru_assoc_key' => 'abschluss_id',
             'order_by' => 'ORDER BY position'
-        );
-        $config['has_many']['abschluss_assignments'] = array(
+        ];
+        $config['has_many']['abschluss_assignments'] = [
             'class_name' => 'AbschlussZuord',
             'assoc_foreign_key' => 'kategorie_id',
             'on_delete' => 'delete'
-        );
+        ];
         
         $config['additional_fields']['count_abschluesse']['get'] =
             function($ak) { return $ak->count_abschluesse; };
@@ -103,7 +103,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
         $db = DBManager::get();
         $stmt = $db->prepare('SELECT kategorie_id FROM mvv_abschl_zuord '
                 . 'WHERE abschluss_id = ?');
-        $stmt->execute(array($abschluss_id));
+        $stmt->execute([$abschluss_id]);
         $kategorie_id = $stmt->fetch(PDO::FETCH_COLUMN, 0);
         return new AbschlussKategorie($kategorie_id);
     }
@@ -128,7 +128,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
             $sortby,
             $order,
             'position',
-            array('count_abschluesse', 'count_dokumente', 'count_studiengaenge')
+            ['count_abschluesse', 'count_dokumente', 'count_studiengaenge']
         );
         return parent::getEnrichedByQuery("
             SELECT mvv_abschl_kategorie.*, 
@@ -143,7 +143,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
             " . self::getFilterSql($filter, true) . "
             GROUP BY kategorie_id 
             ORDER BY " . $sortby,
-            array(), 
+            [], 
             $row_count, 
             $offset
         );
@@ -184,7 +184,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
                 INNER JOIN mvv_fach_inst mfi USING (fach_id) 
             WHERE mfi.institut_id = ? 
             ORDER BY mak.position',
-            array($fachbereich_id)
+            [$fachbereich_id]
         );
     }
     
@@ -195,7 +195,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
      * @param array $studiengang_ids Array of Studiengang ids.
      * @return object SimpleORMapCollection of Kategorien.
      */
-    public static function findByStudiengaenge($studiengang_ids = array())
+    public static function findByStudiengaenge($studiengang_ids = [])
     {
         return parent::getEnrichedByQuery('
             SELECT mak.*, 
@@ -203,7 +203,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
             FROM mvv_abschl_kategorie AS mak 
                 INNER JOIN mvv_abschl_zuord USING (kategorie_id) 
                 INNER JOIN mvv_studiengang USING (abschluss_id) 
-                ' . self::getFilterSql(array('mvv_studiengang.studiengang_id' => $studiengang_ids), true) . '
+                ' . self::getFilterSql(['mvv_studiengang.studiengang_id' => $studiengang_ids], true) . '
             GROUP BY mak.kategorie_id 
             ORDER BY mak.name ASC
         ');
@@ -230,7 +230,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
                 VALUES (?, ?) 
                 ON DUPLICATE KEY UPDATE kategorie_id = ?
             ');
-            $stmt->execute(array($abschluss_id, $this->getId(), $this->getId()));
+            $stmt->execute([$abschluss_id, $this->getId(), $this->getId()]);
         }
     }
     
@@ -248,7 +248,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
-            $messages = array();
+            $messages = [];
             $rejected = false;
             if ($this->isNew() || $this->isDirty()) {
                 // The name of the Abschluss-Kategorie must be longer than 4 characters
@@ -294,7 +294,7 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return array();
+        return [];
     }
     
     /**
@@ -325,10 +325,10 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
                     OR (startsem.beginn BETWEEN :sem_begin AND :sem_end)
                 ) 
             ORDER BY ms.name, startsem.beginn",
-            array(':kategorie_id' => $this->getId(),
+            [':kategorie_id' => $this->getId(),
                 ':parent_id' => $trail_parent_id,
                 ':sem_begin' => ($start_sem ? $start_sem->beginn : 0),
-                ':sem_end' => ($end_sem ? $end_sem->ende : PHP_INT_MAX)));
+                ':sem_end' => ($end_sem ? $end_sem->ende : PHP_INT_MAX)]);
         
     }
     

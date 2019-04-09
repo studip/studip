@@ -36,20 +36,20 @@ use Studip\Button, Studip\LinkButton;
                         <?= LinkButton::create(
                                 _('Ausblenden'),
                                 $controller->url_for('calendar/schedule/adminbind/'. $seminar->getId() .'/'. $cycle->getMetadateId() .'/0'),
-                                array(
+                                [
                                     'id'      => $seminar->getId() . '_' . $cycle->getMetadateId() . '_hide',
                                     'onclick' => "STUDIP.Schedule.instSemUnbind('" . $seminar->getId() . "','" . $cycle->getMetadateId() . "'); return false;",
                                     'style'   => ($visible ? '' : 'display: none')
-                                )) ?>
+                                ]) ?>
 
                         <?= LinkButton::create(
                                 _('Einblenden'),
                                 $controller->url_for('calendar/schedule/adminbind/'. $seminar->getId() .'/'. $cycle->getMetadateId() .'/1'),
-                                array(
+                                [
                                     'id'      => $seminar->getId() . '_' . $cycle->getMetadateId() . '_show',
                                     'onclick' => "STUDIP.Schedule.instSemBind('" . $seminar->getId() . "','" . $cycle->getMetadateId() . "'); return false;",
                                     'style'   => ($visible ?  'display: none' : '')
-                                )) ?>
+                                ]) ?>
                         <br>
                     <? endforeach ?>
                 </td>

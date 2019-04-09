@@ -40,9 +40,9 @@
 
 class ExternElementStudipInfo extends ExternElement {
 
-    var $attributes = array("headline", "homeinst", "involvedinst", "countuser",
+    var $attributes = ["headline", "homeinst", "involvedinst", "countuser",
             "countpostings", "countdocuments", "font_face", "font_size", "font_color",
-            "font_class", "font_style");
+            "font_class", "font_style"];
 
     /**
     * Constructor
@@ -62,14 +62,14 @@ class ExternElementStudipInfo extends ExternElement {
     *
     */
     function getDefaultConfig () {
-        $config = array(
+        $config = [
             "headline" => _("Weitere Informationen aus Stud.IP zu dieser Veranstaltung"),
             "homeinst" => _("Heimatinstitut:"),
             "involvedinst" => _("beteiligte Institute:"),
             "countuser" => _("In Stud.IP angemeldete Teilnehmende:"),
             "countpostings" => _("Anzahl der Postings im Stud.IP-Forum:"),
             "countdocuments" => _("Anzahl der Dokumente im Stud.IP-Downloadbereich:")
-        );
+        ];
 
         return $config;
     }
@@ -78,7 +78,7 @@ class ExternElementStudipInfo extends ExternElement {
             $edit_form = "", $anker = "") {
 
         if ($faulty_values == '')
-            $faulty_values = array();
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';
@@ -91,18 +91,18 @@ class ExternElementStudipInfo extends ExternElement {
         $headline = $edit_form->editHeadline(_("Textersetzungen"));
 
         $info = _("Geben Sie jeweils einen Text ein, der an der entsprechenden Stelle ausgegeben werden soll.");
-        $attributes = array("headline", "homeinst", "involvedinst", "countuser",
-                "countpostings", "countdocuments");
-        $titles = array(_("Überschrift:"), _("Heimatinstitut:"), _("beteiligte Institute:"),
-                _("Teilnehmende:"), _("Forenbeiträge:"), _("Dokumente:"));
+        $attributes = ["headline", "homeinst", "involvedinst", "countuser",
+                "countpostings", "countdocuments"];
+        $titles = [_("Überschrift:"), _("Heimatinstitut:"), _("beteiligte Institute:"),
+                _("Teilnehmende:"), _("Forenbeiträge:"), _("Dokumente:")];
         for ($i = 0; $i < sizeof($attributes); $i++)
             $table .= $edit_form->editTextfieldGeneric($attributes[$i], $titles[$i], $info, 40, 150);
 
         $content_table = $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
 
-        $attributes = array("font_face", "font_size", "font_color", "font_class", "font_style");
-        $headlines = array("font" => _("Schriftformatierung für Textersetzungen"));
+        $attributes = ["font_face", "font_size", "font_color", "font_class", "font_style"];
+        $headlines = ["font" => _("Schriftformatierung für Textersetzungen")];
         $content_table .= $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
 

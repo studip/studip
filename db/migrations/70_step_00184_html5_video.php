@@ -5,34 +5,34 @@ class Step00184Html5Video extends Migration
     /**
      * new config options to install
      */
-    private $options_new = array(
-        array(
+    private $options_new = [
+        [
             'name' => 'LOAD_EXTERNAL_MEDIA',
             'description' => 'Sollen externe Medien über [img/flash/audio/video] eingebunden werden? deny=nicht erlaubt, allow=erlaubt, proxy=proxy benutzen.',
             'section' => '',
             'type' => 'string',
             'value' => 'deny'
-        )
-    );
+        ]
+    ];
 
     /**
      * old config options to remove
      */
-    private $options_old = array(
-        array(
+    private $options_old = [
+        [
             'name' => 'EXTERNAL_IMAGE_EMBEDDING',
             'description' => 'Sollen externe Bilder über [img] eingebunden werden? deny=nicht erlaubt, allow=erlaubt, proxy=image proxy benutzen',
             'section' => '',
             'type' => 'string',
             'value' => 'deny'
-        ), array(
+        ], [
             'name' => 'EXTERNAL_FLASH_MOVIE_EMBEDDING',
             'description' => 'Sollen externe Flash-Filme mit Hilfe des [flash]-Tags der Schnellformatierung eingebunden werden? deny=nicht erlaubt, allow=erlaubt, proxy=image proxy benutzen',
             'section' => '',
             'type' => 'string',
             'value' => 'deny'
-        )
-    );
+        ]
+    ];
 
     /**
      * short description of this migration
@@ -72,7 +72,7 @@ class Step00184Html5Video extends Migration
         $stmt = $db->prepare("DELETE FROM config WHERE field = :name");
 
         foreach ($options as $option) {
-            $stmt->execute(array('name' => $option['name']));
+            $stmt->execute(['name' => $option['name']]);
         }
     }
 

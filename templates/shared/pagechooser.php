@@ -6,7 +6,7 @@
 
     $cur_page = $page ?: 1;
 
-    $items = array_unique(array(1, $cur_page - 2, $cur_page - 1, $cur_page, $cur_page + 1, $cur_page + 2, $num_pages));
+    $items = array_unique([1, $cur_page - 2, $cur_page - 1, $cur_page, $cur_page + 1, $cur_page + 2, $num_pages]);
     $items = array_filter($items, function ($item) use ($num_pages) { return $item >= 1 && $item <= $num_pages; });
     sort($items);
 
