@@ -169,4 +169,4 @@ echo $header_template->render();
 echo $request_template->render();
 include 'lib/include/html_end.inc.php';
 
-page_close()
+page_close();
