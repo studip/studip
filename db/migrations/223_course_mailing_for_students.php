@@ -15,5 +15,5 @@ class CourseMailingForStudents extends Migration
         $query = "ALTER TABLE `seminare`
                     DROP COLUMN `student_mailing`";
         DBManager::get()->exec($query);
-
+    }
 }
