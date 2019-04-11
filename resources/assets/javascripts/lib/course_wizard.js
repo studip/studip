@@ -191,7 +191,7 @@ const CourseWizard = {
                     target.find('.tree-loading').remove();
                     if (items.length > 0) {
                         var list = target.children('ul');
-                        for (i = 0; i < items.length; i++) {
+                        for (var i = 0; i < items.length; i++) {
                             list.append(CourseWizard.createTreeNode(items[i], assignable));
                         }
                     }
