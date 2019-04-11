@@ -392,45 +392,60 @@ class RolePersistence
      */
     public static function getStatistics()
     {
+        // Get basic statistics
         $query = "SELECT r.`roleid`,
                          COUNT(DISTINCT ru.`userid`) AS explicit,
-                         COUNT(DISTINCT a.`user_id`) - SUM(DISTINCT ru2.`userid` IS NOT NULL) AS implicit,
                          COUNT(DISTINCT rp.`pluginid`) AS plugins
                   FROM roles AS r
                   -- Explicit assignment
                   LEFT JOIN `roles_user` AS ru
                     ON r.`roleid` = ru.`roleid` AND ru.`userid` IN (SELECT `user_id` FROM `auth_user_md5`)
-                  -- Implicit assignment
-                  LEFT JOIN `roles_studipperms` AS rsp
-                    ON r.`roleid` = rsp.`roleid`
-                  LEFT JOIN `auth_user_md5` AS a
-                    ON rsp.`permname` = a.`perms`
-                  LEFT JOIN `roles_user` AS ru2
-                    ON a.`user_id` = ru2.`userid` AND r.`roleid` = ru2.`roleid`
                   -- Plugins
                   LEFT JOIN `roles_plugins` AS rp
                     ON r.`roleid` = rp.`roleid` AND rp.`pluginid` IN (SELECT `pluginid` FROM `plugins`)
-                    GROUP BY r.`roleid`";
-        return DBManager::get()->fetchGrouped($query);
+                  GROUP BY r.`roleid`";
+        $result = DBManager::get()->fetchGrouped($query);
+
+        // Fetch implicit assignments in a second query due to performance
+        // reasons
+        foreach (self::countImplicitUsers(array_keys($result)) as $id => $count) {
+            $result[$id]['implicit'] = $count;
+        }
+
+        return $result;
     }
 
     /**
      * Counts the implicitely assigned users for a role.
-     * @param  int $role_id Role id
-     * @return int
+     * @param  mixed $role_id Role id or array of role ids
+     * @return mixed number of implictit for the role (if one role id is given)
+     *               or associative array [role id => number of implicit users]
+     *               when given a list of role ids
      */
     public static function countImplicitUsers($role_id)
     {
-        $query = "SELECT COUNT(*)
+        // Ensure that the result array has an entry for every role id
+        $result = array_fill_keys((array) $role_id, 0);
+
+        $query = "SELECT rsp.`roleid`, COUNT(*) AS implicit
                   FROM `roles_studipperms` AS rsp
                   JOIN `auth_user_md5` AS a ON rsp.`permname` = a.`perms`
                   LEFT JOIN `roles_user` AS ru
                     ON a.`user_id` = ru.`userid` AND rsp.`roleid` = ru.`roleid`
-                  WHERE rsp.`roleid` = ?
-                    AND ru.`userid` IS NULL";
+                  WHERE rsp.`roleid` IN (?)
+                    AND ru.`userid` IS NULL
+                  GROUP BY rsp.`roleid`";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$role_id]);
-        return (int) $statement->fetchColumn();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        foreach ($statement as $row) {
+            $result[$row['roleid']] = (int) $row['implicit'];
+        }
+
+        return is_array($role_id)
+             ? $result
+             : $result[$role_id];
     }
 
     // Cache operations
