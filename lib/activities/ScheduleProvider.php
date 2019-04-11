@@ -37,7 +37,7 @@ class ScheduleProvider implements ActivityProvider
      * @param String $event a notification for an activity
      * @param Array  $sem Seminar-class for the notification
      */
-    public function postActivity($event, $sem)
+    public static function postActivity($event, $sem)
     {
         $range_id = $sem->getId();
 

@@ -18,7 +18,7 @@ class ParticipantsProvider implements ActivityProvider
      * @param String  $course_id
      * @param String  $user_id
      */
-    public function postActivity($event, $course_id, $user_id)
+    public static function postActivity($event, $course_id, $user_id)
     {
         $course = \Course::find($course_id);
 

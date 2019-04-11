@@ -15,7 +15,7 @@ class LiteratureProvider implements ActivityProvider
      *
      * @param object $activity the activity to fill with details, passed by reference
      */
-    public function getActivityDetails($activity)
+    public static function getActivityDetails($activity)
     {
         $activity->content = \htmlReady($activity->content);
 
@@ -51,7 +51,7 @@ class LiteratureProvider implements ActivityProvider
      * @param String $event a notification for an activity
      * @param Array  $info information which a relevant for the activity
      */
-    public function postActivity($event, $info)
+    public static function postActivity($event, $info)
     {
         $range_id = $info['range_id'];
         $list_id  = $info['list_id'];

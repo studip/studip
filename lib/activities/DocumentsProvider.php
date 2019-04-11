@@ -54,10 +54,8 @@ class DocumentsProvider implements ActivityProvider
      * @param String $event a notification for an activity
      * @param \FileRef  $document information which a relevant for the activity
      */
-    public function postActivity($event, $file_ref)
+    public static function postActivity($event, $file_ref)
     {
-
-
         $user_id = $file_ref->user_id;
         $file_name = $file_ref->name;
         $course_id = $file_ref->folder->range_id;

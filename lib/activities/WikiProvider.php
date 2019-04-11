@@ -55,7 +55,7 @@ class WikiProvider implements ActivityProvider
      * @param String $event a notification for an activity
      * @param \WikiPage  $info information which a relevant for the activity
      */
-    public function postActivity($event, $info)
+    public static function postActivity($event, $info)
     {
         $range_id = $info['range_id'];
         $keyword = $info['keyword'];
