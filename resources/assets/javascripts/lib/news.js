@@ -64,7 +64,10 @@ const News = {
             modal: true,
             height: News.dialog_height,
             title: 'Dialog wird geladen...'.toLocaleString(),
-            width: News.dialog_width
+            width: News.dialog_width,
+            close: function () {
+                $('#' + id).remove();
+            }
         });
 
         // load actual dialog content
