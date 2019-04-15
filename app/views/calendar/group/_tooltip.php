@@ -6,13 +6,13 @@
     <div>
         <? if (date('Ymd', $event->getStart()) == date('Ymd', $event->getEnd())) : ?>
             <? if ($event->isDayEvent()) : ?>
-                <?= strftime('%x ', $event->getStart()) . _(('ganztägig')) ?>
+                <?= strftime('%x ', $event->getStart()) . _('ganztägig') ?>
             <? else : ?>
                 <?= strftime('%x %X', $event->getStart()) . strftime(' - %X', $event->getEnd()) ?>
             <? endif; ?>
         <? else : ?>
             <? if ($event->isDayEvent()) : ?>
-                <?= strftime('%x', $event->getStart()) . strftime(' - %x', $event->getEnd()) . _('(ganztägig)') ?>
+                <?= strftime('%x', $event->getStart()) . strftime(' - %x', $event->getEnd()) . '(' . _('ganztägig') . ')' ?>
             <? else : ?>
                 <?= strftime('%x %X', $event->getStart()) . strftime(' - %x %X', $event->getEnd()) ?>
             <? endif; ?>
