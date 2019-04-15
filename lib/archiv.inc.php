@@ -183,14 +183,14 @@ function dump_sem($sem_id, $print_view = false)
         $dumpRow(_('Typ der Veranstaltung'), $content);
     }
 
-    $dumpRow(_('Art der Veranstaltung:'), $seminar['art'], true);
-    $dumpRow(_('VeranstaltungsNummer:'), htmlReady($seminar['VeranstaltungsNummer']));
-    $dumpRow(_('ECTS-Punkte:'), htmlReady($seminar['ects']));
-    $dumpRow(_('Beschreibung:'), $seminar['Beschreibung'], true);
-    $dumpRow(_('Teilnehmende:'), $seminar['teilnehmende'], true);
-    $dumpRow(_('Voraussetzungen:'), $seminar['vorrausetzungen'], true);
-    $dumpRow(_('Lernorganisation:'), $seminar['lernorga'], true);
-    $dumpRow(_('Leistungsnachweis:'), $seminar['leistungsnachweis'], true);
+    $dumpRow(_('Art der Veranstaltung') . ':', $seminar['art'], true);
+    $dumpRow(_('VeranstaltungsNummer') . ':', htmlReady($seminar['VeranstaltungsNummer']));
+    $dumpRow(_('ECTS-Punkte') . ':', htmlReady($seminar['ects']));
+    $dumpRow(_('Beschreibung') . ':', $seminar['Beschreibung'], true);
+    $dumpRow(_('Teilnehmende') . ':', $seminar['teilnehmende'], true);
+    $dumpRow(_('Voraussetzungen') . ':', $seminar['vorrausetzungen'], true);
+    $dumpRow(_('Lernorganisation') . ':', $seminar['lernorga'], true);
+    $dumpRow(_('Leistungsnachweis') . ':', $seminar['leistungsnachweis'], true);
 
     //add the free adminstrable datafields
     $localEntries = DataFieldEntry::getDataFieldEntries($sem_id);

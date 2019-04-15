@@ -71,7 +71,7 @@ class Course_BasicdataController extends AuthenticatedController
         ];
         $course_number_format_config = Config::get()->getMetadata('COURSE_NUMBER_FORMAT');
         $this->attributes[] = [
-            'title' => _("Veranstaltungs-Nummer"),
+            'title' => _("Veranstaltungsnummer"),
             'name' => "course_seminar_number",
             'type' => 'text',
             'value' => $data['seminar_number'],
