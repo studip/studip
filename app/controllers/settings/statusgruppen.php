@@ -358,7 +358,7 @@ class Settings_StatusgruppenController extends Settings_SettingsController
                     $success[] = sprintf(_('Ihre Daten an der Einrichtung %s wurden geändert.'), htmlReady(Request::get('name')));
 
                     setTempLanguage($this->user->user_id);
-                    $this->postPrivateMessage(_("Ihre Daten an der Einrichtung %s wurden geändert.\n"), Request::get('name'));
+                    $this->postPrivateMessage(_('Ihre Daten an der Einrichtung %s wurden geändert.') . "\n", Request::get('name'));
                     restoreLanguage();
                 }
             }
@@ -390,7 +390,7 @@ class Settings_StatusgruppenController extends Settings_SettingsController
                     if ($entry->isValid()) {
                         if ($entry->store() && !$changed && $type === 'institute') {
                             $changed   = true;
-                            $success[] = sprintf(_('Ihre Daten an der Einrichtung %s wurden geändert'), htmlReady(Institute::find($id)->name)
+                            $success[] = sprintf(_('Ihre Daten an der Einrichtung %s wurden geändert.'), htmlReady(Institute::find($id)->name)
                             );
                         }
                     } else {
