@@ -59,6 +59,9 @@ class DataField extends SimpleORMap implements PrivacyObject
             'assoc_foreign_key' => 'identifier',
             'on_delete'         => 'delete',
         ];
+
+        $config['i18n_fields']['name'] = true;
+
         parent::configure($config);
     }
 

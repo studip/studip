@@ -162,7 +162,7 @@ class ProfileModel
             return null;
         }
         foreach ($datafields['long'] as $entry) {
-            $array[$entry->getName()] = [
+            $array[(string) $entry->getName()] = [
                 'content' => $entry->getDisplayValue(),
                 'visible' => '(' . $entry->getPermsDescription() . ')',
             ];
@@ -186,7 +186,7 @@ class ProfileModel
         }
 
         foreach ($shortDatafields['short'] as $entry) {
-            $array[$entry->getName()] = [
+            $array[(string) $entry->getName()] = [
                 'content' => $entry->getDisplayValue(),
                 'visible' => '(' . $entry->getPermsDescription() . ')',
             ];

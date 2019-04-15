@@ -14,9 +14,12 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <span class="required"><?= _('Name') ?></span>
 
-            <input type="text" name="datafield_name" id="datafield_name"
-                   required size="60" maxlength="254"
-                   value="<?= htmlReady($item->name) ?>">
+            <?= I18N::input('datafield_name', $item->name, [
+                'id'        => 'datafield_name',
+                'required'  => '',
+                'size'      => 60,
+                'maxlength' => 254,
+            ]) ?>
         </label>
 
         <label>

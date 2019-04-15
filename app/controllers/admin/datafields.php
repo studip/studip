@@ -95,7 +95,7 @@ class Admin_DatafieldsController extends AuthenticatedController
 
         if (Request::submitted('uebernehmen')) {
             if (Request::get('datafield_name')) {
-                $datafield->name          = Request::get('datafield_name');
+                $datafield->name          = Request::i18n('datafield_name');
                 if ($datafield->object_type === 'moduldeskriptor'
                         || $datafield->object_type === 'modulteildeskriptor') {
                     $object_class = implode(',', Request::getArray('object_class'));
