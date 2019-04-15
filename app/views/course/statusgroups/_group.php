@@ -1,4 +1,4 @@
-<article class="<?= ContentBoxHelper::classes($group->id) ?> <? if ($group->id != 'nogroup' && $is_tutor && !$is_locked) echo 'draggable'; ?>" id="<?= $group->id ?>">
+<article class="<?= ContentBoxHelper::classes($group->id) ?> <? if ($group->id != 'nogroup' && $is_tutor && !$is_locked) echo 'draggable'; ?> <?= $open_group ? 'open' : '' ?>" id="<?= $group->id ?>">
     <header>
         <h1>
             <?php if ($group->id != 'nogroup' && $is_tutor && !$is_locked) : ?>

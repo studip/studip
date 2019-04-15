@@ -68,6 +68,7 @@ class Course_StatusgroupsController extends AuthenticatedController
         $this->sort_by = Request::option('sortby', 'nachname');
         $this->order = Request::option('order', 'desc');
         $this->sort_group = Request::get('sort_group', '');
+        $this->open_groups = Request::get('open_groups');
 
         // Get all course members (needed for mkdate).
         $this->allmembers = SimpleCollection::createFromArray(
@@ -110,7 +111,7 @@ class Course_StatusgroupsController extends AuthenticatedController
              * We only need to load members for a group that shall be sorted
              * explicitly, as this group will be loaded at once and not via AJAX.
              */
-            if ($g->id == $this->sort_group) {
+            if ($g->id == $this->sort_group || $this->open_groups) {
                 if ($this->sort_group == $g->id) {
                     $sorted = StatusgroupsModel::sortGroupMembers(
                         $g->members,
@@ -251,6 +252,27 @@ class Course_StatusgroupsController extends AuthenticatedController
                     Icon::create('door-enter', 'clickable'))->asDialog('size=auto');
             $sidebar->addWidget($actions);
         }
+
+        $views = new ViewsWidget();
+        $views->addLink(
+            _('Alle Gruppen zugeklappt'),
+            $this->url_for(
+                'course/statusgroups'
+            )
+        )->setActive(!$this->open_groups);
+
+        $views->addLink(
+            _('Alle Gruppen aufgeklappt'),
+            $this->url_for(
+                'course/statusgroups',
+                [
+                    'open_groups' => '1'
+                ]
+            )
+
+        )->setActive($this->open_groups);
+
+        $sidebar->addWidget($views);
     }
 
     /**
