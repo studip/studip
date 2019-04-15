@@ -505,7 +505,7 @@ class SingleCalendar
             $subject = strftime(_('Termin am %c geändert'), $event->getStart());
             $msg_text .= "\n\n**";
         }
-        $msg_text .= _('Zeit:') . '** ' . strftime(' %c - ', $event->getStart())
+        $msg_text .= _('Zeit') . ':' . '** ' . strftime(' %c - ', $event->getStart())
                 . strftime('%c', $event->getEnd()) . "\n**";
         $msg_text .= _("Zusammenfassung:") . '** ' . $event->getTitle() . "\n";
         if ($event_data = $event->getDescription()) {

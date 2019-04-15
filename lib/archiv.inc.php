@@ -129,21 +129,21 @@ function dump_sem($sem_id, $print_view = false)
     };
 
     //Grunddaten des Seminars, wie in den seminar_main
-    $dumpRow(_('Untertitel:'), $seminar['Untertitel'], true);
+    $dumpRow(_('Untertitel') . ':', $seminar['Untertitel'], true);
 
     if ($data = $sem->getDatesExport()) {
-        $dumpRow(_('Zeit:'), nl2br($data));
+        $dumpRow(_('Zeit') . ':', nl2br($data));
     }
 
-    $dumpRow(_('Semester:'), get_semester($sem_id));
-    $dumpRow(_('Erster Termin:'), veranstaltung_beginn($sem_id, 'export'));
+    $dumpRow(_('Semester') . ':', get_semester($sem_id));
+    $dumpRow(_('Erster Termin') . ':', veranstaltung_beginn($sem_id, 'export'));
 
     if ($temp = vorbesprechung($sem_id, 'export')) {
-        $dumpRow(_('Vorbesprechung:'), htmlReady($temp));
+        $dumpRow(_('Vorbesprechung') . ':', htmlReady($temp));
     }
 
     if ($data = $sem->getDatesTemplate('dates/seminar_export_location')) {
-        $dumpRow(_('Ort:'), nl2br($data));
+        $dumpRow(_('Ort') . ':', nl2br($data));
     }
 
     //wer macht den Dozenten?
@@ -198,7 +198,7 @@ function dump_sem($sem_id, $print_view = false)
         $dumpRow($entry->getName(), $entry->getDisplayValue());
     }
 
-    $dumpRow(_('Sonstiges:'), $seminar['Sonstiges'], true);
+    $dumpRow(_('Sonstiges') . ':', $seminar['Sonstiges'], true);
 
     // Fakultaeten...
     $query = "SELECT DISTINCT c.Name
@@ -210,7 +210,7 @@ function dump_sem($sem_id, $print_view = false)
     $statement->execute([$sem_id]);
     $faculties = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($faculties) > 0) {
-        $dumpRow(_('Fakultät(en):'), implode('<br>', array_map('htmlReady', $faculties)));
+        $dumpRow(_('Fakultät(en)') . ':', implode('<br>', array_map('htmlReady', $faculties)));
     }
 
     //Studienbereiche
@@ -224,7 +224,7 @@ function dump_sem($sem_id, $print_view = false)
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$iid]);
     $inst_name = $statement->fetchColumn();
-    $dumpRow(_('Heimat-Einrichtung:'), $inst_name, true);
+    $dumpRow(_('Heimat-Einrichtung') . ':', $inst_name, true);
 
     $query = "SELECT Name
               FROM seminar_inst
@@ -234,21 +234,21 @@ function dump_sem($sem_id, $print_view = false)
     $statement->execute([$sem_id, $iid]);
     $other_institutes = $statement->fetchAll(PDO::FETCH_COLUMN);
     if (count($other_institutes) > 0) {
-        $title = (count($other_institutes) == 1)
-               ? _('Beteiligte Einrichtung:')
-               : _('Beteiligte Einrichtungen:');
+        $title = count($other_institutes) === 1
+               ? _('Beteiligte Einrichtung') . ':'
+               : _('Beteiligte Einrichtungen') . ':';
         $dumpRow($title, implode(', ', array_map('htmlReady', $other_institutes)));
     }
 
     //Teilnehmeranzahl
-    $dumpRow(_('max. Personenanzahl:'), $seminar['admission_turnout']);
+    $dumpRow(_('max. Personenanzahl') . ':', $seminar['admission_turnout']);
 
     //Statistikfunktionen
     $query = "SELECT COUNT(*) FROM seminar_user WHERE Seminar_id = ?";
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$sem_id]);
     $count = $statement->fetchColumn();
-    $dumpRow(_('Anzahl der angemeldeten Personen:'), $count);
+    $dumpRow(_('Anzahl der angemeldeten Personen') . ':', $count);
 
     // number of postings for all forum-modules in this seminar
     $count = 0;
@@ -256,7 +256,7 @@ function dump_sem($sem_id, $print_view = false)
     foreach ($forum_modules as $plugin) {
         $count += $plugin->getNumberOfPostingsForSeminar($sem_id);
     }
-    $dumpRow(_('Forenbeiträge:'), $count);
+    $dumpRow(_('Forenbeiträge') . ':', $count);
 
     $num_files = 0;
     $course_top_folder = Folder::findTopFolder($sem_id);
@@ -292,7 +292,7 @@ function dump_sem($sem_id, $print_view = false)
         }
     }
 
-    $dumpRow(_('Dokumente:'), $num_files ? $num_files : 0);
+    $dumpRow(_('Dokumente') . ':', $num_files ? $num_files : 0);
 
     $dump.= '</table>' . "\n";
 
@@ -349,7 +349,7 @@ function dump_sem($sem_id, $print_view = false)
                 $dump .= '<br>';
                 $dump .= '<table width="100%" border="1" cellpadding="2" cellspacing="0">';
                 $dump .= '<tr><td align="left" colspan="3" class="table_header_bold">';
-                $dump .= '<h2 class="table_header_bold">&nbsp;' . _('Dateien:') . '</h2>';
+                $dump .= '<h2 class="table_header_bold">&nbsp;' . _('Dateien') . ':' . '</h2>';
                 $dump .= '</td></tr>' . "\n";
 
                 foreach ($file_refs as $file_ref) {
