@@ -604,7 +604,7 @@ STUDIP.Blubber = {
             });
         }).fail(function () {
             STUDIP.Dialog.show('Der Beitrag konnte nicht gelöscht werden.'.toLocaleString(), {
-                title: 'Es ist ein Fehler aufgetreten'.toLocaleString(),
+                title: 'Es ist ein Fehler aufgetreten.'.toLocaleString(),
                 size: 'auto'
             });
         });

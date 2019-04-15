@@ -88,7 +88,7 @@ $xslt_filename =  mb_strlen(Request::get('xslt_filename')) ? basename(stripslash
 
 if (!CheckParamXSLT())
 {
-    $export_pagename .= _("Es ist ein Fehler aufgetreten ");
+    $export_pagename .= _('Es ist ein Fehler aufgetreten.');
     $export_pagecontent .= MessageBox::error(
         _('Die Parameter, mit denen diese Seite aufgerufen wurde, sind fehlerhaft oder unvollständig.')
     );

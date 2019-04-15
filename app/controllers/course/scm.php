@@ -216,7 +216,9 @@ class Course_ScmController extends StudipController
             return;
         }
 
-        PageLayout::postMessage(MessageBox::error(_('Es ist ein Fehler aufgetreten. Bitte versuchen Sie erneut, diese Seite zu löschen.')));
+        PageLayout::postError(
+            _('Es ist ein Fehler aufgetreten.') . ' ' . _('Bitte versuchen Sie erneut, diese Seite zu löschen.')
+        );
         $this->redirect('course/scm/' . $id);
     }
 

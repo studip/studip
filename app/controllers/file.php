@@ -1525,7 +1525,7 @@ class FileController extends AuthenticatedController
                     PageLayout::postSuccess(sprintf(_('Es wurden %s Ordner gelöscht!'), $count_folders));
                 }
             } else {
-                PageLayout::postError(_('Es ist ein Fehler aufgetreten!'), array_map('htmlReady', $errors));
+                PageLayout::postError(_('Es ist ein Fehler aufgetreten.'), array_map('htmlReady', $errors));
             }
 
             $this->redirectToFolder($parent_folder);

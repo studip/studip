@@ -405,7 +405,7 @@ class FilesController extends AuthenticatedController
                 }
             }
         } else {
-            PageLayout::postError(_('Es ist ein Fehler aufgetreten!'), $errors);
+            PageLayout::postError(_('Es ist ein Fehler aufgetreten.'), $errors);
         }
 
         $dest_range = $destination_folder->range_id;
