@@ -33,7 +33,7 @@ class Lvgruppen_LvgruppenController extends MVVController
     public function index_action()
     {
         // set title
-        
+
         $this->initPageParams();
         $this->initSearchParams();
 
@@ -81,9 +81,9 @@ class Lvgruppen_LvgruppenController extends MVVController
         if (!empty($this->filter)) {
             $this->search_result['Lvgruppe'] = $this->lvgruppen->pluck('id');
         }
-        
+
         $this->count = Lvgruppe::getCount($filter, $this->semester_filter);
-        
+
         $helpbar = Helpbar::get();
         $widget = new HelpbarWidget();
         $widget->addElement(new WidgetElement(_('Auf diesen Seiten können Sie Lehrveranstaltungsgruppen verwalten.').'</br>'));
@@ -96,12 +96,12 @@ class Lvgruppen_LvgruppenController extends MVVController
         $this->setSidebar();
         $sidebar = Sidebar::get();
         $widget  = new ActionsWidget();
-        
+
         $widget->addLink( _('Lehrveranstaltungsgruppen mit Zuordnungen exportieren'),
                 $this->url_for('/export_xls'),
                 Icon::create('download'));
         $sidebar->addWidget($widget);
-    
+
         PageLayout::setTitle(
             _('Verwaltung der Lehrveranstaltungsgruppen')
             . ' ('
@@ -144,12 +144,12 @@ class Lvgruppen_LvgruppenController extends MVVController
             $this->courses = $this->lvgruppe->getAllAssignedCourses();
             $this->next_sem = Semester::findNext();
             $this->current_sem = Semester::findCurrent();
-            
+
             $this->display_semesters = array_reverse(Semester::getAll());
         }
 
         $this->sem_filter = $this->semester_filter;
-    
+
         $this->trail_classes = [
             'Modulteil',
             'Modul',
@@ -231,10 +231,10 @@ class Lvgruppen_LvgruppenController extends MVVController
                     htmlReady($name)
                 ));
             } else {
-                throw new Trails_Exception(403, _('Keine Berechtigung'));
+                throw new AccessDeniedException();
             }
         }
-    
+
         $this->redirect('lvgruppen/lvgruppen');
     }
 
@@ -268,7 +268,7 @@ class Lvgruppen_LvgruppenController extends MVVController
             null,
             $this->semester_filter
         );
-        
+
         if ($this->semester_filter === 'all') {
             $semester = Semester::getAll();
             $this->set_trails_filter(
@@ -336,9 +336,9 @@ class Lvgruppen_LvgruppenController extends MVVController
     private function sidebar_filter()
     {
         $selected_fachbereich = $this->filter['mvv_modul_inst.institut_id'];
-        
+
         $sidebar = Sidebar::get();
-        
+
         $widget = new SelectWidget(
             _('Verwendung in Semester:'),
             $this->url_for('/set_filter', ['fachbereich_filter' => $selected_fachbereich]),
@@ -362,7 +362,7 @@ class Lvgruppen_LvgruppenController extends MVVController
             );
         }
         $sidebar->addWidget($widget, 'semester_filter');
-        
+
         $perm_institutes = MvvPerm::getOwnInstitutes();
         if ($perm_institutes !== false) {
             $widget = new SelectWidget(
@@ -370,7 +370,7 @@ class Lvgruppen_LvgruppenController extends MVVController
                 $this->url_for('/set_filter', ['semester_filter' => $this->semester_filter]),
                 'fachbereich_filter'
             );
-            
+
             $widget->class = 'institute-list';
             $widget->addElement(
                 new SelectElement('select-none', _('Alle'), $selected_fachbereich === '')
@@ -384,7 +384,7 @@ class Lvgruppen_LvgruppenController extends MVVController
                 if (!(count($perm_institutes) === 0 || in_array($institute['Institut_id'], $perm_institutes))) {
                     continue;
                 }
-                
+
                 $widget->addElement(
                     new SelectElement(
                         $institute['Institut_id'],
@@ -393,9 +393,9 @@ class Lvgruppen_LvgruppenController extends MVVController
                     ),
                     'select-' . $institute['Name']
                 );
-            
+
             }
-            
+
             $sidebar->addWidget($widget, 'fachbereich_filter');
         }
     }
@@ -436,8 +436,8 @@ class Lvgruppen_LvgruppenController extends MVVController
     private function sidebar_search()
     {
         $query = "
-            SELECT lvgruppe_id, name 
-            FROM mvv_lvgruppe 
+            SELECT lvgruppe_id, name
+            FROM mvv_lvgruppe
             WHERE name LIKE :input";
         $search_term = $this->search_term ? $this->search_term : _('LV-Gruppe suchen');
 

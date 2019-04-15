@@ -271,7 +271,7 @@ function export_inst($inst_id, $ex_sem_id = "all")
         elseif ($GLOBALS['perm']->have_studip_perm('tutor', $ex_sem_id))
             export_teilis($inst_id, $ex_sem_id);
         else
-            $data_object .= xml_tag("message", _("KEINE BERECHTIGUNG!"));
+            $data_object .= xml_tag("message", _('Keine Berechtigung.'));
         break;
     default:
         echo "</td></tr>";

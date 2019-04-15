@@ -28,7 +28,7 @@ class Admin_SpecificationController extends AuthenticatedController
 
         # user must have special permission
         if (!$perm->have_perm(Config::get()->AUX_RULE_ADMIN_PERM ?: 'admin')) {
-            throw new AccessDeniedException(_('Keine Berechtigung.'));
+            throw new AccessDeniedException();
         }
 
         //setting title and navigation

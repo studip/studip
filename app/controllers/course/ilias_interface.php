@@ -197,8 +197,9 @@ class Course_IliasInterfaceController extends AuthenticatedController
      */
     public function edit_object_assignment_action($index)
     {
-        if (! $this->edit_permission)
-            throw new AccessDeniedException(_('Keine Berechtigung zum Bearbeiten der Lernobjekt-Zuordnungen.'));
+        if (!$this->edit_permission) {
+            throw new AccessDeniedException();
+        }
 
         $this->ilias = new ConnectedIlias($index);
         $this->module_id = Request::int('ilias_module_id');
@@ -235,8 +236,9 @@ class Course_IliasInterfaceController extends AuthenticatedController
     {
         PageLayout::setTitle(_('Lernobjekt hinzufügen'));
 
-        if (! $this->edit_permission)
-            throw new AccessDeniedException(_('Keine Berechtigung zum Bearbeiten der Lernobjekt-Zuordnungen.'));
+        if (!$this->edit_permission) {
+            throw new AccessDeniedException();
+        }
 
         // get active ILIAS installations
         $this->ilias_list = [];
@@ -361,8 +363,8 @@ class Course_IliasInterfaceController extends AuthenticatedController
     {
         PageLayout::setTitle(_('Statusgruppen anlegen'));
 
-        if (! $this->edit_permission) {
-            throw new AccessDeniedException(_('Keine Berechtigung zum Übertragen der Statusgruppen.'));
+        if (!$this->edit_permission) {
+            throw new AccessDeniedException();
         }
 
         $this->groups = Statusgruppen::findBySeminar_id($this->seminar_id);
@@ -462,8 +464,8 @@ class Course_IliasInterfaceController extends AuthenticatedController
      */
     public function remove_course_action($index, $crs_id)
     {
-        if (! $this->edit_permission) {
-            throw new AccessDeniedException(_('Keine Berechtigung zum Entfernen der Verknüpfung.'));
+        if (!$this->edit_permission) {
+            throw new AccessDeniedException();
         }
 
         $this->ilias = new ConnectedIlias($index);

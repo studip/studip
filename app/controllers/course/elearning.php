@@ -164,8 +164,9 @@ class Course_ElearningController extends AuthenticatedController
     public function edit_action($id = null)
     {
         global $connected_cms, $current_module;
-        if (! $this->rechte)
-            throw new AccessDeniedException(_('Keine Berechtigung zum Bearbeiten der Lernmodul-Verknüpfungen.'));
+        if (!$this->rechte) {
+            throw new AccessDeniedException();
+        }
         Navigation::activateItem('/course/elearning/edit');
         $GLOBALS['view'] = 'edit';
         // ggf. neuen Ilias4-Kurs anlegen

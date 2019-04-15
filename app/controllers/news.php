@@ -190,9 +190,7 @@ class NewsController extends StudipController
         }
 
         if (!$news->havePermission('edit') && !$news->isNew()) {
-            $this->set_status(401);
-            PageLayout::postError(_('Keine Berechtigung!'));
-            return $this->render_nothing();
+            throw new AccessDeniedException();
         }
         // if form sent, get news data by post vars
         if (Request::get('news_isvisible')) {

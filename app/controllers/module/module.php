@@ -69,7 +69,7 @@ class Module_ModuleController extends MVVController
         if (!empty($this->filter)) {
             $this->search_result['Modul'] = $this->module->pluck('id');
         }
-        
+
         if (count($this->module) === 0) {
             if (count($this->filter) || $this->search_term) {
                 PageLayout::postInfo(_('Es wurden keine Module gefunden.'));
@@ -124,7 +124,7 @@ class Module_ModuleController extends MVVController
                 'display_language',
                 $this->modul->getDefaultLanguage()
             );
-            
+
             $this->deskriptor = $this->modul->getDeskriptor($this->display_language, true);
             $this->translations = $this->deskriptor->getAvailableTranslations();
             if (!in_array($this->display_language, $this->translations)) {
@@ -140,7 +140,7 @@ class Module_ModuleController extends MVVController
                     _('Modul: %s bearbeiten'), htmlReady($this->modul->getDisplayName())
                 ));
             }
-            
+
             $success_message = _('Das Modul "%s" wurde geändert.');
             // language selector as sidebar widget
             $template_factory = $this->get_template_factory();
@@ -150,7 +150,7 @@ class Module_ModuleController extends MVVController
                 'link'    => $this->url_for('/modul', $this->modul->id, $this->institut_id),
                 'url'     => $this->url]
             );
-    
+
             $widget  = new SidebarWidget();
             $widget->setTitle(_('Ausgabesprache'));
             $widget->addElement(new WidgetElement($sidebar_template));
@@ -182,7 +182,7 @@ class Module_ModuleController extends MVVController
                     ['data-dialog' => 'size=auto;buttons=false']
                 );
             }
-    
+
             $action_widget->addLink(
                 _('Log-Einträge dieses Moduls'),
                 $this->url_for('shared/log_event/show/Modul/' . $this->modul->id,
@@ -255,14 +255,14 @@ class Module_ModuleController extends MVVController
                 $this->modul->assignUsers($grouped_users);
                 $this->modul->verantwortlich = trim(Request::get('verantwortlich'));
             }
-            
+
             $deskriptor_fields = ['bezeichnung', 'verantwortlich',
                 'voraussetzung', 'kompetenzziele', 'inhalte', 'literatur',
                 'links', 'kommentar', 'turnus', 'kommentar_kapazitaet',
                 'kommentar_wl_selbst', 'kommentar_wl_pruef', 'kommentar_sws',
                 'kommentar_note', 'pruef_vorleistung', 'pruef_leistung',
                 'pruef_wiederholung', 'ersatztext'];
-            
+
             foreach ($deskriptor_fields as $deskriptor_field) {
                 if ($this->deskriptor->isI18nField($deskriptor_field)) {
                     $this->deskriptor->$deskriptor_field->setLocalized(
@@ -276,7 +276,7 @@ class Module_ModuleController extends MVVController
                     );
                 }
             }
-            
+
             // update datafields
             foreach (Request::getArray('datafields') as $df_key => $df_value) {
                 $df = $this->deskriptor->datafields->findOneBy('datafield_id', $df_key);
@@ -315,7 +315,7 @@ class Module_ModuleController extends MVVController
                 QuickSearch::get('modul', $sql_search_modul)
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
-    
+
         $sql_search_user = new PermissionSearch(
             'user',
             _('Person suchen'),
@@ -602,7 +602,7 @@ class Module_ModuleController extends MVVController
         } else {
             $this->modul = $this->modulteil->modul;
         }
-    
+
         $this->formen = [];
         foreach ($GLOBALS['MVV_MODULTEIL']['LERNLEHRFORM']['values'] as $key => $form) {
             if ($form['parent'] === '') {
@@ -637,7 +637,7 @@ class Module_ModuleController extends MVVController
             $this->display_language = Request::option('display_language', $this->modulteil->getDefaultLanguage());
             $this->deskriptor = $this->modulteil->getDeskriptor($this->display_language, true);
             $this->translations = $this->deskriptor->getAvailableTranslations();
-    
+
             if (!in_array($this->display_language, $this->translations)) {
                 PageLayout::setTitle(sprintf(
                     _('Modulteil: "%s" in der Ausgabesprache "%s" neu anlegen.'),
@@ -713,7 +713,7 @@ class Module_ModuleController extends MVVController
                 'kommentar_wl_bereitung', 'kommentar_wl_selbst',
                 'kommentar_wl_pruef', 'pruef_vorleistung', 'pruef_leistung',
                 'kommentar_pflicht'];
-            
+
             foreach ($deskriptor_fields as $deskriptor_field) {
                 if ($this->deskriptor->isI18nField($deskriptor_field)) {
                     $this->deskriptor->$deskriptor_field->setLocalized(
@@ -740,7 +740,7 @@ class Module_ModuleController extends MVVController
             if ($this->modulteil->isNew()) {
                 $perm = MvvPerm::get($this->modul);
                 if (!$perm->haveFieldPermModulteile(MvvPerm::PERM_CREATE)) {
-                    throw new Exception(_('Keine Berechtigung.'));
+                    throw new AccessDeniedException();
                 }
             }
 
@@ -1153,7 +1153,7 @@ class Module_ModuleController extends MVVController
                     $this->filter['end_sem.ende'] = $current_sem->beginn;
                 }
             }
-    
+
             $this->do_search(
                 'Modul',
                 trim(Request::get('modul_suche_parameter')),
@@ -1346,7 +1346,7 @@ class Module_ModuleController extends MVVController
             ],
             $this->filter
         );
-        
+
         $template_factory = $this->get_template_factory();
         $template = $template_factory->open('shared/filter');
 

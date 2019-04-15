@@ -29,7 +29,7 @@ class LiteratureController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        if (!Config::Get()->LITERATURE_ENABLE ) {
+        if (!Config::Get()->LITERATURE_ENABLE) {
             throw new AccessDeniedException(_('Die Literaturverwaltung ist nicht aktiviert.'));
         }
 
@@ -108,7 +108,7 @@ class LiteratureController extends AuthenticatedController
         //checking rights
         if (($_the_tree->range_type == "sem" && !$GLOBALS['perm']->have_studip_perm("tutor", $this->_range_id)) ||
             (($_the_tree->range_type == "inst" || $_the_tree->range_type == "fak") && !$GLOBALS['perm']->have_studip_perm("autor", $this->_range_id))){
-                throw new AccessDeniedException(_('Keine Berechtigung für diese Literaturliste.'));
+                throw new AccessDeniedException();
         }
 
         $_the_treeview->parseCommand();
