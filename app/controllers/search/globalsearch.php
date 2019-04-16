@@ -34,6 +34,8 @@ class Search_GlobalsearchController extends AuthenticatedController
             'content' => md5("{$_COOKIE[Seminar_Session::class]}-{$GLOBALS['user']->id}"),
         ]);
 
+        PageLayout::setBodyElementId('globalsearch-page');
+
         $this->addInfoText();
         $this->addSidebar();
     }
