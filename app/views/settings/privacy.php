@@ -157,7 +157,7 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <?= _('Neue Elemente') ?>
             <select name="default">
-                <option value="">-- <?= _('bitte wählen'); ?> --</option>
+                <option value="">-- <?= _('Bitte wählen') ?> --</option>
                 <? foreach ($visibilities as $visibility => $label): ?>
                     <option value="<?= $visibility ?>" <? if ($default_homepage_visibility == $visibility) echo 'selected'; ?>>
                         <?= htmlReady($label) ?>
@@ -169,7 +169,7 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <?= _('Jetzt alle Sichtbarkeiten auf') ?>
             <select name="all">
-                <option value="">-- <?= _('bitte wählen'); ?> --</option>
+                <option value="">-- <?= _('Bitte wählen') ?> --</option>
                 <? foreach ($visibilities as $visibility => $label): ?>
                     <option value="<?= $visibility ?>">
                         <?= htmlReady($label) ?>

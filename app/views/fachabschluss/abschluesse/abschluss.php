@@ -21,7 +21,7 @@
         <? if ($perm->haveFieldPerm('category_assignment')) : ?>
             <label><?= _('Abschluss-Kategorie') ?></label>
             <select id="abschluss_kategorie" name="kategorie_id" size="1">
-                <option value=""><?= _('-- bitte wählen --') ?></option>
+                <option value="">-- <?= _('Bitte wählen') ?> --</option>
                 <? foreach ($abschluss_kategorien as $kategorie) : ?>
                     <option
                         <?= ($kategorie->getId() === $abschluss->kategorie_id ? 'selected ' : '') ?>value="<?= $kategorie->getId() ?>"><?= htmlReady($kategorie->name) ?></option>

@@ -122,7 +122,7 @@
         <legend><?= _('Abschluss') ?></legend>
         <? if ($perm->haveFieldPerm('abschluss_id')) : ?>
             <select id="abschluss_id" name="abschluss_id" size="1">
-                <option value=""><?= _('-- bitte wählen --') ?></option>
+                <option value="">-- <?= _('Bitte wählen') ?> --</option>
                 <? foreach ($abschluesse as $abschluss) : ?>
                     <option
                         <?= ($abschluss['abschluss_id'] === $studiengang->abschluss_id ? 'selected ' : '') ?>value="<?= $abschluss['abschluss_id'] ?>"><?= htmlReady($abschluss['name']) ?></option>

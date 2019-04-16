@@ -6,7 +6,7 @@
     <? endif; ?>
     <label><?= $list['headline'] ?>
         <select name="id" style="width: 100%;">
-            <option value=""><?= _('-- bitte wählen --') ?></option>
+            <option value="">-- <?= _('Bitte wählen') ?> --</option>
         <? foreach ($list['elements'] as $key => $element) : ?>
             <option value="<?= htmlReady($key) ?>"<?= $key == $list['selected'] ? ' selected' : '' ?>>
                 <?= htmlReady($element['name']) ?>

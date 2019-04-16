@@ -25,7 +25,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                             <? $num_bezeichnung = $modulteil->isNew()
                                 ? $GLOBALS['MVV_MODULTEIL']['NUM_BEZEICHNUNG']['default']
                                 : $modulteil->num_bezeichnung; ?>
-                            <option value=""><?= _('-- bitte wählen --') ?></option>
+                            <option value="">-- <?= _('Bitte wählen') ?> --</option>
                             <? foreach ($GLOBALS['MVV_MODULTEIL']['NUM_BEZEICHNUNG']['values'] as $key => $value) : ?>
                                 <? if ($value['visible']) : ?>
                                     <option value="<?= $key ?>"<?= $key === $num_bezeichnung ? ' selected' : '' ?>><?= htmlReady($value['name']) ?></option>
@@ -58,7 +58,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <? if ($perm->haveFieldPerm('lernlehrform')): ?>
                 <? if ($def_lang) : ?>
                     <select id="lernlehrform" name="lernlehrform">
-                        <option value=""><?= _('-- bitte wählen --') ?></option>
+                        <option value="">-- <?= _('Bitte wählen') ?> --</option>
                         <? foreach ($formen as $form_group) : ?>
                             <optgroup label="<?= htmlReady($form_group['group']['name']) ?>">
                                 <? foreach ($form_group['options'] as $form) : ?>

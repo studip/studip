@@ -1,7 +1,7 @@
 <div class="mvv-widget-right">
     <div class="mvv-inst-chooser">
         <select name="<?= $chooser_id ?>">
-            <option class="mvv-inst-chooser-level" value=""><?= _('-- bitte wählen --'); ?></option>
+            <option class="mvv-inst-chooser-level" value="">-- <?= _('Bitte wählen') ?> --</option>
         <? foreach ($chooser_languages as $key => $language) : ?>
             <option class="" data-fb="<?= $key ?>" value="<?= $key ?>">
                 <?= htmlReady($language['name']); ?>

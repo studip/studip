@@ -13,7 +13,7 @@
     <div class="mvv-inst-chooser">
     <span class="mvv-inst-add-button"><?= Icon::create('arr_2left', 'sort', ['title' => _('Einrichtung zuordnen')])->asImg(); ?></span>
     <select name="<?= $chooser_id ?>">
-        <option class="mvv-inst-chooser-empty mvv-inst-chooser-level" value=""><?= _('-- bitte wählen --'); ?></option>
+        <option class="mvv-inst-chooser-empty mvv-inst-chooser-level" value="">-- <?= _('Bitte wählen') ?> --</option>
     <? foreach ($chooser_institutes as $institute) : ?>
         <option class="<?= $institute['kids'] ? '' : 'mvv-inst-chooser-empty' ?><?= $institute['is_object'] ? '' : ' mvv-inst-chooser-level' ?>" value="<?= $institute['object_id']; ?>" data-type="<?= $chooser_id ?>" data-item-id="<?= $institute['item_id'] ?>" data-fb="<?= $institute['fb'] ?>">
             <?= htmlReady($institute['name']); ?>

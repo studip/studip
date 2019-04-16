@@ -28,7 +28,7 @@
 
 
   <div id="lvgruppe_selection_selectables">
-    <h3><?= _("Bitte wählen:") ?></h3>
+    <h3><?= _('Bitte wählen') ?>:</h3>
     <?= $this->render_partial('course/lvgselector/tree', compact('trail', 'subtree')) ?>
 
     <h3><?=_("Suche:")?></h3>

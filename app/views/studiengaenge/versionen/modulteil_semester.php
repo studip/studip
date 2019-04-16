@@ -33,7 +33,7 @@
                     <input type="hidden" name="status[<?= $i ?>]" value="<?= $fachsemester->differenzierung ?>">
                 <? else: ?>
                         <select name="status[<?= $i ?>]">
-                            <option value=""><?= _('-- bitte wählen --') ?></option>
+                            <option value="">-- <?= _('Bitte wählen') ?> --</option>
                             <? foreach ($GLOBALS['MVV_MODULTEIL_STGABSCHNITT']['STATUS']['values'] as $status_key => $status) : ?>
                             <? if ($status['visible']) : ?>
                             <option value="<?= $status_key ?>"<?= ($fachsemester && $fachsemester->differenzierung == $status_key ? ' selected' : '') ?>><?= $status['name'] ?></option>

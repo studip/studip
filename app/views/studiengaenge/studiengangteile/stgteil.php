@@ -10,7 +10,7 @@
             <label>
                 <?= sprintf(_('Mögliche Fächer im gewählten Fachbereich %s:'), '<strong>' . htmlReady($fachbereich->name) . '</strong>') ?>
                 <select name="fach_item">
-                    <option value=""><?= _('-- bitte wählen --') ?></option>
+                    <option value="">-- <?= _('Bitte wählen') ?> --</option>
                     <? foreach ($faecher as $fach) : ?>
                         <option value="<?= $fach->id ?>"><?= htmlReady($fach->name) ?></option>
                     <? endforeach; ?>

@@ -225,7 +225,7 @@
                         <input style="vertical-align: middle" type="checkbox" name="check_all" title="<?= _('Alle Benutzer auswählen') ?>"
                                data-proxyfor=".check_all" data-activates=".bulkAction">
                         <select name="method" class="bulkAction size-s" required>
-                            <option value=""><?= _('Bitte wählen') ?></option>
+                            <option value="">-- <?= _('Bitte wählen') ?> --</option>
                             <option value="send_message"><?= _('Nachricht senden') ?></option>
                             <option value="delete"><?= _('Löschen') ?></option>
                         </select>

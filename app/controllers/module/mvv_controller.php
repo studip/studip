@@ -14,35 +14,35 @@ class MVVController extends AuthenticatedController
      * @var int
      */
     public static $items_per_page;
-    
+
     /**
      * Array of ids of mvv object found by search action.
      *
      * @var array
      */
     public $search_result = [];
-    
+
     /**
      * Holds the last search term.
      *
      * @var string
      */
     public $search_term = '';
-    
+
     /**
      * Holds the last id of an mvv object selected in quick search.
      *
      * @var string
      */
     public $search_id = null;
-    
+
     /**
      * TRUE if sidebar is already rendered.
      *
      * @var bool
      */
     protected $sidebar_rendered = false;
-    
+
     /**
      * The key of an index name used to store values in the session.
      * It is the top level key of an multidimensional array that holds all
@@ -52,8 +52,8 @@ class MVVController extends AuthenticatedController
      * @var string
      */
     protected $session_key;
-    
-    
+
+
     /**
      * The second level key of the array that holds values in the session from
      * current controller. It is derived from the name of the current
@@ -62,26 +62,26 @@ class MVVController extends AuthenticatedController
      * @var string
      */
     public $param_suffix = '';
-    
+
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        
+
         if (!static::IsVisible()) {
             throw new AccessDeniedException();
         }
-        
+
         PageLayout::setTitle(_('Module'));
-        
+
         // Setup flash instance
         $this->flash = Trails_Flash::instance();
-        
+
         $this->me             = 'mvv';
         self::$items_per_page = Config::get()->getValue('ENTRIES_PER_PAGE');
-        
+
         $this->session_key = $this->me . '_' . mb_substr(get_class($this), 0, -10);
     }
-    
+
     /**
      * Returns a controller based (considers name of action if given)
      * suffix for url parameters.
@@ -95,7 +95,7 @@ class MVVController extends AuthenticatedController
             ['/^.*_/', '/Controller$/'], '', get_called_class(), 1));
         return $action ? '_' . $param_suffix . '_' . $action : '_' . $param_suffix;
     }
-    
+
     /**
      * Initialzes the controller (considers name of action if given) based
      * parameters for search and bind them to url.
@@ -105,16 +105,16 @@ class MVVController extends AuthenticatedController
     protected function initSearchParams($action = '')
     {
         $this->search_params_suffix = $this->paramSuffix($action);
-    
+
         $this->search_term = Request::get('search_term' . $this->search_params_suffix, $this->sessGet('search_term'));
-    
+
         URLHelper::bindLinkParam('search_term' . $this->search_params_suffix, $this->search_term);
-    
+
         $this->search_id = Request::option('search_id' . $this->search_params_suffix, $this->sessGet('search_id'));
-    
+
         URLHelper::bindLinkParam('search_id' . $this->search_params_suffix, $this->search_id);
     }
-    
+
     /**
      * Initialzes the controller (considers name of action if given) based
      * parameters for page navigation and bind them to url.
@@ -145,7 +145,7 @@ class MVVController extends AuthenticatedController
         );
         $this->sessSet('order' . $this->page_params_suffix, $this->order);
     }
-    
+
     /**
      * Determines the visibility of this controller.
      *
@@ -155,7 +155,7 @@ class MVVController extends AuthenticatedController
     {
         return MVV::isVisible();
     }
-    
+
     /**
      * Renders a html snippet with a sort link used in table headers.
      *
@@ -178,7 +178,7 @@ class MVVController extends AuthenticatedController
             ]);
         return $template->render();
     }
-    
+
     /**
      * Sets the sidebar with all widgets and set value of sidebar_rendered
      * to true.
@@ -190,7 +190,7 @@ class MVVController extends AuthenticatedController
         $sidebar                = Sidebar::get();
         $sidebar->setImage('sidebar/learnmodule-sidebar.png');
     }
-    
+
     /**
      * Renders a html snippet containing an url. This url is used by
      * java script.
@@ -213,7 +213,7 @@ class MVVController extends AuthenticatedController
         $template->set_attributes(['url' => $url]);
         return $template->render();
     }
-    
+
     /**
      * This action is used to show a select box instead of an input field
      * if the user has clicked on the magnifier icon of a quicksearch.
@@ -231,7 +231,7 @@ class MVVController extends AuthenticatedController
             throw new Trails_Exception(404);
         }
     }
-    
+
     /**
      * Retrieves the result set of quicksearch to show a select box.
      *
@@ -243,8 +243,10 @@ class MVVController extends AuthenticatedController
     {
         $search = self::getSearch($qs_id);
         if ($search) {
-            $results[] = ['id'   => '',
-                          'name' => _('-- bitte wählen --')];
+            $results[] = [
+                'id'   => '',
+                'name' => '-- ' . _('Bitte wählen') . ' --',
+            ];
             foreach ($search->getResults($qs_term) as $result) {
                 $results[] = [
                     'id'   => $result[0],
@@ -255,7 +257,7 @@ class MVVController extends AuthenticatedController
         }
         return null;
     }
-    
+
     /**
      * Retrieves a quick search sql object from session by its id
      * (md5 of serialized object).
@@ -275,7 +277,7 @@ class MVVController extends AuthenticatedController
         }
         return is_object($search) ? $search : null;
     }
-    
+
     /**
      * Perform the search for mvv objects of type defined by $class_name.
      * Uses the findBySearchTerm method with its parameters $search_term and
@@ -335,7 +337,7 @@ class MVVController extends AuthenticatedController
         }
         $this->sessSet('search_term', $this->search_term);
     }
-    
+
     /**
      * Returns the current search result of the given class. The search result
      * is an array of object ids.
@@ -346,10 +348,10 @@ class MVVController extends AuthenticatedController
     protected function getSearchResult($class_name)
     {
         $this->do_search($class_name);
-        
+
         return $this->search_result;
     }
-    
+
     /**
      * Deletes the search results stored in $this->search_result for the
      * given action.
@@ -360,7 +362,7 @@ class MVVController extends AuthenticatedController
     protected function reset_search($action = '')
     {
         $this->search_params_suffix = $this->paramSuffix($action);
-        
+
         // reset search
         $this->search_result = [];
         unset($this->search_term);
@@ -370,7 +372,7 @@ class MVVController extends AuthenticatedController
         URLHelper::removeLinkParam('search_id' . $this->search_params_suffix);
         $this->sessRemove('search_id');
     }
-    
+
     /**
      * Resets the main page parameters for pagination and sorting for the given
      * action.
@@ -381,12 +383,12 @@ class MVVController extends AuthenticatedController
     protected function reset_page($action = '')
     {
         $this->page_params_suffix = $this->paramSuffix($action);
-        
+
         // reset page chooser
         $this->page = 1;
         $this->sessRemove('page' . $this->page_params_suffix);
         URLHelper::removeLinkParam('page' . $this->page_params_suffix);
-        
+
         // reset sorting
         $this->sortby = '';
         $this->sessRemove('sortby' . $this->page_params_suffix);
@@ -395,7 +397,7 @@ class MVVController extends AuthenticatedController
         $this->sessRemove('order' . $this->page_params_suffix);
         URLHelper::removeLinkParam('order' . $this->page_params_suffix);
     }
-    
+
     /**
      * Stores a value with the given key in the session.
      *
@@ -408,7 +410,7 @@ class MVVController extends AuthenticatedController
         $_SESSION[$this->session_key][$key] = $value;
         return $value;
     }
-    
+
     /**
      * Returns the value of the given key from the session.
      *
@@ -421,7 +423,7 @@ class MVVController extends AuthenticatedController
             ? $_SESSION[$this->session_key][$key]
             : $default);
     }
-    
+
     /**
      * Removes the value with the given key from the session.
      *
@@ -436,7 +438,7 @@ class MVVController extends AuthenticatedController
             unset($_SESSION[$this->session_key][$key]);
         }
     }
-    
+
     /**
      * Deletes all values from the session used in this controller.
      *
@@ -445,8 +447,8 @@ class MVVController extends AuthenticatedController
     {
         unset($_SESSION[$this->session_key]);
     }
-    
-    
+
+
     /**
      * This weird WYSIWIG-Editor stores an empty string as an empty diff-element.
      * Use this function to check whether the field has no content

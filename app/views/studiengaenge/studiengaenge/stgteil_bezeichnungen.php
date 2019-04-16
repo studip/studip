@@ -50,7 +50,7 @@
                             </div>
                             <label><?= _('als') ?>
                                 <select name="stgteil_bez_id" size="1">
-                                    <option value=""><?= _('-- bitte wählen --') ?></option>
+                                    <option value="">-- <?= _('Bitte wählen') ?> --</option>
                                     <? foreach (StgteilBezeichnung::getAllEnriched() as $stgteil_bez) : ?>
                                         <option value="<?= $stgteil_bez->getId() ?>"><?= htmlReady($stgteil_bez->name) ?></option>
                                     <? endforeach; ?>
