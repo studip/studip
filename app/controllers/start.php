@@ -105,11 +105,11 @@ class StartController extends AuthenticatedController
             if (!StudipAuthAbstract::CheckField('auth_user_md5.Email', $GLOBALS['user']->auth_plugin) && !LockRules::check($GLOBALS['user']->id, 'email')) {
                 $details .= ' ';
                 $details .= Studip\LinkButton::create(
-                    _('Email-Adresse ändern'),
+                    _('E-Mail-Adresse ändern'),
                     $this->url_for('start/edit_mail_address'),
                     [
                         'data-dialog' => 'size=auto',
-                        'title'       => _('Email-Adresse')
+                        'title'       => _('E-Mail-Adresse')
                     ]
                 );
             }

@@ -457,7 +457,7 @@ class Admission_CoursesetController extends AuthenticatedController
                 }
             }
             if ($csv == 'download_all_members') {
-                $captions = [_("Username"), _("Vorname"), _("Nachname"), _("Email"), _("Veranstaltung"), _("Status")];
+                $captions = [_("Username"), _("Vorname"), _("Nachname"), _("E-Mail"), _("Veranstaltung"), _("Status")];
                 if (count($liste)) {
                     $tmpname = md5(uniqid('tmp'));
                     if (array_to_csv($liste, $GLOBALS['TMP_PATH'].'/'.$tmpname, $captions)) {
@@ -484,7 +484,7 @@ class Admission_CoursesetController extends AuthenticatedController
                     $max_count[] = count($courses);
                     $c++;
                 }
-                $captions = [_("Nutzername"), _("Vorname"), _("Nachname"), _("Email")];
+                $captions = [_("Nutzername"), _("Vorname"), _("Nachname"), _("E-Mail")];
                 foreach (range(1,max($max_count)) as $num) {
                     $captions[] = _("Veranstaltung") . ' ' . $num;
                 }
@@ -603,7 +603,7 @@ class Admission_CoursesetController extends AuthenticatedController
         }
         if ($csv) {
             $tmpname = md5(uniqid('tmp'));
-            $captions[] = _("Email");
+            $captions[] = _("E-Mail");
             if (array_to_csv($data, $GLOBALS['TMP_PATH'].'/'.$tmpname, $captions)) {
                 $this->redirect(
                     FileManager::getDownloadURLForTemporaryFile(

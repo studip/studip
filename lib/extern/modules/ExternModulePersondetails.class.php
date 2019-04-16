@@ -5,9 +5,9 @@
 # Lifter010: TODO
 /**
 * ExternModulePersondetail.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternModulePersondetail.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -61,18 +61,18 @@ class ExternModulePersondetails extends ExternModule {
                 'LinkIntern', 'StudipLink'
         ];
         $this->args = ['username', 'seminar_id'];
-        $this->field_names = 
+        $this->field_names =
         [
-            "contact" => 
+            "contact" =>
             [
                 _("Raum"),
                 _("Telefon"),
                 _("Fax"),
-                _("Email"),
+                _("E-Mail"),
                 _("Homepage"),
                 _("Sprechzeiten")
             ],
-            "content" => 
+            "content" =>
             [
                 _("Name, Anschrift, Kontakt"),
                 _("Lebenslauf"),
@@ -87,46 +87,46 @@ class ExternModulePersondetails extends ExternModule {
         ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
-    
+
     function setup () {
         // extend $data_fields if generic datafields are set
         $config_datafields = $this->config->getValue("Main", "genericdatafields");
         $this->data_fields["content"] = array_merge((array)$this->data_fields['content'], (array)$config_datafields);
-        
+
         // setup module properties
         $this->elements["LinkIntern"]->link_module_type = 4;
         $this->elements["LinkIntern"]->real_name = _("Link zum Modul Veranstaltungsdetails");
         $this->elements["TableHeader"]->real_name = _("Umschließende Tabelle");
     }
-    
+
     function printout ($args) {
         if ($this->config->getValue("Main", "wholesite"))
             echo html_header($this->config);
-        
+
         if (!$language = $this->config->getValue("Main", "language"))
             $language = "de_DE";
         init_i18n($language);
-        
+
         include "lib/extern/modules/views/persondetails.inc.php";
-        
+
         if ($this->config->getValue("Main", "wholesite"))
             echo html_footer();
     }
-    
+
     function printoutPreview () {
         if ($this->config->getValue("Main", "wholesite"))
             echo html_header($this->config);
-        
+
         if (!$language = $this->config->getValue("Main", "language"))
             $language = "de_DE";
         init_i18n($language);
-        
+
         include "lib/extern/modules/views/persondetails_preview.inc.php";
-        
+
         if ($this->config->getValue("Main", "wholesite"))
             echo html_footer();
     }
-    
+
 }
 
 ?>

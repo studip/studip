@@ -426,7 +426,7 @@ use Studip\Button, Studip\LinkButton;
             </ol>
         </section>
         <? endif ?>
-        
+
         <? if (isset($student_institutes) && count($student_institutes)) : ?>
         <section class="col-3">
             <ol class="default">
@@ -602,7 +602,7 @@ use Studip\Button, Studip\LinkButton;
     <footer>
         <label>
             <input name="u_edit_send_mail" value="1" checked type="checkbox">
-            <?= _('Emailbenachrichtigung bei Änderung der Daten verschicken?') ?>
+            <?= _('E-Mail-Benachrichtigung bei Änderung der Daten verschicken?') ?>
         </label>
         <br>
 

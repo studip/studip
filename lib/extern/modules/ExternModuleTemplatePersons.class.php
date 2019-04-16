@@ -56,12 +56,12 @@ class ExternModuleTemplatePersons extends ExternModule {
                 'TemplateGeneric'
         ];
 
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
-                _("Email"),
+                _("E-Mail"),
                 _("Sprechzeiten")
         ];
 
@@ -330,7 +330,7 @@ class ExternModuleTemplatePersons extends ExternModule {
                         }
                         $k = 1;
                         foreach ($generic_datafields as $datafield) {
-                            if (isset($localEntries[$datafield]) && 
+                            if (isset($localEntries[$datafield]) &&
                                     is_object($localEntries[$datafield])) {
                                 $localEntry = $localEntries[$datafield]->getDisplayValue();
                                 if ($localEntry) {

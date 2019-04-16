@@ -67,12 +67,12 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
                 'TemplateMain' => 'TemplateGeneric'
         ];
 
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
-                _("Email"),
+                _("E-Mail"),
                 _("Sprechzeiten")
         ];
 

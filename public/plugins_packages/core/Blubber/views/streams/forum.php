@@ -47,7 +47,7 @@
                 <td><input type="text" id="anonymous_name" value="<?= htmlReady($_SESSION['anonymous_name']) ?>"></td>
             </tr>
             <tr>
-                <td><?= _("Email") ?></td>
+                <td><?= _("E-Mail") ?></td>
                 <td><input type="text" id="anonymous_email" value="<?= htmlReady($_SESSION['anonymous_email']) ?>"></td>
             </tr>
             <tr>
@@ -79,5 +79,3 @@ $sidebar = Sidebar::get();
 $sidebar->setImage('sidebar/blubber-sidebar.png');
 
 $controller->addTagCloudWidgetToSidebar($tags, 'forum');
-
-

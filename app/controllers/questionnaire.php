@@ -389,7 +389,7 @@ class QuestionnaireController extends AuthenticatedController
         if (!$this->questionnaire->isEditable()) {
             throw new AccessDeniedException("Der Fragebogen ist nicht exportierbar.");
         }
-        $csv = [[_("Nummer"), _("Benutzername"), _("Nachname"), _("Vorname"), _("Email")]];
+        $csv = [[_("Nummer"), _("Benutzername"), _("Nachname"), _("Vorname"), _("E-Mail")]];
 
         $results = [];
         $user_ids = [];

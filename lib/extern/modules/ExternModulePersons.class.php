@@ -5,9 +5,9 @@
 # Lifter010: TODO
 /**
 * ExternModulePersons.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternModulePersons.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -53,52 +53,52 @@ class ExternModulePersons extends ExternModule {
                 'Body', 'TableHeader', 'TableHeadrow', 'TableGroup',
                 'TableRow', 'Link', 'LinkIntern', 'TableFooter'
         ];
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Name"),
                 _("Telefon"),
                 _("Raum"),
-                _("Email"),
+                _("E-Mail"),
                 _("Sprechzeiten")
         ];
         parent::__construct($range_id, $module_name, $config_id, $set_config, $global_id);
     }
-    
+
     function setup () {
         // extend $data_fields if generic datafields are set
         $config_datafields = $this->config->getValue("Main", "genericdatafields");
         $this->data_fields = array_merge((array)$this->data_fields, (array)$config_datafields);
-        
+
         // setup module properties
         $this->elements["LinkIntern"]->link_module_type = [2, 14];
         $this->elements["LinkIntern"]->real_name = _("Link zum Modul MitarbeiterInnendetails");
-        $this->elements["Link"]->real_name = _("Email-Link");
+        $this->elements["Link"]->real_name = _("E-Mail-Link");
     }
-    
+
     function printout ($args) {
         if ($this->config->getValue("Main", "wholesite"))
             echo html_header($this->config);
-        
+
         if (!$language = $this->config->getValue("Main", "language"))
             $language = "de_DE";
         init_i18n($language);
-        
+
         include "lib/extern/modules/views/persons.inc.php";
-        
+
         if ($this->config->getValue("Main", "wholesite"))
             echo html_footer();
     }
-    
+
     function printoutPreview () {
         if ($this->config->getValue("Main", "wholesite"))
             echo html_header($this->config);
-        
+
         include "lib/extern/modules/views/persons_preview.inc.php";
-                
+
         if ($this->config->getValue("Main", "wholesite"))
             echo html_footer();
     }
-    
+
 }
 
 ?>
