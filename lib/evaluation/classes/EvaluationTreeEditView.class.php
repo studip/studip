@@ -339,8 +339,7 @@ function showEvalTree(){
         . _("Oder wollen Sie die Aktion abbrechen?")
         . " "
         . LinkButton::createCancel(_('Abbrechen'),
-                $this->getSelf('abbort_move=1'),
-                ['title' => _('abbrechen')]));
+                $this->getSelf('abbort_move=1')));
 
     $td->addContent ($font);
     $tr->addContent ($td);
@@ -1364,8 +1363,7 @@ function execCommandAssertDeleteItem(){
                 ['title' => _('Löschen')])
         . "&nbsp;"
         . LinkButton::createCancel(_('NEIN!'),
-                $this->getSelf('cmd[Cancel]=1'),
-                ['title' => _('Abbrechen')])
+                $this->getSelf('cmd[Cancel]=1'))
         . "\n";
 
     return false;
@@ -2168,7 +2166,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
         $child->getChildren() == NULL &&
         $child->getText == ""){
 
-        $a_content = LinkButton::createCancel(_('Abbrechen'),
+        $a_content = LinkButton::createCancel(_('s'),
                 URLHelper::getURL(EVAL_FILE_ADMIN. "?evalID=").$this->tree->eval->getObjectID()."&abort_creation_button=1",
                 ['title' => _("Erstellung einer Evaluation abbrechen")]);
 

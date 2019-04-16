@@ -356,7 +356,7 @@ class EvalOverview {
             $td = new HTML("td");
             $td->addAttr("class", $style);
             $td->addAttr("width", "1");
-            
+
             // create a blindgif
             $blingif = new HTMLempty("img");
             $blingif->addAttr("border", "0");
@@ -1456,7 +1456,7 @@ class EvalOverview {
             "no" => _("Nein!"),
             "delete" => _("Löschen."),
             "template" => _("Zu den eigenen Evaluationsvorlagen verschieben."),
-            "cancel" => _("Abbrechen.")
+            "cancel" => _("Abbrechen")
         ];
 
         $html = "   <table align=\"center\" width=\"100%\" border=0 cellpadding=3 cellspacing=0>\n" // class=\"table_row_even\"

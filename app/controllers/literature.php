@@ -350,8 +350,8 @@ class LiteratureController extends AuthenticatedController
                 PageLayout::postInfo(sprintf(_("Sie können diesen Eintrag nicht löschen, da er noch in %s Literaturlisten referenziert wird."),$_the_element->reference_count));
             } else {
                 PageLayout::postInfo(_("Wollen Sie diesen Eintrag wirklich löschen?"),
-                    [Studip\LinkButton::createAccept(_('Ja'), URLHelper::getURL('?cmd=delete_element&_catalog_id=' . $_catalog_id), ['title' =>  _('löschen')])
-                            .Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?_catalog_id=' . $_catalog_id), ['title' =>  _('abbrechen')])]);
+                    [Studip\LinkButton::createAccept(_('Ja'), URLHelper::getURL('?cmd=delete_element&_catalog_id=' . $_catalog_id))
+                            .Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('?_catalog_id=' . $_catalog_id))]);
             }
         }
 

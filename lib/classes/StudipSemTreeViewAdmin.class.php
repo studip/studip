@@ -235,8 +235,7 @@ class StudipSemTreeViewAdmin extends TreeView
                     ['title' => _('löschen')])
             . "&nbsp;"
             . LinkButton::createCancel(_('NEIN!'),
-                    URLHelper::getURL($this->getSelf('cmd=Cancel&item_id='. $item_id)),
-                    ['title' => _('abbrechen')]);
+                    URLHelper::getURL($this->getSelf('cmd=Cancel&item_id='. $item_id)));
         }
         return false;
     }

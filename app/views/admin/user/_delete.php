@@ -68,6 +68,6 @@
 
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('JA!'), 'delete', ['title' => _('Benutzer löschen')]) ?>
-        <?= Studip\Button::createCancel(_('NEIN!'), 'back', ['title' => _('Abbrechen   ')]) ?>
+        <?= Studip\Button::createCancel(_('NEIN!'), 'back', ['title' => _('Abbrechen')]) ?>
     </footer>
 </form>
