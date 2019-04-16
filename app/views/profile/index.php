@@ -10,7 +10,7 @@
     <section>
         <dl>
         <? if ($public_email): ?>
-            <dt><?= _('E-Mail:') ?></dt>
+            <dt><?= _('E-Mail') ?>:</dt>
             <dd>
                 <a href="mailto:<?= htmlReady($public_email) ?>">
                     <?= htmlReady($public_email) ?>
@@ -19,32 +19,32 @@
         <? endif; ?>
 
         <? if ($private_nr) : ?>
-            <dt><?= _('Telefon (privat):') ?></dt>
+            <dt><?= _('Telefon (privat)') ?>:</dt>
             <dd><?= htmlReady($private_nr) ?></dd>
         <? endif ?>
 
         <? if ($private_cell) : ?>
-            <dt><?= _('Mobiltelefon:') ?></dt>
+            <dt><?= _('Mobiltelefon') ?>:</dt>
             <dd><?= htmlReady($private_cell) ?></dd>
         <? endif ?>
 
         <? if ($skype_name) : ?>
-            <dt><?= _('Skype:') ?></dt>
+            <dt><?= _('Skype') ?>:</dt>
             <dd><?= htmlReady($skype_name) ?></dd>
         <? endif ?>
 
         <? if ($privadr) : ?>
-            <dt><?= _('Adresse (privat):') ?></dt>
+            <dt><?= _('Adresse (privat)') ?>:</dt>
             <dd><?= htmlReady($privadr) ?></dd>
         <? endif ?>
 
         <? if ($homepage) : ?>
-            <dt><?= _('Homepage:') ?></dt>
+            <dt><?= _('Homepage') ?>:</dt>
             <dd><?= formatLinks($homepage) ?></dd>
         <? endif ?>
 
         <? if (count($study_institutes) > 0): ?>
-            <dt><?= _('Wo ich studiere:') ?></dt>
+            <dt><?= _('Wo ich studiere') ?>:</dt>
             <dd>
                 <ul>
                 <? foreach ($study_institutes as $inst_result) : ?>
@@ -63,7 +63,7 @@
         <? endif ?>
 
         <? if ($current_user->user_id === $GLOBALS['user']->id) : ?>
-            <dt><?= _('Status:') ?></dt>
+            <dt><?= _('Status') ?>:</dt>
             <dd><?= htmlReady(ucfirst($current_user['perms'])) ?></dd>
         <? endif ?>
 

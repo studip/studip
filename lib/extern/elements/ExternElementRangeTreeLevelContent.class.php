@@ -5,9 +5,9 @@
 # Lifter010: TODO
 /**
 * ExternElementRangeTreeLevelContent.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementRangeTreeLevelContent.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -53,49 +53,49 @@ class ExternElementRangeTreeLevelContent extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "RangeTreeLevelContent";
         $this->real_name = _("Inhalt der Ebene");
         $this->description = _("Formatierung des Ebeneninhalts in einer Baum-Navigation.");
     }
-    
+
     function getDefaultConfig () {
         $config = parent::getDefaultConfig();
         $config["mapping"] = "|Strasse|Plz|telefon|fax|email|url";
-        $config["aliases"] = "|"._("Stra&szlig;e:")."|"._("Ort:")."|"._("Telefon:")
-                ."|"._("Fax:")."|"._("Email:")."|"._("Homepage:");
-        
+        $config["aliases"] = "|"._("Stra&szlig;e").":|"._("Ort").":|"._("Telefon")
+                .":|"._("Fax").":|"._("E-Mail").":|"._("Homepage").":";
+
         return $config;
     }
-    
+
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
         if ($faulty_values == '')
-            $faulty_values = [];   
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';
         if ($edit_form == '')
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
-        
+
         $headline = $edit_form->editHeadline(_("Bezeichnungen"));
         $info = _("Geben Sie eine alternative Bezeichnung ein.");
-        $names = [_("Stra&szlig;e"), _("Ort"), _("Telefon"), _("Fax"), _("Email"), _("Homepage")];
+        $names = [_("Stra&szlig;e"), _("Ort"), _("Telefon"), _("Fax"), _("E-Mail"), _("Homepage")];
         $content = $edit_form->editTextfieldGeneric("aliases", $names, $info, 30, 60);
-        
+
         $content_table = $edit_form->editContentTable($headline, $content);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $out = $content_table . $edit_form->getEditFormContent($this->attributes);
-        
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($out, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return  $element_headline . $out;
     }
 }

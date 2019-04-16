@@ -15,10 +15,10 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <? if (!$prelim) : ?>
                 <span class="required">
-                    <?= _("Benutzername:") ?>
+                    <?= _("Benutzername") ?>
                 </span>
             <? else: ?>
-                <?= _("Benutzername:") ?>
+                <?= _("Benutzername") ?>
             <? endif ?>
 
             <input class="user_form" type="text" name="username" value="<?= $user['username'] ?>" <?= (!$prelim ? 'required' : '')?> >
@@ -26,7 +26,7 @@ use Studip\Button, Studip\LinkButton;
 
         <label>
             <span class="required">
-                <?= _("Globaler Status:") ?>
+                <?= _("Globaler Status") ?>
             </span>
 
             <select class="user_form" name="perm" id="perm" onchange="jQuery('#admin_special').toggle( jQuery('#institut').val() != '0' && jQuery('#perm').val() == 'admin' )">
@@ -46,7 +46,7 @@ use Studip\Button, Studip\LinkButton;
         </label>
 
         <label>
-            <?= _("Sichtbarkeit:") ?>
+            <?= _("Sichtbarkeit") ?>
             <? if (!$prelim) : ?>
                 <?= vis_chooser($user['visible'], true) ?>
             <? else : ?>
@@ -56,7 +56,7 @@ use Studip\Button, Studip\LinkButton;
 
         <label>
             <span class="required">
-                <?= _("Vorname:") ?>
+                <?= _("Vorname") ?>
             </span>
 
             <input class="user_form" type="text" name="Vorname" value="<?= htmlReady($user['Vorname']) ?>" required>
@@ -64,14 +64,14 @@ use Studip\Button, Studip\LinkButton;
 
         <label>
             <span class="required">
-                <?= _("Nachname:") ?>
+                <?= _("Nachname") ?>
             </span>
 
             <input class="user_form" type="text" name="Nachname" value="<?= htmlReady($user['Nachname']) ?>" required>
         </label>
 
         <section>
-            <?= _("Geschlecht:") ?>
+            <?= _("Geschlecht") ?>
             <div class="hgroup">
                 <label>
                     <input id="unknown" type="radio" name="geschlecht" value="0"
@@ -99,7 +99,7 @@ use Studip\Button, Studip\LinkButton;
         </section>
 
         <label>
-            <?= _("Titel:") ?>
+            <?= _("Titel") ?>
 
             <div class="hgroup">
                 <select name="title_front_chooser" onchange="jQuery('input[name=title_front]').val( jQuery(this).val() );" class="size-s">
@@ -112,7 +112,7 @@ use Studip\Button, Studip\LinkButton;
         </label>
 
         <label>
-            <?=_("Titel nachgestellt:") ?>
+            <?=_("Titel nachgestellt") ?>
 
             <div class="hgroup">
                 <select name="title_rear_chooser" onchange="jQuery('input[name=title_rear]').val( jQuery(this).val() );" class="size-s">
@@ -140,10 +140,10 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <? if (!$prelim) : ?>
             <span class="required">
-                <?= _("E-Mail:") ?>
+                <?= _("E-Mail") ?>
             </span>
             <? else : ?>
-                <?= _("E-Mail:") ?>
+                <?= _("E-Mail") ?>
             <? endif ?>
 
             <input class="user_form" type="email" name="Email" value="<?= htmlReady($user['Email']) ?>" <?= (!$prelim ? 'required' : '')?>>
@@ -158,7 +158,7 @@ use Studip\Button, Studip\LinkButton;
         <? endif ?>
 
         <label>
-            <?= _("Einrichtung:") ?>
+            <?= _("Einrichtung") ?>
 
             <select id="institut" class="user_form nested-select" name="institute" onchange="jQuery('#admin_special').toggle( jQuery('#institut').val() != '0' && jQuery('#perm').val() == 'admin')">
                 <option value="" class="is-placeholder">
@@ -191,7 +191,7 @@ use Studip\Button, Studip\LinkButton;
 
         <? if (count($domains) > 0) : ?>
         <label>
-            <?= _("Nutzerdomäne:") ?>
+            <?= _("Nutzerdomäne") ?>
 
             <select class="user_form" name="select_dom_id">
                 <option value=""><?= _('-- Bitte Nutzerdomäne auswählen --') ?></option>

@@ -25,7 +25,7 @@
             </div>
 
             <section>
-                <?=  _('Verschicken Sie die Export-Adresse als Email:') ?>
+                <?=  _('Verschicken Sie die Export-Adresse als E-Mail:') ?>
                 <input type="email" name="email" value="<?= htmlReady($GLOBALS['user']->email) ?>" required="required">
                 <?= Button::create(_('Abschicken'), 'submit_email', ['title' => _('Abschicken')]) ?>
             </section>

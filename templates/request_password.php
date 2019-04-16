@@ -57,7 +57,7 @@ if ($bg_mobile) {
                     <? endif ?>
                     <section>
                         <label>
-                            <?= _('E-Mail:') ?>
+                            <?= _('E-Mail') ?>
                             <input type="email" name="email" autofocus
                                    value="<?= htmlReady($email) ?>"
                                    size="20" maxlength="63">

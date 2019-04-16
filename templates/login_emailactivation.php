@@ -29,10 +29,8 @@ use Studip\Button, Studip\LinkButton;
 <form action="activate_email.php" method="post">
 <?= CSRFProtection::tokenTag() ?>
 <input type="hidden" name="uid" value="<?= $uid ?>">
-<table><tr><td><?= _('E-Mail:') ?></td><td><input name="email1"></td></tr>
-<tr><td><?= _('Wiederholung:') ?></td><td><input name="email2"></td></tr></table>
+<table><tr><td><?= _('E-Mail') ?>:</td><td><input name="email1"></td></tr>
+<tr><td><?= _('Wiederholung') ?>:</td><td><input name="email2"></td></tr></table>
 <?= Button::createAccept(_('Abschicken'))  ?>
 </form>
 </td></tr></table></div><br>
-
-
