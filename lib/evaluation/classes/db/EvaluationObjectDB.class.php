@@ -80,7 +80,7 @@ class EvaluationObjectDB extends DatabaseObject {
        global $user;
 
        if ($rangeID == "studip") {
-           return _("Systemweite Evaluationen");
+           return _('Systemweite Evaluationen');
        }
        $o_type = get_object_type($rangeID, ['sem','user','inst']);
        if (in_array($o_type, ['sem','inst','fak'])) {
@@ -91,7 +91,7 @@ class EvaluationObjectDB extends DatabaseObject {
                else
                $rangename = $name;
            } else {
-               $rangename = _("Kein Titel gefunden.");
+               $rangename = _('Kein Titel gefunden.');
            }
            return $rangename;
        }
@@ -102,11 +102,11 @@ class EvaluationObjectDB extends DatabaseObject {
        }
 
        if ($user_id != $user->id) {
-           $rangename = _("Profil: ")
-           . get_fullname($user_id,'full',1)
-           . " (".get_username($user_id).")";
+           $rangename = _('Profil') . ': '
+           . get_fullname($user_id, 'full', true)
+           . ' (' . get_username($user_id) . ')';
        } else {
-           $rangename = _("Profil");
+           $rangename = _('Profil');
        }
        return $rangename;
    }

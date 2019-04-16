@@ -520,15 +520,15 @@ if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
       $o_type = get_object_type($eval_range, ['studip','user','sem','inst']);
       switch($o_type) {
       case 'global':
-          $name = _("Systemweite Evaluationen");
+          $name = _('Systemweite Evaluationen');
           break;
       case 'sem':
-          $name = _("Veranstaltung:");
+          $name = _('Veranstaltung') . ':';
           $seminar = Seminar::getInstance($eval_range);
           $name .= ' ' . $seminar->getName();
           $name .= ' (' . Semester::findByTimestamp($seminar->semester_start_time)->name;
           if ($seminar->semester_duration_time == -1) {
-              $name .= ' - ' . _("unbegrenzt");
+              $name .= ' - ' . _('unbegrenzt');
           }
           if ($seminar->semester_duration_time > 0) {
               $name .= ' - ' . Semester::findByTimestamp($seminar->semester_start_time + $seminar->semester_duration_time)->name;
@@ -538,16 +538,16 @@ if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
           $name .= ' (' . join(', ' , $dozenten) . ')';
           break;
       case 'user':
-          $name = _("Profil:");
+          $name = _('Profil') . ':';
           $name .= ' ' . get_fullname($eval_range);
           break;
       case 'inst':
       case 'fak':
-          $name = _("Einrichtung:");
+          $name = _('Einrichtung') . ':';
           $name .= ' ' . Institute::find($eval_range)->name;
           break;
       default:
-          $name = _("unbekannt");
+          $name = _('unbekannt');
       }
       $eval_ranges_names[] = $name;
   }

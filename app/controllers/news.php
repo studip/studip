@@ -49,7 +49,7 @@ class NewsController extends StudipController
                 'icon'  => 'seminar',
             ],
             'user' => [
-                'title' => _('Profile'),
+                'title' => _('Profil'),
                 'icon'  => 'person',
             ],
         ];
