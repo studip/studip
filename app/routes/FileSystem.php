@@ -167,6 +167,48 @@ class FileSystem extends \RESTAPI\RouteMap
         $this->halt(200);
     }
 
+    /**
+     * Upload file to given folder.
+     * file data has to be attached as multipart/form-data
+     *
+     * @post /file/:folder_id
+     */
+    public function uploadFile($folder_id)
+    {
+        $typed_folder = $this->requireFolder($folder_id)->getTypedFolder();
+        if (isset($this->data['_FILES'])) {
+            $file_data = array_map(function ($a) {
+                return is_array($a) ? $a : [$a];
+            }, array_shift($this->data['_FILES']));
+        }
+        if (is_array($file_data)) {
+            $validated_files = \FileManager::handleFileUpload(
+                $file_data,
+                $typed_folder,
+                $this->requireUser()->id
+            );
+
+            if (count($validated_files['error']) > 0) {
+                $this->error(500, 'Error while uploading files: ' . implode(' ', $validated_files['error']));
+            }
+
+            $uploaded_files = \SimpleCollection::createFromArray($validated_files['files']);
+            $default_license = \ContentTermsOfUse::findDefault();
+            $uploaded_files->setValue('content_terms_of_use_id', $default_license->id);
+            $uploaded_files->store();
+            if (count($uploaded_files) === 1) {
+                $result = $this->filerefToJSON($uploaded_files->first());
+            } else {
+                $result = $uploaded_files->map(function ($f) {
+                    return $this->filerefToJSON($f);
+                });
+            }
+            $this->halt(201, [], $result);
+        } else {
+            $this->error(400, 'No files found in request.');
+        }
+    }
+
     // FOLDER ROUTES:
 
     /**
