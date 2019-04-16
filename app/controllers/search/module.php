@@ -148,7 +148,7 @@ class Search_ModuleController extends MVVController
         $sidebar->addWidget($widget, 'sem_filter');
 
         $this->input_search = $this->sterm;
-        $this->result_count = count($this->search_result['Modul']);
+        $this->result_count = is_array($this->search_result['Modul']) ? count($this->search_result['Modul']) : 0;
 
         $drill_down['studiengaenge']['objects'] =
                 $this->drilldown_studiengaenge($this->search_result['Modul']);
