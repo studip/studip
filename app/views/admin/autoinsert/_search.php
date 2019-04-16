@@ -8,11 +8,11 @@ use Studip\Button, Studip\LinkButton;
         <?= _('Suche nach Veranstaltungen')?>
     </legend>
     <label>
-        <?= _('Semester:') ?>
+        <?= _('Semester') ?>
         <?=SemesterData::GetSemesterSelector(['name' => 'sem_select', 'id' => 'sem_select', 'class' => 'user_form'], $sem_select, 'key', true)?>
     </label>
     <label>
-        <?= _('Veranstaltung:') ?>
+        <?= _('Veranstaltung') ?>
         <input type="text" name="sem_search" value="<?= htmlReady($sem_search) ?>" id="sem_search" class="user_form" required>
     </label>
 </fieldset>

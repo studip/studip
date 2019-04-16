@@ -43,12 +43,12 @@ foreach ($order as $position) {
                 $data["content"] = str_repeat(_("Das sind meine Publikationen.") . " &nbsp;", 15);
                 break;
             case "news" :
-                $data[0]["topic"] = _("Das ist News Nr. 1");
-                $data[0]["body"] = str_repeat(_("News Nr. 1") . " &nbsp;", 10);
-                $data[1]["topic"] = _("Das ist News Nr. 2");
-                $data[1]["body"] = str_repeat(_("News Nr. 2") . " &nbsp;", 10);
-                $data[2]["topic"] = _("Das ist News Nr. 3");
-                $data[2]["body"] = str_repeat(_("News Nr. 3") . " &nbsp;", 10);
+                $data[0]["topic"] = sprintf(_('Das ist News Nr. %u'), 1);
+                $data[0]["body"] = str_repeat(sprintf(_('News Nr. %u'), 1) . " &nbsp;", 10);
+                $data[1]["topic"] = sprintf(_('Das ist News Nr. %u'), 2);
+                $data[1]["body"] = str_repeat(sprintf(_('News Nr. %u'), 2) . " &nbsp;", 10);
+                $data[2]["topic"] = sprintf(_('Das ist News Nr. %u'), 3);
+                $data[2]["body"] = str_repeat(sprintf(_('News Nr. %u'), 3) . " &nbsp;", 10);
                 break;
             case "termine" :
                 $now = time();
@@ -72,35 +72,22 @@ foreach ($order as $position) {
                 $data[0]["start_time"] = $now - 164160000;
                 $data[1]["start_time"] = $now;
                 $data[2]["start_time"] = $now + 164160000;
-                $data[0]["name"] = _("Veranstaltung 1");
-                $data[1]["name"] = _("Veranstaltung 2");
-                $data[2]["name"] = _("Veranstaltung 3");
-                $data[0]["untertitel"] = _("Untertitel der Veranstaltung 1");
-                $data[1]["untertitel"] = _("Untertitel der Veranstaltung 2");
-                $data[2]["untertitel"] = _("Untertitel der Veranstaltung 3");
+                $data[0]["name"] = sprintf(_('Veranstaltung %u'), 1);
+                $data[1]["name"] = sprintf(_('Veranstaltung %u'), 2);
+                $data[2]["name"] = sprintf(_('Veranstaltung %u'), 3);
+                $data[0]["untertitel"] = sprintf(_('Untertitel der Veranstaltung %u'), 1);
+                $data[1]["untertitel"] = sprintf(_('Untertitel der Veranstaltung %u'), 2);
+                $data[2]["untertitel"] = sprintf(_('Untertitel der Veranstaltung %u'), 3);
                 break;
             case "head" :
                 $nameformat = $this->config->getValue("Main", "nameformat");
-                switch ($nameformat) {
-                    case "no_title_short" :
-                        $data["fullname"] = _("Meyer, P.");
-                        break;
-                    case "no_title" :
-                        $data["fullname"] = _("Peter Meyer");
-                        break;
-                    case "no_title_rev" :
-                        $data["fullname"] = _("Meyer Peter");
-                        break;
-                    case "full" :
-                        $data["fullname"] = _("Dr. Peter Meyer");
-                        break;
-                    case "full_rev" :
-                        $data["fullname"] = _("Meyer, Peter, Dr.");
-                        break;
-                    default :
-                        $data["fullname"] = _("Dr. Peter Meyer");
-                        break;
-                }
+                $user = User::build([
+                    'vorname'     => 'Peter',
+                    'nachname'    => 'Meyer',
+                    'title_front' => 'Dr.',
+                ]);
+
+                $data['fullname'] = $user->getFullName($nameformat);
                 $data['instfunction'] = _("HochschullehrerIn");
                 $data["Name"] = _("Mustereinrichtung");
                 $data["Strasse"] = _("Musterstra&szlig;e 23");

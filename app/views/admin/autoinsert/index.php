@@ -31,7 +31,7 @@ use Studip\Button, Studip\LinkButton;
         </legend>
 
         <label>
-            <?= _('Veranstaltung:') ?>
+            <?= _('Veranstaltung') ?>
             <select name="sem_id" id="sem_id">
                 <? foreach ($seminar_search as $seminar): ?>
                     <option value="<?= $seminar[0] ?>">

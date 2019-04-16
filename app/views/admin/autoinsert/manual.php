@@ -53,7 +53,7 @@ use Studip\Button, Studip\LinkButton;
         <tbody>
             <tr>
                 <td>
-                    <label for="sem_id"><?= _('Veranstaltung:') ?></label>
+                    <label for="sem_id"><?= _('Veranstaltung') ?></label>
                 </td>
                 <td colspan="2">
                     <select name="sem_id" id="sem_id" style="width: 100%;">
@@ -68,7 +68,7 @@ use Studip\Button, Studip\LinkButton;
         <? if (count($filtertype) != count($available_filtertypes)): ?>
             <tr>
                 <td>
-                    <legend for="add_filtertype"><?= _('Filterkriterien') ?>:</legend>
+                    <legend for="add_filtertype"><?= _('Filterkriterien') ?></legend>
                 </td>
                 <td colspan="2">
                     <select name="add_filtertype">
