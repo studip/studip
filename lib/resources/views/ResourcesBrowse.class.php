@@ -225,7 +225,7 @@ class ResourcesBrowse {
                 </colgroup>
                 <tbody>
                     <tr>
-                        <th colspan="4"><?= _('Einzeltermin:') ?></th>
+                        <th colspan="4"><?= _('Einzeltermin') ?>:</th>
                     </tr>
                     <tr>
                         <td>

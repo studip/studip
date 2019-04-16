@@ -193,7 +193,7 @@ class ShowSchedulesRequests extends ShowSchedules{
             foreach($assignObjectsWeek as $ao){
                 $name = $ao->getOwnerName();
                 if($reqObj->getTerminId()){
-                    $add_info = _("(Einzeltermin)");
+                    $add_info = '(' . _('Einzeltermin') . ')';
                     $color = 6;
                 } else {
                     $add_info = '(' . _("Sammelanfrage");
