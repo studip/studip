@@ -2026,7 +2026,7 @@ class EvalOverview {
             $td->addAttr("colspan", "2");
 //       $td->addContent(new HTMLempty("hr"));
             $b = new HTML("b");
-#       $b->addContent (_("Suchergebnisse:"));
+#       $b->addContent (_('Suchergebnisse') . ':');
             if (Request::get("search"))
                 $b->addContent(_("Sie können die Evaluation folgenden Bereichen zuordnen (Suchergebnisse):"));
             else

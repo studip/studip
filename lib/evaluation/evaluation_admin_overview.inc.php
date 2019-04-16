@@ -256,7 +256,7 @@ if( $evalAction == "search_showrange" && Request::get("search") ) {
     $line->addAttr ("size", "1");
     $line->addAttr ("noshade", "noshade");
 #$td->addContent ($line);
-    $b->addContent(_("Suchergebnisse:"));
+    $b->addContent(_('Suchergebnisse') . ':');
     $td->addContent ($b);
 
     $td->addHTMLContent ($lib->createDomainLinks (Request::get("search")));

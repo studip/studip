@@ -507,9 +507,12 @@ class SemBrowse {
 
             echo '<table class="default" id="sem_search_result">';
             echo '<caption>'
-                . sprintf(_(' %s Veranstaltungen gefunden %s, Gruppierung: %s'), count($visibles),
-                (($this->sem_browse_data['sset']) ? _('(Suchergebnis)') : ''),
-                $this->group_by_fields[$this->sem_browse_data['group_by']]['name'])
+                . sprintf(
+                    _('%s Veranstaltungen gefunden %s, Gruppierung: %s'),
+                    count($visibles),
+                    $this->sem_browse_data['sset'] ? '(' . _('Suchergebnis') . ')' : '',
+                    $this->group_by_fields[$this->sem_browse_data['group_by']]['name']
+                )
                 . '</caption>';
 
             foreach ($group_by_data as $group_field => $sem_ids) {
@@ -635,9 +638,17 @@ class SemBrowse {
             $worksheet1->set_row(0, 20);
             $worksheet1->write_string(0, 0, mb_convert_encoding($headline, 'WINDOWS-1252') ,$head_format);
             $worksheet1->set_row(1, 20);
-            $worksheet1->write_string(1, 0, mb_convert_encoding(sprintf(_(' %s Veranstaltungen gefunden %s, Gruppierung: %s'),count($sem_data),
-                (($this->sem_browse_data['sset']) ? _('(Suchergebnis)') : ''),
-                $this->group_by_fields[$this->sem_browse_data['group_by']]['name']), 'WINDOWS-1252'), $caption_format);
+            $worksheet1->write_string(
+                1,
+                0,
+                mb_convert_encoding(sprintf(
+                    _('%s Veranstaltungen gefunden %s, Gruppierung: %s'),
+                    count($sem_data),
+                    $this->sem_browse_data['sset'] ? '(' . _('Suchergebnis') . ')' : '',
+                    $this->group_by_fields[$this->sem_browse_data['group_by']]['name']
+                ), 'WINDOWS-1252'),
+                $caption_format
+            );
 
             $worksheet1->write_blank(0, 1, $head_format);
             $worksheet1->write_blank(0, 2, $head_format);
