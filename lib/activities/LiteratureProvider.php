@@ -15,7 +15,7 @@ class LiteratureProvider implements ActivityProvider
      *
      * @param object $activity the activity to fill with details, passed by reference
      */
-    public static function getActivityDetails($activity)
+    public function getActivityDetails($activity)
     {
         $activity->content = \htmlReady($activity->content);
 
