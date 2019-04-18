@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableParagraphHeadline.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableParagraphHeadline.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -51,12 +51,12 @@ class ExternElementTableParagraphHeadline extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableParagraphHeadline";
         $this->real_name = _("Absatzüberschrift");
         $this->description = _("Angaben zur Formatierung einer Absatzüberschrift.");
     }
-    
+
     function toString ($args = null) {
         $out = "\n" . $this->config->getTag($this->name, "tr") . "\n";
         $out .= $this->config->getTag($this->name, "td");
@@ -65,10 +65,8 @@ class ExternElementTableParagraphHeadline extends ExternElement {
         else
             $out .= $args["content"];
         $out .= "</td>\n</tr>";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

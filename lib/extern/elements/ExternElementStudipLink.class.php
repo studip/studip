@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -93,16 +93,16 @@ class ExternElementStudipLink extends ExternElement {
 
         $content = $edit_form->editAlign("align");
 
-        $title = _("Linktext:");
+        $title = _('Linktext') . ':';
         $info = _("Geben Sie den Text für den Link ein.");
         $content .= $edit_form->editTextfieldGeneric("linktext", $title, $info, 40, 150);
 
-        $title = _("Bild anzeigen:");
+        $title = _('Bild anzeigen') . ':';
         $info = _("Anwählen, wenn ein Bild als Link angezeigt werden soll.");
         $value = "1";
         $content .= $edit_form->editCheckboxGeneric("image", $title, $info, $value, "");
 
-        $title = _("Bild-URL:");
+        $title = _('Bild-URL') . ':';
         $info = _("Geben Sie die URL eines Bildes ein, dass als Link dienen soll. Wenn Sie keine URL angeben, wird ein Standard-Bild (Pfeile) ausgegeben.");
         $content .= $edit_form->editTextfieldGeneric("imageurl", $title, $info, 40, 150);
 
@@ -163,5 +163,3 @@ class ExternElementStudipLink extends ExternElement {
     }
 
 }
-
-?>

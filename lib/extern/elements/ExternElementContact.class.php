@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -97,33 +97,33 @@ class ExternElementContact extends ExternElement {
         $field_names = [_("Raum"), _("Telefon"), _("Fax"), _("E-Mail"), _("Homepage"), _("Sprechzeiten")];
         $table = $edit_form->editMainSettings($field_names, "", ["width", "sort", "widthpp"]);
 
-        $title = _("Überschrift:");
+        $title = _('Überschrift') . ':';
         $info = _("Überschrift der Kontakt-Daten");
         $table .= $edit_form->editTextfieldGeneric("headline", $title, $info, 35, 100);
 
-        $title = _("Standard-Adresse:");
+        $title = _('Standard-Adresse') . ':';
         $info = _("Wenn Sie diese Option wählen, wird die Standard-Adresse ausgegeben, die jede(r) Mitarbeiter(in) bei seinen universitären Daten auswählen kann. Wählen Sie diese Option nicht, wenn immer die Adresse der Einrichtung ausgegeben werden soll.");
         $table .= $edit_form->editCheckboxGeneric('defaultadr', $title, $info, '1', '0');
 
-        $title = _("Personenname ausblenden:");
+        $title = _('Personenname ausblenden') . ':';
         $info = _("Unterdrückt die Anzeige des Namens im Adressfeld.");
         $table .= $edit_form->editCheckboxGeneric('hidepersname', $title, $info, '1', '0');
 
-        $title = _("Funktionen anzeigen:");
+        $title = _('Funktionen anzeigen') . ':';
         $info = _("Ausgabe der Funktionen der Mitarbeiterin/des Mitarbeiters in der Einrichtung.");
         $table .= $edit_form->editCheckboxGeneric('showinstgroup', $title, $info, '1', '0');
 
-        $title = _("Einrichtungsname:");
+        $title = _('Einrichtungsname') . ':';
         $info = _("Anzeige des Einrichtungsnamens. Der Name kann auch als Link auf die in Stud.IP angegebene URL (unter Grunddaten der Einrichtung) angezeigt werden.");
         $values = ['1', '0', 'link'];
         $names = [_("nicht anzeigen"), _("anzeigen"), _("als Link anzeigen")];
         $table .= $edit_form->editRadioGeneric('hideinstname', $title, $info, $values, $names);
 
-        $title = _("E-Mail und Hompage getrennt:");
+        $title = _('E-Mail und Hompage getrennt') . ':';
         $info = _("Sinnvoll ist diese Option bei sehr langen E-Mail-Adressen und Homepage-Links der Mitarbeiter. Diese werden dann unterhalb des Adressfeldes ausgegeben.");
         $table .= $edit_form->editCheckboxGeneric('separatelinks', $title, $info, '1', '0');
 
-        $title = _("Adresszusatz:");
+        $title = _('Adresszusatz') . ':';
         $info = _("Zusatz zur Adresse der Einrichtung, z.B. Universitätsname.");
         $table .= $edit_form->editTextfieldGeneric("adradd", $title, $info, 35, 100);
 
@@ -168,5 +168,3 @@ class ExternElementContact extends ExternElement {
     }
 
 }
-
-?>

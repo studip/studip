@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTreeLevelName.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTreeLevelName.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -53,57 +53,55 @@ class ExternElementRangeTreeLevelName extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "RangeTreeLevelName";
         $this->real_name = _("Name der Ebene");
         $this->description = _("Formatierung des Ebenennamens in einer Baum-Navigation.");
     }
-    
+
     function getDefaultConfig () {
         global $INST_TYPE;
         $config = parent::getDefaultConfig();
         foreach ($INST_TYPE as $type)
             $names .= "|{$type['name']}:";
         $config["aliases"] = $names;
-        
+
         return $config;
     }
-    
+
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
-        
+
         global $INST_TYPE;
-        
+
         if ($faulty_values == '')
-            $faulty_values = [];   
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';
         if ($edit_form == '')
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
-        
+
         $headline = $edit_form->editHeadline(_("Bezeichnungen"));
         $info = _("Geben Sie eine alternative Bezeichnung ein.");
         foreach ($INST_TYPE as $type)
             $names[] = $type["name"];
         $content = $edit_form->editTextfieldGeneric("aliases", $names, $info, 35, 200);
-        
+
         $content_table = $edit_form->editContentTable($headline, $content);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $out = $content_table . $edit_form->getEditFormContent($this->attributes);
-        
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($out, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return  $element_headline . $out;
     }
-    
-}
 
-?>
+}

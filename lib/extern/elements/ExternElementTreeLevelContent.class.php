@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTreeLevelContent.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTreeLevelContent.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -53,12 +53,10 @@ class ExternElementTreeLevelContent extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TreeLevelContent";
         $this->real_name = _("Inhalt der Ebene");
         $this->description = _("Formatierung des Ebeneninhalts in einer Baum-Navigation.");
     }
-    
-}
 
-?>
+}

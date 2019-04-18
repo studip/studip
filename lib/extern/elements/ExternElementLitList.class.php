@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementLitList.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <thienel@data-quest.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementLitList.class.php
-// 
+//
 // Copyright (C) 2007 Peter Thienel <thienel@data-quest.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -38,7 +38,7 @@
 // +---------------------------------------------------------------------------+
 
 require_once 'ExternElementTemplateGeneric.class.php';
-     
+
 class ExternElementLitList extends ExternElement {
 
     var $attributes = ['div_style_change', 'div_class_change', 'span_style_name', 'span_class_name',
@@ -48,7 +48,7 @@ class ExternElementLitList extends ExternElement {
                     'LILIST_ITEM' => ['LITLIST_ITEM_ELEMENT'],
                     'LITLIST_NAME']];
     var $rendered_content = '';
-    
+
     /**
     * Constructor
     *
@@ -58,12 +58,12 @@ class ExternElementLitList extends ExternElement {
         if ($config) {
             $this->config = $config;
         }
-        
+
         $this->name = "LitList";
         $this->real_name = _("Literaturliste");
         $this->description = _("Eigenschaften einer Literaturliste.");
     }
-    
+
     function getMarkerDescription ($element_name) {
         $markers['LitList'] = [
             ['<!-- BEGIN LITLISTS -->', ''],
@@ -81,48 +81,48 @@ class ExternElementLitList extends ExternElement {
         ];
         return $markers[$element_name];
     }
-        
+
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
-            
+
         if ($faulty_values == '')
-            $faulty_values = [];   
+            $faulty_values = [];
         $out = '';
         $tag_headline = '';
         $table = '';
         if ($edit_form == '')
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
-        
+
         $edit_form_headlines = [
                 'div_change' => _("Bereich mit Änderungsdatum und Name (HTML-Tag &lt;div&gt;)"),
                 'span_name' => _("Formatierung des Namens (HTML-Tag &lt;span&gt;)")];
         $content_table = $edit_form->getEditFormContent($this->attributes, $edit_form_headlines);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $headline = $edit_form->editHeadline(_("Weitere Optionen"));
 
-        $title = _("Änderungsdatum anzeigen:");
+        $title = _('Änderungsdatum anzeigen') . ':';
         $info = _("Ausgabe des Änderungsdatums und des Namens der Person, die die Änderungen vorgenommen hat");
         $content = $edit_form->editCheckboxGeneric('showlastchange', $title, $info, 1, '');
-        
-        $title = _("Alternative Formatierung:");
+
+        $title = _('Alternative Formatierung') . ':';
         $info = _("Geben Sie hier eine alternative Formatierungsregel an, mit der alle Literaturlisten einheitlich Formatiert werden sollen. Wird keine Formatierung angegeben, wird die Formatierung benutzt, die der Autor der Literaturliste vorgesehen hat.");
         $content .= $edit_form->editTextareaGeneric('formatting', $title, $info, 5, 35);
-        
+
         $content_table .= $edit_form->editContentTable($headline, $content);
         $content_table .= $edit_form->editBlankContent();
-                
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return  $element_headline . $out;
     }
-    
+
     function checkValue ($attribute, $value) {
         if ($attribute == 'formatting') {
             return !preg_match(":^[0-9a-z{}*|#%+\-_^]{0,450}$:", $value);
@@ -132,14 +132,14 @@ class ExternElementLitList extends ExternElement {
                 $_POST['LitList_showlastchange'] = 0;
                 return FALSE;
             }
-                
+
             return !($value == '1' || $value == '');
         }
     }
-    
+
     function getContent ($args) {
         global $_fullname_sql;
-        
+
         $content = [];
         $dbv = DbView::getView('literatur');
         if (is_array($args) && isset($args['user_id'])) {
@@ -176,9 +176,7 @@ class ExternElementLitList extends ExternElement {
                 }
             }
         }
-        
+
         return $content;
     }
 }
-
-?>

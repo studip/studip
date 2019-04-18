@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableRowTwoColumns.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableRowTwoColumns.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -44,7 +44,7 @@ class ExternElementTableRowTwoColumns extends ExternElement {
             "font1_size", "td1width", "font1_color", "font1_class", "font1_style",
             "td2_align", "td2_valign", "td2_bgcolor", "td2_class", "td2_style",
             "font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
-            
+
     /**
     * Constructor
     *
@@ -53,18 +53,18 @@ class ExternElementTableRowTwoColumns extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableRowTwoColumns";
         $this->real_name = _("Zeile mit zwei Spalten");
         $this->description = _("Angaben zur Formatierung einer Tabellenzeile mit zwei Spalten.");
-        
+
         $this->headlines = [_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Linke Spalte &lt;td&gt;"),
             _("Linke Spalte &lt;font&gt;"), _("Rechte Spalte &lt;td&gt;"),
             _("Rechte Spalte &lt;font&gt;")];
     }
-    
+
     /**
-    * 
+    *
     */
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
@@ -72,48 +72,46 @@ class ExternElementTableRowTwoColumns extends ExternElement {
         $table = "";
         if ($edit_form == "")
             $edit_form = new ExternEditModule($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
-        
+
         $attributes = ["tr_height", "tr_class", "tr_style"];
         $headline = ["tr" => $this->headlines[0]];
         $content_table = $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $headline = $edit_form->editHeadline($this->headlines[1]);
-        
-        $title = _("Spaltenbreite:");
+
+        $title = _('Spaltenbreite') . ':';
         $info = _("Breite der Spalte in Prozent.");
         $table = $edit_form->editTextfieldGeneric("td1width", $title, $info, 2, 2);
-        
+
         $table .= $edit_form->editAlign("td1_align");
         $table .= $edit_form->editValign("td1_valign");
         $table .= $edit_form->editBgcolor("td1_bgcolor");
         $table .= $edit_form->editClass("td1_class");
         $table .= $edit_form->editStyle("td1_style");
-        
+
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $attributes = ["font1_face",   "font1_size","font1_color", "font1_class",
                 "font1_style", "td2_align", "td2_valign", "td2_bgcolor", "td2_class",
                 "td2_style", "font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
         $headline = ["font1" => $this->headlines[2], "td2" => $this->headlines[3],
                 "font2" => $this->headlines[4]];
         $content_table .= $edit_form->getEditFormContent($attributes, $headline);
-        
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return $element_headline . $out;
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

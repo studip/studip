@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableFooter.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableFooter.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -50,12 +50,10 @@ class ExternElementTableFooter extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-            
+
         $this->name = "TableFooter";
         $this->real_name = _("Tabellenfuß");
         $this->description = _("Der Tabellenfuß enthält keine administrierbaren Attribute.");
     }
 
 }
-
-?>

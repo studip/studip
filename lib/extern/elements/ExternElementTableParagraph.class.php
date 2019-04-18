@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableParagraph.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableParagraph.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -51,17 +51,15 @@ class ExternElementTableParagraph extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableParagraph";
         $this->real_name = _("Allgemeine Angaben zum Absatz");
         $this->description = _("Der Absatz wird mit Hilfe einer Tabelle aufgebaut.");
     }
-    
+
     function toString ($args = null) {
         return "\n" . $this->config->getTag($this->name, "table") . $args["content"]
                 . "</table>";
     }
-    
-}
 
-?>
+}

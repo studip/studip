@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableHeadrow.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableHeadrow.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -52,16 +52,16 @@ class ExternElementTableHeadrow extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableHeadrow";
         $this->real_name = _("Kopfzeile");
         $this->description = _("Angaben, die die Kopfzeile einer Tabelle betreffen.");
     }
-    
+
     function toString ($args = NULL) {
         if (!$args["main_module"])
             $args["main_module"] = "Main";
-        
+
         $alias = $this->config->getValue($args["main_module"], "aliases");
         $visible = $this->config->getValue($args["main_module"], "visible");
         // if all visible aliases are empty return empty string
@@ -74,7 +74,7 @@ class ExternElementTableHeadrow extends ExternElement {
         }
         if ($al_empty)
             return '';
-        
+
         $out = "<tr" . $this->config->getAttributes($this->name, "tr") . ">\n";
         $i = 0;
         $zebra = $this->config->getValue($this->name, "th_zebrath_");
@@ -83,15 +83,15 @@ class ExternElementTableHeadrow extends ExternElement {
         $attributes[0] = $this->config->getAttributes($this->name, "th", TRUE);
         $attributes[1] = $this->config->getAttributes($this->name, "th", FALSE);
         $font = $this->config->getTag($this->name, "font", FALSE, TRUE);
-        
+
         foreach ($order as $column) {
-        
+
             // "zebra-effect" in head-row
             if ($zebra)
                 $set = $attributes[++$i % 2];
             else
                 $set = $attributes[1];
-        
+
             if ($visible[$column]) {
             $out .= "<th$set width=\"" . $width[$column] . "\">";
                 if ($font)
@@ -106,10 +106,8 @@ class ExternElementTableHeadrow extends ExternElement {
             }
         }
         $out .= "</tr>\n";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementLinkInternTemplate.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <thienel@data-quest.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementLinkInternTemplate.class.php
-// 
+//
 // Copyright (C) 2007 Peter Thienel <thienel@data-quest.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -53,14 +53,14 @@ class ExternElementLinkInternTemplate extends ExternElementLinkIntern {
         if ($config) {
             $this->config = $config;
         }
-        
+
         $this->name = "LinkInternTemplate";
         $this->real_name = _("Links");
         $this->description = _("Eigenschaften der Verlinkung zu anderen Modulen.");
     }
-    
+
     /**
-    * 
+    *
     */
     function toStringEdit ($post_vars = '', $faulty_values = '',
             $edit_form = '', $anker = '') {
@@ -69,26 +69,24 @@ class ExternElementLinkInternTemplate extends ExternElementLinkIntern {
         $table = '';
         if ($edit_form == '')
             $edit_form = new ExternEditModule($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
-        
+
         $this->toStringConfigSelector($edit_form, $content_table);
-                
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return $element_headline . $out;
     }
-    
+
     function toString ($args = null) {
-        
+
         return $this->createUrl($args);
     }
-    
-}
 
-?>
+}

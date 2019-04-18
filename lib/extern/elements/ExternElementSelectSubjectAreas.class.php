@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -85,14 +85,14 @@ class ExternElementSelectSubjectAreas extends ExternElement {
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
 
-        $title = _("Alle Studienbereiche anzeigen:");
+        $title = _('Alle Studienbereiche anzeigen') . ':';
         $info = _("Wählen Sie diese Option, wenn alle Veranstaltungen aus allen Studienbereichen angezeigt werden sollen - unabhängig von unten vorgenommener Auswahl.");
         $values = '1';
         $names = '';
         $table = $edit_form->editCheckboxGeneric('selectallsubjectareas', $title, $info, $values, $names);
         $table .= $edit_form->editSelectSubjectAreas(new StudipSemTreeSearch('dummy', 'SelectSubjectAreas', FALSE));
 
-        $title = _("Auswahl umkehren:");
+        $title = _('Auswahl umkehren') . ':';
         $info = _("Wählen Sie diese Option, wenn Veranstaltungen aus den ausgewählten Bereichen nicht angezeigt werden sollen.");
         $values = '1';
         $names = '';
@@ -157,5 +157,3 @@ class ExternElementSelectSubjectAreas extends ExternElement {
     }
 
 }
-
-?>

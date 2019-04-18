@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementLink.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementLink.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -50,12 +50,12 @@ class ExternElementLink extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "Link";
         $this->real_name = _("Links");
         $this->description = _("Eigenschaften der Schrift für Links.");
     }
-    
+
     function toString ($args = null) {
         // to set the color of the font in the style-attribute of the a-tag
         if ($color = $this->config->getValue($this->name, "font_color")) {
@@ -63,16 +63,14 @@ class ExternElementLink extends ExternElement {
             $style = "color:$color;$style";
             $this->config->setValue($this->name, "a_style", $style);
         }
-        
+
         $out = $args["content"];
         if ($tag = $this->config->getTag($this->name, "font", FALSE, TRUE))
             $out = $tag . $out . "</font>";
         $out = "<a href=\"{$args['link']}\"" . $this->config->getAttributes($this->name, "a")
                 . ">$out</a>";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

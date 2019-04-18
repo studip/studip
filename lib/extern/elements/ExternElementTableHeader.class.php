@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableHeader.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableHeader.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -43,7 +43,7 @@ class ExternElementTableHeader extends ExternElement {
     var $attributes = ["table_width", "table_align", "table_border", "table_bgcolor",
                 "table_bordercolor", "table_cellpadding", "table_cellspacing", "table_class",
                 "table_style"];
-    
+
     /**
     * Constructor
     *
@@ -52,19 +52,17 @@ class ExternElementTableHeader extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableHeader";
         $this->real_name = _("Tabellenkopf");
         $this->description = _("Angaben zur Gestaltung der Tabelle.");
     }
-    
+
     function toString ($args = null) {
         $out = "\n" . $this->config->getTag($this->name, "table") . "\n";
         $out .= $args["content"] . "</table>\n";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

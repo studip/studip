@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementContentNews.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementContentNews.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -52,23 +52,23 @@ class ExternElementContentNews extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "ContentNews";
         $this->real_name = _("Überschrift und Beschreibung der News");
         $this->description = _("Eigenschaften der Überschrift und der Beschreibung einer News.");
     }
-    
+
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
         $out = "";
         $table = "";
         if ($edit_form == "")
             $edit_form = new ExternEditModule($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
-        
+
         $attributes = ["fonttopic_size", "fonttopic_face", "fonttopic_color",
             "fonttopic_class", "fonttopic_style","divtopic_align", "divtopic_class",
             "divtopic_style", "fontbody_size", "fontbody_face", "fontbody_color",
@@ -79,29 +79,29 @@ class ExternElementContentNews extends ExternElement {
                 "divbody" => _("Ausrichtung News-Beschreibung (HTML-Tag &lt;div&gt;)")];
         $content_table = $edit_form->getEditFormContent($attributes, $headlines);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
-        
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return $element_headline . $out;
-        
+
         return $out;
     }
-    
+
     function toString ($args = null) {
         $font_topic = $this->config->getAttributes($this->name, "fonttopic");
         $font_body = $this->config->getAttributes($this->name, "fontbody");
-        
+
         if ($font_topic)
             $out = "<font$font_topic>{$args['content']['topic']}</font>";
         else
             $out = $args['content']['topic'];
         $out = "<div" . $this->config->getAttributes($this->name, "divtopic") . ">$out</div>\n";
-        
+
         if ($args["content"]["body"]) {
             $out .= "<div" . $this->config->getAttributes($this->name, "divbody");
             if ($font_body)
@@ -110,10 +110,8 @@ class ExternElementContentNews extends ExternElement {
                 $out .= ">{$args['content']['body']}";
             $out .= "</div>\n";
         }
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

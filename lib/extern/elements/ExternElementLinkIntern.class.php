@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -92,7 +92,7 @@ class ExternElementLinkIntern extends ExternElement {
     function toStringConfigSelector (&$edit_form, &$content_table) {
         global $EXTERN_MODULE_TYPES;
         $headline = $edit_form->editHeadline(_("Verlinkung zum Modul"));
-        $title = _("Konfiguration:");
+        $title = _('Konfiguration') . ':';
         $info = _("Der Link ruft das Modul mit der gewählten Konfiguration auf. Wählen Sie \"Standard\", um die von Ihnen gesetzte Standardkonfiguration zu benutzen. Ist für das aufgerufene Modul noch keine Konfiguration erstellt worden, wird die Stud.IP-Default-Konfiguration verwendet.");
         $values = [];
         $names = [];
@@ -115,11 +115,11 @@ class ExternElementLinkIntern extends ExternElement {
         }
         $table = $edit_form->editOptionGeneric('config', $title, $info, $values, $names);
 
-        $title = _("SRI-Link:");
+        $title = _('SRI-Link') . ':';
         $info = _("Wenn Sie die SRI-Schnittstelle benutzen, müssen Sie hier die vollständige URL (mit http://) der Seite angeben, in der das Modul, das durch den Link aufgerufen wird, eingebunden ist. Lassen Sie dieses Feld unbedingt leer, falls Sie die SRI-Schnittstelle nicht nutzen.");
         $table .= $edit_form->editTextfieldGeneric("srilink", $title, $info, 50, 250);
 
-        $title = _("Extern-Link:");
+        $title = _('Extern-Link') . ':';
         $info = _("Wenn Sie die SRI-Schnittstelle nicht benutzen, können Sie hier die vollständige URL (mit http://) der Seite angeben, in der das Modul, das durch den Link aufgerufen wird, eingebunden wird. Lassen Sie dieses Feld unbedingt leer, falls Sie die SRI-Schnittstelle nutzen.");
         $table .= $edit_form->editTextfieldGeneric("externlink", $title, $info, 50, 250);
 

@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementSelectInstitutes.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <thienel@data-quest.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementSelectInstitutes.class.php
-// 
+//
 // Copyright (C) 2006 Peter Thienel <thienel@data-quest.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -49,24 +49,24 @@ class ExternElementSelectInstitutes extends ExternElement {
     public function __construct ($config = '') {
         if ($config != '')
             $this->config = $config;
-        
+
         $this->name = "SelectInstitutes";
         $this->real_name = _("Auswahl der anzuzeigenden Institute/Einrichtungen");
         $this->description = _("Sie können hier die Institute/Einrichtungen auswählen, die auf der externen Seite ausgegeben werden sollen.");
         $this->attributes = ['institutesselected'];
     }
-    
+
     /**
-    * 
+    *
     */
     public function getDefaultConfig () {
         $config = ['institutesselected' => '|'];
-        
+
         return $config;
     }
-    
+
     public function toStringEdit ($post_vars = '', $faulty_values = '', $edit_form = '', $anker = '') {
-                            
+
         if ($faulty_values == '') {
             $faulty_values = [];
         }
@@ -75,22 +75,22 @@ class ExternElementSelectInstitutes extends ExternElement {
         if ($edit_form == '') {
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
         }
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
-        
+
         $table = $edit_form->editSelectInstitutes();
-        
+
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $submit = $edit_form->editSubmit($this->config->getName(), $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return  $element_headline . $out;
     }
-    
+
     public function checkValue ($attribute, $value) {
         if ($attribute == 'institutesselected') {
             if (!is_array($_POST[$this->name . '_' . $attribute])) {
@@ -101,7 +101,5 @@ class ExternElementSelectInstitutes extends ExternElement {
 
         return FALSE;
     }
-    
-}
 
-?>
+}

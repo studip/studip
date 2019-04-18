@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementTableGroup.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementTableGroup.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -52,12 +52,12 @@ class ExternElementTableGroup extends ExternElement {
     function __construct ($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "TableGroup";
         $this->real_name = _("Gruppenüberschriften");
         $this->description = _("Gruppenüberschriften sind Tabellenzeilen, die eine neue Gruppe einleiten.");
     }
-    
+
     function toString ($args = null) {
         if (!$args["main_module"])
             $args["main_module"] = "Main";
@@ -65,7 +65,7 @@ class ExternElementTableGroup extends ExternElement {
             $visible["1"] = $args["colspan"];
         else
             $visible = array_count_values($this->config->getValue($args["main_module"], "visible"));
-        
+
         if ($tag = $this->config->getTag($this->name, "font", FALSE, TRUE))
             $content = $tag . $args["content"] . "</font>";
         else
@@ -77,10 +77,8 @@ class ExternElementTableGroup extends ExternElement {
             $out .= "<td";
         $out .= $this->config->getAttributes($this->name, "td") . ">";
         $out .= "$content</td></tr>\n";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

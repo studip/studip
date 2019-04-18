@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -64,11 +64,11 @@ class ExternElementStudipInfo extends ExternElement {
     function getDefaultConfig () {
         $config = [
             "headline" => _("Weitere Informationen aus Stud.IP zu dieser Veranstaltung"),
-            "homeinst" => _("Heimatinstitut:"),
-            "involvedinst" => _("beteiligte Institute:"),
-            "countuser" => _("In Stud.IP angemeldete Teilnehmende:"),
-            "countpostings" => _("Anzahl der Postings im Stud.IP-Forum:"),
-            "countdocuments" => _("Anzahl der Dokumente im Stud.IP-Downloadbereich:")
+            "homeinst" => _('Heimatinstitut') . ':',
+            "involvedinst" => _('beteiligte Institute') . ':',
+            "countuser" => _('In Stud.IP angemeldete Teilnehmende') . ':',
+            "countpostings" => _('Anzahl der Postings im Stud.IP-Forum') . ':',
+            "countdocuments" => _('Anzahl der Dokumente im Stud.IP-Downloadbereich') . ':',
         ];
 
         return $config;
@@ -93,8 +93,8 @@ class ExternElementStudipInfo extends ExternElement {
         $info = _("Geben Sie jeweils einen Text ein, der an der entsprechenden Stelle ausgegeben werden soll.");
         $attributes = ["headline", "homeinst", "involvedinst", "countuser",
                 "countpostings", "countdocuments"];
-        $titles = [_("Überschrift:"), _("Heimatinstitut:"), _("beteiligte Institute:"),
-                _("Teilnehmende:"), _("Forenbeiträge:"), _("Dokumente:")];
+        $titles = [_('Überschrift') . ':', _('Heimatinstitut') . ':', _('beteiligte Institute') . ':',
+                _('Teilnehmende') . ':', _('Forenbeiträge') . ':', _('Dokumente') . ':'];
         for ($i = 0; $i < sizeof($attributes); $i++)
             $table .= $edit_form->editTextfieldGeneric($attributes[$i], $titles[$i], $info, 40, 150);
 
@@ -123,5 +123,3 @@ class ExternElementStudipInfo extends ExternElement {
     }
 
 }
-
-?>

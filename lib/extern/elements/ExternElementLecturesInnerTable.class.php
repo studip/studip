@@ -1,13 +1,13 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
 # Lifter010: TODO
 /**
 * ExternElementLecturesInnerTable.class.php
-* 
-* 
-* 
+*
+*
+*
 *
 * @author       Peter Thienel <pthienel@web.de>, Suchi & Berg GmbH <info@data-quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
 // ExternElementLecturesInnerTable.class.php
-// 
+//
 // Copyright (C) 2003 Peter Thienel <pthienel@web.de>,
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
@@ -44,7 +44,7 @@ class ExternElementLecturesInnerTable extends ExternElement {
             "td_class", "td_style", "td1_height", "td1_align", "td1_valign",
             "td2_height", "td2_align", "td2_valign", "td2width", "font2_face",
             "font2_size", "font2_color", "font2_class", "font2_style", "td3_align"];
-            
+
     /**
     * Constructor
     *
@@ -53,18 +53,18 @@ class ExternElementLecturesInnerTable extends ExternElement {
     function __construct($config = "") {
         if ($config)
             $this->config = $config;
-        
+
         $this->name = "LecturesInnerTable";
         $this->real_name = _("Veranstaltungsname/Zeiten(Termine)/Lehrende");
         $this->description = _("Formatierung von Veranstaltungsname/Zeiten(Termine)/Lehrenden in der Veranstaltungsübersicht.");
-        
+
         $this->headlines = [_("Angaben zum HTML-Tag &lt;tr&gt;"), _("Angaben zum HTML-Tag &lt;td&gt;"),
             _("Ausrichtung Veranstaltungsname"), _("Ausrichtung Zeiten(Termine)/Lehrenden"),
             _("Schrift Zeiten(Termine)/Lehrende (HTML-Tag &lt;font&gt;)")];
     }
-    
+
     /**
-    * 
+    *
     */
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
@@ -72,69 +72,69 @@ class ExternElementLecturesInnerTable extends ExternElement {
         $table = "";
         if ($edit_form == "")
             $edit_form = new ExternEditModule($this->config, $post_vars, $faulty_values, $anker);
-        
+
         $edit_form->setElementName($this->getName());
         $element_headline = $edit_form->editElementHeadline($this->real_name,
                 $this->config->getName(), $this->config->getId(), TRUE, $anker);
-        
+
         $attributes = ["tr_class", "tr_style", "td_bgcolor", "td_bgcolor2_",
                 "td_class", "td_style"];
         $headline = ["tr" => $this->headlines[0], "td" => $this->headlines[1]];
         $content_table = $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $headline = $edit_form->editHeadline($this->headlines[2]);
-        
+
         $table = $edit_form->editHeight("td1_height");
         $table .= $edit_form->editAlign("td1_align");
         $table .= $edit_form->editValign("td1_valign");
-        
+
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $headline = $edit_form->editHeadline($this->headlines[3]);
-        
+
         $table = $edit_form->editHeight("td2_height");
-        
-        $title = _("Spaltenbreite Zeiten:");
+
+        $title = _('Spaltenbreite Zeiten') . ':';
         $info = _("Breite der Spalte \"Zeiten(Termine)\" in Prozent.");
         $table .= $edit_form->editTextfieldGeneric("td2width", $title, $info, 2, 2);
-        
-        $title = _("Horizontale Ausrichtung Zeiten:");
+
+        $title = _('Horizontale Ausrichtung Zeiten') . ':';
         $info = _("Wählen Sie aus der Auswahlliste die Art der horizontalen Ausrichtung.");
         $values = ["left", "right", "center"];
         $names = [_("linksbündig"), _("rechtsbündig"), _("zentriert")];
         $table .= $edit_form->editOptionGeneric("td2_align", $title, $info, $values, $names);
-        
-        $title = _("Horizontale Ausrichtung Lehrende:");
+
+        $title = _('Horizontale Ausrichtung Lehrende') . ':';
         $info = _("Wählen Sie aus der Auswahlliste die Art der horizontalen Ausrichtung.");
         $values = ["left", "right", "center"];
         $names = [_("linksbündig"), _("rechtsbündig"), _("zentriert")];
         $table .= $edit_form->editOptionGeneric("td3_align", $title, $info, $values, $names);
-        
+
         $table .= $edit_form->editValign("td2_valign");
-        
+
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
-        
+
         $attributes = ["font2_face", "font2_size", "font2_color", "font2_class", "font2_style"];
         $headline = ["font2" => $this->headlines[4]];
         $content_table .= $edit_form->getEditFormContent($attributes, $headline);
         $content_table .= $edit_form->editBlankContent();
-    
+
         $submit = $edit_form->editSubmit($this->config->getName(),
                 $this->config->getId(), $this->getName());
         $out = $edit_form->editContent($content_table, $submit);
         $out .= $edit_form->editBlank();
-        
+
         return $element_headline . $out;
-        
+
         return $out;
     }
-    
+
     function toString ($args = null) {
         static $zebra = 0;
-        
+
         $show_time = $this->config->getValue("Main", "time");
         $show_lecturer = $this->config->getValue("Main", "lecturer");
         if ($show_time && $show_lecturer) {
@@ -154,7 +154,7 @@ class ExternElementLecturesInnerTable extends ExternElement {
           $td_lecturer .= "\" valign=\"" . $this->config->getValue($this->name, "td2_valign");
           $td_lecturer .= " width=\"100%\"";
         }
-        
+
         $out = "<tr" . $this->config->getAttributes($this->name, "tr").">";
         if ($zebra % 2 && $this->config->getValue($this->name, "td_bgcolor2_"))
             $out .= "<td width=\"100%\"".$this->config->getAttributes($this->name, "td", TRUE)."\">\n";
@@ -163,9 +163,9 @@ class ExternElementLecturesInnerTable extends ExternElement {
         $zebra++;
         $out .= "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
         $out .= "<tr" . $this->config->getAttributes($this->name, "tr1") . ">";
-        $out .= "<td$colspan" . $this->config->getAttributes($this->name, "td1") . ">";     
+        $out .= "<td$colspan" . $this->config->getAttributes($this->name, "td1") . ">";
         $out .= "{$args['content']['sem_name']}</td></tr>\n";
-        
+
         if ($show_time || $show_lecturer) {
             $out .= "\n<tr" . $this->config->getAttributes($this->name, "tr2") . ">";
             if ($show_time) {
@@ -176,16 +176,14 @@ class ExternElementLecturesInnerTable extends ExternElement {
             if ($show_lecturer) {
                 $out .= "<td$td_lecturer>";
                 $out .= "<font" . $this->config->getAttributes($this->name, "font2") . ">";
-                
+
                 $out .= "{$args['content']['lecturers']}</font></td>";
             }
             $out .= "</tr>";
         }
         $out .= "</table></td></tr>\n";
-        
+
         return $out;
     }
-    
-}
 
-?>
+}

@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -99,5 +99,3 @@ class ExternElementRangeTreeLevelContent extends ExternElement {
         return  $element_headline . $out;
     }
 }
-
-?>
