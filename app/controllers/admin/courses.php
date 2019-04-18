@@ -122,7 +122,7 @@ class Admin_CoursesController extends AuthenticatedController
 
                 if ($options) {
                     $options = array_merge(
-                        [' ' => _('(keine Auswahl)')],
+                        [' ' => '(' . _('keine Auswahl') . ')'],
                         $options
                     );
                     $selectWidget = new OptionsWidget($datafield->name);
