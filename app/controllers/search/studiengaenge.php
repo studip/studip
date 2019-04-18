@@ -106,7 +106,7 @@ class Search_StudiengaengeController extends MVVController
         }
 
         if (!$this->studiengang || !in_array($this->studiengang->stat, $status_filter)) {
-            PageLayout::postError( _('Unbekannter Studiengang.'));
+            PageLayout::postError( _('Unbekannter Studiengang'));
             $this->relocate($this->url_for('/index'));
             return null;
         }

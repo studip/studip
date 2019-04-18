@@ -43,7 +43,7 @@ class Module_InstituteController extends Module_ModuleController
             ],
             (array)$this->filter
         );
-    
+
         $this->institute = Modul::getAllAssignedInstitutes(
             $this->sortby, $this->order, $filter
         );
@@ -61,7 +61,7 @@ class Module_InstituteController extends Module_ModuleController
     {
         $institut = Institute::find(Request::option('institut_id'));
         if (!$institut) {
-            throw new Exception(_('Unbekannte Einrichtung.'));
+            throw new Exception(_('Unbekannte Einrichtung'));
         }
 
         $this->inst_id = $institut->id;
@@ -90,7 +90,7 @@ class Module_InstituteController extends Module_ModuleController
         } else {
             $institute_filter = $this->inst_id;
         }
-    
+
         $filter = array_merge(
             (array)$this->filter,
             [

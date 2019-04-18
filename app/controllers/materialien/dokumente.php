@@ -13,9 +13,9 @@ class Materialien_DokumenteController extends MVVController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-    
+
         $this->filter = $this->sessGet('filter', []);
-    
+
         Navigation::activateItem($this->me . '/materialien/dokumente');
         $this->action = $action;
     }
@@ -24,9 +24,9 @@ class Materialien_DokumenteController extends MVVController
     {
         $this->initPageParams();
         $this->initSearchParams();
-        
+
         $search_result = $this->getSearchResult('MvvDokument');
-    
+
         $this->filter = array_merge(
             ['mvv_dokument.dokument_id' => $search_result],
             (array)$this->filter
@@ -55,14 +55,14 @@ class Materialien_DokumenteController extends MVVController
         $this->count = MvvDokument::getCount($this->filter);
         $this->show_sidebar_search = true;
         $this->setSidebar();
-    
+
         PageLayout::setTitle(
             _('Verlinkte Materialien/Dokumente')
             . ' ('
             . sprintf(ngettext('%s Dokument', '%s Dokumente', $this->count), $this->count)
             . ')'
         );
-    
+
     }
 
     public function details_action($dokument_id = null)
@@ -211,7 +211,7 @@ class Materialien_DokumenteController extends MVVController
     public function set_filter_action()
     {
         $this->filter = [];
-        
+
         // filtered by object type (Zuordnungen)
         $this->filter['mvv_dokument_zuord.object_type']
                 = mb_strlen(Request::get('zuordnung_filter'))
@@ -254,7 +254,7 @@ class Materialien_DokumenteController extends MVVController
     {
         $sidebar = Sidebar::get();
         $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
-        
+
         $widget  = new ActionsWidget();
         if (MvvPerm::get('MvvDokument')->havePermCreate()) {
             $widget->addLink(
@@ -316,7 +316,7 @@ class Materialien_DokumenteController extends MVVController
                 'action'             => $this->url_for('/set_filter'),
                 'action_reset'       => $this->url_for('/reset_filter')
             ]);
-    
+
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
         $widget->setTitle(_('Filter'));

@@ -377,7 +377,7 @@ class Module_ModuleController extends MVVController
     {
         $deskriptor = ModulDeskriptor::find($deskriptor_id);
         if (is_null($deskriptor)) {
-            throw new Trails_Exception(404, _('Unbekannter Deskriptor.'));
+            throw new Trails_Exception(404, _('Unbekannter Deskriptor'));
         }
         $def_lang = $deskriptor->modul->getDefaultLanguage();
         if ($language === $def_lang) {
@@ -445,7 +445,7 @@ class Module_ModuleController extends MVVController
                 . 'ORDER BY beginn DESC LIMIT 1',
                 [$modul->id, $modul->quelle]));
         if (!$this->modul) {
-            PageLayout::postError(_('Unbekanntes Modul.'));
+            PageLayout::postError(_('Unbekanntes Modul'));
         } else {
             $this->perm = MvvPerm::get($this->modul);
             $this->submit_url = $this->url_for('/copy/' . $this->modul->id);
@@ -459,7 +459,7 @@ class Module_ModuleController extends MVVController
     {
         $modul = Modul::find($modul_id);
         if (!$modul) {
-            PageLayout::postError(_('Unbekanntes Modul.'));
+            PageLayout::postError(_('Unbekanntes Modul'));
         } else {
             $perm = MvvPerm::get($modul);
             if (Request::submitted('copy')) {
@@ -593,7 +593,7 @@ class Module_ModuleController extends MVVController
         if (!$this->modulteil) {
             $this->modul = Modul::find(Request::option('modul_id'));
             if (!$this->modul) {
-                PageLayout::postError(_('Unbekanntes Modul.'));
+                PageLayout::postError(_('Unbekanntes Modul'));
                 $this->redirect($this->url_for('/index'));
                 return;
             }
@@ -794,7 +794,7 @@ class Module_ModuleController extends MVVController
     {
         $deskriptor = ModulteilDeskriptor::find($deskriptor_id);
         if (is_null($deskriptor)) {
-            throw new Trails_Exception(404, _('Unbekannter Deskriptor.'));
+            throw new Trails_Exception(404, _('Unbekannter Deskriptor'));
         }
         $def_lang = $deskriptor->modulteil->getDefaultLanguage();
         if ($language === $def_lang) {
@@ -817,7 +817,7 @@ class Module_ModuleController extends MVVController
     {
         $modulteil = Modulteil::find($modulteil_id);
         if (!$modulteil) {
-            PageLayout::postError(_('Unbekannter Modulteil.'));
+            PageLayout::postError(_('Unbekannter Modulteil'));
             $this->redirect($this->url_for('/index'));
             return;
         }
@@ -834,7 +834,7 @@ class Module_ModuleController extends MVVController
     {
         $this->modulteil = Modulteil::find($modulteil_id);
         if (is_null($this->modulteil)) {
-            PageLayout::postError(_('Unbekannter Modulteil.'));
+            PageLayout::postError(_('Unbekannter Modulteil'));
             $this->redirect($this->url_for('/index'));
             return;
         } else {
@@ -870,7 +870,7 @@ class Module_ModuleController extends MVVController
     {
         $this->modulteil = Modulteil::find($modulteil_id);
         if (is_null($this->modulteil)) {
-            PageLayout::postError(_('Unbekannter Modulteil.'));
+            PageLayout::postError(_('Unbekannter Modulteil'));
             $this->redirect($this->url_for('/index'));
             return;
         } else {
@@ -878,7 +878,7 @@ class Module_ModuleController extends MVVController
                 Request::option('lvgruppe_id_' . $this->modulteil->getId())
             );
             if (!$this->lvgruppe) {
-                PageLayout::postError(_('Unbekannte Lehrveranstaltungsgruppe.'));
+                PageLayout::postError(_('Unbekannte Lehrveranstaltungsgruppe'));
             } else {
                 $this->lvg_modulteil = LvgruppeModulteil::get(
                     [
@@ -909,7 +909,7 @@ class Module_ModuleController extends MVVController
     {
         $lvg_modulteil = LvgruppeModulteil::find([$lvgruppe_id, $modulteil_id]);
         if (!$lvg_modulteil) {
-            PageLayout::postError(_('Unbekannte Zuordnung.'));
+            PageLayout::postError(_('Unbekannte Zuordnung'));
         } else {
             $lvgruppe = Lvgruppe::find($lvgruppe_id);
             $modulteil = Modulteil::find($modulteil_id);
@@ -930,7 +930,7 @@ class Module_ModuleController extends MVVController
     {
         $this->modulteil = Modulteil::find($modulteil_id);
         if (is_null($this->modulteil)) {
-            PageLayout::postError(_('Unbekannter Modulteil.'));
+            PageLayout::postError(_('Unbekannter Modulteil'));
             $this->redirect($this->url_for('/index'));
             return;
         } else {
@@ -989,7 +989,7 @@ class Module_ModuleController extends MVVController
     {
         $modul = Modul::get($modul_id);
         if ($modul->isNew()) {
-             PageLayout::postError(_('Unbekanntes Modul.'));
+             PageLayout::postError(_('Unbekanntes Modul'));
         } else {
             if (Request::submitted('delete')) {
                 CSRFProtection::verifyUnsafeRequest();
@@ -1008,7 +1008,7 @@ class Module_ModuleController extends MVVController
         $modulteil = Modulteil::find($modulteil_id);
         $modul_id = $modulteil->modul_id;
         if (!$modulteil) {
-             PageLayout::postError(_('Unbekannter Modulteil.'));
+             PageLayout::postError(_('Unbekannter Modulteil'));
         } else {
             if (Request::submitted('delete')) {
                 CSRFProtection::verifyUnsafeRequest();
@@ -1065,7 +1065,7 @@ class Module_ModuleController extends MVVController
             $this->quelle = $this->modul->modul_quelle;
             $this->variante = $this->modul->modul_variante;
         } else {
-            PageLayout::postError(_('Unbekanntes Modul!'));
+            PageLayout::postError(_('Unbekanntes Modul'));
             $this->relocate('/index');
         }
     }
@@ -1076,7 +1076,7 @@ class Module_ModuleController extends MVVController
         $old_module = Modul::find(Request::option('old_module_id', $old_id));
 
         if (!$new_module || !$old_module) {
-            PageLayout::postError(_('Unbekanntes Modul!'));
+            PageLayout::postError(_('Unbekanntes Modul'));
             if ($new_module) {
                 $this->redirect($this->url_for('/diff_select/' . $new_module->id));
             } else {

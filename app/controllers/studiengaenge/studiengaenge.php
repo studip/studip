@@ -14,7 +14,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        
+
         Navigation::activateItem($this->me . '/studiengaenge/studiengaenge');
         $this->filter = $this->sessGet('filter', []);
         $this->action = $action;
@@ -65,7 +65,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             self::$items_per_page,
             self::$items_per_page * ($this->page - 1)
         );
-        
+
         if (count($this->studiengaenge) === 0) {
             if (count($this->filter) || $this->search_term) {
                 $this->msg = _('Es wurden keine Studiengänge gefunden.');
@@ -106,9 +106,9 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->studiengang = Studiengang::get($studiengang_id);
         $this->semester = Semester::getAll();
         $this->dokumente = $this->studiengang->document_assignments;
-        
+
         $this->parent_id = $parent_id;
-        
+
         if ($this->studiengang->isNew()) {
             $this->studiengang->setNewId();
             PageLayout::setTitle(_('Neuen Studiengang anlegen'));
@@ -122,9 +122,9 @@ class Studiengaenge_StudiengaengeController extends MVVController
             $success_message = _('Der Studiengang "%s" wurde geändert.');
             $quicksearchText = $this->studiengang->name;
         }
-        
+
         $this->sessSet('dokument_target', [$this->studiengang->getId(), 'Studiengang']);
-        
+
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             $stored = false;
@@ -147,7 +147,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 //Lookup the "fach" object in the database:
                 $this->fach = Fach::find($fach_id);
             }
-            
+
             if ($this->fach) {
                 //"fach" object exists: use its value
                 //for the names and short names of the "studiengang"
@@ -159,7 +159,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 $this->studiengang->name = Request::i18n('name')->trim();
                 $this->studiengang->name_kurz = Request::i18n('name_kurz')->trim();
             }
-    
+
             $this->studiengang->abschluss_id     = Request::option('abschluss_id');
             $this->studiengang->beschreibung     = Request::i18n('beschreibung')->trim();
             $this->studiengang->institut_id      = Request::option('institut_item');
@@ -173,12 +173,12 @@ class Studiengaenge_StudiengaengeController extends MVVController
             $this->studiengang->stat             = Request::option('status');
             $this->studiengang->kommentar_status = trim(Request::get('kommentar_status'));
             $this->studiengang->schlagworte      = trim(Request::get('schlagworte'));
-    
+
             MvvDokument::updateDocuments($this->studiengang,
                 Request::optionArray('dokumente_items'),
                 Request::getArray('dokumente_properties')
             );
-            
+
             $quicksearchText = $this->studiengang->name;
 
             $this->studiengang->verifyPermission();
@@ -275,7 +275,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
     {
         $studiengang = Studiengang::find($studiengang_id);
         if (!$studiengang) {
-             PageLayout::postError(_('Unbekannter Studiengang.'));
+             PageLayout::postError(_('Unbekannter Studiengang'));
         } else {
             if (Request::isPost()) {
                 if (Request::submitted('delete')) {
@@ -304,11 +304,11 @@ class Studiengaenge_StudiengaengeController extends MVVController
         // verantwortlichen Einrichtungen der User eine Rolle hat...
         $perm_institutes = MvvPerm::getOwnInstitutes();
         $filter = [];
-        
+
         if (count($perm_institutes)) {
             $filter['ms.institut_id'] = $perm_institutes;
         }
-    
+
         $this->abschluss_kategorien = AbschlussKategorie::getAllEnriched(
             $this->sortby, $this->order, null, null, $filter
         );
@@ -374,7 +374,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->set_studiengangteile($studiengang_id, $stgteil_bez_id);
         $this->parent_id = Request::option('parent_id');
         $this->studiengang_id = $studiengang_id;
-        
+
         if (Request::isXhr()) {
             if ($this->studiengang->typ === 'einfach' || $this->stg_bez) {
                 $this->render_template('studiengaenge/studiengaenge/studiengangteile');
@@ -412,7 +412,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                     $stg_stgteil->setId(
                         [$this->studiengang->id, $stgteil->id, $stgteil_bez ? $this->bez_stgteile->id : '']
                     );
-                    
+
                     if ($stg_stgteil->store()) {
                         if ($this->studiengang->typ === 'mehrfach') {
                             PageLayout::postSuccess(sprintf(
@@ -437,7 +437,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 }
             }
         } else {
-            PageLayout::postError(_('Unbekannter Studiengang.'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
         }
     }
 
@@ -497,7 +497,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                         ));
                     }
                 } else {
-                    PageLayout::postError(_('Unbekannter Studiengangteil.'));
+                    PageLayout::postError(_('Unbekannter Studiengangteil'));
                     $this->redirect($this->url_for('/details_studiengang/' . $studiengang->id));
                     return;
                 }
@@ -507,7 +507,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             );
             return;
         } else {
-            PageLayout::postError(_('Unbekannter Studiengang.'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
             $this->redirect($this->url_for('/index'));
         }
     }
@@ -517,13 +517,13 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->stg_stgteil = StudiengangStgteil::getEnriched(
             [$studiengang_id, $stgteil_id, $stgteil_bez_id]
         );
-        
+
         $studiengang = Studiengang::find($studiengang_id);
-        
+
         if ($studiengang) {
             $stgbez_id = $this->stg_stgteil->stgteil_bez_id;
             if ($this->stg_stgteil->isNew()) {
-                PageLayout::postError(_('Unbekannter Studiengangteil.'));
+                PageLayout::postError(_('Unbekannter Studiengangteil'));
             } else {
                 if (Request::isPost()) {
                     CSRFProtection::verifyRequest();
@@ -548,7 +548,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 $this->url_for('/details_studiengang/' .  $studiengang->id . '/' . $stgbez_id)
             );
         } else {
-            PageLayout::postError(_('Unbekannter Studiengang.'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
             $this->redirect($this->url_for('/index'));
         }
     }
@@ -570,7 +570,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         if ($studiengang) {
             $stgbez_id = $stg_stgteil->stgteil_bez_id;
             if ($stg_stgteil->isNew()) {
-                PageLayout::postError(_('Unbekannter Studiengangteil.'));
+                PageLayout::postError(_('Unbekannter Studiengangteil'));
             } else {
                 if (Request::isPost()) {
                     CSRFProtection::verifyUnsafeRequest();
@@ -600,7 +600,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 }
             }
         } else {
-            PageLayout::postError(_('Unbekannter Studiengang.'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
             $this->redirect($this->url_for('/index'));
         }
     }
@@ -862,10 +862,10 @@ class Studiengaenge_StudiengaengeController extends MVVController
             ON (mvv_studiengang.start = start_sem.semester_id)
             LEFT JOIN semester_data end_sem
             ON (mvv_studiengang.end = end_sem.semester_id) ';
-            
+
             $query .= 'WHERE (mvv_studiengang.name LIKE :input
                 OR mvv_studiengang.name_kurz LIKE :input) ';
-            
+
             $query .= ModuleManagementModel::getFilterSql($this->filter, false);
         }
 
@@ -892,7 +892,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->studiengang =  Studiengang::find($studiengang_id);
 
         if (!$this->studiengang) {
-            PageLayout::postError(_('Unbekannter Studiengang!'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
             $this->relocate('/index');
             return;
         }
@@ -923,7 +923,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $studiengang = Studiengang::find($studiengang_id ?: Request::option('studiengang_id'));
 
         if (!$studiengang) {
-            PageLayout::postError(_('Unbekannter Studiengang!'));
+            PageLayout::postError(_('Unbekannter Studiengang'));
             $this->redirect($this->url_for('/index'));
         } else {
             if (Request::isXhr()) {

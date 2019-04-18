@@ -19,26 +19,26 @@ class Search_AngebotController extends MVVController
     public function before_filter(&$action, &$args)
     {
         $this->allow_nobody = Config::get()->COURSE_SEARCH_IS_VISIBLE_NOBODY;
-        
+
         parent::before_filter($action, $args);
-        
+
         // set navigation
         Navigation::activateItem('/search/courses/module');
-        
+
         PageLayout::setTitle(_('Modulverzeichnis - Studienangebot von A bis Z'));
-        
+
         $sidebar = Sidebar::get();
         $sidebar->setImage('sidebar/learnmodule-sidebar.png');
-        
+
         $views = new ViewsWidget();
         $views->addLink(_('Modulsuche'), $this->url_for('search/module'));
         $views->addLink(_('Studienangebot'), $this->url_for('search/angebot'))
                 ->setActive();
         $views->addLink(_('Studiengänge'), $this->url_for('search/studiengaenge'));
         $views->addLink(_('Fach-Abschluss-Kombinationen'), $this->url_for('search/stgtable'));
-        
+
         $sidebar->addWidget($views);
-        
+
         $this->breadcrumb = new BreadCrumb();
         $this->action = $action;
     }
@@ -177,7 +177,7 @@ class Search_AngebotController extends MVVController
     {
         $this->studiengang = Studiengang::find($studiengang_id);
         if (!$this->studiengang || !$this->studiengang->getPublicStatus()) {
-            throw new Exception('Unbekannter Studiengang!');
+            throw new Exception('Unbekannter Studiengang');
         }
     }
 
