@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -131,7 +131,7 @@ class ExternElementMainPersons extends ExternElementMain {
 
         $table = $edit_form->editGroups();
         if ($table) {
-            $title = _("Gruppierung:");
+            $title = _('Gruppierung') . ':';
             $info = _("Personen nach Gruppen/Funktionen gruppieren.");
             $values = "1";
             $table .= $edit_form->editCheckboxGeneric("grouping", $title, $info, $values, "");
@@ -148,42 +148,42 @@ class ExternElementMainPersons extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
 
-        $title = _("Namensformat:");
+        $title = _('Namensformat') . ':';
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
         $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
         $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer, Peter"),
                 _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
-        $title = _("Spaltenüberschriften wiederholen:");
+        $title = _('Spaltenüberschriften wiederholen') . ':';
         $info = _("Wiederholung der Spaltenüberschriften über oder unter der Gruppierungszeile.");
         $values = ["above", "beneath", ""];
         $names = [_("über"), _("unter Gruppenname"), _("keine")];
         $table .= $edit_form->editRadioGeneric("repeatheadrow", $title, $info, $values, $names);
 
-        $title = _("Standard-Adresse:");
+        $title = _('Standard-Adresse') . ':';
         $info = _("Wenn Sie diese Option wählen, wird die Standard-Adresse ausgegeben, die jede(r) Mitarbeiter(in) bei seinen universitären Daten auswählen kann. Wählen Sie diese Option nicht, wenn immer die Adresse der Einrichtung ausgegeben werden soll.");
         $table .= $edit_form->editCheckboxGeneric('defaultadr', $title, $info, '1', '0');
 
-        $title = _("HTML-Header/Footer:");
+        $title = _('HTML-Header/Footer') . ':';
         $info = _("Anwählen, wenn die Seite als komplette HTML-Seite ausgegeben werden soll, z.B. bei direkter Verlinkung oder in einem Frameset.");
         $values = "1";
         $names = "";
         $table .= $edit_form->editCheckboxGeneric("wholesite", $title, $info, $values, $names);
 
-        $title = _("Stylesheet-Datei:");
+        $title = _('Stylesheet-Datei') . ':';
         $info = _("Geben Sie hier die URL Ihrer Stylesheet-Datei an.");
         $table .= $edit_form->editTextfieldGeneric("urlcss", $title, $info, 50, 200);
 
-        $title = _("Seitentitel:");
+        $title = _('Seitentitel') . ':';
         $info = _("Geben Sie hier den Titel der Seite ein. Der Titel wird bei der Anzeige im Web-Browser in der Titelzeile des Anzeigefensters angezeigt.");
         $table .= $edit_form->editTextfieldGeneric("title", $title, $info, 50, 200);
 
-        $title = _("Copyright:");
+        $title = _('Copyright') . ':';
         $info = _("Geben Sie hier einen Copyright-Vermerk an. Dieser wird im Meta-Tag \"copyright\" ausgegeben, wenn Sie die Option \"HTML-Header/Footer\" angewählt haben.");
         $table .= $edit_form->editTextfieldGeneric("copyright", $title, $info, 50, 200);
 
-        $title = _("Autor:");
+        $title = _('Autor') . ':';
         $info = _("Geben Sie hier den Namen des Seitenautors an. Dieser wird im Meta-Tag \"author\" ausgegeben, wenn Sie die Option \"HTML-Header/Footer\" angewählt haben.");
         $table .= $edit_form->editTextfieldGeneric("author", $title, $info, 50, 200);
 
@@ -215,5 +215,3 @@ class ExternElementMainPersons extends ExternElementMain {
 
 
 }
-
-?>

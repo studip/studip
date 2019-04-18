@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -98,28 +98,28 @@ class ExternElementMainTemplatePersondetails extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
 
-        $title = _("Namensformat:");
+        $title = _('Namensformat') . ':';
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
         $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
         $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
                 _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
-        $title = _("Datumsformat:");
+        $title = _('Datumsformat') . ':';
         $info = _("Wählen Sie, wie Datumsangaben formatiert werden sollen.");
         $values = ["%d. %b. %Y", "%d.%m.%Y", "%d.%m.%y", "%d. %B %Y", "%m/%d/%y"];
         $names = [_("25. Nov. 2003"), _("25.11.2003"), _("25.11.03"),
                 _("25. November 2003"), _("11/25/03")];
         $table .= $edit_form->editOptionGeneric("dateformat", $title, $info, $values, $names);
 
-        $title = _("Sprache:");
+        $title = _('Sprache') . ':';
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
         $values = ["", "de_DE", "en_GB"];
         $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
 
         if (in_array(get_object_type($this->config->range_id), ['global'])) {
-            $title = _("Nur Lehrende:");
+            $title = _('Nur Lehrende') . ':';
             $info = _("Es werden nur Personen angezeigt, die in einer sichtbaren Veranstaltung des aktuellen Semesters Dozent sind.");
             $values = '1';
             $table .= $edit_form->editCheckboxGeneric('onlylecturers', $title, $info, $values, '');
@@ -128,7 +128,7 @@ class ExternElementMainTemplatePersondetails extends ExternElementMain {
                 . _("Das Modul zeigt nur Personen an, die eine Standardadresse angegeben haben.")
                 . '</span>');
         } else {
-            $title = _("Standard-Adresse:");
+            $title = _('Standard-Adresse') . ':';
             $info = _("Wenn Sie diese Option wählen, wird die Standard-Adresse ausgegeben, die jede(r) Mitarbeiter(in) bei seinen universitären Daten auswählen kann. Wählen Sie diese Option nicht, wenn immer die Adresse der Einrichtung ausgegeben werden soll.");
             $table .= $edit_form->editCheckboxGeneric('defaultaddr', $title, $info, '1', '0');
         }
@@ -157,5 +157,3 @@ class ExternElementMainTemplatePersondetails extends ExternElementMain {
     }
 
 }
-
-?>

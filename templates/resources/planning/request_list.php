@@ -21,7 +21,7 @@
                 <th><?= _('Titel') ?></th>
                 <th><?= _('Dozenten') ?></th>
                 <th><?= _('Anfrager') ?></th>
-                <th><?= _('Start-Semester') ?></th>
+                <th><?= _('Startsemester') ?></th>
                 <th class="actions"><?= _('Aktionen') ?></th>
             </tr>
         </thead>

@@ -97,7 +97,7 @@ class ExternElementPersondetailsLectures extends ExternElement {
 
         $headline = $edit_form->editHeadline(_("Allgemeine Angaben"));
 
-        $title = _("Startsemester:");
+        $title = _('Startsemester') . ':';
         $info = _("Geben Sie das erste anzuzeigende Semester an. Die Angaben \"vorheriges\", \"aktuelles\" und \"nächstes\" beziehen sich immer auf das laufende Semester und werden automatisch angepasst.");
         $current_sem = get_sem_num_sem_browse();
         if ($current_sem === FALSE) {
@@ -118,7 +118,7 @@ class ExternElementPersondetailsLectures extends ExternElement {
         }
         $table = $edit_form->editOptionGeneric("semstart", $title, $info, $values, $names);
 
-        $title = _("Anzahl der anzuzeigenden Semester:");
+        $title = _('Anzahl der anzuzeigenden Semester') . ':';
         $info = _("Geben Sie an, wieviele Semester (ab o.a. Startsemester) angezeigt werden sollen.");
         $names = [_("keine Auswahl")];
         $values = [""];
@@ -129,7 +129,7 @@ class ExternElementPersondetailsLectures extends ExternElement {
         }
         $table .= $edit_form->editOptionGeneric("semrange", $title, $info, $values, $names);
 
-        $title = _("Umschalten des aktuellen Semesters:");
+        $title = _('Umschalten des aktuellen Semesters') . ':';
         $info = _("Geben Sie an, wieviele Wochen vor Semesterende automatisch auf das nächste Semester umgeschaltet werden soll.");
         $names = [_("keine Auswahl"), _("am Semesterende"), _("1 Woche vor Semesterende")];
         for ($i = 2; $i < 13; $i++)
@@ -137,21 +137,21 @@ class ExternElementPersondetailsLectures extends ExternElement {
         $values = ["", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
         $table .= $edit_form->editOptionGeneric("semswitch", $title, $info, $values, $names);
 
-        $title = _("Bezeichnung Sommersemester:");
+        $title = _('Bezeichnung Sommersemester') . ':';
         $info = _("Alternative Bezeichnung für den Begriff \"Sommersemester\".");
         $table .= $edit_form->editTextfieldGeneric("aliassose", $title, $info, 40, 80);
 
-        $title = _("Bezeichnung Wintersemester:");
+        $title = _('Bezeichnung Wintersemester') . ':';
         $info = _("Alternative Bezeichnung für den Begriff \"Wintersemester\".");
         $table .= $edit_form->editTextfieldGeneric("aliaswise", $title, $info, 40, 80);
 
-        $title = _("Darstellungsart:");
+        $title = _('Darstellungsart') . ':';
         $info = _("Wählen Sie zwischen Listendarstellung und reiner Textdarstellung.");
         $names = [_("Liste"), _("nur Text")];
         $values = ["1", "0"];
         $table .= $edit_form->editRadioGeneric("aslist", $title, $info, $values, $names);
 
-        $title = _("Veranstaltungsklassen:");
+        $title = _('Veranstaltungsklassen') . ':';
         $info = _("Wählen Sie aus, welche Veranstaltungsklassen angezeigt werden sollen.");
         foreach ($GLOBALS['SEM_CLASS'] as $key => $lecture_class) {
             $class_names[] = $lecture_class['name'];

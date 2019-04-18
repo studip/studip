@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter005: TODO
 # Lifter007: TODO
@@ -99,23 +99,23 @@ class ExternElementMainNewsticker extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
 
-        $title = _("Tick-Frequenz:");
+        $title = _('Tick-Frequenz') . ':';
         $info = _("Geben Sie an, wieviele Zeichen pro Sekunde ausgegeben werden sollen.");
         $table = $edit_form->editTextfieldGeneric("frequency", $title, $info, 2, 2);
 
-        $title = _("Pause zwischen News:");
+        $title = _('Pause zwischen News') . ':';
         $info = _("Geben Sie an, wie lange der Ticker warten soll (in Millisekunden), bis er die nächste News ausgibt.");
         $table .= $edit_form->editTextfieldGeneric("pause", $title, $info, 4, 4);
 
-        $title = _("Text am Anfang der Ausgabe:");
+        $title = _('Text am Anfang der Ausgabe') . ':';
         $info = _("Dieser Text wird ausgegeben, während die News in den Ticker geladen werden, also am Anfang des ersten Durchlaufs.");
         $table .= $edit_form->editTextfieldGeneric("starttext", $title, $info, 50, 200);
 
-        $title = _("Text am Ende der Ausgabe:");
+        $title = _('Text am Ende der Ausgabe') . ':';
         $info = _("Dieser Text wird ausgegeben, nachdem alle News angezeigt wurden, also am Ende jedes Durchlaufs.");
         $table .= $edit_form->editTextfieldGeneric("endtext", $title, $info, 50, 200);
 
-        $title = _("Keine News:");
+        $title = _('Keine News') . ':';
         $info = _("Dieser Text wird ausgegeben, wenn keine News verfügbar sind.");
         $table .= $edit_form->editTextfieldGeneric("nodatatext", $title, $info, 50, 200);
 
@@ -141,11 +141,11 @@ class ExternElementMainNewsticker extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Angaben zum HTML-Tag &lt;textarea&gt;"));
 
-        $title = _("Anzahl Zeilen im Ausgabefenster:");
+        $title = _('Anzahl Zeilen im Ausgabefenster') . ':';
         $info = _("Geben Sie die Anzahl der Zeilen an. Es sind nur Werte zwischen 1 und 10 erlaubt.");
         $table = $edit_form->editTextfieldGeneric("rows", $title, $info, 2, 2);
 
-        $title = _("Anzahl der Zeichen pro Zeile:");
+        $title = _('Anzahl der Zeichen pro Zeile') . ':';
         $info = _("Geben Sie die Anzahl der Zeichen pro Zeile an. Es sind nur Werte zwischen 10 und 200 erlaubt.");
         $table .= $edit_form->editTextfieldGeneric("length", $title, $info, 3, 3);
 
@@ -189,5 +189,3 @@ class ExternElementMainNewsticker extends ExternElementMain {
     }
 
 }
-
-?>

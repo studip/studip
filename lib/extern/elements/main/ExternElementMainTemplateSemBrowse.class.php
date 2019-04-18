@@ -110,20 +110,20 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Konfiguration des Moduls"));
 
-        $title = _("Anzeigemodus:");
+        $title = _('Anzeigemodus') . ':';
         $info = _("Auswahl zwischen Einrichtungsbaum und Bereichsbaum");
         $values = ['show_sem_range', 'show_sem_range_tree'];
         $names = [_("Vorlesungsverzeichnis"), _("Einrichtungen")];
         $table = $edit_form->editRadioGeneric('mode', $title, $info, $values, $names);
 
-        $title = _("Gruppierung:");
+        $title = _('Gruppierung') . ':';
         $info = _("Wählen Sie, wie die Veranstaltungen gruppiert werden sollen.");
         $values = ['0', '1', '2', '3', '4'];
         $names = [_("Semester"), _("Bereich"), _("Lehrende"),
                 _("Typ"), _("Einrichtung")];
         $table .= $edit_form->editOptionGeneric('grouping', $title, $info, $values, $names);
 
-        $title = _("Startsemester:");
+        $title = _('Startsemester') . ':';
         $info = _("Geben Sie das erste anzuzeigende Semester an. Die Angaben \"vorheriges\", \"aktuelles\" und \"nächstes\" beziehen sich immer auf das laufende Semester und werden automatisch angepasst.");
         $current_sem = get_sem_num_sem_browse();
         if ($current_sem === FALSE) {
@@ -144,7 +144,7 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
         }
         $table .= $edit_form->editOptionGeneric("semstart", $title, $info, $values, $names);
         /*
-        $title = _("Anzahl der anzuzeigenden Semester:");
+        $title = _('Anzahl der anzuzeigenden Semester') . ':';
         $info = _("Geben Sie an, wieviele Semester (ab o.a. Startsemester) angezeigt werden sollen.");
         $names = array(_("keine Auswahl"));
         $values = array('');
@@ -155,7 +155,7 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
         }
         $table .= $edit_form->editOptionGeneric('semrange', $title, $info, $values, $names);
         */
-        $title = _("Umschalten des aktuellen Semesters:");
+        $title = _('Umschalten des aktuellen Semesters') . ':';
         $info = _("Geben Sie an, wieviele Wochen vor Semesterende automatisch auf das nächste Semester umgeschaltet werden soll.");
         $names = [_("keine Auswahl"), _("am Semesterende"), _("1 Woche vor Semesterende")];
         for ($i = 2; $i < 13; $i++) {
@@ -165,32 +165,32 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
         $table .= $edit_form->editOptionGeneric('semswitch', $title, $info, $values, $names);
 
         /*
-        $title = _("Veranstaltungen beteiligter Institute anzeigen:");
+        $title = _('Veranstaltungen beteiligter Institute anzeigen') . ':';
         $info = _("Wählen Sie diese Option, um Veranstaltungen anzuzeigen, bei denen diese Einrichtung als beteiligtes Institut eingetragen ist.");
         $values = '1';
         $names = '';
         $table .= $edit_form->editCheckboxGeneric('allseminars', $title, $info, $values, $names);
         */
 
-        $title = _("Bereichspfad ab Ebene:");
+        $title = _('Bereichspfad ab Ebene') . ':';
         $info = _("Wählen Sie, ab welcher Ebene der Bereichspfad ausgegeben werden soll.");
         $values = ['1', '2', '3', '4', '5', '6'];
         $names = ['1', '2', '3', '4', '5', '6'];
         $table .= $edit_form->editOptionGeneric('rangepathlevel', $title, $info, $values, $names);
 
-        $title = _("Anzeige von Unterebenen:");
+        $title = _('Anzeige von Unterebenen') . ':';
         $info = _("Anzahl der Unterebenen des Baumes, die angezeigt werden sollen.");
         $values = ['0', '1', '2', '3', '4', '5', '6'];
         $names = ['0', '1', '2', '3', '4', '5', '6'];
         $table .= $edit_form->editOptionGeneric('countshowsublevels', $title, $info, $values, $names);
         $cid = Request::option('cid') ;
         if ($GLOBALS['perm']->have_perm('root') && $cid = 'studip') {
-            $title = _("Start bei Root-Ebene:");
+            $title = _('Start bei Root-Ebene') . ':';
             $info = _("Wird das Modul ohne weitere Parameter aufgerufen startet die Anzeige beim Root-Level (alle Fakultäten).");
             $table .= $edit_form->editCheckboxGeneric('startitem', $title, $info, 'root', '0');
         }
 
-        $title = _("Leere Ebenen ausblenden:");
+        $title = _('Leere Ebenen ausblenden') . ':';
         $info = _("Ebenen ohne Veranstaltungen und ohne Veranstaltungen in ihren Unterebenen werden nicht angezeigt.");
         $table .= $edit_form->editCheckboxGeneric('disableemptylevels', $title, $info, '1', '0');
 
@@ -199,17 +199,17 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Konfiguration der Suche"));
 
-        $title = _("Sortierung des Treffersets:");
+        $title = _('Sortierung des Treffersets') . ':';
         $info = _("Nach welchem Tabellenfeld soll das Trefferset sortiert werden?");
         $values = ['VeranstaltungsNummer', 'Name'];
         $names = ['Veranstaltungsnummer', 'Name'];
         $table = $edit_form->editOptionGeneric('resultorderby', $title, $info, $values, $names);
 
-        $title = _("Anzahl der Treffer bei Suche:");
+        $title = _('Anzahl der Treffer bei Suche') . ':';
         $info = _("Maximale Anzahl der Veranstaltungen im Trefferset. Angabe 0, um alle anzuzeigen.");
         $table .= $edit_form->editTextfieldGeneric('maxnumberofhits', $title, $info, 3, 3);
 
-        $title = _("Anzahl der Seiten im Result Browser:");
+        $title = _('Anzahl der Seiten im Result Browser') . ':';
         $info = _("Maximale Anzahl der Seiten, die der Result Browser anzeigen soll.");
         $table .= $edit_form->editTextfieldGeneric('maxpagesresultbrowser', $title, $info, 3, 3);
 
@@ -242,7 +242,7 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Termine"));
 
-        $title = _("Termintypen:");
+        $title = _('Termintypen') . ':';
         $info = _("Wählen Sie aus, welche Termintypen angezeigt werden sollen.");
         $values = ['all', 'meeting', 'other', ''];
         $names = [_("alle Termine"), _("nur Sitzungstermine"), _("nur andere Termine"), '-----------'];
@@ -257,14 +257,14 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
 
-        $title = _("Namensformat:");
+        $title = _('Namensformat') . ':';
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
         $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
         $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
                 _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric('nameformat', $title, $info, $values, $names);
 
-        $title = _("Sprache:");
+        $title = _('Sprache') . ':';
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
         $values = ["", "de_DE", "en_GB"];
         $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];

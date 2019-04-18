@@ -1,4 +1,4 @@
-<?
+<?php
 # Lifter002: TODO
 # Lifter007: TODO
 # Lifter003: TODO
@@ -105,7 +105,7 @@ class ExternElementMainGlobal extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Anzuzeigende Lehrveranstaltungen"));
 
-        $title = _("Startsemester:");
+        $title = _('Startsemester') . ':';
         $info = _("Geben Sie das erste anzuzeigende Semester an. Die Angaben \"vorheriges\", \"aktuelles\" und \"nächstes\" beziehen sich immer auf das laufende Semester und werden automatisch angepasst.");
         $current_sem = get_sem_num_sem_browse();
         if ($current_sem === FALSE) {
@@ -126,7 +126,7 @@ class ExternElementMainGlobal extends ExternElementMain {
         }
         $table = $edit_form->editOptionGeneric("semstart", $title, $info, $values, $names);
 
-        $title = _("Anzahl der anzuzeigenden Semester:");
+        $title = _('Anzahl der anzuzeigenden Semester') . ':';
         $info = _("Geben Sie an, wieviele Semester (ab o.a. Startsemester) angezeigt werden sollen.");
         $names = [_("keine Auswahl")];
         $values = [""];
@@ -137,7 +137,7 @@ class ExternElementMainGlobal extends ExternElementMain {
         }
         $table .= $edit_form->editOptionGeneric("semrange", $title, $info, $values, $names);
 
-        $title = _("Umschalten des aktuellen Semesters:");
+        $title = _('Umschalten des aktuellen Semesters') . ':';
         $info = _("Geben Sie an, wieviele Wochen vor Semesterende automatisch auf das nächste Semester umgeschaltet werden soll.");
         $names = [_("keine Auswahl"), _("am Semesterende"), _("1 Woche vor Semesterende")];
         for ($i = 2; $i < 13; $i++)
@@ -150,38 +150,38 @@ class ExternElementMainGlobal extends ExternElementMain {
 
         $headline = $edit_form->editHeadline(_("Weitere Angaben"));
 
-        $title = _("Namensformat:");
+        $title = _('Namensformat') . ':';
         $info = _("Wählen Sie, wie Personennamen formatiert werden sollen.");
         $values = ["", "no_title_short", "no_title", "no_title_rev", "full", "full_rev"];
         $names = [_("keine Auswahl"), _("Meyer, P."), _("Peter Meyer"), _("Meyer Peter"),
                 _("Dr. Peter Meyer"), _("Meyer, Peter, Dr.")];
         $table = $edit_form->editOptionGeneric("nameformat", $title, $info, $values, $names);
 
-        $title = _("Sprache:");
+        $title = _('Sprache') . ':';
         $info = _("Wählen Sie eine Sprache für die Datumsangaben aus.");
         $values = ["", "de_DE", "en_GB"];
         $names = [_("keine Auswahl"), _("Deutsch"), _("Englisch")];
         $table .= $edit_form->editOptionGeneric("language", $title, $info, $values, $names);
 
-        $title = _("Standard-Adresse:");
+        $title = _('Standard-Adresse') . ':';
         $info = _("Wenn Sie diese Option wählen, wird die Standard-Adresse ausgegeben, die jede(r) Mitarbeiter(in) bei seinen universitären Daten auswählen kann. Wählen Sie diese Option nicht, wenn immer die Adresse der Einrichtung ausgegeben werden soll.");
         $table .= $edit_form->editCheckboxGeneric('defaultadr', $title, $info, '1', '0');
 
-        $title = _("HTML-Header/Footer:");
+        $title = _('HTML-Header/Footer') . ':';
         $info = _("Anwählen, wenn die Seite als komplette HTML-Seite ausgegeben werden soll, z.B. bei direkter Verlinkung oder in einem Frameset.");
         $values = "1";
         $names = "";
         $table .= $edit_form->editCheckboxGeneric("wholesite", $title, $info, $values, $names);
 
-        $title = _("Stylesheet-Datei:");
+        $title = _('Stylesheet-Datei') . ':';
         $info = _("Geben Sie hier die URL Ihrer Stylesheet-Datei an.");
         $table .= $edit_form->editTextfieldGeneric("urlcss", $title, $info, 50, 200);
 
-        $title = _("Copyright:");
+        $title = _('Copyright') . ':';
         $info = _("Geben Sie hier einen Copyright-Vermerk an. Dieser wird im Meta-Tag \"copyright\" ausgegeben, wenn Sie die Option \"HTML-Header/Footer\" angewählt haben.");
         $table .= $edit_form->editTextfieldGeneric("copyright", $title, $info, 50, 200);
 
-        $title = _("Autor:");
+        $title = _('Autor') . ':';
         $info = _("Geben Sie hier den Namen des Seitenautors an. Dieser wird im Meta-Tag \"author\" ausgegeben, wenn Sie die Option \"HTML-Header/Footer\" angewählt haben.");
         $table .= $edit_form->editTextfieldGeneric("author", $title, $info, 50, 200);
 
@@ -228,5 +228,3 @@ class ExternElementMainGlobal extends ExternElementMain {
     }
 
 }
-
-?>
