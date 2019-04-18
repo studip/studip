@@ -225,7 +225,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                             <? if ($modul->responsible_institute->institute) : ?>
                                 <?= htmlReady($modul->responsible_institute->institute->getDisplayName()) ?>
                             <? else: ?>
-                                <?= _('unbekannte Einrichtung') ?>
+                                <?= _('Unbekannte Einrichtung') ?>
                             <? endif; ?>
                         </div>
                         <div class="mvv-item-list-buttons">
@@ -245,7 +245,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                             <? if ($modul->responsible_institute->institute) : ?>
                                 <?= htmlReady($modul->responsible_institute->institute->getDisplayName()) ?>
                             <? else : ?>
-                                <?= _('unbekannte Einrichtung') ?>
+                                <?= _('Unbekannte Einrichtung') ?>
                             <? endif; ?>
                         </div>
                         <input type="hidden" name="responsible_item"
@@ -276,7 +276,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                             <? if ($assigned_institute->institute) : ?>
                                 <?= htmlReady($assigned_institute->institute->Name) ?>
                             <? else : ?>
-                                <?= _('unbekannte Einrichtung') ?>
+                                <?= _('Unbekannte Einrichtung') ?>
                             <? endif; ?>
                         </div>
                         <div class="mvv-item-list-buttons">
@@ -298,7 +298,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                                 <? if ($assigned_institute->institute) : ?>
                                     <?= htmlReady($assigned_institute->institute->Name) ?>
                                 <? else : ?>
-                                    <?= _('unbekannte Einrichtung') ?>
+                                    <?= _('Unbekannte Einrichtung') ?>
                                 <? endif; ?>
                             </div>
                             <input type="hidden" name="institute_items[]"

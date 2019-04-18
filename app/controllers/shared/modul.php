@@ -146,7 +146,7 @@ class Shared_ModulController extends AuthenticatedController
             if ($modul->responsible_institute->institute) {
                 $this->instituteName = $modul->responsible_institute->institute->getValue('name');
             } else {
-                $this->instituteName = _('unbekannte Einrichtung');
+                $this->instituteName = _('Unbekannte Einrichtung');
             }
         }
         $this->type = $type;

@@ -152,7 +152,7 @@
                         <? if ($institut) : ?>
                             <?= htmlReady($institut->getDisplayName()) ?>
                         <? else: ?>
-                            <?= _('unbekannte Einrichtung') ?>
+                            <?= _('Unbekannte Einrichtung') ?>
                         <? endif; ?>
                     </div>
                     <? if ($perm->haveFieldPerm('institut_id', MvvPerm::PERM_WRITE)): ?>

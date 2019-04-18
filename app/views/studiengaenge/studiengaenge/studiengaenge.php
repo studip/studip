@@ -29,7 +29,7 @@
                 <? if ($studiengang->responsible_institute) : ?>
                     <?= htmlReady($studiengang->responsible_institute->getDisplayName()) ?>
                 <? else : ?>
-                    <?= _('unbekannte Einrichtung') ?>
+                    <?= _('Unbekannte Einrichtung') ?>
                 <? endif; ?>
             </td>
             <td class="dont-hide">

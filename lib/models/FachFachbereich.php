@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -17,11 +17,11 @@
 
 class FachFachbereich extends ModuleManagementModel
 {
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_fach_inst';
-        
+
         $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
             'foreign_key' => 'fach_id'
@@ -30,14 +30,14 @@ class FachFachbereich extends ModuleManagementModel
             'class_name' => 'Fachbereich',
             'foreign_key' => 'institut_id'
         ];
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * Returns all asignments of institutes by given fach_id filteres by
      * optional parameter group.
-     * 
+     *
      * @param string $modul_id The id of the Fach the institutes are assigned to
      * @param string $group Optional group
      * @return array Array of objects
@@ -55,7 +55,7 @@ class FachFachbereich extends ModuleManagementModel
         }
         return $ret;
     }
-    
+
     public function validate()
     {
         $ret = parent::validate();
