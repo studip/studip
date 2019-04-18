@@ -22,7 +22,7 @@ if ($messages["error"] != "") {
         </tr>
         <tr>
             <td width="30%" style="text-align: left; font-weight: bold;">
-            <?=_("Kategorie:")?>
+                <?= _('Kategorie') ?>:
             </td>
             <td><input size="20" value="<?=$main_category_node_id_title?>" name="cat_name" type="text">
             &nbsp; <?=Icon::create('info-circle', 'inactive', ['title' => _("Geben Sie hier den Namen einer bestehenden ILIAS 4 - Kategorie ein, in der die Lernmodule und User-Kategorien abgelegt werden sollen.")])->asImg(16)?>

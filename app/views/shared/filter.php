@@ -9,7 +9,7 @@
 <form id="index_filter" action="<?= $action ?>" method="post">
     <? if (isset($semester)) : ?>
     <label>
-        <?= $semester_caption ?: _('Semester:') ?><br>
+        <?= $semester_caption ?: _('Semester') . ':' ?><br>
         <select name="semester_filter" class="sidebar-selectlist submit-upon-select">
             <option value="all"<?= (!$selected_semester ? ' selected' : '') ?>><?= _('Alle Semester') ?></option>
             <? foreach ($semester as $sem) : ?>
@@ -20,7 +20,7 @@
     <? endif; ?>
     <? if (isset($zuordnungen)) : ?>
     <label>
-        <?= _('Zugeordnet zu Objekten:') ?>
+        <?= _('Zugeordnet zu Objekten') ?>:
         <select name="zuordnung_filter" class="sidebar-selectlist submit-upon-select">
             <option value=""><?= _('Alle') ?></option>
             <? foreach ($zuordnungen as $object_type => $zuordnung) : ?>
@@ -32,7 +32,7 @@
     <? endif; ?>
     <? if (isset($status)) : ?>
     <label>
-        <?= _('Status:') ?><br>
+        <?= _('Status') ?>:<br>
         <select name="status_filter" class="sidebar-selectlist submit-upon-select">
             <option value=""><?= _('Alle') ?></option>
             <? foreach ($status_array as $key => $stat) : ?>
@@ -49,7 +49,7 @@
     <? endif; ?>
     <? if (isset($kategorien)) : ?>
     <label>
-        <?= _('Kategorie:') ?><br>
+        <?= _('Kategorie') ?>:<br>
         <select name="kategorie_filter" class="sidebar-selectlist submit-upon-select">
             <option value=""><?= _('Alle') ?></option>
             <? foreach ($kategorien as $kategorie) : ?>
@@ -61,7 +61,7 @@
     <? endif; ?>
     <? if (isset($abschluesse)) : ?>
     <label>
-        <?= _('Abschluss:') ?><br>
+        <?= _('Abschluss') ?>:<br>
         <select name="abschluss_filter" class="sidebar-selectlist submit-upon-select">
             <option value=""><?= _('Alle') ?></option>
             <? foreach ($abschluesse as $abschluss) : ?>
@@ -74,7 +74,7 @@
         <? $perm_institutes = MvvPerm::getOwnInstitutes() ?>
         <? if ($perm_institutes !== false) : ?>
         <label>
-            <?= _('Verantw. Einrichtung:') ?><br>
+            <?= _('Verantw. Einrichtung') ?>:<br>
             <select name="institut_filter" class="sidebar-selectlist nested-select submit-upon-select">
                 <option value=""><?= _('Alle') ?></option>
                 <? $fak = '' ?>
@@ -100,7 +100,7 @@
         <? $perm_institutes = MvvPerm::getOwnInstitutes() ?>
         <? if ($perm_institutes !== false) : ?>
         <label>
-            <?= $fachbereich_caption ?: _('Fachbereiche:') ?><br>
+            <?= $fachbereich_caption ?: _('Fachbereiche') ?>:<br>
             <select name="fachbereich_filter" class="sidebar-selectlist nested-select institute-list submit-upon-select">
                 <option value=""><?= _('Alle') ?></option>
                 <? foreach ($fachbereiche as $fachbereich) : ?>
@@ -114,4 +114,3 @@
         <? endif; ?>
     <? endif; ?>
 </form>
-

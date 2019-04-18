@@ -142,7 +142,7 @@ class Ilias3ConnectedCMS extends ConnectedCMS
         echo "</td></tr><tr><td  width=30% align=\"left\"><font size=\"-1\">";
 
         $cat = $this->soap_client->getObjectByReference( $this->main_category_node_id );
-        echo "<b>" . _("Kategorie: ") . "</b>";
+        echo '<b>' . _('Kategorie') . ':</b>';
         echo "</td><td>";
         echo "<input type=\"text\" size=\"20\" border=0 value=\"" . $cat["title"] . "\" name=\"cat_name\">&nbsp;";
         echo Icon::create('info-circle', 'inactive', ['title' => _('Geben Sie hier den Namen einer bestehenden ILIAS 3 - Kategorie ein, in der die Lernmodule und User-Kategorien abgelegt werden sollen.')])->asImg();

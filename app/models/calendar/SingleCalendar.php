@@ -507,24 +507,24 @@ class SingleCalendar
         }
         $msg_text .= _('Zeit') . ':' . '** ' . strftime(' %c - ', $event->getStart())
                 . strftime('%c', $event->getEnd()) . "\n**";
-        $msg_text .= _("Zusammenfassung:") . '** ' . $event->getTitle() . "\n";
+        $msg_text .= _("Zusammenfassung") . ':** ' . $event->getTitle() . "\n";
         if ($event_data = $event->getDescription()) {
-            $msg_text .= '**' . _("Beschreibung:") . "** $event_data\n";
+            $msg_text .= '**' . _('Beschreibung') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringCategories()) {
-            $msg_text .= '**' . _("Kategorie:") . "** $event_data\n";
+            $msg_text .= '**' . _('Kategorie') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringPriority()) {
-            $msg_text .= '**' . _("Priorität:") . "** $event_data\n";
+            $msg_text .= '**' . _('Priorität') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringAccessibility()) {
-            $msg_text .= '**' . _("Zugriff:") . "** $event_data\n";
+            $msg_text .= '**' . _('Zugriff') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringRecurrence()) {
-            $msg_text .= '**' . _("Wiederholung:") . "** $event_data\n";
+            $msg_text .= '**' . _('Wiederholung') . ":** $event_data\n";
         }
         if (get_config('CALENDAR_GROUP_ENABLE') && $event->attendees->count()) {
-            $msg_text .= '**' . _("Teilnehmende:") . '** ';
+            $msg_text .= '**' . _("Teilnehmende") . ':** ';
             $msg_text .= implode(', ', $event->attendees->map(
                 function ($att) use ($event) {
                     $att_name = $att->user->getFullname();
@@ -620,23 +620,23 @@ class SingleCalendar
         $msg_text = sprintf(_("%s hat folgenden Termin in Ihrem Kalender gelöscht:"), get_fullname());
         $msg_text .= "\n\n";
 
-        $msg_text .= '**' . _('Zeit:') . '**' . strftime(' %c - ', $event->getStart())
+        $msg_text .= '**' . _('Zeit') . ':**' . strftime(' %c - ', $event->getStart())
                 . strftime('%c', $event->getEnd()) . "\n";
-        $msg_text .= '**' . _("Zusammenfassung:") . '** ' . $event->getTitle() . "\n";
+        $msg_text .= '**' . _('Zusammenfassung') . ':** ' . $event->getTitle() . "\n";
         if ($event_data = $event->getDescription()) {
-            $msg_text .= '**' . _("Beschreibung:") . "** $event_data\n";
+            $msg_text .= '**' . _('Beschreibung') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringCategories()) {
-            $msg_text .= '**' . _("Kategorie:") . "** $event_data\n";
+            $msg_text .= '**' . _('Kategorie') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringPriority()) {
-            $msg_text .= '**' . _("Priorität:") . "** $event_data\n";
+            $msg_text .= '**' . _('Priorität') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringAccessibility()) {
-            $msg_text .= '**' . _("Zugriff:") . "** $event_data\n";
+            $msg_text .= '**' . _('Zugriff') . ":** $event_data\n";
         }
         if ($event_data = $event->toStringRecurrence()) {
-            $msg_text .= '**' . _("Wiederholung:") . "** $event_data\n";
+            $msg_text .= '**' . _('Wiederholung') . ":** $event_data\n";
         }
         $recipient_unames = is_array($recipient_ids)
                 ? array_map('get_username', $recipient_ids)
