@@ -271,7 +271,7 @@ class Request implements ArrayAccess, IteratorAggregate
             $value = (bool) $value;
         }
 
-        return (bool) self::get($param);
+        return $value;
     }
 
     /**

@@ -24,10 +24,13 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $_GET['e']    = '3,14';
         $_POST['s_x'] = '0';
         $_GET['f']    = 'root@studip';
+        $_POST['g']   = '1';
+        $_GET['h']    = '';
 
         $_GET['v1']  = ['1', '2.4', '3,7'];
         $_POST['v2'] = ['on\'e', 'two', 'thr33'];
         $_GET['v3']  = ['root@studip', 'hotte.testfreund', 42, '!"$%&/()'];
+        $_POST['v4'] = ['0', '1', '', 'foo'];
 
         if (get_magic_quotes_gpc()) {
             $_GET  = Request::addslashes($_GET);
@@ -120,6 +123,19 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertNull(Request::float('v1'));
     }
 
+    public function testBoolParam ()
+    {
+        $this->assertNull(Request::bool('null'));
+        $this->assertTrue(Request::bool('a'));
+        $this->assertTrue(Request::bool('c'));
+        $this->assertTrue(Request::bool('d'));
+        $this->assertTrue(Request::bool('e'));
+        $this->assertTrue(Request::bool('g'));
+        $this->assertFalse(Request::bool('h'));
+        $this->assertFalse(Request::bool('s_x'));
+        $this->assertNull(Request::bool('v1'));
+    }
+
     public function testUsernameParam ()
     {
         $this->assertNull(Request::username('null'));
@@ -164,6 +180,13 @@ class RequestTest extends PHPUnit_Framework_TestCase
         $this->assertSame(Request::floatArray('c'), []);
         $this->assertSame(Request::floatArray('v1'), [1.0, 2.4, 3.7]);
         $this->assertSame(Request::floatArray('v2'), [0.0, 0.0, 0.0]);
+    }
+
+    public function testBoolArrayParam ()
+    {
+        $this->assertSame(Request::boolArray('null'), []);
+        $this->assertSame(Request::boolArray('c'), []);
+        $this->assertSame(Request::boolArray('v4'), [false, true, false, true]);
     }
 
     public function testUsernameArrayParam ()
