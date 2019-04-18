@@ -263,10 +263,12 @@ class Request implements ArrayAccess, IteratorAggregate
      *
      * @since Stud.IP 4.4
      */
-    public static function bool($param, $default = false)
+    public static function bool($param, $default = null)
     {
-        if (!Request::submitted($param)) {
-            return $default;
+        $value = self::get($param, $default);
+
+        if (isset($value)) {
+            $value = (bool) $value;
         }
 
         return (bool) self::get($param);
@@ -387,6 +389,8 @@ class Request implements ArrayAccess, IteratorAggregate
      * @param string $param    parameter name
      *
      * @return array  parameter value as array (if set), else an empty array
+     *
+     * @since Stud.IP 4.4
      */
     public static function boolArray($param)
     {
