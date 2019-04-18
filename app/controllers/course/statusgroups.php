@@ -468,9 +468,9 @@ class Course_StatusgroupsController extends AuthenticatedController
                 $warn = true;
             }
         }
-
+        $position = Statusgruppen::find($group_id)->position;
         $group = StatusgroupsModel::updateGroup($group_id, Request::get('name'),
-            0, $this->course_id, Request::int('size', 0),
+            $position, $this->course_id, Request::int('size', 0),
             Request::int('selfassign', 0) + Request::int('exclusive', 0),
             strtotime(Request::get('selfassign_start', 'now')),
             Request::get('selfassign_end') ? strtotime(Request::get('selfassign_end')) : 0,

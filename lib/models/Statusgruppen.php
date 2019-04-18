@@ -555,7 +555,8 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
             $sql = "SELECT MAX(position) FROM statusgruppen WHERE range_id = ?";
             $stmt = DBManager::get()->prepare($sql);
             $stmt->execute([$this->range_id]);
-            $this->position = 1 + $stmt->fetchColumn();
+            $max_position = $stmt->fetchColumn();
+            $this->position = $max_position === null ? 0 : $max_position + 1;
         }
     }
 
