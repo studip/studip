@@ -423,12 +423,12 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                     $edit .= LinkButton::create(_('Details'), 'dispatch.php/literature/edit_element.php?_catalog_id=' . $element->getValue('catalog_id'), ['title' => _("Detailansicht dieses Eintrages ansehen.")]);
                     $edit .= "&nbsp;";
                     echo "\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">";
-                    $content .= "<b>" . _("Titel:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_title"),true,true) . "<br>";
-                    $content .= "<b>" . _("Autor; weitere Beteiligte:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("authors"),true,true) . "<br>";
-                    $content .= "<b>" . _("Erschienen:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("published"),true,true) . "<br>";
-                    $content .= "<b>" . _("Identifikation:") ."</b>&nbsp;&nbsp;" . formatLinks($element->getValue("dc_identifier")) . "<br>";
+                    $content .= "<b>" . _('Titel') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_title"),true,true) . "<br>";
+                    $content .= "<b>" . _('Autor; weitere Beteiligte') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("authors"),true,true) . "<br>";
+                    $content .= "<b>" . _('Erschienen') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("published"),true,true) . "<br>";
+                    $content .= "<b>" . _('Identifikation') .":</b>&nbsp;&nbsp;" . formatLinks($element->getValue("dc_identifier")) . "<br>";
                     if ($element->getValue("lit_plugin") != "Studip"){
-                        $content .= "<b>" . _("Externer Link:") ."</b>&nbsp;&nbsp;";
+                        $content .= "<b>" . _('Externer Link') .":</b>&nbsp;&nbsp;";
                         if (($link = $element->getValue("external_link"))){
                             $content.= formatReady(" [" . $element->getValue("lit_plugin"). "]" . $link);
                         } else {
@@ -436,7 +436,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                         }
                         $content .= "<br>";
                     }
-                    $content .= "<b>" . _("Veranstaltungen:") . "</b>&nbsp;&nbsp;";
+                    $content .= "<b>" . _('Veranstaltungen') . ":</b>&nbsp;&nbsp;";
                     foreach ($_SESSION['_lit_data'][$cid]['sem_data'] as $sem_data){
                         $content .= '<a href="dispatch.php/course/details/?sem_id=' . $sem_data['Seminar_id'] . '&send_from_search=1&send_from_search_page=' . URLHelper::getURL() . '">' . htmlReady(my_substr($sem_data["Name"],0,50)) . "</a>, ";
                         $estimated_p += $sem_data['admission_turnout'];
@@ -444,13 +444,13 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                     }
                     $content = mb_substr($content,0,-2);
                     $content .= "<br>";
-                    $content .= "<b>" . _("Dozenten:") . "</b>&nbsp;&nbsp;";
+                    $content .= "<b>" . _('Lehrende') . ":</b>&nbsp;&nbsp;";
                     foreach ($_SESSION['_lit_data'][$cid]['doz_data'] as $doz_data){
                         $content .= '<a href="dispatch.php/profile?username=' . $doz_data['username'] . '">' . htmlReady($doz_data["Nachname"]) . "</a>, ";
                     }
                     $content = mb_substr($content,0,-2);
                     $content .= "<br>";
-                    $content .= "<b>" . _("Teilnehmendenanzahl (erwartet/angemeldet):") . "</b>&nbsp;&nbsp;";
+                    $content .= "<b>" . _('Teilnehmendenanzahl (erwartet/angemeldet)') . ":</b>&nbsp;&nbsp;";
                     $content .= ($estimated_p ? $estimated_p : _("unbekannt"));
                     $content .= ' / ' . (int)$participants;
                     $content .= "<br>";
@@ -458,7 +458,7 @@ if ($preferred_plugin && in_array($preferred_plugin, $_search_plugins)){
                         $_SESSION['_lit_data'][$cid]['check_accession'] = StudipLitSearch::CheckZ3950($element->getValue('accession_number'));
                     }
                     if (is_array($_SESSION['_lit_data'][$cid]['check_accession'])){
-                        $content .= "<div style=\"margin-top: 10px;border: 1px solid black;padding: 5px; width:96%;\"<b>" ._("Verfügbarkeit in externen Katalogen:") . "</b><br>";
+                        $content .= "<div style=\"margin-top: 10px;border: 1px solid black;padding: 5px; width:96%;\"<b>" ._('Verfügbarkeit in externen Katalogen') . ":</b><br>";
                         foreach ( $_SESSION['_lit_data'][$cid]['check_accession'] as $plugin_name => $ret){
                             $content .= "<b>&nbsp;{$plugin_name}&nbsp;</b>";
                             if ($ret['found']){

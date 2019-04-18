@@ -88,12 +88,12 @@ class Admin_UserController extends AuthenticatedController
                 $this->datafields[] = $datafield;
             }
         }
-    
+
         // roles
         $this->roles = array_filter(RolePersistence::getAllRoles(), function($role) {
             return !$role->systemtype;
         });
-        
+
         //wenn suche durchgeführt
         if (!empty($request)) {
             //suche mit datafields
@@ -193,7 +193,7 @@ class Admin_UserController extends AuthenticatedController
                 }
             }
         }
-        
+
         $this->degrees      = Abschluss::findBySQL('1 order by name');
         $this->studycourses = Fach::findBySQL('1 order by name');
         $this->userdomains  = UserDomain::getUserDomains();
@@ -420,7 +420,7 @@ class Admin_UserController extends AuthenticatedController
             if (($GLOBALS['perm']->have_perm('root') && Config::get()->ALLOW_ADMIN_USERACCESS) && (Request::get('pass_1') != '' || Request::get('pass_2') != '')) {
                 if (Request::get('pass_1') == Request::get('pass_2')) {
                     if (mb_strlen(Request::get('pass_1')) < 4) {
-                        $details[] = _("Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.");
+                        $details[] = _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.');
                     } else {
                         $um->changePassword(Request::get('pass_1'));
                     }
@@ -596,7 +596,7 @@ class Admin_UserController extends AuthenticatedController
 
             $this->redirect('admin/user/edit/' . $user_id);
         }
-        
+
         $this->prelim = $this->user->auth_plugin === null;
         if ($this->prelim) {
             $this->available_auth_plugins['preliminary'] = _('vorläufig');

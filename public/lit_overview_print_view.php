@@ -51,12 +51,12 @@ if (is_array($_SESSION['_lit_data'])){
             $estimated_p = 0;
             $participants = 0;
             echo "\n<table width=\"97%\" cellpadding=\"0\" cellspacing=\"0\" align=\"center\">";
-            $content .= "<b>" . _("Titel:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_title"),true,true) . "<br>";
-            $content .= "<b>" . _("Autor; weitere Beteiligte:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("authors"),true,true) . "<br>";
-            $content .= "<b>" . _("Erschienen:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("published"),true,true) . "<br>";
-            $content .= "<b>" . _("Identifikation:") ."</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_identifier")) . "<br>";
+            $content .= "<b>" . _('Titel') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_title"),true,true) . "<br>";
+            $content .= "<b>" . _('Autor; weitere Beteiligte') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("authors"),true,true) . "<br>";
+            $content .= "<b>" . _('Erschienen') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("published"),true,true) . "<br>";
+            $content .= "<b>" . _('Identifikation') .":</b>&nbsp;&nbsp;" . htmlReady($element->getValue("dc_identifier")) . "<br>";
 
-            $content .= "<b>" . _("Veranstaltungen:") . "</b>&nbsp;&nbsp;";
+            $content .= "<b>" . _('Veranstaltungen') . ":</b>&nbsp;&nbsp;";
             foreach ($_SESSION['_lit_data'][$cid]['sem_data'] as $sem_data){
                 $content .= htmlReady(my_substr($sem_data["Name"],0,50)) .', ';
                 $estimated_p += $sem_data['admission_turnout'];
@@ -64,18 +64,18 @@ if (is_array($_SESSION['_lit_data'])){
             }
             $content = mb_substr($content,0,-2);
             $content .= "<br>";
-            $content .= "<b>" . _("Dozenten:") . "</b>&nbsp;&nbsp;";
+            $content .= "<b>" . _('Lehrende') . ":</b>&nbsp;&nbsp;";
             foreach ($_SESSION['_lit_data'][$cid]['doz_data'] as $doz_data){
                 $content .= htmlReady($doz_data["Nachname"]) . ", ";
             }
             $content = mb_substr($content,0,-2);
             $content .= "<br>";
-            $content .= "<b>" . _("Teilnehmendenanzahl (erwartet/angemeldet):") . "</b>&nbsp;&nbsp;";
+            $content .= "<b>" . _('Teilnehmendenanzahl (erwartet/angemeldet)') . ":</b>&nbsp;&nbsp;";
             $content .= ($estimated_p ? $estimated_p : _("unbekannt"));
             $content .= ' / ' . (int)$participants;
             $content .= "<br>";
             if (is_array($_SESSION['_lit_data'][$cid]['check_accession'])){
-                $content .= "<div style=\"margin-top: 10px;border: 1px solid black;padding: 5px; width:96%;\"<b>" ._("Verfügbarkeit in externen Katalogen:") . "</b><br>";
+                $content .= "<div style=\"margin-top: 10px;border: 1px solid black;padding: 5px; width:96%;\"<b>" ._('Verfügbarkeit in externen Katalogen') . ":</b><br>";
                 foreach ( $_SESSION['_lit_data'][$cid]['check_accession'] as $plugin_name => $ret){
                     $content .= "<b>&nbsp;{$plugin_name}&nbsp;</b>";
                     if ($ret['found']){

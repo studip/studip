@@ -15,20 +15,20 @@
             <input type="hidden" name="tour_step_editmode" value="<?= $mode ?>">
             <legend><?= sprintf(_('Schritt %s'), $step->step) ?></legend>
             <label>
-                <?= _('Titel:') ?>
+                <?= _('Titel') ?>
                 <input type="text" size="60" maxlength="255" name="step_title"
                        value="<?= $step ? htmlReady($step->title) : '' ?>"
                        placeholder="<?= _('Bitte geben Sie einen Titel für den Schritt an') ?>">
             </label>
 
             <label>
-                <?= _('Inhalt:') ?>
+                <?= _('Inhalt') ?>
                 <textarea cols="60" rows="5" name="step_tip"
                           placeholder="<?= _('Bitte geben Sie den Text für diesen Schritt ein') ?>"><?= $step ? htmlReady($step->tip) : '' ?></textarea>
             </label>
 
             <label>
-                <span class="required"><?= _('Art:') ?></span>
+                <span class="required"><?= _('Art') ?></span>
                 <select name="step_interactive">
                     <option value="0" <? if (!$step->interactive) echo 'selected'; ?>>
                         <?= _('Geführt') ?>
@@ -44,13 +44,13 @@
                 <input type="hidden" name="step_css" value="<?= $step->css_selector ?>">
             <? else : ?>
                 <label for="step_route" class="caption">
-                    <span class="required"><?= _('Seite:') ?></span>
+                    <span class="required"><?= _('Seite') ?></span>
                     <input type="text" size="60" maxlength="255" name="step_route"
                            value="<?= $step ? htmlReady($step->route) : '' ?>"
                            placeholder="<?= _('Route für den Schritt (z.B. "dispatch.php/profile")') ?>">
                 </label>
                 <label>
-                    <?= _('CSS-Selektor:') ?>
+                    <?= _('CSS-Selektor') ?>
                     <input type="text" size="60" maxlength="255" name="step_css"
                            value="<?= $step ? htmlReady($step->css_selector) : '' ?>"
                            placeholder="<?= _('Selektor, an dem der Schritt angezeigt wird') ?>"/>
@@ -60,7 +60,7 @@
         </fieldset>
     <? if ($step->css_selector) : ?>
         <fieldset>
-            <legend><?= _('Orientierung:') ?></legend>
+            <legend><?= _('Orientierung') ?></legend>
             <div class="tour_step_orientation">
                 <table>
                     <tr>

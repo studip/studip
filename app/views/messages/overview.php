@@ -18,7 +18,7 @@
         <caption>
             <?= $received ? _("Eingang") : _("Gesendet") ?>
             <? if (Request::get("tag")) : ?>
-                <?= ", "._("Schlagwort: ").htmlReady(ucfirst(Request::get("tag"))) ?>
+                <?= ', ' . _('Schlagwort') . ': ' . htmlReady(ucfirst(Request::get('tag'))) ?>
                 <button onClick="if (window.confirm('<?= _("Schlagwort wirklich löschen?") ?>') { jQuery('#delete_tags_form').submit(); }" style="background: none; border: none; cursor: pointer;" title="<?= _("Schlagwort von allen Nachrichten entfernen.") ?>">
                     <?= Icon::create('trash', 'clickable')->asImg(20) ?>
                 </button>

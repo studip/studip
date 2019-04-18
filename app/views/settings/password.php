@@ -15,7 +15,7 @@
             <span class="required"><?= _('Neues Passwort') ?></span>
             <input required type="password" pattern=".{8,}"
                    id="new_password" name="new_password"
-                   data-message="<?= _('Das Passwort ist zu kurz - es sollte mindestens 8 Zeichen lang sein.') ?>">
+                   data-message="<?= _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.') ?>">
         </label>
         <label>
             <span class="required"><?= _('Passwort bestätigen') ?></span>

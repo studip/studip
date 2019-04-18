@@ -16,7 +16,7 @@
     </footer>
 
 
-    <h2><?= _("Ausgewählter Katalog:") ?></h2>
+    <h2><?= _('Ausgewählter Katalog') ?>:</h2>
     <p><?= $search->search_plugin->description ?></p>
 
     <fieldset>
@@ -67,7 +67,7 @@
 
     <h2><?= sprintf(_('%s Treffer in Ihrem Suchergebnis.'), $num_hits); ?></h2>
     <p style="text-align: right">
-        <strong><?= _('Anzeige:') ?></strong>
+        <strong><?= _('Anzeige') ?>:</strong>
         <? if ($search->start_result > 1) : ?>
             <a href="<?= URLHelper::getLink('', ['change_start_result' => ($search->start_result - 5)]) ?>">
                 <?= Icon::create('arr_2left', 'clickable')->asImg(['hspace' => 3]); ?>
@@ -105,32 +105,32 @@
                 <section>
                     <dl>
                         <? if ($title = $element->getValue('dc_title')) : ?>
-                            <dt><?= _('Titel:') ?></dt>
+                            <dt><?= _('Titel') ?>:</dt>
                             <dd><?= htmlReady($title, true, true) ?></dd>
                         <? endif ?>
 
                         <? if ($authors = $element->getValue('authors')) : ?>
-                            <dt><?= _('Autor (weitere Beteiligte):') ?></dt>
+                            <dt><?= _('Autor (weitere Beteiligte)') ?>:</dt>
                             <dd><?= htmlReady($authors, true, true) ?></dd>
                         <? endif ?>
 
                         <? if ($published = $element->getValue('published')): ?>
-                            <dt><?= _('Erschienen:') ?></dt>
+                            <dt><?= _('Erschienen') ?>:</dt>
                             <dd> <?= htmlReady($published, true, true) ?></dd>
                         <? endif ?>
 
                         <? if ($identifier = $element->getValue('dc_identifier')) : ?>
-                            <dt><?= _('Identifikation:') ?></dt>
+                            <dt><?= _('Identifikation') ?>:</dt>
                             <dd><?= htmlReady($identifier, true, true) ?></dd>
                         <? endif ?>
 
                         <? if ($subject = $element->getValue('dc_subject')) : ?>
-                            <dt><?= _('Schlagwörter:') ?></dt>
+                            <dt><?= _('Schlagwörter') ?>:</dt>
                             <dd><?= htmlReady($subject, true, true) ?></dd>
                         <? endif ?>
 
                         <? if ($element->getValue("lit_plugin") != 'Studip') : ?>
-                            <p><strong><?= _('Externer Link:') ?></strong>
+                            <p><strong><?= _('Externer Link') ?>:</strong>
                                 <? if (($link = $element->getValue('external_link'))) : ?>
                                     <?= formatReady(' [' . $element->getValue('lit_plugin_display_name') . ']' . $link); ?>
                                 <? else : ?>
@@ -154,7 +154,7 @@
         <? endif ?>
     <? endfor ?>
     <p style="text-align: right">
-        <strong><?= _('Anzeige:') ?></strong>
+        <strong><?= _('Anzeige') ?>:</strong>
         <? if ($search->start_result > 1) : ?>
             <a href="<?= URLHelper::getLink('', ['change_start_result' => ($search->start_result - 5)]) ?>">
                 <?= Icon::create('arr_2left', 'clickable')->asImg(['hspace' => 3]); ?>

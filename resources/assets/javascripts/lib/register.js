@@ -47,7 +47,7 @@ const register = {
         if (jQuery('input[name=password]').val().length < 8) {
             register.addError(
                 'password',
-                'Das Passwort ist zu kurz, es sollte mindestens 8 Zeichen lang sein.'.toLocaleString()
+                'Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.'.toLocaleString()
             );
             document.login.password.focus();
             checked = false;
