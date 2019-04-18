@@ -345,7 +345,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
     
         $sidebar = Sidebar::get();
         $widget = new SidebarWidget();
-        $widget->setTitle('Filter');
+        $widget->setTitle(_('Filter'));
         $widget->addElement(new WidgetElement($filter_template));
         $sidebar->addWidget($widget, 'filter');
     }

@@ -300,7 +300,6 @@ class Materialien_DokumenteController extends MVVController
             'function () { $(this).closest("form").submit(); }',
             $this->search_term
         );
-        $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
 
@@ -320,7 +319,7 @@ class Materialien_DokumenteController extends MVVController
     
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
-        $widget->setTitle('Filter');
+        $widget->setTitle(_('Filter'));
         $widget->addElement(new WidgetElement($filter_template));
         $sidebar->addWidget($widget,"filter");
     }

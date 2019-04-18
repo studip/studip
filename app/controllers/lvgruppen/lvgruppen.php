@@ -451,7 +451,6 @@ class Lvgruppen_LvgruppenController extends MVVController
             'function () { $(this).closest("form").submit(); }',
             $this->search_term
         );
-        $widget->setTitle(_('Suche'));
         $sidebar->addWidget($widget, 'search');
     }
 

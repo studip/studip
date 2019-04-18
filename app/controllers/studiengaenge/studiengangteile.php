@@ -310,7 +310,6 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             'function () { $(this).closest("form").submit(); }',
             $this->search_term
         );
-        $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
 }

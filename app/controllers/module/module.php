@@ -1416,7 +1416,6 @@ class Module_ModuleController extends MVVController
             'function () { $(this).closest("form").submit(); }',
             $this->search_term
         );
-        $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
 }
