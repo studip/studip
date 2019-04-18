@@ -58,7 +58,7 @@ class Fachabschluss_KategorienController extends MVVController
         } else {
             PageLayout::setTitle(sprintf(
                 _('Abschluss-Kategorie: %s bearbeiten'),
-                htmlReady($this->abschluss_kategorie->getDisplayName())
+                $this->abschluss_kategorie->getDisplayName()
             ));
             $success_message = _('Die Abschluss-Kategorie "%s" wurde geändert.');
         }

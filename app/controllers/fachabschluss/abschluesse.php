@@ -86,7 +86,7 @@ class Fachabschluss_AbschluesseController extends MVVController
         } else {
             PageLayout::setTitle(sprintf(
                 _('Abschluss: %s bearbeiten'),
-                htmlReady($this->abschluss->getDisplayName())
+                $this->abschluss->getDisplayName()
             ));
             $success_message = _('Der Abschluss "%s" wurde geändert.');
         }

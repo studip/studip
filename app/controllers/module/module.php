@@ -137,7 +137,7 @@ class Module_ModuleController extends MVVController
                 );
             } else {
                 PageLayout::setTitle(sprintf(
-                    _('Modul: %s bearbeiten'), htmlReady($this->modul->getDisplayName())
+                    _('Modul: %s bearbeiten'), $this->modul->getDisplayName()
                 ));
             }
 

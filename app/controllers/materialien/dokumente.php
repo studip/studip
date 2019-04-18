@@ -91,7 +91,7 @@ class Materialien_DokumenteController extends MVVController
         } else {
             PageLayout::setTitle(sprintf(
                 _('Dokument: %s bearbeiten'),
-                htmlReady($this->dokument->getDisplayName())
+                $this->dokument->getDisplayName()
             ));
             $success_message = _('Das Dokument "%s" wurde geändert.');
         }

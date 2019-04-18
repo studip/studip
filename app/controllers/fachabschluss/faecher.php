@@ -87,7 +87,7 @@ class Fachabschluss_FaecherController extends MVVController
             PageLayout::setTitle(_('Neues Fach anlegen'));
             $success_message = _('Das Fach "%s" wurde angelegt.');
         } else {
-            PageLayout::setTitle(sprintf(_('Fach: %s bearbeiten'), htmlReady($this->fach->getDisplayName())));
+            PageLayout::setTitle(sprintf(_('Fach: %s bearbeiten'), $this->fach->getDisplayName()));
             $success_message = _('Das Fach "%s" wurde geändert.');
         }
         //save changes

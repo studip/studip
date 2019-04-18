@@ -117,7 +117,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         } else {
             PageLayout::setTitle(sprintf(
                 _('Studiengang: %s bearbeiten'),
-                htmlReady($this->studiengang->getDisplayName())
+                $this->studiengang->getDisplayName()
             ));
             $success_message = _('Der Studiengang "%s" wurde geändert.');
             $quicksearchText = $this->studiengang->name;
@@ -914,7 +914,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 return;
             }
         }
-        PageLayout::setTitle(htmlReady($this->studiengang->getDisplayName()));
+        PageLayout::setTitle($this->studiengang->getDisplayName());
         $this->render_template('studiengaenge/studiengaenge/approve', $this->layout);
     }
 

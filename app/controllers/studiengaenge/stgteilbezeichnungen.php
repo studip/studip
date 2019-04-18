@@ -38,7 +38,7 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
             $this->bezeichnung_id = $this->stgteilbezeichnung->getId();
             PageLayout::setTitle(sprintf(
                 _('Studiengangteil-Bezeichnung: %s bearbeiten'),
-                htmlReady($this->stgteilbezeichnung->name)
+                $this->stgteilbezeichnung->name
             ));
         }
 

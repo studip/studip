@@ -32,13 +32,13 @@ class SharedVersionController extends MVVController
             $this->version->stat = 'planung';
             PageLayout::setTitle(sprintf(
                 _('Neue Version für Studiengangteil: %s'),
-                htmlReady($this->stgteil->getDisplayName())
+                $this->stgteil->getDisplayName()
             ));
             $success_message = ('Die Version "%s" des Studiengangteils wurde angelegt.');
         } else {
             PageLayout::setTitle(sprintf(
                 _('Version: %s bearbeiten'),
-                htmlReady($this->version->getDisplayName())
+                $this->version->getDisplayName()
             ));
             $success_message = _('Die Version "%s" des Studiengangteils wurde geändert.');
         }
@@ -253,15 +253,15 @@ class SharedVersionController extends MVVController
             }
             PageLayout::setTitle(sprintf(
                 _('Einen neuen Studiengangteil-Abschnitt für die Version "%s" anlegen.'),
-                htmlReady($this->version->getDisplayName())
+                $this->version->getDisplayName()
             ));
             $success_message = ('Der Studiengangteil-Abschnitt "%s" wurde angelegt.');
         } else {
             $this->version = $this->abschnitt->version;
             PageLayout::setTitle(sprintf(
                 _('Studiengangteil-Abschnitt "%s" der Version "%s" bearbeiten.'),
-                htmlReady($this->abschnitt->name),
-                htmlReady($this->version->getDisplayName())
+                $this->abschnitt->name)
+                $this->version->getDisplayName()
             ));
             $success_message = _('Der Studiengangteil-Abschnitt "%s" wurde geändert.');
         }

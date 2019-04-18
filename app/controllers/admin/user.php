@@ -958,7 +958,7 @@ class Admin_UserController extends AuthenticatedController
     public function lock_comment_action($user_id)
     {
         $this->user = User::find($user_id);
-        PageLayout::setTitle(sprintf(_('%s sperren'), htmlReady($this->user->getFullname())));
+        PageLayout::setTitle(sprintf(_('%s sperren'), $this->user->getFullname()));
 
         $this->params = [];
         if (Request::int('from_index')) {
