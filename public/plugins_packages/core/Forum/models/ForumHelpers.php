@@ -27,12 +27,14 @@ class ForumHelpers {
      * @param  array   $highlight
      * @return string
      */
-    static function do_highlight($text, $highlight)
+    public static function do_highlight($text, $highlight)
     {
         foreach ($highlight as $hl) {
-            $text = preg_replace('/' . preg_quote(htmlReady($hl), '/') . '/i',
-                                 '<span class="highlight">$0</span>',
-                                 $text);
+            $text = preg_replace(
+                '/' . preg_quote(htmlReady($hl), '/') . '/i',
+                '<span class="highlight">$0</span>',
+                $text
+            );
         }
         return $text;
     }
@@ -45,7 +47,7 @@ class ForumHelpers {
      * @param array $highlight an array of words to be highlighted
      * @return string the highlighted text
      */
-    function highlight($text, $highlight)
+    public static function highlight($text, $highlight)
     {
         if (empty($highlight)) {
             return $text;
@@ -110,7 +112,7 @@ class ForumHelpers {
      *
      * @return  int
      */
-    static function getPage()
+    public static function getPage()
     {
         return self::$page;
     }
@@ -120,7 +122,7 @@ class ForumHelpers {
      *
      * @param int $page_num the page
      */
-    static function setPage($page_num)
+    public static function setPage($page_num)
     {
         self::$page = $page_num;
     }
@@ -134,7 +136,7 @@ class ForumHelpers {
      *
      * @return string  a human readable, localized text
      */
-    static function getVisitText($num_entries, $topic_id)
+    public static function getVisitText($num_entries, $topic_id)
     {
         if ($num_entries > 0) {
             $text = sprintf(_('Seit Ihrem letzten Besuch gibt es %s neue Beiträge'), $num_entries);
@@ -167,7 +169,7 @@ class ForumHelpers {
      *
      * @return string
      */
-    static function getOnlineStatus($user_id)
+    public static function getOnlineStatus($user_id)
     {
         static $online_status;
 
@@ -204,7 +206,7 @@ class ForumHelpers {
      * @param string $seminar_id
      * @param string $parent_id
      */
-    static function createPdf($seminar_id, $parent_id = null)
+    public static function createPdf($seminar_id, $parent_id = null)
     {
         $seminar_name = get_object_name($seminar_id, 'sem');
         $data = ForumEntry::getList('dump', $parent_id ?: $seminar_id);
@@ -255,7 +257,7 @@ class ForumHelpers {
      *
      * @return mixed  seminar_id or false
      */
-    static function getSeminarId()
+    public static function getSeminarId()
     {
         return Context::getId();
     }
@@ -272,7 +274,7 @@ class ForumHelpers {
      *
      * @return string the modified text
      */
-    static function replace($text)
+    public static function replace($text)
     {
         return str_replace('%%%', '<%', str_replace('###', '%>', $text));
     }
