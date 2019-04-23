@@ -48,7 +48,7 @@ class ForumPerm {
      * @param string $user_id     the user to check for
      * @return boolean  true, if the user has the perms, false otherwise
      */
-    static function has($perm, $seminar_id, $user_id = null)
+    public static function has($perm, $seminar_id, $user_id = null)
     {
         static $permissions = [];
 
@@ -126,7 +126,7 @@ class ForumPerm {
      *
      * @throws AccessDeniedException
      */
-    function check($perm, $seminar_id, $topic_id = null)
+    public static function check($perm, $seminar_id, $topic_id = null)
     {
         if (!self::has($perm, $seminar_id)) {
             throw new AccessDeniedException(sprintf(
@@ -151,7 +151,7 @@ class ForumPerm {
      *
      * @return bool true if the user has the necessary perms, false otherwise
      */
-    static function hasEditPerms($topic_id)
+    public static function hasEditPerms($topic_id)
     {
         static $perms = [];
 
@@ -182,7 +182,7 @@ class ForumPerm {
      * @param type $seminar_id   id of the seminar, the category should belong to
      * @param type $category_id  the id of the category to check
      */
-    static function checkCategoryId($seminar_id, $category_id)
+    public static function checkCategoryId($seminar_id, $category_id)
     {
         $data = ForumCat::get($category_id);
 
@@ -201,7 +201,7 @@ class ForumPerm {
      * @param type $seminar_id  id of the seminar, the category should belong to
      * @param type $topic_id    the id of the topic to check
      */
-    static function checkTopicId($seminar_id, $topic_id)
+    public static function checkTopicId($seminar_id, $topic_id)
     {
         $data = ForumEntry::getConstraints($topic_id);
 
