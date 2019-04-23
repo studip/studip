@@ -105,7 +105,7 @@ class ContentTermsOfUse extends SimpleORMap
     {
         return [
             0 => _('Ohne Bedingung'),
-            1 => _('Nur innerhalb geschlossene Gruppen erlaubt'),
+            1 => _('Nur innerhalb geschlossener Veranstaltungen erlaubt'),
             2 => _('Nur für EigentümerIn erlaubt'),
         ];
     }
