@@ -36,7 +36,9 @@ class OpenGraphURL extends SimpleORMap
     protected static function configure($config = [])
     {
         $config['db_table'] = 'opengraphdata';
+
         $config['serialized_fields']['data'] = 'JSONArrayObject';
+
         parent::configure($config);
     }
 
@@ -60,6 +62,18 @@ class OpenGraphURL extends SimpleORMap
     }
 
     /**
+     * Specialized findOneByURL function that uses the hash to find the
+     * appropriate record instead.
+     *
+     * @param  string $url URL to find record for
+     * @return mixed instance of OpenGraphURL if available, null otherwise
+     */
+    public static function findOneByURL($url)
+    {
+        return self::findOneByHash(md5($url));
+    }
+
+    /**
      * Constructor of the object. Provides a fallback if a url is passed
      * instead of the usually expected numeric id in order to not break
      * backward compatibility.
@@ -79,7 +93,28 @@ class OpenGraphURL extends SimpleORMap
                 $id = $temp->id;
             }
         }
+
         parent::__construct($id);
+    }
+
+    /**
+     * Sets value of a column. Overwritten so that the hash is also set when
+     * the url is set.
+     *
+     * @param string $field
+     * @param string $value
+     * @return string
+     * @see SimpleORMap::setValue
+     */
+    public function setValue($field, $value)
+    {
+        $ret = parent::setValue($field, $value);
+
+        if ($field === 'url') {
+            $this->content['hash'] = md5($value);
+        }
+
+        return $ret;
     }
 
     /**
@@ -249,22 +284,22 @@ class OpenGraphURL extends SimpleORMap
         foreach ($this['data'] as $meta) {
             foreach ($meta as $key => $value) {
                 switch ($key) {
-                    case "og:$type:url":
+                    case "og:{$type}:url":
                         $media[] = $value;
                         break;
-                    case "og:$type":
+                    case "og:{$type}":
                         $media[] = $value;
                         break;
-                    case "og:$type:secure_url":
+                    case "og:{$type}:secure_url":
                         $secure_media[] = $value;
                         break;
-                    case "og:$type:type":
+                    case "og:{$type}:type":
                         $media_types[] = $value;
                         break;
                 }
             }
         }
-        if ($_SERVER['HTTPS'] === 'on' && count($secure_media)) {
+        if ($_SERVER['HTTPS'] === 'on' && count($secure_media) > 0) {
             foreach ($secure_media as $index => $url) {
                 $files[] = [$url, $media_types[$index]];
             }
