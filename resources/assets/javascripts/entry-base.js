@@ -5,9 +5,7 @@ import 'es6-promise/auto'
 
 import "../stylesheets/studip-jquery-ui.less"
 import "chartist/dist/chartist.css"
-import "gridstack/dist/gridstack.css"
 import "../stylesheets/studip.less"
-import "../stylesheets/widgets.less"
 
 import lodash from "lodash"
 window._ = lodash

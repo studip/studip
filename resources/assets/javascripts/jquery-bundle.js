@@ -73,9 +73,6 @@ import select2 from 'select2/dist/js/select2.full.js';
 
 import 'sticky-kit/dist/sticky-kit.js';
 
-import 'gridstack';
-import 'gridstack/dist/gridstack.jQueryUI.js';
-
 import 'blueimp-file-upload';
 import 'blueimp-file-upload/js/jquery.iframe-transport.js';
 
