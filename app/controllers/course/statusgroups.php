@@ -253,26 +253,16 @@ class Course_StatusgroupsController extends AuthenticatedController
             $sidebar->addWidget($actions);
         }
 
-        $views = new ViewsWidget();
+        $views = $sidebar->addWidget(new ViewsWidget());
         $views->addLink(
             _('Alle Gruppen zugeklappt'),
-            $this->url_for(
-                'course/statusgroups'
-            )
+            $this->url_for('course/statusgroups')
         )->setActive(!$this->open_groups);
 
         $views->addLink(
             _('Alle Gruppen aufgeklappt'),
-            $this->url_for(
-                'course/statusgroups',
-                [
-                    'open_groups' => '1'
-                ]
-            )
-
+            $this->url_for('course/statusgroups', ['open_groups' => '1'])
         )->setActive($this->open_groups);
-
-        $sidebar->addWidget($views);
     }
 
     /**
