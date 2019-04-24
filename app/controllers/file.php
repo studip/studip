@@ -884,17 +884,21 @@ class FileController extends AuthenticatedController
                     }
                 }
             } else {
-                $file = FileRef::find(Request::get('file_id'))->file;
+                $from_file_ref = FileRef::find(Request::get('file_id'));
+                $file = $from_file_ref->file;
             }
 
             $error = $this->to_folder_type->validateUpload($file, $GLOBALS['user']->id);
             if (!$error) {
-                //do the copy
-                $file_ref = $this->to_folder_type->createFile($file);
-                if ($filedata['content_terms_of_use_id']) {
-                    $file_ref['content_terms_of_use_id'] = $filedata['content_terms_of_use_id'];
+                if ($from_file_ref) {
+                    $file_ref = FileManager::copyFileRef($from_file_ref, $this->to_folder_type, User::findCurrent());
+                } else {
+                    //do the copy
+                    $file_ref = $this->to_folder_type->createFile($file);
                 }
-                if (in_array($this->to_folder_type->range_type, ['course', 'institute'])) {
+            }
+            if ($file_ref instanceof FileRef) {
+                if (in_array($this->to_folder_type->range_type, ['course', 'institute']) && !$file_ref->content_terms_of_use_id) {
                     $this->redirect($this->url_for('file/edit_license', ['file_refs' => [$file_ref->id]]));
                     return;
                 } elseif (Request::isXhr()) {
@@ -914,23 +918,22 @@ class FileController extends AuthenticatedController
                     $payload = [
                         'html'     => $this->render_template_as_string("files/_fileref_tr"),
                         'redirect' => $redirects[0],
-                        'url'      => $this->generateFilesUrl($folder, $this->file_ref),
+                        'url'      => $this->generateFilesUrl($this->current_folder, $this->file_ref),
                     ];
 
                     $this->response->add_header(
                         'X-Dialog-Execute',
                         'STUDIP.Files.addFile'
                     );
-                    $this->render_json($payload);
+                    return $this->render_json($payload);
                 } else {
                     PageLayout::postSuccess(_('Datei wurde hinzugefügt.'));
-                    $redirect = 'files/index/' . $folder_id;
-                    if ($this->to_folder_type->range_type === 'course') {
-                        $redirect = 'course/' . $redirect;
-                    }
-                    $this->redirect($redirect);
+                    return $this->redirectToFolder($this->to_folder_type);
                 }
             } else {
+                if (is_array($file_ref)) {
+                    $error = $file_ref;
+                }
                 PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), [$error]);
             }
         }
@@ -1063,7 +1066,7 @@ class FileController extends AuthenticatedController
                 return;
             } else {
                 PageLayout::postSuccess(_('Datei wurde bearbeitet.'));
-                //redirect:
+                return $this->redirectToFolder($this->folder);
             }
         }
         $this->licenses = ContentTermsOfUse::findBySQL("1 ORDER BY position ASC, id ASC");
