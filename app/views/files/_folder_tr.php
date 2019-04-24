@@ -47,10 +47,10 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
     <td data-sort-value="<?= htmlReady($owner->getFullName('no_title')) ?>" class="responsive-hidden">
     <? if ($owner->id !== $GLOBALS['user']->id) : ?>
         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $owner->username) ?>">
-            <?= htmlReady($owner->getFullName('no_title')) ?>
+            <?= htmlReady($owner->getFullName('no_title_rev')) ?>
         </a>
     <? else: ?>
-        <?= htmlReady($owner->getFullName('no_title')) ?>
+        <?= htmlReady($owner->getFullName('no_title_rev')) ?>
     <? endif; ?>
     </td>
     <td title="<?= strftime('%x %X', $folder->mkdate) ?>" data-sort-value="<?= $folder->mkdate ?>" class="responsive-hidden">
