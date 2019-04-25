@@ -6,21 +6,26 @@
 
         <label>
             <span class="required"><?= _('Gruppenname') ?></span>
-            <input required type="text" name="name" class="groupname" size="50"
-                    value="<?= htmlReady($group->name) ?>"
-                    placeholder="<?= _('Mitarbeiterinnen und Mitarbeiter') ?>">
+            <?= I18N::input('name', $group->name, [
+                'required'    => '',
+                'class'       => 'groupname',
+                'size'        => 50,
+                'placeholder' => _('Mitarbeiterinnen und Mitarbeiter'),
+            ]) ?>
         </label>
         <label>
             <?= _('Weibliche Bezeichnung') ?>
-            <input type="text" name="name_w" size="50"
-                    value="<?= htmlReady($group->name_w) ?>"
-                   placeholder="<?= _('Mitarbeiterin') ?>">
+            <?= I18N::input('name_w', $group->name_w, [
+                'size'        => 50,
+                'placeholder' => _('Mitarbeiterin'),
+            ]) ?>
         </label>
         <label>
             <?= _('Männliche Bezeichnung') ?>
-            <input type="text" name="name_m" size="50"
-                   value="<?= htmlReady($group->name_m) ?>"
-                   placeholder="<?= _('Mitarbeiter') ?>">
+            <?= I18N::input('name_m', $group->name_m, [
+                'size'        => 50,
+                'placeholder' => _('Mitarbeiter'),
+            ]) ?>
         </label>
 
     <? if ($type['needs_size']): ?>

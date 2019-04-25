@@ -128,9 +128,9 @@ class Admin_StatusgroupsController extends AuthenticatedController
                 DataFieldEntry::removeAll(['', $group->statusgruppe_id]);
             }
 
-            $group->name       = Request::get('name');
-            $group->name_w     = Request::get('name_w');
-            $group->name_m     = Request::get('name_m');
+            $group->name       = Request::i18n('name');
+            $group->name_w     = Request::i18n('name_w');
+            $group->name_m     = Request::i18n('name_m');
             $group->size       = Request::int('size', 0);
             $group->range_id   = Request::option('range_id', $group->range_id);
             $group->position   = Request::int('position', $group->position);

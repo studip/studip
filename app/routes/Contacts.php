@@ -127,11 +127,11 @@ class Contacts extends \RESTAPI\RouteMap
         if ($GLOBALS['user']->id !== $user_id) {
             $this->error(401);
         }
-        
+
         if (!isset($this->data['name']) || !mb_strlen($name = trim($this->data['name']))) {
             $this->error(400, 'Contact group name required.');
         }
-        
+
         $group = new \Statusgruppen();
         $group->range_id       = $GLOBALS['user']->id;
         $group->name           = $name;
@@ -292,7 +292,7 @@ class Contacts extends \RESTAPI\RouteMap
     {
         $json = [
             'id'             => $group->id,
-            'name'           => $group->name,
+            'name'           => (string) $group->name,
             'contacts'       => $this->urlf('/contact_group/%s/members', [htmlReady($group->id)]),
             'contacts_count' => sizeof($group->members)
         ];
