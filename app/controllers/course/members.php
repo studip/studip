@@ -700,7 +700,7 @@ class Course_MembersController extends AuthenticatedController
         }
 
         // no results
-        if (!sizeof($csv_lines) && !sizeof($selected_users)) {
+        if (empty($csv_lines) && empty($selected_users)) {
             PageLayout::postError(_("Niemanden gefunden!"));
         }
 
@@ -720,7 +720,7 @@ class Course_MembersController extends AuthenticatedController
             $this->redirect('course/members/csv_manual_assignment');
             return;
         }
-        if (count($csv_not_found) > 0) {
+        if (is_array($csv_not_found) && count($csv_not_found) > 0) {
             PageLayout::postError(sprintf(_('%s konnten <b>nicht</b> zugeordnet werden!'), htmlReady(join(',', $csv_not_found))));
         }
 

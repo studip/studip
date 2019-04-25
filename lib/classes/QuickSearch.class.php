@@ -98,6 +98,9 @@ class QuickSearch
      */
     public static function garbageCollect()
     {
+        if (empty($_SESSION['QuickSearches'])) {
+            return 0;
+        }
         $count = count($_SESSION['QuickSearches']);
 
         $_SESSION['QuickSearches'] = array_filter($_SESSION['QuickSearches'], function ($query) {

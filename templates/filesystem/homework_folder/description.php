@@ -1,7 +1,7 @@
 <div>
     <?=_("Dieser Ordner ist ein Hausaufgabenordner. Es können nur Dateien eingestellt werden.")?>
 </div>
-<? if (count($own_files)) : ?>
+<? if (is_array($own_files) && count($own_files) > 0) : ?>
 <?= _("Sie selbst haben folgende Dateien in diesen Ordner eingestellt:") ?>
     <ul>
         <? foreach ($own_files as $own_file) :?>

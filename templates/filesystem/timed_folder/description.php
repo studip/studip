@@ -37,7 +37,7 @@
         <?= formatReady($folderdata['description']) ?>
     </div>
 <? endif ?>
-<? if (count($own_files) > 0) : ?>
+<? if (is_array($own_files) && count($own_files) > 0) : ?>
     <div>
         <?= _('Sie selbst haben folgende Dateien in diesen Ordner eingestellt:') ?>
         <ul>

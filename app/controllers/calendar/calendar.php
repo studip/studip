@@ -450,6 +450,7 @@ class Calendar_CalendarController extends AuthenticatedController
 
     protected function storeEventData(CalendarEvent $event, SingleCalendar $calendar)
     {
+        $messages = [];
         if (Request::int('isdayevent')) {
             $dt_string = Request::get('start_date') . ' 00:00:00';
         } else {

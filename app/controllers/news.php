@@ -279,7 +279,7 @@ class NewsController extends StudipController
         $this->search_presets['user'] = _('Meine Profilseite');
         if ($GLOBALS['perm']->have_perm('autor') && !$GLOBALS['perm']->have_perm('admin')) {
             $my_sem = $this->search_area('__THIS_SEMESTER__');
-            if (count($my_sem['sem']))
+            if (is_array($my_sem['sem']) && count($my_sem['sem']))
                 $this->search_presets['sem'] = _('Meine Veranstaltungen im aktuellen Semester') . ' (' . count($my_sem['sem']) . ')';
         }
         if ($GLOBALS['perm']->have_perm('dozent') && !$GLOBALS['perm']->have_perm('root')) {
@@ -660,7 +660,7 @@ class NewsController extends StudipController
     private function search_area($term)
     {
         global $perm;
-        $result = [];
+        $result = $tmp_result = [];
         if (mb_strlen($term) < 3) {
             PageLayout::postError(_('Der Suchbegriff muss mindestens drei Zeichen lang sein.'));
             return $result;

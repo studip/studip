@@ -66,13 +66,13 @@ class CalendarExport
         } else {
             $message = sprintf(ngettext('Es wurde 1 Termin exportiert', 'Es wurden %s Termine exportiert', sizeof($events)), sizeof($events));
         }
-        
+
         $this->_export($this->_writer->writeFooter());
     }
 
     public function _export($exp)
     {
-        if (sizeof($exp)) {
+        if (!empty($exp)) {
             $this->export[] = $exp;
         }
     }

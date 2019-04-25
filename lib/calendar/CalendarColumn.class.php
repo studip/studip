@@ -201,6 +201,7 @@ class CalendarColumn {
 
         $entries_for_column = $this->getEntries();
         $result = [];
+        $new_entries = [];
 
         // 1st step - group all entries with the same duration
         foreach ($entries_for_column as $entry_id => $entry) {
@@ -315,7 +316,7 @@ class CalendarColumn {
     /**
      * returns a matrix that tells the number of entries for a given timeslot
      *
-     * @return array 
+     * @return array
      */
     public function getMatrix() {
         $group_matrix = [];
