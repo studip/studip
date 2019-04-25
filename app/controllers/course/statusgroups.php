@@ -180,8 +180,12 @@ class Course_StatusgroupsController extends AuthenticatedController
 
                 $members = $this->allmembers->findby('user_id', $nogroupmembers);
                 $groupdata['members'] = StatusgroupsModel::sortGroupMembers($members, $this->sort_by, $this->order);
-
                 $groupdata['load'] = true;
+            } else {
+                $groupdata['members'] = $this->allmembers->findby(
+                    'user_id',
+                    $this->nogroupmembers
+                );
             }
             $this->groups[] = $groupdata;
         }
