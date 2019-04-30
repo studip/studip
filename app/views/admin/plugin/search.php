@@ -1,33 +1,6 @@
-<?
-# Lifter010: TODO
-use Studip\Button, Studip\LinkButton;
-
-?>
-<form action="<?= $controller->link_for('admin/plugin/search') ?>" method="post" class="default">
-    <?= CSRFProtection::tokenTag() ?>
-
-    <fieldset>
-        <legend>
-            <?= _('Plugins suchen') ?>
-        </legend>
-
-        <label>
-            <?= _('Pluginname') ?>
-            <input name="search" type="text" size="20" value="<?= htmlReady($search) ?>">
-        </label>
-    </fieldset>
-
-    <footer>
-        <?= Button::create(_('Suchen'), 'suchen', ['title' => _('Suche starten')])?>
-        <?= LinkButton::create(_('Zurücksetzen'), $controller->url_for('admin/plugin/search'), ['title' => _('Suche zurücksetzen')])?>
-    </footer>
-</form>
-
-
 <? if (!$search_results): ?>
     <?= MessageBox::info(_('Es wurden keine Plugins gefunden.')) ?>
 <? else: ?>
-    <br>
     <table class="default nohover">
         <caption>
         <? if ($search === null): ?>
