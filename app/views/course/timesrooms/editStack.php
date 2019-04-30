@@ -54,8 +54,8 @@
         <legend><?= _('Terminangaben') ?></legend>
         <label>
             <?= _('Art') ?>
-            <select name="course_type" id="course_type" class="size-s">
-                <option value="no_change"><?= _('-- Keine Änderung --') ?></option>
+            <select name="course_type" id="course_type">
+                <option value=""><?= _('-- Keine Änderung --') ?></option>
                 <? foreach ($GLOBALS['TERMIN_TYP'] as $id => $value) : ?>
                     <option value="<?= $id ?>"><?= htmlReady($value['name']) ?></option>
                 <? endforeach ?>
