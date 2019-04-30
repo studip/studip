@@ -254,8 +254,8 @@ class NewsController extends StudipController
             $news->allow_comments = $news_template->allow_comments;
         } else {
             // for new news, set startdate to today and range to dialog context
-            $news->date   = strtotime(date('Y-m-d'));// + 12*60*60;
-            $news->expire = 7 * 24 * 60 * 60;
+            $news->date   = strtotime('today');
+            $news->expire = strtotime('23:59 +1 week') - $news->date;
             if ($context_range && $context_range !== 'template') {
                 $add_range = new NewsRange(['', $context_range]);
                 $ranges[] = $add_range->toArray();

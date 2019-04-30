@@ -19,7 +19,8 @@ const News = {
                 end,
                 result;
             if ($(this).is('#news_duration')) {
-                duration = window.parseInt(this.value, 10);
+                // datepicker assumes beginning of day (00:00), but the duration includes the end date (until 23:59)
+                duration = window.parseInt(this.value, 10) - 1;
                 result   = new Date(start);
                 result.setDate(result.getDate() + duration);
 
@@ -27,7 +28,8 @@ const News = {
             } else {
                 start    = $('#news_startdate').datepicker('getDate');
                 end      = $('#news_enddate').datepicker('getDate');
-                duration = Math.round((end - start) / (24 * 60 * 60 * 1000));
+                // datepicker assumes beginning of day (see above) and we need to add a day to the duration
+                duration = Math.round((end - start) / (24 * 60 * 60 * 1000)) + 1;
                 duration = Math.max(0, duration);
 
                 $('#news_duration').val(duration);

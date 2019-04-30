@@ -87,9 +87,9 @@
 
             <input type="number" class="news_date news_prevent_submit"
                    name="news_duration" id="news_duration"
-                   value="<?= $news['expire'] ? round($news['expire'] / (24 * 60 * 60)) : 7 ?>"
+                   value="<?= $news['expire'] ? round($news['expire'] / (24 * 60 * 60)) : 8 ?>"
                    aria-label="<?= _('Laufzeit') ?>"
-                   min="0">
+                   min="1">
         </label>
 
         <? if ($anker == 'news_comments') : ?>
