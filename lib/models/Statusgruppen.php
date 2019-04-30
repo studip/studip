@@ -193,13 +193,13 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     public function getGenderedName($user_or_id)
     {
         // We have to have at least 1 name gendered
-        if ($this->name_m || $this->name_w) {
+        if ((string) $this->name_m || (string) $this->name_w) {
             $user = User::toObject($user_or_id);
             switch ($user->geschlecht) {
                 case UserInfo::GENDER_FEMALE:
-                    return $this->name_w ?: $this->name;
+                    return (string) $this->name_w ?: $this->name;
                 case UserInfo::GENDER_MALE:
-                    return $this->name_m ?: $this->name;
+                    return (string) $this->name_m ?: $this->name;
             }
         }
         return $this->name;
