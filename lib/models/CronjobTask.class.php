@@ -101,12 +101,12 @@ class CronjobTask extends SimpleORMap
      */
     public function engage($last_result, $parameters = [])
     {
-        $parameters = array_merge(
-            $this->extractDefaultParameters(),
-            $parameters
-        );
-
         if ($this->valid) {
+            $parameters = array_merge(
+                $this->extractDefaultParameters(),
+                $parameters
+            );
+
             $task = new $this->class;
 
             $task->setUp();
