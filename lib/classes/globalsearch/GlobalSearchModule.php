@@ -111,7 +111,8 @@ abstract class GlobalSearchModule
         $query = trim($query);
 
         // Replace direct string
-        $result = preg_replace("/{$query}/Si", "<mark>$0</mark>", $string, -1, $found);
+        $quoted = preg_quote($query, '/');
+        $result = preg_replace("/{$quoted}/Si", "<mark>$0</mark>", $string, -1, $found);
 
         if ($found) {
             // Check for overlength
@@ -127,7 +128,8 @@ abstract class GlobalSearchModule
         $i = 1;
         $replacement = "${$i}";
         foreach (preg_split('//u', mb_strtoupper($query), -1, PREG_SPLIT_NO_EMPTY) as $letter) {
-            $queryletter[] = "({$letter})";
+            $quoted = preg_quote($letter, '/');
+            $queryletter[] = "({$quoted})";
             $replacement .= '<mark>$' . ++$i . '</mark>$' . ++$i;
         }
 
