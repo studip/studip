@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.42-84.2, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.43-84.3, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: studip_42
+-- Host: localhost    Database: studip_43
 -- ------------------------------------------------------
--- Server version	5.6.42-84.2
+-- Server version	5.6.43-84.3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -343,10 +343,12 @@ CREATE TABLE `auth_extern` (
   `external_user_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `external_user_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `external_user_password` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+  `external_user_token` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+  `external_user_token_valid_until` int(11) NOT NULL DEFAULT '0',
   `external_user_category` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `external_user_system_type` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `external_user_type` smallint(6) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`studip_user_id`,`external_user_system_type`)
+  PRIMARY KEY (`studip_user_id`,`external_user_system_type`,`external_user_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -753,6 +755,72 @@ CREATE TABLE `config_values` (
   PRIMARY KEY (`field`,`range_id`),
   KEY `field` (`field`,`value`(10)),
   KEY `range_id` (`range_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `consultation_blocks`
+--
+
+DROP TABLE IF EXISTS `consultation_blocks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `consultation_blocks` (
+  `block_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `teacher_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `start` int(11) unsigned NOT NULL,
+  `end` int(11) unsigned NOT NULL,
+  `room` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `calendar_events` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Create events for slots',
+  `note` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `size` tinyint(2) unsigned NOT NULL DEFAULT '1' COMMENT 'How many people may book a slot',
+  `course_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `mkdate` int(11) unsigned NOT NULL,
+  `chdate` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`block_id`),
+  KEY `teacher_id` (`teacher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `consultation_bookings`
+--
+
+DROP TABLE IF EXISTS `consultation_bookings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `consultation_bookings` (
+  `booking_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `slot_id` int(11) unsigned NOT NULL,
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `reason` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `student_event_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `mkdate` int(11) unsigned NOT NULL,
+  `chdate` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`booking_id`),
+  KEY `block_id` (`slot_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `consultation_slots`
+--
+
+DROP TABLE IF EXISTS `consultation_slots`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `consultation_slots` (
+  `slot_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `block_id` int(11) unsigned NOT NULL,
+  `start_time` int(11) unsigned NOT NULL,
+  `end_time` int(11) unsigned NOT NULL,
+  `note` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `teacher_event_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `mkdate` int(11) unsigned NOT NULL,
+  `chdate` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`slot_id`),
+  KEY `block_id` (`block_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2158,6 +2226,69 @@ CREATE TABLE `loginbackgrounds` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `lti_data`
+--
+
+DROP TABLE IF EXISTS `lti_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lti_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `course_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tool_id` int(11) NOT NULL DEFAULT '0',
+  `launch_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `mkdate` int(11) NOT NULL DEFAULT '0',
+  `chdate` int(11) NOT NULL DEFAULT '0',
+  `options` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `course_id` (`course_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lti_grade`
+--
+
+DROP TABLE IF EXISTS `lti_grade`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lti_grade` (
+  `link_id` int(11) NOT NULL DEFAULT '0',
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `score` float NOT NULL DEFAULT '0',
+  `mkdate` int(11) NOT NULL DEFAULT '0',
+  `chdate` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`link_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `lti_tool`
+--
+
+DROP TABLE IF EXISTS `lti_tool`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lti_tool` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `launch_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `consumer_key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `consumer_secret` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `custom_parameters` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `allow_custom_url` tinyint(1) NOT NULL DEFAULT '0',
+  `deep_linking` tinyint(1) NOT NULL DEFAULT '0',
+  `send_lis_person` tinyint(1) NOT NULL DEFAULT '0',
+  `mkdate` int(11) NOT NULL DEFAULT '0',
+  `chdate` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `mail_queue_entries`
 --
 
@@ -3093,7 +3224,7 @@ DROP TABLE IF EXISTS `object_user_visits`;
 CREATE TABLE `object_user_visits` (
   `object_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-  `type` enum('vote','documents','forum','literature','schedule','scm','sem','wiki','news','eval','inst','ilias_connect','elearning_interface','participants') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'vote',
+  `type` enum('vote','documents','forum','literature','schedule','scm','sem','wiki','news','eval','inst','elearning_interface','ilias_interface','participants') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'vote',
   `visitdate` int(20) NOT NULL DEFAULT '0',
   `last_visitdate` int(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`object_id`,`user_id`,`type`),
@@ -3954,6 +4085,7 @@ CREATE TABLE `semester_data` (
   `ende` int(20) unsigned DEFAULT NULL,
   `vorles_beginn` int(20) unsigned DEFAULT NULL,
   `vorles_ende` int(20) unsigned DEFAULT NULL,
+  `visible` tinyint(2) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`semester_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4801,6 +4933,22 @@ CREATE TABLE `wiki_locks` (
   KEY `chdate` (`chdate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `wiki_page_config`
+--
+
+DROP TABLE IF EXISTS `wiki_page_config`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `wiki_page_config` (
+  `range_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `keyword` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `read_restricted` tinyint(1) NOT NULL DEFAULT '0',
+  `edit_restricted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`range_id`,`keyword`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -4811,4 +4959,4 @@ CREATE TABLE `wiki_locks` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-03 18:06:39
+-- Dump completed on 2019-05-07 18:10:25

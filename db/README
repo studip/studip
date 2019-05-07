@@ -31,3 +31,6 @@ einspielen:
 - studip_resources_demo_data.sql: Mit diesem Dump werden einige Demonstrations-Daten 
   für die Ressourcenverwaltung ins System eingespielt. Das Einspielen dieses Dumps 
   ist zum Betrieb nicht notwendig.
+- studip_mvv_demo_data.sql: Mit diesem Dump werden einige Demonstrations-Daten
+  für die Modulverwaltung ins System eingespielt. Das Einspielen dieses Dumps
+  ist zum Betrieb nicht notwendig.

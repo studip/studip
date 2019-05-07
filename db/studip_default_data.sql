@@ -98,6 +98,10 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CALENDAR_GRANT_ALL_INSERT', '0', 'boolean', 'global', 'modules', 1462287762, 1462287762, 'Ermöglicht das Eintragen von Terminen in alle Nutzerkalender, ohne Beachtung des Rechtesystems.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CALENDAR_GROUP_ENABLE', '0', 'boolean', 'global', 'modules', 1326799692, 1326799692, 'Schaltet die Gruppenterminkalender-Funktionen ein.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CALENDAR_SETTINGS', '{\"view\":\"week\",\"start\":\"9\",\"end\":\"20\",\"step_day\":\"900\",\"step_week\":\"1800\",\"type_week\":\"LONG\",\"step_week_group\":\"3600\",\"step_day_group\":\"3600\"}', 'array', 'user', '', 1403258015, 1403258015, 'persönliche Einstellungen des Kalenders');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONSULTATION_ALLOW_DOCENTS_RESERVING', '0', 'boolean', 'global', 'Sprechstunden', 1557244743, 1557244743, 'Dozenten können sich bei anderen Dozenten anmelden');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONSULTATION_ENABLED', '0', 'boolean', 'global', 'Sprechstunden', 1557244743, 1557244743, 'Schaltet die Sprechstunden global ein');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONSULTATION_REQUIRED_PERMISSION', 'dozent', 'string', 'global', 'Sprechstunden', 1557244743, 1557244743, 'Ab welcher Rechtestufe dürfen Nutzer Sprechstunden anlegen (user, autor, tutor, dozent, admin, root)');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONSULTATION_SEND_MESSAGES', '1', 'boolean', 'user', 'Sprechstunden', 1557244743, 1557244743, 'Nachrichten empfangen über Buchungen/Stornierungen');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONVERT_IDNA_URL', '1', 'boolean', 'global', 'global', 1510849314, 1510849314, 'If true, urls with german \"umlauts\" are converted');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_CALENDAR_ENABLE', '0', 'boolean', 'global', 'modules', 1326799692, 1326799692, 'Kalender als Inhaltselement in Veranstaltungen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_NUMBER_FORMAT', '', 'string', 'global', 'global', 1510849314, 1510849314, 'Erlaubt das Eintragen eines regulären Ausdrucks zur Validierung einer Veranstaltungsnummer. Im Kommentarfeld kann ein entsprechender Hilfetext hinterlegt werden.');
@@ -120,6 +124,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ELEARNING_INTERFACE_ENABLE', '0', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob die Lernmodule global verfügbar sind.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('EMAIL_DOMAIN_RESTRICTION', '', 'string', 'global', '', 1157107088, 1157107088, 'Beschränkt die gültigkeit von Email-Adressen bei freier Registrierung auf die angegebenen Domains. Komma-separierte Liste von Domains ohne vorangestelltes @.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('EMAIL_VISIBILITY_DEFAULT', '1', 'boolean', 'global', 'privacy', 1326799691, 1326799691, 'Ist die eigene Emailadresse sichtbar, falls der Nutzer nichts anderes eingestellt hat?');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ENABLE_ARCHIVE_SEARCH', '0', 'boolean', 'global', 'global', 1557244743, 1557244743, 'Soll es eine Suche in dem alten Archiv geben?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ENABLE_COURSESET_FCFS', '1', 'boolean', 'global', 'coursesets', 1403258021, 1403258021, 'Soll first-come-first-served (Windhundverfahren) bei der Anmeldung erlaubt sein?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ENABLE_FREE_ACCESS', '1', 'boolean', 'global', 'global', 1510849314, 1510849314, 'If true, courses with public access are available');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ENABLE_PROTECTED_DOWNLOAD_RESTRICTION', '0', 'boolean', 'global', 'files', 1257956185, 1257956185, 'Schaltet die Überprüfung (fester Teilnehmerkreis) bei Download von als geschützt markierten Dateien ein');
@@ -146,6 +151,10 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HELP_CONTENT_CURRENT_VERSION', '3.1', 'string', 'global', 'global', 1416496271, 1416496271, 'Aktuelle Version der Helpbar-Einträge in Stud.IP');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HOMEPAGEPLUGIN_DEFAULT_ACTIVATION', '1', 'boolean', 'global', 'privacy', 1403258014, 1403258014, 'Sollen neu installierte Homepageplugins automatisch für Benutzer aktiviert sein?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HOMEPAGE_VISIBILITY_DEFAULT', 'VISIBILITY_STUDIP', 'string', 'global', 'privacy', 1293118059, 1293118059, 'Standardsichtbarkeit für Homepageelemente, falls der Benutzer nichts anderes eingestellt hat. Gültige Werte sind: VISIBILITY_ME, VISIBILITY_BUDDIES, VISIBILITY_DOMAIN, VISIBILITY_STUDIP, VISIBILITY_EXTERN');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_BASIC_SETTINGS', '{\"moduletitle\":\"ILIAS\",\"edit_moduletitle\":false,\"search_active\":true,\"show_offline\":false,\"cache\":true}', 'array', 'global', 'modules', 1557244743, 1557244743, '');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_ENABLE', '0', 'boolean', 'global', 'modules', 1557244743, 1557244743, '');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_MODULETITLE', 'ILIAS', 'string', 'course', 'modules', 1557244743, 1557244743, '');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_SETTINGS', '[]', 'array', 'global', 'modules', 1557244743, 1557244743, '');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('IMPORTANT_SEMNUMBER', '0', 'boolean', 'global', 'global', 1403258018, 1403258018, 'Zeigt die Veranstaltungsnummer prominenter in der Suche und auf der Meine Veranstaltungen Seite an');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('INST_FAK_ADMIN_PERMS', 'all', 'string', 'global', 'permissions', 1293118059, 1293118059, '\"none\" Fakultätsadmin darf Einrichtungen weder anlegen noch löschen, \"create\" Fakultätsadmin darf Einrichtungen anlegen, aber nicht löschen, \"all\" Fakultätsadmin darf Einrichtungen anlegen und löschen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LAST_LOGIN_TIMESTAMP', '0', 'integer', 'user', '', 1403258015, 1403258015, 'Zeitstempel des vorherigen Logins');
@@ -153,6 +162,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LOAD_EXTERNAL_MEDIA', 'deny', 'string', 'global', '', 1293118060, 1293118060, 'Sollen externe Medien über [img/flash/audio/video] eingebunden werden? deny=nicht erlaubt, allow=erlaubt, proxy=proxy benutzen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LOCK_RULE_ADMIN_PERM', 'admin', 'string', 'global', 'permissions', 1240427632, 1240427632, 'mit welchem Status dürfen Sperrebenen angepasst werden (admin, root)');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LOG_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob das Log global verfügbar ist.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LTI_TOOL_TITLE', 'LTI-Tool', 'string', 'course', '', 1557244743, 1557244743, 'Voreinstellung für den Titel des Reiters \"LTI-Tool\" im Kurs.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MAILQUEUE_ENABLE', '0', 'boolean', 'global', 'global', 1403258017, 1403258017, 'Aktiviert bzw. deaktiviert die Mailqueue');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MAILQUEUE_SEND_LIMIT', '0', 'integer', 'global', 'global', 1462287310, 1462287310, 'Wieviele Mails soll die Mailqueue maximal auf einmal an den Mailserver schicken. 0 für unendlich viele.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MAIL_AS_HTML', '0', 'boolean', 'user', '', 1293118060, 1293118060, 'Benachrichtigungen werden im HTML-Format versandt');
@@ -211,6 +221,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_INHERITANCE_PERMS_ROOMS', '1', 'integer', 'global', 'resources', 0, 1100709567, 'Art der Rechtevererbung in der Ressourcenverwaltung für Räume: 1 = lokale Rechte der Einrichtung und Veranstaltung werden übertragen, 2 = nur Autorenrechte werden vergeben, 3 = es werden keine Rechte vergeben');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_LOCKING_ACTIVE', '', 'boolean', 'global', 'resources', 0, 1100709567, 'Schaltet in der Ressourcenverwaltung das Blockieren der Bearbeitung für einen Zeitraum aus (nur Admins dürfen in dieser Zeit auf die Belegung zugreifen)');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_ROOM_REQUEST_DEFAULT_ACTION', 'NO_ROOM_INFO_ACTION', 'string', 'global', 'resources', 0, 0, 'Designates the pre-selected action for the room request dialog');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_ROOM_REQUEST_DEFAULT_SEATS', '0', 'integer', 'global', 'resources', 1557244742, 1557244742, 'Vorbelegung der Sitzplatzanzahl einer Raumanfrage, falls der Kurs keine max. Teilnehmerzahl hat');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_SCHEDULE_EXPLAIN_USER_NAME', '1', 'boolean', 'global', 'resources', 1123516671, 1123516671, 'Schaltet in der Ressourcenverwaltung die Anzeige der Namen des Belegers in der Ausgabe von Belegungsplänen ein oder aus');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_SEARCH_ONLY_REQUESTABLE_PROPERTY', '1', 'boolean', 'global', 'resources', 0, 0, 'Schaltet in der Suche der Ressourcenverwaltun das Durchsuchen von nicht wünschbaren Eigenschaften ein oder aus');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('RESOURCES_SHOW_ROOM_NOT_BOOKED_HINT', '0', 'boolean', 'global', 'resources', 1168444600, 1168444600, 'Einstellung, ob bei aktivierter Raumverwaltung Raumangaben die nicht gebucht sind gekennzeichnet werden');
@@ -235,6 +246,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('SMILEYADMIN_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob die Administration der Smileys verfügbar ist.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('SOAP_ENABLE', '0', 'boolean', 'global', 'global', 1510849314, 1510849314, 'Schaltet die SOAP-Schnittstelle an.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('SOAP_USE_PHP5', '0', 'boolean', 'global', 'global', 1510849314, 1510849314, 'Sollen PHP-Bibliotheken für SOAP verwendet werden?');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('SORT_NEWS_BY_CHDATE', 'false', 'boolean', 'global', 'view', 1557244742, 1557244742, 'Wenn diese Einstellung gesetzt ist werden Ankündigungen nach ihrem letzten Änderungsdatum statt ihrem Erstellungsdatum sortiert angezeigt.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDIP_INSTALLATION_ID', 'demo-installation', 'string', 'global', 'global', 1510849314, 1510849314, 'Unique identifier for installation');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDIP_SHORT_NAME', 'Stud.IP', 'string', 'global', 'global', 1436546684, 1436546684, 'Studip Kurzname');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDYGROUPS_ENABLE', '0', 'boolean', 'global', 'studygroups', 1257956185, 1293118059, 'Schaltet ein oder aus, ob die Studiengruppen global verfügbar sind.');
@@ -249,6 +261,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('USER_VISIBILITY_UNKNOWN', '1', 'boolean', 'global', 'privacy', 1153815901, 1153815901, 'Sollen Nutzer mit Sichtbarkeit \"unknown\" wie sichtbare behandelt werden?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('VOTE_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob die Umfragen global verfügbar sind.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('WEBSERVICES_ENABLE', '0', 'boolean', 'global', 'global', 1510849314, 1510849314, 'Schaltet die Webservice-Schnittstelle an.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('WIKI_COURSE_EDIT_RESTRICTED', '0', 'boolean', 'course', '', 1557244742, 1557244742, 'Legt fest, dass nur Teilnehmende ab Rechtestufe \"tutor\" das Wiki bearbeiten dürfen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('WIKI_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob das Wiki global verfügbar ist.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('WYSIWYG', '1', 'boolean', 'global', 'global', 1403258021, 1403258021, 'Aktiviert den WYSIWYG Editor im JavaScript.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('XSLT_ENABLE', '1', 'boolean', 'global', 'global', 1510849314, 1510849314, 'Soll Export mit XSLT angeschaltet sein?');
@@ -257,7 +270,6 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ZIP_UPLOAD_ENABLE', '1', 'boolean', 'global', 'files', 1130840930, 1130840930, 'Ermöglicht es, ein Zip Archiv hochzuladen, welches automatisch entpackt wird');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ZIP_UPLOAD_MAX_DIRS', '10', 'integer', 'global', 'files', 1130840962, 1130840962, 'Die maximale Anzahl an Verzeichnissen, die bei einem Zipupload automatisch entpackt werden');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ZIP_UPLOAD_MAX_FILES', '100', 'integer', 'global', 'files', 1130840930, 1130840930, 'Die maximale Anzahl an Dateien, die bei einem Zipupload automatisch entpackt werden');
-
 
 --
 -- Dumping data for table `content_terms_of_use_entries`
@@ -1060,6 +1072,8 @@ INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`
 INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`, `plugintype`, `enabled`, `navigationpos`, `dependentonid`, `automatic_update_url`, `automatic_update_secret`) VALUES(6, 'ScheduleWidget', 'core/ScheduleWidget', 'ScheduleWidget', 'PortalPlugin', 'yes', 6, NULL, NULL, NULL);
 INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`, `plugintype`, `enabled`, `navigationpos`, `dependentonid`, `automatic_update_url`, `automatic_update_secret`) VALUES(7, 'TerminWidget', 'core/TerminWidget', 'TerminWidget', 'PortalPlugin', 'yes', 7, NULL, NULL, NULL);
 INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`, `plugintype`, `enabled`, `navigationpos`, `dependentonid`, `automatic_update_url`, `automatic_update_secret`) VALUES(8, 'ActivityFeed', 'core/ActivityFeed', 'ActivityFeed', 'PortalPlugin', 'yes', 8, NULL, NULL, NULL);
+INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`, `plugintype`, `enabled`, `navigationpos`, `dependentonid`, `automatic_update_url`, `automatic_update_secret`) VALUES(9, 'IliasInterfaceModule', '', 'Ilias-Interface', 'StandardPlugin,SystemPlugin', 'yes', 1, NULL, NULL, NULL);
+INSERT INTO `plugins` (`pluginid`, `pluginclassname`, `pluginpath`, `pluginname`, `plugintype`, `enabled`, `navigationpos`, `dependentonid`, `automatic_update_url`, `automatic_update_secret`) VALUES(10, 'LtiToolModule', '', 'LTI-Tool', 'StandardPlugin,SystemPlugin,PrivacyPlugin', 'yes', 1, NULL, NULL, NULL);
 
 --
 -- Dumping data for table `roles`
@@ -1092,6 +1106,8 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(1, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 2);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 3);
@@ -1100,6 +1116,8 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(2, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 2);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 3);
@@ -1108,6 +1126,8 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(3, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 2);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 3);
@@ -1116,6 +1136,8 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(4, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 2);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 3);
@@ -1124,6 +1146,8 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(5, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 2);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 3);
@@ -1132,9 +1156,11 @@ INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 5);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 6);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 7);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 8);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 9);
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(6, 10);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(7, 1);
 INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(7, 2);
-
+INSERT INTO `roles_plugins` (`roleid`, `pluginid`) VALUES(7, 10);
 
 
 --
@@ -1160,20 +1186,20 @@ INSERT INTO `roles_user` (`roleid`, `userid`, `institut_id`) VALUES(7, 'nobody',
 -- Dumping data for table `schema_version`
 --
 
-INSERT INTO `schema_version` (`domain`, `version`) VALUES('studip', 242);
+INSERT INTO `schema_version` (`domain`, `version`) VALUES('studip', 250);
 
 --
 -- Dumping data for table `semester_data`
 --
 
-INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`) VALUES('322f640f3f4643ebe514df65f1163eb1', 'SS 2019', '', '', 1554069600, 1569880799, 1555279200, 1563573599);
-INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`) VALUES('4967f0a483e36554b77e3dc47aa58941', 'WS 2018/2019', '', '', 1538344800, 1554069599, 1539554400, 1549061999);
+INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`, `visible`) VALUES('322f640f3f4643ebe514df65f1163eb1', 'SS 2019', '', '', 1554069600, 1569880799, 1555279200, 1563573599, 1);
+INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`, `visible`) VALUES('4967f0a483e36554b77e3dc47aa58941', 'WS 2019/2020', '', '', 1569880800, 1585691999, 1571608800, 1581116399, 1);
 
 --
 -- Dumping data for table `semester_holiday`
 --
 
-INSERT INTO `semester_holiday` (`holiday_id`, `semester_id`, `name`, `description`, `beginn`, `ende`) VALUES('704038f0cb3ea0a285ba0a453788ebed', '', 'Unterbrechung', '', 1545433200, 1546815599);
+INSERT INTO `semester_holiday` (`holiday_id`, `semester_id`, `name`, `description`, `beginn`, `ende`) VALUES('704038f0cb3ea0a285ba0a453788ebed', '', 'Unterbrechung', '', 1576882800, 1578265199);
 
 --
 -- Dumping data for table `sem_classes`
@@ -1209,7 +1235,7 @@ INSERT INTO `sem_types` (`id`, `name`, `class`, `mkdate`, `chdate`) VALUES(99, '
 
 INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(1, 1, NULL, '[lang=de]Ansprechpartner[/lang][lang=en]Contact[/lang]', '[style=float: right]\n[img]http://www.studip.de/images/studipanim.gif\n**Version:** (:version:)\n[/style]\n[lang=de]Für diese Stud.IP-Installation ((:uniname:)) sind folgende Administratoren zuständig:[/lang]\n[lang=en]The following administrators are responsible for this Stud.IP installation ((:uniname:)):[/lang]\n(:rootlist:)\n[lang=de]allgemeine Anfragen wie Passwort-Anforderungen u.a. richten Sie bitte an:[/lang]\n[lang=en]General queries e.g., password queries, please contact:[/lang]\n(:unicontact:)\n[lang=de]Folgende Einrichtungen sind beteiligt:\n(Genannt werden die jeweiligen Administratoren der Einrichtungen für entsprechende Anfragen)[/lang]\n[lang=en]The following institutes participate:\n(Named are the institutes administrators responsible for the corresponding query areas)[/lang]\n(:adminlist:)');
 INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(2, 1, NULL, '[lang=de]Entwickler[/lang][lang=en]Developer[/lang]', '[style=float: right]\r\n[img]http://www.studip.de/images/studipanim.gif\r\n**Version:** (:version:)\r\n[/style]\r\n[lang=de]Stud.IP ist ein Open Source Projekt zur Unterstützung von Präsenzlehre an Universitäten, Hochschulen und anderen Bildungseinrichtungen. Das System entstand am Zentrum für interdisziplinäre Medienwissenschaft (ZiM) der Georg-August-Universität Göttingen unter Mitwirkung der Suchi & Berg GmbH (data-quest) , Göttingen. Heute erfolgt die Weiterentwicklung von Stud.IP verteilt an vielen Standorten (Göttingen, Osnabrück, Oldenburg, Bremen, Hannover, Jena und weiteren). Die Koordination der Entwicklung erfolgt durch die Stud.IP-CoreGroup.\r\nStud.IP steht unter der GNU General Public License, Version 2.\r\n\r\nWeitere Informationen finden sie auf ** [www.studip.de]http://www.studip.de **,**  [develop.studip.de]http://develop.studip.de ** und ** [blog.studip.de]http://blog.studip.de **.[/lang]\r\n\r\n[lang=en]Stud.IP is an opensource project for supporting attendance courses offered by universities, institutions of higher education and other educational institutions. The system was established at the Zentrum für interdisziplinäre Medienwissenschaft (ZiM) in the Georg-August-Universität Göttingen in cooperation with Suchi & Berg GmbH (data-quest) , Göttingen. At the present further developing takes place at various locations (among others Göttingen, Osnabrück, Oldenburg, Bremen, Hannover, Jena) under coordination through the Stud.IP-CoreGroup.\r\n\r\nStud.IP is covered by the GNU General Public Licence, version 2.\r\n\r\nFurther information can be found under ** [www.studip.de]http://www.studip.de **,**  [develop.studip.de]http://develop.studip.de ** and ** [blog.studip.de]http://blog.studip.de **.[/lang]\r\n\r\n(:coregroup:)\r\n[lang=de]Sie erreichen uns auch über folgende **Mailinglisten**:\r\n\r\n**Nutzer-Anfragen**, E-Mail: studip-users@lists.sourceforge.net : Fragen, Anregungen und Vorschläge an die Entwickler - bitte __keine__ Passwort Anfragen!\r\n**News-Mailingsliste**, E-Mail: studip-news@lists.sourceforge.net : News rund um Stud.IP (Eintragung notwendig)\r\n\r\nWir laden alle Entwickler, Betreiber und Nutzer von Stud.IP ein, sich auf dem Developer-Server http://develop.studip.de an den Diskussionen rund um die Weiterentwicklung und Nutzung der Plattform zu beteiligen.[/lang]\r\n[lang=en]You can contact us via the following **mailing lists**:\r\n\r\n**User enquiries**, E-Mail: studip-users@lists.sourceforge.net : Questions, suggestions and recommendations to the developers - __please no password queries__!\r\n\r\n**News mailing list**, E-Mail: studip-news@lists.sourceforge.net : News about Stud.IP (registration necessary)\r\n\r\nWe invite all developers, administrators and users of Stud.IP to join the discussions on further developing and using the platform available at the developer server http://develop.studip.de[/lang]');
-INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(3, 2, NULL, '[lang=de]Technik[/lang][lang=en]Technology[/lang]', '[style=float: right]\n[img]http://www.studip.de/images/studipanim.gif\n**Version:** (:version:)\n[/style]\n[lang=de]Stud IP ist ein Open-Source Projekt und steht unter der GNU General Public License. Sämtliche zum Betrieb notwendigen Dateien können unter http://sourceforge.net/projects/studip/ heruntergeladen werden.\nDie technische Grundlage bietet ein LINUX-System mit Apache Webserver sowie eine MySQL Datenbank, die über PHP gesteuert wird.\nIm System findet ein 6-stufiges Rechtesystem Verwendung, das individuell auf verschiedenen Ebenen wirkt - etwa in Veranstaltungen, Einrichtungen, Fakultäten oder systemweit.\nSeminare oder Arbeitsgruppen können mit Passwörtern geschützt werden - die Verschlüsselung erfolgt mit einem MD5 one-way-hash.\nDas System ist zu 100% über das Internet administrierbar, es sind keine zusätzlichen Werkzeuge nötig. Ein Webbrowser der 5. Generation wird empfohlen.\nDas System wird ständig weiterentwickelt und an die Wünsche unserer Nutzer angepasst - [sagen Sie uns Ihre Meinung!]studip-users@lists.sourceforge.net[/lang]\n[lang=en]Stud.IP is an Open Source Project and is covered by the Gnu General Public License (GPL). All files necessary for operation can be downloaded from http://sourceforge.net/projects/studip/ .\nThe technical basis can be provided by a LINUX system with Apache Webserver and a MySQL database, which is then controlled by PHP.\nThe system features a authorisation system with six ranks, that affects individually different levels - in courses, institutes,faculties or system wide.\nSeminars or work groups can be secured with passwords - the encryption of which uses a MD5 one-way-hash.\nThe system is capable of being administrated 100% over the internet - no additional tools are necessary. A 5th generation web browser is recommended.\nThe system is continually being developed and customised to the wishes of our users - [Tell us your opinion!]studip-users@lists.sourceforge.net[/lang]');
+INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(3, 2, NULL, '[lang=de]Technik[/lang][lang=en]Technology[/lang]', '[style=float: right]\n[img]http://www.studip.de/images/studipanim.gif\n**Version:** (:version:)\n[/style]\n[lang=de]Stud IP ist ein Open-Source Projekt und steht unter der GNU General Public License. Sämtliche zum Betrieb notwendigen Dateien können unter http://sourceforge.net/projects/studip/ heruntergeladen werden.\nDie technische Grundlage bietet ein LINUX-System mit Apache Webserver sowie eine MySQL Datenbank, die über PHP gesteuert wird.\nIm System findet ein 6-stufiges Rechtesystem Verwendung, das individuell auf verschiedenen Ebenen wirkt - etwa in Veranstaltungen, Einrichtungen, Fakultäten oder systemweit.\n\nDas System wird ständig weiterentwickelt und an die Wünsche unserer Nutzer angepasst - [sagen Sie uns Ihre Meinung!]studip-users@lists.sourceforge.net[/lang]\n[lang=en]Stud.IP is an Open Source Project and is covered by the Gnu General Public License (GPL). All files necessary for operation can be downloaded from http://sourceforge.net/projects/studip/ .\nThe technical basis can be provided by a LINUX system with Apache Webserver and a MySQL database, which is then controlled by PHP.\nThe system features a authorisation system with six ranks, that affects individually different levels - in courses, institutes,faculties or system wide.\n\nThe system is continually being developed and customised to the wishes of our users - [Tell us your opinion!]studip-users@lists.sourceforge.net[/lang]');
 INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(4, 2, NULL, '[lang=de]Statistik[/lang][lang=en]Statistics[/lang]', '[lang=de]!!Top-Listen aller Veranstaltungen[/lang][lang=en]!!Top list of all courses[/lang]\n[style=float: right]\n[lang=de]!!Statistik[/lang][lang=en]!!statistics[/lang]\n(:indicator seminar_all:)\n(:indicator seminar_archived:)\n(:indicator institute_firstlevel_all:)\n(:indicator institute_secondlevel_all:)\n(:indicator user_admin:)\n(:indicator user_dozent:)\n(:indicator user_tutor:)\n(:indicator user_autor:)\n(:indicator posting:)\n(:indicator document:)\n(:indicator link:)\n(:indicator litlist:)\n(:indicator termin:)\n(:indicator news:)\n(:indicator guestbook:)\n(:indicator vote:)\n(:indicator test:)\n(:indicator evaluation:)\n(:indicator wiki_pages:)\n(:indicator lernmodul:)\n(:indicator resource:)\n[/style]\n(:toplist mostparticipants:)\n(:toplist recentlycreated:)\n(:toplist mostdocuments:)\n(:toplist mostpostings:)\n(:toplist mostvisitedhomepages:)');
 INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(5, 2, NULL, 'History', '(:history:)');
 INSERT INTO `siteinfo_details` (`detail_id`, `rubric_id`, `position`, `name`, `content`) VALUES(6, 2, NULL, 'Stud.IP-Blog', '[lang=de]Das Blog der Stud.IP-Entwickler finden Sie auf:[/lang]\n[lang=en]The Stud.IP-Developer-Blog can be found under:[/lang]\nhttp://blog.studip.de');
