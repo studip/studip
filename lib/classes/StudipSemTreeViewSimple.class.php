@@ -66,13 +66,10 @@ class StudipSemTreeViewSimple
     public function showSemTree($start_id = null)
     {
         echo '
-            <table style="width:100%;">
+            <table class="show-tree">
                 <tr>
-                    <td style="text-align:left; vertical-align:top; font-size:10pt;">
-                        <div style="font-size:10pt; margin-left:10px">
-                            <b>' .
-                                _('Studienbereiche') . '
-                            </b><br>' .
+                    <td style="text-align:left; vertical-align:top; font-size:10pt; padding-bottom: 10px; ">
+                        <div style="font-size:10pt; margin-left:10px">'.
                 $this->getSemPath($start_id);
         if ($this->tree->getValue($this->start_item_id, 'info')) {
             echo '
@@ -99,13 +96,13 @@ class StudipSemTreeViewSimple
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align:center; vertical-align:center;">';
+                    <td colspan="2" style="text-align:center;" class="b-top-va-center">';
         $num_all_entries = $this->showKids($this->start_item_id);
         echo '
                     </td>
                 </tr>
                 <tr>
-                    <td colspan=\"2\" style="text-align:left; vertical-align:center;">';
+                    <td colspan=\"2\" style="text-align:left;" class="b-top-va-center">';
         $this->showContent($this->start_item_id, $num_all_entries);
         echo '
                     </td>
@@ -164,31 +161,12 @@ class StudipSemTreeViewSimple
 
     public function showContent($item_id, $num_all_entries)
     {
-        echo "\n<div align=\"center\" style=\"margin-left:10px;margin-top:10px;margin-bottom:10px;font-size:10pt\">";
+        echo "\n<div align=\"left\" style=\"margin-left:10px;margin-top:10px;margin-bottom:10px;font-size:10pt\">";
         if ($item_id != "root"){
-            if ($this->tree->hasKids($item_id) && $num_all_entries){
-                if ($this->show_entries != "sublevels"){
-                    if ($num_all_entries <= 100) echo "<a " . tooltip(_("alle Einträge in allen Unterebenen anzeigen"), false) ." href=\"" . URLHelper::getLink($this->getSelf("cmd=show_sem_range&item_id={$this->start_item_id}_withkids")) ."\">";
-                    echo Icon::create('arr_1right', 'clickable')->asImg();
-                    echo '&nbsp;';
-                } else {
-                    echo Icon::create('arr_1down', 'clickable')->asImg();
-                    echo '&nbsp;';
-                }
-                printf(_("<b>%s</b> Einträge in allen Unterebenen vorhanden"), $num_all_entries);
-                if ($this->show_entries != "sublevels"){
-                    echo "</a>";
-                }
-                echo "&nbsp;&nbsp;|&nbsp;&nbsp;";
-            }
             if ($num_entries = $this->tree->getNumEntries($item_id)){
                 if ($this->show_entries != "level"){
                     echo "<a " . tooltip(_("alle Einträge auf dieser Ebene anzeigen"), false) ." href=\"" . URLHelper::getLink($this->getSelf("cmd=show_sem_range&item_id=$item_id")) ."\">";
-                    echo Icon::create('arr_1right', 'clickable')->asImg();
-                    echo '&nbsp;';
                 } else {
-                    echo Icon::create('arr_1down', 'clickable')->asImg();
-                    echo '&nbsp;';
                 }
                 printf(_("<b>%s</b> Einträge auf dieser Ebene.&nbsp;"),$num_entries);
                 if ($this->show_entries != "level"){
@@ -196,6 +174,17 @@ class StudipSemTreeViewSimple
                 }
             } else {
                     echo _("Keine Einträge auf dieser Ebene vorhanden!");
+            }
+            if ($this->tree->hasKids($item_id) && $num_all_entries){
+                echo "&nbsp;&nbsp;&sol;&nbsp;&nbsp;";
+                if ($this->show_entries != "sublevels"){
+                    if ($num_all_entries <= 100) echo "<a " . tooltip(_("alle Einträge in allen Unterebenen anzeigen"), false) ." href=\"" . URLHelper::getLink($this->getSelf("cmd=show_sem_range&item_id={$this->start_item_id}_withkids")) ."\">";
+                } else {
+                }
+                printf(_("<b>%s</b> Einträge in allen Unterebenen vorhanden"), $num_all_entries);
+                if ($this->show_entries != "sublevels"){
+                    echo "</a>";
+                }
             }
         }
         echo "\n</div>";
@@ -209,22 +198,23 @@ class StudipSemTreeViewSimple
             $start_id = $start_id === null ? 'root' : $start_id;
             for($i = count($parents) - 1; $i >= 0; --$i){
                 if ($add_item || $start_id == $parents[$i]) {
-                    $ret .= "&nbsp;&gt;&nbsp;<a href=\""
+                    $ret .= ($add_item === TRUE ? '&nbsp;&sol;&nbsp;' : '')
+                            . "<a href=\""
                             . URLHelper::getLink($this->getSelf("start_item_id={$parents[$i]}", false))
                             . "\">"
-                            . htmlReady($this->tree->getValue($parents[$i], "name"))
+                            . (($add_item === FALSE) ? Icon::create('literature', 'clickable')->asImg(20) : htmlReady($this->tree->getValue($parents[$i], "name")))
                             . "</a>";
                     $add_item = true;
                 }
             }
         }
         if ($this->start_item_id == "root") {
-            $ret = "&nbsp;&gt;&nbsp;<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id=root",false)) . "\">" .htmlReady($this->tree->root_name) . "</a>";
+            $ret = "<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id=root",false)) . "\">" .Icon::create('literature', 'clickable')->asImg(20) . "</a>";
         } else {
-            $ret .= "&nbsp;&gt;&nbsp;<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id={$this->start_item_id}",false)) . "\">" . htmlReady($this->tree->getValue($this->start_item_id, "name")) . "</a>";
+            $ret .= "&nbsp;&sol;&nbsp;<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id={$this->start_item_id}",false)) . "\">" . htmlReady($this->tree->getValue($this->start_item_id, "name")) . "</a>";
 
         }
-        $ret .= "&nbsp;";
+        $ret .= "&nbsp;&sol;&nbsp;";
         if (!$this->tree->getValue($this->start_item_id, 'info')) {
             $ret .= $this->getInfoIcon($this->start_item_id);
         }

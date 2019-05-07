@@ -26,7 +26,6 @@ class Search_CoursesController extends AuthenticatedController
         parent::before_filter($action, $args);
         
         PageLayout::setHelpKeyword('Basis.VeranstaltungenAbonnieren');
-        PageLayout::setTitle(_('Suche nach Veranstaltungen'));
 
         // activate navigation item
         $nav_options = Config::get()->COURSE_SEARCH_NAVIGATION_OPTIONS;
@@ -39,12 +38,19 @@ class Search_CoursesController extends AuthenticatedController
             $level = Request::get('level', $_SESSION['sem_browse_data']['level']);
             $default_option = SemBrowse::getSearchOptionNavigation('sidebar');
             if (!$level) {
+                PageLayout::setTitle(_($default_option->getTitle()));
                 $this->relocate($default_option->getURL());
             } elseif ($level == 'f' && $nav_options['courses']['visible']) {
-                    Navigation::activateItem('/search/courses/courses');
-            } elseif ($level == 'vv' && $nav_options['semtree']['visible']) {
+                $course_option = SemBrowse::getSearchOptionNavigation('sidebar','courses');
+                PageLayout::setTitle(_($course_option->getTitle()));
+                Navigation::activateItem('/search/courses/semtree');
+            } elseif (($level == 'vv') && $nav_options['semtree']['visible']) {
+                $semtree_option = SemBrowse::getSearchOptionNavigation('sidebar','semtree');
+                PageLayout::setTitle(_($semtree_option->getTitle()));
                 Navigation::activateItem('/search/courses/semtree');
             } elseif ($level == 'ev' && $nav_options['rangetree']['visible']) {
+                $rangetree_option = SemBrowse::getSearchOptionNavigation('sidebar','rangetree');
+                PageLayout::setTitle(_($rangetree_option->getTitle()));
                 Navigation::activateItem('/search/courses/rangetree');
             } else {
                 throw new AccessDeniedException();
@@ -67,20 +73,25 @@ class Search_CoursesController extends AuthenticatedController
         
         $sidebar = Sidebar::get();
         $sidebar->setImage('sidebar/seminar-sidebar.png');
+        
+        // add search options to sidebar
+        $level = Request::get('level', $_SESSION['sem_browse_data']['level']);
+        
+        $widget = new OptionsWidget();
+        $widget->setTitle(_('Suche'));
+        //add a quicksearch input inside the widget
+        $search_content = $this->sem_browse_obj->getQuickSearchForm();
+        $search_element = new WidgetElement($search_content);
+        $widget->addElement($search_element);
+        $widget->addCheckbox(_('Erweiterte Suche anzeigen'),
+        $_SESSION['sem_browse_data']['cmd'] == "xts",
+        URLHelper::getLink('?level='.$level.'&cmd=xts&sset=0&option='),
+        URLHelper::getLink('?level='.$level.'&cmd=qs&sset=0&option='));
+        $sidebar->addWidget($widget);
 
         SemBrowse::setSemesterSelector($this->url_for('search/courses/index'));
         SemBrowse::setClassesSelector($this->url_for('search/courses/index'));
         
-        // add search options to sidebar
-        if (Request::get('level', $_SESSION['sem_browse_data']['level'] ?: 'f') == 'f') {
-            $widget = new OptionsWidget();
-            $widget->setTitle(_('Suchoptionen'));
-            $widget->addCheckbox(_('Erweiterte Suche anzeigen'),
-                    $_SESSION['sem_browse_data']['cmd'] == "xts",
-                    URLHelper::getLink('?cmd=xts&level=f'),
-                    URLHelper::getLink('?cmd=qs&level=f'));
-            $sidebar->addWidget($widget);
-        }
         
         if ($this->sem_browse_obj->show_result
                 && count($_SESSION['sem_browse_data']['search_result'])) {

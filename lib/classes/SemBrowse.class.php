@@ -92,7 +92,6 @@ class SemBrowse {
         }
 
         if ($this->sem_browse_data['cmd'] == 'xts') {
-            $this->sem_browse_data['level'] = 'f';
             if ($this->search_obj->new_search_button_clicked) {
                 $this->show_result = false;
                 $this->sem_browse_data['sset'] = false;
@@ -117,7 +116,6 @@ class SemBrowse {
                     $this->sem_number, $sem_status,
                     !(is_object($GLOBALS['perm'])
                             && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
-            $this->sem_browse_data['cmd'] = 'qs';
             if (Request::option('cmd') != 'show_sem_range'
                     && $level_change
                     && !$this->search_obj->search_button_clicked ) {
@@ -143,7 +141,6 @@ class SemBrowse {
                     $sem_status,
                     !(is_object($GLOBALS['perm'])
                             && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
-            $this->sem_browse_data['cmd'] = 'qs';
             if (Request::option('cmd') != 'show_sem_range_tree'
                     && $level_change
                     && !$this->search_obj->search_button_clicked ) {
@@ -365,15 +362,10 @@ class SemBrowse {
     {
         if ($this->sem_browse_data['cmd'] == 'xts') {
             $this->printExtendedSearch();
-        } else {
-            $this->printQuickSearch();
         }
         $path_id = Request::option('path_id');
         URLHelper::addLinkParam('path_id', $path_id);
         $this->print_level($path_id);
-        if ($this->show_result) {
-            $this->print_result();
-        }
     }
 
     public function print_level($start_id = null)
@@ -381,98 +373,24 @@ class SemBrowse {
         ob_start();
 
         SkipLinks::addIndex(_('Gefundene Bereiche'), 'sem_search_level', 110);
-
-        echo "\n" . '<table id="sem_search_level" width="99%">' . "\n";
-        if ($this->sem_browse_data['level'] == 'f') {
-
-            echo "\n" . '<tr><td align="center" class="table_row_odd" height="40" valign="middle">
-                <div style="margin-top:10px;margin-bottom:10px;">';
-            if (!($this->show_result && count($this->sem_browse_data['search_result']))) {
-                $navigation_options =
-                    [
-                        'semtree'   =>
-                            [
-                                'visible' => $this->show_class(),
-                                'img'     => Assets::img('directory-search.png',
-                                    [
-                                        'size' => '260@100',
-                                        'alt'  => _('Suche im Vorlesungsverzeichnis')
-                                    ])
-                            ],
-                        'rangetree' =>
-                            [
-                                'visible' => true,
-                                'img'     => Assets::img('institute-search.png',
-                                    [
-                                        'size' => '260@100',
-                                        'alt'  => _('Suche im Einrichtungsverzeichnis')
-                                    ])
-                            ],
-                        'module'    =>
-                            [
-                                'visible' => $this->showModules(),
-                                'img'     => Assets::img('directory-search.png',
-                                    [
-                                        'size' => '260@100',
-                                        'alt'  => _('Suche im Modulverzeichnis')
-                                    ])
-                            ]
-                    ];
-                echo '<table class="hidden-medium-down">';
-                echo '<tr>';
-
-                foreach (Config::get()->COURSE_SEARCH_NAVIGATION_OPTIONS as $name => $option) {
-                    $navigation = self::getSearchOptionNavigation('courses', $name);
-                    if ($navigation) {
-                        if ($option['url']) {
-                            SkipLinks::addLink($navigation->getTitle(),
-                                    $navigation->getURL());
-                            echo '<td style="whitespace:nowrap; text-align: center; font-size:1.5em; padding:15px; font-weight:bold;">';
-                            printf('<a href="%s">%s<br>%s</a></td>',
-                                    $navigation->getURL(),
-                                    $navigation->getTitle(),
-                                    is_array($option['img'])
-                                        ? (Assets::img($option['img']['filename'],
-                                            array_merge((array) $option['img']['attributes'],
-                                            tooltip2($navigation->getTitle()))))
-                                        : '');
-                        } else {
-                            SkipLinks::addLink($navigation->getTitle(),
-                                    $navigation->getURL());
-                            echo '<td style="whitespace:nowrap; text-align: center; font-size:1.5em; padding:15px; font-weight:bold;">';
-                            printf('<a href="%s">%s<br>%s</a></td>',
-                                    $navigation->getURL(),
-                                    $navigation->getTitle(),
-                                    $navigation_options[$name]['img']);
-                        }
-                    }
-                }
-
-                echo '</tr></table>';
-
-                ?>
-                <nav class="hidden-large-up button-group">
-                    <?= Studip\LinkButton::create(_('Suche in Einrichtungen'),
-                            URLHelper::getURL('?level=ev&cmd=qs&sset=0')) ?>
-                    <? if ($this->show_class()) : ?>
-                        <?= Studip\LinkButton::create(_('Suche im Vorlesungsverzeichnis'),
-                                URLHelper::getURL('?level=vv&cmd=qs&sset=0')) ?>
-                    <? endif; ?>
-                </nav>
-                <?
-            }
-            echo '</div>';
-        }
+        echo "\n" . '<table id="sem_search_level" class="course-search" width="100%">' . "\n";
         if ($this->sem_browse_data['level'] == 'vv') {
+            echo "\n" . '<caption class="legend">'._('Studienbereiche').'<caption>';
             echo "\n" . '<tr><td align="center">';
             $this->sem_tree->show_entries = $this->sem_browse_data['show_entries'];
             $this->sem_tree->showSemTree($start_id);
         }
         if ($this->sem_browse_data['level'] == 'ev') {
+            echo "\n" . '<caption class="legend">'._('Einrichtungen').'<caption>';
             echo "\n" . '<tr><td align="center">';
             $this->range_tree->show_entries = $this->sem_browse_data['show_entries'];
             $this->range_tree->showSemRangeTree($start_id);
         }
+
+        if ($this->show_result) {
+            $this->print_result();
+        }
+
         echo '</td></tr></table>';
         ob_end_flush();
     }
@@ -505,7 +423,7 @@ class SemBrowse {
                 });
             }
 
-            echo '<table class="default" id="sem_search_result">';
+            echo '<table class="default" id="sem_search_result" style="width: calc(100% - 15px);" >';
             echo '<caption>'
                 . sprintf(
                     _('%s Veranstaltungen gefunden %s, Gruppierung: %s'),
@@ -542,7 +460,9 @@ class SemBrowse {
                                 . ')');
                         break;
                     default:
-                        echo htmlReady($group_field);
+                        $username = key($sem_ids['username']);
+                        $fullname_normal = ($username) ? User::findByUsername($username)->getFullName('full') : null;
+                        echo htmlReady(($fullname_normal) ?  $fullname_normal : $group_field);// echo htmlReady($group_field);//
                 }
                 echo '</th></tr>';
                 ob_end_flush();
@@ -555,9 +475,9 @@ class SemBrowse {
                     // Get sem classes that can be used for grouping.
                     $grouping = SemType::getGroupingSemTypes();
 
-                    while(list($seminar_id,) = each($sem_ids['Seminar_id'])) {
+                    foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){
                         echo $this->printCourseRow($seminar_id, $sem_data);
-                    }
+                    } 
                 }
             }
             echo '</table>';
@@ -618,7 +538,6 @@ class SemBrowse {
             $caption_format->set_align('left');
             $caption_format->set_align('vcenter');
             $caption_format->set_bold();
-            //$caption_format->set_text_wrap();
 
             $data_format = $workbook->addformat();
             $data_format->set_size(10);
@@ -692,7 +611,7 @@ class SemBrowse {
                 $worksheet1->write_blank($row, 3, $caption_format);
                 ++$row;
                 if (is_array($sem_ids['Seminar_id'])) {
-                    while(list($seminar_id,) = each($sem_ids['Seminar_id'])) {
+                     foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){/*  while(list($seminar_id,) = each($sem_ids['Seminar_id'])) { */
                         $sem_name = key($sem_data[$seminar_id]['Name']);
                         $seminar_number = key($sem_data[$seminar_id]['VeranstaltungsNummer']);
                         $sem_number_start = key($sem_data[$seminar_id]['sem_number']);
@@ -732,7 +651,9 @@ class SemBrowse {
                         reset($sem_data[$seminar_id]['fullname']);
                         foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {
                             if ($c == 0) {
-                                list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                                $d_name = key($sem_data[$seminar_id]['fullname']);
+                                $anzahl2 = current($sem_data[$seminar_id]['fullname']);// list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                                next($sem_data[$seminar_id]['fullname']);
                                 $c = $anzahl2 / $anzahl1;
                                 $doz_name = array_merge($doz_name, array_fill(0, $c, $d_name));
                             }
@@ -791,7 +712,7 @@ class SemBrowse {
                 IF(seminare.visible = 0, CONCAT(seminare.Name, ' " . _('(versteckt)')
                     . "'), seminare.Name) AS Name,"
                 . $add_fields
-                . $_fullname_sql['full'] . " AS fullname,
+                . $_fullname_sql['full_rev'] . " AS fullname,
                     auth_user_md5.username,"
                 . $dbv->sem_number_sql . ' AS sem_number, '
                 . $dbv->sem_number_end_sql . ' AS sem_number_end,
@@ -1051,7 +972,9 @@ class SemBrowse {
             reset($sem_data[$seminar_id]['fullname']);
             foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {
                 if ($c == 0) {
-                    list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                    $d_name = key($sem_data[$seminar_id]['fullname']);
+                    $anzahl2 = current($sem_data[$seminar_id]['fullname']);// list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                    next($sem_data[$seminar_id]['fullname']);
                     $c = $anzahl2 / $anzahl1;
                     $doz_name = array_merge($doz_name, array_fill(0, $c, $d_name));
                 }
@@ -1071,7 +994,10 @@ class SemBrowse {
                             $row .= '... <a href="' . $send_from_search_link . '">(' . _('mehr') . ')</a>';
                             break;
                         }
-                    $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' . htmlReady($value) . '</a>';
+                        $fullname_normal = ($doz_uname[$index]) ? User::findByUsername($doz_uname[$index])->getFullName('full') : null;
+                        $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' .
+                                htmlReady(($fullname_normal) ? $fullname_normal : $value) . 
+                            '</a>';
                         if ($i != count($doz_name) - 1) {
                             $row .= ', ';
                         }
@@ -1257,14 +1183,8 @@ class SemBrowse {
         if (!$option['url']) {
             switch ($option_name) {
                 case 'courses':
-                    return new Navigation(_('Veranstaltungssuche'),
-                            URLHelper::getURL('dispatch.php/search/courses',
-                                    [
-                                        'level' => 'f',
-                                        'option' => ''
-                                    ], true));
                 case 'semtree':
-                    return new Navigation(_('Suche im Vorlesungsverzeichnis'),
+                    return new Navigation(_(/* 'Suche im Vorlesungsverzeichnis' */'Vorlesungsverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/courses',
                                     [
                                         'level' => 'vv',
@@ -1273,7 +1193,7 @@ class SemBrowse {
                                         'option' => ''
                                     ], true));
                 case 'rangetree':
-                    return new Navigation(_('Suche in Einrichtungen'),
+                    return new Navigation(_(/* 'Suche in Einrichtungen' */'Einrichtungsverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/courses',
                                     [
                                         'level' => 'ev',
@@ -1282,7 +1202,7 @@ class SemBrowse {
                                         'option' => ''
                                     ], true));
                 case 'module':
-                    return new MVVSearchNavigation(_('Suche im Modulverzeichnis'),
+                    return new MVVSearchNavigation(_(/* 'Suche im Modulverzeichnis' */'Modulverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/module'),null, true);
             }
         } else {
@@ -1490,5 +1410,44 @@ class SemBrowse {
             return 1;
         }
         return 0;
+    }
+
+    /**
+     * Returns a Quick Search form to put inside a WidgetElement.
+     *
+     * @param string   $level     The Level of search , expected ('f', 'vv', 'ev')
+     * @return string $search_form_content Contains a form element with a quick search input, predefined (hidden) inputs and search button
+     */
+    public function getQuickSearchForm()
+    {
+        if ($this->sem_browse_data['level'] === 'vv') {
+            $this->search_obj->sem_tree =& $this->sem_tree->tree;
+            if ($this->sem_tree->start_item_id !== 'root') {
+                $this->search_obj->search_scopes[] = $this->sem_tree->start_item_id;
+            }
+        } elseif ($this->sem_browse_data['level'] === 'ev') {
+            $this->search_obj->range_tree =& $this->range_tree->tree;
+            if ($this->range_tree->start_item_id !== 'root'){
+                $this->search_obj->search_ranges[] = $this->range_tree->start_item_id;
+            }
+        }
+
+        $search_form_content = $this->search_obj->getFormStart(URLHelper::getLink(), ['class' => 'default']);
+        $quicksearch = $this->getQuicksearch();
+        $quicksearch->withButton();
+        $quicksearch->disableAutocomplete();
+        $search_form_content .= $quicksearch->render();
+        $search_form_content .= $this->search_obj->getHiddenField('qs_choose','title_lecturer_number');
+
+        if($this->sem_browse_data['level'] == 'vv') 
+            $search_form_content .= $this->search_obj->getHiddenField('scope_choose', $this->sem_tree->start_item_id);
+        
+        if($this->sem_browse_data['level'] == 'ev') 
+            $search_form_content .= $this->search_obj->getHiddenField('range_choose', $this->range_tree->start_item_id);
+
+        $search_form_content .= $this->search_obj->getHiddenField('level', $this->sem_browse_data['level']);
+        $search_form_content .= $this->search_obj->getHiddenField('sem', htmlReady($_SESSION['sem_browse_data']['default_sem']));
+        $search_form_content .= $this->search_obj->getFormEnd();
+        return $search_form_content;
     }
 }

@@ -389,6 +389,10 @@ table.default {
         word-break: break-all;
     }
 
+    .font-size-adjusted{
+        font-size: 1.1em;
+    }
+
     th, td, caption {
         padding: 5px;
         text-align: left;
@@ -715,4 +719,40 @@ table#schedule_data {
 // Responsive helper
 .table-scrollbox-horizontal {
   .scrollbox-horizontal();
+}
+
+//New table form for Course Search
+table.course-search{
+    @max-width-s: 8em;
+    @max-width-m: 48em;
+    @max-width-l: 100%;
+    border: 1px solid @content-color-40;
+    padding: 10px;
+    border-top: 0;
+    caption.legend {
+        box-sizing: border-box;
+        background-color: @fieldset-header;
+        border: 1px solid @content-color-40;
+        border-bottom: 0;
+        color: @brand-color-dark;
+        font-size: 12pt;
+        font-weight: bold;
+        line-height: 2em;
+        padding: 0;
+        text-align: left;
+        text-indent: 10px;
+    }
+}
+
+//Show Tree Table
+table.show-tree {
+    width:100%;
+    td.b-top-va-center {
+        border-top: 1px solid @content-color-40;
+        padding-top: 10px;
+        vertical-align:center;
+    }
+    ul.semtree a{
+        display: block;
+    }
 }
