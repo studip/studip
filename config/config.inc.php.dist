@@ -39,17 +39,14 @@ global
   $FLASHPLAYER_DEFAULT_CONFIG_MAX,
   $INST_ADMIN_DATAFIELDS_VIEW,
   $INST_MODULES,
-  $INST_STATUS_GROUPS,
   $INST_TYPE,
   $LIT_LIST_FORMAT_TEMPLATE,
   $NAME_FORMAT_DESC,
   $PERS_TERMIN_KAT,
   $SCM_PRESET,
-  $SEM_STATUS_GROUPS,
   $SMILE_SHORT,
   $SYMBOL_SHORT,
   $TERMIN_TYP,
-  $TIME_PRESETS,
   $TITLE_FRONT_TEMPLATE,
   $TITLE_REAR_TEMPLATE,
   $UNI_CONTACT,
@@ -75,7 +72,7 @@ $UNI_URL = "http://www.studip.de";
 $UNI_LOGIN_ADD='';
 $UNI_LOGOUT_ADD=sprintf(_("Und hier geht's zur %sStud.IP Portalseite%s&nbsp;"), "<a href=\"http://www.studip.de\"><b>", "</b></a>");
 $UNI_CONTACT = "<please insert your general contact mail-adress here>";
-$UNI_INFO = "Stud.IP 3.5 - Studienbegleitender Internetsupport von Präsenzlehre";
+$UNI_INFO = "Stud.IP 4.3 - Studienbegleitender Internetsupport von Präsenzlehre";
 
 
 /* $SEM_CLASS and $SEM_TYPE configuration moved to database
@@ -165,16 +162,6 @@ $UPLOAD_TYPES["personalfiles"] =
                                     )
                 );
 
-
-/*
-* define presets for the status-groups in courses (refers to the key of the $SEM_CLASS array above)
-* if none is given, the designations of $SEM_STATUS_GROUPS["default"] are used
-*/
-$SEM_STATUS_GROUPS["default"] = array ("Lehrende", "Tutor/-innen", "Autor/-innen", "Leser/-innen", "sonstige");    //the default. Don't delete this entry!
-$SEM_STATUS_GROUPS["2"] = array ("Organisatoren", "Mitglieder", "Ausschußmitglieder", "sonstige");
-$SEM_STATUS_GROUPS["3"] = array ("Moderatoren des Forums","Mitglieder", "sonstige");
-// ...can be continued accordingly
-
 /*
 * set allowed designations of institutes / divisions / administrative units
 */
@@ -186,17 +173,6 @@ $INST_TYPE[5]=array("name"=>_("Fachbereich"));
 $INST_TYPE[6]=array("name"=>_("Seminar"));
 $INST_TYPE[7]=array("name"=>_("Fakultät"));
 $INST_TYPE[8]=array("name"=>_("Arbeitsgruppe"));
-// ...can be continued accordingly
-
-
-/*
-* define presets for the status-groups in institutes / divisions / administrative units (refers to the key of the $INST_TYPE array above)
-* if none is given, the designations of $INST_STATUS_GROUPS["default"] are used
-*/
-
-$INST_STATUS_GROUPS["default"] = array ("Direktor/-in", "Lehrende", "Lehrbeauftragte", "Zweitmitglied", "wiss. Hilfskraft","wiss. Mitarbeiter/-in",
-                                    "stud. Hilfskraft", "Frauenbeauftragte", "Internetbeauftragte(r)", "Studierende", "techn. Mitarbeiter/-in", "Sekretariat / Verwaltung",
-                                    "stud. Vertreter/-in");
 // ...can be continued accordingly
 
 
