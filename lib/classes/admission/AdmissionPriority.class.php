@@ -105,14 +105,14 @@ class AdmissionPriority
         $query = "INSERT INTO `priorities` (
                     `user_id`, `set_id`, `seminar_id`, `priority`, `mkdate`, `chdate`
                   )
-                  SELECT ?, ?, `seminar_id`, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
-                  FROM `seminare`
-                  WHERE `seminar_id` = ?
+                  SELECT ?, ?, `seminare`.`seminar_id`, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
+                  FROM `seminare` INNER JOIN `seminar_courseset` USING(`seminar_id`)
+                  WHERE `seminare`.`seminar_id` = ? AND `set_id` = ?
                     ON DUPLICATE KEY
                       UPDATE `priority` = VALUES(`priority`),
                              `chdate` = VALUES(`chdate`)";
         $stmt = DBManager::get()->prepare($query);
-        $stmt->execute([$userId, $courseSetId, $priority, $courseId]);
+        $stmt->execute([(string)$userId, (string)$courseSetId, (int)$priority, (string)$courseId, (string)$courseSetId]);
 
         $ok = $stmt->rowCount();
         if ($ok) {
