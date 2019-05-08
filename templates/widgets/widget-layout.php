@@ -1,4 +1,4 @@
-<div class="<?= $base_class ?>-widget">
+<div class="<?= $base_class ?>-widget<?= count($layout_css_classes) ? ' '.htmlReady(implode(" ", $layout_css_classes)) : "" ?>">
 <? if ($title): ?>
     <div class="<?= $base_class ?>-widget-header">
         <?= htmlReady($title) ?>
