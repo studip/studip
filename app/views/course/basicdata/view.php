@@ -250,7 +250,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
                     </td>
                 </tr>
         <? else: ?>
-            <? foreach ($tutoren as $num => $tutor): ?>
+            <? foreach (array_values($tutoren) as $num => $tutor): ?>
                 <tr>
                     <td>
                         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $tutor['username']) ?>">
