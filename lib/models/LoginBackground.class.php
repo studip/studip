@@ -65,7 +65,10 @@ class LoginBackground extends SimpleORMap
      */
     public function getFilesize()
     {
-        return filesize($this->getPath());
+        if (file_exists($this->getPath())) {
+            return filesize($this->getPath());
+        }
+        return false;
     }
 
     /**
@@ -73,7 +76,10 @@ class LoginBackground extends SimpleORMap
      */
     public function getDimensions()
     {
-        return getimagesize($this->getPath());
+        if (file_exists($this->getPath())) {
+            return getimagesize($this->getPath());
+        }
+        return false;
     }
 
     /**
