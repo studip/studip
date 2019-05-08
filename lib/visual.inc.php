@@ -119,9 +119,7 @@ function formatReady($text, $trim = true, $extern = false, $wiki = false, $show_
 {
     $formatted = Markup::apply(new StudipFormat(), $text, $trim);
 
-    return $formatted
-        ? sprintf(FORMATTED_CONTENT_WRAPPER, $formatted)
-        : '';
+    return $formatted !== '' ? sprintf(FORMATTED_CONTENT_WRAPPER, $formatted) : '';
 }
 
 /**
@@ -154,7 +152,8 @@ function formatLinks($text, $nl2br=TRUE){
  */
 function wikiReady($text, $trim=TRUE) {
     $formatted = Markup::apply(new WikiFormat(), $text, $trim);
-    return $formatted ? sprintf(FORMATTED_CONTENT_WRAPPER, $formatted) : '';
+
+    return $formatted !== '' ? sprintf(FORMATTED_CONTENT_WRAPPER, $formatted) : '';
 }
 
 /**
