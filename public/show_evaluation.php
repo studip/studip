@@ -246,7 +246,7 @@ page_close();
              $mandatories[] = $item->getObjectID();
          }
      }
-     return $mandatories;
+     return $mandatories ?: [];
 
  }
 
