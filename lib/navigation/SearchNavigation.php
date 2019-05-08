@@ -51,7 +51,7 @@ class SearchNavigation extends Navigation
 
             if ($navigation_option) { 
                 $navigation = new Navigation( 
-                    _('Veranstaltungen'), 
+                    _('Veranstaltungsverzeichnis'), 
                     $navigation_option->getURL() 
                 ); 
                 foreach (array_keys(Config::get()->COURSE_SEARCH_NAVIGATION_OPTIONS) as $name) { 
