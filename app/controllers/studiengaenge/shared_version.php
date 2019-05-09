@@ -260,7 +260,7 @@ class SharedVersionController extends MVVController
             $this->version = $this->abschnitt->version;
             PageLayout::setTitle(sprintf(
                 _('Studiengangteil-Abschnitt "%s" der Version "%s" bearbeiten.'),
-                $this->abschnitt->name)
+                $this->abschnitt->name,
                 $this->version->getDisplayName()
             ));
             $success_message = _('Der Studiengangteil-Abschnitt "%s" wurde geändert.');
