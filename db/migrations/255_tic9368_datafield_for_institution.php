@@ -10,7 +10,7 @@ class Tic9368DatafieldForInstitution extends Migration
     {
         $query = "ALTER TABLE `datafields`
             ADD COLUMN `institut_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NULL DEFAULT NULL AFTER `view_perms`;";
-        //DBManager::get()->exec($query);
+        DBManager::get()->exec($query);
     }
 
     public function down()
