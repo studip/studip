@@ -39,16 +39,19 @@ class HelpContentController extends AuthenticatedController
     public function admin_overview_action()
     {
         // check permission
-        if (!$GLOBALS['auth']->is_authenticated() || $GLOBALS['user']->id === 'nobody') {
+        if (!$this->help_admin) {
             throw new AccessDeniedException();
         }
-        $GLOBALS['perm']->check('root');
 
         // initialize
         PageLayout::setTitle(_('Verwalten von Hilfe-Texten'));
         PageLayout::setHelpKeyword('Basis.HelpContentAdmin');
         // set navigation
-        Navigation::activateItem('/admin/config/help_content');
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/help_content');
+        } else {
+            Navigation::activateItem('/tools/help_admin/help_content');
+        }
 
         if (Request::get('help_content_filter') == 'set') {
             $this->help_content_searchterm = Request::option('help_content_filter_term');
@@ -75,16 +78,19 @@ class HelpContentController extends AuthenticatedController
     public function admin_conflicts_action()
     {
         // check permission
-        if (!$GLOBALS['auth']->is_authenticated() || $GLOBALS['user']->id === 'nobody') {
+        if (!$this->help_admin) {
             throw new AccessDeniedException();
         }
-        $GLOBALS['perm']->check('root');
 
         // initialize
         PageLayout::setTitle(_('Versions-Konflikte der Hilfe-Texte'));
         PageLayout::setHelpKeyword('Basis.HelpContentAdmin');
         // set navigation
-        Navigation::activateItem('/admin/config/help_content');
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/help_content');
+        } else {
+            Navigation::activateItem('/tools/help_admin/help_content');
+        }
 
         // load help content
         $this->conflicts = HelpContent::GetConflicts();
@@ -98,7 +104,7 @@ class HelpContentController extends AuthenticatedController
     public function resolve_conflict_action($id, $mode)
     {
         // check permission
-        if (!$GLOBALS['auth']->is_authenticated() || $GLOBALS['user']->id === 'nobody') {
+        if (!$this->help_admin) {
             throw new AccessDeniedException();
         }
         $GLOBALS['perm']->check('root');
@@ -167,6 +173,9 @@ class HelpContentController extends AuthenticatedController
      */
     public function store_action($id = '')
     {
+        if (!$this->help_admin) {
+            return $this->render_nothing();
+        }
         CSRFProtection::verifySecurityToken();
 
         $content_id         = md5(uniqid('help_content', 1));
@@ -223,6 +232,9 @@ class HelpContentController extends AuthenticatedController
      */
     public function store_settings_action()
     {
+        if (!$this->help_admin) {
+            return $this->render_nothing();
+        }
         CSRFProtection::verifyUnsafeRequest();
 
         $this->help_contents = HelpContent::GetContentByFilter(Request::get('help_content_searchterm'));

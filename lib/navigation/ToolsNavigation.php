@@ -92,5 +92,14 @@ class ToolsNavigation extends Navigation
             $navigation->addSubNavigation('restricted_courses', new Navigation(_('teilnahmebeschränkte Veranstaltungen'), 'dispatch.php/admission/restricted_courses'));
         }
 
+        if (!$GLOBALS['perm']->have_perm('root') && $GLOBALS['user']->getAuthenticatedUser()->hasRole('Hilfe-Administrator(in)')) {
+            $navigation = new Navigation(_('Hilfe'), 'dispatch.php/help_content/admin_overview');
+            $this->addSubNavigation('help_admin', $navigation);
+            if (Config::get()->TOURS_ENABLE) {
+                $navigation->addSubNavigation('tour', new Navigation(_('Touren'), 'dispatch.php/tour/admin_overview'));
+            }
+            $navigation->addSubNavigation('help_content', new Navigation(_('Hilfe-Texte'), 'dispatch.php/help_content/admin_overview'));
+        }
+
     }
 }

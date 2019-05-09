@@ -172,14 +172,19 @@ class TourController extends AuthenticatedController
     public function admin_overview_action()
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            throw new AccessDeniedException();
+        }
 
         // initialize
         PageLayout::setTitle(_('Verwalten von Touren'));
         PageLayout::setHelpKeyword('Basis.TourAdmin');
         // set navigation
-        Navigation::activateItem('/admin/config/tour');
-
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/tour');
+        } else {
+            Navigation::activateItem('/tools/help_admin/tour');
+        }
 
         if (Request::get('tour_filter') === 'set') {
             $this->tour_searchterm = Request::option('tour_filter_term');
@@ -259,7 +264,9 @@ class TourController extends AuthenticatedController
     public function import_action()
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            return $this->render_nothing();
+        }
 
         PageLayout::setTitle(_('Hilfe-Tour importieren'));
 
@@ -317,7 +324,9 @@ class TourController extends AuthenticatedController
     public function export_action($tour_id)
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            return $this->render_nothing();
+        }
 
         // load tour
         $tour  = new HelpTour($tour_id);
@@ -522,13 +531,19 @@ class TourController extends AuthenticatedController
     public function admin_conflicts_action()
     {
         // check permission
-        $GLOBALS['perm']->check('root');
-
+        if (!$this->help_admin) {
+            throw new AccessDeniedException();
+        }
+        
         // initialize
         PageLayout::setTitle(_('Versions-Konflikte der Touren'));
         PageLayout::setHelpKeyword('Basis.TourAdmin');
         // set navigation
-        Navigation::activateItem('/admin/config/tour');
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/tour');
+        } else {
+            Navigation::activateItem('/tools/help_admin/tour');
+        }
 
         // load help content
         $this->conflicts = HelpTour::GetConflicts();
@@ -557,7 +572,9 @@ class TourController extends AuthenticatedController
     public function resolve_conflict_action($id, $mode)
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            return $this->render_nothing();
+        }
 
         $this->tour = new HelpTour($id);
         if ($mode === 'accept') {
@@ -578,11 +595,17 @@ class TourController extends AuthenticatedController
     function admin_details_action($tour_id = '')
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            throw new AccessDeniedException();
+        }
         // initialize
         PageLayout::setTitle(_('Verwalten von Touren'));
         PageLayout::setHelpKeyword('Basis.TourAdmin');
-        Navigation::activateItem('/admin/config/tour');
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/tour');
+        } else {
+            Navigation::activateItem('/tools/help_admin/tour');
+        }
 
         $this->tour = new HelpTour($tour_id);
         if ($tour_id AND $this->tour->isNew()) {
@@ -616,9 +639,15 @@ class TourController extends AuthenticatedController
     function save_action($tour_id = '')
     {
         // check permission
-        $GLOBALS['perm']->check('root');
+        if (!$this->help_admin) {
+            throw new AccessDeniedException();
+        }
         // initialize
-        Navigation::activateItem('/admin/config/tour');
+        if ($GLOBALS['perm']->have_perm('root')) {
+            Navigation::activateItem('/admin/config/tour');
+        } else {
+            Navigation::activateItem('/tools/help_admin/tour');
+        }
 
         $this->tour = new HelpTour($tour_id);
         $this->tour->settings = new HelpTourSettings($tour_id);
