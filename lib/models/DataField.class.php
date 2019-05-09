@@ -59,6 +59,16 @@ class DataField extends SimpleORMap implements PrivacyObject
             'assoc_foreign_key' => 'identifier',
             'on_delete'         => 'delete',
         ];
+        $config['additional_fields']['institution'] = array(
+            'get' => function ($object, $field) {
+                $institution = Institute::find($object->institut_id);
+                if (!$institution) {
+                    return false;
+                }
+                return $institution;
+            },
+            'set' => false,
+        );
 
         $config['i18n_fields']['name'] = true;
 

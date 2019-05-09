@@ -17,6 +17,7 @@
         <col width="10%">
         <col width="10%">
         <col width="10%">
+        <col width="10%">
         <col width="6%">
         <col width="6%">
         <col width="2%">
@@ -32,6 +33,9 @@
             <th rowspan="2" style="word-wrap: nowrap">
                 <?= _('Typ') ?>
                 <?= tooltipIcon(_('Veranstaltungskategorie, Einrichtungstyp, Sprache bzw. Nutzerstatus')) ?>
+            </th>
+            <th rowspan="2">
+                <?= _('Institution') ?>
             </th>
             <th colspan="2" style="text-align: center">
                 <?= _('benötigter Status') ?>
@@ -58,9 +62,9 @@
     <tbody class="<? if ($current_class !== $key && !$class_filter) echo 'collapsed'; ?> <? if (empty($datafields_list[$key])) echo 'empty'; ?>">
         <tr class="table_header header-row">
         <? if (in_array($key, words('sem user'))): ?>
-            <th class="toggle-indicator" colspan="5">
+            <th class="toggle-indicator" colspan="6">
         <? else: ?>
-            <th class="toggle-indicator" colspan="10">
+            <th class="toggle-indicator" colspan="11">
         <? endif; ?>
             <? if (empty($datafields_list[$key])): ?>
                 <?= sprintf(_('Datenfelder für %s'), $allclasses[$key]) ?>
@@ -110,6 +114,11 @@
             <? else: ?>
                 <?= $val->object_class !== null ? DataField::getReadableUserClass($val->object_class) : _('alle')?>
             <? endif; ?>
+            </td>
+            <td>
+                <? if ($val->institution) : ?>
+                    <?= htmlReady($val->institution->name)?>
+                <? endif; ?>
             </td>
             <td><?= $val->edit_perms ?></td>
             <td><?= $val->view_perms ?></td>

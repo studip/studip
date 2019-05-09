@@ -37,6 +37,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
             'class_name' => 'User',
             'foreign_key' => 'user_id',
         ];
+
         $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'foreign_key' => function($group_member) {
@@ -50,6 +51,17 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
             'on_delete' => 'delete',
             'on_store'  => 'store',
         ];
+
+        $config['additional_fields']['range_object'] = [
+            'get' => function ($object, $field) {
+                $range_object = Course::find($object->range_id);
+                if (!$range_object) {
+                    $range_object = Institute::find($object->range_id);
+                }
+                return $range_object;
+            },
+            'set' => false];
+
 
         $config['additional_fields']['vorname']     = ['user', 'vorname'];
         $config['additional_fields']['nachname']    = ['user', 'nachname'];

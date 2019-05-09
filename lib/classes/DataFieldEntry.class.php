@@ -100,7 +100,6 @@ abstract class DataFieldEntry
         if (!$range_id) {
             return []; // we necessarily need a range ID
         }
-
         $parameters = [];
         if(is_array($range_id)) {
             // rangeID may be an array ("classic" rangeID and second rangeID used for user roles)
@@ -126,11 +125,18 @@ abstract class DataFieldEntry
                     } else {
                         $object_class = SeminarCategories::GetBySeminarId($rangeID);
                     }
+
                     $clause2 = "object_class = :object_class OR object_class IS NULL";
                     $parameters[':object_class'] = (int) $object_class->id;
+                    $clause3 = 'a.institut_id IS NULL OR a.institut_id IN (:institut_ids)';
+                    $query = "SELECT institut_id FROM seminar_inst WHERE seminar_id = :seminar_id";
+                    $statement = DBManager::get()->prepare($query);
+                    $statement->execute([':seminar_id' => $rangeID]);
+                    $parameters[':institut_ids'] = array_keys($statement->fetchGrouped());
                     break;
                 case 'inst':
                 case 'fak':
+
                     if ($object_class_hint) {
                         $object_class = $object_class_hint;
                     } else {
@@ -142,9 +148,16 @@ abstract class DataFieldEntry
                     $object_type = "inst";
                     $clause2 = "object_class = :object_class OR object_class IS NULL";
                     $parameters[':object_class'] = (int) $object_class;
+                    $clause3 = 'a.institut_id IS NULL OR a.institut_id = :institut_id';
+                    $parameters[':institut_id'] = $rangeID;
                     break;
                 case 'roleinstdata': //hmm tja, vermutlich so
                     $clause2 = '1';
+                    $clause3 = '1';
+                    if (is_array($range_id) && isset($range_id[0])) {
+                        $clause3 = 'a.institut_id IS NULL OR a.institut_id = :institut_id';
+                        $parameters[':institut_id'] = $range_id[0];
+                    }
                     break;
                 case 'user':
                 case 'userinstrole':
@@ -152,13 +165,19 @@ abstract class DataFieldEntry
                     $object_class = is_object($GLOBALS['perm']) ? DataField::permMask($GLOBALS['perm']->get_perm($rangeID)) : 0;
                     $clause2 = "((object_class & :object_class) OR object_class IS NULL)";
                     $parameters[':object_class'] = (int) $object_class;
+
+                    $clause3 = 'a.institut_id IS NULL OR a.institut_id IN (:institut_ids)';
+                    $query = "SELECT institut_id FROM user_inst WHERE user_id = :user_id";
+                    $statement = DBManager::get()->prepare($query);
+                    $statement->execute([':user_id' => $rangeID]);
+                    $parameters[':institut_ids'] = array_keys($statement->fetchGrouped());
                     break;
             }
             $query = "SELECT a.*, content
                       FROM datafields AS a
                       LEFT JOIN datafields_entries AS b
                         ON (a.datafield_id = b.datafield_id AND range_id = :range_id {$clause1})
-                      WHERE object_type = :object_type AND ({$clause2})
+                      WHERE object_type = :object_type AND ({$clause2}) AND ($clause3)
                       ORDER BY priority";
             $parameters[':range_id']    = $rangeID;
             $parameters[':object_type'] = $object_type;

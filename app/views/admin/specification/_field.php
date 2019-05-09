@@ -27,5 +27,10 @@ $order  = Request::getArray('order');
                     <?= (($fields && isset($fields[$id])) ? $fields[$id] : @$rule['attributes'][$id]) ? 'checked="checked"' : '' ?>>
             <?= _('Aktivieren') ?>
         </label>
+        <label class="col-1">
+            <? if ($institution) : ?>
+                <?= htmlReady($institution->name)?>
+            <? endif; ?>
+        </label>
     </div>
 </section>

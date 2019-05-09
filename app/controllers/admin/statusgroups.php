@@ -148,6 +148,9 @@ class Admin_StatusgroupsController extends AuthenticatedController
         }
 
         $this->group = new Statusgruppen($group_id);
+        if ($this->group->isNew()) {
+            $this->group->range_id = Context::getId();
+        }
         $this->loadGroups();
     }
 

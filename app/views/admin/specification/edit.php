@@ -42,7 +42,7 @@ use Studip\Button, Studip\LinkButton;
                 <?= $this->render_partial('admin/specification/_field', array_merge(
                     compact('rule'),
                     ['id' => $entry->datafield_id, 'name' => $entry->name],
-                    ['required' => true]
+                    ['required' => true, 'institution' => $entry->institution]
                 )) ?>
             <? endforeach ?>
         </fieldset>
