@@ -81,6 +81,7 @@ class Admin_SemesterController extends AuthenticatedController
             $this->semester->ende           = $this->getTimeStamp('ende', '23:59:59');
             $this->semester->vorles_beginn  = $this->getTimeStamp('vorles_beginn');
             $this->semester->vorles_ende    = $this->getTimeStamp('vorles_ende', '23:59:59');
+            $this->semester->external_id    = Request::get('external_id');
 
             // Validate
             $errors = $this->validateSemester($this->semester);

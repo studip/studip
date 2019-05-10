@@ -30,6 +30,12 @@
                 'id' => 'description',
             ]) ?>
         </label>
+        
+        <label>
+            <?= _('Externe ID') ?>
+            
+            <input type="text" name="external_id" value="<?= htmlReady($semester->external_id) ?>" maxlength="50">
+        </label>
     </fieldset>
 
     <fieldset>
