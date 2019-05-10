@@ -1,6 +1,6 @@
 ﻿/**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md or http://ckeditor.com/license
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/license
  */
 
 /**
@@ -10,13 +10,13 @@
  * If you would like to build CKEditor online again
  * (for example to upgrade), visit one the following links:
  *
- * (1) http://ckeditor.com/builder
+ * (1) https://ckeditor.com/cke4/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/f1bd1fcbcdaa340f1c4d83d1ec629476
+ * (2) https://ckeditor.com/cke4/builder/40e57f535573e8f3f2b3bddeb4cc0a63
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/f1bd1fcbcdaa340f1c4d83d1ec629476
+ * (3) https://ckeditor.com/cke4/builder/download/40e57f535573e8f3f2b3bddeb4cc0a63
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -38,9 +38,11 @@ var CKBUILDER_CONFIG = {
 		'.jshintignore',
 		'.jshintrc',
 		'.mailmap',
-		'README.md',
+		'.npm',
+		'.travis.yml',
 		'bender-err.log',
 		'bender-out.log',
+		'bender.ci.js',
 		'bender.js',
 		'dev',
 		'gruntfile.js',
@@ -57,6 +59,7 @@ var CKBUILDER_CONFIG = {
 		'codemirror' : 1,
 		'colorbutton' : 1,
 		'colordialog' : 1,
+		'confighelper' : 1,
 		'contextmenu' : 1,
 		'dialogadvtab' : 1,
 		'divarea' : 1,
@@ -76,6 +79,7 @@ var CKBUILDER_CONFIG = {
 		'link' : 1,
 		'list' : 1,
 		'liststyle' : 1,
+		'magicline' : 1,
 		'mathjax' : 1,
 		'removeformat' : 1,
 		'selectall' : 1,
@@ -89,8 +93,7 @@ var CKBUILDER_CONFIG = {
 		'tabletools' : 1,
 		'textselection' : 1,
 		'toolbar' : 1,
-		'undo' : 1,
-		'widget' : 1
+		'undo' : 1
 	},
 	languages : {
 		'de' : 1,

@@ -193,7 +193,7 @@ function replaceTextarea(textarea) {
         skin: 'studip,' + STUDIP.ASSETS_URL + 'stylesheets/ckeditor-skin/',
         // NOTE codemirror crashes when not explicitely loaded in CKEditor 4.4.7
         extraPlugins:
-            'codemirror,confighelper,magicline,studip-floatbar,studip-quote,studip-upload,studip-settings,emojione' +
+            'emojione,studip-floatbar,studip-quote,studip-upload,studip-settings' +
             (extraPlugins ? ',' + extraPlugins : ''),
         removePlugins: removePlugins ? removePlugins : textarea.closest('.ui-dialog').length ? 'autogrow' : '',
         enterMode: CKEDITOR.ENTER_BR,
