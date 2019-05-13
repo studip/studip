@@ -192,7 +192,9 @@ class Course_WizardController extends AuthenticatedController
                         } else {
                             if (Request::int('dialog')) {
                                 $message = MessageBox::success(
-                                    sprintf(_('Die Veranstaltung "%s" wurde angelegt.'), htmlReady($this->course->getFullname())));
+                                    sprintf(_('Die Veranstaltung <a class="link-intern" href="%s">"%s"</a> wurde angelegt.'),
+                                        $this->link_for('course/management?cid=' . $this->course->id),
+                                        htmlReady($this->course->getFullname())));
                                 $target = $this->url_for('admin/courses');
                             } else {
                                 $message = MessageBox::success(
