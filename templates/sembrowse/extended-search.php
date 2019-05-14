@@ -57,17 +57,15 @@ SkipLinks::addLink(
         <?= $search_obj->getSearchField('combination') ?>
     </label>
 
-    <label>
-        <div class="text-center">
-            <?= $search_obj->getSearchButton([
-                'class' => 'search'
-                ]) ?>
-            <?= Studip\LinkButton::createCancel(
-                _('Zurücksetzen'),
-                URLHelper::getURL('?cmd=xts&reset_all=1&level='.$sem_browse_data['level']),
-                ['title' => _('Zurücksetzen')]
+    <div class="col-6" style="text-align:center; padding-top:20px;">
+        <?= $search_obj->getSearchButton([
+            'class' => 'search'
+            ]) ?>
+        <?= Studip\LinkButton::createCancel(
+            _('Zurücksetzen'),
+            URLHelper::getURL('?cmd=xts&reset_all=1&level='.$sem_browse_data['level']),
+            ['title' => _('Zurücksetzen')]
             ) ?>
-        </div>
-    </label>
+    </div>
 </fieldset>
 <?= $search_obj->getFormEnd() ?>

@@ -752,7 +752,40 @@ table.show-tree {
         padding-top: 10px;
         vertical-align:center;
     }
-    ul.semtree a{
-        display: block;
+    img[role=root-icon]{
+        position: relative;
+        top: 6px;
+    }
+    div.sem_path_info{
+        margin-left:30px;
+        padding-top:10px;
+        div.sem_path_title{
+            font-size:24px;
+            font-weight:600;
+            margin: 3px 0px 5px 0px;
+        }
+        div.sem_path_text{
+            padding-top:2px;
+        }
+    }
+    table.show-tree-kids{
+        width: 100%;
+        td.kids-tree-row{
+            width: 50%;
+        }
+        ul.semtree{
+            padding-left: 20px !important;
+            a{
+                padding-top: 5px !important;
+                padding-bottom: 3px !important;
+                padding-left: 3px !important;
+                display: block;
+            }
+            a:hover{
+                background-color: @fieldset-header !important;
+                color: @base-color !important;
+            }
+        }
+        
     }
 }

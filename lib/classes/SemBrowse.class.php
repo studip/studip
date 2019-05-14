@@ -362,7 +362,7 @@ class SemBrowse {
     {
         if ($this->sem_browse_data['cmd'] == 'xts') {
             $this->printExtendedSearch();
-        }
+        } 
         $path_id = Request::option('path_id');
         URLHelper::addLinkParam('path_id', $path_id);
         $this->print_level($path_id);
@@ -424,15 +424,6 @@ class SemBrowse {
             }
 
             echo '<table class="default" id="sem_search_result" style="width: calc(100% - 15px);" >';
-            echo '<caption>'
-                . sprintf(
-                    _('%s Veranstaltungen gefunden %s, Gruppierung: %s'),
-                    count($visibles),
-                    $this->sem_browse_data['sset'] ? '(' . _('Suchergebnis') . ')' : '',
-                    $this->group_by_fields[$this->sem_browse_data['group_by']]['name']
-                )
-                . '</caption>';
-
             foreach ($group_by_data as $group_field => $sem_ids) {
                 if (Config::get()->COURSE_SEARCH_SHOW_ADMISSION_STATE) {
                     echo '<tr><th colspan="6">';
@@ -462,7 +453,7 @@ class SemBrowse {
                     default:
                         $username = key($sem_ids['username']);
                         $fullname_normal = ($username) ? User::findByUsername($username)->getFullName('full') : null;
-                        echo htmlReady(($fullname_normal) ?  $fullname_normal : $group_field);// echo htmlReady($group_field);//
+                        echo htmlReady(($fullname_normal) ?  $fullname_normal : $group_field);
                 }
                 echo '</th></tr>';
                 ob_end_flush();
@@ -678,7 +669,7 @@ class SemBrowse {
 
     public function get_result()
     {
-        global $_fullname_sql, $SEM_TYPE, $SEM_CLASS;
+        global $_fullname_sql, $SEM_TYPE, $SEM_CLASS, $user;
         if ($this->sem_browse_data['group_by'] == 1) {
             if (!is_object($this->sem_tree)) {
                 $the_tree = TreeAbstract::GetInstance('StudipSemTree', false);
@@ -740,11 +731,19 @@ class SemBrowse {
         if ($this->group_by_fields[$this->sem_browse_data['group_by']]['unique_field']) {
             $data_fields[1] = $this->group_by_fields[$this->sem_browse_data['group_by']]['unique_field'];
         }
-        $group_by_data = $snap->getGroupedResult($group_field, $data_fields);
-        $sem_data = $snap->getGroupedResult('Seminar_id');
+        if($user->id == 'nobody' && $snap->numRows == 0){
+            $group_by_data = $sem_data = [];
+        }else{
+            $group_by_data = $snap->getGroupedResult($group_field, $data_fields);
+            $sem_data = $snap->getGroupedResult('Seminar_id');
+        }
 
         if ($this->sem_browse_data['group_by'] == 0) {
-            $group_by_duration = $snap->getGroupedResult('sem_number_end', ['sem_number', 'Seminar_id']);
+            if($user->id == 'nobody' && $snap->numRows == 0){
+                $group_by_duration = [];
+            }else{
+                $group_by_duration = $snap->getGroupedResult('sem_number_end', ['sem_number', 'Seminar_id']);
+            }
             foreach ($group_by_duration as $sem_number_end => $detail) {
                 if ($sem_number_end != -1
                         && ($detail['sem_number'][$sem_number_end]
@@ -1432,9 +1431,10 @@ class SemBrowse {
             }
         }
 
-        $search_form_content = $this->search_obj->getFormStart(URLHelper::getLink(), ['class' => 'default']);
+        $search_form_content = $this->search_obj->getFormStart(URLHelper::getLink(), ['class' => '']);
         $quicksearch = $this->getQuicksearch();
-        $quicksearch->withButton();
+        $quicksearch->setInputStyle('height:22px;width: 100%;');
+        $quicksearch->withButton(['search_button_name'=> 'course_search_button']);
         $quicksearch->disableAutocomplete();
         $search_form_content .= $quicksearch->render();
         $search_form_content .= $this->search_obj->getHiddenField('qs_choose','title_lecturer_number');
@@ -1447,6 +1447,7 @@ class SemBrowse {
 
         $search_form_content .= $this->search_obj->getHiddenField('level', $this->sem_browse_data['level']);
         $search_form_content .= $this->search_obj->getHiddenField('sem', htmlReady($_SESSION['sem_browse_data']['default_sem']));
+       
         $search_form_content .= $this->search_obj->getFormEnd();
         return $search_form_content;
     }
