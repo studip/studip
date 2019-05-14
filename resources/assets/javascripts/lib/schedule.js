@@ -64,10 +64,8 @@ const Schedule = {
         });
 
         // fill values of overlay
-        jQuery('input[name=entry_start_hour]').val(start_hour);
-        jQuery('input[name=entry_start_minute]').val('00');
-        jQuery('input[name=entry_end_hour]').val(end_hour);
-        jQuery('input[name=entry_end_minute]').val('00');
+        jQuery('input[name=entry_start]').val(start_hour + ':00');
+        jQuery('input[name=entry_end]').val(end_hour + ':00');
         jQuery('select[name=entry_day]').val(parseInt(day) + 1);
     },
 

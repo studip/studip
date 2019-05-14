@@ -215,9 +215,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         }
 
         if ($error) {
-            $this->flash['messages'] = ['error' =>
-                [_("Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!")]
-             ];
+            PageLayout::postError(_("Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!"));
         } else {
             $data['title']   = Request::get('entry_title');
             $data['content'] = Request::get('entry_content');
