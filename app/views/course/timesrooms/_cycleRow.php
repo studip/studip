@@ -8,7 +8,11 @@ $is_exTermin = $termin instanceof CourseExDate;
         <label for="<?= htmlReady($termin->termin_id) ?>">
             <input class="<?= $class_ids ?>" type="checkbox" id="<?= htmlReady($termin->termin_id) ?>"
                    value="<?= htmlReady($termin->termin_id) ?>"
-                   <? if (!$is_exTermin && $termin->date > time() && ($termin->date <= $current_semester->ende || $semester_filter !== 'all')) echo 'checked'; ?>
+                   <? if (is_array($checked_dates)): ?>
+                       <? if (in_array($termin->termin_id, $checked_dates)) echo 'checked'; ?>
+                   <? else: ?>
+                       <? if (!$is_exTermin && $termin->date > time() && ($termin->date <= $current_semester->ende || $semester_filter !== 'all')) echo 'checked'; ?>
+                   <? endif ?>
                    name="single_dates[]">
         </label>
     </td>

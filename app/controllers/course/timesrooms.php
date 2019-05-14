@@ -186,6 +186,8 @@ class Course_TimesroomsController extends AuthenticatedController
         }
 
         $this->single_dates  = $single_dates;
+        $this->checked_dates = $_SESSION['_checked_dates'];
+        unset($_SESSION['_checked_dates']);
     }
 
     /**
@@ -558,7 +560,6 @@ class Course_TimesroomsController extends AuthenticatedController
             }
         }
         $this->displayMessages();
-        unset($_SESSION['_checked_dates']);
 
         $this->relocate('course/timesrooms/index', ['contentbox_open' => $cycle_id]);
     }
@@ -581,8 +582,6 @@ class Course_TimesroomsController extends AuthenticatedController
         }
 
         $this->displayMessages();
-
-        unset($_SESSION['_checked_dates']);
 
         $this->relocate('course/timesrooms/index', ['contentbox_open' => $cycle_id]);
     }
