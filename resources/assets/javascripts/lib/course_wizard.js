@@ -493,7 +493,10 @@ const CourseWizard = {
      */
     assignAllNodes: function() {
         $('.sem-tree-result').each(function(index, element) {
-            CourseWizard.assignNode($(element).data('id'));
+            var id = $(element).data('id');
+            if ($('li.sem-tree-assigned-' + id).length == 0) {
+                CourseWizard.assignNode(id);
+            }
         });
         CourseWizard.resetSearch();
         return false;
