@@ -143,12 +143,12 @@ function isLockPeriod($type, $timestamp = '')
 {
     static $cache;
 
-    if ($cache[$type][$timestamp / 60]) {
-        return $cache[$type][$timestamp / 60];
-    }
-
     if (!$timestamp) {
         $timestamp = time();
+    }
+
+    if ($cache[$type][$timestamp / 60]) {
+        return $cache[$type][$timestamp / 60];
     }
 
     if ((!Config::get()->RESOURCES_LOCKING_ACTIVE && $type === 'edit') || (!Config::get()->RESOURCES_ASSIGN_LOCKING_ACTIVE && $type === 'assign')) {
