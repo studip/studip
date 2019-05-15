@@ -881,7 +881,7 @@ function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
     releaseLocks($keyword); // kill old locks
     $locks=getLock($keyword, $user_id);
     $cont='';
-    if ($locks && $lock['user_id'] !== $user_id) {
+    if ($locks) {
         $message = MessageBox::info(sprintf(_("Die Seite wird eventuell von %s bearbeitet."), htmlReady($locks)), [_("Wenn Sie die Seite trotzdem ändern, kann ein Versionskonflikt entstehen."), _("Es werden dann beide Versionen eingetragen und müssen von Hand zusammengeführt werden."),  _("Klicken Sie auf Abbrechen, um zurückzukehren.")]);
         PageLayout::postMessage($message);
     }
@@ -1577,7 +1577,7 @@ function showComboDiff($keyword, $db=NULL)
     $content .= "<table cellpadding=6 cellspacing=6>$legend</table>\n";
     $content .= "</p>";
     $content .= "<table cellpadding=0 cellspacing=0 width=\"100%\">";
-    $last_author=None;
+    $last_author = 'None';
     $collect="";
     $diffarray1[]=NULL;
     foreach ($diffarray1 as $i) {
