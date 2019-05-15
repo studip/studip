@@ -98,7 +98,7 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Speichern'), 'save') ?>
+        <?= Studip\Button::createAccept(_('Speichern'), 'save', ['data-dialog' => 'size=600']) ?>
         <? if (Request::get('fromDialog')) : ?>
             <?= Studip\LinkButton::create(_('Zurück zur Übersicht'), $controller->url_for('course/timesrooms/index'), ['data-dialog' => 'size=big']) ?>
         <? endif ?>

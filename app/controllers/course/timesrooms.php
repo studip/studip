@@ -455,7 +455,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->course->store();
         $this->displayMessages();
 
-        $this->redirect('course/timesrooms/index');
+        $this->relocate('course/timesrooms/index');
     }
 
     /**
@@ -855,7 +855,7 @@ class Course_TimesroomsController extends AuthenticatedController
 
             $this->course->createMessage(sprintf(_('Die regelmäßige Veranstaltungszeit %s wurde hinzugefügt!'), $cycle_info));
             $this->displayMessages();
-            $this->redirect('course/timesrooms/index');
+            $this->relocate('course/timesrooms/index');
         } else {
             $this->storeRequest();
             $this->course->createError(_('Die regelmäßige Veranstaltungszeit konnte nicht hinzugefügt werden! Bitte überprüfen Sie Ihre Eingabe.'));
@@ -1160,7 +1160,7 @@ class Course_TimesroomsController extends AuthenticatedController
     }
 
     /**
-     * Relocstes to another location if not from dialog
+     * Relocates to another location if not from dialog
      *
      * @param String $to New location
      */
