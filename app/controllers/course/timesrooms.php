@@ -793,7 +793,7 @@ class Course_TimesroomsController extends AuthenticatedController
                     }
                     foreach ($weeks as $val) {
                         if (mb_strpos($week, mb_substr($val, -15)) !== false) {
-                            $this->clean_weeks[$sem->name][$key] = $val;
+                            $this->clean_weeks[(string) $sem->name][$key] = $val;
                         }
                     }
                 }
