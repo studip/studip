@@ -225,10 +225,10 @@ class MultiPersonSearch {
         $this->jsFunction = $function_name;
         return $this;
     }
-    
+
     /**
      * returns a JavaScript-function which should be fired when the user has pressed the submit button.
-     * 
+     *
      * @return string function name
      */
     public function getJSFunctionOnSubmit()
@@ -257,12 +257,12 @@ class MultiPersonSearch {
     public function getSearchObject() {
         return $this->searchObject;
     }
-    
+
     /**
      * sets html code which will be shown inside the form element.
-     * 
+     *
      * @param string html code
-     * 
+     *
      * @return MultiPersonSearch
      */
     public function setAdditionalHTML($html) {
@@ -292,16 +292,16 @@ class MultiPersonSearch {
     }
     /**
      * returns html code which will be shown inside the form element.
-     * 
+     *
      * @return string html code
      */
     public function getAdditionHTML() {
         return $this->additionalHMTL;
     }
-    
+
     /**
      * returns an additional option array.
-     * 
+     *
      * @return string html code
      */
     public function getAdditionalOptionArray() {
@@ -429,7 +429,7 @@ class MultiPersonSearch {
                 $usersIds[]  = $userId;
             }
         }
-        $this->quickfilterIds[$title] = $usersIds;
+        $this->quickfilterIds[(string) $title] = $usersIds;
 
         return $this;
     }
@@ -455,7 +455,7 @@ class MultiPersonSearch {
 
         return $this;
     }
-    
+
     /**
      * sets the navigation item.
      *
@@ -465,10 +465,10 @@ class MultiPersonSearch {
      */
     public function setNavigationItem($navigationItem) {
         $this->navigationItem = $navigationItem;
-        
+
         return $this;
     }
-    
+
     /**
      * returns the navigation item.
      *
@@ -529,7 +529,7 @@ class MultiPersonSearch {
         $this->description = _('Bitte wählen Sie aus, wen Sie hinzufügen möchten.');
         $this->linkIconPath = Icon::create("community+add", "clickable", ['title' => _('Personen hinzufügen')]);
     }
-    
+
     /**
      * clear unused sessions.
      */
