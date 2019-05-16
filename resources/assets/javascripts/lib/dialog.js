@@ -378,7 +378,7 @@ Dialog.show = function(content, options) {
         // Add cancel button if missing
         if ((!options.hasOwnProperty('buttons') || options.button !== false)
             && $('[data-dialog-button] .button.cancel', helper).length === 0) {
-                var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString);
+                var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
                 $('[data-dialog-button]', helper).append(cancel);
             }
         {
@@ -497,7 +497,8 @@ Dialog.show = function(content, options) {
         // Create 'close' button
         if (!dialog_options.buttons.hasOwnProperty('cancel')) {
             dialog_options.buttons.cancel = {
-                text: 'Schließen'.toLocaleString()
+                text: 'Schließen'.toLocaleString(),
+                'class': 'cancel'
             };
         }
         dialog_options.buttons.cancel.click = function() {
