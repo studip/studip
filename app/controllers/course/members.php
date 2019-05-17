@@ -180,7 +180,7 @@ class Course_MembersController extends AuthenticatedController
 
         // Check for waitlist availability (influences available actions)
         // People can be moved to waitlist if waitlist available and no automatic moving up.
-        if (!$sem->admission_disable_waitlist && $sem->admission_disable_waitlist_move
+        if (!$sem->admission_disable_waitlist && ((count($this->autoren) + count($this->users) > $sem->admission_turnout) || $sem->admission_disable_waitlist_move)
         && $sem->isAdmissionEnabled() && $sem->getCourseSet()->hasAlgorithmRun()) {
             $this->to_waitlist_actions = true;
         }
@@ -1232,7 +1232,7 @@ class Course_MembersController extends AuthenticatedController
         if (!empty($this->flash['users'])) {
             $users = array_keys(array_filter($this->flash['users']));
         }
-
+        
         if (!empty($users)) {
             $msg = $this->members->moveToWaitlist($users, $which_end);
             if (count($msg['success'])) {

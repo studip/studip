@@ -2713,7 +2713,7 @@ class Seminar
      * @param string $which_end 'last' or 'first'
      * @return integer|bool number on waitlist or false if not successful
      */
-    public function addToWaitlist($user_id, $which_end = 'last')
+    public function addToWaitlist($user_id, $which_end = 'last', $current_pos = 0, $total_user = 0)
     {
         if (AdmissionApplication::exists([$user_id, $this->id]) || CourseMember::find([$this->id, $user_id])) {
             return false;
@@ -2730,12 +2730,17 @@ class Seminar
             // Prepend users to waitlist start.
             case 'first':
             default:
-                // Move all others on the waitlist up by the number of people to add.
-                DBManager::get()->execute("UPDATE `admission_seminar_user`
-                        SET `position`=`position`+1
-                        WHERE `seminar_id`=?
-                            AND `status`='awaiting'", [$this->id]);
-                $waitpos = 1;
+                if ($current_pos === 0) { 
+                    $shifting_pos = $total_user; 
+                    // Move all others on the waitlist up by the number of people to add.
+                    DBManager::get()->execute("UPDATE `admission_seminar_user`
+                            SET `position`=`position` + ?
+                            WHERE `seminar_id`=?
+                                AND `status`='awaiting'", [$shifting_pos, $this->id]); 
+                    $waitpos = 1;
+                } else { 
+                    $waitpos = $current_pos + 1; 
+                }    
         }
         $new_admission_member = new AdmissionApplication();
         $new_admission_member->user_id = $user_id;
