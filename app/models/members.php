@@ -467,14 +467,7 @@ class MembersModel
      public function moveToWaitlist($users, $which_end)
      {
          $course = Seminar::getInstance($this->course_id);
-         $enrolment_positioning = [];
-         $courseMembers = CourseMember::findBySQL('user_id IN (?) AND Seminar_id = ? ORDER BY mkdate ASC' , [$users, $this->course_id]);
-         foreach($courseMembers as $member){
-            $enrolment_positioning[$member->user_id] = $member->mkdate; // using mkdate for development (debug)
-         }
-         $current_pos = 0;
-         $total_user = count($enrolment_positioning); 
-         foreach ($enrolment_positioning as $user_id => $en_date) {
+         foreach ($users as $user_id) {
              // Delete member from seminar
              if ($course->deleteMember($user_id)) {
                  setTempLanguage($user_id);
@@ -486,12 +479,12 @@ class MembersModel
                  messaging::sendSystemMessage($user_id, sprintf('%s %s', _('Systemnachricht:'),
                      _('Anmeldung aufgehoben, auf Warteliste gesetzt')), $message);
                  // Insert user in waitlist at current position.
-                 $temp_user = User::find($user_id);
-                 $current_pos = $course->addToWaitlist($user_id, $which_end, $current_pos, $total_user);
-                 if ($current_pos) {
+                 if ($course->addToWaitlist($user_id, $which_end)) {
+                     $temp_user = User::find($user_id);
                      $msgs['success'][] = $temp_user->getFullname('no_title');
-                 } else {
+                     $curpos++;
                      // Something went wrong on removing the user from course.
+                 } else {
                      $msgs['error'][] = $temp_user->getFullname('no_title');
                  }
                  // Something went wrong on inserting the user in waitlist.
