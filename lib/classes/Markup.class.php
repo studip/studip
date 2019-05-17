@@ -24,6 +24,7 @@ require_once 'vendor/HTMLPurifier/HTMLPurifier.standalone.php';
 require_once 'htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
 require_once 'htmlpurifier/HTMLPurifier_Injector_ClassifyTables.php';
 require_once 'htmlpurifier/HTMLPurifier_Injector_LinkifyEmail.php';
+require_once 'htmlpurifier/HTMLPurifier_Injector_TransformLinks.php';
 require_once 'htmlpurifier/HTMLPurifier_Injector_Unlinkify.php';
 
 class Markup
@@ -351,6 +352,8 @@ class Markup
                 'LinkifyEmail'
             ]);
             $config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
+        } else {
+            $config->set('AutoFormat.Custom', ['TransformLinks']);
         }
 
         // avoid <img src="evil_CSRF_stuff">
