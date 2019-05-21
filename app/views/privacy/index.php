@@ -1,5 +1,5 @@
 <? if (empty($plugin_data) || empty(reset($plugin_data))): ?>
-    <?= Messagebox::info(_('In dieser Kategorie sind keine Daten vorhanden.')) ?>
+    <?= MessageBox::info(_('In dieser Kategorie sind keine Daten vorhanden.')) ?>
 <? endif; ?>
 
 <? foreach ($plugin_data as $label => $tabledata) : ?>
