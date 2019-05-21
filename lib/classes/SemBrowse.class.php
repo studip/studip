@@ -451,9 +451,7 @@ class SemBrowse {
                                 . ')');
                         break;
                     default:
-                        $username = key($sem_ids['username']);
-                        $fullname_normal = ($username) ? User::findByUsername($username)->getFullName('full') : null;
-                        echo htmlReady(($fullname_normal) ?  $fullname_normal : $group_field);
+                        echo htmlReady($group_field);
                 }
                 echo '</th></tr>';
                 ob_end_flush();
@@ -703,7 +701,7 @@ class SemBrowse {
                 IF(seminare.visible = 0, CONCAT(seminare.Name, ' " . _('(versteckt)')
                     . "'), seminare.Name) AS Name,"
                 . $add_fields
-                . $_fullname_sql['full_rev'] . " AS fullname,
+                . $_fullname_sql['full'] . " AS fullname,
                     auth_user_md5.username,"
                 . $dbv->sem_number_sql . ' AS sem_number, '
                 . $dbv->sem_number_end_sql . ' AS sem_number_end,
@@ -992,11 +990,8 @@ class SemBrowse {
                         if ($i == 4) {
                             $row .= '... <a href="' . $send_from_search_link . '">(' . _('mehr') . ')</a>';
                             break;
-                        }
-                        $fullname_normal = ($doz_uname[$index]) ? User::findByUsername($doz_uname[$index])->getFullName('full') : null;
-                        $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' .
-                                htmlReady(($fullname_normal) ? $fullname_normal : $value) . 
-                            '</a>';
+                        } 
+                        $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' . htmlReady($value) . '</a>'; 
                         if ($i != count($doz_name) - 1) {
                             $row .= ', ';
                         }
