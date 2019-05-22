@@ -70,9 +70,14 @@ class StudipSemRangeTreeViewSimple {
             <table class="show-tree">
                 <tr>
                     <td style="text-align:left; vertical-align:top; font-size:10pt; padding-bottom: 10px;">
-                        <div style="font-size:10pt; margin-left:10px">' .
-                            $this->getSemPath($start_id);
-                                echo '
+                        <div style="font-size:10pt; margin-left:0px;display: inline-flex;">
+                            <div class="sem-root-icon"><a href="' .URLHelper::getLink($this->getSelf('start_item_id=root', false)). "\">" .
+                            Icon::create('institute', 'clickable')->asImg(29,['role'=>'root-icon'])
+                            .'</a></div>
+                            <div class="sem-path">'.
+                                '<div class="sem-path-dir">'.
+                                    $this->getSemPath($start_id);
+                        echo '</div>
                                 <div class="sem_path_info">
                                     <div class="sem_path_title">'.
                                     formatReady($this->tree->getValue($this->start_item_id, 'name')).
@@ -82,8 +87,8 @@ class StudipSemRangeTreeViewSimple {
                                     formatReady($this->getTooltip($this->start_item_id)) .
                                     '</div>
                                 </div>';
-                    echo        
-                        '</div>
+                    echo'</div>
+                        </div>
                     </td>
                     <td nowrap style="text-align:right; vertical-align:top; padding-top: 1em;">';
         if ($this->start_item_id != 'root') {
@@ -173,7 +178,7 @@ class StudipSemRangeTreeViewSimple {
     }
 
     function showContent($item_id){
-        echo "\n<div align=\"left\" style=\"margin-left:10px;margin-top:10px;margin-bottom:10px;font-size:10pt\">";
+        echo "\n<div align=\"left\" style=\"margin-top:10px;margin-bottom:10px;font-size:10pt\">";
         if ($item_id != "root"){
             
             if ($num_entries = $this->tree->getNumEntries($item_id)){
@@ -213,26 +218,18 @@ class StudipSemRangeTreeViewSimple {
                             . '<a href="'
                             . URLHelper::getLink($this->getSelf('start_item_id=' . $parents[$i], false))
                             . '">'
-                            . (($add_item === FALSE) ? Icon::create('institute', 'clickable')->asImg(24,['role'=>'root-icon']) : htmlReady($this->tree->tree_data[$parents[$i]]['name']))
+                            .  htmlReady($this->tree->tree_data[$parents[$i]]['name'])
                             . '</a>';
                     $add_item = true;
                 }
             }
         }
         if ($this->start_item_id == 'root') {
-            $ret = '<a href="'
-                    . URLHelper::getLink($this->getSelf('start_item_id=root', false))
-                    . '">'
-                    . Icon::create('institute', 'clickable')->asImg(24,['role'=>'root-icon'])
-                    . '</a>';
+            $ret = '<a href="' . URLHelper::getLink($this->getSelf('start_item_id=root', false)) . '">' . $this->tree->root_name . '</a>';
         } else {
-            $ret .= '&nbsp;&sol;&nbsp;<a href="'
-                    . URLHelper::getLink($this->getSelf('start_item_id=' . $this->start_item_id, false))
-                    . '">'
-                    . htmlReady($this->tree->tree_data[$this->start_item_id]['name'])
-                    . '</a>';
+            $ret .= '&nbsp;&sol;&nbsp;<a href="' . URLHelper::getLink($this->getSelf('start_item_id=' . $this->start_item_id, false)). '">'. htmlReady($this->tree->tree_data[$this->start_item_id]['name']). '</a>';
+            $ret .= '&nbsp;&sol;&nbsp;&nbsp;';
         }
-        $ret .= '&nbsp;&sol;&nbsp;&nbsp;';
         return $ret;
     }
 

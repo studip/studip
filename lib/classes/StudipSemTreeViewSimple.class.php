@@ -69,21 +69,27 @@ class StudipSemTreeViewSimple
             <table class="show-tree">
                 <tr>
                     <td style="text-align:left; vertical-align:top; font-size:10pt; padding-bottom: 10px; ">
-                        <div style="font-size:10pt; margin-left:10px">'.
-                $this->getSemPath($start_id);
-                    echo '
-                    <div class="sem_path_info">
-                        <div class="sem_path_title">'.
-                        formatReady($this->tree->getValue($this->start_item_id, 'name')).
+                        <div style="font-size:10pt; margin-left:0px;display: inline-flex;">
+                        <div class="sem-root-icon"><a href="'. URLHelper::getLink($this->getSelf("start_item_id=root",false)) . "\">" .Icon::create('literature', 'clickable')->asImg(29,['role'=>'root-icon'])
+                        .'</a></div>
+                        <div class="sem-path">'.
+                            '<div class="sem-path-dir">'.
+                                $this->getSemPath($start_id);
+                    echo 
                         '</div>
-                        <div class="sem_path_text">';
-                        if ($this->tree->getValue($this->start_item_id, 'info')) {
-                            echo formatReady($this->tree->getValue($this->start_item_id, 'info'));
-                        }else{
-                            echo _("Keine weitere Info vorhanden");
-                        }
-                    echo'</div>
-                    </div>';
+                        <div class="sem_path_info">
+                            <div class="sem_path_title">'.
+                            formatReady($this->tree->getValue($this->start_item_id, 'name')).
+                            '</div>
+                            <div class="sem_path_text">';
+                            if ($this->tree->getValue($this->start_item_id, 'info')) {
+                                echo formatReady($this->tree->getValue($this->start_item_id, 'info'));
+                            }else{
+                                echo _("Keine weitere Info vorhanden");
+                            }
+                        echo'</div>
+                            </div>
+                        </div>';
         echo '
                         </div>
                     </td>
@@ -109,7 +115,7 @@ class StudipSemTreeViewSimple
                     </td>
                 </tr>
                 <tr>
-                    <td colspan=\"2\" style="text-align:left;" class="b-top-va-center">';
+                    <td colspan="2" style="text-align:left;" class="b-top-va-center">';
         $this->showContent($this->start_item_id, $num_all_entries);
         echo '
                     </td>
@@ -175,7 +181,7 @@ class StudipSemTreeViewSimple
 
     public function showContent($item_id, $num_all_entries)
     {
-        echo "\n<div align=\"left\" style=\"margin-left:10px;margin-top:10px;margin-bottom:10px;font-size:10pt\">";
+        echo "\n<div align=\"left\" style=\"margin-top:10px;margin-bottom:10px;font-size:10pt\">";
         if ($item_id != "root"){
             if ($num_entries = $this->tree->getNumEntries($item_id)){
                 if ($this->show_entries != "level"){
@@ -211,22 +217,17 @@ class StudipSemTreeViewSimple
             for($i = count($parents) - 1; $i >= 0; --$i){
                 if ($add_item || $start_id == $parents[$i]) {
                     $ret .= ($add_item === TRUE ? '&nbsp;&sol;&nbsp;' : '')
-                            . "<a href=\""
-                            . URLHelper::getLink($this->getSelf("start_item_id={$parents[$i]}", false))
-                            . "\">"
-                            . (($add_item === FALSE) ? Icon::create('literature', 'clickable')->asImg(24,['role'=>'root-icon']) : htmlReady($this->tree->getValue($parents[$i], "name")))
-                            . "</a>";
+                            . "<a href=\"". URLHelper::getLink($this->getSelf("start_item_id={$parents[$i]}", false)). "\">". htmlReady($this->tree->getValue($parents[$i], "name"))."</a>";
                     $add_item = true;
                 }
             }
         }
         if ($this->start_item_id == "root") {
-            $ret = "<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id=root",false)) . "\">" .Icon::create('literature', 'clickable')->asImg(24,['role'=>'root-icon']) . "</a>";
+            $ret = "<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id=root",false)) . "\">" . $this->tree->root_name  . "</a>";
         } else {
             $ret .= "&nbsp;&sol;&nbsp;<a href=\"" . URLHelper::getLink($this->getSelf("start_item_id={$this->start_item_id}",false)) . "\">" . htmlReady($this->tree->getValue($this->start_item_id, "name")) . "</a>";
-
+            $ret .= "&nbsp;&sol;&nbsp;&nbsp;";
         }
-        $ret .= "&nbsp;&sol;&nbsp;&nbsp;";
         return $ret;
     }
 

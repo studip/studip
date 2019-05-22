@@ -423,7 +423,7 @@ class SemBrowse {
                 });
             }
 
-            echo '<table class="default" id="sem_search_result" style="width: calc(100% - 15px);" >';
+            echo '<table class="default" id="sem_search_result" style="width: calc(100% - 21px);" >';
             foreach ($group_by_data as $group_field => $sem_ids) {
                 if (Config::get()->COURSE_SEARCH_SHOW_ADMISSION_STATE) {
                     echo '<tr><th colspan="6">';
