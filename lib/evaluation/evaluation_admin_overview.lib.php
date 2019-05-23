@@ -815,7 +815,8 @@ class EvalOverview {
                     return $report->createContent();
                 }
                 /* -------------------------------------- end: check permissions */
-            
+
+
                 /* Export evaluation ------------------------------------------- */
                 $exportManager = new EvaluationExportManagerCSV($evalID);
                 $exportManager->export();
@@ -1441,12 +1442,12 @@ class EvalOverview {
     /**
      * creates the 'Safeguard'
      *
+     * @access  private
      * @param sign   string Sign to draw (must be "ok" or "ausruf")
      * @param text   string        The Text to draw
      * @param evalID string needed if you want to delete an evaluation (not needed)
      */
-    public function createSafeguard($sign, $text, $mode = NULL, $evalID = NULL, $showrangeID = NULL, $referer = NULL)
-    {
+    function createSafeguard($sign, $text, $mode = NULL, $evalID = NULL, $showrangeID = NULL, $referer = NULL) {
         //TODO: auf messagebox bzw. createQuestion umstellen!!!
 
         $label = [
@@ -1533,8 +1534,7 @@ class EvalOverview {
      * @param   $style   the background style
      * @return  string   the runtime settings (html)
      */
-    public function createRuntimeSettings($eval, $state, $style)
-    {
+    function createRuntimeSettings($eval, $state, $style) {
         $html = "";
         $startDate = $eval->getStartdate();
         $stopDate = $eval->getStopdate();
@@ -1727,67 +1727,59 @@ class EvalOverview {
      * @param   $style   the background style
      * @return  string   the domain settings (html)
      */
-    public function createDomainSettings($eval, $state, $style) {
+    function createDomainSettings($eval, $state, $style) {
         global $user;
         $db = new EvaluationObjectDB ();
         $evalDB = new EvaluationDB ();
+        $evalID = $eval->getObjectID();
         $globalperm = $db->getGlobalPerm();
 
         // linked ranges
         $rangeIDs = $eval->getRangeIDs();
 
         // search results
-        if (Request::get("search")) {
+        if (Request::get("search"))
             $results = $evalDB->search_range(Request::get("search"));
-        }
-        else {
+        else
             $results = $evalDB->search_range("");
-        }
 
         if ($globalperm == "root") {
             $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } elseif ($globalperm == "dozent" || $globalperm == "autor" || $globalperm == "admin") {
-            $results[$GLOBALS['user']->id] = ["type" => "user", "name" => _("Profil")];
+            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
         }
 
-        if ($globalperm == "dozent" || $globalperm == "autor" || Request::get("search")) {
+        if ($globalperm == "dozent" || $globalperm == "autor" || Request::get("search"))
             $showsearchresults = 1;
-        }
-        
-        if ($globalperm == "autor") {
+
+
+        if ($globalperm == "autor")
             $range_types = [
                 "user" => _("Benutzer"),
-                "sem" => _("Veranstaltung")
-            ];
-        }
-        elseif ($globalperm == "dozent") {
+                "sem" => _("Veranstaltung")];
+        elseif ($globalperm == "dozent")
             $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
-                "inst" => _("Einrichtung")
-            ];
-        }
-        elseif ($globalperm == "admin") {
+                "inst" => _("Einrichtung")];
+        elseif ($globalperm == "admin")
             $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
-                "fak" => _("Fakultät")
-            ];
-        }
-        elseif ($globalperm == "root") {
+                "fak" => _("Fakultät")];
+        elseif ($globalperm == "root")
             $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
                 "fak" => _("Fakultät"),
-                "system" => _("System")
-            ];
-        }
+                "system" => _("System")];
 
 
         // zugewiesene Bereiche
         $table_r = new HTML("table");
+#   $table_r->addAttr ("class","white");
         $table_r->addAttr("border", "0");
         $table_r->addAttr("align", "center");
         $table_r->addAttr("cellspacing", "0");
@@ -1821,6 +1813,7 @@ class EvalOverview {
         $table_r->addContent($tr_r);
 
         if ($rangeIDs) {
+
             // die verknüpften bereiche
             foreach ($rangeIDs as $k => $assigned_rangeID) {
                 $tr_r = new HTML("tr");
@@ -1829,9 +1822,11 @@ class EvalOverview {
                 $td_r = new HTML("td");
                 $td_r->addHTMLContent("&nbsp;");
                 $td_r->addContent($db->getRangename($assigned_rangeID, NO));
+#         $td_r->addContent ($db->getRangename($assigned_rangeID));
                 $tr_r->addContent($td_r);
 
-                if (($this->perm->have_studip_perm("tutor", $assigned_rangeID)) || $assigned_rangeID == $user->id) {
+                if (($this->perm->have_studip_perm("tutor", $assigned_rangeID)) ||
+                        $assigned_rangeID == $user->id) {
                     // link
                     $td_r = new HTML("td");
                     $td_r->addAttr("align", "center");
@@ -1897,10 +1892,9 @@ class EvalOverview {
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                foreach($range_types as $type_key => $type_value) {
-                    if ($v["type"] == $type_key) {
-                        $ranges[$type_key][] = ["id" => $k, "name" => $v["name"]];
-                    }
+                while (list($type_key, $type_value) = each($range_types)) {
+                    if ($v["type"] == $type_key)
+                        $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                 }
                 reset($range_types);
             }
@@ -1911,8 +1905,11 @@ class EvalOverview {
             $table_s->addAttr("cellspacing", "0");
             $table_s->addAttr("cellpadding", "0");
             $table_s->addAttr("width", "100%");
-    
-            foreach($range_types as $type_key => $type_value) {
+
+
+
+            while (list($type_key, $type_value) = each($range_types)) {
+
                 // Überschriften
                 $tr_s = new HTML("tr");
 
@@ -1954,8 +1951,16 @@ class EvalOverview {
 
                 $counter = 0;
 
-                if ($ranges[$type_key]) {
-                    foreach ($ranges[$type_key] as $range) {
+                if ($ranges["$type_key"]) {
+                    foreach ($ranges["$type_key"] as $range) {
+
+                        if ($counter == 0)
+                            $displayclass = "content_body";
+                        elseif (($counter % 2) == 0)
+                            $displayclass = "table_row_even";
+                        else
+                            $displayclass = "table_row_odd";
+
                         $tr_s = new HTML("tr");
 
                         // name
@@ -1968,6 +1973,7 @@ class EvalOverview {
                         $new_rangeID = (get_userid($range['id'])) ? get_userid($range['id']) : $range['id'];
 
                         if (!in_array($new_rangeID, $rangeIDs)) {
+
                             // link
                             $td_s = new HTML("td");
                             $td_s->addAttr("align", "center");
@@ -1978,6 +1984,7 @@ class EvalOverview {
                             $td_s->addContent($input);
                             $tr_s->addContent($td_s);
                         } else {
+
                             // no link
                             $td_s = new HTML("td");
                             $td_s->addAttr("align", "center");
@@ -2017,13 +2024,13 @@ class EvalOverview {
             $tr = new HTML("tr");
             $td = new HTML("td");
             $td->addAttr("colspan", "2");
+//       $td->addContent(new HTMLempty("hr"));
             $b = new HTML("b");
-            if (Request::get("search")) {
+#       $b->addContent (_('Suchergebnisse') . ':');
+            if (Request::get("search"))
                 $b->addContent(_("Sie können die Evaluation folgenden Bereichen zuordnen (Suchergebnisse):"));
-            }
-            else {
+            else
                 $b->addContent(_("Sie können die Evaluation folgenden Bereichen zuordnen:"));
-            }
             $td->addContent($b);
             $td->addContent(EvalCommon::createImage(EVAL_PIC_HELP, "", tooltip(_("Hängen Sie die Evaluation in die gewünschten Bereiche ein (abhängige Kopie mit gemeinsamer Auswertung) oder kopieren Sie sie in Bereiche (unabhängige Kopie mit getrennter Auswertung)."), TRUE, TRUE)));
             $td->addContent(($results) ? $table_s : _("Die Suche ergab keine Treffer."));
@@ -2057,8 +2064,8 @@ class EvalOverview {
         return $table->createContent();
     }
 
-    public function createDomainLinks($search)
-    {
+    function createDomainLinks($search) {
+        global $user;
         $db = new EvaluationObjectDB ();
         $evalDB = new EvaluationDB ();
         $globalperm = $db->getGlobalPerm();
@@ -2069,34 +2076,33 @@ class EvalOverview {
         if ($globalperm == "root") {
             $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } else {
-            $results[$GLOBALS['user']->id] = ["type" => "user", "name" => _("Profil")];
+            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
         }
-        
-        if ($globalperm == "admin") {
+
+        if ($globalperm == "dozent" || $globalperm == "autor" || $search)
+            $showsearchresults = 1;
+
+        if ($globalperm == "admin")
             $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
-                "fak" => _("Fakultät")
-            ];
-        }
-        elseif ($globalperm == "root") {
+                "fak" => _("Fakultät")];
+
+        elseif ($globalperm == "root")
             $range_types = [
                 "user" => _("Benutzer"),
                 "sem" => _("Veranstaltung"),
                 "inst" => _("Einrichtung"),
                 "fak" => _("Fakultät"),
-                "system" => _("System")
-            ];
-        }
+                "system" => _("System")];
 
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                foreach($range_types as $type_key => $type_value) {
-                    if ($v['type'] === $type_key) {
-                        $ranges[$type_key][] = ["id" => $k, "name" => $v["name"]];
-                    }
+                while (list($type_key, $type_value) = each($range_types)) {
+                    if ($v["type"] == $type_key)
+                        $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                 }
                 reset($range_types);
             }
@@ -2109,7 +2115,8 @@ class EvalOverview {
             $table->addAttr("cellpadding", "0");
             $table->addAttr("width", "100%");
 
-            foreach($range_types as $type_key => $type_value) {
+            while (list($type_key, $type_value) = each($range_types)) {
+
                 // Überschriften
                 $tr = new HTML("tr");
 
@@ -2154,6 +2161,14 @@ class EvalOverview {
 
                 if ($ranges["$type_key"]) {
                     foreach ($ranges["$type_key"] as $range) {
+
+                        if ($counter == 0)
+                            $displayclass = "content_body";
+                        elseif (($counter % 2) == 0)
+                            $displayclass = "table_row_even";
+                        else
+                            $displayclass = "table_row_odd";
+
                         $tr = new HTML("tr");
 
                         // name
@@ -2161,6 +2176,10 @@ class EvalOverview {
                         $td->addHTMLContent("&nbsp;");
                         $td->addContent($range["name"]);
                         $tr->addContent($td);
+
+                        // if the rangeID is a username, convert it to the userID
+                        $new_rangeID = (get_userid($range['id'])) ? get_userid($range['id']) : $range['id'];
+
 
                         // link
                         $td = new HTML("td");
@@ -2200,18 +2219,20 @@ class EvalOverview {
     /**
      * checks which button was pressed
      *
+     * @access  public
      * @returns string   the command
      *
      */
-    public function getPageCommand() {
-        if (Request::option('evalAction')) {
-            return Request::option('evalAction');
-        }
+    function getPageCommand() {
+        if (Request::option("evalAction"))
+            return Request::option("evalAction");
+
         foreach ($_REQUEST as $key => $value) {
-            if (preg_match("/(.*)_button(_x)?/", $key, $command)) {
+            if (preg_match("/(.*)_button(_x)?/", $key, $command))
                 break;
-            }
         }
         return $command[1];
     }
+
+# ===================================================== end: public functions #
 }
