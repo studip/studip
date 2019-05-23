@@ -298,7 +298,7 @@ class EvaluationDB extends EvaluationObjectDB {
    * @param  string   $evalID  The eval id
    * @return integer  The number of users
    */
-   function getNumberOfVotes ($evalID) {
+   public static function getNumberOfVotes ($evalID) {
         return DBManager::get()->fetchColumn("SELECT count(DISTINCT user_id) AS number FROM eval_user WHERE eval_id = ?", [$evalID]);
    }
 
