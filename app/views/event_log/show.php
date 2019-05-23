@@ -60,7 +60,7 @@
                 </select>
 
                 <a href="<?= $controller->show(['action_id' => $action_id]) ?>">
-                    <?= Icon::create('refresh')->asImg(['title' => _('neue Suche')]) ?>
+                    <?= Icon::create('decline')->asImg(['title' => _('neue Suche')]) ?>
                 </a>
             </div>
         </label>
