@@ -76,6 +76,36 @@ class Token extends SimpleORMap
         return self::isValid($token);
     }
 
+    /**
+     * Compatbility method for legacy plugins.
+     * @param  string  $user_id owner of this token
+     * @param  string  $duration validity duration
+     * @todo Remove for Stud.IP 5.0
+     * @deprecated
+     */
+    public function __construct($user_id = null, $duration = 30)
+    {
+        parent::__construct($user_id);
+
+        // assume user id if no token with this id exists
+        if (isset($user_id) && $this->isNew()) {
+            $this->user_id    = $user_id;
+            $this->expiration = strtotime("+{$duration} seconds");
+            $this->store();
+        }
+    }
+
+    /**
+     * Compatbility method for legacy plugins.
+     * @return string token value
+     * @todo Remove for Stud.IP 5.0
+     * @deprecated
+     */
+    public function get_token()
+    {
+        return $this->token;
+    }
+
     public function isExpired()
     {
         return $this->expiration < time();
