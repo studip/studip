@@ -308,11 +308,11 @@ function idna_link($link, $mail = false){
         if ($mail){
             if (preg_match('#^([^@]*)@(.*)$#i',$link, $matches)) {
                 $out = $IDN->encode(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
-                $out = ($out)? $matches[1].'@'.$out : $link;
+                $out = ($out)? $matches[1].'@'.htmlReady($out) : $link;
             }
         }elseif (preg_match('#^([^/]*)//([^/?]*)(((/|\?).*$)|$)#i',$link, $matches)) {
             $out = $IDN->encode(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
-            $out = ($out)? $matches[1].'//'.$out.$matches[3] : $link;
+            $out = ($out)? $matches[1].'//'.htmlReady($out).$matches[3] : $link;
         }
         return ($out)? $out:$link;
     }
