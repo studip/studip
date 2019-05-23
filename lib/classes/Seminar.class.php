@@ -265,21 +265,22 @@ class Seminar
             foreach ($termine['ex_termin'] as $ex_termin_id) {
                 $ex_termin = new SingleDate($ex_termin_id);
 
-                $missing_date  = '<div style="border:1px solid black; background:#FFFFDD;">';
+                $missing_date  = '<div style="border:1px solid black; background:#FFFFDD; display: inline-block">';
                 $missing_date .= sprintf(_("Der Termin am %s findet nicht statt."),
                     DateFormatter::formatDateAndRoom($ex_termin_id, $return_mode));
 
                 $missing_date .= '<br>' . _("Kommentar"). ': '.htmlReady($ex_termin->getComment());
+                $missing_date .= '</div>';
 
                 if (!empty($termine['termin'])) {
                     $termin = new SingleDate($termine['termin'][0]);
                     if ($ex_termin->getStartTime() <= $termin->getStartTime()) {
-                        return $next_date .'<br>'. $missing_date . '<br>'. _('Die anderen Termine finden wie angegeben statt!') . '</div>';
+                        return $next_date . $missing_date;
                     } else {
                         return $next_date;
                     }
                 } else {
-                    return $missing_date . '</div>';
+                    return $missing_date;
                 }
             }
         } else {
