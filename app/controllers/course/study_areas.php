@@ -152,12 +152,7 @@ class Course_StudyAreasController extends AuthenticatedController
             }
 
             try {
-                $msg = null;
-
-                if (!$this->course->setStudyAreas($studyareas)) {
-                    $msg = _('Die Studienbereichszuordnung konnte nicht gespeichert werden.');
-                }
-
+                $this->course->setStudyAreas($studyareas);
             } catch (UnexpectedValueException $e) {
                 PageLayout::postError($e->getMessage());
             }
@@ -185,9 +180,7 @@ class Course_StudyAreasController extends AuthenticatedController
             return _('Sie müssen mindestens einen Studienbereich auswählen');
         }
 
-        if (!$this->course->setStudyAreas($assigned)) {
-            $msg = _('Die Studienbereichszuordnung konnte nicht gespeichert werden.');
-        }
+        $this->course->setStudyAreas($assigned);
 
         return $msg;
     }
@@ -201,9 +194,7 @@ class Course_StudyAreasController extends AuthenticatedController
             $assigned = array_unique(array_merge($assigned, $this->course->study_areas->pluck('sem_tree_id')));
         }
 
-        if (!$this->course->setStudyAreas($assigned)) {
-            $msg = _('Die Studienbereichszuordnung konnte nicht gespeichert werden.');
-        }
+        $this->course->setStudyAreas($assigned);
 
         return $msg;
     }
