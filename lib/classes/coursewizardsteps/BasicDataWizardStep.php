@@ -126,21 +126,11 @@ class BasicDataWizardStep implements CourseWizardStep
                 if ($GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT && Request::isXhr()) {
                     $values['institute'] = $GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT;
                 } else {
-                    $user = User::find($GLOBALS['user']->id);
+                    $values['institute'] = InstituteMember::getDefaultInstituteIdForUser($GLOBALS['user']->id);
 
-                    // get default institute
-                    foreach ($user->institute_memberships as $institute_membership) {
-                        if ($institute_membership->inst_perms !== 'user') {
-                            if ($institute_membership->externdefault == 1) {
-                                $values['institute'] = $institute_membership->institut_id;
-                            }
-                        }
-                    }
-
-                    // if for some reason no default institute has beend found, use the first one listed
+                    // if for some reason no default institute is set, use the first one listed
                     if (!$values['institute']) {
-                        $inst_membership = $user->institute_memberships[0];
-                        $values['institute'] = $inst_membership->institut_id;
+                        $values['institute'] = $institutes[0]['Institut_id'];
                     }
                 }
             }
