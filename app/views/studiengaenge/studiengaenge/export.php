@@ -35,7 +35,7 @@
     </head>
     <body>
         <div>
-        <? echo $this->render_partial('shared/studiengang/_studiengang', ['studiengang' => $studiengang, 'url' => $this->plugin->getPluginUrl() . '/public/']); ?>
+        <?= $this->render_partial('shared/studiengang/_studiengang', array('studiengang' => $studiengang)); ?>
         <? if (count($studiengang->studiengangteile)) : ?>
             <h1><?= _('Studiengangteile') ?></h1>
             <? if (count($studiengang->stgteil_bezeichnungen)) : ?>
