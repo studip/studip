@@ -89,7 +89,7 @@ class VisibilitySettings
      */
     function verify($user_id, $owner_id, $visibility)
     {
-        return $this->states[$visibility] && $this->states[$visibility]->verify($user_id, $owner_id);
+        return $this->states[$visibility] && $this->states[$visibility]->verify($owner_id, $user_id);
     }
 
     /**

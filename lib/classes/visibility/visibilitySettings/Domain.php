@@ -33,9 +33,9 @@ class Visibility_Domain extends VisibilityAbstract {
         }
 
         $user_domains = UserDomain::getUserDomainsForUser($user_id);
-        $owner_domains = UserDomain::getUserDomainsForUser($other_id);
-        if (count($user_domains) || count($owner_domains)) {
-            return count(array_intersect($user_domains, $owner_domains)) > 0;
+        $other_domains = UserDomain::getUserDomainsForUser($other_id);
+        if (count($user_domains) || count($other_domains)) {
+            return count(array_intersect($user_domains, $other_domains)) > 0;
         } else {
             return true;
         }
