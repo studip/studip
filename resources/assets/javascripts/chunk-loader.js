@@ -2,7 +2,7 @@
 STUDIP.loadScript = function (script_name) {
     return new Promise(function (resolve, reject) {
         let script = document.createElement('script');
-        script.src = `${STUDIP.ASSETS_URL}/${script_name}`;
+        script.src = `${STUDIP.ASSETS_URL}${script_name}`;
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);

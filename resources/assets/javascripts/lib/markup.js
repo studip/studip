@@ -20,11 +20,11 @@ const Markup = {
     },
     callbacks: {
         math_jax: function (element) {
-            $('span.math-tex:not(:has(.MathJax))', element).each((index, block) => {
+            $('span.math-tex:not(:has(.MathJax)),.formatted-content:contains("[tex]")', element).each((index, block) => {
                 STUDIP.loadChunk('mathjax').then((MathJax) => {
                     MathJax.Hub.Queue(['Typeset', MathJax.Hub, block]);
                 });
-            })
+            });
         },
         codehighlight: function (element) {
             $('pre.usercode:not(.hljs)', element).each(function (index, block) {
