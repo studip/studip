@@ -52,7 +52,7 @@
                 <? endif; ?>
                 </td>
                 <td style="text-align: right">
-                <? if ($tasks->valid): ?>
+                <? if ($task->valid): ?>
                     <a data-dialog href="<?= $controller->execute($task) ?>">
                         <?= Icon::create('play')->asImg(['title' => _('Aufgabe ausführen')]) ?>
                     </a>

@@ -185,7 +185,9 @@ class Admin_Cronjobs_TasksController extends AuthenticatedController
 
         if (Request::isPost()) {
             $parameters = Request::getArray('parameters');
-            $parameters = $parameters[$this->task->id];
+            $parameters = isset($parameters[$this->task->id])
+                        ? $parameters[$this->task->id]
+                        : [];
 
             ob_start();
             $this->task->engage(null, $parameters);
