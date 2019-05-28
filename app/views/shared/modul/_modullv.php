@@ -32,9 +32,27 @@
             <td style="width: 70%;" data-mvv-field="mvv_modulteil.wl_pruef mvv_modulteil_deskriptor.kommentar_wl_pruef"><?= $modulTeil->wl_pruef ?> <?= MVVController::trim($modulTeilDeskriptor->kommentar_wl_pruef) ? sprintf(" (%s)", formatReady($modulTeilDeskriptor->kommentar_wl_pruef)) : '' ?></td>
         </tr>  
         <tr>
-            <td style="width: 30%;"><strong><?= _('Workload Insgesamt') ?></strong></td>
+            <td style="width: 30%;"><strong><?= _('Workload insgesamt') ?></strong></td>
             <td style="width: 70%;"><?= $modulTeilSumme ?></td>
         </tr>
+        <? if ((int) $modul->wl_selbst) : ?>
+            <tr>
+                <td style="width: 30%;"><strong><?= _('Workload selbstgestaltete Arbeit (modulbezogen') ?></strong></td>
+                <td style="width: 70%;" data-mvv-field="mvv_modul.wl_selbst mvv_modul_deskriptor.kommentar_wl_selbst"><?= $modul->wl_selbst ?> <?= MVVController::trim($modulDeskriptor->kommentar_wl_selbst) ? sprintf(" (%s)", formatReady($modulDeskriptor->kommentar_wl_selbst)) : '' ?></td>
+            </tr>
+        <? endif; ?>
+        <? if ((int) $modul->wl_pruef) : ?>
+            <tr>
+                <td style="width: 30%;"><strong><?= _('Workload Prüfung incl. Vorbereitung (modulbezogen)') ?></strong></td>
+                <td style="width: 70%;" data-mvv-field="mvv_modul.wl_pruef mvv_modul_deskriptor.kommentar_wl_pruef"><?= $modul->wl_pruef ?> <?= MVVController::trim($modulDeskriptor->kommentar_wl_pruef) ? sprintf(" (%s)", formatReady($modulDeskriptor->kommentar_wl_pruef)) : '' ?></td>
+            </tr>
+        <? endif; ?>
+        <? if ($modul->wl_selbst + $modul->wl_pruef) : ?>
+            <tr>
+                <td style="width: 30%;"><strong><?= _('Workload Modul insgesamt') ?></strong></td>
+                <td style="width: 70%;"><?= $modulTeilSumme + $modul->wl_selbst + $modul->wl_pruef ?></td>
+            </tr>
+        <? endif; ?>
     </tbody>
 </table>
 <table class="mvv-modul-details default nohover" data-mvv-id="<?= $modulTeilDeskriptor->id; ?>" data-mvv-type="modulteil_deskriptor">

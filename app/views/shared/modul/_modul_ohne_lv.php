@@ -12,7 +12,7 @@
 
         </tr>
         <tr>
-            <td style="width: 30%;"><strong><?= _('Workload Insgesamt') ?></strong></td>
+            <td style="width: 30%;"><strong><?= _('Workload insgesamt') ?></strong></td>
             <td style="width: 70%;"><?= $modulSumme ?></td>
         </tr>
     </tbody>

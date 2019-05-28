@@ -63,14 +63,14 @@
             <? endif; ?>
         <? endforeach; ?>
         <?
-        $modulWLSumme = $wlSelbst + $wlPruef;
+        $modulWLSumme = $modul->wl_selbst + $modul->wl_pruef;
         $modulSumme += $modulWLSumme;
         ?>
         <? if ($modulWLSumme > 0) : ?>
         <tr>
             <td colspan="6"><strong><?= _('Workload modulbezogen') ?></strong></td>
-            <td style="text-align: right;"><?= $wlSelbst ?></td>
-            <td style="text-align: right;"><?= $wlPruef ?></td>
+            <td style="text-align: right;"><?= htmlReady($modul->wl_selbst) ?></td>
+            <td style="text-align: right;"><?= htmlReady($modul->wl_pruef) ?></td>
             <td style="text-align: right;"><?= $modulWLSumme ?></td>
         </tr>
         <? endif; ?>
