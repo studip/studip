@@ -1,3 +1,28 @@
+__03.06.2019 V 4.3__
+- Neu entwickelte ILIAS-Schnittstelle
+- Datenschutzkonforme Archivierungslösung
+- LTI-Consumer-Schnittstelle
+- Sprechstundenverwaltung im Kern integriert
+- Neue globale Suche
+
+__10.12.2018 V 4.2__
+- Lon-Capa-Konnektor ist Bestandteil der eLearning-Schnittstelle
+- Neue systematische Modul- und Veranstaltungssuche
+- Javaskript und CSS werden mit Webpack gepackt
+- Löschfunktionen für Kurse, Teilnehmende und Gruppen
+- Plugins können auf der "Mehr"-Seite selbst entscheiden, ob sie aktiviert werden können
+- Neue Sitzungsordner für Dateien
+- Neue Uploadfunktionen für Avatarbilder
+- DSGVO-konforme Datenschutzfunktionen integriert
+
+__05.07.2018 V 4.1__
+- Neue Übersichten im Adminbereich inkl. Plugins
+- Modul- und Studiengangsverwaltung im Kern internationalisiert
+- Dateimanagement: Persönliches Dashboard und systemweite Dateisuche
+- Fragebögen sind nun für Online in Präsenz-Evaluation tauglich
+- Automatisiertes Nachrücken von Wartelisten
+- Wiederherstellungsfunktion für ausgefallene Termine im Ablaufplan
+
 __09.02.2017 V 4.0__
 - Modul- und Studiengangsverwaltung im Kern integriert
 - Komplett neu entwickeltes Dateimanagement
