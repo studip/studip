@@ -224,7 +224,6 @@ const CourseWizard = {
             $.ajax($('#studyareas').data('ajax-url'), {
                 data: params,
                 beforeSend: function(xhr, settings) {
-                    $('#sem-tree-search-start').css('display', 'none');
                     $('#sem-tree-search-start')
                         .parent()
                         .append(
@@ -241,7 +240,6 @@ const CourseWizard = {
                     $('#sem-tree-search-loading').remove();
                     var items = $.parseJSON(data);
                     if (items.length > 0) {
-                        $('#sem-tree-search-start').addClass('hidden-js');
                         $('#sem-tree-search-reset')
                             .removeClass('hidden-js')
                             .css('display', '');
@@ -253,7 +251,6 @@ const CourseWizard = {
                         $('#sem-tree-assign-all').removeClass('hidden-js');
                         $('li.sem-tree-root input#root').prop('checked', true);
                     } else {
-                        CourseWizard.resetSearch();
                         alert($('#studyareas').data('no-search-result'));
                     }
                 },
@@ -271,9 +268,6 @@ const CourseWizard = {
      */
     resetSearch: function() {
         $('li.css-tree-hidden').removeClass('css-tree-hidden');
-        $('#sem-tree-search-start')
-            .removeClass('hidden-js')
-            .css('display', '');
         $('#sem-tree-search-reset').addClass('hidden-js');
         $('#sem-tree-search').val('');
         $('.css-tree-hidden').removeClass('css-tree-hidden');

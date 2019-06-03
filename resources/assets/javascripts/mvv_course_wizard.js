@@ -79,7 +79,6 @@ MVV.CourseWizard = {
                 },
                 method: 'POST',
                 beforeSend: function(xhr, settings) {
-                    $('#lvgroup-tree-search-start').css('display', 'none');
                     $('#lvgroup-tree-search-start')
                         .parent()
                         .append(
@@ -94,6 +93,8 @@ MVV.CourseWizard = {
                     $('#lvgroup-tree-search-loading').remove();
                     var items = $.parseJSON(data);
                     if (items.length > 0) {
+                        $('#lvgroup-tree-search-reset')
+                            .removeClass('hidden-js');
                         $('#lvgsearchresults ul').empty();
                         $('#lvgsearchresults').show();
                         for (i = 0; i < items.length; i++) {
@@ -107,9 +108,6 @@ MVV.CourseWizard = {
                             $('#lvgsearchresults ul').append(lvgroup_html);
                         }
                     } else {
-                        $('#lvgsearchresults ul').empty();
-                        $('#lvgsearchresults').hide();
-                        MVV.CourseWizard.resetSearch();
                         alert($('#studyareas').data('no-search-result'));
                     }
                 },
@@ -127,6 +125,7 @@ MVV.CourseWizard = {
      * @returns {boolean}
      */
     resetSearch: function() {
+        $('#lvgroup-tree-search-reset').addClass('hidden-js');
         $('#lvgroup-tree-search').val('');
         $('#lvgsearchresults ul').empty();
         $('#lvgsearchresults').hide();
