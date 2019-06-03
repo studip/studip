@@ -82,8 +82,9 @@ class Search_ModuleController extends MVVController
         $helpbar->addWidget($widget);
 
         $this->setSemester();
-
+        $this->page = Request::int('page_module', 1);
         $do_search = Request::int('do_search');
+
         if (mb_strlen(trim(str_replace('%', '', $this->sterm))) < 3) {
             if ($do_search) {
                 PageLayout::postInfo(_('Der Suchbegriff muss mindestens 3 Zeichen lang sein.'));
@@ -216,7 +217,7 @@ class Search_ModuleController extends MVVController
             $this->count = count($this->search_result['Modul']);
             $this->module = Modul::getAllEnriched('code, bezeichnung', 'ASC',
                     self::$items_per_page,
-                    self::$items_per_page * (($this->page ?: 1) - 1),
+                    self::$items_per_page * ($this->page - 1),
                     ['mvv_modul.modul_id' => $this->search_result['Modul']]);
         }
     }
