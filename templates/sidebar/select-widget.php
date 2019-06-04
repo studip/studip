@@ -9,18 +9,18 @@
             <? foreach ($element->getElements() as $option): ?>
                 <option value="<?= htmlReady($option->getId()) ?>" <? if ($option->isActive()) echo 'selected'; ?>
                     class="<? if ($element->getIndentLevel()): ?>nested-item nested-item-level-<?= $element->getIndentLevel() + 1 ?><? endif; ?>  <? if ($element->isHeader()): ?>nested-item-header<? endif; ?>"
-                    title="<?= htmlReady($option->getTooltip()  !== null ? $option->getTooltip() : '') ?>">
+                    title="<?= htmlReady($option->getTooltip() !== null ? $option->getTooltip() : $option->getLabel()) ?>">
 
-                    <?= htmlReady(my_substr($option->getLabel(), 0, $max_length)) ?>
+                    <?= htmlReady($option->getLabel()) ?>
                 </option>
             <? endforeach; ?>
             </optgroup>
         <? elseif (!($element instanceof SelectGroupElement)): ?>
             <option value="<?= htmlReady($element->getId()) ?>" <? if ($element->isActive()) echo 'selected'; ?>
                 class="<? if ($element->getIndentLevel()): ?>nested-item nested-item-level-<?= $element->getIndentLevel() + 1 ?><? endif; ?> <? if ($element->isHeader()): ?>nested-item-header<? endif; ?>"
-                title="<?= htmlReady($element->getTooltip()  !== null ? $element->getTooltip() : '') ?>">
+                title="<?= htmlReady($element->getTooltip() !== null ? $element->getTooltip() : $element->getLabel()) ?>">
 
-                <?= htmlReady(my_substr($element->getLabel(), 0, $max_length)) ?>
+                <?= htmlReady($element->getLabel()) ?>
             </option>
         <? endif; ?>
     <? endforeach; ?>

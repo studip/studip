@@ -88,7 +88,7 @@ class SelectElement extends WidgetElement
      */
     public function getTooltip()
     {
-        return ltrim($this->tooltip);
+        return $this->tooltip !== null ? ltrim($this->tooltip) : null;
     }
 
     /**
