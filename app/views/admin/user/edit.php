@@ -206,13 +206,13 @@ use Studip\Button, Studip\LinkButton;
 
             <label class="col-2">
                 <?= _('Neues Passwort') ?>
-                <input class="user_form" name="pass_1" type="password" id="pass_1">
+                <input class="user_form" name="pass_1" type="password" id="pass_1" autocomplete="new-password">
             </label>
 
             <label class="col-2">
                 <?= _('Passwortwiederholung') ?>
 
-                <input class="user_form" name="pass_2" type="password" id="pass_2"
+                <input class="user_form" name="pass_2" type="password" id="pass_2" autocomplete="new-password"
                        onkeyup="jQuery('#pw_success').toggle(jQuery('#pass_1').val() === $('#pass_2').val())">
            </label>
 
