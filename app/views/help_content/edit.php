@@ -37,8 +37,7 @@
     </fieldset>
 
     <footer data-dialog-button="1">
-        <?= Button::create(_('Speichern'), 'save_help_content', ['data-dialog' => '']) ?>
-        <?= Button::createAccept(_('Speichern'), 'save_help_content') ?>
+        <?= Button::createAccept(_('Speichern'), 'save_help_content', ['data-dialog' => '']) ?>
         <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('help_content/admin_overview'), []) ?>
     </footer>
 </form>
