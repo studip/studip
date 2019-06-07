@@ -17,7 +17,7 @@
                        placeholder="<?= _('Bitte geben Sie eine Route für den Hilfe-Text an') ?>">
             </label>
         <? endif ?>
-        <? if ($GLOBALS['perm']->have_perm('root')) : ?>
+        <? if ($help_admin) : ?>
             <label for="help_content_language">
                 <span class="required"><?= _('Sprache des Textes:') ?></span>
                 <select name="help_content_language">

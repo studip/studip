@@ -43,7 +43,7 @@ class Helpbar extends WidgetContainer
                                 null,
                                 null,
                                 null,
-                                URLHelper::getURL('dispatch.php/help_content/add', ['?help_content_route' => $route, 'from' => $route]));
+                                URLHelper::getURL('dispatch.php/help_content/add', ['help_content_route' => $route, 'from' => $route]));
         }
     }
 
