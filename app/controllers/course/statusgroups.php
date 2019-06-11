@@ -232,7 +232,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                     'csv', 'csv-gruppen', 'status',
                     _('Gruppen als CSV-Dokument exportieren'),
                     'passthrough');
-                $element = LinkElement::fromHTML($csvExport, Icon::create('file-office', 'clickable'));
+                $element = LinkElement::fromHTML($csvExport, Icon::create('file-office'));
                 $export->addElement($element);
 
                 // create rtf-export link
@@ -241,29 +241,31 @@ class Course_StatusgroupsController extends AuthenticatedController
                     'rtf', 'rtf-gruppen', 'status',
                     _('Gruppen als RTF-Dokument exportieren'),
                     'passthrough');
-                $element = LinkElement::fromHTML($rtfExport, Icon::create('file-text', 'clickable'));
+                $element = LinkElement::fromHTML($rtfExport, Icon::create('file-text'));
                 $export->addElement($element);
 
                 $sidebar->addWidget($export);
             }
         // Current user may join at least one group => show sidebar action.
         } else if ($joinable) {
-            $actions->addLink(_('In eine Gruppe eintragen'),
+            $actions->addLink(
+                _('In eine Gruppe eintragen'),
                 $this->url_for('course/statusgroups/joinables'),
-                    Icon::create('door-enter', 'clickable'))->asDialog('size=auto');
+                Icon::create('door-enter')
+            )->asDialog('size=auto');
         }
 
         if ($this->open_groups) {
             $actions->addLink(
                 _('Alle Gruppen zuklappen'),
                 $this->url_for('course/statusgroups'),
-                Icon::create('arr_2up', 'clickable')
+                Icon::create('arr_2up')
             );
         } else {
             $actions->addLink(
                 _('Alle Gruppen aufklappen'),
                 $this->url_for('course/statusgroups', ['open_groups' => '1']),
-                Icon::create('arr_2down', 'clickable')
+                Icon::create('arr_2down')
             );
         }
 
