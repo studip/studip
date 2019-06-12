@@ -108,6 +108,69 @@
     .ms-optgroup-label {
         color: @dark-gray-color-60;
     }
+
+    // Default multi select with STUDIP.MultiSelect.create()
+    &.studip-multi-select {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        form.default & {
+            max-width: 48em;
+        }
+
+        .ms-selectable,
+        .ms-selection {
+            flex: 1;
+            width: auto;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: row;
+            flex-wrap:nowrap;
+            align-items: center;
+            justify-content: space-between;
+
+            background: @dark-gray-color-10;
+            border: 1px solid @dark-gray-color-30;
+            border-bottom: 0;
+
+            padding-left: 0.5em;
+        }
+
+        .button {
+            font-size: smaller;
+        }
+
+        .ms-focus {
+            border-color: @brand-color-dark;
+            box-shadow: none;
+        }
+
+        .ms-selectable {
+            order: 2;
+
+            .header {
+                justify-content: flex-end;
+            }
+
+            li::after {
+                display: none;
+            }
+            li {
+                .icon('before', 'arr_2left', 'info_alt', @icon-size);
+            }
+        }
+
+        .ms-selection {
+            order: 1;
+            li {
+                padding-left: 20px;
+                .icon('before', 'arr_2right', 'info_alt', @icon-size);
+            }
+        }
+    }
 }
 
 .ui-menu .ui-menu-item {
