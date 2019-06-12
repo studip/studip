@@ -527,6 +527,14 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->teachers = $this->course->getMembers('dozent');
         $this->gruppen  = Statusgruppen::findBySeminar_id($this->course->id);
         $this->resList  = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, true, true);
+
+        /*
+         * Extract a single date for start and end time
+         * (all cycle dates have the same start and end time,
+         * so it doesn't matter which date we get).
+         */
+        $this->date = CourseDate::findOneByMetadate_id($cycle_id);
+
         $this->render_template('course/timesrooms/editStack');
     }
 

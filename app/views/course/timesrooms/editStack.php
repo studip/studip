@@ -99,6 +99,10 @@
     <? endif ?>
 
 
+    <input type="hidden" name="date" value="<?= strftime('%d.%m.%Y', $date->date) ?>">
+    <input type="hidden" name="start_time" value="<?= strftime('%H:%M', $date->date) ?>">
+    <input type="hidden" name="end_time" value="<?= strftime('%H:%M', $date->end_time) ?>">
+
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Änderungen speichern'), 'save') ?>
         <? if (Request::int('fromDialog')) : ?>
