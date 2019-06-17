@@ -89,9 +89,9 @@ if (Request::get('to_folder_id')) {
                 <a href="<?= $controller->link_for('file/choose_file/' . $subfolder->id, $options) ?>" data-dialog>
             <? endif ?>
             <? if ($is_empty): ?>
-                <?= Icon::create('folder-empty', Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                <?= Icon::create('folder-empty')->asImg(24) ?>
             <? else: ?>
-                <?= Icon::create('folder-full', Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                <?= Icon::create('folder-full')->asImg(24) ?>
             <? endif; ?>
             <? if ($subfolder->isReadable($GLOBALS['user']->id)) : ?>
                 </a>
@@ -121,11 +121,11 @@ if (Request::get('to_folder_id')) {
                     <form action="<?= $controller->link_for('file/choose_file/' . $top_folder->id, $options) ?>" method="post" data-dialog>
                         <input type="hidden" name="file_id" value="<?= htmlReady($fileref->id) ?>">
                         <a href="#" onclick="jQuery(this).closest('form').submit(); return false;">
-                            <?= Icon::create(FileManager::getIconNameForMimeType($fileref->mime_type), Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                            <?= FileManager::getIconForFileRef($fileref)->asImg(24) ?>
                         </a>
                     </form>
                 <? else: ?>
-                    <?= Icon::create(FileManager::getIconNameForMimeType($fileref->mime_type), Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                    <?= FileManager::getIconForFileRef($fileref, Icon::ROLE_INACTIVE)->asImg(24) ?>
                 <? endif ?>
                 </td>
                 <td>

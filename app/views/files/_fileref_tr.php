@@ -26,10 +26,10 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
     <td class="document-icon" data-sort-value="<?=crc32($file_ref->mime_type)?>">
     <? if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id)) : ?>
         <a href="<?= htmlReady($file_ref->download_url) ?>" target="_blank" rel="noopener noreferrer">
-            <?= Icon::create(FileManager::getIconNameForMimeType($file_ref->mime_type), Icon::ROLE_CLICKABLE)->asImg(24) ?>
+            <?= FileManager::getIconForFileRef($file_ref)->asImg(24) ?>
         </a>
     <? else : ?>
-        <?= Icon::create(FileManager::getIconNameForMimeType($file_ref->mime_type), 'inactive')->asImg(24) ?>
+        <?= FileManager::getIconForFileRef($file_ref, Icon::ROLE_INACTIVE)->asImg(24) ?>
     <? endif ?>
     </td>
     <td data-sort-value="<?= htmlReady($file_ref->name) ?>">

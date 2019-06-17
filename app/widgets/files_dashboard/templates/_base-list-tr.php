@@ -6,14 +6,10 @@ $userId = $GLOBALS['user']->id;
     <td class="document-icon" data-sort-value="1">
         <? if ($currentFolder->isFileDownloadable($fileRef, $userId)) : ?>
             <a href="<?= htmlReady($fileRef->getDownloadURL('force_download')) ?>" target="_blank" rel="noopener noreferrer">
-                <?= Icon::create(
-                    FileManager::getIconNameForMimeType($fileRef->mime_type),
-                    Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                <?= FileManager::getIconForFileRef($fileRef)->asImg(24) ?>
             </a>
         <? else : ?>
-            <?= Icon::create(
-                FileManager::getIconNameForMimeType($fileRef->mime_type),
-                Icon::ROLE_INACTIVE)->asImg(24) ?>
+            <?= FileManager::getIconForFileRef($fileRef, Icon::ROLE_INACTIVE)->asImg(24) ?>
         <? endif ?>
     </td>
 

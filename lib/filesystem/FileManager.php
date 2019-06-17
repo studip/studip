@@ -147,7 +147,7 @@ class FileManager
      * Returns the icon for a given mime type.
      *
      * @param string $mime_type  The mime type whose icon is requested.
-     * @param string $role       The requested remove
+     * @param string $role       The requested role
      * @param array  $attributes Optional additional attributes
      *
      * @return Icon The icon for the mime type.
@@ -160,6 +160,22 @@ class FileManager
     {
         $icon = self::getIconNameForMimeType($mime_type);
         return Icon::create($icon, $role, $attributes);
+    }
+
+    /**
+     * Returns the icon for a given file ref.
+     *
+     * @param FileRef $ref        The file ref whose icon is requested.
+     * @param string  $role       The requested role
+     * @param array   $attributes Optional additional attributes
+     * @return Icon The icon for the file ref.
+     */
+    public static function getIconForFileRef(FileRef $ref, $role = Icon::ROLE_CLICKABLE, array $attributes = [])
+    {
+        if ($ref->is_link) {
+            return Icon::create('link-extern', $role, $attributes);
+        }
+        return self::getIconForMimeType($ref->mime_type);
     }
 
     /**

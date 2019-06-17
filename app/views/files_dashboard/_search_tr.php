@@ -3,14 +3,10 @@
     <td class="files-search-icon">
         <? if ($searchResult['folder']->isFileDownloadable($searchResult['fileRef'], $user->id)) : ?>
             <a href="<?= htmlReady($searchResult['fileRef']->getDownloadURL('force_download')) ?>" target="_blank" rel="noopener noreferrer">
-                <?= Icon::create(
-                    FileManager::getIconNameForMimeType($searchResult['fileRef']->mime_type),
-                    Icon::ROLE_CLICKABLE)->asImg(24) ?>
+                <?= FileManager::getIconForFileRef($searchResult['fileRef'])->asImg(24) ?>
             </a>
         <? else : ?>
-            <?= Icon::create(
-                FileManager::getIconNameForMimeType($searchResult['fileRef']->mime_type),
-                Icon::ROLE_INACTIVE)->asImg(24) ?>
+            <?= FileManager::getIconForFileRef($searchResult['fileRef'], Icon::ROLE_INACTIVE)->asImg(24) ?>
         <? endif ?>
     </td>
 

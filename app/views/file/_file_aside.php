@@ -1,6 +1,6 @@
 <aside id="file_aside">
     <div class="file-icon">
-        <?= FileManager::getIconForMimeType($file_ref->mime_type, Icon::ROLE_INFO) ?>
+        <?= FileManager::getIconForFileRef($file_ref, Icon::ROLE_INFO) ?>
     </div>
 
     <table class="default nohover">

@@ -456,13 +456,9 @@ class MessagesController extends AuthenticatedController {
                                 $new_attachment->user_id = $GLOBALS['user']->id;
 
                                 if ($new_attachment->store()) {
+                                    $icon = FileManager::getIconForFileRef($new_attachment);
                                     $this->default_attachments[] = [
-                                        'icon'        => Icon::create(
-                                            FileManager::getIconNameForMimeType(
-                                                $new_attachment->file->mime_type
-                                            ),
-                                            'clickable'
-                                        )->asImg(['class' => "text-bottom"]),
+                                        'icon'        => $icon->asImg(['class' => 'text-bottom']),
                                         'name'        => $new_attachment->name,
                                         'document_id' => $new_attachment->id,
                                         'size'        => relsize($new_attachment->file->size, false)
@@ -546,13 +542,10 @@ class MessagesController extends AuthenticatedController {
             foreach ($unattached_folders as $unattached_folder) {
                 foreach ($unattached_folder->file_refs as $file_ref) {
                     $unattached_files[] = $file_ref;
+
+                    $icon = FileManager::getIconForFileRef($file_ref);
                     $this->default_attachments[] = [
-                        'icon'        => Icon::create(
-                            FileManager::getIconNameForMimeType(
-                                $file_ref->file->mime_type
-                            ),
-                            'clickable'
-                        )->asImg(['class' => "text-bottom"]),
+                        'icon'        => $icon->asImg(['class' => 'text-bottom']),
                         'name'        => $file_ref->name,
                         'document_id' => $file_ref->id,
                         'size'        => relsize($file_ref->file->size, false)
@@ -899,12 +892,7 @@ class MessagesController extends AuthenticatedController {
 
         $output['document_id'] = $file_ref->id;
 
-        $output['icon'] = Icon::create(
-            FileManager::getIconNameForMimeType(
-                $file_ref->file->mime_type
-            ),
-            'clickable'
-        )->asImg(['class' => "text-bottom"]);
+        $output['icon'] = FileManager::getIconForFileRef($file_ref)->asImg(['class' => 'text-bottom']);
 
         $this->render_json($output);
     }
