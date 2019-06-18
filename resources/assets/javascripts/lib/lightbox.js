@@ -46,6 +46,7 @@ const Lightbox = {
         Dialog.show(wrapper, {
             buttons: false,
             dialogClass: 'studip-lightbox',
+            id: 'lightbox',
             resize: false,
             size: this.getSize(image),
             title: this.getTitle(),
@@ -129,7 +130,7 @@ const Lightbox = {
                 } else if (event.keyCode === 39) {
                     $('.studip-lightbox .next:visible').click();
                 } else if (event.keyCode === 27) {
-                    Dialog.close();
+                    Dialog.close({id: 'lightbox'});
                 } else {
                     return;
                 }
