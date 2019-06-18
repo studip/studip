@@ -790,6 +790,9 @@ class UserManagement
         // store user preferred language for sending mail
         $user_language = getUserLanguagePath($this->user_data['auth_user_md5.user_id']);
 
+        // Load privacy plugins to ensure all event handlers can react to the
+        // UserDataDidRemove event
+        PluginEngine::getPlugins('PrivacyPlugin');
 
         // delete user from instituts
         $this->logInstUserDel($this->user_data['auth_user_md5.user_id']);
