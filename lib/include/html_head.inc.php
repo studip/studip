@@ -23,7 +23,7 @@
     <? endif ?>
 
     <script>
-    document.querySelector('html').classList.replace('no-js', 'js');
+    document.querySelector('html').className = 'js';
     window.STUDIP = {
         ABSOLUTE_URI_STUDIP: "<?= $GLOBALS['ABSOLUTE_URI_STUDIP'] ?>",
         ASSETS_URL: "<?= $GLOBALS['ASSETS_URL'] ?>",
