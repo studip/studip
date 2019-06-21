@@ -1178,7 +1178,7 @@ class SemBrowse {
             switch ($option_name) {
                 case 'courses':
                 case 'semtree':
-                    return new Navigation(_(/* 'Suche im Vorlesungsverzeichnis' */'Vorlesungsverzeichnis'),
+                    return new Navigation(_('Vorlesungsverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/courses',
                                     [
                                         'level' => 'vv',
@@ -1187,7 +1187,7 @@ class SemBrowse {
                                         'option' => ''
                                     ], true));
                 case 'rangetree':
-                    return new Navigation(_(/* 'Suche in Einrichtungen' */'Einrichtungsverzeichnis'),
+                    return new Navigation(_('Einrichtungsverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/courses',
                                     [
                                         'level' => 'ev',
@@ -1196,7 +1196,7 @@ class SemBrowse {
                                         'option' => ''
                                     ], true));
                 case 'module':
-                    return new MVVSearchNavigation(_(/* 'Suche im Modulverzeichnis' */'Modulverzeichnis'),
+                    return new MVVSearchNavigation(_('Modulverzeichnis'),
                             URLHelper::getURL('dispatch.php/search/module'),null, true);
             }
         } else {
