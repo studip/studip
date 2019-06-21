@@ -415,7 +415,7 @@ class FileController extends AuthenticatedController
                 PageLayout::postError(
                     sprintf(
                         _('Fehler beim Aktualisieren der Datei %s!'),
-                        $this->file_ref->name
+                        htmlReady($this->file_ref->name)
                     ),
                     $this->errors
                 );
@@ -423,7 +423,7 @@ class FileController extends AuthenticatedController
                 PageLayout::postSuccess(
                     sprintf(
                         _('Datei %s wurde aktualisiert!'),
-                        $this->file_ref->name
+                        htmlReady($this->file_ref->name)
                     )
                 );
             }
