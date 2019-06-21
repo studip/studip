@@ -212,7 +212,7 @@ const Messages = {
         var container = jQuery('#message_' + message_id)
                 .find('.tag-container')
                 .empty(),
-            template = _.template('<a href="<%= url %>" class="message-tag"><%= tag %></a>');
+            template = _.template('<a href="<%- url %>" class="message-tag"><%- tag %></a>');
 
         jQuery.each(tags, function(index, tag) {
             var html = template({
@@ -226,7 +226,7 @@ const Messages = {
     },
     setAllTags: function(tags) {
         var container = $('#messages-tags ul');
-        var template = _.template('<li><a href="<%= url %>" class="tag"><%= tag %></a></li>');
+        var template = _.template('<li><a href="<%- url %>" class="tag"><%- tag %></a></li>');
 
         container.children('li:not(:has(.all-tags))').remove();
 

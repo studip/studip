@@ -49,7 +49,7 @@
                         <a href="<?= URLHelper::getLink("?", ['tag' => $tag]) ?>" class="message-tag" title="<?= _("Alle Nachrichten zu diesem Schlagwort") ?>">
                             <?= htmlReady($tag) ?>
                         </a>
-                        <?= Icon::create('trash', 'clickable', ['title' => _("Schlagwort entfernen")])->asInput(["class" => 'text-bottom', "name" => 'remove_tag', "value" => htmlReady($tag)]) ?>
+                        <?= Icon::create('trash', 'clickable', ['title' => _("Schlagwort entfernen")])->asInput(["class" => 'text-bottom', "name" => 'remove_tag', "value" => $tag]) ?>
                     </span>
                 <? endforeach ?>
                     <span>
