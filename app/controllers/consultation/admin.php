@@ -24,11 +24,19 @@ class Consultation_AdminController extends ConsultationController
         $this->setupSidebar();
     }
 
-    public function index_action()
+    public function index_action($page = 1)
     {
+        $this->count = ConsultationBlock::countByTeacher_id($this->current_user->id);
+        $this->limit = Config::get()->ENTRIES_PER_PAGE;
+
+        if ($page > ceil($this->count / $this->limit)) {
+            $page = 1;
+        }
+
+        $this->page = $page;
         $this->blocks = ConsultationBlock::findByTeacher_id(
             $this->current_user->id,
-            'ORDER BY start ASC'
+            "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
         );
     }
 

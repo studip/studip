@@ -141,6 +141,20 @@
     <? endforeach; ?>
     </tbody>
 <? endforeach; ?>
+<? if ($count > $limit): ?>
+    <tfoot>
+        <tr>
+            <td colspan="4">
+                <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
+                    'num_postings' => $count,
+                    'perPage'      => $limit,
+                    'page'         => $page,
+                    'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->indexURL('§u'))),
+                ]) ?>
+            </td>
+        </tr>
+    </tfoot>
+<? endif; ?>
 </table>
 </form>
 

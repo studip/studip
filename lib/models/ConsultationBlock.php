@@ -56,6 +56,67 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
     }
 
     /**
+     * Find only visible blocks for user.
+     *
+     * @param string      $user_id    User id to check the visibility for
+     * @param string      $teacher_id User id of the teacher
+     * @param string|null $course_id  Optional course id to filter blocks by
+     * @param string      $order      Optional order clause
+     * @return array
+     */
+    public static function findVisibleForUserByTeacherId($user_id, $teacher_id, $course_id = null, $order = '')
+    {
+        list($condition, $parameters) = self::prepareConditionAndParametersForVisibleBlocks(
+            $user_id,
+            $teacher_id,
+            $course_id
+        );
+        return self::findBySQL("{$condition} {$order}", $parameters);
+    }
+
+    /**
+     * Count only visible blocks for user.
+     *
+     * @param string      $user_id    User id to check the visibility for
+     * @param string      $teacher_id User id of the teacher
+     * @param string|null $course_id  Optional course id to filter blocks by
+     * @return int
+     */
+    public static function countVisibleForUserByTeacherId($user_id, $teacher_id, $course_id = null)
+    {
+        list($condition, $parameters) = self::prepareConditionAndParametersForVisibleBlocks(
+            $user_id,
+            $teacher_id,
+            $course_id
+        );
+        return self::countBySQL($condition, $parameters);
+    }
+
+    private static function prepareConditionAndParametersForVisibleBlocks($user_id, $teacher_id, $course_id)
+    {
+        $conditions = [
+            'course_id IS NULL OR seminar_user.user_id IS NOT NULL',
+            'teacher_id = :teacher_id',
+            'start > UNIX_TIMESTAMP()'
+        ];
+        $parameters = [
+            ':user_id'    => $user_id,
+            ':teacher_id' => $teacher_id,
+        ];
+
+        if ($course_id !== null) {
+            $conditions[] = 'course_id = :course_id';
+            $parameters[':course_id'] = $course_id;
+        }
+
+        $condition = "LEFT JOIN seminar_user
+                        ON (course_id = seminar_id AND seminar_user.user_id = :user_id)
+                      WHERE (" . implode(') AND (', $conditions) . ')';
+
+        return [$condition, $parameters];
+    }
+
+    /**
      * Returns whether any blocks of a teacher exist that should be visible for
      * the given user.
      *

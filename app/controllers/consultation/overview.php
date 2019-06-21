@@ -21,20 +21,26 @@ class Consultation_OverviewController extends ConsultationController
         ));
     }
 
-    public function index_action()
+    public function index_action($page = 1)
     {
-        $this->blocks = SimpleCollection::createFromArray(
-            ConsultationBlock::findBySQL(
-                'teacher_id = :user_id AND start > UNIX_TIMESTAMP() ORDER BY start',
-                [':user_id' => $this->current_user->id]
-            )
-        )->filter(function ($block) {
-            return $block->isVisibleForUser();
-        });
+        $this->count = ConsultationBlock::countVisibleForUserByTeacherId(
+            $GLOBALS['user']->id,
+            $this->current_user->id,
+            Request::option('course_id')
+        );
+        $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
-        if ($course_id = Request::option('course_id')) {
-            $this->blocks = $this->blocks->findBy('course_id', $course_id);
+        if ($page > ceil($this->count / $this->limit)) {
+            $page = 1;
         }
+
+        $this->page   = $page;
+        $this->blocks = ConsultationBlock::findVisibleForUserByTeacherId(
+            $GLOBALS['user']->id,
+            $this->current_user->id,
+            Request::option('course_id'),
+            "LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
+        );
 
         $this->setupSidebar();
     }
@@ -101,12 +107,6 @@ class Consultation_OverviewController extends ConsultationController
 
     private function setupSidebar()
     {
-        $course_ids = array_unique(array_filter($this->blocks->pluck('course_id')));
-
-        if (count($course_ids) === 0) {
-            return;
-        }
-
         $courses = Course::findMany(
             $course_ids,
             Config::get()->IMPORTANT_SEMNUMBER ? 'ORDER BY VeranstaltungsNummer, Name' : 'ORDER BY Name'
