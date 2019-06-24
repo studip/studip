@@ -3,14 +3,14 @@
     <?= _('Zeitpunkt der automatischen Platzverteilung') ?>:
 </label>
 
-<label class="col-1">
+<label class="col-3">
     <?= _('Datum') ?>
     <input type="text" name="distributiondate" id="distributiondate"
         class="size-s no-hint" placeholder="tt.mm.jjjj"
         value="<?= $rule->getDistributionTime() ? date('d.m.Y', $rule->getDistributionTime()) : '' ?>"/>
 </label>
 
-<label class="col-1">
+<label class="col-3">
     <?= _('Uhrzeit') ?>
     <input type="text" name="distributiontime" id="distributiontime"
         class="size-s no-hint" placeholder="ss:mm"

@@ -7,14 +7,14 @@
 <label for="startdate" class="caption">
     <?= _('Start des Anmeldezeitraums') ?>:
 </label>
-<label class="col-1">
+<label class="col-3">
     <?= _('Datum') ?>
     <input type="text" maxlength="10" name="startdate"
         class="size-s no-hint" placeholder="tt.mm.jjjj"
         id="startdate" value="<?= $rule->getStartTime() ?
         date('d.m.Y', $rule->getStartTime()) : '' ?>" data-max-date=""/>
 </label>
-<label class="col-1">
+<label class="col-3">
     <?= _('Uhrzeit') ?>
     <input type="text" name="starttime" id="starttime"
         class="size-s no-hint" placeholder="ss:mm"
@@ -25,14 +25,14 @@
     <?= _('Ende des Anmeldezeitraums') ?>:
 </label>
 
-<label class="col-1">
+<label class="col-3">
     <?= _('Datum') ?>
     <input type="text" maxlength="10" name="enddate"
         class="size-s no-hint" placeholder="tt.mm.jjjj"
         id="enddate" value="<?= $rule->getEndTime() ?
         date('d.m.Y', $rule->getEndTime()) : '' ?>" data-min-date=""/>
 </label>
-<label class="col-1">
+<label class="col-3">
     <?= _('Uhrzeit') ?>
     <input type="text" name="endtime" id="endtime"
         class="size-s no-hint" placeholder="ss:mm"
