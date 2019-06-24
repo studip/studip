@@ -35,8 +35,7 @@
 
                 <label>
                     <textarea class="add_toolbar wysiwyg size-l" data-textarea="new_entry" name="content" required tabindex="3"
-                        placeholder="<?= _('Schreiben Sie hier Ihren Beitrag. Hilfe zu Formatierungen'
-                            . ' finden Sie rechts neben diesem Textfeld.') ?>"></textarea>
+                        placeholder="<?= _('Schreiben Sie hier Ihren Beitrag.') ?>"></textarea>
                 </label>
 
                 <? if (Config::get()->FORUM_ANONYMOUS_POSTINGS): ?>
