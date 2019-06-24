@@ -491,7 +491,7 @@ class Course_TimesroomsController extends AuthenticatedController
      */
     public function stack_action($cycle_id = '')
     {
-        $_SESSION['_checked_dates'] = Request::getArray('single_dates');
+        $_SESSION['_checked_dates'] = Request::optionArray('single_dates');
         if (empty($_SESSION['_checked_dates']) && isset($_SESSION['_checked_dates'])) {
             PageLayout::postError(_('Sie haben keine Termine ausgewählt!'));
             $this->redirect($this->url_for('course/timesrooms/index', ['contentbox_open' => $cycle_id]));
@@ -527,14 +527,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->teachers = $this->course->getMembers('dozent');
         $this->gruppen  = Statusgruppen::findBySeminar_id($this->course->id);
         $this->resList  = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, true, true);
-
-        /*
-         * Extract a single date for start and end time
-         * (all cycle dates have the same start and end time,
-         * so it doesn't matter which date we get).
-         */
-        $this->date = CourseDate::findOneByMetadate_id($cycle_id);
-
+        $this->checked_dates = $_SESSION['_checked_dates'];
         $this->render_template('course/timesrooms/editStack');
     }
 
