@@ -131,6 +131,9 @@ class QuestionnaireController extends AuthenticatedController
                     if (Request::get("range_type") === "course" && !$GLOBALS['perm']->have_studip_perm("tutor", Request::get("range_id"))) {
                         throw new Exception("Der Fragebogen darf nicht in die ausgewählte Veranstaltung eingebunden werden.");
                     }
+                    if (Request::get("range_type") === "user" && Request::get("range_id") !== $GLOBALS['user']->id) {
+                        throw new Exception("Der Fragebogen darf nicht in diesen Bereich eingebunden werden.");
+                    }
                     $assignment = new QuestionnaireAssignment();
                     $assignment['questionnaire_id'] = $this->questionnaire->getId();
                     $assignment['range_id'] = Request::option("range_id");
