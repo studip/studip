@@ -2,6 +2,7 @@
       class="default collapsable" data-dialog="size=big">
     <?= CSRFProtection::tokenTag()?>
     <input type="hidden" name="method" value="edit">
+    <input type="hidden" name="checked_dates" value="<?= implode(',', Request::getArray('single_dates')) ?>">
 
     <fieldset>
         <legend><?= _('Raumangaben') ?></legend>
@@ -98,10 +99,6 @@
         </fieldset>
     <? endif ?>
 
-
-    <input type="hidden" name="date" value="<?= strftime('%d.%m.%Y', $date->date) ?>">
-    <input type="hidden" name="start_time" value="<?= strftime('%H:%M', $date->date) ?>">
-    <input type="hidden" name="end_time" value="<?= strftime('%H:%M', $date->end_time) ?>">
 
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Änderungen speichern'), 'save') ?>
