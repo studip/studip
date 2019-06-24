@@ -169,7 +169,8 @@ class UserFilterField
                 if ($className::$isParameterized) {
                     $fields = array_merge($fields, $className::getParameterizedTypes());
                 } else {
-                    $fields[$className] = $className::getName();
+                    $filter = new $className();
+                    $fields[$className] = $filter->getName();
                 }
             }
         }
