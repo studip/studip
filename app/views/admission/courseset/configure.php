@@ -22,23 +22,22 @@ if ($flash['error']) {
 <form class="default" action="<?= $controller->url_for(!$instant_course_set_view ? 'admission/courseset/save/' . ($courseset ? $courseset->getId() : '') : 'course/admission/save_courseset/' . $courseset->getId()) ?>" method="post">
     <fieldset>
         <legend><?= _('Grunddaten') ?></legend>
-        <label for="name" class="caption">
-            <?= _('Name des Anmeldesets:') ?>
-            <span class="required">*</span>
+        <label>
+            <span class="required"><?= _('Name des Anmeldesets') ?></span>
+            <input type="text" maxlength="255" name="name"
+                   value="<?= $courseset ? htmlReady($courseset->getName()) : '' ?>"
+                   required aria-required="true"/>
         </label>
-        <input type="text" size="60" maxlength="255" name="name"
-            value="<?= $courseset ? htmlReady($courseset->getName()) : '' ?>"
-            required="required" aria-required="true"/>
         <? if (!$courseset || ($courseset->isUserAllowedToEdit($GLOBALS['user']->id) && !$instant_course_set_view)) : ?>
-            <label for="private" class="caption">
-                <?= _('Sichtbarkeit:') ?>
+            <label for="private">
+                <?= _('Sichtbarkeit') ?>
             </label>
             <input type="checkbox" id="private" name="private"<?= $courseset ? ($courseset->getPrivate() ? ' checked="checked"' : '') : 'checked' ?>/>
             <?= _('Dieses Anmeldeset soll nur für mich selbst und alle Administratoren sichtbar und benutzbar sein.') ?>
         <?  endif ?>
         <? if ($courseset) : ?>
-        <label class="caption">
-            <?= _('Besitzer des Anmeldesets:') ?>
+        <label>
+            <?= _('Besitzer des Anmeldesets') ?>
         </label>
         <div>
             <? $user = User::find($courseset->getUserId()) ?>
@@ -51,9 +50,8 @@ if ($flash['error']) {
             <? endif ?>
         </div>
         <? endif ;?>
-        <label for="institutes" class="caption">
-            <?= _('Einrichtungszuordnung:') ?>
-            <span class="required">*</span>
+        <label for="institutes">
+            <span class="required"><?= _('Einrichtungszuordnung') ?></span>
         </label>
         <? if (!$instant_course_set_view) : ?>
             <div id="institutes">
@@ -97,8 +95,8 @@ if ($flash['error']) {
     <fieldset>
         <legend><?= _('Veranstaltungen') ?></legend>
         <? if (!$instant_course_set_view) : ?>
-            <label class="caption">
-                <?= _('Semester:') ?>
+            <label>
+                <?= _('Semester') ?>
                 <select name="semester" onchange="STUDIP.Admission.getCourses('<?= $controller->url_for('admission/courseset/instcourses', $courseset ? $courseset->getId() : '') ?>')">
                     <?php foreach(array_reverse(Semester::getAll(), true) as $id => $semester) { ?>
                     <option value="<?= $id ?>"<?= $id == $selectedSemester ? ' selected="selected"' : '' ?>>
@@ -107,8 +105,8 @@ if ($flash['error']) {
                     <?php } ?>
                 </select>
             </label>
-            <label class="caption">
-                <?= _('Filter auf Name/Nummer/Dozent:') ?><br>
+            <label>
+                <?= _('Filter auf Name/Nummer/Dozent') ?><br>
                 <input style="display:inline-block" type="text" onKeypress="if (event.which==13) return STUDIP.Admission.getCourses('<?= $controller->url_for('admission/courseset/instcourses', $courseset ? $courseset->getId() : '') ?>')" value="<?= htmlReady($current_course_filter) ?>" name="course_filter" >
                 <?=Icon::create('search', 'clickable', ['title' => _("Veranstaltungen anzeigen"),'onClick' => "return STUDIP.Admission.getCourses('" . $controller->url_for('admission/courseset/instcourses', $courseset ? $courseset->getId() : '') ."')"])->asImg()?>
             </label>
@@ -181,8 +179,8 @@ if ($flash['error']) {
    <? if (!$instant_course_set_view) : ?>
 
     <? if ($courseset && $courseset->getSeatDistributionTime()) :?>
-        <label class="caption">
-            <?= _('Personenlisten zuordnen:') ?>
+        <label>
+            <?= _('Personenlisten zuordnen') ?>
             </label>
             <?php if ($myUserlists) { ?>
                 <?php
@@ -219,8 +217,8 @@ if ($flash['error']) {
             ?>
         <? endif ?>
         <? endif ?>
-        <label for="infotext" class="caption">
-            <?= _('Weitere Hinweise für die Teilnehmenden:') ?>
+        <label for="infotext">
+            <?= _('Weitere Hinweise für die Teilnehmenden') ?>
         </label>
         <textarea cols="60" rows="3" name="infotext"><?= $courseset ? htmlReady($courseset->getInfoText()) : '' ?></textarea>
     </fieldset>
