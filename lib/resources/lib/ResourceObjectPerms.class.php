@@ -43,8 +43,8 @@ Verfuegung
 
 class ResourceObjectPerms {
 
-    function Factory($resource_id, $user_id = false){
-
+    public static function Factory($resource_id, $user_id = false)
+    {
         static $object_pool;
 
         if (!$user_id){
