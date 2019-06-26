@@ -17,6 +17,7 @@
         </div>
         <div id="globalsearch-results" data-more-results="<?= _('alle anzeigen') ?>"
              data-no-result="<?= _('Keine Ergebnisse gefunden.') ?>"
+             data-current-semester="<?= htmlReady(GlobalSearchModule::getCurrentSemester()) ?>"
              data-results-per-type="<?= Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE ?>"
         ></div>
     </div>

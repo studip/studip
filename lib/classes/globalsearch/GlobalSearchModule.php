@@ -205,6 +205,21 @@ abstract class GlobalSearchModule
     }
 
     /**
+     * Get the current semester considering the given
+     * SEMESTER_TIME_SWITCH in the CONFIG
+     * (n weeks before the next semester)
+     *
+     * @return int The start time of the current semester.
+     */
+    public static function getCurrentSemester()
+    {
+        $sem_time_switch = Config::get()->SEMESTER_TIME_SWITCH;
+        $current_semester = Semester::findByTimestamp(time() + $sem_time_switch * 7 * 24 * 3600);
+
+        return $current_semester['beginn'];
+    }
+
+    /**
      * Returns a list of all active search modules
      * @return array search_class => data
      */

@@ -390,10 +390,10 @@ const Search = {
     },
 
     /**
-     * Reset all sidebar filters to their default value ('all').
+     * Reset all sidebar filters except for the semester filter to their default value ('all').
      */
     resetFilters: function () {
-        $('select[id$="_select"]').val('').change();
+        $('select[id$="_select"]').not('#semester_select').val('').change();
     },
 
     /**

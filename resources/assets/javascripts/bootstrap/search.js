@@ -15,7 +15,6 @@ STUDIP.domReady(() => {
         } else {
             STUDIP.Search.setActiveCategory('show_all_categories');
         }
-        STUDIP.Search.setFilter('semester', '');
     }
 
     // Clear search term
