@@ -322,7 +322,8 @@ function get_fullname($user_id = "", $format = "full" , $htmlready = false)
     }
 
     if (User::findCurrent()->id === $user_id) {
-        return User::findCurrent()->getFullName($format);
+        $fullname = User::findCurrent()->getFullName($format);
+        return $htmlready ? htmlReady($fullname) : $fullname;
     }
 
     $hash = md5($user_id . $format);
