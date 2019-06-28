@@ -4,6 +4,7 @@ STUDIP.domReady(() => {
     $('#reset-search').hide();
     STUDIP.Search.hideAllFilters();
     $('div#semester_filter').show();
+    STUDIP.Search.setActiveCategory('show_all_categories');
 
     // searchterm and category can be passed by URL parameters (e.g. through the quicksearch)
     var searchterm = $('#search-results').data('searchterm');
@@ -12,8 +13,6 @@ STUDIP.domReady(() => {
         cache.set('searchterm', searchterm);
         if (category) {
             STUDIP.Search.setActiveCategory(category);
-        } else {
-            STUDIP.Search.setActiveCategory('show_all_categories');
         }
     }
 

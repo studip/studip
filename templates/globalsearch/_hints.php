@@ -1,6 +1,14 @@
 <article id="globalsearch-hints">
     <section>
         <header>
+            <?= _('Hinweis:') ?>
+        </header>
+        <p>
+            <?= _('Die Schnellsuche findet nur Ergebnisse im aktuellen Semester.') ?>
+        </p>
+    </section>
+    <section>
+        <header>
             <?= _('[STRG] + [Leertaste]') ?>
         </header>
         <p>
