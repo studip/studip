@@ -119,6 +119,7 @@ const Messages = {
         }
     },
     upload_file: function(formdata, statusbar) {
+        $(".ui-dialog-buttonset button:first-child, footer[data-dialog-button] button:first-child").attr("disabled", "disabled");
         $.ajax({
             xhr: function() {
                 var xhrobj = $.ajaxSettings.xhr();
@@ -152,6 +153,7 @@ const Messages = {
             dataType: 'json'
         })
             .done(function(data) {
+                $(".ui-dialog-buttonset button:first-child, footer[data-dialog-button] button:first-child").removeAttr("disabled");
                 statusbar.find('.progress').css({ 'min-width': '100%', 'max-width': '100%' });
                 var file = jQuery('#attachments .files > .file')
                     .first()
