@@ -64,7 +64,8 @@ class TFASecret extends SimpleORMap
      */
     public function setNew($is_new)
     {
-        if ($is_new) {
+        // TODO: Remove second condition when we can actually use PHP7
+        if ($is_new && version_compare(PHP_VERSION, '7.0.0') >= 0) {
             if (!$this->isNew()) {
                 return;
             }

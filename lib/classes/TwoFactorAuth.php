@@ -43,6 +43,11 @@ final class TwoFactorAuth
      */
     public static function isEnabledForUser(User $user = null)
     {
+        // TODO: Remove this condition when we can actually use PHP7
+        if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+            return false;
+        }
+
         if ($user === null) {
             $user = User::findCurrent();
         }
