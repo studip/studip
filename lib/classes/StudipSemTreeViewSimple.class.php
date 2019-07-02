@@ -99,7 +99,7 @@ class StudipSemTreeViewSimple
                         <a href="' .
                         URLHelper::getLink($this->getSelf('start_item_id=' .
                                 $this->tree->tree_data[$this->start_item_id]['parent_id'], false)) .
-                        '>' .
+                        '">' .
                         Icon::create('arr_2left', 'clickable')->asImg(['class' => 'text-top', 'title' =>_('eine Ebene zurück')]) .
                         '</a>';
         } else {
