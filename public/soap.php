@@ -21,6 +21,10 @@ require '../lib/webservices/webservices_bootstrap.php';
 $delegate = new Studip_Ws_SoapDispatcher($AVAILABLE_SERVICES);
 $server   = new DelegatingSoapServer($delegate);
 
+# use UTF-8 encoding
+$server->soap_defencoding = 'UTF-8';
+$server->decode_utf8 = false;
+
 # creating WSDL
 $namespace = 'urn:studip_wsd';
 $server->configureWSDL('Stud.IP Webservice', $namespace);
