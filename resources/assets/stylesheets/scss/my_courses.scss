@@ -1,0 +1,13 @@
+table.default {
+    tr.has-subcourses {
+        border-bottom: 1px solid $dark-gray-color-75;
+    }
+    tr.subcourses {
+
+        background-color: $dark-gray-color-5;
+
+        td:nth-child(-n+4) {
+            padding-left: 20px;
+        }
+    }
+}
