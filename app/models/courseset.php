@@ -26,7 +26,7 @@ class CoursesetModel
      *
      * @return Array Found courses.
      */
-    public function getInstCourses($instituteIds, $coursesetId = '', $selectedCourses = [], $semester_id = null, $filter = false)
+    public static function getInstCourses($instituteIds, $coursesetId = '', $selectedCourses = [], $semester_id = null, $filter = false)
     {
         // Get semester dates for course sorting.
         $currentSemester = $semester_id ? Semester::find($semester_id) : Semester::findCurrent();
