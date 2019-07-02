@@ -220,7 +220,7 @@ class PluginAdministration
         if (is_dir($plugindir . '/migrations')) {
             $schema_version = new DBSchemaVersion($pluginname);
             $migrator = new Migrator($plugindir . '/migrations', $schema_version);
-            $migrator->migrate_to(null);
+            $migrator->migrateTo(null);
         }
     }
 
@@ -241,11 +241,11 @@ class PluginAdministration
 
             if (is_dir($new_pluginpath . '/migrations')) {
                 $migrator = new Migrator($new_pluginpath . '/migrations', $schema_version);
-                $new_version = $migrator->top_version();
+                $new_version = $migrator->topVersion();
             }
 
             $migrator = new Migrator($plugindir . '/migrations', $schema_version);
-            $migrator->migrate_to($new_version);
+            $migrator->migrateTo($new_version);
         }
     }
 
@@ -262,7 +262,7 @@ class PluginAdministration
         if (is_dir($plugindir . '/migrations')) {
             $schema_version = new DBSchemaVersion($pluginname);
             $migrator = new Migrator($plugindir . '/migrations', $schema_version);
-            $migrator->migrate_to(0);
+            $migrator->migrateTo(0);
         }
 
         if (isset($manifest['uninstalldbscheme'])) {
@@ -374,7 +374,7 @@ class PluginAdministration
             if (is_dir($plugindir . '/migrations')) {
                 $schema_version = new DBSchemaVersion($plugin['name']);
                 $migrator = new Migrator($plugindir . '/migrations', $schema_version);
-                $info[$id]['migration_top_version'] = $migrator->top_version();
+                $info[$id]['migration_top_version'] = $migrator->topVersion();
                 $info[$id]['schema_version'] = $schema_version->get();
             }
         }
@@ -397,7 +397,7 @@ class PluginAdministration
             $schema_version = new DBSchemaVersion($plugin['name']);
             $migrator = new Migrator($plugindir .'/migrations', $schema_version, true);
             ob_start();
-            $migrator->migrate_to(null);
+            $migrator->migrateTo(null);
             $log = ob_get_clean();
         }
         return $log;

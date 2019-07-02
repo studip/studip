@@ -72,7 +72,7 @@ class DBSchemaVersion implements SchemaVersion
      */
     public function get()
     {
-        return max($this->versions);
+        return $this->versions ? max($this->versions) : 0;
     }
 
     /**
