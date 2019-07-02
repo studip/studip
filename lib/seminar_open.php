@@ -149,6 +149,35 @@ if ($user_did_login) {
     NotificationCenter::postNotification('UserDidLogin', $user->id);
 }
 
+if (!Request::isXhr() && $perm->have_perm('root')) {
+    if (!isset($_SESSION['migration-check']) || $_SESSION['migration-check']['timestamp'] < time() - 5 * 60) {
+        $migrator = new Migrator(
+            "{$GLOBALS['STUDIP_BASE_PATH']}/db/migrations",
+            new DBSchemaVersion('studip')
+        );
+
+        $migrations = $migrator->relevantMigrations(null);
+        $_SESSION['migration-check'] = [
+            'timestamp' => time(),
+            'count'     => count($migrations),
+        ];
+    }
+
+    if ($_SESSION['migration-check']['count'] > 0) {
+        PageLayout::postInfo(
+            sprintf(
+                _('Es gibt %u noch nicht ausgeführte Migration(en).'),
+                $_SESSION['migration-check']['count']
+            ),
+            [sprintf(
+                _('Zur %sMigrationsseite%s'),
+                '<a href="' . URLHelper::getLink('web_migrate.php') . '">',
+                '</a>'
+            )]
+        );
+    }
+}
+
 if ($seminar_open_redirected) {
     startpage_redirect(UserConfig::get($user->id)->PERSONAL_STARTPAGE);
 }

@@ -66,6 +66,11 @@ if (Request::submitted('start')) {
     );
     $version = new DBSchemaVersion('studip');
     $migrator = new Migrator($path, $version, $verbose);
+
+    $_SESSION['migration-check'] = [
+        'timestamp' => time(),
+        'count'     => 0,
+    ];
 }
 
 $current = $version->get();
