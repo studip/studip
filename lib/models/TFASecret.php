@@ -13,7 +13,19 @@ class TFASecret extends SimpleORMap
 {
     // Possible authentication types (email may require more tokens in a short
     // period of time with a larger window to accept them).
-    const TYPES = [
+
+    // TODO: Reactivate when we actually can use PHP7
+    // const TYPES = [
+    //     'email' => [
+    //         'window' => 30,
+    //         'period' => 1,
+    //     ],
+    //     'app' => [
+    //         'window' => 1,
+    //         'period' => 30,
+    //     ],
+    // ];
+    private static $types = [
         'email' => [
             'window' => 30,
             'period' => 1,
@@ -129,7 +141,7 @@ class TFASecret extends SimpleORMap
             return false;
         }
 
-        $window = self::TYPES[$this->type]['window'];
+        $window = self::$types[$this->type]['window'];
         if ($allow_reuse) {
             $window = 0;
         }
@@ -159,7 +171,7 @@ class TFASecret extends SimpleORMap
      */
     private function getTOTP()
     {
-        return TOTP::create($this->secret, self::TYPES[$this->type]['period']);
+        return TOTP::create($this->secret, self::$types[$this->type]['period']);
     }
 
     /**
