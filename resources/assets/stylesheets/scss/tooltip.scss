@@ -1,20 +1,19 @@
 /* Tooltips for Stud.IP with CSS3 only -------------------------------------- */
-.studip-tooltip {
-    #arrow > .bottom-border(9px, #ddd, 1px, #ccc, 5px);
-    #gradient > .vertical(fade(#fff, 50%), fade(#fff, 0%));
+%tooltip {
+    @include arrow-bottom-border(9px, $light-gray-color-20, 1px, $light-gray-color-60, 5px);
 
-    background-color: #ddd;
-    border: 2px solid #ccc;
+    background-color: $light-gray-color-20;
+    border: 2px solid $light-gray-color-60;
     border-radius: 4px;
-    box-shadow: 0 1px 2px fade(#000, 60%), 0 1px 0 fade(#fff, 50%) inset;
-    font-size: @font-size-base;
+    box-shadow: 0 1px 0 fade-out(#fff, 0.5) inset;
+    font-size: $font-size-base;
     margin-bottom: 8px;
     max-width: 230px;
     opacity: 0.95;
     padding: 10px;
     position: absolute;
     text-align: left;
-    text-shadow: 0 1px 0 fade(#fff, 50%);
+    text-shadow: 0 1px 0 fade-out(#fff, 0.5);
     white-space: normal;
     z-index: 10000;
 
@@ -22,18 +21,23 @@
     hyphens: auto;
 }
 
+.studip-tooltip {
+    @extend %tooltip;
+}
+
 .tooltip {
     display: inline-block;
+    position: relative;
+
     &.tooltip-icon {
-        .icon('before', 'info-circle', 'inactive');
-        &.tooltip-important {
-            .icon('before', 'info-circle', 'attention');
-        }
+        @include icon(before, info-circle, inactive);
+    }
+    &.tooltip-important {
+        @include icon(before, info-circle, attention);
     }
 
-    position: relative;
     .tooltip-content {
-        .studip-tooltip;
+        @extend %tooltip;
         display: none;
     }
     &:hover .tooltip-content {

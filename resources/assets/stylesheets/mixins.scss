@@ -1,0 +1,6 @@
+$image-path: "../images";
+$icon-path: "#{$image-path}/icons";
+
+@import "mixins/colors.scss";
+@import "mixins/studip.scss";
+@import "mixins/arrow.scss";

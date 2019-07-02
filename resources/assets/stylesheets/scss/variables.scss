@@ -1,0 +1,127 @@
+$text-color:              #000;
+
+$font-family-base:        "Lato", sans-serif;
+
+$font-size-base:          14px;
+$font-size-large:         ceil($font-size-base * 1.25); // ~18px
+$font-size-small:         ceil($font-size-base * 0.85); // ~12px
+
+$font-size-h1:            floor($font-size-base * 1.4); // ~36px
+$font-size-h2:            floor($font-size-base * 1.2); // ~30px
+$font-size-h3:            ceil($font-size-base * 1.1); // ~24px
+$font-size-h4:            $font-size-base; // ~18px
+$font-size-h5:            $font-size-base;
+$font-size-h6:            ceil($font-size-base * 0.85); // ~12px
+
+//** Unit-less `line-height` for use in components like buttons.
+$line-height-base:        1.428571429; // 20/14
+//** Computed "line-height" (`font-size` * `line-height`) for use with `margin`, `padding`, etc.
+$line-height-computed:    floor($font-size-base * $line-height-base); // ~20px
+
+//** By default, this inherits from the `<body>`.
+$headings-font-family:    inherit;
+$headings-font-weight:    700;
+$headings-line-height:    1.1;
+$headings-color:          #444444;
+
+// Design specific
+$bar-bottom-container-height: 40px;
+$header-height: 80px;
+
+:root {
+    --active-color: $active-color;
+    --active-color: $active-color;
+    --activity-color: $activity-color;
+    --activity-color-20: $activity-color-20;
+    --activity-color-40: $activity-color-40;
+    --activity-color-60: $activity-color-60;
+    --activity-color-80: $activity-color-80;
+    --base-color: $base-color;
+    --base-color-20: $base-color-20;
+    --base-color-40: $base-color-40;
+    --base-color-60: $base-color-60;
+    --base-color-80: $base-color-80;
+    --base-gray: $base-gray;
+    --black: $black;
+    --brand-color-dark: $brand-color-dark;
+    --brand-color-darker: $brand-color-darker;
+    --brand-color-light: $brand-color-light;
+    --brand-color-lighter: $brand-color-lighter;
+    --brown: $brown;
+    --brown-20: $brown-20;
+    --brown-40: $brown-40;
+    --brown-60: $brown-60;
+    --brown-80: $brown-80;
+    --content-color: $content-color;
+    --content-color-10: $content-color-10;
+    --content-color-20: $content-color-20;
+    --content-color-40: $content-color-40;
+    --content-color-60: $content-color-60;
+    --content-color-80: $content-color-80;
+    --contrast-content-gray: $contrast-content-gray;
+    --contrast-content-hovergray: $contrast-content-hovergray;
+    --contrast-content-white: $contrast-content-white;
+    --dark-gray-color: $dark-gray-color;
+    --dark-gray-color-10: $dark-gray-color-10;
+    --dark-gray-color-15: $dark-gray-color-15;
+    --dark-gray-color-20: $dark-gray-color-20;
+    --dark-gray-color-30: $dark-gray-color-30;
+    --dark-gray-color-40: $dark-gray-color-40;
+    --dark-gray-color-45: $dark-gray-color-45;
+    --dark-gray-color-5: $dark-gray-color-5;
+    --dark-gray-color-60: $dark-gray-color-60;
+    --dark-gray-color-75: $dark-gray-color-75;
+    --dark-gray-color-80: $dark-gray-color-80;
+    --dark-green: $dark-green;
+    --dark-green-20: $dark-green-20;
+    --dark-green-40: $dark-green-40;
+    --dark-green-60: $dark-green-60;
+    --dark-green-80: $dark-green-80;
+    --dark-violet: $dark-violet;
+    --dark-violet-20: $dark-violet-20;
+    --dark-violet-40: $dark-violet-40;
+    --dark-violet-60: $dark-violet-60;
+    --dark-violet-80: $dark-violet-80;
+    --fieldset-border: $fieldset-border;
+    --fieldset-header: $fieldset-header;
+    --green: $green;
+    --green-20: $green-20;
+    --green-40: $green-40;
+    --green-60: $green-60;
+    --green-80: $green-80;
+    --light-gray-color: $light-gray-color;
+    --light-gray-color-20: $light-gray-color-20;
+    --light-gray-color-40: $light-gray-color-40;
+    --light-gray-color-60: $light-gray-color-60;
+    --light-gray-color-80: $light-gray-color-80;
+    --orange: $orange;
+    --orange-20: $orange-20;
+    --orange-40: $orange-40;
+    --orange-60: $orange-60;
+    --orange-80: $orange-80;
+    --origin-base-color: $origin-base-color;
+    --petrol: $petrol;
+    --petrol-20: $petrol-20;
+    --petrol-40: $petrol-40;
+    --petrol-60: $petrol-60;
+    --petrol-80: $petrol-80;
+    --public-course-bgcolor: $public-course-bgcolor;
+    --red: $red;
+    --red-20: $red-20;
+    --red-40: $red-40;
+    --red-60: $red-60;
+    --red-80: $red-80;
+    --table-footer-color: $table-footer-color;
+    --table-header-color: $table-header-color;
+    --violet: $violet;
+    --violet-20: $violet-20;
+    --violet-40: $violet-40;
+    --violet-60: $violet-60;
+    --violet-80: $violet-80;
+    --white: $white;
+    --yellow: $yellow;
+    --yellow-20: $yellow-20;
+    --yellow-40: $yellow-40;
+    --yellow-60: $yellow-60;
+    --yellow-80: $yellow-80;
+}

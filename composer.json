@@ -5,5 +5,8 @@
     "require-dev": {
         "codeception/codeception": "*",
         "phpunit/phpunit": "5.7.27"
+    },
+    "require": {
+        "leafo/scssphp": "^0.7.7"
     }
 }

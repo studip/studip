@@ -1,0 +1,110 @@
+/*
+ * arrow.less - CSS arrows mixin
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       4.4
+ */
+
+%base {
+    position: relative;
+}
+
+@mixin arrow-pseudo($width, $color) {
+    border: $width solid fade-out($color, 1);
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+// TOP
+@mixin arrow-top($width, $color, $margin: $width) {
+    @extend %base;
+    margin-top: $margin;
+
+    &::before {
+        @include arrow-pseudo($width, $color);
+        border-bottom-color: $color;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -$width;
+    }
+}
+
+@mixin arrow-top-border($width, $color, $border-width, $border-color, $margin: $width) {
+    @include arrow-top($width, $border-color, $margin);
+    &::after {
+        @include arrow-pseudo($width - $border-width, $color);
+    }
+}
+
+// RIGHT
+@mixin arrow-right($width, $color, $margin: $width) {
+    @extend %base;
+    margin-right: $margin;
+
+    &::before {
+        @include arrow-pseudo($width, $color);
+        border-left-color: $color;
+        left: 100%;
+        top: 50%;
+        margin-top: -$width;
+    }
+}
+
+@mixin arrow-right-border($width, $color, $border-width, $border-color, $margin: $width) {
+    @include arrow-right($width, $border-color, $margin);
+    &::after {
+        @include arrow-pseudo($width - $border-width, $color);
+    }
+}
+
+// BOTTOM
+@mixin arrow-bottom($width, $color, $margin: $width) {
+    @extend %base;
+    margin-bottom: $margin;
+
+    &::before {
+        @include arrow-pseudo($width, $color);
+        border-top-color: $color;
+        top: 100%;
+        left: 50%;
+        margin-left: -$width;
+    }
+}
+
+@mixin arrow-bottom-border($width, $color, $border-width, $border-color, $margin: $width) {
+    @include arrow-bottom($width, $border-color, $margin);
+    &::after {
+        @include arrow-pseudo($width - $border-width, $color);
+    }
+}
+
+// LEFT
+@mixin arrow-left($width, $color, $margin: $width) {
+    @extend %base;
+    margin-left: $margin;
+
+    &::before {
+        @include arrow-pseudo($width, $color);
+        border-right-color: $color;
+        right: 100%;
+        top: 50%;
+        margin-top: -$width;
+    }
+}
+
+@mixin arrow-left-border($width, $color, $border-width, $border-color, $margin: $width) {
+    @include arrow-left($width, $border-color, $margin);
+    &::after {
+        @include arrow-pseudo($width - $border-width, $color);
+    }
+}

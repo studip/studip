@@ -9,6 +9,13 @@ else
 	RUN_TESTS = phpunit -c tests/phpunit.xml
 endif
 
+install: force_update
+	composer install --no-dev
+
+install-dev: force_update
+	npm install
+	svn revert package-lock.json
+	composer install --no-dev
 
 build: webpack-prod
 

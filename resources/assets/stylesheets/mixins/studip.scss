@@ -1,0 +1,180 @@
+/**
+ * studip-mixins.less
+ *
+ * This file contains all mixins created specifically for Stud.IP
+ * while mixins.less should contain a copy of the mixins from
+ * twitter's bootstrap.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of
+ * the License, or (at your option) any later version.
+ *
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
+ * @category    Stud.IP
+ * @since       4.4
+ */
+
+// Clearfix
+// --------
+// For clearing floats like a boss h5bp.com/q
+@mixin clearfix {
+    *zoom: 1;
+    &::before,
+    &::after {
+        display: table;
+        content: '';
+        // Fixes Opera/contenteditable bug:
+        // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+        line-height: 0;
+    }
+    &::after {
+        clear: both;
+    }
+}
+
+// CSS image replacement
+// -------------------------
+// Source: https://github.com/h5bp/html5-boilerplate/commit/aa0396eae757
+@mixin hide-text {
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+}
+
+
+
+@mixin background-icon($icon, $role: clickable, $size: 16) {
+    $icon: unquote($icon);
+    $role: unquote($role);
+
+    $color: 'blue';
+    @if $role == info {
+        $color: 'black';
+    } @else if $role == accept or $role == status-green {
+        $color: 'green';
+    } @else if $role == inactive {
+        $color: 'grey';
+    } @else if $role == navigation {
+        $color: 'lightblue';
+    } @else if $role == new or $role == attention or $role == status-red {
+        $color: 'red';
+    } @else if $role == info_alt or $role == info-alt {
+        $color: 'white';
+    } @else if $role == sort or $role == status-yellow {
+        $color: 'yellow';
+    }
+
+    @if unitless($size) {
+        $size: $size * 1px;
+    }
+
+    $svg: "#{$icon-path}/#{$color}/#{$icon}.svg";
+
+    background-image: url("#{$svg}");
+    background-size: $size;
+}
+
+@mixin icon($position, $icon, $role, $size: 16px, $padding: 0) {
+    $position: unquote($position);
+
+    @if unitless($size) {
+        @warn "Assuming icon size to be in pixels";
+        $size: $size * 1px;
+    }
+
+    @if $position == before or $position == after {
+        &::#{$position} {
+            @include background-icon($icon, $role, $size);
+            background-repeat: no-repeat;
+            content: ' ';
+            display: inline-block;
+            height: $size;
+            vertical-align: text-top;
+            width: $size;
+
+            @if position == before {
+                margin-right: $padding;
+            } @else {
+                margin-left: $padding;
+            }
+        }
+    }
+}
+
+// Scrollboxes
+// From http://lea.verou.me/2012/04/background-attachment-local/
+//  and http://dabblet.com/gist/6134408
+%scrollbox-vertical {
+    overflow: auto;
+
+    background:
+        /* Shadow covers */
+        linear-gradient(white 30%, rgba(255,255,255,0)),
+        linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background:
+        /* Shadow covers */
+        linear-gradient(white 30%, rgba(255,255,255,0)),
+        linear-gradient(rgba(255,255,255,0), white 70%) 0 100%,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+
+    /* Opera doesn't support this in the shorthand */
+    background-attachment: local, local, scroll, scroll;
+}
+
+%scrollbox-horizontal {
+    overflow: auto;
+
+    background:
+        /* Shadow covers */
+        linear-gradient(90deg, white 30%, rgba(255,255,255,0)),
+        linear-gradient(90deg, rgba(255,255,255,0), white 70%) 100% 0,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+    background:
+        /* Shadow covers */
+        linear-gradient(90deg, white 30%, rgba(255,255,255,0)),
+        linear-gradient(90deg, rgba(255,255,255,0), white 70%) 100% 0,
+
+        /* Shadows */
+        radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.2), rgba(0,0,0,0)),
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.2), rgba(0,0,0,0)) 100% 0;
+    background-repeat: no-repeat;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+
+    /* Opera doesn't support this in the shorthand */
+    background-attachment: local, local, scroll, scroll;
+}
+
+// Define action icons for widgets
+@mixin widget-action($action, $icon: $action, $role: clickable) {
+    .widget-action[data-action="#{$action}"] {
+        @include hide-text();
+
+        width: 16px;
+        height: 16px;
+
+        @include background-icon($icon, $role, 16px);
+
+        background-repeat: no-repeat;
+        cursor: pointer;
+        display: block;
+        // vertical-align: middle;
+
+        @content;
+    }
+}

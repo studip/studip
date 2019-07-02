@@ -57,7 +57,8 @@ trait PluginAssetsTrait
      */
     protected function addStylesheet($filename, array $variables = [], array $link_attr = [])
     {
-        if (mb_substr($filename, -5) !== '.less') {
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        if (!in_array($extension, ['less', 'scss'])) {
             PageLayout::addStylesheet(
                 "{$this->getPluginURL()}/{$filename}?v={$this->getPluginVersion()}",
                 $link_attr
@@ -65,18 +66,18 @@ trait PluginAssetsTrait
             return;
         }
 
-        // Create absolute path to less file
-        $less_file = $this->resolveFilename($filename);
+        // Create absolute path to asets file
+        $file = $this->resolveFilename($filename);
 
         // Get asset file from storage
         $asset = Assets\Storage::getFactory()->createCSSFile(
-            $less_file,
+            $file,
             $this->createMetaData()
         );
 
         // Compile asset if neccessary
         if ($asset->isNew()) {
-            $css = $this->readPluginAssetFile($less_file, $variables);
+            $css = $this->readPluginAssetFile($file, $variables);
             $asset->setContent($css);
         }
 
@@ -198,8 +199,14 @@ trait PluginAssetsTrait
     private function readPluginAssetFile($filename, array $variables = [])
     {
         $contents = file_get_contents($filename);
-        if (mb_substr($filename, -5) === '.less') {
-            $contents = Assets\Compiler::compileLESS($contents, $variables + [
+
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($extension === 'less') {
+            $contents = Assets\LESSCompiler::getInstance()->compile($contents, $variables + [
+                'plugin-path' => $this->getPluginURL(),
+            ]);
+        } elseif ($extension === 'scss') {
+            $contents = Assets\SASSCompiler::getInstance()->compile($contents, $variables + [
                 'plugin-path' => $this->getPluginURL(),
             ]);
         }

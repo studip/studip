@@ -1,4 +1,7 @@
 <?php
+// Autoloading from composer
+require 'composer/autoload.php';
+
 // Setup autoloading
 require 'lib/classes/StudipAutoloader.php';
 StudipAutoloader::register();

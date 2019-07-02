@@ -6,6 +6,8 @@ import 'es6-promise/auto'
 import "../stylesheets/studip-jquery-ui.less"
 import "chartist/dist/chartist.css"
 import "../stylesheets/studip.less"
+// Basic scss support
+import "../stylesheets/studip.scss"
 
 import lodash from "lodash"
 window._ = lodash

@@ -1,0 +1,142 @@
+//if you like, change this (your brand color)
+$base-color: #28497c; // #28497c
+
+
+//PLEASE, no changes from here
+//$base-gray: #3c454e; // #3c454e
+//calculated base gray
+$base-gray: hsl(hue($base-color),
+                saturation(#3c454e),
+                lightness(#3c454e));
+
+$brand-color-dark: $base-color;
+$brand-color-darker: hsl((hue($base-color) - 0.2),
+                         (saturation($base-color) + 4.5%),
+                         (lightness($base-color) - 4.7)); // #1f3f70;
+
+$brand-color-light: hsl(hue($base-color),
+                        (saturation($base-color) - 5.5%),
+                        (lightness($base-color) + 7)); // #36598f;
+
+$brand-color-lighter: hsl((hue($base-color) + 25),
+                          (saturation($base-color) - 46%),
+                          (lightness($base-color) + 23.9)); // #899ab9;
+/* This code calculates another activity color in case you dont wanna stick with red
+
+$active-color: hsv((hsvhue($red) - hsvhue($base-color) + hsvhue($origin-base-color)),
+hsvsaturation($red),
+hsvvalue($red));
+*/
+
+$black: #000000;
+$white: #fff;
+
+// Default studip base color
+$origin-base-color: #28497c; // #28497c
+
+$base-color-80: mix($base-color, #fff, 80%); // #536d96
+$base-color-60: mix($base-color, #fff, 60%); // #7e92b0
+$base-color-40: mix($base-color, #fff, 40%); // #a9b6cb
+$base-color-20: mix($base-color, #fff, 20%); // #d4dbe5
+
+$content-color: $brand-color-lighter;
+$content-color-80: mix($content-color, #fff, 80%); // #a1aec7
+$content-color-60: mix($content-color, #fff, 60%); // #b8c2d5
+$content-color-40: mix($content-color, #fff, 40%); // #d0d7e3
+$content-color-20: mix($content-color, #fff, 20%); // #e7ebf1
+$content-color-10: mix($content-color, #fff, 10%); // #e7ebf1
+
+$dark-gray-color: $base-gray;
+$dark-gray-color-80: mix($dark-gray-color, #fff, 80%); // #636a71
+$dark-gray-color-75: mix($dark-gray-color, #fff, 75%); // #6c737a
+$dark-gray-color-60: mix($dark-gray-color, #fff, 60%); // #898f94
+$dark-gray-color-45: mix($dark-gray-color, #fff, 45%); // #a7abaf
+$dark-gray-color-40: mix($dark-gray-color, #fff, 40%); // #b1b5b8
+$dark-gray-color-30: mix($dark-gray-color, #fff, 30%); // #c4c7c9
+$dark-gray-color-20: mix($dark-gray-color, #fff, 20%); // #d8dadc
+$dark-gray-color-15: mix($dark-gray-color, #fff, 15%); // #e1e3e4
+$dark-gray-color-10: mix($dark-gray-color, #fff, 10%); // #ebeced
+$dark-gray-color-5: mix($dark-gray-color, #fff, 5%); // #f5f5f6
+
+$light-gray-color: $dark-gray-color-75;
+$light-gray-color-80: $dark-gray-color-60;
+$light-gray-color-60: $dark-gray-color-45;
+$light-gray-color-40: $dark-gray-color-30;
+$light-gray-color-20: $dark-gray-color-15;
+
+//colors. a lot of.
+
+$yellow: #ffbd33;
+$yellow-80: mix($yellow, #fff, 80%); // #ffca5c
+$yellow-60: mix($yellow, #fff, 60%); // #ffd785
+$yellow-40: mix($yellow, #fff, 40%); // #ffe4ad
+$yellow-20: mix($yellow, #fff, 20%); // #fff2d6
+
+$orange: #f26e00;
+$orange-80: mix($orange, #fff, 80%); // #f58b33
+$orange-60: mix($orange, #fff, 60%); // #f7a866
+$orange-40: mix($orange, #fff, 40%); // #fac599
+$orange-20: mix($orange, #fff, 20%); // #fce2cc
+
+$red: #d60000;
+$red-80: mix($red, #fff, 80%); // #de3333
+$red-60: mix($red, #fff, 60%); // #e76666
+$red-40: mix($red, #fff, 40%); // #ef9999
+$red-20: mix($red, #fff, 20%); // #f7cccc
+
+$violet: #b02e7c;
+$violet-80: mix($violet, #fff, 80%); // #c05896
+$violet-60: mix($violet, #fff, 60%); // #d082b0
+$violet-40: mix($violet, #fff, 40%); // #dfabcb
+$violet-20: mix($violet, #fff, 20%); // #efd5e5
+
+$dark-violet: #682c8b;
+$dark-violet-80: mix($dark-violet, #fff, 80%); // #8656a2
+$dark-violet-60: mix($dark-violet, #fff, 60%); // #a480b9
+$dark-violet-40: mix($dark-violet, #fff, 40%); // #c2aad0
+$dark-violet-20: mix($dark-violet, #fff, 20%); // #e0d4e7
+
+$green: #6ead10;
+$green-80: mix($green, #fff, 80%); // #8bbd40
+$green-60: mix($green, #fff, 60%); // #a8ce70
+$green-40: mix($green, #fff, 40%); // #c5dea0
+$green-20: mix($green, #fff, 20%); // #e2efcf
+
+$dark-green: #008512;
+$dark-green-80: mix($dark-green, #fff, 80%); // #339d41
+$dark-green-60: mix($dark-green, #fff, 60%); // #66b570
+$dark-green-40: mix($dark-green, #fff, 40%); // #99cea0
+$dark-green-20: mix($dark-green, #fff, 20%); // #cce6cf
+
+$petrol: #129c94;
+$petrol-80: mix($petrol, #fff, 80%); // #41afaa
+$petrol-60: mix($petrol, #fff, 60%); // #70c3bf
+$petrol-40: mix($petrol, #fff, 40%); // #a0d7d4
+$petrol-20: mix($petrol, #fff, 20%); // #cfebe9
+
+$brown: #a85d45;
+$brown-80: mix($brown, #fff, 80%); // #b97d6a
+$brown-60: mix($brown, #fff, 60%); // #ca9eaf
+$brown-40: mix($brown, #fff, 40%); // #dcbeb4
+$brown-20: mix($brown, #fff, 20%); // #edded9
+
+$fieldset-header: $content-color-20;
+$fieldset-border: $base-color-20;
+
+// contrast colors
+$contrast-content-white: contrast($content-color, #ffffff, #000000, 67%);
+$contrast-content-gray: contrast($content-color, $dark-gray-color, #000000 , 67%);
+$contrast-content-hovergray: contrast($content-color, $dark-gray-color-10, $dark-gray-color);
+
+$public-course-bgcolor: $red;
+
+$table-header-color: $dark-gray-color-15;
+$table-footer-color: $dark-gray-color-15;
+
+$active-color: $red;
+
+$activity-color: $yellow;
+$activity-color-80: mix($activity-color, #fff, 80%); // #ffca5c
+$activity-color-60: mix($activity-color, #fff, 60%); // #ffd785
+$activity-color-40: mix($activity-color, #fff, 40%); // #ffe4ad
+$activity-color-20: mix($activity-color, #fff, 20%); // #fff2d6
