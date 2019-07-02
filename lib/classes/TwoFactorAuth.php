@@ -281,7 +281,7 @@ final class TwoFactorAuth
             if ($this->secret->validateToken($token)) {
                 $_SESSION[self::SESSION_FAILED] = [];
 
-                if ($data['global'] ?? false) {
+                if ($data['global'] ?: false) {
                     $this->registerSecretInSession();
 
                     if (Request::int('tfa-trusted')) {
@@ -289,7 +289,7 @@ final class TwoFactorAuth
                     }
                 }
 
-                if ($data['confirm'] ?? false) {
+                if ($data['confirm'] ?: false) {
                     if (!isset($_SESSION[self::SESSION_CONFIRMATIONS])) {
                         $_SESSION[self::SESSION_CONFIRMATIONS] = [];
                     }
