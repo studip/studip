@@ -17,12 +17,13 @@ require_once __DIR__ . '/studip_cli_env.inc.php';
 
 if (isset($_SERVER['argv'])) {
     # check for command line options
-    $options = getopt('d:lm:t:v');
+    $options = getopt('1:d:lm:t:v');
     if ($options === false) {
         exit(1);
     }
 
     # check for options
+    $single = false;
     $domain = 'studip';
     $list = false;
     $path = $STUDIP_BASE_PATH . '/db/migrations';
@@ -31,6 +32,9 @@ if (isset($_SERVER['argv'])) {
 
     foreach ($options as $option => $value) {
         switch ($option) {
+            case '1':
+                $single = (string) $value;
+                break;
             case 'd':
                 $domain = (string) $value;
                 break;
@@ -53,13 +57,20 @@ if (isset($_SERVER['argv'])) {
     $migrator = new Migrator($path, $version, $verbose);
 
     if ($list) {
-        $migrations = $migrator->relevant_migrations($target);
+        $migrations = $migrator->relevantMigrations($target);
 
         foreach ($migrations as $number => $migration) {
             $description = $migration->description() ?: '(no description)';
-            printf("%3d %-20s %s\n", $number, get_class($migration), $description);
+            printf("%3d %s\n", $number, $description);
         }
+    } elseif ($single) {
+        $direction = 'up';
+        if ($single[0] === '-') {
+            $direction = 'down';
+            $single = substr($single, 1);
+        }
+        $migrator->execute($single, $direction);
     } else {
-        $migrator->migrate_to($target);
+        $migrator->migrateTo($target);
     }
 }

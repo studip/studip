@@ -1,6 +1,4 @@
 <?php
-# Lifter007: TEST
-
 /**
  * Migration.php - abstract base class for migrations
  *
@@ -11,8 +9,7 @@
  * @license   GPL2 or any later version
  * @package   migrations
  */
-
-class Migration
+abstract class Migration
 {
     /**
      * use verbose output
@@ -28,7 +25,16 @@ class Migration
      */
     public function __construct($verbose = false)
     {
-        $this->verbose = (bool) $verbose;
+        $this->setVerbose($verbose);
+    }
+
+    /**
+     * Sets the verbose state of this migration.
+     * @param boolean $state Verbosity state
+     */
+    public function setVerbose($state = true)
+    {
+        $this->verbose = (bool) $state;
     }
 
     /**
@@ -64,23 +70,11 @@ class Migration
      */
     public function migrate($direction)
     {
-        switch ($direction) {
-            case 'up':
-                $this->announce('migrating');
-                break;
-            case 'down':
-                $this->announce('reverting');
-                break;
-            default:
+        if (!in_array($direction, ['up', 'down'])) {
             return;
         }
 
         $result = $this->$direction();
-
-        $action = $direction === 'up' ? 'migrated' : 'reverted';
-        $this->announce($action);
-
-        $this->write();
 
         return $result;
     }
@@ -108,8 +102,7 @@ class Migration
         # format message
         $args = func_get_args();
         $message = vsprintf(array_shift($args), $args);
-        $text = sprintf('== %s: %s ', get_class($this), $message);
 
-        return $this->write($text . ((mb_strlen($text)) < 79 ? str_repeat('=', 79 - mb_strlen($text)) : ''));
+        return $this->write(Migrator::mark($message));
     }
 }

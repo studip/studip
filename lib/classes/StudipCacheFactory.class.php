@@ -193,7 +193,7 @@ class StudipCacheFactory
         # default class
         if (is_null($cache_class)) {
             $version = new DBSchemaVersion();
-            if ($version->get() < 224) {
+            if (!$version->contains(224)) {
                 // db cache is not yet available, use StudipNullCache
                 return 'StudipNullCache';
             }

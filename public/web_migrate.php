@@ -55,19 +55,21 @@ if (Request::submitted('start')) {
 
     $lock->lock(['timestamp' => time(), 'user_id' => $GLOBALS['user']->id]);
 
-    $migrator->migrate_to($target);
+    $migrator->migrateTo($target);
 
     $lock->release();
 
     $announcements = ob_get_clean();
     PageLayout::postSuccess(
         _('Die Datenbank wurde erfolgreich migriert.'),
-        explode("\n", $announcements)
+        array_filter(explode("\n", $announcements))
     );
+    $version = new DBSchemaVersion('studip');
+    $migrator = new Migrator($path, $version, $verbose);
 }
 
 $current = $version->get();
-$migrations = $migrator->relevant_migrations($target);
+$migrations = $migrator->relevantMigrations($target);
 
 PageLayout::setTitle(_('Stud.IP Web-Migrator'));
 $widget = Sidebar::get()->addWidget(new SidebarWidget());

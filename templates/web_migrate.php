@@ -11,13 +11,11 @@
 </p>
 <table class="default">
     <colgroup>
-        <col width="50px">
-        <col width="25%">
+        <col width="120px">
         <col>
     <thead>
         <tr>
             <th style="text-align: right;"><?= _('Nr.') ?></th>
-            <th><?= _('Name') ?></th>
             <th><?= _('Beschreibung') ?></th>
         </tr>
     </thead>
@@ -26,9 +24,6 @@
         <tr>
             <td style="text-align: right;">
                 <?= $number ?>
-            </td>
-            <td>
-                <?= get_class($migration) ?>
             </td>
             <td>
             <? if ($migration->description()): ?>

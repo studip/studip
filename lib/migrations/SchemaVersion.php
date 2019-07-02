@@ -1,6 +1,4 @@
 <?php
-# Lifter007: TEST
-
 /**
  * SchemaVersion.php - schema version interface for migrations
  *
@@ -8,37 +6,40 @@
  * version of a schema. Implementations of this interface need to define
  * where the version information is actually stored (e.g. in a file).
  *
- * @author Marcus Lunzenauer <mlunzena@uos.de>
+ * @author    Marcus Lunzenauer <mlunzena@uos.de>
  * @copyright 2007 - Marcus Lunzenauer <mlunzena@uos.de>
- * @license GPL2 or any later version
- * @package migrations
+ * @license   GPL2 or any later version
+ * @package   migrations
  */
-class SchemaVersion
+interface SchemaVersion
 {
     /**
-     * Returns current schema version.
+     * Returns current schema version (as maximum number).
      *
      * @return int schema version
      */
-    public function get()
-    {
-        trigger_error(
-            sprintf('%s() must be overridden.', __METHOD__),
-            E_USER_ERROR
-        );
-    }
-
+    public function get();
 
     /**
-     * Sets the new schema version.
+     * Returns whether the given version is already present for the given
+     * domain.
      *
-     * @param int $version new schema version
+     * @param  int $version Version number
+     * @return bool
      */
-    public function set($version)
-    {
-        trigger_error(
-            sprintf('%s() must be overridden.', __METHOD__),
-            E_USER_ERROR
-        );
-    }
+    public function contains($version);
+
+    /**
+     * Adds a schema version.
+     *
+     * @param int $version schema version
+     */
+    public function add($version);
+
+    /**
+     * Removes a schema version.
+     *
+     * @param int $version schema version
+     */
+    public function remove($version);
 }

@@ -723,16 +723,7 @@ function get_users_online_count($active_time = 10)
         $query = "SELECT COUNT(*) FROM user_online
                   WHERE last_lifesign > ?";
         $statement = DBManager::get()->prepare($query);
-        try {
-            $statement->execute([time() - $active_time * 60]);
-        } catch (PDOException $e) {
-            $version = new DBSchemaVersion('studip');
-            if ($version->get() < 98) {
-                Log::ALERT('get_users_online_count() failed. Check migration no. 98!');
-            } else {
-                throw $e;
-            }
-        }
+        $statement->execute([time() - $active_time * 60]);
         $online_count = $statement->fetchColumn();
         $cache->write("online_count/{$active_time}", $online_count, 180);
     }

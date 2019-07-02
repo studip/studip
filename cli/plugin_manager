@@ -108,7 +108,7 @@ if ($args) {
             if (is_dir($plugindir . '/migrations')) {
                 $schema_version = new DBSchemaVersion($manifest['pluginname']);
                 $migrator = new Migrator($plugindir . '/migrations', $schema_version);
-                $migrator->migrate_to(null);
+                $migrator->migrateTo(null);
             }
 
             // now register the plugin in the database
@@ -170,7 +170,7 @@ if ($args) {
                         $migrator = new Migrator($plugindir . '/migrations', $schema_version, $verbose);
 
                         if ($list) {
-                            $migrations = $migrator->relevant_migrations($target);
+                            $migrations = $migrator->relevantMigrations($target);
 
                             foreach ($migrations as $number => $migration) {
                                 $description = $migration->description() ?: '(no description)';
@@ -178,7 +178,7 @@ if ($args) {
                                 printf("%3d %-20s %s\n", $number, get_class($migration), $description);
                             }
                         } else {
-                            $migrator->migrate_to($target);
+                            $migrator->migrateTo($target);
                         }
 
                         exit(0);
