@@ -5,27 +5,19 @@
 }
 
 .hover_box div {
-  display: inline;
+    display: inline;
 }
 .hover_box .action_icons {
-  display: inline;
-  margin-left: 15px;
+    display: inline;
+    margin-left: 15px;
 }
 
 .condition {
     margin-left: 20px;
 }
 
-.userlist_user a {
-    visibility: hidden;
-}
-
-.userlist_user:hover a {
-    visibility: visible;
-}
-
 .check_actions {
-  font-weight: normal;
+    font-weight: normal;
 }
 
 .check_actions a {
