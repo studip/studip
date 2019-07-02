@@ -113,7 +113,7 @@ class TFASecret extends SimpleORMap
      */
     public function getToken($timestamp = null)
     {
-        return $this->getTOTP($this->secret)->at($timestamp ?? time());
+        return $this->getTOTP($this->secret)->at($timestamp ?: time());
     }
 
     /**
