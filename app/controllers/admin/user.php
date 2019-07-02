@@ -1189,6 +1189,18 @@ class Admin_UserController extends AuthenticatedController
     }
 
     /**
+     * Reset two factor authentication for user
+     * @param $user_id
+     */
+    public function reset_tfa_action($user_id)
+    {
+        if (TFASecret::deleteByUser_id($user_id)) {
+            PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde für diese Person deaktiviert.'));
+        }
+        $this->redirect('admin/user/edit/' . $user_id);
+    }
+
+    /**
      * Show user activities
      * @param $user_id
      * @throws Exception
@@ -1592,6 +1604,14 @@ class Admin_UserController extends AuthenticatedController
                 _('Alle Dateien des Nutzers aus Veranstaltungen und Einrichtungen als ZIP herunterladen'),
                 $this->url_for("admin/user/download_user_files/{$this->user->user_id}"),
                 Icon::create('folder-full')
+            );
+        }
+
+        if ($this->user->id !== $GLOBALS['user']->id && TFASecret::exists($this->user->id)) {
+            $user_actions->addLink(
+                _('Zwei-Faktor-Authentisierung deaktivieren'),
+                $this->url_for("admin/user/reset_tfa/{$this->user->id}"),
+                Icon::create('code-qr')
             );
         }
 

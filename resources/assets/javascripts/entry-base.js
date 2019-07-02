@@ -26,6 +26,7 @@ import "./init.js"
 import "./chunk-loader.js"
 
 import "./studip-ui.js"
+import "./bootstrap/tfa.js"
 import "./bootstrap/tables.js"
 import "./bootstrap/studip_helper_attributes.js"
 import "./bootstrap/header_magic.js"

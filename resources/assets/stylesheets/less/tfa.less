@@ -1,0 +1,62 @@
+.tfa-app-code {
+    code.qr {
+        display: none;
+    }
+    .qrcode img {
+        margin: auto;
+        width: 40%;
+        max-width: 50vw;
+    }
+}
+
+form.default {
+    .tfa-code-input {
+        text-align: center;
+        .tfa-code-wrapper {
+            border: 1px solid @base-gray;
+            display: inline-block;
+            font-size: 2em;
+            line-height: 2em;
+            margin: 0.5em 0;
+        }
+
+        input[type="number"] {
+            background: @dark-gray-color-10;
+            border: 0;
+            box-sizing: unset;
+            font-family: monospace;
+            height: 1em;
+            min-width: 0;
+            width: 1.5ex;
+            margin: 0;
+            padding: 0.5em 0.25em;
+            text-align: center;
+
+            color: @base-gray;
+            &:focus {
+                background-color: @activity-color-20;
+                color: #000;
+                outline: 0;
+            }
+            &:invalid {
+                box-shadow: none;
+                color: #888;
+                outline: 0;
+            }
+
+            &:nth-child(3) {
+                margin-right: 0.5em;
+            }
+
+            // Hide spinner elements
+            -moz-appearance: textfield;
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+                /* display: none; <- Crashes Chrome on hover */
+                -webkit-appearance: none;
+                margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+            }
+        }
+    }
+}

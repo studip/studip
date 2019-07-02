@@ -9,8 +9,7 @@ const QRCode = {
         jQuery('#qr_code').append("<div class='url'/>");
         jQuery('#qr_code').append("<div class='description'/>");
 
-        var code = new QRCodeGenerator(jQuery('#qr_code .code')[0], {
-            text: jQuery(this).attr('href'),
+        QRCode.generate($('#qr_code .code')[0], this.href, {
             width: 1280,
             height: 1280,
             correctLevel: 3
@@ -30,6 +29,14 @@ const QRCode = {
             qr.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
         }
         return false;
+    },
+    generate: function (element, text, options = {}) {
+        options.text = text;
+        if (!options.hasOwnProperty('correctLevel')) {
+            options.correctLevel = 3;
+        }
+
+        var qrcode = new QRCodeGenerator(element, options);
     }
 };
 

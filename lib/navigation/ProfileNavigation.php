@@ -110,6 +110,10 @@ class ProfileNavigation extends Navigation
                     $navigation->addSubNavigation('api', new Navigation(_('API-Berechtigungen'), 'dispatch.php/api/authorizations'));
                 }
 
+                if (TwoFactorAuth::isEnabledForUser()) {
+                    $navigation->addSubNavigation('tfa', new Navigation(_('Zwei-Faktor-Authentisierung'), 'dispatch.php/tfa'));
+                }
+
                 $this->addSubNavigation('settings', $navigation);
             }
 

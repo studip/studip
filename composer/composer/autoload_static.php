@@ -4,27 +4,55 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0e4428552ef234e9f79f700ed4e5e89e
+class ComposerStaticInit6473f01de0108359f91ac788374346a3
 {
+    public static $files = array (
+        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'ParagonIE\\ConstantTime\\' => 23,
+        ),
+        'O' => 
+        array (
+            'OTPHP\\' => 6,
+        ),
         'L' => 
         array (
             'Leafo\\ScssPhp\\' => 14,
         ),
+        'A' => 
+        array (
+            'Assert\\' => 7,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'ParagonIE\\ConstantTime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
+        ),
+        'OTPHP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spomky-labs/otphp/src',
+        ),
         'Leafo\\ScssPhp\\' => 
         array (
             0 => __DIR__ . '/..' . '/leafo/scssphp/src',
+        ),
+        'Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/beberlei/assert/lib/Assert',
         ),
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0e4428552ef234e9f79f700ed4e5e89e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0e4428552ef234e9f79f700ed4e5e89e::$prefixDirsPsr4;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6473f01de0108359f91ac788374346a3::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6473f01de0108359f91ac788374346a3::$prefixDirsPsr4;
 
         }, null, ClassLoader::class);
     }

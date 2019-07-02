@@ -99,6 +99,8 @@ if ($auth->is_authenticated() && is_object($user) && $user->id != "nobody") {
         }
         $user_did_login = true;
     }
+
+    TwoFactorAuth::get()->secureSession();
 }
 
 // init of output via I18N
