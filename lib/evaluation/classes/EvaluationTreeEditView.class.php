@@ -2166,7 +2166,7 @@ function createButtonbar ( $show = ARRANGMENT_BLOCK ){
         $child->getChildren() == NULL &&
         $child->getText == ""){
 
-        $a_content = LinkButton::createCancel(_('s'),
+        $a_content = LinkButton::createCancel(_('Abbrechen'),
                 URLHelper::getURL(EVAL_FILE_ADMIN. "?evalID=").$this->tree->eval->getObjectID()."&abort_creation_button=1",
                 ['title' => _("Erstellung einer Evaluation abbrechen")]);
 
