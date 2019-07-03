@@ -2,8 +2,8 @@ table.default {
     tr.has-subcourses {
         border-bottom: 1px solid $dark-gray-color-75;
     }
-    tr.subcourses {
 
+    tr.subcourses {
         background-color: $dark-gray-color-5;
 
         td:nth-child(-n+4) {
