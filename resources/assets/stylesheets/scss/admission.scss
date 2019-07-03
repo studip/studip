@@ -1,0 +1,27 @@
+#rulelist div.admissionrule {
+    display: list-item;
+    list-style-type: disc;
+    margin-left: 25px;
+}
+
+.hover_box {
+    div {
+        display: inline;
+    }
+    .action_icons {
+        display: inline;
+        margin-left: 15px;
+    }
+}
+
+.condition {
+    margin-left: 20px;
+}
+
+.check_actions {
+    font-weight: normal;
+
+    a {
+        cursor: pointer;
+    }
+}
