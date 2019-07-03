@@ -31,7 +31,7 @@ class TfaController extends AuthenticatedController
         $this->secret->type = Request::option('type', 'email');
         $this->secret->store();
 
-        PageLayout::postSuccess(_('Die Zwei-Faktor-Authorisierung wurde eingerichtet'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde eingerichtet'));
         $this->redirect('tfa/confirm');
     }
 
@@ -48,7 +48,7 @@ class TfaController extends AuthenticatedController
             ['global' => true]
         );
 
-        PageLayout::postSuccess(_('Die Authorisierung wurde bestätigt.'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde aktiviert.'));
         $this->redirect('tfa/index');
     }
 
@@ -61,7 +61,7 @@ class TfaController extends AuthenticatedController
 
         $this->secret->delete();
 
-        PageLayout::postSuccess(_('Das Einrichten der Zwei-Faktor-Authorisierung wurde abgebrochen.'));
+        PageLayout::postSuccess(_('Das Einrichten der Zwei-Faktor-Authentisierung wurde abgebrochen.'));
         $this->redirect('tfa/index');
     }
 
@@ -74,7 +74,7 @@ class TfaController extends AuthenticatedController
 
         $this->secret->delete();
 
-        PageLayout::postSuccess(_('Die Authorisierung wurde aufgehoben.'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde deaktiviert.'));
         $this->redirect('tfa/index');
     }
 }
