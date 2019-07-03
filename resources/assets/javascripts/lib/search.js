@@ -326,10 +326,9 @@ const Search = {
     showFilter: function (category) {
         var filters = $('#search-results').data('filters');
         STUDIP.Search.hideAllFilters();
-        var active_filters = filters[category];
-        if (active_filters  && category != 'show_all_categories') {
-            for (let i = 0; i < active_filters.length; i++) {
-                $(`#${active_filters[i]}_filter`).show();
+        if (filters && filters.hasOwnProperty(category) && category != 'show_all_categories') {
+            for (let i = 0; i < filters[category].length; i++) {
+                $(`#${filters[category][i]}_filter`).show();
             }
         } else if (category === 'show_all_categories') {
             $('#semester_filter').show();
