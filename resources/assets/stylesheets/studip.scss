@@ -2,9 +2,9 @@
   Standard-Stylesheet für Stud.IP im Safire-Design
   - use http://www.colorzilla.com/gradient-editor/ for gradients
 *******************************************************************************/
-@import "mixins.scss";
+@import "mixins";
 
-@import "scss/variables.scss";
-@import "scss/tooltip.scss";
-@import "scss/admission.scss";
-@import "scss/my_courses.scss";
+@import "scss/variables";
+@import "scss/tooltip";
+@import "scss/admission";
+@import "scss/my_courses";
