@@ -32,10 +32,6 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
         array (
             'Leafo\\ScssPhp\\' => 14,
         ),
-        'A' => 
-        array (
-            'Assert\\' => 7,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -63,9 +59,15 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
         array (
             0 => __DIR__ . '/..' . '/leafo/scssphp/src',
         ),
-        'Assert\\' => 
+    );
+
+    public static $prefixesPsr0 = array (
+        'A' => 
         array (
-            0 => __DIR__ . '/..' . '/beberlei/assert/lib/Assert',
+            'Assert' => 
+            array (
+                0 => __DIR__ . '/..' . '/beberlei/assert/lib',
+            ),
         ),
     );
 
@@ -74,6 +76,7 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
