@@ -9,12 +9,32 @@
 class MigrationTest extends PHPUnit_Framework_TestCase
 {
     protected $migrator;
+    protected $before = null;
 
     public function setUp()
     {
+        $this->before = isset($GLOBALS['CACHING_ENABLE'])
+                      ? $GLOBALS['CACHING_ENABLE']
+                      : null;
+        $GLOBALS['CACHING_ENABLE'] = false;
+
+        require_once 'lib/classes/StudipCache.class.php';
+        require_once 'lib/classes/StudipNullCache.class.php';
+        require_once 'lib/classes/StudipCacheFactory.class.php';
+        require_once 'lib/models/SimpleORMap.class.php';
+
         require_once 'lib/migrations/Migration.php';
         require_once 'lib/migrations/Migrator.php';
         require_once 'lib/migrations/SchemaVersion.php';
+    }
+
+    public function tearDown()
+    {
+        if ($this->before !== null) {
+            $GLOBALS['CACHING_ENABLE'] = $this->before;
+        } else {
+            unset($GLOBALS['CACHING_ENABLE']);
+        }
     }
 
     private function getSchemaVersion()

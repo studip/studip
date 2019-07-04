@@ -292,7 +292,7 @@ class Migrator
 
         # migrate up
         if ($this->target_version > 0
-            && $this->target_version >= $this->topVersion())
+            && $this->target_version >= $this->schema_version->get())
         {
             $this->direction = 'up';
         }
