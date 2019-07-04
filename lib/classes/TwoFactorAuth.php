@@ -51,6 +51,17 @@ final class TwoFactorAuth
         return in_array($user->perms, $valid_perms);
     }
 
+    public static function removeCookie()
+    {
+        // Remove cookie
+        setcookie(
+            self::COOKIE_KEY,
+            '',
+            strtotime('-1 year'),
+            $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP']
+        );
+    }
+
     private $secret = null;
 
     /**
@@ -131,7 +142,7 @@ final class TwoFactorAuth
         // User has already confirmed this session?
         if (isset($_SESSION[self::SESSION_KEY])) {
             list($code, $timeslice) = array_values($_SESSION[self::SESSION_KEY]);
-            if ($this->secret->validateToken($code, $timeslice, true)) {
+            if ($this->secret->validateToken($code, (int) $timeslice, true)) {
                 return;
             }
             unset($_SESSION[self::SESSION_KEY]);
@@ -140,18 +151,12 @@ final class TwoFactorAuth
         // Trusted computer?
         if (isset($_COOKIE[self::COOKIE_KEY])) {
             list($code, $timeslice) = explode(':', $_COOKIE[self::COOKIE_KEY]);
-            if ($this->secret->validateToken($code, $timeslice, true)) {
+            if ($this->secret->validateToken($code, (int) $timeslice, true)) {
                 $this->registerSecretInSession();
                 return;
             }
 
-            // Remove cookie
-            setcookie(
-                self::COOKIE_KEY,
-                '',
-                strtotime('-1 year'),
-                $GLOBALS['CANONICAL_RELATIVE_PATH_STUDIP']
-            );
+            self::removeCookie();
         }
 
         $this->showConfirmationScreen('', [

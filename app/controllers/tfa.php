@@ -73,6 +73,7 @@ class TfaController extends AuthenticatedController
         );
 
         $this->secret->delete();
+        TwoFactorAuth::removeCookie();
 
         PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde deaktiviert.'));
         $this->redirect('tfa/index');
