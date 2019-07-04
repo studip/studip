@@ -14,9 +14,7 @@
 
 namespace Assert;
 
-use Throwable;
-
-interface AssertionFailedException extends Throwable
+interface AssertionFailedException
 {
     public function getPropertyPath();
 

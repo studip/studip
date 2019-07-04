@@ -65,11 +65,11 @@ class TFASecret extends SimpleORMap
     public function setNew($is_new)
     {
         // TODO: Remove second condition when we can actually use PHP7
-        if ($is_new && version_compare(PHP_VERSION, '7.0.0') >= 0) {
+        if ($is_new) {
             if (!$this->isNew()) {
                 return;
             }
-            $this->secret    = TOTP::create()->getSecret();
+            $this->secret    = (new TOTP())->getSecret();
             $this->confirmed = false;
         }
 
@@ -172,7 +172,11 @@ class TFASecret extends SimpleORMap
      */
     private function getTOTP()
     {
-        return TOTP::create($this->secret, self::$types[$this->type]['period']);
+        return new TOTP(
+            $this->user->email,
+            $this->secret,
+            self::$types[$this->type]['period']
+        );
     }
 
     /**
@@ -183,7 +187,6 @@ class TFASecret extends SimpleORMap
     public function getProvisioningUri()
     {
         $totp = $this->getTOTP();
-        $totp->setLabel($this->user->email);
         $totp->setIssuer(Config::get()->UNI_NAME_CLEAN);
         return $totp->getProvisioningUri();
     }

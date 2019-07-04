@@ -8,6 +8,6 @@
     },
     "require": {
         "leafo/scssphp": "^0.8.4",
-        "spomky-labs/otphp": "^9.1"
+        "spomky-labs/otphp": "^8.3"
     }
 }

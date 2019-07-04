@@ -20,7 +20,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements Asse
     private $value;
     private $constraints;
 
-    public function __construct($message, $code, $propertyPath, $value, array $constraints = [])
+    public function __construct($message, $code, $propertyPath, $value, array $constraints = array())
     {
         parent::__construct($message, $code);
 
