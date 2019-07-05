@@ -79,6 +79,7 @@ import "./bootstrap/settings.js"
 import "./bootstrap/subcourses.js"
 import "./bootstrap/widgets.js"
 import "./bootstrap/tabbable_widget.js"
+import "./bootstrap/gradebook.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"

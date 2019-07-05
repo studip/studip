@@ -23,6 +23,7 @@ class Privacy
             'DatafieldEntryModel',
             'UserConfig',
             'HelpTourUser',
+            'Grading\Instance',
             'LogEvent',
         ],
         'date' => [
