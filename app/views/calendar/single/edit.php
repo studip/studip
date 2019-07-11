@@ -33,15 +33,27 @@
             <input type="text" name="start_date" id="start-date" value="<?= strftime('%x', $event->getStart()) ?>" size="12" required>
         </label>
 
-        <label class="col-3">
+        <div class="col-3">
             <?= _('Uhrzeit') ?>
 
             <div class="hgroup">
-                <input class="size-s no-hint" type="text" name="start_hour" value="<?= date('G', $event->getStart()) ?>" size="2" maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
+                <input class="size-s no-hint"
+                       type="text"
+                       name="start_hour"
+                       value="<?= date('G', $event->getStart()) ?>"
+                       size="2"
+                       maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>
+                       aria-label="Stunde">
                 :
-                <input class="size-s no-hint" type="text" name="start_minute" value="<?= date('i', $event->getStart()) ?>" size="2" maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
+                <input class="size-s no-hint"
+                       type="text"
+                       name="start_minute"
+                       value="<?= date('i', $event->getStart()) ?>"
+                       size="2"
+                       maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>
+                       aria-label="Minuten">
             </div>
-        </label>
+        </div>
 
         <section class="required">
             <?= _('Ende') ?>
@@ -52,15 +64,27 @@
             <input type="text" name="end_date" id="end-date" value="<?= strftime('%x', $event->getEnd()) ?>" size="12" required>
         </label>
 
-        <label class="col-3">
+        <div class="col-3">
             <?= _('Uhrzeit') ?>
 
             <div class="hgroup">
-                <input class="size-s no-hint" type="text" name="end_hour" value="<?= date('G', $event->getEnd()) ?>" size="2" maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
+                <input class="size-s no-hint"
+                       type="text"
+                       name="end_hour"
+                       value="<?= date('G', $event->getEnd()) ?>"
+                       size="2"
+                       aria-label="Stunde"
+                       maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
                 :
-                <input class="size-s no-hint" type="text" name="end_minute" value="<?= date('i', $event->getEnd()) ?>" size="2" maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
+                <input class="size-s no-hint"
+                       type="text"
+                       name="end_minute"
+                       value="<?= date('i', $event->getEnd()) ?>"
+                       size="2"
+                       aria-label="Minuten"
+                       maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
             </div>
-        </label>
+        </div>
 
         <label>
             <span class="required">
