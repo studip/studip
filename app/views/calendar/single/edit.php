@@ -73,7 +73,7 @@
                        name="end_hour"
                        value="<?= date('G', $event->getEnd()) ?>"
                        size="2"
-                       aria-label="Stunde"
+                       aria-label="<?= _("Stunde") ?>"
                        maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
                 :
                 <input class="size-s no-hint"
@@ -81,7 +81,7 @@
                        name="end_minute"
                        value="<?= date('i', $event->getEnd()) ?>"
                        size="2"
-                       aria-label="Minuten"
+                       aria-label="<?= _("Minuten") ?>"
                        maxlength="2"<?= $event->isDayEvent() ? ' disabled' : '' ?>>
             </div>
         </div>
