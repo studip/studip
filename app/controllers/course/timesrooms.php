@@ -227,16 +227,9 @@ class Course_TimesroomsController extends AuthenticatedController
                     $course->setEndSemester($end_semester);
                 }
                 $old_start_weeks = isset($course->start_semester) ? $course->start_semester->getStartWeeks($course->duration_time) : [];
-                // If the new duration includes the current semester, we set the semester-chooser to the current semester
-                if ($current_semester->beginn >= $course->getStartSemester() && $current_semester->beginn <= $course->getEndSemesterVorlesEnde()) {
-                    $course->setFilter($current_semester->beginn);
-                    $this->semester_filter = $current_semester->semester_id;
-                } else {
-                    // otherwise we set it to the first semester
-                    $course->setFilter($course->getStartSemester());
-                    $this->semester_filter = $start_semester->semester_id;
-                }
-
+                // set the semester-chooser to the first semester
+                $course->setFilter($course->getStartSemester());
+                $this->semester_filter = $start_semester->semester_id;
 
                 $course->store();
 
@@ -245,6 +238,7 @@ class Course_TimesroomsController extends AuthenticatedController
                 $cycles = SeminarCycleDate::findBySeminar_id($course->seminar_id);
                 foreach ($cycles as $cycle) {
                     $cycle->end_offset = $this->getNewEndOffset($cycle, $old_start_weeks, $new_start_weeks);
+                    $cycle->generateNewDates();
                     $cycle->store();
                 }
 
@@ -1052,7 +1046,7 @@ class Course_TimesroomsController extends AuthenticatedController
             }
         }
         if ($new_offset_value == 0) {
-            return count($new_start_weeks);
+            return count($new_start_weeks) - 1;
         }
 
         return $new_offset_value;

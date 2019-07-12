@@ -306,7 +306,7 @@ class SeminarCycleDate extends SimpleORMap
             || $old_cycle->end_offset != $this->end_offset
             || $old_cycle->cycle != $this->cycle )
         {
-            $update_count = $this->generateNewDates($old_cycle);
+            $update_count = $this->generateNewDates();
         }
 
         StudipLog::log('SEM_CHANGE_CYCLE', $this->seminar_id, NULL,
@@ -368,11 +368,15 @@ class SeminarCycleDate extends SimpleORMap
                 $update_count++;
             }
         }
-        $this->restore();
+        $this->resetRelation('dates');
+        $this->resetRelation('exdates');
         return $update_count;
     }
 
-    private function generateNewDates($old_cycle)
+    /**
+     * Generate any currently missing single dates for this cycle.
+     */
+    public function generateNewDates()
     {
         $course = Course::find($this->seminar_id);
         $topics = [];
@@ -406,7 +410,8 @@ class SeminarCycleDate extends SimpleORMap
             }
         }
         //restore for updated singledate entries
-        $this->restore();
+        $this->resetRelation('dates');
+        $this->resetRelation('exdates');
 
         //create start timestamp
         $new_dates = $this->createTerminSlots($this->calculateTimestamp(
