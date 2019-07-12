@@ -39,7 +39,7 @@ class Search_StudiengaengeController extends MVVController
 
         $this->breadcrumb = new BreadCrumb();
         $this->action = $action;
-        $this->verlauf_url = '/verlauf';
+        $this->verlauf_url = 'search/studiengaenge/verlauf';
         PageLayout::setTitle(_('Modulverzeichnis - Studiengänge'));
     }
 
@@ -145,13 +145,16 @@ class Search_StudiengaengeController extends MVVController
         }
 
         if (!$this->verlauf_url) {
-            $this->verlauf_url = '/verlauf';
+            $this->verlauf_url = 'search/studiengang/verlauf';
         }
 
         if(count($this->studiengang->stgteil_assignments) == 1) {
             foreach($this->studiengang->stgteil_assignments as $assignment) {
-                $url = $this->verlauf_url . '/' . $assignment->stgteil_id . '/'. $assignment->stgteil_bez_id . '/' . $assignment->studiengang_id;
-                $response = $this->relay($url);
+                $response = $this->relay(
+                        $this->verlauf_url,
+                        $assignment->stgteil_id,
+                        $assignment->stgteil_bez_id,
+                        $assignment->studiengang_id);
                 $this->content = $response->body;
                 $this->render_template('shared/content', $this->layout);
             }

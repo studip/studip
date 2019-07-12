@@ -41,6 +41,7 @@ class Search_AngebotController extends MVVController
 
         $this->breadcrumb = new BreadCrumb();
         $this->action = $action;
+        $this->verlauf_url = 'search/angebot/verlauf';
     }
 
     protected static function IsVisible()
@@ -167,7 +168,6 @@ class Search_AngebotController extends MVVController
 
     public function studiengang_action($studiengang_id)
     {
-        $this->verlauf_url = 'search/angebot/verlauf';
         $response = $this->relay('search/studiengaenge/studiengang', $studiengang_id);
         $this->content = $response->body;
         $this->render_template('shared/content', $this->layout);
