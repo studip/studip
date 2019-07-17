@@ -2391,7 +2391,8 @@ class Seminar
                 if (isDefaultDeputyActivated()) {
                     $other_dozenten = array_diff(array_keys($dozenten), [$user_id]);
                     foreach (Deputy::findByRange_id($user_id) as $default_deputy) {
-                        if (!Deputy::countBySql("range_id IN (?)", [$other_dozenten])) {
+                        if ($default_deputy->user_id != $GLOBALS['user']->id &&
+                                !Deputy::countBySql("range_id IN (?)", [$other_dozenten])) {
                             Deputy::deleteBySQL("range_id = ? AND user_id = ?", [$this->id, $default_deputy->user_id]);
                         }
                     }
