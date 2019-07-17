@@ -165,12 +165,12 @@ class FileManager
     /**
      * Returns the icon for a given file ref.
      *
-     * @param FileRef $ref        The file ref whose icon is requested.
-     * @param string  $role       The requested role
-     * @param array   $attributes Optional additional attributes
-     * @return Icon The icon for the file ref.
+     * @param FileRef|stdClass $ref        The file ref whose icon is requested.
+     * @param string           $role       The requested role
+     * @param array            $attributes Optional additional attributes
+     * @return Icon                        The icon for the file ref.
      */
-    public static function getIconForFileRef(FileRef $ref, $role = Icon::ROLE_CLICKABLE, array $attributes = [])
+    public static function getIconForFileRef($ref, $role = Icon::ROLE_CLICKABLE, array $attributes = [])
     {
         if ($ref->is_link) {
             return Icon::create('link-extern', $role, $attributes);
