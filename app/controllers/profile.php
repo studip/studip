@@ -441,13 +441,10 @@ class ProfileController extends AuthenticatedController
         $username = Request::username('username');
         $current  = User::findCurrent();
 
-        $current->contacts = $current->contacts->filter(function ($contact) use ($username) {
-            return $contact->username !== $username;
-        });
-
-        $current->store();
-
-        PageLayout::postSuccess(_('Der Kontakt wurde entfernt.'));
+        $contact = Contact::find([$current->id, User::findByUsername($username)->id]);
+        if ($contact && $contact->delete()) {
+            PageLayout::postSuccess(_('Der Kontakt wurde entfernt.'));
+        }
         $this->redirect('profile/index?username=' . $username);
     }
     /**

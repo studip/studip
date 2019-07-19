@@ -63,6 +63,17 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
     }
 
     /**
+     * find and return all contactgroup entries
+     *
+     * @param Contact $contact
+     * @return StatusgruppeUser[]
+     */
+    public function findByContact(Contact $contact)
+    {
+        return self::findBySQL("INNER JOIN `statusgruppen` USING(`statusgruppe_id`) WHERE `statusgruppen`.`range_id` = ? AND `statusgruppe_user`.`user_id` = ?", [$contact->owner_id, $contact->user_id]);
+    }
+
+    /**
      * Prevents invisible users from being displayed
      *
      * @return string Fullname if visible else string for invisible user

@@ -15,24 +15,32 @@
  * @property User owner belongs_to User
  * @property User friend belongs_to User
  */
-class Contact extends SimpleORMap {
+class Contact extends SimpleORMap
+{
 
-    protected static function configure($config = []) {
+    protected static function configure($config = [])
+    {
 
         $config['db_table'] = 'contact';
         $config['belongs_to']['owner'] = [
-            'class_name' => 'User',
+            'class_name'  => 'User',
             'foreign_key' => 'owner_id'
         ];
         $config['belongs_to']['friend'] = [
-            'class_name' => 'User',
+            'class_name'  => 'User',
             'foreign_key' => 'user_id'
         ];
         $config['has_many']['group_assignments'] = [
-            'class_name' => 'StatusgruppeUser',
-            'foreign_key' => 'user_id',
-            'assoc_foreign_key' => 'user_id',
-            'on_store' => 'store'
+            'class_name'        => 'StatusgruppeUser',
+            'assoc_func'        => 'findByContact',
+            'foreign_key'       => function ($me) {
+                return [$me];
+            },
+            'assoc_foreign_key' => function ($group, $params) {
+                $group->setValue('user_id', $params[0]->user_id);
+            },
+            'on_store'          => 'store',
+            'on_delete'         => 'delete'
         ];
 
 
