@@ -52,17 +52,6 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
             'on_store'  => 'store',
         ];
 
-        $config['additional_fields']['range_object'] = [
-            'get' => function ($object, $field) {
-                $range_object = Course::find($object->group->range_id);
-                if (!$range_object) {
-                    $range_object = Institute::find($object->group->range_id);
-                }
-                return $range_object;
-            },
-            'set' => false];
-
-
         $config['additional_fields']['vorname']     = ['user', 'vorname'];
         $config['additional_fields']['nachname']    = ['user', 'nachname'];
         $config['additional_fields']['username']    = ['user', 'username'];

@@ -58,6 +58,18 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
             'class_name'  => 'Statusgruppen',
             'foreign_key' => 'range_id',
         ];
+        $config['belongs_to']['course'] = [
+            'class_name'  => 'Course',
+            'foreign_key' => 'range_id',
+        ];
+        $config['belongs_to']['institute'] = [
+            'class_name'  => 'Institute',
+            'foreign_key' => 'range_id',
+        ];
+        $config['belongs_to']['user'] = [
+            'class_name'  => 'User',
+            'foreign_key' => 'range_id',
+        ];
         $config['additional_fields']['children'] = true;
 
         $config['default_values']['position'] = null;
