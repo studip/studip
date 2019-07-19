@@ -81,6 +81,12 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
                 $params[':institution_ids'] = $model->range_object->institutes->pluck('institut_id');
             } elseif ($model->range_object && is_a($model->range_object, 'Institute')) {
                 $params[':institution_ids'] = [$model->range_id];
+            } else {
+                /**
+                 *the range_id is a user_id because the statusgroup-object is used
+                 *as a Contactgroup in the personal Community page.
+                 */
+                $params[':institution_ids'] = [];
             }
             $object_class = 255;
             $object_type = 'userinstrole';
