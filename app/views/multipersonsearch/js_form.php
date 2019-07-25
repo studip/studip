@@ -1,6 +1,6 @@
 <div class="mpscontainer" data-dialogname="<?= $name; ?>">
 <form method="POST" class="default" action="<?= URLHelper::getLink('dispatch.php/multipersonsearch/js_form_exec/?name=' . $name); ?>" id="<?= $name; ?>" <?= $data_dialog_status ? 'data-dialog' : ''?> <?= $jsFunction ? ' onSubmit="return '.htmlReady($jsFunction).'(this);"' : "" ?>
-      data-secure="li.ms-elem-selectable:gt(0), li.ms-selected:gt(0)">
+      data-secure="li.ms-selected:gt(0)">
     <fieldset>
         <legend>
             <?= $title ?: _('Nach Personen suchen') ?>
