@@ -267,6 +267,8 @@ class ExportPDF extends TCPDF implements ExportDocument {
         $ht = ($ht == '' ? $this->h_title : $ht);
         $hs = ($hs == '' ? $this->h_string : $hs);
 
+        parent::resetHeaderTemplate();
+
         parent::setHeaderData($ln, $lw, $ht, $hs);
     }
 
