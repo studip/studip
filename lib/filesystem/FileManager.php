@@ -437,8 +437,7 @@ class FileManager
         $data_file = null;
 
         if (!$source->file) {
-            if ($update_other_references) {
-            } else {
+            if (!$update_other_references) {
                 if (!$update_filename) {
                     $uploaded_file_data['name'] = $source->name;
                 } else {
@@ -474,6 +473,7 @@ class FileManager
             if ($update_filename) {
                 $data_file->name = $uploaded_file_data['name'];
             }
+            $data_file->user_id = $user->id;
             $data_file->store();
         } else {
             // If we want to keep the old version of the file in all other
@@ -531,6 +531,16 @@ class FileManager
                 }
             }
         }
+
+        // Update author
+        FileRef::findEachBySQL(
+            function ($ref) use ($user) {
+                $ref->user_id = $user->id;
+                $ref->store();
+            },
+            'file_id = :file_id',
+            ['file_id' => $source->file_id]
+         );
 
         //Everything went fine: Return the updated $source FileRef:
         return $source;
