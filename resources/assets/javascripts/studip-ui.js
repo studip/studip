@@ -504,7 +504,15 @@
             }
         }
     });
-    $.datepicker.setDefaults(defaults);
+    $.datepicker.setDefaults($.extend(defaults, {
+        onClose: function (date, inst) {
+            $(this).one('click.picker', function () {
+                $(this).datepicker('show');
+            }).on('blur', function () {
+                $(this).off('click.picker');
+            });
+        }
+    }));
     $.timepicker.setDefaults(defaults);
 
     // Attach global focus handler on date picker elements
