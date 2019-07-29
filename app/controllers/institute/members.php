@@ -165,8 +165,7 @@ class Institute_MembersController extends AuthenticatedController
                     return $group->members->pluck('user_id');
                 })));
                 $institut_members = $this->institute->members->filter(function ($member) use ($assigned) {
-                    if (!$GLOBALS['perm']->have_perm('admin')
-                            && !($member->visible && $member->user->visible !== 'never')) {
+                    if (!$GLOBALS['perm']->have_perm('admin') && $member->user->visible === 'never') {
                         return false;
                     }
                     if ($member->inst_perms === 'user') {
@@ -191,7 +190,7 @@ class Institute_MembersController extends AuthenticatedController
 
             foreach ($inst_permissions as $key => $permission) {
                 $institut_members = $this->institute->members->filter(function ($member) use ($key) {
-                    if (!$GLOBALS['perm']->have_perm('admin') && !($member->visible && $member->user->visible !== 'never')) {
+                    if (!$GLOBALS['perm']->have_perm('admin') && $member->user->visible === 'never') {
                         return false;
                     }
 
@@ -208,7 +207,7 @@ class Institute_MembersController extends AuthenticatedController
             }
         } else {
             $institut_members = $this->institute->members->filter(function ($member) {
-                if (!$GLOBALS['perm']->have_perm('admin') && !($member->visible && $member->user->visible !== 'never')) {
+                if (!$GLOBALS['perm']->have_perm('admin') && $member->user->visible === 'never') {
                     return false;
                 }
 
@@ -250,7 +249,7 @@ class Institute_MembersController extends AuthenticatedController
                 if ($member->inst_perms === 'user') {
                     return false;
                 }
-                if (!$GLOBALS['perm']->have_perm('admin') && !($member->visible && $member->user->visible !== 'never')) {
+                if (!$GLOBALS['perm']->have_perm('admin') && $member->user->visible === 'never') {
                     return false;
                 }
                 return $group->isMember($member->user_id);
