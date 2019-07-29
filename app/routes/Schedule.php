@@ -63,7 +63,9 @@ class Schedule extends \RESTAPI\RouteMap
     {
         $json = [];
         foreach (['start', 'end', 'content', 'title', 'color', 'type'] as $key) {
-            $json[$key] = $entry[$key];
+            $json[$key] = in_array($key, ['start', 'end'])
+                        ? (int) $entry[$key]
+                        : $entry[$key];
         }
 
         return $json;
