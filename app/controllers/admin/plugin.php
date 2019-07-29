@@ -598,7 +598,7 @@ class Admin_PluginController extends AuthenticatedController
             CSRFProtection::verifyUnsafeRequest();
             $this->check_ticket();
             if (!$plugin_id) {
-                $plugin_id = $this->plugin_admin->installPluginFromURL(Request::get("automatic_update_url"));
+                $plugin_id = $this->plugin_admin->installPluginFromURL(Request::get('automatic_update_url'));
                 $this->plugin = PluginManager::getInstance()->getPluginInfoById($plugin_id);
             }
             $token = $this->plugin['automatic_update_secret'] ?: md5(uniqid());
@@ -609,21 +609,21 @@ class Admin_PluginController extends AuthenticatedController
                 WHERE pluginid = :id
             ");
             $statement->execute([
-                'id' => $plugin_id,
-                'url' => Request::get("automatic_update_url"),
-                'secret' => Request::get("use_security_token") ? $token : null
+                'id'     => $plugin_id,
+                'url'    => Request::get('automatic_update_url'),
+                'secret' => Request::get('use_security_token') ? $token : null
             ]);
-            PageLayout::postMessage(MessageBox::success(_("Daten gespeichert.")));
-            if (Request::get("use_security_token")) {
-                PageLayout::postMessage(MessageBox::info(_("Unten können Sie den Security Token jetzt heraus kopieren.")));
+            PageLayout::postMessage(MessageBox::success(_('Daten gespeichert.')));
+            if (Request::get('automatic_update_url') && Request::get('use_security_token')) {
+                PageLayout::postInfo(_('Unten können Sie den Security Token jetzt heraus kopieren.'));
             }
-            $this->redirect("admin/plugin/edit_automaticupdate/".$plugin_id);
+            $this->redirect("admin/plugin/edit_automaticupdate/{$plugin_id}");
         }
 
         if ($plugin_id) {
-            PageLayout::setTitle(sprintf(_("Automatisches Update für %s"), $this->plugin['name']));
+            PageLayout::setTitle(sprintf(_('Automatisches Update für %s'), $this->plugin['name']));
         } else {
-            PageLayout::setTitle(_("Plugin von URL installieren"));
+            PageLayout::setTitle(_('Plugin von URL installieren'));
         }
     }
 

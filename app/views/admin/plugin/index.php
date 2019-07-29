@@ -66,6 +66,12 @@ use Studip\Button, Studip\LinkButton;
                         </td>
                         <td <? if (!$plugin['enabled']) echo 'class="quiet"'; ?>>
                             <?= htmlReady($update_info[$pluginid]['version']) ?>
+                        <? if ($plugin['automatic_update_url']): ?>
+                            <?= Icon::create('plugin+move_down', Icon::ROLE_STATUS_RED)->asImg([
+                                'title' => _('Automatische Updates sind eingerichtet'),
+                                'style' => 'vertical-align: text-bottom',
+                            ]) ?>
+                        <? endif; ?>
                         </td>
                         <td <? if (!$plugin['enabled']) echo 'class="quiet"'; ?>>
                         <? if (!$plugin['depends']) : ?>
@@ -73,7 +79,7 @@ use Studip\Button, Studip\LinkButton;
                             <? if ($migrations[$pluginid]['schema_version'] < $migrations[$pluginid]['migration_top_version']): ?>
                                 <a href="<?= $controller->url_for('admin/plugin/migrate/' . $pluginid) ?>"
                                    title="<?= sprintf(_('Update auf Version %d verfügbar'), $migrations[$pluginid]['migration_top_version']) ?>">
-                                    <?= Icon::create('plugin+new', 'clickable') ?>
+                                    <?= Icon::create('plugin+new') ?>
                                 </a>
                             <? endif; ?>
                         <? endif; ?>
@@ -105,7 +111,8 @@ use Studip\Button, Studip\LinkButton;
                                         'title' => $plugin['automatic_update_url']
                                                  ? _('Automatisches Update verwalten (eingerichtet)')
                                                  : _('Automatisches Update verwalten')
-                                    ])
+                                    ]),
+                                    ['data-dialog' => 'size=auto;reload-on-close']
                                 ) ?>
                             <? endif ?>
                             <? if (!$plugin['depends'] && isset($update_info[$pluginid]['version']) && !$plugin['core']): ?>
