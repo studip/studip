@@ -55,7 +55,7 @@ class Schedule extends \RESTAPI\RouteMap
 
        $this->etag(md5(serialize($json)));
 
-       return $json;
+       return array_reverse($json, true);
     }
 
 
