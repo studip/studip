@@ -22,7 +22,7 @@ function get_group_names($group_field, $groups)
     foreach ($groups as $key => $value) {
         switch ($group_field){
             case 'sem_number':
-            $ret[$key] = $all_semester[$key]['name'];
+            $ret[$key] = (string) $all_semester[$key]['name'];
             break;
 
             case 'sem_tree_id':
