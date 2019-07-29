@@ -534,7 +534,7 @@ class TourController extends AuthenticatedController
         if (!$this->help_admin) {
             throw new AccessDeniedException();
         }
-        
+
         // initialize
         PageLayout::setTitle(_('Versions-Konflikte der Touren'));
         PageLayout::setHelpKeyword('Basis.TourAdmin');
@@ -592,7 +592,7 @@ class TourController extends AuthenticatedController
      * @param String $tour_id tour id
      * @throws AccessDeniedException
      */
-    function admin_details_action($tour_id = '')
+    public function admin_details_action($tour_id = '')
     {
         // check permission
         if (!$this->help_admin) {
@@ -608,12 +608,15 @@ class TourController extends AuthenticatedController
         }
 
         $this->tour = new HelpTour($tour_id);
-        if ($tour_id AND $this->tour->isNew()) {
+        if ($tour_id && $this->tour->isNew()) {
             throw new AccessDeniedException(_('Die Tour mit der angegebenen ID existiert nicht.'));
         }
 
         foreach ($this->tour->steps as $step) {
-            if (Request::option('delete_tour_step') == $step->step) {
+            if (Request::option('confirm_delete_tour_step') == $step->step) {
+                CSRFProtection::verifyUnsafeRequest();
+                $this->delete_step($this->tour->id, $step->step);
+            } elseif (Request::option('delete_tour_step') == $step->step) {
                 $this->delete_question = $this->delete_step($this->tour->tour_id, $step->step);
                 if (Request::submitted('yes') || Request::submitted('no')) {
                     $this->redirect('tour/admin_details/' . $this->tour->tour_id);
@@ -636,7 +639,7 @@ class TourController extends AuthenticatedController
      * @param String $tour_id tour id
      * @throws AccessDeniedException
      */
-    function save_action($tour_id = '')
+    public function save_action($tour_id = '')
     {
         // check permission
         if (!$this->help_admin) {

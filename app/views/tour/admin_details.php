@@ -147,18 +147,18 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('tour/edit_step/' . $tour->tour_id . '/' . $step->step),
                             _('Schritt bearbeiten'),
-                            Icon::create('edit', 'clickable', ['title' => _('Schritt bearbeiten')]),
+                            Icon::create('edit'),
                             ['data-dialog' => 'size=auto;reload-on-close']
                         ) ?>
                         <? $actionMenu->addLink(
                             $controller->url_for('tour/admin_details/' . $tour->tour_id, ['delete_tour_step' => $step->step]),
                             _('Schritt löschen'),
-                            Icon::create('edit', 'clickable', ['title' => _('Schritt löschen')])
+                            Icon::create('trash')
                         ) ?>
                         <? $actionMenu->addLink(
                             $controller->url_for('tour/edit_step/' . $tour->tour_id . '/' . ($step->step + 1) . '/new'),
                             _('Neuen Schritt hinzufügen'),
-                            Icon::create('add', 'clickable', ['title' => _('Neuen Schritt hinzufügen')]),
+                            Icon::create('add'),
                             ['data-dialog' => 'size=auto;reload-on-close']
                         ) ?>
                             <?= $actionMenu->render() ?>
