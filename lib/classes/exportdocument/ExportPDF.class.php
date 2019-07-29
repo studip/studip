@@ -333,7 +333,10 @@ class ExportPDF extends TCPDF implements ExportDocument {
                 }
             }
         }
-        return 'src="' . $convurl . '"';
+
+        $file_content = @file_get_contents($convurl);
+        $file_content = base64_encode($file_content);
+        return 'src="@' . $file_content . '"';
     }
 
     /**
