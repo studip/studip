@@ -31,8 +31,6 @@ class Pagination
     private $show_page = false;
 
     /**
-     * Private constructor to enforce singleton.
-     *
      * Checks current page ranges for validity.
      *
      * @param  int $total        Total number of entries
