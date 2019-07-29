@@ -229,7 +229,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             default:
                 foreach (['global', 'inst', 'sem', 'user'] as $type) {
                     $add_news = StudipNews::GetNewsRangesByFilter($user_id, $type, $term, $startdate, $enddate, $as_objects, $limit);
-                    if (is_array($add_news)) {
+                    if (is_array($add_news) && isset($add_news[$type])) {
                         $limit          = $limit - count($add_news[$type]);
                         $news_result    = array_merge($news_result, $add_news);
                     }
