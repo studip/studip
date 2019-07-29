@@ -71,10 +71,13 @@ form.default {
 
     label:not(.undecorated) {
         display: block;
-        margin-top: 1.5ex;
         max-width: 100%;
         text-indent: 0.25ex;
         vertical-align: top;
+
+        &:not(:first-of-type) {
+            margin-top: 1.5ex;
+        }
 
         input[type=date], input[type=email], input[type=number],
         input[type=password], input[type=text], input[type=time], input[type=tel], input[type=url],
@@ -129,7 +132,7 @@ form.default {
         border: solid 1px @content-color-40;
         margin: 0 0 10px;
         padding: 10px;
-        padding-top: 0px;
+        padding-top: 1.5ex;
 
         > legend {
             box-sizing: border-box;
