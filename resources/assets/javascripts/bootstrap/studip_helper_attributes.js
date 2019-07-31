@@ -80,9 +80,7 @@ $(document).on('change', '[data-activates],[data-deactivates]', function() {
 });
 
 STUDIP.ready((event) => {
-    $('[data-activates],[data-deactivates]', event.target)
-        .filter(':checked')
-        .trigger('change');
+    $('[data-activates],[data-deactivates]', event.target).trigger('change');
 });
 
 // Use a select as a toggle switch for the disabled attribute of another
