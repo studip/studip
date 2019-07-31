@@ -56,6 +56,22 @@ div.at_least_one_teacher {
                     transform: rotate(90deg);
                 }
             }
+
+            // Flex aligment center so that elements won't stick to the top
+            header {
+                align-items: center;
+            }
+
+            // Show visual toggle indicator
+            header h1 a {
+                .icon('before', 'arr_1right', 'clickable');
+            }
+
+            &.open {
+                header h1 a::before {
+                    transform: rotate(90deg);
+                }
+            }
         }
     }
     article header {
