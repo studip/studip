@@ -284,7 +284,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
      */
     public function writeHTML ($html, $ln = true, $fill = false, $reseth = false, $cell = false, $align = '')
     {
-        $html = preg_replace_callback('/src="(.*)"/U', function ($m) {return $this->convertURL($m[1]);}, $html);
+        $html = preg_replace_callback('/src="([^@].*)"/U', function ($m) {return $this->convertURL($m[1]);}, $html);
         parent::writeHTML($html, $ln, $fill, $reseth, $cell, $align);
     }
 
