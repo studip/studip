@@ -9,9 +9,9 @@
     ]) ?>
 
     <footer data-dialog-button>
-        <?= Studip\Button::create(_('Speichern')) ?>
+        <?= Studip\Button::createAccept(_('Speichern')) ?>
         <?= Studip\LinkButton::createCancel(
-            _('Abbrechen'),
+            _('Lizenzauswahl abbrechen'),
             $controller->url_for((in_array($folder->range_type, ['course', 'institute']) ? $folder->range_type . '/' : '') . 'files/index/' . $folder->id)
         ) ?>
     </footer>

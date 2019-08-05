@@ -97,6 +97,7 @@ const Files = {
                 }
             }).done(function(json) {
                 $('.file_upload_window .uploadbar').css('background-size', '100% 100%');
+
                 if (json.redirect) {
                     Dialog.fromURL(json.redirect, {
                         title:
@@ -111,17 +112,20 @@ const Files = {
                         .parent()
                         .append(json.message);
                 } else {
-                    $.each(json.new_html, function(index, tr) {
-                        Files.addFile(tr, index * 200);
-                    });
                     Dialog.close();
+                }
+
+                if (json.new_html) {
+                    $.each(json.new_html, function(index, tr) {
+                        Files.addFile(tr, index * 200, !json.redirect);
+                    });
                 }
             });
         } else {
             $('.file_upload_window .uploadbar').hide();
         }
     },
-    addFile: function(payload, delay) {
+    addFile: function(payload, delay, hide_dialog = true) {
         if (delay === undefined) {
             delay = 0;
         }
@@ -133,10 +137,10 @@ const Files = {
             html = payload.html;
         }
 
-        if (!redirect) {
-            window.setTimeout(Dialog.close, 20);
-        } else {
+        if (redirect) {
             Dialog.fromURL(redirect);
+        } else if (hide_dialog) {
+            window.setTimeout(Dialog.close, 20);
         }
 
         if ($('table.documents').length > 0) {

@@ -95,8 +95,7 @@ class FileController extends AuthenticatedController
                     //If no terms of use is set for the file ref
                     //we must set it to a default terms of use
                     //and update the fileref.
-                    if (!$fileref->content_terms_of_use_id
-                        and $default_license) {
+                    if (!$fileref->content_terms_of_use_id && $default_license) {
                         $fileref->content_terms_of_use_id = $default_license->id;
                         if ($fileref->isDirty()) {
                             $fileref->store();
@@ -104,13 +103,15 @@ class FileController extends AuthenticatedController
                     }
                     $storedFiles[] = $fileref;
                 }
-                if (count($storedFiles) > 0 && !Request::isXhr()) {
+                if (count($storedFiles) > 0) {
                     PageLayout::postSuccess(
                         sprintf(
                             _('Es wurden %s Dateien hochgeladen'),
                             count($storedFiles)
                         ),
-                        array_map('htmlready', $storedFiles)
+                        array_map(function ($file) {
+                            return htmlReady($file->name);
+                        }, $storedFiles)
                     );
                 }
             } else {
@@ -140,7 +141,7 @@ class FileController extends AuthenticatedController
                         $ref_ids[] = $file_ref->getId();
                     }
                     $output['redirect'] = $this->url_for('file/edit_license', [
-                        'file_refs' => $ref_ids
+                        'file_refs' => $ref_ids,
                     ]);
                 }
 
