@@ -8,8 +8,12 @@ function enhanceSortableTable(table) {
 
     if ($('tbody tr[data-sort-fixed]', table).length > 0) {
         $('tbody tr[data-sort-fixed]', table).each(function() {
-            var index = $(this).index();
-            $(this).data('sort-fixed', index);
+            $(this).data('sort-fixed', {
+                index: $(this).index(),
+                tbody: $(this).closest('table').find('tbody').index($(this).parent())
+            });
+
+            console.log('position', $(this).data('sort-fixed'));
         });
         $(table)
             .on('sortStart', function() {
@@ -22,20 +26,15 @@ function enhanceSortableTable(table) {
                 $('tbody tr[data-sort-fixed]', table)
                     .detach()
                     .each(function() {
-                        var index = $(this).data('sort-fixed');
-                        if ($('tbody tr', table).length === 0) {
-                            $('tbody:first', table).append(this);
+                        var pos = $(this).data('sort-fixed');
+                        if ($(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`).length > 0) {
+                            $(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`, table).before(this);
                         } else {
-                            $('tbody tr:eq(' + index + ')', table).before(this);
+                            $(`tbody:eq(${pos.tbody})`).append(this);
                         }
 
                         if ($(this).data('sort-hidden')) {
-                            setTimeout(
-                                function() {
-                                    $(this).hide();
-                                }.bind(this),
-                                100
-                            );
+                            setTimeout(() => $(this).hide(), 100);
                         }
                     });
             });
