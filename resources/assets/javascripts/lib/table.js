@@ -12,8 +12,6 @@ function enhanceSortableTable(table) {
                 index: $(this).index(),
                 tbody: $(this).closest('table').find('tbody').index($(this).parent())
             });
-
-            console.log('position', $(this).data('sort-fixed'));
         });
         $(table)
             .on('sortStart', function() {
