@@ -206,7 +206,10 @@ class StudipCacheFactory
             return $cache_class;
         }
 
-        $loaded = @include $cache_class_file;
+        $loaded = false;
+        if (file_exists($cache_class_file) || file_exists($GLOBALS['STUDIP_BASE_PATH'] . '/' . $cache_class_file)) {
+            $loaded = include $cache_class_file;
+        }
         if ($loaded === FALSE || !class_exists($cache_class)) {
             # TODO (mlunzena) a more specific exception would be welcome here
             throw new Exception("Could not find class: '$cache_class'");
