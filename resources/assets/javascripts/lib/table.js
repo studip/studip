@@ -28,7 +28,7 @@ function enhanceSortableTable(table) {
                         if ($(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`, table).length > 0) {
                             $(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`, table).before(this);
                         } else {
-                            $(`tbody:eq(${pos.tbody})`).append(this);
+                            $(`tbody:eq(${pos.tbody})`, table).append(this);
                         }
 
                         if ($(this).data('sort-hidden')) {
