@@ -25,7 +25,7 @@ function enhanceSortableTable(table) {
                     .detach()
                     .each(function() {
                         var pos = $(this).data('sort-fixed');
-                        if ($(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`).length > 0) {
+                        if ($(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`, table).length > 0) {
                             $(`tbody:eq(${pos.tbody}) tr:eq(${pos.index})`, table).before(this);
                         } else {
                             $(`tbody:eq(${pos.tbody})`).append(this);
