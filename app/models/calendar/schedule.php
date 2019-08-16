@@ -543,8 +543,8 @@ class CalendarScheduleModel
      * @return array
      */
     static function addDayChooser($entries, $days, $controller = 'schedule') {
-        $day_names  = [_("Montag"),_("Dienstag"),_("Mittwoch"),
-            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag")];
+        $day_names  = [_("Mo"),_("Di"),_("Mi"),
+            _("Do"),_("Fr"),_("Sa"),_("So")];
 
         $ret = [];
 

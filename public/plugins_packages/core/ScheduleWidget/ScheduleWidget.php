@@ -35,7 +35,12 @@ class ScheduleWidget extends StudIPPlugin implements PortalPlugin
      */
     public function getPortalTemplate()
     {
-        $view = CalendarScheduleModel::getUserCalendarView($GLOBALS['user']->id);
+        $view = CalendarScheduleModel::getUserCalendarView(
+            $GLOBALS['user']->id,
+            false,
+            false,
+            $days = array(0,1,2,3,4)
+        );
 
         $template = $GLOBALS['template_factory']->open('shared/string');
         $template->content = CalendarWidgetView::createFromWeekView($view)->render();
