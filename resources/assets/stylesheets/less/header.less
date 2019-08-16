@@ -184,3 +184,19 @@
     position: relative;
     z-index: 3;
 }
+
+// Slide menu in header navigation
+#barBottomLeft {
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding: 0;
+    text-indent: -150px;
+    transition: all 500ms;
+}
+body.fixed {
+    #barBottomLeft {
+        overflow-x: visible;
+        padding: 0 15px;
+        text-indent: 0;
+    }
+}
