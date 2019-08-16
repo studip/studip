@@ -1,15 +1,13 @@
 /* Tooltips for Stud.IP with CSS3 only -------------------------------------- */
 %tooltip {
-    @include arrow-bottom-border(9px, $light-gray-color-20, 1px, $light-gray-color-60, 5px);
+    @include arrow-bottom-border(9px, $dark-gray-color-5, 1px, $dark-gray-color-30, 5px);
 
-    background-color: $light-gray-color-20;
-    border: 2px solid $light-gray-color-60;
-    border-radius: 4px;
+    background-color: $dark-gray-color-5;
+    border: 1px solid $dark-gray-color-30;
     box-shadow: 0 1px 0 fade-out(#fff, 0.5) inset;
     font-size: $font-size-base;
     margin-bottom: 8px;
     max-width: 230px;
-    opacity: 0.95;
     padding: 10px;
     position: absolute;
     text-align: left;
