@@ -36,7 +36,7 @@ body:not(.fixed) #barTopMenu {
         }
 
         img {
-            margin: 5px 0px;
+            margin: 10px 0px;
             .square(28px);
         }
         &[data-badge]:not([data-badge="0"]) {
@@ -73,6 +73,8 @@ body:not(.fixed) #barTopMenu {
             transform: translate(-50%, 0);
 
             opacity: 0;
+            margin-top: -10px;
+            font-size: 0.9em;
         }
     }
 
@@ -193,6 +195,7 @@ body:not(.fixed) #barTopMenu {
                     flex: 1 0 100%;
                     text-align: left;
                     white-space: nowrap;
+                    //margin-top: -10px;
                 }
                 br {
                     display: none;

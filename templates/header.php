@@ -160,7 +160,6 @@ if (isset($_COOKIE['navigation-length'])) {
                         'title'  => '',
                         'alt'    => '',
                     ]) ?>
-                    <br>
                     <div class="navtitle">
                         <?= _('Mehr') ?>&hellip;
                     </div>

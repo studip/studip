@@ -13,3 +13,7 @@ $(window).on('resize', _.debounce(STUDIP.NavigationShrinker, 100));
 
 // Shrink on domready
 STUDIP.domReady(STUDIP.NavigationShrinker);
+
+STUDIP.domReady(() => {
+    $(".new_context").removeClass("contextless");
+});

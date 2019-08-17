@@ -53,7 +53,7 @@ body:not(.fixed) #barTopMenu {
     }
 
     .overflow li:hover {
-        .border-beneath('light', 2px, 2px);
+        .border-beneath('light', 2px, 3px);
         &::after {
             transform: translate(0, -4px);
         }
@@ -66,10 +66,10 @@ body:not(.fixed) #barTopMenu {
             line-height: 25px;
         }
         &.current {
-            .border-beneath('dark', -2px, 2px);
+            .border-beneath('dark', -2px, 3px);
         }
         &:not(.current) {
-            .border-beneath('light', -2px, 2px);
+            .border-beneath('light', -2px, 3px);
             &:not(:hover)::after {
                 .border-shrink();
             }

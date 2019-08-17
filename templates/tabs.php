@@ -8,6 +8,7 @@ foreach (Navigation::getItem("/")->getSubNavigation() as $path => $nav) {
 $ebene3 = [];
 ?>
 <div class="tabs_wrapper">
+    <div class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></div>
     <? SkipLinks::addIndex(_('Erste Reiternavigation'), 'tabs', 10); ?>
     <ul id="tabs" role="navigation">
         <? if (!empty($navigation)): ?>

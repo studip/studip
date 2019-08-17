@@ -46,7 +46,6 @@ foreach ($attributes as $key => $value) {
 <li id="nav_<?= $path ?>"<? if ($nav->isActive()) : ?> class="active"<? endif ?>>
     <a href="<?= URLHelper::getLink($nav->getURL(), $link_params) ?>" <?= $attr_str ?>>
         <?= $nav->getImage()->asImg(['class' => 'headericon original', 'title' => null]) ?>
-        <br>
         <div class="navtitle"><?= htmlReady($nav->getTitle()) ?></div>
     </a>
 </li>

@@ -131,6 +131,9 @@ if (Request::int('disable_plugins') !== null && ($user->id === 'nobody' || $perm
 // load the default set of plugins
 PluginEngine::loadPlugins();
 
+// add the plugin-pages to navigation tree
+//StudipNavigation::initNavigationPlugins();
+
 // add navigation item: add modules
 if ((Navigation::hasItem('/course/admin') || $GLOBALS['perm']->have_perm('admin'))
     && ($perm->have_studip_perm('tutor', Context::getId()) && Context::isCourse())

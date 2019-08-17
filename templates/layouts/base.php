@@ -86,13 +86,34 @@ if ($navigation) {
 
     <? include 'lib/include/header.php' ?>
 
-    <div id="layout_page">
+    <? if ($_SESSION['NEW_CONTEXT']) {
+        unset($_SESSION['NEW_CONTEXT']);
+        $new_context = true;
+    } ?>
+    <div id="layout_page"<?= Context::get() ? ($new_context ? ' class="new_context contextless"' : '') : ' class="contextless"' ?>>
+
         <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
             <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>
         <? endif ?>
 
+        <? if (Context::get()) : ?>
+            <div id="layout_context_title">
+                <? $membership = CourseMember::find(array(Context::get()->id, $GLOBALS['user']->id)) ?>
+                <div class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></div>
+                <div class="context_title">
+                    <? if (Context::isCourse()) : ?>
+                        <?= Icon::create("seminar", "info")->asImg(20, ['class' => "context_icon"]) ?>
+                        <?= htmlReady($GLOBALS['SEM_TYPE'][Context::get()->status]['name'].": ".Context::get()->name) ?>
+                    <? elseif (Context::isInstitute()) : ?>
+                        <?= Icon::create("institute", "info")->asImg(20, ['class' => "context_icon"]) ?>
+                        <?= htmlReady(Context::get()->name) ?>
+                    <? endif ?>
+                </div>
+            </div>
+        <? endif ?>
+
         <? if (PageLayout::isHeaderEnabled() /*&& isset($navigation)*/) : ?>
-            <?= $this->render_partial('tabs', compact('navigation')) ?>
+            <?= $this->render_partial('tabs', compact('navigation', 'membership')) ?>
         <? endif; ?>
 
         <?
@@ -112,13 +133,6 @@ if ($navigation) {
             }
         }
         ?>
-        <div id="page_title_container">
-            <div id="current_page_title">
-                <?= htmlReady(PageLayout::getTitle()) ?>
-                <?= $public_hint ? '(' . htmlReady($public_hint) . ')' : '' ?>
-            </div>
-
-         </div>
 
         <div id="layout_container">
             <?= Sidebar::get()->render() ?>
