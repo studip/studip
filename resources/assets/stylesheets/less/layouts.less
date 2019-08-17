@@ -211,7 +211,7 @@
             transition-delay: 400ms;
         }
 
-        &.contextless, &.new_context {
+        &.contextless {
             .colorblock {
                 min-width: 0px;
                 max-width: 0px;
@@ -247,30 +247,6 @@
         }
     }
 
-}
-
-@keyframes new_context_title_appearance {
-    from {
-        height: 0px;
-        max-height: 0px;
-    }
-
-    to {
-        height: 30px;
-        max-height: 30px;
-    }
-}
-
-@keyframes new_context_colorblock_appearance {
-    from {
-        min-width: 0px;
-        max-width: 0px;
-    }
-
-    to {
-        min-width: 15px;
-        max-width: 15px;
-    }
 }
 
 @-moz-document url-prefix() {
