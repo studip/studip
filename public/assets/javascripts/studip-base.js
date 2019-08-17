@@ -547,7 +547,7 @@ $(document).on("click",'#wiki button[name="submit-and-edit"]',function(e){var t,
  * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
- */r=[i("EVdn"),i("Qwlt")],void 0===(s="function"==typeof(n=function(e){return e.ui.keyCode={BACKSPACE:8,COMMA:188,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,LEFT:37,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SPACE:32,TAB:9,UP:38}})?n.apply(t,r):n)||(e.exports=s)},vvBw:function(e,t){$(document).on("touchstart",function(e){0===$(e.target).closest("li.overflow").length&&$("#header-sink").prop("checked",!1),0===$(e.target).closest("li.has-subnavigation").length&&$(".responsive-toggle").prop("checked",!1)}),$(window).on("resize",_.debounce(STUDIP.NavigationShrinker,100)),STUDIP.domReady(STUDIP.NavigationShrinker)},wCe6:function(e,t,i){var n,r,s;
+ */r=[i("EVdn"),i("Qwlt")],void 0===(s="function"==typeof(n=function(e){return e.ui.keyCode={BACKSPACE:8,COMMA:188,DELETE:46,DOWN:40,END:35,ENTER:13,ESCAPE:27,HOME:36,LEFT:37,PAGE_DOWN:34,PAGE_UP:33,PERIOD:190,RIGHT:39,SPACE:32,TAB:9,UP:38}})?n.apply(t,r):n)||(e.exports=s)},vvBw:function(e,t){$(document).on("touchstart",function(e){0===$(e.target).closest("li.overflow").length&&$("#header-sink").prop("checked",!1),0===$(e.target).closest("li.has-subnavigation").length&&$(".responsive-toggle").prop("checked",!1)}),$(window).on("resize",_.debounce(STUDIP.NavigationShrinker,100)),STUDIP.domReady(STUDIP.NavigationShrinker),STUDIP.domReady(function(){$(".new_context").removeClass("contextless")})},wCe6:function(e,t,i){var n,r,s;
 /*!
  * jQuery UI Menu 1.12.1
  * http://jqueryui.com
