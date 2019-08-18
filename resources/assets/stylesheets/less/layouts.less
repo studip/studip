@@ -198,9 +198,11 @@
 
         #tabs { // row 1 of layout_page
             width: 100%;
-            //min-height: 25px;
             flex: 0 1 auto;
             margin-left: 30px;
+            transition: margin-left;
+            transition-duration: 300ms;
+            transition-delay: 500ms;
         }
 
         .colorblock {
@@ -222,6 +224,11 @@
                 height: 0px;
                 max-heigh: 35px;
                 transition-delay: 350ms;
+            }
+
+            #tabs { // row 1 of layout_page
+                margin-left: 10px;
+                transition-delay: 200ms;
             }
         }
 

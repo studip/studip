@@ -98,8 +98,14 @@ if ($navigation) {
 
         <? if (Context::get()) : ?>
             <div id="layout_context_title">
-                <? $membership = CourseMember::find(array(Context::get()->id, $GLOBALS['user']->id)) ?>
-                <div class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></div>
+                <? if (!$GLOBALS['perm']->have_perm("admin")) : ?>
+                    <? $membership = CourseMember::find(array(Context::get()->id, $GLOBALS['user']->id)) ?>
+                    <? if ($membership) : ?>
+                        <a href="<?= URLHelper::getLink("dispatch.php/my_courses/groups") ?>"
+                           data-dialog
+                           class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></a>
+                    <? endif ?>
+                <? endif ?>
                 <div class="context_title">
                     <? if (Context::isCourse()) : ?>
                         <?= Icon::create("seminar", "info")->asImg(20, ['class' => "context_icon"]) ?>
