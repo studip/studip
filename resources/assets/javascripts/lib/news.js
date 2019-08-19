@@ -80,7 +80,6 @@ const News = {
                 height : (News.dialog_height - 120) + 'px',
                 maxHeight: (News.dialog_height - 120) + 'px'
             });
-            $('.ui-dialog-content').css('padding-right', '1px');
 
             News.init_dialog();
             News.init(id);
