@@ -38,7 +38,7 @@ class Admin_SemClassesController extends AuthenticatedController
             $duplicate = $statement->fetchColumn();
             if ($duplicate) {
                 $message = sprintf(_("Es existiert bereits eine Veranstaltungskategorie mit dem Namen \"%s\""),
-                                   Request::get("add_name"));
+                                   htmlReady(Request::get("add_name")));
                 PageLayout::postMessage(MessageBox::error($message));
                 $this->redirect('admin/sem_classes/overview');
             } else {
