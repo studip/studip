@@ -154,7 +154,7 @@ form.default {
 
         // Insert invisible element that corrects double padding/margin at the
         // bottom
-        &::after {
+        &:not(.collapsed)::after {
             content: '';
             display: block;
             margin-top: -@gap;
