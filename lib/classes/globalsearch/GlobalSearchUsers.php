@@ -46,8 +46,8 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
                 JOIN `user_info` USING (`user_id`)
                 LEFT JOIN `user_visibility` USING (`user_id`)
                 WHERE {$visQuery}
-                    (CONCAT_WS(' ', user.`Nachname`, user.`Vorname`) LIKE {$query}
-                        OR CONCAT_WS(' ', user.`Vorname`, user.`Nachname`) LIKE {$query}
+                    (CONCAT_WS(', ', user.`Nachname`, user.`Vorname`) LIKE {$query}
+                        OR CONCAT_WS(' ', user.`Nachname`, user.`Vorname`, user.`Nachname`) LIKE {$query}
                         OR `username` LIKE {$query}
                     )
                 ORDER BY user.`Nachname`, user.`Vorname`

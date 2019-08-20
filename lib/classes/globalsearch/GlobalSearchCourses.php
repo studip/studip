@@ -93,9 +93,8 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                         IFNULL(`i18n`.`value`, courses.`Name`) LIKE {$query}
                         OR courses.`VeranstaltungsNummer` LIKE {$query}
                         OR CONCAT_WS(' ', `sem_types`.`name`, IFNULL(`i18n`.`value`, courses.`Name`), `sem_types`.`name`) LIKE {$query}
-                        OR a.`Nachname` LIKE {$query}
-                        OR CONCAT_WS(' ', a.`Vorname`, a.`Nachname`) LIKE {$query}
-                        OR CONCAT_WS(' ', a.`Nachname`, a.`Vorname`) LIKE {$query}
+                        OR CONCAT_WS(', ', a.`Nachname`, a.`Vorname`) LIKE {$query}
+                        OR CONCAT_WS(' ', a.`Nachname`, a.`Vorname`, a.`Nachname`) LIKE {$query}
                     )
                 {$seminaruser}
                 {$institute_condition}
