@@ -8,11 +8,6 @@ foreach (Navigation::getItem("/")->getSubNavigation() as $path => $nav) {
 $ebene3 = [];
 ?>
 <div class="tabs_wrapper">
-    <? if (!$GLOBALS['perm']->have_perm("admin") && $membership) : ?>
-        <a href="<?= URLHelper::getLink("dispatch.php/my_courses/groups") ?>"
-           data-dialog
-           class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></a>
-    <? endif ?>
     <? SkipLinks::addIndex(_('Erste Reiternavigation'), 'tabs', 10); ?>
     <ul id="tabs" role="navigation">
         <? if (!empty($navigation)): ?>

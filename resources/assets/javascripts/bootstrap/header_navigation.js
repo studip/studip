@@ -15,5 +15,5 @@ $(window).on('resize', _.debounce(STUDIP.NavigationShrinker, 100));
 STUDIP.domReady(STUDIP.NavigationShrinker);
 
 STUDIP.domReady(() => {
-    $(".new_context").removeClass("contextless");
+    $('.new_context').removeClass('contextless');
 });

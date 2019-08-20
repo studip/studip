@@ -50,28 +50,45 @@
     min-height: 45px;
 }
 
+.secondary-navigation {
+    position: relative;
+    .colorblock {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: @page-margin;
+        transition: width;
+        transition-duration: 300ms;
+        transition-delay: 400ms;
+    }
+
+    .contextless & {
+        .colorblock {
+            width: 0px;
+        }
+
+        #layout_context_title {
+            height: 0px;
+            max-height: 35px;
+        }
+    }
+}
 #layout_context_title {
-    display: flex;
-    justify-content: flex-start;
-    align-items: stretch;
-    flex-wrap: nowrap;
+    font-size: 1.1em;
     height: 30px;
+    padding-left: @page-margin;
     max-height: 30px;
     overflow: hidden;
+
     transition: height, max-height;
     transition-duration: 300ms;
     transition-delay: 200ms;
     background: linear-gradient(to bottom, @dark-gray-color-5, @dark-gray-color-10);
-    > .context_title {
-        display: flex;
-        align-items: flex-end;
-        padding-left: 10px;
-        font-size: 1.1em;
 
-        > .context_icon {
-            margin-right: 6px;
-            margin-bottom: 2px;
-        }
+    > .context_icon {
+        margin: 7px 1px 0 9px;
+        vertical-align: text-bottom;
     }
 }
 #current_page_title {
@@ -199,37 +216,10 @@
         #tabs { // row 1 of layout_page
             width: 100%;
             flex: 0 1 auto;
-            margin-left: 30px;
+            padding-left: @page-margin;
             transition: margin-left;
             transition-duration: 300ms;
             transition-delay: 500ms;
-        }
-
-        .colorblock {
-            min-width: 15px;
-            max-width: 15px;
-            transition: min-width, max-height;
-            transition-duration: 300ms;
-            transition-delay: 400ms;
-        }
-
-        &.contextless {
-            .colorblock {
-                min-width: 0px;
-                max-width: 0px;
-                transition-delay: 200ms;
-            }
-
-            #layout_context_title {
-                height: 0px;
-                max-heigh: 35px;
-                transition-delay: 350ms;
-            }
-
-            #tabs { // row 1 of layout_page
-                margin-left: 10px;
-                transition-delay: 200ms;
-            }
         }
 
         #layout_container {          // row 3 of layout_page
