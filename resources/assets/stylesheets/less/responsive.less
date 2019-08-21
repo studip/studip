@@ -158,8 +158,36 @@ label[for="responsive-toggle"] {
     #header, #flex-header, #barTopFont, #barTopMenu,
     #barBottomLeft .current_page, #barBottommiddle, #barBottomLeft, #barBottomArrow,
     #tabs, .sidebar-image, #sidebar-navigation:not(.show), #barTopFont, #footer, .sidebar-widget-header,
-    .tabs_wrapper .colorblock, #layout_context_title {
+    .tabs_wrapper .colorblock {
         display: none !important;
+    }
+    #layout_wrapper #layout_page {
+        .secondary-navigation {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+
+            background-color: @dark-gray-color-10;
+            border-bottom: 1px solid @dark-gray-color-40;
+
+            #layout_context_title,
+            .tabs_wrapper {
+                background: transparent;
+                border-width: 0;
+            }
+
+            #layout_context_title {
+                flex: 1;
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .tabs_wrapper {
+                flex: 0;
+                align-self: flex-end;
+            }
+        }
     }
     #layout_wrapper #layout_page .tabs_wrapper {
         justify-content: flex-end;
