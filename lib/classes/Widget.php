@@ -47,7 +47,7 @@ class Widget
     public function addElement(WidgetElement $element, $index = null)
     {
         $index = $index ?: $this->guessIndex($element);
-        
+
         $this->elements[$index] = $element;
     }
 
@@ -62,12 +62,12 @@ class Widget
     public function insertElement(WidgetElement $element, $before_index, $index = null)
     {
         $index = $index ?: $this->guessIndex($element);
-        
+
         $inserted = false;
-        
+
         $elements = [];
         foreach ($this->elements as $idx => $elmnt) {
-            if ($idx === $index) {
+            if ($idx === $before_index) {
                 $inserted = true;
                 $elements[$index] = $element;
             }
@@ -80,7 +80,7 @@ class Widget
 
         $this->elements = $elements;
     }
-    
+
     /**
      * Tries to guess an appropriate index name for the element.
      *
@@ -107,7 +107,7 @@ class Widget
 
         return $index;
     }
-    
+
     /**
      * Retrieve the element at the specified position.
      *
@@ -137,7 +137,7 @@ class Widget
      *
      * @param String $index Index/name of the element to remove.
      * @throws Exception if the specified position is invalid
-     */ 
+     */
     public function removeElement($index)
     {
         if (!isset($this->elements[$index])) {
@@ -145,7 +145,7 @@ class Widget
         }
         unset($this->elements[$index]);
     }
-    
+
     /**
      * Returns whether this widget has any elements.
      *
@@ -220,25 +220,25 @@ class Widget
 
             $content = $template->render();
         }
-        
+
         return $content;
     }
-    
+
     public function __isset($offset)
     {
         return isset($this->template_variables[$offset]);
     }
-    
+
     public function __get($offset)
     {
         return $this->template_variables[$offset];
     }
-    
+
     public function __set($offset, $value)
     {
         $this->template_variables[$offset] = $value;
     }
-    
+
     public function __unset($offset)
     {
         unset($this->template_variables[$offset]);
