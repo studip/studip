@@ -552,7 +552,6 @@ class StudygroupModel
                   WHERE user_id = ? AND sem_id = ?";
         $stmt = DBManager::get()->prepare($query);
         $stmt->execute([$user_id, $sem_id]);
-        $result = $stmt->fetch();
 
         return (bool) $stmt->fetchColumn();
     }
