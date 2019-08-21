@@ -59,6 +59,7 @@ class Course_ManagementController extends AuthenticatedController
         $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $course = Course::findCurrent();
+        $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root','admin','dozent']) ? Config::get()->SEM_CREATE_PERM : 'dozent';
         if ($course) {
             $actions = new ActionsWidget();
             if ($GLOBALS['perm']->have_perm($sem_create_perm)) {
@@ -97,17 +98,25 @@ class Course_ManagementController extends AuthenticatedController
                     )->asDialog('size=auto');
                 }
             }
+            if (in_array($GLOBALS['perm']->get_studip_perm($course->id), words('tutor dozent'))) {
+                $actions->addLink(
+                    _('Studierendenansicht simulieren'),
+                    URLHelper::getURL('dispatch.php/course/change_view/set_changed_view'),
+                    Icon::create('visibility-invisible')
+                );
+            }
+
             $sidebar->addWidget($actions);
 
             // Entry list for admin upwards.
-            if ($GLOBALS['perm']->have_studip_perm('admin', $GLOBALS['SessionSeminar'])) {
+            if ($GLOBALS['perm']->have_studip_perm('admin', $course->id)) {
                 $list = new SelectWidget(_('Veranstaltungen'), '?#admin_top_links', 'cid');
                 $seminars = AdminCourseFilter::get()->getCoursesForAdminWidget();
                 foreach ($seminars as $seminar) {
                     $list->addElement(new SelectElement(
                         $seminar['Seminar_id'],
                         $seminar['Name'],
-                        $seminar['Seminar_id'] === Context::getId(),
+                        $seminar['Seminar_id'] === $course->id,
                         $seminar['VeranstaltungsNummer'] . ' ' . $seminar['Name']
                     ));
                 }

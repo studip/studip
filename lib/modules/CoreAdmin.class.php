@@ -75,13 +75,6 @@ class CoreAdmin implements StudipModule {
                 $item->setDescription(_('Vorlagen zur Erhebung weiterer Angaben von Teilnehmenden auswählen.'));
                 $navigation->addSubNavigation('additional_data', $item);
 
-                // show entry for simulated participant view
-                if (in_array($GLOBALS['perm']->get_studip_perm($course_id), words('tutor dozent'))) {
-                    $item = new Navigation('Studierendenansicht simulieren', 'dispatch.php/course/change_view/set_changed_view');
-                    $item->setDescription(_('Hier können Sie sich die Veranstaltung aus der Sicht von Studierenden sehen.'));
-                    $item->setImage(Icon::create('visibility-invisible'));
-                    $main->addSubNavigation('change_view', $item);
-                }
             }  // endif modules only seminars
 
             if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
