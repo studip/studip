@@ -70,7 +70,7 @@ class LtiData extends SimpleORMap
     public function getLaunchURL()
     {
         if ($this->tool_id) {
-            if (!$this->tool->allow_custom_url || !$this->launch_url) {
+            if (!$this->tool->allow_custom_url && !$this->tool->deep_linking || !$this->launch_url) {
                 return $this->tool->launch_url;
             }
         }
