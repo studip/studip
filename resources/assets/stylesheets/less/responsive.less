@@ -170,10 +170,18 @@ label[for="responsive-toggle"] {
             background-color: @dark-gray-color-10;
             border-bottom: 1px solid @dark-gray-color-40;
 
+            .colorblock,
+            #layout_context_title,
+            .context_icon,
+            .tabs_wrapper {
+                transition: unset;
+            }
+
             #layout_context_title,
             .tabs_wrapper {
                 background: transparent;
                 border-width: 0;
+                flex: 1;
             }
 
             #layout_context_title {
@@ -182,10 +190,11 @@ label[for="responsive-toggle"] {
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-            }
-            .tabs_wrapper {
-                flex: 0;
-                align-self: flex-end;
+
+                + .tabs_wrapper {
+                    flex: 0;
+                    align-self: flex-end;
+                }
             }
         }
     }
