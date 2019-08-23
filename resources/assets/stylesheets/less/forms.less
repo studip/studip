@@ -405,6 +405,16 @@ form.narrow {
     &:indeterminate + label {
         .icon('before', 'checkbox-indeterminate', 'clickable', 16, 5px);
     }
+
+    &[disabled] {
+        + label {
+            .icon('before', 'checkbox-unchecked', 'inactive', 15, 5px);
+        }
+
+        &:checked + label {
+            .icon('before', 'checkbox-checked', 'inactive', 16, 5px);
+        }
+    }
 }
 
 // give forms some optimized styling for very narrow screen sizes
