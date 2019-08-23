@@ -396,6 +396,33 @@ class Consultation_AdminController extends ConsultationController
         $this->redirect('consultation/admin');
     }
 
+    public function bulk_action($page)
+    {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
+
+        $block_ids = Request::intArray('block-id');
+        $slot_ids  = Request::getArray('slot-id');
+
+        foreach ($this->loadBlock($block_ids) as $block) {
+            if ($block) {
+                $block->delete();
+            }
+        }
+
+        foreach ($slot_ids as $slot_id) {
+            list($block_id, $slot_id) = explode('-', $slot_id);
+            try {
+                $this->loadSlot($block_id, $slot_id)->delete();
+            } catch (Exception $e) {
+            }
+        }
+
+        PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+        $this->redirect("consultation/admin/index/{$page}");
+    }
+
     private function setupSidebar()
     {
         $sidebar = Sidebar::get();

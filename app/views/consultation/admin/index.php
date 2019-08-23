@@ -11,9 +11,10 @@
 
 <? else: ?>
 
-<form action="#" method="post">
-<table class="default">
+<form action="<?= $controller->bulk($page) ?>" method="post">
+<table class="default" id="consultation-overview">
     <colgroup>
+        <col width="24px">
         <col width="10%">
         <col width="10%">
         <col>
@@ -21,6 +22,14 @@
     </colgroup>
     <thead>
         <tr>
+            <th>
+                <input type="checkbox" id="checkbox-proxy"
+                       class="studip-checkbox"
+                       data-proxyfor="#consultation-overview tbody :checkbox"
+                       data-activates="#consultation-overview tfoot button">
+                <label for="checkbox-proxy"></label>
+            </th>
+            </th>
             <th><?= _('Uhrzeit') ?></th>
             <th><?= _('Status') ?></th>
             <th><?= _('Informationen') ?></th>
@@ -30,6 +39,14 @@
 <? foreach ($blocks as $block): ?>
     <tbody id="block-<?= htmlReady($block->id) ?>">
         <tr>
+            <th>
+                <input type="checkbox" name="block-id[]" id="slots-<?= htmLReady($block->id) ?>"
+                       class="studip-checkbox"
+                       value="<?= htmlReady($block->id) ?>"
+                       data-proxyfor="#block-<?= htmlReady($block->id) ?> :checkbox[name^=slot]"
+                       <? if ($block->has_bookings) echo 'disabled'; ?>>
+                <label for="slots-<?= htmlReady($block->id) ?>"></label>
+            </th>
             <th colspan="3">
                 <?= $this->render_partial('consultation/block-description.php', compact('block')) ?>
             </th>
@@ -67,6 +84,13 @@
         </tr>
     <? foreach ($block->slots as $slot): ?>
         <tr>
+            <td>
+                <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
+                       class="studip-checkbox"
+                       value="<?= htmlReady($block->id) ?>-<?= htmlReady($slot->id) ?>"
+                       <? if (count($slot->bookings) > 0) echo 'disabled'; ?>>
+                <label for="slot-<?= htmlReady($slot->id) ?>"></label>
+            </td>
             <td>
                 <?= strftime('%R', $slot->start_time) ?>
                 -
@@ -141,10 +165,14 @@
     <? endforeach; ?>
     </tbody>
 <? endforeach; ?>
-<? if ($count > $limit): ?>
     <tfoot>
         <tr>
-            <td colspan="4">
+            <td colspan="3">
+                <?= Studip\Button::create(_('Löschen'), 'delete', [
+                    'data-confirm' => _('Wollen Sie diese Sprechtstundentermine wirklich löschen?'),
+                ]) ?>
+            </td>
+            <td colspan="2" class="actions">
                 <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
                     'num_postings' => $count,
                     'perPage'      => $limit,
@@ -154,7 +182,6 @@
             </td>
         </tr>
     </tfoot>
-<? endif; ?>
 </table>
 </form>
 
