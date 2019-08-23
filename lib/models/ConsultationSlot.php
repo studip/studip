@@ -50,6 +50,10 @@ class ConsultationSlot extends SimpleORMap
             }
         };
 
+        $config['additional_fields']['is_expired']['get'] = function ($slot) {
+            return $slot->end_time < time();
+        };
+
         parent::configure($config);
     }
 

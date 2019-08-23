@@ -44,7 +44,7 @@
                        class="studip-checkbox"
                        value="<?= htmlReady($block->id) ?>"
                        data-proxyfor="#block-<?= htmlReady($block->id) ?> :checkbox[name^=slot]"
-                       <? if ($block->has_bookings) echo 'disabled'; ?>>
+                       <? if ($block->has_bookings && !$block->is_expired) echo 'disabled'; ?>>
                 <label for="slots-<?= htmlReady($block->id) ?>"></label>
             </th>
             <th colspan="3">
@@ -88,7 +88,7 @@
                 <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
                        class="studip-checkbox"
                        value="<?= htmlReady($block->id) ?>-<?= htmlReady($slot->id) ?>"
-                       <? if (count($slot->bookings) > 0) echo 'disabled'; ?>>
+                       <? if (count($slot->bookings) > 0 && !$slot->is_expired) echo 'disabled'; ?>>
                 <label for="slot-<?= htmlReady($slot->id) ?>"></label>
             </td>
             <td>

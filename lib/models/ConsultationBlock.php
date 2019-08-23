@@ -51,6 +51,16 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
                 [$block->id]
             ) > 0;
         };
+        $config['additional_fields']['is_expired']['get'] = function ($block) {
+            $expired_slots = 0;
+            foreach ($block->slots as $slot) {
+                if ($slot->is_expired) {
+                    $expired_slots += 1;
+                }
+            }
+
+            return count($block->slots) === $expired_slots;
+        };
 
         parent::configure($config);
     }
