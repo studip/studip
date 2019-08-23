@@ -307,4 +307,45 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
             }
         }
     }
+
+    /**
+     * Finds all blocks of a teacher. Specialized version of the sorm method
+     * that may exclude expired blocks.
+     *
+     * @param  string  $teacher_id      Id of the teacher
+     * @param  string  $order           Optional order
+     * @param  boolean $exclude_expired Exclude expired blocks
+     * @return array
+     */
+    public static function findByTeacher_id($teacher_id, $order = '', $exclude_expired = false)
+    {
+        if (!$exclude_expired) {
+            return parent::findByTeacher_id($teacher_id, $order);
+        }
+
+        return parent::findBySQL(
+            "teacher_id = ? AND end > UNIX_TIMESTAMP()",
+            [$teacher_id]
+        );
+    }
+
+    /**
+     * Count all blocks of a teacher. Specialized version of the sorm method
+     * that may exclude expired blocks.
+     *
+     * @param  string  $teacher_id      Id of the teacher
+     * @param  boolean $exclude_expired Exclude expired blocks
+     * @return array
+     */
+    public static function countByTeacher_id($teacher_id, $exclude_expired = false)
+    {
+        if (!$exclude_expired) {
+            return parent::countByTeacher_id($teacher_id);
+        }
+
+        return parent::countBySQL(
+            "teacher_id = ? AND end > UNIX_TIMESTAMP()",
+            [$teacher_id]
+        );
+    }
 }

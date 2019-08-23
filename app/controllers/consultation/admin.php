@@ -21,12 +21,17 @@ class Consultation_AdminController extends ConsultationController
         Navigation::activateItem('/profile/consultation/admin');
         PageLayout::setTitle(_('Verwaltung der Sprechstundentermine'));
 
-        $this->setupSidebar();
+        $this->user_config = UserConfig::get($this->current_user->id);
+
+        $this->setupSidebar($this->user_config);
     }
 
     public function index_action($page = 1)
     {
-        $this->count = ConsultationBlock::countByTeacher_id($this->current_user->id);
+        $this->count = ConsultationBlock::countByTeacher_id(
+            $this->current_user->id,
+            $this->user_config->CONSULTATION_EXCLUDE_EXPIRED
+        );
         $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
         if ($page > ceil($this->count / $this->limit)) {
@@ -36,7 +41,8 @@ class Consultation_AdminController extends ConsultationController
         $this->page = $page;
         $this->blocks = ConsultationBlock::findByTeacher_id(
             $this->current_user->id,
-            "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
+            "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}",
+            $this->user_config->CONSULTATION_EXCLUDE_EXPIRED
         );
     }
 
@@ -387,8 +393,13 @@ class Consultation_AdminController extends ConsultationController
     public function toggle_action($what, $state)
     {
         if ($what === 'messages') {
-            UserConfig::get($this->current_user->id)->store(
+            $this->user_config->store(
                 'CONSULTATION_SEND_MESSAGES',
+                (bool) $state
+            );
+        } elseif ($what === 'exclude') {
+            $this->user_config->store(
+                'CONSULTATION_EXCLUDE_EXPIRED',
                 (bool) $state
             );
         }
@@ -423,7 +434,7 @@ class Consultation_AdminController extends ConsultationController
         $this->redirect("consultation/admin/index/{$page}");
     }
 
-    private function setupSidebar()
+    private function setupSidebar($config)
     {
         $sidebar = Sidebar::get();
 
@@ -437,9 +448,15 @@ class Consultation_AdminController extends ConsultationController
         $options = $sidebar->addWidget(new OptionsWidget());
         $options->addCheckbox(
             _('Benachrichtungen über Buchungen'),
-            UserConfig::get($this->current_user->id)->CONSULTATION_SEND_MESSAGES,
+            $config->CONSULTATION_SEND_MESSAGES,
             $this->url_for("consultation/admin/toggle/messages/1"),
             $this->url_for("consultation/admin/toggle/messages/0")
+        );
+        $options->addCheckbox(
+            _('Vergangene Blöcke ausblenden'),
+            $config->CONSULTATION_EXCLUDE_EXPIRED,
+            $this->url_for('consultation/admin/toggle/exclude/1'),
+            $this->url_for('consultation/admin/toggle/exclude/0')
         );
 
         $export = $sidebar->addWidget(new ExportWidget());

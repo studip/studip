@@ -12,7 +12,7 @@
 <? else: ?>
 
 <form action="<?= $controller->bulk($page) ?>" method="post">
-<table class="default" id="consultation-overview">
+<table class="default consultation-overview">
     <colgroup>
         <col width="24px">
         <col width="10%">
@@ -25,8 +25,8 @@
             <th>
                 <input type="checkbox" id="checkbox-proxy"
                        class="studip-checkbox"
-                       data-proxyfor="#consultation-overview tbody :checkbox"
-                       data-activates="#consultation-overview tfoot button">
+                       data-proxyfor=".consultation-overview tbody :checkbox"
+                       data-activates=".consultation-overview tfoot button">
                 <label for="checkbox-proxy"></label>
             </th>
             </th>
@@ -37,7 +37,7 @@
         </tr>
     </thead>
 <? foreach ($blocks as $block): ?>
-    <tbody id="block-<?= htmlReady($block->id) ?>">
+    <tbody id="block-<?= htmlReady($block->id) ?>" <? if ($block->is_expired) echo 'class="block-is-expired"'; ?>>
         <tr>
             <th>
                 <input type="checkbox" name="block-id[]" id="slots-<?= htmLReady($block->id) ?>"
@@ -83,7 +83,7 @@
             </th>
         </tr>
     <? foreach ($block->slots as $slot): ?>
-        <tr>
+        <tr <? if ($slot->is_expired) echo 'class="slot-is-expired"'; ?>>
             <td>
                 <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
                        class="studip-checkbox"
