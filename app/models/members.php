@@ -62,10 +62,6 @@ class MembersModel
                             break;
                     }
 
-                    StudipLog::log('SEM_CHANGED_RIGHTS', $this->course_id, $user_id, $next_status,
-                            $this->getLogLevel($direction, $next_status));
-                    NotificationCenter::postNotification('CourseMemberStatusDidUpdate', $this->course_id, $user_id);
-
                     if (is_null($next_pos)) {
                         $next_pos = 0;
                     }
@@ -73,6 +69,9 @@ class MembersModel
                     $pleasure_statement->execute([$next_status, $next_pos, $this->course_id, $user_id, $status]);
 
                     if ($pleasure_statement->rowCount()) {
+                        StudipLog::log('SEM_CHANGED_RIGHTS', $this->course_id, $user_id, $next_status,
+                            $this->getLogLevel($direction, $next_status));
+                        NotificationCenter::postNotification('CourseMemberStatusDidUpdate', $this->course_id, $user_id);
                         if ($next_status == 'autor') {
                             re_sort_tutoren($this->course_id, $next_pos);
                         }
