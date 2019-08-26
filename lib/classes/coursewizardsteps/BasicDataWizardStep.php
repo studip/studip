@@ -75,7 +75,7 @@ class BasicDataWizardStep implements CourseWizardStep
 
         // Semester selection.
         $semesters = [];
-        $now = mktime();
+        $now = time();
         // Allow only current or future semesters for selection.
         foreach (Semester::getAll() as $s) {
             if ($s->ende >= $now) {
