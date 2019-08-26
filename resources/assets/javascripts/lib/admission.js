@@ -38,7 +38,7 @@ const Admission = {
 
         Dialog.fromURL(targetUrl, {
             method: 'post',
-            width: '450',
+            width: 'auto',
             title: 'Anmelderegel konfigurieren'.toLocaleString(),
             id: 'configurerule',
             data: { ruleId: ruleId, rules: _.map($('#rules input[name="rules[]"]'), 'value') }
