@@ -13,8 +13,8 @@ interface DetailspagePlugin
 {
     /**
      * Return a template (an instance of the Flexi_Template class)
-     * to be rendered on the start or portal page. Return NULL to
-     * render nothing for this plugin.
+     * to be rendered on the details page. Return NULL to
+     * render nothing for this plugin or this course.
      *
      * The template will automatically get a standard layout, which
      * can be configured via attributes set on the template:

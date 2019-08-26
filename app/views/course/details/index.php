@@ -468,13 +468,15 @@ if ($mvv_tree) : ?>
 <? endif ?>
 
 <? foreach (PluginManager::getInstance()->getPlugins("DetailspagePlugin") as $plugin) : ?>
-    <article class="studip">
-        <? $template = $plugin->getDetailspageTemplate($course) ?>
-        <header>
-            <h1><?= htmlReady($template->title) ?></h1>
-        </header>
-        <?= $template->render() ?>
-    </article>
+    <? $template = $plugin->getDetailspageTemplate($course) ?>
+    <? if ($template) : ?>
+        <article class="studip">
+            <header>
+                <h1><?= htmlReady($template->title) ?></h1>
+            </header>
+            <?= $template->render() ?>
+        </article>
+    <? endif ?>
 <? endforeach ?>
 
 
