@@ -139,6 +139,15 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
+        $config['has_many']['consultation_blocks'] = [
+            'class_name'        => ConsultationBlock::class,
+            'assoc_foreign_key' => 'teacher_id',
+            'on_delete'         => 'delete',
+        ];
+        $config['has_many']['consultation_bookings'] = [
+            'class_name' => ConsultationBooking::class,
+            'on_delete'  => 'delete',
+        ];
 
         $info = new UserInfo();
         $info_meta = $info->getTableMetadata();
@@ -304,53 +313,53 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $params = [];
         $joins  = [];
         $where  = [];
-        
+
         $query = "SELECT au.*, ui.*
                   FROM `auth_user_md5` au
                   LEFT JOIN `user_online` uo ON (au.`user_id` = uo.`user_id`)
                   LEFT JOIN `user_info` ui ON (au.`user_id` = ui.`user_id`)";
-    
+
         if ($attributes['username']) {
             $where[] =  "au.`username` like :username";
             $params[':username'] = self::searchParam($attributes['username']);
         }
-    
+
         if ($attributes['vorname']) {
             $where[] = "au.`Vorname` LIKE :vorname";
             $params[':vorname'] = self::searchParam($attributes['vorname']);
         }
-    
+
         if ($attributes['nachname']) {
             $where[] = "au.`Nachname` LIKE :nachname";
             $params[':nachname'] = self::searchParam($attributes['nachname']);
         }
-    
+
         if ($attributes['email']) {
             $where[] = "au.`Email` LIKE :email";
             $params[':email'] = self::searchParam($attributes['email']);
         }
-    
+
         //permissions
         if (!is_null($attributes['perm']) && $attributes['perm'] != 'alle') {
             $where[] = "au.`perms` = :perms";
             $params[':perms'] = $attributes['perm'];
         }
-    
+
         //locked user
         if ((int)$attributes['locked'] == 1) {
             $where[] = "au.`locked` = 1";
         }
-    
+
         // show only users who are not lecturers
         if ($attributes['show_only_not_lectures']) {
             $where[] = "au.`user_id` NOT IN (SELECT `user_id` FROM `seminar_user` WHERE `status` = 'dozent') ";
         }
-        
+
         if ($attributes['auth_plugins']) {
             $where[] = "IFNULL(`auth_plugin`, 'preliminary') = :auth_plugins ";
             $params[':auth_plugins'] = $attributes['auth_plugins'];
         }
-    
+
         //inactivity
         if (!is_null($attributes['inaktiv']) && $attributes['inaktiv'][0] != 'nie') {
             $comp = in_array(trim($attributes['inaktiv'][0]), ['=', '>', '<=']) ? $attributes['inaktiv'][0] : '=';
@@ -359,7 +368,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         } elseif (!is_null($attributes['inaktiv'])) {
             $where[] = "uo.`last_lifesign` IS NULL";
         }
-        
+
         //datafields
         if (!is_null($attributes['datafields']) && count($attributes['datafields']) > 0) {
             $joins[] = "LEFT JOIN `datafields_entries` de ON (de.`range_id` = au.`user_id`)";
@@ -370,14 +379,14 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $params[':df_content_' . $id] = $entry;
             }
         }
-    
+
         // roles
         if (!empty($attributes['roles'])) {
             $joins[] = "LEFT JOIN `roles_user` ON roles_user.`userid` = au.`user_id`";
             $where[] = "roles_user.`roleid` IN (:roles)";
             $params[':roles'] = $attributes['roles'];
         }
-        
+
         // userdomains
         if ($attributes['userdomains']) {
             $joins[] = "LEFT JOIN `user_userdomains` uud ON (au.`user_id` = uud.`user_id`)";
@@ -389,7 +398,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $params[':userdomains'] = $attributes['userdomains'];
             }
         }
-    
+
         // degree or studycourse
         if (!empty($attributes['degree']) || !empty($attributes['studycourse']) || !empty($attributes['fachsem'])) {
             $joins[] = "LEFT JOIN `user_studiengang` us ON (us.`user_id` = au.`user_id`)";
@@ -397,24 +406,24 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $where[] = "us.`abschluss_id` IN (:degree)";
                 $params[':degree'] = $attributes['degree'];
             }
-            
+
             if (!empty($attributes['studycourse'])) {
                 $where[] = "us.`fach_id` IN (:studycourse)";
                 $params[':studycourse'] = $attributes['studycourse'];
             }
-            
+
             if(!empty($attributes['fachsem'])) {
                 $where[] = 'us.`semester` = :fachsem';
                 $params[':fachsem'] = $attributes['fachsem'];
             }
         }
-    
+
         if ($attributes['institute']) {
             $joins[] = "LEFT JOIN `user_inst` uis ON uis.`user_id` = au.`user_id`";
             $where[] = "uis.`Institut_id` = :institute";
             $params[':institute'] = $attributes['institute'];
         }
-        
+
         $query .= implode(' ', $joins);
         $query .= " WHERE 1 AND ";
         $query .= implode(' AND ', $where);
@@ -446,7 +455,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             default:
                 $query .= " ORDER BY au.`username` {$attributes['order']}";
         }
-        
+
         return DBManager::get()->fetchAll($query, $params, __CLASS__ . '::buildExisting');
     }
 
