@@ -467,6 +467,16 @@ if ($mvv_tree) : ?>
     </article>
 <? endif ?>
 
+<? foreach (PluginManager::getInstance()->getPlugins("DetailspagePlugin") as $plugin) : ?>
+    <article class="studip">
+        <? $template = $plugin->getDetailspageTemplate($course) ?>
+        <header>
+            <h1><?= htmlReady($template->title) ?></h1>
+        </header>
+        <?= $template->render() ?>
+    </article>
+<? endforeach ?>
+
 
 <? if (Request::get('from')) : ?>
     <footer data-dialog-button>
