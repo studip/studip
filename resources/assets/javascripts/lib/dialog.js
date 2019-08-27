@@ -446,7 +446,7 @@ Dialog.show = function(content, options) {
     dialog_options = $.extend(dialog_options, {
         width: width,
         height: height,
-        dialogClass: (options.dialogClass || dialog_options.dialogClass || '') + ' studip-dialog'.trim(),
+        dialogClass: ((options.dialogClass || dialog_options.dialogClass || '') + ' studip-dialog').trim(),
         buttons: options.buttons || {},
         title: options.title,
         modal: true,
