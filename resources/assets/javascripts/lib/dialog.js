@@ -89,8 +89,13 @@ const Dialog = {
             this.stack.splice(index, 1);
         }
     },
+    /**
+     * legacy method, remove in future
+     * @return bool
+     */
     shouldOpen: function() {
-        return !$('html').is('.responsive-display') && $(window).innerHeight() >= 400;
+        return true;
+//        return !$('html').is('.responsive-display') && $(window).innerHeight() >= 400;
     },
     handlers: {
         header: {}
@@ -335,14 +340,26 @@ Dialog.fromURL = function(url, options) {
 Dialog.show = function(content, options) {
     options = $.extend({}, Dialog.options, options);
 
-    var scripts = $('<div>' + content + '</div>').filter('script'), // Extract scripts
-        dialog_options = {},
-        instance = Dialog.getInstance(options.id),
-        previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false,
-        width = options.width || ($('body').width() * 2) / 3,
-        height = options.height || ($('body').height() * 2) / 3,
-        temp,
-        helper;
+    var scripts = $('<div>' + content + '</div>').filter('script'); // Extract scripts
+    var dialog_options = {};
+    var instance = Dialog.getInstance(options.id);
+    var previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false;
+    var width = options.width || (screen.width * 2) / 3;
+    var height = options.height || (screen.height * 2) / 3;
+    var max_width  = screen.width * 0.95;
+    var max_height = screen.height * 0.9;
+    var temp;
+    var helper;
+
+    if ($('html').is('.responsive-display')) {
+        max_width  = screen.width - 6; // Subtract border
+        max_height = screen.height;
+
+        if (!options.hasOwnProperty('width')) {
+            width  = screen.width * 0.95;
+            height = screen.height * 0.98;
+        }
+    }
 
     if (instance.open) {
         options.title = options.title || instance.element.dialog('option', 'title');
@@ -362,28 +379,25 @@ Dialog.show = function(content, options) {
         helper = $('<div class="ui-dialog ui-widget ui-widget-content">').addClass(
             options.dialogClass || dialog_options.dialogClass || ''
         );
-        $('<div class="ui-dialog-content">')
-            .html(content)
-            .appendTo(helper);
-        helper
-            .css({
-                position: 'absolute',
-                left: '-10000px',
-                top: '-10000px',
-                width: 'auto'
-            })
-            .appendTo('body');
+
+        $('<div class="ui-dialog-content">').html(content).appendTo(helper);
+        helper.css({
+            position: 'absolute',
+            left: '-10000px',
+            top: '-10000px',
+            width: 'auto'
+        }).appendTo('body');
+
         // Prevent buttons from wrapping
         $('[data-dialog-button]', helper).css('white-space', 'nowrap');
         // Add cancel button if missing
         if ((!options.hasOwnProperty('buttons') || options.button !== false)
-            && $('[data-dialog-button] .button.cancel', helper).length === 0) {
-                var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
-                $('[data-dialog-button]', helper).append(cancel);
-            }
+            && $('[data-dialog-button] .button.cancel', helper).length === 0)
         {
-
+            var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
+            $('[data-dialog-button]', helper).append(cancel);
         }
+
         // Calculate width and height
         // TODO: The value of 113 shouldn't be hardcoded
         width = Math.min(helper.outerWidth(true) + dialog_margin, width);
@@ -409,8 +423,8 @@ Dialog.show = function(content, options) {
     }
 
     // Ensure dimensions fit in viewport
-    width = Math.min(width, $('body').width() * 0.95);
-    height = Math.min(height, $('body').height() * 0.9);
+    width = Math.min(width, max_width);
+    height = Math.min(height, max_height);
     if (
         previous &&
         previous.hasOwnProperty('dimensions') &&
@@ -432,7 +446,7 @@ Dialog.show = function(content, options) {
     dialog_options = $.extend(dialog_options, {
         width: width,
         height: height,
-        dialogClass: options.dialogClass || dialog_options.dialogClass || '',
+        dialogClass: (options.dialogClass || dialog_options.dialogClass || '') + ' studip-dialog'.trim(),
         buttons: options.buttons || {},
         title: options.title,
         modal: true,

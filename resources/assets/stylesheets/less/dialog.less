@@ -285,3 +285,23 @@
         }
     }
 }
+
+.ui-dialog.studip-dialog.ui-widget.ui-widget-content {
+    .ui-dialog-buttonpane .ui-dialog-buttonset {
+        white-space:normal;
+
+        html.responsive-display & {
+            @gap: 10px;
+
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-space-between;
+            margin: -@gap 0 0 -@gap;
+
+            .ui-button {
+                flex: 1;
+                margin: @gap 0 0 @gap;
+            }
+        }
+    }
+}
