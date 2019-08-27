@@ -8,6 +8,7 @@
 
     position: relative;
     top: 4px;
+    white-space: nowrap;
 
     // Reset alignments among browsers
     > * {
@@ -287,7 +288,8 @@ html.responsive-display {
             opacity: 1;
         }
     }
-
+}
+html:not(.size-large) {
     &:not(.globalsearch-visible) {
         #globalsearch-list,
         #globalsearch-clear {
@@ -301,8 +303,7 @@ html.responsive-display {
                 display: none;
             }
             #quicksearch_item,
-            #sidebar-menu,
-            li:first-child {
+            #sidebar-menu {
                 display: initial;
             }
         }

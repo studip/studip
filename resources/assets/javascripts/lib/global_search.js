@@ -19,7 +19,7 @@ const GlobalSearch = {
             $('#globalsearch-input').blur().val('');
         }
 
-        $('html.responsive-display').toggleClass('globalsearch-visible', visible);
+        $('html:not(.size-large)').toggleClass('globalsearch-visible', visible);
 
         return false;
     },
