@@ -10,8 +10,8 @@ var timeout = null;
 
 STUDIP.Tooltip.threshold = 6;
 
-$(document).on('mouseenter mouseleave', '[data-tooltip]', function(event) {
-    let  data = $(this).data();
+$(document).on('mouseenter mouseleave', '[data-tooltip],.tooltip:has(.tooltip-content)', function(event) {
+    let data = $(this).data();
 
     const visible = event.type === 'mouseenter';
     const offset = $(this).offset();
