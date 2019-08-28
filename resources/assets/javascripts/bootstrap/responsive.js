@@ -50,7 +50,8 @@ function addMenu() {
             false,
             'responsive-navigation',
             STUDIP.Navigation.activated
-        )
+        ),
+        '<label for="responsive-toggle">'
     );
 
     $('<li>', { html: wrapper }).prependTo('#barBottomright > ul');
@@ -69,6 +70,11 @@ function responsify() {
         $('<li id="sidebar-menu">')
             .on('click', STUDIP.Sidebar.open)
             .appendTo('#barBottomright > ul');
+
+        $('<label id="sidebar-shadow-toggle">')
+            .on('click', STUDIP.Sidebar.open)
+            .prependTo('#layout-sidebar');
+
 
         $('#responsive-toggle').on('change', function() {
             $('#layout-sidebar').removeClass('visible-sidebar');
