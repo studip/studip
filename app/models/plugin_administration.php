@@ -103,8 +103,18 @@ class PluginAdministration
         }
 
         // move directory to final destination
-        if (!file_exists($basepath . '/' . $origin)) {
-            mkdir($basepath . '/' . $origin);
+        if (!file_exists($basepath . '/' . $origin) && mkdir($basepath . '/' . $origin) === false) {
+            throw new PluginInstallationException(sprintf(
+                _('Der Ordner "%s" konnte nicht erstellt werden.'),
+                studip_relative_path($basepath . '/' . $origin)
+            ));
+        }
+
+        if (!is_writable($base_path . '/' . $origin)) {
+            throw new PluginInstallationException(sprintf(
+                _('Der Ordner "%s" ist nicht schreibbar.'),
+                studip_relative_path($basepath . '/' . $origin)
+            ));
         }
 
         rename($tmpplugindir, $plugindir);
