@@ -66,12 +66,12 @@
                     _('Druckansicht anzeigen'),
                     Icon::create('print'),
                     ['target' => '_blank']
-                )->condition($block->has_bookings)->addLink(
+                )->condition($block->has_bookings && !$block->is_expired)->addLink(
                     $controller->cancel_blockURL($block),
                     _('Sprechstundentermine absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
-                )->condition(!$block->has_bookings)->addButton(
+                )->condition(!$block->has_bookings || $block->is_expired)->addButton(
                     'remove',
                     _('Sprechstundentermine entfernen'),
                     Icon::create('trash'),
@@ -141,17 +141,17 @@
                     _('Sprechstundentermin reservieren'),
                     Icon::create('consultation+add'),
                     ['data-dialog' => 'size=auto']
-                )->condition(count($slot->bookings) > 0)->addLink(
+                )->condition($slot->has_bookings)->addLink(
                     $controller->reasonURL($block, $slot, $slot->bookings->first()),
                     _('Grund bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
-                )->condition(count($slot->bookings) > 0)->addLink(
+                )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
                     $controller->cancel_slotURL($block, $slot),
                     _('Sprechstundentermin absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
-                )->condition(count($slot->bookings) === 0)->addButton(
+                )->condition(!$slot->has_bookings || $slot->is_expired)->addButton(
                     'delete',
                     _('Sprechstundentermin entfernen'),
                     Icon::create('trash'),

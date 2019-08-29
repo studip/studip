@@ -50,6 +50,9 @@ class ConsultationSlot extends SimpleORMap
             }
         };
 
+        $config['additional_fields']['has_bookings']['get'] = function ($slot) {
+            return count($slot->bookings) > 0;
+        };
         $config['additional_fields']['is_expired']['get'] = function ($slot) {
             return $slot->end_time < time();
         };
