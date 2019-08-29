@@ -14,15 +14,18 @@ class Consultation_OverviewController extends ConsultationController
     {
         parent::before_filter($action, $args);
 
-        Navigation::activateItem('/profile/consultation/overview');
         PageLayout::setTitle(sprintf(
             _('Sprechstundentermine von %s'),
             $this->current_user->getFullName()
         ));
+
+        $this->setupSidebar();
     }
 
     public function index_action($page = 1)
     {
+        Navigation::activateItem('/profile/consultation/overview');
+
         $this->count = ConsultationBlock::countVisibleForUserByTeacherId(
             $GLOBALS['user']->id,
             $this->current_user->id,
@@ -41,8 +44,16 @@ class Consultation_OverviewController extends ConsultationController
             Request::option('course_id'),
             "LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
         );
+    }
 
-        $this->setupSidebar();
+    public function booked_action($page = 1)
+    {
+        Navigation::activateItem('/profile/consultation/booked');
+
+        $this->slots = ConsultationSlot::findOccupiedSlotsByUserAndTeacher(
+            $GLOBALS['user']->id,
+            $this->current_user->id
+        );
     }
 
     public function book_action($block_id, $slot_id)
@@ -76,9 +87,10 @@ class Consultation_OverviewController extends ConsultationController
         }
     }
 
-    public function cancel_action($block_id, $slot_id)
+    public function cancel_action($block_id, $slot_id, $from_booked = false)
     {
-        $this->slot = $this->loadSlot($block_id, $slot_id);
+        $this->slot        = $this->loadSlot($block_id, $slot_id);
+        $this->from_booked = $from_booked;
 
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
@@ -101,16 +113,24 @@ class Consultation_OverviewController extends ConsultationController
                 PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
             }
 
-            $this->redirect("consultation/overview#block-{$block_id}");
+            if ($from_booked) {
+                $this->redirect("consultation/overview/booked#block-{$block_id}");
+            } else {
+                $this->redirect("consultation/overview#block-{$block_id}");
+            }
         }
     }
 
     private function setupSidebar()
     {
-        $courses = Course::findMany(
-            $course_ids,
-            Config::get()->IMPORTANT_SEMNUMBER ? 'ORDER BY VeranstaltungsNummer, Name' : 'ORDER BY Name'
+        $courses = ConsultationBlock::findVisibleCoursesForUserByTeacherId(
+            $GLOBALS['user']->id,
+            $this->current_user->id
         );
+
+        if (count($courses) === 0) {
+            return;
+        }
 
         $options = ['' => _('Alle Sprechstunden anzeigen')];
         foreach ($courses as $course) {

@@ -61,6 +61,27 @@ class ConsultationSlot extends SimpleORMap
     }
 
     /**
+     * Find all occupied slots for a given user and teacher combination.
+     *
+     * @param  string $user_id    Id of the user
+     * @param  string $teacher_id Id of the teacher
+     * @return array
+     */
+    public static function findOccupiedSlotsByUserAndTeacher($user_id, $teacher_id)
+    {
+        $condition = "JOIN consultation_blocks USING (block_id)
+                      JOIN consultation_bookings USING (slot_id)
+                      WHERE user_id = :user_id
+                        AND teacher_id = :teacher_id
+                        AND end > UNIX_TIMESTAMP()
+                      ORDER BY start_time ASC";
+        return self::findBySQL($condition, [
+            ':user_id'    => $user_id,
+            ':teacher_id' => $teacher_id,
+        ]);
+    }
+
+    /**
      * Returns whether this slot is occupied (by a given user).
      *
      * @param  mixed $user_id Id of the user (optional)

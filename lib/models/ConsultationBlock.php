@@ -102,12 +102,38 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
         return self::countBySQL($condition, $parameters);
     }
 
+    /**
+     * Returns all visible courses to the user that the teacher has created
+     * blocks for.
+     *
+     * @param  string $user_id    User id to find the courses for
+     * @param  string $teacher_id User id of the teacher
+     * @return array
+     */
+    public static function findVisibleCoursesForUserByTeacherId($user_id, $teacher_id)
+    {
+        $condition = "JOIN consultation_blocks ON seminar_id = course_id
+                      JOIN seminar_user USING (seminar_id)
+                      WHERE course_id IS NOT NULL
+                        AND teacher_id = :teacher_id
+                        AND user_id = :user_id";
+
+        $order = Config::get()->IMPORTANT_SEMNUMBER
+               ? 'ORDER BY VeranstaltungsNummer, Name'
+               : 'ORDER BY Name';
+
+        return Course::findBySQL("{$condition} {$order}", [
+            ':user_id'    => $user_id,
+            ':teacher_id' => $teacher_id,
+        ]);
+    }
+
     private static function prepareConditionAndParametersForVisibleBlocks($user_id, $teacher_id, $course_id)
     {
         $conditions = [
             'course_id IS NULL OR seminar_user.user_id IS NOT NULL',
             'teacher_id = :teacher_id',
-            'start > UNIX_TIMESTAMP()'
+            'end > UNIX_TIMESTAMP()'
         ];
         $parameters = [
             ':user_id'    => $user_id,
@@ -121,7 +147,8 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
 
         $condition = "LEFT JOIN seminar_user
                         ON (course_id = seminar_id AND seminar_user.user_id = :user_id)
-                      WHERE (" . implode(') AND (', $conditions) . ')';
+                      WHERE (" . implode(') AND (', $conditions) . ")
+                      ORDER BY start ASC";
 
         return [$condition, $parameters];
     }

@@ -174,6 +174,9 @@ class ProfileNavigation extends Navigation
         // Create visitor navigation
         $navigation = new Navigation(_('Sprechstunden'), 'dispatch.php/consultation/overview');
         $navigation->addSubNavigation('overview', new Navigation(_('Übersicht'), 'dispatch.php/consultation/overview'));
+        if ($user->id !== $GLOBALS['user']->id) {
+            $navigation->addSubNavigation('booked', new Navigation(_('Meine Buchungen'), 'dispatch.php/consultation/overview/booked'));
+        }
         return $navigation;
     }
 }

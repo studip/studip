@@ -1,4 +1,4 @@
-<form action="<?= $controller->cancel($slot->block, $slot) ?>" method="post" class="default">
+<form action="<?= $controller->cancel($slot->block, $slot, $from_booked) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
