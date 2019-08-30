@@ -110,7 +110,7 @@ class PluginAdministration
             ));
         }
 
-        if (!is_writable($base_path . '/' . $origin)) {
+        if (!is_writable($basepath . '/' . $origin)) {
             throw new PluginInstallationException(sprintf(
                 _('Der Ordner "%s" ist nicht schreibbar.'),
                 studip_relative_path($basepath . '/' . $origin)
