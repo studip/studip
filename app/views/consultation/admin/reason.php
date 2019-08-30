@@ -1,4 +1,4 @@
-<form action="<?= $controller->reason($booking->slot->block, $booking->slot, $booking) ?>" method="post" class="default">
+<form action="<?= $controller->reason($booking->slot->block, $booking->slot, $booking, $page) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

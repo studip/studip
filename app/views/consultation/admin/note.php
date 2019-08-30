@@ -4,7 +4,7 @@
     )->hideClose() ?>
 <? endif; ?>
 
-<form action="<?= $controller->note($block, $slot_id) ?>" method="post" class="default">
+<form action="<?= $controller->note($block, $slot_id ?: 0, $page) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

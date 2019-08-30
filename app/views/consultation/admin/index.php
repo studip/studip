@@ -11,7 +11,7 @@
 
 <? else: ?>
 
-<form action="<?= $controller->bulk($page) ?>" method="post">
+<form action="<?= $controller->bulk($page, $current_action === 'expired') ?>" method="post">
 <table class="default consultation-overview">
     <colgroup>
         <col width="24px">
@@ -52,12 +52,12 @@
             </th>
             <th class="actions">
                 <?= ActionMenu::get()->addLink(
-                    $controller->edit_roomURL($block),
+                    $controller->edit_roomURL($block, $page),
                     _('Raum bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->addLink(
-                    $controller->noteURL($block),
+                    $controller->noteURL($block, 0, $page),
                     _('Anmerkung bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
@@ -67,7 +67,7 @@
                     Icon::create('print'),
                     ['target' => '_blank']
                 )->condition($block->has_bookings && !$block->is_expired)->addLink(
-                    $controller->cancel_blockURL($block),
+                    $controller->cancel_blockURL($block, $page),
                     _('Sprechstundentermine absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
@@ -76,7 +76,7 @@
                     _('Sprechstundentermine entfernen'),
                     Icon::create('trash'),
                     [
-                        'formaction'   => $controller->removeURL($block),
+                        'formaction'   => $controller->removeURL($block, 0, $page),
                         'data-confirm' => _('Wollen Sie diese Sprechtstundentermine wirklich löschen?'),
                     ]
                 ) ?>
@@ -132,22 +132,22 @@
             </td>
             <td class="actions">
                 <?= ActionMenu::get()->addLink(
-                    $controller->noteURL($block, $slot),
+                    $controller->noteURL($block, $slot, $page),
                     _('Anmerkung bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
-                )->condition(count($slot->bookings) < $slot->block->size)->addLink(
-                    $controller->bookURL($block, $slot),
+                )->condition(!$slot->is_expired && count($slot->bookings) < $slot->block->size)->addLink(
+                    $controller->bookURL($block, $slot, $page),
                     _('Sprechstundentermin reservieren'),
                     Icon::create('consultation+add'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings)->addLink(
-                    $controller->reasonURL($block, $slot, $slot->bookings->first()),
+                    $controller->reasonURL($block, $slot, $slot->bookings->first(), $page),
                     _('Grund bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
-                    $controller->cancel_slotURL($block, $slot),
+                    $controller->cancel_slotURL($block, $slot, $page),
                     _('Sprechstundentermin absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
@@ -156,7 +156,7 @@
                     _('Sprechstundentermin entfernen'),
                     Icon::create('trash'),
                     [
-                        'formaction'   => $controller->removeURL($block, $slot),
+                        'formaction'   => $controller->removeURL($block, $slot, $page),
                         'data-confirm' => _('Wollen Sie diesen Sprechstundentermin wirklich entfernen?'),
                     ]
                 ) ?>

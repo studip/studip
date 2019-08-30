@@ -337,37 +337,45 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
 
     /**
      * Finds all blocks of a teacher. Specialized version of the sorm method
-     * that may exclude expired blocks.
+     * that excludes expired blocks by default and may be used to explicitely
+     * select expired blocks.
      *
-     * @param  string  $teacher_id      Id of the teacher
-     * @param  string  $order           Optional order
-     * @param  boolean $exclude_expired Exclude expired blocks
+     * @param  string  $teacher_id Id of the teacher
+     * @param  string  $order      Optional order
+     * @param  boolean $expired    Select expired blocks
      * @return array
      */
-    public static function findByTeacher_id($teacher_id, $order = '', $exclude_expired = false)
+    public static function findByTeacher_id($teacher_id, $order = '', $expired = false)
     {
-        if (!$exclude_expired) {
-            return parent::findByTeacher_id($teacher_id, $order);
+        if ($expired) {
+            return parent::findBySQL(
+                "teacher_id = ? AND end <= UNIX_TIMESTAMP() {$order}",
+                [$teacher_id]
+            );
         }
 
         return parent::findBySQL(
-            "teacher_id = ? AND end > UNIX_TIMESTAMP()",
+            "teacher_id = ? AND end > UNIX_TIMESTAMP() {$order}",
             [$teacher_id]
         );
     }
 
     /**
      * Count all blocks of a teacher. Specialized version of the sorm method
-     * that may exclude expired blocks.
+     * that excludes expired blocks by default and may be used to explicitely
+     * select expired blocks.
      *
-     * @param  string  $teacher_id      Id of the teacher
-     * @param  boolean $exclude_expired Exclude expired blocks
+     * @param  string  $teacher_id Id of the teacher
+     * @param  boolean $expired    Select expired blocks
      * @return array
      */
-    public static function countByTeacher_id($teacher_id, $exclude_expired = false)
+    public static function countByTeacher_id($teacher_id, $expired = false)
     {
-        if (!$exclude_expired) {
-            return parent::countByTeacher_id($teacher_id);
+        if ($expired) {
+            return parent::countBySQL(
+                "teacher_id = ? AND end <= UNIX_TIMESTAMP()",
+                [$teacher_id]
+            );
         }
 
         return parent::countBySQL(

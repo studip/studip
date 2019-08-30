@@ -1,4 +1,4 @@
-<form action="<?= $controller->book($slot->block, $slot) ?>" method="post" class="default">
+<form action="<?= $controller->book($slot->block, $slot, $page) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

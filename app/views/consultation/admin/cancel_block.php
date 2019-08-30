@@ -1,4 +1,4 @@
-<form action="<?= $controller->cancel_block($block) ?>" method="post" class="default">
+<form action="<?= $controller->cancel_block($block, $page) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

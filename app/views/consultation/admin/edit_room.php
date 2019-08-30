@@ -1,4 +1,4 @@
-<form action="<?= $controller->store_room($block) ?>" method="post" class="default">
+<form action="<?= $controller->store_room($block, $page) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
