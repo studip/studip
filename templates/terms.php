@@ -27,4 +27,6 @@
     </section>
 </section>
 
-<? include("locale/{$GLOBALS['_language_path']}/LC_HELP/pages/nutzung.html"); ?>
+<?php
+    $lang = $GLOBALS['_language_path'] ?: 'de';
+    include("locale/{$lang}/LC_HELP/pages/nutzung.html");
