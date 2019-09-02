@@ -12,7 +12,7 @@ class Module_DownloadController extends MVVController
     {
         $language = Request::get('display_language', $language);
         ModuleManagementModel::setLanguage($language);
-        
+
         $modul = Modul::find($modul_id);
         if (!$modul) {
             throw new Exception(_('Ungültiges Modul'));
@@ -35,9 +35,7 @@ class Module_DownloadController extends MVVController
             $doc->SetFont('helvetica', '', 8);
             $doc->writeHTML($template->render(), false, false, true);
 
-            $doc->Output(FileManager::cleanFileName($modul->getDisplayName() . '.pdf'), 'D');
-
-            $this->render_nothing();
+            $this->render_pdf($doc, $modul->getDisplayName() . '.pdf');
         } else {
             $factory = $this->get_template_factory();
             $template = $factory->open('module/download/doc');
@@ -77,7 +75,7 @@ class Module_DownloadController extends MVVController
         }
 
         $modulVerantwortung = [];
-        
+
         foreach ($modul->assigned_users as $users) {
             foreach ($users as $user) {
                 if (!isset($modulVerantwortung[$user->gruppe])) {
@@ -92,9 +90,9 @@ class Module_DownloadController extends MVVController
                 ];
             }
         }
-    
+
         $modulTeilData = [];
-    
+
         foreach ($modul->modulteile as $modulTeil) {
             $deskriptor = $modulTeil->getDeskriptor($language);
             $num_bezeichnung = $GLOBALS['MVV_MODULTEIL']['NUM_BEZEICHNUNG']['values'][$modulTeil->num_bezeichnung]['name'];

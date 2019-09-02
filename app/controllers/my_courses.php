@@ -256,13 +256,12 @@ class MyCoursesController extends AuthenticatedController
         $template->set_attributes($this->get_assigned_variables());
         $template->image_style = 'height: 6px; width: 8px;';
 
-        $this->render_nothing();
-        while (ob_end_clean());
         $doc = new ExportPDF();
         $doc->addPage();
         $doc->SetFont('helvetica', '', 10);
         $doc->writeHTML($template->render(), false, false, true);
-        $doc->Output('courseexport.pdf', 'D');
+
+        $this->render_pdf($doc, 'courseexport.pdf');
     }
 
     public function set_open_group_action($id)

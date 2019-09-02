@@ -400,6 +400,37 @@ abstract class StudipController extends Trails_Controller
     }
 
     /**
+     * Renders a pdf file given by an ExportPDF object.
+     *
+     * @param ExportPDF $pdf      ExportPDF object to render
+     * @param string    $filename Filename
+     * @param bool      $inline   Should the pdf be displayed inline (default: no)
+     */
+    protected function render_pdf(ExportPDF $pdf, $filename, $inline = false)
+    {
+        $temp_file = $GLOBALS['TMP_PATH'] . '/' . md5(uniqid('pdf-file', true));
+        $pdf->Output($temp_file, 'F');
+
+        $disposition = $inline ? 'inline' : 'attachment';
+
+        $this->response->add_header('Content-Type', 'application/pdf');
+        $this->response->add_header('Content-Length', filesize($temp_file));
+        $this->response->add_header('Content-Transfer-Encoding',  'binary');
+        $this->response->add_header(
+            'Content-Disposition',
+            "{$disposition}; " . encode_header_parameter(
+                'filename',
+                FileManager::cleanFileName($filename)
+            )
+        );
+
+        // TODO: This should be split into chunks if trails allows it
+        $this->render_text(file_get_contents($temp_file));
+
+        unlink($temp_file);
+    }
+
+    /**
      * relays current request to another controller and returns the response
      * the other controller is given all assigned properties, additional parameters are passed
      * through

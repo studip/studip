@@ -211,9 +211,8 @@ class SharedVersionController extends MVVController
                 $doc->addPage();
                 $doc->SetFont('helvetica', '', 8);
                 $doc->writeHTML($template->render(), false, false, true);
-                $doc->Output($version->getDisplayName() . '.pdf', 'D');
 
-                $this->render_nothing();
+                $this->render_pdf($doc, $version->getDisplayName() . '.pdf');
             } else {
                 $content = $template->render();
                 $this->response->add_header('Content-type', 'application/msword');
