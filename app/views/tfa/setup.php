@@ -2,10 +2,10 @@
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
-        <legend><?= _('Zwei-Faktor-Authentisierung einrichten') ?></legend>
+        <legend><?= _('Zwei-Faktor-Authentifizierung einrichten') ?></legend>
 
         <p>
-            <?= _('Mittels Zwei-Faktor-Authentisierung können Sie Ihr Konto schützen, '
+            <?= _('Mittels Zwei-Faktor-Authentifizierung können Sie Ihr Konto schützen, '
                 . 'indem bei jedem Login ein Token von Ihnen eingegeben werden muss.') ?>
             <?= _('Dieses Token erhalten Sie entweder per E-Mail oder können es über '
                 . 'eine geeignete Authenticator-App erzeugen lassen.') ?>

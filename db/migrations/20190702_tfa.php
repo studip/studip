@@ -35,7 +35,7 @@ class Tfa extends Migration
                     `mkdate`, `chdate`
                   ) VALUES (
                       'TFA_MAX_TRIES', '3', 'integer', 'global',
-                      'Zwei-Faktor-Authentisierung', 'Maximale Anzahl fehlerhafter Versuche innerhalb eines Zeitraums',
+                      'Zwei-Faktor-Authentifizierung', 'Maximale Anzahl fehlerhafter Versuche innerhalb eines Zeitraums',
                       UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
                   )";
         DBManager::get()->exec($query);
@@ -46,7 +46,7 @@ class Tfa extends Migration
                     `mkdate`, `chdate`
                   ) VALUES (
                       'TFA_MAX_TRIES_TIMESPAN', '300', 'integer', 'global',
-                      'Zwei-Faktor-Authentisierung', 'Zeitraum in Sekunden, nach dem fehlerhafte Versuche vergessen werden',
+                      'Zwei-Faktor-Authentifizierung', 'Zeitraum in Sekunden, nach dem fehlerhafte Versuche vergessen werden',
                       UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
                   )";
         DBManager::get()->exec($query);
@@ -57,7 +57,7 @@ class Tfa extends Migration
                     `mkdate`, `chdate`
                   ) VALUES (
                       'TFA_PERMS', 'root', 'string', 'global',
-                      'Zwei-Faktor-Authentisierung', 'Systemrollen für die die Zwei-Faktor-Authentisierung aktiviert ist (kommaseparierte Liste, mögliche Werte: autor, tutor, dozent, admin, root)',
+                      'Zwei-Faktor-Authentifizierung', 'Systemrollen für die die Zwei-Faktor-Authentifizierung aktiviert ist (kommaseparierte Liste, mögliche Werte: autor, tutor, dozent, admin, root)',
                       UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
                   )";
         DBManager::get()->exec($query);

@@ -111,7 +111,7 @@ class ProfileNavigation extends Navigation
                 }
 
                 if (TwoFactorAuth::isEnabledForUser()) {
-                    $navigation->addSubNavigation('tfa', new Navigation(_('Zwei-Faktor-Authentisierung'), 'dispatch.php/tfa'));
+                    $navigation->addSubNavigation('tfa', new Navigation(_('Zwei-Faktor-Authentifizierung'), 'dispatch.php/tfa'));
                 }
 
                 $this->addSubNavigation('settings', $navigation);

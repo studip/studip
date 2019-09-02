@@ -1,7 +1,7 @@
 <form action="<?= htmlReady(Request::url()) ?>" method="post" class="default">
     <input type="hidden" name="tfa-nonce" value="<?= htmlReady($__nonce) ?>">
     <fieldset>
-        <legend><?= _('Zwei-Faktor-Authentisierung') ?></legend>
+        <legend><?= _('Zwei-Faktor-Authentifizierung') ?></legend>
 
 <? if ($blocked): ?>
     <?= MessageBox::warning(_('Sie haben zu viele ungültige Versuche'), [sprintf(

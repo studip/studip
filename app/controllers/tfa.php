@@ -6,7 +6,7 @@ class TfaController extends AuthenticatedController
         parent::before_filter($action, $args);
 
         Navigation::activateItem('/profile/settings/tfa');
-        PageLayout::setTitle(_('Zwei-Faktor-Authentisierung'));
+        PageLayout::setTitle(_('Zwei-Faktor-Authentifizierung'));
 
         $this->secret = new TFASecret(User::findCurrent()->id);
     }
@@ -31,7 +31,7 @@ class TfaController extends AuthenticatedController
         $this->secret->type = Request::option('type', 'email');
         $this->secret->store();
 
-        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde eingerichtet'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentifizierung wurde eingerichtet'));
         $this->redirect('tfa/confirm');
     }
 
@@ -48,7 +48,7 @@ class TfaController extends AuthenticatedController
             ['global' => true]
         );
 
-        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde aktiviert.'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentifizierung wurde aktiviert.'));
         $this->redirect('tfa/index');
     }
 
@@ -61,7 +61,7 @@ class TfaController extends AuthenticatedController
 
         $this->secret->delete();
 
-        PageLayout::postSuccess(_('Das Einrichten der Zwei-Faktor-Authentisierung wurde abgebrochen.'));
+        PageLayout::postSuccess(_('Das Einrichten der Zwei-Faktor-Authentifizierung wurde abgebrochen.'));
         $this->redirect('tfa/index');
     }
 
@@ -75,7 +75,7 @@ class TfaController extends AuthenticatedController
         $this->secret->delete();
         TwoFactorAuth::removeCookie();
 
-        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde deaktiviert.'));
+        PageLayout::postSuccess(_('Die Zwei-Faktor-Authentifizierung wurde deaktiviert.'));
         $this->redirect('tfa/index');
     }
 }

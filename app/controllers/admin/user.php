@@ -1195,7 +1195,7 @@ class Admin_UserController extends AuthenticatedController
     public function reset_tfa_action($user_id)
     {
         if (TFASecret::deleteByUser_id($user_id)) {
-            PageLayout::postSuccess(_('Die Zwei-Faktor-Authentisierung wurde für diese Person deaktiviert.'));
+            PageLayout::postSuccess(_('Die Zwei-Faktor-Authentifizierung wurde für diese Person deaktiviert.'));
         }
         $this->redirect('admin/user/edit/' . $user_id);
     }
@@ -1609,7 +1609,7 @@ class Admin_UserController extends AuthenticatedController
 
         if ($this->user->id !== $GLOBALS['user']->id && TFASecret::exists($this->user->id)) {
             $user_actions->addLink(
-                _('Zwei-Faktor-Authentisierung deaktivieren'),
+                _('Zwei-Faktor-Authentifizierung deaktivieren'),
                 $this->url_for("admin/user/reset_tfa/{$this->user->id}"),
                 Icon::create('code-qr')
             );
