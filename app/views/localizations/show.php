@@ -1,6 +1,6 @@
 <?php
 
-$translations = [
+$translations = array(
     // app/controllers/messages.php
     'Wirklich %s Nachrichten löschen?' => _('Wirklich %s Nachrichten löschen?'),
 
@@ -16,7 +16,7 @@ $translations = [
     'Vor <%= distance %> Minuten' => _('Vor <%= distance %> Minuten'),
     'Sichtbarkeit' => _('Sichtbarkeit'),
     'Der Beitrag konnte nicht gelöscht werden.' => _('Der Beitrag konnte nicht gelöscht werden.'),
-    'Es ist ein Fehler aufgetreten' => _('Es ist ein Fehler aufgetreten'),
+    'Es ist ein Fehler aufgetreten.' => _('Es ist ein Fehler aufgetreten.'),
 
     // public/plugins_packages/core/Forum/javascript/forum.js
     'Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!' => _('Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!'),
@@ -70,9 +70,6 @@ $translations = [
     // resources/assets/javascripts/bootstrap/studip_helper_attributes.js
     'Wollen Sie die Aktion wirklich ausführen?' => _('Wollen Sie die Aktion wirklich ausführen?'),
     'Die beiden Werte "$1" und "$2" stimmen nicht überein. ' => _('Die beiden Werte "$1" und "$2" stimmen nicht überein. '),
-
-    // resources/assets/javascripts/bootstrap/tour.js
-    'Fehler beim Aufruf des Tour-Controllers' => _('Fehler beim Aufruf des Tour-Controllers'),
 
     // resources/assets/javascripts/lib/admission.js
     'Wird geladen' => _('Wird geladen'),
@@ -129,6 +126,9 @@ $translations = [
     ' Dieser Filter enthält keine (neuen) Personen.' => _(' Dieser Filter enthält keine (neuen) Personen.'),
     'Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.' => _('Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.'),
 
+    // resources/assets/javascripts/lib/multi_select.js
+    '<%= count %> ausgewählt' => _('<%= count %> ausgewählt'),
+
     // resources/assets/javascripts/lib/news.js
     'Dialog wird geladen...' => _('Dialog wird geladen...'),
     'Fehler beim Aufruf des News-Controllers' => _('Fehler beim Aufruf des News-Controllers'),
@@ -143,7 +143,7 @@ $translations = [
     // resources/assets/javascripts/lib/register.js
     'Der Benutzername ist zu kurz, er sollte mindestens 4 Zeichen lang sein.' => _('Der Benutzername ist zu kurz, er sollte mindestens 4 Zeichen lang sein.'),
     'Der Benutzername enthält unzulässige Zeichen, er darf keine Sonderzeichen oder Leerzeichen enthalten.' => _('Der Benutzername enthält unzulässige Zeichen, er darf keine Sonderzeichen oder Leerzeichen enthalten.'),
-    'Das Passwort ist zu kurz, es sollte mindestens 8 Zeichen lang sein.' => _('Das Passwort ist zu kurz, es sollte mindestens 8 Zeichen lang sein.'),
+    'Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.' => _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.'),
     'Das Passwort stimmt nicht mit dem Bestätigungspasswort überein!' => _('Das Passwort stimmt nicht mit dem Bestätigungspasswort überein!'),
     'Bitte geben Sie Ihren tatsächlichen Vornamen an.' => _('Bitte geben Sie Ihren tatsächlichen Vornamen an.'),
     'Bitte geben Sie Ihren tatsächlichen Nachnamen an.' => _('Bitte geben Sie Ihren tatsächlichen Nachnamen an.'),
@@ -164,6 +164,9 @@ $translations = [
     'Das Aktivieren des WYSIWYG Editors ist fehlgeschlagen.' => _('Das Aktivieren des WYSIWYG Editors ist fehlgeschlagen.'),
     'URL' => _('URL'),
     'Status' => _('Status'),
+
+    // resources/assets/javascripts/lib/tour.js
+    'Fehler beim Aufruf des Tour-Controllers' => _('Fehler beim Aufruf des Tour-Controllers'),
 
     // resources/assets/javascripts/lib/user_filter.js
     'Bedingung konfigurieren' => _('Bedingung konfigurieren'),
@@ -223,7 +226,7 @@ $translations = [
     'vorm.' => _('vorm.'),
     'nachm.' => _('nachm.'),
 
-];
+);
 
 ?>
 <?= json_encode($translations) ?>
