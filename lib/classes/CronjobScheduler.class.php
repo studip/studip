@@ -305,6 +305,11 @@ class CronjobScheduler
         }
 
         foreach ($schedules as $schedule) {
+            // Skip schedules with missing task classes
+            if (!$schedule->task->valid) {
+                continue;
+            }
+
             $log = new CronjobLog();
             $log->schedule_id = $schedule->schedule_id;
             $log->scheduled   = $schedule->next_execution;
