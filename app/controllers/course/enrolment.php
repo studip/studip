@@ -246,7 +246,7 @@ class Course_EnrolmentController extends AuthenticatedController
                     $limit->setCustomMaxNumber($user_id, $admission_user_limit);
                 }
                 $admission_prio = Request::getArray('admission_prio');
-                $max_prio = max($admission_prio);
+                $max_prio = $admission_prio ? max($admission_prio) : 0;
                 $admission_prio = array_map(function ($a) use (&$max_prio) {
                     return $a > 0 ? $a : ++$max_prio;
                 }, $admission_prio);
@@ -269,10 +269,13 @@ class Course_EnrolmentController extends AuthenticatedController
                 if ($delete = key(Request::getArray('admission_prio_delete'))) {
                     unset($admission_prio[$delete]);
                     $changed = 1;
-                    $admission_prio = array_combine(
-                        array_keys($admission_prio),
-                        range(1, count($admission_prio))
-                    );
+
+                    if ($admission_prio) {
+                        $admission_prio = array_combine(
+                            array_keys($admission_prio),
+                            range(1, count($admission_prio))
+                        );
+                    }
                 }
                 foreach ($admission_prio as $course_id => $p) {
                     $changed += AdmissionPriority::setPriority($courseset->getId(), $user_id, $course_id, $p);
