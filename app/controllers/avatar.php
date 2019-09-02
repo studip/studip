@@ -46,10 +46,11 @@ class AvatarController extends AuthenticatedController
             $studygroup_mode = $sem->getSemClass()->offsetget('studygroup_mode');
             if ($studygroup_mode) {
                 $class = 'StudygroupAvatar';
+                $this->cancel_link = $this->url_for('course/studygroup/edit?cid=' . $id);
             } else {
                 $class = 'CourseAvatar';
+                $this->cancel_link = $this->url_for('course/management?cid=' . $id);
             }
-            $this->cancel_link = $this->url_for('avatar/update/course?cid=' . $id);
         }
 
         if (!$has_perm) {
