@@ -131,18 +131,11 @@ class Admin_RoleController extends AuthenticatedController
     private function search_user($searchtxt)
     {
         $searchtxt = "%{$searchtxt}%";
-        $stmt = DBManager::get()->prepare(
-            "SELECT user_id
-             FROM auth_user_md5
-             WHERE username LIKE ?
-                OR Vorname LIKE ?
-                OR Nachname LIKE ?
-             ORDER BY Vorname, Nachname, username"
-        );
 
-        $stmt->execute([$searchtxt, $searchtxt, $searchtxt]);
-        $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        return User::findMany($ids);
+        $condition = "username LIKE ?
+                      OR CONCAT(Nachname, ', ', Vorname, ' ', Nachname) LIKE ?
+                      ORDER BY Vorname, Nachname, username";
+        return User::findBySQL($condition, [$searchtxt, $searchtxt]);
     }
 
     /**

@@ -26,7 +26,7 @@ use Studip\Button, Studip\LinkButton;
             <select name="usersel" style="min-width: 300px;">
             <? foreach ($users as $user): ?>
                 <option value="<?= $user->id ?>" <? if ($currentuser && $currentuser->id === $user->id) echo 'selected'; ?>>
-                    <?= htmlReady(sprintf('%s %s (%s)', $user->vorname, $user->nachname, $user->username)) ?>
+                    <?= htmlReady(sprintf('%s (%s)', $user->getFullName(), $user->username)) ?>
                 </option>
             <? endforeach ?>
             </select>
