@@ -57,7 +57,7 @@
             <footer>
                 <form class="default" action="<?= htmlReady($launch_url) ?>" method="post" target="_blank">
                     <? foreach ($launch_data as $key => $value): ?>
-                        <input type="hidden" name="<?= htmlReady($key) ?>" value="<?= htmlReady($value) ?>">
+                        <input type="hidden" name="<?= htmlReady($key) ?>" value="<?= htmlReady($value, false) ?>">
                     <? endforeach ?>
                     <?= Studip\Button::create(_('Anwendung starten'), 'oauth_signature', ['value' => $signature]) ?>
                 </form>
