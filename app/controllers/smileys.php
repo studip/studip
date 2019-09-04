@@ -25,7 +25,7 @@ class SmileysController extends AuthenticatedController
     /**
      * Common tasks for all actions.
      */
-    function before_filter(&$action, &$args)
+    public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
 
@@ -49,7 +49,7 @@ class SmileysController extends AuthenticatedController
      *
      * @param mixed $view Subset to display, defaults to favorites if enabled
      */
-    function index_action($view = null)
+    public function index_action($view = null)
     {
         $this->view = $view ?: $this->default;
 
@@ -75,7 +75,8 @@ class SmileysController extends AuthenticatedController
      * @param int    $id    Id of the smiley to favor/disfavor
      * @param String $view  View to return to
      */
-    function favor_action($id, $view) {
+    public function favor_action($id, $view)
+    {
         try {
             $state = $this->favorites->toggle($id);
 
@@ -109,7 +110,7 @@ class SmileysController extends AuthenticatedController
      * @param mixed $view Subset to display, defaults to favorites if enabled
      * @param int   $page Section of subset to display
      */
-    function picker_action($view = null, $page = 0)
+    public function picker_action($view = null, $page = 0)
     {
         $per_page = self::GRID_WIDTH * self::GRID_HEIGHT;
 
@@ -122,8 +123,8 @@ class SmileysController extends AuthenticatedController
         $this->pages      = floor(count($smileys) / $per_page);
 
         array_walk($smileys, function ($smiley) {
-            $smiley->link = Smiley::getURL($smiley->name);
-            $smiley->html = Smiley::img($smiley->name);
+            $smiley->link = $smiley->getURL();
+            $smiley->html = $smiley->getImageTag();
         });
         $this->smileys    = array_slice($smileys, $page * $per_page, $per_page);
 

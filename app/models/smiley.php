@@ -42,49 +42,9 @@ class Smiley
      * @param  mixed  $name Smiley name, defaults to current smiley's name
      * @return String Absolute filename
      */
-    function getFilename($name = null)
+    public static function getFilename($name)
     {
-        return sprintf('%s/smile/%s', realpath($GLOBALS['DYNAMIC_CONTENT_PATH']), $name ?: $this->name);
-    }
-
-    /**
-     * Returns the url of a smiley.
-     *
-     * @param  mixed  $name Smiley name, defaults to current smiley's name
-     * @return String URL
-     */
-    function getURL($name = null)
-    {
-        return sprintf('%s/smile/%s.gif', $GLOBALS['DYNAMIC_CONTENT_URL'], urlencode($name ?: $this->name));
-    }
-
-    /**
-     * Returns the HTML image tag of the smiley
-     *
-     * @param  mixed  $tooltip Tooltip to display for this smiley, defaults to
-     *                         smiley's name
-     * @return String HTML image tag
-     * @see    Smiley::img
-     */
-    function getImageTag($tooltip = null)
-    {
-        return self::img($this->name, $tooltip, $this->width, $this->height);
-    }
-
-    /**
-     * Returns the HTML image tag of any smiley.
-     *
-     * @param  String $name    Name of the smiley
-     * @param  mixed  $tooltip Tooltip to display for this smiley, defaults to
-     *                         smiley's name
-     * @param  mixed  $width   Width of the smiley
-     * @param  mixed  $height  Height of the smiley
-     * @return String HTML image tag
-     */
-    public function img($name, $tooltip = null, $width = null, $height = null) {
-        return sprintf('<img src="%s" alt="%s" title="%s" width="%s" height="%s">',
-                       self::getURL($name), htmlReady($name), htmlReady($tooltip ?: $name),
-                       $width, $height);
+        return sprintf('%s/smile/%s', realpath($GLOBALS['DYNAMIC_CONTENT_PATH']), $name);
     }
 
     /**
@@ -94,7 +54,7 @@ class Smiley
      * @param  int    $id Id of the smiley to load
      * @return Smiley Smiley object
      */
-    static function getById($id)
+    public static function getById($id)
     {
         $result = self::getByIds($id);
         return reset($result) ?: new self;
@@ -106,7 +66,7 @@ class Smiley
      * @param  mixed $ids Ids of the smileys to load, also accepts an atomic id
      * @return Array Array of Smiley objects
      */
-    static function getByIds($ids)
+    public static function getByIds($ids)
     {
         if (empty($ids)) {
             return [];
@@ -127,7 +87,7 @@ class Smiley
      * @param  String $name Name of the smiley to load
      * @return Smiley Smiley object
      */
-    static function getByName($name)
+    public static function getByName($name)
     {
         $query = "SELECT smiley_id AS id, smiley_name AS name, smiley_width AS width, smiley_height AS height, "
                . " short_name AS short, smiley_counter AS `count`, short_counter AS short_count, "
@@ -135,7 +95,7 @@ class Smiley
                . " FROM smiley WHERE smiley_name = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$name]);
-        return $statement->fetchObject('Smiley') ?: new self;
+        return $statement->fetchObject('Smiley') ?: new self();
     }
 
     /**
@@ -145,12 +105,12 @@ class Smiley
      * @param  String $short Short notation of the smiley to load
      * @return Smiley Smiley object
      */
-    static function getByShort($short)
+    public static function getByShort($short)
     {
         $smileys = self::getShort();
         $name   = $smileys[$short];
 
-        return isset($name) ? self::getByName($name) : new self;
+        return isset($name) ? self::getByName($name) : new self();
     }
 
     /**
@@ -159,82 +119,15 @@ class Smiley
      * @param  mixed  $id Id(s) to delete, accepts either an atomic id or an
      *                    array of ids
      */
-    static function Remove($id)
+    public static function Remove($id)
     {
-        if (!empty($id)) {
+        if ($id) {
             foreach (self::getByIds($id) as $smiley) {
-                unlink($smiley->getFilename());
+                unlink(self::getFilename($smiley->name));
             }
             DBManager::get()
                 ->prepare("DELETE FROM smiley WHERE smiley_id IN (?)")
                 ->execute([$id]);
-        }
-    }
-
-    /**
-     * Stores the current smiley to database.
-     */
-    function store()
-    {
-        $query = "INSERT INTO smiley "
-               . "(smiley_id, smiley_name, smiley_width, smiley_height, short_name, "
-               . " smiley_counter, short_counter, fav_counter, mkdate, chdate) "
-               . "VALUES (?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()) "
-               . "ON DUPLICATE KEY "
-               . "UPDATE smiley_name = VALUES(smiley_name), smiley_width = VALUES(smiley_width), "
-               . " smiley_height = VALUES(smiley_height), short_name = VALUES(short_name), "
-               . " smiley_counter = VALUES(smiley_counter), short_counter = VALUES(short_counter), "
-               . " fav_counter = VALUES(fav_counter), chdate = VALUES(chdate)";
-        DBManager::get()
-            ->prepare($query)
-            ->execute([
-               $this->id, $this->name, $this->width, $this->height, $this->short,
-               $this->count, $this->short_count, $this->fav_count
-            ]);
-        if (empty($this->id)) {
-            $this->id = DBManager::get()->lastInsertId();
-        }
-    }
-
-    /**
-     * Renames the smiley to the given new name.
-     *
-     * @param String $new_name New name of the smiley
-     * @return bool  true if smiley was renamed successfully, false otherwise
-     */
-    function rename($new_name)
-    {
-        $old_file = $this->getFilename();
-        $new_file = $this->getFilename($new_name);
-
-        if (!rename($old_file, $new_file)) {
-            return false;
-        }
-
-        $this->name = $new_name;
-        $this->store();
-
-        return true;
-    }
-
-    /**
-     * Deletes the smiley.
-     */
-    function delete()
-    {
-        if ($this->id) {
-            self::Remove($this->id);
-
-            $this->id          = null;
-            $this->name        = '';
-            $this->width       = 0;
-            $this->height      = 0;
-            $this->short       = '';
-            $this->count       = 0;
-            $this->short_count = 0;
-            $this->fav_count   = 0;
-            $this->mkdate      = null;
-            $this->chdate      = null;
         }
     }
 
@@ -331,7 +224,7 @@ class Smiley
      * @return Array Associative list with short notation as key and smiley
      *               name as value
      */
-    static function getShort()
+    public static function getShort()
     {
         if (class_exists('DBManager') && !$GLOBALS['SMILEY_NO_DB']) {
             if (self::$shortnames === null) {
@@ -340,7 +233,7 @@ class Smiley
             }
             return self::$shortnames;
         } else { // Unit test
-            $short = (array)$GLOBALS['SMILE_SHORT'];
+            $short = (array) $GLOBALS['SMILE_SHORT'];
         }
 
         return $short;
@@ -351,7 +244,7 @@ class Smiley
      *
      * @return Array 4 numbers: available, used, occurences and last change
      */
-    static function getStatistics()
+    public static function getStatistics()
     {
         $query = "SELECT COUNT(*) AS count_all, "
                . " SUM(smiley_counter + short_counter > 0) AS count_used, "
@@ -372,12 +265,12 @@ class Smiley
      * @return Array Associative array with smiley name as key and according
      *               usage numbers as value
      */
-    static function getUsage()
+    public static function getUsage()
     {
         // Tabellen, die nach Smileys durchsucht werden sollen
         // Format: array( array (Tabelle, Feld), array (Tabelle, Feld), ... )
         $table_data = [
-            ['datafields_entries','content'],
+            ['datafields_entries', 'content'],
             ['kategorien', 'content'],
             ['message', 'message'],
             ['news', 'body'],
@@ -455,7 +348,7 @@ class Smiley
      *
      * @return int Number of changed objects
      */
-    static function updateUsage()
+    public static function updateUsage()
     {
         $usage = self::getUsage();
         $smileys = self::getGrouped('all');
@@ -499,7 +392,7 @@ class Smiley
      *                           system is refreshed
      * @return Array Numbers: inserted, updated, removed (, favorites adjusted)
      */
-    static function refresh($smiley_file = null)
+    public static function refresh($smiley_file = null)
     {
         $counts = [
             'insert'    => 0,
@@ -559,5 +452,124 @@ class Smiley
         }
 
         return $counts;
+    }
+
+    /**
+     * Returns the url of a smiley.
+     *
+     * @param  mixed  $name Smiley name, defaults to current smiley's name
+     * @return String URL
+     */
+    public function getURL($name = null)
+    {
+        return sprintf('%s/smile/%s.gif', $GLOBALS['DYNAMIC_CONTENT_URL'], urlencode($name ?: $this->name));
+    }
+
+    /**
+     * Returns the HTML image tag of the smiley
+     *
+     * @param  mixed  $tooltip Tooltip to display for this smiley, defaults to
+     *                         smiley's name
+     * @return String HTML image tag
+     * @see    Smiley::img
+     */
+    public function getImageTag($tooltip = null)
+    {
+        return $this->img($this->name, $tooltip, $this->width, $this->height);
+    }
+
+    /**
+     * Returns the HTML image tag of any smiley.
+     *
+     * @param  String $name    Name of the smiley
+     * @param  mixed  $tooltip Tooltip to display for this smiley, defaults to
+     *                         smiley's name
+     * @param  mixed  $width   Width of the smiley
+     * @param  mixed  $height  Height of the smiley
+     * @return String HTML image tag
+     */
+    public function img($name, $tooltip = null, $width = null, $height = null)
+    {
+        return sprintf(
+            '<img src="%s" alt="%s" title="%s" width="%s" height="%s">',
+            $this->getURL(),
+            htmlReady($name),
+            htmlReady($tooltip ?: $name),
+            $width,
+            $height
+        );
+    }
+
+    /**
+     * Stores the current smiley to database.
+     */
+    public function store()
+    {
+        $query = "INSERT INTO smiley (
+                    smiley_id, smiley_name, smiley_width, smiley_height, short_name,
+                    smiley_counter, short_counter, fav_counter, mkdate, chdate
+                  ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
+                  )
+                  ON DUPLICATE KEY
+                    UPDATE smiley_name = VALUES(smiley_name),
+                           smiley_width = VALUES(smiley_width),
+                           smiley_height = VALUES(smiley_height),
+                           short_name = VALUES(short_name),
+                           smiley_counter = VALUES(smiley_counter),
+                           short_counter = VALUES(short_counter),
+                           fav_counter = VALUES(fav_counter),
+                           chdate = VALUES(chdate)";
+        DBManager::get()
+            ->prepare($query)
+            ->execute([
+               $this->id, $this->name, $this->width, $this->height, $this->short,
+               $this->count, $this->short_count, $this->fav_count
+            ]);
+        if (!$this->id) {
+            $this->id = DBManager::get()->lastInsertId();
+        }
+    }
+
+    /**
+     * Renames the smiley to the given new name.
+     *
+     * @param String $new_name New name of the smiley
+     * @return bool  true if smiley was renamed successfully, false otherwise
+     */
+    public function rename($new_name)
+    {
+        $old_file = self::getFilename($this->name);
+        $new_file = self::getFilename($new_name);
+
+        if (!rename($old_file, $new_file)) {
+            return false;
+        }
+
+        $this->name = $new_name;
+        $this->store();
+
+        return true;
+    }
+
+    /**
+     * Deletes the smiley.
+     */
+    public function delete()
+    {
+        if ($this->id) {
+            self::Remove($this->id);
+
+            $this->id          = null;
+            $this->name        = '';
+            $this->width       = 0;
+            $this->height      = 0;
+            $this->short       = '';
+            $this->count       = 0;
+            $this->short_count = 0;
+            $this->fav_count   = 0;
+            $this->mkdate      = null;
+            $this->chdate      = null;
+        }
     }
 }

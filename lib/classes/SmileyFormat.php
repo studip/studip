@@ -3,7 +3,7 @@ require_once 'app/models/smiley.php';
 
 /**
  * SmileyFormat.php
- * 
+ *
  * Provides a formatting object for smileys.
  *
  * @author   Jan-Hendrik Willms <tleilax+studip@gmail.com>
@@ -15,7 +15,7 @@ require_once 'app/models/smiley.php';
 class SmileyFormat extends TextFormat
 {
     const REGEXP = '(\>|^|\s):([_a-zA-Z][_a-z0-9A-Z-]*):(?=$|\<|\s)';
-    
+
     function __construct()
     {
         $rules = [];
@@ -42,7 +42,7 @@ class SmileyFormat extends TextFormat
      */
     static function smiley($markup, $matches)
     {
-        return $matches[1] . Smiley::img($matches[2]) . $matches[3];
+        return $matches[1] . Smiley::getByName($matches[2])->getImageTag() . $matches[3];
     }
 
     /**
@@ -53,7 +53,7 @@ class SmileyFormat extends TextFormat
         $smileys = Smiley::getShort();
         $name    = $smileys[$matches[2]];
         return isset($name)
-            ? $matches[1] . Smiley::img($name) . $matches[3]
+            ? $matches[1] . Smiley::getByName($name)->getImageTag() . $matches[3]
             : $matches[0];
     }
 }
