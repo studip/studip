@@ -28,6 +28,7 @@ $(document).on('mouseenter mouseleave', '[data-tooltip],.tooltip:has(.tooltip-co
         content = $('<div/>').text(data.tooltip || $(this).attr('title')).html();
         if (!content) {
             content = $(this).find('.tooltip-content').remove().html();
+            $(this).attr('data-tooltip', content);
         }
         $(this).attr('title', '');
 
