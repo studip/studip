@@ -98,7 +98,7 @@ if ($navigation) {
 
     <? if (Context::get() || PageLayout::isHeaderEnabled()): ?>
         <nav class="secondary-navigation">
-        <? if (!$GLOBALS['perm']->have_perm('admin') && Context::get()) : ?>
+        <? if (is_object($GLOBALS['perm']) && !$GLOBALS['perm']->have_perm('admin') && Context::get()) : ?>
             <? $membership = CourseMember::find([Context::get()->id, $GLOBALS['user']->id]) ?>
             <? if ($membership) : ?>
                 <a href="<?= URLHelper::getLink('dispatch.php/my_courses/groups') ?>"
