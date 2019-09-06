@@ -9,6 +9,8 @@
  * the License, or (at your option) any later version.
  */
 
+require_once __DIR__ . '/studip_response.php';
+
 abstract class StudipController extends Trails_Controller
 {
     protected $with_session = false; //do we need to have a session for this controller
@@ -69,6 +71,16 @@ abstract class StudipController extends Trails_Controller
         $this->set_layout($layout);
 
         $this->set_content_type('text/html;charset=utf-8');
+    }
+
+    /**
+     * Extended method to inject extended response object.
+     */
+    public function erase_response()
+    {
+        parent::erase_response();
+
+        $this->response = new StudipResponse();
     }
 
     /**
@@ -413,21 +425,104 @@ abstract class StudipController extends Trails_Controller
 
         $disposition = $inline ? 'inline' : 'attachment';
 
-        $this->response->add_header('Content-Type', 'application/pdf');
-        $this->response->add_header('Content-Length', filesize($temp_file));
-        $this->response->add_header('Content-Transfer-Encoding',  'binary');
+        $this->render_temporary_file($temp_file, $filename, 'application/pdf');
+    }
+
+    /**
+     * Renders a file
+     * @param string  $file             Name of the file to render
+     * @param string  $filename         Name of the file displayed to user
+     *                                  (will equal $file when missing)
+     * @param string  $content_type     Optional content type (will be determined if missing)
+     * @param int     $chunk_dispostion Either attachment (default) or inline
+     * @param Closure $callback         Optional callback when download has finished
+     * @param int     $chunk_size       Optional size of chunks to send (default: 256k)
+     */
+    public function render_file(
+        $file,
+        $filename = null,
+        $content_type = null,
+        $content_dispotion = 'attachment',
+        Closure $callback = null,
+        $chunk_size = 262144
+    ) {
+        if (!file_exists($file)) {
+            throw new Trails_Exception(404);
+        }
+
+        if (!is_readable($file)) {
+            throw new Trails_Exception(500);
+        }
+
+        if ($content_type === null) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $content_type = finfo_file($finfo, $file);
+        }
+
+        $this->set_content_type($content_type);
         $this->response->add_header(
             'Content-Disposition',
             "{$disposition}; " . encode_header_parameter(
                 'filename',
-                FileManager::cleanFileName($filename)
+                FileManager::cleanFileName($filename ?: basename($file))
             )
         );
+        $this->response->add_header('Content-Length', filesize($file));
+        $this->response->add_header('Content-Transfer-Encoding',  'binary');
+        $this->response->add_header('Pragma', 'public');
+        $this->render_text(function () use ($file, $chunk_size, $callback) {
+            $fp = fopen($file, 'rb');
 
-        // TODO: This should be split into chunks if trails allows it
-        $this->render_text(file_get_contents($temp_file));
+            while (!feof($fp)) {
+                yield fgets($fp, $chunk_size);
+            }
 
-        unlink($temp_file);
+            fclose($fp);
+
+            if ($callback) {
+                $callback($file);
+            }
+        });
+    }
+
+    /**
+     * Renders a temporary file which will be deleted after transmission.
+     * This is just a convenience method so you don't have to write the delete
+     * callback.
+     *
+     * @param string  $file             Name of the file to render
+     * @param string  $filename         Name of the file displayed to user
+     *                                  (will equal $file when missing)
+     * @param string  $content_type     Optional content type (will be determined if missing)
+     * @param int     $chunk_dispostion Either attachment (default) or inline
+     * @param Closure $callback         Optional callback when download has finished
+     * @param int     $chunk_size       Optional size of chunks to send (default: 256k)
+     */
+    public function render_temporary_file(
+        $file,
+        $filename = null,
+        $content_type = null,
+        $content_dispotion = 'attachment',
+        Closure $callback = null,
+        $chunk_size = 262144
+
+    ) {
+        $delete_callback = function ($file) use ($callback) {
+            unlink($file);
+
+            if ($callback) {
+                $callback($file);
+            }
+        };
+
+        $this->render_file(
+            $file,
+            $filename,
+            $content_type,
+            $content_dispotion,
+            $delete_callback,
+            $chunk_size
+        );
     }
 
     /**

@@ -228,13 +228,11 @@ class PrivacyController extends AuthenticatedController
             }
         }
 
-        $this->set_content_type('application/zip');
-        $this->response->add_header(
-            'Content-disposition',
-            'attachment;' . encode_header_parameter('filename', "datenexport_{$user->username}.zip")
+        $this->render_temporary_file(
+            $zipname,
+            "datenexport_{$user->username}.zip",
+            'application/zip'
         );
-        $this->response->add_header('Content-Length', filesize($zipname));
-        $this->render_text(file_get_contents($zipname));
     }
 
     /**
@@ -302,7 +300,7 @@ class PrivacyController extends AuthenticatedController
         if ($avatar->is_customized()) {
             $zip->addFile($avatar->getCustomAvatarPath('normal'), $user_id . '.png');
         }
-       
+
         foreach (FileRef::findByUser_id($user_id) as $fileref) {
             $storage->addFileRef($fileref);
         }
@@ -313,7 +311,7 @@ class PrivacyController extends AuthenticatedController
 
          // add numbering structure to zip
         $source_files = $storage->getFileData();
-        
+
         $file_names = [];
         foreach ($source_files as $k => $file_data) {
             $file_names[$file_data['name']][] = $k;
@@ -354,7 +352,7 @@ class PrivacyController extends AuthenticatedController
                 }
             }
         } while ($not_clear);
-        
+
 
         foreach ($source_files as $file_data) {
             if (isset($file_data['path'])) {
@@ -456,5 +454,5 @@ class PrivacyController extends AuthenticatedController
         ];
     }
 
-    
+
 }

@@ -410,15 +410,7 @@ class Admin_PluginController extends AuthenticatedController
             $filepath
         );
 
-        $this->set_content_type('application/zip');
-        $this->response->add_header('Content-Disposition',  'attachment; ' . encode_header_parameter('filename', $filename));
-        $this->response->add_header('Content-Length', filesize($filepath));
-        $this->response->add_header('Pragma', 'public');
-
-        $this->render_nothing();
-
-        readfile($filepath);
-        unlink($filepath);
+        $this->render_temporary_file($filepath, $filename, 'application/zip');
     }
 
     /**
