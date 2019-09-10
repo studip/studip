@@ -344,20 +344,20 @@ Dialog.show = function(content, options) {
     var dialog_options = {};
     var instance = Dialog.getInstance(options.id);
     var previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false;
-    var width = options.width || (screen.width * 2) / 3;
-    var height = options.height || (screen.height * 2) / 3;
-    var max_width  = screen.width * 0.95;
-    var max_height = screen.height * 0.9;
+    var width = options.width || ($(window).width() * 2) / 3;
+    var height = options.height || ($(window).height() * 2) / 3;
+    var max_width  = $(window).width() * 0.95;
+    var max_height = $(window).height() * 0.9;
     var temp;
     var helper;
 
     if ($('html').is('.responsive-display')) {
-        max_width  = screen.width - 6; // Subtract border
-        max_height = screen.height;
+        max_width  = $(window).width() - 6; // Subtract border
+        max_height = $(window).height();
 
         if (!options.hasOwnProperty('width')) {
-            width  = screen.width * 0.95;
-            height = screen.height * 0.98;
+            width  = $(window).width() * 0.95;
+            height = $(window).height() * 0.98;
         }
     }
 
