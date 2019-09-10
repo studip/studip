@@ -20,6 +20,7 @@
         </label>
 
         <ul class="themen-list">
+            <li class="list-placeholder"><?= _('Keine Themen zugeordnet') ?></li>
         <? foreach ($date->topics as $topic) : ?>
             <?= $this->render_partial('course/dates/_topic_li', compact('topic')) ?>
         <? endforeach ?>

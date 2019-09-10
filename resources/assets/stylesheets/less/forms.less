@@ -17,6 +17,10 @@ form.default {
         }
     }
 
+    fieldset > section:last-child {
+        margin-bottom: @gap;
+    }
+
     ol.default {
         padding-left: 20px;
 
@@ -254,7 +258,8 @@ form.default {
     }
 
     // Group elements in a row
-    .hgroup, .hgroup-btn {
+    .hgroup,
+    .hgroup-btn {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
@@ -291,6 +296,11 @@ form.default {
                 margin-top: 0;
                 width: auto;
             }
+        }
+
+        .button {
+            margin-bottom: 0;
+            margin-top: 0;
         }
     }
 
