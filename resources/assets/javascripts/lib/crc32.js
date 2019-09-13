@@ -17,12 +17,12 @@ function makeCRCTable() {
 
 var crcTable = makeCRCTable();
 
-const crc32 = function() {
+const crc32 = function(what) {
     var crc = 0 ^ -1,
         i;
 
-    for (i = 0; i < this.length; i += 1) {
-        crc = (crc >>> 8) ^ crcTable[(crc ^ this.charCodeAt(i)) & 0xff];
+    for (i = 0; i < what.length; i += 1) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ what.charCodeAt(i)) & 0xff];
     }
 
     return (crc ^ -1) >>> 0;

@@ -153,7 +153,7 @@ class WidgetSystem
         api.PUT(['widgets', this.id], {
             before: () => {
                 var elements = this.serialize();
-                var hashcode = JSON.stringify(elements).crc32();
+                var hashcode = crc32(JSON.stringify(elements));
                 var result = hashcode !== this.hashcode;
 
                 this.hashcode = hashcode;
