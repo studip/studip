@@ -149,8 +149,6 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                  * at institutes or in their personal file area.
                  */
                 default:
-                    $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
-
                     $mycourses = "SELECT `Seminar_id`
                                   FROM `seminar_user`
                                   WHERE `user_id` = " . DBManager::get()->quote($GLOBALS['user']->id);
@@ -169,7 +167,8 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                             JOIN `folders` fo
                               ON (r.`folder_id` = fo.`id`) AND (
                                   fo.`range_id` IN ({$mycourses})
-                                  OR fo.`range_id` IN (". DBManager::get()->quote($GLOBALS['user']->id) . "," . DBManager::get()->quote($institutes) . ")
+                                  OR fo.`range_id` = ". DBManager::get()->quote($GLOBALS['user']->id) . "
+                                  OR fo.`range_id` IN (SELECT Institut_id FROM Institute)
                               )
                             WHERE (r.`name` LIKE {$query} OR r.`description` LIKE {$query})
                             ORDER BY r.`chdate` DESC LIMIT " . $limit;
