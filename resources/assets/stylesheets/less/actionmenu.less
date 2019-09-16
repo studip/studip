@@ -1,22 +1,28 @@
-.action-menu {
-    @icon-size: 20px;
-    @shadow: 1px 1px 1px @dark-gray-color-60;
+@action-menu-icon-size: 20px;
+@action-menu-shadow: 1px 1px 1px @dark-gray-color-60;
 
+.action-menu {
     display: inline-block;
     position: relative;
     text-align: right;
     vertical-align: middle;
 
-    .action-menu-icon {
-        z-index: 3;
-
-        position: relative;
-        cursor: pointer;
-        display: inline-block;
-        padding: 0;
-        width: 20px;
-        height: 20px;
+    &:not(.is-open) .action-menu-content {
+        display: none;
     }
+}
+
+.action-menu-wrapper {
+    position: absolute;
+
+    &:not(.is-open) {
+        display: none;
+    }
+}
+
+.action-menu,
+.action-menu-wrapper {
+    z-index: 2;
 
     .action-menu-content {
         position: absolute;
@@ -24,23 +30,49 @@
         right: -4px;
 
         padding: 4px 8px;
-        z-index: 2;
 
         background: white;
         border: thin solid @dark-gray-color-45;
-        box-shadow: @shadow;
+        box-shadow: @action-menu-shadow;
         font-weight: normal;
         text-align: left;
         white-space: nowrap;
     }
 
-    &.reversed {
-        .action-menu-content {
-            top: auto;
-            bottom: -4px;
+    .action-menu-icon {
+        z-index: 1;
 
-            .action-menu-list .action-menu-item:last-of-type {
-                padding-right: 20px;
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+
+        // Create animated icon that changes to close icon on activation/hover
+        div {
+            .square((@action-menu-icon-size / 4));
+            transform: translate((-(@action-menu-icon-size / 8)), 0);
+            transition: all .25s ease-in-out;
+
+            display: block;
+            position: absolute;
+            background:  @base-color;
+            border-radius: 50%;
+            opacity: 1;
+            left: 50%;
+
+            &:nth-child(1) {
+                top: 0px;
+            }
+
+            &:nth-child(2) {
+                top: (@action-menu-icon-size / 2);
+                transform: translate((-(@action-menu-icon-size / 8)), (-(@action-menu-icon-size / 8)));
+            }
+
+            &:nth-child(3) {
+                bottom: 0;
             }
         }
     }
@@ -79,8 +111,8 @@
             margin: 0 0.25em;
             vertical-align: middle;
 
-            width: @icon-size;
-            height: @icon-size;
+            width: @action-menu-icon-size;
+            height: @action-menu-icon-size;
         }
 
         > button {
@@ -101,73 +133,39 @@
         }
     }
 
-    &:not(.active) {
-        .action-menu-content {
-            display: none;
-        }
-        .action-menu-icon {
-            z-index: 1;
-        }
-    }
-
-    .no-js &:hover {
-        .action-menu-content {
-            display: initial;
-        }
+    &.is-open {
         .action-menu-icon {
             z-index: 3;
-        }
-    }
+            div {
+                border-radius: 0;
 
-    // Create animated icon that changes to close icon on activation/hover
-    .action-menu-icon div {
-        .square((@icon-size / 4));
-        transform: translate((-(@icon-size / 8)), 0);
-        transition: all .25s ease-in-out;
+                &:nth-child(1) {
+                    left: 0;
+                    .transform(rotate(45deg), translate(((@action-menu-icon-size / 4) + 0.5), ((@action-menu-icon-size / 4) + 0.5)));
+                    width: 100%;
+                }
 
-        display: block;
-        position: absolute;
-        background:  @base-color;
-        border-radius: 50%;
-        opacity: 1;
-        left: 50%;
+                &:nth-child(2) {
+                    opacity: 0;
+                }
 
-        &:nth-child(1) {
-            top: 0px;
-        }
-
-        &:nth-child(2) {
-            top: (@icon-size / 2);
-            transform: translate((-(@icon-size / 8)), (-(@icon-size / 8)));
-        }
-
-        &:nth-child(3) {
-            bottom: 0;
-        }
-    }
-    &.active,
-    html.no-js &:hover {
-        .action-menu-icon div {
-            border-radius: 0;
-
-            &:nth-child(1) {
-                left: 0;
-                .transform(rotate(45deg), translate(((@icon-size / 4) + 0.5), ((@icon-size / 4) + 0.5)));
-                width: 100%;
-            }
-
-            &:nth-child(2) {
-                opacity: 0;
-            }
-
-            &:nth-child(3) {
-                left: 0;
-                .transform(rotate(-45deg), translate((@icon-size / 4), (-(@icon-size / 4))));
-                width: 100%;
+                &:nth-child(3) {
+                    left: 0;
+                    .transform(rotate(-45deg), translate((@action-menu-icon-size / 4), (-(@action-menu-icon-size / 4))));
+                    width: 100%;
+                }
             }
         }
     }
-}
-.force-visible-overflow {
-    overflow: visible !important;
+
+    &.is-reversed {
+        .action-menu-content {
+            top: auto;
+            bottom: -4px;
+
+            .action-menu-list .action-menu-item:last-of-type {
+                padding-right: 20px;
+            }
+        }
+    }
 }

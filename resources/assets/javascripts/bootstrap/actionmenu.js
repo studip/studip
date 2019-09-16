@@ -1,51 +1,35 @@
-/*jslint browser: true, indent: 4 */
-/*global jQuery */
+/*jslint esversion: 6 */
 
 (function ($) {
     'use strict';
 
+    var last = null;
+
     // Open action menu on click on the icon
-    $(document).on('mousedown focus', '.action-menu-icon', function (event) {
-        var menu = $(this).closest('.action-menu'),
-            menu_offset = $(menu).position().top + $('.action-menu-content', menu).height(),
-            max_offset = $('#layout_content').position().top + $('#layout_content').height(),
-            reversed = menu_offset > max_offset;
-
-        if ((event.type !== 'mousedown') && menu.is('.bymousedown')) {
-            menu.removeClass('bymousedown');
-            event.stopPropagation();
-            return false;
-        }
-        if (event.type === 'mousedown') {
-            menu.addClass('bymousedown');
-        }
-
-        // Close other menus (and remove contentbox overflow handling)
-        if (!menu.is('.active')) {
-            $('.action-menu').removeClass('active')
-                .parents().removeClass('force-visible-overflow');
-        }
-
-        // Open menu (and force visibility on contentbox parent elements)
-        menu.toggleClass('active').toggleClass('reversed', reversed)
-            .filter('.active').parents().filter(function () {
-                return $(this).is('p, section, div')
-                    && $(this).parent().is('section.contentbox > article');
-            }).addClass('force-visible-overflow');
-
-        $(this).attr('aria-expanded', menu.is('.active') ? 'true' : 'false');
-        // Stop event so the following close event will not be fired
-        event.stopPropagation();
-    });
     $(document).on('click', '.action-menu-icon', function (event) {
+        // Choose correct root element if menu was positioned absolutely
+        let root_element = $(this).closest('.action-menu');
+        if ($(this).closest('.action-menu-wrapper').length > 0) {
+            root_element = $(this).data('action-menu-element');
+        }
+
+        // Obtain unique id for the root element and close other menus if neccessary
+        const id = root_element.uniqueId().attr('id');
+        if (last !== id) {
+            STUDIP.ActionMenu.closeAll();
+            last = id;
+        }
+
+        STUDIP.ActionMenu.create(root_element).toggle();
+
+        // Stop event so the following close event will not be fired
         return false;
     });
 
     // Close action menu on click outside
-    $(document).on('click', function (event) {
-        if ($(event.target).closest('.action-menu.active').length === 0) {
-            $('.action-menu').removeClass('active')
-                .parents().removeClass('force-visible-overflow');
+    $(document).on('click', (event) => {
+        if ($(event.target).closest('.action-menu-content').length === 0) {
+            STUDIP.ActionMenu.closeAll();
         }
     });
 

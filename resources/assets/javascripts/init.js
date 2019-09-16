@@ -1,3 +1,4 @@
+import ActionMenu from './lib/actionmenu.js';
 import admin_sem_class from './lib/admin_sem_class.js';
 import Admission from './lib/admission.js';
 import Arbeitsgruppen from './lib/arbeitsgruppen.js';
@@ -69,6 +70,7 @@ const configURLHelper = _.get(window, 'STUDIP.URLHelper', {});
 const URLHelper = createURLHelper(configURLHelper);
 
 window.STUDIP = _.assign(window.STUDIP || {}, {
+    ActionMenu,
     admin_sem_class,
     Admission,
     api,
