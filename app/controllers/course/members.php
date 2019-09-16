@@ -1392,6 +1392,7 @@ class Course_MembersController extends AuthenticatedController
     private function createSidebar($filtered_members)
     {
         $sem = Seminar::GetInstance($this->course_id);
+        $course = Course::find($this->course_id);
         $config = CourseConfig::get($this->course_id);
 
         $sidebar = Sidebar::get();
@@ -1411,6 +1412,18 @@ class Course_MembersController extends AuthenticatedController
             )->asDialog();
         }
         if ($this->is_tutor) {
+            //Calculate the course institutes here since they are needed
+            //in three different parts of the followint source code.
+            //The course institutes are the main institute and the
+            //participating institutes.
+            $course_institute_ids = [
+                $course->home_institut->id
+            ];
+            foreach ($course->institutes as $inst) {
+                if ($inst->id != $course->home_institut->id) {
+                    $course_institute_ids[] = $inst->id;
+                }
+            }
             if ($this->is_dozent) {
                 if (!$this->dozent_is_locked) {
                     $sem_institutes = $sem->getInstitutes();
@@ -1430,10 +1443,12 @@ class Course_MembersController extends AuthenticatedController
 
 
                     // quickfilter: dozents of institut
-                    $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'dozent'";
+                    $sql = "SELECT user_id FROM user_inst
+                           WHERE Institut_id IN ( :institute_ids )
+                           AND inst_perms = 'dozent'";
                     $db = DBManager::get();
                     $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
-                    $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
+                    $statement->execute(['institute_ids' => $course_institute_ids]);
                     $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                     // add "add dozent" to infobox
@@ -1444,7 +1459,16 @@ class Course_MembersController extends AuthenticatedController
                         ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('dozent', 1)))
                         ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_dozent'))
                         ->setSearchObject($searchtype)
-                        ->addQuickfilter(sprintf(_('%s der Einrichtung'), $this->status_groups['dozent']), $membersOfInstitute)
+                        ->addQuickfilter(
+                            sprintf(
+                                ngettext(
+                                    '%s der Einrichtung',
+                                    '%s der Einrichtungen',
+                                    count($course_institute_ids)
+                                ),
+                                $this->status_groups['dozent']
+                            ),
+                            $membersOfInstitute)
                         ->setNavigationItem('/course/members/view')
                         ->render();
                     $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
@@ -1467,10 +1491,12 @@ class Course_MembersController extends AuthenticatedController
                     );
 
                     // quickfilter: tutors of institut
-                    $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'tutor'";
+                    $sql = "SELECT user_id FROM user_inst
+                            WHERE Institut_id IN ( :institute_ids )
+                            AND inst_perms = 'tutor'";
                     $db = DBManager::get();
                     $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
-                    $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
+                    $statement->execute(['institute_ids' => $course_institute_ids]);
                     $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                     // add "add tutor" to infobox
@@ -1481,7 +1507,15 @@ class Course_MembersController extends AuthenticatedController
                         ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('tutor', 1)))
                         ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_tutor'))
                         ->setSearchObject($searchType)
-                        ->addQuickfilter(sprintf(_('%s der Einrichtung'), $this->status_groups['tutor']), $membersOfInstitute)
+                        ->addQuickfilter(
+                            sprintf(
+                                ngettext(
+                                    '%s der Einrichtung',
+                                    '%s der Einrichtungen',
+                                    count($course_institute_ids)
+                                ),
+                                $this->status_groups['tutor']),
+                            $membersOfInstitute)
                         ->setNavigationItem('/course/members/view')
                         ->render();
                     $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
@@ -1490,6 +1524,17 @@ class Course_MembersController extends AuthenticatedController
             }
             if (!$this->is_locked) {
                 // create new search for members
+
+                //The course institutes are the main institute and the
+                //participating institutes.
+                $course_institute_ids = [
+                    $course->home_institut->id
+                ];
+                foreach ($course->institutes as $inst) {
+                    if ($inst->id != $course->home_institut->id) {
+                        $course_institute_ids[] = $inst->id;
+                    }
+                }
                 $searchType = new SQLSearch("SELECT auth_user_md5.user_id, CONCAT(" . $GLOBALS['_fullname_sql']['full'] .
                     ", \" (\", auth_user_md5.username, \")\") as fullname " .
                     "FROM auth_user_md5 " .
@@ -1502,10 +1547,11 @@ class Course_MembersController extends AuthenticatedController
                     "ORDER BY Vorname, Nachname", _("Teilnehmende/n suchen"), "username");
 
                 // quickfilter: tutors of institut
-                $sql = "SELECT user_id FROM user_inst WHERE Institut_id = ? AND inst_perms = 'autor'";
+                $sql = "SELECT user_id FROM user_inst WHERE Institut_id IN ( :institute_ids )
+                       AND inst_perms = 'autor'";
                 $db = DBManager::get();
                 $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
-                $statement->execute([Seminar::getInstance($this->course_id)->getInstitutId()]);
+                $statement->execute(['institute_ids' => $course_institute_ids]);
                 $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
                 // add "add autor" to infobox
@@ -1516,7 +1562,16 @@ class Course_MembersController extends AuthenticatedController
                     ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('autor', 1)))
                     ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_autor'))
                     ->setSearchObject($searchType)
-                    ->addQuickfilter(sprintf(_('%s der Einrichtung'), $this->status_groups['autor']), $membersOfInstitute)
+                    ->addQuickfilter(
+                        sprintf(
+                            ngettext(
+                                '%s der Einrichtung',
+                                '%s der Einrichtungen',
+                                count($course_institute_ids)
+                            ),
+                            $this->status_groups['autor']
+                        ),
+                        $membersOfInstitute)
                     ->setNavigationItem('/course/members/view')
                     ->render();
                 $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
