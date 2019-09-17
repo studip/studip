@@ -18,7 +18,6 @@
 <? if ($block->note): ?>
 <br>
 <small>
-    <?= _('Anmerkung') ?>:
     <?= htmlReady($block->note); ?>
 </small>
 <? endif; ?>

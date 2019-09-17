@@ -58,7 +58,7 @@
                     ['data-dialog' => 'size=auto']
                 )->addLink(
                     $controller->noteURL($block, 0, $page),
-                    _('Anmerkung bearbeiten'),
+                    _('Information bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->addLink(
@@ -104,7 +104,6 @@
                 &ndash;
             <? else: ?>
                 <? if ($slot->note): ?>
-                    <?= _('Anmerkung') ?>:
                     <?= htmlReady($slot->note) ?>
                     <br>
                 <? endif; ?>
@@ -133,7 +132,7 @@
             <td class="actions">
                 <?= ActionMenu::get()->addLink(
                     $controller->noteURL($block, $slot, $page),
-                    _('Anmerkung bearbeiten'),
+                    _('Information bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->is_expired && count($slot->bookings) < $slot->block->size)->addLink(

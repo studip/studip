@@ -46,7 +46,6 @@
                 &ndash;
             <? else: ?>
                 <? if ($slot->note): ?>
-                    <?= _('Anmerkung') ?>:
                     <?= htmlReady($slot->note) ?>
                     <br>
                 <? endif; ?>

@@ -106,7 +106,7 @@ $intervals = [
         </label>
 
         <label>
-            <?= _('Anmerkung zu den Terminen in diesem Block') ?>
+            <?= _('Information zu den Terminen in diesem Block') ?>
             <textarea name="note"><?= htmlReady(Request::get('note')) ?></textarea>
         </label>
 
