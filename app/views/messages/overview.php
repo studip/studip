@@ -24,7 +24,7 @@
             <col>
             <col>
             <col class="hidden-small-down">
-            <col style="width: 120px">
+            <col style="width: 20ex">
             <col class="hidden-small-down">
         </colgroup>
         <thead>
