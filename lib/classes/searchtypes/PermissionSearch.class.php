@@ -92,7 +92,7 @@ class PermissionSearch extends SQLSearch {
                         FROM auth_user_md5
                         LEFT JOIN user_info USING (user_id)
                         WHERE (
-                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                             OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                             OR auth_user_md5.username LIKE :input
                           )
@@ -107,7 +107,7 @@ class PermissionSearch extends SQLSearch {
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
                         WHERE su.user_id IS NULL
                           AND (
-                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                               OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                               OR auth_user_md5.username LIKE :input
                           )
@@ -120,7 +120,7 @@ class PermissionSearch extends SQLSearch {
                         JOIN seminar_user su ON su.user_id = auth_user_md5.user_id AND seminar_id=:seminar_id AND status IN (:sem_perm)
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
                         WHERE (
-                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                             OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                             OR auth_user_md5.username LIKE :input
                         )
@@ -132,7 +132,7 @@ class PermissionSearch extends SQLSearch {
                         LEFT JOIN user_inst ON user_inst.user_id = auth_user_md5.user_id
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
                         WHERE (
-                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                            CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                             OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                             OR auth_user_md5.username LIKE :input
                           )
@@ -149,7 +149,7 @@ class PermissionSearch extends SQLSearch {
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
                         WHERE su.user_id IS NULL
                           AND (
-                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                               OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                               OR auth_user_md5.username LIKE :input
                           )
@@ -166,7 +166,7 @@ class PermissionSearch extends SQLSearch {
                         WHERE su.user_id IS NULL
                           AND d.user_id IS NULL
                           AND (
-                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input
+                              CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                               OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                               OR auth_user_md5.username LIKE :input
                           )

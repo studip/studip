@@ -40,7 +40,10 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
         if (!$GLOBALS['perm']->have_perm('admin')) {
             $visQuery = get_vis_query('user', 'search') . " AND ";
         }
+
+        $search = str_replace(' ', '% ', $search);
         $query = DBManager::get()->quote("%{$search}%");
+
         $sql = "SELECT SQL_CALC_FOUND_ROWS user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`, `user_info`.`title_front`, `user_info`.`title_rear`
                 FROM `auth_user_md5` AS user
                 JOIN `user_info` USING (`user_id`)
@@ -76,7 +79,7 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
         $user = User::buildExisting($data);
         $result = [
             'id'         => $user->id,
-            'name'       => self::mark($user->getFullname(), $search),
+            'name'       => self::markMany($user->getFullname(), $search),
             'url'        => URLHelper::getURL('dispatch.php/profile', ['username' => $user->username]),
             'additional' => '<a href="' . URLHelper::getLink('dispatch.php/profile', ['username' => $user->username]) . '">' . self::mark($user->username, $search) . '</a>',
             'expand'     => self::getSearchURL($search),
@@ -138,5 +141,30 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
                 WHERE {$visQuery} MATCH(`username`, `Vorname`, `Nachname`) AGAINST($query IN BOOLEAN MODE)
                 LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
         return $sql;
+    }
+
+    /**
+     * Function to mark a querystring in a resultstring
+     *
+     * @param $string
+     * @param $query
+     * @param bool|true $filename
+     * @return mixed
+     */
+    public static function markMany($string, $query)
+    {
+        if (stripos($string, $query) !== false) {
+            return self::mark($string, $query);
+        }
+
+        // Create regexp for replacement
+        $chunks = preg_split('/[,\s]+/', $query, -1,  PREG_SPLIT_NO_EMPTY);
+        rsort($chunks); // Ensure larger string will be replaced too (food <- foo)
+        $chunks = array_map(function ($chunk) {
+            return preg_quote($chunk, '/');
+        }, $chunks);
+        $regexp = '/' . implode('|', $chunks) . '/i';
+
+        return preg_replace($regexp, '<mark>$0</mark>', strip_tags($string));
     }
 }

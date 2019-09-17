@@ -76,24 +76,24 @@ class StandardSearch extends SQLSearch
         switch ($this->search) {
             case "username":
                 $this->extendedLayout = true;
-                return "SELECT DISTINCT auth_user_md5.username, CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
+                return "SELECT DISTINCT auth_user_md5.username, CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
                         "FROM auth_user_md5 LEFT JOIN user_info ON (user_info.user_id = auth_user_md5.user_id) " .
-                        "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input " .
-                            "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE :input " .
+                        "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
+                            "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
                             "OR auth_user_md5.username LIKE :input) AND " . get_vis_query() .
                         " ORDER BY Nachname ASC, Vorname ASC";
             case "user_id":
                 $this->extendedLayout = true;
-                return "SELECT DISTINCT auth_user_md5.user_id, CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
+                return "SELECT DISTINCT auth_user_md5.user_id, CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
                         "FROM auth_user_md5 LEFT JOIN user_info ON (user_info.user_id = auth_user_md5.user_id) " .
-                        "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input " .
-                            "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE :input " .
+                        "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
+                            "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
                             "OR auth_user_md5.username LIKE :input) AND " . get_vis_query() .
                         " ORDER BY Nachname ASC, Vorname ASC";
             case "Seminar_id":
-                $semester = "CONCAT(' (', 
+                $semester = "CONCAT(' (',
                     IF(seminare.`duration_time` = -1, CONCAT_WS(' - ', sem1.`name`, '" . _('unbegrenzt') . "'),
                         IF(seminare.`duration_time` != 0, CONCAT_WS(' - ', sem1.`name`, sem2.`name`), sem1.`name`)), ')')";
                 return "SELECT DISTINCT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.Name,  ".$semester.") " .
@@ -115,7 +115,7 @@ class StandardSearch extends SQLSearch
                     (Config::get()->IMPORTANT_SEMNUMBER ? "seminare.`VeranstaltungsNummer`, " : "") .
                     "seminare.`Name`";
             case "AnySeminar_id":
-                $semester = "CONCAT(' (', 
+                $semester = "CONCAT(' (',
                     IF(seminare.`duration_time` = -1, CONCAT_WS(' - ', sem1.`name`, '" . _('unbegrenzt') . "'),
                         IF(seminare.`duration_time` != 0, CONCAT_WS(' - ', sem1.`name`, sem2.`name`), sem1.`name`)), ')')";
                 return "SELECT DISTINCT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.Name,  ".$semester.") " .
@@ -125,7 +125,9 @@ class StandardSearch extends SQLSearch
                     "LEFT JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id AND seminar_user.status = 'dozent') " .
                     "LEFT JOIN auth_user_md5 ON (auth_user_md5.user_id = seminar_user.user_id) " .
                     "WHERE (seminare.Name LIKE :input " .
-                    "OR CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input " .
+                    "OR CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
+                    "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
+                    "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
                     "OR seminare.VeranstaltungsNummer LIKE :input " .
                     "OR seminare.Untertitel LIKE :input " .
                     "OR seminare.Beschreibung LIKE :input " .
@@ -140,7 +142,9 @@ class StandardSearch extends SQLSearch
                             "LEFT JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id AND seminar_user.status = 'dozent') " .
                             "LEFT JOIN auth_user_md5 ON (auth_user_md5.user_id = seminar_user.user_id) " .
                         "WHERE (seminare.Name LIKE :input " .
-                            "OR CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE :input " .
+                            "OR CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
+                            "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
+                            "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
                             "OR seminare.VeranstaltungsNummer LIKE :input " .
                             "OR seminare.Untertitel LIKE :input " .
                             "OR seminare.Beschreibung LIKE :input " .
