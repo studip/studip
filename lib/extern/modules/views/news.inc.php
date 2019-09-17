@@ -13,19 +13,6 @@ $statement->execute([$this->config->range_id]);
 if (!$statement->fetchColumn()) {
     $error_message = $GLOBALS["EXTERN_ERROR_MESSAGE"];
 }
-/*
-$sort = $this->config->getValue("Main", "sort");
-
-$query_order = "";
-foreach ($sort as $key => $position) {
-    if ($position > 0)
-        $query_order[$position] = $this->data_fields[$key];
-}
-if ($query_order) {
-    ksort($query_order, SORT_NUMERIC);
-    $query_order = " ORDER BY " . implode(",", $query_order) . " DESC";
-}
-*/
 
 if (!$nameformat = $this->config->getValue("Main", "nameformat"))
     $nameformat = "no_title";

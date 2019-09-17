@@ -153,15 +153,17 @@ class ExternModuleTemplatePersons extends ExternModule {
         }
 
         $sort = $this->config->getValue('Main', 'sort');
-        $query_order = '';
+        $query_order = [];
         foreach ($sort as $key => $position) {
             if ($position > 0) {
                 $query_order[$position] = $this->data_fields[$key];
             }
         }
-        if ($query_order) {
+        if (count($query_order)) {
             ksort($query_order, SORT_NUMERIC);
             $query_order = ' ORDER BY ' . implode(',', $query_order);
+        } else {
+            $query_order = '';
         }
 
         $grouping = $this->config->getValue("Main", "grouping");
@@ -173,7 +175,7 @@ class ExternModuleTemplatePersons extends ExternModule {
             $query = "SELECT DISTINCT ui.raum, ui.sprechzeiten, ui.Telefon, inst_perms, Email, aum.user_id, ";
             $query .= 'username, aum.Vorname, title_front, title_rear, Home, ';
             $query .= $GLOBALS['_fullname_sql'][$nameformat] . " AS fullname, aum.Nachname ";
-            if ($query_order != '') {
+            if ($query_order) {
                 $query .= "FROM statusgruppe_user LEFT JOIN auth_user_md5 aum USING(user_id) ";
                 $query .= "LEFT JOIN user_info USING(user_id) LEFT JOIN user_inst ui USING(user_id) ";
                 $query .= "WHERE statusgruppe_id IN (?) AND Institut_id = ? AND ".get_ext_vis_query()."$query_order";
@@ -206,7 +208,7 @@ class ExternModuleTemplatePersons extends ExternModule {
         $aliases_groups = $this->config->getValue('Main', 'groupsalias');
         foreach ($visible_groups as $group_id => $group) {
             if ($grouping) {
-                if ($query_order == '') {
+                if (!$query_order) {
                     $query_order = ' ORDER BY su.position';
                 }
                 $query = 'SELECT ui.raum, ui.sprechzeiten, ui.Telefon, inst_perms, Email, aum.user_id, ';

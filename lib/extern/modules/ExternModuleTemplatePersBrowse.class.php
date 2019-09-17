@@ -202,15 +202,17 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
         }
 
         $sort = $this->config->getValue('Main', 'sort');
-        $query_order = '';
+        $query_order = [];
         foreach ($sort as $key => $position) {
             if ($position > 0) {
                 $query_order[$position] = $this->data_fields[$key];
             }
         }
-        if ($query_order) {
+        if (count($query_order)) {
             ksort($query_order, SORT_NUMERIC);
             $query_order = ' ORDER BY ' . implode(',', $query_order);
+        } else {
+            $query_order = '';
         }
 
         $module_params = $this->getModuleParams($this->approved_params);
