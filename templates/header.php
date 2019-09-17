@@ -128,7 +128,6 @@ if (isset($_COOKIE['navigation-length'])) {
                 ?>
                 <?= $action_menu->render(); ?>
                 </div>
-                <?= Icon::create('arr_1down', 'info_alt', ['id' => 'avatar-arrow']); ?>
             <? endif; ?>
             </li>
         <? endif; ?>

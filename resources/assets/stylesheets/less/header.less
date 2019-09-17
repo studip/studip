@@ -78,14 +78,6 @@
 
 #barTopAvatar {
     display: inline-flex;
-
-    #avatar-arrow {
-        position: relative;
-        float: right;
-        z-index: 1;
-        padding: 7px 8px;
-        cursor: pointer;
-    }
 }
 
 #header_avatar_menu {
@@ -96,7 +88,7 @@
 
     .action-menu-icon {
         border: 1px solid @dark-gray-color-40;
-        background: @dark-gray-color-5;
+        background-color: @dark-gray-color-5;
         height: 28px;
         margin: 0;
         position: relative;
@@ -106,6 +98,19 @@
         img {
             height: 100%;
             width: 100%;
+        }
+
+        // Add arrow on the right
+        margin-right: 32px;
+        .icon('after', 'arr_1down', 'info_alt');
+
+        &::after {
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 7px 8px;
+            position: absolute;
+            left: 100%;
+            top: 0;
         }
     }
 }
@@ -119,7 +124,7 @@
     .action-menu-content {
         position: absolute;
         top: 41px;
-        right: -31px;
+        right: 0;
 
         /*padding: 4px 28px 4px 8px;*/
         background: #fff;

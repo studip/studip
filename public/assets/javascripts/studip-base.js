@@ -442,7 +442,7 @@ UBb=function($){if($.ui.timepicker=$.ui.timepicker||{},!$.ui.timepicker.version)
  * Copyright jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
- */r=[i("EVdn"),i("Qwlt"),i("/82Z"),i("IyHu")],void 0===(s="function"==typeof(n=function(n){return n.effects.define("puff","hide",function(e,t){var i=n.extend(!0,{},e,{fade:!0,percent:parseInt(e.percent,10)||150});n.effects.effect.scale.call(this,i,t)})})?n.apply(t,r):n)||(e.exports=s)},hYJu:function(e,t){STUDIP.domReady(function(){0<$("#barBottomContainer").length&&STUDIP.HeaderMagic.enable()}),$(document).on("click","#avatar-arrow",function(e){$("#header_avatar_menu .action-menu-icon").click(),e.stopPropagation()})},iGnl:function(e,t,i){var n,r,s;
+ */r=[i("EVdn"),i("Qwlt"),i("/82Z"),i("IyHu")],void 0===(s="function"==typeof(n=function(n){return n.effects.define("puff","hide",function(e,t){var i=n.extend(!0,{},e,{fade:!0,percent:parseInt(e.percent,10)||150});n.effects.effect.scale.call(this,i,t)})})?n.apply(t,r):n)||(e.exports=s)},hYJu:function(e,t){STUDIP.domReady(function(){0<$("#barBottomContainer").length&&STUDIP.HeaderMagic.enable()})},iGnl:function(e,t,i){var n,r,s;
 /*!
  * jQuery UI Mouse 1.12.1
  * http://jqueryui.com
