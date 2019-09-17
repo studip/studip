@@ -49,14 +49,14 @@ class Settings_DeputiesController extends Settings_SettingsController
             if (isDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postError(sprintf(
                     _('%s ist bereits als Vertretung eingetragen.'),
-                    get_fullname($deputy_id, 'full')
+                    htmlReady(get_fullname($deputy_id, 'full'))
                 ));
             } else if ($deputy_id == $this->user->user_id) {
                 PageLayout::postError(_('Sie können sich nicht als Ihre eigene Vertretung eintragen!'));
             } else if (addDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postSuccess(sprintf(
                     _('%s wurde als Vertretung eingetragen.'),
-                    get_fullname($deputy_id, 'full')
+                   htmlReady( get_fullname($deputy_id, 'full'))
                 ));
             } else {
                 PageLayout::postError(_('Fehler beim Eintragen der Vertretung!'));
@@ -77,9 +77,12 @@ class Settings_DeputiesController extends Settings_SettingsController
         $this->deputies = $deputies;
 
         $this->search = new PermissionSearch('user', _('Vor-, Nach- oder Benutzername'),
-            'user_id', ['permission'   => getValidDeputyPerms(),
-                             'exclude_user' => $exclude_users
-            ]);
+            'user_id',
+            [
+                'permission'   => getValidDeputyPerms(),
+                'exclude_user' => $exclude_users
+            ]
+        );
 
         $sidebar = Sidebar::Get();
         $sidebar->setTitle(PageLayout::getTitle());
@@ -110,21 +113,33 @@ class Settings_DeputiesController extends Settings_SettingsController
         ];
         foreach ($mp->getAddedUsers() as $_user_id) {
             if (isDeputy($_user_id, $this->user->user_id)) {
-                $msg['error'][] = sprintf(_('%s ist bereits als Vertretung eingetragen.'), get_fullname($_user_id, 'full'));
+                $msg['error'][] = sprintf(
+                    _('%s ist bereits als Vertretung eingetragen.'),
+                    htmlReady(get_fullname($_user_id, 'full'))
+                );
             } else if ($_user_id == $this->user->user_id) {
                 $msg['error'][] = _('Sie können sich nicht als Ihre eigene Vertretung eintragen!');
             } else if (!addDeputy($_user_id, $this->user->user_id)) {
                 $msg['error'][] = _('Fehler beim Eintragen der Vertretung!');
             } else {
-                $msg['success'][] = sprintf(_('%s wurde als Vertretung eingetragen.'), get_fullname($_user_id, 'full'));
+                $msg['success'][] = sprintf(
+                    _('%s wurde als Vertretung eingetragen.'),
+                    htmlReady(get_fullname($_user_id, 'full'))
+                );
             }
         }
         // only show an error messagebox once.
         if (!empty($msg['error'])) {
-            PageLayout::postError(_('Die gewünschte Operation konnte nicht ausgeführt werden.'), $msg['error']);
+            PageLayout::postError(
+                _('Die gewünschte Operation konnte nicht ausgeführt werden.'),
+                htmlReady($msg['error'])
+            );
         }
         if (!empty($msg['success'])) {
-            PageLayout::postSuccess(_('Die gewünschten Personen wurden als Ihre Vertretung eingetragen!'), $msg['success']);
+            PageLayout::postSuccess(
+                _('Die gewünschten Personen wurden als Ihre Vertretung eingetragen!'),
+                htmlReady($msg['success'])
+            );
         }
 
         $this->redirect('settings/deputies/index');

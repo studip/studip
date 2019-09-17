@@ -40,7 +40,7 @@
                 <a href="<?= $controller->url_for('my_courses/delete_boss',
                         $boss['user_id'])?>" data-confirm="<?=sprintf(
                         _('Wollen Sie sich wirklich als Standardvertretung von %s austragen?'),
-                        $boss['fullname']) ?>">
+                        htmlReady($boss['fullname'])) ?>">
                     <?= Icon::create('trash', 'clickable', ['title' => sprintf(_('Mich als Standardvertretung von %s austragen'),htmlReady($boss['fullname']))])->asImg() ?>
                 </a>
             </td>
