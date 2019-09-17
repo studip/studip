@@ -21,10 +21,10 @@
             <th><div class="hidden-small-down"><?= _('Platz') ?></div></th>
             <th></th>
             <th><?= _('Name') ?></th>
-            <th class="hidden-small-down" ></th>
+            <th class="hidden-small-down"></th>
             <th><?= _('Punkte') ?></th>
-            <th class="hidden-small-down" ><?= _('Titel') ?></th>
-            <th class="hidden-small-down" ></th>
+            <th class="hidden-small-down"><?= _('Titel') ?></th>
+            <th class="hidden-small-down"></th>
         </tr>
     </thead>
     <tbody>
@@ -34,17 +34,19 @@
                 <?= $offset + $index + 1 ?>.
             </td>
             <td>
-                <?= Avatar::getAvatar($person['user_id'], $person['username'])->getImageTag(Avatar::SMALL, ['title' => $person['fullname']]) ?>
+                <?= Avatar::getAvatar($person['user_id'], $person['username'])
+                    ->getImageTag(Avatar::SMALL, ['title' => htmlReady($person['fullname'])])
+                ?>
             </td>
             <td>
                 <a href="<?= URLHelper::getLink('dispatch.php/profile?username='. $person['username']) ?>">
                     <?= htmlReady($person['fullname']) ?>
                 </a>
             <? foreach ($person['is_king'] as $type => $text): ?>
-                <?= Icon::create('crown', 'sort', ['title' => $text])->asImg(16, ["alt" => $text, "class" => 'text-top']) ?>
+                <?= Icon::create('crown', Icon::ROLE_SORT, ['title' => $text])->asImg(16, ["alt" => $text, "class" => 'text-top']) ?>
             <? endforeach ?>
             </td>
-            <td class="hidden-small-down" >
+            <td class="hidden-small-down">
             <?
             $content = Assets::img('blank.gif', ['width' => 16]) . ' ';
 
@@ -54,7 +56,7 @@
                 $content .= sprintf(
                     '<a href="%s">%s</a> ',
                     URLHelper::getLink('dispatch.php/profile?username=' . $person['username']),
-                    Icon::create('news', 'clickable', ['title' => $tmp])->asImg()
+                    Icon::create('news', Icon::ROLE_CLICKABLE, ['title' => $tmp])->asImg()
                 );
             } else {
                 $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
@@ -66,7 +68,7 @@
                 $content .= sprintf(
                     '<a href="%s">%s</a> ',
                     URLHelper::getLink('dispatch.php/profile?username=' . $person['username'] . '#questionnaire_area'),
-                    Icon::create('vote', 'clickable', ['title' => $tmp])->asImg()
+                    Icon::create('vote', Icon::ROLE_CLICKABLE, ['title' => $tmp])->asImg()
                 );
             } else {
                 $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
@@ -78,7 +80,7 @@
                 $content .= sprintf(
                     '<a href="%s">%s</a> ',
                     URLHelper::getLink('dispatch.php/profile?username=' . $person['username'] . '#a'),
-                    Icon::create('schedule', 'clickable', ['title' => $tmp])->asImg()
+                    Icon::create('schedule', Icon::ROLE_CLICKABLE, ['title' => $tmp])->asImg()
                 );
             } else {
                 $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
@@ -90,7 +92,7 @@
                 $content .= sprintf(
                     '<a href="%s">%s</a> ',
                     URLHelper::getLink('dispatch.php/profile?username=' . $person['username']),
-                    Icon::create('literature', 'clickable', ['title' => $tmp])->asImg()
+                    Icon::create('literature', Icon::ROLE_CLICKABLE, ['title' => $tmp])->asImg()
                 );
             } else {
                 $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
@@ -104,7 +106,9 @@
             <td class="hidden-small-down"  style="text-align: right">
             <? if($person['user_id'] == $GLOBALS['user']->id): ?>
                 <a href="<?= $controller->url_for('score/unpublish') ?>">
-                    <?= Icon::create('trash', 'clickable', ['title' => _('Ihren Wert von der Liste löschen')])->asImg(16, ["class" => 'text-top']) ?>
+                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _('Ihren Wert von der Liste löschen')])
+                        ->asImg(16, ["class" => 'text-top'])
+                    ?>
                 </a>
             <? endif; ?>
             </td>
@@ -115,11 +119,14 @@
     <tfoot>
         <tr>
             <td colspan="7" style="text-align: right">
-                <?= $GLOBALS['template_factory']->render('shared/pagechooser', [
+                <?= $GLOBALS['template_factory']->render('shared/pagechooser',
+                    [
                         'perPage'      => $max_per_page,
                         'num_postings' => $numberOfPersons,
                         'page'         => $page,
-                        'pagelink'     => 'dispatch.php/score/%u']) ?>
+                        'pagelink'     => 'dispatch.php/score/%u'
+                    ]
+                ) ?>
             </td>
         </tr>
     </tfoot>
