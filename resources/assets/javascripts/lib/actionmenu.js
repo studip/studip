@@ -74,14 +74,14 @@ class ActionMenu {
     /**
      * Create menu using a singleton pattern for each element.
      */
-    static create(element, classes = '', position = true) {
+    static create(element, position = true) {
         const id = $(element).uniqueId().attr('id');
         if (!stash.has(id)) {
             const menu_offset = $(element).offset().top + $('.action-menu-content', element).height();
             const max_offset = $('#layout_content').offset().top + $('#layout_content').height();
             const reversed = menu_offset > max_offset;
 
-            stash.set(id, new ActionMenu(secret, element, reversed, classes, position));
+            stash.set(id, new ActionMenu(secret, element, reversed, position));
         }
 
         return stash.get(id);
@@ -98,7 +98,7 @@ class ActionMenu {
     /**
      * Private constructor by implementing the secret/passed_secret mechanism.
      */
-    constructor(passed_secret, element, reversed, classes, position) {
+    constructor(passed_secret, element, reversed, position) {
         // Enforce use of create (would use a private constructor if I could)
         if (secret !== passed_secret) {
             throw new Error('Cannot create ActionMenu. Use ActionMenu.create()!');
@@ -113,7 +113,6 @@ class ActionMenu {
         this.content = $('.action-menu-content', element);
         this.is_reversed = reversed;
         this.is_open = false;
-        this.scroll_offsets = [];
 
         // Reposition the menu?
         if (position) {
@@ -145,7 +144,6 @@ class ActionMenu {
             }
         }
 
-        this.addClass(classes);
         this.update();
     }
 

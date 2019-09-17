@@ -1,18 +1,5 @@
-
-<?php
-$attributes = function (array $attributes) {
-    $result = [];
-    foreach ($attributes as $key => $value) {
-        if ($value === null) {
-            $result[] = htmlReady($key);
-        } else {
-            $result[] = sprintf('%s="%s"', htmlReady($key), htmlReady($value));
-        }
-    }
-    return implode(' ', $result);
-};
-?>
-<nav class="action-menu">
+<? // class "action-menu" will be set from API ?>
+<nav <?= arrayToHtmlAttributes($attributes) ?>>
     <a class="action-menu-icon" title="<?= htmlReady($label) ?>"
        aria-expanded="false" aria-label="<?= htmlReady($aria_label) ?>" href="#">
         <?= $image ?>
@@ -27,8 +14,8 @@ $attributes = function (array $attributes) {
         <? foreach ($actions as $action): ?>
             <li class="action-menu-item">
             <? if ($action['type'] === 'link'): ?>
-                <a href="<?= $action['link'] ?>" <?= $attributes($action['attributes']) ?>>
-                
+                <a href="<?= $action['link'] ?>" <?= arrayToHtmlAttributes($action['attributes']) ?>>
+
                 <? if ($has_link_icons): ?>
                     <? if ($action['icon']): ?>
                         <?= $action['icon'] ?>

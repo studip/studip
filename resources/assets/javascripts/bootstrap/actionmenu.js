@@ -13,6 +13,10 @@
             root_element = $(this).data('action-menu-element');
         }
 
+        var position = root_element.data('action-menu-reposition');
+        if (position === undefined) {
+            position = true;
+        }
         // Obtain unique id for the root element and close other menus if neccessary
         const id = root_element.uniqueId().attr('id');
         if (last !== id) {
@@ -20,7 +24,7 @@
             last = id;
         }
 
-        STUDIP.ActionMenu.create(root_element).toggle();
+        STUDIP.ActionMenu.create(root_element, position).toggle();
 
         // Stop event so the following close event will not be fired
         return false;

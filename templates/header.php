@@ -111,6 +111,8 @@ if (isset($_COOKIE['navigation-length'])) {
                 <div id="header_avatar_menu">
                 <?php
                 $action_menu = ContentGroupMenu::get();
+                $action_menu->addCSSClass('avatar-menu');
+                $action_menu->addAttribute('data-action-menu-reposition', 'false');
                 $action_menu->setLabel(User::findCurrent()->getFullName());
                 $action_menu->setAriaLabel(_("Profilmenü"));
                 $action_menu->setIcon(Avatar::getAvatar(User::findCurrent()->id)->getImageTag(Avatar::MEDIUM));

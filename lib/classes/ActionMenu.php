@@ -23,8 +23,11 @@ class ActionMenu
     }
 
     private $actions = [];
+    private $attributes = [];
+
     private $condition_all = null;
     private $condition     = true;
+
 
     /**
      * Private constructur.
@@ -33,6 +36,7 @@ class ActionMenu
      */
     private function __construct()
     {
+        $this->addCSSClass('action-menu');
     }
 
     /**
@@ -148,6 +152,32 @@ class ActionMenu
     }
 
     /**
+     * Adds a css classs to the root element in html.
+     *
+     * @param string $class Name of the css class
+     */
+    public function addCSSClass($class)
+    {
+        $this->addAttribute('class', $class, true);
+    }
+
+    /**
+     * Adds an attribute to the root element in html.
+     *
+     * @param string  $key    Name of the attribute
+     * @param string  $value  Value of the attribute
+     * @param boolean $append Whether a current value should be append or not.
+     */
+    public function addAttribute($key, $value, $append = false)
+    {
+        if (isset($this->attributes[$key]) && $append) {
+            $this->attributes[$key] .= " {$value}";
+        } else {
+            $this->attributes[$key] = $value;
+        }
+    }
+
+    /**
      * Renders the action menu. If no item was added, an empty string will
      * be returned. If a single item was added, the item itself will be
      * displayed. Otherwise the whole menu will be rendered.
@@ -173,6 +203,7 @@ class ActionMenu
             }
             return $action;
         }, $this->actions);
+        $template->attributes = $this->attributes;
         return $template->render();
     }
 

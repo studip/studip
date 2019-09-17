@@ -1,16 +1,4 @@
 <?php
-$attributes = function (array $attributes) {
-    $result = [];
-    foreach ($attributes as $key => $value) {
-        if ($value === null) {
-            $result[] = htmlReady($key);
-        } else {
-            $result[] = sprintf('%s="%s"', htmlReady($key), htmlReady($value));
-        }
-    }
-    return implode(' ', $result);
-};
-
 $table_rows = 0;
 $table_cols = 0;
 $max_rows   = 0;
@@ -22,7 +10,8 @@ if ($rows > 1) {
 }
 ?>
 
-<nav class="action-menu">
+<? // class "action-menu" will be set from API ?>
+<nav <?= arrayToHtmlAttributes($attributes) ?>>
     <a class="action-menu-icon" title="<?= htmlReady($label) ?>"
        aria-expanded="false" aria-label="<?= htmlReady($aria_label) ?>">
         <?= $image ?>
@@ -37,7 +26,7 @@ if ($rows > 1) {
             <? foreach ($actions as $action): ?>
                 <td>
                 <? if ($action['type'] === 'link'): ?>
-                    <a href="<?= $action['link'] ?>" <?= $attributes($action['attributes']) ?>>
+                    <a href="<?= $action['link'] ?>" <?= arrayToHtmlAttributes($action['attributes']) ?>>
                     <? if ($action['icon']): ?>
                         <?= $action['icon'] ?>
                     <? else: ?>

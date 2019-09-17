@@ -6,7 +6,7 @@ STUDIP.domReady(() => {
 });
 
 $(document).on('click', '#avatar-arrow', function (event) {
-    STUDIP.ActionMenu.create('#header_avatar_menu .action-menu', 'avatar-menu', false).toggle();
+    $('#header_avatar_menu .action-menu-icon').click();
 
     event.stopPropagation();
 });
