@@ -142,40 +142,54 @@ class ConsultationSlot extends SimpleORMap
      */
     public function updateEvent()
     {
-        if (!$this->event) {
+        if (count($this->bookings) === 0 && !$this->block->calendar_events) {
+            if ($this->event) {
+                $this->event->delete();
+
+                $this->teacher_event_id = null;
+                $this->store();
+            }
             return;
+        }
+
+        $event = $this->event;
+        if (!$event) {
+            $event = $this->createEvent($this->block->teacher);
+
+            $this->teacher_event_id = $event->id;
+            $this->store();
         }
 
         setTempLanguage($this->block->teacher_id);
 
-        if (count($this->bookings) === 0) {
-            $this->event->category_intern = 9;
-            $this->event->summary         = _('Freier Sprechstundentermin');
-            $this->event->description     = _('Dieser Sprechstundentermin ist noch nicht belegt.');
-        } else {
-            $this->event->category_intern = 1;
+        if (count($this->bookings) > 0) {
+            $event->category_intern = 1;
 
             if (count($this->bookings) === 1) {
                 $booking = $this->bookings->first();
 
-                $this->event->summary     = sprintf(
+                $event->summary = sprintf(
                     _('Sprechstundentermin mit %s'),
                     $booking->user->getFullName()
                 );
-                $this->event->description = $booking->reason;
+                $event->description = $booking->reason;
             } else {
-                $this->event->summary     = sprintf(
+                $event->summary = sprintf(
                     _('Sprechstundentermin mit %u Personen'),
                     count($this->bookings)
                 );
-                $this->event->description = implode("\n\n----\n\n", $this->bookings->map(function ($booking) {
+                $event->description = implode("\n\n----\n\n", $this->bookings->map(function ($booking) {
                     return "- {$booking->user->getFullName()}:\n{$booking->reason}";
                 }));
             }
+        } else {
+            $event->category_intern = 9;
+            $event->summary         = _('Freier Sprechstundentermin');
+            $event->description     = _('Dieser Sprechstundentermin ist noch nicht belegt.');
         }
 
         restoreLanguage();
 
-        $this->event->store();
+        $event->store();
     }
 }
