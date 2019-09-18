@@ -1,17 +1,27 @@
 /*jslint esversion: 6*/
 
 /**
+ * Determine whether the menu should be opened in dialog or regular layout.
+ * @type {[type]}
+ */
+function determineBreakpoint(element) {
+    return $(element).closest('.ui-dialog-content').length > 0 ? '.ui-dialog-content' : '#layout_content';
+}
+
+/**
  * Obtain all parents of the given element that have scrollable content.
  */
 function getScrollableParents(element) {
-    var offset = $(element).offset();
-    var height = $('.action-menu-content', element).height();
-    var width  = $('.action-menu-content', element).width();
+    const offset = $(element).offset();
+    const height = $('.action-menu-content', element).height();
+    const width  = $('.action-menu-content', element).width();
+
+    const breakpoint = determineBreakpoint(element);
 
     var elements = [];
     $(element).parents().each(function () {
         // Stop at layout_content
-        if ($(this).is('#layout_content')) {
+        if ($(this).is(breakpoint)) {
             return false;
         }
 
@@ -76,9 +86,10 @@ class ActionMenu {
      */
     static create(element, position = true) {
         const id = $(element).uniqueId().attr('id');
+        const breakpoint = determineBreakpoint(element);
         if (!stash.has(id)) {
             const menu_offset = $(element).offset().top + $('.action-menu-content', element).height();
-            const max_offset = $('#layout_content').offset().top + $('#layout_content').height();
+            const max_offset = $(breakpoint).offset().top + $(breakpoint).height();
             const reversed = menu_offset > max_offset;
 
             stash.set(id, new ActionMenu(secret, element, reversed, position));
@@ -104,9 +115,10 @@ class ActionMenu {
             throw new Error('Cannot create ActionMenu. Use ActionMenu.create()!');
         }
 
-        var offset = $(element).offset();
-        var height = $('.action-menu-content').height();
-        var width  = $('.action-menu-content').width();
+        const offset     = $(element).offset();
+        const height     = $('.action-menu-content').height();
+        const width      = $('.action-menu-content').width();
+        const breakpoint = determineBreakpoint(element);
 
         this.element = $(element);
         this.menu = this.element;
@@ -123,10 +135,10 @@ class ActionMenu {
 
                 this.menu
                     .offset(this.element.offset())
-                    .appendTo('#layout_content');
+                    .appendTo(breakpoint);
 
                 // Always add layout_content
-                parents.push('#layout_content');
+                parents.push(breakpoint);
                 parents.forEach((parent, index) => {
                     var data = $(parent).data('action-menu-scroll-data') || {
                         menus: [],
