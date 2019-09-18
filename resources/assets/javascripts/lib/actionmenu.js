@@ -20,7 +20,7 @@ function getScrollableParents(element) {
 
     var elements = [];
     $(element).parents().each(function () {
-        // Stop at layout_content
+        // Stop at breakpoint
         if ($(this).is(breakpoint)) {
             return false;
         }
@@ -137,7 +137,7 @@ class ActionMenu {
                     .offset(this.element.offset())
                     .appendTo(breakpoint);
 
-                // Always add layout_content
+                // Always add breakpoint
                 parents.push(breakpoint);
                 parents.forEach((parent, index) => {
                     var data = $(parent).data('action-menu-scroll-data') || {
