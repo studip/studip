@@ -39,6 +39,410 @@ const wysiwyg = {
         }
         return this.htmlMarker + '\n' + text;
     },
+    // Create Stud.IP default configuration for editor
+    getDefaultConfig: function(textarea) {
+        // create new toolbar container
+        var textareaHeight = Math.max(textarea.height(), 200),
+            textareaWidth = (textarea.outerWidth() / textarea.parent().width()) * 100 + '%';
+
+        // fetch ckeditor configuration
+        var options = textarea.attr('data-editor'),
+            extraPlugins,
+            removePlugins;
+
+        if (options) {
+            options = parseOptions(options);
+            extraPlugins = options.extraPlugins;
+            removePlugins = options.removePlugins;
+        }
+
+        return {
+            allowedContent: {
+                // NOTE update the dev docs when changing ACF settings!!
+                // at http://docs.studip.de/develop/Entwickler/Wysiwyg
+                //
+                // note that changes here should also be reflected in
+                // HTMLPurifier's settings!!
+                a: {
+                    // note that external links should always have
+                    // class="link-extern", target="_blank" and rel="nofollow"
+                    // and internal links should not have any attributes except
+                    // for href, but this cannot be enforced here
+                    attributes: ['href', 'target', 'rel', 'name', 'id'],
+                    classes: ['link-extern', 'link-intern']
+                },
+                audio: {
+                    attributes: ['controls', '!src', 'height', 'width'],
+                    // only float:left and float:right should be allowed
+                    styles: ['float', 'height', 'width']
+                },
+                big: {},
+                blockquote: {},
+                br: {},
+                caption: {},
+                code: {},
+                em: {},
+                div: {
+                    classes: 'author', // needed for quotes
+                    // only allow left margin and horizontal text alignment to
+                    // be set in divs
+                    // - margin-left should only be settable in multiples of
+                    //   40 pixels
+                    // - text-align should only be either "center", "right" or
+                    //   "justify"
+                    // - note that maybe these two features will be removed
+                    //   completely in future versions
+                    styles: ['margin-left', 'text-align']
+                },
+                h1: {},
+                h2: {},
+                h3: {},
+                h4: {},
+                h5: {},
+                h6: {},
+                hr: {},
+                img: {
+                    attributes: ['alt', '!src', 'height', 'width'],
+                    // only float:left and float:right should be allowed
+                    styles: ['float']
+                },
+                li: {},
+                ol: {},
+                p: {
+                    // - margin-left should only be settable in multiples of
+                    //   40 pixels
+                    // - text-align should only be either "center", "right" or
+                    //   "justify"
+                    styles: ['margin-left', 'text-align']
+                },
+                pre: {
+                    classes: ['usercode']
+                },
+                span: {
+                    // note that 'wiki-links' are currently set as a span due
+                    // to implementation difficulties, but probably this
+                    // might be changed in future versions
+                    classes: ['wiki-link', 'math-tex'],
+
+                    // note that allowed (background-)colors should be further
+                    // restricted
+                    styles: ['color', 'background-color']
+                },
+                strong: {},
+                u: {},
+                ul: {},
+                s: {},
+                small: {},
+                sub: {},
+                sup: {},
+                table: {
+                    // note that tables should always have the class "content"
+                    // (it should not be optional)
+                    classes: 'content'
+                },
+                tbody: {},
+                td: {
+                    // attributes and styles should be the same
+                    // as for <th>, except for 'scope' attribute
+                    attributes: ['colspan', 'rowspan'],
+                    styles: ['text-align', 'width', 'height', 'background-color']
+                },
+                thead: {},
+                th: {
+                    // attributes and styles should be the same
+                    // as for <td>, except for 'scope' attribute
+                    //
+                    // note that allowed scope values should be restricted to
+                    // "col", "row" or "col row", if scope is set
+                    attributes: ['colspan', 'rowspan', 'scope'],
+                    styles: ['text-align', 'width', 'height']
+                },
+                tr: {},
+                tt: {},
+                video: {
+                    attributes: ['controls', '!src', 'height', 'width'],
+                    // only float:left and float:right should be allowed
+                    styles: ['float', 'height', 'width']
+                }
+            },
+            height: textareaHeight,
+            width: textareaWidth,
+            skin: 'studip,' + STUDIP.ASSETS_URL + 'stylesheets/ckeditor-skin/',
+            // NOTE codemirror crashes when not explicitely loaded in CKEditor 4.4.7
+            extraPlugins:
+                'emojione,studip-floatbar,studip-quote,studip-upload,studip-settings' +
+                (extraPlugins ? ',' + extraPlugins : ''),
+            removePlugins: removePlugins ? removePlugins : textarea.closest('.ui-dialog').length ? 'autogrow' : '',
+            enterMode: CKEDITOR.ENTER_BR,
+            mathJaxLib: STUDIP.URLHelper.getURL('assets/javascripts/mathjax/MathJax.js?config=TeX-AMS_HTML,default'),
+            studipUpload_url: STUDIP.URLHelper.getURL('dispatch.php/wysiwyg/upload'),
+            codemirror: {
+                autoCloseTags: false,
+                autoCloseBrackets: false,
+                showSearchButton: false,
+                showFormatButton: false,
+                showCommentButton: false,
+                showUncommentButton: false,
+                showAutoCompleteButton: false
+            },
+            autoGrow_onStartup: true,
+
+            // configure toolbar
+            toolbarGroups: [
+                { name: 'basicstyles', groups: ['undo', 'basicstyles', 'cleanup'] },
+                { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'quote'] },
+                '/',
+                { name: 'styles', groups: ['styles', 'colors', 'tools', 'links', 'insert'] },
+                { name: 'others', groups: ['mode', 'settings'] }
+            ],
+            removeButtons: 'Font,FontSize',
+            toolbarCanCollapse: true,
+            toolbarStartupExpanded: textarea.width() > 420,
+
+            // configure dialogs
+            dialog_buttonsOrder: 'ltr',
+            removeDialogTabs: 'image:Link;image:advanced;' + 'link:target;link:advanced;' + 'table:advanced',
+
+            // convert special chars except latin ones to html entities
+            entities: false,
+            entities_latin: false,
+            entities_processNumerical: true,
+
+            // set WYSIWYG's menu language to the language set in Stud.IP
+            defaultLanguage: 'de', // use German if user language not available
+            language: String.locale, // override browser-stored preferences
+
+            // configure list of special characters
+            // NOTE 17 characters fit in one row of special characters dialog
+            specialChars: [].concat(
+                [
+                    '&Agrave;',
+                    '&Aacute;',
+                    '&Acirc;',
+                    '&Atilde;',
+                    '&Auml;',
+                    '&Aring;',
+                    '&AElig;',
+                    '&Egrave;',
+                    '&Eacute;',
+                    '&Ecirc;',
+                    '&Euml;',
+                    '&Igrave;',
+                    '&Iacute;',
+                    '&Iuml;',
+                    '&Icirc;',
+                    '',
+                    '&Yacute;',
+
+                    '&agrave;',
+                    '&aacute;',
+                    '&acirc;',
+                    '&atilde;',
+                    '&auml;',
+                    '&aring;',
+                    '&aelig;',
+                    '&egrave;',
+                    '&eacute;',
+                    '&ecirc;',
+                    '&euml;',
+                    '&igrave;',
+                    '&iacute;',
+                    '&iuml;',
+                    '&icirc;',
+                    '',
+                    '&yacute;',
+
+                    '&Ograve;',
+                    '&Oacute;',
+                    '&Ocirc;',
+                    '&Otilde;',
+                    '&Ouml;',
+                    '&Oslash;',
+                    '&OElig;',
+                    '&Ugrave;',
+                    '&Uacute;',
+                    '&Ucirc;',
+                    '&Uuml;',
+                    '',
+                    '&Ccedil;',
+                    '&Ntilde;',
+                    '&#372;',
+                    '',
+                    '&#374',
+
+                    '&ograve;',
+                    '&oacute;',
+                    '&ocirc;',
+                    '&otilde;',
+                    '&ouml;',
+                    '&oslash;',
+                    '&oelig;',
+                    '&ugrave;',
+                    '&uacute;',
+                    '&ucirc;',
+                    '&uuml;',
+                    '',
+                    '&ccedil;',
+                    '&ntilde;',
+                    '&#373',
+                    '',
+                    '&#375;',
+
+                    '&szlig;',
+                    '&ETH;',
+                    '&eth;',
+                    '&THORN;',
+                    '&thorn;',
+                    '',
+                    '',
+                    '`',
+                    '&acute;',
+                    '^',
+                    '&uml;',
+                    '',
+                    '&cedil;',
+                    '~',
+                    '&asymp;',
+                    '',
+                    '&yuml;'
+                ],
+                (function() {
+                    var greek = [];
+                    for (var i = 913; i <= 929; i++) {
+                        // 17 uppercase characters
+                        greek.push('&#' + String(i));
+                    }
+                    for (var i = 945; i <= 962; i++) {
+                        // 17 lowercase characters
+                        greek.push('&#' + String(i));
+                    }
+                    // NOTE character #930 is not assigned!!
+                    for (var i = 931; i <= 937; i++) {
+                        // remaining upercase
+                        greek.push('&#' + String(i));
+                    }
+                    greek.push('');
+                    for (var i = 963; i <= 969; i++) {
+                        // remaining lowercase
+                        greek.push('&#' + String(i));
+                    }
+                    greek.push('');
+                    return greek;
+                })(),
+                [
+                    '&ordf;',
+                    '&ordm;',
+                    '&deg;',
+                    '&sup1;',
+                    '&sup2;',
+                    '&sup3;',
+                    '&frac14;',
+                    '&frac12;',
+                    '&frac34;',
+                    '&lsquo;',
+                    '&rsquo;',
+                    '&ldquo;',
+                    '&rdquo;',
+                    '&laquo;',
+                    '&raquo;',
+                    '&iexcl;',
+                    '&iquest;',
+
+                    '@',
+                    '&sect;',
+                    '&para;',
+                    '&micro;',
+                    '[',
+                    ']',
+                    '{',
+                    '}',
+                    '|',
+                    '&brvbar;',
+                    '&ndash;',
+                    '&mdash;',
+                    '&macr;',
+                    '&sbquo;',
+                    '&#8219;',
+                    '&bdquo;',
+                    '&hellip;',
+
+                    '&euro;',
+                    '&cent;',
+                    '&pound;',
+                    '&yen;',
+                    '&curren;',
+                    '&copy;',
+                    '&reg;',
+                    '&trade;',
+
+                    '&not;',
+                    '&middot;',
+                    '&times;',
+                    '&divide;',
+
+                    '&#9658;',
+                    '&bull;',
+                    '&rarr;',
+                    '&rArr;',
+                    '&hArr;',
+                    '&diams;',
+
+                    '&#x00B1', // ±
+                    '&#x2229', // ∩ INTERSECTION
+                    '&#x222A', // ∪ UNION
+                    '&#x221E', // ∞ INFINITY
+                    '&#x2107', // ℇ EULER CONSTANT
+                    '&#x2200', // ∀ FOR ALL
+                    '&#x2201', // ∁ COMPLEMENT
+                    '&#x2202', // ∂ PARTIAL DIFFERENTIAL
+                    '&#x2203', // ∃ THERE EXISTS
+                    '&#x2204', // ∄ THERE DOES NOT EXIST
+                    '&#x2205', // ∅ EMPTY SET
+                    '&#x2206', // ∆ INCREMENT
+                    '&#x2207', // ∇ NABLA
+                    '&#x2282', // ⊂ SUBSET OF
+                    '&#x2283', // ⊃ SUPERSET OF
+                    '&#x2284', // ⊄ NOT A SUBSET OF
+                    '&#x2286', // ⊆ SUBSET OF OR EQUAL TO
+                    '&#x2287', // ⊇ SUPERSET OF OR EQUAL TO
+                    '&#x2208', // ∈ ELEMENT OF
+                    '&#x2209', // ∉ NOT AN ELEMENT OF
+                    '&#x2227', // ∧ LOGICAL AND
+                    '&#x2228', // ∨ LOGICAL OR
+                    '&#x2264', // ≤ LESS-THAN OR EQUAL TO
+                    '&#x2265', // ≥ GREATER-THAN OR EQUAL TO
+                    '&#x220E', // ∎ END OF PROOF
+                    '&#x220F', // ∏ N-ARY PRODUCT
+                    '&#x2211', // ∑ N-ARY SUMMATION
+                    '&#x221A', // √ SQUARE ROOT
+                    '&#x222B', // ∫ INTEGRAL
+                    '&#x2234', // ∴ THEREFORE
+                    '&#x2235', // ∵ BECAUSE
+                    '&#x2260', // ≠ NOT EQUAL TO
+                    '&#x2262', // ≢ NOT IDENTICAL TO
+                    '&#x2263', // ≣ STRICTLY EQUIVALENT TO
+                    '&#x22A2', // ⊢ RIGHT TACK
+                    '&#x22A3', // ⊣ LEFT TACK
+                    '&#x22A4', // ⊤ DOWN TACK
+                    '&#x22A5', // ⊥ UP TACK
+                    '&#x22A7', // ⊧ MODELS
+                    '&#x22A8', // ⊨ TRUE
+                    '&#x22AC', // ⊬ DOES NOT PROVE
+                    '&#x22AD', // ⊭ NOT TRUE
+                    '&#x22EE', // ⋮ VERTICAL ELLIPSIS
+                    '&#x22EF', // ⋯ MIDLINE HORIZONTAL ELLIPSIS
+                    '&#x29FC', // ⧼ LEFT-POINTING CURVED ANGLE BRACKET
+                    '&#x29FD', // ⧽ RIGHT-POINTING CURVED ANGLE BRACKET
+                    '&#x207F', // ⁿ SUPERSCRIPT LATIN SMALL LETTER N
+                    '&#x2295', // ⊕ CIRCLED PLUS
+                    '&#x2297', // ⊗ CIRCLED TIMES
+                    '&#x2299' // ⊙ CIRCLED DOT OPERATOR
+                ]
+            ),
+            on: { pluginsLoaded: onPluginsLoaded },
+            title: false
+        };
+    },
 
     // for jquery dialogs, see toolbar.js
     replace: replaceTextarea
@@ -46,7 +450,7 @@ const wysiwyg = {
 
 export default wysiwyg;
 
-function replaceTextarea(textarea) {
+function replaceTextarea(textarea, config) {
     // TODO support jQuery object with multiple textareas
     if (!(textarea instanceof jQuery)) {
         textarea = $(textarea);
@@ -63,408 +467,13 @@ function replaceTextarea(textarea) {
         textarea.attr('id', createNewId('wysiwyg'));
     }
 
-    // create new toolbar container
-    var textareaHeight = Math.max(textarea.height(), 200),
-        textareaWidth = (textarea.outerWidth() / textarea.parent().width()) * 100 + '%';
-
-    // fetch ckeditor configuration
-    var options = textarea.attr('data-editor'),
-        extraPlugins,
-        removePlugins;
-
-    if (options) {
-        options = parseOptions(options);
-        extraPlugins = options.extraPlugins;
-        removePlugins = options.removePlugins;
+    // No custom config given, fetch default config
+    if (config == undefined) {
+        config = wysiwyg.getDefaultConfig(textarea);
     }
 
     // replace textarea with editor
-    CKEDITOR.replace(textarea[0], {
-        allowedContent: {
-            // NOTE update the dev docs when changing ACF settings!!
-            // at http://docs.studip.de/develop/Entwickler/Wysiwyg
-            //
-            // note that changes here should also be reflected in
-            // HTMLPurifier's settings!!
-            a: {
-                // note that external links should always have
-                // class="link-extern", target="_blank" and rel="nofollow"
-                // and internal links should not have any attributes except
-                // for href, but this cannot be enforced here
-                attributes: ['href', 'target', 'rel', 'name', 'id'],
-                classes: ['link-extern', 'link-intern']
-            },
-            audio: {
-                attributes: ['controls', '!src', 'height', 'width'],
-                // only float:left and float:right should be allowed
-                styles: ['float', 'height', 'width']
-            },
-            big: {},
-            blockquote: {},
-            br: {},
-            caption: {},
-            code: {},
-            em: {},
-            div: {
-                classes: 'author', // needed for quotes
-                // only allow left margin and horizontal text alignment to
-                // be set in divs
-                // - margin-left should only be settable in multiples of
-                //   40 pixels
-                // - text-align should only be either "center", "right" or
-                //   "justify"
-                // - note that maybe these two features will be removed
-                //   completely in future versions
-                styles: ['margin-left', 'text-align']
-            },
-            h1: {},
-            h2: {},
-            h3: {},
-            h4: {},
-            h5: {},
-            h6: {},
-            hr: {},
-            img: {
-                attributes: ['alt', '!src', 'height', 'width'],
-                // only float:left and float:right should be allowed
-                styles: ['float']
-            },
-            li: {},
-            ol: {},
-            p: {
-                // - margin-left should only be settable in multiples of
-                //   40 pixels
-                // - text-align should only be either "center", "right" or
-                //   "justify"
-                styles: ['margin-left', 'text-align']
-            },
-            pre: {
-                classes: ['usercode']
-            },
-            span: {
-                // note that 'wiki-links' are currently set as a span due
-                // to implementation difficulties, but probably this
-                // might be changed in future versions
-                classes: ['wiki-link', 'math-tex'],
-
-                // note that allowed (background-)colors should be further
-                // restricted
-                styles: ['color', 'background-color']
-            },
-            strong: {},
-            u: {},
-            ul: {},
-            s: {},
-            small: {},
-            sub: {},
-            sup: {},
-            table: {
-                // note that tables should always have the class "content"
-                // (it should not be optional)
-                classes: 'content'
-            },
-            tbody: {},
-            td: {
-                // attributes and styles should be the same
-                // as for <th>, except for 'scope' attribute
-                attributes: ['colspan', 'rowspan'],
-                styles: ['text-align', 'width', 'height', 'background-color']
-            },
-            thead: {},
-            th: {
-                // attributes and styles should be the same
-                // as for <td>, except for 'scope' attribute
-                //
-                // note that allowed scope values should be restricted to
-                // "col", "row" or "col row", if scope is set
-                attributes: ['colspan', 'rowspan', 'scope'],
-                styles: ['text-align', 'width', 'height']
-            },
-            tr: {},
-            tt: {},
-            video: {
-                attributes: ['controls', '!src', 'height', 'width'],
-                // only float:left and float:right should be allowed
-                styles: ['float', 'height', 'width']
-            }
-        },
-        height: textareaHeight,
-        width: textareaWidth,
-        skin: 'studip,' + STUDIP.ASSETS_URL + 'stylesheets/ckeditor-skin/',
-        // NOTE codemirror crashes when not explicitely loaded in CKEditor 4.4.7
-        extraPlugins:
-            'emojione,studip-floatbar,studip-quote,studip-upload,studip-settings' +
-            (extraPlugins ? ',' + extraPlugins : ''),
-        removePlugins: removePlugins ? removePlugins : textarea.closest('.ui-dialog').length ? 'autogrow' : '',
-        enterMode: CKEDITOR.ENTER_BR,
-        mathJaxLib: STUDIP.URLHelper.getURL('assets/javascripts/mathjax/MathJax.js?config=TeX-AMS_HTML,default'),
-        studipUpload_url: STUDIP.URLHelper.getURL('dispatch.php/wysiwyg/upload'),
-        codemirror: {
-            autoCloseTags: false,
-            autoCloseBrackets: false,
-            showSearchButton: false,
-            showFormatButton: false,
-            showCommentButton: false,
-            showUncommentButton: false,
-            showAutoCompleteButton: false
-        },
-        autoGrow_onStartup: true,
-
-        // configure toolbar
-        toolbarGroups: [
-            { name: 'basicstyles', groups: ['undo', 'basicstyles', 'cleanup'] },
-            { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'quote'] },
-            '/',
-            { name: 'styles', groups: ['styles', 'colors', 'tools', 'links', 'insert'] },
-            { name: 'others', groups: ['mode', 'settings'] }
-        ],
-        removeButtons: 'Font,FontSize',
-        toolbarCanCollapse: true,
-        toolbarStartupExpanded: textarea.width() > 420,
-
-        // configure dialogs
-        dialog_buttonsOrder: 'ltr',
-        removeDialogTabs: 'image:Link;image:advanced;' + 'link:target;link:advanced;' + 'table:advanced',
-
-        // convert special chars except latin ones to html entities
-        entities: false,
-        entities_latin: false,
-        entities_processNumerical: true,
-
-        // set WYSIWYG's menu language to the language set in Stud.IP
-        defaultLanguage: 'de', // use German if user language not available
-        language: String.locale, // override browser-stored preferences
-
-        // configure list of special characters
-        // NOTE 17 characters fit in one row of special characters dialog
-        specialChars: [].concat(
-            [
-                '&Agrave;',
-                '&Aacute;',
-                '&Acirc;',
-                '&Atilde;',
-                '&Auml;',
-                '&Aring;',
-                '&AElig;',
-                '&Egrave;',
-                '&Eacute;',
-                '&Ecirc;',
-                '&Euml;',
-                '&Igrave;',
-                '&Iacute;',
-                '&Iuml;',
-                '&Icirc;',
-                '',
-                '&Yacute;',
-
-                '&agrave;',
-                '&aacute;',
-                '&acirc;',
-                '&atilde;',
-                '&auml;',
-                '&aring;',
-                '&aelig;',
-                '&egrave;',
-                '&eacute;',
-                '&ecirc;',
-                '&euml;',
-                '&igrave;',
-                '&iacute;',
-                '&iuml;',
-                '&icirc;',
-                '',
-                '&yacute;',
-
-                '&Ograve;',
-                '&Oacute;',
-                '&Ocirc;',
-                '&Otilde;',
-                '&Ouml;',
-                '&Oslash;',
-                '&OElig;',
-                '&Ugrave;',
-                '&Uacute;',
-                '&Ucirc;',
-                '&Uuml;',
-                '',
-                '&Ccedil;',
-                '&Ntilde;',
-                '&#372;',
-                '',
-                '&#374',
-
-                '&ograve;',
-                '&oacute;',
-                '&ocirc;',
-                '&otilde;',
-                '&ouml;',
-                '&oslash;',
-                '&oelig;',
-                '&ugrave;',
-                '&uacute;',
-                '&ucirc;',
-                '&uuml;',
-                '',
-                '&ccedil;',
-                '&ntilde;',
-                '&#373',
-                '',
-                '&#375;',
-
-                '&szlig;',
-                '&ETH;',
-                '&eth;',
-                '&THORN;',
-                '&thorn;',
-                '',
-                '',
-                '`',
-                '&acute;',
-                '^',
-                '&uml;',
-                '',
-                '&cedil;',
-                '~',
-                '&asymp;',
-                '',
-                '&yuml;'
-            ],
-            (function() {
-                var greek = [];
-                for (var i = 913; i <= 929; i++) {
-                    // 17 uppercase characters
-                    greek.push('&#' + String(i));
-                }
-                for (var i = 945; i <= 962; i++) {
-                    // 17 lowercase characters
-                    greek.push('&#' + String(i));
-                }
-                // NOTE character #930 is not assigned!!
-                for (var i = 931; i <= 937; i++) {
-                    // remaining upercase
-                    greek.push('&#' + String(i));
-                }
-                greek.push('');
-                for (var i = 963; i <= 969; i++) {
-                    // remaining lowercase
-                    greek.push('&#' + String(i));
-                }
-                greek.push('');
-                return greek;
-            })(),
-            [
-                '&ordf;',
-                '&ordm;',
-                '&deg;',
-                '&sup1;',
-                '&sup2;',
-                '&sup3;',
-                '&frac14;',
-                '&frac12;',
-                '&frac34;',
-                '&lsquo;',
-                '&rsquo;',
-                '&ldquo;',
-                '&rdquo;',
-                '&laquo;',
-                '&raquo;',
-                '&iexcl;',
-                '&iquest;',
-
-                '@',
-                '&sect;',
-                '&para;',
-                '&micro;',
-                '[',
-                ']',
-                '{',
-                '}',
-                '|',
-                '&brvbar;',
-                '&ndash;',
-                '&mdash;',
-                '&macr;',
-                '&sbquo;',
-                '&#8219;',
-                '&bdquo;',
-                '&hellip;',
-
-                '&euro;',
-                '&cent;',
-                '&pound;',
-                '&yen;',
-                '&curren;',
-                '&copy;',
-                '&reg;',
-                '&trade;',
-
-                '&not;',
-                '&middot;',
-                '&times;',
-                '&divide;',
-
-                '&#9658;',
-                '&bull;',
-                '&rarr;',
-                '&rArr;',
-                '&hArr;',
-                '&diams;',
-
-                '&#x00B1', // ±
-                '&#x2229', // ∩ INTERSECTION
-                '&#x222A', // ∪ UNION
-                '&#x221E', // ∞ INFINITY
-                '&#x2107', // ℇ EULER CONSTANT
-                '&#x2200', // ∀ FOR ALL
-                '&#x2201', // ∁ COMPLEMENT
-                '&#x2202', // ∂ PARTIAL DIFFERENTIAL
-                '&#x2203', // ∃ THERE EXISTS
-                '&#x2204', // ∄ THERE DOES NOT EXIST
-                '&#x2205', // ∅ EMPTY SET
-                '&#x2206', // ∆ INCREMENT
-                '&#x2207', // ∇ NABLA
-                '&#x2282', // ⊂ SUBSET OF
-                '&#x2283', // ⊃ SUPERSET OF
-                '&#x2284', // ⊄ NOT A SUBSET OF
-                '&#x2286', // ⊆ SUBSET OF OR EQUAL TO
-                '&#x2287', // ⊇ SUPERSET OF OR EQUAL TO
-                '&#x2208', // ∈ ELEMENT OF
-                '&#x2209', // ∉ NOT AN ELEMENT OF
-                '&#x2227', // ∧ LOGICAL AND
-                '&#x2228', // ∨ LOGICAL OR
-                '&#x2264', // ≤ LESS-THAN OR EQUAL TO
-                '&#x2265', // ≥ GREATER-THAN OR EQUAL TO
-                '&#x220E', // ∎ END OF PROOF
-                '&#x220F', // ∏ N-ARY PRODUCT
-                '&#x2211', // ∑ N-ARY SUMMATION
-                '&#x221A', // √ SQUARE ROOT
-                '&#x222B', // ∫ INTEGRAL
-                '&#x2234', // ∴ THEREFORE
-                '&#x2235', // ∵ BECAUSE
-                '&#x2260', // ≠ NOT EQUAL TO
-                '&#x2262', // ≢ NOT IDENTICAL TO
-                '&#x2263', // ≣ STRICTLY EQUIVALENT TO
-                '&#x22A2', // ⊢ RIGHT TACK
-                '&#x22A3', // ⊣ LEFT TACK
-                '&#x22A4', // ⊤ DOWN TACK
-                '&#x22A5', // ⊥ UP TACK
-                '&#x22A7', // ⊧ MODELS
-                '&#x22A8', // ⊨ TRUE
-                '&#x22AC', // ⊬ DOES NOT PROVE
-                '&#x22AD', // ⊭ NOT TRUE
-                '&#x22EE', // ⋮ VERTICAL ELLIPSIS
-                '&#x22EF', // ⋯ MIDLINE HORIZONTAL ELLIPSIS
-                '&#x29FC', // ⧼ LEFT-POINTING CURVED ANGLE BRACKET
-                '&#x29FD', // ⧽ RIGHT-POINTING CURVED ANGLE BRACKET
-                '&#x207F', // ⁿ SUPERSCRIPT LATIN SMALL LETTER N
-                '&#x2295', // ⊕ CIRCLED PLUS
-                '&#x2297', // ⊗ CIRCLED TIMES
-                '&#x2299' // ⊙ CIRCLED DOT OPERATOR
-            ]
-        ),
-        on: { pluginsLoaded: onPluginsLoaded },
-        title: false
-    });
+    CKEDITOR.replace(textarea[0], config);
 
     CKEDITOR.on('instanceReady', function(event) {
         var editor = event.editor,
