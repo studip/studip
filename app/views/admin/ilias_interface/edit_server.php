@@ -47,7 +47,7 @@
             <? elseif (count($ilias_clients) > 1) : ?>
                 <select name="ilias_client">
                 <? foreach ($ilias_clients as $client_name) : ?>
-                    <option value="<?=htmlReady($client_name)?>" <?= $client_name = $ilias_config['client'] ? ' selected' : ''?>><?=htmlReady($client_name)?></option>
+                    <option value="<?=htmlReady($client_name)?>" <?= $client_name == $ilias_config['client'] ? ' selected' : ''?>><?=htmlReady($client_name)?></option>
                 <? endforeach ?>
                 </select>
             <? else : ?>
