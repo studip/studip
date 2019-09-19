@@ -39,6 +39,7 @@ import MultiSelect from './lib/multi_select.js';
 import NavigationShrinker from './lib/navigation_shrinker.js';
 import News from './lib/news.js';
 import OldUpload from './lib/old_upload.js';
+import Overlapping from './lib/overlapping.js';
 import Overlay from './lib/overlay.js';
 import parseOptions from './lib/parse_options.js';
 import PersonalNotifications from './lib/personal_notifications.js';
@@ -111,6 +112,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     NavigationShrinker,
     News,
     OldUpload,
+    Overlapping,
     Overlay,
     parseOptions,
     PersonalNotifications,
