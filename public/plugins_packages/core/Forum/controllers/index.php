@@ -289,6 +289,11 @@ class IndexController extends ForumController
      */
     function search_action($page = null)
     {
+        if (Request::submitted('reset-search')) {
+            $this->redirect('index');
+            return;
+        }
+
         ForumPerm::check('search', $this->getId());
 
         $nav = Navigation::getItem('course/forum2');
