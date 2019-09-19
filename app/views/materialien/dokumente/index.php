@@ -2,6 +2,10 @@
     <form method="post">
         <?= CSRFProtection::tokenTag() ?>
         <table class="default collapsable">
+            <caption>
+                <?= _('Verlinkte Materialien/Dokumente') ?>
+                <span class="actions"><? printf(ngettext('%s Dokument', '%s Dokumente', $count), $count) ?></span>
+            </caption>
             <colgroup>
                 <col>
                 <col style="width: 40%">

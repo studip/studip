@@ -1,5 +1,9 @@
 <?= $controller->jsUrl() ?>
 <table class="default collapsable">
+    <caption>
+        <?= _('Module')?>
+        <span class="actions"><?= sprintf(ngettext('%s Modul', '%s Module', $count), $count) ?></span>
+    </caption>
     <colgroup>
         <col style="width: 10%;">
         <col>

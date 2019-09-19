@@ -1,6 +1,10 @@
 <form method="post">
     <?= CSRFProtection::tokenTag(); ?>
     <table class="default collapsable">
+        <caption>
+            <?= _('Fächer mit verwendeten Abschlüssen') ?>
+            <span class="actions"><? printf(ngettext('%s Fach', '%s Fächer', $count), $count) ?></span>
+        </caption>
         <colgroup>
             <col>
             <col style="width: 5%">

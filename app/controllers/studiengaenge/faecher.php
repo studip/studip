@@ -11,6 +11,7 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
 {
     public function index_action()
     {
+        PageLayout::setTitle(_('Verwaltung der Studiengangteile - Studiengangteile gruppiert nach Fächern'));
         $this->initPageParams();
         $this->initSearchParams();
         
@@ -49,11 +50,6 @@ class Studiengaenge_FaecherController extends Studiengaenge_StudiengangteileCont
         }
         $this->show_sidebar_search = true;
         $this->setSidebar();
-    
-        PageLayout::setTitle(sprintf(
-            _('Verwaltung der Studiengangteile - Studiengangteile gruppiert nach Fächern (%u)'),
-            $this->count
-        ));
     }
     
     /**

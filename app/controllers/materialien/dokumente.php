@@ -22,6 +22,7 @@ class Materialien_DokumenteController extends MVVController
 
     public function index_action()
     {
+        PageLayout::setTitle(_('Verwaltung der Dokumente'));
         $this->initPageParams();
         $this->initSearchParams();
 
@@ -55,14 +56,6 @@ class Materialien_DokumenteController extends MVVController
         $this->count = MvvDokument::getCount($this->filter);
         $this->show_sidebar_search = true;
         $this->setSidebar();
-
-        PageLayout::setTitle(
-            _('Verlinkte Materialien/Dokumente')
-            . ' ('
-            . sprintf(ngettext('%s Dokument', '%s Dokumente', $this->count), $this->count)
-            . ')'
-        );
-
     }
 
     public function details_action($dokument_id = null)

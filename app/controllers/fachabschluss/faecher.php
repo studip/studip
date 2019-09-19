@@ -19,6 +19,7 @@ class Fachabschluss_FaecherController extends MVVController
      */
     public function index_action()
     {
+        PageLayout::setTitle(_('Verwaltung der Fächer'));
         $this->initPageParams();
 
         // Nur Fächer mit verantwortlichen Einrichtungen an denen der User
@@ -30,14 +31,6 @@ class Fachabschluss_FaecherController extends MVVController
         if ($this->count < self::$items_per_page * ($this->page - 1)) {
             $this->page = 1;
         }
-    
-        PageLayout::setTitle(
-            _('Fächer mit verwendeten Abschlüssen')
-            . ' ('
-            . sprintf(ngettext('%s Fach', '%s Fächer', $this->count), $this->count)
-            . ')'
-        );
-        
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
         //get data

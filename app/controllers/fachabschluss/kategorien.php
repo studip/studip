@@ -19,7 +19,7 @@ class Fachabschluss_KategorienController extends MVVController
     /**
      * Lists all Abschluss-Kategorien
      */
-    function index_action()
+    public function index_action()
     {
         $helpbar = Helpbar::get();
         $widget = new HelpbarWidget();
@@ -41,14 +41,14 @@ class Fachabschluss_KategorienController extends MVVController
             $filter
         );
     
-        PageLayout::setTitle(_('Abschluss-Kategorien mit verwendeten Abschlüssen'));
+        PageLayout::setTitle(_('Abschluss-Kategorien'));
         $this->setSidebar();
     }
 
     /**
      * Creates a new Abschluss-Kategorie
      */
-    function kategorie_action($kategorie_id = null)
+    public function kategorie_action($kategorie_id = null)
     {
         $this->abschluss_kategorie = new AbschlussKategorie($kategorie_id);
         $this->dokumente = $this->abschluss_kategorie->document_assignments;
@@ -113,7 +113,7 @@ class Fachabschluss_KategorienController extends MVVController
     /**
      * Deletes a Abschluss-Kategorie
      */
-    function delete_action($kategorie_id)
+    public function delete_action($kategorie_id)
     {
         $abschluss_kategorie = new AbschlussKategorie($kategorie_id);
         if ($abschluss_kategorie->isNew()) {

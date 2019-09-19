@@ -1,6 +1,10 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default collapsable">
+        <caption>
+            <?= _('Studiengangteile nach Fächern gruppiert') ?>
+            <span class="actions"><? printf(_('%s Fächer'), $count) ?></span>
+        </caption>
         <colgroup>
             <col>
             <col style="width:1%;">

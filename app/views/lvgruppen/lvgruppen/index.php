@@ -1,6 +1,10 @@
 <form method="post">
     <?= CSRFProtection::tokenTag(); ?>
     <table class="default collapsable">
+        <caption>
+            <?= _('Lehrveranstaltungsgruppen'); ?>
+            <span class="actions"><? printf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $count), $count) ?></span>
+        </caption>
         <colgroup>
             <col>
             <col span="4" style="width: 1%;">

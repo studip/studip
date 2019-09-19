@@ -32,8 +32,7 @@ class Lvgruppen_LvgruppenController extends MVVController
      */
     public function index_action()
     {
-        // set title
-
+        PageLayout::setTitle(_('Verwaltung der Lehrveranstaltungsgruppen'));
         $this->initPageParams();
         $this->initSearchParams();
 
@@ -109,13 +108,6 @@ class Lvgruppen_LvgruppenController extends MVVController
         }
         
         $sidebar->addWidget($widget);
-
-        PageLayout::setTitle(
-            _('Verwaltung der Lehrveranstaltungsgruppen')
-            . ' ('
-            . sprintf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $this->count), $this->count)
-            . ')'
-        );
     }
 
     public function details_action($lvgruppe_id = null)

@@ -2,6 +2,10 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table id="stgteilbezeichnungen" class="default sortable collapsable">
+        <caption>
+            <?= _('Studiengangteil-Bezeichnungen') ?>
+            <span class="actions"><? printf(_('%s Bezeichnungen'), count($stgteilbezeichnungen)) ?></span>
+        </caption>
         <colgroup>
             <col>
             <col style="width: 10%;">

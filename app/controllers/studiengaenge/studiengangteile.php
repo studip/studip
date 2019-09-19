@@ -20,6 +20,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
     
     public function index_action()
     {
+        PageLayout::setTitle(_('Verwaltung der Studiengangteile - Alle Studiengangteile'));
         $this->initPageParams();
         $this->initSearchParams();
 
@@ -52,10 +53,6 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             }
             $this->count = StudiengangTeil::getCount($filter);
         }
-        PageLayout::setTitle(sprintf(
-            _('Verwaltung der Studiengangteile - Alle Studiengangteile (%u)'), $this->count
-        ));
-
         $this->show_sidebar_search = true;
         $this->setSidebar();
     }
