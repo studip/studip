@@ -246,7 +246,7 @@ class Avatar {
 
         if (!isset($opt['title'])) {
             $opt['title'] = $this->getDefaultTitle();
-        } elseif ($opt['title'] !== html_entity_decode($opt['title'])) {
+        } elseif (is_string($opt['title']) && $opt['title'] !== html_entity_decode($opt['title'])) {
             // Decode already htmlready encoded titles (which were used until
             // all attributes were encoded inside this method)
             $opt['title'] = html_entity_decode($opt['title']);
