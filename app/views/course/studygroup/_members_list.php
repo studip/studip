@@ -22,7 +22,7 @@
                 <a class="member-avatar"
                    href="<?= $controller->url_for('profile', ['username' => $m['username']]) ?>">
                     <?= Avatar::getAvatar($m['user_id'])
-                              ->getImageTag(Avatar::SMALL, tooltip2($fullname)) ?>
+                              ->getImageTag(Avatar::SMALL, ['title' => $fullname]) ?>
                 </a>
             </td>
             <td>

@@ -46,10 +46,10 @@
                         <td class="gruppe<?= $course['gruppe'] ?>"></td>
                         <td>
                             <? if ($sem_class['studygroup_mode']) : ?>
-                                <?= StudygroupAvatar::getAvatar($course['seminar_id'])->getImageTag(Avatar::SMALL, tooltip2($course['name']))
+                                <?= StudygroupAvatar::getAvatar($course['seminar_id'])->getImageTag(Avatar::SMALL, ['title' => $course['name']])
                                 ?>
                             <? else : ?>
-                                <?= CourseAvatar::getAvatar($course['seminar_id'])->getImageTag(Avatar::SMALL, tooltip2($course['name']))
+                                <?= CourseAvatar::getAvatar($course['seminar_id'])->getImageTag(Avatar::SMALL, ['title' => $course['name']])
                                 ?>
                             <? endif ?>
                         </td>
