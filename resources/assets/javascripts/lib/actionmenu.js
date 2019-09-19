@@ -78,7 +78,7 @@ function scrollHandler(event) {
 }
 
 const stash  = new Map();
-const secret = Symbol();
+const secret = typeof Symbol === 'undefined' ?  Math.random().toString(36).substring(2, 15) : Symbol();
 
 class ActionMenu {
     /**
