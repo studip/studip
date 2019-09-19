@@ -77,7 +77,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $accept['username']) ?>" <? if ($accept['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($accept['user_id'], $accept['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                             'title' => htmlReady($fullname)
+                            'title' => $fullname,
                         ]) ?>
                         <?= htmlReady($fullname) ?>
                     </a>

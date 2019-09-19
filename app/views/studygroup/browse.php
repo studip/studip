@@ -40,7 +40,7 @@ $headers = [
             <? $is_member = $user->course_memberships->findBy('seminar_id', $group['Seminar_id'])->count(); ?>
             <tr>
                 <td class="hidden-small-down">
-                    <?= StudygroupAvatar::getAvatar($group['Seminar_id'])->getImageTag(Avatar::SMALL, ['title' => htmlready($group['Name'])]) ?>
+                    <?= StudygroupAvatar::getAvatar($group['Seminar_id'])->getImageTag(Avatar::SMALL, ['title' => $group['Name']]) ?>
                 </td>
                 <td class="studygroup-title">
                     <? if ($is_member): ?>

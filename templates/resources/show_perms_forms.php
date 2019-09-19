@@ -31,7 +31,7 @@ use Studip\Button;
             <tr>
                 <td>
                     <?= Avatar::getAvatar($resObject->getOwnerId())->getImageTag(Avatar::SMALL,
-                        ['style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true))]); ?>
+                        ['style' => 'margin-right: 5px', 'title' => $resObject->getOwnerName(true)]); ?>
                 </td>
                 <td>
                     <a href="<?= $resObject->getOwnerLink() ?>"><?= htmlReady($resObject->getOwnerName(true)) ?></a>
@@ -74,7 +74,7 @@ use Studip\Button;
                     <tr>
                         <td>
                             <?= Avatar::getAvatar($user_id)->getImageTag(Avatar::SMALL,
-                                ['style' => 'margin-right: 5px', 'title' => htmlReady($resObject->getOwnerName(true, $user_id))]); ?>
+                                ['style' => 'margin-right: 5px', 'title' => $resObject->getOwnerName(true, $user_id)]); ?>
                         </td>
                         <td>
                             <input type="hidden" name="change_user_id[]" value="<?= $user_id ?>">

@@ -46,7 +46,7 @@
                 <a href="<?= $controller->url_for(sprintf('profile?username=%s',$dozent['username'])) ?>" <? if ($dozent['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                     <?= Avatar::getAvatar($dozent['user_id'], $dozent['username'])->getImageTag(Avatar::SMALL, [
                         'style' => 'margin-right: 5px',
-                        'title' => htmlReady($fullname),
+                        'title' => $fullname,
                     ]) ?>
                     <?= htmlReady($fullname) ?>
                 </a>

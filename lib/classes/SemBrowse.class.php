@@ -362,7 +362,7 @@ class SemBrowse {
     {
         if ($this->sem_browse_data['cmd'] == 'xts') {
             $this->printExtendedSearch();
-        } 
+        }
         $path_id = Request::option('path_id');
         URLHelper::addLinkParam('path_id', $path_id);
         $this->print_level($path_id);
@@ -466,7 +466,7 @@ class SemBrowse {
 
                     foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){
                         echo $this->printCourseRow($seminar_id, $sem_data);
-                    } 
+                    }
                 }
             }
             echo '</table>';
@@ -875,7 +875,7 @@ class SemBrowse {
                 if ($seminar_obj->admission_prelim) $sem_name .= ', ' . _('Zutritt auf Anfrage');
                 $sem_name .= ')';
                 $row .= '<td width="1%" class="hidden-tiny-down">';
-                $row .= StudygroupAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, ['title' => htmlReady($seminar_obj->getName())]);
+                $row .= StudygroupAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, ['title' => $seminar_obj->getName()]);
                 $row .= '</td>';
             } else {
                 $sem_number_start = key($sem_data[$seminar_id]['sem_number']);
@@ -889,7 +889,7 @@ class SemBrowse {
                     $sem_name .= " (" . $this->search_obj->sem_dates[$sem_number_start]['name'] . ')';
                 }
                 $row .= '<td width="1%" class="hidden-tiny-down">';
-                $row .= CourseAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, ['title' => htmlReady($seminar_obj->getName())]);
+                $row .= CourseAvatar::getAvatar($seminar_id)->getImageTag(Avatar::SMALL, ['title' => $seminar_obj->getName()]);
                 $row .= '</td>';
 
             }
@@ -990,8 +990,8 @@ class SemBrowse {
                         if ($i == 4) {
                             $row .= '... <a href="' . $send_from_search_link . '">(' . _('mehr') . ')</a>';
                             break;
-                        } 
-                        $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' . htmlReady($value) . '</a>'; 
+                        }
+                        $row .= '<a href="' . UrlHelper::getLink('dispatch.php/profile', ['username' => $doz_uname[$index]]) . '">' . htmlReady($value) . '</a>';
                         if ($i != count($doz_name) - 1) {
                             $row .= ', ';
                         }
@@ -1434,15 +1434,15 @@ class SemBrowse {
         $search_form_content .= $quicksearch->render();
         $search_form_content .= $this->search_obj->getHiddenField('qs_choose','title_lecturer_number');
 
-        if($this->sem_browse_data['level'] == 'vv') 
+        if($this->sem_browse_data['level'] == 'vv')
             $search_form_content .= $this->search_obj->getHiddenField('scope_choose', $this->sem_tree->start_item_id);
-        
-        if($this->sem_browse_data['level'] == 'ev') 
+
+        if($this->sem_browse_data['level'] == 'ev')
             $search_form_content .= $this->search_obj->getHiddenField('range_choose', $this->range_tree->start_item_id);
 
         $search_form_content .= $this->search_obj->getHiddenField('level', $this->sem_browse_data['level']);
         $search_form_content .= $this->search_obj->getHiddenField('sem', htmlReady($_SESSION['sem_browse_data']['default_sem']));
-       
+
         $search_form_content .= $this->search_obj->getFormEnd();
         return $search_form_content;
     }

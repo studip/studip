@@ -35,7 +35,7 @@
             </td>
             <td>
                 <?= Avatar::getAvatar($person['user_id'], $person['username'])
-                    ->getImageTag(Avatar::SMALL, ['title' => htmlReady($person['fullname'])])
+                    ->getImageTag(Avatar::SMALL, ['title' => $person['fullname']])
                 ?>
             </td>
             <td>

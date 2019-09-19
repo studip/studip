@@ -85,7 +85,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $tutor['username']) ?>" <? if ($tutor['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($tutor['user_id'], $tutor['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                            'title' => htmlReady($fullname)
+                            'title' => $fullname,
                         ]) ?>
                         <?= htmlReady($fullname) ?>
                     </a>

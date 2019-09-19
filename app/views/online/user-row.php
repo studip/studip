@@ -2,7 +2,7 @@
     <td>
         <a href="<?= $controller->url_for('profile?username=' . $user['username']) ?>">
             <?= Avatar::getAvatar($user['user_id'], $user['username'])->getImageTag(Avatar::SMALL, [
-                'title' => htmlReady($user['name'])
+                'title' => $user['name']
             ]) ?>
         </a>
     </td>

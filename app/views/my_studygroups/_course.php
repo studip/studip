@@ -2,7 +2,7 @@
     <tr>
         <td class="gruppe<?= $group['gruppe'] ?>"></td>
         <td>
-            <?= CourseAvatar::getAvatar($group['seminar_id'])->getImageTag(Avatar::SMALL, tooltip2(htmlReady($group['name'])))
+            <?= CourseAvatar::getAvatar($group['seminar_id'])->getImageTag(Avatar::SMALL, tooltip2($group['name']))
             ?>
         </td>
         <td style="text-align: left">

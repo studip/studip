@@ -93,7 +93,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $autor['username']) ?>" <? if ($autor['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($autor['user_id'], $autor['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                            'title' => htmlReady($fullname),
+                            'title' => $fullname,
                         ]) ?>
                         <?= htmlReady($fullname) ?>
                     <? if ($user_id === $autor['user_id'] && $autor['visible'] === 'no') : ?>

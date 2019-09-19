@@ -95,7 +95,7 @@ class StatusgruppeUser extends SimpleORMap implements PrivacyObject
      */
     public function avatar()
     {
-        return Avatar::getAvatar($this->user_id, $this->user->username)->getImageTag(Avatar::SMALL, ['title' => htmlReady($this->name())]);
+        return Avatar::getAvatar($this->user_id, $this->user->username)->getImageTag(Avatar::SMALL, ['title' => $this->name()]);
     }
 
     /**

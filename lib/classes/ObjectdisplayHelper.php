@@ -58,7 +58,7 @@ class ObjectdisplayHelper {
             return htmlReady($obj->getFullname());
         },
                 'avatar' => function($obj) {
-            return Avatar::getAvatar($obj->id, $obj->username)->getImageTag(Avatar::SMALL,['title' => htmlReady($obj->getFullname('no_title'))]);
+            return Avatar::getAvatar($obj->id, $obj->username)->getImageTag(Avatar::SMALL,['title' => $obj->getFullname('no_title')]);
         }
             ],
             'Course' => [
@@ -69,7 +69,7 @@ class ObjectdisplayHelper {
             return htmlReady($obj->name);
         },
                 'avatar' => function($obj) {
-            return CourseAvatar::getAvatar($obj->id)->getImageTag($size = CourseAvatar::SMALL,['title' => htmlReady($obj->name)]);
+            return CourseAvatar::getAvatar($obj->id)->getImageTag($size = CourseAvatar::SMALL,['title' => $obj->name]);
         }
             ]
         ];

@@ -245,20 +245,29 @@ class Avatar {
         }
 
         if (!isset($opt['title'])) {
-            $opt['title'] = htmlReady($this->getDefaultTitle());
+            $opt['title'] = $this->getDefaultTitle();
+        } elseif ($opt['title'] !== html_entity_decode($opt['title'])) {
+            // Decode already htmlready encoded titles (which were used until
+            // all attributes were encoded inside this method)
+            $opt['title'] = html_entity_decode($opt['title']);
+
+            if (Studip\ENV === 'development') {
+                $trace  = debug_backtrace();
+                $caller = array_shift($trace);
+
+                $file = str_replace("{$GLOBALS['STUDIP_BASE_PATH']}/", '', $caller['file']);
+                trigger_error(
+                    "{$file}:{$caller['line']}: Passes already encoded title to Avatar::getImageTag()",
+                    E_USER_DEPRECATED
+                );
+            }
         }
 
         if (!isset($opt['alt'])) {
             $opt['alt'] = $opt['title'];
         }
 
-        $result = '';
-
-        foreach ($opt as $key => $value) {
-            $result .= sprintf('%s="%s" ', $key, $value);
-        }
-
-        return '<img ' . $result . '>';
+        return '<img ' . arrayToHtmlAttributes($opt) . '>';
     }
 
 

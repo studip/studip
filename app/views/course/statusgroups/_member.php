@@ -13,9 +13,10 @@
     </td>
     <td>
         <a href="<?= $controller->url_for(sprintf('profile?username=%s', $m->username)) ?>">
-            <?= Avatar::getAvatar($m->user_id, $m->username)->getImageTag(Avatar::SMALL,
-                    ['style' => 'margin-right: 5px',
-                     'title' => htmlReady($user_fullname)]); ?>
+            <?= Avatar::getAvatar($m->user_id, $m->username)->getImageTag(Avatar::SMALL, [
+                'style' => 'margin-right: 5px',
+                'title' => $user_fullname,
+            ]) ?>
             <?= htmlReady($user_fullname) ?>
             <?php if ($user_id == $m->user_id && $m->visible == 'no') : ?>
                 (<?= _('unsichtbar') ?>)

@@ -21,7 +21,7 @@
     <? foreach ($my_bosses as $boss) : ?>
         <tr>
             <td>
-                <?= Avatar::getAvatar($boss['user_id'])->getImageTag(Avatar::SMALL, ['title' => htmlReady($boss['fullname'])]) ?>
+                <?= Avatar::getAvatar($boss['user_id'])->getImageTag(Avatar::SMALL, ['title' => $boss['fullname']]) ?>
             </td>
             <td>
                 <?= htmlReady($boss['fullname'])?>

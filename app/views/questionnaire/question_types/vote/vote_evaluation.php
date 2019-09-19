@@ -104,7 +104,7 @@ rsort($ordered_results);
                                      ) ?>">
                                 <?= Avatar::getAvatar($user_id, $user->username)->getImageTag(
                                     Avatar::SMALL,
-                                    ['title' => htmlReady($user->getFullname('no_title'))]
+                                    ['title' => $user->getFullname('no_title')]
                                 ) ?>
                                 <? if (count($results_users[$key]) < 4) : ?>
                                     <?= htmlReady($user->getFullname('no_title')) ?>
