@@ -1,3 +1,5 @@
+<input type="hidden" name="<?= $name ?>[<?= $model->id ?>]" value="0">
+
 <label>
     <input type="checkbox" name="<?= $name ?>[<?= $model->id ?>]"
            value="1" id="<?= $name ?>_<?= $model->id ?>"
