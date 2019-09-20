@@ -47,7 +47,7 @@ $intervals = [
             <input required type="text" name="end-date" id="end-date"
                    value="<?= htmlReady(Request::get('end-date', strftime('%d.%m.%Y', strtotime('+4 weeks'))))  ?>"
                    placeholder="<?= _('tt.mm.jjjj') ?>"
-                   data-date-picker='{">":"#start-date"}'>
+                   data-date-picker='{">=":"#start-date"}'>
         </label>
 
         <label class="col-3">
