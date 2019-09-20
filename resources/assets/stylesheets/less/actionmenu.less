@@ -97,9 +97,16 @@
             margin: 0;
             padding: 3px 0;
             display: block;
+        }
 
-            &[disabled] {
-                color: @dark-gray-color-80;
+        &.action-menu-item-disabled {
+            > a,
+            > label {
+                &,
+                &:hover {
+                    color: @dark-gray-color-80;
+                    cursor: default;
+                }
             }
         }
 
