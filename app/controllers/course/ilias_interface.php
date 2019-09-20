@@ -159,7 +159,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
             $widget = new ActionsWidget();
             if ($this->edit_permission && $this->ilias_interface_config['add_statusgroups']) {
                 $widget->addLink(
-                        _('Statusgruppen übertragen'),
+                        _('Gruppen übertragen'),
                         $this->url_for('course/ilias_interface/add_groups'),
                         Icon::create('group2+refresh', 'clickable'),
                         ['data-dialog' => 'size=auto']
@@ -361,7 +361,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
      */
     public function add_groups_action($index = '')
     {
-        PageLayout::setTitle(_('Statusgruppen anlegen'));
+        PageLayout::setTitle(_('Gruppen übertragen'));
 
         if (!$this->edit_permission) {
             throw new AccessDeniedException();
@@ -393,7 +393,8 @@ class Course_IliasInterfaceController extends AuthenticatedController
             $this->ilias = $this->ilias_list[$index];
             $this->ilias_index = $index;
             $this->ilias_groups = [];
-            $this->submit_text =  _('Gruppen übertragen');
+            $this->groups_exist = false;
+            $this->submit_text =  _('Gruppen anlegen');
             $course_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $this->ilias_index);
 
             if ((Request::get('cmd') == 'create_groups') && $course_id) {
@@ -448,6 +449,13 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     }
                 }
                 $this->redirect($this->url_for('course/ilias_interface'));
+            } else {
+                foreach ($this->groups as $group) {
+                    if ($group_id = IliasObjectConnections::getConnectionModuleId($group->getId(), "group", $this->ilias_index)) {
+                        $this->submit_text =  _('Gruppen aktualisieren');
+                        $this->groups_exist = true;
+                    }
+                }
             }
 
             // show error messages

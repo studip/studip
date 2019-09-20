@@ -14,18 +14,18 @@
     <? else : ?>
     <div>
         <input type="hidden" name="cmd" value="create_groups">
-        <h3><?= _('Statusgruppen') ?></h3>
+        <h3><?= _('Gruppen') ?></h3>
         <? foreach ($groups as $group) : ?>
         <article>
             <?=$group->getName()?> (<?=count($group->members)?>)
         </article>
         <? endforeach ?>
-        <?=sprintf(_('Die Statusgruppen können nun in der %s-Installation angelegt werden.'), $ilias->getName())?>
+        <?= $groups_exist ? sprintf(_('Die Gruppen können nun in der %s-Installation aktualisiert werden.'), $ilias->getName()) : sprintf(_('Die Gruppen können nun in der %s-Installation angelegt werden.'), $ilias->getName())?>
     </div>
     <? endif ?>
     <footer data-dialog-button>
         <? if ($ilias->isActive() && $submit_text) : ?>
-        <?= Studip\Button::create($submit_text, 'submit') ?>
+        <?= Studip\Button::create($submit_text, 'submit', ($dialog && ! $ilias_index) ? ['data-dialog' => 'size=auto'] : []) ?>
         <? endif ?>
         <?= Studip\Button::createCancel(_('Schließen'), 'cancel', $dialog ? ['data-dialog' => 'close'] : []) ?>
     </footer>
