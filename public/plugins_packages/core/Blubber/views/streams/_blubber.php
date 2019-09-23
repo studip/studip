@@ -64,7 +64,7 @@ $commentable = $GLOBALS['perm']->have_perm("autor") ? true : (bool) $commentable
         <? $sharing_user_ids = array_map(function ($v) { return $v['user_id']; }, $sharingusers) ?>
         <div class="reshares<?= count($sharingusers) > 0 ? " reshared" : "" ?>">
             <? if (count($sharingusers)) : ?>
-                <? if ((!User::findCurrent()->isFriendOf($thread) || $thread['external_contact']) && ($GLOBALS['user']->id !== $thread['user_id'])) : ?>
+                <? if (((User::findCurrent() && !User::findCurrent()->isFriendOf($thread)) || $thread['external_contact']) && ($GLOBALS['user']->id !== $thread['user_id'])) : ?>
                     <? $sharingcontacts = "" ?>
                     <? $othersharing = 0 ?>
                     <? foreach ($sharingusers as $key => $user) {
