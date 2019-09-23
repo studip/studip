@@ -64,13 +64,15 @@
                         </label>
                     </td>
                     <td>
-                        <? if (count($contact_groups)) : ?>
+                        <? if ($contact_groups && is_array($contact_groups)) : ?>
                         <label>
                         <?= _("An Kontaktgruppe(n)") ?><br>
                         <select multiple name="contact_group[]" id="contact_groups" style="width: 100%" size="<?= count($contact_groups) <= 4 ? count($contact_groups) : "4"  ?>">
-                            <? foreach ($contact_groups as $group) : ?>
-                            <option value="<?= htmlReady($group['statusgruppe_id']) ?>"><?= htmlReady($group['name']) ?></option>
-                            <? endforeach ?>
+                        <? foreach ($contact_groups as $group) : ?>
+                            <option value="<?= htmlReady($group['statusgruppe_id']) ?>">
+                                <?= htmlReady($group['name']) ?>
+                            </option>
+                        <? endforeach ?>
                         </select>
                         </label>
                         <? else : ?>
