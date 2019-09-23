@@ -259,7 +259,7 @@
                             if ($val["type"] == "grouped") $grouped_rooms[$key] = true;
                         }
 
-                        if (sizeof($matching_rooms)) {
+                        if ($matching_rooms && is_array($matching_rooms)) {
                             // filter list to [search_limit_low]...[search_limit_high]
                             $search_limit_low  = $_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["search_limit_low"];
                             $search_limit_high = $_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["search_limit_high"];
@@ -339,7 +339,7 @@
                             print "<tr><td width=\"100%\" colspan=\"" . ($cols + 1) . "\">" . _("keine gefunden") . "</td></tr>";
 
                         //Clipped Rooms
-                        if (sizeof($clipped_rooms)) {
+                        if ($clipped_rooms && is_array($clipped_rooms)) {
                             ?>
                             <tr>
                                 <td style="border-top:1px solid; width: 100%" colspan="<?= $cols + 2 ?>">
@@ -505,7 +505,7 @@
                     echo Button::createCancel(_('Abbrechen'), 'cancel_edit_request');
                     echo Button::create(_('Löschen'), 'delete_request');
 
-                    if ((($reqObj->getResourceId()) || (sizeof($matching_rooms)) || (sizeof($clipped_rooms)) || (sizeof($grouped_rooms))) && ((is_array($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["groups"])) || ($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["assign_objects"]))) {
+                    if (($reqObj->getResourceId() || $matching_rooms || $clipped_rooms || $grouped_rooms) && (is_array($_SESSION['resources_data']['requests_working_on'][$_SESSION['resources_data']['requests_working_pos']]['groups']) || $_SESSION['resources_data']['requests_working_on'][$_SESSION['resources_data']['requests_working_pos']]['assign_objects'])) {
                         echo Button::createAccept(_('Speichern'), 'save_state');
                         echo Button::createCancel(_('Ablehnen'), 'suppose_decline_request');
                     }
