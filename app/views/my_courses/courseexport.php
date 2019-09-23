@@ -17,7 +17,7 @@
         </style>
     </head>
     <body>
-    <? if (count($sem_courses) > 0) : ?>
+    <? if ($sem_courses && is_array($sem_courses)) : ?>
         <h1><?= _('Meine Veranstaltungen'); ?></h1>
         <div id="my_seminars">
         <? foreach ($sem_courses as $sem_key => $course_group) : ?>
