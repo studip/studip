@@ -387,7 +387,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
                 }
             }
 
-            $a['readable_entry'] = html_entity_decode(strip_tags(str_replace('<br>', PHP_EOL, ($log_event->formatEvent()))));
+            $a['readable_entry'] = html_entity_decode(strip_tags(str_replace('<br>', PHP_EOL, $log_event->formatEvent())));
             $log[$pos]= array_merge($a, $event);
         }
 

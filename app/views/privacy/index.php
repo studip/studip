@@ -32,11 +32,7 @@
                         <tr>
                         <? foreach ($row as $key => $value): ?>
                             <td>
-                            <? if ($tabledata['table_name'] === 'log_events' && $key === 'readable_entry'): ?>
-                                <?= $value ?>
-                            <? else: ?>
                                 <?= htmlReady($value) ?>
-                            <? endif; ?>
                             </td>
                         <? endforeach; ?>
                         </tr>
