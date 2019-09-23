@@ -1,4 +1,4 @@
-<div class="<?= $base_class ?>-widget<?= count($layout_css_classes) ? ' '.htmlReady(implode(" ", $layout_css_classes)) : "" ?>"
+<div class="<?= $base_class ?>-widget <? if ($layout_css_classes && is_array($layout_css_classes)) echo htmlReady(implode(' ', $layout_css_classes)); ?>"
     <? if ($id) printf('id="%s"', htmlReady($id)) ?>
     <? if ($style) printf('style="%s"', $style) ?>>
 <? if ($title): ?>
