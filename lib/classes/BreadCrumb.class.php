@@ -29,7 +29,7 @@ class BreadCrumb
 
     /**
      * Appends a new element to the end of the bread crumb navigation.
-     * 
+     *
      * @param MvvTreeItem $object The MvvTreeItem object of the current view
      * to append.
      * @param string $action The url to the current view.
@@ -48,7 +48,7 @@ class BreadCrumb
             $id = reset($object)->id;
             $type = get_class(reset($object));
             foreach ($object as $obj) {
-                if ($obj->id != $id) {
+                if ($obj && $obj->id != $id) {
                     $additional_objects[get_class($obj)] = $obj->id;
                 }
             }
@@ -83,7 +83,7 @@ class BreadCrumb
 
     /**
      * Returns all elements of the bread crumb navigation.
-     * 
+     *
      * @return array All elements of the bread crumb navigation
      */
     public function getTrail()
