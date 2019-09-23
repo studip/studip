@@ -320,11 +320,13 @@ class SeminarCycleDate extends SimpleORMap
         $update_count = 0;
         foreach ($this->getAllDates() as $date) {
             // ignore dates in the past
-            if ($date->date < time()) continue;
+            if ($date->date < time()) {
+                continue;
+            }
 
             $tos = $date->date;
             $toe = $date->end_time;
-            $day = (date('D', $date->date) - $old_cycle->weekday) + $this->weekday;
+            $day = $this->weekday - $old_cycle->weekday;
 
             $date->date = mktime(date('G', strtotime($this->start_time)), date('i', strtotime($this->start_time)), 0, date('m', $tos), date('d', $tos), date('Y', $tos)) + $day * 24 * 60 * 60;
             $date->end_time = mktime(date('G', strtotime($this->end_time)), date('i', strtotime($this->end_time)), 0, date('m', $toe), date('d', $toe), date('Y', $toe)) + $day * 24 * 60 * 60;
