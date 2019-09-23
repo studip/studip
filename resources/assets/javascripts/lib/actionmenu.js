@@ -13,8 +13,8 @@ function determineBreakpoint(element) {
  */
 function getScrollableParents(element) {
     const offset = $(element).offset();
-    const height = $('.action-menu-content', element).height();
-    const width  = $('.action-menu-content', element).width();
+    const height = $(element).height();
+    const width  = $(element).width();
 
     const breakpoint = determineBreakpoint(element);
 
