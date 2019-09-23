@@ -387,14 +387,17 @@ class LVGroupsWizardStep implements CourseWizardStep
         $errors = [];
 
         // optional step if study areas step is activated and at least one area is assigned
-        if (!count($values['StudyAreasWizardStep']['studyareas'])
-                && !count($values[__CLASS__]['lvgruppe_selection']['areas'])) {
+        if (!$values['StudyAreasWizardStep']['studyareas']
+            && !$values[__CLASS__]['lvgruppe_selection']['areas'])
+        {
             $ok = false;
             $errors[] = _('Der Veranstaltung muss mindestens eine Lehrveranstaltungsgruppe zugeordnet sein.');
         }
         if ($errors) {
-            PageLayout::postMessage(MessageBox::error(
-                _('Bitte beheben Sie erst folgende Fehler, bevor Sie fortfahren:'), $errors));
+            PageLayout::postError(
+                _('Bitte beheben Sie erst folgende Fehler, bevor Sie fortfahren:'),
+                $errors
+            );
         }
         return $ok;
     }
