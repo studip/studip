@@ -51,7 +51,7 @@
             ]) ?>
 
             <?= Button::create(_('Adresse löschen'), 'delete_id', [
-                title => _('Ein Zugriff auf Ihre Termine über diese Adresse ist dann nicht mehr möglich!')
+                'title' => _('Ein Zugriff auf Ihre Termine über diese Adresse ist dann nicht mehr möglich!')
             ]) ?>
         <? endif ?>
 
