@@ -114,10 +114,7 @@ class Calendar_ScheduleController extends AuthenticatedController
             if (Request::getArray('days')) {
                 $this->days = array_keys(Request::getArray('days'));
             } else {
-                $this->days = $schedule_settings['glb_days'];
-                foreach ($this->days as $key => $day_number) {
-                    $this->days[$key] = ($day_number + 6) % 7;
-                }
+                $this->days = CalendarScheduleModel::getDisplayedDays($schedule_settings['glb_days']);
             }
         } else {
             $this->days = explode(',', $days);

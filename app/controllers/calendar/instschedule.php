@@ -14,6 +14,7 @@
  * @category    Stud.IP
  */
 
+require_once 'app/models/calendar/schedule.php';
 require_once 'app/models/calendar/instschedule.php';
 
 /**
@@ -31,17 +32,16 @@ class Calendar_InstscheduleController extends AuthenticatedController
      */
     function index_action($days = false)
     {
-        if ($GLOBALS['perm']->have_perm('admin')) $inst_mode = true;
+        if ($GLOBALS['perm']->have_perm('admin')) {
+            $inst_mode = true;
+        }
         $my_schedule_settings = $GLOBALS['user']->cfg->SCHEDULE_SETTINGS;
         // set the days to be displayed
         if ($days === false) {
             if (Request::getArray('days')) {
                 $this->days = array_keys(Request::getArray('days'));
             } else {
-                $this->days = $my_schedule_settings['glb_days'];
-                foreach ($this->days as $key => $day_number) {
-                    $this->days[$key] = ($day_number + 6) % 7;
-                }
+                $this->days = CalendarScheduleModel::getDisplayedDays($my_schedule_settings['glb_days']);
             }
         } else {
             $this->days = explode(',', $days);

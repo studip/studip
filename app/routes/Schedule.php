@@ -11,6 +11,11 @@ namespace RESTAPI\Routes;
  */
 class Schedule extends \RESTAPI\RouteMap
 {
+    public static function before()
+    {
+        require_once 'app/models/calendar/schedule.php';
+    }
+
     /**
      * returns schedule for a given user and semester
      *
@@ -32,10 +37,7 @@ class Schedule extends \RESTAPI\RouteMap
         }
 
         $schedule_settings = \UserConfig::get($user_id)->SCHEDULE_SETTINGS;
-        $days = $schedule_settings['glb_days'];
-        foreach ($days as $key => $day_number) {
-            $days[$key] = ($day_number + 6) % 7;
-        }
+        $days = \CalendarScheduleModel::getDisplayedDays($schedule_settings['glb_days']);
 
         $entries = \CalendarScheduleModel::getEntries(
             $user_id, $current_semester,

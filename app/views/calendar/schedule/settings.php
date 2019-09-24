@@ -50,7 +50,7 @@ use Studip\Button, Studip\LinkButton;
             <? foreach ([1,2,3,4,5,6,0] as $day) : ?>
                 <label>
                     <input type="checkbox" name="days[]" value="<?= $day ?>"
-                        <?= in_array($day, $settings['glb_days']) !== false ? 'checked="checked"' : '' ?>>
+                        <?= in_array($day, $settings['glb_days']) !== false ? 'checked' : '' ?>>
                     <?= getWeekDay($day, false) ?>
                 </label>
             <? endforeach ?>
