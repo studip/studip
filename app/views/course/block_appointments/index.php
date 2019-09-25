@@ -90,14 +90,60 @@
                 <? endforeach ?>
             </select>
         </label>
+
+        <? if (Config::get()->RESOURCES_ENABLE): ?>
+            <label>
+                <?= _('Raum') ?>
+                <select name="room_id" style="width: calc(100% - 23px);">
+                    <option value="nothing"><?= _('<em>Keinen</em> Raum buchen') ?></option>
+                    <? if ($resource_list->numberOfRooms()): ?>
+                        <? foreach ($resource_list->getRooms() as $room_id => $room): ?>
+                            <option value="<?= htmlReady($room_id) ?>"
+                                    <?= Request::option('room') == $room_id
+                                      ? 'selected="selected"'
+                                      : '' ?>>
+                                <?= htmlReady($room->getName()) ?>
+                                <? if ($room->getSeats() > 1): ?>
+                                    <?= sprintf(_('(%d Sitzplätze)'), $room->getSeats()) ?>
+                                <? endif ?>
+                            </option>
+                        <? endforeach ?>
+                    <? endif ?>
+                </select>
+            </label>
+        <? endif ?>
+
         <label for="block_appointments_room_text">
             <?= _('Freie Ortsangabe') ?>
             <input type="text" name="block_appointments_room_text" id="block_appointments_room_text"
                    value="<?= $request['block_appointments_room_text'] ?>">
         </label>
 
+         <? if (count($lecturers)): ?>
+            <label for="lecturers[]"><?= _('Durchführende Lehrende') ?>
+                <? if (count($lecturers) > 1): ?>
+                    <select name="lecturers[]" multiple="multiple" class="multiple">
+                        <? foreach ($lecturers as $lecturer): ?>
+                            <option <?= in_array(
+                                    $lecturer->user_id,
+                                    Request::getArray('lecturers')
+                                    ) ? 'selected="selected"' : '' ?>
+                                value="<?= $lecturer->user_id ?>">
+                                <?= htmlReady($lecturer->user->getFullName()) ?>
+                            </option>
+                        <? endforeach ?>
+                    </select>
+                <? else: ?>
+                    <p style="margin-left: 15px">
+                        <? $lecturer = array_pop($lecturers) ?>
+                        <?= htmlReady($lecturer->user->getFullName()) ?>
+                    </p>
+                <? endif; ?>
+            </label>
+        <? endif ?>
+
         <label for="block_appointments_date_count">
-            <?= _('Anzahl') ?>
+            <?= _('Anzahl der Termine') ?>
             <input type="text" name="block_appointments_date_count" id="block_appointments_date_count" class="size-s" value="<?= $request['block_appointments_date_count'] ?: 1 ?>">
         </label>
 

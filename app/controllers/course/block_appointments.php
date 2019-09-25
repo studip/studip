@@ -51,6 +51,19 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $this->start_ts         = strtotime('this monday');
         $this->request          = $this->flash['request'] ?: $_SESSION['block_appointments'];
         $this->confirm_many     = isset($this->flash['confirm_many']) ? $this->flash['confirm_many'] : false;
+
+        if (Config::get()->RESOURCES_ENABLE) {
+            $this->resource_list = ResourcesUserRoomsList::getInstance(
+                $GLOBALS['user']->id,
+                true,
+                true,
+                true
+            );
+        }
+        $this->lecturers = CourseMember::findByCourseAndStatus(
+            $this->course_id,
+            'dozent'
+        );
     }
 
     /**
@@ -81,6 +94,27 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $free_room_text = Request::get('block_appointments_room_text');
         $date_count     = Request::int('block_appointments_date_count');
         $days           = Request::getArray('block_appointments_days');
+        $lecturer_ids   = Request::getArray('lecturers');
+        $room_id        = Request::get('room_id');
+
+        $lecturers = User::findBySql(
+            "INNER JOIN seminar_user
+            USING (user_id)
+            WHERE seminar_id = :course_id AND seminar_user.user_id IN ( :lecturer_ids )
+            AND seminar_user.status = 'dozent'",
+            [
+                'course_id' => $this->course_id,
+                'lecturer_ids' => $lecturer_ids
+            ]
+        );
+
+        $room = null;
+        if ($room_id != 'nothing') {
+            $room = new ResourceObject($room_id);
+            if (!$room->getId()) {
+                $errors[] = _('Der angegebene Raum wurde nicht gefunden!');
+            }
+        }
 
         if (!is_array($days)) {
             $errors[] = _('Bitte wählen Sie mindestens einen Tag aus!');
@@ -120,6 +154,7 @@ class Course_BlockAppointmentsController extends AuthenticatedController
                     $date->raum = $free_room_text;
                     $date->date = $t;
                     $date->end_time = $t + $delta;
+                    $date->dozenten = $lecturers;
                     $dates[] = $date;
                 }
             }
@@ -151,6 +186,26 @@ class Course_BlockAppointmentsController extends AuthenticatedController
                 $dates_created = array_filter(array_map(function ($d) {
                     return $d->store() ? $d->getFullname() : null;
                 }, $dates));
+                if ($room) {
+                    $booking_warnings = [];
+                    foreach ($dates as $date) {
+                        $singledate = new SingleDate($date);
+                        $singledate->bookRoom($room->getId());
+                        $messages = $singledate->getMessages();
+                        if ($messages['error']) {
+                            $booking_warnings = array_merge(
+                                $booking_warnings,
+                                $messages['error']
+                            );
+                        }
+                    }
+                    if ($booking_warnings) {
+                        PageLayout::postWarning(
+                            _('Beim Buchen des Raumes traten folgende Probleme auf:'),
+                            $booking_warnings
+                        );
+                    }
+                }
                 if ($date_count > 1) {
                     $dates_created = array_count_values($dates_created);
                     $dates_created = array_map(function ($k, $v) {
