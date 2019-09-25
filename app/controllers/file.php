@@ -961,9 +961,17 @@ class FileController extends AuthenticatedController
                 }
             }
         } else {
-            $this->top_folder = new StandardFolder(new Folder($folder_id));
-            if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
-                throw new AccessDeniedException();
+            //Load the folder by its ID.
+            $folder = new Folder($folder_id);
+            $folder_type = $folder->folder_type;
+            //Check if the specified folder type is a FolderType implementation.
+            if (is_a($folder_type, 'FolderType', true)) {
+                //Get an instance of the FolderType implementation
+                //and use it in the code below this point.
+                $this->top_folder = new $folder_type($folder);
+                if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
+                    throw new AccessDeniedException();
+                }
             }
         }
 
