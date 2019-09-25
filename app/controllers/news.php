@@ -282,6 +282,11 @@ class NewsController extends StudipController
             if (is_array($my_sem['sem']) && count($my_sem['sem']))
                 $this->search_presets['sem'] = _('Meine Veranstaltungen im aktuellen Semester') . ' (' . count($my_sem['sem']) . ')';
         }
+        if ($GLOBALS['perm']->have_perm('autor') && !$GLOBALS['perm']->have_perm('admin')) {
+            $my_nextsem = $this->search_area('__NEXT_SEMESTER__');
+            if (is_array($my_nextsem['sem']) && count($my_nextsem['sem']))
+                $this->search_presets['nextsem'] = _('Meine Veranstaltungen im nächsten Semester') . ' (' . count($my_nextsem['sem']) . ')';
+        }
         if ($GLOBALS['perm']->have_perm('dozent') && !$GLOBALS['perm']->have_perm('root')) {
             $my_inst = $this->search_area('__MY_INSTITUTES__');
             if (count($my_inst))
@@ -305,6 +310,8 @@ class NewsController extends StudipController
                     $this->area_options_selectable = $my_inst;
                 } elseif ($this->current_search_preset === 'sem') {
                     $this->area_options_selectable = $my_sem;
+                } elseif ($this->current_search_preset === 'nextsem') {
+                    $this->area_options_selectable = $my_nextsem;
                 } elseif ($this->current_search_preset === 'user') {
                     $this->area_options_selectable = ['user' => [$GLOBALS['user']->id => get_fullname()]];
                 } elseif ($this->current_search_preset === 'global') {
@@ -688,6 +695,37 @@ class NewsController extends StudipController
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':user_id', $GLOBALS['user']->id);
             $statement->bindValue(':start', $current_semester->beginn);
+            $statement->execute();
+            $seminars = $statement->fetchAll(PDO::FETCH_ASSOC);
+            foreach($seminars as $key => $sem) {
+                $tmp_result[$sem['Seminar_id']] = [
+                    'name' => $sem['sem_name'],
+                    'type' => 'sem',
+                ];
+            }
+            $term = '';
+        } elseif ($term === '__NEXT_SEMESTER__') {
+            $nr = 0;
+            $next_semester = Semester::findNext();
+            $query = "SELECT seminare.Name AS sem_name, seminare.Seminar_id, seminare.visible
+                      FROM seminar_user LEFT JOIN seminare  USING (Seminar_id)
+                      WHERE seminar_user.user_id = :user_id AND seminar_user.status IN('tutor', 'dozent')
+                      AND seminare.start_time <= :start
+                      AND (:start <= (seminare.start_time + seminare.duration_time)
+                      OR seminare.duration_time = -1)";
+            if (Config::get()->DEPUTIES_ENABLE) {
+                $query .= " UNION SELECT CONCAT(seminare.Name, ' ["._("Vertretung")."]') AS sem_name, seminare.Seminar_id,
+                            seminare.visible
+                            FROM deputies JOIN seminare ON (deputies.range_id=seminare.Seminar_id)
+                            WHERE deputies.user_id = :user_id
+                            AND seminare.start_time <= :start
+                            AND (:start <= (seminare.start_time + seminare.duration_time)
+                            OR seminare.duration_time = -1)";
+            }
+            $query .= " ORDER BY sem_name ASC";
+            $statement = DBManager::get()->prepare($query);
+            $statement->bindValue(':user_id', $GLOBALS['user']->id);
+            $statement->bindValue(':start', $next_semester->beginn);
             $statement->execute();
             $seminars = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach($seminars as $key => $sem) {
