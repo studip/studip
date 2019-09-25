@@ -80,11 +80,20 @@ class SearchWidget extends SidebarWidget
      * @param mixed  $js_func      Optional name of a js function or a js
      *                             function itself that's executed when an
      *                             entry of the found elements is selected
+     * @param array  $attributes   An array with optional HTML attributes
+     *                             that shall be attached to the input element
+     *                             that is constructed when rendering
+     *                             this "needle".
+     *                             The array keys specify the attribute names
+     *                             while the array values specify the attribute
+     *                             values.
+     *                             Note that this parameter is ignored
+     *                             when a quick search object is provided!
      */
-    public function addNeedle($label, $name, $placeholder = false, SearchType $quick_search = null, $js_func = null, $value = null)
+    public function addNeedle($label, $name, $placeholder = false, SearchType $quick_search = null, $js_func = null, $value = null, $attributes = [])
     {
         $value = $value ?: Request::get($name);
-        $this->needles[] = compact(['label', 'name', 'placeholder', 'value', 'quick_search',  'js_func']);
+        $this->needles[] = compact(['label', 'name', 'placeholder', 'value', 'quick_search',  'js_func', 'attributes']);
     }
 
     /**

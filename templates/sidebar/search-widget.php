@@ -19,7 +19,10 @@
             <input type="text" id="needle-<?= $hash ?>"
                    name="<?= htmlReady($needle['name']) ?>"
                    value="<?= htmlReady($needle['value']) ?>"
-                   <? if ($needle['placeholder']) printf('placeholder="%s"', htmlReady($needle['label'])); ?>>
+                   <? if ($needle['placeholder']) printf('placeholder="%s"', htmlReady($needle['label'])); ?>
+                   <? if (is_array($needle['attributes'])): ?>
+                       <?= arrayToHtmlAttributes($needle['attributes']) ?>
+                   <? endif ?>>
         <? endif; ?>
             <input type="submit" value="<?= _('Suchen') ?>">
         </li>
