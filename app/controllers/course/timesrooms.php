@@ -620,13 +620,16 @@ class Course_TimesroomsController extends AuthenticatedController
         $group_action    = Request::get('related_groups_action');
         $lecture_changed = false;
         $groups_changed  = false;
+        $singledates     = [];
 
-        foreach ($_SESSION['_checked_dates'] as $singledate_id) {
-            $singledate = CourseDate::find($singledate_id);
-            if (!isset($singledate)) {
-                $singledate = CourseExDate::find($singledate_id);
+        if (is_array($_SESSION['_checked_dates'])) {
+            foreach ($_SESSION['_checked_dates'] as $singledate_id) {
+                $singledate = CourseDate::find($singledate_id);
+                if (!isset($singledate)) {
+                    $singledate = CourseExDate::find($singledate_id);
+                }
+                $singledates[] = $singledate;
             }
-            $singledates[] = $singledate;
         }
 
         // Update related persons
