@@ -2489,7 +2489,7 @@ class Seminar
         if (!$user) {
             $info['enrolment_allowed'] = false;
             $info['cause'] = 'nobody';
-            $info['description'] = _("Sie sind nicht angemeldet.");
+            $info['description'] = _("Sie sind nicht in Stud.IP angemeldet.");
             return $info;
         }
         if ($GLOBALS['perm']->have_perm('root', $user_id)) {
@@ -2736,7 +2736,7 @@ class Seminar
                 DBManager::get()->execute("UPDATE `admission_seminar_user`
                         SET `position`=`position`+1
                         WHERE `seminar_id`=?
-                            AND `status`='awaiting'", [$this->id]); 
+                            AND `status`='awaiting'", [$this->id]);
                 $waitpos = 1;
         }
         $new_admission_member = new AdmissionApplication();
