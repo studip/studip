@@ -563,7 +563,12 @@ class Course_MembersController extends AuthenticatedController
             }
             $_SESSION['sms_data'] = [];
             $_SESSION['sms_data']['p_rec'] = array_filter($users);
-            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', ['default_subject' => $this->getSubject(), 'tmpsavesnd' => 1]));
+            $this->redirect(URLHelper::getURL('dispatch.php/messages/write', [
+                'default_subject' => $this->getSubject(),
+                'tmpsavesnd' => 1,
+                'course_id' => $this->course_id,
+                'emailrequest' => 1
+            ]));
         } else {
             if (Request::isXhr()) {
                 $this->response->add_header('X-Dialog-Close', '1');
