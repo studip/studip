@@ -104,10 +104,10 @@ class CheckMultipleOverlaps
 
     function checkOverlap ($events, &$result, $index_mode = 'assign_id')
     {
-        if (count($events) == 0) {
+        if (!$events) {
             return false;
         }
-        if (count($this->resource_ids) == 0) {
+        if (!$this->resource_ids) {
             $result = [];
             return;
         }
