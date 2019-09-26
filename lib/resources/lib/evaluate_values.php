@@ -1735,8 +1735,8 @@ if (Request::submitted('save_state')) {
                     $assign_ids = array_keys($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["assign_objects"]);
                     $resObj = ResourceObject::Factory($res_id);
 
-                    if (!empty($result)){
-                        foreach ($result as $key=>$val) {
+                    if ($result && is_array($result)) {
+                        foreach ($result as $key => $val) {
                             if (!$val["overlap_assigns"]) {
                                 $_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["assign_objects"][$assign_ids[0]]["resource_id"] = $resObj->getId();
                                 $good_msg.="<br>".sprintf(_("%s, Belegungszeit: %s"), $resObj->getFormattedLink( $assignObjects[0]->getBegin() ), $assignObjects[0]->getFormattedShortInfo());
