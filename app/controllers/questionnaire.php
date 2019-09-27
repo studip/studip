@@ -14,7 +14,9 @@ class QuestionnaireController extends AuthenticatedController
         }
         Sidebar::Get()->setImage(Assets::image_path("sidebar/evaluation-sidebar.png"));
         PageLayout::setTitle(_("Fragebögen"));
-        class_exists("Test"); //trigger autoloading
+        //trigger autoloading:
+        class_exists("Test");
+        class_exists("Freetext");
     }
 
     public function overview_action()
