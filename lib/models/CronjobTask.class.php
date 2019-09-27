@@ -66,6 +66,8 @@ class CronjobTask extends SimpleORMap
      */
     protected function loadClass()
     {
+        $this->valid = false;
+
         if (empty($this->class)) {
             return;
         }
