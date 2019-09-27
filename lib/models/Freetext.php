@@ -110,13 +110,9 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
     {
         $output = array();
 
+        $question = trim(strip_tags($this->etask->description));
         foreach ($this->answers as $answer) {
-            $text = $answer['answerdata']['text'];
-            if (isset($output[$text])) {
-                $output[$text][$answer['user_id']]++;
-            } else {
-                $output[$text] = array($answer['user_id'] => 1);
-            }
+            $output[$question][$answer['user_id']] = $answer['answerdata']['text'];
         }
 
         return $output;
