@@ -21,10 +21,13 @@ class QuestionnaireController extends AuthenticatedController
 
     public function overview_action()
     {
+        if (Navigation::hasItem('/tools/questionnaire/overview')) {
+            Navigation::activateItem('/tools/questionnaire/overview');
+        }
+
         if (!$GLOBALS['perm']->have_perm("autor")) {
             throw new AccessDeniedException("Only for logged in users.");
         }
-        //Navigation::activateItem("/tools/questionnaire/overview");
         $this->questionnaires = Questionnaire::findBySQL("user_id = ? ORDER BY mkdate DESC", [$GLOBALS['user']->id]);
         foreach ($this->questionnaires as $questionnaire) {
             if (!$questionnaire['visible'] && $questionnaire->isRunning()) {
@@ -577,6 +580,260 @@ class QuestionnaireController extends AuthenticatedController
                 && !$GLOBALS['perm']->have_studip_perm("tutor", $this->range_id)
                 && !($stopped_visible || count($this->questionnaire_data))) {
             $this->render_nothing();
+        }
+    }
+
+
+    /**
+     * The assign action allows assigning multiple questionnaires
+     * to multiple courses.
+     */
+    public function assign_action()
+    {
+        PageLayout::setTitle(_('Fragebögen zuordnen'));
+
+        if (Navigation::hasItem('/tools/questionnaire/assign')) {
+            Navigation::activateItem('/tools/questionnaire/assign');
+        }
+
+        if (!$GLOBALS['perm']->have_perm('admin')) {
+            throw new AccessDeniedException();
+        }
+
+        $user = User::findCurrent();
+
+        $this->available_semesters = Semester::findBySql(
+            'TRUE ORDER BY beginn DESC'
+        );
+        $this->available_institutes = Institute::getMyInstitutes($user->id);
+        $this->available_course_types = SemType::getTypes();
+        $this->selected_questionnaires = [];
+
+        $this->step = 0;
+
+        //We accept only forms which have been sent via POST!
+        if (Request::isPost()) {
+            CSRFProtection::verifyUnsafeRequest();
+
+            if (Request::submitted('search_courses')) {
+                $this->step = 1;
+            } elseif (Request::submitted('select_courses')) {
+                $this->step = 2;
+            } elseif (Request::submitted('copy') || Request::submitted('assign')) {
+                $this->step = 3;
+            }
+
+            if ($this->step >= 1) {
+                //Step 1: Search for courses.
+                $this->semester_id = Request::get('semester_id');
+                $this->institute_id = Request::get('institute_id');
+                $this->course_type_id = Request::get('course_type_id');
+
+                if ($this->institute_id) {
+                    //Check if the user has at least admin permissions on the selected
+                    //institute. If not, then don't process the submitted data
+                    //any further:
+                    if (!$perm->have_studip_perm('admin', $this->institute_id, $user_id)) {
+                        PageLayout::postError(
+                            _('Sie haben unzureichende Berechtigungen an der gewählten Einrichtung! Bitte wählen Sie eine andere Einrichtung!')
+                        );
+                        $this->step = 0;
+                        return;
+                    }
+                }
+
+                $this->semester = Semester::find($this->semester_id);
+                if ($this->institute_id) {
+                    $this->institute = Institute::find($this->institute_id);
+                }
+
+                $this->error_message = '';
+
+                if (!$this->semester) {
+                    PageLayout::postError(_('Es wurde kein gültiges Semester ausgewählt!'));
+                    $this->step = 0;
+                    return;
+                }
+
+                //Search courses matching the search criteria:
+
+                $sql = 'start_time = :semester_begin ';
+                $sql_array = [
+                    'semester_begin' => $this->semester->beginn
+                ];
+
+                if ($this->institute) {
+                    $sql .= 'AND institut_id = :institute_id ';
+                    $sql_array['institute_id'] = $this->institute->id;
+                }
+                if ($this->course_type_id) {
+                    $sql .= 'AND status = :course_type_id ';
+                    $sql_array['course_type_id'] = $this->course_type_id;
+                }
+
+                $sql .= 'ORDER BY name ASC';
+
+                $courses = Course::findBySql($sql, $sql_array);
+
+                $this->found_courses = [];
+
+                //We can only add those courses where the current user
+                //has at least admin permissions:
+                foreach ($courses as $course) {
+                    if ($GLOBALS['perm']->have_studip_perm('admin', $course->id, $user_id)) {
+                        $this->found_courses[] = $course;
+                    }
+                }
+            }
+
+            if ($this->step >= 2) {
+                //Step 2: Courses have been selected. Search for questionnaires.
+                $this->course_id_list = Request::getArray('course_id_list');
+                $this->selected_courses = Course::findMany($this->course_id_list);
+                if (!$this->selected_courses) {
+                    PageLayout::postError(
+                        _('Es wurde keine Veranstaltung ausgewählt! Bitte mindestens eine Veranstaltung auswählen!')
+                    );
+                    $this->step = 1;
+                    return;
+                }
+                $courses_without_perms = [];
+                foreach ($this->selected_courses as $course) {
+                    if (!$GLOBALS['perm']->have_studip_perm('admin', $course->id, $user_id)) {
+                        $courses_without_perms[] = $course->getFullName();
+                    }
+                }
+
+                if ($courses_without_perms) {
+                    PageLayout::postError(
+                        ngettext(
+                            'Ihre Berechtigungen reichen nicht, um Fragebögen zu der folgenden Veranstaltung zuweisen zu können:',
+                            'Ihre Berechtigungen reichen nicht, um Fragebögen zu den folgenden Veranstaltungen zuweisen zu können:',
+                            count($courses_without_perms)
+                        ),
+                        $courses_without_perms
+                    );
+                    $this->step = 1;
+                    return;
+                }
+
+                //Get only the questionnaires of the current user:
+                $this->questionnaires = Questionnaire::findBySql(
+                    'user_id = :user_id ORDER BY mkdate DESC',
+                    [
+                        'user_id' => $user->id
+                    ]
+                );
+            }
+
+            if ($this->step >= 3) {
+                //Step 3: Questionnaires have been selected. Assign them
+                //to the found courses.
+                $this->selected_questionnaire_ids = Request::getArray('selected_questionnaire_ids');
+                $this->delete_dates = Request::get('delete_dates');
+                $this->copy_questionnaires = Request::submitted('copy');
+
+                //Get only the questionnaires of the current user:
+                $this->selected_questionnaires = Questionnaire::findBySql(
+                    'user_id = :user_id AND questionnaire_id IN ( :questionnaire_ids )',
+                    [
+                        'user_id' => $user->id,
+                        'questionnaire_ids' => $this->selected_questionnaire_ids
+                    ]
+                );
+                if (!$this->selected_questionnaires) {
+                    PageLayout::postError(
+                        _('Es wurde kein Fragebogen ausgewählt! Bitte mindestens einen Fragebogen auswählen!')
+                    );
+                    $this->step = 2;
+                    return;
+                }
+
+                $errors = [];
+                foreach ($this->selected_courses as $course) {
+                    foreach ($this->selected_questionnaires as $questionnaire) {
+                        if ($copy_questionnaires) {
+                            //The questionnaire shall be copied and only the copy
+                            //shall be placed inside the course.
+
+                            //The following code to copy a questionnaire was copied
+                            //from the questionnaire controller's copy_action method.
+                            //If that method changes please keep this code "in sync"
+                            //with the code from the questionnaire controller to avoid
+                            //misbehavior of this plugin.
+                            $new_questionnaire = new Questionnaire();
+                            $new_questionnaire->setData($questionnaire->toArray());
+                            $new_questionnaire->setId($new_questionnaire->getNewId());
+                            $new_questionnaire->user_id = $user->id;
+                            //Contrary to the original code, copied questionnaires
+                            //may still contain the start date and end date of the
+                            //original questionnaire.
+                            if ($this->delete_dates) {
+                                $new_questionnaire->startdate = null;
+                                $new_questionnaire->stopdate = null;
+                            }
+
+                            $new_questionnaire->mkdate = time();
+                            $new_questionnaire->chdate = time();
+                            $new_questionnaire->store();
+                            foreach ($questionnaire->questions as $question) {
+                                $new_question = QuestionnaireQuestion::build($question->toArray());
+                                $new_question->setId($new_question->getNewId());
+                                $new_question->questionnaire_id = $new_questionnaire->id;
+                                $new_question->mkdate = time();
+                                $new_question->store();
+                            }
+
+                            $assignment = new QuestionnaireAssignment();
+                            $assignment->questionnaire_id = $new_questionnaire->id;
+                            $assignment->range_id = $course->id;
+                            $assignment->range_type = 'course';
+                            $assignment->user_id = $user->id;
+                            if (!$assignment->store()) {
+                                $errors[] = sprintf(
+                                    _('Fragebogen "%1$s" konnte nicht in Veranstaltung "%2$s" kopiert werden!'),
+                                    $new_questionnaire->title,
+                                    $course->name
+                                );
+                            }
+                        } else {
+                            //The questionnaire shall be assigned to the course.
+                            //We must check if the association already exists.
+                            $assignment = QuestionnaireAssignment::findBySeminarAndQuestionnaire(
+                                $course->id,
+                                $questionnaire->id
+                            );
+
+                            if (!$assignment) {
+                                //The assignment doesn't exist: create it:
+                                $assignment = new QuestionnaireAssignment();
+                                $assignment->questionnaire_id = $questionnaire->id;
+                                $assignment->range_id = $course->id;
+                                $assignment->range_type = 'course';
+                                $assignment->user_id = $user->id;
+                                if (!$assignment->store()) {
+                                    $errors[] = sprintf(
+                                        _('Fragebogen "%1$s" konnte nicht zu Veranstaltung "%2$s" zugeordnet werden!'),
+                                        $questionnaire->title,
+                                        $course->name
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($errors) {
+                    PageLayout::postError(
+                        _('Beim Zuordnen traten Fehler auf:'),
+                        $errors
+                    );
+                } else {
+                    PageLayout::postSuccess(
+                        _('Alle gewählten Fragebögen wurden den gewählten Veranstaltungen zugeordnet!')
+                    );
+                }
+            }
         }
     }
 }
