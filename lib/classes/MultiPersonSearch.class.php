@@ -439,10 +439,9 @@ class MultiPersonSearch {
      *
      * @return array
      */
-    public function getQuickfilterIds() {
-        if ($this->quickfilterIds == null)
-            return [];
-        return $this->quickfilterIds;
+    public function getQuickfilterIds()
+    {
+        return $this->quickfilterIds ?: [];
     }
 
     /**

@@ -19,11 +19,11 @@
         <br><br>
          <select name="search_preset" aria-label="<?= _('Vorauswahl bestimmter Bereiche, alternativ zur Suche') ?>" style="width: 45%">
             <option><?=_('--- Suchvorlagen ---')?></option>
-            <? foreach($quickfilter as $title) : ?>
-            <option value="<?= $title; ?>" <?= $searchPreset == $title ? "selected" : ""; ?>>
+        <? foreach ($quickfilter as $title) : ?>
+            <option value="<?= htmlReady($title) ?>" <?= $searchPreset == $title ? "selected" : ""; ?>>
                 <?= $title; ?>
             </option>
-            <? endforeach; ?>
+        <? endforeach; ?>
         </select>
         <?= Icon::create('accept', 'clickable', ['title' => _('Vorauswahl anwenden')])->asInput(['name'=>'submit_search_preset','class'=>'stay_on_dialog']) ?>
 

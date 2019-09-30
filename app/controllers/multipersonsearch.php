@@ -128,9 +128,7 @@ class MultipersonsearchController extends AuthenticatedController
 
         // restore quickfilter
         $this->quickfilterIDs = $mp->getQuickfilterIds();
-        foreach($this->quickfilterIDs as $title=>$array) {
-            $this->quickfilter[] = $title;
-        }
+        $this->quickfilter    = array_keys($this->quickfilterIDs);
 
         // abort
         if (Request::submitted('abort')) {
