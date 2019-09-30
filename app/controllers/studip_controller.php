@@ -412,13 +412,13 @@ abstract class StudipController extends Trails_Controller
     }
 
     /**
-     * Renders a pdf file given by an ExportPDF object.
+     * Renders a pdf file given by a TCPDF/ExportPDF object.
      *
-     * @param ExportPDF $pdf      ExportPDF object to render
-     * @param string    $filename Filename
-     * @param bool      $inline   Should the pdf be displayed inline (default: no)
+     * @param TCPDF   $pdf      TCPDF object to render
+     * @param string  $filename Filename
+     * @param bool    $inline   Should the pdf be displayed inline (default: no)
      */
-    protected function render_pdf(ExportPDF $pdf, $filename, $inline = false)
+    protected function render_pdf(TCPDF $pdf, $filename, $inline = false)
     {
         $temp_file = $GLOBALS['TMP_PATH'] . '/' . md5(uniqid('pdf-file', true));
         $pdf->Output($temp_file, 'F');
