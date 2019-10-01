@@ -153,7 +153,7 @@ class Course_ScmController extends StudipController
             if ($scm->isNew()) {
                 $temp = StudipScmEntry::findByRange_id(Context::getId(), 'ORDER BY position ASC');
                 $scms = SimpleORMapCollection::createFromArray($temp);
-                $max  = max($scms->pluck('position'));
+                $max  = count($scms) > 0 ? max($scms->pluck('position')) : 0;
 
                 $scm->position = $max + 1;
             }
