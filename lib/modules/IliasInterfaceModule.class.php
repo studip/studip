@@ -14,11 +14,12 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
     {
         parent::__construct();
         if (Config::get()->ILIAS_INTERFACE_ENABLE) {
+            $ilias_interface_config = Config::get()->ILIAS_INTERFACE_BASIC_SETTINGS;
             if (Seminar_Perm::get()->have_perm('root')) {
                 Navigation::addItem('/admin/config/ilias_interface',
                     new Navigation(_('ILIAS-Schnittstelle'), 'dispatch.php/admin/ilias_interface'));
             }
-            if (Seminar_Perm::get()->have_perm('tutor')) {
+            if (Seminar_Perm::get()->have_perm('tutor') || (Seminar_Perm::get()->have_perm('autor') && array_key_exists('show_tools_page', $ilias_interface_config) && $ilias_interface_config['show_tools_page'])) {
                 Navigation::addItem('/tools/my_ilias_accounts',
                     new Navigation(_('ILIAS'), 'dispatch.php/my_ilias_accounts'));
             }

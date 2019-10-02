@@ -102,6 +102,7 @@ class Admin_IliasInterfaceController extends AuthenticatedController
             $this->ilias_interface_config['edit_moduletitle'] = (boolean)Request::get('ilias_interface_edit_moduletitle');
             $this->ilias_interface_config['show_offline'] = (boolean)Request::get('ilias_interface_show_offline');
             $this->ilias_interface_config['search_active'] = (boolean)Request::get('ilias_interface_search_active');
+            $this->ilias_interface_config['show_tools_page'] = (boolean)Request::get('ilias_interface_show_tools_page');
             $this->ilias_interface_config['add_statusgroups'] = (boolean)Request::get('ilias_interface_add_statusgroups');
             $this->ilias_interface_config['cache'] = (boolean)Request::get('ilias_interface_cache');
             $this->ilias_interface_config['allow_change_course'] = Request::get('ilias_interface_allow_change_course');

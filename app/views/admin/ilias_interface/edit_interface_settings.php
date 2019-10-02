@@ -21,6 +21,10 @@
         <span><?= _('Lehrende können die Kursverknüpfung einer Veranstaltung ändern') ?></span>
     </label>
     <label>
+        <input type="checkbox" name="ilias_interface_show_tools_page" value="1" <?= $ilias_interface_config['show_tools_page'] ? 'checked' : '' ?>>
+        <span><?= _('Account-Seite im Tools-Bereich ist für alle Nutzenden (auch für Studierende ohne Berechtigung zum Anlegen von Lernobjekten) sichtbar') ?></span>
+    </label>
+    <label>
         <input type="checkbox" name="ilias_interface_search_active" value="1" <?= $ilias_interface_config['search_active'] ? 'checked' : '' ?>>
         <span><?= _('Suche nach Lernobjekten verfügbar') ?></span>
     </label>
