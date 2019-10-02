@@ -159,7 +159,7 @@ function get_role_data_recursive($roles, $user_or_id, $default_entries, $level =
 
         if ($role['user_there'] && $role['visible']) {
             $out .= '<tr><td>'
-                 . Assets::img('forumgrau2.png')
+                 . Icon::create('arr_1right', Icon::ROLE_INFO)
                  . '</td><td colspan="2"><b>'. htmlReady($new_pred) .'</b></td></tr>';
 
             $entries = DataFieldEntry::getDataFieldEntries([$user->id, $role_id]);
