@@ -12,7 +12,7 @@ class Vote extends QuestionnaireQuestion implements QuestionType
 
     public static function getName()
     {
-        return _('Frage');
+        return _('Auswahlfrage');
     }
 
     public function getEditingTemplate()
