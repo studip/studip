@@ -2,6 +2,7 @@
       method="post" enctype="multipart/form-data"
       class="questionnaire_edit default"
       <?= Request::isAjax() ? "data-dialog" : "" ?>>
+    <input type="hidden" name="order" value="<?= htmlReady(json_encode($order)) ?>">
     <? if (Request::get("range_id")) : ?>
         <input type="hidden" name="range_id" value="<?= htmlReady(Request::get("range_id")) ?>">
         <input type="hidden" name="range_type" value="<?= htmlReady(Request::get("range_type", "static")) ?>">
@@ -22,9 +23,8 @@
         <? foreach (get_declared_classes() as $class) :
             if (in_array('QuestionType', class_implements($class))) : ?>
                 <a href="" onClick="STUDIP.Questionnaire.addQuestion('<?= htmlReady($class) ?>'); return false;">
-                    <?= $class::getIcon(true, true)->asimg("20px", ['class' => "text-bottom"]) ?>
+                    <?= $class::getIcon(true, true)->asimg("40px") ?>
                     <?= htmlReady($class::getName()) ?>
-                    <?= _("hinzufügen") ?>
                 </a>
             <? endif;
         endforeach ?>

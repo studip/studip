@@ -15,6 +15,7 @@ class QuestionnaireController extends AuthenticatedController
         Sidebar::Get()->setImage(Assets::image_path("sidebar/evaluation-sidebar.png"));
         PageLayout::setTitle(_("Fragebögen"));
         //trigger autoloading:
+        class_exists("Vote");
         class_exists("Test");
         class_exists("Freetext");
     }
@@ -88,6 +89,7 @@ class QuestionnaireController extends AuthenticatedController
             return;
         }
         if (Request::isPost()) {
+            $order = array_flip(json_decode(Request::get("order"), true));
             $questionnaire_data = Request::getArray("questionnaire");
             $questionnaire_data['startdate'] = $questionnaire_data['startdate']
                 ? (strtotime($questionnaire_data['startdate']) ?: time())
@@ -113,7 +115,7 @@ class QuestionnaireController extends AuthenticatedController
                     $question = new $question_type($question_id);
                     $this->questionnaire->questions[] = $question;
                 }
-                $question['position'] = $index + 1;
+                $question['position'] = $order[$question_id] + 1;
                 $question->createDataFromRequest();
             }
             foreach ($this->questionnaire->questions as $q) {
@@ -180,11 +182,15 @@ class QuestionnaireController extends AuthenticatedController
             }
             return;
         }
-        if ($this->questionnaire->isNew() && count($this->questionnaire->questions) === 0) {
-            $question = new Vote();
-            $question->setId($question->getNewId());
-            $this->questionnaire->questions[] = $question;
-        }
+
+        $statement = DBManager::get()->prepare("
+            SELECT question_id 
+            FROM questionnaire_questions
+            WHERE questionnaire_questions.questionnaire_id = ?
+            ORDER BY position ASC
+        ");
+        $statement->execute(array($this->questionnaire->getId()));
+        $this->order = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
     }
 
     public function copy_action($from)
@@ -264,7 +270,8 @@ class QuestionnaireController extends AuthenticatedController
         $template->set_attribute("question", $this->question);
 
         $output = [
-            'html' => $template->render()
+            'html' => $template->render(),
+            'question_id' => $this->question->getId()
         ];
         $this->render_json($output);
     }

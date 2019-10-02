@@ -43,6 +43,38 @@
         }
 
     }
+    .add_questions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+        border: thin dashed @content-color-40;
+        > a {
+            background-color: transparent;
+            margin: 10px;
+            border: thin solid @content-color-20;
+            padding: 5px;
+            width: 100px;
+            min-width: 100px;
+            max-width: 100px;
+            height: 100px;
+            min-height: 100px;
+            max-height: 100px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            > img {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    }
+    .questionnaire_metadata {
+        margin-top: 10px;
+    }
 }
 
 .questionnaire_results {
@@ -62,7 +94,7 @@
         //Balkenfarbe
         stroke: @red;
     }
-    //Tortenstücke:
+    //Tortenstï¿½cke:
     .ct-series-a .ct-area, .ct-series-a .ct-slice-pie {
         fill: @red;
     }

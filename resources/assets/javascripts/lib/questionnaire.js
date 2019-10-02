@@ -126,6 +126,9 @@ const Questionnaire = {
             },
             dataType: 'json',
             success: function(output) {
+                var order = JSON.parse(jQuery("input[name=order]").val());
+                order.push(output.question_id);
+                jQuery("input[name=order]").val(JSON.stringify(order));
                 jQuery(output.html)
                     .hide()
                     .insertBefore('.questionnaire_edit .add_questions')
