@@ -57,11 +57,14 @@ class ToolsNavigation extends Navigation
                 'dispatch.php/questionnaire/overview'
             );
             $navigation->addSubNavigation('overview', $sub_nav);
-            $sub_nav = new Navigation(
-                _('Fragebögen zuordnen'),
-                'dispatch.php/questionnaire/assign'
-            );
-            $navigation->addSubNavigation('assign', $sub_nav);
+
+            if ($GLOBALS['perm']->have_perm('admin')) {
+                $sub_nav = new Navigation(
+                    _('Fragebögen zuordnen'),
+                    'dispatch.php/questionnaire/assign'
+                );
+                $navigation->addSubNavigation('assign', $sub_nav);
+            }
 
             $navigation = new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $username]);
             $this->addSubNavigation('evaluation', $navigation);
