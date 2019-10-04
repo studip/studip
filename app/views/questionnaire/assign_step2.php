@@ -1,24 +1,26 @@
 <h1><?= _('Ausgewählte Veranstaltungen') ?></h1>
-<ul>
-    <? if ($selected_courses): ?>
-        <? foreach ($selected_courses as $selected_course): ?>
-            <li>
-                <? if ($GLOBALS['perm']->have_perm('root')): ?>
-                    <a href="<?= URLHelper::getLink(
-                             'dispatch.php/course/details',
-                             [
-                                 'cid' => $found_course->id
-                             ]
-                             ) ?>" data-dialog="1">
+<p>
+    <ul>
+        <? if ($selected_courses): ?>
+            <? foreach ($selected_courses as $selected_course): ?>
+                <li>
+                    <? if ($GLOBALS['perm']->have_perm('root')): ?>
+                        <a href="<?= URLHelper::getLink(
+                                 'dispatch.php/course/details',
+                                 [
+                                     'cid' => $selected_course->id
+                                 ]
+                                 ) ?>" data-dialog="1">
+                            <?= htmlReady($selected_course->getFullName()) ?>
+                        </a>
+                    <? else: ?>
                         <?= htmlReady($selected_course->getFullName()) ?>
-                    </a>
-                <? else: ?>
-                    <?= htmlReady($selected_course->getFullName()) ?>
-                <? endif ?>
-            </li>
-        <? endforeach ?>
-    <? endif ?>
-</ul>
+                    <? endif ?>
+                </li>
+            <? endforeach ?>
+        <? endif ?>
+    </ul>
+</p>
 <h1><?= _('Auswählbare Fragebögen') ?></h1>
 <table class="default sortable-table" data-sortlist="[[2, 1]]">
     <thead>
