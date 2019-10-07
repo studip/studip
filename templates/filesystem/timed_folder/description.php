@@ -1,3 +1,4 @@
+<div style="font-style: italic">
 <? if ($folder->start_time && !$folder->end_time) : ?>
     <strong>
         <?= sprintf(_('Sichtbar ab %s'),
@@ -29,14 +30,10 @@
     </div>
     <div>
         <?= _('Den Inhalt des Ordners können nur Lehrende und TutorInnen verändern.') ?>
-        <?= _('Alle anderen Teilnehmenden der Veranstaltung können diese Materialien nur herunterladen.') ?>
     </div>
 <? endif ?>
-<? if ($folderdata['description']) : ?>
-    <div>
-        <?= formatReady($folderdata['description']) ?>
-    </div>
-<? endif ?>
+</div>
+
 <? if (!empty($own_files) && count($own_files) > 0) : ?>
     <div>
         <?= _('Sie selbst haben folgende Dateien in diesen Ordner eingestellt:') ?>
@@ -45,5 +42,12 @@
                 <li><?= htmlReady($own_file->name) ?> - <?= strftime('%x %X', $own_file->chdate) ?></li>
             <? endforeach ?>
         </ul>
+    </div>
+<? endif ?>
+
+<? if ($folderdata['description']) : ?>
+<hr>
+    <div>
+        <?= formatReady($folderdata['description']) ?>
     </div>
 <? endif ?>

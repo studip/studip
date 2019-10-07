@@ -1,5 +1,5 @@
-<div>
-    <?= _('Dieser Ordner ist ein themenbezogener Dateiordner.')?>
+<div style="font-style: italic">
+<?= _('Dieser Ordner ist ein themenbezogener Dateiordner.')?>
     <? if (Seminar_Perm::get()->have_studip_perm('tutor', $folder->range_id)) : ?>
         <? if ($folder->checkPermission('w')) : ?>
             <?= _('(Studierende dürfen Dateien hochladen.)')?>
@@ -18,6 +18,7 @@
     <? endif ?>
 </div>
 <? if ($folderdata['description']) : ?>
+<hr>
     <div>
         <?= formatReady($folderdata['description']) ?>
     </div>

@@ -99,7 +99,7 @@ class PermissionEnabledFolder extends StandardFolder
 
         $template->type   = self::getTypeName();
         $template->folder = $this;
-
+        $template->folderdata = $this->folderdata;
         return $template;
     }
 
