@@ -77,7 +77,7 @@ $start_pages = [
                    value="1"
                 <? if ($config->SHOWSEM_ENABLE) echo 'checked'; ?>>
             <?= _('Semesteranzeige auf &raquo;Meine Veranstaltungen&laquo;');?>
-            <?= tooltipIcon(_('Mit dieser Einstellung können Sie auf der Seite &raquo;Meine '
+            <?= tooltipHtmlIcon(_('Mit dieser Einstellung können Sie auf der Seite &raquo;Meine '
                 .'Veranstaltungen&laquo; die Einblendung des Start- und Endsemesters '
                 .'hinter jeder Veranstaltung aktivieren.')) ?>
         </label>
