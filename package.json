@@ -6,7 +6,8 @@
     "scripts": {
         "wds": "webpack-dev-server --progress --config webpack.dev-server.js",
         "webpack-dev": "webpack --config webpack.dev.js --mode development",
-        "webpack-prod": "webpack --config webpack.prod.js --mode production --display errors-only"
+        "webpack-prod": "webpack --config webpack.prod.js --mode production --display errors-only",
+        "webpack-watch": "webpack --config webpack.dev.js --mode development --watch"
     },
     "author": "",
     "license": "GPL-2.0",

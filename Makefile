@@ -31,6 +31,9 @@ webpack-dev: force_update
 webpack-prod: force_update
 	npm run webpack-prod
 
+webpack-watch: force_update
+	npm run webpack-watch
+
 wds: force_update
 	npm run wds
 
