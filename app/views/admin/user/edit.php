@@ -32,7 +32,7 @@ use Studip\Button, Studip\LinkButton;
             <?= _('Allgemeine Daten') ?>
         </legend>
 
-        <label class="col-2">
+        <label>
             <span class="required">
                 <?= _('Benutzername') ?>
             </span>
@@ -43,7 +43,7 @@ use Studip\Button, Studip\LinkButton;
                     || LockRules::check($user->user_id, 'username') ? 'readonly' : 'name="username"' ?>>
         </label>
 
-        <label class="col-2">
+        <label>
             <?= _('Globaler Status') ?>
 
             <select name="perms[]" id="permission"
@@ -56,7 +56,7 @@ use Studip\Button, Studip\LinkButton;
             </select>
         </label>
 
-        <label class="col-2">
+        <label >
             <?= _('Sichtbarkeit') ?>
 
             <div class="hgroup">
@@ -66,7 +66,7 @@ use Studip\Button, Studip\LinkButton;
             </div>
         </label>
 
-        <label class="col-3">
+        <label >
             <span class="required">
                 <?= _('Vorname') ?>
             </span>
@@ -77,7 +77,7 @@ use Studip\Button, Studip\LinkButton;
                     || LockRules::check($user->user_id, 'name') ? 'readonly' : 'name="Vorname"' ?>>
         </label>
 
-        <label class="col-3">
+        <label >
             <span class="required">
                 <?= _('Nachname') ?>
             </span>
@@ -88,7 +88,7 @@ use Studip\Button, Studip\LinkButton;
                     || LockRules::check($user->user_id, 'name') ? 'readonly' : 'name="Nachname"' ?>>
         </label>
 
-        <label class="col-3">
+        <label >
             <?= _('Titel') ?>
 
             <? $disable_field = false ?>
@@ -113,7 +113,7 @@ use Studip\Button, Studip\LinkButton;
         </label>
 
 
-        <label class="col-3">
+        <label >
             <?= _('Titel nachgestellt') ?>
 
             <? $disable_field = false ?>
@@ -137,7 +137,7 @@ use Studip\Button, Studip\LinkButton;
            </div>
         </label>
 
-        <label class="col-3">
+        <label >
             <?= _('Sprache')  ?>
 
             <select name="preferred_language">
@@ -150,7 +150,7 @@ use Studip\Button, Studip\LinkButton;
             </select>
         </label>
 
-        <section class="col-3">
+        <section class="col-2">
             <span class="label-text">
                 <?= _('Geschlecht') ?>
             </span>
@@ -203,12 +203,12 @@ use Studip\Button, Studip\LinkButton;
                && !$prelim
         ): ?>
 
-            <label class="col-2">
+            <label>
                 <?= _('Neues Passwort') ?>
                 <input class="user_form" name="pass_1" type="password" id="pass_1" autocomplete="new-password">
             </label>
 
-            <label class="col-2">
+            <label>
                 <?= _('Passwortwiederholung') ?>
 
                 <input class="user_form" name="pass_2" type="password" id="pass_2" autocomplete="new-password"
@@ -244,7 +244,7 @@ use Studip\Button, Studip\LinkButton;
             <? endif ?>
         </section>
 
-        <label class="col-3">
+        <label>
             <?= _('Authentifizierung') ?>
 
             <select name="auth_plugin" id="auth_plugin">
@@ -255,6 +255,26 @@ use Studip\Button, Studip\LinkButton;
             <? endforeach; ?>
             </select>
         </label>
+
+        
+        <section class="col-2">
+            <label for="expiration_date">
+                <?= _('Ablaufdatum') ?>
+            </label>
+
+            <div class="hgroup">
+                <input class="user_form" type="text"
+                       name="expiration_date" id="expiration_date"
+                       data-date-picker
+                       value="<? if (UserConfig::get($user->user_id)->EXPIRATION_DATE) echo strftime('%x', UserConfig::get($user->user_id)->EXPIRATION_DATE); ?>">
+
+                <label>
+                    <input type="checkbox" onchange="jQuery('input[name=expiration_date]').val('');"
+                           name="expiration_date_delete" value="1">
+                    <?= _('löschen') ?>
+                </label>
+            </div>
+        </section>
 
         <? if ($user->validation_key|| true) : ?>
         <section class="col-3">
@@ -274,26 +294,7 @@ use Studip\Button, Studip\LinkButton;
         <? endif ?>
 
 
-        <section>
-            <label for="expiration_date">
-                <?= _('Ablaufdatum') ?>
-            </label>
-
-            <div class="hgroup">
-                <input class="user_form" type="text"
-                       name="expiration_date" id="expiration_date"
-                       data-date-picker
-                       value="<? if (UserConfig::get($user->user_id)->EXPIRATION_DATE) echo strftime('%x', UserConfig::get($user->user_id)->EXPIRATION_DATE); ?>">
-
-                <label>
-                    <input type="checkbox" onchange="jQuery('input[name=expiration_date]').val('');"
-                           name="expiration_date_delete" value="1">
-                    <?= _('löschen') ?>
-                </label>
-            </div>
-        </section>
-
-        <section class="col-3">
+        <section class="col-2">
             <span class="label-text">
                 <?= _('Zuletzt aktiv') ?>
             </span>
@@ -309,7 +310,7 @@ use Studip\Button, Studip\LinkButton;
             <? endif; ?>
         </section>
 
-        <section class="col-3">
+        <section class="col-2">
             <span class="label-text">
                 <?= _('Registriert seit') ?>
             </span>
