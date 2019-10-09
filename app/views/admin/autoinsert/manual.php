@@ -30,8 +30,8 @@ use Studip\Button, Studip\LinkButton;
 </form>
 
 
-<? if (count($seminar_search) > 0 and $sem_search and $sem_select): ?>
-<form class="default" action="<?= $controller->url_for('admin/autoinsert/manual') ?>" method="post">
+<? if ($seminar_search > 0 && $sem_search && $sem_select): ?>
+<form class="default" action="<?= $controller->link_for('admin/autoinsert/manual') ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <input type="hidden" name="sem_search" value="<?= htmlReady($sem_search) ?>">
     <input type="hidden" name="sem_select" value="<?= htmlReady($sem_select) ?>">
