@@ -46,7 +46,11 @@
         <tr <? if ($semester->current) echo 'style="font-weight: bold;"'; ?>>
             <td>
                 <input type="checkbox" name="ids[]" value="<?= $semester->id ?>"
-                       <? if ($semester->absolute_seminars_count) echo 'disabled'; ?>>
+                    <? if ($semester->absolute_seminars_count): ?>
+                        <?= 'disabled' ?>
+                        <?= tooltip(_('Das Semester kann nicht gelöscht werden, weil Veranstaltungen zugeordnet sind.')); ?>
+                    <? endif; ?>
+                >
             </td>
             <td title="<?= htmlReady($semester->description) ?>">
                 <?= htmlReady($semester->name) ?>
@@ -107,8 +111,15 @@
                 if ($semester->absolute_seminars_count) {
                     $actionMenu->addLink(
                         $controller->url_for("admin/semester"),
-                        _('Semester hat Veranstaltungen und kann daher nicht gelöscht werden.'),
-                        Icon::create('trash', Icon::ROLE_INACTIVE)
+                        _('Semester löschen'),
+                        Icon::create('trash', Icon::ROLE_INACTIVE),
+                        array_merge(
+                            tooltip2(_('Das Semester kann nicht gelöscht werden, weil Veranstaltungen zugeordnet sind.')),
+                            [
+                                'disabled' => FALSE,
+                                'onclick' => 'return false;'
+                            ]
+                        )
                     );
                 } else {
                     $actionMenu->addButton(
