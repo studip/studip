@@ -354,13 +354,13 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         );
     }
 
-    public static function DoGarbageCollect()
+    public static function DoGarbageCollect($news_deletion_days = 0) 
     {
         $db = DBManager::get();
         if (!Config::get()->NEWS_DISABLE_GARBAGE_COLLECT) {
             $query = "SELECT news.news_id
                       FROM news
-                      WHERE date + expire < UNIX_TIMESTAMP()
+                      WHERE date + expire + ? < UNIX_TIMESTAMP() 
 
                       UNION DISTINCT
 
@@ -375,8 +375,10 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                       FROM news
                       LEFT JOIN news_range USING (news_id)
                       WHERE range_id IS NULL";
-            $result = $db->query($query)->fetchAll(PDO::FETCH_COLUMN);
-
+            $stm = $db->prepare($query);
+            $stm->execute([$news_deletion_days]);
+            $result = $stm->fetchAll(PDO::FETCH_COLUMN);
+            
             if (count($result) > 0) {
                 $query = "DELETE FROM news WHERE news_id IN (?)";
                 $statement = DBManager::get()->prepare($query);
