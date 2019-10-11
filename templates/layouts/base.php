@@ -141,6 +141,16 @@ if ($navigation) {
             }
         }
         ?>
+        <div id="page_title_container" class="hidden-medium-up">
+            <div id="current_page_title">
+                <? if (Context::get() && strpos(PageLayout::getTitle(), Context::getHeaderLine() . ' - ') !== FALSE) : ?>
+                    <?= htmlReady(str_replace(Context::getHeaderLine() . ' - ' , '', PageLayout::getTitle())) ?>
+                <? else: ?>
+                    <?= htmlReady( PageLayout::getTitle()) ?>
+                <? endif ?>
+                <?= $public_hint ? '(' . htmlReady($public_hint) . ')' : '' ?>
+            </div>
+        </div>
 
         <div id="layout_container">
             <?= Sidebar::get()->render() ?>
