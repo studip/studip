@@ -33,6 +33,7 @@ class Institute_OverviewController extends AuthenticatedController
 
         //set visitdate for institute, when coming from meine_seminare
         if (Request::option('auswahl')) {
+            $_SESSION['NEW_CONTEXT'] = true;
             object_set_visit($this->institute_id, "inst");
         }
 
