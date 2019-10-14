@@ -39,7 +39,7 @@ class GarbageCollectorJob extends CronJob
             ],
             'message_deletion_days' => [
                 'type'        => 'integer',
-                'default'     => 30,
+                'default'     => 365,
                 'status'      => 'optional',
                 'description' => _('(Systemnachrichten): Nach wie vielen Tagen sollen die '
                                  .'Systemnachrichten gelöscht werden (0 für sofort, Default: 30 Tage)?'),
