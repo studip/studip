@@ -2,15 +2,16 @@ import Dialog from './dialog.js';
 
 const Files = {
     openAddFilesWindow: function(folder_id) {
+        var responsive_mode = jQuery('html').first().hasClass('responsive-display');
         if ($('.files_source_selector').length > 0) {
             Dialog.show($('.files_source_selector').html(), {
                 title: 'Datei hinzufügen'.toLocaleString(),
-                size: 'auto'
+                size: (responsive_mode ? 'auto;width=800' : 'auto')
             });
         } else {
             Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/file/add_files_window/' + folder_id), {
                 title: 'Datei hinzufügen'.toLocaleString(),
-                size: 'auto'
+                size: (responsive_mode ? 'auto;width=800' : 'auto')
             });
         }
     },
