@@ -47,6 +47,12 @@ class Router
     protected static $instances = [];
 
     /**
+     * Holds the user object of the user that is accessing the API.
+     * This is null for nobody users.
+     */
+    protected $user = null;
+
+    /**
      * Returns (and if neccessary, initializes) a (cached) router object for an
      * optional consumer id.
      *
@@ -134,10 +140,13 @@ class Router
      *                                  either 'core' or 'plugin', but
      *                                  defaults to 'unknown'.
      *
+     * @param bool $allow_nobody Whether the route can be accessed
+     *     as nobody user (true) or not (false). Defaults to false.
+     *
      * @return Router  returns itself to allow chaining
      * @throws Exception  if passed HTTP request method is not supported
      */
-    public function register($request_method, $uri_template, $handler, $conditions = [], $source = 'unknown')
+    public function register($request_method, $uri_template, $handler, $conditions = [], $source = 'unknown', $allow_nobody = false)
     {
         // Normalize method and test whether it's supported
         $request_method = mb_strtolower($request_method);
@@ -162,7 +171,8 @@ class Router
             }
         }
 
-        $this->routes[$request_method][$uri_template] = compact('handler', 'conditions', 'source');
+        $this->routes[$request_method][$uri_template] =
+            compact('handler', 'conditions', 'source', 'allow_nobody');
 
         // Return instance to allow chaining
         return $this;
@@ -199,7 +209,8 @@ class Router
                 $this->register(
                     $http_method, $uri_template,
                     $data['handler'], $data['conditions'],
-                    $source
+                    $source,
+                    $data['allow_nobody']
                 );
                 if ($data['description']) {
                     $this->describe(
@@ -351,15 +362,24 @@ class Router
 
         $content_renderer = $this->negotiateContent($uri);
 
-        list($route, $parameters) = $this->matchRoute($uri, $method, $content_renderer);
+        list($route, $parameters, $allow_nobody) = $this->matchRoute($uri, $method, $content_renderer);
         if (!$route) {
+            //No route found for the combination of URI and method.
+            //We return the allowed methods for the route in the HTTP header:
             $methods = $this->getMethodsForUri($uri);
             if (count($methods) > 0) {
                 header('Allow: ' . implode(', ', $methods));
                 throw new RouterException(405);
             } else {
+                //Route not found.
                 throw new RouterException(404);
             }
+        }
+        //At this point, a route is found.
+        //We need to check if it can be used as nobody user or not.
+        if (!$route['allow_nobody'] && !$this->user) {
+            //Nobody users aren't allowed for this route.
+            throw new RouterException(401, 'Unauthorized (no consumer)');
         }
 
         try {
@@ -528,7 +548,6 @@ class Router
             }
 
             foreach ($this->routes[$method] as $uri_template => $route) {
-
                 if (!isset($route['uri_template'])) {
                     $route['uri_template'] = new UriTemplate($uri_template, $route['conditions']);
                 }
@@ -572,5 +591,42 @@ class Router
         }
 
         return array_map('strtoupper', $methods);
+    }
+
+
+    /**
+     * Sets up the authentication for the router.
+     */
+    public function setupAuth()
+    {
+        // Detect consumer
+        $consumer = Consumer\Base::detectConsumer();
+        if (!$consumer) {
+            return null;
+        }
+
+        $this->user = $consumer->getUser();
+
+        // Set authentication if present
+        if ($this->user) {
+            // Skip fake authentication if user is already logged in
+            if ($GLOBALS['user']->id !== $this->user->id) {
+
+                $GLOBALS['auth'] = new \Seminar_Auth();
+                $GLOBALS['auth']->auth = [
+                    'uid'   => $this->user->user_id,
+                    'uname' => $this->user->username,
+                    'perm'  => $this->user->perms,
+                ];
+
+                $GLOBALS['user'] = new \Seminar_User($this->user->user_id);
+
+                $GLOBALS['perm'] = new \Seminar_Perm();
+                $GLOBALS['MAIL_VALIDATE_BOX'] = false;
+            }
+            setTempLanguage($GLOBALS['user']->id);
+        }
+
+        return $this->user;
     }
 }

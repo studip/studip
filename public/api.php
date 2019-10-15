@@ -53,7 +53,7 @@ namespace RESTAPI {
         // Get router instance
         $router = Router::getInstance();
 
-        $user_id = setupAuth($router);
+        $user_id = $router->setupAuth();
 
         // Actual dispatch
         $response = $router->dispatch($uri);
@@ -89,36 +89,4 @@ namespace RESTAPI {
             'status'    => 500,
         ]);
     }
-
-    function setupAuth($router)
-    {
-        // Detect consumer
-        $consumer = Consumer\Base::detectConsumer();
-        if (!$consumer) {
-            throw new RouterException(401, 'Unauthorized (no consumer)');
-        }
-
-        // Set authentication if present
-        if ($user = $consumer->getUser()) {
-            // Skip fake authentication if user is already logged in
-            if ($GLOBALS['user']->id !== $user->id) {
-
-                $GLOBALS['auth'] = new Seminar_Auth();
-                $GLOBALS['auth']->auth = [
-                    'uid'   => $user->user_id,
-                    'uname' => $user->username,
-                    'perm'  => $user->perms,
-                ];
-
-                $GLOBALS['user'] = new Seminar_User($user->user_id);
-
-                $GLOBALS['perm'] = new Seminar_Perm();
-                $GLOBALS['MAIL_VALIDATE_BOX'] = false;
-            }
-            setTempLanguage($GLOBALS['user']->id);
-        }
-
-        return $consumer->getUser();
-    }
-
 }
