@@ -176,7 +176,7 @@
                     'num_postings' => $count,
                     'perPage'      => $limit,
                     'page'         => $page,
-                    'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->indexURL('§u'))),
+                    'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->url_for("consultation/admin/{$current_action}/§u"))),
                 ]) ?>
             </td>
         </tr>
