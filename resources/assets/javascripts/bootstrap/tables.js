@@ -1,3 +1,5 @@
+/*jslint esversion: 6*/
+
 STUDIP.domReady(function() {
     if (window.MutationObserver !== undefined) {
         var observer = new window.MutationObserver(function(mutations) {
@@ -31,10 +33,10 @@ STUDIP.domReady(function() {
             observer.observe(element, { attributes: true });
         });
     }
+});
 
-    if ($('table.sortable-table').length) {
-        $('table.sortable-table').each(function(index, element) {
-            STUDIP.Table.enhanceSortableTable(element);
-        });
-    }
+STUDIP.ready(function (event) {
+    $('table.sortable-table:not(.tablesorter)', event.target).each((index, element) => {
+        STUDIP.Table.enhanceSortableTable(element);
+    });
 });
