@@ -139,9 +139,9 @@ class Router
      *                                  origin of a route. Usually
      *                                  either 'core' or 'plugin', but
      *                                  defaults to 'unknown'.
-     *
-     * @param bool $allow_nobody Whether the route can be accessed
-     *     as nobody user (true) or not (false). Defaults to false.
+     * @param bool    $allow_nobody     Whether the route can be accessed
+     *                                  as nobody user (true) or not (false).
+     *                                  Defaults to false.
      *
      * @return Router  returns itself to allow chaining
      * @throws Exception  if passed HTTP request method is not supported
@@ -171,8 +171,9 @@ class Router
             }
         }
 
-        $this->routes[$request_method][$uri_template] =
-            compact('handler', 'conditions', 'source', 'allow_nobody');
+        $this->routes[$request_method][$uri_template] = compact(
+            'handler', 'conditions', 'source', 'allow_nobody'
+        );
 
         // Return instance to allow chaining
         return $this;

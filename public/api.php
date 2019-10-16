@@ -19,14 +19,16 @@
 namespace {
     require_once '../lib/bootstrap.php';
 
-    page_open(['sess' => 'Seminar_Session',
-                    'auth' => 'Seminar_Default_Auth',
-                    'perm' => 'Seminar_Perm',
-                    'user' => 'Seminar_User']);
+    page_open([
+        'sess' => 'Seminar_Session',
+        'auth' => 'Seminar_Default_Auth',
+        'perm' => 'Seminar_Perm',
+        'user' => 'Seminar_User',
+    ]);
 }
 
 namespace RESTAPI {
-    use User, Seminar_Auth, Seminar_User, Seminar_Perm, Config;
+    use Config;
 
     // A potential api exception will lead to an according response with the
     // exception code and name as the http status.
@@ -53,7 +55,7 @@ namespace RESTAPI {
         // Get router instance
         $router = Router::getInstance();
 
-        $user_id = $router->setupAuth();
+        $user = $router->setupAuth();
 
         // Actual dispatch
         $response = $router->dispatch($uri);
