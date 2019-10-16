@@ -19,7 +19,7 @@
  *     exists: Dynamically added nodes cannot be detected and thus will
  *             never be taken into account when detecting whether the
  *             element's value has changed. Specify a css selector that
- *             precisely identify elements that are only present when the
+ *             precisely identifies elements that are only present when the
  *             element needs to be secured.
  *
  * These options may be passed as a json encoded array like this:
@@ -90,13 +90,13 @@ function detectChanges(context) {
             return;
         }
 
-        var data = $(this).data().secure,
-            config = normalizeConfig(data),
-            items = $(this).is('form') ? $(this).find(':input') : $(this);
+        var data = $(this).data().secure;
+        var config = normalizeConfig(data);
+        var items = $(this).is('form') ? $(this).find(':input') : $(this);
 
         if (config.always === true) {
             changed = true;
-        } else if (config.always !== false) {
+        } else if (config.exists === false) {
             items
                 .filter('[name]')
                 .filter(':not(:checkbox,:radio)')
