@@ -11,11 +11,8 @@ function determineBreakpoint(element) {
 /**
  * Obtain all parents of the given element that have scrollable content.
  */
-function getScrollableParents(element) {
-    const offset = $(element).offset();
-    const height = $(element).height();
-    const width  = $(element).width();
-
+function getScrollableParents(element, menu_width, menu_height) {
+    const offset     = $(element).offset();
     const breakpoint = determineBreakpoint(element);
 
     var elements = [];
@@ -43,9 +40,9 @@ function getScrollableParents(element) {
         const w    = $(this).width();
         const h    = $(this).height();
 
-        if (offset.left + width > offs.left + w) {
+        if (offset.left + menu_width > offs.left + w) {
             elements.push(this);
-        } else if (offset.top + height > offs.top + h) {
+        } else if (offset.top + menu_height > offs.top + h) {
             elements.push(this);
         }
     });
@@ -126,9 +123,12 @@ class ActionMenu {
         this.is_reversed = reversed;
         this.is_open = false;
 
+        const menu_width  = this.content.width();
+        const menu_height = this.content.height();
+
         // Reposition the menu?
         if (position) {
-            var parents = getScrollableParents(this.element);
+            var parents = getScrollableParents(this.element, menu_width, menu_height);
             if (parents.length > 0) {
                 this.menu = $('<div class="action-menu-wrapper">').append(this.content.remove());
                 $('.action-menu-icon', element).clone().data('action-menu-element', element).prependTo(this.menu);
