@@ -24,6 +24,20 @@ use Request, Config, DocBlock;
  *  public function anyMethodName($id, $other_id = null) {}
  * @endcode
  *
+ * By default, all API routes are unaccessible for nobody users.
+ * To explicitly allow access for nobody users, add the allow_nobody
+ * tag to the handler method's DocBlock. Example:
+ *
+ * @code
+ * / * *
+ *  * Another example handler method
+ *  *
+ *  * @get /foo
+ *  *
+ *  * @allow_nobody
+ *  * /
+ * @endcode
+ *
  * As soon as the Router matches a HTTP request to a handler defined
  * in a RouteMap, it calls RouteMap::init to initialize it and
  * especially the instance field `$this->response` of type
