@@ -11,6 +11,7 @@ const GlobalSearch = {
         $('#globalsearch-searchbar').toggleClass('is-visible', visible);
         $('#globalsearch-input').toggleClass('hidden-small-down', !visible);
         $('#globalsearch-icon').toggleClass('hidden-small-down', visible);
+        $('#globalsearch-clear').toggleClass('hidden-small-down', !visible);
 
         if (!visible && cleanup) {
             GlobalSearch.lastSearch = null;
