@@ -20,9 +20,7 @@
                    name="<?= htmlReady($needle['name']) ?>"
                    value="<?= htmlReady($needle['value']) ?>"
                    <? if ($needle['placeholder']) printf('placeholder="%s"', htmlReady($needle['label'])); ?>
-                   <? if (is_array($needle['attributes'])): ?>
-                       <?= arrayToHtmlAttributes($needle['attributes']) ?>
-                   <? endif ?>>
+                   <?= arrayToHtmlAttributes($needle['attributes']) ?>>
         <? endif; ?>
             <input type="submit" value="<?= _('Suchen') ?>">
         </li>

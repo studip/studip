@@ -90,7 +90,7 @@ class SearchWidget extends SidebarWidget
      *                             Note that this parameter is ignored
      *                             when a quick search object is provided!
      */
-    public function addNeedle($label, $name, $placeholder = false, SearchType $quick_search = null, $js_func = null, $value = null, $attributes = [])
+    public function addNeedle($label, $name, $placeholder = false, SearchType $quick_search = null, $js_func = null, $value = null, array $attributes = [])
     {
         $value = $value ?: Request::get($name);
         $this->needles[] = compact(['label', 'name', 'placeholder', 'value', 'quick_search',  'js_func', 'attributes']);
