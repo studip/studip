@@ -97,7 +97,7 @@ if ($no_access) {
 }
 
 //replace bad charakters to avoid problems when saving the file
-$file_name = FileManager::cleanFileName(basename(Request::get('file_name')));
+$file_name = FileManager::cleanFileName(Request::get('file_name'));
 
 switch ($type) {
     //We want to download from the archive (this mode performs perm checks)
