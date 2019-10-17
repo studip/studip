@@ -73,8 +73,12 @@ class StudipLitSearchPluginAbstract {
     }
 
     function getError($format = "clear"){
-        if ($format == "clear"){
+        if ($format == "clear") {
             return $this->error_msg;
+        } elseif (in_array($format, ['error', 'msg', 'info'])) {
+            return SimpleCollection::createFromArray($this->error_msg)
+                ->findBy('type', $format)
+                ->pluck('msg');
         } else {
             $ret = '';
             for ($i = 0; $i < count($this->error_msg); ++$i){

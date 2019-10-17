@@ -237,12 +237,15 @@ class LiteratureController extends AuthenticatedController
         )) {
             $hits = $_the_search->doSearch();
             if(!$_the_search->search_plugin->getNumError()) {
-                if($_the_search->getNumHits() == 0) {
+                if($_the_search->getNumHits() > 0) {
                     $_msg = sprintf(_("Ihre Suche ergab %s Treffer."), $_the_search->getNumHits());
                 } else {
-                    $_msg = sprintf(_("Ihre Suche ergab %s Treffer."), $_the_search->getNumHits());
+                    $_msg = _("Ihre Suche ergab keine Treffer.");
                 }
-                PageLayout::postMessage(MessageBox::info($_msg));
+                PageLayout::postSuccess($_msg);
+            } else {
+                PageLayout::postError(_('Bei der Suche ist ein Fehler aufgetreten.') ,$_the_search->search_plugin->getError('error'));
+
             }
             $_the_search->start_result = 1;
         }
