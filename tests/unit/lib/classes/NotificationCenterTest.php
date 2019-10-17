@@ -38,13 +38,19 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->observer = $this->getMock("Observer");
+        $this->observer = $this->createMock('Observer');
         $this->subject = new stdClass();
 
+        // Register observers for simple events
         NotificationCenter::addObserver($this->observer, 'update', NULL);
         NotificationCenter::addObserver($this->observer, 'update', NULL, $this->subject);
         NotificationCenter::addObserver($this->observer, 'update', 'foo');
         NotificationCenter::addObserver($this->observer, 'update', 'foo', $this->subject);
+
+        // Register observers for SORM events
+        NotificationCenter::addObserver($this->observer, 'update', 'SORMDidCreate');
+        NotificationCenter::addObserver($this->observer, 'update', 'AnotherSORMDidCreate');
+        NotificationCenter::addObserver($this->observer, 'update', 'Namespaced\\SormDidUpdate', $this->subject);
     }
 
     public function tearDown()
@@ -95,7 +101,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     {
         $this->observer->expects($this->exactly(4))->method('update');
 
-        $observer = $this->getMock("Observer");
+        $observer = $this->createMock('Observer');
         NotificationCenter::removeObserver($observer);
         NotificationCenter::postNotification('foo', $this->subject);
     }
@@ -215,7 +221,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
         $subject = new stdClass();
 
         // register observer
-        $wildcard = $this->getMock("Observer");
+        $wildcard = $this->createMock('Observer');
         $wildcard->expects($this->once())->method('update')->with('foo', $subject, $user_data);
 
         NotificationCenter::addObserver($wildcard, 'update', NULL);
@@ -235,7 +241,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
         $subject = new stdClass();
 
         // register observer
-        $wildcard = $this->getMock("Observer");
+        $wildcard = $this->createMock('Observer');
         $wildcard->expects($this->once())->method('update')->with('foobar', $subject, $user_data);
 
         NotificationCenter::addObserver($wildcard, 'update', 'foo*');
@@ -253,7 +259,7 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     function assertMatchingNotification($matcher, $subject)
     {
         // register observer
-        $observer = $this->getMock("Observer");
+        $observer = $this->createMock('Observer');
         NotificationCenter::addObserver($observer, 'update',
                                         'SomeNotification', $matcher);
 
@@ -270,9 +276,9 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
     public function testCustomPredicateWithAnonFunc()
     {
         $matcher = function ($subject) {
-                return preg_match('@^/road/to@', $subject);
+            return preg_match('@^/road/to@', $subject);
         };
-        $subject = "/road/to/nowhere";
+        $subject = '/road/to/nowhere';
 
         $this->assertMatchingNotification($matcher, $subject);
     }
@@ -285,4 +291,41 @@ class NotificationCenterTest extends PHPUnit_Framework_TestCase
         $this->assertMatchingNotification($matcher, $subject);
     }
 
+    public function testStaticOnOffMethods()
+    {
+        $observer = $this->createMock('Observer');
+        $observer->expects($this->once())->method('update');
+
+        NotificationCenter::on('OnOff', [$observer, 'update']);
+
+        NotificationCenter::postNotification('OnOff', 'on');
+
+        NotificationCenter::off('OnOff', [$observer, 'update']);
+
+        NotificationCenter::postNotification('OnOff', 'on');
+    }
+
+    public function testSORMOberservers()
+    {
+        $observer = $this->createMock('Observer');
+
+        // Register observer for SORM event
+        NotificationCenter::addObserver($observer, 'update', 'SORMDidCreate');
+
+        $observer->expects($this->once())->method('update');
+        NotificationCenter::postNotification('SORMDidCreate', 'foo');
+        NotificationCenter::postNotification('AnotherSORMDidCreate', 'foo');
+    }
+
+    public function testNamespacedSORMOberservers()
+    {
+        $observer = $this->createMock('Observer');
+
+        // Register observer for namespaced SORM event
+        NotificationCenter::addObserver($observer, 'update', 'Namespaced\\SORMDidCreate');
+
+        $observer->expects($this->once())->method('update');
+        NotificationCenter::postNotification('SORMDidCreate', 'foo');
+        NotificationCenter::postNotification('Namespaced\\SORMDidCreate', 'foo');
+    }
 }

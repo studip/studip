@@ -117,15 +117,39 @@ class NotificationCenter
     {
         $current_observers = [];
         foreach (self::$observers as $e => $l) {
-            if ($e === '' || fnmatch($e, $event)) {
+            if (self::eventMatchesRequirement($e, $event)) {
                 $current_observers = array_merge($current_observers, $l);
             }
         }
+
         foreach ($current_observers as $list) {
             if (!$list['predicate'] || $list['predicate']($object)) {
                 call_user_func($list['observer'], $event, $object, $user_data);
             }
         }
+    }
+
+    /**
+     * Determines whether the given event matches the required event.
+     *
+     * @param  string $event    name of the given notification
+     * @param  string $required name of the required notification
+     * @return bool
+     */
+    private static function eventMatchesRequirement($event, $required)
+    {
+        // Catchall event matches always
+        if ($event === '' || $event === '*') {
+            return true;
+        }
+
+        // No wildcard event notification name, names must match
+        if ($event[mb_strlen($strlen) - 1] !== '*') {
+            return $event === $required;
+        }
+
+        // Otherwise, the event must match the required event at the beginning
+        return mb_strpos($required, mb_substr($event, 0, -1)) === 0;
     }
 
     /**
@@ -159,6 +183,12 @@ class NotificationCenter
      */
     public static function off($event, Callable $callback, $object = null)
     {
-        static::removeObserver($callback, $event, $object);
+        if ($callback instanceof Closure || is_object($callback)) {
+            static::removeObserver($callback, $event, $object);
+        } elseif (is_array($callback)) {
+            static::removeObserver($callback[0], $event, $object);
+        } elseif (is_string($callback)) {
+            throw new Exception('Strings as callable may not be passed to ' . __METHOD__);
+        }
     }
 }
