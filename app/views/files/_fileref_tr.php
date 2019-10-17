@@ -51,6 +51,11 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
         <?= relSize($file_ref->size, false) ?>
     <? endif ?>
     </td>
+<? if ($show_downloads) : ?>
+    <td data-sort-value="<?= htmlReady($file_ref->downloads) ?>" class="responsive-hidden">
+        <?= htmlReady($file_ref->downloads) ?>
+    </td>
+<? endif ?>
     <td data-sort-value="<?= htmlReady($file_ref->author_name) ?>" class="responsive-hidden">
     <? if ($file_ref->user_id !== $GLOBALS['user']->id && $file_ref->owner): ?>
         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $file_ref->owner->username) ?>">

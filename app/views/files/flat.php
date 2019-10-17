@@ -1,7 +1,7 @@
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default documents sortable-table flat" data-sortlist="[[5, 1]]">
-        <?= $this->render_partial('files/_files_thead.php') ?>
+        <?= $this->render_partial('files/_files_thead.php', ['show_downloads' => true]) ?>
         <tbody>
         <? if (count($files) === 0): ?>
             <tr>
@@ -13,7 +13,8 @@
             <? foreach ($files as $file_ref): ?>
                 <?= $this->render_partial('files/_fileref_tr', [
                     'file_ref'       => $file_ref,
-                    'current_folder' => $folders[$file_ref->folder_id] ?: $file_ref->folder->getTypedFolder()
+                    'current_folder' => $folders[$file_ref->folder_id] ?: $file_ref->folder->getTypedFolder(),
+                    'show_downloads' => true,
                 ]) ?>
             <? endforeach ?>
         <? endif; ?>

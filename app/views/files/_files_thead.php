@@ -20,6 +20,9 @@
             <th data-sort="htmldata"><?= _('Typ') ?></th>
             <th data-sort="text"><?= _('Name') ?></th>
             <th data-sort="htmldata" class="responsive-hidden"><?= _('Größe') ?></th>
+        <? if ($show_downloads) : ?>
+            <th data-sort="htmldata" class="responsive-hidden"><?= _('Downloads') ?></th>
+        <? endif ?>
             <th data-sort="text" class="responsive-hidden"><?= _('Autor/-in') ?></th>
             <th data-sort="htmldata" class="responsive-hidden"><?= _('Datum') ?></th>
             <th data-sort="false"><?= _('Aktionen') ?></th>
