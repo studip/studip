@@ -620,7 +620,7 @@ class Router
                     'perm'  => $this->user->perms,
                 ];
 
-                $GLOBALS['user'] = new \Seminar_User($this->user->user_id);
+                $GLOBALS['user'] = new \Seminar_User($this->user);
 
                 $GLOBALS['perm'] = new \Seminar_Perm();
                 $GLOBALS['MAIL_VALIDATE_BOX'] = false;

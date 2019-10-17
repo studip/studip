@@ -197,7 +197,7 @@ abstract class Base extends \SimpleORMap
     public function setUser($user)
     {
         if (!is_object($user)) {
-            $user = AuthUserMd5::find($user);
+            $user = \User::findFull($user);
         }
         $this->user = $user;
         return $this;

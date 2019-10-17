@@ -55,13 +55,13 @@ namespace RESTAPI {
         // Get router instance
         $router = Router::getInstance();
 
-        $user = $router->setupAuth();
+        $api_user = $router->setupAuth();
 
         // Actual dispatch
         $response = $router->dispatch($uri);
 
         // Tear down
-        if ($user_id) {
+        if ($api_user) {
             restoreLanguage();
         }
 
