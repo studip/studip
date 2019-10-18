@@ -1,3 +1,6 @@
+<?php
+$show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', 'flat']);
+?>
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default documents sortable-table flat" data-sortlist="[[5, 1]]">

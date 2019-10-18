@@ -6,6 +6,7 @@ if (!$controllerpath) {
         $controllerpath = $topFolder->range_type . '/' . $controllerpath;
     }
 }
+$show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
 ?>
 
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
