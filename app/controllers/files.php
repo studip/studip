@@ -189,12 +189,10 @@ class FilesController extends AuthenticatedController
         $this->buildSidebar($this->topFolder);
 
         //check for INBOX and OUTBOX folder:
-
-        //first the INBOX folder:
-        $inbox_folder = FileManager::getInboxFolder($this->user);
-
-        //then the OUTBOX folder:
+        $inbox_folder  = FileManager::getInboxFolder($this->user);
         $outbox_folder = FileManager::getOutboxFolder($this->user);
+
+        $this->show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
     }
 
     /**
@@ -214,6 +212,8 @@ class FilesController extends AuthenticatedController
 
         //find all files in all subdirectories:
         list($this->files, $this->folders) = array_values(FileManager::getFolderFilesRecursive($this->topFolder, $GLOBALS['user']->id));
+
+        $this->show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', 'flat']);
     }
 
     /**

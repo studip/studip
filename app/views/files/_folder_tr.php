@@ -33,7 +33,7 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
     <? endif?>
     </td>
     <td class="document-icon" data-sort-value="<?=crc32(get_class($folder))?>">
-    <a href="<?= $controller->link_for($controllerpath . '/' . $folder->getId())  ?>">
+        <a href="<?= $controller->link_for($controllerpath . '/' . $folder->getId())  ?>">
             <?= $folder->getIcon('clickable')->asImg(26) ?>
         </a>
     </td>
@@ -44,6 +44,9 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
     </td>
     <? // -number + file count => directories should be sorted apart from files ?>
     <td data-sort-value="-1000000" class="responsive-hidden"></td>
+<? if ($show_downloads): ?>
+    <td data-sort-value="-1000000" class="responsive-hidden"></td>
+<? endif; ?>
     <td data-sort-value="<?= htmlReady($owner->getFullName('no_title')) ?>" class="responsive-hidden">
     <? if ($owner->id !== $GLOBALS['user']->id) : ?>
         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $owner->username) ?>">
