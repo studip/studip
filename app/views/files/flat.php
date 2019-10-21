@@ -3,7 +3,7 @@ $show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', '
 ?>
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
     <?= CSRFProtection::tokenTag() ?>
-    <table class="default documents sortable-table flat" data-sortlist="[[5, 1]]">
+    <table class="default documents sortable-table flat" data-sortlist="[[<?= $show_downloads ? 6 : 5 ?>, 1]]">
         <?= $this->render_partial('files/_files_thead.php', compact('show_downloads')) ?>
         <tbody>
         <? if (count($files) === 0): ?>
