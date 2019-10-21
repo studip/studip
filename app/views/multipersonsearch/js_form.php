@@ -1,9 +1,9 @@
-<div class="mpscontainer" data-dialogname="<?= $name; ?>">
-<form method="POST" class="default" action="<?= URLHelper::getLink('dispatch.php/multipersonsearch/js_form_exec/?name=' . $name); ?>" id="<?= $name; ?>" <?= $data_dialog_status ? 'data-dialog' : ''?> <?= $jsFunction ? ' onSubmit="return '.htmlReady($jsFunction).'(this);"' : "" ?>
+<div class="mpscontainer" data-dialogname="<?= $name ?>">
+<form method="post" class="default" action="<?= URLHelper::getLink('dispatch.php/multipersonsearch/js_form_exec/?name=' . $name); ?>" id="<?= $name ?>" <?= $data_dialog_status ? 'data-dialog' : ''?>
       data-secure="li.ms-selected:gt(0)">
     <fieldset>
         <legend>
-            <?= $title ?: _('Nach Personen suchen') ?>
+            <?= htmlReady($title) ?: _('Nach Personen suchen') ?>
         </legend>
 
         <label class="with-action">
@@ -46,3 +46,11 @@
     </footer>
 </form>
 </div>
+
+<? if ($jsFunction): ?>
+<script>
+jQuery(document).off('submit.mps-<?= md5($name) ?>').on('submit.mps-<?= md5($name) ?>', '#<?= $name ?>', function () {
+    return <?= $jsFunction ?><?= preg_match('/;$/', $jsFunction) ? '' : '(this);'; ?>
+});
+</script>
+<? endif; ?>
