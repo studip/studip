@@ -24,3 +24,18 @@
 #skiplink_list {
     display: none;
 }
+
+body.enable-skiplinks {
+    *:focus,
+    .focus_box,
+    .studip-checkbox:focus + label {
+        outline: 2px dashed @orange;
+    }
+
+    #tabs {
+        a:focus {
+            position: relative;
+            z-index: 100;
+        }
+    }
+}

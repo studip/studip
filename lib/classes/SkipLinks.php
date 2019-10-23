@@ -32,16 +32,25 @@ class SkipLinks
     private static $position = [];
 
     /**
+     * Returns whether skiplinks are enabled.
+     *
+     * @return boolean
+     */
+    public static function isEnabled()
+    {
+        return UserConfig::get($GLOBALS['user']->id)->SKIPLINKS_ENABLE;
+    }
+
+    /**
      * Inserts container for skip links in page layout.
      */
     public static function insertContainer()
     {
-        if (UserConfig::get($GLOBALS['user']->id)->getValue('SKIPLINKS_ENABLE')) {
-            PageLayout::addBodyElements('<style> *:focus, .focus_box, a.button:focus, button.button:focus { outline: 2px dashed #ff6600; }</style>');
-            if (is_object($GLOBALS['auth']) && $GLOBALS['auth']->is_authenticated()) {
-                PageLayout::addBodyElements('<div id="skip_link_navigation" aria-busy="true"></div>');
-            }
+        if (!self::isEnabled()) {
+            return;
         }
+
+        PageLayout::addBodyElements('<div id="skip_link_navigation" aria-busy="true"></div>');
     }
 
     /**
@@ -54,8 +63,13 @@ class SkipLinks
      */
     public static function addLink($name, $url, $position = null, $overwriteable = false)
     {
-        $position = (is_null($position) || $position < 1) ? sizeof(self::$links) + 100 : intval($position);
-        $new_link = ['name' => $name, 'url' => decodeHTML($url), 'position' => $position, 'overwriteable' => $overwriteable];
+        $position = (!$position || $position < 1) ? count(self::$links) + 100 : (int) $position;
+        $new_link = [
+            'name'          => $name,
+            'url'           => decodeHTML($url),
+            'position'      => $position,
+            'overwriteable' => $overwriteable,
+        ];
         if (self::checkOverwrite($new_link)) {
             self::$links[$new_link['url']] = $new_link;
         }
@@ -82,26 +96,22 @@ class SkipLinks
      */
     public static function getHTML()
     {
-        $html = '';
-        if (UserConfig::get($GLOBALS['user']->id)->getValue('SKIPLINKS_ENABLE') && $GLOBALS['auth']->is_authenticated() && sizeof(self::$links)) {
-            Navigation::addItem('/skiplinks', new Navigation(''));
-            uasort(self::$links, function ($a, $b) {
-                return $a['position'] > $b['position'];
-            });
-            $i = 1;
-            $position = 0;
-            $overwriteable = false;
-            foreach (self::$links as $link) {
-                $navigation = new Navigation($link['name'], $link['url']);
-                $path = '/skiplinks/' . $i++;
-                Navigation::addItem($path, $navigation);
-                $position = $link['position'];
-                $overwriteable = $link['overwriteable'];
-            }
-            $navigation = Navigation::getItem('/skiplinks');
-            $html = $GLOBALS['template_factory']->render('skiplinks', compact('navigation'));
+        if (!self::isEnabled() || count(self::$links) === 0) {
+            return '';
         }
-        return $html;
+
+        usort(self::$links, function ($a, $b) {
+            return $a['position'] > $b['position'];
+        });
+
+        $navigation = new Navigation('');
+        foreach (self::$links as $index => $link) {
+            $navigation->addSubNavigation(
+                "/skiplinks/link-{$index}",
+                new Navigation($link['name'], $link['url'])
+            );
+        }
+        return $GLOBALS['template_factory']->render('skiplinks', compact('navigation'));
     }
 
     /**
