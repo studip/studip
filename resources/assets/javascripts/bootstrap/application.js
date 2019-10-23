@@ -1,4 +1,4 @@
-/*jslint browser: true, white: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, newcap: true, immed: true, indent: 4, onevar: false */
+/*jslint browser: true, esversion: 6 */
 /*global window, $, jQuery, _ */
 /* ------------------------------------------------------------------------
  * application.js
@@ -33,11 +33,21 @@
         large: '1200px'
     };
 
-    for (let size in sizes) {
-        if (window.matchMedia('(min-width: ' + sizes[size] + ')').matches) {
-            $('html').addClass('size-' + size);
+    const setScreensizeClasses = function () {
+        for (let size in sizes) {
+            if (window.matchMedia(`(min-width: ${sizes[size]})`).matches) {
+                $('html').addClass(`size-${size}`);
+            } else {
+                $('html').removeClass(`size-${size}`);
+            }
         }
-    }
+    };
+
+    // Reset screen size classes on window resizes
+    $(window).resize(setScreensizeClasses);
+
+    // Set screen size classes initially
+    setScreensizeClasses();
 }(jQuery));
 
 /* ------------------------------------------------------------------------
