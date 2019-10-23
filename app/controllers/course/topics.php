@@ -7,12 +7,17 @@ class Course_TopicsController extends AuthenticatedController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
+
         checkObject();
         checkObjectModule("schedule");
+
         PageLayout::setTitle(sprintf('%s - %s', Course::findCurrent()->getFullname(), _("Themen")));
+
         $seminar = new Seminar(Course::findCurrent());
         $this->forum_activated = $seminar->getSlotModule('forum');
         $this->documents_activated = $seminar->getSlotModule('documents');
+
+        $this->setupSidebar($action);
     }
 
     public function index_action()
@@ -227,5 +232,46 @@ class Course_TopicsController extends AuthenticatedController
         $this->render_json($output);
     }
 
+    private function setupSidebar($action)
+    {
+        $sidebar = Sidebar::get();
+        $sidebar->setImage('sidebar/date-sidebar.png');
 
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        if ($action === 'index') {
+            $actions->addLink(
+                _('Alle Themen aufklappen'),
+                $this->url_for('course/topics/show'),
+                Icon::create('arr_1down'),
+                ['onclick' => "jQuery('table.withdetails > tbody > tr:not(.details):not(.open) > :first-child a').click(); return false;"]
+            );
+            $actions->addLink(
+                _('Alle Themen zuklappen'),
+                $this->url_for('course/topics/hide'),
+                Icon::create('arr_1right'),
+                ['onclick' => "jQuery('table.withdetails > tbody > tr:not(.details).open > :first-child a').click(); return false;"]
+            );
+        }
+        if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
+            $actions->addLink(
+                _('Neues Thema erstellen'),
+                $this->url_for('course/topics/edit'),
+                Icon::create('add')
+            )->asDialog();
+            $actions->addLink(
+                _('Themen aus Veranstaltung kopieren'),
+                $this->url_for('course/topics/copy'),
+                Icon::create('topic+add')
+            )->asDialog();
+        }
+
+        if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
+            $options = $sidebar->addWidget(new OptionsWidget());
+            $options->addCheckbox(
+                _("Themen öffentlich einsehbar"),
+                CourseConfig::get(Context::getId())->COURSE_PUBLIC_TOPICS,
+                $this->url_for('course/topics/allow_public')
+            );
+        }
+    }
 }

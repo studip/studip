@@ -120,39 +120,5 @@
     </tbody>
 </table>
 <? else : ?>
-    <? PageLayout::postMessage(MessageBox::info(_("Keine Themen vorhanden."))) ?>
+    <? PageLayout::postInfo(_('Keine Themen vorhanden.')) ?>
 <? endif ?>
-
-<?php
-$sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/date-sidebar.png');
-
-$actions = new ActionsWidget();
-$actions->addLink(_("Alle Themen aufklappen"),
-                  null, Icon::create('arr_1down', 'clickable'),
-                  ['onClick' => "jQuery('table.withdetails > tbody > tr:not(.details):not(.open) > :first-child a').click(); return false;"]);
-if ($GLOBALS['perm']->have_studip_perm("tutor", Context::getId())) {
-    $actions->addLink(
-        _("Neues Thema erstellen"),
-        URLHelper::getURL("dispatch.php/course/topics/edit"),
-        Icon::create('add', 'clickable'),
-        ['data-dialog' => "buttons"]
-    );
-    $actions->addLink(
-        _("Themen aus Veranstaltung kopieren"),
-        URLHelper::getURL("dispatch.php/course/topics/copy"),
-        Icon::create('topic+add', 'clickable'),
-        ['data-dialog' => "buttons"]
-    );
-}
-$sidebar->addWidget($actions);
-
-if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
-    $options = new OptionsWidget();
-    $options->addCheckbox(
-        _('Themen öffentlich einsehbar'),
-        CourseConfig::get(Context::getId())->COURSE_PUBLIC_TOPICS,
-        $controller->url_for('course/topics/allow_public')
-    );
-    $sidebar->addWidget($options);
-}
