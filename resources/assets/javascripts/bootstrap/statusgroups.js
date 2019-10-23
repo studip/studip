@@ -1,3 +1,4 @@
+/*jslint esversion: 6*/
 STUDIP.domReady(function() {
     STUDIP.Statusgroups.ajax_endpoint = $('meta[name="statusgroups-ajax-movable-endpoint"]').attr('content');
     STUDIP.Statusgroups.apply();
@@ -22,6 +23,15 @@ STUDIP.domReady(function() {
         }
     });
 
+    var handle = false;
+    // Check for touch device
+    if (window.matchMedia('(hover: none)').matches) {
+        $('.course-statusgroups[data-sortable]').addClass('by-touch').find('> .draggable').each(function () {
+            $('header', this).prepend('<span class="sg-sortable-handle">');
+        });
+        handle = '.sg-sortable-handle';
+    }
+
     var index_before = null;
     $('.course-statusgroups[data-sortable]')
         .disableSelection()
@@ -29,6 +39,7 @@ STUDIP.domReady(function() {
             axis: 'y',
             containment: 'parent',
             forcePlaceholderSize: true,
+            handle: handle,
             items: '> .draggable',
             placeholder: 'sortable-placeholder',
             start: function(event, ui) {
