@@ -14,6 +14,24 @@
             <?= htmlready($slot->block->room) ?>
         </label>
 
+    <? if (count($slot->bookings) > 1): ?>
+        <div>
+            <?= _('Den folgenden Personen absagen') ?><br>
+            <ul>
+            <? foreach ($slot->bookings as $booking): ?>
+                <li>
+                    <label class="undecorated">
+                        <input type="checkbox" name="ids[]" checked
+                               value="<?= htmlReady($booking->id) ?>">
+                        <?= htmlReady($booking->user->getFullName()) ?>
+                    </label>
+                </li>
+            <? endforeach; ?>
+            </ul>
+        </div>
+        <br>
+    <? endif; ?>
+
         <label>
             <?= _('Grund') ?>
             <textarea name="reason"></textarea>

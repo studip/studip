@@ -367,8 +367,18 @@ class Consultation_AdminController extends ConsultationController
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
 
-            $reason = trim(Request::get('reason'));
+            $ids = false;
+            if (count($this->slot->bookings) > 1) {
+                $ids = Request::intArray('ids');
+            }
+
+            $removed = 0;
+            $reason  = trim(Request::get('reason'));
             foreach ($this->slot->bookings as $booking) {
+                if ($ids !== false && !in_array($booking->id, $ids)) {
+                    continue;
+                }
+
                 $this->sendMessage(
                     $booking->user,
                     $this->slot,
@@ -388,9 +398,19 @@ class Consultation_AdminController extends ConsultationController
                 }
 
                 $booking->delete();
+                $removed += 1;
             }
 
-            PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+            if ($removed === count($this->slot->bookings)) {
+                PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+            } elseif ($removed > 1) {
+                PageLayout::postSuccess(sprintf(
+                    _('Der Sprechstundentermin wurde für %u Personen abgesagt.'),
+                    $removed
+                ));
+            } elseif ($removed === 1) {
+                PageLayout::postSuccess(_('Der Sprechstundentermin wurde für eine Person abgesagt.'));
+            }
             $this->redirect("consultation/admin/index/{$page}#block-{$block_id}");
         }
     }
