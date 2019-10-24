@@ -1209,6 +1209,7 @@ class FileController extends AuthenticatedController
         $this->name = Request::get('name');
         $this->description = Request::get('description');
         $this->folder_types = [];
+        $this->show_confirmation_button = false;
 
         foreach ($folder_types as $folder_type) {
             $folder_type_instance = new $folder_type(
@@ -1224,8 +1225,13 @@ class FileController extends AuthenticatedController
             ];
         }
 
-        if (Request::submitted('create')) {
+        if (Request::submitted('create') || Request::submitted('force_creation')) {
             CSRFProtection::verifyUnsafeRequest();
+
+            $force_creation = false;
+            if (Request::submitted('force_creation')) {
+                $force_creation = true;
+            }
 
             //Get class name of folder type and check if the class
             //is a subclass of FolderType before initialising it:
@@ -1243,8 +1249,28 @@ class FileController extends AuthenticatedController
                  'parent_id' => $parent_folder->getId()]
             );
             $result = $new_folder->setDataFromEditTemplate($request);
+
             if ($result instanceof FolderType) {
                 $new_folder->user_id = User::findCurrent()->id;
+                if (($result instanceof CourseDateFolder) && !$force_creation) {
+                    //Check if there is already a folder for the
+                    //selected course date:
+                    $course_date = $result->getDate();
+                    if ($course_date instanceof CourseDate) {
+                        $other_folders_exist = count($course_date->folders) > 0;
+                        if ($other_folders_exist) {
+                            PageLayout::postWarning(
+                                sprintf(
+                                    _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
+                                    $course_date->getFullname()
+                                )
+                            );
+                            $this->show_confirmation_button = true;
+                            $this->folder = $new_folder ?: new StandardFolder();
+                            return;
+                        }
+                    }
+                }
                 if ($parent_folder->createSubfolder($new_folder)) {
                     PageLayout::postSuccess(_('Der Ordner wurde angelegt.'));
                     $this->response->add_header('X-Dialog-Close', '1');

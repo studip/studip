@@ -7,6 +7,10 @@
         'new_folder_form' => true,
     ]) ?>
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Erstellen'), 'create') ?>
+        <? if ($show_confirmation_button): ?>
+            <?= Studip\Button::createAccept(_('Trotzdem erstellen'), 'force_creation') ?>
+        <? else: ?>
+            <?= Studip\Button::createAccept(_('Erstellen'), 'create') ?>
+        <? endif ?>
     </footer>
 </form>

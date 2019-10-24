@@ -518,11 +518,29 @@ class Course_DatesController extends AuthenticatedController
     {
         $this->checkAccess();
         $this->dates = CourseDate::findByRange_id($this->course->id);
-        if (Request::submitted('go')) {
+        $this->show_confirmation_button = false;
+        $this->course_date_folders = [];
+        $this->previously_selected_dates = [];
+        $confirmed = false;
+        if (Request::submitted('go') || Request::submitted('force_go')) {
             CSRFProtection::verifyUnsafeRequest();
+            $confirmed = Request::submitted('force_go');
+            $this->course_date_folders = Request::optionArray('course_date_folders');
+            $this->previously_selected_dates = Request::getArray('previously_selected_dates');
             $count = 0;
             $root_folder_id = Folder::findTopFolder($this->course->id)->getId();
-            foreach (Request::optionArray('course_date_folders') as $termin_id) {
+            $new_folders = [];
+            $dates_with_folders = [];
+            foreach ($this->course_date_folders as $termin_id) {
+                //Check if there are already course date folders
+                //for the course date:
+                $course_date = CourseDate::find($termin_id);
+                if ($course_date instanceof CourseDate) {
+                    $date_has_folders = count($course_date->folders) > 0;
+                    if ($date_has_folders) {
+                        $dates_with_folders[] = $course_date;
+                    }
+                }
                 $folder = Folder::build([
                     'range_id'    => $this->course->id,
                     'parent_id'   => $root_folder_id,
@@ -535,11 +553,49 @@ class Course_DatesController extends AuthenticatedController
                     'course_date_folder_termin_id'  => $termin_id,
                     'course_date_folder_perm_write' => Request::get('course_date_folder_perm_write')
                 ]);
-                if ($ok instanceof CourseDateFolder) {
-                    $count += $ok->store();
+                $new_folders[] = $ok;
+            }
+            //Check if the course_date_folders array
+            //and the previously_selected_dates array are equal.
+            //If not, then someone has changed the date selection in the
+            //confirmation step and the confirmation has to be done again.
+            if ($this->previously_selected_dates) {
+                //We are definetly confirming the creation of folders.
+                if ($this->previously_selected_dates != $this->course_date_folders) {
+                    //Confirm again.
+                    $confirmed = false;
+                }
+            }
+            if ($dates_with_folders && !$confirmed) {
+                $this->previously_selected_dates = $this->course_date_folders;
+                if (count($dates_with_folders) == 1) {
+                    PageLayout::postWarning(
+                        sprintf(
+                            _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
+                            $dates_with_folders[0]->getFullname()
+                        )
+                    );
+                } else {
+                    $dates_string = [];
+                    foreach ($dates_with_folders as $date) {
+                        $dates_string[] = $date->getFullname();
+                    }
+                    PageLayout::postWarning(
+                        _('Für die folgenden Termine gibt es bereits Sitzungs-Ordner. Möchten Sie trotzdem weitere Sitzungs-Ordner erstellen?'),
+                        $dates_string
+                    );
+                }
+                $this->show_confirmation_button = true;
+                return;
+            }
+
+            foreach ($new_folders as $new_folder) {
+                if ($new_folder instanceof CourseDateFolder) {
+                    $count += $new_folder->store();
                 }
             }
             PageLayout::postSuccess(sprintf(_('Es wurden %u Ordner erstellt.'), $count));
+            $this->response->add_header('X-Dialog-Close', '1');
             $this->relocate($this->url_for('/index'));
         }
     }
