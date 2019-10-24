@@ -273,7 +273,14 @@ class FileController extends AuthenticatedController
                 throw new AccessDeniedException();
             }
 
-            //file system object is a Folder
+            //The file system object is a folder.
+            //Calculate the files and the folder size:
+            $this->folder_size = 0;
+            $this->folder_file_amount = 0;
+            foreach ($this->folder->getFiles() as $file_ref) {
+                $this->folder_file_amount++;
+                $this->folder_size += $file_ref['size'];
+            }
             PageLayout::setTitle($this->folder->name);
             $this->render_action('folder_details');
         }
