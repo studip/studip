@@ -78,7 +78,7 @@ if ($navigation) {
     </script>
 </head>
 
-<body id="<?= $body_id ?: PageLayout::getBodyElementId() ?>" <? if (Skiplinks::isEnabled()) echo 'class="enable-skiplinks"'; ?>>
+<body id="<?= $body_id ?: PageLayout::getBodyElementId() ?>" <? if (SkipLinks::isEnabled()) echo 'class="enable-skiplinks"'; ?>>
 <div id="layout_wrapper">
     <? SkipLinks::insertContainer() ?>
     <? SkipLinks::addIndex(_('Hauptinhalt'), 'layout_content', 100, true) ?>
