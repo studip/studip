@@ -84,8 +84,9 @@ namespace RESTAPI {
             echo $status;
         }
     } catch (\Exception $e) {
+        $message = explode("\n", $e->getMessage())[0];
         header('Content-Type: application/json; charset=UTF-8');
-        header("{$_SERVER['SERVER_PROTOCOL']} 500 {$e->getMessage()}");
+        header("{$_SERVER['SERVER_PROTOCOL']} 500 {$message}");
         echo $GLOBALS['template_factory']->render('json_exception', [
             'exception' => $e,
             'status'    => 500,
