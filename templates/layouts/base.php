@@ -86,11 +86,7 @@ if ($navigation) {
 
     <? include 'lib/include/header.php' ?>
 
-    <? if ($_SESSION['NEW_CONTEXT']) {
-        unset($_SESSION['NEW_CONTEXT']);
-        $new_context = true;
-    } ?>
-    <div id="layout_page"<?= Context::get() ? ($new_context ? ' class="new_context contextless"' : '') : ' class="contextless"' ?>>
+    <div id="layout_page">
 
         <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
             <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>

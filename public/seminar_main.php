@@ -60,7 +60,6 @@ if (Request::get('auswahl')) {
     object_set_visit($course_id, "sem");
 }
 
-$_SESSION['NEW_CONTEXT'] = true;
 
 // gibt es eine Anweisung zur Umleitung?
 if (Request::get('redirect_to')) {
