@@ -98,8 +98,7 @@
         $menu->addLink(
             $controller->url_for('questionnaire/export/'  .$questionnaire->id),
             _('Export als CSV'),
-            Icon::create('file-excel', 'clickable'),
-            ['data-dialog' => '']
+            Icon::create('file-excel', 'clickable')
         );
         $menu->addLink(
             $controller->url_for('questionnaire/delete/'  .$questionnaire->id),
