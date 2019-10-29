@@ -5,7 +5,6 @@
  * regarding the controllers and actions.
  *
  * @author Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @see    https://develop.studip.de/trac/ticket/8136
  */
 
 require_once __DIR__ . '/studip_cli_env.inc.php';
