@@ -26,11 +26,11 @@
             </tr>
             <tr>
                 <td><?= _('Anz. Dateien') ?></td>
-                <td><?= htmlReady($folder_file_amount) ?></td>
+                <td><?= number_format($folder_file_amount, 0, ',', '.') ?></td>
             </tr>
             <tr>
                 <td><?= _('Größe') ?></td>
-                <td><?= htmlReady(relsize($folder_size, false)) ?></td>
+                <td><?= relsize($folder_size, false) ?></td>
             </tr>
         </tbody>
     </table>
