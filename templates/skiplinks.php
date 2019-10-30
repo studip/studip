@@ -1,7 +1,7 @@
 <?
 # Lifter010: TODO
 ?>
-<? if ($navigation instanceof Navigation && count($navigation) > 0) : ?>
+<? if ($navigation instanceof Navigation && !empty($navigation)) : ?>
     <ul role="navigation" id="skiplink_list">
     <? $i = 1 ?>
     <? foreach ($navigation as $nav) : ?>
