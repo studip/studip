@@ -563,6 +563,9 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         $stmt->setFetchMode(PDO::FETCH_INTO , $record);
         $record->setNew(false);
         while ($record = $stmt->fetch()) {
+            // Reset all relations
+            $record->cleanup();
+
             $record->applyCallbacks('after_initialize');
             $ret[] = clone $record;
         }
