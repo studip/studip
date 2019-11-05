@@ -211,7 +211,8 @@ function show_rss_news($range_id, $type)
         case 'inst':
             $studip_url = $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'dispatch.php/institute/overview?auswahl=' . $range_id;
             $object_name = get_object_name($range_id, $type);
-            if (!Config::get()->ENABLE_FREE_ACCESS) {
+            if (!Config::get()->ENABLE_FREE_ACCESS ||
+                (Config::get()->ENABLE_FREE_ACCESS && Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY)) {
                 $studip_url .= "&again=yes";
             }
             $title = $object_name['name'] . ' (Stud.IP - ' . Config::get()->UNI_NAME_CLEAN . ')';

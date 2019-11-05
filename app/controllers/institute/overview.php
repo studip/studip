@@ -18,6 +18,12 @@ class Institute_OverviewController extends AuthenticatedController
 
     function before_filter(&$action, &$args) {
 
+        //Check if anonymous access is really allowed:
+        $config = Config::get();
+        if (($config->ENABLE_FREE_ACCESS && $config->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY)) {
+            $this->allow_nobody = false;
+        }
+
         if (Request::option('auswahl')) {
             Request::set('cid', Request::option('auswahl'));
         }

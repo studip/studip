@@ -123,7 +123,11 @@ if ($navigation) {
         <?
         if (is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody') {
             // only mark course if user is logged in and free access enabled
-            if (Config::get()->ENABLE_FREE_ACCESS
+            $is_public_course = Context::isCourse() && Config::get()->ENABLE_FREE_ACCESS;
+            $is_public_institute = Context::isInstitute()
+                                && Config::get()->ENABLE_FREE_ACCESS
+                                && !Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY;
+            if (($is_public_course || $is_public_institute)
                 && Navigation::hasItem('/course')
                 && Navigation::getItem('/course')->isActive())
             {

@@ -251,7 +251,10 @@ class Context
             }
         } else if (self::isInstitute()) {
             // check if current user can access the object
-            if (!Config::get()->ENABLE_FREE_ACCESS && !$perm->have_perm('user')) {
+            $no_access = (!Config::get()->ENABLE_FREE_ACCESS ||
+                          (Config::get()->ENABLE_FREE_ACCESS && Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY)) &&
+                         !$perm->have_perm('user');
+            if ($no_access) {
                 // redirect to login page if user is not logged in
                 $auth->login_if($auth->auth['uid'] === 'nobody');
 

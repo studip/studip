@@ -128,7 +128,9 @@ class StandardFolder implements FolderType
         }
 
         if ($this->range_type === 'institute' ) {
-            $visible = Config::get()->ENABLE_FREE_ACCESS || Seminar_Perm::get()->have_perm('user', $user_id);
+            $visible = (Config::get()->ENABLE_FREE_ACCESS
+                     && !Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY) ||
+                       Seminar_Perm::get()->have_perm('user', $user_id);
         }
 
         if ($this->range_type === 'course') {
