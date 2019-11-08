@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.43-84.3, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.46-86.2, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: studip_43
+-- Host: localhost    Database: studip_44
 -- ------------------------------------------------------
--- Server version	5.6.43-84.3
+-- Server version	5.6.46-86.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -203,7 +203,7 @@ CREATE TABLE `admissionrules` (
   `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ruletype` (`ruletype`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1056,6 +1056,7 @@ CREATE TABLE `datafields` (
   `object_class` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `edit_perms` enum('user','autor','tutor','dozent','admin','root') CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `view_perms` enum('all','user','autor','tutor','dozent','admin','root') CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
+  `institut_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `mkdate` int(20) unsigned DEFAULT NULL,
   `chdate` int(20) unsigned DEFAULT NULL,
@@ -1874,6 +1875,48 @@ CREATE TABLE `globalsearch_buzzwords` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `grading_definitions`
+--
+
+DROP TABLE IF EXISTS `grading_definitions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `grading_definitions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `item` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tool` varchar(64) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `position` int(11) NOT NULL DEFAULT '0',
+  `weight` float unsigned NOT NULL,
+  `mkdate` int(11) NOT NULL,
+  `chdate` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `course_id` (`course_id`),
+  KEY `tool` (`tool`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `grading_instances`
+--
+
+DROP TABLE IF EXISTS `grading_instances`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `grading_instances` (
+  `definition_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `rawgrade` decimal(6,5) unsigned NOT NULL,
+  `feedback` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mkdate` int(11) NOT NULL,
+  `chdate` int(11) NOT NULL,
+  PRIMARY KEY (`definition_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `help_content`
 --
 
@@ -2195,14 +2238,14 @@ DROP TABLE IF EXISTS `log_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_events` (
-  `event_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+  `event_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `action_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `affected_range_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `coaffected_range_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `info` text COLLATE utf8mb4_unicode_ci,
   `dbg_info` text COLLATE utf8mb4_unicode_ci,
-  `mkdate` int(20) NOT NULL DEFAULT '0',
+  `mkdate` int(11) unsigned NOT NULL,
   PRIMARY KEY (`event_id`),
   KEY `action_id` (`action_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -2222,7 +2265,7 @@ CREATE TABLE `loginbackgrounds` (
   `desktop` tinyint(1) NOT NULL DEFAULT '1',
   `in_release` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`background_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3257,6 +3300,7 @@ DROP TABLE IF EXISTS `opengraphdata`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `opengraphdata` (
   `opengraph_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `url` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_opengraph` tinyint(2) DEFAULT NULL,
   `title` text COLLATE utf8mb4_unicode_ci,
@@ -3268,7 +3312,7 @@ CREATE TABLE `opengraphdata` (
   `chdate` bigint(20) NOT NULL,
   `mkdate` bigint(20) NOT NULL,
   PRIMARY KEY (`opengraph_id`),
-  UNIQUE KEY `url` (`url`(512))
+  UNIQUE KEY `hash` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3355,7 +3399,7 @@ DROP TABLE IF EXISTS `plugin_assets`;
 CREATE TABLE `plugin_assets` (
   `asset_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
   `plugin_id` int(10) unsigned NOT NULL,
-  `type` enum('css') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'css',
+  `type` enum('css','js') CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   `filename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `storagename` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `size` int(11) unsigned DEFAULT NULL,
@@ -3384,7 +3428,7 @@ CREATE TABLE `plugins` (
   `automatic_update_url` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `automatic_update_secret` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`pluginid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3857,7 +3901,7 @@ CREATE TABLE `roles` (
   `rolename` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `system` enum('y','n') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'n',
   PRIMARY KEY (`roleid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3942,16 +3986,16 @@ CREATE TABLE `schedule_seminare` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `schema_version`
+-- Table structure for table `schema_versions`
 --
 
-DROP TABLE IF EXISTS `schema_version`;
+DROP TABLE IF EXISTS `schema_versions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `schema_version` (
-  `domain` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `version` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`domain`)
+CREATE TABLE `schema_versions` (
+  `domain` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `version` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`domain`,`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4027,7 +4071,7 @@ CREATE TABLE `sem_classes` (
   `chdate` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4066,7 +4110,7 @@ CREATE TABLE `sem_types` (
   `mkdate` bigint(20) NOT NULL,
   `chdate` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4086,6 +4130,7 @@ CREATE TABLE `semester_data` (
   `vorles_beginn` int(20) unsigned DEFAULT NULL,
   `vorles_ende` int(20) unsigned DEFAULT NULL,
   `visible` tinyint(2) unsigned NOT NULL DEFAULT '1',
+  `external_id` varchar(50) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`semester_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -4301,7 +4346,7 @@ CREATE TABLE `siteinfo_details` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`detail_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4316,7 +4361,7 @@ CREATE TABLE `siteinfo_rubrics` (
   `position` tinyint(3) unsigned DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`rubric_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4633,13 +4678,11 @@ DROP TABLE IF EXISTS `user_token`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_token` (
-  `user_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `token` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `expiration` int(11) NOT NULL,
-  PRIMARY KEY (`user_id`,`token`,`expiration`),
-  KEY `index_expiration` (`expiration`),
-  KEY `index_token` (`token`),
-  KEY `index_user_id` (`user_id`)
+  `token` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `expiration` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `index_expiration` (`expiration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4765,6 +4808,39 @@ CREATE TABLE `userlimits` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `users_tfa`
+--
+
+DROP TABLE IF EXISTS `users_tfa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_tfa` (
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `secret` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `confirmed` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `type` enum('email','app') CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'email',
+  `mkdate` int(11) unsigned NOT NULL,
+  `chdate` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users_tfa_tokens`
+--
+
+DROP TABLE IF EXISTS `users_tfa_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_tfa_tokens` (
+  `user_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `token` char(6) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+  `mkdate` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `webservice_access_rules`
 --
 
@@ -4799,7 +4875,7 @@ CREATE TABLE `widget_containers` (
   PRIMARY KEY (`container_id`),
   UNIQUE KEY `range` (`range_id`,`range_type`,`scope`),
   KEY `parent_id` (`parent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4841,7 +4917,7 @@ CREATE TABLE `widget_elements` (
   PRIMARY KEY (`element_id`),
   KEY `container_id` (`container_id`),
   KEY `widget_id` (`widget_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4878,7 +4954,7 @@ CREATE TABLE `widgets` (
   `chdate` int(11) unsigned NOT NULL,
   PRIMARY KEY (`widget_id`),
   UNIQUE KEY `class` (`class`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4959,4 +5035,4 @@ CREATE TABLE `wiki_page_config` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-07 18:10:25
+-- Dump completed on 2019-11-08 19:24:40
