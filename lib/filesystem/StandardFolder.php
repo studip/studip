@@ -129,7 +129,7 @@ class StandardFolder implements FolderType
 
         if ($this->range_type === 'institute' ) {
             $visible = (Config::get()->ENABLE_FREE_ACCESS
-                     && !Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY) ||
+                     && (Config::get()->ENABLE_FREE_ACCESS != 'courses_only')) ||
                        Seminar_Perm::get()->have_perm('user', $user_id);
         }
 

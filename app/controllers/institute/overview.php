@@ -20,7 +20,7 @@ class Institute_OverviewController extends AuthenticatedController
 
         //Check if anonymous access is really allowed:
         $config = Config::get();
-        if (($config->ENABLE_FREE_ACCESS && $config->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY)) {
+        if (($config->ENABLE_FREE_ACCESS && ($config->ENABLE_FREE_ACCESS == 'courses_only'))) {
             $this->allow_nobody = false;
         }
 

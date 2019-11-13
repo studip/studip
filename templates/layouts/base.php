@@ -126,7 +126,7 @@ if ($navigation) {
             $is_public_course = Context::isCourse() && Config::get()->ENABLE_FREE_ACCESS;
             $is_public_institute = Context::isInstitute()
                                 && Config::get()->ENABLE_FREE_ACCESS
-                                && !Config::get()->ENABLE_FREE_ACCESS_FOR_COURSES_ONLY;
+                                && Config::get()->ENABLE_FREE_ACCESS != 'courses_only';
             if (($is_public_course || $is_public_institute)
                 && Navigation::hasItem('/course')
                 && Navigation::getItem('/course')->isActive())

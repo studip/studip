@@ -8,14 +8,9 @@ class AddEnableFreeAccessForCoursesOnly extends Migration
         $db = DBManager::get();
 
         $db->exec(
-            "INSERT INTO config
-            (`field`, `value`, `type`, `range`,
-            `section`, `mkdate`, `chdate`,
-            `description`)
-            VALUES
-            ('ENABLE_FREE_ACCESS_FOR_COURSES_ONLY', '0', 'boolean', 'global',
-            'global', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-            'Whether the public access shall be limited to courses (true) or unlimited (false).')"
+            "UPDATE `config` SET `type` = 'string',
+            `description` = '1: courses and institutes with public access are visible without login. courses_only: only courses with public access are visible without login. 0: disable this feature.'
+            WHERE `field` = 'ENABLE_FREE_ACCESS'"
         );
     }
 
@@ -25,14 +20,15 @@ class AddEnableFreeAccessForCoursesOnly extends Migration
         $db = DBManager::get();
 
         $db->exec(
-            "DELETE FROM config
-            WHERE field = 'ENABLE_FREE_ACCESS_FOR_COURSES_ONLY'"
+            "UPDATE `config` SET `type` = 'boolean',
+            `description` = 'If true, courses with public access are available'
+            WHERE `field` = 'ENABLE_FREE_ACCESS'"
         );
     }
 
 
     public function description()
     {
-        return 'Adds the ENABLE_FREE_ACCESS_FOR_COURSES_ONLY parameter into the configuration.';
+        return 'Adds the "courses_only" option for ENABLE_FREE_ACCESS in the configuration.';
     }
 }
