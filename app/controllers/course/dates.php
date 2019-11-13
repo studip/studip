@@ -7,6 +7,8 @@ class Course_DatesController extends AuthenticatedController
 
     public function before_filter(&$action, &$args)
     {
+        PageLayout::setHelpKeyword('Basis/InVeranstaltungAblauf');
+
         parent::before_filter($action, $args);
         checkObject();
         checkObjectModule('schedule');

@@ -6,6 +6,8 @@ class Course_TopicsController extends AuthenticatedController
 
     public function before_filter(&$action, &$args)
     {
+        PageLayout::setHelpKeyword('Basis/InVeranstaltungAblauf');
+
         parent::before_filter($action, $args);
 
         checkObject();
