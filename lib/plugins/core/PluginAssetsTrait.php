@@ -66,7 +66,7 @@ trait PluginAssetsTrait
             return;
         }
 
-        // Create absolute path to asets file
+        // Create absolute path to assets file
         $file = $this->resolveFilename($filename);
 
         // Get asset file from storage

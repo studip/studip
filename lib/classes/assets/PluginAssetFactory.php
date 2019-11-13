@@ -25,7 +25,7 @@ class PluginAssetFactory implements AssetFactory
         if ($asset->isNew()) {
             $css_filename = sprintf(
                 '%s.%s.css',
-                basename($filename, '.less'),
+                pathinfo($filename, PATHINFO_FILENAME),
                 $metadata['plugin_version']
             );
 

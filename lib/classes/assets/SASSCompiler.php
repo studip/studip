@@ -102,6 +102,7 @@ class SASSCompiler implements Compiler
 
             // Add adjusted image paths
             $prefix .= sprintf('$image-path: "%s";', Assets::url('images')) . "\n";
+            $prefix .= '$icon-path: "#{$image-path}/icons";' . "\n";
 
             $cache->write(self::CACHE_KEY, $prefix);
         }
