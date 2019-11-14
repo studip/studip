@@ -72,7 +72,7 @@ class MyPublicFilesWidget extends BaseWidget
         $publicFolders = [];
         foreach ($folders as $folder) {
             $onePublicFolder = $folder->getTypedFolder();
-            if ($onePublicFolder->viewable) {
+            if ($onePublicFolder->isVisible($GLOBALS['user']->id)) {
                 $allFiles = \FileManager::getFolderFilesRecursive($onePublicFolder, $GLOBALS['user']->id);
                 $publicFiles = array_merge($publicFiles, $allFiles['files']);
                 $publicFolders = array_merge($publicFolders, $allFiles['folders']);

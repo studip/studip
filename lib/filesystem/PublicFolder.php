@@ -38,6 +38,21 @@ class PublicFolder extends StandardFolder
         return $range_id === $user_id;
     }
 
+
+    /**
+     * @param string $role
+     * @return Icon
+     */
+    public function getIcon($role = Icon::DEFAULT_ROLE)
+    {
+        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+               ? 'folder-public-empty'
+               : 'folder-public-full';
+
+        return Icon::create($shape, $role);
+    }
+
+
     /**
      * @param $attribute
      * @return mixed
