@@ -316,34 +316,73 @@ class FileController extends AuthenticatedController
         }
 
         $this->content_terms_of_use_entries = ContentTermsOfUse::findAll();
+        $this->show_force_button = false;
+
         if (Request::isPost()) {
             //form was sent
             CSRFProtection::verifyUnsafeRequest();
             $this->errors = [];
 
-            $new_name = trim(Request::get('name'));
-            $new_description = Request::get('description');
-            $new_content_terms_of_use_id = Request::get('content_terms_of_use_id');
+            $force_save = Request::submitted('force_save');
+            $this->name = trim(Request::get('name'));
+            $this->description = Request::get('description');
+            $this->content_terms_of_use_id = Request::get('content_terms_of_use_id');
 
             //Check if the FileRef is unmodified:
-            if (($new_name == $this->file_ref->name) &&
-                ($new_description == $this->file_ref->description) &&
-                ($new_content_terms_of_use_id == $this->file_ref->content_terms_of_use_id)) {
+            if (($this->name == $this->file_ref->name) &&
+                ($this->description == $this->file_ref->description) &&
+                ($this->content_terms_of_use_id == $this->file_ref->content_terms_of_use_id)) {
                 //The FileRef is unmodified. We can redirect to the folder
                 //where the FileRef is stored in.
                 $this->redirectToFolder($this->folder);
                 return;
             }
+            //Check if the file extension has changed:
+            $old_file_extension = '';
+            $new_file_extension = '';
+            $old_matches = [];
+            $new_matches = [];
+            preg_match('/\.[^.]*$/', $this->file_ref->name, $old_matches);
+            preg_match('/\.[^.]*$/', $this->name, $new_matches);
+            $old_file_extension = $old_matches[0];
+            $new_file_extension = $new_matches[0];
+            if (($old_file_extension != $new_file_extension) && !$force_save) {
+                if (!$new_file_extension) {
+                    PageLayout::postWarning(
+                        sprintf(
+                            _('Die Dateiendung "%1$s" wird entfernt. Soll die Datei trotzdem gespeichert werden?'),
+                            $old_file_extension
+                        )
+                    );
+                } elseif (!$old_file_extension) {
+                    PageLayout::postWarning(
+                        sprintf(
+                            _('Die Dateiendung wird auf "%1$s" gesetzt. Soll die Datei trotzdem gespeichert werden?'),
+                            $new_file_extension
+                        )
+                    );
+                } else {
+                    PageLayout::postWarning(
+                        sprintf(
+                            _('Die Dateiendung wird von "%1$s" auf "%2$s" geändert. Soll die Datei trotzdem gespeichert werden?'),
+                            $old_file_extension,
+                            $new_file_extension
+                        )
+                    );
+                }
+                $this->show_force_button = true;
+                return;
+            }
 
             if (Request::get("from_plugin")) {
-                $result = $this->folder->editFile($file_ref_id, $new_name, $new_description, $new_content_terms_of_use_id);
+                $result = $this->folder->editFile($file_ref_id, $this->name, $this->description, $this->content_terms_of_use_id);
             } else {
                 $result = FileManager::editFileRef(
                     $this->file_ref,
                     User::findCurrent(),
-                    $new_name,
-                    $new_description,
-                    $new_content_terms_of_use_id
+                    $this->name,
+                    $this->description,
+                    $this->content_terms_of_use_id
                 );
             }
 
@@ -364,8 +403,11 @@ class FileController extends AuthenticatedController
                 PageLayout::postSuccess(_('Änderungen gespeichert!'));
                 $this->redirectToFolder($this->folder);
             }
-
         }
+
+        $this->name = $this->file_ref->name;
+        $this->description = $this->file_ref->description;
+        $this->content_terms_of_use_id = $this->file_ref->content_terms_of_use_id;
     }
 
     /**

@@ -12,21 +12,25 @@
                 <label>
                     <?= _('Name') ?>
                     <input id="edit_file_name" type="text" name="name"
-                           value="<?= htmlReady($file_ref->name) ?>">
+                           value="<?= htmlReady($name) ?>">
                 </label>
                 <label>
                     <?= _('Beschreibung') ?>
-                    <textarea name="description" placeholder="<?= _('Optionale Beschreibung') ?>"><?= htmlReady($file_ref->description); ?></textarea>
+                    <textarea name="description" placeholder="<?= _('Optionale Beschreibung') ?>"><?= htmlReady($description); ?></textarea>
                 </label>
             </fieldset>
 
             <?= $this->render_partial('file/_terms_of_use_select.php', [
                 'content_terms_of_use_entries' => $content_terms_of_use_entries,
-                'selected_terms_of_use_id'     => $file_ref->content_terms_of_use_id,
+                'selected_terms_of_use_id'     => $content_terms_of_use_id,
             ]) ?>
 
             <footer data-dialog-button>
-                <?= Studip\Button::createAccept(_('Speichern'), 'save') ?>
+                <? if ($show_force_button): ?>
+                    <?= Studip\Button::createAccept(_('Trotzdem speichern'), 'force_save') ?>
+                <? else: ?>
+                    <?= Studip\Button::createAccept(_('Speichern'), 'save') ?>
+                <? endif ?>
                 <?= Studip\LinkButton::createCancel(
                     _('Abbrechen'),
                     $controller->url_for((in_array($folder->range_type, ['course', 'institute']) ? $folder->range_type . '/' : '') . 'files/index/' . $folder->id)
