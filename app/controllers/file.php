@@ -325,6 +325,10 @@ class FileController extends AuthenticatedController
 
             $force_save = Request::submitted('force_save');
             $this->name = trim(Request::get('name'));
+            $this->url = null;
+            if ($this->file_ref->isLink()) {
+                $this->url = Request::get('url');
+            }
             $this->description = Request::get('description');
             $this->content_terms_of_use_id = Request::get('content_terms_of_use_id');
 
@@ -332,10 +336,18 @@ class FileController extends AuthenticatedController
             if (($this->name == $this->file_ref->name) &&
                 ($this->description == $this->file_ref->description) &&
                 ($this->content_terms_of_use_id == $this->file_ref->content_terms_of_use_id)) {
-                //The FileRef is unmodified. We can redirect to the folder
-                //where the FileRef is stored in.
-                $this->redirectToFolder($this->folder);
-                return;
+                $unmodified = false;
+                if ($this->file_ref->isLink() && $this->url == $this->file_ref->file->getURL()) {
+                    $unmodified = true;
+                } elseif(!$this->file_ref->isLink()) {
+                    $unmodified = true;
+                }
+                if ($unmodified) {
+                    //The FileRef is unmodified. We can redirect to the folder
+                    //where the FileRef is stored in.
+                    $this->redirectToFolder($this->folder);
+                    return;
+                }
             }
             //Check if the file extension has changed:
             $old_file_extension = '';
@@ -375,14 +387,21 @@ class FileController extends AuthenticatedController
             }
 
             if (Request::get("from_plugin")) {
-                $result = $this->folder->editFile($file_ref_id, $this->name, $this->description, $this->content_terms_of_use_id);
+                $result = $this->folder->editFile(
+                    $file_ref_id,
+                    $this->name,
+                    $this->description,
+                    $this->content_terms_of_use_id,
+                    ($this->file_ref->isLink() ? $this->url : null)
+                );
             } else {
                 $result = FileManager::editFileRef(
                     $this->file_ref,
                     User::findCurrent(),
                     $this->name,
                     $this->description,
-                    $this->content_terms_of_use_id
+                    $this->content_terms_of_use_id,
+                    ($this->file_ref->isLink() ? $this->url : null)
                 );
             }
 
@@ -406,6 +425,9 @@ class FileController extends AuthenticatedController
         }
 
         $this->name = $this->file_ref->name;
+        if ($this->file_ref->isLink()) {
+            $this->url = $this->file_ref->file->getURL();
+        }
         $this->description = $this->file_ref->description;
         $this->content_terms_of_use_id = $this->file_ref->content_terms_of_use_id;
     }

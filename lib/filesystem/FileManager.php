@@ -554,15 +554,18 @@ class FileManager
      * in this method so that a controller can simply call this method
      * to change attributes of a file reference.
      *
-     * At least one of the three parameters name, description and license
-     * must be set. Otherwise this method will do nothing.
+     * At least one of the three parameters name, description and
+     * content_terms_of_use_id must be set. Otherwise this method
+     * will do nothing.
      *
      * @param FileRef file_ref The file reference that shall be edited.
      * @param User user The user who wishes to edit the file reference.
      * @param string|null name The new name for the file reference
      * @param string|null description The new description for the file reference.
      * @param string|null content_terms_of_use_id The ID of the new ContentTermsOfUse object.
-     * @param string|null license The new license description for the file reference.
+     * @param string|null url The new URL for the file to link to.
+     *     This is only regarded if the file_ref points to an URL instead
+     *     of a file stored by Stud.IP.
      *
      * @return FileRef|string[] The edited FileRef object on success, string array with error messages on failure.
      */
@@ -571,7 +574,8 @@ class FileManager
         User $user,
         $name = null,
         $description = null,
-        $content_terms_of_use_id = null
+        $content_terms_of_use_id = null,
+        $url = null
     )
     {
         if (!$name && !$description && !$content_terms_of_use_id) {
@@ -630,6 +634,15 @@ class FileManager
             $file_ref->content_terms_of_use_id = $content_terms_of_use->id;
         }
 
+        if ($file_ref->isLink() && $url !== null) {
+            $file_ref->file->setURL($url);
+            if ($file_ref->file->isDirty()) {
+                $file_ref->file->store();
+            }
+            if ($file_ref->file->file_url->isDirty()) {
+                $file_ref->file->file_url->store();
+            }
+        }
 
         if (!$file_ref->isDirty() || $file_ref->store()) {
             //everything went fine
