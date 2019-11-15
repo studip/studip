@@ -229,7 +229,7 @@ use Studip\Button, Studip\LinkButton;
                 <?= _('E-Mail') ?>
             </label>
 
-            <? if (StudipAuthAbstract::CheckField('auth_user_md5.Email', $auth_plugin) || LockRules::check($user->user_id, 'email')) : ?>
+            <? if (StudipAuthAbstract::CheckField('auth_user_md5.Email', $user->auth_plugin) || LockRules::check($user->user_id, 'email')) : ?>
                 <input class="user_form" type="email" id="email"
                        value="<?= htmlReady($user['Email']) ?>" <? if (!$prelim) echo 'required'; ?> readonly>
             <? else : ?>
@@ -331,7 +331,7 @@ use Studip\Button, Studip\LinkButton;
             <?= _('Studiendaten') ?>
         </legend>
 
-        <? if (!StudipAuthAbstract::CheckField('studiengang_id', $auth_plugin)) : ?>
+        <? if (!StudipAuthAbstract::CheckField('studiengang_id', $user->auth_plugin)) : ?>
             <section class="col-3">
                 <span class="label-text"><?= _('Neuer Studiengang') ?></span>
 
