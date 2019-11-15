@@ -26,6 +26,10 @@
                     <? if (Request::option('access_type') === 'proxy') echo 'checked'; ?>>
             <?= _('Link über Proxy')?>
         </label>
+        <?= $this->render_partial('file/_terms_of_use_select.php', [
+            'content_terms_of_use_entries' => $content_terms_of_use_entries,
+            'selected_terms_of_use_id'     => $content_terms_of_use_id,
+        ]) ?>
     </fieldset>
 
     <footer data-dialog-button>

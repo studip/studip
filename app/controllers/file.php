@@ -1159,6 +1159,7 @@ class FileController extends AuthenticatedController
 
     public function add_url_action($folder_id)
     {
+        $this->content_terms_of_use_entries = ContentTermsOfUse::findAll();
         if (Request::get("to_plugin")) {
             $folder_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/add_url/") + strlen("dispatch.php/file/add_url/"));
             if (strpos($folder_id, "?") !== false) {
@@ -1181,6 +1182,7 @@ class FileController extends AuthenticatedController
             CSRFProtection::verifyUnsafeRequest();
             $url = trim(Request::get('url'));
             $url_parts = parse_url($url);
+            $content_terms_of_use_id = Request::get('content_terms_of_use_id');
             if (filter_var($url, FILTER_VALIDATE_URL) !== false && in_array($url_parts['scheme'], ['http', 'https','ftp'])) {
                 if (Request::get('access_type') === 'redirect') {
                     if (in_array($url_parts['scheme'], ['http', 'https'])) {
@@ -1223,6 +1225,17 @@ class FileController extends AuthenticatedController
                     $file['user_id'] = $GLOBALS['user']->id;
 
                     $this->file_ref = $this->top_folder->createFile($file);
+                    if ($this->file_ref instanceof FileRef) {
+                        //It is probably a file from the Stud.IP core system
+                        //and not a file from a plugin.
+                        if ($this->file_ref->file instanceof File) {
+                            //It is definetly a file from the core system.
+                            $this->file_ref->content_terms_of_use_id = $content_terms_of_use_id;
+                            if ($this->file_ref->isDirty()) {
+                                $this->file_ref->store();
+                            }
+                        }
+                    }
                     $payload = [];
 
                     $this->current_folder = $this->top_folder;
