@@ -3,6 +3,12 @@
     <input type="hidden" name="file_refs[]" value="<?= htmlReady($file_ref->id) ?>">
 <? endforeach ?>
 
+    <? if ($show_description_field): ?>
+        <label>
+            <?= _('Beschreibung') ?>
+            <textarea name="description" placeholder="<?= _('Optionale Beschreibung') ?>"></textarea>
+        </label>
+    <? endif ?>
     <?= $this->render_partial('file/_terms_of_use_select.php', [
         'content_terms_of_use_entries' => $licenses,
         'selected_terms_of_use_id'     => $file_ref->content_terms_of_use_id

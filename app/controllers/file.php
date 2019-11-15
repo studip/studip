@@ -1105,9 +1105,14 @@ class FileController extends AuthenticatedController
         }
         $this->file_refs = FileRef::findMany($file_ref_ids);
         $this->folder = $this->file_refs[0]->folder;
+        $this->show_description_field = Config::get()->ENABLE_DESCRIPTION_ENTRY_ON_UPLOAD;
         if (Request::isPost()) {
+            $description = Request::get('description');
             foreach ($this->file_refs as $file_ref) {
                 $file_ref['content_terms_of_use_id'] = Request::option('content_terms_of_use_id');
+                if ($this->show_description_field && $description) {
+                    $file_ref['description'] = $description;
+                }
                 $file_ref->store();
             }
             if (Request::isXhr()) {
