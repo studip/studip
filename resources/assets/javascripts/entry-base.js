@@ -80,6 +80,7 @@ import "./bootstrap/subcourses.js"
 import "./bootstrap/widgets.js"
 import "./bootstrap/tabbable_widget.js"
 import "./bootstrap/gradebook.js"
+import "./bootstrap/buttons.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"
