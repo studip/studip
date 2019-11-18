@@ -124,16 +124,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
         }
         if ($current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
             $actionMenu->addLink(
-                (
-                    $flat_view
-                    ? URLHelper::getURL(
-                        'dispatch.php/file/delete/' . $file_ref->id,
-                        [
-                            'from_flat_view' => '1'
-                        ]
-                    )
-                    : $controller->url_for('file/delete/' . $file_ref->id)
-                ),
+                $controller->url_for('file/delete/' . $file_ref->id, $flat_view ? ['from_flat_view' => 1] : []),
                 _('Datei löschen'),
                 Icon::create('trash', Icon::ROLE_CLICKABLE, ['size' => 20]),
                 ['onclick' => "return STUDIP.Dialog.confirmAsPost('" . sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), htmlReady($file_ref->name)) . "', this.href);"]
