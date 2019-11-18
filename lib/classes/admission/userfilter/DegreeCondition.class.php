@@ -1,5 +1,4 @@
 <?php
-
 /**
  * DegreeCondition.class.php
  *
@@ -14,7 +13,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
 class DegreeCondition extends UserFilterField
 {
     // --- ATTRIBUTES ---
@@ -27,7 +25,8 @@ class DegreeCondition extends UserFilterField
     /**
      * @see UserFilterField::__construct
      */
-    public function __construct($fieldId='') {
+    public function __construct($fieldId = '')
+    {
         parent::__construct($fieldId);
         $this->relations = [
             'SubjectCondition' => [
@@ -44,9 +43,7 @@ class DegreeCondition extends UserFilterField
      */
     public function getName()
     {
-        return _("Abschluss");
+        return _('Abschluss');
     }
 
-} /* end of class DegreeCondition */
-
-?>
+}

@@ -12,7 +12,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
 class DatafieldCondition extends UserFilterField
 {
     public static $isParameterized = true;
@@ -161,4 +160,3 @@ class DatafieldCondition extends UserFilterField
             $this->value, $this->compareOperator, time(), time()]);
     }
 }
-

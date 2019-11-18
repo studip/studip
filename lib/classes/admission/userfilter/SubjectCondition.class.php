@@ -1,10 +1,9 @@
 <?php
-
 /**
  * SubjectCondition.class.php
- * 
+ *
  * All conditions concerning the study subject in Stud.IP can be specified here.
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
@@ -14,7 +13,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
 class SubjectCondition extends UserFilterField
 {
     // --- ATTRIBUTES ---
@@ -29,7 +27,8 @@ class SubjectCondition extends UserFilterField
     /**
      * @see UserFilterField::__construct
      */
-    public function __construct($fieldId='') {
+    public function __construct($fieldId = '')
+    {
         parent::__construct($fieldId);
         $this->relations = [
             'DegreeCondition' => [
@@ -46,9 +45,6 @@ class SubjectCondition extends UserFilterField
      */
     public function getName()
     {
-        return _("Studienfach");
+        return _('Studienfach');
     }
-
-} /* end of class SubjectCondition */
-
-?>
+}

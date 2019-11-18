@@ -1,5 +1,4 @@
 <?php
-
 /**
  * SubjectConditionAny.class.php
  *
@@ -49,5 +48,4 @@ class SubjectConditionAny extends UserFilterField
     {
         return _('Alle Studienfächer');
     }
-
-} /* end of class SubjectCondition */
+}

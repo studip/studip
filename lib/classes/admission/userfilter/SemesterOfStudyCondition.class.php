@@ -1,5 +1,4 @@
 <?php
-
 /**
  * SemesterOfStudyCondition.class.php
  *
@@ -14,7 +13,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
 class SemesterOfStudyCondition extends UserFilterField
 {
     // --- ATTRIBUTES ---
@@ -29,7 +27,8 @@ class SemesterOfStudyCondition extends UserFilterField
     /**
      * @see UserFilterField::__construct
      */
-    public function __construct($fieldId='') {
+    public function __construct($fieldId='')
+    {
         parent::__construct($fieldId);
         $this->validValues = [];
         $this->relations = [
@@ -51,14 +50,15 @@ class SemesterOfStudyCondition extends UserFilterField
         // Initialize to some value in case there are no semester numbers.
         $maxsem = 15;
         // Calculate the maximal available semester.
-        $stmt = DBManager::get()->query("SELECT MAX(".$this->valuesDbIdField.") AS maxsem ".
-            "FROM `".$this->valuesDbTable."`");
+        $query = "SELECT MAX(`{$this->valuesDbIdField}`) AS maxsem
+                  FROM `{$this->valuesDbTable}`";
+        $stmt = DBManager::get()->query($query);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
             if ($current['maxsem']) {
                 $maxsem = $current['maxsem'];
             }
         }
-        for ($i=1 ; $i<=$maxsem ; $i++) {
+        for ($i = 1; $i <= $maxsem; $i++) {
             $this->validValues[$i] = $i;
         }
     }
@@ -70,8 +70,7 @@ class SemesterOfStudyCondition extends UserFilterField
      */
     public function getName()
     {
-        return _("Fachsemester");
+        return _('Fachsemester');
     }
 
-} /* end of class SemesterOfStudyCondition */
-
+}

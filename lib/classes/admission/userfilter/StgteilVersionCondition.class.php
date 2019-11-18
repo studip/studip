@@ -1,5 +1,4 @@
 <?php
-
 /**
  * StgteilVersionCondition.class.php
  *
@@ -14,7 +13,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
 class StgteilVersionCondition extends UserFilterField
 {
     // --- ATTRIBUTES ---
@@ -27,11 +25,13 @@ class StgteilVersionCondition extends UserFilterField
     /**
      * @see UserFilterField::__construct
      */
-    public function __construct($fieldId='') {
+    public function __construct($fieldId = '')
+    {
         parent::__construct($fieldId);
-        foreach($this->validValues as $version_id => $name) {
+
+        foreach ($this->validValues as $version_id => $name) {
             $stgteilversion = StgteilVersion::find($version_id);
-            if (!$stgteilversion || $stgteilversion->stat != 'genehmigt') {
+            if (!$stgteilversion || $stgteilversion->stat !== 'genehmigt') {
                 unset($this->validValues[$version_id]);
                 continue;
             }
@@ -46,9 +46,6 @@ class StgteilVersionCondition extends UserFilterField
      */
     public function getName()
     {
-        return _("Studiengangteil-Version");
+        return _('Studiengangteil-Version');
     }
-
-} /* end of class StgteilVersionCondition */
-
-?>
+}
