@@ -350,35 +350,29 @@ class FileController extends AuthenticatedController
                 }
             }
             //Check if the file extension has changed:
-            $old_file_extension = '';
-            $new_file_extension = '';
-            $old_matches = [];
-            $new_matches = [];
-            preg_match('/\.[^.]*$/', $this->file_ref->name, $old_matches);
-            preg_match('/\.[^.]*$/', $this->name, $new_matches);
-            $old_file_extension = $old_matches[0];
-            $new_file_extension = $new_matches[0];
-            if (($old_file_extension != $new_file_extension) && !$force_save) {
+            $old_file_extension = pathinfo($this->file_ref->name, PATHINFO_EXTENSION);
+            $new_file_extension = pathinfo($this->name, PATHINFO_EXTENSION);
+            if ($old_file_extension !== $new_file_extension && !$force_save) {
                 if (!$new_file_extension) {
                     PageLayout::postWarning(
                         sprintf(
                             _('Die Dateiendung "%1$s" wird entfernt. Soll die Datei trotzdem gespeichert werden?'),
-                            $old_file_extension
+                            htmlReady($old_file_extension)
                         )
                     );
                 } elseif (!$old_file_extension) {
                     PageLayout::postWarning(
                         sprintf(
                             _('Die Dateiendung wird auf "%1$s" gesetzt. Soll die Datei trotzdem gespeichert werden?'),
-                            $new_file_extension
+                            htmlReady($new_file_extension)
                         )
                     );
                 } else {
                     PageLayout::postWarning(
                         sprintf(
                             _('Die Dateiendung wird von "%1$s" auf "%2$s" geändert. Soll die Datei trotzdem gespeichert werden?'),
-                            $old_file_extension,
-                            $new_file_extension
+                            htmlReady($old_file_extension),
+                            htmlReady($new_file_extension)
                         )
                     );
                 }
