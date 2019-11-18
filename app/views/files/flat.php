@@ -18,6 +18,7 @@ $show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', '
                     'file_ref'       => $file_ref,
                     'current_folder' => $folders[$file_ref->folder_id] ?: $file_ref->folder->getTypedFolder(),
                     'show_downloads' => $show_downloads,
+                    'flat_view'      => true
                 ]) ?>
             <? endforeach ?>
         <? endif; ?>

@@ -43,6 +43,32 @@ class FileController extends AuthenticatedController
         }
     }
 
+
+    /**
+     * This helper method redirects to the flat view of the file area
+     * that is displayed.
+     */
+    protected function redirectToFlatView($folder)
+    {
+        switch ($folder->range_type) {
+            case 'course':
+            case 'institute':
+                $this->relocate(
+                    $folder->range_type . '/files/flat',
+                    ['cid' => $folder->range_id]
+                );
+                break;
+            case 'user':
+                $this->relocate('files/flat', ['cid' => null]);
+                break;
+            default:
+                //Plugins should not be available in the flat view.
+                $this->relocate('files/system/' . $folder->range_type . '/' . $folder->getId(), ['cid' => null]);
+                break;
+        }
+    }
+
+
     public function upload_window_action()
     {
         // just send the template
@@ -846,7 +872,11 @@ class FileController extends AuthenticatedController
         } else {
             PageLayout::postError(_('Datei konnte nicht gelöscht werden.'));
         }
-        $this->redirectToFolder($folder);
+        if (Request::submitted('from_flat_view')) {
+            $this->redirectToFlatView($folder);
+        } else {
+            $this->redirectToFolder($folder);
+        }
     }
 
     public function add_files_window_action($folder_id)
