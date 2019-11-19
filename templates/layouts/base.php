@@ -86,11 +86,11 @@ if ($navigation) {
 
     <? include 'lib/include/header.php' ?>
 
-    <div id="layout_page">
+    <div id="layout_page" <? if (!Context::get()) echo 'class="contextless"'; ?>>
 
-        <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
-            <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>
-        <? endif ?>
+    <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
+        <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>
+    <? endif ?>
 
     <? if (Context::get() || PageLayout::isHeaderEnabled()): ?>
         <nav class="secondary-navigation">
