@@ -76,11 +76,72 @@ class HiddenFolder extends PermissionEnabledFolder
     }
 
     /**
-     * This method returns the special part for the edit template for the folder type GroupFolder
+     * Returns the edit template for this folder type.
+     *
+     * @return Flexi_Template
      */
     public function getEditTemplate()
     {
-        return ;
+        $template = $GLOBALS['template_factory']->open('filesystem/hidden_folder/edit.php');
+        $template->download_allowed = $this->download_allowed;
+        return $template;
+    }
+
+    /**
+     * Sets the data from a submitted edit template.
+     *
+     * @param array $request The data from the edit template.
+     *
+     * @return FolderType
+     */
+    public function setDataFromEditTemplate($request)
+    {
+        $this->download_allowed = (int)$request['hidden_folder_download_allowed'];
+        return parent::setDataFromEditTemplate($request);
+    }
+
+    /**
+     * @param $attribute
+     * @return mixed
+     */
+    public function __get($attribute)
+    {
+        if ($attribute === 'download_allowed') {
+            return $this->folderdata['data_content']['download_allowed'];
+        }
+        return $this->folderdata[$attribute];
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     * @return mixed
+     */
+    public function __set($name, $value)
+    {
+        if ($name === 'download_allowed') {
+            return $this->folderdata['data_content']['download_allowed'] = $value;
+        }
+        return $this->folderdata[$name] = $value;
+    }
+
+    /**
+     * @param $fileref_or_id
+     * @param $user_id
+     * @return bool
+     */
+    public function isFileDownloadable($fileref_or_id, $user_id)
+    {
+        $fileref = FileRef::toObject($fileref_or_id);
+
+        if (is_object($fileref)) {
+            if ($this->download_allowed
+                && $this->getParent()->isVisible($user_id)
+                && $this->getParent()->isReadable($user_id)) {
+                return $fileref->terms_of_use->fileIsDownloadable($fileref, true, $user_id);
+            }
+        }
+        return false;
     }
 
 }
