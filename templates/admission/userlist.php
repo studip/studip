@@ -1,7 +1,15 @@
-<?= sprintf(_('Bei der Platzverteilung zu Veranstaltungen haben die betreffenden '.
-    'Personen gegenüber Anderen eine %s-fache Chance darauf, einen Platz zu '.
-    'erhalten.'), '<b>'.$userlist->getFactor().'</b>'); ?>
-<br/>
+<?php if ($userlist->getFactor() == 0) : ?>
+    <?= _('Bei der Platzverteilung zu Veranstaltungen werden die betreffenden '.
+        'Personen nur nachrangig berücksichtigt.') ?>
+<?php elseif ($userlist->getFactor() == PHP_INT_MAX) : ?>
+    <?= _('Bei der Platzverteilung zu Veranstaltungen werden die betreffenden '.
+        'Personen vor allen anderen einen Platz erhalten.') ?>
+<?php else : ?>
+    <?= sprintf(_('Bei der Platzverteilung zu Veranstaltungen haben die betreffenden '.
+        'Personen gegenüber Anderen eine %s-fache Chance darauf, einen Platz zu '.
+        'erhalten.'), '<b>'.$userlist->getFactor().'</b>'); ?>
+<?php endif ?>
+<br>
 <?= _('Personen auf dieser Liste:') ?>
 <?php if ($userlist->getUsers()) { ?>
 <ul>
@@ -10,6 +18,6 @@
     <?php } ?>
 </ul>
 <?php } else { ?>
-<br/>
+<br>
 <i><?= _('Es wurde noch niemand zugeordnet.'); ?></i>
 <?php } ?>    

@@ -28,55 +28,17 @@ Helpbar::get()->addPlainText(_('Info'), "Stellen Sie hier ein, wie die Chancen b
         </label>
         <br/>
         <label for="factor">
-            <?= _('Faktor zur Modifikation der Platzverteilung') ?>
+            <?= _('Wie sollen die Personen auf dieser Liste bei der Platzverteilung berücksichtigt werden?') ?>
         </label>
-        <div id="factordiv">
-            <input type="text" size="4" maxlength="255" name="factor" id="factor" value="<?= $userlist_id ? $userlist->getFactor() : 1 ?>"/>
-            <div id="factor-slider"></div>
-            <script>
-                $(function() {
-                <?php
-                $factor = 3;
-                $realfactor = 1;
-                if ($userlist) {
-                    $realfactor = $userlist->getFactor();
-                    if ($userlist->getFactor() < 1) {
-                        $factor = intval($realfactor*4);
-                    } else if ($realfactor <= 5) {
-                        $factor = $realfactor+2;
-                    } else {
-                        $factor = 8;
-                    }
-                }
-                ?>
-                var factor = <?= $realfactor ?>;
-                var realfactor = <?= $factor ?>;
-                    $('#factor-slider').slider({
-                        range: "max",
-                        min: 0,
-                        max: 8,
-                        value: realfactor,
-                        step: 1,
-                        slide: function(event, ui) {
-                        if (ui.value < 3) {
-                        factor = ui.value/4;
-                    } else if (ui.value < 8) {
-                        factor = ui.value-2;
-                        } else {
-                        factor = 10;
-                        }
-                            $('#factor').val(factor);
-                            $('#factorval').html(factor);
-                        }
-                    });
-                    $('#factor-slider').css('width', 150);
-                    $('#factor').val(factor);
-                    $('#factor').css('display', 'none');
-                    $('#factordiv').prepend('<span id="factorval">'+factor+'</span>');
-                });
-            </script>
-        </div>
-        <br/>
+        <label for="factor-0">
+            <input type="radio" name="factor" id="factor-0" value="0"<?= $userlist->getFactor() == 0 ? ' checked' : '' ?>>
+            <?= _('Nachrangig (nach allen anderen Personen in der Platzvergabe)') ?>
+        </label>
+        <label for="factor-max">
+            <input type="radio" name="factor" id="factor-max"
+                   value="<?= (float) PHP_INT_MAX ?>"<?= $userlist->getFactor() == PHP_INT_MAX ? ' checked' : '' ?>>
+            <?= _('Bevorzugt (erhalten zuerst einen Platz)') ?>
+        </label>
         <table class="default">
             <caption>
                 <?= _('Personen') ?>

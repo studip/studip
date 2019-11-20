@@ -88,7 +88,10 @@ class RandomAlgorithm extends AdmissionAlgorithm
                     if (!$course->getParticipantStatus($user_id)) {
                         $claiming_users[$user_id] = 1;
                         if (isset($factored_users[$user_id])) {
-                            $claiming_users[$user_id] *= $factored_users[$user_id];
+                            $claiming_users[$user_id] =
+                                $factored_users[$user_id] == PHP_INT_MAX ?
+                                    PHP_INT_MAX :
+                                    $claiming_users[$user_id] * $factored_users[$user_id];
                         }
                         Log::DEBUG(sprintf('user %s gets factor %s', $user_id, $claiming_users[$user_id]));
                     } else {
@@ -221,7 +224,10 @@ class RandomAlgorithm extends AdmissionAlgorithm
                             if (!$course->getParticipantStatus($user_id)) {
                                 $current_claiming[$user_id] = 1;
                                 if (isset($factored_users[$user_id])) {
-                                    $current_claiming[$user_id] *= $factored_users[$user_id];
+                                    $current_claiming[$user_id] =
+                                        $factored_users[$user_id] == PHP_INT_MAX ?
+                                            PHP_INT_MAX :
+                                            $current_claiming[$user_id] * $factored_users[$user_id];
                                 }
                             } else {
                                 Log::DEBUG(sprintf('user %s is already %s in course %s, ignoring', $user_id, $course->getParticipantStatus($user_id), $course->id));

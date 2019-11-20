@@ -194,7 +194,8 @@ class AdmissionUserList
     public function load()
     {
         // Load basic data.
-        $stmt = DBManager::get()->prepare("SELECT *
+        $stmt = DBManager::get()->prepare("SELECT `list_id`, `name`,
+                CAST(`factor` AS INT) AS factor, `owner_id`, `mkdate`, `chdate` 
             FROM `admissionfactor` WHERE `list_id`=? LIMIT 1");
         $stmt->execute([$this->id]);
         if ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
