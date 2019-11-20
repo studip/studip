@@ -430,13 +430,13 @@ abstract class StudipController extends Trails_Controller
 
     /**
      * Renders a file
-     * @param string  $file             Name of the file to render
-     * @param string  $filename         Name of the file displayed to user
-     *                                  (will equal $file when missing)
-     * @param string  $content_type     Optional content type (will be determined if missing)
-     * @param int     $chunk_dispostion Either attachment (default) or inline
-     * @param Closure $callback         Optional callback when download has finished
-     * @param int     $chunk_size       Optional size of chunks to send (default: 256k)
+     * @param string  $file                Name of the file to render
+     * @param string  $filename            Name of the file displayed to user
+     *                                     (will equal $file when missing)
+     * @param string  $content_type        Optional content type (will be determined if missing)
+     * @param string  $content_disposition Either attachment (default) or inline
+     * @param Closure $callback            Optional callback when download has finished
+     * @param int     $chunk_size          Optional size of chunks to send (default: 256k)
      */
     public function render_file(
         $file,
@@ -490,13 +490,13 @@ abstract class StudipController extends Trails_Controller
      * This is just a convenience method so you don't have to write the delete
      * callback.
      *
-     * @param string  $file             Name of the file to render
-     * @param string  $filename         Name of the file displayed to user
-     *                                  (will equal $file when missing)
-     * @param string  $content_type     Optional content type (will be determined if missing)
-     * @param int     $chunk_dispostion Either attachment (default) or inline
-     * @param Closure $callback         Optional callback when download has finished
-     * @param int     $chunk_size       Optional size of chunks to send (default: 256k)
+     * @param string  $file                Name of the file to render
+     * @param string  $filename            Name of the file displayed to user
+     *                                     (will equal $file when missing)
+     * @param string  $content_type        Optional content type (will be determined if missing)
+     * @param string  $content_disposition Either attachment (default) or inline
+     * @param Closure $callback            Optional callback when download has finished
+     * @param int     $chunk_size          Optional size of chunks to send (default: 256k)
      */
     public function render_temporary_file(
         $file,
