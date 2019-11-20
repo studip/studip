@@ -442,7 +442,7 @@ abstract class StudipController extends Trails_Controller
         $file,
         $filename = null,
         $content_type = null,
-        $content_dispotion = 'attachment',
+        $content_disposition = 'attachment',
         Closure $callback = null,
         $chunk_size = 262144
     ) {
@@ -462,7 +462,7 @@ abstract class StudipController extends Trails_Controller
         $this->set_content_type($content_type);
         $this->response->add_header(
             'Content-Disposition',
-            "{$disposition}; " . encode_header_parameter(
+            "{$content_disposition}; " . encode_header_parameter(
                 'filename',
                 FileManager::cleanFileName($filename ?: basename($file))
             )
@@ -502,7 +502,7 @@ abstract class StudipController extends Trails_Controller
         $file,
         $filename = null,
         $content_type = null,
-        $content_dispotion = 'attachment',
+        $content_disposition = 'attachment',
         Closure $callback = null,
         $chunk_size = 262144
 
@@ -519,7 +519,7 @@ abstract class StudipController extends Trails_Controller
             $file,
             $filename,
             $content_type,
-            $content_dispotion,
+            $content_disposition,
             $delete_callback,
             $chunk_size
         );
