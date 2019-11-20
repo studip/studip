@@ -25,3 +25,20 @@
         cursor: pointer;
     }
 }
+
+#userlists {
+    div {
+        margin-bottom: 10px;
+
+        a {
+            &.userlist-action {
+                margin-left: 2px;
+                margin-right: 2px;
+            }
+
+            img {
+                vertical-align: bottom;
+            }
+        }
+    }
+}
