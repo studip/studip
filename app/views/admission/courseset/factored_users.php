@@ -10,7 +10,7 @@
         <? foreach ($users as $user) : ?>
         <tr>
             <td><?= htmlReady($user['nachname'] . ', ' . $user['vorname'] . ' (' . $user['username'] . ')')?></td>
-            <td><?= htmlReady($user['factor'])?></td>
+            <td><?= $user['factor'] == PHP_INT_MAX ? _('maximal') : htmlReady($user['factor'])?></td>
             <td><?= $user['applicant'] ? _("Ja") : _("Nein")?></td>
         </tr>
         <? endforeach ?>
