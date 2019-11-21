@@ -52,6 +52,8 @@ class ArchivedCourse extends SimpleORMap implements PrivacyObject
             'foreign_key' => 'heimat_inst_id',
         ];
 
+        $config['registered_callbacks']['after_delete'][] = 'deleteFiles';
+
         parent::configure($config);
     }
 
@@ -82,5 +84,22 @@ class ArchivedCourse extends SimpleORMap implements PrivacyObject
                 $storage->addTabularData(_('archivierte Seminare'), 'archiv', $field_data);
             }
         }
+    }
+
+    /**
+     * delete data files belonging to this archived course
+     *
+     * @return int number of deleted files
+     */
+    public function deleteFiles()
+    {
+        $ok = 0;
+        if ($this->archiv_file_id) {
+            $ok += unlink($GLOBALS['ARCHIV_PATH'] . '/' . basename($this->archiv_file_id));
+        }
+        if ($this->archiv_protected_file_id) {
+            $ok += unlink($GLOBALS['ARCHIV_PATH'] . '/' . basename($this->archiv_protected_file_id));
+        }
+        return $ok;
     }
 }

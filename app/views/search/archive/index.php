@@ -111,7 +111,7 @@
                     <? endif ?>
                     <? if (archiv_check_perm($course->id) === 'admin'): ?>
                         <?= Icon::create('trash')->asInput(tooltip2(_('Löschen')) + [
-                            'formaction' => URLHelper::getLink(
+                            'formaction' => URLHelper::getURL(
                                 "dispatch.php/archive/delete/{$course->id}",
                                 compact('criteria', 'teacher', 'semester', 'institute', 'my_courses_only')
                             ),
