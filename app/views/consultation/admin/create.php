@@ -19,6 +19,21 @@ $intervals = [
 <form action="<?= $controller->store() ?>" method="post" class="default" data-dialog>
     <?= CSRFProtection::tokenTag() ?>
 
+<? if ($flash['confirm-many']): ?>
+    <?= MessageBox::info(
+        _('Sie erstellen eine sehr große Anzahl an Sprechstunden.') . ' ' .
+        _('Bitte bestätigen Sie diese Aktion.'),
+        [
+            '<label><input type="checkbox" name="confirmed" value="1">' .
+            sprintf(
+                _('Ja, ich möchte wirklich %s Sprechstunden erstellen.'),
+                number_format($flash['confirm-many'], 0, ',', '.')
+            ) .
+            '</label>'
+        ]
+    )->hideClose() ?>
+<? endif; ?>
+
     <fieldset>
         <legend>
             <?= _('Neue Sprechstundenblöcke anlegen') ?>
@@ -38,7 +53,7 @@ $intervals = [
             <input required type="text" name="start-date" id="start-date"
                    value="<?= htmlReady(Request::get('start-date', strftime('%d.%m.%Y', strtotime('+7 days'))))  ?>"
                    placeholder="<?= _('tt.mm.jjjj') ?>"
-                   data-date-picker>
+                   data-date-picker='{">=":"today"}'>
         </label>
 
         <label class="col-3">

@@ -49,6 +49,12 @@ class ConsultationSlot extends SimpleORMap
                 $slot->updateEvent();
             }
         };
+        $config['registered_callbacks']['after_delete'][] = function ($slot) {
+            $block = $slot->block;
+            if (count($block->slots) === 0) {
+                $block->delete();
+            }
+        };
 
         $config['additional_fields']['has_bookings']['get'] = function ($slot) {
             return count($slot->bookings) > 0;
@@ -58,6 +64,47 @@ class ConsultationSlot extends SimpleORMap
         };
 
         parent::configure($config);
+    }
+
+    /**
+     * Counts all slots of the given teacher.
+     *
+     * @param  string $teacher_id Id of the teacher
+     * @return int
+     */
+    public static function countByTeacher_id($teacher_id, $expired = false)
+    {
+        $expired_condition = $expired
+                           ? "end <= UNIX_TIMESTAMP()"
+                           : "end > UNIX_TIMESTAMP()";
+
+        $condition = "JOIN consultation_blocks USING (block_id)
+                      WHERE teacher_id = :teacher_id
+                        AND {$expired_condition}";
+        return self::countBySQL($condition, [
+            ':teacher_id' => $teacher_id,
+        ]);
+    }
+
+    /**
+     * Finds slots of the given teacher.
+     *
+     * @param  string $teacher_id Id of the teacher
+     * @return array
+     */
+    public static function findByTeacher_id($teacher_id, $order = '', $expired = false)
+    {
+        $expired_condition = $expired
+                           ? "end <= UNIX_TIMESTAMP()"
+                           : "end > UNIX_TIMESTAMP()";
+
+        $condition = "JOIN consultation_blocks USING (block_id)
+                      WHERE teacher_id = :teacher_id
+                      AND {$expired_condition}
+                      {$order}";
+        return self::findBySQL($condition, [
+            ':teacher_id' => $teacher_id,
+        ]);
     }
 
     /**

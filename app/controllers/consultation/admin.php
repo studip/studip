@@ -10,6 +10,7 @@ require_once __DIR__ . '/consultation_controller.php';
  */
 class Consultation_AdminController extends ConsultationController
 {
+    const SLOT_COUNT_THRESHOLD = 1000;
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
@@ -26,9 +27,24 @@ class Consultation_AdminController extends ConsultationController
         $this->setupSidebar($action, $this->user_config);
     }
 
+    private function groupSlots(array $slots)
+    {
+        $blocks = [];
+        foreach ($slots as $slot) {
+            if (!isset($blocks[$slot->block_id])) {
+                $blocks[$slot->block_id] = [
+                    'block' => $slot->block,
+                    'slots' => [],
+                ];
+            }
+            $blocks[$slot->block_id]['slots'][] = $slot;
+        }
+        return $blocks;
+    }
+
     public function index_action($page = 1)
     {
-        $this->count = ConsultationBlock::countByTeacher_id($this->current_user->id);
+        $this->count = ConsultationSlot::countByTeacher_id($this->current_user->id);
         $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
         if ($page > ceil($this->count / $this->limit)) {
@@ -36,15 +52,15 @@ class Consultation_AdminController extends ConsultationController
         }
 
         $this->page = $page;
-        $this->blocks = ConsultationBlock::findByTeacher_id(
+        $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
             $this->current_user->id,
             "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
-        );
+        ));
     }
 
     public function expired_action($page = 1)
     {
-        $this->count = ConsultationBlock::countByTeacher_id(
+        $this->count = ConsultationSlot::countByTeacher_id(
             $this->current_user->id,
             true
         );
@@ -55,11 +71,11 @@ class Consultation_AdminController extends ConsultationController
         }
 
         $this->page = $page;
-        $this->blocks = ConsultationBlock::findByTeacher_id(
+        $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
             $this->current_user->id,
             "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}",
             true
-        );
+        ));
 
         $this->render_action('index');
     }
@@ -97,6 +113,18 @@ class Consultation_AdminController extends ConsultationController
         CSRFProtection::verifyUnsafeRequest();
 
         try {
+            $slot_count = ConsultationBlock::countBlocks(
+                $this->getDateAndTime('start'),
+                $this->getDateAndTime('end'),
+                Request::int('day-of-week'),
+                Request::int('interval'),
+                Request::int('duration')
+            );
+            if ($slot_count >= self::SLOT_COUNT_THRESHOLD && !Request::int('confirmed')) {
+                $this->flash['confirm-many'] = $slot_count;
+                throw new Exception('', -1);
+            }
+
             $blocks = ConsultationBlock::generateBlocks(
                 $this->current_user->id,
                 $this->getDateAndTime('start'),
@@ -125,7 +153,9 @@ class Consultation_AdminController extends ConsultationController
         } catch (Exception $e) {
             $this->keepRequest();
 
-            PageLayout::postError($e->getMessage());
+            if ($e->getCode() !== -1) {
+                PageLayout::postError($e->getMessage());
+            }
             $this->redirect('consultation/admin/create');
             return;
         }

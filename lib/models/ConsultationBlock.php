@@ -5,6 +5,11 @@
  * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @license GPL2 or any later version
  * @since   Stud.IP 4.3
+ *
+ * @todo Rewrite countBlocks and generateBlocks to use the same underlying
+ *       method when the dev board finally fully supports PHP7 since that
+ *       required "yield from".
+ *
  * @property string block_id database column
  * @property string id alias column for block_id
  * @property string teacher_id database column
@@ -176,6 +181,50 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
             ':teacher_id' => $teacher_id,
             ':user_id'    => $user_id,
         ]);
+    }
+
+    /**
+     * Count generated blocks according to the given data.
+     *
+     * @param  int $start    Start of the time range as unix timestamp
+     * @param  int $end      End of the time range as unix timestamp
+     * @param  int $week_day Day of the week the blocks should be created
+     *                          (0 = sunday, 1 = monday ...)
+     * @param  int $interval Week interval (skip $interval weeks between
+     *                          blocks)
+     * @param  int $duration Duration of a slot in minutes
+     */
+    public static function countBlocks($start, $end, $week_day, $interval, $duration)
+    {
+        $count = 0;
+
+        $start_time = date('H:i', $start);
+        $end_time   = date('H:i', $end);
+
+        // Adjust current date to match week of day
+        $current = $start;
+        while (date('w', $current) != $week_day) {
+            $current = strtotime('+1 day', $current);
+        }
+
+        while ($current <= $end) {
+            $temp    = holiday($current);
+            $holiday = is_array($temp) && $temp['col'] === 3;
+
+            if (!$holiday) {
+                $block_start = strtotime("today {$start_time}", $current);
+                $block_end   = strtotime("today {$end_time}", $current);
+
+                while ($block_start < $block_end) {
+                    $count += 1;
+                    $block_start = strtotime("+{$duration} minutes", $block_start);
+                }
+            }
+
+            $current = strtotime("+{$interval} weeks", $current);
+        }
+
+        return $count;
     }
 
     /**
