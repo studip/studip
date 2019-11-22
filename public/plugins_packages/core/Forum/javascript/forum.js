@@ -237,7 +237,8 @@ STUDIP.Forum = {
         var template = STUDIP.Forum.getTemplate('edit_area');
 
         // disable iconbar
-        jQuery('tr[data-area-id=' + area_id + '] .action-icons').hide();
+        STUDIP.ActionMenu.closeAll();
+        jQuery('tr[data-area-id=' + area_id + '] .action-menu').hide();
 
         // show edit form
         jQuery('tr[data-area-id=' + area_id + '] span.areadata').hide()
@@ -253,7 +254,7 @@ STUDIP.Forum = {
         jQuery('tr[data-area-id=' + area_id + '] span.areadata').show();
 
         // enable iconbar
-        jQuery('tr[data-area-id=' + area_id + '] .action-icons').show();
+        jQuery('tr[data-area-id=' + area_id + '] .action-menu').show();
     },
 
     saveArea: function (area_id) {
@@ -703,14 +704,31 @@ STUDIP.Forum = {
         });
     },
 
+    wrapActionElementText: function (element) {
+        if (jQuery('span', element).length > 0) {
+            return;
+        }
+        var img  = jQuery('img', element).remove();
+        var text = jQuery(element).text().trim();
+        var span = jQuery('<span>').text(text);
+
+        $(element).empty().append(img, span);
+    },
+
     openThreadFromOverview: function(topic_id, parent_topic_id, page) {
         var buttonText = "Thema schließen".toLocaleString();
-        jQuery('#closeButton-' + topic_id + ' img').attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/lock-locked.svg');
-        jQuery('#closeButton-' + topic_id + ' img').attr('title', buttonText);
-        jQuery('#closeButton-' + topic_id).attr('onclick', 'STUDIP.Forum.closeThreadFromOverview("' + topic_id + '", "' + parent_topic_id + '", ' + page + '); return false;');
+        var element = jQuery('#closeButton-' + topic_id);
+
+        STUDIP.Forum.wrapActionElementText(element);
+
+        jQuery('img', element).attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/lock-locked.svg');
+        jQuery('span', element).text(buttonText);
+        jQuery(element).attr('onclick', 'STUDIP.Forum.closeThreadFromOverview("' + topic_id + '", "' + parent_topic_id + '", ' + page + '); return false;');
         jQuery('#img-locked-' + topic_id).hide();
 
         STUDIP.Forum.openThread(topic_id, parent_topic_id, page, false);
+
+        STUDIP.ActionMenu.closeAll();
     },
 
     openThreadFromThread: function(topic_id, page) {
@@ -739,13 +757,19 @@ STUDIP.Forum = {
 
     closeThreadFromOverview: function(topic_id, parent_topic_id, page) {
         var buttonText = "Thema öffnen".toLocaleString();
-        jQuery('#closeButton-' + topic_id + ' img').attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/lock-unlocked.svg');
-        jQuery('#closeButton-' + topic_id + ' img').attr('title', buttonText);
-        jQuery('#closeButton-' + topic_id).attr('onclick', 'STUDIP.Forum.openThreadFromOverview("' + topic_id + '", ' + page + '); return false;');
+        var element = jQuery('#closeButton-' + topic_id);
+
+        STUDIP.Forum.wrapActionElementText(element);
+
+        jQuery('img', element).attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/lock-unlocked.svg');
+        jQuery('span', element).text(buttonText);
+        jQuery(element).attr('onclick', 'STUDIP.Forum.openThreadFromOverview("' + topic_id + '", ' + page + '); return false;');
 
         jQuery('#img-locked-' + topic_id).show();
 
         STUDIP.Forum.closeThread(topic_id, parent_topic_id, page, false);
+
+        STUDIP.ActionMenu.closeAll();
     },
 
     closeThreadFromThread: function(topic_id, page) {

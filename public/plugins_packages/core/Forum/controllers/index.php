@@ -434,7 +434,7 @@ class IndexController extends ForumController
 
             if ($topic_id != $this->getId()) {
                 // only delete directly if passed by ajax, otherwise ask for confirmation
-                if (Request::isXhr() || Request::get('approve_delete')) {
+                if (Request::isXhr() || Request::isPost() || Request::get('approve_delete')) {
                     ForumEntry::delete($topic_id);
                     $this->flash['messages'] = ['success' => sprintf(_('Der Eintrag %s wurde gelöscht!'), $topic['name'])];
                 } else {
@@ -453,12 +453,7 @@ class IndexController extends ForumController
             $this->render_template('messages');
             $this->flash['messages'] = null;
         } else {
-            if (Request::option('section') == 'index') {
-                $this->redirect(PluginEngine::getLink('coreforum/index/index/' . $parent['id'] .'/'. $page));
-            } else {
-                $this->redirect(PluginEngine::getLink('coreforum/index/' . Request::option('section')
-                    . '/' . Request::int('page')));
-            }
+            $this->redirect('index/index/' . $parent['id'] .'/'. $page);
         }
     }
 

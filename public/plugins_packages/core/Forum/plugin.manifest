@@ -1,7 +1,7 @@
 pluginclassname=CoreForum
 pluginname=Forum
 origin=core
-version=3.0.1
+version=3.0.2
 summary=Diskussionen und veranstaltungsbegleitender Meinungsaustausch
 description=Textbasierte zeit- und ortsunabhängige Möglichkeit zum Austausch von Gedanken, Meinungen und Erfahrungen. Lehrende und/oder Studierende können parallel zu Veranstaltungsthemen Fragen stellen, die in Form von Textbeiträgen besprochen werden können. Diese Beiträge können von allen Teilnehmenden der Veranstaltung gemerkt, verlinkt, positiv bewertet (sog. "Gefällt mir") und editiert werden (Letzeres nur von Lehrenden). Lehrende können zusätzlich Themen in Bereiche gliedern, zwischen den Bereichen verschiebe, im Bereich hervorheben und diesen öffnen und schließen.
 

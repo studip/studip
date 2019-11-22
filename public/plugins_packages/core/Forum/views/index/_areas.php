@@ -45,7 +45,7 @@
         <col>
         <col>
         <col>
-        <col>
+        <col class="hidden-small-down">
         <col>
     </colgroup>
 
@@ -53,7 +53,10 @@
         <tr>
             <th colspan="2"> <?= _('Name des Bereichs') ?></th>
             <th data-type="answers"><?= _("Beiträge") ?></th>
-            <th colspan="2" data-type="last_posting"><?= _("letzte Antwort") ?></th>
+            <th data-type="last_posting" class="hidden-small-down">
+                <?= _("letzte Antwort") ?>
+            </th>
+            <th></th>
         </tr>
     </thead>
 
@@ -71,7 +74,7 @@
     <? if (!$entries): ?>
     <!-- this row allows dropping on otherwise empty categories -->
     <tr class="sort-disabled">
-        <td class="areaborder" style="height: 5px; padding: 0px; margin: 0px"colspan="7"> </td>
+        <td class="areaborder" style="height: 5px; padding: 0px; margin: 0px" colspan="5"> </td>
     </tr>
     <? endif; ?>
     </tbody>
