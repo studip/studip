@@ -21,6 +21,10 @@
         <span><?= _('Lehrende können die Kursverknüpfung einer Veranstaltung ändern') ?></span>
     </label>
     <label>
+        <input type="checkbox" name="ilias_interface_allow_add_own_course" value="1" <?= $ilias_interface_config['allow_add_own_course'] ? 'checked' : '' ?>>
+        <span><?= _('Lehrende können einen eigenen ILIAS-Kurs verknüpfen, der noch nicht mit Stud.IP verbunden ist') ?></span>
+    </label>
+    <label>
         <input type="checkbox" name="ilias_interface_show_tools_page" value="1" <?= $ilias_interface_config['show_tools_page'] ? 'checked' : '' ?>>
         <span><?= _('Account-Seite im Tools-Bereich ist für alle Nutzenden (auch für Studierende ohne Berechtigung zum Anlegen von Lernobjekten) sichtbar') ?></span>
     </label>

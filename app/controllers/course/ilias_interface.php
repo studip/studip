@@ -47,6 +47,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->edit_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id);
         $this->author_permission = false;
         $this->change_course_permission = $GLOBALS['auth']->auth["perm"] == "root" || ($GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id) && $this->ilias_interface_config['allow_change_course']);
+        $this->add_own_course_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id) && $this->ilias_interface_config['allow_add_own_course'];
         $this->course_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id);
 
         $this->sidebar = Sidebar::get();
@@ -132,6 +133,12 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 if ($this->change_course_permission) $widget->addLink(
                         _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
                         $this->url_for('course/ilias_interface/add_object/assign_course'),
+                        Icon::create('seminar+add', 'clickable'),
+                        ['data-dialog' => 'size=auto;reload-on-close']
+                        );
+                if ($this->change_course_permission) $widget->addLink(
+                        _('Eigenen ILIAS-Kurs zuordnen'),
+                        $this->url_for('course/ilias_interface/add_object/assign_own_course'),
                         Icon::create('seminar+add', 'clickable'),
                         ['data-dialog' => 'size=auto;reload-on-close']
                         );
@@ -253,7 +260,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
             }
         }
 
-        if (($mode == 'new_course') || ($mode == 'assign_course')) {
+        if (($mode == 'new_course') || ($mode == 'assign_course') || ($mode == 'assign_own_course')) {
             // allow add course only if no course exists
             foreach ($this->ilias_list as $ilias_index => $ilias) {
                 if (IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $ilias_index)) {
@@ -331,6 +338,25 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 $this->studip_course_list = [];
                 while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
                     $this->studip_course_list[$row['module_id']] = my_substr($row['Name'],0,60)." ".sprintf(_("(Kurs-ID %s)"), $row['module_id']);
+                }
+
+                if (Request::get('cmd') ==  'assign_course') {
+                    $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $this->ilias_index);
+                    if (!$crs_id) {
+                        IliasObjectConnections::setConnection($this->seminar_id, Request::get(ilias_course_id), "crs", $this->ilias_index);
+                        PageLayout::postInfo(_('Kurs wurde zugeordnet.'));
+                        $this->redirect($this->url_for('course/ilias_interface'));
+                    }
+                }
+            } elseif ($mode == 'assign_own_course') {
+                $own_courses = $this->ilias->soap_client->getCoursesForUser($this->ilias->user->getId(), 12);
+                if (is_array($own_courses) && count($own_courses)) {
+                    $this->submit_text = _('Kurs zuordnen');
+                    foreach ($own_courses as $own_course_id => $own_course_name) {
+                        $this->studip_course_list[$own_course_id] = my_substr($own_course_name,0,60)." ".sprintf(_("(Kurs-ID %s)"), $own_course_id);
+                    }
+                } else {
+                    $this->submit_text = '';
                 }
 
                 if (Request::get('cmd') ==  'assign_course') {

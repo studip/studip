@@ -33,6 +33,23 @@
             </select>
         </label>
     </div>
+    <? elseif (($mode == 'assign_own_course')) : ?>
+    <div>
+        <input type="hidden" name="cmd" value="assign_course">
+        <? if ($submit_text) : ?>
+        <label>
+            <span><?= _('ILIAS-Kurs wählen') ?></span>
+            <select name="ilias_course_id" required>
+            <option></option>
+            <? foreach ($studip_course_list as $ilias_course_id => $studip_course_name) : ?>
+                <option value="<?=$ilias_course_id?>"><?=$studip_course_name?></option>
+            <? endforeach ?>
+            </select>
+        </label>
+        <? else : ?>
+            <?=sprintf(_('Es wurden keine Kurse in der %s-Installation gefunden, in denen Sie als Kursadministrator/-in eingetragen sind.'), $ilias->getName())?>
+        <? endif ?>
+    </div>
     <? elseif (($mode == 'search') || ($mode == 'my_modules')) : ?>
     <table class="default">
         <caption>

@@ -1543,6 +1543,50 @@ class IliasSoap extends StudipSoapClient
  /**/
 
     /**
+    * get courses for given user
+    *
+    * gets course xml-object for given course-data
+    * @access public
+    * @param array course_data course-data
+    * @return string course-xml
+    */
+    function getCoursesForUser($user_id, $status = 1) 
+    {
+        $xmlrs = '<?xml version="1.0" encoding="utf-8"?>
+        <result>
+            <colspecs>
+                <colspec idx="0" name="user_id"/>
+                <colspec idx="1" name="status"/>
+            </colspecs>
+            <rows>
+                <row>
+                    <column>'.$user_id.'</column>
+                    <column>'.$status.'</column>
+                </row>
+            </rows>
+        </result>';
+        $param = array(
+            'sid' => $this->getSID(),
+            'parameters' => $xmlrs
+        );
+        $result = $this->call('getCoursesForUser', $param);
+
+        if ($result) {
+            $s = simplexml_load_string($result);
+            foreach ($s->rows->row as $row) {
+                $ref_id = (string)$row->column[0];
+                $course = array_pop($this->parseXML((string)$row->column[1]));
+                $ret[$ref_id] = $course['title'];
+            }
+        }
+        if (is_array($ret)) {
+            return $ret;
+        } else {
+            return false;
+        }
+    }
+
+    /**
     * check reference by title
     *
     * gets reference id by object id
