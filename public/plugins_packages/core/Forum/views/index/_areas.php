@@ -45,7 +45,7 @@
         <col>
         <col>
         <col>
-        <col class="hidden-small-down">
+        <col class="hidden-tiny-down">
         <col>
     </colgroup>
 
@@ -53,7 +53,7 @@
         <tr>
             <th colspan="2"> <?= _('Name des Bereichs') ?></th>
             <th data-type="answers"><?= _("Beiträge") ?></th>
-            <th data-type="last_posting" class="hidden-small-down">
+            <th data-type="last_posting" class="hidden-tiny-down">
                 <?= _("letzte Antwort") ?>
             </th>
             <th></th>

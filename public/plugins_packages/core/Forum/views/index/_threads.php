@@ -15,7 +15,7 @@
             <col>
             <col>
             <col>
-            <col class="hidden-small-down">
+            <col class="hidden-tiny-down">
             <col style="width: 24px">
         </colgroup>
 
@@ -23,7 +23,7 @@
             <tr>
                 <th colspan="2"><?= _('Thema') ?></th>
                 <th data-type="answers"><?= _("Beiträge") ?></th>
-                <th data-type="last_posting" class="hidden-small-down">
+                <th data-type="last_posting" class="hidden-tiny-down">
                     <?= _('letzte Antwort') ?>
                 </th>
                 <th></th>
@@ -92,7 +92,7 @@
                 <?= number_format($entry['num_postings'], 0, ',', '.') ?>
             </td>
 
-            <td class="answer hidden-small-down">
+            <td class="answer hidden-tiny-down">
                 <?= $this->render_partial('index/_last_post.php', compact('entry')) ?>
             </td>
 

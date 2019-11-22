@@ -47,7 +47,7 @@
         <?= number_format(max($entry['num_postings'] - 1, 0), 0, ',', '.') ?>
     </td>
 
-    <td class="answer hidden-small-down">
+    <td class="answer hidden-tiny-down">
         <?= $this->render_partial('index/_last_post.php', compact('entry')) ?>
     </td>
 
