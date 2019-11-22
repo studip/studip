@@ -26,8 +26,12 @@
   	<? endif;?>
     <hr>
     <span class="minor">
-      <?= sprintf(_("Diese E-Mail ist eine Kopie einer systeminternen Nachricht, die in Stud.IP an %s versendet wurde."), htmlReady($rec_fullname)) ?><br>
-      <?= sprintf(_("Sie erreichen Stud.IP unter %s"), "<a href=\"" . $GLOBALS['ABSOLUTE_URI_STUDIP'] . "\">" . $GLOBALS['ABSOLUTE_URI_STUDIP'] . "</a>") ?>
+        <? if ($snd_fullname) : ?>
+            <?= sprintf(_('Diese E-Mail ist eine Kopie einer systeminternen Nachricht, die in Stud.IP von %s (<a href="%s">%s</a>) an %s (<a href="%s">%s</a>) versendet wurde.'), htmlReady($snd_fullname), htmlReady($snd_email),htmlReady($snd_email), htmlReady($rec_fullname), htmlReady($rec_email),htmlReady($rec_email)) ?>
+        <? else : ?>
+          <?= sprintf(_("Diese E-Mail ist eine Kopie einer systeminternen Nachricht, die in Stud.IP an %s versendet wurde."), htmlReady($rec_fullname)) ?>
+        <? endif ?>
+      <br><?= sprintf(_("Sie erreichen Stud.IP unter %s"), "<a href=\"" . $GLOBALS['ABSOLUTE_URI_STUDIP'] . "\">" . $GLOBALS['ABSOLUTE_URI_STUDIP'] . "</a>") ?>
     </span>
   </div>
 </body>

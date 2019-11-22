@@ -194,6 +194,11 @@ class messaging
         $template = $GLOBALS['template_factory']->open('mail/text');
         $template->set_attribute('message', kill_format($message));
         $template->set_attribute('rec_fullname', $rec_fullname);
+        $template->set_attribute('rec_email', $to);
+        if (isset($snd_fullname)) {
+            $template->set_attribute('snd_email', $reply_to);
+            $template->set_attribute('snd_fullname', $snd_fullname);
+        }
         if ($attachments_as_links) {
             $template->set_attribute('attachments', $attachments);
         }
@@ -203,6 +208,11 @@ class messaging
         $template->set_attribute('lang', getUserLanguagePath($rec_user_id));
         $template->set_attribute('message', $message);
         $template->set_attribute('rec_fullname', $rec_fullname);
+        $template->set_attribute('rec_email', $to);
+        if (isset($snd_fullname)) {
+            $template->set_attribute('snd_email', $reply_to);
+            $template->set_attribute('snd_fullname', $snd_fullname);
+        }
         if ($attachments_as_links) {
             $template->set_attribute('attachments', $attachments);
         }
@@ -216,13 +226,16 @@ class messaging
             ->setReplyToEmail('')
             ->addRecipient($to, $rec_fullname)
             ->setBodyText($mailmessage);
-        if ($GLOBALS['MESSAGING_FORWARD_USE_REPLYTO']) {
-            $mail->setReplyToEmail($reply_to)
-                ->setReplyToName($snd_fullname);
-        } elseif (mb_strlen($reply_to)) {
-            $mail->setSenderEmail($reply_to)
-                ->setSenderName($snd_fullname)
-                ->setReplyToEmail('');
+        if (mb_strlen($reply_to)) {
+            if ($GLOBALS['MESSAGING_FORWARD_USE_REPLYTO']) {
+                $mail->setReplyToEmail($reply_to)
+                    ->setReplyToName($snd_fullname)
+                    ->setSenderName(sprintf(_('Stud.IP für %s'), $snd_fullname));
+            } else {
+                $mail->setSenderEmail($reply_to)
+                    ->setSenderName($snd_fullname)
+                    ->setReplyToEmail('');
+            }
         }
         $user_cfg = UserConfig::get($rec_user_id);
         if ($user_cfg->getValue('MAIL_AS_HTML')) {
