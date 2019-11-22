@@ -7,6 +7,7 @@ section.contentbox {
 
     header {
         display: flex;
+        flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
 
@@ -14,6 +15,7 @@ section.contentbox {
         background-color: @content-color-20;
 
         h1 {
+            flex: 1 0 0;
             padding: 5px;
             margin: 0;
             color: @base-color;
@@ -29,7 +31,7 @@ section.contentbox {
         > nav {
             align-items: center;
             display: flex;
-            flex: 0 1 auto;
+            flex: 0 0 auto;
             justify-content: flex-end;
             padding: 2px;
             text-align: right;
