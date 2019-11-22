@@ -734,7 +734,7 @@ class Course_StudygroupController extends AuthenticatedController
         $id = Context::getId();
 
         $user = Request::get('user');
-        $user = preg_replace('/[^\w@.-]/', '', $user);
+        $user = preg_replace('/[^\w@\.\-]/', '', $user);
 
         if ($perm->have_studip_perm('tutor', $id)) {
 

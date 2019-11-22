@@ -473,7 +473,7 @@ class PageLayout
      */
     public static function setBodyElementId($id)
     {
-        self::$body_element_id = preg_replace('/[^\w-]/', '_', $id);
+        self::$body_element_id = preg_replace('/[^\w\-]/', '_', $id);
     }
 
     /**

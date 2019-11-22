@@ -155,10 +155,13 @@ class ActionMenu
      * Adds a css classs to the root element in html.
      *
      * @param string $class Name of the css class
+     * @return ActionMenu instance to allow chaining
      */
     public function addCSSClass($class)
     {
         $this->addAttribute('class', $class, true);
+
+        return $this;
     }
 
     /**

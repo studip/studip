@@ -161,7 +161,7 @@ class StudipCoreFormat extends TextFormat
                 (?:\[([^\n\f\]]+?)\])?
 
                 # capture actual email address
-                ([\w.!#%+-]+@([[:alnum:]-.]+\.[[:alnum:]-.]{2,}))
+                ([\w.!#%+\-]+@([[:alnum:]\-.]+\.[[:alnum:]\-.]{2,}))
 
                 # ensure block is succeeded by white space or line end
                 (?=\s|$)

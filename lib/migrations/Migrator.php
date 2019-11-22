@@ -116,7 +116,7 @@
  */
 class Migrator
 {
-    const FILE_REGEXP = '/\b(\d+)([_-][_a-z0-9]+)+\.php$/';
+    const FILE_REGEXP = '/\b(\d+)([_\-][_a-z0-9]+)+\.php$/';
 
     /**
      * Direction of migration, either "up" or "down"

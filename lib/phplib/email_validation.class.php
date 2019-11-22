@@ -12,7 +12,7 @@ class email_validation_class
 {
     var $username_regular_expression=null;
     var $password_regular_expression="/^([[:print:]]{8,72})\$/";
-    var $name_regular_expression='/^[-_ a-zA-ZÀ-ÿ\']+$/';
+    var $name_regular_expression='/^[\-_ a-zA-ZÀ-ÿ\']+$/';
     var $telefon_regular_expression="/^([0-9 \(\)\\/+_-]*)\$/";
     var $timeout=10;
     var $data_timeout=10;

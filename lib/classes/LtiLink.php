@@ -18,7 +18,7 @@
  *
  * Use LtiLink::getLaunchSignature() to fetch the OAuth signature to use for
  * the launch request (or some other request).
- */ 
+ */
 class LtiLink
 {
     // launch URL and credentials
@@ -204,7 +204,7 @@ class LtiLink
     public function addCustomParameter($name, $value)
     {
         $name = strtolower(preg_replace('/\W/', '_', $name));
-        $value = preg_replace_callback('/\$([\w.]*\w)/', function($matches) {
+        $value = preg_replace_callback('/\$([\w\.]*\w)/', function($matches) {
             return $this->variables[$matches[1]] ?: $matches[0];
         }, $value);
 

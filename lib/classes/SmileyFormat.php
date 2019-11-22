@@ -14,7 +14,7 @@ require_once 'app/models/smiley.php';
  */
 class SmileyFormat extends TextFormat
 {
-    const REGEXP = '(\>|^|\s):([_a-zA-Z][_a-z0-9A-Z-]*):(?=$|\<|\s)';
+    const REGEXP = '(\>|^|\s):([_a-zA-Z][_a-z0-9A-Z\-]*):(?=$|\<|\s)';
 
     function __construct()
     {

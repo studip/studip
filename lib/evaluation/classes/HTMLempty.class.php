@@ -67,7 +67,7 @@ class HTMLempty
 # Define constructor and destructor ========================================= #
   public function __construct($name)
   {
-    if (preg_match('/^[a-zA-Z.:][\w\-_.:]*$/i', $name)) {
+    if (preg_match('/^[a-zA-Z.:][\w\-_\.:]*$/i', $name)) {
       $this->_name = $name;
     } else {
       trigger_error("Unerlaubter Name für ein HTML-Element : '" .
@@ -85,7 +85,7 @@ class HTMLempty
   {
     if (isset ($wert)) {
       $name = (string)$name;
-      if (preg_match('/^[a-zA-Z.:][\w\-_.:]*$/i', $name)) {
+      if (preg_match('/^[a-zA-Z.:][\w\-_\.:]*$/i', $name)) {
         $this->_attribute[$name] = $wert;
       } else {
         trigger_error("Unerlaubter Name für ein HTML-Attribut : '" . $name . "'",
@@ -96,7 +96,7 @@ class HTMLempty
         // Dies braucht man, falls man Attribute hinzufügen
         // will, die keinen Wert haben, wie man es bei
         // <option selected> kennt
-        if (preg_match('/^[a-zA-Z.:][\w\-_.:]*$/i', $name)) {
+        if (preg_match('/^[a-zA-Z\.:][\w\-_\.:]*$/i', $name)) {
           $this->_attribute[$name] = $name;
           // Da wir gültiges HTML bzw XML schreiben
           // muss jedes Attribut auch einen Wert haben
@@ -113,7 +113,7 @@ class HTMLempty
             // also ohne Schlüssel. Ich nehme dann an
             // das es sich um ein Attribut wie
             // 'selected' oder 'readonly' handelt
-            if (preg_match('/^[a-zA-Z.:][\w\-_.:]*$/i', $wert)) {
+            if (preg_match('/^[a-zA-Z\.:][\w\-_\.:]*$/i', $wert)) {
               $this->_attribute[$wert] = $wert;
             } else {
               trigger_error("Unerlaubter Name für ein HTML-Attribut : '" .
@@ -121,7 +121,7 @@ class HTMLempty
             }
           } else {
             $key = (string)$key;
-            if (preg_match('/^[a-zA-Z.:][\w\-_.:]*$/i', $key)) {
+            if (preg_match('/^[a-zA-Z\.:][\w\-_\.:]*$/i', $key)) {
               $this->_attribute[$key] = $wert;
             } else {
               trigger_error("Unerlaubter Name für ein HTML-Attribut : '" .

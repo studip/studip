@@ -55,7 +55,7 @@ class ExternModuleDownload extends ExternModule {
     *
     */
     function __construct($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Icon"),
                 _("Dateiname"),
@@ -260,7 +260,7 @@ class ExternModuleDownload extends ExternModule {
 
         foreach ($data as $db) {
 
-            preg_match("/^.+\.([a-z1-9_-]+)$/i", $db["filename"], $file_suffix);
+            preg_match("/^.+\.([a-z1-9_\-]+)$/i", $db["filename"], $file_suffix);
 
             // choose the icon for the given file format
             $icon = "";

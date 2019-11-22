@@ -1640,7 +1640,7 @@ class FileManager
 
         // URL links to an ftp server
         if ($url_parts['scheme'] === 'ftp') {
-            if (preg_match('/[^a-z0-9_.-]/i', $url_parts['host'])) { // exists umlauts ?
+            if (preg_match('/[^a-z0-9_\.\-]/i', $url_parts['host'])) { // exists umlauts ?
                 $IDN = new idna_convert();
                 $out = $IDN->encode($url_parts['host']); // false by error
                 $url_parts['host'] = $out ?: $url_parts['host'];
@@ -1700,7 +1700,7 @@ class FileManager
         if (empty($port)) {
             $port = 80;
         }
-        if (preg_match('/[^a-z0-9_.-]/i', $host)) { // exists umlauts ?
+        if (preg_match('/[^a-z0-9_\.\-]/i', $host)) { // exists umlauts ?
             $IDN = new idna_convert();
             $out = $IDN->encode($host); // false by error
             $host = $out ?: $host;

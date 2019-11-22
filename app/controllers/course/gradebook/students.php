@@ -52,9 +52,7 @@ class Course_Gradebook_StudentsController extends AuthenticatedController
      */
     public function export_action()
     {
-        $filename = preg_replace(
-            '/[^a-zA-Z0-9-_.]+/',
-            '-',
+        $filename = FileManager::cleanFileName(
             sprintf(
                 'gradebook-%s.csv',
                 \Context::getHeaderLine()

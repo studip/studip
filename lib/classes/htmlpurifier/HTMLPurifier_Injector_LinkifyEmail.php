@@ -17,7 +17,7 @@ class HTMLPurifier_Injector_LinkifyEmail extends HTMLPurifier_Injector
         }
 
         // e-mail regex comes from Drupal 7, see http://api.drupal.org/_filter_url, adapted to match only mails with tld part
-        $bits = preg_split('#([A-Za-z0-9._-]+@(?:[A-Za-z0-9._+-]+\.[A-Za-z]{2,64}\b))#S', $token->data, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $bits = preg_split('#([A-Za-z0-9\._\-]+@(?:[A-Za-z0-9\._+\-]+\.[A-Za-z]{2,64}\b))#S', $token->data, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $token = [];
 

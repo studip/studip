@@ -33,7 +33,7 @@ class UserDomain
      */
     public function __construct ($id, $name = NULL)
     {
-        if (preg_match('/[^\\w.-]/', $id)) {
+        if (preg_match('/[^\\w\.\-]/', $id)) {
             throw new Exception(_('Ungültige ID für Nutzerdomäne').': '.$id);
         }
 
@@ -90,23 +90,23 @@ class UserDomain
     public function store ()
     {
         $db = DBManager::get();
-        
+
         $query = "SELECT * FROM userdomains WHERE userdomain_id = :id ";
         $statement = $db->prepare($query);
         $statement->execute([':id' => $this->id]);
-        
+
         if (($row = $statement->fetch())) {
             $query = "UPDATE userdomains SET name = :name "
                     . "WHERE userdomain_id = :id ";
             $statement = $db->prepare($query);
             $statement->execute([':name' => $this->name, ':id' => $this->id]);
-            NotificationCenter::postNotification('UserDomainDidUpdate', $this->id, $GLOBALS['user']->id); 
+            NotificationCenter::postNotification('UserDomainDidUpdate', $this->id, $GLOBALS['user']->id);
         } else {
                 $query = "INSERT INTO userdomains (userdomain_id, name) "
                         . "VALUES (:id, :name)";
             $statement = $db->prepare($query);
             $statement->execute([':id' => $this->id, ':name' => $this->name]);
-            NotificationCenter::postNotification('UserDomainDidCreate', $this->id, $GLOBALS['user']->id); 
+            NotificationCenter::postNotification('UserDomainDidCreate', $this->id, $GLOBALS['user']->id);
         }
     }
 
@@ -158,7 +158,7 @@ class UserDomain
         $query = "DELETE FROM user_userdomains "
                 . "WHERE user_id = :user_id "
                 . "AND userdomain_id = :id";
-                
+
         $statement = DBManager::get()->prepare($query);
         $statement->execute([':user_id' => $user_id, ':id' => $this->id]);
         NotificationCenter::postNotification('UserDomainUserDidDelete', $this->id, $user_id);
@@ -173,7 +173,7 @@ class UserDomain
         $query = "SELECT user_id FROM user_userdomains WHERE userdomain_id = :id";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([':id' => $this->id]);
-        
+
         $users = [];
         foreach ($statement->fetchAll() as $row) {
             $users[] = $row['user_id'];
@@ -190,10 +190,10 @@ class UserDomain
     {
         $query = "SELECT * FROM userdomains JOIN user_userdomains USING (userdomain_id) "
                 . "WHERE user_userdomains.user_id = :user_id ORDER BY name";
-        
+
         $statement = DBManager::get()->prepare($query);
         $statement->execute([':user_id' => $user_id]);
-        
+
         $domains = [];
         foreach ($statement->fetchAll() as $row) {
             $domains[] = new UserDomain($row['userdomain_id'], $row['name']);
@@ -246,7 +246,7 @@ class UserDomain
         $query = "SELECT seminar_id FROM seminar_userdomains WHERE userdomain_id = :id";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([':id' => $this->id]);
-    
+
         $seminars = [];
         foreach ($statement->fetchAll() as $row) {
             $seminars[] = $row['seminar_id'];
@@ -265,7 +265,7 @@ class UserDomain
                 . "WHERE seminar_userdomains.seminar_id = :seminar_id ORDER BY name";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([':seminar_id' => $seminar_id]);
-        
+
         $domains = [];
         foreach ($statement->fetchAll() as $row) {
             $domains[] = new UserDomain($row['userdomain_id'], $row['name']);

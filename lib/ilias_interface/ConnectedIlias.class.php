@@ -698,7 +698,7 @@ class ConnectedIlias
             $this->error[] = _("Keine Berechtigung zum Kopieren des Lernobjekts!");
             return false;
         }
-        
+
         $crs_id = IliasObjectConnections::getConnectionModuleId($studip_course_id, "crs", $this->index);
         $this->soap_client->setCachingStatus(false);
         $this->soap_client->clearCache();

@@ -642,7 +642,7 @@ function tooltipHtmlIcon($text, $important = false)
 function TransformInternalLinks($str){
     $str = trim($str);
     if (mb_strpos($str, 'http') !== 0) {
-        if (preg_match('/^[a-z][a-z0-9+.-]*:/i', $str)) {
+        if (preg_match('/^[a-z][a-z0-9+\.\-]*:/i', $str)) {
             return $str;
         }
         if ($str[0] === '/') {

@@ -111,7 +111,7 @@ class ExternElementTemplateGeneric extends ExternElement {
     function toString ($args = null) {
         $template = $this->config->getValue($this->getName(), 'template');
         $template = preg_replace(
-            ['/###([\w-]+)###/', '/<!--\s+BEGIN\s+([\w-]+)\s+-->/', '/<!--\s+END\s+[\w-]+\s+-->/'],
+            ['/###([\w\-]+)###/', '/<!--\s+BEGIN\s+([\w\-]+)\s+-->/', '/<!--\s+END\s+[\w\-]+\s+-->/'],
             ['{% $1 %}', '{% foreach $1 %}', '{% endforeach %}'], $template);
         exTpl\Template::setTagMarkers('{%', '%}');
 

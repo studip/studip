@@ -429,7 +429,7 @@ class CalendarParserICalendar extends CalendarParser
      */
     private function _parseDuration($text)
     {
-        if (preg_match('/([+]?|[-])P(([0-9]+W)|([0-9]+D)|)(T(([0-9]+H)|([0-9]+M)|([0-9]+S))+)?/', trim($text), $matches)) {
+        if (preg_match('/([+]?|[\-])P(([0-9]+W)|([0-9]+D)|)(T(([0-9]+H)|([0-9]+M)|([0-9]+S))+)?/', trim($text), $matches)) {
             // weeks
             $duration = 7 * 86400 * intval($matches[3]);
             if (count($matches) > 4) {
