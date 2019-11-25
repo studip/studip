@@ -130,22 +130,22 @@
             </td>
             <td class="actions">
                 <?= ActionMenu::get()->addLink(
-                    $controller->noteURL($block, $slot, $page),
+                    $controller->noteURL($block['block'], $slot, $page),
                     _('Information bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->is_expired && count($slot->bookings) < $slot->block->size)->addLink(
-                    $controller->bookURL($block, $slot, $page),
+                    $controller->bookURL($block['block'], $slot, $page),
                     _('Sprechstundentermin reservieren'),
                     Icon::create('consultation+add'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings)->addLink(
-                    $controller->reasonURL($block, $slot, $slot->bookings->first(), $page),
+                    $controller->reasonURL($block['block'], $slot, $slot->bookings->first(), $page),
                     _('Grund bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
-                    $controller->cancel_slotURL($block, $slot, $page),
+                    $controller->cancel_slotURL($block['block'], $slot, $page),
                     _('Sprechstundentermin absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
@@ -154,7 +154,7 @@
                     _('Sprechstundentermin entfernen'),
                     Icon::create('trash'),
                     [
-                        'formaction'   => $controller->removeURL($block, $slot, $page),
+                        'formaction'   => $controller->removeURL($block['block'], $slot, $page),
                         'data-confirm' => _('Wollen Sie diesen Sprechstundentermin wirklich entfernen?'),
                     ]
                 ) ?>
