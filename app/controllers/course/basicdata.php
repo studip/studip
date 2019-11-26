@@ -651,118 +651,118 @@ class Course_BasicdataController extends AuthenticatedController
      * Löscht einen Dozenten (bis auf den letzten Dozenten)
      * Leitet danach weiter auf View und öffnet den Reiter Personal.
      *
-     * @param md5 $dozent
+     * @param string $course_id
+     * @param string $teacher_id
      */
-    public function deletedozent_action($course_id, $dozent)
+    public function deletedozent_action($course_id, $teacher_id)
     {
-        global $user, $perm;
+        CSRFProtection::verifyUnsafeRequest();
 
-        CSRFProtection::verifySecurityToken();
-
-        $sem = Seminar::getInstance($course_id);
-        $this->msg = [];
-        if ($perm->have_studip_perm("dozent", $sem->getId())) {
-            if ($dozent !== $user->id) {
-                $sem->deleteMember($dozent);
-
-                // Remove user from subcourses as well.
-                if (count($sem->children) > 0) {
-                    foreach ($sem->children as $child) {
-                        $child->deleteMember($dozent);
-                    }
-                }
-
-                foreach($sem->getStackedMessages() as $key => $messages) {
-                    foreach($messages['details'] as $message) {
-                        $this->msg[] = [($key !== "success" ? $key : "msg"), $message];
-                    }
-                }
-            } else {
-                $this->msg[] = ["error", _("Sie dürfen sich nicht selbst aus der Veranstaltung austragen.")];
-            }
+        if (!$GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
+            PageLayout::postError(_('Sie haben keine Berechtigung diese Veranstaltung zu verändern.'));
+        } elseif ($dozent === $GLOBALS['user']->id) {
+            PageLayout::postError(_('Sie dürfen sich nicht selbst aus der Veranstaltung austragen.'));
         } else {
-            $this->msg[] = ["error", _("Sie haben keine Berechtigung diese Veranstaltung zu verändern.")];
+            $sem = Seminar::getInstance($course_id);
+            $sem->deleteMember($teacher_id);
+
+            // Remove user from subcourses as well.
+            foreach ($sem->children as $child) {
+                $child->deleteMember($teacher_id);
+            }
+
+            $this->msg = [];
+            foreach ($sem->getStackedMessages() as $key => $messages) {
+                foreach ($messages['details'] as $message) {
+                    $this->msg[] = [
+                        $key !== 'success' ? $key : 'msg',
+                        $message
+                    ];
+                }
+            }
+            $this->flash['msg'] = $this->msg;
         }
-        $this->flash['msg'] = $this->msg;
-        $this->flash['open'] = "bd_personal";
-        $this->redirect($this->url_for('course/basicdata/view/' . $sem->getId()));
+
+        $this->flash['open'] = 'bd_personal';
+        $this->redirect("course/basicdata/view/{$course_id}");
     }
 
     /**
      * Löscht einen Stellvertreter.
      * Leitet danach weiter auf View und öffnet den Reiter Personal.
      *
-     * @param md5 $deputy
+     * @param string $course_id
+     * @param string $deputy_id
      */
-    public function deletedeputy_action($course_id, $deputy)
+    public function deletedeputy_action($course_id, $deputy_id)
     {
-        global $user, $perm;
+        CSRFProtection::verifyUnsafeRequest();
 
-        CSRFProtection::verifySecurityToken();
-
-        $sem = Seminar::getInstance($course_id);
-        $this->msg = [];
-        if ($perm->have_studip_perm("dozent", $sem->getId())) {
-            if ($deputy !== $user->id) {
-                if (deleteDeputy($deputy, $sem->getId())) {
-                    // Remove user from subcourses as well.
-                    if (count($sem->children) > 0) {
-                        foreach ($sem->children as $child) {
-                            deleteDeputy($deputy, $child->id);
-                        }
-                    }
-
-                    $this->msg[] = ["msg", sprintf(_("%s wurde entfernt."),
-                        get_title_for_status('deputy', 1, $sem->status))];
-                } else {
-                    $this->msg[] = ["error", sprintf(_("%s konnte nicht entfernt werden."),
-                       get_title_for_status('deputy', 1, $sem->status))];
-                }
-            } else {
-                $this->msg[] = ["error", _("Sie dürfen sich nicht selbst aus der Veranstaltung austragen.")];
-            }
+        if (!$GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
+            PageLayout::postError(_('Sie haben keine Berechtigung diese Veranstaltung zu verändern.'));
+        } elseif ($deputy_id === $GLOBALS['user']->id) {
+            PageLayout::postError(_('Sie dürfen sich nicht selbst aus der Veranstaltung austragen.'));
         } else {
-            $this->msg[] = ["error", _("Sie haben keine Berechtigung diese Veranstaltung zu verändern.")];
+            $sem = Seminar::getInstance($course_id);
+
+            if (deleteDeputy($deputy_id, $course_id)) {
+                // Remove user from subcourses as well.
+                foreach ($sem->children as $child) {
+                    deleteDeputy($deputy_id, $child->id);
+                }
+
+                PageLayout::postSuccess(sprintf(
+                    _('%s wurde entfernt.'),
+                    htmlReady(get_title_for_status('deputy', 1, $sem->status))
+                ));
+            } else {
+                PageLayout::postError(sprintf(
+                    _('%s konnte nicht entfernt werden.'),
+                    htmlReady(get_title_for_status('deputy', 1, $sem->status))
+                ));
+            }
         }
-        $this->flash['msg'] = $this->msg;
-        $this->flash['open'] = "bd_personal";
-        $this->redirect($this->url_for('course/basicdata/view/' . $sem->getId()));
+
+        $this->flash['open'] = 'bd_personal';
+        $this->redirect("course/basicdata/view/{$course_id}");
     }
 
     /**
      * Löscht einen Tutor
      * Leitet danach weiter auf View und öffnet den Reiter Personal.
      *
-     * @param md5 $tutor
+     * @param string $course_id
+     * @param string $tutor_id
      */
-    public function deletetutor_action($course_id, $tutor)
+    public function deletetutor_action($course_id, $tutor_id)
     {
-        global $user, $perm;
+        CSRFProtection::verifyUnsafeRequest();
 
-        CSRFProtection::verifySecurityToken();
-
-        $sem = Seminar::getInstance($course_id);
-        $this->msg = [];
-        if ($perm->have_studip_perm("dozent", $sem->getId())) {
-            $sem->deleteMember($tutor);
-            // Remove user from subcourses as well.
-            if (count($sem->children) > 0) {
-                foreach ($sem->children as $child) {
-                    $child->deleteMember($tutor);
-                }
-            }
-
-            foreach($sem->getStackedMessages() as $key => $messages) {
-                foreach($messages['details'] as $message) {
-                    $this->msg[] = [($key !== "success" ? $key : "msg"), $message];
-                }
-            }
+        if (!$GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
+            PageLayout::postError( _('Sie haben keine Berechtigung diese Veranstaltung zu verändern.'));
         } else {
-            $this->msg[] = ["error", _("Sie haben keine Berechtigung diese Veranstaltung zu verändern.")];
+            $sem = Seminar::getInstance($course_id);
+
+            $sem->deleteMember($tutor_id);
+            // Remove user from subcourses as well.
+            foreach ($sem->children as $child) {
+                $child->deleteMember($tutor_id);
+            }
+
+            $this->msg = [];
+            foreach ($sem->getStackedMessages() as $key => $messages) {
+                foreach ($messages['details'] as $message) {
+                    $this->msg[] = [
+                        $key !== 'success' ? $key : 'msg',
+                        $message
+                    ];
+                }
+            }
+            $this->flash['msg'] = $this->msg;
         }
-        $this->flash['msg'] = $this->msg;
-        $this->flash['open'] = "bd_personal";
-        $this->redirect($this->url_for('course/basicdata/view/' . $sem->getId()));
+
+        $this->flash['open'] = 'bd_personal';
+        $this->redirect("course/basicdata/view/{$course_id}");
     }
 
     /**

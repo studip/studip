@@ -20,7 +20,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
     <?= MessageBox::{$message_types[$msg[0]]}($msg[1]) ?>
 <? endforeach ?>
 
-<form name="course-details" name="details" method="post" action="<?= $controller->url_for('course/basicdata/set', $course_id) ?>" <?= $dialog_attr ?> class="default collapsable">
+<form name="course-details" name="details" method="post" action="<?= $controller->link_for('course/basicdata/set', $course_id) ?>" <?= $dialog_attr ?> class="default collapsable">
     <?= CSRFProtection::tokenTag() ?>
     <input id="open_variable" type="hidden" name="open" value="<?= $flash['open'] ?>">
 
@@ -135,18 +135,19 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
                     <td class="actions">
                 <? if ($perm_dozent && !$dozent_is_locked): ?>
                     <? if ($num > 0) : ?>
-                        <a href="<?= $controller->url_for('course/basicdata/priorityupfor', $course_id, $dozent['user_id'], 'dozent') ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('arr_2up', 'sort')->asImg(["class" => 'middle']) ?>
+                        <a href="<?= $controller->link_for('course/basicdata/priorityupfor', $course_id, $dozent['user_id'], 'dozent') ?>" <?= $dialog_attr ?>>
+                            <?= Icon::create('arr_2up', Icon::ROLE_SORT)->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>
                     <? if ($num < count($dozenten) - 1): ?>
-                        <a href="<?= $controller->url_for('course/basicdata/prioritydownfor', $course_id, $dozent['user_id'], 'dozent') ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('arr_2down', 'sort')->asImg(["class" => 'middle']) ?>
+                        <a href="<?= $controller->link_for('course/basicdata/prioritydownfor', $course_id, $dozent['user_id'], 'dozent') ?>" <?= $dialog_attr ?>>
+                            <?= Icon::create('arr_2down', Icon::ROLE_SORT)->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>
-                        <a href="<?= $controller->url_for('course/basicdata/deletedozent', $course_id, $dozent['user_id']) ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('trash', 'clickable')->asImg() ?>
-                        </a>
+                        <?= Icon::create('trash')->asInput([
+                            'formaction'   => $controller->url_for('course/basicdata/deletedozent', $course_id, $dozent['user_id']),
+                            'data-confirm' => _('Soll die Person wirklich entfernt werden?'),
+                        ]) ?>
                 <? endif; ?>
                     </td>
                 </tr>
@@ -203,9 +204,10 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
                     <td></td>
                     <td class="actions">
                     <? if ($perm_dozent && !$dozent_is_locked): ?>
-                        <a href="<?= $controller->url_for('course/basicdata/deletedeputy', $course_id, $deputy["user_id"]) ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('trash', 'clickable')->asImg() ?>
-                        </a>
+                        <?= Icon::create('trash')->asInput([
+                            'formaction'   => $controller->url_for('course/basicdata/deletedeputy', $course_id, $deputy['user_id']),
+                            'data-confirm' => _('Soll die Person wirklich entfernt werden?'),
+                        ]) ?>
                     <? endif; ?>
                     </td>
                 </tr>
@@ -270,18 +272,19 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
                     <td class="actions">
                 <? if ($perm_dozent && !$tutor_is_locked): ?>
                     <? if ($num > 0) : ?>
-                        <a href="<?= $controller->url_for('course/basicdata/priorityupfor', $course_id, $tutor['user_id'], 'tutor') ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('arr_2up', 'sort')->asImg(["class" => 'middle']) ?>
+                        <a href="<?= $controller->link_for('course/basicdata/priorityupfor', $course_id, $tutor['user_id'], 'tutor') ?>" <?= $dialog_attr ?>>
+                            <?= Icon::create('arr_2up', Icon::ROLE_SORT)->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>
                     <? if ($num < count($tutoren) - 1) : ?>
-                        <a href="<?= $controller->url_for('course/basicdata/prioritydownfor', $course_id, $tutor['user_id'], 'tutor') ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('arr_2down', 'sort')->asImg(["class" => 'middle']) ?>
+                        <a href="<?= $controller->link_for('course/basicdata/prioritydownfor', $course_id, $tutor['user_id'], 'tutor') ?>" <?= $dialog_attr ?>>
+                            <?= Icon::create('arr_2down', Icon::ROLE_SORT)->asImg(['class' => 'middle']) ?>
                         </a>
                     <? endif; ?>
-                        <a href="<?= $controller->url_for('course/basicdata/deletetutor', $course_id, $tutor['user_id']) ?>" <?= $dialog_attr ?>>
-                            <?= Icon::create('trash', 'clickable')->asImg() ?>
-                        </a>
+                        <?= Icon::create('trash')->asInput([
+                            'formaction'   => $controller->url_for('course/basicdata/deletetutor', $course_id, $tutor['user_id']),
+                            'data-confirm' => _('Soll die Person wirklich entfernt werden?'),
+                        ]) ?>
                 <? endif; ?>
                     </td>
                 </tr>
@@ -304,7 +307,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
             <span <?= $description['must'] ? 'class="required"' : '' ?>>
                 <?= $description['title'] ?>
             </span>
-            
+
             <? if ($description['type'] === 'datafield' && $description['description']) : ?>
                 <?= tooltipIcon($description['description'])?>
             <? endif?>
