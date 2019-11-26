@@ -514,68 +514,106 @@ class Course_BasicdataController extends AuthenticatedController
         $this->redirect($this->url_for('course/basicdata/view/' . $sem->getId()));
     }
 
-    public function add_member_action($course_id, $status = 'dozent') {
+    public function add_member_action($course_id, $status = 'dozent')
+    {
         CSRFProtection::verifySecurityToken();
 
         // load MultiPersonSearch object
-        $mp = MultiPersonSearch::load("add_member_" . $status . $course_id);
-        $fail = false;
+        $mp = MultiPersonSearch::load("add_member_{$status}{$course_id}");
 
         switch($status) {
-            case 'tutor' : $func = 'addTutor'; break;
-            case 'deputy': $func = 'addDeputy'; break;
-            default: $func = 'addTeacher'; break;
+            case 'tutor' :
+                $func = 'addTutor';
+                break;
+            case 'deputy':
+                $func = 'addDeputy';
+                break;
+            default:
+                $func = 'addTeacher';
+                break;
         }
 
+        $succeeded = [];
+        $failed = [];
         foreach ($mp->getAddedUsers() as $a) {
             $result = $this->$func($a, $course_id);
             if ($result !== false) {
-                PageLayout::postMessage($result);
+                $succeeded[] = User::find($a)->getFullname('no_title_rev');
             } else {
-                $fail = true;
+                $failed[] = User::find($a)->getFullname('no_title_rev');
             }
         }
-        // only show an error messagebox once.
-        if ($fail === true) {
-            PageLayout::postMessage(MessageBox::error(_('Die gewünschte Operation konnte nicht ausgeführt werden.')));
+        // Only show the success messagebox once
+        if ($succeeded) {
+            $sem = Seminar::GetInstance($course_id);
+            $status_title = get_title_for_status($status, count($succeeded), $sem->status);
+            if (count($succeeded) > 1) {
+                $messagetext = sprintf(
+                    _("%u %s wurden hinzugefügt."),
+                    count($succeeded),
+                    $status_title
+                );
+            } else {
+                $messagetext = sprintf(
+                    _('%s wurde hinzugefügt.'),
+                    $status_title
+                );
+            }
+            PageLayout::postSuccess(
+                htmlReady($messagetext),
+                array_map('htmlReady', $succeeded),
+                true
+            );
         }
-        $this->flash['open'] = "bd_personal";
-        $redirect = Request::get('from') ? : 'course/basicdata/view/' . $course_id;
+
+        // only show an error messagebox once with list of errors!
+        if ($failed) {
+            PageLayout::postError(
+                _('Bei den folgenden Nutzer/-innen ist ein Fehler aufgetreten') ,
+                array_map('htmlReady', $failed)
+            );
+        }
+        $this->flash['open'] = 'bd_personal';
+
+        $redirect = Request::get('from', "course/basicdata/view/{$course_id}");
         $this->redirect($this->url_for($redirect));
     }
 
-    private function addTutor($tutor, $course_id) {
+    private function addTutor($tutor, $course_id)
+    {
         //Tutoren hinzufügen:
-        if ($GLOBALS['perm']->have_studip_perm("tutor", $course_id)) {
+        if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
             $sem = Seminar::GetInstance($course_id);
-            if ($sem->addMember($tutor, "tutor")) {
+            if ($sem->addMember($tutor, 'tutor')) {
                 // Check if we need to add user to course parent as well.
                 if ($sem->parent_course) {
                     $this->addTutor($tutor, $sem->parent_course);
                 }
 
-                return MessageBox::success(sprintf(_("%s wurde hinzugefügt."),get_title_for_status('tutor', 1, $sem->status)));
+                return true;
             }
         }
         return false;
     }
 
-    private function addDeputy($deputy, $course_id) {
+    private function addDeputy($deputy, $course_id)
+    {
         //Vertretung hinzufügen:
-        if ($GLOBALS['perm']->have_studip_perm("dozent", $course_id)) {
+        if ($GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
             $sem = Seminar::GetInstance($course_id);
             if (addDeputy($deputy, $sem->getId())) {
-                return MessageBox::success(sprintf(_("%s wurde hinzugefügt."), get_title_for_status('deputy', 1, $sem->status)));
+                return true;
             }
         }
         return false;
     }
 
-    private function addTeacher($dozent, $course_id) {
-        $deputies_enabled = get_config('DEPUTIES_ENABLE');
+    private function addTeacher($dozent, $course_id)
+    {
+        $deputies_enabled = Config::get()->DEPUTIES_ENABLE;
         $sem = Seminar::GetInstance($course_id);
-        if($GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
-            if ($sem->addMember($dozent, "dozent")) {
+        if ($GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
+            if ($sem->addMember($dozent, 'dozent')) {
                 // Check if we need to add user to course parent as well.
                 if ($sem->parent_course) {
                     $this->addTeacher($dozent, $sem->parent_course);
@@ -589,7 +627,7 @@ class Course_BasicdataController extends AuthenticatedController
                         deleteDeputy($dozent, $course_id);
                     }
                     // Add default deputies of the chosen lecturer...
-                    if (get_config('DEPUTIES_DEFAULTENTRY_ENABLE')) {
+                    if (Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
                         $deputies  = getDeputies($dozent);
                         $lecturers = $sem->getMembers('dozent');
                         foreach ($deputies as $deputy) {
@@ -603,7 +641,7 @@ class Course_BasicdataController extends AuthenticatedController
                     }
                 }
 
-                return MessageBox::success(sprintf(_('%s wurde hinzugefügt.'), get_title_for_status('dozent', 1)));
+                return true;
             }
         }
         return false;
