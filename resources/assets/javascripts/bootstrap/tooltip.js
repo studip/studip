@@ -25,7 +25,15 @@ $(document).on('mouseenter mouseleave', '[data-tooltip],.tooltip:has(.tooltip-co
     if (!data.tooltipObject) {
         // If tooltip has not yet been created (first hover), obtain it's
         // contents and create the actual tooltip object.
-        content = $('<div/>').text(data.tooltip || $(this).attr('title')).html();
+        if (!data.tooltip || !$.isPlainObject(data.tooltip)) {
+            content = $('<div/>').text(data.tooltip || $(this).attr('title')).html();
+        } else if (data.tooltip.hasOwnProperty('html')) {
+            content = data.tooltip.html;
+        } else if (data.tooltip.hasOwnProperty('text')) {
+            content = data.tooltip.text;
+        } else {
+            throw "Invalid content for tooltip via data";
+        }
         if (!content) {
             content = $(this).find('.tooltip-content').remove().html();
             $(this).attr('data-tooltip', content);

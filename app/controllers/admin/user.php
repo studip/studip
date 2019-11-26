@@ -1694,7 +1694,9 @@ class Admin_UserController extends AuthenticatedController
                 $title = '• ' . implode("\n• ", array_map(function ($role) {
                     return $role->rolename;
                 }, $roles));
-                $roles_attributes['data-tooltip'] = $title;
+                $roles_attributes['data-tooltip'] = json_encode([
+                    'html' => htmlReady($title, true, true),
+                ]);
             }
 
             $views->addLink(
