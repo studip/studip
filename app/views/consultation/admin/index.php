@@ -65,6 +65,11 @@
                     _('Druckansicht anzeigen'),
                     Icon::create('print'),
                     ['target' => '_blank']
+                )->condition($block['block']->has_bookings)->addLink(
+                    $controller->mailURL($block['block']),
+                    _('Nachricht schreiben'),
+                    Icon::create('mail'),
+                    ['data-dialog' => 'size=50%']
                 )->condition($block['block']->has_bookings && !$block['block']->is_expired)->addLink(
                     $controller->cancel_blockURL($block['block'], $page),
                     _('Sprechstundentermine absagen'),
@@ -144,6 +149,11 @@
                     _('Grund bearbeiten'),
                     Icon::create('edit'),
                     ['data-dialog' => 'size=auto']
+                )->condition($slot->has_bookings)->addLink(
+                    $controller->mailURL($block['block'], $slot),
+                    _('Nachricht schreiben'),
+                    Icon::create('mail'),
+                    ['data-dialog' => 'size=50%']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
                     $controller->cancel_slotURL($block['block'], $slot, $page),
                     _('Sprechstundentermin absagen'),

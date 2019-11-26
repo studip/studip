@@ -530,6 +530,43 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
+    public function mail_action($block_id, $slot_id = null)
+    {
+        $block = $this->loadBlock($block_id);
+
+        $default_subject = sprintf(
+            _('Sprechstundentermin am %s'),
+            strftime('%x', $block->start)
+        );
+
+        $rec_uname = [];
+        foreach ($block->slots as $slot) {
+            if ($slot_id && $slot->id != $slot_id) {
+                continue;
+            }
+
+            // Adjust subject
+            if ($slot_id) {
+                $default_subject = sprintf(
+                    _('Sprechstundentermin am %s um %s'),
+                    strftime('%x', $slot->start_time),
+                    strftime('%R', $slot->start_time)
+                );
+            }
+
+            foreach ($slot->bookings as $booking) {
+                $rec_uname[] = $booking->user->username;
+            }
+        }
+
+        $rec_uname = array_unique($rec_uname);
+
+        $this->redirect(URLHelper::getURL(
+            'dispatch.php/messages/write',
+            compact('rec_uname', 'default_subject')
+        ));
+    }
+
     private function setupSidebar($action, $config)
     {
         $sidebar = Sidebar::get();
