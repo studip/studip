@@ -493,19 +493,11 @@
 
     // Apply defaults including date picker handlers
     defaults = $.extend(locale, {
-        beforeShow: function () {
+        beforeShow: function (input, inst) {
             STUDIP.UI.Datepicker.refresh();
             STUDIP.UI.DateTimepicker.refresh();
             STUDIP.UI.Timepicker.refresh();
-        },
-        onSelect: function (value, instance) {
-            if (value !== instance.lastVal) {
-                $(this).change();
-            }
-        }
-    });
-    $.datepicker.setDefaults($.extend(defaults, {
-        beforeShow: function (input, inst) {
+
             if ($(input).parents('.ui-dialog').length > 0) {
                 return;
             }
@@ -515,6 +507,13 @@
                 'z-index': 1002
             });
         },
+        onSelect: function (value, instance) {
+            if (value !== instance.lastVal) {
+                $(this).change();
+            }
+        }
+    });
+    $.datepicker.setDefaults($.extend(defaults, {
         onClose: function (date, inst) {
             $(this).one('click.picker', function () {
                 $(this).datepicker('show');
