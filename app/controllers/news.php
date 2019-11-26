@@ -753,7 +753,7 @@ class NewsController extends StudipController
                 }
             }
         } else {
-            $tmp_result = search_range($term, true);
+            $tmp_result = search_range($term, true) ?: [];
             // add users
             if (mb_stripos(get_fullname(), $term) !== false) {
                 $tmp_result[$GLOBALS['user']->id] = [
