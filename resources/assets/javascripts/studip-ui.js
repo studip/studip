@@ -505,6 +505,16 @@
         }
     });
     $.datepicker.setDefaults($.extend(defaults, {
+        beforeShow: function (input, inst) {
+            if ($(input).parents('.ui-dialog').length > 0) {
+                return;
+            }
+
+            $(input).css({
+                'position': 'relative',
+                'z-index': 1002
+            });
+        },
         onClose: function (date, inst) {
             $(this).one('click.picker', function () {
                 $(this).datepicker('show');
