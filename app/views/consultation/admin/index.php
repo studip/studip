@@ -16,7 +16,7 @@
     <colgroup>
         <col width="24px">
         <col width="10%">
-        <col width="10%">
+        <col width="12%">
         <col>
         <col width="48px">
     </colgroup>
@@ -38,12 +38,11 @@
     </thead>
 <? foreach ($blocks as $block): ?>
     <tbody id="block-<?= htmlReady($block['block']->id) ?>" <? if ($block['block']->is_expired) echo 'class="block-is-expired"'; ?>>
-        <tr>
+        <tr class="<? if ($block['block']->has_bookings) echo 'is-occupied'; ?>">
             <th>
                 <input type="checkbox" id="slots-<?= htmLReady($block['block']->id) ?>"
                        class="studip-checkbox"
-                       data-proxyfor="#block-<?= htmlReady($block['block']->id) ?> :checkbox[name^=slot]"
-                       <? if ($block['block']->has_bookings && !$block['block']->is_expired) echo 'disabled'; ?>>
+                       data-proxyfor="#block-<?= htmlReady($block['block']->id) ?> :checkbox[name^=slot]">
                 <label for="slots-<?= htmlReady($block['block']->id) ?>"></label>
             </th>
             <th colspan="3">
@@ -69,7 +68,7 @@
                     $controller->mailURL($block['block']),
                     _('Nachricht schreiben'),
                     Icon::create('mail'),
-                    ['data-dialog' => 'size=50%']
+                    ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($block['block']->has_bookings && !$block['block']->is_expired)->addLink(
                     $controller->cancel_blockURL($block['block'], $page),
                     _('Sprechstundentermine absagen'),
@@ -87,12 +86,11 @@
             </th>
         </tr>
     <? foreach ($block['slots'] as $slot): ?>
-        <tr <? if ($slot->is_expired) echo 'class="slot-is-expired"'; ?>>
+        <tr class="<? if ($slot->is_expired) echo 'slot-is-expired'; ?>  <? if (count($slot->bookings) > 0) echo 'is-occupied'; ?>">
             <td>
                 <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
                        class="studip-checkbox"
-                       value="<?= htmlReady($block['block']->id) ?>-<?= htmlReady($slot->id) ?>"
-                       <? if (count($slot->bookings) > 0 && !$slot->is_expired) echo 'disabled'; ?>>
+                       value="<?= htmlReady($block['block']->id) ?>-<?= htmlReady($slot->id) ?>">
                 <label for="slot-<?= htmlReady($slot->id) ?>"></label>
             </td>
             <td>
@@ -153,7 +151,7 @@
                     $controller->mailURL($block['block'], $slot),
                     _('Nachricht schreiben'),
                     Icon::create('mail'),
-                    ['data-dialog' => 'size=50%']
+                    ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
                     $controller->cancel_slotURL($block['block'], $slot, $page),
                     _('Sprechstundentermin absagen'),
@@ -175,18 +173,25 @@
 <? endforeach; ?>
     <tfoot>
         <tr>
-            <td colspan="3">
+            <td colspan="5">
+                <?= Studip\Button::create(_('Nachricht schreiben'), 'mail', [
+                    'data-dialog'              => 'size=50%',
+                    'data-activates-condition' => '.consultation-overview tbody tr.is-occupied:has(:checkbox:checked)',
+                    'formaction'               => $controller->mailURL('bulk'),
+                ]) ?>
                 <?= Studip\Button::create(_('Löschen'), 'delete', [
-                    'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                    'data-confirm'             => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                    'data-activates-condition' => '.consultation-overview tbody tr:not(.is-occupied):has(:checkbox:checked)',
                 ]) ?>
-            </td>
-            <td colspan="2" class="actions">
-                <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
-                    'num_postings' => $count,
-                    'perPage'      => $limit,
-                    'page'         => $page,
-                    'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->url_for("consultation/admin/{$current_action}/§u"))),
-                ]) ?>
+
+                <div class="actions">
+                    <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
+                        'num_postings' => $count,
+                        'perPage'      => $limit,
+                        'page'         => $page,
+                        'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->url_for("consultation/admin/{$current_action}/§u"))),
+                    ]) ?>
+                </div>
             </td>
         </tr>
     </tfoot>

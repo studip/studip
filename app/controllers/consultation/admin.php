@@ -504,24 +504,25 @@ class Consultation_AdminController extends ConsultationController
             throw new MethodNotAllowedException();
         }
 
-        $block_ids = Request::intArray('block-id');
-        $slot_ids  = Request::getArray('slot-id');
-
-        foreach ($this->loadBlock($block_ids) as $block) {
-            if ($block) {
-                $block->delete();
+        $deleted = 0;
+        $skipped = 0;
+        foreach ($this->getSlotsFromBulk() as $slot) {
+            if ($slot->is_expired || !$slot->has_bookings) {
+                $deleted += $slot->delete();
+            } else {
+                $skipped += 1;
             }
         }
 
-        foreach ($slot_ids as $slot_id) {
-            list($block_id, $slot_id) = explode('-', $slot_id);
-            try {
-                $this->loadSlot($block_id, $slot_id)->delete();
-            } catch (Exception $e) {
-            }
+        if ($deleted > 0) {
+            PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
         }
-
-        PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+        if ($skipped > 0) {
+            PageLayout::postInfo(
+                _('Einige Sprechstundentermine konnten nicht gelöscht werden, da sie belegt sind'),
+                [_('Sie müssen diese Termine erst absagen, bevor Sie sie löschen können.')]
+            );
+        }
 
         if ($expired) {
             $this->redirect("consultation/admin/expired/{$page}");
@@ -532,39 +533,91 @@ class Consultation_AdminController extends ConsultationController
 
     public function mail_action($block_id, $slot_id = null)
     {
-        $block = $this->loadBlock($block_id);
+        // Get matching slots
+        if ($block_id === 'bulk') {
+            $slots = $this->getSlotsFromBulk();
+        } else {
+            $block = $this->loadBlock($block_id);
 
-        $default_subject = sprintf(
-            _('Sprechstundentermin am %s'),
-            strftime('%x', $block->start)
-        );
+            foreach ($block->slots as $slot) {
+                if ($slot_id && $slot->id != $slot_id) {
+                    continue;
+                }
 
-        $rec_uname = [];
-        foreach ($block->slots as $slot) {
-            if ($slot_id && $slot->id != $slot_id) {
-                continue;
-            }
-
-            // Adjust subject
-            if ($slot_id) {
-                $default_subject = sprintf(
-                    _('Sprechstundentermin am %s um %s'),
-                    strftime('%x', $slot->start_time),
-                    strftime('%R', $slot->start_time)
-                );
-            }
-
-            foreach ($slot->bookings as $booking) {
-                $rec_uname[] = $booking->user->username;
+                $slots[] = $slots;
             }
         }
 
-        $rec_uname = array_unique($rec_uname);
+        // Get user names and timestamps
+        $p_rec = [];
+        $timestamps = [];
+        foreach ($slots as $slot) {
+            if (count($slot->bookings) === 0) {
+                continue;
+            }
 
+            $timestamps[] = $slot->start_time;
+            foreach ($slot->bookings as $booking) {
+                $p_rec[] = $booking->user->username;
+            }
+        }
+
+        // Get unique usernames
+        $p_rec = array_unique($p_rec);
+
+        // Get correct default subject
+        $default_subject = _('Sprechstundentermin');
+        if (count($timestamps) === 1) {
+            $default_subject = sprintf(
+                _('Sprechstundentermin am %s um %s'),
+                strftime('%x', $timestamps[0]),
+                strftime('%R', $timestamps[0])
+            );
+        } else {
+            $days = array_unique(array_map(function ($timestamp) {
+                return strftime('%x', $timestamp);
+            }, $timestamps));
+            if (count($days) === 1) {
+                $default_subject = sprintf(
+                    _('Sprechstundentermin am %s'),
+                    $days[0]
+                );
+            }
+        }
+
+        // Redirect to message write
+        $_SESSION['sms_data'] = compact('p_rec');
+        page_close();
         $this->redirect(URLHelper::getURL(
             'dispatch.php/messages/write',
-            compact('rec_uname', 'default_subject')
+            compact('default_subject')
         ));
+    }
+
+    private function getSlotsFromBulk()
+    {
+        $slots = [];
+
+        $block_ids = Request::intArray('block-id');
+        $slot_ids  = Request::getArray('slot-id');
+
+        foreach ($this->loadBlock($block_ids) as $block) {
+            foreach ($block->slots as $slot) {
+                $slots[$slot->id] = $slot;
+            }
+        }
+
+        foreach ($slot_ids as $slot_id) {
+            list($block_id, $slot_id) = explode('-', $slot_id);
+            try {
+                if ($slot = $this->loadSlot($block_id, $slot_id)) {
+                    $slots[$slot->id] = $slot;
+                }
+            } catch (Exception $e) {
+            }
+        }
+
+        return $slots;
     }
 
     private function setupSidebar($action, $config)
