@@ -1,3 +1,5 @@
+/*jslint esversion: 6*/
+
 import Dialog from './dialog.js';
 
 const Files = {
@@ -96,42 +98,16 @@ const Files = {
                     }
                     return xhr;
                 }
-            }).done(function(json) {
+            }).done(function (json) {
                 $('.file_upload_window .uploadbar').css('background-size', '100% 100%');
-
-                if (json.redirect) {
-                    Dialog.fromURL(json.redirect, {
-                        title:
-                            json.window_title ||
-                            (json.new_html.length > 1
-                                ? 'Lizenz auswählen: %s Dateien'.toLocaleString().replace('%s', json.new_html.length)
-                                : 'Lizenz auswählen'.toLocaleString())
-                    });
-                } else if (json.message) {
-                    $('.file_upload_window .uploadbar')
-                        .hide()
-                        .parent()
-                        .append(json.message);
-                } else {
-                    Dialog.close();
-                }
-
-                if (json.new_html) {
-                    $.each(json.new_html, function(index, tr) {
-                        Files.addFile(tr, index * 200, !json.redirect);
-                    });
-                }
             });
         } else {
             $('.file_upload_window .uploadbar').hide();
         }
     },
-    addFile: function(payload, delay, hide_dialog = true) {
-        if (delay === undefined) {
-            delay = 0;
-        }
-        var redirect = false,
-            html = [];
+    addFile: (payload, delay = 0, hide_dialog = true) => {
+        var redirect = false;
+        var html = [];
 
         if (payload.hasOwnProperty('html') && payload.html !== undefined) {
             redirect = payload.redirect;
@@ -147,53 +123,96 @@ const Files = {
         if ($('table.documents').length > 0) {
             // on files page
 
-            if (typeof html !== 'array' && typeof html !== 'object') {
-                html = [html];
-            }
-            $.each(html, function(i, value) {
-                var tr = $(value).attr('id');
-                if ($(document.getElementById(tr)).length > 0) {
-                    $(document.getElementById(tr)).replaceWith(value);
-                } else {
-                    $(value)
-                        .hide()
-                        .appendTo('.documents[data-folder_id] tbody.files')
-                        .delay(500 + delay + i * 200)
-                        .fadeIn(300);
-                }
-            });
-
-            $('.subfolders .empty').hide('fade');
-
-            // update tablesorter cache
-            $('table.documents').trigger('update');
-            $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
-        } else {
+            Files.addFileDisplay(html, delay);
+        } else if (payload.url) {
             //not on files page
 
-            if (payload.url) {
-                Dialog.handlers.header['X-Location'](payload.url);
-            }
+            Dialog.handlers.header['X-Location'](payload.url);
+        }
+    },
+    addFileDisplay: (html, delay = 0) => {
+        if (!Array.isArray(html)) {
+            html = [html];
         }
 
-        $(document).trigger('refresh-handlers');
-    },
-    removeFile: function(fileref_id) {
-        $.post(STUDIP.URLHelper.getURL('dispatch.php/file/delete/' + fileref_id)).done(function() {
-            $('.documents tbody.files > tr#fileref_' + fileref_id).fadeOut(300, function() {
-                $(this).remove();
-                if ($('.subfolders > *').length + $('.files > *').length < 2) {
-                    $('.subfolders .empty').show('fade');
-                }
+        html.forEach((value, i) => {
+            var id = $(value).attr('id');
+            if ($(document.getElementById(id)).length > 0) {
+                $(document.getElementById(id)).replaceWith(value);
+            } else {
+                $(value)
+                    .hide()
+                    .appendTo('.documents[data-folder_id] tbody.files')
+                    .delay(500 + delay + i * 200)
+                    .fadeIn(300);
+            }
+        });
 
-                $(document).trigger('refresh-handlers');
+        $('.subfolders .empty').hide('fade');
+
+        $(document).trigger('refresh-handlers');
+
+        // update tablesorter cache
+        $('table.documents').trigger('update');
+        $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
+    },
+    // removeFile: function(fileref_id) {
+    //     $.post(STUDIP.URLHelper.getURL('dispatch.php/file/delete/' + fileref_id)).done(function() {
+    //         Files.removeFileDisplay(fileref_id);
+    //     });
+    // },
+    removeFileDisplay: function (ids) {
+        if (!Array.isArray(ids)) {
+            ids = [ids];
+        }
+
+        var count = ids.length;
+        ids.forEach((id) => {
+            $(`.documents tbody.files > tr#fileref_${id}`).fadeOut(300, function () {
+                $(this).remove();
+                if (--count === 0) {
+                    if ($('.subfolders > *').length + $('.files > *').length < 2) {
+                        $('.subfolders .empty').show('fade');
+                    }
+
+                    $(document).trigger('refresh-handlers');
+                    // update tablesorter cache
+                    $('table.documents').trigger('update');
+                    $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
+                }
             });
         });
     },
-    reloadPage: function() {
-        Dialog.close();
-        location.reload();
+    addFolderDisplay: function (html, delay = 0) {
+        if (!Array.isArray(html)) {
+            html = [html];
+        }
+
+        html.forEach((value, i) => {
+            var id = $(value).attr('id');
+            if ($(document.getElementById(id)).length > 0) {
+                $(document.getElementById(id)).replaceWith(value);
+            } else {
+                $(value)
+                    .hide()
+                    .appendTo('.documents[data-folder_id] tbody.subfolders')
+                    .delay(500 + delay + i * 200)
+                    .fadeIn(300);
+            }
+        });
+
+        $('.subfolders .empty').hide('fade');
+
+        $(document).trigger('refresh-handlers');
+
+        // update tablesorter cache
+        $('table.documents').trigger('update');
+        $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
     },
+    // reloadPage: function() {
+    //     Dialog.close();
+    //     location.reload();
+    // },
     getFolders: function(name) {
         var element_name = 'folder_select_' + name,
             context = $('#' + element_name + '-destination').val(),

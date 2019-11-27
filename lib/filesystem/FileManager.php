@@ -1010,7 +1010,7 @@ class FileManager
                 $errors[] = sprintf(
                     _('Ein Ordner vom Typ %s kann nicht in einem Ordner vom Typ %s erzeugt werden!'),
                     get_class($sub_folder_type),
-                    'StandardFolder'
+                    get_class($destination_folder)
                 );
             }
         }

@@ -735,7 +735,7 @@ class FileArchiveManager
                 $result = FileManager::createSubFolder(
                     $current_folder,
                     $user,
-                    get_class($current_folder),
+                    get_class($current_folder) === RootFolder::class ? StandardFolder::class : get_class($current_folder),
                     $new_folder_name
                 );
 
@@ -847,7 +847,7 @@ class FileArchiveManager
         // in the current folder or one of its subfolders:
         $file_refs = [];
 
-        for($i = 0; $i < $archive->numFiles; $i++) {
+        for ($i = 0; $i < $archive->numFiles; $i++) {
             $entry_info = $archive->statIndex($i);
             $entry_info_name = $archive->convertArchiveFilename($entry_info['name']);
             // split the entry's path into its path and its name component:

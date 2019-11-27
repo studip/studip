@@ -137,28 +137,33 @@ class FileController extends AuthenticatedController
                         ),
                         array_map(function ($file) {
                             return htmlReady($file->name);
-                        }, $storedFiles)
+                        }, $storedFiles),
+                        true
                     );
                 }
             } else {
-                $this->render_json(['message' => (string)MessageBox::error(
-                    _('Ein Systemfehler ist beim Upload aufgetreten.')
-
-                )]);
+                $this->response->add_header('X-Filesystem-Changes', json_encode(['message' => null]));
+                $this->render_json([
+                    'message' => (string) MessageBox::error(
+                        _('Ein Systemfehler ist beim Upload aufgetreten.')
+                    )
+                ]);
                 return;
             }
 
             if (Request::isXhr()) {
-                $output = ['new_html' => []];
+                $changes = ['added_files' => null];
+                $output  = ['added_files' => []];
 
                 if (count($storedFiles) === 1
-                        && (strtolower(substr($storedFiles[0]['name'], -4)) === ".zip")
-                        && ($folder->range_id === $GLOBALS['user']->id || Seminar_Perm::get()->have_studip_perm('tutor', $folder->range_id))) {
+                    && strtolower(substr($storedFiles[0]['name'], -4)) === '.zip'
+                    && ($folder->range_id === $GLOBALS['user']->id || Seminar_Perm::get()->have_studip_perm('tutor', $folder->range_id)))
+                {
                     $ref_ids = [];
                     foreach ($storedFiles as $file_ref) {
                         $ref_ids[] = $file_ref->getId();
                     }
-                    $output['redirect'] = $this->url_for('file/unzipquestion', [
+                    $changes['redirect'] = $this->url_for('file/unzipquestion', [
                         'file_refs' => $ref_ids
                     ]);
                 } elseif (in_array($folder->range_type, ['course', 'institute', 'user'])) {
@@ -166,19 +171,26 @@ class FileController extends AuthenticatedController
                     foreach ($storedFiles as $file_ref) {
                         $ref_ids[] = $file_ref->getId();
                     }
-                    $output['redirect'] = $this->url_for('file/edit_license', [
+                    $changes['redirect'] = $this->url_for("file/edit_license/{$folder->getId()}", [
                         'file_refs' => $ref_ids,
                     ]);
+                } else {
+                    $changes['close_dialog'] = true;
                 }
 
                 foreach ($storedFiles as $fileref) {
-                    $this->file_ref           = $fileref;
-                    $this->current_folder     = $folder;
-                    $this->marked_element_ids = [];
-
-                    $output['new_html'][] = ['html' => $this->render_template_as_string('files/_fileref_tr')];
+                    $output['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
+                        'controller'         => $this,
+                        'file_ref'           => $fileref,
+                        'current_folder'     => $folder,
+                        'marked_element_ids' => [],
+                    ]);
                 }
 
+                $this->response->add_header(
+                    'X-Filesystem-Changes',
+                    json_encode($changes)
+                );
                 $this->render_json($output);
             }
         }
@@ -194,6 +206,8 @@ class FileController extends AuthenticatedController
         $this->current_folder = $this->file_ref->folder->getTypedFolder();
 
         if (Request::isPost()) {
+            $changes = [];
+
             if (Request::submitted('unzip')) {
                 //unzip!
                 $file_refs = FileArchiveManager::extractArchiveFileToFolder(
@@ -209,15 +223,64 @@ class FileController extends AuthenticatedController
                 }
 
                 //Delete the original zip file:
+                $changes['removed_files'] = [$this->file_ref->id];
                 $this->file_ref->delete();
             } else {
                 $ref_ids = [$this->file_ref->getId()];
             }
 
             $this->flash->set('file_refs', $ref_ids);
-            $this->redirect(
-                $this->url_for('file/edit_license')
-            );
+
+            if (Request::isXhr()) {
+                $topFolder = null;
+
+                $changes['redirect'] = $this->url_for("file/edit_license/{$this->current_folder->getId()}");
+                $changes['added_files'] = null;
+                $changes['added_folders'] = null;
+
+                $payload = [
+                    'add_files'   => [],
+                    'add_folders' => [],
+                ];
+                $added_folders = [];
+                foreach ($file_refs as $fileref) {
+                    if ($fileref->folder->id === $this->current_folder->id) {
+                        $payload['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
+                            'controller'         => $this,
+                            'file_ref'           => $fileref,
+                            'current_folder'     => $this->current_folder,
+                            'marked_element_ids' => [],
+                        ]);
+                    } elseif (
+                        $fileref->folder->parentfolder->id === $this->current_folder->id
+                        && !in_array($fileref->folder->id, $added_folders)
+                    ) {
+                        if ($topFolder === null) {
+                            $topFolder = $this->current_folder;
+                            while ($topFolder->parentfolder !== null) {
+                                $topFolder = $topFolder->parentFolder;
+                            }
+                        }
+
+                        $payload['added_folders'][] = $this->get_template_factory()->render('files/_folder_tr', [
+                            'controller'         => $this,
+                            'folder'             => $fileref->getFolderType(),
+                            'topFolder'          => $topFolder,
+                            'marked_element_ids' => [],
+                        ]);
+
+                        $added_folders[] = $fileref->folder->id;
+                    }
+                }
+
+                $this->response->add_header(
+                    'X-Filesystem-Changes',
+                    json_encode($changes)
+                );
+                $this->render_json($payload);
+            } else {
+                $this->redirect("file/edit_license/{$this->current_folder->getId()}");
+            }
         }
     }
 
@@ -995,7 +1058,10 @@ class FileController extends AuthenticatedController
             }
             if ($file_ref instanceof FileRef) {
                 if (in_array($this->to_folder_type->range_type, ['course', 'institute']) && !$file_ref->content_terms_of_use_id) {
-                    $this->redirect($this->url_for('file/edit_license', ['file_refs' => [$file_ref->id]]));
+                    $this->redirect($this->url_for(
+                        "file/edit_license/{$this->to_folder_type->getId()}",
+                        ['file_refs' => [$file_ref->id]]
+                    ));
                     return;
                 } elseif (Request::isXhr()) {
                     $this->file_ref = $file_ref;
@@ -1012,7 +1078,7 @@ class FileController extends AuthenticatedController
                         }
                     }
                     $payload = [
-                        'html'     => $this->render_template_as_string("files/_fileref_tr"),
+                        'html'     => $this->render_template_as_string('files/_fileref_tr'),
                         'redirect' => $redirects[0],
                         'url'      => $this->generateFilesUrl($this->current_folder, $this->file_ref),
                     ];
@@ -1119,7 +1185,7 @@ class FileController extends AuthenticatedController
         }
     }
 
-    public function edit_license_action()
+    public function edit_license_action($folder_id = null)
     {
         $file_ref_ids = Request::getArray('file_refs');
         if (!$file_ref_ids) {
@@ -1130,6 +1196,7 @@ class FileController extends AuthenticatedController
         $this->file_refs = FileRef::findMany($file_ref_ids);
         $this->folder = $this->file_refs[0]->folder;
         $this->show_description_field = Config::get()->ENABLE_DESCRIPTION_ENTRY_ON_UPLOAD;
+        $this->origin_folder_id = $folder_id;
         if (Request::isPost()) {
             $description = Request::get('description');
             foreach ($this->file_refs as $file_ref) {
@@ -1142,6 +1209,13 @@ class FileController extends AuthenticatedController
             if (Request::isXhr()) {
                 $payload = ['html' => []];
                 foreach ($this->file_refs as $file_ref) {
+                    $folder = $file_ref->folder->getTypedFolder();
+
+                    // Skip files not in current folder (during archive extract)
+                    if ($folder_id && $folder_id !== $folder->getId()) {
+                        continue;
+                    }
+
                     $this->file_ref = $file_ref;
                     $this->current_folder = $file_ref->folder->getTypedFolder();
                     $this->marked_element_ids = [];
@@ -1178,6 +1252,16 @@ class FileController extends AuthenticatedController
                 return $this->redirectToFolder($this->folder);
             }
         }
+
+        PageLayout::setTitle(sprintf(
+            ngettext(
+                'Lizenz auswählen',
+                'Lizenz auswählen: %s Dateien',
+                count($this->file_refs)
+            ),
+            count($this->file_refs)
+        ));
+
         $this->licenses = ContentTermsOfUse::findBySQL("1 ORDER BY position ASC, id ASC");
     }
 

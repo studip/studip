@@ -12,7 +12,7 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
 <?= CSRFProtection::tokenTag() ?>
 <input type="hidden" name="parent_folder_id" value="<?= $topFolder->getId() ?>" >
-<table class="default documents sortable-table" data-sortlist="[[2, 0]]" data-folder_id="<?= htmlReady($topFolder->getId()) ?>">
+<table class="default documents sortable-table" data-sortlist="[[2, 0]]" data-folder_id="<?= htmlReady($topFolder->getId()) ?>" data-shiftcheck>
     <caption>
         <div class="caption-container">
             <?
