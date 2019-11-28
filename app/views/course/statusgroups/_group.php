@@ -5,8 +5,7 @@
                 <input aria-label="<?= _('Gruppe auswählen') ?>"
                        type="checkbox" name="groups[]"
                        class="groupselector" value="<?= $group->id ?>"
-                       id="<?= $group->id ?>"
-                       data-activates="select#batch-groups-action"/>
+                       id="<?= $group->id ?>"/>
             <?php endif ?>
             <a href="<?= ContentBoxHelper::href($group->id) ?>" class="get-group-members"
                     data-group-id="<?= $group->id ?>"
