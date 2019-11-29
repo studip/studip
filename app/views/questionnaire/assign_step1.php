@@ -5,7 +5,7 @@
             <table class="default">
                 <thead>
                     <tr>
-                        <th>
+                        <th class="checkbox">
                             <input type="checkbox" data-proxyfor=".FoundCourseListItem"
                                    id="AskALotPlugin_course_select_proxy"
                                    data-proxyfor="input[name='course_id_list[]']"
@@ -26,7 +26,7 @@
                             $teacher_arr[] = $teacher->getUserFullName();
                         } ?>
                         <tr>
-                            <td>
+                            <td class="checkbox">
                                 <input type="checkbox" name="course_id_list[]"
                                        class="FoundCourseListItem"
                                        value="<?= htmlReady($found_course->id) ?>">

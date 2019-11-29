@@ -27,7 +27,7 @@
         <table class="default sortable-table" data-sortlist="[[2, 1]]">
             <thead>
                 <tr>
-                    <th>
+                    <th class="checkbox">
                         <input type="checkbox"
                                data-proxyfor="input[name='selected_questionnaire_ids[]']"
                                data-activates="#questionnaire-assign-form .step2-button">
@@ -39,7 +39,7 @@
             <tbody>
                 <? foreach ($questionnaires as $questionnaire): ?>
                     <tr>
-                        <td>
+                        <td class="checkbox">
                             <input type="checkbox" name="selected_questionnaire_ids[]"
                                    value="<?= htmlReady($questionnaire->id) ?>"
                                    <?= in_array($questionnaire->id, $selected_questionnaires)
