@@ -3,9 +3,14 @@
     <section>
         <? if ($found_courses): ?>
             <table class="default">
+                <colgroup>
+                    <col width="30px">
+                    <col>
+                    <col>
+                </colgroup>
                 <thead>
                     <tr>
-                        <th class="checkbox">
+                        <th>
                             <input type="checkbox" data-proxyfor=".FoundCourseListItem"
                                    id="AskALotPlugin_course_select_proxy"
                                    data-proxyfor="input[name='course_id_list[]']"
@@ -26,7 +31,7 @@
                             $teacher_arr[] = $teacher->getUserFullName();
                         } ?>
                         <tr>
-                            <td class="checkbox">
+                            <td>
                                 <input type="checkbox" name="course_id_list[]"
                                        class="FoundCourseListItem"
                                        value="<?= htmlReady($found_course->id) ?>">

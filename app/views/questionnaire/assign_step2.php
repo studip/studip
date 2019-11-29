@@ -25,9 +25,14 @@
     <header><h1><?= _('Auswählbare Fragebögen') ?></h1></header>
     <section>
         <table class="default sortable-table" data-sortlist="[[2, 1]]">
+            <colgroup>
+                <col width="30px">
+                <col>
+                <col>
+            </colgroup>
             <thead>
                 <tr>
-                    <th class="checkbox">
+                    <th>
                         <input type="checkbox"
                                data-proxyfor="input[name='selected_questionnaire_ids[]']"
                                data-activates="#questionnaire-assign-form .step2-button">
@@ -39,7 +44,7 @@
             <tbody>
                 <? foreach ($questionnaires as $questionnaire): ?>
                     <tr>
-                        <td class="checkbox">
+                        <td>
                             <input type="checkbox" name="selected_questionnaire_ids[]"
                                    value="<?= htmlReady($questionnaire->id) ?>"
                                    <?= in_array($questionnaire->id, $selected_questionnaires)
