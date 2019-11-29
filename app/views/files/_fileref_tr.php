@@ -121,6 +121,12 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 Icon::create('file+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
                 ['data-dialog' => 'size=auto']
             );
+            $actionMenu->addLink(
+                $file_ref->getDownloadURL('force_download'),
+                _('Link kopieren'),
+                Icon::create('group', 'clickable'),
+                ['class' => 'copyable-link']
+            );
         }
         if ($current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
             $actionMenu->addButton(

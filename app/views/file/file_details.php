@@ -58,13 +58,5 @@
         _('Herunterladen'),
         $file_ref->getDownloadURL('force_download')
     ) ?>
-    <?= Studip\Button::create(
-        _('Link kopieren'),
-        '',
-        [
-            'class' => 'copy-to-clipboard',
-            'data-copy' => $file_ref->getDownloadURL('force_download')
-        ]
-    ) ?>
 <? endif; ?>
 </footer>
