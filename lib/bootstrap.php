@@ -61,7 +61,7 @@ if (isset($_SERVER['SERVER_NAME'])) {
 // default ASSETS_URL, customize if required
 $GLOBALS['ASSETS_URL'] = $ABSOLUTE_URI_STUDIP . 'assets/';
 
-require 'lib/classes/StudipFileloader.php';
+require __DIR__ . '/classes/StudipFileloader.php';
 $added = StudipFileloader::load('config_defaults.inc.php config_local.inc.php', $GLOBALS, compact('STUDIP_BASE_PATH', 'ABSOLUTE_URI_STUDIP', 'ASSETS_URL', 'CANONICAL_RELATIVE_PATH_STUDIP'), true);
 
 // If no ENV setting was found in the config files, assume ENV=production
@@ -92,6 +92,16 @@ if (Studip\ENV === 'development' && !in_array('ASSETS_URL', $added)) {
             $GLOBALS['ASSETS_URL'] = $assets_url;
         }
     }
+}
+
+if (!file_exists($GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php')) {
+    require_once __DIR__ . '/classes/URLHelper.php';
+
+    URLHelper::setBaseUrl($GLOBALS['ABSOLUTE_URI_STUDIP']);
+    header('Location: ' . URLHelper::getURL('install.php'));
+
+    page_close();
+    die;
 }
 
 require __DIR__ . '/bootstrap-autoload.php';
