@@ -40,6 +40,15 @@ class CoursePublicFolder extends StandardFolder
         }
     }
 
+    public function getIcon($role = Icon::DEFAULT_ROLE)
+    {
+        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+               ? 'folder-public-empty'
+               : 'folder-public-full';
+
+        return Icon::create($shape, $role);
+    }
+
     /**
      * CoursePublicFolders are visible for all logged in users.
      *
