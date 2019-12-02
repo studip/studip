@@ -192,7 +192,7 @@ if ($view === 'listall') {
     // Default action: Display WikiPage (+ logic for submission)
     //
     if (empty($keyword)) {
-        $keyword = 'Wiki Startseite'; // display Start page as default
+        $keyword = 'WikiWikiWeb'; // display Start page as default
     }
     releaseLocks($keyword); // kill old locks
     $special = '';
@@ -269,7 +269,7 @@ if ($view === 'listall') {
 $layout = $GLOBALS['template_factory']->open('layouts/base');
 $layout->content_for_layout = ob_get_clean();
 
-if (in_array($cmd, words('abortedit really_delete really_delete_all'))) {
+if (in_array($cmd, words('show abortedit really_delete really_delete_all'))) {
     // redirect to normal view to avoid duplicate edits on reload or back/forward
     header('Location: ' . URLHelper::getURL('', compact('keyword')));
 } else {
