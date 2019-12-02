@@ -139,6 +139,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
+
         $config['has_many']['consultation_blocks'] = [
             'class_name'        => ConsultationBlock::class,
             'assoc_foreign_key' => 'teacher_id',
@@ -147,6 +148,14 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $config['has_many']['consultation_bookings'] = [
             'class_name' => ConsultationBooking::class,
             'on_delete'  => 'delete',
+        ];
+
+        $config['has_and_belongs_to_many']['domains'] = [
+            'class_name'        => 'UserDomain',
+            'thru_table'        => 'user_userdomains',
+            'ondelete'          => 'delete',
+            'onstore'           => 'store',
+            'order_by'          => 'ORDER BY name',
         ];
 
         $info = new UserInfo();

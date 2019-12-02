@@ -395,7 +395,6 @@ use Studip\Button, Studip\LinkButton;
                         htmlReady($usc->semester),
                         _('Fachsemester')
                     ) ?>
-
                     <a href="<?= $controller->url_for('admin/user/delete_studycourse/' . $user->user_id . '/' . $usc->fach_id . '/' . $usc->abschluss_id) ?>">
                         <?= Icon::create('trash')->asImg([
                             'class' => 'text-bottom',
@@ -520,8 +519,8 @@ use Studip\Button, Studip\LinkButton;
             <select name="new_userdomain" id="new_userdomain">
                 <option selected value="none"><?= _('-- Bitte Nutzerdomäne auswählen --') ?></option>
             <? foreach ($domains as $domain) : ?>
-                <option value="<?= $domain->getID() ?>">
-                    <?= htmlReady(my_substr($domain->getName(), 0, 50)) ?>
+                <option value="<?= $domain->id ?>">
+                    <?= htmlReady(my_substr($domain->name, 0, 50)) ?>
                 </option>
             <? endforeach ?>
             </select>
@@ -533,9 +532,9 @@ use Studip\Button, Studip\LinkButton;
             <ol class="default">
             <? foreach ($userdomains as $i => $domain): ?>
                 <li>
-                    <?= htmlReady($domain->getName()) ?>
+                    <?= htmlReady($domain->name) ?>
 
-                    <a href="<?= $controller->url_for('admin/user/delete_userdomain/' . $user->user_id . '?domain_id=' . $domain->getID()) ?>">
+                    <a href="<?= $controller->url_for('admin/user/delete_userdomain/' . $user->id, ['domain_id' => $domain->id]) ?>">
                         <?= Icon::create('trash')->asImg([
                             'class' => 'text-bottom',
                             'title' => _('Aus dieser Nutzerdomäne austragen'),

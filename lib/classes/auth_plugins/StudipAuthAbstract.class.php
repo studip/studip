@@ -396,17 +396,16 @@ class StudipAuthAbstract {
             $old_domains = UserDomain::getUserDomainsForUser($uid);
 
             foreach ($old_domains as $domain) {
-                if (!in_array($domain->getID(), $user_domains)) {
+                if (!in_array($domain->id, $user_domains)) {
                     $domain->removeUser($uid);
                 }
             }
 
             foreach ($user_domains as $user_domain) {
                 $domain = new UserDomain($user_domain);
-                $name = $domain->getName();
 
-                if (!isset($name)) {
-                    $domain->setName($user_domain);
+                if ($domain->isNew()) {
+                    $domain->name = $user_domain;
                     $domain->store();
                 }
 

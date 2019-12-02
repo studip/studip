@@ -23,11 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // Define constants for visibility states.
-define("VISIBILITY_ME", 1);
-define("VISIBILITY_BUDDIES", 2);
-define("VISIBILITY_DOMAIN", 3);
-define("VISIBILITY_STUDIP", 4);
-define("VISIBILITY_EXTERN", 5);
+define('VISIBILITY_ME', 1);
+define('VISIBILITY_BUDDIES', 2);
+define('VISIBILITY_DOMAIN', 3);
+define('VISIBILITY_STUDIP', 4);
+define('VISIBILITY_EXTERN', 5);
 
 /*
  * A function to determine a users visibility
@@ -37,8 +37,7 @@ define("VISIBILITY_EXTERN", 5);
  */
 function get_visibility_by_id ($user_id)
 {
-    global $perm;
-    if ($perm->have_perm('root')) {
+    if ($GLOBALS['perm']->have_perm('root')) {
         return true;
     }
 
@@ -56,10 +55,9 @@ function get_visibility_by_id ($user_id)
  * @param   $username   username
  * @returns boolean true: user is visible, false: user is not visible
  */
-function get_visibility_by_username ($username)
+function get_visibility_by_username($username)
 {
-    global $perm;
-    if ($perm->have_perm('root')) {
+    if ($GLOBALS['perm']->have_perm('root')) {
         return true;
     }
 
@@ -79,36 +77,24 @@ function get_visibility_by_username ($username)
  * @returns boolean true: state means 'visible', false: state means 'invisible'
  */
 function get_visibility_by_state ($state, $user_id) {
-    global $auth;
-
-    $same_domain = true;
-    $my_domains = UserDomain::getUserDomainsForUser($auth->auth['uid']);
-    $user_domains = UserDomain::getUserDomainsForUser($user_id);
-
-    if (count($my_domains) > 0 || count($user_domains) > 0) {
-        $same_domain = count(array_intersect($user_domains, $my_domains)) > 0;
+    // Globally visible, no need for futher checks.
+    if ($state === 'global') {
+        return true;
     }
+
+    $same_domain = UserDomain::checkUserVisibility(
+        User::find($user_id)->domains,
+        User::find($GLOBALS['user']->id)->domains
+    );
 
     switch ($state) {
-        case "global":
-            return true;
-            break;
-        case "yes":
-        case "always":
+        case 'yes':
+        case 'always':
             return $same_domain;
-            break;
-        case "unknown":
-            return $same_domain && get_config('USER_VISIBILITY_UNKNOWN');
-            break;
-        case "no":
-        case "never":
-            return false;
-            break;
-
-        default:
-            return false;
-            break;
+        case 'unknown':
+            return $same_domain && Config::get()->USER_VISIBILITY_UNKNOWN;
     }
+
     return false;
 }
 
@@ -116,13 +102,14 @@ function get_visibility_by_state ($state, $user_id) {
  * This function returns a query-snip for selecting with current visibility rights
  * @returns string  returns a query string
  */
-function get_vis_query($table_alias = 'auth_user_md5', $context='') {
+function get_vis_query($table_alias = 'auth_user_md5', $context = '') {
     global $auth, $perm;
 
-    if ($perm->have_perm("root")) return "1";
+    if ($GLOBALS['perm']->have_perm('root')) {
+        return '1';
+    }
 
-    $my_domains = UserDomain::getUserDomainsForUser($auth->auth['uid']);
-    $query = "$table_alias.visible = 'global'";
+    $query = "{$table_alias}.visible = 'global'";
 
     /*
      *  Check if the user has set own visibilities or if the system default
@@ -130,42 +117,65 @@ function get_vis_query($table_alias = 'auth_user_md5', $context='') {
      */
     if ($context) {
         $context_default = (int) get_config(mb_strtoupper($context) . '_VISIBILITY_DEFAULT');
-        $contextQuery = " AND (IFNULL(user_visibility.$context, ".
-            "$context_default) = 1 OR $table_alias.visible = 'always')";
+        $contextQuery = " AND (IFNULL(user_visibility.{$context}, {$context_default}) = 1
+                               OR {$table_alias}.visible = 'always')";
     }
 
-    // are users with visibility "unknown" treated as visible?
-    $unknown = get_config('USER_VISIBILITY_UNKNOWN');
+    $my_domains = UserDomain::getUserDomainsForUser($GLOBALS['user']->id);
+    $restricted = count($my_domains) > 0;
 
+    $my_domain_ids = [];
     foreach ($my_domains as $domain) {
-        $my_domain_ids[] = $domain->getID();
+        if (!$domain->restricted_access) {
+            $restricted = false;
+        } else {
+            $my_domain_ids[] = $domain->id;
+        }
     }
 
-    if (count($my_domains) == 0) {
-        $query .= " OR NOT EXISTS (SELECT * FROM user_userdomains WHERE user_id = $table_alias.user_id)";
-    } else {
-        $query .= " OR EXISTS (SELECT * FROM user_userdomains WHERE user_id = $table_alias.user_id
-                    AND userdomain_id IN ('".implode("','", $my_domain_ids)."'))";
+    if (!$restricted) {
+        $query .= " OR NOT EXISTS (
+                     SELECT *
+                     FROM user_userdomains
+                     JOIN userdomains USING (userdomain_id)
+                     WHERE user_id = {$table_alias}.user_id
+                  ) OR EXISTS (
+                      SELECT *
+                      FROM user_userdomains
+                      JOIN userdomains USING (userdomain_id)
+                      WHERE user_id = {$table_alias}.user_id
+                      AND restricted_access = 0
+                  )";
+    }
+    if (count($my_domain_ids) > 0) {
+        $query .= " OR EXISTS (
+                     SELECT *
+                     FROM user_userdomains
+                     WHERE user_id = {$table_alias}.user_id
+                       AND userdomain_id IN (" . DBManager::get()->quote($my_domain_ids) . ")
+                   )";
     }
 
-    $query .= " AND ($table_alias.visible = 'always' OR $table_alias.visible = 'yes'";
 
-    if ($unknown) {
-        $query .= " OR $table_alias.visible = 'unknown'";
+    $allowed = ['always', 'yes'];
+    if (Config::get()->USER_VISIBILITY_UNKNOWN) {
+        // users with visibility "unknown" are treated as visible
+        $allowed[] = 'unknown';
     }
-    $query .= ")";
+    $quoted = DBManager::get()->quote($allowed);
+    $query .= " AND {$table_alias}.visible IN ({$quoted})";
 
     return "($query) $contextQuery";
 }
 
 function get_ext_vis_query($table_alias = 'aum') {
-    $query = "$table_alias.visible = 'global' OR $table_alias.visible = 'always' OR $table_alias.visible = 'yes'";
-
-    if (get_config('USER_VISIBILITY_UNKNOWN')) {
-        $query .= " OR $table_alias.visible = 'unknown'";
+    $allowed = ['global', 'always', 'yes'];
+    if (Config::get()->USER_VISIBILITY_UNKNOWN) {
+        $allowed[] = 'unknown';
     }
 
-    return "($query)";
+    $quoted = DBManager::get()->quote($allowed);
+    return "({$table_alias}.visible IN ({$quoted}))";
 }
 
 /*
@@ -459,4 +469,3 @@ function get_visible_email($user_id) {
     }
     return $result;
 }
-

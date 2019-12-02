@@ -79,8 +79,8 @@
                         if (!empty($userdomains)) {
                             $domains = [];
                             array_walk($userdomains, function ($a) use (&$domains) {
-                                if (!in_array($a->getName(), $domains)) {
-                                    $domains[] = $a->getName();
+                                if (!in_array($a->name, $domains)) {
+                                    $domains[] = $a->name;
                                 }
                             });
                             $tooltxt .= "\n" . _('Domänen:') . ' ' . implode(', ', $domains);

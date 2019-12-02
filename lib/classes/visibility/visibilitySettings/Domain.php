@@ -11,7 +11,8 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-class Visibility_Domain extends VisibilityAbstract {
+class Visibility_Domain extends VisibilityAbstract
+{
 
     // Should this state be used?
     protected $activated = true;
@@ -26,7 +27,7 @@ class Visibility_Domain extends VisibilityAbstract {
     protected $description = "nur für meine Nutzerdomäne sichtbar";
 
     // When do two users have this state
-    function verify($user_id, $other_id)
+    public function verify($user_id, $other_id)
     {
         if ($other_id === 'nobody') {
             return false;
@@ -41,4 +42,3 @@ class Visibility_Domain extends VisibilityAbstract {
         }
     }
 }
-?>

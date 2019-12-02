@@ -138,11 +138,11 @@ class UserLookup
         }
 
         if (($flags & self::FLAG_SORT_NAME) && !($flags & self::FLAG_RETURN_FULL_INFO)) {
-            $query = "SELECT `user_id`
-                      FROM `auth_user_md5`
-                      WHERE `user_id` IN (?)
-                      ORDER BY `Nachname` ASC, `Vorname` ASC";
-            $result = DBManager::get()->fetchFirst($query, [$result]);
+            $query = "SELECT user_id
+                      FROM auth_user_md5
+                      WHERE user_id IN (?)
+                      ORDER BY Nachname ASC, Vorname ASC";
+            $result = DBManager::get()->fetchFirst($query, [$result ?: '']);
         }
 
         if (!empty($result) && ($flags & self::FLAG_RETURN_FULL_INFO)) {
@@ -153,7 +153,7 @@ class UserLookup
                 $query .= " ORDER BY Nachname ASC, Vorname ASC";
             }
 
-            $result = DBManager::get()->fetchGrouped($query, [$result]);
+            $result = DBManager::get()->fetchGrouped($query, [$result ?: '']);
         }
 
         return $result;
@@ -251,6 +251,17 @@ class UserLookup
     }
 
     /**
+     * Return all user with matching studiengang_id in $needles
+     * @param  array $needles List of studiengang ids to filter against
+     * @return array List of user ids matching the given filter
+     */
+    protected static function fachFilter($needles)
+    {
+        $query = "SELECT user_id FROM user_studiengang WHERE fach_id IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles ?: '']);
+    }
+
+    /**
      * Return all studycourses
      * @return array Associative array of studiengang ids and studiengang names
      */
@@ -263,6 +274,17 @@ class UserLookup
     }
 
     /**
+     * Return all user with matching abschluss_id in $needles
+     * @param  array $needles List of abschluss ids to filter against
+     * @return array List of user ids matching the given filter
+     */
+    protected static function abschlussFilter($needles)
+    {
+        $query = "SELECT user_id FROM user_studiengang WHERE abschluss_id IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles ?: '']);
+    }
+
+    /**
      * Return all studydegrees
      * @return array Associative array of abschluss ids and abschluss names
      */
@@ -272,6 +294,17 @@ class UserLookup
                   FROM `abschluss`
                   ORDER BY `name` ASC";
         return DBManager::get()->fetchPairs($query);
+    }
+
+    /**
+     * Return all users with a matching fachsemester given in $needles
+     * @param  array $needles List of fachsemesters to filter against
+     * @return array List of user ids matching the given filter
+     */
+    protected static function fachsemesterFilter($needles)
+    {
+        $query = "SELECT user_id FROM user_studiengang WHERE semester IN (?)";
+        return DBManager::get()->fetchFirst($query, [$needles ?: '']);
     }
 
     /**

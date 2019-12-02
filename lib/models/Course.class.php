@@ -185,6 +185,14 @@ class Course extends SimpleORMap implements Range, PrivacyObject
             'on_store'   => 'store',
         ];
 
+        $config['has_and_belongs_to_many']['domains'] = [
+            'class_name'        => 'UserDomain',
+            'thru_table'        => 'seminar_userdomains',
+            'ondelete'          => 'delete',
+            'onstore'           => 'store',
+            'order_by'          => 'ORDER BY name',
+        ];
+
         $config['has_many']['room_requests'] = [
             'class_name'        => 'RoomRequest',
             'assoc_foreign_key' => 'seminar_id',

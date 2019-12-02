@@ -461,7 +461,7 @@ if ($mvv_tree) : ?>
         </header>
         <ul>
             <? foreach ($course_domains as $domain): ?>
-                <li><?= htmlReady($domain->getName()) ?></li>
+                <li><?= htmlReady($domain->name) ?></li>
             <? endforeach ?>
         </ul>
     </article>

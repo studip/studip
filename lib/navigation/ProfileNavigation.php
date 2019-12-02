@@ -76,7 +76,7 @@ class ProfileNavigation extends Navigation
             }
 
             if ($current_user->perms !== 'root') {
-                if (count(UserDomain::getUserDomains())) {
+                if (count(UserDomain::getUserDomains()) > 0) {
                     $navigation->addSubNavigation('userdomains', new Navigation(_('Nutzerdomänen'), 'dispatch.php/settings/userdomains'));
                 }
 

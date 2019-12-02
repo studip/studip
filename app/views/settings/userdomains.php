@@ -30,10 +30,10 @@
         <? endif; ?>
         <? foreach ($user_domains as $domain): ?>
             <tr>
-                <td><?= htmlReady($domain->getName()) ?></td>
+                <td><?= htmlReady($domain->name) ?></td>
                 <td style="text-align:center">
                 <? if ($allow_change): ?>
-                    <input type="checkbox" name="userdomain_delete[]" value="<?= $domain->getID() ?>">
+                    <input type="checkbox" name="userdomain_delete[]" value="<?= $domain->id ?>">
                 <? else: ?>
                     <?= Icon::create('accept', 'inactive')->asImg(['class' => 'text-top']) ?>
                 <? endif; ?>
@@ -41,16 +41,17 @@
             </tr>
         <? endforeach; ?>
         </tbody>
-
-        <? if (count($user_domains) !== 0 && $allow_change): ?>
-        <tr>
-            <td colspan="2" style="padding: 0px; text-align: right;">
-                <footer>
-                    <?= Button::create(_('Übernehmen'), 'store_in', ['title' => _('Änderungen übernehmen')]) ?>
-                </footer>
-            </td>
-        </tr>
-        <? endif ?>
+    <? if (count($user_domains) > 0 && $allow_change): ?>
+        <tfoot>
+            <tr>
+                <td colspan="2">
+                    <footer>
+                        <?= Button::create(_('Übernehmen'), 'store_in', ['title' => _('Änderungen übernehmen')]) ?>
+                    </footer>
+                </td>
+            </tr>
+        </tfoot>
+    <? endif ?>
     </table>
 </form>
 
@@ -61,6 +62,7 @@
 
     <fieldset>
         <legend><?= _('Nutzerdomäne hinzufügen') ?></legend>
+</form>
 
         <a name="userdomains"></a>
 
@@ -75,6 +77,34 @@
                     <? endforeach ?>
                 </select>
             <? endif ?>
+        </label>
+    </fieldset>
+
+    <footer>
+        <?= Button::create(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
+    </footer>
+<form action="<?= $controller->url_for('settings/userdomains/store') ?>" method="post" class="default">
+    <input type="hidden" name="studipticket" value="<?= get_ticket() ?>">
+    <?= CSRFProtection::tokenTag() ?>
+
+    <fieldset>
+        <legend><?= _('Nutzerdomäne hinzufügen') ?></legend>
+
+        <a name="userdomains"></a>
+
+        <label>
+            <?= _('Wählen Sie eine Nutzerdomäne aus der folgenden Liste aus:') ?>
+
+        <? if (!empty($domains)) : ?>
+            <select name="new_userdomain" id="new_userdomain">
+                <option selected value="none"><?= _('-- Bitte Nutzerdomäne auswählen --') ?></option>
+                <? foreach ($domains as $domain) : ?>
+                    <option value="<?= htmlReady($domain->id) ?>">
+                        <?= htmlReady(my_substr($domain->name, 0, 50)) ?>
+                    </option>
+                <? endforeach ?>
+            </select>
+        <? endif ?>
         </label>
     </fieldset>
 

@@ -78,7 +78,7 @@ class Course_AdmissionController extends AuthenticatedController
         }
 
         $this->all_domains = UserDomain::getUserDomains();
-        $this->seminar_domains = array_map(function($d) {return $d->getId();}, UserDomain::getUserDomainsForSeminar($this->course_id));
+        $this->seminar_domains = array_map(function($d) { return $d->id; }, UserDomain::getUserDomainsForSeminar($this->course_id));
         $this->current_courseset = CourseSet::getSetForCourse($this->course_id);
         $this->activated_admission_rules = AdmissionRule::getAvailableAdmissionRules();
         if (!$this->current_courseset) {
@@ -309,16 +309,15 @@ class Course_AdmissionController extends AuthenticatedController
     {
         CSRFProtection::verifyUnsafeRequest();
         if (Request::submitted('change_domains') && !LockRules::Check($this->course_id, 'user_domain')) {
-            $old_domains = array_map(function($d) {return $d->getId();}, UserDomain::getUserDomainsForSeminar($this->course_id));
+            $old_domains = array_map(function($d) { return $d->id; }, UserDomain::getUserDomainsForSeminar($this->course_id));
             $new_domains = Request::getArray('user_domain');
             $changes = count(array_diff($old_domains, $new_domains)) + count(array_diff($new_domains, $old_domains));
             if ($changes) {
                 UserDomain::removeUserDomainsForSeminar($this->course_id);
                 foreach ($new_domains as $d) {
-                    $domain = new UserDomain($d);
-                    $domain->addSeminar($this->course_id);
+                    UserDomain::find($d)->addSeminar($this->course_id);
                 }
-                PageLayout::postMessage(MessageBox::success(_("Die zugelassenen Nutzerdomänen wurden geändert.")));
+                PageLayout::postSuccess(_('Die zugelassenen Nutzerdomänen wurden geändert.'));
             }
         }
         $this->redirect($this->url_for('/index'));

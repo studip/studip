@@ -87,12 +87,12 @@ use Studip\Button, Studip\LinkButton;
 
             <select name="userdomains">
                 <option value=""><?= _('Alle') ?></option>
-                <option value="null-domain" <?= ($request['userdomains'] === 'null-domain') ? 'selected' : '' ?>>
+                <option value="null-domain" <?= $request['userdomains'] === 'null-domain' ? 'selected' : '' ?>>
                     <?= _('Ohne Domäne') ?>
                 </option>
             <? foreach ($userdomains as $one): ?>
-                <option value="<?= htmlReady($one->getId()) ?>" <?= ($request['userdomains'] === $one->getId()) ? 'selected' : ''?>>
-                    <?= htmlReady($one->getName() ?: $one->getId()) ?>
+                <option value="<?= htmlReady($one->id) ?>" <?= $request['userdomains'] === $one->id ? 'selected' : ''?>>
+                    <?= htmlReady($one->name ?: $one->id) ?>
                 </option>
             <? endforeach; ?>
             </select>

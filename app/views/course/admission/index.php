@@ -219,12 +219,13 @@
                 <?= _('Bitte geben Sie hier an, welche Nutzerdomänen zugelassen sind.'); ?>
             </div>
             <? foreach ($all_domains as $domain) : ?>
-                <label for="user_domain_<?= $domain->getId() ?>">
+                <label for="user_domain_<?= htmlReady($domain->id) ?>">
                     <input <?= $is_locked['user_domain'] ?>
-                            id="user_domain_<?= $domain->getId() ?>"
-                            type="checkbox" <?= in_array($domain->getId(), $seminar_domains) ? "checked" : "" ?>
-                            name="user_domain[]" value="<?= $domain->getId() ?>">
-                    <?= htmlReady($domain->getName()) ?></label>
+                            id="user_domain_<?= htmlReady($domain->id) ?>"
+                            type="checkbox" <? if (in_array($domain->id, $seminar_domains)) echo 'checked'; ?>
+                            name="user_domain[]" value="<?= htmlReady($domain->id) ?>">
+                    <?= htmlReady($domain->name) ?>
+                </label>
             <? endforeach ?>
         </fieldset>
         <footer>

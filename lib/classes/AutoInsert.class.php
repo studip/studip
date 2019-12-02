@@ -32,19 +32,19 @@
  */
 class AutoInsert
 {
-    
+
     private $settings = [];
-    
+
     public function instance()
     {
         return new AutoInsert();
     }
-    
+
     public function __construct()
     {
         $this->loadSettings();
     }
-    
+
     private function loadSettings()
     {
         $query = "SELECT a.seminar_id, GROUP_CONCAT(a.status,IF(LENGTH(a.domain_id)=0,':keine',CONCAT(':',a.domain_id))) AS domain_status, s.Name, s.Schreibzugriff, s.start_time ";
@@ -57,7 +57,7 @@ class AutoInsert
         foreach ($results as $result) {
             if ($result['Schreibzugriff'] < 3) {
                 $domains = explode(',', $result['domain_status']);
-                
+
                 foreach ($domains as $domain) {
                     $array                                       = explode(':', $domain);
                     $key                                         = $array[1] . '.' . $array[0];
@@ -69,8 +69,8 @@ class AutoInsert
             }
         }
     }
-    
-    
+
+
     private function getUserSeminars($user_id, $seminare)
     {
         $statement = DBManager::get()->prepare("SELECT Seminar_id,s.name,s.Schreibzugriff,s.start_time,su.status
@@ -80,7 +80,7 @@ class AutoInsert
         $statement->execute([$user_id, $seminare]);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     /**
      * Trägt den Benutzer in den Eingestellten veranstaltungen automatisch ein.
      * @param type $user_id
@@ -95,16 +95,16 @@ class AutoInsert
             $status = $GLOBALS['perm']->get_perm($user_id);
         }
         foreach (UserDomain::getUserDomainsForUser($user_id) as $d) {
-            $domains [] = $d->getID(); //Domains des Users
+            $domains [] = $d->id; //Domains des Users
         }
-        
+
         if (count($domains) === 0) {
             $domains [] = 'keine';
         }
         $settings     = [];
         $all_seminare = [];
         foreach ($domains as $domain) {
-            
+
             $key = $domain . '.' . $status;
             if (is_array($this->settings[$key])) {
                 $id = key($this->settings[$key]);
@@ -118,7 +118,7 @@ class AutoInsert
                 }
             }
         }
-        
+
         $seminare              = [];
         $seminare_tutor_dozent = [];
         foreach ($this->getUserSeminars($user_id, array_keys($all_seminare)) as $sem) {
@@ -129,20 +129,20 @@ class AutoInsert
         }
         $toAdd    = array_diff_key($settings, $seminare);
         $toRemove = array_diff_key($all_seminare, $toAdd, $settings, $seminare_tutor_dozent);
-        
+
         $added   = [];
         $removed = [];
-        
+
         foreach ($toAdd as $id => $seminar) {
             if ($this->addUser($user_id, $seminar)) $added[] = $seminar['name'];
         }
         foreach ($toRemove as $id => $seminar) {
             if ($this->removeUser($user_id, $seminar)) $removed[] = $seminar['name'];
         }
-        
+
         return ['added' => $added, 'removed' => $removed];
     }
-    
+
     private function addUser($user_id, $seminar)
     {
         $query = "INSERT IGNORE INTO seminar_user (Seminar_id, user_id, status, gruppe, mkdate)";
@@ -151,28 +151,28 @@ class AutoInsert
         $statement->execute([$seminar['Seminar_id'], $user_id, select_group($seminar['start_time'])]);
         $rows = $statement->rowCount();
         if ($rows > 0) return true;
-        
+
         return false;
-        
+
     }
-    
+
     private function removeUser($user_id, $seminar)
     {
         $query = "DELETE FROM seminar_user " . "WHERE user_id = ? " . "AND Seminar_id = ? ";
-        
+
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$user_id, $seminar['Seminar_id']]);
         $rows = $statement->rowCount();
-        
+
         $query             = "DELETE FROM statusgruppe_user " . "WHERE user_id = ? " . "AND statusgruppe_id IN (SELECT statusgruppe_id FROM statusgruppen WHERE range_id = ?)";
         $statusgruppe_stmt = DBManager::get()->prepare($query);
         $statusgruppe_stmt->execute([$user_id, $seminar['Seminar_id']]);
         $statusgruppe_rows = $statusgruppe_stmt->rowCount();
         if ($rows > 0 || $statusgruppe_rows > 0) return true;
-        
+
         return false;
     }
-    
+
     /**
      *
      * @param type $user_id
@@ -182,8 +182,8 @@ class AutoInsert
         $db = DBManager::get();
         $db->exec("DELETE FROM seminar_user " . "WHERE user_id = " . $db->quote($user_id));
     }
-    
-    
+
+
     /**
      * Tests if a seminar already has an autoinsert record
      * @param  string $seminar_id Id of the seminar
@@ -200,13 +200,13 @@ class AutoInsert
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$seminar_id, $domain_id]);
         }
-        
-        
+
+
         $result = $statement->fetchColumn();
-        
+
         return (bool)$result;
     }
-    
+
     /**
      * Enables a seminar for autoinsertion of users with the given status(ses)
      * @param string $seminar_id Id of the seminar
@@ -218,12 +218,12 @@ class AutoInsert
     {
         $query     = "INSERT INTO auto_insert_sem (seminar_id, status,domain_id) VALUES (?, ?,?)";
         $statement = DBManager::get()->prepare($query);
-        
+
         foreach ((array)$status as $s) {
             $statement->execute([$seminar_id, $s, $domain_id]);
         }
     }
-    
+
     /**
      * Updates an autoinsert record for a given seminar, dependent on the
      * parameter $remove it either inserts or removes the record for the given
@@ -239,7 +239,7 @@ class AutoInsert
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id, $status, $domain]);
     }
-    
+
     /**
      * Removes a seminar from the autoinsertion process.
      * @param string $seminar_id Id of the seminar
@@ -250,7 +250,7 @@ class AutoInsert
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id]);
     }
-    
+
     /**
      * Returns a list of all seminars enabled for autoinsertion
      * @param  bool  Indicates whether only the seminar ids (true) or the full
@@ -267,7 +267,7 @@ class AutoInsert
             $query = "SELECT a.seminar_id, GROUP_CONCAT(a.status,IF(LENGTH(a.domain_id)=0,':keine',CONCAT(':',a.domain_id))) AS domain_status, s.Name, s.Schreibzugriff, s.start_time ";
             $query .= "FROM auto_insert_sem a ";
             $query .= "JOIN seminare AS s USING (Seminar_id) ";
-            
+
             $query .= "GROUP BY s.seminar_id ";
             $query .= "ORDER BY s.Name";
             $statement = DBManager::get()->query($query);
@@ -280,10 +280,10 @@ class AutoInsert
                 }
             }
         }
-        
+
         return $results;
     }
-    
+
     /**
      * Returns a seminar's info for autoinsertion
      * @param  string $seminar_id Id of the seminar
@@ -296,15 +296,15 @@ class AutoInsert
         $query .= "JOIN seminare AS s USING (Seminar_id) ";
         $query .= "WHERE a.seminar_id = ? ";
         $query .= "GROUP BY s.seminar_id";
-        
+
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id]);
-        
+
         $result           = $statement->fetch(PDO::FETCH_ASSOC);
         $result['status'] = explode(',', $result['status']);
         return $result;
     }
-    
+
     /**
      * Store the user's automatic registration in a seminar redundantly to
      * avoid an annoying reregistration although the user explicitely left the
@@ -321,7 +321,7 @@ class AutoInsert
         $statement->execute([$seminar_id, $user_id]);
         return $statement->rowCount();
     }
-    
+
     /**
      * Tests whether a user was already automatically registered for a certain
      * seminar.
@@ -335,10 +335,9 @@ class AutoInsert
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id, $user_id]);
         $result = $statement->fetchColumn();
-        
+
         return $result > 0;
     }
-    
-    
-}
 
+
+}

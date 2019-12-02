@@ -169,7 +169,7 @@ class Admin_UserController extends AuthenticatedController
                              'inaktiv seit'];
                 $mapper   = function ($u) {
                     $userdomains = array_map(function ($ud) {
-                        return $ud->getName();
+                        return $ud->name;
                     }, UserDomain::getUserDomainsForUser($u->id));
                     return [
                         $u['username'],
@@ -532,8 +532,7 @@ class Admin_UserController extends AuthenticatedController
 
             //change userdomain
             if (Request::get('new_userdomain', 'none') != 'none' && $editPerms[0] != 'root') {
-                $domain = new UserDomain(Request::get('new_userdomain'));
-                $domain->addUser($user_id);
+                UserDomain::find(Request::get('new_userdomain'))->addUser($user_id);
                 $result = AutoInsert::instance()->saveUser($user_id);
 
                 $details[] = _('Die Nutzerdomäne wurde hinzugefügt.');
@@ -816,9 +815,9 @@ class Admin_UserController extends AuthenticatedController
                 //adding userdomain
                 if (Request::get('select_dom_id')) {
                     $domain = new UserDomain(Request::get('select_dom_id'));
-                    if ($perm->have_perm('root') || in_array($domain, UserDomain::getUserDomainsForUser($auth->auth["uid"]))) {
+                    if ($perm->have_perm('root') || in_array($domain, UserDomain::getUserDomainsForUser($GLOBALS['user']->id))) {
                         $domain->addUser($user_id);
-                        $details[] = sprintf(_('Person wurde in Nutzerdomäne "%s" eingetragen.'), htmlReady($domain->getName()));
+                        $details[] = sprintf(_('Person wurde in Nutzerdomäne "%s" eingetragen.'), htmlReady($domain->name));
                     } else {
                         $details[] = _('Person konnte nicht in die Nutzerdomäne eingetragen werden.');
                     }
@@ -1160,8 +1159,7 @@ class Admin_UserController extends AuthenticatedController
     public function delete_userdomain_action($user_id)
     {
         $domain_id = Request::get('domain_id');
-        $domain    = new UserDomain($domain_id);
-        $domain->removeUser($user_id);
+        UserDomain::find($domain_id)->removeUser($user_id);
         $result = AutoInsert::instance()->saveUser($user_id);
 
         $details = [];

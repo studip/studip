@@ -19,20 +19,62 @@ class Admin_DomainController extends AuthenticatedController
      */
     public function before_filter(&$action, &$args)
     {
-        parent::before_filter($action, $args);
+        if ($action === 'new') {
+            $action = 'edit';
+        }
 
-        $this->set_sidebar();
+        parent::before_filter($action, $args);
 
         # user must have root permission
         $GLOBALS['perm']->check('root');
+
+        $this->set_sidebar();
 
         # set page title
         PageLayout::setTitle(_('Verwaltung der Nutzerdomänen'));
         PageLayout::setHelpKeyword('Admins.Nutzerdomaenen');
         Navigation::activateItem('/admin/user/user_domains');
+    }
 
-        # fetch user domain
-        $this->domains = UserDomain::getUserDomains();
+    /**
+     * Extracts action and args from a string. Specialized to allow dots
+     * in the argument.
+     *
+     * @param  string       the processed string
+     * @return array        an array with two elements - a string containing the
+     *                      action and an array of strings representing the args
+     */
+    public function extract_action_and_args($string) {
+
+      if ('' === $string) {
+        return $this->default_action_and_args();
+      }
+
+      $args = explode('/', $string);
+      $action = array_shift($args);
+      return [$action, $args, null];
+    }
+
+    /**
+     * Validate arguments based on a list of given types. The types are:
+     * 'int', 'float', 'option' and 'string'. If the list of types is NULL
+     * or shorter than the argument list, 'option' is assumed for all
+     * remaining arguments. 'option' differs from Request::option() in
+     * that it also accepts the charaters '-' and ',' in addition to all
+     * word charaters.
+     *
+     * @param array   an array of arguments to the action
+     * @param array   list of argument types (optional)
+     */
+    public function validate_args(&$args, $types = NULL)
+    {
+        foreach ($args as $arg) {
+            if (!preg_match('/' . UserDomain::REGEXP . '/', $arg)) {
+                throw new Trails_Exception(400);
+            }
+        }
+
+        reset($args);
     }
 
     /**
@@ -40,44 +82,44 @@ class Admin_DomainController extends AuthenticatedController
      */
     public function index_action()
     {
-    }
-
-    /**
-     * Create a new user domain.
-     */
-    public function new_action()
-    {
-        $this->render_action('edit');
+        $this->domains = UserDomain::getUserDomains();
     }
 
     /**
      * Edit an existing user domain.
      */
-    public function edit_action()
+    public function edit_action($id = null)
     {
-        $this->edit_id = Request::get('id');
+        $this->domain = new UserDomain($id);
+
+        if ($id !== null && $this->domain === null) {
+            throw new Exception(_('Die zu bearbeitende Domäne konnte nicht gefunden werden.'));
+        }
     }
 
     /**
      * Save changes to a user domain.
      */
-    function save_action()
+    public function save_action($domain_id = null)
     {
         CSRFProtection::verifyUnsafeRequest();
+
         $id   = Request::get('id');
         $name = Request::get('name');
 
         if ($id && $name) {
             try {
-                $domain   = new UserDomain($id);
-                $old_name = $domain->getName();
-
-                if (Request::get('new_domain') && isset($old_name)) {
+                $domain = new UserDomain($domain_id ?: $id);
+                if (!$domain_id && !$domain->isNew()) {
                     throw new Exception(_('Diese ID wird bereits verwendet'));
                 }
 
-                $domain->setName($name);
+                $domain->id                = $id;
+                $domain->name              = $name;
+                $domain->restricted_access = Request::int('restricted_access', 0);
                 $domain->store();
+
+                PageLayout::postSuccess(_('Die Domäne wurde gespeichert'));
             } catch (Exception $ex) {
                 PageLayout::postError($ex->getMessage());
             }
@@ -85,17 +127,15 @@ class Admin_DomainController extends AuthenticatedController
             PageLayout::postError(_('Sie haben keinen Namen und keine ID angegeben.'));
         }
 
-        $this->domains = UserDomain::getUserDomains();
-        $this->render_action('index');
+        $this->redirect('admin/domain');
     }
 
     /**
      * Delete an existing user domain.
      */
-    public function delete_action()
+    public function delete_action($id)
     {
         CSRFProtection::verifyUnsafeRequest();
-        $id     = Request::get('id');
         $domain = new UserDomain($id);
 
         if (count($domain->getUsers()) == 0) {
@@ -104,8 +144,7 @@ class Admin_DomainController extends AuthenticatedController
             PageLayout::postError(_('Domänen, denen noch Personen zugewiesen sind, können nicht gelöscht werden.'));
         }
 
-        $this->domains = UserDomain::getUserDomains();
-        $this->render_action('index');
+        $this->redirect('admin/domain');
     }
 
     /**
@@ -115,8 +154,12 @@ class Admin_DomainController extends AuthenticatedController
     {
         $sidebar = Sidebar::Get();
         $sidebar->setImage('sidebar/admin-sidebar.png');
-        $actions = new ActionsWidget();
-        $actions->addLink(_('Neue Nutzerdomäne anlegen'), $this->url_for('admin/domain/new'), Icon::create('add', 'clickable'));
-        $sidebar->addWidget($actions);
+
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Neue Nutzerdomäne anlegen'),
+            $this->url_for('admin/domain/new'),
+            Icon::create('add')
+        )->asDialog('size=auto');
     }
 }
