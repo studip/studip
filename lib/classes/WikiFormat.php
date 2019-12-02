@@ -113,14 +113,16 @@ class WikiFormat extends StudipFormat
         $from = mb_substr($matches[1], 1);
         $comment = $matches[2];
 
-        if (Request::get('wiki_comments') === 'all') {
+        if (Request::get('wiki_comments') === 'none') {
+            return '';
+        } else if ($GLOBALS['user']->cfg->WIKI_COMMENTS_ENABLE) {
             $commenttmpl = "<table style=\"border:thin solid;margin: 5px;\" bgcolor=\"#ffff88\"><tr><td><font size=-1><b>"._("Kommentar von")." %1\$s:</b>&nbsp;</font></td></tr><tr class=steelgrau><td class=steelgrau><font size=-1>%2\$s</font></td></tr></table>";
             return sprintf(
                 $commenttmpl,
                 $from,
                 $comment
             );
-        } elseif (Request::get('wiki_comments') !== "none") {
+        } else {
             $from = decodeHTML($from);
             $comment = decodeHTML($comment); //because tooltip already escapes
             return sprintf(
@@ -128,10 +130,7 @@ class WikiFormat extends StudipFormat
                 tooltip(sprintf("%s %s: %s", _("Kommentar von"), $from, $comment), true, true),
                 Icon::create('chat2', Icon::ROLE_STATUS_YELLOW)
             );
-        } else {
-            return '';
         }
-
     }
 
     /**

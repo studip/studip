@@ -171,6 +171,20 @@ class WikiController extends AuthenticatedController
         }
     }
 
+    public function info_action()
+    {
+        // prevent malformed urls: keyword must be set
+        if (!$this->keyword) {
+            throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
+        }
+
+        $this->backlinks = getBacklinks($this->keyword);
+
+        PageLayout::setTitle(_('Informationen zur Wikiseite'));
+
+        getShowPageInfobox($this->keyword, true);
+    }
+
     /**
      * This action is responsible for importing wiki pages into the wiki
      * of a course from another course.

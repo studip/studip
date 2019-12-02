@@ -412,31 +412,36 @@ function showDeleteDialog($keyword, $version) {
     }
     $islatest=0; // will another version become latest version?
     $willvanish=0; // will the page be deleted entirely?
-    if ($version=="latest") {
+    $lv=getLatestVersion($keyword, Context::getId());
+    if ($version=="latest" || $version==$lv["version"]) {
         $lv=getLatestVersion($keyword, Context::getId());
+        $fv=getFirstVersion($keyword, Context::getId());
         $version=$lv["version"];
-        if ($version==1) {
+        if ($version==$fv["version"]) {
             $willvanish=1;
         }
         $islatest=1;
     }
 
-    if (!$islatest) {
+    /*if (!$islatest) {
         throw new InvalidArgumentException(_('Die Version, die Sie löschen wollen, ist nicht die Aktuellste. Überprüfen Sie, ob inzwischen eine aktuellere Version erstellt wurde.'));
-    }
+    } */
     $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), "<b>".htmlReady($version)."</b>", "<b>".htmlReady($keyword)."</b>") . "<br>\n";
     if (!$willvanish) {
-        $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.") . "<br>";
+        if ($islatest) {
+            $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.") . "<br>";
+        } else {
+            /* $msg .= _("Diese Version ist derzeit nicht aktuell. Nach dem Löschen wird sie durch die nächstältere Version ersetzt.") . "<br>"; */
+        }
     } else {
         $msg .= _("Diese Version ist die derzeit einzige. Nach dem Löschen ist die Seite komplett gelöscht.") . "<br>";
     }
-    //TODO: modaler dialog benutzen
-    $msg.=LinkButton::createAccept(_('Ja'), URLHelper::getURL("?cmd=really_delete&keyword=".urlencode($keyword)."&version=$version&dellatest=$islatest"));
     $lnk = "?keyword=".urlencode($keyword); // what to do when delete is aborted
     if (!$islatest) $lnk .= "&version=$version";
-    $msg .= LinkButton::createCancel(_("Nein"), URLHelper::getURL($lnk));
-
-    PageLayout::postMessage(MessageBox::info($msg));
+    PageLayout::postQuestion(
+        $msg,
+        URLHelper::getURL("?cmd=really_delete&keyword=".urlencode($keyword)."&version=$version&dellatest=$islatest"),
+        URLHelper::getURL($lnk));
     return $version;
 }
 
@@ -464,12 +469,16 @@ function showDeleteAllDialog($keyword) {
             $msg .= sprintf(_("Auf diese Seite verweisen %s andere Seiten."), count(getBacklinks($keyword)));
         }
     }
-    //TODO: modaler dialog benutzen
-    $msg.="<a href=\"".URLHelper::getLink("?cmd=really_delete_all&keyword=".urlencode($keyword))."\">" .Button::createAccept(_('Ja')) . "</a>&nbsp; \n";
-    $lnk = "?keyword=".urlencode($keyword); // what to do when delete is aborted
-    if (!$islatest) $lnk .= "&version=$version";
-    $msg.="<a href=\"".URLHelper::getLink($lnk)."\">" . Button::createCancel(_('Nein')) . "</a>\n";
-    PageLayout::postMessage(MessageBox::info($msg));
+
+    if (Request::option('cmd') === 'delete_all_versions') {
+        $lnk = "?view=pageversions&keyword=".urlencode($keyword)."&sortby=".Request::option('sortby'); // what to do when delete is aborted
+    } else {
+        $lnk = "?keyword=".urlencode($keyword);
+    }
+    PageLayout::postQuestion(
+        $msg,
+        URLHelper::getURL("?cmd=really_delete_all&keyword=".urlencode($keyword)),
+        URLHelper::getURL($lnk));
 }
 
 
@@ -490,9 +499,9 @@ function deleteWikiPage($keyword, $version, $range_id) {
         throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu löschen.'));
     }
     $lv=getLatestVersion($keyword, Context::getId());
-    if ($lv["version"] != $version) {
+    /*if ($lv["version"] != $version) {
         throw new InvalidArgumentException(_('Die Version, die Sie löschen wollen, ist nicht die aktuellste. Überprüfen Sie, ob inzwischen eine aktuellere Version erstellt wurde.'));
-    }
+    } */
 
     $wp = WikiPage::find([$range_id, $keyword, $version]);
     if ($wp) {
@@ -661,6 +670,69 @@ function listPages($mode, $sortby = NULL)
 
     showPageFrameEnd([]);
 }
+
+/**
+* List all versions of a wiki page
+*
+* @param  string  WikiPage name
+* @param  sortby  string  Different sortings of entries.
+**/
+function listPageVersions($keyword, $sortby = NULL)
+{
+    $selfurl = '?view=pageversions';
+    $sort = "ORDER by version DESC"; // default sort order for versions"
+    $nopages = _('In dieser Veranstaltung wurden noch keine WikiSeiten angelegt.');
+
+    // help texts
+    $help = _('Zeigt eine tabellarische Übersicht aller Versionen dieser Wiki-Seite an.');
+    Helpbar::get()->ignoreDatabaseContents();
+    Helpbar::get()->addPlainText('', $help);
+
+    $versionsortlink = 'version';
+    $changesortlink  = 'lastchange';
+
+    switch ($sortby) {
+        case 'version':
+            $sort = "ORDER BY version DESC";
+            $versionsortlink = 'versiondesc';
+            break;
+        case 'versiondesc':
+            $sort = "ORDER BY version";
+            break;
+        case 'lastchange':
+            // sort by change date, default: newest first
+            $sort = "ORDER BY chdate DESC, keyword ASC";
+            $changesortlink = 'lastchangedesc';
+            break;
+        case 'lastchangedesc':
+            // sort by change date, oldest first
+            $sort = "ORDER BY chdate, keyword ASC";
+            break;
+    }
+
+    $pages = WikiPage::findBySQL("range_id = ? AND keyword = ? ".$sort, [Context::getId(), $keyword]);
+
+    if (count($pages) === 0) {
+        PageLayout::postInfo($nopages);
+    } else {
+        $template = $GLOBALS['template_factory']->open('wiki/pageversions.php');
+        $template->keyword         = $keyword;
+        $template->url             = $selfurl;
+        $template->titlesortlink   = $titlesortlink;
+        $template->versionsortlink = $versionsortlink;
+        $template->changesortlink  = $changesortlink;
+        $template->pages           = $pages;
+        $template->sortby          = $sortby;
+        echo $template->render();
+    }
+
+    $wikiData = getWikiPage($keyword, $version);
+
+    getShowPageInfobox($keyword, $wikiData->isLatestVersion(),TRUE);
+
+    showPageFrameEnd([]);
+}
+
 
 /**
 * Search Wiki
@@ -852,7 +924,7 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
     // search
     $widget = new SearchWidget(URLHelper::getLink('?view=search&keyword=' . urlencode($keyword)));
     $widget->addNeedle(_('Im Wiki suchen'), 'searchfor', true);
-    $widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
+    //$widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
     Sidebar::get()->addWidget($widget);
 
     showPageFrameEnd([]);
@@ -1144,7 +1216,7 @@ function showPageFrameEnd()
 * @param    bool    Is version displayed latest version?
 *
 **/
-function getShowPageInfobox($keyword, $latest_version)
+function getShowPageInfobox($keyword, $latest_version, $pageversionslist=NULL)
 {
     $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
 
@@ -1208,82 +1280,69 @@ function getShowPageInfobox($keyword, $latest_version)
             URLHelper::getURL('dispatch.php/wiki/change_courseperms', compact('keyword')),
             Icon::create('admin')
         )->asDialog('size=auto');
-    }
 
-    // Backlinks
-    if ($latest_version) {
-        $widget = $sidebar->addWidget(new LinksWidget());
-        $widget->setTitle(_('Seiten, die auf diese Seite verweisen'));
-        foreach(getBacklinks($keyword) as $backlink) {
+        if (keywordExists($keyword)) {
+            if ($pageversionslist) {
+                $tempurl = URLHelper::getURL('', ['keyword' => $keyword, 'sortby' => Request::option('sortby'), 'cmd' => 'delete_all_versions']);
+            } else {
+                $tempurl = URLHelper::getURL('', ['keyword' => $keyword, 'sortby' => Request::option('sortby'), 'cmd' => 'delete_all']);
+            }
             $widget->addLink(
-                $backlink,
-                URLHelper::getURL('', ['keyword' => $backlink])
+                _('Alle Versionen löschen'),
+                $tempurl,
+                Icon::create('trash')
             );
         }
-    }
-
-    // Ansichten
-    $widget = $sidebar->addWidget(new ViewsWidget());
-    $widget->addLink(
-        _('Standard'),
-        URLHelper::getURL('?view=show', compact('keyword')),
-        Icon::create('wiki')
-    )->setActive(true);
-    if (count($versions) >= 1) {
-        $widget->addLink(
-            _('Textänderungen anzeigen'),
-            URLHelper::getURL('?view=diff', compact('keyword'))
-        );
-        $widget->addLink(
-            _('Text mit Autor/-innenzuordnung anzeigen'),
-            URLHelper::getURL('?view=combodiff', compact('keyword'))
-        );
     }
 
     // Suche
     $widget = $sidebar->addWidget(new SearchWidget(URLHelper::getURL('?view=search', compact('keyword'))));
     $widget->addNeedle(_('Im Wiki suchen'), 'searchfor', true);
-    $widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
+    //$widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
 
-    // Versionen
-    if (count($versions) > 0) {
-        $widget = $sidebar->addWidget(new SelectWidget(
-            _('Alte Versionen dieser Seite'),
-            URLHelper::getLink('', compact('keyword')),
-            'version'
-        ));
-        $widget->addElement(new SelectElement('', _('Aktuelle Version')));
-        foreach ($versions as $version) {
-            $widget->addElement(new SelectElement(
-                $version['version'],
-                sprintf(
-                    _('Version %u (%s)'),
-                    $version['version'],
-                    date('d.m.Y, H:i', $version['chdate'])
-                ),
-                $version['version'] == Request::int('version', 0)
-            ));
+    // Ansichten
+    $widget = $sidebar->addWidget(new ViewsWidget());
+    $widget->addLink(
+        _('Leseansicht'),
+        URLHelper::getURL('?view=show', compact('keyword')),
+        Icon::create('wiki')
+    )->setActive(true);
+
+    if (Request::option('wiki_comments') === 'none') {
+        if ($GLOBALS['user']->cfg->WIKI_COMMENTS_ENABLE) {
+            $widget->addLink(
+                _('Kommentare anzeigen'),
+                URLHelper::getURL('?wiki_comments=all', compact('keyword'))
+            );
+        } else {
+            $widget->addLink(
+                _('Kommentare anzeigen'),
+                URLHelper::getURL('?wiki_comments=icon', compact('keyword'))
+            );
         }
+    } else {
+        $widget->addLink(
+            _('Kommentare ausblenden'),
+            URLHelper::getURL('?wiki_comments=none', compact('keyword'))
+        );
     }
 
-    // Kommentare
-    $widget = $sidebar->addWidget(new OptionsWidget(), 'comments');
-    $widget->setTitle(_('Kommentare'));
-    $widget->addRadioButton(
-        _('einblenden'),
-        URLHelper::getURL('?wiki_comments=all', compact('keyword')),
-        $GLOBALS['show_wiki_comments'] === 'all'
-    );
-    $widget->addRadioButton(
-        _('als Icons einblenden'),
-        URLHelper::getURL('?wiki_comments=icon', compact('keyword')),
-        $GLOBALS['show_wiki_comments'] === 'icon'
-    );
-    $widget->addRadioButton(
-        _('ausblenden'),
-        URLHelper::getURL('?wiki_comments=none', compact('keyword')),
-        $GLOBALS['show_wiki_comments'] === 'none'
-    );
+    if (count($versions) >= 1) {
+        if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
+            $widget->addLink(
+                _('Änderungen anzeigen'),
+                URLHelper::getURL('?view=diff', compact('keyword'))
+            );
+            $widget->addLink(
+                _('Text mit Autor/-innenzuordnung anzeigen'),
+                URLHelper::getURL('?view=combodiff', compact('keyword'))
+            );
+            $widget->addLink(
+                _('Versionen dieser Seite'),
+                URLHelper::getURL('?view=pageversions', compact('keyword'))
+            );
+        }
+    }
 
     // Exportfunktionen
     $version = Request::int('version') ?: '';
@@ -1319,39 +1378,18 @@ function getDiffPageInfobox($keyword) {
     // Aktuelle Version
     $widget = Sidebar::get()->addWidget(new ViewsWidget());
     $widget->addLink(
-        _('Standard'),
+        _('Leseansicht'),
         URLHelper::getURL('?view=show', compact('keyword'))
     );
     if (count($versions) >= 1) {
         $widget->addLink(
-            _('Textänderungen anzeigen'),
+            _('Änderungen anzeigen'),
             URLHelper::getURL('?view=diff', compact('keyword'))
         )->setActive(Request::option('view') === 'diff');
         $widget->addLink(
             _('Text mit Autor/-innenzuordnung anzeigen'),
             URLHelper::getURL('?view=combodiff', compact('keyword'))
         )->setActive(Request::option('view') === 'combodiff');
-    }
-
-    // Versionen
-    if (count($versions) > 0) {
-        $widget = Sidebar::get()->addWidget(new SelectWidget(
-            _('Alte Versionen dieser Seite'),
-            URLHelper::getLink('?keyword=' . urlencode($keyword)),
-            'version'
-        ));
-        $widget->addElement(new SelectElement('', _('Aktuelle Version')));
-        foreach ($versions as $version) {
-            $widget->addElement(new SelectElement(
-                $version['version'],
-                sprintf(
-                    _('Version %u (%s)'),
-                    $version['version'],
-                    date('d.m.Y, H:i', $version['chdate'])
-                ),
-                $version['version'] == Request::int('version', 0)
-            ));
-        }
     }
 
     return [];
@@ -1406,7 +1444,7 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     //
     if ($special === 'delete') {
         $version = showDeleteDialog($keyword, $version);
-    } else if ($special === 'delete_all') {
+    } else if ($special === 'delete_all' || $special === 'delete_all_versions') {
         showDeleteAllDialog($keyword);
     }
 
@@ -1431,7 +1469,12 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     $template = $GLOBALS['template_factory']->open('wiki/show.php');
     $template->wikipage = $wikiData;
     $template->content  = $content;
-    echo $template->render();
+
+    if ($special === 'delete_all_versions') {
+        listPageVersions($keyword, Request::option('sortby'));
+    } else {
+        echo $template->render();
+    }
 
     getShowPageInfobox($keyword, $wikiData->isLatestVersion());
 }
@@ -1492,7 +1535,8 @@ function showDiffs($keyword, $versions_since)
     $template->content  = $content;
     echo $template->render();
 
-    getDiffPageInfobox($keyword);
+    //getDiffPageInfobox($keyword);
+    getShowPageInfobox($keyword, $wikiData->isLatestVersion());
 
     // help texts
     $help = _('Die Ansicht zeigt den Verlauf der Textänderungen einer Wiki-Seite.');
@@ -1611,7 +1655,8 @@ function showComboDiff($keyword, $db=NULL)
     $template->content  = $content;
     echo $template->render();
 
-    getDiffPageInfobox($keyword);
+    //getDiffPageInfobox($keyword);
+    getShowPageInfobox($keyword, $wikiData->isLatestVersion());
 
     // help texts
     $help = [

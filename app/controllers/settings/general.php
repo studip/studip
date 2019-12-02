@@ -62,6 +62,7 @@ class Settings_GeneralController extends Settings_SettingsController
         $this->config->store('SHOWSEM_ENABLE', Request::int('showsem_enable'));
         $this->config->store('SKIPLINKS_ENABLE', Request::int('skiplinks_enable'));
         $this->config->store('TOUR_AUTOSTART_DISABLE', Request::int('tour_autostart_disable'));
+        $this->config->store('WIKI_COMMENTS_ENABLE', Request::int('wiki_comments_enable'));
 
         if (Request::int('personal_notifications_activated')) {
             PersonalNotifications::activate($this->user->id);

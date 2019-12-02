@@ -73,11 +73,11 @@ if (in_array(Request::get('view'), words('listnew listall export'))) {
     Navigation::activateItem('/course/wiki/show');
 }
 
-if (Request::option('wiki_comments') === 'all') {         // show all comments
-    $show_wiki_comments = 'all';
-} elseif (Request::option('wiki_comments') === 'none') {  // don't show comments
+if (Request::option('wiki_comments') === 'none') {  // don't show comments
     $show_wiki_comments = 'none';
-} else {                             // show comments as icons
+} else if ($user->cfg->WIKI_COMMENTS_ENABLE) {      // show all comments
+    $show_wiki_comments = 'all';
+} else {                                            // show comments as icons
     $show_wiki_comments = 'icon';
 }
 
@@ -114,6 +114,13 @@ if ($view === 'listall') {
     //
     SkipLinks::addIndex(_('Seite mit Änderungen'), 'main_content', 100);
     showComboDiff($keyword);
+
+} else if ($view === 'pageversions') {
+    //
+    // show versions of a wiki page
+    //
+    SkipLinks::addIndex(_('Versionen dieser Seite'), 'main_content', 100);
+    listPageVersions($keyword, Request::option('sortby'));
 
 } else if ($view === 'export') {
     //
@@ -185,7 +192,7 @@ if ($view === 'listall') {
     // Default action: Display WikiPage (+ logic for submission)
     //
     if (empty($keyword)) {
-        $keyword = 'WikiWikiWeb'; // display Start page as default
+        $keyword = 'Wiki Startseite'; // display Start page as default
     }
     releaseLocks($keyword); // kill old locks
     $special = '';
@@ -226,6 +233,12 @@ if ($view === 'listall') {
         // Delete all request sent -> confirmdialog and current page
         //
         $special = 'delete_all';
+        
+    } else if ($cmd === 'delete_all_versions') {
+        //
+        // Delete all request sent -> confirmdialog and current page
+        //
+        $special = 'delete_all_versions';
 
     } else if ($cmd === 'really_delete_all') {
         //
@@ -256,7 +269,7 @@ if ($view === 'listall') {
 $layout = $GLOBALS['template_factory']->open('layouts/base');
 $layout->content_for_layout = ob_get_clean();
 
-if (in_array($cmd, words('show abortedit really_delete really_delete_all'))) {
+if (in_array($cmd, words('abortedit really_delete really_delete_all'))) {
     // redirect to normal view to avoid duplicate edits on reload or back/forward
     header('Location: ' . URLHelper::getURL('', compact('keyword')));
 } else {
