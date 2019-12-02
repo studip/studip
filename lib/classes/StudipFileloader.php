@@ -18,6 +18,7 @@ class StudipFileloader
      * @param  array  $_injected   optional bindings, to inject into
      *                             the scope before loading
      * @param bool $_allow_overwrite allow overwriting of injected
+     * @return array names of newly added variables
      */
     public static function load($_filename, &$_container, $_injected = [], $_allow_overwrite = false)
     {
@@ -30,7 +31,7 @@ class StudipFileloader
         }
         unset($file);
 
-        $newVariables     = get_defined_vars();
+        $newVariables = get_defined_vars();
 
         unset($newVariables['_filename']);
         unset($newVariables['_container']);
@@ -42,13 +43,15 @@ class StudipFileloader
             $newVariableNames = array_keys($newVariables);
         } else {
             $newVariableNames = array_diff(
-                array_keys($newVariables), $_oldVariableNames
+                array_keys($newVariables),
+                $_oldVariableNames
             );
         }
 
         foreach ($newVariableNames as $variableName) {
-                $_container[$variableName] = $newVariables[$variableName];
+            $_container[$variableName] = $newVariables[$variableName];
         }
 
+        return $newVariableNames;
     }
 }
