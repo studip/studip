@@ -60,12 +60,10 @@
                     <a href="<?= $controller->link_for('admin/cronjobs/logs/task', $task) ?>">
                         <?= Icon::create('log')->asImg(['title' => _('Log anzeigen')]) ?>
                     </a>
-                    <?= Icon::create('trash')->asInput(
-                        [
-                            'data-confirm' => _('Wollen Sie den ausgewählte Aufgabe wirklich löschen?'),
-                            'formaction' =>  $controller->link_for('admin/cronjobs/tasks/delete', $task, $pagination->getCurrentPage()),
-                        ]
-                    )?>
+                    <?= Icon::create('trash')->asInput([
+                        'data-confirm' => _('Wollen Sie die ausgewählte Aufgabe wirklich löschen?'),
+                        'formaction'   => $controller->deleteURL($task, $pagination->getCurrentPage()),
+                    ]) ?>
                 </td>
             </tr>
         <? endforeach; ?>
