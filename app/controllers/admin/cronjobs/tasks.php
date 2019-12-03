@@ -116,6 +116,7 @@ class Admin_Cronjobs_TasksController extends AuthenticatedController
      */
     public function delete_action(CronjobTask $task, $page = 0)
     {
+        CSRFProtection::verifyUnsafeRequest();
         $deleted = $task->schedules->count();
         $task->delete();
 

@@ -133,9 +133,12 @@
                 <a href="<?= $controller->link_for('admin/cronjobs/logs/schedule', $schedule) ?>">
                     <?= Icon::create('log')->asImg(['title' => _('Log anzeigen')]) ?>
                 </a>
-                <a href="<?= $controller->cancel($schedule, $pagination->getCurrentPage()) ?>">
-                    <?= Icon::create('trash')->asImg(['title' => _('Cronjob löschen')]) ?>
-                </a>
+                <?= Icon::create('trash')->asInput(
+                    [
+                        'data-confirm' => _('Wollen Sie den ausgewählten Cronjob wirklich löschen?'),
+                        'formaction' =>  $controller->cancel($schedule, $pagination->getCurrentPage()),
+                    ]
+                )?>
             </td>
         </tr>
     <? endforeach; ?>

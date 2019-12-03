@@ -251,6 +251,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
      */
     public function cancel_action(CronjobSchedule $schedule, $page = 0)
     {
+        CSRFProtection::verifyUnsafeRequest();
         $schedule->delete();
 
         PageLayout::postSuccess(_('Der Cronjob wurde gelöscht.'));
