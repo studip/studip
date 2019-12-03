@@ -1,3 +1,5 @@
+@import "../mixins/colors.scss";
+
 .stage {
     $image-path: '../images/';
     $icon-path: '#{$image-path}icons/';
@@ -101,11 +103,55 @@
                 background-size: 16px;
             }
 
-            dt:not(.succeeded) + dd.success {
+            dd.success,
+            dd.failed,
+            progress {
                 display: none;
             }
-            dt:not(.failed) + dd.success + dd.failed {
-                display: none;
+
+            dt.succeeded + dd.success,
+            dt.failed + dd.success + dd.failed {
+                display: block;
+            }
+            dt.event-sourced + dd.success + dd.failed + progress {
+                display: inline-block;
+            }
+
+            progress {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+
+                border: 1px solid #000;
+                color: $base-color-60;
+                margin-left: 1em;
+                width: 550px;
+                height: 20px;
+
+                &::-moz-progress-bar,
+                &::-webkit-progress-bar {
+                    background-color: $base-color-60;
+                }
+
+                + div {
+                    position: absolute;
+                    width: 550px;
+                    height: 22px;
+
+                    &::before {
+                        position: absolute;
+                        left: 2px;
+                        top: 2px;
+                        content: attr(data-file);
+                    }
+
+                    &::after {
+                        position: absolute;
+                        right: 2px;
+                        top: 2px;
+                        content: attr(data-percent) '%';
+                    }
+                }
             }
         }
     }
@@ -125,5 +171,9 @@
             margin: 1px;
             margin-left: 100px;
         }
+    }
+    .studip-checkbox + label {
+        float: none;
+        width: auto;
     }
 }

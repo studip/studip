@@ -1,16 +1,6 @@
 <?php
 class Admin_InstallController extends Trails_Controller
 {
-    public function test_action($what)
-    {
-        if ($what !== 'config') {
-            $this-render_json(true);
-        } else {
-            $this->set_status(500);
-            $this->render_json('FOOO');
-        }
-    }
-
     public function before_filter(&$action, &$args)
     {
         if (!isset($_SESSION['STUDIP_INSTALLATION'])) {
@@ -191,23 +181,30 @@ class Admin_InstallController extends Trails_Controller
 
         // INSTALL SQL FILES
         if ($this->basic || $what === 'sql') {
-            try {
-                foreach ($_SESSION['STUDIP_INSTALLATION']['files'] as $file) {
-                    $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
-                    foreach ($queries as $query) {
-                        $pdo->exec($query);
+            if (Request::submitted('evts')) {
+                $this->installDatabaseEventSource(
+                    $pdo,
+                    $_SESSION['STUDIP_INSTALLATION']['files']
+                );
+            } else {
+                try {
+                    foreach ($_SESSION['STUDIP_INSTALLATION']['files'] as $file) {
+                        $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
+                        foreach ($queries as $query) {
+                            $pdo->exec($query);
+                        }
                     }
-                }
 
-                if (!$this->basic) {
-                    $this->render_json(true);
-                }
-            } catch (Exception $e) {
-                if ($this->basic) {
-                    throw $e;
-                } else {
-                    $this->set_status(500);
-                    $this->render_json($e->getMessage());
+                    if (!$this->basic) {
+                        $this->render_json(true);
+                    }
+                } catch (Exception $e) {
+                    if ($this->basic) {
+                        throw $e;
+                    } else {
+                        $this->set_status(500);
+                        $this->render_json($e->getMessage());
+                    }
                 }
             }
         }
@@ -335,5 +332,53 @@ class Admin_InstallController extends Trails_Controller
     {
         $this->set_content_type('application/json');
         $this->render_text(json_encode($what));
+    }
+
+    private function installDatabaseEventSource(PDO $pdo, array $files)
+    {
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Cache-Control: no-cache');
+        header("Content-Type: text/event-stream\n\n");
+
+        try {
+            $total = 0;
+            foreach ($files as $file) {
+                $total += substr_count(
+                    file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file),
+                    ';'
+                );
+            }
+            $this->sendEventSourceEvent('total', $total);
+
+            $current = 0;
+            foreach ($files as $file) {
+                $this->sendEventSourceEvent('file', $file);
+
+                $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
+                foreach ($queries as $query) {
+                    $pdo->exec($query);
+                    $current += 1;
+
+                    $this->sendEventSourceEvent('current', $current);
+                }
+            }
+
+            $this->sendEventSourceEvent('close', true);
+        } catch (Exception $e) {
+            $this->sendEventSourceEvent('error', $e->getMessage());
+        }
+
+        die;
+    }
+
+    private function sendEventSourceEvent($event, $data)
+    {
+        echo "event: {$event}\n";
+        echo "data: {$data}\n";
+        echo "\n";
+        flush();
     }
 }

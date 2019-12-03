@@ -1,10 +1,11 @@
 <dl class="requests">
-    <dt data-request-url="<?= $controller->link_for('admin/install/install/sql') ?>">Datenbank</dt>
+    <dt data-request-url="<?= $controller->link_for('admin/install/install/sql') ?>" data-event-source="1">Datenbank</dt>
     <dd class="success">Installiert</dd>
     <dd class="failed">
         Fehler beim Installieren
         <div class="response"></div>
     </dd>
+    <progress class="event-sourced" max="1" value="0"></progress>
 
     <dt data-request-url="<?= $controller->link_for('admin/install/install/root') ?>">Root-Konto</dt>
     <dd class="success">Eingerichtet</dd>

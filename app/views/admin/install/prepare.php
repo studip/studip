@@ -1,19 +1,20 @@
 <h3>SQL-Daten einspielen</h3>
-<ul>
-<?php foreach ($files as $file => $description): ?>
+<ul class="list-unstyled">
+<?php $i = 0; foreach ($files as $file => $description): ?>
     <li>
-        <label class="plain">
-        <?php if (in_array($file, $required)): ?>
-            <input type="hidden" name="files[]" value="<?= htmlReady($file) ?>">
-            <input type="checkbox" checked disabled>
-        <?php else: ?>
-            <input type="checkbox" name="files[]" value="<?= htmlReady($file) ?>">
-        <?php endif; ?>
+    <?php if (in_array($file, $required)): ?>
+        <input type="hidden" name="files[]" value="<?= htmlReady($file) ?>">
+        <input type="checkbox" checked disabled class="studip-checkbox">
+    <?php else: ?>
+        <input type="checkbox" name="files[]" value="<?= htmlReady($file) ?>"
+               class="studip-checkbox" id="option-<?= $i ?>">
+    <?php endif; ?>
+        <label for="option-<?= $i ?>">
             <strong><?= htmlReady($description) ?></strong>
             (<?= htmlReady($file) ?>)
         </label>
     </li>
-<?php endforeach; ?>
+<?php $i += 1; endforeach; ?>
 </ul>
 
 <h3>Konto für Root einrichten</h3>
