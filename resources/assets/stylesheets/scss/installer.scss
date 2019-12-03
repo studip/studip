@@ -1,0 +1,129 @@
+.stage {
+    $image-path: '../images/';
+    $icon-path: '#{$image-path}icons/';
+
+    background: #fff;
+    margin: 0 auto;
+    margin-top: 1em;
+    padding: 1em;
+    width: 800px;
+
+    &.ui-dialog {
+        position: relative;
+        top: auto;
+        left: auto;
+
+        &.ui-widget.ui-widget-content .ui-dialog-titlebar {
+            background-image: url('#{$image-path}logos/studip-logo.svg');
+            background-position: right 10px top 10px;
+            background-repeat: no-repeat;
+            background-size: 120px;
+
+            div:first-of-type {
+                font-size: 20px;
+                line-height: 1;
+            }
+            div:last-of-type {
+                font-weight: lighter;
+            }
+        }
+
+        .ui-dialog-content.ui-widget-content {
+            min-height: 15em;
+            padding: 0.5em 1em;
+        }
+    }
+
+    footer {
+        border-top: 1px solid #444;
+        text-align: center;
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                display: inline-block;
+
+                &:not(:first-child)::before {
+                    content: ' | ';
+                }
+            }
+        }
+    }
+
+    dl {
+        dt {
+            clear: left;
+            float: left;
+            width: 200px;
+        }
+        dd {
+            margin-left: 200px;
+            word-break: break-all;
+
+            &.failed {
+                background: url('#{$icon-path}red/decline.svg') no-repeat top left;
+                color: red;
+                padding-left: 20px;
+            }
+            &.success {
+                background: url('#{$icon-path}green/accept.svg') no-repeat top left;
+                color: green;
+                padding-left: 20px;
+            }
+
+            code {
+                font-weight: bold;
+                white-space: nowrap;
+            }
+            textarea {
+                width: 100%;
+                height: 40em;
+            }
+        }
+
+        &::after {
+            clear: both;
+            display: block;
+            content: '';
+            height: 0px;
+            visibility: hidden;
+        }
+
+        &.requests {
+            dt:not(.succeeded):not(.failed):not(.requesting) {
+                background: url('#{$icon-path}/black/date.svg') no-repeat right center;
+            }
+            dt.requesting {
+                background: url('#{$image-path}/ajax-indicator-black.svg') no-repeat right center;
+                background-size: 16px;
+            }
+
+            dt:not(.succeeded) + dd.success {
+                display: none;
+            }
+            dt:not(.failed) + dd.success + dd.failed {
+                display: none;
+            }
+        }
+    }
+
+    div.type-text {
+        clear: both;
+    }
+    label {
+        &:not(.plain) {
+            display: block;
+            float: left;
+            padding: 2px;
+            width: 100px;
+        }
+        + input {
+            display: block;
+            margin: 1px;
+            margin-left: 100px;
+        }
+    }
+}

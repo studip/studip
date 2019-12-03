@@ -1,19 +1,23 @@
-<h3>Installation</h3>
-<dl>
-    <dt>Datenbank</dt>
+<dl class="requests">
+    <dt data-request-url="<?= $controller->link_for('admin/install/install/sql') ?>">Datenbank</dt>
     <dd class="success">Installiert</dd>
+    <dd class="failed">
+        Fehler beim Installieren
+        <div class="response"></div>
+    </dd>
 
-    <dt>Root-Konto</dt>
+    <dt data-request-url="<?= $controller->link_for('admin/install/install/root') ?>">Root-Konto</dt>
     <dd class="success">Eingerichtet</dd>
+    <dd class="failed">
+        Fehler beim Einrichten
+        <div class="response"></div>
+    </dd>
 
-    <dt>Konfiguration</dt>
-<?php if ($local_inc === true): ?>
+    <dt data-request-url="<?= $controller->link_for('admin/install/install/config') ?>">Konfiguration</dt>
     <dd class="success">Gespeichert</dd>
-<?php else: ?>
     <dd class="failed">
         Konnte nicht gespeichert werden. Bitte erzeugen Sie die Datei
         <code>config/config_local.inc.php</code> mit dem folgenden Inhalt:<br>
-        <textarea onclick="this.select()"><?= htmlReady($local_inc) ?></textarea>
+        <textarea onclick="this.select()" class="response"></textarea>
     </dd>
-<?php endif; ?>
 </dl>

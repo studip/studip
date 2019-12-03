@@ -1,7 +1,16 @@
 <?php
-
 class Admin_InstallController extends Trails_Controller
 {
+    public function test_action($what)
+    {
+        if ($what !== 'config') {
+            $this-render_json(true);
+        } else {
+            $this->set_status(500);
+            $this->render_json('FOOO');
+        }
+    }
+
     public function before_filter(&$action, &$args)
     {
         if (!isset($_SESSION['STUDIP_INSTALLATION'])) {
@@ -22,6 +31,11 @@ class Admin_InstallController extends Trails_Controller
         $this->installer = new StudipInstaller($GLOBALS['STUDIP_BASE_PATH']);
         $this->checker   = new SystemChecker($GLOBALS['STUDIP_BASE_PATH']);
 
+        $this->basic = Request::submitted('basic');
+        if ($this->basic) {
+            URLHelper::addLinkParam('basic', 1);
+        }
+
         parent::before_filter($action, $args);
 
         $this->set_layout('admin/install/layout');
@@ -34,7 +48,7 @@ class Admin_InstallController extends Trails_Controller
             'permissions' => 'Berechtigungen',
             'prepare'     => 'Konfiguration',
             'install'     => 'Installation',
-            'migrate'     => 'Migration',
+            'finish'      => 'Installation beendet',
         ];
         $steps = array_keys($this->steps);
         $step  = array_search($action, $steps) ?: 0;
@@ -43,7 +57,11 @@ class Admin_InstallController extends Trails_Controller
         $this->step          = $steps[$step];
         $this->next_step     = $step + 1 < count($steps) ? $steps[$step + 1] : false;
 
+        $this->total_steps  = count($this->steps);
+        $this->current_step = $step + 1;
+
         $this->valid = true;
+        $this->hide_back_button = false;
     }
 
     public function index_action()
@@ -161,11 +179,8 @@ class Admin_InstallController extends Trails_Controller
         $this->button_label = 'Installieren';
     }
 
-    public function install_action()
+    public function install_action($what = null)
     {
-        // echo '<pre>';var_dump($_SESSION['STUDIP_INSTALLATION']);die;
-
-        // INSTALL SQL FILES
         $pdo = $this->checker->checkMySQLConnection(
             $_SESSION['STUDIP_INSTALLATION']['database']['host'],
             $_SESSION['STUDIP_INSTALLATION']['database']['user'],
@@ -174,61 +189,116 @@ class Admin_InstallController extends Trails_Controller
         );
         $pdo->exec('SET NAMES utf8');
 
-        foreach ($_SESSION['STUDIP_INSTALLATION']['files'] as $file) {
-            $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
-            foreach ($queries as $query) {
-                $pdo->exec($query);
+        // INSTALL SQL FILES
+        if ($this->basic || $what === 'sql') {
+            try {
+                foreach ($_SESSION['STUDIP_INSTALLATION']['files'] as $file) {
+                    $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
+                    foreach ($queries as $query) {
+                        $pdo->exec($query);
+                    }
+                }
+
+                if (!$this->basic) {
+                    $this->render_json(true);
+                }
+            } catch (Exception $e) {
+                if ($this->basic) {
+                    throw $e;
+                } else {
+                    $this->set_status(500);
+                    $this->render_json($e->getMessage());
+                }
+            }
+        }
+        // CREATE ROOT USER
+        if ($this->basic || $what === 'root') {
+            try {
+                $user_id = md5(uniqid('root-user', true));
+                $hasher  = new PasswordHash(8, false);
+
+                $query = "INSERT INTO `auth_user_md5` (
+                            `user_id`, `username`, `password`, `perms`,
+                            `Vorname`, `Nachname`, `Email`, `auth_plugin`,
+                            `locked`, `lock_comment`, `locked_by`,
+                            `visible`
+                          ) VALUES (
+                            :user_id, :username, :password, 'root',
+                            :first_name, :last_name, :email, 'standard',
+                            0, NULL, NULL,
+                            'global'
+                          )";
+                $statement = $pdo->prepare($query);
+                $statement->bindValue(':user_id', $user_id);
+                $statement->bindValue(':username', $_SESSION['STUDIP_INSTALLATION']['root']['username']);
+                $statement->bindValue(':password', $hasher->HashPassword($_SESSION['STUDIP_INSTALLATION']['root']['password']));
+                $statement->bindValue(':first_name', $_SESSION['STUDIP_INSTALLATION']['root']['first_name']);
+                $statement->bindValue(':last_name', $_SESSION['STUDIP_INSTALLATION']['root']['last_name']);
+                $statement->bindValue(':email', $_SESSION['STUDIP_INSTALLATION']['root']['email']);
+                $statement->execute();
+
+                $query = "INSERT INTO `user_info` (`user_id`) VALUES (:user_id)";
+                $statement = $pdo->prepare($query);
+                $statement->bindValue(':user_id', $user_id);
+                $statement->execute();
+
+                if (!$this->basic) {
+                    $this->render_json(true);
+                }
+            } catch (Exception $e) {
+                if ($this->basic) {
+                    throw $e;
+                } else {
+                    $this->set_status(500);
+                    $this->render_json($e->getMessage());
+                }
             }
         }
 
-        // CREATE ROOT USER
-        $user_id = md5(uniqid('root-user', true));
-        $hasher  = new PasswordHash(8, false);
-
-        $query = "INSERT INTO `auth_user_md5` (
-                    `user_id`, `username`, `password`, `perms`,
-                    `Vorname`, `Nachname`, `Email`, `auth_plugin`,
-                    `locked`, `lock_comment`, `locked_by`,
-                    `visible`
-                  ) VALUES (
-                    :user_id, :username, :password, 'root',
-                    :first_name, :last_name, :email, 'standard',
-                    0, NULL, NULL,
-                    'global'
-                  )";
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':username', $_SESSION['STUDIP_INSTALLATION']['root']['username']);
-        $statement->bindValue(':password', $hasher->HashPassword($_SESSION['STUDIP_INSTALLATION']['root']['password']));
-        $statement->bindValue(':first_name', $_SESSION['STUDIP_INSTALLATION']['root']['first_name']);
-        $statement->bindValue(':last_name', $_SESSION['STUDIP_INSTALLATION']['root']['last_name']);
-        $statement->bindValue(':email', $_SESSION['STUDIP_INSTALLATION']['root']['email']);
-        $statement->execute();
-
-        $query = "INSERT INTO `user_info` (`user_id`) VALUES (:user_id)";
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(':user_id', $user_id);
-        $statement->execute();
-
         // COPY config.inc.php / config_local.inc.php
-        $local_inc = $this->installer->createConfigLocalInc(
-            $_SESSION['STUDIP_INSTALLATION']['database']['host'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['user'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['password'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['database'],
+        if ($this->basic || $what === 'config') {
+            $local_inc = $this->installer->createConfigLocalInc(
+                $_SESSION['STUDIP_INSTALLATION']['database']['host'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['user'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['password'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['database'],
 
-            $_SESSION['STUDIP_INSTALLATION']['env']
-        );
-        if (is_writable($GLOBALS['STUDIP_BASE_PATH'] . '/config')) {
-            file_put_contents(
-                $GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php',
-                $local_inc
+                $_SESSION['STUDIP_INSTALLATION']['env']
             );
+            if (is_writable($GLOBALS['STUDIP_BASE_PATH'] . '/config')) {
+                file_put_contents(
+                    $GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php',
+                    $local_inc
+                );
 
-            $this->local_inc = true;
-        } else {
-            $this->local_inc = $local_inc;
+                if ($this->basic) {
+                    $this->local_inc = true;
+                } else {
+                    $this->render_json(true);
+                }
+            } elseif ($this->basic) {
+                $this->local_inc = $local_inc;
+            } else {
+                $this->set_status(500);
+                $this->render_json($local_inc);
+            }
         }
+
+        if ($this->basic) {
+            $this->render_template('admin/install/install-basic.php', $this->layout);
+        }
+    }
+
+    public function finish_action()
+    {
+        if (Request::submitted('continue')) {
+            $this->redirect('admin/install/migrate');
+            return;
+        }
+
+        $this->valid            = false;
+        $this->hide_back_button = true;
+        $this->button_label     = 'Zum Stud.IP-System';
     }
 
     public function migrate_action()
@@ -250,8 +320,20 @@ class Admin_InstallController extends Trails_Controller
         }
     }
 
+    public function url_for($to)
+    {
+        $url = call_user_func_array('parent::url_for', func_get_args());
+        return URLHelper::getURL($url);
+    }
+
     public function link_for($to)
     {
         return htmlReady(call_user_func_array([$this, 'url_for'], func_get_args()));
+    }
+
+    public function render_json($what)
+    {
+        $this->set_content_type('application/json');
+        $this->render_text(json_encode($what));
     }
 }

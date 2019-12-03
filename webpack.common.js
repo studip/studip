@@ -10,6 +10,7 @@ module.exports = {
         "studip-admission": assetsPath + "/entry-admission.js",
         "studip-statusgroups": assetsPath + "/entry-statusgroups.js",
         "studip-wysiwyg": assetsPath + "/entry-wysiwyg.js",
+        "studip-installer": assetsPath + "/entry-installer.js",
         "print": path.resolve(__dirname, "resources/assets/stylesheets") + "/print.less"
     },
     output: {

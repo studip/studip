@@ -4,99 +4,38 @@
     <meta charset="utf-8">
     <base href="<?= dirname($_SERVER['SCRIPT_NAME']) ?>/">
     <title>Stud.IP - Installation<?= $steps[$step] ? ' - ' . $steps[$step] : '' ?></title>
+    <link rel="icon" type="image/svg+xml" href="<?= URLHelper::getLink('assets/images/favicon.svg') ?>">
+    <link href="<?= URLHelper::getLink('assets/stylesheets/studip-installer.css') ?>" rel="stylesheet" type="text/css">
     <link href="<?= URLHelper::getLink('assets/stylesheets/studip-base.css') ?>" rel="stylesheet" type="text/css">
-    <style>
-    .stage {
-        background: #fff;
-        margin: 0 auto;
-        padding: 1em;
-        width: 800px;
-    }
-    .stage header h1 {
-        background: url('<?= URLHelper::getURL('assets/images/logos/studip4-logo.svg') ?>') no-repeat left -18px center;
-        background-size: 120px 60px;
-        font-size: 25px;
-        line-height: 40px;
-        text-indent: 90px;
-    }
-    section {
-        min-height: 15em;
-        padding: 0.5em 1em;
-    }
-    nav {
-        border-top: 1px dotted #888;
-        text-align: center;
-    }
-    footer {
-        border-top: 1px solid #444;
-    }
-    h2 {
-        margin-bottom: 0;
-    }
-    dt {
-        float: left;
-        width: 200px;
-    }
-    dd {
-        margin-left: 200px;
-        word-break: break-all;
-    }
-    dd.failed {
-        background: url('<?= URLHelper::getURL('assets/images/icons/red/decline.svg') ?>') no-repeat top left;
-        color: red;
-        padding-left: 20px;
-    }
-    dd.success {
-        background: url('<?= URLHelper::getURL('assets/images/icons/green/accept.svg') ?>') no-repeat top left;
-        color: green;
-        padding-left: 20px;
-    }
-    dd code {
-        font-weight: bold;
-        white-space: nowrap;
-    }
-    dd textarea {
-        width: 100%;
-        height: 40em;
-    }
-    div.type-text {
-        clear: both;
-    }
-    label:not(.plain) {
-        display: block;
-        float: left;
-        padding: 2px;
-        width: 100px;
-    }
-    label + input {
-        display: block;
-        margin: 1px;
-        margin-left: 100px;
-    }
-    </style>
 </head>
 <body id="install">
-    <div class="stage">
-        <header>
-            <h1>Installation</h1>
-        <?php if ($steps[$step]): ?>
-            <h2><?= $steps[$step] ?></h2>
-        <?php endif; ?>
-        </header>
-        <form action="<?= $controller->link_for('admin/install', $step) ?>" method="post">
+    <form action="<?= $controller->link_for('admin/install', $step) ?>" method="post" class="stage ui-dialog ui-corner-all ui-widget ui-widget-content ui-front studip-dialog ui-dialog-buttons">
+        <noscript>
+            <input type="hidden" name="basic" value="1">
+        </noscript>
+        <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix">
+            <div>Installationsassistent</div>
+            <div>
+                <?= sprintf('Schritt %u/%u:', $current_step, $total_steps) ?>
+                <?= $steps[$step] ?>
+            </div>
+        </div>
+        <div class="ui-dialog-content ui-widget-content">
         <?php if ($error): ?>
             <?= MessageBox::error($error) ?>
         <?php endif; ?>
             <section>
                 <?= $content_for_layout ?>
             </section>
-            <nav>
-            <?php if ($previous_step): ?>
+        </div>
+        <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+            <div class="ui-dialog-buttonset">
+            <?php if (!$hide_back_button && $previous_step): ?>
                 <?= Studip\LinkButton::create(
                     '<< zurück',
                     $controller->url_for('admin/install', $previous_step)
                 ) ?>
-            <?php else: ?>
+            <?php elseif (!$hide_back_button): ?>
                 <?= Studip\LinkButton::create(
                     '<< zurück',
                     $controller->url_for('admin/install', $step),
@@ -113,11 +52,24 @@
             <?php else: ?>
                 <?= Studip\Button::create($button_label, 'continue', ['style' => 'visibility: hidden;']) ?>
             <?php endif; ?>
-            </nav>
-        </form>
+            </div>
+        </div>
         <footer>
-            Hilfe | Blog
+            <ul>
+                <li>
+                    <a href="https://hilfe.studip.de/admin/Admins/Installationsanleitung" target="_blank">
+                        Hilfe
+                    </a>
+                </li>
+                <li>
+                    <a href="https://develop.studip.de" target="_blank">
+                        Stud.IP Entwicklungs- und Anwendungsforum
+                    </a>
+                </li>
+            </ul>
         </footer>
-    </div>
+    </form>
+
+    <script src="<?= URLHelper::getLink('assets/javascripts/studip-installer.js') ?>"></script>
 </body>
 </html>

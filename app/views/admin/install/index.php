@@ -1,11 +1,18 @@
 <p>Vielen Dank, dass Sie sich für Stud.IP entschieden haben.</p>
 
-<p>
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-    veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-    commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-    velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-    cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-    est laborum.
+<p style="text-align: justify">
+    Dieser Installationsassistent wird Sie durch die notwendigen Schritte zur
+    Konfiguration Ihres Stud.IP-Systems führen.
+</p>
+
+<p style="text-align: justify">
+    Sollten Sie in einem der Schritte auf unerwartete oder unlösbare Probleme
+    stoßen, wenden Sie sich bitte an die Entwickler von Stud.IP im Entwicklungs-
+    und Anwendungsforum, welches im Fußbereich jeder Seite verlinkt ist.
+</p>
+
+<p style="text-align: justify">
+    Weitere Hilfestellungen und Anleitungen zur Installation und zum Betrieb
+    von Stud.IP finden Sie in der ebenfalls im Fußbereich jeder Seite verlinkten
+    Hilfe.
 </p>
