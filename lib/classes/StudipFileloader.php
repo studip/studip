@@ -52,6 +52,12 @@ class StudipFileloader
             $_container[$variableName] = $newVariables[$variableName];
         }
 
+        foreach ($_injected as $key => $value) {
+            if ($$key === $value) {
+                $newVariableNames = array_diff($newVariableNames, [$key]);
+            }
+        }
+
         return $newVariableNames;
     }
 }
