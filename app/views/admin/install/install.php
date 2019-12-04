@@ -17,8 +17,15 @@
     <dt data-request-url="<?= $controller->link_for('admin/install/install/config') ?>">Konfiguration</dt>
     <dd class="success">Gespeichert</dd>
     <dd class="failed">
-        Konnte nicht gespeichert werden. Bitte erzeugen Sie die Datei
-        <code>config/config_local.inc.php</code> mit dem folgenden Inhalt:<br>
-        <textarea onclick="this.select()" class="response"></textarea>
+        Konnte nicht gespeichert werden. Bitte erzeugen Sie die beiden folgenden
+        Dateien mit dem jeweiligen Inhalt:<br>
+
+        <code>config/config_local.inc.php</code>:<br>
+        <textarea onclick="this.select()" class="response" data-key="local_inc"></textarea>
+
+        <br>
+
+        <code>config/config.inc.php</code>:<br>
+        <textarea onclick="this.select()" class="response" data-key="config_inc"></textarea>
     </dd>
 </dl>

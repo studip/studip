@@ -12,9 +12,10 @@ class Admin_InstallController extends Trails_Controller
                     'database' => 'studip',
                     'version'  => false,
                 ],
-                'files' => false,
-                'root' => false,
-                'env' => 'development',
+                'files'  => false,
+                'root'   => false,
+                'system' => false,
+                'env'    => 'development',
             ];
         }
 
@@ -37,6 +38,7 @@ class Admin_InstallController extends Trails_Controller
             'mysql_check' => 'System-Check (Datenbank)',
             'permissions' => 'Berechtigungen',
             'prepare'     => 'Konfiguration',
+            'root'        => 'Root-Konto',
             'install'     => 'Installation',
             'finish'      => 'Installation beendet',
         ];
@@ -123,13 +125,29 @@ class Admin_InstallController extends Trails_Controller
             'studip_resources_default_data.sql',
         ];
 
-        $this->valid = false;
         if (Request::submitted('continue')) {
-            $files = array_intersect(
+            $_SESSION['STUDIP_INSTALLATION']['files'] = array_intersect(
                 array_keys($this->files),
                 Request::getArray('files')
             );
+            $_SESSION['STUDIP_INSTALLATION']['env'] = Request::option('env') === 'production'
+                                                    ? 'production'
+                                                    : 'development';
 
+            $_SESSION['STUDIP_INSTALLATION']['system'] = [
+                'UNI_NAME_CLEAN'         => Request::get('system_name'),
+                'STUDIP_INSTALLATION_ID' => Request::get('system_id'),
+                'ABSOLUTE_URI_STUDIP'    => Request::get('system_url'),
+                'UNI_CONTACT'            => Request::get('system_email'),
+                'UNI_URL'                => Request::get('system_host_url'),
+            ];
+        }
+    }
+
+    public function root_action()
+    {
+        $this->valid = false;
+        if (Request::submitted('continue')) {
             $username = Request::get('username');
             $password = Request::get('password');
             $confirm  = Request::get('password_confirm');
@@ -157,13 +175,9 @@ class Admin_InstallController extends Trails_Controller
                              : '<ul><li>' . implode('</li><li>', $errors) . '</li></ul>';
             }
 
-            $_SESSION['STUDIP_INSTALLATION']['files'] = $files;
             $_SESSION['STUDIP_INSTALLATION']['root'] = compact(
                 'username', 'password', 'email', 'first_name', 'last_name'
             );
-            $_SESSION['STUDIP_INSTALLATION']['env'] = Request::option('env') === 'production'
-                                                    ? 'production'
-                                                    : 'development';
         }
 
         $this->button_label = 'Installieren';
@@ -260,12 +274,34 @@ class Admin_InstallController extends Trails_Controller
                 $_SESSION['STUDIP_INSTALLATION']['database']['password'],
                 $_SESSION['STUDIP_INSTALLATION']['database']['database'],
 
-                $_SESSION['STUDIP_INSTALLATION']['env']
+                $_SESSION['STUDIP_INSTALLATION']['env'],
+                $_SESSION['STUDIP_INSTALLATION']['system']['ABSOLUTE_URI_STUDIP']
             );
+            $config_inc = $this->installer->createConfigInc(
+                $_SESSION['STUDIP_INSTALLATION']['system']['UNI_URL'],
+                $_SESSION['STUDIP_INSTALLATION']['system']['UNI_CONTACT']
+            );
+
+            // Update config entries
+            $this->installer->updateConfigInDatabase(
+                $pdo,
+                'STUDIP_INSTALLATION_ID',
+                $_SESSION['STUDIP_INSTALLATION']['system']['STUDIP_INSTALLATION_ID']
+            );
+            $this->installer->updateConfigInDatabase(
+                $pdo,
+                'UNI_NAME_CLEAN',
+                $_SESSION['STUDIP_INSTALLATION']['system']['UNI_NAME_CLEAN']
+            );
+
             if (is_writable($GLOBALS['STUDIP_BASE_PATH'] . '/config')) {
                 file_put_contents(
                     $GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php',
                     $local_inc
+                );
+                file_put_contents(
+                    $GLOBALS['STUDIP_BASE_PATH'] . '/config/config.inc.php',
+                    $config_inc
                 );
 
                 if ($this->basic) {
@@ -274,10 +310,11 @@ class Admin_InstallController extends Trails_Controller
                     $this->render_json(true);
                 }
             } elseif ($this->basic) {
-                $this->local_inc = $local_inc;
+                $this->local_inc  = $local_inc;
+                $this->config_inc = $config_inc;
             } else {
                 $this->set_status(500);
-                $this->render_json($local_inc);
+                $this->render_json(compact('local_inc', 'config_inc'));
             }
         }
 

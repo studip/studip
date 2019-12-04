@@ -102,7 +102,15 @@ domReady(() => {
             next();
         }).catch(error => {
             current.element.classList.add('failed');
-            current.element.nextElementSibling.nextElementSibling.querySelector('.response').innerText = error;
+
+            if (error !== null && error === Object(error)) {
+                current.element.nextElementSibling.nextElementSibling.querySelectorAll('.response').forEach((element) => {
+                    let key = element.dataset.key;
+                    element.value = error[key];
+                });
+            } else {
+                current.element.nextElementSibling.nextElementSibling.querySelector('.response').innerText = error;
+            }
         }).finally(() => {
             current.element.classList.remove('requesting');
         });

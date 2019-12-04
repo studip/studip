@@ -33,6 +33,17 @@
         .ui-dialog-content.ui-widget-content {
             min-height: 15em;
             padding: 0.5em 1em;
+
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+
+            > * {
+                flex: 0 0 100%;
+            }
+            > .half-sized {
+                flex: 1;
+            }
         }
     }
 
@@ -170,6 +181,16 @@
             display: block;
             margin: 1px;
             margin-left: 100px;
+        }
+
+        &.vertical {
+            float: none;
+            width: auto;
+
+            + input {
+                margin-left: 0;
+                width: 100%;
+            }
         }
     }
     .studip-checkbox + label {

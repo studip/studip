@@ -24,9 +24,7 @@
         <?php if ($error): ?>
             <?= MessageBox::error($error) ?>
         <?php endif; ?>
-            <section>
-                <?= $content_for_layout ?>
-            </section>
+            <?= $content_for_layout ?>
         </div>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
             <div class="ui-dialog-buttonset">

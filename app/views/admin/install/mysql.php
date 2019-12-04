@@ -1,7 +1,7 @@
 <h3>Datenbankverbindung</h3>
 <div class="type-text">
     <label for="host">Host</label>
-    <input required type="text" id="host" name="host" value="<?= htmlReady(Request::get('post', $_SESSION['STUDIP_INSTALLATION']['database']['host'])) ?>">
+    <input required type="text" id="host" name="host" value="<?= htmlReady(Request::get('host', $_SESSION['STUDIP_INSTALLATION']['database']['host'])) ?>">
 </div>
 
 <div class="type-text">

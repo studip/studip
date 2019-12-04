@@ -17,38 +17,45 @@
 <?php $i += 1; endforeach; ?>
 </ul>
 
-<h3>Konto für Root einrichten</h3>
+<h3>Daten zum System</h3>
 <div class="type-text">
-    <label for="username">Nutzername</label>
-    <input required type="text" id="username" name="username"
-           value="<?= htmlReady(Request::get('username', $_SESSION['STUDIP_INSTALLATION']['root']['username'])) ?>">
+    <label for="system-name" class="vertical">
+        Name der Stud.IP-Installation
+    </label>
+    <input required type="text" id="system-name" name="system_name"
+           value="<?= htmlReady(Request::get('system_name', $_SESSION['STUDIP_INSTALLATION']['system']['name'])) ?>">
 </div>
 
 <div class="type-text">
-    <label for="password">Passwort</label>
-    <input required type="password" id="password" name="password">
+    <label for="system-id" class="vertical">
+        Id der Stud.IP-Installation
+    </label>
+    <input required type="text" id="system-id" name="system_id"
+           value="<?= htmlReady(Request::get('system_id', $_SESSION['STUDIP_INSTALLATION']['system']['id'])) ?>">
 </div>
 
 <div class="type-text">
-    <label for="password_confirm">Passwort bestätigen</label>
-    <input required type="password" id="password_confirm" name="password_confirm">
+    <label for="system-url" class="vertical">
+        URL der Stud.IP-Installation
+    </label>
+    <input required type="url" id="system-url" name="system_url"
+           value="<?= htmlReady(Request::get('system_url', $_SESSION['STUDIP_INSTALLATION']['system']['url'])) ?>">
 </div>
 
 <div class="type-text">
-    <label for="first_name">Vorname</label>
-    <input required type="text" id="first_name" name="first_name"
-           value="<?= htmlReady(Request::get('first_name', $_SESSION['STUDIP_INSTALLATION']['root']['first_name'])) ?>">
+    <label for="system-url" class="vertical">
+        E-Mail-Adresse für Kontakt
+    </label>
+    <input required type="email" id="system-email" name="system_email"
+           value="<?= htmlReady(Request::get('system_email', $_SESSION['STUDIP_INSTALLATION']['system']['email'])) ?>">
 </div>
 
 <div class="type-text">
-    <label for="last_name">Nachname</label>
-    <input required type="text" id="last_name" name="last_name"
-           value="<?= htmlReady(Request::get('last_name', $_SESSION['STUDIP_INSTALLATION']['root']['last_name'])) ?>">
-</div>
-
-<div class="type-text">
-    <label for="email">E-Mail-Adresse</label>
-    <input required type="email" id="email" name="email" value="<?= htmlReady(Request::get('user', $_SESSION['STUDIP_INSTALLATION']['root']['email'])) ?>">
+    <label for="system-host-url" class="vertical">
+        URL der betreibenden Einrichtung
+    </label>
+    <input type="url" id="system-host-url" name="system_host_url"
+           value="<?= htmlReady(Request::get('system_host_url', $_SESSIOn['STUDIP_INSTALLATION']['system']['host_url'])) ?>">
 </div>
 
 <h3>Stud.IP-Umgebung</h3>
