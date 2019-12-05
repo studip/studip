@@ -17,7 +17,7 @@ class Semester extends \RESTAPI\RouteMap
      */
     public function getSemesters()
     {
-        $semesters = $this->findAllSemesters();
+        $semesters = \Semester::getAll();
 
         // paginate
         $total = count($semesters);
@@ -39,7 +39,7 @@ class Semester extends \RESTAPI\RouteMap
      */
     public function getSemester($id)
     {
-        $semester = \SemesterData::getSemesterData($id);
+        $semester = \Semester::find($id);
         if (!$semester) {
             $this->notFound();
         }
@@ -49,29 +49,18 @@ class Semester extends \RESTAPI\RouteMap
         return $this->semesterToJSON($semester);
     }
 
-    private function findAllSemesters()
-    {
-        return $this->filterSemesters(\SemesterData::GetSemesterArray());
-    }
-
-    private function filterSemesters($semesters)
-    {
-        return array_filter($semesters, function ($semester) {
-            return isset($semester['semester_id']);
-        });
-    }
-
     private function semesterToJSON($semester)
     {
         return [
             'id'             => $semester['semester_id'],
             'title'          => (string) $semester['name'],
-            'token'          => (string) $semester['token'],
+            'token'          => (string) $semester['semester_token'],
             'description'    => (string) $semester['description'],
             'begin'          => (int) $semester['beginn'],
             'end'            => (int) $semester['ende'],
             'seminars_begin' => (int) $semester['vorles_beginn'],
             'seminars_end'   => (int) $semester['vorles_ende'],
+            'visible'        => (int) $semester['visible'],
         ];
     }
 }
