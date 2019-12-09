@@ -5,12 +5,12 @@
  */
 session_start();
 
-$GLOBALS['STUDIP_BASE_PATH'] = realpath(dirname(__FILE__) . '/..');
+$GLOBALS['STUDIP_BASE_PATH'] = realpath(__DIR__ . '/..');
 
 if (file_exists($GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php')
     && !isset($_SESSION['STUDIP_INSTALLATION'])
 ) {
-    throw new Exception('Diese Installation ist bereits konfiguriert');
+    throw new Exception(_('Diese Installation ist bereits konfiguriert'));
 }
 
 set_include_path($GLOBALS['STUDIP_BASE_PATH']);
@@ -36,4 +36,4 @@ $GLOBALS['template_factory'] = new Flexi_TemplateFactory('../templates/');
 $dispatch_to = $_SERVER['PATH_INFO'] ?: '';
 
 $dispatcher = new Trails_Dispatcher( '../app', $_SERVER['SCRIPT_NAME'], 'admin/install');
-$dispatcher->dispatch($dispatch_to);
+$dispatcher->dispatch("admin/install/{$dispatch_to}");

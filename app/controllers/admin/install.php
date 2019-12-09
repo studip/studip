@@ -1,6 +1,15 @@
 <?php
 class Admin_InstallController extends Trails_Controller
 {
+    public function __construct($dispatcher)
+    {
+        if (basename($dispatcher->trails_uri, '.php') !== 'install') {
+            throw new AccessDeniedException();
+        }
+
+        parent::__construct($dispatcher);
+    }
+
     public function before_filter(&$action, &$args)
     {
         if (!isset($_SESSION['STUDIP_INSTALLATION'])) {
@@ -326,7 +335,7 @@ class Admin_InstallController extends Trails_Controller
     public function finish_action()
     {
         if (Request::submitted('continue')) {
-            $this->redirect('admin/install/migrate');
+            $this->redirect('migrate');
             return;
         }
 
@@ -348,7 +357,7 @@ class Admin_InstallController extends Trails_Controller
     public function after_filter($action, $args)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->next_step && $this->valid) {
-            header('Location: ' . $this->url_for('admin/install', $this->next_step));
+            header('Location: ' . $this->url_for($this->next_step));
             page_close();
             die;
         }

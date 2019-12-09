@@ -9,7 +9,7 @@
     <link href="<?= URLHelper::getLink('assets/stylesheets/studip-base.css') ?>" rel="stylesheet" type="text/css">
 </head>
 <body id="install">
-    <form action="<?= $controller->link_for('admin/install', $step) ?>" method="post" class="stage ui-dialog ui-corner-all ui-widget ui-widget-content ui-front studip-dialog ui-dialog-buttons">
+    <form action="<?= $controller->link_for($step) ?>" method="post" class="stage ui-dialog ui-corner-all ui-widget ui-widget-content ui-front studip-dialog ui-dialog-buttons">
         <noscript>
             <input type="hidden" name="basic" value="1">
         </noscript>
@@ -31,12 +31,12 @@
             <?php if (!$hide_back_button && $previous_step): ?>
                 <?= Studip\LinkButton::create(
                     '<< zurück',
-                    $controller->url_for('admin/install', $previous_step)
+                    $controller->url_for($previous_step)
                 ) ?>
             <?php elseif (!$hide_back_button): ?>
                 <?= Studip\LinkButton::create(
                     '<< zurück',
-                    $controller->url_for('admin/install', $step),
+                    $controller->url_for($step),
                     ['style' => 'visibility: hidden;']
                 ) ?>
             <?php endif; ?>
