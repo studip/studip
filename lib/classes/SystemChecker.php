@@ -35,31 +35,35 @@ final class SystemChecker
 
         $version = $this->compareVersion(phpversion(), $requirements['version']);
 
-        $valid = $version['valid'];
-
         $modules = [];
+        $modules_valid = true;
         foreach ($requirements['modules'] as $module => $requirement) {
             $modules[$module] = in_array($module, get_loaded_extensions());
             if (!$modules[$module] && $requirement === true) {
-                $valid = false;
+                $modules_valid = false;
             }
         }
 
         $settings = [];
+        $settings_valid = true;
         foreach ($requirements['settings'] as $setting => $state) {
             $settings[$setting] = $this->compareSetting(ini_get($setting), $state);
 
-            $valid = $valid && $settings[$setting]['valid'];
+            $settings_valid = $settings_valid && $settings[$setting]['valid'];
         }
 
         return [
-            'valid'   => $valid,
+            'valid'   => $version['valid'] && $modules_valid && $settings_valid,
             'version' => $version,
             'modules' => [
+                'valid'    => $modules_valid,
                 'required' => $requirements['modules'],
                 'present'  => $modules,
             ],
-            'settings' => $settings,
+            'settings' => [
+                'valid'    => $settings_valid,
+                'settings' => $settings,
+            ],
         ];
     }
 
@@ -83,27 +87,23 @@ final class SystemChecker
             $requirements['version']
         );
 
-        $valid = $version['valid'];
-
         $variables = $pdo->query('SHOW VARIABLES')->fetchAll(PDO::FETCH_KEY_PAIR);
-        $variables['innodb_large_prefix'] = 'ON';
-
-        // echo '<dl>';
-        // foreach ($variables as $var => $value) {
-        //     echo "<dt>{$var}</dt><dd>{$value}</dd>";
-        // }
-        // echo '</dl>';
-        // die;
 
         $settings = [];
+        $settings_valid = true;
         foreach ($requirements['settings'] as $setting => $state) {
             $settings[$setting] = $this->compareSetting($variables[$setting], $state, $version['present']);
+
+            $settings_valid = $settings_valid && $settings[$setting]['valid'];
         }
 
         return [
-            'valid'   => $valid,
+            'valid'   => $version['valid'] && $settings_valid,
             'version' => $version,
-            'settings' => $settings,
+            'settings' => [
+                'valid'    => $settings_valid,
+                'settings' => $settings,
+            ],
         ];
     }
 

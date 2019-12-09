@@ -67,6 +67,7 @@ class Admin_InstallController extends Trails_Controller
 
     public function index_action()
     {
+        $this->button_label = 'Assistent starten';
     }
 
     public function php_check_action()
@@ -97,6 +98,20 @@ class Admin_InstallController extends Trails_Controller
                 $this->valid = false;
 
                 $this->error = $e->getMessage();
+                $this->error_details = [
+                    sprintf(
+                        'Falls Sie ausführlichere Hilfestellung zu dieser '
+                        . 'Meldung benötigen, probieren Sie die %sGoogle-Suche%s '
+                        . 'oder fragen Sie im Stud.IP Entwicklungs- und '
+                        . 'Anwendungsforum nach.',
+                        sprintf(
+                            '<a href="%s" target="_blank" class="link-extern">',
+                            URLHelper::getURL('https://google.com/search', ['q' => $e->getMessage()])
+                        ),
+                        '</a>'
+                    ),
+                    'Oder wenden Sie sich an Ihren Hoster.',
+                ];
             }
         }
     }
@@ -123,10 +138,10 @@ class Admin_InstallController extends Trails_Controller
         $this->files = [
             'studip.sql' => 'Datenbankschema',
             'studip_default_data.sql' => 'Voreinstellungen',
-            'studip_resources_default_data.sql' => 'Struktur für die Ressourcen',
-            'studip_demo_data.sql' => 'Beispieldaten',
-            'studip_mvv_demo_data.sql' => 'Beispieldaten',
-            'studip_resources_demo_data.sql' => 'Beispieldaten',
+            'studip_resources_default_data.sql' => 'Struktur für Ressourcen',
+            'studip_demo_data.sql' => 'Allgemeine Beispieldaten',
+            'studip_mvv_demo_data.sql' => 'Demodaten für das Modul- und Veranstaltungsverzeichnis',
+            'studip_resources_demo_data.sql' => 'Demodaten für die Ressourcenverwaltung ',
         ];
         $this->required = [
             'studip.sql',
@@ -341,7 +356,7 @@ class Admin_InstallController extends Trails_Controller
 
         $this->valid            = false;
         $this->hide_back_button = true;
-        $this->button_label     = 'Zum Stud.IP-System';
+        $this->button_label     = 'Zum neuen Stud.IP';
     }
 
     public function migrate_action()
@@ -356,7 +371,11 @@ class Admin_InstallController extends Trails_Controller
 
     public function after_filter($action, $args)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $this->next_step && $this->valid) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && Request::submitted('continue')
+            && $this->next_step
+            && $this->valid
+        ) {
             header('Location: ' . $this->url_for($this->next_step));
             page_close();
             die;

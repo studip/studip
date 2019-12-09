@@ -22,10 +22,11 @@
         </div>
         <div class="ui-dialog-content ui-widget-content">
         <?php if ($error): ?>
-            <?= MessageBox::error($error) ?>
+            <?= MessageBox::error($error, (array) @$error_details) ?>
         <?php endif; ?>
             <?= $content_for_layout ?>
         </div>
+        <progress id="progress" value="<?= $current_step ?>" max="<?= $total_steps ?>"></progress>
         <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
             <div class="ui-dialog-buttonset">
             <?php if (!$hide_back_button && $previous_step): ?>
@@ -33,7 +34,7 @@
                     '<< zurück',
                     $controller->url_for($previous_step)
                 ) ?>
-            <?php elseif (!$hide_back_button): ?>
+            <?php elseif ($hide_back_button): ?>
                 <?= Studip\LinkButton::create(
                     '<< zurück',
                     $controller->url_for($step),
@@ -44,9 +45,9 @@
             <?php if (!$valid && $button_label): ?>
                 <?= Studip\Button::create($button_label, 'continue') ?>
             <?php elseif (!$valid): ?>
-                <?= Studip\Button::create('Erneut prüfen', 'continue') ?>
+                <?= Studip\Button::create('Erneut prüfen', 'check') ?>
             <?php elseif ($next_step): ?>
-                <?= Studip\Button::create('Weiter >>', 'continue') ?>
+                <?= Studip\Button::create($button_label ?: 'Weiter >>', 'continue') ?>
             <?php else: ?>
                 <?= Studip\Button::create($button_label, 'continue', ['style' => 'visibility: hidden;']) ?>
             <?php endif; ?>

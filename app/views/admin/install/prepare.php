@@ -1,3 +1,10 @@
+<p>
+    In diesem Schritt wählen Sie aus, welche Beispieldaten in Ihre Datenbank
+    eingespielt werden und geben einige Grunddaten zur Installation an, die
+    in der Datenbank gespeichert werden.  Die Grunddaten können Sie nach der
+    Installation weiterhin bearbeiten.
+</p>
+
 <h3>SQL-Daten einspielen</h3>
 <ul class="list-unstyled">
 <?php $i = 0; foreach ($files as $file => $description): ?>
@@ -10,7 +17,9 @@
                class="studip-checkbox" id="option-<?= $i ?>">
     <?php endif; ?>
         <label for="option-<?= $i ?>">
-            <strong><?= htmlReady($description) ?></strong>
+            <strong <?php if (in_array($file, $required)): ?>class="required"<?php endif; ?>>
+                <?= htmlReady($description) ?>
+            </strong>
             (<?= htmlReady($file) ?>)
         </label>
     </li>
@@ -18,47 +27,50 @@
 </ul>
 
 <h3>Daten zum System</h3>
-<div class="type-text">
+<div class="type-text required">
     <label for="system-name" class="vertical">
         Name der Stud.IP-Installation
     </label>
     <input required type="text" id="system-name" name="system_name"
-           value="<?= htmlReady(Request::get('system_name', $_SESSION['STUDIP_INSTALLATION']['system']['name'])) ?>">
+           value="<?= htmlReady(Request::get('system_name', $_SESSION['STUDIP_INSTALLATION']['system']['UNI_NAME_CLEAN'])) ?>">
 </div>
 
-<div class="type-text">
+<div class="type-text required">
     <label for="system-id" class="vertical">
         Id der Stud.IP-Installation
     </label>
     <input required type="text" id="system-id" name="system_id"
-           value="<?= htmlReady(Request::get('system_id', $_SESSION['STUDIP_INSTALLATION']['system']['id'])) ?>">
+           value="<?= htmlReady(Request::get('system_id', $_SESSION['STUDIP_INSTALLATION']['system']['STUDIP_INSTALLATION_ID'])) ?>"
+           placeholder="Eindeutiges, gängiges Kürzel Ihrer Einrichtung">
 </div>
 
-<div class="type-text">
-    <label for="system-url" class="vertical">
-        URL der Stud.IP-Installation
-    </label>
-    <input required type="url" id="system-url" name="system_url"
-           value="<?= htmlReady(Request::get('system_url', $_SESSION['STUDIP_INSTALLATION']['system']['url'])) ?>">
-</div>
-
-<div class="type-text">
+<div class="type-text required">
     <label for="system-url" class="vertical">
         E-Mail-Adresse für Kontakt
     </label>
     <input required type="email" id="system-email" name="system_email"
-           value="<?= htmlReady(Request::get('system_email', $_SESSION['STUDIP_INSTALLATION']['system']['email'])) ?>">
+           value="<?= htmlReady(Request::get('system_email', $_SESSION['STUDIP_INSTALLATION']['system']['UNI_CONTACT'])) ?>">
 </div>
 
-<div class="type-text">
+<div class="type-text required">
+    <label for="system-url" class="vertical">
+        URL der Stud.IP-Installation
+    </label>
+    <input required type="url" id="system-url" name="system_url"
+           value="<?= htmlReady(Request::get('system_url', $_SESSION['STUDIP_INSTALLATION']['system']['ABSOLUTE_URI_STUDIP'])) ?>"
+           placeholder="https://">
+</div>
+
+<div class="type-text required">
     <label for="system-host-url" class="vertical">
         URL der betreibenden Einrichtung
     </label>
     <input type="url" id="system-host-url" name="system_host_url"
-           value="<?= htmlReady(Request::get('system_host_url', $_SESSIOn['STUDIP_INSTALLATION']['system']['host_url'])) ?>">
+           value="<?= htmlReady(Request::get('system_host_url', $_SESSION['STUDIP_INSTALLATION']['system']['UNI_URL'])) ?>"
+           placeholder="https://">
 </div>
 
-<h3>Stud.IP-Umgebung</h3>
+<h3>Diese Stud.IP-Installation läuft im</h3>
 <div class="type-text">
     <label class="plain">
         <input type="radio" name="env" value="development"
