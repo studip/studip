@@ -32,12 +32,21 @@ STUDIP.domReady(() => {
         $('.file_selector input[type=file]').first().click();
     });
 
-    $('table.documents.flat').filterTable({
-        highlightClass: 'filter-match',
-        ignoreColumns: [0, 1, 3, 5, 6],
-        inputSelector: '.sidebar .tablesorterfilter',
-        minChars: 1,
-        minRows: 1
+    $('table.documents.flat').each(function () {
+        var ignored = [];
+        $('colgroup col', this).each((index, col) => {
+            if ($(col).is('[data-filter-ignore]')) {
+                ignored.push(index);
+            }
+        });
+
+        $(this).filterTable({
+            highlightClass: 'filter-match',
+            ignoreColumns: ignored,
+            inputSelector: '.sidebar .tablesorterfilter',
+            minChars: 1,
+            minRows: 1
+        });
     });
 
     $(document).trigger('refresh-handlers');

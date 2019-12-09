@@ -1,11 +1,14 @@
     <colgroup>
-        <col width="30px">
-        <col width="20px">
+        <col width="30px" data-filter-ignore>
+        <col width="20px" data-filter-ignore>
         <col>
-        <col width="100px" class="responsive-hidden">
+        <col width="100px" class="responsive-hidden" data-filter-ignore>
+    <? if ($show_downloads) : ?>
+        <col width="100px" class="responsive-hidden" data-filter-ignore>
+    <? endif; ?>
         <col width="150px" class="responsive-hidden">
-        <col width="120px" class="responsive-hidden">
-        <col width="80px">
+        <col width="120px" class="responsive-hidden" data-filter-ignore>
+        <col width="80px" data-filter-ignore>
     </colgroup>
     <thead>
         <tr class="sortable">
