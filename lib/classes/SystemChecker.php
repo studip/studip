@@ -48,6 +48,8 @@ final class SystemChecker
         $settings = [];
         foreach ($requirements['settings'] as $setting => $state) {
             $settings[$setting] = $this->compareSetting(ini_get($setting), $state);
+
+            $valid = $valid && $settings[$setting]['valid'];
         }
 
         return [
