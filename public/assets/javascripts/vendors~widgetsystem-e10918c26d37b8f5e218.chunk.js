@@ -1,4 +1,4 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{"9BHx":function(t,e,i){var o,a,s;
+(window.webpackJsonp=window.webpackJsonp||[]).push([[11],{"9BHx":function(t,e,i){var o,a,s;
 /**
  * gridstack.js 0.3.0
  * http://troolee.github.io/gridstack.js/
@@ -13,4 +13,4 @@
  * gridstack.js may be freely distributed under the MIT license.
  * @preserve
 */a=[i("EVdn"),i("LvDl"),i("9BHx"),i("CumE"),i("THJS"),i("ybz5"),i("121P"),i("NHgk"),i("vBzC"),i("r15H"),i("jmh0"),i("alHQ"),i("yw1R"),i("yM/z"),i("8Iik"),i("RJxi"),i("y6ec"),i("Qwlt"),i("MIQu"),i("iGnl"),i("chtW"),i("kCXG"),i("7UVs")],void 0===(s="function"==typeof(o=function(a,s,e){function t(t){e.GridStackDragDropPlugin.call(this,t)}return window,e.GridStackDragDropPlugin.registerPlugin(t),((t.prototype=Object.create(e.GridStackDragDropPlugin.prototype)).constructor=t).prototype.resizable=function(t,e){if(t=a(t),"disable"===e||"enable"===e)t.resizable(e);else if("option"===e){var i=arguments[2],o=arguments[3];t.resizable(e,i,o)}else t.resizable(s.extend({},this.grid.opts.resizable,{start:e.start||function(){},stop:e.stop||function(){},resize:e.resize||function(){}}));return this},t.prototype.draggable=function(t,e){return t=a(t),"disable"===e||"enable"===e?t.draggable(e):t.draggable(s.extend({},this.grid.opts.draggable,{containment:this.grid.opts.isNested?this.grid.container.parent():null,start:e.start||function(){},stop:e.stop||function(){},drag:e.drag||function(){}})),this},t.prototype.droppable=function(t,e){return t=a(t),"disable"===e||"enable"===e?t.droppable(e):t.droppable({accept:e.accept}),this},t.prototype.isDroppable=function(t,e){return t=a(t),Boolean(t.data("droppable"))},t.prototype.on=function(t,e,i){return a(t).on(e,i),this},t})?o.apply(e,a):o)||(t.exports=s)},eW3N:function(t,e,i){}}]);
-//# sourceMappingURL=vendors~widgetsystem-fcc00348e05da1be2c15.chunk.js.map
+//# sourceMappingURL=vendors~widgetsystem-e10918c26d37b8f5e218.chunk.js.map
