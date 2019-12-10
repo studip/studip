@@ -42,7 +42,7 @@ class CoursePublicFolder extends StandardFolder
 
     public function getIcon($role = Icon::DEFAULT_ROLE)
     {
-        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+        $shape = $this->is_empty
                ? 'folder-public-empty'
                : 'folder-public-full';
 
