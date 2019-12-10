@@ -98,18 +98,18 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $room_id        = Request::get('room_id');
 
         $lecturers = User::findBySql(
-            "INNER JOIN seminar_user
-            USING (user_id)
-            WHERE seminar_id = :course_id AND seminar_user.user_id IN ( :lecturer_ids )
-            AND seminar_user.status = 'dozent'",
+            "INNER JOIN seminar_user USING (user_id)
+             WHERE seminar_id = :course_id
+               AND seminar_user.user_id IN (:lecturer_ids)
+               AND seminar_user.status = 'dozent'",
             [
-                'course_id' => $this->course_id,
-                'lecturer_ids' => $lecturer_ids
+                'course_id'    => $this->course_id,
+                'lecturer_ids' => $lecturer_ids,
             ]
         );
 
         $room = null;
-        if ($room_id != 'nothing') {
+        if ($room_id !== 'nothing') {
             $room = new ResourceObject($room_id);
             if (!$room->getId()) {
                 $errors[] = _('Der angegebene Raum wurde nicht gefunden!');
@@ -202,7 +202,7 @@ class Course_BlockAppointmentsController extends AuthenticatedController
                     if ($booking_warnings) {
                         PageLayout::postWarning(
                             _('Beim Buchen des Raumes traten folgende Probleme auf:'),
-                            $booking_warnings
+                            array_map('htmlReady', $booking_warnings)
                         );
                     }
                 }
