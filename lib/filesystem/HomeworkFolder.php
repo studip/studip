@@ -52,9 +52,9 @@ class HomeworkFolder extends PermissionEnabledFolder
      */
     public function getIcon($role = Icon::DEFAULT_ROLE)
     {
-        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
-            ? 'folder-lock-empty'
-            : 'folder-lock-full';
+        $shape = $this->is_empty
+              ? 'folder-lock-empty'
+              : 'folder-lock-full';
         return Icon::create($shape, $role);
     }
 

@@ -26,27 +26,20 @@ function extractButtons(element) {
         .addBack()
         .filter('a,button')
         .each(function() {
-            var label = $(this).text(),
-                cancel = $(this).is('.cancel'),
-                index = cancel ? 'cancel' : label,
-                classes = $(this).attr('class') || '',
-                handler;
+            var label = $(this).text();
+            var cancel = $(this).is('.cancel');
+            var index = cancel ? 'cancel' : label;
+            var classes = $(this).attr('class') || '';
 
             classes = classes.replace(/\bbutton\b/, '').trim();
-
-            handler = function(event) {
-                // TODO: Find a convenient way to disable buttons
-                this.click();
-            };
-            handler = handler.bind(this);
 
             if ($(this).is('.accept,.cancel')) {
                 buttons[index] = {
                     text: label,
-                    click: handler
+                    click: () => this.click()
                 };
             } else {
-                buttons[index] = handler;
+                buttons[index] = () => this.click();
             }
 
             if ($(this).is(':disabled')) {
@@ -204,13 +197,8 @@ Dialog.fromElement = function(element, options) {
         options.title ||
         Dialog.getInstance(options.id).options.title ||
         $(element).attr('title') ||
-        $(element)
-            .find('[title]')
-            .first()
-            .attr('title') ||
-        $(element)
-            .filter('a,button')
-            .text();
+        $(element).find('[title]').first().attr('title') ||
+        $(element).filter('a,button').text();
     options.method = 'get';
     options.data = {};
 
@@ -218,20 +206,11 @@ Dialog.fromElement = function(element, options) {
 
     // Predefine options
     if ($(element).is('form,button,input')) {
-        url =
-            $(element).attr('formaction') ||
-            $(element)
-                .closest('form')
-                .data('formaction') ||
-            $(element)
-                .closest('form')
-                .attr('action');
-        options.method = $(element)
-            .closest('form')
-            .attr('method');
-        options.data = $(element)
-            .closest('form')
-            .serializeArray();
+        url = $(element).attr('formaction') ||
+              $(element).closest('form').data('formaction') ||
+              $(element).closest('form').attr('action');
+        options.method = $(element).closest('form').attr('method');
+        options.data = $(element).closest('form').serializeArray();
 
         if ($(element).is('button,input')) {
             options.data.push({
@@ -241,15 +220,9 @@ Dialog.fromElement = function(element, options) {
         } else if ($(element).data().triggeredBy) {
             options.data.push($(element).data().triggeredBy);
         }
-        $(element)
-            .closest('form')
-            .removeData('formaction');
+        $(element).closest('form').removeData('formaction');
 
-        if (
-            $(element)
-                .closest('form')
-                .attr('enctype') === 'multipart/form-data'
-        ) {
+        if ($(element).closest('form').attr('enctype') === 'multipart/form-data') {
             options.processData = false;
 
             fd = new FormData();
@@ -257,16 +230,13 @@ Dialog.fromElement = function(element, options) {
                 fd.append(item.name, item.value);
             });
 
-            $(element)
-                .closest('form')
-                .find('input[type=file]')
-                .each(function() {
-                    var name = $(this).attr('name'),
-                        i;
-                    for (i = 0; i < this.files.length; i += 1) {
-                        fd.append(name, this.files[i]);
-                    }
-                });
+            $(element).closest('form').find('input[type=file]').each(function() {
+                var name = $(this).attr('name'),
+                    i;
+                for (i = 0; i < this.files.length; i += 1) {
+                    fd.append(name, this.files[i]);
+                }
+            });
 
             options.data = fd;
         }
@@ -648,8 +618,8 @@ Dialog.initialize = function() {
     // Actual dialog handler
     function dialogHandler(event) {
         if (!event.isDefaultPrevented()) {
-            var target = $(event.target).closest('[data-dialog]'),
-                options = target.data().dialog;
+            var target = $(event.target).closest('[data-dialog]');
+            var options = target.data().dialog;
             if (Dialog.fromElement(target, parseOptions(options))) {
                 event.preventDefault();
             }
@@ -658,8 +628,9 @@ Dialog.initialize = function() {
 
     function clickHandler(event) {
         if (!event.isDefaultPrevented()) {
-            var form = $(event.target).closest('form'),
-                action = $(event.target).attr('formaction');
+            var element = $(event.target).closest(':submit,input[type="image"]');
+            var form = element.closest('form');
+            var action = element.attr('formaction');
             form.data('triggeredBy', {
                 name: $(event.target).attr('name'),
                 value: $(event.target).val()

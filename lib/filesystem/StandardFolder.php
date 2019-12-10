@@ -61,11 +61,11 @@ class StandardFolder implements FolderType
     public function getIcon($role = Icon::DEFAULT_ROLE)
     {
         if ($this->parent_id || !$this->id) {
-            $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+            $shape = $this->is_empty
                    ? 'folder-empty'
                    : 'folder-full';
         } else {
-            $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+            $shape = $this->is_empty
                    ? 'folder-home-empty'
                    : 'folder-home-full';
         }

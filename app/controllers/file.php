@@ -588,9 +588,12 @@ class FileController extends AuthenticatedController
 
     public function choose_destination_action($copymode, $fileref_id = null)
     {
+        PageLayout::setTitle(_('Ziel wählen'));
 
         if (empty($fileref_id)) {
             $fileref_id = Request::getArray('fileref_id');
+        } elseif ($fileref_id === 'bulk') {
+            $fileref_id = Request::optionArray('ids');
         }
         $this->copymode = $copymode;
         $this->fileref_id = $fileref_id;
@@ -622,8 +625,7 @@ class FileController extends AuthenticatedController
         } else {
 
             if (is_array($fileref_id)) {
-                $refs = $fileref_id;
-                $this->file_ref = FileRef::find($refs[0]);
+                $this->file_ref = FileRef::find($fileref_id[0]);
             } else {
                 $this->file_ref = FileRef::find($fileref_id);
 
@@ -644,10 +646,6 @@ class FileController extends AuthenticatedController
             }
         } elseif (!$this->parent_folder) {
             throw new AccessDeniedException();
-        }
-
-        if (Request::isXhr()) {
-            $this->response->add_header('X-Title', rawurlencode(_('Ziel wählen')));
         }
 
         $this->plugin = Request::get('from_plugin');
@@ -710,6 +708,8 @@ class FileController extends AuthenticatedController
 
     public function choose_folder_from_course_action()
     {
+        PageLayout::setTitle(_('Zielordner von Veranstaltung wählen'));
+
         if (Request::get('course_id')) {
             $folder = Folder::findTopFolder(Request::get("course_id"));
             $this->redirect($this->url_for(
@@ -749,6 +749,8 @@ class FileController extends AuthenticatedController
 
     public function choose_folder_from_institute_action()
     {
+        PageLayout::setTitle(_('Zielordner von Einrichtung wählen'));
+
         if (Request::get('Institut_id')) {
             $folder = Folder::findTopFolder(Request::get("Institut_id"));
             $this->redirect($this->url_for(
@@ -793,6 +795,8 @@ class FileController extends AuthenticatedController
 
     public function choose_folder_action($folder_id = null)
     {
+        PageLayout::setTitle(_('Zielordner wählen'));
+
         if (Request::isPost()) {
             //copy
             if (Request::get('to_plugin')) {
@@ -843,39 +847,34 @@ class FileController extends AuthenticatedController
                 $range_type = Folder::findRangeTypeById($this->top_folder->range_id);
 
                 switch ($range_type) {
-                    case 'course': {
+                    case 'course':
                         $course = Course::find($this->top_folder->range_id);
                         if ($course) {
                             $this->top_folder_name = $course->getFullName();
                         }
                         break;
-                    }
-                    case 'institute': {
+                    case 'institute':
                         $institute = Institute::find($this->top_folder->range_id);
                         if ($institute) {
                             $this->top_folder_name = $institute->getFullName();
                         }
                         break;
-                    }
-                    case 'user': {
+                    case 'user':
                         $user = User::find($this->top_folder->range_id);
                         if ($user) {
                             $this->top_folder_name = $user->getFullName();
                         }
                         break;
-                    }
-                    case 'message': {
+                    case 'message':
                         $message = Message::find($this->top_folder->range_id);
                         if ($message) {
                             $this->top_folder_name = $message->subject;
                         }
                         break;
-                    }
                 }
 
             }
-        }
-        else {
+        }else {
             //$top_folder is not a top folder. We can use its name directly.
             $this->top_folder_name = $this->top_folder->name;
         }
@@ -1698,10 +1697,12 @@ class FileController extends AuthenticatedController
             }
         } elseif (Request::submitted('copy')) {
             //bulk copying
-            $this->redirect($this->url_for('file/choose_destination/copy', ['fileref_id' => Request::getArray('ids')]));
+            $this->flash['fileref_id'] = Request::getArray('ids');
+            $this->redirect($this->url_for('file/choose_destination/copy/flash'));
         } elseif (Request::submitted('move')) {
             //bulk moving
-            $this->redirect($this->url_for('file/choose_destination/move', ['fileref_id' => Request::getArray('ids')]));
+            $this->flash['fileref_id'] = Request::getArray('ids');
+            $this->redirect($this->url_for('file/choose_destination/move/flash'));
         } elseif (Request::submitted('delete')) {
             //bulk deleting
             $errors = [];

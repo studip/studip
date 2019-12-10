@@ -1,36 +1,27 @@
 <?php
-$options = [];
-if (Request::get('to_plugin')) {
-    $options['to_plugin'] = Request::get('to_plugin');
-}
-if (Request::get('from_plugin')) {
-    $options['from_plugin'] = Request::get('from_plugin');
-}
-if (Request::get('range_type')) {
-    $options['range_type'] = Request::get('range_type');
-}
-if (Request::getArray('fileref_id')) {
-    $options['fileref_id'] = Request::getArray('fileref_id');
-}
-if (Request::get('isfolder')) {
-    $options['isfolder'] = Request::get('isfolder');
-}
-if (Request::get('copymode')) {
-    $options['copymode'] = Request::get('copymode');
-}
+$options = array_filter([
+    'to_plugin'   => Request::get('to_plugin'),
+    'from_plugin' => Request::get('from_plugin'),
+    'range_type'  => Request::get('range_type'),
+    'fileref_id'  => Request::getArray('fileref_id'),
+    'isfolder'    => Request::get('isfolder'),
+    'copymode'    => Request::get('copymode'),
+], function ($value) {
+    return $value !== null;
+});
 ?>
 
 <? if ($GLOBALS['perm']->have_perm("admin")) : ?>
-    <form id="folderchooser_institute_search"
-          action="<?= $controller->link_for('/choose_folder_from_institute/', $options) ?>"
-          data-dialog>
-        <?= QuickSearch::get('Institut_id', $instsearch)
-            ->fireJSFunctionOnSelect("function () { jQuery('#folderchooser_institute_search').submit(); }")
-            ->setInputStyle('width: calc(100% - 40px); margin: 20px;')
-            ->render()
-        ?>
-    </form>
+<form id="folderchooser_institute_search" method="post"
+      action="<?= $controller->link_for('/choose_folder_from_institute') ?>"
+      data-dialog>
+    <?= QuickSearch::get('Institut_id', $instsearch)
+        ->fireJSFunctionOnSelect("function () { jQuery('#folderchooser_institute_search').submit(); }")
+        ->setInputStyle('width: calc(100% - 40px); margin: 20px;')
+        ->render()
+    ?>
 <? else : ?>
+<form action="#" method="post" data-dialog>
     <table class="default">
         <thead>
             <tr>
@@ -42,12 +33,14 @@ if (Request::get('copymode')) {
         <? foreach (Institute::getMyInstitutes($GLOBALS['user']->id) as $institut) : ?>
             <tr>
                 <td>
-                    <a href="<?= $controller->link_for('/choose_folder_from_institute/', array_merge($options, ['Institut_id' => $institut['Institut_id']])) ?>" data-dialog>
+                    <!-- neu -->
+                    <buton formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>" name="Institut_id" value="<?= htmlReady($institut['Institut_id']) ?>" class="undecorated">
                         <?= InstituteAvatar::getAvatar($institut['Institut_id'])->getImageTag(Avatar::MEDIUM, ['style' => 'width: 50px; height: 50px;']) ?>
                     </a>
                 </td>
                 <td>
-                    <a href="<?= $controller->link_for("/choose_folder_from_institute/", array_merge($options, ['Institut_id' => $institut['Institut_id']])) ?>" data-dialog>
+                    <!-- neu -->
+                    <buton formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>" name="Institut_id" value="<?= htmlReady($institut['Institut_id']) ?>" class="undecorated">
                         <?= htmlReady($institut['Name']) ?>
                     </a>
                 </td>
@@ -57,13 +50,18 @@ if (Request::get('copymode')) {
     </table>
 <? endif; ?>
 
-<footer data-dialog-button>
-    <?= Studip\LinkButton::create(
-        _('Zurück'),
-        $controller->url_for('/choose_destination/' . $options['copymode'], $options),
-        ['data-dialog' => 'size=auto']
-    ) ?>
-</footer>
+<? foreach ($options as $key => $value): ?>
+    <?= addHiddenFields($key, $value) ?>
+<? endforeach; ?>
+
+    <footer data-dialog-button>
+        <!-- neu -->
+        <?= Studip\Button::create(_('Zurück'), [
+            'formaction'  => $controller->url_for('/choose_destination/' . $options['copymode']),
+            'data-dialog' => 'size=auto',
+        ]) ?>
+    </footer>
+</form>
 
 <script>
 jQuery(function () {

@@ -34,12 +34,16 @@ $show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', '
 
                 <? if ($topFolder->isWritable($GLOBALS['user']->id)): ?>
                     <?= Studip\Button::create(_('Verschieben'), 'move', [
-                        'data-dialog'              => '',
+                        'formaction'  => $controller->url_for('file/choose_destination/move/bulk'),
+                        'data-dialog' => '',
                         'data-activates-condition' => 'table.documents tr[data-permissions*=w] :checkbox:checked'
                     ]) ?>
                 <? endif ?>
 
-                    <?= Studip\Button::create(_('Kopieren'), 'copy', ['data-dialog' => '']) ?>
+                    <?= Studip\Button::create(_('Kopieren'), 'copy', [
+                        'formaction'  => $controller->url_for('file/choose_destination/copy/bulk'),
+                        'data-dialog' => ''
+                    ]) ?>
 
                 <? if ($topFolder->isWritable($GLOBALS['user']->id)): ?>
                     <?= Studip\Button::create(_('Löschen'), 'delete', [

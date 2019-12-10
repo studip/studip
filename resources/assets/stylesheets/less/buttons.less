@@ -1,3 +1,4 @@
+/* Stud.IP button styles */
 .button() {
     background: white;
     border: 1px solid @base-color;
@@ -126,5 +127,35 @@ a.button, button.button {
         float: left;
         margin-left: 5px;
         margin-right: 0;
+    }
+}
+
+
+/* Other button styles */
+
+button,
+.button {
+    &.undecorated {
+        background: none;
+        border: 0;
+        margin: 0;
+        padding: 0;
+
+        &[formaction] {
+            cursor: pointer;
+            color: @base-color;
+
+            transition: color 0.3s;
+
+            &:hover,
+            &:active {
+                color: @active-color;
+                text-decoration: none;
+            }
+
+            &[disabled] {
+                pointer-events: none;
+            }
+        }
     }
 }

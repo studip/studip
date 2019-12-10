@@ -90,13 +90,15 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
                         ]) ?>
                     <? if ($topFolder->isWritable($GLOBALS['user']->id)): ?>
                         <?= Studip\Button::create(_('Verschieben'), 'move', [
-                            'data-dialog'              => '',
+                            'formaction'  => $controller->url_for('file/choose_destination/move/bulk'),
+                            'data-dialog' => 'size=auto',
                             'data-activates-condition' => 'table.documents tr[data-permissions*=w] :checkbox:checked'
                         ]) ?>
                     <? endif; ?>
                     <? if ($topFolder->isReadable($GLOBALS['user']->id)): ?>
                         <?= Studip\Button::create(_('Kopieren'), 'copy', [
-                            'data-dialog'              => '',
+                            'formaction'  => $controller->url_for('file/choose_destination/copy/bulk'),
+                            'data-dialog' => 'size=auto',
                             'data-activates-condition' => 'table.documents tr[data-permissions*=r] :checkbox:checked'
                         ]) ?>
                     <? endif; ?>

@@ -45,7 +45,7 @@ class PublicFolder extends StandardFolder
      */
     public function getIcon($role = Icon::DEFAULT_ROLE)
     {
-        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
+        $shape = $this->is_empty
                ? 'folder-public-empty'
                : 'folder-public-full';
 
@@ -109,10 +109,9 @@ class PublicFolder extends StandardFolder
      */
     public function getDescriptionTemplate()
     {
-        return $this->viewable ?
-            _('Dateien aus diesem Ordner werden auf Ihrer Profilseite zum Download angeboten.')
-            :
-         _('Dateien aus diesem Ordner sind für alle Stud.IP Nutzer zugreifbar.');
+        return $this->viewable
+             ? _('Dateien aus diesem Ordner werden auf Ihrer Profilseite zum Download angeboten.')
+             : _('Dateien aus diesem Ordner sind für alle Stud.IP Nutzer zugreifbar.');
 
     }
 

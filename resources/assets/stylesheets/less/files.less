@@ -38,6 +38,9 @@
 
 /* for file/edit view and file/new_edit_folder_form view: */
 div.file_select_possibilities, .folder_type_select_possibilities {
+    @width: 100px;
+    @height: 100px;
+
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -47,12 +50,12 @@ div.file_select_possibilities, .folder_type_select_possibilities {
         margin: 10px;
         border: thin solid @content-color-20;
         padding: 5px;
-        width: 100px;
-        min-width: 100px;
-        max-width: 100px;
-        height: 100px;
-        min-height: 100px;
-        max-height: 100px;
+        width: @width;
+        min-width: @width;
+        max-width: @width;
+        height: @height;
+        min-height: @height;
+        max-height: @height;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -82,13 +85,8 @@ div.file_select_possibilities, .folder_type_select_possibilities {
     }
 
     > button {
+        box-sizing: content-box;
         cursor: pointer;
-        width: 140px;
-        min-width: 140px;
-        max-width: 140px;
-        height: 140px;
-        min-height: 140px;
-        max-height: 140px;
         color: @base-color;
     }
 

@@ -83,7 +83,7 @@ if (Request::get('to_folder_id')) {
 <? else : ?>
     <tbody>
     <? foreach ($top_folder->getSubfolders() as $subfolder) : ?>
-        <tr <? if ($full_access) printf('data-file="%s"', $subfolder->id) ?> <? if ($full_access) printf('data-folder="%s"', $subfolder->id); ?>>
+        <tr>
             <td class="document-icon" data-sort-value="0">
             <? if ($subfolder->isReadable($GLOBALS['user']->id)) : ?>
                 <a href="<?= $controller->link_for('file/choose_file/' . $subfolder->id, $options) ?>" data-dialog>

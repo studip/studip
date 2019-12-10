@@ -79,9 +79,9 @@ class TimedFolder extends PermissionEnabledFolder
      */
     public function getIcon($role = Icon::DEFAULT_ROLE)
     {
-        $shape = count($this->getSubfolders()) + count($this->getFiles()) === 0
-            ? 'folder-date-empty'
-            : 'folder-date-full';
+        $shape = $this->is_empty
+               ? 'folder-date-empty'
+               : 'folder-date-full';
         return Icon::create($shape, $role);
     }
 

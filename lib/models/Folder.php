@@ -75,6 +75,10 @@ class Folder extends SimpleORMap
 
         $config['registered_callbacks']['before_store'][] = 'cbMakeUniqueName';
 
+        $config['additional_fields']['is_empty']['get'] = function ($folder) {
+            return count($folder->file_refs) + count($folder->subfolders) === 0;
+        };
+
         parent::configure($config);
     }
 
