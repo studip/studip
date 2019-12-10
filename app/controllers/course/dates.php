@@ -534,14 +534,11 @@ class Course_DatesController extends AuthenticatedController
             $new_folders = [];
             $dates_with_folders = [];
             foreach ($this->course_date_folders as $termin_id) {
-                //Check if there are already course date folders
-                //for the course date:
+                // Check if there are already course date folders
+                // for the course date:
                 $course_date = CourseDate::find($termin_id);
-                if ($course_date instanceof CourseDate) {
-                    $date_has_folders = count($course_date->folders) > 0;
-                    if ($date_has_folders) {
-                        $dates_with_folders[] = $course_date;
-                    }
+                if ($course_date && count($course_date->folders) > 0) {
+                    $dates_with_folders[] = $course_date;
                 }
                 $folder = Folder::build([
                     'range_id'    => $this->course->id,
@@ -557,10 +554,10 @@ class Course_DatesController extends AuthenticatedController
                 ]);
                 $new_folders[] = $ok;
             }
-            //Check if the course_date_folders array
-            //and the previously_selected_dates array are equal.
-            //If not, then someone has changed the date selection in the
-            //confirmation step and the confirmation has to be done again.
+            // Check if the course_date_folders array
+            // and the previously_selected_dates array are equal.
+            // If not, then someone has changed the date selection in the
+            // confirmation step and the confirmation has to be done again.
             if ($this->previously_selected_dates) {
                 //We are definetly confirming the creation of folders.
                 if ($this->previously_selected_dates != $this->course_date_folders) {
@@ -570,13 +567,11 @@ class Course_DatesController extends AuthenticatedController
             }
             if ($dates_with_folders && !$confirmed) {
                 $this->previously_selected_dates = $this->course_date_folders;
-                if (count($dates_with_folders) == 1) {
-                    PageLayout::postWarning(
-                        sprintf(
-                            _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
-                            $dates_with_folders[0]->getFullname()
-                        )
-                    );
+                if (count($dates_with_folders) === 1) {
+                    PageLayout::postWarning(sprintf(
+                        _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
+                        htmlReady($dates_with_folders[0]->getFullname())
+                    ));
                 } else {
                     $dates_string = [];
                     foreach ($dates_with_folders as $date) {
@@ -584,7 +579,7 @@ class Course_DatesController extends AuthenticatedController
                     }
                     PageLayout::postWarning(
                         _('Für die folgenden Termine gibt es bereits Sitzungs-Ordner. Möchten Sie trotzdem weitere Sitzungs-Ordner erstellen?'),
-                        $dates_string
+                        array_map('htmlReady', $dates_string)
                     );
                 }
                 $this->show_confirmation_button = true;

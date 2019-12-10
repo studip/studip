@@ -1431,13 +1431,10 @@ class FileController extends AuthenticatedController
         if (Request::submitted('create') || Request::submitted('force_creation')) {
             CSRFProtection::verifyUnsafeRequest();
 
-            $force_creation = false;
-            if (Request::submitted('force_creation')) {
-                $force_creation = true;
-            }
+            $force_creation = Request::submitted('force_creation');
 
-            //Get class name of folder type and check if the class
-            //is a subclass of FolderType before initialising it:
+            // Get class name of folder type and check if the class
+            // is a subclass of FolderType before initialising it:
             $folder_type = Request::get('folder_type', 'StandardFolder');
             if (!is_subclass_of($folder_type, 'FolderType')) {
                 throw new Exception(
@@ -1455,23 +1452,20 @@ class FileController extends AuthenticatedController
 
             if ($result instanceof FolderType) {
                 $new_folder->user_id = User::findCurrent()->id;
-                if (($result instanceof CourseDateFolder) && !$force_creation) {
-                    //Check if there is already a folder for the
-                    //selected course date:
+                if ($result instanceof CourseDateFolder && !$force_creation) {
+                    // Check if there is already a folder for the
+                    // selected course date:
                     $course_date = $result->getDate();
-                    if ($course_date instanceof CourseDate) {
-                        $other_folders_exist = count($course_date->folders) > 0;
-                        if ($other_folders_exist) {
-                            PageLayout::postWarning(
-                                sprintf(
-                                    _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
-                                    $course_date->getFullname()
-                                )
-                            );
-                            $this->show_confirmation_button = true;
-                            $this->folder = $new_folder ?: new StandardFolder();
-                            return;
-                        }
+                    if ($course_date instanceof CourseDate
+                        && count($course_date->folders) > 0
+                    ) {
+                        PageLayout::postWarning(sprintf(
+                            _('Für den Termin am %s existiert bereits ein Sitzungs-Ordner. Möchten Sie trotzdem einen weiteren Sitzungs-Ordner erstellen?'),
+                            htmlReady($course_date->getFullname())
+                        ));
+                        $this->show_confirmation_button = true;
+                        $this->folder = $new_folder ?: new StandardFolder();
+                        return;
                     }
                 }
                 if ($parent_folder->createSubfolder($new_folder)) {
