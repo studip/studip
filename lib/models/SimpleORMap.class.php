@@ -173,6 +173,13 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
     protected $getter_setter_map = [];
 
     /**
+     * indicator for batch operations in findEachBySQL
+     *
+     * @var bool $batch_operation
+     */
+    protected static $performs_batch_operation = false;
+
+    /**
      * set configuration data from subclass
      *
      * @param array $config configuration data
@@ -635,28 +642,35 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     public static function findEachBySQL($callable, $sql, $params = [])
     {
-        $db_table = static::config('db_table');
-        $class = get_called_class();
-        $record = new $class();
-        $db = DBManager::get();
         $has_join = mb_stripos($sql, 'JOIN ');
         if ($has_join === false || $has_join > 10) {
-            $sql = 'WHERE ' . $sql;
+            $sql = "WHERE {$sql}";
         }
-        $sql = "SELECT `" . $db_table . "`.* FROM `" .  $db_table . "` " . $sql;
-        $st = $db->prepare($sql);
+
+        $record = new static();
+        $record->setNew(false);
+
+        $db_table = static::config('db_table');
+        $st = DBManager::get()->prepare("SELECT `{$db_table}`.* FROM `{$db_table}` {$sql}");
         $st->execute($params);
         $st->setFetchMode(PDO::FETCH_INTO , $record);
+
+        // Indicate that we are performing a batch operation
+        static::$performs_batch_operation = true;
+
         $ret = 0;
-        $record->setNew(false);
         while ($record = $st->fetch()) {
             // Reset all relations
             $record->cleanup();
-
             $record->applyCallbacks('after_initialize');
-            $callable(clone $record);
-            ++$ret;
+
+            // Execute callable on current record
+            $callable(clone $record, $ret++);
         }
+
+        // Reset batch operation indicator
+        static::$performs_batch_operation = false;
+
         return $ret;
     }
 

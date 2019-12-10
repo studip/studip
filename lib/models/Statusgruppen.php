@@ -152,6 +152,23 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     }
 
     /**
+     * Reorders the positions in numeric order without gaps (e.g. after a delete).
+     *
+     * @param  string $range_id Id of range
+     */
+    public static function reorderPositionsForRange($range_id)
+    {
+        return self::findEachBySQL(
+            function ($group, $index) {
+                $group->position = $index;
+                $group->store();
+            },
+            'range_id = ? ORDER BY position ASC, name ASC',
+            [$range_id]
+        );
+    }
+
+    /**
      * Produces an array of all statusgroups a user is in
      *
      * @param string $user_id The user_id
@@ -581,15 +598,11 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
      */
     public function cbReorderPositions()
     {
-        $i = 0;
-        self::findEachBySQL(
-            function ($group) use (&$i) {
-                $group->position = $i++;
-                $group->store();
-            },
-            'range_id = ? ORDER BY position ASC, name ASC',
-            [$this->range_id]
-        );
+        if (self::$performs_batch_operation) {
+            return;
+        }
+
+        self::reorderPositionsForRange($this->range_id);
     }
 
     /**

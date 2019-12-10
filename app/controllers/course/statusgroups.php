@@ -975,15 +975,20 @@ class Course_StatusgroupsController extends AuthenticatedController
      */
     public function batch_delete_groups_action()
     {
+        CSRFProtection::verifyUnsafeRequest();
+
         if (!$this->is_tutor) {
             throw new AccessDeniedException();
         }
 
-        CSRFProtection::verifyUnsafeRequest();
-        $groups = Statusgruppen::findMany(Request::getArray('groups'));
-        foreach ($groups as $g) {
-            $g->delete();
-        }
+        Statusgruppen::findEachMany(
+            function ($group) {
+                $group->delete();
+            },
+            Request::optionArray('groups')
+        );
+        Statusgruppen::reorderPositionsForRange($this->course_id);
+
         PageLayout::postSuccess(_('Die ausgewählten Gruppen wurden gelöscht.'));
         $this->relocate('course/statusgroups');
     }
