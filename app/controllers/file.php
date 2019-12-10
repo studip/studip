@@ -104,11 +104,17 @@ class FileController extends AuthenticatedController
                 );
 
                 if (count($validatedFiles['error']) > 0) {
+                    $this->response->add_header(
+                        'X-Filesystem-Changes',
+                        json_encode(['message' => null])
+                    );
                     // error during upload: display error message:
-                    $this->render_json(['message' => (string)MessageBox::error(
-                        _('Beim Hochladen ist ein Fehler aufgetreten '),
-                        array_map('htmlready', $validatedFiles['error'])
-                    )]);
+                    $this->render_json([
+                        'message' => (string) MessageBox::error(
+                            _('Beim Hochladen ist ein Fehler aufgetreten '),
+                            array_map('htmlready', $validatedFiles['error'])
+                        ),
+                    ]);
 
                     return;
                 }
@@ -1243,7 +1249,8 @@ class FileController extends AuthenticatedController
 
                 $this->response->add_header(
                     'X-Dialog-Execute',
-                    'STUDIP.Files.addFile');
+                    'STUDIP.Files.addFile'
+                );
                 $this->render_json($payload);
                 return;
             } else {
