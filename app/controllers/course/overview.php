@@ -94,10 +94,10 @@ class Course_OverviewController extends AuthenticatedController
                 $rule = AuxLockRules::getLockRuleBySemId($this->course_id);
                 if (isset($rule)) {
                     $show = false;
-                    foreach ((array)$rule['attributes'] as $val) {
+                    foreach ((array) $rule['attributes'] as $val) {
                         if ($val == 1) {
                             // Es gibt also Zusatzangaben. Nun noch überprüfen ob der Nutzer diese Angaben schon gemacht hat...
-                            $query     = "SELECT 1
+                            $query = "SELECT 1
                                       FROM datafields
                                       LEFT JOIN datafields_entries USING (datafield_id)
                                       WHERE object_type = 'usersemdata' AND sec_range_id = ? AND range_id = ?";
@@ -143,7 +143,7 @@ class Course_OverviewController extends AuthenticatedController
                 _('Austragen aus der Veranstaltung'),
                 $this->url_for("my_courses/decline/{$this->course->id}", ['cmd' => 'suppose_to_kill']),
                 Icon::create('door-leave')
-            );
+            )->setDisabled(!empty($_SESSION["seminar_change_view_{$this->course_id}"]));
             Sidebar::get()->addWidget($actions);
         }
 

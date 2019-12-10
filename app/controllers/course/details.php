@@ -274,7 +274,7 @@ class Course_DetailsController extends AuthenticatedController
                     _('Austragen aus der Veranstaltung'),
                     $this->url_for("my_courses/decline/{$this->course->id}", ['cmd' => 'suppose_to_kill']),
                     Icon::create('door-leave')
-                );
+                )->setDisabled(!empty($_SESSION["seminar_change_view_{$this->course->id}"]));
             }
 
             if ($links->hasElements()) {

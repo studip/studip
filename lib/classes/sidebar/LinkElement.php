@@ -154,6 +154,15 @@ class LinkElement extends WidgetElement implements ArrayAccess
         return $this;
     }
 
+    public function setDisabled($state = true)
+    {
+        if ($state) {
+            $this->attributes['disabled'] = true;
+        } else {
+            unset($this->attributes['disabled']);
+        }
+    }
+
     /**
      * Returns whether the element is disabled.
      *

@@ -491,9 +491,26 @@ class MyCoursesController extends AuthenticatedController
         $ticket_check    = Seminar_Session::check_ticket(Request::option('studipticket'));
         if (LockRules::Check($course_id, 'participants')) {
             $lockdata = LockRules::getObjectRule($course_id);
-            PageLayout::postMessage(MessageBox::error(sprintf(_("Sie können sich nicht von der Veranstaltung <b>%s</b> abmelden."),
-                htmlReady($current_seminar->name))));
-            if ($lockdata['description']) PageLayout::postMessage(MessageBox::info(formatLinks($lockdata['description'])));
+            PageLayout::postError(sprintf(
+                _('Sie können sich nicht von der Veranstaltung <b>%s</b> abmelden.'),
+                htmlReady($current_seminar->name)
+            ));
+            if ($lockdata['description']) {
+                PageLayout::postInfo(formatLinks($lockdata['description']));
+            }
+            $this->redirect('my_courses/index');
+            return;
+        }
+
+        // Ensure last teacher cannot leave course
+        $course = Course::find($course_id);
+        if ($course->members->findOneBy('user_id', $GLOBALS['user']->id)->status === 'dozent'
+            && count($course->getMembersWithStatus('dozent')) === 1
+        ) {
+            PageLayout::postError(sprintf(
+                _('Sie können sich nicht von der Veranstaltung <b>%s</b> abmelden.'),
+                htmlReady($current_seminar->name)
+            ));
             $this->redirect('my_courses/index');
             return;
         }
