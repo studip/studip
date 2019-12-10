@@ -103,61 +103,63 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 $widget->addLink(
                     _('Lernobjekte suchen'),
                     $this->url_for('course/ilias_interface/add_object/search'),
-                    Icon::create('learnmodule+add', 'clickable'),
-                    ['data-dialog' => '']
-                    );
+                    Icon::create('learnmodule+add')
+                )->asDialog();
             }
             if ($this->author_permission) {
                 $widget->addLink(
                     _('Meine Lernobjekte'),
                     $this->url_for('course/ilias_interface/add_object/my_modules'),
-                    Icon::create('learnmodule+add', 'clickable'),
-                    ['data-dialog' => '']
-                    );
+                    Icon::create('learnmodule+add')
+                )->asDialog();
             }
             if ($this->ilias_interface_config['search_active'] || $this->author_permission) {
-                    $this->sidebar->addWidget($widget);
+                $this->sidebar->addWidget($widget);
             }
         }
 
         $widget = new ActionsWidget();
         $widget->setTitle(count($this->ilias_list) > 1 ? _('ILIAS-Kurse') : _('ILIAS-Kurs'));
-        if ($this->edit_permission) {
-            if ($missing_course) {
+        if ($this->edit_permission && $missing_course) {
+            $widget->addLink(
+                _('Neuen ILIAS-Kurs anlegen'),
+                $this->url_for('course/ilias_interface/add_object/new_course'),
+                Icon::create('seminar+add')
+            )->asDialog('size=auto;reload-on-close');
+            if ($this->change_course_permission) {
                 $widget->addLink(
-                        _('Neuen ILIAS-Kurs anlegen'),
-                        $this->url_for('course/ilias_interface/add_object/new_course'),
-                        Icon::create('seminar+add', 'clickable'),
-                        ['data-dialog' => 'size=auto;reload-on-close']
-                        );
-                if ($this->change_course_permission) $widget->addLink(
-                        _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
-                        $this->url_for('course/ilias_interface/add_object/assign_course'),
-                        Icon::create('seminar+add', 'clickable'),
-                        ['data-dialog' => 'size=auto;reload-on-close']
-                        );
-                if ($this->change_course_permission) $widget->addLink(
-                        _('Eigenen ILIAS-Kurs zuordnen'),
-                        $this->url_for('course/ilias_interface/add_object/assign_own_course'),
-                        Icon::create('seminar+add', 'clickable'),
-                        ['data-dialog' => 'size=auto;reload-on-close']
-                        );
+                    _('ILIAS-Kurs aus einer anderen Veranstaltung zuordnen'),
+                    $this->url_for('course/ilias_interface/add_object/assign_course'),
+                    Icon::create('seminar+add')
+                )->asDialog('size=auto;reload-on-close');
+            }
+            if ($this->change_course_permission) {
+                $widget->addLink(
+                    _('Eigenen ILIAS-Kurs zuordnen'),
+                    $this->url_for('course/ilias_interface/add_object/assign_own_course'),
+                    Icon::create('seminar+add')
+                )->asDialog('size=auto;reload-on-close');
             }
         }
         foreach ($this->courses as $ilias_index => $crs_id) {
             $widget->addLink(
-                    sprintf(_('Kurs in %s'), $this->ilias_list[$ilias_index]->getName()).($this->course_objects[$ilias_index]->is_offline ? ' '._('(offline)') : ''),
-                    $this->url_for('my_ilias_accounts/redirect/'.$ilias_index.'/start/'.$crs_id.'/crs'),
-                    Icon::create('link-extern', 'clickable'),
-                    ['target' => '_blank', 'rel' => 'noopener noreferrer']
-                    );
+                sprintf(_('Kurs in %s'), $this->ilias_list[$ilias_index]->getName()).($this->course_objects[$ilias_index]->is_offline ? ' '._('(offline)') : ''),
+                $this->url_for("my_ilias_accounts/redirect/{$ilias_index}/start/{$crs_id}/crs"),
+                Icon::create('link-extern'),
+                ['target' => '_blank', 'rel' => 'noopener noreferrer']
+            );
             if ($this->change_course_permission) {
                 $widget->addLink(
-                        sprintf(_('Verknüpfung zu %s entfernen'), $this->ilias_list[$ilias_index]->getName()),
-                        $this->url_for('course/ilias_interface/remove_course/'.$ilias_index.'/'.$crs_id),
-                        Icon::create('seminar+remove', 'clickable'),
-                        ['data-confirm' => sprintf(_('Verknüpfung zum Kurs in %s entfernen? Hierdurch werden auch die Verknüpfungen zu allen Objekten innerhalb des Kurses entfernt.'), $this->ilias_list[$ilias_index]->getName())]
-                        );
+                    sprintf(_('Verknüpfung zu %s entfernen'), $this->ilias_list[$ilias_index]->getName()),
+                    $this->url_for("course/ilias_interface/remove_course/{$ilias_index}/{$crs_id}"),
+                    Icon::create('seminar+remove'),
+                    [
+                        'data-confirm' => sprintf(
+                            _('Verknüpfung zum Kurs in %s entfernen? Hierdurch werden auch die Verknüpfungen zu allen Objekten innerhalb des Kurses entfernt.'),
+                            $this->ilias_list[$ilias_index]->getName()
+                        )
+                    ]
+                );
             }
         }
         $this->sidebar->addWidget($widget);
@@ -166,25 +168,24 @@ class Course_IliasInterfaceController extends AuthenticatedController
             $widget = new ActionsWidget();
             if ($this->edit_permission && $this->ilias_interface_config['add_statusgroups']) {
                 $widget->addLink(
-                        _('Gruppen übertragen'),
-                        $this->url_for('course/ilias_interface/add_groups'),
-                        Icon::create('group2+refresh', 'clickable'),
-                        ['data-dialog' => 'size=auto']
-                        );
+                    _('Gruppen übertragen'),
+                    $this->url_for('course/ilias_interface/add_groups'),
+                    Icon::create('group2+refresh')
+                )->asDialog('size=auto');
             }
             if ($this->author_permission) {
                 $widget->addLink(
-                        _('Externe Accounts verwalten'),
-                        $this->url_for('my_ilias_accounts'),
-                        Icon::create('person', 'clickable'));
+                    _('Externe Accounts verwalten'),
+                    $this->url_for('my_ilias_accounts'),
+                    Icon::create('person')
+                );
             }
             if ($this->edit_permission && $this->ilias_interface_config['edit_moduletitle']) {
                 $widget->addLink(
-                        _('Seite umbenennen'),
-                        $this->url_for('course/ilias_interface/edit_moduletitle'),
-                        Icon::create('edit', 'clickable'),
-                        ['data-dialog' => 'size=auto']
-                        );
+                    _('Seite umbenennen'),
+                    $this->url_for('course/ilias_interface/edit_moduletitle'),
+                    Icon::create('edit')
+                )->asDialog('size=auto');
             }
             $this->sidebar->addWidget($widget);
         }
@@ -260,10 +261,10 @@ class Course_IliasInterfaceController extends AuthenticatedController
             }
         }
 
-        if (($mode == 'new_course') || ($mode == 'assign_course') || ($mode == 'assign_own_course')) {
+        if ($mode === 'new_course' || $mode === 'assign_course' || $mode === 'assign_own_course') {
             // allow add course only if no course exists
             foreach ($this->ilias_list as $ilias_index => $ilias) {
-                if (IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $ilias_index)) {
+                if (IliasObjectConnections::getConnectionModuleId($this->seminar_id, 'crs', $ilias_index)) {
                     unset($this->ilias_list[$ilias_index]);
                 } else {
                     $last_ilias_index = $ilias_index;
@@ -271,7 +272,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
             }
         }
 
-        if (!$index && (count($this->ilias_list) > 1)) {
+        if (!$index && count($this->ilias_list) > 1) {
             // if several installations available yet no index given show index selection dialog
             $this->submit_text =  _('Weiter');
 
@@ -286,17 +287,17 @@ class Course_IliasInterfaceController extends AuthenticatedController
             $object_connections = new IliasObjectConnections($this->seminar_id);
             $course_modules = $object_connections->getConnections();
 
-            if ($mode == 'search') {
+            if ($mode === 'search') {
                 // perform search
                 $this->ilias_search = Request::quoted('ilias_search');
-                if (strlen($this->ilias_search) > 2) {
+                if (mb_strlen($this->ilias_search) > 2) {
                     $this->ilias_modules = $this->ilias->searchModules($this->ilias_search);
                     foreach ($this->ilias_modules as $search_module_id => $search_module_object) {
                         if (!$search_module_object->isAllowed('copy') && !$search_module_object->isAllowed('edit')) {
                             unset($this->ilias_modules[$search_module_id]);
                         }
                     }
-                } elseif (strlen($this->ilias_search) > 0) {
+                } elseif (mb_strlen($this->ilias_search) > 0) {
                     PageLayout::postInfo(_('Der Suchbegriff muss mindestens drei Zeichen lang sein.'));
                 }
                 if (count($this->ilias_modules)) {
@@ -305,33 +306,36 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     $this->submit_text = _('Suchen');
                 }
 
-            } elseif ($mode == 'my_modules') {
+            } elseif ($mode === 'my_modules') {
                 // get user modules
                 $this->ilias_modules = $this->ilias->getUserModules();
 
-            } elseif ($mode == 'new_course') {
+            } elseif ($mode === 'new_course') {
                 $this->submit_text = _('Kurs anlegen');
-                if (Request::get('cmd') ==  'add_course') {
+                if (Request::get('cmd') === 'add_course') {
                     $crs_id = $this->ilias->addCourse($this->seminar_id);
                     if ($crs_id) {
                         PageLayout::postInfo(_('Neuer Kurs wurde angelegt.'));
-                        $this->redirect($this->url_for('course/ilias_interface'));
+                        $this->redirect('course/ilias_interface');
                     }
                 }
 
-            } elseif ($mode == 'assign_course') {
+            } elseif ($mode === 'assign_course') {
                 $this->submit_text = _('Kurs zuordnen');
                 if ($GLOBALS['perm']->have_perm('root')) {
                     $query = "SELECT DISTINCT object_id, module_id, Name
-                                  FROM object_contentmodules
-                                  LEFT JOIN seminare ON (object_id = Seminar_id)
-                                  WHERE module_type = 'crs' AND system_type = ?";
+                              FROM object_contentmodules
+                              LEFT JOIN seminare ON (object_id = Seminar_id)
+                              WHERE module_type = 'crs'
+                                AND system_type = ?";
                 } else {
                     $query = "SELECT DISTINCT object_id, module_id, Name
-                                  FROM object_contentmodules
-                                  LEFT JOIN seminare ON (object_id = Seminar_id)
-                                  LEFT JOIN seminar_user USING (Seminar_id)
-                                  WHERE module_type = 'crs' AND system_type = ? AND seminar_user.status = 'dozent'";
+                              FROM object_contentmodules
+                              LEFT JOIN seminare ON (object_id = Seminar_id)
+                              LEFT JOIN seminar_user USING (Seminar_id)
+                              WHERE module_type = 'crs'
+                                AND system_type = ?
+                                AND seminar_user.status = 'dozent'";
                 }
                 $statement = DBManager::get()->prepare($query);
                 $statement->execute([$this->ilias_index]);
@@ -340,31 +344,31 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     $this->studip_course_list[$row['module_id']] = my_substr($row['Name'],0,60)." ".sprintf(_("(Kurs-ID %s)"), $row['module_id']);
                 }
 
-                if (Request::get('cmd') ==  'assign_course') {
-                    $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $this->ilias_index);
+                if (Request::get('cmd') === 'assign_course') {
+                    $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, 'crs', $this->ilias_index);
                     if (!$crs_id) {
-                        IliasObjectConnections::setConnection($this->seminar_id, Request::get(ilias_course_id), "crs", $this->ilias_index);
+                        IliasObjectConnections::setConnection($this->seminar_id, Request::get(ilias_course_id), 'crs', $this->ilias_index);
                         PageLayout::postInfo(_('Kurs wurde zugeordnet.'));
                         $this->redirect($this->url_for('course/ilias_interface'));
                     }
                 }
-            } elseif ($mode == 'assign_own_course') {
+            } elseif ($mode === 'assign_own_course') {
                 $own_courses = $this->ilias->soap_client->getCoursesForUser($this->ilias->user->getId(), 12);
                 if (is_array($own_courses) && count($own_courses)) {
                     $this->submit_text = _('Kurs zuordnen');
                     foreach ($own_courses as $own_course_id => $own_course_name) {
-                        $this->studip_course_list[$own_course_id] = my_substr($own_course_name,0,60)." ".sprintf(_("(Kurs-ID %s)"), $own_course_id);
+                        $this->studip_course_list[$own_course_id] = my_substr($own_course_name,0,60) . ' ' . sprintf(_('(Kurs-ID %s)'), $own_course_id);
                     }
                 } else {
                     $this->submit_text = '';
                 }
 
-                if (Request::get('cmd') ==  'assign_course') {
-                    $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, "crs", $this->ilias_index);
+                if (Request::get('cmd') === 'assign_course') {
+                    $crs_id = IliasObjectConnections::getConnectionModuleId($this->seminar_id, 'crs', $this->ilias_index);
                     if (!$crs_id) {
-                        IliasObjectConnections::setConnection($this->seminar_id, Request::get(ilias_course_id), "crs", $this->ilias_index);
+                        IliasObjectConnections::setConnection($this->seminar_id, Request::get(ilias_course_id), 'crs', $this->ilias_index);
                         PageLayout::postInfo(_('Kurs wurde zugeordnet.'));
-                        $this->redirect($this->url_for('course/ilias_interface'));
+                        $this->redirect('course/ilias_interface');
                     }
                 }
             }
