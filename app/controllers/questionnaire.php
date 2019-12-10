@@ -9,15 +9,16 @@ class QuestionnaireController extends AuthenticatedController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        if ($action != 'courseoverview' && Navigation::hasItem("/tools/questionnaire")) {
-            Navigation::activateItem("/tools/questionnaire");
+        if ($action !== 'courseoverview' && Navigation::hasItem('/tools/questionnaire')) {
+            Navigation::activateItem('/tools/questionnaire');
         }
-        Sidebar::Get()->setImage(Assets::image_path("sidebar/evaluation-sidebar.png"));
-        PageLayout::setTitle(_("Fragebögen"));
+        Sidebar::Get()->setImage('sidebar/evaluation-sidebar.png');
+        PageLayout::setTitle(_('Fragebögen'));
+
         //trigger autoloading:
-        class_exists("Vote");
-        class_exists("Test");
-        class_exists("Freetext");
+        class_exists('Vote');
+        class_exists('Test');
+        class_exists('Freetext');
     }
 
     public function overview_action()
@@ -26,8 +27,8 @@ class QuestionnaireController extends AuthenticatedController
             Navigation::activateItem('/tools/questionnaire/overview');
         }
 
-        if (!$GLOBALS['perm']->have_perm("autor")) {
-            throw new AccessDeniedException("Only for logged in users.");
+        if (!$GLOBALS['perm']->have_perm('autor')) {
+            throw new AccessDeniedException('Only for logged in users.');
         }
         $this->questionnaires = Questionnaire::findBySQL("user_id = ? ORDER BY mkdate DESC", [$GLOBALS['user']->id]);
         foreach ($this->questionnaires as $questionnaire) {
@@ -184,7 +185,7 @@ class QuestionnaireController extends AuthenticatedController
         }
 
         $statement = DBManager::get()->prepare("
-            SELECT question_id 
+            SELECT question_id
             FROM questionnaire_questions
             WHERE questionnaire_questions.questionnaire_id = ?
             ORDER BY position ASC

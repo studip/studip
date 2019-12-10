@@ -12,18 +12,21 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      * @param bool $add : true if the add-appendix shoudl be added to the icon.
      * @return Icon : guestbook-icon.
      */
-    static public function getIcon($active = false, $add = false)
+    public static function getIcon($active = false, $add = false)
     {
-        return Icon::create(($add ?  "add/" : "")."guestbook", $active ? "clickable" : "info");
+        return Icon::create(
+            ($add ?  'add/' : '') . 'guestbook',
+            $active ? Icon::ROLE_CLICKABLE : Icon::ROLE_INFO
+        );
     }
 
     /**
      * Returns the name of this QuestionType "Freitextfrage".
      * @return string
      */
-    static public function getName()
+    public static function getName()
     {
-        return _("Freitextfrage");
+        return _('Freitextfrage');
     }
 
     /**
@@ -33,9 +36,9 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      */
     public function getEditingTemplate()
     {
-        $factory = new Flexi_TemplateFactory(realpath(__DIR__.'/../../app/views'));
-        $template = $factory->open("questionnaire/question_types/freetext/freetext_edit.php");
-        $template->set_attribute('vote', $this);
+        $factory = new Flexi_TemplateFactory(realpath(__DIR__ . '/../../app/views'));
+        $template = $factory->open('questionnaire/question_types/freetext/freetext_edit.php');
+        $template->vote = $this;
         return $template;
     }
 
@@ -45,12 +48,12 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      */
     public function createDataFromRequest()
     {
-        $questions = Request::getArray("questions");
+        $questions = Request::getArray('questions');
         $data = $questions[$this->getId()];
 
         if (!$this->etask) {
             $this->etask = Task::create([
-                'type' => "freetext",
+                'type'    => 'freetext',
                 'user_id' => $GLOBALS['user']->id,
             ]);
         }
@@ -68,9 +71,9 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      */
     public function getDisplayTemplate()
     {
-        $factory = new Flexi_TemplateFactory(realpath(__DIR__.'/../../app/views'));
-        $template = $factory->open("questionnaire/question_types/freetext/freetext_answer.php");
-        $template->set_attribute('vote', $this);
+        $factory = new Flexi_TemplateFactory(realpath(__DIR__ . '/../../app/views'));
+        $template = $factory->open('questionnaire/question_types/freetext/freetext_answer.php');
+        $template->vote = $this;
         return $template;
     }
 
@@ -82,7 +85,7 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
     public function createAnswer()
     {
         $answer = $this->getMyAnswer();
-        $answers = Request::getArray("answers");
+        $answers = Request::getArray('answers');
         $userAnswerText = $answers[$this->getId()]['answerdata']['text'];
         $answer->setData(['answerData' => ['text' => $userAnswerText]]);
         return $answer;
@@ -96,9 +99,9 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      */
     public function getResultTemplate($only_user_ids = null)
     {
-        $factory = new Flexi_TemplateFactory(realpath(__DIR__.'/../../app/views'));
-        $template = $factory->open("questionnaire/question_types/freetext/freetext_evaluation.php");
-        $template->set_attribute('vote', $this);
+        $factory = new Flexi_TemplateFactory(realpath(__DIR__ . '/../../app/views'));
+        $template = $factory->open('questionnaire/question_types/freetext/freetext_evaluation.php');
+        $template->vote = $this;
         return $template;
     }
 
@@ -108,7 +111,7 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
      */
     public function getResultArray()
     {
-        $output = array();
+        $output = [];
 
         $question = trim(strip_tags($this->etask->description));
         foreach ($this->answers as $answer) {
