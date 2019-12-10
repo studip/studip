@@ -123,7 +123,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
             $actionMenu->addLink(
                 $file_ref->getDownloadURL('force_download'),
                 _('Link kopieren'),
-                Icon::create('group', 'clickable'),
+                Icon::create('group'),
                 ['class' => 'copyable-link']
             );
         }
