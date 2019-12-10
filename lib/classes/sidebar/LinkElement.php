@@ -154,6 +154,12 @@ class LinkElement extends WidgetElement implements ArrayAccess
         return $this;
     }
 
+    /**
+     * Set disabled state
+     *
+     * @param boolean $state Disabled state
+     * @return LinkElement instance to allow chaining
+     */
     public function setDisabled($state = true)
     {
         if ($state) {
@@ -161,6 +167,8 @@ class LinkElement extends WidgetElement implements ArrayAccess
         } else {
             unset($this->attributes['disabled']);
         }
+
+        return $this;
     }
 
     /**
