@@ -13,15 +13,15 @@ class Admin_InstallController extends Trails_Controller
     public function before_filter(&$action, &$args)
     {
         $this->steps = [
-            'index'       => 'Einleitung',
-            'php_check'   => 'System-Check (PHP)',
-            'mysql'       => 'Datenbank konfigurieren',
-            'mysql_check' => 'System-Check (Datenbank)',
-            'permissions' => 'Berechtigungen',
-            'prepare'     => 'Konfiguration',
-            'root'        => 'Root-Konto',
-            'install'     => 'Installation',
-            'finish'      => 'Installation beendet',
+            'index'       => _('Einleitung'),
+            'php_check'   => _('System-Check (PHP)'),
+            'mysql'       => _('Datenbank konfigurieren'),
+            'mysql_check' => _('System-Check (Datenbank)'),
+            'permissions' => _('Berechtigungen'),
+            'prepare'     => _('Konfiguration'),
+            'root'        => _('Root-Konto'),
+            'install'     => _('Installation'),
+            'finish'      => _('Installation beendet'),
         ];
         $steps = array_keys($this->steps);
         $step  = array_search($action, $steps) ?: 0;
@@ -71,7 +71,7 @@ class Admin_InstallController extends Trails_Controller
 
     public function index_action()
     {
-        $this->button_label = 'Assistent starten';
+        $this->button_label = _('Assistent starten');
     }
 
     public function php_check_action()
@@ -105,17 +105,17 @@ class Admin_InstallController extends Trails_Controller
                 $this->error = $e->getMessage();
                 $this->error_details = [
                     sprintf(
-                        'Falls Sie ausführlichere Hilfestellung zu dieser '
+                        _('Falls Sie ausführlichere Hilfestellung zu dieser '
                         . 'Meldung benötigen, probieren Sie die %sGoogle-Suche%s '
                         . 'oder fragen Sie im Stud.IP Entwicklungs- und '
-                        . 'Anwendungsforum nach.',
+                        . 'Anwendungsforum nach.'),
                         sprintf(
                             '<a href="%s" target="_blank" class="link-extern">',
                             URLHelper::getURL('https://google.com/search', ['q' => $e->getMessage()])
                         ),
                         '</a>'
                     ),
-                    'Oder wenden Sie sich an Ihren Hoster.',
+                    _('Oder wenden Sie sich an Ihren Hoster.'),
                 ];
             }
         }
@@ -137,17 +137,17 @@ class Admin_InstallController extends Trails_Controller
             $this->error = $e->getMessage();
             $this->error_details = [
                 sprintf(
-                    'Falls Sie ausführlichere Hilfestellung zu dieser '
+                    _('Falls Sie ausführlichere Hilfestellung zu dieser '
                     . 'Meldung benötigen, probieren Sie die %sGoogle-Suche%s '
                     . 'oder fragen Sie im Stud.IP Entwicklungs- und '
-                    . 'Anwendungsforum nach.',
+                    . 'Anwendungsforum nach.'),
                     sprintf(
                         '<a href="%s" target="_blank" class="link-extern">',
                         URLHelper::getURL('https://google.com/search', ['q' => $e->getMessage()])
                     ),
                     '</a>'
                 ),
-                'Oder wenden Sie sich an Ihren Hoster.',
+                _('Oder wenden Sie sich an Ihren Hoster.'),
             ];
         }
     }
@@ -163,12 +163,12 @@ class Admin_InstallController extends Trails_Controller
     public function prepare_action()
     {
         $this->files = [
-            'studip.sql' => 'Datenbankschema',
-            'studip_default_data.sql' => 'Voreinstellungen',
-            'studip_resources_default_data.sql' => 'Struktur für Ressourcen',
-            'studip_demo_data.sql' => 'Allgemeine Beispieldaten',
-            'studip_mvv_demo_data.sql' => 'Demodaten für das Modul- und Veranstaltungsverzeichnis',
-            'studip_resources_demo_data.sql' => 'Demodaten für die Ressourcenverwaltung ',
+            'studip.sql'                        => _('Datenbankschema'),
+            'studip_default_data.sql'           => _('Voreinstellungen'),
+            'studip_resources_default_data.sql' => _('Struktur für Ressourcen'),
+            'studip_demo_data.sql'              => _('Allgemeine Beispieldaten'),
+            'studip_mvv_demo_data.sql'          => _('Demodaten für das Modul- und Veranstaltungsverzeichnis'),
+            'studip_resources_demo_data.sql'    => _('Demodaten für die Ressourcenverwaltung '),
         ];
         $this->required = [
             'studip.sql',
@@ -213,13 +213,13 @@ class Admin_InstallController extends Trails_Controller
             $errors = [];
 
             if (!preg_match(StudipInstaller::USERNAME_REGEX, $username)) {
-                $errors[] = 'Der Benutzername ist ungültig';
+                $errors[] = _('Der Benutzername ist ungültig');
             }
 
             if (!preg_match(StudipInstaller::PASSWORD_REGEX, $password)) {
-                $errors[] = 'Das Passwort ist zu kurz oder ungültig. Es muss mindestens 8 Zeichen lang sein.';
+                $errors[] = _('Das Passwort ist zu kurz oder ungültig. Es muss mindestens 8 Zeichen lang sein.');
             } elseif ($password !== $confirm) {
-                $errors[] = 'Die Passwörter stimmen nicht überein.';
+                $errors[] = _('Die Passwörter stimmen nicht überein.');
             }
 
             if (count($errors) === 0) {
@@ -235,7 +235,7 @@ class Admin_InstallController extends Trails_Controller
             );
         }
 
-        $this->button_label = 'Installieren';
+        $this->button_label = _('Installieren');
     }
 
     public function install_action($what = null)
@@ -387,7 +387,7 @@ class Admin_InstallController extends Trails_Controller
 
         $this->valid            = false;
         $this->hide_back_button = true;
-        $this->button_label     = 'Zum neuen Stud.IP';
+        $this->button_label     = _('Zum neuen Stud.IP');
     }
 
     public function migrate_action()

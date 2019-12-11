@@ -1,46 +1,51 @@
-<h2> Willkommen beim Installationsassistenten für Stud.IP!</h2>
+<h2><?= _('Willkommen beim Installationsassistenten für Stud.IP!') ?></h2>
 
 <p>
-    Dieser Assistent führt Sie in <?= count($steps) ?> Schritten durch die
-    Installation von Stud.IP. Nach dem letzten Schritt haben Sie eine voll
-    funktionsfähige Stud.IP-Installation mit Datenbank und von Ihnen
-    ausgewählten Beispiel-Inhalten für den ersten Testbetrieb.
+    <?= sprintf(
+        _('Dieser Assistent führt Sie in %u Schritten durch die Installation '
+        . 'von Stud.IP. Nach dem letzten Schritt haben Sie eine voll '
+        . 'funktionsfähige Stud.IP-Installation mit Datenbank und von Ihnen '
+        . 'ausgewählten Beispiel-Inhalten für den ersten Testbetrieb.'),
+        count($steps)
+    ) ?>
 
-    Die Installation dauert ca. 10 Minuten.
+    <?= _('Die Installation dauert ca. 10 Minuten.') ?>
 </p>
 
 <p>
-    Sie benötigen für die Installation
+    <?= _('Sie benötigen für die Installation') ?>
     <ul>
-        <li>eine Datenbank (MySQL/MariaDB)</li>
+        <li><?= _('eine Datenbank (MySQL/MariaDB)') ?></li>
         <li>
-            Zugriff auf den Server (als Server-Administrator oder über Ihren
-            Hoster)
+            <?= _('Zugriff auf den Server (als Server-Administrator oder über '
+                . 'Ihren Hoster)') ?>
         </li>
     </ul>
 </p>
 
 <p>
-    Bitte halten Sie folgende Informationen bereit:
+    <?= _('Bitte halten Sie folgende Informationen bereit:') ?>
 
     <ul>
-        <li>Datenbank-Host</li>
-        <li>Datenbank-Name</li>
-        <li>Datenbank-Nutzername</li>
-        <li>Datenbank-Passwort</li>
+        <li><?= _('Datenbank-Host') ?></li>
+        <li><?= _('Datenbank-Name') ?></li>
+        <li><?= _('Datenbank-Nutzername') ?></li>
+        <li><?= _('Datenbank-Passwort') ?></li>
     </ul>
 </p>
 
 
 <p>
-    Eine ausführliche Installationsanleitung und weiterführende Hilfen finden
-    Sie auf den
-    <a href="https://hilfe.studip.de/admin/Admins/Installationsanleitung" class="link-extern" target="_blank">
-        Hilfe-Seiten von Stud.IP
-    </a>
-    und über die Fußleiste des Assistenten.
+    <?= sprintf(
+        _('Eine ausführliche Installationsanleitung und weiterführende Hilfen '
+        . 'finden Sie auf den %sHilfe-Seiten von Stud.IP%s und über die Fußleiste '
+        . 'des Assistenten.'),
+        '<a href="https://hilfe.studip.de/admin/Admins/Installationsanleitung" class="link-extern" target="_blank">',
+        '</a>'
+    ) ?>
 </p>
 
 <p>
-    Klicken Sie auf „Assistent starten“, wenn Sie mit der Installation beginnen wollen!
+    <?= _('Klicken Sie auf „Assistent starten“, wenn Sie mit der Installation '
+        . 'beginnen wollen!') ?>
 </p>

@@ -1,27 +1,34 @@
-<h3>Installation</h3>
+<h3><?= _('Installation') ?></h3>
 <dl>
-    <dt>Datenbank</dt>
+    <dt><?= _('Datenbank') ?></dt>
     <dd class="success">
-        Datenbanktabellen wurden erzeugt und ausgewählte Beispieldaten
-        eingetragen
+        <?= _('Datenbanktabellen wurden erzeugt und ausgewählte Beispieldaten '
+            . 'eingetragen') ?>
     </dd>
 
-    <dt>Root-Konto</dt>
+    <dt><?= _('Root-Konto') ?></dt>
     <dd class="success">
-        Das Konto für das Haupt-Administrator-Konto wurde eingerichtet
+        <?= _('Das Konto für das Haupt-Administrator-Konto wurde eingerichtet') ?>
     </dd>
 
-    <dt>Konfiguration</dt>
+    <dt><?= _('Konfiguration') ?></dt>
 <?php if ($local_inc === true): ?>
     <dd class="success">
-        Konfiguration wurde in die Datenbank und die Dateien
-        <code>config/config_local.inc.php</code>
-        sowie <code>config/config.inc.php</code> geschrieben
+        <?= sprintf(
+            _('Konfiguration wurde in die Datenbank und die Dateien '
+            . '%sconfig/config_local.inc.php%s sowie '
+            . '%sconfig/config.inc.php%s geschrieben'),
+            '<code>',
+            '</code>',
+            '<code>',
+            '</code>'
+        ) ?>
     </dd>
 <?php else: ?>
     <dd class="failed">
-        Konnte nicht gespeichert werden. Bitte erzeugen Sie die beiden folgenden
-        Dateien mit dem jeweiligen Inhalt:<br>
+        <?= _('Konnte nicht gespeichert werden. Bitte erzeugen Sie die beiden '
+            . 'folgenden Dateien mit dem jeweiligen Inhalt:') ?>
+        <br>
 
         <code>config/config_local.inc.php</code>:<br>
         <textarea onclick="this.select()"><?= htmlReady($local_inc) ?></textarea>

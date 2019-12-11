@@ -30,6 +30,27 @@ require_once 'lib/classes/SystemChecker.php';
 require_once 'lib/classes/Markup.class.php';
 require_once 'vendor/phpass/PasswordHash.php';
 
+// Mock gettext functions if extension is not available
+if (!function_exists('_')) {
+    function _($what) {
+        return $what;
+    }
+} else {
+    require_once 'lib/language.inc.php';
+
+    foreach (explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $lang) {
+        list($lang, ) = explode(';', $lang);
+        $lang = substr($lang, 0, 2);
+
+        if (!in_array($lang, ['de', 'en'])) {
+            continue;
+        }
+
+        setLocaleEnv($lang, 'studip');
+        break;
+    }
+}
+
 $GLOBALS['template_factory'] = new Flexi_TemplateFactory('../templates/');
 
 # get plugin class from request
