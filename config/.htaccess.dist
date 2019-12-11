@@ -11,9 +11,9 @@
 #Apache 2.4
 Require all granted
 
-php_value upload_max_filesize 7M
-php_value post_max_size 8M
-php_value memory_limit 64M
+php_value upload_max_filesize 8M
+php_value post_max_size 9M
+php_value memory_limit 128M
 php_value max_execution_time 300
 php_flag short_open_tag On
 php_flag allow_url_fopen On
@@ -26,4 +26,3 @@ php_value error_reporting 22519
 # PHP 5.5 (ab 5.6 Standardeinstellung)
 php_value default_charset utf-8
 php_value mbstring.internal_encoding utf-8
-
