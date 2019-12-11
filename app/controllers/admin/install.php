@@ -88,10 +88,11 @@ class Admin_InstallController extends Trails_Controller
             $user     = Request::get('user');
             $password = Request::get('password');
             $database = Request::get('database');
+            $create   = (bool) Request::int('create');
 
             try {
-                $this->result = $this->checker->checkMySQLConnection(
-                    $host, $user, $password, $database
+                $this->checker->getMySQLConnection(
+                    $host, $user, $password, $database, $create
                 );
                 $this->valid = true;
 
@@ -153,8 +154,10 @@ class Admin_InstallController extends Trails_Controller
 
     public function permissions_action()
     {
-        $this->writable = $this->checker->checkPermissions();
-        $this->valid = array_sum($this->writable) === count($this->writable);
+        $this->writable     = $this->checker->checkPermissions();
+        $this->requirements = $this->checker->getRequirements('writable');
+
+        $this->valid = $this->writable['valid'];
     }
 
     public function prepare_action()
@@ -171,6 +174,10 @@ class Admin_InstallController extends Trails_Controller
             'studip.sql',
             'studip_default_data.sql',
             'studip_resources_default_data.sql',
+        ];
+
+        $this->defaults = [
+            'system_url' => $this->buildDefaultAbsoluteURI(),
         ];
 
         if (Request::submitted('continue')) {
@@ -233,7 +240,7 @@ class Admin_InstallController extends Trails_Controller
 
     public function install_action($what = null)
     {
-        $pdo = $this->checker->checkMySQLConnection(
+        $pdo = $this->checker->getMySQLConnection(
             $_SESSION['STUDIP_INSTALLATION']['database']['host'],
             $_SESSION['STUDIP_INSTALLATION']['database']['user'],
             $_SESSION['STUDIP_INSTALLATION']['database']['password'],
@@ -474,5 +481,16 @@ class Admin_InstallController extends Trails_Controller
         echo "data: {$data}\n";
         echo "\n";
         flush();
+    }
+
+    private function buildDefaultAbsoluteURI()
+    {
+        return sprintf(
+            '%s://%s%s%s/',
+            $_SERVER['SERVER_PORT'] == 443 ? 'https' : 'http',
+            $_SERVER['SERVER_NAME'],
+            in_array($_SERVER['SERVER_PORT'], [80, 443]) ? '' : ":{$_SERVER['SERVER_PORT']}",
+            dirname($_SERVER['SCRIPT_NAME'])
+        );
     }
 }

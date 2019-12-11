@@ -6,7 +6,7 @@
 
 <h3>PHP-Version</h3>
 <dl>
-    <dt><?= htmlReady($result['version']['present']) ?>1240ß1283092840293840932840932842309843209</dt>
+    <dt><?= htmlReady($result['version']['present']) ?></dt>
 <?php if ($result['version']['valid']): ?>
     <dd class="success">Ok</dd>
 <?php else: ?>

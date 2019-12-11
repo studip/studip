@@ -37,7 +37,7 @@ final class StudipInstaller
             'DB_STUDIP_PASSWORD' => $password,
             'DB_STUDIP_DATABASE' => $database,
 
-            'ABSOLUTE_URI_STUDIP' => $uri,
+            'ABSOLUTE_URI_STUDIP' => rtrim($uri, '/') . '/',
         ];
         foreach ($replacements as $needle => $replacement) {
             $template = $this->replaceVariable($needle, $replacement, $template);

@@ -57,11 +57,11 @@
         URL der Stud.IP-Installation
     </label>
     <input required type="url" id="system-url" name="system_url"
-           value="<?= htmlReady(Request::get('system_url', $_SESSION['STUDIP_INSTALLATION']['system']['ABSOLUTE_URI_STUDIP'])) ?>"
+           value="<?= htmlReady(Request::get('system_url', $_SESSION['STUDIP_INSTALLATION']['system']['ABSOLUTE_URI_STUDIP'] ?: $defaults['system_url'])) ?>"
            placeholder="https://">
 </div>
 
-<div class="type-text required">
+<div class="type-text">
     <label for="system-host-url" class="vertical">
         URL der betreibenden Einrichtung
     </label>

@@ -11,17 +11,25 @@
 
 <div class="type-text required">
     <label for="user">Datenbank-Nutzer</label>
-    <input required type="text" id="user" name="user" value="<?= htmlReady(Request::get('user', $_SESSION['STUDIP_INSTALLATION']['database']['user'])) ?>">
+    <input type="text" id="user" name="user" value="<?= htmlReady(Request::get('user', $_SESSION['STUDIP_INSTALLATION']['database']['user'])) ?>">
 </div>
 
-<div class="type-text required">
+<div class="type-text">
     <label for="password">Datenbank-Passwort</label>
-    <input required type="password" id="password" name="password" value="<?= htmlReady(Request::get('password', $_SESSION['STUDIP_INSTALLATION']['database']['password'])) ?>">
+    <input type="password" id="password" name="password" value="<?= htmlReady(Request::get('password', $_SESSION['STUDIP_INSTALLATION']['database']['password'])) ?>">
 </div>
 
 <div class="type-text required">
     <label for="database">Name der Datenbank</label>
     <input required type="text" id="database" name="database" value="<?= htmlReady(Request::get('database', $_SESSION['STUDIP_INSTALLATION']['database']['database'])) ?>">
+</div>
+
+<div class="type-checkbox">
+    <input type="checkbox" name="create" id="create" value="1" checked
+           class="studip-checkbox">
+    <label for="create">
+        Versuche, Datenbank anzulegen, falls Sie noch nicht exisitiert
+    </label>
 </div>
 
 <?php $button_label = $valid ? '' : 'Verbindung prüfen'; ?>

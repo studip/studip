@@ -85,14 +85,21 @@
                     content: url('#{$icon-path}red/decline.svg') ' ';
                     vertical-align: text-top;
                 }
-                color: red;
+                color: $red;
             }
             &.success {
                 &::before {
                     content: url('#{$icon-path}green/accept.svg') ' ';
                     vertical-align: text-top;
                 }
-                color: green;
+                color: $green;
+            }
+            &.notice {
+                &::before {
+                    content: url('#{$icon-path}blue/info-circle.svg') ' ';
+                    vertical-align: text-top;
+                }
+                color: black;
             }
 
             code {

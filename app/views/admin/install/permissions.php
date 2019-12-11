@@ -5,12 +5,14 @@
 
 <h3>Schreibbare Dateien/Ordner</h3>
 <dl>
-<?php foreach ($writable as $f => $is_writable): ?>
+<?php foreach ($writable['paths'] as $f => $is_writable): ?>
     <dt><?= htmlReady($f) ?></dt>
   <?php if ($is_writable): ?>
     <dd class="success">Ok</dd>
-  <?php else: ?>
+  <?php elseif ($requirements[$f]): ?>
     <dd class="failed">Fehler, nicht schreibbar</dd>
+  <?php else: ?>
+    <dd class="notice">Nicht schreibbar (unproblematisch)</dd>
   <?php endif; ?>
 <?php endforeach; ?>
 </dl>

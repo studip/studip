@@ -67,18 +67,33 @@ final class SystemChecker
         ];
     }
 
-    public function checkMySQLConnection($host, $user, $password, $database)
+    public function getMySQLConnection($host, $user, $password, $database, $create_database = false)
     {
-        return new PDO(
-            "mysql:host={$host};dbname={$database};charset=utf8mb4",
-            $user,
-            $password
-        );
+        try {
+            $dsn = "mysql:host={$host}";
+            if ($database !== null) {
+                $dsn .= ";dbname={$database}";
+            }
+            $dsn .= ";charset=utf8mb4";
+
+            return new PDO($dsn, $user, $password);
+        } catch (Exception $e) {
+            if (!$create_database || strpos($e->getMessage(), '[1049]') === false) {
+                throw $e;
+            }
+
+            $dsn = "mysql:host={$host};charset=utf8mb4";
+            $pdo = new PDO($dsn, $user, $password);
+
+            $pdo->exec("CREATE DATABASE {$database}");
+            $pdo->exec("USE {$database}");
+            return $pdo;
+        }
     }
 
     public function checkMySQLRequirements($host, $user, $password, $database)
     {
-        $pdo = $this->checkMySQLConnection($host, $user, $password, $database);
+        $pdo = $this->getMySQLConnection($host, $user, $password, $database);
 
         $requirements = $this->getRequirements('mysql');
 
@@ -111,11 +126,14 @@ final class SystemChecker
     {
         $requirements = $this->getRequirements('writable');
 
-        $writable = [];
-        foreach ($requirements as $f) {
-            $writable[$f] = is_writable($this->base_path . '/' . $f);
+        $valid = true;
+        $paths = [];
+        foreach ($requirements as $p => $required) {
+            $paths[$p] = is_writable($this->base_path . '/' . $p);
+
+            $valid = $valid && (!$required || $paths[$p]);
         }
-        return $writable;
+        return compact('paths', 'valid');
     }
 
     private function compareVersion($present, $required)

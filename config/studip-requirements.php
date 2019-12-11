@@ -80,9 +80,11 @@ return [
         ],
     ],
     'writable' => [
-        'data/upload_doc',
-        'data/assets_cache',
-        'data/media_cache',
-        'public/plugins_packages',
+        'data/upload_doc'         => true,
+        'data/assets_cache'       => true,
+        'data/media_cache'        => true,
+        'public/pictures'         => true,
+        'public/plugins_packages' => true,
+        'config'                  => false,
     ],
 ];
