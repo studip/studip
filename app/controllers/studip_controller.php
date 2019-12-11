@@ -430,7 +430,7 @@ abstract class StudipController extends Trails_Controller
 
     /**
      * Renders a file
-     * @param string  $file                Name of the file to render
+     * @param string  $file                Path of the file to render
      * @param string  $filename            Name of the file displayed to user
      *                                     (will equal $file when missing)
      * @param string  $content_type        Optional content type (will be determined if missing)
@@ -490,7 +490,7 @@ abstract class StudipController extends Trails_Controller
      * This is just a convenience method so you don't have to write the delete
      * callback.
      *
-     * @param string  $file                Name of the file to render
+     * @param string  $file                Path of the file to render
      * @param string  $filename            Name of the file displayed to user
      *                                     (will equal $file when missing)
      * @param string  $content_type        Optional content type (will be determined if missing)
