@@ -118,13 +118,33 @@ class Admin_InstallController extends Trails_Controller
 
     public function mysql_check_action()
     {
-        $this->result = $this->checker->checkMySQLRequirements(
-            $_SESSION['STUDIP_INSTALLATION']['database']['host'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['user'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['password'],
-            $_SESSION['STUDIP_INSTALLATION']['database']['database']
-        );
-        $this->valid = $this->result['valid'];
+        try {
+            $this->result = $this->checker->checkMySQLRequirements(
+                $_SESSION['STUDIP_INSTALLATION']['database']['host'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['user'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['password'],
+                $_SESSION['STUDIP_INSTALLATION']['database']['database']
+            );
+            $this->valid = $this->result['valid'];
+        } catch (Exception $e) {
+            $this->valid = false;
+
+            $this->error = $e->getMessage();
+            $this->error_details = [
+                sprintf(
+                    'Falls Sie ausführlichere Hilfestellung zu dieser '
+                    . 'Meldung benötigen, probieren Sie die %sGoogle-Suche%s '
+                    . 'oder fragen Sie im Stud.IP Entwicklungs- und '
+                    . 'Anwendungsforum nach.',
+                    sprintf(
+                        '<a href="%s" target="_blank" class="link-extern">',
+                        URLHelper::getURL('https://google.com/search', ['q' => $e->getMessage()])
+                    ),
+                    '</a>'
+                ),
+                'Oder wenden Sie sich an Ihren Hoster.',
+            ];
+        }
     }
 
     public function permissions_action()
