@@ -48,7 +48,6 @@ folgende Einstellungen nötig:
       Benötigt man komplexere Mappings, so empfiehlt es sich ein eigenenes Plugin von AuthLdap abzuleiten und
       die entsprechenden Methoden dort zu realisieren.
 
-
 LdapReader authentifiziert nicht den Nutzer direkt gegen den LDAP Server, sondern benutzt einen konfigurierten LDAP
 Account mit Leserechten, um das Passwort des Nutzers aus dem Verzeichnis zu lesen und mit dem eingegebenen zu vergleichen.
 Anonymes Binden wird dazu nicht benötigt. Dieses Plugin ist als Beispiel gedacht, und
@@ -72,19 +71,15 @@ http://www.indexdata.dk/phpyaz/.
 
 Nach dem Entpacken:
 
-phpize
-./configure
-make
+    phpize
+    ./configure
+    make
 
-Unter  modules/yaz.so  ist die Extension erzeugt worden. Die Datei
+Unter  modules/yaz.so  ist die Extension erzeugt worden. Die Datei yaz.so speichert man in das Verzeichnis der php-Extensions (unter SuSE Linux 9.3 ist das /usr/lib/php/extensions ).
 
-yaz.so speichert man in das Verzeichnis der php-Extensions (unter SuSE Linux 9.3 ist das /usr/lib/php/extensions ).
+In php.ini (bei mir /etc/php.ini) ergänzt man im extensions-Abschnitt
 
-In php.ini  (bei mir /etc/php.ini)
-
-Ergänzt man im extensions-Abschnitt
-
-extension = yaz.so
+    extension = yaz.so
 
 Neuladen des Apache-Webservers nicht vergessen!
 
