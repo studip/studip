@@ -958,7 +958,7 @@ class CourseSet
             $text .= '#' . $rule_counter . ' => ' . $rule_text . $semicolon;
             $rule_counter++;
         }
-        
+
         $courses = $this->getCourses();
         foreach ($courses as $course_id) {
             StudipLog::log(
@@ -1095,7 +1095,13 @@ class CourseSet
         if ($ok) {
             StudipLog::log('SEM_CHANGED_ACCESS', $course_id,
                 null, 'Zuordnung zu Anmeldeset', sprintf('Anmeldeset: %s', $set_id));
-                Course::buildExisting(['seminar_id' => $course_id])->triggerChdate();
+            $course = Course::find($course_id);
+            if ($course) {
+                $course->chdate = time();
+                $course->lesezugriff = 1;
+                $course->schreibzugriff = 1;
+                $course->store();
+            }
         }
         return $ok;
     }
