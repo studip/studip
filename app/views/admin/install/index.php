@@ -35,7 +35,7 @@
 <p>
     Eine ausführliche Installationsanleitung und weiterführende Hilfen finden
     Sie auf den
-    <a href="https://hilfe.studip.de/admin/Admins/Installationsanleitung" class="link-extern">
+    <a href="https://hilfe.studip.de/admin/Admins/Installationsanleitung" class="link-extern" target="_blank">
         Hilfe-Seiten von Stud.IP
     </a>
     und über die Fußleiste des Assistenten.
