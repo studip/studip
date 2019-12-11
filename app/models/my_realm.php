@@ -1319,7 +1319,7 @@ class MyRealmModel
     public static function getWaitingList($user_id)
     {
         $sql = "SELECT set_id, priorities.seminar_id,'claiming' as status, seminare.Name, seminare.Ort,
-                priorities.priority, coursesets.name AS cname
+                priorities.priority, coursesets.name AS cname, seminare.admission_binding
             FROM priorities
             INNER JOIN seminare USING(seminar_id)
             INNER JOIN coursesets USING (set_id)
@@ -1530,11 +1530,14 @@ class MyRealmModel
         $courses = [];
         $modules = new Modules();
 
-        $studygroups = User::findCurrent()
-            ->course_memberships
-            ->filter(function ($c) {
-                return $c->course->getSemClass()->offsetGet('studygroup_mode');
-            })->toGroupedArray('seminar_id');
+        $studygroup_sem_types = array_filter(array_keys($GLOBALS['SEM_TYPE']), function ($sem_type_id) {
+            return (bool) $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$sem_type_id]['class']]['studygroup_mode'];
+        });
+        $studygroups = Course::findBySQL("INNER JOIN seminar_user USING (Seminar_id) WHERE seminar_user.user_id = :me AND seminare.status IN (:studygroup_semtypes) ", [
+            'me' => User::findCurrent()->id,
+            'studygroup_semtypes' => $studygroup_sem_types
+        ]);
+        $studygroups = SimpleCollection::createFromArray($studygroups)->toGroupedArray('seminar_id');
 
 
         $param_array = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible ';
