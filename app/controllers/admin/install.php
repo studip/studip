@@ -12,34 +12,6 @@ class Admin_InstallController extends Trails_Controller
 
     public function before_filter(&$action, &$args)
     {
-        if (!isset($_SESSION['STUDIP_INSTALLATION'])) {
-            $_SESSION['STUDIP_INSTALLATION'] = [
-                'database' => [
-                    'host'     => 'localhost',
-                    'user'     => '',
-                    'password' => '',
-                    'database' => 'studip',
-                    'version'  => false,
-                ],
-                'files'  => false,
-                'root'   => false,
-                'system' => false,
-                'env'    => 'development',
-            ];
-        }
-
-        $this->installer = new StudipInstaller($GLOBALS['STUDIP_BASE_PATH']);
-        $this->checker   = new SystemChecker($GLOBALS['STUDIP_BASE_PATH']);
-
-        $this->basic = Request::submitted('basic');
-        if ($this->basic) {
-            URLHelper::addLinkParam('basic', 1);
-        }
-
-        parent::before_filter($action, $args);
-
-        $this->set_layout('admin/install/layout');
-
         $this->steps = [
             'index'       => 'Einleitung',
             'php_check'   => 'System-Check (PHP)',
@@ -53,6 +25,38 @@ class Admin_InstallController extends Trails_Controller
         ];
         $steps = array_keys($this->steps);
         $step  = array_search($action, $steps) ?: 0;
+
+        if ($step > 0 && !isset($_SESSION['STUDIP_INSTALLATION'])) {
+            $action = 'session_error';
+        } else {
+            if (!isset($_SESSION['STUDIP_INSTALLATION'])) {
+                $_SESSION['STUDIP_INSTALLATION'] = [
+                    'database' => [
+                        'host'     => 'localhost',
+                        'user'     => '',
+                        'password' => '',
+                        'database' => 'studip',
+                        'version'  => false,
+                    ],
+                    'files'   => false,
+                    'root'    => false,
+                    'system'  => false,
+                    'env'     => 'development',
+                ];
+            }
+
+            $this->installer = new StudipInstaller($GLOBALS['STUDIP_BASE_PATH']);
+            $this->checker   = new SystemChecker($GLOBALS['STUDIP_BASE_PATH']);
+
+            $this->basic = Request::submitted('basic');
+            if ($this->basic) {
+                URLHelper::addLinkParam('basic', 1);
+            }
+        }
+
+        parent::before_filter($action, $args);
+
+        $this->set_layout('admin/install/layout');
 
         $this->previous_step = $step > 0 ? $steps[$step - 1] : false;
         $this->step          = $steps[$step];
@@ -387,6 +391,11 @@ class Admin_InstallController extends Trails_Controller
         header('Location: ' . dirname($_SERVER['SCRIPT_NAME']) . '/web_migrate.php');
         page_close();
         die;
+    }
+
+    public function session_error_action()
+    {
+        $this->valid = false;
     }
 
     public function after_filter($action, $args)
