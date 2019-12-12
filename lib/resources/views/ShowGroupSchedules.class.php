@@ -237,7 +237,6 @@ class ShowGroupSchedules extends ShowSemSchedules {
                         <?= htmlReady($this->semester['name']) ?>
                         -  <?= date ('d.m.Y', $start_time) ?>
                         -  <?= date ('d.m.Y', $end_time) ?>
-                        ?>
                     </th>
                     <th align="center">
                         <a href="<?= URLHelper::getLink('?quick_view='.$this->used_view.'&quick_view_mode='.$view_mode.'&next_day=1') ?>">
