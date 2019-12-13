@@ -537,6 +537,7 @@
                 border-bottom: thin solid $content-color-40;
 
                 height: 50px;
+                max-height: 50px;
                 overflow: hidden;
                 padding: 10px;
                 cursor: pointer;
@@ -599,6 +600,7 @@
                     .info {
                         display: flex;
                         flex-direction: column;
+                        height: 60px;
                         max-height: 60px;
                         overflow: hidden;
                         .name {

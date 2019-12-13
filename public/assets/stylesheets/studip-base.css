@@ -17140,6 +17140,7 @@ table.default tr.subcourses {
     .blubber_threads_widget .sidebar-widget-content ol li {
       border-bottom: thin solid #d0d0d5;
       height: 50px;
+      max-height: 50px;
       overflow: hidden;
       padding: 10px;
       cursor: pointer;
@@ -17188,6 +17189,7 @@ table.default tr.subcourses {
         .blubber_threads_widget .sidebar-widget-content ol li a .info {
           display: flex;
           flex-direction: column;
+          height: 60px;
           max-height: 60px;
           overflow: hidden; }
           .blubber_threads_widget .sidebar-widget-content ol li a .info .name {
