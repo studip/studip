@@ -696,7 +696,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                         AND seminare.status NOT IN (:forbidden_types)";
             $my_courses = array_merge(
                 $my_courses,
-                DBManager::get()->fechFirst($query, $parameters)
+                DBManager::get()->fetchFirst($query, $parameters)
             );
         }
         return $my_courses;
