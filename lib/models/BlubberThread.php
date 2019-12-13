@@ -263,10 +263,12 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                       WHERE blubber_mentions.thread_id = :thread_id
                         AND blubber_mentions.user_id != :me
                       ORDER BY name";
-            $names = DBManager::get()->fetchFirst($query, [
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([
                 'thread_id' => $this->getId(),
                 'me'        => $GLOBALS['user']->id,
             ]);
+            $names = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
 
             $names[] = _('ich');
             $names = implode(', ', $names);
