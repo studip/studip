@@ -67,7 +67,8 @@ if ($navigation) {
                          is_object($GLOBALS['perm']) &&
                          $GLOBALS['perm']->have_perm('autor') &&
                          PersonalNotifications::isActivated()) ?>,
-        wysiwyg_enabled: <?= json_encode((bool) Config::get()->WYSIWYG) ?>
+        wysiwyg_enabled: <?= json_encode((bool) Config::get()->WYSIWYG) ?>,
+        server_timestamp: <?= time() ?>
     }
     </script>
 

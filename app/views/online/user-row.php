@@ -19,11 +19,12 @@
     </td>
     <td class="actions" nowrap="nowrap">
         <? $actionMenu = ActionMenu::get() ?>
-        <? if (class_exists('Blubber')) : ?>
+        <? if (Config::get()->BLUBBER_GLOBAL_MESSENGER_ACTIVATE) : ?>
             <? $actionMenu->addLink(
-                URLHelper::getURL('plugins.php/blubber/streams/global', ['mention' => $user['username']]),
+                URLHelper::getURL('dispatch.php/blubber/write_to/'.$user['user_id']),
                 _('Blubber diesen Nutzer an'),
-                Icon::create('blubber', 'clickable')
+                Icon::create('blubber', 'clickable'),
+                ['data-dialog' => "width=540px"]
             ) ?>
         <? endif ?>
         <? $actionMenu->addLink(

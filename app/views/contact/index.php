@@ -59,6 +59,14 @@
                             </td>
                             <td class="actions">
                                 <? $actionMenu = ActionMenu::get() ?>
+                                <? if (Config::get()->BLUBBER_GLOBAL_MESSENGER_ACTIVATE) : ?>
+                                    <? $actionMenu->addLink(
+                                        URLHelper::getURL('dispatch.php/blubber/write_to/'.$contact->user_id),
+                                        _('Blubber diesen Nutzer an'),
+                                        Icon::create('blubber', 'clickable'),
+                                        ['data-dialog' => "width=540px"]
+                                    ) ?>
+                                <? endif ?>
                                 <? $actionMenu->addLink($controller->url_for('contact/vcard', ['user[]' => $contact->username]),
                                         _('vCard herunterladen'),
                                         Icon::create('vcard', 'clickable')) ?>

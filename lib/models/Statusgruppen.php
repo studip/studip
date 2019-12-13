@@ -318,6 +318,16 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     }
 
     /**
+     * Gets the blubberthread assigned to this statusgroup.
+     *
+     * @return BlubberThread|false
+     */
+    public function getBlubberthread()
+    {
+        return BlubberStatusgruppeThread::findByStatusgruppe_id($this->id);
+    }
+
+    /**
      * Finds CourseTopics assigned to this group via course dates.
      * @return array
      */

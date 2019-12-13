@@ -80,6 +80,8 @@ import "./bootstrap/subcourses.js"
 import "./bootstrap/widgets.js"
 import "./bootstrap/tabbable_widget.js"
 import "./bootstrap/gradebook.js"
+import "./bootstrap/blubber.js"
+import "./bootstrap/vue.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"

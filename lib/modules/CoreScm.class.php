@@ -13,9 +13,62 @@ class CoreScm implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('SCM_ENABLE')) {
-            $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", ['auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates"]));
-            $navigation->setImage(Icon::create('schedule', 'inactive'));
-            return $navigation;
+            $sql = "SELECT tab_name,  ouv.object_id,
+                  COUNT(IF(content !='',1,0)) as count,
+                  COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content !='',1,0), NULL)) AS neue,
+                  MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), chdate, 0)) AS last_modified
+                FROM
+                  scm
+                LEFT JOIN
+                  object_user_visits ouv ON(ouv.object_id = scm.range_id AND ouv.user_id = :user_id and ouv . type = 'scm')
+                WHERE
+                  scm.range_id = :course_id
+                GROUP BY
+                  scm.range_id";
+
+            $statement = DBManager::get()->prepare($sql);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->bindValue(':course_id', $course_id);
+            $statement->bindValue(':threshold', $last_visit);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+
+            if (!empty($result)) {
+                $nav = new Navigation('scm', 'dispatch.php/course/scm');
+
+                if ($result['count']) {
+                    if ($result['neue']) {
+                        $image = Icon::create('infopage+new', 'attention');
+                        $nav->setBadgeNumber($result['neue']);
+                        if ($result['count'] == 1) {
+                            $title = $result['tab_name'] . _(' (geändert)');
+                        } else {
+                            $title = sprintf(
+                                _('%1$d Einträge insgesamt, %2$d neue'),
+                                $result['count'],
+                                $result['neue']
+                            );
+                        }
+                    } else {
+                        $image = Icon::create('infopage', 'inactive');
+                        if ($result['count'] == 1) {
+                            $title = $result['tab_name'];
+                        } else {
+                            $title = sprintf(
+                                ngettext(
+                                    '%d Eintrag',
+                                    '%d Einträge',
+                                    $result['count']
+                                ),
+                                $result['count']
+                            );
+                        }
+                    }
+                    $nav->setImage($image, ['title' => $title]);
+                }
+                return $nav;
+            }
         } else {
             return null;
         }

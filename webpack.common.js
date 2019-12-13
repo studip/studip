@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const assetsPath = path.resolve(__dirname, "resources/assets/javascripts");
 
@@ -89,10 +90,15 @@ module.exports = {
                 use: {
                     loader: 'babel-loader'
                 }
+            },
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
             }
         ]
     },
     plugins: [
+        new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: "stylesheets/[name].css",
             chunkFilename: "stylesheets/[id].css"
@@ -101,6 +107,7 @@ module.exports = {
     ],
     resolve: {
         alias: {
+            'vue$': 'vue/dist/vue.esm.js',
             'jquery-ui/data': 'jquery-ui/ui/data',
             'jquery-ui/disable-selection': 'jquery-ui/ui/disable-selection',
             'jquery-ui/focusable': 'jquery-ui/ui/focusable',

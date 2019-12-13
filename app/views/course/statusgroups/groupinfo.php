@@ -50,6 +50,15 @@
         </p>
     <?php endif ?>
 
+    <?php if ($thread = $group->getBlubberthread()) : ?>
+        <p>
+            <?= formatReady(sprintf(_('Zu dieser Gruppe gehört ein [Blubberthread]%s .'),
+                URLHelper::getURL('plugins.php/blubber/messenger/course/' . $thread->id, [
+                    'cid' => $course_id,
+                ]))) ?>
+        </p>
+    <?php endif ?>
+
     <?php if ($group->dates->count() > 0) : ?>
         <p>
             <?= _('Zugeordnete Termine:') ?>

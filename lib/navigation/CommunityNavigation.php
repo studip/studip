@@ -52,6 +52,12 @@ class CommunityNavigation extends Navigation
 
         parent::initSubNavigation();
 
+        if (Config::get()->BLUBBER_GLOBAL_MESSENGER_ACTIVATE) {
+            //Blubber messenger
+            $navigation = new Navigation(_('Blubber'), 'dispatch.php/blubber');
+            $this->addSubNavigation('blubber', $navigation);
+        }
+
         // online list
         $navigation = new Navigation(_('Wer ist online?'), 'dispatch.php/online/index');
         $this->addSubNavigation('online', $navigation);

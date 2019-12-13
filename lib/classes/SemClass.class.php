@@ -76,7 +76,7 @@ class SemClass implements ArrayAccess
         $data = [
             'name' => "Fehlerhafte Seminarklasse!",
             'overview' => "CoreOverview",
-            'forum' => "CoreForum",
+            'forum' => "Blubber",
             'admin' => "CoreAdmin",
             'documents' => "CoreDocuments",
             'schedule' => "CoreSchedule",
@@ -113,7 +113,7 @@ class SemClass implements ArrayAccess
             'admin'               => 'CoreAdmin'     // always available
         ];
         $slots = [
-            'forum'               => 'CoreForum',
+            'forum'               => 'Blubber',
             'documents'           => 'CoreDocuments',
             'literature'          => 'CoreLiterature',
             'scm'                 => 'CoreScm',

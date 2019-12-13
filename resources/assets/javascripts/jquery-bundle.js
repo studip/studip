@@ -77,6 +77,7 @@ import 'blueimp-file-upload';
 import 'blueimp-file-upload/js/jquery.iframe-transport.js';
 
 import './jquery/jquery.filtertable-1.5.7.js';
+import './jquery/autoresize.jquery.min.js';
 
 import Toolbar from './lib/toolbar.js';
 

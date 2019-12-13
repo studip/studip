@@ -12,9 +12,95 @@
 class CoreSchedule implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
-        $navigation = new Navigation(_('Ablaufplan'), URLHelper::getURL("seminar_main.php", ['auswahl' => $course_id, 'redirect_to' => "dispatch.php/course/dates"]));
-        $navigation->setImage(Icon::create('schedule', 'inactive'));
-        return $navigation;
+        $count = 0;
+        $neue  = 0;
+        // check for extern dates
+        $sql       = "SELECT  COUNT(term.termin_id) as count,
+                  MAX(IF ((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term.chdate, 0)) AS last_modified,
+                  COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id !=:user_id), term.termin_id, NULL)) AS neue
+                FROM
+                  ex_termine term
+                LEFT JOIN
+                  object_user_visits ouv ON(ouv . object_id = term . range_id AND ouv . user_id = :user_id AND ouv . type = 'schedule')
+                WHERE term . range_id = :course_id
+                GROUP BY term.range_id";
+        $statement = DBManager::get()->prepare($sql);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if (!empty($result)) {
+            $count = $result['count'];
+            $neue  = $result['neue'];
+        }
+
+
+        // check for normal dates
+        $sql = "SELECT  COUNT(term.termin_id) as count,
+                  COUNT(term.termin_id) as count, COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id !=:user_id), term.termin_id, NULL)) AS neue,
+                  MAX(IF ((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term . chdate, 0)) AS last_modified
+                FROM
+                  termine term
+                LEFT JOIN
+                  object_user_visits ouv ON(ouv . object_id = term . range_id AND ouv . user_id = :user_id AND ouv . type = 'schedule')
+                WHERE term . range_id = :course_id
+                GROUP BY term.range_id";
+
+        $statement = DBManager::get()->prepare($sql);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if (!empty($result)) {
+            $count += $result['count'];
+            $neue += $result['neue'];
+        }
+
+        if ($neue || (int)$count > 0) {
+            $nav = new Navigation('schedule', "dispatch.php/course/dates");
+            if ($neue) {
+                $nav->setImage(
+                    Icon::create(
+                        'schedule+new',
+                        'attention',
+                        [
+                            'title' => sprintf(
+                                ngettext(
+                                    '%1$d Termin, %2$d neuer',
+                                    '%1$d Termine, %2$d neue',
+                                    $count
+                                ),
+                                $count,
+                                $neue
+                            )
+                        ]
+                    )
+                );
+                $nav->setBadgeNumber($neue);
+            } elseif ($count) {
+                $nav->setImage(
+                    Icon::create(
+                        'schedule',
+                        'inactive',
+                        [
+                            'title' => sprintf(
+                                ngettext(
+                                    '%d Termin',
+                                    '%d Termine',
+                                    $count
+                                ),
+                                $count
+                            )
+                        ]
+                    )
+                );
+            }
+            return $nav;
+        }
     }
     
     function getTabNavigation($course_id) {

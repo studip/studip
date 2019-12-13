@@ -49,8 +49,8 @@ function startpage_redirect($page_code) {
         case 6:
             // redirect to global blubberstream
             // or no redirection if blubber isn't active
-            if (PluginEngine::getPlugin("Blubber")) {
-                $jump_page = "plugins.php/blubber/streams/global";
+            if (Config::get()->BLUBBER_GLOBAL_MESSENGER_ACTIVATE) {
+                $jump_page = "dispatch.php/blubber";
             }
             break;
     }

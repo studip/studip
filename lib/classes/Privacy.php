@@ -33,7 +33,8 @@ class Privacy
             'CourseExDate',
         ],
         'message' => [
-            'BlubberPosting',
+            'BlubberThread',
+            'BlubberComment',
             'StudipNews',
             'StudipComment',
             'Message',

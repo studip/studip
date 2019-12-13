@@ -13,9 +13,70 @@ class CoreWiki implements StudipModule {
 
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('WIKI_ENABLE')) {
-            $navigation = new Navigation(_('Wiki'), "seminar_main.php?auswahl=".$course_id."&redirect_to=wiki.php");
-            $navigation->setImage(Icon::create('wiki', 'inactive'));
-            return $navigation;
+            $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id);
+
+            if ($priviledged) {
+                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
+                           COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
+                           MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), chdate, 0)) AS last_modified,
+                           COUNT(keyword) AS count
+                    FROM wiki
+                    LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                    WHERE wiki.range_id = :course_id
+                    GROUP BY wiki.range_id";
+            } else {
+                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
+                           COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
+                           MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), chdate, 0)) AS last_modified,
+                           COUNT(keyword) AS count
+                    FROM wiki
+                    LEFT JOIN wiki_page_config USING (range_id, keyword)
+                    LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                    WHERE wiki.range_id = :course_id
+                      AND (
+                          wiki_page_config.range_id IS NULL
+                          OR wiki_page_config.read_restricted = 0
+                      )
+                    GROUP BY wiki.range_id";
+            }
+            $statement = DBManager::get()->prepare($sql);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->bindValue(':course_id', $course_id);
+            $statement->bindValue(':threshold', $last_visit);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            if (!empty($result)) {
+                $nav = new Navigation('wiki');
+                if ($result['neue']) {
+                    $nav->setURL('wiki.php?view=listnew');
+                    $nav->setImage(Icon::create('wiki+new', Icon::ROLE_ATTENTION, [
+                        'title' => sprintf(
+                            ngettext(
+                                '%1$d Wiki-Seite, %2$d Änderung(en)',
+                                '%1$d Wiki-Seiten, %2$d Änderung(en)',
+                                $result['count_d']
+                            ),
+                            $result['count_d'],
+                            $result['neue']
+                        )
+                    ]));
+                    $nav->setBadgeNumber($result['neue']);
+                } elseif ($result['count']) {
+                    $nav->setURL('wiki.php');
+                    $nav->setImage(Icon::create('wiki', Icon::ROLE_INACTIVE, [
+                        'title' => sprintf(
+                            ngettext(
+                                '%d Wiki-Seite',
+                                '%d Wiki-Seiten',
+                                $result['count_d']
+                            ),
+                            $result['count_d']
+                        )
+                    ]));
+                }
+                return $nav;
+            }
         } else {
             return null;
         }

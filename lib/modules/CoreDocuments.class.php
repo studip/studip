@@ -15,8 +15,27 @@ class CoreDocuments implements StudipModule
     function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $range_type = get_object_type($course_id, ['sem', 'inst']) == 'sem' ? 'course' : 'institute';
-        $navigation = new Navigation(_('Dateibereich'), "seminar_main.php?auswahl=$course_id&redirect_to=dispatch.php/' . $range_type . '/files'");
+        $navigation = new Navigation(
+            _('Dateibereich'),
+            "dispatch.php/".$range_type."/files"
+        );
         $navigation->setImage(Icon::create('files', 'inactive'));
+        $file_refs = FileRef::findBySQL("INNER JOIN folders ON (folders.id = file_refs.folder_id) WHERE folders.range_type = :range_type AND folders.range_id = :context_id AND file_refs.mkdate >= :last_visit AND file_refs.user_id != :me", [
+            'me' => $user_id,
+            'last_visit' => $last_visit,
+            'context_id' => $course_id,
+            'range_type' => $range_type
+        ]);
+        foreach ($file_refs as $fileref) {
+            $foldertype = $fileref->folder->getTypedFolder();
+            if ($foldertype->isFileDownloadable($fileref->getId(), $user_id)) {
+                $navigation->setImage(Icon::create('files', 'attention'));
+                $navigation->setTitle(_("Es gibt neue Dateien."));
+                $navigation->setURL("dispatch.php/".$range_type."/files/flat?select=new");
+                break;
+            }
+        }
+
         return $navigation;
     }
 

@@ -56,6 +56,7 @@ class JsupdaterController extends AuthenticatedController
      */
     public function get_action()
     {
+        UpdateInformation::setInformation("server_timestamp", time());
         $data = UpdateInformation::getInformation();
         $data = array_merge($data, $this->coreInformation());
 
@@ -152,6 +153,43 @@ class JsupdaterController extends AuthenticatedController
                     ];
                 }
             }
+        }
+        if (is_array($page_info['Blubber']['threads']) && count($page_info['Blubber']['threads'])) {
+            $blubber_data = array();
+            foreach ($page_info['Blubber']['threads'] as $thread_id) {
+                $thread = new BlubberThread($thread_id);
+                if ($thread->isReadable()) {
+                    $comments = BlubberComment::findBySQL("thread_id = :thread_id AND mkdate >= :time ORDER BY mkdate ASC", array(
+                        'thread_id' => $thread_id,
+                        'time' => UpdateInformation::getTimestamp()
+                    ));
+                    foreach ($comments as $comment) {
+                        $blubber_data[$thread_id][] = $comment->getJSONdata();
+                    }
+                }
+            }
+            if (count($blubber_data)) {
+                $data['Blubber.addNewComments'] = $blubber_data;
+            }
+        }
+        if (mb_stripos(Request::get("page"), "dispatch.php/blubber") !== false) {
+            //collect updated threads for the widget
+            $threads = BlubberThread::findMyGlobalThreads(30, UpdateInformation::getTimestamp());
+            $thread_widget_data = array();
+            foreach ($threads as $thread) {
+                $thread_widget_data[] = array(
+                    'thread_id' => $thread->getId(),
+                    'avatar' => $thread->getAvatar(),
+                    'name' => $thread->getName(),
+                    'timestamp' => (int) $thread->getLatestActivity()
+                );
+            }
+            if (count($thread_widget_data)) {
+                $data['Blubber.updateThreadWidget'] = $thread_widget_data;
+            }
+        }
+        if (mb_stripos(Request::get("page"), "plugins.php/blubber/messenger") !== false) {
+
         }
         return $data;
     }

@@ -13,10 +13,61 @@ class CoreElearningInterface implements StudipModule {
 
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('ELEARNING_INTERFACE_ENABLE')) {
-            $navigation = new Navigation(_('Lernmodule'), "seminar_main.php?auswahl=".$course_id."&redirect_to=dispatch.php/course/elearning/show");
-            $navigation->setImage(Icon::create('learnmodule', 'inactive'));
+            $sql = "SELECT a.object_id, COUNT(module_id) as count,
+                COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
+                MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
+                FROM
+                object_contentmodules a
+                LEFT JOIN object_user_visits b ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='elearning_interface')
+                WHERE a.object_id = :course_id  AND a.module_type != 'crs'
+                GROUP BY a.object_id";
 
-            return $navigation;
+            $statement = DBManager::get()->prepare($sql);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->bindValue(':course_id', $course_id);
+            $statement->bindValue(':threshold', $last_visit);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+            if (!empty($result)) {
+                $nav = new Navigation('elearning', "dispatch.php/course/elearning/show");
+                if ((int) $result['neue']) {
+                    $nav->setImage(
+                        Icon::create(
+                            'learnmodule+new',
+                            'attention',
+                            [
+                                'title' => sprintf(
+                                    ngettext(
+                                        '%1$d Lernmodul, %2$d neues',
+                                        '%1$d Lernmodule, %2$d neue',
+                                        $result['count']
+                                    ),
+                                    $result['count'],
+                                    $result['neue']
+                                )
+                            ]
+                        )
+                    );
+                } elseif ((int) $result['count']) {
+                    $nav->setImage(
+                        Icon::create(
+                            'learnmodule',
+                            'inactive',
+                            [
+                                'title' => sprintf(
+                                    ngettext(
+                                        '%d Lernmodul',
+                                        '%d Lernmodule',
+                                        $result['count']
+                                    ),
+                                    $result['count']
+                                )
+                            ]
+                        )
+                    );
+                }
+                return $nav;
+            }
         } else {
             return null;
         }

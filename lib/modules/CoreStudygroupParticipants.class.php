@@ -12,7 +12,7 @@
 class CoreStudygroupParticipants implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
-        $navigation = new Navigation(_('Teilnehmende'), "seminar_main.php?auswahl=".$course_id."&redirect_to=dispatch.php/course/members/index");
+        $navigation = new Navigation(_('Teilnehmende'), "dispatch.php/course/members/index");
         $navigation->setImage(Icon::create('persons', 'inactive'));
         return $navigation;
     }

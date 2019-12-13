@@ -200,8 +200,10 @@ class Score
         $tables[] = ['table' => 'news'];
         $tables[] = ['table' => 'seminar_user'];
         $tables[] = [
-            'table' => 'blubber',
-            'where' => "context_type != 'private'",
+            'table' => 'blubber_threads'
+        ];
+        $tables[] = [
+            'table' => 'blubber_comments'
         ];
         $tables[] = [
             'table'          => 'kategorien',

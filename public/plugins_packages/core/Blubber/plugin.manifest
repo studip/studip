@@ -1,9 +1,7 @@
 pluginclassname=Blubber
 pluginname=Blubber
 origin=core
-version=2.5.1
-studipMinVersion=2.5
-studipMaxVersion=2.99
+version=3
 summary=Schneller und einfacher Austausch von Informationen
 description=Blubber ist eine Kommunikationsform mit Ähnlichkeiten zu einem Forum, in dem aber in Echtzeit miteinander kommuniziert werden kann und das durch den etwas informelleren Charakter eher einem Chat anmutet. Anders als im Forum ist es nicht notwendig, die Seiten neu zu laden, um die neuesten Einträge (z. B. Antworten auf eigene Postings) sehen zu können: Die Seite aktualisiert sich selbst bei neuen Einträgen. Dateien (z.B. Fotos, Audiodateien, Links) können per Drag and Drop in das Feld gezogen und somit verlinkt werden. Auch Textformatierungen und das Verwenden von Smileys sind möglich.
 homepage=http://docs.studip.de/help/3.0/de/Basis/InteraktionBlubber

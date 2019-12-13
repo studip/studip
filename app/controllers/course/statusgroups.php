@@ -484,6 +484,22 @@ class Course_StatusgroupsController extends AuthenticatedController
                 htmlReady($group->name)));
         }
 
+        $thread = BlubberStatusgruppeThread::findByStatusgruppe_id($group->id);
+        if (Request::get("blubber") && !$thread) {
+            $thread = new BlubberStatusgruppeThread();
+            $thread['context_type'] = "course";
+            $thread['context_id'] = $this->course_id;
+            $thread['user_id'] = $GLOBALS['user']->id;
+            $thread['external_contact'] = 0;
+            $thread['visible_in_stream'] = 1;
+            $thread['display_class'] = "BlubberStatusgruppeThread";
+            $thread['commentable'] = 1;
+            $thread['metadata'] = array('statusgruppe_id' => $group->id);
+            $thread->store();
+        } elseif(!Request::get("blubber") && $thread) {
+            $thread->delete();
+        }
+
         $this->relocate('course/statusgroups');
     }
 

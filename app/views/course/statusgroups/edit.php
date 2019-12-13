@@ -29,6 +29,11 @@
         <?php endif ?>
 
         <label>
+            <input type="checkbox" name="blubber" value="1"<?= BlubberStatusgruppeThread::findByStatusgruppe_id($group->id) ? " checked" : "" ?>>
+            <?= _('Blubber in der Gruppe erlauben') ?>
+        </label>
+
+        <label>
             <input type="checkbox" name="selfassign" value="1"<?= $group->selfassign ? ' checked' : '' ?>>
             <?= _('Selbsteintrag erlaubt') ?>
         </label>

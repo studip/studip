@@ -13,8 +13,11 @@ class CoreParticipants implements StudipModule
 {
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
-        $navigation = new Navigation(_('Teilnehmende'), 'seminar_main.php?auswahl=' . $course_id . '&redirect_to=dispatch.php/course/members');
+        $navigation = new Navigation(_('Teilnehmende'), 'dispatch.php/course/members');
         $navigation->setImage(Icon::create('persons', 'inactive'));
+        if ($last_visit && CourseMember::countBySQL("seminar_id = :course_id AND mkdate >= :last_visit", ['last_visit' => $last_visit, 'course_id' => $course_id]) > 0) {
+            $navigation->setImage(Icon::create('persons', 'attention'));
+        }
         return $navigation;
     }
 

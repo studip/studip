@@ -1,0 +1,646 @@
+.blubber_panel {
+    display: flex;
+    align-items: stretch;
+    height: calc(100vh - 174px);
+    transition: opacity 100ms, filter 100ms;
+    &.waiting {
+        filter: blur(1px);
+        opacity: 0.5;
+    }
+    [v-if],
+    [v-for],
+    [v-show] {
+        display: none;
+    }
+}
+
+.blubber_thread {
+    border: 1px solid $content-color-40;
+    background-color: $dark-gray-color-5;
+
+    &.dragover {
+        background-color: $yellow-40;
+        .writer > textarea {
+            background-color: $yellow-40;
+        }
+        ol.comments > li.mine > .content::after,
+        ol.comments > li.theirs > .content::after {
+            background-color: $yellow-40;
+        }
+    }
+
+    .writer {
+        border-top: 1px solid $content-color-40;
+
+        background-color: $white;
+        background-image: linear-gradient(to left, $content-color-60, $content-color-60);
+        background-size: 0% 100%;
+        background-repeat: no-repeat;
+        padding: 5px;
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        > textarea {
+            border: 1px solid $content-color-40;
+            background-color: $white;
+            width: calc(100% - 140px);
+            height: 40px;
+            resize: none;
+            padding: 5px;
+            max-height: 40vh;
+        }
+        .send {
+            display: none;
+            cursor: pointer;
+        }
+        label {
+            cursor: pointer;
+        }
+        &.filled {
+            .send {
+                display: block;
+            }
+            label {
+                display: none;
+            }
+        }
+    }
+    ol.comments {
+        list-style-type: none;
+        margin: 0px;
+        padding: 0px;
+
+        > li {
+            display: none;
+            &.new {
+                animation: blubber-scaling 300ms ease-out;
+            }
+            align-items: flex-end;
+            justify-content: flex-start;
+
+            margin-top: 20px;
+            padding-right: 10px;
+            padding-left: 10px;
+
+            &:last-child {
+                margin-bottom: 10px;
+            }
+
+            > .content {
+                max-width: 60%;
+                margin-left: 5px;
+                margin-right: 5px;
+                padding: 5px;
+
+                > .html {
+                    max-width: 100%;
+                    overflow: hidden;
+                    img {
+                        max-width: 100%;
+                        max-height: 95vh;
+                    }
+                }
+
+                > .edit {
+                    display: none;
+                }
+
+                &.editing {
+                    > .html {
+                        display: none;
+                    }
+                    > .edit {
+                        display: block;
+                        width: 300px;
+                        height: 20px;
+                    }
+                }
+            }
+
+            &.mine {
+                display: flex;
+                flex-direction: row-reverse;
+                > .content {
+                    background-color: $base-color;
+                    color: $white;
+
+                    .opengraph {
+                        background-color: $base-color-80;
+                        border-color: $base-color-60;
+                    }
+
+                    a.link-extern {
+                        @include icon(before, link-extern, info-alt);
+
+                        &::before {
+                            opacity: 0.8;
+                            transition: opacity 200ms;
+                        }
+                    }
+                    a.link-intern {
+                        @include icon(before, link-intern, info-alt);
+
+                        &::before {
+                            opacity: 0.8;
+                            transition: opacity 200ms;
+                        }
+                    }
+
+                    a,
+                    a:link,
+                    a:visited {
+                        color: $white;
+                        opacity: 0.8;
+                        transition: opacity 200ms;
+                    }
+                    a:hover,
+                    a:active,
+                    a:hover.index,
+                    a:active.index,
+                    a:hover.tree {
+                        color: $white;
+                        opacity: 1;
+                        transition: opacity 200ms;
+                    }
+                    a.link-extern:hover::before,
+                    a.link-intern:hover::before {
+                        opacity: 1;
+                        transition: opacity 200ms;
+                    }
+
+                    //Now the small triangular:
+                    @include arrow-right(10px, $base-color);
+                    &::before {
+                        top: 100%;
+                    }
+                    &::after {
+                        content: '';
+                        height: 10px;
+                        width: 10px;
+                        background-color: $dark-gray-color-5;
+                        position: absolute;
+                        pointer-events: none;
+                        left: 100%;
+                        top: 100%;
+                    }
+                    > .name {
+                        display: none;
+                    }
+                }
+                > .avatar {
+                    display: none;
+                }
+            }
+            &.theirs {
+                display: flex;
+                > .content {
+                    background-color: $content-color-20;
+                    @include arrow-left(10px, $content-color-20);
+                    &::before {
+                        top: 100%;
+                    }
+                    &::after {
+                        content: '';
+                        height: 10px;
+                        width: 10px;
+                        background-color: $dark-gray-color-5;
+                        position: absolute;
+                        pointer-events: none;
+                        left: -10px;
+                        top: 100%;
+                    }
+                    > .name {
+                        color: $light-gray-color-80;
+                        font-size: 0.8em;
+                        display: block;
+                    }
+                }
+                > .avatar {
+                    min-width: 40px;
+                    min-height: 40px;
+                    width: 40px;
+                    height: 40px;
+                    background-repeat: no-repeat;
+                    background-size: 40px auto;
+                    background-position: center center;
+                    margin-right: 10px;
+                }
+            }
+            &.more {
+                display: flex;
+                justify-content: center;
+            }
+            > .time {
+                font-size: 0.8em;
+                color: $light-gray-color;
+                time {
+                    @media screen and (max-width: 500px) { // TODO: Adjust to existing breakpoints
+                        display: none;
+                    }
+                }
+            }
+        }
+
+    }
+}
+
+.blubber_thread,
+.blubber_globalstream {
+    .thread_posting {
+        border-bottom: 1px solid $content-color-40;
+        background-color: $white;
+
+        .contextinfo {
+            background-color: $content-color-20;
+            border-bottom: 1px solid $content-color-40;
+            color: $dark-gray-color-60;
+            font-size: 0.8em;
+            padding: 7px 5px 5px 75px;
+            position: relative;
+            a {
+                color: $dark-gray-color-60;
+            }
+            time {
+                float: right;
+                margin-left: 0.5em;
+            }
+            .avatar {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+
+                height: 40px;
+                width: 40px;
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: 100% auto;
+            }
+        }
+
+
+        .content {
+            padding: 10px 10px 10px 75px;
+            img {
+                max-width: 100%;
+                max-height: 95vh;
+            }
+        }
+    }
+}
+
+#blubber_stream_container {
+    display: flex;
+    align-items: stretch;
+}
+
+.blubber_globalstream,
+.blubber_thread {
+    // TODO: Adjust to existing breakpoints (576px)
+    width: 540px;
+    max-width: 540px;
+    @media screen and (max-width: 540px) {
+        width: 100%;
+    }
+
+    margin-right: 12px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+
+    [v-if],
+    [v-for],
+    [v-show] {
+        display: none;
+    }
+
+    .scrollable_area {
+        max-height: calc(100vh - 240px);
+        overflow: auto;
+        &.scrolled::before {
+            content: '';
+            width: 100%;
+            max-width: 540px;
+            height: 20px;
+            display: block;
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
+            z-index: 10;
+        }
+    }
+    ol.postings {
+        padding: 0px;
+        margin: 0px;
+        list-style-type: none;
+
+        > li {
+            border: 1px solid $content-color-40;
+            margin-bottom: 20px;
+            &.new {
+                animation: blubber-scaling 300ms ease-out;
+            }
+        }
+    }
+}
+
+.blubber_globalstream {
+    .thread_posting {
+        border-bottom: none;
+        .link_to_comments {
+            line-height: 30px;
+            margin-left: 75px;
+        }
+    }
+    ol.postings .more {
+        text-align: center;
+        border: none;
+    }
+    .scrollable_area {
+        max-height: calc(100vh - 175px);
+    }
+}
+
+.studip-dialog .blubber_panel {
+    height: 420px;
+    .blubber_thread {
+        max-height: 420px;
+
+        .scrollable_area {
+            max-height: 420px;
+        }
+    }
+}
+
+.blubber_sideinfo {
+    width: 270px;
+    max-width: 270px;
+
+    margin-left: 5px;
+    border: 1px solid $content-color-40;
+    box-sizing: border-box;
+
+    max-height: calc(100vh - 140px);
+    overflow: auto;
+
+    .indented {
+        padding: 10px;
+    }
+
+    .members {
+        margin-bottom: 10px;
+        li {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid $content-color-40;
+            &:first-child {
+                border-top: 1px solid $content-color-40;
+            }
+        }
+        &.topless li:first-child {
+            padding-top: 0px;
+            border-top: none;
+        }
+        &.bottomless li {
+            border-bottom: none;
+            padding-bottom: 0px;
+        }
+    }
+
+    .headline {
+        display: flex;
+        margin-bottom: 10px;
+        &:last-child {
+            margin-bottom: 0px;
+        }
+        .side {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .icons {
+                margin-top: 5px;
+            }
+        }
+
+        .avatar {
+            min-width: 50px;
+            min-height: 50px;
+            max-width: 50px;
+            max-height: 50px;
+            display: block;
+            background-size: 100% 100%;
+            background-position: auto;
+            margin-right: 10px;
+        }
+    }
+
+    .posting {
+        border-bottom: 1px solid $content-color-40;
+        .header {
+            background-color: $content-color-20;
+            border-bottom: 1px solid $content-color-40;
+            padding: 10px;
+            padding-top: 7px;
+            padding-bottom: 5px;
+            font-size: 0.8em;
+            color: $dark-gray-color-60;
+
+            time {
+                float: right;
+            }
+        }
+        .content {
+            padding: 10px;
+        }
+    }
+
+    .context_info {
+        border-bottom: 1px solid $content-color-40;
+
+        .blubber_course_info {
+
+        }
+        .blubber_private_info {
+            .icon {
+                text-align: center;
+            }
+
+            .avatar {
+                min-width: 50px;
+                min-height: 50px;
+                max-width: 50px;
+                max-height: 50px;
+                display: block;
+                background-size: 100% 100%;
+                background-position: auto;
+                margin-right: 10px;
+            }
+        }
+    }
+
+}
+
+.lowprio_info {
+    color: $light-gray-color;
+}
+
+#blubber-index {
+    @media screen and (max-width: 500px) { // TODO: Adjust to existing breakpoints
+        #page_title_container,
+        .secondary-navigation {
+            display: none;
+        }
+    }
+}
+
+
+.blubber_threads_widget {
+    .sidebar-widget-header {
+        .actions {
+            float: right;
+        }
+    }
+
+    .sidebar-widget-content {
+        padding: 0px;
+        max-height: calc(100vh - 285px);
+        overflow: auto;
+
+        .scrollable_area.scrolled::before {
+            content: '';
+            width: 100%;
+            max-width: 540px;
+            height: 20px;
+            display: block;
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
+            z-index: 10;
+        }
+
+        .scrollable_area.scrolled ol li.active {
+            &::before {
+                display: none;
+            }
+            &::after {
+                display: none;
+            }
+        }
+
+        ol {
+            list-style-type: none;
+            padding-left: 0px;
+
+            li {
+                border-bottom: thin solid $content-color-40;
+
+                height: 50px;
+                overflow: hidden;
+                padding: 10px;
+                cursor: pointer;
+                color: $base-color;
+                font-weight: bold;
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                &[v-if],
+                &[v-for],
+                &[v-show] {
+                    display: none;
+                }
+
+                &.more {
+                    display: flex;
+                    justify-content: center;
+                }
+
+                &.active {
+                    background-color: $yellow-40;
+
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        height: 0px;
+                        width: 0px;
+                        border-top: 35px transparent solid;
+                        border-bottom: 35px transparent solid;
+                        border-left: 10px $content-color-40 solid;
+                        right: -10px;
+                        margin-top: -10px;
+                    }
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        height: 0px;
+                        width: 0px;
+                        border-top: 35px transparent solid;
+                        border-bottom: 35px transparent solid;
+                        border-left: 10px $yellow-40 solid;
+                        right: -9px;
+                        margin-top: -70px;
+                    }
+                }
+
+                a {
+                    display: flex;
+                    .avatar {
+                        min-width: 50px;
+                        max-width: 50px;
+                        min-height: 50px;
+                        max-height: 50px;
+                        margin-right: 10px;
+                        background-repeat: no-repeat;
+                        background-size: 50px 50px;
+                        background-position: center center;
+                    }
+                    .info {
+                        display: flex;
+                        flex-direction: column;
+                        max-height: 60px;
+                        overflow: hidden;
+                        .name {
+                            max-height: 40px;
+                            overflow: hidden;
+                        }
+                        time {
+                            font-size: 0.8em;
+                            font-weight: normal;
+                            color: $light-gray-color;
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+.blubber-edit-icons {
+    margin-top: 10px;
+    > * {
+        margin: 10px;
+    }
+}
+
+.float_right {
+    float: right;
+}
+
+@keyframes blubber-scaling {
+    from {
+        opacity: 0.8;
+        transform: scale(0.8,0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1,1);
+    }
+}

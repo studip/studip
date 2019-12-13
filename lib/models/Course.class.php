@@ -150,6 +150,12 @@ class Course extends SimpleORMap implements Range, PrivacyObject
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
+        $config['has_many']['blubberthreads'] = [
+            'class_name' => 'BlubberThread',
+            'assoc_func' => 'findBySeminar',
+            'on_delete'  => 'delete',
+            'on_store'   => 'store',
+        ];
 
         $config['belongs_to']['start_semester'] = [
             'class_name'        => 'Semester',

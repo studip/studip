@@ -6,6 +6,7 @@ import Archive from './lib/archive.js';
 import Audio from './lib/audio.js';
 import Avatar from './lib/avatar.js';
 import BigImageHandler from './lib/big_image_handler.js';
+import Blubber from './lib/blubber.js';
 import Browse from './lib/browse.js';
 import Cache from './lib/cache.js';
 import Calendar from './lib/calendar.js';
@@ -80,6 +81,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Audio,
     Avatar,
     BigImageHandler,
+    Blubber,
     Browse,
     Cache,
     Calendar,

@@ -235,6 +235,13 @@ $translations = array(
     'vorm.' => _('vorm.'),
     'nachm.' => _('nachm.'),
 
+    // resources/vue/components/StudipDateTime.vue
+    'Vor %s Minuten' => _('Vor %s Minuten'),
+
+    // resources/vue/components/BlubberGlobalstream.vue
+    'Zur Diskussion' => _('Zur Diskussion'),
+    'Kommentar schreiben. Enter zum Abschicken.' => _('Kommentar schreiben. Enter zum Abschicken.')
+
 );
 
 ?>

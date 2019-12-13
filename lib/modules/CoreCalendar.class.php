@@ -14,7 +14,7 @@ class CoreCalendar implements StudipModule {
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('CALENDAR_GROUP_ENABLE')) {
             $navigation = new Navigation(_('Kalender'), "seminar_main.php?auswahl=".$course_id."&redirect_to=dispatch.php/calendar/single/");
-            $navigation->setImage(Icon::create('wiki', 'inactive'));
+            $navigation->setImage(Icon::create('schedule', 'inactive'));
             return $navigation;
         }
     }

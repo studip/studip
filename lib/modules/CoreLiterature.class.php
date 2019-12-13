@@ -13,9 +13,61 @@ class CoreLiterature implements StudipModule {
     
     function getIconNavigation($course_id, $last_visit, $user_id) {
         if (get_config('LITERATURE_ENABLE')) {
-            $navigation = new Navigation(_('Teilnehmende'), "seminar_main.php?auswahl=".$course_id."&redirect_to=dispatch.php/course/members/index");
-            $navigation->setImage(Icon::create('persons', 'inactive'));
-            return $navigation;
+            $sql = "SELECT a.range_id, COUNT(list_id) as count,
+                COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.user_id !=:user_id), list_id, NULL)) AS neue,
+                MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.user_id != :user_id), chdate, 0)) AS last_modified
+                FROM
+                lit_list a
+                LEFT JOIN object_user_visits b ON (b.object_id = a.range_id AND b.user_id = :user_id AND b.type ='literature')
+                WHERE a.range_id = :course_id  AND a. visibility = 1
+                GROUP BY a.range_id";
+            $statement = DBManager::get()->prepare($sql);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->bindValue(':course_id', $course_id);
+            $statement->bindValue(':threshold', $last_visit);
+            $statement->execute();
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+            if (!empty($result)) {
+                $nav = new Navigation('literature', "dispatch.php/course/literature");
+                if ((int) $result['neue']) {
+                    $nav->setImage(
+                        Icon::create(
+                            'literature+new',
+                            'attention',
+                            [
+                                'title' => sprintf(
+                                    ngettext(
+                                        '%1$d Literaturliste, %2$d neue',
+                                        '%1$d Literaturlisten, %2$d neue',
+                                        $result['count']
+                                    ),
+                                    $result['count'],
+                                    $result['neue']
+                                )
+                            ]
+                        )
+                    );
+                    $nav->setBadgeNumber($result['neue']);
+                } elseif ((int)$result['count']) {
+                    $nav->setImage(
+                        Icon::create(
+                            'literature',
+                            'inactive',
+                            [
+                                'title' => sprintf(
+                                    ngettext(
+                                        '%d Literaturliste',
+                                        '%d Literaturlisten',
+                                        $result['count']
+                                    ),
+                                    $result['count']
+                                )
+                            ]
+                        )
+                    );
+                }
+                return $nav;
+            }
         } else {
             return null;
         }
