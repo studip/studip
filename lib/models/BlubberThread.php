@@ -678,7 +678,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         $my_courses = DBManager::get()->fetchFirst($query, $parameters);
 
         if ($is_deputy) {
-            $query = "SELECT deputies.r019ange_id
+            $query = "SELECT deputies.range_id
                       FROM deputies
                       INNER JOIN seminare ON (seminare.Seminar_id = deputies.range_id)
                       LEFT JOIN plugins_activated
