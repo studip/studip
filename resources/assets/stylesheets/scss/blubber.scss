@@ -31,42 +31,9 @@
 
     .writer {
         border-top: 1px solid $content-color-40;
-
-        background-color: $white;
-        background-image: linear-gradient(to left, $content-color-60, $content-color-60);
-        background-size: 0% 100%;
-        background-repeat: no-repeat;
-        padding: 5px;
-
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-
-        > textarea {
-            border: 1px solid $content-color-40;
-            background-color: $white;
-            width: calc(100% - 140px);
-            height: 40px;
-            resize: none;
-            padding: 5px;
-            max-height: 40vh;
-        }
-        .send {
-            display: none;
-            cursor: pointer;
-        }
-        label {
-            cursor: pointer;
-        }
-        &.filled {
-            .send {
-                display: block;
-            }
-            label {
-                display: none;
-            }
-        }
     }
+
+
     ol.comments {
         list-style-type: none;
         margin: 0px;
@@ -246,6 +213,45 @@
     }
 }
 
+.blubber_thread, .blubber_globalstream {
+    .writer {
+        background-color: $white;
+        background-image: linear-gradient(to left, $content-color-60, $content-color-60);
+        background-size: 0% 100%;
+        background-repeat: no-repeat;
+        padding: 5px;
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+
+        > textarea {
+            border: 1px solid $content-color-40;
+            background-color: $white;
+            width: calc(100% - 140px);
+            height: 36px;
+            resize: none;
+            padding: 5px;
+            max-height: 40vh;
+        }
+        .send {
+            display: none;
+            cursor: pointer;
+        }
+        label {
+            cursor: pointer;
+        }
+        &.filled {
+            .send {
+                display: block;
+            }
+            label {
+                display: none;
+            }
+        }
+    }
+}
+
 .blubber_thread,
 .blubber_globalstream {
     .thread_posting {
@@ -339,7 +345,7 @@
 
         > li {
             border: 1px solid $content-color-40;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             &.new {
                 animation: blubber-scaling 300ms ease-out;
             }
@@ -348,6 +354,11 @@
 }
 
 .blubber_globalstream {
+    .writer {
+        border: 1px solid $content-color-40;
+        padding: 5px;
+        margin-bottom: 15px;
+    }
     .thread_posting {
         border-bottom: none;
         .link_to_comments {

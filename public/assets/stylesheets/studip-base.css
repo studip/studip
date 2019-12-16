@@ -16727,32 +16727,7 @@ table.default tr.subcourses {
     .blubber_thread.dragover ol.comments > li.theirs > .content::after {
       background-color: #ffe5ad; }
   .blubber_thread .writer {
-    border-top: 1px solid #d0d0d5;
-    background-color: #fff;
-    background-image: linear-gradient(to left, #b8b8bf, #b8b8bf);
-    background-size: 0% 100%;
-    background-repeat: no-repeat;
-    padding: 5px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center; }
-    .blubber_thread .writer > textarea {
-      border: 1px solid #d0d0d5;
-      background-color: #fff;
-      width: calc(100% - 140px);
-      height: 40px;
-      resize: none;
-      padding: 5px;
-      max-height: 40vh; }
-    .blubber_thread .writer .send {
-      display: none;
-      cursor: pointer; }
-    .blubber_thread .writer label {
-      cursor: pointer; }
-    .blubber_thread .writer.filled .send {
-      display: block; }
-    .blubber_thread .writer.filled label {
-      display: none; }
+    border-top: 1px solid #d0d0d5; }
   .blubber_thread ol.comments {
     list-style-type: none;
     margin: 0px;
@@ -16917,6 +16892,33 @@ table.default tr.subcourses {
           .blubber_thread ol.comments > li > .time time {
             display: none; } }
 
+.blubber_thread .writer, .blubber_globalstream .writer {
+  background-color: #fff;
+  background-image: linear-gradient(to left, #b8b8bf, #b8b8bf);
+  background-size: 0% 100%;
+  background-repeat: no-repeat;
+  padding: 5px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center; }
+  .blubber_thread .writer > textarea, .blubber_globalstream .writer > textarea {
+    border: 1px solid #d0d0d5;
+    background-color: #fff;
+    width: calc(100% - 140px);
+    height: 36px;
+    resize: none;
+    padding: 5px;
+    max-height: 40vh; }
+  .blubber_thread .writer .send, .blubber_globalstream .writer .send {
+    display: none;
+    cursor: pointer; }
+  .blubber_thread .writer label, .blubber_globalstream .writer label {
+    cursor: pointer; }
+  .blubber_thread .writer.filled .send, .blubber_globalstream .writer.filled .send {
+    display: block; }
+  .blubber_thread .writer.filled label, .blubber_globalstream .writer.filled label {
+    display: none; }
+
 .blubber_thread .thread_posting,
 .blubber_globalstream .thread_posting {
   border-bottom: 1px solid #d0d0d5;
@@ -17001,10 +17003,15 @@ table.default tr.subcourses {
     .blubber_globalstream ol.postings > li,
     .blubber_thread ol.postings > li {
       border: 1px solid #d0d0d5;
-      margin-bottom: 20px; }
+      margin-bottom: 15px; }
       .blubber_globalstream ol.postings > li.new,
       .blubber_thread ol.postings > li.new {
         animation: blubber-scaling 300ms ease-out; }
+
+.blubber_globalstream .writer {
+  border: 1px solid #d0d0d5;
+  padding: 5px;
+  margin-bottom: 15px; }
 
 .blubber_globalstream .thread_posting {
   border-bottom: none; }

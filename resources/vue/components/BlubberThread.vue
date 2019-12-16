@@ -96,7 +96,7 @@
                     html: formatted_text,
                     content: text,
                     mkdate:  Math.floor(Date.now() / 1000),
-                    name: 'Rasmus Fuhse',
+                    name: 'Nobody',
                     class: 'mine new',
                     writable: 1
                 };

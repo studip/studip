@@ -1,6 +1,7 @@
 <template>
     <div class="blubber_globalstream">
         <div class="scrollable_area" v-scroll>
+            <blubber-public-composer></blubber-public-composer>
             <ol class="postings" aria-live="polite">
                 <li class="more" v-if="stream_data.more_up">
                     <studip-asset-img file="ajax-indicator-black.svg" width="20"></studip-asset-img>
@@ -58,9 +59,20 @@
                     }
                 }
                 if (!exists) {
+                    posting.class = posting.class + " new";
                     this.stream_data.push(posting);
+                    this.$nextTick(() => {
+                        STUDIP.Markup.element($(this.$el).find(`.postings > li[data-thread_id="${posting.thread_id}"]`));
+                    });
                 }
             }
+        },
+        mounted () { //when everything is initialized
+            this.$nextTick(function () {
+                $(this.$el).find('.postings .content').each(function () {
+                    STUDIP.Markup.element(this);
+                });
+            });
         },
         computed: {
             sortedPostings: function () {
