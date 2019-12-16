@@ -104,6 +104,36 @@ class Blubber extends \RESTAPI\RouteMap
     }
 
     /**
+     * Write a global blubber
+     *
+     * @post /blubber/threads
+     * @return Array   the blubber as array
+     */
+    public function postGlobalBlubber()
+    {
+        if (!$GLOBALS['perm']->have_perm('autor')) {
+            $this->error(401);
+        }
+
+        if (!trim($this->data['content'])) {
+            $this->error(406);
+            return false;
+        }
+
+        $blubber = new \BlubberThread();
+        $blubber['context_type'] = "public";
+        $blubber['context_id'] = $GLOBALS['user']->id;
+        $blubber['content'] = $this->data['content'];
+        $blubber['user_id'] = $GLOBALS['user']->id;
+        $blubber['external_contact'] = 0;
+        $blubber['visible_in_stream'] = 1;
+        $blubber['commentable'] = 1;
+        $blubber->store();
+
+        return $blubber->getJSONData();
+    }
+
+    /**
      * Write a comment to a thread
      *
      * @post /blubber/threads/:thread_id/comments
