@@ -16911,7 +16911,8 @@ table.default tr.subcourses {
     height: 36px;
     resize: none;
     padding: 5px;
-    max-height: 40vh; }
+    max-height: 40vh;
+    overflow: auto !important; }
   .blubber_thread .writer .send, .blubber_globalstream .writer .send {
     display: none;
     cursor: pointer; }

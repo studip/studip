@@ -233,6 +233,7 @@
             resize: none;
             padding: 5px;
             max-height: 40vh;
+            overflow: auto !important;
         }
         .send {
             display: none;
