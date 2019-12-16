@@ -122,6 +122,11 @@ class Blubber extends \RESTAPI\RouteMap
             return false;
         }
 
+        if (!trim($this->data['content'])) {
+            $this->error(406);
+            return false;
+        }
+
         $thread = new \BlubberThread($thread_id);
         if (!$thread->isCommentable()) {
             $this->error(401);
@@ -130,7 +135,7 @@ class Blubber extends \RESTAPI\RouteMap
 
         $comment = new \BlubberComment();
         $comment['thread_id'] = $thread_id;
-        $comment['content'] = \Request::get('content');
+        $comment['content'] = $this->data['content'];
         $comment['user_id'] = $GLOBALS['user']->id;
         $comment['external_contact'] = 0;
         $comment->store();
