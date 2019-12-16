@@ -42,6 +42,7 @@ import News from './lib/news.js';
 import OldUpload from './lib/old_upload.js';
 import Overlapping from './lib/overlapping.js';
 import Overlay from './lib/overlay.js';
+import PageLayout from './lib/page_layout.js';
 import parseOptions from './lib/parse_options.js';
 import PersonalNotifications from './lib/personal_notifications.js';
 import QRCode from './lib/qr_code.js';
@@ -116,6 +117,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     OldUpload,
     Overlapping,
     Overlay,
+    PageLayout,
     parseOptions,
     PersonalNotifications,
     QRCode,

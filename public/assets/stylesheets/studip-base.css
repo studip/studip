@@ -12463,14 +12463,6 @@ div.available-widgets .studip-widget {
   top: 50%;
   right: 34px;
 }
-.ui-dialog .ui-dialog-title {
-  margin-right: 48px;
-}
-.ui-dialog .with-wiki-link .ui-dialog-title {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  padding-right: 24px;
-}
 .studip-dialog-centered .ui-dialog-content {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;

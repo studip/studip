@@ -12,6 +12,7 @@
 import parseOptions from './parse_options.js';
 import extractCallback from './extract_callback.js';
 import Overlay from './overlay.js';
+import PageLayout from './page_layout.js';
 
 var dialog_margin = 0;
 
@@ -310,6 +311,8 @@ Dialog.fromURL = function(url, options) {
 Dialog.show = function(content, options) {
     options = $.extend({}, Dialog.options, options);
 
+    options.wikilink = options.wikilink === undefined ? true : options.wikilink;
+
     var scripts = $('<div>' + content + '</div>').filter('script'); // Extract scripts
     var dialog_options = {};
     var instance = Dialog.getInstance(options.id);
@@ -350,6 +353,15 @@ Dialog.show = function(content, options) {
             options.dialogClass || dialog_options.dialogClass || ''
         );
 
+        var helper_title = $('<span class="ui-dialog-title">')
+            .text(options.title)
+            .appendTo(helper)
+            .wrap('<div class="ui-dialog-titlebar ui-helper-clearfix">')
+            .after('<button class="ui-button ui-button-icon-only ui-dialog-titlebar-close">close</button>');
+        if (options.wikilink) {
+            helper_title.parent().append('<a class="ui-dialog-titlebar-wiki"></a>').addClass('with-wiki-link');
+        }
+
         $('<div class="ui-dialog-content">').html(content).appendTo(helper);
         helper.css({
             position: 'absolute',
@@ -369,9 +381,10 @@ Dialog.show = function(content, options) {
         }
 
         // Calculate width and height
-        // TODO: The value of 113 shouldn't be hardcoded
+        // TODO: The value of 63 shouldn't be hardcoded (the height of buttonpane)
         width = Math.min(helper.outerWidth(true) + dialog_margin, width);
-        height = Math.min(helper.outerHeight(true) + 113, height);
+        height = Math.min(helper.outerHeight(true) + 63, height);
+
         if (options.size === 'auto') {
             width = Math.max(300, width);
             height = Math.max(200, height);
@@ -411,6 +424,7 @@ Dialog.show = function(content, options) {
         width: window.parseInt(width, 10),
         height: window.parseInt(height, 10)
     };
+    instance.previous_title = instance.previous_title || PageLayout.title;
 
     // Set dialog options
     dialog_options = $.extend(dialog_options, {
@@ -437,23 +451,27 @@ Dialog.show = function(content, options) {
             $(event.target).dialog('option', 'position', position);
         },
         open: function() {
-            var helpbar_element = $('.helpbar a[href*="hilfe.studip.de"]'),
-                tooltip = helpbar_element.text(),
-                link = options.wiki_link || helpbar_element.attr('href'),
-                element = $('<a class="ui-dialog-titlebar-wiki"' + ' target="_blank" rel="noopener noreferrer">')
+            PageLayout.title = dialog_options.title;
+
+            var helpbar_element = $('.helpbar a[href*="hilfe.studip.de"]');
+            var tooltip = helpbar_element.text();
+            var link = options.wiki_link || helpbar_element.attr('href');
+            var element = $('<a class="ui-dialog-titlebar-wiki"' + ' target="_blank" rel="noopener noreferrer">')
                     .attr('href', link)
-                    .attr('title', tooltip),
-                buttons = $(this)
+                    .attr('title', tooltip);
+            var buttons = $(this)
                     .parent()
                     .find('.ui-dialog-buttonset .ui-button');
 
-            if (options.wikilink === undefined || options.wikilink !== false) {
+            if (options.wikilink) {
                 $(this)
                     .siblings('.ui-dialog-titlebar')
                     .addClass('with-wiki-link')
                     .find('.ui-dialog-titlebar-close')
                     .before(element);
             }
+
+            $(this).parent().find('.ui-dialog-title').attr('title', options.title);
 
             instance.open = true;
             // Execute scripts
@@ -470,6 +488,8 @@ Dialog.show = function(content, options) {
         },
         close: function(event) {
             $(options.origin || document).trigger('dialog-close', { dialog: this, options: options });
+
+            PageLayout.title = instance.previous_title;
 
             Dialog.close(options);
         }

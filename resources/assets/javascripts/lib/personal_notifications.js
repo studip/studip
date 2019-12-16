@@ -1,8 +1,8 @@
 import Favico from 'favico.js';
 import Cache from './cache.js';
+import PageLayout from './page_layout.js';
 
 var stack = {},
-    originalTitle,
     audio_notification = false,
     directlydeleted = [],
     favicon = null;
@@ -101,7 +101,6 @@ const PersonalNotifications = {
                 stack[data.id] = data;
             });
 
-            originalTitle = window.document.title;
             PersonalNotifications.newNotifications = process_notifications;
 
             if ($('#audio_notification').length > 0) {
@@ -154,10 +153,10 @@ const PersonalNotifications = {
             $('#notification_marker')
                 .data('seen', false)
                 .addClass('alert');
-            window.document.title = '(!) ' + originalTitle;
+            PageLayout.title_prefix = '(!) ';
         } else {
             $('#notification_marker').removeClass('alert');
-            window.document.title = originalTitle;
+            PageLayout.title_prefix = '';
         }
         if (count) {
             $('#notification_container').addClass('hoverable');
