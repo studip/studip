@@ -74,16 +74,10 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             && $user->getId() !== $GLOBALS['user']->id
         ) {
             if ($thread['context_type'] === 'private') {
-                $query = "INSERT IGNORE INTO blubber_mentions
-                          SET user_id = :user_id,
-                              thread_id = :thread_id,
-                              external_contact = 0,
-                              mkdate = UNIX_TIMESTAMP()";
-                $statement = DBManager::get()->prepare($query);
-                $statement->execute([
-                    'user_id'   => $user->getId(),
-                    'thread_id' => $thread->getId()
-                ]);
+                $mention = new BlubberMention();
+                $mention['thread_id'] = $thread->getId();
+                $mention['user_id'] = $user->getId();
+                $mention->store();
             } elseif ($thread['context_type'] === 'public') {
                 PersonalNotifications::add(
                     $user->getId(),
@@ -251,7 +245,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             return sprintf(_('Blubber von %s'), $this->user ? $this->user->getFullName() : _('unbekannt'));
         }
 
-        if ($this['context_type'] === "private") {
+        if ($this['context_type'] === 'private') {
             $query = "SELECT IFNULL(blubber_external_contact.name, CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname)) AS name
                       FROM blubber_mentions
                       LEFT JOIN auth_user_md5
@@ -421,8 +415,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                       FROM blubber_mentions
                       WHERE thread_id = :thread_id
                         AND external_contact = 0
-                        AND user_id != :me
-            ";
+                        AND user_id != :me";
             $user_ids = DBManager::get()->fetchFirst($query, [
                 'thread_id' => $this->getId(),
                 'me'        => $GLOBALS['user']->id,
