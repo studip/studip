@@ -35,4 +35,13 @@ Sidebar.setSticky = function(is_sticky) {
             .trigger('sticky_kit:detach');
     }
 };
+
+Sidebar.alignTitle = function() {
+    //Manage Height
+    if (parseInt($('.title-content').innerHeight()) > parseInt($('.title-content').css('line-height'))) {
+        $('.title-content').removeClass('title-bottom');
+    } else {
+        $('.title-content').addClass('title-bottom');
+    }
+}
 export default Sidebar;

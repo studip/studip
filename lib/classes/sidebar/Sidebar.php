@@ -35,6 +35,7 @@ class Sidebar extends WidgetContainer
      */
     public function setImage($image)
     {
+        $image = "sidebar/noicon-sidebar.png";
         $this->image = $image;
     }
 

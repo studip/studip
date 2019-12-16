@@ -15,7 +15,19 @@
                 </a>
                 <? endif ?>
             </div>
-        <? endif ?>
+            <? endif ?>
+            <div class="sidebar-title">
+                <div class="vertical-align">
+                    <div class="title-content title-bottom">
+                        <?= htmlReady(ucfirst(trim(str_replace(Context::getHeaderLine() ? [
+                                    Context::getHeaderLine() . ' - ',
+                                    '- ' . Context::getHeaderLine(),
+                                    Context::getHeaderLine() . ': ',
+                                    Context::getHeaderLine(),
+                            ] : [] , '', PageLayout::getTitle())))) ?>
+                    </div>
+                </div>
+            </div>
         </div>
 <? endif; ?>
 
