@@ -157,6 +157,11 @@ class Blubbermessenger extends Migration
             @unlink($blubberstreams_folder . "/" . $file);
         }
         @rmdir($blubberstreams_folder);
+
+        DBManager::get()->exec("
+            DELETE FROM activities
+            WHERE object_type = 'blubber'
+        ");
     }
 
     public function down()

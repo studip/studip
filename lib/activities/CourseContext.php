@@ -47,9 +47,6 @@ class CourseContext extends Context
             //news
             $this->addProvider('Studip\Activity\NewsProvider');
 
-            // add blubber-provider
-            $this->addProvider('Studip\Activity\BlubberProvider');
-
             //plugins
             $standard_plugins = \PluginManager::getInstance()->getPlugins("StandardPlugin", $course->id);
             foreach ($standard_plugins as $plugin) {

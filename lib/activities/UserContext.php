@@ -42,7 +42,6 @@ class UserContext extends Context
 
             if ($this->user->id === $this->observer->id) {
                 $this->addProvider('Studip\Activity\MessageProvider');
-                $this->addProvider('Studip\Activity\BlubberProvider');
             }
 
             if (get_config('LITERATURE_ENABLE')) {

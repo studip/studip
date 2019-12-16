@@ -45,9 +45,6 @@ class InstituteContext extends Context
             //news
             $this->addProvider('Studip\Activity\NewsProvider');
 
-            // add blubber-provider
-            $this->addProvider('Studip\Activity\BlubberProvider');
-
             $sem_class = \SemClass::getDefaultInstituteClass($institute->type ?: 1);
 
             //plugins
