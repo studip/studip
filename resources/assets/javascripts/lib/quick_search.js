@@ -45,7 +45,7 @@ const QuickSearch = {
             } else if ($(`#${name}`).closest('.ui-dialog').length > 0) {
                 appendTo = $(`#${name}`).closest('.ui-dialog');
             }
-            jQuery('#' + name).autocomplete({
+            jQuery('#' + name).quicksearch({
                 delay: 500,
                 minLength: 3,
                 appendTo: appendTo,
@@ -174,9 +174,9 @@ const QuickSearch = {
     // start searching now
     triggerSearch: function(name) {
         var term = jQuery('#' + name).val();
-        jQuery('#' + name).autocomplete({ minLength: 1 });
-        jQuery('#' + name).autocomplete('search', term);
-        jQuery('#' + name).autocomplete({ minLength: 3 });
+        jQuery('#' + name).quicksearch({ minLength: 1 });
+        jQuery('#' + name).quicksearch('search', term);
+        jQuery('#' + name).quicksearch({ minLength: 3 });
     },
 
     reset: function(form_name, quick_search_name) {

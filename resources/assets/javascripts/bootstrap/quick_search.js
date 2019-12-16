@@ -1,8 +1,18 @@
 //must be overridden to display html in autocomplete like avatars:
-var method_name = "_renderItem";
-jQuery.ui.autocomplete.prototype[method_name] = function (ul, item) {
-    return jQuery("<li></li>")
-        .data("item.autocomplete", item)
-        .append(jQuery("<a></a>").html(item.label))
-        .appendTo(ul);
-};
+$.widget('studip.quicksearch', $.ui.autocomplete, {
+    _renderItem (ul, item) {
+        let li = $('<li>');
+        li.data('item.autocomplete', item);
+        $('<a>').html(item.label).appendTo(li);
+        li.appendTo(ul);
+
+        return li;
+    },
+
+    _renderMenu (ul, items) {
+        $(ul).addClass('studip-quicksearch');
+        items.forEach((item) => {
+            this._renderItemData(ul, item);
+        });
+    }
+});

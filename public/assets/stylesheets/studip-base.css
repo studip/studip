@@ -8212,16 +8212,19 @@ div.quicksearch_frame input[type=submit] {
   margin-left: -32px;
   margin-top: 1px;
 }
-.extendedLayout .ui-autocomplete {
+.extendedLayout .ui-autocomplete,
+.studip-quicksearch .ui-autocomplete {
   max-height: 275px;
   overflow-y: auto;
   overflow-x: hidden;
   z-index: 99999;
 }
-.extendedLayout .ui-menu-item {
+.extendedLayout .ui-menu-item,
+.studip-quicksearch .ui-menu-item {
   white-space: nowrap;
 }
-.extendedLayout .ui-menu-item a img {
+.extendedLayout .ui-menu-item a img,
+.studip-quicksearch .ui-menu-item a img {
   float: left;
   width: 40px;
   height: 40px;
