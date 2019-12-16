@@ -49,6 +49,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
             if ($comment->thread->isVisibleInStream() AND $comment->thread->isReadable()) {
                 $icon->setImage(Icon::create("blubber", "new"));
                 $icon->setTitle(_("Es gibt neue Blubber"));
+                $icon->setBadgeNumber(count($comments));
                 break;
             }
         }
