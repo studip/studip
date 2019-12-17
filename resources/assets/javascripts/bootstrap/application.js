@@ -184,14 +184,6 @@ STUDIP.domReady(function () {
 }(jQuery));
 
 /* ------------------------------------------------------------------------
- * only numbers in the input field
- * ------------------------------------------------------------------------ */
-jQuery(document).on('keyup', 'input.allow-only-numbers', function () {
-    jQuery(this).val(jQuery(this).val().replace(/\D/, ''));
-});
-
-
-/* ------------------------------------------------------------------------
  * additional jQuery (UI) settings for Stud.IP
  * ------------------------------------------------------------------------ */
 jQuery.ui.accordion.prototype.options.icons = {

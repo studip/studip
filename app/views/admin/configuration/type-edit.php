@@ -9,8 +9,8 @@
     <label>
     <?= _('Inhalt') ?>
     <? if ($type === 'integer'): ?>
-        <input class="allow-only-numbers" name="value" type="number"
-               id="item-value" value="<?= htmlReady($value) ?>">
+        <input name="value" type="number" id="item-value"
+               value="<?= htmlReady($value) ?>">
     <? elseif ($type === 'array') : ?>
         <?php $v = version_compare(PHP_VERSION, '5.4.0', '>=') ? json_encode($value, JSON_UNESCAPED_UNICODE) : json_encode($value) ?>
         <textarea cols="80" rows="5" name="value" id="item-value"><?= htmlReady($v, true, true) ?></textarea>
