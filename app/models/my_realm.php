@@ -1161,7 +1161,7 @@ class MyRealmModel
         }
 
         $plugin_navigation = MyRealmModel::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
-        $available_modules = 'forum participants documents overview scm schedule wiki vote literature elearning_interface';
+        $available_modules = 'forum participants documents overview scm schedule wiki vote literature elearning_interface resources';
 
         foreach (words($available_modules) as $key) {
 
