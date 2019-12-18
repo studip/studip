@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Assert
  *
@@ -14,7 +13,7 @@
 
 namespace Assert;
 
-class LazyAssertionException extends InvalidArgumentException
+class LazyAssertionException extends \InvalidArgumentException
 {
     /**
      * @var InvalidArgumentException[]
@@ -23,24 +22,23 @@ class LazyAssertionException extends InvalidArgumentException
 
     /**
      * @param InvalidArgumentException[] $errors
-     *
      * @return self
      */
-    public static function fromErrors(array $errors)
+    static public function fromErrors(array $errors)
     {
-        $message = \sprintf('The following %d assertions failed:', \count($errors)) . "\n";
+        $message = sprintf('The following %d assertions failed:' , count($errors)) . "\n";
 
         $i = 1;
         foreach ($errors as $error) {
-            $message .= \sprintf("%d) %s: %s\n", $i++, $error->getPropertyPath(), $error->getMessage());
+            $message .= sprintf("%d) %s: %s\n", $i++, $error->getPropertyPath(), $error->getMessage());
         }
 
-        return new static($message, $errors);
+        return new self($message, $errors);
     }
 
     public function __construct($message, array $errors)
     {
-        parent::__construct($message, 0, null, null);
+        parent::__construct($message, 0);
 
         $this->errors = $errors;
     }
