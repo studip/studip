@@ -946,6 +946,12 @@ class UserManagement
                 StudipMail::sendMessage($this->user_data['auth_user_md5.Email'], $subject, $mailbody);
             }
 
+            // Remove plugin associations/activations
+            PluginManager::getInstance()->deactivateAllPluginsForRange(
+                'user',
+                $this->user_data['auth_user_md5.user_id']
+            );
+
             // Trigger delete on sorm object which will fire notifications
             //
             // TODO: Remove everything from this method that would also be

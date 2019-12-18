@@ -1928,6 +1928,8 @@ class Seminar
             }
         }
 
+        // Alle Pluginzuordnungen entfernen
+        PluginManager::getInstance()->deactivateAllPluginsForRange('sem', $s_id);
 
         // Alle Dokumente zu diesem Seminar loeschen.
         $folder = Folder::findTopFolder($s_id);

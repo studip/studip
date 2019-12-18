@@ -281,6 +281,26 @@ class PluginManager
     }
 
     /**
+     * Deactivate all plugins for the given range.
+     *
+     * @param  string $range_type Type of range (sem, inst or user)
+     * @param  string $range_id   Id of range
+     * @return int number of deactivated/removed plugins for range
+     */
+    public function deactivateAllPluginsForRange($range_type, $range_id)
+    {
+        $query = "DELETE FROM `plugins_activated`
+                  WHERE `range_type` = :range_type
+                    AND `range_id` = :range_id";
+        $statement = DBManager::get()->prepare($query);
+        $statement->bindValue(':range_type', $range_type);
+        $statement->bindValue(':range_id', $range_id);
+        $statement->execute();
+
+        return $statement->rowCount();
+    }
+
+    /**
      * Returns the list of institutes for which a specific plugin is
      * enabled by default.
      *

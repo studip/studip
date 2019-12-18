@@ -438,6 +438,9 @@ class Institute_BasicdataController extends AuthenticatedController
                 }
             }
 
+            // Alle Pluginzuordnungen entfernen
+            PluginManager::getInstance()->deactivateAllPluginsForRange('inst', $i_id);
+
             //Delete all documents of the institute:
 
             //We must use findOneBySql since findTopFolder cannot determine if
