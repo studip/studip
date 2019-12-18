@@ -1641,7 +1641,7 @@ function count_table_rows($table) {
  */
 function studip_relative_path($filepath)
 {
-    return str_replace($GLOBALS['STUDIP_BASE_PATH'] . '/', '', $filepath);
+    return str_replace($GLOBALS['STUDIP_BASE_PATH'] . DIRECTORY_SEPARATOR, '', $filepath);
 }
 
 
