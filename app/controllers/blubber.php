@@ -8,7 +8,7 @@ class BlubberController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        PageLayout::setTitle(_('Blubber'));
+        PageLayout::setTitle(_('Blubber-Messenger'));
         Sidebar::Get()->setImage('sidebar/blubber-sidebar.png');
     }
 
