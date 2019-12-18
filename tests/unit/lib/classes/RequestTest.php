@@ -13,7 +13,7 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/classes/Request.class.php';
 
-class RequestTest extends PHPUnit_Framework_TestCase
+class RequestTest extends \Codeception\Test\Unit
 {
     public function setUp ()
     {
@@ -217,7 +217,7 @@ class RequestTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class RequestMethodTest extends PHPUnit_Framework_TestCase
+class RequestMethodTest extends \Codeception\Test\Unit
 {
     public function setUp ()
     {

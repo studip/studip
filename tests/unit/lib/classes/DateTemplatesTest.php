@@ -17,7 +17,7 @@ require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'vendor/flexi/lib/flexi.php';
 require_once 'lib/functions.php';
 
-class DateTemplatesTests extends PHPUnit_Framework_TestCase
+class DateTemplatesTests extends \Codeception\Test\Unit
 {
 
     public function setUp()

@@ -23,7 +23,7 @@ class StringWrapper {
     }
 }
 
-class FunctionsTest extends PHPUnit_Framework_TestCase
+class FunctionsTest extends \Codeception\Test\Unit
 {
     function testWords()
     {

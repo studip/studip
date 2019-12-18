@@ -15,7 +15,7 @@ require_once 'lib/classes/StudipFileloader.php';
  * @copyright (c) Authors
  */
 
-class StudipFileloaderTestCase extends PHPUnit_Framework_TestCase {
+class StudipFileloaderTestCase extends \Codeception\Test\Unit {
 
     function setUp() {
         ArrayFileStream::set_filesystem(

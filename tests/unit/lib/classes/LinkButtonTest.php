@@ -17,7 +17,7 @@ require_once 'lib/classes/LinkButton.class.php';
 
 use \Studip\LinkButton;
 
-class LinkButtonTestCase extends PHPUnit_Framework_TestCase
+class LinkButtonTestCase extends \Codeception\Test\Unit
 {
     function testCreate()
     {

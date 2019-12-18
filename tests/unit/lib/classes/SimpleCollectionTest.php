@@ -16,7 +16,7 @@ require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/classes/StudipArrayObject.class.php';
 require_once 'lib/models/SimpleCollection.class.php';
 
-class SimpleCollectionTest extends PHPUnit_Framework_TestCase
+class SimpleCollectionTest extends \Codeception\Test\Unit
 {
     function setUp()
     {

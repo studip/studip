@@ -192,7 +192,7 @@ function markupSum($markup, $matches)
     return $matches[1] + $matches[2];
 }
 
-class TextFormatTest extends PHPUnit_Framework_TestCase
+class TextFormatTest extends \Codeception\Test\Unit
 {
     public function setUp()
     {

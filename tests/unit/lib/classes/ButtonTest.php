@@ -16,7 +16,7 @@ require_once 'lib/classes/Button.class.php';
 
 use \Studip\Button;
 
-class ButtonTestCase extends PHPUnit_Framework_TestCase
+class ButtonTestCase extends \Codeception\Test\Unit
 {
     function testCreate()
     {

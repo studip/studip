@@ -32,7 +32,7 @@ require_once 'lib/classes/htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
 /**
  * Test case for HTMLPurifier_Injector_ClassifyLinks.
  */
-class HTMLPurifier_Injector_ClassifyLinksTest extends PHPUnit_Framework_TestCase
+class HTMLPurifier_Injector_ClassifyLinksTest extends \Codeception\Test\Unit
 {
     public function setUp()
     {

@@ -23,7 +23,7 @@ class TestStudipPDO extends StudipPDO
     }
 }
 
-class StudipPDOTest extends PHPUnit_Framework_TestCase
+class StudipPDOTest extends \Codeception\Test\Unit
 {
     public function testSimpleString()
     {

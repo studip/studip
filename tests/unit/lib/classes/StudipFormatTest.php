@@ -21,7 +21,7 @@ function markupBold($markup, $matches, $contents)
     return '<b>' . $contents . '</b>';
 }
 
-class StudipFormatTest extends PHPUnit_Framework_TestCase
+class StudipFormatTest extends \Codeception\Test\Unit
 {
     function setUp() {
         $this->old_rules = StudipCoreFormat::getStudipMarkups();

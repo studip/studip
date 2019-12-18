@@ -13,7 +13,7 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/plugins/engine/PluginRepository.class.php';
 
-class PluginRepositoryTest extends PHPUnit_Framework_TestCase
+class PluginRepositoryTest extends \Codeception\Test\Unit
 {
     public function setUp ()
     {

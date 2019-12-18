@@ -27,7 +27,7 @@ define('DYNAMIC_ASSETS_URL', 'http://www%d.example.com/public/');
  * @copyright (c) Authors
  */
 
-class AssetsTestCase extends PHPUnit_Framework_TestCase {
+class AssetsTestCase extends \Codeception\Test\Unit {
 
 
   function setUp() {
@@ -57,7 +57,7 @@ class AssetsTestCase extends PHPUnit_Framework_TestCase {
 }
 
 
-class DynamicAssetsTestCase extends PHPUnit_Framework_TestCase
+class DynamicAssetsTestCase extends \Codeception\Test\Unit
 {
 
 
@@ -90,7 +90,7 @@ class DynamicAssetsTestCase extends PHPUnit_Framework_TestCase
 }
 
 
-class AssetsHelpersTestCase extends PHPUnit_Framework_TestCase
+class AssetsHelpersTestCase extends \Codeception\Test\Unit
 {
 
 

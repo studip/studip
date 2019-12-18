@@ -16,7 +16,7 @@ require_once 'lib/exceptions/InvalidSecurityTokenException.php';
 require_once 'lib/exceptions/MethodNotAllowedException.php';
 require_once 'lib/classes/CSRFProtection.php';
 
-class CSRFProtectionTokenTest extends PHPUnit_Framework_TestCase
+class CSRFProtectionTokenTest extends \Codeception\Test\Unit
 {
     function setUp()
     {
@@ -68,7 +68,7 @@ class CSRFProtectionTokenTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class CSRFRequestTest extends PHPUnit_Framework_TestCase
+class CSRFRequestTest extends \Codeception\Test\Unit
 {
 
     function setUp()

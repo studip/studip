@@ -15,7 +15,7 @@ require_once 'lib/classes/UpdateInformation.class.php';
 
 
 
-class UpdateInformationCase extends PHPUnit_Framework_TestCase
+class UpdateInformationCase extends \Codeception\Test\Unit
 {
 
     function setUp() {

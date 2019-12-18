@@ -70,22 +70,6 @@ if (isset($config['modules']['config']['Db'])) {
     //DBManager::getInstance()->setConnection('studip', 'sqlite://'. $GLOBALS ,'', '');
 }
 
-// minimal support for running with PHPUnit 6.x
-if (!class_exists('PHPUnit_Framework_TestCase')) {
-    abstract class PHPUnit_Framework_TestCase extends PHPUnit\Framework\TestCase
-    {
-        public function getMock($classname)
-        {
-            return $this->createMock($classname);
-        }
-
-        public function setExpectedException($exception)
-        {
-            return $this->expectException($exception);
-        }
-    }
-}
-
 // create "fake" cache class
 if (!class_exists('StudipArrayCache')) {
     class StudipArrayCache implements StudipCache {

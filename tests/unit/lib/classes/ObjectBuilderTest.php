@@ -6,7 +6,7 @@
  * @license GPL2 or any later version
  */
 
-class ObjectBuilderTest extends PHPUnit_Framework_TestCase
+class ObjectBuilderTest extends \Codeception\Test\Unit
 {
     protected $object;
     protected $changed_object;

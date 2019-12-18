@@ -49,7 +49,7 @@ class Seminar_Session
 /**
  * Test case for Markup class.
  */
-class MarkupTest extends PHPUnit_Framework_TestCase
+class MarkupTest extends \Codeception\Test\Unit
 {
     public function testRemoveHTML()
     {

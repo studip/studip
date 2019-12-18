@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
-class StringManipulationTest extends PHPUnit_Framework_TestCase
+class StringManipulationTest extends \Codeception\Test\Unit
 {
     public function setUp()
     {

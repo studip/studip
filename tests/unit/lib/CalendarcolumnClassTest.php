@@ -24,7 +24,7 @@ require_once 'lib/functions.php';
 
 
 
-class CalendarColumnCase extends PHPUnit_Framework_TestCase {
+class CalendarColumnCase extends \Codeception\Test\Unit {
 
 
     function setUp() {

@@ -14,7 +14,7 @@ require_once 'lib/calendar/CalendarView.class.php';
 require_once 'lib/classes/PageLayout.php';
 
 
-class CalendarViewCase extends PHPUnit_Framework_TestCase {
+class CalendarViewCase extends \Codeception\Test\Unit {
 
 
     function setUp() {

@@ -17,7 +17,7 @@ require_once 'lib/classes/NotificationCenter.class.php';
 require_once 'lib/classes/URLHelper.php';
 require_once 'lib/navigation/Navigation.php';
 
-class NavigationTest extends PHPUnit_Framework_TestCase
+class NavigationTest extends \Codeception\Test\Unit
 {
     public function setUp ()
     {
@@ -176,7 +176,7 @@ class NavigationTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class NavigationNotificationTest extends PHPUnit_Framework_TestCase
+class NavigationNotificationTest extends \Codeception\Test\Unit
 {
 
     public function testNotificationOnActivation ()
@@ -184,7 +184,7 @@ class NavigationNotificationTest extends PHPUnit_Framework_TestCase
         $navigation = new Navigation('test');
         Navigation::addItem('/test', $navigation);
 
-        $observer = $this->getMock("NotificationObserver");
+        $observer = $this->createMock("NotificationObserver");
         $observer->expects($this->once())
             ->method('update')
             ->with($this->equalTo('NavigationDidActivateItem'),

@@ -15,7 +15,7 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/classes/StudipVersion.php';
 
-class StudipVersionTest extends PHPUnit_Framework_TestCase
+class StudipVersionTest extends \Codeception\Test\Unit
 {
     function setUp() {
         $this->version = $GLOBALS['SOFTWARE_VERSION'];

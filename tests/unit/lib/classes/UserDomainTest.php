@@ -9,7 +9,7 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once 'lib/models/UserDomain.php';
 
-class UserDomainTest extends PHPUnit_Framework_TestCase
+class UserDomainTest extends \Codeception\Test\Unit
 {
     public function setUp()
     {

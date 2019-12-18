@@ -13,7 +13,7 @@
 require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/classes/URLHelper.php';
 
-class URLHelperTest extends PHPUnit_Framework_TestCase
+class URLHelperTest extends \Codeception\Test\Unit
 {
     public function tearDown ()
     {

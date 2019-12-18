@@ -26,11 +26,11 @@ require_once 'lib/classes/Visibility.php';
  * @author    mlunzena
  * @copyright (c) Authors
  */
-class AvatarTestCase extends PHPUnit_Framework_TestCase {
+class AvatarTestCase extends  \Codeception\Test\Unit {
 
     function setUp()
     {
-        $stub = $this->getMock('Seminar_Perm');
+        $stub = $this->createMock('Seminar_Perm');
         // Configure the stub.
         $stub->expects($this->any())
             ->method('have_perm')
@@ -73,7 +73,7 @@ class AvatarTestCase extends PHPUnit_Framework_TestCase {
 }
 
 
-class CourseAvatarTestCase extends PHPUnit_Framework_TestCase
+class CourseAvatarTestCase extends \Codeception\Test\Unit
 {
 
   function setUp() {

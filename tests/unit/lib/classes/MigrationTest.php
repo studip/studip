@@ -6,7 +6,7 @@
  * @license GPL2 or any later version
  */
 
-class MigrationTest extends PHPUnit_Framework_TestCase
+class MigrationTest extends \Codeception\Test\Unit
 {
     protected $migrator;
     protected $before = null;

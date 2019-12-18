@@ -12,7 +12,7 @@ require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/classes/Icon.class.php';
 require_once 'lib/classes/Assets.class.php';
 
-class IconClassTest extends PHPUnit_Framework_TestCase
+class IconClassTest extends \Codeception\Test\Unit
 {
     function setUp()
     {

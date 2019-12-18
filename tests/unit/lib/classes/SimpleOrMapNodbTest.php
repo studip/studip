@@ -56,7 +56,7 @@ class auth_user_md5 extends SimpleORMap
     }
 }
 
-class SimpleOrMapNodbTest extends PHPUnit_Framework_TestCase
+class SimpleOrMapNodbTest extends \Codeception\Test\Unit
 {
     function setUp()
     {
