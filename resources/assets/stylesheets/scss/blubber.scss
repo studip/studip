@@ -376,17 +376,6 @@
     }
 }
 
-.studip-dialog .blubber_panel {
-    height: 420px;
-    .blubber_thread {
-        max-height: 420px;
-
-        .scrollable_area {
-            max-height: 420px;
-        }
-    }
-}
-
 .blubber_sideinfo {
     width: 270px;
     max-width: 270px;
@@ -497,6 +486,19 @@
 
 .lowprio_info {
     color: $light-gray-color;
+}
+
+.studip-dialog {
+    .blubber_panel {
+        height: inherit;
+    }
+    #blubber_stream_container {
+        width: 100%;
+    }
+    .blubber_thread {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 #blubber-index {

@@ -17053,13 +17053,6 @@ table.default tr.subcourses {
 .blubber_globalstream .scrollable_area {
   max-height: calc(100vh - 175px); }
 
-.studip-dialog .blubber_panel {
-  height: 420px; }
-  .studip-dialog .blubber_panel .blubber_thread {
-    max-height: 420px; }
-    .studip-dialog .blubber_panel .blubber_thread .scrollable_area {
-      max-height: 420px; }
-
 .blubber_sideinfo {
   width: 270px;
   max-width: 270px;
@@ -17134,6 +17127,16 @@ table.default tr.subcourses {
 
 .lowprio_info {
   color: #6d727a; }
+
+.studip-dialog .blubber_panel {
+  height: inherit; }
+
+.studip-dialog #blubber_stream_container {
+  width: 100%; }
+
+.studip-dialog .blubber_thread {
+  width: 100%;
+  max-width: 100%; }
 
 @media screen and (max-width: 500px) {
   #blubber-index #page_title_container,
