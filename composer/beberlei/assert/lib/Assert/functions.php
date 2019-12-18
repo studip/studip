@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Assert
  *
@@ -14,7 +15,7 @@
 namespace Assert;
 
 /**
- * Start validation on a value, returns {@link AssertionChain}
+ * Start validation on a value, returns {@link AssertionChain}.
  *
  * The invocation of this method starts an assertion chain
  * that is happening on the passed value.
@@ -27,7 +28,7 @@ namespace Assert;
  * The assertion chain can be stateful, that means be careful when you reuse
  * it. You should never pass around the chain.
  *
- * @param mixed $value
+ * @param mixed  $value
  * @param string $defaultMessage
  * @param string $defaultPropertyPath
  *
@@ -35,27 +36,37 @@ namespace Assert;
  */
 function that($value, $defaultMessage = null, $defaultPropertyPath = null)
 {
-    return new AssertionChain($value, $defaultMessage, $defaultPropertyPath);
+    return Assert::that($value, $defaultMessage, $defaultPropertyPath);
 }
 
 /**
- * Start validation on a set of values, returns {@link AssertionChain}
+ * Start validation on a set of values, returns {@link AssertionChain}.
+ *
+ * @param mixed  $values
+ * @param string $defaultMessage
+ * @param string $defaultPropertyPath
  *
  * @return \Assert\AssertionChain
  */
 function thatAll($values, $defaultMessage = null, $defaultPropertyPath = null)
 {
-    return that($values, $defaultMessage, $defaultPropertyPath)->all();
+    return Assert::thatAll($values, $defaultMessage, $defaultPropertyPath);
 }
 
 /**
- * Start validation and allow NULL, returns {@link AssertionChain}
+ * Start validation and allow NULL, returns {@link AssertionChain}.
+ *
+ * @param mixed  $value
+ * @param string $defaultMessage
+ * @param string $defaultPropertyPath
  *
  * @return \Assert\AssertionChain
+ *
+ * @deprecated In favour of Assert::thatNullOr($value, $defaultMessage = null, $defaultPropertyPath = null)
  */
 function thatNullOr($value, $defaultMessage = null, $defaultPropertyPath = null)
 {
-    return that($value, $defaultMessage, $defaultPropertyPath)->nullOr();
+    return Assert::thatNullOr($value, $defaultMessage, $defaultPropertyPath);
 }
 
 /**
@@ -65,6 +76,5 @@ function thatNullOr($value, $defaultMessage = null, $defaultPropertyPath = null)
  */
 function lazy()
 {
-    return new LazyAssertion();
+    return Assert::lazy();
 }
-

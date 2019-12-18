@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Assert
  *
  * LICENSE
  *
- * This source file is subject to the new BSD license that is bundled
+ * This source file is subject to the MIT license that is bundled
  * with this package in the file LICENSE.txt.
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
@@ -19,7 +20,7 @@ class InvalidArgumentException extends \InvalidArgumentException implements Asse
     private $value;
     private $constraints;
 
-    public function __construct($message, $code, $propertyPath = null, $value, array $constraints = array())
+    public function __construct($message, $code, $propertyPath, $value, array $constraints = array())
     {
         parent::__construct($message, $code);
 
@@ -62,4 +63,3 @@ class InvalidArgumentException extends \InvalidArgumentException implements Asse
         return $this->constraints;
     }
 }
-

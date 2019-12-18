@@ -4,37 +4,72 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit0f98e4d071731499977a922cf076d10e
+class ComposerStaticInitf3059f2904a9a3a74a51959f0815a72a
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'T' => 
+        array (
+            'Tuupola\\Middleware\\' => 19,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Util\\' => 22,
             'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Slim\\' => 5,
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
         'O' => 
         array (
             'OTPHP\\' => 6,
         ),
+        'N' => 
+        array (
+            'Neomerx\\JsonApi\\' => 16,
+            'Neomerx\\Cors\\' => 13,
+        ),
         'L' => 
         array (
             'Leafo\\ScssPhp\\' => 14,
         ),
+        'I' => 
+        array (
+            'Interop\\Container\\' => 18,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+        ),
+        'F' => 
+        array (
+            'FastRoute\\' => 10,
+        ),
+        'A' => 
+        array (
+            'Assert\\' => 7,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Tuupola\\Middleware\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tuupola/cors-middleware/src',
+        ),
         'Symfony\\Polyfill\\Util\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-util',
@@ -47,6 +82,22 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
         'ParagonIE\\ConstantTime\\' => 
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
@@ -55,18 +106,42 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/otphp/src',
         ),
+        'Neomerx\\JsonApi\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/neomerx/json-api/src',
+        ),
+        'Neomerx\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/neomerx/cors-psr7/src',
+        ),
         'Leafo\\ScssPhp\\' => 
         array (
             0 => __DIR__ . '/..' . '/leafo/scssphp/src',
         ),
+        'Interop\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+        'Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/beberlei/assert/lib/Assert',
+        ),
     );
 
     public static $prefixesPsr0 = array (
-        'A' => 
+        'P' => 
         array (
-            'Assert' => 
+            'Pimple' => 
             array (
-                0 => __DIR__ . '/..' . '/beberlei/assert/lib',
+                0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
         ),
     );
@@ -74,9 +149,9 @@ class ComposerStaticInit0f98e4d071731499977a922cf076d10e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit0f98e4d071731499977a922cf076d10e::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitf3059f2904a9a3a74a51959f0815a72a::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitf3059f2904a9a3a74a51959f0815a72a::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitf3059f2904a9a3a74a51959f0815a72a::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
