@@ -319,6 +319,7 @@
     justify-content: space-between;
     align-items: stretch;
     align-content: stretch;
+    position: relative;
 
     [v-if],
     [v-for],
@@ -329,7 +330,6 @@
     .scrollable_area {
         max-height: calc(100vh - 240px);
         overflow: auto;
-        position: relative;
         &.scrolled::before {
             //the shadow!
             content: '';

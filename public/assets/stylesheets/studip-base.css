@@ -17000,7 +17000,8 @@ table.default tr.subcourses {
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  align-content: stretch; }
+  align-content: stretch;
+  position: relative; }
   .blubber_globalstream [v-if],
   .blubber_globalstream [v-for],
   .blubber_globalstream [v-show],
@@ -17011,8 +17012,7 @@ table.default tr.subcourses {
   .blubber_globalstream .scrollable_area,
   .blubber_thread .scrollable_area {
     max-height: calc(100vh - 240px);
-    overflow: auto;
-    position: relative; }
+    overflow: auto; }
     .blubber_globalstream .scrollable_area.scrolled::before,
     .blubber_thread .scrollable_area.scrolled::before {
       content: '';
