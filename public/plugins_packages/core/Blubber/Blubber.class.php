@@ -14,15 +14,18 @@
  */
 class Blubber extends StudIPPlugin implements StandardPlugin
 {
-
     /**
      * Returns a navigation for the tab displayed in the course.
      * @param string $course_id of the course
      * @return \Navigation
      */
-    public function getTabNavigation($course_id) {
-        $tab = new Navigation(_("Blubber"), PluginEngine::getLink($this, [], "messenger/course"));
-        $tab->setImage(Icon::create('blubber', 'info_alt'));
+    public function getTabNavigation($course_id)
+    {
+        $tab = new Navigation(
+            _('Blubber'),
+            PluginEngine::getURL($this, [], 'messenger/course')
+        );
+        $tab->setImage(Icon::create('blubber', Icon::ROLE_INFO_ALT));
         return ['blubber' => $tab];
     }
 
@@ -34,35 +37,49 @@ class Blubber extends StudIPPlugin implements StandardPlugin
      * @param string|null  $user_id
      * @return \Navigation
      */
-    public function getIconNavigation($course_id, $last_visit, $user_id = null) {
+    public function getIconNavigation($course_id, $last_visit, $user_id = null)
+    {
         $icon = new Navigation(
-            _("Blubber"),
-            "plugins.php/blubber/messenger/course"
+            _('Blubber'),
+            PluginEngine::getURL($this, [], 'messenger/course')
         );
-        $icon->setImage(Icon::create("blubber", "inactive", ['title' => _("Blubber-Messenger")]));
-        $comments = BlubberComment::findBySQL("INNER JOIN blubber_threads USING (thread_id) WHERE blubber_threads.context_type = 'course' AND blubber_threads.context_id = :course_id AND blubber_comments.mkdate >= :last_visit AND blubber_comments.user_id != :me AND blubber_threads.visible_in_stream = '1'", [
-            'course_id' => $course_id,
+        $icon->setImage(Icon::create('blubber', Icon::ROLE_INACTIVE, ['title' => _('Blubber-Messenger')]));
+
+        $condition = "INNER JOIN blubber_threads USING (thread_id)
+                      WHERE blubber_threads.context_type = 'course'
+                        AND blubber_threads.context_id = :course_id
+                        AND blubber_comments.mkdate >= :last_visit
+                        AND blubber_comments.user_id != :me
+                        AND blubber_threads.visible_in_stream = 1";
+        $comments = BlubberComment::findBySQL($condition, [
+            'course_id'  => $course_id,
             'last_visit' => $last_visit,
-            'me' => $GLOBALS['user']->id
+            'me'         => $GLOBALS['user']->id,
         ]);
         foreach ($comments as $comment) {
-            if ($comment->thread->isVisibleInStream() AND $comment->thread->isReadable()) {
-                $icon->setImage(Icon::create("blubber", "new", ['title' => _("Es gibt neue Blubber")]));
-                $icon->setTitle(_("Es gibt neue Blubber"));
+            if ($comment->thread->isVisibleInStream() && $comment->thread->isReadable()) {
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')]));
+                $icon->setTitle(_('Es gibt neue Blubber'));
                 $icon->setBadgeNumber(count($comments));
-                $icon->setURL("plugins.php/blubber/messenger/course", ['thread' => "new"]);
+                $icon->setURL(PluginEngine::getURL($this, ['thread' => 'new'], 'messenger/course'));
                 break;
             }
         }
-        $threads = BlubberThread::findBySQL("context_type = 'course' AND context_id = :course_id AND mkdate >= :last_visit AND user_id != :me AND visible_in_stream = '1'", [
-            'course_id' => $course_id,
+
+        $condition = "context_type = 'course'
+                        AND context_id = :course_id
+                        AND mkdate >= :last_visit
+                        AND user_id != :me
+                        AND visible_in_stream = 1";
+        $threads = BlubberThread::findBySQL($condition, [
+            'course_id'  => $course_id,
             'last_visit' => $last_visit,
-            'me' => $GLOBALS['user']->id
+            'me'         => $GLOBALS['user']->id,
         ]);
         foreach ($threads as $thread) {
-            if ($thread->isVisibleInStream() AND $thread->isReadable()) {
-                $icon->setImage(Icon::create("blubber", "attention", ['title' => _("Es gibt neue Blubber")]));
-                $icon->setTitle(_("Es gibt neue Blubber"));
+            if ($thread->isVisibleInStream() && $thread->isReadable()) {
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')]));
+                $icon->setTitle(_('Es gibt neue Blubber'));
                 break;
             }
         }
@@ -75,7 +92,8 @@ class Blubber extends StudIPPlugin implements StandardPlugin
      * @param string $course_id
      * @return null
      */
-    public function getInfoTemplate($course_id)  {
+    public function getInfoTemplate($course_id)
+    {
         return null;
     }
 }
