@@ -39,7 +39,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
             _("Blubber"),
             "plugins.php/blubber/messenger/course"
         );
-        $icon->setImage(Icon::create("blubber", "inactive"));
+        $icon->setImage(Icon::create("blubber", "inactive", ['title' => _("Blubber-Messenger")]));
         $comments = BlubberComment::findBySQL("INNER JOIN blubber_threads USING (thread_id) WHERE blubber_threads.context_type = 'course' AND blubber_threads.context_id = :course_id AND blubber_comments.mkdate >= :last_visit AND blubber_comments.user_id != :me AND blubber_threads.visible_in_stream = '1'", [
             'course_id' => $course_id,
             'last_visit' => $last_visit,
@@ -47,9 +47,10 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($comments as $comment) {
             if ($comment->thread->isVisibleInStream() AND $comment->thread->isReadable()) {
-                $icon->setImage(Icon::create("blubber", "new"));
+                $icon->setImage(Icon::create("blubber", "new", ['title' => _("Es gibt neue Blubber")]));
                 $icon->setTitle(_("Es gibt neue Blubber"));
                 $icon->setBadgeNumber(count($comments));
+                $icon->setURL("plugins.php/blubber/messenger/course", ['thread' => "new"]);
                 break;
             }
         }
@@ -60,7 +61,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($threads as $thread) {
             if ($thread->isVisibleInStream() AND $thread->isReadable()) {
-                $icon->setImage(Icon::create("blubber", "attention"));
+                $icon->setImage(Icon::create("blubber", "attention", ['title' => _("Es gibt neue Blubber")]));
                 $icon->setTitle(_("Es gibt neue Blubber"));
                 break;
             }
