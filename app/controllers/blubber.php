@@ -77,7 +77,9 @@ class BlubberController extends AuthenticatedController
             ));
         }
 
-        PageLayout::setTitle($this->thread->getName());
+        if (Request::isDialog()) {
+            PageLayout::setTitle($this->thread->getName());
+        }
         $this->buildSidebar();
 
         if (Request::isDialog()) {

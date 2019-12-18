@@ -279,7 +279,7 @@ class Blubber extends \RESTAPI\RouteMap
 
             $output = ['comments' => $comments];
 
-            if (count($result) > $limit) {
+            if (count($comments) > $limit) {
                 array_pop($output['comments']);
                 $output['more_up'] = 1;
             } else {
