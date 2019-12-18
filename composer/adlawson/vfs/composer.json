@@ -1,0 +1,55 @@
+{
+    "name": "adlawson/vfs",
+    "description": "Virtual file system",
+    "homepage": "https://github.com/adlawson/php-vfs",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "dir",
+        "directory",
+        "fs",
+        "file",
+        "read",
+        "stream",
+        "system",
+        "virtual",
+        "wrapper",
+        "write"
+    ],
+    "authors": [
+        {
+            "name": "Andrew Lawson",
+            "homepage": "http://adlawson.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vfs\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vfs\\Test\\": "test/src/"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "adlawson/timezone": "^1.0",
+        "fabpot/php-cs-fixer": "^1.9",
+        "mockery/mockery": "^0.9",
+        "phpunit/phpunit": "^4.7"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit -v --colors=always",
+        "test:acceptance": "vendor/bin/phpunit -v --colors=always --testsuite acceptance",
+        "test:functional": "vendor/bin/phpunit -v --colors=always --testsuite functional",
+        "test:unit": "vendor/bin/phpunit -v --colors=always --testsuite unit",
+        "lint:fix": [
+            "vendor/bin/php-cs-fixer fix src --level=psr2",
+            "vendor/bin/php-cs-fixer fix test --level=psr2"
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+{
+    "name": "tuupola/cors-middleware",
+    "description": "PSR-7 CORS Middleware",
+    "keywords": [
+        "slim",
+        "middleware",
+        "cors"
+    ],
+    "homepage": "https://github.com/tuupola/cors-middleware",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mika Tuupola",
+            "email": "tuupola@appelsiini.net",
+            "homepage": "http://www.appelsiini.net/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^5.5 || ^7.0",
+        "neomerx/cors-psr7": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tuupola\\Middleware\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tuupola\\Middleware\\": "tests"
+        }
+    },
+    "require-dev": {
+        "zendframework/zend-diactoros": "^1.3",
+        "squizlabs/php_codesniffer": "^2.5",
+        "phpunit/phpunit": "^4.8"
+    }
+}
