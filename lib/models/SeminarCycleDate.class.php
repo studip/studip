@@ -70,7 +70,10 @@ class SeminarCycleDate extends SimpleORMap
     protected static function configure($config = [])
     {
         $config['db_table'] = 'seminar_cycle_dates';
-        $config['belongs_to']['course'] = ['class_name' => 'Course'];
+        $config['belongs_to']['course'] = array(
+            'class_name' => 'Course',
+            'foreign_key' => 'seminar_id',
+        );
         $config['has_one']['room_request'] = [
             'class_name' => 'RoomRequest',
             'on_store'   => 'store',

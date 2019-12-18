@@ -25,6 +25,9 @@ doc: force_update
 test: force_update
 	$(RUN_TESTS)
 
+test-jsonapi:
+	composer/bin/codecept run jsonapi
+
 webpack-dev: force_update
 	npm run webpack-dev
 
