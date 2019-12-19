@@ -238,7 +238,7 @@ class Blubber extends \RESTAPI\RouteMap
                       FROM blubber_comments
                       WHERE blubber_comments.thread_id = :thread_id
                         AND blubber_comments.mkdate <= :timestamp
-                      ORDER BY mkdate ASC
+                      ORDER BY mkdate DESC
                       LIMIT :limit";
             $result = \DBManager::get()->fetchAll($query, [
                 'thread_id' => $thread_id,
@@ -268,7 +268,7 @@ class Blubber extends \RESTAPI\RouteMap
                       FROM blubber_comments
                       WHERE blubber_comments.thread_id = :thread_id
                         AND blubber_comments.mkdate >= :timestamp
-                      ORDER BY mkdate DESC
+                      ORDER BY mkdate ASC
                       LIMIT :limit";
             $comments = \DBManager::get()->fetchAll($query, [
                 'thread_id' => $thread_id,
