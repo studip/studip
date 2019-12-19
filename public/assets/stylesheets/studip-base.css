@@ -16931,7 +16931,7 @@ table.default tr.subcourses {
     border: 1px solid #d0d0d5;
     background-color: #fff;
     width: calc(100% - 140px);
-    height: 36px;
+    height: 34px;
     resize: none;
     padding: 5px;
     max-height: 40vh;

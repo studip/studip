@@ -4,22 +4,24 @@
 
     <div <?= !$thread ? "" : 'style="display: none;"' ?>>
         <div class="file_select_possibilities">
-            <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.public_blubber_composer').show(); return false;">
-                <?= Icon::create('globe')->asImg(50) ?>
-                <?= _('Öffentlich') ?>
-            </a>
-
-        <? if (!$GLOBALS['perm']->have_perm('admin')) : ?>
-            <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.course_blubber_composer').show(); return false;">
-                <?= Icon::create('seminar')->asImg(50) ?>
-                <?= _('Veranstaltung') ?>
-            </a>
-        <? endif ?>
 
             <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.private_blubber_composer').show(); return false;">
                 <?= Icon::create('group3')->asImg(50) ?>
                 <?= _('Kontakte') ?>
             </a>
+
+            <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.public_blubber_composer').show(); return false;">
+                <?= Icon::create('globe')->asImg(50) ?>
+                <?= _('Öffentlich') ?>
+            </a>
+
+            <? if (!$GLOBALS['perm']->have_perm('admin')) : ?>
+                <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.course_blubber_composer').show(); return false;">
+                    <?= Icon::create('seminar')->asImg(50) ?>
+                    <?= _('Veranstaltung') ?>
+                </a>
+            <? endif ?>
+
         </div>
     </div>
 
@@ -28,7 +30,6 @@
             <textarea name="public_blubber"
                       class="add_toolbar"
                       placeholder="<?= _('Schreib was, frag was.') ?>"><?= $thread ? $thread['content'] : "" ?></textarea>
-
         </div>
     </div>
 
