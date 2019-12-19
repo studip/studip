@@ -32,6 +32,8 @@ class BlubberController extends AuthenticatedController
             $this->thread = BlubberThread::find($thread_id);
             if (!$this->thread || !$this->thread->isReadable()) {
                 $this->thread = null;
+            } else {
+                $this->thread->markAsRead();
             }
         }
 

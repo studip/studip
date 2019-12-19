@@ -9,8 +9,9 @@ class MessengerController extends PluginController {
         PageLayout::setHelpKeyword("Basis/InteraktionBlubber");
     }
 
-    public function course_action($thread_id = null) {
-        PageLayout::setTitle(_("Blubber"));
+    public function course_action($thread_id = null)
+    {
+        PageLayout::setTitle(_("Blubber-Messenger"));
 
         Navigation::activateItem("/course/blubber");
 
@@ -44,9 +45,10 @@ class MessengerController extends PluginController {
             $coursethread->store();
             $this->threads[] = $coursethread;
         }
-        if (!$this->thread) {
+        if (!$this->thread || Request::get("thread") === "new") {
             $this->thread = array_pop(array_reverse($this->threads));
         }
+        $this->thread->markAsRead();
 
         $this->thread_data = $this->thread->getJSONData();
 

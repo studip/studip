@@ -39,6 +39,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
      */
     public function getIconNavigation($course_id, $last_visit, $user_id = null)
     {
+        $user_id || $user_id = $GLOBALS['user']->id;
         $icon = new Navigation(
             _('Blubber'),
             PluginEngine::getURL($this, [], 'messenger/course')
@@ -54,11 +55,12 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         $comments = BlubberComment::findBySQL($condition, [
             'course_id'  => $course_id,
             'last_visit' => $last_visit,
-            'me'         => $GLOBALS['user']->id,
+            'me'         => $user_id,
         ]);
         foreach ($comments as $comment) {
-            if ($comment->thread->isVisibleInStream() && $comment->thread->isReadable()) {
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')]));
+            if ($comment->thread->isVisibleInStream() && $comment->thread->isReadable() && ($comment->thread->getLatestActivity() > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$comment['thread_id']))) {
+                $text = $comment->thread->getId()." ".$comment->thread->getLatestActivity()." ".UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$comment['thread_id']);
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')." ".$text]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 $icon->setBadgeNumber(count($comments));
                 $icon->setURL(PluginEngine::getURL($this, ['thread' => 'new'], 'messenger/course'));
@@ -77,8 +79,8 @@ class Blubber extends StudIPPlugin implements StandardPlugin
             'me'         => $GLOBALS['user']->id,
         ]);
         foreach ($threads as $thread) {
-            if ($thread->isVisibleInStream() && $thread->isReadable()) {
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')]));
+            if ($thread->isVisibleInStream() && $thread->isReadable() && ($thread['mkdate'] > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$thread->getId()))) {
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')." b ".$thread->getId()]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 break;
             }

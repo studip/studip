@@ -48,6 +48,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     }
 
     public static $mention_thread_id = null;
+    protected $last_visit = null;
 
     /**
      * Pre-Markup rule. Recognizes mentions in blubber as @username or @"Firstname lastname"
@@ -394,6 +395,12 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return URLHelper::getURL('dispatch.php/blubber/index/' . $this->getId());
     }
 
+    public function getLastVisit($user_id = null)
+    {
+        $user_id || $user_id = $GLOBALS['user']->id;
+        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId());
+    }
+
     public function notifyUsersForNewComment($comment)
     {
         $user_ids = [];
@@ -540,11 +547,15 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     public function getJSONData($limit_comments = 50, $around_comment_id = null)
     {
         $output = [
-            'thread_posting' => $this->toRawArray(),
-            'context_info'   => '',
-            'comments'       => [],
-            'more_up'        => 0,
-            'more_down'      => 0
+            'thread_posting'  => $this->toRawArray(),
+            'context_info'    => '',
+            'comments'        => [],
+            'more_up'         => 0,
+            'more_down'       => 0,
+            'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
+                $this->getId(),
+                $this->getLastVisit()
+            ])
         ];
         $context_info = $this->getContextTemplate();
         if ($context_info) {
@@ -580,6 +591,27 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
 
         return $output;
+    }
+
+    public function markAsRead($user_id = null)
+    {
+        $user_id || $user_id = $GLOBALS['user']->id;
+
+        $statement = DBManager::get()->prepare("
+            UPDATE personal_notifications_user
+                INNER JOIN personal_notifications USING (personal_notification_id)
+            SET personal_notifications_user.seen = '1'
+            WHERE personal_notifications_user.user_id = :user_id
+                AND personal_notifications.html_id = :html_id
+        ");
+        $statement->execute([
+            'user_id' => $user_id,
+            'html_id' => "blubberthread_".$this->getId()
+        ]);
+        $this->last_visit[$user_id] = !$this->last_visit[$user_id]
+            ? object_get_visit($this->getId(), "blubberthread", "last", "", $user_id)
+            : $this->last_visit[$user_id];
+        UserConfig::get($user_id)->store("BLUBBERTHREAD_VISITED_".$this->getId(), time());
     }
 
     /**

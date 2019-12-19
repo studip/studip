@@ -35,6 +35,7 @@ class Blubber extends \RESTAPI\RouteMap
             }
 
             $json = $thread->getJSONData();
+            $thread->markAsRead();
 
             $this->etag(md5(serialize($json)));
 

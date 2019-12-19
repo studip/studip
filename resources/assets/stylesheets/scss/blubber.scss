@@ -203,7 +203,7 @@
                 font-size: 0.8em;
                 color: $light-gray-color;
                 time {
-                    @media screen and (max-width: 500px) { // TODO: Adjust to existing breakpoints
+                    @media screen and (max-width: $major-breakpoint-small) {
                         display: none;
                     }
                 }
@@ -301,14 +301,16 @@
     display: flex;
     align-items: stretch;
     width: calc(100% - 270px);
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: $major-breakpoint-medium) {
         width: 100%;
+    }
+    @media screen and (min-width: $major-breakpoint-large) {
+        max-width: calc(#{$major-breakpoint-large} - 100px);
     }
 }
 
 .blubber_globalstream,
 .blubber_thread {
-    // TODO: Adjust to existing breakpoints (576px)
     width: 100%;
     max-width: 100%;
 
@@ -505,7 +507,7 @@
 }
 
 #blubber-index {
-    @media screen and (max-width: 500px) { // TODO: Adjust to existing breakpoints
+    @media screen and (max-width: $major-breakpoint-small) {
         #page_title_container,
         .secondary-navigation {
             display: none;

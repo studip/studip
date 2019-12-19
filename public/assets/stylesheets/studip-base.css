@@ -16914,7 +16914,7 @@ table.default tr.subcourses {
       .blubber_thread ol.comments > li > .time {
         font-size: 0.8em;
         color: #6d727a; }
-        @media screen and (max-width: 500px) {
+        @media screen and (max-width: 576px) {
           .blubber_thread ol.comments > li > .time time {
             display: none; } }
 
@@ -16987,9 +16987,12 @@ table.default tr.subcourses {
   display: flex;
   align-items: stretch;
   width: calc(100% - 270px); }
-  @media screen and (max-width: 576px) {
+  @media screen and (max-width: 768px) {
     #blubber_stream_container {
       width: 100%; } }
+  @media screen and (min-width: 1200px) {
+    #blubber_stream_container {
+      max-width: calc(1200px - 100px); } }
 
 .blubber_globalstream,
 .blubber_thread {
@@ -17139,7 +17142,7 @@ table.default tr.subcourses {
   width: 100%;
   max-width: 100%; }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 576px) {
   #blubber-index #page_title_container,
   #blubber-index .secondary-navigation {
     display: none; } }
