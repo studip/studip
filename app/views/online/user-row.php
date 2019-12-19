@@ -23,8 +23,8 @@
             <? $actionMenu->addLink(
                 URLHelper::getURL('dispatch.php/blubber/write_to/'.$user['user_id']),
                 _('Blubber diesen Nutzer an'),
-                Icon::create('blubber', 'clickable'),
-                ['data-dialog' => "1"]
+                Icon::create('blubber'),
+                ['data-dialog' => '']
             ) ?>
         <? endif ?>
         <? $actionMenu->addLink(
