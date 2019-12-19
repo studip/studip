@@ -64,7 +64,7 @@
                                         URLHelper::getURL('dispatch.php/blubber/write_to/'.$contact->user_id),
                                         _('Blubber diesen Nutzer an'),
                                         Icon::create('blubber', 'clickable'),
-                                        ['data-dialog' => "width=540px"]
+                                        ['data-dialog' => "1"]
                                     ) ?>
                                 <? endif ?>
                                 <? $actionMenu->addLink($controller->url_for('contact/vcard', ['user[]' => $contact->username]),

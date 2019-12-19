@@ -309,7 +309,7 @@ class ProfileController extends AuthenticatedController
                     _('Anblubbern'),
                     URLHelper::getURL('dispatch.php/blubber/write_to/'.$this->current_user->user_id),
                     Icon::create('blubber', Icon::ROLE_CLICKABLE),
-                    ['data-dialog' => "width=540px", 'title' => _('Blubber diesen Nutzer an')]
+                    ['data-dialog' => "1", 'title' => _('Blubber diesen Nutzer an')]
                 );
             }
 
