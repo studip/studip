@@ -35,6 +35,8 @@ const Blubber = {
                             }
                         }).always(() => {
                             this.waiting = false;
+                        }).fail(() => {
+                            window.alert("Konnte die Konversation nicht laden. Probieren Sie es nachher erneut.".toLocaleString());
                         });
                     }
                 }
