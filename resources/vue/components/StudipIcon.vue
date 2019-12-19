@@ -52,6 +52,9 @@
                     case 'status-yellow':
                         return 'yellow';
 
+                    case 'lightblue':
+                        return 'lightblue';
+
                     case 'clickable':
                     case 'navigation':
                     default:

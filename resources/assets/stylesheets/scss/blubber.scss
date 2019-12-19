@@ -295,6 +295,23 @@
             }
         }
     }
+
+    .empty_blubber_background {
+        padding-top: 130px;
+        background-image: url('#{$icon-path}/lightblue/blubber.svg');
+        background-repeat: no-repeat;
+        background-size: 60% 60%;
+        background-position: center 0%;
+        background-color: hsla(0,0%,100%,0.70);
+        background-blend-mode: overlay;
+        text-align: center;
+        height: 40vh;
+        color: $content-color;
+        > :first-child {
+            position: relative;
+            top: -30px;
+        }
+    }
 }
 
 #blubber_stream_container {
