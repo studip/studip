@@ -122,11 +122,11 @@ ul.widget-list {
         word-wrap: break-word;
     }
 }
-#sidebar-navigation {
-    .sidebar-widget-header {
+div#sidebar-navigation {
+    div.sidebar-widget-header {
         display: none;
     }
-    .sidebar-widget-content {
+    div.sidebar-widget-content {
         border-top: 0px;
     }
 }
@@ -315,8 +315,8 @@ select.sidebar-selectlist {
         // Activate when twitter-mixins is included as scss and remove the above rules
         // @include hide-text();
 
-        width: 20px;
-        height: 29px;
+        width: 29px;
+        height: 20px;
         @include background-icon(search, info_alt);
         float: left;
         background-position: center 3px;

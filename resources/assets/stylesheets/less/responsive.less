@@ -171,270 +171,272 @@
     }
 });
 
-.media-breakpoint-small-down({
-    #header, #flex-header, #barTopFont, #barTopMenu,
-    #barBottomLeft .current_page, #barBottommiddle, #barBottomLeft, #barBottomArrow,
-    #tabs, .sidebar-image, #sidebar-navigation:not(.show), #barTopFont, #footer, .sidebar-widget-header,
-    .tabs_wrapper .colorblock {
-        display: none !important;
-    }
-    #layout_wrapper #layout_page {
-        .secondary-navigation {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-
-            background-color: @dark-gray-color-10;
-            border-bottom: 1px solid @dark-gray-color-40;
-
-            .colorblock,
-            #layout_context_title,
-            .context_icon,
-            .tabs_wrapper {
-                transition: unset;
-            }
-
-            #layout_context_title,
-            .tabs_wrapper {
-                background: transparent;
-                border-width: 0;
-                flex: 1;
-            }
-
-            #layout_context_title {
-                flex: 1;
-
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-
-                + .tabs_wrapper {
-                    flex: 0;
-                    align-self: flex-end;
-                }
-            }
-        }
-    }
-    #layout_wrapper #layout_page .tabs_wrapper {
-        justify-content: flex-end;
-        .helpbar-container {
-            top: 0px;
-            right: 6px;
-        }
-    }
-    .responsive-hidden {
-        display: none;
-    }
-    #notification_marker {
-        display: inline-block;
-        margin-top: 0;
-        vertical-align: initial;
-
-        width: 22px;
-        padding-left: 5px;
-        padding-right: 5px;
-        height: 20px;
-        line-height: 20px;
-    }
-
-    #barTopAvatar {
-        position: relative;
-        bottom: 0px;
-        right: 0px;
-        line-height: 20px !important;
-
-        #header_avatar_menu {
-            display: none;
-        }
-
-        &::after {
+.responsive-display {
+    .media-breakpoint-small-down({
+        #header, #flex-header, #barTopFont, #barTopMenu,
+        #barBottomLeft .current_page, #barBottommiddle, #barBottomLeft, #barBottomArrow,
+        #tabs, .sidebar-image, #sidebar-navigation:not(.show), #barTopFont, #footer, .sidebar-widget-header,
+        .tabs_wrapper .colorblock {
             display: none !important;
         }
-    }
+        #layout_wrapper #layout_page {
+            .secondary-navigation {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
 
-    #barBottomContainer {
-        box-sizing: border-box;
-        height: @header-bar-container-height;
-        position: fixed;
-        top: 0;
-        margin-left: 0px;
-        margin-right: 0px;
-        width: 100%;
-    }
+                background-color: @dark-gray-color-10;
+                border-bottom: 1px solid @dark-gray-color-40;
 
-    #barBottomright, #barBottomright ul {
-        box-sizing: border-box;
-        flex: 1;
-    }
+                .colorblock,
+                #layout_context_title,
+                .context_icon,
+                .tabs_wrapper {
+                    transition: unset;
+                }
 
-    #barBottomright {
-        flex: 1 !important;
-        #sidebar-menu {
-            display: inline-block;
-        }
-        .list {
-            &::before, &::after {
-                display: none;
-            }
-            @width: 300px;
-            @arrow-height: 10px;
+                #layout_context_title,
+                .tabs_wrapper {
+                    background: transparent;
+                    border-width: 0;
+                    flex: 1;
+                }
 
-            margin-top: 2px;
-            width: @width;
-            max-width: @width;
+                #layout_context_title {
+                    flex: 1;
 
-            &.below {
-                left: (-@width + 90);
-                &:before {
-                    left: (@width - 90);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+
+                    + .tabs_wrapper {
+                        flex: 0;
+                        align-self: flex-end;
+                    }
                 }
             }
-
         }
-
-        > ul > li {
-            flex: 1 0 auto;
-
-            &:first-child {
-                flex: 1 1 100%;
+        #layout_wrapper #layout_page .tabs_wrapper {
+            justify-content: flex-end;
+            .helpbar-container {
+                top: 0px;
+                right: 6px;
             }
         }
-    }
-
-    #notification_container {
-        position: inherit !important;
-        /*top: 8px;*/
-        width: 32px;
-        height: 20px;
-    }
-
-    #responsive-container {
-        display: block;
-    }
-
-    #layout_page {
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    #layout_page, #layout_container, #barBottomContainer, #flex-header, #layout_content {
-        min-width: inherit !important;
-    }
-
-    #layout_container {
-        margin-left: 0px;
-        margin-right: 0px;
-    }
-
-    #layout_content {
-        margin: 0px 4px;
-    }
-
-    .visible-sidebar {
-        right: 0 !important;
-        transition: right 300ms;
-
-        #layout-sidebar& #sidebar-shadow-toggle {
-            display: initial;
+        .responsive-hidden {
+            display: none;
         }
-    }
+        #notification_marker {
+            display: inline-block;
+            margin-top: 0;
+            vertical-align: initial;
 
-    #layout-sidebar {
-        #gradient > .horizontal(@brand-color-light, @brand-color-darker);
-        background-clip: content-box;
-        transition: right 300ms;
-
-        position: fixed;
-        top: @header-bar-container-height;
-        right: (-@responsive-menu-width - @responsive-menu-shadow-width);
-        left: auto;
-        bottom: 0;
-
-        margin-right: 0px;
-
-        width: @responsive-menu-width;
-
-        overflow: hidden;
-        overflow-y: auto;
-        z-index: 10000;
-
-        border-left: @responsive-menu-shadow-width solid @responsive-menu-shadow-color;
-
-        .sidebar {
-            box-sizing: border-box;
-
-            &:before {
-                border: 0 !important;
-            }
-
-            top: auto !important;
-            width: @responsive-menu-width !important;
-
-            background: inherit;
-            border: 0;
+            width: 22px;
+            padding-left: 5px;
+            padding-right: 5px;
+            height: 20px;
+            line-height: 20px;
         }
 
-        .widget-links li.active {
-            &:before, &:after {
+        #barTopAvatar {
+            position: relative;
+            bottom: 0px;
+            right: 0px;
+            line-height: 20px !important;
+
+            #header_avatar_menu {
                 display: none;
             }
+
+            &::after {
+                display: none !important;
+            }
+        }
+
+        #barBottomContainer {
+            box-sizing: border-box;
+            height: @header-bar-container-height;
+            position: fixed;
+            top: 0;
+            margin-left: 0px;
+            margin-right: 0px;
+            width: 100%;
+        }
+
+        #barBottomright, #barBottomright ul {
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        #barBottomright {
+            flex: 1 !important;
+            #sidebar-menu {
+                display: inline-block;
+            }
+            .list {
+                &::before, &::after {
+                    display: none;
+                }
+                @width: 300px;
+                @arrow-height: 10px;
+
+                margin-top: 2px;
+                width: @width;
+                max-width: @width;
+
+                &.below {
+                    left: (-@width + 90);
+                    &:before {
+                        left: (@width - 90);
+                    }
+                }
+
+            }
+
+            > ul > li {
+                flex: 1 0 auto;
+
+                &:first-child {
+                    flex: 1 1 100%;
+                }
+            }
+        }
+
+        #notification_container {
+            position: inherit !important;
+            /*top: 8px;*/
+            width: 32px;
+            height: 20px;
+        }
+
+        #responsive-container {
+            display: block;
+        }
+
+        #layout_page {
+            margin-left: 0;
             margin-right: 0;
         }
 
-        // Create second, invisible toggle that closes the menu when
-        // clicked/touched outside of the menu
-        #sidebar-shadow-toggle {
+        #layout_page, #layout_container, #barBottomContainer, #flex-header, #layout_content {
+            min-width: inherit !important;
+        }
+
+        #layout_container {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        #layout_content {
+            margin: 0px 4px;
+        }
+
+        .visible-sidebar {
+            right: 0 !important;
+            transition: right 300ms;
+
+            #layout-sidebar& #sidebar-shadow-toggle {
+                display: initial;
+            }
+        }
+
+        #layout-sidebar {
+            #gradient > .horizontal(@brand-color-light, @brand-color-darker);
+            background-clip: content-box;
+            transition: right 300ms;
+
             position: fixed;
             top: @header-bar-container-height;
-            right: @responsive-menu-width;
+            right: (-@responsive-menu-width - @responsive-menu-shadow-width);
+            left: auto;
             bottom: 0;
-            left: 0;
-            height: 100vh;
 
-            display: none;
+            margin-right: 0px;
+
+            width: @responsive-menu-width;
+
+            overflow: hidden;
+            overflow-y: auto;
+            z-index: 10000;
+
+            border-left: @responsive-menu-shadow-width solid @responsive-menu-shadow-color;
+
+            .sidebar {
+                box-sizing: border-box;
+
+                &:before {
+                    border: 0 !important;
+                }
+
+                top: auto !important;
+                width: @responsive-menu-width !important;
+
+                background: inherit;
+                border: 0;
+            }
+
+            .widget-links li.active {
+                &:before, &:after {
+                    display: none;
+                }
+                margin-right: 0;
+            }
+
+            // Create second, invisible toggle that closes the menu when
+            // clicked/touched outside of the menu
+            #sidebar-shadow-toggle {
+                position: fixed;
+                top: @header-bar-container-height;
+                right: @responsive-menu-width;
+                bottom: 0;
+                left: 0;
+                height: 100vh;
+
+                display: none;
+            }
         }
-    }
-    #index,
-    #login,
-    #request_new_password,
-    #web_migrate {
-        div.index_container {
-            height: calc(100% - 74px);
-            position: static;
-            top: 0;
+        #index,
+        #login,
+        #request_new_password,
+        #web_migrate {
+            div.index_container {
+                height: calc(100% - 74px);
+                position: static;
+                top: 0;
 
-            div.messagebox,
-            div.index_main {
-                margin: 1em auto;
+                div.messagebox,
+                div.index_main {
+                    margin: 1em auto;
+                }
+            }
+
+            #background-desktop,
+            #background-mobile {
+                position: fixed;
             }
         }
 
-        #background-desktop,
-        #background-mobile {
-            position: fixed;
+        #layout_footer {
+            display: block;
+            min-width: 0;
+            width: 100vw;
         }
-    }
+    });
 
-    #layout_footer {
-        display: block;
-        min-width: 0;
-        width: 100vw;
-    }
-});
-
-.media-breakpoint-tiny-down({
-    #index,
-    #login,
-    #request_new_password,
-    #web_migrate {
-        div.index_container {
-            div.messagebox,
-            div.index_main {
-                margin: 0 auto;
+    .media-breakpoint-tiny-down({
+        #index,
+        #login,
+        #request_new_password,
+        #web_migrate {
+            div.index_container {
+                div.messagebox,
+                div.index_main {
+                    margin: 0 auto;
+                }
             }
         }
-    }
-});
+    });    
+}
 
 // Hide duplicated avatar menu in sidebar as default
 .sidebar-avatar-menu {

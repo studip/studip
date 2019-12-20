@@ -51,6 +51,7 @@ import QuickSearch from './lib/quick_search.js';
 import Raumzeit from './lib/raumzeit.js';
 import {ready, domReady, dialogReady} from './lib/ready.js';
 import register from './lib/register.js';
+import Responsive from './lib/responsive.js';
 import RESTAPI, { api } from './lib/restapi.js';
 import Schedule from './lib/schedule.js';
 import Scroll from './lib/scroll.js';
@@ -125,6 +126,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     QuickSearch,
     Raumzeit,
     register,
+    Responsive,
     RESTAPI,
     Schedule,
     Scroll,
