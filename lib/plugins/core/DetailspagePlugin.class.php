@@ -23,5 +23,5 @@ interface DetailspagePlugin
      *
      * @return object   template object to render or NULL
      */
-    function getDetailspageTemplate($course);
+    public function getDetailspageTemplate($course);
 }
