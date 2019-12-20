@@ -39,11 +39,19 @@
     </dd>
   <?php else: ?>
     <dd class="failed">
+        <?php if ($state['cmp'] === '!~=') : ?>
+        <?= sprintf(
+            _('Fehler, Wert ist %s und darf nicht %s sein'),
+            htmlReady($state['present']),
+            htmlReady($state['required'])
+        ) ?>
+        <?php else : ?>
         <?= sprintf(
             _('Fehler, Wert ist %s und muss %s sein'),
             htmlReady($state['present']) ?: _('(leer)'),
             htmlReady($state['required'])
         ) ?>
+        <?php endif ?>
     </dd>
   <?php endif; ?>
 <?php endforeach; ?>

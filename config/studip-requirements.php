@@ -16,7 +16,8 @@ return [
             'xsl'       => 'Export',
             'xml'       => 'Export',
             'ldap'      => 'LDAP-Nutzerverwaltung',
-            'dom'       => 'Literaturverwaltung',
+            'dom'       => true,
+            'yaz'       => 'Literaturverwaltung',
             'mysqlnd'   => 'Globale Suche',
             'mysqli'    => 'Globale Suche',
         ],
@@ -62,7 +63,7 @@ return [
         ],
     ],
     'mysql' => [
-        'version' => '5.7.6',
+        'version' => '5.6.10',
         'settings' => [
             'innodb_file_per_table' => true,
             'innodb_file_format' => [
@@ -74,8 +75,9 @@ return [
                 'assume' => '5.7.7',
             ],
             'sql_mode' => [
-                'value'    => 'NO_ENGINE_SUBSTITUTION',
-                'contains' => true,
+                'value'    => 'STRICT_TRANS_TABLES|STRICT_ALL_TABLES',
+                'contains_not' => true,
+                'allow_empty' => true
             ]
         ],
     ],

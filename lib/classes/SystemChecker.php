@@ -176,6 +176,9 @@ final class SystemChecker
             if (@$required['contains'] && strpos($present, $required['value']) !== false) {
                 $valid = true;
                 $cmp = '~=';
+            } elseif (@$required['contains_not']) {
+                $cmp = '!~=';
+                $valid = !preg_match('/' . $required['value'] . '/', $present);
             } elseif (@$required['allow_empty'] && !$present) {
                 $valid = true;
                 $cmp = '~=';
