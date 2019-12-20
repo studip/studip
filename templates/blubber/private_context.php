@@ -17,6 +17,15 @@
                             <?= Icon::create("blubber", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
                         </a>
                     <? endif ?>
+                    <? if ($user->getId() === $GLOBALS['user']->id) : ?>
+                        <a class="float_right"
+                           href="<?= URLHelper::getLink("dispatch.php/blubber/leave_private/".$thread->getId()) ?>"
+                           data-dialog="size=auto"
+                           title="<?= _("Gruppe verlassen") ?>"
+                           data-confirm="<?= _("Private Konversation wirklich verlassen?") ?>">
+                            <?= Icon::create("door-leave", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
+                        </a>
+                    <? endif ?>
                     <a href="<?= URLHelper::getLink("dispatch.php/profile", ['username' => $user['username']]) ?>">
                 <? endif ?>
                     <?= Avatar::getAvatar($mention['user_id'])->getImageTag(Avatar::SMALL) ?>
@@ -35,8 +44,10 @@
         </li>
     </ul>
 
-    <a href="<?= URLHelper::getLink("dispatch.php/blubber/private_to_studygroup/".$thread->getId()) ?>" data-dialog="size=auto">
-        <?= _("Aus diesem Blubber eine Studiengruppe machen.") ?>
-    </a>
+    <? if (!$GLOBALS['perm']->have_perm("admin")) : ?>
+        <a href="<?= URLHelper::getLink("dispatch.php/blubber/private_to_studygroup/".$thread->getId()) ?>" data-dialog="size=auto">
+            <?= _("Aus diesem Blubber eine Studiengruppe machen.") ?>
+        </a>
+    <? endif ?>
 
 </div>

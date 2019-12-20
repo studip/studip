@@ -432,7 +432,7 @@ class BlubberController extends AuthenticatedController
 
     public function private_to_studygroup_action(BlubberThread $thread)
     {
-        if (!$this->thread['context_type'] === 'private' || !$this->thread->isReadable()) {
+        if ($this->thread['context_type'] !== 'private' || !$this->thread->isReadable()) {
             throw new AccessDeniedException();
         }
         PageLayout::setTitle(_("Studiengruppe aus Konversation erstellen"));
@@ -451,7 +451,7 @@ class BlubberController extends AuthenticatedController
                       FROM blubber_mentions
                       WHERE thread_id = ?";
             $statement = DBManager::get()->prepare($query);
-            $statement->execute([$thread->id]);
+            $statement->execute([$this->thread->id]);
             foreach ($statement->fetchFirst() as $user_id) {
                 $member = new CourseMember();
                 $member['user_id'] = $user_id;
@@ -473,6 +473,44 @@ class BlubberController extends AuthenticatedController
 
             PageLayout::postSuccess(sprintf(_("Studiengruppe '%s' wurde angelegt."), $course['name']));
             $this->redirect(URLHelper::getURL('seminar_main.php', ['auswahl' => $course->getId()]));
+        }
+    }
+
+    public function leave_private_action(BlubberThread $thread)
+    {
+        if ($this->thread['context_type'] !== 'private' || !$this->thread->isReadable()) {
+            throw new AccessDeniedException();
+        }
+        PageLayout::setTitle(_("Private Konversation verlassen"));
+        if (Request::isPost()) {
+            BlubberMention::deleteBySQL("user_id = :me AND external_contact = '0' AND thread_id = :thread_id", [
+                'thread_id' => $this->thread->getId(),
+                'me' => $GLOBALS['user']->id
+            ]);
+            if (Request::get("delete_comments")) {
+                BlubberComment::deleteBySQL("thread_id = :thread_id AND user_id = :me AND external_contact = '0'", [
+                    'thread_id' => $this->thread->getId(),
+                    'me' => $GLOBALS['user']->id
+                ]);
+            }
+            if ($this->thread['user_id'] === $GLOBALS['user']->id) {
+                $this->thread['content'] = "";
+                $this->thread->store();
+            }
+            $count_departed = BlubberMention::countBySQL("INNER JOIN auth_user_md5 USING (user_id) WHERE external_contact = '0' AND thread_id = :thread_id", [
+                'thread_id' => $this->thread->getId()
+            ]);
+            $count_comments = BlubberComment::countBySQL("thread_id = :thread_id AND external_contact = '0'", [
+                'thread_id' => $this->thread->getId()
+            ]);
+            if (!$count_departed || (!$count_comments && !$this->thread['content'])) {
+                //ich mache das Licht aus:
+                $this->thread->delete();
+                PageLayout::postSuccess(_("Private Konversation gelöscht."));
+            } else {
+                PageLayout::postSuccess(_("Private Konversation verlassen."));
+            }
+            $this->redirect("blubber/index");
         }
     }
 

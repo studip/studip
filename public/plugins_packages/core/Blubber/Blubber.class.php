@@ -59,8 +59,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($comments as $comment) {
             if ($comment->thread->isVisibleInStream() && $comment->thread->isReadable() && ($comment->thread->getLatestActivity() > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$comment['thread_id']))) {
-                $text = $comment->thread->getId()." ".$comment->thread->getLatestActivity()." ".UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$comment['thread_id']);
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')." ".$text]));
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 $icon->setBadgeNumber(count($comments));
                 $icon->setURL(PluginEngine::getURL($this, ['thread' => 'new'], 'messenger/course'));
