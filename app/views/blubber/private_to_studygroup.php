@@ -1,4 +1,7 @@
-<form action="<?= $controller->private_to_studygroup($thread) ?>" method="post" class="default" enctype="multipart/form-data">
+<form action="<?= $controller->private_to_studygroup($thread) ?>"
+      method="post"
+      class="default"
+      enctype="multipart/form-data">
 
     <div style="display: flex; justify-content: center; align-items: center">
         <?= Icon::create('blubber', Icon::ROLE_INFO)->asImg(50, ['style' => "margin-right: 50px;"]) ?>
@@ -17,7 +20,7 @@
     </label>
 
     <div data-dialog-button>
-        <?= Studip\Button::create(_('Umwandlung beginnen'), 'submit') ?>
+        <?= Studip\Button::create(_('Erstellen'), 'submit') ?>
     </div>
 
 </form>

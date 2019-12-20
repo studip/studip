@@ -35,7 +35,7 @@
         </li>
     </ul>
 
-    <a href="<?= URLHelper::getLink("dispatch.php/blubber/private_to_studygroup/".$thread->getId()) ?>" data-dialog>
+    <a href="<?= URLHelper::getLink("dispatch.php/blubber/private_to_studygroup/".$thread->getId()) ?>" data-dialog="size=auto">
         <?= _("Aus diesem Blubber eine Studiengruppe machen.") ?>
     </a>
 

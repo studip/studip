@@ -435,6 +435,7 @@ class BlubberController extends AuthenticatedController
         if (!$this->thread['context_type'] === 'private' || !$this->thread->isReadable()) {
             throw new AccessDeniedException();
         }
+        PageLayout::setTitle(_("Studiengruppe aus Konversation erstellen"));
         if (Request::isPost() && count(studygroup_sem_types())) {
             $course = new Course();
             $course['name'] = Request::get('name');
