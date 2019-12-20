@@ -13,18 +13,18 @@
 
 class Search_CoursesController extends AuthenticatedController
 {
-    
+
     /**
      * @var string Holds the URL parameter with selected navigation option
      */
     private $nav_option = null;
-    
+
     public function before_filter(&$action, &$args)
     {
         $this->allow_nobody = Config::get()->COURSE_SEARCH_IS_VISIBLE_NOBODY;
-        
+
         parent::before_filter($action, $args);
-        
+
         PageLayout::setHelpKeyword('Basis.VeranstaltungenAbonnieren');
 
         // activate navigation item
@@ -62,7 +62,7 @@ class Search_CoursesController extends AuthenticatedController
     {
         SemBrowse::transferSessionData();
         $this->sem_browse_obj = new SemBrowse();
-        
+
         if (!$GLOBALS['perm']->have_perm('root')) {
             $this->sem_browse_obj->target_url = 'dispatch.php/course/details/';
             $this->sem_browse_obj->target_id = 'sem_id';
@@ -70,13 +70,12 @@ class Search_CoursesController extends AuthenticatedController
             $this->sem_browse_obj->target_url = 'seminar_main.php';
             $this->sem_browse_obj->target_id = 'auswahl';
         }
-        
+
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/seminar-sidebar.png');
         
         // add search options to sidebar
         $level = Request::get('level', $_SESSION['sem_browse_data']['level']);
-        
+
         $widget = new OptionsWidget();
         $widget->setTitle(_('Suche'));
         //add a quicksearch input inside the widget
@@ -91,8 +90,8 @@ class Search_CoursesController extends AuthenticatedController
 
         SemBrowse::setSemesterSelector($this->url_for('search/courses/index'));
         SemBrowse::setClassesSelector($this->url_for('search/courses/index'));
-        
-        
+
+
         if ($this->sem_browse_obj->show_result
                 && count($_SESSION['sem_browse_data']['search_result'])) {
             $actions = new ActionsWidget();
@@ -113,7 +112,7 @@ class Search_CoursesController extends AuthenticatedController
             }
             $sidebar->addWidget($grouping);
         }
-        
+
         // show information about course class if class was changed
         $class = $GLOBALS['SEM_CLASS'][$_SESSION['sem_browse_data']['show_class']];
         if (is_object($class) && $class->countSeminars() > 0) {
@@ -128,7 +127,7 @@ class Search_CoursesController extends AuthenticatedController
         } elseif ($_SESSION['sem_browse_data']['show_class'] != 'all') {
             PageLayout::postInfo(_('Im gewählten Semester ist in dieser Veranstaltungsklasse keine Veranstaltung verfügbar. Bitte wählen Sie eine andere Veranstaltungsklasse oder ein anderes Semester!'));
         }
-        
+
         $this->controller = $this;
     }
 
@@ -143,5 +142,5 @@ class Search_CoursesController extends AuthenticatedController
             $this->render_nothing();
         }
     }
-    
+
 }

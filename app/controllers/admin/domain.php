@@ -153,7 +153,6 @@ class Admin_DomainController extends AuthenticatedController
     private function set_sidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $actions = $sidebar->addWidget(new ActionsWidget());
         $actions->addLink(

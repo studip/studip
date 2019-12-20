@@ -12,7 +12,6 @@ class QuestionnaireController extends AuthenticatedController
         if ($action !== 'courseoverview' && Navigation::hasItem('/tools/questionnaire')) {
             Navigation::activateItem('/tools/questionnaire');
         }
-        Sidebar::Get()->setImage('sidebar/evaluation-sidebar.png');
         PageLayout::setTitle(_('Fragebögen'));
 
         //trigger autoloading:

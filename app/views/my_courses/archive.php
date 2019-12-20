@@ -76,8 +76,6 @@
 <? endif; ?>
 <?
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/seminar-archive-sidebar.png');
-$sidebar->setTitle(_('Meine archivierten Veranstaltungen'));
 
 $links = new LinksWidget();
 $links->setTitle(_('Aktionen'));

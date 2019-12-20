@@ -51,7 +51,6 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->course_permission = $GLOBALS['perm']->have_studip_perm('tutor', $this->seminar_id);
 
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/learnmodule-sidebar.png');
         $this->sidebar->setContextAvatar(CourseAvatar::getAvatar($this->seminar_id));
     }
 

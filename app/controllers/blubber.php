@@ -9,7 +9,6 @@ class BlubberController extends AuthenticatedController
         parent::before_filter($action, $args);
 
         PageLayout::setTitle(_('Blubber-Messenger'));
-        Sidebar::Get()->setImage('sidebar/blubber-sidebar.png');
     }
 
     public function index_action($thread_id = null)

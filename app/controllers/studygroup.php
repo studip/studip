@@ -92,7 +92,6 @@ class StudygroupController extends AuthenticatedController
     private function setupSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/studygroup-sidebar.png');
 
         if ($GLOBALS['perm']->have_perm('autor')) {
             $actions = new ActionsWidget();

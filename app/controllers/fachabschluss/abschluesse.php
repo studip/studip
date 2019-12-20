@@ -37,7 +37,7 @@ class Fachabschluss_AbschluesseController extends MVVController
             PageLayout::postInfo(_('Es wurden noch keine Abschlüsse angelegt.'));
         }
         $this->count = Abschluss::getCount($filter);
-        
+
         $this->setSidebar();
 
         $helpbar = Helpbar::get();
@@ -164,11 +164,10 @@ class Fachabschluss_AbschluesseController extends MVVController
      */
     protected function setSidebar()
     {
-        $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
-
         if (MvvPerm::havePermCreate('Abschluss')) {
-            $widget  = new ActionsWidget();
+            $sidebar = Sidebar::get();
+
+            $widget = new ActionsWidget();
             $widget->addLink(
                 _('Neuen Abschluss anlegen'),
                 $this->url_for('/abschluss'),

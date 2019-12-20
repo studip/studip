@@ -57,7 +57,6 @@ class Admin_IliasInterfaceController extends AuthenticatedController
 
         $this->modules_available = ConnectedIlias::getSupportedModuleTypes();
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/learnmodule-sidebar.png');
     }
 
     /**

@@ -75,7 +75,6 @@ class Course_ElearningController extends AuthenticatedController
             $_SESSION['elearning_open_close'][Request::get('do_close')] = false;
         }
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/learnmodule-sidebar.png');
         $this->sidebar->setContextAvatar(CourseAvatar::getAvatar($this->seminar_id));
     }
 

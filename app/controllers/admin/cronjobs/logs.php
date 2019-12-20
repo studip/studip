@@ -35,8 +35,6 @@ class Admin_Cronjobs_LogsController extends AuthenticatedController
 
         // Setup sidebar
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Cronjobs'));
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $actions = $sidebar->addWidget(new ViewsWidget());
         $actions->addLink(

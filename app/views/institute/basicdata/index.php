@@ -146,7 +146,6 @@
 
 <?php
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/institute-sidebar.png');
 
 if (!$institute->isNew()) {
     $widget = new ActionsWidget();

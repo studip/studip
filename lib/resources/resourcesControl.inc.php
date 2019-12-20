@@ -150,7 +150,6 @@ if ($perm->have_perm('admin')) {
         if ($view == "list_requests") {
             // Set default sidebar image
             $sidebar = Sidebar::get();
-            $sidebar->setImage('sidebar/person-sidebar.png');
 
             if (Config::get()->EXPORT_ENABLE) {
                 $widget = new ExportWidget();
@@ -697,8 +696,6 @@ if (Request::get('print_view')){
     PageLayout::removeStylesheet('studip-base.css');
     PageLayout::addStylesheet('print.css'); // use special stylesheet for printing
 }
-
-Sidebar::get()->setImage('sidebar/resources-sidebar.png');
 
 // Add clipboard if neccessary (another hack meets the core)
 if (is_object($clipObj))  {

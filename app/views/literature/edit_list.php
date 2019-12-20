@@ -23,7 +23,6 @@
 
 <?php
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/literature-sidebar.png');
 $widget = $sidebar->addWidget(new ActionsWidget());
 
 $widget->addLink(

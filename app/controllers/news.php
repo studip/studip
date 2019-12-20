@@ -591,7 +591,6 @@ class NewsController extends StudipController
         }
 
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/news-sidebar.png');
         if ($GLOBALS['perm']->have_perm('tutor')) {
             $widget = new ViewsWidget();
             $widget->addLink(

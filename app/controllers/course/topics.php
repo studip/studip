@@ -237,7 +237,6 @@ class Course_TopicsController extends AuthenticatedController
     private function setupSidebar($action)
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/date-sidebar.png');
 
         $actions = $sidebar->addWidget(new ActionsWidget());
         if ($action === 'index') {

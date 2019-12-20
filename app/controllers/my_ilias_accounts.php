@@ -31,13 +31,12 @@ class MyIliasAccountsController extends AuthenticatedController
 
         if (!Config::Get()->ILIAS_INTERFACE_ENABLE ) {
             throw new AccessDeniedException(_('Ilias-Interface ist nicht aktiviert.'));
-        } else
+        } else {
             $this->ilias_active = true;
+        }
 
-            PageLayout::setHelpKeyword('Basis.Ilias');
-
-            $this->sidebar = Sidebar::get();
-            $this->sidebar->setImage('sidebar/learnmodule-sidebar.png');
+        PageLayout::setHelpKeyword('Basis.Ilias');
+        $this->sidebar = Sidebar::get();
     }
 
     /**
@@ -128,13 +127,13 @@ class MyIliasAccountsController extends AuthenticatedController
             $this->ilias = new ConnectedIlias($index);
             $this->ilias_index = $index;
             switch ($mode) {
-                case 'update' : 
+                case 'update' :
                     // update user account
                     if ($this->ilias->updateUser($GLOBALS['user'])) {
                         PageLayout::postSuccess(_("ILIAS-Account aktualisiert."));
                     }
                     break;
-                case 'add' : 
+                case 'add' :
                     // set new user account
                     if ($this->ilias->soap_client->checkPassword(Request::get('ilias_login'), Request::get('ilias_password'))) {
                         // login data valid
@@ -152,7 +151,7 @@ class MyIliasAccountsController extends AuthenticatedController
                         PageLayout::postError(_("Login fehlgeschlagen. Die Zuordnung konnte nicht geändert werden."));
                     }
                     break;
-                case 'remove' : 
+                case 'remove' :
                     $this->ilias->user->unsetConnection();
                     PageLayout::postSuccess(_("Account-Zuordnung entfernt."));
                     break;

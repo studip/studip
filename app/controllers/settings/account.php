@@ -32,8 +32,6 @@ class Settings_AccountController extends Settings_SettingsController
         PageLayout::setTitle(_('Persönliche Angaben bearbeiten'));
         Navigation::activateItem('/profile/edit/profile');
         SkipLinks::addIndex(_('Persönliche Angaben bearbeiten'), 'layout_content');
-
-        Sidebar::get()->setImage('sidebar/person-sidebar.png');
     }
 
     /**

@@ -151,8 +151,6 @@ class Course_PlusController extends AuthenticatedController
         if (Request::Get('displaystyle') != null) $_SESSION['plus']['displaystyle'] = Request::Get('displaystyle');
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/plugin-sidebar.png');
-
 
         $widget = new OptionsWidget();
         $widget->setTitle(_('Kategorien'));

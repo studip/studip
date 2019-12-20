@@ -187,8 +187,6 @@ class MVVController extends AuthenticatedController
     protected function setSidebar()
     {
         $this->sidebar_rendered = true;
-        $sidebar                = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
     }
 
     /**

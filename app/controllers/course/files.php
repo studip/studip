@@ -39,7 +39,6 @@ class Course_FilesController extends AuthenticatedController
     private function buildSidebar($index = 'index')
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/files-sidebar.png');
 
         $actions = new ActionsWidget();
 

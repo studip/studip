@@ -32,7 +32,7 @@ class Fachabschluss_KategorienController extends MVVController
         // sind an deren Verantwortliche Einrichtung dem User eine Rolle
         // zugewiesen wurde
         $filter = ['mvv_studiengang.institut_id' => MvvPerm::getOwnInstitutes()];
-    
+
         $this->abschluss_kategorien = AbschlussKategorie::getAllEnriched(
             'position',
             'ASC',
@@ -40,7 +40,7 @@ class Fachabschluss_KategorienController extends MVVController
             null,
             $filter
         );
-    
+
         PageLayout::setTitle(_('Abschluss-Kategorien'));
         $this->setSidebar();
     }
@@ -83,7 +83,7 @@ class Fachabschluss_KategorienController extends MVVController
                     Request::optionArray('dokumente_items'),
                     Request::getArray('dokumente_properties')
                 );
-    
+
                 PageLayout::postSuccess(sprintf(
                     $success_message, htmlReady($this->abschluss_kategorie->name)
                 ));
@@ -213,7 +213,7 @@ class Fachabschluss_KategorienController extends MVVController
             );
         }
     }
-    
+
     public function document_comments_action($dokument_id, $object_id, $object_type)
     {
         $this->redirect(
@@ -226,11 +226,10 @@ class Fachabschluss_KategorienController extends MVVController
      */
     protected function setSidebar()
     {
-        $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
-
         if (MvvPerm::havePermCreate('AbschlussKategorie')) {
-            $widget  = new ActionsWidget();
+            $sidebar = Sidebar::get();
+
+            $widget = new ActionsWidget();
             $widget->addLink(
                 _('Neue Abschluss-Kategorie anlegen'),
                 $this->url_for('/kategorie'),
@@ -239,5 +238,5 @@ class Fachabschluss_KategorienController extends MVVController
             $sidebar->addWidget($widget);
         }
     }
-    
+
 }

@@ -171,7 +171,6 @@
 
 <?php
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/literature-sidebar.png');
 ob_start();
 ?>
 <?= $clip_form->getFormStart(URLHelper::getLink('?_catalog_id=' . $catalog_id)); ?>

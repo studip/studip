@@ -80,8 +80,6 @@ class Settings_SettingsController extends AuthenticatedController
             $mbox = MessageBox::info($message);
             PageLayout::postMessage($mbox, 'settings-user-anncouncement');
         }
-
-        Sidebar::get()->setImage('sidebar/person-sidebar.png');
     }
 
     /**

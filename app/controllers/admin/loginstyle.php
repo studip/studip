@@ -134,8 +134,6 @@ class Admin_LoginStyleController extends AuthenticatedController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setTitle(_('Semester'));
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $links = new ActionsWidget();
         $links->addLink(

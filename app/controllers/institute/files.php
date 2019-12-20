@@ -40,7 +40,6 @@ class Institute_FilesController extends AuthenticatedController
     private function buildSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/files-sidebar.png');
 
         $actions = new ActionsWidget();
 

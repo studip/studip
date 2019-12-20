@@ -51,10 +51,6 @@
 <?
 
 $sidebar = Sidebar::Get();
-$sidebar->setImage('sidebar/admin-sidebar.png');
-$sidebar->setTitle(_('Zusatzangaben'));
 $actions = new ActionsWidget();
 $actions->addLink(_('Neue Regel anlegen'), $controller->url_for('admin/specification/edit'), Icon::create('add', 'clickable'));
 $sidebar->addWidget($actions);
-
-?>

@@ -98,7 +98,6 @@ class ScoreController extends AuthenticatedController
         // Set up sidebar and helpbar
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/medal-sidebar.png');
 
         $actions = new OptionsWidget();
         $actions->addCheckbox(

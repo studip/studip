@@ -35,8 +35,6 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
 
         // Setup sidebar
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Cronjobs'));
-        $sidebar->setImage('sidebar/date-sidebar.png');
 
         // Aktionen
         $views = $sidebar->addWidget(new ViewsWidget());

@@ -126,8 +126,6 @@ class ProfileModulesController extends AuthenticatedController
     private function setupSidebar(array $list, array $config)
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/plugin-sidebar.png');
-        $sidebar->setTitle(PageLayout::getTitle());
 
         if ($config['displaystyle'] === 'category') {
             $widget = $sidebar->addWidget(new OptionsWidget());

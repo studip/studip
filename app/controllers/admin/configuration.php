@@ -263,8 +263,6 @@ class Admin_ConfigurationController extends AuthenticatedController
     {
         // Basic info and layout
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Konfiguration'));
-        $sidebar->setImage(Assets::image_path('sidebar/admin-sidebar.png'));
 
         // Views
         $views = new ViewsWidget();

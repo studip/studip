@@ -45,8 +45,6 @@ class Settings_NotificationController extends Settings_SettingsController
         PageLayout::setTitle(_('Benachrichtigung über neue Inhalte anpassen'));
         Navigation::activateItem('/profile/settings/notification');
         SkipLinks::addIndex(_('Benachrichtigung über neue Inhalte anpassen'), 'layout_content', 100);
-
-        Sidebar::get()->setImage('sidebar/seminar-sidebar.png');
     }
 
     /**
@@ -162,7 +160,7 @@ class Settings_NotificationController extends Settings_SettingsController
 
         $modules = new ModulesNotification();
         $modules->setModuleNotification(Request::getArray('m_checked'), 'sem');
-    
+
         PageLayout::postSuccess(_('Die Einstellungen wurden gespeichert.'));
         $this->redirect('settings/notification');
     }

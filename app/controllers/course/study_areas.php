@@ -65,7 +65,6 @@ class Course_StudyAreasController extends AuthenticatedController
 
             Navigation::activateItem('course/admin/study_areas');
             $sidebar = Sidebar::get();
-            $sidebar->setImage('sidebar/admin-sidebar.png');
 
             if ($this->course) {
                 // Entry list for admin upwards.

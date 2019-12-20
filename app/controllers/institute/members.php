@@ -502,7 +502,6 @@ class Institute_MembersController extends AuthenticatedController
     private function setupSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/person-sidebar.png');
 
         $widget = new ViewsWidget();
         $widget->addLink(

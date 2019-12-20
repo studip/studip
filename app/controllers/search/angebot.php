@@ -28,7 +28,6 @@ class Search_AngebotController extends MVVController
         PageLayout::setTitle(_('Modulverzeichnis - Studienangebot von A bis Z'));
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
 
         $views = new ViewsWidget();
         $views->addLink(_('Modulsuche'), $this->url_for('search/module'));

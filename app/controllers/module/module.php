@@ -1289,7 +1289,6 @@ class Module_ModuleController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
 
         $widget  = new ViewsWidget();
         $widget->addLink(

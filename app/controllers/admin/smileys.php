@@ -57,7 +57,7 @@ class Admin_SmileysController extends AuthenticatedController
     public function edit_action($id, $view)
     {
         PageLayout::setTitle(_('Smiley bearbeiten'));
-        
+
         $smiley = Smiley::getById($id);
 
         if (Request::submitted('edit')) {
@@ -180,7 +180,7 @@ class Admin_SmileysController extends AuthenticatedController
     public function upload_action($view)
     {
         PageLayout::setTitle(_('Neues Smiley hochladen'));
-        
+
         if (!Request::submitted('upload')) {
             $this->view = $view;
             return;
@@ -258,8 +258,6 @@ class Admin_SmileysController extends AuthenticatedController
     private function setSidebar($view)
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/smiley-sidebar.png');
-        $sidebar->setTitle(PageLayout::getTitle() ?: _('Smileys'));
 
         // Render items
         $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/admin/smileys/');
@@ -279,7 +277,7 @@ class Admin_SmileysController extends AuthenticatedController
             $group->addElement($option);
         }
         $widget->addElement($group);
-        
+
         $groups = [
             'all'   => _('Alle'),
             'top20' => _('Top 20'),
@@ -295,7 +293,7 @@ class Admin_SmileysController extends AuthenticatedController
         }
         $widget->addElement($group);
         $sidebar->addWidget($widget);
-        
+
         $widget = new SidebarWidget();
         $statistics = $factory->render('statistics', Smiley::getStatistics());
         $widget->setTitle(_('Statistiken'));

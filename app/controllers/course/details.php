@@ -211,7 +211,6 @@ class Course_DetailsController extends AuthenticatedController
                 $enrolment_info = $this->sem->getEnrolmentInfo($GLOBALS['user']->id);
             }
 
-            $sidebar->setTitle(_('Details'));
             $links = new ActionsWidget();
             $links->addLink(
                 _('Drucken'),

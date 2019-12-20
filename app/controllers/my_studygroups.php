@@ -28,8 +28,6 @@ class MyStudygroupsController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/studygroup-sidebar.png');
-        $sidebar->setTitle(_('Meine Studiengruppen'));
 
         $actions = new ActionsWidget();
         $actions->addLink(

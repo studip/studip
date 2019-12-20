@@ -16,9 +16,6 @@ class Sidebar extends WidgetContainer
         parent::__construct();
 
         $this->setTitle();
-
-        // Default sidebar image in order to prevent jumps in navigation
-        $this->setImage('sidebar/seminar-sidebar.png');
     }
 
     /**
@@ -32,11 +29,10 @@ class Sidebar extends WidgetContainer
      * Set an image for the sidebar.
      *
      * @param String $image The image relative to assets/images
+     * @deprecated
      */
     public function setImage($image)
     {
-        $image = "sidebar/noicon-sidebar.png";
-        $this->image = $image;
     }
 
     /**
@@ -44,6 +40,7 @@ class Sidebar extends WidgetContainer
      *
      * @return mixed Either the previously set image or false if no image
      *               has been set.
+     * @deprecated
      */
     public function getImage()
     {
@@ -167,8 +164,19 @@ class Sidebar extends WidgetContainer
             $template->widgets = [];
         }
 
-        $template->image  = $this->getImage();
-        $template->title  = $this->getTitle();
+        $title = PageLayout::getTitle();
+        if (Context::getHeaderLine()) {
+            $needles = [
+                Context::getHeaderLine() . ' - ',
+                '- ' . Context::getHeaderLine(),
+                Context::getHeaderLine() . ': ',
+                Context::getHeaderLine(),
+            ];
+            $title = str_replace($needles, '', $title);
+        }
+        $title = ucfirst(trim($title));
+
+        $template->title  = $title;
         $template->avatar = $this->context_avatar;
         $content = $template->render();
 

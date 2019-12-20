@@ -28,7 +28,7 @@ class Admin_OverlappingController extends AuthenticatedController
         parent::before_filter($action, $args);
 
         Navigation::activateItem('/browse/my_courses/overlapping');
-        
+
         if (Request::option('sem_select')) {
             $GLOBALS['user']->cfg->store('MY_COURSE_SELECTED_CYCLE', Request::option(sem_select));
         }
@@ -38,7 +38,7 @@ class Admin_OverlappingController extends AuthenticatedController
         }
         PageLayout::setTitle(_('Überschneidung von Veranstaltungen'));
     }
-    
+
     /**
      * Main view: Shows selection form and result.
      */
@@ -72,7 +72,7 @@ class Admin_OverlappingController extends AuthenticatedController
             !$_SESSION['MVV_OVL_HIDDEN']
         );
     }
-    
+
     /**
      * Resets form and shows index view.
      */
@@ -83,7 +83,7 @@ class Admin_OverlappingController extends AuthenticatedController
         $this->conflicts = [];
         $this->render_action('index');
     }
-    
+
     /**
      * Calculates the conflicts and redirects to index view.
      */
@@ -110,10 +110,10 @@ class Admin_OverlappingController extends AuthenticatedController
                     $this->fachsems,
                     $this->semtypes
                 );
-                
+
                 // refresh conflicts
                 MvvOverlappingConflict::deleteBySelection($selection_id);
-                
+
                 foreach ($this->comp_versions as $comp_version) {
                     $selection[$comp_version->id] = MvvOverlappingSelection::findOneBySQL(
                     '`selection_id` = ? AND `comp_version_id` = ?', [
@@ -164,10 +164,10 @@ class Admin_OverlappingController extends AuthenticatedController
         $_SESSION['MVV_OVL_HIDDEN'] = Request::int('show_hidden');
         $this->redirect($this->url_for('/index', ['selection' => $selection_id]));
     }
-    
+
     /**
      * Shows the responsible admin of the course.
-     * 
+     *
      * @param type $course_id The id of the course.
      */
     public function admin_info_action($course_id)
@@ -179,10 +179,10 @@ class Admin_OverlappingController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::error(_('Unbekannte Veranstaltung.')));
         }
     }
-    
+
     /**
      * Shows the course details.
-     * 
+     *
      * @param type $course_id The id of the course.
      */
     public function course_info_action($course_id)
@@ -195,7 +195,7 @@ class Admin_OverlappingController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::error(_('Unbekannte Veranstaltung.')));
         }
     }
-    
+
     /**
      * Sets a course as hidden.
      */
@@ -215,10 +215,10 @@ class Admin_OverlappingController extends AuthenticatedController
         }
         $this->render_nothing();
     }
-    
+
     /**
      * Shows detailed information about the studiengangteil version.
-     * 
+     *
      * @param type $version_id The id of the studiengangteil version.
      */
     public function version_info_action($version_id)
@@ -234,15 +234,14 @@ class Admin_OverlappingController extends AuthenticatedController
             PageLayout::postMessage(MessageBox::error(_('Unbekannte Studiengangteil-Version.')));
         }
     }
-    
+
     /**
      * Init the sidebar.
      */
     private function setSidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
-        
+
         $widget = new SelectWidget(
             _('Semesterauswahl'),
             $this->url_for('admin/overlapping/index'),
@@ -258,7 +257,7 @@ class Admin_OverlappingController extends AuthenticatedController
         }
         $sidebar->addWidget($widget);
     }
-    
+
     /**
      * Search for base version by given search term.
      */
@@ -267,7 +266,7 @@ class Admin_OverlappingController extends AuthenticatedController
         $sword = Request::get('term');
         $this->render_text(json_encode($this->getResult($sword)));
     }
-    
+
     /**
      * Search für comparison version by given search term.
      */
@@ -280,10 +279,10 @@ class Admin_OverlappingController extends AuthenticatedController
         $version_ids = $this->getRelatedVersions($version_id);
         $this->render_text(json_encode($this->getResult($sword, $version_ids)));
     }
-    
+
     /**
      * Returns versions related to the base version.
-     * 
+     *
      * @param type $version_id
      * @return type
      */
@@ -308,18 +307,18 @@ class Admin_OverlappingController extends AuthenticatedController
         }
         return count($version_ids) ? array_diff($version_ids, [$version_id]) : null;
     }
-    
+
     /**
      * Search for studiengangteil versionen by given keyword. The result can be
      * filtered by version ids.
-     * 
+     *
      * @param string $keyword The keyword to search for.
      * @param array $version_ids An array of version ids.
      * @return array An array of studiengangteil versionen.
      */
     private function getResult($keyword, $version_ids = null) {
         $version_query = '';
-        
+
         if (!is_null($version_ids)) {
             $version_query = ' AND `mvv_stgteilversion`.`version_id` IN (:version_ids) ';
         }
@@ -335,21 +334,21 @@ class Admin_OverlappingController extends AuthenticatedController
              WHERE (`fach`.`name` LIKE :keyword
                     OR `mvv_stgteil`.`zusatz` LIKE :keyword
                     OR `mvv_stgteilversion`.`code` LIKE :keyword)
-                
+
                 AND (`start_sem`.`beginn` <= :sem_end
                     OR ISNULL(`start_sem`.`beginn`))
                 AND (`end_sem`.`ende` >= :sem_start
                     OR ISNULL(`end_sem`.`ende`))
                 " . $version_query . "
             ORDER BY `name` ASC, `kp` ASC";
-        
+
         $stat = array_keys(array_filter(
             $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'],
             function ($v) {
                 return $v['public'];
             }
         ));
-        
+
         $stmt = DBManager::get()->prepare($query);
         $stmt->execute([
             ':keyword'     => '%' . $keyword . '%',
@@ -368,5 +367,5 @@ class Admin_OverlappingController extends AuthenticatedController
         }
         return $res;
     }
-    
+
 }

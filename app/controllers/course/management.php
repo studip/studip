@@ -56,7 +56,6 @@ class Course_ManagementController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $course = Course::findCurrent();
         $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root','admin','dozent']) ? Config::get()->SEM_CREATE_PERM : 'dozent';

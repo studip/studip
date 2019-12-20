@@ -271,9 +271,8 @@ class Studiengaenge_VersionenController extends SharedVersionController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
 
-        $widget  = new ActionsWidget();
+        $widget = new ActionsWidget();
         $widget->addLink(
             _('Auswahl zurücksetzen'),
             $this->url_for('/reset'),
@@ -330,7 +329,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
             'version_id IN (?) AND stat IS NULL', [$version_ids]
         );
         $status_results['__undefined__'] = ['count_objects' => $count_status];
-    
+
         $filter_template = $template_factory->render('shared/filter',
             [
                 'semester'          => $semesters,
@@ -342,7 +341,7 @@ class Studiengaenge_VersionenController extends SharedVersionController
                 'action_reset'      => $this->url_for('/reset_filter')
             ]
         );
-    
+
         $sidebar = Sidebar::get();
         $widget = new SidebarWidget();
         $widget->setTitle(_('Filter'));

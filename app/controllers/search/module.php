@@ -49,7 +49,6 @@ class Search_ModuleController extends MVVController
         PageLayout::setTitle(_('Modulverzeichnis - Modulsuche'));
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
 
         $views = new ViewsWidget();
         $views->addLink(_('Modulsuche'), $this->url_for('search/module'))
@@ -287,7 +286,7 @@ class Search_ModuleController extends MVVController
             }
             $sem_number++;
         }
-        
+
         $this->semester_select = array_reverse($this->semester_select);
         $response = $this->relay('shared/modul/overview', $this->modul->getId(), $this->selected_semester->semester_id);
 
@@ -582,7 +581,7 @@ class Search_ModuleController extends MVVController
         }
         return $courses;
     }
-    
+
     /**
      * Sets the default semester if no semester was selected by semester filter.
      */

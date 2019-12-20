@@ -250,8 +250,6 @@ class Admin_DatafieldsController extends AuthenticatedController
     private function createSidebar($action)
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/admin-sidebar.png');
-        $sidebar->setTitle(_('Datenfelder'));
 
         $actions = new ActionsWidget();
         $actions->addLink(_('Neues Datenfeld anlegen'),

@@ -74,8 +74,6 @@
 </form>
 <?
 $sidebar = Sidebar::Get();
-$sidebar->setImage('sidebar/admin-sidebar.png');
-$sidebar->setTitle(_('Webservices'));
 
 $actions = new ActionsWidget();
 $actions->addLink(_('Regeln testen'),$controller->url_for('admin/webservice_access/test'), Icon::create('add', 'clickable'));

@@ -94,10 +94,6 @@ class Course_MembersController extends AuthenticatedController
         // Create new MembersModel, to get additionanl informations to a given Seminar
         $this->members = new MembersModel($this->course_id, $this->course_title);
         $this->members->checkUserVisibility();
-
-        // Set default sidebar image
-        $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/person-sidebar.png');
     }
 
     public function index_action()

@@ -163,7 +163,6 @@ class MyCoursesController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/seminar-sidebar.png');
         $this->setSemesterWidget($sem);
 
         $setting_widget = $sidebar->addWidget(new ActionsWidget());

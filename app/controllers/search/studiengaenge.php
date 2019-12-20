@@ -26,7 +26,6 @@ class Search_StudiengaengeController extends MVVController
         Navigation::activateItem('/search/courses/module');
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
 
         $views = new ViewsWidget();
         $views->addLink(_('Modulsuche'), $this->url_for('search/module'));

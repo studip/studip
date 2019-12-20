@@ -33,8 +33,6 @@ class Settings_UserdomainsController extends Settings_SettingsController
         Navigation::activateItem('/profile/edit/userdomains');
         SkipLinks::addIndex(_('Zugeordnete Nutzerdomänen'), 'assigned_userdomains');
         SkipLinks::addIndex(_('Nutzerdomäne auswählen'), 'select_userdomains');
-
-        Sidebar::get()->setImage('sidebar/admin-sidebar.png');
     }
 
     /**

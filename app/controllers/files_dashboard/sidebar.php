@@ -15,7 +15,6 @@ trait Sidebar
     private function addIndexSidebar()
     {
         $sidebar = \Sidebar::get();
-        $sidebar->setImage('sidebar/files-sidebar.png');
 
         $actions = $sidebar->hasWidget('actions')
                  ? $sidebar->getWidget('actions')
@@ -39,7 +38,6 @@ trait Sidebar
     private function addSearchSidebar()
     {
         $sidebar = \Sidebar::get();
-        $sidebar->setImage('sidebar/files-sidebar.png');
 
         $categoryWidget = $this->getCategoryWidget();
         $sidebar->addWidget($categoryWidget);

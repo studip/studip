@@ -246,7 +246,6 @@ class Materialien_DokumenteController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
 
         $widget  = new ActionsWidget();
         if (MvvPerm::get('MvvDokument')->havePermCreate()) {

@@ -55,8 +55,6 @@ class FilesController extends AuthenticatedController
     private function buildSidebar(FolderType $folder, $view = true)
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/files-sidebar.png');
-
 
         $sources = new LinksWidget();
         $sources->setTitle(_("Dateiquellen"));

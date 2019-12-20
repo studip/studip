@@ -83,10 +83,6 @@ class Course_ScmController extends StudipController
         checkObject(); // do we have an open object?
         checkObjectModule('scm');
         object_set_visit_module('scm');
-
-        // Set sidebar image
-        $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/info-sidebar.png');
     }
 
     /**

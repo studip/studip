@@ -25,9 +25,9 @@ class Fachabschluss_FaecherController extends MVVController
         // Nur Fächer mit verantwortlichen Einrichtungen an denen der User
         // eine Rolle hat
         $filter = ['mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes()];
-    
+
         $this->count = Fach::getCount($filter);
-        
+
         if ($this->count < self::$items_per_page * ($this->page - 1)) {
             $this->page = 1;
         }
@@ -117,7 +117,7 @@ class Fachabschluss_FaecherController extends MVVController
             'institut_id',
             new StandardSearch('Institut_id')
         )->fireJSFunctionOnSelect('MVV.Search.addSelected')->noSelectbox();
-        
+
         if (!$this->fach->isNew() && MvvPerm::havePermCreate($this->fach)) {
             $this->setSidebar();
             $sidebar = Sidebar::get();
@@ -158,7 +158,7 @@ class Fachabschluss_FaecherController extends MVVController
     public function fachbereiche_action()
     {
         $filter = ['mvv_fach_inst.institut_id' => MvvPerm::getOwnInstitutes()];
-    
+
         $this->initPageParams('fachbereiche');
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
@@ -210,7 +210,6 @@ class Fachabschluss_FaecherController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
 
         $widget  = new ViewsWidget();
         $widget->addLink(

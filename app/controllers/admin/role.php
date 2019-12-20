@@ -523,8 +523,6 @@ class Admin_RoleController extends AuthenticatedController
     private function setSidebar($action)
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(PageLayout::getTitle() ?: _('Rollen'));
-        $sidebar->setImage('sidebar/roles-sidebar.png');
 
         $views = $sidebar->addWidget(new ViewsWidget());
         $views->addLink(

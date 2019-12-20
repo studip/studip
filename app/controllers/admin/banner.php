@@ -413,7 +413,6 @@ class Admin_BannerController extends AuthenticatedController
     protected function setSidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $actions = new ActionsWidget();
         $actions->addLink(

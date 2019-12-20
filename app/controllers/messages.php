@@ -924,8 +924,7 @@ class MessagesController extends AuthenticatedController {
     public function setupSidebar($action)
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/mail-sidebar.png');
-
+        
         $actions = new ActionsWidget();
         if ($GLOBALS['user']->perms !== 'user') {
             $actions->addLink(

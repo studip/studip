@@ -233,8 +233,6 @@ class Admin_SemesterController extends AuthenticatedController
     protected function setSidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Semester'));
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $views = $sidebar->addWidget(new ViewsWidget());
         $views->addLink(

@@ -89,8 +89,6 @@
 
 <?php
 $sidebar = Sidebar::Get();
-$sidebar->setImage('sidebar/institute-sidebar.png');
-$sidebar->setTitle(_('Meine Einrichtungen'));
 
 $links = new ActionsWidget();
 if ($reset) {

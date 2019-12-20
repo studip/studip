@@ -40,8 +40,6 @@
 
 <?
 $sidebar = Sidebar::Get();
-$sidebar->setTitle(PageLayout::getTitle());
-$sidebar->setImage('sidebar/plugin-sidebar.png');
 $links = new ActionsWidget();
 $links->addLink(
     _('Neue Kategorie anlegen'),

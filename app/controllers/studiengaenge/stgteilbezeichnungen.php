@@ -157,11 +157,10 @@ class Studiengaenge_StgteilbezeichnungenController extends MVVController
      */
     protected function setSidebar()
     {
-        $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/learnmodule-sidebar.png'));
-
         if (MvvPerm::havePermCreate('StgteilBezeichnung')) {
-            $widget  = new ActionsWidget();
+            $sidebar = Sidebar::get();
+
+            $widget = new ActionsWidget();
             $widget->addLink(
                 _('Neue Studiengangteil-Bezeichnung'),
                 $this->url_for('/stgteilbezeichnung'),

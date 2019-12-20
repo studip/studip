@@ -32,8 +32,6 @@ class Course_StudygroupController extends AuthenticatedController
             throw new Exception(_("Die von Ihnen gewählte Option ist im System nicht aktiviert."));
         }
 
-        Sidebar::get()->setImage('sidebar/studygroup-sidebar.png');
-
         if (Context::getId()) {
             $this->view = $this->getView(Context::getId());
         }
@@ -133,7 +131,6 @@ class Course_StudygroupController extends AuthenticatedController
                 }
             }
             $sidebar = Sidebar::get();
-            $sidebar->setTitle(_('Details'));
             $sidebar->setContextAvatar(StudygroupAvatar::getAvatar($studygroup->id));
 
             $iwidget = new SidebarWidget();

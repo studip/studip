@@ -166,7 +166,6 @@ jQuery(function ($) {
 
 <?
 $sidebar = Sidebar::Get();
-$sidebar->setTitle('Manuelles Eintragen');
 $links = new ActionsWidget();
 $links->addLink(_('Übersicht'), $controller->url_for('admin/autoinsert'), Icon::create('edit', 'clickable'));
 $sidebar->addWidget($links);

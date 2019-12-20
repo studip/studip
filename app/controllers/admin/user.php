@@ -1510,7 +1510,6 @@ class Admin_UserController extends AuthenticatedController
     public function addSidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setImage('sidebar/person-sidebar.png');
 
         $actions = $sidebar->addWidget(new ActionsWidget());
 

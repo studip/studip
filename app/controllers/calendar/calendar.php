@@ -60,8 +60,7 @@ class Calendar_CalendarController extends AuthenticatedController
     {
         $active = $active ?: $this->last_view;
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Kalender'));
-        $sidebar->setImage('sidebar/schedule-sidebar.png');
+
         $views = new ViewsWidget();
         $views->addLink(_('Tag'), $this->url_for($this->base . 'day'))
                 ->setActive($active == 'day');

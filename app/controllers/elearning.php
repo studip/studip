@@ -69,7 +69,6 @@ class ElearningController extends AuthenticatedController
         elseif ($this->close_all != "")
             $_SESSION['elearning_open_close']["all open"] = "";
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/learnmodule-sidebar.png');
         //$this->sidebar->setContextAvatar(CourseAvatar::getAvatar($this->seminar_id));
     }
 
@@ -139,7 +138,6 @@ class ElearningController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
         $widget = new ActionsWidget();
 
         if ($GLOBALS['perm']->have_perm('autor') AND count($this->cms_list)) {

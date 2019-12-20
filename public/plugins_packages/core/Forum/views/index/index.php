@@ -13,7 +13,6 @@
 <?php
 
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/forum-sidebar.png');
 
 if (ForumPerm::has('search', $seminar_id)) {
     $search = new SearchWidget(PluginEngine::getLink('coreforum/index/search?backend=search'));

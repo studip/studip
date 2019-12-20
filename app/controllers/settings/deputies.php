@@ -85,7 +85,6 @@ class Settings_DeputiesController extends Settings_SettingsController
         );
 
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(PageLayout::getTitle());
         $actions = new ActionsWidget();
         $mp = MultiPersonSearch::get('settings_add_deputy')
             ->setLinkText(_('Neue Standardvertretung festlegen'))

@@ -759,7 +759,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
+
         $widget  = new ViewsWidget();
         $widget->addLink(
             _('Liste der Studiengänge'),

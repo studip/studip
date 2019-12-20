@@ -60,7 +60,6 @@ class Course_AdmissionController extends AuthenticatedController
     {
         URLHelper::addLinkParam('return_to_dialog', Request::isDialog());
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/seminar-sidebar.png');
 
         if ($GLOBALS['perm']->have_perm('admin')) {
             $list = new SelectWidget(_('Veranstaltungen'), '?#admin_top_links', 'cid');

@@ -149,8 +149,6 @@ class Admin_HolidaysController extends AuthenticatedController
     private function setSidebar()
     {
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(_('Ferien'));
-        $sidebar->setImage('sidebar/admin-sidebar.png');
 
         $views = new ViewsWidget();
         $views->addLink(_('Alle Einträge'),

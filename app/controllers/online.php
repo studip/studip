@@ -61,7 +61,6 @@ class OnlineController extends AuthenticatedController
 
         // Setup sidebar
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/person-sidebar.png');
 
         // Add buddy configuration option to sidebar only if the user actually
         // has buddies

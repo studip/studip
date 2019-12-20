@@ -361,7 +361,6 @@ class Course_BasicdataController extends AuthenticatedController
         }
         $this->flash->discard(); //schmeißt ab jetzt unnötige Variablen aus der Session.
         $sidebar = Sidebar::get();
-        $sidebar->setImage("sidebar/admin-sidebar.png");
 
         $widget = new ActionsWidget();
         $widget->addLink(_('Bild ändern'),

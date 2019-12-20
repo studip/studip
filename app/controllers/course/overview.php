@@ -132,7 +132,6 @@ class Course_OverviewController extends AuthenticatedController
         $this->plugins = PluginEngine::getPlugins('StandardPlugin', $this->course_id);
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/seminar-sidebar.png');
 
         if (!$this->course->admission_binding
             && in_array($GLOBALS['perm']->get_studip_perm($this->course->id), ['user','autor'])

@@ -147,8 +147,6 @@ use Studip\Button, Studip\LinkButton;
 
 <?
 $sidebar = Sidebar::Get();
-$sidebar->setTitle(_('Plugins'));
-$sidebar->setImage('sidebar/plugin-sidebar.png');
 
 if (Config::get()->PLUGINS_UPLOAD_ENABLE) {
     $uploadArea = $sidebar->addWidget(new LinksWidget());

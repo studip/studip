@@ -68,7 +68,6 @@ class Admin_StatusgroupsController extends AuthenticatedController
         }
         // Setup sidebar.
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/group-sidebar.png');
         if ($this->tutor) {
             $widget = new ActionsWidget();
             $widget->addLink(_('Neue Gruppe anlegen'),

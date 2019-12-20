@@ -30,8 +30,6 @@ class Admission_RuleAdministrationController extends AuthenticatedController
         PageLayout::addScript('studip-admission.js');
 
         $sidebar = Sidebar::Get();
-        $sidebar->setTitle(PageLayout::getTitle() ?: _('Anmelderegeln'));
-        //$sidebar->setImage('sidebar/roles-sidebar.png');
 
         $views = new ViewsWidget();
         $views->addLink(_('Installierte Anmelderegeln'),

@@ -31,13 +31,11 @@ class Course_WizardController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/seminar-sidebar.png');
 
         $this->studygroup = Request::int('studygroup') ?: $this->flash['studygroup'];
 
         if (!$this->studygroup) {
             PageLayout::setTitle(_('Neue Veranstaltung anlegen'));
-            $sidebar->setTitle(_('Neue Veranstaltung anlegen'));
 
             $navigation = new Navigation(_('Neue Veranstaltung anlegen'), 'dispatch.php/course/wizard');
             Navigation::addItem('/browse/my_courses/new_course', $navigation);
@@ -46,7 +44,6 @@ class Course_WizardController extends AuthenticatedController
             $this->flash['studygroup'] = true;
 
             PageLayout::setTitle(_('Neue Studiengruppe anlegen'));
-            $sidebar->setTitle(_('Neue Studiengruppe anlegen'));
 
             $navigation = new Navigation(_('Neue Studiengruppe anlegen'), 'dispatch.php/course/wizard?studygroup=1');
             Navigation::addItem('/browse/my_courses/new_course', $navigation);

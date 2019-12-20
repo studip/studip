@@ -5,8 +5,8 @@
 # Lifter010: TODO
 /**
 * Frontend
-* 
-* 
+*
+*
 *
 * @author       André Noack <andre.noack@data.quest.de>
 * @access       public
@@ -18,7 +18,7 @@
 // This file is part of Stud.IP
 // admin_range_tree.php
 //
-// Copyright (c) 2002 André Noack <noack@data-quest.de> 
+// Copyright (c) 2002 André Noack <noack@data-quest.de>
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
 // This program is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ $perm->check(Config::get()->RANGE_TREE_ADMIN_PERM ?: 'admin');
 
 include 'lib/seminar_open.php'; //hier werden die sessions initialisiert
 
-PageLayout::setTitle(Config::get()->UNI_NAME_CLEAN . " - " . _("Einrichtungshierarchie bearbeiten"));
+PageLayout::setTitle(_('Einrichtungshierarchie bearbeiten'));
 Navigation::activateItem('/admin/locations/range_tree');
 
 ob_start();

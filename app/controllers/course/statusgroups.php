@@ -205,8 +205,6 @@ class Course_StatusgroupsController extends AuthenticatedController
          * Setup sidebar.
          */
         $sidebar = Sidebar::get();
-        // Set default sidebar image
-        $sidebar->setImage('sidebar/person-sidebar.png');
 
         $actions = new ActionsWidget();
         if ($this->is_tutor) {

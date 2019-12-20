@@ -47,7 +47,6 @@ class Search_GlobalsearchController extends AuthenticatedController
     private function addSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/search-sidebar.png');
 
         $links_widget = $sidebar->addWidget(new ViewsWidget());
         $links_widget->setTitle(_('Ergebnis-Anzeige'));

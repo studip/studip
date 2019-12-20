@@ -40,7 +40,7 @@ if (!$perm->is_fak_admin()){
 
 include 'lib/seminar_open.php'; // initialise Stud.IP-Session
 
-PageLayout::setTitle(Config::get()->UNI_NAME_CLEAN . " - " . _("Veranstaltungshierachie bearbeiten"));
+PageLayout::setTitle(_('Veranstaltungshierachie bearbeiten'));
 Navigation::activateItem('/admin/locations/sem_tree');
 
 // Start of Output
@@ -293,7 +293,7 @@ ob_start();
                 ]
             ); ?>
         </div>
-    </form> 
+    </form>
 <?
 
 // Add Clipboard to Sidebar (get the inner/second output buffer)

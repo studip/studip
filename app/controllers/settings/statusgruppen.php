@@ -34,8 +34,6 @@ class Settings_StatusgruppenController extends Settings_SettingsController
         PageLayout::setTitle(_('Einrichtungsdaten bearbeiten'));
         Navigation::activateItem('/profile/edit/statusgruppen');
         SkipLinks::addIndex(_('Einrichtungsdaten bearbeiten'), 'layout_content', 100);
-
-        Sidebar::get()->setImage('sidebar/group-sidebar.png');
     }
 
     /**

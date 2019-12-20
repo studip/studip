@@ -22,30 +22,29 @@ class Search_StgtableController extends Search_StudiengaengeController
     public function before_filter(&$action, &$args)
     {
         $this->allow_nobody = Config::get()->COURSE_SEARCH_IS_VISIBLE_NOBODY;
-        
+
         MVVController::before_filter($action, $args);
-        
+
         // set navigation
         Navigation::activateItem('/search/courses/module');
-        
+
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/learnmodule-sidebar.png');
-        
+
         $views = new ViewsWidget();
         $views->addLink(_('Modulsuche'), $this->url_for('search/module'));
         $views->addLink(_('Studienangebot'), $this->url_for('search/angebot'));
         $views->addLink(_('Studiengänge'), $this->url_for('search/studiengaenge'));
         $views->addLink(_('Fach-Abschluss-Kombinationen'), $this->url_for('search/stgtable'))
                 ->setActive(true);
-        
+
         $sidebar->addWidget($views);
-        
+
         $this->breadcrumb = new BreadCrumb();
         $this->action = $action;
         $this->verlauf_url = 'search/stgtable/verlauf';
         PageLayout::setTitle(_('Modulverzeichnis - Fach-Abschluss-Kombinationen'));
     }
-    
+
     public function index_action()
     {
         $this->kategorien = [];
@@ -54,9 +53,9 @@ class Search_StgtableController extends Search_StudiengaengeController
                 $this->kategorien[$kategorie->id]  = $kategorie;
             }
         }
-        
+
         $public_status = [];
-        
+
         // combine all Studiengänge with the same name to one entry
         $this->stgs = [];
         foreach (SimpleORMapCollection::createFromArray(Studiengang::getAll())
@@ -66,19 +65,13 @@ class Search_StgtableController extends Search_StudiengaengeController
                 $this->stgs[(string) $studiengang->name][$studiengang->abschluss->kategorie_id] = $studiengang->id;
             }
         }
-        
+
         $this->breadcrumb->init();
         $this->breadcrumb->append(_('Fach-Abschluss-Kombinationen'), 'index');
     }
-    
+
     public function matrix_detail_action($fach_id, $abschluss_id, $studiengang_id = null)
     {
         $this->relocate('detail/', $fach_id, $abschluss_id, $studiengang_id);
     }
-    
-    public function studiengang_action($studiengang_id)
-    {
-        parent::studiengang_action($studiengang_id);
-    }
-    
 }
