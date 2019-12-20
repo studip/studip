@@ -57,7 +57,7 @@
         </div>
         <div class="writer" v-if="thread_data.thread_posting.commentable">
             <studip-icon shape="blubber" size="30" role="info"></studip-icon>
-            <textarea :placeholder="'Kommentar schreiben. Enter zum Abschicken.'.toLocaleString()"
+            <textarea :placeholder="thread_data.thread_posting.content.trim() ? 'Kommentar schreiben. Enter zum Abschicken.'.toLocaleString() : 'Nachricht schreiben. Enter zum Abschicken'.toLocaleString()"
                       @keyup.enter.exact="submit"
                       @keyup.up.exact="editPreviousComment"
                       @keyup="saveCommentToSession" @change="saveCommentToSession"></textarea>
