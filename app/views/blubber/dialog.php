@@ -6,3 +6,7 @@
         <blubber-thread :thread_data="thread_data"></blubber-thread>
     </div>
 </div>
+
+<div data-dialog-button>
+    <?= \Studip\LinkButton::create(_("Zum Kontext springen"), $thread->getURL()) ?>
+</div>
