@@ -25,7 +25,7 @@ class Course extends \RESTAPI\RouteMap
      */
     public function getUserCourses($user_id)
     {
-        if ($GLOBALS['user']->id !== $user_id) {
+        if (($GLOBALS['user']->id !== $user_id) && !$GLOBALS['perm']->have_perm("root")) {
             $this->error(401);
         }
 

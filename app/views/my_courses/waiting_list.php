@@ -86,7 +86,7 @@
             </td>
 
             <td style="text-align: right">
-                <? if ($wait["status"] == "accepted" && $wait['admission_binding']) : ?>
+                <? if ($wait["status"] == "accepted" || $wait['admission_binding']) : ?>
                     <a href="<?= $controller->url_for('my_courses/decline_binding') ?>">
                         <?= Icon::create('door-leave+decline', 'inactive', ['title' => _("Die Teilnahme ist bindend. Bitte wenden Sie sich an die Lehrenden.")])->asImg(20) ?>
                     </a>

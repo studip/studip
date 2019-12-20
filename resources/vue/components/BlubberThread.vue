@@ -16,8 +16,6 @@
                 </div>
 
                 <div v-if="!thread_data.thread_posting.content.trim() && !thread_data.comments.length" class="empty_blubber_background">
-                    <studip-icon shape="blubber" size="130" role="clickable"></studip-icon>
-                    <studip-icon shape="blubber" size="180" role="lightblue"></studip-icon>
                     <div v-html="'Starte die Konversation jetzt!'.toLocaleString()">
 
                     </div>
