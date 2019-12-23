@@ -132,7 +132,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     Icon::create('seminar+add')
                 )->asDialog('size=auto;reload-on-close');
             }
-            if ($this->change_course_permission) {
+            if ($this->add_own_course_permission) {
                 $widget->addLink(
                     _('Eigenen ILIAS-Kurs zuordnen'),
                     $this->url_for('course/ilias_interface/add_object/assign_own_course'),
