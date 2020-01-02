@@ -588,8 +588,8 @@
                 }
 
                 &.unseen {
-                    border-left: 5px solid $active-color;
-                    padding-left: 6px;
+                    border-left: 3px solid $active-color;
+                    padding-left: 8px;
                 }
 
                 &[v-if],
