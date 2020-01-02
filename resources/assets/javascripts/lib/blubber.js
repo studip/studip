@@ -22,6 +22,7 @@ const Blubber = {
                         this.waiting = true;
                         STUDIP.api.GET(`blubber/threads/${thread_id}`).done((data) => {
                             this.active_thread = thread_id;
+                            console.log(jQuery(this.$el).find('.blubber_panel'));
                             if (thread_id !== 'global') {
                                 this.thread_data = data;
                                 this.stream_data = {};

@@ -4,7 +4,7 @@
      data-stream_more_down="<?= $stream_more_down ? 1 : 0 ?>"
      data-thread_data="<?= htmlReady(json_encode($thread_data ?: ['thread_posting' => []])) ?>"
      data-threads_more_down="<?= htmlReady($threads_more_down) ?>"
-     :class="waiting ? 'waiting' : ''">
+     :class="(waiting ? 'waiting' : '') + (active_thread === 'global' ? ' globalstream' : '')">
 
     <div id="blubber_stream_container">
         <blubber-globalstream :stream_data="stream_data" :more_down="stream_more_down" v-if="active_thread === 'global'"></blubber-globalstream>

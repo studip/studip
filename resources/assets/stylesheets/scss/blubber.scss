@@ -12,6 +12,9 @@
     [v-show] {
         display: none;
     }
+    &.globalstream .blubber_sideinfo {
+        display: none;
+    }
 }
 
 .blubber_thread {

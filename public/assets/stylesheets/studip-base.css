@@ -16274,6 +16274,8 @@ table.default tr.subcourses {
   .blubber_panel [v-for],
   .blubber_panel [v-show] {
     display: none; }
+  .blubber_panel.globalstream .blubber_sideinfo {
+    display: none; }
 
 .blubber_thread {
   border: 1px solid #d0d0d5;
