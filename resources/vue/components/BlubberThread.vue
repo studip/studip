@@ -243,10 +243,13 @@
                     let comment_id = $(event.target).closest('li[data-comment_id]').data('comment_id');
                 }
                 li.find('.content').toggleClass('editing');
-                li.find('.content textarea').focus();
+                let textarea = li.find('.content textarea').last()[0];
+                textarea.focus();
+                textarea.setSelectionRange(textarea.value.length, textarea.value.length);
                 li.find('.content textarea:not(.auto-resizable)').addClass('auto-resizable').autoResize({
                     animateDuration: 0
                 });
+                console.log(li.find('.content textarea'));
             },
             saveComment (event) {
                 let thread = this;
