@@ -22,7 +22,6 @@ const Blubber = {
                         this.waiting = true;
                         STUDIP.api.GET(`blubber/threads/${thread_id}`).done((data) => {
                             this.active_thread = thread_id;
-                            console.log(jQuery(this.$el).find('.blubber_panel'));
                             if (thread_id !== 'global') {
                                 this.thread_data = data;
                                 this.stream_data = {};
@@ -39,6 +38,11 @@ const Blubber = {
                         }).fail(() => {
                             window.alert("Konnte die Konversation nicht laden. Probieren Sie es nachher erneut.".toLocaleString());
                         });
+                        for (let i in this.threads) {
+                            if (this.threads[i].thread_id === thread_id) {
+                                this.threads[i].unseen_comments = 0;
+                            }
+                        }
                     }
                 }
             });

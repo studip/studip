@@ -4,7 +4,8 @@
             <li v-for="thread in sortedThreads"
                 :key="thread.thread_id"
                 :data-thread_id="thread.thread_id"
-                :class="active_thread === thread.thread_id ? 'active' : ''"
+                :class="(active_thread === thread.thread_id ? 'active' : '') + (thread.unseen_comments > 0 ? ' unseen' : '')"
+                :data-unseen_comments="thread.unseen_comments"
                 @click.prevent="changeActiveThread">
                 <a :href="link(thread.thread_id)">
                     <div class="avatar"

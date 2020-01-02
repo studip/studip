@@ -16734,6 +16734,9 @@ table.default tr.subcourses {
       font-weight: bold; }
       .blubber_threads_widget .sidebar-widget-content ol li:last-child {
         border-bottom: none; }
+      .blubber_threads_widget .sidebar-widget-content ol li.unseen {
+        border-left: 5px solid #d60000;
+        padding-left: 6px; }
       .blubber_threads_widget .sidebar-widget-content ol li[v-if], .blubber_threads_widget .sidebar-widget-content ol li[v-for], .blubber_threads_widget .sidebar-widget-content ol li[v-show] {
         display: none; }
       .blubber_threads_widget .sidebar-widget-content ol li.more {

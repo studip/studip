@@ -587,6 +587,11 @@
                     border-bottom: none;
                 }
 
+                &.unseen {
+                    border-left: 5px solid $active-color;
+                    padding-left: 6px;
+                }
+
                 &[v-if],
                 &[v-for],
                 &[v-show] {

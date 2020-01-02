@@ -398,7 +398,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     public function getLastVisit($user_id = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
-        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId());
+        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId()) ?: object_get_visit_threshold();
     }
 
     public function notifyUsersForNewComment($comment)

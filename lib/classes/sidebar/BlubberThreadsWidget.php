@@ -34,7 +34,11 @@ class BlubberThreadsWidget extends SidebarWidget
                 'thread_id' => $thread->getId(),
                 'avatar' => $thread->getAvatar(),
                 'name' => $thread->getName(),
-                'timestamp' => (int) $thread->getLatestActivity()
+                'timestamp' => (int) $thread->getLatestActivity(),
+                'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
+                    $thread->getId(),
+                    $thread->getLastVisit()
+                ])
             ];
         }
 
