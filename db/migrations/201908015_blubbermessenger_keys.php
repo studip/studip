@@ -3,7 +3,7 @@ class BlubbermessengerKeys extends Migration
 {
     public function description()
     {
-        $query = "Adds primary key to table 'blubber_mentions'";
+        return "Adds primary key to table 'blubber_mentions'";
     }
 
     public function up()

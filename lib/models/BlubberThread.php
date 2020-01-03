@@ -392,13 +392,16 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
     public function getURL()
     {
+        if (($this['context_type'] === "course") || ($this['context_type'] === "institute")) {
+            return URLHelper::getURL('plugins.php/blubber/messenger/course/' . $this->getId(), ['cid' => $this['context_id']]);
+        }
         return URLHelper::getURL('dispatch.php/blubber/index/' . $this->getId());
     }
 
     public function getLastVisit($user_id = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
-        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId()) ?: object_get_visit_threshold();
+        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId());
     }
 
     public function notifyUsersForNewComment($comment)
@@ -554,7 +557,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             'more_down'       => 0,
             'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
                 $this->getId(),
-                $this->getLastVisit()
+                $this->getLastVisit() ?: object_get_visit_threshold()
             ])
         ];
         $context_info = $this->getContextTemplate();
