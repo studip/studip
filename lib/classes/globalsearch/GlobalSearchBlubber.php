@@ -114,7 +114,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                 $description = self::mark($comment['content'], $search, true);
                 $name = sprintf(
                     $thread['content'] ? _("Kommentar von %s") : _("Nachricht von %s"),
-                    $comment->user->getFullName()
+                    $comment->user ? $comment->user->getFullName() : _("unbekannt")
                 );
             }
         }
