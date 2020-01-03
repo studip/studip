@@ -39,7 +39,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
         $search = DBManager::get()->quote("%".$search."%");
 
         if (!$GLOBALS['perm']->have_perm("admin")) {
-            return "SELECT SQL_CALC_FOUND_ROWS DISTINCT `blubber_threads`.`thread_id`, `blubber_comments`.`comment_id`
+            return "SELECT SQL_CALC_FOUND_ROWS `blubber_threads`.`thread_id`, `blubber_comments`.`comment_id`
                 FROM `blubber_threads`
                     LEFT JOIN `seminar_user` ON (`blubber_threads`.`context_id` = `seminar_id` AND `blubber_threads`.context_type = 'course')
                     LEFT JOIN `user_inst` ON (`blubber_threads`.`context_id` = `Institut_id` AND `blubber_threads`.context_type = 'institute')
@@ -52,6 +52,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR (`blubber_threads`.context_type = 'private' AND `blubber_mentions`.user_id = {$user_id})
                     )
                     AND (`blubber_threads`.content LIKE {$search} OR `blubber_comments`.content LIKE {$search})
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . $limit;
         } elseif (!$GLOBALS['perm']->have_perm("root")) {
@@ -68,6 +69,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR (`blubber_threads`.context_type = 'private' AND `blubber_mentions`.user_id = {$user_id})
                     )
                     AND (`blubber_threads`.content LIKE {$search} OR `blubber_comments`.content LIKE {$search})
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . $limit;
         } else { //I Am Root!
@@ -80,6 +82,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR `blubber_mentions`.user_id = {$user_id}
                     )
                     AND (`blubber_threads`.content LIKE {$search} OR `blubber_comments`.content LIKE {$search})
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . $limit;
         }
@@ -195,6 +198,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR (`blubber_threads`.context_type = 'private' AND `blubber_mentions`.user_id = {$user_id})
                     )
                     AND (MATCH(`blubber_threads`.`content`) AGAINST({$query} IN BOOLEAN MODE) OR MATCH(`blubber_comments`.`content`) AGAINST({$query} IN BOOLEAN MODE))
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
         } elseif (!$GLOBALS['perm']->have_perm("root")) {
@@ -211,6 +215,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR (`blubber_threads`.context_type = 'private' AND `blubber_mentions`.user_id = {$user_id})
                     )
                     AND (MATCH(`blubber_threads`.`content`) AGAINST({$query} IN BOOLEAN MODE) OR MATCH(`blubber_comments`.`content`) AGAINST({$query} IN BOOLEAN MODE))
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
         } else { //I Am Root!
@@ -223,6 +228,7 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
                         OR `blubber_mentions`.user_id = {$user_id}
                     )
                     AND (MATCH(`blubber_threads`.`content`) AGAINST({$query} IN BOOLEAN MODE) OR MATCH(`blubber_comments`.`content`) AGAINST({$query} IN BOOLEAN MODE))
+                GROUP BY `blubber_threads`.`thread_id`
                 ORDER BY `blubber_threads`.`mkdate` DESC
                 LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
         }
