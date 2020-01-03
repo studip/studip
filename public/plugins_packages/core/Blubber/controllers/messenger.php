@@ -58,11 +58,16 @@ class MessengerController extends PluginController {
         }
         $this->buildSidebar();
 
-
         $tf = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH']."/app/views");
-        $template = $tf->open("blubber/index");
+        if (Request::isDialog()) {
+            PageLayout::setTitle($this->thread->getName());
+            $template = $tf->open("blubber/dialog");
+        } else {
+            $template = $tf->open("blubber/index");
+            $template->set_layout($GLOBALS['template_factory']->open("layouts/base"));
+        }
+
         $template->set_attributes($this->get_assigned_variables());
-        $template->set_layout($GLOBALS['template_factory']->open("layouts/base"));
         $this->render_text($template->render());
     }
 
