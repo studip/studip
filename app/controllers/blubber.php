@@ -31,13 +31,15 @@ class BlubberController extends AuthenticatedController
             $this->thread = BlubberThread::find($thread_id);
             if (!$this->thread || !$this->thread->isReadable()) {
                 $this->thread = null;
-            } else {
-                $this->thread->markAsRead();
             }
         }
 
         if (!$this->thread) {
             $this->thread = array_pop(array_reverse($this->threads));
+        }
+
+        if ($this->thread) {
+            $this->thread->markAsRead();
         }
 
         if ($this->thread->getId() === 'global') {

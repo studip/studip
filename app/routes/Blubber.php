@@ -56,6 +56,7 @@ class Blubber extends \RESTAPI\RouteMap
             array_pop($global_threads);
             $this->stream_data['more_down'] = 1;
         }
+        $GLOBALS['user']->cfg->store("BLUBBERTHREAD_VISITED_global", time());
         foreach ($global_threads as $thread) {
             if ($thread->isVisibleInStream() && $thread->isReadable()) {
                 $data = $thread->toRawArray();

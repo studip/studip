@@ -30,15 +30,21 @@ class BlubberThreadsWidget extends SidebarWidget
 
         $json = [];
         foreach ($this->elements as $thread) {
+            if ($thread->getId() === "global") {
+                $unseen_comments = BlubberThread::countBySQL("context_type = 'public' AND mkdate > ?", [$thread->getLastVisit() ?: object_get_visit_threshold()]);
+            } else {
+                $unseen_comments = BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
+                    $thread->getId(),
+                    $thread->getLastVisit() ?: object_get_visit_threshold()
+                ]);
+            }
+
             $json[] = [
                 'thread_id' => $thread->getId(),
                 'avatar' => $thread->getAvatar(),
                 'name' => $thread->getName(),
                 'timestamp' => (int) $thread->getLatestActivity(),
-                'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
-                    $thread->getId(),
-                    $thread->getLastVisit() ?: object_get_visit_threshold()
-                ])
+                'unseen_comments' => $unseen_comments
             ];
         }
 
