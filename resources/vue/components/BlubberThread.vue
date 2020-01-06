@@ -169,21 +169,22 @@
                 });
             },
             addComment (comment) {
-                let comment_ids = this.thread_data.comments.map((comment) => comment.comment_id);
-                if (comment_ids.indexOf(comment.comment_id) !== -1) {
-                    return;
-                }
-                this.thread_data.comments.push(comment);
-
                 this.$nextTick(() => {
                     STUDIP.Markup.element($(this.$el).find(`.comments > li[data-comment_id="${comment.comment_id}"]`));
                 });
+                for (let i in this.thread_data.comments) {
+                    if (this.thread_data.comments[i].comment_id === comment.comment_id) {
+                        this.thread_data.comments[i].content = comment.content;
+                        this.thread_data.comments[i].html = comment.html;
+                        return;
+                    }
+                }
+                this.thread_data.comments.push(comment);
             },
             removeComment (comment_id) {
                 this.thread_data.comments.forEach((comment, i) => {
-                    if (comment.comment_id = comment_id) {
+                    if (comment.comment_id === comment_id) {
                         this.$delete(this.thread_data.comments, i);
-                        //delete this.thread_data.comments[i];
                     }
                 });
             },
@@ -249,7 +250,6 @@
                 li.find('.content textarea:not(.auto-resizable)').addClass('auto-resizable').autoResize({
                     animateDuration: 0
                 });
-                console.log(li.find('.content textarea'));
             },
             saveComment (event) {
                 let thread = this;
@@ -286,6 +286,11 @@
                     }
                     $(thread.$el).find('.writer textarea').focus();
                 });
+            },
+            removeDeletedComments: function (comment_ids) {
+                for (let i in comment_ids) {
+                    this.removeComment(comment_ids[i]);
+                }
             },
             editPreviousComment () {
                 if (!$(this.$el).find('.writer textarea').val().trim()) {

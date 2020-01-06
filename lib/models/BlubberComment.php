@@ -37,6 +37,7 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
 
         $config['registered_callbacks']['before_create'][] = 'transformMentions';
         $config['registered_callbacks']['after_create'][] = 'cbCreateNotifications';
+        $config['registered_callbacks']['before_delete'][] = 'cbCreateDeleteEvent';
 
         parent::configure($config);
     }
@@ -108,5 +109,21 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
             'BlubberThread::mention'
         );
         $this['content'] = transformBeforeSave($this['content']);
+    }
+
+    public function cbCreateDeleteEvent()
+    {
+        $statement = DBManager::get()->prepare("
+            INSERT IGNORE INTO blubber_events_queue
+            SET event_type = 'delete',
+                item_id = ?,
+                mkdate = UNIX_TIMESTAMP()
+        ");
+        $statement->execute([$this->getId()]);
+        $statement = DBManager::get()->prepare("
+            DELETE FROM blubber_events_queue
+            WHERE mkdate <= UNIX_TIMESTAMP() - 60 * 15
+        ");
+        $statement->execute();
     }
 }

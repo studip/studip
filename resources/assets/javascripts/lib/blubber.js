@@ -87,6 +87,11 @@ const Blubber = {
             }
         });
     },
+    removeDeletedComments: function (comment_ids) {
+        $('.blubber_thread').each(function () {
+            this.__vue__.removeDeletedComments(comment_ids);
+        });
+    },
     updateThreadWidget (threaddata) {
         for (let i in threaddata) {
             let exists = false;

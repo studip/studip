@@ -159,7 +159,7 @@ class JsupdaterController extends AuthenticatedController
             foreach ($page_info['Blubber']['threads'] as $thread_id) {
                 $thread = new BlubberThread($thread_id);
                 if ($thread->isReadable()) {
-                    $comments = BlubberComment::findBySQL("thread_id = :thread_id AND mkdate >= :time ORDER BY mkdate ASC", array(
+                    $comments = BlubberComment::findBySQL("thread_id = :thread_id AND chdate >= :time ORDER BY mkdate ASC", array(
                         'thread_id' => $thread_id,
                         'time' => UpdateInformation::getTimestamp()
                     ));
@@ -171,6 +171,21 @@ class JsupdaterController extends AuthenticatedController
             if (count($blubber_data)) {
                 $data['Blubber.addNewComments'] = $blubber_data;
             }
+            $statement = DBManager::get()->prepare("
+                SELECT blubber_events_queue.item_id 
+                FROM blubber_events_queue
+                WHERE blubber_events_queue.event_type = 'delete'
+            ");
+            $statement->execute([$page_info['Blubber']['threads']]);
+            $comment_ids = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            if (count($comment_ids)) {
+                $data['Blubber.removeDeletedComments'] = $comment_ids;
+            }
+            $statement = DBManager::get()->prepare("
+                DELETE FROM blubber_events_queue
+                WHERE mkdate <= UNIX_TIMESTAMP() - 60 * 15
+            ");
+            $statement->execute();
         }
         if (mb_stripos(Request::get("page"), "dispatch.php/blubber") !== false) {
             //collect updated threads for the widget
