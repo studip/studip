@@ -107,11 +107,6 @@ class ProfileModulesController extends AuthenticatedController
     {
         $plugins = [];
 
-        // Add blubber to plugin list so status can be updated.
-        if ($blubber = PluginEngine::getPlugin('Blubber')) {
-            $plugins[$blubber->getPluginId()] = $blubber;
-        }
-
         // Get homepage plugins from database.
         foreach (PluginEngine::getPlugins('HomepagePlugin') as $plugin) {
             $plugins[$plugin->getPluginId()] = $plugin;
