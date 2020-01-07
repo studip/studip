@@ -16809,6 +16809,9 @@ table.default tr.subcourses {
     opacity: 1;
     transform: scale(1, 1); } }
 
+.blubberthreadwidget-list-move {
+  transition: transform 0.5s; }
+
 #layout-sidebar {
   background: #fff;
   flex: 0 1 auto;

@@ -1,28 +1,28 @@
 <template>
     <div class="scrollable_area" v-scroll>
-        <ol>
-            <li v-for="thread in sortedThreads"
-                :key="thread.thread_id"
-                :data-thread_id="thread.thread_id"
-                :class="(active_thread === thread.thread_id ? 'active' : '') + (thread.unseen_comments > 0 ? ' unseen' : '')"
-                :data-unseen_comments="thread.unseen_comments"
-                @click.prevent="changeActiveThread">
-                <a :href="link(thread.thread_id)">
-                    <div class="avatar"
-                         :style="{ backgroundImage: 'url(' + thread.avatar + ')' }">
-                    </div>
-                    <div class="info">
-                        <div class="name">
-                            {{ thread.name }}
+        <transition-group name="blubberthreadwidget-list" tag="ol">
+                <li v-for="thread in sortedThreads"
+                    :key="thread.thread_id"
+                    :data-thread_id="thread.thread_id"
+                    :class="(active_thread === thread.thread_id ? 'active' : '') + (thread.unseen_comments > 0 ? ' unseen' : '')"
+                    :data-unseen_comments="thread.unseen_comments"
+                    @click.prevent="changeActiveThread">
+                    <a :href="link(thread.thread_id)">
+                        <div class="avatar"
+                             :style="{ backgroundImage: 'url(' + thread.avatar + ')' }">
                         </div>
-                        <studip-date-time :timestamp="thread.timestamp" :relative="true"></studip-date-time>
-                    </div>
-                </a>
-            </li>
-            <li class="more" v-if="display_more_down">
-                <studip-asset-img file="ajax-indicator-black.svg" width="20"></studip-asset-img>
-            </li>
-        </ol>
+                        <div class="info">
+                            <div class="name">
+                                {{ thread.name }}
+                            </div>
+                            <studip-date-time :timestamp="thread.timestamp" :relative="true"></studip-date-time>
+                        </div>
+                    </a>
+                </li>
+                <li class="more" v-if="display_more_down">
+                    <studip-asset-img file="ajax-indicator-black.svg" width="20"></studip-asset-img>
+                </li>
+        </transition-group>
     </div>
 </template>
 

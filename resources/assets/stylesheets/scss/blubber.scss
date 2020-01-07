@@ -691,3 +691,7 @@
         transform: scale(1,1);
     }
 }
+
+.blubberthreadwidget-list-move {
+    transition: transform 0.5s;
+}
