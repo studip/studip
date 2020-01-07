@@ -21,7 +21,7 @@ class CronjobTestSchedule extends SimpleORMap
 {
 }
 
-class ScheduleTest extends \Codeception\Test\Unit
+class CronjobScheduleTest extends \Codeception\Test\Unit
 {
     function setUp()
     {

@@ -48,7 +48,8 @@ class I18N
      */
     public static function isEnabled()
     {
-        return count($GLOBALS['CONTENT_LANGUAGES']) > 1;
+        return is_array($GLOBALS['CONTENT_LANGUAGES']) &&
+            count($GLOBALS['CONTENT_LANGUAGES']) > 1;
     }
 
     protected $template;
