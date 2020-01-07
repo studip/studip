@@ -215,31 +215,31 @@
     },
     {
         "name": "neomerx/cors-psr7",
-        "version": "v1.0.11",
-        "version_normalized": "1.0.11.0",
+        "version": "v1.0.13",
+        "version_normalized": "1.0.13.0",
         "source": {
             "type": "git",
             "url": "https://github.com/neomerx/cors-psr7.git",
-            "reference": "cc0413d6843ca27f90d15dbaf3bc6f9f972476f0"
+            "reference": "2556e2013f16a55532c95928455257d5b6bbc6e2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/neomerx/cors-psr7/zipball/cc0413d6843ca27f90d15dbaf3bc6f9f972476f0",
-            "reference": "cc0413d6843ca27f90d15dbaf3bc6f9f972476f0",
+            "url": "https://api.github.com/repos/neomerx/cors-psr7/zipball/2556e2013f16a55532c95928455257d5b6bbc6e2",
+            "reference": "2556e2013f16a55532c95928455257d5b6bbc6e2",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.5.0",
+            "php": ">=5.6.0",
             "psr/http-message": "^1.0",
             "psr/log": "^1.0"
         },
         "require-dev": {
-            "mockery/mockery": "^0.9.4",
-            "phpunit/phpunit": "^4.8",
+            "mockery/mockery": "^1.0",
+            "phpunit/phpunit": "^5.7",
             "scrutinizer/ocular": "^1.1",
-            "squizlabs/php_codesniffer": "^2.5"
+            "squizlabs/php_codesniffer": "^3.0"
         },
-        "time": "2016-08-03T16:32:06+00:00",
+        "time": "2018-05-23T16:10:11+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -377,28 +377,27 @@
     },
     {
         "name": "paragonie/constant_time_encoding",
-        "version": "v1.0.4",
-        "version_normalized": "1.0.4.0",
+        "version": "v2.3.0",
+        "version_normalized": "2.3.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/paragonie/constant_time_encoding.git",
-            "reference": "2132f0f293d856026d7d11bd81b9f4a23a1dc1f6"
+            "reference": "47a1cedd2e4d52688eb8c96469c05ebc8fd28fa2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/2132f0f293d856026d7d11bd81b9f4a23a1dc1f6",
-            "reference": "2132f0f293d856026d7d11bd81b9f4a23a1dc1f6",
+            "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/47a1cedd2e4d52688eb8c96469c05ebc8fd28fa2",
+            "reference": "47a1cedd2e4d52688eb8c96469c05ebc8fd28fa2",
             "shasum": ""
         },
         "require": {
-            "php": "^5.3|^7"
+            "php": "^7|^8"
         },
         "require-dev": {
-            "paragonie/random_compat": "^1.4|^2",
-            "phpunit/phpunit": "4.*|5.*",
-            "vimeo/psalm": "^0.3|^1"
+            "phpunit/phpunit": "^6|^7",
+            "vimeo/psalm": "^1|^2|^3"
         },
-        "time": "2018-04-30T17:57:16+00:00",
+        "time": "2019-11-06T19:20:29+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -442,36 +441,32 @@
     },
     {
         "name": "paragonie/random_compat",
-        "version": "v2.0.18",
-        "version_normalized": "2.0.18.0",
+        "version": "v9.99.99",
+        "version_normalized": "9.99.99.0",
         "source": {
             "type": "git",
             "url": "https://github.com/paragonie/random_compat.git",
-            "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db"
+            "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
-            "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
+            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
+            "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
             "shasum": ""
         },
         "require": {
-            "php": ">=5.2.0"
+            "php": "^7"
         },
         "require-dev": {
-            "phpunit/phpunit": "4.*|5.*"
+            "phpunit/phpunit": "4.*|5.*",
+            "vimeo/psalm": "^1"
         },
         "suggest": {
             "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
         },
-        "time": "2019-01-03T20:59:08+00:00",
+        "time": "2018-07-02T15:55:56+00:00",
         "type": "library",
         "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "lib/random.php"
-            ]
-        },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
             "MIT"

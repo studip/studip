@@ -143,9 +143,15 @@ class Analyzer implements AnalyzerInterface
 
         // #6.1.1 and #6.2.1
         $requestOrigin = $this->getOrigin($request);
-        if ($requestOrigin === null || $this->isCrossOrigin($requestOrigin, $serverOrigin) === false) {
-            $this->logDebug(
-                'Request is not CORS (request origin is empty or equals to server one). ' .
+        if ($requestOrigin === null) {
+            $this->logInfo(
+                'Request is not CORS (request origin is empty).',
+                ['request' => $requestOrigin, 'server' => $serverOrigin]
+            );
+            return $this->createResult(AnalysisResultInterface::TYPE_REQUEST_OUT_OF_CORS_SCOPE);
+        } elseif ($this->isCrossOrigin($requestOrigin, $serverOrigin) === false) {
+            $this->logInfo(
+                'Request is not CORS (request origin equals to server one). ' .
                 'Check config settings for Server Origin.',
                 ['request' => $requestOrigin, 'server' => $serverOrigin]
             );
@@ -311,13 +317,28 @@ class Analyzer implements AnalyzerInterface
      */
     protected function isSameHost(RequestInterface $request, ParsedUrlInterface $serverOrigin)
     {
-        $host    = $this->getRequestHostHeader($request);
-        $hostUrl = $host === null ? null : $this->factory->createParsedUrl($host);
+        $host = $this->getRequestHostHeader($request);
 
+        // parse `Host` header
+        //
+        // According to https://tools.ietf.org/html/rfc7230#section-5.4 `Host` header could be
+        //
+        //                     "uri-host" OR "uri-host:port"
+        //
+        // `parse_url` function thinks the first value is `path` and the second is `host` with `port`
+        // which is a bit annoying so...
+        $portOrNull = parse_url($host, PHP_URL_PORT);
+        $hostUrl    = $portOrNull === null ? $host : parse_url($host, PHP_URL_HOST);
+
+        // Neither MDN, nor RFC tell anything definitive about Host header comparison.
+        // Browsers such as Firefox and Chrome do not add the optional port for
+        // HTTP (80) and HTTPS (443).
+        // So we require port match only if it specified in settings.
+
+        $isHostUrlMatch = strcasecmp($serverOrigin->getHost(), $hostUrl) === 0;
         $isSameHost =
-            $hostUrl !== null &&
-            $serverOrigin->isPortEqual($hostUrl) === true &&
-            $serverOrigin->isHostEqual($hostUrl) === true;
+            $isHostUrlMatch === true &&
+            ($serverOrigin->getPort() === null || $serverOrigin->getPort() === $portOrNull);
 
         return $isSameHost;
     }
