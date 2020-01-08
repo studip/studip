@@ -243,7 +243,7 @@ class ResourceObject
 
 class SingleDate
 {
-    public $resource_id = abcdef1234567890;
+    public $resource_id = 'abcdef1234567890';
 
     function getResourceID()
     {
