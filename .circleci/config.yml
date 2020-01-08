@@ -1,0 +1,79 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.1-node-browsers
+
+      - image: circleci/mysql:5.7-ram
+        environment:
+          MYSQL_ROOT_PASSWORD: studip
+          MYSQL_DATABASE: studip
+          MYSQL_USER: studip
+          MYSQL_PASSWORD: studip
+        command:
+          mysqld --sql-mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+    environment:
+      DB_STUDIP_HOST: 127.0.0.1
+      DB_STUDIP_USER: studip
+      DB_STUDIP_PASSWORD: studip
+      DB_STUDIP_DATABASE: studip
+
+    steps:
+      - checkout
+
+      - run: sudo apt update
+
+      - run: sudo docker-php-ext-install gettext pdo_mysql
+
+      - run: echo "short_open_tag = On" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "composer.json" }}
+            - v1-dependencies-
+
+      - run: composer install -n --prefer-dist
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "composer.json" }}
+          paths:
+            - ./composer
+
+      - restore_cache:
+          keys:
+            - node-v1-{{ checksum "package.json" }}
+            - node-v1-
+      - run: npm install
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      # prepare MySQL service image
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
+
+      - run:
+          name: Install MySQL CLI; Import dummy data
+          command: |
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -u studip -pstudip studip < db/studip.sql
+            mysql -h 127.0.0.1 -u studip -pstudip studip < db/studip_default_data.sql
+            mysql -h 127.0.0.1 -u studip -pstudip studip < db/studip_demo_data.sql
+            mysql -h 127.0.0.1 -u studip -pstudip studip < db/studip_resources_default_data.sql
+      - run:
+          name: Start Stud.IP migrations
+          command: php cli/migrate.php
+
+      # run tests with phpunit or codecept
+      - run: ./composer/bin/codecept build
+      - run: ./composer/bin/codecept run unit
+      - run: ./composer/bin/codecept run jsonapi
+      - run: ./composer/bin/codecept run functional
