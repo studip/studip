@@ -316,23 +316,6 @@ Dialog.show = function(content, options) {
     var scripts = $('<div>' + content + '</div>').filter('script'); // Extract scripts
     var dialog_options = {};
     var instance = Dialog.getInstance(options.id);
-    var previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false;
-    var width = options.width || ($(window).width() * 2) / 3;
-    var height = options.height || ($(window).height() * 2) / 3;
-    var max_width  = $(window).width() * 0.95;
-    var max_height = $(window).height() * 0.9;
-    var temp;
-    var helper;
-
-    if ($('html').is('.responsive-display')) {
-        max_width  = $(window).width() - 6; // Subtract border
-        max_height = $(window).height();
-
-        if (!options.hasOwnProperty('width')) {
-            width  = $(window).width() * 0.95;
-            height = $(window).height() * 0.98;
-        }
-    }
 
     if (instance.open) {
         options.title = options.title || instance.element.dialog('option', 'title');
@@ -346,90 +329,15 @@ Dialog.show = function(content, options) {
     // Hide and update container
     instance.element.hide().html(content);
 
-    // Adjust size if neccessary
-    if (options.size && (options.size === 'auto' || options.size === 'fit')) {
-        // Render off screen
-        helper = $('<div class="ui-dialog ui-widget ui-widget-content">').addClass(
-            options.dialogClass || dialog_options.dialogClass || ''
-        );
-
-        var helper_title = $('<span class="ui-dialog-title">')
-            .text(options.title)
-            .appendTo(helper)
-            .wrap('<div class="ui-dialog-titlebar ui-helper-clearfix">')
-            .after('<button class="ui-button ui-button-icon-only ui-dialog-titlebar-close">close</button>');
-        if (options.wikilink) {
-            helper_title.parent().append('<a class="ui-dialog-titlebar-wiki"></a>').addClass('with-wiki-link');
-        }
-
-        $('<div class="ui-dialog-content">').html(content).appendTo(helper);
-        helper.css({
-            position: 'absolute',
-            left: '-10000px',
-            top: '-10000px',
-            width: 'auto'
-        }).appendTo('body');
-
-        // Prevent buttons from wrapping
-        $('[data-dialog-button]', helper).css('white-space', 'nowrap');
-        // Add cancel button if missing
-        if ((!options.hasOwnProperty('buttons') || options.button !== false)
-            && $('[data-dialog-button] .button.cancel', helper).length === 0)
-        {
-            var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
-            $('[data-dialog-button]', helper).append(cancel);
-        }
-
-        // Calculate width and height
-        // TODO: The value of 63 shouldn't be hardcoded (the height of buttonpane)
-        width = Math.min(helper.outerWidth(true) + dialog_margin, width);
-        height = Math.min(helper.outerHeight(true) + 63, height);
-
-        if (options.size === 'auto') {
-            width = Math.max(300, width);
-            height = Math.max(200, height);
-        }
-        // Remove helper element
-        helper.remove();
-    } else if (options.size && options.size === 'big') {
-        width = $('body').width() * 0.9;
-        height = $('body').height() * 0.8;
-    } else if (options.size && options.size === 'small') {
-        width = 300;
-        height = 200;
-    } else if (options.size && options.size.match(/^\d+x\d+$/)) {
-        temp = options.size.split('x');
-        width = temp[0];
-        height = temp[1];
-    } else if (options.size && !options.size.match(/\D/)) {
-        width = height = options.size;
-    }
-
-    // Ensure dimensions fit in viewport
-    width = Math.min(width, max_width);
-    height = Math.min(height, max_height);
-    if (
-        previous &&
-        previous.hasOwnProperty('dimensions') &&
-        width > previous.dimensions.width &&
-        height > previous.dimensions.height
-    ) {
-        width = width > previous.dimensions.width ? previous.dimensions.width * 0.95 : width;
-        height = height > previous.dimensions.height ? previous.dimensions.height * 0.95 : height;
-    }
-
     // Store options and dimensions
     instance.options = options;
-    instance.dimensions = {
-        width: window.parseInt(width, 10),
-        height: window.parseInt(height, 10)
-    };
+    instance.dimensions = Dialog.calculateDimensions(instance, options);
     instance.previous_title = instance.previous_title || PageLayout.title;
 
     // Set dialog options
     dialog_options = $.extend(dialog_options, {
-        width: width,
-        height: height,
+        width: instance.dimensions.width,
+        height: instance.dimensions.height,
         dialogClass: ((options.dialogClass || dialog_options.dialogClass || '') + ' studip-dialog').trim(),
         buttons: options.buttons || {},
         title: options.title,
@@ -573,6 +481,103 @@ Dialog.close = function(options) {
     }
 };
 
+Dialog.calculateDimensions = function (instance, options) {
+    var previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false;
+    var width = options.width || ($(window).width() * 2) / 3;
+    var height = options.height || ($(window).height() * 2) / 3;
+    var max_width  = $(window).width() * 0.95;
+    var max_height = $(window).height() * 0.9;
+    var helper;
+    var temp;
+
+    if ($('html').is('.responsive-display')) {
+        max_width  = $(window).width() - 6; // Subtract border
+        max_height = $(window).height();
+
+        if (!options.hasOwnProperty('width')) {
+            width  = $(window).width() * 0.95;
+            height = $(window).height() * 0.98;
+        }
+    }
+
+    // Adjust size if neccessary
+    if (options.size && (options.size === 'auto' || options.size === 'fit')) {
+        // Render off screen
+        helper = $('<div class="ui-dialog ui-widget ui-widget-content">').addClass(
+            options.dialogClass || dialog_options.dialogClass || ''
+        );
+
+        var helper_title = $('<span class="ui-dialog-title">')
+            .text(options.title)
+            .appendTo(helper)
+            .wrap('<div class="ui-dialog-titlebar ui-helper-clearfix">')
+            .after('<button class="ui-button ui-button-icon-only ui-dialog-titlebar-close">close</button>');
+        if (options.wikilink) {
+            helper_title.parent().append('<a class="ui-dialog-titlebar-wiki"></a>').addClass('with-wiki-link');
+        }
+
+        $('<div class="ui-dialog-content">').html(content).appendTo(helper);
+        helper.css({
+            position: 'absolute',
+            left: '-10000px',
+            top: '-10000px',
+            width: 'auto'
+        }).appendTo('body');
+
+        // Prevent buttons from wrapping
+        $('[data-dialog-button]', helper).css('white-space', 'nowrap');
+        // Add cancel button if missing
+        if ((!options.hasOwnProperty('buttons') || options.button !== false)
+            && $('[data-dialog-button] .button.cancel', helper).length === 0)
+        {
+            var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
+            $('[data-dialog-button]', helper).append(cancel);
+        }
+
+        // Calculate width and height
+        // TODO: The value of 63 shouldn't be hardcoded (the height of buttonpane)
+        width = Math.min(helper.outerWidth(true) + dialog_margin, width);
+        height = Math.min(helper.outerHeight(true) + 63, height);
+
+        if (options.size === 'auto') {
+            width = Math.max(300, width);
+            height = Math.max(200, height);
+        }
+        // Remove helper element
+        helper.remove();
+    } else if (options.size && options.size === 'big') {
+        width = $('body').width() * 0.9;
+        height = $('body').height() * 0.8;
+    } else if (options.size && options.size === 'small') {
+        width = 300;
+        height = 200;
+    } else if (options.size && options.size.match(/^\d+x\d+$/)) {
+        temp = options.size.split('x');
+        width = temp[0];
+        height = temp[1];
+    } else if (options.size && !options.size.match(/\D/)) {
+        width = height = options.size;
+    }
+
+    // Ensure dimensions fit in viewport
+    width = Math.min(width, max_width);
+    height = Math.min(height, max_height);
+    if (
+        previous &&
+        previous.hasOwnProperty('dimensions') &&
+        width > previous.dimensions.width &&
+        height > previous.dimensions.height
+    ) {
+        width = width > previous.dimensions.width ? previous.dimensions.width * 0.95 : width;
+        height = height > previous.dimensions.height ? previous.dimensions.height * 0.95 : height;
+    }
+
+    return {
+        width: window.parseInt(width, 10),
+        height: window.parseInt(height, 10)
+    };
+};
+
 // Specialized confirmation dialog
 Dialog.confirm = function(question, yes_callback, no_callback) {
     return $.Deferred(function(defer) {
@@ -689,6 +694,22 @@ Dialog.initialize = function() {
                 id: Dialog.stack[0]
             });
         }
+    });
+
+    // Recalculate dialog dimensions upon window resize. This is throttled
+    // since the resize event keeps on firing during the resizing.
+    var timeout = null;
+    $(window).on('resize', () => {
+        clearTimeout(timeout);
+        setTimeout(() => {
+            Dialog.stack.forEach((id) => {
+                var instance = Dialog.getInstance(id);
+                instance.dimensions = Dialog.calculateDimensions(instance, instance.options);
+
+                $(instance.element).dialog('option', 'width', instance.dimensions.width);
+                $(instance.element).dialog('option', 'height', instance.dimensions.height);
+            });
+        }, 10);
     });
 };
 
