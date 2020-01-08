@@ -22,19 +22,49 @@ class StgteilVersionCondition extends UserFilterField
     public $userDataDbTable = 'user_studiengang';
     public $userDataDbField = 'version_id';
 
+    public static $isParameterized = true;
+
+    public static function getParameterizedTypes()
+    {
+        if (Config::get()->DISPLAY_STGTEILVERSION_USERFILTER) {
+            $filter = new StgteilVersionCondition;
+            $fields['StgteilVersionCondition'] = $filter->getName();
+            return $fields;
+        } else {
+            return [];
+        }
+    }
+
     /**
      * @see UserFilterField::__construct
      */
     public function __construct($fieldId = '')
     {
-        parent::__construct($fieldId);
+        $this->validCompareOperators = [
+            '=' => _('ist'),
+            '!=' => _('ist nicht')
+        ];
+        if ($this->valuesDbNameField) {
+            // Get all available values from database.
+            $stmt = DBManager::get()->query(
+                "SELECT DISTINCT `version_id`, `fach`.`name` ".
+                 "FROM `mvv_stgteilversion` LEFT JOIN mvv_stgteil USING (stgteil_id)".
+                 "LEFT JOIN fach USING (fach_id)".
+                 "WHERE `mvv_stgteilversion`.`stat` = 'genehmigt' ORDER BY `fach`.`name` ASC");
+
+            while ($current = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $this->validValues[$current[$this->valuesDbIdField]] = $current[$this->valuesDbNameField];
+            }
+        }
+        if ($fieldId) {
+            $this->id = $fieldId;
+            $this->load();
+        } else {
+            $this->id = $this->generateId();
+        }
 
         foreach ($this->validValues as $version_id => $name) {
             $stgteilversion = StgteilVersion::find($version_id);
-            if (!$stgteilversion || $stgteilversion->stat !== 'genehmigt') {
-                unset($this->validValues[$version_id]);
-                continue;
-            }
             $this->validValues[$version_id] = $stgteilversion->getDisplayname();
         }
     }
