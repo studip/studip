@@ -54,7 +54,12 @@ StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'db');
 
 // load config-variables
-StudipFileloader::load('config/config_local.inc.php', $GLOBALS);
+StudipFileloader::load(
+    'config_defaults.inc.php config_local.inc.php',
+    $GLOBALS,
+    compact('STUDIP_BASE_PATH', 'ABSOLUTE_URI_STUDIP', 'ASSETS_URL', 'CANONICAL_RELATIVE_PATH_STUDIP'),
+    true
+);
 
 require_once 'vendor/yaml/lib/sfYamlParser.php';
 $yaml = new \sfYamlParser();
