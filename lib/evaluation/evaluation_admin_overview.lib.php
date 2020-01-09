@@ -1211,7 +1211,7 @@ class EvalOverview {
                 if (!empty($remove_range_Array)) {
 
                     /* if all rangeIDs will be removed, so ask if it should be deleted -- */
-                    if (sizeof($remove_range_Array) == $eval->getNumberRanges()) {
+                    if (is_array($remove_range_Array) && count($remove_range_Array) == $eval->getNumberRanges()) {
                         $text = _("Sie wollen die Evaluation <b>%s</b> aus allen ihr zugeordneten Bereichen aushängen.<br>Soll die Evaluation gelöscht oder zu Ihren eigenen Evaluationsvorlagen verschoben werden?");
                         $safeguard .= $this->createSafeguard("ausruf", sprintf($text, $evalName), "unlink_delete_request", $evalID, $showrangeID, $referer);
                         $update_message = NULL;
@@ -1369,10 +1369,10 @@ class EvalOverview {
                 $results = $evalDB->search_range($search);
                 if (empty($search))
                     $safeguard .= $this->createSafeguard("ausruf", _("Bitte einen Suchbegriff eingeben."), $search);
-                elseif (sizeof($results) == 0)
+                elseif (empty($results))
                     $safeguard .= $this->createSafeguard("ausruf", sprintf(_("Es wurde kein Bereich gefunden, der den Suchbegriff <b>%s</b> enthält."), htmlReady($search)), $search);
                 else
-                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Es wurden %s Bereiche gefunden, die den Suchbegriff <b>%s</b> enthalten."), sizeof($results), htmlReady($search)), $search);
+                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Es wurden %s Bereiche gefunden, die den Suchbegriff <b>%s</b> enthalten."), count($results), htmlReady($search)), $search);
                 break;
 
             case "check_abort_creation":
