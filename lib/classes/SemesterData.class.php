@@ -49,18 +49,13 @@ class SemesterData
      */
     public static function getSemesterArray()
     {
-        static $all_semester;
-
-        if (is_null($all_semester)) {
-            $all_semester = SemesterData::getAllSemesterData();
-            array_unshift($all_semester, 0);
-            $all_semester[0] = [
-                'name' => sprintf(_('vor dem %s'), $all_semester[1]['name']),
-                'past' => true
-            ];
+        $ret = [];
+        foreach (Semester::getAllAsArray() as $key => $semester) {
+            if ($GLOBALS['perm']->have_perm('admin') || $semester['visible']) {
+                $ret[$key] = $semester;
+            }
         }
-
-        return $all_semester;
+        return $ret;
     }
 
     /**
