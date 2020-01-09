@@ -190,6 +190,24 @@ class Semester extends SimpleORMap
     }
 
     /**
+     * returns the index for a given semester id, in an array returned from self::getAllAsArray(), beware of second parameter
+     *
+     * @deprecated ASK YOURSELF WHAT THE F!!! YOU ARE DOING
+     * @param $semester_id
+     * @param bool $with_before_first
+     * @return bool|int
+     */
+    public static function getIndexById($semester_id, $with_before_first = true)
+    {
+        foreach (self::getAllAsArray($with_before_first) as $index => $semester) {
+            if (@$semester['semester_id'] === $semester_id) {
+                return $index;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Caches seminar counts
      */
     protected $seminar_counts = null;

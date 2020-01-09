@@ -51,7 +51,7 @@ if (isset($_COOKIE['navigation-length'])) {
             <? endforeach; ?>
         <? endif; ?>
 
-        <? if (isset($search_semester_nr)) : ?>
+        <? if (isset($show_quicksearch)) : ?>
             <? if (PageLayout::hasCustomQuicksearch()): ?>
                 <?= PageLayout::getCustomQuicksearch() ?>
             <? else: ?>

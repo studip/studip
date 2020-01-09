@@ -51,15 +51,7 @@ if (PageLayout::isHeaderEnabled()) //Einige Seiten benötigen keinen Header, spr
         }
 
         if (!$GLOBALS['user']->needsToAcceptTerms()) {
-            // fetch semester for quick search box in the link bar
-            $semester_data = SemesterData::GetSemesterArray();
-            $default_semester = $_SESSION['_default_sem']
-                              ? SemesterData::GetSemesterIndexById($_SESSION['_default_sem'])
-                              : 'all';
-            $header_template->search_semester_nr = $default_semester;
-            $header_template->search_semester_name = $default_semester !== 'all'
-                                                   ? $semester_data[$default_semester]['name']
-                                                   : _('alle Semester');
+            $header_template->show_quicksearch = true;
         }
     }
 } else {

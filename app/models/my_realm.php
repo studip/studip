@@ -848,7 +848,7 @@ class MyRealmModel
 
         // Get the needed semester
         if (!in_array($sem, ['all', 'current', 'future', 'last', 'lastandnext'])) {
-            $semesters[] = SemesterData::GetSemesterIndexById($sem);
+            $semesters[] = Semester::getIndexById($sem);
         } else {
             switch ($sem) {
                 case 'current':
@@ -879,7 +879,7 @@ class MyRealmModel
     public static function getPreparedCourses($sem = "all", $params = [])
     {
         $semesters   = self::getSelectedSemesters($sem);
-        $current_semester_nr = SemesterData::GetSemesterIndexById(@Semester::findCurrent()->id);
+        $current_semester_nr = Semester::getIndexById(@Semester::findCurrent()->id);
         $min_sem_key = min($semesters);
         $max_sem_key = max($semesters);
         $group_field = $params['group_field'];
@@ -928,8 +928,8 @@ class MyRealmModel
                 $_course['visitdate']      = object_get_visit($course->id, 'sem', '');
                 $_course['user_status']    = $user_status;
                 $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
-                $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : SemesterData::GetSemesterIndexById($course->end_semester->id);
-                $_course['sem_number']     = SemesterData::GetSemesterIndexById($course->start_semester->id);
+                $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
+                $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
                 $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
                 $_course['name']           = $course->name;
                 $_course['temp_name']      = $course->name;

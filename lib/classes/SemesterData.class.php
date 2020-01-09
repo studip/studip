@@ -51,8 +51,8 @@ class SemesterData
     {
         $ret = [];
         foreach (Semester::getAllAsArray() as $key => $semester) {
-            if ($GLOBALS['perm']->have_perm('admin') || $semester['visible']) {
-                $ret[$key] = $semester;
+            if ($GLOBALS['perm']->have_perm('admin') || $semester['visible'] || $key == 0) {
+                $ret[] = $semester;
             }
         }
         return $ret;
@@ -71,9 +71,9 @@ class SemesterData
     {
         $index = false;
 
-        foreach (Semester::getAllAsArray(false) as $i => $sem){
-            if ($sem['semester_id'] == $semester_id) {
-                $index = $i + 1;
+        foreach (self::getSemesterArray() as $i => $sem){
+            if (@$sem['semester_id'] == $semester_id) {
+                $index = $i;
             }
         }
 
