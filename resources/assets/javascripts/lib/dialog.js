@@ -1,3 +1,5 @@
+/*jslint esversion: 6*/
+
 /**
  * Specialized dialog handler
  *
@@ -323,7 +325,6 @@ Dialog.show = function(content, options) {
 
     if (options['center-content']) {
         content = '<div class="studip-dialog-centered-helper">' + content + '</div>';
-        dialog_options.dialogClass = 'studip-dialog-centered';
     }
 
     // Hide and update container
@@ -331,14 +332,14 @@ Dialog.show = function(content, options) {
 
     // Store options and dimensions
     instance.options = options;
-    instance.dimensions = Dialog.calculateDimensions(instance, options);
+    instance.dimensions = Dialog.calculateDimensions(instance, content, options);
     instance.previous_title = instance.previous_title || PageLayout.title;
 
     // Set dialog options
     dialog_options = $.extend(dialog_options, {
         width: instance.dimensions.width,
         height: instance.dimensions.height,
-        dialogClass: ((options.dialogClass || dialog_options.dialogClass || '') + ' studip-dialog').trim(),
+        dialogClass: Dialog.getClasses(options),
         buttons: options.buttons || {},
         title: options.title,
         modal: true,
@@ -481,7 +482,19 @@ Dialog.close = function(options) {
     }
 };
 
-Dialog.calculateDimensions = function (instance, options) {
+Dialog.getClasses = function (options) {
+    var classes = ['studip-dialog'];
+
+    if (options.dialogClass) {
+        classes.push(options.dialogClass);
+    } else if (options['center-content']) {
+        classes.push('studip-dialog-centered');
+    }
+
+    return classes.join(' ');
+};
+
+Dialog.calculateDimensions = function (instance, content, options) {
     var previous = instance.previous !== false ? Dialog.getInstance(instance.previous) : false;
     var width = options.width || ($(window).width() * 2) / 3;
     var height = options.height || ($(window).height() * 2) / 3;
@@ -503,9 +516,8 @@ Dialog.calculateDimensions = function (instance, options) {
     // Adjust size if neccessary
     if (options.size && (options.size === 'auto' || options.size === 'fit')) {
         // Render off screen
-        helper = $('<div class="ui-dialog ui-widget ui-widget-content">').addClass(
-            options.dialogClass || dialog_options.dialogClass || ''
-        );
+        helper = $('<div class="ui-dialog ui-widget ui-widget-content">');
+        helper.addClass(Dialog.getClasses(options));
 
         var helper_title = $('<span class="ui-dialog-title">')
             .text(options.title)
@@ -573,8 +585,8 @@ Dialog.calculateDimensions = function (instance, options) {
     }
 
     return {
-        width: window.parseInt(width, 10),
-        height: window.parseInt(height, 10)
+        width: width,
+        height: height
     };
 };
 
@@ -699,12 +711,20 @@ Dialog.initialize = function() {
     // Recalculate dialog dimensions upon window resize. This is throttled
     // since the resize event keeps on firing during the resizing.
     var timeout = null;
-    $(window).on('resize', () => {
+    $(window).on('resize', (event) => {
+        if (event.target !== window) {
+            return;
+        }
+
         clearTimeout(timeout);
         setTimeout(() => {
             Dialog.stack.forEach((id) => {
                 var instance = Dialog.getInstance(id);
-                instance.dimensions = Dialog.calculateDimensions(instance, instance.options);
+                instance.dimensions = Dialog.calculateDimensions(
+                    instance,
+                    $(instance.element).html(),
+                    instance.options
+                );
 
                 $(instance.element).dialog('option', 'width', instance.dimensions.width);
                 $(instance.element).dialog('option', 'height', instance.dimensions.height);
