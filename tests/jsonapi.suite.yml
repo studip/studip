@@ -9,7 +9,7 @@ modules:
 
     config:
         \Helper\StudipDb:
-            dsn: 'mysql:host=mysql;dbname=studip;charset=utf8mb4'
+            dsn: 'mysql:host=127.0.0.1;dbname=studip;charset=utf8mb4'
             user: 'studip'
             password: 'studip'
 coverage:
