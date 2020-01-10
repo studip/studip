@@ -215,12 +215,6 @@ if ($view === 'listall') {
         // if editing new page was aborted, display last page again
         $keyword = Request::get('lastpage', $keyword);
 
-    } else if ($cmd === 'delete') {
-        //
-        // Delete request sent -> confirmdialog and current page
-        //
-        $special = 'delete';
-
     } else if ($cmd === 'really_delete') {
         //
         // Delete was confirmed -> really delete
@@ -228,18 +222,7 @@ if ($view === 'listall') {
 
         $keyword = deleteWikiPage($keyword, $version, Context::getId());
         $version = ''; // show latest version
-    } else if ($cmd === 'delete_all') {
-        //
-        // Delete all request sent -> confirmdialog and current page
-        //
-        $special = 'delete_all';
         
-    } else if ($cmd === 'delete_all_versions') {
-        //
-        // Delete all request sent -> confirmdialog and current page
-        //
-        $special = 'delete_all_versions';
-
     } else if ($cmd === 'really_delete_all') {
         //
         // Delete all was confirmed -> delete entire page

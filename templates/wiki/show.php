@@ -28,9 +28,10 @@
                            ['data-dialog' => 'size=auto']
                     ) ?>
                     <? $actionMenu->addLink(
-                           URLHelper::getURL('', ['keyword' => $wikipage->keyword, 'cmd' => 'delete', 'version' => 'latest']),
+                           URLHelper::getURL('', ['keyword' => $wikipage->keyword, 'cmd' => 'really_delete', 'version' => $wikipage->version]),
                            _('Löschen'),
-                           Icon::create('trash')
+                           Icon::create('trash'),
+                           ['data-confirm' => showDeleteDialog($wikipage->keyword, $wikipage->version)]
                     ) ?>
                 <? endif ?>
                 <?= $actionMenu->render() ?>
@@ -39,28 +40,16 @@
     </header>
     <section>
         <? if ($wikipage->keyword == 'WikiWikiWeb' && $wikipage->isNew()): ?>
-            <style>
-                .wiki_background {
-                   background-image:url(assets/images/icons/lightblue/wiki.svg);
-                   background-repeat:no-repeat;
-                   background-size:260px;
-                   background-position:center;
-                   background-color: hsla(0,0%,100%,0.70);
-                   background-blend-mode: overlay;
-                }
-                .flex {
-                   display:flex;
-                   justify-content:center;
-                }
-            </style>
-            <div class="wiki_background">
+            <div class="wiki-background">
                 <div class="flex">
-                    <img src='assets/images/icons/blue/wiki.svg' style="height:140x;width:160px;margin-top:90px;margin-left:10px";>
-                    <img src='assets/images/icons/lightblue/wiki.svg' style="height:180px;width:200px;margin-top:120px;margin-left:10px";>
+                    <img src='assets/images/icons/blue/wiki.svg' class="image1">
+                    <img src='assets/images/icons/lightblue/wiki.svg' class="image2">
                 </div>
             </div>
-            <div class="flex" style="color:#28497c;">
-                <?= _('Mach die Welt ein Stückchen schlauer.') ?>
+            <div class="flex">
+                <div class="text-color">
+                    <?= _('Mach die Welt ein Stückchen schlauer.') ?>
+                </div>
             </div>
         <? else : ?>
             <?= $content ?>

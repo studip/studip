@@ -1,8 +1,9 @@
-<h1>
-    <?= htmlReady($keyword) ?> - <?= _('Versionshistorie') ?>
-</h1>
-
 <table class="default">
+
+    <caption>
+        <?= htmlReady($keyword) ?> - <?= _('Versionshistorie') ?>
+    </caption>
+ 
     <colgroup>
         <col style="width: 10%;">
         <col style="width: 30%;">
@@ -13,7 +14,7 @@
         <tr>
             <th>
                 <a href="<?= URLHelper::getLink($url, ['keyword' => $keyword, 'sortby' => $versionsortlink]) ?>">
-                    <?= _('Versionsnummer') ?>
+                    <?= _('Version') ?>
                 </a>
             </th>
             <th>
@@ -25,7 +26,7 @@
                 </a>
             </th>
             <th>
-                <?= _('Löschen') ?>
+                <?= _('Aktion') ?>
             </th>
         </tr>
     </thead>
@@ -35,7 +36,7 @@
             <tr>
                 <td>
                 <a href="<?= URLHelper::getLink('', ['keyword' => $keyword, 'version' => $page->version]) ?>">
-                    <?= _('Version') ?> <?= $page->version ?>
+                    <?= $page->version ?>
                 </td>
                 <td>
                     <? if (isset($page->author)) : ?>
@@ -51,9 +52,9 @@
                 <td>
                     <?= date('d.m.Y H:i', $page->chdate) ?>
                 </td>
-                <td>
-                    <a href="<?= URLHelper::getURL('', ['keyword' => $keyword, 'cmd' => 'delete', 'version' => $page->version])  ?>">
-                        <?= Icon::create('trash')->asImg(tooltip2('Version löschen')) ?>
+                <td style="text-align: right";>
+                    <a href="<?= URLHelper::getURL("?cmd=really_delete&keyword=".urlencode($keyword)."&version={$page->version}") ?>">
+                        <?= Icon::create('trash')->asInput(tooltip2(_('löschen')) + ['data-confirm' => showDeleteDialog($keyword, $page->version)]) ?>
                     </a>
                 </td>
             </tr>
@@ -65,7 +66,8 @@
             <td colspan="4">
                 <?= Studip\LinkButton::create(
                     _('Alle Versionen löschen'),
-                    URLHelper::getURL('', ['keyword' => $keyword, 'sortby' => $sortby, 'cmd' => 'delete_all_versions'])
+                    URLHelper::getURL("?cmd=really_delete_all&keyword=".urlencode($keyword)),
+                    ['data-confirm' => showDeleteAllDialog($keyword)]
                 ) ?>
             </td>
         </tr>

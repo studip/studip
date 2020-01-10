@@ -406,10 +406,6 @@ function getZusatz($wikiData)
 *
 **/
 function showDeleteDialog($keyword, $version) {
-    global $perm;
-    if (!$perm->have_studip_perm("tutor", Context::getId())) {
-        throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu löschen.'));
-    }
     $islatest=0; // will another version become latest version?
     $willvanish=0; // will the page be deleted entirely?
     $lv=getLatestVersion($keyword, Context::getId());
@@ -423,39 +419,19 @@ function showDeleteDialog($keyword, $version) {
         $islatest=1;
     }
 
-    /*if (!$islatest) {
-        throw new InvalidArgumentException(_('Die Version, die Sie löschen wollen, ist nicht die Aktuellste. Überprüfen Sie, ob inzwischen eine aktuellere Version erstellt wurde.'));
-    } */
     $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), "<b>".htmlReady($version)."</b>", "<b>".htmlReady($keyword)."</b>") . "<br>\n";
     if (!$willvanish) {
         if ($islatest) {
             $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.") . "<br>";
-        } else {
-            /* $msg .= _("Diese Version ist derzeit nicht aktuell. Nach dem Löschen wird sie durch die nächstältere Version ersetzt.") . "<br>"; */
         }
     } else {
         $msg .= _("Diese Version ist die derzeit einzige. Nach dem Löschen ist die Seite komplett gelöscht.") . "<br>";
     }
-    $lnk = "?keyword=".urlencode($keyword); // what to do when delete is aborted
-    if (!$islatest) $lnk .= "&version=$version";
-    PageLayout::postQuestion(
-        $msg,
-        URLHelper::getURL("?cmd=really_delete&keyword=".urlencode($keyword)."&version=$version&dellatest=$islatest"),
-        URLHelper::getURL($lnk));
-    return $version;
+    return $msg;
 }
 
-/**
-* Display yes/no dialog to confirm complete WikiPage deletion.
-*
-* @param    string  WikiPage name
-*
-**/
+
 function showDeleteAllDialog($keyword) {
-    global $perm;
-    if (!$perm->have_studip_perm("tutor", Context::getId())) {
-        throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu löschen.'));
-    }
     $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), "<b>".htmlReady($keyword)."</b>") . "<br>\n";
     if ($keyword=="WikiWikiWeb") {
         $msg .= "<p>" . _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.") . "</p>";
@@ -469,16 +445,7 @@ function showDeleteAllDialog($keyword) {
             $msg .= sprintf(_("Auf diese Seite verweisen %s andere Seiten."), count(getBacklinks($keyword)));
         }
     }
-
-    if (Request::option('cmd') === 'delete_all_versions') {
-        $lnk = "?view=pageversions&keyword=".urlencode($keyword)."&sortby=".Request::option('sortby'); // what to do when delete is aborted
-    } else {
-        $lnk = "?keyword=".urlencode($keyword);
-    }
-    PageLayout::postQuestion(
-        $msg,
-        URLHelper::getURL("?cmd=really_delete_all&keyword=".urlencode($keyword)),
-        URLHelper::getURL($lnk));
+    return $msg;
 }
 
 
@@ -499,9 +466,9 @@ function deleteWikiPage($keyword, $version, $range_id) {
         throw new AccessDeniedException(_('Sie haben keine Berechtigung, Seiten zu löschen.'));
     }
     $lv=getLatestVersion($keyword, Context::getId());
-    /*if ($lv["version"] != $version) {
+    if ($lv["version"] != $version) {
         throw new InvalidArgumentException(_('Die Version, die Sie löschen wollen, ist nicht die aktuellste. Überprüfen Sie, ob inzwischen eine aktuellere Version erstellt wurde.'));
-    } */
+    }
 
     $wp = WikiPage::find([$range_id, $keyword, $version]);
     if ($wp) {
@@ -713,7 +680,7 @@ function listPageVersions($keyword, $sortby = NULL)
     $pages = WikiPage::findBySQL("range_id = ? AND keyword = ? ".$sort, [Context::getId(), $keyword]);
 
     if (count($pages) === 0) {
-        PageLayout::postInfo($nopages);
+        #PageLayout::postInfo($nopages);
     } else {
         $template = $GLOBALS['template_factory']->open('wiki/pageversions.php');
         $template->keyword         = $keyword;
@@ -1216,7 +1183,7 @@ function showPageFrameEnd()
 * @param    bool    Is version displayed latest version?
 *
 **/
-function getShowPageInfobox($keyword, $latest_version, $pageversionslist=NULL)
+function getShowPageInfobox($keyword, $latest_version)
 {
     $edit_perms = CourseConfig::get(Context::getId())->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
 
@@ -1281,16 +1248,13 @@ function getShowPageInfobox($keyword, $latest_version, $pageversionslist=NULL)
             Icon::create('admin')
         )->asDialog('size=auto');
 
+        // Alle Versionen löschen
         if (keywordExists($keyword)) {
-            if ($pageversionslist) {
-                $tempurl = URLHelper::getURL('', ['keyword' => $keyword, 'sortby' => Request::option('sortby'), 'cmd' => 'delete_all_versions']);
-            } else {
-                $tempurl = URLHelper::getURL('', ['keyword' => $keyword, 'sortby' => Request::option('sortby'), 'cmd' => 'delete_all']);
-            }
             $widget->addLink(
                 _('Alle Versionen löschen'),
-                $tempurl,
-                Icon::create('trash')
+                URLHelper::getURL("?cmd=really_delete_all&keyword=".urlencode($keyword)),
+                Icon::create('trash'),
+                ['data-confirm' => showDeleteAllDialog($keyword)]
             );
         }
     }
@@ -1306,25 +1270,27 @@ function getShowPageInfobox($keyword, $latest_version, $pageversionslist=NULL)
         _('Leseansicht'),
         URLHelper::getURL('?view=show', compact('keyword')),
         Icon::create('wiki')
-    )->setActive(true);
+    )->setActive(Request::option('view') === 'show' || Request::option('view') == '');
 
-    if (Request::option('wiki_comments') === 'none') {
-        if ($GLOBALS['user']->cfg->WIKI_COMMENTS_ENABLE) {
-            $widget->addLink(
-                _('Kommentare anzeigen'),
-                URLHelper::getURL('?wiki_comments=all', compact('keyword'))
-            );
+    if (Request::option('view') != 'pageversions') {
+        if (Request::option('wiki_comments') === 'none') {
+            if ($GLOBALS['user']->cfg->WIKI_COMMENTS_ENABLE) {
+                $widget->addLink(
+                    _('Kommentare anzeigen'),
+                    URLHelper::getURL('?wiki_comments=all&view='.Request::option('view'), compact('keyword'))
+                );
+            } else {
+                $widget->addLink(
+                    _('Kommentare anzeigen'),
+                    URLHelper::getURL('?wiki_comments=icon&view='.Request::option('view'), compact('keyword'))
+                );
+            }
         } else {
             $widget->addLink(
-                _('Kommentare anzeigen'),
-                URLHelper::getURL('?wiki_comments=icon', compact('keyword'))
+                _('Kommentare ausblenden'),
+                URLHelper::getURL('?wiki_comments=none&view='.Request::option('view'), compact('keyword'))
             );
         }
-    } else {
-        $widget->addLink(
-            _('Kommentare ausblenden'),
-            URLHelper::getURL('?wiki_comments=none', compact('keyword'))
-        );
     }
 
     if (count($versions) >= 1) {
@@ -1332,15 +1298,15 @@ function getShowPageInfobox($keyword, $latest_version, $pageversionslist=NULL)
             $widget->addLink(
                 _('Änderungen anzeigen'),
                 URLHelper::getURL('?view=diff', compact('keyword'))
-            );
+            )->setActive(Request::option('view') === 'diff');
             $widget->addLink(
                 _('Text mit Autor/-innenzuordnung anzeigen'),
                 URLHelper::getURL('?view=combodiff', compact('keyword'))
-            );
+            )->setActive(Request::option('view') === 'combodiff');
             $widget->addLink(
                 _('Versionen dieser Seite'),
                 URLHelper::getURL('?view=pageversions', compact('keyword'))
-            );
+            )->setActive(Request::option('view') === 'pageversions');
         }
     }
 
@@ -1435,19 +1401,11 @@ function get_toc_content() {
 *
 * @param    string  WikiPage name
 * @param    string  WikiPage version
-* @param    string  ID of special dialog to be printed (delete, delete_all)
+* @param    string  ID of special dialog to be printed (delete)
 * @param    string  Comment show mode (all, none, icon)
 *
 **/
 function showWikiPage($keyword, $version, $special="", $show_comments="icon", $hilight=NULL) {
-    // show dialogs if any..
-    //
-    if ($special === 'delete') {
-        $version = showDeleteDialog($keyword, $version);
-    } else if ($special === 'delete_all' || $special === 'delete_all_versions') {
-        showDeleteAllDialog($keyword);
-    }
-
     $wikiData = getWikiPage($keyword, $version);
     $content = wikiReady($wikiData["body"], TRUE, FALSE, $show_comments);
 
@@ -1470,11 +1428,7 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     $template->wikipage = $wikiData;
     $template->content  = $content;
 
-    if ($special === 'delete_all_versions') {
-        listPageVersions($keyword, Request::option('sortby'));
-    } else {
-        echo $template->render();
-    }
+    echo $template->render();
 
     getShowPageInfobox($keyword, $wikiData->isLatestVersion());
 }
@@ -1500,8 +1454,6 @@ function showDiffs($keyword, $versions_since)
         throw new InvalidArgumentException(_('Es gibt keine zu vergleichenden Versionen.'));
     }
 
-    $content = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">";
-
     $version     = array_shift($versions);
     $last        = $version['body'];
     $lastversion = $version['version'];
@@ -1526,7 +1478,6 @@ function showDiffs($keyword, $versions_since)
             break;
         }
     }
-    $content .= '</table>';
 
     $wikiData = getWikiPage($keyword, null);
 
