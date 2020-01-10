@@ -132,8 +132,8 @@ class GlobalSearchBlubber extends GlobalSearchModule implements GlobalSearchFull
             'url'         => $thread->getURL(),
             'img'         => $thread->getAvatar(),
             'date'        => strftime('%x', $thread['mkdate']),
-            'description' => $description,
-            'additional'  => $thread->getName(),
+            'description' => htmlReady($description),
+            'additional'  => htmlReady($thread->getName()),
             'expand'      => $thread->getURL()
         ];
 
