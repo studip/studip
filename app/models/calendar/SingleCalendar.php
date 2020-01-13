@@ -759,7 +759,7 @@ class SingleCalendar
                      *
                      */
                     if ($end > $rep['expire'] + $duration * 86400) {
-                        continue;
+                        continue 2;
                     }
                     $ts = $ts + (date('I', $rep['ts']) * 3600);
                     $pos = (($ts - $rep['ts']) / 86400) % $rep['linterval'];
