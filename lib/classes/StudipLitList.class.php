@@ -345,7 +345,7 @@ class StudipLitList extends TreeAbstract implements PrivacyObject
         return $rs->affected_rows();
     }
 
-    function GetTabbedList($range_id, $list_id){
+    public static function GetTabbedList($range_id, $list_id){
         $end_note_map = [  'dc_type' => 'Reference Type', 'dc_title' => 'Title', 'dc_creator' => 'Author',
                                 'year' => 'Year', 'dc_contributor' => 'Secondary Author', 'dc_publisher' => 'Publisher',
                                 'dc_identifier' => 'ISBN/ISSN', 'dc_source' => 'Original Publication', 'dc_subject' => 'Keywords',
