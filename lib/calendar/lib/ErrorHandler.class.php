@@ -87,14 +87,9 @@ class ErrorHandler
 
     public function nextError($status)
     {
-
-        if (is_array($this->errors[$status]) &&
-                list($key, $error) = each($this->errors[$status])) {
-            return $error;
+        if(is_array($this->errors[$status])) {
+            return reset($this->errors[$status]);
         }
-
-        if (is_array($this->errors[$status]))
-            reset($this->errors[$status]);
         return false;
     }
 
