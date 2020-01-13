@@ -50,12 +50,12 @@ if ($folder_id) {
     </div>
     <? if (count($upload_type['file_types']) && $upload_type['type'] == 'allow') : ?>
         <div>
-            <?=sprintf(_('Sie dürfen die Dateitypen %s nicht hochladen!'), '<b>' . join($upload_type['file_types'],',') . '</b>')?>
+            <?=sprintf(_('Sie dürfen die Dateitypen %s nicht hochladen!'), '<b>' . join(',', $upload_type['file_types']) . '</b>')?>
         </div>
     <? endif ?>
     <? if (count($upload_type['file_types']) && $upload_type['type'] == 'deny') : ?>
         <div>
-            <?=sprintf(_('Sie dürfen nur die Dateitypen %s hochladen!'), '<b>' . join($upload_type['file_types'],',') . '</b>')?>
+            <?=sprintf(_('Sie dürfen nur die Dateitypen %s hochladen!'), '<b>' . join(',', $upload_type['file_types']) . '</b>')?>
         </div>
     <? endif ?>
     <form style="display: none;" class="file_selector">
