@@ -60,7 +60,9 @@ class Stream implements \ArrayAccess, \Countable, \IteratorAggregate
                     $activity->verb . $activity->object_type . $activity->mkdate);
 
             if ($new_activities[$id]) {
-                list($url, $name) = each($activity->object_url);
+                $url = key($activity->object_url);
+                $name = current($activity->object_url);
+                next($activity->object_url);
                 $new_activities[$id]->addUrl($url, $name);
             } else {
                 $new_activities[$id] = $activity;
