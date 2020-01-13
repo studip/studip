@@ -8,7 +8,7 @@ class BlubberController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        PageLayout::setTitle(_('Blubber-Messenger'));
+        PageLayout::setTitle(_('Blubber'));
     }
 
     public function index_action($thread_id = null)

@@ -11,7 +11,7 @@ class MessengerController extends PluginController {
 
     public function course_action($thread_id = null)
     {
-        PageLayout::setTitle(_("Blubber-Messenger"));
+        PageLayout::setTitle(_("Blubber"));
 
         Navigation::activateItem("/course/blubber");
 
