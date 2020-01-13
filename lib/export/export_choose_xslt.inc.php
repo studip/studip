@@ -70,15 +70,18 @@ function CheckParamXSLT()
             $page         = 0;
         }
         
-        if ($format == "")
+        if ($format === "") {
             $page = 0;
+        }
         reset($xslt_files);
     }
     
-    if (($page === 2) AND ($choose === ""))
+    if (($page === 2) && ($choose === "")) {
         $page = 1;
-    if ( /*($xml_file_id != "") AND */ (in_array($ex_type, $export_ex_types)) AND (in_array($o_mode, $export_o_modes)))
+    }
+    if ( /*($xml_file_id != "") AND */ (in_array($ex_type, $export_ex_types)) && (in_array($o_mode, $export_o_modes))) {
         return true;
+    }
     
     $export_error .= "<b>" . _("Unzulässiger Seitenaufruf!") . "</b><br>";
     $export_error_num++;
@@ -96,12 +99,12 @@ if (!CheckParamXSLT()) {
 }
 
 // Die Seiten 2 und 3 ueberspringen, wenn als Dateiformat XML gewaehlt wurde
-if (($format == "xml") AND ($page == 1)) {
+if (($format === "xml") && ($page === 1)) {
     $xml_file_id = "";
     $o_mode      = "file";
     $page        = 3;
-} elseif (!isset($page) or ($page == 0)) // Seite 1 : Auswahl des Dateiformats
-{
+// Seite 1 : Auswahl des Dateiformats
+} elseif (!isset($page) || ($page === 0)) {
     $export_pagename .= _("Auswahl des Dateiformats");
     
     unset($export_msg);
@@ -118,9 +121,11 @@ if (($format == "xml") AND ($page == 1)) {
     $export_pagecontent .= CSRFProtection::tokenTag();
     $export_pagecontent .= "<label>" . _("Ausgabeformat:") . "<select name=\"format\">";
     
-    while (list($key, $val) = each($output_formats)) {
+    foreach ($output_formats as $key => $val) {
         $export_pagecontent .= "<option value=\"" . $key . "\"";
-        if ($format == $key) $export_pagecontent .= " selected";
+        if ($format == $key) {
+            $export_pagecontent .= " selected";
+        }
         $export_pagecontent .= ">" . $val;
     }
     $export_pagecontent .= "</select></label>";
@@ -143,29 +148,27 @@ if (($format == "xml") AND ($page == 1)) {
     $export_weiter_button .= Button::create(_('Weiter') . ' >>', 'next') . "</div>";
     
     $export_weiter_button .= "</footer></form>";
-    
-} elseif ($page == 1) // Seite 2 : Auswahl des XSLT-Scripts
-{
-    if (mb_strpos($choose, $format) === false)
+// Seite 2 : Auswahl des XSLT-Scripts
+} elseif ($page === 1) {
+    if (mb_strpos($choose, $format) === false) {
         unset($choose);
-    $export_pagename .= _("Auswahl des Ausgabemoduls");
-    
-    $export_info = null;
-    
+    }
+    $export_pagename    .= _("Auswahl des Ausgabemoduls");
+    $export_info        = null;
     $export_pagecontent .= '<form class="default" method="POST" action="' . URLHelper::getLink() . '">';
     $export_pagecontent .= '<fieldset><legend>' . _('Ausgabemodul') . '</legend>';
     $export_pagecontent .= CSRFProtection::tokenTag();
     $export_pagecontent .= "";
     
     $opt_num = 0;
-    while (list($key, $val) = each($xslt_files)) {
-        if ($val[$ex_type] AND $val[$format]) {
+    foreach ($xslt_files as $key => $val) {
+        if ($val[$ex_type] && $val[$format]) {
             $export_pagecontent .= "<label><input type=\"radio\" name=\"choose\" value=\"" . $key . "\"";
-            if (($key == $choose) OR (($choose == "") AND ($opt_num == 0))) $export_pagecontent .= " checked";
+            if (($key == $choose) || (($choose == "") && ($opt_num == 0))) {
+                $export_pagecontent .= " checked";
+            }
             $export_pagecontent .= ">" . $val["name"];
             $export_pagecontent .= tooltipIcon($val["desc"]);
-            
-            
             $export_pagecontent .= "</label>";
             $opt_num++;
         }
@@ -188,23 +191,22 @@ if (($format == "xml") AND ($page == 1)) {
     
     $export_weiter_button .= Button::create(_('Weiter') . ' >>', 'next');
     $export_weiter_button .= '</footer></form>';
-} elseif ($page == 2)  // Seite 3 : Download der Dateien
-{
-    $export_pagename .= _("Download der Dateien");
-    
+// Seite 3 : Download der Dateien
+} elseif ($page === 2) {
+    $export_pagename    .= _("Download der Dateien");
     $export_info        = _("Die benötigten Dateien liegen nun zum Download bereit.");
-    $export_pagecontent .= "<form class=\"default\" method=\"POST\" action=\"" . URLHelper::getLink() . "\">";
+    $export_pagecontent .= "<form class=\"default\" method=\"post\" action=\"" . URLHelper::getLink() . "\">";
     $export_pagecontent .= CSRFProtection::tokenTag();
     
     $xml_printimage   = '<a href="' . FileManager::getDownloadLinkForTemporaryFile($xml_file_id, $xml_filename) . '">';
-    $xml_printimage   .= Icon::create($export_icon['xml'], 'clickable')->asImg(['class' => 'text-top']);
+    $xml_printimage   .= Icon::create($export_icon['xml'])->asImg(['class' => 'text-top']);
     $xml_printimage   .= '</a>';
     $xml_printlink    = '<a href="' . FileManager::getDownloadLinkForTemporaryFile($xml_file_id, $xml_filename) . '">' . htmlReady($xml_filename) . '</a>';
     $xml_printdesc    = _("XML-Daten");
     $xml_printcontent = _("In dieser Datei sind die Daten als XML-Tags gespeichert. Diese Tags können mit einem XSLT-Script verarbeitet werden.") . "<br>";
     
     $xslt_printimage   = '<a href="' . FileManager::getDownloadLinkForTemporaryFile($xslt_files[$choose]['file'], $xslt_files[$choose]['name'] . '.xsl') . '">';
-    $xslt_printimage   .= Icon::create($export_icon['xslt'], 'clickable')->asImg(['class' => 'text-top']);
+    $xslt_printimage   .= Icon::create($export_icon['xslt'])->asImg(['class' => 'text-top']);
     $xslt_printimage   .= '</a>';
     $xslt_printlink    = '<a href="' . FileManager::getDownloadLinkForTemporaryFile($xslt_files[$choose]['file'], $xslt_files[$choose]['name'] . '.xsl') . '">' . $xslt_files[$choose]['name'] . '.xsl</a>';
     $xslt_printdesc    = _("XSLT-Datei");
