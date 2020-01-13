@@ -67,6 +67,13 @@ class Admin_CourseplanningController extends AuthenticatedController
 
         // build the sidebar:
         $this->buildSidebar($GLOBALS['user']->cfg->MY_COURSES_TYPE_FILTER);
+        $sidebar = Sidebar::get();
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Veranstaltungs-Stundenplan PDF'),
+            'javascript:STUDIP.Fullcalendar.downloadPDF();',
+            Icon::create('file-pdf')
+        );
 
         $this->courses = $this->getFilteredCourses();
         $this->events = InstituteCalendarHelper::getEvents(
@@ -110,6 +117,13 @@ class Admin_CourseplanningController extends AuthenticatedController
 
         //build the sidebar:
         $this->buildSidebar($GLOBALS['user']->cfg->MY_COURSES_TYPE_FILTER);
+        $sidebar = Sidebar::get();
+        $actions = $sidebar->addWidget(new ActionsWidget());
+        $actions->addLink(
+            _('Veranstaltungs-Stundenplan PDF'),
+            'javascript:STUDIP.Fullcalendar.downloadPDF("landscape", true);',
+            Icon::create('file-pdf')
+        );
 
         Sidebar::get()->getWidget('actions')->addLink(
             _('Spalten Anzeige'),
@@ -502,20 +516,11 @@ class Admin_CourseplanningController extends AuthenticatedController
      */
     private function buildSidebar($courseTypeFilterConfig = null)
     {
-        $sidebar = Sidebar::get();
-
         $this->setInstSelector();
         $this->setSemesterSelector();
         $this->setStgteilSelector();
         $this->setCourseTypeWidget($courseTypeFilterConfig);
         $this->setTeacherWidget();
-
-        $actions = $sidebar->addWidget(new ActionsWidget());
-        $actions->addLink(
-            _('Veranstaltungs-Stundenplan PDF'),
-            'javascript:STUDIP.Fullcalendar.downloadPDF();',
-            Icon::create('file-pdf')
-        );
     }
 
 
