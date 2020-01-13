@@ -92,7 +92,7 @@ class Admin_SmileysController extends AuthenticatedController
             }
 
             if ($success) {
-                $this->redirect('admin/smileys?view=' . $smiley->name{0} . '#smiley' . $smiley->id);
+                $this->redirect('admin/smileys?view=' . $smiley->name[0] . '#smiley' . $smiley->id);
             } else {
                 $this->redirect($this->url_for('admin/smileys/edit', $id, $view));
             }
@@ -247,7 +247,7 @@ class Admin_SmileysController extends AuthenticatedController
         PageLayout::postMessage(MessageBox::success($message));
 
         // Return to index and display the view the uploaded smiley is in
-        $this->redirect('admin/smileys?view=' . $smiley_file{0});
+        $this->redirect('admin/smileys?view=' . $smiley_file[0]);
     }
 
     /**
