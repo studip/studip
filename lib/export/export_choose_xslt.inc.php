@@ -65,18 +65,18 @@ function CheckParamXSLT()
                 $mod_counter++;
             }
         }
-        if (($mod_counter === 0) && ($format !== "xml")) {
+        if ($mod_counter === 0 && $format !== "xml") {
             $export_error .= _("Für dieses Format sind keine Ausgabemodule installiert.<br>Bitte wählen Sie ein anderes Ausgabeformat.") . "<br>";
             $page         = 0;
         }
         
-        if ($format === "") {
+        if (!$format) {
             $page = 0;
         }
         reset($xslt_files);
     }
     
-    if (($page === 2) && ($choose === "")) {
+    if ($page === 2 && !$choose) {
         $page = 1;
     }
     if ( /*($xml_file_id != "") AND */ (in_array($ex_type, $export_ex_types)) && (in_array($o_mode, $export_o_modes))) {
@@ -99,12 +99,12 @@ if (!CheckParamXSLT()) {
 }
 
 // Die Seiten 2 und 3 ueberspringen, wenn als Dateiformat XML gewaehlt wurde
-if (($format === "xml") && ($page === 1)) {
+if ($format === "xml" && $page === 1) {
     $xml_file_id = "";
     $o_mode      = "file";
     $page        = 3;
 // Seite 1 : Auswahl des Dateiformats
-} elseif (!isset($page) || ($page === 0)) {
+} elseif (!isset($page) || $page === 0) {
     $export_pagename .= _("Auswahl des Dateiformats");
     
     unset($export_msg);
@@ -164,7 +164,7 @@ if (($format === "xml") && ($page === 1)) {
     foreach ($xslt_files as $key => $val) {
         if ($val[$ex_type] && $val[$format]) {
             $export_pagecontent .= "<label><input type=\"radio\" name=\"choose\" value=\"" . $key . "\"";
-            if (($key == $choose) || (($choose == "") && ($opt_num == 0))) {
+            if ($key == $choose || !$choose && $opt_num == 0) {
                 $export_pagecontent .= " checked";
             }
             $export_pagecontent .= ">" . $val["name"];

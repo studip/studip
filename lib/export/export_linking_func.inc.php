@@ -41,13 +41,15 @@ function export_form($range_id, $ex_type = "", $filename = "", $format = "", $fi
     $export_string .= CSRFProtection::tokenTag();
     $export_string .= "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"><tr><td class=\"table_row_even\"> &nbsp; &nbsp; &nbsp; ";
 
-    $export_string .= "<font size=\"-1\"><b> "._("Diese Daten exportieren: ") .  "</b></font>";
+    $export_string .= "<b> "._("Diese Daten exportieren: ") .  "</b>";
     $export_string .= "</td><td align=\"center\" class=\"table_row_even\">";
     $export_string .= "<select name=\"format\">";
-    while (list($key, $val) = each($output_formats))
+    foreach ($output_formats as $key => $val)
     {
         $export_string .= "<option value=\"" . $key . "\"";
-        if ($format==$key) $export_string .= " selected";
+        if ($format==$key) {
+            $export_string .= " selected";
+        }
         $export_string .= ">" . $val;
     }
     $export_string .= "</select>";
@@ -88,10 +90,12 @@ function export_form_sidebar($range_id, $ex_type = "", $filename = "", $format =
     $export_string .= "<form class=\"default\" action=\"" .$GLOBALS['ABSOLUTE_URI_STUDIP']. "export.php\" method=\"post\">";
     $export_string .= CSRFProtection::tokenTag();
     $export_string .= "<select name=\"format\">";
-    while (list($key, $val) = each($output_formats))
+    foreach ($output_formats as $key => $val)
     {
         $export_string .= "<option value=\"" . $key . "\"";
-        if ($format==$key) $export_string .= " selected";
+        if ($format==$key) {
+            $export_string .= " selected";
+        }
         $export_string .= ">" . my_substr($val, 0, 20) . "</option>";
     }
     $export_string .= "</select>";
@@ -124,15 +128,45 @@ function export_form_sidebar($range_id, $ex_type = "", $filename = "", $format =
 */
 function export_link($range_id, $ex_type = "", $filename = "", $format = "", $choose = "", $filter = "", $content = "", $o_mode = 'processor')
 {
-    global $xslt_filename, $i_page;
+    global $i_page;
 
     $export_string = '<a href="';
-    if ($choose != "")
-        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' => $filename, 'format' => $format, 'choose' => $choose, 'o_mode' => $o_mode, 'filter' => $filter, 'jump' => $i_page]);
-    elseif ($ex_type != "")
-        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'ex_type' => $ex_type, 'xslt_filename' =>  $filename, 'o_mode' => 'choose', 'filter' => $filter]);
-    else
-        $export_string .= URLHelper::getLink('export.php', ['range_id' => $range_id, 'o_mode' => 'start']);
+    if ($choose != "") {
+        $export_string .= URLHelper::getLink(
+            'export.php',
+            [
+                'range_id' => $range_id,
+                'ex_type' => $ex_type,
+                'xslt_filename' => $filename,
+                'format' => $format,
+                'choose' => $choose,
+                'o_mode' => $o_mode,
+                'filter' => $filter,
+                'jump' => $i_page
+            ]
+        );
+    }
+    elseif ($ex_type != "") {
+        $export_string .= URLHelper::getLink(
+            'export.php',
+            [
+                'range_id' => $range_id,
+                'ex_type' => $ex_type,
+                'xslt_filename' =>  $filename,
+                'o_mode' => 'choose',
+                'filter' => $filter
+            ]
+        );
+    }
+    else {
+        $export_string .= URLHelper::getLink(
+            'export.php',
+            [
+                'range_id' => $range_id,
+                'o_mode' => 'start'
+            ]
+        );
+    }
 
     $export_string .= '">' . ($content ? $content : _("Diese Daten exportieren"));
     $export_string .= '</a>';
@@ -156,16 +190,33 @@ function export_link($range_id, $ex_type = "", $filename = "", $format = "", $ch
 */
 function export_button($range_id, $ex_type = "", $filename = "", $format = "", $choose = "", $filter = "")
 {
-    global $xslt_filename, $i_page;
-    $export_link = '';
-    if ($choose != "")
-        $export_link .= "export.php?range_id=$range_id&ex_type=$ex_type&xslt_filename=$filename&format=$format&choose=$choose&o_mode=processor&filter=$filter&jump=$i_page";
-    elseif ($ex_type != "")
-        $export_link .= "export.php?range_id=$range_id&ex_type=$ex_type&xslt_filename=$filename&o_mode=choose&filter=$filter";
-    else
-        $export_link .= "export.php?range_id=$range_id&o_mode=start";
-    $export_string = Studip\LinkButton::create(_('Export'), URLHelper::getURL($export_link));
-    return $export_string;
+    global $i_page;
+    if ($choose != "") {
+        $parameters = [
+            'range_id' => $range_id,
+            'ex_type' => $ex_type,
+            'xslt_filename' => $filename,
+            'format' => $format,
+            'choose' => $choose,
+            'o_mode' => 'processor',
+            'filter' => $filter,
+            'jump' => $i_page
+        ];
+    }
+    elseif ($ex_type != "") {
+        $parameters = [
+            'range_id' => $range_id,
+            'ex_type' => $ex_type,
+            'xslt_filename' => $filename,
+            'o_mode' => 'choose',
+            'filter' => $filter,
+        ];
+    }
+    else {
+        $parameters = [
+            'range_id' => $range_id,
+            'o_mode' => 'start',
+        ];
+    }
+    return Studip\LinkButton::create(_('Export'), URLHelper::getURL('export.php', $parameters));
 }
-
-?>
