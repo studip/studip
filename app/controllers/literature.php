@@ -130,11 +130,13 @@ class LiteratureController extends AuthenticatedController
                     if ($inserted){
                         $_the_tree->init();
                         $_the_treeview->open_ranges[$clip_cmd[1]] = true;
-                        PageLayout::postMessage(MessageBox::success(sprintf(_("%s Einträge aus Ihrer Merkliste wurden in <b>%s</b> eingetragen."),
-                        $inserted, htmlReady($_the_tree->tree_data[$clip_cmd[1]]['name']))));
+                        PageLayout::postSuccess(sprintf(
+                            _("%s Einträge aus Ihrer Merkliste wurden in <b>%s</b> eingetragen."),
+                            $inserted, htmlReady($_the_tree->tree_data[$clip_cmd[1]]['name'])
+                        ));
                     }
                 } else {
-                    PageLayout::postMessage(MessageBox::info(_("Sie haben keinen Eintrag in Ihrer Merkliste ausgewählt!")));
+                    PageLayout::postInfo(_("Sie haben keinen Eintrag in Ihrer Merkliste ausgewählt!"));
                 }
             }
             $_the_clipboard->doClipCmd();
@@ -244,7 +246,10 @@ class LiteratureController extends AuthenticatedController
                 }
                 PageLayout::postSuccess($_msg);
             } else {
-                PageLayout::postError(_('Bei der Suche ist ein Fehler aufgetreten.') ,$_the_search->search_plugin->getError('error'));
+                PageLayout::postError(
+                    _('Bei der Suche ist ein Fehler aufgetreten.'),
+                    $_the_search->search_plugin->getError('error')
+                );
 
             }
             $_the_search->start_result = 1;
@@ -252,7 +257,7 @@ class LiteratureController extends AuthenticatedController
 
         if (Request::option('cmd') == "add_to_clipboard"){
             $catalog_id = Request::option('catalog_id');
-            if ($catalog_id{0} == "_"){
+            if ($catalog_id[0] == "_"){
                 $parts = explode("__", $catalog_id);
                 if ( ($fields = $_SESSION[$parts[0]][$parts[1]]) ){
                     $cat_element = new StudipLitCatElement();
@@ -301,7 +306,7 @@ class LiteratureController extends AuthenticatedController
         Navigation::activateItem('/tools/literature');
 
         //dump data into db if $_catalog_id points to a search result
-        if ($_catalog_id{0} == "_"){
+        if ($_catalog_id[0] == "_"){
             $parts = explode("__", $_catalog_id);
             if ( ($fields = $_SESSION[$parts[0]][$parts[1]]) ){
                 $cat_element = new StudipLitCatElement();
@@ -321,7 +326,10 @@ class LiteratureController extends AuthenticatedController
         if (Request::option('cmd') == 'clone_entry'){
             $_the_element = StudipLitCatElement::GetClonedElement($_catalog_id);
             if ($_the_element->isNewEntry()){
-                PageLayout::postWarning(_("Der Eintrag wurde kopiert, Sie können die Daten jetzt ändern."), [_("Der kopierte Eintrag wurde noch nicht gespeichert.")]);
+                PageLayout::postWarning(
+                    _("Der Eintrag wurde kopiert, Sie können die Daten jetzt ändern."),
+                    [_("Der kopierte Eintrag wurde noch nicht gespeichert.")]
+                );
                 //$old_cat_id = $_catalog_id;
                 $_catalog_id = $_the_element->getValue('catalog_id');
             } else {
@@ -350,7 +358,10 @@ class LiteratureController extends AuthenticatedController
 
         if ($_the_form->IsClicked("delete") && $_catalog_id != "new_entry" && $_the_element->isChangeable()){
             if ($_the_element->reference_count){
-                PageLayout::postInfo(sprintf(_("Sie können diesen Eintrag nicht löschen, da er noch in %s Literaturlisten referenziert wird."),$_the_element->reference_count));
+                PageLayout::postInfo(sprintf(
+                    _("Sie können diesen Eintrag nicht löschen, da er noch in %s Literaturlisten referenziert wird."),
+                    $_the_element->reference_count
+                ));
             } else {
                 PageLayout::postInfo(_("Wollen Sie diesen Eintrag wirklich löschen?"),
                     [Studip\LinkButton::createAccept(_('Ja'), URLHelper::getURL('?cmd=delete_element&_catalog_id=' . $_catalog_id))
@@ -420,7 +431,7 @@ class LiteratureController extends AuthenticatedController
         $_catalog_id = $_the_element->getValue("catalog_id");
 
         if (!$_the_element->isChangeable()) {
-            PageLayout::postMessage(MessageBox::info(_('Sie haben diesen Eintrag nicht selbst vorgenommen, und dürfen ihn daher nicht verändern! Wenn Sie mit diesem Eintrag arbeiten wollen, können Sie sich eine persönliche Kopie erstellen.')));
+            PageLayout::postInfo(_('Sie haben diesen Eintrag nicht selbst vorgenommen, und dürfen ihn daher nicht verändern! Wenn Sie mit diesem Eintrag arbeiten wollen, können Sie sich eine persönliche Kopie erstellen.'));
         }
 
 
