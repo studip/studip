@@ -132,7 +132,7 @@ class FileManager
                 //and return the icon name that matches the regular expression
                 //for an application mime type:
                 foreach ($application_category_icons as $icon_name => $type_name) {
-                    if (preg_match('/' . implode($type_name, '|') . '/i', $type)) {
+                    if (preg_match('/' . implode('|', $type_name) . '/i', $type)) {
                         return $icon_name;
                     }
                 }
