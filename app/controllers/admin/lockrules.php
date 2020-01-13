@@ -19,7 +19,7 @@ class Admin_LockrulesController extends AuthenticatedController
     /**
      * common tasks for all actions
      */
-    function before_filter (&$action, &$args)
+    public function before_filter (&$action, &$args)
     {
         global $perm, $template_factory;
 
@@ -42,7 +42,7 @@ class Admin_LockrulesController extends AuthenticatedController
         } elseif ($this->lock_rule_type == 'user') {
             $this->lock_rule_permissions = ['tutor','dozent','admin','root'];
         }
-
+        $this->sidebar = Sidebar::Get();
         $this->rule_type_names = ['sem' => _('Veranstaltung'), 'inst' => _('Einrichtung'), 'user' => _('Person')];
     }
 
