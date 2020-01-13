@@ -373,7 +373,7 @@ class StudipLitSearchPluginZ3950Abstract extends StudipLitSearchPluginAbstract{
             $this->z_start_range = (int)floor($num_hit/5)*5 + 1;
             $this->doSearch();
         }
-        $catalog_id = ($this->search_result[$num_hit]['catalog_id']{0} != "_") ? $this->search_result[$num_hit]['catalog_id'] : false;
+        $catalog_id = ($this->search_result[$num_hit]['catalog_id'][0] != "_") ? $this->search_result[$num_hit]['catalog_id'] : false;
         $cat_element = new StudipLitCatElement($catalog_id);
         if ($cat_element->isNewEntry()){
             $cat_element->setValues($this->search_result[$num_hit]);
