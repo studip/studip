@@ -43,13 +43,12 @@
 
 class StudipComment extends SimpleORMap implements PrivacyObject
 {
-
-    static function NumCommentsForObject($object_id)
+    public static function NumCommentsForObject($object_id)
     {
         return self::countBySql('object_id = ?', [$object_id]);
     }
 
-    static function NumCommentsForObjectSinceLastVisit($object_id, $comments_since = 0, $exclude_user_id = null)
+    public static function NumCommentsForObjectSinceLastVisit($object_id, $comments_since = 0, $exclude_user_id = null)
     {
         $query = "object_id = ?";
         $query .= " AND chdate > ?";
@@ -58,8 +57,8 @@ class StudipComment extends SimpleORMap implements PrivacyObject
         }
         return self::countBySql($query, [$object_id, $comments_since, $exclude_user_id]);
     }
-
-    static function GetCommentsForObject($object_id)
+    
+    public static function GetCommentsForObject($object_id)
     {
         global $_fullname_sql;
         $query = "SELECT comments.content, {$_fullname_sql['full']} AS fullname,
@@ -73,8 +72,8 @@ class StudipComment extends SimpleORMap implements PrivacyObject
         $statement->execute([$object_id]);
         return $statement->fetchAll(PDO::FETCH_BOTH);
     }
-
-    static function DeleteCommentsByObject($object_ids)
+    
+    public static function DeleteCommentsByObject($object_ids)
     {
         if (!is_array($object_ids)) {
             $object_ids = [$object_ids];
