@@ -476,22 +476,24 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         );
     }
 
-    public function isVisibleInStream()
+    public function isVisibleInStream($user_id = null)
     {
         return $this['visible_in_stream'];
     }
 
-    public function isWritable()
+    public function isWritable($user_id = null)
     {
+        $user_id || $user_id = $GLOBALS['user']->id;
         if ($this['context_type'] === 'course' || $this['context_type'] === 'institute') {
-            return $GLOBALS['perm']->have_studip_perm('tutor', $this['context_id']);
+            return $GLOBALS['perm']->have_studip_perm('tutor', $this['context_id'], $user_id);
         } else {
-            return $GLOBALS['perm']->have_perm('root') || $this['user_id'] === $GLOBALS['user']->id;
+            return $GLOBALS['perm']->have_perm('root', $user_id) || ($this['user_id'] === $user_id);
         }
     }
 
-    public function isReadable()
+    public function isReadable($user_id = null)
     {
+        $user_id || $user_id = $GLOBALS['user']->id;
         if ($this['context_type'] === 'public') {
             return true;
         }
@@ -503,7 +505,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                         AND user_id = :me
                         AND external_contact = 0";
             return (bool) DBManager::get()->fetchColumn($query, [
-                'me'        => $GLOBALS['user']->id,
+                'me'        => $user_id,
                 'thread_id' => $this->getId()
             ]);
         }
@@ -515,7 +517,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return false;
     }
 
-    public function isCommentable()
+    public function isCommentable($user_id = null)
     {
         return $this->isReadable() && $this['commentable'];
     }

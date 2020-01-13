@@ -33,9 +33,10 @@ class BlubberStatusgruppeThread extends BlubberThread
         return false;
     }
 
-    public function isReadable()
+    public function isReadable($user_id = null)
     {
-        if ($GLOBALS['perm']->have_studip_perm("tutor", $this['context_id'])) {
+        $user_id || $user_id = $GLOBALS['user']->id;
+        if ($GLOBALS['perm']->have_studip_perm("tutor", $this['context_id'], $user_id)) {
             return true;
         }
 
@@ -45,7 +46,7 @@ class BlubberStatusgruppeThread extends BlubberThread
                     AND user_id = :user_id";
         return (bool) DBManager::get()->fetchColumn($query, [
             'statusgruppe_id' => $this['metadata']['statusgruppe_id'],
-            'user_id'         => $GLOBALS['user']->id
+            'user_id'         => $user_id
         ]);
     }
 
