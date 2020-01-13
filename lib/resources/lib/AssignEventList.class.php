@@ -108,21 +108,24 @@ class AssignEventList{
     }
 
     function existEvent(){
-        return sizeof($this->events) > 0 ? TRUE : FALSE;
+        return sizeof($this->events) > 0 ? true : false;
     }
 
     // public
     function nextEvent(){
         if (is_array($this->events)) {
-            if (list(,$ret) = each($this->events))
+            $ret = current($this->events);
+            if ($ret) {
+                next($this->events);
                 return $ret;
+            }
         }
-        return FALSE;
+        return false;
     }
 
     function sort(){
-        if($this->events)
+        if($this->events) {
             usort($this->events,"cmp_assign_events");
+        }
     }
-
 }
