@@ -131,7 +131,7 @@ class ExternElementSelectSubjectAreas extends ExternElement {
             }
             return !($value == '1' || $value == '');
         }
-        if ($attribute == 'subjectareasselected' && sizeof($_POST[$this->name . '_selectallsubjectareas'])) {
+        if ($attribute == 'subjectareasselected' && is_array($_POST[$this->name . '_selectallsubjectareas']) && count($_POST[$this->name . '_selectallsubjectareas'])) {
             return ($value == '0');
         }
 

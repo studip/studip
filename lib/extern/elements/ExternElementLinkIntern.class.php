@@ -100,7 +100,7 @@ class ExternElementLinkIntern extends ExternElement {
         $first_module = TRUE;
         foreach ((array) $this->link_module_type as $module_type) {
             $configs = ExternConfig::GetAllConfigurations($this->config->range_id, $module_type);
-            if (sizeof($configs)) {
+            if (is_array($configs) && count($configs)) {
                 if ($first_module) {
                     $names[] = _("Standardkonfiguration") . ' ('. $EXTERN_MODULE_TYPES[$module_type]['name'] . ')';
                     $values[] = '';

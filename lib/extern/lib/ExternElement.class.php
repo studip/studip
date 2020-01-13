@@ -109,7 +109,7 @@ class ExternElement {
     *
     */
     function isEditable () {
-        if (sizeof($this->attributes))
+        if (is_array($this->attributes) && count($this->attributes))
             return TRUE;
 
         return FALSE;
@@ -462,7 +462,7 @@ class ExternElement {
             foreach ((array) $this->link_module_type as $type) {
                 $module_name = $GLOBALS['EXTERN_MODULE_TYPES'][$type]['module'];
                 $configs = ExternConfig::GetAllConfigurations($this->config->range_id, $type);
-                if (sizeof($configs)) {
+                if (is_array($configs) && count($configs)) {
                     break;
                 }
             }

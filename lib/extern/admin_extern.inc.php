@@ -246,7 +246,7 @@ if ($choose_module_form != '') {
         echo "</form><br>\n";
 
         $conf_institutes = ExternConfig::GetInstitutesWithConfigurations(($GLOBALS['perm']->have_perm('root') && Request::option('view') == 'extern_global') ? 'global' : ['inst', 'fak']);
-        if (sizeof($conf_institutes)) {
+        if (is_array($conf_institutes) && count($conf_institutes)) {
             echo '<form method="post" action="' . URLHelper::getLink('?com=copychoose') . '" class="default">';
             echo CSRFProtection::tokenTag();
             echo "<fieldset>";
@@ -414,7 +414,7 @@ $info_max_configs = sprintf(_("Sie können pro Modul maximal %s Konfigurationen 
 Helpbar::get()->addPlainText(_('Information'), sprintf(_("Sie können pro Modul maximal %s Konfigurationen anlegen."),
         $EXTERN_MAX_CONFIGURATIONS));
 
-if (sizeof($configurations)) {
+if (is_array($configurations) && count($configurations)) {
 
     Helpbar::get()->addPlainText(_('Standard-Konfiguration'),
             _('Dieses Symbol kennzeichnet die Standard-Konfiguration, die zur Formatierung herangezogen wird, wenn Sie beim Aufruf dieses Moduls keine Konfiguration angeben.'),

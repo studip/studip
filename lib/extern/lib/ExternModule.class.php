@@ -283,7 +283,7 @@ class ExternModule {
             }
         }
 
-        if (sizeof($faulty_values)) {
+        if (is_array($faulty_values) && count($faulty_values)) {
             return $faulty_values;
         }
 
@@ -508,7 +508,7 @@ class ExternModule {
         }
 
         $url .= "module={$module}&config_id=" . (is_null($linked_element_name) ? $this->config->getId() : $this->config->getValue($linked_element_name, 'config')) . "&range_id={$this->config->range_id}";
-        if (sizeof($query_parts)) {
+        if (is_array($query_parts) && count($query_parts)) {
             $url .= '&' . implode('&', $query_parts);
         }
         return $url;

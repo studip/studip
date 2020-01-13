@@ -66,14 +66,17 @@ class ExternElementTableHeadrow extends ExternElement {
         $visible = $this->config->getValue($args["main_module"], "visible");
         // if all visible aliases are empty return empty string
         $al_empty = TRUE;
-        for ($i = 0; $i < sizeof($alias); $i++) {
-            if ($alias[$i] != '' && $visible[$i]) {
-                $al_empty = FALSE;
-                break;
+        if(is_array($alias)) {
+            for ($i = 0; $i < count($alias); $i++) {
+                if ($alias[$i] != '' && $visible[$i]) {
+                    $al_empty = FALSE;
+                    break;
+                }
             }
         }
-        if ($al_empty)
+        if ($al_empty) {
             return '';
+        }
 
         $out = "<tr" . $this->config->getAttributes($this->name, "tr") . ">\n";
         $i = 0;
@@ -85,23 +88,28 @@ class ExternElementTableHeadrow extends ExternElement {
         $font = $this->config->getTag($this->name, "font", FALSE, TRUE);
 
         foreach ($order as $column) {
-
             // "zebra-effect" in head-row
-            if ($zebra)
+            if ($zebra) {
                 $set = $attributes[++$i % 2];
-            else
+            }
+            else {
                 $set = $attributes[1];
+            }
 
             if ($visible[$column]) {
             $out .= "<th$set width=\"" . $width[$column] . "\">";
-                if ($font)
+                if ($font) {
                     $out .= $font;
-                if ($alias[$column])
+                }
+                if ($alias[$column]) {
                     $out .= $alias[$column];
-                else
+                }
+                else  {
                     $out .= "&nbsp;";
-                if ($font)
+                }
+                if ($font) {
                     $out .= "</font>";
+                }
                 $out .= "</th>\n";
             }
         }
@@ -109,5 +117,4 @@ class ExternElementTableHeadrow extends ExternElement {
 
         return $out;
     }
-
 }

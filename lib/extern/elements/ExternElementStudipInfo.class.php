@@ -77,13 +77,13 @@ class ExternElementStudipInfo extends ExternElement {
     function toStringEdit ($post_vars = "", $faulty_values = "",
             $edit_form = "", $anker = "") {
 
-        if ($faulty_values == '')
+        if ($faulty_values == '') {
             $faulty_values = [];
-        $out = '';
-        $tag_headline = '';
+        }
         $table = '';
-        if ($edit_form == '')
+        if ($edit_form == '') {
             $edit_form = new ExternEditHtml($this->config, $post_vars, $faulty_values, $anker);
+        }
 
         $edit_form->setElementName($this->getName());
         $element_headline = $this->getEditFormHeadline($edit_form);
@@ -95,9 +95,12 @@ class ExternElementStudipInfo extends ExternElement {
                 "countpostings", "countdocuments"];
         $titles = [_('Überschrift') . ':', _('Heimatinstitut') . ':', _('beteiligte Institute') . ':',
                 _('Teilnehmende') . ':', _('Forenbeiträge') . ':', _('Dokumente') . ':'];
-        for ($i = 0; $i < sizeof($attributes); $i++)
-            $table .= $edit_form->editTextfieldGeneric($attributes[$i], $titles[$i], $info, 40, 150);
-
+        if (is_array($attributes)) {
+            for ($i = 0; $i < count($attributes); $i++) {
+                $table .= $edit_form->editTextfieldGeneric($attributes[$i], $titles[$i], $info, 40, 150);
+            }
+        }
+    
         $content_table = $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
 

@@ -92,7 +92,7 @@ class ExternElementLinkInternSimple extends ExternElement {
         $title = _('Konfiguration') . ':';
         $info = _("Der Link ruft das Modul mit der gewählten Konfiguration auf. Wählen Sie \"Standard\", um die von Ihnen gesetzte Standardkonfiguration zu benutzen. Ist für das aufgerufene Modul noch keine Konfiguration erstellt worden, wird die Stud.IP-Default-Konfiguration verwendet.");
         $configs = ExternConfig::GetAllConfigurations($this->config->range_id, $this->link_module_type);
-        if (sizeof($configs)) {
+        if (is_array($configs) && count($configs)) {
             $module_name = $EXTERN_MODULE_TYPES[$this->link_module_type]["module"];
             $values = array_keys($configs[$module_name]);
             unset($names);

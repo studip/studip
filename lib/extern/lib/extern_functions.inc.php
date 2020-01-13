@@ -56,7 +56,10 @@ function get_all_statusgruppen ($range_id) {
     foreach ($roles as $id => $role) {
         $ret[$id] = $role['name_long'];
     }
-    return sizeof($ret) ? $ret : false;
+    if(is_array($ret) && count($ret)) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -80,7 +83,10 @@ function get_statusgruppen_by_id ($range_id, $ids) {
     foreach ($ids as $id) {
         if ($groups[$id]) $ret[$id] = $groups[$id];
     }
-    return sizeof($ret) ? $ret : false;
+    if(is_array($ret) && count($ret)) {
+        return true;
+    }
+    return false;
 }
 
 function print_footer () {
@@ -115,7 +121,7 @@ function get_generic_datafields ($object_type) {
     $fieldStructs = DataField::getDataFields($object_type);
 //  $generic_datafields = $datafields_obj->getFields($object_type);
 
-    if (sizeof($fieldStructs)) {
+    if (is_array($fieldStructs) && count($fieldStructs)) {
         foreach ($fieldStructs as $struct) {
             $datafields["ids"][] = $struct->getID();
             $datafields["names"][] = $struct->getName();
@@ -125,7 +131,7 @@ function get_generic_datafields ($object_type) {
         return $datafields;
     }
 
-    return FALSE;
+    return false;
 }
 
 function array_condense ($array) {
@@ -145,14 +151,14 @@ function update_generic_datafields (&$config, &$data_fields, &$field_names, $obj
         $visible = (array) $config->getValue("Main", "visible");
         $order = (array) $config->getValue("Main", "order");
         $aliases = (array) $config->getValue("Main", "aliases");
-        $store = FALSE;
+        $store = false;
 
         // data fields deleted
         if ($diff_generic_datafields = array_diff($config_datafields,
                 $generic_datafields["ids"])) {
             $swapped_datafields = array_flip($config_datafields);
             $swapped_order = array_flip($order);
-            $offset = sizeof($data_fields) - sizeof($config_datafields);
+            $offset = count($data_fields) - count($config_datafields);
             $deleted = [];
             foreach ($diff_generic_datafields as $datafield) {
                 $deleted[] = $offset + $swapped_datafields[$datafield];
@@ -166,7 +172,7 @@ function update_generic_datafields (&$config, &$data_fields, &$field_names, $obj
 
             $config_generic_datafields = array_diff($config_datafields,
                     $diff_generic_datafields);
-            for ($i = 0; $i < sizeof($order); $i++) {
+            for ($i = 0; $i < count($order); $i++) {
                 foreach ($deleted as $position) {
                     if ($order[$i] >= $position)
                         $order[$i]--;
@@ -184,7 +190,7 @@ function update_generic_datafields (&$config, &$data_fields, &$field_names, $obj
                     (array)$diff_generic_datafields);
             foreach ($diff_generic_datafields as $datafield) {
                 $visible[] = "0";
-                $order[] = sizeof($order);
+                $order[] = count($order);
                 $aliases[] = $generic_datafields["ids_names"][$datafield];
             }
             $store = TRUE;

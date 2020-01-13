@@ -210,11 +210,13 @@ class ExternElementMainDownload extends ExternElementMain {
         $info_add = _("Wenn Sie keine URL angeben, wird ein Standard-Icon ausgegeben.");
 
         $table = "";
-        for ($i = 0; $i < sizeof($icon_attributes); $i++) {
-            $table .= $edit_form->editTextfieldGeneric($icon_attributes[$i],
+        if (is_array($icon_attributes)) {
+            for ($i = 0; $i < sizeof($icon_attributes); $i++) {
+                $table .= $edit_form->editTextfieldGeneric($icon_attributes[$i],
                     $icon_titles[$i], $icon_infos[$i] . $info_add, 50, 200);
+            }
         }
-
+    
         $content_table .= $edit_form->editContentTable($headline, $table);
         $content_table .= $edit_form->editBlankContent();
 

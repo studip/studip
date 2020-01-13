@@ -57,7 +57,7 @@ class ExternElementReplaceTextSemType extends ExternElement {
         $this->real_name = _("Textersetzungen für Veranstaltungstypen");
         $this->description = _("Ersetzt die Bezeichnung der Veranstaltungstypen.");
         $this->attributes = ['order', 'visibility'];
-        for ($i = 1; $i <= sizeof($GLOBALS["SEM_CLASS"]); $i++) {
+        for ($i = 1; $i <= count($GLOBALS["SEM_CLASS"]); $i++) {
             $this->attributes[] = "class_" . $i;
         }
     }

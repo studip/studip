@@ -71,112 +71,110 @@ class ExternEditModule extends ExternEditHtml {
 
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         $out .= "<tr>\n";
-        $out .= "<td><font size=\"2\"><b>" . _("Datenfeld") . "</b></font></td>\n";
+        $out .= "<td><b>" . _("Datenfeld") . "</b></td>\n";
         if (!in_array('aliases', $hide))
-            $out .= "<td><font size=\"2\"><b>" . _("Überschrift") . "</b></font></td>\n";
+            $out .= "<td><b>" . _("Überschrift") . "</b></td>\n";
         if (!in_array("width", $hide))
-            $out .= "<td><font size=\"2\"><b>" . _("Breite") . "</b></font></td>\n";
+            $out .= "<td><b>" . _("Breite") . "</b></td>\n";
         if (!in_array("sort", $hide))
-            $out .= "<td><font size=\"2\"><b>" . _("Sortierung") . "</b></font></td>\n";
+            $out .= "<td><b>" . _("Sortierung") . "</b></td>\n";
         if (!in_array("visible", $hide))
-            $out .= "<td><font size=\"2\"><b>" . _("Reihenfolge/<br>Sichtbarkeit") . "</b></font></td>\n";
+            $out .= "<td><b>" . _("Reihenfolge/<br>Sichtbarkeit") . "</b></td>\n";
         $out .= "</tr>\n";
-
-        for ($i = 0; $i < sizeof($field_names); $i++) {
-
-            // name of column
-            $out .= "<tr valign=\"middle\">\n";
-            $out .= '<td>&nbsp;' . htmlReady($field_names[$order[$i]]) . '</td>';
-
-            // column headline
-            if (!in_array('aliases', $hide)) {
-                if (!in_array($order[$i], $hide_fields["aliases"])) {
-                    $out .= "<td><input type=\"text\" name=\"{$this->element_name}_aliases[$order[$i]]\"";
-                    $out .= "\" size=\"12\" maxlength=\"50\" value=\"";
-                    $out .= $aliases[$order[$i]] . "\">";
-                    if ($this->faulty_values[$this->element_name . "_aliases"][$order[$i]])
+    
+        if (is_array($field_names)) {
+            for ($i = 0; $i < count($field_names); $i++) {
+                // name of column
+                $out .= "<tr valign=\"middle\">\n";
+                $out .= '<td>&nbsp;' . htmlReady($field_names[$order[$i]]) . '</td>';
+            
+                // column headline
+                if (!in_array('aliases', $hide)) {
+                    if (!in_array($order[$i], $hide_fields["aliases"])) {
+                        $out .= "<td><input type=\"text\" name=\"{$this->element_name}_aliases[$order[$i]]\"";
+                        $out .= "\" size=\"12\" maxlength=\"50\" value=\"";
+                        $out .= $aliases[$order[$i]] . "\">";
+                        if ($this->faulty_values[$this->element_name . "_aliases"][$order[$i]])
+                            $out .= $this->error_sign;
+                        $out .= "</td>\n";
+                    } else {
+                        $out .= "<td>&nbsp;</td>\n";
+                        $out .= "<input type=\"hidden\" name=\"{$this->element_name}_aliases[$order[$i]]\" ";
+                        $out .= "value=\"\">";
+                    }
+                }
+            
+                // width
+                if (!in_array("width", $hide)) {
+                    $width = str_replace("%", "", $widths[$order[$i]]);
+                    $out   .= "<td><input type=\"text\" name=\"{$this->element_name}_width[$order[$i]]";
+                    $out   .= "\" size=\"3\" maxlength=\"3\" value=\"$width\">";
+                    if ($this->faulty_values[$this->element_name . "_width"][$order[$i]])
                         $out .= $this->error_sign;
                     $out .= "</td>\n";
                 }
-                else {
-                    $out .= "<td>&nbsp;</td>\n";
-                    $out .= "<input type=\"hidden\" name=\"{$this->element_name}_aliases[$order[$i]]\" ";
-                    $out .= "value=\"\">";
-                }
-            }
-
-            // width
-            if (!in_array("width", $hide)) {
-                $width = str_replace("%", "", $widths[$order[$i]]);
-                $out .= "<td><input type=\"text\" name=\"{$this->element_name}_width[$order[$i]]";
-                $out .= "\" size=\"3\" maxlength=\"3\" value=\"$width\">";
-                if ($this->faulty_values[$this->element_name . "_width"][$order[$i]])
-                    $out .= $this->error_sign;
-                $out .= "</td>\n";
-            }
-
-            // sort
-            if (!in_array("sort", $hide)) {
-                if (!in_array($order[$i], $hide_fields["sort"])) {
-                    $out .= "<td><select name=\"{$this->element_name}_sort[$order[$i]]\" ";
-                    $out .= "size=\"1\">\n";
-                    $out .= "<option value=\"0\"" . ($sort[$order[$i]] == 1 ? " selected" : "")
+            
+                // sort
+                if (!in_array("sort", $hide)) {
+                    if (!in_array($order[$i], $hide_fields["sort"])) {
+                        $out .= "<td><select name=\"{$this->element_name}_sort[$order[$i]]\" ";
+                        $out .= "size=\"1\">\n";
+                        $out .= "<option value=\"0\"" . ($sort[$order[$i]] == 1 ? " selected" : "")
                             . ">" . _("keine") . "</option>";
-                    for ($j = 1; $j <= (sizeof($order) - sizeof($hide_fields["sort"])); $j++) {
-                        if ($sort[$order[$i]] == $j)
-                            $selected = " selected";
-                        else
-                            $selected = "";
-                        $out .= "<option value=\"$j\"$selected>$j</option>";
+                        for ($j = 1; $j <= (count($order) - count($hide_fields["sort"])); $j++) {
+                            if ($sort[$order[$i]] == $j)
+                                $selected = " selected";
+                            else
+                                $selected = "";
+                            $out .= "<option value=\"$j\"$selected>$j</option>";
+                        }
+                        $out .= "\n</select>\n</td>\n";
+                    } else {
+                        $out .= "<td>&nbsp;</td>\n";
+                        $out .= "<input type=\"hidden\" name=\"{$this->element_name}_sort[$order[$i]]\" ";
+                        $out .= "value=\"0\">\n";
                     }
-                    $out .= "\n</select>\n</td>\n";
                 }
-                else {
-                    $out .= "<td>&nbsp;</td>\n";
-                    $out .= "<input type=\"hidden\" name=\"{$this->element_name}_sort[$order[$i]]\" ";
-                    $out .= "value=\"0\">\n";
+            
+                if (!in_array("visible", $hide)) {
+                    // move left
+                    $out .= "<td valign=\"middle\" nowrap=\"nowrap\">";
+                    $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_move_left[" . $i . "]"]);
+                
+                    // move right
+                    $out .= "\n";
+                    $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_move_right[" . $i . "]"]);
+                
+                    // visible
+                    if ($visible[$order[$i]]) {
+                        $out .= "\n";
+                        $out .= Icon::create('checkbox-checked', 'clickable', ['title' => _('Datenfeld ausblenden')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_hide[" . $order[$i] . "]"]);
+                    } else {
+                        $out .= "\n";
+                        $out .= Icon::create('checkbox-unchecked', 'clickable', ['title' => _('Datenfeld einblenden')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_show[" . $order[$i] . "]"]);
+                        $out .= "</td>\n";
+                    }
                 }
             }
-
-            if (!in_array("visible", $hide)) {
-                // move left
-                $out .= "<td valign=\"middle\" nowrap=\"nowrap\">";
-                $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name."_move_left[".$i."]"]);
-
-                // move right
-                $out .= "\n";
-                $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name."_move_right[".$i."]"]);
-
-                // visible
-                if ($visible[$order[$i]]) {
-                $out .= "\n";
-                $out .= Icon::create('checkbox-checked', 'clickable', ['title' => _('Datenfeld ausblenden')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name."_hide[".$order[$i]."]"]);
-                } else {
-                    $out .= "\n";
-                    $out .= Icon::create('checkbox-unchecked', 'clickable', ['title' => _('Datenfeld einblenden')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name."_show[".$order[$i]."]"]);
-                    $out .= "</td>\n";
-                }
-           }
-
         }
-
+    
         // width in pixels or percent
         if (!in_array("widthpp", $hide) && !in_array('width', $hide)) {
-            $colspan = 4 - sizeof($hide);
+            $colspan = 4 - count($hide);
             $title = _("Breite in:");
             $info = _("Wählen Sie hier, ob die Breiten der Tabellenspalten als Prozentwerte oder Pixel interpretiert werden sollen.");
             $width_values = ["%", ""];
             $width_names = [_("Prozent"), _("Pixel")];
             $out .= "<tr>\n";
-            $out .= "<td><font size=\"2\">&nbsp;$title</font></td>";
+            $out .= "<td>&nbsp;$title</td>";
             $out .= "<td colspan=\"$colspan\"><input type=\"radio\" name=\"{$this->element_name}_widthpp\" value=\"%\"";
             if (mb_substr($widths[0], -1) == "%")
                 $out .= " checked=\"checked\"";
-            $out .= "><font size=\"2\">" . _("Prozent") . "&nbsp; &nbsp;</font><input type=\"radio\" name=\"";
+            $out .= ">" . _("Prozent") . "&nbsp; &nbsp;<input type=\"radio\" name=\"";
             $out .= "{$this->element_name}_widthpp\" value=\"\"";
             if (mb_substr($widths[0], -1) != "%")
                 $out .= " checked=\"checked\"";
-            $out .= "><font size=\"2\">" . _("Pixel") . "&nbsp; &nbsp;</font>\n";
+            $out .= ">" . _("Pixel") . "&nbsp; &nbsp;\n";
             $out .= tooltipIcon($info);
             $out .= "$error_sign</td></tr>\n";
         }
@@ -195,30 +193,34 @@ class ExternEditModule extends ExternEditHtml {
 
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         $out .= "<tr>\n";
-        $out .= "<td><font size=\"2\"><b>" . _("Datenfeld") . "</b></font></td>\n";
-        $out .= "<td><font size=\"2\"><b>" . _("Sortierung") . "</b></font></td>\n";
+        $out .= "<td><b>" . _("Datenfeld") . "</b></td>\n";
+        $out .= "<td><b>" . _("Sortierung") . "</b></td>\n";
 
-        for ($i = 0; $i < sizeof($field_names); $i++) {
-            $out .= "<tr valign=\"middle\">\n";
-            $out .= "<td><font size=\"2\">&nbsp;{$field_names[$i]}</font></td>";
-            if (!in_array($i, $hide_fields)) {
-                $out .= "<td><select name=\"{$this->element_name}_sort[$i]\" ";
-                $out .= "size=\"1\">\n";
-                $out .= "<option value=\"0\"" . ($sort[$i] == 1 ? " selected" : "")
+        if(!empty($field_names)) {
+            for ($i = 0; $i < count($field_names); $i++) {
+                $out .= "<tr valign=\"middle\">\n";
+                $out .= "<td>&nbsp;{$field_names[$i]}</td>";
+                if (!in_array($i, $hide_fields)) {
+                    $out .= "<td><select name=\"{$this->element_name}_sort[$i]\" ";
+                    $out .= "size=\"1\">\n";
+                    $out .= "<option value=\"0\"" . ($sort[$i] == 1 ? " selected" : "")
                         . ">" . _("keine") . "</option>";
-                for ($j = 1; $j <= (sizeof($field_names) - sizeof($hide_fields["sort"])); $j++) {
-                    if ($sort[$i] == $j)
-                        $selected = " selected";
-                    else
-                        $selected = "";
-                    $out .= "<option value=\"$j\"$selected>$j</option>";
+                    if (!empty($hide_fields["sort"])) {
+                        for ($j = 1; $j <= (count($field_names) - count($hide_fields["sort"])); $j++) {
+                            if ($sort[$i] == $j)
+                                $selected = " selected";
+                            else
+                                $selected = "";
+                            $out .= "<option value=\"$j\"$selected>$j</option>";
+                        }
+                    }
+                    $out .= "\n</select>\n</td>\n";
                 }
-                $out .= "\n</select>\n</td>\n";
-            }
-            else {
-                $out .= "<td>&nbsp;</td>\n";
-                $out .= "<input type=\"hidden\" name=\"{$this->element_name}_sort[$i]\" ";
-                $out .= "value=\"0\">\n";
+                else {
+                    $out .= "<td>&nbsp;</td>\n";
+                    $out .= "<input type=\"hidden\" name=\"{$this->element_name}_sort[$i]\" ";
+                    $out .= "value=\"0\">\n";
+                }
             }
         }
 
@@ -259,23 +261,24 @@ class ExternEditModule extends ExternEditHtml {
             $groups_visible = [];
         if (!is_array($groups_aliases))
             $groups_aliases = [];
-        if (sizeof(array_intersect(array_keys($groups_aliases),
-                array_keys($groups_db)))) {
+        if (count(array_intersect(array_keys($groups_aliases), array_keys($groups_db)))) {
             foreach ($groups_config as $group_config) {
                 $groups[$group_config] = $groups_aliases[$group_config];
             }
         } else {
-            for ($i = 0; $i < sizeof($groups_config); $i++) {
-                $groups[$groups_config[$i]] = $groups_aliases[$i];
+            if (is_array($groups_config)) {
+                for ($i = 0; $i < count($groups_config); $i++) {
+                    $groups[$groups_config[$i]] = $groups_aliases[$i];
+                }
             }
         }
 
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         $out .= "<tr>\n";
-        $out .= "<td width=\"42%\"><font size=\"2\"><b>" . _("Gruppenname") . "</b></font></td>\n";
-        $out .= "<td width=\"48%\"><font size=\"2\"><b>" . _("alternativer Gruppenname") . "</b></font></td>\n";
-        $out .= "<td width=\"1%\"><font size=\"2\"><b>" . _("Sichtbarkeit") . "</b></font></td>\n";
-        $out .= "<td width=\"9%\"><font size=\"2\">&nbsp;</font></td>\n";
+        $out .= "<td width=\"42%\"><b>" . _("Gruppenname") . "</b></td>\n";
+        $out .= "<td width=\"48%\"><b>" . _("alternativer Gruppenname") . "</b></td>\n";
+        $out .= "<td width=\"1%\"><b>" . _("Sichtbarkeit") . "</b></td>\n";
+        $out .= "<td width=\"9%\">&nbsp;</td>\n";
         $out .= "</tr>\n";
         $i = 0;
         foreach ($groups_db as $id => $name) {
@@ -326,7 +329,7 @@ class ExternEditModule extends ExternEditHtml {
 
         // compat <1.3: new attribute visibility (all SemTypes are visible)
         if (!is_array($visibility) || !count($visibility)) {
-            $visibility = array_fill(0, sizeof($order), 1);
+            $visibility = array_fill(0, count($order), 1);
         }
 
         if (!is_array($order)) {
@@ -336,10 +339,10 @@ class ExternEditModule extends ExternEditHtml {
 
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         $out .= "<tr>\n";
-        $out .= "<td><font size=\"2\"><b>" . _("Datenfeld") . "</b></font></td>\n";
-        $out .= "<td><font size=\"2\"><b>" . _("Überschrift") . "</b></font></td>\n";
-        $out .= "<td align=\"center\"><font size=\"2\"><b>" . _("Reihenfolge") . "</b></font></td>\n";
-        $out .= "<td align=\"center\"><font size=\"2\"><b>" . _("Sichtbarkeit") . "</b></font></td>\n";
+        $out .= "<td><b>" . _("Datenfeld") . "</b></td>\n";
+        $out .= "<td><b>" . _("Überschrift") . "</b></td>\n";
+        $out .= "<td align=\"center\"><b>" . _("Reihenfolge") . "</b></td>\n";
+        $out .= "<td align=\"center\"><b>" . _("Sichtbarkeit") . "</b></td>\n";
         $out .= "</tr>\n";
 
         foreach ($SEM_CLASS as $class_index => $foo) {
@@ -352,63 +355,66 @@ class ExternEditModule extends ExternEditHtml {
             $classes[$class_index] = $this->getValue("class_$class_index");
         }
 
-        for ($i = 0; $i < sizeof($order); $i++) {
-            if ($SEM_TYPE[$order[$i]]) {
-                $new_order[] = $order[$i];
-                // name of column
-                $out .= "<tr>\n";
-                $out .= "<td><font size=\"2\">&nbsp;";
-                if (mb_strlen($SEM_TYPE[$order[$i]]["name"]) > 25) {
-                    $out .= htmlReady(mb_substr($SEM_TYPE[$order[$i]]["name"], 0, 22)
+        if(is_array($order)) {
+            for ($i = 0; $i < count($order); $i++) {
+                if ($SEM_TYPE[$order[$i]]) {
+                    $new_order[] = $order[$i];
+                    // name of column
+                    $out .= "<tr>\n";
+                    $out .= "<td>&nbsp;";
+                    if (mb_strlen($SEM_TYPE[$order[$i]]["name"]) > 25) {
+                        $out .= htmlReady(mb_substr($SEM_TYPE[$order[$i]]["name"], 0, 22)
                             . "... ({$SEM_CLASS[$SEM_TYPE[$order[$i]]['class']]['name']})");
-                } else {
-                    $out .= htmlReady($SEM_TYPE[$order[$i]]["name"]
+                    } else {
+                        $out .= htmlReady($SEM_TYPE[$order[$i]]["name"]
                             . " ({$SEM_CLASS[$SEM_TYPE[$order[$i]]['class']]['name']})");
-                }
-                $out .= "</font></td>";
-
-                // column headline
-                $out .= "<td><input type=\"text\" name=\"{$this->element_name}_class_";
-                $out .= $SEM_TYPE[$order[$i]]['class'] . "[{$mapping[$order[$i]]}]\"";
-                $out .= "\" size=\"20\" maxlength=\"100\" value=\"";
-                if (isset($classes[$SEM_TYPE[$order[$i]]['class']][$mapping[$order[$i]]])) {
-                    $out .= $classes[$SEM_TYPE[$order[$i]]['class']][$mapping[$order[$i]]] . "\">";
-                } else {
-                    $out .= $SEM_TYPE[$order[$i]]["name"]
+                    }
+                    $out .= "</td>";
+            
+                    // column headline
+                    $out .= "<td><input type=\"text\" name=\"{$this->element_name}_class_";
+                    $out .= $SEM_TYPE[$order[$i]]['class'] . "[{$mapping[$order[$i]]}]\"";
+                    $out .= "\" size=\"20\" maxlength=\"100\" value=\"";
+                    if (isset($classes[$SEM_TYPE[$order[$i]]['class']][$mapping[$order[$i]]])) {
+                        $out .= $classes[$SEM_TYPE[$order[$i]]['class']][$mapping[$order[$i]]] . "\">";
+                    } else {
+                        $out .= $SEM_TYPE[$order[$i]]["name"]
                             . " ({$SEM_CLASS[$SEM_TYPE[$order[$i]]['class']]['name']})\">";
-                }
-                if ($this->faulty_values[$this->element_name
-                        . "_class_{$SEM_TYPE[$order[$i]]['class']}"][$mapping[$order[$i]]]) {
-                    $out .= $this->error_sign;
-                }
-                $out .= "</td>\n";
-
+                    }
+                    if ($this->faulty_values[$this->element_name
+                    . "_class_{$SEM_TYPE[$order[$i]]['class']}"][$mapping[$order[$i]]]) {
+                        $out .= $this->error_sign;
+                    }
+                    $out .= "</td>\n";
+            
                     // move up
-                $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
-                $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(['name'=>$this->element_name.'_move_left['.$i.']','align'=>'middle',]);
-
-                // move down
-                $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(['name'=>$this->element_name.'_move_right['.$i.']','align'=>'middle',]);
-                $out .= "</td>\n";
-
-                // visibility
-                $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
-                $out .= "<input type=\"checkbox\" name=\"{$this->element_name}_visibility";
-                $out .= '[' . ($order[$i] - 1) . "]\" value=\"1\"";
-                if ($visibility[$order[$i] - 1] == 1) {
-                    $out .= ' checked="checked"';
+                    $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
+                    $out .= Icon::create('arr_2up', Icon::ROLE_SORT, ['title' => _('Datenfeld verschieben')])
+                        ->asInput(['name'=>$this->element_name.'_move_left['.$i.']','align'=>'middle',]);
+            
+                    // move down
+                    $out .= Icon::create('arr_2down', Icon::ROLE_SORT, ['title' => _('Datenfeld verschieben')])
+                        ->asInput(['name'=>$this->element_name.'_move_right['.$i.']','align'=>'middle',]);
+                    $out .= "</td>\n";
+            
+                    // visibility
+                    $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
+                    $out .= "<input type=\"checkbox\" name=\"{$this->element_name}_visibility";
+                    $out .= '[' . ($order[$i] - 1) . "]\" value=\"1\"";
+                    if ($visibility[$order[$i] - 1] == 1) {
+                        $out .= ' checked="checked"';
+                    }
+                    $out .= '>';
+            
+                    $out .= "</td>\n</tr>\n";
                 }
-                $out .= '>';
-
-                $out .= "</td>\n</tr>\n";
             }
         }
-
         $out .= "</table>\n";
         $out .= "<input type=\"hidden\" name=\"count_semtypes\" value=\"$i\">\n";
 
         // update order
-        if (sizeof(array_diff($order, $new_order))) {
+        if (count(array_diff($order, $new_order))) {
             $this->config->setValue($this->element_name, 'order', $new_order);
             $this->config->store();
         }
@@ -437,11 +443,11 @@ class ExternEditModule extends ExternEditHtml {
                 $selector->sem_tree_ids[] = $selected_id;
             }
         }
-
+        
         $form_name_tmp = $selector->form_name;
         $selector->form_name = 'SelectSubjectAreas';
         $selector->doSearch();
-        $out .= "<table width=\"100%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\">\n";
+        $out = "<table width=\"100%\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\">\n";
         $out .= '<tr><td align="left" style="font-size: smaller;" width="100%" nowrap="nowrap" colspan="2">' . _("Suche") . ': ';
         $out .= $selector->getSearchField(['size' => 30 ,'style' => 'vertical-align:middle;']);
         $out .= $selector->getSearchButton(['style' => 'vertical-align:middle;']);
@@ -468,8 +474,8 @@ class ExternEditModule extends ExternEditHtml {
     function editMarkerDescription ($markers, $new_datafields = FALSE) {
         $out = "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\" style=\"font-size: 0.7em\">\n";
         $out .= "<tr>\n";
-        $out .= '<td><font size="2"><b>' . _("Marker") . "</b></font></td>\n";
-        $out .= '<td><font size="2"><b>' . _("Beschreibung") . "</b></font></td>\n";
+        $out .= '<td><b>' . _("Marker") . "</b></td>\n";
+        $out .= '<td><b>' . _("Beschreibung") . "</b></td>\n";
         $out .= "</tr>\n";
 
         $spacer = 0;
@@ -481,13 +487,13 @@ class ExternEditModule extends ExternEditHtml {
                 $out .= "<tr>\n";
                 $out .= '<td colspan="2"><strong>' . htmlReady(_("Globale Variablen")) . '</strong></td>';
                 $spacer++;
-                $global_vars = TRUE;
+                $global_vars = true;
             } else if ($mark{0} == '<') {
                 if ($global_vars) {
                     $out .= "<tr>\n";
                     $out .= '<td colspan="2">&nbsp;</td>';
                     $spacer--;
-                    $global_vars = FALSE;
+                    $global_vars = false;
                 }
                 if (mb_substr($mark, 0, 8) == '<!-- END') {
                     $spacer--;
@@ -563,5 +569,4 @@ class ExternEditModule extends ExternEditHtml {
         $out .= '</div>';
         return $out;
     }
-
 }
