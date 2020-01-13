@@ -67,27 +67,27 @@ class Admin_SmileysController extends AuthenticatedController
             if ($smiley->name != $name) { // rename smiley
                 if (Smiley::getByName($name)->id) {
                     $error = sprintf(_('Es existiert bereits eine Datei mit dem Namen "%s".'), $name . '.gif');
-                    PageLayout::postMessage(MessageBox::error($error));
+                    PageLayout::postError($error);
                     $success = false;
                 } elseif (!$smiley->rename($name)) {
                     $error = sprintf(_('Die Datei "%s" konnte nicht umbenannt werden.'), $smiley->name . '.gif');
-                    PageLayout::postMessage(MessageBox::error($error));
+                    PageLayout::postError($error);
                     $success = false;
                 } else {
-                    PageLayout::postMessage(MessageBox::success(_('Smiley erfolgreich umbenannt.')));
+                    PageLayout::postSuccess(_('Smiley erfolgreich umbenannt.'));
                 }
             }
 
             $short = Request::get('short', $smiley->short);
-            if (!$message and $smiley->short != $short) { // rename short
+            if (!$message && $smiley->short != $short) { // rename short
                 if (Smiley::getByShort($short)->id) {
                     $error = sprintf(_('Es gibt bereits einen Smileys mit dem Kürzel "%s".'), $short);
-                    PageLayout::postMessage(MessageBox::error($error));
+                    PageLayout::postError($error);
                     $success = false;
                 } else {
                     $smiley->short = $short;
                     $smiley->store();
-                    PageLayout::postMessage(MessageBox::success(_('Kürzel erfolgreich geändert.')));
+                    PageLayout::postSuccess(_('Kürzel erfolgreich geändert.'));
                 }
             }
 
@@ -114,16 +114,15 @@ class Admin_SmileysController extends AuthenticatedController
         if ($id == 'bulk') {
             $ids = Request::intArray('smiley_id');
             Smiley::remove($ids);
-
-            $message = sprintf( _('%d Smiley(s) erfolgreich gelöscht.'), count($ids));
+            $message = sprintf(_('%d Smiley(s) erfolgreich gelöscht.'), count($ids));
         } else {
             $smiley = Smiley::getById($id);
             $name = $smiley->name;
             $smiley->delete();
 
-            $message = sprintf( _('Smiley "%s" erfolgreich gelöscht.'), $name);
+            $message = sprintf(_('Smiley "%s" erfolgreich gelöscht.'), $name);
         }
-        PageLayout::postMessage(MessageBox::success($message));
+        PageLayout::postSuccess($message);
 
         $this->redirect('admin/smileys?view=' . $view);
     }
@@ -188,16 +187,16 @@ class Admin_SmileysController extends AuthenticatedController
 
         // File submitted?
         $upload = $_FILES['smiley_file'];
-        if (empty($upload) or empty($upload['name'])) {
+        if (empty($upload) || empty($upload['name'])) {
             $error = _('Sie haben keine Datei zum Hochladen ausgewählt!');
-            PageLayout::postMessage(MessageBox::error($error));
+            PageLayout::postError($error);
             return;
         }
 
         // Error upon upload?
         if ($upload['error']) {
             $error = _('Es gab einen Fehler beim Upload. Bitte versuchen Sie es erneut.');
-            PageLayout::postMessage(MessageBox::error($error));
+            PageLayout::postError($error);
             return;
         }
 
@@ -209,7 +208,7 @@ class Admin_SmileysController extends AuthenticatedController
         }
         if ($no_image) {
             $error = _('Die Datei ist keine Bilddatei');
-            PageLayout::postMessage(MessageBox::error($error));
+            PageLayout::postError($error);
             return;
         }
 
@@ -222,7 +221,7 @@ class Admin_SmileysController extends AuthenticatedController
         $replace = Request::int('replace');
         if ($smiley->id && !$replace) {
             $error = sprintf(_('Es ist bereits eine Bildatei mit dem Namen "%s" vorhanden.'), $smiley_file);
-            PageLayout::postMessage(MessageBox::error($error));
+            PageLayout::postError($error);
             return;
         }
 
@@ -230,7 +229,7 @@ class Admin_SmileysController extends AuthenticatedController
         $destination = Smiley::getFilename($smiley_file);
         if (!move_uploaded_file($upload['tmp_name'], $destination)) {
             $error = _('Es ist ein Fehler beim Kopieren der Datei aufgetreten. Das Bild wurde nicht hochgeladen!');
-            PageLayout::postMessage(MessageBox::error($error));
+            PageLayout::postError($error);
             return;
         }
 
@@ -244,7 +243,7 @@ class Admin_SmileysController extends AuthenticatedController
         $message = $replace
                  ? sprintf(_('Die Bilddatei "%s" wurde erfolgreich ersetzt.'), $smiley_file)
                  : sprintf(_('Die Bilddatei "%s" wurde erfolgreich hochgeladen.'), $smiley_file);
-        PageLayout::postMessage(MessageBox::success($message));
+        PageLayout::postSuccess($message);
 
         // Return to index and display the view the uploaded smiley is in
         $this->redirect('admin/smileys?view=' . $smiley_file[0]);
@@ -263,13 +262,33 @@ class Admin_SmileysController extends AuthenticatedController
         $factory = new Flexi_TemplateFactory($this->dispatcher->trails_root . '/views/admin/smileys/');
 
         $actions = new ActionsWidget();
-        $actions->addLink(_('Neues Smiley hochladen'), $this->url_for('admin/smileys/upload', $view), Icon::create('add', 'clickable'))->asDialog('size=auto');
-        $actions->addLink(_('Smileys zählen'), $this->url_for('admin/smileys/count', $view), Icon::create('code', 'clickable'));
-        $actions->addLink(_('Tabelle aktualisieren'), $this->url_for('admin/smileys/refresh', $view), Icon::create('refresh', 'clickable'));
-        $actions->addLink(_('Smiley-Übersicht öffnen'), URLHelper::getLink('dispatch.php/smileys'), Icon::create('smiley', 'clickable'))->asDialog();
+        $actions->addLink(
+            _('Neues Smiley hochladen'),
+            $this->url_for('admin/smileys/upload', $view),
+            Icon::create('add')
+        )->asDialog('size=auto');
+        $actions->addLink(
+            _('Smileys zählen'),
+            $this->url_for('admin/smileys/count', $view),
+            Icon::create('code')
+        );
+        $actions->addLink(
+            _('Tabelle aktualisieren'),
+            $this->url_for('admin/smileys/refresh', $view),
+            Icon::create('refresh')
+        );
+        $actions->addLink(
+            _('Smiley-Übersicht öffnen'),
+            URLHelper::getLink('dispatch.php/smileys'),
+            Icon::create('smiley')
+        )->asDialog();
         $sidebar->addWidget($actions);
 
-        $widget = new SelectWidget(_('Filter'), $this->url_for('admin/smileys/index'), 'view');
+        $widget = new SelectWidget(
+            _('Filter'),
+            $this->url_for('admin/smileys/index'),
+            'view'
+        );
         $group = new SelectGroupElement(_('Nach Buchstaben'));
         foreach (Smiley::getUsedCharacters() as $character => $count) {
             $option = new SelectElement($character, sprintf("%s (% 2u)", mb_strtoupper($character), $count));
