@@ -149,7 +149,7 @@ function export_range($range_id)
                 output_data(xml_header(), $o_mode);
                 $output_startet = true;
             }
-            while (list($key, $inst_ids) = each($inst_array)) {
+            foreach ($inst_array as $key => $inst_ids) {
                 export_inst($inst_ids);
             }
         }
@@ -232,8 +232,8 @@ function export_inst($inst_id, $ex_sem_id = "all")
     $statement->execute([$inst_id]);
     $institute = $statement->fetch(PDO::FETCH_ASSOC);
     
-    $data_object .= xml_open_tag($xml_groupnames_inst["object"], $institute['Institut_id']);
-    while (list($key, $val) = each($xml_names_inst)) {
+    $data_object = xml_open_tag($xml_groupnames_inst["object"], $institute['Institut_id']);
+    foreach ($xml_names_inst as $key => $val) {
         if ($val == '') {
             $val = $key;
         }
@@ -422,7 +422,7 @@ function export_sem($inst_id, $ex_sem_id = 'all')
         $object_counter += 1;
         $data_object    .= xml_open_tag($xml_groupnames_lecture['object'], $row['seminar_id']);
         $sem_obj        = new Seminar($row['seminar_id']);
-        while (list($key, $val) = each($xml_names_lecture)) {
+        foreach ($xml_names_lecture as $key => $val) {
             if (!$val) {
                 $val = $key;
             }
@@ -580,9 +580,9 @@ function export_teilis($inst_id, $ex_sem_id = "no")
         }
     }
     
-    $data_object .= xml_open_tag($xml_groupnames_person['group']);
+    $data_object = xml_open_tag($xml_groupnames_person['group']);
     
-    while (list($key1, $val1) = each($gruppe)) {
+    foreach ($gruppe as $key1 => $val1) {
         $parameters = [];
         if ($filter == 'status') {
             // Gruppierung nach Statusgruppen / Funktionen
@@ -697,7 +697,7 @@ function export_teilis($inst_id, $ex_sem_id = "no")
                     $data_object_tmp .= xml_open_tag($xml_groupnames_person["object"], $row['username']);
                     
                     reset($xml_names_person);
-                    while (list($key, $val) = each($xml_names_person)) {
+                    foreach ($xml_names_person as $key => $val) {
                         if ($val == '') {
                             $val = $key;
                         }
@@ -736,7 +736,7 @@ function export_teilis($inst_id, $ex_sem_id = "no")
         if (count($studiengang_count) > 0) {
             $data_object .= xml_open_tag($xml_groupnames_studiengaenge["group"]);
             for ($i = 0; $i < count($studiengang_count); $i += 1) { // TODO: Is this really neccessary?
-                while (list ($key, $val) = each($studiengang_count)) {
+                foreach ($studiengang_count as $key => $val) {
                     $data_object .= xml_open_tag($xml_groupnames_studiengaenge['object']);
                     $data_object .= xml_tag($xml_names_studiengaenge['name'], $key);
                     $data_object .= xml_tag($xml_names_studiengaenge['count'], $val);
@@ -805,7 +805,7 @@ function export_pers($inst_id)
         $data_object    .= $group_string;
         $object_counter += 1;
         $data_object    .= xml_open_tag($xml_groupnames_person["object"], $row['username']);
-        while (list($key, $val) = each($xml_names_person)) {
+        foreach ($xml_names_person as $key => $val) {
             if ($val == '') {
                 $val = $key;
             }
@@ -863,7 +863,7 @@ function export_persons($persons)
         if ($ex_person_details) {
             $data_object .= xml_tag('id', $row['user_id']);
         }
-        while (list($key, $val) = each($xml_names_person)) {
+        foreach ($xml_names_person as $key => $val) {
             if ($val == '') {
                 $val = $key;
             }
@@ -876,7 +876,6 @@ function export_persons($persons)
         $data_object .= xml_close_tag($xml_groupnames_person['object']);
         reset($xml_names_person);
         output_data($data_object, $o_mode);
-        $data_object = '';
     }
 }
 
