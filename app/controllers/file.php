@@ -216,7 +216,7 @@ class FileController extends AuthenticatedController
 
             if (Request::submitted('unzip')) {
                 //unzip!
-                $file_refs = FileArchiveManager::extractArchiveFileToFolder(
+                $this->file_refs = FileArchiveManager::extractArchiveFileToFolder(
                     $this->file_ref,
                     $this->current_folder,
                     $GLOBALS['user']->id
@@ -224,7 +224,7 @@ class FileController extends AuthenticatedController
 
                 $ref_ids = [];
 
-                foreach ($file_refs as $file_ref) {
+                foreach ($this->file_refs as $file_ref) {
                     $ref_ids[] = $file_ref->id;
                 }
 
@@ -249,7 +249,7 @@ class FileController extends AuthenticatedController
                     'add_folders' => [],
                 ];
                 $added_folders = [];
-                foreach ($file_refs as $fileref) {
+                foreach ($this->file_refs as $fileref) {
                     if ($fileref->folder->id === $this->current_folder->id) {
                         $payload['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
                             'controller'         => $this,
