@@ -227,7 +227,7 @@ class Course_MembersController extends AuthenticatedController
         }
         $this->comment = $course_member->comment;
         $this->user = User::find($user_id);
-        PageLayout::setTitle(sprintf(_('Bemerkung für %s'), $this->user->getFullName()));
+        PageLayout::setTitle(sprintf(_('Bemerkung für %s'), htmlReady($this->user->getFullName())));
 
         // Output as dialog (Ajax-Request) or as Stud.IP page?
         $this->xhr = Request::isXhr();
@@ -322,9 +322,9 @@ class Course_MembersController extends AuthenticatedController
         if($countAdded > 0) {
             $status = get_title_for_status('dozent', $countAdded, $sem->status);
             if ($countAdded == 1) {
-                PageLayout::postSuccess(sprintf(_('Ein %s wurde hinzugefügt.'), $status));
+                PageLayout::postSuccess(sprintf(_('Ein %s wurde hinzugefügt.'), htmlReady($status)));
             } else {
-                PageLayout::postSuccess(sprintf(_("Es wurden %s %s Personen hinzugefügt."), $countAdded, $status));
+                PageLayout::postSuccess(sprintf(_("Es wurden %s %s Personen hinzugefügt."), $countAdded, htmlReady($status)));
             }
         }
 
@@ -420,7 +420,7 @@ class Course_MembersController extends AuthenticatedController
             }
         }
         if($countAdded) {
-            PageLayout::postMessage(MessageBox::success(sprintf(_('%s wurde hinzugefügt.'), get_title_for_status('tutor', $countAdded, $sem->status))));
+            PageLayout::postSuccess(sprintf(_('%s wurde hinzugefügt.'), get_title_for_status('tutor', $countAdded, $sem->status)));
         }
         $this->redirect('course/members/index');
     }
@@ -710,13 +710,13 @@ class Course_MembersController extends AuthenticatedController
         }
 
         if ($csv_count_present) {
-            PageLayout::postMessage(MessageBox::info(sprintf(_('%s Personen waren bereits in der Veranstaltung eingetragen!'), $csv_count_present)));
+            PageLayout::postInfo(sprintf(_('%s Personen waren bereits in der Veranstaltung eingetragen!'), $csv_count_present));
         }
 
         // redirect to manual assignment
         if ($csv_mult_founds) {
-            PageLayout::postMessage(MessageBox::info(sprintf(_('%s Personen konnten <b>nicht eindeutig</b>
-                zugeordnet werden! Nehmen Sie die Zuordnung bitte manuell vor.'), $csv_count_multiple)));
+            PageLayout::postInfo(sprintf(_('%s Personen konnten <b>nicht eindeutig</b>
+                zugeordnet werden! Nehmen Sie die Zuordnung bitte manuell vor.'), $csv_count_multiple));
             $this->flash['csv_mult_founds'] = $csv_mult_founds;
             $this->redirect('course/members/csv_manual_assignment');
             return;
