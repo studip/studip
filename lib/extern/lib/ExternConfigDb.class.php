@@ -100,5 +100,3 @@ class ExternConfigDb extends ExternConfig {
         return TRUE;
     }
 }
-
-?>

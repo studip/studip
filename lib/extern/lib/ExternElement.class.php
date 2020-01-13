@@ -262,7 +262,7 @@ class ExternElement {
 
             case "show_group" :
                 $groups = get_all_statusgruppen($this->config->range_id);
-                if (!groups) {
+                if (!$groups) {
                     $this->config->setValue($this->name, 'groupsvisible', []);
                 } else if (is_array($value)) {
                     $groups_visible = [];
@@ -526,5 +526,3 @@ class ExternElement {
         return ExternModule::ExtHtmlReady($link);
     }
 }
-
-?>
