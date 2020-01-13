@@ -4,17 +4,17 @@
 # Lifter003: TODO
 # Lifter010: TODO
 /**
-* AssignEventList.class.php
-*
-* container for an list of assign-events
-*
-*
-* @author       Cornelis Kater <ckater@gwdg.de>, Suchi & Berg GmbH <info@data-quest.de>
-* @access       public
-* @modulegroup      resources
-* @module       AssignEventList.class.php
-* @package      resources
-*/
+ * AssignEventList.class.php
+ *
+ * container for an list of assign-events
+ *
+ *
+ * @author       Cornelis Kater <ckater@gwdg.de>, Suchi & Berg GmbH <info@data-quest.de>
+ * @access       public
+ * @modulegroup      resources
+ * @module       AssignEventList.class.php
+ * @package      resources
+ */
 
 // +---------------------------------------------------------------------------+
 // This file is part of Stud.IP
@@ -37,82 +37,86 @@
 // +---------------------------------------------------------------------------+
 
 /*****************************************************************************
-AssignEventList, creates a event-list for an assignobject
-/*****************************************************************************/
-
-class AssignEventList{
-
+ * AssignEventList, creates a event-list for an assignobject
+ * /*****************************************************************************/
+class AssignEventList
+{
+    
     var $begin;     // starttime as unix-timestamp
     var $end;       // endtime as unix-timestamp
     var $assign;        // ressources-assignements (Object[])
     var $range_id;      // range_id (String)
     var $user_id;       // userId from PhpLib (String)
     var $filter;        // filter mode (single, repeated, all)
-
+    
     // Konstruktor
     // if activated without timestamps, we take the current semester
-    function __construct($begin = 0, $end = 0, $resource_id='', $range_id='', $user_id='', $sort = TRUE, $filter = FALSE, $day_of_week = false){
+    public function __construct($begin = 0, $end = 0, $resource_id = '', $range_id = '', $user_id = '', $sort = true, $filter = false, $day_of_week = false)
+    {
         $semester = Semester::findCurrent();
-
+        
         if (!$begin)
             $begin = $semester->beginn;
-        if (!$end )
+        if (!$end)
             $end = $semester->ende;
-
-        $this->dow = $day_of_week;
-        $this->begin = $begin;
-        $this->end = $end;
-        $this->filter = $filter;
+        
+        $this->dow         = $day_of_week;
+        $this->begin       = $begin;
+        $this->end         = $end;
+        $this->filter      = $filter;
         $this->resource_id = $resource_id;
-        $this->range_id = $range_id;
-        $this->user_id = $user_id;
-        $this->events = [];
+        $this->range_id    = $range_id;
+        $this->user_id     = $user_id;
+        $this->events      = [];
         $this->restore();
-        if($sort)
+        if ($sort) {
             $this->sort();
+        }
     }
-
-    // public
-    function getBegin(){
+    
+    
+    public function getBegin()
+    {
         return $this->begin;
     }
-
-    // public
-    function getEnd(){
+    
+    public function getEnd()
+    {
         return $this->end;
     }
-
-    // public
-    function getResourceId(){
+    
+    public function getResourceId()
+    {
         return $this->resource_id;
     }
-
-    // public
-    function getRangeId(){
+    
+    public function getRangeId()
+    {
         return $this->range_id;
     }
-
-    // public
-    function getUserId(){
+    
+    public function getUserId()
+    {
         return $this->user_id;
     }
-
-    // private
-    function restore() {
-        list_restore_assign($this, $this->resource_id,  $this->begin, $this->end, FALSE, FALSE, $this->filter, $this->dow);
+    
+    private function restore()
+    {
+        list_restore_assign($this, $this->resource_id, $this->begin, $this->end, false, false, $this->filter, $this->dow);
     }
-
-    // public
-    function numberOfEvents(){
+    
+    public function numberOfEvents()
+    {
         return sizeof($this->events);
     }
-
-    function existEvent(){
+    
+    public function existEvent()
+    {
         return sizeof($this->events) > 0 ? true : false;
     }
-
-    // public
-    function nextEvent(){
+    
+    public function nextEvent()
+    {
         if (is_array($this->events)) {
             $ret = current($this->events);
             if ($ret) {
@@ -122,10 +126,11 @@ class AssignEventList{
         }
         return false;
     }
-
-    function sort(){
-        if($this->events) {
-            usort($this->events,"cmp_assign_events");
+    
+    public function sort()
+    {
+        if ($this->events) {
+            usort($this->events, "cmp_assign_events");
         }
     }
 }
