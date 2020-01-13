@@ -622,7 +622,7 @@ class StudipSemTreeViewAdmin extends TreeView
         foreach ($group_by_data as $sem_number => $sem_ids){
             $content .= "\n<tr><td class=\"content_seperator\" colspan=\"3\" style=\"font-size:10pt;\" >" . $this->tree->sem_dates[$sem_number]['name'] . "</td></tr>";
             if (is_array($sem_ids['seminar_id'])){
-                while(list($seminar_id,) = each($sem_ids['seminar_id'])){
+                foreach($sem_ids['seminar_id'] as $seminar_id) {
                     $sem_name = key($sem_data[$seminar_id]["Name"]);
                     $sem_number_start = key($sem_data[$seminar_id]["sem_number"]);
                     $sem_number_end = key($sem_data[$seminar_id]["sem_number_end"]);
