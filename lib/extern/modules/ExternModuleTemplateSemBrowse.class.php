@@ -782,7 +782,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
                     if (is_array($sem_ids['Seminar_id'])) {
                         $k = 0;
                         $semester = SemesterData::GetSemesterArray();
-                        while(list($seminar_id, ) = each($sem_ids['Seminar_id'])) {
+                        foreach (array_keys($sem_ids['Seminar_id'])  as $seminar_id) {
                             $content['RESULT']['GROUP'][$j]['COURSE'][$k]['COURSE_ID'] = $seminar_id;
                             $content['RESULT']['GROUP'][$j]['COURSE'][$k]['TITLE'] = ExternModule::ExtHtmlReady(key($sem_data[$seminar_id]['Name']));
                             $content['RESULT']['GROUP'][$j]['COURSE'][$k]['COURSE-NO'] = $k + 1;
@@ -1402,7 +1402,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
                 ++$row;
                 if (is_array($sem_ids['Seminar_id'])) {
                     $semester = SemesterData::GetSemesterArray();
-                    while(list($seminar_id,) = each($sem_ids['Seminar_id'])){
+                    foreach (array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                         $sem_name = key($sem_data[$seminar_id]["Name"]);
                         $seminar_number = key($sem_data[$seminar_id]['VeranstaltungsNummer']);
                         $sem_number_start = key($sem_data[$seminar_id]["sem_number"]);
