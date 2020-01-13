@@ -813,9 +813,7 @@ class MyCoursesController extends AuthenticatedController
                   GROUP BY semester_data.semester_id";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$GLOBALS['user']->id]);
-        foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $semester_courses) {
-            $courses[] = $semester_courses['semester_id'];
-        }
+        $courses = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         if (!empty($semesters)) {
             $group = new SelectGroupElement(_('Semester auswählen'));
