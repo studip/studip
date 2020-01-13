@@ -341,9 +341,7 @@ class ExternSemBrowseTable extends SemBrowse {
                 $first_loop = FALSE;
 
                 if (is_array($sem_ids['Seminar_id'])) {
-                    $zebra = 0;
-                    while (list($seminar_id,) = each($sem_ids['Seminar_id'])) {
-
+                    foreach (array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                         $sem_name = key($sem_data[$seminar_id]["Name"]);
                         $sem_number_start = key($sem_data[$seminar_id]["sem_number"]);
                         $sem_number_end = key($sem_data[$seminar_id]["sem_number_end"]);

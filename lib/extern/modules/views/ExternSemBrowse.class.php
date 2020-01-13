@@ -392,13 +392,11 @@ class ExternSemBrowse extends SemBrowse {
                     echo "</font></td></tr>";
                     if (is_array($sem_ids['Seminar_id'])) {
                         $zebra = 0;
-
                         $group_sem_types = SemType::getGroupingSemTypes();
-
                         $table_data = compact('zebra', 'colspan', 'show_time',
                             'show_lecturer', 'td_time', 'td_lecturer', 'group_sem_types');
-
-                        while (list($seminar_id,) = each($sem_ids['Seminar_id'])) {
+    
+                        foreach (array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                             $this->printCourseRow($seminar_id, $sem_data, $table_data);
                         }
 
