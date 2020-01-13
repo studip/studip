@@ -1692,7 +1692,8 @@ if (Request::submitted('save_state')) {
                 //single date mode
                 if ($reqObj->getTerminId()) {
                     reset($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["selected_resources"]);
-                    list(,$res_id) = each($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["selected_resources"]);
+                    $res_id = current($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["selected_resources"]);
+                    next($_SESSION['resources_data']["requests_working_on"][$_SESSION['resources_data']["requests_working_pos"]]["selected_resources"]);
                     $result = $semResAssign->changeDateAssign($reqObj->getTerminId(), $res_id);
 
                 //grouped multiple dates mode
