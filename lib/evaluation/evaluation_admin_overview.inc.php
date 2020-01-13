@@ -393,6 +393,3 @@ if ($debug) {
 
     print_r($_POST);
 }
-
-
-?>
