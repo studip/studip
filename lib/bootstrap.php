@@ -10,7 +10,7 @@
  */
 
 // Default environment, do not change. Change in config/config_local.inc.php.
-const DEFAULT_ENV = 'development';
+const DEFAULT_ENV = 'production';
 
 //software version - please leave it as it is!
 $SOFTWARE_VERSION = '4.5.alpha-svn';
