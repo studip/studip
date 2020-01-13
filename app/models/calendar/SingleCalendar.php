@@ -772,7 +772,7 @@ class SingleCalendar
                     $rep['ts'] = $rep['ts'] + ((date('I', $rep['ts']) - date('I', $ts)) * 3600);
                     for ($i = 0; $i < mb_strlen($rep['wdays']); $i++) {
                         $pos = ((($ts - $dow * 86400) - $rep['ts']) / 86400
-                                - ($rep['wdays']{$i} - 1) + $dow)
+                                - ($rep['wdays'][$i] - 1) + $dow)
                                 % ($rep['linterval'] * 7);
                         $start = $ts - $pos * 86400;
                         $end = $start + $duration * 86400;
@@ -1050,7 +1050,7 @@ class SingleCalendar
                     while ($adate >= $properties['DTSTART'] && $adate <= $rep['expire'] && $adate <= $end) {
                         // event is repeated on different week days
                         for ($i = 0; $i < mb_strlen($rep['wdays']); $i++) {
-                            $awday = (int) $rep['wdays']{$i};
+                            $awday = (int) $rep['wdays'][$i];
                             $lwst = $adate + ($awday - 1) * 86400;
                             $hgst = $lwst + $duration * 86400;
                             if ($lwst < $start_ts) {
