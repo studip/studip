@@ -437,12 +437,8 @@ class ExternSemBrowseTemplate extends SemBrowse {
                 $content['LECTURES']['GROUP'][$i]['GROUP-NO'] = $i + 1;
 
                 if (is_array($sem_ids['Seminar_id'])) {
-                    $zebra = 0;
                     $j = 0;
-                    while (list($seminar_id,) = each($sem_ids['Seminar_id'])) {
-
-                //      $sem_name = key($sem_data[$seminar_id]["Name"]);
-
+                    foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                         $content['LECTURES']['GROUP'][$i]['LECTURE'][$j]['TITLE'] = ExternModule::ExtHtmlReady(key($sem_data[$seminar_id]['Name']));
 
                         $sem_number_start = key($sem_data[$seminar_id]['sem_number']);
@@ -466,7 +462,9 @@ class ExternSemBrowseTemplate extends SemBrowse {
                         $doz_titlerear = array_keys($sem_data[$seminar_id]['title_rear']);
                         $doz_uname = array_keys($sem_data[$seminar_id]['username']);
                         $doz_position = array_keys($sem_data[$seminar_id]['position']);
-                        if (sizeof($doz_position) < $doz_name) $doz_position = array_fill(0, sizeof($doz_name), 0);
+                        if (sizeof($doz_position) < $doz_name) {
+                            $doz_position = array_fill(0, sizeof($doz_name), 0);
+                        }
                         if (is_array($doz_name)){
                             array_multisort($doz_position, $doz_name, $doz_uname);
                             $k = 0;
