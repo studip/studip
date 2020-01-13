@@ -488,7 +488,7 @@ class ExternEditModule extends ExternEditHtml {
                 $out .= '<td colspan="2"><strong>' . htmlReady(_("Globale Variablen")) . '</strong></td>';
                 $spacer++;
                 $global_vars = true;
-            } else if ($mark{0} == '<') {
+            } else if ($mark[0] == '<') {
                 if ($global_vars) {
                     $out .= "<tr>\n";
                     $out .= '<td colspan="2">&nbsp;</td>';
