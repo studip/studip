@@ -1437,7 +1437,9 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
                         reset($sem_data[$seminar_id]['fullname']);
                         foreach($sem_data[$seminar_id]['username'] as $anzahl1){
                             if($c == 0){
-                                list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                                $d_name = key($sem_data[$seminar_id]['fullname']);
+                                $anzahl2 = current($anzahl2);
+                                next($sem_data[$seminar_id]['fullname']);
                                 $c = $anzahl2/$anzahl1;
                                 $doz_name = array_merge($doz_name, array_fill(0, $c, $d_name));
                             }
