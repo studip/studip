@@ -300,20 +300,20 @@ class CalendarEvent extends SimpleORMap implements Event, PrivacyObject
                         $start_wday = date('N', $start);
                         $count_first_week = 0;
                         for ($i = 0; $i < strlen($r_rule['wdays']); $i++) {
-                            if ($r_rule['wdays']{$i} >= $start_wday) {
+                            if (isset($r_rule['wdays'][$i]) && $r_rule['wdays'][$i] >= $start_wday) {
                                 $count_first_week++;
                             }
                         }
 
-                        $count_first_week += (date('N', $start) < $r_rule['wdays']{0}) ? 1 : 0;
+                        $count_first_week += (date('N', $start) < $r_rule['wdays'][0]) ? 1 : 0;
 
                         $count_complete = $r_rule['count'] - $count_first_week;
                         $weeks_max = floor($count_complete / strlen($r_rule['wdays']));
 
                         $dt_expire = $dt_ts->add(new DateInterval('P' . ($weeks_max + 1) . 'W'));
                         $count_last_week = $count_complete % strlen($r_rule['wdays']);
-                        if ($count_last_week) {
-                            $last_wday = $r_rule['wdays']{$count_last_week - 1};
+                        if ($count_last_week && isset($r_rule['wdays'][$count_last_week - 1])) {
+                            $last_wday = $r_rule['wdays'][$count_last_week - 1];
                             $dt_expire = $dt_expire->add(new DateInterval('P' . ($last_wday - 1) . 'D'));
                         } else {
                             $dt_expire = $dt_expire->sub(new DateInterval('P1D'));
