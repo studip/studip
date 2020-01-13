@@ -55,7 +55,7 @@ class ExternModule {
     /**
     *
     */
-    function GetInstance ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
+    public static function GetInstance ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
 
         if ($module_name != '') {
             $module_name = ucfirst($module_name);

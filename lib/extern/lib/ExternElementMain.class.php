@@ -46,7 +46,7 @@ class ExternElementMain extends ExternElement {
     /**
     *
     */
-    function GetInstance (&$config, $module_name, &$data_fields = null, &$field_names = null) {
+    public static function GetInstance (&$config, $module_name, &$data_fields = null, &$field_names = null) {
         if ($module_name != '') {
             $main_class_name = 'ExternElementMain' . ucfirst($module_name);
             require_once "lib/extern/elements/main/$main_class_name.class.php";

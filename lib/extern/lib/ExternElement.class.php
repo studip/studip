@@ -51,7 +51,7 @@ class ExternElement {
     /**
     *
     */
-    function GetInstance (&$config, $element_name, &$data_fields = null, &$field_names = null) {
+    public static function GetInstance (&$config, $element_name, &$data_fields = null, &$field_names = null) {
         $class_name = "ExternElement" . $element_name;
         require_once "lib/extern/elements/$class_name.class.php";
         $element = new $class_name();
