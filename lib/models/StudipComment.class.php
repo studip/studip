@@ -53,8 +53,10 @@ class StudipComment extends SimpleORMap implements PrivacyObject
     {
         $query = "object_id = ?";
         $query .= " AND chdate > ?";
-        if ($exclude_user_id) $query .= " AND user_id != ?";
-        return self::countBySql($query, func_get_args());
+        if ($exclude_user_id) {
+            $query .= " AND user_id != ?";
+        }
+        return self::countBySql($query, [$object_id, $comments_since, $exclude_user_id]);
     }
 
     static function GetCommentsForObject($object_id)
