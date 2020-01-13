@@ -1892,9 +1892,10 @@ class EvalOverview {
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                while (list($type_key, $type_value) = each($range_types)) {
-                    if ($v["type"] == $type_key)
+                foreach($range_types as $type_key => $type_value) {
+                    if ($v["type"] == $type_key) {
                         $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
+                    }
                 }
                 reset($range_types);
             }
@@ -1905,11 +1906,10 @@ class EvalOverview {
             $table_s->addAttr("cellspacing", "0");
             $table_s->addAttr("cellpadding", "0");
             $table_s->addAttr("width", "100%");
-
-
-
-            while (list($type_key, $type_value) = each($range_types)) {
-
+    
+    
+    
+            foreach($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr_s = new HTML("tr");
 
@@ -2100,9 +2100,10 @@ class EvalOverview {
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                while (list($type_key, $type_value) = each($range_types)) {
-                    if ($v["type"] == $type_key)
+                foreach($range_types as $type_key => $type_value) {
+                    if ($v["type"] == $type_key) {
                         $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
+                    }
                 }
                 reset($range_types);
             }
@@ -2114,9 +2115,8 @@ class EvalOverview {
             $table->addAttr("cellspacing", "0");
             $table->addAttr("cellpadding", "0");
             $table->addAttr("width", "100%");
-
-            while (list($type_key, $type_value) = each($range_types)) {
-
+    
+            foreach($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr = new HTML("tr");
 
