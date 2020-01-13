@@ -56,13 +56,17 @@ require_once 'lib/dates.inc.php';   // Datumsfunktionen
 function CheckParamXSLT()
 {
 global $ex_type, $xml_file_id, $page, $o_mode, $format, $choose, $xslt_files, $export_o_modes, $export_ex_types, $export_error, $export_error_num;
-    if ($page==1)
+    $mod_counter = 0;
+    $page = (int)$page;
+    if ($page===1)
     {
         reset($xslt_files);
-        while (list($key, $val) = each($xslt_files))
-            if ($val[$ex_type] AND $val[$format])
+        foreach($xslt_files as $val) {
+            if ($val[$ex_type] && $val[$format]) {
                 $mod_counter++;
-        if (($mod_counter == 0) AND ($format != "xml"))
+            }
+        }
+        if (($mod_counter === 0) && ($format !== "xml"))
         {
             $export_error .= _("Für dieses Format sind keine Ausgabemodule installiert.<br>Bitte wählen Sie ein anderes Ausgabeformat.") . "<br>";
             $page = 0;
@@ -73,7 +77,7 @@ global $ex_type, $xml_file_id, $page, $o_mode, $format, $choose, $xslt_files, $e
         reset($xslt_files);
     }
 
-    if ( ($page==2) AND ($choose == "") )
+    if (($page===2) AND ($choose === "") )
         $page = 1;
     if ( /*($xml_file_id != "") AND */( in_array($ex_type, $export_ex_types) ) AND ( in_array($o_mode, $export_o_modes) ) )
         return true;
