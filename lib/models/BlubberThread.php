@@ -211,9 +211,26 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return $upgraded_threads;
     }
 
-    public static function findBySeminar($seminar_id)
+    public static function findBySeminar($seminar_id, $only_in_stream = false)
     {
-        return self::findBySQL("context_id = ? AND context_type = 'course'", [$seminar_id]);
+        $query = SQLQuery::table('blubber_threads')
+            ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id', 'LEFT JOIN');
+        if ($only_in_stream) {
+            $query->where("blubber_threads.visible_in_stream = 1");
+        }
+        $query->where("context", "blubber_threads.context_type = 'course' AND blubber_threads.context_id = ?", [$seminar_id]);
+        $query->groupBy('blubber_threads.thread_id');
+        $query->orderBy("IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) DESC");
+
+        $threads = $query->fetchAll(static::class);
+
+        $threads = array_map(function ($thread) {
+            return self::upgradeThread($thread);
+        }, $threads);
+        $threads = array_filter($threads, function ($t) {
+            return $t->isVisibleInStream() && $t->isReadable();
+        });
+        return $threads;
     }
 
     /**

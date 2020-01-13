@@ -15,13 +15,9 @@ class MessengerController extends PluginController {
 
         Navigation::activateItem("/course/blubber");
 
-        $this->threads = BlubberThread::findBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1'", [
-            'context_id' => Context::get()->id,
-            'type' => Context::getType()
-        ]);
-        $this->threads = array_filter($this->threads, function ($t) {
-            return $t->isVisibleInStream() && $t->isReadable();
-        });
+
+        $this->threads = BlubberThread::findBySeminar(Context::get()->id, true);
+
         if (!$thread_id) {
             $thread_id = $GLOBALS['user']->cfg->BLUBBER_DEFAULT_THREAD;
         }
