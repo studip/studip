@@ -273,7 +273,7 @@ class ProfileModulesController extends AuthenticatedController
     private function getSortedList(Range $context, array $config)
     {
         $list = [];
-
+        $sortedcats = [];
         $manager = PluginManager::getInstance();
 
         // Now loop through all found plugins.
