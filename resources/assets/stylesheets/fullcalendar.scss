@@ -1,0 +1,203 @@
+@import "scss/variables";
+@import "scss/buttons";
+@import "mixins.scss";
+
+a.fc-event, td.fc-event {
+    border-radius: 0;
+
+    .fc-time {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+    }
+}
+
+.fc button.fc-button {
+    @include button();
+    border-radius: 0;
+}
+
+.fc-button-primary:not(:disabled):active,
+.fc-button-primary:not(:disabled).fc-button-active,
+.fc button.fc-button.fc-state-active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
+    background-color: $base-color !important;
+    color: $white;
+}
+
+/* adjust height: */
+/* .fc-scroller.fc-time-grid-container {
+    height: auto !important;
+    min-height: 0 !important;
+}*/
+
+.fullcalendar-header {
+    &.fullcalendar-dialog{
+        width: calc(100% - 550px);
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 275px;
+    }
+}
+
+.fullcalendar-dialogwidget-container {
+    border-left: 0;
+    display: inline-block;
+    flex: 0 0 auto;
+    margin-bottom: 1em;
+    position: relative;
+
+    $width: 270px;
+
+    padding-bottom: 7px;
+    width: $width;
+    z-index: 2;
+
+
+    .fullcalendar-dialogwidget-widget {
+        background: $white;
+        border: 1px solid $content-color-40;
+        margin: 15px 0px 0;
+    }
+
+    .fullcalendar-dialogwidget-widget-header {
+        @include clearfix();
+        background: $content-color-20;
+        color: $base-color;
+        font-weight: bold;
+        padding: 4px;
+    }
+
+    select.fullcalendar-dialogwidget-selectlist {
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    .fullcalendar-dialogwidget-widget-content {
+        border-top: 1px solid $content-color-40;
+        padding: 4px;
+        transition: all 0.5s;
+    }
+}
+
+.institute-plan .fc-slats tr {
+    height: 100px;
+}
+
+#external-events{
+    td.fc-event {
+        border-radius: 0;
+        margin: 2px 0px;
+        background-color: $content-color;
+        border: 1px solid $brand-color-light;
+    }
+}
+
+.institute-plan {
+    .fc-bg td.fc-today {
+        background: none;
+    }
+
+    th.fc-day-header, .fc-axis, th.fc-resource-cell {
+        background-color: $content-color-10;
+    }
+}
+
+.calendar-caption {
+    background-color: transparent;
+    padding-top: 0;
+    color: $base-gray;
+    font-size: 1.4em;
+    text-align: left;
+    margin-bottom: -10px;
+}
+
+#event-color-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    column-gap: 16px;
+    width: 200px;
+    height: 204px;
+    margin: 10px 0px;
+    margin-left: calc(50% - 100px);
+
+    input {
+        opacity: 0;
+        position: absolute;
+
+        + label {
+            cursor: pointer;
+
+            &::before {
+                background-repeat: no-repeat;
+                content: ' ';
+                display: inline-block;
+                margin: 0px 1px 1px 1px;
+                vertical-align: text-top;
+                background-image: none;
+                background-size: 100%;
+                height: 100%;
+                width: calc(100% - 4px);
+            }
+        }
+
+        &:checked + label::before {
+            @include background-icon(checkbox-checked, info_alt, 100%);
+        }
+    }
+}
+
+.event-colorpicker {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 0;
+
+    width: 20px;
+    height: 20px;
+
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+    &.white {
+        @include background-icon(group4, info_alt, 100%);
+    }
+    &.black {
+        @include background-icon(group4, info, 100%);
+    }
+}
+
+.fc[data-fullcalendar="1"].print-view {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 2000px;
+    width: 2000px;
+
+    .event-colorpicker {
+        display: none;
+    }
+    th span a {
+        color: $black;
+    }
+
+    td.fc-today {
+        background: none;
+    }
+    .fc-now-indicator {
+        border: 0;
+    }
+
+    &.without-weekend {
+        .fc-day-header,
+        .fc-day,
+        .fc-content-skeleton td {
+            &:last-child,
+            &:nth-last-child(2) {
+                display: none;
+            }
+        }
+    }
+}

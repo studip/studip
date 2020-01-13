@@ -1,6 +1,7 @@
 $image-path: "../images";
 $icon-path: "#{$image-path}/icons";
 
+@import "mixins/misc";
 @import "mixins/colors";
 @import "mixins/studip";
 @import "mixins/arrow";

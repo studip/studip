@@ -202,6 +202,54 @@ class AdminCourseFilter
         return $this;
     }
 
+    /**
+     * Adds a filter for an stgteil_id or many stgteil_ids if the parameter is an array.
+     * @param array|integer $stgteil_ids : id or ids of stgteile
+     * @return $this
+     */
+    public function filterByStgTeil($stgteil_ids)
+    {
+        $this->settings['query']['joins']['mvv_lvgruppe_seminar'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_lvgruppe_seminar",
+            'on' => "mvv_lvgruppe_seminar.seminar_id = seminare.Seminar_id"
+        ];
+        $this->settings['query']['joins']['mvv_lvgruppe_modulteil'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_lvgruppe_modulteil",
+            'on' => "mvv_lvgruppe_modulteil.lvgruppe_id = mvv_lvgruppe_seminar.lvgruppe_id"
+        ];
+        $this->settings['query']['joins']['mvv_modulteil'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_modulteil",
+            'on' => "mvv_modulteil.modulteil_id = mvv_lvgruppe_modulteil.modulteil_id"
+        ];
+        $this->settings['query']['joins']['mvv_stgteilabschnitt_modul'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_stgteilabschnitt_modul",
+            'on' => "mvv_stgteilabschnitt_modul.modul_id = mvv_modulteil.modul_id"
+        ];
+        $this->settings['query']['joins']['mvv_stgteilabschnitt'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_stgteilabschnitt",
+            'on' => "mvv_stgteilabschnitt.abschnitt_id = mvv_stgteilabschnitt_modul.abschnitt_id"
+        ];
+        $this->settings['query']['joins']['mvv_stgteilversion'] = [
+            'join' => "LEFT JOIN",
+            'table' => "mvv_stgteilversion",
+            'on' => "mvv_stgteilversion.version_id = mvv_stgteilabschnitt.version_id"
+        ];
+
+        if (is_array($stgteil_ids)) {
+            $this->settings['query']['where']['mvv_stgteilversion'] = "mvv_stgteilversion.stgteil_id IN (:stgteil_ids)";
+            $this->settings['parameter']['stgteil_ids'] = $stgteil_ids;
+        } else {
+            $this->settings['query']['where']['mvv_stgteilversion'] = "mvv_stgteilversion.stgteil_id = :stgteil_id";
+            $this->settings['parameter']['stgteil_id'] = (string) $stgteil_ids;
+        }
+        return $this;
+    }
+
     public function filterByDozent($user_ids)
     {
         $this->settings['query']['joins']['dozenten'] = [

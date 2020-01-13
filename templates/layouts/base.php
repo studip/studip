@@ -156,6 +156,9 @@ if ($navigation) {
         <div id="layout_container">
             <?= Sidebar::get()->render() ?>
             <div id="layout_content">
+            <? if (PageLayout::isFullscreenModeAllowed()): ?>
+                <?= $this->render_partial('shared/fullscreen-toggle.php') ?>
+            <? endif; ?>
                 <?= implode(PageLayout::getMessages()) ?>
                 <?= $content_for_layout ?>
             </div>

@@ -93,17 +93,35 @@
 
 .background-icon(@icon, @role: 'clickable', @size: 16, @append: 0) {
     .role2color(@role);
+
+    & when (ispercentage(@size)) {
+        @bgsize: @size;
+    }
+    & when not (ispercentage(@size)) {
+        @bgsize: unit(@size, px);
+    }
+
     @temp-icon: replace("@{color}/@{icon}", "\.(png|svg)$", '', g);
     @svg: "@{image-path}/icons/@{temp-icon}.svg";
 
 
     & when (@append = 0) {
         background-image: url("@{svg}");
-        background-size: unit(@size, px);
+        & when (ispercentage(@size)) {
+            background-size: @size;
+        }
+        & when not (ispercentage(@size)) {
+            background-size: unit(@size, px);
+        }
     }
     & when (@append = 1) {
         background-image+: url("@{svg}");
-        background-size+: unit(@size, px);
+        & when (ispercentage(@size)) {
+            background-size+: @size;
+        }
+        & when not (ispercentage(@size)) {
+            background-size+: unit(@size, px);
+        }
     }
 }
 

@@ -71,6 +71,11 @@ class PageLayout
     private static $customQuicksearch;
 
     /**
+     * Allow full screen mode toggle
+     */
+    private static $allow_full_screen = false;
+
+    /**
      * Compatibility lookup table (old file -> new file/squeeze package)
      *
      * This is used for often used but "deprecated" assets that got
@@ -684,7 +689,8 @@ class PageLayout
      *
      * @param $html HTML code for the custom quicksearch
      */
-    public static function addCustomQuicksearch($html) {
+    public static function addCustomQuicksearch($html)
+    {
         self::$customQuicksearch = $html;
     }
 
@@ -693,7 +699,8 @@ class PageLayout
      *
      * @return bool TRUE if there is a custom quicksearch
      */
-    public static function hasCustomQuicksearch() {
+    public static function hasCustomQuicksearch()
+    {
         return isset(self::$customQuicksearch);
     }
 
@@ -702,7 +709,28 @@ class PageLayout
      *
      * @return mixed Quicksearch code
      */
-    public static function getCustomQuicksearch() {
+    public static function getCustomQuicksearch()
+    {
         return self::$customQuicksearch;
+    }
+
+    /**
+     * Defines whether full screen mode toggle is allowed or not.
+     *
+     * @param boolean $state
+     */
+    public static function allowFullscreenMode($state = true)
+    {
+        self::$allow_full_screen = $state;
+    }
+
+    /**
+     * Returns whether full screen mode toggle is allowed.
+     *
+     * @return boolean
+     */
+    public static function isFullscreenModeAllowed()
+    {
+        return self::$allow_full_screen;
     }
 }

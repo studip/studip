@@ -25,6 +25,13 @@ STUDIP.loadChunk = (function () {
                 });
                 break;
 
+            case 'fullcalendar':
+                promise = import(
+                    /* webpackChunkName: "fullcalendar" */
+                    './chunks/fullcalendar'
+                );
+                break;
+
             case 'tablesorter':
                 promise = import(
                     /* webpackChunkName: "tablesorter" */

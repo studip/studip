@@ -23,6 +23,12 @@
             <?= _('Semester'); ?>
         </label>
         <label>
+            <input name="stgteilActive" type="checkbox" value="1"
+                <?= ($userSelectedElements['stgteil']) ? 'checked="checked"' : '' ?>
+                >
+            <?= _('Studiengangteil'); ?>
+        </label>
+        <label>
             <input name="courseTypeActive" type="checkbox" value="1"
                 <?= ($userSelectedElements['courseType']) ? 'checked="checked"' : '' ?>
                 >

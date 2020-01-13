@@ -198,6 +198,9 @@ class Admin_CoursesController extends AuthenticatedController
         if ($visibleElements['semester']) {
             $this->setSemesterSelector();
         }
+        if ($visibleElements['stgteil']) {
+            $this->setStgteilSelector();
+        }
         if ($visibleElements['courseType']) {
             $this->setCourseTypeWidget($courseTypeFilterConfig);
         }
@@ -421,6 +424,7 @@ class Admin_CoursesController extends AuthenticatedController
             $searchActive = Request::get('searchActive');
             $instituteActive = Request::get('instituteActive');
             $semesterActive = Request::get('semesterActive');
+            $stgteilActive = Request::get('stgteilActive');
             $courseTypeActive = Request::get('courseTypeActive');
             $teacherActive = Request::get('teacherActive');
             $viewFilterActive = Request::get('viewFilterActive');
@@ -439,6 +443,9 @@ class Admin_CoursesController extends AuthenticatedController
             }
             if ($semesterActive) {
                 $activeArray['semester'] = true;
+            }
+            if ($stgteilActive) {
+                $activeArray['stgteil'] = true;
             }
             if ($courseTypeActive) {
                 $activeArray['courseType'] = true;
@@ -597,6 +604,7 @@ class Admin_CoursesController extends AuthenticatedController
     {
         if (Request::option('institute')) {
             $GLOBALS['user']->cfg->store('ADMIN_COURSES_TEACHERFILTER', null);
+            $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_STGTEIL', null);
             $inst = explode('_', Request::option('institute'));
             $GLOBALS['user']->cfg->store('MY_INSTITUTES_DEFAULT', $inst[0]);
 
@@ -615,6 +623,15 @@ class Admin_CoursesController extends AuthenticatedController
                 PageLayout::postMessage(MessageBox::success(sprintf(_('Das %s wurde ausgewählt'), Semester::find(Request::option('sem_select'))->name)));
             } else {
                 PageLayout::postMessage(MessageBox::success(_('Semesterfilter abgewählt')));
+            }
+        }
+
+        if (Request::option('stgteil_select')) {
+            $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_STGTEIL', Request::option('stgteil_select'));
+            if (Request::option('stgteil_select') !== "all") {
+                PageLayout::postMessage(MessageBox::success(sprintf(_('Der Studiengangteil %s wurde ausgewählt'), StudiengangTeil::find(Request::option('stgteil_select'))->getDisplayName())));
+            } else {
+                PageLayout::postMessage(MessageBox::success(_('Studiengangteilfilter abgewählt')));
             }
         }
 
@@ -1159,6 +1176,9 @@ class Admin_CoursesController extends AuthenticatedController
         if ($active_elements['institute']) {
             $filter->filterByInstitute($inst_ids);
         }
+        if ($GLOBALS['user']->cfg->MY_COURSES_SELECTED_STGTEIL && $GLOBALS['user']->cfg->MY_COURSES_SELECTED_STGTEIL !== 'all') {
+            $filter->filterByStgTeil($GLOBALS['user']->cfg->MY_COURSES_SELECTED_STGTEIL);
+        }
         if ($params['sortby'] === "status") {
             $filter->orderBy(sprintf('sem_classes.name %s, sem_types.name %s, VeranstaltungsNummer', $params['sortFlag'], $params['sortFlag'], $params['sortFlag']), $params['sortFlag']);
         } elseif ($params['sortby']) {
@@ -1321,6 +1341,26 @@ class Admin_CoursesController extends AuthenticatedController
         }
 
         $sidebar->addWidget($list, 'filter_semester');
+    }
+
+        /**
+     * Adds the studiengangteil selector to the sidebar
+     */
+    private function setStgteilSelector()
+    {
+        $stgteile = StudiengangTeil::getAllEnriched('fach_name','ASC', ['mvv_fach_inst.institut_id' => $GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT]);
+        $sidebar = Sidebar::Get();
+        $list = new SelectWidget(_('Studiengangteil'), $this->url_for('admin/courses/set_selection'), 'stgteil_select');
+        $list->addElement(new SelectElement('all', _('Alle')), 'stgteil_select-all');
+        foreach ($stgteile as $stgteil) {
+            $list->addElement(new SelectElement(
+                $stgteil->id,
+                $stgteil->getDisplayName(),
+                $stgteil->id === $GLOBALS['user']->cfg->MY_COURSES_SELECTED_STGTEIL
+            ), 'stgteil_select-' . $stgteil->id);
+        }
+
+        $sidebar->addWidget($list, 'filter_stgteil');
     }
 
 
@@ -1503,6 +1543,7 @@ class Admin_CoursesController extends AuthenticatedController
             'search' => true,
             'institute' => true,
             'semester' => true,
+            'stgteil' => true,
             'courseType' => true,
             'teacher' => true,
             'viewFilter' => true

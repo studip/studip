@@ -1,0 +1,132 @@
+
+a.fc-event {
+    border-radius: 0;
+    color: black;
+
+    .fc-time {
+        text-decoration: underline;
+        color: black;
+    }
+}
+
+div.fc-toolbar {
+    display: none;
+}
+
+/* the "now" indicator: */
+.fc-now-indicator.fc-now-indicator-line,
+.fc-now-indicator.fc-now-indicator-arrow {
+    display: none;
+}
+
+/* adjust height: */
+.fc-resourceTimelineDay-view {
+    .fc-widget-header{
+        .fc-scroller {
+            height: 40px !important;
+            .fc-content > table{
+                height: 26px !important;
+            }
+        }
+    }
+}
+.fc-resourceTimelineWeek-view {
+    .fc-widget-header{
+        .fc-scroller {
+            height: 60px !important;
+            .fc-content > table{
+                height: 26px !important;
+            }
+        }
+    }
+}
+.fc-scroller.fc-time-grid-container {
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+/* disable page break for calendar: */
+div.fc-view-container {
+    page-break-inside: avoid;
+}
+
+/* a potential existing map key: */
+.map-key-list {
+    display: none;
+}
+
+.fullcalendar-header {
+    &.fullcalendar-dialog{
+        display: block;
+        width: 100%;
+        margin-top: 2em;
+        margin-right: 0em;
+    }
+}
+
+.fullcalendar-dialogwidget-container {
+    display:none !important;
+}
+
+div.fc-timeGrid-view th.fc-axis, td.fc-axis {
+    display: table-cell !important;
+}
+
+div.fc-slats, div.fc-time-grid hr {
+    display: block !important;
+}
+
+section.fc th, section.fc td, section.fc hr, section.fc thead, section.fc tbody, .fc-row {
+    background: none !important;
+}
+
+div.fc-content-skeleton {
+    & table {
+        height: 100% !important;
+    }
+    height: 100%;
+}
+
+div.fc-time-grid a.fc-event {
+    position: absolute !important;
+    margin: 0px 0px 1px 0px !important;
+
+    img {
+        filter: brightness(0);
+    }
+}
+
+a.fc-timeline-event {
+    img {
+        filter: brightness(0);
+    }
+}
+
+.fc-slats table tr {
+    line-height: 1.7em;
+    line-height: 22px;
+}
+
+.fc-resource-area {
+    .fc-cell-content {
+        a > img {
+            display: none;
+        }
+    }
+}
+
+.institute-plan {
+
+    img {
+        display: none;
+    }
+
+    .fc-event {
+        height: 100px;
+        transform: translate(0px, -101px);
+    }
+
+    .fc-slats tr {
+        height: 50px;
+    }
+}
