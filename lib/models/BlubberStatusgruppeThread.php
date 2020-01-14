@@ -35,7 +35,7 @@ class BlubberStatusgruppeThread extends BlubberThread
 
     public function isReadable(string $user_id = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
+        $user_id = $user_id ?? $GLOBALS['user']->id;
         if ($GLOBALS['perm']->have_studip_perm("tutor", $this['context_id'], $user_id)) {
             return true;
         }
