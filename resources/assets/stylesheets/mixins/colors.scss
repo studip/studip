@@ -10,17 +10,17 @@ $base-gray: hsl(hue($base-color),
                 lightness(#3c454e));
 
 $brand-color-dark: $base-color;
-$brand-color-darker: hsl((hue($base-color) - 0.2),
-                         (saturation($base-color) + 4.5%),
-                         (lightness($base-color) - 4.7)); // #1f3f70;
+$brand-color-darker: hsl(hue($base-color),
+                         (saturation($base-color) + 5.4%),
+                         (lightness($base-color) - 4%)); // #1f3f70;
 
 $brand-color-light: hsl(hue($base-color),
-                        (saturation($base-color) - 5.5%),
-                        (lightness($base-color) + 7)); // #36598f;
+                        (saturation($base-color) - 6%),
+                        (lightness($base-color) + 6.5%)); // #36598f;
 
-$brand-color-lighter: hsl((hue($base-color) + 25),
-                          (saturation($base-color) - 46%),
-                          (lightness($base-color) + 23.9)); // #899ab9;
+$brand-color-lighter: hsl((hue($base-color) + 2.5),
+                          (saturation($base-color) - 25.5%),
+                          (lightness($base-color) + 31%)); // #899ab9;
 /* This code calculates another activity color in case you dont wanna stick with red
 
 $active-color: hsv((hsvhue($red) - hsvhue($base-color) + hsvhue($origin-base-color)),
