@@ -87,12 +87,13 @@ abstract class GlobalSearchModule
     /**
      * Function to mark a querystring in a resultstring
      *
-     * @param $string
-     * @param $query
-     * @param bool|true $filename
+     * @param $string             Result string that should be displayed
+     * @param $query              Query string to mark up
+     * @param bool $longtext      Indicates whether result might be a longer text
+     * @param bool|true $filename Indicates whether the query string might denote a file.
      * @return mixed
      */
-    public static function mark($string, $query, $longtext = false, $filename = true)
+    public static function mark($string, $query, $longtext = false, $filename = false)
     {
         // Secure
         $string = strip_tags($string);
@@ -100,12 +101,11 @@ abstract class GlobalSearchModule
         // Maximum length for an unshortened string.
         $maxlength = 100;
 
-        if (mb_strpos($query, '/') !== false) {
-            $args = explode('/', $query);
-            if ($filename) {
+        if ($filename && mb_strpos($query, '/') !== false) {
+            $args = explode('/', $query, 2);
+            if ($args[1]) {
                 return self::mark($string, trim($args[1]));
             }
-            return self::mark($string, trim($args[0]));
         }
 
         $query = trim($query);

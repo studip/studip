@@ -40,16 +40,9 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
         // Check if a path to a course was given.
         if (mb_strpos($search, '/') !== false) {
 
-            $args = explode('/', $search);
+            $args = explode('/', $search, 2);
             $prequery = DBManager::get()->quote("%" . trim($args[0]) . "%");
             $query = DBManager::get()->quote("%" . trim($args[1]) . "%");
-            $binary = DBManager::get()->quote('%' . implode('%', preg_split(
-                '//u',
-                mb_strtoupper(trim($args[0])),
-                null,
-                PREG_SPLIT_NO_EMPTY
-            )) . '%');
-            $comp = "AND";
 
             switch ($GLOBALS['perm']->get_perm()) {
                 // Roots see all files, no matter where.
@@ -57,8 +50,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                     $mycourses = "SELECT SQL_CALC_FOUND_ROWS DISTINCT `Seminar_id`
                                   FROM `seminare`
                                   WHERE (`Name` LIKE {$prequery}
-                                    OR `VeranstaltungsNummer` LIKE {$prequery})
-                                    {$semester_condition}";
+                                    OR `VeranstaltungsNummer` LIKE {$prequery})";
                     break;
 
                 /*
@@ -78,8 +70,6 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                  * at institutes or in their personal file area.
                  */
                 default:
-                    $institutes = array_map(function ($i) { return $i['Institut_id']; }, Institute::getMyInstitutes());
-
                     $mycourses = "SELECT SQL_CALC_FOUND_ROWS DISTINCT u.`Seminar_id`
                                   FROM `seminar_user` u
                                   JOIN `seminare` s ON (s.`Seminar_id` = u.`Seminar_id`)
@@ -225,7 +215,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
 
         return [
             'id'         => $fileref->id,
-            'name'       => self::mark($fileref->name, $search, true),
+            'name'       => self::mark($fileref->name, $search, true, true),
             'url'        => URLHelper::getURL(
                 "dispatch.php/file/details/{$fileref->id}"
             ),
