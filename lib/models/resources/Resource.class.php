@@ -19,12 +19,9 @@
  * @property string id alias column for resource_id
  * @property string parent_id database column
  * @property string category_id database column
- * @property string institut_id database column
  * @property string level database column
  * @property string name database column
  * @property string description database column
- * @property string lockable database column
- * @property string multiple_assign database column
  * @property string requestable database column
  * @property string sort_position database column
  * @property string mkdate database column

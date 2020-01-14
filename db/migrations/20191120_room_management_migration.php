@@ -1847,12 +1847,12 @@ class RoomManagementMigration extends Migration
             CHANGE COLUMN resource_id id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
             CHANGE COLUMN parent_id parent_id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
             CHANGE COLUMN category_id category_id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-            CHANGE COLUMN institut_id institut_id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
             CHANGE COLUMN description description text NULL DEFAULT NULL,
-            CHANGE COLUMN lockable lockable TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-            CHANGE COLUMN multiple_assign multiple_assign TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             CHANGE COLUMN requestable requestable TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN sort_position TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            DROP COLUMN institut_id,
+            DROP COLUMN lockable,
+            DROP COLUMN multiple_assign,
             DROP COLUMN owner_id,
             DROP COLUMN root_id");
 
