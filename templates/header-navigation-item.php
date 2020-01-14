@@ -1,34 +1,19 @@
 <?php
-if (!function_exists('__nav_attr')) {
-    if ($accesskey_enabled) {
-        function __nav_attr($nav) {
-            static $count = 1;
-            $image_attributes = $nav->getImage()->getAttributes();
+$attributes = $nav->getLinkAttributes();
 
-            if ($count > 9) {
-                return [
-                    'title' => $image_attributes['title'] ?: $nav->getTitle(),
-                ];
-            }
+$image_attributes = $nav->getImage()->getAttributes();
+$attributes['title'] = $image_attributes['title'];
 
-            return [
-                'title' => "{$image_attributes['title']}  [ALT] + {$count}",
-                'accesskey' => $count++,
-            ];
-        }
-    } else {
-        function __nav_attr($nav) {
-            $image_attributes = $nav->getImage()->getAttributes();
-            return ['title' => $image_attributes['title']];
-        }
+if ($accesskey_enabled) {
+    if (!isset($GLOBALS['accesskey-count'])) {
+        $GLOBALS['accesskey-count'] = 1;
+    }
+
+    if ($GLOBALS['accesskey-count'] < 10) {
+        $attributes['title'] = "{$attributes['title']}  [ALT] + {$GLOBALS['accesskey-count']}";
+        $attributes['accesskey'] = $GLOBALS['accesskey-count']++;
     }
 }
-
-
-$attributes = array_merge(
-    $nav->getLinkAttributes(),
-    __nav_attr($nav)
-);
 
 // Add badge number to link attributes
 if ($nav->getBadgeNumber()) {
@@ -36,11 +21,7 @@ if ($nav->getBadgeNumber()) {
 }
 
 // Convert link attributes array to proper attribute string
-$attr_str = '';
-foreach ($attributes as $key => $value) {
-    $attr_str .= sprintf(' %s="%s"', htmlReady($key), htmlReady($value));
-}
-
+$attr_str = arrayToHtmlAttributes($attributes);
 ?>
 
 <li id="nav_<?= $path ?>"<? if ($nav->isActive()) : ?> class="active"<? endif ?>>
