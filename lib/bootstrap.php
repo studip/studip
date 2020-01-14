@@ -135,10 +135,9 @@ Assets::set_assets_url($GLOBALS['ASSETS_URL']);
 
 // globale template factory anlegen
 require_once 'vendor/flexi/lib/flexi.php';
-$GLOBALS['template_factory'] =
-    new Flexi_TemplateFactory($STUDIP_BASE_PATH . '/templates');
-Renderable::setTemplateFactory($GLOBALS['template_factory']);
-
+$GLOBALS['template_factory'] = new Flexi_TemplateFactory("{$STUDIP_BASE_PATH}/templates");
+Widgets\Container::setTemplateFactory($GLOBALS['template_factory']);
+Widgets\Element::setTemplateFactory($GLOBALS['template_factory']);
 
 // set default pdo connection
 try {
