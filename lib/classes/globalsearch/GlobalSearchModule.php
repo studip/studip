@@ -106,6 +106,7 @@ abstract class GlobalSearchModule
             if ($args[1]) {
                 return self::mark($string, trim($args[1]));
             }
+            return self::mark($string, trim($args[0]));
         }
 
         $query = trim($query);
