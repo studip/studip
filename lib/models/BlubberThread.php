@@ -136,8 +136,20 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return $thread;
     }
 
-    public static function findMyGlobalThreads($limit = 51, $since = null, $olderthan = null)
+    /**
+     * @param string $limit      optional; limits the number of results
+     * @param string $since      optional; selects threads after this date (inclusive)
+     * @param string $olderthan  optional; selects threads before this date (inclusive)
+     * @param string $userId     optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @return array  an array of the user's global BlubberThreads
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public static function findMyGlobalThreads($limit = 51, $since = null, $olderthan = null, string $userId = null)
     {
+        $userId = $userId ?? $GLOBALS['user']->id;
+
         $condition = "LEFT JOIN blubber_comments
                         ON blubber_comments.thread_id = blubber_threads.thread_id
                       WHERE (blubber_threads.content IS NULL OR blubber_threads.content = '')
@@ -151,7 +163,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             ->join('my_comments', 'blubber_comments', 'blubber_threads.thread_id = my_comments.thread_id', 'LEFT JOIN')
             ->join('blubber_mentions', 'blubber_mentions', 'blubber_mentions.thread_id = blubber_threads.thread_id', 'LEFT JOIN');
 
-        if (!$GLOBALS['perm']->have_perm('admin')) {
+        if (!$GLOBALS['perm']->have_perm('admin', $userId)) {
             //user, autor, tutor, dozent
             $query->where('mycourses', implode(' OR ', [
                 "(blubber_threads.context_type = 'public' AND (my_comments.user_id = :user_id OR blubber_threads.user_id = :user_id))",
@@ -159,16 +171,16 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 "(blubber_threads.context_type = 'institute' AND blubber_threads.context_id IN (:institut_ids))",
                 "(blubber_threads.context_type = 'private' AND blubber_mentions.user_id = :user_id AND blubber_mentions.external_contact = 0)",
             ]), [
-                'seminar_ids'  => self::getMyBlubberCourses(),
-                'institut_ids' => self::getMyBlubberInstitutes(),
+                'seminar_ids'  => self::getMyBlubberCourses($userId),
+                'institut_ids' => self::getMyBlubberInstitutes($userId),
             ]);
-        } elseif (!$GLOBALS['perm']->have_perm('root')) {
+        } elseif (!$GLOBALS['perm']->have_perm('root', $userId)) {
             //admin
             $query->where('mycourses', implode(' OR ', [
                 "(blubber_threads.context_type = 'public' AND (my_comments.user_id = :user_id OR blubber_threads.user_id = :user_id))",
                 "(blubber_threads.context_type = 'institute' AND blubber_threads.context_id IN (:institut_ids))",
                 "(blubber_threads.context_type = 'private' AND blubber_mentions.user_id = :user_id AND blubber_mentions.external_contact = 0)",
-            ]), ['institut_ids' => self::getMyBlubberInstitutes()]);
+            ]), ['institut_ids' => self::getMyBlubberInstitutes($userId)]);
         } else {
             //root
             $query->where(implode(' OR ', [
@@ -181,7 +193,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
         $query->where("blubber_threads.visible_in_stream = 1");
         $query->where("(blubber_comments.mkdate IS NULL OR blubber_comments.mkdate > UNIX_TIMESTAMP() - 86400 * 365)");
-        $query->parameter('user_id', $GLOBALS['user']->id);
+        $query->parameter('user_id', $userId);
         $query->groupBy('blubber_threads.thread_id');
         if ($olderthan !== null) {
             $query->having('olderthan', "IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) <= :olderthan", [
@@ -204,8 +216,8 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             }
         }
 
-        $upgraded_threads = array_filter($upgraded_threads, function ($t) {
-            return $t->isVisibleInStream() && $t->isReadable();
+        $upgraded_threads = array_filter($upgraded_threads, function ($thread) use ($userId) {
+            return $thread->isVisibleInStream() && $thread->isReadable($userId);
         });
 
         return $upgraded_threads;
@@ -415,10 +427,14 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return URLHelper::getURL('dispatch.php/blubber/index/' . $this->getId());
     }
 
-    public function getLastVisit($user_id = null)
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function getLastVisit(string $userId = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
-        return UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId());
+        return UserConfig::get($userId ?? $GLOBALS['user']->id)->getValue("BLUBBERTHREAD_VISITED_".$this->getId());
     }
 
     public function notifyUsersForNewComment($comment)
@@ -476,22 +492,32 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         );
     }
 
-    public function isVisibleInStream($user_id = null)
+    public function isVisibleInStream()
     {
         return $this['visible_in_stream'];
     }
 
-    public function isWritable($user_id = null)
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function isWritable(string $userId = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
         if ($this['context_type'] === 'course' || $this['context_type'] === 'institute') {
-            return $GLOBALS['perm']->have_studip_perm('tutor', $this['context_id'], $user_id);
+            return $GLOBALS['perm']->have_studip_perm('tutor', $this['context_id'], $userId);
         } else {
-            return $GLOBALS['perm']->have_perm('root', $user_id) || ($this['user_id'] === $user_id);
+            return $GLOBALS['perm']->have_perm('root', $userId) || $this['user_id'] === $GLOBALS['user']->id;
         }
     }
 
-    public function isReadable($user_id = null)
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function isReadable(string $userId = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
         if ($this['context_type'] === 'public') {
@@ -505,21 +531,24 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                         AND user_id = :me
                         AND external_contact = 0";
             return (bool) DBManager::get()->fetchColumn($query, [
-                'me'        => $user_id,
+                'me'        => $userId ?? $GLOBALS['user']->id,
                 'thread_id' => $this->getId()
             ]);
         }
 
         if (in_array($this['context_type'], ['course', 'institute'])) {
-            return $GLOBALS['perm']->have_studip_perm('user', $this['context_id']);
+            return $GLOBALS['perm']->have_studip_perm('user', $this['context_id'], $userId);
         }
 
         return false;
     }
 
-    public function isCommentable($user_id = null)
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     */
+    public function isCommentable(string $userId = null)
     {
-        return $this->isReadable() && $this['commentable'];
+        return $this->isReadable($userId) && $this['commentable'];
     }
 
     public function getAvatar()
@@ -615,9 +644,14 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return $output;
     }
 
-    public function markAsRead($user_id = null)
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function markAsRead(string $userId = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
+        $user_id = $userId ?? $GLOBALS['user']->id;
 
         $statement = DBManager::get()->prepare("
             UPDATE personal_notifications_user
@@ -639,11 +673,17 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     /**
      * Returns all Seminar_ids to courses I am member of and in which blubber
      * is an active plugin.
+     *
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
      * @return array of string : array of Seminar_ids
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
-    protected static function getMyBlubberCourses()
+    protected static function getMyBlubberCourses(string $userId = null)
     {
-        if ($GLOBALS['perm']->have_perm('admin', $GLOBALS['user']->id)) {
+        $userId = $userId ?? $GLOBALS['user']->id;
+        if ($GLOBALS['perm']->have_perm('admin', $userId)) {
             return [];
         }
 
@@ -679,7 +719,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             }
         }
 
-        $is_deputy = Config::get()->DEPUTIES_ENABLE && Deputy::countByUser_id($GLOBALS['user']->id) > 0;
+        $is_deputy = Config::get()->DEPUTIES_ENABLE && Deputy::countByUser_id($userId) > 0;
         $blubber_plugin_info = PluginManager::getInstance()->getPluginInfo('Blubber');
 
         $parameters = [
@@ -749,15 +789,21 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return $my_courses;
     }
 
-    protected static function getMyBlubberInstitutes()
+    /**
+     * @param string $userId  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    protected static function getMyBlubberInstitutes(string $userId = null)
     {
-        if ($GLOBALS['perm']->have_perm('root', $GLOBALS['user']->id)) {
+        $userId = $userId ?? $GLOBALS['user']->id;
+        if ($GLOBALS['perm']->have_perm('root', $userId)) {
             return [];
         }
 
         $query = "SELECT Institut_id
                   FROM user_inst
                   WHERE user_id = ?";
-        return DBManager::get()->fetchFirst($query, [$GLOBALS['user']->id]);
+        return DBManager::get()->fetchFirst($query, [$userId]);
     }
 }
