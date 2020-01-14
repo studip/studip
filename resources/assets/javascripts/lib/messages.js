@@ -36,7 +36,7 @@ const Messages = {
         new_adressee.find('input').val(user_id);
         new_adressee
             .find('.visual')
-            .html(name)
+            .text(name)
             .find('b')
             .replaceWith(function() {
                 return jQuery(this).contents();
