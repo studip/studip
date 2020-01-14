@@ -16,7 +16,7 @@
         <? if ($range_object instanceof Course): ?>
             <a href="<?= URLHelper::getLink(
                      'dispatch.php/course/details',
-                     ['sem_id' => $range_object->id]
+                     ['cid' => $range_object->id]
                      ) ?>">
                 <?= htmlReady($range_object->name)?>
             </a>
