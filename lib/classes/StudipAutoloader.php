@@ -260,7 +260,8 @@ class StudipAutoloader
 
         // Path is invalid? Try to resolve it step by step.
         if (!is_dir($fullpath)) {
-            $chunks = array_filter(explode(DIRECTORY_SEPARATOR, $class_file));
+            $chunks = array_filter(explode(DIRECTORY_SEPARATOR, $fullpath));
+            $path = '';
             foreach ($chunks as $chunk) {
                 if (!is_dir($path . DIRECTORY_SEPARATOR . $chunk)) {
                     $chunk = mb_strtolower($chunk);
