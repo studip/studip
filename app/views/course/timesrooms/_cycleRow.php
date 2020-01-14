@@ -54,7 +54,14 @@ $is_exTermin = $termin instanceof CourseExDate;
     <? elseif ($name = SemesterHoliday::isHoliday($termin->date, false) && $is_exTermin): ?>
         <?= $room_holiday ?>
     <? elseif ($room = $termin->getRoom()) : ?>
-        <?= $room->getFormattedLink(true, true, true, 'view_schedule', 'no_nav', $termin->date, $room->getName()) ?>
+        <a href="<?= $room->getLink(
+                 'booking_plan',
+                 [
+                     'defaultDate' => date('Y-m-d', $termin->date)
+                 ]
+                 ) ?>" data-dialog="size=big">
+            <?= htmlReady($room->getFullName()) ?>
+        </a>
         <?= $room_holiday ?: '' ?>
     <? elseif ($freeTextRoom = $termin->getRoomName()) : ?>
         <?= sprintf('(%s)', htmlReady($freeTextRoom)) ?>
@@ -63,9 +70,9 @@ $is_exTermin = $termin instanceof CourseExDate;
         <?= $room_holiday ?: '' ?>
     <? endif ?>
 
-    <? $room_request = RoomRequest::find(RoomRequest::existsByDate($termin->id, true)) ?>
-    <? if (isset($room_request)) : ?>
-        <? $msg_info = _('Für diesen Termin existiert eine Raumanfrage: ') . $room_request->getInfo() ?>
+    <? $room_request_exists = RoomRequest::existsByDate($termin->id, true) ?>
+    <? if ($room_request_exists): ?>
+        <? $msg_info = _('Für diesen Termin existiert eine Raumanfrage.') ?>
         <?= tooltipIcon($msg_info) ?>
     <? endif ?>
     </td>

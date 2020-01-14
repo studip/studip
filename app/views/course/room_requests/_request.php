@@ -1,4 +1,1 @@
-<h4><?= htmlReady($request->getTypeExplained()) ?></h4>
-<p>
-    <?= htmlReady($request->getInfo(),1,1); ?>
-</p>
+<?= $this->render_partial('resources/_common/_request_info.php') ?>

@@ -13,7 +13,7 @@ $global_requests = $course->room_requests->filter(function (RoomRequest $request
             <?= tooltipIcon(_('Hier können Sie für die gesamte Veranstaltung, also für alle regelmäßigen und unregelmäßigen Termine, '
                               . 'eine Raumanfrage erstellen.')) ?>
             <a class="link-add" href="<?= $controller->url_for('course/room_requests/edit/' . $course->id,
-                    ['cid' => $course->id, 'new_room_request_type' => 'course', 'origin' => 'course_timesrooms']) ?>"
+                    array('cid' => $course->id, 'range_str' => 'course', 'origin' => 'course_timesrooms', 'create_room_request' => 1)) ?>"
                data-dialog="size=big"
                title="<?= _('Neue Raumanfrage für die Veranstaltung erstellen') ?>">
                 <?= _('Neue Raumanfrage') ?>

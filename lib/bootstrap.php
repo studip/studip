@@ -229,9 +229,6 @@ class DB_Seminar extends DB_Sql
     }
 }
 
-require_once 'lib/resources/resourcesFunc.inc.php';
-require_once 'lib/resources/lib/list_assign.inc.php';
-
 if (Config::get()->EXTERN_ENABLE) {
     require_once $GLOBALS['STUDIP_BASE_PATH'] . '/lib/extern/extern_config.inc.php';
     require_once $GLOBALS['STUDIP_BASE_PATH'] . '/lib/extern/lib/extern_functions.inc.php';

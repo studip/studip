@@ -27,7 +27,8 @@
  * @property User author belongs_to User
  * @property Course course belongs_to Course
  * @property SeminarCycleDate cycle belongs_to SeminarCycleDate
- * @property ResourceAssignment room_assignment has_one ResourceAssignment
+ * @property RoomRequest room_requests has_many RoomRequest
+ * @property ResourceBooking room_booking has_one ResourceBooking
  * @property SimpleORMapCollection topics has_and_belongs_to_many CourseTopic
  * @property SimpleORMapCollection statusgruppen has_and_belongs_to_many Statusgruppen
  * @property SimpleORMapCollection dozenten has_and_belongs_to_many User
@@ -87,14 +88,14 @@ class CourseDate extends SimpleORMap implements PrivacyObject
             'class_name'  => 'SeminarCycleDate',
             'foreign_key' => 'metadate_id'
         ];
-        $config['has_one']['room_assignment'] = [
-            'class_name'        => 'ResourceAssignment',
+        $config['has_one']['room_booking'] = [
+            'class_name'        => 'ResourceBooking',
             'foreign_key'       => 'termin_id',
-            'assoc_foreign_key' => 'assign_user_id',
+            'assoc_foreign_key' => 'range_id',
             'on_delete'         => 'delete',
-            'on_store'          => 'store'
+            //'on_store'          => 'store'
         ];
-        $config['has_one']['room_request'] = [
+        $config['has_many']['room_requests'] = [
             'class_name'        => 'RoomRequest',
             'assoc_foreign_key' => 'termin_id',
             'on_delete'         => 'delete',
@@ -221,8 +222,8 @@ class CourseDate extends SimpleORMap implements PrivacyObject
      */
     public function getRoomName()
     {
-        if (Config::get()->RESOURCES_ENABLE && $this->room_assignment->resource_id) {
-            return $this->room_assignment->resource->getName();
+        if (Config::get()->RESOURCES_ENABLE && $this->room_booking->resource_id) {
+            return $this->room_booking->resource->name;
         }
         return $this['raum'];
     }
@@ -230,12 +231,12 @@ class CourseDate extends SimpleORMap implements PrivacyObject
     /**
      * Returns the assigned room for this date as an object.
      *
-     * @return mixed Either the object or null if no room is assigned
+     * @return Room Either the object or null if no room is assigned
      */
     public function getRoom()
     {
-        if (Config::get()->RESOURCES_ENABLE && $this->room_assignment->resource_id) {
-           return $this->room_assignment->resource;
+        if (Config::get()->RESOURCES_ENABLE && $this->room_booking->resource_id) {
+           return $this->room_booking->resource->getDerivedClassInstance();
         }
         return null;
     }
@@ -358,8 +359,8 @@ class CourseDate extends SimpleORMap implements PrivacyObject
      */
     public function store()
     {
-        // load room-assignment, if any
-        $this->room_assignment;
+        // load room-booking, if any
+        $this->room_booking;
 
         $cache = StudipCacheFactory::getCache();
         $cache->expire('course/undecorated_data/'. $this->range_id);

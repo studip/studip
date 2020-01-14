@@ -11,6 +11,7 @@ import Browse from './lib/browse.js';
 import Cache from './lib/cache.js';
 import Calendar from './lib/calendar.js';
 import CalendarDialog from './lib/calendar_dialog.js';
+import Clipboard from './lib/clipboard.js';
 import Cookie from './lib/cookie.js';
 import CourseWizard from './lib/course_wizard.js';
 import createURLHelper from './lib/url_helper.js';
@@ -26,11 +27,13 @@ import Filesystem from './lib/filesystem.js';
 import FilesDashboard from './lib/files_dashboard.js';
 import Folders from './lib/folders.js';
 import Forms from './lib/forms.js';
+import Fullcalendar from './lib/fullcalendar.js';
 import Fullscreen from './lib/fullscreen.js';
 import GlobalSearch from './lib/global_search.js';
 import HeaderMagic from './lib/header_magic.js';
 import i18n from './lib/i18n.js';
 import Instschedule from './lib/instschedule.js';
+import InlineEditing from './lib/inline-editing.js';
 import JSUpdater from './lib/jsupdater.js';
 import Lightbox from './lib/lightbox.js';
 import Markup from './lib/markup.js';
@@ -52,6 +55,7 @@ import QuickSearch from './lib/quick_search.js';
 import Raumzeit from './lib/raumzeit.js';
 import {ready, domReady, dialogReady} from './lib/ready.js';
 import register from './lib/register.js';
+import Resources from './lib/resources.js';
 import Responsive from './lib/responsive.js';
 import RESTAPI, { api } from './lib/restapi.js';
 import Schedule from './lib/schedule.js';
@@ -103,11 +107,13 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     FilesDashboard,
     Folders,
     Forms,
+    Fullcalendar,
     Fullscreen,
     GlobalSearch,
     HeaderMagic,
     i18n,
     Instschedule,
+    InlineEditing,
     JSUpdater,
     Lightbox,
     Markup,
@@ -147,7 +153,8 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     UserFilter,
     WidgetSystem,
     wysiwyg,
-
+    Resources,
+    Clipboard,
     ready,
     domReady,
     dialogReady

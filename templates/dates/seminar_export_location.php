@@ -2,8 +2,8 @@
 // condense regular dates by room
 if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turnus_data'] as $cycle) :
   if (is_array($cycle['assigned_rooms'])) foreach ($cycle['assigned_rooms'] as $room_id => $count) :
-    $resObj = ResourceObject::Factory($room_id);
-    $output[$resObj->getName()][] = $cycle['tostring_short'] .' ('. $count .'x)';
+    $room_object = Room::find($room_id);
+    $output[$room_object->name][] = $cycle['tostring_short'] .' ('. $count .'x)';
   endforeach;
 
   if (is_array($cycle['freetext_rooms'])) foreach ($cycle['freetext_rooms'] as $room => $count) :
@@ -27,8 +27,8 @@ endforeach;
 // now shrink the dates for each room/freetext and add them to the output
 if (is_array($output_dates)) foreach ($output_dates as $dates) :
     if ($dates[0]['resource_id']) :
-        $resObj = ResourceObject::Factory($dates[0]['resource_id']);
-        $output[$resObj->getName()][] = implode(", ", shrink_dates($dates));
+        $room_object = Room::find($dates[0]['resource_id']);
+        $output[$room_object->name][] = implode(", ", shrink_dates($dates));
     elseif ($dates[0]['raum']) :
         $output['('. $dates[0]['raum'] .')'][] = implode(", ", shrink_dates($dates));
     endif;

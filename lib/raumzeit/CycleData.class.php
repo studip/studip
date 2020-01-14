@@ -433,19 +433,4 @@ class CycleData
         }
         $this->store();
     }
-
-    /**
-     * use SingleDate::removeRequest()
-     *
-     * @deprecated
-     * @param string $singledate_id
-     * @param int $filterStart
-     * @param int $filterEnd
-     */
-    function removeRequest($singledate_id, $filterStart, $filterEnd)
-    {
-        $this->readSingleDates($filterStart, $filterEnd);
-        $this->termine[$singledate_id]->removeRequest();
-    }
-
 }

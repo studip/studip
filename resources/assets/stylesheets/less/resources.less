@@ -1,0 +1,648 @@
+.resource-object-container
+{
+    display: flex;
+}
+
+.resource-object
+{
+    max-width: 30em;
+    width: 30em;
+    float: left;
+    margin: 1em;
+
+    .resource-header
+    {
+        .resource-actions
+        {
+            float: right;
+        }
+    }
+
+    .resource-details
+    {
+        padding: 0.5em;
+
+        .resource-description
+        {
+            min-height: 10em;
+            height: 10em;
+            max-height: 10em;
+
+            .resource-picture
+            {
+                min-height: 10em;
+                min-width: 10em;
+                height: 10em;
+                width: 10em;
+                max-height: 10em;
+                max-width: 10em;
+                float:left;
+            }
+        }
+
+        .small-resource-description
+        {
+            min-height: 5em;
+            height: 5em;
+            max-height: 5em;
+
+            .resource-picture
+            {
+                min-height: 5em;
+                min-width: 5em;
+                height: 5em;
+                width: 5em;
+                max-height: 5em;
+                max-width: 5em;
+                float:left;
+            }
+        }
+    }
+}
+
+
+.resource-picture
+{
+    min-height: 10em;
+    min-width: 10em;
+    height: 10em;
+    width: 10em;
+    max-height: 10em;
+    max-width: 10em;
+}
+
+
+.small-resource-picture
+{
+    min-height: 16px;
+    min-width: 16px;
+    height: 16px;
+    width: 16px;
+    max-height: 16px;
+    max-width: 16px;
+}
+
+
+/* resource category overview table */
+
+table.resource-categories {
+    col.icon {
+        width: 20px;
+    }
+
+    td.properties ul {
+        padding-left: 1em;
+    }
+}
+
+
+/* rseource category selection */
+
+.resource-category-select-icon-label > .resource-category-select-radio
+{
+    visibility: hidden;
+    position: absolute;
+}
+
+
+.resource-category-select
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+
+    a.category-link {
+        background-color: transparent;
+        margin: 10px;
+        border: thin solid @content-color-20;
+        padding: 5px;
+        width: 100px;
+        min-width: 100px;
+        max-width: 100px;
+        height: 100px;
+        min-height: 100px;
+        max-height: 100px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+
+        &:has(.radio-button:checked) {
+            background-color: @brand-color-darker;
+            color: @contrast-content-white;
+        }
+
+        .radio-button {
+            visibility: hidden;
+            &:checked + img {
+                filter: invert(100%) brightness(200%);
+            }
+        }
+    }
+}
+
+#layout-sidebar .room-search-tree-widget
+{
+    max-height: unset !important;
+}
+
+ul.resource-tree
+{
+    list-style-type: none;
+    padding-left: 0px;
+
+    & > li {
+        padding-left: 18px;
+        text-indent: -19px;
+
+        & > ul.resource-tree
+        {
+            padding-left: 3px;
+        }
+    }
+}
+
+.resource-tree
+{
+    .selected-resource {
+        background-color: @origin-base-color;
+        color: @white;
+        padding: 2px;
+        width: calc(100% - 21px);
+    }
+
+    a {
+        img:not(.resource-tree-node) {
+            margin-left: 1px;
+        }
+
+        &.selected-resource {
+            display: inline-block;
+            padding-left: 18px;
+            text-indent: -19px;
+
+            img {
+                margin-left: 4px;
+           }
+        }
+    }
+
+    img.resource-tree-node {
+        padding-top: 2px;
+        vertical-align: top;
+    }
+}
+
+@media all and (min-width: 800px) {
+    form.resource-search
+    {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    fieldset.resource-search
+    {
+        flex-grow: 1;
+    }
+}
+
+
+.resource-action-tile {
+    margin-bottom: 1em;
+
+    article {
+        border: none;
+    }
+}
+
+@media all and (min-width: 800px) {
+    .overview-action-tile-container
+    {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .overview-action-tile {
+        width: 20em;
+        max-width: 45%;
+        flex-grow: 1;
+        margin-right: 10px;
+        height: 9em;
+        min-height: 9em;
+    }
+}
+
+@media all and (max-width: 799px) {
+
+    .overview-action-tile {
+        width: 95%;
+        margin-bottom: 1em;
+    }
+}
+
+.room-search-form {
+
+    ul.criteria-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin-bottom: 0.5em;
+
+            img.remove-icon {
+                margin-right: 5px;
+            }
+
+            .special-item-switch {
+                vertical-align: text-bottom;
+            }
+
+            & > label {
+
+                input, select {
+                    width: calc(100% - 2em);
+                    height: 30px;
+
+                    &.has-date-picker {
+                        width: calc(100% - 2em - 84px);
+                    }
+
+                    &[type=number], &[data-time=yes] {
+                        width: 4em;
+                    }
+
+                    &[type=date] {
+                        width: 10em;
+                        max-width: 10em;
+                    }
+                }
+
+                .select2-wrapper {
+                    select, span.selection, span.select2 {
+                        height: 30px;
+                        width: calc(100% - 2em) !important;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.room-search-widget_criteria-list {
+    list-style-type: none;
+    padding-left: 0.5em;
+
+    .item {
+        margin-bottom: 0.75em;
+
+        > label {
+            display: inline-block;
+            width: calc(100% - 2em);
+        }
+
+        > label.RangeSearchLabel {
+
+            > .RangeInputContainer {
+                margin-left: 1em;
+
+                > input[type="number"] {
+                    max-width: 5em;
+                }
+            }
+        }
+    }
+}
+
+/* room clipboard widget */
+.room-clipboard-special-actions {
+    margin-top: 0.25em;
+    margin-left: 0.25em;
+}
+
+.room-clipboard-group-action {
+    display: block;
+    cursor: pointer;
+}
+
+
+/* resource request resolving views */
+
+.resource-request
+{
+    .overlapping-requests {
+        color: @yellow-60;
+    }
+
+    .overlapping-bookings {
+        color: @red-60;
+    }
+
+    .resource-available {
+        color: @green-60;
+    }
+}
+
+.booking-view-button-container {
+    width: 100%;
+    text-align: center;
+}
+
+.create-booking-form {
+    .fieldset-row {
+
+        &.inner-row {
+            padding-top: 0ex;
+            display: flow-root;
+        }
+
+        .time-option-container {
+            padding-top: 1ex;
+        }
+
+        fieldset {
+            min-width: 340px;
+            padding-top: 1ex;
+        }
+
+        #begin_date-weekdays,
+        #end_date-weekdays {
+            span, input {
+                max-width: 7.7em;
+            }
+        }
+
+        #RepeatIntervalSelectField {
+            margin-left: 2em;
+            margin-top: 0.5em;
+        }
+    }
+
+    .singledates {
+        .booking-list-interval-date {
+            &.not-taking-place {
+                text-decoration: line-through;
+                color: @light-gray-color;
+            }
+            margin-right: 1.2em;
+        }
+    }
+
+    .booking-list-interval-actions {
+        img {
+            cursor: pointer;
+        }
+    }
+
+    label.assigned-user-label div.assigned-user-search-wrapper {
+        display: flex;
+        flex-direction: row;
+
+        .delete-assigned-user-icon {
+            margin-top: 0.5em;
+            margin-left: 0.5em;
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    /* individual booking plan print view */
+    .sidebar .colour-selectors {
+        display: flex;
+        flex-direction: column;
+        margin: 1em;
+        text-align: center;
+
+        .colour-selector {
+            width: calc(100% - 1em);
+            height: 4em;
+            margin: 0.5em;
+
+            input[type="color"] {
+                display: none;
+            }
+        }
+
+        .print-action {
+            margin-top: 2em;
+            width: 100%;
+            height: 6em;
+        }
+    }
+}
+
+
+.dragged-colour
+{
+    width: 10%;
+    height: 10%;
+}
+
+
+@media screen {
+    section.room-schedule {
+        margin-bottom: 2em;
+    }
+}
+
+@media print {
+    section.room-schedule {
+        width: 100%;
+        height: 95%;
+        page-break-after:always;
+    }
+}
+
+
+
+/* Rules for the map keys on a booking plan page: */
+.map-key-list {
+
+    list-style-type: none;
+    padding-left: 1em;
+    padding-top: 1em;
+
+    .map-key {
+        white-space: nowrap;
+        display: inline;
+        margin-right: 2em;
+        vertical-align: middle;
+
+        span {
+            width: 2em;
+            display: inline-block;
+            height: 1em;
+
+        }
+    }
+}
+
+
+/* Rules for the booking plan: */
+
+.resource-booking-plan-header {
+    display: flex;
+    flex-direction: row;
+
+    .title {
+        flex-grow: 1;
+        padding-left: 1em;
+        padding-right: 1em;
+        text-align: center;
+        font-weight: bold;
+    }
+}
+
+
+/* Rules for the room list in the room search: */
+
+article.room-list-item {
+    header > nav.action-menu > a.action-menu-icon {
+        border-right: none;
+        margin-right: 0;
+    }
+
+    section {
+        padding: 0.5em;
+
+        .description {
+            min-height: 6em;
+        }
+
+        ul.property-list {
+            list-style: none;
+            padding-left: 0em;
+            flex-grow: 1;
+        }
+    }
+}
+
+
+@media all and (min-width: 800px) {
+
+    ul.room-list li.room-list-item {
+        section {
+            display: flex;
+
+            .description {
+                min-height: 6em;
+                margin-right: 1em;
+                width: calc(100% - 44em);
+            }
+
+            ul.property-list {
+                list-style-type: none;
+                padding-left: 0em;
+                min-width: 14em;
+            }
+
+            div.actions {
+                min-width: 22em;
+                a.button {
+                    margin: .4em .3em .4em 0;
+                    width: -webkit-fill-available;
+                }
+            }
+        }
+
+        .actions {
+            display: flex;
+        }
+    }
+}
+
+.fc-time, .fc-widget-header {
+    background-color: @content-color-20;
+}
+
+#room_request-form {
+    fieldset {
+        & > fieldset {
+            margin-top: 1em;
+            width: 25em;
+            label{
+                display: inline-block;
+                input {
+                    max-width: 7.7em;
+                }
+            }
+        }
+    }
+
+}
+
+.request-list {
+    a.request-marking-icon {
+        .square(16px);
+        background-repeat: no-repeat;
+        display: block;
+        .background-icon('radiobutton-unchecked', 'clickable');
+
+        &[data-marked="1"] {
+            .background-icon('radiobutton-checked', 'status-red');
+        }
+
+        &[data-marked="2"] {
+            .background-icon('radiobutton-checked', 'status-yellow');
+        }
+
+        &[data-marked="3"] {
+            .background-icon('radiobutton-checked', 'status-green');
+        }
+    }
+}
+
+.resolve-date-backlit-green {
+    background-color: @green-40;
+}
+
+.resolve-date-backlit-red {
+    background-color: @red-40;
+}
+
+#booking-plan-jmpdate-button {
+    width: 100px;
+    height: 31.5px;
+    margin: 0.5em;
+    padding: 0.4em;
+}
+
+#booking-plan-jmpdate {
+    width: 100px;
+    height: 19px;
+    margin: 0.5em;
+    padding: 0.4em;
+}
+
+
+@media all and (min-width: 1600px) {
+    form#resolve-request {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        article.left-part, article.right-part {
+            width: 40%;
+            flex-grow: 1;
+        }
+
+        article.right-part {
+            padding-left: 1em;
+        }
+
+        article.assign-dates, div[data-dialog-button] {
+            width: 100%;
+        }
+    }
+}
+
+@media all and (max-width: 1599px) {
+    form#resolve-request article.right-part {
+        padding-bottom: 10px;
+    }
+}
+

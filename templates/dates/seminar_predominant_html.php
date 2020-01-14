@@ -12,13 +12,13 @@ if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turn
         else :
             if ($pos > 0) $roominfo .= ', ';
 
-            $resObj = ResourceObject::Factory($resource_id);
+            $room = Room::find($resource_id);
             if ($link) :
-                $roominfo .= $resObj->getFormattedLink(TRUE, TRUE, TRUE);
+                $roominfo .= '<a href="' . $room->getLink('show') . '" data-dialog="1">'
+                    . htmlReady($room->name) . '</a>';
             else :
-                $roominfo .= htmlReady($resObj->getName());
+                $roominfo .= htmlReady($room->name);
             endif;
-            unset($resObj);
         endif;
 
         $pos++;

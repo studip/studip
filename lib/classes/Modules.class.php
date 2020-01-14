@@ -51,7 +51,6 @@ class Modules {
         'scm' => ['id' => 12, 'const' => 'SCM_ENABLE', 'sem' => true, 'inst' => true],
         'elearning_interface' => ['id' => 13, 'const' => 'ELEARNING_INTERFACE_ENABLE', 'sem' => true, 'inst' => true],
         'calendar' => ['id' => 16, 'const' => 'COURSE_CALENDAR_ENABLE', 'sem' => true, 'inst' => true],
-        'resources' => ['id' => 21, 'const' => 'RESOURCES_ENABLE', 'sem' => true, 'inst' => true]
     ];
 
     function __construct() {

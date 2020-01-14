@@ -826,13 +826,6 @@ class UserManagement
                 $this->msg .= 'info§' . sprintf(_('%s Zuordnungen zu Studiengängen gelöscht.'), $count) . '§';
             }
 
-
-            // kill all the ressources that are assigned to the user (and all the linked or subordinated stuff!)
-            if (Config::get()->RESOURCES_ENABLE) {
-                $killAssign = new DeleteResourcesUser($this->user_data['auth_user_md5.user_id']);
-                $killAssign->delete();
-            }
-
             $this->re_sort_position_in_seminar_user();
 
             // delete user from seminars (postings will be preserved)

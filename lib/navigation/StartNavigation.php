@@ -169,28 +169,55 @@ class StartNavigation extends Navigation
             $navigation->addSubNavigation('admin_roles', new Navigation(_('Verwaltung von Rollen'), 'dispatch.php/admin/role'));
             $this->addSubNavigation('admin_plugins', $navigation);
         }
-        // administration of ressources
-        if ($perm->have_perm('admin')) {
+        
+        // administration of resources
 
-            if (Config::get()->RESOURCES_ENABLE) {
-                $navigation = new Navigation(_('Verwaltung von Ressourcen'));
-                $navigation->addSubNavigation('hierarchy', new Navigation(_('Struktur'), 'resources.php#a', ['view' => 'resources']));
-                if ($perm->have_perm('admin') && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
-                    if (getGlobalPerms($GLOBALS['user']->id) !== 'admin') {
-                        $resList = new ResourcesUserRoomsList($GLOBALS['user']->id, false, false);
-                        $show_roomplanning = $resList->roomsExist();
-                    } else {
-                        $show_roomplanning = true;
-                    }
-                    if ($show_roomplanning) {
-                        $navigation->addSubNavigation('start_planning', new Navigation(_('Raumplanung'), 'resources.php?cancel_edit_request_x=1', ['view' => 'requests_start']));
-                    }
-                }
-                if (getGlobalPerms($GLOBALS['user']->id) == 'admin') {
-                    $navigation->addSubNavigation('edit_types', new Navigation(_('Anpassen'), 'resources.php', ['view' => 'edit_types']));
-                }
-                $this->addSubNavigation('ressources', $navigation);
-
+        $current_user = User::findCurrent();
+        $global_resource_permissions = ResourceManager::getGlobalResourcePermission(
+            $current_user
+        );
+        $show_resources_navigation = false;
+        if ($global_resource_permissions == 'admin') {
+            $show_resources_navigation = true;
+        } else {
+            $show_resources_navigation = ResourceManager::userHasResourcePermissions(
+                $current_user,
+                'autor'
+            );
+        }
+        if (get_config('RESOURCES_ENABLE') and $show_resources_navigation) {
+            if ($global_resource_permissions == 'admin') {
+                $navigation = new Navigation(_('Raum- und Ressourcenverwaltung'));
+                $navigation->addSubNavigation(
+                    'resources_overview',
+                    new Navigation(
+                        _('Übersicht'),
+                        'dispatch.php/room_management/overview/index'
+                    )
+                );
+                $navigation->addSubNavigation(
+                    'room_planning',
+                    new Navigation(
+                        _('Raumplanung'),
+                        'dispatch.php/room_management/planning/index'
+                    )
+                );
+                $navigation->addSubNavigation(
+                    'categories',
+                    new Navigation(
+                        _('Ressourcenkategorien anpassen'),
+                        'dispatch.php/resources/admin/categories'
+                    )
+                );
+                $this->addSubNavigation('resources', $navigation);
+            } else {
+                //Users who are not resource admins see another page that
+                //displays only those resources where they have permissions for.
+                $navigation = new Navigation(
+                    _('Meine Räume und Ressourcen'),
+                    'dispatch.php/my_resources/index'
+                );
+                $this->addSubNavigation('resources', $navigation);
             }
         }
 
@@ -241,7 +268,7 @@ class StartNavigation extends Navigation
         $navigation = new Navigation(_('Suchen'), 'dispatch.php/search/globalsearch');
         $navigation->addSubNavigation('course', new Navigation(_('Veranstaltungssuche'), 'dispatch.php/search/courses'));
         if (Config::get()->RESOURCES_ENABLE) {
-            $navigation->addSubNavigation('resources', new Navigation(_('Ressourcen suchen'), 'resources.php?view=search&reset=TRUE'));
+            $navigation->addSubNavigation('rooms', new Navigation(_('Räume suchen'), 'dispatch.php/resources/search/rooms'));
         }
         $this->addSubNavigation('search', $navigation);
 

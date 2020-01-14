@@ -710,38 +710,4 @@ class MetaDate
 
         return ['dates' => $dates, 'dates_to_delete' => $dates_to_delete];
     }
-
-    /**
-     * returns an array of AssignObjects for one cycle for given room
-     * assigns are not stored, used for collision checks before the cycle is stored
-     * (for now only in admin_seminare_assi.php)
-     *
-     * @param string id of cycle
-     * @param string id of room
-     * @return array array of AssignObject
-     */
-    function getVirtualMetaAssignObjects($metadate_id, $resource_id)
-    {
-        $ret = [];
-        foreach ($this->getVirtualSingleDates($metadate_id) as $semester_id => $dates_for_semester) {
-            list($dates, $dates_to_delete) = array_values($dates_for_semester);
-            foreach ($dates as $d) {
-                if (!$d->isExTermin()) {
-                    $ao = new AssignObject(null);
-                    $ao->setResourceId($resource_id);
-                    $ao->setBegin($d->getStartTime());
-                    $ao->setEnd($d->getEndTime());
-                    $ao->setRepeatEnd($d->getEndTime());
-                    $ao->setRepeatQuantity(0);
-                    $ao->setRepeatInterval(0);
-                    $ao->setRepeatMonthOfYear(0);
-                    $ao->setRepeatDayOfMonth(0);
-                    $ao->setRepeatWeekOfMonth(0);
-                    $ao->setRepeatDayOfWeek(0);
-                    $ret[] = $ao;
-                }
-            }
-        }
-        return $ret;
-    }
 }

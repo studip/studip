@@ -140,6 +140,9 @@ class Folder extends SimpleORMap
         if (Message::exists($range_id)) {
             return 'message';
         }
+        if (Resource::exists($range_id)) {
+            return 'resource';
+        }
 
         return false;
     }

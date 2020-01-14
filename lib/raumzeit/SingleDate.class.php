@@ -74,7 +74,7 @@ class SingleDate
         if ($data instanceOf CourseDate || $data instanceof CourseExDate) {
             $single_date_data = $data->toArray();
             $single_date_data['ex_termin'] = $data instanceOf CourseDate ? 0 : 1;
-            $single_date_data['resource_id'] = $data->room_assignment->resource_id ?: '';
+            $single_date_data['resource_id'] = $data->room_booking->resource_id ?: '';
             if ($data instanceOf CourseDate) {
                 $single_date_data['related_persons'] = $data->dozenten->pluck('user_id');
                 $single_date_data['related_groups'] = $data->statusgruppen->pluck('statusgruppe_id');
@@ -118,11 +118,19 @@ class SingleDate
             if ($this->validate($start, $end)) {
                 $before = $this->toString();
 
-                // if the time-span has been shortened, keep the room-assignment,
+                // if the time-span has been shortened, keep the room-booking,
                 // otherwise remove it.
                 if ($this->resource_id) {
                     if ($start >= $this->date && $end <= $this->end_time) {
-                        $this->shrinkAssign($start, $end);
+                        //Shrink the booking.
+                        if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
+                            $assign_object = new ResourceBooking($assign_id);
+                            $assign_object->resource_id = $this->resource_id;
+                            $assign_object->begin = $start;
+                            $assign_object->end = $end;
+                            $assign_object->repeat_end = $end;
+                            $assign_object->store();
+                        }
                     } else {
                         $this->killAssign();
                     }
@@ -414,21 +422,22 @@ class SingleDate
         }
     }
 
-    function bookRoom($roomID)
+    function bookRoom($room_id)
     {
-        if ($this->ex_termin || !$roomID) return false;
+        if ($this->ex_termin || !$room_id) {
+            return false;
+        }
 
         // create a resource-object of the passed room
-        $resObj = ResourceObject::Factory($roomID);
+        $room = Room::find($room_id);
 
         // there is no room with the passed id
-        if (!$resObj->id) {
+        if (!$room) {
             return false;
         }
 
         // check permissions (is current user allowed to book the passed room?)
-        $resList = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, false, true);
-        if (in_array($roomID, array_keys($resList->resources)) === false) {
+        if (!$room->userHasPermission(User::findCurrent(), 'autor')) {
             return false;
         }
 
@@ -436,95 +445,93 @@ class SingleDate
         $this->setFreeRoomText('');
         $this->store();
 
-        // if there is already a room assigned, change the assignment, else create a new one
+        //If there is already a room assigned, "change" the booking.
+        //Otherwise create a new one.
         if ($this->resource_id != '') {
-            $this->changeAssign($roomID);
+            $this->changeAssign($room);
         } else {
-            $this->insertAssign($roomID);
+            $this->insertAssign($room);
         }
 
-        return $resObj;
+        return $room;
     }
 
 
     /**
-     * This method converts overlap data about an overlapping assignment
+     * This method converts overlap data about an overlapping booking
      * to a string that can be used to output overlap information to the user.
      * Only one overlap is converted by this method. For multiple overlaps
      * this method must be called multiple times.
      *
-     * @param string $assignment_id The ID of an overlapping assignment.
-     *
-     * @param array $overlap_data An associative array with data for an
-     *     overlap. The array must have the following structure:
-     *     [
-     *         'begin' => The begin timestamp of the overlap.
-     *         'end' => The end timestamp of the overlap.
-     *         'lock' => Whether the overlap is caused by a lock assignment
-     *                   (true) or not (false).
-     *     ]
+     * @param ResourceBooking $booking The overlapping booking.
      *
      * @return string A string representation of the overlap.
      */
-    protected function getOverlapMessage($assignment_id = null, array $overlap_data = [])
+    protected function getOverlapMessage(ResourceBooking $booking)
     {
-        if (!$assignment_id || !$overlap_data) {
-            return '';
-        }
-
-        $db = DBManager::get();
-
-        $course_id_stmt = $db->prepare(
-            'SELECT range_id FROM termine WHERE termin_id = :termin_id'
-        );
-
         $message = '';
 
-        if ($overlap_data['lock']) {
+        if ($booking->booking_type == '2') {
             $message .= sprintf(
                 _('Vom %1$s, %2$s Uhr bis zum %3$s, %4$s Uhr (Sperrzeit)') . "\n",
-                date('d.m.Y', $overlap_data['begin']),
-                date('H:i', $overlap_data['begin']),
-                date('d.m.Y', $overlap_data['end']),
-                date('H:i', $overlap_data['end'])
+                date("d.m.Y", $booking->begin),
+                date("H:i", $booking->begin),
+                date("d.m.Y", $booking->end),
+                date("H:i", $booking->end)
             );
         } else {
-            $course_data = [];
-            $overlapping_assignment = AssignObject::Factory($assignment_id);
-            if ($overlapping_assignment) {
-                $assignment_range_id = $overlapping_assignment->getAssignUserId();
-                $course_id_stmt->execute(['termin_id' => $assignment_range_id]);
-                $course_id = $course_id_stmt->fetchColumn();
-                if (get_object_type($course_id) === 'sem'
-                    && $GLOBALS['perm']->have_studip_perm('dozent', $course_id))
-                {
-                    $course_data['id'] = $course_id;
-                    $course_data['name'] = $overlapping_assignment->GetOwnerName();
-                }
-            }
+            $course = Course::find($booking->course_id);
 
-            if ($course_data) {
-                $course_link = URLHelper::getLink(
-                    'dispatch.php/course/timesrooms/index',
-                    ['cid' => $course_data['id']]
+            if ($course) {
+                $user_has_permissions = $GLOBALS['perm']->have_studip_perm(
+                    'dozent',
+                    $course->id,
+                    $GLOBALS['user']->id
                 );
-                $message .= sprintf(
-                    _('Am %1$s von %2$s bis %3$s Uhr durch Veranstaltung %4$s') . "\n",
-                    date('d.m.Y', $overlap_data['begin']),
-                    date('H:i', $overlap_data['begin']),
-                    date('H:i', $overlap_data['end']),
-                    sprintf(
-                        '<a href="%1$s">%2$s</a>',
-                        $course_link,
-                        $course_data['name']
-                    )
-                );
+                if ($user_has_permissions) {
+                    $course_link = URLHelper::getLink(
+                        'dispatch.php/course/timesrooms/index',
+                        [
+                            'cid' => $course->id
+                        ]
+                    );
+                    $message .= sprintf(
+                        _('Am %1$s von %2$s bis %3$s Uhr durch Veranstaltung %4$s') . "\n",
+                        date('d.m.Y', $booking->begin),
+                        date('H:i', $booking->begin),
+                        date('H:i', $booking->end),
+                        sprintf(
+                            '<a href="%1$s">%2$s</a>',
+                            $course_link,
+                            $course->name
+                        )
+                    );
+                } else {
+                    $course_link = URLHelper::getLink(
+                        'dispatch.php/course/details',
+                        [
+                            'sem_id' => $course->id
+                        ]
+                    );
+                    $message .= sprintf(
+                        _('Am %1$s von %2$s bis %3$s Uhr durch Veranstaltung %4$s') . "\n",
+                        date('d.m.Y', $booking->begin),
+                        date('H:i', $booking->begin),
+                        date('H:i', $booking->end),
+                        sprintf(
+                            '<a href="%1$s">%2$s</a>',
+                            $course_link,
+                            $course->name
+                        )
+                    );
+                }
             } else {
                 $message .= sprintf(
-                    _('Am %1$s von %2$s bis %3$s Uhr') . "\n",
-                    date('d.m.Y', $overlap_data['begin']),
-                    date('H:i', $overlap_data['begin']),
-                    date('H:i', $overlap_data['end'])
+                    _('Am %1$s von %2$s bis %3$s Uhr belegt von "%4$s"') . "\n",
+                    date("d.m.Y", $booking->begin),
+                    date("H:i", $booking->begin),
+                    date("H:i", $booking->end),
+                    htmlready($booking->description)
                 );
             }
         }
@@ -533,85 +540,124 @@ class SingleDate
     }
 
 
-    private function insertAssign($roomID)
+    private function insertAssign(Room $room)
     {
-        $createAssign = AssignObject::Factory(
-            false, $roomID, $this->termin_id, '',
-            $this->date, $this->end_time, $this->end_time,
-            0, 0, 0, 0, 0, 0
-        );
+        $begin = new DateTime();
+        $begin->setTimestamp($this->date);
+        $end = new DateTime();
+        $end->setTimestamp($this->end_time);
 
-        $overlaps = $createAssign->checkOverlap(true);
-        if (is_array($overlaps) && count($overlaps) > 0) {
-            $resObj = ResourceObject::Factory($roomID);
-            $raum = $resObj->getFormattedLink($this->date);
-            $msg = sprintf(
+        //If the following code is executed a new room booking can be created:
+        try {
+            $booking = $room->createBooking(
+                User::findCurrent(),
+                $this->termin_id,
+                [
+                    [
+                        'begin' => $begin,
+                        'end' => $end
+                    ]
+                ]
+            );
+            if ($booking instanceof ResourceBooking) {
+                $this->assign_id = $booking->id;
+                SingleDateDB::storeSingleDate($this);
+                $msg = sprintf(
+                    _('Für den Termin %1$s wurde der Raum %2$s gebucht.'),
+                    $this->toString(),
+                    $room
+                );
+                $this->messages['success'][] = $msg;
+            }
+        } catch (ResourceBookingRangeException $e) {
+            $this->messages['error'][] = _('Fehler beim Verknüpfen der Raumbelegung mit dem Einzeltermin!');
+            return false;
+        } catch (ResourceBookingOverlapException $e) {
+            $error_message = sprintf(
                 _('Für den Termin %1$s konnte der Raum %2$s nicht gebucht werden, da es Überschneidungen mit folgenden Terminen gibt:'),
                 $this->toString(),
-                $raum
-            ) . '<br>';
-            foreach ($overlaps as $tmp_assign_id => $val) {
-                $msg .= $this->getOverlapMessage($tmp_assign_id, $val);
-            }
-            $this->messages['error'][] = $msg;
+                $room->name
+                ) . '<br>';
+            $overlapping_bookings = array_merge(
+                $room->getResourceBookings($begin, $end),
+                $room->getResourceLocks($begin, $end)
+            );
+            foreach ($overlapping_bookings as $overlapping_booking) {
+                $course_link = null;
+                if ($overlapping_booking->course) {
+                    $user_is_lecturer = $GLOBALS['perm']->have_studip_perm(
+                        'dozent',
+                        $overlapping_booking->course->id,
+                        $GLOBALS['user']->id
+                    );
+                    if ($user_is_lecturer) {
+                        $course_link = URLHelper::getLink(
+                            'dispatch.php/course/timesrooms/index',
+                            [
+                                'cid' => $overlapping_booking->course->id
+                            ]
+                        );
+                    }
+                }
 
+                $error_message .= $this->getOverlapMessage(
+                    $overlapping_booking
+                );
+            }
+            $this->messages['error'][] = $error_message;
+            return false;
+        } catch (ResourcePermissionException $e) {
+            $this->messages['error'][] = $e->getMessage();
+            return false;
+        } catch (ResourceBookingException $e) {
+            $this->messages['error'][] = $e->getMessage();
             return false;
         }
 
-        if ($createAssign->create()) {
-            $resObj = ResourceObject::Factory($roomID);
-            $raum = $resObj->getFormattedLink($this->date);
-            $msg = sprintf(_("Für den Termin %s wurde der Raum %s gebucht."), $this->toString(), $raum);
-            $this->messages['success'][] = $msg;
-            $this->resource_id = $roomID;
-
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
-    private function changeAssign($roomID)
+
+    private function changeAssign(Room $room)
     {
         if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
-            $changeAssign = AssignObject::Factory($assign_id);
-            $changeAssign->setResourceId($roomID);
+            $changeAssign = new ResourceBooking($assign_id);
+            $changeAssign->resource_id = $room->id;
+            $changeAssign->begin = $this->date;
+            $changeAssign->end = $this->end_time;
+            $changeAssign->repeat_end = $this->end_time;
+            $changeAssign->repeat_quantity = 0;
+            $changeAssign->repetition_interval = '';
 
-            $changeAssign->chng_flag = true;
+            $room_link_string = sprintf(
+                '<a href="%1$s" data-dialog="1">%2$s</a>',
+                $room->getLink(),
+                $room->name
+            );
 
-            $changeAssign->setBegin($this->date);
-            $changeAssign->setEnd($this->end_time);
-            $changeAssign->setRepeatEnd($this->end_time);
-            $changeAssign->setRepeatQuantity(0);
-            $changeAssign->setRepeatInterval(0);
-            $changeAssign->setRepeatMonthOfYear(0);
-            $changeAssign->setRepeatDayOfMonth(0);
-            $changeAssign->setRepeatWeekOfMonth(0);
-            $changeAssign->setRepeatDayOfWeek(0);
-
-            $overlaps = $changeAssign->checkOverlap(true);
+            $overlaps = $changeAssign->getOverlappingBookings();
             if (is_array($overlaps) && (sizeof($overlaps) > 0)) {
-                $resObj = ResourceObject::Factory($roomID);
-                $raum = $resObj->getFormattedLink($this->date);
                 $msg = sprintf(
                     _('Für den Termin %1$s konnte der Raum %2$s nicht gebucht werden, da es Überschneidungen mit folgenden Terminen gibt:'),
                     $this->toString(),
-                    $raum
-                ) . '<br>';
-
-                foreach ($overlaps as $tmp_assign_id => $val) {
-                    $msg .= $this->getOverlapMessage($tmp_assign_id, $val);
+                    $room_link_string
+                    ) . '<br>';
+                foreach ($overlaps as $overlap) {
+                    $msg .= $this->getOverlapMessage($overlap);
                 }
                 $this->messages['error'][] = $msg;
 
                 return false;
             }
 
-            $this->resource_id = $roomID;
+            $this->resource_id = $room->id;
             $changeAssign->store();
-            $resObj = ResourceObject::Factory($roomID);
-            $raum = $resObj->getFormattedLink($this->date);
-            $msg = sprintf(_("Für den Termin %s wurde der Raum %s gebucht."), $this->toString(), $raum);
+
+            $msg = sprintf(
+                _('Für den Termin %1$s wurde der Raum %2$s gebucht.'),
+                $this->toString(),
+                $room_link_string
+            );
             $this->messages['success'][] = $msg;
 
             return true;
@@ -624,131 +670,28 @@ class SingleDate
     {
         $this->resource_id = '';
         if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
-            $killAssign = AssignObject::Factory($assign_id);
-            $killAssign->delete();
+            $assign_object = new ResourceBooking($assign_id);
+            $assign_object->delete();
         }
     }
+
 
     /**
-     * change the start and the end for this date.
-     * ONLY SAVE WHEN SHRINKING DATES, otherwise unwanted assign-collisions
-     * may happen...
+     * Returns the room name for this SingleDate object.
      *
-     * @param int $start the start-time to set for the assign
-     * @param int $end   the end-time to set for the assign
+     * @returns string The room name.
      */
-    private function shrinkAssign($start, $end)
-    {
-        if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
-            $changeAssign = AssignObject::Factory($assign_id);
-            $changeAssign->setResourceId($this->resource_id);
-
-            $changeAssign->chng_flag = true;
-
-            $changeAssign->setBegin($start);
-            $changeAssign->setEnd($end);
-            $changeAssign->setRepeatEnd($end);
-            $changeAssign->store();
-        }
-    }
-
-    function hasRoom()
-    {
-        return ($this->resource_id) ? true : false;
-    }
-
-    function getRoom()
+    public function getRoom()
     {
         if (!$this->resource_id) {
             return null;
         } else {
-            $resObj = ResourceObject::Factory($this->resource_id);
+            $room = Room::find($this->resource_id);
 
-            return $resObj->getName();
+            return $room->name;
         }
     }
 
-    function hasRoomRequest()
-    {
-        if (RoomRequest::existsByDate($this->termin_id)) {
-            if (!$this->request_id) {
-                $this->request_id = SingleDateDB::getRequestID($this->termin_id);
-            }
-            $rD = new RoomRequest($this->request_id);
-            if (($rD->getClosed() == 1) || ($rD->getClosed() == 2)) {
-                return false;
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * this function returns a human-readable status of a room-request, if any, false otherwise
-     *
-     * the int-values of the states are:
-     *  0 - room-request is open
-     *  1 - room-request has been edited, but no confirmation has been sent
-     *  2 - room-request has been edited and a confirmation has been sent
-     *  3 - room-request has been declined
-     *
-     * they are mapped with:
-     *  0 - open
-     *  1 - pending
-     *  2 - closed
-     *  3 - declined
-     *
-     * @return string the mapped text
-     */
-    function getRoomRequestStatus()
-    {
-        // check if there is any room-request
-        $this->room_request = $this->getRoomRequest();
-        if (!$this->room_request) {
-            return false;
-        }
-
-        return $this->room_request->getStatus();
-    }
-
-
-    function getRoomRequest()
-    {
-        if ($request = RoomRequest::findByDate($this->termin_id)) {
-            $this->room_request = $request;
-
-            return $this->room_request;
-        }
-        return false;
-    }
-
-    function getRequestedRoom()
-    {
-        if ($this->hasRoomRequest()) {
-            $rD = new RoomRequest($this->request_id);
-            $resObject = ResourceObject::Factory($rD->resource_id);
-
-            return $resObject->getName();
-        }
-
-        return false;
-    }
-
-    function getRoomRequestInfo()
-    {
-        if ($this->room_request) {
-            return jsReady($this->room_request->getInfo(), 'inline-single');
-        } else {
-            return false;
-        }
-    }
-
-    function removeRequest()
-    {
-        return SingleDateDB::deleteRequest($this->termin_id);
-    }
 
     function readIssueIDs()
     {

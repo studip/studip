@@ -199,6 +199,33 @@ class ActionMenu {
         this.menu.toggleClass('is-reversed', this.is_reversed);
         this.menu.attr('aria-expanded', this.is_open ? 'true' : 'false');
     }
+
+    /**
+     * Confirms an action in the action menu that calls a JavaScript function
+     * instead of linking to another URL.
+     */
+    confirmJSAction(element = null) {
+        //Show visual hint using a deferred. This way we don't need to
+        //duplicate the functionality in the done() handler.
+        //(code copied from copyable_link.js and modified)
+        (new Promise((resolve, reject) => {
+            var confirmation = $('<div class="js-action-confirmation">');
+            confirmation.text = jQuery(element).data('confirmation_text');
+            confirmation.insertBefore(element);
+            jQuery(element).parent().addClass('js-action-confirm-animation');
+            var timeout = setTimeout(() => {
+                jQuery(element).parent().off('animationend');
+                resolve(confirmation);
+            }, 1500);
+            jQuery(element).parent().one('animationend', () => {
+                clearTimeout(timeout);
+                resolve(confirmation);
+            });
+        })).then((confirmation, parent) => {
+            confirmation.remove();
+            jQuery(element).parent().removeClass('js-action-confirm-animation');
+        });
+    }
 }
 
 export default ActionMenu;

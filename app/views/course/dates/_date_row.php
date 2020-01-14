@@ -39,11 +39,14 @@ $dialog_url = $show_raumzeit
     </td>
 <? endif ?>
     <td>
-    <? if ($date->getRoom()): ?>
-        <?= $date->getRoom()->getFormattedLink() ?>
-    <? else: ?>
-        <?= htmlReady($date->raum) ?>
-    <? endif; ?>
+        <? $room = $date->getRoom(); ?>
+        <? if ($room): ?>
+            <a href="<?= $room->getLink('show') ?>" data-dialog>
+                <?= htmlReady($room->name) ?>
+            </a>
+        <? else: ?>
+            <?= htmlReady($date->raum) ?>
+        <? endif ?>
     </td>
     <td class="actions">
         <? $actionMenu = ActionMenu::get() ?>

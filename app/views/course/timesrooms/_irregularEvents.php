@@ -60,8 +60,8 @@ $room_request_filter = function ($date) {
                 <? if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS): ?>
                     <span>
                         | <strong><?= _('Einzel-Raumanfrage') ?></strong>:
-                    <? if ($rr_count = count($termine->filter($room_request_filter)) > 0): ?>
-                        <?= sprintf(_('%u noch offen'), $rr_count) ?>
+                    <? if ($single_date_room_request_c > 0): ?>
+                        <?= sprintf(_('%u noch offen'), $single_date_room_request_c) ?>
                     <? else: ?>
                         <?= _('keine offen') ?>
                     <? endif; ?>

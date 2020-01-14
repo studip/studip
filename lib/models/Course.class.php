@@ -70,7 +70,7 @@
  * @property SimpleORMapCollection children has_many Course
  */
 
-class Course extends SimpleORMap implements Range, PrivacyObject
+class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem
 {
 
     /**
@@ -201,7 +201,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject
 
         $config['has_many']['room_requests'] = [
             'class_name'        => 'RoomRequest',
-            'assoc_foreign_key' => 'seminar_id',
+            'assoc_foreign_key' => 'course_id',
             'on_delete'         => 'delete',
         ];
         $config['belongs_to']['parent'] = [
@@ -610,6 +610,38 @@ class Course extends SimpleORMap implements Range, PrivacyObject
             StudipLog::log($this->visible ? 'SEM_VISIBLE' : 'SEM_INVISIBLE', $this->id);
         }
     }
+
+
+    //StudipItem interface implementation:
+
+    public function getItemName($long_format = true)
+    {
+        if ($long_format) {
+            return $this->getFullName();
+        } else {
+            return $this->name;
+        }
+    }
+
+    public function getItemURL()
+    {
+        return URLHelper::getURL(
+            'dispatch.php/course/details/index',
+            [
+                'cid' => $this->id
+            ]
+        );
+    }
+
+    public function getItemAvatarURL()
+    {
+        $avatar = CourseAvatar::getAvatar($this->id);
+        if ($avatar) {
+            return $avatar->getURL(Avatar::NORMAL);
+        }
+        return '';
+    }
+
 
     /**
      * Export available data of a given user into a storage object

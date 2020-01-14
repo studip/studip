@@ -16,11 +16,14 @@ if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turn
     endif;
 
     if (is_array($cycle['assigned_rooms'])) foreach ($cycle['assigned_rooms'] as $room_id => $count) :
-        $resObj = ResourceObject::Factory($room_id);
+        $room_obj = Room::find($room_id);
         if ($link) {
-            $output[$resObj->getFormattedLink(true, true, true)][] = $cycle_output .' ('. $count .'x)';
+            $output[
+                '<a href="' . $room_obj->getLink('show') . '" data-dialog="1">'
+                . htmlReady($room_obj->name) . '</a>'
+                ][] = $cycle['tostring_short'] .' ('. $count .'x)';
         } else {
-            $output[htmlReady($resObj->getName())][] = $cycle_output .' ('. $count .'x)';
+            $output[htmlReady($room_obj->name)][] = $cycle['tostring_short'] .' ('. $count .'x)';
         }
     endforeach;
     if (is_array($cycle['freetext_rooms'])) foreach ($cycle['freetext_rooms'] as $room => $count) :
@@ -51,11 +54,14 @@ endforeach;
 // now shrink the dates for each room/freetext and add them to the output
 if (is_array($output_dates)) foreach ($output_dates as $dates) :
     if (isset($dates[0]['resource_id'])) :
-        $resObj = ResourceObject::Factory($dates[0]['resource_id']);
+        $room_obj = Room::find($dates[0]['resource_id']);
         if ($link) {
-            $output[$resObj->getFormattedLink(true, true, true)][] = implode('<br>', shrink_dates($dates));
+            $output[
+                '<a href="' . $room_obj->getLink('show') . '" data-dialog="1">'
+                . htmlReady($room_obj->name) . '</a>'
+                ][] = implode('<br>', shrink_dates($dates));
         } else {
-            $output[htmlReady($resObj->getName())][] = implode('<br>', shrink_dates($dates));
+            $output[htmlReady($room_obj->name)][] = implode('<br>', shrink_dates($dates));
         }
     elseif (isset($dates[0]['raum'])) :
         $output['(' . htmlReady($dates[0]['raum']) . ')'][] = implode('<br>', shrink_dates($dates));

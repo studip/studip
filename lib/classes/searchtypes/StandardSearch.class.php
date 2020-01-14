@@ -31,15 +31,30 @@ class StandardSearch extends SQLSearch
 {
 
     public $search;
+    public $search_settings;
 
     /**
      *
-     * @param string $search
+     * @param string $search The search type.
+     *
+     * @param Array $search_settings Settings for the selected seach type.
+     *     Depending on the search type different settings are possible
+     *     which can change the output or the display of the output
+     *     of the search. The array must be an associative array
+     *     with the setting as array key.
+     *     The following settings are implemented:
+     *     Search type 'room':
+     *     - display_seats: If set to true, the seats will be displayed
+     *       after the name of the room.
      *
      * @return void
      */
-    public function __construct($search)
+    public function __construct($search, $search_settings = [])
     {
+        if (is_array($search_settings)) {
+            $this->search_settings = $search_settings;
+        }
+
         $this->avatarLike = $this->search = $search;
         $this->sql = $this->getSQL();
     }

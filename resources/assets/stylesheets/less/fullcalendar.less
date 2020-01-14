@@ -1,0 +1,101 @@
+a.fc-event {
+    border-radius: 0;
+
+    .fc-time {
+        background-color: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+    }
+}
+
+.fc button.fc-button {
+    .button;
+    border-radius: 0;
+}
+
+.fc-button-primary:not(:disabled):active,
+.fc-button-primary:not(:disabled).fc-button-active,
+.fc button.fc-button.fc-state-active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+
+    background-color: @base-color !important;
+    color: white;
+}
+
+/* adjust height: */
+/* .fc-scroller.fc-time-grid-container {
+    height: auto !important;
+    min-height: 0 !important;
+}*/
+
+.studip-fullcalendar-header {
+    &.fullcalendar-dialog{
+        width: calc(100% - 550px);
+        vertical-align: middle;
+        display: inline-block;
+        margin-right: 275px;
+    }
+}
+
+.fullcalendar-dialogwidget-container {
+    border-left: 0;
+    display: inline-block;
+    flex: 0 0 auto;
+    margin-bottom: 1em;
+    position: relative;
+
+    @width: 270px;
+
+    padding-bottom: 7px;
+    width: @width;
+    z-index: 2;
+
+
+    .fullcalendar-dialogwidget-widget {
+        background: #fff;
+        border: 1px solid @content-color-40;
+        margin: 15px 0px 0;
+    }
+
+    .fullcalendar-dialogwidget-widget-header {
+        .clearfix();
+        background: @content-color-20;
+        color: @base-color;
+        font-weight: bold;
+        padding: 4px;
+    }
+
+    select.fullcalendar-dialogwidget-selectlist {
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    .fullcalendar-dialogwidget-widget-content {
+        border-top: 1px solid @content-color-40;
+        padding: 4px;
+        transition: all 0.5s;
+    }
+}
+
+.fc {
+    .fc-toolbar.fc-header-toolbar {
+        margin-bottom: 0.5em;
+    }
+
+    .fc-button-group {
+        height: 30px;
+
+        .fc-button {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.studip-fullcalendar-header {
+    /* This shall look like a table caption. */
+    background-color: transparent;
+    color: @base-gray;
+    font-size: 1.4em;
+    text-align: left;
+}

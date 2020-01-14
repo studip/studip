@@ -39,6 +39,56 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         PageLayout::setTitle(Course::findCurrent()->getFullname() . " - " . _('Blockveranstaltungstermine anlegen'));
     }
 
+
+    protected function setAvailableRooms()
+    {
+        if (Config::get()->RESOURCES_ENABLE) {
+            //Check for how many rooms the user has booking permissions.
+            //In case these permissions exist for more than 50 rooms
+            //show a quick search. Otherwise show a select field
+            //with the list of rooms.
+
+            $current_user = User::findCurrent();
+            $current_user_is_resource_admin = ResourceManager::userHasGlobalPermission(
+                $current_user,
+                'admin'
+            );
+
+            $this->selectable_rooms = [];
+            $rooms_with_booking_permissions = 0;
+            if ($current_user_is_resource_admin) {
+                $rooms_with_booking_permissions = Room::countAll();
+            } else {
+                $user_rooms = RoomManager::getUserRooms($current_user);
+                foreach ($user_rooms as $room) {
+                    if ($room->userHasBookingRights($current_user)) {
+                        $rooms_with_booking_permissions++;
+                        $this->selectable_rooms[] = $room;
+                    }
+                }
+            }
+
+            if ($rooms_with_booking_permissions > 50) {
+                $room_search_type = new RoomSearch();
+                $room_search_type->setAcceptedPermissionLevels(
+                    ['autor', 'tutor', 'admin']
+                );
+                $room_search_type->setAdditionalDisplayProperties(
+                    ['seats']
+                );
+                $this->room_search = new QuickSearch(
+                    'room_id',
+                    $room_search_type
+                );
+            } else {
+                if (ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
+                    $this->selectable_rooms = Room::findAll();
+                }
+            }
+        }
+    }
+
+
     /**
      * Display the block appointments
      */
@@ -51,19 +101,13 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $this->start_ts         = strtotime('this monday');
         $this->request          = $this->flash['request'] ?: $_SESSION['block_appointments'];
         $this->confirm_many     = isset($this->flash['confirm_many']) ? $this->flash['confirm_many'] : false;
-
-        if (Config::get()->RESOURCES_ENABLE) {
-            $this->resource_list = ResourcesUserRoomsList::getInstance(
-                $GLOBALS['user']->id,
-                true,
-                true,
-                true
-            );
-        }
         $this->lecturers = CourseMember::findByCourseAndStatus(
             $this->course_id,
             'dozent'
         );
+        if (Config::get()->RESOURCES_ENABLE) {
+            $this->setAvailableRooms();
+        }
     }
 
     /**
@@ -95,7 +139,6 @@ class Course_BlockAppointmentsController extends AuthenticatedController
         $date_count     = Request::int('block_appointments_date_count');
         $days           = Request::getArray('block_appointments_days');
         $lecturer_ids   = Request::getArray('lecturers');
-        $room_id        = Request::get('room_id');
 
         $lecturers = User::findBySql(
             "INNER JOIN seminar_user USING (user_id)
@@ -107,14 +150,6 @@ class Course_BlockAppointmentsController extends AuthenticatedController
                 'lecturer_ids' => $lecturer_ids,
             ]
         );
-
-        $room = null;
-        if ($room_id !== 'nothing') {
-            $room = new ResourceObject($room_id);
-            if (!$room->getId()) {
-                $errors[] = _('Der angegebene Raum wurde nicht gefunden!');
-            }
-        }
 
         if (!is_array($days)) {
             $errors[] = _('Bitte wählen Sie mindestens einen Tag aus!');
@@ -183,29 +218,18 @@ class Course_BlockAppointmentsController extends AuthenticatedController
                     'block_appointments_date_count' => $date_count,
                     'block_appointments_days'       => $days
                 ];
-                $dates_created = array_filter(array_map(function ($d) {
-                    return $d->store() ? $d->getFullname() : null;
+                $dates_created = array_filter(array_map(function ($d) use ($free_room_text) {
+                    $result = false;
+                    if (!Request::get('room_id')) {
+                        $d->raum = $free_room_text;
+                        $result = $d->store();
+                    } else {
+                        $result = $d->store();
+                        $singledate = new SingleDate($d);
+                        $singledate->bookRoom(Request::option('room_id'));
+                    }
+                    return $result ? $d->getFullname() : null;
                 }, $dates));
-                if ($room) {
-                    $booking_warnings = [];
-                    foreach ($dates as $date) {
-                        $singledate = new SingleDate($date);
-                        $singledate->bookRoom($room->getId());
-                        $messages = $singledate->getMessages();
-                        if ($messages['error']) {
-                            $booking_warnings = array_merge(
-                                $booking_warnings,
-                                $messages['error']
-                            );
-                        }
-                    }
-                    if ($booking_warnings) {
-                        PageLayout::postWarning(
-                            _('Beim Buchen des Raumes traten folgende Probleme auf:'),
-                            array_map('htmlReady', $booking_warnings)
-                        );
-                    }
-                }
                 if ($date_count > 1) {
                     $dates_created = array_count_values($dates_created);
                     $dates_created = array_map(function ($k, $v) {

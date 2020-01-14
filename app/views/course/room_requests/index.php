@@ -25,20 +25,20 @@ echo $flash['message'];
         <? foreach ($room_requests as $rr): ?>
             <tr>
                 <td>
-                    <?= htmlReady($rr->getTypeExplained(), 1, 1) ?>
+                    <?= htmlReady($rr->getTypeString(), 1, 1) ?>
                 </td>
                 <td>
-                    <?= htmlReady($rr['user_id'] ? get_fullname($rr['user_id']) : '') ?>
+                    <?= htmlReady($rr->user ? $rr->user->getFullName() : '') ?>
                 </td>
                 <td>
-                    <?= htmlReady($rr->getStatusExplained()) ?>
+                    <?= htmlReady($rr->getStatusText()) ?>
                 </td>
                 <td class="actions">
                     <a class="load-in-new-row"
-                       href="<?= $controller->link_for('course/room_requests/info/' . $rr->getId()) ?>">
+                       href="<?= $controller->link_for('course/room_requests/info/' . $rr->id) ?>">
                         <?= Icon::create('info', 'clickable', ['title' => _('Weitere Informationen einblenden')])->asImg(16) ?>
                     </a>
-                    <? $params = ['request_id' => $rr->getId()] ?>
+                    <? $params = [] ?>
                     <? $dialog = []; ?>
                     <? if (Request::isXhr()) : ?>
                         <? $params['asDialog'] = true; ?>
@@ -47,30 +47,63 @@ echo $flash['message'];
 
                     <? $actionMenu = ActionMenu::get() ?>
                     <? $actionMenu->addLink(
-                        $controller->url_for('course/room_requests/edit/' . $course_id, $params),
+                        $controller->url_for('course/room_requests/edit/' . $rr->id),
                         _('Diese Anfrage bearbeiten'),
                         Icon::create('edit', 'clickable', ['title' => _('Diese Anfrage bearbeiten')]),
                         $dialog
                     ) ?>
 
-                    <? if (getGlobalPerms($GLOBALS['user']->id) === 'admin' || ($GLOBALS['perm']->have_perm('admin') && count(getMyRoomRequests(null, null, true, $rr->getId())))) : ?>
+                    <? $user_has_permissions = false;
+                    $user = User::findCurrent();
+                    if ($rr->room) {
+                        $user_has_permissions = (
+                            $rr->room->userHasPermission($user, 'admin') &&
+                            (RoomRequest::countBySql(
+                                "id = :request_id
+                                AND closed = '0'
+                                AND user_id = :user_id",
+                                [
+                                    'request_id' => $rr->id,
+                                    'user_id' => $GLOBALS['user']->id
+                                ]
+                            ) > 0
+                            )
+                        );
+                    } else {
+                        $user_has_permissions = ResourceManager::userHasGlobalPermission($user, 'admin');
+                    } ?>
+                    <? if ($user_has_permissions): ?>
                         <? $actionMenu->addLink(
-                            URLHelper::getURL('resources.php', ['view' => 'edit_request', 'single_request' => $rr->getId()]),
+                            URLHelper::getLink(
+                                'dispatch.php/resources/room_request/resolve/' . $rr->id
+                            ),
                             _('Diese Anfrage selbst auflösen'),
-                            Icon::create('admin', 'clickable', ['title' => _('Diese Anfrage selbst auflösen')])
+                            Icon::create(
+                                'admin',
+                                'clickable',
+                                [
+                                    'title' => _('Diese Anfrage selbst auflösen')
+                                ]
+                            ),
+                            ['data-dialog' => '1']
                         ) ?>
                     <? endif ?>
-
                     <? $actionMenu->addLink(
-                        $controller->url_for('course/room_requests/delete/' . $course_id, ['request_id' => $rr->getId()]),
+                        $controller->url_for('course/room_requests/delete/' . $rr->id),
                         _('Diese Anfrage zurückziehen'),
-                        Icon::create('trash', 'clickable', ['title' => _('Diese Anfrage zurückziehen')])
-                    ); ?>
+                        Icon::create(
+                            'trash',
+                            'clickable',
+                            [
+                                'title' => _('Diese Anfrage zurückziehen')
+                            ]
+                        )
+                    ) ?>
                     <?= $actionMenu->render() ?>
                 </td>
             </tr>
         <? endforeach ?>
-        <? if ($request_id == $rr->getId()) : ?>
+        <? if ($request_id == $rr->id) : ?>
             <tr>
                 <td colspan="4">
                     <?= $this->render_partial('course/room_requests/_request.php', ['request' => $rr]); ?>

@@ -61,6 +61,27 @@ function getWeekday($day_num, $short = TRUE) {
     return $day;
 }
 
+
+/**
+ * Returns an array with strings of all weekdays, starting on monday.
+ *
+ * @param bool $short If this parameter is set to true, a short
+ *     version of the day is returned. Defaults to true.
+ */
+function getWeekdays($short = true)
+{
+    return [
+        getWeekday(1, $short), //Monday
+        getWeekday(2, $short), //Tuesday
+        getWeekday(3, $short), //Wednesday
+        getWeekday(4, $short), //Thursday
+        getWeekday(5, $short), //Friday
+        getWeekday(6, $short), //Saturday
+        getWeekday(0, $short)  //Sunday
+    ];
+}
+
+
 /**
  * getMonthName returns the localized name of a certain month in
  * either the abbreviated form (default) or as the actual name.
@@ -258,14 +279,15 @@ function vorbesprechung ($seminar_id, $type = 'standard')
         $ret .= ', '._("Ort:").' ';
         switch ($type) {
             case 'export':
-                $resObj = ResourceObject::Factory($termin->getResourceID());
-                $ret .= $resObj->getName();
+                $room = Room::find($termin->getResourceID());
+                $ret .= $room->name;
                 break;
 
             case 'standard':
             default:
-                $resObj = ResourceObject::Factory($termin->getResourceID());
-                $ret .= $resObj->getFormattedLink(TRUE, TRUE, TRUE);
+                $resource = Resource::find($termin->getResourceID());
+                $ret .= '<a href="' . $resource->getLink('show') . '" data-dialog="1">'
+                    . htmlReady($resource->name) . '</a>';
                 break;
         }
     }
@@ -349,12 +371,8 @@ Es erfolgt keine Überprüfung der Berechtigung innerhalb der Funktion,
 dies muss das aufrufende Script sicherstellen.
 */
 
-function delete_date($termin_id, $topic_delete = TRUE, $folder_move = TRUE, $sem_id=0) {
-
-    if (Config::get()->RESOURCES_ENABLE) {
-        include_once ("lib/resources/lib/VeranstaltungResourcesAssign.class.php");
-    }
-
+function delete_date($termin_id, $topic_delete = TRUE, $folder_move = TRUE, $sem_id=0)
+{
     //Deleting folders was removed since folders can't be assigned to
     //single dates, only to topics.
 
@@ -364,8 +382,15 @@ function delete_date($termin_id, $topic_delete = TRUE, $folder_move = TRUE, $sem
     $statement->execute([$termin_id]);
 
     if ($statement->rowCount() && Config::get()->RESOURCES_ENABLE) {
-        $insertAssign = new VeranstaltungResourcesAssign($sem_id);
-        $insertAssign->killDateAssign($termin_id);
+        //The date has been successfully deleted:
+        //Now we must delete all resource bookings which are
+        //attached to it:
+        ResourceBooking::deleteBySql(
+            'assign_user_id = :range_id',
+            [
+                'range_id' => $termin_id
+            ]
+        );
     }
 }
 
@@ -491,12 +516,12 @@ function getFormattedRooms($rooms, $link = false)
     if (is_array($rooms)) {
         foreach ($rooms as $room_id => $count) {
             if ($room_id && Config::get()->RESOURCES_ENABLE) {
-                $resObj = ResourceObject::Factory($room_id);
+                $room = Room::find($room_id);
                 if ($link) {
-                    $room_list[] = $resObj->getFormattedLink(TRUE, TRUE, TRUE,
-                        'view_schedule', 'no_nav', false, htmlReady($resObj->getName()));
+                    $room_list[] = '<a href="' . $room->getLink('show') . '" data-dialog="1">'
+                        . htmlReady($room->name) . '</a>';
                 } else {
-                    $room_list[] = htmlReady($resObj->getName());
+                    $room_list[] = htmlReady($room->name);
                 }
             }
         }
@@ -518,8 +543,8 @@ function getPlainRooms($rooms) {
     if (is_array($rooms)) {
         foreach ($rooms as $room_id => $count) {
             if ($room_id) {
-                $resObj =& ResourceObject::Factory($room_id);
-                $room_list[] = $resObj->getName();
+                $room = Room::find($room_id);
+                $room_list[] = $room->name;
             }
         }
     }

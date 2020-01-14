@@ -1,5 +1,10 @@
 <?php
 
+
+//Do not remove! This is still needed for the toString method!
+require_once 'lib/dates.inc.php';
+
+
 /**
  * SeminarCycleDate.class.php
  * model class for table seminar_cycle_dates
@@ -33,7 +38,7 @@
  * @property string                end_minute   computed column read/write
  * @property SimpleORMapCollection dates        has_many CourseDate
  * @property Course                course       belongs_to Course
- * @property RoomRequest           room_request has_one RoomRequest
+ * @property RoomRequest           room_requests has_many RoomRequest
  * @property bool                  is_visible   computed column read
  */
 class SeminarCycleDate extends SimpleORMap
@@ -74,10 +79,11 @@ class SeminarCycleDate extends SimpleORMap
             'class_name' => 'Course',
             'foreign_key' => 'seminar_id',
         );
-        $config['has_one']['room_request'] = [
+        $config['has_many']['room_requests'] = [
             'class_name' => 'RoomRequest',
             'on_store'   => 'store',
             'on_delete'  => 'delete',
+            'assoc_func' => 'findByMetadate_id'
         ];
         $config['has_many']['dates'] = [
             'class_name' => 'CourseDate',
@@ -337,8 +343,8 @@ class SeminarCycleDate extends SimpleORMap
             if ($date instanceof CourseDate &&
                     ($date->date < $tos || $date->end_time > $toe || $old_cycle->weekday != $this->weekday)) {
 
-                if (!is_null($date->room_assignment)) {
-                    $date->room_assignment->delete();
+                if (!is_null($date->room_booking)) {
+                    $date->room_booking->delete();
                 }
             }
 
@@ -676,13 +682,18 @@ class SeminarCycleDate extends SimpleORMap
 
         if (count($ids) > 0) {
             // remove all assigns for the dates in question
-            $query = "SELECT assign_id FROM resources_assign WHERE assign_user_id IN (?)";
+            $query = "SELECT id FROM resource_bookings WHERE range_id IN (?)";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$ids]);
 
-            while ($id = $statement->fetchColumn()) {
-                AssignObject::Factory($assign_id)->delete();
-            }
+            $booking_ids = $statement->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE, 0);
+
+            ResourceBooking::deleteBySql(
+                'id IN ( :booking_ids )',
+                [
+                    'booking_ids' => $booking_ids
+                ]
+            );
         }
 
         $query = "DELETE FROM ex_termine
@@ -706,5 +717,91 @@ class SeminarCycleDate extends SimpleORMap
         $date->setTimestamp($base);
         $date->modify(sprintf('%s days', $days));
         return $date->getTimestamp();
+    }
+
+
+    /**
+     * This is a helper method for getRoomRequestsForDates and
+     * countRoomRequestsForDates which helps at building the
+     * SQL query and parameters.
+     *
+     * @returns array An associative array with two indexes:
+     *     - sql: The SQL query
+     *     - sql_params: The parameters for the SQL query as associative array.
+     */
+    protected function buildOpenRequestsForDatesQuery(
+        $include_metadate = false,
+        $order = ''
+    )
+    {
+        $sql = "closed < '1' AND ";
+        $sql_params = [];
+
+        if ($include_metadate) {
+            $sql = 'metadate_id = :metadate_id OR ';
+        }
+
+        $sql .= 'termin_id IN (
+            SELECT termin_id FROM termine
+            WHERE metadate_id = :metadate_id
+        ) OR id IN (
+            SELECT request_id
+            FROM resource_request_appointments rra
+            INNER JOIN termine
+            ON rra.appointment_id = termine.termin_id
+            WHERE termine.metadate_id = :metadate_id
+        ) ';
+        $sql_params['metadate_id'] = $this->id;
+
+        if ($order) {
+            $sql .= 'ORDER BY ' . $order;
+        }
+        return [
+            'sql' => $sql,
+            'sql_params' => $sql_params
+        ];
+    }
+
+
+    /**
+     * Returns the open room requests that are associated with this metadate.
+     * If the optional parameter $include_metadate is set to false,
+     * the requests associated with this metadate are not included
+     * in the result.
+     *
+     * @param bool $include_metadate Whether to include requests associated
+     *     with this metadate (true) or not (false). The default is false.
+     *
+     * @returns ResourceRequest[] The requests for this metadate.
+     */
+    public function getOpenRequestsForDates(
+        $include_metadate = false,
+        $order = 'mkdate DESC'
+    )
+    {
+        $data = $this->buildOpenRequestsForDatesQuery($include_metadate, $order);
+        return ResourceRequest::findBySql($data['sql'], $data['sql_params']);
+    }
+
+
+    /**
+     * Returns the amount of open room requests that are associated
+     * with this metadate.
+     * The amount of requests is determined by counting requests that are
+     * directly associated to this metadate and the requests that are
+     * associated with the dates of this metadate.
+     * If the optional parameter $include_metadate is set to false,
+     * the requests associated with this metadate are not included
+     * in the result.
+     *
+     * @param bool $include_metadate Whether to include requests associated
+     *     with this metadate (true) or not (false). The default is false.
+     *
+     * @returns int The amount of requests for this metadate.
+     */
+    public function countOpenRequestsForDates($include_metadate = false)
+    {
+        $data = $this->buildOpenRequestsForDatesQuery($include_metadate);
+        return ResourceRequest::countBySql($data['sql'], $data['sql_params']);
     }
 }

@@ -407,7 +407,32 @@ class Router
         $was_setup = true;
 
         // Register default routes
-        $routes = words('Activity Blubber Contacts Course Discovery Events FileSystem Forum Messages News Schedule Semester Studip User UserConfig Wiki');
+        $routes = [
+            'Activity',
+            'Blubber',
+            'Clipboard',
+            'Contacts',
+            'Course',
+            'Discovery',
+            'Events',
+            'FileSystem',
+            'Forum',
+            'Messages',
+            'News',
+            'ResourceBooking',
+            'Resources',
+            'ResourceCategories',
+            'ResourcePermissions',
+            'ResourceProperties',
+            'ResourceRequest',
+            'RoomClipboard',
+            'Schedule',
+            'Semester',
+            'Studip',
+            'User',
+            'UserConfig',
+            'Wiki'
+        ];
 
         foreach ($routes as $route) {
             require_once "app/routes/$route.php";
@@ -423,6 +448,7 @@ class Router
                 $router->registerRoutes($route);
             }
         );
+        \PluginEngine::getPlugins('SystemPlugin');
     }
 
     /**

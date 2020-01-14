@@ -38,17 +38,38 @@
                     </h1>
                     <section>
                         <span>
-                            <strong><?= _('Raum') ?></strong>:
-                        <? if (count($cycle['room_request']) > 0): ?>
-                            <?= htmlReady(array_pop($cycle['room_request'])->name)?>
-                        <? else : ?>
-                            <?= _('keiner') ?>
-                        <? endif; ?>
+                            <? if ($cycle_room_names[$cycle['cycle']->id]): ?>
+                                <strong><?= _('Raum') ?>:</strong>
+                                <?= htmlReady($cycle_room_names[$cycle['cycle']->id])?>
+                            <? else: ?>
+                                <? if (count($cycle['cycle']->room_requests) > 0): ?>
+                                    <? $room_request = $cycle['cycle']->room_requests[0] ?>
+                                    <? if ($room_request->closed <= '1'): ?>
+                                        <strong>
+                                            <?= sprintf(
+                                                _('Raum %s angefragt'),
+                                                htmlReady($cycle['cycle']->room_requests[0]->room->name)
+                                            ) ?>
+                                        </strong>
+                                    <? else: ?>
+                                        <strong><?= _('Bearbeitete Raumanfrage vorhanden!')?></strong>
+                                    <? endif ?>
+                                <? else: ?>
+                                    <strong><?= _('Raumanfragen') ?></strong>:
+                                    <?= _('keine') ?>
+                                <? endif ?>
+                            <? endif ?>
                         </span>
                     <? if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) : ?>
+                        <? $metadate = SeminarCycleDate::find($metadate_id) ?>
+                        <? $open_requests = $metadate->countOpenRequestsForDates(); ?>
                         <span>
                             <strong><?= _('Einzel-Raumanfrage') ?></strong>:
-                            <?= htmlReady($course->getRequestsInfo($metadate_id)) ?>
+                            <?= htmlReady(
+                                $open_requests > 0
+                                ? $open_requests
+                                : _('keine offenen Anfragen')
+                            ) ?>
                         </span>
                     <? endif ?>
                     </section>
@@ -60,6 +81,24 @@
                             _('Diesen Zeitraum bearbeiten'),
                             Icon::create('edit', 'clickable', ['title' => _('Diesen Zeitraum bearbeiten'), 'style' => 'vertical-align: middle;']),
                             ['data-dialog' => 'size=600']
+                        ) ?>
+                        <? $actionMenu->addLink(
+                            $controller->url_for(
+                                'course/room_requests/edit/',
+                                [
+                                    'range' => 'cycle',
+                                    'range_id' => $metadate_id
+                                ]
+                            ),
+                            _('Raumanfrage erstellen'),
+                            Icon::create(
+                                'room-request',
+                                'clickable',
+                                [
+                                    'title' => _('Raumanfrage erstellen'),
+                                    'class' => 'text-align'
+                                ]
+                            )
                         ) ?>
                         <? $actionMenu->addButton(
                             'delete_cycle',

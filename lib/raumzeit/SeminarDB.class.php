@@ -51,11 +51,11 @@ class SeminarDB
 
     public static function getSingleDates($seminar_id, $start = 0, $end = 0)
     {
-        $query = "SELECT termine.*, resources_assign.resource_id, GROUP_CONCAT(DISTINCT trp.user_id) AS related_persons,  GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
+        $query = "SELECT termine.*, resource_bookings.resource_id, GROUP_CONCAT(DISTINCT trp.user_id) AS related_persons,  GROUP_CONCAT(DISTINCT trg.statusgruppe_id) AS related_groups
                   FROM termine
                   LEFT JOIN termin_related_persons AS trp ON (termine.termin_id = trp.range_id)
                   LEFT JOIN termin_related_groups AS trg ON (termine.termin_id = trg.termin_id)
-                  LEFT JOIN resources_assign ON (assign_user_id = termine.termin_id)
+                  LEFT JOIN resource_bookings ON (resource_bookings.range_id = termine.termin_id)
                   WHERE termine.range_id = ?
                     AND (metadate_id IS NULL OR metadate_id = '')";
         $parameters = [$seminar_id];
@@ -95,10 +95,10 @@ class SeminarDB
             'declined_dates' => [],
         ];
 
-        $query = "SELECT termine.*, resources_assign.resource_id
+        $query = "SELECT termine.*, resource_bookings.resource_id
                   FROM termine
-                  LEFT JOIN resources_assign ON (assign_user_id = termin_id)
-                  WHERE range_id = ? AND metadate_id = ?";
+                  LEFT JOIN resource_bookings ON (resource_bookings.range_id = termin_id)
+                  WHERE termine.range_id = ? AND metadate_id = ?";
         $parameters = [$seminar_id, $cycle_id];
 
         if ($filterStart != 0 || $filterEnd != 0) {
@@ -123,7 +123,7 @@ class SeminarDB
         // count how many singledates have a declined room-request
         $query = "SELECT *
                   FROM termine t
-                  LEFT JOIN resources_requests AS rr ON (t.termin_id = rr.termin_id)
+                  LEFT JOIN resource_requests AS rr ON (t.termin_id = rr.termin_id)
                   WHERE range_id = ? AND t.metadate_id = ? AND closed = 3";
         $parameters = [$seminar_id, $cycle_id];
 
@@ -142,24 +142,6 @@ class SeminarDB
         }
 
         return $stat;
-    }
-
-    public static function countRequestsForSingleDates($cycle_id, $seminar_id, $filterStart = 0, $filterEnd = 0)
-    {
-        $query = "SELECT COUNT(*)
-                  FROM termine AS t
-                  LEFT JOIN resources_requests AS rr ON (t.termin_id = rr.termin_id)
-                  WHERE seminar_id = ? AND t.metadate_id = ? AND closed = 0";
-        $parameters = [$seminar_id, $cycle_id];
-
-        if ($filterStart > 0 || $filterEnd > 0) {
-            $query .= " AND `date` >= ? AND end_time <= ?";
-            array_push($parameters, $filterStart, $filterEnd);
-        }
-
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute($parameters);
-        return $statement->fetchColumn();
     }
 
     public static function hasDatesOutOfDuration($start, $end, $seminar_id)
@@ -234,22 +216,6 @@ class SeminarDB
         return compact('termin', 'ex_termin');
     }
 
-    /**
-     * vergisst die Einträge in resources_requests_properties
-     * @deprecated
-     * @param unknown_type $id
-     * @return boolean
-     */
-    public static function deleteRequest($id)
-    {
-        $query = "DELETE FROM resources_requests
-                  WHERE seminar_id = ?
-                    AND (termin_id = '' OR termin_id IS NULL)";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$id]);
-
-        return true;
-    }
 
     public static function getDeletedSingleDates($seminar_id, $start = 0, $end = 0)
     {

@@ -6,23 +6,26 @@
 
     <fieldset>
         <legend><?= _('Raumangaben') ?></legend>
-        <? if (Config::get()->RESOURCES_ENABLE && $resList->numberOfRooms()) : ?>
+        <? if (Config::get()->RESOURCES_ENABLE && (!empty($room_search) || !empty($selectable_rooms))): ?>
             <section>
-            <input type="radio" name="action" value="room" checked="checked">
-            <label style="display: inline;">
-                <select name="room" style="display: inline-block; width: 50%;" onFocus="jQuery('input[type=radio][name=action][value=room]').prop('checked', 'checked')">
-                    <option value="0">-- <?= _('Raum auswählen') ?> --</option>
-                    <? foreach ($resList->getRooms() as $room_id => $room) : ?>
-                        <option value="<?= $room_id ?>">
-                            <?= htmlReady($room->getName()) ?>
-                            <? if ($room->getSeats() > 1) : ?>
-                                <?= sprintf(_('(%d Sitzplätze)'), $room->getSeats()) ?>
-                            <? endif ?>
-                        </option>
-                    <? endforeach ?>
-                </select>
-                <?= Icon::create('room-clear', 'clickable', ['title' => _("Nur buchbare Räume anzeigen")])->asImg(16, ["class" => 'bookable_rooms_action', "data-name" => 'bulk_action']) ?>
-            </label>
+                <input type="radio" name="action" value="room"
+                        id="room">
+                <label style="display: inline-block; width: 50%; vertical-align: middle">
+                    <? if (!empty($room_search)) : ?>
+                        <?= $room_search
+                            ->setAttributes(['onFocus' => "jQuery('input[type=radio][name=action][value=room]').prop('checked', 'checked')"])
+                            ->render() ?>
+                    <? else : ?>
+                        <select name="room_id" style="display: inline-block; width: 50%;" onFocus="jQuery('input[type=radio][name=action][value=room]').prop('checked', 'checked')">
+                            <option value="0">-- <?= _('Raum auswählen') ?> --</option>
+                            <? foreach ($selectable_rooms as $room): ?>
+                                <option value="<?= htmlReady($room->id)?>">
+                                    <?= htmlReady($room->name) ?>
+                                </option>
+                            <? endforeach ?>
+                        </select>
+                    <? endif ?>
+                </label>
             </section>
 
             <? $placerholder = _('Freie Ortsangabe (keine Raumbuchung):') ?>

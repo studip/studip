@@ -53,7 +53,7 @@ class CycleDataDB
                       FROM termine
                       LEFT JOIN termin_related_persons AS trp ON (termine.termin_id = trp.range_id)
                       LEFT JOIN termin_related_groups AS trg ON (termine.termin_id = trg.termin_id)
-                      LEFT JOIN resources_assign AS r ON (termine.termin_id = assign_user_id)
+                      LEFT JOIN resource_bookings AS r ON (termine.termin_id = r.range_id)
                       WHERE metadate_id = ? AND termine.date BETWEEN ? AND ?
                       GROUP BY termine.termin_id
                       ORDER BY NULL";
@@ -63,7 +63,7 @@ class CycleDataDB
                       FROM termine
                         LEFT JOIN termin_related_persons AS trp ON (termine.termin_id = trp.range_id)
                         LEFT JOIN termin_related_groups AS trg ON (termine.termin_id = trg.termin_id)
-                        LEFT JOIN resources_assign AS r ON (termine.termin_id = assign_user_id)
+                        LEFT JOIN resource_bookings AS r ON (termine.termin_id = r.range_id)
                       WHERE metadate_id = ?
                       GROUP BY termine.termin_id
                       ORDER BY NULL";
@@ -177,7 +177,7 @@ class CycleDataDB
         if (($filterStart == 0) && ($filterEnd == 0)) {
             $query = "SELECT resource_id, COUNT(resource_id) AS c
                       FROM termine
-                      INNER JOIN resources_assign ON (termin_id = assign_user_id)
+                      INNER JOIN resource_bookings ON (termin_id = resource_bookings.range_id)
                       WHERE termine.metadate_id = ? AND resource_id != ''
                       GROUP BY resource_id
                       ORDER BY c DESC";
@@ -185,7 +185,7 @@ class CycleDataDB
         } else {
             $query = "SELECT resource_id, COUNT(resource_id) AS c
                       FROM termine
-                      INNER JOIN resources_assign ON (termin_id = assign_user_id)
+                      INNER JOIN resource_bookings ON (termin_id = resource_bookings.range_id)
                       WHERE termine.metadate_id = ? AND termine.date BETWEEN ? AND ?
                       GROUP BY resource_id
                       ORDER BY c DESC";
@@ -211,16 +211,16 @@ class CycleDataDB
         if (($filterStart == 0) && ($filterEnd == 0)) {
             $query = "SELECT raum, COUNT(raum) AS c
                       FROM termine
-                      LEFT JOIN resources_assign ON (termin_id = assign_user_id)
-                      WHERE termine.metadate_id = ? AND assign_user_id IS NULL
+                      LEFT JOIN resource_bookings ON (termin_id = resource_bookings.range_id)
+                      WHERE termine.metadate_id = ? AND resource_bookings.range_id IS NULL
                       GROUP BY raum
                       ORDER BY c DESC";
             $parameters = [$metadate_id];
         } else {
             $query = "SELECT raum, COUNT(raum) AS c
                       FROM termine
-                      LEFT JOIN resources_assign ON (termin_id = assign_user_id)
-                      WHERE termine.metadate_id = ? AND assign_user_id IS NULL
+                      LEFT JOIN resource_bookings ON (termin_id = resource_bookings.range_id)
+                      WHERE termine.metadate_id = ? AND resource_bookings.range_id IS NULL
                         AND termine.date BETWEEN ? AND ?
                       GROUP BY raum
                       ORDER BY c DESC";

@@ -176,3 +176,54 @@
         }
     }
 }
+
+
+/* copied from copyable-links.less and modified */
+.js-action-confirm-animation {
+    @animation-name: js-action-confirm-confirmation;
+    @animation-duration: 2s;
+
+    // Position confirmation message above the link
+    position: relative;
+
+    div {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        text-align: center;
+
+        .icon('before', 'check-circle', 'status-green', 16px, 5px);
+    }
+
+    // Flip the link and confirmation message along the x axis
+    a,
+    div {
+        backface-visibility: hidden;
+        pointer-events: none;
+    }
+
+    a {
+        .keyframes(~"@{animation-name}-front", {
+            opacity: 1;
+            transform: rotateX(0);
+        }, {
+           opacity: 0;
+            transform: rotateX(180deg);
+        });
+        animation: ~"@{animation-name}-front" @animation-duration linear;
+    }
+
+    div {
+        .keyframes(~"@{animation-name}-back", {
+            opacity: 0;
+            transform: rotateX(180deg);
+        }, {
+            opacity: 1;
+            transform: rotateX(0);
+        });
+        animation: ~"@{animation-name}-back" @animation-duration linear;
+    }
+}

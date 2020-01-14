@@ -87,7 +87,7 @@ class CourseExDate extends SimpleORMap implements PrivacyObject
         $config['additional_fields']['topics']['get'] = $dummy_relation;
         $config['additional_fields']['statusgruppen']['get'] = $dummy_relation;
         $config['additional_fields']['dozenten']['get'] = $dummy_relation;
-        $config['additional_fields']['room_assignment']['get'] = $dummy_null;
+        $config['additional_fields']['room_booking']['get'] = $dummy_null;
         $config['additional_fields']['room_request']['get'] = $dummy_null;
         $config['default_values']['date_typ'] = 1;
         parent::configure($config);

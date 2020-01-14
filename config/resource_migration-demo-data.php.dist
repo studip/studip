@@ -1,0 +1,121 @@
+<?php
+
+
+$GLOBALS['RESOURCE_CATEGORY_CLASS_MAPPING'] = [
+    'Gebäude' => 'Building',
+    'Hörsaal' => 'Room',
+    'Übungsraum' => 'Room',
+    'Gerät' => 'Resource',
+];
+
+
+$GLOBALS['RESOURCE_ADMINISTRATION_PERSON_URL'] = 'https://example.org/person/%s';
+
+
+$GLOBALS['RESOURCE_MIGRATION_RESOURCE_TREES_TO_BE_DELETED'] = [];
+
+/**
+ * Whether course bound resource permissions shall be migrated.
+ * If this is set to false, all course bound permissions are deleted.
+ * In case this is set to true, all course members get autor permissions
+ * on that resources where the course had permissions.
+ */
+$GLOBALS['RESOURCE_MIGRATION_MIGRATE_COURSE_PERMISSIONS'] = true;
+
+
+/**
+ * This variable contains the IDs of resource property definitions
+ * that shall be deleted. If a resource property is listed here,
+ * its connections to resources, resource requests and resource categories
+ * are also deleted.
+ */
+$GLOBALS['RESOURCE_PROPERTIES_TO_BE_DELETED'] = [];
+
+
+/**
+ * This variable defines if the resource migration shall migrate
+ * course bound permissions into the tables of the SpecialResourcesPlugin
+ * that can handle resources in courses.
+ */
+$GLOBALS['RESOURCE_MIGRATION_SPECIALRESOURCESPLUGIN'] = false;
+
+
+/**
+ * Array explaination:
+ * The key of an array entry is the old name of the property.
+ * The value consists of an associative array with the following fields:
+ * - name: The name of the new property-
+ * - old_type: The type of the old property.
+ * - requestable: Whether the property shall be requestable (optional).
+ * - searchable: Whether the property can be used as search parameter or not
+ *   (optional).
+ */
+$GLOBALS['RESOURCE_PROPERTIES_TO_BE_MODIFIED'] = [
+    'Adresse' => [
+        'name' => 'address',
+        'old_type' => 'text'
+    ],
+    'Audio-Anlage' => [
+        'name' => 'has_loudspeakers',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Beamer' => [
+        'name' => 'has_projector',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'behindertengerecht' => [
+        'name' => 'accessible',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Dozentenrechner' => [
+        'name' => 'has_computer',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Hersteller' => [
+        'name' => 'manufacturer',
+        'old_type' => 'select',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Inventarnummer' => [
+        'name' => 'inventory_number',
+        'old_type' => 'num',
+        'requestable' => false,
+        'searchable' => true
+    ],
+    'Seriennummer' => [
+        'name' => 'serial_number',
+        'old_type' => 'num',
+        'requestable' => false,
+        'searchable' => true
+    ],
+    'Sitzplätze' => [
+        'name' => 'seats',
+        'old_type' => 'num',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Tageslichtprojektor' => [
+        'name' => 'has_overhead_projector',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ],
+    'Verdunklung' => [
+        'name' => 'is_dimmable',
+        'old_type' => 'bool',
+        'requestable' => true,
+        'searchable' => true
+    ]
+];
+
+
+$GLOBALS['RESOURCE_PROPERTIES_TO_BE_MERGED'] = [];

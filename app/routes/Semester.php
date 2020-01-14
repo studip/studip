@@ -10,10 +10,19 @@ namespace RESTAPI\Routes;
  */
 class Semester extends \RESTAPI\RouteMap
 {
+    public function __construct()
+    {
+        parent::__construct();
+        if (!\Request::int('limit')) {
+            $this->limit = count(\Semester::getAll());
+        }
+    }
+
     /**
      * Returns a list of all semesters.
      *
      * @get /semesters
+     * @allow_nobody
      */
     public function getSemesters()
     {

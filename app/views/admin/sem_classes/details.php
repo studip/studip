@@ -216,7 +216,6 @@
             'literature' => ['name' => _("Literaturübersicht")],
             'scm' => ['name' => _("Freie Informationen")],
             'wiki' => ['name' => _("Wiki")],
-            'resources' => ['name' => _("Ressourcen")],
             'calendar' => ['name' => _("Kalender")],
             'elearning_interface' => ['name' => _("Lernmodule")]
         ];

@@ -76,7 +76,6 @@ class Admin_SemClassesController extends AuthenticatedController
             'CoreLiterature' => ['id' => "CoreLiterature", 'name' => _("Kern-Literatur"), 'enabled' => true],
             'CoreScm' => ['id' => "CoreScm", 'name' => _("Kern-Freie-Informationen"), 'enabled' => true],
             'CoreWiki' => ['id' => "CoreWiki", 'name' => _("Kern-Wiki"), 'enabled' => true],
-            'CoreResources' => ['id' => "CoreResources", 'name' => _("Kern-Ressourcen"), 'enabled' => true],
             'CoreCalendar' => ['id' => "CoreCalendar", 'name' => _("Kern-Kalender"), 'enabled' => true],
             'CoreElearningInterface' => ['id' => "CoreElearningInterface", 'name' => _("Kern-Lernmodule"), 'enabled' => true]
         ];

@@ -37,6 +37,20 @@ class StudipNavigation extends Navigation
         if (is_object($user) && $user->id != 'nobody' || Config::get()->ENABLE_FREE_ACCESS) {
             $this->addSubNavigation('browse', new BrowseNavigation());
         }
+        try {
+            if (($user->id == 'nobody') && Room::publicBookingPlansExists()) {
+                //Show a navigation entry for the public booking plans overview.
+                $nav = new Navigation(
+                    _('Belegungspläne'),
+                    URLHelper::getURL('dispatch.php/room_management/overview/public_booking_plans')
+                );
+                $nav->setImage(Icon::create('timetable', 'navigation'));
+                $this->addSubNavigation('public_booking_plans', $nav);
+            }
+        } catch (PDOException $e) {
+            //The resource migration probably hasn't run yet.
+            //Do nothing here.
+        }
 
         // if a course is selected, the navigation for it will be loaded, but
         // it will not be shown in the main toolbar
@@ -73,6 +87,36 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('tools', new ToolsNavigation());
         }
 
+        //Add the resource management icon, if that area is enabled
+        //and the current user either has global admin permissions in the
+        //room and resource management or if the the current user has
+        //autor permissions on at least one resource.
+        $current_user = User::findCurrent();
+        //The resources navigation entry shall only be visible
+        //for users who are logged in.
+        if ($current_user) {
+            try {
+                $show_resources_navigation = (
+                    (
+                        RoomManager::userHasRooms($current_user)
+                        ||
+                        ResourceManager::userHasGlobalPermission(
+                            $current_user,
+                            'user'
+                        )
+                    )
+                    &&
+                    Config::get()->RESOURCES_ENABLE
+                );
+                if ($show_resources_navigation) {
+                    $this->addSubNavigation('resources', new ResourceNavigation());
+                }
+            } catch (PDOException $e) {
+                //The resource migration probably hasn't run yet.
+                //Do nothing here.
+            }
+        }
+
         // admin page
         if (is_object($user) && $perm->have_perm('admin')) {
             $this->addSubNavigation('admin', new AdminNavigation());
@@ -81,19 +125,6 @@ class StudipNavigation extends Navigation
         //mvv pages
         if (MVV::isVisible()) {
             $this->addSubNavigation('mvv', new MVVNavigation());
-        }
-
-        // resource managment, if it is enabled
-        if (get_config('RESOURCES_ENABLE')) {
-            require_once 'lib/resources/resourcesFunc.inc.php';
-            //TODO: suboptimal, es sollte eine ResourcesNavigation geben
-            $navigation = new Navigation(_('Ressourcen'), 'resources.php', ['view' => 'resources']);
-
-            if (is_object($user) && (getGlobalPerms($user->id)=='admin' || checkAvailableResources($user->id))) {
-                $navigation->setImage(Icon::create('resources', 'navigation', ["title" => _('Zur Ressourcenverwaltung')]));
-            }
-
-            $this->addSubNavigation('resources', $navigation);
         }
 
         if (is_object($user) && $user->id != 'nobody') {

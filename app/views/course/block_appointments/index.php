@@ -91,21 +91,25 @@
             </select>
         </label>
 
-    <? if (Config::get()->RESOURCES_ENABLE): ?>
-        <label>
-            <?= _('Raum') ?>
-            <select name="room_id">
-                <option value="nothing"><?= _('<em>Keinen</em> Raum buchen') ?></option>
-        <? if ($resource_list->numberOfRooms()): ?>
-            <? foreach ($resource_list->getRooms() as $room_id => $room): ?>
-                <option value="<?= htmlReady($room_id) ?>"
-                        <? if (Request::option('room') === $room_id) echo 'selected'; ?>>
-                    <?= htmlReady($room->getName()) ?>
-                <? if ($room->getSeats() > 1): ?>
-                    <?= sprintf(_('(%d Sitzplätze)'), $room->getSeats()) ?>
+        <? if ((Config::get()->RESOURCES_ENABLE) && ($selectable_rooms || $room_search)) : ?>
+            <label>
+                <?= _('Raum') ?>
+                <? if ($room_search): ?>
+                    <?= $room_search->render() ?>
+                <? else: ?>
+                    <select name="room_id" style="width: calc(100% - 23px);">
+                        <option value=""><?= _('<em>Keinen</em> Raum buchen') ?></option>
+                        <? foreach ($selectable_rooms as $room): ?>
+                            <option value="<?= htmlReady($room->id) ?>">
+                                <?= htmlReady($room->name) ?>
+                                <? if ($room->seats > 1) : ?>
+                                    <?= sprintf(_('(%d Sitzplätze)'), $room->seats) ?>
+                                <? endif ?>
+                            </option>
+                        <? endforeach ?>
+                    </select>
                 <? endif ?>
-                </option>
-            <? endforeach ?>
+            </label>
         <? endif ?>
             </select>
         </label>

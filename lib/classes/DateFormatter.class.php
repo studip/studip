@@ -135,7 +135,7 @@ class DateFormatter {
     private function formatLocationText($date)
     {
         if ($this->hasResource($date)) {
-            $resObj = ResourceObject::Factory($date->getResourceID());
+            $resObj = Resource::find($date->getResourceID());
             return $this->generateLocationTextFromResourceObject($resObj);
         } else if ($this->hasFreeRoomText($date)) {
             return $this->generateLocationTextFromFreeRoomText($date);
@@ -146,12 +146,17 @@ class DateFormatter {
 
     private function generateLocationTextFromResourceObject($resObj)
     {
-        if ($this->return_mode == 'string') {
-            return $resObj->getFormattedLink(TRUE, TRUE, TRUE);
+        if ($resObj) {
+            if ($this->return_mode == 'string') {
+                return '<a href="' . $resObj->getLink() . '" data-dialog="1">'
+                    . htmlReady($resObj->name)
+                    . '</a>';
+            }
+            else {
+                return htmlReady($resObj->name);
+            }
         }
-        else {
-            return htmlReady($resObj->getName());
-        }
+        return '';
     }
 
     private function generateLocationTextFromFreeRoomText($date)

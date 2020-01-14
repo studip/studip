@@ -253,26 +253,138 @@ class Request implements ArrayAccess, IteratorAggregate
         return $value;
     }
 
-    /**
-     * Return the value of the selected query parameter as a boolean.
-     *
-     * @param string $param   parameter name
-     * @param bool   $default default value if parameter is not set
-     *
-     * @return bool parameter value as bool (if set), else NULL
-     *
-     * @since Stud.IP 4.4
-     */
-    public static function bool($param, $default = null)
-    {
-        $value = self::get($param, $default);
 
-        if (isset($value)) {
-            $value = (bool) $value;
+    /**
+     * Returns the date and time values from one or two fields
+     * as a DateTime object. The $second_param and $second_format
+     * parameters are handy in case the date and time values
+     * come from different fields.
+     *
+     * @param string $param The name of the date/time field.
+     * @param string $format The date format of the date/time field.
+     * @param string $second_param The name of the second field, if used.
+     *     This parameter is optional.
+     * @param string $second_format The time format of the second field, if used.
+     *     This parameter is optional.
+     * @param DateTime|null $default Either a default DateTime object
+     *     or null if no default shall be set. In the latter case a DateTime
+     *     object representing the unix timestamp 0 is returned.
+     *
+     * @returns DateTime|bool A DateTime object containing the
+     *     date and time values of the specified date and time field.
+     *     In case something went wrong the boolean value false is returned.
+     *
+     * @see the following PHP documentation page for a list of
+     *     accepted date and time formats:
+     *     https://secure.php.net/manual/en/datetime.createfromformat.php
+     */
+    public static function getDateTime(
+        $param = 'date',
+        $format = 'Y-m-d',
+        $second_param = null,
+        $second_format = null,
+        $default = null
+    )
+    {
+        $value = self::get($param);
+
+        if (!$value) {
+            //In case the first field is not set
+            //use the default value, if any:
+            if ($default instanceof DateTime) {
+                return $default;
+            } else {
+                $datetime = new DateTime();
+                $datetime->setTimestamp(0);
+                return $datetime;
+            }
         }
 
-        return $value;
+        //Combine the format specifications and the
+        //values into one string each.
+        $combined_format = $format;
+        $combined_value = $value;
+
+        //The second format and value is only added
+        //when $second_param and $second_format are set
+        //and a second value could be retrieved.
+        if ($second_param and $second_format) {
+            $second_value = Request::get($second_param);
+            if ($second_value) {
+                $combined_format .= ' ' . $second_format;
+                $combined_value .= ' ' . $second_value;
+            }
+        }
+
+        //The time zone may not be set in the fields
+        //so we use the default timezone from a new
+        //DateTime object:
+        $value = new DateTime();
+        $time_zone = $value->getTimezone();
+
+        //Now we return a DateTime object created from the
+        //specified date value(s):
+        return DateTime::createFromFormat(
+            $combined_format,
+            $combined_value,
+            $time_zone
+        );
     }
+
+
+    /**
+     * Retrieves a parameter that stores time data and converts the time data
+     * to a DateTime object. If a date is specified using an existing DateTime
+     * object, the time will be set on the existing DateTime object and the
+     * modified object is returned.
+     *
+     * @param string $param The name of the time field.
+     *
+     * @param string $format The time format of the time field.
+     *
+     * @param DateTime|null $date An optional DateTime object whose time
+     *     shall be set from the specified parameter.
+     *
+     * @returns DateTime|bool A DateTime object containing the
+     *     time value of the specified date and time field.
+     *     In case something went wrong the boolean value false is returned.
+     *
+     */
+    public static function getTime(
+        $param = 'time',
+        $format = 'H:i',
+        $date = null
+    )
+    {
+        $value = Request::get($param);
+
+        //Get the timezone before parsing the time
+        //so that the resulting DateTime object
+        //will have the current timezone set.
+        $tz_get = new DateTime();
+        $time_zone = $tz_get->getTimezone();
+        $converted_value = DateTime::createFromFormat(
+            $format,
+            $value,
+            $time_zone
+        );
+
+        if ($date instanceof DateTime) {
+            //Modify the time information of the specified
+            //DateTime object and return the modified object.
+            $date->setTime(
+                intval($converted_value->format('H')),
+                intval($converted_value->format('i')),
+                intval($converted_value->format('s'))
+            );
+
+            return $date;
+        }
+
+        //Return the time value.
+        return $converted_value;
+    }
+
 
     /**
      * Return the value of the selected query parameter as a string

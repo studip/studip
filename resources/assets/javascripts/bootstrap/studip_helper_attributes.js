@@ -1,8 +1,11 @@
 /**
  * This file provides a set of global handlers.
  */
+
+var proxy_elements_selector = ':checkbox[data-proxyfor], input[type="radio"][data-proxyfor]';
+
 function connectProxyAndProxied(event) {
-    $(':checkbox[data-proxyfor]', event.target)
+    $(proxy_elements_selector)
         .each(function() {
             const proxy = $(this);
             const proxyId = proxy.uniqueId().attr('id');
@@ -18,7 +21,7 @@ function connectProxyAndProxied(event) {
 // Use a checkbox as a proxy for a set of other checkboxes. Define
 // proxied elements by a css selector in attribute "data-proxyfor".
 $(document)
-    .on('change', ':checkbox[data-proxyfor]', function(event, force) {
+    .on('change', proxy_elements_selector, function(event, force) {
         // Detect if event was triggered natively (triggered events have no
         // originalEvent)
         if (event.originalEvent !== undefined || !!force) {
@@ -31,7 +34,7 @@ $(document)
                 .trigger('change', [true]);
         }
     })
-    .on('update.proxy', ':checkbox[data-proxyfor]', function() {
+    .on('update.proxy', proxy_elements_selector, function() {
         var proxied = $(this).data('proxyfor'),
             $proxied = $(proxied).filter(':not(:disabled)'),
             $checked = $proxied.filter(':checked'),

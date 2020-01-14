@@ -139,7 +139,16 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
-
+        $config['has_many']['resource_permissions'] = [
+            'class_name' => 'ResourcePermission',
+            'on_delete'  => 'delete',
+            'on_store'   => 'store'
+        ];
+        $config['has_many']['resource_temporary_permissions'] = [
+            'class_name' => 'ResourceTemporaryPermission',
+            'on_delete'  => 'delete',
+            'on_store'   => 'store'
+        ];
         $config['has_many']['consultation_blocks'] = [
             'class_name'        => ConsultationBlock::class,
             'assoc_foreign_key' => 'teacher_id',

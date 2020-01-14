@@ -128,7 +128,10 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->cycle_dates      = [];
         $matched                = [];
 
+        $this->cycle_room_names = [];
+
         foreach ($this->course->cycles as $cycle) {
+            $cycle_has_multiple_rooms = false;
             foreach ($cycle->getAllDates() as $val) {
                 foreach ($this->semester as $sem) {
                     if ($this->semester_filter !== 'all' && $this->semester_filter !== $sem->id) {
@@ -151,14 +154,32 @@ class Course_TimesroomsController extends AuthenticatedController
                             $this->cycle_dates[$cycle->metadate_id]['room_request'][] = $val->getRoom();
                         }
                         $matched[] = $val->termin_id;
+                        //Check if a room is booked for the date:
+                        if (($val->room_booking instanceof ResourceBooking)
+                            && !$cycle_has_multiple_rooms) {
+                            $date_room = $val->room_booking->resource->name;
+                            if ($this->cycle_room_names[$cycle->id]) {
+                                if ($date_room
+                                    && ($date_room != $this->cycle_room_names[$cycle->id])) {
+                                    $cycle_has_multiple_rooms = true;
+                                }
+                            } elseif ($date_room) {
+                                $this->cycle_room_names[$cycle->id] = $date_room;
+                            }
+                        }
                     }
                 }
+            }
+            if ($cycle_has_multiple_rooms) {
+                $this->cycle_room_names[$cycle->id] = _('mehrere gebuchte Räume');
             }
         }
 
         $dates = $this->course->getDatesWithExdates();
 
+        $check_room_requests = Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS;
         $single_dates  = [];
+        $this->single_date_room_request_c = 0;
         foreach ($dates as $id => $val) {
             foreach ($this->semester as $sem) {
                 if ($this->semester_filter !== 'all' && $this->semester_filter !== $sem->id) {
@@ -173,8 +194,15 @@ class Course_TimesroomsController extends AuthenticatedController
                     $single_dates[$sem->id] = new SimpleCollection();
                 }
                 $single_dates[$sem->id]->append($val);
-
                 $matched[] = $val->id;
+                if ($check_room_requests) {
+                    $this->single_date_room_request_c += ResourceRequest::countBySql(
+                        "resource_requests.closed < '2' AND termin_id = :termin_id",
+                        [
+                            'termin_id' => $val->id
+                        ]
+                    );
+                }
             }
         }
 
@@ -270,7 +298,7 @@ class Course_TimesroomsController extends AuthenticatedController
         }
 
         if (Config::get()->RESOURCES_ENABLE) {
-            $this->resList = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, true, true);
+            $this->setAvailableRooms([$this->date]);
         }
 
         $this->teachers          = $this->course->getMembersWithStatus('dozent');
@@ -338,14 +366,14 @@ class Course_TimesroomsController extends AuthenticatedController
         }
 
         // Set Room
-        $old_room_id = $termin->room_assignment->resource_id;
+        $old_room_id = $termin->room_booking->resource_id;
         $singledate = new SingleDate($termin);
         if ($singledate->setTime($date, $end_time)) {
             $singledate->store();
         }
 
         if (Request::option('room') == 'room') {
-            $room_id = Request::option('room_sd');
+            $room_id = Request::get('room_id');
 
             if ($room_id) {
                 if ($room_id != $singledate->resource_id) {
@@ -353,8 +381,11 @@ class Course_TimesroomsController extends AuthenticatedController
                         $messages = $singledate->getMessages();
                         $this->course->appendMessages($messages);
                     } else if (!$singledate->ex_termin) {
-                        $this->course->createError(sprintf(_("Der angegebene Raum konnte für den Termin %s nicht gebucht werden!"),
-                                                           '<b>' . $singledate->toString() . '</b>'));
+                        $this->course->createError(
+                            sprintf(
+                                _("Der angegebene Raum konnte für den Termin %s nicht gebucht werden!"),
+                                '<b>' . $singledate->toString() . '</b>')
+                        );
                     }
                 }
             } else if ($old_room_id && !$singledate->resource_id) {
@@ -386,7 +417,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->restoreRequest(words('date start_time end_time room related_teachers related_statusgruppen freeRoomText dateType fromDialog course_type'));
 
         if (Config::get()->RESOURCES_ENABLE) {
-            $this->resList = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, true, true);
+            $this->setAvailableRooms(null);
         }
         $this->teachers = $this->course->getMembers('dozent');
         $this->groups   = Statusgruppen::findBySeminar_id($this->course->id);
@@ -433,13 +464,13 @@ class Course_TimesroomsController extends AuthenticatedController
             $termin->statusgruppen = Statusgruppen::findMany($related_groups);
         }
 
-        if (!Request::get('room') || Request::get('room') === 'nothing') {
+        if (!Request::get('room_id')) {
             $termin->raum = Request::get('freeRoomText');
             $termin->store();
         } else {
             $termin->store();
             $singledate = new SingleDate($termin);
-            $singledate->bookRoom(Request::get('room'));
+            $singledate->bookRoom(Request::option('room_id'));
             $this->course->appendMessages($singledate->getMessages());
         }
 
@@ -509,8 +540,14 @@ class Course_TimesroomsController extends AuthenticatedController
             case 'undelete':
                 PageLayout::setTitle(_('Termine stattfinden lassen'));
                 $this->unDeleteStack($cycle_id);
+            case 'request':
+                PageLayout::setTitle(
+                    _('Anfrage auf ausgewählte Termine stellen')
+                );
+                $this->requestStack($cycle_id);
         }
     }
+
 
     /**
      * Edits a stack/cycle.
@@ -522,10 +559,38 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->cycle_id = $cycle_id;
         $this->teachers = $this->course->getMembers('dozent');
         $this->gruppen  = Statusgruppen::findBySeminar_id($this->course->id);
-        $this->resList  = ResourcesUserRoomsList::getInstance($GLOBALS['user']->id, true, true, true);
+        $this->setAvailableRooms(CourseDate::findMany($_SESSION['_checked_dates']));
+
+        /*
+         * Extract a single date for start and end time
+         * (all cycle dates have the same start and end time,
+         * so it doesn't matter which date we get).
+         */
+        $this->date = CourseDate::findOneByMetadate_id($cycle_id);
         $this->checked_dates = $_SESSION['_checked_dates'];
         $this->render_template('course/timesrooms/editStack');
     }
+
+
+    /**
+     *
+     */
+    protected function requestStack($cycle_id)
+    {
+        $this->cycle_id = $cycle_id;
+
+        $appointment_ids = $_SESSION['_checked_dates'];
+        $this->redirect(
+            $this->url_for(
+                'course/room_requests/edit',
+                [
+                    'range' => 'date-multiple',
+                    'range_ids' => $appointment_ids
+                ]
+            )
+        );
+    }
+
 
     /**
      * Prepares a stack/cycle to be canceled.
@@ -576,6 +641,8 @@ class Course_TimesroomsController extends AuthenticatedController
             case 'preparecancel':
                 $this->saveCanceledStack();
                 break;
+            case 'request':
+                $this->saveRequestStack();
         }
 
         $this->displayMessages();
@@ -707,9 +774,9 @@ class Course_TimesroomsController extends AuthenticatedController
         if (in_array(Request::get('action'), ['room', 'freetext', 'noroom']) || Request::get('course_type')) {
             foreach ($singledates as $key => $singledate) {
                 $date = new SingleDate($singledate);
-                if (Request::option('action') == 'room' && Request::option('room')) {
-                    if (Request::option('room') != $singledate->room_assignment->resource_id) {
-                        if ($resObj = $date->bookRoom(Request::option('room'))) {
+                if (Request::option('action') == 'room' && Request::option('room_id')) {
+                    if (Request::option('room_id') != $singledate->room_booking->resource_id) {
+                        if ($resObj = $date->bookRoom(Request::option('room_id'))) {
                             $messages = $date->getMessages();
                             $this->course->appendMessages($messages);
                         } else if (!$date->ex_termin) {
@@ -740,6 +807,98 @@ class Course_TimesroomsController extends AuthenticatedController
         }
     }
 
+
+    /**
+     * The data saving part of the action to create one request
+     * for multiple appointments.
+     */
+    public function saveRequestStack($cycle_id = null)
+    {
+        //The properties[] array is set by $rp->definition->toHtmlInput.
+        //The default name for toHtmlInput input elements is:
+        //properties[$property->id].
+        $set_property_values = Request::getArray('properties');
+        $set_properties = [];
+        foreach ($set_property_values as $id => $value) {
+            if (!ResourcePropertyDefinition::exists($id)) {
+                continue;
+            }
+            $property = new ResourceRequestProperty();
+            $property->property_id = $id;
+            $property->state = $value;
+            $set_properties[] = $property;
+        }
+
+        $appointments = [];
+        foreach ($_SESSION['_checked_dates'] as $appointment_id) {
+            $appointment = CourseDate::find($appointment_id);
+            if ($appointment) {
+                $appointments[] = $appointment;
+            }
+        }
+
+        if (!$appointments) {
+            $this->course->createError(
+                _('Es wurden keine gültigen Termin-IDs übergeben!')
+            );
+            return;
+        }
+
+        $request = new RoomRequest();
+        $request->course_id = $this->course->getId();
+        $request->user_id = $GLOBALS['user']->id;
+        $request->comment = Request::get('comment');
+        $request->closed = '0';
+        if (!$request->store()) {
+            $this->course->createError(
+                _('Fehler beim Speichern der Anfrage!')
+            );
+            return;
+        }
+
+        //Now we store the requested properties:
+        $successfully_stored = 0;
+        foreach ($set_properties as $property) {
+            $property->request_id = $request->id;
+            if ($property->store()) {
+                $successfully_stored++;
+            }
+        }
+
+        if (($successfully_stored < count($set_properties))
+            and count($set_properties)) {
+            $this->course->createError(
+                _('Es wurden nicht alle zur Anfrage gehörenden Eigenschaften gespeichert!')
+            );
+        }
+
+        //Finally we can create ResourceRequestAppointment
+        //objects for each appointment:
+
+        $successfully_stored = 0;
+        foreach ($appointments as $appointment) {
+            $rra = new ResourceRequestAppointment();
+            $rra->request_id = $request->id;
+            $rra->appointment_id = $appointment->id;
+            if ($rra->store()) {
+                $successfully_stored++;
+            }
+        }
+
+        if (($successfully_stored < count($appointments))
+            and count($appointments)) {
+            $this->course->createError(
+                _('Es wurden nicht alle zur Anfrage gehörenden Terminzuordnungen gespeichert!')
+            );
+            return;
+        }
+
+        $this->course->createMessage(
+            _('Die Raumanfrage wurde gespeichert!')
+        );
+    }
+
+
     /**
      * Creates a cycle.
      *
@@ -757,7 +916,12 @@ class Course_TimesroomsController extends AuthenticatedController
         } else {
             $ids = $this->cycle->dates->pluck('termin_id');
 
-            $count              = ResourceAssignment::countBySQL('assign_user_id IN (?)', [$ids ?: '']);
+            $count = ResourceBooking::countBySQL(
+                'range_id IN ( :range_ids )',
+                [
+                    'range_ids' => ($ids ?: '')
+                ]
+            );
             $this->has_bookings = $count > 0;
         }
 
@@ -844,19 +1008,24 @@ class Course_TimesroomsController extends AuthenticatedController
             $cycle->end_offset = NULL;
         }
 
-        $cycle->store();
+        if ($cycle->store()) {
 
-        if(Request::int('course_type')) {
-            $cycle->setSingleDateType(Request::int('course_type'));
+            if(Request::int('course_type')) {
+                $cycle->setSingleDateType(Request::int('course_type'));
+            }
+
+            $cycle_info = $cycle->toString();
+            NotificationCenter::postNotification('CourseDidChangeSchedule', $this->course);
+
+            $this->course->createMessage(sprintf(_('Die regelmäßige Veranstaltungszeit %s wurde hinzugefügt!'), $cycle_info));
+            $this->displayMessages();
+            $this->relocate('course/timesrooms/index');
+        } else {
+            $this->storeRequest();
+            $this->course->createError(_('Die regelmäßige Veranstaltungszeit konnte nicht hinzugefügt werden! Bitte überprüfen Sie Ihre Eingabe.'));
+            $this->displayMessages();
+            $this->redirect('course/timesrooms/createCycle');
         }
-
-        $cycle_info = $cycle->toString();
-        NotificationCenter::postNotification('CourseDidChangeSchedule', $this->course);
-
-        $this->course->createMessage(sprintf(_('Die regelmäßige Veranstaltungszeit %s wurde hinzugefügt!'), $cycle_info));
-        $this->displayMessages();
-
-        $this->relocate('course/timesrooms/index');
     }
 
     /**
@@ -1168,6 +1337,61 @@ class Course_TimesroomsController extends AuthenticatedController
             $this->redirect($url);
         } else {
             call_user_func_array('parent::relocate', func_get_args());
+        }
+    }
+
+
+    protected function setAvailableRooms($dates)
+    {
+        if (Config::get()->RESOURCES_ENABLE) {
+            //Check for how many rooms the user has booking permissions.
+            //In case these permissions exist for more than 50 rooms
+            //show a quick search. Otherwise show a select field
+            //with the list of rooms.
+
+            $current_user = User::findCurrent();
+            $current_user_is_resource_admin = ResourceManager::userHasGlobalPermission(
+                $current_user,
+                'admin'
+            );
+            if (empty($dates)) {
+                $begin = $end = null;
+            } else {
+                $dates = SimpleCollection::createFromArray($dates);
+                $begin = min($dates->pluck('date'));
+                $end = max($dates->pluck('end_time'));
+            }
+            $this->selectable_rooms = [];
+            $rooms_with_booking_permissions = 0;
+            if ($current_user_is_resource_admin) {
+                $rooms_with_booking_permissions = Room::countAll();
+            } else {
+                $user_rooms = RoomManager::getUserRooms($current_user);
+                foreach ($user_rooms as $room) {
+                    if ($room->userHasBookingRights($current_user, $begin, $end)) {
+                        $rooms_with_booking_permissions++;
+                        $this->selectable_rooms[] = $room;
+                    }
+                }
+            }
+
+            if ($rooms_with_booking_permissions > 50) {
+                $room_search_type = new RoomSearch();
+                $room_search_type->setAcceptedPermissionLevels(
+                    ['autor', 'tutor', 'admin']
+                );
+                $room_search_type->setAdditionalDisplayProperties(
+                    ['seats']
+                );
+                $this->room_search = new QuickSearch(
+                    'room_id',
+                    $room_search_type
+                );
+            } else {
+                if (ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
+                    $this->selectable_rooms = Room::findAll();
+                }
+            }
         }
     }
 }

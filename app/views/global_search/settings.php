@@ -50,7 +50,7 @@
                         <td class="dragHandle"></td>
                         <td>
                             <?php $resourcesInactive = (get_class($module) == 'GlobalSearchResources' ||
-                                get_class($module) == 'GlobalSearchRoomAssignments') && !Config::get()->RESOURCES_ENABLE ?>
+                                get_class($module) == 'GlobalSearchRoomBookings') && !Config::get()->RESOURCES_ENABLE ?>
                             <label for="active[<?= htmlReady(get_class($module)) ?>]"
                                 <?php if ($resourcesInactive) : ?>
                                     class="inactive-settings-category"

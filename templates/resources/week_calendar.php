@@ -1,0 +1,1 @@
+<?= $calendar->render() ?>

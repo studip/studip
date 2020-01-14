@@ -35,8 +35,8 @@ class GlobalSearchResources extends GlobalSearchModule
             return null;
         }
         $query = DBManager::get()->quote("%{$search}%");
-        return "SELECT SQL_CALC_FOUND_ROWS `resource_id`, `name`, `description`
-                FROM `resources_objects`
+        return "SELECT SQL_CALC_FOUND_ROWS `id`, `name`, `description`
+                FROM `resources`
                 WHERE `name` LIKE {$query}
                   OR `description` LIKE {$query}
                   OR REPLACE(`name`, ' ', '') LIKE {$query}
@@ -63,14 +63,21 @@ class GlobalSearchResources extends GlobalSearchModule
      */
     public static function filter($res, $search)
     {
+        $resource = Resource::find($res['id']);
+        if (!($resource instanceof Resource)) {
+            return [];
+        }
+        try {
+            $resource = $resource->getDerivedClassInstance();
+        } catch (Exception $e) {
+            //Leave the resource as it is.
+        }
+
         return [
-            'name' => self::mark($res['name'], $search),
-            'url'  => URLHelper::getURL('resources.php', [
-                'view'        => 'view_schedule',
-                'show_object' => $res['resource_id'],
-            ]),
-            'img'        => Icon::create('resources', 'clickable')->asImagePath(),
-            'additional' => self::mark($res['description'], $search),
+            'name' => self::mark($resource->getFullName(), $search),
+            'url'  => $resource->getUrl('show'),
+            'img'        => $resource->getIcon('clickable')->asImagePath(),
+            'additional' => self::mark($resource->description, $search),
             'expand'     => self::getSearchURL($search),
         ];
     }

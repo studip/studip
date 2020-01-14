@@ -37,25 +37,11 @@ class FileController extends AuthenticatedController
             case 'user':
                 $this->relocate('files/index/' . $folder->getId(), ['cid' => null]);
                 break;
-            default:
-                $this->relocate('files/system/' . $folder->range_type . '/' . $folder->getId(), ['cid' => null]);
-                break;
-        }
-    }
-
-
-    /**
-     * This helper method redirects to the flat view of the file area
-     * that is displayed.
-     */
-    protected function redirectToFlatView($folder)
-    {
-        switch ($folder->range_type) {
-            case 'course':
-            case 'institute':
+            case 'Resource':
                 $this->relocate(
-                    $folder->range_type . '/files/flat',
-                    ['cid' => $folder->range_id]
+                    'resources/resource/files/'
+                  . $folder->range_id . '/'
+                  . $folder->getId()
                 );
                 break;
             case 'user':
@@ -877,6 +863,15 @@ class FileController extends AuthenticatedController
                             $this->top_folder_name = $message->subject;
                         }
                         break;
+                    case 'resource': {
+                        $resource = Resource::find($this->top_folder->range_id);
+                        if ($resource) {
+                            $resource = $resource->getDerivedClassInstance();
+                            if ($resource) {
+                                $this->top_folder_name = $resource->getFullName();
+                            }
+                        }
+                    }
                 }
 
             }

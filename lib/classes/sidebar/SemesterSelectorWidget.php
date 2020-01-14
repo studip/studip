@@ -40,8 +40,12 @@ class SemesterSelectorWidget extends SelectWidget
     public function render($variables = [])
     {
         $current_id = Request::get($this->template_variables['name']);
-        if (!$current_id && !$this->include_all) {
-            $current_id = Semester::findCurrent()->id;
+        if (!$current_id) {
+            if ($this->template_variables['value']) {
+                $current_id = $this->template_variables['value'];
+            } elseif (!$this->include_all) {
+                $current_id = Semester::findCurrent()->id;
+            }
         }
 
         if ($this->include_all) {

@@ -1101,32 +1101,6 @@ class Seminar
         return $this->metadate->getTurnus($metadate_id);
     }
 
-    public function bookRoomForSingleDate($singleDateID, $roomID, $cycle_id = '', $append_messages = true)
-    {
-        if (!$roomID) {
-            return false;
-        }
-        if ($cycle_id != '') {  // SingleDate of an MetaDate
-            $this->readSingleDatesForCycle($cycle_id, $this->filterStart, $this->filterEnd);    // Let the cycle-object read in all of his single dates
-
-            if (isset($this->metadate->cycles[$cycle_id]->termine[$singleDateID])) {
-                if (!$return = $this->metadate->cycles[$cycle_id]->termine[$singleDateID]->bookRoom($roomID)) {
-                    $this->appendMessages($this->metadate->cycles[$cycle_id]->termine[$singleDateID]->getMessages());
-                    return false;
-                }
-            }
-        } else {    // an irregular SingleDate
-            $this->readSingleDates();
-
-            if (isset($this->irregularSingleDates[$singleDateID])) {
-                if (!$return = $this->irregularSingleDates[$singleDateID]->bookRoom($roomID)) {
-                    $this->appendMessages($this->irregularSingleDates[$singleDateID]->getMessages());
-                    return false;
-                }
-            }
-        }
-        return $return;
-    }
 
     /**
      * get StatOfNotBookedRooms returns an array:
@@ -1179,15 +1153,6 @@ class Seminar
         }
 
         return $return;
-    }
-
-    public function getRequestsInfo($cycle_id)
-    {
-        $zahl =  SeminarDB::countRequestsForSingleDates($cycle_id, $this->id, $this->filterStart, $this->filterEnd);
-        if ($zahl > 0) {
-            return sprintf(_('%u noch offen'), $zahl);
-        }
-        return _('keine offen');
     }
 
     /**
@@ -1291,65 +1256,6 @@ class Seminar
         $this->metadate->cycles[$cycle_id]->autoAssignIssues($themen, $this->filterStart, $this->filterEnd);
     }
 
-    public function hasRoomRequest()
-    {
-        if (!$this->request_id) {
-            $this->request_id = RoomRequest::existsByCourse($this->is);
-            if (!$this->request_id) return FALSE;
-
-            $rD = new RoomRequest($this->request_id);
-            if ($rD->getClosed() != 0) {
-                return FALSE;
-            }
-        }
-
-        return TRUE;
-    }
-
-    /**
-     * this function returns a human-readable status of a room-request, if any, false otherwise
-     *
-     * the int-values of the states are:
-     *  0 - room-request is open
-     *  1 - room-request has been edited, but no confirmation has been sent
-     *  2 - room-request has been edited and a confirmation has been sent
-     *  3 - room-request has been declined
-     *
-     * they are mapped with:
-     *  0 - open
-     *  1 - pending
-     *  2 - closed
-     *  3 - declined
-     *
-     * @return string the mapped text
-     */
-    public function getRoomRequestStatus()
-    {
-        // check if there is any room-request
-        if (!$this->request_id) {
-            $this->request_id = getSeminarRoomRequest($this->id);
-
-            // no room request found
-            if (!$this->request_id) return FALSE;
-        }
-
-        // room-request found, parse int-status and return string-status
-        if (!$this->room_request) {
-            $this->room_request = new RoomRequest($this->request_id);
-            if ($this->room_request->isNew()) {
-                throw new Exception("Room-Request with the id {$this->request_id} does not exists!");
-            }
-        }
-
-        switch ($this->room_request->getClosed()) {
-            case '0'; return 'open'; break;
-            case '1'; return 'pending'; break;
-            case '2'; return 'closed'; break;
-            case '3'; return 'declined'; break;
-        }
-
-        return FALSE;
-    }
 
     public function applyTimeFilter($start, $end)
     {
@@ -1413,56 +1319,6 @@ class Seminar
         }
     }
 
-    public function getFormattedPredominantRooms($cycle_id, $link = true, $show = 3)
-    {
-        if (!($rooms = $this->metadate->cycles[$cycle_id]->getPredominantRoom($this->filterStart, $this->filterEnd))) {
-            return FALSE;
-        }
-
-        $roominfo = '';
-
-        foreach ($rooms as $key => $val) {
-            // get string-representation of predominant booked rooms
-            if ($key >= $show) {
-                if ($show > 1) {
-                    $roominfo .= ', '.sprintf(_("und %s weitere"), (sizeof($rooms)-$show));
-                }
-                break;
-            } else {
-                if ($key > 0) {
-                    $roominfo .= ', ';
-                }
-                $resObj = ResourceObject::Factory($val);
-                if ($link) {
-                    $roominfo .= $resObj->getFormattedLink(TRUE, TRUE, TRUE);
-                } else {
-                    $roominfo .= $resObj->getName();
-                }
-                unset($resObj);
-            }
-        }
-        return $roominfo;
-    }
-
-    /**
-     * removes a room-request for a single date. If no cycle_id is given, the single date
-     * is an irregular date of the seminar, otherwise it is a single date of a regular entry.
-     *
-     * @param string $singledate_id the id of the date
-     * @param string $cycle_id the metadate_id of the regular entry (optional)
-     *
-     * @return boolean true on success
-     */
-    public function removeRequest($singledate_id,  $cycle_id = '')
-    {
-        if ($cycle_id == '') {
-            $this->irregularSingleDates[$singledate_id]->removeRequest();
-        } else {
-            $this->metadate->cycles[$cycle_id]->removeRequest($singledate_id, $this->filterStart, $this->filterEnd);
-        }
-        $this->createMessage(_("Die Raumanfrage wurde zurückgezogen!"));
-        return TRUE;
-    }
 
     public function hasDatesOutOfDuration($force = false)
     {
@@ -1491,217 +1347,6 @@ class Seminar
         }
     }
 
-    // Funktion fuer die Ressourcenverwaltung
-    public function getGroupedDates($singledate = null, $metadate = null)
-    {
-        $i = 0;
-        $first_event = FALSE;
-        $all_semester = SemesterData::getAllSemesterData();
-
-        if (Config::get()->RESOURCES_HIDE_PAST_SINGLE_DATES) {
-            // filtering
-            foreach ($all_semester as $semester) {
-                if ($semester['ende'] > time()) {
-                    $new_as[] = $semester;
-                }
-            }
-            $all_semester = $new_as;
-        }
-
-        if (!$singledate) {
-            foreach ($all_semester as $semester) {
-                foreach ($this->metadate->cycles as $metadate_id => $cycle) {
-                    if ($metadate && $metadate_id != $metadate) continue;
-                    $group = $cycle->getSingleDates();
-                    $metadate_has_termine = 0;
-                    $single = true;
-                    foreach ($group as $termin) {
-                        if (!$termin->isExTermin() && $termin->getStartTime() >= $semester['beginn'] && $termin->getStartTime() <= $semester['ende'] && (!Config::get()->RESOURCES_HIDE_PAST_SINGLE_DATES || $termin->getStartTime() >= time()) && $termin->isPresence()) {
-                            if (empty($first_event)) {
-                                $first_event = $termin->getStartTime();
-                            }
-                            $groups[$i]["termin_ids"][$termin->getSingleDateId()] = TRUE;
-                            $metadate_has_termine = 1;
-
-                            if (empty($info[$i]['raum'])) {
-                                $info[$i]['raum'] = $termin->resource_id;
-                            } else if ($info[$i]['raum'] != $termin->resource_id) {
-                                $single = false;
-                            }
-                        }
-                    }
-
-                    if ($metadate_has_termine) {
-                        $info[$i]['name'] = $cycle->toString('long').' ('.$semester['name'].')';
-                        $info[$i]['export'] = $cycle->toString('long').' ('.$semester['name'].')';
-                        $info[$i]['weekend'] = ($cycle->getDay() == 6 || $cycle->getDay() == 0);
-                        $this->applyTimeFilter($semester['beginn'], $semester['ende']);
-                        $raum = $this->getDatesTemplate('dates/seminar_predominant_html', ['cycle_id' => $metadate_id]);
-                        if ($raum) {
-                            $info[$i]['name'] .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$raum;
-                            $room_stat = $this->getStatOfNotBookedRooms($cycle->getMetadateId());
-                            $info[$i]['name'] .= sprintf(_(" (%s von %s belegt)"), $room_stat['all'] - $room_stat['open'] , $room_stat['all']);
-                            $info[$i]['export'] .= sprintf(_(" (%s von %s belegt)"), $room_stat['all'] - $room_stat['open'] , $room_stat['all']);
-                            $groups[$i]['complete'] = ($room_stat['all'] - $room_stat['open'] >= sizeof($groups[$i]['termin_ids'])) ? true : false;
-                        }
-                        if (!$single) unset($info[$i]['raum']);
-                        $i++;
-                    }
-                }
-            }
-            if (!$metadate) {
-                $irreg = $this->getSingleDates();
-
-                if (Config::get()->RESOURCES_HIDE_PAST_SINGLE_DATES) {
-                    $anzahl = 0;
-                    foreach ($irreg as $termin_id => $termin) {
-                        if ($termin->getStartTime() > time() - 3600) {
-                            $anzahl++;
-                        }
-                    }
-                } else {
-                    $anzahl = sizeof($irreg);
-                }
-
-                if ($anzahl > Config::get()->RESOURCES_ALLOW_SINGLE_DATE_GROUPING) {
-                    $single = true;
-                    $first = true;
-                    foreach ($irreg as $termin_id => $termin) {
-                        if ($termin->isPresence()) {
-                            if (!Config::get()->RESOURCES_HIDE_PAST_SINGLE_DATES || $termin->getStartTime() > time() - 3600) {
-                                if (empty($first_event)) {
-                                    $first_event = $termin->getStartTime();
-                                }
-                                $groups[$i]["termin_ids"][$termin->getSingleDateId()] = TRUE;
-                                if (!$first) $info[$i]['name'] .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;';
-                                $info[$i]['name'] .= $termin->toString();
-                                $info[$i]['export'] .= $termin->toString();
-                                $resObj = ResourceObject::Factory($termin->resource_id);
-
-                                if ($link = $resObj->getFormattedLink($termin->getStartTime())) {
-                                    $info[$i]['name'] .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$link;
-                                    $info[$i]['export'] .= ': ' . $resObj->getName();
-                                    if (empty($info[$i]['raum'])) {
-                                        $info[$i]['raum'] = $termin->resource_id;
-                                    } else if ($info[$i]['raum'] != $termin->resource_id) {
-                                        $single = false;
-                                    }
-                                }
-
-                                if (date('w', $termin->getStartTime()) == 6 || date('w', $termin->getStartTime()) == 0) {
-                                    $info[$i]['weekend'] = true;
-                                }
-                                $first = false;
-                            }
-                        }
-                    }
-                    if (!$single) unset($info[$i]['raum']);
-                } else {
-                    foreach ($irreg as $termin_id => $termin) {
-                        if ($termin->isPresence()) {
-                            if (!Config::get()->RESOURCES_HIDE_PAST_SINGLE_DATES || $termin->getStartTime() > time() - 3600) {
-                                if (empty($first_event)) {
-                                    $first_event = $termin->getStartTime();
-                                }
-                                $groups[$i]["termin_ids"][$termin->getSingleDateId()] = TRUE;
-                                $info[$i]['name'] = $termin->toString();
-                                $info[$i]['export'] = $termin->toString();
-                                $resObj = ResourceObject::Factory($termin->resource_id);
-
-                                if ($link = $resObj->getFormattedLink($termin->getStartTime())) {
-                                    $info[$i]['name'] .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;'.$link;
-                                    $info[$i]['raum'] = $termin->resource_id;
-                                    $info[$i]['export'] .= ': ' . $resObj->getName();
-                                }
-
-                                $info[$i]['weekend'] = (date('w', $termin->getStartTime()) == 6 || date('w', $termin->getStartTime()) == 0);
-                                $i++;
-                            }
-                        }
-                    }
-                }
-            }
-        } else {    // we have a single date
-            $termin = new SingleDate($singledate);
-            $groups[0]['termin_ids'][$termin->getSingleDateID()] = TRUE;
-            $info[0]['name']   = $this->getDatesTemplate('dates/date_html', ['date' => $termin]);
-            $info[0]['export'] = $termin->toString();
-            $info[0]['raum']   = $termin->resource_id;
-            $info[0]['weekend'] = (date('w', $termin->getStartTime()) == 6 || date('w', $termin->getStartTime()) == 0);
-            $first_event = $termin->getStartTime();
-        }
-
-        return ['first_event' => $first_event, 'groups' => $groups, 'info' => $info];
-    }
-
-    /**
-     * creates a textual, status-dependent representation of a room-request for a seminar.
-     *
-     * @return string conatining room, responsible person, properties, current status and message / decline-message
-     */
-    public function getRoomRequestInfo()
-    {
-        $room_request = $this->getRoomRequestStatus();
-        if ($room_request) {
-            if (!$this->requestData) {
-                $rD = new RoomRequest($this->request_id);
-                $resObject = ResourceObject::Factory($rD->resource_id);
-                $this->requestData .= 'Raum: '.$resObject->getName() . "\n";
-                $this->requestData .= 'verantwortlich: '.$resObject->getOwnerName() ."\n\n";
-                foreach ($rD->getProperties() as $val) {
-                    $this->requestData .= $val['name'].': ';
-                    if ($val['type'] == 'bool') {
-                        if ($val['state'] == 'on') {
-                            $this->requestData .= "vorhanden\n";
-                        } else {
-                            $this->requestData .= "nicht vorhanden\n";
-                        }
-                    } else {
-                        $this->requestData .= $val['state'] . "\n";
-                    }
-                }
-                if  ($rD->getClosed() == 0) {
-                    $txt = _("Die Anfrage wurde noch nicht bearbeitet.");
-                } else if ($rD->getClosed() == 3) {
-                    $txt = _("Ihre Anfrage wurde abgelehnt!");
-                } else {
-                    $txt = _("Die Anfrage wurde bearbeitet.");
-                }
-
-                $this->requestData .= "\nStatus: $txt\n";
-
-                // if the room-request has been declined, show the decline-notice placed by the room-administrator
-                if ($room_request == 'declined') {
-                    if ($rD->getReplyComment()) {
-                        $this->requestData .= "\nNachricht Raumadmin:\n";
-                        $this->requestData .= $rD->getReplyComment();
-                    }
-                } else {
-                    if ($rD->getComment()) {
-                        $this->requestData .= "\nNachricht an Raumadmin:\n";
-                        $this->requestData .= $rD->getComment();
-                    }
-                }
-
-            }
-
-            return $this->requestData;
-        } else {
-            return FALSE;
-        }
-    }
-
-    public function removeSeminarRequest()
-    {
-        $request_id = RoomRequest::existsByCourse($this->getId());
-        if ($request_id) {
-            // logging >>>>>>
-            StudipLog::log("SEM_DELETE_REQUEST", $this->getId());
-            // logging <<<<<<
-            $this->requestData = '';
-            return RoomRequest::find($request_id)->delete();
-        }
-    }
 
     /**
      * instance method
@@ -1988,8 +1633,12 @@ class Seminar
 
         // kill all the ressources that are assigned to the Veranstaltung (and all the linked or subordinated stuff!)
         if (Config::get()->RESOURCES_ENABLE) {
-            $killAssign = new DeleteResourcesUser($s_id);
-            $killAssign->delete();
+            ResourceBooking::deleteBySql(
+                'range_id = :course_id',
+                [
+                    'course_id' => $s_id
+                ]
+            );
             if ($rr = RoomRequest::existsByCourse($s_id)) {
                 RoomRequest::find($rr)->delete();
             }

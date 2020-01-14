@@ -50,7 +50,6 @@ class SemClass implements ArrayAccess
         "literature",
         "scm",
         "wiki",
-        "resources",
         "calendar",
         "elearning_interface"
     ];
@@ -66,7 +65,6 @@ class SemClass implements ArrayAccess
         "CoreLiterature",
         "CoreScm",
         "CoreWiki",
-        "CoreResources",
         "CoreCalendar",
         "CoreElearningInterface"
     ];
@@ -84,7 +82,6 @@ class SemClass implements ArrayAccess
             'literature' => "CoreLiterature",
             'scm' => "CoreScm",
             'wiki' => "CoreWiki",
-            'resources' => "CoreResources",
             'calendar' => "CoreCalendar",
             'elearning_interface' => "CoreElearningInterface",
             'modules' => '{"CoreOverview":{"activated":1,"sticky":1},"CoreAdmin":{"activated":1,"sticky":1}, "CoreResources":{"activated":1,"sticky":0}}',
@@ -118,7 +115,6 @@ class SemClass implements ArrayAccess
             'literature'          => 'CoreLiterature',
             'scm'                 => 'CoreScm',
             'wiki'                => 'CoreWiki',
-            'resources'           => 'CoreResources',
             'calendar'            => 'CoreCalendar',
             'elearning_interface' => 'CoreElearningInterface',
             'personal'            => 'personal'
@@ -387,7 +383,6 @@ class SemClass implements ArrayAccess
                 "literature = :literature, " .
                 "scm = :scm, " .
                 "wiki = :wiki, " .
-                "resources = :resources, " .
                 "calendar = :calendar, " .
                 "elearning_interface = :elearning_interface, " .
                 "modules = :modules, " .
@@ -430,7 +425,6 @@ class SemClass implements ArrayAccess
             'literature' => $this->data['literature'],
             'scm' => $this->data['scm'],
             'wiki' => $this->data['wiki'],
-            'resources' => $this->data['resources'],
             'calendar' => $this->data['calendar'],
             'elearning_interface' => $this->data['elearning_interface'],
             'modules' => json_encode((object) $this->data['modules']),

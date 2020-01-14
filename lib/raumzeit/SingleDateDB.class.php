@@ -48,20 +48,18 @@ class SingleDateDB
         if ($termin->isExTermin()) {
             $table = 'ex_termine';
 
-            $query = "SELECT assign_id FROM resources_assign WHERE assign_user_id = ?";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$termin->getTerminID()]);
-            $assign_id = $statement->fetchColumn();
-
-            if ($assign_id) {
+            $booking = ResourceBooking::findByRange_id($termin->getTerminID());
+            if ($booking) {
                 // delete resource-request, if any
-                if ($request_id = self::getRequestID($termin->getTerminID())) {
-                    $rr = new RoomRequest($request_id);
-                    $rr->delete();
-                }
+                ResourceRequest::deleteBySql(
+                    'termin_id = :termin_id',
+                    [
+                        'termin_id' => $termin->getTerminID()
+                    ]
+                );
 
-                // delete resource assignment, if any
-                AssignObject::Factory($assign_id)->delete();
+                // delete resource booking, if any
+                $booking->delete();
             }
         }
 
@@ -173,7 +171,7 @@ class SingleDateDB
                   FROM termine
                         LEFT JOIN termin_related_persons AS trp ON (termine.termin_id = trp.range_id)
                         LEFT JOIN termin_related_groups AS trg ON (termine.termin_id = trg.termin_id)
-                        LEFT JOIN resources_assign ON (assign_user_id = termine.termin_id)
+                        LEFT JOIN resource_bookings ON (resource_bookings.range_id = termine.termin_id)
                   WHERE termine.termin_id = ?
                   GROUP BY termine.termin_id
                   ORDER BY NULL";
@@ -208,14 +206,17 @@ class SingleDateDB
     static function deleteSingleDate($id, $ex_termin)
     {
         if (Config::get()->RESOURCES_ENABLE) {
-            // delete resource assignment, if any
-            $killAssign = AssignObject::Factory(self::getAssignID($id));
+            // delete resource booking, if any
+            $killAssign = new ResourceBooking(self::getAssignID($id));
             $killAssign->delete();
 
-            if ($request_id = self::getRequestID($id)) {
-                $rr = new RoomRequest($request_id);
-                $rr->delete();
-            }
+            //Delete resource requests:
+            ResourceRequest::deleteBySql(
+                'termin_id = :termin_id',
+                [
+                    'termin_id' => $id
+                ]
+            );
         }
 
         // Prepare query that deletes all entries for a given termin id
@@ -243,22 +244,15 @@ class SingleDateDB
 
     static function getAssignID($termin_id)
     {
-        $query = "SELECT assign_id
+        $query = "SELECT resource_bookings.id
                   FROM termine
-                  LEFT JOIN resources_assign ON (assign_user_id = termin_id)
+                  LEFT JOIN resource_bookings ON (resource_bookings.range_id = termin_id)
                   WHERE termin_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$termin_id]);
         return $statement->fetchColumn() ?: false;
     }
 
-    static function getRequestID($termin_id)
-    {
-        $query = "SELECT request_id FROM resources_requests WHERE termin_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$termin_id]);
-        return $statement->fetchColumn() ?: false;
-    }
 
     static function getIssueIDs($termin_id)
     {
@@ -283,14 +277,6 @@ class SingleDateDB
         return true;
     }
 
-    static function deleteRequest($termin_id)
-    {
-        $query = "DELETE FROM resources_requests WHERE termin_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$termin_id]);
-
-        return true;
-    }
 
     static function deleteAllDates($course_id)
     {

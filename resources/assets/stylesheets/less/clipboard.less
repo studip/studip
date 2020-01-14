@@ -1,0 +1,91 @@
+.clipboard-selector {
+    width: calc(100% - 5em);
+    margin-bottom: 0.25em;
+    margin-right: 1em;
+}
+
+.clipboard-name {
+    height: 1.7em;
+    padding: 1px 8px;
+    width: calc(100% - 5.5em);
+    margin-bottom: 0.25em;
+}
+
+.selected-element-transporter {
+    padding: 0.5em;
+    text-align: center;
+}
+
+.dragged-clipboard-item {
+    position: fixed;
+    z-index: @drag_and_drop_z_index;
+    border: @drag_and_drop_border;
+    color: @base-color;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: @white;
+}
+
+div.clipboard-area-container {
+    margin-bottom: 0.5em;
+    overflow-y: scroll;
+    max-height: 15em;
+}
+
+table.clipboard-area {
+    width: 100%;
+    border: 1px solid @content-color-40;
+    min-height: 8em;
+    height: 8em;
+    padding: 0.25em;
+}
+
+table.clipboard-area tr.empty-clipboard-message > td {
+    padding: 0.5em;
+    text-align: center;
+}
+
+.clipboard-item {
+
+    > td.item-name, > td.item-actions {
+        vertical-align: top;
+    }
+
+    > .item-name {
+        width: 80%;
+    }
+
+    > .item-actions {
+        width: 20%;
+    }
+}
+
+.clipboard-widget {
+    form .apply-button {
+        width: 100%;
+        margin-bottom: 0.15em;
+    }
+
+    form.new-clipboard-form {
+        input[type=text][name=name] {
+            display: inline-block;
+            width: calc(100% - 2em);
+        }
+    }
+
+}
+
+
+.animated-drop {
+    animation: drop-animation 0.5s;
+}
+
+@keyframes drop-animation {
+    0% {
+        background-color: @yellow-60;
+    }
+
+    100% {
+        background-color: @white;
+    }
+}
