@@ -466,7 +466,14 @@ class Markup
 
             $purifier = new \HTMLPurifier($config);
             $html = $purifier->purify($html);
-            $html = \decodeHTML(trim(str_replace('<br />', PHP_EOL, $html)));
+
+            // Replace new lines with simple line break; twice because we don't
+            // want to create unneccessary white space if a <br /> is followed
+            // by a new line
+            $html = str_replace('<br />' . PHP_EOL, PHP_EOL, $html);
+            $html = str_replace('<br />', PHP_EOL, $html);
+
+            $html = \decodeHTML(trim($html));
         }
 
         return $html;
