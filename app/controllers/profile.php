@@ -128,7 +128,10 @@ class ProfileController extends AuthenticatedController
         if (Config::get()->CALENDAR_ENABLE) {
             if (!in_array($this->current_user->perms, ['admin', 'root'])) {
                 if (Visibility::verify('termine', $this->current_user->user_id)) {
-                    $response    = $this->relay('calendar/contentbox/display/' . $this->current_user->user_id);
+                    $start = time();
+                    $end   = strtotime('+1 week 23:59:59');
+
+                    $response    = $this->relay('calendar/contentbox/display/' . $this->current_user->user_id . '/' . ($end - $start));
                     $this->dates = $response->body;
                 }
             }

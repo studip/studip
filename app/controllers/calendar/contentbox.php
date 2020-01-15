@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * contentbox.php - Calender Contentbox controller
  *
  * This program is free software; you can redistribute it and/or
@@ -24,8 +23,8 @@ class Calendar_ContentboxController extends StudipController {
      * @param String $range_id range id (or array of range ids) of the news to get displayed
      * @return array() Array of votes
      */
-    function display_action($range_id, $timespan = 604800, $start = null) {
-
+     public function display_action($range_id, $timespan = 604800, $start = null)
+     {
         // Fetch time if needed
         $this->start = $start ? : strtotime('today');
         $this->timespan = $timespan;
@@ -50,15 +49,22 @@ class Calendar_ContentboxController extends StudipController {
 
         // Check permission to edit
         if ($this->single) {
-            $this->admin = $range_id[0] == $GLOBALS['user']->id
-                || (get_object_type($range_id[0], ['sem']) === 'sem' && $GLOBALS['perm']->have_studip_perm('tutor', $range_id[0]));
+            $this->admin = $range_id[0] === $GLOBALS['user']->id
+                || (
+                    get_object_type($range_id[0], ['sem']) === 'sem'
+                    && $GLOBALS['perm']->have_studip_perm('tutor', $range_id[0])
+                );
             // Set range_id
             $this->range_id = $range_id[0];
         }
 
         // Forge title
         if ($this->termine) {
-            $this->title = sprintf(_('Termine für die Zeit vom %s bis zum %s'), strftime("%d. %B %Y", $this->start), strftime("%d. %B %Y", $this->start + $this->timespan));
+            $this->title = sprintf(
+                _('Termine für die Zeit vom %s bis zum %s'),
+                strftime('%d. %B %Y', $this->start),
+                strftime('%d. %B %Y', $this->start + $this->timespan)
+            );
         } else {
             $this->title = _('Termine');
         }
@@ -69,81 +75,91 @@ class Calendar_ContentboxController extends StudipController {
         }
     }
 
-    private function parseSeminar($id) {
+    private function parseSeminar($id)
+    {
         $course = Course::find($id);
         $dates = $course->getDatesWithExdates()->findBy('end_time', [$this->start, $this->start + $this->timespan], '><');
         foreach ($dates as $courseDate) {
-
             // Build info
             $info = [];
-            if ($courseDate->dozenten[0]) {
-                $info[_('Durchführende Dozenten')] = join(', ', $courseDate->dozenten->getFullname());
+            if (count($courseDate->dozenten) > 0) {
+                $info[_('Durchführende Dozenten')] = implode(', ', $courseDate->dozenten->getFullname());
             }
-            if ($courseDate->statusgruppen[0]) {
-                $info[_('Beteiligte Gruppen')] = join(', ', $courseDate->statusgruppen->getValue('name'));
+            if (count($courseDate->statusgruppen) > 0) {
+                $info[_('Beteiligte Gruppen')] = implode(', ', $courseDate->statusgruppen->getValue('name'));
             }
 
             // Store for view
             $this->termine[] = [
-                'id' => $courseDate->id,
-                'chdate' => $courseDate->chdate,
-                'title' => $courseDate->getFullname() . ($courseDate->topics[0] ? ', ' . join(', ', $courseDate->topics->getValue('title')) : ""),
+                'id'          => $courseDate->id,
+                'chdate'      => $courseDate->chdate,
+                'title'       => $courseDate->getFullname() . (count($courseDate->topics) > 0 ? ', ' . implode(', ', $courseDate->topics->getValue('title')) : ''),
                 'description' => $courseDate instanceOf CourseExDate ? $courseDate->content : '',
-                'topics' => $courseDate->topics->toArray('title description'),
-                'room' => $courseDate->getRoomName(),
-                'info' => $info
+                'topics'      => $courseDate->topics->toArray('title description'),
+                'room'        => $courseDate->getRoomName(),
+                'info'        => $info
             ];
         }
     }
 
-    private function parseUser($id) {
-        $restrictions = ($GLOBALS['user']->id == $id ? [] : ['CLASS' => 'PUBLIC']);
-        $events = SingleCalendar::getEventList($id, $this->start,
-                $this->start + $this->timespan, null, $restrictions);
+    private function parseUser($id)
+    {
+        $restrictions = $GLOBALS['user']->id === $id ? [] : ['CLASS' => 'PUBLIC'];
+        $events = SingleCalendar::getEventList(
+            $id,
+            $this->start,
+            $this->start + $this->timespan,
+            null,
+            $restrictions
+        );
 
         // Prepare termine
         $this->termine = [];
 
         foreach ($events as $termin) {
+            // Exclude events that begin after the given time range
+            if ($termin->getStart() > $this->start + $this->timespan) {
+                continue;
+            }
+
             // Adjust title
-            if (date("Ymd", $termin->getStart()) == date("Ymd", time())) {
-                $title = _('Heute') . date(", H:i", $termin->getStart());
+            if (date('Ymd', $termin->getStart()) == date('Ymd')) {
+                $title = _('Heute') . date(', H:i', $termin->getStart());
             } else {
-                $title = mb_substr(strftime("%a", $termin->getStart()), 0, 2);
-                $title .= date(". d.m.Y, H:i", $termin->getStart());
+                $title = mb_substr(strftime('%a', $termin->getStart()), 0, 2);
+                $title .= date('. d.m.Y, H:i', $termin->getStart());
             }
 
             if ($termin->getStart() < $termin->getEnd()) {
-                if (date("Ymd", $termin->getStart()) < date("Ymd", $termin->getEnd())) {
-                    $title .= " - " . mb_substr(strftime("%a", $termin->getEnd()), 0, 2);
-                    $title .= date(". d.m.Y, H:i", $termin->getEnd());
+                if (date('Ymd', $termin->getStart()) < date('Ymd', $termin->getEnd())) {
+                    $title .= ' - ' . mb_substr(strftime('%a', $termin->getEnd()), 0, 2);
+                    $title .= date('. d.m.Y, H:i', $termin->getEnd());
                 } else {
-                    $title .= " - " . date("H:i", $termin->getEnd());
+                    $title .= ' - ' . date('H:i', $termin->getEnd());
                 }
             }
 
             if ($termin->getTitle()) {
                 $tmp_titel = htmlReady(mila($termin->getTitle())); //Beschneiden des Titels
-                $title .= ", " . $tmp_titel;
+                $title .= ', ' . $tmp_titel;
             }
 
             // Store for view
             $this->termine[] = [
-                'id' => $termin->id,
-                'type' => get_class($termin),
-                'range_id' => $termin->range_id,
-                'event_id' => $termin->event_id,
-                'chdate' => $termin->chdate,
-                'title' => $title,
+                'id'          => $termin->id,
+                'type'        => get_class($termin),
+                'range_id'    => $termin->range_id,
+                'event_id'    => $termin->event_id,
+                'chdate'      => $termin->chdate,
+                'title'       => $title,
                 'description' => $termin->getDescription(),
-                'room' => $termin->getLocation(),
-                'info' => [
-                    _('Kategorie') => $termin->toStringCategories(),
-                    _('Priorität') => $termin->toStringPriority(),
+                'room'        => $termin->getLocation(),
+                'info'        => [
+                    _('Kategorie')    => $termin->toStringCategories(),
+                    _('Priorität')    => $termin->toStringPriority(),
                     _('Sichtbarkeit') => $termin->toStringAccessibility(),
                     _('Wiederholung') => $termin->toStringRecurrence()]
             ];
         }
     }
-
 }
