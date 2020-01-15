@@ -971,11 +971,10 @@ class UserManagement
         $localEntries = DataFieldEntry::removeAll($user_id);
 
         // delete all blubber entrys
-        $query = "DELETE blubber, blubber_mentions, blubber_reshares, blubber_streams
-                  FROM blubber
+        $query = "DELETE blubber_threads, blubber_mentions, blubber_comments
+                  FROM blubber_threads
                   LEFT JOIN blubber_mentions USING (user_id)
-                  LEFT JOIN blubber_reshares USING (user_id)
-                  LEFT JOIN blubber_streams USING (user_id)
+                  LEFT JOIN blubber_comments USING (user_id)
                   WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$user_id]);
