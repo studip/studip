@@ -91,6 +91,7 @@
                                             'name' => 'delete_room_part['
                                                   . $room_part->id
                                                   . ']',
+                                            'data-confirm' => _('Wollen Sie den Raum wirklich entfernen?'),
                                             'class' => 'text-bottom'
                                         ]
                                     ) ?>
