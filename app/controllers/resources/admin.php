@@ -280,7 +280,7 @@ class Resources_AdminController extends AuthenticatedController
                 'dispatch.php/resources/category/add'
             ),
             Icon::create('add'),
-            ['data-dialog' => 'reload-on-close']
+            ['data-dialog' => 'size=auto;reload-on-close']
         );
 
         $this->sidebar->addWidget($actions);
