@@ -34,7 +34,7 @@ class BrokenResource extends Resource
         return false;
     }
     
-    public static function getIconStatic($role = 'info')
+    public static function getIconStatic($role = Icon::ROLE_INFO)
     {
         return Icon::create('resource', $role);
     }

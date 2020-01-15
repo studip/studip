@@ -257,7 +257,7 @@ class Building extends Resource
         return $this->getIcon()->asImagePath();
     }
 
-    public function getIcon($role = 'info')
+    public function getIcon($role = Icon::ROLE_INFO)
     {
         return Icon::create('home', $role);
     }
