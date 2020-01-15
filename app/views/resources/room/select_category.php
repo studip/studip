@@ -9,7 +9,7 @@
                      'dispatch.php/resources/room/add/' . $room_id,
                      ['category_id' => $category->id]
                      ) ?>" class="category-link" data-dialog="size=auto">
-                <?= $room_class::getIconStatic('clickable')->asImg('50px') ?>
+                <?= $room_class::getIconStatic('clickable')->asImg(50) ?>
                 <div class="resource-category-select-text">
                     <?= htmlReady($category->name) ?>
                 </div>

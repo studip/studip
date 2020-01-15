@@ -101,7 +101,7 @@
                     'dispatch.php/messages/write',
                     ['rec_uname' => $booking->assigned_user->username]
                 ) ?>" data-dialog="size=auto">
-                    <?= Icon::create('mail')->asImg('20px', ['class' => 'text-bottom']) ?>
+                    <?= Icon::create('mail')->asImg(20, ['class' => 'text-bottom']) ?>
                 </a>
             <? else :?>
                 <?= htmlReady($booking->description) ?>
@@ -120,7 +120,7 @@
                 'dispatch.php/messages/write',
                 ['rec_uname' => $booking->booking_user->username]
             ) ?>" data-dialog="size=auto">
-                <?= Icon::create('mail')->asImg('20px', ['class' => 'text-bottom']) ?>
+                <?= Icon::create('mail')->asImg(20, ['class' => 'text-bottom']) ?>
             </a>
         <? else :?>
           <?= _('unbekannt') ?>

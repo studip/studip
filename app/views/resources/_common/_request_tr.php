@@ -103,7 +103,7 @@
                  'resources/room_request/resolve/' . $request->id) ?>"
            data-dialog="size=big"
            title="<?= _('Anfrage selbst auflösen') ?>">
-            <?= Icon::create('room-request')->asImg('20px') ?>
+            <?= Icon::create('room-request')->asImg(20) ?>
         </a>
     </td>
 </tr>

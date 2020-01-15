@@ -9,7 +9,7 @@
                      'dispatch.php/resources/location/add',
                      ['category_id' => $category->id]
                      ) ?>" class="category-link" data-dialog="size=auto">
-                <?= $location_class::getIconStatic('clickable')->asImg('50px') ?>
+                <?= $location_class::getIconStatic('clickable')->asImg(50) ?>
                 <div class="resource-category-select-text">
                     <?= htmlReady($category->name) ?>
                 </div>

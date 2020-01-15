@@ -33,7 +33,7 @@
                     'dispatch.php/resources/room/revoke_permission/' . $room->id,
                     ['permission_id' => $permission->id]
                     ) ?>" data-dialog>
-                    <?= Icon::create('trash')->asImg('20px') ?>
+                    <?= Icon::create('trash')->asImg(20) ?>
                 </a>
             </td>
         </tr>
