@@ -30,19 +30,20 @@
             <td><?= htmlReady($category->description) ?></td>
             <td><?= htmlReady($category->class_name) ?></td>
             <td><?= $category->system ? _('ja') : _('nein') ?></td>
-            <td class="properties"><? if ($category->property_definitions): ?>
-                <ul>
-                    <? foreach ($category->property_definitions as $definition): ?>
-                    <li>
-                        <? if ($definition->system): ?>
-                        <strong><?= htmlReady($definition->name) ?></strong>
-                        <? else: ?>
-                        <?= htmlReady($definition->name) ?>
-                        <? endif ?>
-                        [<?= htmlReady($definition->type) ?>]
-                    </li>
-                    <? endforeach ?>
-                </ul>
+            <td class="properties">
+                <? if ($category->property_definitions): ?>
+                    <ul>
+                        <? foreach ($category->property_definitions as $definition): ?>
+                            <li>
+                                <? if ($definition->system): ?>
+                                    <strong><?= htmlReady($definition) ?></strong>
+                                <? else: ?>
+                                    <?= htmlReady($definition) ?>
+                                <? endif ?>
+                                [<?= htmlReady($definition->type) ?>]
+                            </li>
+                        <? endforeach ?>
+                    </ul>
                 <? endif ?>
             </td>
             <td class="actions">
