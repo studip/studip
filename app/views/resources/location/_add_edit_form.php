@@ -32,16 +32,18 @@
             ]
         ) ?>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Weitere Eigenschaften') ?></legend>
-        <?= $this->render_partial(
-            'resources/resource/_standard_properties_form_part.php',
-            [
-                'defined_properties' => $defined_properties,
-                'property_data' => $property_data
-            ]
-        ) ?>
-    </fieldset>
+    <? if ($defined_properties) : ?>
+        <fieldset>
+            <legend><?= _('Weitere Eigenschaften') ?></legend>
+                <?= $this->render_partial(
+                    'resources/resource/_standard_properties_form_part.php',
+                    [
+                        'defined_properties' => $defined_properties,
+                        'property_data' => $property_data
+                    ]
+                ) ?>
+        </fieldset>
+    <? endif ?>
     <div data-dialog-button>
         <?= \Studip\Button::create(_('Speichern'), 'save') ?>
     </div>
