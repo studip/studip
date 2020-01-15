@@ -140,16 +140,16 @@ class ResourceRequest extends SimpleORMap
 
 
     /**
-     * PrivacyObject method implementation. @see PrivacyObject
+     * @inheritDoc
      */
-    public static function exportUserdata(StoredUserData $user_data)
+    public static function exportUserdata(StoredUserData $storage)
     {
-        $user = User::find($user_data->user_id);
+        $user = User::find($storage->user_id);
 
         $requests = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
-                'user_id' => $user_data->user_id
+                'user_id' => $storage->user_id
             ]
         );
 

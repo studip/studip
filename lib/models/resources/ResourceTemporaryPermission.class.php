@@ -59,7 +59,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
 
 
     /**
-     * PrivacyObject method implementation. @see PrivacyObject
+     * @inheritDoc
      */
     public static function exportUserData(StoredUserData $storage)
     {

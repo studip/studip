@@ -1488,16 +1488,18 @@ class ResourceBooking extends SimpleORMap
 
 
     //PrivacyObject interface implementation:
-
-
-    public static function exportUserData(StoredUserData $user_data)
+    
+    /**
+     * @inheritDoc
+     */
+    public static function exportUserData(StoredUserData $storage)
     {
-        $user = User::find($user_data->user_id);
+        $user = User::find($storage->user_id);
 
         $bookings = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
-                'user_id' => $user_data->user_id
+                'user_id' => $storage->user_id
             ]
         );
 
