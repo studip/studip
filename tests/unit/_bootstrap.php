@@ -45,25 +45,8 @@ $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 StudipAutoloader::register();
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'activities', 'Studip\\Activity');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'models');
-StudipAutoloader::addAutoloadPath(
-    $STUDIP_BASE_PATH
-    . DIRECTORY_SEPARATOR
-    . 'lib'
-    . DIRECTORY_SEPARATOR
-    . 'resources'
-);
-StudipAutoloader::addAutoloadPath(
-    $STUDIP_BASE_PATH
-    . DIRECTORY_SEPARATOR
-    . 'lib'
-    . DIRECTORY_SEPARATOR
-    . 'models'
-    . DIRECTORY_SEPARATOR
-    . 'resources'
-);
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exceptions');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exceptions' . DIRECTORY_SEPARATOR . 'resources');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'sidebar');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'helpbar');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'engine');
