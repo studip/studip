@@ -653,8 +653,7 @@ class Resources_ResourceController extends AuthenticatedController
             return;
         }
         $this->resource = $this->resources[0];
-
-        PageLayout::addSqueezePackage('tablesorter');
+        
         $this->getUserAndCheckPermissions('admin');
 
         if ($this->resource_id == 'global') {
@@ -895,8 +894,7 @@ class Resources_ResourceController extends AuthenticatedController
         }
         $this->resource = $this->resources[0];
         $this->resource_id = $this->resource->id;
-
-        PageLayout::addSqueezePackage('tablesorter');
+        
         $this->getUserAndCheckPermissions('admin');
 
         if ($this->resource_id == 'global') {
