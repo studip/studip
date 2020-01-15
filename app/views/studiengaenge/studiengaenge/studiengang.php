@@ -77,10 +77,10 @@
             <? endif; ?>
         </label>
         <label><?= _('Fassung:') ?></label>
-        <select<?= $perm->disable('fassung_nr') ?> name="fassung_nr" style="display: inline-block; width: 5em;">
+        <select <?= $perm->disable('fassung_nr') ?> name="fassung_nr" style="display: inline-block; width: 5em;">
             <option value="">--</option>
             <? foreach (range(1, 30) as $nr) : ?>
-                <option<?= $nr === (int)$studiengang->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
+                <option <?= $nr === (int)$studiengang->fassung_nr ? ' selected' : '' ?> value="<?= $nr ?>"><?= $nr ?>.</option>
             <? endforeach; ?>
         </select>
         <? if ($perm->haveFieldPerm('fassung_typ')): ?>
