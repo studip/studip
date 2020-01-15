@@ -496,6 +496,27 @@ class Request implements ArrayAccess, IteratorAggregate
     }
 
     /**
+     * Return the value of the selected query parameter as a boolean.
+     *
+     * @param string $param   parameter name
+     * @param bool   $default default value if parameter is not set
+     *
+     * @return bool parameter value as bool (if set), else NULL
+     *
+     * @since Stud.IP 4.4
+     */
+    public static function bool($param, $default = null)
+    {
+        $value = self::get($param, $default);
+
+        if (isset($value)) {
+            $value = (bool) $value;
+        }
+
+        return $value;
+    }
+
+    /**
      * Return the value of the selected query parameter as a boolean array.
      *
      * @param string $param    parameter name
