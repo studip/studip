@@ -29,15 +29,10 @@ class Resources_ExportController extends AuthenticatedController
                 'Resources_ExportController::returnCsvData requires an array as parameter!'
             );
         }
-        
-        $csv_string = array_to_csv($data);
-        if ($file_name) {
-            header("Content-Disposition: attachment; "
-                . encode_header_parameter('filename', $file_name)
-            );
-        }
-        $this->set_content_type('text/csv; charset=UTF-8');
-        $this->render_text($csv_string);
+        $this->render_csv(
+            $data,
+            $file_name
+        );
     }
     
     protected function returnHtmlData($data = '')
