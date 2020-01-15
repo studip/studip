@@ -10,11 +10,11 @@
  * the License, or (at your option) any later version.
  *
  * @author      Moritz Strohm <strohm@data-quest.de>
- * @copyright   2017
+ * @copyright   2017-2020
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  * @package     tests
- * @since       4.2
+ * @since       4.5
  */
 
 

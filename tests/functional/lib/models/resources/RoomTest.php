@@ -55,10 +55,11 @@ class RoomTest extends \Codeception\Test\Unit
         $this->test_user->perms = 'admin';
         $this->test_user->store();
 
-        ResourceManager::setGlobalResourcePermission(
-            $this->test_user,
-            'tutor'
-        );
+        $perms = new ResourcePermission();
+        $perms->user_id = $this->test_user->id;
+        $perms->resource_id = 'global';
+        $perms->perms = 'tutor';
+        $perms->store();
 
         $this->location_cat = ResourceManager::createLocationCategory(
             'TestLocation'

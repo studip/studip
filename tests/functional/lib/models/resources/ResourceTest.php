@@ -47,14 +47,28 @@ class ResourceTest extends \Codeception\Test\Unit
         $this->resource_cat->iconnr = '1';
         $this->resource_cat->store();
 
-        $this->test_property = $this->resource_cat->addOrCreateProperty(
+        $def = new ResourcePropertyDefinition();
+        $def->name = $this->test_property_name;
+        $def->type = 'text';
+        $def->searchable = '0';
+        $def->range_search = '0';
+        $def->store();
+
+        $def2 = new ResourcePropertyDefinition();
+        $def2->name = $this->test_property2_name;
+        $def2->type = 'user';
+        $def2->searchable = '0';
+        $def2->range_search = '0';
+        $def2->store();
+
+        $this->test_property = $this->resource_cat->addProperty(
             $this->test_property_name,
             'text',
             true,
             true
         );
 
-        $this->test_property2 = $this->resource_cat->addOrCreateProperty(
+        $this->test_property2 = $this->resource_cat->addProperty(
             $this->test_property2_name,
             'user',
             false,
