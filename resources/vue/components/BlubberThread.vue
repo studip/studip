@@ -42,8 +42,11 @@
                         </div>
                         <div class="time">
                             <studip-date-time :timestamp="comment.mkdate" :relative="true"></studip-date-time>
-                            <a href="" v-if="comment.writable" @click.prevent="editComment" class="edit_comment">
+                            <a href="" v-if="comment.writable" @click.prevent="editComment" class="edit_comment" :title="'Bearbeiten.'.toLocaleString()">
                                 <studip-icon shape="edit" size="14" role="inactive"></studip-icon>
+                            </a>
+                            <a href="" @click.prevent="answerComment" class="answer_comment" :title="'Hierauf antworten.'.toLocaleString()">
+                                <studip-icon shape="export" size="14" role="inactive"></studip-icon>
                             </a>
                         </div>
                     </li>
@@ -250,6 +253,30 @@
                 li.find('.content textarea:not(.auto-resizable)').addClass('auto-resizable').autoResize({
                     animateDuration: 0
                 });
+            },
+            answerComment (event) {
+                let li;
+                if (typeof event === 'string') {
+                    let comment_id = event;
+                    li = $(this.$el).find(`.comments > li[data-comment_id="${comment_id}"]`);
+                } else {
+                    li = $(event.target).closest('li[data-comment_id]');
+                    let comment_id = $(event.target).closest('li[data-comment_id]').data('comment_id');
+                }
+                let comment_id = $(li).data('comment_id');
+                let comment_data = null;
+                this.thread_data.comments.forEach((comment, i) => {
+                    if (comment.comment_id === comment_id) {
+                        comment_data = comment;
+                    }
+                });
+                if (comment_data) {
+                    let quote = '[quote=' + comment_data.user_name + ']' + comment_data.content + '[/quote] ';
+                    $(this.$el).find('.writer textarea').val(quote);
+                    let textarea = $(this.$el).find('.writer textarea').last()[0];
+                    textarea.focus();
+                    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+                }
             },
             saveComment (event) {
                 let thread = this;
