@@ -50,53 +50,57 @@
                 ) ?>
             </div>
         <? else: ?>
-            <fieldset>
-                <label>
-                    <?= _('Individuelle Raumgruppe') ?>:
-                    <select name="clipboard_id">
-                        <? foreach ($available_clipboards as $clipboard): ?>
-                            <option value="<?= htmlReady($clipboard->id) ?>">
-                                <?= htmlReady($clipboard->name) ?>
+            <? if(count($available_clipboards)) : ?>
+                <fieldset>
+                    <label>
+                        <?= _('Individuelle Raumgruppe') ?>:
+                        <select name="clipboard_id">
+                            <? foreach ($available_clipboards as $clipboard): ?>
+                                <option value="<?= htmlReady($clipboard->id) ?>">
+                                    <?= htmlReady($clipboard->name) ?>
+                                </option>
+                            <? endforeach ?>
+                        </select>
+                    </label>
+                    <label>
+                        <?= _('Art des Belegungsplanes') ?>:
+                        <select name="schedule_type">
+                            <option value="w"
+                                    <?= $selected_schedule == 'w'
+                                        ? 'selected="selected"'
+                                        : '' ?>>
+                                <?= _('Wochenplan') ?>
                             </option>
-                        <? endforeach ?>
-                    </select>
-                </label>
-                <label>
-                    <?= _('Art des Belegungsplanes') ?>:
-                    <select name="schedule_type">
-                        <option value="w"
-                                <?= $selected_schedule == 'w'
-                                  ? 'selected="selected"'
-                                  : '' ?>>
-                            <?= _('Wochenplan') ?>
-                        </option>
-                        <option value="w+we"
-                                <?= $selected_schedule == 'w+we'
-                                  ? 'selected="selected"'
-                                  : '' ?>>
-                            <?= _('Wochenplan inklusive Wochenende') ?>
-                        </option>
-                        <option value="d"
-                                <?= $selected_schedule == 'd'
-                                  ? 'selected="selected"'
-                                  : '' ?>>
-                            <?= _('Tagesplan') ?>
-                        </option>
-                    </select>
-                </label>
-                <label>
-                    <?= _('Datum')?>:
-                    <input type="text" name="date"
-                           value="<?= date('d.m.Y') ?>"
-                           class="has-date-picker">
-                </label>
-            </fieldset>
-            <div data-dialog-button>
-                <?= \Studip\Button::create(
-                    _('Weiter zur Raumauswahl'),
-                    'select_clipboard'
-                ) ?>
-            </div>
+                            <option value="w+we"
+                                    <?= $selected_schedule == 'w+we'
+                                        ? 'selected="selected"'
+                                        : '' ?>>
+                                <?= _('Wochenplan inklusive Wochenende') ?>
+                            </option>
+                            <option value="d"
+                                    <?= $selected_schedule == 'd'
+                                        ? 'selected="selected"'
+                                        : '' ?>>
+                                <?= _('Tagesplan') ?>
+                            </option>
+                        </select>
+                    </label>
+                    <label>
+                        <?= _('Datum')?>:
+                        <input type="text" name="date"
+                               value="<?= date('d.m.Y') ?>"
+                               class="has-date-picker">
+                    </label>
+                </fieldset>
+                <div data-dialog-button>
+                    <?= \Studip\Button::create(
+                        _('Weiter zur Raumauswahl'),
+                        'select_clipboard'
+                    ) ?>
+                </div>
+            <? else :?>
+                <?= MessageBox::info(_('Sie müssen zunächst Raumgruppen erstellen'))?>
+            <? endif ?>
         <? endif ?>
     </form>
 <? else: ?>
