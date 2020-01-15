@@ -57,7 +57,7 @@ class ResourceProperty extends SimpleORMap
      * by checking the requestable flag of the corresponding
      * resource category property.
      *
-     * @returns True, if this property is requestable, false otherwise.
+     * @return True, if this property is requestable, false otherwise.
      */
     public function isRequestable()
     {
@@ -85,7 +85,7 @@ class ResourceProperty extends SimpleORMap
      * Creates a string containing the appropriate value
      * of this resource property.
      *
-     * @returns string The string representation of this resource property.
+     * @return string The string representation of this resource property.
      */
     public function __toString()
     {

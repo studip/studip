@@ -55,7 +55,7 @@ class ResourceRequestProperty extends SimpleORMap
      * Creates a string containing the appropriate value
      * of this resource property.
      *
-     * @returns string The string representation of this resource property.
+     * @return string The string representation of this resource property.
      */
     public function __toString()
     {

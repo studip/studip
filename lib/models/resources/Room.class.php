@@ -122,7 +122,7 @@ class Room extends Resource
      *
      * @param string $building_id The ID of the building.
      *
-     * @returns Room[] An array with rooms or an empty array.
+     * @return Room[] An array with rooms or an empty array.
      */
     public static function findByBuilding($building_id = null)
     {
@@ -154,7 +154,7 @@ class Room extends Resource
      *     and their values in case the request doesn't have (the desired)
      *     properties set.
      *
-     * @returns Room[] An array of room resources.
+     * @return Room[] An array of room resources.
      */
     public static function findByRoomRequestAndProperties(
         RoomRequest $request,
@@ -279,7 +279,7 @@ class Room extends Resource
      *
      * @param Room $room The room part whose other room parts shall be found.
      *
-     * @returns Room[] An array of room objects or an empty array
+     * @return Room[] An array of room objects or an empty array
      *     if no other room parts can be found.
      */
     public static function findOtherRoomParts(Room $room)
@@ -319,7 +319,7 @@ class Room extends Resource
     /**
      * Checks wheter rooms with public booking plans exist.
      *
-     * @returns True, if at least one room has a public booking plan,
+     * @return True, if at least one room has a public booking plan,
      *     false otherwise.
      */
     public static function publicBookingPlansExists()
@@ -337,7 +337,7 @@ class Room extends Resource
      * Retrieves all rooms that have a public booking plan,
      * ordered by name and creation date.
      *
-     * @returns Room[] A list of rooms with public booking plans.
+     * @return Room[] A list of rooms with public booking plans.
      */
     public static function findByPublicBookingPlans()
     {
@@ -350,7 +350,7 @@ class Room extends Resource
      * Only room types which have at least one room object with that
      * type in the database are considered here.
      *
-     * @returns string[] An array consisting of all room types which
+     * @return string[] An array consisting of all room types which
      *     exist in the database.
      */
     public static function getAllRoomTypes()
@@ -393,7 +393,7 @@ class Room extends Resource
      *
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @returns string The URL path for the specified action.
+     * @return string The URL path for the specified action.
      */
     protected static function buildPathForAction($action = 'show', $id = null)
     {
@@ -455,7 +455,7 @@ class Room extends Resource
      *
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @returns string The Link for the room action.
+     * @return string The Link for the room action.
      */
     public static function getLinkForAction(
         $action = 'show',
@@ -483,7 +483,7 @@ class Room extends Resource
      *
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @returns string The URL for the room action.
+     * @return string The URL for the room action.
      */
     public static function getURLForAction(
         $action = 'show',
@@ -544,7 +544,7 @@ class Room extends Resource
      * @see Resource::createRequest for paramter descriptions
      *     and thrown exceptions.
      *
-     * @returns RoomRequest A room request object.
+     * @return RoomRequest A room request object.
      */
     public function createRequest(
         User $user,
@@ -575,7 +575,7 @@ class Room extends Resource
      * @throws InvalidResourceException If the specified resource belongs to
      *     the resource classes Room, Building or Location.
      *
-     * @returns True, if the resource could be added as child, false otherwise.
+     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {
@@ -599,7 +599,7 @@ class Room extends Resource
     /**
      * Returns the full name of this room.
      *
-     * @returns string The full name of this room.
+     * @return string The full name of this room.
      */
     public function getFullName()
     {
@@ -702,7 +702,7 @@ class Room extends Resource
      * Retrieves the building where this room resides in by looking up
      * the parent resources of this Room.
      *
-     * @returns Building|null A Building object if it can be found,
+     * @return Building|null A Building object if it can be found,
      *     null otherwise.
      */
     public function findBuilding()

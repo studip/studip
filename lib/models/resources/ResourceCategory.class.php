@@ -60,7 +60,7 @@ class ResourceCategory extends SimpleORMap
     /**
      * Retrieves all resource categories from the database.
      *
-     * @returns ResourceCategory[] An array of ResourceCategory objects
+     * @return ResourceCategory[] An array of ResourceCategory objects
      *     or an empty array if no resource categories are defined.
      */
     public static function findAll($force_reload = false)
@@ -86,7 +86,7 @@ class ResourceCategory extends SimpleORMap
      *
      * @param string $category_id The category-ID of the specified category.
      *
-     * @returns string The class name field of the category which is specified
+     * @return string The class name field of the category which is specified
      *     by $category_id. In case no category could be found, an empty
      *     string is returned.
      */
@@ -116,7 +116,7 @@ class ResourceCategory extends SimpleORMap
      * @param string[] excluded_properties An array with the names
      *     of the properties that shall be excluded from the result set.
      *
-     * @returns ResourcePropertyDefinition[] An array of resource property
+     * @return ResourcePropertyDefinition[] An array of resource property
      *     definitions.
      */
     public function getPropertyDefinitions($excluded_properties = [])
@@ -157,7 +157,7 @@ class ResourceCategory extends SimpleORMap
      * but grouped and ordered by the property groups and the position of the
      * property in that group.
      *
-     * @returns Array An array with the group names as keys and the properties
+     * @return Array An array with the group names as keys and the properties
      *     in the second array dimension. The structure of the array
      *     is as follows:
      *     [
@@ -273,7 +273,7 @@ class ResourceCategory extends SimpleORMap
      * @throws ResourcePropertyDefinitionException If the property definition
      *     cannot be created.
      *
-     * @returns ResourceCategoryProperty The created or updated
+     * @return ResourceCategoryProperty The created or updated
      *     resource category property.
      */
     public function addProperty(
@@ -409,7 +409,7 @@ class ResourceCategory extends SimpleORMap
      * @throws InvalidResourceException if the resource cannot be stored.
      * @throws ResourcePropertyException If the name of the resource property
      *     is not defined for this resource category.
-     * @returns New Resource object which is a member of this resource category.
+     * @return New Resource object which is a member of this resource category.
      */
     public function createResource(
         $name = '',
@@ -472,7 +472,7 @@ class ResourceCategory extends SimpleORMap
      * @param ResourcePropertyDefinition $definition The definition of a
      *     resource property whose default state shall be returned.
      *
-     * @returns mixed The default state for the property type,
+     * @return mixed The default state for the property type,
      *     specified by the given property definition.
      */
     protected function setPropertyDefaultState(
@@ -718,7 +718,7 @@ class ResourceCategory extends SimpleORMap
      * @param string $name The requested property name.
      * @param string $type The requested property type (optional).
      *
-     * @returns bool True, if a property with the specified name and type
+     * @return bool True, if a property with the specified name and type
      *     exists, false otherwise.
      */
     public function hasProperty($name = '', $type = null)

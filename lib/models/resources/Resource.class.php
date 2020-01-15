@@ -139,8 +139,9 @@ class Resource extends SimpleORMap implements StudipItem
      *     made for. This is only used to determine, if a singular or a
      *     plural form shall be returned.
      *
-     * @returns string The translated form of the class name, either in
+     * @return string The translated form of the class name, either in
      *     singular or plural.
+     *
      */
     public static function getTranslatedClassName($item_count = 1)
     {
@@ -156,7 +157,7 @@ class Resource extends SimpleORMap implements StudipItem
      * Such resources are called root resources since they are roots of
      * a resource hierarchy (or a resource tree).
      *
-     * @returns Resource[] An array of Resource objects
+     * @return Resource[] An array of Resource objects
      *     which are root resources.
      */
     public static function getRootResources()
@@ -168,7 +169,7 @@ class Resource extends SimpleORMap implements StudipItem
      * A method for overloaded classes so that they can define properties
      * that are required for that resource class.
      *
-     * @returns string[] An array with the names of the required properties.
+     * @return string[] An array with the names of the required properties.
      *     Example: The properties with the names "foo", "bar" and "baz"
      *     are required properties. The array would have the following content:
      *     [
@@ -203,7 +204,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @throws InvalidArgumentException If $resource_id is empty.
      *
-     * @returns string The URL path for the specified action.
+     * @return string The URL path for the specified action.
      */
     protected static function buildPathForAction($action = 'show', $id = null)
     {
@@ -266,7 +267,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @throws InvalidArgumentException If $resource_id is empty.
      *
-     * @returns string The Link for the resource action.
+     * @return string The Link for the resource action.
      */
     public static function getLinkForAction(
         $action = 'show',
@@ -293,7 +294,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @throws InvalidArgumentException If $resource_id is empty.
      *
-     * @returns string The URL for the resource action.
+     * @return string The URL for the resource action.
      */
     public static function getURLForAction(
         $action = 'show',
@@ -422,7 +423,7 @@ class Resource extends SimpleORMap implements StudipItem
      * Returns a list of property names that are required
      * for the resource class.
      *
-     * @returns string[] An array with the property names.
+     * @return string[] An array with the property names.
      */
     public function getRequiredPropertyNames()
     {
@@ -480,7 +481,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourceRequestException if the request could not be marked
      *     as resolved.
      *
-     * @returns ResourceBooking[] A list of resource bookings
+     * @return ResourceBooking[] A list of resource bookings
      *     matching the request.
      */
     public function createBookingFromRequest(
@@ -656,7 +657,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourceBookingException If the repetition interval
      *     is invalid or if the resource booking cannot be stored.
      *
-     * @returns ResourceBooking object.
+     * @return ResourceBooking object.
      */
     public function createBooking(
         User $user,
@@ -917,7 +918,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourceRequestException If the resource request
      *     cannot be stored.
      *
-     * @returns ResourceRequest A resource request object.
+     * @return ResourceRequest A resource request object.
      */
     public function createSimpleRequest(
         User $user,
@@ -1020,7 +1021,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourceRequestException If the resource request
      *     cannot be stored.
      *
-     * @returns ResourceRequest A resource request object.
+     * @return ResourceRequest A resource request object.
      */
     public function createRequest(
         User $user,
@@ -1231,7 +1232,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourceUnavailableException If a lock booking already
      *     exists in the specified time range.
      *
-     * @returns ResourceBooking A ResourceBooking object.
+     * @return ResourceBooking A ResourceBooking object.
      */
     public function createLock(
         User $user,
@@ -1368,7 +1369,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param string $name The name of the resource property.
      *
-     * @returns bool True, if this resource has a property with
+     * @return bool True, if this resource has a property with
      *     the specified name, false otherwise.
      */
     public function propertyExists($name = '')
@@ -1457,7 +1458,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param string $name The name of the resource property.
      *
-     * @returns string|null The state of the specified property or null
+     * @return string|null The state of the specified property or null
      *     if the propery can't be found.
      */
     public function getProperty($name = '')
@@ -1520,7 +1521,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param string $name The name of the resource property.
      *
-     * @returns SimpleORMap|null A SimpleORMap-based object or null,
+     * @return SimpleORMap|null A SimpleORMap-based object or null,
      *     if no such object can be retrieved from the property's state.
      */
     public function getPropertyRelatedObject($name = '')
@@ -1558,7 +1559,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param mixed $state The state of the resource property.
      * @param User|null $userd The user who wishes to set the property.
      *
-     * @returns True, if the property state could be set, false otherwise.
+     * @return True, if the property state could be set, false otherwise.
      */
     public function setProperty($name = '', $state = '', $user = null)
     {
@@ -1634,7 +1635,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param User|null $user The user who wishes to set the properties.
      *     If this is left empty, the current user will be used.
      *
-     * @returns Array If properties cannot be set, their names (as key) and the
+     * @return Array If properties cannot be set, their names (as key) and the
      *     error messages (if any) are returned.
      *     The array has the following structure:
      *     [
@@ -1685,7 +1686,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param User|null $user The user who wishes to set the properties.
      *     If this is left empty, the current user will be used.
      *
-     * @returns Array If properties cannot be set, their ids (as key) and the
+     * @return Array If properties cannot be set, their ids (as key) and the
      *     error messages (if any) are returned.
      *     The array has the following structure:
      *     [
@@ -1737,7 +1738,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param string $name The name of the resource property.
      * @param user $user The user whose edit permissions shall be checked.
      *
-     * @returns bool True, if the user has edit permissions for the property,
+     * @return bool True, if the user has edit permissions for the property,
      *     false otherwise.
      */
     public function isPropertyEditable($name = '', User $user)
@@ -1754,7 +1755,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @throws ResourcePropertyStateException If the provided state is invalid
      *     for the specified resource property.
      *
-     * @returns bool True, if the property state can be stored, false otherwise.
+     * @return bool True, if the property state can be stored, false otherwise.
      */
     public function setPropertyByDefinitionId(
         $property_definition_id = null,
@@ -1803,7 +1804,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param string $name The name of the resource property.
      * @param SimpleORMap $object The object for the resource property.
      *
-     * @returns bool True, if the property has been saved, false otherwise.
+     * @return bool True, if the property has been saved, false otherwise.
      */
     public function setPropertyRelatedObject($name = '', $object = null)
     {
@@ -1907,7 +1908,7 @@ class Resource extends SimpleORMap implements StudipItem
      * this method if they have an alternative storage method for
      * resource pictures than the Stud.IP file system.
      *
-     * @returns string The URL to the resource picture.
+     * @return string The URL to the resource picture.
      */
     public function getPictureUrl()
     {
@@ -1922,7 +1923,7 @@ class Resource extends SimpleORMap implements StudipItem
      * The call to getPictureUrl will call the getDefaultPictureUrl method
      * from the derived class.
      *
-     * @returns string The URL to the picture.
+     * @return string The URL to the picture.
      */
     public function getDefaultPictureUrl()
     {
@@ -1935,7 +1936,7 @@ class Resource extends SimpleORMap implements StudipItem
      * Classes derived from Resource should re-implement this method
      * if they want to get a different icon than the resource icon.
      *
-     * @returns Icon The icon for the resource.
+     * @return Icon The icon for the resource.
      */
     public function getIcon($role = Icon::ROLE_INFO)
     {
@@ -1957,7 +1958,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     shall be returned set this to true. If all properties shall be
      *     returned, set this to false.
      *
-     * @returns Array[] A two-dimensional array containing property data.
+     * @return Array[] A two-dimensional array containing property data.
      */
     public function getPropertyArray($only_requestable_properties = false)
     {
@@ -2008,7 +2009,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param $excluded_lock_ids The IDs of bookings that shall
      *     be excluded from the determination of the "assigned" status.
      *
-     * @returns bool True, if the resource is assigned in the specified
+     * @return bool True, if the resource is assigned in the specified
      *     time range, false otherwise.
      */
     public function isAssigned(
@@ -2042,7 +2043,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param $excluded_lock_ids The IDs of reservation bookings that shall
      *     be excluded from the determination of the "reserved" status.
      *
-     * @returns bool True, if the resource is reserved in the specified
+     * @return bool True, if the resource is reserved in the specified
      *     time range, false otherwise.
      */
     public function isReserved(
@@ -2079,7 +2080,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param $excluded_lock_ids The IDs of lock bookings that shall
      *     be excluded from the determination of the "locked" status.
      *
-     * @returns bool True, if the resource is locked in the specified
+     * @return bool True, if the resource is locked in the specified
      *     time range, false otherwise.
      */
     public function isLocked(
@@ -2114,7 +2115,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param $excluded_booking_ids The IDs of available bookings that shall
      *     be excluded from the determination of the "available" status.
      *
-     * @returns bool True, if the resource is available in the specified
+     * @return bool True, if the resource is available in the specified
      *     time range, false otherwise.
      */
     public function isAvailable(
@@ -2142,7 +2143,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param ResourceRequest $request A resource request object.
      *
-     * @returns bool True, if the resource is available in the
+     * @return bool True, if the resource is available in the
      *     time ranges of the resource request, false otherwise.
      */
     public function isAvailableForRequest(ResourceRequest $request)
@@ -2174,7 +2175,7 @@ class Resource extends SimpleORMap implements StudipItem
     /**
      * Returns the full (localised) name of the resource.
      *
-     * @returns string The full name of the resource.
+     * @return string The full name of the resource.
      */
     public function getFullName()
     {
@@ -2223,7 +2224,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param User $user The user whose permission shall be deleted.
      *
-     * @returns bool True
+     * @return bool True
      */
     public function deleteUserPermission(User $user)
     {
@@ -2241,7 +2242,7 @@ class Resource extends SimpleORMap implements StudipItem
     /**
      * Deletes all permissions of all users for this resource.
      *
-     * @returns bool True
+     * @return bool True
      */
     public function deleteAllPermissions()
     {
@@ -2273,7 +2274,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     (true) or permanent and temporary permissions (false).
      *     Defaults to false.
      *
-     * @returns string The permission level, expressed as string.
+     * @return string The permission level, expressed as string.
      *     The level can be 'user', 'autor', 'tutor' or 'admin'.
      */
     public function getUserPermission(User $user, $time_range = [], $permanent_only = false)
@@ -2471,7 +2472,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param User $user The user whose permission to create a child
      *     resource shall be checked.
      *
-     * @returns bool True, if the user may create a child resource
+     * @return bool True, if the user may create a child resource
      *     on this resource, false otherwise.
      */
     public function userMayCreateChild(User $user)
@@ -2487,7 +2488,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param User $user The user whose request permissions shall be checked.
      *
-     * @returns bool True, if the user has request permissions, false otherwise.
+     * @return bool True, if the user has request permissions, false otherwise.
      */
     public function userHasRequestRights(User $user)
     {
@@ -2517,7 +2518,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param int|string|DateTime $end The end timestamp of the
      *     optional time range.
      *
-     * @returns bool True, if the user may book the resource, false otherwise.
+     * @return bool True, if the user may book the resource, false otherwise.
      */
     public function userHasBookingRights(
         User $user,
@@ -2554,7 +2555,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     permission check.
      *     @see Resource::getUserPermission
      *
-     * @returns bool True, if the user can see the resource booking plan,
+     * @return bool True, if the user can see the resource booking plan,
      *     false otherwise.
      */
     public function bookingPlanVisibleForUser(
@@ -2574,7 +2575,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param string $class_name The class name of the parent.
      *
-     * @returns Resource|null Either a resource object or null
+     * @return Resource|null Either a resource object or null
      *     in case a matching parent resource cannot be found.
      */
     public function findParentByClassName($class_name = 'Resource')
@@ -2628,7 +2629,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param string $order_by_name Order the children by name.
      *     Defaults to true.
      *
-     * @returns Resource[] An array of resource objects or an empty array
+     * @return Resource[] An array of resource objects or an empty array
      *     if no matching resources can be found.
      */
     public function findChildrenByClassName(
@@ -2685,7 +2686,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param Resource $resource The child resource.
      *
-     * @returns bool True on success, false on failure.
+     * @return bool True on success, false on failure.
      */
     public function addChild(Resource $resource)
     {
@@ -2726,7 +2727,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param DateTime $begin Begin of timeframe.
      * @param DateTime $end End of timeframe.
      *
-     * @returns ResourceRequest[] An array of ResourceRequest objects.
+     * @return ResourceRequest[] An array of ResourceRequest objects.
      */
     public function getOpenResourceRequests(DateTime $begin, DateTime $end)
     {
@@ -2752,7 +2753,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param DateTime $begin Begin of timeframe.
      * @param DateTime $end End of timeframe.
      *
-     * @returns ResourceBooking[] An array of ResourceBooking objects.
+     * @return ResourceBooking[] An array of ResourceBooking objects.
      */
     public function getResourceBookings(DateTime $begin, DateTime $end)
     {
@@ -2775,7 +2776,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param DateTime $begin Begin of timeframe.
      * @param DateTime $end End of timeframe.
      *
-     * @returns ResourceBooking[] An array of ResourceBooking objects.
+     * @return ResourceBooking[] An array of ResourceBooking objects.
      */
     public function getResourceLocks(DateTime $begin, DateTime $end)
     {
@@ -2798,7 +2799,7 @@ class Resource extends SimpleORMap implements StudipItem
      * Depending on whether the folder has files in it or not
      * this method returns true or false.
      *
-     * @returns bool True, if there are files attached to this resource,
+     * @return bool True, if there are files attached to this resource,
      *     false otherwise.
      */
     public function hasFiles()
@@ -2830,7 +2831,7 @@ class Resource extends SimpleORMap implements StudipItem
     /**
      * Converts a Resource object to an object of a specialised resource class.
      *
-     * @returns Resource|other An object of a specialised resource class
+     * @return Resource|other An object of a specialised resource class
      *     or a Resource object, if the resource is a standard resource
      *     with the class_name 'Resource' in its resource category.
      *     If the derived resource class is not available, an instance of
@@ -2870,7 +2871,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     if the class name of this resource is not a derived class
      *     of the Resource class.
      *
-     * @returns bool True, if this resource is correctly placed,
+     * @return bool True, if this resource is correctly placed,
      *     false otherwise.
      */
     public function checkHierarchy()

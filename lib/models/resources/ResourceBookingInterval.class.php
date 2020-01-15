@@ -66,7 +66,7 @@ class ResourceBookingInterval extends SimpleORMap
      * @param ResourceBooking $booking The resource booking object
      *     from which interval entries shall be generated.
      *
-     * @returns True, if all intervals have been created successfully,
+     * @return True, if all intervals have been created successfully,
      *     false otherwise.
      */
     public static function createFromBooking(ResourceBooking $booking)
@@ -101,7 +101,7 @@ class ResourceBookingInterval extends SimpleORMap
     /**
      * Converts this ResourceBookingInterval object to a DateInterval object.
      *
-     * @returns DateInterval A DateInterval representing the time interval
+     * @return DateInterval A DateInterval representing the time interval
      *     of this ResourceBookingInterval object.
      */
     public function toDateInterval()

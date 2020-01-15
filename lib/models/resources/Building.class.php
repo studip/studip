@@ -58,7 +58,7 @@ class Building extends Resource
     /**
      * Returns all buildings which are stored in the database.
      *
-     * @returns Building[] An array of Building objects.
+     * @return Building[] An array of Building objects.
      */
     public static function findAll()
     {
@@ -89,7 +89,7 @@ class Building extends Resource
      *
      * @param string $location_id The ID of the location.
      *
-     * @returns Building[] An array with buildings or an empty array.
+     * @return Building[] An array with buildings or an empty array.
      */
     public static function findByLocation($location_id = null)
     {
@@ -117,7 +117,7 @@ class Building extends Resource
      *
      * @throws InvalidArgumentException If $building_id is empty.
      *
-     * @returns string The URL path for the specified action.
+     * @return string The URL path for the specified action.
      */
     protected static function buildPathForAction($action = 'show', $id = null)
     {
@@ -158,7 +158,7 @@ class Building extends Resource
      * @param string $id The ID of the building on which the specified
      *     action shall be executed.
      *
-     * @returns string The Link for the building action.
+     * @return string The Link for the building action.
      */
     public static function getLinkForAction(
         $action = 'show',
@@ -181,7 +181,7 @@ class Building extends Resource
      * @param string $id The ID of the building on which the specified
      *     action shall be executed.
      *
-     * @returns string The URL for the building action.
+     * @return string The URL for the building action.
      */
     public static function getURLForAction(
         $action = 'show',
@@ -235,7 +235,7 @@ class Building extends Resource
     /**
      * Returns the full (localised) name of the building.
      *
-     * @returns string The full name of the building.
+     * @return string The full name of the building.
      */
     public function getFullName()
     {
@@ -250,7 +250,7 @@ class Building extends Resource
      * If the building has no image the path for a general
      * building icon will be returned.
      *
-     * @returns string The image path to the building's image.
+     * @return string The image path to the building's image.
      */
     public function getDefaultPictureUrl()
     {
@@ -305,7 +305,7 @@ class Building extends Resource
      *     and 'delete' are defined.
      * @param array $link_parameters Optional parameters for the link.
      *
-     * @returns string The Link for the building action.
+     * @return string The Link for the building action.
      */
     public function getLink($action = 'show', $link_parameters = [])
     {
@@ -325,7 +325,7 @@ class Building extends Resource
      *     and 'delete' are defined.
      * @param array $link_parameters Optional parameters for the URL.
      *
-     * @returns string The URL for the building action.
+     * @return string The URL for the building action.
      */
     public function getURL($action = 'show', $url_parameters = [])
     {
@@ -340,7 +340,7 @@ class Building extends Resource
      * Retrieves the rooms which reside inside this building by looking up
      * the child resources of this building.
      *
-     * @returns Room[] An array with Room objects or an empty array
+     * @return Room[] An array with Room objects or an empty array
      *     if no rooms can be found.
      */
     public function findRooms()
@@ -360,7 +360,7 @@ class Building extends Resource
      * Retrieves the location where this building is assigned to by looking up
      * the parent resources of this building.
      *
-     * @returns Location|null A Location object if it can be found,
+     * @return Location|null A Location object if it can be found,
      *     null otherwise.
      */
     public function findLocation()
@@ -381,7 +381,7 @@ class Building extends Resource
      * @throws InvalidResourceException If the specified resource belongs to
      *     the resource classes Building or Location.
      *
-     * @returns True, if the resource could be added as child, false otherwise.
+     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {

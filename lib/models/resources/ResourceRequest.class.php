@@ -165,7 +165,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     /**
      * Retrieves all resource requests from the database.
      *
-     * @returns ResourceRequest[] An array of ResourceRequests objects
+     * @return ResourceRequest[] An array of ResourceRequests objects
      *     or an empty array, if no resource requests are stored
      *     in the database.
      */
@@ -177,7 +177,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     /**
      * Retrieves all open resource requests from the database.
      *
-     * @returns ResourceRequest[] An array of ResourceRequests objects
+     * @return ResourceRequest[] An array of ResourceRequests objects
      *     or an empty array, if no open resource requests are stored
      *     in the database.
      */
@@ -399,7 +399,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * @param Array $excluded_request_ids An array of strings representing
      *     resource request IDs. IDs specified in this array are excluded from
      *     the search.
-     * @returns ResourceRequest[] An array of ResourceRequest objects.
+     * @return ResourceRequest[] An array of ResourceRequest objects.
      *     If no requests can be found, the array is empty.
      *
      * @throws InvalidArgumentException, if the time ranges are either not in an
@@ -663,7 +663,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      *     accept one ID. The range type 'date-multiple' accepts multiple
      *     IDs.
      *
-     * @returns void No return value.
+     * @return void No return value.
      */
     public function setRangeFields($range_type = '', $range_ids = [])
     {
@@ -734,7 +734,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Returns the resource requests whose time ranges overlap
      * with those of this resource request.
      *
-     * @returns ResourceRequest[] An array of ResourceRequest objects.
+     * @return ResourceRequest[] An array of ResourceRequest objects.
      */
     public function getOverlappingRequests()
     {
@@ -753,7 +753,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Counts the resource requests whose time ranges overlap
      * with those of this resource request.
      *
-     * @returns int The amount of overlapping resource requests.
+     * @return int The amount of overlapping resource requests.
      */
     public function countOverlappingRequests()
     {
@@ -772,7 +772,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Returns the resource bookings whose time ranges overlap
      * with those of this resource request.
      *
-     * @returns ResourceBooking[] An array of ResourceBooking objects.
+     * @return ResourceBooking[] An array of ResourceBooking objects.
      */
     public function getOverlappingBookings()
     {
@@ -790,7 +790,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Counts the resource bookings whose time ranges overlap
      * with those of this resource request.
      *
-     * @returns int The amount of overlapping resource bookings.
+     * @return int The amount of overlapping resource bookings.
      */
     public function countOverlappingBookings()
     {
@@ -808,7 +808,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Returns the repetion interval if regular appointments are used
      * for this request.
      *
-     * @returns DateInterval|null In case regular appointments are used
+     * @return DateInterval|null In case regular appointments are used
      *     for this request a DateInterval is returned.
      *     Otherwise null is returned.
      */
@@ -945,7 +945,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * Retrieves the time intervals by looking at metadate objects
      * and other time interval sources and returns them grouped by metadate.
      *
-     * @returns mixed[][][] A three-dimensional array with
+     * @return mixed[][][] A three-dimensional array with
      *     the following structure:
      *     - The first dimension has the metadate-id as index. For single dates
      *       an empty string is used as index.
@@ -1127,7 +1127,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      *     and its corresponding ID to the request (true) or not (false).
      *     Defaults to false.
      *
-     * @returns string[][] A two-dimensional array of unix timestamps.
+     * @return string[][] A two-dimensional array of unix timestamps.
      *     The first dimension contains one entry for each date,
      *     the second dimension contains the start and end timestamp
      *     for the date.
@@ -1533,7 +1533,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     /**
      * Returns a "compressed" array of resource request properties.
      *
-     * @returns Array An associative array where the keys represent the
+     * @return Array An associative array where the keys represent the
      *     property names and the values represent the property states.
      *     Note that the value can be an array in case of range properties.
      */
@@ -1665,7 +1665,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     
     /**
      *
-     * @returns True, if the property state could be set, false otherwise.
+     * @return True, if the property state could be set, false otherwise.
      */
     public function setProperty($name = '', $state = '')
     {
@@ -1715,7 +1715,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      *     If $accept_null_values is set to false all properties
      *     with a value equal to null will be deleted.
      *
-     * @returns null
+     * @return null
      */
     public function updateProperties(
         $property_list = [],

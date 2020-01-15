@@ -82,7 +82,7 @@ class ResourcePropertyDefinition extends SimpleORMap
     /**
      * Returns a list of all defined data types.
      *
-     * @returns string[] An array containing the names of all defined
+     * @return string[] An array containing the names of all defined
      *     resource property types.
      */
     public static function getDefinedTypes()
@@ -142,7 +142,7 @@ class ResourcePropertyDefinition extends SimpleORMap
      *     if the checkbox for the boolean attribute is not checked.
      *     Defaults to true.
      *
-     * @returns string A string containing HTML code.
+     * @return string A string containing HTML code.
      */
     public function toHtmlInput(
         $value = '',
@@ -279,7 +279,7 @@ class ResourcePropertyDefinition extends SimpleORMap
      * @throws ResourcePropertyStateException If the state has an invalid value
      *     a ResourcePropertyStateException is thrown.
      *
-     * @returns True, if the state value is valid.
+     * @return True, if the state value is valid.
      */
     public function validateState($state = '')
     {
@@ -358,7 +358,7 @@ class ResourcePropertyDefinition extends SimpleORMap
      *
      * @throws ResourcePropertyException If $state is invalid for this property.
      *
-     * @returns ResourceProperty A ResourceProperty object
+     * @return ResourceProperty A ResourceProperty object
      *     which can be modified.
      */
     public function createResourceProperty(Resource $resource, $state = '')

@@ -90,7 +90,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
      * @param string $resource_id The resource where the user's permission
      *     shall be retrieved.
      *
-     * @returns The permission level as string or an empty string, if no
+     * @return The permission level as string or an empty string, if no
      *    temporary permission exists for the specified user on the
      *    specified resource.
      */

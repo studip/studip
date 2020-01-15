@@ -67,7 +67,7 @@ class GlobalResourceLock extends SimpleORMap
     /**
      * Returns a list of defined lock types.
      *
-     * @returns string[] An associative array with all defined lock types.
+     * @return string[] An associative array with all defined lock types.
      */
     public static function getDefinedTypes()
     {
@@ -78,7 +78,7 @@ class GlobalResourceLock extends SimpleORMap
     /**
      * Returns a string representation of the type of this resource lock.
      *
-     * @returns string A string representing the type of this resource lock.
+     * @return string A string representing the type of this resource lock.
      */
     public function getTypeString()
     {

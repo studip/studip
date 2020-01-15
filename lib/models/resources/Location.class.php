@@ -63,7 +63,7 @@ class Location extends Resource
     /**
      * Returns all locations which are stored in the database.
      *
-     * @returns Location[] An array of Location objects.
+     * @return Location[] An array of Location objects.
      */
     public static function findAll()
     {
@@ -116,7 +116,7 @@ class Location extends Resource
      *     action shall be executed.
      * @param array $link_parameters Optional parameters for the link.
      *
-     * @returns string The Link for the location action.
+     * @return string The Link for the location action.
      */
     public static function getLinkForAction(
         $action = 'show',
@@ -142,7 +142,7 @@ class Location extends Resource
      *     action shall be executed.
      * @param array $url_parameters Optional parameters for the URL.
      *
-     * @returns string The URL for the location action.
+     * @return string The URL for the location action.
      */
     public static function getURLForAction(
         $action = 'show',
@@ -194,7 +194,7 @@ class Location extends Resource
     /**
      * Returns the full (localised) name of the location.
      *
-     * @returns string The full name of the location.
+     * @return string The full name of the location.
      */
     public function getFullName()
     {
@@ -253,7 +253,7 @@ class Location extends Resource
      *     are defined.
      * @param array $link_parameters Optional parameters for the link.
      *
-     * @returns string The Link for the building action.
+     * @return string The Link for the building action.
      */
     public function getLink($action = 'show', $link_parameters = [])
     {
@@ -288,7 +288,7 @@ class Location extends Resource
      * Retrieves the buildings which are associated to this location
      * by looking up the child resources of this location.
      *
-     * @returns Building[] An array with Building objects or an empty array
+     * @return Building[] An array with Building objects or an empty array
      *     if no buildings can be found.
      */
     public function findBuildings()
@@ -311,7 +311,7 @@ class Location extends Resource
      * @throws InvalidResourceException If the specified resource belongs to
      *     the Location resource class.
      *
-     * @returns True, if the resource could be added as child, false otherwise.
+     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {

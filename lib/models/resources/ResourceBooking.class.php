@@ -252,7 +252,7 @@ class ResourceBooking extends SimpleORMap
      * @param Array $excluded_booking_ids An array of strings representing
      *     resource booking IDs. IDs specified in this array are excluded
      *     from the search.
-     * @returns ResourceRequest[] An array of ResourceRequest objects.
+     * @return ResourceRequest[] An array of ResourceRequest objects.
      *     If no requests can be found, the array is empty.
      *
      * @throws InvalidArgumentException, if the time ranges are either not in an
@@ -609,7 +609,7 @@ class ResourceBooking extends SimpleORMap
      * Deletes the ResourceBooking object if there are no
      * ResourceBookingInterval objects attachted to it.
      *
-     * @returns null|bool If the ResourceBooking object still has
+     * @return null|bool If the ResourceBooking object still has
      *     ResourceBookingInterval objects attachted to it,
      *     null is returned. Otherwise the return value of the
      *     SimpleORMap::delete method for the ResourceBooking object
@@ -635,7 +635,7 @@ class ResourceBooking extends SimpleORMap
      * Deletes all bookings in the time ranges of this resource booking.
      * Such bookings would prevent saving this booking.
      *
-     * @returns int The amount of deleted bookings.
+     * @return int The amount of deleted bookings.
      */
     public function deleteOverlappingBookings()
     {
@@ -748,7 +748,7 @@ class ResourceBooking extends SimpleORMap
     /**
      * Deletes all reservations in the time ranges of this resource booking.
      *
-     * @returns int The amount of deleted reservations.
+     * @return int The amount of deleted reservations.
      */
     public function deleteOverlappingReservations()
     {
@@ -841,7 +841,7 @@ class ResourceBooking extends SimpleORMap
      * Determines whether the resource booking ends on the same timestamp
      * like the lecture time of one of the defined semesters.
      *
-     * @returns True, if the resource booking ends with a semester,
+     * @return True, if the resource booking ends with a semester,
      *     false otherwise.
      */
     public function endsWithSemester()
@@ -862,7 +862,7 @@ class ResourceBooking extends SimpleORMap
      *
      * @param User $user The user whose ownership shall be tested.
      *
-     * @returns bool True, if the specified user is the owner of the booking,
+     * @return bool True, if the specified user is the owner of the booking,
      *     false otherwise.
      */
     public function userIsOwner(User $user)
@@ -876,7 +876,7 @@ class ResourceBooking extends SimpleORMap
      *
      * @param User $user The user whose permissions shall be checked.
      *
-     * @returns bool True, if the specified user may only perform reading
+     * @return bool True, if the specified user may only perform reading
      *     actions on the booking, false otherwise.
      */
     public function isReadOnlyForUser(User $user)
@@ -899,7 +899,7 @@ class ResourceBooking extends SimpleORMap
      * Determines whether this resource booking has a repetition in the
      * specified time range.
      *
-     * @returns bool True, if the booking has repetitions in the timeframe
+     * @return bool True, if the booking has repetitions in the timeframe
      * specified by $begin and $end, false otherwise.
      */
     public function isRepetitionInTimeframe(DateTime $begin, DateTime $end)
@@ -935,7 +935,7 @@ class ResourceBooking extends SimpleORMap
      * Returns the DateInterval object according to the set repetition
      * interval of this resource booking object.
      *
-     * @returns DateInterval|null A DateInterval object or null,
+     * @return DateInterval|null A DateInterval object or null,
      *     if this booking has no repetition interval.
      */
     public function getRepetitionInterval()
@@ -1005,7 +1005,7 @@ class ResourceBooking extends SimpleORMap
      * Determines if the resource booking overlaps with another
      * resource booking.
      *
-     * @returns True, if there are other bookings which overlap
+     * @return True, if there are other bookings which overlap
      *     with this one, false otherwise.
      */
     public function hasOverlappingBookings()
@@ -1057,7 +1057,7 @@ class ResourceBooking extends SimpleORMap
     /**
      * Gets the bookings that overlap with this booking.
      *
-     * @returns SimpleORMapCollection Collection of ResourceBooking objects
+     * @return SimpleORMapCollection Collection of ResourceBooking objects
      */
     public function getOverlappingBookings()
     {
@@ -1129,7 +1129,7 @@ class ResourceBooking extends SimpleORMap
      * @param bool $as_datetime Whether to return the timestamps
      *     as DateTime objects (true) or not (false). Defaults to false.
      *
-     * @returns Array A two-dimensional array with each time interval
+     * @return Array A two-dimensional array with each time interval
      *     for this booking. The array has the following structure:
      *     [
      *         [
@@ -1216,7 +1216,7 @@ class ResourceBooking extends SimpleORMap
     /**
      * Retrieves all time intervals for this resource booking.
      *
-     * @returns ResourceBookingInterval[] An array of
+     * @return ResourceBookingInterval[] An array of
      *     ResourceBookingInterval objects.
      */
     public function getTimeIntervals($with_exceptions = true)
@@ -1248,7 +1248,7 @@ class ResourceBooking extends SimpleORMap
      * @param DateTime $begin The begin of the time range.
      * @param DateTime $end The end of the time range.
      *
-     * @returns ResourceBookingInterval[] An array of
+     * @return ResourceBookingInterval[] An array of
      *     ResourceBookingInterval objects.
      */
     public function getTimeIntervalsInTimeRange(DateTime $begin, DateTime $end)
@@ -1286,7 +1286,7 @@ class ResourceBooking extends SimpleORMap
      * @param bool $only_names Whether only the names of these users shall be
      *     returned (true) or user objects shall be returned (false).
      *
-     * @returns string[]|User[] Depending on the value of the $only_names
+     * @return string[]|User[] Depending on the value of the $only_names
      *     parameter a string array or an user object array is returned.
      *     In case no user can be found, the array is empty.
      *     In case the parameter $only_names is set to true, the result
@@ -1409,7 +1409,7 @@ class ResourceBooking extends SimpleORMap
      * if a repetition interval is set for the booking so that such instances
      * can exist.
      *
-     * @returns bool True, if the booking has exceptions in the repetition,
+     * @return bool True, if the booking has exceptions in the repetition,
      *     false otherwise.
      */
     public function hasExceptions()
