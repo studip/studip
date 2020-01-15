@@ -9,7 +9,7 @@ use JsonApi\JsonApiController;
 use JsonApi\Models\ForumEntry;
 
 /**
- * Löscht eine Forum-Kategorie.
+ * LÃ¶scht eine Forum-Kategorie.
  */
 class ForumEntriesDelete extends JsonApiController
 {

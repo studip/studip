@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Löscht eine Forum-Kategorie.
+ * LÃ¶scht eine Forum-Kategorie.
  */
 class ForumCategoriesDelete extends JsonApiController
 {

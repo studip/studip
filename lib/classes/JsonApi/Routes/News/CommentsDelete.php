@@ -9,7 +9,7 @@ use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\JsonApiController;
 
 /**
- * Löscht eine Studip-Nachricht.
+ * LÃ¶scht eine Studip-Nachricht.
  */
 class CommentsDelete extends JsonApiController
 {
