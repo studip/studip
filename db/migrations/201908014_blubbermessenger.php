@@ -11,8 +11,8 @@ class Blubbermessenger extends Migration
     {
         $query = "CREATE TABLE `blubber_threads` (
                     `thread_id` CHAR(32) COLLATE latin1_bin NOT NULL,
-                    `context_type` ENUM('public','private','course','institute') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'public',
-                    `context_id` VARCHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                    `context_type` ENUM('public','private','course','institute') COLLATE latin1_bin NOT NULL DEFAULT 'public',
+                    `context_id` VARCHAR(32) COLLATE latin1_bin NOT NULL DEFAULT '',
                     `user_id` CHAR(32) COLLATE latin1_bin NOT NULL,
                     `external_contact` TINYINT(1) NOT NULL DEFAULT 0,
                     `content` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -40,7 +40,7 @@ class Blubbermessenger extends Migration
         $query = "CREATE TABLE `blubber_comments` (
                     `comment_id` CHAR(32) COLLATE latin1_bin NOT NULL,
                     `thread_id` CHAR(32) COLLATE latin1_bin NOT NULL,
-                    `user_id` CHAR(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+                    `user_id` CHAR(32) COLLATE latin1_bin NOT NULL DEFAULT '',
                     `external_contact` TINYINT(1) NOT NULL DEFAULT 0,
                     `content` TEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                     `network` VARCHAR(64) COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
