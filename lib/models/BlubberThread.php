@@ -577,11 +577,11 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 return Avatar::getAvatar($mentions[0]['user_id'])->getURL(Avatar::MEDIUM);
             }
 
-            if (count($mentions) === 2 && $mentions[0]['user_id'] === $user_id && !$mentions[0]['external_contact']) {
+            if (count($mentions) === 2 && $mentions[0]['user_id'] === $GLOBALS['user']->id && !$mentions[0]['external_contact']) {
                 return Avatar::getAvatar($mentions[1]['user_id'])->getURL(Avatar::MEDIUM);
             }
 
-            if (count($mentions) === 2 && $mentions[1]['user_id'] === $user_id && !$mentions[1]['external_contact']) {
+            if (count($mentions) === 2 && $mentions[1]['user_id'] === $GLOBALS['user']->id && !$mentions[1]['external_contact']) {
                 return Avatar::getAvatar($mentions[0]['user_id'])->getURL(Avatar::MEDIUM);
             }
 
