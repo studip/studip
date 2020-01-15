@@ -313,7 +313,7 @@ class Resources_AdminController extends AuthenticatedController
             ),
             Icon::create('add'),
             [
-                'data-dialog' => '1'
+                'data-dialog' => 'size=auto'
             ]
         );
 
