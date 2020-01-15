@@ -229,6 +229,9 @@ class Resources_RoomGroupController extends AuthenticatedController
 
                         if ($permission_object->isDirty()) {
                             if (!$permission_object->store()) {
+                                /**
+                                 * @TODO $user is not defined
+                                 */
                                 $errors[] = sprintf(
                                     _('Die Berechtigungen von %1$s am Raum %2$s konnten nicht gespeichert werden!'),
                                     htmlReady($user->getFullName()),

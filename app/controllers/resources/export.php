@@ -22,9 +22,6 @@
  */
 class Resources_ExportController extends AuthenticatedController
 {
-    //Helper methods:
-
-
     protected function returnCsvData($data = [], $file_name = '')
     {
         if (!is_array($data)) {
@@ -32,40 +29,35 @@ class Resources_ExportController extends AuthenticatedController
                 'Resources_ExportController::returnCsvData requires an array as parameter!'
             );
         }
-
+        
         $csv_string = array_to_csv($data);
         if ($file_name) {
             header("Content-Disposition: attachment; "
-                 . encode_header_parameter('filename', $file_name)
+                . encode_header_parameter('filename', $file_name)
             );
         }
         $this->set_content_type('text/csv; charset=UTF-8');
         $this->render_text($csv_string);
     }
-
-
+    
     protected function returnHtmlData($data = '')
     {
         $this->set_content_type('text/html');
         $this->render_text($data);
     }
-
-
+    
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-
-        $this->export_type = Request::get('export_type', 'default');
+        
+        $this->export_type  = Request::get('export_type', 'default');
         $this->export_param = Request::get('export_param', '');
-
+        
         if (Navigation::hasItem('/resources/export')) {
             Navigation::activateItem('/resources/export');
         }
     }
-
-    //Actions:
-
-
+    
     public function index_action()
     {
         if (Navigation::hasItem('/resources/export/index')) {
@@ -74,11 +66,10 @@ class Resources_ExportController extends AuthenticatedController
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
+        
         PageLayout::setTitle(_('Raum- und Ressourcenverwaltung Exportzentrale'));
     }
-
-
+    
     public function select_booking_sources_action($range_with_id = null)
     {
         if (Navigation::hasItem('/resources/export/select_booking_sources')) {
@@ -87,11 +78,11 @@ class Resources_ExportController extends AuthenticatedController
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
+        
         PageLayout::setTitle(_('Quellen für den Export von Buchungen auswählen'));
-
+        
         $this->select_rooms = Request::get('select_rooms');
-
+        
         if ($this->select_rooms) {
             $this->available_rooms = RoomManager::getUserRooms(
                 User::findCurrent()
@@ -102,42 +93,42 @@ class Resources_ExportController extends AuthenticatedController
                 ['Room']
             );
         }
-
+        
         if (!$this->available_clipboards && !$this->available_rooms) {
             PageLayout::postInfo(
                 _('Es sind keine Quellen für den Export von Buchungen vorhanden!')
             );
             return;
         }
-
+        
         $this->begin = new DateTime();
         $this->begin->setDate(
             intval(date('Y')),
             intval(date('m')),
             1
         );
-        $this->begin->setTime(0,0,0);
+        $this->begin->setTime(0, 0, 0);
         $this->end = clone $this->begin;
         $this->end = $this->end->add(
             new DateInterval('P1M')
         )->sub(
             new DateInterval('P1D')
         );
-        $this->end->setTime(23,59,59);
-
+        $this->end->setTime(23, 59, 59);
+        
         $this->range_type = null;
-        $this->range_id = null;
-
+        $this->range_id   = null;
+        
         if (!$range_with_id) {
             //Check if range-ID and range_type are provided in an URL parameter:
             $this->range_type = Request::get('range_type');
-            $this->range_id = Request::get('range_id');
+            $this->range_id   = Request::get('range_id');
         }
-
+        
         //Build sidebar
-
+        
         $sidebar = Sidebar::get();
-
+        
         $views = new ViewsWidget();
         $views->addLink(
             _('Raumgruppen auswählen'),
@@ -156,21 +147,21 @@ class Resources_ExportController extends AuthenticatedController
         )->setActive($this->select_rooms);
         $sidebar->addWidget($views);
     }
-
-
+    
+    
     public function resource_bookings_action($resource_id = null)
     {
         PageLayout::setTitle(
             _('Buchungen exportieren')
         );
-
+        
         if (!$resource_id) {
             PageLayout::postError(
                 _('Es wurde keine Ressource ausgewählt!')
             );
             return;
         }
-
+        
         $this->resource = Resource::find($resource_id);
         if (!$this->resource) {
             PageLayout::postError(
@@ -179,26 +170,26 @@ class Resources_ExportController extends AuthenticatedController
             return;
         }
         $this->resource = $this->resource->getDerivedClassInstance();
-
+        
         PageLayout::setTitle(
             sprintf(
                 '%s: Buchungen exportieren',
                 $this->resource->getFullName()
             )
         );
-
+        
         $this->current_user = User::findCurrent();
-
+        
         if (!$this->resource->userHasPermission($this->current_user, 'user')) {
             throw new AccessDeniedException();
         }
-
+        
         $this->begin = new DateTime();
-        $this->end = clone $this->begin;
-
+        $this->end   = clone $this->begin;
+        
         $begin_timestamp = Request::get('begin');
-        $end_timestamp = Request::get('end');
-        $week_timestamp = Request::get('timestamp');
+        $end_timestamp   = Request::get('end');
+        $week_timestamp  = Request::get('timestamp');
         if ($week_timestamp) {
             //Calculate start and end of week:
             $this->begin->setTimestamp($week_timestamp);
@@ -207,7 +198,7 @@ class Resources_ExportController extends AuthenticatedController
                     new DateInterval('P' . ($this->begin->format('N') - 1) . 'D')
                 );
             }
-            $this->begin->setTime(0,0,0);
+            $this->begin->setTime(0, 0, 0);
             $this->end = clone $this->begin;
             $this->end = $this->end->add(
                 new DateInterval('P7D')
@@ -223,29 +214,29 @@ class Resources_ExportController extends AuthenticatedController
                 intval(date('m')),
                 1
             );
-            $this->begin->setTime(0,0,0);
+            $this->begin->setTime(0, 0, 0);
             $this->end = clone $this->begin;
             $this->end = $this->end->add(
                 new DateInterval('P1M')
             )->sub(
                 new DateInterval('P1D')
             );
-            $this->end->setTime(23,59,59);
+            $this->end->setTime(23, 59, 59);
         }
     }
-
-
+    
+    
     public function bookings_action()
     {
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
         }
-
+        
         //Get the IDs of all selected clipboards and rooms:
         $this->selected_clipboard_ids = Request::getArray('selected_clipboards');
-        $this->selected_room_ids = Request::getArray('selected_rooms');
-        $this->selected_resource_ids = Request::getArray('selected_resources');
-
+        $this->selected_room_ids      = Request::getArray('selected_rooms');
+        $this->selected_resource_ids  = Request::getArray('selected_resources');
+        
         //Get begin and end date:
         $this->begin = Request::getDateTime(
             'begin_date',
@@ -253,57 +244,57 @@ class Resources_ExportController extends AuthenticatedController
             'begin_time',
             'H:i'
         );
-        $this->end = Request::getDateTime(
+        $this->end   = Request::getDateTime(
             'end_date',
             'd.m.Y',
             'end_time',
             'H:i'
         );
-
+        
         if ($this->begin >= $this->end) {
             PageLayout::postError(
                 _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
             );
             return;
         }
-
+        
         //Resolve the IDs to clipboards (or rooms) and build a list of rooms.
-
+        
         $this->selected_clipboards = Clipboard::findMany(
             $this->selected_clipboard_ids
         );
-        $room_sql = "INNER JOIN resource_categories rc
+        $room_sql                  = "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
             WHERE
             rc.class_name = 'Room'
             AND resources.id IN ( :room_ids )
             ORDER BY resources.name ASC";
-        $this->selected_rooms = Room::findBySql(
+        $this->selected_rooms      = Room::findBySql(
             $room_sql,
             [
                 'room_ids' => $this->selected_room_ids
             ]
         );
-        $this->selected_resources = Resource::findMany(
+        $this->selected_resources  = Resource::findMany(
             $this->selected_resource_ids
         );
-
+        
         $resources = [];
         foreach ($this->selected_clipboards as $clipboard) {
             $clipboard_room_ids = $clipboard->getAllRangeIds('Room');
-            $clipboard_rooms = Room::findBySql(
+            $clipboard_rooms    = Room::findBySql(
                 $room_sql,
                 [
                     'room_ids' => $clipboard_room_ids
                 ]
             );
-            $resources = array_merge($resources, $clipboard_rooms);
+            $resources          = array_merge($resources, $clipboard_rooms);
         }
-
+        
         $resources = array_merge($resources, $this->selected_rooms);
-
+        
         //Collect all bookings in the selected time range and export them.
-
+        
         $booking_data = [
             [
                 _('Beginn'),
@@ -317,7 +308,7 @@ class Resources_ExportController extends AuthenticatedController
                 _('Interner Kommentar')
             ]
         ];
-
+        
         foreach ($resources as $resource) {
             //Retrieve the bookings in the specified time range:
             $bookings = ResourceBooking::findByResourceAndTimeRanges(
@@ -325,14 +316,14 @@ class Resources_ExportController extends AuthenticatedController
                 [
                     [
                         'begin' => $this->begin->getTimestamp(),
-                        'end' => $this->end->getTimestamp()
+                        'end'   => $this->end->getTimestamp()
                     ]
                 ],
-                [0,1,2,3]
+                [0, 1, 2, 3]
             );
-
+            
             //Prepare data for export:
-
+            
             foreach ($bookings as $booking) {
                 $booking_data[] = [
                     date('d.m.Y H:i', $booking->begin),
@@ -343,17 +334,17 @@ class Resources_ExportController extends AuthenticatedController
                     ),
                     $booking->resource->name,
                     (
-                        $booking->booking_type == '0'
+                    $booking->booking_type == '0'
                         ? _('Buchung')
                         : (
-                            $booking->booking_type == '1'
-                            ? _('Reservierung')
-                            : (
-                                $booking->booking_type == '2'
-                                ? _('Sperrbuchung')
-                                : _('sonstiges')
-                            )
-                        )
+                    $booking->booking_type == '1'
+                        ? _('Reservierung')
+                        : (
+                    $booking->booking_type == '2'
+                        ? _('Sperrbuchung')
+                        : _('sonstiges')
+                    )
+                    )
                     ),
                     $booking->description,
                     $booking->booking_user ? $booking->booking_user->getFullName() : '',
@@ -362,7 +353,7 @@ class Resources_ExportController extends AuthenticatedController
                 ];
             }
         }
-
+        
         $this->returnCsvData(
             $booking_data,
             sprintf(
@@ -374,8 +365,8 @@ class Resources_ExportController extends AuthenticatedController
             )
         );
     }
-
-
+    
+    
     public function booking_plan_action($resource_id = null)
     {
         $this->resource = Resource::find($resource_id);
@@ -386,7 +377,7 @@ class Resources_ExportController extends AuthenticatedController
             return;
         }
         $this->resource = $this->resource->getDerivedClassInstance();
-
+        
         $user_has_user_permissions = $this->resource->userHasPermission(
             User::findCurrent(),
             'user'
@@ -400,30 +391,30 @@ class Resources_ExportController extends AuthenticatedController
                 throw new AccessDeniedException();
             }
         }
-
+        
         $week_timestamp = Request::get('timestamp', time());
-
+        
         $this->date = new DateTime();
         $this->date->setTimestamp($week_timestamp);
-
+        
         $week_begin = clone $this->date;
         $week_begin->sub(
             new DateInterval('P' . abs($this->date->format('N') - 1) . 'D')
         );
-        $week_begin->setTime(0,0,0);
-
+        $week_begin->setTime(0, 0, 0);
+        
         $week_end = clone $week_begin;
         $week_end->add(new DateInterval('P7D'))->sub(new DateInterval('PT1S'));
-
+        
         if ($this->export_type == 'csv') {
             $csv_data = [];
-
+            
             $csv_data[] = [
                 _('Beginn'),
                 _('Ende'),
                 _('Rüstzeit (Minuten)'),
                 (
-                    $this->resource instanceof Room
+                $this->resource instanceof Room
                     ? _('Raum / Gebäude')
                     : _('Ressource')
                 ),
@@ -433,9 +424,8 @@ class Resources_ExportController extends AuthenticatedController
                 _('Belegende Person(en)'),
                 _('Interner Kommentar')
             ];
-
+            
             //Get booking intervals:
-            $intervals = [];
             if ($this->resource instanceof Room) {
                 $intervals = RoomManager::getBookingIntervalsForRoom(
                     $this->resource,
@@ -452,15 +442,14 @@ class Resources_ExportController extends AuthenticatedController
                     [0, 2]
                 );
             }
-
+            
             foreach ($intervals as $interval) {
-
                 $resource_name = '';
                 if ($interval->resource) {
                     $interval_resource = $interval->resource->getDerivedClassInstance();
-                    $resource_name = $interval_resource->getFullName();
+                    $resource_name     = $interval_resource->getFullName();
                 }
-
+                
                 $booking_type_string = '';
                 if ($interval->booking->booking_type == '0') {
                     $booking_type_string = _('Buchung');
@@ -469,7 +458,7 @@ class Resources_ExportController extends AuthenticatedController
                 } elseif ($interval->booking->booking_type == '2') {
                     $booking_type_string = _('Sperrbuchung');
                 }
-
+                
                 $csv_data[] = [
                     date(_('d.m.Y H:i'), $interval->begin),
                     date(_('d.m.Y H:i'), $interval->end),
@@ -478,7 +467,7 @@ class Resources_ExportController extends AuthenticatedController
                     $booking_type_string,
                     $interval->booking->description,
                     (
-                        $interval->booking->booking_user instanceof User
+                    $interval->booking->booking_user instanceof User
                         ? $interval->booking->booking_user->getFullName()
                         : ''
                     ),
@@ -486,7 +475,7 @@ class Resources_ExportController extends AuthenticatedController
                     $interval->booking->internal_comment
                 ];
             }
-
+            
             $file_name = sprintf(
                 _('Belegungsplan %1$s, KW %2$d.csv'),
                 $this->resource->getFullName(),

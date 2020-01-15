@@ -1495,7 +1495,6 @@ class ResourceBooking extends SimpleORMap
     public static function exportUserData(StoredUserData $storage)
     {
         $user = User::find($storage->user_id);
-
         $bookings = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [

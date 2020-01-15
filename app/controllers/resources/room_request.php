@@ -230,7 +230,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $institute = Institute::find($institute_id);
             if ($institute instanceof Institute) {
                 $institute_ids = [$institute->id];
-                if ($institute->isFaculty() and $include_children) {
+                if ($institute->isFaculty() && $include_children) {
                     //Get the requests from courses from the faculty
                     //and its institutes.
                     foreach ($institute->sub_institutes as $sub_inst) {
@@ -249,7 +249,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         }
 
-        if (($this->filter['marked'] > -1) && ($this->filter['marked'] < ResourceRequest::MARKING_STATES)) {
+        if ($this->filter['marked'] > -1 && $this->filter['marked'] < ResourceRequest::MARKING_STATES) {
             if ($sql) {
                 $sql .= ' AND ';
             }
@@ -402,7 +402,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     'resources/room_request/overview',
                     ['reset_filter' => '1']
                 ),
-                Icon::create('filter+decline', 'clickable')
+                Icon::create('filter+decline')
             );
             $sidebar->addWidget($filter_reset_widget);
         }
@@ -575,19 +575,18 @@ class Resources_RoomRequestController extends AuthenticatedController
         $export->addLink(
             _('Gefilterte Anfragen'),
             $this->url_for('/export_list', $export_url_params),
-            Icon::create('file-excel', 'clickable')
+            Icon::create('file-excel')
         );
         $export->addLink(
             _('Alle Anfragen'),
             $this->url_for('/export_list'),
-            Icon::create('file-excel', 'clickable')
+            Icon::create('file-excel')
         );
         $sidebar->addWidget($export);
 
         $this->requests = $this->getFilteredRoomRequests();
     }
-
-
+    
     public function index_action($request_id = null)
     {
         $this->request = ResourceRequest::find($request_id);
@@ -614,7 +613,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             )
         );
     }
-
 
     /**
      * This action handles resource requests that are not bound
@@ -1192,8 +1190,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         $this->request_semester_string = '';
         $request_start_semester = $this->request->getStartSemester();
         $request_end_semester = $this->request->getEndSemester();
-        if (($request_start_semester->id != $request_end_semester->id)
-            && $request_end_semester->id) {
+        if ($request_start_semester->id != $request_end_semester->id && $request_end_semester->id) {
             $this->request_semester_string = sprintf(
                 '%1$s - %2$s',
                 $request_start_semester->name,
@@ -1212,7 +1209,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         if ($selected_room instanceof Room) {
             $this->room_availability[$selected_room->id] = [];
             foreach ($this->request_time_intervals as $metadate_id => $data) {
-                if (($data['metadate'] instanceof SeminarCycleDate) && !$this->expand_metadates) {
+                if ($data['metadate'] instanceof SeminarCycleDate && !$this->expand_metadates) {
                     //There is at least one metadate in the grouped set
                     //of time intervals. The expand button must be shown.
                     $this->show_expand_metadates_button = true;
@@ -1610,8 +1607,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         }
     }
-
-
+    
     public function decline_action($request_id = null)
     {
         $this->request = ResourceRequest::find($request_id);
@@ -1622,8 +1618,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             return;
         }
         $this->delete_mode = Request::get('delete');
-
-        $user_has_permission = false;
+        
         $user = User::findCurrent();
 
         if ($this->request->resource) {
@@ -1835,12 +1830,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         );
         $dpicker->addElement(new WidgetElement($picker_html));
         $sidebar->addWidget($dpicker);
-
-        $template = $GLOBALS['template_factory']->open(
-            'sidebar/map_key.php'
-        );
-
-        $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
+        
         $simple_booking_exception_colour =
             ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
         $course_booking_colour =
@@ -2082,10 +2072,10 @@ class Resources_RoomRequestController extends AuthenticatedController
                         }
                     }
                 }
-            } elseif (($request_type == 'cycle') && ($request->cycle instanceof SeminarCycleDate)) {
+            } elseif ($request_type == 'cycle' && $request->cycle instanceof SeminarCycleDate) {
                 //Produce one row for the metadate.
                 $date_data[] = $this->getMetadateDataForExportRow($request->cycle);
-            } elseif (($request_type == 'date') && ($request->date instanceof CourseDate)) {
+            } elseif ($request_type == 'date' && $request->date instanceof CourseDate) {
                 //Produce one row for the single date.
                 $date_data[] = $this->getSingleDateDataForExportRow($request->date);
             } else {

@@ -21,8 +21,6 @@
  */
 class Resources_LocationController extends AuthenticatedController
 {
-    protected $utf8decode_xhr = true;
-
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
@@ -93,7 +91,7 @@ class Resources_LocationController extends AuthenticatedController
                 $actions->addLink(
                     _('Standort bearbeiten'),
                     $this->location->getURL('edit'),
-                    Icon::create('edit', 'clickable'),
+                    Icon::create('edit'),
                     [
                         'data-dialog' => '1'
                     ]
@@ -101,7 +99,7 @@ class Resources_LocationController extends AuthenticatedController
                 $actions->addLink(
                     _('Rechte bearbeiten'),
                     $this->location->getURL('permissions'),
-                    Icon::create('roles', 'clickable'),
+                    Icon::create('roles'),
                     [
                         'data-dialog' => '1'
                     ]
@@ -112,7 +110,7 @@ class Resources_LocationController extends AuthenticatedController
                 $actions->addLink(
                     _('Lageplan anzeigen'),
                     ResourceManager::getMapUrlForResourcePosition($this->geo_coordinates_object),
-                    Icon::create('globe', 'clickable'),
+                    Icon::create('globe'),
                     ['target' => '_blank']
                 );
             }
@@ -134,8 +132,7 @@ class Resources_LocationController extends AuthenticatedController
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
-        $category_id = Request::get('category_id');
+        
         $this->next_action = Request::get('next_action');
         $this->categories = ResourceCategory::findByClass_name('Location');
 
@@ -286,15 +283,12 @@ class Resources_LocationController extends AuthenticatedController
             if ($GLOBALS['perm']->have_perm('root')) {
                 $this->location->sort_position = $this->sort_position;
             }
-
-            $successfully_stored = false;
+            
             if ($this->location->isDirty()) {
                 $successfully_stored = $this->location->store();
             } else {
                 $successfully_stored = true;
             }
-
-            //Store the properties:
 
             if ($GLOBALS['perm']->have_perm('root')) {
                 $this->location->sort_position = $this->sort_position;
@@ -308,9 +302,7 @@ class Resources_LocationController extends AuthenticatedController
             } elseif ($this->location->geo_coordinates != $position_string) {
                 $unchanged_properties[] = $this->location->getPropertyObject('geo_coordinates');
             }
-
-            //Store all non-special properties:
-
+            
             $failed_properties = $this->location->setPropertiesById(
                 $this->property_data,
                 $user

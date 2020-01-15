@@ -21,9 +21,6 @@
  */
 class Resources_CategoryController extends AuthenticatedController
 {
-    protected $utf8decode_xhr = true;
-
-
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
@@ -312,15 +309,11 @@ class Resources_CategoryController extends AuthenticatedController
                     }
                 }
             }
-
-            //store data:
-
             $this->category->name = $this->name;
             $this->category->description = $this->description;
             $this->category->class_name = $this->class_name;
             $this->category->iconnr = $this->iconnr;
-
-            $successfully_stored = false;
+            
             if ($this->category->isDirty()) {
                 $successfully_stored = $this->category->store();
             } else {
@@ -330,8 +323,6 @@ class Resources_CategoryController extends AuthenticatedController
             if ($successfully_stored) {
                 //After we have stored the category we must store
                 //the properties or create them, if necessary.
-
-                $properties_successfully_stored = false;
                 //First we store all set properties, if they are new
                 //or we modify existing properties:
                 foreach ($this->set_properties as $set_property) {
@@ -386,7 +377,6 @@ class Resources_CategoryController extends AuthenticatedController
     public function delete_action($category_id = null)
     {
         $this->show_form = false;
-
         $this->alternative_categories = [];
         $this->category_has_resources = false;
         $this->resource_handling = 'reassign';

@@ -65,7 +65,7 @@ class ResourcePermission extends SimpleORMap implements PrivacyObject
      */
     public static function exportUserData(StoredUserData $storage)
     {
-        $user = User::find($storage);
+        $user = User::find($storage->user_id);
         $permissions = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [

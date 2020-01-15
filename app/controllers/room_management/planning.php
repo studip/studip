@@ -21,12 +21,6 @@
  */
 class RoomManagement_PlanningController extends AuthenticatedController
 {
-    public function before_filter(&$action, &$args)
-    {
-        parent::before_filter($action, $args);
-    }
-
-
     public function index_action($selected_clipboard_id = null)
     {
         PageLayout::setTitle(
@@ -112,8 +106,6 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 PageLayout::setTitle(
                     $clipboard->name . ': ' . _('Raumgruppen-Belegungsplan')
                 );
-
-                $room_ids = [];
                 if ($selected_clipboard_item_ids) {
                     //The array of current clipboard item IDs is not empty.
                     //This means that at least one but not necessarily all
@@ -216,8 +208,6 @@ class RoomManagement_PlanningController extends AuthenticatedController
                     'room_management/planning/index/' . $_SESSION['selected_clipboard_id']
                 ),
                 [],
-                'display_all_requests',
-                $this->display_all_requests
             );
             $sidebar->insertWidget($options, 'roomclipboard');
         }
@@ -230,12 +220,9 @@ class RoomManagement_PlanningController extends AuthenticatedController
         }
 
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-        $simple_booking_exception_colour =
-            ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
-        $course_booking_colour =
-            ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $course_booking_with_exceptions_colour =
-            ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
+        $simple_booking_exception_colour = ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
+        $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+        $course_booking_with_exceptions_colour = ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
@@ -275,18 +262,6 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 'text'   => _('Anfrage')
             ];
         }
-
-
-        /* $this->fullcalendar_studip_urls = [];
-        if ($all_rooms_booking_rights) {
-            $this->fullcalendar_studip_urls['add'] = $this->url_for(
-                'resources/booking/add/'
-            );
-        } elseif ($all_rooms_booking_rights) {
-            $this->fullcalendar_studip_urls['add'] = $this->url_for(
-                'resources/room_request/add/'
-            );
-        } */
     }
 
     public function semester_plan_action($selected_clipboard_id = null)
@@ -327,7 +302,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
         $actions->addLink(
             _('Buchungen kopieren'),
             $this->url_for('room_management/planning/copy_bookings'),
-            Icon::create('assessment+add', 'clickable'),
+            Icon::create('assessment+add'),
             ['data-dialog' => 'size=auto']
         );
         $sidebar->addWidget($actions);
@@ -407,17 +382,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             )
         );
         $sidebar->addWidget($semester_selector);
-
-
-
-       /*  $dpicker = new SidebarWidget();
-        $dpicker->setTitle('Datum');
-        $picker_html = $this->get_template_factory()->render(
-            'resources/room_planning/_sidebar_date_selection.php'
-        );
-        $dpicker->addElement(new WidgetElement($picker_html));
-        $sidebar->addWidget($dpicker); */
-
+        
         //Add clipboard widget:
         $clipboard_widget = new RoomClipboardWidget();
         $clipboard_widget->setReadonly(true);
@@ -435,12 +400,9 @@ class RoomManagement_PlanningController extends AuthenticatedController
             $clipboard = Clipboard::find($selected_clipboard_id);
             $this->clipboard = $clipboard;
             if ($clipboard) {
-
                 PageLayout::setTitle(
                     $clipboard->name . ': ' . _('Raumgruppen-Semester-Belegungsplan')
                 );
-
-                $room_ids = [];
                 if ($selected_clipboard_item_ids) {
                     //The array of current clipboard item IDs is not empty.
                     //This means that at least one but not necessarily all
@@ -538,20 +500,15 @@ class RoomManagement_PlanningController extends AuthenticatedController
                         'semester_id' => Request::option('semester_id')
                     ]
                 ),
-                [],
-                'display_all_requests',
-                $this->display_all_requests
+                []
             );
             $sidebar->insertWidget($options, 'roomclipboard');
         }
 
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-        $simple_booking_exception_colour =
-            ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
-        $course_booking_colour =
-            ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $course_booking_with_exceptions_colour =
-            ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
+        $simple_booking_exception_colour = ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
+        $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+        $course_booking_with_exceptions_colour = ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
@@ -995,8 +952,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             }
         }
     }
-
-
+    
     public function booking_comments_action($selected_clipboard_id = null)
     {
         PageLayout::setTitle(_('Buchungen mit Kommentaren'));
@@ -1066,12 +1022,9 @@ class RoomManagement_PlanningController extends AuthenticatedController
             $clipboard = Clipboard::find($selected_clipboard_id);
             $this->clipboard = $clipboard;
             if ($clipboard) {
-
                 PageLayout::setTitle(
                     $clipboard->name . ': ' . _('Buchungen mit Kommentaren')
                 );
-
-                $room_ids = [];
                 if ($selected_clipboard_item_ids) {
                     //The array of current clipboard item IDs is not empty.
                     //This means that at least one but not necessarily all
@@ -1111,7 +1064,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                     'date' => $this->date->format('d.m.Y')
                 ]
             ),
-            Icon::create('file-text', 'clickable')
+            Icon::create('file-text')
         );
         $actions->addLink(
             _('Export als CSV'),
@@ -1122,7 +1075,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                     'date' => $this->date->format('d.m.Y')
                 ]
             ),
-            Icon::create('file-excel', 'clickable')
+            Icon::create('file-excel')
         );
         $sidebar->addWidget($actions);
 

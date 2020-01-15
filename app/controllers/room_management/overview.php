@@ -58,7 +58,6 @@ class RoomManagement_OverviewController extends StudipController
     protected function buildSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/resources-sidebar.png');
         return $sidebar;
     }
 
@@ -75,7 +74,7 @@ class RoomManagement_OverviewController extends StudipController
                 $this->user,
                 'user'
             )
-            or
+            ||
             ResourceManager::userHasResourcePermissions($this->user, 'user')
         );
         if (!$sufficient_permissions) {
@@ -87,7 +86,7 @@ class RoomManagement_OverviewController extends StudipController
                 $this->user,
                 'autor'
             )
-            or
+            ||
             ResourceManager::userHasResourcePermissions($this->user, 'autor')
         );
 
@@ -229,7 +228,7 @@ class RoomManagement_OverviewController extends StudipController
             URLHelper::getURL(
                 'dispatch.php/resources/location/select_category'
             ),
-            Icon::create('add', 'clickable'),
+            Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );
         $sidebar->addWidget($actions);
@@ -272,7 +271,7 @@ class RoomManagement_OverviewController extends StudipController
             URLHelper::getURL(
                 'dispatch.php/resources/building/select_category'
             ),
-            Icon::create('add', 'clickable'),
+            Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );
         $sidebar->addWidget($actions);
@@ -334,8 +333,7 @@ class RoomManagement_OverviewController extends StudipController
             }
         }
     }
-
-
+    
     public function rooms_action()
     {
         if (ResourceManager::userHasGlobalPermission($this->user, 'user')) {
@@ -347,8 +345,7 @@ class RoomManagement_OverviewController extends StudipController
                 _('Meine Räume')
             );
         }
-
-
+        
         if (Navigation::hasItem('/resources/overview')) {
             Navigation::activateItem('/resources/overview');
         }
@@ -376,7 +373,7 @@ class RoomManagement_OverviewController extends StudipController
                 URLHelper::getURL(
                     'dispatch.php/resources/room/select_category'
                 ),
-                Icon::create('add', 'clickable'),
+                Icon::create('add'),
                 ['data-dialog' => 'size=auto']
             );
             $sidebar->addWidget($actions);
@@ -386,7 +383,6 @@ class RoomManagement_OverviewController extends StudipController
         $sidebar->addWidget($clipboard);
 
         $search = new SearchWidget($this->url_for(''));
-        //$search->addNeedle(_('Raum'), 'room_name', true);
         $search->addNeedle(_('Gebäude'), 'building_name', true);
         $sidebar->addWidget($search);
 
@@ -408,8 +404,7 @@ class RoomManagement_OverviewController extends StudipController
                 'user_id' => $this->user->id,
                 'now' => time()
             ];
-            $rooms_sql .= "";
-
+            $rooms_sql = "";
             if (Request::get('building_name')) {
                 $rooms_sql .= " INNER JOIN resources pr ON resources.parent_id = pr.id";
             }

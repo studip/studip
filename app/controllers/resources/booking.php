@@ -21,7 +21,6 @@
  */
 class Resources_BookingController extends AuthenticatedController
 {
-
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
@@ -76,13 +75,6 @@ class Resources_BookingController extends AuthenticatedController
                 throw new AccessDeniedException();
             }
         }
-
-        $user_has_tutor_perms = $this->booking->resource->userHasPermission(
-            $this->current_user,
-            'tutor'
-        );
-        $user_booked_booking = $this->current_user->id == $this->booking->booking_user_id;
-
         //Only those users who have "tutor" permissions or who have
         //"autor" permissions and created the request may edit the
         //internal comment of the booking.
@@ -101,7 +93,6 @@ class Resources_BookingController extends AuthenticatedController
             CSRFProtection::verifyUnsafeRequest();
 
             $this->booking->internal_comment = Request::get('internal_comment');
-            $successfully_stored = false;
             if ($this->booking->isDirty()) {
                 $successfully_stored = $this->booking->store();
             } else {
@@ -143,7 +134,6 @@ class Resources_BookingController extends AuthenticatedController
         }
 
         $this->resource = $this->resource->getDerivedClassInstance();
-
         $this->max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
         $this->preparation_time = intval($this->request->preparation_time / 60);
         $this->notify_lecturers = '1';
@@ -180,7 +170,7 @@ class Resources_BookingController extends AuthenticatedController
                     $this->notify_lecturers
                 );
 
-                if ($bookings and is_array($bookings)) {
+                if ($bookings && is_array($bookings)) {
                     $this->show_form = false;
                     PageLayout::postSuccess(
                         _('Die Buchung wurde vorgenommen und die Anfrage als bearbeitet markiert!')
@@ -557,7 +547,6 @@ class Resources_BookingController extends AuthenticatedController
                 }
             } elseif ($room_part_errors) {
                 //Room parts could not be assigned.
-                $text = '';
                 if ($booking_type == '1') {
                     $text = ngettext(
                         'Die Reservierung wurde gespeichert, aber es traten Fehler beim Reservieren der anderen Raumteile auf:',
@@ -1145,7 +1134,7 @@ class Resources_BookingController extends AuthenticatedController
 
             //Validation:
 
-            if (($this->booking_type < 0) or ($this->booking_type > 2)) {
+            if (($this->booking_type < 0) || ($this->booking_type > 2)) {
                 PageLayout::postError(
                     _('Es wurde ein ungültiger Buchungstyp gewählt.')
                 );
@@ -1278,8 +1267,7 @@ class Resources_BookingController extends AuthenticatedController
                     }
                 }
             }
-
-            $room_part_errors = [];
+            
             $time_intervals = [];
 
             if ($block_booking_days) {
@@ -1423,148 +1411,7 @@ class Resources_BookingController extends AuthenticatedController
                 $errors,
                 $room_part_errors
             );
-
-            /*
-            if ($block_booking_days) {
-                $errors = [];
-                $room_part_errors = [];
-                $bookings = [];
-
-                $begin_time = [
-                    intval($this->begin->format('H')),
-                    intval($this->begin->format('i')),
-                    intval($this->begin->format('s'))
-                ];
-                $end_time = [
-                    intval($this->end->format('H')),
-                    intval($this->end->format('i')),
-                    intval($this->end->format('s'))
-                ];
-
-                //We must loop the first 7 days. For each weekday that
-                //is selected in the block booking area we create
-                //an booking.
-                $current_day = clone $this->begin;
-                $current_day->setTime(
-                    $end_time[0],
-                    $end_time[1],
-                    $end_time[2]
-                );
-                $this->end_day = clone $this->end;
-
-                while ($current_day <= $this->end_day) {
-                    $current_day_index = $current_day->format('N') - 1;
-                    if (in_array($current_day_index, $block_booking_days)) {
-                        $current_begin = clone $current_day;
-                        $current_begin->setTime(
-                            $begin_time[0],
-                            $begin_time[1],
-                            $begin_time[2]
-                        );
-                        $current_end = clone $current_day;
-                        $current_end->setTime(
-                            $end_time[0],
-                            $end_time[1],
-                            $end_time[2]
-                        );
-
-                        foreach ($this->resources as $resource) {
-                            $results = $this->assignResourceAndCollectResults(
-                                $this->booking,
-                                $resource,
-                                $this->current_user,
-                                $current_begin,
-                                $current_end,
-                                intval($this->preparation_time) * 60,
-                                $this->description,
-                                $this->internal_comment,
-                                $this->booking_type,
-                                $this->assigned_user,
-                                $this->repetition_date_interval,
-                                $this->end,
-                                $this->notification_enabled,
-                                (
-                                    $this->book_other_room_parts
-                                    ? $this->other_room_parts[$resource->id]
-                                    : []
-                                ),
-                                $this->overwrite_bookings
-                            );
-
-                            $errors = array_merge($errors, $results['errors']);
-                            $room_part_errors = array_merge(
-                                $room_part_errors,
-                                $results['room_part_errors']
-                            );
-                            $bookings = array_merge(
-                                $bookings,
-                                $results['bookings']
-                            );
-                        }
-                    }
-
-                    $current_day = $current_day->add(new DateInterval('P1D'));
-                }
-
-                if ($bookings) {
-                    $this->show_form = false;
-                }
-                $this->displayAssignResultMessages(
-                    $this->booking_type,
-                    count($bookings),
-                    $errors,
-                    $room_part_errors
-                );
-            } else {
-                //It is one single booking.
-                $errors = [];
-                $room_part_errors = [];
-                $bookings = [];
-                foreach ($this->resources as $resource) {
-                    $results = $this->assignResourceAndCollectResults(
-                        $this->booking,
-                        $resource,
-                        $this->current_user,
-                        $this->begin,
-                        $this->end,
-                        intval($this->preparation_time) * 60,
-                        $this->description,
-                        $this->internal_comment,
-                        $this->booking_type,
-                        $this->assigned_user,
-                        $this->repetition_date_interval,
-                        $this->repetition_end,
-                        $this->notification_enabled,
-                        (
-                            $this->book_other_room_parts
-                            ? $this->other_room_parts[$resource->id]
-                            : []
-                        ),
-                        $this->overwrite_bookings
-                    );
-                    $errors = array_merge($errors, $results['errors']);
-                    $room_part_errors = array_merge(
-                        $room_part_errors,
-                        $results['room_part_errors']
-                    );
-                    $bookings = array_merge(
-                        $bookings,
-                        $results['bookings']
-                    );
-                }
-
-                if ($bookings) {
-                    $this->show_form = false;
-                }
-                $this->displayAssignResultMessages(
-                    $this->booking_type,
-                    count($bookings),
-                    $errors,
-                    $room_part_errors
-                );
-            }
-            */
-
+            
             if (!$errors && Request::isXhr()) {
                 $this->response->add_header('X-Dialog-Close', '1');
                 $this->response->add_header('X-Location', URLHelper::getURL('', ['defaultDate'=> date('Y-m-d', $this->begin->getTimestamp())]));

@@ -24,24 +24,18 @@ class Resources_AdminController extends AuthenticatedController
 {
     public function before_filter(&$action, &$args)
     {
-        global $perm;
         parent::before_filter($action, $args);
 
         $this->sidebar = Sidebar::get();
-        $this->sidebar->setImage('sidebar/resources-sidebar.png');
-
+        
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')
-            and !$perm->have_perm('root')) {
+            && !$GLOBALS['perm']->have_perm('root')) {
             throw new AccessDeniedException();
         }
-
-        PageLayout::addSqueezePackage('tablesorter');
     }
 
     public function permissions_action($resource_id = null)
     {
-        global $perm;
-
         if (Navigation::hasItem('/resources/admin/permissions')) {
             Navigation::activateItem('/resources/admin/permissions');
         }
@@ -60,7 +54,7 @@ class Resources_AdminController extends AuthenticatedController
                 return;
             }
             if (!$this->resource->userHasPermission(User::findCurrent(), 'admin')
-                and !$perm->have_perm('root')) {
+                && !$GLOBALS['perm']->have_perm('root')) {
                 throw new AccessDeniedException();
             }
         }
@@ -94,7 +88,7 @@ class Resources_AdminController extends AuthenticatedController
             URLHelper::getLink(
                 'dispatch.php/resources/global_locks/add'
             ),
-            Icon::create('add', 'clickable'),
+            Icon::create('add'),
             [
                 'data-dialog' => '1'
             ]
@@ -285,7 +279,7 @@ class Resources_AdminController extends AuthenticatedController
             URLHelper::getURL(
                 'dispatch.php/resources/category/add'
             ),
-            Icon::create('add', 'clickable'),
+            Icon::create('add'),
             ['data-dialog' => 'reload-on-close']
         );
 
@@ -317,7 +311,7 @@ class Resources_AdminController extends AuthenticatedController
             URLHelper::getURL(
                 'dispatch.php/resources/property/add'
             ),
-            Icon::create('add', 'clickable'),
+            Icon::create('add'),
             [
                 'data-dialog' => '1'
             ]

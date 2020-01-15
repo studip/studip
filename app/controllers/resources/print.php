@@ -60,7 +60,7 @@ class Resources_PrintController extends AuthenticatedController
         $sidebar = Sidebar::get();
 
         $views = new ViewsWidget();
-        if ($GLOBALS['user']->id and ($GLOBALS['user']->id != 'nobody')) {
+        if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
             if ($this->resource->userHasPermission($current_user, 'user')) {
                 $views->addLink(
                     _('Standard Zeitfenster'),
@@ -128,7 +128,7 @@ class Resources_PrintController extends AuthenticatedController
         $this->schedule_type = Request::get('schedule_type');
         $this->selected_date_string = Request::get('date');
 
-        if (!$this->clipboard_selected and !$this->print_schedules) {
+        if (!$this->clipboard_selected && !$this->print_schedules) {
             //We have to load all selectable clipboards of the current user:
             $this->available_clipboards = Clipboard::getClipboardsForUser(
                 $GLOBALS['user']->id

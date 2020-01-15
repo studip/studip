@@ -21,8 +21,6 @@
  */
 class Resources_RoomController extends AuthenticatedController
 {
-    protected $utf8decode_xhr = true;
-
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
@@ -84,7 +82,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Wochenbelegung'),
                         $this->room->getURL('booking_plan'),
-                        Icon::create('timetable', 'clickable'),
+                        Icon::create('timetable'),
                         [
                             'target' => '_blank'
                         ]
@@ -92,7 +90,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Semesterbelegung'),
                         $this->room->getURL('semester_plan'),
-                        Icon::create('timetable', 'clickable'),
+                        Icon::create('timetable'),
                         [
                             'target' => '_blank'
                         ]
@@ -102,7 +100,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Belegungsplan'),
                         $this->room->getURL('booking_plan'),
-                        Icon::create('timetable', 'clickable'),
+                        Icon::create('timetable'),
                         [
                             'data-dialog' => 'size=big'
                         ]
@@ -110,7 +108,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Semesterbelegung'),
                         $this->room->getURL('semester_plan'),
-                        Icon::create('timetable', 'clickable'),
+                        Icon::create('timetable'),
                         [
                             'data-dialog' => 'size=big'
                         ]
@@ -121,7 +119,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Raum bearbeiten'),
                         $this->room->getURL('edit'),
-                        Icon::create('edit', 'clickable'),
+                        Icon::create('edit'),
                         [
                             'data-dialog' => 'size=auto'
                         ]
@@ -129,7 +127,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Rechte bearbeiten'),
                         $this->room->getURL('permissions'),
-                        Icon::create('roles', 'clickable'),
+                        Icon::create('roles'),
                         [
                             'data-dialog' => 'size=auto'
                         ]
@@ -140,7 +138,7 @@ class Resources_RoomController extends AuthenticatedController
                     $actions->addLink(
                         _('Raumanfragen anzeigen'),
                         $this->room->getURL('request_list'),
-                        Icon::create('room-request', 'clickable'),
+                        Icon::create('room-request'),
                         [
                             'target' => '_blank'
                         ]
@@ -152,7 +150,7 @@ class Resources_RoomController extends AuthenticatedController
                 $actions->addLink(
                     _('Raum anfragen'),
                     $this->room->getURL('request'),
-                    Icon::create('room-request', 'clickable'),
+                    Icon::create('room-request'),
                     [
                         'data-dialog' => 'size=auto'
                     ]
@@ -197,7 +195,7 @@ class Resources_RoomController extends AuthenticatedController
         $user = User::findCurrent();
         $this->mode = $mode;
         $this->show_form = false;
-        if (($mode == 'edit') or ($mode == 'delete')) {
+        if ($mode == 'edit' || $mode == 'delete') {
             $this->room = Room::find($room_id);
             if (!$this->room) {
                 PageLayout::postError(
@@ -206,17 +204,18 @@ class Resources_RoomController extends AuthenticatedController
                 return;
             }
 
-            if ((($mode == 'edit') and !$this->room->userHasPermission($user, 'admin'))
-                or (($mode == 'delete') and !$this->room->userHasPermission($user, 'admin'))) {
+            if (($mode == 'edit' && !$this->room->userHasPermission($user, 'admin'))
+                || ($mode == 'delete' && !$this->room->userHasPermission($user, 'admin')))
+            {
                 throw new AccessDeniedException();
             }
         }
 
-        if (($mode == 'add') and !ResourceManager::userHasGlobalPermission($user, 'admin')) {
+        if ($mode == 'add' && !ResourceManager::userHasGlobalPermission($user, 'admin')) {
             throw new AccessDeniedException();
         }
 
-        if (($mode == 'add') or ($mode == 'edit')) {
+        if ($mode == 'add' || $mode == 'edit') {
             //get the list of buildings to set a parent for the room:
             $buildings = Building::findAll();
 
@@ -272,7 +271,7 @@ class Resources_RoomController extends AuthenticatedController
 
             CSRFProtection::verifyUnsafeRequest();
 
-            if (($mode == 'add') or ($mode == 'edit')) {
+            if ($mode == 'add' || $mode == 'edit') {
                 //Process submitted form:
                 $this->parent_id = Request::get('parent_id');
                 if ($mode == 'add') {
@@ -285,7 +284,6 @@ class Resources_RoomController extends AuthenticatedController
                 $this->seats = Request::int('seats');
                 $this->booking_plan_is_public = Request::get('booking_plan_is_public');
                 $this->sort_position = Request::get('sort_position');
-
                 $this->property_data = Request::getArray('properties');
 
                 //validation:
@@ -316,8 +314,7 @@ class Resources_RoomController extends AuthenticatedController
                         $this->category_id
                     );
 
-                    if (($category_class != 'Room')
-                        and !is_subclass_of($category_class, 'Room')) {
+                    if ($category_class != 'Room' && !is_subclass_of($category_class, 'Room')) {
                         PageLayout::postError(
                             _('Die gewählte Kategorie ist für Räume nicht geeignet!')
                         );
@@ -348,9 +345,7 @@ class Resources_RoomController extends AuthenticatedController
                 if ($mode == 'add') {
                     $this->room = new Room();
                 }
-
-                $successfully_stored = false;
-
+                
                 //store the room object:
                 $this->room->parent_id = $this->parent_id;
                 if ($mode == 'add') {
@@ -408,7 +403,7 @@ class Resources_RoomController extends AuthenticatedController
                     $failed_property_objects
                 );
 
-                if ($successfully_stored and !$unchanged_properties) {
+                if ($successfully_stored && !$unchanged_properties) {
                     $this->show_form = false;
                     PageLayout::postSuccess(
                         _('Der Raum wurde gespeichert!')
@@ -447,7 +442,7 @@ class Resources_RoomController extends AuthenticatedController
             }
         } else {
             //For add mode $this->category_id is set directly in add_action!
-            if (($mode == 'edit') or ($mode == 'delete')) {
+            if ($mode == 'edit' || $mode == 'delete') {
                 //Show form with current data:
                 $this->parent_id = $this->room->parent_id;
                 $this->category_id = $this->room->category_id;
@@ -483,7 +478,7 @@ class Resources_RoomController extends AuthenticatedController
             );
         } else {
             $category_class = $this->category->class_name;
-            if (($category_class != 'Room') and !is_subclass_of($category_class, 'Room')) {
+            if ($category_class != 'Room' && !is_subclass_of($category_class, 'Room')) {
                 PageLayout::postError(
                     _('Die gewählte Kategorie ist für Räume nicht geeignet!')
                 );
@@ -572,7 +567,7 @@ class Resources_RoomController extends AuthenticatedController
                 PageLayout::postSuccess(
                     sprintf(
                         _('Der Raum %1$s wurde zu folgenden Zeiten gebucht:'),
-                        htmlReady($room->name)
+                        htmlReady($this->room->name)
                     ),
                     $booked_time_interval_strings
                 );
@@ -580,7 +575,7 @@ class Resources_RoomController extends AuthenticatedController
                 PageLayout::postError(
                     sprintf(
                         _('Fehler beim Buchen des Raumes %1$s!'),
-                        htmlReady($room->name)
+                        htmlReady($this->room->name)
                     )
                 );
             }

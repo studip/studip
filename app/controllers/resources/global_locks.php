@@ -22,7 +22,6 @@
  */
 class Resources_GlobalLocksController extends AuthenticatedController
 {
-
     public function add_action()
     {
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
@@ -202,8 +201,7 @@ class Resources_GlobalLocksController extends AuthenticatedController
             }
         }
     }
-
-
+    
     public function delete_action($lock_id = null)
     {
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
@@ -213,7 +211,6 @@ class Resources_GlobalLocksController extends AuthenticatedController
         if (Navigation::hasItem('/room_management/admin/global_locks')) {
             Navigation::activateItem('/room_management/admin/global_locks');
         }
-
 
         $this->lock = GlobalResourceLock::find($lock_id);
         if (!$this->lock) {

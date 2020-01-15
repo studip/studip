@@ -85,7 +85,7 @@ class Resources_ResourceController extends AuthenticatedController
                 $this->edit_global_permissions = true;
                 $this->resource_ids = [$args[0]];
             }
-            if (!$this->resources and ($args[0] != 'global')) {
+            if (!$this->resources && ($args[0] != 'global')) {
                 PageLayout::postError(
                     _('Die Ressource wurde nicht gefunden!')
                 );
@@ -147,8 +147,6 @@ class Resources_ResourceController extends AuthenticatedController
 
     protected function getPermissionUserSearch()
     {
-        $db = DBManager::get();
-
         return QuickSearch::get(
             'searched_user_id',
             new SQLSearch(
@@ -216,6 +214,10 @@ class Resources_ResourceController extends AuthenticatedController
 
         if ($GLOBALS['user']->id != 'nobody') {
             $current_user = User::findCurrent();
+            /**
+             * @TODO: Check this
+             *  $week_timestamp is not defined
+             */
             $user_has_resource_user_permissions = $this->resource->userHasPermission(
                 $current_user,
                 'user'
@@ -234,7 +236,7 @@ class Resources_ResourceController extends AuthenticatedController
                                 'timestamp' => $week_timestamp
                             ]
                         ),
-                        Icon::create('timetable', 'clickable')
+                        Icon::create('timetable')
                     );
                     $sidebar->addWidget($actions);
 
@@ -248,11 +250,9 @@ class Resources_ResourceController extends AuthenticatedController
                 $tree_widget->setCurrentResource($this->resource);
                 $sidebar->addWidget($tree_widget);
             }
-
         }
     }
-
-
+    
     protected function addEditDeleteHandler($mode = 'add')
     {
         $this->resource = $this->resources[0];
@@ -356,8 +356,6 @@ class Resources_ResourceController extends AuthenticatedController
                     $this->resource = new Resource();
                 }
 
-                $successfully_stored = false;
-
                 //store the resource object:
                 $this->resource->parent_id = $this->parent_id;
                 if ($mode == 'add') {
@@ -383,7 +381,7 @@ class Resources_ResourceController extends AuthenticatedController
                 );
                 array_walk($unchanged_properties, function(&$item){$item = htmlReady($item);});
 
-                if ($successfully_stored and !$unchanged_properties) {
+                if ($successfully_stored && !$unchanged_properties) {
                     $this->show_form = false;
                     PageLayout::postSuccess(
                         _('Die Ressource wurde gespeichert!')
@@ -422,7 +420,7 @@ class Resources_ResourceController extends AuthenticatedController
             }
         } else {
             //For add mode $this->category_id is set directly in add_action!
-            if (($mode == 'edit') or ($mode == 'delete')) {
+            if (($mode == 'edit') || ($mode == 'delete')) {
                 //Show form with current data:
                 $this->parent_id = $this->resource->parent_id;
                 $this->category_id = $this->resource->category_id;
@@ -536,7 +534,7 @@ class Resources_ResourceController extends AuthenticatedController
         $sidebar = Sidebar::get();
 
         $views = new ViewsWidget();
-        if ($GLOBALS['user']->id and ($GLOBALS['user']->id != 'nobody')) {
+        if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
             if ($this->resource->userHasPermission($current_user, 'user')) {
                 $views->addLink(
                     _('Standard Zeitfenster'),
@@ -572,7 +570,7 @@ class Resources_ResourceController extends AuthenticatedController
                 $actions->addLink(
                     _('Druckansicht'),
                     'javascript:void(window.print());',
-                    Icon::create('print', 'clickable')
+                    Icon::create('print')
                 );
                 $actions->addLink(
                     _('Individuelle Druckansicht'),
@@ -582,7 +580,7 @@ class Resources_ResourceController extends AuthenticatedController
                             'timestamp' => $week_timestamp
                         ]
                     ),
-                    Icon::create('print', 'clickable'),
+                    Icon::create('print'),
                     [
                         'target' => '_blank'
                     ]
@@ -596,7 +594,7 @@ class Resources_ResourceController extends AuthenticatedController
                             'export_type' => 'csv'
                         ]
                     ),
-                    Icon::create('file-excel', 'clickable'),
+                    Icon::create('file-excel'),
                     [
                         'target' => '_blank'
                     ]
@@ -607,7 +605,7 @@ class Resources_ResourceController extends AuthenticatedController
             $actions->addLink(
                 _('QR-Code anzeigen'),
                 $this->resource->getUrl('booking_plan'),
-                Icon::create('download', 'clickable'),
+                Icon::create('download'),
                 [
                     'data-qr-code' => '',
                     'data-qr-code-print' => '1'
@@ -616,11 +614,7 @@ class Resources_ResourceController extends AuthenticatedController
         }
 
         $sidebar->addWidget($actions);
-
-        $template = $GLOBALS['template_factory']->open(
-            'sidebar/map_key.php'
-        );
-
+        
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
@@ -1072,7 +1066,6 @@ class Resources_ResourceController extends AuthenticatedController
             $user_permissions = Request::getArray('permissions');
 
             $processed_permissions = 0;
-            $deleted_permissions = 0;
             $errors = [];
             $user_ids = [];
             //We must check for each permission if the user exists and if
@@ -1268,7 +1261,7 @@ class Resources_ResourceController extends AuthenticatedController
 
         $this->show_form = false;
 
-        $this->booking_type = intval(Request::get('type'));
+        $this->booking_type = Request::int('type');
         if (!in_array($this->booking_type, [1, 2])) {
             PageLayout::postError(
                 _('Es wurde kein passender Buchungstyp angegeben!')
@@ -1298,8 +1291,7 @@ class Resources_ResourceController extends AuthenticatedController
         $this->end = clone $this->begin;
         $this->end->add(new DateInterval('P1D'));
         $this->show_form = true;
-
-
+        
         if (Request::submitted('save')) {
             $begin_date = Request::get('begin_date');
             $begin_time = Request::get('begin_time');
@@ -1334,7 +1326,10 @@ class Resources_ResourceController extends AuthenticatedController
                 intval($end_time[1]),
                 0
             );
-
+    
+            /**
+             * @TODO $booking wird nicht weiterverwendet. Ist das noch notwenig?
+             */
             try {
                 $booking = $this->resource->createSimpleBooking(
                     $this->current_user,
@@ -1506,9 +1501,6 @@ class Resources_ResourceController extends AuthenticatedController
         //Build the sidebar:
 
         $sidebar = Sidebar::get();
-
-        $sidebar->setImage('sidebar/resources-sidebar.png');
-
         $actions = new ActionsWidget();
         $sidebar->addWidget($actions);
 
@@ -1516,7 +1508,7 @@ class Resources_ResourceController extends AuthenticatedController
             $actions->addLink(
                 _('Datei hinzufügen'),
                 '#',
-                Icon::create('file+add', 'clickable'),
+                Icon::create('file+add'),
                 [
                     'onclick' => 'STUDIP.Files.openAddFilesWindow(); return false;'
                 ]

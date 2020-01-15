@@ -79,8 +79,7 @@ class Resources_PropertyController extends AuthenticatedController
                 );
                 return;
             }
-
-
+            
             $property->name = $this->name;
             $property->description = $this->description;
             $property->type = $this->type;
@@ -121,16 +120,7 @@ class Resources_PropertyController extends AuthenticatedController
             );
             return;
         }
-
-        /*
-        if ($this->property->system) {
-            PageLayout::postError(
-                _('Systemeigenschaften dürfen nicht geändert werden!')
-            );
-            return;
-        }
-        */
-
+        
         $this->defined_types = ResourcePropertyDefinition::getDefinedTypes();
 
         $this->show_form = true;
@@ -192,8 +182,7 @@ class Resources_PropertyController extends AuthenticatedController
                     : '0'
                 );
             }
-
-            $success = false;
+            
             if ($this->property->isDirty()) {
                 $success = $this->property->store();
             } else {
