@@ -44,7 +44,7 @@
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="3">
+                        <td colspan="5">
                             <? if ($separable_rooms): ?>
                                 <?= \Studip\Button::create(
                                     _('Teilbare Räume löschen'),
