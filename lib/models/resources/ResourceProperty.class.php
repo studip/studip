@@ -25,8 +25,6 @@
  * @property ResourcePropertyDefinition definition belongs_to
  *     ResourcePropertyDefinition
  */
-
-
 class ResourceProperty extends SimpleORMap
 {
     protected static function configure($config = [])
@@ -53,8 +51,7 @@ class ResourceProperty extends SimpleORMap
 
         parent::configure($config);
     }
-
-
+    
     /**
      * Determines whether this resource property is requestable
      * by checking the requestable flag of the corresponding

@@ -24,29 +24,28 @@
  * @property SimpleORMapCollection parts has_many SeparableRoomPart
  */
 
-
 class SeparableRoom extends SimpleORMap
 {
     protected static function configure($config = [])
     {
         $config['db_table'] = 'separable_rooms';
-
+        
         $config['belongs_to']['building'] = [
-            'class_name' => 'Building',
+            'class_name'  => 'Building',
             'foreign_key' => 'building_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-        $config['has_many']['parts'] = [
-            'class_name' => 'SeparableRoomPart',
+        $config['has_many']['parts']      = [
+            'class_name'        => 'SeparableRoomPart',
             'assoc_foreign_key' => 'separable_room_id',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
+            'on_store'          => 'store',
+            'on_delete'         => 'delete'
         ];
-
+        
         parent::configure($config);
     }
-
-
+    
+    
     /**
      * Creates a SeparableRoom object from a list of room objects.
      */
@@ -56,15 +55,13 @@ class SeparableRoom extends SimpleORMap
         $name = ''
     )
     {
-        if (!$building_id or !is_array($rooms)) {
-            //Nothing to do.
+        if (!$building_id || !is_array($rooms)) {
             return null;
         }
-        if (count($rooms) == 0) {
-            //Still nothing to do.
+        if (count($rooms) === 0) {
             return null;
         }
-
+        
         //Check if all array items are room objects:
         $room_names = [];
         foreach ($rooms as $room) {
@@ -75,14 +72,14 @@ class SeparableRoom extends SimpleORMap
             }
             $room_names[] = $room->name;
         }
-
+        
         //Now we can create the separable room:
         if (!$name) {
             //First we create a common name from all the room names.
             $common_name = '';
-
+            
             if (count($room_names) > 1) {
-                $name_position = 0;
+                $name_position     = 0;
                 $current_character = '';
                 //Loop over all rooms until $common_name doesn't grow anymore
                 while ($current_character !== null) {
@@ -102,11 +99,11 @@ class SeparableRoom extends SimpleORMap
             }
             $name = $common_name;
         }
-
+        
         //At this point we have either found the common name
         //or $common_name is empty.
-
-        $separable_room = new SeparableRoom();
+        
+        $separable_room              = new SeparableRoom();
         $separable_room->building_id = $building_id;
         if ($name) {
             $separable_room->name = $name;
@@ -118,17 +115,17 @@ class SeparableRoom extends SimpleORMap
                 _('Fehler beim Speichern des teilbaren Raumes!')
             );
         }
-
+        
         $successfully_stored = 0;
         foreach ($rooms as $room) {
-            $part = new SeparableRoomPart();
+            $part                    = new SeparableRoomPart();
             $part->separable_room_id = $separable_room->id;
-            $part->room_id = $room->id;
+            $part->room_id           = $room->id;
             if ($part->store()) {
                 $successfully_stored++;
             }
         }
-
+        
         if ($successfully_stored < count($rooms)) {
             throw new SeparableRoomException(
                 sprintf(
@@ -138,11 +135,11 @@ class SeparableRoom extends SimpleORMap
                 )
             );
         }
-
+        
         return $separable_room;
     }
-
-
+    
+    
     public static function findByRoomPart(Room $room)
     {
         return self::findOneBySql(
@@ -155,21 +152,21 @@ class SeparableRoom extends SimpleORMap
             ]
         );
     }
-
-
+    
+    
     public function findOtherRoomParts($known_parts = [])
     {
         if (!is_array($known_parts)) {
             return;
         }
-
+        
         $known_part_ids = [];
         foreach ($known_parts as $known_part) {
             if ($known_part instanceof Room) {
                 $known_part_ids[] = $known_part->id;
             }
         }
-
+        
         $resources = Resource::findBySql(
             'INNER JOIN separable_room_parts
             ON resources.id = separable_room_parts.room_id
@@ -178,16 +175,16 @@ class SeparableRoom extends SimpleORMap
             AND
             separable_room_id = :separable_room_id',
             [
-                'known_part_ids' => $known_part_ids,
+                'known_part_ids'    => $known_part_ids,
                 'separable_room_id' => $this->id
             ]
         );
-
+        
         if (!$resources) {
             //There are no other room parts.
             return [];
         }
-
+        
         $room_parts = [];
         foreach ($resources as $resource) {
             $resource = $resource->getDerivedClassInstance();
@@ -195,7 +192,7 @@ class SeparableRoom extends SimpleORMap
                 $room_parts[] = $resource;
             }
         }
-
+        
         return $room_parts;
     }
 }

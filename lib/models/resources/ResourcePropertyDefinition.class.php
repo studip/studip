@@ -50,7 +50,6 @@ class ResourcePropertyDefinition extends SimpleORMap
      */
     const CRSWGS84_REGEX = '/[+-]{1}[0-9]{1,3}\.[0-9]{1,10}[+-]{1}[0-9]{1,3}\.[0-9]{1,10}[+-]{1}[0-9]{1,5}\.[0-9]{1,10}CRSWGS_84\/$/';
 
-
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_property_definitions';
@@ -64,8 +63,7 @@ class ResourcePropertyDefinition extends SimpleORMap
 
         parent::configure($config);
     }
-
-
+    
     public static function findByPropertyGroup($group_id = null)
     {
         if (!$group_id) {
@@ -80,8 +78,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             ]
         );
     }
-
-
+    
     /**
      * Returns a list of all defined data types.
      *
@@ -102,8 +99,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             'url'
         ];
     }
-
-
+    
     /**
      * Returns all available options for this property
      * as an array.
@@ -115,8 +111,7 @@ class ResourcePropertyDefinition extends SimpleORMap
         }
         return [];
     }
-
-
+    
     /**
      *
      */
@@ -128,8 +123,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             $this->options = '';
         }
     }
-
-
+    
     /**
      * Generates appropriate HTML input elements for this property.
      *
@@ -166,7 +160,6 @@ class ResourcePropertyDefinition extends SimpleORMap
         if ($type == 'bool') {
             //Booleans can have one or two input elements,
             //whether a false state shall be selectable or not.
-            $input_html = '';
             if ($allow_boolean_false) {
                 $input_html = sprintf(
                     '<input type="hidden" name="%1$s" value="0" %2$s>'
@@ -276,8 +269,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             }
         }
     }
-
-
+    
     /**
      * Verifies that a property value (state) is valid for the given
      * resource property definition.
@@ -379,8 +371,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             return $property;
         }
     }
-
-
+    
     public function __toString()
     {
         //I18N fields can be an instance of I18NString or not.

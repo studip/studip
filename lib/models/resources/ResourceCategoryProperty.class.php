@@ -55,7 +55,7 @@ class ResourceCategoryProperty extends SimpleORMap
         $name = null,
         $category_id = null
     ) {
-        if (!$name or !$category_id) {
+        if (!$name || !$category_id) {
             return null;
         }
 

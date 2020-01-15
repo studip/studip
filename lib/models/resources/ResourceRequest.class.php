@@ -58,75 +58,73 @@
  * The "traditional" resource requests use either course_id, metadate_id
  * or termin_id to store the time ranges connected to the request.
  */
-class ResourceRequest extends SimpleORMap
-    implements PrivacyObject, Studip\Calendar\EventSource
+class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calendar\EventSource
 {
     /**
      * The amount of defined marking states.
      */
     const MARKING_STATES = 4;
-
-
+    
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_requests';
-
+        
         $config['belongs_to']['resource'] = [
-            'class_name' => 'Resource',
+            'class_name'  => 'Resource',
             'foreign_key' => 'resource_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['category'] = [
-            'class_name' => 'ResourceCategory',
+            'class_name'  => 'ResourceCategory',
             'foreign_key' => 'category_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['user'] = [
-            'class_name' => 'User',
+            'class_name'  => 'User',
             'foreign_key' => 'user_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['last_modifier'] = [
-            'class_name' => 'User',
+            'class_name'  => 'User',
             'foreign_key' => 'last_modified_by',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'course_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['cycle'] = [
             'class_name'  => 'SeminarCycleDate',
             'foreign_key' => 'metadate_id'
         ];
-
+        
         $config['belongs_to']['date'] = [
             'class_name'  => 'CourseDate',
             'foreign_key' => 'termin_id'
         ];
-
+        
         $config['has_many']['properties'] = [
-            'class_name' => 'ResourceRequestProperty',
-            'foreign_key' => 'id',
+            'class_name'        => 'ResourceRequestProperty',
+            'foreign_key'       => 'id',
             'assoc_foreign_key' => 'request_id',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
+            'on_store'          => 'store',
+            'on_delete'         => 'delete'
         ];
-
+        
         $config['has_many']['appointments'] = [
-            'class_name' => 'ResourceRequestAppointment',
-            'foreign_key' => 'id',
+            'class_name'        => 'ResourceRequestAppointment',
+            'foreign_key'       => 'id',
             'assoc_foreign_key' => 'request_id',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
+            'on_store'          => 'store',
+            'on_delete'         => 'delete'
         ];
-
+        
         //In regard to TIC 6460:
         //As long as TIC 6460 is not implemented, we must add the validate
         //method as a callback before storing the object.
@@ -134,25 +132,24 @@ class ResourceRequest extends SimpleORMap
             $config['registered_callbacks']['before_store'][] = 'validate';
         }
         $config['registered_callbacks']['after_create'][] = 'cbLogNewRequest';
-
+        
         parent::configure($config);
     }
-
-
+    
     /**
      * @inheritDoc
      */
     public static function exportUserdata(StoredUserData $storage)
     {
         $user = User::find($storage->user_id);
-
+        
         $requests = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
                 'user_id' => $storage->user_id
             ]
         );
-
+        
         $request_rows = [];
         foreach ($requests as $request) {
             $request_rows[] = $request->toRawArray();
@@ -164,8 +161,7 @@ class ResourceRequest extends SimpleORMap
             $user
         );
     }
-
-
+    
     /**
      * Retrieves all resource requests from the database.
      *
@@ -177,8 +173,7 @@ class ResourceRequest extends SimpleORMap
     {
         return self::findBySql('TRUE ORDER BY mkdate ASC');
     }
-
-
+    
     /**
      * Retrieves all open resource requests from the database.
      *
@@ -190,8 +185,7 @@ class ResourceRequest extends SimpleORMap
     {
         return self::findBySql("closed = '0' ORDER BY mkdate ASC");
     }
-
-
+    
     /**
      * Internal method that generated the SQL query used in
      * findByResourceAndTimeRanges and countByResourceAndTimeRanges.
@@ -212,7 +206,7 @@ class ResourceRequest extends SimpleORMap
                 _('Es wurde keine Liste mit Zeiträumen angegeben!')
             );
         }
-
+        
         //Check the array:
         foreach ($time_ranges as $time_range) {
             if ($time_range['begin'] > $time_range['end']) {
@@ -220,33 +214,33 @@ class ResourceRequest extends SimpleORMap
                     _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
                 );
             }
-
+            
             if ($time_range['begin'] == $time_range['end']) {
                 throw new InvalidArgumentException(
                     _('Startzeitpunkt und Endzeitpunkt dürfen nicht identisch sein!')
                 );
             }
         }
-
+        
         $sql_params = [
             'resource_id' => $resource->id
         ];
-
+        
         //First we build the SQL snippet for the case that the $closed_status
         //variable is set to something different than null.
         $closed_status_sql = '';
         if ($closed_status !== null) {
-            $closed_status_sql = ' AND (resource_requests.closed = :status) ';
+            $closed_status_sql    = ' AND (resource_requests.closed = :status) ';
             $sql_params['status'] = strval($closed_status);
         }
-
+        
         //Then we build the snipped for excluded request IDs, if specified.
         $excluded_request_ids_sql = '';
         if (is_array($excluded_request_ids) && count($excluded_request_ids)) {
-            $excluded_request_ids_sql = ' AND resource_requests.id NOT IN ( :excluded_ids ) ';
+            $excluded_request_ids_sql   = ' AND resource_requests.id NOT IN ( :excluded_ids ) ';
             $sql_params['excluded_ids'] = $excluded_request_ids;
         }
-
+        
         //Now we build the SQL snippet for the time intervals.
         //These are repeated four times in the query below.
         //First we use one template ($time_sql_template) and
@@ -261,11 +255,11 @@ class ResourceRequest extends SimpleORMap
             OR
             BEGIN <= :beginNUMBER AND END >= :endNUMBER
         ) ';
-
+        
         $time_sql = '';
         if ($time_ranges) {
             $time_sql = 'AND (';
-
+            
             $i = 1;
             foreach ($time_ranges as $time_range) {
                 if ($i > 1) {
@@ -276,73 +270,73 @@ class ResourceRequest extends SimpleORMap
                     $i,
                     $time_sql_template
                 );
-
+                
                 $sql_params[('begin' . $i)] = $time_range['begin'];
-                $sql_params[('end' . $i)] = $time_range['end'];
-
+                $sql_params[('end' . $i)]   = $time_range['end'];
+                
                 $i++;
             }
-
+            
             $time_sql .= ') ';
         }
-
+        
         //Check if the request has a start and end timestamp set or if it belongs
         //to a date, a metadate or a course.
         //This is done in the rest of the SQL query:
-
+        
         $whole_sql = 'resource_requests.id IN (
                 SELECT id FROM resource_requests
                 WHERE
                 resource_id = :resource_id
         '
-                   . str_replace(
-                       ['BEGIN', 'END'],
-                       ['(CAST(begin AS SIGNED) - preparation_time)', 'end'],
-                       $time_sql
-                   )
-                   . (
-                       $closed_status_sql
-                       ? $closed_status_sql
-                       : ''
-                   ) . '
+            . str_replace(
+                ['BEGIN', 'END'],
+                ['(CAST(begin AS SIGNED) - preparation_time)', 'end'],
+                $time_sql
+            )
+            . (
+            $closed_status_sql
+                ? $closed_status_sql
+                : ''
+            ) . '
                 UNION
                 SELECT id FROM resource_requests
                 INNER JOIN termine USING (termin_id)
                 WHERE
                 resource_id = :resource_id
                    '
-                   . str_replace(
-                       ['BEGIN', 'END'],
-                       [
-                           '(termine.date - resource_requests.preparation_time)',
-                           'termine.end_time'
-                       ],
-                       $time_sql
-                   )
-                   . (
-                       $closed_status_sql
-                       ? $closed_status_sql
-                       : ''
-                   ) . '
+            . str_replace(
+                ['BEGIN', 'END'],
+                [
+                    '(termine.date - resource_requests.preparation_time)',
+                    'termine.end_time'
+                ],
+                $time_sql
+            )
+            . (
+            $closed_status_sql
+                ? $closed_status_sql
+                : ''
+            ) . '
                 UNION
                 SELECT id FROM resource_requests
                 INNER JOIN termine USING (metadate_id)
                 WHERE
                 resource_id = :resource_id
                    '
-                   . str_replace(
-                       ['BEGIN', 'END'],
-                       [
-                           '(termine.date - resource_requests.preparation_time)',
-                           'termine.end_time'
-                       ],
-                       $time_sql
-                   )
-                   . (
-                       $closed_status_sql
-                       ? $closed_status_sql
-                       : ''
-                   ) . '
+            . str_replace(
+                ['BEGIN', 'END'],
+                [
+                    '(termine.date - resource_requests.preparation_time)',
+                    'termine.end_time'
+                ],
+                $time_sql
+            )
+            . (
+            $closed_status_sql
+                ? $closed_status_sql
+                : ''
+            ) . '
             UNION
             SELECT id FROM resource_requests
             INNER JOIN termine
@@ -350,23 +344,23 @@ class ResourceRequest extends SimpleORMap
             WHERE
             resource_id = :resource_id
                    '
-                   . str_replace(
-                       ['BEGIN', 'END'],
-                       [
-                           '(termine.date - resource_requests.preparation_time)',
-                           'termine.end_time'
-                       ],
-                       $time_sql
-                   )
-                   . (
-                       $closed_status_sql
-                       ? $closed_status_sql
-                       : ''
-                   ) . '
+            . str_replace(
+                ['BEGIN', 'END'],
+                [
+                    '(termine.date - resource_requests.preparation_time)',
+                    'termine.end_time'
+                ],
+                $time_sql
+            )
+            . (
+            $closed_status_sql
+                ? $closed_status_sql
+                : ''
+            ) . '
             GROUP BY id
         ) '
-                   . $excluded_request_ids_sql;
-
+            . $excluded_request_ids_sql;
+        
         if ($additional_conditions) {
             $whole_sql .= ' AND ' . $additional_conditions;
             if ($additional_parameters) {
@@ -374,14 +368,13 @@ class ResourceRequest extends SimpleORMap
             }
         }
         $whole_sql .= ' ORDER BY mkdate ASC';
-
+        
         return [
-            'sql' => $whole_sql,
+            'sql'    => $whole_sql,
             'params' => $sql_params
         ];
     }
-
-
+    
     /**
      * Retrieves all resource requests for the given resource and
      * time range. By default, all requests are returned.
@@ -425,21 +418,20 @@ class ResourceRequest extends SimpleORMap
     )
     {
         //Build the SQL query and the parameter array.
-
+        
         $sql_data = self::buildResourceAndTimeRangesSqlQuery(
             $resource,
             $time_ranges,
             $closed_status,
-            $excluded_request_is,
+            $excluded_request_ids,
             $additional_conditions,
             $additional_parameters
         );
-
+        
         //Call findBySql:
         return self::findBySql($sql_data['sql'], $sql_data['params']);
     }
-
-
+    
     public static function countByResourceAndTimeRanges(
         Resource $resource,
         $time_ranges = [],
@@ -449,8 +441,6 @@ class ResourceRequest extends SimpleORMap
         $additional_parameters = []
     )
     {
-        //Build the SQL query and the parameter array.
-
         $sql_data = self::buildResourceAndTimeRangesSqlQuery(
             $resource,
             $time_ranges,
@@ -459,18 +449,16 @@ class ResourceRequest extends SimpleORMap
             $additional_conditions,
             $additional_parameters
         );
-
-        //Call countBySql:
+        
         return self::countBySql($sql_data['sql'], $sql_data['params']);
     }
-
-
+    
     public static function findByCourse($course_id = null)
     {
         if (!$course_id) {
             return null;
         }
-
+        
         return self::findOneBySql(
             "termin_id = '' AND metadate_id = '' AND course_id = :course_id",
             [
@@ -478,14 +466,13 @@ class ResourceRequest extends SimpleORMap
             ]
         );
     }
-
-
+    
     public static function findByDate($date_id = null)
     {
         if (!$date_id) {
             return null;
         }
-
+        
         return self::findOneBySql(
             'termin_id = :date_id',
             [
@@ -493,14 +480,13 @@ class ResourceRequest extends SimpleORMap
             ]
         );
     }
-
-
+    
     public static function findByMetadate($metadate_id = null)
     {
         if (!$metadate_id) {
             return null;
         }
-
+        
         return self::findOneBySql(
             'metadate_id = :metadate_id',
             [
@@ -508,115 +494,99 @@ class ResourceRequest extends SimpleORMap
             ]
         );
     }
-
-
-    public static function existsByCourse(
-        $course_id = null,
-        $request_is_open = false
-    )
+    
+    public static function existsByCourse($course_id = null, $request_is_open = false)
     {
         if (!$course_id) {
             return false;
         }
-
+        
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-
+        
         $request = self::findOneBySql(
             $sql . "termin_id = '' AND metadate_id = '' AND course_id = :course_id",
             [
                 'course_id' => $course_id
             ]
         );
-
+        
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-
-
-    public static function existsByDate(
-        $date_id = null,
-        $request_is_open = false
-    )
+    
+    public static function existsByDate($date_id = null, $request_is_open = false)
     {
         if (!$date_id) {
             return false;
         }
-
+        
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-
+        
         $request = self::findOneBySql(
             $sql . "termin_id = :date_id",
             [
                 'date_id' => $date_id
             ]
         );
-
+        
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-
-
-    public static function existsByMetadate(
-        $metadate_id = null,
-        $request_is_open = false
-    )
+    
+    public static function existsByMetadate($metadate_id = null, $request_is_open = false)
     {
         if (!$metadate_id) {
             return false;
         }
-
+        
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-
+        
         $request = self::findOneBySql(
             $sql . "metadate_id = :metadate_id",
             [
                 'metadate_id' => $metadate_id
             ]
         );
-
+        
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-
-
+    
     public function store()
     {
         $new_request = $this->isNew();
-
+        
         if (!parent::store()) {
             return false;
         }
-
-        //After storing, we must send messages to the room administration:
-
+        
         if ($new_request) {
             $this->sendNewRequestMail();
         } elseif ($this->closed == '3') {
             $this->sendRequestDeniedMail();
         }
-
+        
         return true;
     }
-
-
+    
     /**
      * A callback method that creates a Stud.IP log entry
      * when a new request has been made.
@@ -632,8 +602,7 @@ class ResourceRequest extends SimpleORMap
             null
         );
     }
-
-
+    
     /**
      * This validation method is called before storing an object.
      */
@@ -645,11 +614,7 @@ class ResourceRequest extends SimpleORMap
             );
         }
     }
-
-
-    // Methods regarding derived classes:
-
-
+    
     public function getDerivedClassInstance()
     {
         if (!$this->resource) {
@@ -657,15 +622,15 @@ class ResourceRequest extends SimpleORMap
             return $this;
         }
         $class_name = $this->resource->class_name;
-
+        
         if ($class_name == 'Resource') {
             //This is already the correct class.
             return $this;
         }
-
+        
         if (is_subclass_of($class_name, 'Resource')) {
             //Now we append 'Request' to the class name:
-            $class_name = $class_name . 'Request';
+            $class_name         = $class_name . 'Request';
             $converted_resource = $class_name::buildExisting(
                 $this->toRawArray()
             );
@@ -681,16 +646,7 @@ class ResourceRequest extends SimpleORMap
             );
         }
     }
-
-
-    // ResourceRequest retrieval methods:
-
-
-
-
-    // ResourceRequest instance methods:
-
-
+    
     /**
      * Sets the range fields (termin_id, metadate_id, course_id)
      * or the ResourceRequestAppointment objects related to this request
@@ -712,29 +668,28 @@ class ResourceRequest extends SimpleORMap
     public function setRangeFields($range_type = '', $range_ids = [])
     {
         if ($range_type == 'date') {
-            $this->termin_id = $range_ids[0];
+            $this->termin_id   = $range_ids[0];
             $this->metadate_id = '';
         } elseif ($range_type == 'cycle') {
-            $this->termin_id = '';
+            $this->termin_id   = '';
             $this->metadate_id = $range_ids[0];
         } elseif ($range_type == 'date-multiple') {
-            $this->termin_id = '';
+            $this->termin_id   = '';
             $this->metadate_id = '';
-            $appointments = [];
+            $appointments      = [];
             foreach ($range_ids as $range_id) {
-                $app = new ResourceRequestAppointment();
+                $app                 = new ResourceRequestAppointment();
                 $app->appointment_id = $range_id;
-                $appointments[] = $app;
+                $appointments[]      = $app;
             }
             $this->appointments = $appointments;
         } elseif ($range_type == 'course') {
-            $this->termin_id = '';
+            $this->termin_id   = '';
             $this->metadate_id = '';
-            $this->course_id = $range_ids[0];
+            $this->course_id   = $range_ids[0];
         }
     }
-
-
+    
     /**
      * Closes the requests and sends out notification mails.
      * If the request is closed and a resource has been booked,
@@ -754,19 +709,19 @@ class ResourceRequest extends SimpleORMap
             //The request has already been closed.
             return true;
         }
-
+        
         $this->closed = 1;
         if ($this->isDirty()) {
             $this->store();
         }
-
+        
         //Now we send the confirmation mail to the requester:
         $this->sendCloseRequestMailToRequester($bookings);
-
+        
         if ($notify_lecturers) {
             $this->sendCloseRequestMailToLecturers($bookings);
         }
-
+        
         //Sending successful: The request is closed.
         $this->closed = 2;
         if ($this->isDirty()) {
@@ -774,8 +729,7 @@ class ResourceRequest extends SimpleORMap
         }
         return true;
     }
-
-
+    
     /**
      * Returns the resource requests whose time ranges overlap
      * with those of this resource request.
@@ -794,8 +748,7 @@ class ResourceRequest extends SimpleORMap
         }
         return [];
     }
-
-
+    
     /**
      * Counts the resource requests whose time ranges overlap
      * with those of this resource request.
@@ -814,8 +767,7 @@ class ResourceRequest extends SimpleORMap
         }
         return 0;
     }
-
-
+    
     /**
      * Returns the resource bookings whose time ranges overlap
      * with those of this resource request.
@@ -833,8 +785,7 @@ class ResourceRequest extends SimpleORMap
         }
         return [];
     }
-
-
+    
     /**
      * Counts the resource bookings whose time ranges overlap
      * with those of this resource request.
@@ -852,11 +803,7 @@ class ResourceRequest extends SimpleORMap
         }
         return 0;
     }
-
-
-    // ResourceRequest attribute methods:
-
-
+    
     /**
      * Returns the repetion interval if regular appointments are used
      * for this request.
@@ -871,28 +818,27 @@ class ResourceRequest extends SimpleORMap
             //It is a set of regular appointments.
             //We just have to compute the time difference between the first
             //two appointments to get the interval.
-
-            $first_date = $this->cycle->dates[0];
+            
+            $first_date  = $this->cycle->dates[0];
             $second_date = $this->cycle->dates[1];
-
-            if (!$first_date or !$second_date) {
+            
+            if (!$first_date || !$second_date) {
                 //Either only one date is in the set of regular appointments
                 //or there is a database error. We cannot continue.
                 return null;
             }
-
+            
             $first_datetime = new DateTime();
             $first_datetime->setTimestamp($first_date->date);
             $second_datetime = new DateTime();
             $second_datetime->setTimestamp($second_date->date);
-
+            
             return $first_datetime->diff($second_datetime);
         }
-
+        
         return null;
     }
-
-
+    
     public function getStartDate()
     {
         $start_date = new DateTime();
@@ -908,9 +854,9 @@ class ResourceRequest extends SimpleORMap
         } elseif ($this->course_id) {
             $single_date_start = new DateTime();
             $single_date_start->setTimestamp($this->course->dates[0]->date);
-
+            
             $start_date->setTimestamp($this->course->cycles[0]->dates[0]->date);
-
+            
             if ($single_date_start < $start_date) {
                 return $single_date_start;
             } else {
@@ -922,8 +868,7 @@ class ResourceRequest extends SimpleORMap
         }
         return null;
     }
-
-
+    
     public function getEndDate()
     {
         $end_date = new DateTime();
@@ -939,7 +884,7 @@ class ResourceRequest extends SimpleORMap
         } elseif ($this->course_id) {
             $single_date_end = new DateTime();
             $single_date_end->setTimestamp(end($this->course->dates)->end_time);
-
+            
             $last_cycle = null;
             if (is_array($this->course->cycles)) {
                 $last_cycle = end($this->course->cycles);
@@ -953,7 +898,7 @@ class ResourceRequest extends SimpleORMap
                     $end_date->setTimestamp($last_cycle_date->end_time);
                 }
             }
-
+            
             if ($single_date_end > $end_date) {
                 return $single_date_end;
             } else {
@@ -965,8 +910,7 @@ class ResourceRequest extends SimpleORMap
         }
         return null;
     }
-
-
+    
     public function getStartSemester()
     {
         $start_date = $this->getStartDate();
@@ -975,8 +919,7 @@ class ResourceRequest extends SimpleORMap
         }
         return null;
     }
-
-
+    
     public function getEndSemester()
     {
         $end_date = $this->getEndDate();
@@ -985,21 +928,19 @@ class ResourceRequest extends SimpleORMap
         }
         return null;
     }
-
-
+    
     public function getRepetitionEndDate()
     {
         $repetition_interval = $this->getRepetitionInterval();
-
+        
         if (!$repetition_interval) {
             //There is no repetition.
             return null;
         }
-
+        
         return $this->getEndDate();
     }
-
-
+    
     /**
      * Retrieves the time intervals by looking at metadate objects
      * and other time interval sources and returns them grouped by metadate.
@@ -1029,71 +970,68 @@ class ResourceRequest extends SimpleORMap
         if (count($this->appointments)) {
             $time_intervals = [
                 '' => [
-                    'metadate' => null,
+                    'metadate'  => null,
                     'intervals' => []
                 ]
             ];
             foreach ($this->appointments as $appointment) {
-                $interval = [];
                 if ($with_preparation_time) {
                     $interval = [
                         'begin' => $appointment->appointment->date - $this->preparation_time,
-                        'end' => $appointment->appointment->end_time
+                        'end'   => $appointment->appointment->end_time
                     ];
                 } else {
                     $interval = [
                         'begin' => $appointment->appointment->date,
-                        'end' => $appointment->appointment->end_time
+                        'end'   => $appointment->appointment->end_time
                     ];
                 }
-                $interval['range'] = 'CourseDate';
-                $interval['range_id'] = $appointment->appointment_id;
+                $interval['range']                 = 'CourseDate';
+                $interval['range_id']              = $appointment->appointment_id;
                 $time_intervals['']['intervals'][] = $interval;
             }
             return $time_intervals;
         } elseif ($this->termin_id) {
-            $interval = [];
             if ($with_preparation_time) {
                 $interval = [
                     'begin' => $this->date->date - $this->preparation_time,
-                    'end' => $this->date->end_time
+                    'end'   => $this->date->end_time
                 ];
             } else {
                 $interval = [
                     'begin' => $this->date->date,
-                    'end' => $this->date->end_time
+                    'end'   => $this->date->end_time
                 ];
             }
-            $interval['range'] = 'CourseDate';
+            $interval['range']    = 'CourseDate';
             $interval['range_id'] = $this->termin_id;
             return [
                 '' => [
-                    'metadate' => null,
+                    'metadate'  => null,
                     'intervals' => [$interval]
                 ]
             ];
         } elseif ($this->metadate_id) {
             $time_intervals = [
                 $this->metadate_id => [
-                    'metadate' => $this->cycle,
+                    'metadate'  => $this->cycle,
                     'intervals' => []
                 ]
             ];
             foreach ($this->cycle->dates as $date) {
-                $interval = [];
                 if ($with_preparation_time) {
                     $interval = [
                         'begin' => $date->date - $this->preparation_time,
-                        'end' => $date->end_time
+                        'end'   => $date->end_time
                     ];
                 } else {
                     $interval = [
                         'begin' => $date->date,
-                        'end' => $date->end_time
+                        'end'   => $date->end_time
                     ];
                 }
-                $interval['range'] = 'CourseDate';
-                $interval['range_id'] = $date->id;
+                $interval['range']                                 = 'CourseDate';
+                $interval['range_id']                              = $date->id;
                 $time_intervals[$this->metadate_id]['intervals'][] = $interval;
             }
             return $time_intervals;
@@ -1102,25 +1040,24 @@ class ResourceRequest extends SimpleORMap
             if ($this->course->cycles) {
                 foreach ($this->course->cycles as $cycle) {
                     $time_intervals[$cycle->id] = [
-                        'metadate' => $cycle,
+                        'metadate'  => $cycle,
                         'intervals' => []
                     ];
                     if ($cycle->dates) {
                         foreach ($cycle->dates as $date) {
-                            $interval = [];
                             if ($with_preparation_time) {
                                 $interval = [
                                     'begin' => $date->date - $this->preparation_time,
-                                    'end' => $date->end_time
+                                    'end'   => $date->end_time
                                 ];
                             } else {
                                 $interval = [
                                     'begin' => $date->date,
-                                    'end' => $date->end_time
+                                    'end'   => $date->end_time
                                 ];
                             }
-                            $interval['range'] = 'CourseDate';
-                            $interval['range_id'] = $date->id;
+                            $interval['range']                         = 'CourseDate';
+                            $interval['range_id']                      = $date->id;
                             $time_intervals[$cycle->id]['intervals'][] = $interval;
                         }
                     }
@@ -1128,7 +1065,7 @@ class ResourceRequest extends SimpleORMap
             }
             if ($this->course->dates) {
                 $time_intervals[''] = [
-                    'metadate' => null,
+                    'metadate'  => null,
                     'intervals' => []
                 ];
                 foreach ($this->course->dates as $date) {
@@ -1136,42 +1073,40 @@ class ResourceRequest extends SimpleORMap
                         //Metadates are already handled above.
                         continue;
                     }
-                    $interval = [];
                     if ($with_preparation_time) {
                         $interval = [
                             'begin' => $date->date - $this->preparation_time,
-                            'end' => $date->end_time
+                            'end'   => $date->end_time
                         ];
                     } else {
                         $interval = [
                             'begin' => $date->date,
-                            'end' => $date->end_time
+                            'end'   => $date->end_time
                         ];
                     }
-                    $interval['range'] = 'CourseDate';
-                    $interval['range_id'] = $date->id;
+                    $interval['range']                 = 'CourseDate';
+                    $interval['range_id']              = $date->id;
                     $time_intervals['']['intervals'][] = $interval;
                 }
             }
             return $time_intervals;
-        } elseif ($this->begin and $this->end) {
-            $interval = [];
+        } elseif ($this->begin && $this->end) {
             if ($with_preparation_time) {
                 $interval = [
                     'begin' => $this->begin - $this->preparation_time,
-                    'end' => $this->end
+                    'end'   => $this->end
                 ];
             } else {
                 $interval = [
                     'begin' => $this->begin,
-                    'end' => $this->end
+                    'end'   => $this->end
                 ];
             }
-            $interval['range'] = 'User';
+            $interval['range']    = 'User';
             $interval['range_id'] = $this->user_id;
             return [
                 '' => [
-                    'metadate' => null,
+                    'metadate'  => null,
                     'intervals' => [$interval]
                 ]
             ];
@@ -1179,8 +1114,7 @@ class ResourceRequest extends SimpleORMap
             return [];
         }
     }
-
-
+    
     /**
      * Retrieves the time intervals for this request.
      *
@@ -1216,60 +1150,57 @@ class ResourceRequest extends SimpleORMap
         if (count($this->appointments)) {
             $time_intervals = [];
             foreach ($this->appointments as $appointment) {
-                $interval = [];
                 if ($with_preparation_time) {
                     $interval = [
                         'begin' => $appointment->appointment->date - $this->preparation_time,
-                        'end' => $appointment->appointment->end_time
+                        'end'   => $appointment->appointment->end_time
                     ];
                 } else {
                     $interval = [
                         'begin' => $appointment->appointment->date,
-                        'end' => $appointment->appointment->end_time
+                        'end'   => $appointment->appointment->end_time
                     ];
                 }
                 if ($with_range) {
-                    $interval['range'] = 'ResourceRequestAppointment';
+                    $interval['range']    = 'ResourceRequestAppointment';
                     $interval['range_id'] = $appointment->appointment_id;
                 }
                 $time_intervals[] = $interval;
             }
             return $time_intervals;
         } elseif ($this->termin_id) {
-            $interval = [];
             if ($with_preparation_time) {
                 $interval = [
                     'begin' => $this->date->date - $this->preparation_time,
-                    'end' => $this->date->end_time
+                    'end'   => $this->date->end_time
                 ];
             } else {
                 $interval = [
                     'begin' => $this->date->date,
-                    'end' => $this->date->end_time
+                    'end'   => $this->date->end_time
                 ];
             }
             if ($with_range) {
-                $interval['range'] = 'CourseDate';
+                $interval['range']    = 'CourseDate';
                 $interval['range_id'] = $this->termin_id;
             }
             return [$interval];
         } elseif ($this->metadate_id) {
             $time_intervals = [];
             foreach ($this->cycle->dates as $date) {
-                $interval = [];
                 if ($with_preparation_time) {
                     $interval = [
                         'begin' => $date->date - $this->preparation_time,
-                        'end' => $date->end_time
+                        'end'   => $date->end_time
                     ];
                 } else {
                     $interval = [
                         'begin' => $date->date,
-                        'end' => $date->end_time
+                        'end'   => $date->end_time
                     ];
                 }
                 if ($with_range) {
-                    $interval['range'] = 'CourseDate';
+                    $interval['range']    = 'CourseDate';
                     $interval['range_id'] = $date->id;
                 }
                 $time_intervals[] = $interval;
@@ -1279,41 +1210,39 @@ class ResourceRequest extends SimpleORMap
             $time_intervals = [];
             if ($this->course->dates) {
                 foreach ($this->course->dates as $date) {
-                    $interval = [];
                     if ($with_preparation_time) {
                         $interval = [
                             'begin' => $date->date - $this->preparation_time,
-                            'end' => $date->end_time
+                            'end'   => $date->end_time
                         ];
                     } else {
                         $interval = [
                             'begin' => $date->date,
-                            'end' => $date->end_time
+                            'end'   => $date->end_time
                         ];
                     }
                     if ($with_range) {
-                        $interval['range'] = 'CourseDate';
+                        $interval['range']    = 'CourseDate';
                         $interval['range_id'] = $date->id;
                     }
                     $time_intervals[] = $interval;
                 }
             }
             return $time_intervals;
-        } elseif ($this->begin and $this->end) {
-            $interval = [];
+        } elseif ($this->begin && $this->end) {
             if ($with_preparation_time) {
                 $interval = [
                     'begin' => $this->begin - $this->preparation_time,
-                    'end' => $this->end
+                    'end'   => $this->end
                 ];
             } else {
                 $interval = [
                     'begin' => $this->begin,
-                    'end' => $this->end
+                    'end'   => $this->end
                 ];
             }
             if ($with_range) {
-                $interval['range'] = 'User';
+                $interval['range']    = 'User';
                 $interval['range_id'] = $this->user_id;
             }
             return [$interval];
@@ -1321,14 +1250,14 @@ class ResourceRequest extends SimpleORMap
             return [];
         }
     }
-
-
+    
+    
     /**
      * Returns a string representation of the time intervals for this request.
      */
     public function getTimeIntervalStrings()
     {
-        $strings = [];
+        $strings   = [];
         $intervals = $this->getTimeIntervals();
         foreach ($intervals as $interval) {
             $same_day = (date('Ymd', $interval['begin'])
@@ -1342,8 +1271,8 @@ class ResourceRequest extends SimpleORMap
         }
         return $strings;
     }
-
-
+    
+    
     /**
      * Filters the time intervals for this request
      * by a specified time range.
@@ -1356,7 +1285,7 @@ class ResourceRequest extends SimpleORMap
     )
     {
         $all_time_intervals = $this->getTimeIntervals();
-
+        
         $included_intervals = [];
         foreach ($all_time_intervals as $interval) {
             $interval_in_range = (
@@ -1376,11 +1305,11 @@ class ResourceRequest extends SimpleORMap
                 $included_intervals[] = $interval;
             }
         }
-
+        
         return $included_intervals;
     }
-
-
+    
+    
     /**
      * Returns a string representation of the ResourceRequest's type.
      */
@@ -1397,7 +1326,7 @@ class ResourceRequest extends SimpleORMap
         }
         return null;
     }
-
+    
     /**
      * Returns a string representation of the status of the ResourceRequest.
      */
@@ -1420,8 +1349,8 @@ class ResourceRequest extends SimpleORMap
                 return '';
         }
     }
-
-
+    
+    
     /**
      * Returns a textual representation of the status of the ResourceRequest.
      */
@@ -1430,7 +1359,6 @@ class ResourceRequest extends SimpleORMap
         if ($this->isNew()) {
             return _('Diese Anfrage wurde noch nicht gespeichert.');
         }
-
         if ($this->closed == 0) {
             return _('Die Anfrage wurde noch nicht bearbeitet.');
         } else if ($this->closed == 3) {
@@ -1438,16 +1366,16 @@ class ResourceRequest extends SimpleORMap
         } else {
             return _('Die Anfrage wurde bearbeitet.');
         }
-
+        
         return _('unbekannt');
     }
-
-
+    
+    
     public function getDateString()
     {
         if (count($this->appointments)) {
             $string = '';
-            $parts = [];
+            $parts  = [];
             foreach ($this->appointments as $rra) {
                 if ($rra->appointment) {
                     $parts[] = $rra->appointment->getFullname();
@@ -1465,33 +1393,33 @@ class ResourceRequest extends SimpleORMap
             }
         } elseif ($this->course_id) {
             $course = new Seminar($this->course_id);
-
+            
             if ($course) {
                 return $course->getDatesExport(
                     [
-                        'short' => true,
-                        'shrink' => true,
+                        'short'     => true,
+                        'shrink'    => true,
                         'show_room' => false
                     ]
                 );
             }
-        } elseif ($this->begin and $this->end) {
+        } elseif ($this->begin && $this->end) {
             $begin_date = date('Ymd', $this->begin);
-            $end_date = date('Ymd', $this->end);
+            $end_date   = date('Ymd', $this->end);
             if ($begin_date == $end_date) {
                 return strftime('%a., %x, %R', $this->begin) . ' - '
-                     . strftime('%R', $this->end);
+                    . strftime('%R', $this->end);
             } else {
                 //Begin and end are on differnt dates
                 return strftime('%a., %x, %R', $this->begin) . ' - '
-                     . strftime('%a., %x, %R', $this->end);
+                    . strftime('%a., %x, %R', $this->end);
             }
         }
-
+        
         return '';
     }
-
-
+    
+    
     /**
      * Returns a human-readable string describing the type of the request.
      *
@@ -1537,9 +1465,7 @@ class ResourceRequest extends SimpleORMap
         }
     }
 
-
-    // ResourceRequest related object methods:
-
+    
     /**
      * Returns an array of date objects which are affected
      * by this ResourceRequest.
@@ -1548,23 +1474,26 @@ class ResourceRequest extends SimpleORMap
     {
         $dates = [];
         switch ($this->getType()) {
-            case 'date': {
+            case 'date':
+            {
                 $dates[] = $this->date;
                 break;
-            } case 'cycle': {
+            }
+            case 'cycle':
+            {
                 $dates = $this->cycle->dates->getArrayCopy();
                 break;
-            } case 'course': {
+            }
+            case 'course':
+            {
                 $dates = $this->course->dates->getArrayCopy();
                 break;
             }
         }
         return $dates;
     }
-
-
-    // ResourceRequest property methods:
-
+    
+    
     /**
      * Returns all resource property definitions for all properties
      * which can be applied for this ResourceRequest by looking at the
@@ -1584,7 +1513,7 @@ class ResourceRequest extends SimpleORMap
                 WHERE requestable = '1' AND category_id = :category_id
                 AND name NOT IN ( :excluded_property_names )",
                 [
-                    'category_id' => $this->category_id,
+                    'category_id'             => $this->category_id,
                     'excluded_property_names' => $excluded_property_names
                 ]
             );
@@ -1599,8 +1528,8 @@ class ResourceRequest extends SimpleORMap
             );
         }
     }
-
-
+    
+    
     /**
      * Returns a "compressed" array of resource request properties.
      *
@@ -1621,36 +1550,36 @@ class ResourceRequest extends SimpleORMap
         }
         return $data;
     }
-
-
+    
+    
     public function propertyExists($name)
     {
         if (!$name) {
             return false;
         }
-
+        
         $db = DBManager::get();
-
+        
         $exists_stmt = $db->prepare(
             "SELECT TRUE FROM resource_request_properties
             INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
             WHERE resource_request_properties.request_id = :request_id
                 AND rpd.name = :name");
-
+        
         $exists_stmt->execute(
             [
                 'request_id' => $this->id,
-                'name' => $name
+                'name'       => $name
             ]
         );
-
+        
         $exists = $exists_stmt->fetchColumn(0);
-
+        
         return (bool)$exists;
     }
-
-
+    
+    
     /**
      * Returns the state of the property specified by $name.
      */
@@ -1659,42 +1588,42 @@ class ResourceRequest extends SimpleORMap
         if (!$name) {
             return null;
         }
-
+        
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource request object.
             //In that case we can only return null, since resource requests
             //store only those properties which are requested:
-
+            
             return null;
         }
-
+        
         $db = DBManager::get();
-
+        
         $value_stmt = $db->prepare(
             "SELECT resource_request_properties.state FROM resource_request_properties
             INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
             WHERE resource_request_properties.request_id = :request_id
                 AND rpd.name = :name");
-
+        
         $value_stmt->execute(
             [
                 'request_id' => $this->id,
-                'name' => $name
+                'name'       => $name
             ]
         );
-
+        
         $value = $value_stmt->fetchColumn(0);
-
+        
         if (!$value) {
             return null;
         }
-
+        
         return $value;
     }
-
-
+    
+    
     /**
      * @throws InvalidResourceCategoryException If this resource category
      *     doesn't match the category of the resource request object.
@@ -1706,21 +1635,21 @@ class ResourceRequest extends SimpleORMap
         if (!$name) {
             return null;
         }
-
+        
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource object. If it is a mandatory property
             //we can still try to create it:
-
+            
             $property = $this->category->createDefinedResourceRequestProperty(
                 $this,
                 $name
             );
-
+            
             $property->store();
             return $property;
         }
-
+        
         return ResourceRequestProperty::findOneBySql(
             "INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
@@ -1728,12 +1657,12 @@ class ResourceRequest extends SimpleORMap
                 AND rpd.name = :name",
             [
                 'request_id' => $this->id,
-                'name' => $name
+                'name'       => $name
             ]
         );
     }
-
-
+    
+    
     /**
      *
      * @returns True, if the property state could be set, false otherwise.
@@ -1743,12 +1672,12 @@ class ResourceRequest extends SimpleORMap
         if (!$name) {
             return false;
         }
-
+        
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource object. If it is a mandatory property
             //we can still try to create it:
-
+            
             if ($this->category) {
                 $property = $this->category->createDefinedResourceRequestProperty(
                     $this,
@@ -1759,9 +1688,9 @@ class ResourceRequest extends SimpleORMap
             }
             return false;
         }
-
+        
         $property = $this->getPropertyObject($name);
-
+        
         if ($property) {
             $property->state = $state;
             if ($property->isDirty()) {
@@ -1770,8 +1699,8 @@ class ResourceRequest extends SimpleORMap
             return true;
         }
     }
-
-
+    
+    
     /**
      * Sets or unsets the properties for this resource request.
      *
@@ -1807,14 +1736,14 @@ class ResourceRequest extends SimpleORMap
         }
         $this->resetRelation('properties');
     }
-
-
+    
+    
     public function deletePropertyIfExists($name = '')
     {
         if (!$name) {
             return false;
         }
-
+        
         if (!$this->propertyExists($name)) {
             return true;
         } else {
@@ -1822,11 +1751,11 @@ class ResourceRequest extends SimpleORMap
             return $property->delete();
         }
     }
-
-
+    
+    
     // Helper methods
-
-
+    
+    
     public function getRangeName()
     {
         if ($this->getRangeType() === 'course') {
@@ -1840,14 +1769,14 @@ class ResourceRequest extends SimpleORMap
         }
         return $name;
     }
-
-
+    
+    
     public function isSimpleRequest()
     {
         return !$this->course_id && !$this->metadate_id && !$this->termin_id;
     }
-
-
+    
+    
     public function getRangeId()
     {
         //Check if the request belongs to a course:
@@ -1858,13 +1787,13 @@ class ResourceRequest extends SimpleORMap
         } elseif ($this->course_id) {
             return $this->course_id;
         }
-
+        
         //The request does not belong to a course and therefore
         //belongs to a user:
         return $this->user_id;
     }
-
-
+    
+    
     public function getRangeType()
     {
         if ($this->course_id || $this->termin_id || $this->metadate_id) {
@@ -1872,8 +1801,8 @@ class ResourceRequest extends SimpleORMap
         }
         return 'user';
     }
-
-
+    
+    
     public function getRangeObject()
     {
         if ($this->course_id) {
@@ -1888,10 +1817,7 @@ class ResourceRequest extends SimpleORMap
         return $this->user;
     }
 
-
-    //Mail sending methods:
-
-
+    
     /**
      * This method sends a notification mail to all room administrators
      * that informs them of this new request.
@@ -1902,9 +1828,8 @@ class ResourceRequest extends SimpleORMap
         //resource management system. Depending wheter a resource_id is set
         //for this resource request either all admins of a resource or
         //all admins of the resource management system must be informed.
-
-        $admin_users = [];
-        $now = time();
+        
+        $now         = time();
         if ($this->resource_id) {
             //The resource-ID is set for this request:
             //Get all admins of the resource and the resource management system.
@@ -1924,7 +1849,7 @@ class ResourceRequest extends SimpleORMap
                 )",
                 [
                     'resource_id' => $this->resource_id,
-                    'now' => $now
+                    'now'         => $now
                 ]
             );
         } else {
@@ -1946,23 +1871,23 @@ class ResourceRequest extends SimpleORMap
                 ]
             );
         }
-
+        
         if (!$admin_users) {
             return;
         }
-
+        
         $factory = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
         );
-
+        
         foreach ($admin_users as $user) {
             $user_lang_path = getUserLanguagePath($user->id);
-
+            
             $template = $factory->open(
                 $user_lang_path . '/LC_MAILS/new_resource_request.php'
             );
             $template->set_attribute('request', $this);
-
+            
             if ($this->resource instanceof Resource) {
                 $resource = $this->resource->getDerivedClassInstance();
                 if ($resource instanceof Room) {
@@ -1971,12 +1896,11 @@ class ResourceRequest extends SimpleORMap
                     $template->set_attribute('requested_resource', $resource->name);
                 }
             }
-
+            
             $mail_text = $template->render();
-
+            
             setLocaleEnv($user->preferred_language);
-
-            $mail_title = '';
+            
             if ($this->resource) {
                 $resource = $this->resource->getDerivedClassInstance();
                 $template->set_attribute('derived_resource', $resource);
@@ -1989,19 +1913,19 @@ class ResourceRequest extends SimpleORMap
                     _('Neue Anfrage in der Raum- und Ressourcenverwaltung')
                 );
             }
-
+            
             Message::send(
                 '____%system%____',
                 $user->username,
                 $mail_title,
                 $mail_text
             );
-
+            
             restoreLanguage();
         }
     }
-
-
+    
+    
     /**
      * This method sends a mail to inform the requester that
      * the request has been closed.
@@ -2011,17 +1935,17 @@ class ResourceRequest extends SimpleORMap
         $factory = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
         );
-
-        $requester_lang = $this->user->preferred_language;
+        
+        $requester_lang      = $this->user->preferred_language;
         $requester_lang_path = getUserLanguagePath($this->user->id);
         setLocaleEnv($requester_lang);
-
+        
         $template = $factory->open(
             $requester_lang_path . '/LC_MAILS/close_resource_request.php'
         );
         $template->set_attribute('request', $this);
         if ($this->course) {
-            $lecturers = CourseMember::findByCourseAndStatus(
+            $lecturers      = CourseMember::findByCourseAndStatus(
                 $this->course->id,
                 'dozent'
             );
@@ -2031,15 +1955,15 @@ class ResourceRequest extends SimpleORMap
                     $lecturer_names[] = $lecturer->user->getFullName();
                 }
             }
-
+            
             $lecturer_names = implode(', ', $lecturer_names);
             $template->set_attribute('lecturer_names', $lecturer_names);
         }
         if (is_array($bookings)) {
-            $booked_rooms = [];
+            $booked_rooms          = [];
             $booked_time_intervals = [];
-            $metadates = [];
-            $single_dates = [];
+            $metadates             = [];
+            $single_dates          = [];
             foreach ($bookings as $booking) {
                 if (!($booking instanceof ResourceBooking)) {
                     continue;
@@ -2047,7 +1971,7 @@ class ResourceRequest extends SimpleORMap
                 $booked_rooms[] = $booking->resource->name;
                 if ($booking->assigned_course_date instanceof CourseDate) {
                     $single_date = $booking->assigned_course_date;
-                    $metadate = $single_date->cycle;
+                    $metadate    = $single_date->cycle;
                     if ($metadate instanceof SeminarCycleDate) {
                         $metadates[$metadate->id] = $metadate;
                     } else {
@@ -2067,21 +1991,21 @@ class ResourceRequest extends SimpleORMap
             $template->set_attribute('single_dates', $single_dates);
             $template->set_attribute('booked_time_intervals', $booked_time_intervals);
         }
-
+        
         $mail_title = _('Ihre Anfrage wurde bearbeitet!');
-        $mail_text = $template->render();
-
+        $mail_text  = $template->render();
+        
         Message::send(
             '____%system%____',
             $this->user->username,
             $mail_title,
             $mail_text
         );
-
+        
         restoreLanguage();
     }
-
-
+    
+    
     /**
      * This method sends mails to the lecurers of the course (if any)
      * where this request has been assigned to. The sent mail informs them
@@ -2095,12 +2019,12 @@ class ResourceRequest extends SimpleORMap
                 $this->course->id,
                 'dozent'
             );
-
+            
             if ($lecturers) {
                 $factory = new Flexi_TemplateFactory(
                     $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
                 );
-
+                
                 $lecturer_names = [];
                 foreach ($lecturers as $lecturer) {
                     if ($lecturer->user instanceof User) {
@@ -2108,11 +2032,11 @@ class ResourceRequest extends SimpleORMap
                     }
                 }
                 $lecturer_names = implode(', ', $lecturer_names);
-
-                $booked_rooms = [];
+                
+                $booked_rooms          = [];
                 $booked_time_intervals = [];
-                $metadates = [];
-                $single_dates = [];
+                $metadates             = [];
+                $single_dates          = [];
                 if (is_array($bookings)) {
                     $booked_rooms = [];
                     foreach ($bookings as $booking) {
@@ -2122,7 +2046,7 @@ class ResourceRequest extends SimpleORMap
                         $booked_rooms[] = $booking->resource->name;
                         if ($booking->assigned_course_date instanceof CourseDate) {
                             $single_date = $booking->assigned_course_date;
-                            $metadate = $single_date->cycle;
+                            $metadate    = $single_date->cycle;
                             if ($metadate instanceof SeminarCycleDate) {
                                 $metadates[$metadate->id] = $metadate;
                             } else {
@@ -2139,13 +2063,13 @@ class ResourceRequest extends SimpleORMap
                 $booked_rooms = array_unique($booked_rooms);
                 sort($booked_rooms);
                 $booked_rooms = implode(', ', $booked_rooms);
-
+                
                 foreach ($lecturers as $lecturer) {
-                    $lec_lang = $lecturer->user->preferred_language;
+                    $lec_lang      = $lecturer->user->preferred_language;
                     $lec_lang_path = getUserLanguagePath($lecturer->user->id);
-
+                    
                     setLocaleEnv($lec_lang);
-
+                    
                     $template = $factory->open(
                         $lec_lang_path . '/LC_MAILS/close_resource_request.php'
                     );
@@ -2155,24 +2079,24 @@ class ResourceRequest extends SimpleORMap
                     $template->set_attribute('metadates', $metadates);
                     $template->set_attribute('single_dates', $single_dates);
                     $template->set_attribute('booked_time_intervals', $booked_time_intervals);
-
+                    
                     $mail_title = _('Bearbeitung einer Anfrage!');
-                    $mail_text = $template->render();
-
+                    $mail_text  = $template->render();
+                    
                     Message::send(
                         '____%system%____',
                         $lecturer->user->username,
                         $mail_title,
                         $mail_text
                     );
-
+                    
                     restoreLanguage();
                 }
             }
         }
     }
-
-
+    
+    
     /**
      * This method sends a mail to inform the requester
      * about the denial of the request.
@@ -2185,19 +2109,19 @@ class ResourceRequest extends SimpleORMap
             //No mail to send.
             return;
         }
-
+        
         //Load the mail template:
-        $factory = new Flexi_TemplateFactory(
+        $factory        = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
         );
         $user_lang_path = getUserLanguagePath($user->id);
-        $template = $factory->open(
+        $template       = $factory->open(
             $user_lang_path . '/LC_MAILS/request_denied_mail.inc.php'
         );
-
+        
         $mail_title = _('Ihre Anfrage wurde abgelehnt!');
-        $mail_text = $template->render(['request' => $this]);
-
+        $mail_text  = $template->render(['request' => $this]);
+        
         //Send the mail:
         Message::send(
             '____%system%____',
@@ -2206,11 +2130,11 @@ class ResourceRequest extends SimpleORMap
             $mail_text
         );
     }
-
-
+    
+    
     //User-related methods:
-
-
+    
+    
     public function isReadOnlyForUser(User $user)
     {
         $resource = $this->resource;
@@ -2219,26 +2143,22 @@ class ResourceRequest extends SimpleORMap
             return false;
         }
         $resource = $resource->getDerivedClassInstance();
-
+        
         return !$resource->userHasPermission($user, 'autor')
             && ($this->user_id != $user->id);
     }
-
-
-    //Studip\Calendar\EventSource interface implementation:
-
-
+    
     protected function convertToEventData($time_intervals = [], User $user)
     {
-        $booking_plan_request_bg =
+        $booking_plan_request_bg     =
             ColourValue::find('Resources.BookingPlan.Request.Bg');
-        $booking_plan_request_fg =
+        $booking_plan_request_fg     =
             ColourValue::find('Resources.BookingPlan.Request.Fg');
         $booking_plan_preparation_bg =
             ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $booking_plan_preparation_fg =
             ColourValue::find('Resources.BookingPlan.PreparationTime.Fg');
-
+        
         $user_is_resource_autor = false;
         if ($this->resource_id && ($this->resource instanceof Resource)) {
             $user_is_resource_autor = $this->resource->userHasPermission(
@@ -2248,39 +2168,38 @@ class ResourceRequest extends SimpleORMap
         }
         $request_is_editable =
             $user_is_resource_autor || ($user->id == $this->user_id);
-
-        $request_api_urls = [];
-        $request_view_urls = [];
-
+        
+        $request_api_urls  = [];
+        
         if ($request_is_editable) {
             $request_api_urls = [
                 'resize' => URLHelper::getURL(
                     'api.php/resources/request/'
-                  . $this->id . '/move',
+                    . $this->id . '/move',
                     [
                         'quiet' => '1'
                     ]
                 ),
-                'move' => URLHelper::getURL(
+                'move'   => URLHelper::getURL(
                     'api.php/resources/request/'
-                  . $this->id . '/move',
+                    . $this->id . '/move',
                     [
                         'quiet' => '1'
                     ]
                 )
             ];
-
+            
             $request_view_urls = [
                 'edit' => URLHelper::getURL(
                     'dispatch.php/resources/room_request/edit/'
-                  . $this->id
+                    . $this->id
                 )
             ];
             if ($this->resource_id && ($this->resource instanceof Resource)) {
                 if ($this->resource->userHasBookingRights($user)) {
                     $request_view_urls['edit'] = URLHelper::getURL(
                         'dispatch.php/resources/room_request/resolve/'
-                      . $this->id
+                        . $this->id
                     );
                 }
             }
@@ -2288,18 +2207,18 @@ class ResourceRequest extends SimpleORMap
             $request_view_urls = [
                 'show' => URLHelper::getURL(
                     'dispatch.php/resources/room_request/index/'
-                  . $this->id
+                    . $this->id
                 )
             ];
         }
-
+        
         $events = [];
-
+        
         foreach ($time_intervals as $interval) {
             $real_begin = $interval['begin'];
             if ($this->preparation_time) {
                 $real_begin += $this->preparation_time;
-                $begin = new DateTime();
+                $begin      = new DateTime();
                 $begin->setTimestamp($interval['begin']);
                 $end = new DateTime();
                 $end->setTimestamp($real_begin);
@@ -2321,19 +2240,12 @@ class ResourceRequest extends SimpleORMap
                     $request_api_urls
                 );
             }
-
-            $all_day = false;
-            if ((date('Ymd', $interval['begin']) == date('Ymd', $interval['end']))
-                && (intval(date('His', $interval['begin'])) == 0)
-                && (date('His', $interval['end']) == '235959')) {
-                $all_day = true;
-            }
-
+            
             $begin = new DateTime();
             $begin->setTimestamp($real_begin);
             $end = new DateTime();
             $end->setTimestamp($interval['end']);
-
+            
             $events[] = new Studip\Calendar\EventData(
                 $begin,
                 $end,
@@ -2352,11 +2264,11 @@ class ResourceRequest extends SimpleORMap
                 $request_api_urls
             );
         }
-
+        
         return $events;
     }
-
-
+    
+    
     public function getAllEventData()
     {
         return $this->convertToEventData(
@@ -2364,32 +2276,32 @@ class ResourceRequest extends SimpleORMap
             User::findCurrent()
         );
     }
-
-
+    
+    
     public function getEventDataForTimeRange(DateTime $begin, DateTime $end)
     {
-        $intervals = $this->getTimeIntervals(true);
+        $intervals      = $this->getTimeIntervals(true);
         $time_intervals = [];
-
+        
         $begin_timestamp = $begin->getTimestamp();
-        $end_timestamp = $end->getTimestamp();
-
-        foreach ($time_intervals as $interval) {
+        $end_timestamp   = $end->getTimestamp();
+        
+        foreach ($intervals as $interval) {
             if ((($interval['begin'] >= $begin_timestamp)
-              && ($interval['begin'] <= $end_timestamp)) ||
+                    && ($interval['begin'] <= $end_timestamp)) ||
                 (($interval['end'] >= $begin_timestamp)
-              && ($interval['end'] <= $end_timestamp)) ||
+                    && ($interval['end'] <= $end_timestamp)) ||
                 (($interval['begin'] < $begin_timestamp)
-              && ($interval['end'] > $end_timestamp))
+                    && ($interval['end'] > $end_timestamp))
             ) {
                 $time_intervals[] = $interval;
             }
         }
-
+        
         return $this->convertToEventData($time_intervals, User::findCurrent());
     }
-
-
+    
+    
     public function getFilteredEventData(
         $user_id = null,
         $range_id = null,
@@ -2398,26 +2310,26 @@ class ResourceRequest extends SimpleORMap
         $end = null
     )
     {
-        $intervals = $this->getTimeIntervals(true);
+        $intervals      = $this->getTimeIntervals(true);
         $time_intervals = [];
-
+        
         if ($begin && $end) {
             $begin_timestamp = $begin;
-            $end_timestamp = $end;
+            $end_timestamp   = $end;
             if ($begin instanceof DateTime) {
                 $begin_timestamp = $begin->getTimestamp();
             }
             if ($end instanceof DateTime) {
                 $end_timestamp = $end->getTimestamp();
             }
-
+            
             foreach ($intervals as $interval) {
                 if ((($interval['begin'] >= $begin_timestamp)
-                  && ($interval['begin'] <= $end_timestamp)) ||
+                        && ($interval['begin'] <= $end_timestamp)) ||
                     (($interval['end'] >= $begin_timestamp)
-                  && ($interval['end'] <= $end_timestamp)) ||
+                        && ($interval['end'] <= $end_timestamp)) ||
                     (($interval['begin'] < $begin_timestamp)
-                  && ($interval['end'] > $end_timestamp))
+                        && ($interval['end'] > $end_timestamp))
                 ) {
                     $time_intervals[] = $interval;
                 }
@@ -2425,22 +2337,22 @@ class ResourceRequest extends SimpleORMap
         } else {
             $time_intervals = $intervals;
         }
-
+        
         $user = null;
         if ($user_id) {
             $user = User::find($user_id);
         } else {
             $user = User::findCurrent();
         }
-
+        
         return $this->convertToEventData($time_intervals, $user);
     }
-
+    
     public function getPriority()
     {
         $first = $this->getTimeIntervals()[0];
-        $diff = round(($first['begin'] - time()) / 86400);
+        $diff  = round(($first['begin'] - time()) / 86400);
         return $diff;
-
+        
     }
 }

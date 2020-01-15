@@ -36,18 +36,18 @@ class ResourceRequestAppointment extends SimpleORMap
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_request_appointments';
-
+        
         $config['belongs_to']['resource_request'] = [
-            'class_name' => 'ResourceRequest',
+            'class_name'  => 'ResourceRequest',
             'foreign_key' => 'request_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-        $config['belongs_to']['appointment'] = [
-            'class_name' => 'CourseDate',
+        $config['belongs_to']['appointment']      = [
+            'class_name'  => 'CourseDate',
             'foreign_key' => 'appointment_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         parent::configure($config);
     }
 }

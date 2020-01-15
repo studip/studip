@@ -21,8 +21,6 @@
  * @property string mkdate database column
  * @property string chdate database column
  */
-
-
 class ResourcePropertyGroup extends SimpleORMap
 {
     protected static function configure($config = [])

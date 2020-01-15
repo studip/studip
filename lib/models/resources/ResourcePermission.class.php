@@ -36,7 +36,6 @@
  */
 class ResourcePermission extends SimpleORMap implements PrivacyObject
 {
-
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_permissions';
@@ -58,7 +57,6 @@ class ResourcePermission extends SimpleORMap implements PrivacyObject
 
         parent::configure($config);
     }
-
 
     /**
      * @inheritDoc

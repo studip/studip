@@ -23,34 +23,32 @@
  * @property SimpleORMapCollection separable_room belongs_to SeparableRoom
  * @property SimpleORMapCollection room belongs_to Room
  */
-
-
 class SeparableRoomPart extends SimpleORMap
 {
     protected static function configure($config = [])
     {
         $config['db_table'] = 'separable_room_parts';
-
+        
         $config['belongs_to']['separable_room'] = [
-            'class_name' => 'SeparableRoom',
+            'class_name'  => 'SeparableRoom',
             'foreign_key' => 'separable_room_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-        $config['belongs_to']['room'] = [
-            'class_name' => 'Room',
+        $config['belongs_to']['room']           = [
+            'class_name'  => 'Room',
             'foreign_key' => 'room_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         parent::configure($config);
     }
-
+    
     public function getRoomName()
     {
         if ($this->room) {
             return $this->room->name;
         }
-
+        
         return '';
     }
 }

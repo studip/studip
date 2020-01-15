@@ -59,7 +59,6 @@ class ResourceBookingInterval extends SimpleORMap
         parent::configure($config);
     }
 
-
     /**
      * Creates resource booking interval entries by checking the
      * values of a specified ResourceBooking object.
@@ -98,8 +97,7 @@ class ResourceBookingInterval extends SimpleORMap
         }
         return true;
     }
-
-
+    
     /**
      * Converts this ResourceBookingInterval object to a DateInterval object.
      *
@@ -115,7 +113,6 @@ class ResourceBookingInterval extends SimpleORMap
 
         return $begin->diff($end);
     }
-
 
     public function __toString()
     {

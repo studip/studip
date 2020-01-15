@@ -38,39 +38,38 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_temporary_permissions';
-
+        
         $config['belongs_to']['resource'] = [
-            'class_name' => 'Resource',
+            'class_name'  => 'Resource',
             'foreign_key' => 'resource_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
+        
         $config['belongs_to']['user'] = [
-            'class_name' => 'User',
+            'class_name'  => 'User',
             'foreign_key' => 'user_id',
-            'assoc_func' => 'find'
+            'assoc_func'  => 'find'
         ];
-
-        $config['registered_callbacks']['before_store'][] = 'cbLogChanges';
+        
+        $config['registered_callbacks']['before_store'][]  = 'cbLogChanges';
         $config['registered_callbacks']['before_delete'][] = 'cbLogDeletion';
-
+        
         parent::configure($config);
     }
-
-
+    
     /**
      * @inheritDoc
      */
     public static function exportUserData(StoredUserData $storage)
     {
-        $user = User::find($storage->user_id);
+        $user        = User::find($storage->user_id);
         $permissions = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
                 'user_id' => $storage->user_id
             ]
         );
-
+        
         $rows = [];
         foreach ($permissions as $permission) {
             $rows[] = $permission->toRawArray();
@@ -83,8 +82,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
             $user
         );
     }
-
-
+    
     /**
      * Returns the current permission a user has for a resource.
      *
@@ -104,14 +102,14 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
         if (!$resource_id) {
             return '';
         }
-
+        
         $perm = self::findOneBySql(
             'resource_id = :resource_id
             AND
             user_id = :user_id',
             [
                 'resource_id' => $resource_id,
-                'user_id' => $user->id
+                'user_id'     => $user->id
             ]
         );
         if ($perm) {
@@ -119,8 +117,8 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
         }
         return '';
     }
-
-
+    
+    
     public static function userHasPermissionInTimeRange(
         User $user,
         $resource_id = null,
@@ -132,7 +130,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
         if (!$resource_id) {
             return false;
         }
-
+        
         //Query explaination: We want exactly one permission object
         //for the specified user and the resource.
         //The permission must exist during the whole specified time range
@@ -147,23 +145,23 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
             AND
             (begin <= :begin AND end >= :end)',
             [
-                'user_id' => $user->id,
+                'user_id'     => $user->id,
                 'resource_id' => $resource_id,
-                'begin' => $begin->getTimestamp(),
-                'end' => $end->getTimestamp()
+                'begin'       => $begin->getTimestamp(),
+                'end'         => $end->getTimestamp()
             ]
         );
-
+        
         if (!$perm) {
             //If no permission object can be found the user obviously
             //doesn't have the requested permissions.
             return false;
         }
-
+        
         return ResourceManager::comparePermissionLevels($perm->perm, $perm) >= 0;
     }
-
-
+    
+    
     /**
      * This is a callback method to create an entry in the Stud.IP log
      * when a ResourceTemporaryPermission object is stored.
@@ -184,7 +182,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
                         $this->perms
                     )
                 );
-
+                
             } elseif ($this->resource_id) {
                 //Resource-specific permissions
                 StudipLog::log(
@@ -236,7 +234,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
             }
         }
     }
-
+    
     /**
      * This is a callback method to create an entry in the Stud.IP log
      * when a ResourceTemporaryPermission object is deleted.
@@ -268,6 +266,4 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
             );
         }
     }
-
-
-    }
+}

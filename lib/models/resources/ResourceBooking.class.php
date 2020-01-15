@@ -149,7 +149,7 @@ class ResourceBooking extends SimpleORMap
         //First we build the SQL snippet for the case that the $booking_type
         //variable is set to something different than null.
         $booking_type_sql = '';
-        if (is_array($booking_types) and count($booking_types)) {
+        if (is_array($booking_types) && count($booking_types)) {
             $booking_type_sql = ' AND booking_type IN ( :booking_types )';
             $sql_params['booking_types'] = $booking_types;
         }
@@ -561,8 +561,7 @@ class ResourceBooking extends SimpleORMap
                         $current_begin_str = $current_repetition->format('Y-m-d');
                         $current_end_str = $current_end->format('Y-m-d');
 
-                        if (($current_begin_str == $exc_begin_str)
-                            and ($current_end_str == $exc_end_str)) {
+                        if ($current_begin_str == $exc_begin_str && $current_end_str == $exc_end_str) {
                             //We found one exception which needs to be updated.
                             $exception_obsolete = false;
                             $exception->begin = $current_repetition->getTimestamp();

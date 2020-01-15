@@ -18,8 +18,6 @@
  * @property string id location-ID (equal to Resource.resource_id)
  * Other properties are inherited from the parent class (Resource).
  */
-
-
 class Location extends Resource
 {
     protected static $required_properties = [
@@ -47,8 +45,7 @@ class Location extends Resource
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
         parent::configure($config);
     }
-
-
+    
     public static function getTranslatedClassName($item_count = 1)
     {
         return ngettext(
@@ -57,13 +54,11 @@ class Location extends Resource
             $item_count
         );
     }
-
-
-    public static function getIconStatic($role = 'info')
+    
+    public static function getIconStatic($role = Icon::ROLE_INFO)
     {
         return Icon::create('place', $role);
     }
-
 
     /**
      * Returns all locations which are stored in the database.
@@ -79,7 +74,6 @@ class Location extends Resource
             ORDER BY sort_position DESC, name ASC, mkdate ASC"
         );
     }
-
 
     /**
      * Returns the part of the URL for getLink and getURL which will be
@@ -110,7 +104,6 @@ class Location extends Resource
             }
         }
     }
-
 
     /**
      * Returns the appropriate link for the location action that shall be
@@ -162,19 +155,16 @@ class Location extends Resource
             $url_parameters
         );
     }
-
-
+    
     public function getRequiredPropertyNames()
     {
         return self::$required_properties;
     }
-
-
+    
     public function __toString()
     {
         return $this->getFullName();
     }
-
 
     public function cbValidate()
     {
@@ -200,8 +190,7 @@ class Location extends Resource
         }
 
     }
-
-
+    
     /**
      * Returns the full (localised) name of the location.
      *
@@ -214,19 +203,16 @@ class Location extends Resource
             $this->name
         );
     }
-
-
+    
     public function getDefaultPictureUrl()
     {
         return $this->getIcon()->asImagePath();
     }
-
-
-    public function getIcon($role = 'info')
+    
+    public function getIcon($role = Icon::ROLE_INFO)
     {
         return Icon::create('place', $role);
     }
-
 
     public function checkHierarchy()
     {
@@ -257,8 +243,7 @@ class Location extends Resource
         //the hierarchy around this location is valid.
         return true;
     }
-
-
+    
     /**
      * Returns the link for an action for this building.
      * This is the non-static variant of Building::getLinkForAction.
@@ -338,9 +323,6 @@ class Location extends Resource
         return parent::addChild($resource);
     }
 
-
-    //Overloaded methods to prevent booking locations:
-
     public function createSimpleBooking(
         User $user,
         DateTime $begin,
@@ -368,7 +350,6 @@ class Location extends Resource
         return null;
     }
 
-
     public function createBooking(
         User $user,
         $range_id = null,
@@ -384,8 +365,7 @@ class Location extends Resource
     ) {
         return null;
     }
-
-
+    
     public function createSimpleRequest(
         User $user,
         DateTime $begin,
@@ -396,8 +376,7 @@ class Location extends Resource
     {
         return null;
     }
-
-
+    
     public function createRequest(
         User $user,
         $date_range_ids = null,
@@ -408,8 +387,7 @@ class Location extends Resource
     {
         return null;
     }
-
-
+    
     public function createLock(
         User $user,
         DateTime $begin,
@@ -428,8 +406,7 @@ class Location extends Resource
     {
         return false;
     }
-
-
+    
     public function isReserved(
         DateTime $begin,
         DateTime $end,
@@ -438,8 +415,7 @@ class Location extends Resource
     {
         return false;
     }
-
-
+    
     public function isLocked(
         DateTime $begin,
         DateTime $end,
@@ -448,7 +424,6 @@ class Location extends Resource
     {
         return true;
     }
-
 
     public function isAvailable(
         DateTime $begin,

@@ -27,39 +27,33 @@
  */
 class BrokenResource extends Resource
 {
-
     public function store()
     {
         //Broken resources shall not be stored or modified.
         //Modification may break things.
         return false;
     }
-
-
+    
     public static function getIconStatic($role = 'info')
     {
         return Icon::create('resource', $role);
     }
-
-
+    
     public function getFolder()
     {
         return null;
     }
-
-
+    
     public function setFolder(ResourceFolder $folder)
     {
         return false;
     }
-
-
+    
     public function createFolder()
     {
         return null;
     }
-
-
+    
     public function createSimpleBooking(
         User $user,
         DateTime $begin,
@@ -86,8 +80,7 @@ class BrokenResource extends Resource
     {
         return null;
     }
-
-
+    
     public function createBooking(
         User $user,
         $range_id = null,
@@ -103,8 +96,7 @@ class BrokenResource extends Resource
     ) {
         return null;
     }
-
-
+    
     public function createSimpleRequest(
         User $user,
         DateTime $begin,
@@ -127,8 +119,7 @@ class BrokenResource extends Resource
     {
         return null;
     }
-
-
+    
     public function createLock(
         User $user,
         DateTime $begin,
@@ -138,45 +129,38 @@ class BrokenResource extends Resource
     {
         return null;
     }
-
-
+    
     public function propertyExists($name = '')
     {
         //Resource labels don't have properties:
         return false;
     }
-
-
+    
     public function getPropertyObject($name = '')
     {
         return null;
     }
-
-
+    
     public function getProperty($name = '')
     {
         return null;
     }
-
-
+    
     public function getPropertyRelatedObject($name = '')
     {
         return null;
     }
-
-
+    
     public function setProperty($name = '', $state = '', $user_id = null)
     {
         return false;
     }
 
-
     public function isPropertyEditable($name = '', User $user)
     {
         return false;
     }
-
-
+    
     public function setPropertyByDefinitionId(
         $property_definition_id = null,
         $state = null
@@ -184,26 +168,22 @@ class BrokenResource extends Resource
     {
         return false;
     }
-
-
+    
     public function setPropertyRelatedObject($name = '', $object = null)
     {
         return false;
     }
-
-
-    public function getIcon($role = 'info')
+    
+    public function getIcon($role = Icon::ROLE_INFO)
     {
         return Icon::create('resource', $role);
     }
-
-
+    
     public function getPropertyArray($only_requestable_properties = false)
     {
         return [];
     }
-
-
+    
     public function isAssigned(
         DateTime $begin,
         DateTime $end,
@@ -213,7 +193,6 @@ class BrokenResource extends Resource
         return false;
     }
 
-
     public function isReserved(
         DateTime $begin,
         DateTime $end,
@@ -222,8 +201,7 @@ class BrokenResource extends Resource
     {
         return false;
     }
-
-
+    
     public function isLocked(
         DateTime $begin,
         DateTime $end,
@@ -232,8 +210,7 @@ class BrokenResource extends Resource
     {
         return true;
     }
-
-
+    
     public function isAvailable(
         DateTime $begin,
         DateTime $end,
@@ -242,55 +219,44 @@ class BrokenResource extends Resource
     {
         return false;
     }
-
-
+    
     public function isAvailableForRequest(ResourceRequest $request)
     {
         return false;
     }
-
-
+    
     public function getFullName()
     {
         return sprintf('%1$s (%2$s)', $this->name, _('defekt'));
     }
-
 
     public function getOpenResourceRequests(DateTime $begin, DateTime $end)
     {
         return [];
     }
 
-
     public function getResourceBookings(DateTime $begin, DateTime $end)
     {
         return [];
     }
-
 
     public function getResourceLocks(DateTime $begin, DateTime $end)
     {
         return [];
     }
 
-
     public function hasFiles()
     {
         return false;
     }
-
 
     public function checkHierarchy()
     {
         return true;
     }
 
-
-    //StudipItem interface implementation overloading:
-
-
     public function getItemAvatarURL()
     {
-        return Icon::create('info', 'info')->asImagePath();
+        return Icon::create('info', Icon::ROLE_INFO)->asImagePath();
     }
 }

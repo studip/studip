@@ -26,8 +26,6 @@
  * @property ResourcePropertyDefinition definition belongs_to
  *     ResourcePropertyDefinition
  */
-
-
 class ResourceRequestProperty extends SimpleORMap
 {
     protected static function configure($config = [])
@@ -52,8 +50,7 @@ class ResourceRequestProperty extends SimpleORMap
 
         parent::configure($config);
     }
-
-
+    
     /**
      * Creates a string containing the appropriate value
      * of this resource property.

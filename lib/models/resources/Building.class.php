@@ -54,9 +54,7 @@ class Building extends Resource
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
         parent::configure($config);
     }
-
-    //retrieval methods:
-
+    
     /**
      * Returns all buildings which are stored in the database.
      *
@@ -71,11 +69,7 @@ class Building extends Resource
             ORDER BY sort_position DESC, name ASC, mkdate ASC"
         );
     }
-
-
-    //Overloaded methods:
-
-
+    
     public static function getTranslatedClassName($item_count = 1)
     {
         return ngettext(
@@ -84,14 +78,12 @@ class Building extends Resource
             $item_count
         );
     }
-
-
+    
     public static function getRequiredProperties()
     {
         return self::$required_properties;
     }
-
-
+    
     /**
      * Finds buildings by a location specified by its ID.
      *
@@ -155,8 +147,7 @@ class Building extends Resource
             }
         }
     }
-
-
+    
     /**
      * Returns the appropriate link for the building action that shall be
      * executed on a building.
@@ -179,8 +170,7 @@ class Building extends Resource
             $link_parameters
         );
     }
-
-
+    
     /**
      * Returns the appropriate URL for the building action that shall be
      * executed on a building.
@@ -203,21 +193,16 @@ class Building extends Resource
             $url_parameters
         );
     }
-
-
+    
     public function getRequiredPropertyNames()
     {
         return self::$required_properties;
     }
-
-
+    
     public function __toString()
     {
         return $this->getFullName();
     }
-
-
-    //callback methods:
 
     public function cbValidate()
     {
@@ -277,12 +262,11 @@ class Building extends Resource
         return Icon::create('home', $role);
     }
 
-    public static function getIconStatic($role = 'info')
+    public static function getIconStatic($role = Icon::ROLE_INFO)
     {
         return Icon::create('home', $role);
     }
-
-
+    
     public function checkHierarchy()
     {
         //We must check if this building has buildings as children
@@ -311,8 +295,7 @@ class Building extends Resource
         //the hierarchy around this building is valid.
         return true;
     }
-
-
+    
     /**
      * Returns the link for an action for this building.
      * This is the non-static variant of Building::getLinkForAction.
@@ -352,8 +335,6 @@ class Building extends Resource
             $url_parameters
         );
     }
-
-    // Relation methods:
 
     /**
      * Retrieves the rooms which reside inside this building by looking up
@@ -415,10 +396,7 @@ class Building extends Resource
         }
         return parent::addChild($resource);
     }
-
-
-    //Overloaded methods to prevent booking buildings:
-
+    
     public function createSimpleBooking(
         User $user,
         DateTime $begin,
@@ -462,8 +440,7 @@ class Building extends Resource
     ) {
         return null;
     }
-
-
+    
     public function createSimpleRequest(
         User $user,
         DateTime $begin,
@@ -474,8 +451,7 @@ class Building extends Resource
     {
         return null;
     }
-
-
+    
     public function createRequest(
         User $user,
         $date_range_ids = null,
@@ -486,8 +462,7 @@ class Building extends Resource
     {
         return null;
     }
-
-
+    
     public function createLock(
         User $user,
         DateTime $begin,
@@ -507,7 +482,6 @@ class Building extends Resource
         return false;
     }
 
-
     public function isReserved(
         DateTime $begin,
         DateTime $end,
@@ -516,8 +490,7 @@ class Building extends Resource
     {
         return false;
     }
-
-
+    
     public function isLocked(
         DateTime $begin,
         DateTime $end,
@@ -526,8 +499,7 @@ class Building extends Resource
     {
         return true;
     }
-
-
+    
     public function isAvailable(
         DateTime $begin,
         DateTime $end,
