@@ -120,10 +120,6 @@ class ResourceTreeWidget extends SidebarWidget
             $this->template
         );
         $template->set_attributes($variables);
-
-        $layout = $GLOBALS['template_factory']->open(
-            'sidebar/widget-layout'
-        );
         $template->set_layout('sidebar/widget-layout');
         return $template->render();
     }
