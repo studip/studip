@@ -338,7 +338,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
                         URLHelper::getURL(
                             'dispatch.php/resources/room/index/' . $this->resource->id
                         ),
-                        Icon::create('link-intern')
+                        Icon::create('link-intern'),
+                        ['data-dialog' => 'size=auto']
                     );
                 }
             }
