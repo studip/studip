@@ -1,19 +1,10 @@
 <?php
 
-// set error reporting
-error_reporting(E_ALL & ~E_NOTICE);
-if (version_compare(phpversion(), '5.4', '>=')) {
-    error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-}
-
 // set include path
 $inc_path = ini_get('include_path');
 $inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../..';
 $inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../../config';
 ini_set('include_path', $inc_path);
-
-// load varstream for easier filesystem testing
-require_once 'varstream.php';
 
 define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/fixtures/");
 
@@ -23,32 +14,14 @@ require 'lib/functions.php';
 $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 
 StudipAutoloader::register();
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'activities', 'Studip\\Activity');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'models');
-StudipAutoloader::addAutoloadPath(
-    $STUDIP_BASE_PATH
-    . DIRECTORY_SEPARATOR
-    . 'lib'
-    . DIRECTORY_SEPARATOR
-    . 'resources'
-);
-StudipAutoloader::addAutoloadPath(
-    $STUDIP_BASE_PATH
-    . DIRECTORY_SEPARATOR
-    . 'lib'
-    . DIRECTORY_SEPARATOR
-    . 'models'
-    . DIRECTORY_SEPARATOR
-    . 'resources'
-);
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'resources');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'models' . DIRECTORY_SEPARATOR . 'resources');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exceptions');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exceptions' . DIRECTORY_SEPARATOR . 'resources');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'sidebar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'helpbar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'engine');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'core');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'db');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'migrations');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'resources');
 
 // load config-variables
 StudipFileloader::load(
@@ -58,19 +31,8 @@ StudipFileloader::load(
     true
 );
 
-require_once 'vendor/yaml/lib/sfYamlParser.php';
-$yaml = new \sfYamlParser();
-$config = $yaml->parse(file_get_contents(dirname(__FILE__) .'/../unit.suite.yml'));
-
-// connect to database if configured
-if (isset($config['modules']['config']['Db'])) {
-    DBManager::getInstance()->setConnection('studip',
-        $config['modules']['config']['Db']['dsn'],
-        $config['modules']['config']['Db']['user'],
-        $config['modules']['config']['Db']['password']);
-} else {
-    //DBManager::getInstance()->setConnection('studip', 'sqlite://'. $GLOBALS ,'', '');
-}
+require_once 'vendor/flexi/lib/flexi.php';
+$GLOBALS['template_factory'] = new Flexi_TemplateFactory(dirname(dirname(__DIR__)) . '/templates');
 
 // create "fake" cache class
 if (!class_exists('StudipArrayCache')) {
