@@ -24,7 +24,6 @@
                     <input type="hidden" name="room_ids[]">
                     <span></span>
                     <?= Icon::create('trash')->asImg(
-                        '16px',
                         [
                             'class' => 'remove-icon text-bottom'
                         ]
@@ -37,7 +36,6 @@
                                    value="<?= htmlReady($room->id) ?>">
                             <span><?= htmlReady($room->name) ?></span>
                             <?= Icon::create('trash')->asImg(
-                                '16px',
                                 [
                                     'class' => 'remove-icon text-bottom'
                                 ]

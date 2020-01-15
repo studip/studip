@@ -23,8 +23,7 @@
         <? foreach ($categories as $category): ?>
         <tr>
             <td>
-                <img class="small-resource-picture"
-                    src="<?= $category->getIconUrl() ?>">
+                <img class="small-resource-picture" src="<?= $category->getIconUrl() ?>">
             </td>
             <td><?= htmlReady($category->name) ?></td>
             <td><?= htmlReady($category->description) ?></td>

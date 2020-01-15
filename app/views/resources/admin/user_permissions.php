@@ -7,7 +7,6 @@
                     <?= htmlReady($global_permission->perms) ?>
                     <? if ($current_global_lock and ($global_permission->perms != 'admin')): ?>
                         <?= Icon::create('exclaim', 'attention')->asImg(
-                            '16px',
                             [
                                 'class' => 'text-bottom',
                                 'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raum- und Ressourcenverwaltung nicht genutzt werden!')
@@ -132,7 +131,6 @@
                                      . $permission->resource_id
                                      ) ?>" data-dialog>
                                 <?= Icon::create('log')->asImg(
-                                    '16px',
                                     [
                                         'class' => 'text-bottom',
                                         'title' => 'Liste mit Buchungen anzeigen'
@@ -168,7 +166,6 @@
                             <?= htmlReady($permission->perms) ?>
                             <? if ($current_global_lock and ($permission->perms != 'admin')): ?>
                                 <?= Icon::create('exclaim', 'attention')->asImg(
-                                    '16px',
                                     [
                                         'class' => 'text-bottom',
                                         'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raum- und Ressourcenverwaltung nicht genutzt werden!')
@@ -184,7 +181,6 @@
                                      ]
                                      ) ?>" data-dialog>
                                 <?= Icon::create('edit')->asImg(
-                                    '16px',
                                     [
                                         'class' => 'text-bottom',
                                         'title' => _('Berechtigung bearbeiten')
@@ -198,7 +194,6 @@
                                      . $permission->resource_id
                                      ) ?>" data-dialog>
                                 <?= Icon::create('log')->asImg(
-                                    '16px',
                                     [
                                         'class' => 'text-bottom',
                                         'title' => _('Liste mit Buchungen anzeigen')

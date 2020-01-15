@@ -91,7 +91,6 @@
                 <tr>
                     <th>
                         <?= Icon::create('radiobutton-checked')->asImg(
-                            '16px',
                             [
                                 'class' => 'text-bottom',
                                 'title' => _('Markierung')

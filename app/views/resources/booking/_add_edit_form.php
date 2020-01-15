@@ -538,7 +538,6 @@
                                 "
                                     data-interval_id="<?= htmlReady($interval->id) ?>">
                                     <?= Icon::create('trash')->asImg(
-                                        '16px',
                                         [
                                             'class' => 'text-bottom',
                                             'title' => _('löschen')
@@ -551,7 +550,6 @@
                                 "
                                     data-interval_id="<?= htmlReady($interval->id) ?>">
                                     <?= Icon::create('trash+decline')->asImg(
-                                        '16px',
                                         [
                                             'class' => 'text-bottom',
                                             'title' => _('wiederherstellen')

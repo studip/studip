@@ -64,7 +64,6 @@
                                              ['rec_uname' => $user->username]
                                              )?>" data-dialog>
                                         <?= Icon::create('mail')->asImg(
-                                            '16px',
                                             ['class' => 'text-bottom']
                                         ) ?>
                                     </a>
@@ -76,7 +75,6 @@
                                    target="_blank">
                                     <?= htmlReady($property->state) ?>
                                     <?= Icon::create('link-extern')->asImg(
-                                        '16px',
                                         ['class' => 'text-bottom']
                                     ) ?>
                                 </a>

@@ -46,7 +46,6 @@
             <li>
                 <a href="<?= $controller->url_for('resources/building/index/'. $child->id); ?>" <?= (Request::isDialog())?'data-dialog':''; ?> >
                     <?= $child->getIcon('clickable')->asImg(
-                        '16px',
                         ['class' => 'text-bottom']
                     ) ?>
                     <?= htmlReady($child->name); ?>

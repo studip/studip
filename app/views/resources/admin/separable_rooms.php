@@ -69,7 +69,6 @@
                             <td></td>
                             <td class="actions">
                                 <?= Icon::create('trash')->asInput(
-                                    '16px',
                                     [
                                         'name' => 'delete_separable_room['
                                               . $separable_room->id . ']',
@@ -88,7 +87,6 @@
                                 <td><?= htmlReady($room_part->getRoomName()) ?></td>
                                 <td class="actions">
                                     <?= Icon::create('trash')->asInput(
-                                        '16px',
                                         [
                                             'name' => 'delete_room_part['
                                                   . $room_part->id

@@ -42,7 +42,6 @@
                                      . $property->id
                                      ) ?>" data-dialog>
                                 <?= Icon::create('edit')->asImg(
-                                    '16px',
                                     [
                                         'title' => _('Bearbeiten')
                                     ]
