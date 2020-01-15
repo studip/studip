@@ -2,25 +2,23 @@
     <form class="default" method="post"
           action="<?= $controller->link_for('resources/export/bookings') ?>">
         <?= CSRFProtection::tokenTag() ?>
-        <article class="default">
-            <header><?= _('Zeitbereich wählen') ?></header>
-            <section>
-                <label>
-                    <?= _('Startzeitpunkt') ?>
-                    <input type="text" class="has-date-picker" name="begin_date"
-                           value="<?= $begin->format('d.m.Y') ?>">
-                    <input type="text" class="has-time-picker" name="begin_time"
-                           value="<?= $begin->format('H:i')?>">
-                </label>
-                <label>
-                    <?= _('Endzeitpunkt') ?>
-                    <input type="text" class="has-date-picker" name="end_date"
-                           value="<?= $end->format('d.m.Y') ?>">
-                    <input type="text" class="has-time-picker" name="end_time"
-                           value="<?= $end->format('H:i')?>">
-                </label>
-            </section>
-        </article>
+        <fieldset>
+            <legend><?= _('Zeitbereich wählen') ?></legend>
+            <label class="col-2">
+                <?= _('Startzeitpunkt') ?>
+                <input type="text" class="has-date-picker size-s" name="begin_date"
+                       value="<?= $begin->format('d.m.Y') ?>">
+                <input type="text" class="has-time-picker size-s" name="begin_time"
+                       value="<?= $begin->format('H:i')?>">
+            </label>
+            <label class="col-2">
+                <?= _('Endzeitpunkt') ?>
+                <input type="text" class="has-date-picker size-s" name="end_date"
+                       value="<?= $end->format('d.m.Y') ?>">
+                <input type="text" class="has-time-picker size-s" name="end_time"
+                       value="<?= $end->format('H:i')?>">
+            </label>
+        </fieldset>
         <? if ($available_rooms): ?>
             <table class="default">
                 <caption>
@@ -40,8 +38,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <input type="checkbox"
-                                   data-proxyfor="input[name='selected_rooms[]']">
+                            <input type="checkbox" data-proxyfor="input[name='selected_rooms[]']">
                         </th>
                         <th><?= _('Räume') ?></th>
                     </tr>
@@ -81,8 +78,7 @@
                 <thead>
                     <tr>
                         <th>
-                            <input type="checkbox"
-                                   data-proxyfor="input[name='selected_clipboards[]']">
+                            <input type="checkbox" data-proxyfor="input[name='selected_clipboards[]']">
                         </th>
                         <th><?= _('Raumgruppen') ?></th>
                     </tr>
