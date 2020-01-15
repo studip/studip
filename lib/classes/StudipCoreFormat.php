@@ -136,7 +136,7 @@ class StudipCoreFormat extends TextFormat
         ],
         'quote' => [
             'start'    => '\[quote(=.*?)?\]',
-            'end'      => '\[\/quote\]',
+            'end'      => '\[\/quote\]\s*',
             'callback' => 'StudipCoreFormat::markupQuote'
         ],
         'nop' => [

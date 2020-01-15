@@ -271,7 +271,7 @@
                     }
                 });
                 if (comment_data) {
-                    let quote = '[quote=' + comment_data.user_name + ']' + (comment_data.content.replace(/\[quote[^\]]*\].*\[\/quote\]/g, '')) + '[/quote] ';
+                    let quote = '[quote=' + comment_data.user_name + ']' + (comment_data.content.replace(/\[quote[^\]]*\].*\[\/quote\]/g, '')).trim() + "[/quote]\n";
                     $(this.$el).find('.writer textarea').val(quote);
                     let textarea = $(this.$el).find('.writer textarea').last()[0];
                     textarea.focus();
