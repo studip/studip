@@ -40,7 +40,7 @@
                             <a href="<?= URLHelper::getLink(
                                      'dispatch.php/resources/property/edit/'
                                      . $property->id
-                                     ) ?>" data-dialog>
+                                     ) ?>" data-dialog="size=auto">
                                 <?= Icon::create('edit')->asImg(
                                     [
                                         'title' => _('Bearbeiten')
