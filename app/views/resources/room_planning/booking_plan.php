@@ -108,7 +108,6 @@
         <?= $this->render_partial(
             'resources/_common/_grouped_room_list.php',
             [
-                'title' => _('Wählbare Räume'),
                 'grouped_rooms' => RoomManager::groupRooms($rooms),
                 'link_template' => $selection_link_template,
                 'show_in_dialog' => false

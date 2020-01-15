@@ -189,7 +189,6 @@
         <?= $this->render_partial(
             'resources/room_planning/_resource_selection.php',
             [
-                'title' => _('Wählbare Räume'),
                 'resources' => $rooms,
                 'link_template' => $selection_link_template
             ]

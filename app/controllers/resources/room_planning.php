@@ -86,6 +86,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
             Navigation::activateItem('/resources/planning/booking_plan');
         }
         
+        PageLayout::setTitle(_('Belegungsplan'));
+        
         $current_user = User::findCurrent();
         
         $new_resource_id = Request::get('new_resource_id');
