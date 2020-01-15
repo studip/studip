@@ -47,7 +47,7 @@ require_once 'lib/statusgruppe.inc.php';
 *
 * @access   public
 * @param    string  $range_id
-* @return   array   (structure statusgruppe_id => name)
+* @return   array|bool  (structure statusgruppe_id => name)
 */
 function get_all_statusgruppen ($range_id) {
     $ret = [];
@@ -56,10 +56,7 @@ function get_all_statusgruppen ($range_id) {
     foreach ($roles as $id => $role) {
         $ret[$id] = $role['name_long'];
     }
-    if(is_array($ret) && count($ret)) {
-        return true;
-    }
-    return false;
+    return count($ret) ? $ret : false;
 }
 
 /**
@@ -71,22 +68,22 @@ function get_all_statusgruppen ($range_id) {
 *
 * @access   public
 * @param    string  $range_id
-* @param    string  $ids comma separated list of statusgruppe_id for
-* statusgruppe valid for the given range (syntax: 'id1','id2',...)
+* @param    array  $ids statusgruppe_id for
+* statusgruppe valid for the given range
 *
-* @return   array       (structure statusgruppe_id => name)
+* @return   array|bool       (structure statusgruppe_id => name)
 */
 function get_statusgruppen_by_id ($range_id, $ids) {
     $ret = [];
     $groups = get_all_statusgruppen($range_id);
-
-    foreach ($ids as $id) {
-        if ($groups[$id]) $ret[$id] = $groups[$id];
+    if (is_array($ids)) {
+        foreach ($ids as $id) {
+            if (isset($groups[$id])) {
+                $ret[$id] = $groups[$id];
+            }
+        }
     }
-    if(is_array($ret) && count($ret)) {
-        return true;
-    }
-    return false;
+    return count($ret) ? $ret : false;
 }
 
 function print_footer () {
