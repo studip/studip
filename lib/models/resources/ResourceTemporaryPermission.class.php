@@ -61,14 +61,14 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
     /**
      * PrivacyObject method implementation. @see PrivacyObject
      */
-    public static function exportUserData(StoredUserData $user_data)
+    public static function exportUserData(StoredUserData $storage)
     {
-        $user = User::find($user_data->user_id);
+        $user = User::find($storage->user_id);
 
         $permissions = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
-                'user_id' => $user_data->user_id
+                'user_id' => $storage->user_id
             ]
         );
 
@@ -76,6 +76,7 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
         foreach ($permissions as $permission) {
             $rows[] = $permission->toRawArray();
         }
+        
         $storage->addTabularData(
             _('Temporäre Berechtigungen an Ressourcen'),
             self::$config['db_table'],
