@@ -114,6 +114,8 @@
 
         <label>
             <input type="radio" name="type" value="periodic"
+                   data-activates="[name^='periodic']"
+                   data-deactivates="[name^='once']"
                    <? if ($schedule->type === 'periodic') echo 'checked'; ?>>
             <?= _('Wiederholt') ?>
         </label>
@@ -197,16 +199,14 @@
                             <input type="number" name="periodic[month][value]" value="<?= abs($schedule->month) ?>" class="size-s">
                         </td>
                         <td>
-                            <section>
-                                <select name="periodic[day_of_week][value]" id="day_of_week" class="size-s">
-                                    <option value=""><?= _('*') ?></option>
-                                <? foreach ($days_of_week as $index => $label): ?>
-                                    <option value="<?= $index ?>" <? if ($schedule->day_of_week === $index) echo 'selected'; ?>>
-                                        <?= $index ?> (<?= $label ?>)
-                                    </option>
-                                <? endforeach; ?>
-                                </select>
-                            </section>
+                            <select name="periodic[day_of_week][value]" id="day_of_week" class="size-s">
+                                <option value=""><?= _('*') ?></option>
+                            <? foreach ($days_of_week as $index => $label): ?>
+                                <option value="<?= $index ?>" <? if ($schedule->day_of_week === $index) echo 'selected'; ?>>
+                                    <?= $index ?> (<?= $label ?>)
+                                </option>
+                            <? endforeach; ?>
+                            </select>
                         </td>
                     </tr>
                 </tbody>
@@ -215,19 +215,21 @@
 
         <label>
             <input type="radio" name="type" value="once"
+                   data-activates="input[name^='once']"
+                   data-deactivates="[name^='periodic']"
                    <? if ($schedule->type === 'once') echo 'checked'; ?>>
             <?= _('Einmalig') ?>
         </label>
 
         <label class="col-1">
             <?= _('Datum') ?>
-            <input type="text" name="once[date]" class="has-date-picker size-s"
+            <input type="text" name="once[date]" data-date-picker class="size-s"
                    value="<? if ($schedule->type === 'once' && $schedule->next_execution) echo date('d.m.Y', $schedule->next_execution); ?>">
         </label>
 
         <label class="col-1">
             <?= _('Uhrzeit') ?>
-            <input type="text" name="once[time]" class="has-time-picker size-s"
+            <input type="text" name="once[time]" data-time-picker class="size-s"
                    value="<? if ($schedule->type === 'once' && $schedule->next_execution) echo date('H:i', $schedule->next_execution) ?>">
         </label>
     </fieldset>

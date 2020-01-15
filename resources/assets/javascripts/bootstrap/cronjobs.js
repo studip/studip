@@ -28,9 +28,6 @@ $(document).on('change', '.cron-item select', function() {
 // Active date and time picker as well as the Cron item selector on
 // document ready / page load.
 STUDIP.domReady(function() {
-    $('.cronjobs-edit input.has-date-picker').datepicker();
-    $('.cronjobs-edit input.has-time-picker').timepicker();
-
     $('.cron-item select').change();
     $('.cronjobs tfoot select').change();
 });
