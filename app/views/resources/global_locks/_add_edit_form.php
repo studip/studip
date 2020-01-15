@@ -6,7 +6,7 @@
             <legend><?= _('Zeitraum') ?></legend>
             <label>
                 <?= _('Startdatum') ?>
-                <input type="text" name="begin_date" class="has-date-picker"
+                <input type="text" name="begin_date" class="has-date-picker""
                        value="<?= htmlReady($begin->format('d.m.Y'))?>">
             </label>
             <label>

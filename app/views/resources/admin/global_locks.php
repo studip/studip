@@ -34,7 +34,7 @@
                             _('Sperrung bearbeiten'),
                             Icon::create('edit'),
                             [
-                                'data-dialog' => '1'
+                                'data-dialog' => 'size=auto'
                             ]
                         );
                         $menu->addLink(
@@ -44,7 +44,7 @@
                             _('Sperrung löschen'),
                             Icon::create('trash'),
                             [
-                                'data-dialog' => '1'
+                                'data-dialog' => 'size=auto'
                             ]
                         );
                         ?>
