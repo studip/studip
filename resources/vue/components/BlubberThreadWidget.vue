@@ -19,7 +19,7 @@
                         </div>
                     </a>
                 </li>
-                <li class="more" v-if="display_more_down">
+                <li class="more" v-if="display_more_down" key="more">
                     <studip-asset-img file="ajax-indicator-black.svg" width="20"></studip-asset-img>
                 </li>
         </transition-group>
