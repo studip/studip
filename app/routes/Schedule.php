@@ -6,8 +6,8 @@ namespace RESTAPI\Routes;
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
  *
- * @condition user_id ^[a-f0-9]{32}$
- * @condition semester_id ^[a-f0-9]{32}$
+ * @condition user_id ^[a-f0-9]{1,32}$
+ * @condition semester_id ^[a-f0-9]{1,32}$
  */
 class Schedule extends \RESTAPI\RouteMap
 {

@@ -6,7 +6,7 @@ namespace RESTAPI\Routes;
  * @author      André Klaßen <klassen@elan-ev.de>
  * @license     GPL 2 or later
  *
- * @condition user_id ^[a-f0-9]{32}$
+ * @condition user_id ^[a-f0-9]{1,32}$
  */
 class Activity extends \RESTAPI\RouteMap
 {

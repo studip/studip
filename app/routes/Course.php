@@ -5,8 +5,8 @@ namespace RESTAPI\Routes;
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
  *
- * @condition course_id ^[a-f0-9]{32}$
- * @condition user_id ^[a-f0-9]{32}$
+ * @condition course_id ^[a-f0-9]{1,32}$
+ * @condition user_id ^[a-f0-9]{1,32}$
  */
 class Course extends \RESTAPI\RouteMap
 {

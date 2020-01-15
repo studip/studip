@@ -5,8 +5,8 @@ namespace RESTAPI\Routes;
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
  *
- * @condition message_id ^[a-f0-9]{32}$
- * @condition user_id ^[a-f0-9]{32}$
+ * @condition message_id ^[a-f0-9]{1,32}$
+ * @condition user_id ^[a-f0-9]{1,32}$
  * @condition box ^(inbox|outbox)$
  */
 class Messages extends \RESTAPI\RouteMap

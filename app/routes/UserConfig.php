@@ -11,7 +11,7 @@ use RESTAPI\Router;
  * @license GPL2 or any later version
  * @since   Stud.IP 3.4
  *
- * @condition user_id ^[0-9a-f]{32}$
+ * @condition user_id ^[0-9a-f]{1,32}$
  *
  * @status 404 if user does not exist
  * @status 403 if user may access the request config item

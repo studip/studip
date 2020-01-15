@@ -4,7 +4,7 @@ namespace RESTAPI\Routes;
 /**
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
- * @condition course_id ^[a-f0-9]{32}$
+ * @condition course_id ^[a-f0-9]{1,32}$
  */
 class Forum extends \RESTAPI\RouteMap
 {
@@ -193,7 +193,7 @@ class Forum extends \RESTAPI\RouteMap
         if (!\ForumPerm::has('view', $cid)) {
             $this->error(401);
         }
-        
+
         $entry = $this->findEntry($entry_id);
         $this->lastmodified($entry->chdate);
         $this->etag(md5(serialize($entry)));

@@ -5,10 +5,10 @@ namespace RESTAPI\Routes;
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
  *
- * @condition news_id ^[0-9a-f]{32}$
- * @condition course_id ^[0-9a-f]{32}$
- * @condition user_id ^[0-9a-f]{32}$
- * @condition comment_id ^[0-9a-f]{32}$
+ * @condition news_id ^[0-9a-f]{1,32}$
+ * @condition course_id ^[0-9a-f]{1,32}$
+ * @condition user_id ^[0-9a-f]{1,32}$
+ * @condition comment_id ^[0-9a-f]{1,32}$
  */
 class News extends \RESTAPI\RouteMap
 {

@@ -4,7 +4,7 @@ namespace RESTAPI\Routes;
 /**
  * @author  <mlunzena@uos.de>
  * @license GPL 2 or later
- * @condition course_id ^[0-9a-f]{32}$
+ * @condition course_id ^[0-9a-f]{1,32}$
  */
 class Wiki extends \RESTAPI\RouteMap
 {

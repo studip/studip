@@ -4,10 +4,10 @@ namespace RESTAPI\Routes;
 /**
  * @license GPL 2 or later
  *
- * @condition course_id ^[a-f0-9]{32}$
- * @condition stream_id ^(global|[a-f0-9]{32})$
- * @condition user_id ^[a-f0-9]{32}$
- * @condition blubber_id ^[a-f0-9]{32}$
+ * @condition course_id ^[a-f0-9]{1,32}$
+ * @condition stream_id ^(global|[a-f0-9]{1,32})$
+ * @condition user_id ^[a-f0-9]{1,32}$
+ * @condition blubber_id ^[a-f0-9]{1,32}$
  */
 class Blubber extends \RESTAPI\RouteMap
 {
