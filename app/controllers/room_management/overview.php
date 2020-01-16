@@ -67,8 +67,7 @@ class RoomManagement_OverviewController extends StudipController
         if (Navigation::hasItem('/resources/overview')) {
             Navigation::activateItem('/resources/overview');
         }
-
-        global $perm;
+        
         $sufficient_permissions = (
             ResourceManager::userHasGlobalPermission(
                 $this->user,
@@ -95,7 +94,7 @@ class RoomManagement_OverviewController extends StudipController
             ||
             ResourceManager::userHasResourcePermissions($this->user, 'admin')
             ||
-            $perm->have_perm('root')
+            $GLOBALS['perm']->have_perm('root')
         );
 
         if (!$this->show_admin_actions) {
