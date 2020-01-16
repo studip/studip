@@ -179,8 +179,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 );
             }
         }
-
-        $all_rooms_requestable = (($room_c == $requestable_rooms_c) == $request_rights_c);
+        
         $this->all_rooms_booking_rights = ($room_c == $booking_rights_c);
         $all_rooms_admin = ($room_c == $admin_rights_c);
         if ($all_rooms_admin) {
@@ -207,7 +206,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 $this->url_for(
                     'room_management/planning/index/' . $_SESSION['selected_clipboard_id']
                 ),
-                [],
+                []
             );
             $sidebar->insertWidget($options, 'roomclipboard');
         }
@@ -220,9 +219,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
         }
 
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-        $simple_booking_exception_colour = ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
         $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $course_booking_with_exceptions_colour = ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
