@@ -43,15 +43,15 @@ require 'lib/functions.php';
 $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 
 StudipAutoloader::register();
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'activities', 'Studip\\Activity');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'models');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'exceptions');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'sidebar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'helpbar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'engine');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'core');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'db');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/activities', 'Studip\\Activity');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/sidebar');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/helpbar');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/engine');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/core');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/db');
 
 // load config-variables
 StudipFileloader::load(
