@@ -374,15 +374,12 @@ class Resources_RoomPlanningController extends AuthenticatedController
         }
         $sidebar->addWidget($actions);
         
-        $simple_booking_exception_colour       = ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
-        $course_booking_colour                 = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $course_booking_with_exceptions_colour = ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
-        $booking_colour                        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-        
-        $lock_colour        = ColourValue::find('Resources.BookingPlan.Lock.Bg');
-        $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
-        $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
-        $request_colour     = ColourValue::find('Resources.BookingPlan.Request.Bg');
+        $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+        $booking_colour        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
+        $lock_colour           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
+        $preparation_colour    = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
+        $reservation_colour    = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
+        $request_colour        = ColourValue::find('Resources.BookingPlan.Request.Bg');
         
         if ($this->resource instanceof Room) {
             $this->table_keys = [
@@ -708,7 +705,6 @@ class Resources_RoomPlanningController extends AuthenticatedController
         
         $booking_colour                        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
         $course_booking_colour                 = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $course_booking_with_exceptions_colour = ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
         $lock_colour                           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour                    = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour                    = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
