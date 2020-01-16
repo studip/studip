@@ -60,7 +60,7 @@
                 <select name="semester" id="stgteil_semester">
                     <option value="">--</option>
                     <? for ($sem = 1; $sem < 21; $sem++) : ?>
-                        <option value="<?= $sem ?>"<?= ($stgteil->semester === $sem ? ' selected' : '') ?>><?= $sem ?></option>
+                        <option value="<?= $sem ?>"<?= ((int) $stgteil->semester === $sem ? ' selected' : '') ?>><?= $sem ?></option>
                     <? endfor; ?>
                 </select>
             <? else : ?>
