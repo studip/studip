@@ -200,6 +200,10 @@
                     background-position: center center;
                     margin-right: 10px;
                 }
+                .answer_comment > img {
+                    vertical-align: text-bottom;
+                    transform: rotate(90deg);
+                }
             }
             &.more {
                 display: flex;
