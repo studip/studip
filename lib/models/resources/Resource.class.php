@@ -218,55 +218,38 @@ class Resource extends SimpleORMap implements StudipItem
         switch ($action) {
             case 'show':
                 return 'dispatch.php/resources/resource/index/' . $id;
-                break;
             case 'add':
                 return 'dispatch.php/resources/resource/add';
-                break;
             case 'edit':
                 return 'dispatch.php/resources/resource/edit/' . $id;
-                break;
             case 'files':
                 return 'dispatch.php/resources/resource/files/' . $id . '/';
-                break;
             case 'permissions':
                 return 'dispatch.php/resources/resource/permissions/' . $id;
-                break;
             case 'temporary_permissions':
                 return 'dispatch.php/resources/resource/temporary_permissions/' . $id;
-                break;
             case 'booking_plan':
                 return 'dispatch.php/resources/room_planning/booking_plan/' . $id;
-                break;
             case 'request_plan':
                 return 'dispatch.php/resources/room_planning/request_plan/' . $id;
-                break;
             case 'semester_plan':
                 return 'dispatch.php/resources/room_planning/semester_plan/' . $id;
-                break;
             case 'assign-undecided':
                 return 'dispatch.php/resources/booking/add/' . $id;
-                break;
             case 'assign':
                 return 'dispatch.php/resources/booking/add/' . $id . '/0';
-                break;
             case 'reserve':
                 return 'dispatch.php/resources/booking/add/' . $id . '/1';
-                break;
             case 'lock':
                 return 'dispatch.php/resources/booking/add/' . $id . '/2';
-                break;
             case 'delete_bookings':
                 return 'dispatch.php/resources/resource/delete_bookings/' . $id;
-                break;
             case 'export_bookings':
                 return 'dispatch.php/resources/export/resource_bookings/' . $id;
-                break;
             case 'delete':
                 return 'dispatch.php/resources/resource/delete/' . $id;
-                break;
             default:
                 return 'dispatch.php/resources/resource/show/' . $id;
-                break;
         }
     }
     
@@ -1224,20 +1207,21 @@ class Resource extends SimpleORMap implements StudipItem
         }
         
         //The request has been created: Now we need to link the properties:
-        
-        foreach ($property_data as $property) {
-            $rrp              = new ResourceRequestProperty();
-            $rrp->request_id  = $request->id;
-            $rrp->property_id = $property['object']->id;
-            $rrp->state       = intval($property['state']);
-            if (!$rrp->store()) {
-                throw new InvalidResourceRequestException(
-                    sprintf(
-                        _('%1$s: Die Eigenschaft %2$s zur Anfrage konnte nicht gespeichert werden!'),
-                        $this->getFullName(),
-                        $property['object']->name
-                    )
-                );
+        if(!empty($property_data)) {
+            foreach ($property_data as $property) {
+                $rrp              = new ResourceRequestProperty();
+                $rrp->request_id  = $request->id;
+                $rrp->property_id = $property['object']->id;
+                $rrp->state       = intval($property['state']);
+                if (!$rrp->store()) {
+                    throw new InvalidResourceRequestException(
+                        sprintf(
+                            _('%1$s: Die Eigenschaft %2$s zur Anfrage konnte nicht gespeichert werden!'),
+                            $this->getFullName(),
+                            $property['object']->name
+                        )
+                    );
+                }
             }
         }
         return $request;
@@ -1560,23 +1544,15 @@ class Resource extends SimpleORMap implements StudipItem
         if ($property) {
             switch ($property->definition->type) {
                 case 'user':
-                {
                     return User::find($property->state);
-                }
                 case 'institute':
-                {
                     return Institute::find($property->state);
-                }
                 case 'fileref' :
-                {
                     return FileRef::find($property->state);
-                }
                 default:
-                {
                     //For all other property types where we cannot create an object
                     //we return the raw state value:
                     return $property->state;
-                }
             }
         }
         return null;
@@ -1590,7 +1566,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param string $name The name of the resource property.
      * @param mixed $state The state of the resource property.
-     * @param User|null $userd The user who wishes to set the property.
+     * @param User|null $user The user who wishes to set the property.
      *
      * @return True, if the property state could be set, false otherwise.
      */
@@ -1675,13 +1651,8 @@ class Resource extends SimpleORMap implements StudipItem
      *         (property name) => (error message or empty string)
      *     ]
      */
-    public function setPropertiesByName($properties = [], $user)
+    public function setPropertiesByName(array $properties, User $user)
     {
-        if (!is_array($properties)) {
-            //There is nothing to be set.
-            return [];
-        }
-        
         $failed_properties = [];
         
         if (!($user instanceof User)) {
@@ -1900,13 +1871,10 @@ class Resource extends SimpleORMap implements StudipItem
      * @param string $name The name of the property to be deleted.
      *
      * @param User $user The user who wishes to delete the property.
+     * @return number
      */
-    public function deleteProperty($name = '', User $user)
+    public function deleteProperty(string $name, User $user)
     {
-        if (!$name) {
-            return false;
-        }
-        
         //Get the user object and the minimum permission level
         //required for modifying the property:
         
@@ -2046,7 +2014,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param DateTime $end Time range end timestamp.
      *
-     * @param $excluded_lock_ids The IDs of bookings that shall
+     * @param array $excluded_booking_ids The IDs of bookings that shall
      *     be excluded from the determination of the "assigned" status.
      *
      * @return bool True, if the resource is assigned in the specified
@@ -2080,7 +2048,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param DateTime $end Time range end timestamp.
      *
-     * @param $excluded_lock_ids The IDs of reservation bookings that shall
+     * @param array $excluded_reservation_ids The IDs of reservation bookings that shall
      *     be excluded from the determination of the "reserved" status.
      *
      * @return bool True, if the resource is reserved in the specified
@@ -2117,7 +2085,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param DateTime $end Time range end timestamp.
      *
-     * @param $excluded_lock_ids The IDs of lock bookings that shall
+     * @param array $excluded_lock_ids The IDs of lock bookings that shall
      *     be excluded from the determination of the "locked" status.
      *
      * @return bool True, if the resource is locked in the specified
@@ -2152,7 +2120,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @param DateTime $begin Time range start timestamp.
      * @param DateTime $end Time range end timestamp.
      *
-     * @param $excluded_booking_ids The IDs of available bookings that shall
+     * @param array $excluded_booking_ids The IDs of available bookings that shall
      *     be excluded from the determination of the "available" status.
      *
      * @return bool True, if the resource is available in the specified
@@ -2305,7 +2273,7 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @param User $user The user whose permission shall be retrieved.
      *
-     * @param Array(DateTime) $time_range: This is an optional parameter that can
+     * @param array $time_range (DateTime) This is an optional parameter that can
      *     be used to pass two DateTime objects to this method. The first object
      *     will be treated as the begin timestamp and the second one as the
      *     end timestamp.
@@ -2434,19 +2402,15 @@ class Resource extends SimpleORMap implements StudipItem
      * @param User $user The user whose permissions shall be checked on this
      *     resource object.
      * @param string $permission The permission level.
-     *
-     * @param bool $permanent_only Whether to check only permanent permissions
-     *     (true) or permanent and temporary permissions (false).
-     *     Defaults to false.
+     * @param $time_range @TODO
      *
      * @return bool True, if the specified user has the specified permission,
      *     false otherwise.
      */
     public function userHasPermission(
         User $user,
-        $permission = 'user',
-        $time_range = [],
-        $permanent_only = false
+        string $permission = 'user',
+        array $time_range = []
     )
     {
         if (!in_array($permission, ['user', 'autor', 'tutor', 'admin'])) {
@@ -2460,7 +2424,7 @@ class Resource extends SimpleORMap implements StudipItem
         
         $perm_level = $this->getUserPermission($user, $time_range);
         
-        if ($permission == 'user') {
+        if ($permission === 'user') {
             //No check for global resource locks here:
             //If only user permissions are requested we can safely grant them
             //since 'user' users may only perform reading actions but
@@ -2470,7 +2434,7 @@ class Resource extends SimpleORMap implements StudipItem
             } else {
                 return false;
             }
-        } elseif ($permission == 'autor') {
+        } elseif ($permission === 'autor') {
             if (GlobalResourceLock::currentlyLocked()) {
                 //A global resource lock means no writing actions are permitted.
                 return false;
@@ -2480,7 +2444,7 @@ class Resource extends SimpleORMap implements StudipItem
             } else {
                 return false;
             }
-        } elseif ($permission == 'tutor') {
+        } elseif ($permission === 'tutor') {
             if (GlobalResourceLock::currentlyLocked()) {
                 //A global resource lock means no writing actions are permitted.
                 return false;
@@ -2490,7 +2454,7 @@ class Resource extends SimpleORMap implements StudipItem
             } else {
                 return false;
             }
-        } elseif ($permission == 'admin') {
+        } elseif ($permission === 'admin') {
             //No check for global resource locks here:
             //Admins may always do write actions in the resource management.
             if ($perm_level == 'admin') {

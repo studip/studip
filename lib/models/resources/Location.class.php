@@ -26,7 +26,6 @@ class Location extends Resource
     
     protected static function configure($config = [])
     {
-        
         $config['additional_fields'] = [];
         foreach (self::$required_properties as $property) {
             $config['additional_fields'][$property] = [
@@ -91,21 +90,16 @@ class Location extends Resource
         switch ($action) {
             case 'show':
                 return 'dispatch.php/resources/location/index/' . $id;
-                break;
             case 'add':
                 return 'dispatch.php/resources/location/add';
-                break;
             case 'edit':
                 return 'dispatch.php/resources/location/edit/' . $id;
-                break;
             case 'delete':
                 return 'dispatch.php/resources/location/delete/' . $id;
-                break;
             default:
                 //There are some actions which can be handled by the general
                 //resource controller:
                 return parent::buildPathForAction($action, $id);
-                break;
         }
     }
     
@@ -192,7 +186,6 @@ class Location extends Resource
                 )
             );
         }
-        
     }
     
     /**
@@ -276,6 +269,7 @@ class Location extends Resource
      *     For locations the actions 'show', 'add', 'edit' and 'delete'
      *     are defined.
      * @param array $url_parameters Optional parameters for the URL.
+     * @return string
      */
     public function getURL($action = 'show', $url_parameters = [])
     {

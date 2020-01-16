@@ -136,19 +136,14 @@ class Building extends Resource
         switch ($action) {
             case 'show':
                 return 'dispatch.php/resources/building/index/' . $id;
-                break;
             case 'add':
                 return 'dispatch.php/resources/building/add';
-                break;
             case 'edit':
                 return 'dispatch.php/resources/building/edit/' . $id;
-                break;
             case 'delete':
                 return 'dispatch.php/resources/building/delete/' . $id;
-                break;
             default:
                 return parent::buildPathForAction($action, $id);
-                break;
         }
     }
     
@@ -161,6 +156,7 @@ class Building extends Resource
      *     and 'delete' are defined.
      * @param string $id The ID of the building on which the specified
      *     action shall be executed.
+     * @param $link_parameters @TODO
      *
      * @return string The Link for the building action.
      */
@@ -185,7 +181,7 @@ class Building extends Resource
      *     and 'delete' are defined.
      * @param string $id The ID of the building on which the specified
      *     action shall be executed.
-     *
+     * @param $url_parameters @TODO
      * @return string The URL for the building action.
      */
     public static function getURLForAction(
