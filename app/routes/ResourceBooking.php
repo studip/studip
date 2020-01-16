@@ -38,12 +38,8 @@ class ResourceBooking extends \RESTAPI\RouteMap
      *
      * @post /resources/booking/:booking_id/move
      */
-    public function move($booking_id = null)
+    public function move($booking_id)
     {
-        if (!$booking_id) {
-            $this->halt(400, 'ID of booking object was not provided!');
-        }
-
         $booking = \ResourceBooking::find($booking_id);
         if (!$booking) {
             $this->notFound('Resource booking object not found!');
@@ -131,12 +127,8 @@ class ResourceBooking extends \RESTAPI\RouteMap
      *
      * @get /resources/booking/:booking_id/intervals
      */
-    public function getIntervals($booking_id = null)
+    public function getIntervals($booking_id)
     {
-        if (!$booking_id) {
-            $this->halt(400, 'ID of booking object was not provided!');
-        }
-
         $booking = \ResourceBooking::find($booking_id);
         if (!$booking) {
             $this->notFound('Resource booking object not found!');

@@ -30,12 +30,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id
      */
-    public function getResource($resource_id = null)
+    public function getResource($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -65,12 +61,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @put /resources/resource/:resource_id
      */
-    public function editResource($resource_id = null)
+    public function editResource($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -140,12 +132,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @delete /resources/resource/:resource_id
      */
-    public function deleteResource($resource_id = null)
+    public function deleteResource($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -178,12 +166,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/children
      */
-    public function getResourceChildren($resource_id = null)
+    public function getResourceChildren($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -223,12 +207,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/parent
      */
-    public function getResourceParent($resource_id = null)
+    public function getResourceParent($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -260,12 +240,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/properties
      */
-    public function getResourceProperties($resource_id = null)
+    public function getResourceProperties($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -319,12 +295,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/booking_plan
      */
-    public function getResourceBookingPlan($resource_id = null)
+    public function getResourceBookingPlan($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -516,12 +488,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/semester_plan
      */
-    public function getResourceSemesterBookingPlan($resource_id = null)
+    public function getResourceSemesterBookingPlan($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -720,12 +688,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/requests
      */
-    public function getResourceRequests($resource_id = null)
+    public function getResourceRequests($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -785,12 +749,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @get /resources/resource/:resource_id/bookings
      */
-    public function getResourceBookings($resource_id = null)
+    public function getResourceBookings($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -864,12 +824,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @post /resources/resource/:resource_id/assign
      */
-    public function createResourceBooking($resource_id = null)
+    public function createResourceBooking($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -916,12 +872,8 @@ class Resources extends \RESTAPI\RouteMap
      *
      * @post /resources/resource/:resource_id/request_simple
      */
-    public function createSimpleResourceRequest($resource_id = null)
+    public function createSimpleResourceRequest($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -964,12 +916,8 @@ class Resources extends \RESTAPI\RouteMap
      * Change the status of a resource booking interval:
      * @post /resources/booking_interval/:interval_id/toggle_takes_place
      */
-    public function toggleResourceBookingIntervalTakesPlaceField($interval_id = null)
+    public function toggleResourceBookingIntervalTakesPlaceField($interval_id)
     {
-        if (!$interval_id) {
-            $this->notFound('ID of ResourceBookingInterval object was not provided!');
-        }
-
         $interval = \ResourceBookingInterval::find($interval_id);
         if (!$interval) {
             $this->notFound('ResourceBookingInterval object not found!');

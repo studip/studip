@@ -38,12 +38,8 @@ class ResourceRequest extends \RESTAPI\RouteMap
      *
      * @post /resources/request/:request_id/move
      */
-    public function move($request_id = null)
+    public function move($request_id)
     {
-        if (!$request_id) {
-            $this->halt(400, 'ID of request object was not provided!');
-        }
-
         $request = \ResourceRequest::find($request_id);
         if (!$request) {
             $this->notFound('Resource request object not found!');
@@ -85,12 +81,8 @@ class ResourceRequest extends \RESTAPI\RouteMap
      *
      * @post /resources/request/:request_id/edit_reply_comment
      */
-    public function editReplyComment($request_id = null)
+    public function editReplyComment($request_id)
     {
-        if (!$request_id) {
-            $this->halt(400, 'ID of request object was not provided!');
-        }
-
         $request = \ResourceRequest::find($request_id);
         if (!$request) {
             $this->notFound('Resource request object not found!');
@@ -133,12 +125,8 @@ class ResourceRequest extends \RESTAPI\RouteMap
      *
      * @post /resources/request/:request_id/toggle_marked
      */
-    public function toggleMarkedFlag($request_id = null)
+    public function toggleMarkedFlag($request_id)
     {
-        if (!$request_id) {
-            $this->halt(400, 'ID of request object was not provided!');
-        }
-
         $request = \ResourceRequest::find($request_id);
         if (!$request) {
             $this->notFound('Resource request object not found!');

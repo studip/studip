@@ -46,12 +46,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @get /resources/category/:category_id
      */
-    public function getResourceCategory($category_id = null)
+    public function getResourceCategory($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');
@@ -180,12 +176,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @put /resources/category/:category_id
      */
-    public function editResourceCategory($category_id = null)
+    public function editResourceCategory($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');
@@ -237,12 +229,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @delete /resources/category/:category_id
      */
-    public function deleteResourceCategory($category_id = null)
+    public function deleteResourceCategory($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');
@@ -273,12 +261,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @get /resources/category/:category_id/properties
      */
-    public function getResourceCategoryProperties($category_id = null)
+    public function getResourceCategoryProperties($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');
@@ -319,12 +303,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @get /resources/category/:category_id/resources
      */
-    public function getResourceCategoryResources($category_id = null)
+    public function getResourceCategoryResources($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');
@@ -376,12 +356,8 @@ class ResourceCategories extends \RESTAPI\RouteMap
      *
      * @post /resources/category/:category_id/create_resource
      */
-    public function createResource($category_id = null)
+    public function createResource($category_id)
     {
-        if (!$category_id) {
-            $this->notFound('ID of ResourceCategory object was not provided!');
-        }
-
         $category = \ResourceCategory::find($category_id);
         if (!$category) {
             $this->notFound('ResourceCategory object not found!');

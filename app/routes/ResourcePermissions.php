@@ -33,12 +33,8 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @get /resources/permissions/:resource_id
      */
-    public function getResourcePermissions($resource_id = null)
+    public function getResourcePermissions($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -84,9 +80,9 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @get /resources/permissions/:resource_id/:user:_id
      */
-    public function getPermission($resource_id = null, $user_id = null)
+    public function getPermission($resource_id, $user_id)
     {
-        if ($resource_id != 'global') {
+        if ($resource_id !== 'global') {
             if (!\Resource::exists($resource_id)) {
                 $this->halt(
                     404,
@@ -143,9 +139,9 @@ class ResourcePermissions extends \RESTAPI\RouteMap
     /**
      * @post /resources/permissions/:resource_id/:user_id
      */
-    public function setPermission($resource_id = null, $user_id = null)
+    public function setPermission($resource_id, $user_id)
     {
-        if ($resource_id != 'global') {
+        if ($resource_id !== 'global') {
             if (!\Resource::exists($resource_id)) {
                 $this->halt(
                     404,
@@ -229,9 +225,9 @@ class ResourcePermissions extends \RESTAPI\RouteMap
     /**
      * @delete /resources/permissions/:resource_id/:user_id
      */
-    public function deletePermission($resource_id = null, $user_id = null)
+    public function deletePermission($resource_id, $user_id)
     {
-        if ($resource_id != 'global') {
+        if ($resource_id !== 'global') {
             if (!\Resource::exists($resource_id)) {
                 $this->halt(
                     404,
@@ -309,12 +305,8 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @get /resources/temporary_permissions/:resource_id
      */
-    public function getTemporaryResourcePermissions($resource_id = null)
+    public function getTemporaryResourcePermissions($resource_id)
     {
-        if (!$resource_id) {
-            $this->notFound('ID of Resource object was not provided!');
-        }
-
         $resource = \Resource::find($resource_id);
         if (!$resource) {
             $this->notFound('Resource object not found!');
@@ -379,9 +371,9 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @get /resources/temporary_permissions/:resource_id/:user:_id
      */
-    public function getTemporaryPermission($resource_id = null, $user_id = null)
+    public function getTemporaryPermission($resource_id, $user_id)
     {
-        if ($resource_id != 'global') {
+        if ($resource_id !== 'global') {
             if (!\Resource::exists($resource_id)) {
                 $this->halt(
                     404,
@@ -479,7 +471,7 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @post /resources/temporary_permissions/:resource_id/:user_id
      */
-    public function setTemporaryPermission($resource_id = null, $user_id = null)
+    public function setTemporaryPermission($resource_id, $user_id)
     {
         if (!\Resource::exists($resource_id)) {
             $this->halt(
@@ -579,9 +571,9 @@ class ResourcePermissions extends \RESTAPI\RouteMap
      *
      * @delete /resources/temporary_permissions/:resource_id/:user_id
      */
-    public function deleteTemporaryPermission($resource_id = null, $user_id = null)
+    public function deleteTemporaryPermission($resource_id, $user_id)
     {
-        if ($resource_id != 'global') {
+        if ($resource_id !== 'global') {
             if (!\Resource::exists($resource_id)) {
                 $this->halt(
                     404,

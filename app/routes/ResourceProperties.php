@@ -115,12 +115,8 @@ class ResourceProperties extends \RESTAPI\RouteMap
      *
      * @get /resources/property/:property_id
      */
-    public function getResourcePropertyDefinition($property_id = null)
+    public function getResourcePropertyDefinition($property_id)
     {
-        if (!$property_id) {
-            $this->notFound('ID of ResourcePropertyDefinition object was not provided!');
-        }
-
         $property = \ResourcePropertyDefinition::find($property_id);
         if (!$property) {
             $this->notFound('ResourcePropertyDefinition object not found!');
@@ -139,12 +135,8 @@ class ResourceProperties extends \RESTAPI\RouteMap
      *
      * @put /resources/property/:property_id
      */
-    public function editResourcePropertyDefinition($property_id = null)
+    public function editResourcePropertyDefinition($property_id)
     {
-        if (!$property_id) {
-            $this->notFound('ID of ResourcePropertyDefinition object was not provided!');
-        }
-
         $property = \ResourcePropertyDefinition::find($property_id);
         if (!$property) {
             $this->notFound('ResourcePropertyDefinition object not found!');
@@ -229,12 +221,8 @@ class ResourceProperties extends \RESTAPI\RouteMap
      *
      * @delete /resources/property/:property_id
      */
-    public function deleteResourcePropertyDefinition($property_id = null)
+    public function deleteResourcePropertyDefinition($property_id)
     {
-        if (!$property_id) {
-            $this->notFound('ID of ResourcePropertyDefinition object was not provided!');
-        }
-
         $property = \ResourcePropertyDefinition::find($property_id);
         if (!$property) {
             $this->notFound('ResourcePropertyDefinition object not found!');
