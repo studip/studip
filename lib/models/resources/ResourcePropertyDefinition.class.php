@@ -64,12 +64,8 @@ class ResourcePropertyDefinition extends SimpleORMap
         parent::configure($config);
     }
     
-    public static function findByPropertyGroup($group_id = null)
+    public static function findByPropertyGroup($group_id)
     {
-        if (!$group_id) {
-            return [];
-        }
-
         return self::findBySql(
             'property_group_id = :group_id
             ORDER BY property_group_pos ASC, name ASC',
@@ -112,9 +108,7 @@ class ResourcePropertyDefinition extends SimpleORMap
         return [];
     }
     
-    /**
-     *
-     */
+    
     public function setOptionsFromArray($array = [])
     {
         if (is_array($array)) {
@@ -134,7 +128,7 @@ class ResourcePropertyDefinition extends SimpleORMap
      * @param bool $with_label Whether a label shall be placed around the
      *     HTML input element(s) or not.
      *
-     * @param string $html_label_classes The classes that shall be attached
+     * @param string $label_html_classes The classes that shall be attached
      *     to the label when a label shall be used.
      *
      * @param bool $allow_boolean_false Wheter boolean attributes shall
@@ -279,7 +273,7 @@ class ResourcePropertyDefinition extends SimpleORMap
      * @throws ResourcePropertyStateException If the state has an invalid value
      *     a ResourcePropertyStateException is thrown.
      *
-     * @return True, if the state value is valid.
+     * @return bool True, if the state value is valid.
      */
     public function validateState($state = '')
     {
