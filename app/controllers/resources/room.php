@@ -177,8 +177,7 @@ class Resources_RoomController extends AuthenticatedController
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
-        $category_id = Request::get('category_id');
+        
         $this->next_action = Request::get('next_action');
         $this->categories = ResourceCategory::findByClass_name('Room');
 
