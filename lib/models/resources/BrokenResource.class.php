@@ -169,7 +169,7 @@ class BrokenResource extends Resource
         return false;
     }
     
-    public function setPropertyRelatedObject($name = '', $object = null)
+    public function setPropertyRelatedObject(string $name, SimpleORMap $object)
     {
         return false;
     }
