@@ -33,12 +33,7 @@ class BrokenResource extends Resource
         //Modification may break things.
         return false;
     }
-    
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('resource', $role);
-    }
-    
+
     public function getFolder()
     {
         return null;

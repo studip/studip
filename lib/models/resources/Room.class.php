@@ -372,13 +372,6 @@ class Room extends Resource
         );
     }
     
-    
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('room', $role);
-    }
-    
-    
     /**
      * Returns the part of the URL for getLink and getURL which will be
      * placed inside the calls to URLHelper::getLink and URLHelper::getURL

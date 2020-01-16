@@ -54,11 +54,6 @@ class Location extends Resource
         );
     }
     
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('place', $role);
-    }
-    
     /**
      * Returns all locations which are stored in the database.
      *

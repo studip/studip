@@ -27,11 +27,6 @@
  */
 class ResourceLabel extends Resource
 {
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('resource-label', $role);
-    }
-    
     public function getFolder()
     {
         return null;

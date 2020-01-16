@@ -264,11 +264,6 @@ class Building extends Resource
         return Icon::create('home', $role);
     }
     
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('home', $role);
-    }
-    
     public function checkHierarchy()
     {
         //We must check if this building has buildings as children

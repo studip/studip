@@ -183,16 +183,6 @@ class Resource extends SimpleORMap implements StudipItem
         return [];
     }
     
-    /**
-     * @param string $role
-     * This is the static variant of the getIcon method.
-     * @return Icon
-     * @see getIcon
-     */
-    public static function getIconStatic($role = Icon::ROLE_INFO)
-    {
-        return Icon::create('resources', $role);
-    }
     
     /**
      * Returns the part of the URL for getLink and getURL which will be
