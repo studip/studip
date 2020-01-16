@@ -27,14 +27,14 @@
                         <?php
                         $menu = ActionMenu::get()
                             ->addLink(
-                                $controller->editURL($lock->id),
+                                $controller->url_for('resources/global_locks/delete/' . $lock->id),
                                 _('Sperrung bearbeiten'),
                                 Icon::create('edit'),
                                 [
                                     'data-dialog' => 'size=auto'
                                 ])
                             ->addLink(
-                                $controller->deleteURL($lock->id),
+                                $controller->url_for('resources/global_locks/delete/' . $lock->id),
                                 _('Sperrung löschen'),
                                 Icon::create('trash'),
                                 [
