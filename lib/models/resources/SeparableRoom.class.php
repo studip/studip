@@ -47,17 +47,14 @@ class SeparableRoom extends SimpleORMap
     
     
     /**
-     * Creates a SeparableRoom object from a list of room objects.
+     *  Creates a SeparableRoom object from a list of room objects.
+     * @param string $building_id
+     * @param array $rooms
+     * @param string $name
+     * @return SeparableRoom|null
      */
-    public static function createFromRooms(
-        $building_id = null,
-        $rooms = [],
-        $name = ''
-    )
+    public static function createFromRooms(string $building_id, array $rooms = [], $name = '')
     {
-        if (!$building_id || !is_array($rooms)) {
-            return null;
-        }
         if (count($rooms) === 0) {
             return null;
         }
@@ -77,7 +74,6 @@ class SeparableRoom extends SimpleORMap
         if (!$name) {
             //First we create a common name from all the room names.
             $common_name = '';
-            
             if (count($room_names) > 1) {
                 $name_position     = 0;
                 $current_character = '';
@@ -154,12 +150,8 @@ class SeparableRoom extends SimpleORMap
     }
     
     
-    public function findOtherRoomParts($known_parts = [])
+    public function findOtherRoomParts(array $known_parts = [])
     {
-        if (!is_array($known_parts)) {
-            return;
-        }
-        
         $known_part_ids = [];
         foreach ($known_parts as $known_part) {
             if ($known_part instanceof Room) {
