@@ -148,7 +148,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         $this->anonymous_view = true;
         $this->booking_types  = [0, 1, 2];
         if ($current_user instanceof User) {
-            if ($display_requests) {
+            if ($display_all_requests) {
                 $plan_is_visible = $this->resource->userHasPermission(
                     $current_user,
                     'autor'

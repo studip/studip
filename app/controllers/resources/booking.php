@@ -921,9 +921,8 @@ class Resources_BookingController extends AuthenticatedController
                             );
                         }
                         $separable_room_messages[] = sprintf(
-                            _('Der Raum %1$s ist ein Teilraum des Raumes %2$s. Weitere Teilräume sind:'),
-                            htmlReady($resource->name),
-                            htmlReady($separable_room->name)
+                            _('Der Raum %1$s ist ein Teilraum eines teilbaren Raumes. Weitere Teilräume sind:'),
+                            htmlReady($resource->name)
                         ) . ' ' . implode(
                             ', ',
                             $other_room_links
@@ -932,9 +931,8 @@ class Resources_BookingController extends AuthenticatedController
                 }
                 if ($simple_message) {
                     $separable_room_messages[] = sprintf(
-                        _('Der Raum %1$s ist ein Teilraum des Raumes %2$s.'),
-                        htmlReady($resource->name),
-                        htmlReady($separable_room->name)
+                        _('Der Raum %1$s ist ein Teilraum eines teilbaren Raumes.'),
+                        htmlReady($resource->name)
                     );
                 }
             }

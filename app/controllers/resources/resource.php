@@ -211,6 +211,8 @@ class Resources_ResourceController extends AuthenticatedController
         );
 
         if ($GLOBALS['user']->id != 'nobody') {
+            $current_user = User::findCurrent();
+
             if (!Request::isDialog()) {
                 $sidebar = Sidebar::get();
 
@@ -219,10 +221,7 @@ class Resources_ResourceController extends AuthenticatedController
                     $actions->addLink(
                         _('Belegungsplan'),
                         URLHelper::getURL(
-                            'dispatch.php/resources/resource/booking_plan/' . $this->resource->id,
-                            [
-                                'timestamp' => $week_timestamp
-                            ]
+                            'dispatch.php/resources/resource/booking_plan/' . $this->resource->id
                         ),
                         Icon::create('timetable')
                     );
@@ -1312,12 +1311,9 @@ class Resources_ResourceController extends AuthenticatedController
                 intval($end_time[1]),
                 0
             );
-    
-            /**
-             * @TODO $booking wird nicht weiterverwendet. Ist das noch notwenig?
-             */
+
             try {
-                $booking = $this->resource->createSimpleBooking(
+                $this->resource->createSimpleBooking(
                     $this->current_user,
                     $this->begin,
                     $this->end,
