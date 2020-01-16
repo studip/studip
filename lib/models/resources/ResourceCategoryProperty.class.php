@@ -51,14 +51,8 @@ class ResourceCategoryProperty extends SimpleORMap
         parent::configure($config);
     }
 
-    public static function findByNameAndCategoryId(
-        $name = null,
-        $category_id = null
-    ) {
-        if (!$name || !$category_id) {
-            return null;
-        }
-
+    public static function findByNameAndCategoryId($name, $category_id)
+    {
         return self::findOneBySql(
             'INNER JOIN resource_property_definitions rpd
             USING (property_id)
