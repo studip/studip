@@ -49,7 +49,7 @@ class Resources_StatisticsController extends AuthenticatedController
         $db = DBManager::get();
 
         $sum_stmt = $db->prepare(
-            "SELECT SUM(rai.end - rai.begin) FROM resource_booking_intervals rbi
+            "SELECT SUM(rbi.end - rbi.begin) FROM resource_booking_intervals rbi
             INNER JOIN resource_bookings rb
             ON rbi.booking_id = rb.id
             WHERE
