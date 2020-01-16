@@ -90,19 +90,12 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
      * @param string $resource_id The resource where the user's permission
      *     shall be retrieved.
      *
-     * @return The permission level as string or an empty string, if no
+     * @return string The permission level as string or an empty string, if no
      *    temporary permission exists for the specified user on the
      *    specified resource.
      */
-    public static function getCurrentTemporaryPermissions(
-        User $user,
-        $resource_id = null
-    )
+    public static function getCurrentTemporaryPermissions(User $user, string $resource_id)
     {
-        if (!$resource_id) {
-            return '';
-        }
-        
         $perm = self::findOneBySql(
             'resource_id = :resource_id
             AND
@@ -121,16 +114,11 @@ class ResourceTemporaryPermission extends SimpleORMap implements PrivacyObject
     
     public static function userHasPermissionInTimeRange(
         User $user,
-        $resource_id = null,
-        $perm = 'user',
+        string $resource_id,
         DateTime $begin,
         DateTime $end
     )
     {
-        if (!$resource_id) {
-            return false;
-        }
-        
         //Query explaination: We want exactly one permission object
         //for the specified user and the resource.
         //The permission must exist during the whole specified time range
