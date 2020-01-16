@@ -3,7 +3,6 @@
 namespace JsonApi\Errors;
 
 use JsonApi\Providers\JsonApiConfig as C;
-use Interop\Container\ContainerInterface;
 use Neomerx\JsonApi\Contracts\Factories\FactoryInterface;
 use Neomerx\JsonApi\Contracts\Http\Headers\MediaTypeInterface;
 use Neomerx\JsonApi\Contracts\Schema\ContainerInterface as SC;
@@ -11,6 +10,7 @@ use Neomerx\JsonApi\Document\Error;
 use Neomerx\JsonApi\Encoder\EncoderOptions;
 use Neomerx\JsonApi\Exceptions\ErrorCollection;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

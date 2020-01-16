@@ -19,7 +19,6 @@ return array(
     'Neomerx\\JsonApi\\' => array($vendorDir . '/neomerx/json-api/src'),
     'Neomerx\\Cors\\' => array($vendorDir . '/neomerx/cors-psr7/src'),
     'Leafo\\ScssPhp\\' => array($vendorDir . '/leafo/scssphp/src'),
-    'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Assert\\' => array($vendorDir . '/beberlei/assert/lib/Assert'),

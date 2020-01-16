@@ -88,7 +88,7 @@ trait JsonApiTrait
     protected $allowedFilteringParameters = [];
 
     /**
-     * @var Interop\Container\ContainerInterface
+     * @var Psr\Container\ContainerInterface;
      */
     protected $container;
 

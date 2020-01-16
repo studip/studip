@@ -4,9 +4,9 @@ namespace JsonApi;
 
 use JsonApi\Errors\InternalServerError;
 use JsonApi\Middlewares\Authentication;
-use Interop\Container\ContainerInterface;
 use Neomerx\JsonApi\Contracts\Schema\ContainerInterface as SchemaContainerInterface;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 

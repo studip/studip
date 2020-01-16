@@ -3,7 +3,7 @@
 namespace JsonApi;
 
 use JsonApi\JsonApiIntegration\JsonApiTrait;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 use Neomerx\JsonApi\Contracts\Http\Headers\HeadersCheckerInterface;
 use Neomerx\JsonApi\Contracts\Http\Headers\HeaderParametersInterface;
