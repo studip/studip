@@ -144,7 +144,6 @@ class RouteMap
         $this->addAuthenticatedInstitutesRoutes();
         $this->addAuthenticatedMessagesRoutes();
         $this->addAuthenticatedNewsRoutes();
-        $this->addAuthenticatedResourcesRoutes();
         $this->addAuthenticatedWikiRoutes();
     }
 
@@ -333,12 +332,6 @@ class RouteMap
 
         $this->app->delete('/forum-categories/{id}', Routes\Forum\ForumCategoriesDelete::class);
         $this->app->delete('/forum-entries/{id}', Routes\Forum\ForumEntriesDelete::class);
-    }
-
-    private function addAuthenticatedResourcesRoutes()
-    {
-        $this->app->get('/resources-objects', Routes\Resources\ResourcesIndex::class);
-        $this->app->get('/resources-objects/{id}/assignments', Routes\Resources\AssignmentsIndex::class);
     }
 
     private function addRelationship($url, $handler)

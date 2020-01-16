@@ -32,11 +32,6 @@ class SchemaMap
                 \WikiPage::class => \JsonApi\Schemas\WikiPage::class,
                 \Studip\Activity\Activity::class => \JsonApi\Schemas\Activity::class,
                 \User::class => \JsonApi\Schemas\User::class,
-
-                \AssignEvent::class => \JsonApi\Schemas\ResourcesAssignEvent::class,
-                \JsonApi\Models\Resources\Category::class => \JsonApi\Schemas\ResourcesCategory::class,
-                \JsonApi\Models\Resources\ResourcesObject::class => \JsonApi\Schemas\ResourcesObject::class,
-
                 \File::class => \JsonApi\Schemas\File::class,
                 \FileRef::class => \JsonApi\Schemas\FileRef::class,
                 \FolderType::class => \JsonApi\Schemas\Folder::class,
