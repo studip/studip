@@ -273,7 +273,7 @@ class Resources_BookingController extends AuthenticatedController
      *     object or null. If a ResourceBooking object is specified
      *     its content will be updated. Otherwise a new object will be created.
      *
-     * @returns Array An associative array with the following structure:
+     * @returns array An associative array with the following structure:
      * [
      *     'errors' => Error messages related to booking the resource.
      *     'room_part_errors' => Error messages related to the booking of other resource parts.
@@ -281,17 +281,17 @@ class Resources_BookingController extends AuthenticatedController
      * ]
      */
     protected function assignResourceAndCollectResults(
-        $booking = null,
+        $booking,
         Resource $resource,
         User $user,
         DateTime $begin,
         DateTime $end,
-        $preparation_time = 0,
-        $description = '',
-        $comment = '',
-        $booking_type = '0',
-        $assigned_user = null,
-        $repetition_interval = null,
+        $preparation_time,
+        $description,
+        $comment,
+        $booking_type,
+        $assigned_user,
+        $repetition_interval,
         DateTime $repetition_end,
         $notification_enabled = false,
         $included_room_parts = [],

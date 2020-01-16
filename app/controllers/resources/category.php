@@ -31,11 +31,8 @@ class Resources_CategoryController extends AuthenticatedController
     }
     
     
-    public function index_action($category_id = null)
+    public function index_action($category_id = '')
     {
-        if (!$category_id) {
-            return;
-        }
         $this->category = ResourceCategory::find($category_id);
     }
     
