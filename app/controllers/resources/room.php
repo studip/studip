@@ -467,7 +467,7 @@ class Resources_RoomController extends AuthenticatedController
 
         $this->category_id = Request::get('category_id');
         $this->category = ResourceCategory::find($this->category_id);
-        if (!($this->category instanceof ResourceCategory)) {
+        if (!$this->category) {
             //If no category_id is set we must redirect to the
             //select_category action:
             $this->redirect(

@@ -1,19 +1,18 @@
 <? if ($categories) : ?>
-    <p><?= _('Bitte eine Gebäudekategorie auswählen:') ?></p>
-    <section class="resource-category-select">
-        <? foreach ($categories as $category) : ?>
-            <?
-            $building_class = $category->class_name;
-            ?>
-            <a href="<?= URLHelper::getLink(
-                     'dispatch.php/resources/building/add',
-                     ['category_id' => $category->id]
-                     ) ?>" class="category-link" data-dialog="size=auto">
-                <?= $building_class::getIconStatic('clickable')->asImg(50) ?>
-                <div class="resource-category-select-text">
+<form method="get" action="<?= $controller->url_for('resources/building/add' . $room_id) ?>" class="default"
+      data-dialog="size=auto">
+    <label>
+        <?= _('Gebäudekategorie') ?>
+        <select name="category_id" required>
+            <option value=""><?= _('Bitte eine Gebäudekategorie auswählen:') ?></option>
+            <? foreach ($categories as $category) : ?>
+                <option value="<?= $category->id ?>">
                     <?= htmlReady($category->name) ?>
-                </div>
-            </a>
-        <? endforeach ?>
-    </section>
+                </option>
+            <? endforeach ?>
+        </select>
+    </label>
+    <footer data-dialog-button>
+        <?= Studip\Button::createAccept(_('Auswählen')) ?>
+    </footer>
 <? endif ?>
