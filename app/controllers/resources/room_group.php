@@ -20,15 +20,12 @@ class Resources_RoomGroupController extends AuthenticatedController
 {
 
     /**
+     * @param array $room_ids
      * Loads the rooms and permissions and sets the $rooms, $common_permissions
      * and $partial_permissiosn attributes.
      */
-    protected function loadRoomsAndPermissions($room_ids = [])
+    protected function loadRoomsAndPermissions(array $room_ids = [])
     {
-        if (!is_array($room_ids)) {
-            return null;
-        }
-
         if (!count($room_ids)) {
             return null;
         }
@@ -63,17 +60,18 @@ class Resources_RoomGroupController extends AuthenticatedController
         //First and second level use the user_id or the permission level resp.
         //as index.
         $user_permissions = [];
-
-        foreach ($all_permissions as $permission) {
-            if (!is_array($user_permissions[$permission->user_id])) {
-                $user_permissions[$permission->user_id] = [];
+        if(!empty($all_permissions)) {
+            foreach ($all_permissions as $permission) {
+                if (!is_array($user_permissions[$permission->user_id])) {
+                    $user_permissions[$permission->user_id] = [];
+                }
+        
+                if (!is_array($user_permissions[$permission->user_id][$permission->perms])) {
+                    $user_permissions[$permission->user_id][$permission->perms] = [];
+                }
+        
+                $user_permissions[$permission->user_id][$permission->perms][] = $permission;
             }
-
-            if (!is_array($user_permissions[$permission->user_id][$permission->perms])) {
-                $user_permissions[$permission->user_id][$permission->perms] = [];
-            }
-
-            $user_permissions[$permission->user_id][$permission->perms][] = $permission;
         }
 
         //After that step we can check if the number of permissions for one user
@@ -83,18 +81,20 @@ class Resources_RoomGroupController extends AuthenticatedController
 
         $this->common_permissions = [];
         $this->partial_permissions = [];
-        foreach ($user_permissions as $user_id => $perm_level_data) {
-            foreach ($perm_level_data as $level => $permissions) {
-                //If $permissions is an array with the same length as
-                //$this->rooms we have found a permission which is common
-                //for all the rooms:
-                if (count($permissions) == count($this->rooms)) {
-                    $this->common_permissions[] = $permissions[0];
-                } else {
-                    $this->partial_permissions = array_merge(
-                        $this->partial_permissions,
-                        $permissions
-                    );
+        if(!empty($user_permissions)) {
+            foreach ($user_permissions as $user_id => $perm_level_data) {
+                foreach ($perm_level_data as $level => $permissions) {
+                    //If $permissions is an array with the same length as
+                    //$this->rooms we have found a permission which is common
+                    //for all the rooms:
+                    if (count($permissions) == count($this->rooms)) {
+                        $this->common_permissions[] = $permissions[0];
+                    } else {
+                        $this->partial_permissions = array_merge(
+                            $this->partial_permissions,
+                            $permissions
+                        );
+                    }
                 }
             }
         }
@@ -193,6 +193,7 @@ class Resources_RoomGroupController extends AuthenticatedController
                         //must not be processed!
                         continue;
                     }
+                    $user = User::find($user_id);
                     $permission = $new_common_permissions['level'][$key];
                     if (!in_array($permission, ['user', 'autor', 'tutor', 'admin'])) {
                         PageLayout::postError(
@@ -229,9 +230,6 @@ class Resources_RoomGroupController extends AuthenticatedController
 
                         if ($permission_object->isDirty()) {
                             if (!$permission_object->store()) {
-                                /**
-                                 * @TODO $user is not defined
-                                 */
                                 $errors[] = sprintf(
                                     _('Die Berechtigungen von %1$s am Raum %2$s konnten nicht gespeichert werden!'),
                                     htmlReady($user->getFullName()),
