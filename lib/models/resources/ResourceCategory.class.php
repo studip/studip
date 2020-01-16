@@ -269,12 +269,12 @@ class ResourceCategory extends SimpleORMap
      * @param bool $protected Whether the property is protected or not.
      *     Defaults to false.
      *
-     * @throws ResourcePropertyException If the property cannot be created.
+     * @return ResourceCategoryProperty The created or updated
+     *     resource category property.
      * @throws ResourcePropertyDefinitionException If the property definition
      *     cannot be created.
      *
-     * @return ResourceCategoryProperty The created or updated
-     *     resource category property.
+     * @throws ResourcePropertyException If the property cannot be created.
      */
     public function addProperty(
         $name = '',
@@ -403,13 +403,13 @@ class ResourceCategory extends SimpleORMap
      *     with a default value and an invalid property name will not result
      *     in a set property.
      *
-     * @throws InvalidResourceCategoryException if the class_name attribute of
-     *     the resource category contains a class name of a class which is not
-     *     derived from the Resource class.
+     * @return New Resource object which is a member of this resource category.
      * @throws InvalidResourceException if the resource cannot be stored.
      * @throws ResourcePropertyException If the name of the resource property
      *     is not defined for this resource category.
-     * @return New Resource object which is a member of this resource category.
+     * @throws InvalidResourceCategoryException if the class_name attribute of
+     *     the resource category contains a class name of a class which is not
+     *     derived from the Resource class.
      */
     public function createResource(
         $name = '',
@@ -481,43 +481,25 @@ class ResourceCategory extends SimpleORMap
     {
         switch ($definition->type) {
             case 'bool':
-            {
                 return false;
-                break;
-            }
             case 'num':
-            {
                 return 0;
-                break;
-            }
             case 'select':
-            {
                 //Set the first option as default.
                 //For that, we have to split the option list first,
                 //since it containts semicolon separated values:
                 $options = explode(';', $definition->options);
                 return $options[0];
-                break;
-            }
             case 'user':
-            {
                 //Return the ID of the current user:
                 return User::findCurrent()->id;
-                break;
-            }
             case 'position':
-            {
                 return '+0.0+0.0+0.0CRSWGS_84/';
-                break;
-            }
             case 'institute':
             case 'fileref':
             case 'url':
             case 'text':
-            {
                 return '';
-                break;
-            }
         }
     }
     
@@ -694,7 +676,7 @@ class ResourceCategory extends SimpleORMap
         
         return $property;
     }
-
+    
     public function getRequestableProperties()
     {
         return ResourcePropertyDefinition::findBySql(
@@ -812,12 +794,12 @@ class ResourceCategory extends SimpleORMap
     {
         if ($this->iconnr == 0) {
             //No special icon
-            return Icon::create('resources',  Icon::ROLE_INFO)->asImagePath();
+            return Icon::create('resources', Icon::ROLE_INFO)->asImagePath();
         } elseif ($this->iconnr == 1) {
             return Icon::create('home', Icon::ROLE_INFO)->asImagePath();
         } else {
             //No known icon
-            return Icon::create('resources',  Icon::ROLE_INFO)->asImagePath();
+            return Icon::create('resources', Icon::ROLE_INFO)->asImagePath();
         }
     }
 }

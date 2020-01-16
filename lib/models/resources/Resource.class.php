@@ -217,73 +217,56 @@ class Resource extends SimpleORMap implements StudipItem
         
         switch ($action) {
             case 'show':
-            {
                 return 'dispatch.php/resources/resource/index/' . $id;
-            }
+                break;
             case 'add':
-            {
                 return 'dispatch.php/resources/resource/add';
-            }
+                break;
             case 'edit':
-            {
                 return 'dispatch.php/resources/resource/edit/' . $id;
-            }
+                break;
             case 'files':
-            {
                 return 'dispatch.php/resources/resource/files/' . $id . '/';
-            }
+                break;
             case 'permissions':
-            {
                 return 'dispatch.php/resources/resource/permissions/' . $id;
-            }
+                break;
             case 'temporary_permissions':
-            {
                 return 'dispatch.php/resources/resource/temporary_permissions/' . $id;
-            }
+                break;
             case 'booking_plan':
-            {
                 return 'dispatch.php/resources/room_planning/booking_plan/' . $id;
-            }
+                break;
             case 'request_plan':
-            {
                 return 'dispatch.php/resources/room_planning/request_plan/' . $id;
-            }
+                break;
             case 'semester_plan':
-            {
                 return 'dispatch.php/resources/room_planning/semester_plan/' . $id;
-            }
+                break;
             case 'assign-undecided':
-            {
                 return 'dispatch.php/resources/booking/add/' . $id;
-            }
+                break;
             case 'assign':
-            {
                 return 'dispatch.php/resources/booking/add/' . $id . '/0';
-            }
+                break;
             case 'reserve':
-            {
                 return 'dispatch.php/resources/booking/add/' . $id . '/1';
-            }
+                break;
             case 'lock':
-            {
                 return 'dispatch.php/resources/booking/add/' . $id . '/2';
-            }
+                break;
             case 'delete_bookings':
-            {
                 return 'dispatch.php/resources/resource/delete_bookings/' . $id;
-            }
+                break;
             case 'export_bookings':
-            {
                 return 'dispatch.php/resources/export/resource_bookings/' . $id;
-            }
+                break;
             case 'delete':
-            {
                 return 'dispatch.php/resources/resource/delete/' . $id;
-            }
+                break;
             default:
-            {
                 return 'dispatch.php/resources/resource/show/' . $id;
-            }
+                break;
         }
     }
     

@@ -23,10 +23,10 @@ class Location extends Resource
     protected static $required_properties = [
         'geo_coordinates'
     ];
-
+    
     protected static function configure($config = [])
     {
-
+        
         $config['additional_fields'] = [];
         foreach (self::$required_properties as $property) {
             $config['additional_fields'][$property] = [
@@ -34,14 +34,14 @@ class Location extends Resource
                 'set' => 'setProperty'
             ];
         }
-
+        
         $config['additional_fields']['buildings']['get'] = 'findBuildings';
-
+        
         $config['additional_fields']['director'] = [
             'get' => 'getPropertyRelatedObject',
             'set' => 'setPropertyRelatedObject'
         ];
-
+        
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
         parent::configure($config);
     }
@@ -59,7 +59,7 @@ class Location extends Resource
     {
         return Icon::create('place', $role);
     }
-
+    
     /**
      * Returns all locations which are stored in the database.
      *
@@ -74,7 +74,7 @@ class Location extends Resource
             ORDER BY sort_position DESC, name ASC, mkdate ASC"
         );
     }
-
+    
     /**
      * Returns the part of the URL for getLink and getURL which will be
      * placed inside the calls to URLHelper::getLink and URLHelper::getURL
@@ -87,24 +87,28 @@ class Location extends Resource
                 _('Zuer Erstellung der URL fehlt eine Standort-ID!')
             );
         }
-
+        
         switch ($action) {
-            case 'show': {
+            case 'show':
                 return 'dispatch.php/resources/location/index/' . $id;
-            } case 'add': {
+                break;
+            case 'add':
                 return 'dispatch.php/resources/location/add';
-            } case 'edit': {
+                break;
+            case 'edit':
                 return 'dispatch.php/resources/location/edit/' . $id;
-            } case 'delete': {
+                break;
+            case 'delete':
                 return 'dispatch.php/resources/location/delete/' . $id;
-            } default: {
+                break;
+            default:
                 //There are some actions which can be handled by the general
                 //resource controller:
                 return parent::buildPathForAction($action, $id);
-            }
+                break;
         }
     }
-
+    
     /**
      * Returns the appropriate link for the location action that shall be
      * executed on a location.
@@ -129,8 +133,8 @@ class Location extends Resource
             $link_parameters
         );
     }
-
-
+    
+    
     /**
      * Returns the appropriate URL for the location action that shall be
      * executed on a location.
@@ -165,7 +169,7 @@ class Location extends Resource
     {
         return $this->getFullName();
     }
-
+    
     public function cbValidate()
     {
         if ($this->parent_id) {
@@ -177,7 +181,7 @@ class Location extends Resource
                 )
             );
         }
-
+        
         if ($this->category->class_name != get_class($this)) {
             //Only resources with the Location category can be handled
             //with this class!
@@ -188,7 +192,7 @@ class Location extends Resource
                 )
             );
         }
-
+        
     }
     
     /**
@@ -213,24 +217,24 @@ class Location extends Resource
     {
         return Icon::create('place', $role);
     }
-
+    
     public function checkHierarchy()
     {
         //We must check if this location has locations as children
         //or rooms, buildings or locations as parents.
         //In any of those cases the hierarchy is invalid!
-
+        
         $children = $this->findChildrenByClassName('Location');
         if (count($children) > 0) {
             //At least one child anywhere below this location
             //resource is a location, too.
             return false;
         }
-
+        
         $parents = ResourceManager::getHierarchy($this);
         //We do not need to check this element:
         array_shift($parents);
-        foreach($parents as $parent) {
+        foreach ($parents as $parent) {
             $parent = $parent->getDerivedClassInstance();
             if (($parent instanceof Location) || ($parent instanceof Building)
                 || ($parent instanceof Room)) {
@@ -238,7 +242,7 @@ class Location extends Resource
                 return false;
             }
         }
-
+        
         //If code execution reaches this point then
         //the hierarchy around this location is valid.
         return true;
@@ -263,7 +267,7 @@ class Location extends Resource
             $link_parameters
         );
     }
-
+    
     /**
      * Returns the URL for an action for this location.
      * This is the non-static variant of Location::getURLForAction.
@@ -281,9 +285,9 @@ class Location extends Resource
             $url_parameters
         );
     }
-
+    
     // Relation methods:
-
+    
     /**
      * Retrieves the buildings which are associated to this location
      * by looking up the child resources of this location.
@@ -294,24 +298,24 @@ class Location extends Resource
     public function findBuildings()
     {
         $buildings = parent::findChildrenByClassName('Building');
-
+        
         $result = [];
         foreach ($buildings as $building) {
             $result[] = Building::toObject($building);
         }
         return $result;
     }
-
+    
     /**
      * Adds a child resource to this location. The child resource
      * must not be a resource of the Location class.
      *
      * @param Resource $resource The resource which shall be added as child.
      *
+     * @return True, if the resource could be added as child, false otherwise.
      * @throws InvalidResourceException If the specified resource belongs to
      *     the Location resource class.
      *
-     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {
@@ -322,7 +326,7 @@ class Location extends Resource
         }
         return parent::addChild($resource);
     }
-
+    
     public function createSimpleBooking(
         User $user,
         DateTime $begin,
@@ -335,7 +339,7 @@ class Location extends Resource
     {
         return null;
     }
-
+    
     public function createBookingFromRequest(
         User $user,
         ResourceRequest $request,
@@ -349,7 +353,7 @@ class Location extends Resource
     {
         return null;
     }
-
+    
     public function createBooking(
         User $user,
         $range_id = null,
@@ -362,7 +366,8 @@ class Location extends Resource
         $internal_comment = '',
         $booking_type = 0,
         $force_booking = false
-    ) {
+    )
+    {
         return null;
     }
     
@@ -397,7 +402,7 @@ class Location extends Resource
     {
         return null;
     }
-
+    
     public function isAssigned(
         DateTime $begin,
         DateTime $end,
@@ -424,7 +429,7 @@ class Location extends Resource
     {
         return true;
     }
-
+    
     public function isAvailable(
         DateTime $begin,
         DateTime $end,

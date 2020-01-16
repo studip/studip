@@ -32,7 +32,7 @@ class Building extends Resource
         'number',
         'geo_coordinates'
     ];
-
+    
     protected static function configure($config = [])
     {
         $config['additional_fields'] = [];
@@ -42,15 +42,15 @@ class Building extends Resource
                 'set' => 'setProperty'
             ];
         }
-
+        
         $config['additional_fields']['location']['get'] = 'findLocation';
-        $config['additional_fields']['rooms']['get'] = 'findRooms';
-
+        $config['additional_fields']['rooms']['get']    = 'findRooms';
+        
         $config['additional_fields']['facility_manager'] = [
             'get' => 'getPropertyRelatedObject',
             'set' => 'setPropertyRelatedObject'
         ];
-
+        
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
         parent::configure($config);
     }
@@ -96,17 +96,17 @@ class Building extends Resource
         if (!$location_id) {
             return [];
         }
-
+        
         $location = Building::find($location_id);
         if (!$location) {
             return [];
         }
-
+        
         //Return all found Building objects below the location:
         return $location->findChildrenByClassName('Building', 0, true);
     }
-
-
+    
+    
     /**
      * Returns the part of the URL for getLink and getURL which will be
      * placed inside the calls to URLHelper::getLink and URLHelper::getURL
@@ -115,9 +115,9 @@ class Building extends Resource
      * @param string $action The action for the building.
      * @param string $id The ID of the building.
      *
+     * @return string The URL path for the specified action.
      * @throws InvalidArgumentException If $building_id is empty.
      *
-     * @return string The URL path for the specified action.
      */
     protected static function buildPathForAction($action = 'show', $id = null)
     {
@@ -126,25 +126,29 @@ class Building extends Resource
                 _('Zur Erstellung der URL fehlt eine Gebäude-ID!')
             );
         }
-
+        
         //There are some actions which can be handled by the general
         //resource controller:
         if (in_array($action, ['files', 'request', 'lock'])) {
             return parent::buildPathForAction($action, $id);
         }
-
+        
         switch ($action) {
-            case 'show': {
+            case 'show':
                 return 'dispatch.php/resources/building/index/' . $id;
-            } case 'add': {
+                break;
+            case 'add':
                 return 'dispatch.php/resources/building/add';
-            } case 'edit': {
+                break;
+            case 'edit':
                 return 'dispatch.php/resources/building/edit/' . $id;
-            } case 'delete': {
+                break;
+            case 'delete':
                 return 'dispatch.php/resources/building/delete/' . $id;
-            } default: {
+                break;
+            default:
                 return parent::buildPathForAction($action, $id);
-            }
+                break;
         }
     }
     
@@ -164,7 +168,8 @@ class Building extends Resource
         $action = 'show',
         $id = null,
         $link_parameters = []
-    ) {
+    )
+    {
         return URLHelper::getLink(
             self::buildPathForAction($action, $id),
             $link_parameters
@@ -187,7 +192,8 @@ class Building extends Resource
         $action = 'show',
         $id = null,
         $url_parameters = []
-    ) {
+    )
+    {
         return URLHelper::getURL(
             self::buildPathForAction($action, $id),
             $url_parameters
@@ -203,7 +209,7 @@ class Building extends Resource
     {
         return $this->getFullName();
     }
-
+    
     public function cbValidate()
     {
         if (!$this->findParentByClassName('Location')) {
@@ -215,7 +221,7 @@ class Building extends Resource
                 )
             );
         }
-
+        
         if ($this->category->class_name != get_class($this)) {
             //Only resources with the Building category can be handled
             //with this class!
@@ -226,12 +232,12 @@ class Building extends Resource
                 )
             );
         }
-
+        
         return true;
     }
-
+    
     //property and shortcut methods:
-
+    
     /**
      * Returns the full (localised) name of the building.
      *
@@ -244,7 +250,7 @@ class Building extends Resource
             $this->name
         );
     }
-
+    
     /**
      * Returns the path for the building's image.
      * If the building has no image the path for a general
@@ -256,12 +262,12 @@ class Building extends Resource
     {
         return $this->getIcon()->asImagePath();
     }
-
+    
     public function getIcon($role = Icon::ROLE_INFO)
     {
         return Icon::create('home', $role);
     }
-
+    
     public static function getIconStatic($role = Icon::ROLE_INFO)
     {
         return Icon::create('home', $role);
@@ -272,25 +278,25 @@ class Building extends Resource
         //We must check if this building has buildings as children
         //or rooms or buildings as parents. In any of those cases the hierarchy
         //is invalid!
-
+        
         $children = $this->findChildrenByClassName('Building');
         if (count($children) > 0) {
             //At least one child anywhere below this building
             //resource is a building, too.
             return false;
         }
-
+        
         $parents = ResourceManager::getHierarchy($this);
         //We do not need to check this element:
         array_shift($parents);
-        foreach($parents as $parent) {
+        foreach ($parents as $parent) {
             $parent = $parent->getDerivedClassInstance();
             if (($parent instanceof Building) || ($parent instanceof Room)) {
                 //Hierarchy error
                 return false;
             }
         }
-
+        
         //If code execution reaches this point then
         //the hierarchy around this building is valid.
         return true;
@@ -315,7 +321,7 @@ class Building extends Resource
             $link_parameters
         );
     }
-
+    
     /**
      * Returns the URL for an action for this building.
      * This is the non-static variant of Building::getURLForAction.
@@ -335,7 +341,7 @@ class Building extends Resource
             $url_parameters
         );
     }
-
+    
     /**
      * Retrieves the rooms which reside inside this building by looking up
      * the child resources of this building.
@@ -346,7 +352,7 @@ class Building extends Resource
     public function findRooms()
     {
         $rooms = parent::findChildrenByClassName('Room', 0, true);
-
+        
         $result = [];
         foreach ($rooms as $room) {
             if ($room instanceof Room) {
@@ -355,7 +361,7 @@ class Building extends Resource
         }
         return $result;
     }
-
+    
     /**
      * Retrieves the location where this building is assigned to by looking up
      * the parent resources of this building.
@@ -371,17 +377,17 @@ class Building extends Resource
         }
         return null;
     }
-
+    
     /**
      * Adds a child resource to this building. The child resource
      * must not be a resource of the class Building or Location.
      *
      * @param Resource $resource The resource which shall be added as child.
      *
+     * @return True, if the resource could be added as child, false otherwise.
      * @throws InvalidResourceException If the specified resource belongs to
      *     the resource classes Building or Location.
      *
-     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {
@@ -409,7 +415,7 @@ class Building extends Resource
     {
         return null;
     }
-
+    
     public function createBookingFromRequest(
         User $user,
         ResourceRequest $request,
@@ -423,8 +429,8 @@ class Building extends Resource
     {
         return null;
     }
-
-
+    
+    
     public function createBooking(
         User $user,
         $range_id = null,
@@ -437,7 +443,8 @@ class Building extends Resource
         $internal_comment = '',
         $booking_type = 0,
         $force_booking = false
-    ) {
+    )
+    {
         return null;
     }
     
@@ -472,7 +479,7 @@ class Building extends Resource
     {
         return null;
     }
-
+    
     public function isAssigned(
         DateTime $begin,
         DateTime $end,
@@ -481,7 +488,7 @@ class Building extends Resource
     {
         return false;
     }
-
+    
     public function isReserved(
         DateTime $begin,
         DateTime $end,

@@ -391,9 +391,9 @@ class Room extends Resource
      * @param string $action The action for the room.
      * @param string $id The ID of the room.
      *
+     * @return string The URL path for the specified action.
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @return string The URL path for the specified action.
      */
     protected static function buildPathForAction($action = 'show', $id = null)
     {
@@ -405,39 +405,23 @@ class Room extends Resource
         
         switch ($action) {
             case 'show':
-            {
                 return 'dispatch.php/resources/room/index/' . $id;
-            }
             case 'add':
-            {
                 return 'dispatch.php/resources/room/add';
-            }
             case 'edit':
-            {
                 return 'dispatch.php/resources/room/edit/' . $id;
-            }
             case 'delete':
-            {
                 return 'dispatch.php/resources/room/delete/' . $id;
-            }
             case 'request':
-            {
                 return 'dispatch.php/resources/room_request/add/' . $id;
-            }
             case 'request_list':
-            {
                 return 'dispatch.php/resources/room_request/overview?room_id=' . $id;
-            }
             case 'booking_plan':
-            {
                 return 'dispatch.php/resources/room_planning/booking_plan/' . $id;
-            }
             default:
-            {
                 //There are some actions which can be handled by the general
                 //resource controller:
                 return parent::buildPathForAction($action, $id);
-            }
         }
     }
     
@@ -453,9 +437,9 @@ class Room extends Resource
      *     action shall be executed.
      * @param array $link_parameters Optional parameters for the link.
      *
+     * @return string The Link for the room action.
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @return string The Link for the room action.
      */
     public static function getLinkForAction(
         $action = 'show',
@@ -481,9 +465,9 @@ class Room extends Resource
      *     action shall be executed.
      * @param array $url_parameters Optional parameters for the URL.
      *
+     * @return string The URL for the room action.
      * @throws InvalidArgumentException If $room_id is empty.
      *
-     * @return string The URL for the room action.
      */
     public static function getURLForAction(
         $action = 'show',
@@ -541,10 +525,10 @@ class Room extends Resource
      * This method calls Resource::createRequest and transforms the
      * resulting ResourceRequest object into a RoomRequest object.
      *
+     * @return RoomRequest A room request object.
      * @see Resource::createRequest for paramter descriptions
      *     and thrown exceptions.
      *
-     * @return RoomRequest A room request object.
      */
     public function createRequest(
         User $user,
@@ -572,10 +556,10 @@ class Room extends Resource
      *
      * @param Resource $resource The resource which shall be added as child.
      *
+     * @return True, if the resource could be added as child, false otherwise.
      * @throws InvalidResourceException If the specified resource belongs to
      *     the resource classes Room, Building or Location.
      *
-     * @return True, if the resource could be added as child, false otherwise.
      */
     public function addChild(Resource $resource)
     {
@@ -649,7 +633,7 @@ class Room extends Resource
         return true;
     }
     
-
+    
     /**
      * @see Resource::bookingPlanVisibleForUser
      */

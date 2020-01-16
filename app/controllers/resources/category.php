@@ -24,13 +24,13 @@ class Resources_CategoryController extends AuthenticatedController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-
+        
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
     }
-
-
+    
+    
     public function index_action($category_id = null)
     {
         if (!$category_id) {
@@ -38,16 +38,16 @@ class Resources_CategoryController extends AuthenticatedController
         }
         $this->category = ResourceCategory::find($category_id);
     }
-
-
+    
+    
     public function add_action()
     {
         //These three variables are needed in the _add_edit_form template:
-        $this->mode = 'add';
+        $this->mode                      = 'add';
         $this->previously_set_properties = [];
-        $this->show_form = false;
-
-        $this->class_names = ResourceManager::getAllResourceClassNames();
+        $this->show_form                 = false;
+        
+        $this->class_names          = ResourceManager::getAllResourceClassNames();
         $this->available_properties = ResourcePropertyDefinition::findBySql(
             'TRUE ORDER BY name ASC'
         );
@@ -58,40 +58,40 @@ class Resources_CategoryController extends AuthenticatedController
                 //defined are displayed.
                 if ($link->definition) {
                     $this->previously_set_properties[$link->definition->id] = [
-                        'id' => $link->definition->id,
-                        'name' => $link->definition->__toString(),
-                        'system' => $link->system,
+                        'id'          => $link->definition->id,
+                        'name'        => $link->definition->__toString(),
+                        'system'      => $link->system,
                         'requestable' => $link->requestable,
-                        'protected' => $link->protected
+                        'protected'   => $link->protected
                     ];
                 }
             }
         }
-
+        
         $this->show_form = true;
-
+        
         if (Request::submitted('confirmed')) {
             CSRFProtection::verifyUnsafeRequest();
-
+            
             //Process submitted form:
-            $this->name = Request::get('name');
+            $this->name        = Request::get('name');
             $this->description = Request::get('description');
-            $this->class_name = Request::get('class_name');
-            $this->iconnr = Request::int('iconnr');
-
-            $set_properties = Request::getArray('prop');
+            $this->class_name  = Request::get('class_name');
+            $this->iconnr      = Request::int('iconnr');
+            
+            $set_properties         = Request::getArray('prop');
             $properties_requestable = Request::getArray('prop_requestable');
-            $properties_protected = Request::getArray('prop_protected');
-
+            $properties_protected   = Request::getArray('prop_protected');
+            
             $this->set_properties = [];
             foreach (array_keys($set_properties) as $key) {
                 $this->set_properties[$key] = [
-                    'id' => $key,
+                    'id'          => $key,
                     'requestable' => $properties_requestable[$key],
-                    'protected' => $properties_protected[$key]
+                    'protected'   => $properties_protected[$key]
                 ];
             }
-
+            
             //validation:
             if (!$this->name) {
                 PageLayout::postError(
@@ -99,14 +99,14 @@ class Resources_CategoryController extends AuthenticatedController
                 );
                 return;
             }
-
+            
             if (!is_a($this->class_name, 'Resource', true)) {
                 PageLayout::postError(
                     _('Es wurde keine gültige Ressourcen-Datenklasse ausgewählt!')
                 );
                 return;
             }
-
+            
             if ($this->category->system) {
                 //Special validation rules for system categories:
                 if ($this->class_name != $this->category->class_name) {
@@ -115,7 +115,7 @@ class Resources_CategoryController extends AuthenticatedController
                     );
                     return;
                 }
-
+                
                 //Check if one of the system properties has been deleted:
                 $system_properties = ResourcePropertyDefinition::findBySql(
                     "INNER JOIN resource_category_properties rcp
@@ -133,7 +133,7 @@ class Resources_CategoryController extends AuthenticatedController
                             $removed_system_property_names[] = $property->name;
                         }
                     }
-
+                    
                     if ($removed_system_property_names) {
                         asort($removed_system_property_names);
                         PageLayout::postError(
@@ -144,28 +144,28 @@ class Resources_CategoryController extends AuthenticatedController
                     }
                 }
             }
-
+            
             $this->category = null;
             switch ($this->class_name) {
-                case 'Location': {
+                case 'Location':
                     $this->category = ResourceManager::createLocationCategory(
                         $this->name,
                         $this->description
                     );
                     break;
-                } case 'Building': {
+                case 'Building':
                     $this->category = ResourceManager::createBuildingCategory(
                         $this->name,
                         $this->description
                     );
                     break;
-                } case 'Room': {
+                case 'Room':
                     $this->category = ResourceManager::createRoomCategory(
                         $this->name,
                         $this->description
                     );
                     break;
-                } default: {
+                default:
                     $this->category = ResourceManager::createCategory(
                         $this->name,
                         $this->description,
@@ -173,7 +173,6 @@ class Resources_CategoryController extends AuthenticatedController
                         false,
                         $this->iconnr
                     );
-                }
             }
             if ($this->category instanceof ResourceCategory) {
                 //Now we store all optional properties:
@@ -197,14 +196,14 @@ class Resources_CategoryController extends AuthenticatedController
             }
         }
     }
-
+    
     public function edit_action($category_id = null)
     {
         //These three variables are needed in the _add_edit_form template:
-        $this->mode = 'edit';
+        $this->mode                      = 'edit';
         $this->previously_set_properties = [];
-        $this->show_form = false;
-
+        $this->show_form                 = false;
+        
         $this->category = ResourceCategory::find($category_id);
         if (!$this->category) {
             PageLayout::postError(
@@ -212,8 +211,8 @@ class Resources_CategoryController extends AuthenticatedController
             );
             return;
         }
-
-        $this->class_names = ResourceManager::getAllResourceClassNames();
+        
+        $this->class_names          = ResourceManager::getAllResourceClassNames();
         $this->available_properties = ResourcePropertyDefinition::findBySql(
             'TRUE ORDER BY name ASC'
         );
@@ -224,39 +223,39 @@ class Resources_CategoryController extends AuthenticatedController
                 //defined are displayed.
                 if ($link->definition) {
                     $this->previously_set_properties[$link->definition->id] = [
-                        'id' => $link->definition->id,
-                        'name' => $link->definition->__toString(),
-                        'system' => $link->system,
+                        'id'          => $link->definition->id,
+                        'name'        => $link->definition->__toString(),
+                        'system'      => $link->system,
                         'requestable' => $link->requestable,
-                        'protected' => $link->protected
+                        'protected'   => $link->protected
                     ];
                 }
             }
         }
-
+        
         $this->show_form = true;
-
+        
         if (Request::submitted('confirmed')) {
             CSRFProtection::verifyUnsafeRequest();
             //Process submitted form:
-            $this->name = Request::get('name');
+            $this->name        = Request::get('name');
             $this->description = Request::get('description');
-            $this->class_name = Request::get('class_name');
-            $this->iconnr = Request::int('iconnr');
-
-            $set_properties = Request::getArray('prop');
+            $this->class_name  = Request::get('class_name');
+            $this->iconnr      = Request::int('iconnr');
+            
+            $set_properties         = Request::getArray('prop');
             $properties_requestable = Request::getArray('prop_requestable');
-            $properties_protected = Request::getArray('prop_protected');
-
+            $properties_protected   = Request::getArray('prop_protected');
+            
             $this->set_properties = [];
             foreach (array_keys($set_properties) as $key) {
                 $this->set_properties[$key] = [
-                    'id' => $key,
+                    'id'          => $key,
                     'requestable' => $properties_requestable[$key],
-                    'protected' => $properties_protected[$key]
+                    'protected'   => $properties_protected[$key]
                 ];
             }
-
+            
             //validation:
             if (!$this->name) {
                 PageLayout::postError(
@@ -264,14 +263,14 @@ class Resources_CategoryController extends AuthenticatedController
                 );
                 return;
             }
-
+            
             if (!is_a($this->class_name, 'Resource', true)) {
                 PageLayout::postError(
                     _('Es wurde keine gültige Ressourcen-Datenklasse ausgewählt!')
                 );
                 return;
             }
-
+            
             if ($this->category->system) {
                 //Special validation rules for system categories:
                 if ($this->class_name != $this->category->class_name) {
@@ -280,7 +279,7 @@ class Resources_CategoryController extends AuthenticatedController
                     );
                     return;
                 }
-
+                
                 //Check if one of the system properties has been deleted:
                 $system_properties = ResourcePropertyDefinition::findBySql(
                     "INNER JOIN resource_category_properties rcp
@@ -298,7 +297,7 @@ class Resources_CategoryController extends AuthenticatedController
                             $removed_system_property_names[] = $property->name;
                         }
                     }
-
+                    
                     if ($removed_system_property_names) {
                         asort($removed_system_property_names);
                         PageLayout::postError(
@@ -309,17 +308,17 @@ class Resources_CategoryController extends AuthenticatedController
                     }
                 }
             }
-            $this->category->name = $this->name;
+            $this->category->name        = $this->name;
             $this->category->description = $this->description;
-            $this->category->class_name = $this->class_name;
-            $this->category->iconnr = $this->iconnr;
+            $this->category->class_name  = $this->class_name;
+            $this->category->iconnr      = $this->iconnr;
             
             if ($this->category->isDirty()) {
                 $successfully_stored = $this->category->store();
             } else {
                 $successfully_stored = true;
             }
-
+            
             if ($successfully_stored) {
                 //After we have stored the category we must store
                 //the properties or create them, if necessary.
@@ -338,16 +337,16 @@ class Resources_CategoryController extends AuthenticatedController
                         );
                     }
                 }
-
+                
                 //Now we must delete all properties which have not been
                 //set in the form but which may still be in the database:
-
+                
                 if (count($this->set_properties)) {
                     ResourceCategoryProperty::deleteBySql(
                         'category_id = :category_id
                         AND property_id NOT IN ( :set_property_ids )',
                         [
-                            'category_id' => $this->category->id,
+                            'category_id'      => $this->category->id,
                             'set_property_ids' => array_keys($this->set_properties)
                         ]
                     );
@@ -365,22 +364,22 @@ class Resources_CategoryController extends AuthenticatedController
                 PageLayout::postError(_('Fehler beim Speichern der Kategorie!'));
             }
         }
-
+        
         //Show form with current data:
-        $this->name = $this->category->name;
+        $this->name        = $this->category->name;
         $this->description = $this->category->description;
-        $this->class_name = $this->category->class_name;
-        $this->iconnr = $this->category->iconnr;
+        $this->class_name  = $this->category->class_name;
+        $this->iconnr      = $this->category->iconnr;
     }
-
-
+    
+    
     public function delete_action($category_id = null)
     {
-        $this->show_form = false;
+        $this->show_form              = false;
         $this->alternative_categories = [];
         $this->category_has_resources = false;
-        $this->resource_handling = 'reassign';
-
+        $this->resource_handling      = 'reassign';
+        
         $this->category = ResourceCategory::find($category_id);
         if (!$this->category) {
             PageLayout::postError(
@@ -388,7 +387,7 @@ class Resources_CategoryController extends AuthenticatedController
             );
             return;
         }
-
+        
         if ($this->category->system) {
             //The category is a system category.
             //Such categories cannot be deleted!
@@ -403,25 +402,25 @@ class Resources_CategoryController extends AuthenticatedController
             ORDER BY name ASC',
             [
                 'class_name' => $this->category->class_name,
-                'this_id' => $this->category->id
+                'this_id'    => $this->category->id
             ]
         );
         //Check if there are resources attached to the category:
         $this->category_has_resources = Resource::countByCategory_id($this->category->id) > 0;
-
+        
         if (!$this->alternative_categories && $this->category_has_resources) {
             PageLayout::postError(
                 _('Die Kategorie darf nicht gelöscht werden, da es keine alternative Kategorie für die Ressourcenklasse gibt, der die Ressourcen dieser Kategorie zugewiesen werden könnten!')
             );
             return;
         }
-
+        
         $this->show_form = true;
         if (Request::submitted('confirmed')) {
             CSRFProtection::verifyUnsafeRequest();
-
+            
             $this->resource_handling = Request::get('resource_handling');
-            $this->new_category_id = Request::get('new_category_id');
+            $this->new_category_id   = Request::get('new_category_id');
             if ($this->resource_handling == 'delete') {
                 //All resources from this resource category shall be deleted:
                 Resource::deleteBySql(
@@ -450,7 +449,7 @@ class Resources_CategoryController extends AuthenticatedController
                     return;
                 }
                 //Reassign the resources:
-                $db = DBManager::get();
+                $db   = DBManager::get();
                 $stmt = $db->prepare(
                     'UPDATE resources SET category_id = :new_category_id
                     WHERE category_id = :old_category_id'
@@ -467,7 +466,7 @@ class Resources_CategoryController extends AuthenticatedController
                 );
                 return;
             }
-
+            
             if ($this->category->delete()) {
                 $this->show_form = false;
                 PageLayout::postSuccess(_('Die Kategorie wurde gelöscht!'));
@@ -476,7 +475,7 @@ class Resources_CategoryController extends AuthenticatedController
             }
         }
     }
-
+    
     public function show_resources_action($category_id = null)
     {
         $this->category = ResourceCategory::find($category_id);
@@ -486,7 +485,7 @@ class Resources_CategoryController extends AuthenticatedController
             );
             return;
         }
-
+        
         $this->resources = Resource::findBySql(
             'category_id = :category_id
             ORDER BY name, mkdate ASC',

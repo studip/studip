@@ -1335,16 +1335,12 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         switch ($this->closed) {
             case '0':
                 return 'open';
-                break;
             case '1':
                 return 'pending';
-                break;
             case '2':
                 return 'closed';
-                break;
             case '3':
                 return 'declined';
-                break;
             default:
                 return '';
         }
