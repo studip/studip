@@ -59,7 +59,7 @@ class ResourceCategory extends SimpleORMap
     
     /**
      * Retrieves all resource categories from the database.
-     *
+     * @param bool $force_reload
      * @return ResourceCategory[] An array of ResourceCategory objects
      *     or an empty array if no resource categories are defined.
      */
@@ -157,7 +157,7 @@ class ResourceCategory extends SimpleORMap
      * but grouped and ordered by the property groups and the position of the
      * property in that group.
      *
-     * @return Array An array with the group names as keys and the properties
+     * @return array An array with the group names as keys and the properties
      *     in the second array dimension. The structure of the array
      *     is as follows:
      *     [
@@ -268,7 +268,7 @@ class ResourceCategory extends SimpleORMap
      *     Defaults to false.
      * @param bool $protected Whether the property is protected or not.
      *     Defaults to false.
-     *
+     * @param string $write_permission_level
      * @return ResourceCategoryProperty The created or updated
      *     resource category property.
      * @throws ResourcePropertyDefinitionException If the property definition
@@ -403,7 +403,7 @@ class ResourceCategory extends SimpleORMap
      *     with a default value and an invalid property name will not result
      *     in a set property.
      *
-     * @return New Resource object which is a member of this resource category.
+     * @return Resource New Resource object which is a member of this resource category.
      * @throws InvalidResourceException if the resource cannot be stored.
      * @throws ResourcePropertyException If the name of the resource property
      *     is not defined for this resource category.
@@ -519,11 +519,7 @@ class ResourceCategory extends SimpleORMap
      * @throws InvalidResourceCategoryException If this resource category
      *     doesn't match the category of the resource object.
      */
-    public function createDefinedResourceProperty(
-        Resource $resource,
-        $name,
-        $state = null
-    )
+    public function createDefinedResourceProperty(Resource $resource, $name, $state = null)
     {
         if ($resource->category_id != $this->id) {
             throw new InvalidResourceCategoryException(
@@ -750,13 +746,8 @@ class ResourceCategory extends SimpleORMap
      * @throws ResourcePropertyDefinitionException If no property is found.
      *
      */
-    public function userHasPropertyWritePermissions($name = '', User $user, $resource = null)
+    public function userHasPropertyWritePermissions(string $name, User $user, $resource = null)
     {
-        if (!$name) {
-            //No name? No permissions!
-            return false;
-        }
-        
         $property = ResourcePropertyDefinition::findOneBySql(
             'name = :name',
             [
