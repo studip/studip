@@ -7,6 +7,7 @@ require_once __DIR__ . '/../../_bootstrap.php';
 class ResourceManagerTest extends \Codeception\Test\Unit
 {
     protected $db_handle;
+    protected $oldUser;
 
     protected function _before()
     {
@@ -28,6 +29,11 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         //we have established to the Stud.IP database:
         \DBManager::getInstance()->setConnection('studip', $this->db_handle);
 
+        // Workaround old-style Stud.IP-API using $GLOBALS['user']
+        $this->oldUser = $GLOBALS['user'];
+        $GLOBALS['user'] = new \Seminar_User(
+            \User::build(['user_id' => 'cli', 'username' => 'cli', 'perms' => 'autor'], false)
+        );
 
         //As a final step we create the SORM objects for our test cases:
 
@@ -65,7 +71,10 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         //so that the live database remains unchanged after
         //all the test cases of this test have been finished:
         $this->db_handle->rollBack();
-    }
+
+        // Workaround old-style Stud.IP-API using $GLOBALS['user']
+        $GLOBALS['user'] = $this->oldUser;
+     }
 
 
     /*

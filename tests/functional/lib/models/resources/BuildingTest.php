@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * BuildingTest.php - A test for the Building class.
  *
@@ -17,22 +16,21 @@
  * @since       4.5
  */
 
-
 require_once __DIR__ . '/../../../_bootstrap.php';
-
 
 class BuildingTest extends \Codeception\Test\Unit
 {
     protected $db_handle;
+    protected $oldUser;
 
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
     protected function _before()
     {
         //First we must initialise the StudipPDO database connection:
         $this->db_handle = new \StudipPDO(
-            'mysql:host='
-                . $GLOBALS['DB_STUDIP_HOST']
-                . ';dbname='
-                . $GLOBALS['DB_STUDIP_DATABASE'],
+            'mysql:host=' . $GLOBALS['DB_STUDIP_HOST'] . ';dbname=' . $GLOBALS['DB_STUDIP_DATABASE'],
             $GLOBALS['DB_STUDIP_USER'],
             $GLOBALS['DB_STUDIP_PASSWORD']
         );
@@ -45,24 +43,20 @@ class BuildingTest extends \Codeception\Test\Unit
         //we have established to the Stud.IP database:
         \DBManager::getInstance()->setConnection('studip', $this->db_handle);
 
+        // Workaround old-style Stud.IP-API using $GLOBALS['user']
+        $this->oldUser = $GLOBALS['user'];
+        $GLOBALS['user'] = new \Seminar_User(
+            \User::build(['user_id' => 'cli', 'username' => 'cli', 'perms' => 'autor'], false)
+        );
+
         //As a final step we create the SORM objects for our test cases:
 
-        $this->location_cat = ResourceManager::createLocationCategory(
-            'TestLocation'
-        );
-        $this->building_cat = ResourceManager::createBuildingCategory(
-            'TestBuilding'
-        );
+        $this->location_cat = ResourceManager::createLocationCategory('TestLocation');
+        $this->building_cat = ResourceManager::createBuildingCategory('TestBuilding');
 
-        $this->location = $this->location_cat->createResource(
-            'Test location object'
-        );
+        $this->location = $this->location_cat->createResource('Test location object');
 
-        $this->building = $this->building_cat->createResource(
-            'Test building object',
-            '',
-            $this->location->id
-        );
+        $this->building = $this->building_cat->createResource('Test building object', '', $this->location->id);
 
         //Everything is set up for the test cases.
     }
@@ -73,13 +67,14 @@ class BuildingTest extends \Codeception\Test\Unit
         //so that the live database remains unchanged after
         //all the test cases of this test have been finished:
         $this->db_handle->rollBack();
+
+        // Workaround old-style Stud.IP-API using $GLOBALS['user']
+        $GLOBALS['user'] = $this->oldUser;
     }
 
     public function testValidation()
     {
-        $this->expectException(
-            InvalidResourceException::class
-        );
+        $this->expectException(InvalidResourceException::class);
 
         $invalid = new Building();
         $invalid->name = 'invalid';
@@ -92,23 +87,14 @@ class BuildingTest extends \Codeception\Test\Unit
     {
         $link = $this->building->getURL('show');
 
-        $this->assertEquals(
-            'dispatch.php/resources/building/index/' . $this->building->id,
-            $link
-        );
+        $this->assertEquals('dispatch.php/resources/building/index/' . $this->building->id, $link);
 
         $link = $this->building->getURL('show', ['test' => '1']);
 
-        $this->assertEquals(
-            'dispatch.php/resources/building/index/' . $this->building->id . '?test=1',
-            $link
-        );
+        $this->assertEquals('dispatch.php/resources/building/index/' . $this->building->id . '?test=1', $link);
 
         $link = $this->building->getURL('delete');
 
-        $this->assertEquals(
-            'dispatch.php/resources/building/delete/' . $this->building->id,
-            $link
-        );
+        $this->assertEquals('dispatch.php/resources/building/delete/' . $this->building->id, $link);
     }
 }

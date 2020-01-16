@@ -14,14 +14,15 @@ require 'lib/functions.php';
 $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 
 StudipAutoloader::register();
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/resources');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models/resources');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes', 'Studip');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions/resources');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/filesystem');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/migrations');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models/resources');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/phplib');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/resources');
 
 // load config-variables
