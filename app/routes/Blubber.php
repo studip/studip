@@ -172,6 +172,8 @@ class Blubber extends \RESTAPI\RouteMap
         $comment['external_contact'] = 0;
         $comment->store();
 
+        $GLOBALS['user']->cfg->store("BLUBBERTHREAD_VISITED_".$thread_id, time());
+
         return $comment->getJSONData();
     }
 

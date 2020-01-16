@@ -595,17 +595,19 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return CourseAvatar::getNobody()->getURL(Avatar::MEDIUM);
     }
 
-    public function getJSONData($limit_comments = 50, $around_comment_id = null)
+    public function getJSONData($limit_comments = 50, $user_id = null)
     {
+        $user_id || $user_id = $GLOBALS['user']->id;
         $output = [
             'thread_posting'  => $this->toRawArray(),
             'context_info'    => '',
             'comments'        => [],
             'more_up'         => 0,
             'more_down'       => 0,
-            'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ?", [
+            'unseen_comments' => BlubberComment::countBySQL("thread_id = ? AND mkdate >= ? AND user_id != ?", [
                 $this->getId(),
-                $this->getLastVisit() ?: object_get_visit_threshold()
+                $this->getLastVisit() ?: object_get_visit_threshold(),
+                $user_id
             ])
         ];
         $context_info = $this->getContextTemplate();
