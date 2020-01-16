@@ -122,14 +122,10 @@ class Room extends Resource
      *
      * @param string $building_id The ID of the building.
      *
-     * @return Room[] An array with rooms or an empty array.
+     * @return array An array with rooms or an empty array.
      */
-    public static function findByBuilding($building_id = null)
+    public static function findByBuilding(string $building_id)
     {
-        if (!$building_id) {
-            return [];
-        }
-        
         $building = Building::find($building_id);
         if (!$building) {
             return [];
@@ -319,7 +315,7 @@ class Room extends Resource
     /**
      * Checks wheter rooms with public booking plans exist.
      *
-     * @return True, if at least one room has a public booking plan,
+     * @return bool True, if at least one room has a public booking plan,
      *     false otherwise.
      */
     public static function publicBookingPlansExists()
@@ -337,7 +333,7 @@ class Room extends Resource
      * Retrieves all rooms that have a public booking plan,
      * ordered by name and creation date.
      *
-     * @return Room[] A list of rooms with public booking plans.
+     * @return array A list of rooms with public booking plans.
      */
     public static function findByPublicBookingPlans()
     {
@@ -350,7 +346,7 @@ class Room extends Resource
      * Only room types which have at least one room object with that
      * type in the database are considered here.
      *
-     * @return string[] An array consisting of all room types which
+     * @return array An array consisting of all room types which
      *     exist in the database.
      */
     public static function getAllRoomTypes()
@@ -441,11 +437,7 @@ class Room extends Resource
      * @throws InvalidArgumentException If $room_id is empty.
      *
      */
-    public static function getLinkForAction(
-        $action = 'show',
-        $id = null,
-        $link_parameters = []
-    )
+    public static function getLinkForAction($action = 'show', $id = null, $link_parameters = [])
     {
         return URLHelper::getLink(
             self::buildPathForAction($action, $id),
@@ -469,11 +461,7 @@ class Room extends Resource
      * @throws InvalidArgumentException If $room_id is empty.
      *
      */
-    public static function getURLForAction(
-        $action = 'show',
-        $id = null,
-        $url_parameters = []
-    )
+    public static function getURLForAction($action = 'show', $id = null, $url_parameters = [])
     {
         return URLHelper::getURL(
             self::buildPathForAction($action, $id),
@@ -528,7 +516,7 @@ class Room extends Resource
      * @return RoomRequest A room request object.
      * @see Resource::createRequest for paramter descriptions
      *     and thrown exceptions.
-     *
+     * @inheritDoc
      */
     public function createRequest(
         User $user,
@@ -636,6 +624,7 @@ class Room extends Resource
     
     /**
      * @see Resource::bookingPlanVisibleForUser
+     * @inheritDoc
      */
     public function bookingPlanVisibleForUser(User $user, $time_range = [])
     {
@@ -652,6 +641,7 @@ class Room extends Resource
      *     For rooms the actions 'show', 'booking_plan', 'add', 'edit' and 'delete'
      *     are defined.
      * @param array $link_parameters Optional parameters for the link.
+     * @return string @TODO
      */
     public function getLink($action = 'show', $link_parameters = [])
     {
@@ -671,6 +661,7 @@ class Room extends Resource
      *     For rooms the actions 'show', 'booking_plan', 'add', 'edit' and 'delete'
      *     are defined.
      * @param array $url_parameters Optional parameters for the URL.
+     * @return string @TODO
      */
     public function getURL($action = 'show', $url_parameters = [])
     {
