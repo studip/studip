@@ -252,7 +252,6 @@
                                     'selected_dates' => $selected_rooms
                                 ]
                             ) ?>
-                            <tr><td colspan="<?= htmlReady(count($request_time_intervals) + 2) ?>"></td></tr>
                         <? endif ?>
                         <? if ($alternative_rooms): ?>
                             <? foreach ($alternative_rooms as $room): ?>
@@ -267,7 +266,6 @@
                                     ]
                                 ) ?>
                             <? endforeach ?>
-                            <tr><td colspan="<?= htmlReady(count($request_time_intervals) + 2) ?>"></td></tr>
                         <? endif ?>
                     </tbody>
                 </table>
