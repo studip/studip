@@ -76,23 +76,23 @@ class ResourceAssignmentTest extends \Codeception\Test\Unit
         $this->booking = $this->resource->createBooking(
             $this->test_user,
             $this->test_user->id,
-            new DateTime('2017-12-01 8:00:00+0000'),
-            new DateTime('2017-12-01 14:00:00+0000'),
-            new DateTime('2017-12-05 23:59:59+0000'),
-            4,
-            1,
-            'd'
+            [
+                [
+                    'begin' => new DateTime('2017-12-01 8:00:00+0000'),
+                    'end' => new DateTime('2017-12-01 14:00:00+0000')
+                ]
+            ]
         );
 
         $this->another_booking = $this->resource->createBooking(
             $this->test_user,
             $this->test_user->id,
-            new DateTime('2017-12-06 0:00:00+0000'),
-            new DateTime('2017-12-06 12:00:00+0000'),
-            new DateTime('2017-12-08 23:59:59+0000'),
-            2,
-            1,
-            'd'
+            [
+                [
+                    'begin' => new DateTime('2017-12-06 0:00:00+0000'),
+                    'end' => new DateTime('2017-12-06 12:00:00+0000')
+                ]
+            ]
         );
         //Everything is set up for the test cases.
     }
