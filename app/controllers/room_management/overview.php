@@ -333,7 +333,7 @@ class RoomManagement_OverviewController extends StudipController
             }
         }
     }
-    
+
     public function rooms_action()
     {
         if (ResourceManager::userHasGlobalPermission($this->user, 'user')) {
@@ -345,7 +345,7 @@ class RoomManagement_OverviewController extends StudipController
                 _('Meine Räume')
             );
         }
-        
+
         if (Navigation::hasItem('/resources/overview')) {
             Navigation::activateItem('/resources/overview');
         }
@@ -383,6 +383,7 @@ class RoomManagement_OverviewController extends StudipController
         $sidebar->addWidget($clipboard);
 
         $search = new SearchWidget($this->url_for(''));
+        $search->setTitle(_('Räume nach Gebäude suchen'));
         $search->addNeedle(_('Gebäude'), 'building_name', true);
         $sidebar->addWidget($search);
 
