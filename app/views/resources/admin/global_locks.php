@@ -24,7 +24,8 @@
                     <td><?= date(_('d.m.Y H:i'), $lock->end) ?></td>
                     <td><?= $lock->getTypeString() ?></td>
                     <td class="actions">
-                        <?= ActionMenu::get()
+                        <?php
+                        $menu = ActionMenu::get()
                             ->addLink(
                                 $controller->url_for('resources/global_locks/delete/' . $lock->id),
                                 _('Sperrung bearbeiten'),
@@ -39,7 +40,8 @@
                                 [
                                     'data-dialog' => 'size=auto'
                                 ]
-                            )->render();
+                            );
+                        echo $menu->render();
                         ?>
                     </td>
                 </tr>
