@@ -1034,7 +1034,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->request->end = $new_end->getTimestamp();
             $this->request->comment = $this->comment;
             $this->request->preparation_time = $this->preparation_time * 60;
-            $successfully_stored = false;
+            
             if ($this->request->isDirty()) {
                 $successfully_stored = $this->request->store();
             } else {
@@ -1784,9 +1784,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->date->setTimestamp($week_timestamp);
         } elseif ($default_date) {
             $this->date = Request::getDateTime('defaultDate', 'Y-m-d');
-            $week_timestamp = $this->date->getTimestamp();
-        } else {
-            $week_timestamp = $this->date->getTimestamp();
         }
 
         //Build sidebar:
@@ -1838,7 +1835,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $course_booking_with_exceptions_colour =
             ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
@@ -2009,10 +2005,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             $lecturer_names = [];
             $course_number = '';
             $course_name = '';
-            $day_of_week = '';
-            $time_string = '';
-            $date_amount = 0;
-            $first_date_str = '';
             $room_name = '';
             $room_seats = '';
             if ($request->resource instanceof Resource) {
@@ -2035,12 +2027,12 @@ class Resources_RoomRequestController extends AuthenticatedController
                             if ($institute_name) {
                                 $institute_name .= "\n";
                             }
-                            $institute_name = $institute->name;
+                            $institute_name .= $institute->name;
                             if ($institute->faculty instanceof Institute) {
                                 if ($faculty_name) {
                                     $faculty_name .= "\n";
                                 }
-                                $faculty_name = $institute->faculty->name;
+                                $faculty_name .= $institute->faculty->name;
                             }
                         }
                     }
@@ -2052,8 +2044,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     $lecturer_names[] = $lecturer->user->getFullName('no_title_rev');
                 }
             }
-
-            $request_rows = [];
+            
             $date_data = [];
             $request_type = $request->getType();
             if ($request_type == 'course') {
