@@ -24,31 +24,25 @@
                     <td><?= date(_('d.m.Y H:i'), $lock->end) ?></td>
                     <td><?= $lock->getTypeString() ?></td>
                     <td class="actions">
-                        <?
-                        $menu = ActionMenu::get();
-
-                        $menu->addLink(
-                            URLHelper::getLink(
-                                'dispatch.php/resources/global_locks/edit/' . $lock->id
-                            ),
-                            _('Sperrung bearbeiten'),
-                            Icon::create('edit'),
-                            [
-                                'data-dialog' => 'size=auto'
-                            ]
-                        );
-                        $menu->addLink(
-                            URLHelper::getLink(
-                                'dispatch.php/resources/global_locks/delete/' . $lock->id
-                            ),
-                            _('Sperrung löschen'),
-                            Icon::create('trash'),
-                            [
-                                'data-dialog' => 'size=auto'
-                            ]
-                        );
+                        <?php
+                        $menu = ActionMenu::get()
+                            ->addLink(
+                                $controller->editURL($lock->id),
+                                _('Sperrung bearbeiten'),
+                                Icon::create('edit'),
+                                [
+                                    'data-dialog' => 'size=auto'
+                                ])
+                            ->addLink(
+                                $controller->deleteURL($lock->id),
+                                _('Sperrung löschen'),
+                                Icon::create('trash'),
+                                [
+                                    'data-dialog' => 'size=auto'
+                                ]
+                            );
+                        echo $menu->render();
                         ?>
-                        <?= $menu->render() ?>
                     </td>
                 </tr>
             <? endforeach ?>

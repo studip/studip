@@ -33,14 +33,10 @@
                     </td>
                     <td class="actions">
                         <form method="post" class="default"
-                              action="<?= URLHelper::getLink(
-                                      'dispatch.php/resources/property/delete/' . $property->id
-                                      ) ?>">
+                            action="<?= $controller->url_for('resources/property/delete/' . $property->id)?>">
                             <?= CSRFProtection::tokenTag() ?>
-                            <a href="<?= URLHelper::getLink(
-                                     'dispatch.php/resources/property/edit/'
-                                     . $property->id
-                                     ) ?>" data-dialog="size=auto">
+                            <a href="<?=$controller->url_for('resources/property/edit/' . $property->id)?>"
+                               data-dialog="size=auto">
                                 <?= Icon::create('edit')->asImg(
                                     [
                                         'title' => _('Bearbeiten')

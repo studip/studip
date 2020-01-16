@@ -50,14 +50,14 @@
                 $actions = ActionMenu::get()
                     ->conditionAll($category->hasResources())
                     ->addLink(
-                        $controller->link_for(
+                        $controller->url_for(
                             'resources/category/show_resources/' . $category->id
                         ),
                         _('Alle Ressourcen anzeigen'),
                         Icon::create('log'),
                         ['data-dialog' => 'size=auto'])
                     ->addLink(
-                        $controller->link_for(
+                        $controller->url_for(
                             'resources/category/edit/' . $category->id
                         ),
                         _('Bearbeiten'),
@@ -65,7 +65,7 @@
                         ['data-dialog' => 'size=auto'])
                     ->condition($category->system == '0')
                     ->addLink(
-                        $controller->link_for(
+                        $controller->url_for(
                             'resources/category/delete/' . $category->id
                         ),
                         _('Löschen'),

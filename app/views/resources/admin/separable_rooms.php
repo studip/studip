@@ -1,5 +1,5 @@
 <form class="default" method="post"
-      action="<?= URLHelper::getLink('dispatch.php/resources/admin/separable_rooms') ?>">
+      action="<?= URLHelper::getLink('dispatch.php/') ?>">
     <?= CSRFProtection::tokenTag() ?>
     <? if ($building_id): ?>
         <input type="hidden" name="building_id"
