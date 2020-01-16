@@ -91,27 +91,24 @@
             </select>
         </label>
 
-        <? if ((Config::get()->RESOURCES_ENABLE) && ($selectable_rooms || $room_search)) : ?>
-            <label>
-                <?= _('Raum') ?>
-                <? if ($room_search): ?>
-                    <?= $room_search->render() ?>
-                <? else: ?>
-                    <select name="room_id" style="width: calc(100% - 23px);">
-                        <option value=""><?= _('<em>Keinen</em> Raum buchen') ?></option>
-                        <? foreach ($selectable_rooms as $room): ?>
-                            <option value="<?= htmlReady($room->id) ?>">
-                                <?= htmlReady($room->name) ?>
-                                <? if ($room->seats > 1) : ?>
-                                    <?= sprintf(_('(%d Sitzplätze)'), $room->seats) ?>
-                                <? endif ?>
-                            </option>
-                        <? endforeach ?>
-                    </select>
-                <? endif ?>
-            </label>
-        <? endif ?>
-            </select>
+    <? if (Config::get()->RESOURCES_ENABLE && ($selectable_rooms || $room_search)) : ?>
+        <label>
+            <?= _('Raum') ?>
+            <? if ($room_search): ?>
+                <?= $room_search->render() ?>
+            <? else: ?>
+                <select name="room_id" style="width: calc(100% - 23px);">
+                    <option value=""><?= _('<em>Keinen</em> Raum buchen') ?></option>
+                    <? foreach ($selectable_rooms as $room): ?>
+                        <option value="<?= htmlReady($room->id) ?>">
+                            <?= htmlReady($room->name) ?>
+                            <? if ($room->seats > 1) : ?>
+                                <?= sprintf(_('(%d Sitzplätze)'), $room->seats) ?>
+                            <? endif ?>
+                        </option>
+                    <? endforeach ?>
+                </select>
+            <? endif ?>
         </label>
     <? endif ?>
 
