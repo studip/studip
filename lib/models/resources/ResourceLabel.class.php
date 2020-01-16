@@ -149,7 +149,7 @@ class ResourceLabel extends Resource
         return false;
     }
     
-    public function isPropertyEditable($name = '', User $user)
+    public function isPropertyEditable(string $name, User $user)
     {
         return false;
     }

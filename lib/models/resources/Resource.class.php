@@ -1774,7 +1774,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @return bool True, if the user has edit permissions for the property,
      *     false otherwise.
      */
-    public function isPropertyEditable($name = '', User $user)
+    public function isPropertyEditable(string $name, User $user)
     {
         return $this->category->userHasPropertyWritePermissions($name, $user, $this);
     }
