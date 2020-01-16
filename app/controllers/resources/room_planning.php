@@ -498,7 +498,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if (Request::isDialog()) {
             $this->dialog_semesters = array_reverse(Semester::getAll());
             $this->plan_link        = URLHelper::getLink(
-                'dispatch.php/resources/room_planning/semester_plan/' . $resource->id,
+                'dispatch.php/resources/room_planning/semester_plan/' . $this->resource->id,
                 [
                     'allday' => Request::get('allday', false)
                 ]
