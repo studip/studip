@@ -174,9 +174,7 @@ class Resources_ResourceController extends AuthenticatedController
                     CONCAT(vorname, nachname) LIKE CONCAT('%', :input, '%')
                 )
                 ORDER BY nachname ASC, vorname ASC, username ASC"
-            ),
-            _('Personen suchen'),
-            'searched_user_id'
+            )
         );
     }
 
@@ -213,16 +211,6 @@ class Resources_ResourceController extends AuthenticatedController
         );
 
         if ($GLOBALS['user']->id != 'nobody') {
-            $current_user = User::findCurrent();
-            /**
-             * @TODO: Check this
-             *  $week_timestamp is not defined
-             */
-            $user_has_resource_user_permissions = $this->resource->userHasPermission(
-                $current_user,
-                'user'
-            );
-
             if (!Request::isDialog()) {
                 $sidebar = Sidebar::get();
 
