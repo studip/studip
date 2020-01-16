@@ -163,7 +163,7 @@
                     $resource->getLink('show'),
                     _('Details'),
                     Icon::create('info-circle'),
-                    ['data-dialog' => '']
+                    ['data-dialog' => 'size=auto']
                 ];
 
                 $actions['0020'] = [
@@ -195,7 +195,7 @@
                         $resource->getLink('edit'),
                         _('Bearbeiten'),
                         Icon::create('edit'),
-                        ['data-dialog' => '']
+                        ['data-dialog' => 'size=auto']
                     ];
                 }
                 if ($show_autor_actions) {
