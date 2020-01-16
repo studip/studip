@@ -57,8 +57,7 @@
  * @property User assigned_user belongs_to User
  * @property CourseDate assigned_course_date belongs_to CourseDate
  */
-class ResourceBooking extends SimpleORMap
-    implements PrivacyObject, Studip\Calendar\EventSource
+class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calendar\EventSource
 {
     private $assigned_user_type;
 
@@ -113,6 +112,7 @@ class ResourceBooking extends SimpleORMap
      * findByResourceAndTimeRanges and countByResourceAndTimeRanges.
      *
      * @see findByResourceAndTimeRanges
+     * @inheritDoc
      */
     protected static function buildResourceAndTimeRangesSqlQuery(
         Resource $resource,
@@ -209,7 +209,7 @@ class ResourceBooking extends SimpleORMap
         //This is done in the rest of the SQL query:
 
         $whole_sql = "resource_bookings.id IN (
-                    SELECT resource_booking_intervals.booking_id FROM resource_booking_intervals WHERE 
+                    SELECT resource_booking_intervals.booking_id FROM resource_booking_intervals WHERE
                     resource_booking_intervals.resource_id = :resource_id
                     AND resource_booking_intervals.takes_place = 1"
                     . $excluded_booking_ids_sql
@@ -232,7 +232,7 @@ class ResourceBooking extends SimpleORMap
      * set the $booking_type parameter.
      *
      * @param Resource $resource The resource whose requests shall be retrieved.
-     * @param Array $time_ranges An array with time ranges as DateTime objects.
+     * @param array $time_ranges An array with time ranges as DateTime objects.
      *     The array has the following structure:
      *     [
      *         [
@@ -241,7 +241,7 @@ class ResourceBooking extends SimpleORMap
      *         ],
      *         ...
      *     ]
-     * @param Array $booking_types An optional specification for the
+     * @param array $booking_types An optional specification for the
      *     booking_type column in the database. More than one booking
      *     type can be specified.
      *     By default this is set to an empty array which means
@@ -249,10 +249,10 @@ class ResourceBooking extends SimpleORMap
      *     The allowed resource booking types are specified in the
      *     class documentation.
      *
-     * @param Array $excluded_booking_ids An array of strings representing
+     * @param array $excluded_booking_ids An array of strings representing
      *     resource booking IDs. IDs specified in this array are excluded
      *     from the search.
-     * @return ResourceRequest[] An array of ResourceRequest objects.
+     * @return ResourceBooking[] An array of ResourceRequest objects.
      *     If no requests can be found, the array is empty.
      *
      * @throws InvalidArgumentException, if the time ranges are either not in an
@@ -289,6 +289,7 @@ class ResourceBooking extends SimpleORMap
      * set the $booking_type parameter.
      *
      * @see findByResourceAndTimeRanges
+     * @inheritDoc
      */
     public static function countByResourceAndTimeRanges(
         Resource $resource,
@@ -318,6 +319,7 @@ class ResourceBooking extends SimpleORMap
      * set the $booking_type parameter.
      *
      * @see findByResourceAndTimeRanges
+     * @inheritDoc
      */
     public static function deleteByResourceAndTimeRanges(
         Resource $resource,
@@ -346,6 +348,7 @@ class ResourceBooking extends SimpleORMap
      *
      * @param bool $force_booking Whether booking shall be forced (true)
      *     or not (false). Defaults to false.
+     * @return bool
      */
     public function store($force_booking = false)
     {
@@ -833,10 +836,8 @@ class ResourceBooking extends SimpleORMap
         }
         return $deleted_c;
     }
-
-
-
-
+    
+    
     /**
      * Determines whether the resource booking ends on the same timestamp
      * like the lecture time of one of the defined semesters.
@@ -898,7 +899,8 @@ class ResourceBooking extends SimpleORMap
     /**
      * Determines whether this resource booking has a repetition in the
      * specified time range.
-     *
+     * @param DateTime $begin
+     * @param DateTime $end
      * @return bool True, if the booking has repetitions in the timeframe
      * specified by $begin and $end, false otherwise.
      */
@@ -1005,7 +1007,7 @@ class ResourceBooking extends SimpleORMap
      * Determines if the resource booking overlaps with another
      * resource booking.
      *
-     * @return True, if there are other bookings which overlap
+     * @return bool True, if there are other bookings which overlap
      *     with this one, false otherwise.
      */
     public function hasOverlappingBookings()
@@ -1057,7 +1059,7 @@ class ResourceBooking extends SimpleORMap
     /**
      * Gets the bookings that overlap with this booking.
      *
-     * @return SimpleORMapCollection Collection of ResourceBooking objects
+     * @return array Array of ResourceBooking objects
      */
     public function getOverlappingBookings()
     {
@@ -1129,7 +1131,7 @@ class ResourceBooking extends SimpleORMap
      * @param bool $as_datetime Whether to return the timestamps
      *     as DateTime objects (true) or not (false). Defaults to false.
      *
-     * @return Array A two-dimensional array with each time interval
+     * @return array A two-dimensional array with each time interval
      *     for this booking. The array has the following structure:
      *     [
      *         [
@@ -1484,9 +1486,7 @@ class ResourceBooking extends SimpleORMap
         }
         return $strings;
     }
-
-
-    //PrivacyObject interface implementation:
+    
     
     /**
      * @inheritDoc
@@ -1514,10 +1514,7 @@ class ResourceBooking extends SimpleORMap
     }
 
 
-    //EventSource interface implementation:
-
-
-    public function convertToEventData($time_intervals = [], $user)
+    public function convertToEventData(array $time_intervals, User $user)
     {
         $booking_plan_booking_bg =
             \ColourValue::find('Resources.BookingPlan.Booking.Bg');
@@ -1527,30 +1524,16 @@ class ResourceBooking extends SimpleORMap
             ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Bg');
         $booking_plan_simple_booking_with_exceptions_fg =
             ColourValue::find('Resources.BookingPlan.SimpleBookingWithExceptions.Fg');
-        $booking_plan_reservation_bg =
-            \ColourValue::find('Resources.BookingPlan.Reservation.Bg');
-        $booking_plan_reservation_fg =
-            \ColourValue::find('Resources.BookingPlan.Reservation.Fg');
-        $booking_plan_lock_bg =
-            \ColourValue::find('Resources.BookingPlan.Lock.Bg');
-        $booking_plan_lock_fg =
-            \ColourValue::find('Resources.BookingPlan.Lock.Fg');
-        $booking_plan_planned_booking_bg =
-            \ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
-        $booking_plan_planned_booking_fg =
-            \ColourValue::find('Resources.BookingPlan.PlannedBooking.Fg');
-        $booking_plan_preparation_bg =
-            \ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
-        $booking_plan_preparation_fg =
-            \ColourValue::find('Resources.BookingPlan.PreparationTime.Fg');
-        $booking_plan_course_booking_bg =
-            \ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-        $booking_plan_course_booking_fg =
-            \ColourValue::find('Resources.BookingPlan.CourseBooking.Fg');
-        $booking_plan_course_booking_with_exceptions_bg =
-            \ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Bg');
-        $booking_plan_course_booking_with_exceptions_fg =
-            \ColourValue::find('Resources.BookingPlan.CourseBookingWithExceptions.Fg');
+        $booking_plan_reservation_bg = \ColourValue::find('Resources.BookingPlan.Reservation.Bg');
+        $booking_plan_reservation_fg = \ColourValue::find('Resources.BookingPlan.Reservation.Fg');
+        $booking_plan_lock_bg = \ColourValue::find('Resources.BookingPlan.Lock.Bg');
+        $booking_plan_lock_fg = \ColourValue::find('Resources.BookingPlan.Lock.Fg');
+        $booking_plan_planned_booking_bg = \ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
+        $booking_plan_planned_booking_fg = \ColourValue::find('Resources.BookingPlan.PlannedBooking.Fg');
+        $booking_plan_preparation_bg = \ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
+        $booking_plan_preparation_fg = \ColourValue::find('Resources.BookingPlan.PreparationTime.Fg');
+        $booking_plan_course_booking_bg = \ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+        $booking_plan_course_booking_fg = \ColourValue::find('Resources.BookingPlan.CourseBooking.Fg');
 
         $colour = $booking_plan_booking_bg->__toString();
         $text_colour = $booking_plan_booking_fg->__toString();
@@ -1559,35 +1542,10 @@ class ResourceBooking extends SimpleORMap
         if ($this->booking_type == '0') {
             $event_classes[] = 'resource-booking';
             //Check if the booking is a course booking:
-            if ($this->isSimpleBooking()) {
-                /*
-                if ($this->hasExceptions()) {
-                    $event_classes[] = 'with-exceptions';
-                    $colour =
-                        $booking_plan_simple_booking_with_exceptions_bg->__toString();
-                    $text_colour =
-                        $booking_plan_simple_booking_with_exceptions_fg->__toString();
-                }*/
-            } else {
-                //It is a course date.
-                $event_classes[] = 'for-course';
-                $colour =
-                    $booking_plan_course_booking_bg->__toString();
-                $text_colour =
-                    $booking_plan_course_booking_fg->__toString();
-                /*
-                $course_date_with_exceptions = false;
-                if ($this->hasExceptions()) {
-                    $event_classes[] = 'with-exceptions';
-                    //The course date is assigned to a metadate
-                    //with exceptions.
-                    $colour =
-                        $booking_plan_course_booking_with_exceptions_bg->__toString();
-                    $text_colour =
-                        $booking_plan_course_booking_with_exceptions_fg->__toString();
-                }
-                */
-            }
+            //It is a course date.
+            $event_classes[] = 'for-course';
+            $colour = $booking_plan_course_booking_bg->__toString();
+            $text_colour = $booking_plan_course_booking_fg->__toString();
         } elseif ($this->booking_type == '1') {
             $event_classes[] = 'resource-reservation';
             $colour = $booking_plan_reservation_bg->__toString();
@@ -1601,27 +1559,21 @@ class ResourceBooking extends SimpleORMap
             $colour = $booking_plan_planned_booking_bg->__toString();
             $text_colour = $booking_plan_planned_booking_fg->__toString();
         }
-
-        $booking_is_editable = false;
-        if ($user instanceof User) {
-            $booking_is_editable = !$this->isReadOnlyForUser($user);
-        }
+        
+        $booking_is_editable = !$this->isReadOnlyForUser($user);
 
         $booking_api_urls = [];
-        $booking_view_urls = [];
-        if ($user instanceof User) {
-            $booking_view_urls = [
-                'show' => \URLHelper::getURL(
-                    'dispatch.php/resources/booking/index/'
-                  . $this->id
-                ),
-            ];
-            if ($booking_is_editable) {
-                $booking_view_urls['edit'] = \URLHelper::getURL(
-                    'dispatch.php/resources/booking/edit/'
-                  . $this->id
-                );
-            }
+        $booking_view_urls = [
+            'show' => \URLHelper::getURL(
+                'dispatch.php/resources/booking/index/'
+                . $this->id
+            ),
+        ];
+        if ($booking_is_editable) {
+            $booking_view_urls['edit'] = \URLHelper::getURL(
+                'dispatch.php/resources/booking/edit/'
+                . $this->id
+            );
         }
         $events = [];
 
@@ -1650,21 +1602,11 @@ class ResourceBooking extends SimpleORMap
                     $booking_view_urls
                 );
             }
-
-            $all_day = false;
-            if ((date('Ymd', $interval['begin']) == date('Ymd', $interval['end']))
-                && (intval(date('His', $interval['begin'])) == 0)
-                && (date('His', $interval['end']) == '235959')) {
-                $all_day = true;
-            }
-
             $prefix = '';
             $icon = '';
-
-            if ($user instanceof User) {
-                if ($this->resource->userHasPermission($user, 'user') && $this->internal_comment) {
-                    $icon = 'chat2';
-                }
+    
+            if ($this->resource->userHasPermission($user, 'user') && $this->internal_comment) {
+                $icon = 'chat2';
             }
 
             if (!$this->isSimpleBooking()) {

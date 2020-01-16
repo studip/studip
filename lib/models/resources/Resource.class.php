@@ -1424,12 +1424,8 @@ class Resource extends SimpleORMap implements StudipItem
      * doesn't match the category of the resource object.
      *
      */
-    public function getPropertyObject($name = '')
+    public function getPropertyObject(string $name)
     {
-        if (!$name) {
-            return null;
-        }
-        
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource object. If it is a defined property
@@ -1471,12 +1467,8 @@ class Resource extends SimpleORMap implements StudipItem
      * @return string|null The state of the specified property or null
      *     if the propery can't be found.
      */
-    public function getProperty($name = '')
+    public function getProperty(string $name)
     {
-        if (!$name) {
-            return null;
-        }
-        
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource object. If it is a defined property
@@ -1534,7 +1526,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @return SimpleORMap|null A SimpleORMap-based object or null,
      *     if no such object can be retrieved from the property's state.
      */
-    public function getPropertyRelatedObject($name = '')
+    public function getPropertyRelatedObject(string $name)
     {
         //Get the property state first:
         $property = $this->getPropertyObject($name);
@@ -1570,12 +1562,8 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @return True, if the property state could be set, false otherwise.
      */
-    public function setProperty($name = '', $state = '', $user = null)
+    public function setProperty(string $name, $state = '', $user = null)
     {
-        if (!$name) {
-            return false;
-        }
-        
         if (!($user instanceof User)) {
             $user = User::findCurrent();
             if (!$user) {
@@ -1697,13 +1685,8 @@ class Resource extends SimpleORMap implements StudipItem
      *         (property-ID) => (error message or empty string)
      *     ]
      */
-    public function setPropertiesById($properties = [], $user = null)
+    public function setPropertiesById(array $properties, User $user = null)
     {
-        if (!is_array($properties)) {
-            //There is nothing to be set.
-            return [];
-        }
-        
         $failed_properties = [];
         
         if (!($user instanceof User)) {
@@ -1761,10 +1744,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     for the specified resource property.
      *
      */
-    public function setPropertyByDefinitionId(
-        $property_definition_id = null,
-        $state = null
-    )
+    public function setPropertyByDefinitionId($property_definition_id = null, $state = null)
     {
         if (!$property_definition_id and !$state) {
             return false;
@@ -1810,12 +1790,8 @@ class Resource extends SimpleORMap implements StudipItem
      *
      * @return bool True, if the property has been saved, false otherwise.
      */
-    public function setPropertyRelatedObject($name = '', $object = null)
+    public function setPropertyRelatedObject(string $name, SimpleORMap $object)
     {
-        if (!$object) {
-            return false;
-        }
-        
         //Get the property state first:
         $property = $this->getPropertyObject($name);
         
@@ -1827,35 +1803,28 @@ class Resource extends SimpleORMap implements StudipItem
         
         switch ($property->definition->type) {
             case 'user':
-            {
                 if (!($object instanceof User)) {
                     throw new ResourcePropertyException(
                         _("Eine Ressourceneigenschaft vom Typ 'user' benötigt ein Nutzer-Objekt zur Wertzuweisung!")
                     );
                 }
-                break;
-            }
+            break;
             case 'institute':
-            {
                 if (!($object instanceof Institute)) {
                     throw new ResourcePropertyException(
                         _("Eine Ressourceneigenschaft vom Typ 'institute' benötigt ein Institut-Objekt zur Wertzuweisung!")
                     );
                 }
-                break;
-            }
+            break;
             case 'fileref':
-            {
                 if (!($object instanceof FileRef)) {
                     throw new ResourcePropertyException(
                         _("Eine Ressourceneigenschaft vom Typ 'fileref' benötigt ein FileRef-Objekt zur Wertzuweisung!")
                     );
                 }
-                break;
-            }
+            break;
             default:
-            {
-            }
+            break;
         }
         
         //When no exception is thrown above we can set the object's ID
@@ -2562,10 +2531,7 @@ class Resource extends SimpleORMap implements StudipItem
      * @see Resource::getUserPermission
      *
      */
-    public function bookingPlanVisibleForUser(
-        User $user,
-        $time_range = []
-    )
+    public function bookingPlanVisibleForUser(User $user, $time_range = [])
     {
         return $this->userHasPermission($user, 'user', $time_range)
             || $GLOBALS['perm']->have_perm('root', $user->id);
@@ -2630,7 +2596,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     which shall be searched.
      * @param bool $convert_objects True, if objects shall be converted to
      *     $class_name (default), false otherwise.
-     * @param string $order_by_name Order the children by name.
+     * @param bool $order_by_name Order the children by name.
      *     Defaults to true.
      *
      * @return Resource[] An array of resource objects or an empty array
@@ -2903,6 +2869,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     For default Resources the actions 'show', 'add', 'edit' and 'delete'
      *     are defined.
      * @param array $link_parameters Optional parameters for the link.
+     * @return string @TODO
      */
     public function getLink($action = 'show', $link_parameters = [])
     {
@@ -2933,6 +2900,7 @@ class Resource extends SimpleORMap implements StudipItem
      *     For default Resources the actions 'show', 'add', 'edit' and 'delete'
      *     are defined.
      * @param array $url_parameters Optional parameters for the URL.
+     * @return string @TODO
      */
     public function getURL($action = 'show', $url_parameters = [])
     {
