@@ -2007,7 +2007,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * where this request has been assigned to. The sent mail informs them
      * about the closing of the request.
      */
-    public function sendCloseRequestMailToLecturers($booking_date_objects = [])
+    public function sendCloseRequestMailToLecturers($bookings = [])
     {
         //Notify each lecturer of the course:
         if ($this->course) {

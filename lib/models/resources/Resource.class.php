@@ -575,7 +575,7 @@ class Resource extends SimpleORMap implements StudipItem
                     ],
                     null,
                     0,
-                    $last_end_timestamp,
+                    $end,
                     $preparation_time,
                     $description,
                     $internal_comment,
@@ -853,8 +853,8 @@ class Resource extends SimpleORMap implements StudipItem
                 } else {
                     $booking->repeat_end = $repetition_end_date;
                 }
-            } elseif ($repeat_amount) {
-                $booking->repeat_quantity = $repeat_amount;
+            } elseif ($repetition_amount) {
+                $booking->repeat_quantity = $repetition_amount;
             }
             
             $booking->repetition_interval = $repetition_interval->format('P%YY%MM%DD');
