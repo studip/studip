@@ -104,46 +104,6 @@ table.resource-categories {
     position: absolute;
 }
 
-
-.resource-category-select
-{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-
-    a.category-link {
-        background-color: transparent;
-        margin: 10px;
-        border: thin solid @content-color-20;
-        padding: 5px;
-        width: 100px;
-        min-width: 100px;
-        max-width: 100px;
-        height: 100px;
-        min-height: 100px;
-        max-height: 100px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-        text-align: center;
-
-        &:has(.radio-button:checked) {
-            background-color: @brand-color-darker;
-            color: @contrast-content-white;
-        }
-
-        .radio-button {
-            visibility: hidden;
-            &:checked + img {
-                filter: invert(100%) brightness(200%);
-            }
-        }
-    }
-}
-
 #layout-sidebar .room-search-tree-widget
 {
     max-height: unset !important;
