@@ -39,6 +39,7 @@ class BlubbermessengerFlat extends Migration
             SELECT thread_id, 'global', user_id, external_contact, `content`, null, chdate, mkdate
             FROM blubber_threads
             WHERE context_type = 'public'
+                AND thread_id != 'global'
         ");
         DBManager::get()->exec("
             DELETE FROM blubber_threads
