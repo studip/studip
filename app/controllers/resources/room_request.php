@@ -1295,6 +1295,11 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         }
 
+        if (!($selected_room instanceof Room)) {
+            //List "my rooms" as default alternative selection.
+            $this->alternatives_selection = 'my_rooms';
+        }
+
         if (!$this->requested_room_fully_available || Request::submitted('select_alternatives')) {
             if ($this->alternatives_selection == 'clipboard') {
                 $room_group_rooms = [];
