@@ -1,5 +1,5 @@
-<h2><?= _('Ausgewählter Raum')?></h2>
-<section>
+<fieldset>
+    <legend><?= _('Ausgewählter Raum') ?></legend>
     <? if ($selected_room): ?>
         <input type="hidden" name="selected_room_id"
                value="<?= htmlReady($selected_room->id) ?>">
@@ -22,18 +22,18 @@
     <? else: ?>
         <?= MessageBox::info(
             _('Es wurde kein konkreter Raum ausgewählt!')
-        )?>
+        ) ?>
     <? endif ?>
-</section>
-<label>
-    <?= _('Erwartete Anzahl an Teilnehmenden') ?>:
-    <input type="number" name="seats"
-           value="<?= htmlReady($selected_properties['seats']) ?>"
-           min="1">
-</label>
-<label>
-    <?= _('Rüstzeit') ?>
-    <input type="number" name="preparation_time"
-           value="<?= htmlReady($preparation_time) ?>"
-           min="0" max="<?= htmlReady($max_preparation_time) ?>">
-</label>
+    <label>
+        <?= _('Erwartete Anzahl an Teilnehmenden') ?>:
+        <input type="number" name="seats"
+               value="<?= htmlReady($selected_properties['seats']) ?>"
+               min="1">
+    </label>
+    <label>
+        <?= _('Rüstzeit') ?>
+        <input type="number" name="preparation_time"
+               value="<?= htmlReady($preparation_time) ?>"
+               min="0" max="<?= htmlReady($max_preparation_time) ?>">
+    </label>
+</fieldset>

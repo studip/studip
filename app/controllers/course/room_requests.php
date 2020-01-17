@@ -183,6 +183,7 @@ class Course_RoomRequestsController extends AuthenticatedController
         //Create the RoomRequest object and set its "range-ID":
         $this->request = new RoomRequest($request_id);
         if ($this->request->isNew()) {
+            PageLayout::setTitle(_('Raumanfragen bearbeiten / erstellen') . ' - ' . PageLayout::getTitle());
             if (Request::submitted('create_room_request')) {
                 //Get the type and the range-ID of request:
                 $range_str = explode('_', Request::get('range_str'), 2);
