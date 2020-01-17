@@ -75,6 +75,15 @@
                             'additional_properties' => [
                                 'number',
                                 'address'
+                            ],
+                            'additional_actions' => [
+                                '0020' => null,
+                                '0030' => null,
+                                '0040' => null,
+                                '0050' => null,
+                                '0070' => null,
+                                '0080' => null,
+                                '0090' => null
                             ]
                         ]
                     ) ?>
