@@ -3,14 +3,12 @@
         <?= CSRFProtection::tokenTag() ?>
         <input type="hidden" name="parent_folder_id" value="<?= $folder->getId() ?>">
         <table class="default documents sortable-table" data-sortlist="[[2, 0]]" data-folder_id="<?= $folder->getId() ?>">
-            <?= $this->render_partial(
-                'files/_files_table_caption.php',
-                [
-                    'folder' => $folder,
-                    'controllerpath' => 'resources/resource/files/' . $resource->id,
-                    'root_name' => $this->resource->getFullName()
-                ]
-            ) ?>
+            <caption>
+                <a href="<?= $controller->url_for('resources/resource/files/' . $resource->id)?>"
+                   title="<?= _('Zum Hauptordner') ?>">
+                    <?= Icon::create('folder-home-full', 'clickable')->asImg(30, ['class' => 'text-bottom']) ?>
+                </a>
+                <?= htmlReady($resource->getFullName()) ?></caption>
             <?= $this->render_partial('files/_files_thead') ?>
             <tbody>
                 <? if (count($folder_files)): ?>
