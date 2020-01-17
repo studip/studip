@@ -26,16 +26,17 @@
             </a>
         </div>
     <? endif ?>
-
-
-    <? if ($thread->isWritable()) : ?>
-        <div class="center blubber-edit-icons">
-            <form action="<?= URLHelper::getLink("dispatch.php/blubber/delete/".$thread->getId()) ?>"
-                  method="post"
-                  data-confirm="<?= _('Wirklich löschen?') ?>">
-                <?= CSRFProtection::tokenTag() ?>
-                <?= Icon::create("trash", "clickable")->asInput(30, ['title' => _('Diesen Blubber löschen.')]) ?>
-            </form>
-        </div>
-    <? endif ?>
 </div>
+<? if (!$GLOBALS['perm']->have_perm("admin")) : ?>
+    <div class="indented new_section">
+        <a href="#"
+           onClick="STUDIP.Blubber.followunfollow.call(this); return false;"
+           class="followunfollow<?= $unfollowed ? " unfollowed" : "" ?>"
+           title="<?= _("Benachrichtigungen für diese Konversation abstellen.") ?>"
+           data-thread_id="<?= htmlReady($thread->getId()) ?>">
+            <?= Icon::create("rss+remove", "clickable")->asImg(20, ['class' => "follow text-bottom"]) ?>
+            <?= Icon::create("rss", "clickable")->asImg(20, ['class' => "unfollow text-bottom"]) ?>
+            <?= _("Benachrichtigungen aktiviert") ?>
+        </a>
+    </div>
+<? endif ?>

@@ -12,14 +12,61 @@
     [v-show] {
         display: none;
     }
-    &.globalstream .blubber_sideinfo {
-        display: none;
+    .context_info {
+        .followunfollow {
+            > .follow {
+                display: none;
+            }
+            &.unfollowed {
+                text-decoration: line-through;
+            }
+            &.unfollowed > .follow {
+                display: inline-block;
+            }
+            &.unfollowed > .unfollow {
+                display: none;
+            }
+        }
     }
 }
 
 .blubber_thread {
     border: 1px solid $content-color-40;
     background-color: $dark-gray-color-5;
+
+    width: 100%;
+    max-width: 100%;
+
+    margin-right: 12px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+    position: relative;
+
+    [v-if],
+    [v-for],
+    [v-show] {
+        display: none;
+    }
+
+    .scrollable_area {
+        max-height: calc(100vh - 240px);
+        overflow: auto;
+        &.scrolled::before {
+            //the shadow!
+            content: '';
+            left: 0px;
+            right: 0px;
+            height: 20px;
+            display: block;
+            position: absolute;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
+            z-index: 10;
+        }
+    }
 
     &.dragover {
         background-color: $yellow-40;
@@ -158,6 +205,9 @@
                     > .name {
                         display: none;
                     }
+                    blockquote {
+                        background-color: rgba(255, 255, 255, 0.1);
+                    }
                 }
                 > .avatar {
                     display: none;
@@ -202,7 +252,7 @@
                 }
                 .answer_comment > img {
                     vertical-align: text-bottom;
-                    transform: rotate(90deg);
+                    transform: rotate(180deg);
                 }
             }
             &.more {
@@ -221,9 +271,7 @@
         }
 
     }
-}
 
-.blubber_thread, .blubber_globalstream {
     .writer {
         background-color: $white;
         background-image: linear-gradient(to left, $content-color-60, $content-color-60);
@@ -261,10 +309,7 @@
             }
         }
     }
-}
 
-.blubber_thread,
-.blubber_globalstream {
     .thread_posting {
         border-bottom: 1px solid $content-color-40;
         background-color: $white;
@@ -337,77 +382,7 @@
     }
 }
 
-.blubber_globalstream,
-.blubber_thread {
-    width: 100%;
-    max-width: 100%;
 
-    margin-right: 12px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: stretch;
-    align-content: stretch;
-    position: relative;
-
-    [v-if],
-    [v-for],
-    [v-show] {
-        display: none;
-    }
-
-    .scrollable_area {
-        max-height: calc(100vh - 240px);
-        overflow: auto;
-        &.scrolled::before {
-            //the shadow!
-            content: '';
-            left: 0px;
-            right: 0px;
-            height: 20px;
-            display: block;
-            position: absolute;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.08), rgba(0,0,0,0));
-            z-index: 10;
-        }
-    }
-    ol.postings {
-        padding: 0px;
-        margin: 0px;
-        list-style-type: none;
-
-        > li {
-            border: 1px solid $content-color-40;
-            margin-bottom: 15px;
-            &.new {
-                animation: blubber-scaling 300ms ease-out;
-            }
-        }
-    }
-}
-
-.blubber_globalstream {
-    .writer {
-        border: 1px solid $content-color-40;
-        padding: 5px;
-        margin-bottom: 15px;
-    }
-    .thread_posting {
-        border-bottom: none;
-        .link_to_comments {
-            line-height: 30px;
-            margin-left: 75px;
-        }
-    }
-    ol.postings .more {
-        text-align: center;
-        border: none;
-    }
-    .scrollable_area {
-        max-height: calc(100vh - 175px);
-    }
-}
 
 .blubber_sideinfo {
     width: 270px;
@@ -422,6 +397,9 @@
 
     .indented {
         padding: 10px;
+    }
+    .new_section {
+        border-top: 1px solid $content-color-40;
     }
 
     .members {
@@ -468,26 +446,6 @@
             background-size: 100% 100%;
             background-position: auto;
             margin-right: 10px;
-        }
-    }
-
-    .posting {
-        border-bottom: 1px solid $content-color-40;
-        .header {
-            background-color: $content-color-20;
-            border-bottom: 1px solid $content-color-40;
-            padding: 10px;
-            padding-top: 7px;
-            padding-bottom: 5px;
-            font-size: 0.8em;
-            color: $dark-gray-color-60;
-
-            time {
-                float: right;
-            }
-        }
-        .content {
-            padding: 10px;
         }
     }
 

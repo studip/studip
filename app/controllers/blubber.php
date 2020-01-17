@@ -42,34 +42,7 @@ class BlubberController extends AuthenticatedController
             $this->thread->markAsRead();
         }
 
-        if ($this->thread->getId() === 'global') {
-            $condition = "context_type = 'public' AND visible_in_stream = 1
-                         ORDER BY mkdate
-                         DESC LIMIT 31";
-            $global_threads = BlubberThread::findBySQL($condition);
-            if (count($global_threads) > 30) {
-                array_pop($global_threads);
-                $this->stream_more_down = 1;
-            } else {
-                $this->stream_more_down = 0;
-            }
-
-            $this->stream_data = [];
-            foreach ($global_threads as $thread) {
-                if ($thread->isVisibleInStream()) {
-                    $data = $thread->toRawArray();
-                    $data['mkdate']    = (int) $data['mkdate'];
-                    $data['chdate']    = (int) $data['chdate'];
-                    $data['avatar']    = Avatar::getAvatar($thread['user_id'])->getURL(Avatar::MEDIUM);
-                    $data['html']      = $thread->getContentTemplate()->render();
-                    $data['user_name'] = $thread->user->getFullName();
-
-                    $this->stream_data[] = $data;
-                }
-            }
-        } else {
-            $this->thread_data = $this->thread->getJSONData();
-        }
+        $this->thread_data = $this->thread->getJSONData();
 
         if (!Avatar::getAvatar($GLOBALS['user']->id)->is_customized() && !$_SESSION['already_asked_for_avatar']) {
             $_SESSION['already_asked_for_avatar'] = true;
@@ -98,27 +71,6 @@ class BlubberController extends AuthenticatedController
         }
 
         PageLayout::setTitle($this->thread ? _('Blubber bearbeiten') : _('Neuer Blubber'));
-
-        if (Request::isPost() && Request::get('public_blubber')) {
-            CSRFProtection::verifySecurityToken();
-            if (!$this->thread) {
-                $this->thread = new BlubberThread();
-                $this->thread['context_type'] = 'public';
-                $this->thread['context_id'] = 'global';
-                $this->thread['user_id'] = $GLOBALS['user']->id;
-                $this->thread['external_contact'] = 0;
-                $this->thread['display_class'] = null;
-                $this->thread['visible_in_stream'] = 1;
-                $this->thread['commentable'] = 1;
-            }
-            $this->thread['content'] = Request::get('public_blubber');
-            $this->thread->store();
-
-            $GLOBALS['user']->cfg->store('BLUBBER_DEFAULT_THREAD', $this->thread->getId());
-
-            $this->redirect('blubber');
-            return;
-        }
 
         if (Request::isPost() && count(Request::getArray('user_ids'))) {
             $user_ids = array_filter(Request::getArray('user_ids'));

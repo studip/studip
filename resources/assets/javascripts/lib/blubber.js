@@ -9,8 +9,6 @@ const Blubber = {
                 el: '#layout_container',
                 data: {
                     threads: $('.blubber_threads_widget').data('threads_data'),
-                    stream_data: panel_data.stream_data,
-                    stream_more_down: panel_data.stream_more_down,
                     thread_data: panel_data.thread_data,
                     active_thread: panel_data.active_thread,
                     threads_more_down: panel_data.threads_more_down,
@@ -22,17 +20,8 @@ const Blubber = {
                         this.waiting = true;
                         STUDIP.api.GET(`blubber/threads/${thread_id}`).done((data) => {
                             this.active_thread = thread_id;
-                            if (thread_id !== 'global') {
-                                this.thread_data = data;
-                                this.stream_data = {};
-                            } else {
-                                this.stream_data = data.postings;
-                                this.stream_more_down = data.more_down;
-                                this.thread_data = {
-                                    thread_posting: {}
-                                };
-                                this.display_context_posting = 0;
-                            }
+                            this.thread_data = data;
+                            this.stream_data = {};
                         }).always(() => {
                             this.waiting = false;
                         }).fail(() => {
@@ -65,7 +54,6 @@ const Blubber = {
                 });
             });
         });
-
     },
     periodicalPushData () {
         let data = {
@@ -110,6 +98,23 @@ const Blubber = {
     },
     refreshThread (data) {
         STUDIP.Blubber.App.changeActiveThread(data.thread_id);
+    },
+    followunfollow () {
+        let thread_id = jQuery(this).data("thread_id");
+        let unfollowed = jQuery(this).hasClass("unfollowed");
+        if (unfollowed) {
+            jQuery(this).removeClass("unfollowed");
+            unfollowed = false;
+        } else {
+            jQuery(this).addClass("unfollowed");
+            unfollowed = true;
+        }
+        if (unfollowed) {
+            STUDIP.api.POST(`blubber/threads/${thread_id}/unfollow`);
+        } else {
+            STUDIP.api.DELETE(`blubber/threads/${thread_id}/unfollow`);
+        }
+        return false;
     },
     Composer: {
         vue: null,

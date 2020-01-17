@@ -10,7 +10,7 @@
                 <?= _('Kontakte') ?>
             </a>
 
-            <a href="#" onclick="jQuery('.file_select_possibilities').hide(); jQuery('.public_blubber_composer').show(); return false;">
+            <a href="<?= $controller->link_for("blubber/index/global") ?>">
                 <?= Icon::create('globe')->asImg(50) ?>
                 <?= _('Öffentlich') ?>
             </a>
@@ -22,14 +22,6 @@
                 </a>
             <? endif ?>
 
-        </div>
-    </div>
-
-    <div class="public_blubber_composer"<?= $thread ? "" : ' style="display: none;" ' ?>>
-        <div>
-            <textarea name="public_blubber"
-                      class="add_toolbar"
-                      placeholder="<?= _('Schreib was, frag was.') ?>"><?= $thread ? $thread['content'] : "" ?></textarea>
         </div>
     </div>
 

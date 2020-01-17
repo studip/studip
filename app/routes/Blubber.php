@@ -26,49 +26,19 @@ class Blubber extends \RESTAPI\RouteMap
         }
         $GLOBALS['user']->cfg->store('BLUBBER_DEFAULT_THREAD', $thread_id);
 
-        if ($thread_id !== 'global') {
-            $thread = new \BlubberThread($thread_id);
-            $thread = \BlubberThread::upgradeThread($thread);
-            if (!$thread->isReadable()) {
-                $this->error(401);
-                return;
-            }
-
-            $json = $thread->getJSONData();
-            $thread->markAsRead();
-
-            $this->etag(md5(serialize($json)));
-
-            return $json;
+        $thread = new \BlubberThread($thread_id);
+        $thread = \BlubberThread::upgradeThread($thread);
+        if (!$thread->isReadable()) {
+            $this->error(401);
+            return;
         }
 
-        $this->stream_data = [
-            'more_down' => 0,
-            'postings' => [],
-        ];
-        $limit = \Request::int('limit', 30);
-        if (\Request::get('modifier') === 'olderthan') {
-            $global_threads = \BlubberThread::findBySQL("context_type = 'public' AND visible_in_stream = '1'  AND mkdate <= ? ORDER BY mkdate DESC LIMIT ".($limit + 1), [\Request::int("timestamp")]);
-        } else {
-            $global_threads = \BlubberThread::findBySQL("context_type = 'public' AND visible_in_stream = '1' ORDER BY mkdate DESC LIMIT ".($limit + 1));
-        }
-        if (count($global_threads) > $limit) {
-            array_pop($global_threads);
-            $this->stream_data['more_down'] = 1;
-        }
-        $GLOBALS['user']->cfg->store("BLUBBERTHREAD_VISITED_global", time());
-        foreach ($global_threads as $thread) {
-            if ($thread->isVisibleInStream() && $thread->isReadable()) {
-                $data = $thread->toRawArray();
-                $data['mkdate'] = (int) $data['mkdate'];
-                $data['chdate'] = (int) $data['chdate'];
-                $data['avatar'] = \Avatar::getAvatar($thread['user_id'])->getURL(\Avatar::MEDIUM);
-                $data['html'] = $thread->getContentTemplate()->render();
-                $data['user_name'] = $thread->user ? $thread->user->getFullName() : _('unbekannt');
-                $this->stream_data['postings'][] = $data;
-            }
-        }
-        return $this->stream_data;
+        $json = $thread->getJSONData();
+        $thread->markAsRead();
+
+        $this->etag(md5(serialize($json)));
+
+        return $json;
     }
 
     /**
@@ -106,36 +76,6 @@ class Blubber extends \RESTAPI\RouteMap
     }
 
     /**
-     * Write a global blubber
-     *
-     * @post /blubber/threads
-     * @return Array   the blubber as array
-     */
-    public function postGlobalBlubber()
-    {
-        if (!$GLOBALS['perm']->have_perm('autor')) {
-            $this->error(401);
-        }
-
-        if (!trim($this->data['content'])) {
-            $this->error(406);
-            return false;
-        }
-
-        $blubber = new \BlubberThread();
-        $blubber['context_type'] = "public";
-        $blubber['context_id'] = $GLOBALS['user']->id;
-        $blubber['content'] = $this->data['content'];
-        $blubber['user_id'] = $GLOBALS['user']->id;
-        $blubber['external_contact'] = 0;
-        $blubber['visible_in_stream'] = 1;
-        $blubber['commentable'] = 1;
-        $blubber->store();
-
-        return $blubber->getJSONData();
-    }
-
-    /**
      * Write a comment to a thread
      *
      * @post /blubber/threads/:thread_id/comments
@@ -146,12 +86,6 @@ class Blubber extends \RESTAPI\RouteMap
     {
         if (!$GLOBALS['perm']->have_perm('autor')) {
             $this->error(401);
-        }
-
-        // sonderfall thread_id === "global"
-        if ($thread_id === 'global') {
-            $this->error(416);
-            return false;
         }
 
         if (!trim($this->data['content'])) {
@@ -221,12 +155,6 @@ class Blubber extends \RESTAPI\RouteMap
             $this->error(401);
         }
 
-        //sonderfall thread_id === "global"
-        if ($thread_id === 'global') {
-            $this->error(416);
-            return false;
-        }
-
         $thread = new \BlubberThread($thread_id);
         if (!$thread->isReadable()) {
             $this->error(401);
@@ -253,9 +181,9 @@ class Blubber extends \RESTAPI\RouteMap
 
             if (count($result) > $limit) {
                 array_pop($result);
-                $output['more_down'] = 1;
+                $output['more_up'] = 1;
             } else {
-                $output['more_down'] = 0;
+                $output['more_up'] = 0;
             }
             foreach ($result as $data) {
                 $comment = \BlubberComment::buildExisting($data);
@@ -285,9 +213,9 @@ class Blubber extends \RESTAPI\RouteMap
 
             if (count($comments) > $limit) {
                 array_pop($output['comments']);
-                $output['more_up'] = 1;
+                $output['more_down'] = 1;
             } else {
-                $output['more_up'] = 0;
+                $output['more_down'] = 0;
             }
 
             return $output;
@@ -304,6 +232,67 @@ class Blubber extends \RESTAPI\RouteMap
         });
 
         return compact('comments');
+    }
+
+    /**
+     * User unfollows a thread.
+     *
+     * @post /blubber/threads/:thread_id/unfollow
+     *
+     * @param string $thread_id   id of the blubber thread
+     */
+    public function unfollowThread($thread_id)
+    {
+        if (!$GLOBALS['perm']->have_perm('autor')) {
+            $this->error(401);
+        }
+
+        $thread = new \BlubberThread($thread_id);
+        if (!$thread->isReadable()) {
+            $this->error(401);
+            return;
+        }
+
+        $statement = \DBManager::get()->prepare("
+            INSERT IGNORE INTO blubber_threads_unfollow
+            SET user_id = :me,
+                thread_id = :thread_id,
+                mkdate = UNIX_TIMESTAMP()
+        ");
+        $statement->execute([
+            'me'        => $GLOBALS['user']->id,
+            'thread_id' => $thread_id
+        ]);
+    }
+
+    /**
+     * User follows a thread.
+     *
+     * @delete /blubber/threads/:thread_id/unfollow
+     *
+     * @param string $thread_id   id of the blubber thread
+     */
+    public function followThread($thread_id)
+    {
+        if (!$GLOBALS['perm']->have_perm('autor')) {
+            $this->error(401);
+        }
+
+        $thread = new \BlubberThread($thread_id);
+        if (!$thread->isReadable()) {
+            $this->error(401);
+            return;
+        }
+
+        $statement = \DBManager::get()->prepare("
+            DELETE FROM blubber_threads_unfollow
+            WHERE user_id = :me
+                AND thread_id = :thread_id
+        ");
+        $statement->execute([
+            'me'        => $GLOBALS['user']->id,
+            'thread_id' => $thread_id
+        ]);
     }
 
 
