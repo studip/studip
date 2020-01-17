@@ -420,7 +420,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             if (Request::isPost()) {
                 $this->seats = Request::get('seats');
             }
-            if (!count($this->request->properties)) {
+            if (!count($this->selected_properties)) {
                 if (!$this->request->resource_id) {
                     PageLayout::postError(
                         'Es wurde weder eine Raumkategorie noch ein konkreter Raum ausgewählt!'
