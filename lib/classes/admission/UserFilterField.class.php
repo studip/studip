@@ -115,6 +115,8 @@ class UserFilterField
         // For equality checks we must use the "==" operator.
         if ($this->compareOperator == '=') {
             $cOp = '==';
+        } elseif (!isset($this->validCompareOperators[$this->compareOperator])) {
+            throw new Exception('Invalid compare operator');
         } else {
             $cOp = $this->compareOperator;
         }
