@@ -16,12 +16,16 @@
             ) ?>
         <? endif ?>
         <?= Studip\Button::create(
-            _("Anderen Raum wählen"),
+            _('Anderen Raum wählen'),
             'reset_selected_room'
         ) ?>
     <? else: ?>
         <?= MessageBox::info(
             _('Es wurde kein konkreter Raum ausgewählt!')
+        ) ?>
+        <?= Studip\Button::create(
+            _('Eigenschaften neu wählen'),
+            'reset_selected_room'
         ) ?>
     <? endif ?>
     <label>
