@@ -5,17 +5,13 @@
             <?= _('Lehrveranstaltungsgruppen'); ?>
             <span class="actions"><? printf(ngettext('%s LV-Gruppe', '%s LV-Gruppen', $count), $count) ?></span>
         </caption>
-        <colgroup>
-            <col>
-            <col span="4" style="width: 1%;">
-        </colgroup>
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('/index', _('Name'), 'name') ?>
-                <?= $controller->renderSortLink('/index', _('Veranstaltungen'), 'count_seminare', ['style' => 'text-align: center;']) ?>
-                <?= $controller->renderSortLink('/index', _('Archiv'), 'count_archiv', ['style' => 'text-align: center;']) ?>
-                <?= $controller->renderSortLink('/index', _('Modulteile'), 'count_modulteile', ['style' => 'text-align: center;']) ?>
-                <th></th>
+                <?= $controller->renderSortLink('/index', _('Veranstaltungen'), 'count_seminare', ['style' => 'text-align: center; width: 5%;']) ?>
+                <?= $controller->renderSortLink('/index', _('Archiv'), 'count_archiv', ['style' => 'text-align: center; width: 5%;']) ?>
+                <?= $controller->renderSortLink('/index', _('Modulteile'), 'count_modulteile', ['style' => 'text-align: center; width: 5%;']) ?>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? if (count($lvgruppen)) : ?>

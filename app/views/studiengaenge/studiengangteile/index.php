@@ -6,18 +6,13 @@
             <?= _('Liste der Studiengangteile') ?>
             <span class="actions"><? printf(_('%s Studiengangteile'), $count) ?></span>
         </caption>
-        <colgroup>
-            <col>
-            <col style="width: 40%;">
-            <col span="3" style="width: 1%">
-        </colgroup>
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('/index', _('Fach'), 'fach_name,zusatz,kp') ?>
-                <?= $controller->renderSortLink('/index', _('Zweck'), 'zusatz,fach_name,kp') ?>
-                <?= $controller->renderSortLink('/index', _('CP'), 'kp,fach_name,zusatz', ['style' => 'text-align: center;']) ?>
-                <?= $controller->renderSortLink('/index', _('Versionen'), 'count_versionen,fach_name,kp', ['style' => 'text-align: center;']) ?>
-                <th></th>
+                <?= $controller->renderSortLink('/index', _('Zweck'), 'zusatz,fach_name,kp', ['style' => 'width: 40%;']) ?>
+                <?= $controller->renderSortLink('/index', _('CP'), 'kp,fach_name,zusatz', ['style' => 'text-align: center; width: 2%;']) ?>
+                <?= $controller->renderSortLink('/index', _('Versionen'), 'count_versionen,fach_name,kp', ['style' => 'text-align: center; width: 2%;']) ?>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? if ($count) : ?>

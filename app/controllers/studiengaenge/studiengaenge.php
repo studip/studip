@@ -18,6 +18,8 @@ class Studiengaenge_StudiengaengeController extends MVVController
         Navigation::activateItem($this->me . '/studiengaenge/studiengaenge');
         $this->filter = $this->sessGet('filter', []);
         $this->action = $action;
+
+        PageLayout::addSqueezePackage('statusgroups');
     }
 
     public function after_filter($action, $args) {
@@ -105,7 +107,10 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->abschluesse = Abschluss::getAll();
         $this->studiengang = Studiengang::get($studiengang_id);
         $this->semester = Semester::getAll();
-        $this->dokumente = $this->studiengang->document_assignments;
+        $this->dokumente = $this->studiengang->documents;
+        $this->contacts = $this->studiengang->contact_assignments;
+        $this->range_id = $studiengang_id;
+        $this->range_type = 'Studiengang';
 
         $this->parent_id = $parent_id;
 
@@ -114,6 +119,12 @@ class Studiengaenge_StudiengaengeController extends MVVController
             PageLayout::setTitle(_('Neuen Studiengang anlegen'));
             $success_message = ('Der Studiengang "%s" wurde angelegt.');
             $quicksearchText = _('Studiengangsbezeichnung suchen');
+            // set default language of instruction
+            if ($GLOBALS['MVV_STUDIENGANG']['SPRACHE']['default']) {
+                $this->studiengang->assignLanguagesOfInstruction([
+                    $GLOBALS['MVV_STUDIENGANG']['SPRACHE']['default']
+                ]);
+            }
         } else {
             PageLayout::setTitle(sprintf(
                 _('Studiengang: %s bearbeiten'),
@@ -124,8 +135,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         }
 
         $this->sessSet('dokument_target', [$this->studiengang->getId(), 'Studiengang']);
-
-        if (Request::submitted('store')) {
+        if (Request::submittedSome('store', 'store_cancel')) {
             CSRFProtection::verifyUnsafeRequest();
             $stored = false;
             if ($this->studiengang->isNew()) {
@@ -173,20 +183,48 @@ class Studiengaenge_StudiengaengeController extends MVVController
             $this->studiengang->stat             = Request::option('status');
             $this->studiengang->kommentar_status = trim(Request::get('kommentar_status'));
             $this->studiengang->schlagworte      = trim(Request::get('schlagworte'));
-
-            MvvDokument::updateDocuments($this->studiengang,
-                Request::optionArray('dokumente_items'),
-                Request::getArray('dokumente_properties')
-            );
-
+            $this->studiengang->studienzeit = Request::int('studienzeit');
+            $this->studiengang->studienplaetze = Request::int('studienplaetze');
+            $this->studiengang->abschlussgrad = Request::option('abschlussgrad');
+            $this->studiengang->assignLanguagesOfInstruction(
+                    Request::optionArray('language_items'));
+            $this->studiengang->assignStudycourseTypes(Request::optionArray('studycourse_types'));
+            $this->studiengang->enroll = implode(',', Request::optionArray('enroll'));
             $quicksearchText = $this->studiengang->name;
 
             $this->studiengang->verifyPermission();
 
-            try {
-                $stored = $this->studiengang->store();
-            } catch (InvalidValuesException $e) {
-                PageLayout::postError(htmlReady($e->getMessage()));
+            $datafield_entries = DataFieldEntry::getDataFieldEntries($this->studiengang->id, 'studycourse');
+            foreach (Request::getArray('datafields') as $df_key => $df_value) {
+                $df = $datafield_entries[$df_key];
+                if ($df) {
+                    $df->setValueFromSubmit($df_value);
+                    $df->store();
+                }
+            }
+
+            // Aufbaustudiengänge
+            $aufbaustg_types = Request::optionArray('aufbaustg_typ');
+            foreach ($this->studiengang->aufbaustg_assignments as $aufbaustg) {
+                $aufbaustg->typ = $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['values'][$aufbaustg_types[$aufbaustg->id]]['visible']
+                    ? $aufbaustg_types[$aufbaustg->id]
+                    : $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['default'];
+            }
+
+            if (count($df_invalid)) {
+                PageLayout::postError(_('Folgende Datenfelder wurden falsch angegeben:'), $df_invalid);
+            } else {
+                try {
+                    // plugin hook
+                    NotificationCenter::postNotification('MvvStudycourseFormWillStore', $this->studiengang);
+                    
+                    $stored = $this->studiengang->store();
+                    
+                    // plugin hook
+                    NotificationCenter::postNotification('MvvStudycourseFormDidStore', $this->studiengang);
+                } catch (InvalidValuesException $e) {
+                    PageLayout::postError(htmlReady($e->getMessage()));
+                }
             }
             if ($stored !== false) {
                 if ($stored) {
@@ -197,7 +235,11 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 } else {
                     PageLayout::postInfo(_('Es wurden keine Änderungen vorgenommen.'));
                 }
-                $this->redirect($this->url_for('/index/'. $this->studiengang->id));
+                if (Request::submitted('store_cancel')) {
+                    $this->redirect($this->url_for('/index', $this->studiengang->id));
+                } else {
+                    $this->redirect($this->url_for('/studiengang', $this->studiengang->id));
+                }
                 return;
             }
         }
@@ -212,9 +254,6 @@ class Studiengaenge_StudiengaengeController extends MVVController
                     ->noSelectbox()
                     ->fireJSFunctionOnSelect('MVV.Search.insertFachName')
                     ->render();
-
-        // Dokumente
-        $this->search_dokumente = MvvDokument::getQuickSearch($this->dokumente->pluck('dokument_id'));
 
         // Einrichtung
         $this->institut = Fachbereich::find($this->studiengang->institut_id);
@@ -262,7 +301,13 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 Icon::create('log')
             )->asDialog();
         }
-
+        
+        // plugin hook
+        ob_start();
+        NotificationCenter::postNotification('MvvStudycourseFormWillRender', $this->studiengang);
+        $this->plugin_hook_content = ob_get_contents();
+        ob_end_clean();
+        
         $this->render_template('studiengaenge/studiengaenge/studiengang', $this->layout);
     }
 
@@ -696,6 +741,224 @@ class Studiengaenge_StudiengaengeController extends MVVController
             $this->set_status(404, 'Not Found');
             $this->render_nothing();
         }
+    }
+
+    /**
+     * create a new or edit an existing assignment of a master's degree course
+     */
+    public function aufbaustg_edit_action($aufbaustg_id)
+    {
+        $this->aufbaustg = Aufbaustudiengang::find($aufbaustg_id);
+
+        $perm = MvvPerm::get($this->aufbaustg->grund_studiengang);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_WRITE)) {
+            throw new AccessDeniedException();
+        }
+        PageLayout::setTitle('Zuordnung des Aufbaustudiengangs bearbeiten');
+    }
+
+    public function aufbaustg_select_action ($grundstg_id)
+    {
+        PageLayout::setTitle(_('Aufbaustudiengang'));
+        $this->grundstg = Studiengang::find($grundstg_id);
+        $perm = MvvPerm::get($this->grundstg);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_WRITE)) {
+            throw new AccessDeniedException();
+        }
+
+        // unset some filters from overview
+        $filter = $this->filter;
+        $filter['mvv_abschl_zuord.kategorie_id'] = null;
+        $filter['abschluss.abschluss_id'] = null;
+        $filter['mvv_studiengang.studiengang_id'] = null;
+        $filter['mvv_studiengang.institut_id'] = null;
+
+        // set default semester filter
+        if (!isset($filter['start_sem.beginn'])
+                || !isset($filter['end_sem.ende'])) {
+            $sem_time_switch = Config::get()->getValue('SEMESTER_TIME_SWITCH');
+            // switch semester according to time switch
+            // (n weeks before next semester)
+            $current_sem = Semester::findByTimestamp(time()
+                    + $sem_time_switch * 7 * 24 * 3600);
+            if ($current_sem) {
+                $filter['start_sem.beginn'] = $current_sem->beginn;
+                $filter['end_sem.ende'] = $current_sem->beginn;
+            }
+        }
+        // Nur Studiengänge von verantwortlichen Einrichtungen an denen der User
+        // eine Rolle hat
+        $filter = array_merge(['mvv_studiengang.institut_id' => MvvPerm::getOwnInstitutes()], $filter);
+        $this->aufbaustgs = Studiengang::getAllEnriched('name', 'ASC', $filter);
+        $this->aufbaustg_assigmnents = $this->grundstg->aufbaustg_assignments->pluck('aufbau_stg_id');
+    }
+
+    public function aufbaustg_assign_action()
+    {
+        CSRFProtection::verifyUnsafeRequest();
+        // check permission
+        $grundstg = Studiengang::find(Request::option('grundstg_id'));
+        if ($grundstg) {
+            $perm = MvvPerm::get($grundstg);
+            if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_WRITE)) {
+                throw new AccessDeniedException();
+            }
+        } else {
+            PageLayout::postError(_('Unbekannter Studiengang'));
+        }
+        $stored = false;
+        foreach (Request::optionArray('aufbaustg_ids') as $aufbaustg_id) {
+            $aufbaustg = Aufbaustudiengang::findOneBySQL(
+                    '`grund_stg_id` = ? AND `aufbau_stg_id` = ?',
+                    [
+                        $grundstg->id,
+                        $aufbaustg_id
+                    ]);
+            if (!$aufbaustg) {
+                if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_CREATE)) {
+                    throw new AccessDeniedException();
+                }
+                $aufbaustg = new Aufbaustudiengang();
+                $aufbaustg->grund_stg_id = $grundstg->id;
+                $aufbaustg->aufbau_stg_id = $aufbaustg_id;
+            }
+            $aufbaustg->typ = $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['default'];
+            $aufbaustg->kommentar = '';
+            $aufbaustg->verifyPermission();
+            try {
+                $stored = $aufbaustg->store();
+            } catch (InvalidValuesException $e) {
+                PageLayout::postError(_('Der Aufbaustudiengang konnte nicht angelegt werden'),
+                        [htmlReady($e->getMessage())]);
+                $this->redirect('studiengaenge/studiengaenge/studiengang/' . $grundstg->id);
+                return;
+            }
+        }
+        if ($stored) {
+            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grundstg->id . '")');
+
+        }
+        $this->response->add_header('X-Dialog-Close', '1');
+        $this->render_nothing();
+/*
+        try {
+            $stored = $aufbaustg->store();
+        } catch (InvalidValuesException $e) {
+            PageLayout::postError(htmlReady($e->getMessage()));
+        }
+        if ($stored) {
+            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grund_stg->id . '")');
+            $this->response->add_header('X-Dialog-Close', '1');
+            $this->render_nothing();
+        } else {
+            PageLayout::postError(_('Der Aufbaustudiengang konnte nicht angelegt werden'));
+            $this->redirect('studiengaenge/studiengaenge/aufbaustg_new/' . $grund_stg->id);
+        }
+ *
+ */
+    }
+
+    public function aufbaustg_store_action()
+    {
+        CSRFProtection::verifyUnsafeRequest();
+        $aufbaustg = Aufbaustudiengang::find(Request::option('aufbaustg_id'));
+
+        // check permission
+        /*
+        $grundstg = Studiengang::find($aufbaustg->grund_stg_id);
+        $perm = MvvPerm::get($grundstg);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_WRITE)) {
+            throw new AccessDeniedException();
+        }
+         *
+         */
+        /*
+        } else {
+            PageLayout::postError(_('Unbekannter Studiengang'));
+        }
+         *
+         */
+
+        if (!$aufbaustg) {
+            PageLayout::postError(_('Unbekannter Studiengang'));
+            // redirect
+        }
+        $aufbaustg->typ = $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['values'][Request::option('aufbaustg_typ')]['visible']
+                ? Request::option('aufbaustg_typ')
+                : $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['default'];
+        $aufbaustg->kommentar = Request::get('aufbaustg_kommentar');
+        $aufbaustg->verifyPermission();
+
+        try {
+            $stored = $aufbaustg->store();
+        } catch (InvalidValuesException $e) {
+            PageLayout::postError(htmlReady($e->getMessage()));
+        }
+        if ($stored) {
+            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $aufbaustg->grund_stg_id . '")');
+            $this->response->add_header('X-Dialog-Close', '1');
+            $this->render_nothing();
+        } else {
+            PageLayout::postError(_('Der Aufbaustudiengang konnte nicht angelegt werden'));
+            $this->redirect('studiengaenge/studiengaenge/aufbaustg_new/' . $aufbaustg->grund_stg_id);
+        }
+    }
+
+    public function aufbaustg_delete_action($id)
+    {
+        $aufbaustg = Aufbaustudiengang::find($id);
+        if (!$aufbaustg) {
+            PageLayout::postError(_('Unbekannter Aufbaustudiengang'));
+            $this->relocate('studiengaenge/studiengaenge/index');
+            return;
+        }
+        // check permission
+        $perm = MvvPerm::get($aufbaustg->grund_studiengang);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_CREATE)) {
+            throw new AccessDeniedException();
+        }
+        $grund_stg_id = $aufbaustg->grund_stg_id;
+        if ($aufbaustg->delete()) {
+            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grund_stg_id . '")');
+            $this->response->add_header('X-Dialog-Close', '1');
+            $this->render_nothing();
+        }
+
+    }
+
+    public function aufbaustg_table_action($grund_stg_id)
+    {
+        $this->grund_stg = new Studiengang($grund_stg_id);
+        $perm = MvvPerm::get($this->grund_stg);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_READ)) {
+            $this->set_status(200);
+            $this->render_nothing();
+        }
+    }
+
+    public function aufbaustg_info_action($id)
+    {
+        $this->aufbaustg = Aufbaustudiengang::find($id);
+        if (!$this->aufbaustg) {
+            PageLayout::postError(_('Unbekannter Aufbaustudiengang'));
+            $this->relocate('studiengaenge/studiengaenge/index');
+            return;
+        }
+        // check permission
+        $perm = MvvPerm::get($this->aufbaustg->grund_studiengang);
+        if (!$perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_READ)) {
+            throw new AccessDeniedException();
+        }
+        PageLayout::setTitle('Information');
+    }
+
+    public function description_action($studiengang_id)
+    {
+        $this->stg = Studiengang::find($studiengang_id);
+        if (!$this->stg) {
+            throw new AccessDeniedException();
+        }
+        $this->render_template('shared/studiengang/description');
     }
 
     /**

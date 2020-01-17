@@ -4,8 +4,11 @@
 <? $perm = MvvPerm::get($fach) ?>
 <form class="default" action="<?= $controller->url_for('/fach/', $fach->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
-        <legend><?= _('Grunddaten') ?></legend>
+    <fieldset class="collapsable">
+        <legend>
+            <?= _('Grunddaten') ?>
+        </legend>
+
         <label>
             <?= _('Name') ?>
             <?= MvvI18N::input('name', $fach->name, ['maxlength' => '255', 'required' => ''])->checkPermission($fach) ?>
@@ -19,8 +22,12 @@
             <?= MvvI18N::textarea('beschreibung', $fach->beschreibung, ['class' => 'add_toolbar ui-resizable wysiwyg'])->checkPermission($fach) ?>
         </label>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Verantwortliche Einrichtung') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Verantwortliche Einrichtung') ?>
+        </legend>
+
         <? if ($perm->haveFieldPermDepartments(MvvPerm::PERM_WRITE)) : ?>
             <?= $search_institutes->render(); ?>
             <? if (Request::submitted('search_institutes')) : ?>
@@ -71,8 +78,11 @@
             <? endforeach; ?>
         </ul>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Zusätzliche Angaben') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Zusätzliche Angaben') ?>
+        </legend>
         <label><?= _('Schlagworte') ?>
             <? if ($perm->haveFieldPerm('schlagworte')) : ?>
                 <textarea cols="60" rows="5" name="schlagworte" id="schlagworte"
@@ -84,6 +94,7 @@
             <?= _('Hier können zusätzlich Schlagworte angegeben werden, die in der Suche berücksichtigt werden.') ?>
         </label>
     </fieldset>
+
     <footer data-dialog-button>
         <? if ($fach->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>

@@ -5,16 +5,11 @@
             <?= _('Studiengangteile nach Fächern gruppiert') ?>
             <span class="actions"><? printf(_('%s Fächer'), $count) ?></span>
         </caption>
-        <colgroup>
-            <col>
-            <col style="width:1%;">
-            <col style="width:1%;">
-        <colgroup>
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('/index', _('Fach'), 'name') ?>
-                <?= $controller->renderSortLink('/index', _('Studiengangteile'), 'count_stgteile', ['style' => 'text-align: center;']) ?>
-                <th></th>
+                <?= $controller->renderSortLink('/index', _('Studiengangteile'), 'count_stgteile', ['style' => 'width: 5%; text-align: center;']) ?>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? foreach ($faecher as $fach): ?>

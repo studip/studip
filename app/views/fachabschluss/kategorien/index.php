@@ -2,23 +2,18 @@
 <form method="post">
     <?= CSRFProtection::tokenTag(); ?>
     <table id="abschluss_kategorien" class="default sortable collapsable">
-        <colgroup>
-            <col>
-            <col style="width: 20%;">
-            <col style="width: 20%;">
-            <col style="width: 1%;">
         <thead>
             <tr>
                 <th>
                     <?= _('Name') ?>
                 </th>
-                <th style="text-align: center;">
+                <th style="text-align: center; width: 5%;">
                     <?= _('Abschlüsse') ?>
                 </th>
-                <th style="text-align: center;">
+                <th style="text-align: center; width: 5%;">
                     <?= _('Materialien') ?>
                 </th>
-                <th colspan="2"></th>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? if(count($abschluss_kategorien)) : ?>
@@ -70,7 +65,7 @@
         <? else : ?>
             <tbody>
                 <tr>
-                    <td colspan="5" style="text-align: center">
+                    <td colspan="4" style="text-align: center">
                         <?= _('Es wurden noch keine Abschluss-Kategorien angelegt.') ?>
                     </td>
                 </tr>

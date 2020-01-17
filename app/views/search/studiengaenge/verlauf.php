@@ -7,7 +7,12 @@
         <caption>
             <?= htmlReady($studiengangTeilName) ?>
     <? if ($studiengang && $stgTeilBez) : ?>
-    <h3><?= sprintf(_('%s im Studiengang %s'), htmlReady($stgTeilBez->getDisplayName()), htmlReady($studiengang->getDisplayName(ModuleManagementModel::DISPLAY_ABSCHLUSS))) ?></h3>
+        <h3>
+            <?= sprintf(_('%s im Studiengang %s'), htmlReady($stgTeilBez->getDisplayName()), htmlReady($studiengang->getDisplayName(ModuleManagementModel::DISPLAY_ABSCHLUSS))) ?>
+            <? if (Config::get()->ENABLE_STUDYCOURSE_INFO_PAGE) : ?>
+                <a href="<?= $controller->url_for('search/studiengaenge/info', $studiengang->id)?>" data-dialog><?= Icon::create('infopage2', Icon::ROLE_CLICKABLE)->asImg() ?>
+            <? endif; ?>
+        </h3>
     <? endif; ?>
     <? $current_version = $versionen->findOneBy('id', $cur_version_id); ?>
     <? if ($current_version) : ?>

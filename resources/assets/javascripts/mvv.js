@@ -64,6 +64,87 @@ jQuery(function ($) {
         return false;
     });
 
+    $(document).on('click', '.stgfile .remove_attachment', function($event) {
+        MVV.Document.remove_attachment($(this));
+        return false;
+    });
+
+    STUDIP.dialogReady(
+        function() {
+
+            var contactSearchParams = $('#search-contact-params');
+            if (contactSearchParams) {
+                $('#search-contact-studiengang-select').select2({
+                    placeholder: 'Studiengang suchen'.toLocaleString(),
+                    minimumInputLength: 3,
+                    ajax: {
+                        url: STUDIP.URLHelper.getURL('dispatch.php/shared/contacts/search_studiengang'),
+                        data: function (params) {
+                            var query = {
+                                term: params.term,
+                                _type: params._type,
+                                contact_id: contactSearchParams.data('contact')
+                            }
+                            return query;
+                        },
+                        dataType: 'json'
+                    }
+                });
+                $('#search-contact-modul-select').select2({
+                    placeholder: 'Modul suchen'.toLocaleString(),
+                    minimumInputLength: 3,
+                    ajax: {
+                        url: STUDIP.URLHelper.getURL('dispatch.php/shared/contacts/search_modul'),
+
+                        data: function (params) {
+                            var query = {
+                                term: params.term,
+                                _type: params._type,
+                                contact_id: contactSearchParams.data('contact')
+                            }
+                            return query;
+                        },
+                        dataType: 'json'
+                    }
+                });
+            }
+
+            $('#search-file-select').select2({
+                placeholder: 'Dokument suchen'.toLocaleString(),
+                minimumInputLength: 3,
+                ajax: {
+                    url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_file'),
+                    dataType: 'json'
+                }
+            });
+
+            $('#search-file-studiengang-select').select2({
+                placeholder: 'Studiengang suchen'.toLocaleString(),
+                minimumInputLength: 3,
+                ajax: {
+                    url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_studiengang'),
+                    dataType: 'json'
+                }
+            });
+            $('#search-file-modul-select').select2({
+                placeholder: 'Modul suchen'.toLocaleString(),
+                minimumInputLength: 3,
+                ajax: {
+                    url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_modul'),
+                    dataType: 'json'
+                }
+            });
+            $('#search-file-abschlusskategorie-select').select2({
+                placeholder: 'AbschlussKategorie suchen'.toLocaleString(),
+                minimumInputLength: 3,
+                ajax: {
+                    url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_abschlusskategorie'),
+                    dataType: 'json'
+                }
+            });
+        }
+    );
+
 });
 
 /* ------------------------------------------------------------------------
@@ -158,7 +239,7 @@ MVV.Search = {
             do_submit = qs_item.data('qs_submit');
         var reset_button = jQuery('<input type="image" />');
             reset_button.attr({
-                src: STUDIP.ASSETS_URL+'images/icons/blue/refresh.svg',
+                src: STUDIP.ASSETS_URL+'images/icons/blue/decline.svg',
                 title: "Suche zurücksetzen".toLocaleString()
             }).addClass('mvv-search-reset');
         if (!_.isUndefined(do_submit)) {
@@ -485,6 +566,7 @@ MVV.Content = {
             jQuery('body').trigger('ajaxLoaded');
             jQuery(row).show();
             MVV.Sort.init(jQuery('.sortable'));
+            STUDIP.Table.enhanceSortableTable(row.find('.sortable-table'));
         });
         element.closest('tbody').toggleClass('collapsed not-collapsed');
         return false;
@@ -568,3 +650,189 @@ MVV.Diff = {
         return false;
     }
 };
+
+MVV.Document = {
+    reload_documenttable: function(range_id, range_type) {
+        setTimeout(function() {
+            jQuery.ajax({
+                url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/materialien/files/' + (typeof range_id != 'undefined' ?  'range' : 'index'),
+                data: {
+                    'range_id': range_id,
+                    'range_type': range_type
+                },
+                type: 'POST',
+                success: function (data) {
+                    jQuery(data).each(function(){
+                        jQuery('#'+ jQuery(this).attr("id")).html(jQuery(this).html());
+                    });
+                }
+            })
+        }, 100);
+    },
+    remove_attachment: function(item) {
+        jQuery.ajax({
+            url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/materialien/files/delete_attachment',
+            data: {
+                mvvfile_id: jQuery('#mvvfile_id').val(),
+                fileref_id: item.closest('li')
+                                .find('input[name=document_id]')
+                                .val()
+            },
+            type: 'POST'
+        });
+        item.parents('td').find('.attachments').toggle();
+        item.closest('li')
+            .fadeOut(300, function() {
+                jQuery(this).remove();
+                jQuery('#upload_chooser').show();
+            });
+    },
+    upload_from_input: function(input, file_language) {
+        MVV.Document.upload_files(input.files, file_language);
+        jQuery(input).val('');
+    },
+    fileIDQueue: 1,
+    upload_files: function(files, file_language) {
+        for (var i = 0; i < files.length; i++) {
+            var fd = new FormData();
+            fd.append('file', files[i], files[i].name);
+            var statusbar = jQuery('#statusbar_container .statusbar')
+                .first()
+                .clone()
+                .show();
+            statusbar.appendTo('#statusbar_container');
+            fd.append('mvvfile_id', jQuery('#mvvfile_id').val());
+            fd.append('range_id', jQuery('#range_id').val());
+            fd.append('file_language', file_language);
+            MVV.Document.upload_file(fd, statusbar);
+        }
+    },
+    upload_file: function(formdata, statusbar) {
+        $.ajax({
+            xhr: function() {
+                var xhrobj = $.ajaxSettings.xhr();
+                if (xhrobj.upload) {
+                    xhrobj.upload.addEventListener(
+                        'progress',
+                        function(event) {
+                            var percent = 0;
+                            var position = event.loaded || event.position;
+                            var total = event.total;
+                            if (event.lengthComputable) {
+                                percent = Math.ceil((position / total) * 100);
+                            }
+                            //Set progress
+                            statusbar.find('.progress').css({ 'min-width': percent + '%', 'max-width': percent + '%' });
+                            statusbar
+                                .find('.progresstext')
+                                .text(percent === 100 ? jQuery('#upload_finished').text() : percent + '%');
+                        },
+                        false
+                    );
+                }
+                return xhrobj;
+            },
+            url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/materialien/files/upload_attachment',
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            cache: false,
+            data: formdata,
+            dataType: 'json'
+        })
+        .done(function(data) {
+            statusbar.find('.progress').css({ 'min-width': '100%', 'max-width': '100%' });
+            var file = jQuery('#fileselector_'+formdata.get('file_language')).find('.stgfiles > .stgfile')
+                .first()
+                .clone();
+            file.find('.name').text(data.name);
+            if (data.size < 1024) {
+                file.find('.size').text(data.size + 'B');
+            }
+            if (data.size > 1024 && data.size < 1024 * 1024) {
+                file.find('.size').text(Math.floor(data.size / 1024) + 'KB');
+            }
+            if (data.size > 1024 * 1024 && data.size < 1024 * 1024 * 1024) {
+                file.find('.size').text(Math.floor(data.size / 1024 / 1024) + 'MB');
+            }
+            if (data.size > 1024 * 1024 * 1024) {
+                file.find('.size').text(Math.floor(data.size / 1024 / 1024 / 1024) + 'GB');
+            }
+            file.find('.icon').html(data.icon);
+            file.find('input[name=document_id]').attr('value', data.document_id);
+            jQuery('#fileviewer_'+formdata.get('file_language')).find('.stgfiles').append(file);
+            jQuery('#fileselector_'+formdata.get('file_language')).toggle();
+            jQuery('#fileselector_'+formdata.get('file_language')).parents('.attachments').toggle();
+            jQuery('#fileselector_'+formdata.get('file_language')).parents('.attachments').find('span').toggle();
+            file.fadeIn(300);
+            statusbar.find('.progresstext').text(jQuery('#upload_received_data').text());
+            statusbar.delay(1000).fadeOut(300, function() {
+                jQuery('#upload_chooser').hide();
+                jQuery(this).remove();
+            });
+        })
+        .fail(function(jqxhr, status, errorThrown) {
+            var error = jqxhr.responseJSON.error;
+
+            statusbar
+                .find('.progress')
+                .addClass('progress-error')
+                .attr('title', error);
+            statusbar.find('.progresstext').html(error);
+            statusbar.on('click', function() {
+                jQuery(this).fadeOut(300, function() {
+                    jQuery(this).remove();
+                });
+            });
+        });
+    }
+};
+
+
+MVV.Contact = {
+    reload_contacttable: function(range_id, range_type) {
+        setTimeout(function() {
+            jQuery.ajax({
+                url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/shared/contacts/' + (typeof range_id != 'undefined' ? 'range' : 'index'),
+                data: {
+                    'range_id': range_id,
+                    'range_type': range_type
+                },
+                type: 'POST',
+                success: function (data) {
+                    jQuery(data).each(function(){
+                        jQuery('#'+ jQuery(this).attr("id")).html(jQuery(this).html());
+                    });
+                }
+            })
+        }, 100);
+    }
+};
+
+MVV.Aufbaustg = {
+    create: function(df) {
+        setTimeout(function() {
+            $.ajax({
+                url: STUDIP.URLHelper.getURL('dispatch.php/studiengaenge/studiengaenge/aufbaustg_store'),
+                data: $(df).serialize(),
+                type: 'POST',
+                success: function (data) {
+                    $('#mvv-aufbaustg-table').html($(data).html());
+                    STUDIP.Table.enhanceSortableTable($('#mvv-aufbaustg-table').find('.sortable-table'));
+                }
+            })
+        }, 100);
+    },
+    loadTable: function(stg_id) {
+        setTimeout(function() {
+            $.ajax({
+                url: STUDIP.URLHelper.getURL('dispatch.php/studiengaenge/studiengaenge/aufbaustg_table/' + stg_id),
+                type: 'GET',
+                success: function (data) {
+                    $('#mvv-aufbaustg-table').html($(data).html());
+                    STUDIP.Table.enhanceSortableTable($('#mvv-aufbaustg-table').find('.sortable-table'));
+                }
+            })
+        }, 100);
+    }
+}

@@ -27,7 +27,7 @@ class MVV implements Loggable {
 
     /**
      * Determines whether the mvv backend is visible.
-     * 
+     *
      * @return boolean True if backend is visible
      */
     public static function isVisible() {
@@ -64,7 +64,7 @@ class MVV implements Loggable {
 
     /**
      * Determines whether the search for modules is visible in the global search.
-     * 
+     *
      * @return boolean True if backend is visible in search
      */
     public static function isVisibleSearch()
@@ -117,6 +117,7 @@ class MVV implements Loggable {
                 }
                 break;
 
+            case 'mvv_files':
             case 'mvv_dokument':
             case 'mvv_dokument_zuord':
                 $dokument = MvvDokument::find($event->affected_range_id);

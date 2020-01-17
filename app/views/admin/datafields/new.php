@@ -35,6 +35,8 @@ use Studip\Button, Studip\LinkButton;
             <?= _('Einrichtungstyp') ?>
         <? elseif ($object_typ === 'moduldeskriptor' || $object_type === 'modulteildeskriptor') : ?>
             <?= _('Sprache') ?>
+        <? elseif ($object_typ === 'studycourse'): ?>
+            <?= _('Typ/Abschnitt') ?>
         <? else: ?>
             <?= _('Nutzerstatus') ?>
         <? endif; ?>
@@ -67,6 +69,14 @@ use Studip\Button, Studip\LinkButton;
             <? foreach ((array) $GLOBALS['MVV_MODULTEIL_DESKRIPTOR']['SPRACHE']['values'] as $key => $value) : ?>
                 <option value="<?= htmlReady($key) ?>"><?= htmlReady($value['name']) ?></option>
             <? endforeach; ?>
+        <? elseif ($object_typ === 'studycourse') : ?>
+            <select name="object_class" required>
+                <option value="all_settings" selected><?= _('alle (Abschnitt "Einstellungen")') ?></option>
+                <option value="all_info"><?= _('alle (Abschnitt "Inhalte und Informationen")') ?></option>
+                <option value="einfach_settings"><?= _('Einfach-Studiengänge (Abschnitt "Einstellungen")') ?></option>
+                <option value="einfach_info"><?= _('Einfach-Studiengänge (Abschnitt "Inhalte und Informationen")') ?></option>
+                <option value="mehrfach_settings"><?= _('Mehrfach-Studiengänge (Abschnitt "Einstellungen")') ?></option>
+                <option value="mehrfach_info"><?= _('Mehrfach-Studiengänge (Abschnitt "Inhalte und Informationen")') ?></option>
         <? else: ?>
              <select multiple size="7" name="object_class[]" required>
                 <option value="NULL" selected><?= _('alle') ?></option>

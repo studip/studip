@@ -14,8 +14,11 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
 <form id="modulteil_form" class="default" action="<?= $controller->url_for('/modulteil/', $modulteil->id) ?>"
       method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset id="mvv-field-modulteil-numbering">
-        <legend><?= _('Nummerierung und Bezeichnung') ?></legend>
+
+    <fieldset class="collapsable" id="mvv-field-modulteil-numbering">
+        <legend>
+            <?= _('Nummerierung und Bezeichnung') ?>
+        </legend>
         <? if ($perm->haveFieldPerm('num_bezeichnung')): ?>
             <? if ($def_lang) : ?>
                 <section class="hgroup">
@@ -87,10 +90,8 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <input <?= $perm_d->disable('bezeichnung') ?>
                     type="text" name="bezeichnung" id="bezeichnung" value="<?= htmlReady($deskriptor->bezeichnung) ?>">
         </label>
-    </fieldset>
-    <fieldset id="mvv-field-modulteil-flexnow_modul">
-        <legend><?= _('Modulteil-ID aus Fremdsystem') ?></legend>
-        <label><?= _('ID') ?>
+
+        <label><?= _('Modulteil-ID aus Fremdsystem') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('flexnow_modul') ?>
                         type="text" name="flexnow_modul" id="flexnow_modul"
@@ -101,8 +102,11 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <? endif; ?>
         </label>
     </fieldset>
-    <fieldset id="mvv-field-modulteil-semester">
-        <legend><?= _('Häufigkeit/Turnus') ?></legend>
+
+    <fieldset class="collapsable collapsed" id="mvv-field-modulteil-semester">
+        <legend>
+            <?= _('Einstellungen') ?>
+        </legend>
         <label><?= _('Häufigkeit') ?>
             <? $semester = $modulteil->semester ? $modulteil->semester
                 : $GLOBALS['MVV_NAME_SEMESTER']['default']; ?>
@@ -125,14 +129,13 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                 <input type="hidden" name="semester" value="<?= $semester ?>">
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset id="mvv-field-modulteil-languages">
-        <legend><?= _('Unterrichtssprachen') ?></legend>
+
+        <label for="mvv-language-chooser-select"><?= _('Lehrsprachen') ?>
         <? if ($def_lang && $perm->haveFieldPerm('languages', MvvPerm::PERM_WRITE)) : ?>
             <ul id="language_target" class="mvv-assigned-items sortable mvv-languages">
                 <? if (!count($modulteil->languages)) : ?>
                     <li class="mvv-item-list-placeholder"<?= (count($modulteil->languages) ? ' style="display:none;"' : '') ?>>
-                        <?= _('Geben Sie die Unterrichtssprachen an.') ?>
+                        <?= _('Geben Sie die Lehrsprachen an.') ?>
                     </li>
                 <? endif; ?>
                 <? foreach ($modulteil->languages as $assigned_language) : ?>
@@ -147,8 +150,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                     </li>
                 <? endforeach; ?>
             </ul>
-            <?= $this->render_partial('shared/language_chooser', ['chooser_id' => 'language', 'chooser_languages' => $GLOBALS['MVV_MODULTEIL']['SPRACHE']['values']]); ?>
-            <?= _('Die Reihenfolge der Sprachen kann durch Anklicken und Ziehen geändert werden.') ?>
+            <?= $this->render_partial('shared/language_chooser', ['chooser_id' => 'language', 'chooser_languages' => $GLOBALS['MVV_MODULTEIL']['SPRACHE']['values'], 'addition' => _('Die Reihenfolge der Sprachen kann durch Anklicken und Ziehen geändert werden.')]); ?>
         <? else : ?>
             <ul id="languages_target" class="mvv-assigned-items mvv-languages">
                 <? if (count($modulteil->languages)) : ?>
@@ -165,33 +167,11 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                 <? endif; ?>
             </ul>
         <? endif; ?>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Teilnahmevoraussetzung Modulteil') ?></legend>
-        <label><?= _('Teilnahmevoraussetzung') ?>
-            <? if ($perm_d->haveFieldPerm('voraussetzung', MvvPerm::PERM_WRITE)) : ?>
-                <textarea cols="60" rows="5" name="voraussetzung" id="voraussetzung"
-                          class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->voraussetzung) ?></textarea>
-            <? else : ?>
-                <textarea readonly cols="60" rows="5" name="voraussetzung" id="voraussetzung"
-                          class="ui-resizable"><?= htmlReady($deskriptor->voraussetzung) ?></textarea>
-            <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Kommentar Modulteil') ?></legend>
-        <label><?= _('Kommentar') ?>
-            <? if ($perm_d->haveFieldPerm('kommentar', MvvPerm::PERM_WRITE)) : ?>
-                <textarea cols="60" rows="5" name="kommentar" id="kommentar"
-                          class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar) ?></textarea>
-            <? else : ?>
-                <textarea readonly cols="60" rows="5" name="kommentar" id="kommentar"
-                          class="ui-resizable"><?= htmlReady($deskriptor->kommentar) ?></textarea>
-            <? endif; ?>
+
+        <label>
+            <?= _('Kapazität/Teilnahmezahl Modulteil') ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Kapazität/Teilnahmezahl Modulteil') ?></legend>
         <section id="mvv-field-modulteil-kapazitaet" class="hgroup size-m">
             <? if ($perm->haveFieldPerm('kapazitaet') && $def_lang): ?>
                 <label><?= _('Teilnahmezahl') ?>
@@ -219,9 +199,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar_kapazitaet) ?></textarea>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Semesterwochenstunden') ?></legend>
+
         <label><?= _('SWS') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('sws') ?>
@@ -230,19 +208,57 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                 <?= $modulteil->sws ? htmlReady($modulteil->sws) : _('keine Angabe') ?>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Kreditpunkte') ?></legend>
+
+        <label>
+            <?= _('Kreditpunkte') ?>
+        </label>
         <? if ($def_lang) : ?>
             <input <?= $perm->disable('kp') ?>
                     type="text" name="kp" id="kp" value="<?= htmlReady($modulteil->kp) ?>" maxlength="2">
         <? else : ?>
             <?= $modulteil->kp ? htmlReady($modulteil->kp) : _('keine Angabe') ?>
         <? endif; ?>
+
+
+
     </fieldset>
-    <fieldset>
-        <legend><?= _('Workload Präsenzzeit') ?></legend>
-        <label><?= _('Workload') ?>
+
+
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Teilnahmevoraussetzung Modulteil') ?>
+        </legend>
+        <label><?= _('Teilnahmevoraussetzung') ?>
+        <? if ($perm_d->haveFieldPerm('voraussetzung', MvvPerm::PERM_WRITE)) : ?>
+            <textarea cols="60" rows="5" name="voraussetzung" id="voraussetzung" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->voraussetzung) ?></textarea>
+        <? else : ?>
+            <textarea readonly cols="60" rows="5" name="voraussetzung" id="voraussetzung" class="ui-resizable"><?= htmlReady($deskriptor->voraussetzung) ?></textarea>
+        <? endif; ?>
+        </label>
+    </fieldset>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Kommentar Modulteil') ?>
+        </legend>
+        <label><?= _('Kommentar') ?>
+        <? if ($perm_d->haveFieldPerm('kommentar', MvvPerm::PERM_WRITE)) : ?>
+            <textarea cols="60" rows="5" name="kommentar" id="kommentar" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar) ?></textarea>
+        <? else : ?>
+            <textarea readonly cols="60" rows="5" name="kommentar" id="kommentar" class="ui-resizable"><?= htmlReady($deskriptor->kommentar) ?></textarea>
+        <? endif; ?>
+        </label>
+    </fieldset>
+
+
+
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Workload') ?>
+        </legend>
+        <label><?= _('Workload (Präsenzzeit)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('wl_praesenz') ?>
                         type="text" name="wl_praesenz" id="wl_praesenz"
@@ -261,10 +277,8 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar_wl_praesenz) ?></textarea>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Workload Vor-/Nachbereitung') ?></legend>
-        <label><?= _('Workload') ?>
+
+        <label><?= _('Workload ( Vor-/Nachbereitung)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('wl_bereitung') ?>
                         type="text" name="wl_bereitung" id="wl_bereitung"
@@ -283,10 +297,8 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar_wl_bereitung) ?></textarea>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Workload Modulteil selbstgestaltete Arbeitszeit') ?></legend>
-        <label><?= _('Workload') ?>
+
+        <label><?= _('Workload (Modulteil selbstgestaltete Arbeitszeit)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable("wl_selbst") ?>
                         type="text" name="wl_selbst" id="wl_selbst"
@@ -305,10 +317,8 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar_wl_selbst) ?></textarea>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Workload Modulteil Prüfung') ?></legend>
-        <label><?= _('Workload') ?>
+
+        <label><?= _('Workload (Modulteil Prüfung)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('wl_pruef') ?> type="text" name="wl_pruef" id="wl_pruef"
                                                          value="<?= htmlReady($modulteil->wl_pruef) ?>" maxlength="4">
@@ -326,8 +336,11 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <? endif; ?>
         </label>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Prüfung/Note') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Prüfung/Note') ?>
+        </legend>
         <label><?= _('Prüfungsvorleistung') ?>
             <? if ($perm_d->haveFieldPerm('pruef_vorleistung', MvvPerm::PERM_WRITE)) : ?>
                 <textarea cols="60" rows="5" name="pruef_vorleistung" id="pruef_vorleistung"
@@ -377,8 +390,11 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <? endif; ?>
         </label>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Anwesenheitspflicht') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Anwesenheitspflicht') ?>
+        </legend>
         <? if ($def_lang && $perm->haveFieldPerm('pflicht', MvvPerm::PERM_WRITE)) : ?>
             <section class="hgroup">
                 <label>
@@ -411,8 +427,10 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
         </label>
     </fieldset>
     <? if (count($deskriptor->datafields)) : ?>
-        <fieldset>
-            <legend><?= _('Weitere Angaben') ?></legend>
+        <fieldset class="collapsable collapsed">
+            <legend>
+                <?= _('Weitere Angaben') ?>
+            </legend>
             <? foreach ($deskriptor->datafields as $entry) : ?>
                 <? if ($entry->lang === '') : ?>
                     <? if (!$def_lang) : ?>
@@ -427,7 +445,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
                         <? $df = $entry; ?>
                     <? endif; ?>
                     <? $tdf = $df->getTypedDatafield(); ?>
-                    <? if ($perm_d->haveDfEntryPerm($df, MvvPerm::PERM_WRITE)) : ?>
+                    <? if ($perm_d->haveDfEntryPerm($df->datafield_id, MvvPerm::PERM_WRITE)) : ?>
                         <?= $tdf->getHTML('datafields'); ?>
                     <? else : ?>
                         <em><?= htmlReady($tdf->getName()) ?>:</em><br>

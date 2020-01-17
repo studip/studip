@@ -144,6 +144,41 @@ class Folder extends SimpleORMap
             return 'resource';
         }
 
+        //MVV
+        if (Abschluss::exists($range_id)) {
+            return 'Abschluss';
+        }
+        if (AbschlussKategorie::exists($range_id)) {
+            return 'AbschlussKategorie';
+        }
+        if (Lvgruppe::exists($range_id)) {
+            return 'Lvgruppe';
+        }
+        if (Modul::exists($range_id)) {
+            return 'Modul';
+        }
+        if (Modulteil::exists($range_id)) {
+            return 'Modulteil';
+        }
+        if (MvvCourse::exists($range_id)) {
+            return 'MvvCourse';
+        }
+        if (Studiengang::exists($range_id)) {
+            return 'Studiengang';
+        }
+        if (StudiengangTeil::exists($range_id)) {
+            return 'StudiengangTeil';
+        }
+        if (StgteilVersion::exists($range_id)) {
+            return 'StgteilVersion';
+        }
+        if (StgteilAbschnitt::exists($range_id)) {
+            return 'StgteilAbschnitt';
+        }
+        if (StgteilabschnittModul::exists($range_id)) {
+            return 'StgteilabschnittModul';
+        }
+
         return false;
     }
 

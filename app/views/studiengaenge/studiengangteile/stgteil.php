@@ -4,8 +4,11 @@
 
 <form class="default" action="<?= $controller->url_for('/stgteil/' . $stgteil->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
-        <legend><?= _('Fach') ?></legend>
+
+    <fieldset class="collapsable">
+        <legend>
+            <?= _('Fach') ?>
+        </legend>
         <? if (is_array($faecher)) : ?>
             <label>
                 <?= sprintf(_('Mögliche Fächer im gewählten Fachbereich %s:'), '<strong>' . htmlReady($fachbereich->name) . '</strong>') ?>
@@ -47,8 +50,11 @@
             </ul>
         <? endif; ?>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Ausprägung') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Ausprägung') ?>
+        </legend>
         <label><?= _('Kredit-Punkte') ?>
             <input <?= $perm->disable('kp') ?>
                     type="text" name="kp" id="stgteil_kp" size="10" maxlength="50"
@@ -69,12 +75,18 @@
             <? endif; ?>
         </label>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Titelzusatz') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+        <?= _('Titelzusatz') ?>
+        </legend>
         <?= MvvI18N::input('zusatz', $stgteil->zusatz, ['id' => 'stgteil_zusatz', 'maxlength' => '200'])->checkPermission($stgteil) ?>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Studienfachberater') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Studienfachberater') ?>
+        </legend>
         <? if ($perm->haveFieldPerm('fachberater')) : ?>
             <?= $search_fachberater->render() ?>
             <? if (Request::submitted('search_fachberater')) : ?>
@@ -122,6 +134,7 @@
             <?= _('Die Reihenfolge der Studienfachberater kann durch Anklicken und Ziehen geändert werden.') ?>
         </div>
     </fieldset>
+
     <footer data-dialog-button>
         <? if ($stgteil->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>

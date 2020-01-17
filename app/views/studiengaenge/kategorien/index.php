@@ -1,12 +1,9 @@
 <table class="default collapsable">
-    <colgroup>
-        <col>
-        <col style="width: 10%;">
-    </colgroup>
     <thead>
         <tr class="sortable">
             <?= $controller->renderSortLink('/index', _('Abschluss-Kategorie'), 'name') ?>
-            <?= $controller->renderSortLink('/index', _('Studiengänge'), 'count_studiengaenge', ['style' => 'text-align: center;']) ?>
+            <?= $controller->renderSortLink('/index', _('Studiengänge'), 'count_studiengaenge', ['style' => 'text-align: center; width: 10%;']) ?>
+            <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
         </tr>
     </thead>
     <? foreach ($kategorien as $kategorie) : ?>
@@ -36,6 +33,7 @@
                     <? endif; ?>
                 </td>
                 <td style="text-align: center;" class="dont-hide"><?= $kategorie->count_studiengaenge ?></td>
+                <td></td>
             </tr>
             <? if ($kategorie_id == $kategorie->id) : ?>
                 <tr class="loaded-details nohover">

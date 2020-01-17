@@ -9,7 +9,7 @@
       action="<?= $controller->url_for('fachabschluss/kategorien/kategorie/' . $abschluss_kategorie->getId()) ?>"
       method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
+    <fieldset class="collapsable">
         <legend><?= _('Grunddaten') ?></legend>
         <label>
             <?= _('Name') ?>
@@ -34,10 +34,12 @@
                 )->checkPermission($abschluss_kategorie) ?>
             </label>
     </fieldset>
-    <?= $this->render_partial(
-        'shared/form_dokumente',
-        ['perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE)]
-    ) ?>
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Dokumente'); ?>
+        </legend>
+        <?= $this->render_partial('materialien/files/range', array('perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE))) ?>
+    </fieldset>
     <footer data-dialog-buttons>
         <? if ($abschluss_kategorie->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>

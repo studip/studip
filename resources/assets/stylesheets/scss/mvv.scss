@@ -1,0 +1,33 @@
+#index_filter {
+    label.mvv-name-search {
+        display: block;
+        input[type="text"] {
+            box-sizing: border-box;
+            border: 1px solid $base-color-60;
+            border-right-width: 30px;
+            float: left;
+            height: 22px;
+            width: 100%;
+        }
+
+        input[type="submit"] {
+            font: 0/0 a;
+            color: transparent;
+            text-shadow: none;
+            background-color: transparent;
+            border: 0;
+
+            // Activate when twitter-mixins is included as scss and remove the above rules
+            // @include hide-text();
+
+            width: 29px;
+            height: 20px;
+            @include background-icon(search, info_alt);
+            float: left;
+            background-position: center 3px;
+            background-repeat: no-repeat;
+            vertical-align: top;
+            margin-left: -30px;
+        }
+    }
+}

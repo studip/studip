@@ -78,6 +78,11 @@ class Modul extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
+        $config['has_many']['contact_assignments'] = [
+            'class_name'        => 'MvvContactRange',
+            'assoc_foreign_key' => 'range_id',
+            'order_by'          => 'ORDER BY position'
+        ];
         $config['has_many']['abschnitte_modul'] = [
             'class_name' => 'StgteilabschnittModul',
             'assoc_foreign_key' => 'modul_id',
@@ -107,6 +112,8 @@ class Modul extends ModuleManagementModelTreeItem
         $config['additional_fields']['languagesofinstruction']['get'] =
                 function ($modul) { return $modul->languages; };
         $config['additional_fields']['languagesofinstruction']['set'] = false;
+        $config['additional_fields']['display_name']['get'] = 
+                function ($modul) { return $modul->getDisplayName(); };
 
         $config['alias_fields']['flexnow_id'] = 'flexnow_modul';
 
@@ -139,16 +146,16 @@ class Modul extends ModuleManagementModelTreeItem
     public static function getEnriched($modul_id)
     {
         $modul = parent::getEnrichedByQuery('
-            SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung AS bezeichnung, 
-                COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile 
-            FROM mvv_modul 
-                LEFT JOIN mvv_modul_deskriptor 
-                    ON mvv_modul.modul_id = mvv_modul_deskriptor.modul_id 
-                LEFT JOIN mvv_modulteil 
-                    ON mvv_modul.modul_id = mvv_modulteil.modul_id 
-                LEFT JOIN mvv_modul_inst 
-                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id 
-                        AND mvv_modul_inst.gruppe = ?) 
+            SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung AS bezeichnung,
+                COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile
+            FROM mvv_modul
+                LEFT JOIN mvv_modul_deskriptor
+                    ON mvv_modul.modul_id = mvv_modul_deskriptor.modul_id
+                LEFT JOIN mvv_modulteil
+                    ON mvv_modul.modul_id = mvv_modulteil.modul_id
+                LEFT JOIN mvv_modul_inst
+                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id
+                        AND mvv_modul_inst.gruppe = ?)
             WHERE mvv_modul.modul_id = ?',
             [
                 'hauptverantwortlich',
@@ -181,22 +188,22 @@ class Modul extends ModuleManagementModelTreeItem
         $sortby = self::createSortStatement($sortby, $order, 'bezeichnung,chdate',
                 words('bezeichnung count_modulteile chdate'));
         return parent::getEnrichedByQuery('
-                SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung AS bezeichnung, 
-                    COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile 
-                FROM mvv_modul 
-                    LEFT JOIN mvv_modul_deskriptor 
-                        ON mvv_modul.modul_id = mvv_modul_deskriptor.modul_id 
-                LEFT JOIN mvv_modulteil 
-                    ON mvv_modul.modul_id = mvv_modulteil.modul_id 
-                LEFT JOIN mvv_modul_inst 
-                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id 
-                        AND mvv_modul_inst.gruppe = ?) 
-                LEFT JOIN semester_data start_sem 
-                    ON (mvv_modul.start = start_sem.semester_id) 
-                LEFT JOIN semester_data end_sem 
+                SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung AS bezeichnung,
+                    COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile
+                FROM mvv_modul
+                    LEFT JOIN mvv_modul_deskriptor
+                        ON mvv_modul.modul_id = mvv_modul_deskriptor.modul_id
+                LEFT JOIN mvv_modulteil
+                    ON mvv_modul.modul_id = mvv_modulteil.modul_id
+                LEFT JOIN mvv_modul_inst
+                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id
+                        AND mvv_modul_inst.gruppe = ?)
+                LEFT JOIN semester_data start_sem
+                    ON (mvv_modul.start = start_sem.semester_id)
+                LEFT JOIN semester_data end_sem
                     ON (mvv_modul.end = end_sem.semester_id) '
                 . self::getFilterSql($filter, true) . '
-                GROUP BY modul_id 
+                GROUP BY modul_id
                 ORDER BY ' . $sortby,
             ['hauptverantwortlich'],
             $row_count,
@@ -214,14 +221,14 @@ class Modul extends ModuleManagementModelTreeItem
     public static function getCount($filter = null)
     {
         $query = '
-            SELECT COUNT(DISTINCT(mvv_modul.modul_id)) 
-            FROM mvv_modul 
-                LEFT JOIN mvv_modul_inst 
-                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id 
+            SELECT COUNT(DISTINCT(mvv_modul.modul_id))
+            FROM mvv_modul
+                LEFT JOIN mvv_modul_inst
+                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id
                         AND mvv_modul_inst.gruppe = ?)
-                LEFT JOIN semester_data as start_sem 
-                    ON (mvv_modul.start = start_sem.semester_id)  
-                LEFT JOIN semester_data as end_sem 
+                LEFT JOIN semester_data as start_sem
+                    ON (mvv_modul.start = start_sem.semester_id)
+                LEFT JOIN semester_data as end_sem
                     ON (mvv_modul.end = end_sem.semester_id) '
                 . self::getFilterSql($filter, true);
         $db = DBManager::get()->prepare($query);
@@ -252,10 +259,10 @@ class Modul extends ModuleManagementModelTreeItem
     {
         $_SESSION['MVV/Lvgruppe/trail_parent_id'] =  $this->getId();
         return Lvgruppe::getEnrichedByQuery('
-            SELECT ml.* 
-            FROM mvv_lvgruppe ml 
-                LEFT JOIN mvv_lvgruppe_modulteil USING (lvgruppe_id) 
-                LEFT JOIN mvv_modulteil USING (modulteil_id) 
+            SELECT ml.*
+            FROM mvv_lvgruppe ml
+                LEFT JOIN mvv_lvgruppe_modulteil USING (lvgruppe_id)
+                LEFT JOIN mvv_modulteil USING (modulteil_id)
             WHERE modul_id = ? ',
             [$this->getId()]
         );
@@ -368,7 +375,7 @@ class Modul extends ModuleManagementModelTreeItem
             $deskriptor->modul_id = $this->getId();
             $this->deskriptoren = $deskriptor;
         }
-        
+
         return $this->deskriptoren;
     }
 
@@ -520,12 +527,12 @@ class Modul extends ModuleManagementModelTreeItem
             $copy->responsible_institute->modul_id = $copy->id;
             $copy->responsible_institute->setNew(true);
         }
-        
+
         $copy->deskriptoren = clone $this->deskriptoren;
         $copy->deskriptoren->modul_id = $copy->id;
         $copy->deskriptoren->setNewId();
         $copy->deskriptoren->setNew(true);
-        
+
         $institutes = [];
         foreach ($this->assigned_institutes as $assigned_institute) {
             $cloned_inst = clone $assigned_institute;
@@ -608,12 +615,12 @@ class Modul extends ModuleManagementModelTreeItem
     public static function findByStgteilAbschnitt($abschnitt_id, $filter)
     {
         return parent::getEnrichedByQuery('
-                SELECT mvv_modul.* FROM mvv_modul 
-                LEFT JOIN mvv_stgteilabschnitt_modul USING(modul_id) 
-                LEFT JOIN semester_data start_sem 
-                ON (mvv_modul.start = start_sem.semester_id) 
-                LEFT JOIN semester_data end_sem 
-                ON (mvv_modul.end = end_sem.semester_id) 
+                SELECT mvv_modul.* FROM mvv_modul
+                LEFT JOIN mvv_stgteilabschnitt_modul USING(modul_id)
+                LEFT JOIN semester_data start_sem
+                ON (mvv_modul.start = start_sem.semester_id)
+                LEFT JOIN semester_data end_sem
+                ON (mvv_modul.end = end_sem.semester_id)
                 WHERE mvv_stgteilabschnitt_modul.abschnitt_id = ? '
                 . self::getFilterSql($filter) . '
                 ORDER BY position, mkdate',
@@ -643,21 +650,21 @@ class Modul extends ModuleManagementModelTreeItem
         $sortby = self::createSortStatement($sortby, $order, 'chdate',
                 ['count_modulteile', 'bezeichnung']);
         return parent::getEnrichedByQuery('
-                SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung, 
-                    COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile 
-                FROM mvv_modul 
-                    LEFT JOIN mvv_modulteil 
-                        ON mvv_modul.modul_id = mvv_modulteil.modul_id 
-                    INNER JOIN mvv_modul_inst 
-                        ON mvv_modul.modul_id = mvv_modul_inst.modul_id 
-                    LEFT JOIN mvv_modul_deskriptor 
-                        ON mvv_modul_deskriptor.modul_id =  mvv_modul.modul_id 
-                    LEFT JOIN semester_data start_sem 
-                        ON (mvv_modul.start = start_sem.semester_id) 
-                    LEFT JOIN semester_data end_sem 
+                SELECT mvv_modul.*, mvv_modul_deskriptor.bezeichnung,
+                    COUNT(DISTINCT(mvv_modulteil.modulteil_id)) AS count_modulteile
+                FROM mvv_modul
+                    LEFT JOIN mvv_modulteil
+                        ON mvv_modul.modul_id = mvv_modulteil.modul_id
+                    INNER JOIN mvv_modul_inst
+                        ON mvv_modul.modul_id = mvv_modul_inst.modul_id
+                    LEFT JOIN mvv_modul_deskriptor
+                        ON mvv_modul_deskriptor.modul_id =  mvv_modul.modul_id
+                    LEFT JOIN semester_data start_sem
+                        ON (mvv_modul.start = start_sem.semester_id)
+                    LEFT JOIN semester_data end_sem
                         ON (mvv_modul.end = end_sem.semester_id) '
                 . self::getFilterSql($filter, true) .'
-                GROUP BY modul_id 
+                GROUP BY modul_id
                 ORDER BY ' . $sortby,
             [],
             $row_count,
@@ -675,10 +682,10 @@ class Modul extends ModuleManagementModelTreeItem
     public static function findByLvgruppe($lvgruppe_id)
     {
         return parent::getEnrichedByQuery('
-            SELECT mm.* 
-            FROM mvv_modul mm 
-                LEFT JOIN mvv_modulteil mmt USING(modul_id) 
-                LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id) 
+            SELECT mm.*
+            FROM mvv_modul mm
+                LEFT JOIN mvv_modulteil mmt USING(modul_id)
+                LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id)
             WHERE mlm.lvgruppe_id = ? ',
             [$lvgruppe_id]
         );
@@ -714,18 +721,18 @@ class Modul extends ModuleManagementModelTreeItem
         $sortby = Fachbereich::createSortStatement($sortby, $order, 'name',
                 ['count_objects']);
         return Fachbereich::getEnrichedByQuery('
-                SELECT Institute.*, 
-                    Institute.Name as `name`, 
-                    Institute.Institut_id AS institut_id, 
-                    COUNT(DISTINCT modul_id) as count_objects 
-                FROM Institute 
-                    INNER JOIN mvv_modul_inst 
-                        ON Institute.Institut_id = mvv_modul_inst.institut_id 
-                    INNER JOIN mvv_modul USING(modul_id) 
-                    LEFT JOIN semester_data start_sem 
-                        ON (mvv_modul.start = start_sem.semester_id) 
-                    LEFT JOIN semester_data end_sem 
-                        ON (mvv_modul.end = end_sem.semester_id) 
+                SELECT Institute.*,
+                    Institute.Name as `name`,
+                    Institute.Institut_id AS institut_id,
+                    COUNT(DISTINCT modul_id) as count_objects
+                FROM Institute
+                    INNER JOIN mvv_modul_inst
+                        ON Institute.Institut_id = mvv_modul_inst.institut_id
+                    INNER JOIN mvv_modul USING(modul_id)
+                    LEFT JOIN semester_data start_sem
+                        ON (mvv_modul.start = start_sem.semester_id)
+                    LEFT JOIN semester_data end_sem
+                        ON (mvv_modul.end = end_sem.semester_id)
                 '.Fachbereich::getFilterSql($filter, true).'
                 GROUP BY institut_id ORDER BY ' . $sortby,
                 [],
@@ -748,16 +755,16 @@ class Modul extends ModuleManagementModelTreeItem
     {
         if (is_array($modul_ids)) {
             $stmt = DBManager::get()->prepare("
-                SELECT IFNULL(stat, '__undefined__') AS stat, 
-                COUNT(modul_id) AS count_module 
-                FROM mvv_modul WHERE modul_id IN (?) 
+                SELECT IFNULL(stat, '__undefined__') AS stat,
+                COUNT(modul_id) AS count_module
+                FROM mvv_modul WHERE modul_id IN (?)
                 GROUP BY stat
             ");
             $stmt->execute([$modul_ids]);
         } else {
             $stmt = DBManager::get()->prepare("
-                SELECT IFNULL(stat, '__undefined__') AS stat, 
-                COUNT(modul_id) AS count_module 
+                SELECT IFNULL(stat, '__undefined__') AS stat,
+                COUNT(modul_id) AS count_module
                 FROM mvv_modul GROUP BY stat
             ");
             $stmt->execute();
@@ -791,15 +798,15 @@ class Modul extends ModuleManagementModelTreeItem
             return [];
         }
         $stmt = DBManager::get()->prepare('
-            SELECT DISTINCT mvv_modul.modul_id 
-            FROM mvv_modul 
-                LEFT JOIN mvv_modulteil 
-                    ON mvv_modul.modul_id = mvv_modulteil.modul_id 
-                LEFT JOIN mvv_modul_inst 
-                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id) 
-                LEFT JOIN semester_data start_sem 
-                    ON (mvv_modul.start = start_sem.semester_id) 
-                LEFT JOIN semester_data end_sem 
+            SELECT DISTINCT mvv_modul.modul_id
+            FROM mvv_modul
+                LEFT JOIN mvv_modulteil
+                    ON mvv_modul.modul_id = mvv_modulteil.modul_id
+                LEFT JOIN mvv_modul_inst
+                    ON (mvv_modul.modul_id = mvv_modul_inst.modul_id)
+                LEFT JOIN semester_data start_sem
+                    ON (mvv_modul.start = start_sem.semester_id)
+                LEFT JOIN semester_data end_sem
                     ON (mvv_modul.end = end_sem.semester_id) '
             . $filter_sql
         );
@@ -838,19 +845,19 @@ class Modul extends ModuleManagementModelTreeItem
             $public_status = ModuleManagementModel::getPublicStatus('Modul');
             if (count($public_status)) {
                 $stmt = DBManager::get()->prepare('
-                    SELECT mm.modul_id 
-                    FROM mvv_modul mm 
-                        INNER JOIN mvv_modul_deskriptor mmd USING(modul_id) 
-                        LEFT JOIN mvv_stgteilabschnitt_modul msm ON mmd.modul_id = msm.modul_id 
-                        LEFT JOIN mvv_stgteilabschnitt USING(abschnitt_id) 
-                        LEFT JOIN mvv_stgteilversion msv USING(version_id) 
+                    SELECT mm.modul_id
+                    FROM mvv_modul mm
+                        INNER JOIN mvv_modul_deskriptor mmd USING(modul_id)
+                        LEFT JOIN mvv_stgteilabschnitt_modul msm ON mmd.modul_id = msm.modul_id
+                        LEFT JOIN mvv_stgteilabschnitt USING(abschnitt_id)
+                        LEFT JOIN mvv_stgteilversion msv USING(version_id)
                     WHERE (
-                            mm.code LIKE :term 
-                            OR mmd.bezeichnung LIKE :term 
+                            mm.code LIKE :term
+                            OR mmd.bezeichnung LIKE :term
                             OR msm.bezeichnung LIKE :term
                         )
-                        AND mm.stat IN (:stat) 
-                        AND msv.stat IN (:stat) 
+                        AND mm.stat IN (:stat)
+                        AND msv.stat IN (:stat)
                     GROUP BY mm.modul_id
                 ');
                 $stmt->execute([':term' => $term, ':stat' => $public_status]);
@@ -858,10 +865,10 @@ class Modul extends ModuleManagementModelTreeItem
             }
         } else {
             $stmt = DBManager::get()->prepare('
-                SELECT mm.modul_id 
-                FROM mvv_modul mm 
-                    LEFT JOIN mvv_modul_deskriptor mmd USING(modul_id) 
-                WHERE code LIKE :term OR mmd.bezeichnung LIKE :term 
+                SELECT mm.modul_id
+                FROM mvv_modul mm
+                    LEFT JOIN mvv_modul_deskriptor mmd USING(modul_id)
+                WHERE code LIKE :term OR mmd.bezeichnung LIKE :term
                 GROUP BY modul_id
             ');
             $stmt->execute([':term' => $term]);
@@ -989,13 +996,13 @@ class Modul extends ModuleManagementModelTreeItem
         $public_status = ModuleManagementModel::getPublicStatus('Modul');
         if (count($public_status)) {
             $stmt = DBManager::get()->prepare('
-                SELECT 1 
-                FROM mvv_modul mm 
-                    INNER JOIN mvv_modul_deskriptor mmd USING(modul_id) 
-                    INNER JOIN mvv_stgteilabschnitt_modul msm ON mmd.modul_id = msm.modul_id 
-                    INNER JOIN mvv_stgteilabschnitt USING(abschnitt_id) 
-                    INNER JOIN mvv_stgteilversion msv USING(version_id) 
-                WHERE mm.stat IN (:stat) 
+                SELECT 1
+                FROM mvv_modul mm
+                    INNER JOIN mvv_modul_deskriptor mmd USING(modul_id)
+                    INNER JOIN mvv_stgteilabschnitt_modul msm ON mmd.modul_id = msm.modul_id
+                    INNER JOIN mvv_stgteilabschnitt USING(abschnitt_id)
+                    INNER JOIN mvv_stgteilversion msv USING(version_id)
+                WHERE mm.stat IN (:stat)
                     AND msv.stat IN (:stat) LIMIT 1
             ');
             $stmt->execute([':term' => $term, ':stat' => $public_status]);
@@ -1003,13 +1010,13 @@ class Modul extends ModuleManagementModelTreeItem
         }
         return false;
     }
-    
+
     /**
      * Retrieves all courses this Modul is assigned by its parts and assigned
      * LV-Gruppen.
      * Filtered by a given semester considering the global visibility or the
      * the visibility for a given user.
-     * 
+     *
      * @param string $semester_id The id of a semester.
      * @param mixed $only_visible Boolean true retrieves only visible courses, false
      * retrieves all courses. If $only_visible is an user id it depends on the users

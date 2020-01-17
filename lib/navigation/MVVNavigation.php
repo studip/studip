@@ -53,13 +53,13 @@ class MVVNavigation extends Navigation
         $this->addSubNavigation('studiengaenge', $stg_navigation);
 
         $modul_navigation = new Navigation(_('Module'));
-        $modul_navigation->addSubNavigation('module', 
+        $modul_navigation->addSubNavigation('module',
                 new Navigation(_('Module'),
                 'dispatch.php/module/module'));
         $this->addSubNavigation('module', $modul_navigation);
 
         $lvg_navigation = new Navigation(_('LV-Gruppen'));
-        $lvg_navigation->addSubNavigation('lvgruppen', 
+        $lvg_navigation->addSubNavigation('lvgruppen',
                 new Navigation(_('Lehrveranstaltungsgruppen'),
                 'dispatch.php/lvgruppen/lvgruppen'));
         $this->addSubNavigation('lvgruppen', $lvg_navigation);
@@ -78,9 +78,18 @@ class MVVNavigation extends Navigation
 
         $dok_navigation = new Navigation(_('Materialien/Dokumente'));
         $dok_navigation->addSubNavigation(
+            'files', new Navigation(_('Dokumente'),
+            'dispatch.php/materialien/files'));
+        $dok_navigation->addSubNavigation(
                 'dokumente', new Navigation(_('Materialien/Dokumente'),
-                'dispatch.php/materialien/dokumente'));        
+                'dispatch.php/materialien/dokumente'));
         $this->addSubNavigation('materialien', $dok_navigation);
+
+        $contact_navigation = new Navigation(_('Ansprechpartner'));
+        $contact_navigation->addSubNavigation(
+                'index', new Navigation(_('Ansprechpartner'),
+                'dispatch.php/shared/contacts'));
+        $this->addSubNavigation('contacts', $contact_navigation);
 
     }
 

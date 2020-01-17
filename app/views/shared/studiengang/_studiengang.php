@@ -116,5 +116,31 @@
                 <?= htmlReady($studiengang->schlagworte) ?>
             </td>
         </tr>
+        <? foreach ($studiengang->datafields as $df) : ?>
+            <? if (mb_strpos($df->datafield->object_class, 'settings') !== false) : ?>
+                <? $tdf = $df->getTypedDatafield(); ?>
+                <tr>
+                    <td>
+                        <strong><?= htmlReady($tdf->getName()) ?></strong>
+                    </td>
+                    <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
+                        <?= $tdf->getDisplayValue() ?>
+                    </td>
+                </tr>
+            <? endif; ?>
+        <? endforeach; ?>
+        <? foreach ($studiengang->datafields as $df) : ?>
+            <? if (mb_strpos($entry->datafield->object_class, 'info') !== false) : ?>
+                <? $tdf = $df->getTypedDatafield(); ?>
+                <tr>
+                    <td>
+                        <strong><?= htmlReady($tdf->getName()) ?></strong>
+                    </td>
+                    <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
+                        <?= $tdf->getDisplayValue() ?>
+                    </td>
+                </tr>
+            <? endif; ?>
+        <? endforeach; ?>
     </tbody>
 </table>

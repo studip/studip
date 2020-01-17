@@ -1,9 +1,5 @@
 <td colspan="3">
     <table class="default">
-        <colgroup>
-            <col>
-            <col style="width: 1%;">
-        </colgroup>
         <tbody>
             <? foreach ($stgteile as $stgteil) : ?>
                 <tr>
@@ -13,7 +9,7 @@
                         <? endif; ?>
                         <?= htmlReady($stgteil->getDisplayName()) ?>
                     </td>
-                    <td class="actions" style="white-space: nowrap;">
+                    <td class="actions" style="white-space: nowrap; width: 1%;">
                         <? $actionMenu = ActionMenu::get() ?>
                         <? if (MvvPerm::havePermWrite($stgteil)) : ?>
                             <? $actionMenu->addLink(

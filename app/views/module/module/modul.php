@@ -15,8 +15,11 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
 
 <form id="modul_form" class="default" action="<?= $controller->url_for('/modul', $modul->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
-        <legend><?= _('Bezeichnung') ?></legend>
+
+    <fieldset class="collapsable">
+        <legend>
+            <?= _('Bezeichnung') ?>
+        </legend>
         <label id="mvv-field-modul-bezeichnung"><?= _('Modulbezeichnung') ?>
             <input <?= $perm_d->disable('bezeichnung') ?> type="text" name="bezeichnung" id="bezeichnung"
                                                           value="<?= htmlReady($deskriptor->bezeichnung) ?>" required>
@@ -29,9 +32,6 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <?= $modul->code ? htmlReady($modul->code) : _('keine Angabe') ?>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Relationen') ?></legend>
         <label id="mvv-field-modul-quelle"><?= _('Quelle') ?>
             <? if (!$modul->modul_quelle) : ?>
                 <?= _('Dieses Modul hat keine Vorlage.') ?>
@@ -49,53 +49,57 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <?= htmlReady($modul->flexnow_modul) ?>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset id="mvv-field-modul-variante">
-        <legend><?= _('Ist Variante von') ?></legend>
-        <? if ($def_lang) : ?>
-            <? if ($perm->haveFieldPerm('modul_variante', MvvPerm::PERM_WRITE)) : ?>
-                <div>
-                    <?= $search_modul->render(); ?>
-                    <? if (Request::submitted('search_modul')) : ?>
-                        <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
-                    <? else : ?>
-                        <?= Icon::create('search', Icon::ROLE_CLICKABLE, ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
-                    <? endif; ?>
-                </div>
-            <? endif; ?>
-            <ul id="modul_target" class="mvv-assigned-items mvv-assign-single mvv-modul">
-                <li class="mvv-item-list-placeholder"<?= ($modul->modul_variante ? ' style="display: none;"' : '') ?>><?= _('Dieses Modul ist nicht die Variante eines anderen Moduls.') ?></li>
-                <? if ($modul->modul_variante->id) : ?>
-                    <li id="modul_<?= $modul->modul_variante->id ?>">
-                        <div class="mvv-item-list-text">
-                            <?= htmlReady($modul->modul_variante->getDisplayName()) ?>
-                        </div>
-                        <? if ($perm->haveFieldPerm('modul_variante', MvvPerm::PERM_WRITE)) : ?>
-                            <div class="mvv-item-list-buttons">
-                                <a href="#"
-                                   class="mvv-item-remove"><?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _(' entfernen')])->asImg(); ?></a>
-                            </div>
+
+        <label>
+            <?= _('Ist Variante von') ?>
+            <? if ($def_lang) : ?>
+                <? if ($perm->haveFieldPerm('modul_variante', MvvPerm::PERM_WRITE)) : ?>
+                    <div>
+                        <?= $search_modul->render(); ?>
+                        <? if (Request::submitted('search_modul')) : ?>
+                            <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['name' => 'reset_modul', 'data-qs_id' => $qs_id_module])->asInput(); ?>
+                        <? else : ?>
+                            <?= Icon::create('search', Icon::ROLE_CLICKABLE, ['name' => 'search_modul', 'data-qs_id' => $qs_id_module, 'data-qs_name' => $search_modul->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
                         <? endif; ?>
-                        <input type="hidden" name="modul_item" value="<?= $modul->modul_variante->id ?>">
-                    </li>
+                    </div>
                 <? endif; ?>
-            </ul>
-        <? else : ?>
-            <ul id="modul_target" class="mvv-assigned-items mvv-assign-single mvv-modul">
-                <? if ($modul->modul_variante) : ?>
-                    <li id="modul_<?= $modul->modul_variante->id ?>">
-                        <div class="mvv-item-list-text">
-                            <?= htmlReady($modul->modul_variante->getDisplayName()) ?>
-                        </div>
-                    </li>
-                <? else : ?>
-                    <li class="mvv-item-list-placeholder"><?= _('Dieses Modul ist nicht die Variante eines anderen Moduls.') ?></li>
-                <? endif; ?>
-            </ul>
-        <? endif; ?>
+                <ul id="modul_target" class="mvv-assigned-items mvv-assign-single mvv-modul">
+                    <li class="mvv-item-list-placeholder"<?= ($modul->modul_variante ? ' style="display: none;"' : '') ?>><?= _('Dieses Modul ist nicht die Variante eines anderen Moduls.') ?></li>
+                    <? if ($modul->modul_variante->id) : ?>
+                        <li id="modul_<?= $modul->modul_variante->id ?>">
+                            <div class="mvv-item-list-text">
+                                <?= htmlReady($modul->modul_variante->getDisplayName()) ?>
+                            </div>
+                            <? if ($perm->haveFieldPerm('modul_variante', MvvPerm::PERM_WRITE)) : ?>
+                                <div class="mvv-item-list-buttons">
+                                    <a href="#"
+                                       class="mvv-item-remove"><?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _(' entfernen')])->asImg(); ?></a>
+                                </div>
+                            <? endif; ?>
+                            <input type="hidden" name="modul_item" value="<?= $modul->modul_variante->id ?>">
+                        </li>
+                    <? endif; ?>
+                </ul>
+            <? else : ?>
+                <ul id="modul_target" class="mvv-assigned-items mvv-assign-single mvv-modul">
+                    <? if ($modul->modul_variante) : ?>
+                        <li id="modul_<?= $modul->modul_variante->id ?>">
+                            <div class="mvv-item-list-text">
+                                <?= htmlReady($modul->modul_variante->getDisplayName()) ?>
+                            </div>
+                        </li>
+                    <? else : ?>
+                        <li class="mvv-item-list-placeholder"><?= _('Dieses Modul ist nicht die Variante eines anderen Moduls.') ?></li>
+                    <? endif; ?>
+                </ul>
+            <? endif; ?>
+        </label>
     </fieldset>
-    <fieldset id="mvv-field-modul-gueltigkeit">
-        <legend><?= _('Gültigkeit') ?></legend>
+
+    <fieldset class="collapsable collapsed" id="mvv-field-modul-gueltigkeit">
+        <legend>
+            <?= _('Gültigkeit') ?>
+        </legend>
         <? if ($def_lang) : ?>
             <label id="mvv-field-modul-modul_start">
                 <?= _('von Semester:') ?>
@@ -207,8 +211,48 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             </div>
         <? endif; ?>
     </fieldset>
-    <fieldset id="mvv-field-modul-responsible_institute">
-        <legend><?= _('Verantwortliche Einrichtung') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Einstellungen') ?>
+        </legend>
+
+        <label><?= _('Bearbeitungsstatus') ?></label>
+        <? $modul_stat = $modul->isNew() ? $GLOBALS['MVV_MODUL']['STATUS']['default'] : $modul->stat; ?>
+        <? if ($def_lang) : ?>
+            <input type="hidden" name="status" value="<?= $modul_stat ?>">
+            <? foreach ($GLOBALS['MVV_MODUL']['STATUS']['values'] as $key => $status_modul) : ?>
+            <? // The MVVAdmin have always PERM_CREATE for all fields ?>
+            <? if ($perm->haveFieldPerm('stat', MvvPerm::PERM_CREATE) && $modul_stat != 'planung') : ?>
+            <label>
+                <input type="radio" name="status" value="<?= $key ?>"<?= ($modul_stat == $key ? ' checked' : '') ?>>
+                <?= $status_modul['name'] ?>
+            </label>
+            <? elseif ($perm->haveFieldPerm('stat', MvvPerm::PERM_WRITE) && $modul_stat != 'planung') : ?>
+            <label>
+                <input <?= ($modul_stat == 'ausgelaufen' && $key == 'genehmigt')  ? 'disabled' :'' ?> type="radio" name="status" value="<?= $key ?>"<?= ($modul_stat == $key ? ' checked' : '') ?>>
+                <?= $status_modul['name'] ?>
+            </label>
+            <? elseif($modul_stat == $key) : ?>
+                <?= $status_modul['name'] ?>
+            <? endif; ?>
+            <? endforeach; ?>
+            <label id="mvv-field-modul-kommentar_status"><?= _('Kommentar:') ?>
+                <? if ($perm->haveFieldPerm('kommentar_status', MvvPerm::PERM_WRITE)): ?>
+                <textarea cols="60" rows="5" name="kommentar_status" id="kommentar_status" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($modul->kommentar_status) ?></textarea>
+                <? else : ?>
+                <textarea readonly cols="60" rows="5" name="kommentar_status" id="kommentar_status" class="ui-resizable"><?= htmlReady($modul->kommentar_status) ?></textarea>
+                <? endif; ?>
+            </label>
+        <? else : ?>
+            <?= $GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['name'] ?>
+            <div id="mvv-field-modul-kommentar_status" style="padding-top:10px;">
+                <div><?= _('Kommentar') ?></div>
+                <?= htmlReady($modul->kommentar_status) ?>
+            </div>
+        <? endif; ?>
+
+        <label><?= _('Verantwortliche Einrichtung') ?></label>
         <? if ($def_lang && $perm->haveFieldPerm('responsible_institute', MvvPerm::PERM_WRITE)) : ?>
             <?= $search_responsible->render(); ?>
             <? if (Request::submitted('search_responsible')) : ?>
@@ -256,9 +300,10 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <? endif; ?>
             </ul>
         <? endif; ?>
-    </fieldset>
-    <fieldset id="mvv-field-modul-assigned_institutes">
-        <legend><?= _('Beteiligte Einrichtungen') ?></legend>
+
+        <label>
+            <?= _('Beteiligte Einrichtungen') ?>
+        </label>
         <? if ($def_lang && $perm->haveFieldPerm('assigned_institutes', MvvPerm::PERM_WRITE)) : ?>
             <?= $search_institutes->render(); ?>
             <? if (Request::submitted('search_institutes')) : ?>
@@ -288,7 +333,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                     </li>
                 <? endforeach; ?>
             </ul>
-            <?= _('Die Reihenfolge der beteiligten Einrichtungen kann durch Anklicken und Ziehen geändert werden.') ?>
+            <label><?= _('Die Reihenfolge der beteiligten Einrichtungen kann durch Anklicken und Ziehen geändert werden.') ?></label>
         <? else : ?>
             <ul id="institute_target" class="mvv-assigned-items mvv-institute">
                 <? if (count($modul->assigned_institutes)) : ?>
@@ -312,88 +357,101 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <? endif; ?>
             </ul>
         <? endif; ?>
-    </fieldset>
-    <fieldset id="mvv-field-modul-assigned_users">
-        <legend><?= _('Personen') ?></legend>
-        <div class="extendedLayout" id="<?= $qs_frame_id_users ?>_frame">
-            <? if ($def_lang && $perm->haveFieldPerm('assigned_users', MvvPerm::PERM_WRITE)) : ?>
-                <div class="mvv-select-group">
-                    <label><?= _('Zuordnen mit der Funktion:') ?>
-                        <select>
-                            <? foreach ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'] as $gruppe_id => $gruppe) : ?>
-                                <option value="<?= $gruppe_id ?>"><?= htmlReady($gruppe['name']) ?></option>
-                            <? endforeach; ?>
-                        </select>
-                    </label>
-                </div>
-                <?= $search_users->render(); ?>
-                <? if (Request::submitted('search_users')) : ?>
-                    <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['name' => 'reset_users', 'data-qs_id' => $qs_id_users])->asInput(); ?>
-                <? else : ?>
-                    <?= Icon::create('search', Icon::ROLE_CLICKABLE, ['name' => 'search_users', 'data-qs_id' => $qs_id_users, 'data-qs_name' => $search_users->getId(), 'class' => 'mvv-qs-button'])->asInput(); ?>
+
+        <label for="mvv-language-chooser-select"><?= _('Lehrsprachen') ?>
+        <? if ($def_lang && $perm->haveFieldPerm('languages', MvvPerm::PERM_WRITE)) : ?>
+            <ul id="language_target" class="mvv-assigned-items sortable mvv-languages">
+                <? if (!count($modul->languages)) : ?>
+                <li class="mvv-item-list-placeholder"<?= (count($modul->languages) ? ' style="display:none;"' : '') ?>>
+                    <?= _('Geben Sie die Lehrsprachen an.') ?>
+                </li>
                 <? endif; ?>
-                <? $grouped_users = $modul->getGroupedAssignedUsers(); ?>
-                <ul id="users_target" class="mvv-assigned-items sortable mvv-assign-group">
-                    <li class="mvv-item-list-placeholder"<?= (count($modul->assigned_users) ? ' style="display:none;"' : '') ?>>
-                        <?= _('Ordnen Sie dem Modul Personen mit ihren Funktionen zu.') ?>
-                    </li>
-                    <? foreach ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'] as $gruppe_id => $gruppe) : ?>
-                        <li<?= is_array($grouped_users[$gruppe_id]) ? '' : ' style="display:none;"' ?>>
-                            <?= $gruppe['name'] ?>
-                            <ul id="users_<?= $gruppe_id ?>" class="sortable mvv-persons">
-                                <? if (is_array($grouped_users[$gruppe_id])) : ?>
-                                    <? foreach ($grouped_users[$gruppe_id] as $assigned_user) : ?>
-                                        <li id="users_<?= $gruppe_id ?>_<?= $assigned_user->user_id ?>"
-                                            class="sort_items">
-                                            <div class="mvv-item-list-text"><?= htmlReady(get_fullname($assigned_user->user_id)) ?></div>
-                                            <div class="mvv-item-list-buttons">
-                                                <a href="#" class="mvv-item-remove">
-                                                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _('Person entfernen')])->asImg(); ?>
-                                                </a>
-                                            </div>
-                                            <input type="hidden" name="users_items_<?= $gruppe_id ?>[]"
-                                                   value="<?= $assigned_user->user_id ?>">
-                                        </li>
-                                    <? endforeach; ?>
-                                <? endif; ?>
-                            </ul>
-                        </li>
-                    <? endforeach; ?>
-                </ul>
-                <?= _('Die Reihenfolge der Personen kann innerhalb der Funktion durch Anklicken und Ziehen geändert werden.') ?>
+                <? foreach ($modul->languages as $assigned_language) : ?>
+                <li id="language_<?= $assigned_language->lang ?>" class="sort_items">
+                    <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
+                    <div class="mvv-item-list-buttons">
+                        <a href="#" class="mvv-item-remove"><?= Icon::create('trash', 'clickable', array('title' => _('Sprache entfernen')))->asImg(); ?></a>
+                    </div>
+                    <input type="hidden" name="language_items[]" value="<?= htmlReady($assigned_language->lang) ?>">
+                </li>
+                <? endforeach; ?>
+            </ul>
+            <?= $this->render_partial('shared/language_chooser', ['chooser_id' => 'language', 'chooser_languages' => $GLOBALS['MVV_MODUL']['SPRACHE']['values'], 'addition' => _('Die Reihenfolge der Sprachen kann durch Anklicken und Ziehen geändert werden.')]); ?>
+        <? else : ?>
+            <ul id="languages_target" class="mvv-assigned-items mvv-languages">
+            <? if (count($modul->languages)) : ?>
+                <? foreach ($modul->languages as $assigned_language) : ?>
+                <li id="institut_<?= $assigned_language->lang ?>">
+                    <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
+                    <input type="hidden" name="language_items[]" value="<?= htmlReady($assigned_language->lang) ?>">
+                </li>
+                <? endforeach; ?>
             <? else : ?>
-                <ul id="users_target" class="mvv-assigned-items mvv-assign-group">
-                    <? if (!count($modul->assigned_users)) : ?>
-                        <li class="mvv-item-list-placeholder">
-                            <?= _('Es wurden keine Personen mit ihren Funktionen zugeordnet.') ?>
-                        </li>
-                    <? endif; ?>
-                    <? $grouped_users = $grouped_users = $modul->getGroupedAssignedUsers(); ?>
-                    <? foreach ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'] as $gruppe_id => $gruppe) : ?>
-                        <? if (is_array($grouped_users[$gruppe_id])) : ?>
-                            <li>
-                                <?= $gruppe['name'] ?>
-                                <ul id="users_<?= $gruppe_id ?>" class="mvv-persons">
-                                    <? if (is_array($grouped_users[$gruppe_id])) : ?>
-                                        <? foreach ($grouped_users[$gruppe_id] as $assigned_user) : ?>
-                                            <li id="person_<?= $assigned_user->user_id ?>">
-                                                <div class="mvv-item-list-text"><?= htmlReady(get_fullname($assigned_user->user_id)) ?></div>
-                                                <input type="hidden" name="users_items_<?= $gruppe_id ?>[]"
-                                                       value="<?= $assigned_user->user_id ?>">
-                                            </li>
-                                        <? endforeach; ?>
-                                    <? endif; ?>
-                                </ul>
-                            </li>
-                        <? endif; ?>
-                    <? endforeach; ?>
-                </ul>
+                <li class="mvv-item-list-placeholder">
+                    <?= _('Es wurden noch keine Sprachen angegeben.') ?>
+                </li>
             <? endif; ?>
-        </div>
+            </ul>
+        <? endif; ?>
+        </label>
+
+        <label id="mvv-field-modul-dauer"><?= _('Dauer (Semester)') ?>
+        <? if ($def_lang) : ?>
+            <input <?= $perm->disable('dauer') ?> type="text" name="dauer" id="dauer" value="<?= htmlReady($modul->dauer) ?>" maxlength="50">
+        <? else : ?>
+            <?= $modul->dauer ? htmlReady($modul->dauer) : _('keine Angabe') ?>
+        <? endif; ?>
+        </label>
+        <label id="mvv-field-modul-turnus"><?= _('Turnus/Angebotsrhythmus') ?>
+            <input <?= $perm_d->disable('turnus') ?> type="text" name="turnus" id="turnus" value="<?= htmlReady($deskriptor->turnus) ?>" maxlength="250">
+        </label>
+
+        <label>
+            <?= _('Kapazität/Teilnahmezahl') ?>
+        </label>
+        <section  id="mvv-field-modul-kapazitaet" class="hgroup size-m">
+        <? if ($perm->haveFieldPerm('kapazitaet') && $def_lang): ?>
+            <label><?= _('Teilnahmezahl') ?>
+                <input type="text" name="kapazitaet" id="kapazitaet" value="<?= htmlReady($modul->kapazitaet) ?>" <?= $modul->kapazitaet == '' ? ' disabled' : ''; ?>>
+            </label>
+            <label>
+                <input type="checkbox" name="kap_unbegrenzt" id="kap_unbegrenzt" value="1"<?= $modul->kapazitaet == '' ? ' checked' : ''; ?> onchange="jQuery('#kapazitaet').attr('disabled', function(foo, attr){ jQuery(this).val(attr ? '0' : ''); return !attr; }); return false;">
+                <?= _('unbegrenzt') ?>
+            </label>
+        <? else : ?>
+            <?= _('Teilnahmezahl') ?>: <?= $modul->kapazitaet == '' ? _('unbegrenzt') : htmlReady($modul->kapazitaet) ?>
+            <input type="hidden" name="kapazitaet" value="<?= htmlReady($modul->kapazitaet) ?>">
+            <input type="hidden" name="kap_unbegrenzt" value="<?= $modul->kapazitaet == '' ? '1' : ''; ?>">
+        <? endif; ?>
+        </section>
+        <label id="mvv-field-modul-kommentar_kapazitaet"><?= _('Kommentar') ?>
+        <? if($perm_d->haveFieldPerm('kommentar_kapazitaet', MvvPerm::PERM_WRITE)): ?>
+            <textarea cols="60" rows="5" name="kommentar_kapazitaet" id="kommentar_kapazitaet" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar_kapazitaet) ?></textarea>
+        <? else: ?>
+            <textarea readonly cols="60" rows="5" name="kommentar_kapazitaet" id="kommentar_kapazitaet" class="ui-resizable"><?= htmlReady($deskriptor->kommentar_kapazitaet) ?></textarea>
+        <? endif; ?>
+        </label>
+
+        <label id="mvv-field-modul-kp"><?= _('Kreditpunkte') ?>
+        <? if ($def_lang) : ?>
+            <input <?= $perm->disable('kp') ?> type="text" name="kp" id="kp" value="<?= htmlReady($modul->kp) ?>" maxlength="2">
+        <? else : ?>
+            <?= $modul->kp ? htmlReady($modul->kp) : _('keine Angabe') ?>
+        <? endif; ?>
+        </label>
+
     </fieldset>
-    <fieldset id="mvv-field-modul-verantwortlich">
-        <legend><?= _('Weitere verantwortliche Personen') ?></legend>
-        <label><?= _('Verantwortliche Personen') ?>
+
+    <fieldset class="collapsable collapsed" id="mvv-field-modul-assigned_users">
+        <legend>
+            <?= _('Personen') ?>
+        </legend>
+        <label>
+            <?= _('Ansprechpartner'); ?>
+            <?= $this->render_partial('shared/contacts/range', ['perm_contacts' => $perm->haveFieldPerm('contact_assignments', MvvPerm::PERM_CREATE), 'range_type' => 'Modul', 'range_id' => $modul->id]) ?>
+        </label>
+
+        <label><?= _('Weitere verantwortliche Personen') ?>
             <? if ($perm_d->haveFieldPerm('verantwortlich', MvvPerm::PERM_WRITE)): ?>
                 <textarea name="verantwortlich" id="verantwortlich" cols="25"
                           rows="6"><?= htmlReady($deskriptor->verantwortlich) ?></textarea>
@@ -401,53 +459,15 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <textarea readonly name="verantwortlich" id="verantwortlich" cols="25"
                           rows="6"><?= htmlReady($deskriptor->verantwortlich) ?></textarea>
             <? endif; ?>
-            <div>
+        <div>
                 <?= _('Gegebenenfalls weitere Namen von verantwortlichen Personen, die keinen Account in Stud.IP haben. Oder allgemeine Angaben zur Verantwortlichkeit.') ?>
-            </div>
+        </div>
     </fieldset>
-    <fieldset id="mvv-field-modul-languages">
-        <legend><?= _('Unterrichtssprachen') ?></legend>
-        <? if ($def_lang && $perm->haveFieldPerm('languages', MvvPerm::PERM_WRITE)) : ?>
-            <ul id="language_target" class="mvv-assigned-items sortable mvv-languages">
-                <? if (!count($modul->languages)) : ?>
-                    <li class="mvv-item-list-placeholder"<?= (count($modul->languages) ? ' style="display:none;"' : '') ?>>
-                        <?= _('Geben Sie die Unterrichtssprachen an.') ?>
-                    </li>
-                <? endif; ?>
-                <? foreach ($modul->languages as $assigned_language) : ?>
-                    <li id="language_<?= $assigned_language->lang ?>" class="sort_items">
-                        <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
-                        <div class="mvv-item-list-buttons">
-                            <a href="#" class="mvv-item-remove">
-                                <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => _('Sprache entfernen')])->asImg(); ?>
-                            </a>
-                        </div>
-                        <input type="hidden" name="language_items[]" value="<?= htmlReady($assigned_language->lang) ?>">
-                    </li>
-                <? endforeach; ?>
-            </ul>
-            <?= $this->render_partial('shared/language_chooser', ['chooser_id' => 'language', 'chooser_languages' => $GLOBALS['MVV_MODUL']['SPRACHE']['values']]); ?>
-            <?= _('Die Reihenfolge der Sprachen kann durch Anklicken und Ziehen geändert werden.') ?>
-        <? else : ?>
-            <ul id="languages_target" class="mvv-assigned-items mvv-languages">
-                <? if (count($modul->languages)) : ?>
-                    <? foreach ($modul->languages as $assigned_language) : ?>
-                        <li id="institut_<?= $assigned_language->lang ?>">
-                            <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
-                            <input type="hidden" name="language_items[]"
-                                   value="<?= htmlReady($assigned_language->lang) ?>">
-                        </li>
-                    <? endforeach; ?>
-                <? else : ?>
-                    <li class="mvv-item-list-placeholder">
-                        <?= _('Es wurden noch keine Sprachen angegeben.') ?>
-                    </li>
-                <? endif; ?>
-            </ul>
-        <? endif; ?>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Beschreibende Angaben') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Inhalte und Informationen') ?>
+        </legend>
         <label id="mvv-field-modul-voraussetzung"><?= _('Teilnahmevoraussetzung') ?>
             <? if ($perm_d->haveFieldPerm('voraussetzung', MvvPerm::PERM_WRITE)): ?>
                 <textarea cols="60" rows="5" name="voraussetzung" id="voraussetzung"
@@ -502,63 +522,14 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar) ?></textarea>
             <? endif; ?>
         </label>
-        <label id="mvv-field-modul-dauer"><?= _('Dauer (Semester)') ?>
-            <? if ($def_lang) : ?>
-                <input <?= $perm->disable('dauer') ?> type="text" name="dauer" id="dauer"
-                                                      value="<?= htmlReady($modul->dauer) ?>" maxlength="50">
-            <? else : ?>
-                <?= $modul->dauer ? htmlReady($modul->dauer) : _('keine Angabe') ?>
-            <? endif; ?>
-        </label>
-        <label id="mvv-field-modul-turnus"><?= _('Turnus/Angebotsrhythmus') ?>
-            <input <?= $perm_d->disable('turnus') ?> type="text" name="turnus" id="turnus"
-                                                     value="<?= htmlReady($deskriptor->turnus) ?>" maxlength="250">
-        </label>
+
     </fieldset>
-    <fieldset>
-        <legend><?= _('Kapazität/Teilnahmezahl') ?></legend>
-        <section id="mvv-field-modul-kapazitaet" class="hgroup size-m">
-            <? if ($perm->haveFieldPerm('kapazitaet') && $def_lang): ?>
-                <label><?= _('Teilnahmezahl') ?>
-                    <input type="text" name="kapazitaet" id="kapazitaet"
-                           value="<?= htmlReady($modul->kapazitaet) ?>" <?= $modul->kapazitaet == '' ? ' disabled' : ''; ?>>
-                </label>
-                <label>
-                    <input type="checkbox" name="kap_unbegrenzt" id="kap_unbegrenzt"
-                           value="1"<?= $modul->kapazitaet == '' ? ' checked' : ''; ?>
-                           onchange="jQuery('#kapazitaet').attr('disabled', function(foo, attr){ jQuery(this).val(attr ? '0' : ''); return !attr; }); return false;">
-                    <?= _('unbegrenzt') ?>
-                </label>
-            <? else : ?>
-                <?= _('Teilnahmezahl') ?>: <?= $modul->kapazitaet == '' ? _('unbegrenzt') : htmlReady($modul->kapazitaet) ?>
-                <input type="hidden" name="kapazitaet" value="<?= htmlReady($modul->kapazitaet) ?>">
-                <input type="hidden" name="kap_unbegrenzt" value="<?= $modul->kapazitaet == '' ? '1' : ''; ?>">
-            <? endif; ?>
-        </section>
-        <label id="mvv-field-modul-kommentar_kapazitaet"><?= _('Kommentar') ?>
-            <? if ($perm_d->haveFieldPerm('kommentar_kapazitaet', MvvPerm::PERM_WRITE)): ?>
-                <textarea cols="60" rows="5" name="kommentar_kapazitaet" id="kommentar_kapazitaet"
-                          class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar_kapazitaet) ?></textarea>
-            <? else: ?>
-                <textarea readonly cols="60" rows="5" name="kommentar_kapazitaet" id="kommentar_kapazitaet"
-                          class="ui-resizable"><?= htmlReady($deskriptor->kommentar_kapazitaet) ?></textarea>
-            <? endif; ?>
-        </label>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Kreditpunkte') ?></legend>
-        <label id="mvv-field-modul-kp"><?= _('Kreditpunkte') ?>
-            <? if ($def_lang) : ?>
-                <input <?= $perm->disable('kp') ?> type="text" name="kp" id="kp" value="<?= htmlReady($modul->kp) ?>"
-                                                   maxlength="2">
-            <? else : ?>
-                <?= $modul->kp ? htmlReady($modul->kp) : _('keine Angabe') ?>
-            <? endif; ?>
-        </label>
-    </fieldset>
-    <fieldset id="mvv-field-modul-wl_selbst">
-        <legend><?= _('Workload selbstgestaltete Arbeitszeit') ?></legend>
-        <label><?= _('Stunden') ?>
+
+    <fieldset class="collapsable collapsed" id="mvv-field-modul-wl_selbst">
+        <legend>
+            <?= _('Workload') ?>
+        </legend>
+        <label><?= _('Stunden (selbstgestaltete Arbeitszeit)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('wl_selbst') ?> type="text" name="wl_selbst" id="wl_selbst"
                                                           value="<?= htmlReady($modul->wl_selbst) ?>" maxlength="4">
@@ -575,10 +546,8 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->kommentar_wl_selbst) ?></textarea>
             <? endif; ?>
         </label>
-    </fieldset>
-    <fieldset id="mvv-field-modul-wl_pruef">
-        <legend><?= _('Workload Prüfung') ?></legend>
-        <label><?= _('Stunden') ?>
+
+        <label><?= _('Stunden (Prüfung)') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('wl_pruef') ?> type="text" name="wl_pruef" id="wl_pruef"
                                                          value="<?= htmlReady($modul->wl_pruef) ?>" maxlength="4">
@@ -596,20 +565,15 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             <? endif; ?>
         </label>
     </fieldset>
-    <fieldset id="mvv-field-modul-kommentar_note">
-        <legend><?= _('Kommentar Note') ?></legend>
-        <label><?= _('Kommentar') ?>
-            <? if ($perm_d->haveFieldPerm('kommentar_note', MvvPerm::PERM_WRITE)): ?>
-                <textarea cols="60" rows="5" name="kommentar_note" id="kommentar_note"
-                          class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar_note) ?></textarea>
-            <? else: ?>
-                <textarea readonly cols="60" rows="5" name="kommentar_note" id="kommentar_note"
-                          class="ui-resizable"><?= htmlReady($deskriptor->kommentar_note) ?></textarea>
-            <? endif; ?>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Prüfung') ?>
+        </legend>
+
+        <label>
+            <?= _('Prüfungsebene') ?>
         </label>
-    </fieldset>
-    <fieldset id="mvv-field-modul-pruef_ebene">
-        <legend><?= _('Prüfungsebene') ?></legend>
         <? if ($def_lang && $perm->haveFieldPerm('pruef_ebene', MvvPerm::PERM_WRITE)) : ?>
             <? foreach ($GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'] as $key => $ebene) : ?>
                 <label>
@@ -622,9 +586,8 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             <?= $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'] ?>
             <input type="hidden" name="pruef_ebene" value="<?= $modul->pruef_ebene ?>">
         <? endif; ?>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Prüfung') ?></legend>
+
+
         <label id="mvv-field-modul-pruef_vorleistung"><?= _('Prüfungsvorleistung') ?>
             <? if ($perm_d->haveFieldPerm('pruef_vorleistung', MvvPerm::PERM_WRITE)) : ?>
                 <textarea cols="60" rows="5" name="pruef_vorleistung" id="pruef_vorleistung"
@@ -652,9 +615,20 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                           class="ui-resizable"><?= htmlReady($deskriptor->pruef_wiederholung) ?></textarea>
             <? endif; ?>
         </label>
+
+        <label><?= _('Kommentar Note') ?>
+        <? if($perm_d->haveFieldPerm('kommentar_note', MvvPerm::PERM_WRITE)): ?>
+            <textarea cols="60" rows="5" name="kommentar_note" id="kommentar_note" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($deskriptor->kommentar_note) ?></textarea>
+        <? else: ?>
+            <textarea readonly cols="60" rows="5" name="kommentar_note" id="kommentar_note" class="ui-resizable"><?= htmlReady($deskriptor->kommentar_note) ?></textarea>
+        <? endif; ?>
+        </label>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Weitere Angaben') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Weitere Angaben') ?>
+        </legend>
         <label id="mvv-field-modul-faktor_note"><?= _('Faktor der Modulnote für die Endnote des Studiengangs') ?>
             <? if ($def_lang) : ?>
                 <input <?= $perm->disable('faktor_note') ?> type="text" name="faktor_note" id="faktor_note"
@@ -686,7 +660,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                     <? $df = $entry; ?>
                 <? endif; ?>
                 <? $tdf = $df->getTypedDatafield(); ?>
-                <? if ($perm_d->haveDfEntryPerm($df, MvvPerm::PERM_WRITE)) : ?>
+                <? if ($perm_d->haveDfEntryPerm($df->datafield_id, MvvPerm::PERM_WRITE)) : ?>
                     <?= $tdf->getHTML('datafields'); ?>
                 <? else : ?>
                     <em><?= htmlReady($tdf->getName()) ?>:</em><br>
@@ -695,48 +669,8 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             <? endif; ?>
         <? endforeach; ?>
     </fieldset>
-    <fieldset id="mvv-field-modul-status">
-        <legend><?= _('Bearbeitungsstatus und Sichtbarkeit') ?></legend>
-        <?= _('Status') ?>
-        <? $modul_stat = $modul->isNew() ? $GLOBALS['MVV_MODUL']['STATUS']['default'] : $modul->stat; ?>
-        <? if ($def_lang) : ?>
-            <input type="hidden" name="status" value="<?= $modul_stat ?>">
-            <? foreach ($GLOBALS['MVV_MODUL']['STATUS']['values'] as $key => $status_modul) : ?>
-                <? // The MVVAdmin have always PERM_CREATE for all fields ?>
-                <? if ($perm->haveFieldPerm('stat', MvvPerm::PERM_CREATE) && $modul_stat != 'planung') : ?>
-                    <label>
-                        <input type="radio" name="status"
-                               value="<?= $key ?>"<?= ($modul_stat == $key ? ' checked' : '') ?>>
-                        <?= $status_modul['name'] ?>
-                    </label>
-                <? elseif ($perm->haveFieldPerm('stat', MvvPerm::PERM_WRITE) && $modul_stat != 'planung') : ?>
-                    <label>
-                        <input <?= ($modul_stat == 'ausgelaufen' && $key == 'genehmigt') ? 'disabled' : '' ?>
-                                type="radio" name="status"
-                                value="<?= $key ?>"<?= ($modul_stat == $key ? ' checked' : '') ?>>
-                        <?= $status_modul['name'] ?>
-                    </label>
-                <? elseif ($modul_stat == $key) : ?>
-                    <?= $status_modul['name'] ?>
-                <? endif; ?>
-            <? endforeach; ?>
-            <label id="mvv-field-modul-kommentar_status"><?= _('Kommentar:') ?>
-                <? if ($perm->haveFieldPerm('kommentar_status', MvvPerm::PERM_WRITE)): ?>
-                    <textarea cols="60" rows="5" name="kommentar_status" id="kommentar_status"
-                              class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($modul->kommentar_status) ?></textarea>
-                <? else : ?>
-                    <textarea readonly cols="60" rows="5" name="kommentar_status" id="kommentar_status"
-                              class="ui-resizable"><?= htmlReady($modul->kommentar_status) ?></textarea>
-                <? endif; ?>
-            </label>
-        <? else : ?>
-            <?= $GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['name'] ?>
-            <div id="mvv-field-modul-kommentar_status" style="padding-top:10px;">
-                <div><?= _('Kommentar') ?></div>
-                <?= htmlReady($modul->kommentar_status) ?>
-            </div>
-        <? endif; ?>
-    </fieldset>
+
+
     <input type="hidden" name="display_language" value="<?= $display_language ?>">
     <footer>
         <? if ($deskriptor->isNew()) : ?>

@@ -51,7 +51,9 @@ class Fachabschluss_KategorienController extends MVVController
     public function kategorie_action($kategorie_id = null)
     {
         $this->abschluss_kategorie = new AbschlussKategorie($kategorie_id);
-        $this->dokumente = $this->abschluss_kategorie->document_assignments;
+        $this->dokumente = $this->abschluss_kategorie->documents;
+        $this->range_id = $kategorie_id;
+        $this->range_type = 'AbschlussKategorie';
         if ($this->abschluss_kategorie->isNew()) {
             PageLayout::setTitle(_('Neue Abschluss-Kategorie anlegen'));
             $success_message = _('Die Abschluss-Kategorie "%s" wurde angelegt.');
@@ -78,12 +80,6 @@ class Fachabschluss_KategorienController extends MVVController
                 PageLayout::postError(htmlReady($e->getMessage()));
             }
             if ($stored !== false) {
-                MvvDokument::updateDocuments(
-                    $this->abschluss_kategorie,
-                    Request::optionArray('dokumente_items'),
-                    Request::getArray('dokumente_properties')
-                );
-
                 PageLayout::postSuccess(sprintf(
                     $success_message, htmlReady($this->abschluss_kategorie->name)
                 ));
@@ -91,10 +87,6 @@ class Fachabschluss_KategorienController extends MVVController
                 return;
             }
         }
-
-        $this->search_dokumente = MvvDokument::getQuickSearch(
-            $this->dokumente->pluck('dokument_id')
-        );
 
         $this->cancel_url = $this->url_for('/index');
 

@@ -28,60 +28,109 @@ class Studiengang extends ModuleManagementModelTreeItem
         $config['db_table'] = 'mvv_studiengang';
 
         $config['belongs_to']['abschluss'] = [
-            'class_name' => 'Abschluss',
+            'class_name'  => 'Abschluss',
             'foreign_key' => 'abschluss_id'
         ];
         $config['has_and_belongs_to_many']['studiengangteile'] = [
-            'class_name' => 'StudiengangTeil',
-            'thru_table' => 'mvv_stg_stgteil',
-            'thru_key' => 'studiengang_id',
+            'class_name'     => 'StudiengangTeil',
+            'thru_table'     => 'mvv_stg_stgteil',
+            'thru_key'       => 'studiengang_id',
             'thru_assoc_key' => 'stgteil_id'
         ];
         $config['has_many']['stgteil_assignments'] = [
-            'class_name' => 'StudiengangStgteil',
+            'class_name'  => 'StudiengangStgteil',
             'foreign_key' => 'studiengang_id',
-            'order_by' => 'ORDER BY position',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
+            'order_by'    => 'ORDER BY position',
+            'on_delete'   => 'delete',
+            'on_store'    => 'store'
         ];
         $config['has_and_belongs_to_many']['stgteil_bezeichnungen'] = [
-            'class_name' => 'StgteilBezeichnung',
-            'thru_table' => 'mvv_stg_stgteil',
-            'thru_key' => 'studiengang_id',
+            'class_name'     => 'StgteilBezeichnung',
+            'thru_table'     => 'mvv_stg_stgteil',
+            'thru_key'       => 'studiengang_id',
             'thru_assoc_key' => 'stgteil_bez_id',
-            'order_by' => 'GROUP BY stgteil_bez_id ORDER BY position'
+            'order_by'       => 'GROUP BY stgteil_bez_id ORDER BY position'
         ];
         $config['has_many']['documents'] = [
-            'class_name' => 'MvvDokument',
-            'assoc_func' => 'findByObject',
+            'class_name'             => 'MvvFile',
+            'assoc_func'             => 'findbyrange_id',
             'assoc_func_params_func' => function ($stg) { return $stg; }
         ];
         $config['has_many']['document_assignments'] = [
-            'class_name' => 'MvvDokumentZuord',
+            'class_name'        => 'MvvFileRange',
             'assoc_foreign_key' => 'range_id',
-            'order_by' => 'ORDER BY position',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
+            'order_by'          => 'ORDER BY position',
+            'on_delete'         => 'delete',
+            'on_store'          => 'store'
         ];
+        $config['has_many']['contact_assignments'] = [
+            'class_name'        => 'MvvContactRange',
+            'assoc_foreign_key' => 'range_id',
+            'order_by'          => 'ORDER BY position'
+        ];
+
         $config['has_one']['responsible_institute'] = [
-            'class_name' => 'Fachbereich',
-            'foreign_key' => 'institut_id',
+            'class_name'        => 'Fachbereich',
+            'foreign_key'       => 'institut_id',
             'assoc_foreign_key' => 'institut_id'
+        ];
+        $config['has_many']['studycourse_types'] = [
+            'class_name'  => 'StudycourseType',
+            'foreign_key' => 'studiengang_id',
+            'on_delete'   => 'delete',
+            'on_store'    => 'store'
+        ];
+        $config['has_many']['languages'] = [
+            'class_name'        => 'StudycourseLanguage',
+            'assoc_foreign_key' => 'studiengang_id',
+            'order_by'          => 'ORDER BY position,mkdate',
+            'on_delete'         => 'delete',
+            'on_store'          => 'store'
+        ];
+        $config['has_many']['datafields'] = [
+            'class_name'        => 'DatafieldEntryModel',
+            'assoc_foreign_key' =>
+                function($model, $params) {
+                    $model->setValue('range_id', $params[0]->id);
+                },
+            'assoc_func'        => 'findByModel',
+            'on_delete'         => 'delete',
+            'on_store'          => 'store',
+            'foreign_key'       =>
+                function($stg) {
+                    return [$stg];
+                }
+        ];
+        $config['has_many']['grundstg_assignments'] = [
+            'class_name'        => 'Aufbaustudiengang',
+            'assoc_func'        => 'findByaufbau_stg_id',
+            'assoc_foreign_key' => 'aufbau_stg_id',
+            'on_delete'         => 'delete',
+            'on_store'          => 'store'
+        ];
+        $config['has_many']['aufbaustg_assignments'] = [
+            'class_name'        => 'Aufbaustudiengang',
+            'assoc_func'        => 'findBygrund_stg_id',
+            'assoc_foreign_key' => 'grund_stg_id',
+            'on_delete'         => 'delete',
+            'on_store'          => 'store'
         ];
 
         $config['additional_fields']['count_dokumente']['get'] =
-            function($stg) { return $stg->count_dokumente; };
+            function ($stg) { return $stg->count_dokumente; };
         $config['additional_fields']['count_faecher']['get'] =
-            function($stg) { return $stg->count_faecher; };
+            function ($stg) { return $stg->count_faecher; };
         $config['additional_fields']['count_module']['get'] =
-            function($stg) { return $stg->count_module; };
+            function ($stg) { return $stg->count_module; };
         $config['additional_fields']['institut_name']['get'] =
-            function($stg) { return $stg->institut_name; };
+            function ($stg) { return $stg->institut_name; };
         $config['additional_fields']['kategorie_name']['get'] =
-            function($stg) { return $stg->kategorie_name; };
+            function ($stg) { return $stg->kategorie_name; };
+        $config['additional_fields']['display_name']['get'] =
+            function ($stg) { return $stg->getDisplayName(); };
 
-        $config['i18n_fields']['name'] = true;
-        $config['i18n_fields']['name_kurz'] = true;
+        $config['i18n_fields']['name']         = true;
+        $config['i18n_fields']['name_kurz']    = true;
         $config['i18n_fields']['beschreibung'] = true;
 
         parent::configure($config);
@@ -332,7 +381,7 @@ class Studiengang extends ModuleManagementModelTreeItem
                 Institute.Name AS institut_name,
                 COUNT(mvv_stgteil.stgteil_id) AS `count_faecher`,
                 COUNT(mvv_stg_stgteil.stgteil_bez_id) AS `count_stgteile`,
-                COUNT(DISTINCT mvv_dokument_zuord.dokument_id) AS count_dokumente,
+                COUNT(DISTINCT mvv_files_filerefs.fileref_id) AS count_dokumente,
                 GROUP_CONCAT(mvv_fach_inst.institut_id) AS fachbereich_ids
             FROM mvv_studiengang
                 LEFT JOIN abschluss USING (abschluss_id)
@@ -342,8 +391,9 @@ class Studiengang extends ModuleManagementModelTreeItem
                 LEFT JOIN mvv_stgteil USING (stgteil_id)
                 LEFT JOIN mvv_fach_inst USING (fach_id)
                 LEFT JOIN Institute ON (mvv_studiengang.institut_id = Institute.Institut_id)
-                LEFT JOIN mvv_dokument_zuord ON (mvv_studiengang.studiengang_id = mvv_dokument_zuord.range_id
-                        AND mvv_dokument_zuord.object_type = '" . get_class() . "' )
+                LEFT JOIN mvv_files_ranges ON (mvv_studiengang.studiengang_id = mvv_files_ranges.range_id)
+                LEFT JOIN mvv_files ON (mvv_files_ranges.mvvfile_id = mvv_files.mvvfile_id)
+                LEFT JOIN mvv_files_filerefs ON (mvv_files_filerefs.mvvfile_id = mvv_files.mvvfile_id)
                 LEFT JOIN semester_data start_sem ON (mvv_studiengang.start = start_sem.semester_id)
                 LEFT JOIN semester_data end_sem ON (mvv_studiengang.end = end_sem.semester_id)
             " . self::getFilterSql($filter, true) . "
@@ -700,6 +750,10 @@ class Studiengang extends ModuleManagementModelTreeItem
         return $start_sem->beginn <= $time && $time <= $end_sem->ende;
     }
 
+    public function getVariant() {
+        return $this->typ;
+    }
+
     /**
      * @see MvvTreeItem::getTrailParentId()
      */
@@ -739,6 +793,54 @@ class Studiengang extends ModuleManagementModelTreeItem
     public function hasChildren()
     {
         return count($this->getChildren()) > 0;
+    }
+
+    /**
+     * Assignes languages of instruction to this study course.
+     *
+     * @param array $languages An array of language keys defined in mvv_config.php.
+     */
+    public function assignLanguagesOfInstruction($languages)
+    {
+        $assigned_languages = array();
+        $languages_flipped = array_flip($languages);
+        foreach ($GLOBALS['MVV_STUDIENGANG']['SPRACHE']['values'] as $key => $language) {
+            if (isset($languages_flipped[$key])) {
+                $language = StudycourseLanguage::find([$this->id, $key]);
+                if (!$language) {
+                    $language = new StudycourseLanguage();
+                    $language->studiengang_id = $this->id;
+                    $language->lang = $key;
+                }
+                $language->position = $languages_flipped[$key];
+                $assigned_languages[] = $language;
+            }
+        }
+
+        $this->languages = SimpleORMapCollection::createFromArray(
+                $assigned_languages);
+    }
+
+    /**
+     * Assigns studycourse types to this study course.
+     *
+     * @param array $types An array of names of study course types.
+     */
+    public function assignStudycourseTypes($types)
+    {
+        $stc_type_proto = new StudycourseType();
+        $stc_type_objects = [];
+        foreach ($types as $type) {
+            $stc_type_objects[$type] =
+                    $this->studycourse_types->findOneBy('type', $type);
+            if (!$stc_type_objects[$type]) {
+                $stc_type_objects[$type] = clone $stc_type_proto;
+                $stc_type_objects[$type]->type = $type;
+                $stc_type_objects[$type]->studiengang_id;
+            }
+        }
+        $this->studycourse_types =
+                SimpleORMapCollection::createFromArray($stc_type_objects);
     }
 
     public function validate()

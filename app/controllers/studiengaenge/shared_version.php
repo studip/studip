@@ -44,9 +44,10 @@ class SharedVersionController extends MVVController
         }
 
         $this->semester = Semester::getAll();
-        $this->dokumente = $this->version->document_assignments;
-        $this->sessSet('dokument_target', [$this->version->getId(), 'StgteilVersion']);
-
+        $this->dokumente = $this->version->documents;
+        $this->range_id = $version_id;
+        $this->range_type = 'StgteilVersion';
+        $this->sessSet('dokument_target', array($this->version->getId(), 'StgteilVersion'));
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             if (!MvvPerm::haveFieldPermVersionen($this->stgteil)) {
@@ -63,11 +64,11 @@ class SharedVersionController extends MVVController
             $this->version->beschreibung = Request::i18n('beschreibung')->trim();
             $this->version->stat = Request::option('status', 'planung');
             $this->version->kommentar_status = trim(Request::get('kommentar_status'));
-            MvvDokument::updateDocuments(
+            /* MvvDokument::updateDocuments(
                 $this->version,
                 Request::optionArray('dokumente_items'),
                 Request::getArray('dokumente_properties')
-            );
+            ); */
 
             $this->version->verifyPermission();
 
@@ -91,7 +92,7 @@ class SharedVersionController extends MVVController
             }
         }
         $this->search_dokumente =
-                MvvDokument::getQuickSearch($this->dokumente->pluck('dokument_id'));
+                MvvFile::getQuickSearch($this->dokumente->pluck('fileref_id'));
         $this->cancel_url = $this->url_for('/index');
 
         $this->setSidebar();

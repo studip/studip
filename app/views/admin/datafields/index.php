@@ -111,6 +111,17 @@
                 <?=  $val->object_class !== null ? htmlReady(implode(', ', array_map(function ($class) {
                     return $GLOBALS['MVV_MODULTEIL_DESKRIPTOR']['SPRACHE']['values'][$class]['name'];
                 }, explode(',', $val->object_class)))) : _('alle')?>
+            <? elseif ($key === 'studycourse'): ?>
+                <? $object_classes =
+                        [
+                            'all_settings'      => _('alle (Abschnitt "Einstellungen")'),
+                            'all_info'          => _('alle (Abschnitt "Inhalte und Informationen")'),
+                            'einfach_settings'  => _('Einfach-Studiengänge (Abschnitt "Einstellungen")'),
+                            'einfach_info'      => _('Einfach-Studiengänge (Abschnitt "Inhalte und Informationen")'),
+                            'mehrfach_settings' => _('Mehrfach-Studiengänge (Abschnitt "Einstellungen")'),
+                            'mehrfach_info'     => _('Mehrfach-Studiengänge (Abschnitt "Inhalte und Informationen")')
+                        ];?>
+                <?= $object_classes[$val->object_class] ?>
             <? else: ?>
                 <?= $val->object_class !== null ? DataField::getReadableUserClass($val->object_class) : _('alle')?>
             <? endif; ?>

@@ -335,6 +335,39 @@ class Search_StudiengaengeController extends MVVController
         $this->render_template('search/studiengaenge/verlauf', $this->layout);
     }
 
+    public function info_action($studiengang_id, $language = null)
+    {
+        $language = $language ?: Request::get('language', $_SESSION['_language']);
+        ModuleManagementModel::setLanguage($language);
+
+        $this->studiengang = Studiengang::find($studiengang_id);
+        if (!$this->studiengang) {
+            throw new AccessDeniedException();
+        }
+        $this->all_documents = [];
+        // get documents in current selected language with fallback to default language
+        // grouped by category
+        foreach ($this->studiengang->document_assignments->orderBy('position') as $document) {
+            $file = $document->mvv_file;
+            $mvv_file_ref = null;
+            foreach ($GLOBALS['MVV_LANGUAGES']['values'] as $key => $mvv_language) {
+                if ($mvv_language['locale'] === $_SESSION['_language']) {
+                    $mvv_file_ref = $file->file_refs->findOneBy('file_language', $key);
+                } else {
+                    $mvv_file_ref = $file->file_refs->findOneBy('file_language', $GLOBALS['MVV_LANGUAGES']['default']);
+                }
+            }
+            if ($mvv_file_ref) {
+                $this->all_documents[$file->category][$file->id]['name'] = $file->getDisplayName();
+                $this->all_documents[$file->category][$file->id]['url'] = $mvv_file_ref->file_ref->download_url;
+                $this->all_documents[$file->category][$file->id]['extension'] = $mvv_file_ref->file_ref->file->getExtension();
+                $this->all_documents[$file->category][$file->id]['is_link'] = $mvv_file_ref->file_ref->is_link;
+            }
+        }
+        PageLayout::setTitle(sprintf(_('Informationen zum Studiengang: %s'),
+                $this->studiengang->getDisplayName()));
+    }
+
     public function kommentar_action($abschnitt_id)
     {
         $this->abschnitt = StgteilAbschnitt::find($abschnitt_id);

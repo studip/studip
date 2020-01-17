@@ -5,15 +5,11 @@
             <?= _('Fächer mit verwendeten Abschlüssen') ?>
             <span class="actions"><? printf(ngettext('%s Fach', '%s Fächer', $count), $count) ?></span>
         </caption>
-        <colgroup>
-            <col>
-            <col style="width: 5%">
-            <col style="width: 10%">
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('/index', _('Fach'), 'name') ?>
-                <?= $controller->renderSortLink('/index', _('Abschlüsse'), 'count_abschluesse') ?>
-                <th></th>
+                <?= $controller->renderSortLink('/index', _('Abschlüsse'), 'count_abschluesse', ['style' => 'width: 10%; text-align: center;']) ?>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? foreach ($faecher as $fach): ?>

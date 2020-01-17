@@ -4,8 +4,11 @@
 
 <form class="default" action="<?= $controller->url_for('/version', $stgteil->id, $version->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
-        <legend><?= _('Gültigkeit') ?></legend>
+
+    <fieldset class="collapsable">
+        <legend>
+            <?= _('Gültigkeit') ?>
+        </legend>
         <label>
             <?= _('von Semester:') ?>
             <? if ($perm->haveFieldPerm('start_sem')) : ?>
@@ -76,35 +79,49 @@
             <? endif; ?>
         </section>
     </fieldset>
-    <fieldset>
-        <legend><?= _('Code') ?></legend>
-            <input <?= $perm->disable('code') ?> type="text" name="code" id="code" value="<?= htmlReady($version->code) ?>" maxlength="100">
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Code') ?>
+        </legend>
+        <input <?= $perm->disable('code') ?> type="text" name="code" id="code" value="<?= htmlReady($version->code) ?>" maxlength="100">
     </fieldset>
-    <fieldset>
-        <legend><?= _('Beschreibung') ?></legend>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Beschreibung') ?>
+        </legend>
         <?= MvvI18N::textarea('beschreibung', $version->beschreibung, ['class' => 'add_toolbar ui-resizable wysiwyg', 'id' => 'beschreibung'])->checkPermission($version) ?>
     </fieldset>
+
     <? $url = $controller->url_for('/dokumente_properties'); ?>
     <? $perm_dokumente = $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE) ?>
-    <?= $this->render_partial('shared/form_dokumente', compact('search_dokumente', 'dokumente', 'url', 'perm_dokumente')) ?>
-    <fieldset>
-        <legend><?= _('Status der Bearbeitung') ?></legend>
+    <?//= $this->render_partial('shared/form_dokumente', compact('search_dokumente', 'dokumente', 'url', 'perm_dokumente')) ?>
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Dokumente'); ?>
+        </legend>
+        <?= $this->render_partial('materialien/files/range', array('perm_dokumente' => $perm->haveFieldPerm('document_assignments', MvvPerm::PERM_CREATE))) ?>
+    </fieldset>
+
+    <fieldset class="collapsable collapsed">
+        <legend>
+            <?= _('Status der Bearbeitung') ?>
+        </legend>
         <input type="hidden" name="status" value="<?= $version->stat ?>">
         <? foreach ($GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'] as $key => $status_bearbeitung) : ?>
         <? // The MVVAdmin have always PERM_CREATE for all fields ?>
-        <? if ($perm->haveFieldPerm('stat', MvvPerm::PERM_CREATE) && $version->stat != 'planung') : ?>
         <label>
+        <? if ($perm->haveFieldPerm('stat', MvvPerm::PERM_CREATE) && $version->stat != 'planung') : ?>
             <input type="radio" name="status" value="<?= $key ?>"<?= ($version->stat == $key ? ' checked' : '') ?>>
             <?= $status_bearbeitung['name'] ?>
-        </label>
         <? elseif ($perm->haveFieldPerm('stat', MvvPerm::PERM_WRITE) && $version->stat != 'planung') : ?>
-        <label>
             <input <?= ($version->stat == 'ausgelaufen' && $key == 'genehmigt')  ? 'disabled' :'' ?> type="radio" name="status" value="<?= $key ?>"<?= ($version->stat == $key ? ' checked' : '') ?>>
             <?= $status_bearbeitung['name'] ?>
-        </label>
         <? elseif($version->stat == $key) : ?>
             <?= $status_bearbeitung['name'] ?>
         <? endif; ?>
+        </label>
         <? endforeach; ?>
         <label for="kommentar_status" style="vertical-align: top;"><?= _('Kommentar:') ?></label>
         <? if($perm->haveFieldPerm('kommentar_status', MvvPerm::PERM_WRITE)) : ?>
@@ -113,6 +130,7 @@
         <textarea disabled cols="60" rows="5" name="kommentar_status" id="kommentar_status" class="ui-resizable"><?= htmlReady($version->kommentar_status) ?></textarea>
         <? endif; ?>
     </fieldset>
+
     <footer data-dialog-button>
         <? if ($version->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>

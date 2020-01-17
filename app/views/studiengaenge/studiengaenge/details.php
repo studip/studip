@@ -1,4 +1,4 @@
-<td colspan="2">
+<td colspan="3">
     <table class="default collapsable">
         <colgroup>
             <col>

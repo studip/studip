@@ -6,18 +6,12 @@
             <?= _('Studiengangteil-Bezeichnungen') ?>
             <span class="actions"><? printf(_('%s Bezeichnungen'), count($stgteilbezeichnungen)) ?></span>
         </caption>
-        <colgroup>
-            <col>
-            <col style="width: 10%;">
-            <col style="width: 1%;">
-            <col style="width: 10%;">
-        </colgroup>
         <thead>
             <tr>
                 <th><?= _('Name') ?></th>
-                <th><?= _('Kurzname') ?></th>
-                <th style="text-align: center;"><?= _('Studiengänge') ?></th>
-                <th></th>
+                <th style="width: 15%;"><?= _('Kurzname') ?></th>
+                <th style="text-align: center; width: 5%;"><?= _('Studiengänge') ?></th>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? if (count($stgteilbezeichnungen)) : ?>

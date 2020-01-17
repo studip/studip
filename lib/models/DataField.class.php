@@ -125,8 +125,9 @@ class DataField extends SimpleORMap implements PrivacyObject
             'userinstrole'        => _('Benutzerrollen in Einrichtungen'),
             'usersemdata'         => _('Benutzer-Zusatzangaben in VA'),
             'roleinstdata'        => _('Rollen in Einrichtungen'),
-            'moduldeskriptor'     => _('Moduldeskriptor'),
-            'modulteildeskriptor' => _('Modulteildeskriptor')
+            'moduldeskriptor'     => _('Moduldeskriptoren'),
+            'modulteildeskriptor' => _('Modulteildeskriptoren'),
+            'studycourse'         => _('Studiengänge')
         ];
     }
 

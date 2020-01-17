@@ -152,6 +152,9 @@ abstract class DataFieldEntry
                     $parameters[':institut_id'] = $rangeID;
                     break;
                 case 'roleinstdata': //hmm tja, vermutlich so
+                case 'moduldeskriptor':
+                case 'modulteildeskriptor':
+                case 'studycourse':
                     $clause2 = '1';
                     $clause3 = '1';
                     if (is_array($range_id) && isset($range_id[0])) {

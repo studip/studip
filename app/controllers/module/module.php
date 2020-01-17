@@ -20,6 +20,8 @@ class Module_ModuleController extends MVVController
         Navigation::activateItem($this->me . '/module/module');
         $this->filter = $this->sessGet('filter', []);
         $this->action = $action;
+
+        PageLayout::addSqueezePackage('statusgroups');
     }
 
     public function index_action()
@@ -102,6 +104,10 @@ class Module_ModuleController extends MVVController
             }
         }
 
+        $this->contacts = $this->modul->contact_assignments;
+        $this->range_id = $modul_id;
+        $this->range_type = 'Modul';
+
         $this->setSidebar();
         $sidebar = Sidebar::get();
 
@@ -116,6 +122,12 @@ class Module_ModuleController extends MVVController
                     _('Sie legen ein neues Modul an. Das Modul muss zunächst in der Ausgabesprache <em>%s</em> angelegt werden.'),
                     $GLOBALS['MVV_MODUL_DESKRIPTOR']['SPRACHE']['values'][$this->display_language]['name']
                 ));
+            }
+            // set default language of instruction
+            if ($GLOBALS['MVV_MODUL']['SPRACHE']['default']) {
+                $this->modul->assignLanguagesOfInstruction([
+                    $GLOBALS['MVV_MODUL']['SPRACHE']['default']
+                ]);
             }
         } else {
             $this->display_language = Request::option(
@@ -631,6 +643,12 @@ class Module_ModuleController extends MVVController
                 htmlReady($this->modul->getDisplayName()),
                 htmlReady($GLOBALS['MVV_MODUL_DESKRIPTOR']['SPRACHE']['values'][$this->display_language]['name'])
             ));
+            // set default language of instruction
+            if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default']) {
+                $this->modulteil->assignLanguagesOfInstruction([
+                    $GLOBALS['MVV_MODULTEIL']['SPRACHE']['default']
+                ]);
+            }
         } else {
             $this->display_language = Request::option('display_language', $this->modulteil->getDefaultLanguage());
             $this->deskriptor = $this->modulteil->getDeskriptor($this->display_language, true);

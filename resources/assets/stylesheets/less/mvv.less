@@ -83,11 +83,19 @@ table {
         > tbody {
             &.collapsed > tr > td {
                 border-bottom: 1px solid @dark-gray-color-20;
+                padding: 5px;
+                &:first-child {
+                    padding-left: 0;
+                }
             }
             
             &.not-collapsed {
                 > tr > td {
                     border-bottom: 1px solid @dark-gray-color-20;
+                    padding: 5px;
+                    &:first-child {
+                        padding-left: 0;
+                    }
                 }
                 > tr.loaded-details > td {
                     padding: 0px 0px 5px 20px;
@@ -277,7 +285,7 @@ ul {
         max-width: 40em;
         width: 100%;
         list-style-type: none;
-        padding: 20px 0px 20px 10px;
+        padding: 0px 0px 0px 10px;
         
         li {
             border-bottom: solid @dark-gray-color-45 1px;
@@ -510,6 +518,7 @@ form.default .mvv-inst-chooser select {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    margin-left: 10px;
 }
 
 .mvv-inst-next-button {
@@ -669,3 +678,4 @@ form.default .mvv-inst-chooser select {
     vertical-align: text-top;
     text-decoration: none;
 }
+

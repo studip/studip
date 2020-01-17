@@ -60,7 +60,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 $this->class_filter => DataField::getDataFields($this->class_filter),
             ];
         } else {
-            $this->datafields_list = [
+            $this->datafields_list = array(
                 'sem'                 => DataField::getDataFields('sem'),
                 'inst'                => DataField::getDataFields('inst'),
                 'user'                => DataField::getDataFields('user'),
@@ -68,8 +68,9 @@ class Admin_DatafieldsController extends AuthenticatedController
                 'usersemdata'         => DataField::getDataFields('usersemdata'),
                 'roleinstdata'        => DataField::getDataFields('roleinstdata'),
                 'moduldeskriptor'     => DataField::getDataFields('moduldeskriptor'),
-                'modulteildeskriptor' => DataField::getDataFields('modulteildeskriptor')
-            ];
+                'modulteildeskriptor' => DataField::getDataFields('modulteildeskriptor'),
+                'studycourse'         => DataField::getDataFields('studycourse'),
+            );
         }
 
         // set variables for view
@@ -100,6 +101,8 @@ class Admin_DatafieldsController extends AuthenticatedController
                         || $datafield->object_type === 'modulteildeskriptor') {
                     $object_class = implode(',', Request::getArray('object_class'));
                     $datafield->object_class  = (trim($object_class) && $object_class != 'NULL') ? $object_class : null;
+                } elseif ($datafield->object_type === 'studycourse') {
+                    $datafield->object_class  = trim(Request::option('object_class', 'all_settings'));
                 } else {
                     $datafield->object_class  = array_sum(Request::getArray('object_class')) ?: null;
                 }
@@ -148,9 +151,11 @@ class Admin_DatafieldsController extends AuthenticatedController
                 $datafield->object_type   = $type;
                 if ($type === 'moduldeskriptor' || $type === 'modulteildeskriptor') {
                     $object_class = implode(',', Request::getArray('object_class'));
-                    $datafield->object_class  = (trim($object_class) && $object_class != 'NULL') ? $object_class : null;
+                    $datafield->object_class = (trim($object_class) && $object_class != 'NULL') ? $object_class : null;
+                } elseif ($type === 'studycourse') {
+                    $datafield->object_class = Request::option('object_class');
                 } else {
-                    $datafield->object_class  = array_sum(Request::getArray('object_class')) ?: null;
+                    $datafield->object_class = array_sum(Request::getArray('object_class')) ?: null;
                 }
                 $datafield->edit_perms    = Request::get('edit_perms');
                 $datafield->view_perms    = Request::get('visibility_perms');

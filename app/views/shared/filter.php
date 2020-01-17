@@ -1,4 +1,4 @@
-<? if ($selected_status || $selected_kategorie || $selected_abschluss || $selected_fachbereich || $selected_zuordnung || $selected_institut || $selected_semester != $default_semester) : ?>
+<? if ($selected_status || $selected_kategorie || $selected_abschluss || $selected_fachbereich || $selected_zuordnung || $selected_institut || $selected_name || $selected_semester != $default_semester) : ?>
 <div style="width: 100%; text-align: right;">
     <a href="<?= $action_reset ?>">
         <?= Icon::create('refresh', 'clickable', ['title' => _('Filter zurücksetzen')])->asImg(); ?>
@@ -7,6 +7,13 @@
 </div>
 <? endif; ?>
 <form id="index_filter" action="<?= $action ?>" method="post">
+    <? if ($name_search) : ?>
+        <label class="mvv-name-search">
+            <?= $name_caption ?: _('Name') ?>:
+            <input type="text" name="name_filter" value="<?= htmlReady($selected_name) ?>">
+            <input type="submit" value="<?= _('Suchen') ?>">
+        </label>
+    <? endif ?>
     <? if (isset($semester)) : ?>
     <label>
         <?= $semester_caption ?: _('Semester') . ':' ?><br>
@@ -53,8 +60,10 @@
         <select name="kategorie_filter" class="sidebar-selectlist submit-upon-select">
             <option value=""><?= _('Alle') ?></option>
             <? foreach ($kategorien as $kategorie) : ?>
-            <option value="<?= $kategorie->getId() ?>"
-                <?= ($kategorie->getId() == $selected_kategorie || (!isset($abschluesse) || $abschluesse[$selected_abschluss]->kategorie_id == $kategorie->getId()) ? ' selected' : '') ?>><?= htmlReady($kategorie->name) . ' (' . $kategorie->count_objects . ')'  ?></option>
+                <option value="<?= $kategorie->id ?>"
+                    <? if ($kategorie->id === $selected_kategorie || (isset($abschluesse) && $abschluesse[$selected_abschluss]->kategorie_id == $kategorie->id)) : ?> selected<? endif; ?>>
+                    <?= htmlReady($kategorie->name) . ' (' . $kategorie->count_objects . ')'  ?>
+                </option>
             <? endforeach; ?>
         </select>
     </label>
@@ -77,7 +86,6 @@
             <?= _('Verantw. Einrichtung') ?>:<br>
             <select name="institut_filter" class="sidebar-selectlist nested-select submit-upon-select">
                 <option value=""><?= _('Alle') ?></option>
-                <? $fak = '' ?>
                 <? foreach ($institute as $institut) : ?>
                     <?
                     if (count($perm_institutes) == 0

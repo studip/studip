@@ -71,11 +71,13 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
             $object_class = $model->getVariant();
             $object_type = 'moduldeskriptor';
             $range_id = $model->deskriptor_id;
+            $sec_range_id = null;
         } elseif (is_a($model, 'ModulteilDeskriptor')) {
             $params[':institution_ids'] = [$model->modulteil->modul->responsible_institute->institut_id];
             $object_class = $model->getVariant();
             $object_type = 'modulteildeskriptor';
             $range_id = $model->deskriptor_id;
+            $sec_range_id = null;
         } elseif ($model instanceof StatusgruppeUser) {
             if (isset($model->group->institute)) {
                 $params[':institution_ids'] = [$model->group->institute->id];
@@ -86,6 +88,12 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
             $object_type = 'userinstrole';
             $range_id = $model->user_id;
             $sec_range_id = $model->statusgruppe_id;
+        } elseif ($model instanceof Studiengang) {
+            $params[':institution_ids'] = [$model->institut_id];
+            $object_class = $model->getVariant();
+            $object_type = 'studycourse';
+            $range_id = $model->studiengang_id;
+            $sec_range_id = null;
         }
 
         if (!$object_type) {
@@ -97,9 +105,17 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
 
         $query = "SELECT a.*, b.*,a.datafield_id,b.datafield_id as isset_content ";
         $query .= "FROM datafields a LEFT JOIN datafields_entries b ON (a.datafield_id=b.datafield_id AND range_id = :range_id AND sec_range_id = :sec_range_id) ";
-        $query .= "WHERE object_type = :object_type AND (a.institut_id IS NULL OR a.institut_id IN (:institution_ids))";
+        $query .= "WHERE object_type = :object_type AND (ISNULL(lang) OR lang = '') AND (a.institut_id IS NULL OR a.institut_id IN (:institution_ids))";
 
-        if ($object_type === 'moduldeskriptor' || $object_type === 'modulteildeskriptor') {
+        if ($object_type === 'studycourse') {
+            $query .= "AND (LOCATE(:object_class, object_class) OR LOCATE('all', object_class)) $one_datafield ORDER BY priority";
+            $params = array_merge($params,[
+                ':range_id' => (string) $range_id,
+                ':sec_range_id' => (string) $sec_range_id,
+                ':object_type' => $object_type,
+                ':object_class' => (string) $object_class]);
+        } elseif ($object_type === 'moduldeskriptor'
+                || $object_type === 'modulteildeskriptor') {
             // find datafields by language (string)
             $query .= "AND (LOCATE(:object_class, object_class) OR object_class IS NULL) $one_datafield ORDER BY priority";
             $params = array_merge($params,[

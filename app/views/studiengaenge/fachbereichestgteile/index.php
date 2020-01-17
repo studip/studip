@@ -1,13 +1,10 @@
 <form method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default collapsable">
-        <colgroup>
-            <col>
-            <col style="width: 1%;">
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('studiengaenge/fachbereichestgteile/', _('Fachbereich'), 'fachbereich') ?>
-                <th colspan="4"></th>
+                <th style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? foreach ($fachbereiche as $fachbereich) : ?>
@@ -23,7 +20,7 @@
                             <?= htmlReady($fachbereich['name']) ?>
                         <? endif; ?>
                     </td>
-                    <td class="actions" style="white-space: nowrap;">
+                    <td class="actions dont-hide" style="white-space: nowrap;">
                         <? if (MvvPerm::havePermCreate('StudiengangTeil')) : ?>
                             <a href="<?= $controller->url_for('/stgteil_fachbereich/' . $fachbereich['institut_id']) ?>">
                                 <?= Icon::create('file+add', Icon::ROLE_CLICKABLE , ['title' => _('Neuen Studiengangteil in diesem Fachbereich anlegen')])->asImg(); ?>

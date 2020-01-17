@@ -114,11 +114,29 @@ class GarbageCollectorJob extends CronJob
             ]
         );
 
+        //delete old attachments of non-stored and deleted mvv objects:
+        //A folder is old and not attached to a mvv object when it has a mvv
+        //range type, belongs to the folder type 'MVVFolder',
+        //is older than 2 hours and has a range-ID that doesn't exist.
+        $unsent_mvv_folders = Folder::deleteBySql(
+            "folder_type = 'MVVFolder'
+            AND chdate < UNIX_TIMESTAMP(DATE_ADD(NOW(),INTERVAL -2 HOUR))
+            AND ((`range_type` = 'Studiengang' AND  range_id NOT IN ( SELECT studiengang_id FROM mvv_studiengang))
+            OR (`range_type` = 'AbschlussKategorie' AND  range_id NOT IN ( SELECT kategorie_id FROM mvv_abschl_kategorie))
+            OR (`range_type` = 'StgteilVersion' AND  range_id NOT IN ( SELECT version_id FROM mvv_stgteilversion)))",
+            [
+                'user_id' => $GLOBALS['user']->id
+            ]
+        );
+        if (count($unsent_mvv_folders)) {
+            $db->exec("DELETE FROM mvv_files WHERE fileref_id NOT IN (SELECT id FROM file_refs)");
+        }
 
         if ($parameters['verbose']) {
             printf(_("Gelöschte Ankündigungen: %u") . "\n", (int)$deleted_news);
             printf(_("Gelöschte Nachrichten: %u") . "\n", (count($to_delete) + count($to_delete_system)));
             printf(_("Gelöschte Dateianhänge: %u") . "\n", count($unsent_attachment_folders));
+            printf(_("Gelöschte MVV-Dateien: %u") . "\n", count($unsent_mvv_folders));
         }
 
         Token::deleteBySQL('expiration < UNIX_TIMESTAMP()');

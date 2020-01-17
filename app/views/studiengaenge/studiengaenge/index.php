@@ -13,9 +13,9 @@
     <thead>
         <tr class="sortable">
             <?= $controller->renderSortLink('studiengaenge/studiengaenge/index/', _('Studiengang'), 'name') ?>
-            <?= $controller->renderSortLink('studiengaenge/studiengaenge/index/', _('Einrichtung'), 'institut_name') ?>
-            <?= $controller->renderSortLink('studiengaenge/studiengaenge/index/', _('Kategorie'), 'kategorie_name') ?>
-            <th></th>
+            <?= $controller->renderSortLink('studiengaenge/studiengaenge/index/', _('Einrichtung'), 'institut_name', ['style' => 'width: 15%;']) ?>
+            <?= $controller->renderSortLink('studiengaenge/studiengaenge/index/', _('Kategorie'), 'kategorie_name', ['style' => 'width: 15%;']) ?>
+            <th style="width: 8%; text-align: right;"><?= _('Aktionen') ?></th>
         </tr>
     </thead>
     <? if ($count) : ?>

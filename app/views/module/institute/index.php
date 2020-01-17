@@ -1,12 +1,8 @@
 <?= $controller->jsUrl() ?>
 <table class="default collapsable">
-    <colgroup>
-        <col>
-        <col style="width: 20px;">
-    </colgroup>
     <thead>
         <tr class="sortable">
-            <?= $controller->renderSortLink('module/institute/index', _('Einrichtung'), 'name') ?>
+            <?= $controller->renderSortLink('module/institute/index', _('Einrichtung'), 'name', ['style' => 'width: 75%;']) ?>
             <?= $controller->renderSortLink('module/institute/index', _('Module'), 'count_objects', ['style' => 'text-align: center;']) ?>
         </tr>
     </thead>

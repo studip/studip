@@ -80,6 +80,17 @@ use Studip\Button, Studip\LinkButton;
                 </option>
             <? endforeach; ?>
             </select>
+        <? elseif ($item->object_type === 'studycourse'): ?>
+            <?= _('Typ/Abschnitt') ?>
+            
+            <select name="object_class" required>
+                <option value="all_settings"<?= mb_strpos($item->object_class, 'all_settings') !== false ? ' selected' : '' ?>><?= _('alle (Abschnitt "Einstellungen")') ?></option>
+                <option value="all_info"<?= mb_strpos($item->object_class, 'all_info') !== false ? ' selected' : '' ?>><?= _('alle (Abschnitt "Inhalte und Informationen")') ?></option>
+                <option value="einfach_settings"<?= mb_strpos($item->object_class, 'einfach_settings') !== false ? ' selected' : '' ?>><?= _('Einfach-Studiengänge (Abschnitt "Einstellungen")') ?></option>
+                <option value="einfach_info"<?= mb_strpos($item->object_class, 'einfach_info') !== false ? ' selected' : '' ?>><?= _('Einfach-Studiengänge (Abschnitt "Inhalte und Informationen")') ?></option>
+                <option value="mehrfach_settings"<?= mb_strpos($item->object_class, 'mehrfach_settings') !== false ? ' selected' : '' ?>><?= _('Mehrfach-Studiengänge (Abschnitt "Einstellungen")') ?></option>
+                <option value="mehrfach_info"<?= mb_strpos($item->object_class, 'mehrfach_info') !== false ? ' selected' : '' ?>><?= _('Mehrfach-Studiengänge (Abschnitt "Inhalte und Informationen")') ?></option>
+            </select>
         <? else : ?>
             <?= _('Nutzerstatus') ?>:
 

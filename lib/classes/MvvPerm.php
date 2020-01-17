@@ -406,16 +406,14 @@ class MvvPerm {
      * Returns whether the actual user has at least the given permission to
      * the datafield entry.
      * 
-     * @param DataFieldEntryModel $df_entry An object of type
-     * DataFieldEntryModel object.
+     * @param $datafield_id The id of a datafield.
      * @param int $perm 
      * @return bool True if permission is granted.
      */
-    public function haveDfEntryPerm(DataFieldEntryModel $df_entry, $perm)
+    public function haveDfEntryPerm($datafield_id, $perm)
     {
         $field = 'datafields';
-        $df_id = $df_entry->datafield_id;
-        $field_perm = $this->getFieldPerm([$field, $df_id]);
+        $field_perm = $this->getFieldPerm([$field, $datafield_id]);
         return $field_perm >= $perm;
     }
 
@@ -498,10 +496,10 @@ class MvvPerm {
     }
 
     /**
-     * Returns whether 
+     * Returns true if the user have at least the given permission status.
      * 
-     * @param string $field
-     * @param int $perm Optional. 
+     * @param string $field The name of the table field.
+     * @param int $perm The optional (default PERM_WRITE) permission status. 
      * @param string $user_id Optional. The ID of the user. If not set the ID of
      * the current user.
      * @param string|array $institut_id Optional. The id of an institute or an array of
@@ -586,7 +584,6 @@ class MvvPerm {
     /**
      * Returns all ids of institutes the user is assigned with at least one role.
      * Have the user at least one role globally an empty array is returned.
-     * If the user has no role at any institute false is returned.
      *
      * @param string $user_id Optional. The ID of the user. If not set the ID of
      * the current user.
@@ -614,7 +611,7 @@ class MvvPerm {
                 // don't check system roles or roles not related to MVV
                 if (stripos($role->rolename, 'MVV') !== 0) continue;
                 
-                if ($role->rolename === 'MVVAdmin' || $GLOBALS['perm']->have_perm('root')) {
+                if ($GLOBALS['perm']->have_perm('root', $user_id)) {
                     $institutes = [];
                     break;
                 }

@@ -1,15 +1,10 @@
-<? $count = isset($versionen) ? count($versionen) : 0; ?>
+    <? $count = isset($versionen) ? count($versionen) : 0; ?>
 <div class="mvv-version-content">
     <table class="default collapsable">
-        <colgroup>
-            <col>
-            <col style="width: 5%;">
-            <col style="width: 1%;">
-        </colgroup>
         <thead>
             <tr class="sortable">
                 <?= $controller->renderSortLink('studiengaenge/versionen/', _('Studiengangteil-Version'), 'start_sem') ?>
-                <th colspan="2"></th>
+                <th colspan="2" style="width: 5%; text-align: right;"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <? if ($count) : ?>

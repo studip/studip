@@ -69,6 +69,8 @@ $GLOBALS['MVV_MODUL']['SPRACHE'] = [
 
 $GLOBALS['MVV_MODULTEIL']['SPRACHE'] = $GLOBALS['MVV_MODUL']['SPRACHE'];
 
+$GLOBALS['MVV_STUDIENGANG']['SPRACHE'] = $GLOBALS['MVV_MODUL']['SPRACHE'];
+
 $GLOBALS['MVV_MODUL']['PRUEF_EBENE'] = [
     'values'            => [
         'abschliessend'     => ['visible' => 1, 'name' => _('modulabschließend')],
@@ -239,3 +241,106 @@ $GLOBALS['MVV_LANGUAGES'] = [
 ];
 
 $GLOBALS['MVV_STUDIENGANG']['FASSUNG_TYP'] = $GLOBALS['MVV_STGTEILVERSION']['FASSUNG_TYP'];
+
+$GLOBALS['MVV_STUDIENGANG']['STUDYCOURSE_TYPE'] = [
+    'values' => [
+        'grundstaendig' => [
+            'visible' => 1,
+            'name'    => _('grundständiger Studiengang')
+        ],
+        'international' => [
+            'visible'  => 1,
+            'name'    => _('International')
+        ],
+    ],
+    'default' => [
+        'grundstaendig'
+    ]
+];
+
+$GLOBALS['MVV_STUDIENGANG']['ABSCHLUSSGRAD'] = [
+    'values' => [
+        'BA' => [
+            'visible' => 1,
+            'name'    => _('Bachelor of Arts')
+        ],
+        'BSc' => [
+            'visible' => 1,
+            'name'    => _('Bachelor of Science')
+        ],
+    ],
+    'default' => [
+        'BA'
+    ]
+];
+
+$GLOBALS['MVV_STUDIENGANG']['PERSONEN_GRUPPEN'] = [
+    'values' => [
+        'studium'     => ['visible' => 1, 'name' => _('Fragen Rund ums Studium')],
+        'studiengang' => ['visible' => 1, 'name' => _('Fragen zum Studiengang')]
+    ],
+    'default' => ''
+];
+
+$GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP'] = [
+    'values' => [
+        'masterfach' => [
+            'visible' => 1,
+            'name'    => _('Masterfach')
+        ],
+        'kernfach' => [
+            'visible' => 1,
+            'name'    => _('Kernfach')
+        ],
+        'kombifach' => [
+            'visible' => 1,
+            'name'    => _('Kombinationsfach')
+        ],
+        'koopfach' => [
+            'visible' => 1,
+            'name'    => _('Kooperationsfach')
+        ]
+    ],
+    'default' => [
+        'masterfach'
+    ]
+];
+
+$GLOBALS['MVV_DOCUMENTS']['TYPE'] = [
+    'values' => [
+        'po03fachteil'  => ['visible' => 1, 'name' => _('PO 03 fachspezi. Teil')]
+    ],
+    'default' => ''
+];
+
+$GLOBALS['MVV_DOCUMENTS']['CATEGORY'] = [
+    'values' => [
+        'keine'      => ['visible' => 1, 'name' => _('keine')],
+        'ordnung'    => ['visible' => 1, 'name' => _('Ordnungen')],
+        'vordruck'   => ['visible' => 1, 'name' => _('Vordrucke und Formulare')],
+        'anrechnung' => ['visible' => 1, 'name' => _('Anrechnungen')],
+        'praktikum'  => ['visible' => 1, 'name' => _('Praktika')],
+        'klausur'    => ['visible' => 1, 'name' => _('Klausuren und Prüfende')],
+        'website'    => ['visible' => 1, 'name' => _('Webseite')]
+    ],
+    'default' => 'keine'
+];
+
+$GLOBALS['MVV_DOCUMENTS']['TAG'] = [
+    'values' => [
+        'englisch'  => ['visible' => 1, 'name' => _('Englisch')],
+        'ordnung'   => ['visible' => 1, 'name' => _('Ordnungen')],
+        'anglistik' => ['visible' => 1, 'name' => _('Anglistik')],
+        'bpo'       => ['visible' => 1, 'name' => _('BPO')]
+    ],
+    'default' => ''
+];
+
+$GLOBALS['MVV_CONTACTS']['TYPE'] = [
+    'values' => [
+        'fachschaft' => ['visible' => 1, 'name' => _('Fachschaften')]
+    ],
+    'default' => ''
+];
+
+
