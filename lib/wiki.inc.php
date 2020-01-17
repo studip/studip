@@ -1294,20 +1294,18 @@ function getShowPageInfobox($keyword, $latest_version)
     }
 
     if (count($versions) >= 1) {
-        if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
-            $widget->addLink(
-                _('Änderungen anzeigen'),
-                URLHelper::getURL('?view=diff', compact('keyword'))
-            )->setActive(Request::option('view') === 'diff');
-            $widget->addLink(
-                _('Text mit Autor/-innenzuordnung anzeigen'),
-                URLHelper::getURL('?view=combodiff', compact('keyword'))
-            )->setActive(Request::option('view') === 'combodiff');
-            $widget->addLink(
-                _('Versionen dieser Seite'),
-                URLHelper::getURL('?view=pageversions', compact('keyword'))
-            )->setActive(Request::option('view') === 'pageversions');
-        }
+        $widget->addLink(
+            _('Änderungen anzeigen'),
+            URLHelper::getURL('?view=diff', compact('keyword'))
+        )->setActive(Request::option('view') === 'diff');
+        $widget->addLink(
+            _('Text mit Autor/-innenzuordnung anzeigen'),
+            URLHelper::getURL('?view=combodiff', compact('keyword'))
+        )->setActive(Request::option('view') === 'combodiff');
+        $widget->addLink(
+            _('Versionen dieser Seite'),
+            URLHelper::getURL('?view=pageversions', compact('keyword'))
+        )->setActive(Request::option('view') === 'pageversions');
     }
 
     // Exportfunktionen

@@ -25,9 +25,6 @@
                     <?= _('Erstellt am') ?>
                 </a>
             </th>
-            <th>
-                <?= _('Aktion') ?>
-            </th>
         </tr>
     </thead>
 
@@ -51,11 +48,6 @@
                 </td>
                 <td>
                     <?= date('d.m.Y H:i', $page->chdate) ?>
-                </td>
-                <td style="text-align: right";>
-                    <a href="<?= URLHelper::getURL("?cmd=really_delete&keyword=".urlencode($keyword)."&version={$page->version}") ?>">
-                        <?= Icon::create('trash')->asInput(tooltip2(_('löschen')) + ['data-confirm' => showDeleteDialog($keyword, $page->version)]) ?>
-                    </a>
                 </td>
             </tr>
         <? endforeach ?>
