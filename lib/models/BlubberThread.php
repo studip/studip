@@ -159,7 +159,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         self::deleteBySQL($condition);
 
         $query = SQLQuery::table('blubber_threads')
-            ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id', 'LEFT JOIN')
+            ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id AND blubber_comments.mkdate > UNIX_TIMESTAMP() - 86400 * 365', 'LEFT JOIN')
             ->join('my_comments', 'blubber_comments', 'blubber_threads.thread_id = my_comments.thread_id', 'LEFT JOIN')
             ->join('blubber_mentions', 'blubber_mentions', 'blubber_mentions.thread_id = blubber_threads.thread_id', 'LEFT JOIN');
 
@@ -192,7 +192,6 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $query->where('since', 'blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since', compact('since'));
         }
         $query->where("blubber_threads.visible_in_stream = 1");
-        $query->where("(blubber_comments.mkdate IS NULL OR blubber_comments.mkdate > UNIX_TIMESTAMP() - 86400 * 365)");
         $query->parameter('user_id', $user_id);
         $query->groupBy('blubber_threads.thread_id');
         if ($olderthan !== null) {
