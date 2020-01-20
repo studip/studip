@@ -2147,7 +2147,7 @@ class Seminar
             $info['enrolment_allowed'] = true;
             $info['cause'] = 'root';
             $info['description'] = _("Sie dürfen ALLES.");
-            return null; //$info;
+            return $info;
         }
         if ($GLOBALS['perm']->have_studip_perm('admin', $this->getId(), $user_id)) {
             $info['enrolment_allowed'] = true;
