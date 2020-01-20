@@ -144,7 +144,8 @@ class DatafieldCondition extends UserFilterField
      * Stores data to DB.
      *
      */
-    public function store() {
+    public function store()
+    {
         // Generate new ID if field entry doesn't exist in DB yet.
         if (!$this->id) {
             $this->id = $this->generateId();

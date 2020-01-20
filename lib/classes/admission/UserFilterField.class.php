@@ -79,7 +79,8 @@ class UserFilterField
      *                        loaded from database.
      *
      */
-    public function __construct($fieldId='') {
+    public function __construct($fieldId = '')
+    {
         $this->validCompareOperators = [
             '=' => _('ist'),
             '!=' => _('ist nicht')
@@ -111,20 +112,37 @@ class UserFilterField
      */
     public function checkValue($values)
     {
-        $result = false;
-        // For equality checks we must use the "==" operator.
-        if ($this->compareOperator == '=') {
-            $cOp = '==';
-        } elseif (!isset($this->validCompareOperators[$this->compareOperator])) {
+        // Validate compare operator
+        if (!isset($this->validCompareOperators[$this->compareOperator])) {
             throw new Exception('Invalid compare operator');
-        } else {
-            $cOp = $this->compareOperator;
         }
 
+        $result = false;
         foreach ($values as $value) {
-            if (eval("return ('".$value."'".$cOp."'".$this->value."');"))
-            {
-                $result = true;
+            switch ($this->compareOperator) {
+                case '=':
+                    $result = $value == $this->value;
+                    break;
+                case '!=':
+                    $result = $value != $this->value;
+                    break;
+                case '<':
+                    $result = $value < $this->value;
+                    break;
+                case '<=':
+                    $result = $value <= $this->value;
+                    break;
+                case '>=':
+                    $result = $value >= $this->value;
+                    break;
+                case '>':
+                    $result = $value > $this->value;
+                    break;
+                default:
+                    throw new Exception('Unknown compare operator.');
+            }
+
+            if ($result) {
                 break;
             }
         }
@@ -134,7 +152,8 @@ class UserFilterField
     /**
      * Deletes the stored data for this condition field from DB.
      */
-    public function delete() {
+    public function delete()
+    {
         // Delete condition data.
         $stmt = DBManager::get()->prepare("DELETE FROM `userfilter_fields`
             WHERE `field_id`=?");
@@ -146,7 +165,8 @@ class UserFilterField
      *
      * @param  String tableName
      */
-    public function generateId() {
+    public function generateId()
+    {
         do {
             $newid = md5(uniqid(get_class($this).microtime(), true));
             $id = DBManager::get()->fetchColumn("SELECT `field_id`
@@ -158,7 +178,8 @@ class UserFilterField
     /**
      * Reads all available UserFilterField subclasses and loads their definitions.
      */
-    public static function getAvailableFilterFields() {
+    public static function getAvailableFilterFields()
+    {
         $fields = [];
         // Load all PHP class files found in the condition field folder.
         foreach (glob(realpath(dirname(__FILE__).'/userfilter').'/*.class.php') as $file) {
@@ -232,7 +253,8 @@ class UserFilterField
      * @return Array All users that are affected by the current condition
      *               field.
      */
-    public function getUsers($restrictions=[]) {
+    public function getUsers($restrictions = [])
+    {
         $db = DBManager::get();
         $users = [];
         // Standard query getting the values without respecting other values.
@@ -282,7 +304,8 @@ class UserFilterField
      * @param  array $additional conditions that are required for check.
      * @return array The value(s) for this user.
      */
-    public function getUserValues($userId, $additional = null) {
+    public function getUserValues($userId, $additional = null)
+    {
         $result = [];
         $query = "SELECT DISTINCT `".$this->userDataDbField."` ".
             "FROM `".$this->userDataDbTable."` ".
@@ -340,7 +363,8 @@ class UserFilterField
     /**
      * Helper function for loading data from DB.
      */
-    public function load() {
+    public function load()
+    {
         $stmt = DBManager::get()->prepare(
             "SELECT * FROM `userfilter_fields` WHERE `field_id`=? LIMIT 1");
         $stmt->execute([$this->id]);
@@ -373,7 +397,8 @@ class UserFilterField
      * @param  String $id ID of a UserFilter object.
      * @return UserFilterField
      */
-    public function setConditionId($id) {
+    public function setConditionId($id)
+    {
         $this->conditionId = $id;
         return $this;
     }
@@ -399,7 +424,8 @@ class UserFilterField
      *
      * @param  String conditionId The condition this field belongs to.
      */
-    public function store() {
+    public function store()
+    {
         // Generate new ID if field entry doesn't exist in DB yet.
         if (!$this->id) {
             $this->id = $this->generateId();
@@ -422,5 +448,3 @@ class UserFilterField
     }
 
 } /* end of class UserFilterField */
-
-?>
