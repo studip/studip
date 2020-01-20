@@ -15,7 +15,6 @@ jQuery(
             null,
             function() {
                 var elements = jQuery('.ui-dialog [data-inline-editing]');
-                console.log(elements);
                 for (element of elements) {
                     STUDIP.InlineEditing.init(element);
                 }

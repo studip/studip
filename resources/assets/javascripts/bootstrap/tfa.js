@@ -19,8 +19,6 @@ $(document).on('keyup', '.tfa-code-input input', function (event) {
         $(this).next('input').focus();
     } else if (event.keyCode === 36) {
         $(this).parent().find('input:not(:hidden):first').focus();
-    } else if (event.keyCode === 35) {
-        console.log($(this).parent().find('input:not(:hidden):last').focus());
     }
 }).on('keydown', '.tfa-code-input', function (event) {
     if (event.key >= '0' && event.key <= '9') {

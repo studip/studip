@@ -194,7 +194,6 @@ STUDIP.ready(function() {
             },
             appendTo: 'body',
             helper: function () {
-                console.log('drag');
                 var dragged_item = jQuery(
                     '<div class="dragged-colour"></div>'
                 );

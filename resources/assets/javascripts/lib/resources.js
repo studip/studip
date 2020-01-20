@@ -1,7 +1,7 @@
 class Resources
 {
 
-    static addUserToPermissionList(user_id = null, table_element = null)
+    static addUserToPermissionList(user_id, table_element)
     {
         if (!user_id || !table_element) {
             return;
@@ -162,7 +162,7 @@ class Resources
     }
 
 
-    static addCourseUsersToPermissionList(course_id = null, table_element = null)
+    static addCourseUsersToPermissionList(course_id, table_element)
     {
         if (!course_id || !table_element) {
             return;
@@ -191,7 +191,7 @@ class Resources
         );
     }
 
-    static removeUserFromPermissionList(html_node = null)
+    static removeUserFromPermissionList(html_node)
     {
         if (!html_node) {
             return;
@@ -216,11 +216,9 @@ class Resources
     //Room search related methods:
 
 
-    static addSearchCriteriaToRoomSearchWidget(select_node = null)
+    static addSearchCriteriaToRoomSearchWidget(select_node)
     {
         if (!select_node) {
-            console.log('no select node');
-
             return;
         }
 
@@ -323,7 +321,7 @@ class Resources
 
             if (time_inputs.length < 2) {
                 //Something is wrong with the HTML.
-                console.log('timw inputs wrong');
+                console.log('time inputs wrong');
 
                 return;
             }
@@ -407,7 +405,7 @@ class Resources
     }
 
 
-    static removeSearchCriteriaFromRoomSearchWidget(icon_node = null)
+    static removeSearchCriteriaFromRoomSearchWidget(icon_node)
     {
         if (!icon_node) {
             return;
@@ -438,7 +436,7 @@ class Resources
     }
 
 
-    static submitRoomSearchWidgetForm(input_node = null)
+    static submitRoomSearchWidgetForm(input_node)
     {
         if (!input_node) {
             return;
@@ -689,7 +687,7 @@ class Resources
     //Fullcalendar specialisations:
 
 
-    static updateEventUrlsInCalendar(calendar_event = null)
+    static updateEventUrlsInCalendar(calendar_event)
     {
         if (!calendar_event) {
             return;
@@ -785,7 +783,7 @@ class Resources
     }
 
 
-    static toggleRequestMarked(source_node = null)
+    static toggleRequestMarked(source_node)
     {
         if (!source_node) {
             return;
@@ -827,7 +825,6 @@ class Messages
     static selectRoom(room_id, room_name)
     {
         if (!room_id) {
-            console.log('no room-ID');
             return;
         }
 

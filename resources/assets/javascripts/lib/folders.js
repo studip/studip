@@ -30,7 +30,6 @@ const Folders = {
             .val();
 
         if (folder_name && folder_type && parent_folder_id) {
-            console.log('data present!');
             jQuery.ajax({
                 method: 'POST',
                 url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/folder/new',
@@ -41,8 +40,6 @@ const Folders = {
                     Dialog.close();
                 }
             });
-        } else {
-            console.log('data missing!');
         }
     },
 
