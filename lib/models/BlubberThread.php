@@ -158,8 +158,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                         AND UNIX_TIMESTAMP() - blubber_threads.mkdate > 60 * 60";
         self::deleteBySQL($condition);
 
+
+
         $query = SQLQuery::table('blubber_threads')
-            ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id AND blubber_comments.mkdate > UNIX_TIMESTAMP() - 86400 * 365', 'LEFT JOIN')
             ->join('my_comments', 'blubber_comments', 'blubber_threads.thread_id = my_comments.thread_id', 'LEFT JOIN')
             ->join('blubber_mentions', 'blubber_mentions', 'blubber_mentions.thread_id = blubber_threads.thread_id', 'LEFT JOIN');
 
@@ -188,21 +189,45 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 "(blubber_threads.context_type = 'private' AND blubber_mentions.user_id = :user_id AND blubber_mentions.external_contact = '0')",
             ]));
         }
-        if ($since !== null) {
-            $query->where('since', 'blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since', compact('since'));
-        }
         $query->where("blubber_threads.visible_in_stream = 1");
         $query->parameter('user_id', $user_id);
         $query->groupBy('blubber_threads.thread_id');
+
+        $thread_ids = $query->fetchAll("thread_id");
+
+
+
+        $query = SQLQuery::table('blubber_threads')->join(
+            'blubber_comments',
+            'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id',
+            'LEFT JOIN'
+        );
+
+        $query->where(
+            "filter_thread_ids",
+            "blubber_threads.thread_id IN (:thread_ids)",
+            ['thread_ids' => $thread_ids]
+        );
+        if ($since !== null) {
+            $query->where(
+                'since',
+                'blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since',
+                compact('since')
+            );
+        }
+        $query->groupBy('blubber_threads.thread_id');
         if ($olderthan !== null) {
-            $query->having('olderthan', "IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) <= :olderthan", [
-                'olderthan' => $olderthan
-            ]);
+            $query->having(
+                'olderthan',
+                "IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) <= :olderthan",
+                ['olderthan' => $olderthan]
+            );
         }
         $query->orderBy("IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) DESC");
         $query->limit($limit);
 
         $threads = $query->fetchAll(static::class);
+
         $upgraded_threads = array_map(function ($thread) {
             return self::upgradeThread($thread);
         }, $threads);

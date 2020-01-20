@@ -205,13 +205,18 @@ class SQLQuery
     /**
      * Fetches the whole resultset as an array of associative arrays. If you define
      * a sorm_class the result will be an array of the sorm-objects.
-     * @return array of arrays or array of objects.
+     * @param $sorm_class_or_column : column name, a class of SimpleORMap or null for associative array.
+     * @return array of arrays or array of objects or array of values.
      */
-    public function fetchAll($sorm_class = null)
+    public function fetchAll($sorm_class_or_column = null)
     {
         NotificationCenter::postNotification('SQLQueryWillExecute', $this);
 
-        $sql = "SELECT `{$this->settings['table']}`.* ";
+        if (is_string($sorm_class_or_column) && !is_subclass_of($sorm_class_or_column, "SimpleORMap")) {
+            $sql = "SELECT `{$this->settings['table']}`.`{$sorm_class_or_column}` ";
+        } else {
+            $sql = "SELECT `{$this->settings['table']}`.* ";
+        }
 
         foreach ((array) $this->settings['select'] as $alias => $statement) {
             $sql .= $statement ? "{$statement} AS {$alias} " : $alias;
@@ -224,12 +229,16 @@ class SQLQuery
 
         NotificationCenter::postNotification('SQLQueryDidExecute', $this);
 
+        if (is_string($sorm_class_or_column) && !is_subclass_of($sorm_class_or_column, "SimpleORMap")) {
+            return $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+        }
+
         $alldata = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if (!$sorm_class) {
+        if (!$sorm_class_or_column) {
             return $alldata;
         }
 
-        return array_map("{$sorm_class}::buildExisting", $alldata);
+        return array_map("{$sorm_class_or_column}::buildExisting", $alldata);
     }
 
     /**
