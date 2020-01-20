@@ -682,7 +682,7 @@ class ResourceCategory extends SimpleORMap
             resource_category_properties.category_id = :category_id
             AND
             resource_category_properties.requestable = '1'
-            ORDER BY name ASC",
+            ORDER BY type DESC, name ASC",
             [
                 'category_id' => $this->id
             ]

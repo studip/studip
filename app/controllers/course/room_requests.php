@@ -318,8 +318,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 }
                 $this->request->category_id = $this->room_category->id;
 
-                $this->available_properties =
-                    $this->room_category->getRequestableProperties();
+                $this->available_properties = $this->room_category->getRequestableProperties();
                 $this->saving_allowed = true;
             }
 
