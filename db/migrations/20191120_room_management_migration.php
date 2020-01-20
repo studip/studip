@@ -567,6 +567,12 @@ class RoomManagementMigration extends Migration
                 PDO::FETCH_COLUMN,
                 0
             );
+            if ($data['name'] === 'seats' && !count($old_property_ids)) {
+                $old_property_ids = $db->fetchFirst(
+                    "SELECT `property_id`
+                    FROM `resource_property_definitions`
+                    WHERE `system` = 2");
+            }
 
             //Check if the new property already exists:
             $get_property_stmt->execute(
@@ -2264,6 +2270,10 @@ class RoomManagementMigration extends Migration
                                 'property_id' => $property_id
                             ]
                         );
+                    }
+                    //make plans visible
+                    if ($area_name === 'room' && $name === 'booking_plan_is_public') {
+                        $db->execute("INSERT IGNORE INTO `resource_properties` (`resource_id`, `property_id`, `state`, `mkdate`, `chdate`) SELECT `id` , ?, '1', UNIX_TIMESTAMP(), UNIX_TIMESTAMP() FROM `resources` WHERE `category_id` = ?", [$property_id, $area_id]);
                     }
                 }
             }

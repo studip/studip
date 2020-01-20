@@ -169,55 +169,56 @@ class StartNavigation extends Navigation
             $navigation->addSubNavigation('admin_roles', new Navigation(_('Verwaltung von Rollen'), 'dispatch.php/admin/role'));
             $this->addSubNavigation('admin_plugins', $navigation);
         }
-        
-        // administration of resources
 
-        $current_user = User::findCurrent();
-        $global_resource_permissions = ResourceManager::getGlobalResourcePermission(
-            $current_user
-        );
-        $show_resources_navigation = false;
-        if ($global_resource_permissions == 'admin') {
-            $show_resources_navigation = true;
-        } else {
-            $show_resources_navigation = ResourceManager::userHasResourcePermissions(
-                $current_user,
-                'autor'
+        // administration of resources
+        if (Config::get()->RESOURCES_ENABLE) {
+            $current_user = User::findCurrent();
+            $global_resource_permissions = ResourceManager::getGlobalResourcePermission(
+                $current_user
             );
-        }
-        if (get_config('RESOURCES_ENABLE') and $show_resources_navigation) {
+            $show_resources_navigation = false;
             if ($global_resource_permissions == 'admin') {
-                $navigation = new Navigation(_('Raum- und Ressourcenverwaltung'));
-                $navigation->addSubNavigation(
-                    'resources_overview',
-                    new Navigation(
-                        _('Übersicht'),
-                        'dispatch.php/room_management/overview/index'
-                    )
-                );
-                $navigation->addSubNavigation(
-                    'room_planning',
-                    new Navigation(
-                        _('Raumplanung'),
-                        'dispatch.php/room_management/planning/index'
-                    )
-                );
-                $navigation->addSubNavigation(
-                    'categories',
-                    new Navigation(
-                        _('Ressourcenkategorien anpassen'),
-                        'dispatch.php/resources/admin/categories'
-                    )
-                );
-                $this->addSubNavigation('resources', $navigation);
+                $show_resources_navigation = true;
             } else {
-                //Users who are not resource admins see another page that
-                //displays only those resources where they have permissions for.
-                $navigation = new Navigation(
-                    _('Meine Räume und Ressourcen'),
-                    'dispatch.php/my_resources/index'
+                $show_resources_navigation = ResourceManager::userHasResourcePermissions(
+                    $current_user,
+                    'autor'
                 );
-                $this->addSubNavigation('resources', $navigation);
+            }
+            if ($show_resources_navigation) {
+                if ($global_resource_permissions == 'admin') {
+                    $navigation = new Navigation(_('Raum- und Ressourcenverwaltung'));
+                    $navigation->addSubNavigation(
+                        'resources_overview',
+                        new Navigation(
+                            _('Übersicht'),
+                            'dispatch.php/room_management/overview/index'
+                        )
+                    );
+                    $navigation->addSubNavigation(
+                        'room_planning',
+                        new Navigation(
+                            _('Raumplanung'),
+                            'dispatch.php/room_management/planning/index'
+                        )
+                    );
+                    $navigation->addSubNavigation(
+                        'categories',
+                        new Navigation(
+                            _('Ressourcenkategorien anpassen'),
+                            'dispatch.php/resources/admin/categories'
+                        )
+                    );
+                    $this->addSubNavigation('resources', $navigation);
+                } else {
+                    //Users who are not resource admins see another page that
+                    //displays only those resources where they have permissions for.
+                    $navigation = new Navigation(
+                        _('Meine Räume und Ressourcen'),
+                        'dispatch.php/my_resources/index'
+                    );
+                    $this->addSubNavigation('resources', $navigation);
+                }
             }
         }
 
