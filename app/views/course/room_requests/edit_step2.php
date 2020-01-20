@@ -24,9 +24,5 @@
             ) ?>
         <? endforeach ?>
     </fieldset>
-<? elseif ($category_id) : ?>
-    <?= MessageBox::info(
-        _('Es sind keine wünschbaren Eigenschaften vorhanden.')
-    ) ?>
 <? endif ?>
 

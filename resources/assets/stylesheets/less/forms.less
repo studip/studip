@@ -10,10 +10,12 @@ form.default {
     }
 
     section {
-        padding-top: @gap;
+        &:not(.contentbox) {
+            padding-top: @gap;
 
-        label:first-of-type {
-            margin-top: 0px;
+            label:first-of-type {
+                margin-top: 0px;
+            }
         }
     }
 
@@ -162,6 +164,18 @@ form.default {
             content: '';
             display: block;
             margin-top: -@gap;
+        }
+    }
+
+    .selectbox {
+        padding:5px;
+        max-height:200px;
+        overflow:auto;
+
+        > fieldset {
+            border:none;
+            margin:0px;
+            padding:0px;
         }
     }
 

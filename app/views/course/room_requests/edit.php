@@ -24,7 +24,6 @@
                    name="selected_properties[<?= htmlReady($name) ?>]">
         <? endforeach ?>
     <? endif ?>
-    
     <? if (!$search_by_name): ?>
         <p>
             <?= _('Geben Sie den gewünschten Raum und/oder Raumeigenschaften an. Ihre Raumanfrage wird von der zuständigen Raumvergabe bearbeitet.') ?>
@@ -39,51 +38,64 @@
         <p><strong><?= _('Achtung') ?>:</strong>
         <p><?= _('Geben Sie bitte immer die notwendige Sitzplatzanzahl mit an!') ?></p>
     <? endif ?>
-    <section>
-        <h2><?= _('Anfrage') ?></h2>
-        <article>
+    <section class="contentbox">
+        <header>
+            <h1><?= _('Anfrage') ?></h1>
+        </header>
+        <section>
             <?= htmlready($request->getTypeString(), 1, 1); ?>
-        </article>
-        <h2><?= _('Bearbeitungsstatus') ?></h2>
-        <article>
+        </section>
+    </section>
+    <section class="contentbox">
+        <header>
+            <h1><?= _('Bearbeitungsstatus') ?></h1>
+        </header>
+        <section>
             <?= htmlReady($request->getStatusText()); ?>
-        </article>
+        </section>
     </section>
     
-    
-    <section>
-        <? if ($step < 4) : ?>
-            <?= $this->render_partial('course/room_requests/edit_step1') ?>
-            <?= $this->render_partial('course/room_requests/edit_step2') ?>
-            <?= $this->render_partial('course/room_requests/edit_step3') ?>
-            <?= \Studip\Button::create(
-                _('Passende Räume suchen'),
-                'search_rooms',
-                [
-                    'title' => _('Startet die Suche von Räumen anhand der gewählten Eigenschaften.')
-                ]
-            ) ?>
-        <? elseif ($step >= 4) : ?>
-            <?= $this->render_partial('course/room_requests/edit_step4') ?>
+    <? if ($step < 4) : ?>
+        <section class="times-rooms-grid">
+            <section>
+                <?= $this->render_partial('course/room_requests/edit_step1') ?>
+            </section>
+            <section>
+                <?= $this->render_partial('course/room_requests/edit_step2') ?>
+            </section>
+        </section>
+        <?= $this->render_partial('course/room_requests/edit_step3') ?>
+        <?= \Studip\Button::create(
+            _('Passende Räume suchen'),
+            'search_rooms',
+            [
+                'title' => _('Startet die Suche von Räumen anhand der gewählten Eigenschaften.')
+            ]
+        ) ?>
+        <? if ($step === 3) : ?>
+            <?= Studip\Button::create(_('Anfragen'), 'select_room') ?>
+            <?= Studip\Button::create(_('Neue Suche starten'), 'reset_search') ?>
         <? endif ?>
-        <? if ($saving_allowed) : ?>
-            <? if ($user_is_global_resource_admin) : ?>
-                <label>
-                    <input type="checkbox" name="reply_lecturers" value="1"
-                           <?= $reply_lecturers
-                               ? 'checked="checked"'
-                               : ''
-                           ?>>
-                    <?= _('Benachrichtigung bei Ablehnung der Raumanfrage auch an alle Lehrenden der Veranstaltung senden') ?>
-                </label>
-            <? endif ?>
-            <fieldset>
-                <legend><?= _('Nachricht an die Raumvergabe') ?></legend>
-                <textarea name="comment" cols="58" rows="4"
-                          placeholder="<?= _('Weitere Wünsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
-            </fieldset>
+    <? elseif ($step >= 4) : ?>
+        <?= $this->render_partial('course/room_requests/edit_step4') ?>
+    <? endif ?>
+    <? if ($saving_allowed) : ?>
+        <? if ($user_is_global_resource_admin) : ?>
+            <label>
+                <input type="checkbox" name="reply_lecturers" value="1"
+                       <?= $reply_lecturers
+                           ? 'checked="checked"'
+                           : ''
+                       ?>>
+                <?= _('Benachrichtigung bei Ablehnung der Raumanfrage auch an alle Lehrenden der Veranstaltung senden') ?>
+            </label>
         <? endif ?>
-    </section>
+        <fieldset>
+            <legend><?= _('Nachricht an die Raumvergabe') ?></legend>
+            <textarea name="comment" cols="58" rows="4"
+                      placeholder="<?= _('Weitere Wünsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
+        </fieldset>
+    <? endif ?>
 
     <footer data-dialog-button>
         <? if ($saving_allowed) : ?>
