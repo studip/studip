@@ -258,7 +258,6 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         $threads = array_filter($threads, function ($t) {
             return $t->isVisibleInStream() && $t->isReadable();
         });
-        var_dump($query->show());
         return $threads;
     }
 
@@ -372,13 +371,19 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 }
             }
 
-            $nextdate = CourseDate::findOneBySQL("range_id = ? AND `date` >= UNIX_TIMESTAMP() ORDER BY `date` ASC", [$this['context_id']]);
+            $nextdate       = CourseDate::findOneBySQL("range_id = ? AND `date` >= UNIX_TIMESTAMP() ORDER BY `date` ASC", [$this['context_id']]);
+            $teachers       = CourseMember::findBySQL("Seminar_id = ? AND status = 'dozent' ORDER BY position ASC", [$this['context_id']]);
+            $tutors         = CourseMember::findBySQL("Seminar_id = ? AND status = 'tutor' ORDER BY position ASC", [$this['context_id']]);
+            $students_count = CourseMember::countBySQL("Seminar_id = ? AND status IN ('autor', 'user') ORDER BY position ASC", [$this['context_id']]);
 
             $template = $GLOBALS['template_factory']->open('blubber/course_context');
-            $template->thread = $this;
-            $template->course = $course;
-            $template->icons = $icons;
-            $template->nextdate = $nextdate;
+            $template->thread         = $this;
+            $template->course         = $course;
+            $template->icons          = $icons;
+            $template->nextdate       = $nextdate;
+            $template->teachers       = $teachers;
+            $template->tutors         = $tutors;
+            $template->students_count = $students_count;
             return $template;
         }
 
