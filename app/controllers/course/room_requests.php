@@ -885,20 +885,63 @@ class Course_RoomRequestsController extends AuthenticatedController
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
 
-            if (Request::submitted('select_room')) {
-                $this->selected_room_id = Request::get('selected_room_id');
+            $this->selected_room_id = Request::get('selected_room_id');
+            if ($this->selected_room_id) {
+                $room_found = false;
                 foreach ($this->available_rooms as $room) {
                     if ($this->selected_room_id == $room->id) {
-                        $session_data['selected_room_id'] = $room->id;
-                        $this->redirect('course/room_requests/request_summary/' . $this->request_id);
-                        return;
+                        $room_found = true;
+                        break;
                     }
                 }
-                //At this point, the room could not be found in the list of
-                //available rooms.
-                PageLayout::postError(
-                    _('Der gewählte Raum wurde nicht gefunden!')
+                if (!$room_found) {
+                    //The room could not be found in the list of available rooms.
+                    PageLayout::postError(_('Der gewählte Raum wurde nicht gefunden!'));
+                    return;
+                }
+            }
+            if (Request::submitted('select_room')) {
+                $session_data['selected_room_id'] = $this->selected_room_id;
+                $this->redirect('course/room_requests/request_summary/' . $this->request_id);
+            } elseif (Request::submitted('save') || Request::submitted('save_and_close')) {
+                if ($session_data['selected_properties']['seats'] < 1) {
+                    PageLayout::postError(
+                        _('Es wurde keine Anzahl an gewünschten Sitzplätzen angegeben!')
+                    );
+                    return;
+                }
+                $session_data['selected_room_id'] = $this->selected_room_id;
+                //Store all request data from the session in the request:
+                $this->request->category_id = $session_data['category_id'];
+                $this->request->updateProperties($session_data['selected_properties']);
+                $this->request->resource_id = (
+                    $this->selected_room_id
+                    ? $this->selected_room_id
+                    : ''
                 );
+
+                if ($this->request->isNew()) {
+                    //Set the requester:
+                    $this->request->user_id = $this->current_user->id;
+                }
+
+                $storing_successful = false;
+                if ($this->request->isDirty()) {
+                    $storing_successful = $this->request->store();
+                } else {
+                    $storing_successful = true;
+                }
+
+                if ($storing_successful) {
+                    PageLayout::postSuccess(_('Die Anfrage wurde gespeichert!'));
+                    if (Request::submitted('save_and_close')) {
+                        $this->relocate('course/room_requests/index');
+                    }
+                } else {
+                    PageLayout::postError(
+                        _('Die Anfrage konnte nicht gespeichert werden!')
+                    );
+                }
             }
         }
     }

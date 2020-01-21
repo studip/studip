@@ -10,11 +10,11 @@
         'course/room_requests/_request_edit_header',
         ['request' => $request]
     ) ?>
+    <?= $this->render_partial(
+        'course/room_requests/request_start',
+        ['embedded' => true]
+    ) ?>
 <? endif ?>
-<?= $this->render_partial(
-    'course/room_requests/request_start',
-    ['embedded' => true]
-) ?>
 <? if ($available_properties) : ?>
     <fieldset>
         <legend><?= _('Wünschbare Eigenschaften') ?></legend>
