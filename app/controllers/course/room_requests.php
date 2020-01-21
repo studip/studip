@@ -591,7 +591,10 @@ class Course_RoomRequestsController extends AuthenticatedController
             }
         }
         if ($step >= 4) {
-            
+            $this->seats = $session_data['selected_properties']['seats'];
+            $this->comment = $session_data['comment'];
+            $this->reply_lecturers = $session_data['reply_lecturers'];
+            $this->preparation_time = $session_data['preparation_time'];
         }
     }
 

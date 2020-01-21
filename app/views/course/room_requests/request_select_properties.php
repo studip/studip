@@ -28,16 +28,12 @@
             ) ?>
         <? endforeach ?>
     </fieldset>
-<? elseif ($category_id) : ?>
-    <?= MessageBox::info(
-        _('Es sind keine wünschbaren Eigenschaften vorhanden.')
-    ) ?>
 <? endif ?>
 <? if (!$embedded) : ?>
     <?= $this->render_partial(
         'course/room_requests/_request_form_footer',
         [
-            'room_selection_button' => true,
+            'room_search_button' => true,
             'save_buttons' => true
         ]
     ) ?>

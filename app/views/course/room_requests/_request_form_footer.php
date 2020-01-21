@@ -1,6 +1,12 @@
 <footer data-dialog-button>
-    <? if ($room_selection_button) : ?>
-        <?= \Studip\Button::create(_('Zur Raumauswahl'), 'select_room') ?>
+    <? if ($room_search_button) : ?>
+        <?= \Studip\Button::create(
+            _('Passende Räume suchen'),
+            'select_room',
+            [
+                'title' => _('Startet die Suche von Räumen anhand der gewählten Eigenschaften.')
+            ]
+        ) ?>
     <? endif ?>
     <? if ($room_select_button) : ?>
         <?= \Studip\Button::create(_('Raum auswählen'), 'select_room') ?>

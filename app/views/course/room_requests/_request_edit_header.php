@@ -15,9 +15,11 @@
             <?= _('Um später einen passenden Raum für Ihre Veranstaltung zu bekommen, geben Sie bitte immer die gewünschten Eigenschaften mit an!') ?>
         </p>
 <? endif ?>
-<section>
-    <h2><?= _('Anfrage') ?></h2>
-    <article><?= htmlready($request->getTypeString(), 1, 1) ?></article>
-    <h2><?= _('Bearbeitungsstatus') ?></h2>
-    <article><?= htmlReady($request->getStatusText()) ?></article>
+<section class="contentbox">
+    <header><h1><?= _('Anfrage') ?></h1></header>
+    <section><?= htmlready($request->getTypeString(), 1, 1) ?></section>
+</section>
+<section class="contentbox">
+    <header><h1><?= _('Bearbeitungsstatus') ?></h1></header>
+    <section><?= htmlReady($request->getStatusText()) ?></section>
 </section>
