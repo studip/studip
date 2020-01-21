@@ -31,13 +31,19 @@ class Resources_BuildingController extends AuthenticatedController
         }
     }
     
-    public function index_action($building_id = null)
+    public function index_action($building_id)
     {
-        if (!$building_id) {
-            return;
-        }
         $this->building = Building::find($building_id);
+        $building_details = [];
+    
+        if($this->building->number) {
+            $building_details[_('Gebäudenummer')] = $this->building->number;
+        }
+        if($this->building->address) {
+            $building_details[_('Adresse')] = $this->building->address;
+        }
         
+        $this->building_details = $building_details;
         $this->geo_coordinates_object = $this->building->getPropertyObject(
             'geo_coordinates'
         );
@@ -45,61 +51,56 @@ class Resources_BuildingController extends AuthenticatedController
         PageLayout::setTitle(
             $this->building->getFullName() . ' - ' . _('Informationen')
         );
-        
-        if (!Request::isDialog()) {
-            //We must add add a sidebar and activate the navigation item
-            //for the room management overview.
-            
-            if (Navigation::hasItem('/room_management/overview/index')) {
-                Navigation::activateItem('/room_management/overview/index');
-            }
-            
-            $user                           = User::findCurrent();
-            $current_user_is_resource_admin = $this->building->userHasPermission(
-                $user,
-                'admin'
-            );
-            
-            $sidebar           = Sidebar::get();
-            $actions           = new ActionsWidget();
-            $actions_available = false;
-            if ($current_user_is_resource_admin) {
-                $actions_available = true;
-                $actions->addLink(
-                    _('Gebäude bearbeiten'),
-                    $this->building->getURL('edit'),
-                    Icon::create('edit'),
-                    [
-                        'data-dialog' => '1'
-                    ]
-                );
-                $actions->addLink(
-                    _('Rechte bearbeiten'),
-                    $this->building->getURL('permissions'),
-                    Icon::create('roles'),
-                    [
-                        'data-dialog' => '1'
-                    ]
-                );
-            }
-            if ($this->geo_coordinates_object instanceof ResourceProperty) {
-                $actions_available = true;
-                $actions->addLink(
-                    _('Lageplan anzeigen'),
-                    ResourceManager::getMapUrlForResourcePosition($this->geo_coordinates_object),
-                    Icon::create('globe'),
-                    ['target' => '_blank']
-                );
-            }
-            if ($actions_available) {
-                $sidebar->addWidget($actions);
-            }
-            
-            $tree_widget = new ResourceTreeWidget(Location::findAll(), null, null);
-            $tree_widget->setCurrentResource($this->building);
-            
-            $sidebar->addWidget($tree_widget);
+        if (Navigation::hasItem('/room_management/overview/index')) {
+            Navigation::activateItem('/room_management/overview/index');
         }
+        
+        $user = User::findCurrent();
+        
+        $current_user_is_resource_admin = $this->building->userHasPermission(
+            $user,
+            'admin'
+        );
+        
+        $sidebar           = Sidebar::get();
+        $actions           = new ActionsWidget();
+        $actions_available = false;
+        if ($current_user_is_resource_admin) {
+            $actions_available = true;
+            $actions->addLink(
+                _('Gebäude bearbeiten'),
+                $this->building->getURL('edit'),
+                Icon::create('edit'),
+                [
+                    'data-dialog' => '1'
+                ]
+            );
+            $actions->addLink(
+                _('Rechte bearbeiten'),
+                $this->building->getURL('permissions'),
+                Icon::create('roles'),
+                [
+                    'data-dialog' => '1'
+                ]
+            );
+        }
+        if ($this->geo_coordinates_object instanceof ResourceProperty) {
+            $actions_available = true;
+            $actions->addLink(
+                _('Lageplan anzeigen'),
+                ResourceManager::getMapUrlForResourcePosition($this->geo_coordinates_object),
+                Icon::create('globe'),
+                ['target' => '_blank']
+            );
+        }
+        if ($actions_available) {
+            $sidebar->addWidget($actions);
+        }
+        
+        $tree_widget = new ResourceTreeWidget(Location::findAll(), null, null);
+        $tree_widget->setCurrentResource($this->building);
+        
+        $sidebar->addWidget($tree_widget);
     }
     
     public function select_category_action()
@@ -332,7 +333,6 @@ class Resources_BuildingController extends AuthenticatedController
             
         } else {
             //Show form with current data:
-            
             $this->name        = $this->building->name;
             $this->description = $this->building->description;
             $this->number      = $this->building->number;
