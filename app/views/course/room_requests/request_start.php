@@ -13,11 +13,18 @@
 <? endif ?>
 <fieldset>
     <legend><?= _('Raum suchen') ?></legend>
-    <label><?= _('Raumname') ?>
-        <input type="text" name="room_name" value="<?= htmlReady($room_name) ?>">
+    <label>
+        <?= _('Raumname') ?>
+        <span class="flex-row">
+            <input type="text" name="room_name" value="<?= htmlReady($room_name) ?>">
             <?= Icon::create('search', Icon::ROLE_CLICKABLE)->asInput(
-                '16px', ['name' => 'search_by_name']
+                [
+                    'name' => 'search_by_name',
+                    'class' => 'text-bottom',
+                    'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
+                ]
             ) ?>
+        </span>
     </label>
     <? if ($available_room_categories): ?>
         <label>
@@ -40,7 +47,7 @@
                         'class' => 'text-bottom',
                         'name'  => 'select_properties',
                         'value' => _('Raumtyp auswählen'),
-                        'style' => 'margin-left: 0.2em; margin-top: 0.5em;'
+                        'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
                     ]
                 ) ?>
                 <? if ($category): ?>
@@ -49,7 +56,7 @@
                             'type'  => 'image',
                             'class' => 'text-bottom',
                             'name'  => 'reset_category',
-                            'style' => 'margin-left: 0.2em; margin-top: 0.5em;'
+                            'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
                         ]
                     ) ?>
                 <? endif ?>
