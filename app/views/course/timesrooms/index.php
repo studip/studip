@@ -24,8 +24,8 @@
 
 <? if (Request::isXhr() && !$locked && Config::get()->RESOURCES_ENABLE && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS): ?>
     <div data-dialog-button>
-    <?= Studip\LinkButton::create(_('Raumanfrage erstellen'), 
-            $controller->url_for('course/room_requests/edit/' . $course->id,
+    <?= Studip\LinkButton::create(_('Raumanfrage erstellen'),
+            $controller->url_for('course/room_requests/request_start',
             ['cid' => $course->id, 'range_str' => 'course', 'origin' => 'admin_courses']),
             ['data-dialog' => 'size=big']) ?>
     </div>

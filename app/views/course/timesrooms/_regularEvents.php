@@ -84,7 +84,7 @@
                         ) ?>
                         <? $actionMenu->addLink(
                             $controller->url_for(
-                                'course/room_requests/edit/',
+                                'course/room_requests/request_start/',
                                 [
                                     'range' => 'cycle',
                                     'range_id' => $metadate_id

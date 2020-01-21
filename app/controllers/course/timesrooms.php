@@ -582,7 +582,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $appointment_ids = $_SESSION['_checked_dates'];
         $this->redirect(
             $this->url_for(
-                'course/room_requests/edit',
+                'course/room_requests/request_start',
                 [
                     'range' => 'date-multiple',
                     'range_ids' => $appointment_ids

@@ -195,9 +195,16 @@
             <?  ?>
             <?= Studip\LinkButton::create(
                 ($request_id ? _('Zur Raumanfrage wechseln') : _('Raumanfrage erstellen')),
-                $controller->url_for(
-                    'course/room_requests/edit/' . $request_id,
-                    array_merge($params, ['origin' => 'course_timesrooms'])),
+                (
+                    $request_id
+                    ? $controller->url_for(
+                        'course/room_requests/request_summary/' . $request_id
+                    )
+                    :  $controller->url_for(
+                        'course/room_requests/request_start/' . $request_id,
+                        array_merge($params, ['origin' => 'course_timesrooms'])
+                    )
+                ),
                 ['data-dialog' => 'size=big']) ?>
         <? endif ?>
     </footer>

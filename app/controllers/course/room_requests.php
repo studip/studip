@@ -634,22 +634,29 @@ class Course_RoomRequestsController extends AuthenticatedController
         } else {
             //A new request shall be created.
             //Get the range from URL parameters.
-            $range_str = explode('_', Request::get('range_str'));
-            $range = $range_str[0];
+            $range = null;
             $range_id = null;
             $range_ids = [];
-            if ($range == 'course') {
-                $range_id = $range_str[1];
-                if (!$range_id) {
-                    $range_id = Context::getId();
+            if (Request::submitted('range_str')) {
+                $range_str = explode('_', Request::get('range_str'));
+                $range = $range_str[0];
+                if ($range == 'course') {
+                    $range_id = $range_str[1];
+                    if (!$range_id) {
+                        $range_id = Context::getId();
+                    }
+                } else {
+                    if (count($range_str) > 2) {
+                        //More than one ID has been specified.
+                        $range_ids = array_slice($range_str, 1);
+                    } else {
+                        $range_id = $range_str[1];
+                    }
                 }
             } else {
-                if (count($range_str) > 2) {
-                    //More than one ID has been specified.
-                    $range_ids = array_slice($range_str, 1);
-                } else {
-                    $range_id = $range_str[1];
-                }
+                $range = Request::get('range');
+                $range_id = Request::get('range_id');
+                $range_ids = Request::getArray('range_ids');
             }
             $session_data['range'] = $range;
             $session_data['range_id'] = $range_id;
