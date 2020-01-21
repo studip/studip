@@ -1,8 +1,6 @@
 <form method="POST" class="default" name="new_room_request"
-      action="<?= $this->controller->link_for('course/room_requests/edit/',
-                                              $url_params
-              ) ?>"
-      <?= Request::isXhr() ? 'data-dialog="size=big"' : '' ?>>
+      action="<?= $this->controller->link_for('course/room_requests/request_start') ?>"
+    <?= Request::isXhr() ? 'data-dialog="size=big"' : '' ?>>
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

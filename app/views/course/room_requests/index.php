@@ -47,7 +47,7 @@ echo $flash['message'];
 
                     <? $actionMenu = ActionMenu::get() ?>
                     <? $actionMenu->addLink(
-                        $controller->url_for('course/room_requests/edit/' . $rr->id),
+                        $controller->url_for('course/room_requests/request_summary/' . $rr->id),
                         _('Diese Anfrage bearbeiten'),
                         Icon::create('edit', 'clickable', ['title' => _('Diese Anfrage bearbeiten')]),
                         $dialog
