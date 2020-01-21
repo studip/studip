@@ -809,6 +809,15 @@ class Course_RoomRequestsController extends AuthenticatedController
                     return;
                 }
 
+                $this->request->category_id = $session_data['category_id'];
+                if ($this->request->isNew()) {
+                    //Set the requester:
+                    $this->request->user_id = $this->current_user->id;
+                } else {
+                    //Do another thing: Delete all previously set properties:
+                    $this->request->properties->delete();
+                }
+
                 $storing_successful = false;
                 if ($this->request->isDirty()) {
                     $storing_successful = $this->request->store();
@@ -818,8 +827,9 @@ class Course_RoomRequestsController extends AuthenticatedController
 
                 if ($storing_successful) {
                     //Store the properties:
-                    $this->request->updateProperties($this->selected_properties);
-
+                    foreach ($this->selected_properties as $name => $state) {
+                        $result = $this->request->setProperty($name, $state);
+                    }
                     PageLayout::postSuccess(_('Die Anfrage wurde gespeichert!'));
 
                     if (Request::submitted('save_and_close')) {
