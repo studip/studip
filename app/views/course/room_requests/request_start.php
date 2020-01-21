@@ -38,12 +38,12 @@
                     [
                         'type'  => 'image',
                         'class' => 'text-bottom',
-                            'name'  => 'select_properties',
+                        'name'  => 'select_properties',
                         'value' => _('Raumtyp auswählen'),
                         'style' => 'margin-left: 0.2em; margin-top: 0.5em;'
                     ]
                 ) ?>
-                <? if ($room_category): ?>
+                <? if ($category): ?>
                     <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['title' => _('alle Angaben zurücksetzen')])->asInput(
                         [
                             'type'  => 'image',

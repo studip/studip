@@ -795,6 +795,13 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $this->redirect(
                     'course/room_requests/request_select_room/' . $this->request_id
                 );
+            } elseif (Request::submitted('reset_category')) {
+                //Delete all selected properties from the session since the
+                //category is reset:
+                $session_data['selected_properties'] = [];
+                $this->redirect(
+                    'course/room_requests/request_start/' . $this->request_id
+                );
             } elseif (Request::submitted('select_room')) {
                 //Store the selected properties in the session and redirect.
                 $session_data['selected_properties'] = $this->selected_properties;
@@ -916,6 +923,12 @@ class Course_RoomRequestsController extends AuthenticatedController
             if (Request::submitted('select_room')) {
                 $session_data['selected_room_id'] = $this->selected_room_id;
                 $this->redirect('course/room_requests/request_summary/' . $this->request_id);
+            }  elseif (Request::submitted('reset_category')) {
+                //Delete all selected properties from the session since the
+                //category is reset:
+                $session_data['selected_properties'] = [];
+                $session_data['selected_room_id'] = $this->selected_room_id;
+                $this->redirect('course/room_requests/request_start/' . $this->request_id);
             } elseif (Request::submitted('save') || Request::submitted('save_and_close')) {
                 if ($session_data['selected_properties']['seats'] < 1) {
                     PageLayout::postError(
@@ -1024,7 +1037,8 @@ class Course_RoomRequestsController extends AuthenticatedController
             $this->confirmed_selected_room_id = Request::get('confirmed_selected_room_id');
             $this->preparation_time = Request::get('preparation_time');
 
-            if (Request::submitted('select_other_room') || Request::submitted('select_properties')) {
+            if (Request::submitted('select_other_room') || Request::submitted('select_properties')
+                || Request::submitted('reset_category')) {
                 //The checks for the values of the seats property, the amount of
                 //preparation time and the other fields are skipped here since
                 //the request isn't stored. Even if it gets stored in one of
@@ -1036,6 +1050,11 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $session_data['preparation_time'] = $this->preparation_time;
                 if (Request::submitted('select_other_room')) {
                     $this->redirect('course/room_requests/request_select_room/' . $this->request_id);
+                } elseif (Request::submitted('reset_category')) {
+                    //Delete all selected properties from the session since the
+                    //category is reset:
+                    $session_data['selected_properties'] = [];
+                    $this->redirect('course/room_requests/request_start/' . $this->request_id);
                 } else {
                     $this->redirect('course/room_requests/request_select_properties/' . $this->request_id);
                 }
@@ -1091,7 +1110,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                     $selected_properties = $session_data['selected_properties'];
                     if ($selected_properties) {
                         $selected_properties['seats'] = $this->seats;
-                        foreach ($this->selected_properties as $name => $state) {
+                        foreach ($selected_properties as $name => $state) {
                             $result = $this->request->setProperty($name, $state);
                         }
                     } else {
