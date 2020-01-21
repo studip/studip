@@ -7,7 +7,6 @@
                     <th data-sort="htmldata">
                         <?= Icon::create('radiobutton-checked')->asImg(
                             [
-                                'class' => 'text-bottom',
                                 'title' => _('Markierung')
                             ]
                         ) ?>
