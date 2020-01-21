@@ -53,6 +53,7 @@
         </h4>
     </div>
 </div>
+<?= $this->render_partial("blubber/_tagcloud") ?>
 <? if (!$GLOBALS['perm']->have_perm("admin")) : ?>
     <div class="indented new_section">
         <a href="#"

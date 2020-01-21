@@ -33,7 +33,7 @@ class Blubber extends \RESTAPI\RouteMap
             return;
         }
 
-        $json = $thread->getJSONData();
+        $json = $thread->getJSONData(50, null, \Request::get("search"));
         $thread->markAsRead();
 
         $this->etag(md5(serialize($json)));
@@ -58,7 +58,9 @@ class Blubber extends \RESTAPI\RouteMap
         $threads = \BlubberThread::findMyGlobalThreads(
             $limit + 1,
             null,
-            \Request::int('timestamp')
+            \Request::int('timestamp'),
+            null,
+            \Request::get("search") ?: null
         );
         if (count($threads) > $limit) {
             array_pop($threads);
@@ -223,15 +225,22 @@ class Blubber extends \RESTAPI\RouteMap
 
         $query = "SELECT blubber_comments.*
                   FROM blubber_comments
-                  WHERE blubber_comments.thread_id = :thread_id
-                  ORDER BY mkdate ASC";
-        $comments = \DBManager::get()->fetchAll($query, [
-            'thread_id' => $thread_id,
-        ], function ($comment) {
+                  WHERE blubber_comments.thread_id = :thread_id ";
+        $parameters = ['thread_id' => $thread_id];
+
+        if (\Request::get('search')) {
+            $query .= " AND blubber_comments.content LIKE :search ";
+            $parameters['search'] = '%'.\Request::get('search').'%';
+        }
+        $query .= " ORDER BY mkdate ASC ";
+
+        $output['comments'] = \DBManager::get()->fetchAll($query, $parameters, function ($comment) {
             return \BlubberComment::buildExisting($comment)->getJSONData();
         });
+        $output['more_up'] = 0;
+        $output['more_down'] = 0;
 
-        return compact('comments');
+        return $output;
     }
 
     /**

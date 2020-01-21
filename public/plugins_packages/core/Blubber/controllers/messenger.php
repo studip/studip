@@ -70,16 +70,25 @@ class MessengerController extends PluginController {
     protected function buildSidebar()
     {
         $sidebar = Sidebar::Get();
-        $threads_widget = new BlubberThreadsWidget();
+        $search = new SearchWidget("#");
+        $search->addNeedle(
+            _("Suche nach ..."),
+            "search",
+            true,
+            null,
+            null,
+            null,
+            []
+        );
+        $sidebar->addWidget($search, "blubbersearch");
 
+        $threads_widget = new BlubberThreadsWidget();
         foreach ($this->threads as $thread) {
             $threads_widget->addThread($thread);
         }
-
         if ($this->thread) {
             $threads_widget->setActive($this->thread->getId());
         }
-
         $sidebar->addWidget($threads_widget, "threads");
     }
 }

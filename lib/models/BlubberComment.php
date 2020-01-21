@@ -69,7 +69,7 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         $output['user_name']     = $this->user ? $this->user->getFullName() : _('unbekannt');
         $output['user_username'] = $this->user ? $this->user['username'] : '';
         $output['class']         = $this['user_id'] === $GLOBALS['user']->id ? 'mine' : 'theirs';
-        $output['html']          = formatReady($this['content']) . $this->getOpenGraphURLs()->render();
+        $output['html']          = blubberReady($this['content']) . $this->getOpenGraphURLs()->render();
         $output['writable']      = $this->isWritable();
         $output['chdate']        = (int) $output['chdate'];
         $output['mkdate']        = (int) $output['mkdate'];

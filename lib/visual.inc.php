@@ -157,6 +157,20 @@ function wikiReady($text, $trim=TRUE) {
 }
 
 /**
+ * Special version of formatReady for blubber, which includes hashtags
+ *
+ * @access public
+ * @param  string $what  Marked-up text.
+ * @param  string $trim  Trim leading and trailing whitespace, if TRUE.
+ * @return string        HTML code computed by applying markup-rules.
+ */
+function blubberReady($text, $trim=TRUE) {
+    $formatted = Markup::apply(new BlubberFormat(), $text, $trim);
+
+    return $formatted !== '' ? sprintf(FORMATTED_CONTENT_WRAPPER, $formatted) : '';
+}
+
+/**
  * Apply StudipTransformFormat rules to marked-up text.
  *
  * @param  string $text  Marked-up text.

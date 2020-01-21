@@ -1,6 +1,7 @@
 <template>
     <div class="scrollable_area" v-scroll>
-        <transition-group name="blubberthreadwidget-list" tag="ol">
+        <transition-group name="blubberthreadwidget-list"
+                          tag="ol">
                 <li v-for="thread in sortedThreads"
                     :key="thread.thread_id"
                     :data-thread_id="thread.thread_id"

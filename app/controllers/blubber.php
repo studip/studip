@@ -15,7 +15,13 @@ class BlubberController extends AuthenticatedController
     {
         Navigation::activateItem('/community/blubber');
 
-        $this->threads = BlubberThread::findMyGlobalThreads(51);
+        $this->threads = BlubberThread::findMyGlobalThreads(
+            51,
+            null,
+            null,
+            null,
+            Request::get("search")
+        );
         if (count($this->threads) > 20) {
             array_pop($this->threads);
             $this->threads_more_down = 1;
@@ -42,7 +48,11 @@ class BlubberController extends AuthenticatedController
             $this->thread->markAsRead();
         }
 
-        $this->thread_data = $this->thread->getJSONData();
+        $this->thread_data = $this->thread->getJSONData(
+            50,
+            null,
+            Request::get("search")
+        );
 
         if (!Avatar::getAvatar($GLOBALS['user']->id)->is_customized() && !$_SESSION['already_asked_for_avatar']) {
             $_SESSION['already_asked_for_avatar'] = true;
@@ -470,6 +480,15 @@ class BlubberController extends AuthenticatedController
 
     protected function buildSidebar()
     {
+        $search = new SearchWidget("#");
+        $search->addNeedle(
+            _("Suche nach ..."),
+            "search",
+            true
+        );
+
+        Sidebar::Get()->addWidget($search, "blubbersearch");
+
         $threads_widget = Sidebar::Get()->addWidget(
             new BlubberThreadsWidget(),
             'threads'

@@ -52,6 +52,10 @@
             <? endforeach ?>
             </select>
         </label>
+        <?= Icon::create("search", "info")->asImg(16) ?>
+        <a href="" onClick="return false;">
+            <?= Icon::create("decline", "clickable")->asImg(16) ?>
+        </a>
 
         <script>
             jQuery(function ($) {
@@ -88,6 +92,9 @@
             </ul>
             <?= QuickSearch::get('search_user_id', new StandardSearch('user_id'))
                     ->fireJSFunctionOnSelect('STUDIP.Blubber.Composer.vue.addUser')->render() ?>
+
+            <?= Icon::create("search", "info")->asImg(16) ?>
+            <?= Icon::create("decline", "info")->asImg(16) ?>
         </div>
 
     </div>

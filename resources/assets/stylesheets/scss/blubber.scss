@@ -511,7 +511,7 @@
 
     .sidebar-widget-content {
         padding: 0px;
-        max-height: calc(100vh - 285px);
+        max-height: calc(100vh - 359px);
         overflow: auto;
 
         .scrollable_area.scrolled::before {
@@ -646,6 +646,46 @@
     float: right;
 }
 
+ol.tagcloud {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    > li {
+        display: inline-block;
+        margin-right: 10px;
+        &.size10 {
+            font-size: 1.6em;
+        }
+        &.size9 {
+            font-size: 1.5em;
+        }
+        &.size8 {
+            font-size: 1.4em;
+        }
+        &.size7 {
+            font-size: 1.3em;
+        }
+        &.size6 {
+            font-size: 1.2em;
+        }
+        &.size5 {
+            font-size: 1.1em;
+        }
+        &.size4 {
+            font-size: 1em;
+        }
+        &.size3 {
+            font-size: 0.9em;
+        }
+        &.size2 {
+            font-size: 0.8em;
+        }
+        &.size1 {
+            font-size: 0.7em;
+        }
+    }
+}
+
 @keyframes blubber-scaling {
     from {
         opacity: 0.8;
@@ -657,6 +697,10 @@
     }
 }
 
-.blubberthreadwidget-list-move {
+//Animationen des Widgets:
+.blubberthreadwidget-list-move, .blubberthreadwidget-list-enter-active, .blubberthreadwidget-list-leave-active {
     transition: transform 0.5s;
+}
+.blubberthreadwidget-list-enter, .blubberthreadwidget-list-leave-to {
+    transform: translateY(-70px);
 }

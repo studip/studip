@@ -146,7 +146,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function findMyGlobalThreads($limit = 51, $since = null, $olderthan = null, string $user_id = null)
+    public static function findMyGlobalThreads($limit = 51, $since = null, $olderthan = null, string $user_id = null, $search = null)
     {
         $user_id = $user_id ?? $GLOBALS['user']->id;
 
@@ -208,6 +208,13 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             "blubber_threads.thread_id IN (:thread_ids)",
             ['thread_ids' => $thread_ids]
         );
+        if ($search !== null) {
+            $query->where(
+                "search",
+                "(blubber_threads.content LIKE :search OR blubber_comments.content LIKE :search)",
+                ['search' => '%' . $search . '%']
+            );
+        }
         if ($since !== null) {
             $query->where(
                 'since',
@@ -384,6 +391,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $template->teachers       = $teachers;
             $template->tutors         = $tutors;
             $template->students_count = $students_count;
+            $template->hashtags       = $this->getHashtags();
             return $template;
         }
 
@@ -608,7 +616,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return CourseAvatar::getNobody()->getURL(Avatar::MEDIUM);
     }
 
-    public function getJSONData($limit_comments = 50, $user_id = null)
+    public function getJSONData($limit_comments = 50, $user_id = null, $search = null)
     {
         $user_id || $user_id = $GLOBALS['user']->id;
         $output = [
@@ -636,19 +644,33 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         $output['thread_posting']['chdate'] = (int) $output['thread_posting']['chdate'];
         $output['thread_posting']['mkdate'] = (int) $output['thread_posting']['mkdate'];
 
-        $query = "SELECT blubber_comments.*
-                  FROM blubber_comments
-                  WHERE blubber_comments.thread_id = :thread_id
-                  ORDER BY mkdate DESC
-                  LIMIT :limit";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([
-            'thread_id' => $this->getId(),
-            'limit'     => $limit_comments + 1,
-        ]);
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-        if (count($result) > $limit_comments) {
-            $output['more_up'] = 1;
+        if ($search) {
+            $query = "SELECT blubber_comments.*
+                      FROM blubber_comments
+                      WHERE blubber_comments.thread_id = :thread_id
+                          AND content LIKE :search
+                      ORDER BY mkdate DESC";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([
+                'thread_id' => $this->getId(),
+                'search'    => '%' . $search . '%'
+            ]);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $query = "SELECT blubber_comments.*
+                      FROM blubber_comments
+                      WHERE blubber_comments.thread_id = :thread_id
+                      ORDER BY mkdate DESC
+                      LIMIT :limit";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([
+                'thread_id' => $this->getId(),
+                'limit' => $limit_comments + 1,
+            ]);
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            if (count($result) > $limit_comments) {
+                $output['more_up'] = 1;
+            }
         }
 
         foreach ($result as $data) {
@@ -683,6 +705,38 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             ? object_get_visit($this->getId(), "blubberthread", "last", "", $user_id)
             : $this->last_visit[$user_id];
         UserConfig::get($user_id)->store("BLUBBERTHREAD_VISITED_".$this->getId(), time());
+    }
+
+    public function getHashtags($since = null)
+    {
+        if ($since) {
+            $get_hashtags = DBManager::get()->query("
+                SELECT *
+                FROM blubber_comments
+                WHERE thread_id = ".DBManager::get()->quote($this->getId())."
+                    AND content REGEXP '#[[:graph:]]' > 0
+                    AND mkdate > ".DBManager::get()->quote($since)."
+            ");
+        } else {
+            $get_hashtags = DBManager::get()->query("
+                SELECT *
+                FROM blubber_comments
+                WHERE thread_id = ".DBManager::get()->quote($this->getId())."
+                    AND content REGEXP '#[[:graph:]]' > 0
+            ");
+        }
+        $hashtags = [];
+        foreach ($get_hashtags->fetchAll(PDO::FETCH_ASSOC) as $comment_data) {
+            preg_match_all("/#(\w+)/u", $comment_data['content'], $matches);
+            array_shift($matches);
+            foreach ($matches as $match) {
+                foreach ($match as $tag) {
+                    $hashtags[strtolower($tag)] += 1;
+                }
+            }
+        }
+        asort($hashtags);
+        return array_reverse($hashtags);
     }
 
     /**
