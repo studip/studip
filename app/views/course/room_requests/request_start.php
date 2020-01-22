@@ -30,7 +30,7 @@
         <label>
             <?= _('Raumkategorie') ?>
             <span class="flex-row">
-                <select name="category_id" <?= $category ? 'readonly' : '' ?>>
+                <select name="category_id" <?= $category ? 'disabled' : '' ?>>
                     <option value=""><?= _('bitte auswählen') ?></option>
                     <? foreach ($available_room_categories as $rc): ?>
                         <option value="<?= htmlReady($rc->id) ?>"
