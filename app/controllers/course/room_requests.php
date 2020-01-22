@@ -567,6 +567,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $session_data['selected_room_id'] = $this->selected_room_id;
                 $this->redirect('course/room_requests/request_start/' . $this->request_id);
             } elseif (Request::submitted('save') || Request::submitted('save_and_close')) {
+                $session_data['selected_properties'] = Request::getArray('selected_properties');
                 if ($session_data['selected_properties']['seats'] < 1) {
                     PageLayout::postError(
                         _('Es wurde keine Anzahl an gewünschten Sitzplätzen angegeben!')

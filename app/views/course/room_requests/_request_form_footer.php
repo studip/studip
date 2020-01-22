@@ -12,8 +12,7 @@
         <?= \Studip\Button::create(_('Raum auswählen'), 'select_room') ?>
     <? endif ?>
     <? if ($save_buttons) :  ?>
-        <?= \Studip\Button::create(_('Speichern'), 'save') ?>
-        <?= \Studip\Button::create(_('Speichern und zurück zur Übersicht'), 'save_and_close') ?>
+        <?= \Studip\Button::create(_('Speichern'), 'save_and_close') ?>
     <? endif ?>
     <? if ($select_properties_button) : ?>
         <?= \Studip\Button::create(_('Eigenschaften wählen'), 'select_properties') ?>
