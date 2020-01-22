@@ -439,7 +439,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $this->redirect(
                     'course/room_requests/request_start/' . $this->request_id
                 );
-            } elseif (Request::submitted('select_room')) {
+            } elseif (Request::submitted('search_rooms')) {
                 //Store the selected properties in the session and redirect.
                 $session_data['selected_properties'] = $this->selected_properties;
                 $this->redirect(
@@ -477,8 +477,9 @@ class Course_RoomRequestsController extends AuthenticatedController
                     foreach ($this->selected_properties as $name => $state) {
                         $result = $this->request->setProperty($name, $state);
                     }
+                    //Delete the session data:
+                    $session_data = [];
                     PageLayout::postSuccess(_('Die Anfrage wurde gespeichert!'));
-
                     if (Request::submitted('save_and_close')) {
                         $this->relocate('course/room_requests/index');
                     }
@@ -557,7 +558,12 @@ class Course_RoomRequestsController extends AuthenticatedController
                     return;
                 }
             }
-            if (Request::submitted('select_room')) {
+            if (Request::submitted('search_rooms')) {
+                //Store the form data in the session and reload.
+                $session_data['selected_properties'] = Request::getArray('selected_properties');
+                $this->redirect('course/room_requests/request_select_room/' . $this->request_id);
+            } else if (Request::submitted('select_room')) {
+                $session_data['selected_properties'] = Request::getArray('selected_properties');
                 $session_data['selected_room_id'] = $this->selected_room_id;
                 $this->redirect('course/room_requests/request_summary/' . $this->request_id);
             }  elseif (Request::submitted('reset_category')) {
@@ -597,6 +603,8 @@ class Course_RoomRequestsController extends AuthenticatedController
                 }
 
                 if ($storing_successful) {
+                    //Delete the session data:
+                    $session_data = [];
                     PageLayout::postSuccess(_('Die Anfrage wurde gespeichert!'));
                     if (Request::submitted('save_and_close')) {
                         $this->relocate('course/room_requests/index');
@@ -625,7 +633,6 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         $this->request_id = $request_id;
         $session_data = &$this->getRequestSessionData($this->request_id);
-
         $this->loadData($session_data, 4);
 
         $this->max_preparation_time = $this->config->RESOURCES_MAX_PREPARATION_TIME;
@@ -639,7 +646,10 @@ class Course_RoomRequestsController extends AuthenticatedController
             if ($this->request->resource_id) {
                 $selected_room = Resource::find($this->request->resource_id);
             }
+
             $this->seats = $this->request->seats;
+            $this->comment = $this->request->comment;
+            $this->reply_lecturers = $this->request->reply_recipients == 'lecturer';
             $this->preparation_time = intval($this->request->preparation_time / 60);
         } else {
             //It is a new request or an existing request that is being modified.
@@ -687,6 +697,10 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $session_data['reply_lecturers'] = $this->reply_lecturers;
                 $session_data['preparation_time'] = $this->preparation_time;
                 if (Request::submitted('select_other_room')) {
+                    $session_data['selected_properties']['seats'] = $this->seats;
+                    $session_data['comment'] = $this->comment;
+                    $session_data['reply_lecturers'] = $this->reply_lecturers;
+                    $session_data['preparation_time'] = $this->preparation_time;
                     $this->redirect('course/room_requests/request_select_room/' . $this->request_id);
                 } elseif (Request::submitted('reset_category')) {
                     //Delete all selected properties from the session since the
@@ -732,8 +746,10 @@ class Course_RoomRequestsController extends AuthenticatedController
 
                 if ($this->selected_room) {
                     $this->request->resource_id = $this->selected_room->id;
+                    $this->request->category_id = $this->selected_room->category_id;
                 } else {
                     $this->request->resource_id = '';
+                    $this->request->category_id = $session_data['category_id'];
                 }
 
                 $storing_successful = false;
@@ -754,6 +770,8 @@ class Course_RoomRequestsController extends AuthenticatedController
                     } else {
                         $result = $this->request->setProperty('seats', $this->seats);
                     }
+                    //Delete the session data:
+                    $session_data = [];
                     PageLayout::postSuccess(_('Die Anfrage wurde gespeichert!'));
 
                     if (Request::submitted('save_and_close')) {

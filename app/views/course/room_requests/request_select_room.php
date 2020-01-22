@@ -65,6 +65,7 @@
     <?= $this->render_partial(
         'course/room_requests/_request_form_footer',
         [
+            'room_search_button' => true,
             'room_select_button' => true,
             'save_buttons' => true,
             'select_properties_button' => true
