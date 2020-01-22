@@ -44,7 +44,8 @@ const Blubber = {
                 if ($('#messenger-course').length === 0) {
                     STUDIP.api.GET(`blubber/threads`, {data: {"search": search}}).done((data) => {
                         STUDIP.Blubber.App.threads = data.threads;
-                        STUDIP.Blubber.App.threads_more_down = data.threads;
+                        STUDIP.Blubber.App.threads_more_down = data.more_down;
+                        $('.blubber_thread_widget')[0].__vue__.display_more_down = data.more_down;
                     }).always(() => {
                         this.waiting = false;
                     }).fail(() => {

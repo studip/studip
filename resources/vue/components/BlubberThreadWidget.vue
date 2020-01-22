@@ -1,5 +1,5 @@
 <template>
-    <div class="scrollable_area" v-scroll>
+    <div class="scrollable_area blubber_thread_widget" v-scroll>
         <transition-group name="blubberthreadwidget-list"
                           tag="ol">
                 <li v-for="thread in sortedThreads"

@@ -141,6 +141,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
      * @param string $since      optional; selects threads after this date (inclusive)
      * @param string $olderthan  optional; selects threads before this date (inclusive)
      * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     * @param string $search     optional; filters the threads by a search string
      *
      * @return array  an array of the user's global BlubberThreads
      *
@@ -195,8 +196,46 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
         $thread_ids = $query->fetchAll("thread_id");
 
+        $threads = [];
 
+        do {
+            foreach ($threads as $thread) {
+                if ($since) {
+                    $active_time = $thread->getLatestActivity();
+                    $since = max($since, $active_time);
+                }
+                if ($olderthan) {
+                    $active_time = $thread->getLatestActivity();
+                    $olderthan = min($olderthan, $active_time);
+                }
+            }
+            list($newthreads, $filtered) = self::getOrderedThreads(
+                $thread_ids,
+                $limit - count($threads),
+                $since,
+                $olderthan,
+                $user_id,
+                $search
+            );
+            $threads = array_merge($threads, $newthreads);
+        } while ($filtered && $limit);
 
+        return $threads;
+    }
+
+    /**
+     * This method is used to get the ordered (upgraded) threads. Because a thread is also able to
+     * manage its own visibility and not only pure SQL, we need to execute
+     * @param $thread_ids
+     * @param string $limit      optional; limits the number of results
+     * @param string $since      optional; selects threads after this date (inclusive)
+     * @param string $olderthan  optional; selects threads before this date (inclusive)
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     * @param string $search     optional; filters the threads by a search string
+     * @return array
+     */
+    protected static function getOrderedThreads($thread_ids, $limit = 51, $since = null, $olderthan = null, string $user_id = null, $search = null)
+    {
         $query = SQLQuery::table('blubber_threads')->join(
             'blubber_comments',
             'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id',
@@ -218,7 +257,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         if ($since !== null) {
             $query->where(
                 'since',
-                'blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since',
+                '(blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since)',
                 compact('since')
             );
         }
@@ -239,11 +278,13 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             return self::upgradeThread($thread);
         }, $threads);
 
+        $old_count = count($upgraded_threads);
+
         $upgraded_threads = array_filter($upgraded_threads, function ($thread) use ($user_id) {
             return $thread->isVisibleInStream() && $thread->isReadable($user_id);
         });
 
-        return $upgraded_threads;
+        return [$upgraded_threads, $old_count !== count($upgraded_threads)];
     }
 
     public static function findBySeminar($seminar_id, $only_in_stream = false)
