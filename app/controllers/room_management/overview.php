@@ -224,9 +224,7 @@ class RoomManagement_OverviewController extends StudipController
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Neuer Standort'),
-            URLHelper::getURL(
-                'dispatch.php/resources/location/select_category'
-            ),
+            $this->link_for('resources/location/select_category'),
             Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );

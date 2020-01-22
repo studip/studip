@@ -1305,7 +1305,7 @@ class Resource extends SimpleORMap implements StudipItem
      */
     public function getGroupedProperties($excluded_properties = [])
     {
-        if (count($excluded_properties)) {
+        if (is_array($excluded_properties) && count($excluded_properties)) {
             $properties = ResourceProperty::findBySql(
                 "INNER JOIN resource_property_definitions rpd
                 USING (property_id)
