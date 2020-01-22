@@ -297,15 +297,26 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return self::findByContext($seminar_id, $only_in_stream, 'course');
     }
 
-    public static function findByContext($seminar_id, $only_in_stream = false, $context_type = 'course')
+    public static function findByContext($context_id, $only_in_stream = false, $context_type = 'course')
     {
+        if (!BlubberThread::findOneBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1' AND content IS NULL", ['context_id' => context_id, 'type' => $context_type])) {
+            //create the default-thread for this context
+            $coursethread = new BlubberThread();
+            $coursethread['user_id'] = $GLOBALS['user']->id;
+            $coursethread['external_contact'] = 0;
+            $coursethread['context_type'] = $context_type;
+            $coursethread['context_id'] = $context_id;
+            $coursethread['visible_in_stream'] = 1;
+            $coursethread['commentable'] = 1;
+            $coursethread->store();
+        }
         $query = SQLQuery::table('blubber_threads')
             ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id', 'LEFT JOIN');
         if ($only_in_stream) {
             $query->where("blubber_threads.visible_in_stream = 1");
         }
         $query->where("context", "blubber_threads.context_type = :context_type AND blubber_threads.context_id = :context_id", [
-            'context_id' => $seminar_id,
+            'context_id' => $context_id,
             'context_type' => $context_type
         ]);
         $query->groupBy('blubber_threads.thread_id');

@@ -28,18 +28,6 @@ class MessengerController extends PluginController {
                 }
             }
         }
-        if (!BlubberThread::findOneBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1' AND content IS NULL", ['context_id' => Context::get()->id, 'type' => Context::getType()])) {
-            //create the default-thread for this context
-            $coursethread = new BlubberThread();
-            $coursethread['user_id'] = $GLOBALS['user']->id;
-            $coursethread['external_contact'] = 0;
-            $coursethread['context_type'] = Context::getType();
-            $coursethread['context_id'] = Context::get()->id;
-            $coursethread['visible_in_stream'] = 1;
-            $coursethread['commentable'] = 1;
-            $coursethread->store();
-            $this->threads[] = $coursethread;
-        }
         if (!$this->thread || Request::get("thread") === "new") {
             $this->thread = array_pop(array_reverse($this->threads));
         }
