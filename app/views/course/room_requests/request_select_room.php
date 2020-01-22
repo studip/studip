@@ -73,7 +73,7 @@
             'room_search_button' => true,
             'room_select_button' => true,
             'save_buttons' => true,
-            'select_properties_button' => true
+            'select_properties_button' => false
         ]
     ) ?>
 <? endif ?>
