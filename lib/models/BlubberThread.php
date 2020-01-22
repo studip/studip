@@ -287,9 +287,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return [$upgraded_threads, $old_count !== count($upgraded_threads)];
     }
 
-    public static function findByInstitut($seminar_id, $only_in_stream = false)
+    public static function findByInstitut($institut_id, $only_in_stream = false)
     {
-        return self::findByContext($seminar_id, $only_in_stream, 'institute');
+        return self::findByContext($institut_id, $only_in_stream, 'institute');
     }
 
     public static function findBySeminar($seminar_id, $only_in_stream = false)
