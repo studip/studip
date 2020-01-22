@@ -130,7 +130,34 @@ class Blubber extends \RESTAPI\RouteMap
             $this->error(401);
             return;
         }
+        $old_content = $comment['content'];
         $comment['content'] = $this->data['content'];
+
+        if ($comment['user_id'] !== $GLOBALS['user']->id) {
+            $messaging = new \messaging();
+            $message = sprintf(
+                _("%s hat als Moderator gerade Ihren Beitrag in Blubber editiert.\n\nDie alte Version des Beitrags lautete:\n\n%s\n\nDie neue lautet:\n\n%s\n"),
+                get_fullname(), $old_content, $comment['content']
+            );
+
+            $message .= "\n\n";
+
+            $message .= '[' . _('Link zu diesem Beitrag') . ']';
+            $message .= \URLHelper::getURL(
+                "{$GLOBALS['ABSOLUTE_URI_STUDIP']}dispatch.php/blubber/index/{$comment->thread_id}",
+                [],
+                true
+            );
+
+            $messaging->insert_message(
+                $message,
+                get_username($comment['user_id']),
+                $GLOBALS['user']->id,
+                null, null, null, null,
+                _("Änderungen an Ihrem Blubber.")
+            );
+        }
+
         if (!trim($this->data['content'])) {
             $data = $comment->getJSONData();
             $comment->delete();
@@ -138,7 +165,6 @@ class Blubber extends \RESTAPI\RouteMap
             $comment->store();
             $data = $comment->getJSONData();
         }
-
         return $data;
     }
 
