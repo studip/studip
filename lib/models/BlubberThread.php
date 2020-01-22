@@ -709,21 +709,18 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
     public function getHashtags($since = null)
     {
+        $query = "
+            SELECT *
+            FROM blubber_comments
+            WHERE thread_id = ".DBManager::get()->quote($this->getId())."
+                AND content REGEXP '(^|[[:blank:]]|[[:cntrl:]])#[[:graph:]]' > 0
+        ";
         if ($since) {
-            $get_hashtags = DBManager::get()->query("
-                SELECT *
-                FROM blubber_comments
-                WHERE thread_id = ".DBManager::get()->quote($this->getId())."
-                    AND content REGEXP '#[[:graph:]]' > 0
+            $get_hashtags = DBManager::get()->query($query ."
                     AND mkdate > ".DBManager::get()->quote($since)."
             ");
         } else {
-            $get_hashtags = DBManager::get()->query("
-                SELECT *
-                FROM blubber_comments
-                WHERE thread_id = ".DBManager::get()->quote($this->getId())."
-                    AND content REGEXP '#[[:graph:]]' > 0
-            ");
+            $get_hashtags = DBManager::get()->query($query);
         }
         $hashtags = [];
         foreach ($get_hashtags->fetchAll(PDO::FETCH_ASSOC) as $comment_data) {
