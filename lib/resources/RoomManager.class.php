@@ -566,12 +566,7 @@ class RoomManager
             //There is no selection for a specific building or location.
             $filtered_rooms = $rooms;
         }
-
-        $use_time_search = (
-            ($begin instanceof DateTime)
-            and ($end instanceof DateTime)
-        );
-
+        
         $result = [];
         if (is_array($time_ranges)) {
             //We must check if the room is available:
@@ -615,7 +610,7 @@ class RoomManager
         unset($properties['room_category_id']);
 
         //Now we filter each room for the properties, if any:
-        if (count($properties)) {
+        if (is_array($properties) && count($properties)) {
             $old_result = $result;
             $result = [];
             $required_property_c = count($properties);

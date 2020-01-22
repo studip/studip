@@ -6,64 +6,70 @@
         ['request' => $request]
     ) ?>
     <?= CSRFProtection::tokenTag() ?>
-    <fieldset>
-        <legend><?= _('Ausgewählter Raum') ?></legend>
-        <? if ($selected_room): ?>
-            <input type="hidden" name="selected_room_id"
-                   value="<?= htmlReady($selected_room->id) ?>">
-            <input type="hidden" name="confirmed_selected_room_id"
-                   value="<?= htmlReady($selected_room->id) ?>">
-            <?= htmlReady($selected_room->name) ?>
-            <? if ($selected_room->properties): ?>
-                <? $property_names = $selected_room->properties
-                                                   ->findBy('info_label', 1)
-                                                   ->findBy('state', '', '!=')
-                                                   ->pluck('fullname') ?>
-                <?= tooltipIcon(
-                    implode("\n", $property_names)
-                ) ?>
-            <? endif ?>
-            <?= Studip\Button::create(
-                _('Anderen Raum wählen'),
-                'select_other_room'
-            ) ?>
-        <? else: ?>
-            <?= MessageBox::info(
-                _('Es wurde kein konkreter Raum ausgewählt!')
-            ) ?>
-            <?= Studip\Button::create(
-                _('Eigenschaften neu wählen'),
-                'select_properties'
-            ) ?>
-        <? endif ?>
-        <label>
-            <?= _('Erwartete Anzahl an Teilnehmenden') ?>:
-            <input type="number" name="seats"
-                   value="<?= htmlReady($seats) ?>"
-                   min="1">
-        </label>
-        <label>
-            <?= _('Rüstzeit') ?>
-            <input type="number" name="preparation_time"
-                   value="<?= htmlReady($preparation_time) ?>"
-                   min="0" max="<?= htmlReady($max_preparation_time) ?>">
-        </label>
-         <? if ($user_is_global_resource_admin) : ?>
-             <label>
-                 <input type="checkbox" name="reply_lecturers" value="1"
-                        <?= $reply_lecturers
-                          ? 'checked="checked"'
-                          : ''
-                        ?>>
-              <?= _('Benachrichtigung bei Ablehnung der Raumanfrage auch an alle Lehrenden der Veranstaltung senden') ?>
-             </label>
-         <? endif ?>
-    </fieldset>
-    <fieldset>
-        <legend><?= _('Nachricht an die Raumvergabe') ?></legend>
-        <textarea name="comment" cols="58" rows="4"
-                  placeholder="<?= _('Weitere Wüsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
-    </fieldset>
+    <section class="resources-grid">
+        <div>
+            <fieldset>
+                <legend><?= _('Ausgewählter Raum') ?></legend>
+                <? if ($selected_room): ?>
+                    <input type="hidden" name="selected_room_id"
+                           value="<?= htmlReady($selected_room->id) ?>">
+                    <input type="hidden" name="confirmed_selected_room_id"
+                           value="<?= htmlReady($selected_room->id) ?>">
+                    <?= htmlReady($selected_room->name) ?>
+                    <? if ($selected_room->properties): ?>
+                        <? $property_names = $selected_room->properties
+                            ->findBy('info_label', 1)
+                            ->findBy('state', '', '!=')
+                            ->pluck('fullname') ?>
+                        <?= tooltipIcon(
+                            implode("\n", $property_names)
+                        ) ?>
+                    <? endif ?>
+                    <?= Studip\Button::create(
+                        _('Anderen Raum wählen'),
+                        'select_other_room'
+                    ) ?>
+                <? else: ?>
+                    <?= MessageBox::info(
+                        _('Es wurde kein konkreter Raum ausgewählt!')
+                    ) ?>
+                    <?= Studip\Button::create(
+                        _('Eigenschaften neu wählen'),
+                        'select_properties'
+                    ) ?>
+                <? endif ?>
+                <label>
+                    <?= _('Erwartete Anzahl an Teilnehmenden') ?>:
+                    <input type="number" name="seats"
+                           value="<?= htmlReady($seats) ?>"
+                           min="1">
+                </label>
+                <label>
+                    <?= _('Rüstzeit') ?>
+                    <input type="number" name="preparation_time"
+                           value="<?= htmlReady($preparation_time) ?>"
+                           min="0" max="<?= htmlReady($max_preparation_time) ?>">
+                </label>
+                <? if ($user_is_global_resource_admin) : ?>
+                    <label>
+                        <input type="checkbox" name="reply_lecturers" value="1"
+                               <?= $reply_lecturers
+                                   ? 'checked="checked"'
+                                   : ''
+                               ?>>
+                        <?= _('Benachrichtigung bei Ablehnung der Raumanfrage auch an alle Lehrenden der Veranstaltung senden') ?>
+                    </label>
+                <? endif ?>
+            </fieldset>
+        </div>
+        <div>
+            <fieldset>
+                <legend><?= _('Nachricht an die Raumvergabe') ?></legend>
+                <textarea name="comment" cols="58" rows="4"
+                          placeholder="<?= _('Weitere Wüsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
+            </fieldset>
+        </div>
+    </section>
     <footer data-dialog-button>
         <?= \Studip\Button::create(
             _('Speichern'),

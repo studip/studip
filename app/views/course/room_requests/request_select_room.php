@@ -2,7 +2,7 @@
     <?= $this->render_partial(
         'course/room_requests/_request_form_header',
         [
-            'action' => $this->controller->link_for('course/room_requests/request_select_room/' . $request_id),
+            'action'     => $this->controller->link_for('course/room_requests/request_select_room/' . $request_id),
             'request_id' => $request_id
         ]
     ) ?>
@@ -21,6 +21,9 @@
         ) ?>
     <? endif ?>
 <? endif ?>
+</div>
+
+<div>
 <? if ($available_rooms) : ?>
     <section class="contentbox">
         <header><h1><?= _('Passende Räume') ?></h1></header>
@@ -30,7 +33,7 @@
                     <div class="flex-row">
                         <label class="horizontal">
                             <? if ($overlaps[$room->id] <= 0.0): ?>
-                                <?= Icon::create('check-circle',Icon::ROLE_STATUS_GREEN)->asImg(
+                                <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
                                     ['class' => 'text-bottom']
                                 ) ?>
                             <? elseif ($overlaps[$room->id] >= 1.0): ?>
@@ -47,9 +50,9 @@
                             <?= htmlReady(mb_substr($room->name, 0, 50)); ?>
                             <? if ($room->properties): ?>
                                 <? $property_names = $room->properties
-                                                          ->findBy('info_label', 1)
-                                                          ->findBy('state', '', '!=')
-                                                          ->pluck('fullname') ?>
+                                    ->findBy('info_label', 1)
+                                    ->findBy('state', '', '!=')
+                                    ->pluck('fullname') ?>
                                 <?= tooltipIcon(implode("\n", $property_names)) ?>
                             <? endif ?>
                         </label>
@@ -58,9 +61,11 @@
             </fieldset>
         </section>
     </section>
-<? else : ?>
-    <?= MessageBox::info(_('Es wurden keine passenden Räume gefunden!')) ?>
-<? endif ?>
+    <? else : ?>
+        <?= MessageBox::info(_('Es wurden keine passenden Räume gefunden!')) ?>
+    <? endif ?>
+    </div>
+</section>
 <? if (!$embedded) : ?>
     <?= $this->render_partial(
         'course/room_requests/_request_form_footer',

@@ -2,7 +2,7 @@
     <?= $this->render_partial(
         'course/room_requests/_request_form_header',
         [
-            'action' => $this->controller->link_for('course/room_requests/request_select_properties/' . $request_id),
+            'action'     => $this->controller->link_for('course/room_requests/request_select_properties/' . $request_id),
             'request_id' => $request_id
         ]
     ) ?>
@@ -15,9 +15,8 @@
         ['embedded' => true]
     ) ?>
 <? endif ?>
+
 <? if ($available_properties) : ?>
-    <fieldset>
-        <legend><?= _('Wünschbare Eigenschaften') ?></legend>
         <? foreach ($available_properties as $property) : ?>
             <?= $property->toHtmlInput(
                 $selected_properties[$property->name],
@@ -27,14 +26,16 @@
                 false
             ) ?>
         <? endforeach ?>
-    </fieldset>
 <? endif ?>
+
 <? if (!$embedded) : ?>
+    </div>
+    </section>
     <?= $this->render_partial(
         'course/room_requests/_request_form_footer',
         [
             'room_search_button' => true,
-            'save_buttons' => true
+            'save_buttons'       => true
         ]
     ) ?>
 <? endif ?>
