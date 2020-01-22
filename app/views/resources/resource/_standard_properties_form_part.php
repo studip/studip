@@ -11,14 +11,20 @@
 ?>
 <? if ($grouped_defined_properties): ?>
     <? foreach ($grouped_defined_properties as $group_name => $properties): ?>
-        <h2><?= htmlReady($group_name) ?></h2>
-        <? foreach ($properties as $property): ?>
-            <?= $property->toHtmlInput(
-                $property_data[$property->id],
-                '',
-                true,
-                false
-            ) ?>
-        <? endforeach ?>
+        <section class="contentbox">
+            <header>
+                <h1><?= htmlReady($group_name) ?></h1>
+            </header>
+            <section>
+                <? foreach ($properties as $property): ?>
+                    <?= $property->toHtmlInput(
+                        $property_data[$property->id],
+                        '',
+                        true,
+                        false
+                    ) ?>
+                <? endforeach ?>
+            </section>
+        </section>
     <? endforeach ?>
 <? endif ?>

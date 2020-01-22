@@ -185,7 +185,7 @@ class ResourceCategory extends SimpleORMap
                     :excluded_properties
                 )
                 ORDER BY
-                rpg.position ASC, rpg.name ASC,
+                type DESC, rpg.position ASC, rpg.name ASC,
                 resource_property_definitions.property_group_pos,
                 resource_property_definitions.name ASC",
                 [

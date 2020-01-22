@@ -1,9 +1,9 @@
 <? if ($show_form): ?>
     <form class="default" method="post" action="<?= ($mode == 'add')
-        ? URLHelper::getLink('dispatch.php/resources/room/add')
-        : URLHelper::getLink('dispatch.php/resources/room/edit/' . $room->id) ?>"
-        data-dialog="reload-on-close">
-
+        ? $controller->url_for('resources/room/add')
+        : $controller->url_for('resources/room/edit/' . $room->id) ?>"
+          data-dialog="reload-on-close">
+        
         <?= CSRFProtection::tokenTag() ?>
         <input type="hidden" name="category_id" value="<?= htmlReady($category_id) ?>">
         <fieldset>
@@ -14,8 +14,8 @@
                     <? foreach ($building_hierarchies as $building_id => $hierarchy): ?>
                         <option value="<?= htmlReady($building_id) ?>"
                                 <?= ($building_id == $parent_id)
-                                  ? 'selected="selected"'
-                                  : '' ?>>
+                                    ? 'selected="selected"'
+                                    : '' ?>>
                             <?= htmlReady($hierarchy) ?>
                         </option>
                     <? endforeach ?>
@@ -56,16 +56,13 @@
             <? endif ?>
         </fieldset>
         <? if ($grouped_defined_properties): ?>
-            <fieldset>
-                <legend><?= _('Weitere Eigenschaften') ?></legend>
-                <?= $this->render_partial(
-                    'resources/resource/_standard_properties_form_part.php',
-                    [
-                        'grouped_defined_properties' => $grouped_defined_properties,
-                        'property_data' => $property_data
-                    ]
-                ) ?>
-            </fieldset>
+            <?= $this->render_partial(
+                'resources/resource/_standard_properties_form_part.php',
+                [
+                    'grouped_defined_properties' => $grouped_defined_properties,
+                    'property_data'              => $property_data
+                ]
+            ) ?>
         <? endif ?>
         <div data-dialog-button>
             <?= \Studip\Button::create(_('Speichern'), 'confirmed') ?>

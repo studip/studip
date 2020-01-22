@@ -238,7 +238,6 @@ class ResourcePropertyDefinition extends SimpleORMap
             if ($type == 'num') {
                 $input_type = 'number';
             }
-            $label_html_classes = 'col-3';
             if ($with_label) {
                 return sprintf(
                     '<label %1$s>%5$s<input type="%2$s" name="%3$s" value="%4$s"></label>',
