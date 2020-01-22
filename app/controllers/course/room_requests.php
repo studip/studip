@@ -543,6 +543,9 @@ class Course_RoomRequestsController extends AuthenticatedController
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
 
+            $this->room_name = Request::get('room_name');
+            $session_data['room_name'] = $this->room_name;
+
             $this->selected_room_id = Request::get('selected_room_id');
             if ($this->selected_room_id) {
                 $room_found = false;
@@ -558,15 +561,50 @@ class Course_RoomRequestsController extends AuthenticatedController
                     return;
                 }
             }
-            if (Request::submitted('search_rooms')) {
+            if (Request::submitted('search_by_name')) {
+                if (!$this->room_name) {
+                    PageLayout::postError(
+                        _('Es wurde kein Raumname angegeben!')
+                    );
+                    return;
+                }
+                $session_data['room_name'] = $this->room_name;
+                $session_data['request_id'] = $this->request_id;
+                //Redirect to the room selection action.
+                $this->redirect(
+                    'course/room_requests/request_select_room/' . $this->request_id
+                );
+            } elseif (Request::submitted('search_rooms')) {
                 //Store the form data in the session and reload.
                 $session_data['selected_properties'] = Request::getArray('selected_properties');
                 $this->redirect('course/room_requests/request_select_room/' . $this->request_id);
-            } else if (Request::submitted('select_room')) {
+            } elseif (Request::submitted('select_room')) {
                 $session_data['selected_properties'] = Request::getArray('selected_properties');
                 $session_data['selected_room_id'] = $this->selected_room_id;
                 $this->redirect('course/room_requests/request_summary/' . $this->request_id);
-            }  elseif (Request::submitted('reset_category')) {
+            } elseif (Request::submitted('select_properties')) {
+                $this->category_id = Request::get('category_id');
+                if (!$this->category_id) {
+                    PageLayout::postError(
+                        _('Es wurde keine Raumkategorie ausgewählt!')
+                    );
+                    return;
+                }
+                foreach ($this->available_room_categories as $category) {
+                    if ($category->id == $this->category_id) {
+                        //The selected category is in the array of
+                        //available categories.
+                        $session_data['request_id'] = $this->request_id;
+                        $session_data['category_id'] = $this->category_id;
+                        $session_data['room_name'] = $this->room_name;
+                        //Redirect to the property selection page:
+                        $this->redirect(
+                            'course/room_requests/request_select_properties/' . $this->request_id
+                           );
+                        return;
+                    }
+                }
+            } elseif (Request::submitted('reset_category')) {
                 //Delete all selected properties from the session since the
                 //category is reset:
                 $session_data['selected_properties'] = [];
