@@ -22,7 +22,6 @@
                 $selected_properties[$property->name],
                 'selected_properties[' . htmlReady($property->name) . ']',
                 true,
-                '',
                 false
             ) ?>
         <? endforeach ?>

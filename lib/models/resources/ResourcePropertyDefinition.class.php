@@ -128,9 +128,6 @@ class ResourcePropertyDefinition extends SimpleORMap
      * @param bool $with_label Whether a label shall be placed around the
      *     HTML input element(s) or not.
      *
-     * @param string $label_html_classes The classes that shall be attached
-     *     to the label when a label shall be used.
-     *
      * @param bool $allow_boolean_false Wheter boolean attributes shall
      *     also include a hidden input field that sets the value to zero
      *     if the checkbox for the boolean attribute is not checked.
@@ -142,16 +139,17 @@ class ResourcePropertyDefinition extends SimpleORMap
         $value = '',
         $special_name = '',
         $with_label = false,
-        $label_html_classes = '',
         $allow_boolean_false = true
     )
     {
+        $label_html_classes = '';
         $type = $this->type;
         $input_name = $special_name
                     ? $special_name
                     : 'properties[' . $this->id . ']';
 
         if ($type == 'bool') {
+            $label_html_classes = 'col-3';
             //Booleans can have one or two input elements,
             //whether a false state shall be selectable or not.
             if ($allow_boolean_false) {
@@ -240,6 +238,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             if ($type == 'num') {
                 $input_type = 'number';
             }
+            $label_html_classes = 'col-3';
             if ($with_label) {
                 return sprintf(
                     '<label %1$s>%5$s<input type="%2$s" name="%3$s" value="%4$s"></label>',
