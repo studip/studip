@@ -30,7 +30,7 @@
         <label>
             <?= _('Raumkategorie') ?>
             <span class="flex-row">
-                <select name="category_id">
+                <select name="category_id" <?= $category ? 'readonly' : '' ?>>
                     <option value=""><?= _('bitte auswählen') ?></option>
                     <? foreach ($available_room_categories as $rc): ?>
                         <option value="<?= htmlReady($rc->id) ?>"
@@ -41,21 +41,22 @@
                         </option>
                     <? endforeach ?>
                 </select>
-                <?= Icon::create('accept', Icon::ROLE_CLICKABLE, ['title' => _('Raumtyp auswählen')])->asInput(
-                    [
-                        'type'  => 'image',
-                        'class' => 'text-bottom',
-                        'name'  => 'select_properties',
-                        'value' => _('Raumtyp auswählen'),
-                        'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
-                    ]
-                ) ?>
-                <? if ($category): ?>
+                <? if ($category) : ?>
                     <?= Icon::create('refresh', Icon::ROLE_CLICKABLE, ['title' => _('alle Angaben zurücksetzen')])->asInput(
                         [
                             'type'  => 'image',
                             'class' => 'text-bottom',
                             'name'  => 'reset_category',
+                            'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
+                        ]
+                    ) ?>
+                <? else : ?>
+                    <?= Icon::create('accept', Icon::ROLE_CLICKABLE, ['title' => _('Raumtyp auswählen')])->asInput(
+                        [
+                            'type'  => 'image',
+                            'class' => 'text-bottom',
+                            'name'  => 'select_properties',
+                            'value' => _('Raumtyp auswählen'),
                             'style' => 'margin-left: 0.2em; margin-top: 0.6em;'
                         ]
                     ) ?>
