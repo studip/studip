@@ -724,11 +724,11 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
         $hashtags = [];
         foreach ($get_hashtags->fetchAll(PDO::FETCH_ASSOC) as $comment_data) {
-            preg_match_all("/#(\w+)/u", $comment_data['content'], $matches);
+            preg_match_all("/#([\w\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]+)/u", $comment_data['content'], $matches);
             array_shift($matches);
             foreach ($matches as $match) {
                 foreach ($match as $tag) {
-                    $hashtags[strtolower($tag)] += 1;
+                    $hashtags[mb_strtolower($tag)] += 1;
                 }
             }
         }
