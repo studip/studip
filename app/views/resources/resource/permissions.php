@@ -1,28 +1,28 @@
 <form class="default" method="post"
       action="<?= ($custom_form_action_link
-                 ? $custom_form_action_link
-                 : ($single_user_mode
-                  ? $resource->getLink(
-                      'permissions',
-                      [
-                          'user_id' => $user->id
-                      ]
+          ? $custom_form_action_link
+          : ($single_user_mode
+              ? $resource->getLink(
+                  'permissions',
+                  [
+                      'user_id' => $user->id
+                  ]
+              )
+              : ($resource
+                  ? $resource->getLink('permissions')
+                  : URLHelper::getLink(
+                      'dispatch.php/resources/admin/permissions/global'
                   )
-                  : ($resource
-                   ? $resource->getLink('permissions')
-                   : URLHelper::getLink(
-                       'dispatch.php/resources/admin/permissions/global'
-                   )
-                  )
-                 )
-              ) ?>"
+              )
+          )
+      ) ?>"
       <?= (Request::isDialog()
-         ? (
-             $single_user_mode
-             ? 'data-dialog="reload-on-close"'
-             : 'data-dialog'
-         )
-         : '') ?>>
+          ? (
+          $single_user_mode
+              ? 'data-dialog="reload-on-close"'
+              : 'data-dialog'
+          )
+          : '') ?>>
     <? if ($custom_hidden_fields): ?>
         <? foreach ($custom_hidden_fields as $name => $content): ?>
             <? if (is_array($content)): ?>
@@ -40,10 +40,10 @@
     <?= $this->render_partial(
         'resources/_common/_permission_table.php',
         [
-            'permissions' => $permissions,
+            'permissions'               => $permissions,
             'custom_empty_list_message' => $custom_empty_list_message,
-            'table_id' => $table_id,
-            'single_user' => $user
+            'table_id'                  => $table_id,
+            'single_user'               => $user
         ]
     ) ?>
     <? if (!$single_user_mode): ?>

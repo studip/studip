@@ -42,7 +42,7 @@ if (!isset($show_delete_action)) {
 ?>
 <table class="default sortable-table resource-permissions-table"
        data-sortlist="[[1, 0]]"
-       <?= $table_id ? 'id="' . htmlReady($table_id) . '"' : ''?>>
+       <?= $table_id ? 'id="' . htmlReady($table_id) . '"' : '' ?>>
     <? if ($table_caption): ?>
         <caption><?= htmlReady($table_caption) ?></caption>
     <? endif ?>
@@ -52,7 +52,7 @@ if (!isset($show_delete_action)) {
         <col>
         <? if ($custom_columns): ?>
             <? foreach ($custom_columns as $column_name): ?>
-            <col>
+                <col>
             <? endforeach ?>
         <? endif ?>
     </colgroup>
@@ -72,40 +72,46 @@ if (!isset($show_delete_action)) {
             <? endif ?>
         </tr>
     </thead>
+    <? if ($show_delete_action): ?>
     <tfoot>
         <tr>
             <td colspan="3">
                 <?
                 $button_attrs = [
-                    'class' => 'bulk-action',
+                    'class'                    => 'bulk-action',
                     'data-activates-condition' => 'table.resource-permissions-table :checkbox:checked'
                 ];
                 ?>
-                <? if ($show_delete_action): ?>
+                
                     <?= \Studip\Button::create(_('Löschen'), 'bulk_delete', $button_attrs) ?>
-                <? endif ?>
             </td>
         </tr>
     </tfoot>
+    <? endif ?>
     <tbody>
         <? if (count($permissions)): ?>
             <? foreach ($permissions as $permission): ?>
                 <?
                 $permission_sort_key = 10;
                 switch ($permission->perms) {
-                    case 'autor': {
+                    case 'autor':
+                    {
                         $permission_sort_key = 20;
                         break;
-                    } case 'tutor': {
+                    }
+                    case 'tutor':
+                    {
                         $permission_sort_key = 30;
                         break;
-                    } case 'admin': {
+                    }
+                    case 'admin':
+                    {
                         $permission_sort_key = 40;
                         break;
                     }
                 }
                 ?>
-                <tr data-user_id="<?= htmlReady($permission->user_id)?>">
+                <tr data-user_id="<?= htmlReady($permission->user_id) ?>">
                     <td>
                         <input type="checkbox" name="selected_permissions[]"
                                value="<?= htmlReady($permission->user_id) ?>">
@@ -125,29 +131,29 @@ if (!isset($show_delete_action)) {
                             <option value="user"
                                     <?=
                                     $permission->perms == 'user'
-                                    ? 'selected="selected"'
-                                    : '' ?>>
+                                        ? 'selected="selected"'
+                                        : '' ?>>
                                 user
                             </option>
                             <option value="autor"
                                     <?=
                                     $permission->perms == 'autor'
-                                    ? 'selected="selected"'
-                                    : '' ?>>
+                                        ? 'selected="selected"'
+                                        : '' ?>>
                                 autor
                             </option>
                             <option value="tutor"
                                     <?=
                                     $permission->perms == 'tutor'
-                                    ? 'selected="selected"'
-                                    : '' ?>>
+                                        ? 'selected="selected"'
+                                        : '' ?>>
                                 tutor
                             </option>
                             <option value="admin"
                                     <?=
                                     $permission->perms == 'admin'
-                                    ? 'selected="selected"'
-                                    : '' ?>>
+                                        ? 'selected="selected"'
+                                        : '' ?>>
                                 admin
                             </option>
                         </select>
@@ -163,23 +169,15 @@ if (!isset($show_delete_action)) {
             <? endforeach ?>
         <? endif ?>
         <tr id="resource-empty-permission-list-message"
-            <?= count($permissions) ? 'class="invisible"' : ''?>>
-            <td colspan="3">
+            <?= count($permissions) ? 'class="invisible"' : '' ?>>
+            <td colspan="3" style="text-align: center">
                 <? if ($single_user instanceof User): ?>
-                    <?= MessageBox::info(
-                        $custom_empty_list_message
-                        ? $custom_empty_list_message
-                        : sprintf(
-                            _('Es sind keine besonderen Rechte für %s vorhanden.'),
-                            htmlReady($single_user->getFullName())
-                        )
-                    ) ?>
+                    <?= $custom_empty_list_message ?: sprintf(
+                        _('Es sind keine besonderen Rechte für %s vorhanden.'),
+                        htmlReady($single_user->getFullName()
+                        )) ?>
                 <? else: ?>
-                    <?= MessageBox::info(
-                        $custom_empty_list_message
-                        ? $custom_empty_list_message
-                        : _('Es sind keine besonderen Rechte vorhanden.')
-                    ) ?>
+                    <?= $custom_empty_list_message ?: _('Es sind keine besonderen Rechte vorhanden.') ?>
                 <? endif ?>
             </td>
         </tr>

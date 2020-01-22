@@ -5,11 +5,11 @@
             <tr>
                 <th><?= _('Name') ?></th>
                 <th><?= _('Sitzplätze') ?></th>
+                <th class="actions"><?= _('Aktionen') ?></th>
             </tr>
         </thead>
         <tbody>
             <? foreach ($rooms as $room): ?>
-
                 <?= $this->render_partial(
                     'resources/_common/_room_tr.php',
                     [
