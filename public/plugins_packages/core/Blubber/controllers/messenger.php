@@ -15,8 +15,7 @@ class MessengerController extends PluginController {
 
         Navigation::activateItem("/course/blubber");
 
-
-        $this->threads = BlubberThread::findBySeminar(Context::get()->id, true);
+        $this->threads = BlubberThread::findByContext(Context::get()->id, true, Context::getType());
 
         if (!$thread_id) {
             $thread_id = $GLOBALS['user']->cfg->BLUBBER_DEFAULT_THREAD;

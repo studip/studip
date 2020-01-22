@@ -188,6 +188,12 @@ class Institute extends SimpleORMap implements Range
             'on_store'          => 'store',
             'order_by'          => 'ORDER BY position ASC',
         ];
+        $config['has_many']['blubberthreads'] = [
+            'class_name' => 'BlubberThread',
+            'assoc_func' => 'findByInstitut',
+            'on_delete'  => 'delete',
+            'on_store'   => 'store',
+        ];
         $config['additional_fields']['all_status_groups']['get'] = function ($institute) {
             return Statusgruppen::findAllByRangeId($institute->id, true);
         };

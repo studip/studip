@@ -287,14 +287,27 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return [$upgraded_threads, $old_count !== count($upgraded_threads)];
     }
 
+    public static function findByInstitut($seminar_id, $only_in_stream = false)
+    {
+        return self::findByContext($seminar_id, $only_in_stream, 'institute');
+    }
+
     public static function findBySeminar($seminar_id, $only_in_stream = false)
+    {
+        return self::findByContext($seminar_id, $only_in_stream, 'course');
+    }
+
+    public static function findByContext($seminar_id, $only_in_stream = false, $context_type = 'course')
     {
         $query = SQLQuery::table('blubber_threads')
             ->join('blubber_comments', 'blubber_comments', 'blubber_threads.thread_id = blubber_comments.thread_id', 'LEFT JOIN');
         if ($only_in_stream) {
             $query->where("blubber_threads.visible_in_stream = 1");
         }
-        $query->where("context", "blubber_threads.context_type = 'course' AND blubber_threads.context_id = ?", [$seminar_id]);
+        $query->where("context", "blubber_threads.context_type = :context_type AND blubber_threads.context_id = :context_id", [
+            'context_id' => $seminar_id,
+            'context_type' => $context_type
+        ]);
         $query->groupBy('blubber_threads.thread_id');
         $query->orderBy("IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) DESC");
 
