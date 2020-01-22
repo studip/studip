@@ -487,7 +487,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         } elseif ($this['context_type'] === 'course') {
             $query = "SELECT user_id
                       FROM seminar_user
-                          LEFT JOIN blubber_threads_unfollow ON (seminar_user.user_id = blubber_threads_unfollow.user_id AND blubber_threads_unfollow.thread_id = :thread_id) 
+                          LEFT JOIN blubber_threads_unfollow ON (seminar_user.user_id = blubber_threads_unfollow.user_id AND blubber_threads_unfollow.thread_id = :thread_id)
                       WHERE Seminar_id = :context_id
                           AND user_id != :me
                           AND blubber_threads_unfollow.user_id IS NULL
@@ -724,12 +724,18 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
         $hashtags = [];
         foreach ($get_hashtags->fetchAll(PDO::FETCH_ASSOC) as $comment_data) {
-            preg_match_all("/#([\w\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]+)/u", $comment_data['content'], $matches);
-            array_shift($matches);
-            foreach ($matches as $match) {
-                foreach ($match as $tag) {
-                    $hashtags[mb_strtolower($tag)] += 1;
-                }
+            $matched = preg_match_all(
+                '/'. BlubberFormat::REGEXP_HASHTAG . '/uS',
+                $comment_data['content'],
+                $matches
+            );
+
+            if ($matched === 0) {
+                continue;
+            }
+
+            foreach ($matches[1] as $tag) {
+                $hashtags[mb_strtolower($tag)] += 1;
             }
         }
         asort($hashtags);
