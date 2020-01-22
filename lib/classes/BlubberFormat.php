@@ -4,7 +4,7 @@ class BlubberFormat extends StudipFormat
 {
     private static $blubber_rules = [
         'hashtags' => [
-            'start'    => '(^|[^\w])#([\w\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]*)',
+            'start'    => '(?<=^|\s)#([\w\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]+)',
             'callback' => 'BlubberFormat::markupHashtags'
         ]
     ];
@@ -93,8 +93,8 @@ class BlubberFormat extends StudipFormat
      */
     protected static function markupHashtags($markup, $matches)
     {
-        $tag = $matches[2];
-        return $matches[1].'<a href="'.URLHelper::getLink("dispatch.php/blubber", ['search' => "#".$tag]).'" class="blubber_hashtag" data-tag="'.htmlReady($tag).'">#'.htmlReady($tag).'</a>';
+        $tag = $matches[1];
+        return '<a href="'.URLHelper::getLink("dispatch.php/blubber", ['search' => "#".$tag]).'" class="blubber_hashtag" data-tag="'.htmlReady($tag).'">#'.htmlReady($tag).'</a>';
 
     }
 
