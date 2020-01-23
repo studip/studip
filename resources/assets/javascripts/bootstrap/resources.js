@@ -741,86 +741,90 @@ STUDIP.ready(function() {
 
     var nodes = jQuery('*.resource-plan[data-resources-fullcalendar="1"]');
     jQuery.each(nodes, function (index, node) {
-        if (node.calendar == undefined) {
-            if (jQuery(node).hasClass('semester-plan')) {
-                STUDIP.Fullcalendar.createSemesterCalendarFromNode(
-                    node,
-                    {
-                        eventAfterRender: function() {
-                            var h = jQuery('section.studip-fullcalendar-header').clone();
-                            if (h) {
-                                jQuery(h).removeClass('invisible');
-                                jQuery(h).insertAfter('.fc .fc-toolbar');
+        STUDIP.loadChunk('fullcalendar').then(() => {
+            if (node.calendar == undefined) {
+                if (jQuery(node).hasClass('semester-plan')) {
+                    STUDIP.Fullcalendar.createSemesterCalendarFromNode(
+                        node,
+                        {
+                            eventAfterRender: function() {
+                                var h = jQuery('section.studip-fullcalendar-header').clone();
+                                if (h) {
+                                    jQuery(h).removeClass('invisible');
+                                    jQuery(h).insertAfter('.fc .fc-toolbar');
+                                }
                             }
                         }
-                    }
-                );
-            } else {
-                STUDIP.Fullcalendar.createFromNode(
-                    node,
-                    {
-                        studip_functions: {
-                            drop_event:
-                            STUDIP.Resources.dropEventInRoomGroupBookingPlan,
-                            resize_event:
-                            STUDIP.Resources.resizeEventInRoomGroupBookingPlan
-                        },
-                        eventAfterRender: function() {
-                            var h = jQuery('section.studip-fullcalendar-header').clone();
-                            if (h) {
-                                jQuery(h).removeClass('invisible');
-                                jQuery(h).insertAfter('.fc .fc-toolbar');
+                    );
+                } else {
+                    STUDIP.Fullcalendar.createFromNode(
+                        node,
+                        {
+                            studip_functions: {
+                                drop_event:
+                                STUDIP.Resources.dropEventInRoomGroupBookingPlan,
+                                resize_event:
+                                STUDIP.Resources.resizeEventInRoomGroupBookingPlan
+                            },
+                            eventAfterRender: function() {
+                                var h = jQuery('section.studip-fullcalendar-header').clone();
+                                if (h) {
+                                    jQuery(h).removeClass('invisible');
+                                    jQuery(h).insertAfter('.fc .fc-toolbar');
+                                }
                             }
                         }
-                    }
-                );
+                    );
+                }
             }
-        }
+        });
     });
 
     //Check if an individual booking plan is to be displayed:
     var nodes = jQuery('*[data-resources-fullcalendar="1"][class="individual-booking-plan"]');
     jQuery.each(nodes, function (index, node) {
-        STUDIP.Fullcalendar.createFromNode(
-            node,
-            {
-                eventAfterRender: function (calendar_event, dom_element, view) {
-                    jQuery(dom_element).droppable({
-                        drop: function(event, ui_element) {
-                            event.preventDefault();
+        STUDIP.loadChunk('fullcalendar').then(() => {
+            STUDIP.Fullcalendar.createFromNode(
+                node,
+                {
+                    eventAfterRender: function (calendar_event, dom_element, view) {
+                        jQuery(dom_element).droppable({
+                            drop: function(event, ui_element) {
+                                event.preventDefault();
 
-                            var booking_plan_entry = event.target;
-                            var new_background_colour = jQuery(
-                                ui_element.helper
-                            ).css('background-color');
+                                var booking_plan_entry = event.target;
+                                var new_background_colour = jQuery(
+                                    ui_element.helper
+                                ).css('background-color');
 
-                            jQuery(booking_plan_entry).css(
-                                'background-color',
-                                new_background_colour
-                            );
-                            jQuery(booking_plan_entry).css(
-                                'border-color',
-                                new_background_colour
-                            );
+                                jQuery(booking_plan_entry).css(
+                                    'background-color',
+                                    new_background_colour
+                                );
+                                jQuery(booking_plan_entry).css(
+                                    'border-color',
+                                    new_background_colour
+                                );
 
-                            jQuery(booking_plan_entry).find('dl').css({
-                                backgroundColor: new_background_colour,
-                                borderColor: new_background_colour
-                            });
-                            jQuery(booking_plan_entry).find('dt').css(
-                                'background-color',
-                                new_background_colour
-                            );
+                                jQuery(booking_plan_entry).find('dl').css({
+                                    backgroundColor: new_background_colour,
+                                    borderColor: new_background_colour
+                                });
+                                jQuery(booking_plan_entry).find('dt').css(
+                                    'background-color',
+                                    new_background_colour
+                                );
+                            }
+                        });
+                        var h = jQuery('section.studip-fullcalendar-header').clone();
+                        if (h) {
+                            jQuery(h).removeClass('invisible');
+                            jQuery(h).insertAfter('.fc .fc-toolbar');
                         }
-                    });
-                    var h = jQuery('section.studip-fullcalendar-header').clone();
-                    if (h) {
-                        jQuery(h).removeClass('invisible');
-                        jQuery(h).insertAfter('.fc .fc-toolbar');
                     }
                 }
-            }
-        );
+            );
+        });
     });
 
     jQuery(document).on(
