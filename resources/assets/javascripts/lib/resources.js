@@ -662,7 +662,7 @@ class Resources
 
         STUDIP.api.GET(
             'resources/booking/' +
-                calendar_event.studip_parent_object_id +
+                calendar_event.extendedProps.studip_parent_object_id +
                 '/intervals',
             {
                 data: {
@@ -671,10 +671,11 @@ class Resources
                 }
             }
         ).done(function (data) {
-            var new_interval_id = calendar_event.studip_object_id = data[0].interval_id;
+            var new_interval_id = data[0].interval_id;
+            calendar_event.setExtendedProp('studip_object_id', new_interval_id);
             if (new_interval_id) {
-                var move_url = calendar_event.studip_api_urls['move'];
-                var resize_url = calendar_event.studip_api_urls['resize'];
+                var move_url = calendar_event.extendedProps.studip_api_urls['move'];
+                var resize_url = calendar_event.extendedProps.studip_api_urls['resize'];
                 move_url = move_url.replace(
                     /\&interval_id=([0-9a-f]{32})/,
                     '&interval_id=' + new_interval_id
@@ -683,8 +684,10 @@ class Resources
                     /\&interval_id=([0-9a-f]{32})/,
                     '&interval_id=' + new_interval_id
                 );
-                calendar_event.studip_api_urls['move'] = move_url;
-                calendar_event.studip_api_urls['resize'] = resize_url;
+                var studip_api_urls = calendar_event.extendedProps.studip_api_urls;
+                studip_api_urls['move'] = move_url;
+                studip_api_urls['resize'] = resize_url;
+                calendar_event.setExtendedProp('studip_api_urls', studip_api_urls);
             }
         });
     }
