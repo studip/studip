@@ -173,9 +173,10 @@ class Resources_RoomPlanningController extends AuthenticatedController
             );
         }
         
+        $this->user_has_request_permissions = false;
         $this->user_has_booking_permissions = false;
-        $this->user_has_request_permissions = $this->resource->userHasRequestRights($current_user);
         if ($current_user instanceof User) {
+            $this->user_has_request_permissions = $this->resource->userHasRequestRights($current_user);
             $this->user_has_booking_permissions = $this->resource->userHasBookingRights(
                 $current_user
             );
@@ -404,15 +405,16 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     'text'   => _('Reservierung')
                 ]
             ];
-            if ($this->resource->userHasPermission($current_user, 'admin')) {
-                $planned_booking_colour = ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
-                $this->table_keys[]     = [
-                    'colour' => $planned_booking_colour->__toString(),
-                    'text'   => _('Geplante Buchung')
-                ];
-            }
-            
             if (!$this->anonymous_view) {
+                if ($current_user instanceof User) {
+                    if ($this->resource->userHasPermission($current_user, 'admin')) {
+                        $planned_booking_colour = ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
+                        $this->table_keys[]     = [
+                            'colour' => $planned_booking_colour->__toString(),
+                            'text'   => _('Geplante Buchung')
+                        ];
+                    }
+                }
                 $this->table_keys[] = [
                     'colour' => $request_colour->__toString(),
                     'text'   => (
