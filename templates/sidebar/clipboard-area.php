@@ -25,10 +25,9 @@
                            . (
                                $clipboards ? '' : ' invisible'
                            ),
-                    'onClick' => "STUDIP.Clipboard.toggleEditButtons(
-                        {
-                            'widget_id': '" . htmlReady($clipboard_widget_id) . "'
-                        });"
+                    'onClick' => "STUDIP.Clipboard.toggleEditButtons('"
+                             . htmlReady($clipboard_widget_id)
+                             . "');"
                 ]
             ) ?>
 
@@ -48,10 +47,9 @@
                 '20px',
                 [
                     'class' => 'middle clipboard-edit-cancel invisible',
-                    'onClick' => "STUDIP.Clipboard.toggleEditButtons(
-                        {
-                            'widget_id': '" . htmlReady($clipboard_widget_id) . "'
-                        });"
+                    'onClick' => "STUDIP.Clipboard.toggleEditButtons('"
+                             . htmlReady($clipboard_widget_id)
+                             . "');"
                 ]
             ) ?>
 

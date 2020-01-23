@@ -1,4 +1,4 @@
-STUDIP.ready(function() {
+STUDIP.domReady(function() {
     jQuery('.clipboard-draggable-item').draggable(
         {
             cursorAt: {left: 28, top: 15},

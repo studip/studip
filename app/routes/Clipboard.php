@@ -67,7 +67,7 @@ class Clipboard extends \RESTAPI\RouteMap
             throw new AccessDeniedException();
         }
 
-        $name = \Request::get('name');
+        $name = $this->data['name'];
         if (!$name) {
             $this->halt(400, _('Es wurde kein Name angegeben!'));
         }
@@ -117,20 +117,11 @@ class Clipboard extends \RESTAPI\RouteMap
             throw new AccessDeniedException();
         }
 
-        $widget_id = \Request::get('widget_id');
-
-        $result = [
-            'clipboard_id' => $clipboard_id
-        ];
-        if ($widget_id) {
-            $result['widget_id'] = $widget_id;
-        }
-
         if (!$clipboard->delete()) {
             $this->halt(500, _('Fehler beim Löschen des Merkzettels!'));
         }
 
-        return $result;
+        return "";
     }
 
 

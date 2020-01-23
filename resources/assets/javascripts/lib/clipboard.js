@@ -34,6 +34,8 @@ const Clipboard = {
     },
 
     handleAddForm: function(event) {
+        console.log('form');
+        
         if (!event) {
             return false;
         }
@@ -53,15 +55,12 @@ const Clipboard = {
         }
 
         //Submit the form via AJAX:
-        jQuery.ajax(
+        STUDIP.api.POST(
+            'clipboard/add',
             {
-                url: STUDIP.URLHelper.resolveURL('api.php/clipboard/add'),
-                type: 'POST',
-                data: jQuery(event.target).serialize(),
-                dataType: 'json',
-                success: STUDIP.Clipboard.add
+                data: jQuery(event.target).serialize()
             }
-        );
+        ).done(STUDIP.Clipboard.add);
     },
 
     add: function(data) {
@@ -243,21 +242,16 @@ const Clipboard = {
         }
 
         //Add the item to the clipboard via AJAX:
-        jQuery.ajax(
-            STUDIP.URLHelper.resolveURL(
-                'api.php/clipboard/' + clipboard_id + '/item'
-            ),
+        STUDIP.api.POST(
+            'clipboard/' + clipboard_id + '/item',
             {
-                type: 'POST',
                 data: {
                     'range_id': range_id,
                     'range_type': range_type,
                     'widget_id': widget_id
-                },
-                dataType: 'json',
-                success: STUDIP.Clipboard.addDroppedItem
+                }
             }
-        );
+        ).done(STUDIP.Clipboard.addDroppedItem);
     },
 
     addDroppedItem: function(response_data) {
@@ -340,44 +334,38 @@ const Clipboard = {
         var clipboard_id = jQuery(widget).find(".clipboard-selector").val();
         var namer = jQuery(widget).find("input.clipboard-name");
 
-        jQuery.ajax(
-            STUDIP.URLHelper.getURL(
-                'api.php/clipboard/' + clipboard_id,
-                {
-                    widget_id: data['widget_id'],
+        var widget_id = data['widget_id'];
+        STUDIP.api.PUT(
+            'clipboard/' + clipboard_id,
+            {
+                data: {
                     name: namer.val()
                 }
-            ),
-            {
-                type: 'PUT',
-                success: STUDIP.Clipboard.update,
-                data: {
-                },
-                dataType: 'json'
             }
-        );
+        ).done(function(data) {
+            STUDIP.Clipboard.update(data, widget_id)
+        });
     },
 
-    update: function(data) {
-        if (!data['widget_id'] || !data['id'] || !data['name']) {
+    update: function(data, widget_id) {
+        if (!widget_id || !data['id'] || !data['name']) {
             //Required data are missing!
             return;
         }
 
-        var widget = jQuery('#ClipboardWidget_' + data['widget_id']);
+        var widget = jQuery('#ClipboardWidget_' + widget_id);
         var selector = jQuery(widget).find("select.clipboard-selector");
         selector.find("option[value=" + data['id'] + "]").text(data['name']);
-        STUDIP.Clipboard.toggleEditButtons(data);
+        STUDIP.Clipboard.toggleEditButtons(widget_id);
     },
 
-    remove: function(data) {
-        if (!data['widget_id']) {
+    remove: function(clipboard_id, widget_id) {
+        if (!clipboard_id || !widget_id) {
             //Required data are missing!
             return;
         }
 
-        var widget = jQuery('#ClipboardWidget_' + data['widget_id']);
-        var clipboard_id = jQuery(widget).find(".clipboard-selector").val();
+        var widget = jQuery('#ClipboardWidget_' + widget_id);
 
         var clipboard_selector = jQuery(widget).find('.clipboard-selector')[0];
         if (!clipboard_selector) {
@@ -470,21 +458,16 @@ const Clipboard = {
         }
         var widget_id = jQuery(widget).data('widget_id');
 
-        jQuery.ajax(
-            STUDIP.URLHelper.getURL(
-                'api.php/clipboard/' + clipboard_id,
-                {
+        STUDIP.api.DELETE(
+            'clipboard/' + clipboard_id,
+            {
+                data: {
                     widget_id: widget_id
                 }
-            ),
-            {
-                type: 'DELETE',
-                success: STUDIP.Clipboard.remove,
-                data: {
-                },
-                dataType: 'json'
             }
-        );
+        ).done(function() {
+            STUDIP.Clipboard.remove(clipboard_id, widget_id);
+        });
     },
 
     removeItem: function(event) {
@@ -503,37 +486,31 @@ const Clipboard = {
             return;
         }
 
-        jQuery.ajax(
-            STUDIP.URLHelper.resolveURL(
-                'api.php/clipboard/' + clipboard_id + '/item/' + range_id
-            ),
-            {
-                type: 'DELETE',
-                success: function() {
-                    //Check if the item has siblings:
-                    var siblings = jQuery(item_html).siblings();
-                    if (siblings.length < 3) {
-                        //Only the "no items" element and the template
-                        //are siblings of the item.
-                        //We must display the "no items" element:
-                        jQuery(item_html).siblings(
-                            '.empty-clipboard-message'
-                        ).removeClass('invisible');
-                        jQuery("#clipboard-group-container").find('.widget-links').addClass('invisible');
-                    }
-                    //Finally remove the item:
-                    jQuery(item_html).remove();
-                }
+        STUDIP.api.DELETE(
+            'clipboard/' + clipboard_id + '/item/' + range_id
+        ).done(function() {
+            //Check if the item has siblings:
+            var siblings = jQuery(item_html).siblings();
+            if (siblings.length < 3) {
+                //Only the "no items" element and the template
+                //are siblings of the item.
+                //We must display the "no items" element:
+                jQuery(item_html).siblings(
+                    '.empty-clipboard-message'
+                ).removeClass('invisible');
+                jQuery("#clipboard-group-container").find('.widget-links').addClass('invisible');
             }
-        );
+            //Finally remove the item:
+            jQuery(item_html).remove();
+        });
     },
 
-    toggleEditButtons: function(data) {
-        if (!data['widget_id']) {
+    toggleEditButtons: function(widget_id) {
+        if (!widget_id) {
            //Required data are missing!
            return;
        }
-       var widget = jQuery('#ClipboardWidget_' + data['widget_id']);
+       var widget = jQuery('#ClipboardWidget_' + widget_id);
        jQuery(widget).find("img.clipboard-edit-accept").toggle();
        jQuery(widget).find("img.clipboard-edit-cancel").toggle();
        jQuery(widget).find("img.clipboard-edit-button").toggle();
