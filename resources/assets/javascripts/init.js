@@ -27,7 +27,6 @@ import Filesystem from './lib/filesystem.js';
 import FilesDashboard from './lib/files_dashboard.js';
 import Folders from './lib/folders.js';
 import Forms from './lib/forms.js';
-import Fullcalendar from './lib/fullcalendar.js';
 import Fullscreen from './lib/fullscreen.js';
 import GlobalSearch from './lib/global_search.js';
 import HeaderMagic from './lib/header_magic.js';
@@ -107,7 +106,6 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     FilesDashboard,
     Folders,
     Forms,
-    Fullcalendar,
     Fullscreen,
     GlobalSearch,
     HeaderMagic,
