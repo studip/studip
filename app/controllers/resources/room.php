@@ -30,30 +30,30 @@ class Resources_RoomController extends AuthenticatedController
             }
         }
     }
-    
+
     public function index_action($room_id = null)
     {
         $this->room = Room::find($room_id);
-        
+
         if (!$this->room) {
             PageLayout::postError(
                 _('Der angegebene Raum wurde nicht gefunden!')
             );
             return;
         }
-        
+
         PageLayout::setTitle(
             $this->room->getFullName() . ' - ' . _('Informationen')
         );
-        
-        
+
+
         //We must add add a sidebar and activate the navigation item
         //for the room management overview.
-        
+
         if (Navigation::hasItem('/room_management/overview/index')) {
             Navigation::activateItem('/room_management/overview/index');
         }
-        
+
         $user                                 = User::findCurrent();
         $current_user_is_resource_admin       = $this->room->userHasPermission(
             $user,
@@ -71,11 +71,11 @@ class Resources_RoomController extends AuthenticatedController
             $user,
             'user'
         );
-        
+
         $sidebar           = Sidebar::get();
         $actions           = new ActionsWidget();
         $actions_available = false;
-        
+
         if ($current_user_is_resource_user) {
             if ($this->current_user_is_resource_autor) {
                 $actions_available = true;
@@ -159,17 +159,17 @@ class Resources_RoomController extends AuthenticatedController
         if ($actions_available) {
             $sidebar->addWidget($actions);
         }
-        
+
         $tree_widget = new ResourceTreeWidget(Location::findAll(), null, null);
         $tree_widget->setCurrentResource($this->room);
         $sidebar->addWidget($tree_widget);
-        
+
         $this->grouped_properties = $this->room->getGroupedProperties(
             $this->room->getRequiredPropertyNames()
         );
     }
-    
-    
+
+
     public function select_category_action()
     {
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
@@ -178,15 +178,15 @@ class Resources_RoomController extends AuthenticatedController
         PageLayout::setTitle(_('Raum hinzufügen'));
         $this->next_action = Request::get('next_action');
         $this->categories  = ResourceCategory::findByClass_name('Room');
-        
+
         if (!$this->categories) {
             PageLayout::postError(
                 _('Es sind keine Raumkategorien eingerichtet!')
             );
         }
     }
-    
-    
+
+
     protected function addEditDeleteHandler($mode = 'edit', $room_id = null)
     {
         $user            = User::findCurrent();
@@ -200,21 +200,21 @@ class Resources_RoomController extends AuthenticatedController
                 );
                 return;
             }
-            
+
             if (($mode == 'edit' && !$this->room->userHasPermission($user, 'admin'))
                 || ($mode == 'delete' && !$this->room->userHasPermission($user, 'admin'))) {
                 throw new AccessDeniedException();
             }
         }
-        
+
         if ($mode == 'add' && !ResourceManager::userHasGlobalPermission($user, 'admin')) {
             throw new AccessDeniedException();
         }
-        
+
         if ($mode == 'add' || $mode == 'edit') {
             //get the list of buildings to set a parent for the room:
             $buildings = Building::findAll();
-            
+
             //We must convert the buildings to a hierarchy since rooms can be
             //placed multiple layers below a building:
             $this->building_hierarchies = [];
@@ -222,24 +222,24 @@ class Resources_RoomController extends AuthenticatedController
                 //Build the complete hierarchy from the root resource to
                 //the building:
                 $hierarchy = ResourceManager::getHierarchyNames($building);
-                
+
                 array_reverse($hierarchy);
-                
+
                 $this->building_hierarchies[$building->id] = '/' . implode('/', $hierarchy);
             }
-            
+
             //In add-mode the category must be set before calling this method.
             if ($mode == 'edit') {
                 $this->category = $this->room->category;
             }
-            
+
             if (!($this->category instanceof ResourceCategory)) {
                 PageLayout::postError(
                     _('Die gewählte Raumkategorie wurde nicht gefunden!')
                 );
                 return;
             }
-            
+
             //Get all properties of the room:
             $this->grouped_defined_properties = [];
             $this->property_data              = [];
@@ -261,12 +261,12 @@ class Resources_RoomController extends AuthenticatedController
                     );
             }
         }
-        
+
         $this->show_form = true;
         if (Request::submitted('confirmed')) {
-            
+
             CSRFProtection::verifyUnsafeRequest();
-            
+
             if ($mode == 'add' || $mode == 'edit') {
                 //Process submitted form:
                 $this->parent_id = Request::get('parent_id');
@@ -281,9 +281,9 @@ class Resources_RoomController extends AuthenticatedController
                 $this->booking_plan_is_public = Request::get('booking_plan_is_public');
                 $this->sort_position          = Request::get('sort_position');
                 $this->property_data          = Request::getArray('properties');
-                
+
                 //validation:
-                
+
                 $parent = Resource::find($this->parent_id);
                 $parent = $parent->getDerivedClassInstance();
                 if (!($parent instanceof Building)) {
@@ -296,7 +296,7 @@ class Resources_RoomController extends AuthenticatedController
                     }
                     return;
                 }
-                
+
                 if ($mode == 'add') {
                     //Check if the user has admin permissions on the parent resource.
                     //These are required so that a child resource can be created:
@@ -305,11 +305,11 @@ class Resources_RoomController extends AuthenticatedController
                             _('Unzureichende Berechtigungen zum Anlegen eines Raumes in der gewählten Hierarchie!')
                         );
                     }
-                    
+
                     $category_class = ResourceCategory::getClassNameById(
                         $this->category_id
                     );
-                    
+
                     if ($category_class != 'Room' && !is_subclass_of($category_class, 'Room')) {
                         PageLayout::postError(
                             _('Die gewählte Kategorie ist für Räume nicht geeignet!')
@@ -317,31 +317,31 @@ class Resources_RoomController extends AuthenticatedController
                         return;
                     }
                 }
-                
+
                 if (!$this->name) {
                     PageLayout::postError(
                         _('Der Name des Raumes ist leer!')
                     );
                     return;
                 }
-                
+
                 if ($this->seats < 0) {
                     PageLayout::postError(
                         _('Die Anzahl der Sitzplätze darf nicht negativ sein!')
                     );
                     return;
                 }
-                
+
                 //data conversion:
-                
+
                 //(nothing to do here at the moment)
-                
+
                 //store data:
-                
+
                 if ($mode == 'add') {
                     $this->room = new Room();
                 }
-                
+
                 //store the room object:
                 $this->room->parent_id = $this->parent_id;
                 if ($mode == 'add') {
@@ -358,13 +358,13 @@ class Resources_RoomController extends AuthenticatedController
                 } else {
                     $successfully_stored = true;
                 }
-                
+
                 $user = User::findCurrent();
-                
+
                 //Now we can store the room's properties, if the permissions
                 //are high enough:
                 $unchanged_properties = [];
-                
+
                 //Special treatment for special properties:
                 if ($this->room->isPropertyEditable('room_type', $user)) {
                     $this->room->room_type = $this->room_type;
@@ -383,22 +383,22 @@ class Resources_RoomController extends AuthenticatedController
                         'booking_plan_is_public'
                     );
                 }
-                
+
                 //Non-special treatment for ordinary properties:
                 $failed_properties = $this->room->setPropertiesById(
                     $this->property_data,
                     $user
                 );
-                
+
                 $failed_property_objects = ResourcePropertyDefinition::findMany(
                     array_keys($failed_properties)
                 );
-                
+
                 $unchanged_properties = array_merge(
                     $unchanged_properties,
                     $failed_property_objects
                 );
-                
+
                 if ($successfully_stored && !$unchanged_properties) {
                     $this->show_form = false;
                     PageLayout::postSuccess(
@@ -452,16 +452,16 @@ class Resources_RoomController extends AuthenticatedController
             }
         }
     }
-    
-    
+
+
     public function add_action()
     {
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-        
+
         PageLayout::setTitle(_('Raum hinzufügen'));
-        
+
         $this->category_id = Request::get('category_id');
         $this->category    = ResourceCategory::find($this->category_id);
         if (!$this->category) {
@@ -483,22 +483,22 @@ class Resources_RoomController extends AuthenticatedController
             $this->addEditDeleteHandler('add');
         }
     }
-    
-    
+
+
     public function edit_action($room_id = null)
     {
         PageLayout::setTitle(_('Raum bearbeiten'));
         $this->addEditDeleteHandler('edit', $room_id);
     }
-    
-    
+
+
     public function delete_action($room_id = null)
     {
         PageLayout::setTitle(_('Raum löschen'));
         $this->addEditDeleteHandler('delete', $room_id);
     }
-    
-    
+
+
     /**
      * This action handles booking a room from a resource request.
      * Contrary to the resources/resource/assign action
@@ -508,7 +508,7 @@ class Resources_RoomController extends AuthenticatedController
     {
         $this->show_form = false;
         PageLayout::setTitle(_('Raum zuweisen'));
-        
+
         $this->room = Room::find($room_id);
         if (!$this->room) {
             PageLayout::postError(
@@ -516,11 +516,11 @@ class Resources_RoomController extends AuthenticatedController
             );
             return;
         }
-        
+
         if (!$this->room->userHasPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-        
+
         $this->room_request = RoomRequest::find(
             Request::get('request_id')
         );
@@ -530,21 +530,21 @@ class Resources_RoomController extends AuthenticatedController
             );
             return;
         }
-        
+
         $this->show_form = true;
-        
+
         if (Request::submitted('confirmed')) {
             //Create a room booking with data from the selected room request.
-            
+
             $this->notify_teachers = Request::get('notify_teachers', '0');
-            
+
             $bookings = RoomManager::createRoomBookingsByRequest(
                 $this->room,
                 $this->room_request,
                 User::findCurrent(),
                 (bool)$this->notify_teachers
             );
-            
+
             if ($bookings) {
                 $booked_time_interval_strings = [];
                 foreach ($bookings as $booking) {
@@ -558,7 +558,7 @@ class Resources_RoomController extends AuthenticatedController
                         );
                     }
                 }
-                
+
                 $this->show_form = false;
                 PageLayout::postSuccess(
                     sprintf(
