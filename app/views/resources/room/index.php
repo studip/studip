@@ -92,7 +92,7 @@
                 ),
                 ["target" => "_blank"]) ?>
         <? endif ?>
-        <? if ($current_user_is_resource_autor && $room->requestable) : ?>
+        <? if (!$current_user_is_resource_autor && $room->requestable) : ?>
             <?= \Studip\LinkButton::create(
                 _('Raum anfragen'),
                 $room->getLink('request'),
