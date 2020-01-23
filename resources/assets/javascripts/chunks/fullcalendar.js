@@ -7,3 +7,5 @@ import '@fullcalendar/resource-timeline/main.css';
 import "../../stylesheets/fullcalendar.scss";
 
 import Fullcalendar from '../lib/fullcalendar.js';
+
+STUDIP.Fullcalendar = Fullcalendar;
