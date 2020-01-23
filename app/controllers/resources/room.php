@@ -30,169 +30,167 @@ class Resources_RoomController extends AuthenticatedController
             }
         }
     }
-
+    
     public function index_action($room_id = null)
     {
         $this->room = Room::find($room_id);
-
+        
         if (!$this->room) {
             PageLayout::postError(
                 _('Der angegebene Raum wurde nicht gefunden!')
             );
             return;
         }
-
+        
         PageLayout::setTitle(
             $this->room->getFullName() . ' - ' . _('Informationen')
         );
-
-        if (!Request::isDialog()) {
-            //We must add add a sidebar and activate the navigation item
-            //for the room management overview.
-
-            if (Navigation::hasItem('/room_management/overview/index')) {
-                Navigation::activateItem('/room_management/overview/index');
-            }
-
-            $user = User::findCurrent();
-            $current_user_is_resource_admin = $this->room->userHasPermission(
-                $user,
-                'admin'
-            );
-            $current_user_is_resource_tutor = $this->room->userHasPermission(
-                $user,
-                'tutor'
-            );
-            $this->current_user_is_resource_autor = $this->room->userHasPermission(
-                $user,
-                'autor'
-            );
-            $current_user_is_resource_user = $this->room->userHasPermission(
-                $user,
-                'user'
-            );
-
-            $sidebar = Sidebar::get();
-            $actions = new ActionsWidget();
-            $actions_available = false;
-
-            if ($current_user_is_resource_user) {
-                if ($this->current_user_is_resource_autor) {
-                    $actions_available = true;
-                    $actions->addLink(
-                        _('Wochenbelegung'),
-                        $this->room->getURL('booking_plan'),
-                        Icon::create('timetable'),
-                        [
-                            'target' => '_blank'
-                        ]
-                    );
-                    $actions->addLink(
-                        _('Semesterbelegung'),
-                        $this->room->getURL('semester_plan'),
-                        Icon::create('timetable'),
-                        [
-                            'target' => '_blank'
-                        ]
-                    );
-                } elseif ($this->room->bookingPlanVisibleForUser($user)) {
-                    $actions_available = true;
-                    $actions->addLink(
-                        _('Belegungsplan'),
-                        $this->room->getURL('booking_plan'),
-                        Icon::create('timetable'),
-                        [
-                            'data-dialog' => 'size=big'
-                        ]
-                    );
-                    $actions->addLink(
-                        _('Semesterbelegung'),
-                        $this->room->getURL('semester_plan'),
-                        Icon::create('timetable'),
-                        [
-                            'data-dialog' => 'size=big'
-                        ]
-                    );
-                }
-                if ($current_user_is_resource_admin) {
-                    $actions_available = true;
-                    $actions->addLink(
-                        _('Raum bearbeiten'),
-                        $this->room->getURL('edit'),
-                        Icon::create('edit'),
-                        [
-                            'data-dialog' => 'size=auto'
-                        ]
-                    );
-                    $actions->addLink(
-                        _('Rechte bearbeiten'),
-                        $this->room->getURL('permissions'),
-                        Icon::create('roles'),
-                        [
-                            'data-dialog' => 'size=auto'
-                        ]
-                    );
-                }
-                if ($current_user_is_resource_tutor && $this->room->requestable) {
-                    $actions_available = true;
-                    $actions->addLink(
-                        _('Raumanfragen anzeigen'),
-                        $this->room->getURL('request_list'),
-                        Icon::create('room-request'),
-                        [
-                            'target' => '_blank'
-                        ]
-                    );
-                }
-            }
-            if (!$this->current_user_is_resource_autor && $this->room->requestable) {
+        
+        
+        //We must add add a sidebar and activate the navigation item
+        //for the room management overview.
+        
+        if (Navigation::hasItem('/room_management/overview/index')) {
+            Navigation::activateItem('/room_management/overview/index');
+        }
+        
+        $user                                 = User::findCurrent();
+        $current_user_is_resource_admin       = $this->room->userHasPermission(
+            $user,
+            'admin'
+        );
+        $current_user_is_resource_tutor       = $this->room->userHasPermission(
+            $user,
+            'tutor'
+        );
+        $this->current_user_is_resource_autor = $this->room->userHasPermission(
+            $user,
+            'autor'
+        );
+        $current_user_is_resource_user        = $this->room->userHasPermission(
+            $user,
+            'user'
+        );
+        
+        $sidebar           = Sidebar::get();
+        $actions           = new ActionsWidget();
+        $actions_available = false;
+        
+        if ($current_user_is_resource_user) {
+            if ($this->current_user_is_resource_autor) {
                 $actions_available = true;
                 $actions->addLink(
-                    _('Raum anfragen'),
-                    $this->room->getURL('request'),
-                    Icon::create('room-request'),
+                    _('Wochenbelegung'),
+                    $this->room->getURL('booking_plan'),
+                    Icon::create('timetable'),
+                    [
+                        'target' => '_blank'
+                    ]
+                );
+                $actions->addLink(
+                    _('Semesterbelegung'),
+                    $this->room->getURL('semester_plan'),
+                    Icon::create('timetable'),
+                    [
+                        'target' => '_blank'
+                    ]
+                );
+            } elseif ($this->room->bookingPlanVisibleForUser($user)) {
+                $actions_available = true;
+                $actions->addLink(
+                    _('Belegungsplan'),
+                    $this->room->getURL('booking_plan'),
+                    Icon::create('timetable'),
+                    [
+                        'data-dialog' => 'size=big'
+                    ]
+                );
+                $actions->addLink(
+                    _('Semesterbelegung'),
+                    $this->room->getURL('semester_plan'),
+                    Icon::create('timetable'),
+                    [
+                        'data-dialog' => 'size=big'
+                    ]
+                );
+            }
+            if ($current_user_is_resource_admin) {
+                $actions_available = true;
+                $actions->addLink(
+                    _('Raum bearbeiten'),
+                    $this->room->getURL('edit'),
+                    Icon::create('edit'),
+                    [
+                        'data-dialog' => 'size=auto'
+                    ]
+                );
+                $actions->addLink(
+                    _('Rechte bearbeiten'),
+                    $this->room->getURL('permissions'),
+                    Icon::create('roles'),
                     [
                         'data-dialog' => 'size=auto'
                     ]
                 );
             }
-            if ($actions_available) {
-                $sidebar->addWidget($actions);
+            if ($current_user_is_resource_tutor && $this->room->requestable) {
+                $actions_available = true;
+                $actions->addLink(
+                    _('Raumanfragen anzeigen'),
+                    $this->room->getURL('request_list'),
+                    Icon::create('room-request'),
+                    [
+                        'target' => '_blank'
+                    ]
+                );
             }
-
-            $tree_widget = new ResourceTreeWidget(Location::findAll(), null, null);
-            $tree_widget->setCurrentResource($this->room);
-            $sidebar->addWidget($tree_widget);
         }
-
+        if (!$this->current_user_is_resource_autor && $this->room->requestable) {
+            $actions_available = true;
+            $actions->addLink(
+                _('Raum anfragen'),
+                $this->room->getURL('request'),
+                Icon::create('room-request'),
+                [
+                    'data-dialog' => 'size=auto'
+                ]
+            );
+        }
+        if ($actions_available) {
+            $sidebar->addWidget($actions);
+        }
+        
+        $tree_widget = new ResourceTreeWidget(Location::findAll(), null, null);
+        $tree_widget->setCurrentResource($this->room);
+        $sidebar->addWidget($tree_widget);
+        
         $this->grouped_properties = $this->room->getGroupedProperties(
             $this->room->getRequiredPropertyNames()
         );
     }
-
-
+    
+    
     public function select_category_action()
     {
-        PageLayout::setTitle(_('Raum hinzufügen'));
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-        
+        PageLayout::setTitle(_('Raum hinzufügen'));
         $this->next_action = Request::get('next_action');
-        $this->categories = ResourceCategory::findByClass_name('Room');
-
+        $this->categories  = ResourceCategory::findByClass_name('Room');
+        
         if (!$this->categories) {
             PageLayout::postError(
                 _('Es sind keine Raumkategorien eingerichtet!')
             );
         }
     }
-
-
+    
+    
     protected function addEditDeleteHandler($mode = 'edit', $room_id = null)
     {
-        $user = User::findCurrent();
-        $this->mode = $mode;
+        $user            = User::findCurrent();
+        $this->mode      = $mode;
         $this->show_form = false;
         if ($mode == 'edit' || $mode == 'delete') {
             $this->room = Room::find($room_id);
@@ -202,22 +200,21 @@ class Resources_RoomController extends AuthenticatedController
                 );
                 return;
             }
-
+            
             if (($mode == 'edit' && !$this->room->userHasPermission($user, 'admin'))
-                || ($mode == 'delete' && !$this->room->userHasPermission($user, 'admin')))
-            {
+                || ($mode == 'delete' && !$this->room->userHasPermission($user, 'admin'))) {
                 throw new AccessDeniedException();
             }
         }
-
+        
         if ($mode == 'add' && !ResourceManager::userHasGlobalPermission($user, 'admin')) {
             throw new AccessDeniedException();
         }
-
+        
         if ($mode == 'add' || $mode == 'edit') {
             //get the list of buildings to set a parent for the room:
             $buildings = Building::findAll();
-
+            
             //We must convert the buildings to a hierarchy since rooms can be
             //placed multiple layers below a building:
             $this->building_hierarchies = [];
@@ -225,27 +222,27 @@ class Resources_RoomController extends AuthenticatedController
                 //Build the complete hierarchy from the root resource to
                 //the building:
                 $hierarchy = ResourceManager::getHierarchyNames($building);
-
+                
                 array_reverse($hierarchy);
-
+                
                 $this->building_hierarchies[$building->id] = '/' . implode('/', $hierarchy);
             }
-
+            
             //In add-mode the category must be set before calling this method.
             if ($mode == 'edit') {
                 $this->category = $this->room->category;
             }
-
+            
             if (!($this->category instanceof ResourceCategory)) {
                 PageLayout::postError(
                     _('Die gewählte Raumkategorie wurde nicht gefunden!')
                 );
                 return;
             }
-
+            
             //Get all properties of the room:
             $this->grouped_defined_properties = [];
-            $this->property_data = [];
+            $this->property_data              = [];
             if ($mode == 'edit') {
                 $this->grouped_defined_properties =
                     $this->room->category->getGroupedPropertyDefinitions(
@@ -264,29 +261,29 @@ class Resources_RoomController extends AuthenticatedController
                     );
             }
         }
-
+        
         $this->show_form = true;
         if (Request::submitted('confirmed')) {
-
+            
             CSRFProtection::verifyUnsafeRequest();
-
+            
             if ($mode == 'add' || $mode == 'edit') {
                 //Process submitted form:
                 $this->parent_id = Request::get('parent_id');
                 if ($mode == 'add') {
                     $this->category_id = Request::get('category_id');
                 }
-                $this->name = Request::get('name');
-                $this->description = Request::get('description');
-                $this->requestable = Request::int('requestable');
-                $this->room_type = Request::get('room_type');
-                $this->seats = Request::int('seats');
+                $this->name                   = Request::get('name');
+                $this->description            = Request::get('description');
+                $this->requestable            = Request::int('requestable');
+                $this->room_type              = Request::get('room_type');
+                $this->seats                  = Request::int('seats');
                 $this->booking_plan_is_public = Request::get('booking_plan_is_public');
-                $this->sort_position = Request::get('sort_position');
-                $this->property_data = Request::getArray('properties');
-
+                $this->sort_position          = Request::get('sort_position');
+                $this->property_data          = Request::getArray('properties');
+                
                 //validation:
-
+                
                 $parent = Resource::find($this->parent_id);
                 $parent = $parent->getDerivedClassInstance();
                 if (!($parent instanceof Building)) {
@@ -299,7 +296,7 @@ class Resources_RoomController extends AuthenticatedController
                     }
                     return;
                 }
-
+                
                 if ($mode == 'add') {
                     //Check if the user has admin permissions on the parent resource.
                     //These are required so that a child resource can be created:
@@ -308,11 +305,11 @@ class Resources_RoomController extends AuthenticatedController
                             _('Unzureichende Berechtigungen zum Anlegen eines Raumes in der gewählten Hierarchie!')
                         );
                     }
-
+                    
                     $category_class = ResourceCategory::getClassNameById(
                         $this->category_id
                     );
-
+                    
                     if ($category_class != 'Room' && !is_subclass_of($category_class, 'Room')) {
                         PageLayout::postError(
                             _('Die gewählte Kategorie ist für Räume nicht geeignet!')
@@ -320,27 +317,27 @@ class Resources_RoomController extends AuthenticatedController
                         return;
                     }
                 }
-
+                
                 if (!$this->name) {
                     PageLayout::postError(
                         _('Der Name des Raumes ist leer!')
                     );
                     return;
                 }
-
+                
                 if ($this->seats < 0) {
                     PageLayout::postError(
                         _('Die Anzahl der Sitzplätze darf nicht negativ sein!')
                     );
                     return;
                 }
-
+                
                 //data conversion:
-
+                
                 //(nothing to do here at the moment)
-
+                
                 //store data:
-
+                
                 if ($mode == 'add') {
                     $this->room = new Room();
                 }
@@ -350,7 +347,7 @@ class Resources_RoomController extends AuthenticatedController
                 if ($mode == 'add') {
                     $this->room->category_id = $this->category_id;
                 }
-                $this->room->name = $this->name;
+                $this->room->name        = $this->name;
                 $this->room->description = $this->description;
                 $this->room->requestable = strval($this->requestable);
                 if ($GLOBALS['perm']->have_perm('root')) {
@@ -361,13 +358,13 @@ class Resources_RoomController extends AuthenticatedController
                 } else {
                     $successfully_stored = true;
                 }
-
+                
                 $user = User::findCurrent();
-
+                
                 //Now we can store the room's properties, if the permissions
                 //are high enough:
                 $unchanged_properties = [];
-
+                
                 //Special treatment for special properties:
                 if ($this->room->isPropertyEditable('room_type', $user)) {
                     $this->room->room_type = $this->room_type;
@@ -386,22 +383,22 @@ class Resources_RoomController extends AuthenticatedController
                         'booking_plan_is_public'
                     );
                 }
-
+                
                 //Non-special treatment for ordinary properties:
                 $failed_properties = $this->room->setPropertiesById(
                     $this->property_data,
                     $user
                 );
-
+                
                 $failed_property_objects = ResourcePropertyDefinition::findMany(
                     array_keys($failed_properties)
                 );
-
+                
                 $unchanged_properties = array_merge(
                     $unchanged_properties,
                     $failed_property_objects
                 );
-
+                
                 if ($successfully_stored && !$unchanged_properties) {
                     $this->show_form = false;
                     PageLayout::postSuccess(
@@ -419,7 +416,7 @@ class Resources_RoomController extends AuthenticatedController
                     } else {
                         PageLayout::postWarning(
                             _('Der Raum wurde gespeichert, aber die folgenden Eigenschaften konnten wegen fehlender Berechtigungen nicht gespeichert werden:'),
-                            SimpleCollection::createFromArray($unchanged_properties)->pluck('display_name')
+                            array_map('htmlReady', SimpleCollection::createFromArray($unchanged_properties)->pluck('display_name'))
                         );
                     }
                 } else {
@@ -443,30 +440,30 @@ class Resources_RoomController extends AuthenticatedController
             //For add mode $this->category_id is set directly in add_action!
             if ($mode == 'edit' || $mode == 'delete') {
                 //Show form with current data:
-                $this->parent_id = $this->room->parent_id;
-                $this->category_id = $this->room->category_id;
-                $this->name = $this->room->name;
-                $this->description = $this->room->description;
-                $this->requestable = '1';
-                $this->room_type = $this->room->room_type;
-                $this->seats = $this->room->seats;
+                $this->parent_id              = $this->room->parent_id;
+                $this->category_id            = $this->room->category_id;
+                $this->name                   = $this->room->name;
+                $this->description            = $this->room->description;
+                $this->requestable            = '1';
+                $this->room_type              = $this->room->room_type;
+                $this->seats                  = $this->room->seats;
                 $this->booking_plan_is_public = (bool)$this->room->booking_plan_is_public;
-                $this->sort_position = $this->room->sort_position;
+                $this->sort_position          = $this->room->sort_position;
             }
         }
     }
-
-
+    
+    
     public function add_action()
     {
         if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
+        
         PageLayout::setTitle(_('Raum hinzufügen'));
-
+        
         $this->category_id = Request::get('category_id');
-        $this->category = ResourceCategory::find($this->category_id);
+        $this->category    = ResourceCategory::find($this->category_id);
         if (!$this->category) {
             //If no category_id is set we must redirect to the
             //select_category action:
@@ -486,22 +483,22 @@ class Resources_RoomController extends AuthenticatedController
             $this->addEditDeleteHandler('add');
         }
     }
-
-
+    
+    
     public function edit_action($room_id = null)
     {
         PageLayout::setTitle(_('Raum bearbeiten'));
         $this->addEditDeleteHandler('edit', $room_id);
     }
-
-
+    
+    
     public function delete_action($room_id = null)
     {
         PageLayout::setTitle(_('Raum löschen'));
         $this->addEditDeleteHandler('delete', $room_id);
     }
-
-
+    
+    
     /**
      * This action handles booking a room from a resource request.
      * Contrary to the resources/resource/assign action
@@ -511,7 +508,7 @@ class Resources_RoomController extends AuthenticatedController
     {
         $this->show_form = false;
         PageLayout::setTitle(_('Raum zuweisen'));
-
+        
         $this->room = Room::find($room_id);
         if (!$this->room) {
             PageLayout::postError(
@@ -519,11 +516,11 @@ class Resources_RoomController extends AuthenticatedController
             );
             return;
         }
-
+        
         if (!$this->room->userHasPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
-
+        
         $this->room_request = RoomRequest::find(
             Request::get('request_id')
         );
@@ -533,21 +530,21 @@ class Resources_RoomController extends AuthenticatedController
             );
             return;
         }
-
+        
         $this->show_form = true;
-
+        
         if (Request::submitted('confirmed')) {
             //Create a room booking with data from the selected room request.
-
+            
             $this->notify_teachers = Request::get('notify_teachers', '0');
-
+            
             $bookings = RoomManager::createRoomBookingsByRequest(
                 $this->room,
                 $this->room_request,
                 User::findCurrent(),
                 (bool)$this->notify_teachers
             );
-
+            
             if ($bookings) {
                 $booked_time_interval_strings = [];
                 foreach ($bookings as $booking) {
@@ -561,7 +558,7 @@ class Resources_RoomController extends AuthenticatedController
                         );
                     }
                 }
-
+                
                 $this->show_form = false;
                 PageLayout::postSuccess(
                     sprintf(
