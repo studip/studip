@@ -605,3 +605,5 @@ class Fullcalendar
         return this.init(node, config);
     }
 }
+
+export default Fullcalendar;
