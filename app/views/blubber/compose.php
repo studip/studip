@@ -41,21 +41,27 @@
     </div>
 
     <div class="private_blubber_composer" style="display: none;">
-        <label>
+        <label for="blubber_contacts">
             <?= _('Kontakte') ?>
-            <select name="user_ids[]" class="select2" id="blubber_contacts" multiple>
-                <option value="">&nbsp;</option>
-            <? foreach ($contacts as $contact) : ?>
-                <option value="<?= htmlReady($contact['user_id']) ?>" data-avatar="<?= htmlReady(Avatar::getAvatar($contact['user_id'])->getImageTag(AVATAR::SMALL)) ?>">
-                    <?= htmlReady($contact->friend->getFullName()) ?>
-                </option>
-            <? endforeach ?>
-            </select>
         </label>
-        <?= Icon::create("search", "info")->asImg(16) ?>
-        <a href="" onClick="return false;">
-            <?= Icon::create("decline", "clickable")->asImg(16) ?>
-        </a>
+        <div class="blubber_composer_select_container">
+            <span class="container">
+                <select name="user_ids[]" class="select2" id="blubber_contacts" multiple>
+                    <? foreach ($contacts as $contact) : ?>
+                        <option value="<?= htmlReady($contact['user_id']) ?>" data-avatar="<?= htmlReady(Avatar::getAvatar($contact['user_id'])->getImageTag(AVATAR::SMALL)) ?>">
+                            <?= htmlReady($contact->friend->getFullName()) ?>
+                        </option>
+                    <? endforeach ?>
+                </select>
+            </span>
+
+            <a href="" onClick="$('#blubber_contacts').focus().select2('open'); return false;">
+                <?= Icon::create("search", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
+            </a>
+            <a href="" onClick="$('#blubber_contacts').val(null).trigger('change'); return false;">
+                <?= Icon::create("decline", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
+            </a>
+        </div>
 
         <script>
             jQuery(function ($) {
@@ -90,11 +96,17 @@
                     </a>
                 </li>
             </ul>
-            <?= QuickSearch::get('search_user_id', new StandardSearch('user_id'))
-                    ->fireJSFunctionOnSelect('STUDIP.Blubber.Composer.vue.addUser')->render() ?>
+            <div class="blubber_composer_select_container">
+                <?= QuickSearch::get('search_user_id', new StandardSearch('user_id'))
+                        ->fireJSFunctionOnSelect('STUDIP.Blubber.Composer.vue.addUser')->render() ?>
 
-            <?= Icon::create("search", "info")->asImg(16) ?>
-            <?= Icon::create("decline", "info")->asImg(16) ?>
+                <a href="" onClick="$('input[name=search_user_id_parameter]').focus(); return false;">
+                    <?= Icon::create("search", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
+                </a>
+                <a href="" onClick="STUDIP.Blubber.Composer.vue.clearUsers(); return false;">
+                    <?= Icon::create("decline", "clickable")->asImg(20, ['class' => "text-bottom"]) ?>
+                </a>
+            </div>
         </div>
 
     </div>

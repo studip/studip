@@ -635,10 +635,22 @@
     justify-content: center;
 }
 
+
 .blubber-edit-icons {
     margin-top: 10px;
+
     > * {
         margin: 10px;
+    }
+}
+
+
+form.default {
+    .blubber_composer_select_container {
+        input, select, .container {
+            width: calc(100% - 50px);
+            display: inline-block;
+        }
     }
 }
 

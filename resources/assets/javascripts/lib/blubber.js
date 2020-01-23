@@ -175,6 +175,9 @@ const Blubber = {
                                 this.$delete(this.users, i);
                             }
                         }
+                    },
+                    clearUsers: function () {
+                        this.users = [];
                     }
                 }
             });
