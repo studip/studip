@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[1],{SsKN:function(n,o,p){"use strict";p.r(o);p("eV1F"),p("pDWP"),p("FZkX"),p("fARK"),p("c+2l"),p("pBon");var c=p("0h/i");STUDIP.Fullcalendar=c.default},pBon:function(n,o,p){}}]);
+//# sourceMappingURL=fullcalendar-7aab11dce52fe9ac7317.chunk.js.map
