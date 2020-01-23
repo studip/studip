@@ -46,19 +46,12 @@
     );
     ?>
     <? if (count($property_groups)): ?>
-        <section class="contentbox">
-            <header>
-                <h1><?= _('Weitere Eigenschaften') ?></h1>
-            </header>
-            <section>
-                <?= $this->render_partial(
-                    'resources/resource/_standard_properties_display_part.php',
-                    [
-                        'property_groups' => $property_groups
-                    ]
-                ) ?>
-            </section>
-        </section>
+        <?= $this->render_partial(
+            'resources/resource/_standard_properties_display_part.php',
+            [
+                'property_groups' => $property_groups
+            ]
+        ) ?>
     <? endif ?>
 
 <? endif ?>
