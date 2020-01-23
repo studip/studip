@@ -530,8 +530,8 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $query = "SELECT DISTINCT user_id
                       FROM blubber_comments
                       WHERE thread_id = :thread_id
-                        AND external_contact = 0
-                        AND user_id != :me";
+                          AND external_contact = 0
+                          AND user_id != :me";
             $user_ids = DBManager::get()->fetchFirst($query, [
                 'thread_id' => $this->getId(),
                 'me'        => $GLOBALS['user']->id,
@@ -550,11 +550,14 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 'me'        => $GLOBALS['user']->id,
             ]);
         } elseif ($this['context_type'] === 'course') {
-            $query = "SELECT user_id
+            $query = "SELECT seminar_user.user_id
                       FROM seminar_user
-                          LEFT JOIN blubber_threads_unfollow ON (seminar_user.user_id = blubber_threads_unfollow.user_id AND blubber_threads_unfollow.thread_id = :thread_id)
-                      WHERE Seminar_id = :context_id
-                          AND user_id != :me
+                          LEFT JOIN blubber_threads_unfollow ON (
+                              seminar_user.user_id = blubber_threads_unfollow.user_id 
+                              AND blubber_threads_unfollow.thread_id = :thread_id
+                          )
+                      WHERE seminar_user.Seminar_id = :context_id
+                          AND seminar_user.user_id != :me
                           AND blubber_threads_unfollow.user_id IS NULL
             ";
             $user_ids = DBManager::get()->fetchFirst($query, [
@@ -566,7 +569,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $query = "SELECT user_id
                       FROM user_inst
                       WHERE Institut_id = :context_id
-                        AND user_id != :me";
+                          AND user_id != :me";
             $user_ids = DBManager::get()->fetchFirst($query, [
                 'context_id' => $this['context_id'],
                 'me'         => $GLOBALS['user']->id,
