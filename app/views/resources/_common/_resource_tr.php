@@ -183,13 +183,13 @@
                         $resource->getLink('permissions'),
                         _('Berechtigungen verwalten'),
                         Icon::create('roles2'),
-                        ['data-dialog' => '']
+                        ['data-dialog' => 'size=auto']
                     ];
                     $actions['0050'] = [
                         $resource->getLink('temporary_permissions'),
                         _('Temporäre Berechtigungen verwalten'),
                         Icon::create('roles2'),
-                        ['data-dialog' => '']
+                        ['data-dialog' => 'size=auto']
                     ];
                     $actions['0060'] = [
                         $resource->getLink('edit'),
@@ -222,7 +222,7 @@
                             ),
                             _('Buchungen löschen'),
                             Icon::create('trash'),
-                            ['data-dialog' => '']
+                            ['data-dialog' => 'size=auto']
                         ];
                     }
                 }

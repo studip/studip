@@ -1,39 +1,36 @@
 <? if ($show_form): ?>
     <form class="default" method="post"
-          data-dialog="<?= $no_reload ? '1' : 'reload-on-close'?>"
-          action="<?= URLHelper::getLink(
-                  'dispatch.php/resources/resource/delete_bookings/'
-                  . $resource_id_parameter
-                  ) ?>">
+          data-dialog="size-auto<?= !$no_reload ? ';reload-on-close' : ''?>"
+          action="<?= $controller->url_for('resources/resource/delete_bookings/' . $resource_id_parameter) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <fieldset>
             <legend><?= _('Zeitbereich zum Löschen von Buchungen wählen') ?></legend>
-            <label>
+            <label class="col-3">
                 <?= _('Startdatum') ?>
-                <input type="text" class="has-date-picker" name="begin_date"
+                <input type="text" class="has-date-picker size-s" name="begin_date"
                        value="<?= $begin->format('d.m.Y') ?>">
             </label>
-            <label>
-                <?= _('Start-Uhrzeit') ?>
-                <input type="text" class="has-time-picker" name="begin_time"
-                       value="<?= $begin->format('H:i') ?>">
-            </label>
-            <label>
+            <label class="col-3">
                 <?= _('Enddatum') ?>
-                <input type="text" class="has-date-picker" name="end_date"
+                <input type="text" class="has-date-picker size-s" name="end_date"
                        value="<?= $end->format('d.m.Y') ?>">
             </label>
-            <label>
+            <label class="col-3">
+                <?= _('Start-Uhrzeit') ?>
+                <input type="text" class="has-time-picker size-s" name="begin_time"
+                       value="<?= $begin->format('H:i') ?>">
+            </label>
+            <label class="col-3">
                 <?= _('End-Uhrzeit') ?>
-                <input type="text" class="has-time-picker" name="end_time"
+                <input type="text" class="has-time-picker size-s" name="end_time"
                        value="<?= $end->format('H:i') ?>">
             </label>
         </fieldset>
-        <div data-dialog-button>
+        <footer data-dialog-button>
             <?= \Studip\Button::create(
                 _('Buchungen löschen'),
                 'delete'
             ) ?>
-        </div>
+        </footer>
     </form>
 <? endif ?>
