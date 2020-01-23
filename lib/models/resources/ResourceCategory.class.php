@@ -34,11 +34,11 @@
 class ResourceCategory extends SimpleORMap
 {
     private static $cache;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_categories';
-        
+
         $config['has_and_belongs_to_many']['property_definitions'] = [
             'class_name'        => 'ResourcePropertyDefinition',
             'assoc_foreign_key' => 'property_id',
@@ -46,17 +46,27 @@ class ResourceCategory extends SimpleORMap
             'thru_key'          => 'category_id',
             'order_by'          => 'ORDER BY name ASC'
         ];
-        
+
         $config['has_many']['property_links'] = [
             'class_name'  => 'ResourceCategoryProperty',
             'assoc_func'  => 'findByCategory_id',
             'foreign_key' => 'id',
             'on_delete'   => 'delete'
         ];
-        
+
+        $config['registered_callbacks']['after_create'][] = function ($category) {
+            self::$cache[$category->id] = $category;
+        };
+        $config['registered_callbacks']['after_store'][] = function ($category) {
+            self::$cache[$category->id] = $category;
+        };
+        $config['registered_callbacks']['after_delete'][] = function ($category) {
+            unset(self::$cache[$category->id]);
+        };
+
         parent::configure($config);
     }
-    
+
     /**
      * Retrieves all resource categories from the database.
      * @param bool $force_reload
@@ -73,13 +83,13 @@ class ResourceCategory extends SimpleORMap
         }
         return self::$cache;
     }
-    
+
     public static function find($id)
     {
         $all = self::findAll();
         return $all[$id] ?: null;
     }
-    
+
     /**
      * "Converts" a category-ID to a class name by looking up the
      * class name of a specified category.
@@ -98,7 +108,7 @@ class ResourceCategory extends SimpleORMap
         }
         return '';
     }
-    
+
     public function hasResources()
     {
         $db   = DBManager::get();
@@ -108,7 +118,7 @@ class ResourceCategory extends SimpleORMap
         $stmt->execute(['category_id' => $this->id]);
         return $stmt->fetchColumn() !== false;
     }
-    
+
     /**
      * Retrieves the definitions of all properties that are available
      * for this resource category.
@@ -137,7 +147,7 @@ class ResourceCategory extends SimpleORMap
                 ]
             );
         }
-        
+
         //No excluded properties are specified.
         //We can return all property definitions.
         return ResourcePropertyDefinition::findBySql(
@@ -151,7 +161,7 @@ class ResourceCategory extends SimpleORMap
             ]
         );
     }
-    
+
     /**
      * This method returns the same properties as getPropertyDefinitions,
      * but grouped and ordered by the property groups and the position of the
@@ -193,7 +203,7 @@ class ResourceCategory extends SimpleORMap
                     'excluded_properties' => $excluded_properties
                 ]
             );
-            
+
             $empty_index          = _('Sonstige');
             $empty_property_group = [
                 $empty_index => []
@@ -216,7 +226,7 @@ class ResourceCategory extends SimpleORMap
                 return $property_groups;
             }
         }
-        
+
         //No excluded properties are specified.
         //We can return all property definitions.
         $definitions = ResourcePropertyDefinition::findBySql(
@@ -234,7 +244,7 @@ class ResourceCategory extends SimpleORMap
                 'category_id' => $this->id
             ]
         );
-        
+
         $empty_index          = _('Sonstige');
         $empty_property_group = [
             $empty_index => []
@@ -257,7 +267,7 @@ class ResourceCategory extends SimpleORMap
             return $property_groups;
         }
     }
-    
+
     /**
      * Adds a property to this category. If the property doesn't exist
      * it will be created.
@@ -289,9 +299,9 @@ class ResourceCategory extends SimpleORMap
                 _('Es wurde kein Name für die Eigenschaft angegeben!')
             );
         }
-        
+
         $defined_types = ResourcePropertyDefinition::getDefinedTypes();
-        
+
         if (!in_array($type, $defined_types)) {
             throw new ResourcePropertyException(
                 sprintf(
@@ -300,7 +310,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         if (!in_array($write_permission_level, ['user', 'autor', 'tutor', 'admin'])) {
             throw new ResourcePropertyException(
                 sprintf(
@@ -309,7 +319,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         $existing_property = ResourceCategoryProperty::findOneBySql(
             'INNER JOIN resource_property_definitions rpd
             ON resource_category_properties.property_id = rpd.property_id
@@ -325,7 +335,7 @@ class ResourceCategory extends SimpleORMap
                 'type'        => $type
             ]
         );
-        
+
         if ($existing_property) {
             $existing_property->requestable = $requestable ? '1' : '0';
             $existing_property->protected   = $protected ? '1' : '0';
@@ -350,7 +360,7 @@ class ResourceCategory extends SimpleORMap
                     'type' => $type
                 ]
             );
-            
+
             if (!$definition) {
                 $definition       = new ResourcePropertyDefinition();
                 $definition->name = $name;
@@ -365,13 +375,13 @@ class ResourceCategory extends SimpleORMap
                     );
                 }
             }
-            
+
             $property              = new ResourceCategoryProperty();
             $property->property_id = $definition->id;
             $property->category_id = $this->id;
             $property->requestable = $requestable ? '1' : '0';
             $property->protected   = $protected ? '1' : '0';
-            
+
             if ($property->store()) {
                 return $property;
             } else {
@@ -385,7 +395,7 @@ class ResourceCategory extends SimpleORMap
             }
         }
     }
-    
+
     /**
      * Creates a resource object which belongs to this category.
      * All properties which are mandatory for resources of this
@@ -432,13 +442,13 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         $resource              = new $this->class_name;
         $resource->parent_id   = $parent_id;
         $resource->category_id = $this->id;
         $resource->name        = $name;
         $resource->description = $description;
-        
+
         if (!$resource->store()) {
             throw new InvalidResourceException(
                 sprintf(
@@ -447,7 +457,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         //The resource is stored. We can now store its attributes:
         if ($properties) {
             foreach ($properties as $name => $state) {
@@ -460,10 +470,10 @@ class ResourceCategory extends SimpleORMap
                 }
             }
         }
-        
+
         return $resource;
     }
-    
+
     /**
      * Returns the default state for a resource property.
      * Depending on the type of the resource property
@@ -502,7 +512,7 @@ class ResourceCategory extends SimpleORMap
                 return '';
         }
     }
-    
+
     /**
      * Creates a ResourceProperty object for a specified Resource object.
      *
@@ -530,7 +540,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         if (!$resource->id) {
             //The resource has no ID: probably it is a new resource.
             if ($resource->isNew()) {
@@ -545,8 +555,8 @@ class ResourceCategory extends SimpleORMap
                 );
             }
         }
-        
-        
+
+
         //get property definition:
         $definition = ResourcePropertyDefinition::findOneBySql(
             'INNER JOIN resource_category_properties rcp
@@ -559,7 +569,7 @@ class ResourceCategory extends SimpleORMap
                 'name'        => $name
             ]
         );
-        
+
         if (!$definition) {
             //Property is undefined for this resource category:
             throw new ResourcePropertyException(
@@ -570,11 +580,11 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         $property              = new ResourceProperty();
         $property->resource_id = $resource->id;
         $property->property_id = $definition->id;
-        
+
         //if state is not set we can set it to defined default values
         //for some state types:
         if ($state === null) {
@@ -582,10 +592,10 @@ class ResourceCategory extends SimpleORMap
         } else {
             $property->state = $state;
         }
-        
+
         return $property;
     }
-    
+
     /**
      * Creates a ResourceRequestProperty object
      * for a specified ResourceRequest object.
@@ -618,7 +628,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         if (!$request->id) {
             //The request has no ID: probably it is a new resource request.
             if ($request->isNew()) {
@@ -633,7 +643,7 @@ class ResourceCategory extends SimpleORMap
                 );
             }
         }
-        
+
         //get property definition:
         $definition = ResourcePropertyDefinition::findOneBySql(
             'INNER JOIN resource_category_properties rcp
@@ -646,7 +656,7 @@ class ResourceCategory extends SimpleORMap
                 'name'        => $name
             ]
         );
-        
+
         if (!$definition) {
             //Property is undefined for this resource category:
             throw new ResourcePropertyException(
@@ -657,11 +667,11 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         $property              = new ResourceRequestProperty();
         $property->request_id  = $request->id;
         $property->property_id = $definition->id;
-        
+
         //if state is not set we can set it to defined default values
         //for some state types:
         if ($state === null) {
@@ -669,10 +679,10 @@ class ResourceCategory extends SimpleORMap
         } else {
             $property->state = $state;
         }
-        
+
         return $property;
     }
-    
+
     public function getRequestableProperties()
     {
         return ResourcePropertyDefinition::findBySql(
@@ -688,7 +698,7 @@ class ResourceCategory extends SimpleORMap
             ]
         );
     }
-    
+
     /**
      * Determines if this resource category has a property with the
      * specified name and type.
@@ -732,7 +742,7 @@ class ResourceCategory extends SimpleORMap
                 ) > 0;
         }
     }
-    
+
     /**
      * Determines if the user has write permissions for the
      * resource property specified by its name.
@@ -754,7 +764,7 @@ class ResourceCategory extends SimpleORMap
                 'name' => $name
             ]
         );
-        
+
         if (!$property) {
             throw new ResourcePropertyDefinitionException(
                 sprintf(
@@ -763,7 +773,7 @@ class ResourceCategory extends SimpleORMap
                 )
             );
         }
-        
+
         if ($property->write_permission_level == 'admin-global') {
             return ResourceManager::userHasGlobalPermission(
                 $user,
@@ -780,7 +790,7 @@ class ResourceCategory extends SimpleORMap
             return false;
         }
     }
-    
+
     public function getIconUrl()
     {
         if ($this->iconnr == 0) {
