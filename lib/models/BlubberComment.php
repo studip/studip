@@ -108,6 +108,7 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
             '',
             'BlubberThread::mention'
         );
+        $this['content'] = \Studip\Markup::purifyHtml($this['content']);
         $this['content'] = transformBeforeSave($this['content']);
     }
 
