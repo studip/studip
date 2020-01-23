@@ -55,7 +55,6 @@ class Resources
             }
             var user_id_input = jQuery(row_tds[user_td_index]).children('input')[0];
             if (!user_id_input) {
-                console.log('no user_id input!');
                 return;
             }
             jQuery(user_id_input).val(user_id);
@@ -134,31 +133,24 @@ class Resources
             jQuery(table_element).trigger('update');
         };
 
-        jQuery.ajax(
-            STUDIP.URLHelper.resolveURL('api.php/user/' + user_id),
-            {
-                success: function(data) {
-                    var username = data.name.family
-                        + ', '
-                        + data.name.given;
-                    if (data.name.prefix) {
-                        username += ', ' + data.name.prefix;
-                    }
-                    if (data.name.suffix) {
-                        username += ' ' + data.name.suffix;
-                    }
-                    username += ' (' + data.name.username +')'
-                        + ' (' + data.perms + ')';
-                    insert_function(user_id, username);
-                },
-
-                error: function(request_object) {
-                    if (request_object.status == '403') {
-                        insert_function(user_id);
-                    }
-                }
+        STUDIP.api.GET(
+            'user/' + user_id
+        ).done(function(data) {
+            var username = data.name.family
+                + ', '
+                + data.name.given;
+            if (data.name.prefix) {
+                username += ', ' + data.name.prefix;
             }
-        );
+            if (data.name.suffix) {
+                username += ' ' + data.name.suffix;
+            }
+            username += ' (' + data.name.username +')'
+                + ' (' + data.perms + ')';
+            insert_function(user_id, username);
+        }).fail(function() {
+            insert_function(user_id);
+        });
     }
 
 
@@ -168,28 +160,24 @@ class Resources
             return;
         }
 
-        jQuery.ajax(
-            STUDIP.URLHelper.getURL(
-                'api.php/course/' + course_id + '/members',
-                {
-                    //The limit '0' results in a division by zero.
-                    //Hopefully, the limit is set to a value high enough:
-                    limit: 1000000
-                }
-            ),
+        STUDIP.api.GET(
+            'course/' + course_id + '/members',
             {
-                success: function(data) {
-                    for (var attribute in data.collection) {
-                        var user_id = data.collection[attribute].member.id;
-                        STUDIP.Resources.addUserToPermissionList(
-                            user_id,
-                            table_element
-                        );
-                    }
-                }
+                //The limit '0' results in a division by zero.
+                //Hopefully, the limit is set to a value high enough:
+                limit: 1000000
             }
-        );
+        ).done(function(data) {
+            for (var attribute in data.collection) {
+                var user_id = data.collection[attribute].member.id;
+                STUDIP.Resources.addUserToPermissionList(
+                    user_id,
+                    table_element
+                );
+            }
+        });
     }
+
 
     static removeUserFromPermissionList(html_node)
     {
@@ -224,8 +212,6 @@ class Resources
 
         var selected_option = jQuery(select_node).find(":selected")[0];
         if (!selected_option) {
-            console.log('no selected option');
-
             return;
         }
 
@@ -233,8 +219,6 @@ class Resources
         if (!option_value) {
             //The first option which is left blank intentionally
             //has been selected.
-            console.log('no option value');
-
             return;
         }
         var option_title = jQuery(selected_option).attr('data-title');
@@ -280,8 +264,6 @@ class Resources
         }
 
         if (!template) {
-            console.log('no template');
-
             return;
         }
 
@@ -303,8 +285,6 @@ class Resources
             //Build the option elements from the data-options field:
             if (!option_select_options) {
                 //Something is wrong.
-                console.log('wrong select options');
-
                 return;
             }
             var options_html = '';
@@ -321,8 +301,6 @@ class Resources
 
             if (time_inputs.length < 2) {
                 //Something is wrong with the HTML.
-                console.log('time inputs wrong');
-
                 return;
             }
             var now = new Date();
@@ -340,8 +318,6 @@ class Resources
                 //We must fill two date fields.
                 if (date_inputs.length < 2) {
                     //Something is wrong with the HTML.
-                    console.log('date inputs wrong');
-
                     return;
                 }
 
@@ -361,8 +337,6 @@ class Resources
                 //One date field, two time fields.
                 if (date_inputs.length < 1) {
                     //Something is wrong with the HTML.
-                    console.log('date inputs wrong 2');
-
                     return;
                 }
                 jQuery(date_inputs[0]).attr('name', option_value + '_date');
@@ -521,34 +495,27 @@ class Resources
             return;
         }
 
-        jQuery.ajax(
-            STUDIP.URLHelper.getURL(
-                'api.php/resources/booking_interval/' + interval_id + '/toggle_takes_place'
-            ),
-            {
-                method: 'post',
-                dataType: 'json',
-                success: function(data) {
-                    if (data['takes_place'] == undefined) {
-                        //Something went wrong: do nothing.
-                        return;
-                    }
-
-                    if (data['takes_place'] == '1') {
-                        //Switch on the icons and text for the "takes place"
-                        //status and switch off the other ones:
-                        jQuery(li).find('.takes-place-revive').addClass('invisible');
-                        jQuery(li).find('.takes-place-delete').removeClass('invisible');
-                        jQuery(li).find('.booking-list-interval-date').removeClass('not-taking-place');
-                    } else {
-                        //Do the opposite of the if-block above:
-                        jQuery(li).find('.takes-place-delete').addClass('invisible');
-                        jQuery(li).find('.takes-place-revive').removeClass('invisible');
-                        jQuery(li).find('.booking-list-interval-date').addClass('not-taking-place');
-                    }
-                }
+        STUDIP.api.POST(
+            'resources/booking_interval/' + interval_id + '/toggle_takes_place'
+        ).done(function(data) {
+            if (data['takes_place'] == undefined) {
+                //Something went wrong: do nothing.
+                return;
             }
-        );
+
+            if (data['takes_place'] == '1') {
+                //Switch on the icons and text for the "takes place"
+                //status and switch off the other ones:
+                jQuery(li).find('.takes-place-revive').addClass('invisible');
+                jQuery(li).find('.takes-place-delete').removeClass('invisible');
+                jQuery(li).find('.booking-list-interval-date').removeClass('not-taking-place');
+            } else {
+                //Do the opposite of the if-block above:
+                jQuery(li).find('.takes-place-delete').addClass('invisible');
+                jQuery(li).find('.takes-place-revive').removeClass('invisible');
+                jQuery(li).find('.booking-list-interval-date').addClass('not-taking-place');
+            }
+        });
     }
 
 
@@ -693,38 +660,33 @@ class Resources
             return;
         }
 
-        jQuery.ajax(
+        STUDIP.api.GET(
+            'resources/booking/' +
+                calendar_event.studip_parent_object_id +
+                '/intervals',
             {
-                url: STUDIP.URLHelper.getURL(
-                    'api.php/resources/booking/' +
-                        calendar_event.studip_parent_object_id +
-                        '/intervals'
-                ),
-                method: 'GET',
                 data: {
                     begin: STUDIP.Fullcalendar.toRFC3339String(calendar_event.start),
                     end: STUDIP.Fullcalendar.toRFC3339String(calendar_event.end)
                 }
             }
-        ).done(
-            function (data) {
-                var new_interval_id = calendar_event.studip_object_id = data[0].interval_id;
-                if (new_interval_id) {
-                    var move_url = calendar_event.studip_api_urls['move'];
-                    var resize_url = calendar_event.studip_api_urls['resize'];
-                    move_url = move_url.replace(
-                        /\&interval_id=([0-9a-f]{32})/,
-                        '&interval_id=' + new_interval_id
-                    );
-                    resize_url = resize_url.replace(
-                        /\&interval_id=([0-9a-f]{32})/,
-                        '&interval_id=' + new_interval_id
-                    );
-                    calendar_event.studip_api_urls['move'] = move_url;
-                    calendar_event.studip_api_urls['resize'] = resize_url;
-                }
+        ).done(function (data) {
+            var new_interval_id = calendar_event.studip_object_id = data[0].interval_id;
+            if (new_interval_id) {
+                var move_url = calendar_event.studip_api_urls['move'];
+                var resize_url = calendar_event.studip_api_urls['resize'];
+                move_url = move_url.replace(
+                    /\&interval_id=([0-9a-f]{32})/,
+                    '&interval_id=' + new_interval_id
+                );
+                resize_url = resize_url.replace(
+                    /\&interval_id=([0-9a-f]{32})/,
+                    '&interval_id=' + new_interval_id
+                );
+                calendar_event.studip_api_urls['move'] = move_url;
+                calendar_event.studip_api_urls['resize'] = resize_url;
             }
-        );
+        });
     }
 
 
@@ -794,20 +756,13 @@ class Resources
             return;
         }
 
-        jQuery.ajax(
-            STUDIP.URLHelper.getURL(
-                'api.php/resources/request/' + request_id + '/toggle_marked'
-            ),
-            {
-                method: 'post',
-                dataType: 'json',
-                success: function(data) {
-                    jQuery(source_node).attr('data-marked', data.marked);
-                    jQuery(source_node).parent().attr('data-sort-value', data.marked);
-                    jQuery(source_node).parents('table.request-list').trigger('update');
-                }
-            }
-        );
+        STUDIP.api.POST(
+            'api.php/resources/request/' + request_id + '/toggle_marked'
+        ).done(function(data) {
+            jQuery(source_node).attr('data-marked', data.marked);
+            jQuery(source_node).parent().attr('data-sort-value', data.marked);
+            jQuery(source_node).parents('table.request-list').trigger('update');
+        });
     }
 };
 
@@ -830,13 +785,11 @@ class Messages
 
         var selection_area = jQuery('.resources_messages-form .selection-area')[0];
         if (!selection_area) {
-            console.log('no selection area');
             return;
         }
 
         var template = jQuery(selection_area).find('.template')[0];
         if (!template) {
-            console.log('no template');
             return;
         }
 
