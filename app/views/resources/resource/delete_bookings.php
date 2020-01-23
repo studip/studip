@@ -1,7 +1,7 @@
 <? if ($show_form): ?>
     <form class="default" method="post"
           data-dialog="size-auto<?= !$no_reload ? ';reload-on-close' : ''?>"
-          action="<?= $controller->url_for('resources/resource/delete_bookings/' . $resource_id_parameter) ?>">
+          action="<?= $controller->link_for('resources/resource/delete_bookings/' . $resource_id_parameter) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <fieldset>
             <legend><?= _('Zeitbereich zum Löschen von Buchungen wählen') ?></legend>
