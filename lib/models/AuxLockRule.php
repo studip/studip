@@ -129,7 +129,7 @@ class AuxLockRule extends SimpleORMap
                         if (!$display_only && current($datafield)->isEditable() && $this->datafieldCache[$field]->object_type == 'usersemdata') {
                             $new[$field] = current($datafield)->getHTML($member->user_id);
                         } else {
-                            $new[$field] = current($datafield)->getDisplayValue();
+                            $new[$field] = current($datafield)->getDisplayValue(false);
                         }
                     }
                 }
