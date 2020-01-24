@@ -80,7 +80,7 @@ STUDIP.domReady(function() {
     jQuery(document).on(
         'click',
         '.clipboard-item-remove-button',
-        STUDIP.Clipboard.removeItem
+        STUDIP.Clipboard.confirmRemoveItemClick
     );
 
     jQuery('.clipboard-widget .new-clipboard-form').submit(

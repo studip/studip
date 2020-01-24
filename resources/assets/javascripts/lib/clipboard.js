@@ -470,13 +470,23 @@ const Clipboard = {
         });
     },
 
-    removeItem: function(event) {
-        if (!event.target) {
+
+    confirmRemoveItemClick: function(event) {
+        STUDIP.Clipboard.current_delete_icon = event.target;
+        STUDIP.Dialog.confirm(
+            'Sind Sie sicher?',
+            STUDIP.Clipboard.removeItem
+        );
+    },
+
+    removeItem: function() {
+        var delete_icon = STUDIP.Clipboard.current_delete_icon;
+        if (!delete_icon) {
             return;
         }
 
         //Get the item-ID:
-        var item_html = jQuery(event.target).parents('tr');
+        var item_html = jQuery(delete_icon).parents('tr');
         var range_id = jQuery(item_html).data('range_id');
         var clipboard_element = jQuery(item_html).parents('table');
         var clipboard_id = jQuery(clipboard_element).data('id');
