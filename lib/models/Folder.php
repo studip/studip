@@ -25,7 +25,7 @@
  * @property string mkdate database column
  * @property string chdate database column
  */
-class Folder extends SimpleORMap
+class Folder extends SimpleORMap implements FeedbackRange
 {
     /**
      * @param array $config
@@ -74,6 +74,7 @@ class Folder extends SimpleORMap
         $config['serialized_fields']['data_content'] = 'JSONArrayObject';
 
         $config['registered_callbacks']['before_store'][] = 'cbMakeUniqueName';
+        $config['registered_callbacks']['after_delete'][] = 'cbRemoveFeedbackElements';
 
         $config['additional_fields']['is_empty']['get'] = function ($folder) {
             return count($folder->file_refs) + count($folder->subfolders) === 0;
@@ -245,6 +246,15 @@ class Folder extends SimpleORMap
             ($this->isFieldDirty('name') || $this->isFieldDirty('parent_id'))) {
             $this->name = $this->parentfolder->getUniqueName($this->name, true);
         }
+    }
+
+    /**
+     * This callback is called after deleting a Folder.
+     * It removes feedback elements that are associated with the Folder.
+     */
+    public function cbRemoveFeedbackElements()
+    {
+        FeedbackElements::deleteBySQL("range_id = ? AND range_type = 'Folder'", [$this->id]);
     }
 
     /**
@@ -468,5 +478,30 @@ class Folder extends SimpleORMap
     {
         $parents = $this->getParents();
         return join($delimiter, SimpleCollection::createFromArray($parents)->pluck('name'));
+    }
+    
+    public function getRangeName() 
+    {
+        return $this->name;
+    }
+
+    public function getRangeIcon($role)
+    {
+        return $this->getTypedFolder()->getIcon($role);
+    }
+
+    public function getRangeUrl()
+    {
+        return 'course/files/index/' . $this->getTypedFolder()->getId();
+    }
+
+    public function getRangeCourseId()
+    {
+        return $this->range_id;
+    }
+
+    public function isRangeAccessible()
+    {
+        return $this->getTypedFolder()->isReadable($GLOBALS['user']->id);
     }
 }

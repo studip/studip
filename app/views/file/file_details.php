@@ -28,6 +28,7 @@
         <article>
             <?= htmlReady($file_ref->description ?: _('Keine Beschreibung vorhanden.'), true, true) ?>
         </article>
+        <?= Feedback::getHTML($file_ref->id, 'FileRef') ?>
     </div>
 </div>
 

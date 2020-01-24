@@ -127,6 +127,14 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 ['class' => 'copyable-link']
             );
         }
+        if (Feedback::isActivated() && Feedback::hasCreatePerm($course->id)) {
+            $actionMenu->addLink(
+                $controller->url_for('course/feedback/create_form/' . $file_ref->id . '/FileRef'),
+                _('Neues Feedback-Element'),
+                Icon::create('star+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
+                ['data-dialog' => '1']
+            );
+        }
         if ($current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
             $actionMenu->addButton(
                 'delete',

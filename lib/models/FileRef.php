@@ -30,7 +30,7 @@
  * @property SimpleORMap owner belongs_to User
  * @property SimpleORMap terms_of_use belongs_to ContentTermsOfUse
  */
-class FileRef extends SimpleORMap implements PrivacyObject
+class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
 {
 
     protected $folder_type;
@@ -69,6 +69,7 @@ class FileRef extends SimpleORMap implements PrivacyObject
         $config['additional_fields']['foldertype']['get'] = 'getFolderType';
 
         $config['registered_callbacks']['after_delete'][] = 'cbRemoveFileIfOrphaned';
+        $config['registered_callbacks']['after_delete'][] = 'cbRemoveFeedbackElements';
         $config['registered_callbacks']['before_store'][] = 'cbMakeUniqueFilename';
 
         parent::configure($config);
@@ -84,6 +85,15 @@ class FileRef extends SimpleORMap implements PrivacyObject
         if (!self::countBySql('file_id = ?', [$this->file_id])) {
             File::deleteBySQL("id = ?", [$this->file_id]);
         }
+    }
+
+    /**
+     * This callback is called after deleting a FileRef.
+     * It removes feedback elements that are associated with the FileRef.
+     */
+    public function cbRemoveFeedbackElements()
+    {
+        FeedbackElements::deleteBySQL("range_id = ? AND range_type = 'FileRef'", [$this->id]);
     }
 
     /**
@@ -282,5 +292,30 @@ class FileRef extends SimpleORMap implements PrivacyObject
                 $storage->addTabularData(_('Dateien'), 'file_refs', $field_data);
             }
         }
+    }
+
+    public function getRangeName() 
+    {
+        return $this->name;
+    }
+
+    public function getRangeIcon($role)
+    {
+        return FileManager::getIconForFileRef($this, $role);
+    }
+
+    public function getRangeUrl()
+    {
+        return 'course/files/index/' . $this->foldertype->getId();
+    }
+
+    public function getRangeCourseId()
+    {
+        return $this->foldertype->range_id;
+    }
+
+    public function isRangeAccessible()
+    {
+        return $this->foldertype->isFileDownloadable($this->id, $GLOBALS['user']->id);
     }
 }

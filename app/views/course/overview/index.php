@@ -78,3 +78,4 @@ if (!empty($plugins)) {
         }
     }
 }
+echo Feedback::getHTML($course_id, 'Course');

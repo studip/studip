@@ -67,6 +67,14 @@ class Course_FilesController extends AuthenticatedController
                 ['onclick' => "STUDIP.Files.openAddFilesWindow(); return false;"]
             );
         }
+        if (Feedback::isActivated() && Feedback::hasCreatePerm($this->course->id)) {
+            $actions->addLink(
+                _('Neues Feedback-Element'),
+                $this->url_for('course/feedback/create_form/' . $this->topFolder->getId() . '/Folder'),
+                Icon::create('star+add')
+            )->asDialog();
+
+        }
         $sidebar->addWidget($actions);
 
         if ($this->topFolder->isWritable($GLOBALS['user']->id)) {

@@ -485,3 +485,4 @@ if ($mvv_tree) : ?>
         <?= \Studip\LinkButton::createCancel(_('Zurück'), URLHelper::getURL(Request::get('from')))?>
     </footer>
 <? endif ?>
+<?= Feedback::getHTML($course->id, 'Course'); ?>

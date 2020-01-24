@@ -138,3 +138,4 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
     ]) ?>
 <? endif ?>
 <? endif ?>
+<?= Feedback::getHTML($topFolder->getId(), 'Folder') ?>

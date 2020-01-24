@@ -70,7 +70,7 @@
  * @property SimpleORMapCollection children has_many Course
  */
 
-class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem
+class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, FeedbackRange
 {
 
     /**
@@ -236,6 +236,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem
         $config['registered_callbacks']['before_update'][] = 'logStore';
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();
+            FeedbackElements::deleteBySQL('course_id = ?', [$course->id]);
         };
 
         parent::configure($config);
@@ -666,5 +667,29 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem
                 $storage->addTabularData(_('Seminare'), 'seminare', $field_data);
             }
         }
+    }
+    public function getRangeName() 
+    {
+        return $this->name;
+    }
+
+    public function getRangeIcon($role)
+    {
+        return Icon::create('seminar', $role);
+    }
+
+    public function getRangeUrl()
+    {
+        return 'course/overview';
+    }
+
+    public function getRangeCourseId()
+    {
+        return $this->Seminar_id;
+    }
+
+    public function isRangeAccessible()
+    {
+        return $GLOBALS['perm']->have_studip_perm('autor', $this->Seminar_id);
     }
 }

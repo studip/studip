@@ -91,3 +91,4 @@ import "./bootstrap/vue.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"
+import "./feedback.js"

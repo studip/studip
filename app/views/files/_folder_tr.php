@@ -96,6 +96,14 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
                 Icon::create('folder-empty+add', 'clickable', ['size' => 20]),
                 ['data-dialog' => 'size=auto']
             );
+            if (Feedback::isActivated() && Feedback::hasCreatePerm($course->id)) {
+                $actionMenu->addLink(
+                    $controller->url_for('course/feedback/create_form/' . $folder->getId() . '/Folder'),
+                    _('Neues Feedback-Element'),
+                    Icon::create('star+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
+                    ['data-dialog' => '1']
+                );
+            }
             $actionMenu->addLink(
                 $controller->url_for('file/delete_folder/' . $folder->getId()),
                 _('Ordner löschen'),

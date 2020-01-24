@@ -167,6 +167,8 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'order_by'          => 'ORDER BY name',
         ];
 
+        $config['registered_callbacks']['after_delete'][] = 'cbRemoveFeedback';
+
         $info = new UserInfo();
         $info_meta = $info->getTableMetadata();
         foreach ($info_meta ['fields'] as $field => $meta) {
@@ -1429,5 +1431,15 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
 
         $data = DBManager::get()->fetchAll('SELECT * FROM object_user_visits WHERE user_id = ?', [$storage->user_id]);
         $storage->addTabularData(_('Objekt Aufrufe'), 'object_user_visits', $data);
+    }
+
+    /**
+     * This callback is called after deleting a User.
+     * It removes feedback entries that are associated with the User.
+     */
+    public function cbRemoveFeedback()
+    {
+        FeedbackElements::deleteBySQL('user_id = ?', [$this->id]);
+        FeedbackEntries::deleteBySQL('user_id = ?', [$this->id]);
     }
 }

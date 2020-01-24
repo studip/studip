@@ -415,6 +415,7 @@ class Router
             'Course',
             'Discovery',
             'Events',
+			'Feedback',
             'FileSystem',
             'Forum',
             'Messages',
