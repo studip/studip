@@ -53,18 +53,6 @@ class Resources_ExportController extends AuthenticatedController
         }
     }
     
-    public function index_action()
-    {
-        if (Navigation::hasItem('/resources/export/index')) {
-            Navigation::activateItem('/resources/export/index');
-        }
-        if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
-            throw new AccessDeniedException();
-        }
-        
-        PageLayout::setTitle(_('Raum- und Ressourcenverwaltung Exportzentrale'));
-    }
-    
     public function select_booking_sources_action($range_with_id = null)
     {
         if (Navigation::hasItem('/resources/export/select_booking_sources')) {
