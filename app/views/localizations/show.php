@@ -10,13 +10,24 @@ $translations = array(
     'Gefundene Nutzer' => _('Gefundene Nutzer'),
     'Wollen Sie diesen Filter wirklich entfernen?' => _('Wollen Sie diesen Filter wirklich entfernen?'),
 
-    // public/plugins_packages/core/Blubber/assets/javascripts/blubber.js
+    // data/assets_cache/e4ea037cea4bddd3daf26b0c0e468e8a.js
     'Vor wenigen Sekunden' => _('Vor wenigen Sekunden'),
     'Vor einer Minute' => _('Vor einer Minute'),
     'Vor <%= distance %> Minuten' => _('Vor <%= distance %> Minuten'),
     'Sichtbarkeit' => _('Sichtbarkeit'),
     'Der Beitrag konnte nicht gelöscht werden.' => _('Der Beitrag konnte nicht gelöscht werden.'),
-    'Es ist ein Fehler aufgetreten.' => _('Es ist ein Fehler aufgetreten.'),
+    'Es ist ein Fehler aufgetreten' => _('Es ist ein Fehler aufgetreten'),
+
+    // data/upload_doc/79/7992020da37ee5cf4b270540177759df
+    'Sie haben noch keine Anmelderegeln festgelegt.' => _('Sie haben noch keine Anmelderegeln festgelegt.'),
+    'Dialog wird geladen...' => _('Dialog wird geladen...'),
+    'Fehler beim Aufruf des News-Controllers' => _('Fehler beim Aufruf des News-Controllers'),
+    'Neuen Termin eintragen' => _('Neuen Termin eintragen'),
+    'Veranstaltungsdetails' => _('Veranstaltungsdetails'),
+    'Termindetails bearbeiten' => _('Termindetails bearbeiten'),
+    'Detaillierte Veranstaltungsliste' => _('Detaillierte Veranstaltungsliste'),
+    'Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?' => _('Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?'),
+    'Anonym' => _('Anonym'),
 
     // public/plugins_packages/core/Forum/javascript/forum.js
     'Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!' => _('Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!'),
@@ -24,8 +35,6 @@ $translations = array(
     'Alle Bereiche werden dann nach "Allgemein" verschoben!' => _('Alle Bereiche werden dann nach "Allgemein" verschoben!'),
     'Sind sie sicher, dass Sie diesen Bereich löschen möchten? ' => _('Sind sie sicher, dass Sie diesen Bereich löschen möchten? '),
     'Es werden auch alle Beiträge in diesem Bereich gelöscht!' => _('Es werden auch alle Beiträge in diesem Bereich gelöscht!'),
-    'Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?' => _('Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?'),
-    'Anonym' => _('Anonym'),
     '%s hat geschrieben:' => _('%s hat geschrieben:'),
     'Die Senderin/der Sender dieser Nachricht möchte Sie auf den folgenden Beitrag aufmerksam machen. ' => _('Die Senderin/der Sender dieser Nachricht möchte Sie auf den folgenden Beitrag aufmerksam machen. '),
     'Link zum Beitrag: ' => _('Link zum Beitrag: '),
@@ -74,11 +83,14 @@ $translations = array(
     // resources/assets/javascripts/lib/admission.js
     'Wird geladen' => _('Wird geladen'),
     'Anmelderegel konfigurieren' => _('Anmelderegel konfigurieren'),
-    'Sie haben noch keine Anmelderegeln festgelegt.' => _('Sie haben noch keine Anmelderegeln festgelegt.'),
     'Sie haben noch niemanden hinzugefügt.' => _('Sie haben noch niemanden hinzugefügt.'),
 
     // resources/assets/javascripts/lib/big_image_handler.js
     'Dieses Bild wird verkleinert dargestellt. Klicken Sie für eine größere Darstellung.' => _('Dieses Bild wird verkleinert dargestellt. Klicken Sie für eine größere Darstellung.'),
+
+    // resources/assets/javascripts/lib/blubber.js
+    'Konnte die Konversation nicht laden. Probieren Sie es nachher erneut.' => _('Konnte die Konversation nicht laden. Probieren Sie es nachher erneut.'),
+    'Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut.' => _('Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut.'),
 
     // resources/assets/javascripts/lib/calendar.js
     'Montag' => _('Montag'),
@@ -99,15 +111,10 @@ $translations = array(
     'Datei hinzufügen' => _('Datei hinzufügen'),
     'Datei ist zu groß oder hat eine nicht erlaubte Endung.' => _('Datei ist zu groß oder hat eine nicht erlaubte Endung.'),
     'Datei hochladen' => _('Datei hochladen'),
-    'Lizenz auswählen: %s Dateien' => _('Lizenz auswählen: %s Dateien'),
-    'Lizenz auswählen' => _('Lizenz auswählen'),
 
     // resources/assets/javascripts/lib/filesystem.js
     'Objekt aufklappen' => _('Objekt aufklappen'),
     'Objekt zuklappen' => _('Objekt zuklappen'),
-
-    // resources/assets/javascripts/lib/instschedule.js
-    'Detaillierte Veranstaltungsliste' => _('Detaillierte Veranstaltungsliste'),
 
     // resources/assets/javascripts/lib/jsupdater.js
     'Bitte laden Sie die Seite neu, um fortzufahren' => _('Bitte laden Sie die Seite neu, um fortzufahren'),
@@ -128,10 +135,6 @@ $translations = array(
 
     // resources/assets/javascripts/lib/multi_select.js
     '<%= count %> ausgewählt' => _('<%= count %> ausgewählt'),
-
-    // resources/assets/javascripts/lib/news.js
-    'Dialog wird geladen...' => _('Dialog wird geladen...'),
-    'Fehler beim Aufruf des News-Controllers' => _('Fehler beim Aufruf des News-Controllers'),
 
     // resources/assets/javascripts/lib/overlapping.js
     'Studiengangteil suchen' => _('Studiengangteil suchen'),
@@ -158,10 +161,8 @@ $translations = array(
     'Bitte geben Sie Ihren tatsächlichen Nachnamen an.' => _('Bitte geben Sie Ihren tatsächlichen Nachnamen an.'),
     'Die E-Mail-Adresse ist nicht korrekt!' => _('Die E-Mail-Adresse ist nicht korrekt!'),
 
-    // resources/assets/javascripts/lib/schedule.js
-    'Neuen Termin eintragen' => _('Neuen Termin eintragen'),
-    'Veranstaltungsdetails' => _('Veranstaltungsdetails'),
-    'Termindetails bearbeiten' => _('Termindetails bearbeiten'),
+    // resources/assets/javascripts/lib/resources.js
+    'Soll die ausgewählte Berechtigung wirklich entfernt werden?' => _('Soll die ausgewählte Berechtigung wirklich entfernt werden?'),
 
     // resources/assets/javascripts/lib/smiley_picker.js
     'Smileys' => _('Smileys'),
@@ -182,6 +183,10 @@ $translations = array(
     'oder' => _('oder'),
 
     // resources/assets/javascripts/mvv.js
+    'Studiengang suchen' => _('Studiengang suchen'),
+    'Modul suchen' => _('Modul suchen'),
+    'Dokument suchen' => _('Dokument suchen'),
+    'AbschlussKategorie suchen' => _('AbschlussKategorie suchen'),
     'hinzufügen' => _('hinzufügen'),
     'Suche zurücksetzen' => _('Suche zurücksetzen'),
     'Keine Angabe beim Fach' => _('Keine Angabe beim Fach'),
@@ -235,12 +240,22 @@ $translations = array(
     'vorm.' => _('vorm.'),
     'nachm.' => _('nachm.'),
 
-    // resources/vue/components/StudipDateTime.vue
-    'Vor %s Minuten' => _('Vor %s Minuten'),
-
     // resources/vue/components/BlubberGlobalstream.vue
     'Zur Diskussion' => _('Zur Diskussion'),
-    'Kommentar schreiben. Enter zum Abschicken.' => _('Kommentar schreiben. Enter zum Abschicken.')
+
+    // resources/vue/components/BlubberPublicComposer.vue
+    'Schreib was, frag was. Enter zum Abschicken.' => _('Schreib was, frag was. Enter zum Abschicken.'),
+
+    // resources/vue/components/BlubberThread.vue
+    'Starte die Konversation jetzt!' => _('Starte die Konversation jetzt!'),
+    'Bearbeiten.' => _('Bearbeiten.'),
+    'Hierauf antworten.' => _('Hierauf antworten.'),
+    'Kommentar schreiben. Enter zum Abschicken.' => _('Kommentar schreiben. Enter zum Abschicken.'),
+    'Nachricht schreiben. Enter zum Abschicken' => _('Nachricht schreiben. Enter zum Abschicken'),
+    'Abschicken' => _('Abschicken'),
+
+    // resources/vue/components/StudipDateTime.vue
+    'Vor %s Minuten' => _('Vor %s Minuten'),
 
 );
 
