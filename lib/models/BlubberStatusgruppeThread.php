@@ -88,7 +88,7 @@ class BlubberStatusgruppeThread extends BlubberThread
         PersonalNotifications::add(
             $user_ids,
             $this->getURL(),
-            sprintf(_('%s hat einen Kommentar geschrieben.'), get_fullname()),
+            sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
             'blubberthread_' . $this->getId(),
             Icon::create('blubber'),
             true
