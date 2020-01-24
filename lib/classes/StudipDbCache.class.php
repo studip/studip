@@ -76,6 +76,6 @@ class StudipDbCache implements StudipCache
         $db = DBManager::get();
 
         $stmt = $db->prepare('REPLACE INTO cache VALUES(?, ?, ?)');
-        $stmt->execute([$name, serialize($content), time() + $expires]);
+        return $stmt->execute([$name, serialize($content), time() + $expires]);
     }
 }
