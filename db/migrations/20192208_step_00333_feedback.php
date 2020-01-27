@@ -23,36 +23,36 @@ class Step00333Feedback extends Migration
         $db = DBManager::get();
 
         $db->exec("CREATE TABLE IF NOT EXISTS `feedback` (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `user_id` varchar(32) NOT NULL,
-            `range_id` varchar(32) NOT NULL,
-            `range_type` varchar(32) NOT NULL,
-            `course_id` varchar(32) NOT NULL,
-            `question` text NOT NULL,
-            `description` text NOT NULL,
-            `mode` int NOT NULL,
-            `results_visible` tinyint NOT NULL,
-            `commentable` tinyint NOT NULL,
-            `mkdate` int NOT NULL,
-            `chdate` int NOT NULL,
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `user_id` varchar(32) COLLATE latin1_bin NOT NULL,
+          `range_id` varchar(32) COLLATE latin1_bin NOT NULL,
+          `range_type` varchar(32) COLLATE latin1_bin NOT NULL,
+          `course_id` varchar(32) COLLATE latin1_bin NOT NULL,
+          `question` text COLLATE utf8mb4_unicode_ci NOT NULL,
+          `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+          `mode` int(11) UNSIGNED NOT NULL,
+          `results_visible` tinyint(4) UNSIGNED NOT NULL,
+          `commentable` tinyint(4) UNSIGNED NOT NULL,
+          `mkdate` int(11) UNSIGNED NOT NULL,
+          `chdate` int(11) UNSIGNED NOT NULL,
             PRIMARY KEY (`id`),
             KEY `user_id` (`user_id`),
             INDEX `idx_range` (`range_id`,`range_type`),
             KEY `course_id` (`course_id`)
-        )");
+        ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
 
         $db->exec("CREATE TABLE IF NOT EXISTS `feedback_entries` (
-            `id` int NOT NULL AUTO_INCREMENT,
-            `feedback_id` int NOT NULL,
-            `user_id` varchar(32) NOT NULL,
-            `comment` text NOT NULL,
-            `rating` int NOT NULL,
-            `mkdate` text NOT NULL,
-            `chdate` text NOT NULL,
+              `id` int(11) NOT NULL AUTO_INCREMENT,
+              `feedback_id` int(11) UNSIGNED NOT NULL,
+              `user_id` varchar(32) COLLATE latin1_bin NOT NULL,
+              `comment` text COLLATE utf8mb4_unicode_ci NOT NULL,
+              `rating` tinyint(3) UNSIGNED NOT NULL,
+              `mkdate` int(10) UNSIGNED NOT NULL,
+              `chdate` int(10) UNSIGNED NOT NULL,
             PRIMARY KEY (`id`),
-            FOREIGN KEY (`feedback_id`) REFERENCES `feedback` (`id`),
+            KEY `feedback_id` (`feedback_id`),
             KEY `user_id` (`user_id`)
-        )");
+        ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
 
         // install as core plugin
         $db->exec(
@@ -71,7 +71,7 @@ class Step00333Feedback extends Migration
         // install config settings
         $stmt = $db->prepare('INSERT INTO config (field, value, type, `range`, mkdate, chdate, description)
                               VALUES (:name, :value, :type, :range, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)');
-      
+
       $stmt->execute([
             'name'        => 'FEEDBACK_ADMIN_PERM',
             'description' => 'Voreinstellung für Berechtigungslevel, um Einstellung zu Feedback-Elementen zu verwalten',
@@ -79,7 +79,7 @@ class Step00333Feedback extends Migration
             'type'        => 'string',
             'value'       => 'tutor'
         ]);
-      
+
       $stmt->execute([
             'name'        => 'FEEDBACK_CREATE_PERM',
             'description' => 'Voreinstellung für Berechtigungslevel, um Feedback-Elemente anzulegen.',
