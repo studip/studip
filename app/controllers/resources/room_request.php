@@ -1295,9 +1295,14 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         }
 
-        if (!($selected_room instanceof Room)) {
-            //List "my rooms" as default alternative selection.
-            $this->alternatives_selection = 'my_rooms';
+        if (!($selected_room instanceof Room) && !Request::submitted('alternatives_selection')) {
+            if (!$this->config->RESOURCES_DIRECT_ROOM_REQUESTS_ONLY) {
+                //Use the property search as default alternative selection.
+                $this->alternatives_selection = 'request';
+            } else {
+                //Use the room search instead.
+                $this->alternatives_selection = 'room_search';
+            }
         }
 
         if (!$this->requested_room_fully_available || Request::submitted('select_alternatives')) {
