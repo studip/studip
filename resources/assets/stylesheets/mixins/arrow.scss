@@ -27,6 +27,11 @@
 
 // TOP
 @mixin arrow-top-pseudo($width, $color) {
+    @include arrow-pseudo($width, $color);
+    border-bottom-color: $color;
+    bottom: 100%;
+    right: 50%;
+    margin-right: -$width;
 
 }
 @mixin arrow-top($width, $color, $margin: $width) {
