@@ -4,13 +4,13 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit74ca270d8938639e26a09ffe2ffe4c17
+class ComposerStaticInitafdff3f157d35b186059424175068bb5
 {
     public static $files = array (
-        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
     );
 
@@ -140,9 +140,9 @@ class ComposerStaticInit74ca270d8938639e26a09ffe2ffe4c17
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit74ca270d8938639e26a09ffe2ffe4c17::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit74ca270d8938639e26a09ffe2ffe4c17::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit74ca270d8938639e26a09ffe2ffe4c17::$prefixesPsr0;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitafdff3f157d35b186059424175068bb5::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitafdff3f157d35b186059424175068bb5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitafdff3f157d35b186059424175068bb5::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }
