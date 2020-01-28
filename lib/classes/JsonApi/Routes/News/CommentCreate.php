@@ -39,7 +39,7 @@ class CommentCreate extends JsonApiController
 
     protected function createCommentFromJSON($user, \StudipNews $news, array $json)
     {
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $content = self::arrayGet($json, 'data.attributes.content');
 
         return $this->createComment($user, $news, $content);
     }

@@ -72,7 +72,7 @@ trait RoutesHelperTrait
         }
 
         // Attribute: name
-        $name = studip_utf8decode(self::arrayGet($json, 'data.attributes.name'));
+        $name = self::arrayGet($json, 'data.attributes.name');
         if (!$name || 0 === mb_strlen(trim($name))) {
             return '`name` must not be empty.';
         }
@@ -296,7 +296,7 @@ trait RoutesHelperTrait
     protected function getFilename($request, $uploadedFile)
     {
         return $request->hasHeader('slug')
-            ? studip_utf8decode(rawurldecode(reset($request->getHeader('Slug'))))
+            ? rawurldecode(reset($request->getHeader('Slug')))
             : $uploadedFile->getClientFilename();
     }
 

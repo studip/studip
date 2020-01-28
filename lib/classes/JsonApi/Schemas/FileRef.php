@@ -37,8 +37,8 @@ class FileRef extends SchemaProvider
     public function getAttributes($resource)
     {
         $attributes = [
-            'name' => studip_utf8encode($resource['name']),
-            'description' => studip_utf8encode($resource['description']),
+            'name' => $resource['name'],
+            'description' => $resource['description'],
 
             'mkdate' => date('c', $resource['mkdate']),
             'chdate' => date('c', $resource['chdate']),
@@ -47,7 +47,7 @@ class FileRef extends SchemaProvider
 
             'filesize' => (int) $resource->file->size,
 
-            'storage' => studip_utf8encode($resource->file->storage),
+            'storage' => $resource->file->storage,
         ];
 
         $user = $this->getDiContainer()->get('studip-current-user');

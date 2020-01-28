@@ -42,7 +42,7 @@ class NewsUpdate extends JsonApiController
     protected function updateNewsFromJSON($user, $news, array $json)
     {
         $getField = function ($key, $default = null) use ($json) {
-            return studip_utf8decode(self::arrayGet($json, 'data.attributes.'.$key, $default));
+            return self::arrayGet($json, 'data.attributes.'.$key, $default);
         };
 
         if (self::arrayHas($json, 'data.attributes.title')) {

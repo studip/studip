@@ -44,7 +44,7 @@ class ForumCategoriesUpdate extends JsonApiController
 
     protected function updateCategoryFromJSON($category, $json)
     {
-        $title = studip_utf8decode(self::arrayGet($json, 'data.attributes.title'));
+        $title = self::arrayGet($json, 'data.attributes.title');
         $category->entry_name = $title;
         if ($category->isDirty()) {
             $category->store();
@@ -56,7 +56,7 @@ class ForumCategoriesUpdate extends JsonApiController
     protected function validateResourceDocument($json)
     {
         $title = self::arrayGet($json, 'data.attributes.title', '');
-        if (empty(studip_utf8decode($title))) {
+        if (empty($title)) {
             return 'Categories must have a title. ';
         }
     }

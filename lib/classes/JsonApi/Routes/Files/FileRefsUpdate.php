@@ -40,7 +40,7 @@ class FileRefsUpdate extends JsonApiController
     private function updateFileRef(\FileRef $fileRef, array $json, \User $user)
     {
         $getTrimmed = function ($key, $default = '') use ($json) {
-            return studip_utf8decode(trim(self::arrayGet($json, $key, $default)));
+            return trim(self::arrayGet($json, $key, $default));
         };
 
         $name = $getTrimmed('data.attributes.name', $fileRef->name);

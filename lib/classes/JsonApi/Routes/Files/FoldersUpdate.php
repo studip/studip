@@ -37,7 +37,7 @@ class FoldersUpdate extends JsonApiController
     private function updateFolder(\FolderType $folder, array $json, \User $user)
     {
         $getTrimmed = function ($key, $default = '') use ($json) {
-            return studip_utf8decode(trim(self::arrayGet($json, $key, $default)));
+            return trim(self::arrayGet($json, $key, $default));
         };
 
         // rename AND/OR change description

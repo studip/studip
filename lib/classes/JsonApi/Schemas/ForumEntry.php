@@ -21,9 +21,9 @@ class ForumEntry extends SchemaProvider
     public function getAttributes($entry)
     {
         return [
-            'title' => studip_utf8encode($entry->name),
+            'title' => $entry->name,
             'area' => (int) $entry->area,
-            'content' => studip_utf8encode($entry->content),
+            'content' => $entry->content,
         ];
     }
 

@@ -68,20 +68,18 @@ class WikiPage extends SchemaProvider
 
     public function getId($wiki)
     {
-        return studip_utf8encode(
-            sprintf(
-                '%s_%s',
-                $wiki->range_id,
-                $wiki->keyword
-            )
+        return sprintf(
+            '%s_%s',
+            $wiki->range_id,
+            $wiki->keyword
         );
     }
 
     public function getAttributes($wiki)
     {
         return [
-            'keyword' => studip_utf8encode($wiki->keyword),
-            'content' => studip_utf8encode($wiki->body),
+            'keyword' => $wiki->keyword,
+            'content' => $wiki->body,
             'chdate' => date('c', $wiki->chdate),
             'version' => (int) $wiki->version,
         ];
@@ -106,7 +104,7 @@ class WikiPage extends SchemaProvider
               : \User::build(['id' => $wiki->user_id], false);
         $relationships[self::REL_AUTHOR] = [
             self::LINKS => [
-                Link::RELATED => new Link('/users/'.studip_utf8encode($wiki->user_id)),
+                Link::RELATED => new Link('/users/' . $wiki->user_id),
             ],
             self::DATA => $data,
         ];
@@ -118,7 +116,7 @@ class WikiPage extends SchemaProvider
     {
         $relationships[self::REL_RANGE] = [
             self::LINKS => [
-                Link::RELATED => new Link('/'.self::getRangeType($wiki).'/'.studip_utf8encode($wiki->range_id)),
+                Link::RELATED => new Link('/' . self::getRangeType($wiki) . '/' . $wiki->range_id),
             ],
             self::DATA => $this->prepareRange($wiki, $includeList),
         ];

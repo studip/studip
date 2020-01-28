@@ -42,11 +42,11 @@ class Activity extends SchemaProvider
         }
 
         $result = [
-            'title' => studip_utf8encode($this->createTitle($activity)),
+            'title' => $this->createTitle($activity),
             'mkdate' => date('c', $activity->mkdate),
-            'content' => studip_utf8encode($activity->content),
-            'verb' => studip_utf8encode($activity->verb),
-            'activity-type' => studip_utf8encode($activityType),
+            'content' => $activity->content,
+            'verb' => $activity->verb,
+            'activity-type' => $activityType,
         ];
 
         return $result;
@@ -128,8 +128,8 @@ class Activity extends SchemaProvider
         } else {
             $relationships[self::REL_OBJECT] = [
                 self::META => [
-                    'object-type' => studip_utf8encode($activity->object_type),
-                    'object-id' => studip_utf8encode($activity->object_id),
+                    'object-type' => $activity->object_type,
+                    'object-id' => $activity->object_id,
                 ],
             ];
         }

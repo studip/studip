@@ -22,22 +22,22 @@ class CourseMember extends SchemaProvider
     public function getAttributes($membership)
     {
         $attributes = [
-            'permission' => studip_utf8encode($membership->status),
+            'permission' => $membership->status,
             'position' => (int) $membership->position,
             'group' => (int) $membership->gruppe,
             'mkdate' => date('c', $membership->mkdate),
-            'label' => studip_utf8encode($membership->label),
+            'label' => $membership->label,
         ];
         // TODO: "bind_calendar": "1",
 
         if ($user = $this->getDiContainer()->get('studip-current-user')) {
             if (MembershipAuthority::canIndexMembershipsOfUser($user, $membership->user)) {
                 $attributes['notification'] = (int) $membership->notification;
-                $attributes['visible'] = studip_utf8encode($membership->visible);
+                $attributes['visible'] = $membership->visible;
             }
             if (CourseAuthority::canEditCourse($user, $membership->course)) {
-                $attributes['comment'] = studip_utf8encode($membership->comment);
-                $attributes['visible'] = studip_utf8encode($membership->visible);
+                $attributes['comment'] = $membership->comment;
+                $attributes['visible'] = $membership->visible;
             }
         }
 

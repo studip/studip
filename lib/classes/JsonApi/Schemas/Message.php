@@ -22,12 +22,12 @@ class Message extends SchemaProvider
         $user = $this->getDiContainer()->get('studip-current-user');
 
         return [
-            'subject' => studip_utf8encode($message->subject),
-            'message' => studip_utf8encode($message->message),
+            'subject' => $message->subject,
+            'message' => $message->message,
             'mkdate' => date('c', $message->mkdate),
             'is-read' => (bool) $message->isRead($user->id),
-            'priority' => studip_utf8encode($message->priority),
-            'tags' => studip_utf8encode($message->getTags()),
+            'priority' => $message->priority,
+            'tags' => $message->getTags(),
         ];
     }
 

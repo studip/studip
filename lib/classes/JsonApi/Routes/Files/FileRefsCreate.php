@@ -65,7 +65,7 @@ class FileRefsCreate extends JsonApiController
         \FolderType $parentFolder
     ) {
         $getTrimmed = function ($key, $default = '') use ($json) {
-            return studip_utf8decode(trim(self::arrayGet($json, $key, $default)));
+            return trim(self::arrayGet($json, $key, $default));
         };
 
         $name = $getTrimmed('data.attributes.name');

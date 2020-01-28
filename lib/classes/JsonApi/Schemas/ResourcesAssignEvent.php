@@ -23,11 +23,11 @@ class ResourcesAssignEvent extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'repeat-mode' => studip_utf8encode($resource->getRepeatMode()),
+            'repeat-mode' => $resource->getRepeatMode(),
             'start' => date('c', $resource->getBegin()),
             'end' => date('c', $resource->getEnd()),
 
-            'owner-free-text' => studip_utf8encode($resource->getUserFreeName()),
+            'owner-free-text' => $resource->getUserFreeName(),
         ];
     }
 
@@ -51,7 +51,7 @@ class ResourcesAssignEvent extends SchemaProvider
     private function addOwnerRelationship(array $relationships, $resource, $includeList)
     {
         $getObject = function ($resource) {
-            $ownerId = studip_utf8encode($resource->getAssignUserId());
+            $ownerId = $resource->getAssignUserId();
             $type = get_object_type($ownerId);
 
             switch ($type) {

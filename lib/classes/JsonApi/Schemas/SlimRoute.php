@@ -16,8 +16,8 @@ class SlimRoute extends SchemaProvider
     public function getAttributes($route)
     {
         return [
-            'methods' => studip_utf8encode($route->getMethods()),
-            'pattern' => studip_utf8encode($route->getPattern()),
+            'methods' => $route->getMethods(),
+            'pattern' => $route->getPattern(),
         ];
     }
 

@@ -25,9 +25,9 @@ class Folder extends SchemaProvider
         $user = $this->getDiContainer()->get('studip-current-user');
 
         $attributes = [
-            'folder-type' => studip_utf8encode($resource->folder_type),
-            'name' => studip_utf8encode($resource->name),
-            'description' => $resource->description ? studip_utf8encode($resource->description) : null,
+            'folder-type' => $resource->folder_type,
+            'name' => $resource->name,
+            'description' => $resource->description ?: null,
 
             'mkdate' => date('c', $resource->mkdate),
             'chdate' => date('c', $resource->chdate),
@@ -132,8 +132,8 @@ class Folder extends SchemaProvider
     {
         return [
             self::META => [
-                'range_id' => studip_utf8encode($resource->range_id),
-                'range_type' => studip_utf8encode($resource->range_type),
+                'range_id' => $resource->range_id,
+                'range_type' => $resource->range_type,
             ],
         ];
     }

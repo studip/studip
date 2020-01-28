@@ -20,7 +20,7 @@ class InstituteMember extends SchemaProvider
     public function getAttributes($resource)
     {
         $defaultNull = function ($key) use ($resource) {
-            return $resource->$key ? studip_utf8encode($resource->$key) : null;
+            return $resource->$key ?: null;
         };
 
         $attributes = [

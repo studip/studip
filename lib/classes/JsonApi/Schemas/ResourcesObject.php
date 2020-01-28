@@ -21,15 +21,15 @@ class ResourcesObject extends SchemaProvider
     public function getPrimaryMeta($resource)
     {
         return [
-            'resource-type' => studip_utf8encode($resource->category->name),
+            'resource-type' => $resource->category->name,
         ];
     }
 
     public function getAttributes($resource)
     {
         return [
-            'name' => studip_utf8encode($resource->name),
-            'description' => studip_utf8encode($resource->description),
+            'name' => $resource->name,
+            'description' => $resource->description,
 
             'is-room' => (bool) $resource->category->is_room,
             'multiple-assign' => (bool) $resource->multiple_assign,
@@ -63,7 +63,7 @@ class ResourcesObject extends SchemaProvider
             $relationships[self::REL_CATEGORY] = [
                 self::DATA => $resource->category,
                 self::LINKS => [
-                    Link::RELATED => new Link('/resources-categories/'.studip_utf8encode($resource->category_id)),
+                    Link::RELATED => new Link('/resources-categories/' . $resource->category_id),
                 ],
             ];
         }

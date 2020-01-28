@@ -170,20 +170,18 @@ class Ranges extends RelationshipsController
 
     private function findRange($type, $rangeId)
     {
-        $decodedRangeId = studip_utf8decode($rangeId);
-
         switch ($type) {
             case \JsonApi\Schemas\Studip::TYPE:
                 return $this->container['studip-system-object'];
 
             case \JsonApi\Schemas\Course::TYPE:
-                return \Course::find($decodedRangeId);
+                return \Course::find($rangeId);
 
             case \JsonApi\Schemas\User::TYPE:
-                return \User::find($decodedRangeId);
+                return \User::find($rangeId);
 
             case \JsonApi\Schemas\Institute::TYPE:
-                return \Institute::find($decodedRangeId);
+                return \Institute::find($rangeId);
         }
 
         return null;

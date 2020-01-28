@@ -21,12 +21,12 @@ class Institute extends SchemaProvider
     public function getAttributes($institute)
     {
         return [
-            'name' => studip_utf8encode($institute['Name']),
-            'city' => studip_utf8encode($institute['Plz']),
-            'street' => studip_utf8encode($institute['Strasse']),
-            'phone' => studip_utf8encode($institute['telefon']),
-            'fax' => studip_utf8encode($institute['fax']),
-            'url' => studip_utf8encode($institute['url']),
+            'name' => $institute['Name'],
+            'city' => $institute['Plz'],
+            'street' => $institute['Strasse'],
+            'phone' => $institute['telefon'],
+            'fax' => $institute['fax'],
+            'url' => $institute['url'],
             'mkdate' => date('c', $institute['mkdate']),
             'chdate' => date('c', $institute['chdate']),
         ];

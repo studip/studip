@@ -16,8 +16,8 @@ class Semester extends SchemaProvider
     public function getAttributes($semester)
     {
         return [
-            'title' => studip_utf8encode($semester->name),
-            'description' => studip_utf8encode($semester->description),
+            'title' => $semester->name,
+            'description' => $semester->description,
             'start' => date('c', $semester->beginn),
             'end' => date('c', $semester->ende),
             // TODO: vorles_beginn

@@ -19,12 +19,12 @@ class CourseEvent extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'title' => studip_utf8encode($resource->title),
-            'description' => studip_utf8encode($resource->getDescription()),
+            'title' => $resource->title,
+            'description' => $resource->getDescription(),
             'start' => date('c', $resource->getStart()),
             'end' => date('c', $resource->getEnd()),
-            'categories' => array_filter(studip_utf8encode($resource->toStringCategories(true))),
-            'location' => studip_utf8encode($resource->getLocation()),
+            'categories' => array_filter($resource->toStringCategories(true)),
+            'location' => $resource->getLocation(),
 
             'mkdate' => date('c', $resource->mkdate),
             'chdate' => date('c', $resource->chdate),

@@ -20,7 +20,7 @@ class StudipComment extends SchemaProvider
     public function getAttributes($comment)
     {
         return [
-            'content' => studip_utf8encode($comment->content),
+            'content' => $comment->content,
             'mkdate' => date('c', $comment->mkdate),
             'chdate' => date('c', $comment->chdate),
         ];

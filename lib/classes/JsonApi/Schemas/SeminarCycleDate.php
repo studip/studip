@@ -22,15 +22,15 @@ class SeminarCycleDate extends SchemaProvider
 
         return [
             'title' => self::createTitle($course),
-            'description' => mb_strlen(trim($entry->description)) ? studip_utf8encode($entry->description) : null,
+            'description' => mb_strlen(trim($entry->description)) ? $entry->description : null,
 
             'start' => sprintf('%02d:%02d', $entry->start_hour, $entry->start_minute),
             'end' => sprintf('%02d:%02d', $entry->end_hour, $entry->end_minute),
             'weekday' => (int) $entry->weekday,
 
-            'recurrence' => studip_utf8encode($this->getRecurring($entry)),
+            'recurrence' => $this->getRecurring($entry),
 
-            'locations' => studip_utf8encode(self::createLocation($entry)),
+            'locations' => self::createLocation($entry),
         ];
     }
 
@@ -85,7 +85,7 @@ class SeminarCycleDate extends SchemaProvider
         if ($course->veranstaltungsnummer) {
             $title = sprintf('%s %s', $course->veranstaltungsnummer, $course->name);
         } else {
-            $title = studip_utf8encode($course->name);
+            $title = $course->name;
         }
 
         return $title;

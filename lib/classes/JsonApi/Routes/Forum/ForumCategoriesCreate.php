@@ -41,7 +41,7 @@ class ForumCategoriesCreate extends JsonApiController
 
     protected function createCategoryFromJSON($courseId, $json)
     {
-        $title = studip_utf8decode(self::arrayGet($json, 'data.attributes.title'));
+        $title = self::arrayGet($json, 'data.attributes.title');
 
         $category = new ForumCat();
         $category->seminar_id = $courseId;
@@ -54,7 +54,7 @@ class ForumCategoriesCreate extends JsonApiController
     protected function validateResourceDocument($json)
     {
         $title = self::arrayGet($json, 'data.attributes.title', '');
-        if (empty(studip_utf8decode($title))) {
+        if (empty($title)) {
             return 'Categorys must have a title. ';
         }
     }

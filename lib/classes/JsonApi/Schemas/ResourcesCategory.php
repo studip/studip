@@ -16,8 +16,8 @@ class ResourcesCategory extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'name' => studip_utf8encode($resource->name),
-            'description' => studip_utf8encode($resource->description),
+            'name' => $resource->name,
+            'description' => $resource->description,
 
             'system' => (bool) $resource->system,
             'is-room' => (bool) $resource->is_room,

@@ -90,9 +90,9 @@ class MessageCreate extends JsonApiController
 
     protected function createMessageFromJSON(\User $user, array $json)
     {
-        $subject = studip_utf8decode(self::arrayGet($json, 'data.attributes.subject'));
-        $body = studip_utf8decode(self::arrayGet($json, 'data.attributes.message'));
-        $tags = studip_utf8decode(self::arrayGet($json, 'data.attributes.tags', []));
+        $subject = self::arrayGet($json, 'data.attributes.subject');
+        $body = self::arrayGet($json, 'data.attributes.message');
+        $tags = self::arrayGet($json, 'data.attributes.tags', []);
 
         $recipients = $this->getRecipientsFromJSON($json);
 
@@ -112,7 +112,7 @@ class MessageCreate extends JsonApiController
 
                 return $user;
             },
-            studip_utf8decode(self::arrayGet($json, 'data.relationships.recipients.data'))
+            self::arrayGet($json, 'data.relationships.recipients.data')
         );
     }
 

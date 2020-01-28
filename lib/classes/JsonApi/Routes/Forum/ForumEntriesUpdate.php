@@ -44,8 +44,8 @@ class ForumEntriesUpdate extends JsonApiController
 
     protected function updateEntryFromJSON($entry, $json)
     {
-        $title = studip_utf8decode(self::arrayGet($json, 'data.attributes.title'));
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $title = self::arrayGet($json, 'data.attributes.title');
+        $content = self::arrayGet($json, 'data.attributes.content');
         if (!empty($title)) {
             $entry->name = $title;
         }
@@ -64,8 +64,8 @@ class ForumEntriesUpdate extends JsonApiController
 
     protected function validateResourceDocument($json)
     {
-        $title = studip_utf8decode(self::arrayGet($json, 'data.attributes.title'));
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $title = self::arrayGet($json, 'data.attributes.title');
+        $content = self::arrayGet($json, 'data.attributes.content');
 
         if (empty($title) && empty($content)) {
             return 'You must change entry-data to update.';

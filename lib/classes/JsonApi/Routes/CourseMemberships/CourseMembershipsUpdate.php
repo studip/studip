@@ -53,7 +53,7 @@ class CourseMembershipsUpdate extends JsonApiController
     protected function updateMembershipFromJSON($membership, array $json)
     {
         $getField = function ($key, $default = null) use ($json) {
-            return studip_utf8decode(self::arrayGet($json, 'data.attributes.'.$key, $default));
+            return self::arrayGet($json, 'data.attributes.'.$key, $default);
         };
 
         if (self::arrayHas($json, 'data.attributes.group')) {

@@ -119,7 +119,7 @@ class Contacts extends RelationshipsController
         $contacts = [];
 
         foreach (self::arrayGet($json, 'data') as $contactResource) {
-            if (!$contact = \User::find(studip_utf8decode($contactResource['id']))) {
+            if (!$contact = \User::find($contactResource['id'])) {
                 throw new RecordNotFoundException();
             }
 

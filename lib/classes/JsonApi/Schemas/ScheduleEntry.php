@@ -19,8 +19,8 @@ class ScheduleEntry extends SchemaProvider
     public function getAttributes($entry)
     {
         return [
-            'title' => studip_utf8encode($entry->title),
-            'description' => mb_strlen(trim($entry->content)) ? studip_utf8encode($entry->content) : null,
+            'title' => $entry->title,
+            'description' => mb_strlen(trim($entry->content)) ? $entry->content : null,
 
             'start' => $this->formatTime($entry->start),
             'end' => $this->formatTime($entry->end),

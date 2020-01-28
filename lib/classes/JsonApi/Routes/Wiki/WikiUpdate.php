@@ -38,7 +38,7 @@ class WikiUpdate extends JsonApiController
 
     protected function updateWikiFromJSON(\User $user, \WikiPage $wikiPage, $json)
     {
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $content = self::arrayGet($json, 'data.attributes.content');
 
         if (method_exists(\Studip\Markup::class, 'purifyHtml')) {
             $content = transformBeforeSave(\Studip\Markup::purifyHtml($content));

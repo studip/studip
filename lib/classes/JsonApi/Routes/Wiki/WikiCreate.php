@@ -35,7 +35,7 @@ class WikiCreate extends JsonApiController
             throw new AuthorizationFailedException();
         }
 
-        $keyword = studip_utf8decode(self::arrayGet($json, 'data.attributes.keyword'));
+        $keyword = self::arrayGet($json, 'data.attributes.keyword');
 
         if (\WikiPage::findLatestPage($range->id, $keyword)) {
             throw new ConflictError('Wiki page already exists.');
@@ -50,8 +50,8 @@ class WikiCreate extends JsonApiController
 
     protected function createWikiFromJSON(\User $user, $range, $json)
     {
-        $keyword = studip_utf8decode(self::arrayGet($json, 'data.attributes.keyword'));
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $keyword = self::arrayGet($json, 'data.attributes.keyword');
+        $content = self::arrayGet($json, 'data.attributes.content');
 
         if (method_exists(\Studip\Markup::class, 'purifyHtml')) {
             $content = transformBeforeSave(\Studip\Markup::purifyHtml($content));
@@ -72,7 +72,7 @@ class WikiCreate extends JsonApiController
     protected function validateResourceDocument($json, $data)
     {
         $keyword = self::arrayGet($json, 'data.attributes.keyword', '');
-        if (empty(studip_utf8decode($keyword))) {
+        if (empty($keyword)) {
             return 'Wikis must have a title (keyword)';
         }
 

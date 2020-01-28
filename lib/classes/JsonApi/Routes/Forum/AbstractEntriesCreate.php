@@ -14,7 +14,7 @@ abstract class AbstractEntriesCreate extends JsonApiController
     protected function validateResourceDocument($json)
     {
         $content = self::arrayHas($json, 'data.attributes.title');
-        if (empty(studip_utf8decode($content))) {
+        if (empty($content)) {
             return 'Entries should not be empty.';
         }
     }
@@ -22,8 +22,8 @@ abstract class AbstractEntriesCreate extends JsonApiController
     protected function createEntryFromJSON($user, $parentId, $json)
     {
         //Check whether the parent is category or entry of first or seccond depth
-        $title = studip_utf8decode(self::arrayGet($json, 'data.attributes.title'));
-        $content = studip_utf8decode(self::arrayGet($json, 'data.attributes.content'));
+        $title = self::arrayGet($json, 'data.attributes.title');
+        $content = self::arrayGet($json, 'data.attributes.content');
         if (method_exists(\Studip\Markup::class, 'purifyHtml')) {
             $content = transformBeforeSave(\Studip\Markup::purifyHtml($content));
         }

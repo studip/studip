@@ -27,10 +27,10 @@ class File extends SchemaProvider
     public function getAttributes($resource)
     {
         $attributes = [
-            'name' => studip_utf8encode($resource['name']),
-            'mime-type' => studip_utf8encode($resource['mime_type']),
+            'name' => $resource['name'],
+            'mime-type' => $resource['mime_type'],
             'filesize' => (int) $resource['size'],
-            'storage' => studip_utf8encode($resource['storage']),
+            'storage' => $resource['storage'],
 
             'mkdate' => date('c', $resource['mkdate']),
             'chdate' => date('c', $resource['chdate']),
@@ -39,7 +39,7 @@ class File extends SchemaProvider
         if ($resource['storage'] === 'url') {
             $user = $this->getDiContainer()->get('studip-current-user');
             if (FilesAuthority::canUpdateFile($user, $resource)) {
-                $attributes['url'] = studip_utf8encode($resource['url']);
+                $attributes['url'] = $resource['url'];
             }
         }
 

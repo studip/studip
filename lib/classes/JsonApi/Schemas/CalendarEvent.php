@@ -19,12 +19,12 @@ class CalendarEvent extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'title' => studip_utf8encode($resource->title),
-            'description' => studip_utf8encode($resource->getDescription()),
+            'title' => $resource->title,
+            'description' => $resource->getDescription(),
             'start' => date('c', $resource->getStart()),
             'end' => date('c', $resource->getEnd()),
-            'categories' => studip_utf8encode($resource->toStringCategories(true)),
-            'location' => studip_utf8encode($resource->getLocation()),
+            'categories' => $resource->toStringCategories(true),
+            'location' => $resource->getLocation(),
 // TODO: 'is-canceled'    => $singledate->isHoliday() ?: false,
 
             'mkdate' => date('c', $resource->mkdate),

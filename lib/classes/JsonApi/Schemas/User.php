@@ -47,14 +47,14 @@ class User extends SchemaProvider
     public function getAttributes($user)
     {
         $attrs = [
-            'username' => studip_utf8encode($user->username),
-            'formatted-name' => studip_utf8encode(trim($user->getFullName())),
-            'family-name' => studip_utf8encode($user->nachname),
-            'given-name' => studip_utf8encode($user->vorname),
-            'name-prefix' => studip_utf8encode($user->title_front),
-            'name-suffix' => studip_utf8encode($user->title_rear),
-            'permission' => studip_utf8encode($user->perms),
-            'email' => studip_utf8encode(get_visible_email($user->id)),
+            'username' => $user->username,
+            'formatted-name' => trim($user->getFullName()),
+            'family-name' => $user->nachname,
+            'given-name' => $user->vorname,
+            'name-prefix' => $user->title_front,
+            'name-suffix' => $user->title_rear,
+            'permission' => $user->perms,
+            'email' => get_visible_email($user->id),
         ];
 
         return $attrs + iterator_to_array($this->getProfileAttributes($user));

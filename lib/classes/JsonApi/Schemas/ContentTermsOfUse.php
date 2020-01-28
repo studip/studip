@@ -16,11 +16,11 @@ class ContentTermsOfUse extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'name' => studip_utf8encode($resource['name']),
-            'description' => mb_strlen($resource['description']) ? studip_utf8encode($resource['description']) : null,
-            'icon' => studip_utf8encode($resource['icon']),
-            'mkdate' => date('c', studip_utf8encode($resource['mkdate'])),
-            'chdate' => date('c', studip_utf8encode($resource['chdate'])),
+            'name' => $resource['name'],
+            'description' => mb_strlen($resource['description']) ? $resource['description'] : null,
+            'icon' => $resource['icon'],
+            'mkdate' => date('c', $resource['mkdate']),
+            'chdate' => date('c', $resource['chdate']),
         ];
     }
 }

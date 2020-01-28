@@ -21,7 +21,7 @@ class ForumCategory extends SchemaProvider
     public function getAttributes($category)
     {
         return [
-            'title' => studip_utf8encode($category->entry_name),
+            'title' => $category->entry_name,
             'position' => (int) $category->pos,
         ];
     }

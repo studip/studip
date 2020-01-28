@@ -16,8 +16,8 @@ class StudipProperty extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'description' => studip_utf8encode($resource->description),
-            'value' => studip_utf8encode($resource->value),
+            'description' => $resource->description,
+            'value' => $resource->value,
         ];
     }
 
