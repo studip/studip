@@ -10,24 +10,11 @@ $translations = array(
     'Gefundene Nutzer' => _('Gefundene Nutzer'),
     'Wollen Sie diesen Filter wirklich entfernen?' => _('Wollen Sie diesen Filter wirklich entfernen?'),
 
-    // data/assets_cache/e4ea037cea4bddd3daf26b0c0e468e8a.js
-    'Vor wenigen Sekunden' => _('Vor wenigen Sekunden'),
-    'Vor einer Minute' => _('Vor einer Minute'),
-    'Vor <%= distance %> Minuten' => _('Vor <%= distance %> Minuten'),
-    'Sichtbarkeit' => _('Sichtbarkeit'),
-    'Der Beitrag konnte nicht gelöscht werden.' => _('Der Beitrag konnte nicht gelöscht werden.'),
-    'Es ist ein Fehler aufgetreten' => _('Es ist ein Fehler aufgetreten'),
-
-    // data/upload_doc/79/7992020da37ee5cf4b270540177759df
-    'Sie haben noch keine Anmelderegeln festgelegt.' => _('Sie haben noch keine Anmelderegeln festgelegt.'),
-    'Dialog wird geladen...' => _('Dialog wird geladen...'),
-    'Fehler beim Aufruf des News-Controllers' => _('Fehler beim Aufruf des News-Controllers'),
-    'Neuen Termin eintragen' => _('Neuen Termin eintragen'),
-    'Veranstaltungsdetails' => _('Veranstaltungsdetails'),
-    'Termindetails bearbeiten' => _('Termindetails bearbeiten'),
-    'Detaillierte Veranstaltungsliste' => _('Detaillierte Veranstaltungsliste'),
-    'Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?' => _('Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?'),
-    'Anonym' => _('Anonym'),
+    // public/assets/javascripts/ckeditor/plugins/studip-quote/plugin.js
+    'Zitat einfügen' => _('Zitat einfügen'),
+    'Zitat teilen' => _('Zitat teilen'),
+    'Zitat löschen' => _('Zitat löschen'),
+    '%s hat geschrieben:' => _('%s hat geschrieben:'),
 
     // public/plugins_packages/core/Forum/javascript/forum.js
     'Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!' => _('Wenn Sie die Seite verlassen, gehen ihre Änderungen verloren!'),
@@ -35,7 +22,8 @@ $translations = array(
     'Alle Bereiche werden dann nach "Allgemein" verschoben!' => _('Alle Bereiche werden dann nach "Allgemein" verschoben!'),
     'Sind sie sicher, dass Sie diesen Bereich löschen möchten? ' => _('Sind sie sicher, dass Sie diesen Bereich löschen möchten? '),
     'Es werden auch alle Beiträge in diesem Bereich gelöscht!' => _('Es werden auch alle Beiträge in diesem Bereich gelöscht!'),
-    '%s hat geschrieben:' => _('%s hat geschrieben:'),
+    'Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?' => _('Sind sie sicher, dass Sie ihren bisherigen Beitrag verwerfen wollen?'),
+    'Anonym' => _('Anonym'),
     'Die Senderin/der Sender dieser Nachricht möchte Sie auf den folgenden Beitrag aufmerksam machen. ' => _('Die Senderin/der Sender dieser Nachricht möchte Sie auf den folgenden Beitrag aufmerksam machen. '),
     'Link zum Beitrag: ' => _('Link zum Beitrag: '),
     'Beitrag verschieben' => _('Beitrag verschieben'),
@@ -83,6 +71,7 @@ $translations = array(
     // resources/assets/javascripts/lib/admission.js
     'Wird geladen' => _('Wird geladen'),
     'Anmelderegel konfigurieren' => _('Anmelderegel konfigurieren'),
+    'Sie haben noch keine Anmelderegeln festgelegt.' => _('Sie haben noch keine Anmelderegeln festgelegt.'),
     'Sie haben noch niemanden hinzugefügt.' => _('Sie haben noch niemanden hinzugefügt.'),
 
     // resources/assets/javascripts/lib/big_image_handler.js
@@ -116,6 +105,9 @@ $translations = array(
     'Objekt aufklappen' => _('Objekt aufklappen'),
     'Objekt zuklappen' => _('Objekt zuklappen'),
 
+    // resources/assets/javascripts/lib/instschedule.js
+    'Detaillierte Veranstaltungsliste' => _('Detaillierte Veranstaltungsliste'),
+
     // resources/assets/javascripts/lib/jsupdater.js
     'Bitte laden Sie die Seite neu, um fortzufahren' => _('Bitte laden Sie die Seite neu, um fortzufahren'),
     'Neu laden' => _('Neu laden'),
@@ -135,6 +127,10 @@ $translations = array(
 
     // resources/assets/javascripts/lib/multi_select.js
     '<%= count %> ausgewählt' => _('<%= count %> ausgewählt'),
+
+    // resources/assets/javascripts/lib/news.js
+    'Dialog wird geladen...' => _('Dialog wird geladen...'),
+    'Fehler beim Aufruf des News-Controllers' => _('Fehler beim Aufruf des News-Controllers'),
 
     // resources/assets/javascripts/lib/overlapping.js
     'Studiengangteil suchen' => _('Studiengangteil suchen'),
@@ -163,6 +159,11 @@ $translations = array(
 
     // resources/assets/javascripts/lib/resources.js
     'Soll die ausgewählte Berechtigung wirklich entfernt werden?' => _('Soll die ausgewählte Berechtigung wirklich entfernt werden?'),
+
+    // resources/assets/javascripts/lib/schedule.js
+    'Neuen Termin eintragen' => _('Neuen Termin eintragen'),
+    'Veranstaltungsdetails' => _('Veranstaltungsdetails'),
+    'Termindetails bearbeiten' => _('Termindetails bearbeiten'),
 
     // resources/assets/javascripts/lib/smiley_picker.js
     'Smileys' => _('Smileys'),

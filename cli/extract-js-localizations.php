@@ -26,15 +26,29 @@ require 'studip_cli_env.inc.php';
  */
 function should_skip_file($filename, $realfile) {
     $exclude = [
+        'cli/*',
+        'composer/*',
+        'config/*',
+        'data/*',
+        'db/*',
+        'doc/*',
         'locale/*',
         'node_modules/*',
-        'public/assets/*',
+        'public/assets/flash*',
+        'public/assets/fonts*',
+        'public/assets/images*',
+        'public/assets/javascripts/*',
+        'public/assets/sounds*',
+        'public/assets/squeezed*',
+        'public/assets/stylesheets*',
         'public/pictures/*',
         'public/plugins_packages/*',
         'test/*',
+        'tests/*',
         'vendor/*',
     ];
     $include = [
+        'public/assets/javascripts/ckeditor*',
         'public/plugins_packages/core*',
     ];
     $mime_types = [
