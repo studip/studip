@@ -78,5 +78,5 @@ interface JsonApiPlugin
      * @return array ein Array von Zuordnungen von Model-Klassennamen
      *               zu den entsprechenden Schema-Klassennamen
      */
-    public function registerSchemas();
+    public function registerSchemas(): array;
 }
