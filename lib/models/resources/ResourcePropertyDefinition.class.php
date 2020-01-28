@@ -63,7 +63,7 @@ class ResourcePropertyDefinition extends SimpleORMap
 
         parent::configure($config);
     }
-    
+
     public static function findByPropertyGroup($group_id)
     {
         return self::findBySql(
@@ -74,7 +74,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             ]
         );
     }
-    
+
     /**
      * Returns a list of all defined data types.
      *
@@ -95,7 +95,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             'url'
         ];
     }
-    
+
     /**
      * Returns all available options for this property
      * as an array.
@@ -107,8 +107,8 @@ class ResourcePropertyDefinition extends SimpleORMap
         }
         return [];
     }
-    
-    
+
+
     public function setOptionsFromArray($array = [])
     {
         if (is_array($array)) {
@@ -117,7 +117,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             $this->options = '';
         }
     }
-    
+
     /**
      * Generates appropriate HTML input elements for this property.
      *
@@ -189,7 +189,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             foreach ($this->getOptionsArray() as $option) {
                 $options_html .= sprintf(
                     '<option value="%1$s" %2$s>%1$s</option>',
-                    $option,
+                    htmlReady($option),
                     $value == $option ? 'selected="selected"' : ''
                 );
             }
@@ -261,7 +261,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             }
         }
     }
-    
+
     /**
      * Verifies that a property value (state) is valid for the given
      * resource property definition.
@@ -363,7 +363,7 @@ class ResourcePropertyDefinition extends SimpleORMap
             return $property;
         }
     }
-    
+
     public function __toString()
     {
         //I18N fields can be an instance of I18NString or not.
