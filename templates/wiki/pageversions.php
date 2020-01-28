@@ -5,8 +5,8 @@
     </caption>
  
     <colgroup>
-        <col style="width: 10%;">
-        <col style="width: 30%;">
+        <col style="width: 5%;">
+        <col style="width: 25%;">
         <col style="width: 70%;">
     </colgroup>
 
@@ -55,7 +55,7 @@
 
     <tfoot>
         <tr>
-            <td colspan="4">
+            <td colspan="3">
                 <?= Studip\LinkButton::create(
                     _('Alle Versionen löschen'),
                     URLHelper::getURL("?cmd=really_delete_all&keyword=".urlencode($keyword)),

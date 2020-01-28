@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="flex">
-                <div class="text-color">
+                <div class="wiki-teaser">
                     <?= _('Mach die Welt ein Stückchen schlauer.') ?>
                 </div>
             </div>

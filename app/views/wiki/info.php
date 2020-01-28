@@ -1,7 +1,11 @@
-<aside>
+<h1>
+    <?= htmlReady($keyword) ?>
+</h1>
+
+<aside class="wiki-info-aside">
     <table class="default nohover">
         <caption>
-            <?= htmlReady($keyword) ?>
+            <?= _('Details') ?>
         </caption>
 
         <tbody>
@@ -20,7 +24,7 @@
             </tr>
             <tr>
                 <td><?= _('Erstellt von') ?></td>
-                <td><?= $first_user->username ?></td>
+                <td><?= htmlReady($first_user->username) ?></td>
             </tr>
             <tr>
                 <td><?= _('Zuletzt geändert') ?></td>
@@ -28,13 +32,13 @@
             </tr>
             <tr>
                 <td><?= _('Geändert von') ?></td>
-                <td><?= $last_user->username ?></td>
+                <td><?= htmlReady($last_user->username) ?></td>
             </tr>
         </tbody>
     </table>
 </aside>
 
-<table class="default nohover">
+<table class="default nohover wiki-backlinks">
     <caption>
         <?=_('Verweise auf diese Seite') ?>
     </caption>
@@ -44,7 +48,7 @@
             <? foreach (getBacklinks($keyword) as $backlink) : ?>
                 <tr>
                     <td>
-                        <a href="<?= URLHelper::getURL('wiki.php', ['keyword' => $backlink]) ?>">
+                        <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => $backlink]) ?>">
                             <?= Icon::create('link-extern') ?>
                             <?= htmlReady($backlink) ?>
                         </a>

@@ -1295,15 +1295,15 @@ function getShowPageInfobox($keyword, $latest_version)
 
     if (count($versions) >= 1) {
         $widget->addLink(
-            _('Änderungen anzeigen'),
+            _('Änderungsliste'),
             URLHelper::getURL('?view=diff', compact('keyword'))
         )->setActive(Request::option('view') === 'diff');
         $widget->addLink(
-            _('Text mit Autor/-innenzuordnung anzeigen'),
+            _('Text mit Autor/-innenzuordnung'),
             URLHelper::getURL('?view=combodiff', compact('keyword'))
         )->setActive(Request::option('view') === 'combodiff');
         $widget->addLink(
-            _('Versionen dieser Seite'),
+            _('Alle Versionen dieser Seite'),
             URLHelper::getURL('?view=pageversions', compact('keyword'))
         )->setActive(Request::option('view') === 'pageversions');
     }
@@ -1557,7 +1557,7 @@ function showComboDiff($keyword, $db=NULL)
             if ($count % 4 == 0) {
                 $legend.= "<tr width=\"100%\">";
             }
-            $legend.= "<td bgcolor=".create_color($count)." width=14>&nbsp;</td><td><font size=-1>".get_fullname($i->who,'full',1)."</font></td><td>&nbsp;</td>";
+            $legend.= "<td class=\"wiki-author".($count % 30)."\" width=\"14\">&nbsp;</td><td><font size=-1>".get_fullname($i->who,'full',1)."</font></td><td>&nbsp;</td>";
             if ($count % 4 == 3) {
                 $legend .= "</tr>";
             }
@@ -1577,8 +1577,7 @@ function showComboDiff($keyword, $db=NULL)
         if (!$i || $last_author != $i->who) {
             if (trim($collect)!="") {
                 $idx=array_search($last_author, $authors);
-                $col=create_color($idx);
-                $content .= "<tr bgcolor=$col>";
+                $content .= "<tr class=\"wiki-author".($idx % 30)."\">";
                 $content .= "<td width=30 align=center valign=top>";
                 $content .= Icon::create('info-circle', 'inactive', ['title' => _("Änderung von").' ' . get_fullname($last_author)])->asImg();
                 $content .= "</td>";
@@ -1614,23 +1613,6 @@ function showComboDiff($keyword, $db=NULL)
           'vorgenommen haben.')];
     Helpbar::get()->ignoreDatabaseContents();
     Helpbar::get()->addPlainText('', $help);
-}
-
-function create_color($index) {
-    $shades=["e","b","d","a","c","9","8","7","6","5"];
-    if ($index>70) {
-        $index=$index%70;
-    }
-    $shade=$shades[$index/7]."0";
-    switch ($index % 7) {
-        case 0: return "#".$shade.$shade.$shade;
-        case 1: return "#ff".$shade.$shade;
-        case 2: return "#".$shade."ff".$shade;
-        case 3: return "#".$shade.$shade."ff";
-        case 4: return "#ffff".$shade;
-        case 5: return "#ff".$shade."ff";
-        case 6: return "#".$shade."ffff";
-    }
 }
 
 /*
