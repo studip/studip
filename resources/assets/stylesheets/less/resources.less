@@ -1,85 +1,43 @@
-.resource-object-container
-{
-    display: flex;
-}
-
-.resource-object
-{
-    max-width: 30em;
+.resource-object {
     width: 30em;
     float: left;
     margin: 1em;
 
-    .resource-header
-    {
-        .resource-actions
-        {
-            float: right;
-        }
-    }
-
-    .resource-details
-    {
+    .resource-details {
         padding: 0.5em;
 
-        .resource-description
-        {
-            min-height: 10em;
+        .resource-description {
             height: 10em;
-            max-height: 10em;
 
-            .resource-picture
-            {
-                min-height: 10em;
-                min-width: 10em;
+            .resource-picture {
                 height: 10em;
                 width: 10em;
-                max-height: 10em;
-                max-width: 10em;
-                float:left;
+                float: left;
             }
         }
 
-        .small-resource-description
-        {
-            min-height: 5em;
+        .small-resource-description {
             height: 5em;
-            max-height: 5em;
 
-            .resource-picture
-            {
-                min-height: 5em;
-                min-width: 5em;
+            .resource-picture {
                 height: 5em;
                 width: 5em;
-                max-height: 5em;
-                max-width: 5em;
-                float:left;
+                float: left;
             }
         }
     }
 }
 
 
-.resource-picture
-{
-    min-height: 10em;
-    min-width: 10em;
+.resource-picture {
     height: 10em;
     width: 10em;
-    max-height: 10em;
-    max-width: 10em;
 }
 
 
-.small-resource-picture
-{
-    min-height: 16px;
-    min-width: 16px;
+.small-resource-picture {
     height: 16px;
     width: 16px;
-    max-height: 16px;
-    max-width: 16px;
 }
 
 
@@ -98,19 +56,16 @@ table.resource-categories {
 
 /* rseource category selection */
 
-.resource-category-select-icon-label > .resource-category-select-radio
-{
+.resource-category-select-icon-label > .resource-category-select-radio {
     visibility: hidden;
     position: absolute;
 }
 
-#layout-sidebar .room-search-tree-widget
-{
+#layout-sidebar .room-search-tree-widget {
     max-height: unset !important;
 }
 
-ul.resource-tree
-{
+ul.resource-tree {
     list-style-type: none;
     padding-left: 0px;
 
@@ -118,15 +73,13 @@ ul.resource-tree
         padding-left: 18px;
         text-indent: -19px;
 
-        & > ul.resource-tree
-        {
+        & > ul.resource-tree {
             padding-left: 3px;
         }
     }
 }
 
-.resource-tree
-{
+.resource-tree {
     .selected-resource {
         background-color: @origin-base-color;
         color: @white;
@@ -146,7 +99,7 @@ ul.resource-tree
 
             img {
                 margin-left: 4px;
-           }
+            }
         }
     }
 
@@ -157,18 +110,15 @@ ul.resource-tree
 }
 
 @media all and (min-width: 800px) {
-    form.resource-search
-    {
+    form.resource-search {
         display: flex;
         flex-wrap: wrap;
     }
 
-    fieldset.resource-search
-    {
+    fieldset.resource-search {
         flex-grow: 1;
     }
 }
-
 
 .resource-action-tile {
     margin-bottom: 1em;
@@ -179,8 +129,7 @@ ul.resource-tree
 }
 
 @media all and (min-width: 800px) {
-    .overview-action-tile-container
-    {
+    .overview-action-tile-container {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -192,12 +141,10 @@ ul.resource-tree
         flex-grow: 1;
         margin-right: 10px;
         height: 9em;
-        min-height: 9em;
     }
 }
 
 @media all and (max-width: 799px) {
-
     .overview-action-tile {
         width: 95%;
         margin-bottom: 1em;
@@ -205,7 +152,6 @@ ul.resource-tree
 }
 
 .room-search-form {
-
     ul.criteria-list {
         list-style: none;
         margin: 0;
@@ -223,7 +169,6 @@ ul.resource-tree
             }
 
             & > label {
-
                 input, select {
                     width: calc(100% - 2em);
                     height: 30px;
@@ -265,9 +210,8 @@ ul.resource-tree
             width: calc(100% - 2em);
         }
 
-        > label.RangeSearchLabel {
-
-            > .RangeInputContainer {
+        > label.range-search-label {
+            > .range-input-container {
                 margin-left: 1em;
 
                 > input[type="number"] {
@@ -278,7 +222,7 @@ ul.resource-tree
     }
 }
 
-/* room clipboard widget */
+
 .room-clipboard-special-actions {
     margin-top: 0.25em;
     margin-left: 0.25em;
@@ -289,11 +233,7 @@ ul.resource-tree
     cursor: pointer;
 }
 
-
-/* resource request resolving views */
-
-.resource-request
-{
+.resource-request {
     .overlapping-requests {
         color: @yellow-60;
     }
@@ -314,7 +254,6 @@ ul.resource-tree
 
 .create-booking-form {
     .fieldset-row {
-
         &.inner-row {
             padding-top: 0ex;
             display: flow-root;
@@ -348,6 +287,7 @@ ul.resource-tree
                 text-decoration: line-through;
                 color: @light-gray-color;
             }
+
             margin-right: 1.2em;
         }
     }
@@ -396,8 +336,7 @@ ul.resource-tree
 }
 
 
-.dragged-colour
-{
+.dragged-colour {
     width: 10%;
     height: 10%;
 }
@@ -413,15 +352,13 @@ ul.resource-tree
     section.room-schedule {
         width: 100%;
         height: 95%;
-        page-break-after:always;
+        page-break-after: always;
     }
 }
 
 
-
 /* Rules for the map keys on a booking plan page: */
 .map-key-list {
-
     list-style-type: none;
     padding-left: 1em;
     padding-top: 1em;
@@ -441,25 +378,6 @@ ul.resource-tree
     }
 }
 
-
-/* Rules for the booking plan: */
-
-.resource-booking-plan-header {
-    display: flex;
-    flex-direction: row;
-
-    .title {
-        flex-grow: 1;
-        padding-left: 1em;
-        padding-right: 1em;
-        text-align: center;
-        font-weight: bold;
-    }
-}
-
-
-/* Rules for the room list in the room search: */
-
 article.room-list-item {
     header > nav.action-menu > a.action-menu-icon {
         border-right: none;
@@ -477,40 +395,6 @@ article.room-list-item {
             list-style: none;
             padding-left: 0em;
             flex-grow: 1;
-        }
-    }
-}
-
-
-@media all and (min-width: 800px) {
-
-    ul.room-list li.room-list-item {
-        section {
-            display: flex;
-
-            .description {
-                min-height: 6em;
-                margin-right: 1em;
-                width: calc(100% - 44em);
-            }
-
-            ul.property-list {
-                list-style-type: none;
-                padding-left: 0em;
-                min-width: 14em;
-            }
-
-            div.actions {
-                min-width: 22em;
-                a.button {
-                    margin: .4em .3em .4em 0;
-                    width: -webkit-fill-available;
-                }
-            }
-        }
-
-        .actions {
-            display: flex;
         }
     }
 }
@@ -538,10 +422,6 @@ article.room-list-item {
             .background-icon('radiobutton-checked', 'status-green');
         }
     }
-}
-
-.resolve-date-backlit-green {
-    background-color: @green-40;
 }
 
 .resolve-date-backlit-red {

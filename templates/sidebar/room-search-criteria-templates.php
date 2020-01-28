@@ -21,10 +21,10 @@
             'class' => 'text-bottom remove-icon'
         ]
     ) ?>
-    <label class="RangeSearchLabel undecorated">
+    <label class="range-search-label undecorated">
         <input type="hidden">
         <span></span>
-        <div class="RangeInputContainer">
+        <div class="range-input-container">
                     <?= _('von') ?>
             <input type="number"
                    class="room-search-widget_criteria-list_input">
@@ -72,7 +72,7 @@
     ) ?>
     <label class="undecorated">
         <span></span>
-        <div class="RangeInputContainer">
+        <div class="range-input-container">
             <input type="date">
             <input type="text" data-time="yes">
             <?= _('Uhr') ?>
@@ -91,7 +91,7 @@
     ) ?>
     <label class="undecorated">
         <span></span>
-        <div class="RangeInputContainer">
+        <div class="range-input-container">
             <input type="date">
             <input type="date">
             <input type="text" data-time="yes">
