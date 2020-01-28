@@ -26,7 +26,7 @@
                     <td class="actions">
                         <?= ActionMenu::get()
                             ->addLink(
-                                $controller->url_for('resources/global_locks/delete/' . $lock->id),
+                                $controller->url_for('resources/global_locks/edit/' . $lock->id),
                                 _('Sperrung bearbeiten'),
                                 Icon::create('edit'),
                                 [

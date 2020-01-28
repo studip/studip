@@ -56,9 +56,6 @@
         </label>
     </fieldset>
     <fieldset>
-        <legend><?= _('Anlegen von Ressourcen') ?></legend>
-    </fieldset>
-    <fieldset>
         <legend><?= _('Raum- und Ressourcenanfragen') ?></legend>
         <label>
             <input type="checkbox" name="resources_allow_room_requests"
