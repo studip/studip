@@ -15,6 +15,9 @@
         "type": "svn",
         "url": "https://develop.studip.de/svn/studip"
     },
+    "engines": {
+        "node": ">=12"
+    },
     "dependencies": {},
     "devDependencies": {
         "@babel/core": "^7.4.0",
