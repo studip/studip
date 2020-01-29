@@ -6,7 +6,7 @@ $transition-duration: 300ms;
     width: 28px;
     height: 28px;
 
-    @include background-icon('zoom-in2', 'clickable', 20);
+    @include background-icon(zoom-in2, clickable, 20);
     background-position: center;
     background-repeat: no-repeat;
 
@@ -72,7 +72,7 @@ html.is-fullscreen {
     }
 
     .fullscreen-toggle {
-        @include background-icon('zoom-out2', 'clickable', 20);
+        @include background-icon(zoom-out2, clickable, 20);
         margin-bottom: 16px;
         right: 0px;
     }
