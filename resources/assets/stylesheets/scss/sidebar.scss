@@ -52,14 +52,15 @@
 
         box-sizing: border-box;
         max-height: 60px;
-        margin: 12px 15px;
+        padding: 12px 15px 0;
+        border-bottom: 12px solid transparent;
 
         color: $white;
         font-size: 1.2em;
         overflow: hidden;
         word-break: break-word;
         position: relative;
-        line-height: 1;
+        line-height: 1.1;
         text-align: left;
         text-overflow: ellipsis;
         /* it may happen that some browser does not support the following, then (...) won't appear */
