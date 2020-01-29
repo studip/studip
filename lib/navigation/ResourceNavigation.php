@@ -272,7 +272,7 @@ class ResourceNavigation extends Navigation
             $admin_navigation->addSubNavigation('global_locks', $sub_navigation);
 
             $sub_navigation = new Navigation(
-                _('Ressourcen-Berechtigungen verwalten'),
+                _('Berechtigungs-Übersicht'),
                 'dispatch.php/resources/admin/user_permissions'
             );
             $admin_navigation->addSubNavigation('user_permissions', $sub_navigation);

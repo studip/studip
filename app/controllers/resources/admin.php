@@ -121,7 +121,7 @@ class Resources_AdminController extends AuthenticatedController
         }
         
         PageLayout::setTitle(
-            _('Ressourcen-Berechtigungen verwalten')
+            _('Berechtigungs-Übersicht')
         );
         
         $user_search = new SearchWidget(
