@@ -760,7 +760,7 @@ class Resources
         }
 
         STUDIP.api.POST(
-            'api.php/resources/request/' + request_id + '/toggle_marked'
+            'resources/request/' + request_id + '/toggle_marked'
         ).done(function(data) {
             jQuery(source_node).attr('data-marked', data.marked);
             jQuery(source_node).parent().attr('data-sort-value', data.marked);
