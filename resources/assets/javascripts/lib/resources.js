@@ -134,7 +134,7 @@ class Resources
         };
 
         STUDIP.api.GET(
-            'user/' + user_id
+            'user/${user_id}'
         ).done(function(data) {
             var username = data.name.family
                 + ', '
@@ -161,7 +161,7 @@ class Resources
         }
 
         STUDIP.api.GET(
-            'course/' + course_id + '/members',
+            'course/${course_id}/members',
             {
                 //The limit '0' results in a division by zero.
                 //Hopefully, the limit is set to a value high enough:
@@ -496,7 +496,7 @@ class Resources
         }
 
         STUDIP.api.POST(
-            'resources/booking_interval/' + interval_id + '/toggle_takes_place'
+            'resources/booking_interval/${interval_id}/toggle_takes_place'
         ).done(function(data) {
             if (data['takes_place'] == undefined) {
                 //Something went wrong: do nothing.
@@ -661,9 +661,7 @@ class Resources
         }
 
         STUDIP.api.GET(
-            'resources/booking/' +
-                calendar_event.extendedProps.studip_parent_object_id +
-                '/intervals',
+            'resources/booking/${calendar_event.extendedProps.studip_parent_object_id}/intervals',
             {
                 data: {
                     begin: STUDIP.Fullcalendar.toRFC3339String(calendar_event.start),
@@ -760,7 +758,7 @@ class Resources
         }
 
         STUDIP.api.POST(
-            'resources/request/' + request_id + '/toggle_marked'
+            'resources/request/${request_id}/toggle_marked'
         ).done(function(data) {
             jQuery(source_node).attr('data-marked', data.marked);
             jQuery(source_node).parent().attr('data-sort-value', data.marked);
