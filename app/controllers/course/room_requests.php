@@ -669,6 +669,8 @@ class Course_RoomRequestsController extends AuthenticatedController
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
         );
 
+        $this->course = Course::find($this->course_id);
+
         $this->request_id = $request_id;
         $session_data = &$this->getRequestSessionData($this->request_id);
         $this->loadData($session_data, 4);
