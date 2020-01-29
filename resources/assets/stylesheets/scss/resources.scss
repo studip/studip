@@ -81,8 +81,8 @@ ul.resource-tree {
 
 .resource-tree {
     .selected-resource {
-        background-color: @origin-base-color;
-        color: @white;
+        background-color: $origin-base-color;
+        color: $white;
         padding: 2px;
         width: calc(100% - 21px);
     }
@@ -235,15 +235,15 @@ ul.resource-tree {
 
 .resource-request {
     .overlapping-requests {
-        color: @yellow-60;
+        color: $yellow-60;
     }
 
     .overlapping-bookings {
-        color: @red-60;
+        color: $red-60;
     }
 
     .resource-available {
-        color: @green-60;
+        color: $green-60;
     }
 }
 
@@ -285,7 +285,7 @@ ul.resource-tree {
         .booking-list-interval-date {
             &.not-taking-place {
                 text-decoration: line-through;
-                color: @light-gray-color;
+                color: $light-gray-color;
             }
 
             margin-right: 1.2em;
@@ -400,32 +400,33 @@ article.room-list-item {
 }
 
 .fc-time, .fc-widget-header {
-    background-color: @content-color-20;
+    background-color: $content-color-20;
 }
 
 .request-list {
     a.request-marking-icon {
-        .square(16px);
         background-repeat: no-repeat;
         display: block;
-        .background-icon('radiobutton-unchecked', 'clickable');
+        width: 16px;
+        height: 16px;
+        @include background-icon('radiobutton-unchecked', 'clickable');
 
         &[data-marked="1"] {
-            .background-icon('radiobutton-checked', 'status-red');
+            @include background-icon('radiobutton-checked', 'status-red');
         }
 
         &[data-marked="2"] {
-            .background-icon('radiobutton-checked', 'status-yellow');
+            @include background-icon('radiobutton-checked', 'status-yellow');
         }
 
         &[data-marked="3"] {
-            .background-icon('radiobutton-checked', 'status-green');
+            @include background-icon('radiobutton-checked', 'status-green');
         }
     }
 }
 
 .resolve-date-backlit-red {
-    background-color: @red-40;
+    background-color: $red-40;
 }
 
 #booking-plan-jmpdate-button {
