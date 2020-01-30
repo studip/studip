@@ -25,6 +25,15 @@ class Credentials extends \Codeception\Module
         ];
     }
 
+    public function getCredentialsForTestAdmin()
+    {
+        return [
+            'id' => '6235c46eb9e962866ebdceece739ace5',
+            'username' => 'test_admin',
+            'password' => 'testing',
+        ];
+    }
+
     public function getCredentialsForRoot()
     {
         return [

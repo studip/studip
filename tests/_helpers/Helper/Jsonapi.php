@@ -16,6 +16,25 @@ use WoohooLabs\Yang\JsonApi\Response\JsonApiResponse;
 
 class Jsonapi extends \Codeception\Module
 {
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function withPHPLib($credentials, $function) {
+        // EVIL HACK
+        $oldPerm = $GLOBALS['perm'];
+        $oldUser = $GLOBALS['user'];
+        $GLOBALS['perm'] = new \Seminar_Perm();
+        $GLOBALS['user'] = new \Seminar_User(\User::find($credentials['id']));
+
+        $result = $function($credentials);
+
+        // EVIL HACK
+        $GLOBALS['user'] = $oldUser;
+        $GLOBALS['perm'] = $oldPerm;
+
+        return $result;
+    }
+
     public function createApp($credentials, $method, $pattern, $callable, $name = null)
     {
         return $this->createApp0(
