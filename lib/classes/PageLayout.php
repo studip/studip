@@ -112,9 +112,6 @@ class PageLayout
         // set initial width for mobile devices
         self::addHeadElement('meta', ['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1.0']);
 
-        // include ie-specific CSS
-        self::addComment('[if IE]>' . Assets::stylesheet('ie.css?v=' . $v, ['media' => 'screen,print']) . '<![endif]');
-
         self::addHeadElement('link', [
             'rel'   => 'help',
             'href'  => format_help_url('Basis.VerschiedenesFormat'),
