@@ -1,6 +1,6 @@
 <? foreach ($actions as $action): ?>
     <? if ($action['type'] === 'link'): ?>
-        <a href="<?= $action['link'] ?>" <?= arrayToHtmlAttributes($action['attributes'] + ['title' => $action['label']]) ?>>
+        <a href="<?= htmlReady($action['link']) ?>" <?= arrayToHtmlAttributes($action['attributes'] + ['title' => $action['label']]) ?>>
             <? if ($action['icon']): ?>
                 <?= $action['icon'] ?>
             <? else: ?>

@@ -88,18 +88,18 @@ class ActionMenu
     /**
      * Adds a link to the list of actions.
      *
-     * @param String $link       Link target
+     * @param String $url        Link target
      * @param String $label      Textual representation of the link
      * @param mixed  $icon       Optional icon (as Icon object)
      * @param array  $attributes Optional attributes to add to the <a> tag
      * @return ActionMenu instance to allow chaining
      */
-    public function addLink($link, $label, Icon $icon = null, array $attributes = [])
+    public function addLink($url, $label, Icon $icon = null, array $attributes = [])
     {
         if ($this->checkCondition()) {
             $this->actions[] = [
                 'type'       => 'link',
-                'link'       => $link,
+                'link'       => $url,
                 'icon'       => $icon,
                 'label'      => $label,
                 'attributes' => $attributes,
