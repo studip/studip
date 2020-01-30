@@ -12,10 +12,6 @@
  * @category    Stud.IP
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/TextFormat.php';
-require_once 'lib/classes/StudipCoreFormat.php';
-
 function markupBold($markup, $matches, $contents)
 {
     return '<b>' . $contents . '</b>';

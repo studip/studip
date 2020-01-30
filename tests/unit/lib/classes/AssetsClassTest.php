@@ -9,10 +9,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/Assets.class.php';
-
-
 define('STATIC_ASSETS_URL',  'http://www.example.com/public/');
 define('DYNAMIC_ASSETS_URL', 'http://www%d.example.com/public/');
 

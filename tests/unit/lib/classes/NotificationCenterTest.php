@@ -10,9 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/NotificationCenter.class.php';
-
 interface Observer
 {
     public function update($event, $object, $user_data);

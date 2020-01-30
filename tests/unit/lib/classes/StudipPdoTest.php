@@ -12,9 +12,6 @@
  * @category    Stud.IP
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/StudipPDO.class.php';
-
 class TestStudipPDO extends StudipPDO
 {
     public static function doReplaceStrings($statement)

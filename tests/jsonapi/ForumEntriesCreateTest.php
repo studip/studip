@@ -52,7 +52,7 @@ class ForumEntriesCreateTest extends \Codeception\Test\Unit
 
     public function testShouldNotCreateEntryForCategory()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
             $cat = $this->createCategory($credentials);
             $content = 'some content to test';
@@ -101,7 +101,7 @@ class ForumEntriesCreateTest extends \Codeception\Test\Unit
 
     public function testShouldNotCreateEntryForEntry()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
             $cat = $this->createCategory($credentials);
             $entry = $this->createEntry($credentials, $cat->id);

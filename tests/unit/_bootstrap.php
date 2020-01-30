@@ -46,6 +46,7 @@ StudipAutoloader::register();
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/activities', 'Studip\\Activity');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes', 'Studip');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/sidebar');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/helpbar');

@@ -44,7 +44,7 @@ class ForumCategoriesDeleteTest extends \Codeception\Test\Unit
 
     public function testShouldNotDeleteEntry()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
             $cat = $this->createCategory($credentials);
             $entry = $this->createEntry($credentials, $cat->id);

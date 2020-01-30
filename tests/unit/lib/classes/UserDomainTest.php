@@ -6,9 +6,6 @@
  * @license GPL2 or any later version
  */
 
-require_once __DIR__ . '/../../bootstrap.php';
-require_once 'lib/models/UserDomain.php';
-
 class UserDomainTest extends \Codeception\Test\Unit
 {
     public function setUp()

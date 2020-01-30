@@ -12,9 +12,6 @@
  * @category    Stud.IP
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/StudipVersion.php';
-
 class StudipVersionTest extends \Codeception\Test\Unit
 {
     function setUp() {

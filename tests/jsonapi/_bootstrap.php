@@ -33,8 +33,6 @@ require 'lib/visual.inc.php';
 require 'lib/deputies_functions.inc.php';
 require 'lib/calendar_functions.inc.php';
 require 'lib/dates.inc.php';
-require 'lib/resources/lib/list_assign.inc.php';
-require_once 'lib/resources/resourcesFunc.inc.php';
 
 // Setup autoloading
 require 'lib/classes/StudipAutoloader.php';
@@ -60,7 +58,7 @@ StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/migrations'
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/modules');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/phplib');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/raumzeit');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/resources/lib');
+StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/resources');
 
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/activities', 'Studip\\Activity');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/classes/visibility');

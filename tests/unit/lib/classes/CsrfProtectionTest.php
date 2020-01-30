@@ -10,12 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/exceptions/AccessDeniedException.php';
-require_once 'lib/exceptions/InvalidSecurityTokenException.php';
-require_once 'lib/exceptions/MethodNotAllowedException.php';
-require_once 'lib/classes/CSRFProtection.php';
-
 class CSRFProtectionTokenTest extends \Codeception\Test\Unit
 {
     function setUp()
@@ -90,7 +84,7 @@ class CSRFRequestTest extends \Codeception\Test\Unit
 
     function testInvalidUnsafeRequest()
     {
-        $this->setExpectedException('InvalidSecurityTokenException');
+        $this->expectException(InvalidSecurityTokenException::class);
         $_SERVER['REQUEST_METHOD'] = 'POST';
         CSRFProtection::verifyUnsafeRequest();
     }
@@ -106,7 +100,7 @@ class CSRFRequestTest extends \Codeception\Test\Unit
     function testSafeRequest()
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
-        $this->setExpectedException('MethodNotAllowedException');
+        $this->expectException(MethodNotAllowedException::class);
         CSRFProtection::verifyUnsafeRequest();
     }
 
@@ -114,7 +108,7 @@ class CSRFRequestTest extends \Codeception\Test\Unit
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XmlHttpRequest';
-        $this->setExpectedException('MethodNotAllowedException');
+        $this->expectException(MethodNotAllowedException::class);
         CSRFProtection::verifyUnsafeRequest();
     }
 

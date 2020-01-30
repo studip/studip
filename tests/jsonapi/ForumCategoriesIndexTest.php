@@ -45,7 +45,7 @@ class ForumCategoriesIndexTest extends \Codeception\Test\Unit
 
     public function testShouldNotShowCategory()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
             $course_id = 'a07535cf2f8a72df33c12ddfa4b53dde';
             $cat = $this->createCategory($credentials);

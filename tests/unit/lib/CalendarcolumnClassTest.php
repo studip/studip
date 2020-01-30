@@ -9,20 +9,7 @@
  * the License, or (at your option) any later version.
  */
 
-
-require_once dirname(__FILE__) . '/../bootstrap.php';
-require_once 'lib/classes/DbView.class.php';
-require_once 'lib/classes/StudipCache.class.php';
-require_once 'lib/classes/StudipNullCache.class.php';
-require_once 'lib/classes/TextFormat.php';
-require_once 'lib/classes/StudipFormat.php';
-require_once 'lib/classes/WikiFormat.php';
-require_once 'lib/classes/TreeAbstract.class.php';
 require_once 'lib/calendar/CalendarColumn.class.php';
-require_once 'lib/functions.php';
-
-
-
 
 class CalendarColumnCase extends \Codeception\Test\Unit {
 
@@ -83,7 +70,7 @@ class CalendarColumnCase extends \Codeception\Test\Unit {
     }
 
     function test_wrong_entry() {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $entry1 = ['start' => "0800", 'end' => "1000"];
         $entry2 = ['start' => "1000", 'title' => "test_title"];
         $entry3 = ['end' => "1500", 'title' => "test_title"];

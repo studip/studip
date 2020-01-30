@@ -84,7 +84,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $name = 'filename.jpg';
         $description = 'a description';
 
-        $this->tester->expectException(
+        $this->tester->expectThrowable(
             RecordNotFoundException::class,
             function () use ($credentials, $missingFolder, $name, $description, $license) {
                 $this->createFileRefInFolder(
@@ -109,7 +109,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $name = '';
         $description = 'a description';
 
-        $this->tester->expectException(
+        $this->tester->expectThrowable(
             UnprocessableEntityException::class,
             function () use ($credentials, $folder, $name, $description, $license) {
                 $this->createFileRefInFolder(
@@ -133,7 +133,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $name = 'a-real-filename.gif';
         $description = 'a description';
 
-        $this->tester->expectException(
+        $this->tester->expectThrowable(
             UnprocessableEntityException::class,
             function () use ($credentials, $folder, $name, $description) {
                 $this->createFileRefInFolder(

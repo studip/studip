@@ -10,9 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/URLHelper.php';
-
 class URLHelperTest extends \Codeception\Test\Unit
 {
     public function tearDown ()

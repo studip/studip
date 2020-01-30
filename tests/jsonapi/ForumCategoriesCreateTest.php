@@ -48,7 +48,7 @@ class ForumCategoryCreateTest extends \Codeception\Test\Unit
 
     public function testShouldNotCreateCategory()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestAutor();
             $cat = $this->createCategory($credentials);
             $course_id = 'badCourse';

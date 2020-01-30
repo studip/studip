@@ -8,6 +8,7 @@
 
 # RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
 
+bootstrap: _bootstrap.php
 class_name: WebGuy
 modules:
     enabled:

@@ -10,7 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/plugins/engine/PluginRepository.class.php';
 
 class PluginRepositoryTest extends \Codeception\Test\Unit

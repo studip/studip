@@ -7,11 +7,13 @@
     "require-dev": {
         "adlawson/vfs": "~0.12.1",
         "camspiers/json-pretty": "~1.0.2",
-        "codeception/codeception": "2.5.3",
+        "codeception/codeception": "4.0.2",
         "monolog/monolog": "~1.21.0",
         "php-http/curl-client": "~1.7.0",
-        "phpunit/phpunit": "5.7.27",
-        "woohoolabs/yang": "~0.9.0"
+        "phpunit/phpunit": "6.5.14",
+        "woohoolabs/yang": "~0.9.0",
+        "codeception/module-phpbrowser": "^1.0",
+        "codeception/module-asserts": "^1.1"
     },
     "require": {
         "php": "^7.0",

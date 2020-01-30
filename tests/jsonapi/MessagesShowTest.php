@@ -23,7 +23,7 @@ class MessagesShowTest extends \Codeception\Test\Unit
     // tests
     public function testMessageNotFound()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestAutor();
             $response = $this->fetchMessage($credentials, new \Message(md5('eurydamas')));
         });

@@ -18,7 +18,6 @@
  * @since       File available since Release 3.0
  * @author      Robert Costa <rcosta@uos.de>
  */
-require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'tests/unit/fakeserver.php';
 
 # needed by visual.inc.php

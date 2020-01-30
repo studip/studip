@@ -8,10 +8,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/Icon.class.php';
-require_once 'lib/classes/Assets.class.php';
-
 class IconClassTest extends \Codeception\Test\Unit
 {
     function setUp()

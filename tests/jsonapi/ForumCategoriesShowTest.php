@@ -47,7 +47,7 @@ class ForumCategoriesShowTest extends \Codeception\Test\Unit
 
     public function testShouldNotShowCategories()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
 
             $app = $this->tester->createApp($credentials, 'get', '/forum-categories/{id}', ForumCategoriesShow::class);

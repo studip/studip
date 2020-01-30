@@ -18,14 +18,9 @@
  * @since       File available since Release 3.0
  * @author      Robert Costa <rcosta@uos.de>
  */
-require_once dirname(__FILE__) . '/../../../bootstrap.php';
 require_once 'tests/unit/fakeserver.php';
 
 require_once 'vendor/HTMLPurifier/HTMLPurifier.standalone.php';
-
-# needed by visual.inc.php, which is required by link classifier
-require_once 'lib/classes/DbView.class.php';
-require_once 'lib/classes/TreeAbstract.class.php';
 
 require_once 'lib/classes/htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
 

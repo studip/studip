@@ -56,7 +56,7 @@ class NewsCreateTest extends \Codeception\Test\Unit
     public function testShouldNotStudipNewsCreate()
     {
 
-        $this->tester->expectException(AuthorizationFailedException::class, function () {
+        $this->tester->expectThrowable(AuthorizationFailedException::class, function () {
             $credentials = $this->tester->getCredentialsForTestDozent();
             $title = 'A public testing title';
             $content = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit';
@@ -130,7 +130,7 @@ class NewsCreateTest extends \Codeception\Test\Unit
     }
     public function testShouldNotCourseNewsCreate()
     {
-      $this->tester->expectException(AuthorizationFailedException::class, function () {
+      $this->tester->expectThrowable(AuthorizationFailedException::class, function () {
 
         $credentials = $this->tester->getCredentialsForTestAutor();
         $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
@@ -182,7 +182,7 @@ class NewsCreateTest extends \Codeception\Test\Unit
     }
     public function testShouldNotUserNewsCreate()
     {
-      $this->tester->expectException(AuthorizationFailedException::class, function () {
+      $this->tester->expectThrowable(AuthorizationFailedException::class, function () {
 
         $credentials = $this->tester->getCredentialsForTestAutor();
         $otherUser = $this->tester->getCredentialsForTestDozent();
@@ -235,7 +235,7 @@ class NewsCreateTest extends \Codeception\Test\Unit
     public function testShouldNotCommentCreate()
     {
         //missing title
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $title = 'A course testing title';
             $credentials = $this->tester->getCredentialsForTestDozent();
             $content = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit';

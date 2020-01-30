@@ -10,11 +10,6 @@
  */
 
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/UpdateInformation.class.php';
-
-
-
 class UpdateInformationCase extends \Codeception\Test\Unit
 {
 
@@ -37,10 +32,7 @@ class UpdateInformationCase extends \Codeception\Test\Unit
         $this->assertEquals("TestValue", $new_data['test.myfunc']['test']);
         $this->assertEquals("strangedata", $new_data['test.myfunc2']);
     }
-    
+
     //kann man nicht automatischtesten, da abhängig von $_SERVER
     //function test_iscollecting() {}
-
 }
-
-

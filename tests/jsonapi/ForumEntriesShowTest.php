@@ -61,7 +61,7 @@ class ForumShowEntryTest extends \Codeception\Test\Unit
 
     public function testShouldNotShowEntry()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForRoot();
             $app = $this->tester->createApp($credentials, 'get', '/forum-entries/{id}', ForumEntriesShow::class);
 
@@ -78,7 +78,7 @@ class ForumShowEntryTest extends \Codeception\Test\Unit
 
     public function testShouldNotShowEntriesForCategory()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForRoot();
             $cat = $this->createCategory($credentials);
             $this->createEntry($credentials, $cat->id);
@@ -143,7 +143,7 @@ class ForumShowEntryTest extends \Codeception\Test\Unit
 
     public function testShouldNotShowEntriesForEntry()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForRoot();
             $cat = $this->createCategory($credentials);
             $targetEntry = $this->createEntry($credentials, $cat->id);

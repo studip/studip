@@ -47,7 +47,7 @@ class ForumCategoriesUpdateTest extends \Codeception\Test\Unit
 
     public function testShouldNotUpdateCategory()
     {
-        $this->tester->expectException(RecordNotFoundException::class, function () {
+        $this->tester->expectThrowable(RecordNotFoundException::class, function () {
             $credentials = $this->tester->getCredentialsForTestAutor();
             $cat = $this->createCategory($credentials);
             $cat_document = $this->buildValidResourceCategoryUpdate();

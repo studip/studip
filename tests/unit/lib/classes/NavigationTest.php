@@ -10,11 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/Assets.class.php';
-require_once 'lib/classes/Icon.class.php';
-require_once 'lib/classes/NotificationCenter.class.php';
-require_once 'lib/classes/URLHelper.php';
 require_once 'lib/navigation/Navigation.php';
 
 class NavigationTest extends \Codeception\Test\Unit
@@ -164,14 +159,14 @@ class NavigationTest extends \Codeception\Test\Unit
 
     public function testExceptionOnGet ()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         Navigation::getItem('/test');
     }
 
     public function testExceptionOnAdd ()
     {
         $navigation = new Navigation('test');
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         Navigation::addItem('/test/foo', $navigation);
     }
 }

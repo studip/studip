@@ -10,9 +10,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/classes/Request.class.php';
-
 class RequestTest extends \Codeception\Test\Unit
 {
     public function setUp ()

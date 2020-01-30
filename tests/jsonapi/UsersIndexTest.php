@@ -24,7 +24,7 @@ class UsersIndexTest extends \Codeception\Test\Unit
 
     public function testOnlyRootMayIndexUsers()
     {
-        $this->tester->expectException(AuthorizationFailedException::class, function () {
+        $this->tester->expectThrowable(AuthorizationFailedException::class, function () {
             $credentials = $this->tester->getCredentialsForTestAutor();
             $this->getUsers($credentials);
         });

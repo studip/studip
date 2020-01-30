@@ -8,15 +8,6 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/models/SimpleORMap.class.php';
-require_once 'lib/classes/Config.class.php';
-require_once 'lib/classes/DBManager.class.php';
-require_once 'lib/classes/StudipCache.class.php';
-require_once 'lib/classes/StudipCacheFactory.class.php';
-require_once 'lib/models/StudipCacheOperation.php';
-require_once 'lib/models/CronjobSchedule.class.php';
-
 class CronjobTestSchedule extends SimpleORMap
 {
 }

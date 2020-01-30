@@ -9,13 +9,7 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
 require_once 'lib/phplib/Seminar_Perm.class.php';
-require_once 'lib/classes/Avatar.class.php';
-require_once 'lib/classes/CourseAvatar.class.php';
-require_once 'lib/classes/InstituteAvatar.class.php';
-require_once 'lib/models/SimpleORMap.class.php';
-require_once 'lib/classes/Visibility.php';
 
 /**
  * Testcase for Avatar class.

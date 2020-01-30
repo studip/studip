@@ -12,18 +12,6 @@
  * @category    Stud.IP
  */
 
-require_once dirname(__FILE__) . '/../../bootstrap.php';
-require_once 'lib/models/SimpleORMap.class.php';
-require_once 'lib/classes/Config.class.php';
-require_once 'lib/classes/StudipCache.class.php';
-require_once 'lib/classes/StudipArrayObject.class.php';
-require_once 'lib/classes/MultiDimArrayObject.class.php';
-require_once 'lib/classes/CSVArrayObject.class.php';
-require_once 'lib/classes/JSONArrayObject.class.php';
-require_once 'lib/classes/NotificationCenter.class.php';
-
-
-
 class auth_user_md5 extends SimpleORMap
 {
     public $additional_dummy_data = null;

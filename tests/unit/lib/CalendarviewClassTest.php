@@ -9,10 +9,7 @@
  * the License, or (at your option) any later version.
  */
 
-require_once dirname(__FILE__) . '/../bootstrap.php';
 require_once 'lib/calendar/CalendarView.class.php';
-require_once 'lib/classes/PageLayout.php';
-
 
 class CalendarViewCase extends \Codeception\Test\Unit {
 
@@ -69,7 +66,7 @@ class CalendarViewCase extends \Codeception\Test\Unit {
     }
 
     public function test_negative_addEntry() {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $view = new CalendarView();
         $entry = [
             'title' => "Test Eintrag",
