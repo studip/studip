@@ -287,22 +287,38 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         return [$upgraded_threads, $old_count !== count($upgraded_threads)];
     }
 
-    public static function findByInstitut($institut_id, $only_in_stream = false)
+    /**
+     * @param string $institut_id  the ID of an institute
+     * @param string $only_in_stream  optional; filter threads by `visible_in_stream`
+     * @param string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     */
+    public static function findByInstitut($institut_id, $only_in_stream = false, string $user_id = null)
     {
-        return self::findByContext($institut_id, $only_in_stream, 'institute');
+        return self::findByContext($institut_id, $only_in_stream, 'institute', $user_id);
     }
 
-    public static function findBySeminar($seminar_id, $only_in_stream = false)
+    /**
+     * @param string $seminar_id  the ID of a course
+     * @param string $only_in_stream  optional; filter threads by `visible_in_stream`
+     * @param string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     */
+    public static function findBySeminar($seminar_id, $only_in_stream = false, string $user_id = null)
     {
-        return self::findByContext($seminar_id, $only_in_stream, 'course');
+        return self::findByContext($seminar_id, $only_in_stream, 'course', $user_id);
     }
 
-    public static function findByContext($context_id, $only_in_stream = false, $context_type = 'course')
+    /**
+     * @param string $seminar_id  the ID of a course
+     * @param string $only_in_stream  optional; filter threads by `visible_in_stream`
+     * @param string $context_type  optional; filter threads by `context_type`
+     * @param string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     */
+    public static function findByContext($context_id, $only_in_stream = false, $context_type = 'course', string $user_id = null)
     {
         if (!BlubberThread::findOneBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1' AND content IS NULL", ['context_id' => $context_id, 'type' => $context_type])) {
             //create the default-thread for this context
             $coursethread = new BlubberThread();
-            $coursethread['user_id'] = $GLOBALS['user']->id;
+            $coursethread['user_id'] = $user_id ?? $GLOBALS['user']->id;
             $coursethread['external_contact'] = 0;
             $coursethread['context_type'] = $context_type;
             $coursethread['context_id'] = $context_id;
@@ -327,8 +343,8 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         $threads = array_map(function ($thread) {
             return self::upgradeThread($thread);
         }, $threads);
-        $threads = array_filter($threads, function ($t) {
-            return $t->isVisibleInStream() && $t->isReadable();
+        $threads = array_filter($threads, function ($t) use ($user_id){
+            return $t->isVisibleInStream() && $t->isReadable($user_id);
         });
         return $threads;
     }

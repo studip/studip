@@ -76,11 +76,17 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         return $output;
     }
 
-    public function isWritable()
+    /**
+     * @param string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    public function isWritable(string $user_id = null)
     {
-        return $GLOBALS['user']->id === $this['user_id']
-            || $GLOBALS['perm']->have_perm('root')
-            || ($this->thread['context_type'] === 'course' && $this->thread->isWritable());
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+        return $user_id === $this['user_id']
+            || $GLOBALS['perm']->have_perm('root', $user_id)
+            || ($this->thread['context_type'] === 'course' && $this->thread->isWritable($user_id));
     }
 
     public function getOpenGraphURLs()
