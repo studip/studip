@@ -9,8 +9,7 @@ class User extends SchemaProvider
     const TYPE = 'users';
 
     const REL_ACTIVITYSTREAM = 'activitystream';
-    // TODO: Polishing
-    // const REL_BLUBBER = 'blubber-postings';
+    const REL_BLUBBER = 'blubber-threads';
     const REL_CONTACTS = 'contacts';
     const REL_COURSES = 'courses';
     const REL_COURSE_MEMBERSHIPS = 'course-memberships';
@@ -132,12 +131,11 @@ class User extends SchemaProvider
                 $user,
                 $shouldInclude(self::REL_ACTIVITYSTREAM)
             );
-            // TODO: Polishing
-            // $relationships = $this->getBlubberRelationship(
-            //     $relationships,
-            //     $user,
-            //     $shouldInclude(self::REL_BLUBBER)
-            // );
+            $relationships = $this->getBlubberRelationship(
+                $relationships,
+                $user,
+                $shouldInclude(self::REL_BLUBBER)
+            );
             $relationships = $this->getContactsRelationship(
                 $relationships,
                 $user,
@@ -218,20 +216,19 @@ class User extends SchemaProvider
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    // TODO: Polishing
-    // private function getBlubberRelationship(
-    //     array $relationships,
-    //     \User $user,
-    //     $includeData
-    // ) {
-    //     $relationships[self::REL_BLUBBER] = [
-    //         self::LINKS => [
-    //             Link::RELATED => new Link('/'.self::REL_BLUBBER.'?filter[user]='.$user->id),
-    //         ],
-    //     ];
+    private function getBlubberRelationship(
+        array $relationships,
+        \User $user,
+        $includeData
+    ) {
+        $relationships[self::REL_BLUBBER] = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($user, self::REL_BLUBBER),
+            ],
+        ];
 
-    //     return $relationships;
-    // }
+        return $relationships;
+    }
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)

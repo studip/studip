@@ -8,6 +8,7 @@ class Institute extends SchemaProvider
 {
     const TYPE = 'institutes';
 
+    const REL_BLUBBER = 'blubber-threads';
     const REL_FILES = 'file-refs';
     const REL_FOLDERS = 'folders';
 
@@ -53,6 +54,13 @@ class Institute extends SchemaProvider
                 Link::RELATED => $foldersLink,
             ],
         ];
+
+        $relationships[self::REL_BLUBBER] = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($resource, self::REL_BLUBBER),
+            ],
+        ];
+
 
         return $relationships;
     }

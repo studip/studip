@@ -10,11 +10,6 @@ use JsonApi\Schemas\User as UserSchema;
 
 class UsersIndex extends JsonApiController
 {
-    protected $allowedIncludePaths = [
-        // TODO: Polishing
-        // UserSchema::REL_BLUBBER
-    ];
-
     protected $allowedPagingParameters = ['offset', 'limit'];
 
     public function __invoke(Request $request, Response $response, $args)

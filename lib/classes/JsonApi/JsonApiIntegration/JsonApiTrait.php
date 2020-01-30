@@ -223,8 +223,11 @@ trait JsonApiTrait
         $meta['page'] = [
             'offset' => (int) $offset,
             'limit' => (int) $limit,
-            'total' => (int) $total,
         ];
+
+        if (isset($total)) {
+            $meta['page']['total'] = (int) $total;
+        }
 
         $paginator = new Paginator($total, $offset, $limit);
 
@@ -280,8 +283,11 @@ trait JsonApiTrait
         $meta['page'] = [
             'offset' => (int) $offset,
             'limit' => (int) $limit,
-            'total' => (int) $total,
         ];
+
+        if (isset($total)) {
+            $meta['page']['total'] = (int) $total;
+        }
 
         $paginator = new Paginator($total, $offset, $limit);
 

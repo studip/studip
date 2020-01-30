@@ -29,9 +29,14 @@ class Paginator
 
     public function getLastPageOffsetAndLimit()
     {
+        if (!isset($this->total)) {
+            return null;
+        }
+
         if ($this->limit === 0) {
             return [0, 0];
         }
+
         $last = max(0, floor($this->total / $this->limit - 1) * $this->limit);
 
         return [$last, $this->limit];
@@ -56,7 +61,7 @@ class Paginator
             return null;
         }
 
-        if ($this->total <= $this->offset + $this->limit) {
+        if (isset($this->total) && $this->total <= $this->offset + $this->limit) {
             return null;
         }
 

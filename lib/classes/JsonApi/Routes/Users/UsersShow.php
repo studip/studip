@@ -13,8 +13,6 @@ class UsersShow extends JsonApiController
 {
     protected $allowedIncludePaths = [
         UserSchema::REL_ACTIVITYSTREAM,
-        // TODO: Polishing
-        // UserSchema::REL_BLUBBER,
         UserSchema::REL_CONTACTS,
         UserSchema::REL_COURSES,
         UserSchema::REL_COURSE_MEMBERSHIPS,

@@ -59,8 +59,8 @@ class RouteMap
     /**
      * Der Konstruktor.
      *
-     * @param \Slim\App     $app    die Slim-Applikation, in der die Routen
-     *                              definiert werden sollen
+     * @param \Slim\App $app die Slim-Applikation, in der die Routen
+     *                       definiert werden sollen
      */
     public function __construct(\Slim\App $app)
     {
@@ -134,8 +134,7 @@ class RouteMap
         $this->app->get('/schedule-entries/{id}', Routes\Schedule\ScheduleEntriesShow::class);
         $this->app->get('/seminar-cycle-dates/{id}', Routes\Schedule\SeminarCycleDatesShow::class);
 
-        // TODO: Polishing
-        // $this->addAuthenticatedBlubberRoutes();
+        $this->addAuthenticatedBlubberRoutes();
         $this->addAuthenticatedContactsRoutes();
         $this->addAuthenticatedCoursesRoutes();
         $this->addAuthenticatedEventsRoutes();
@@ -169,35 +168,31 @@ class RouteMap
         return $container[StudipServices::AUTHENTICATOR];
     }
 
-    // TODO: Polishing
-    // private function addAuthenticatedBlubberRoutes()
-    // {
-    //     $this->app->get('/blubber-postings', Routes\Blubber\PostingIndex::class);
-    //     $this->app->get('/blubber-postings/{id}', Routes\Blubber\PostingShow::class);
-    //     $this->app->post('/blubber-postings', Routes\Blubber\PostingCreate::class);
-    //     $this->app->patch('/blubber-postings/{id}', Routes\Blubber\PostingUpdate::class);
-    //     $this->app->delete('/blubber-postings/{id}', Routes\Blubber\PostingDelete::class);
+    private function addAuthenticatedBlubberRoutes()
+    {
+        // find BlubberThreads
+        $this->app->get('/courses/{id}/blubber-threads', Routes\Blubber\ThreadsIndex::class)
+                  ->setArgument('type', 'course');
+        $this->app->get('/institutes/{id}/blubber-threads', Routes\Blubber\ThreadsIndex::class)
+                  ->setArgument('type', 'institute');
+        $this->app->get('/studip/blubber-threads', Routes\Blubber\ThreadsIndex::class)
+                  ->setArgument('type', 'public');
+        $this->app->get('/users/{id}/blubber-threads', Routes\Blubber\ThreadsIndex::class)
+                  ->setArgument('type', 'private');
+        $this->app->get('/blubber-threads', Routes\Blubber\ThreadsIndex::class)
+                  ->setArgument('type', 'all');
+        $this->app->get('/blubber-threads/{id}', Routes\Blubber\ThreadsShow::class);
 
-    //     // RELATIONSHIP: 'author'
-    //     $this->addRelationship('/blubber-postings/{id}/relationships/author', Routes\Blubber\Rel\Author::class);
+        // create, read, update and delete BlubberComments
+        $this->app->get('/blubber-threads/{id}/comments', Routes\Blubber\CommentsIndex::class);
+        $this->app->post('/blubber-threads/{id}/comments', Routes\Blubber\CommentsCreate::class);
+        $this->app->get('/blubber-comments/{id}', Routes\Blubber\CommentsShow::class);
+        $this->app->patch('/blubber-comments/{id}', Routes\Blubber\CommentsUpdate::class);
+        $this->app->delete('/blubber-comments/{id}', Routes\Blubber\CommentsDelete::class);
 
-    //     // RELATIONSHIP: 'comments'
-    //     $this->app->get('/blubber-postings/{id}/comments', Routes\Blubber\CommentIndex::class);
-    //     $this->app->post('/blubber-postings/{id}/comments', Routes\Blubber\CommentCreate::class);
-    //     $this->addRelationship('/blubber-postings/{id}/relationships/comments', Routes\Blubber\Rel\Comments::class);
-
-    //     // RELATIONSHIP: 'context'
-    //     $this->app->get('/blubber-postings/{id}/relationships/context', \JsonApi\Routes\Blubber\Rel\Context::class);
-
-    //     // RELATIONSHIP: 'mentions'
-    //     $this->app->get('/blubber-postings/{id}/mentions', Routes\Blubber\MentionsShow::class);
-    //     $this->addRelationship('/blubber-postings/{id}/relationships/mentions', Routes\Blubber\Rel\Mentions::class);
-
-    //     // RELATIONSHIP: 'resharers'
-    //     $this->addRelationship('/blubber-postings/{id}/relationships/resharers', Routes\Blubber\Rel\Resharers::class);
-
-    //     $this->app->get('/blubber-streams/{id}', Routes\Blubber\StreamShow::class);
-    // }
+        // REL mentions
+        $this->addRelationship('/blubber-threads/{id}/relationships/mentions', Routes\Blubber\Rel\Mentions::class);
+    }
 
     private function addAuthenticatedContactsRoutes()
     {
@@ -207,11 +202,11 @@ class RouteMap
 
     private function addAuthenticatedEventsRoutes()
     {
-            $this->app->get('/courses/{id}/events', Routes\Events\CourseEventsIndex::class);
-            $this->app->get('/users/{id}/events', Routes\Events\UserEventsIndex::class);
+        $this->app->get('/courses/{id}/events', Routes\Events\CourseEventsIndex::class);
+        $this->app->get('/users/{id}/events', Routes\Events\UserEventsIndex::class);
 
-            // not a JSON:API route
-            $this->app->get('/users/{id}/events.ics', Routes\Events\UserEventsIcal::class);
+        // not a JSON:API route
+        $this->app->get('/users/{id}/events.ics', Routes\Events\UserEventsIcal::class);
     }
 
     private function addAuthenticatedInstitutesRoutes()
@@ -244,7 +239,7 @@ class RouteMap
     private function addAuthenticatedWikiRoutes()
     {
         $this->app->get('/courses/{id}/wiki-pages', Routes\Wiki\WikiIndex::class);
-        $this->app->get('/wiki-pages/{id:.+}', Routes\Wiki\WikiShow::class)->setName('get-wiki-page');;
+        $this->app->get('/wiki-pages/{id:.+}', Routes\Wiki\WikiShow::class)->setName('get-wiki-page');
 
         $this->app->post('/courses/{id}/wiki-pages', Routes\Wiki\WikiCreate::class);
         $this->app->patch('/wiki-pages/{id:.+}', Routes\Wiki\WikiUpdate::class);
@@ -287,7 +282,6 @@ class RouteMap
 
         // not a JSON route
         $this->app->post('/folders/{id}/copy', Routes\Files\FoldersCopy::class);
-
 
         $this->app->get('/folders/{id}/file-refs', Routes\Files\SubfilerefsIndex::class);
         $this->app->get('/folders/{id}/folders', Routes\Files\SubfoldersIndex::class);

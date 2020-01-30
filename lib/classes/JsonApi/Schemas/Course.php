@@ -3,15 +3,13 @@
 namespace JsonApi\Schemas;
 
 use JsonApi\Routes\Files\Authority as FilesAuth;
-use JsonApi\Routes\Documents\Authority as DocumentsAuth;
 use Neomerx\JsonApi\Document\Link;
 
 class Course extends SchemaProvider
 {
     const TYPE = 'courses';
 
-    // TODO: Polishing
-    // const REL_BLUBBER = 'blubber-postings';
+    const REL_BLUBBER = 'blubber-threads';
     const REL_END_SEMESTER = 'end-semester';
     const REL_EVENTS = 'events';
     const REL_FILES = 'file-refs';
@@ -66,8 +64,7 @@ class Course extends SchemaProvider
 
         $relationships = $this->getFilesRelationship($relationships, $course);
         $relationships = $this->getForumCategoriesRelationship($relationships, $course, $includeList);
-        // TODO: Polishing
-        // $relationships = $this->getBlubberRelationship($relationships, $course, $includeList);
+        $relationships = $this->getBlubberRelationship($relationships, $course, $includeList);
         $relationships = $this->getEventsRelationship($relationships, $course, $includeList);
         $relationships = $this->getMembershipsRelationship($relationships, $course, $includeList);
         $relationships = $this->getNewsRelationship($relationships, $course, $includeList);
@@ -161,20 +158,19 @@ class Course extends SchemaProvider
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    // TODO: Polishing
-    // private function getBlubberRelationship(
-    //     array $relationships,
-    //     \Course $course,
-    //     $includeData
-    // ) {
-    //     $relationships[self::REL_BLUBBER] = [
-    //         self::LINKS => [
-    //             Link::RELATED => new Link('/'.self::REL_BLUBBER.'?filter[course]='.$course->id),
-    //         ],
-    //     ];
+    private function getBlubberRelationship(
+        array $relationships,
+        \Course $course,
+        $includeData
+    ) {
+        $relationships[self::REL_BLUBBER] = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($course, self::REL_BLUBBER),
+            ],
+        ];
 
-    //     return $relationships;
-    // }
+        return $relationships;
+    }
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
