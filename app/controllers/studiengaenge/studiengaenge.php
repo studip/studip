@@ -211,15 +211,15 @@ class Studiengaenge_StudiengaengeController extends MVVController
                     : $GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['default'];
             }
 
-            if (count($df_invalid)) {
+            if (is_array($df_invalid) && count($df_invalid)) {
                 PageLayout::postError(_('Folgende Datenfelder wurden falsch angegeben:'), $df_invalid);
             } else {
                 try {
                     // plugin hook
                     NotificationCenter::postNotification('MvvStudycourseFormWillStore', $this->studiengang);
-                    
+
                     $stored = $this->studiengang->store();
-                    
+
                     // plugin hook
                     NotificationCenter::postNotification('MvvStudycourseFormDidStore', $this->studiengang);
                 } catch (InvalidValuesException $e) {
@@ -301,13 +301,13 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 Icon::create('log')
             )->asDialog();
         }
-        
+
         // plugin hook
         ob_start();
         NotificationCenter::postNotification('MvvStudycourseFormWillRender', $this->studiengang);
         $this->plugin_hook_content = ob_get_contents();
         ob_end_clean();
-        
+
         $this->render_template('studiengaenge/studiengaenge/studiengang', $this->layout);
     }
 
