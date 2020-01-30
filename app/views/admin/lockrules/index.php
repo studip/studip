@@ -42,7 +42,7 @@
                         <?
                         if ($rule->getUsage()) :?>
                             <? $msg = sprintf(_('Sie beabsichtigen die Ebene %s zu löschen. Diese Ebene wird von %s Objekten benutzt. Soll sie trotzdem gelöscht werden?'),
-                                $rule->name, $rule->getUsage()) ?>
+                                htmlReady($rule->name), htmlReady($rule->getUsage())) ?>
                         <? else : ?>
                             <? $msg = sprintf(_('Möchten Sie die Ebene %s löschen?'), $rule->name) ?>
                         <? endif ?>

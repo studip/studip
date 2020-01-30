@@ -37,7 +37,7 @@
                         <?= Icon::create('trash')->asInput([
                             'formaction' => $controller->url_for('course/lti/delete/' . $lti_data->position),
                             'title' => _('Abschnitt löschen'),
-                            'data-confirm' => sprintf(_('Wollen Sie wirklich den Abschnitt "%s" löschen?'), $lti_data->title)
+                            'data-confirm' => sprintf(_('Wollen Sie wirklich den Abschnitt "%s" löschen?'), htmlReady($lti_data->title))
                         ]) ?>
                     </form>
                 </nav>

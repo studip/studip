@@ -63,8 +63,8 @@
                                         'Dieses Dokument wird von %s Objekten referenziert.',
                                         $relations
                                     ),
-                                    $dokument->name,
-                                    $relations
+                                    htmlReady($dokument->name),
+                                    htmlReady($relations)
                                 );
                             } else {
                                 $msg = sprintf(_('Wollen Sie das Dokument "%s" wirklich löschen?'), htmlReady($dokument->name));

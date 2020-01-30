@@ -682,7 +682,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <?= Button::createAccept(_('Übernehmen'), 'store', ['title' => _('Änderungen übernehmen')]) ?>
             <? endif; ?>
             <? if (!$def_lang && !$deskriptor->isNew() && in_array($display_language, $translations)) : ?>
-                <?= Button::create(_('Löschen'), 'delete', ['title'      => _('Deskriptor löschen'), 'data-confirm' => sprintf(_('Soll der Deskriptor in der Ausgabesprache %s gelöscht werden?'), $GLOBALS['MVV_LANGUAGES']['values'][$display_language]['name']),
+                <?= Button::create(_('Löschen'), 'delete', ['title'      => _('Deskriptor löschen'), 'data-confirm' => sprintf(_('Soll der Deskriptor in der Ausgabesprache %s gelöscht werden?'), htmlReady($GLOBALS['MVV_LANGUAGES']['values'][$display_language]['name'])),
                                                             'formaction' => $controller->url_for('/delete_modul_deskriptor', $deskriptor->id, $display_language)]); ?>
             <? endif; ?>
         <? endif; ?>

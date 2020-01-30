@@ -155,7 +155,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
                     [
                         'data-confirm' => sprintf(
                             _('Verknüpfung zum Kurs in %s entfernen? Hierdurch werden auch die Verknüpfungen zu allen Objekten innerhalb des Kurses entfernt.'),
-                            $this->ilias_list[$ilias_index]->getName()
+                            htmlReady($this->ilias_list[$ilias_index]->getName())
                         )
                     ]
                 );

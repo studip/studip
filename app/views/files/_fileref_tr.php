@@ -142,7 +142,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 Icon::create('trash', Icon::ROLE_CLICKABLE, ['size' => 20]),
                 [
                     'formaction'   => $controller->url_for("file/delete/{$file_ref->id}", $flat_view ? ['from_flat_view' => 1] : []),
-                    'data-confirm' => sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), $file_ref->name),
+                    'data-confirm' => sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), htmlReady($file_ref->name)),
                 ]
             );
         }

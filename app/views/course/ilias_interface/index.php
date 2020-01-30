@@ -71,7 +71,7 @@
                             Icon::create('learnmodule+decline', Icon::ROLE_CLICKABLE, [
                                 'title'        => _('Entfernen'),
                                 'formaction'   => $controller->url_for($module->getRoute('remove')),
-                                'data-confirm' => $module->siblings_count < 2 ? sprintf(_('Dies ist die einzige Instanz des Objekts "%s". Durch das Entfernen aus dem Kurs wird das Objekt unwiderruflich gelöscht! Wollen Sie das Objekt wirklich löschen?'), $module->getTitle()) : sprintf(_('Wollen Sie das Objekt "%s" jetzt entfernen?'), $module->getTitle()),
+                                'data-confirm' => $module->siblings_count < 2 ? sprintf(_('Dies ist die einzige Instanz des Objekts "%s". Durch das Entfernen aus dem Kurs wird das Objekt unwiderruflich gelöscht! Wollen Sie das Objekt wirklich löschen?'), htmlReady($module->getTitle())) : sprintf(_('Wollen Sie das Objekt "%s" jetzt entfernen?'), htmlReady($module->getTitle())),
                                 'target'       => '_blank',
                                 'rel'          => 'noopener noreferrer'
                             ])

@@ -85,7 +85,7 @@ Helpbar::get()->addPlainText(_('Info'), "Stellen Sie hier ein, wie die Chancen b
                             <a href="<?= $controller->url_for('admission/userlist/delete_member',
                                 $userlist_id, $u->id) ?>" class="userlist-delete-user"
                                 data-confirm="<?= sprintf(_('Soll %s wirklich von der Liste entfernt werden?'),
-                                    $u->getFullname()) ?>">
+                                    htmlReady($u->getFullname())) ?>">
                                 <?= Icon::create('trash', 'clickable') ?>
                             </a>
                         </td>

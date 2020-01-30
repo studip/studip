@@ -49,7 +49,7 @@
                         <?= Icon::create('trash')->asInput([
                             'formaction' => $controller->url_for('admin/lti/delete/' . $tool->id),
                             'title' => _('LTI-Tool löschen'),
-                            'data-confirm' => sprintf(_('Wollen Sie wirklich das LTI-Tool "%s" löschen?'), $tool->name)
+                            'data-confirm' => sprintf(_('Wollen Sie wirklich das LTI-Tool "%s" löschen?'), htmlReady($tool->name))
                         ]) ?>
                     </td>
                 </tr>
