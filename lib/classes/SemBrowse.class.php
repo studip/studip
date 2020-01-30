@@ -600,7 +600,7 @@ class SemBrowse {
                 $worksheet1->write_blank($row, 3, $caption_format);
                 ++$row;
                 if (is_array($sem_ids['Seminar_id'])) {
-                     foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){/*  while(list($seminar_id,) = each($sem_ids['Seminar_id'])) { */
+                     foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){
                         $sem_name = key($sem_data[$seminar_id]['Name']);
                         $seminar_number = key($sem_data[$seminar_id]['VeranstaltungsNummer']);
                         $sem_number_start = key($sem_data[$seminar_id]['sem_number']);
@@ -641,7 +641,7 @@ class SemBrowse {
                         foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {
                             if ($c == 0) {
                                 $d_name = key($sem_data[$seminar_id]['fullname']);
-                                $anzahl2 = current($sem_data[$seminar_id]['fullname']);// list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                                $anzahl2 = current($sem_data[$seminar_id]['fullname']);
                                 next($sem_data[$seminar_id]['fullname']);
                                 $c = $anzahl2 / $anzahl1;
                                 $doz_name = array_merge($doz_name, array_fill(0, $c, $d_name));
@@ -970,7 +970,7 @@ class SemBrowse {
             foreach ($sem_data[$seminar_id]['username'] as $anzahl1) {
                 if ($c == 0) {
                     $d_name = key($sem_data[$seminar_id]['fullname']);
-                    $anzahl2 = current($sem_data[$seminar_id]['fullname']);// list($d_name, $anzahl2) = each($sem_data[$seminar_id]['fullname']);
+                    $anzahl2 = current($sem_data[$seminar_id]['fullname']);
                     next($sem_data[$seminar_id]['fullname']);
                     $c = $anzahl2 / $anzahl1;
                     $doz_name = array_merge($doz_name, array_fill(0, $c, $d_name));
