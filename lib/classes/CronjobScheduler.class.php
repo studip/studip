@@ -305,34 +305,43 @@ class CronjobScheduler
         }
 
         foreach ($schedules as $schedule) {
-            // Skip schedules with missing task classes
-            if (!$schedule->task->valid) {
-                continue;
-            }
-
-            $log = new CronjobLog();
-            $log->schedule_id = $schedule->schedule_id;
-            $log->scheduled   = $schedule->next_execution;
-            $log->executed    = time();
-            $log->exception   = null;
-            $log->duration    = -1;
-            $log->store();
-
-            set_time_limit($escalation_time);
-
-            // Activate the file lock and store the current timestamp,
-            // schedule id and according log id in it
-            $this->lock->lock([
-                'schedule_id' => $schedule->schedule_id,
-                'log_id'      => $log->log_id,
-            ]);
-
-            // Start capturing output and measuring duration
-            ob_start();
-            $start_time = microtime(true);
-
             try {
+                // Skip schedules with missing task classes
+                if (!$schedule->task->valid) {
+                    throw new Exception(_('Die Klase für den Cronjob-Task konnte nicht gefunden werden'));
+                }
+
+                $log = new CronjobLog();
+                $log->schedule_id = $schedule->schedule_id;
+                $log->scheduled   = $schedule->next_execution;
+                $log->executed    = time();
+                $log->exception   = null;
+                $log->duration    = -1;
+                $log->store();
+
+                set_time_limit($escalation_time);
+
+                // Activate the file lock and store the current timestamp,
+                // schedule id and according log id in it
+                $this->lock->lock([
+                    'schedule_id' => $schedule->schedule_id,
+                    'log_id'      => $log->log_id,
+                ]);
+
+                // Start capturing output and measuring duration
+                ob_start();
+                $start_time = microtime(true);
+
                 $schedule->execute();
+
+                // Actually capture output and duration
+                $end_time = microtime(true);
+                $output = ob_get_clean();
+
+                // Complete log
+                $log->output    = $output;
+                $log->duration  = $end_time - $start_time;
+                $log->store();
             } catch (Exception $e) {
                 $log->exception = $e;
 
@@ -356,15 +365,6 @@ class CronjobScheduler
 
                 $this->sendMailToRoots($subject, $message);
             }
-
-            // Actually capture output and duration
-            $end_time = microtime(true);
-            $output = ob_get_clean();
-
-            // Complete log
-            $log->output    = $output;
-            $log->duration  = $end_time - $start_time;
-            $log->store();
         }
 
         // Release lock

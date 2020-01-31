@@ -72,17 +72,14 @@ class CronjobTask extends SimpleORMap
             return;
         }
 
-        if (class_exists($this->class)) {
-            $this->valid = true;
+        $filename = $GLOBALS['STUDIP_BASE_PATH'] . '/' . $this->filename;
+        if (!file_exists($filename)) {
             return;
         }
 
-        $filename = $GLOBALS['STUDIP_BASE_PATH'] . '/' . $this->filename;
+        require_once $filename;
 
-        if (file_exists($filename)) {
-            $this->valid = true;
-            require_once $filename;
-        }
+        $this->valid = class_exists($this->class);
     }
 
     /**
