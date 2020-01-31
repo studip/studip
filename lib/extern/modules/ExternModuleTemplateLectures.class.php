@@ -203,7 +203,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
         $this->module = $module;
         $this->sem_browse_data["group_by"] = $this->module->config->getValue("Main", "grouping");
         $this->sem_dates = $all_semester;
-        $this->sem_dates[0] = ["name" => sprintf(_("vor dem %s"),$this->sem_dates[1]['name'])];
+        $this->sem_dates[0] = ["name" => _("abgelaufene Semester")];
 
         // reorganize the $SEM_TYPE-array
         foreach ($SEM_CLASS as $key_class => $class) {

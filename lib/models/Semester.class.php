@@ -181,7 +181,7 @@ class Semester extends SimpleORMap
 
         if ($with_before_first) {
             array_unshift($result, [
-                'name' => sprintf(_('vor dem %s'), $result[0]['name']),
+                'name' => _('abgelaufene Semester'),
                 'past' => true,
             ]);
         }
