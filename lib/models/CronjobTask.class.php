@@ -134,8 +134,14 @@ class CronjobTask extends SimpleORMap
             } elseif ($field === 'description') {
                 return _('Unbekannt');
             } elseif ($field === 'name') {
-                return preg_replace('/(_Cronjob)?(\.class)?\.php$/', '', basename($this->filename))
-                     . ' (' . _('fehlerhaft') . ')';
+                $result = $this->filename;
+                if (strpos($result, 'public/plugins_packages') !== false) {
+                    $result = preg_replace('/.*public\/plugins_packages\/(.+)(_Cronjob)?(\.class)?\.php$/', '$1', $result);
+                } else {
+                    $result = preg_replace('/(_Cronjob)?(\.class)?\.php$/', '', basename($result));
+                }
+                $result .= ' (' . _('fehlerhaft') . ')';
+                return $result;
             } elseif ($field === 'parameters') {
                 return [];
             }
