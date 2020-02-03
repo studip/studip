@@ -3,11 +3,11 @@
     <caption>
         <?= htmlReady($keyword) ?> - <?= _('Versionshistorie') ?>
     </caption>
- 
+
     <colgroup>
         <col style="width: 5%;">
-        <col style="width: 25%;">
         <col style="width: 70%;">
+        <col style="width: 25%;">
     </colgroup>
 
     <thead>
