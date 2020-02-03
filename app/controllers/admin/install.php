@@ -283,7 +283,7 @@ class Admin_InstallController extends Trails_Controller
                 $user_id = md5(uniqid('root-user', true));
                 $hasher  = new PasswordHash(8, false);
 
-                $query = "INSERT INTO `auth_user_md5` (
+                $query = "REPLACE INTO `auth_user_md5` (
                             `user_id`, `username`, `password`, `perms`,
                             `Vorname`, `Nachname`, `Email`, `auth_plugin`,
                             `locked`, `lock_comment`, `locked_by`,
