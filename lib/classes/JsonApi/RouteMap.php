@@ -184,7 +184,7 @@ class RouteMap
         $this->app->get('/blubber-threads/{id}', Routes\Blubber\ThreadsShow::class);
 
         // create, read, update and delete BlubberComments
-        $this->app->get('/blubber-threads/{id}/comments', Routes\Blubber\CommentsIndex::class);
+        $this->app->get('/blubber-threads/{id}/comments', Routes\Blubber\CommentsByThreadIndex::class);
         $this->app->post('/blubber-threads/{id}/comments', Routes\Blubber\CommentsCreate::class);
         $this->app->get('/blubber-comments/{id}', Routes\Blubber\CommentsShow::class);
         $this->app->patch('/blubber-comments/{id}', Routes\Blubber\CommentsUpdate::class);

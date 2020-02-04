@@ -2,7 +2,7 @@
 
 require_once 'BlubberTestHelper.php';
 
-class BlubberCommentsIndexTest extends \Codeception\Test\Unit
+class BlubberCommentsByThreadIndexTest extends \Codeception\Test\Unit
 {
     use BlubberTestHelper;
 

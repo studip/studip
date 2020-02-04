@@ -1,7 +1,7 @@
 <?php
 
 use JsonApi\Routes\Blubber\ThreadsShow;
-use JsonApi\Routes\Blubber\CommentsIndex;
+use JsonApi\Routes\Blubber\CommentsByThreadIndex;
 use JsonApi\Routes\Blubber\CommentsShow;
 
 trait BlubberTestHelper
@@ -117,7 +117,7 @@ trait BlubberTestHelper
     private function fetchComments(array $credentials, \BlubberThread $resource)
     {
         return $this->tester->sendMockRequest(
-            $this->tester->createApp($credentials, 'get', '/blubber-threads/{id}/comments', CommentsIndex::class),
+            $this->tester->createApp($credentials, 'get', '/blubber-threads/{id}/comments', CommentsByThreadIndex::class),
             $this->tester
             ->createRequestBuilder($credentials)
             ->setUri('/blubber-threads/'.$resource->id.'/comments')

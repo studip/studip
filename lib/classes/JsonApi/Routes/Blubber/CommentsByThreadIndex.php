@@ -11,7 +11,7 @@ use JsonApi\JsonApiController;
 /**
  * Displays all comments of a certain blubber thread.
  */
-class CommentsIndex extends JsonApiController
+class CommentsByThreadIndex extends JsonApiController
 {
     protected $allowedIncludePaths = ['author', 'mentions', 'thread'];
     protected $allowedPagingParameters = ['offset', 'limit'];
