@@ -22,7 +22,7 @@ class AdditionalMvvTables extends Migration
             `mkdate` int(11) NOT NULL,
             `chdate` int(11) NOT NULL,
             PRIMARY KEY (`mvvfile_id`)
-          ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;");
+          ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         $db->exec("CREATE TABLE IF NOT EXISTS `mvv_files_filerefs` (
             `mvvfile_id` varchar(32) COLLATE latin1_bin NOT NULL,
@@ -34,7 +34,7 @@ class AdditionalMvvTables extends Migration
             `mkdate` int(11) NOT NULL,
             `chdate` int(11) NOT NULL,
             PRIMARY KEY (`mvvfile_id`,`file_language`)
-          ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;");
+          ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         $db->exec("CREATE TABLE IF NOT EXISTS `mvv_files_ranges` (
             `mvvfile_id` VARCHAR(32) COLLATE latin1_bin NOT NULL ,
@@ -46,7 +46,7 @@ class AdditionalMvvTables extends Migration
             `mkdate` INT(11) NOT NULL ,
             `chdate` INT(11) NOT NULL ,
             PRIMARY KEY (`mvvfile_id`, `range_id`))
-            ENGINE = InnoDB ROW_FORMAT=DYNAMIC");
+            ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         $db->exec("CREATE TABLE IF NOT EXISTS `mvv_contacts` (
             `contact_id` varchar(32) COLLATE latin1_bin NOT NULL,
@@ -58,7 +58,21 @@ class AdditionalMvvTables extends Migration
             `chdate` int(11) NOT NULL,
             PRIMARY KEY (`contact_id`),
             KEY `contact_status` (`contact_status`))
-            ENGINE=InnoDB ROW_FORMAT=DYNAMIC;");
+            ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
+        
+        $db->exec("CREATE TABLE IF NOT EXISTS `mvv_extern_contacts` (
+            `extern_contact_id` VARCHAR(32) COLLATE latin1_bin NOT NULL,
+            `name` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `vorname` VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+            `homepage` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `mail` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `tel` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `author_id` VARCHAR(32) COLLATE latin1_bin DEFAULT NULL,
+            `editor_id` VARCHAR(32) COLLATE latin1_bin DEFAULT NULL,
+            `mkdate` INT(11) NOT NULL,
+            `chdate` INT(11) NOT NULL,
+            PRIMARY KEY (`extern_contact_id`))
+            ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         $db->exec("CREATE TABLE IF NOT EXISTS `mvv_contacts_ranges` (
             `contact_range_id` varchar(32) COLLATE latin1_bin NOT NULL,
@@ -78,7 +92,7 @@ class AdditionalMvvTables extends Migration
             KEY `type` (`type`),
             KEY `category_range` (`category`,`range_id`),
             KEY `contact_id` (`contact_id`,`range_id`,`category`) USING BTREE
-          ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
+          ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
 
         //Merge old mvv_dokument
@@ -160,7 +174,7 @@ class AdditionalMvvTables extends Migration
                 `chdate` INT(11) NOT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `grund_stg_id` (`grund_stg_id`,`aufbau_stg_id`)
-            ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC");
+            ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         // types of study courses
         $db->exec("CREATE TABLE `mvv_studycourse_type` (
@@ -171,7 +185,7 @@ class AdditionalMvvTables extends Migration
                 `mkdate` INT(11) NOT NULL,
                 `chdate` INT(11) NOT NULL,
                 PRIMARY KEY (`studiengang_id`, `type`)
-            ) ENGINE = InnoDB ROW_FORMAT=DYNAMIC");
+            ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         // assigned languages to study course
         $db->execute("CREATE TABLE `mvv_studycourse_language` (
@@ -183,7 +197,7 @@ class AdditionalMvvTables extends Migration
                 `mkdate` int(11) NOT NULL,
                 `chdate` int(11) NOT NULL,
                 PRIMARY KEY (`studiengang_id`, `lang`)
-            ) ENGINE = InnoDB ROW_FORMAT=DYNAMIC");
+            ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC");
 
         // add index to speed up filters
         $db->execute("ALTER TABLE `mvv_modul_inst` ADD INDEX (`institut_id`)");
