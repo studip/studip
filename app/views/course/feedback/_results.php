@@ -13,25 +13,32 @@
             if ($feedback->mode == 2) {$rating_scale = 10;}
         ?>
         <div class="ratings">
-            <table class="default sortable-table" data-sortlist="[[0, 1]]">
+            <table class="default sortable-table feedback" data-sortlist="[[1, 1]]">
+            <colgroup>
+                <col>
+                <col width="15%">
+                <col width="15%">
+            </colgroup>
                 <thead>
                     <tr>
-                        <th data-sort="htmldata"><?=_('Bewertung')?></th>
                         <th data-sort="text"><?=_('Prozent')?></th>
+                        <th data-sort="htmldata"><?=_('Bewertung')?></th>
                         <th data-sort="text"><?=_('Anzahl')?></th>
                     </tr>
                 </thead>
                 <tbody>
                 <? for ($i = 1; $i < $rating_scale+1; $i++) : ?>
                     <tr>
-                        <td data-sort-value="<?= $i ?>">
-                            <? for ($t = 0; $t < $i; $t++) {
-                                echo(Icon::create('star'));
-                            } ?>
-                        </td>
                         <td data-sort-value="<?= $feedback->getPercentageOfRating($i) ?>">
-                                
-                        <?= $feedback->getPercentageOfRating($i) . '%' ?>
+                        <div class="percentage">
+                            <div class="percentage-bar" style="width: <?= $feedback->getPercentageOfRating($i) . '%' ?>;">
+                            <?= $feedback->getPercentageOfRating($i) . '%' ?>
+                            </div>
+                        </div>
+                        </td>
+                        <td data-sort-value="<?= $i ?>">
+                        <?= $i ?>
+                        <?=Icon::create('star') ?>
                         </td>
                         <td>
                             <?= $feedback->getCountOfRating($i) ?>
@@ -42,7 +49,8 @@
                 <tfoot>
                     <tr>
                         <td colspan="2">
-                            <?= _('Durchschnitt: ') . $feedback->getMeanOfRating() ?>
+                            <?= _('Durchschnitt: ') ?>
+                            <?= $feedback->getMeanOfRating(); ?>
                         </td>
                         <td>
                             <strong><?= $entries_count ?></strong>
