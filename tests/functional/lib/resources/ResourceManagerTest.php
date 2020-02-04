@@ -54,7 +54,6 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         $this->perm_resource = $this->test_cat->createResource(
             'Permission Test Resource'
         );
-        $this->perm_resource->owner_id = $this->perm_user->id;
         $this->perm_resource->store();
 
         $this->test_def = new ResourcePropertyDefinition();
@@ -176,32 +175,7 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         //Test default properties:
         $this->assertEquals(
             true,
-            $location_cat->hasProperty('address', 'text')
-        );
-
-        $this->assertEquals(
-            true,
-            $location_cat->hasProperty('director', 'user')
-        );
-
-        $this->assertEquals(
-            true,
-            $location_cat->hasProperty('faculties', 'select')
-        );
-
-        $this->assertEquals(
-            true,
             $location_cat->hasProperty('geo_coordinates', 'position')
-        );
-
-        $this->assertEquals(
-            true,
-            $location_cat->hasProperty('primary', 'bool')
-        );
-
-        $this->assertEquals(
-            true,
-            $location_cat->hasProperty('url', 'url')
         );
 
         //Test optional properties:
@@ -239,11 +213,6 @@ class ResourceManagerTest extends \Codeception\Test\Unit
 
         $this->assertEquals(
             true,
-            $building_cat->hasProperty('facility_manager', 'text')
-        );
-
-        $this->assertEquals(
-            true,
             $building_cat->hasProperty('geo_coordinates', 'position')
         );
 
@@ -277,7 +246,7 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         //Test default properties:
         $this->assertEquals(
             true,
-            $room_cat->hasProperty('room_type', 'text')
+            $room_cat->hasProperty('room_type', 'select')
         );
 
         $this->assertEquals(
@@ -363,7 +332,7 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         $position_url = ResourceManager::getMapUrlForResourcePosition($position);
 
         $this->assertEquals(
-            'https://www.openstreetmap.org/#map=17/8.040295/17.988283',
+            'https://www.openstreetmap.org/#map=19/8.040295/17.988283',
             $position_url
         );
 
@@ -377,7 +346,7 @@ class ResourceManagerTest extends \Codeception\Test\Unit
         $position_url = ResourceManager::getMapUrlForResourcePosition($position);
 
         $this->assertEquals(
-            'https://www.openstreetmap.org/#map=17/-14.29302/-31.28323',
+            'https://www.openstreetmap.org/#map=19/-14.29302/-31.28323',
             $position_url
         );
     }

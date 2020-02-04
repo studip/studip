@@ -14,6 +14,7 @@ require 'lib/functions.php';
 $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 
 StudipAutoloader::register();
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/calendar', 'Studip\\Calendar');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes', 'Studip');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions');

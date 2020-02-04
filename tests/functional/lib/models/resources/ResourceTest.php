@@ -84,7 +84,6 @@ class ResourceTest extends \Codeception\Test\Unit
             $this->test_resource_name,
             'Resource Description 20171013'
         );
-        $this->resource->owner_id = $this->test_user->id;
         $this->resource->store();
 
         $this->resource->setProperty(

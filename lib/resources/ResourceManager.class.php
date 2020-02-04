@@ -215,6 +215,12 @@ class ResourceManager
                     true
                 ],
                 [
+                    'accessible',
+                    false,
+                    true,
+                    true
+                ],
+                [
                     'number',
                     false,
                     true,
