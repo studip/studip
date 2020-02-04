@@ -22,17 +22,9 @@ class UsersIndexTest extends \Codeception\Test\Unit
 
     // tests
 
-    public function testOnlyRootMayIndexUsers()
+    public function testIndexUsers()
     {
-        $this->tester->expectThrowable(AuthorizationFailedException::class, function () {
-            $credentials = $this->tester->getCredentialsForTestAutor();
-            $this->getUsers($credentials);
-        });
-    }
-
-    public function testButRootMayIndexUsers()
-    {
-        $credentials = $this->tester->getCredentialsForRoot();
+        $credentials = $this->tester->getCredentialsForTestAutor();
         $response = $this->getUsers($credentials);
         $this->tester->assertTrue($response->isSuccessfulDocument([200]));
 

@@ -61,6 +61,7 @@ StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/raumzeit');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/resources');
 
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/activities', 'Studip\\Activity');
+StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/globalsearch');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/classes/visibility');
 
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/vendor/oauth-php/library');

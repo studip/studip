@@ -11,7 +11,7 @@ class Authority
      */
     public static function canIndexUsers(User $user)
     {
-        return $GLOBALS['perm']->have_perm('root', $user->id);
+        return $GLOBALS['perm']->have_perm('autor', $user->id);
     }
 
     /**
