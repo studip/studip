@@ -69,8 +69,10 @@ PageLayout::setTitle(Context::getHeaderLine() . " - " . _("Wiki"));
 
 if (in_array(Request::get('view'), words('listnew listall export'))) {
     Navigation::activateItem('/course/wiki/'.$view);
-} else {
+} else if ($keyword) {
     Navigation::activateItem('/course/wiki/show');
+} else {
+    Navigation::activateItem('/course/wiki/start');
 }
 
 if (Request::option('wiki_comments') === 'none') {  // don't show comments
