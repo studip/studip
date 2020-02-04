@@ -513,8 +513,20 @@
             }
         }
     });
+
     $.datepicker.setDefaults($.extend(defaults, {
-        onClose: function (date, inst) {
+        beforeShow (input) {
+            if ($(input).closest('.sidebar').length === 0) {
+                return;
+            }
+
+            const button = input.nextElementSibling;
+            if (button.matches('input[type="submit"]')) {
+                button.style.position = 'relative';
+                button.style.zIndex = input.style.zIndex;
+            }
+        },
+        onClose (date, inst) {
             $(this).one('click.picker', function () {
                 $(this).datepicker('show');
             }).on('blur', function () {
