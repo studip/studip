@@ -12,6 +12,7 @@ class FixMissingConsultationEvents extends Migration
                   FROM consultation_bookings
                   JOIN consultation_slots USING (slot_id)
                   JOIN consultation_blocks USING (block_id)
+                  JOIN auth_user_md5 ON teacher_id = auth_user_md5.user_id
                   WHERE teacher_event_id IS NULL";
         $ids = DBManager::get()->fetchFirst($query);
 
