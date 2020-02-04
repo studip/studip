@@ -86,6 +86,7 @@ class ResourceTest extends \Codeception\Test\Unit
             $this->test_resource_name,
             'Resource Description 20171013'
         );
+        $this->resource->requestable = '1';
         $this->resource->store();
 
         $this->resource->setProperty(
@@ -98,6 +99,12 @@ class ResourceTest extends \Codeception\Test\Unit
             $this->test_user
         );
 
+        $permission = new ResourcePermission();
+        $permission->user_id = $this->test_user->id;
+        $permission->resource_id = $this->resource->id;
+        $permission->perms = 'admin';
+        $permission->store();
+
         $this->booking_start_time = new DateTime('2017-10-02 8:00:00 +0000');
         $this->booking_end_time = new DateTime('2017-10-02 10:00:00 +0000');
         $this->booking_repeat_end = new DateTime('2017-10-06 10:00:00 +0000');
@@ -105,12 +112,15 @@ class ResourceTest extends \Codeception\Test\Unit
         $this->booking = $this->resource->createBooking(
             $this->test_user,
             $this->test_user->id,
-            $this->booking_start_time,
-            $this->booking_end_time,
-            $this->booking_repeat_end,
-            2,
-            2,
-            'd'
+            [
+                [
+                    'begin' => $this->booking_start_time,
+                    'end' => $this->booking_end_time
+                ]
+            ],
+            new DateInterval('P2D'),
+            2, //Shall not be regarded since a repetition end date is set.
+            $this->booking_repeat_end
         );
 
         $this->lock_start_time = new DateTime('2017-11-01 0:00:00 +0000');
@@ -194,49 +204,6 @@ class ResourceTest extends \Codeception\Test\Unit
         );
     }
 
-    public function testGetRootResources()
-    {
-        $root_resources = Resource::getRootResources($this->test_user);
-
-        //Since the test user (with admin permissions)
-        //should only have one resources
-        //which has been created in the _before()-Method
-        //there should only be one root resource of the user
-        //in the database.
-        $this->assertEquals(
-            1,
-            count($root_resources)
-        );
-
-        $this->assertEquals(
-            $this->test_resource_name,
-            $root_resources[0]->name
-        );
-    }
-
-    public function testCountByUser()
-    {
-        $this->assertEquals(
-            1,
-            Resource::countByUser($this->test_user)
-        );
-    }
-
-    public function testFindByUser()
-    {
-        $resources = Resource::findByUser($this->test_user);
-
-        $this->assertEquals(
-            1,
-            count($resources)
-        );
-
-        $this->assertEquals(
-            $this->test_resource_name,
-            $resources[0]->name
-        );
-    }
-
     public function testCreateBooking()
     {
         //The booking has been created in the _before() method.
@@ -267,13 +234,13 @@ class ResourceTest extends \Codeception\Test\Unit
         );
 
         $this->assertEquals(
-            '2',
+            null,
             $this->booking->repeat_quantity
         );
 
         $this->assertEquals(
-            '2',
-            $this->booking->repeat_interval
+            'P00Y00M02D',
+            $this->booking->repetition_interval
         );
     }
 
@@ -288,12 +255,12 @@ class ResourceTest extends \Codeception\Test\Unit
 
         $this->assertEquals(
             $this->lock_start_time->getTimestamp(),
-            $this->lock->lock_begin
+            $this->lock->begin
         );
 
         $this->assertEquals(
             $this->lock_end_time->getTimestamp(),
-            $this->lock->lock_end
+            $this->lock->end
         );
     }
 
@@ -380,6 +347,8 @@ class ResourceTest extends \Codeception\Test\Unit
 
     public function testGetPropertyObjectWithoutName()
     {
+        $this->expectException(TypeError::class);
+
         //The resource has been created in the _before() method.
 
         $no_object = $this->resource->getPropertyObject();
@@ -392,6 +361,7 @@ class ResourceTest extends \Codeception\Test\Unit
 
     public function testGetPropertyWithoutName()
     {
+        $this->expectException(TypeError::class);
         //The resource has been created in the _before() method.
 
         $this->assertEquals(
@@ -432,16 +402,6 @@ class ResourceTest extends \Codeception\Test\Unit
     //don't need to be tested since they are called in the _before() method.
     //If those set methods wouldn't work then the tests where
     //properties or property objects are retrieved would fail.
-
-    public function testGetImageUrl()
-    {
-        //$this->resource has been created in the _before() method.
-
-        $this->assertEquals(
-            Icon::create('resources', 'info')->asImagePath(),
-            $this->resource->getImageUrl()
-        );
-    }
 
     public function testGetPropertyArray()
     {
@@ -689,9 +649,9 @@ class ResourceTest extends \Codeception\Test\Unit
             $this->resource->deleteAllPermissions()
         );
 
-        //Now user2 should have user permissions on $this->resource:
+        //Now user2 should have no permissions on $this->resource:
         $this->assertEquals(
-            'user',
+            '',
             $this->resource->getUserPermission($this->user2)
         );
     }
@@ -705,14 +665,14 @@ class ResourceTest extends \Codeception\Test\Unit
         $link = $this->resource->getURL('show');
 
         $this->assertEquals(
-            'dispatch.php/resources/resource/show/' . $this->resource->id,
+            'dispatch.php/resources/resource/index/' . $this->resource->id,
             $link
         );
 
         $link = $this->resource->getURL('show', ['test' => '1']);
 
         $this->assertEquals(
-            'dispatch.php/resources/resource/show/' . $this->resource->id . '?test=1',
+            'dispatch.php/resources/resource/index/' . $this->resource->id . '?test=1',
             $link
         );
 

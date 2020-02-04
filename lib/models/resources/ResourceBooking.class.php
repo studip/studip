@@ -995,7 +995,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                     _('jeden %d. Tag'),
                     $interval->d
                 );
-            } elseif ($this->repeat_interval == 1){
+            } elseif ($interval->d == 1) {
                 return _('jeden Tag');
             } else {
                 return _('ungültiges Zeitintervall');

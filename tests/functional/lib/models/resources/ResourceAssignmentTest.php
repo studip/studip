@@ -83,7 +83,10 @@ class ResourceAssignmentTest extends \Codeception\Test\Unit
                     'begin' => new DateTime('2017-12-01 8:00:00+0000'),
                     'end' => new DateTime('2017-12-01 14:00:00+0000')
                 ]
-            ]
+            ],
+            new DateInterval('P1D'),
+            0,
+            new DateTime('2017-12-04 15:00:00+0000')
         );
 
         $this->another_booking = $this->resource->createBooking(
@@ -168,7 +171,7 @@ class ResourceAssignmentTest extends \Codeception\Test\Unit
         $time_intervals = $this->booking->getTimeIntervals();
 
         $this->assertEquals(
-            5,
+            4,
             count($time_intervals)
         );
     }

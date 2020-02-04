@@ -10,6 +10,7 @@ define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/fixtures/");
 
 require 'lib/classes/StudipAutoloader.php';
 require 'lib/functions.php';
+require_once 'lib/language.inc.php';
 
 $STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
 
@@ -24,6 +25,7 @@ StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/migrations');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models/resources');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/phplib');
+StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/raumzeit');
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/resources');
 
 // load config-variables

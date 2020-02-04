@@ -11,7 +11,7 @@ Angefragte Ressource: <?= $requested_resource ?>
 
 Typ der Anfrage: <?= $request->getTypeString() ?>
 
-<? if ($request->getRangeType() == 'course'): ?>
+<? if (($request->getRangeType() == 'course') && $request->getRangeObject()): ?>
 Veranstaltung: <?= $request->getRangeObject()->getFullName() ?>
 <? endif ?>
 

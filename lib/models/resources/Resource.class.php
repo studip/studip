@@ -2722,8 +2722,8 @@ class Resource extends SimpleORMap implements StudipItem
             $this,
             [
                 [
-                    $begin->getTimestamp(),
-                    $end->getTimestamp()
+                    'begin' => $begin->getTimestamp(),
+                    'end' => $end->getTimestamp()
                 ]
             ],
             [0]

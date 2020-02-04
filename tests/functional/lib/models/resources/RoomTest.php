@@ -101,7 +101,8 @@ class RoomTest extends \Codeception\Test\Unit
         //The request we create is for a room with at least 22 seats.
         $this->room->seats = 25;
 
-        $this->room->owner_id = $this->test_user->id;
+        $this->room->requestable = '1';
+
         $this->room->store();
 
         $this->request_begin_date = new DateTime();
@@ -135,16 +136,6 @@ class RoomTest extends \Codeception\Test\Unit
         // Workaround old-style Stud.IP-API using $GLOBALS['user']
         $GLOBALS['perm'] = $this->oldPerm;
         $GLOBALS['user'] = $this->oldUser;
-    }
-
-    public function testCountByUser()
-    {
-        $rooms = Room::countByUser($this->test_user);
-
-        $this->assertEquals(
-            $rooms,
-            1
-        );
     }
 
     //The tests for findParentByClassName and findChildrenByClassName
@@ -191,31 +182,6 @@ class RoomTest extends \Codeception\Test\Unit
         $this->assertEquals(
             $building->id,
             $this->building->id
-        );
-    }
-
-    public function testFindByUser()
-    {
-        $rooms = Room::findByUser($this->test_user);
-
-        $this->assertEquals(
-            count($rooms),
-            1
-        );
-
-        $this->assertEquals(
-            $rooms[0]->name,
-            $this->room->name
-        );
-
-        $this->assertEquals(
-            $rooms[0]->owner_id,
-            $this->room->owner_id
-        );
-
-        $this->assertEquals(
-            $rooms[0]->parent_id,
-            $this->room->parent_id
         );
     }
 
