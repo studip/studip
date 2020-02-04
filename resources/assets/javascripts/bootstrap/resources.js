@@ -157,9 +157,6 @@ STUDIP.ready(function() {
             }
 
             var property_id = jQuery(row).data('property_id');
-            if (!property_id) {
-                console.log('no property_id');
-            }
 
             //Enable the property in the "add property" select element:
             var table = jQuery(row).parents('table')[0];
@@ -747,7 +744,7 @@ STUDIP.ready(function() {
                     STUDIP.Fullcalendar.createSemesterCalendarFromNode(
                         node,
                         {
-                            eventAfterRender: function() {
+                            eventPositioned: function() {
                                 var h = jQuery('section.studip-fullcalendar-header').clone();
                                 if (h) {
                                     jQuery(h).removeClass('invisible');
@@ -766,7 +763,7 @@ STUDIP.ready(function() {
                                 resize_event:
                                 STUDIP.Resources.resizeEventInRoomGroupBookingPlan
                             },
-                            eventAfterRender: function() {
+                            eventPositioned: function() {
                                 var h = jQuery('section.studip-fullcalendar-header').clone();
                                 if (h) {
                                     jQuery(h).removeClass('invisible');
@@ -781,13 +778,16 @@ STUDIP.ready(function() {
     });
 
     //Check if an individual booking plan is to be displayed:
-    var nodes = jQuery('*[data-resources-fullcalendar="1"][class="individual-booking-plan"]');
+    var nodes = jQuery('.individual-booking-plan[data-resources-fullcalendar="1"]');
     jQuery.each(nodes, function (index, node) {
         STUDIP.loadChunk('fullcalendar').then(() => {
             STUDIP.Fullcalendar.createFromNode(
                 node,
                 {
-                    eventAfterRender: function (calendar_event, dom_element, view) {
+                    eventPositioned: function (info, calendar_event, dom_element, view) {
+                        var calendar_event = info.event;
+                        var dom_element = info.el;
+                        var view = info.view;
                         jQuery(dom_element).droppable({
                             drop: function(event, ui_element) {
                                 event.preventDefault();
