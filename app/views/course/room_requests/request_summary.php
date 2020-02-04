@@ -45,7 +45,7 @@
                            min="1">
                 </label>
                 <label>
-                    <?= _('Rüstzeit') ?>
+                    <?= _('Rüstzeit (in Minuten)') ?>
                     <input type="number" name="preparation_time"
                            value="<?= htmlReady($preparation_time) ?>"
                            min="0" max="<?= htmlReady($max_preparation_time) ?>">
