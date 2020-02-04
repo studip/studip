@@ -1,3 +1,6 @@
+params:
+    - tests/configuration.php
+    - env
 paths:
     tests: tests
     log: tests/_log

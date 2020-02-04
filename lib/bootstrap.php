@@ -70,7 +70,7 @@ if (!defined('Studip\ENV')) {
 }
 
 // if in dev mode and webpack dev server is running, adjust assets url
-if (Studip\ENV === 'development' && !in_array('ASSETS_URL', $added)) {
+if (Studip\ENV === 'development' && !in_array('ASSETS_URL', $added) && function_exists('socket_create')) {
     $wds_config = json_decode(
         file_get_contents("{$STUDIP_BASE_PATH}/config/webpack.dev-server.config.json")
     );
