@@ -1,6 +1,6 @@
 import AbstractAPI from './abstract-api.js';
 
-// Actual JSONAPI object
+// Actual RESTAPI object
 class RESTAPI extends AbstractAPI
 {
     constructor() {
