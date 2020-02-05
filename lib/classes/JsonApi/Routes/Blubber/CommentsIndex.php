@@ -10,9 +10,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
- * Displays all comments of a certain blubber thread.
+ * Displays all comments visible to the user.
  */
-class CommentsByThreadIndex extends JsonApiController
+class CommentsIndex extends JsonApiController
 {
     use TimestampTrait, FilterTrait;
 
@@ -27,26 +27,32 @@ class CommentsByThreadIndex extends JsonApiController
     {
         $this->validateFilters();
 
-        if (!($thread = \BlubberThread::find($args['id']))) {
-            throw new RecordNotFoundException();
-        }
-
-        if (!Authority::canShowBlubberThread($this->getUser($request), $thread)) {
+        if (!Authority::canIndexComments($user = $this->getUser($request))) {
             throw new AuthorizationFailedException();
         }
 
         $filters = $this->getFilters();
-        list($total, $comments) = $this->getComments($thread, $filters);
+        list($total, $comments) = $this->getComments($user, $filters);
 
         return $this->getPaginatedContentResponse($comments, $total);
     }
 
-    private function getComments(\BlubberThread $thread, array $filters)
+    private function getComments(\User $user, array $filters)
     {
         list($offset, $limit) = $this->getOffsetAndLimit();
 
-        $query = 'thread_id = :thread_id';
-        $params = ['thread_id' => $thread->id];
+        $threadIds = array_map(function ($thread) {
+            return $thread->id;
+        }, \BlubberThread::findMyGlobalThreads(
+            99999999,
+            $filters['since'],
+            $filters['before'],
+            $user->id,
+            $filters['search']
+        ));
+
+        $query = 'thread_id IN (:thread_ids)';
+        $params = ['thread_ids' => $threadIds];
 
         if (isset($filters['before'])) {
             $query .= ' AND mkdate <= :before';
@@ -63,7 +69,7 @@ class CommentsByThreadIndex extends JsonApiController
             $params['search'] = '%' . $filters['search'] . '%';
         }
 
-        $query .= ' ORDER BY mkdate ASC LIMIT :limit OFFSET :offset';
+        $query .= ' ORDER BY chdate ASC LIMIT :limit OFFSET :offset';
         $params['limit'] = $limit + 1;
         $params['offset'] = $offset;
 
