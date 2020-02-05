@@ -33,6 +33,7 @@ import HeaderMagic from './lib/header_magic.js';
 import i18n from './lib/i18n.js';
 import Instschedule from './lib/instschedule.js';
 import InlineEditing from './lib/inline-editing.js';
+import JSONAPI, { jsonapi } from './lib/jsonapi.js';
 import JSUpdater from './lib/jsupdater.js';
 import Lightbox from './lib/lightbox.js';
 import Markup from './lib/markup.js';
@@ -112,6 +113,8 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     i18n,
     Instschedule,
     InlineEditing,
+    jsonapi,
+    JSONAPI,
     JSUpdater,
     Lightbox,
     Markup,
