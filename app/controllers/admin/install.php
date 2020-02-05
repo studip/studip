@@ -280,6 +280,12 @@ class Admin_InstallController extends Trails_Controller
         // CREATE ROOT USER
         if ($this->basic || $what === 'root') {
             try {
+                // Remove root user from demo data
+                $query = "DELETE FROM `auth_user_md5`
+                          WHERE `username` = 'root@studip'";
+                $pdo->exec($query);
+
+                // Create root user
                 $user_id = md5(uniqid('root-user', true));
                 $hasher  = new PasswordHash(8, false);
 
