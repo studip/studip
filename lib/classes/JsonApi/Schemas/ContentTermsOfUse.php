@@ -16,8 +16,8 @@ class ContentTermsOfUse extends SchemaProvider
     public function getAttributes($resource)
     {
         return [
-            'name' => $resource['name'],
-            'description' => mb_strlen($resource['description']) ? $resource['description'] : null,
+            'name' => (string) $resource['name'],
+            'description' => mb_strlen($resource['description']) ? (string) $resource['description'] : null,
             'icon' => $resource['icon'],
             'mkdate' => date('c', $resource['mkdate']),
             'chdate' => date('c', $resource['chdate']),

@@ -31,13 +31,13 @@ class Course extends SchemaProvider
     public function getAttributes($course)
     {
         $stringOrNull = function ($item) {
-            return trim($item) != '' ? $item : null;
+            return trim($item) != '' ? (string) $item : null;
         };
 
         return [
             'course-number' => $stringOrNull($course->veranstaltungsnummer),
 
-            'title' => $course->name,
+            'title' => (string) $course->name,
             'subtitle' => $stringOrNull($course->untertitel),
             'course-type' => (int) $course->status,
             'description' => $stringOrNull($course->beschreibung),

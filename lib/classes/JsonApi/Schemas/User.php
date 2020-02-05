@@ -72,7 +72,7 @@ class User extends SchemaProvider
 
         foreach ($fields as list($attr, $field, $vis)) {
             $value = ($user[$field] && is_element_visible_for_user($observer->id, $user->id, $visibilities[$vis]))
-                   ? strip_tags($user[$field]) : null;
+                   ? strip_tags((string) $user[$field]) : null;
             yield $attr => $value;
         }
     }
