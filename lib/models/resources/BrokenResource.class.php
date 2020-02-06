@@ -131,22 +131,22 @@ class BrokenResource extends Resource
         return false;
     }
     
-    public function getPropertyObject($name = '')
+    public function getPropertyObject(string $name = '')
     {
         return null;
     }
     
-    public function getProperty($name = '')
+    public function getProperty(string $name = '')
     {
         return null;
     }
     
-    public function getPropertyRelatedObject($name = '')
+    public function getPropertyRelatedObject(string $name = '')
     {
         return null;
     }
     
-    public function setProperty($name = '', $state = '', $user_id = null)
+    public function setProperty(string $name = '', $state = '', $user_id = null)
     {
         return false;
     }
