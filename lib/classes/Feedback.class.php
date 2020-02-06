@@ -35,12 +35,18 @@ class Feedback
     /**
      * Returns admin permission of current user within given course
      *
+     * @param string $course_id  the course
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
      * @return boolean
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function hasAdminPerm($course_id)
+    public static function hasAdminPerm($course_id, string $user_id = null): bool
     {
+        $user_id = $user_id ?? $GLOBALS['user']->id;
         $admin_perm_level =  CourseConfig::get($course_id)->FEEDBACK_ADMIN_PERM;
-        $admin_perm = $GLOBALS['perm']->have_studip_perm($admin_perm_level, $course_id);
+        $admin_perm = $GLOBALS['perm']->have_studip_perm($admin_perm_level, $course_id, $user_id);
 
         return $admin_perm;
     }
@@ -48,12 +54,18 @@ class Feedback
     /**
      * Returns create permission of current user within given course
      *
+     * @param string $course_id  the course
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
      * @return boolean
+     *
+     * @SuppressWarnings(PHPMD.Superglobals)
      */
-    public static function hasCreatePerm($course_id)
+    public static function hasCreatePerm($course_id, string $user_id = null): bool
     {
+        $user_id = $user_id ?? $GLOBALS['user']->id;
         $create_perm_level =  CourseConfig::get($course_id)->FEEDBACK_CREATE_PERM;
-        $create_perm = $GLOBALS['perm']->have_studip_perm($create_perm_level, $course_id);
+        $create_perm = $GLOBALS['perm']->have_studip_perm($create_perm_level, $course_id, $user_id);
 
         return $create_perm;
     }
@@ -61,12 +73,17 @@ class Feedback
     /**
      * Returns range access permission of current user for given range
      *
+     * @param string $range_id
+     * @param string $range_type
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
      * @return boolean
      */
-    public static function hasRangeAccess($range_id, $range_type)
+    public static function hasRangeAccess($range_id, $range_type, string $user_id = null): bool
     {
+        $user_id = $user_id ?? $GLOBALS['user']->id;
         $range = $range_type::find($range_id);
-        return $range->isRangeAccessible();
+        return $range->isRangeAccessible($user_id);
     }
 
 }

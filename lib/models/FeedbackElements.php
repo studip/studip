@@ -3,7 +3,7 @@
 /**
  *
  * @author Nils Gehrke <nils.gehrke@uni-goettingen.de>
- * 
+ *
  */
 
 class FeedbackElements extends SimpleORMap
@@ -29,37 +29,61 @@ class FeedbackElements extends SimpleORMap
         parent::configure($config);
     }
 
-    public function isFeedbackable()
+    /**
+     *
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @return bool
+     */
+    public function isFeedbackable(string $user_id = null): bool
     {
-        $feedbackable       = false;
-        if (Feedback::hasRangeAccess($this->range_id, $this->range_type) && !$this->isOwner()) {
-            $already_feedbacked = $this->getOwnEntry();
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+        $feedbackable = false;
+        if (Feedback::hasRangeAccess($this->range_id, $this->range_type, $user_id) && !$this->isOwner($user_id)) {
+            $already_feedbacked = $this->getOwnEntry($user_id);
             if ($already_feedbacked === null) {
                 $feedbackable = true;
             }
-
         }
+
         return $feedbackable;
     }
 
-    public function isOwner()
+    /**
+     *
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @return bool
+     */
+    public function isOwner(string $user_id = null): bool
     {
-        $ownership       = false;
-        if ($this->user_id == $GLOBALS['user']->id) {
-            $ownership       = true;
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+        $ownership = false;
+        if ($this->user_id == $user_id) {
+            $ownership = true;
         }
         return $ownership;
     }
 
-    public function getOwnEntry()
+    /**
+     *
+     * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @return FeedbackEntries|null
+     */
+    public function getOwnEntry(string $user_id = null)
     {
-        return FeedbackEntries::findOneBySQL("feedback_id = ? AND user_id = ?", [$this->id, $GLOBALS['user']->id]);
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+
+        return FeedbackEntries::findOneBySQL("feedback_id = ? AND user_id = ?", [$this->id, $user_id]);
     }
+
     public function getRatings()
     {
         $ratings = $this->entries->pluck('rating');
         return $ratings;
     }
+
     public function getCountOfRating($rating)
     {
         $ratings = $this->entries->filter(function ($entry) use ($rating) {
@@ -68,6 +92,7 @@ class FeedbackElements extends SimpleORMap
 
         return count($ratings);
     }
+
     public function getPercentageOfRating($rating)
     {
         $ratings    = $this->getCountOfRating($rating);
@@ -76,6 +101,7 @@ class FeedbackElements extends SimpleORMap
 
         return round($percentage);
     }
+
     public function getPercentageOfMeanRating($total)
     {
         $rating    = round($this->getMeanOfRating(), 2);
@@ -83,6 +109,7 @@ class FeedbackElements extends SimpleORMap
 
         return $percentage;
     }
+
     public function getMeanOfRating()
     {
         $ratings = $this->getRatings();
@@ -90,6 +117,7 @@ class FeedbackElements extends SimpleORMap
 
         return number_format($mean, 2, _(','), ' ');
     }
+
     public function getMaxRating()
     {
         switch ($this->mode) {
@@ -105,6 +133,7 @@ class FeedbackElements extends SimpleORMap
                 return 0;
         }
     }
+
     public function getRange()
     {
         return $this->range_type::find($this->range_id);

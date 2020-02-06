@@ -479,8 +479,8 @@ class Folder extends SimpleORMap implements FeedbackRange
         $parents = $this->getParents();
         return join($delimiter, SimpleCollection::createFromArray($parents)->pluck('name'));
     }
-    
-    public function getRangeName() 
+
+    public function getRangeName()
     {
         return $this->name;
     }
@@ -500,8 +500,10 @@ class Folder extends SimpleORMap implements FeedbackRange
         return $this->range_id;
     }
 
-    public function isRangeAccessible()
+    public function isRangeAccessible(string $user_id = null): bool
     {
-        return $this->getTypedFolder()->isReadable($GLOBALS['user']->id);
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+
+        return $this->getTypedFolder()->isReadable($user_id);
     }
 }

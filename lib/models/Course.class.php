@@ -668,7 +668,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             }
         }
     }
-    public function getRangeName() 
+    public function getRangeName()
     {
         return $this->name;
     }
@@ -688,8 +688,9 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         return $this->Seminar_id;
     }
 
-    public function isRangeAccessible()
+    public function isRangeAccessible(string $user_id = null): bool
     {
-        return $GLOBALS['perm']->have_studip_perm('autor', $this->Seminar_id);
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+        return $GLOBALS['perm']->have_studip_perm('autor', $this->Seminar_id, $user_id);
     }
 }

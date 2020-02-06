@@ -294,7 +294,7 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
         }
     }
 
-    public function getRangeName() 
+    public function getRangeName()
     {
         return $this->name;
     }
@@ -314,8 +314,10 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
         return $this->foldertype->range_id;
     }
 
-    public function isRangeAccessible()
+    public function isRangeAccessible(string $user_id = null): bool
     {
-        return $this->foldertype->isFileDownloadable($this->id, $GLOBALS['user']->id);
+        $user_id = $user_id ?? $GLOBALS['user']->id;
+
+        return $this->foldertype->isFileDownloadable($this->id, $user_id);
     }
 }
