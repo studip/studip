@@ -1,27 +1,28 @@
 <?
         $subject="Bestätigungsmail des Stud.IP-Systems";
         
-        $mailbody="Dies ist eine Bestätigungsmail des Systems Stud.IP\n"
-        ."(Studienbegleitender Internetsupport von Präsenzlehre)\n"
-        ."- " . Config::get()->UNI_NAME_CLEAN . "-\n\n"
-        ."Sie haben sich um $Zeit mit folgenden Angaben angemeldet:\n\n"
+        $mailbody="Dies ist eine Informationsmail des Stud.IP-Systems.\n"
+        ."Stud.IP ist eine Online-Plattform, die von der " . Config::get()->UNI_NAME_CLEAN 
+        ." als studienbegleitende Unterstützung der Präsenzlehre genutzt wird.\n\n"
+        ."Sie wurden um $Zeit mit folgenden Angaben von einem der Administrierenden in das System eingetragen.\n"
+        ."Mit dieser E-Mail erhalten Sie Ihren Benutzernamen und Ihr Passwort.\n"
+        . "Die für Sie in der Datenbank hinterlegten Daten sind folgende:\n\n"
         ."Benutzername: $username\n"
+        . $password ? "Passwort: $password\n" : ''
+        . $status ? "Status: $status\n" : ''
         ."Vorname: $Vorname\n"
         ."Nachname: $Nachname\n"
         ."E-Mail-Adresse: $Email\n\n"
-        ."Diese E-Mail wurde Ihnen zugesandt um sicherzustellen,\n"
-        ."daß die angegebene E-Mail-Adresse tatsächlich Ihnen gehört.\n\n"
-        ."Wenn diese Angaben korrekt sind, dann öffnen Sie bitte den Link\n\n"
+        ."Mit diesen Anmeldedaten können Sie sich nun auf der Startseite im Stud.IP-System anmelden.\n"
+        ."Dazu besuchen Sie bitte:\n\n"
         ."$url\n\n"
-        ."in Ihrem Browser.\n"
         ."Wahrscheinlich unterstützt Ihr E-Mail-Programm ein einfaches Anklicken des Links.\n"
-        ."Ansonsten müssen Sie Ihren Browser öffnen und den Link komplett in die Zeile\n"
-        ."\"Location\" oder \"URL\" kopieren.\n\n"
-        ."Sie müssen sich auf jeden Fall als BenutzerIn \"$username\" anmelden,\n"
-        ."damit die Rückbestätigung funktioniert.\n\n"
-        ."Falls Sie sich nicht als Benutzer \"$username\" angemeldet haben\n"
-        ."oder überhaupt nicht wissen, wovon hier die Rede ist,\n"
-        ."dann hat jemand Ihre E-Mail-Adresse fälschlicherweise verwendet!\n\n"
-        ."Bitte wenden Sie sich in diesem Fall an $abuse,\n"
-        ."damit der Eintrag aus der Datenbank gelöscht wird.\n";
+        ."kopieren Sie bitte den Link, öffnen Ihren Browser und fügen diesen in die Adresszeile\n"
+        ."\"Location\" oder \"URL\" ein.\n\n"
+        ."Um Zugang auf die nichtöffentlichen Bereiche des Systems zu bekommen,\n"
+        ."müssen Sie sich unter \"Login\" auf der Seite anmelden.\n"
+        ."Geben Sie bitte unter Benutzername \"$username\" und unter Passwort: \"" . $password ? $password : "Ihr Passwort" . "\" ein. \n\n"
+        ."Das Passwort ist nur Ihnen bekannt, bitte geben Sie es niemals an Dritte weiter.\n\n"
+        ."Mit besten Grüßen,\n\n"
+        ."Ihr Stud.IP Supportteam\n"
 ?>
