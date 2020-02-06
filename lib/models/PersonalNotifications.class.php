@@ -104,10 +104,14 @@ class PersonalNotifications extends SimpleORMap
         if (!is_array($user_ids)) {
             $user_ids = [$user_ids];
         }
+
+        $user_ids = array_filter($user_ids, 'self::isActivated');
+
         if (!count($user_ids)) {
             return false;
         }
-        $notification = new PersonalNotifications();
+
+        $notification = new self();
         $notification['html_id'] = $html_id;
         $notification['url']     = $url;
         $notification['text']    = $text;
@@ -118,14 +122,13 @@ class PersonalNotifications extends SimpleORMap
         foreach ($user_ids as $user_id) {
             self::expireCache($user_id);
 
-            if (self::isActivated($user_id)) {
-                $assignment = new PersonalNotificationsUser();
-                $assignment['personal_notification_id'] = $notification->id;
-                $assignment['user_id'] = $user_id;
-                $assignment['seen'] = 0;
-                $assignment->store();
-            }
+            $assignment = new PersonalNotificationsUser();
+            $assignment['personal_notification_id'] = $notification->id;
+            $assignment['user_id'] = $user_id;
+            $assignment['seen'] = 0;
+            $assignment->store();
         }
+
         return true;
     }
 

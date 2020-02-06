@@ -396,14 +396,20 @@ class messaging
         $user_ids = array_diff($rec_id, [$user_id]);
 
         // Create notifications
-        PersonalNotifications::add(
-            $user_ids,
-            URLHelper::getUrl("dispatch.php/messages/read/$tmp_message_id", ['cid' => null]),
-            sprintf(_('Sie haben eine Nachricht von %s erhalten!'), $snd_name),
-            'message_'.$tmp_message_id,
-            Icon::create('mail', 'clickable'),
-            true
-        );
+        foreach ($user_ids as $user_id) {
+            setTempLanguage($user_id);
+
+            PersonalNotifications::add(
+                $user_id,
+                URLHelper::getUrl("dispatch.php/messages/read/{$tmp_message_id}", [], true),
+                sprintf(_('Sie haben eine Nachricht von %s erhalten!'), $snd_name),
+                "message_{$tmp_message_id}",
+                Icon::create('mail'),
+                true
+            );
+
+            restoreLanguage();
+        }
 
         NotificationCenter::postNotification('MessageDidSend', $tmp_message_id, compact('user_id', 'rec_id'));
 
