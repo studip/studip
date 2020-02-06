@@ -27,7 +27,7 @@ class AdditionalMvvTables extends Migration
         $db->exec("CREATE TABLE IF NOT EXISTS `mvv_files_filerefs` (
             `mvvfile_id` varchar(32) COLLATE latin1_bin NOT NULL,
             `file_language` varchar(32) COLLATE latin1_bin NOT NULL,
-            `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+            `name` varchar(1000) COLLATE utf8mb4_unicode_ci NOT NULL,
             `fileref_id` varchar(32) COLLATE latin1_bin NOT NULL,
             `author_id` varchar(32) COLLATE latin1_bin DEFAULT NULL,
             `editor_id` varchar(32) COLLATE latin1_bin DEFAULT NULL,
@@ -101,14 +101,14 @@ class AdditionalMvvTables extends Migration
             $folder_id = md5('Folder'.  $old_doc['dokument_id']);
             $file_id = md5('File'.  $old_doc['dokument_id']);
             $mvvfile_id = md5('MvvFile'.  $old_doc['dokument_id']);
-            $db->execute("INSERT IGNORE INTO `mvv_files` (`mvvfile_id`, `name`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ? ,?)",
-                    [$mvvfile_id, $old_doc['linktext'], $old_doc['author_id'], $old_doc['editor_id'], $old_doc['mkdate'], $old_doc['chdate']]);
-            $db->execute("INSERT IGNORE INTO `mvv_files_filerefs` (`mvvfile_id`, `file_language`, `fileref_id`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [$mvvfile_id, 'DE', $fileref_id, $old_doc['author_id'], $old_doc['editor_id'], $old_doc['mkdate'], $old_doc['chdate']]);
+            $db->execute("INSERT IGNORE INTO `mvv_files` (`mvvfile_id`, `year`, `type`, `category`, `tags`, `extern_visible`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, NULL, NULL, NULL, NULL , 1, ?, ?, ?, ?)",
+                    [$mvvfile_id, $old_doc['author_id'], $old_doc['editor_id'], $old_doc['mkdate'], $old_doc['chdate']]);
+            $db->execute("INSERT IGNORE INTO `mvv_files_filerefs` (`mvvfile_id`, `file_language`, `name`, `fileref_id`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    [$mvvfile_id, 'DE', $old_doc['linktext'], $fileref_id, $old_doc['author_id'], $old_doc['editor_id'], $old_doc['mkdate'], $old_doc['chdate']]);
             $db->execute("INSERT IGNORE INTO `file_urls` (`file_id`, `url`, `access_type`) VALUES (?, ?, 'proxy')", [$file_id, $old_doc['url']]);
             $db->execute("INSERT IGNORE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`)
-                        VALUES (?, ?, '', ?, ?, 'MVVFolder', ?, NULL, '', ?, ?)",
-                            [$folder_id, $old_doc['author_id'], $mvvfile_id, 'mvv', 'MVV Dateiordner', $old_doc['mkdate'], $old_doc['chdate']]);
+                        VALUES (?, ?, NULL, ?, ?, 'MVVFolder', ?, NULL, ?, ?, ?)",
+                            [$folder_id, $old_doc['author_id'], $mvvfile_id, 'mvv', $old_doc['name'], $old_doc['linktext'], $old_doc['mkdate'], $old_doc['chdate']]);
             $db->execute("INSERT IGNORE INTO `file_refs` (`id`, `file_id`, `folder_id`, `description`, `user_id`, `name`, `mkdate`, `chdate`)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                         [$fileref_id, $file_id, $folder_id, $old_doc['beschreibung'], $old_doc['author_id'], $old_doc['name'], $old_doc['mkdate'], $old_doc['chdate']]);
@@ -123,14 +123,15 @@ class AdditionalMvvTables extends Migration
 
         //Merge old mvv_modul_user
         foreach ($db->query("SELECT * FROM `mvv_modul_user`") as $old_modul_user) {
+            $contact_range_id = md5('MvvContactRange' .  $old_modul_user['user_id'] . $old_modul_user['modul_id']);
             $db->execute("INSERT IGNORE INTO `mvv_contacts` (`contact_id`, `contact_status`, `alt_mail`,
                         `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ? ,?)",
                         [
                             $old_modul_user['user_id'], 'intern', '', $old_modul_user['author_id'],
                             $old_modul_user['editor_id'], $old_modul_user['mkdate'], $old_modul_user['chdate']
                         ]);
-            $db->execute("INSERT IGNORE INTO `mvv_contacts_ranges` (`range_id`, `contact_id`, `range_type`, `type`, `category`, `position`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                        [$old_modul_user['modul_id'], $old_modul_user['user_id'], 'Modul', '',
+            $db->execute("INSERT IGNORE INTO `mvv_contacts_ranges` (`contact_range_id`, `range_id`, `contact_id`, `range_type`, `type`, `category`, `position`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [$contact_range_id, $old_modul_user['modul_id'], $old_modul_user['user_id'], 'Modul', '',
                         $old_modul_user['gruppe'],  $old_modul_user['position'], $old_modul_user['author_id'],
                         $old_modul_user['editor_id'], $old_modul_user['mkdate'], $old_modul_user['chdate']]);
         }
