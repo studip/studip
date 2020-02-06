@@ -162,7 +162,7 @@ body:not(.fixed) #barTopMenu {
 
             list-style: none;
             margin: 5px 0 0;
-            padding: 0;
+            padding: 4px 4px;
 
             background-color: @dark-gray-color-5;
             border: 1px solid @dark-gray-color-40;
@@ -174,25 +174,27 @@ body:not(.fixed) #barTopMenu {
 
             li {
                 display: block;
+                line-height: 1;
                 a {
                     display: flex;
                     flex-direction: row;
                     flex-wrap: nowrap;
                     align-items: center;
 
-                    padding: 0.5em 1em;
+                    padding: 4px 0;
 
                     &[data-badge]:not([data-badge="0"])::before {
                         left: 21px;
                     }
                 }
                 img {
-                    flex: 1 0 24px;
-                    .square(24px);
-                    margin: 2px 0.7em 0 0;
+                    flex: 1 0 20px;
+                    .square(20px);
+                    margin: 0 0.25em;
+
                 }
                 .navtitle {
-                    flex: 1 0 100%;
+                    flex: 1 0 70%;
                     text-align: left;
                     white-space: nowrap;
                     //margin-top: -10px;
