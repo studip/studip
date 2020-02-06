@@ -98,10 +98,6 @@ class AdminModules extends ModulesNotification {
         $this->registered_modules["admin"]["msg_activate"] = _("Wenn die Verwaltungsseite aktiviert wird, kann die Veranstaltung wieder von Admin und Dozenten bearbeitet werden.");
         $this->registered_modules["admin"]["msg_deactivate"] = _("Wenn Sie die Verwaltungsseite deaktivieren, können Sie sie eventuell nicht mehr aktivieren.");
         $this->registered_modules["admin"]["msg_warning"] = _("Wenn die Verwaltungsseite deaktiviert wird, können Dozenten und Admin (Sie eventuell eingeschlossen) die Veranstaltung nicht mehr administrieren.");
-
-        $this->registered_modules["resources"]['name'] = _("Ressourcen");
-        $this->registered_modules["resources"]["msg_activate"] = _("Sie können die Ressourcenseite jederzeit aktivieren.");
-        $this->registered_modules["resources"]["msg_deactivate"] = _("Sie können die Ressourcenseite jederzeit deaktivieren.");
     }
 
     public function getDocumentsExistingItems($range_id) { //getModuleDocumentsExistingItems
