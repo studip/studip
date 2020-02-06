@@ -27,6 +27,16 @@ class Authority
         return \Feedback::hasRangeAccess($course->id, \Course::class, $user->id);
     }
 
+    public static function canIndexFeedbackElementsOfFileRef(User $user, \FileRef $fileRef)
+    {
+        return \Feedback::hasRangeAccess($fileRef->id, \FileRef::class, $user->id);
+    }
+
+    public static function canIndexFeedbackElementsOfFolder(User $user, \Folder $folder)
+    {
+        return \Feedback::hasRangeAccess($folder->id, \Folder::class, $user->id);
+    }
+
     public static function canShowFeedbackEntry(User $user, \FeedbackEntries $resource)
     {
         $feedbackElement = $resource->feedback;

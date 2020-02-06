@@ -113,7 +113,8 @@ class FeedbackElements extends SimpleORMap
     public function getMeanOfRating()
     {
         $ratings = $this->getRatings();
-        $mean    = array_sum($ratings) / count($ratings);
+        $count = count($ratings);
+        $mean    = $count > 0 ? array_sum($ratings) / $count : 0;
 
         return number_format($mean, 2, _(','), ' ');
     }

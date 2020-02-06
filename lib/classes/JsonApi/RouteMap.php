@@ -216,6 +216,8 @@ class RouteMap
         $this->app->get('/feedback-elements/{id}', Routes\Feedback\FeedbackElementsShow::class);
         $this->app->get('/feedback-elements/{id}/entries', Routes\Feedback\FeedbackEntriesIndex::class);
         $this->app->get('/courses/{id}/feedback-elements', Routes\Feedback\FeedbackElementsByCourseIndex::class);
+        $this->app->get('/file-refs/{id}/feedback-elements', Routes\Feedback\FeedbackElementsByFileRefIndex::class);
+        $this->app->get('/folders/{id}/feedback-elements', Routes\Feedback\FeedbackElementsByFolderIndex::class);
 
         $this->app->get('/feedback-entries/{id}', Routes\Feedback\FeedbackEntriesShow::class);
     }

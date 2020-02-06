@@ -9,6 +9,7 @@ class FileRef extends SchemaProvider
 {
     const TYPE = 'file-refs';
 
+    const REL_FEEDBACK = 'feedback-elements';
     const REL_FILE = 'file';
     const REL_OWNER = 'owner';
     const REL_PARENT = 'parent';
@@ -73,11 +74,32 @@ class FileRef extends SchemaProvider
     {
         $relationships = [];
 
+        $relationships = $this->getFeedbackRelationship($relationships, $resource);
         $relationships = $this->addFileRelationship($relationships, $resource);
         $relationships = $this->addOwnerRelationship($relationships, $resource);
         $relationships = $this->addParentRelationship($relationships, $resource);
         $relationships = $this->addRangeRelationship($relationships, $resource);
         $relationships = $this->addTermsRelationship($relationships, $resource);
+
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function getFeedbackRelationship(
+        array $relationships,
+        \FileRef $resource
+    ) {
+        if ($folder = $resource->getFolderType()) {
+            if ($folder->range_id && $folder->range_type === 'course' && \Feedback::isActivated($folder->range_id)) {
+                $relationships[self::REL_FEEDBACK] = [
+                    self::LINKS => [
+                        Link::RELATED => $this->getRelationshipRelatedLink($resource, self::REL_FEEDBACK)
+                    ],
+                ];
+            }
+        }
 
         return $relationships;
     }

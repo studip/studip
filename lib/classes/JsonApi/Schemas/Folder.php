@@ -10,8 +10,9 @@ class Folder extends SchemaProvider
     const REL_OWNER = 'owner';
     const REL_PARENT = 'parent';
     const REL_RANGE = 'range';
-    const REL_FOLDERS = 'folders';
+    const REL_FEEDBACK = 'feedback-elements';
     const REL_FILE_REFS = 'file-refs';
+    const REL_FOLDERS = 'folders';
 
     protected $resourceType = self::TYPE;
 
@@ -55,11 +56,12 @@ class Folder extends SchemaProvider
         $relationships = [];
 
         if ($isPrimary) {
+            $relationships = $this->getFeedbackRelationship($relationships, $resource);
+            $relationships = $this->getFilesRelationship($relationships, $resource);
+            $relationships = $this->getFoldersRelationship($relationships, $resource);
             $relationships = $this->getOwnerRelationship($relationships, $resource);
             $relationships = $this->getParentRelationship($relationships, $resource);
             $relationships = $this->getRangeRelationship($relationships, $resource);
-            $relationships = $this->getFoldersRelationship($relationships, $resource);
-            $relationships = $this->getFilesRelationship($relationships, $resource);
         }
 
         return $relationships;
@@ -136,6 +138,21 @@ class Folder extends SchemaProvider
                 'range_type' => $resource->range_type,
             ],
         ];
+    }
+
+    private function getFeedbackRelationship(array $relationships, $resource): array
+    {
+        if ($resource->range_type === 'course') {
+            if (\Feedback::isActivated($resource->range_id)) {
+                $relationships[self::REL_FEEDBACK] = [
+                    self::LINKS => [
+                        Link::RELATED => $this->getRelationshipRelatedLink($resource, self::REL_FEEDBACK)
+                    ],
+                ];
+            }
+        }
+
+        return $relationships;
     }
 
     private function getFoldersRelationship(array $relationships, $resource)

@@ -36,6 +36,21 @@ class FeedbackElement extends SchemaProvider
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getPrimaryMeta($resource)
+    {
+        return $resource['mode'] === 0
+            ? null
+            : [
+                'ratings' => [
+                    'count' => \FeedbackEntries::countBySql('feedback_id = ?', [$resource->id]),
+                    'mean' => (float) $resource->getMeanOfRating()
+                ]
+            ];
+    }
+
+    /**
      * In dieser Methode können Relationships zu anderen Objekten
      * spezifiziert werden.
      * {@inheritdoc}
