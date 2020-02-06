@@ -138,6 +138,7 @@ class RouteMap
         $this->addAuthenticatedContactsRoutes();
         $this->addAuthenticatedCoursesRoutes();
         $this->addAuthenticatedEventsRoutes();
+        $this->addAuthenticatedFeedbackRoutes();
         $this->addAuthenticatedFilesRoutes();
         $this->addAuthenticatedForumRoutes();
         $this->addAuthenticatedInstitutesRoutes();
@@ -208,6 +209,15 @@ class RouteMap
 
         // not a JSON:API route
         $this->app->get('/users/{id}/events.ics', Routes\Events\UserEventsIcal::class);
+    }
+
+    private function addAuthenticatedFeedbackRoutes()
+    {
+        $this->app->get('/feedback-elements/{id}', Routes\Feedback\FeedbackElementsShow::class);
+        $this->app->get('/feedback-elements/{id}/entries', Routes\Feedback\FeedbackEntriesIndex::class);
+        $this->app->get('/courses/{id}/feedback-elements', Routes\Feedback\FeedbackElementsByCourseIndex::class);
+
+        $this->app->get('/feedback-entries/{id}', Routes\Feedback\FeedbackEntriesShow::class);
     }
 
     private function addAuthenticatedInstitutesRoutes()

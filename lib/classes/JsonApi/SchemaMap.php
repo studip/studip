@@ -20,6 +20,8 @@ class SchemaMap
             \ContentTermsOfUse::class => \JsonApi\Schemas\ContentTermsOfUse::class,
             \Course::class => \JsonApi\Schemas\Course::class,
             \CourseMember::class => \JsonApi\Schemas\CourseMember::class,
+            \FeedbackElements::class => \JsonApi\Schemas\FeedbackElement::class,
+            \FeedbackEntries::class => \JsonApi\Schemas\FeedbackEntry::class,
             \JsonApi\Models\ForumCat::class => \JsonApi\Schemas\ForumCategory::class,
             \JsonApi\Models\ForumEntry::class => \JsonApi\Schemas\ForumEntry::class,
             \Institute::class => \JsonApi\Schemas\Institute::class,

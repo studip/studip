@@ -21,11 +21,13 @@ class Feedback
     /**
      * Returns activation status of the feedback module in currently active course
      *
+     * @param string $course_id  optional; use this course_id instead of the current context
+     *
      * @return boolean
      */
-    public static function isActivated()
+    public static function isActivated(string $course_id = null): bool
     {
-        $course_id          = Context::getId();
+        $course_id          = $course_id ?? Context::getId();
         $plugin_manager     = PluginManager::getInstance();
         $feedback_module    = $plugin_manager->getPluginInfo('FeedbackModule');
 
