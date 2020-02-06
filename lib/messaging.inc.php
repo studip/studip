@@ -407,9 +407,9 @@ class messaging
                 Icon::create('mail'),
                 true
             );
-
-            restoreLanguage();
         }
+
+        restoreLanguage();
 
         NotificationCenter::postNotification('MessageDidSend', $tmp_message_id, compact('user_id', 'rec_id'));
 
