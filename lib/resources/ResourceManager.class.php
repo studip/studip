@@ -1392,10 +1392,18 @@ class ResourceManager
         foreach (get_declared_classes() as $class_name) {
             if (is_a($class_name, 'Resource', true)) {
                 foreach ($excluded_classes as $excl_class) {
-                    if (is_a($class_name, $excl_class, true)) {
-                        //The class belongs to one of the
-                        //excluded resource classes.
-                        continue 2;
+                    //For the resource base class, we must not check
+                    //derived classes.
+                    if ($excl_class == 'Resource') {
+                        if ($class_name == 'Resource') {
+                            continue 2;
+                        }
+                    } else {
+                        if (is_a($class_name, $excl_class, true)) {
+                            //The class belongs to one of the
+                            //excluded resource classes.
+                            continue 2;
+                        }
                     }
                 }
                 $class_names[] = $class_name;
