@@ -88,6 +88,15 @@ class RoomManagementMigration extends Migration
                 'old_type' => 'bool',
                 'requestable' => true,
                 'searchable' => true
+            ],
+            'Raumverantwortung' => [
+                'name' => 'responsible_person',
+                'display_name' => 'Raumverantwortung',
+                'old_type' => 'text',
+                'new_type' => 'user',
+                'requestable' => false,
+                'searchable' => false,
+                'info_label' => true
             ]
         ];
         $GLOBALS['RESOURCE_PROPERTIES_TO_BE_MERGED'] = [];
@@ -297,6 +306,30 @@ class RoomManagementMigration extends Migration
                 }
             }
         }
+    }
+
+    public function migrateOwner()
+    {
+        $db = DBManager::get();
+        $db->exec("INSERT INTO resource_permissions
+                    (user_id, resource_id, perms, mkdate, chdate)
+                    SELECT r.owner_id, r.id, 'admin', r.mkdate, r.chdate
+                    FROM resources r INNER JOIN resource_categories rc
+                    ON r.category_id = rc.id AND class_name='Room'
+                    WHERE EXISTS
+                        (SELECT * FROM auth_user_md5 WHERE owner_id = user_id)");
+        $responsible_property_id =
+            $db->fetchColumn("SELECT property_id FROM resource_property_definitions WHERE name = 'responsible_person'");
+        if ($responsible_property_id) {
+            $db->exec("INSERT IGNORE INTO resource_properties
+                    (resource_id, property_id,state,mkdate,chdate)
+                    SELECT r.id, '$responsible_property_id', r.owner_id, r.mkdate, r.chdate
+                    FROM resources r INNER JOIN resource_categories rc
+                    ON r.category_id = rc.id AND class_name='Room'
+                    WHERE EXISTS
+                        (SELECT * FROM auth_user_md5 WHERE owner_id = user_id)");
+        }
+        $db->exec("ALTER TABLE resources DROP COLUMN owner_id");
     }
 
     public function deleteOldPermissions(PDO $db) {
@@ -657,9 +690,9 @@ class RoomManagementMigration extends Migration
                                 : ''
                             ),
                             'system' => 1,
-                            'type' => $data['old_type'],
+                            'type' => $data['new_type'] ? $data['new_type'] : $data['old_type'],
                             'options' => ($data['options'] ? $data['options'] : ''),
-                            'info_label' => '0',
+                            'info_label' => $data['info_label'] ? '1' : '0',
                             'display_name' => (
                                 $data['display_name']
                                 ? $data['display_name']
@@ -1251,10 +1284,10 @@ class RoomManagementMigration extends Migration
         $building_ids = $get_buildings_stmt->fetchAll(PDO::FETCH_COLUMN, 0);
 
         $get_parent_stmt = $db->prepare(
-            "SELECT r1.parent_id as parent_id, rc.class_name as class_name  
-            FROM resources r1  
-            LEFT JOIN resources r2 ON r2.id=r1.parent_id  
-            INNER JOIN resource_categories rc ON r2.category_id = rc.id  
+            "SELECT r1.parent_id as parent_id, rc.class_name as class_name
+            FROM resources r1
+            LEFT JOIN resources r2 ON r2.id=r1.parent_id
+            INNER JOIN resource_categories rc ON r2.category_id = rc.id
             WHERE r1.id = :resource_id"
         );
 
@@ -1859,7 +1892,6 @@ class RoomManagementMigration extends Migration
             DROP COLUMN institut_id,
             DROP COLUMN lockable,
             DROP COLUMN multiple_assign,
-            DROP COLUMN owner_id,
             DROP COLUMN root_id");
 
         $db->exec("RENAME TABLE resources_categories TO resource_categories;");
@@ -2207,7 +2239,8 @@ class RoomManagementMigration extends Migration
                 //room properties:
                 'booking_plan_is_public' => 'bool',
                 'room_type' => 'select',
-                'seats' => 'num'
+                'seats' => 'num',
+                'responsible_person' => 'user'
             ]
         ];
 
@@ -2285,6 +2318,7 @@ class RoomManagementMigration extends Migration
         //Migrate resource booking interval data:
         $this->migrateBookingRepeatIntervals($db);
 
+        $this->migrateOwner();
         //Migrate course permissions on resources:
         $this->migrateCourseBoundPermissions($db);
         $this->deleteOldPermissions($db);
