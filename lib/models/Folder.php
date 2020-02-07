@@ -254,7 +254,7 @@ class Folder extends SimpleORMap implements FeedbackRange
      */
     public function cbRemoveFeedbackElements()
     {
-        FeedbackElements::deleteBySQL("range_id = ? AND range_type = 'Folder'", [$this->id]);
+        FeedbackElement::deleteBySQL("range_id = ? AND range_type = 'Folder'", [$this->id]);
     }
 
     /**

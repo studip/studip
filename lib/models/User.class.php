@@ -1439,7 +1439,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      */
     public function cbRemoveFeedback()
     {
-        FeedbackElements::deleteBySQL('user_id = ?', [$this->id]);
-        FeedbackEntries::deleteBySQL('user_id = ?', [$this->id]);
+        FeedbackElement::deleteBySQL('user_id = ?', [$this->id]);
+        FeedbackEntry::deleteBySQL('user_id = ?', [$this->id]);
     }
 }

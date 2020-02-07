@@ -44,7 +44,7 @@ class FeedbackElement extends SchemaProvider
             ? null
             : [
                 'ratings' => [
-                    'count' => \FeedbackEntries::countBySql('feedback_id = ?', [$resource->id]),
+                    'count' => \FeedbackEntry::countBySql('feedback_id = ?', [$resource->id]),
                     'mean' => (float) $resource->getMeanOfRating()
                 ]
             ];
@@ -71,7 +71,7 @@ class FeedbackElement extends SchemaProvider
         return $relationships;
     }
 
-    private function getAuthorRelationship(array $relationships, \FeedbackElements $resource, $includeData): array
+    private function getAuthorRelationship(array $relationships, \FeedbackElement $resource, $includeData): array
     {
         $userId = $resource['user_id'];
         $related = $includeData ? \User::find($userId) : \User::build(['id' => $userId], false);
@@ -87,7 +87,7 @@ class FeedbackElement extends SchemaProvider
         return $relationships;
     }
 
-    private function getCourseRelationship(array $relationships, \FeedbackElements $resource, $includeData): array
+    private function getCourseRelationship(array $relationships, \FeedbackElement $resource, $includeData): array
     {
         if ($courseId = $resource['course_id']) {
             $related = $includeData ? \Course::find($courseId) : \Course::build(['id' => $courseId], false);
@@ -104,7 +104,7 @@ class FeedbackElement extends SchemaProvider
         return $relationships;
     }
 
-    private function getEntriesRelationship(array $relationships, \FeedbackElements $resource, $includeData): array
+    private function getEntriesRelationship(array $relationships, \FeedbackElement $resource, $includeData): array
     {
         $relationships[self::REL_ENTRIES] = [
             self::LINKS => [
@@ -116,7 +116,7 @@ class FeedbackElement extends SchemaProvider
         return $relationships;
     }
 
-    private function getRangeRelationship(array $relationships, \FeedbackElements $resource, $includeData): array
+    private function getRangeRelationship(array $relationships, \FeedbackElement $resource, $includeData): array
     {
         $rangeType = $resource['range_type'];
         $rangeSchema = null;

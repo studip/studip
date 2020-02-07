@@ -29,7 +29,7 @@ class FeedbackElementsByFileRefIndex extends JsonApiController
             throw new AuthorizationFailedException();
         }
 
-        $resources = \FeedbackElements::findBySQL('range_id = ? AND range_type = ?', [$fileRef->id, \FileRef::class]);
+        $resources = \FeedbackElement::findBySQL('range_id = ? AND range_type = ?', [$fileRef->id, \FileRef::class]);
         list($offset, $limit) = $this->getOffsetAndLimit();
 
         return $this->getPaginatedContentResponse(

@@ -1,19 +1,25 @@
 <?php
 
 /**
- * 
+ *
  * @author Nils Gehrke <nils.gehrke@uni-goettingen.de>
- * 
+ *
+ * @property integer id database column
+ * @property integer feedback_id database column
+ * @property string user_id database column
+ * @property string comment database column
+ * @property integer rating database column
+ *
  */
 
-class FeedbackEntries extends SimpleORMap
+class FeedbackEntry extends SimpleORMap
 {
     public static function configure($config = [])
     {
         $config['db_table'] = 'feedback_entries';
 
         $config['belongs_to']['feedback'] = [
-            'class_name'    => 'FeedbackElements',
+            'class_name'    => 'FeedbackElement',
             'foreign_key'   => 'feedback_id',
         ];
         $config['belongs_to']['user'] = [

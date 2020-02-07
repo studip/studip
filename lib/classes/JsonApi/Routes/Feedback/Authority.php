@@ -6,17 +6,17 @@ use User;
 
 class Authority
 {
-    public static function canShowFeedbackElement(User $user, \FeedbackElements $resource)
+    public static function canShowFeedbackElement(User $user, \FeedbackElement $resource)
     {
         return \Feedback::hasRangeAccess($resource->range_id, $resource->range_type, $user->id);
     }
 
-    public static function canIndexFeedbackEntries(User $user, \FeedbackElements $resource)
+    public static function canIndexFeedbackEntries(User $user, \FeedbackElement $resource)
     {
         return self::canShowFeedbackElement($user, $resource);
     }
 
-    public static function canSeeResultsOfFeedbackElement(User $user, \FeedbackElements $resource)
+    public static function canSeeResultsOfFeedbackElement(User $user, \FeedbackElement $resource)
     {
         return self::canIndexFeedbackEntries($user, $resource) &&
             ($resource['results_visible'] || \Feedback::hasAdminPerm($resource['course_id'], $user->id));
@@ -37,7 +37,7 @@ class Authority
         return \Feedback::hasRangeAccess($folder->id, \Folder::class, $user->id);
     }
 
-    public static function canShowFeedbackEntry(User $user, \FeedbackEntries $resource)
+    public static function canShowFeedbackEntry(User $user, \FeedbackEntry $resource)
     {
         $feedbackElement = $resource->feedback;
 

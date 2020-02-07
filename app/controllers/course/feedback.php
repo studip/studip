@@ -35,7 +35,7 @@ class Course_FeedbackController extends AuthenticatedController
         if ($this->admin_perm) {
             Helpbar::get()->addPlainText('', _('Auf dieser Seite werden sämtliche Feedback Elemente der Veranstaltung angezeigt'));
 
-            $this->feedback_elements  = FeedbackElements::findBySQL('course_id = ? ORDER BY chdate DESC', [$this->course_id]);
+            $this->feedback_elements  = FeedbackElement::findBySQL('course_id = ? ORDER BY chdate DESC', [$this->course_id]);
 
             $widget = Sidebar::get()->addWidget(new ActionsWidget());
 
@@ -65,7 +65,7 @@ class Course_FeedbackController extends AuthenticatedController
             $range_type = 'Course';
         }
         // default settings for new feedback element
-        $this->feedback = FeedbackElements::build([
+        $this->feedback = FeedbackElement::build([
             'range_id'          => $range_id,
             'range_type'        => $range_type,
             'results_visible'   => 1,
@@ -89,7 +89,7 @@ class Course_FeedbackController extends AuthenticatedController
                 $mode           = intval(Request::get('mode'));
                 $commentable    = intval(Request::get('commentable'));
             }
-            $feedback = FeedbackElements::build([
+            $feedback = FeedbackElement::build([
                 'range_id'          => $range_id,
                 'range_type'        => $range_type,
                 'user_id'           => $GLOBALS['user']->id,
@@ -115,7 +115,7 @@ class Course_FeedbackController extends AuthenticatedController
             throw new AccessDeniedException();
         }
         $this->edit_action  = true;
-        $this->feedback     = FeedbackElements::find($id);
+        $this->feedback     = FeedbackElement::find($id);
     }
 
     /* edit feedback */
@@ -125,7 +125,7 @@ class Course_FeedbackController extends AuthenticatedController
         if (!$this->admin_perm) {
             throw new AccessDeniedException();
         }
-        $feedback = FeedbackElements::find($id);
+        $feedback = FeedbackElement::find($id);
         $feedback->question = trim(Request::get('question'));
         $feedback->description = Studip\Markup::purifyHtml(Request::get('description'));
         $feedback->results_visible = intval(Request::get('results_visible'));
@@ -141,7 +141,7 @@ class Course_FeedbackController extends AuthenticatedController
         if (!$this->admin_perm) {
             throw new AccessDeniedException();
         }
-        $feedback   = FeedbackElements::find($id);
+        $feedback   = FeedbackElement::find($id);
         $url        = $feedback->getRange()->getRangeUrl();
         if ($feedback->delete()) {
             PageLayout::postSuccess(_('Das Feedback-Element und dazugehörige Einträge wurden gelöscht.'));
@@ -188,13 +188,13 @@ class Course_FeedbackController extends AuthenticatedController
                 Icon::create('add')
             )->asDialog('size=auto');
         }
-        $this->feedback_elements = FeedbackElements::findBySQL('range_id = ? AND range_type = ?  ORDER BY mkdate DESC', [$this->range_id, $this->range_type]);
+        $this->feedback_elements = FeedbackElement::findBySQL('range_id = ? AND range_type = ?  ORDER BY mkdate DESC', [$this->range_id, $this->range_type]);
     }
 
     /* view one feedback element */
     public function view_action($id)
     {
-        $this->feedback = FeedbackElements::find($id);
+        $this->feedback = FeedbackElement::find($id);
         if (!Feedback::hasRangeAccess($this->feedback->range_id, $this->feedback->range_type)) {
             throw new AccessDeniedException();
         }
@@ -218,7 +218,7 @@ class Course_FeedbackController extends AuthenticatedController
     public function entry_add_action($id)
     {
         CSRFProtection::verifyUnsafeRequest();
-        $this->feedback = FeedbackElements::find($id);
+        $this->feedback = FeedbackElement::find($id);
         if (!Feedback::hasRangeAccess($this->feedback->range_id, $this->feedback->range_type)) {
             throw new AccessDeniedException();
         }
@@ -227,7 +227,7 @@ class Course_FeedbackController extends AuthenticatedController
             if ($rating == 0) {
                 $rating = 1;
             }
-            $entry =  FeedbackEntries::build([
+            $entry =  FeedbackEntry::build([
                 'feedback_id'   => $this->feedback->id,
                 'user_id'       => $GLOBALS['user']->id,
                 'rating'        => $rating,
@@ -243,7 +243,7 @@ class Course_FeedbackController extends AuthenticatedController
 
     public function entry_edit_form_action($entry_id)
     {
-        $this->entry = FeedbackEntries::find($entry_id);
+        $this->entry = FeedbackEntry::find($entry_id);
         if (!$this->entry->isEditable()) {
             throw new AccessDeniedException();
         }
@@ -253,7 +253,7 @@ class Course_FeedbackController extends AuthenticatedController
     public function entry_edit_action($entry_id)
     {
         CSRFProtection::verifyUnsafeRequest();
-        $entry = FeedbackEntries::find($entry_id);
+        $entry = FeedbackEntry::find($entry_id);
         if (!$entry->isEditable()) {
             throw new AccessDeniedException();
         }
@@ -271,7 +271,7 @@ class Course_FeedbackController extends AuthenticatedController
     public function entry_delete_action($entry_id)
     {
         CSRFProtection::verifyUnsafeRequest();
-        $entry  = FeedbackEntries::find($entry_id);
+        $entry  = FeedbackEntry::find($entry_id);
         $url    = $entry->feedback->getRange()->getRangeUrl();
         if ($entry->delete()) {
             PageLayout::postSuccess(_('Das Feedback wurde erfolgreich gelöscht.'));

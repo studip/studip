@@ -20,7 +20,7 @@ class FeedbackElementsShow extends JsonApiController
      */
     public function __invoke(Request $request, Response $response, $args)
     {
-        if (!$resource = \FeedbackElements::find($args['id'])) {
+        if (!$resource = \FeedbackElement::find($args['id'])) {
             throw new RecordNotFoundException();
         }
 

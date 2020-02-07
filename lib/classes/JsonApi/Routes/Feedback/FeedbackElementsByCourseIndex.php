@@ -29,7 +29,7 @@ class FeedbackElementsByCourseIndex extends JsonApiController
             throw new AuthorizationFailedException();
         }
 
-        $resources = \FeedbackElements::findBySQL('range_id = ? AND range_type = ?', [$course->id, \Course::class]);
+        $resources = \FeedbackElement::findBySQL('range_id = ? AND range_type = ?', [$course->id, \Course::class]);
         list($offset, $limit) = $this->getOffsetAndLimit();
 
         return $this->getPaginatedContentResponse(

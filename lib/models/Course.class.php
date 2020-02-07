@@ -236,7 +236,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $config['registered_callbacks']['before_update'][] = 'logStore';
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();
-            FeedbackElements::deleteBySQL('course_id = ?', [$course->id]);
+            FeedbackElement::deleteBySQL('course_id = ?', [$course->id]);
         };
 
         parent::configure($config);

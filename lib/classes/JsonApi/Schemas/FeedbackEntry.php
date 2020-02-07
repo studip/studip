@@ -52,7 +52,7 @@ class FeedbackEntry extends SchemaProvider
         return $relationships;
     }
 
-    private function getAuthorRelationship(array $relationships, \FeedbackEntries $resource, $includeData): array
+    private function getAuthorRelationship(array $relationships, \FeedbackEntry $resource, $includeData): array
     {
         $userId = $resource['user_id'];
         $related = $includeData ? \User::find($userId) : \User::build(['id' => $userId], false);
@@ -70,12 +70,12 @@ class FeedbackEntry extends SchemaProvider
 
     private function getFeedbackElementRelationship(
         array $relationships,
-        \FeedbackEntries $resource,
+        \FeedbackEntry $resource,
         $includeData
     ): array {
         $related = $includeData
             ? $resource->feedback
-            : \FeedbackElements::build(['id' => $resource->feedback_id], false);
+            : \FeedbackElement::build(['id' => $resource->feedback_id], false);
 
         $relationships[self::REL_FEEDBACK] = [
             self::LINKS => [

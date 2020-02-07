@@ -4,15 +4,33 @@
  *
  * @author Nils Gehrke <nils.gehrke@uni-goettingen.de>
  *
+ * @property integer id database column
+ * @property string user_id database column
+ * @property string range_id database column
+ * @property string range_type database column:
+ *                  name of class that implements FeedbackRange
+ *
+ * @property string course_id database column
+ * @property string question database column
+ * @property string description database column
+ * @property integer mode database column:
+ *                  0 without rating;
+ *                  1 with star rating from 1 to 5;
+ *                  2 with star rating from 1 to 10;
+ *
+ * @property boolean results_visible database column:
+ *                   show rating results to users after feedback submission
+ * @property boolean commentable database column: users may comment ratings
+ *
  */
 
-class FeedbackElements extends SimpleORMap
+class FeedbackElement extends SimpleORMap
 {
     public static function configure($config = [])
     {
         $config['db_table'] = 'feedback';
         $config['has_many']['entries'] = [
-            'class_name'        => 'FeedbackEntries',
+            'class_name'        => 'FeedbackEntry',
             'assoc_foreign_key' => 'feedback_id',
             'order_by'          => 'ORDER BY mkdate DESC',
             'on_delete'         => 'delete'
@@ -69,13 +87,13 @@ class FeedbackElements extends SimpleORMap
      *
      * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
      *
-     * @return FeedbackEntries|null
+     * @return FeedbackEntry|null
      */
     public function getOwnEntry(string $user_id = null)
     {
         $user_id = $user_id ?? $GLOBALS['user']->id;
 
-        return FeedbackEntries::findOneBySQL("feedback_id = ? AND user_id = ?", [$this->id, $user_id]);
+        return FeedbackEntry::findOneBySQL("feedback_id = ? AND user_id = ?", [$this->id, $user_id]);
     }
 
     public function getRatings()

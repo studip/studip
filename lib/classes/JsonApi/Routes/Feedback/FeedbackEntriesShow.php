@@ -19,7 +19,7 @@ class FeedbackEntriesShow extends JsonApiController
      */
     public function __invoke(Request $request, Response $response, $args)
     {
-        if (!$resource = \FeedbackEntries::find($args['id'])) {
+        if (!$resource = \FeedbackEntry::find($args['id'])) {
             throw new RecordNotFoundException();
         }
 

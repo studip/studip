@@ -7,7 +7,7 @@ namespace RESTAPI\Routes;
  *
  * @condition feedback_id ^\d*$
  * @condition course_id ^[a-f0-9]{32}$
- * 
+ *
  */
 class Feedback extends \RESTAPI\RouteMap
 {
@@ -23,7 +23,7 @@ class Feedback extends \RESTAPI\RouteMap
         if (!\Feedback::hasRangeAccess($range_id, $range_type) || !\Feedback::hasCreatePerm($course_id)) {
             $this->error(403);
         }
-        $feedback = \FeedbackElements::build([
+        $feedback = \FeedbackElement::build([
             'range_id'          => $range_id,
             'range_type'        => $range_type,
             'user_id'           => $GLOBALS['user']->id,
@@ -46,7 +46,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function getFeedbackElement($feedback_id)
     {
-        if (!$feedback = \FeedbackElements::find($feedback_id)) {
+        if (!$feedback = \FeedbackElement::find($feedback_id)) {
             $this->error(404);
         }
         if (!\Feedback::hasRangeAccess($feedback->range_id, $feedback->range_type)) {
@@ -55,7 +55,7 @@ class Feedback extends \RESTAPI\RouteMap
         return $feedback->toArray();
     }
 
-    
+
     /**
      * Get all entries of a feedback element
      *
@@ -64,7 +64,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function getFeedbackEntries($feedback_id)
     {
-        if (!$feedback = \FeedbackElements::find($feedback_id)) {
+        if (!$feedback = \FeedbackElement::find($feedback_id)) {
             $this->error(404);
         }
         if (!\Feedback::hasRangeAccess($feedback->range_id, $feedback->range_type)) {
@@ -84,7 +84,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function editFeedbackElement($feedback_id)
     {
-        if (!$feedback = \FeedbackElements::find($feedback_id)) {
+        if (!$feedback = \FeedbackElement::find($feedback_id)) {
             $this->error(404);
         }
         $course_id = $feedback->course_id;
@@ -107,7 +107,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function deleteFeedbackElement($feedback_id)
     {
-        if (!$feedback = \FeedbackElements::find($feedback_id)) {
+        if (!$feedback = \FeedbackElement::find($feedback_id)) {
             $this->error(404);
         }
         $course_id = $feedback->course_id;
@@ -131,7 +131,7 @@ class Feedback extends \RESTAPI\RouteMap
         if (!\Feedback::hasRangeAccess($range_id, $range_type)) {
             $this->error(403, 'You may not access the given range object.');
         }
-        $feedback_elements = \FeedbackElements::findBySQL('range_id = ? AND range_type = ?  ORDER BY mkdate DESC', [$range_id, $range_type]);
+        $feedback_elements = \FeedbackElement::findBySQL('range_id = ? AND range_type = ?  ORDER BY mkdate DESC', [$range_id, $range_type]);
         foreach($feedback_elements as $feedback) {
             $result['feedback_elements'][] = $feedback->toArray();
         }
@@ -149,7 +149,7 @@ class Feedback extends \RESTAPI\RouteMap
         if (!\Feedback::hasAdminPerm($course_id)) {
             $this->error(403, 'You may not list all feedback elements of the course. Only feedback admins can.');
         }
-        $feedback_elements  = \FeedbackElements::findBySQL('course_id = ? ORDER BY mkdate DESC', [$course_id]);
+        $feedback_elements  = \FeedbackElement::findBySQL('course_id = ? ORDER BY mkdate DESC', [$course_id]);
         foreach($feedback_elements as $feedback) {
             $result['feedback_elements'][] = $feedback->toArray();
         }
@@ -164,7 +164,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function addFeedbackEntry($feedback_id)
     {
-        if (!$feedback = \FeedbackElements::find($feedback_id)) {
+        if (!$feedback = \FeedbackElement::find($feedback_id)) {
             $this->error(404);
         }
         if (!$feedback->isFeedbackable()) {
@@ -174,7 +174,7 @@ class Feedback extends \RESTAPI\RouteMap
         if ($rating == 0) {
             $rating = 1;
         }
-        $entry = \FeedbackEntries::build([
+        $entry = \FeedbackEntry::build([
             'feedback_id'   => $feedback->id,
             'user_id'       => $GLOBALS['user']->id,
             'comment'       => $this->data['comment'],
@@ -192,7 +192,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function editFeedbackEntry($entry_id)
     {
-        if (!$entry = \FeedbackEntries::find($entry_id)) {
+        if (!$entry = \FeedbackEntry::find($entry_id)) {
             $this->error(404);
         }
         if (!$entry->isEditable()) {
@@ -216,7 +216,7 @@ class Feedback extends \RESTAPI\RouteMap
      */
     public function deleteFeedbackEntry($entry_id)
     {
-        if (!$entry = \FeedbackEntries::find($entry_id)) {
+        if (!$entry = \FeedbackEntry::find($entry_id)) {
             $this->error(404);
         }
         if ($entry->delete()){
