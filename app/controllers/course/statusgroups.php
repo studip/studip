@@ -134,14 +134,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                     );
                     if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
                         ($course_member->visible != 'no')) {
-                        //Second visibility check for the group:
-                        //A user may be visible in a course, but invisible in
-                        //a group.
-                        if ($member->visible) {
-                            $groupdata['members'][] = $member;
-                        } else {
-                            $groupdata['invisible_users']++;
-                        }
+                        $groupdata['members'][] = $member;
                     } else {
                         $groupdata['invisible_users']++;
                     }
@@ -216,7 +209,7 @@ class Course_StatusgroupsController extends AuthenticatedController
             foreach ($members as $member) {
                 //Note: $member is a CourseMember object here.
                 if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
-                    ($course_member->visible != 'no')) {
+                    ($member->visible != 'no')) {
                     $groupdata['members'][] = $member;
                 } else {
                     $groupdata['invisible_users']++;
@@ -330,14 +323,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                     );
                     if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id)
                         || ($course_member->visible != 'no')) {
-                        //Second visibility check for the group:
-                        //A user may be visible in a course, but invisible in
-                        //a group.
-                        if ($member->visible) {
-                            $this->members[] = $member;
-                        } else {
-                            $this->invisible++;
-                        }
+                        $this->members[] = $member;
                     } else {
                         $this->invisible++;
                     }
