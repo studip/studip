@@ -20,8 +20,9 @@
 <label>
     <?= _('Kommentar') ?>
     <textarea name="comment"><?= htmlReady($entry->comment) ?></textarea>
-</label <? endif; ?>
-<div data-dialog-button>
+</label>
+<? endif; ?>
+<div>
     <?= Studip\Button::createAccept(_('Absenden'), 'add', ['class' => 'feedback-entry-submit']) ?>
     <?= Studip\Button::createCancel(_('Abbrechen'), 'cancel', ['class' => 'feedback-entry-cancel']) ?>
 </div>
