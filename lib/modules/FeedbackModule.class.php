@@ -26,14 +26,7 @@ class FeedbackModule extends StudIPPlugin implements StandardPlugin, SystemPlugi
      */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
-        $title      = _('Feedback');
-        $changed    = FeedbackElements::countBySQL('course_id = ? AND chdate > ?', [$course_id, $last_visit]);
-        $icon       = Icon::create($changed ? 'star+new' : 'star', $changed ? Icon::ROLE_NEW : Icon::ROLE_INACTIVE);
-
-        $navigation = new Navigation($title, 'dispatch.php/course/feedback');
-        $navigation->setImage($icon, ['title' => $title]);
-
-        return $navigation;
+        return null;
     }
 
     /**

@@ -1,11 +1,11 @@
 <?php
 /**
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author Nils Gehrke <nils.gehrke@uni-goettingen.de>
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL version 3
  * @category Stud.IP
@@ -32,16 +32,11 @@ class Course_FeedbackController extends AuthenticatedController
     /* index all feedback for course */
     public function index_action()
     {
-        // redirect non admins to latest feedback
-        if (!$this->admin_perm) {
-            $feedback = FeedbackElements::findOneBySQL('course_id = ?', [$this->course_id]);
-            $this->redirect($feedback->getRange()->getRangeUrl());
-        }
         if ($this->admin_perm) {
             Helpbar::get()->addPlainText('', _('Auf dieser Seite werden sämtliche Feedback Elemente der Veranstaltung angezeigt'));
 
             $this->feedback_elements  = FeedbackElements::findBySQL('course_id = ? ORDER BY chdate DESC', [$this->course_id]);
-            
+
             $widget = Sidebar::get()->addWidget(new ActionsWidget());
 
             $widget->addLink(
@@ -92,7 +87,7 @@ class Course_FeedbackController extends AuthenticatedController
                 $commentable = 1;
             } else {
                 $mode           = intval(Request::get('mode'));
-                $commentable    = intval(Request::get('commentable')); 
+                $commentable    = intval(Request::get('commentable'));
             }
             $feedback = FeedbackElements::build([
                 'range_id'          => $range_id,
