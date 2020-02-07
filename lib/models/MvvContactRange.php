@@ -105,7 +105,7 @@ class MvvContactRange extends ModuleManagementModel
 
         if ($filter) {
             foreach ($filter as $column => $val) {
-                if ($column == null || $val == null) {
+                if ($column === null || $val === null) {
                     continue;
                 }
 

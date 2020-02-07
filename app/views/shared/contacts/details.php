@@ -6,7 +6,7 @@
             <? if (!$object_type) : continue; endif; ?>
             <table class="default sortable-table" style="margin-top: 10px;" data-sortlist="[[0, 0]]">
                 <colgroup>
-                    <? if($object_type == 'Studiengang'): ?>
+                    <? if($object_type === 'Studiengang'): ?>
                         <col width="50%">
                         <col width="20%">
                     <? else: ?>
@@ -20,7 +20,7 @@
                 </caption>
                 <thead>
                     <tr class="sortable">
-                    <? if($object_type == 'Studiengang'): ?>
+                    <? if($object_type === 'Studiengang'): ?>
                         <th data-sorter="text"><?= _('Name'); ?></th>
                         <th data-empty="top" data-sorter="text"><?= _('Ansprechpartnertyp'); ?></th>
                     <? else: ?>
@@ -40,7 +40,7 @@
                                             <?= $object_name ?>
                                         </a>
                                     </td>
-                                    <? if($object_type == 'Studiengang'): ?>
+                                    <? if($object_type === 'Studiengang'): ?>
                                     <td>
                                         <?= htmlReady($GLOBALS['MVV_CONTACTS']['TYPE']['values'][$rel['type']]['name']); ?>
                                     </td>
