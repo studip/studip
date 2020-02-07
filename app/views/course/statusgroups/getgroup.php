@@ -67,11 +67,10 @@
             </tr>
         </thead>
         <tbody>
-            <? $i = 1; $invisible = 0; foreach ($members as $m) : ?>
-                <? if ($is_tutor || $m->user_id == $GLOBALS['user']->id || $m->visible != 'no') : ?>
-                    <?= $this->render_partial('course/statusgroups/_member',
-                        ['m' => $m, 'i' => $i++, 'is_tutor' => $is_tutor, 'is_locked' => $is_locked]); ?>
-                <? else : $invisible++; endif ?>
+            <? $i = 1; foreach ($members as $m) : ?>
+                <?= $this->render_partial(
+                    'course/statusgroups/_member',
+                    ['m' => $m, 'i' => $i++, 'is_tutor' => $is_tutor, 'is_locked' => $is_locked]) ?>
             <? endforeach ?>
         </tbody>
         <tfoot>
@@ -113,8 +112,19 @@
         </tr>
         </tfoot>
     </table>
+<? elseif ($invisible > 0): ?>
+    <div class="statusgroup-no-members">
+        <?= sprintf(
+            ngettext(
+                'Diese Gruppe hat %d unsichtbares Mitglied.',
+                'Diese Gruppe hat %d unsichtbare Mitglieder.',
+                $invisible
+            ),
+            htmlReady($invisible)
+        ) ?>
+    </div>
 <? else : ?>
     <div class="statusgroup-no-members">
         <?= _('Diese Gruppe hat keine Mitglieder.') ?>
     </div>
-<? endif;
+<? endif ?>

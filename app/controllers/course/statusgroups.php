@@ -104,7 +104,9 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             $groupdata = [
                 'group' => $g,
-                'membercount' => $membercounts[$g->id] ?: 0
+                'members' => [],
+                'membercount' => $membercounts[$g->id] ?: 0,
+                'invisible_users' => 0
             ];
 
             /*
@@ -122,7 +124,28 @@ class Course_StatusgroupsController extends AuthenticatedController
                     );
                 }
 
-                $groupdata['members'] = $sorted;
+                foreach ($sorted as $member) {
+                    //Note: $member is a StatusgruppeUser object.
+                    //We must get the CourseMember object to correctly
+                    //determine the visibility of the user.
+                    $course_member = CourseMember::findOneBySql(
+                        'user_id = :user_id AND seminar_id = :course_id',
+                        ['user_id' => $member->user_id, 'course_id' => $member->group->range_id]
+                    );
+                    if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
+                        ($course_member->visible != 'no')) {
+                        //Second visibility check for the group:
+                        //A user may be visible in a course, but invisible in
+                        //a group.
+                        if ($member->visible) {
+                            $groupdata['members'][] = $member;
+                        } else {
+                            $groupdata['invisible_users']++;
+                        }
+                    } else {
+                        $groupdata['invisible_users']++;
+                    }
+                }
                 $groupdata['load'] = true;
             }
 
@@ -160,7 +183,9 @@ class Course_StatusgroupsController extends AuthenticatedController
             $groupdata = [
                 'group' => $no_group,
                 'membercount' => $ungrouped_count,
-                'joinable' => false
+                'joinable' => false,
+                'invisible_users' => 0,
+                'members' => []
             ];
 
             $nogroupmembers = DBManager::get()->fetchFirst("SELECT user_id
@@ -176,16 +201,26 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             $this->nogroupmembers = $nogroupmembers;
 
+            $members = [];
             if ($this->sort_group == 'nogroup') {
-
                 $members = $this->allmembers->findby('user_id', $nogroupmembers);
-                $groupdata['members'] = StatusgroupsModel::sortGroupMembers($members, $this->sort_by, $this->order);
+                $members = StatusgroupsModel::sortGroupMembers($members, $this->sort_by, $this->order);
                 $groupdata['load'] = true;
             } else {
-                $groupdata['members'] = $this->allmembers->findby(
+                $members = $this->allmembers->findby(
                     'user_id',
                     $this->nogroupmembers
                 );
+            }
+
+            foreach ($members as $member) {
+                //Note: $member is a CourseMember object here.
+                if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
+                    ($course_member->visible != 'no')) {
+                    $groupdata['members'][] = $member;
+                } else {
+                    $groupdata['invisible_users']++;
+                }
             }
             $this->groups[] = $groupdata;
         }
@@ -279,12 +314,34 @@ class Course_StatusgroupsController extends AuthenticatedController
     {
         if ($group_id != 'nogroup') {
             $this->group = Statusgruppen::find($group_id);
+            $this->members = [];
+            $this->invisible = 0;
             if (count($this->group->members) > 0) {
-                $this->members = StatusgroupsModel::sortGroupMembers(
+                //Note: $members consists of StatusgruppeUser objects here.
+                $members = StatusgroupsModel::sortGroupMembers(
                     $this->group->members
                 );
-            } else {
-                $this->members = [];
+                foreach ($members as $member) {
+                    //Get the course member object to check the visibility
+                    //in the course.
+                    $course_member = CourseMember::findOneBySql(
+                        'user_id = :user_id AND seminar_id = :course_id',
+                        ['user_id' => $member->user_id, 'course_id' => $member->group->range_id]
+                    );
+                    if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id)
+                        || ($course_member->visible != 'no')) {
+                        //Second visibility check for the group:
+                        //A user may be visible in a course, but invisible in
+                        //a group.
+                        if ($member->visible) {
+                            $this->members[] = $member;
+                        } else {
+                            $this->invisible++;
+                        }
+                    } else {
+                        $this->invisible++;
+                    }
+                }
             }
         } else {
             // Create dummy entry for "no group" users.
@@ -310,8 +367,19 @@ class Course_StatusgroupsController extends AuthenticatedController
                         [$this->course_id])
                 ], 'CourseMember::buildExisting');
 
-            $this->members = new SimpleCollection($members);
-            $this->members = StatusgroupsModel::sortGroupMembers($this->members);
+            $members = new SimpleCollection($members);
+            //Note: $members consists of CourseMember objects here.
+            $members = StatusgroupsModel::sortGroupMembers($members);
+            $this->invisible = 0;
+            $this->members = [];
+            foreach ($members as $member) {
+                if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id)
+                    || ($member->visible != 'no')) {
+                    $this->members[] = $member;
+                } else {
+                    $this->invisible++;
+                }
+            }
 
             $this->group = $no_group;
         }

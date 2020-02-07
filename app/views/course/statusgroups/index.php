@@ -9,6 +9,7 @@
             'membercount' => $group['membercount'],
             'members'     => $group['members'],
             'joinable'    => $group['joinable'],
+            'invisible'   => $group['invisible_users'],
             'load'        => $open_groups ? true : $group['load'],
             'order'       => $order,
             'sort_by'     => $sort_by,
