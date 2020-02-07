@@ -148,34 +148,7 @@ class Resources_ResourceController extends AuthenticatedController
     protected function getPermissionUserSearch()
     {
         return QuickSearch::get(
-            'searched_user_id',
-            new SQLSearch(
-                "SELECT user_id,
-                CONCAT(
-                    ' ',
-                    nachname,
-                    ', ',
-                    vorname,
-                    ' (',
-                    username,
-                    ') (',
-                    perms,
-                    ')'
-                )
-                FROM auth_user_md5
-                WHERE
-                (
-                    username LIKE CONCAT('%', :input, '%')
-                    OR
-                    vorname LIKE CONCAT('%', :input, '%')
-                    OR
-                    nachname LIKE CONCAT('%', :input, '%')
-                    OR
-                    CONCAT(vorname, nachname) LIKE CONCAT('%', :input, '%')
-                )
-                ORDER BY nachname ASC, vorname ASC, username ASC"
-            )
-        );
+            'searched_user_id', new StandardSearch('user_id'));
     }
 
 
@@ -239,7 +212,7 @@ class Resources_ResourceController extends AuthenticatedController
             }
         }
     }
-    
+
     protected function addEditDeleteHandler($mode = 'add')
     {
         $this->resource = $this->resources[0];
@@ -601,7 +574,7 @@ class Resources_ResourceController extends AuthenticatedController
         }
 
         $sidebar->addWidget($actions);
-        
+
         $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
         $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
@@ -640,7 +613,7 @@ class Resources_ResourceController extends AuthenticatedController
             return;
         }
         $this->resource = $this->resources[0];
-        
+
         $this->getUserAndCheckPermissions('admin');
 
         if ($this->resource_id == 'global') {
@@ -881,7 +854,7 @@ class Resources_ResourceController extends AuthenticatedController
         }
         $this->resource = $this->resources[0];
         $this->resource_id = $this->resource->id;
-        
+
         $this->getUserAndCheckPermissions('admin');
 
         if ($this->resource_id == 'global') {
@@ -1276,7 +1249,7 @@ class Resources_ResourceController extends AuthenticatedController
         $this->end = clone $this->begin;
         $this->end->add(new DateInterval('P1D'));
         $this->show_form = true;
-        
+
         if (Request::submitted('save')) {
             $begin_date = Request::get('begin_date');
             $begin_time = Request::get('begin_time');
