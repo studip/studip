@@ -77,7 +77,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
                 $this->fach_id = $this->stgteil->fach->getId();
             }
         }
-
+        $this->contacts = $this->stgteil->contact_assignments;
         if (Request::submitted('store')) {
             CSRFProtection::verifyUnsafeRequest();
             $stored = false;
@@ -88,7 +88,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             $this->stgteil->semester = Request::int('semester');
             $this->stgteil->zusatz = Request::i18n('zusatz')->trim();
             $this->stgteil->assignFach(Request::option('fach_item'));
-            $this->stgteil->assignFachberater(Request::optionArray('fachberater_items'));
+        //    $this->stgteil->assignFachberater(Request::optionArray('fachberater_items'));
             try {
                 $stored = $this->stgteil->store();
             } catch (InvalidValuesException $e) {

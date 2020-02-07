@@ -31,22 +31,13 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             'assoc_foreign_key' => 'stgteil_id',
             'on_delete' => 'delete'
         ];
-        // All assigned Studienfachberater
-        $config['has_and_belongs_to_many']['fachberater'] = [
-            'class_name' => 'User',
-            'thru_table' => 'mvv_fachberater',
-            'thru_key' => 'stgteil_id',
-            'thru_assoc_key' => 'user_id',
-            'order_by' => 'ORDER BY position',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
+       
+        $config['has_many']['contact_assignments'] = [
+            'class_name'        => 'MvvContactRange',
+            'assoc_foreign_key' => 'range_id',
+            'order_by'          => 'ORDER BY position'
         ];
-        $config['has_many']['fachberater_assignments'] = [
-            'class_name' => 'Fachberater',
-            'assoc_foreign_key' => 'stgteil_id',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
-        ];
+        
         // The assigned Fach
         $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
@@ -84,42 +75,6 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     {
         parent::__construct($id);
         $this->object_real_name = _('Studiengangteil');
-    }
-
-    /**
-     * Assignes fachberater to this Studiengangteil.
-     * Returns true only if all given user ids are valid.
-     *
-     * @param String[]/Object[] Array of user ids or user objects.
-     * @return boolean True if fachbereiche was successfully assigned.
-     */
-    public function assignFachberater($users)
-    {
-        $all_fachberater = [];
-        if (count($users)) {
-            $position = 1;
-            foreach ($users as $user) {
-                if (is_object($user)) {
-                    $assigned_user = $user;
-                } else {
-                    $assigned_user = User::find($user);
-                }
-                if (!$assigned_user->isNew()) {
-                    $fachberater = Fachberater::find([$this->id, $assigned_user->id]);
-                    if (!$fachberater) {
-                        $fachberater = new Fachberater();
-                        $fachberater->setId([$this->id, $assigned_user->id]);
-                    }
-                    $fachberater->position = $position++;
-                    $all_fachberater[] = $fachberater;
-                } else {
-                    return false;
-                }
-            }
-        }
-        $this->fachberater_assignments =
-                    SimpleORMapCollection::createFromArray($all_fachberater);
-        return true;
     }
 
     /**

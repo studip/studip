@@ -343,4 +343,9 @@ $GLOBALS['MVV_CONTACTS']['TYPE'] = [
     'default' => ''
 ];
 
-
+$GLOBALS['MVV_STGTEIL']['PERSONEN_GRUPPEN'] = [
+    'values' => [
+        'fachberater'     => ['visible' => 1, 'name' => _('Studienfachberater')]
+    ],
+    'default' => 'fachberater'
+];

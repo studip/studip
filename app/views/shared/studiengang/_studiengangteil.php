@@ -29,12 +29,12 @@
         <td data-mvv-field="mvv_stgteil.zusatz">
             <?= htmlReady($stgteil->zusatz) ?>   
         </td>
-        <td data-mvv-field="mvv_stgteil.fachberater">
-            <? if (empty($stgteil->fachberater)): ?>
+        <td data-mvv-field="mvv_stgteil.contact_assignments">
+            <? if (empty($stgteil->contact_assignments)): ?>
                 -
             <? else: ?>
-                <? foreach ($stgteil->fachberater as $fachberater) : ?>
-                    <?= htmlReady($fachberater->getFullname()) ?><br>
+                <? foreach ($stgteil->contact_assignments as $contact_assignment) : ?>
+                    <?= htmlReady($contact_assignment->contact->getDisplayName()) ?><br>
                 <? endforeach; ?>
             <? endif; ?>
         </td>

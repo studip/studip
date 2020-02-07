@@ -175,6 +175,8 @@ class MvvContactRange extends ModuleManagementModel
                 return $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'];
             case 'Studiengang':
                 return $GLOBALS['MVV_STUDIENGANG']['PERSONEN_GRUPPEN']['values'];
+            case 'StudiengangTeil':
+                return $GLOBALS['MVV_STGTEIL']['PERSONEN_GRUPPEN']['values'];
             default:
                 return array_merge(
                     $GLOBALS['MVV_STUDIENGANG']['PERSONEN_GRUPPEN']['values'],

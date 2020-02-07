@@ -85,6 +85,14 @@
 
     <fieldset class="collapsable collapsed">
         <legend>
+            <?= _('Ansprechpartner'); ?>
+        </legend>
+        <?= $this->render_partial('shared/contacts/range', ['perm_contacts' => $perm->haveFieldPerm('contact_assignments', MvvPerm::PERM_CREATE), 'range_type' => 'StudiengangTeil', 'range_id' => $stgteil->id]) ?>
+    </fieldset>
+    
+    <? /*
+    <fieldset class="collapsable collapsed">
+        <legend>
             <?= _('Studienfachberater') ?>
         </legend>
         <? if ($perm->haveFieldPerm('fachberater')) : ?>
@@ -134,6 +142,8 @@
             <?= _('Die Reihenfolge der Studienfachberater kann durch Anklicken und Ziehen geändert werden.') ?>
         </div>
     </fieldset>
+     * 
+     */?>
 
     <footer data-dialog-button>
         <? if ($stgteil->isNew()) : ?>

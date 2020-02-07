@@ -130,7 +130,7 @@ class Shared_ContactsController extends MVVController
     public function new_ansprechpartner_action()
     {
         PageLayout::setTitle(_('Art des MVV-Objektes wählen'));
-        $this->allowed_object_types = ['Modul','Studiengang'];
+        $this->allowed_object_types = ['Modul', 'Studiengang', 'StudiengangTeil'];
         if (Request::submitted('store')) {
             $this->redirect($this->url_for('shared/contacts/select_range', Request::get('range_type')));
         }
@@ -256,7 +256,7 @@ class Shared_ContactsController extends MVVController
         }
         $helpbar = Helpbar::get();
         $widget = new HelpbarWidget();
-        $widget->addElement(new WidgetElement(_('Auf dieser Seite können Sie Ansprechpartner verwalten, die mit Studiengängen, Studiengangteilen usw. verknüpft sind.')));
+        $widget->addElement(new WidgetElement(_('Auf dieser Seite können Sie Ansprechpartner verwalten, die mit Studiengängen, Studiengangteilen und Modulen verknüpft sind.')));
         $helpbar->addWidget($widget);
 
         $this->sidebar_rendered = true;
@@ -618,7 +618,7 @@ class Shared_ContactsController extends MVVController
     public function select_range_type_action($user_id)
     {
         PageLayout::setTitle(_('Art des MVV-Objektes wählen'));
-        $this->allowed_object_types = ['Studiengang','Modul'];
+        $this->allowed_object_types = ['Studiengang','Modul','StudiengangTeil'];
         $this->mvvcontact_id = $user_id;
         if (Request::submitted('store')) {
             $this->redirect($this->url_for('shared/contacts/add_ranges_to_contact',$user_id, Request::get('range_type')));
@@ -761,9 +761,12 @@ class Shared_ContactsController extends MVVController
             if ($row['range_type'] === 'Studiengang') {
                 $row['type'] = $GLOBALS['MVV_CONTACTS']['TYPE']['values'][$row['type']]['name'];
                 $row['category'] = $GLOBALS['MVV_STUDIENGANG']['PERSONEN_GRUPPEN']['values'][$row['category']]['name'];
-            } else {
+            } else if ($row['range_type'] === 'Modul') {
                 $row['type'] = '';
                 $row['category'] = $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$row['category']]['name'];
+            } else {
+                $row['type'] = '';
+                $row['category'] = $GLOBALS['MVV_STGTEIL']['PERSONEN_GRUPPEN']['values'][$row['category']]['name'];
             }
             $data[] = array_values($row);
         }

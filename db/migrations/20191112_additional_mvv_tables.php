@@ -78,7 +78,7 @@ class AdditionalMvvTables extends Migration
             `contact_range_id` varchar(32) COLLATE latin1_bin NOT NULL,
             `contact_id` varchar(32) COLLATE latin1_bin NOT NULL,
             `range_id` varchar(32) COLLATE latin1_bin NOT NULL,
-            `range_type` enum('Modul','Studiengang') COLLATE latin1_bin NOT NULL,
+            `range_type` enum('Modul','Studiengang','StudiengangTeil') COLLATE latin1_bin NOT NULL,
             `type` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
             `category` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
             `position` int(10) DEFAULT NULL,
@@ -120,6 +120,8 @@ class AdditionalMvvTables extends Migration
             $db->execute("INSERT IGNORE INTO `mvv_files_ranges` (`mvvfile_id`, `range_id`, `range_type`, `position`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                             [$mvvfile_id, $old_docrange['range_id'], $old_docrange['object_type'], $old_docrange['position'], $old_docrange['author_id'], $old_docrange['editor_id'], $old_docrange['mkdate'], $old_docrange['chdate']]);
         }
+        $db->exec('DROP TABLE `mvv_dokument`');
+        $db->exec('DROP TABLE `mvv_dokument_zuord`');
 
         //Merge old mvv_modul_user
         foreach ($db->query("SELECT * FROM `mvv_modul_user`") as $old_modul_user) {
@@ -135,6 +137,23 @@ class AdditionalMvvTables extends Migration
                         $old_modul_user['gruppe'],  $old_modul_user['position'], $old_modul_user['author_id'],
                         $old_modul_user['editor_id'], $old_modul_user['mkdate'], $old_modul_user['chdate']]);
         }
+        $db->exec('DROP TABLE `mvv_modul_user`');
+        
+        // Merge old Fachberater
+        foreach ($db->query("SELECT * FROM `mvv_fachberater`") as $old_fachberater) {
+            $contact_range_id = md5('MvvContactRange' .  $old_fachberater['user_id'] . $old_fachberater['stgteil_id']);
+            $db->execute("INSERT IGNORE INTO `mvv_contacts` (`contact_id`, `contact_status`, `alt_mail`,
+                        `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ? ,?)",
+                        [
+                            $old_fachberater['user_id'], 'intern', '', $old_fachberater['author_id'],
+                            $old_fachberater['editor_id'], $old_fachberater['mkdate'], $old_fachberater['chdate']
+                        ]);
+            $db->execute("INSERT IGNORE INTO `mvv_contacts_ranges` (`contact_range_id`, `range_id`, `contact_id`, `range_type`, `type`, `category`, `position`, `author_id`, `editor_id`, `mkdate`, `chdate`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        [$contact_range_id, $old_fachberater['stgteil_id'], $old_fachberater['user_id'], 'StudiengangTeil', '',
+                        'fachberater',  $old_fachberater['position'], $old_fachberater['author_id'],
+                        $old_fachberater['editor_id'], $old_fachberater['mkdate'], $old_fachberater['chdate']]);
+        }
+        $db->exec('DROP TABLE `mvv_fachberater`');
 
         // datafields for study courses
         $db->exec("ALTER TABLE `datafields`
@@ -220,5 +239,57 @@ class AdditionalMvvTables extends Migration
         DBManager::get()->exec(
             "DELETE FROM config WHERE field = 'ENABLE_STUDYCOURSE_INFO_PAGE'"
         );
+        DBManager::get()->exec(
+            "CREATE TABLE `mvv_fachberater` (
+                `stgteil_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `user_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `position` int(11) NOT NULL,
+                `author_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `editor_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `mkdate` bigint(20) NOT NULL,
+                `chdate` bigint(20) NOT NULL,
+                PRIMARY KEY (`stgteil_id`,`user_id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC");
+        DBManager::get()->exec(
+            "CREATE TABLE `mvv_modul_user` (
+                `modul_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `user_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `gruppe` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `position` int(11) NOT NULL DEFAULT '9999',
+                `author_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `editor_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `mkdate` bigint(20) NOT NULL,
+                `chdate` bigint(20) NOT NULL,
+                PRIMARY KEY (`modul_id`,`user_id`,`gruppe`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;");
+        DBManager::get()->exec(
+            "CREATE TABLE `mvv_dokument` (
+                `dokument_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `url` tinytext COLLATE utf8mb4_unicode_ci NOT NULL,
+                `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `linktext` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `beschreibung` text COLLATE utf8mb4_unicode_ci,
+                `author_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `editor_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `mkdate` bigint(20) NOT NULL,
+                `chdate` bigint(20) NOT NULL,
+                PRIMARY KEY (`dokument_id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC");
+        DBManager::get()->exec(
+            "CREATE TABLE `mvv_dokument_zuord` (
+                `dokument_zuord_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `dokument_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `range_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `object_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `position` int(3) NOT NULL DEFAULT '999',
+                `kommentar` tinytext COLLATE utf8mb4_unicode_ci,
+                `author_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `editor_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                `mkdate` bigint(20) NOT NULL,
+                `chdate` bigint(20) NOT NULL,
+                PRIMARY KEY (`dokument_zuord_id`),
+                UNIQUE KEY `dokument_id` (`dokument_id`,`range_id`,`object_type`) USING BTREE,
+                KEY `range_id_object_type` (`range_id`,`object_type`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC");
     }
 }

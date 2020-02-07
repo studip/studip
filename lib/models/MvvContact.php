@@ -155,9 +155,13 @@ class MvvContact extends ModuleManagementModel
                 case 'mvv_studiengang':
                     $filter_studiengang[$column] = $values;
                     break;
+                case 'mvv_stgteil':
+                    $filter_stgteil[$column] = $values;
+                    break;
                 default:
                     $filter_modul[$column] = $values;
                     $filter_studiengang[$column] = $values;
+                    $filter_stgteil[$column] = $values;
             }
         }
 
@@ -182,11 +186,25 @@ class MvvContact extends ModuleManagementModel
                 FROM `mvv_contacts`
                     INNER JOIN `mvv_contacts_ranges` USING (`contact_id`)
                     INNER JOIN `mvv_studiengang` ON (`mvv_contacts_ranges`.`range_id` = `mvv_studiengang`.`studiengang_id`)
+                    LEFT JOIN `mvv_stg_stgteil` USING (`studiengang_id`)
                     LEFT JOIN `semester_data` `start_sem`
                         ON (`mvv_studiengang`.`start` = `start_sem`.`semester_id`)
                     LEFT JOIN `semester_data` `end_sem`
                         ON (`mvv_studiengang`.`end` = `end_sem`.`semester_id`)"
-                    . self::getFilterSql($filter_studiengang, true);
+                    . self::getFilterSql($filter_studiengang, true) . "
+            UNION
+                SELECT DISTINCT `mvv_contacts`.`contact_id`,
+                    `mvv_contacts_ranges`.`contact_range_id`,
+                    `mvv_contacts_ranges`.`category`, `mvv_contacts_ranges`.`range_id`
+                FROM `mvv_contacts`
+                    INNER JOIN `mvv_contacts_ranges` USING (`contact_id`)
+                    INNER JOIN `mvv_stg_stgteil` ON (`mvv_contacts_ranges`.`range_id` = `mvv_stg_stgteil`.`stgteil_id`)
+                    LEFT JOIN `mvv_studiengang` USING (`studiengang_id`)
+                    LEFT JOIN `semester_data` `start_sem`
+                        ON (`mvv_studiengang`.`start` = `start_sem`.`semester_id`)
+                    LEFT JOIN `semester_data` `end_sem`
+                        ON (`mvv_studiengang`.`end` = `end_sem`.`semester_id`)"
+                    . self::getFilterSql($filter_stgteil, true);
 
         $stm = DBManager::get()->prepare($sql);
         $stm->execute();
