@@ -64,51 +64,51 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
      * The amount of defined marking states.
      */
     const MARKING_STATES = 4;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resource_requests';
-        
+
         $config['belongs_to']['resource'] = [
             'class_name'  => 'Resource',
             'foreign_key' => 'resource_id',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['belongs_to']['category'] = [
             'class_name'  => 'ResourceCategory',
             'foreign_key' => 'category_id',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['belongs_to']['user'] = [
             'class_name'  => 'User',
             'foreign_key' => 'user_id',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['belongs_to']['last_modifier'] = [
             'class_name'  => 'User',
             'foreign_key' => 'last_modified_by',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['belongs_to']['course'] = [
             'class_name'  => 'Course',
             'foreign_key' => 'course_id',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['belongs_to']['cycle'] = [
             'class_name'  => 'SeminarCycleDate',
             'foreign_key' => 'metadate_id'
         ];
-        
+
         $config['belongs_to']['date'] = [
             'class_name'  => 'CourseDate',
             'foreign_key' => 'termin_id'
         ];
-        
+
         $config['has_many']['properties'] = [
             'class_name'        => 'ResourceRequestProperty',
             'foreign_key'       => 'id',
@@ -116,7 +116,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             'on_store'          => 'store',
             'on_delete'         => 'delete'
         ];
-        
+
         $config['has_many']['appointments'] = [
             'class_name'        => 'ResourceRequestAppointment',
             'foreign_key'       => 'id',
@@ -124,7 +124,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             'on_store'          => 'store',
             'on_delete'         => 'delete'
         ];
-        
+
         //In regard to TIC 6460:
         //As long as TIC 6460 is not implemented, we must add the validate
         //method as a callback before storing the object.
@@ -132,24 +132,24 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $config['registered_callbacks']['before_store'][] = 'validate';
         }
         $config['registered_callbacks']['after_create'][] = 'cbLogNewRequest';
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * @inheritDoc
      */
     public static function exportUserdata(StoredUserData $storage)
     {
         $user = User::find($storage->user_id);
-        
+
         $requests = self::findBySql(
             'user_id = :user_id ORDER BY mkdate',
             [
                 'user_id' => $storage->user_id
             ]
         );
-        
+
         $request_rows = [];
         foreach ($requests as $request) {
             $request_rows[] = $request->toRawArray();
@@ -161,7 +161,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $user
         );
     }
-    
+
     /**
      * Retrieves all resource requests from the database.
      *
@@ -173,7 +173,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     {
         return self::findBySql('TRUE ORDER BY mkdate ASC');
     }
-    
+
     /**
      * Retrieves all open resource requests from the database.
      *
@@ -185,7 +185,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     {
         return self::findBySql("closed = '0' ORDER BY mkdate ASC");
     }
-    
+
     /**
      * Internal method that generated the SQL query used in
      * findByResourceAndTimeRanges and countByResourceAndTimeRanges.
@@ -207,7 +207,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 _('Es wurde keine Liste mit Zeiträumen angegeben!')
             );
         }
-        
+
         //Check the array:
         foreach ($time_ranges as $time_range) {
             if ($time_range['begin'] > $time_range['end']) {
@@ -215,18 +215,18 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
                 );
             }
-            
+
             if ($time_range['begin'] == $time_range['end']) {
                 throw new InvalidArgumentException(
                     _('Startzeitpunkt und Endzeitpunkt dürfen nicht identisch sein!')
                 );
             }
         }
-        
+
         $sql_params = [
             'resource_id' => $resource->id
         ];
-        
+
         //First we build the SQL snippet for the case that the $closed_status
         //variable is set to something different than null.
         $closed_status_sql = '';
@@ -234,14 +234,14 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $closed_status_sql    = ' AND (resource_requests.closed = :status) ';
             $sql_params['status'] = strval($closed_status);
         }
-        
+
         //Then we build the snipped for excluded request IDs, if specified.
         $excluded_request_ids_sql = '';
         if (is_array($excluded_request_ids) && count($excluded_request_ids)) {
             $excluded_request_ids_sql   = ' AND resource_requests.id NOT IN ( :excluded_ids ) ';
             $sql_params['excluded_ids'] = $excluded_request_ids;
         }
-        
+
         //Now we build the SQL snippet for the time intervals.
         //These are repeated four times in the query below.
         //First we use one template ($time_sql_template) and
@@ -256,11 +256,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             OR
             BEGIN <= :beginNUMBER AND END >= :endNUMBER
         ) ';
-        
+
         $time_sql = '';
         if ($time_ranges) {
             $time_sql = 'AND (';
-            
+
             $i = 1;
             foreach ($time_ranges as $time_range) {
                 if ($i > 1) {
@@ -271,20 +271,20 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $i,
                     $time_sql_template
                 );
-                
+
                 $sql_params[('begin' . $i)] = $time_range['begin'];
                 $sql_params[('end' . $i)]   = $time_range['end'];
-                
+
                 $i++;
             }
-            
+
             $time_sql .= ') ';
         }
-        
+
         //Check if the request has a start and end timestamp set or if it belongs
         //to a date, a metadate or a course.
         //This is done in the rest of the SQL query:
-        
+
         $whole_sql = 'resource_requests.id IN (
                 SELECT id FROM resource_requests
                 WHERE
@@ -361,7 +361,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             GROUP BY id
         ) '
             . $excluded_request_ids_sql;
-        
+
         if ($additional_conditions) {
             $whole_sql .= ' AND ' . $additional_conditions;
             if ($additional_parameters) {
@@ -369,13 +369,13 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             }
         }
         $whole_sql .= ' ORDER BY mkdate ASC';
-        
+
         return [
             'sql'    => $whole_sql,
             'params' => $sql_params
         ];
     }
-    
+
     /**
      * Retrieves all resource requests for the given resource and
      * time range. By default, all requests are returned.
@@ -419,7 +419,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     )
     {
         //Build the SQL query and the parameter array.
-        
+
         $sql_data = self::buildResourceAndTimeRangesSqlQuery(
             $resource,
             $time_ranges,
@@ -428,11 +428,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $additional_conditions,
             $additional_parameters
         );
-        
+
         //Call findBySql:
         return self::findBySql($sql_data['sql'], $sql_data['params']);
     }
-    
+
     public static function countByResourceAndTimeRanges(
         Resource $resource,
         $time_ranges = [],
@@ -450,10 +450,10 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $additional_conditions,
             $additional_parameters
         );
-        
+
         return self::countBySql($sql_data['sql'], $sql_data['params']);
     }
-    
+
     public static function findByCourse($course_id)
     {
         return self::findOneBySql(
@@ -463,7 +463,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             ]
         );
     }
-    
+
     public static function findByDate($date_id)
     {
         return self::findOneBySql(
@@ -473,7 +473,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             ]
         );
     }
-    
+
     public static function findByMetadate($metadate_id)
     {
         return self::findOneBySql(
@@ -483,87 +483,87 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             ]
         );
     }
-    
+
     public static function existsByCourse($course_id, $request_is_open = false)
     {
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-        
+
         $request = self::findOneBySql(
             $sql . "termin_id = '' AND metadate_id = '' AND course_id = :course_id",
             [
                 'course_id' => $course_id
             ]
         );
-        
+
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-    
+
     public static function existsByDate($date_id, $request_is_open = false)
     {
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-        
+
         $request = self::findOneBySql(
             $sql . "termin_id = :date_id",
             [
                 'date_id' => $date_id
             ]
         );
-        
+
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-    
+
     public static function existsByMetadate($metadate_id, $request_is_open = false)
     {
         $sql = '';
         if ($request_is_open) {
             $sql .= "closed = '0' AND ";
         }
-        
+
         $request = self::findOneBySql(
             $sql . "metadate_id = :metadate_id",
             [
                 'metadate_id' => $metadate_id
             ]
         );
-        
+
         if ($request) {
             return $request->id;
         } else {
             return false;
         }
     }
-    
+
     public function store()
     {
         $new_request = $this->isNew();
-        
+
         if (!parent::store()) {
             return false;
         }
-        
+
         if ($new_request) {
             $this->sendNewRequestMail();
         } elseif ($this->closed == '3') {
             $this->sendRequestDeniedMail();
         }
-        
+
         return true;
     }
-    
+
     /**
      * A callback method that creates a Stud.IP log entry
      * when a new request has been made.
@@ -579,7 +579,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             null
         );
     }
-    
+
     /**
      * This validation method is called before storing an object.
      */
@@ -591,7 +591,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             );
         }
     }
-    
+
     public function getDerivedClassInstance()
     {
         if (!$this->resource) {
@@ -599,12 +599,12 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return $this;
         }
         $class_name = $this->resource->class_name;
-        
+
         if ($class_name == 'Resource') {
             //This is already the correct class.
             return $this;
         }
-        
+
         if (is_subclass_of($class_name, 'Resource')) {
             //Now we append 'Request' to the class name:
             $class_name         = $class_name . 'Request';
@@ -623,7 +623,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             );
         }
     }
-    
+
     /**
      * Sets the range fields (termin_id, metadate_id, course_id)
      * or the ResourceRequestAppointment objects related to this request
@@ -666,7 +666,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $this->course_id   = $range_ids[0];
         }
     }
-    
+
     /**
      * Closes the requests and sends out notification mails.
      * If the request is closed and a resource has been booked,
@@ -687,19 +687,19 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //The request has already been closed.
             return true;
         }
-        
+
         $this->closed = 1;
         if ($this->isDirty()) {
             $this->store();
         }
-        
+
         //Now we send the confirmation mail to the requester:
         $this->sendCloseRequestMailToRequester($bookings);
-        
+
         if ($notify_lecturers) {
             $this->sendCloseRequestMailToLecturers($bookings);
         }
-        
+
         //Sending successful: The request is closed.
         $this->closed = 2;
         if ($this->isDirty()) {
@@ -707,7 +707,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return true;
     }
-    
+
     /**
      * Returns the resource requests whose time ranges overlap
      * with those of this resource request.
@@ -726,7 +726,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return [];
     }
-    
+
     /**
      * Counts the resource requests whose time ranges overlap
      * with those of this resource request.
@@ -745,7 +745,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return 0;
     }
-    
+
     /**
      * Returns the resource bookings whose time ranges overlap
      * with those of this resource request.
@@ -763,7 +763,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return [];
     }
-    
+
     /**
      * Counts the resource bookings whose time ranges overlap
      * with those of this resource request.
@@ -781,7 +781,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return 0;
     }
-    
+
     /**
      * Returns the repetion interval if regular appointments are used
      * for this request.
@@ -796,27 +796,27 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //It is a set of regular appointments.
             //We just have to compute the time difference between the first
             //two appointments to get the interval.
-            
+
             $first_date  = $this->cycle->dates[0];
             $second_date = $this->cycle->dates[1];
-            
+
             if (!$first_date || !$second_date) {
                 //Either only one date is in the set of regular appointments
                 //or there is a database error. We cannot continue.
                 return null;
             }
-            
+
             $first_datetime = new DateTime();
             $first_datetime->setTimestamp($first_date->date);
             $second_datetime = new DateTime();
             $second_datetime->setTimestamp($second_date->date);
-            
+
             return $first_datetime->diff($second_datetime);
         }
-        
+
         return null;
     }
-    
+
     public function getStartDate()
     {
         $start_date = new DateTime();
@@ -830,65 +830,39 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $start_date->setTimestamp($this->cycle->dates[0]->date);
             return $start_date;
         } elseif ($this->course_id) {
-            $single_date_start = new DateTime();
-            $single_date_start->setTimestamp($this->course->dates[0]->date);
-            
-            $start_date->setTimestamp($this->course->cycles[0]->dates[0]->date);
-            
-            if ($single_date_start < $start_date) {
-                return $single_date_start;
-            } else {
-                return $start_date;
-            }
+            $start_date = new DateTime();
+            $start_date->setTimestamp($this->course->dates[0]->date);
+            return $start_date;
         } elseif ($this->begin) {
             $start_date->setTimestamp($this->begin);
             return $start_date;
         }
         return null;
     }
-    
+
     public function getEndDate()
     {
         $end_date = new DateTime();
         if (count($this->appointments)) {
-            $end_date->setTimestamp(end($this->appointments)->end_time);
+            $end_date->setTimestamp($this->appointments->last()->appointment->end_time);
             return $end_date;
         } elseif ($this->termin_id) {
             $end_date->setTimestamp($this->date->end_time);
             return $end_date;
         } elseif ($this->metadate_id) {
-            $end_date->setTimestamp(end($this->cycle->dates)->end_time);
+            $end_date->setTimestamp($this->cycle->dates->last()->end_time);
             return $end_date;
         } elseif ($this->course_id) {
-            $single_date_end = new DateTime();
-            $single_date_end->setTimestamp(end($this->course->dates)->end_time);
-            
-            $last_cycle = null;
-            if (is_array($this->course->cycles)) {
-                $last_cycle = end($this->course->cycles);
-            }
-            if ($last_cycle instanceof SeminarCycleDate) {
-                $last_cycle_date = null;
-                if (is_array($last_cycle->dates)) {
-                    $last_cycle_date = end($last_cycle->dates);
-                }
-                if ($last_cycle_date instanceof CourseDate) {
-                    $end_date->setTimestamp($last_cycle_date->end_time);
-                }
-            }
-            
-            if ($single_date_end > $end_date) {
-                return $single_date_end;
-            } else {
-                return $end_date;
-            }
+            $end_date = new DateTime();
+            $end_date->setTimestamp($this->course->dates->last()->end_time);
+            return $end_date;
         } elseif ($this->end) {
             $end_date->setTimestamp($this->end);
             return $end_date;
         }
         return null;
     }
-    
+
     public function getStartSemester()
     {
         $start_date = $this->getStartDate();
@@ -897,7 +871,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return null;
     }
-    
+
     public function getEndSemester()
     {
         $end_date = $this->getEndDate();
@@ -906,19 +880,19 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return null;
     }
-    
+
     public function getRepetitionEndDate()
     {
         $repetition_interval = $this->getRepetitionInterval();
-        
+
         if (!$repetition_interval) {
             //There is no repetition.
             return null;
         }
-        
+
         return $this->getEndDate();
     }
-    
+
     /**
      * Retrieves the time intervals by looking at metadate objects
      * and other time interval sources and returns them grouped by metadate.
@@ -1090,7 +1064,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return [];
         }
     }
-    
+
     /**
      * Retrieves the time intervals for this request.
      *
@@ -1223,8 +1197,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return [];
         }
     }
-    
-    
+
+
     /**
      * Returns a string representation of the time intervals for this request.
      */
@@ -1244,8 +1218,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return $strings;
     }
-    
-    
+
+
     /**
      * Filters the time intervals for this request
      * by a specified time range.
@@ -1255,7 +1229,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     public function getTimeIntervalsInTimeRange(DateTime $begin, DateTime $end)
     {
         $all_time_intervals = $this->getTimeIntervals();
-        
+
         $included_intervals = [];
         foreach ($all_time_intervals as $interval) {
             $interval_in_range = (
@@ -1275,11 +1249,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $included_intervals[] = $interval;
             }
         }
-        
+
         return $included_intervals;
     }
-    
-    
+
+
     /**
      * Returns a string representation of the ResourceRequest's type.
      */
@@ -1296,7 +1270,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return null;
     }
-    
+
     /**
      * Returns a string representation of the status of the ResourceRequest.
      */
@@ -1315,8 +1289,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 return '';
         }
     }
-    
-    
+
+
     /**
      * Returns a textual representation of the status of the ResourceRequest.
      */
@@ -1332,11 +1306,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         } else {
             return _('Die Anfrage wurde bearbeitet.');
         }
-        
+
         return _('unbekannt');
     }
-    
-    
+
+
     public function getDateString()
     {
         if (count($this->appointments)) {
@@ -1359,7 +1333,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             }
         } elseif ($this->course_id) {
             $course = new Seminar($this->course_id);
-            
+
             if ($course) {
                 return $course->getDatesExport(
                     [
@@ -1381,11 +1355,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     . strftime('%a., %x, %R', $this->end);
             }
         }
-        
+
         return '';
     }
-    
-    
+
+
     /**
      * Returns a human-readable string describing the type of the request.
      *
@@ -1432,7 +1406,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
     }
 
-    
+
     /**
      * Returns an array of date objects which are affected
      * by this ResourceRequest.
@@ -1453,8 +1427,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return $dates;
     }
-    
-    
+
+
     /**
      * @param arrya $excluded_property_names
      * Returns all resource property definitions for all properties
@@ -1490,8 +1464,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             );
         }
     }
-    
-    
+
+
     /**
      * Returns a "compressed" array of resource request properties.
      * @param array $excluded_property_names
@@ -1512,7 +1486,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return $data;
     }
-    
+
     /**
      * @param $name
      * @return bool
@@ -1520,27 +1494,27 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     public function propertyExists($name)
     {
         $db = DBManager::get();
-        
+
         $exists_stmt = $db->prepare(
             "SELECT TRUE FROM resource_request_properties
             INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
             WHERE resource_request_properties.request_id = :request_id
                 AND rpd.name = :name");
-        
+
         $exists_stmt->execute(
             [
                 'request_id' => $this->id,
                 'name'       => $name
             ]
         );
-        
+
         $exists = $exists_stmt->fetchColumn(0);
-        
+
         return (bool)$exists;
     }
-    
-    
+
+
     /**
      * @param $name
      * Returns the state of the property specified by $name.
@@ -1552,36 +1526,36 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //resource request object.
             //In that case we can only return null, since resource requests
             //store only those properties which are requested:
-            
+
             return null;
         }
-        
+
         $db = DBManager::get();
-        
+
         $value_stmt = $db->prepare(
             "SELECT resource_request_properties.state FROM resource_request_properties
             INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
             WHERE resource_request_properties.request_id = :request_id
                 AND rpd.name = :name");
-        
+
         $value_stmt->execute(
             [
                 'request_id' => $this->id,
                 'name'       => $name
             ]
         );
-        
+
         $value = $value_stmt->fetchColumn(0);
-        
+
         if (!$value) {
             return null;
         }
-        
+
         return $value;
     }
-    
-    
+
+
     /**
      * @param $name
      * @return ResourceRequestProperty
@@ -1596,16 +1570,16 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //A property with the name $name does not exist for this
             //resource object. If it is a mandatory property
             //we can still try to create it:
-            
+
             $property = $this->category->createDefinedResourceRequestProperty(
                 $this,
                 $name
             );
-            
+
             $property->store();
             return $property;
         }
-        
+
         return ResourceRequestProperty::findOneBySql(
             "INNER JOIN resource_property_definitions rpd
                 ON resource_request_properties.property_id = rpd.property_id
@@ -1617,8 +1591,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             ]
         );
     }
-    
-    
+
+
     /**
      * @param string $name
      * @param string $state
@@ -1630,7 +1604,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //A property with the name $name does not exist for this
             //resource object. If it is a mandatory property
             //we can still try to create it:
-            
+
             if ($this->category) {
                 $property = $this->category->createDefinedResourceRequestProperty(
                     $this,
@@ -1641,9 +1615,9 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             }
             return false;
         }
-        
+
         $property = $this->getPropertyObject($name);
-        
+
         if ($property) {
             $property->state = $state;
             if ($property->isDirty()) {
@@ -1652,8 +1626,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return true;
         }
     }
-    
-    
+
+
     /**
      * Sets or unsets the properties for this resource request.
      *
@@ -1686,8 +1660,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         $this->resetRelation('properties');
     }
-    
-    
+
+
     public function deletePropertyIfExists($name = '')
     {
         if (!$this->propertyExists($name)) {
@@ -1697,8 +1671,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return $property->delete();
         }
     }
-    
-    
+
+
     public function getRangeName()
     {
         if ($this->getRangeType() === 'course') {
@@ -1712,14 +1686,14 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return $name;
     }
-    
-    
+
+
     public function isSimpleRequest()
     {
         return !$this->course_id && !$this->metadate_id && !$this->termin_id;
     }
-    
-    
+
+
     public function getRangeId()
     {
         //Check if the request belongs to a course:
@@ -1730,13 +1704,13 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         } elseif ($this->course_id) {
             return $this->course_id;
         }
-        
+
         //The request does not belong to a course and therefore
         //belongs to a user:
         return $this->user_id;
     }
-    
-    
+
+
     public function getRangeType()
     {
         if ($this->course_id || $this->termin_id || $this->metadate_id) {
@@ -1744,8 +1718,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         return 'user';
     }
-    
-    
+
+
     public function getRangeObject()
     {
         if ($this->course_id) {
@@ -1760,7 +1734,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         return $this->user;
     }
 
-    
+
     /**
      * This method sends a notification mail to all room administrators
      * that informs them of this new request.
@@ -1771,7 +1745,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         //resource management system. Depending wheter a resource_id is set
         //for this resource request either all admins of a resource or
         //all admins of the resource management system must be informed.
-        
+
         $now         = time();
         if ($this->resource_id) {
             //The resource-ID is set for this request:
@@ -1814,23 +1788,23 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 ]
             );
         }
-        
+
         if (!$admin_users) {
             return;
         }
-        
+
         $factory = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
         );
-        
+
         foreach ($admin_users as $user) {
             $user_lang_path = getUserLanguagePath($user->id);
-            
+
             $template = $factory->open(
                 $user_lang_path . '/LC_MAILS/new_resource_request.php'
             );
             $template->set_attribute('request', $this);
-            
+
             if ($this->resource instanceof Resource) {
                 $resource = $this->resource->getDerivedClassInstance();
                 if ($resource instanceof Room) {
@@ -1839,11 +1813,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $template->set_attribute('requested_resource', $resource->name);
                 }
             }
-            
+
             $mail_text = $template->render();
-            
+
             setLocaleEnv($user->preferred_language);
-            
+
             if ($this->resource) {
                 $resource = $this->resource->getDerivedClassInstance();
                 $template->set_attribute('derived_resource', $resource);
@@ -1856,19 +1830,19 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     _('Neue Anfrage in der Raum- und Ressourcenverwaltung')
                 );
             }
-            
+
             Message::send(
                 '____%system%____',
                 $user->username,
                 $mail_title,
                 $mail_text
             );
-            
+
             restoreLanguage();
         }
     }
-    
-    
+
+
     /**
      * @param array $bookings
      * This method sends a mail to inform the requester that
@@ -1879,11 +1853,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         $factory = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
         );
-        
+
         $requester_lang      = $this->user->preferred_language;
         $requester_lang_path = getUserLanguagePath($this->user->id);
         setLocaleEnv($requester_lang);
-        
+
         $template = $factory->open(
             $requester_lang_path . '/LC_MAILS/close_resource_request.php'
         );
@@ -1899,7 +1873,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $lecturer_names[] = $lecturer->user->getFullName();
                 }
             }
-            
+
             $lecturer_names = implode(', ', $lecturer_names);
             $template->set_attribute('lecturer_names', $lecturer_names);
         }
@@ -1935,21 +1909,21 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $template->set_attribute('single_dates', $single_dates);
             $template->set_attribute('booked_time_intervals', $booked_time_intervals);
         }
-        
+
         $mail_title = _('Ihre Anfrage wurde bearbeitet!');
         $mail_text  = $template->render();
-        
+
         Message::send(
             '____%system%____',
             $this->user->username,
             $mail_title,
             $mail_text
         );
-        
+
         restoreLanguage();
     }
-    
-    
+
+
     /**
      * @param array $bookings
      * This method sends mails to the lecurers of the course (if any)
@@ -1964,12 +1938,12 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $this->course->id,
                 'dozent'
             );
-            
+
             if ($lecturers) {
                 $factory = new Flexi_TemplateFactory(
                     $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
                 );
-                
+
                 $lecturer_names = [];
                 foreach ($lecturers as $lecturer) {
                     if ($lecturer->user instanceof User) {
@@ -1977,7 +1951,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     }
                 }
                 $lecturer_names = implode(', ', $lecturer_names);
-                
+
                 $booked_rooms          = [];
                 $booked_time_intervals = [];
                 $metadates             = [];
@@ -2008,13 +1982,13 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $booked_rooms = array_unique($booked_rooms);
                 sort($booked_rooms);
                 $booked_rooms = implode(', ', $booked_rooms);
-                
+
                 foreach ($lecturers as $lecturer) {
                     $lec_lang      = $lecturer->user->preferred_language;
                     $lec_lang_path = getUserLanguagePath($lecturer->user->id);
-                    
+
                     setLocaleEnv($lec_lang);
-                    
+
                     $template = $factory->open(
                         $lec_lang_path . '/LC_MAILS/close_resource_request.php'
                     );
@@ -2024,24 +1998,24 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $template->set_attribute('metadates', $metadates);
                     $template->set_attribute('single_dates', $single_dates);
                     $template->set_attribute('booked_time_intervals', $booked_time_intervals);
-                    
+
                     $mail_title = _('Bearbeitung einer Anfrage!');
                     $mail_text  = $template->render();
-                    
+
                     Message::send(
                         '____%system%____',
                         $lecturer->user->username,
                         $mail_title,
                         $mail_text
                     );
-                    
+
                     restoreLanguage();
                 }
             }
         }
     }
-    
-    
+
+
     /**
      * This method sends a mail to inform the requester
      * about the denial of the request.
@@ -2054,7 +2028,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             //No mail to send.
             return;
         }
-        
+
         //Load the mail template:
         $factory        = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
@@ -2063,10 +2037,10 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         $template       = $factory->open(
             $user_lang_path . '/LC_MAILS/request_denied_mail.inc.php'
         );
-        
+
         $mail_title = _('Ihre Anfrage wurde abgelehnt!');
         $mail_text  = $template->render(['request' => $this]);
-        
+
         //Send the mail:
         Message::send(
             '____%system%____',
@@ -2075,8 +2049,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $mail_text
         );
     }
-    
-    
+
+
     public function isReadOnlyForUser(User $user)
     {
         $resource = $this->resource;
@@ -2085,11 +2059,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             return false;
         }
         $resource = $resource->getDerivedClassInstance();
-        
+
         return !$resource->userHasPermission($user, 'autor')
             && ($this->user_id != $user->id);
     }
-    
+
     protected function convertToEventData(array $time_intervals, User $user)
     {
         $booking_plan_request_bg     =
@@ -2100,7 +2074,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $booking_plan_preparation_fg =
             ColourValue::find('Resources.BookingPlan.PreparationTime.Fg');
-        
+
         $user_is_resource_autor = false;
         if ($this->resource_id && ($this->resource instanceof Resource)) {
             $user_is_resource_autor = $this->resource->userHasPermission(
@@ -2110,9 +2084,9 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
         $request_is_editable =
             $user_is_resource_autor || ($user->id == $this->user_id);
-        
+
         $request_api_urls  = [];
-        
+
         if ($request_is_editable) {
             $request_api_urls = [
                 'resize' => URLHelper::getURL(
@@ -2130,7 +2104,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     ]
                 )
             ];
-            
+
             $request_view_urls = [
                 'edit' => URLHelper::getURL(
                     'dispatch.php/resources/room_request/edit/'
@@ -2153,9 +2127,9 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 )
             ];
         }
-        
+
         $events = [];
-        
+
         foreach ($time_intervals as $interval) {
             $real_begin = $interval['begin'];
             if ($this->preparation_time) {
@@ -2182,12 +2156,12 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $request_api_urls
                 );
             }
-            
+
             $begin = new DateTime();
             $begin->setTimestamp($real_begin);
             $end = new DateTime();
             $end->setTimestamp($interval['end']);
-            
+
             $events[] = new Studip\Calendar\EventData(
                 $begin,
                 $end,
@@ -2206,11 +2180,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $request_api_urls
             );
         }
-        
+
         return $events;
     }
-    
-    
+
+
     public function getAllEventData()
     {
         return $this->convertToEventData(
@@ -2218,16 +2192,16 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             User::findCurrent()
         );
     }
-    
-    
+
+
     public function getEventDataForTimeRange(DateTime $begin, DateTime $end)
     {
         $intervals      = $this->getTimeIntervals(true);
         $time_intervals = [];
-        
+
         $begin_timestamp = $begin->getTimestamp();
         $end_timestamp   = $end->getTimestamp();
-        
+
         foreach ($intervals as $interval) {
             if ((($interval['begin'] >= $begin_timestamp)
                     && ($interval['begin'] <= $end_timestamp)) ||
@@ -2239,11 +2213,11 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $time_intervals[] = $interval;
             }
         }
-        
+
         return $this->convertToEventData($time_intervals, User::findCurrent());
     }
-    
-    
+
+
     public function getFilteredEventData(
         $user_id = null,
         $range_id = null,
@@ -2254,7 +2228,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     {
         $intervals      = $this->getTimeIntervals(true);
         $time_intervals = [];
-        
+
         if ($begin && $end) {
             $begin_timestamp = $begin;
             $end_timestamp   = $end;
@@ -2264,7 +2238,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             if ($end instanceof DateTime) {
                 $end_timestamp = $end->getTimestamp();
             }
-            
+
             foreach ($intervals as $interval) {
                 if ((($interval['begin'] >= $begin_timestamp)
                         && ($interval['begin'] <= $end_timestamp)) ||
@@ -2279,17 +2253,17 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         } else {
             $time_intervals = $intervals;
         }
-        
+
         $user = null;
         if ($user_id) {
             $user = User::find($user_id);
         } else {
             $user = User::findCurrent();
         }
-        
+
         return $this->convertToEventData($time_intervals, $user);
     }
-    
+
     public function getPriority()
     {
         $first = $this->getTimeIntervals()[0];
