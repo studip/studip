@@ -744,11 +744,13 @@ STUDIP.ready(function() {
                     STUDIP.Fullcalendar.createSemesterCalendarFromNode(
                         node,
                         {
-                            eventPositioned: function() {
-                                var h = jQuery('section.studip-fullcalendar-header').clone();
-                                if (h) {
-                                    jQuery(h).removeClass('invisible');
-                                    jQuery(h).insertAfter('.fc .fc-toolbar');
+                            loading: function(isLoading) {
+                                if(!isLoading) {
+                                    var h = jQuery('section.studip-fullcalendar-header');
+                                    if (h) {
+                                        jQuery(h).removeClass('invisible');
+                                        jQuery(h).insertAfter('.fc .fc-toolbar');
+                                    }
                                 }
                             }
                         }
@@ -763,11 +765,13 @@ STUDIP.ready(function() {
                                 resize_event:
                                 STUDIP.Resources.resizeEventInRoomGroupBookingPlan
                             },
-                            eventPositioned: function() {
-                                var h = jQuery('section.studip-fullcalendar-header').clone();
-                                if (h) {
-                                    jQuery(h).removeClass('invisible');
-                                    jQuery(h).insertAfter('.fc .fc-toolbar');
+                            loading: function(isLoading) {
+                                if(!isLoading) {
+                                    var h = jQuery('section.studip-fullcalendar-header');
+                                    if (h) {
+                                        jQuery(h).removeClass('invisible');
+                                        jQuery(h).insertAfter('.fc .fc-toolbar');
+                                    }
                                 }
                             }
                         }
