@@ -1,11 +1,12 @@
 STUDIP.Feedback = {
 
-	initiate: function(feedback) 
+	initiate: function(feedback)
 	{
         var range_id = $(feedback).attr('for');
         var range_type = $(feedback).attr('type');
+        var course_id = $(feedback).attr('context');
 
-		$(feedback).load(STUDIP.URLHelper.getURL('dispatch.php/course/feedback/index_for/' + range_id + '/' + range_type), function() 
+		$(feedback).load(STUDIP.URLHelper.getURL('dispatch.php/course/feedback/index_for/' + range_id + '/' + range_type + '?cid=' + course_id), function()
 		{
 			if ($('.feedback-delete').length) {
 				$('.feedback-delete').prop("onclick", null).off("click");
@@ -20,7 +21,7 @@ STUDIP.Feedback = {
 			STUDIP.Feedback.initiateView();
 		});
 	},
-	
+
 	initiateView: function() {
 		$('.feedback-entry-add').prop("onclick", null).off("click");
 		$('.feedback-entry-add').find('.accept').click(function (event) {
@@ -52,7 +53,7 @@ STUDIP.Feedback = {
 			});
 		}
 	},
-	delete: function(id,feedback) 
+	delete: function(id,feedback)
 	{
 		var url = STUDIP.URLHelper.getURL('dispatch.php/course/feedback/delete/' + id);
 		request = $.ajax({
@@ -64,7 +65,7 @@ STUDIP.Feedback = {
 			STUDIP.Feedback.initiate(feedback);
 		});
 	},
-	addEntry: function(feedback_id,data) 
+	addEntry: function(feedback_id,data)
 	{
 		var url = STUDIP.URLHelper.getURL('dispatch.php/course/feedback/entry_add/' + feedback_id);
 		request = $.ajax({
@@ -78,7 +79,7 @@ STUDIP.Feedback = {
 		});
 
 	},
-	editEntryForm: function(entry_id,feedback_id) 
+	editEntryForm: function(entry_id,feedback_id)
 	{
 		url = STUDIP.URLHelper.getURL('dispatch.php/course/feedback/entry_edit_form/' + entry_id);
 		$('#feedback-stream-' + feedback_id).find('.feedback-view').load(url, function() {
@@ -96,7 +97,7 @@ STUDIP.Feedback = {
 			});
 		});
 	},
-	editEntry: function(entry_id,feedback_id,data) 
+	editEntry: function(entry_id,feedback_id,data)
 	{
 		var url = STUDIP.URLHelper.getURL('dispatch.php/course/feedback/entry_edit/' + entry_id);
 		request = $.ajax({
@@ -109,7 +110,7 @@ STUDIP.Feedback = {
 			STUDIP.Feedback.reloadView(feedback_id);
 		});
 	},
-	deleteEntry: function(entry_id,feedback_id) 
+	deleteEntry: function(entry_id,feedback_id)
 	{
 		var url = STUDIP.URLHelper.getURL('dispatch.php/course/feedback/entry_delete/' + entry_id);
 		request = $.ajax({

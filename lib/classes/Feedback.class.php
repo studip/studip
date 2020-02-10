@@ -10,10 +10,13 @@ class Feedback
      *
      * @return string
      */
-    public static function getHTML($range_id, $range_type)
+    public static function getHTML(string $range_id, string $range_type)
     {
-        if (Feedback::isActivated() && Feedback::hasRangeAccess($range_id, $range_type)) {
-            return '<div class="feedback-elements" for="' . $range_id . '" type="' . $range_type . '"></div>';
+        if (is_subclass_of($range_type, \FeedbackRange::class)) {
+            $course_id = $range_type::find($range_id)->getRangeCourseId();
+        }
+        if (Feedback::isActivated($course_id) && Feedback::hasRangeAccess($range_id, $range_type)) {
+            return '<div class="feedback-elements" for="' . $range_id . '" type="' . $range_type . '" context="' . $course_id . '"></div>';
         } else {
             return null;
         }
@@ -31,7 +34,7 @@ class Feedback
         $plugin_manager     = PluginManager::getInstance();
         $feedback_module    = $plugin_manager->getPluginInfo('FeedbackModule');
 
-        return $plugin_manager->isPluginActivated($feedback_module['id'], $course_id);
+        return $plugin_manager->isPluginActivated($feedback_module['id'], $course_id) ?? false;
     }
 
     /**
