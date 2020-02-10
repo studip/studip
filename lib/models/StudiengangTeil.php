@@ -20,7 +20,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     private $count_versionen;
     private $fach_name;
     private $stgteil_name;
-    private $count_fachberater;
+    private $count_contacts;
 
     protected static function configure($config = [])
     {
@@ -61,8 +61,8 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             function($stgteil) { return $stgteil->count_versionen; };
         $config['additional_fields']['fach_name']['get'] =
             function($stgteil) { return $stgteil->fach_name; };
-        $config['additional_fields']['count_fachberater']['get'] =
-            function($stgteil) { return $stgteil->count_fachberater; };
+        $config['additional_fields']['count_contacts']['get'] =
+            function($stgteil) { return $stgteil->count_contacts; };
         $config['additional_fields']['stgteil_name']['get'] =
             function($stgteil) { return $stgteil->stgteil_name; };
 
@@ -196,17 +196,18 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
     {
         $sortby = self::createSortStatement($sortby, $order,
                 'fach_name',
-                words('fach_name stgteil_name count_fachberater count_versionen'));
+                words('fach_name stgteil_name count_contacts count_versionen'));
         return parent::getEnrichedByQuery(
                 'SELECT mvv_stgteil.*, CONCAT(fach.name, ": ", '
                 . 'mvv_stgteil.zusatz, " (", mvv_stgteil.kp, " KP)") AS stgteil_name, '
                 . 'fach.name AS fach_name, '
-                . 'COUNT(DISTINCT mvv_fachberater.user_id) AS count_fachberater, '
+                . 'COUNT(DISTINCT mvv_contacts_ranges.contact_range_id) AS count_contacts, '
                 . 'COUNT(DISTINCT mvv_stgteilversion.version_id) AS count_versionen '
                 . 'FROM mvv_stgteil '
                 . 'LEFT JOIN fach USING(fach_id) '
                 . 'LEFT JOIN mvv_fach_inst USING(fach_id) '
-                . 'LEFT JOIN mvv_fachberater USING(stgteil_id) '
+                . 'LEFT JOIN mvv_contacts_ranges ON mvv_contacts_ranges.range_id = stgteil_id'
+                . " AND mvv_contacts_ranges.range_type = 'StudiengangTeil' "
                 . 'LEFT JOIN mvv_stgteilversion USING(stgteil_id) '
                 . self::getFilterSql($filter, true)
                 . 'GROUP BY mvv_stgteil.stgteil_id '
@@ -226,7 +227,8 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
                 . 'FROM mvv_stgteil '
                 . 'LEFT JOIN fach USING(fach_id) '
                 . 'LEFT JOIN mvv_fach_inst USING(fach_id) '
-                . 'LEFT JOIN mvv_fachberater USING(stgteil_id) '
+                . 'LEFT JOIN mvv_contacts_ranges ON mvv_contacts_ranges.range_id = stgteil_id'
+                . " AND mvv_contacts_ranges.range_type = 'StudiengangTeil' "
                 . 'LEFT JOIN mvv_stgteilversion USING(stgteil_id) '
                 . self::getFilterSql($filter, true);
         $db = DBManager::get()->query($query);

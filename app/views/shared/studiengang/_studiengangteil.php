@@ -12,7 +12,7 @@
         <th><?= _('Kredit-Punkte') ?></th>
         <th><?= _('Semesterzahl') ?></th>
         <th><?= _('Titelzusatz') ?></th>
-        <th><?= _('Studienfachberater') ?></th>   
+        <th><?= _('Personen/Kontakte') ?></th>   
     </tr>
     <tr>
         <td data-mvv-field="mvv_stgteil.fach">
@@ -34,7 +34,11 @@
                 -
             <? else: ?>
                 <? foreach ($stgteil->contact_assignments as $contact_assignment) : ?>
-                    <?= htmlReady($contact_assignment->contact->getDisplayName()) ?><br>
+                    <? if ($GLOBALS['MVV_STGTEIL']['PERSONEN_GRUPPEN']['values'][$contact_assignment->category]['visible']) : ?>
+                    <?= htmlReady($contact_assignment->contact->getDisplayName()) ?>
+                    (<?= htmlReady($GLOBALS['MVV_STGTEIL']['PERSONEN_GRUPPEN']['values'][$contact_assignment->category]['name']) ?>)
+                    <br>
+                    <? endif; ?>
                 <? endforeach; ?>
             <? endif; ?>
         </td>

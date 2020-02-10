@@ -90,61 +90,6 @@
         <?= $this->render_partial('shared/contacts/range', ['perm_contacts' => $perm->haveFieldPerm('contact_assignments', MvvPerm::PERM_CREATE), 'range_type' => 'StudiengangTeil', 'range_id' => $stgteil->id]) ?>
     </fieldset>
     
-    <? /*
-    <fieldset class="collapsable collapsed">
-        <legend>
-            <?= _('Studienfachberater') ?>
-        </legend>
-        <? if ($perm->haveFieldPerm('fachberater')) : ?>
-            <?= $search_fachberater->render() ?>
-            <? if (Request::submitted('search_fachberater')) : ?>
-                <?= Icon::create(
-                    'refresh',
-                    Icon::ROLE_CLICKABLE,
-                    [
-                        'name'       => 'reset_fachberater',
-                        'data-qs_id' => $search_fachberater_id
-                    ])->asInput(); ?>
-            <? else : ?>
-                <?= Icon::create(
-                    'search',
-                    Icon::ROLE_CLICKABLE, [
-                    'name'         => 'search_fachberater',
-                    'data-qs_id'   => $search_fachberater_id,
-                    'data-qs_name' => $search_fachberater->getId(),
-                    'class'        => 'mvv-qs-button'
-                ])->asInput(); ?>
-            <? endif; ?>
-        <? endif; ?>
-        <ul id="fachberater_target" class="mvv-assigned-items sortable mvv-persons">
-            <li class="mvv-item-list-placeholder"<?= (count($stgteil->fachberater) ? ' style="display:none;"' : '') ?>>
-                <?= _('Studienfachberater zuordnen.') ?>
-            </li>
-            <? foreach ($stgteil->fachberater as $fachberater) : ?>
-                <li id="fachberater_<?= $fachberater->getId() ?>"<?= $perm->haveFieldPerm('fachberater_assignments') ? 'class="sort_items"' : '' ?>>
-                    <div class="mvv-item-list-text">
-                        <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $fachberater->username]) ?>">
-                            <?= htmlReady($fachberater->getFullname()) ?>
-                        </a>
-                    </div>
-                    <? if ($perm->haveFieldPerm('fachberater')) : ?>
-                        <div class="mvv-item-list-buttons">
-                            <a href="#" class="mvv-item-remove">
-                                <?= Icon::create('trash', Icon::ROLE_CLICKABLE ,['title' => _('Studienfachberater entfernen')])->asImg(); ?>
-                            </a>
-                        </div>
-                    <? endif; ?>
-                    <input type="hidden" name="fachberater_items[]" value="<?= $fachberater->id ?>">
-                </li>
-            <? endforeach; ?>
-        </ul>
-        <div style="width: 100%; max-width: 48em;">
-            <?= _('Die Reihenfolge der Studienfachberater kann durch Anklicken und Ziehen geändert werden.') ?>
-        </div>
-    </fieldset>
-     * 
-     */?>
-
     <footer data-dialog-button>
         <? if ($stgteil->isNew()) : ?>
             <? if ($perm->havePermCreate()) : ?>

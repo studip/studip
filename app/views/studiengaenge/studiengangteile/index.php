@@ -24,14 +24,14 @@
                                 <a class="mvv-load-in-new-row"
                                    href="<?= $controller->url_for('/details/' . $stgteil->getId()) ?>">
                                     <?= htmlReady($stgteil->fach_name) ?>
-                                    <? if ($stgteil->count_fachberater) : ?>
-                                        <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
+                                    <? if ($stgteil->count_contacts) : ?>
+                                        <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Kontakt zugeordnet', '%s Kontakte zugeordnet', $stgteil->count_contacts), $stgteil->count_contacts)]) ?>
                                     <? endif; ?>
                                 </a>
                             <? else : ?>
                                 <?= htmlReady($stgteil->fach_name) ?>
-                                <? if ($stgteil->count_fachberater) : ?>
-                                    <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Fachberater zugeordnet', '%s Fachberater zugeordnet', $stgteil->count_fachberater), $stgteil->count_fachberater)]) ?>
+                                <? if ($stgteil->count_contacts) : ?>
+                                    <?= Icon::create('community', Icon::ROLE_INFO, ['title' => sprintf(ngettext('%s Kontakt zugeordnet', '%s Kontakte zugeordnet', $stgteil->count_contacts), $stgteil->count_contacts)]) ?>
                                 <? endif; ?>
                             <? endif; ?>
                         </td>

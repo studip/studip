@@ -88,7 +88,6 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
             $this->stgteil->semester = Request::int('semester');
             $this->stgteil->zusatz = Request::i18n('zusatz')->trim();
             $this->stgteil->assignFach(Request::option('fach_item'));
-        //    $this->stgteil->assignFachberater(Request::optionArray('fachberater_items'));
             try {
                 $stored = $this->stgteil->store();
             } catch (InvalidValuesException $e) {
@@ -116,20 +115,6 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
                 ->fireJSFunctionOnSelect('MVV.Search.addSelected')
                 ->noSelectbox();
 
-        $query = "
-            SELECT
-            user_id,
-            CONCAT(Vorname, ' ', Nachname, ' (', username, ')') AS name
-            FROM auth_user_md5
-            WHERE Nachname LIKE :input
-            OR username LIKE :input
-            AND perms IN('autor', 'tutor', 'dozent', 'admin')";
-        $search = new SQLSearch($query, _('Studienfachberater suchen'));
-        $this->search_fachberater_id = md5(serialize($search));
-        $this->search_fachberater =
-                QuickSearch::get('fachberater', $search)
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
-                ->noSelectbox();
         $this->cancel_url = $this->url_for('/index');
 
         $this->setSidebar();
@@ -152,7 +137,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         if ($stgteil_orig) {
             $this->stgteil = clone $stgteil_orig;
             $this->stgteil->setNewId();
-            $this->stgteil->fachberater = $stgteil_orig->fachberater;
+            $this->stgteil->contact_assignments = $stgteil_orig->contact_assignments;
 
         } else {
             throw new Trails_Exception(404);
