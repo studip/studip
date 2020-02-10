@@ -407,6 +407,14 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         $this->available_properties = $this->category->getRequestableProperties();
 
+        if (!$session_data['selected_properties']['seats']) {
+            $this->course = Course::find($this->course_id);
+            $admission_turnout = $this->course->admission_turnout;
+            $this->selected_properties['seats'] = $admission_turnout
+                                                ? $admission_turnout
+                                                : $config->RESOURCES_ROOM_REQUEST_DEFAULT_SEATS;
+        }
+
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
             $this->selected_properties = Request::getArray('selected_properties');
