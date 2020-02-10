@@ -74,13 +74,12 @@
                 <? endif ?>
             <? endif ?>
         <? else: ?>
-            <? $begin = $request->getStartDate() ?>
-            <? if ($begin instanceof DateTime): ?>
+            <? if (count($intervals) > 1 && $intervals[0]['begin'] > 0): ?>
                 <br>
                 (<?= htmlReady(
                     sprintf(
                         _('ab %s'),
-                        $begin->format('d.m.Y H:i')
+                        date('d.m.Y H:i', $intervals[0]['begin'])
                     )
                 ) ?>)
             <? endif ?>
@@ -145,7 +144,7 @@
                 ['data-dialog' => 'size=auto']
             );
         }
-        
+
         if ($range_object instanceof User) {
             $action_menu->addLink(
                 URLHelper::getLink('dispatch.php/profile', ['username' => $range_object->username]),
