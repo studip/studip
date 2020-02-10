@@ -44,7 +44,7 @@
 class Resource extends SimpleORMap implements StudipItem
 {
     /**
-     * This is a cache for permissions that users have on this resource.
+     * This is a cache for permissions that users have on resources.
      * It is meant to reduce the database requests in cases where the
      * same permission is queried a lot of times.
      */
@@ -2175,15 +2175,20 @@ class Resource extends SimpleORMap implements StudipItem
                 'resource_id' => $this->id
             ]
         );
-        
+
         if (!$perm_object) {
             $perm_object              = new ResourcePermission();
             $perm_object->user_id     = $user->id;
             $perm_object->resource_id = $this->id;
         }
-        
+
         $perm_object->perms = $perm;
-        return (bool)$perm_object->store();
+        $stored = (bool)$perm_object->store();
+        if ($stored) {
+            //Update the permission cache.
+            self::$permission_cache[$this->id][$user->id] = $perm;
+        }
+        return $stored;
     }
     
     /**
@@ -2195,17 +2200,22 @@ class Resource extends SimpleORMap implements StudipItem
      */
     public function deleteUserPermission(User $user)
     {
-        ResourcePermission::deleteBySql(
+        $deleted = ResourcePermission::deleteBySql(
             '(user_id = :user_id) AND (resource_id = :resource_id)',
             [
                 'user_id'     => $user->id,
                 'resource_id' => $this->id
             ]
         );
-        
+
+        if ($deleted) {
+            //Update the permission cache.
+            self::$permission_cache[$this->id][$user->id] = null;
+        }
+
         return true;
     }
-    
+
     /**
      * Deletes all permissions of all users for this resource.
      *
@@ -2219,7 +2229,10 @@ class Resource extends SimpleORMap implements StudipItem
                 'resource_id' => $this->id
             ]
         );
-        
+
+        //Update the permission cache:
+        self::$permission_cache[$this->id] = [];
+
         return true;
     }
     
@@ -2380,9 +2393,9 @@ class Resource extends SimpleORMap implements StudipItem
             //root users have all permissions for the resource.
             return true;
         }
-        
+
         $perm_level = $this->getUserPermission($user, $time_range);
-        
+
         if ($permission === 'user') {
             //No check for global resource locks here:
             //If only user permissions are requested we can safely grant them

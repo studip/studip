@@ -643,6 +643,11 @@ class ResourceTest extends \Codeception\Test\Unit
             )
         );
 
+        $this->assertEquals(
+            'tutor',
+            $this->resource->getUserPermission($this->user2)
+        );
+
         //Ok, we now delete every permission for
         //$this->resource:
         $this->assertTrue(
