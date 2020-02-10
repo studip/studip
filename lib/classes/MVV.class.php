@@ -118,8 +118,6 @@ class MVV implements Loggable {
                 break;
 
             case 'mvv_files':
-            case 'mvv_dokument':
-            case 'mvv_dokument_zuord':
                 $dokument = MvvDokument::find($event->affected_range_id);
                 if ($dokument) {
                     $url = URLHelper::getURL('dispatch.php/materialien/dokumente/details/' . $dokument->getId(), [], true);

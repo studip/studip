@@ -121,12 +121,12 @@ class StgteilVersion extends ModuleManagementModelTreeItem
             SELECT mvv_stgteilversion.*,
                 start_sem.beginn AS start,
                 COUNT(abschnitt_id) AS count_abschnitte,
-                COUNT(DISTINCT dokument_id) AS count_dokumente
+                COUNT(DISTINCT mvvfile_id) AS count_dokumente
             FROM mvv_stgteilversion
                 LEFT JOIN mvv_stgteilabschnitt USING(version_id)
-                LEFT JOIN mvv_dokument_zuord ON (
-                        mvv_dokument_zuord.range_id = mvv_stgteilversion.version_id
-                        AND mvv_dokument_zuord.object_type = 'StgteilVersion'
+                LEFT JOIN mvv_files_ranges ON (
+                        mvv_files_ranges.range_id = mvv_stgteilversion.version_id
+                        AND mvv_files_ranges.range_type = 'StgteilVersion'
                     )
                 LEFT JOIN semester_data start_sem ON (mvv_stgteilversion.start_sem = start_sem.semester_id)
                 LEFT JOIN semester_data end_sem ON (mvv_stgteilversion.end_sem = end_sem.semester_id)

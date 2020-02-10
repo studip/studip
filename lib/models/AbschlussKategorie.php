@@ -133,12 +133,12 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
         return parent::getEnrichedByQuery("
             SELECT mvv_abschl_kategorie.*,
                 COUNT(DISTINCT mvv_abschl_zuord.abschluss_id) AS `count_abschluesse`,
-                COUNT(DISTINCT mvv_dokument_zuord.dokument_id) AS `count_dokumente`,
+                COUNT(DISTINCT mvv_files_ranges.mvvfile_id) AS `count_dokumente`,
                 COUNT(DISTINCT mvv_studiengang.studiengang_id) AS `count_studiengaenge`
             FROM mvv_abschl_kategorie
                 LEFT JOIN mvv_abschl_zuord USING (kategorie_id)
-                LEFT JOIN mvv_dokument_zuord ON (mvv_dokument_zuord.range_id = mvv_abschl_kategorie.kategorie_id
-                    AND mvv_dokument_zuord.object_type = '" . get_class() . "')
+                LEFT JOIN mvv_files_ranges ON (mvv_files_ranges.range_id = mvv_abschl_kategorie.kategorie_id
+                    AND mvv_files_ranges.range_type = 'AbschlussKategorie')
                 LEFT JOIN mvv_studiengang ON mvv_studiengang.abschluss_id = mvv_abschl_zuord.abschluss_id
             " . self::getFilterSql($filter, true) . "
             GROUP BY kategorie_id
