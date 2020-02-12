@@ -111,11 +111,16 @@ class RoomManagement_OverviewController extends StudipController
 
         $sidebar = $this->buildSidebar();
 
-        $res_search = new ResourceSearch();
-        $res_search->setAdditionalPropertyFormat('');
-        $res_search->setSearchableResourceClasses(['Location', 'ResourceLabel', 'Building', 'Room']);
+        $room_search = new RoomSearch();
+        $room_search->setAdditionalPropertyFormat('');
         $search = new SearchWidget('dispatch.php/room_management/overview/index');
-        $search->addNeedle(_('Suche'), 'tree_selected_resource', true, $res_search);
+        $search->addNeedle(
+            _('Suche'),
+            'tree_selected_resource',
+            true,
+            $room_search,
+            "function(room_id) {STUDIP.Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/resources/room/index/' + room_id));}"
+        );
         $sidebar->addWidget($search);
 
 
