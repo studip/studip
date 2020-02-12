@@ -58,9 +58,11 @@
                     </dd>
                     <dt><?= _('Angeforderte Belegungszeiten') ?></dt>
                     <dd>
-                        <?= htmlReady($request->getDateString()) ?>
+                        <? $dates = $request->getDateString(true) ?>
+                        <? foreach ($dates as $date) : ?>
+                            <?= htmlReady($date) ?><br>
+                        <? endforeach ?>
                         <? if ($request_semester_string): ?>
-                            <br>
                             (<?= htmlReady($request_semester_string) ?>)
                         <? endif ?>
                     </dd>
@@ -199,44 +201,27 @@
                         <tr>
                             <th><?= _('Raum') ?></th>
                             <th><?= _('Alle Termine') ?></th>
-                            <? $i = 1 ?>
                             <? foreach ($request_time_intervals as $metadate_id => $data): ?>
                                 <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
-                                <? $date_string = $data['metadate']->toString('full') ?>
-                                    <th>
-                                    <?= htmlReady(sprintf('#%d', $i)) ?>
-                                    <?= tooltipIcon($date_string) ?>
-                                    </th>
+                                <? $date_string = $data['metadate']->toString('short') ?>
+                                    <th><?= htmlReady($date_string) ?></th>
                                 <? else : ?>
-                                <? $j = 1 ?>
                                     <? foreach ($data['intervals'] as $time_interval) : ?>
                                         <?
-                                        $date_string = '';
-                                        if (date('Ymd', $time_interval['begin']) != date('Ymd', $time_interval['end'])) {
-                                            $date_string = sprintf(
-                                                '%1$s., %2$s - %3$s, %4$s',
-                                                getWeekday(date('w', $time_interval['begin'])),
-                                                date('d.m.Y H:i', $time_interval['begin']),
-                                                getWeekday(date('w', $time_interval['end'])),
-                                                date('d.m.Y H:i', $time_interval['end'])
-                                            );
-                                        } else {
-                                            $date_string = sprintf(
-                                                '%1$s., %2$s - %3$s',
-                                                getWeekday(date('w', $time_interval['begin'])),
-                                                date('d.m.Y H:i', $time_interval['begin']),
-                                                date('H:i', $time_interval['end'])
-                                            );
-                                        }
+                                        $date_string1 = sprintf(
+                                            '%1$s., %2$s',
+                                            getWeekday(date('w', $time_interval['begin'])),
+                                            date('d.m', $time_interval['begin'])
+                                        );
+                                        $date_string2 = sprintf(
+                                            '%1$s - %2$s',
+                                            date('H:i', $time_interval['begin']),
+                                            date('H:i', $time_interval['end'])
+                                        );
                                         ?>
-                                        <th>
-                                        <?= htmlReady(sprintf('%d.', $j)) ?>
-                                        <?= tooltipIcon($date_string) ?>
-                                        </th>
-                                        <? $j++ ?>
+                                        <th><?= htmlReady($date_string1) ?><br><?= htmlReady($date_string2) ?></th>
                                     <? endforeach ?>
                                 <? endif ?>
-                                <? $i++ ?>
                             <? endforeach ?>
                         </tr>
                     </thead>

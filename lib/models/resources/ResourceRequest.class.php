@@ -1311,8 +1311,20 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     }
 
 
-    public function getDateString()
+    /**
+     * Returns a textual representation of the dates for which the request
+     * has been created.
+     *
+     * @param bool $as_array True, if an array with a string for each date
+     *     (single or cycle date) shall be returned, false otherwise.
+     *
+     * @returns string|array Depending on the parameter $as_array, the text
+     *     is returned as one string or as an array of strings for each date
+     *     (single or cycle date).
+     */
+    public function getDateString($as_array = false)
     {
+        $strings = [];
         if (count($this->appointments)) {
             $string = '';
             $parts  = [];
@@ -1321,21 +1333,20 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     $parts[] = $rra->appointment->getFullname();
                 }
             }
-            $string .= implode('; ', $parts);
-            return $string;
+            $strings[] .= implode('; ', $parts);
         } elseif ($this->termin_id) {
             if ($this->date) {
-                return $this->date->getFullname();
+                $strings[] = $this->date->getFullname();
             }
         } elseif ($this->metadate_id) {
             if ($this->cycle) {
-                return $this->cycle->toString('full');
+                $strings[] = $this->cycle->toString('full');
             }
         } elseif ($this->course_id) {
             $course = new Seminar($this->course_id);
 
             if ($course) {
-                return $course->getDatesExport(
+                $strings[] = $course->getDatesExport(
                     [
                         'short'     => true,
                         'shrink'    => true,
@@ -1347,16 +1358,20 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $begin_date = date('Ymd', $this->begin);
             $end_date   = date('Ymd', $this->end);
             if ($begin_date == $end_date) {
-                return strftime('%a., %x, %R', $this->begin) . ' - '
-                    . strftime('%R', $this->end);
+                $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
+                           . strftime('%R', $this->end);
             } else {
                 //Begin and end are on differnt dates
-                return strftime('%a., %x, %R', $this->begin) . ' - '
+                $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
                     . strftime('%a., %x, %R', $this->end);
             }
         }
 
-        return '';
+        if ($as_array) {
+            return $strings;
+        } else {
+            return implode(';', $strings);
+        }
     }
 
 
