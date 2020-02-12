@@ -21,7 +21,7 @@
     ."\"Location\" oder \"URL\" ein.\n\n"
     ."Um Zugang auf die nichtöffentlichen Bereiche des Systems zu bekommen,\n"
     ."müssen Sie sich unter \"Login\" auf der Seite anmelden.\n"
-    ."Geben Sie bitte unter Benutzername \"$username\" und unter Passwort: \"" . $password ? $password : "Ihr Passwort" . "\" ein. \n\n"
+    ."Geben Sie bitte unter Benutzername \"$username\" und unter Passwort: \"" . ($password ? $password : "Ihr Passwort") . "\" ein. \n\n"
     ."Das Passwort ist nur Ihnen bekannt, bitte geben Sie es niemals an Dritte weiter.\n\n"
     ."Mit besten Grüßen,\n\n"
     ."Ihr Stud.IP Supportteam\n";
