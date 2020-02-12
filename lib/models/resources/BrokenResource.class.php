@@ -171,7 +171,7 @@ class BrokenResource extends Resource
     
     public function getIcon($role = Icon::ROLE_INFO)
     {
-        return Icon::create('resource', $role);
+        return Icon::create('resources-broken', $role);
     }
     
     public function getPropertyArray($only_requestable_properties = false)
