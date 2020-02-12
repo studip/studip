@@ -28,8 +28,11 @@
             [<?= htmlReady($underload) ?>%]
         <? endif ?>
     </td>
-    <td><input type="radio" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
-               name="all_in_room" value="<?= htmlReady($room->id) ?>"></td>
+    <td class="<?= $room_fully_available[$room->id] ? '' : 'resolve-date-backlit-red' ?>">
+        <input type="radio" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
+               name="all_in_room" value="<?= htmlReady($room->id) ?>"
+                <?= $room_fully_available[$room->id] ? '' : 'disabled="disabled"' ?>>
+    </td>
     <? foreach ($time_intervals as $metadate_id => $data): ?>
         <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
             <?

@@ -1203,11 +1203,13 @@ class Resources_RoomRequestController extends AuthenticatedController
         $this->room_availability = [];
         $this->room_underload = [];
         $this->requested_room_fully_available = true;
+        $this->room_fully_available = [];
 
         $selected_room = $this->request_resource;
         $this->visible_dates = 0;
         if ($selected_room instanceof Room) {
             $this->room_availability[$selected_room->id] = [];
+            $this->room_fully_available[$selected_room->id] = true;
             foreach ($this->request_time_intervals as $metadate_id => $data) {
                 if ($data['metadate'] instanceof SeminarCycleDate && !$this->expand_metadates) {
                     //There is at least one metadate in the grouped set
@@ -1243,6 +1245,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 foreach ($metadate_availability as $available) {
                     if (!$available) {
                         $this->requested_room_fully_available = false;
+                        $this->room_fully_available[$selected_room->id] = false;
                         break;
                     }
                 }
@@ -1250,6 +1253,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         } else {
             //If no room is selected, it cannot be declared fully available.
             $this->requested_room_fully_available = false;
+            $this->room_fully_available[$selected_room->id] = false;
         }
 
         //Load the room groups of the current user:
@@ -1388,6 +1392,16 @@ class Resources_RoomRequestController extends AuthenticatedController
                         $data['intervals']
                     );
             }
+            $this->room_fully_available[$room->id] = true;
+            foreach ($this->room_availability[$room->id] as $metadate_availability) {
+                foreach ($metadate_availability as $available) {
+                    if (!$available) {
+                        $this->room_fully_available[$room->id] = false;
+                        break;
+                    }
+                }
+            }
+
             if ($this->request->getProperty('seats') > 0) {
                 $this->room_underload[$room->id] =
                     round((intval($room->seats) / intval($this->request->getProperty('seats'))) * 100);
