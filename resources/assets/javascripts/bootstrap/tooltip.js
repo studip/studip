@@ -36,9 +36,9 @@ $(document).on('mouseenter mouseleave', '[data-tooltip],.tooltip:has(.tooltip-co
         }
         if (!content) {
             content = $(this).find('.tooltip-content').remove().html();
-            $(this).attr('data-tooltip', content);
         }
         $(this).attr('title', '');
+        $(this).attr('data-tooltip', content);
 
         tooltip = new STUDIP.Tooltip(x, y, content);
 
