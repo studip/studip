@@ -16,7 +16,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "public/assets"),
-        chunkFilename: "javascripts/[name]-[chunkhash].chunk.js",
+        chunkFilename: "javascripts/[name]-[contenthash].chunk.js",
         filename: "javascripts/[name].js"
     },
     module: {
@@ -101,9 +101,8 @@ module.exports = {
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: "stylesheets/[name].css",
-            chunkFilename: "stylesheets/[id].css"
+            chunkFilename: "stylesheets/[name]-[contentHash].css"
         }),
-        new webpack.HashedModuleIdsPlugin()
     ],
     resolve: {
         alias: {
