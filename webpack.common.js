@@ -53,7 +53,7 @@ module.exports = {
                         }
                     },
                     {
-                        loader: "resolve-url-loader"
+                        loader: "postcss-loader"
                     },
                     {
                         loader: "sass-loader"
