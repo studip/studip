@@ -851,22 +851,4 @@ STUDIP.ready(function() {
             STUDIP.Resources.toggleRequestMarked(event.target);
         }
     );
-
-    //resources/room_request/resolve action:
-
-    jQuery('#resolve-dates-table input[type="radio"]').on('click', function() {
-        if ($(this).data('proxyfor')) {
-            var newstate = this.previous?false:true;
-            this.checked = newstate;
-            $($(this).data('proxyfor')).each(function(){
-                this.checked = newstate;
-            })
-            this.previous = this.checked;
-        } else {
-            if (this.previous) {
-                this.checked = false;
-            }
-            this.previous = this.checked;
-        }
-    });
 });

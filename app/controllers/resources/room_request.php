@@ -1443,7 +1443,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 if (!$room) {
                     PageLayout::postError(
                         sprintf(
-                            _('Der Raum mit der ID %s existiert nicht!'),
+                            _('Es wurde kein Raum ausgewählt!'),
                             htmlReady($room_id)
                         )
                     );

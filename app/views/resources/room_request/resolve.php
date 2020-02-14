@@ -226,6 +226,46 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td><?= _('Keine Auswahl') ?></td>
+                            <td>
+                                <input type="radio" data-proxyfor="input.radio-null"
+                                       name="all_in_room" value="">
+                            </td>
+                            <? foreach ($request_time_intervals as $metadate_id => $data): ?>
+                                <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
+                                    <?
+                                    $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
+                                    $room_radio_name = 'selected_rooms[' . $range_index . ']';
+                                    ?>
+                                    <td>
+                                        <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
+                                               class="text-bottom radio-null"
+                                               value=""
+                                               <?= $selected_dates[$range_index] == null
+                                                 ? 'checked="checked"'
+                                                 : ''?>>
+                                    </td>
+                                <? else : ?>
+                                    <? $i = 0 ?>
+                                    <? foreach($data['intervals'] as $interval) : ?>
+                                        <?
+                                        $range_index = $interval['range'] . '_' . $interval['range_id'];
+                                        $room_radio_name = 'selected_rooms[' . $range_index . ']';
+                                        ?>
+                                        <td>
+                                            <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
+                                                   class="radio-null text-bottom"
+                                                   value=""
+                                                   <?= $selected_dates[$range_index] == null
+                                                     ? 'checked="checked"'
+                                                     : ''?>>
+                                        </td>
+                                    <? $i++ ?>
+                                    <? endforeach ?>
+                                <? endif ?>
+                            <? endforeach ?>
+                        </tr>
                         <? if ($request_resource instanceof Room): ?>
                             <?= $this->render_partial(
                                 'resources/room_request/resolve_room_tr.php',

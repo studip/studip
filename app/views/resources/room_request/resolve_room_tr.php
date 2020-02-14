@@ -43,8 +43,8 @@
             <td class="<?= $available?'':'resolve-date-backlit-red';?>">
                 <? if ($available): ?>
                     <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                           class="radio-<?= htmlReady($room->id) ?>"
-                           value="<?= htmlReady($room->id) ?>" class="text-bottom"
+                           class="text-bottom radio-<?= htmlReady($room->id) ?>"
+                           value="<?= htmlReady($room->id) ?>"
                            <?= $selected_dates[$range_index] == $room->id
                              ? 'checked="checked"'
                              : ''?>>
@@ -65,8 +65,8 @@
                 <td class="<?= $available?'':'resolve-date-backlit-red';?>">
                     <? if ($available): ?>
                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                               class="radio-<?= htmlReady($room->id) ?>"
-                               value="<?= htmlReady($room->id) ?>" class="text-bottom"
+                               class="text-bottom radio-<?= htmlReady($room->id) ?>"
+                               value="<?= htmlReady($room->id) ?>"
                                <?= $selected_dates[$range_index] == $room->id
                                  ? 'checked="checked"'
                                  : ''?>>
