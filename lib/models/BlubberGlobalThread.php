@@ -18,7 +18,7 @@ class BlubberGlobalThread extends BlubberThread
             SELECT 1
             FROM blubber_threads_unfollow
             WHERE thread_id = :thread_id
-                AND user_id = :me 
+                AND user_id = :me
         ");
         $statement->execute([
             'me' => $GLOBALS['user']->id,
@@ -48,7 +48,7 @@ class BlubberGlobalThread extends BlubberThread
         PersonalNotifications::add(
             $user_ids,
             $this->getURL(),
-            sprintf(_('%s hat einen Kommentar geschrieben.'), get_fullname()),
+            sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
             'blubberthread_' . $this->getId(),
             Icon::create('blubber'),
             true
