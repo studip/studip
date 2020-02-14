@@ -163,22 +163,36 @@ if (!Request::isXhr() && $perm->have_perm('root')) {
 
         $migrations = $migrator->relevantMigrations(null);
         $_SESSION['migration-check'] = [
+            'disabled'  => false,
             'timestamp' => time(),
             'count'     => count($migrations),
         ];
     }
 
-    if ($_SESSION['migration-check']['count'] > 0) {
-        $message = MessageBox::info(
+    if (Request::submitted('stop-migration-nag')) {
+        $_SESSION['migation-check']['disabled'] = true;
+    }
+
+    if (!$_SESSION['migation-check']['disabled']
+        && $_SESSION['migration-check']['count'] > 0
+    ) {
+        $info = sprintf(
+            _('Es gibt %u noch nicht ausgeführte Migration(en).'),
+            $_SESSION['migration-check']['count']
+        );
+
+        $message = MessageBox::info($info,[
             sprintf(
-                _('Es gibt %u noch nicht ausgeführte Migration(en).'),
-                $_SESSION['migration-check']['count']
-            ),
-            [sprintf(
                 _('Zur %sMigrationsseite%s'),
-                '<a href="' . URLHelper::getLink('web_migrate.php') . '">',
+                '<a class="link-intern" href="' . URLHelper::getLink('web_migrate.php') . '">',
                 '</a>'
-            )]
+            ),
+            sprintf(
+                '<small><a href="%s">%s</a></small>',
+                URLHelper::getLink('', ['stop-migration-nag' => true]),
+                _('Diese Nachricht bis zum nächsten Login nicht mehr anzeigen')
+            )
+        ]
         );
         PageLayout::postMessage($message, 'migration-info');
     }
