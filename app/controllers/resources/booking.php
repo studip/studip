@@ -45,7 +45,7 @@ class Resources_BookingController extends AuthenticatedController
             $this->resource = $this->booking->resource->getDerivedClassInstance();
             $this->current_user = User::findCurrent();
             if (($this->booking->booking_user_id != $this->current_user->id)
-                && (!$this->resource->bookingPlanVisibleForUser($this->current_user, 'user'))
+                && (!$this->resource->bookingPlanVisibleForUser($this->current_user))
                 && ($action != 'index')) {
                     throw new AccessDeniedException();
             }
