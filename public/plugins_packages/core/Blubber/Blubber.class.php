@@ -79,7 +79,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($threads as $thread) {
             if ($thread->isVisibleInStream() && $thread->isReadable() && ($thread['mkdate'] > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$thread->getId()))) {
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')." b ".$thread->getId()]));
+                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 break;
             }
