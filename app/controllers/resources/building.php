@@ -353,7 +353,7 @@ class Resources_BuildingController extends AuthenticatedController
     
     public function add_action()
     {
-        if (!$GLOBALS['perm']->have_perm('root')) {
+        if (!ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             throw new AccessDeniedException();
         }
         
