@@ -757,7 +757,7 @@ class ResourceManager
             $string .=  ' ';
             if ($coordinate_parts[2] < 0) {
                 $string .= sprintf(
-                    _('%s m tief'),
+                    _('%s m unter NHN'),
                     number_format(
                         abs($coordinate_parts[2]),
                         1,
@@ -767,7 +767,7 @@ class ResourceManager
                 );
             } else {
                 $string .= sprintf(
-                    _('%s m hoch'),
+                    _('%s m über NHN'),
                     number_format(
                         abs($coordinate_parts[2]),
                         1,
