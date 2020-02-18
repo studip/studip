@@ -46,7 +46,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         
         if (!$current_semester) {
             PageLayout::postError(
-                _('DEBUG: Es gibt kein aktuelles Semester in dieser Stud.IP-Installation!')
+                _('Es gibt kein aktuelles Semester in dieser Stud.IP-Installation!')
             );
         }
         $begin = DateTime::createFromFormat('Y-m-d H:i:s', '2017-06-12 0:00:00');
