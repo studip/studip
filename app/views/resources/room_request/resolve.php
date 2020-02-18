@@ -53,7 +53,7 @@
                         <? if ($request->course): ?>
                             <?= htmlReady($request->course->getNumParticipants()) ?>
                         <? else: ?>
-                            <?= _('nicht verfügbar') ?>
+                            <?= _('Nicht verfügbar') ?>
                         <? endif ?>
                     </dd>
                     <dt><?= _('Angeforderte Belegungszeiten') ?></dt>

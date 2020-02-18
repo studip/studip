@@ -1,6 +1,6 @@
 <? if ($no_clipboard): ?>
     <?= MessageBox::info(
-        _('Es wurde keine Raumgruppe gewählt!')
+        _('Es wurde keine Raumgruppe ausgewählt!')
     ) ?>
 <? elseif ($no_rooms): ?>
     <?= MessageBox::info(

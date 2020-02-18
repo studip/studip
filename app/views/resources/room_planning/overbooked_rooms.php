@@ -4,7 +4,7 @@
             <tr>
                 <th><?= _('Raumname') ?></th>
                 <th><?= _('Sitzplätze') ?></th>
-                <th><?= _('Anzahl Teilnehmde der Veranstaltung') ?></th>
+                <th><?= _('Anzahl Teilnehmende der Veranstaltung') ?></th>
                 <th><?= _('Aktionen') ?></th>
             </tr>
         </thead>

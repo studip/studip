@@ -133,7 +133,7 @@
             <?= CSRFProtection::tokenTag() ?>
     <? endif ?>
     <? if ($show_internal_comment): ?>
-        <h3><?= _('Interner Kommentar zur Buchung:') ?></h3>
+        <h3><?= _('Interner Kommentar zur Buchung') ?>:</h3>
         <? if ($make_comment_editable): ?>
             <textarea name="internal_comment"><?= htmlReady($booking->internal_comment) ?></textarea>
         <? else: ?>

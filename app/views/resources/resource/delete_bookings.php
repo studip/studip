@@ -16,12 +16,12 @@
                        value="<?= $end->format('d.m.Y') ?>">
             </label>
             <label class="col-3">
-                <?= _('Start-Uhrzeit') ?>
+                <?= _('Startuhrzeit') ?>
                 <input type="text" class="has-time-picker size-s" name="begin_time"
                        value="<?= $begin->format('H:i') ?>">
             </label>
             <label class="col-3">
-                <?= _('End-Uhrzeit') ?>
+                <?= _('Enduhrzeit') ?>
                 <input type="text" class="has-time-picker size-s" name="end_time"
                        value="<?= $end->format('H:i') ?>">
             </label>

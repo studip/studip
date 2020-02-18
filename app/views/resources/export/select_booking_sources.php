@@ -3,7 +3,7 @@
           action="<?= $controller->link_for('resources/export/bookings') ?>">
         <?= CSRFProtection::tokenTag() ?>
         <fieldset>
-            <legend><?= _('Zeitbereich wählen') ?></legend>
+            <legend><?= _('Zeitbereich auswählen') ?></legend>
             <label class="col-2">
                 <?= _('Startzeitpunkt') ?>
                 <input type="text" class="has-date-picker size-s" name="begin_date"

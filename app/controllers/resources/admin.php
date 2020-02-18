@@ -1064,13 +1064,13 @@ class Resources_AdminController extends AuthenticatedController
             $hour_regex = '/^(([01][0-9])|(2[0-3]))\:[0-5][0-9]$/';
             if (!preg_match($hour_regex, $this->resources_booking_plan_start_hour)) {
                 PageLayout::postError(
-                    _('Die Start-Uhrzeit für den Belegungsplan ist im falschen Format!')
+                    _('Die Startuhrzeit für den Belegungsplan ist im falschen Format!')
                 );
                 return;
             }
             if (!preg_match($hour_regex, $this->resources_booking_plan_end_hour)) {
                 PageLayout::postError(
-                    _('Die End-Uhrzeit für den Belegungsplan ist im falschen Format!')
+                    _('Die Enduhrzeit für den Belegungsplan ist im falschen Format!')
                 );
                 return;
             }
@@ -1079,7 +1079,7 @@ class Resources_AdminController extends AuthenticatedController
             $end   = strtotime($this->resources_booking_plan_end_hour);
             if ($begin >= $end) {
                 PageLayout::postError(
-                    _('Die Start-Uhrzeit für den Belegungsplan darf nicht hinter der End-Uhrzeit liegen!')
+                    _('Die Startuhrzeit für den Belegungsplan darf nicht hinter der Enduhrzeit liegen!')
                 );
                 return;
             }

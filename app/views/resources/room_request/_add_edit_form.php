@@ -22,12 +22,12 @@
         </section>
         <section>
             <label class="col-2">
-                <?= _('Start-Uhrzeit') ?>
+                <?= _('Startuhrzeit') ?>
                 <input type="text" name="begin_time" class="has-time-picker size-s"
                        value="<?= htmlReady($begin_time_str) ?>">
             </label>
             <label class="col-2">
-                <?= _('End-Uhrzeit') ?>
+                <?= _('Enduhrzeit') ?>
                 <input type="text" name="end_time" class="has-time-picker size-s"
                        value="<?= htmlReady($end_time_str) ?>">
             </label>
