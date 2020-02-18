@@ -512,8 +512,8 @@ class Resources_BuildingController extends AuthenticatedController
             PageLayout::postSuccess(
                 sprintf(
                     _('Das Gebäude wurde im Zeitraum von %1$s bis %2$s gesperrt!'),
-                    $this->begin->format(_('d.m.Y H:i')),
-                    $this->end->format(_('d.m.Y H:i'))
+                    $this->begin->format('d.m.Y H:i'),
+                    $this->end->format('d.m.Y H:i')
                 )
             );
         } else {

@@ -1310,8 +1310,8 @@ class Resources_ResourceController extends AuthenticatedController
                 sprintf(
                     _('%1$s: Die Sperrbuchung für den Zeitraum von %2$s bis %3$s wurde gespeichert!'),
                     htmlReady($this->resource->getFullName()),
-                    $this->begin->format(_('d.m.Y H:i')),
-                    $this->end->format(_('d.m.Y H:i'))
+                    $this->begin->format('d.m.Y H:i'),
+                    $this->end->format('d.m.Y H:i')
                 )
             );
         }
@@ -1346,7 +1346,7 @@ class Resources_ResourceController extends AuthenticatedController
 
             if ($this->begin >= $this->end) {
                 PageLayout::postError(
-                    _('Der Startzeitpunkt muss vor dem Endzeitpunkt liegen!')
+                    _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
                 );
                 return;
             }
@@ -1386,10 +1386,10 @@ class Resources_ResourceController extends AuthenticatedController
                             '%5$d Buchungen wurde im Zeitbereich von %1$s, %2$s Uhr bis zum %3$s, %4$s Uhr gelöscht!',
                             $deleted
                         ),
-                        $this->begin->format(_('d.m.Y')),
-                        $this->begin->format(_('H:i')),
-                        $this->end->format(_('d.m.Y')),
-                        $this->end->format(_('H:i')),
+                        $this->begin->format('d.m.Y'),
+                        $this->begin->format('H:i'),
+                        $this->end->format('d.m.Y'),
+                        $this->end->format('H:i'),
                         $deleted
                     )
                 );
@@ -1397,10 +1397,10 @@ class Resources_ResourceController extends AuthenticatedController
                 PageLayout::postError(
                     sprintf(
                         _('Die Buchungen im Zeitbereich von %1$s, %2$s Uhr bis %3$s, %4$s Uhr konnten nicht gelöscht werden!'),
-                        $this->begin->format(_('d.m.Y')),
-                        $this->begin->format(_('H:i')),
-                        $this->end->format(_('d.m.Y')),
-                        $this->end->format(_('H:i'))
+                        $this->begin->format('d.m.Y'),
+                        $this->begin->format('H:i'),
+                        $this->end->format('d.m.Y'),
+                        $this->end->format('H:i')
                     )
                 );
             }

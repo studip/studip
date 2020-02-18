@@ -404,7 +404,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
 
         if ($this->begin >= $this->end) {
             throw new InvalidArgumentException(
-                _('Der Startzeitpunkt muss vor dem dem Endzeitpunkt liegen!')
+                _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
             );
         }
 
@@ -449,14 +449,14 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                 if ($time_interval['begin']->format('Ymd') == $time_interval['end']->format('Ymd')) {
                     $time_interval_overlaps[] = sprintf(
                         _('Gesperrt im Bereich vom %1$s bis %2$s'),
-                        $time_interval['begin']->format(_('d.m.Y H:i')),
-                        $time_interval['end']->format(_('H:i'))
+                        $time_interval['begin']->format('d.m.Y H:i'),
+                        $time_interval['end']->format('H:i')
                     );
                 } else {
                     $time_interval_overlaps[] = sprintf(
                         _('Gesperrt im Bereich vom %1$s bis zum %2$s'),
-                        $time_interval['begin']->format(_('d.m.Y H:i')),
-                        $time_interval['end']->format(_('d.m.Y H:i'))
+                        $time_interval['begin']->format('d.m.Y H:i'),
+                        $time_interval['end']->format('d.m.Y H:i')
                     );
                 }
             } else {
@@ -469,14 +469,14 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                     if ($time_interval['begin']->format('Ymd') == $time_interval['end']->format('Ymd')) {
                         $time_interval_overlaps[] = sprintf(
                             _('Gebucht im Bereich vom %1$s bis %2$s'),
-                            $time_interval['begin']->format(_('d.m.Y H:i')),
-                            $time_interval['end']->format(_('H:i'))
+                            $time_interval['begin']->format('d.m.Y H:i'),
+                            $time_interval['end']->format('H:i')
                         );
                     } else {
                         $time_interval_overlaps[] = sprintf(
                             _('Gebucht im Bereich vom %1$s bis zum %2$s'),
-                            $time_interval['begin']->format(_('d.m.Y H:i')),
-                            $time_interval['end']->format(_('d.m.Y H:i'))
+                            $time_interval['begin']->format('d.m.Y H:i'),
+                            $time_interval['end']->format('d.m.Y H:i')
                         );
                     }
                 }
@@ -1452,9 +1452,9 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
 
     public function __toString()
     {
-        return date(_('d.m.Y H:i'), $this->begin)
+        return date('d.m.Y H:i', $this->begin)
              . ' - '
-             . date(_('d.m.Y H:i'), $this->end);
+             . date('d.m.Y H:i', $this->end);
     }
 
 

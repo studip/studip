@@ -44,16 +44,16 @@
                             <ul class="default">
                                 <? foreach ($intervals as $interval): ?>
                                     <li>
-                                        <?= date(_('d.m.Y H:i'), $interval->begin) ?>
+                                        <?= date('d.m.Y H:i', $interval->begin) ?>
                                         -
-                                        <?= date(_('d.m.Y H:i'), $interval->end) ?>
+                                        <?= date('d.m.Y H:i', $interval->end) ?>
                                     </li>
                                 <? endforeach ?>
                             </ul>
                         <? else: ?>
-                            <?= date(_('d.m.Y H:i'), $booking->begin) ?>
+                            <?= date('d.m.Y H:i', $booking->begin) ?>
                             -
-                            <?= date(_('d.m.Y H:i'), $booking->end) ?>
+                            <?= date('d.m.Y H:i', $booking->end) ?>
                         <? endif ?>
                     </td>
                     <td>

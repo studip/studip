@@ -1,9 +1,9 @@
 <? if ($current_lock): ?>
     <?= MessageBox::info(
         sprintf(
-            _('Die Raum- und Ressourcenverwaltung ist zurzeit gesperrt. Die Sperre besteht vom %1$s bis zum %2$s.'),
-            date(_('d.m.Y H:i'), $current_lock->begin),
-            date(_('d.m.Y H:i'), $current_lock->end)
+            _('Die Raumverwaltung ist vom %1$s bis zum %2$s gesperrt.'),
+            date('d.m.Y H:i', $current_lock->begin),
+            date('d.m.Y H:i', $current_lock->end)
         )
     ) ?>
 <? endif ?>
@@ -20,8 +20,8 @@
         <tbody>
             <? foreach ($future_locks as $lock): ?>
                 <tr>
-                    <td><?= date(_('d.m.Y H:i'), $lock->begin) ?></td>
-                    <td><?= date(_('d.m.Y H:i'), $lock->end) ?></td>
+                    <td><?= date('d.m.Y H:i', $lock->begin) ?></td>
+                    <td><?= date('d.m.Y H:i', $lock->end) ?></td>
                     <td><?= $lock->getTypeString() ?></td>
                     <td class="actions">
                         <?= ActionMenu::get()
@@ -49,6 +49,6 @@
     </table>
 <? else: ?>
     <?= MessageBox::info(
-        _('Es sind keine gegenwärtigen und zukünftigen Sperren der Raum- und Resourcenverwaltung hinterlegt.')
+        _('Es sind keine gegenwärtigen und zukünftigen Sperren der Raumverwaltung hinterlegt.')
     ) ?>
 <? endif ?>

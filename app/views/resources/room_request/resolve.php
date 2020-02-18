@@ -32,7 +32,7 @@
                     <dd><?= htmlReady(
                         sprintf(
                             _('Anfrage erstellt am %1$s von %2$s'),
-                            date(_('d.m.Y H:i'), $request->mkdate),
+                            date('d.m.Y H:i', $request->mkdate),
                             ($request->user
                            ? $request->user->getFullName()
                            : '')
@@ -42,13 +42,13 @@
                     <dd><?= htmlReady(
                         sprintf(
                             _('Letzte Änderung am %1$s von %2$s'),
-                            date(_('d.m.Y H:i'), $request->chdate),
+                            date('d.m.Y H:i', $request->chdate),
                             ($request->last_modifier
                            ? $request->last_modifier->getFullName()
                            : '')
                         )
                         ) ?></dd>
-                    <dt><?= _('Aktuelle Teilnehmerzahl') ?></dt>
+                    <dt><?= _('Aktuelle Zahl an teilnehmenden Personen') ?></dt>
                     <dd>
                         <? if ($request->course): ?>
                             <?= htmlReady($request->course->getNumParticipants()) ?>

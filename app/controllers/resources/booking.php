@@ -249,8 +249,8 @@ class Resources_BookingController extends AuthenticatedController
             $mail_title = sprintf(
                 _('%1$s: Neue Sperrbuchung von %2$s bis %3$s'),
                 $derived_resource->getFullName(),
-                date(_('d.m.Y H:i'), $booking->begin),
-                date(_('d.m.Y H:i'), $booking->end)
+                date('d.m.Y H:i', $booking->begin),
+                date('d.m.Y H:i', $booking->end)
             );
 
             Message::send(
@@ -503,8 +503,8 @@ class Resources_BookingController extends AuthenticatedController
                                 _('Raum %1$s: Der Teilraum %2$s ist im Zeitbereich von %3$s bis %4$s nicht verfügbar und kann daher nicht gebucht werden!'),
                                 htmlReady($resource->name),
                                 htmlReady($room_part->name),
-                                $this->begin->format(_('d.m.Y H:i')),
-                                $this->end->format(_('d.m.Y H:i'))
+                                $this->begin->format('d.m.Y H:i'),
+                                $this->end->format('d.m.Y H:i')
                             );
                         } catch (Exception $e) {
                             $result['room_part_errors'][] = $e->getMessage();
@@ -1701,8 +1701,8 @@ class Resources_BookingController extends AuthenticatedController
                 $week_name = sprintf(
                     _('%1$d. KW, vom %2$s bis zum %3$s'),
                     $current_week->format('W'),
-                    $current_week_start->format(_('d.m.Y')),
-                    $current_week_end->format(_('d.m.Y'))
+                    $current_week_start->format('d.m.Y'),
+                    $current_week_end->format('d.m.Y')
                 );
                 $week_name_index = $current_week->format('Y_W');
                 $this->available_semester_weeks[$week_name_index] = $week_name;
@@ -1798,10 +1798,10 @@ class Resources_BookingController extends AuthenticatedController
                 sprintf(
                     _('Die Buchung wurde in das Semester %1$s kopiert und findet dort vom %2$s, %3$s Uhr bis zum %4$s, %5$s Uhr statt!'),
                     htmlReady($selected_semester->name),
-                    $new_begin->format(_('d.m.Y')),
-                    $new_begin->format(_('H:i')),
-                    $new_end->format(_('d.m.Y')),
-                    $new_end->format(_('H:i'))
+                    $new_begin->format('d.m.Y'),
+                    $new_begin->format('H:i'),
+                    $new_end->format('d.m.Y'),
+                    $new_end->format('H:i')
                 )
             );
         }

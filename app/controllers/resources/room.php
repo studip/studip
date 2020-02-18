@@ -552,9 +552,9 @@ class Resources_RoomController extends AuthenticatedController
                     foreach ($time_intervals as $time_interval) {
                         $booked_time_interval_strings[] = sprintf(
                             _('Am %1$s zwischen %2$s Uhr und %3$s Uhr'),
-                            date(_('d.m.Y'), $time_interval['begin']),
-                            date(_('H:i'), $time_interval['begin']),
-                            date(_('H:i'), $time_interval['end'])
+                            date('d.m.Y', $time_interval['begin']),
+                            date('H:i', $time_interval['begin']),
+                            date('H:i', $time_interval['end'])
                         );
                     }
                 }

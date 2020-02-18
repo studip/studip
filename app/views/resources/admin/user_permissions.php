@@ -9,7 +9,7 @@
                         <?= Icon::create('exclaim', 'attention')->asImg(
                             [
                                 'class' => 'text-bottom',
-                                'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raum- und Ressourcenverwaltung nicht genutzt werden!')
+                                'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raumverwaltung nicht genutzt werden!')
                             ]
                         )?>
                     <? endif ?>
@@ -99,15 +99,15 @@
                                     '20px',
                                     [
                                         'class' => 'text-bottom',
-                                        'title' => _('Die Berechtigung kann aufgrund einer globalen Sperrung der Raum- und Ressourcenverwaltung zurzeit nicht genutzt werden!')
+                                        'title' => _('Die Berechtigung kann aufgrund einer globalen Sperrung der Raumverwaltung zurzeit nicht genutzt werden!')
                                     ]
                                 )?>
                             <? endif ?>
                         </td>
                         <td>
-                            <?= date(_('d.m.Y H:i'), $permission->begin) ?>
+                            <?= date('d.m.Y H:i', $permission->begin) ?>
                             -
-                            <?= date(_('d.m.Y H:i'), $permission->end) ?>
+                            <?= date('d.m.Y H:i', $permission->end) ?>
                         </td>
                         <td class="actions">
                             <a href="<?= $permission->resource->getLink(
@@ -168,7 +168,7 @@
                                 <?= Icon::create('exclaim', 'attention')->asImg(
                                     [
                                         'class' => 'text-bottom',
-                                        'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raum- und Ressourcenverwaltung nicht genutzt werden!')
+                                        'title' => _('Die Berechtigung kann zurzeit aufgrund einer globalen Sperrung der Raumverwaltung nicht genutzt werden!')
                                     ]
                                 )?>
                             <? endif ?>

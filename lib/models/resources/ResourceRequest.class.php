@@ -1837,12 +1837,12 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $resource = $this->resource->getDerivedClassInstance();
                 $template->set_attribute('derived_resource', $resource);
                 $mail_title = sprintf(
-                    _('%1$s: Neue Anfrage in der Raum- und Ressourcenverwaltung'),
+                    _('%1$s: Neue Anfrage in der Raumverwaltung'),
                     $resource->getFullName()
                 );
             } else {
                 $mail_title = sprintf(
-                    _('Neue Anfrage in der Raum- und Ressourcenverwaltung')
+                    _('Neue Anfrage in der Raumverwaltung')
                 );
             }
 

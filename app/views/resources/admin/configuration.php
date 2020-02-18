@@ -9,7 +9,7 @@
                    <?= $config->RESOURCES_ENABLE == '1'
                      ? 'checked="checked"'
                      : ''?>>
-            <?= _('Raum- und Ressourcenverwaltung aktivieren') ?>
+            <?= _('Raumverwaltung aktivieren') ?>
         </label>
     </fieldset>
     <fieldset>
@@ -56,7 +56,7 @@
         </label>
     </fieldset>
     <fieldset>
-        <legend><?= _('Raum- und Ressourcenanfragen') ?></legend>
+        <legend><?= _('Raumanfragen') ?></legend>
         <label>
             <input type="checkbox" name="resources_allow_room_requests"
                    value="1"

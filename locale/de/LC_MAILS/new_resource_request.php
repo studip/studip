@@ -1,5 +1,5 @@
 <?= $request->user->getFullName() ?> hat eine neue Anfrage
-in der Raum- und Ressourcenverwaltung erstellt.
+in der Raumverwaltung erstellt.
 
 
 <? if ($requested_room): ?>

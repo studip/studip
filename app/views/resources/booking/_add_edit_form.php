@@ -458,7 +458,7 @@
                             <span style="padding-left: 1em;">
                                 <?= sprintf(
                                     _('Letzte Änderung am %s'),
-                                    date(_('d.m.Y'), $booking->chdate)
+                                    date('d.m.Y', $booking->chdate)
                                 ) ?>
                             </span>
                         <? endif ?>
@@ -519,16 +519,16 @@
                             <td class="booking-list-interval-date
                                 <?= $interval->takes_place ? '': ' not-taking-place'; ?>
                                 ">
-                                <? if (date(_('d.m.Y'), $interval['begin']) == date(_('d.m.Y'), $interval['end'])): ?>
+                                <? if (date('d.m.Y', $interval['begin']) == date('d.m.Y', $interval['end'])): ?>
                                     <?= $wdays[intVal(date('w', $interval['begin']))]
-                                        . ' ' . date(_('d.m.Y, H:i'), $interval['begin'])
+                                        . ' ' . date('d.m.Y, H:i', $interval['begin'])
                                         . date(' - H:i', $interval['end']) ?>
                                 <? else: ?>
                                     <?= $wdays[intVal(date('w', $interval['begin']))]
-                                        . ' ' . date(_('d.m.Y, H:i'), $interval['begin']) ?>
+                                        . ' ' . date('d.m.Y, H:i', $interval['begin']) ?>
                                     -
                                     <?= $wdays[intVal(date('w', $interval['end']))]
-                                        . ' ' . date(_('d.m.Y, H:i'), $interval['end']) ?>
+                                        . ' ' . date('d.m.Y, H:i', $interval['end']) ?>
 
                                 <? endif; ?>
                             </td>

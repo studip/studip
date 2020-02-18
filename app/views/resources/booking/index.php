@@ -3,7 +3,7 @@
         <p>
             <?= sprintf(
                 _('Letzte Änderung am %s'),
-                date(_('d.m.Y'), $booking->chdate)
+                date('d.m.Y', $booking->chdate)
             ) ?>
         </p>
     <? endif ?>

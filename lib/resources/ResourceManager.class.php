@@ -650,16 +650,16 @@ class ResourceManager
 
         if (!self::userHasGlobalPermission($user, 'admin')) {
             throw new ResourcePermissionException(
-                _('Unzureichende Berechtigungen zum globalen Sperren der Raum- und Ressourcenverwaltung!')
+                _('Unzureichende Berechtigungen zum globalen Sperren der Raumverwaltung!')
             );
         }
 
         if (GlobalResourceLock::existsInTimeRange($begin, $end)) {
             throw new GlobalResourceLockOverlapException(
                 sprintf(
-                    _('Im Zeitbereich vom %1$s bis %2$s gibt es bereits eine globale Sperrung der Raum- und Ressourcenverwaltung!'),
-                    $begin->format(_('d.m.Y H:i')),
-                    $end->format(_('d.m.Y H:i'))
+                    _('Im Zeitbereich vom %1$s bis %2$s gibt es bereits eine globale Sperrung der Raumverwaltung!'),
+                    $begin->format('d.m.Y H:i'),
+                    $end->format('d.m.Y H:i')
                 )
             );
         }
@@ -672,9 +672,9 @@ class ResourceManager
         if (!$lock->store()) {
             throw new GlobalResourceLockException(
                 sprintf(
-                    _('Fehler beim Speichern der globalen Sperre der Raum- und Ressourcenverwaltung im Zeitbereich vom %1$s bis %2$s!'),
-                    $begin->format(_('d.m.Y H:i')),
-                    $end->format(_('d.m.Y H:i'))
+                    _('Fehler beim Speichern der globalen Sperre der Raumverwaltung im Zeitbereich vom %1$s bis %2$s!'),
+                    $begin->format('d.m.Y H:i'),
+                    $end->format('d.m.Y H:i')
                 )
             );
         }

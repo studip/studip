@@ -187,7 +187,7 @@ class StartNavigation extends Navigation
             }
             if ($show_resources_navigation) {
                 if ($global_resource_permissions == 'admin') {
-                    $navigation = new Navigation(_('Raum- und Ressourcenverwaltung'));
+                    $navigation = new Navigation(_('Raumverwaltung'));
                     $navigation->addSubNavigation(
                         'resources_overview',
                         new Navigation(

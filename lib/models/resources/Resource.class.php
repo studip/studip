@@ -851,8 +851,8 @@ class Resource extends SimpleORMap implements StudipItem
                     sprintf(
                         _('%1$s: Die Buchung vom %2$s bis %3$s konnte wegen Überlappungen nicht gespeichert werden: %4$s'),
                         $this->getFullName(),
-                        $begin->format(_('d.m.Y H:i')),
-                        $end->format(_('H:i')),
+                        $begin->format('d.m.Y H:i'),
+                        $end->format('H:i'),
                         $e->getMessage()
                     )
                 );
@@ -861,8 +861,8 @@ class Resource extends SimpleORMap implements StudipItem
                     sprintf(
                         _('%1$s: Die Buchung vom %2$s bis %3$s konnte wegen Überlappungen nicht gespeichert werden: %4$s'),
                         $this->getFullName(),
-                        $begin->format(_('d.m.Y H:i')),
-                        $end->format(_('d.m.Y H:i')),
+                        $begin->format('d.m.Y H:i'),
+                        $end->format('d.m.Y H:i'),
                         $e->getMessage()
                     )
                 );
@@ -873,8 +873,8 @@ class Resource extends SimpleORMap implements StudipItem
                     sprintf(
                         _('%1$s: Die Buchung vom %2$s bis %3$s konnte aus folgendem Grund nicht gespeichert werden: %4$s'),
                         $this->getFullName(),
-                        $begin->format(_('d.m.Y H:i')),
-                        $end->format(_('H:i')),
+                        $begin->format('d.m.Y H:i'),
+                        $end->format('H:i'),
                         $e->getMessage()
                     )
                 );
@@ -883,8 +883,8 @@ class Resource extends SimpleORMap implements StudipItem
                     sprintf(
                         _('%1$s: Die Buchung vom %2$s bis %3$s konnte aus folgendem Grund nicht gespeichert werden: %4$s'),
                         $this->getFullName(),
-                        $begin->format(_('d.m.Y H:i')),
-                        $end->format(_('d.m.Y H:i')),
+                        $begin->format('d.m.Y H:i'),
+                        $end->format('d.m.Y H:i'),
                         $e->getMessage()
                     )
                 );
@@ -940,7 +940,7 @@ class Resource extends SimpleORMap implements StudipItem
         
         if ($begin > $end) {
             throw new InvalidArgumentException(
-                _('Der Startzeitpunkt darf nicht nach dem Endzeitpunkt liegen!')
+                _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
             );
         } elseif ($begin == $end) {
             throw new InvalidArgumentException(
@@ -953,8 +953,8 @@ class Resource extends SimpleORMap implements StudipItem
                 sprintf(
                     _('Die Ressource %1$s ist im Zeitraum von %2$s bis %3$s nicht verfügbar!'),
                     $this->name,
-                    $begin->format(_('d.m.Y H:i')),
-                    $end->format(_('d.m.Y H:i'))
+                    $begin->format('d.m.Y H:i'),
+                    $end->format('d.m.Y H:i')
                 )
             );
         }
@@ -1078,8 +1078,8 @@ class Resource extends SimpleORMap implements StudipItem
                     sprintf(
                         _('Die Ressource %1$s ist im Zeitraum vom %2$s bis %3$s nicht verfügbar!'),
                         $this->name,
-                        $time_range[0]->format(_('d.m.Y H:i')),
-                        $time_range[1]->format(_('d.m.Y H:i'))
+                        $time_range[0]->format('d.m.Y H:i'),
+                        $time_range[1]->format('d.m.Y H:i')
                     )
                 );
             }
@@ -1255,8 +1255,8 @@ class Resource extends SimpleORMap implements StudipItem
                 sprintf(
                     _('%1$s: Im Zeitbereich von %2$s bis %3$s gibt es bereits Sperrbuchungen!'),
                     $this->getFullName(),
-                    $begin->format(_('d.m.Y H:i')),
-                    $end->format(_('d.m.Y H:i'))
+                    $begin->format('d.m.Y H:i'),
+                    $end->format('d.m.Y H:i')
                 )
             );
         }
@@ -1273,8 +1273,8 @@ class Resource extends SimpleORMap implements StudipItem
             throw new ResourceBookingException(
                 sprintf(
                     _('%1$s: Fehler beim Speichern der Sperrbuchung für den Zeitbereich von %2$s bis %3$s!'),
-                    $begin->format(_('d.m.Y H:i')),
-                    $end->format(_('d.m.Y H:i'))
+                    $begin->format('d.m.Y H:i'),
+                    $end->format('d.m.Y H:i')
                 )
             );
         }

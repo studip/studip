@@ -1,5 +1,5 @@
 <?= $request->user->getFullName() ?> created a new request
-in the room and resource management system.
+in the room management system.
 
 
 <? if ($requested_room): ?>

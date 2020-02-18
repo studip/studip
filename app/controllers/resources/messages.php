@@ -130,7 +130,7 @@ class Resources_MessagesController extends AuthenticatedController
 
                 if ($this->begin > $this->end) {
                     PageLayout::postError(
-                        _('Der Startzeitpunkt darf nicht nach dem Endzeitpunkt liegen!')
+                        _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
                     );
                     $this->relocate('resources/messages/index');
                     return;

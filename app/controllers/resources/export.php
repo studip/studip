@@ -443,8 +443,8 @@ class Resources_ExportController extends AuthenticatedController
                 }
                 
                 $csv_data[] = [
-                    date(_('d.m.Y H:i'), $interval->begin),
-                    date(_('d.m.Y H:i'), $interval->end),
+                    date('d.m.Y H:i', $interval->begin),
+                    date('d.m.Y H:i', $interval->end),
                     round($interval->booking->preparation_time / 60),
                     $resource_name,
                     $booking_type_string,

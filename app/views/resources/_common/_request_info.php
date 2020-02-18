@@ -47,9 +47,9 @@
             ) ?>
         </dd>
         <dt><?= _('Erstellt am') ?>:</dt>
-        <dd><?= date(_('d.m.Y H:i'), $request->mkdate) ?></dd>
+        <dd><?= date('d.m.Y H:i', $request->mkdate) ?></dd>
         <dt><?= _('Letzte Änderung am') ?>:</dt>
-        <dd><?= date(_('d.m.Y H:i'), $request->chdate) ?></dd>
+        <dd><?= date('d.m.Y H:i', $request->chdate) ?></dd>
         <dt><?= _('Letzte Änderung von') ?>:</dt>
         <dd>
             <?= htmlReady(

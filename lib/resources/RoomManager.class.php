@@ -333,9 +333,9 @@ class RoomManager
                         $message_body .= '- '
                                        . sprintf(
                                            _('Am %1$s von %2$s Uhr bis %3$s Uhr'),
-                                           date(_('d.m.Y'), $time_interval['begin']),
-                                           date(_('H:i'), $time_interval['begin']),
-                                           date(_('H:i'), $time_interval['end'])
+                                           date('d.m.Y', $time_interval['begin']),
+                                           date('H:i', $time_interval['begin']),
+                                           date('H:i', $time_interval['end'])
                                        )
                                        . "\n";
                     }

@@ -198,8 +198,7 @@ class Resources_AdminController extends AuthenticatedController
             if ($this->last_activity instanceof DateInterval) {
                 //Calculate the date of the last inactivity:
                 $last_activity_date = $this->now->sub($this->last_activity);
-                
-                $this->last_activity_date = $last_activity_date->format(_('d.m.Y H:i'));
+                $this->last_activity_date = $last_activity_date->format('d.m.Y H:i');
             }
         }
     }
