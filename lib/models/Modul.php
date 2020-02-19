@@ -71,16 +71,6 @@ class Modul extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
-        /*
-        $config['has_many']['assigned_users'] = [
-            'class_name' => 'ModulUser',
-            'assoc_foreign_key' => 'modul_id',
-            'order_by' => 'ORDER BY gruppe,position',
-            'on_delete' => 'delete',
-            'on_store' => 'store'
-        ];
-         * 
-         */
         $config['has_many']['contact_assignments'] = [
             'class_name'        => 'MvvContactRange',
             'assoc_foreign_key' => 'range_id',
