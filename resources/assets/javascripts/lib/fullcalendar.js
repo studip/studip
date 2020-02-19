@@ -527,7 +527,7 @@ class Fullcalendar
                 var start = view.activeStart;
                 var end = view.activeEnd;
 
-                if ($(view.calendar.el).hasClass('institute-plan')) {
+                if ($(info.el).hasClass('institute-plan')) {
                     $('.fc-slats tr:odd .fc-widget-content:not(.fc-axis)').remove();
                 }
 
