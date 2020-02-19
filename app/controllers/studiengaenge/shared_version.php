@@ -106,7 +106,7 @@ class SharedVersionController extends MVVController
             );
             $action_widget->addLink(
                 _('Version als PDF'),
-                $this->url_for('/export/' . $this->version->getId() . 'pdf'),
+                $this->url_for('/export/' . $this->version->getId() . '/pdf'),
                 Icon::create('file-pdf')
             );
             $action_widget->addLink(
