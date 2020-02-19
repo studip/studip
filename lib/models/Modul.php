@@ -71,6 +71,7 @@ class Modul extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
+        /*
         $config['has_many']['assigned_users'] = [
             'class_name' => 'ModulUser',
             'assoc_foreign_key' => 'modul_id',
@@ -78,6 +79,8 @@ class Modul extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
+         * 
+         */
         $config['has_many']['contact_assignments'] = [
             'class_name'        => 'MvvContactRange',
             'assoc_foreign_key' => 'range_id',
@@ -420,55 +423,6 @@ class Modul extends ModuleManagementModelTreeItem
             $institutes[] = $modul_inst;
         }
         $this->assigned_institutes = SimpleORMapCollection::createFromArray($institutes);
-    }
-
-    /**
-     * Assigns users in their groups to this module.
-     *
-     * @param array $grouped_user_ids Array of user ids grouped by usergroup.
-     */
-    public function assignUsers($grouped_user_ids) {
-        $assigned_users = [];
-
-        foreach (array_keys($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values']) as $group) {
-            $position = 1;
-            foreach ((array) $grouped_user_ids[$group] as $user_id) {
-                $user = User::find($user_id);
-                if ($user) {
-                    $modul_user = ModulUser::find([$this->id, $user_id, $group]);
-                    if (!$modul_user) {
-                        $modul_user = new ModulUser();
-                        $modul_user->modul_id = $this->id;
-                        $modul_user->user_id = $user_id;
-                        $modul_user->gruppe = $group;
-                    }
-                    $modul_user->position = $position++;
-                    $assigned_users[] = $modul_user;
-                } else {
-                    throw new Exception(_('Unbekannter Nutzer'));
-                }
-            }
-        }
-        $this->assigned_users = SimpleOrMapCollection::createFromArray($assigned_users);
-    }
-
-    /**
-     * Returns an associative array with all assigned users grouped by
-     * their functions.
-     *
-     * @return array Array with group name as key and array of users as value.
-     */
-    public function getGroupedAssignedUsers()
-    {
-        $grouped_users = [];
-        foreach ($this->assigned_users as $user) {
-            if ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$user->gruppe]) {
-                $grouped_users[$user->gruppe][] = $user;
-            } else {
-                $grouped_users['unknown'][] = $user;
-            }
-        }
-        return $grouped_users;
     }
 
     /**

@@ -86,24 +86,24 @@
             <td>
                 <?
                 $modulVerantwortung = [];
-                foreach (ModulUser::findByModul($modul->getId()) as $users) {
-                    foreach ($users as $user) {
-                        if (!isset($modulVerantwortung[$user->gruppe])) {
-                            $modulVerantwortung[$user->gruppe] = [
-                                'name' => $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$user->gruppe]['name'],
+                foreach ($modul->contact_assignments->orderBy('position', SORT_NUMERIC) as $contact_assignment) {
+                    if ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$contact_assignment->category]['visible']) {
+                        if (!isset($modulVerantwortung[$contact_assignment->category])) {
+                            $modulVerantwortung[$contact_assignment->category] = [
+                                'name' => $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$contact_assignment->category]['name'],
                                 'users' => []
                             ];
                         }
-                        $modulVerantwortung[$user->gruppe]['users'][$user->user_id] = [
-                            'name' => get_fullname($user->user_id),
-                            'id' => $user->user_id
+                        $modulVerantwortung[$contact_assignment->category]['contacts'][$contact_assignment->contact_id] = [
+                            'name' => $contact_assignment->contact->getDisplayName(),
+                            'id' => $contact_assignment->contact_id
                         ];
                     }
                 }
                 ?>
-                <? foreach ($modulVerantwortung as $gruppe): ?>
-                    <? foreach ($gruppe['users'] as $user): ?>
-                        <span data-mvv-field="mvv_modul_user" data-mvv-coid="<?= $user['id']; ?>"><?= htmlReady($user['name']) ?> (<?= htmlReady($gruppe['name']) ?>)</span><br>
+                <? foreach ($modulVerantwortung as $group): ?>
+                    <? foreach ($group['contacts'] as $contact): ?>
+                        <span data-mvv-field="mvv_modul_user" data-mvv-coid="<?= $contact['id']; ?>"><?= htmlReady($contact['name']) ?> (<?= htmlReady($group['name']) ?>)</span><br>
                     <? endforeach; ?>
                 <? endforeach; ?>
             </td>

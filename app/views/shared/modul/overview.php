@@ -12,17 +12,15 @@
         <td>
             <dl>
             <? foreach ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'] as $key => $gruppe) : ?>
-                <? if ($gruppe['visible'] && is_array($modulVerantwortung[$key])) : ?>
+                <? $contacts = $modul->contact_assignments->findBy('category', $key)->orderBy('position', SORT_NUMERIC); ?>
+                <? if ($gruppe['visible'] && count($contacts)) : ?>
                 <dt><?= htmlReady($gruppe['name']) ?></dt>
-                <? foreach ($modulVerantwortung[$key] as $modul_user): ?>
-                <? if ($modul_user->user) : ?>
-                <dd><?= htmlReady($modul_user->user->getFullname('no_title')) ?></dd>
-                <? endif; ?>
+                <? foreach ($contacts as $modul_contact): ?>
+                <dd><?= htmlReady($modul_contact->contact->getDisplayName()) ?></dd>
                 <? endforeach; ?>
                 <? endif; ?>
             <? endforeach; ?>
             </dl>
-            <?= htmlReady($modul['verantwortlich']); ?>
         </td>
     </tr>
     <tr>

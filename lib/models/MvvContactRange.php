@@ -118,7 +118,6 @@ class MvvContactRange extends ModuleManagementModel
                     . ') ';
                 } else {
                     $sql .= ' AND '.$column.' = ? ';
-                    //$params[] = $column;
                     $params[] = $val;
                 }
             }

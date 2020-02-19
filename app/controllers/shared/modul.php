@@ -55,11 +55,6 @@ class Shared_ModulController extends AuthenticatedController
                 $currentSemester = SemesterData::getSemesterData($semester_id);
             }
 
-            $this->modulVerantwortung = [];
-            foreach ($modul->assigned_users as $user) {
-                $this->modulVerantwortung[$user->gruppe][] = $user;
-            }
-
             $sws = 0;
             $institut = new Institute($modul->responsible_institute->institut_id);
             $modulTeileData = [];

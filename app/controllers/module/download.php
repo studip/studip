@@ -74,23 +74,6 @@ class Module_DownloadController extends MVVController
             $currentSemester = Semester::find(Request::get('sem_select'));
         }
 
-        $modulVerantwortung = [];
-
-        foreach ($modul->assigned_users as $users) {
-            foreach ($users as $user) {
-                if (!isset($modulVerantwortung[$user->gruppe])) {
-                    $modulVerantwortung[$user->gruppe] = [
-                        'name'  => $GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'][$user->gruppe]['name'],
-                        'users' => []
-                    ];
-                }
-                $modulVerantwortung[$user->gruppe]['users'][$user->user_id] = [
-                    'name' => get_fullname($user->user_id),
-                    'id'   => $user->user_id
-                ];
-            }
-        }
-
         $modulTeilData = [];
 
         foreach ($modul->modulteile as $modulTeil) {
@@ -154,11 +137,9 @@ class Module_DownloadController extends MVVController
         } else {
             $this->instituteName = '';
         }
-        $this->modulVerantwortung = $modulVerantwortung;
         $this->modulTeilData = $modulTeilData;
         $this->type = $type;
         $this->modulTeile = $modul->modulteile;
-        $this->modulUser = $modul->assigned_users;
         $this->semester = $currentSemester;
         $this->download = (bool)Request::get('download');
         $this->detail_list_url = $this->url_for('modul/detail_list/', $modul->id);
@@ -176,12 +157,10 @@ class Module_DownloadController extends MVVController
                 'modulDeskriptor'     => $this->modulDeskriptor,
                 'startSemester'       => $this->startSemester,
                 'instituteName'       => $this->instituteName,
-                'modulVerantwortung'  => $this->modulVerantwortung,
                 'modulTeilKommentar'  => $this->modulTeilKommentar,
                 'modulTeilData'       => $this->modulTeilData,
                 'type'                => $this->type,
                 'modulTeile'          => $this->modulTeile,
-                'modulUser'           => $this->modulUser,
                 'semester'            => $this->semester,
                 'download'            => $this->download,
                 'detail_list_url'     => $this->detail_list_url,
