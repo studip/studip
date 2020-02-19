@@ -1,4 +1,4 @@
-<tr>
+<tr class="nohover">
     <td>
         <?
         $room_tooltip_text = $room->room_type;

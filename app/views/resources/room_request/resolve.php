@@ -226,7 +226,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr class="nohover">
                             <td><?= _('Keine Auswahl') ?></td>
                             <td>
                                 <input type="radio" data-proxyfor="input.radio-null"
