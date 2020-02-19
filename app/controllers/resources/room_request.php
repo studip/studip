@@ -137,7 +137,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $room_ids = $clipboard->getAllRangeIds('Room');
                 if (!$room_ids) {
                     PageLayout::postError(
-                        _('Die gewählte Raumgruppe enthält keine Räume')
+                        _('Die gewählte Raumgruppe enthält keine Räume!')
                     );
                     return;
                 }
