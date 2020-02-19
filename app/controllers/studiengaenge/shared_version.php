@@ -368,7 +368,7 @@ class SharedVersionController extends MVVController
             return;
         } else {
             $version_id = $abschnitt->version_id;
-            if (Request::submitted('yes')) {
+            if (Request::submitted('delete')) {
                 CSRFProtection::verifyUnsafeRequest();
                 $abschnitt_name = $abschnitt->getDisplayName();
                 if ($abschnitt->delete()) {
@@ -384,7 +384,7 @@ class SharedVersionController extends MVVController
                 }
             }
         }
-        if ($abschnitt && !Request::submitted('yes')) {
+        if ($abschnitt && !Request::submitted('delete')) {
             $this->redirect($this->url_for('/details_abschnitt/ ' . $abschnitt->getId()));
         } else {
             $this->redirect($this->url_for('/abschnitte/' . $version_id));
