@@ -13,11 +13,27 @@
     <?= $this->render_partial('course/feedback/_entry.php' , ['entry' => $feedback->getOwnEntry()]) ?>
 </section>
 <? endif; ?>
-<? if (count($feedback->entries) > 0 && (($feedback->results_visible == 1 && !$feedback->isFeedbackable()) || $admin_perm)) : ?>
+<? if (
+        count($feedback->entries) > 0
+        && (($feedback->results_visible == 1
+        && !$feedback->isFeedbackable())
+        || $admin_perm)
+    ) : ?>
 <section class="feedback-entries">
-    <h2><?= _('Alle Einträge') ?></h2>
+    <h2>
+    <? if (
+        !$feedback->isOwner()
+        && !$feedback->isFeedbackable()
+    ) : ?>
+    <?= _('Andere Einträge') ?>
+    <? else : ?>
+    <?= _('Einträge') ?>
+    <? endif; ?>
+    </h2>
     <? foreach($feedback->entries as $entry) : ?>
+    <? if ($entry->user_id !== $GLOBALS['user']->id) : ?>
     <?= $this->render_partial('course/feedback/_entry.php' , ['entry' => $entry]) ?>
+    <? endif; ?>
     <? endforeach; ?>
 </section>
 <? endif; ?>

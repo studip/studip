@@ -8,7 +8,7 @@
 <div class="rating">
     <p><?= _('Bewertung') ?></p>
     <? for ($i = 1; $i < $n+1; $i++) : ?>
-    <label class="star-rating undecorated <?= $i <= $entry->rating ? ' checked' : '' ?>">
+    <label class="star-rating undecorated <?= $i <= $entry->rating || $i === 1 ? ' checked' : '' ?>">
         <input class="star-rating-input" name="rating" value="<?= $i ?>" type="radio"
             <?= $i == $entry->rating ? ' selected' : '' ?> required/>
         <?= Icon::create('star', 'clickable') ?>

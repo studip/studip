@@ -188,7 +188,11 @@ class Course_FeedbackController extends AuthenticatedController
                 Icon::create('add')
             )->asDialog('size=auto');
         }
-        $this->feedback_elements = FeedbackElement::findBySQL('range_id = ? AND range_type = ?  ORDER BY mkdate DESC', [$this->range_id, $this->range_type]);
+        $this->feedback_elements =  FeedbackElement::findBySQL(
+                                        'range_id = ? AND range_type = ?  ORDER BY mkdate DESC',
+                                        [$this->range_id,
+                                        $this->range_type]
+                                    );
     }
 
     /* view one feedback element */
