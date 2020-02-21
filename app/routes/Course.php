@@ -217,7 +217,12 @@ class Course extends \RESTAPI\RouteMap
             $this->notFound("Course not found");
         }
 
-        if (!$GLOBALS['perm']->have_studip_perm('user', $id, $GLOBALS['user']->id)) {
+        //This route is used in the room management system.
+        //Therefore, we need not only to check if the user is in the course,
+        //but also, if the user is a global resource admin. In the latter case,
+        //access shall also be granted.
+        if (!$GLOBALS['perm']->have_studip_perm('user', $id, $GLOBALS['user']->id)
+            && !\ResourceManager::userHasGlobalPermission(\User::findCurrent(), 'admin')) {
             $this->error(401);
         }
 
