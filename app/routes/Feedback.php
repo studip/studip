@@ -70,9 +70,16 @@ class Feedback extends \RESTAPI\RouteMap
         if (!\Feedback::hasRangeAccess($feedback->range_id, $feedback->range_type)) {
             $this->error(403);
         }
-        foreach($feedback->entries as $entry) {
-            $result['entries'][] = $entry->toArray();
+        if ($feedback->results_visible == 1 && !$feedback->isFeedbackable()) {
+            foreach($feedback->entries as $entry) {
+                $result['entries'][] = $entry->toArray();
+            }
+        } elseif (!$feedback->isFeedbackable()) {
+            $result['entries'][] = $feedback->getOwnEntry()->toArray();
+        } else {
+            $result = [];
         }
+
         return $result;
     }
 
@@ -170,16 +177,29 @@ class Feedback extends \RESTAPI\RouteMap
         if (!$feedback->isFeedbackable()) {
             $this->error(403, 'You may not add an entry here. Maybe you have already given feedback or you are the author of the feedback element.');
         }
-        $rating = intval($this->data['rating']);
-        if ($rating == 0) {
-            $rating = 1;
-        }
         $entry = \FeedbackEntry::build([
             'feedback_id'   => $feedback->id,
-            'user_id'       => $GLOBALS['user']->id,
-            'comment'       => $this->data['comment'],
-            'rating'        => $rating
+            'user_id'       => $GLOBALS['user']->id
         ]);
+
+        if($feedback->commentable === 1) {
+            $entry->comment = $this->data['comment'];
+        }
+
+        if($feedback->mode !== 0) {
+            $rating = intval($this->data['rating']);
+            if ($rating === 0) {
+                $rating = 1;
+            }
+            if ($feedback->mode === 1) {
+                $rating = ($rating > 5 ? 5 : $rating);
+            }
+            if ($feedback->mode === 2) {
+                $rating = ($rating > 10 ? 10 : $rating);
+            }
+            $entry->rating = $rating;
+        }
+
         $entry->store();
         return $entry->toArray();
     }
@@ -198,12 +218,22 @@ class Feedback extends \RESTAPI\RouteMap
         if (!$entry->isEditable()) {
             $this->error(403);
         }
-        $rating = intval($this->data['rating']);
-        if ($rating == 0) {
-            $rating = 1;
+        if($feedback->mode !== 0) {
+            $rating = intval($this->data['rating']);
+            if ($rating === 0) {
+                $rating = 1;
+            }
+            if ($feedback->mode === 1) {
+                $rating = ($rating > 5 ? 5 : $rating);
+            }
+            if ($feedback->mode === 2) {
+                $rating = ($rating > 10 ? 10 : $rating);
+            }
+            $entry->rating = $rating;
         }
-        $entry->comment = $this->data['comment'] !== null ? $this->data['comment'] : $entry->comment;
-        $entry->rating =  $rating;
+        if($feedback->commentable === 1) {
+            $entry->comment = $this->data['comment'] !== null ? $this->data['comment'] : $entry->comment;
+        }
         $entry->store();
         return $entry->toArray();
     }
