@@ -3,6 +3,7 @@
  */
 
 var proxy_elements_selector = ':checkbox[data-proxyfor], input[type="radio"][data-proxyfor]';
+var proxied_elements_selector = ':checkbox[data-proxiedby], input[type="radio"][data-proxiedby]';
 
 function connectProxyAndProxied(event) {
     $(proxy_elements_selector)
@@ -48,8 +49,25 @@ $(document)
         );
         $(this).trigger('change');
     })
-    .on('change', ':checkbox[data-proxiedby]', function() {
+    .on('change', proxied_elements_selector, function() {
+        //In case of radio buttons in a group that are deselected,
+        //we must trigger the update.proxy event for each radio
+        //button in the group, if the proxy is another element
+        //than the proxy for "this" element.
         var proxy = $(this).data('proxiedby');
+        if (jQuery(this).attr('type') == 'radio') {
+            //It is a radio button.
+            var name = jQuery(this).attr('name');
+            var radio_button_group = jQuery('input[type="radio"][name="' + name + '"]');
+            jQuery(radio_button_group).each(function() {
+                console.log(this);
+                var button_proxy = jQuery(this).data('proxiedby');
+                if (button_proxy != proxy) {
+
+                    jQuery(button_proxy).trigger('update.proxy');
+                }
+            });
+        }
         $(proxy).trigger('update.proxy');
     });
 

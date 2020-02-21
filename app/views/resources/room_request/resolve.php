@@ -229,7 +229,7 @@
                         <tr class="nohover">
                             <td><?= _('Keine Auswahl') ?></td>
                             <td>
-                                <input type="radio" data-proxyfor="input.radio-null"
+                                <input type="checkbox" data-proxyfor="input.radio-null"
                                        name="all_in_room" value="">
                             </td>
                             <? foreach ($request_time_intervals as $metadate_id => $data): ?>

@@ -29,7 +29,7 @@
         <? endif ?>
     </td>
     <td>
-        <input type="radio" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
+        <input type="checkbox" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
                name="all_in_room" value="<?= htmlReady($room->id) ?>"
                <?= $room_availability_share[$room->id] <= 0.0  ? 'disabled="disabled"' : '' ?>>
         <? if ($room_availability_share[$room->id] >= 1.0) : ?>
