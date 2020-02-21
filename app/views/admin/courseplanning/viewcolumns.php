@@ -1,7 +1,7 @@
 <form class="default" method="POST" action="<?= $controller->url_for('admin/courseplanning/viewcolumns/' . $week_day) ?>" data-dialog="size=auto">
 
     <table class="default">
-        <caption><?= _('Sichbarkeit') ?></caption>
+        <caption><?= _('Sichtbarkeit') ?></caption>
         <thead>
             <tr>
                 <th><?= _('Name') ?></th>
