@@ -762,7 +762,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             foreach ($this->selected_booking_ids as $booking_id) {
                 if (!in_array($booking_id, $this->available_booking_ids)) {
                     PageLayout::postError(
-                        _('Es wurde eine Buchung ausgewählt, der nicht Teil der Raumgruppe ist!')
+                        _('Es wurde eine Buchung ausgewählt, die nicht Teil der Raumgruppe ist!')
                     );
                     $this->step = 2;
                     return;

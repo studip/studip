@@ -28,19 +28,32 @@
             [<?= htmlReady($underload) ?>%]
         <? endif ?>
     </td>
-    <td class="<?= $room_fully_available[$room->id] ? '' : 'resolve-date-backlit-red' ?>">
+    <td>
         <input type="radio" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
                name="all_in_room" value="<?= htmlReady($room->id) ?>"
-                <?= $room_fully_available[$room->id] ? '' : 'disabled="disabled"' ?>>
+               <?= $room_availability_share[$room->id] <= 0.0  ? 'disabled="disabled"' : '' ?>>
+        <? if ($room_availability_share[$room->id] >= 1.0) : ?>
+            <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
+                16, ['class' => 'text-bottom']
+            ) ?>
+        <? elseif ($room_availability_share[$room->id] <= 0.0) : ?>
+            <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
+                16, ['class' => 'text-bottom']
+            ) ?>
+        <? else : ?>
+            <?= Icon::create('exclaim-circle', Icon::ROLE_STATUS_YELLOW)->asImg(
+                16, ['class' => 'text-bottom']
+            ) ?>
+        <? endif ?>
     </td>
     <? foreach ($time_intervals as $metadate_id => $data): ?>
         <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
             <?
-            $available = $availability[$metadate_id][0];
+            $available = $metadate_available[$room->id][$metadate_id];
             $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
             $room_radio_name = 'selected_rooms[' . $range_index . ']';
             ?>
-            <td class="<?= $available?'':'resolve-date-backlit-red';?>">
+            <td>
                 <? if ($available): ?>
                     <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                            class="text-bottom radio-<?= htmlReady($room->id) ?>"
@@ -48,10 +61,16 @@
                            <?= $selected_dates[$range_index] == $room->id
                              ? 'checked="checked"'
                              : ''?>>
+                    <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
+                        16, ['class' => 'text-bottom']
+                    ) ?>
                 <? else: ?>
                     <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                            value="1" disabled="disabled"
                            class="text-bottom">
+                    <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
+                        16, ['class' => 'text-bottom']
+                    ) ?>
                 <? endif ?>
             </td>
         <? else : ?>
@@ -62,7 +81,7 @@
                 $range_index = $interval['range'] . '_' . $interval['range_id'];
                 $room_radio_name = 'selected_rooms[' . $range_index . ']';
                 ?>
-                <td class="<?= $available?'':'resolve-date-backlit-red';?>">
+                <td>
                     <? if ($available): ?>
                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                                class="text-bottom radio-<?= htmlReady($room->id) ?>"
@@ -70,10 +89,16 @@
                                <?= $selected_dates[$range_index] == $room->id
                                  ? 'checked="checked"'
                                  : ''?>>
+                        <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
+                            16, ['class' => 'text-bottom']
+                        ) ?>
                     <? else: ?>
                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                                value="1" disabled="disabled"
                                class="text-bottom">
+                        <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
+                            16, ['class' => 'text-bottom']
+                        ) ?>
                     <? endif ?>
                 </td>
                 <? $i++ ?>
