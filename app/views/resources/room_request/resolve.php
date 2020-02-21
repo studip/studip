@@ -1,5 +1,5 @@
 <? if ($show_info) : ?>
-    <form id="resolve-request" class="default" method="post" data-dialog="size=big;reload-on-close"
+    <form id="resolve-request" class="default" method="post" data-dialog="size=big"
           action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <article class="studip left-part">
