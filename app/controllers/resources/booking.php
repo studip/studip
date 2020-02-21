@@ -619,11 +619,16 @@ class Resources_BookingController extends AuthenticatedController
 
         $only_one_room = null;
 
-        //Preserve the resource_id parameter, if it is set:
-        if (Request::submitted('resource_id')) {
-            URLHelper::addLinkParam('resource_id', Request::get('resource_id'));
-        } elseif (count($this->resources) == 1) {
-            URLHelper::addLinkParam('resource_id' , $this->resources[0]->id);
+        if (Request::submitted('semester_id')) {
+            URLHelper::addLinkParam('semester_id', Request::get('semester_id'));
+        } elseif ($this->booking) {
+            $booking_semester = Semester::findByTimestamp($this->booking->begin);
+            if ($booking_semester)  {
+                URLHelper::addLinkParam('semester_id' , $booking_semester->id);
+            }
+        }
+        if (Request::submitted('display_single_bookings')) {
+            URLHelper::addLinkParam('display_single_bookings', Request::get('display_single_bookings'));
         }
 
         //Get the resource objects and (if needed) the booking object:
@@ -974,15 +979,7 @@ class Resources_BookingController extends AuthenticatedController
             $begin = $begin->getTimestamp();
             $end = $end->getTimestamp();
 
-            $this->selected_semester = Semester::findOneBySql(
-                '(beginn = :begin OR vorles_beginn = :begin)
-                OR
-                (ende = :repeat_end OR vorles_ende = :repeat_end)',
-                [
-                    'begin' => $begin,
-                    'repeat_end' => $end
-                ]
-            );
+            $this->selected_semester = Semester::findByTimestamp($begin);
 
             if ($this->selected_semester) {
                 if ($end == $this->selected_semester->vorles_ende) {

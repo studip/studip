@@ -443,9 +443,8 @@ STUDIP.ready(function() {
                 $("#begin_date-weekdays span").addClass('invisible');
                 $("#begin_date-weekdays #"+d.getDay()).removeClass('invisible');
 
-                if ($("#RepetitionEndInput").prop('defaultValue') ==
-                    $("#RepetitionEndInput").val())
-                {
+                if ($(this).val() > $("#RepetitionEndInput").val()
+                    && $("input[name='selected_end']:checked").val() != 'semester_course_end') {
                     $("#RepetitionEndInput").prop('defaultValue',$(this).val());
                     $("#RepetitionEndInput").val($(this).val()).trigger('change');
                 }

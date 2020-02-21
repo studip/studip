@@ -211,7 +211,8 @@
         <div data-dialog-button="1">
             <?= \Studip\Button::create(
                 _('Zurück'),
-                'step2'
+                'step2',
+                ['data-dialog' => 'size=auto']
             ) ?>
             <?= \Studip\Button::create(
                 _('Kopieren'),
