@@ -784,7 +784,9 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
             [$this->id]
         );
         foreach ($affected_reservations as $reservation) {
-            if ($reservation->id == $this->id) continue;
+            if ($reservation->id == $this->id) {
+                continue;
+            }
             if ($reservation->assigned_user && (
                 $reservation->range_id != $reservation->booking_user_id
             )) {
