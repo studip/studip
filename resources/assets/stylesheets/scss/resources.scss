@@ -109,6 +109,20 @@ ul.resource-tree {
     }
 }
 
+/* temporary permission list */
+
+#resource-temporary-permissions {
+    fieldset.bulk-datetime {
+        display: none;
+    }
+
+    input.bulk-datetime-enable:checked ~ fieldset.bulk-datetime {
+        display: block;
+    }
+}
+
+/* desktop view */
+
 @media all and (min-width: 800px) {
     form.resource-search {
         display: flex;

@@ -38,28 +38,15 @@ STUDIP.ready(function() {
         }
     );
 
-    //Temporary permission list:
-
-    jQuery('input[name="selected_permission_ids[]"]').click(function(){
-        var any_checked = false;
-        jQuery('input[name="selected_permission_ids[]"]').each(function(){
-            if ($(this).prop('checked')) {
-                any_checked = true;
-                return false;
-            }
-        });
-        if (any_checked) {
-            $('#resource-temporary-permission-bulk-datetime').show();
+    //Temporary permission list: Set the hidden checkbox to the state of the
+    //proxy checkbox:
+    jQuery(document).on('change', '#resource-temporary-permissions input.bulk-proxy', function() {
+        var bulk_checked = jQuery(this).prop('checked');
+        var bulk_indeterminate = jQuery(this).prop('indeterminate');
+        if (bulk_checked || bulk_indeterminate) {
+            jQuery('#resource-temporary-permissions input.bulk-datetime-enable').prop('checked', true);
         } else {
-            $('#resource-temporary-permission-bulk-datetime').hide();
-        }
-    });
-
-    jQuery('#TemporaryPermissionList th input[type="checkbox"], #TemporaryPermissionList input.bulk-proxy').click(function(){
-        if ($(this).prop('checked')) {
-            $('#resource-temporary-permission-bulk-datetime').show();
-        } else {
-            $('#resource-temporary-permission-bulk-datetime').hide();
+            jQuery('#resource-temporary-permissions input.bulk-datetime-enable').prop('checked', false);
         }
     });
 

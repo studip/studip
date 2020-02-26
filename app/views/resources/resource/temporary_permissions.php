@@ -1,4 +1,4 @@
-<form class="default" method="post"
+<form class="default" id="resource-temporary-permissions" method="post"
       action="<?= ($single_user_mode
                  ? $resource->getLink(
                      'temporary_permissions',
@@ -35,10 +35,7 @@
             <tr>
                 <td colspan="5">
                     <?
-                    $button_attrs = [
-                        'class' => 'bulk-action',
-                        'data-activates-condition' => 'table.temporary-permission-list :checkbox:checked'
-                    ];
+                    $button_attrs = ['class' => 'bulk-action'];
                     ?>
                     <?= \Studip\Button::create(_('Löschen'), 'bulk_delete', $button_attrs) ?>
                 </td>
@@ -171,7 +168,8 @@
         </tbody>
     </table>
 
-    <fieldset id="resource-temporary-permission-bulk-datetime" style="display:none;">
+    <input type="checkbox" class="invisible bulk-datetime-enable">
+    <fieldset class="bulk-datetime">
         <legend>
             <?= _('Neuen Zeitbereich für die ausgewählten Berechtigungen setzen') ?>
         </legend>
