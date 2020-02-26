@@ -94,7 +94,7 @@
             <?= _('Auswahl anhand der minimalen Rechtestufe') ?>
         </legend>
         <label>
-            <?= _('Sende die Rundmail an alle Personen, die mindestens die folgende Rechtestufe an den ausgewählten Räumen hat:') ?>
+            <?= _('Sende die Rundmail an alle Personen, die mindestens die folgende Rechtestufe an den ausgewählten Räumen haben:') ?>
             <select name="min_permission">
                 <option value="user"
                         <?= $min_permission == 'user' ? 'selected="selected"' : ''?>>

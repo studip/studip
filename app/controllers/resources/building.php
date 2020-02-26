@@ -318,7 +318,7 @@ class Resources_BuildingController extends AuthenticatedController
                 PageLayout::postWarning(
                     sprintf(
                         ngettext(
-                            'Das Gebäude wurde gespeichert, aber eine Eigenschaft nicht gespeichert werden!',
+                            'Das Gebäude wurde gespeichert, aber eine Eigenschaft konnte nicht gespeichert werden!',
                             'Das Gebäude wurde gespeichert, aber %d Eigenschaften konnten nicht gespeichert werden!',
                             $failed_properties
                         ),

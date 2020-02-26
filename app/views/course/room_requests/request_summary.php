@@ -66,7 +66,7 @@
             <fieldset>
                 <legend><?= _('Nachricht an die Raumvergabe') ?></legend>
                 <textarea name="comment" cols="58" rows="4"
-                          placeholder="<?= _('Weitere Wüsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
+                          placeholder="<?= _('Weitere Wünsche oder Bemerkungen zur angefragten Raumbelegung') ?>"><?= htmlReady($comment) ?></textarea>
             </fieldset>
         </div>
     </section>

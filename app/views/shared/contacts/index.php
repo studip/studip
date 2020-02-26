@@ -45,7 +45,7 @@
                         _('Alle Zuordnungen löschen'),
                         Icon::create('trash'),
                         [
-                            'data-confirm' => _('Wollen Sie wirklich alle Zordnungen entfernen?'),
+                            'data-confirm' => _('Wollen Sie wirklich alle Zuordnungen entfernen?'),
                             'data-dialog' => 'size=auto'
                         ]
                     );
