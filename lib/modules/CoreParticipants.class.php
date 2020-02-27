@@ -35,6 +35,9 @@ class CoreParticipants implements StudipModule
             $navigation->addSubNavigation('view', new Navigation(_('Teilnehmende'), 'dispatch.php/course/members'));
             $navigation->addSubNavigation('statusgroups', new Navigation(_('Gruppen'), 'dispatch.php/course/statusgroups'));
         } else {
+            if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
+                return null;
+            }
             $navigation->addSubNavigation('children', new Navigation(_('Teilnehmende in Unterveranstaltungen'), 'dispatch.php/course/grouping/members'));
         }
 

@@ -1031,7 +1031,14 @@ class MyRealmModel
             if (SeminarCategories::GetByTypeId($my_obj['status'])->studygroup_mode) {
                 $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/?cid=' . $object_id);
             } else {
-                $nav = new Navigation('participants', 'dispatch.php/course/members/index');
+                if (!$my_obj['sem_class']->isGroup()) {
+                    $nav = new Navigation('participants', 'dispatch.php/course/members/index');
+                } else {
+                    if (!$GLOBALS['perm']->have_studip_perm('tutor', $object_id)) {
+                        return null;
+                    }
+                    $nav = new Navigation('participants', 'dispatch.php/course/grouping/members');
+                }
             }
 
 
