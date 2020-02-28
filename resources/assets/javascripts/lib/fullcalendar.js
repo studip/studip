@@ -357,7 +357,7 @@ class Fullcalendar
             }
         }).done(data => {
             if (data) {
-                info.view.calendar.addEvent(JSON.parse(data));
+                info.view.context.calendar.addEvent(JSON.parse(data));
                 info.event.remove();
             }
         });
@@ -455,7 +455,7 @@ class Fullcalendar
                 info.event.source.refetch();
             },
             eventDrop (info) {
-                if ($(info.view.calendar.el).hasClass('institute-plan')) {
+                if ($(info.view.context.calendar.el).hasClass('institute-plan')) {
                     var start = info.event.start;
                     var cal_start = info.view.activeStart;
                     if ((start.getHours() - cal_start.getHours()) % 2 === 1) {
@@ -476,7 +476,7 @@ class Fullcalendar
                 var eventElement = info.el;
                 var iconColor = event.textColor == '#000000' ? 'black' : 'white';
 
-                if ($(info.view.calendar.el).hasClass('institute-plan')) {
+                if ($(info.view.context.calendar.el).hasClass('institute-plan')) {
                     $(eventElement).attr('title', event.extendedProps.tooltip);
                     $(eventElement).find('.fc-title').html(
                         $('<div>').css({
@@ -561,8 +561,8 @@ class Fullcalendar
                 }
             },
             resourceRender (renderInfo) {
-                if ($(renderInfo.view.calendar.el).hasClass('room-group-booking-plan')) {
-                    var action = $(renderInfo.view.calendar.el).hasClass('semester-plan') ? 'semester' : 'booking';
+                if ($(renderInfo.view.context.calendar.el).hasClass('room-group-booking-plan')) {
+                    var action = $(renderInfo.view.context.calendar.el).hasClass('semester-plan') ? 'semester' : 'booking';
                     var url = STUDIP.URLHelper.getURL(`dispatch.php/resources/room_planning/${action}_plan/${renderInfo.resource.id}`);
 
                     $(renderInfo.el).find('.fc-cell-text').html(
@@ -594,7 +594,7 @@ class Fullcalendar
                 $(dropInfo.draggedEl).remove();
             },
             eventReceive (info) {
-                if ($(info.view.calendar.el).hasClass('institute-plan')) {
+                if ($(info.view.context.calendar.el).hasClass('institute-plan')) {
                     STUDIP.Fullcalendar.institutePlanExternalDropEventHandler(info);
                 }
             }
