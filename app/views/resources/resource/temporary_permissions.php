@@ -64,7 +64,7 @@
                                value="<?= htmlReady($permission->id) ?>">
                         <td>
                             <input type="checkbox"
-                                   name="selected_permission_ids[]"
+                                   name="selected_permission_ids[<?= htmlReady($permission->id) ?>]"
                                    value="<?= htmlReady($permission->id) ?>">
                         </td>
                         <td>

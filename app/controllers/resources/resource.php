@@ -1079,7 +1079,7 @@ class Resources_ResourceController extends AuthenticatedController
                 }
 
                 $permission_object = null;
-                if (strpos($permission_id, 'new') === false) {
+                if ($permission_id) {
                     //It is an existing permission.
                     //Existing permission objects can only be determined
                     //by their permission-ID or if the resource-ID,
