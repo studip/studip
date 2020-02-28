@@ -483,12 +483,26 @@ STUDIP.ready(function() {
     );
 
     jQuery(document).on(
-        'change',
-        '#booking-plan-jmpdate',
+        'click',
+        '#booking-plan-jmpdate-submit',
         function () {
-            var picked = $(this).val();
-            $('*[data-fullcalendar="1"]').each(function() {
-                $(this)[0].calendar.gotoDate(picked.split('.').reverse().join('-'));
+            var picked = $('#booking-plan-jmpdate').val();
+            $('*[data-resources-fullcalendar="1"]').each(function() {
+                if (picked.includes('.')) {
+                    var good_format = picked.split('.');
+                    var day = good_format[0];
+                    var month = good_format[1];
+                    var year = good_format[2];
+                    $(this)[0].calendar.gotoDate(year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0"));
+                } else if (picked.includes('/')) {
+                    var bad_format = picked.split('/');
+                    var day = bad_format[1];
+                    var month = bad_format[0];
+                    var year = bad_format[2];
+                    $(this)[0].calendar.gotoDate(year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0"));
+                } else if (picked.includes('-')) {
+                    $(this)[0].calendar.gotoDate(picked);
+                }
             });
             updateDateURL();
         }
@@ -653,7 +667,7 @@ STUDIP.ready(function() {
 
     function updateDateURL() {
         var changedmoment;
-        $('*[data-fullcalendar="1"]').each(function() {
+        $('*[data-resources-fullcalendar="1"]').each(function() {
             changedmoment = $(this)[0].calendar.getDate();
         });
         if (changedmoment) {

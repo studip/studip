@@ -11,9 +11,10 @@
         'today',
         [
             'id' => 'booking-plan-jmpdate-button',
-            'onClick' => "$('#booking-plan-jmpdate').val('". strftime('%x', time()) ."').trigger('change');"
+            'onClick' => "$('#booking-plan-jmpdate').val('". strftime('%x', time()) ."');$('#booking-plan-jmpdate-submit').trigger('click');"
         ]
     ); ?>
-<input id="booking-plan-jmpdate" type="text"
-        value="<?= $default_date; ?>">
 
+<input id="booking-plan-jmpdate" type="text"
+ name="booking-plan-jmpdate" value="<?= $default_date; ?>">
+ <?= Icon::create('accept', 'clickable')->asInput(['id'=>'booking-plan-jmpdate-submit', 'class' => 'text-top']) ?>
