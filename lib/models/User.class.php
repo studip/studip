@@ -1268,7 +1268,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $statement->execute([$new_id, $old_id]);
 
         //Blubber
-        $query = "UPDATE IGNORE blubber SET user_id = ? WHERE user_id = ?";
+        $query = "UPDATE IGNORE blubber_comments SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
         $query = "UPDATE IGNORE blubber_follower SET studip_user_id = ? WHERE studip_user_id = ?";
@@ -1277,10 +1277,10 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $query = "UPDATE IGNORE blubber_mentions SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
-        $query = "UPDATE IGNORE blubber_reshares SET user_id = ? WHERE user_id = ?";
+        $query = "UPDATE IGNORE blubber_threads SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
-        $query = "UPDATE IGNORE blubber_streams SET user_id = ? WHERE user_id = ?";
+        $query = "UPDATE IGNORE blubber_threads_unfollow SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
 
