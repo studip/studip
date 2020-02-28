@@ -507,8 +507,8 @@ class Fullcalendar
             loading (isLoading) {
                 if (isLoading) {
                     if (!$('#loading-spinner').length) {
-                        $('.fullcalendar-header').after(
-                            $('<div id="loading-spinner" style="margin-top: 5px; text-align:center;">').html(
+                        jQuery('#layout_content').append(
+                            $('<div id="loading-spinner" style="position: absolute; top: calc(50% - 55px); left: calc(50% + 135px); z-index: 9001;">').html(
                                 $('<img>').attr('src', STUDIP.ASSETS_URL + 'images/ajax-indicator-black.svg')
                                     .css({
                                         width: 64,
@@ -518,7 +518,7 @@ class Fullcalendar
                         );
                     }
                 } else {
-                    $('#loading-spinner').empty();
+                    $('#loading-spinner').remove();
                     this.updateSize();
                 }
             },
