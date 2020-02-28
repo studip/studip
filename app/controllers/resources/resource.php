@@ -857,18 +857,12 @@ class Resources_ResourceController extends AuthenticatedController
 
         $this->getUserAndCheckPermissions('admin');
 
-        if ($this->resource_id == 'global') {
-            PageLayout::setTitle(
-                _('Globale temporäre Berechtigungen verwalten')
-            );
-        } else {
-            PageLayout::setTitle(
-                sprintf(
-                    _('%s: Temporäre Berechtigungen verwalten'),
-                    $this->resource->getFullName()
-                )
-            );
-        }
+        PageLayout::setTitle(
+            sprintf(
+                _('%s: Temporäre Berechtigungen verwalten'),
+                $this->resource->getFullName()
+            )
+        );
 
         //The user_id parameter is only needed in
         //the single user permission mode.
@@ -1022,6 +1016,7 @@ class Resources_ResourceController extends AuthenticatedController
 
             //Get the list of temporary permissions for the user-IDs in the list:
             $user_permissions = Request::getArray('permissions');
+            //var_dump($user_permissions);die();
 
             $processed_permissions = 0;
             $errors = [];
@@ -1083,30 +1078,34 @@ class Resources_ResourceController extends AuthenticatedController
                     );
                 }
 
-                //Existing permission objects can only be determined
-                //by their permission-ID or if the resource-ID,
-                //user-ID and the begin and end timestamps match.
-                //In all other cases we must create a new permission object.
-                $permission_object = ResourceTemporaryPermission::findOneBySql(
-                    'id = :permission_id
-                    OR
-                    (
-                        resource_id = :resource_id
-                        AND
-                        user_id = :user_id
-                        AND
-                        begin = :begin
-                        AND
-                        end = :end
-                    )',
-                    [
-                        'permission_id' => $permission_id,
-                        'resource_id' => $this->resource_id,
-                        'user_id' => $user_id,
-                        'begin' => $begin->getTimestamp(),
-                        'end' => $end->getTimestamp()
-                    ]
-                );
+                $permission_object = null;
+                if (strpos($permission_id, 'new') === false) {
+                    //It is an existing permission.
+                    //Existing permission objects can only be determined
+                    //by their permission-ID or if the resource-ID,
+                    //user-ID and the begin and end timestamps match.
+                    //In all other cases we must create a new permission object.
+                    $permission_object = ResourceTemporaryPermission::findOneBySql(
+                        'id = :permission_id
+                        OR
+                        (
+                            resource_id = :resource_id
+                            AND
+                            user_id = :user_id
+                            AND
+                            begin = :begin
+                            AND
+                            end = :end
+                        )',
+                        [
+                            'permission_id' => $permission_id,
+                            'resource_id' => $this->resource_id,
+                            'user_id' => $user_id,
+                            'begin' => $begin->getTimestamp(),
+                            'end' => $end->getTimestamp()
+                        ]
+                    );
+                }
 
                 if (!$permission_object) {
                     //Create a new permission object:
