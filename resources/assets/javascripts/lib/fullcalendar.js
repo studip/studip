@@ -540,7 +540,7 @@ class Fullcalendar
                         sem_start = null;
                         sem_end = null;
                     } else {
-                        var sem_week = Math.floor((start.getTime() / 1000 - sem_start) / (7 * 24 * 60 * 60)) + 1;
+                        var sem_week = Math.floor((end.getTime() / 1000 - sem_start) / (7 * 24 * 60 * 60)) + 1;
                         $('#booking-plan-header-semweek').text(sem_week);
                     }
 
