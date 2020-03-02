@@ -523,9 +523,9 @@ class Fullcalendar
                 }
             },
             datesRender (info) {
-                var view = info.view;
-                var start = view.activeStart;
-                var end = view.activeEnd;
+                var activeRange = info.view.props.dateProfile.activeRange;
+                var start = activeRange.start;
+                var end = activeRange.end;
 
                 if ($(info.el).hasClass('institute-plan')) {
                     $('.fc-slats tr:odd .fc-widget-content:not(.fc-axis)').remove();
@@ -549,7 +549,7 @@ class Fullcalendar
                     $('#booking-plan-header-calend').text(end.toLocaleDateString('de-DE', {weekday: 'short'}) + ' ' + end.toLocaleDateString('de-DE'));
 
                     if (!sem_start || !sem_end) {
-                        STUDIP.Resources.updateBookingPlanSemesterByView(view);
+                        STUDIP.Resources.updateBookingPlanSemesterByView(activeRange);
                     }
                 }
             },

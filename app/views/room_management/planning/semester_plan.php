@@ -19,9 +19,9 @@
              data-semester-begin="" data-semester-end="">
         <div>
             <?= _('Raumgruppe') ?>
-            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?></span>,
-            <strong>
-                <span id="booking-plan-header-semrow">
+            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?></span>
+            <span id="booking-plan-header-semrow">,
+                <strong>
                     <?= _('Semester')?>
                     <span id="booking-plan-header-semname"><?= htmlReady($semester->name) ?></span>
                     <span id="booking-plan-header-semspan">
@@ -31,8 +31,8 @@
                             <?= sprintf('(%1$s - %2$s)', date('d.m.Y',$semester->vorles_beginn), date('d.m.Y', $semester->vorles_ende)); ?>
                         <? endif ?>
                     </span>
-                </span>
-            </strong>
+                </strong>
+            </span>
         </div>
     </section>
 

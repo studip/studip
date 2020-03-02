@@ -14,15 +14,17 @@
                     <?= htmlReady($resource->name) ?>,
                     <span id="booking-plan-header-seats">
                         <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>
-                    </span>,
+                    </span>
                 <? else : ?>
-                    <?= htmlReady($resource->name) ?>,
+                    <?= htmlReady($resource->name) ?>
                 <? endif ?>
-                <strong>
-                    <span id="booking-plan-header-semname"></span>,
-                    <?= _('Vorlesungswoche') ?>
-                    <span id="booking-plan-header-semweek"></span>
-                </strong>
+                <span id="booking-plan-header-semrow">,
+                    <strong>
+                        <span id="booking-plan-header-semname"></span>,
+                        <?= _('Vorlesungswoche') ?>
+                        <span id="booking-plan-header-semweek"></span>
+                    </strong>
+                </span>
             </span>
             <? if ($resource->getProperty('room_administrator')): ?>
                 <div id="booking-plan-header-room_administrator-line">

@@ -18,17 +18,19 @@
              data-semester-begin="" data-semester-end="">
         <div>
             <?= _('Raumgruppe') ?>
-            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?></span>,
-            <strong>
-                <?= _('KW') ?>
-                <span id="booking-plan-header-calweek"></span>,
-                (<span id="booking-plan-header-calbegin"></span>),
-                <span id="booking-plan-header-semname"></span>
-                <span id="booking-plan-header-semweek-part">,
-                    <?= _('Vorlesungswoche') ?>
-                    <span id="booking-plan-header-semweek"></span>
-                </span>
-            </strong>
+            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?></span>
+            <span id="booking-plan-header-semrow">,
+                <strong>
+                    <?= _('KW') ?>
+                    <span id="booking-plan-header-calweek"></span>,
+                    (<span id="booking-plan-header-calbegin"></span>),
+                    <span id="booking-plan-header-semname"></span>
+                    <span id="booking-plan-header-semweek-part">,
+                        <?= _('Vorlesungswoche') ?>
+                        <span id="booking-plan-header-semweek"></span>
+                    </span>
+                </strong>
+            </span>
         </div>
     </section>
 

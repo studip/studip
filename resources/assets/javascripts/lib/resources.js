@@ -704,7 +704,7 @@ class Resources
     }
 
 
-    static updateBookingPlanSemesterByView(view, api_url = 'api.php/semesters') {
+    static updateBookingPlanSemesterByView(activeRange, api_url = 'api.php/semesters') {
         var semester = null;
         jQuery.ajax(
             STUDIP.URLHelper.getURL(api_url),
@@ -714,8 +714,8 @@ class Resources
                 success: function(data) {
                     if (data) {
                         var element;
-                        var start = view.activeStart;
-                        var end = view.activeEnd;
+                        var start = activeRange.start;
+                        var end = activeRange.end;
                         for (element in data.collection) {
                             var sem = data.collection[element];
                             if (start.getTime()/1000 >= sem.seminars_begin && start.getTime()/1000 < sem.seminars_end) {
@@ -732,7 +732,7 @@ class Resources
                             $("#booking-plan-header-semweek").text(sem_week);
                         } else {
                             if (data.pagination && data.pagination.links && data.pagination.links.next != api_url) {
-                                semester = STUDIP.Resources.updateBookingPlanSemesterByView(view, data.pagination.links.next);
+                                semester = STUDIP.Resources.updateBookingPlanSemesterByView(activeRange, data.pagination.links.next);
                             } else {
                                 $("#booking-plan-header-semrow").hide();
                                 $(".booking-plan-header").data('semester-begin', '');
