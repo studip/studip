@@ -13,7 +13,7 @@
                     </a>
                     <a href="<?= $controller->url_for('course/grouping/unassign_child', $child->id) ?>"
                        data-confirm="<?= _('Wollen Sie die Zuordnung dieser Unterveranstaltung wirklich entfernen?')?>">
-                        <?= Icon::create('trash') ?>
+                        <?= Icon::create('trash', 'clickable')->asImg() ?>
                     </a>
                 </li>
             <? endforeach ?>

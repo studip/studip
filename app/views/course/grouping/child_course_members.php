@@ -10,12 +10,12 @@
 ]) ?>
 <? foreach (words('tutor autor user') as $level) :
     $members = $child->members->findBy('status', $level)->orderBy('nachname, vorname')
-    ?>
+?>
     <? if (count($members) > 0) : ?>
-    <?= $this->render_partial('course/grouping/_perm_level', [
-        'level'   => $level,
-        'current' => $child,
-        'members' => $members,
-    ]) ?>
-<? endif ?>
+        <?= $this->render_partial('course/grouping/_perm_level', [
+            'level' => $level,
+            'current' => $child,
+            'members' => $members,
+        ]) ?>
+    <? endif ?>
 <? endforeach ?>
