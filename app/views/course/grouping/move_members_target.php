@@ -2,7 +2,7 @@
     <fieldset>
         <legend><?= _('Personen verschieben') ?></legend>
 
-        <h2><?= _('Wohin sollen die gewählten Personen verschoben werden?') ?></h1>
+        <h1><?= _('Wohin sollen die gewählten Personen verschoben werden?') ?></h1>
         <section>
         <? foreach ($targets as $one) : ?>
             <label>
