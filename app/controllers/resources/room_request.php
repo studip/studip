@@ -1295,7 +1295,17 @@ class Resources_RoomRequestController extends AuthenticatedController
         $previously_selected_room_ids = [];
         if ($this->selected_rooms) {
             $previously_selected_room_ids = array_unique($this->selected_rooms);
-            $previously_selected_rooms = Resource::findMany($previously_selected_room_ids);
+            if ($this->request->resource instanceof Resource) {
+                $previously_selected_rooms = Resource::findBySql(
+                    'id IN ( :room_ids ) AND id <> :request_room_id',
+                    [
+                        'room_ids' => $previously_selected_room_ids,
+                        'request_room_id' => $this->request->resource_id
+                    ]
+                );
+            } else {
+                $previously_selected_rooms = Resource::findMany($previously_selected_room_ids);
+            }
             foreach ($previously_selected_rooms as $room) {
                 $room = $room->getDerivedClassInstance();
                 if ($room instanceof Room) {
