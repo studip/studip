@@ -22,7 +22,7 @@
             <tr>
                 <th>
                     <input type="checkbox" class="bulk-proxy"
-                           data-proxyfor="[name='selected_permission_ids[]']"
+                           data-proxyfor="input.selected-temporary-permission"
                            data-activates="table.temporary-permission-list button.bulk-action">
                 </th>
                 <th data-sort="text"><?= _('Name') ?></th>
@@ -63,7 +63,7 @@
                         <input type="hidden" name="permissions[permission_id][<?= htmlReady('existing_' . $permission->id) ?>]"
                                value="<?= htmlReady($permission->id) ?>">
                         <td>
-                            <input type="checkbox"
+                            <input type="checkbox" class="selected-temporary-permission"
                                    name="selected_permission_ids[<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= htmlReady($permission->id) ?>">
                         </td>
