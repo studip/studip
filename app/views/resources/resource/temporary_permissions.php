@@ -60,21 +60,21 @@
                     }
                     ?>
                     <tr data-temp-perms="1" class="resource-temporary-permission-row">
-                        <input type="hidden" name="permissions[permission_id][<?= htmlReady('e_' . $permission->id) ?>]"
+                        <input type="hidden" name="permissions[permission_id][<?= htmlReady('existing_' . $permission->id) ?>]"
                                value="<?= htmlReady($permission->id) ?>">
                         <td>
                             <input type="checkbox"
-                                   name="selected_permission_ids[<?= htmlReady('e_' . $permission->id) ?>]"
+                                   name="selected_permission_ids[<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= htmlReady($permission->id) ?>">
                         </td>
                         <td>
                             <?= htmlReady($permission->user->getFullName('full_rev_username')) ?>
                             (<?= htmlReady($permission->user->perms) ?>)
-                            <input type="hidden" name="permissions[user_id][<?= htmlReady('e_' . $permission->id) ?>]"
+                            <input type="hidden" name="permissions[user_id][<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= htmlReady($permission->user_id)?>">
                         </td>
                         <td data-sort-value="<?= htmlReady($permission_sort_key) ?>">
-                            <select name="permissions[level][<?= htmlReady('e_' . $permission->id) ?>]">
+                            <select name="permissions[level][<?= htmlReady('existing_' . $permission->id) ?>]">
                                 <option value="user"
                                         <?=
                                         $permission->perms == 'user'
@@ -107,18 +107,18 @@
                         </td>
                         <td class="DateTime">
                             <input type="text" class="has-date-picker"
-                                   name="permissions[begin_date][<?= htmlReady('e_' . $permission->id) ?>]"
+                                   name="permissions[begin_date][<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= date('d.m.Y', $permission->begin)?>">
                             <input type="text" class="has-time-picker"
-                                   name="permissions[begin_time][<?= htmlReady('e_' . $permission->id) ?>]"
+                                   name="permissions[begin_time][<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= date('H:i', $permission->begin)?>">
                         </td>
                         <td class="DateTime">
                             <input type="text" class="has-date-picker"
-                                   name="permissions[end_date][<?= htmlReady('e_' . $permission->id) ?>]"
+                                   name="permissions[end_date][<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= date('d.m.Y', $permission->end)?>">
                             <input type="text" class="has-time-picker"
-                                   name="permissions[end_time][<?= htmlReady('e_' . $permission->id) ?>]"
+                                   name="permissions[end_time][<?= htmlReady('existing_' . $permission->id) ?>]"
                                    value="<?= date('H:i', $permission->end)?>">
                         </td>
                     </tr>
