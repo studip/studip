@@ -36,7 +36,7 @@
         <input type="checkbox" name="ilias_interface_cache" value="1" <?= $ilias_interface_config['cache'] ? 'checked' : '' ?>>
         <span><?= _('SOAP-Cache') ?></span>
     </label>
-    <? if (count($existing_indices)) : ?>
+    <? if (!empty($existing_indices)) : ?>
     <label>
         <span class="required"><?= _('Art der Verknüpfung') ?></span>
         <select name="ilias_index">
