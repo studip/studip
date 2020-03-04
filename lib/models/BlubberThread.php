@@ -198,18 +198,19 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
         $threads = [];
 
-        do {
-            foreach ($threads as $thread) {
-                if ($since) {
-                    $active_time = $thread->getLatestActivity();
-                    $since = max($since, $active_time);
-                }
-                if ($olderthan) {
-                    $active_time = $thread->getLatestActivity();
-                    $olderthan = min($olderthan, $active_time);
-                }
+        foreach ($threads as $thread) {
+            if ($since) {
+                $active_time = $thread->getLatestActivity();
+                $since = max($since, $active_time);
             }
-            list($newthreads, $filtered) = self::getOrderedThreads(
+            if ($olderthan) {
+                $active_time = $thread->getLatestActivity();
+                $olderthan = min($olderthan, $active_time);
+            }
+        }
+
+        do {
+            list($newthreads, $filtered, $new_since, $new_olderthan) = self::getOrderedThreads(
                 $thread_ids,
                 $limit - count($threads),
                 $since,
@@ -217,6 +218,15 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 $user_id,
                 $search
             );
+
+            if ($since) {
+                $since = max($since, $new_since);
+            }
+            if ($olderthan) {
+                $olderthan = min($olderthan, $new_olderthan);
+            } else {
+                $olderthan = $new_olderthan;
+            }
             $threads = array_merge($threads, $newthreads);
         } while ($filtered && $limit);
 
@@ -257,7 +267,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         if ($since !== null) {
             $query->where(
                 'since',
-                '(blubber_comments.mkdate >= :since OR blubber_threads.mkdate >= :since)',
+                '(blubber_comments.mkdate > :since OR blubber_threads.mkdate > :since)',
                 compact('since')
             );
         }
@@ -265,7 +275,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         if ($olderthan !== null) {
             $query->having(
                 'olderthan',
-                "IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) <= :olderthan",
+                "IFNULL(MAX(blubber_comments.mkdate), blubber_threads.mkdate) < :olderthan",
                 ['olderthan' => $olderthan]
             );
         }
@@ -278,13 +288,21 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             return self::upgradeThread($thread);
         }, $threads);
 
+        $since = 0;
+        $olderthan = time();
+        foreach ($upgraded_threads as $thread) {
+            $active_time = $thread->getLatestActivity();
+            $since = max($since, $active_time);
+            $olderthan = min($olderthan, $active_time);
+        }
+
         $old_count = count($upgraded_threads);
 
         $upgraded_threads = array_filter($upgraded_threads, function ($thread) use ($user_id) {
             return $thread->isVisibleInStream() && $thread->isReadable($user_id);
         });
 
-        return [$upgraded_threads, $old_count !== count($upgraded_threads)];
+        return [$upgraded_threads, $old_count !== count($upgraded_threads), $since, $olderthan];
     }
 
     /**
@@ -569,7 +587,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $query = "SELECT seminar_user.user_id
                       FROM seminar_user
                           LEFT JOIN blubber_threads_unfollow ON (
-                              seminar_user.user_id = blubber_threads_unfollow.user_id 
+                              seminar_user.user_id = blubber_threads_unfollow.user_id
                               AND blubber_threads_unfollow.thread_id = :thread_id
                           )
                       WHERE seminar_user.Seminar_id = :context_id
