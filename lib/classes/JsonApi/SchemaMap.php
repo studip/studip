@@ -29,7 +29,7 @@ class SchemaMap
             \Message::class => \JsonApi\Schemas\Message::class,
             \Semester::class => \JsonApi\Schemas\Semester::class,
             \SeminarCycleDate::class => \JsonApi\Schemas\SeminarCycleDate::class,
-            \Statusgruppen::class => \JsonApi\Schemas\Statusgruppen::class,
+            \Statusgruppen::class => \JsonApi\Schemas\StatusGroup::class,
             \JsonApi\Models\Studip::class => \JsonApi\Schemas\Studip::class,
             \JsonApi\Models\StudipProperty::class => \JsonApi\Schemas\StudipProperty::class,
             \StudipComment::class => \JsonApi\Schemas\StudipComment::class,
