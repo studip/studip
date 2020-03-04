@@ -516,7 +516,7 @@ class UserManagement
         foreach ($newuser as $key => $value) {
             if (!StudipAuthAbstract::CheckField($key, $auth_plugin)) {
                 $this->user_data[$key] = $value;
-            } else {
+            } else if ($this->user_data[$key] !== $value) {
                 $this->msg .= 'error§' .  sprintf(_('Das Feld <em>%s</em> können Sie nicht ändern!'), $key) . '§';
                 return false;
             }
@@ -524,7 +524,7 @@ class UserManagement
 
         if (!$this->storeToDatabase()) {
             $this->msg .= 'info§' . _('Es wurden keine Veränderungen der Grunddaten vorgenommen.') . '§';
-            return false;
+            return true;
         }
 
         $this->msg .= 'msg§' . sprintf(_('Benutzer "%s" verändert.'), $this->user_data['auth_user_md5.username']) . '§';
