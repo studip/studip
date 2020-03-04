@@ -23,7 +23,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
 <form name="course-details" name="details" method="post" action="<?= $controller->link_for('course/basicdata/set', $course_id) ?>" <?= $dialog_attr ?> class="default collapsable">
     <?= CSRFProtection::tokenTag() ?>
     <input id="open_variable" type="hidden" name="open" value="<?= $flash['open'] ?>">
-
+    <?= Studip\Button::createAccept(_('Speichern'), 'store', ['style' => 'display: none;']) ?>
     <fieldset <?= isset($flash['open']) && $flash['open'] != 'bd_basicsettings' ? 'class="collapsed"' : ''?> data-open="bd_basicsettings">
         <legend><?= _('Grundeinstellungen') ?></legend>
 
