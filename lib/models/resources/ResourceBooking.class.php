@@ -1545,10 +1545,12 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         if ($this->booking_type == '0') {
             $event_classes[] = 'resource-booking';
             //Check if the booking is a course booking:
-            //It is a course date.
-            $event_classes[] = 'for-course';
-            $colour = $booking_plan_course_booking_bg->__toString();
-            $text_colour = $booking_plan_course_booking_fg->__toString();
+            if ($this->getAssignedUserType() === 'course') {
+                //It is a course date.
+                $event_classes[] = 'for-course';
+                $colour = $booking_plan_course_booking_bg->__toString();
+                $text_colour = $booking_plan_course_booking_fg->__toString();
+            }
         } elseif ($this->booking_type == '1') {
             $event_classes[] = 'resource-reservation';
             $colour = $booking_plan_reservation_bg->__toString();
