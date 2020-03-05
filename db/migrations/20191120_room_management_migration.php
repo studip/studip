@@ -311,7 +311,7 @@ class RoomManagementMigration extends Migration
     public function migrateOwner()
     {
         $db = DBManager::get();
-        $db->exec("INSERT INTO resource_permissions
+        $db->exec("INSERT IGNORE INTO resource_permissions
                     (user_id, resource_id, perms, mkdate, chdate)
                     SELECT r.owner_id, r.id, 'admin', r.mkdate, r.chdate
                     FROM resources r INNER JOIN resource_categories rc
