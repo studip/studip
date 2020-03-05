@@ -19,8 +19,8 @@ class Course_RoomRequestsController extends AuthenticatedController
     /**
      * Common tasks for all actions
      *
-     * @param String $action Called action
-     * @param Array  $args   Possible arguments
+     * @param string $action Called action
+     * @param array  $args   Possible arguments
      */
     public function before_filter(&$action, &$args)
     {
@@ -48,7 +48,7 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         PageLayout::setHelpKeyword('Basis.VeranstaltungenVerwaltenAendernVonZeitenUndTerminen');
         $pagetitle .= Course::find($this->course_id)->getFullname() . ' - ';
-        $pagetitle .= _('Verwalten von Raumanfrage');
+        $pagetitle .= _('Verwalten von Raumanfragen');
         PageLayout::setTitle($pagetitle);
     }
 
@@ -681,6 +681,9 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         $this->request_id = $request_id;
         $session_data = &$this->getRequestSessionData($this->request_id);
+        if (Request::submitted('clear_cache')) {
+            $session_data = [];
+        }
         $this->loadData($session_data, 4);
 
         $this->max_preparation_time = $this->config->RESOURCES_MAX_PREPARATION_TIME;
@@ -721,7 +724,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             $admission_turnout = $this->course->admission_turnout;
             $this->seats = $admission_turnout
                          ? $admission_turnout
-                         : $config->RESOURCES_ROOM_REQUEST_DEFAULT_SEATS;
+                         : Config::get()->RESOURCES_ROOM_REQUEST_DEFAULT_SEATS;
         }
 
         if (Request::isPost()) {
