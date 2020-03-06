@@ -81,10 +81,10 @@ hsvvalue(@red));
 //colors. a lot of.
 
 @yellow: #ffbd33;
-@yellow-80: mix(@orange, #fff, 80%); // #ffca5c
-@yellow-60: mix(@orange, #fff, 60%); // #ffd785
-@yellow-40: mix(@orange, #fff, 40%); // #ffe4ad
-@yellow-20: mix(@orange, #fff, 20%); // #fff2d6
+@yellow-80: mix(@yellow, #fff, 80%); // #ffca5c
+@yellow-60: mix(@yellow, #fff, 60%); // #ffd785
+@yellow-40: mix(@yellow, #fff, 40%); // #ffe4ad
+@yellow-20: mix(@yellow, #fff, 20%); // #fff2d6
 
 @orange: #f26e00;
 @orange-80: mix(@orange, #fff, 80%); // #f58b33
@@ -141,3 +141,55 @@ hsvvalue(@red));
 @contrast-content-white: contrast(@content-color, #ffffff, #000000, 67%);
 @contrast-content-gray: contrast(@content-color, @dark-gray-color, #000000 , 67%);
 @contrast-content-hovergray: contrast(@content-color, @dark-gray-color-10, @dark-gray-color);
+
+// Calender color mapping
+@calendar-day-event:        @brand-color-dark;
+@calendar-day-event-aux:    @base-color-60;
+
+@calendar-category-1:       @dark-green;
+@calendar-category-1-aux:   @dark-green-60;
+
+@calendar-category-2:       @dark-violet;
+@calendar-category-2-aux:   @dark-violet-60;
+
+@calendar-category-3:       @violet;
+@calendar-category-3-aux:   @violet-60;
+
+@calendar-category-4:       @petrol;
+@calendar-category-4-aux:   @petrol-60;
+
+@calendar-category-5:       @orange;
+@calendar-category-5-aux:   @orange-60;
+
+@calendar-category-6:       @brown;
+@calendar-category-6-aux:   @brown-60;
+
+@calendar-category-7:       @green;
+@calendar-category-7-aux:   @green-60;
+
+@calendar-category-8:       @red;
+@calendar-category-8-aux:   @red-60;
+
+@calendar-category-9:       @yellow;
+@calendar-category-9-aux:   @yellow-60;
+
+@calendar-category-10:      @dark-green-60;
+@calendar-category-10-aux:  @dark-green-20;
+
+@calendar-category-11:      @dark-violet-60;
+@calendar-category-11-aux:  @dark-violet-20;
+
+@calendar-category-12:      @violet-60;
+@calendar-category-12-aux:  @violet-20;
+
+@calendar-category-13:      @petrol-60;
+@calendar-category-13-aux:  @petrol-20;
+
+@calendar-category-14:      @orange-60;
+@calendar-category-14-aux:  @orange-20;
+
+@calendar-category-15:      @brown-60;
+@calendar-category-15-aux:  @brown-20;
+
+@calendar-category-255:     @light-gray-color-60;
+@calendar-category-255-aux: @light-gray-color-20;

@@ -140,3 +140,55 @@ $activity-color-80: mix($activity-color, #fff, 80%); // #ffca5c
 $activity-color-60: mix($activity-color, #fff, 60%); // #ffd785
 $activity-color-40: mix($activity-color, #fff, 40%); // #ffe4ad
 $activity-color-20: mix($activity-color, #fff, 20%); // #fff2d6
+
+// Calender color mapping
+$calendar-day-event:        $brand-color-dark;
+$calendar-day-event-aux:    $base-color-60;
+
+$calendar-category-1:       $dark-green;
+$calendar-category-1-aux:   $dark-green-60;
+
+$calendar-category-2:       $dark-violet;
+$calendar-category-2-aux:   $dark-violet-60;
+
+$calendar-category-3:       $violet;
+$calendar-category-3-aux:   $violet-60;
+
+$calendar-category-4:       $petrol;
+$calendar-category-4-aux:   $petrol-60;
+
+$calendar-category-5:       $orange;
+$calendar-category-5-aux:   $orange-60;
+
+$calendar-category-6:       $brown;
+$calendar-category-6-aux:   $brown-60;
+
+$calendar-category-7:       $green;
+$calendar-category-7-aux:   $green-60;
+
+$calendar-category-8:       $red;
+$calendar-category-8-aux:   $red-60;
+
+$calendar-category-9:       $yellow;
+$calendar-category-9-aux:   $yellow-60;
+
+$calendar-category-10:      $dark-green-60;
+$calendar-category-10-aux:  $dark-green-20;
+
+$calendar-category-11:      $dark-violet-60;
+$calendar-category-11-aux:  $dark-violet-20;
+
+$calendar-category-12:      $violet-60;
+$calendar-category-12-aux:  $violet-20;
+
+$calendar-category-13:      $petrol-60;
+$calendar-category-13-aux:  $petrol-20;
+
+$calendar-category-14:      $orange-60;
+$calendar-category-14-aux:  $orange-20;
+
+$calendar-category-15:      $brown-60;
+$calendar-category-15-aux:  $brown-20;
+
+$calendar-category-255:     $light-gray-color-60;
+$calendar-category-255-aux: $light-gray-color-20;

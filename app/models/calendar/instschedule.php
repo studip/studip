@@ -16,9 +16,9 @@
 
 require_once 'app/models/calendar/schedule.php';
 
-define('DEFAULT_COLOR_SEM', $GLOBALS['PERS_TERMIN_KAT'][2]['color']);
-define('DEFAULT_COLOR_NEW', $GLOBALS['PERS_TERMIN_KAT'][3]['color']);
-define('DEFAULT_COLOR_VIRTUAL', $GLOBALS['PERS_TERMIN_KAT'][1]['color']);
+define('DEFAULT_COLOR_SEM', 2);
+define('DEFAULT_COLOR_NEW', 3);
+define('DEFAULT_COLOR_VIRTUAL', 1);
 
 /**
  * Pseudo-namespace containing helper methods for the calendar of institutes.

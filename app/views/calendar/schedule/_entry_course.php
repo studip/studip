@@ -13,11 +13,11 @@ $sem = Seminar::getInstance($show_entry['id']);
             <?= _('Stundenplaneintrag') ?>
         </legend>
 
-        <section>
-            <b><?= _("Farbe des Termins") ?></b><br>
-            <? foreach ($GLOBALS['PERS_TERMIN_KAT'] as $data) : ?>
-            <span style="background-color: <?= $data['color'] ?>; vertical-align: middle; padding: 3px">
-                <input type="radio" name="entry_color" value="<?= $data['color'] ?>" <?= ($data['color'] == $show_entry['color']) ? 'checked="checked"' : '' ?>>
+        <section id="color_picker">
+            <?= _("Farbe des Termins") ?></b><br>
+            <? foreach ($GLOBALS['PERS_TERMIN_KAT'] as $index => $data) : ?>
+            <span class="schedule-category<?= $index ?>" style="vertical-align: middle; padding: 3px">
+                <input type="radio" name="entry_color" value="<?= $index ?>" <?= ($index == $show_entry['color']) ? 'checked="checked"' : '' ?>>
             </span>
             <? endforeach ?>
         </section>
