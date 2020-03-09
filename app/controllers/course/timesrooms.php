@@ -1377,12 +1377,14 @@ class Course_TimesroomsController extends AuthenticatedController
 
             if ($rooms_with_booking_permissions > 50) {
                 $room_search_type = new RoomSearch();
+                $room_search_type->with_seats = 1;
                 $room_search_type->setAcceptedPermissionLevels(
                     ['autor', 'tutor', 'admin']
                 );
                 $room_search_type->setAdditionalDisplayProperties(
                     ['seats']
                 );
+                $room_search_type->setAdditionalPropertyFormat(_('(%s Sitzplätze)'));
                 $this->room_search = new QuickSearch(
                     'room_id',
                     $room_search_type

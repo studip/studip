@@ -26,6 +26,7 @@ class RoomSearch extends ResourceSearch
             'user', 'autor', 'tutor', 'admin'
         ];
         $this->use_global_permissions = true;
+        $this->with_seats = 0;
         $this->additional_display_properties = [];
         $this->additional_property_format = '[%s]';
     }
@@ -54,17 +55,35 @@ class RoomSearch extends ResourceSearch
         if (!$user) {
             return [];
         }
-
-        $sql = "INNER JOIN resource_categories rc
+        if ($this->with_seats) {
+            $prop_id_seats = ResourcePropertyDefinition::findOneByName('seats')->id;
+            $sql = "INNER JOIN resource_categories rc
+            ON resources.category_id = rc.id
+            INNER JOIN resource_properties rp ON rp.resource_id = resources.id
+            WHERE
+            rc.class_name = 'Room'
+            AND
+            rp.property_id = :prop_id_seats
+            AND
+            rp.state > :seats
+            AND
+            resources.name LIKE CONCAT('%', :keyword, '%') ";
+            $sql_params = [
+                'keyword' => $keyword,
+                'seats'   => $this->with_seats,
+                'prop_id_seats' => $prop_id_seats
+            ];
+        } else {
+            $sql = "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
             WHERE
             rc.class_name = 'Room'
             AND
             resources.name LIKE CONCAT('%', :keyword, '%') ";
-        $sql_params = [
-            'keyword' => $keyword
-        ];
-
+            $sql_params = [
+                'keyword' => $keyword
+            ];
+        }
         //Root users can access everything so that we don't need
         //to check for permissions in case the current user is root.
         if (!$GLOBALS['perm']->have_perm('root')) {
