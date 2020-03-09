@@ -103,7 +103,7 @@
             <?= _('Kategorie') ?>
             <select name="category_intern" id="category-intern" class="nested-select">
             <? foreach ($GLOBALS['PERS_TERMIN_KAT'] as $key => $category) : ?>
-                <option value="<?= $key ?>" <?= $key == $event->getCategory() ? 'selected' : '' ?> data-text-color="<?= $category['color'] ?>">
+                <option value="<?= $key ?>" <?= $key == $event->getCategory() ? 'selected' : '' ?> class="calendar-category<?= $key ?>" data-color-class="calendar-category<?= $key ?>">
                     <?= htmlReady($category['name']) ?>
                 </option>
             <? endforeach; ?>

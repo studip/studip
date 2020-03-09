@@ -227,6 +227,10 @@ function createSelect2(element) {
                 result.css('color', element_data.textColor);
             }
 
+            if (element_data && element_data.colorClass) {
+                result.addClass(element_data.colorClass);
+            }
+            
             return result;
         },
         width: 'style'
