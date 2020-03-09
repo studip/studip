@@ -119,17 +119,22 @@ class GarbageCollectorJob extends CronJob
         //range type, belongs to the folder type 'MVVFolder',
         //is older than 2 hours and has a range-ID that doesn't exist.
         $unsent_mvv_folders = Folder::deleteBySql(
-            "folder_type = 'MVVFolder'
-            AND chdate < UNIX_TIMESTAMP(DATE_ADD(NOW(),INTERVAL -2 HOUR))
-            AND ((`range_type` = 'Studiengang' AND  range_id NOT IN ( SELECT studiengang_id FROM mvv_studiengang))
-            OR (`range_type` = 'AbschlussKategorie' AND  range_id NOT IN ( SELECT kategorie_id FROM mvv_abschl_kategorie))
-            OR (`range_type` = 'StgteilVersion' AND  range_id NOT IN ( SELECT version_id FROM mvv_stgteilversion)))",
+            "LEFT JOIN `file_refs` ON (`file_refs`.`folder_id` = `folders`.`id`)
+            LEFT JOIN `mvv_files_filerefs` ON (`file_refs`.`id` = `mvv_files_filerefs`.`fileref_id`)
+            LEFT JOIN `mvv_files_ranges` USING (`mvvfile_id`)
+            WHERE `folders`.`folder_type` = 'MVVFolder'
+            AND `folders`.`chdate` < UNIX_TIMESTAMP(DATE_ADD(NOW(),INTERVAL -2 HOUR))
+            AND ((`mvv_files_ranges`.`range_type` = 'Studiengang' AND `mvv_files_ranges`.`range_id` NOT IN ( SELECT `studiengang_id` FROM `mvv_studiengang`))
+            OR (`mvv_files_ranges`.`range_type` = 'AbschlussKategorie' AND `mvv_files_ranges`.`range_id` NOT IN ( SELECT `kategorie_id` FROM `mvv_abschl_kategorie`))
+            OR (`mvv_files_ranges`.`range_type` = 'StgteilVersion' AND `mvv_files_ranges`.`range_id` NOT IN ( SELECT `version_id` FROM `mvv_stgteilversion`)))",
             [
                 'user_id' => $GLOBALS['user']->id
             ]
         );
         if (count($unsent_mvv_folders)) {
-            $db->exec("DELETE FROM mvv_files WHERE fileref_id NOT IN (SELECT id FROM file_refs)");
+            $db->exec("DELETE FROM mvv_files_filerefs WHERE fileref_id NOT IN (SELECT id FROM file_refs)");
+            $db->exec("DELETE FROM mvv_files WHERE mvvfile_id NOT IN (SELECT mvvfile_id FROM mvv_files_filerefs)");
+            $db->exec("DELETE FROM mvv_files_ranges WHERE mvvfile_id NOT IN (SELECT mvvfile_id FROM mvv_files)");
         }
 
         if ($parameters['verbose']) {
