@@ -115,7 +115,7 @@ class Admin_CoursesController extends AuthenticatedController
                     );
                     foreach($options as $option) {
                         $selectWidget->addElement(
-                            new SelectElement($option, $option, Request::option('df_'.$datafield->id) == $option)
+                            new SelectElement($option, $option, Request::get('df_'.$datafield->id) == $option)
                         );
                     }
                     return $selectWidget;
