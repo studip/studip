@@ -141,7 +141,8 @@ class ForumHelpers {
         if ($num_entries > 0) {
             $text = sprintf(_('Seit Ihrem letzten Besuch gibt es %s neue Beiträge'), $num_entries);
         } else {
-            $all_entries = max(ForumEntry::countEntries($topic_id) - 1, 0);
+            $all_entries = ForumEntry::countPostings($topic_id);
+
             if ($all_entries == 0) {
                 $text = sprintf(_('Es gibt bisher keine Beiträge.'));
             } else if ($all_entries == 1) {

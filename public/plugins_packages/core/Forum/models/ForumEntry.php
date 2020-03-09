@@ -871,6 +871,22 @@ class ForumEntry  implements PrivacyObject
     }
 
     /**
+    * Count the number of postings in a given course and return it.
+    *
+    * @param string $course_id the id of the given course
+    *
+    * @return int the number of postings in the course
+    */
+    public static function countPostings($course_id)
+    {
+        $stmt = DBManager::get()->prepare("SELECT COUNT(*) FROM forum_entries
+            WHERE seminar_id = ? AND depth >= 2");
+        $stmt->execute([$course_id]);
+
+        return $stmt->fetchColumn(0);
+    }
+
+    /**
      * Count all entries the passed user has ever written and return the result
      *
      * @staticvar type $entries
@@ -1358,4 +1374,5 @@ class ForumEntry  implements PrivacyObject
             $storage->addTabularData(_('Forum Einträge'), 'forum_entries', $field_data);
         }
     }
+
 }
