@@ -83,11 +83,10 @@ class Admin_CoursesController extends AuthenticatedController
 
             if ($type == 'bool') {
                 //bool fields just need a checkbox for the states TRUE and FALSE
-
                 $checkboxWidget = new OptionsWidget($datafield->name);
                 $checkboxWidget->addCheckbox(
                     _('Feld gesetzt'),
-                    (bool)Request::get('df_'.$datafield->id, false),
+                    Request::bool('df_'.$datafield->id, false),
                     URLHelper::getLink(
                         'dispatch.php/admin/courses/index',
                         ['df_'.$datafield->id => '1']
@@ -96,61 +95,42 @@ class Admin_CoursesController extends AuthenticatedController
                         'dispatch.php/admin/courses/index'
                     )
                 );
-
                 return $checkboxWidget;
-
-            } elseif (($type == 'selectbox') or ($type == 'radio')
-                or ($type == 'selectboxmultiple')) {
-                //these field's options are displayed as select box
-
-                $db = DBManager::get();
-
-                $statement = $db->prepare(
-                      'SELECT content FROM datafields_entries '
-                    . 'WHERE datafield_id = :datafieldId '
-                    . 'GROUP BY content;'
-                );
-
-                $statement->execute(['datafieldId' => $datafield->id]);
-                $result = $statement->fetchAll();
-
-
-                $options = [];
-                foreach ($result as $row) {
-                    $options[$row[0]] = $row[0];
-                }
+            } elseif ($type == 'selectbox' || $type == 'radio' || $type == 'selectboxmultiple') {
+                $options = array_map('trim', explode("\n", DBManager::get()->fetchColumn(
+                    'SELECT typeparam FROM datafields WHERE datafield_id = ?',
+                    [$datafield->id]
+                )));
 
                 if ($options) {
                     $options = array_merge(
                         [' ' => '(' . _('keine Auswahl') . ')'],
                         $options
                     );
-                    $selectWidget = new OptionsWidget($datafield->name);
-                    $selectWidget->addSelect(
-                        '',
-                        '', //TODO
-                        'df_'.$datafield->id,
-                        $options,
-                        Request::get('df_'.$datafield->id)
+
+                    $selectWidget = new SelectWidget(
+                        $datafield->name,
+                        '?',
+                        'df_' . $datafield->id
                     );
+                    foreach($options as $option) {
+                        $selectWidget->addElement(
+                            new SelectElement($option, $option, Request::option('df_'.$datafield->id) == $option)
+                        );
+                    }
                     return $selectWidget;
                 }
-
                 return null;
-
             } else {
                 //all other fields get a text field
-
                 $textWidget = new SearchWidget();
                 $textWidget->setTitle($datafield->name);
                 $textWidget->addNeedle(
                     '',
                     'df_'.$datafield->id
                 );
-
                 return $textWidget;
             }
-
         }
     }
 
