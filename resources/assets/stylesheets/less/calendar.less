@@ -187,14 +187,15 @@ nav.calendar-nav {
     }
 }
 
-.calendar-category-mixin {
+.calendar-category-mixin(@color-bg) {
     vertical-align: top;
     font-size: 11px;
     color: @white;
     padding: 0;
     /* necessary for All-day Events */
     a {
-        color: @dark-gray-color !important;
+        color: contrast(@color-bg, black, white, 60%);
+        font-weight: 600;
     }
 }
 
@@ -274,7 +275,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-day-event-aux;
             border: solid 1px @calendar-day-event;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-day-event-aux);
         }
         &.calendar-category1, &.calendar-course-category5 {
             div:first-child {
@@ -283,7 +284,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-1-aux;
             border: solid 1px @calendar-category-1;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-1-aux);
         }
         &.calendar-category2, &.calendar-course-category1 {
             div:first-child {
@@ -292,7 +293,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-2-aux;
             border: solid 1px @calendar-category-2;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-2-aux);
         }
         &.calendar-category3, &.calendar-course-category2 {
             div:first-child {
@@ -301,7 +302,7 @@ table.calendar-week, table.calendar-day {
             }
             background:  @calendar-category-3-aux;
             border: solid 1px @calendar-category-3;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-3-aux);
         }
         &.calendar-category4, &.calendar-course-category3 {
             div:first-child {
@@ -310,7 +311,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-4-aux;
             border: solid 1px @calendar-category-4;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-4-aux);
         }
         &.calendar-category5, &.calendar-course-category4 {
             div:first-child {
@@ -319,7 +320,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-5-aux;
             border: solid 1px @calendar-category-5;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-5-aux);
         }
         &.calendar-category6, &.calendar-course-category6 {
             div:first-child {
@@ -328,7 +329,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-6-aux;
             border: solid 1px @calendar-category-6;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-6-aux);
         }
         &.calendar-category7, &.calendar-course-category8 {
             div:first-child {
@@ -337,7 +338,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-7-aux;
             border: solid 1px @calendar-category-7;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-7-aux);
         }
         &.calendar-category8, &.calendar-course-category9 {
             div:first-child {
@@ -346,7 +347,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-8-aux;
             border: solid 1px @calendar-category-8;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-8-aux);
         }
         &.calendar-category9, &.calendar-course-category10 {
             div:first-child {
@@ -355,7 +356,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-9-aux;
             border: solid 1px @calendar-category-9;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-9-aux);
         }
         &.calendar-category10, &.calendar-course-category11 {
             div:first-child {
@@ -364,7 +365,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-10-aux;
             border: solid 1px @calendar-category-10;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-10-aux);
         }
         &.calendar-category11, &.calendar-course-category12 {
             div:first-child {
@@ -373,7 +374,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-11-aux;
             border: solid 1px @calendar-category-11;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-11-aux);
         }
         &.calendar-category12, &.calendar-course-category13 {
             div:first-child {
@@ -382,7 +383,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-12-aux;
             border: solid 1px @calendar-category-12;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-12-aux);
         }
         &.calendar-category13, &.calendar-course-category14 {
             div:first-child {
@@ -391,7 +392,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-13-aux;
             border: solid 1px @calendar-category-13;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-13-aux);
         }
         &.calendar-category14, &.calendar-course-category15 {
             div:first-child {
@@ -400,7 +401,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-14-aux;
             border: solid 1px @calendar-category-14;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-14-aux);
         }
         &.calendar-category15, &.calendar-course-category7 {
             div:first-child {
@@ -409,7 +410,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-15-aux;
             border: solid 1px @calendar-category-15;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-15-aux);
         }
         &.calendar-category255, &.calendar-course-category255 {
             div:first-child {
@@ -418,7 +419,7 @@ table.calendar-week, table.calendar-day {
             }
             background: @calendar-category-255-aux;
             border: solid 1px @calendar-category-255;
-            .calendar-category-mixin;
+            .calendar-category-mixin(@calendar-category-255-aux);
         }
         /* Termin von im Stundenplan vorgemerkter Kurs */
         &.calendar-course-category256 {
@@ -428,7 +429,7 @@ table.calendar-week, table.calendar-day {
             }
             background: mix(#2D2C64, #fff, 60%);
             border: solid 1px #2D2C64;
-            .calendar-category-mixin;
+            .calendar-category-mixin(mix(#2D2C64, #fff, 60%));
         }
     }
 }
