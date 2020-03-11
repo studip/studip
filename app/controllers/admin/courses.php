@@ -222,6 +222,9 @@ class Admin_CoursesController extends AuthenticatedController
             $actions->addLink(_('Neue Veranstaltung anlegen'),
                               URLHelper::getURL('dispatch.php/course/wizard'),
                               Icon::create('seminar+add', 'clickable'))->asDialog('size=50%');
+            $actions->addLink(_('Neue Veranstaltung anlegen (Kurzvariante)'),
+                              URLHelper::getURL('dispatch.php/course/wizard?kurz=1'),
+                              Icon::create('seminar+add', 'clickable'))->asDialog('size=50%');
             $actions->addLink(
                 _('Diese Seitenleiste konfigurieren'),
                 URLHelper::getURL('dispatch.php/admin/courses/sidebar'),

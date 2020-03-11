@@ -6,6 +6,9 @@
 
         <footer data-dialog-button>
             <input type="hidden" name="step" value="<?= $stepnumber ?>">
+            <? if ($kurz) : ?>
+                <input type="hidden" name="kurz" value="<?= $kurz ?>">
+            <? endif ?>
         <? if (!$first_step): ?>
             <?= Studip\Button::create(
                 _('Zurück'),

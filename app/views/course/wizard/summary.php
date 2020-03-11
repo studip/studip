@@ -33,6 +33,9 @@
 
     <section>
         <input type="hidden" name="step" value="<?= $stepnumber ?>">
+    <? if ($kurz) : ?>
+        <input type="hidden" name="kurz" value="<?= $kurz ?>">
+    <? endif ?>
     <? if ($dialog) : ?>
         <input type="hidden" name="dialog" value="1">
     <? endif ?>

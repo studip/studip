@@ -32,12 +32,18 @@ class Course_WizardController extends AuthenticatedController
 
         $sidebar = Sidebar::get();
 
+        $this->kurz = Request::int('kurz') ?: $this->flash['kurz'];
+
+        if ($this->kurz) {
+            $this->flash['kurz'] = true;
+        }
+
         $this->studygroup = Request::int('studygroup') ?: $this->flash['studygroup'];
 
         if (!$this->studygroup) {
             PageLayout::setTitle(_('Neue Veranstaltung anlegen'));
 
-            $navigation = new Navigation(_('Neue Veranstaltung anlegen'), 'dispatch.php/course/wizard');
+            $navigation = new Navigation(_('Neue Veranstaltung anlegen'), 'dispatch.php/course/wizard' . ($this->kurz ? '?kurz=1' : ''));
             Navigation::addItem('/browse/my_courses/new_course', $navigation);
             Navigation::activateItem('/browse/my_courses/new_course');
         } else {
@@ -62,7 +68,7 @@ class Course_WizardController extends AuthenticatedController
      */
     public function index_action()
     {
-        $this->redirect('course/wizard/step/0' . ($this->studygroup ? '?studygroup=1' : ''));
+        $this->redirect('course/wizard/step/0' . ($this->studygroup ? '?studygroup=1' : '') . ($this->kurz ? ( $this->studygroup ? '&kurz=1' : '?kurz=1') : ''));
     }
 
     /**
@@ -94,6 +100,15 @@ class Course_WizardController extends AuthenticatedController
                 array_merge($this->getValues(get_class($step)), ['studygroup' => 1])
             );
         }
+
+        if ($this->kurz) {
+            // Add special kurz flag to set values.
+            $this->setStepValues(
+                get_class($step),
+                array_merge($this->getValues(get_class($step)), ['kurz' => 1])
+            );
+        }
+
         $this->values = $this->getValues();
         $this->content = $step->getStepTemplate($this->values, $number, $this->temp_id);
         $this->stepnumber = $number;
@@ -188,11 +203,18 @@ class Course_WizardController extends AuthenticatedController
                             // "Normal" course.
                         } else {
                             if (Request::int('dialog')) {
-                                $message = MessageBox::success(
-                                    sprintf(_('Die Veranstaltung <a class="link-intern" href="%s">"%s"</a> wurde angelegt.'),
-                                        $this->link_for('course/management?cid=' . $this->course->id),
-                                        htmlReady($this->course->getFullname())));
-                                $target = $this->url_for('admin/courses');
+                                if (Request::int('kurz')) {
+                                    $message = MessageBox::success(
+                                        sprintf(_('Die Veranstaltung <a class="link-intern" href="%s">"%s"</a> wurde angelegt.'),
+                                            $this->link_for('course/management?cid=' . $this->course->id),
+                                            htmlReady($this->course->getFullname())));
+                                    $target = $this->url_for('admin/courses');
+                                } else {
+                                    $message = MessageBox::success(
+                                        sprintf(_('Die Veranstaltung "%s" wurde angelegt. Sie können sie direkt hier weiter verwalten.'),
+                                            htmlReady($this->course->getFullname())));
+                                    $target = $this->url_for('course/management?cid=' . $this->course->id);
+                                }
                             } else {
                                 $message = MessageBox::success(
                                     sprintf(_('Die Veranstaltung "%s" wurde angelegt. Sie können sie direkt hier weiter verwalten.'),
