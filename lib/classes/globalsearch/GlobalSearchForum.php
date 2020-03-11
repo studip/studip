@@ -128,30 +128,81 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             $course ? $course->getFullname() : _('Ohne Titel')
         );
 
-        $result = [
-            'id'          => $data['topic_id'],
-            'name'        => $name,
-            'url'         => URLHelper::getURL('plugins.php/coreforum/index/index/' . $data['topic_id'] .
-                '#' . $data['topic_id'], ['cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id']]
-            ),
-            'img'         => CourseAvatar::getAvatar($course->id)->getUrl(Avatar::MEDIUM),
-            'date'        => strftime('%x', $data['chdate']),
-            'description' => self::mark($data['content'], $search, true),
-            'additional'  => htmlReady($additional),
-            'expand' => URLHelper::getURL('plugins.php/coreforum/index/search', [
-                'cid'            => $data['seminar_id'],
-                'backend'        => 'search',
-                'searchfor'      => $search,
-                'search_title'   => 1,
-                'search_content' => 1,
-                'search_author'  => 1
-            ]),
-            'expandtext'  => _('Im Forum dieser Veranstaltung suchen'),
-            'user'        => $temp
-        ];
+        // Clear content from blockquotes
+        $filtered_content = self::blockquote_filter($data['content']);
 
-        return $result;
+        //in case the search query is found in either $name or $filtered_content (via direct_search), the result should be returned
+        if (strpos($name, "<mark>") !== FALSE || self::direct_search($filtered_content, $search)) {
+            $result = [
+                'id'          => $data['topic_id'],
+                'name'        => $name,
+                'url'         => URLHelper::getURL('plugins.php/coreforum/index/index/' . $data['topic_id'] .
+                    '#' . $data['topic_id'], ['cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id']]
+                ),
+                'img'         => CourseAvatar::getAvatar($course->id)->getUrl(Avatar::MEDIUM),
+                'date'        => strftime('%x', $data['chdate']),
+                'description' => self::mark($filtered_content, $search, true),
+                'additional'  => htmlReady($additional),
+                'expand' => URLHelper::getURL('plugins.php/coreforum/index/search', [
+                    'cid'            => $data['seminar_id'],
+                    'backend'        => 'search',
+                    'searchfor'      => $search,
+                    'search_title'   => 1,
+                    'search_content' => 1,
+                    'search_author'  => 1
+                ]),
+                'expandtext'  => _('Im Forum dieser Veranstaltung suchen'),
+                'user'        => $temp
+            ];
+    
+            return $result;
+        }
+        return false;
     }
+
+    /**
+     * Looks for blockquote and removes it from content in recursive mode
+     * 
+     * @param string $content data content
+     * @return string purified content (without blockquote)
+     */
+    public static function blockquote_filter($content)
+    {
+        $beg = '<blockquote>';
+        $end = '</blockquote>';
+        $beg_pos = mb_strpos($content, $beg);
+        $end_pos = mb_strpos($content, $end);
+        if ($beg_pos === false || $end_pos === false) {
+            return $content;
+        }
+
+        $quote = mb_substr($content, $beg_pos, ($end_pos + mb_strlen($end)) - $beg_pos);
+        $most_inner_element = mb_substr($quote, mb_strrpos($quote, $beg), (mb_strpos($quote, $end) + mb_strlen($end)) - mb_strrpos($quote, $beg));
+
+        //recursive call!
+        return self::blockquote_filter(str_replace($most_inner_element, '', $content));
+    }
+
+    /**
+     * Search the query directly inside the string
+     * 
+     * @param string $string text to be searched
+     * @param string $query query to be found
+     * 
+     * @return boolean $found in case of finding true, otherwise false
+     */
+    public static function direct_search($string, $query)
+    {
+        $found = false;
+        $string = strip_tags($string);
+        $query = trim($query);
+        $quoted = preg_quote($query, '/');
+        if (preg_match("/{$quoted}/Si", $string)) {
+            $found = true;
+        }
+        return $found;
+    }
+
 
     /**
      * Enables fulltext (MATCH AGAINST) search by creating the corresponding indices.
