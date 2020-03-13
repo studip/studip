@@ -38,7 +38,7 @@
 
 <?
 $room_actions = [];
-if ($room->requestable) {
+if ($room->requestable && $show_autor_actions) {
     $room_actions = [
         '0071' => [
             $room->getLink('request_list'),
