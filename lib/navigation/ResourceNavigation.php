@@ -30,7 +30,12 @@ class ResourceNavigation extends Navigation
 
     public function initItem()
     {
-        $this->setURL('dispatch.php/room_management/overview/index');
+        $user = User::findCurrent();
+        if (ResourceManager::userHasGlobalPermission($user, 'user')) {
+            $this->setURL('dispatch.php/room_management/overview/index');
+        } else {
+            $this->setURL('dispatch.php/room_management/overview/rooms');
+        }
         $this->setImage(
             Icon::create('resources', 'navigation', ['title' => _('Raumverwaltung')])
         );

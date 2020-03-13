@@ -180,9 +180,9 @@ class StartNavigation extends Navigation
             if ($global_resource_permissions == 'admin') {
                 $show_resources_navigation = true;
             } else {
-                $show_resources_navigation = ResourceManager::userHasResourcePermissions(
+                $show_resources_navigation = RoomManager::userHasRooms(
                     $current_user,
-                    'autor'
+                    'user'
                 );
             }
             if ($show_resources_navigation) {
@@ -214,8 +214,8 @@ class StartNavigation extends Navigation
                     //Users who are not resource admins see another page that
                     //displays only those resources where they have permissions for.
                     $navigation = new Navigation(
-                        _('Meine Räume und Ressourcen'),
-                        'dispatch.php/my_resources/index'
+                        _('Meine Räume'),
+                        'dispatch.php/room_management/overview/rooms'
                     );
                     $this->addSubNavigation('resources', $navigation);
                 }

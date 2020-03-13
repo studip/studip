@@ -119,7 +119,7 @@
         ?>
         <?
         $edit_url            = '';
-        $edit_url_attributes = null;
+        $edit_url_attributes = [];
         if ($GLOBALS['perm']->have_studip_perm('tutor', $request->getRangeId())) {
             $edit_url            = $controller->link_for(
                 'course/room_requests/request_summary/' . $request->id,
@@ -130,12 +130,14 @@
             $edit_url            = $controller->link_for('resources/room_request/edit/' . $request->id);
             $edit_url_attributes = ['data-dialog' => 'size=auto'];
         }
-        $action_menu->addLink(
-            $edit_url,
-            _('Anfrage bearbeiten'),
-            Icon::create('edit'),
-            $edit_url_attributes
-        );
+        if ($edit_url && $edit_urL_attributes) {
+            $action_menu->addLink(
+                $edit_url,
+                _('Anfrage bearbeiten'),
+                Icon::create('edit'),
+                $edit_url_attributes
+            );
+        }
         if ($range_object instanceof Course) {
             $action_menu->addLink(
                 URLHelper::getLink('dispatch.php/course/details', ['cid' => $range_object->id]),
