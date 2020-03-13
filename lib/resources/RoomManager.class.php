@@ -213,6 +213,14 @@ class RoomManager
         $sql_condition_parameters = []
     )
     {
+        if (ResourceManager::userHasGlobalPermission($user, $level)) {
+            //Count all rooms.
+            return Room::countBySql("INNER JOIN resource_categories
+                ON resources.category_id = resource_categories.id
+                WHERE
+                resource_categories.class_name = 'Room'"
+            );
+        }
         $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters);
         return Room::countBySql($sql['query'], $sql['data']);
     }
@@ -254,6 +262,16 @@ class RoomManager
         $sql_condition_parameters = []
     )
     {
+        if (ResourceManager::userHasGlobalPermission($user, $level)) {
+            //Return all rooms:
+            return Room::findBySql("INNER JOIN resource_categories
+                ON resources.category_id = resource_categories.id
+                WHERE
+                resource_categories.class_name = 'Room'
+                GROUP BY resources.id
+                ORDER BY resources.sort_position DESC, resources.name ASC"
+            );
+        }
         $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters);
         return Room::findBySql($sql['query'], $sql['data']);
     }
