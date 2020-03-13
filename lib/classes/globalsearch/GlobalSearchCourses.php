@@ -166,7 +166,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                 $course->admission_prelim)) {
                 case 1:
                     $admission_state = Icon::create(
-                        'info-circle',
+                        'decline-circle',
                         Icon::ROLE_STATUS_YELLOW,
                         tooltip2(_('Eingeschränkter Zugang'))
                     )->asImg();
