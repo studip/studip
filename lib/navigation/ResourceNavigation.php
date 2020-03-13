@@ -59,10 +59,10 @@ class ResourceNavigation extends Navigation
         $user_has_rooms = RoomManager::userHasRooms($user);
 
         $user_is_room_admin = RoomManager::userHasRooms($user, 'admin') > 0;
-        if (!$show_global_admin_actions && !$user_has_rooms) {
+        $user_is_global_resource_user = ResourceManager::userHasGlobalPermission($user, 'user');
+        if (!$show_global_admin_actions && !$user_has_rooms && !$user_is_global_resource_user) {
             return;
         }
-        $user_is_global_resource_user = ResourceManager::userHasGlobalPermission($user, 'user');
         $user_is_global_resource_autor = ResourceManager::userHasGlobalPermission($user, 'autor');
 
         parent::initSubNavigation();
@@ -104,21 +104,12 @@ class ResourceNavigation extends Navigation
                 'dispatch.php/room_management/overview/buildings'
             );
             $overview_navigation->addSubNavigation('buildings', $sub_navigation);
-        } else {
-            $sub_navigation = new Navigation(
-                _('Meine Räume'),
-                'dispatch.php/room_management/overview/rooms'
-            );
-            $overview_navigation->addSubNavigation('rooms', $sub_navigation);
-        }
-
-        if ($show_global_admin_actions) {
             $sub_navigation = new Navigation(
                 _('Räume'),
                 'dispatch.php/room_management/overview/rooms'
             );
             $overview_navigation->addSubNavigation('rooms', $sub_navigation);
-        } else if ($user_has_rooms) {
+        } else if ($user_has_rooms || $user_is_global_resource_user) {
             $sub_navigation = new Navigation(
                 _('Meine Räume'),
                 'dispatch.php/room_management/overview/rooms'
@@ -152,7 +143,7 @@ class ResourceNavigation extends Navigation
             } else {
                 $sub_navigation = new Navigation(
                     _('Raumplanung'),
-                    'dispatch.php/resources/planning/booking_comments'
+                    'dispatch.php/room_management/planning/booking_comments'
                 );
                 $this->addSubNavigation('planning', $sub_navigation);
 
