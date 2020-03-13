@@ -244,6 +244,14 @@ const Search = {
                 .appendTo(information);
         }
 
+        // Course Admission State as Img
+        if (result.admission_state !== null) {
+            $('<div class="search-result-admission-state">')
+                .html(result.admission_state)
+                .appendTo(information);
+        }
+
+
         // Details: Additional information
         var additional = $('<div class="search-result-additional">');
         if (result.additional !== null) {

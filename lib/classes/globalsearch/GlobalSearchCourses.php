@@ -159,6 +159,34 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             $result_children[] = self::filter($child, $search);
         }
 
+        //admission state
+        $admission_state = "";
+        if (Config::get()->COURSE_SEARCH_SHOW_ADMISSION_STATE) {
+            switch (self::getStatusCourseAdmission($course->id,
+                $course->admission_prelim)) {
+                case 1:
+                    $admission_state = Icon::create(
+                        'info-circle',
+                        Icon::ROLE_STATUS_YELLOW,
+                        tooltip2(_('Eingeschränkter Zugang'))
+                    )->asImg();
+                break;
+                case 2:
+                    $admission_state = Icon::create(
+                        'decline-circle',
+                        Icon::ROLE_STATUS_RED,
+                        tooltip2(_('Kein Zugang'))
+                    )->asImg();
+                break;
+                default:
+                $admission_state = Icon::create(
+                    'check-circle',
+                    Icon::ROLE_STATUS_GREEN,
+                    tooltip2(_('Uneingeschränkter Zugang'))
+                )->asImg();
+            }
+        }
+
         $result = [
             'id'            => $course->id,
             'number'        => self::mark($course->veranstaltungsnummer, $search),
@@ -184,6 +212,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                 )
             ),
             'expand'     => self::getSearchURL($search),
+            'admission_state' => $admission_state,
         ];
         if ($course->getSemClass()->offsetGet('studygroup_mode')) {
             $avatar = StudygroupAvatar::getAvatar($course->id);
@@ -272,6 +301,39 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
             'q'        => $searchterm,
             'category' => self::class
         ]);
+    }
+
+    /**
+     * Returns the admission status for a course.
+     *
+     * @param string $seminar_id Id of the course
+     * @param bool   $prelim     State of preliminary setting
+     * @return int
+     */
+    public static function getStatusCourseAdmission($seminar_id, $prelim)
+    {
+        $sql = "SELECT COUNT(`type`) AS `types`,
+                       SUM(IF(`type` = 'LockedAdmission', 1, 0)) AS `type_locked`
+                FROM `seminar_courseset`
+	            INNER JOIN `courseset_rule` USING (`set_id`)
+	            WHERE `seminar_id` = ?
+                GROUP BY `set_id`";
+
+	    $stmt = DBManager::get()->prepare($sql);
+	    $stmt->execute([$seminar_id]);
+	    $result = $stmt->fetch();
+
+        if ($result['types']) {
+            if ($result['type_locked']) {
+                return 2;
+            }
+            return 1;
+        }
+
+        if ($prelim) {
+            return 1;
+        }
+        return 0;
     }
 
 }
