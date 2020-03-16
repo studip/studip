@@ -396,11 +396,11 @@ class messaging
         $user_ids = array_diff($rec_id, [$user_id]);
 
         // Create notifications
-        foreach ($user_ids as $user_id) {
-            setTempLanguage($user_id);
+        foreach ($user_ids as $uid) {
+            setTempLanguage($uid);
 
             PersonalNotifications::add(
-                $user_id,
+                $uid,
                 URLHelper::getUrl("dispatch.php/messages/read/{$tmp_message_id}", [], true),
                 sprintf(_('Sie haben eine Nachricht von %s erhalten!'), $snd_name),
                 "message_{$tmp_message_id}",
@@ -413,7 +413,6 @@ class messaging
 
         NotificationCenter::postNotification('MessageDidSend', $tmp_message_id, compact('user_id', 'rec_id'));
 
-        return sizeof($rec_id);
+        return count($rec_id);
     }
-
 }
