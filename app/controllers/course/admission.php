@@ -390,8 +390,7 @@ class Course_AdmissionController extends AuthenticatedController
     {
         $cs = new CourseSet(Request::option('set_id'));
         if ($cs->getId()) {
-            $template = $GLOBALS['template_factory']->open('shared/tooltip');
-            $this->render_text($template->render(['text' => $cs->toString(true)]));
+            $this->render_text($cs->toString(true));
         } else {
             $this->render_nothing();
         }

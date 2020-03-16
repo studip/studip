@@ -51,7 +51,7 @@
                     </summary>
 
                     <select name="course_set_assign" style="display: inline-block;"
-                            onChange="$('#course_set_assign_explain').load('<?= $controller->link_for('/explain_course_set') ?>&set_id=' + $(this).val());">
+                            onChange="$('#course_set_assign_explain').load('<?= $controller->link_for('/explain_course_set') ?>&set_id=' + $(this).val(), function () { $(this).show(); });">
                         <option></option>
                         <? $my_own_sets = $available_coursesets->findBy('my_own', true); ?>
                         <? $other_sets = $available_coursesets->findBy('my_own', false); ?>
@@ -74,11 +74,9 @@
                         <? endif ?>
                     </select>
 
-                    <div id="course_set_assign_explain" style="display: inline-block;padding:1ex;">
-                    </div>
-                    <div style="display: inline-block;padding:1ex;">
-                        <?= Studip\Button::create(_("Zuordnen"), 'change_course_set_assign', ['data-dialog' => '']) ?>
-                    </div>
+                    <?= Studip\Button::create(_("Zuordnen"), 'change_course_set_assign', ['data-dialog' => '']) ?>
+
+                    <div id="course_set_assign_explain" class="messagebox messagebox_info" style="display: none"></div>
                 </details>
             <? endif ?>
         <? endif ?>
