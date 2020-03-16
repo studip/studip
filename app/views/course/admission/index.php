@@ -51,7 +51,7 @@
                     </summary>
 
                     <select name="course_set_assign" style="display: inline-block;"
-                            onChange="$('#course_set_assign_explain').load('<?= $controller->link_for('/explain_course_set') ?>&set_id=' + $(this).val(), function () { $(this).show(); });">
+                            onChange="$('#course_set_assign_explain').load('<?= $controller->link_for('/explain_course_set') ?>&set_id=' + $(this).val(), function () { $(this).show(); });">
                         <option></option>
                         <? $my_own_sets = $available_coursesets->findBy('my_own', true); ?>
                         <? $other_sets = $available_coursesets->findBy('my_own', false); ?>
