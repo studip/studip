@@ -1037,6 +1037,11 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$new_id, $old_id]);
 
+            self::removeDoubles('termin_related_persons', 'range_id', $new_id, $old_id);
+            $query = "UPDATE IGNORE `termin_related_persons` SET `user_id` = ? WHERE `user_id` = ?";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([$new_id, $old_id]);
+
             // Persönliche Infos
             $query = "DELETE FROM user_info WHERE user_id = ?";
             $statement = DBManager::get()->prepare($query);
