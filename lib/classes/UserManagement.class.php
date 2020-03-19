@@ -836,6 +836,13 @@ class UserManagement
                 $this->msg .= 'info§' . sprintf(_('%s Einträge aus Veranstaltungen gelöscht.'), $count) . '§';
             }
 
+            $query = "DELETE FROM `termin_related_persons` WHERE `user_id` = ?";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([$this->user_data['auth_user_md5.user_id']]);
+            if ($count = $statement->rowCount()) {
+                $this->msg .= 'info§' . sprintf(_('%u Terminzuordnungen gelöscht.'), $count) . '§';
+            }
+
             // delete visibility settings
             Visibility::removeUserPrivacySettings($this->user_data['auth_user_md5.user_id']);
 
