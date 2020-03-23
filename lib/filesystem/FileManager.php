@@ -421,6 +421,8 @@ class FileManager
             return $errors;
         }
 
+        $original_file_name = $source->file->name;
+
         // Check if $uploaded_file_data has valid data in it:
         $upload_error = $folder->validateUpload($uploaded_file_data, $user->id);
         if ($upload_error) {
@@ -503,6 +505,8 @@ class FileManager
             $data_file->mime_type = get_mime_type($uploaded_file_data['name']);
             if ($update_filename) {
                 $data_file->name = $uploaded_file_data['name'];
+            } else {
+                $data_file->name = $source->file->name;
             }
             $data_file->store();
 
