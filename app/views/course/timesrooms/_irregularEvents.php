@@ -16,7 +16,7 @@ $room_request_filter = function ($date) {
         <nav>
             <? $actionMenu = ActionMenu::get()?>
             <? $actionMenu->addLink(
-                $controller->link_for('course/timesrooms/createSingleDate/' . $course->id, $linkAttributes),
+                $controller->url_for('course/timesrooms/createSingleDate/' . $course->id, $linkAttributes),
                 _('Einzeltermin hinzufügen'),
                 Icon::create('date+add', 'clickable', ['title' => _('Einzeltermin hinzufügen')]),
                 ['data-dialog' => 'size=600']
