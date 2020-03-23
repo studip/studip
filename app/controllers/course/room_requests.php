@@ -412,7 +412,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             $admission_turnout = $this->course->admission_turnout;
             $this->selected_properties['seats'] = $admission_turnout
                                                 ? $admission_turnout
-                                                : $config->RESOURCES_ROOM_REQUEST_DEFAULT_SEATS;
+                                                : Config::get()->RESOURCES_ROOM_REQUEST_DEFAULT_SEATS;
         }
 
         if (Request::isPost()) {
@@ -537,7 +537,6 @@ class Course_RoomRequestsController extends AuthenticatedController
                 null
             ];
         }
-
         //Search rooms by the selected properties:
         $this->available_rooms = RoomManager::findRooms(
             $this->room_name,
@@ -702,6 +701,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             $this->comment = $this->request->comment;
             $this->reply_lecturers = $this->request->reply_recipients == 'lecturer';
             $this->preparation_time = intval($this->request->preparation_time / 60);
+            $this->category_id = $this->request->category->id;
         } else {
             //It is a new request or an existing request that is being modified.
             //Create the request object from the session and do nothing else.
@@ -747,16 +747,14 @@ class Course_RoomRequestsController extends AuthenticatedController
                 $session_data['comment'] = $this->comment;
                 $session_data['reply_lecturers'] = $this->reply_lecturers;
                 $session_data['preparation_time'] = $this->preparation_time;
+                $session_data['category_id'] = $this->category_id;
                 if (Request::submitted('select_other_room')) {
-                    $session_data['selected_properties']['seats'] = $this->seats;
-                    $session_data['comment'] = $this->comment;
-                    $session_data['reply_lecturers'] = $this->reply_lecturers;
-                    $session_data['preparation_time'] = $this->preparation_time;
                     $this->redirect('course/room_requests/request_select_room/' . $this->request_id);
                 } elseif (Request::submitted('reset_category')) {
                     //Delete all selected properties from the session since the
                     //category is reset:
                     $session_data['selected_properties'] = [];
+                    unset($session_data['category_id']);
                     $this->redirect('course/room_requests/request_start/' . $this->request_id);
                 } else {
                     $this->redirect('course/room_requests/request_select_properties/' . $this->request_id);

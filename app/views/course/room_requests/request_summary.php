@@ -38,10 +38,6 @@
                         'select_properties'
                     ) ?>
                 <? endif ?>
-                <? if ($request->category): ?>
-                    <dt><?= _('Gewünschter Raumtyp') ?>:</dt>
-                    <dd><?= htmlReady($request->category->name) ?></dd>
-                <? endif ?>
                 <? if ($request->properties): ?>
                     <? foreach ($request->properties as $property): ?>
                         <? if (!in_array($property->name, ['seats'])): ?>
@@ -49,6 +45,10 @@
                             <dd><?= htmlReady($property->__toString()) ?></dd>
                         <? endif ?>
                     <? endforeach ?>
+                <? endif ?>
+                <? if ($request->category): ?>
+                    <dt><?= _('Gewünschter Raumtyp') ?>:</dt>
+                    <dd><?= htmlReady($request->category->name) ?></dd>
                 <? endif ?>
                 <label>
                     <?= _('Erwartete Anzahl an Teilnehmenden') ?>:
