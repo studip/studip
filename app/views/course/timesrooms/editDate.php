@@ -202,7 +202,7 @@
                     )
                     :  $controller->url_for(
                         'course/room_requests/request_start/' . $request_id,
-                        array_merge($params, ['origin' => 'course_timesrooms'])
+                        array_merge($params, ['range_str' => 'date_' . $date->id,'origin' => 'course_timesrooms'])
                     )
                 ),
                 ['data-dialog' => 'size=big']) ?>
