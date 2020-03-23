@@ -421,8 +421,6 @@ class FileManager
             return $errors;
         }
 
-        $original_file_name = $source->file->name;
-
         // Check if $uploaded_file_data has valid data in it:
         $upload_error = $folder->validateUpload($uploaded_file_data, $user->id);
         if ($upload_error) {
