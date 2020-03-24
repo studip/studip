@@ -521,7 +521,7 @@
             }
 
             const button = input.nextElementSibling;
-            if (button.matches('input[type="submit"]')) {
+            if (button && button.matches('input[type="submit"]')) {
                 button.style.position = 'relative';
                 button.style.zIndex = input.style.zIndex;
             }
