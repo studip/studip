@@ -1,4 +1,4 @@
-<?
+<?php
 $start_pages = [
     '' => _('keine'),
      1 => _('Meine Veranstaltungen'),
@@ -14,9 +14,7 @@ $start_pages = [
     <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
 
     <fieldset>
-        <legend>
-            <?= _('Allgemeine Einstellungen') ?>
-        </legend>
+        <legend><?= _('Allgemeine Einstellungen') ?></legend>
 
         <label>
             <?= _('Sprache') ?>
@@ -30,7 +28,7 @@ $start_pages = [
             </select>
         </label>
 
-        <? if (!$GLOBALS['perm']->have_perm('root')): ?>
+    <? if (!$GLOBALS['perm']->have_perm('root')): ?>
         <label>
             <?= _('Persönliche Startseite') ?>
             <?= tooltipHtmlIcon(_('Sie können hier einstellen, welche Seite standardmäßig nach dem Einloggen '
@@ -45,7 +43,7 @@ $start_pages = [
             <? endforeach; ?>
             </select>
         </label>
-        <? endif ?>
+    <? endif ?>
 
         <label>
             <input type="checkbox" name="skiplinks_enable"
@@ -82,7 +80,7 @@ $start_pages = [
                 .'hinter jeder Veranstaltung aktivieren.')) ?>
         </label>
 
-        <? if (get_config('TOURS_ENABLE')) : ?>
+    <? if (Config::get()->TOURS_ENABLE) : ?>
         <label>
             <input type="checkbox" name="tour_autostart_disable"
                    aria-describedby="tour_autostart_disable_description" value="1"
@@ -92,13 +90,11 @@ $start_pages = [
                 .'Stud.IP-Seiten automatisch starten, wenn Sie die Seite aufrufen. Die Touren '
                 .'können weiterhin über die Hilfe gestartet werden.')) ?>
         </label>
-        <? endif ?>
+    <? endif ?>
     </fieldset>
 
     <fieldset>
-        <legend>
-            <?= _('Benachrichtigungen') ?>
-        </legend>
+        <legend><?= _('Benachrichtigungen') ?></legend>
 
         <label>
             <input type="checkbox" name="personal_notifications_activated"
@@ -123,9 +119,7 @@ $start_pages = [
     </fieldset>
 
     <fieldset>
-        <legend>
-            <?= _('Wiki') ?>
-        </legend>
+        <legend><?= _('Wiki') ?></legend>
 
         <label>
             <input type="checkbox" name="wiki_comments_enable" value="1"
@@ -135,6 +129,17 @@ $start_pages = [
                 .' und nicht mehr nur als Icon angezeigt.')) ?>
         </label>
     </fieldset>
+
+<? if (Config::get()->WYSIWYG): ?>
+    <fieldset>
+        <legend><?= _('WYSIWYG-Editor') ?></legend>
+
+        <label>
+            <input type="checkbox" name="wysiwyg_enabled" value="1"
+                   <? if (!$config->WYSIWYG_DISABLED) echo 'checked'; ?>>
+            <?= _('WYSIWYG-Editor aktivieren') ?>
+    </fieldset>
+<? endif; ?>
 
     <footer>
         <?= \Studip\Button::create(_("Speichern")) ?>

@@ -64,6 +64,10 @@ class Settings_GeneralController extends Settings_SettingsController
         $this->config->store('TOUR_AUTOSTART_DISABLE', Request::int('tour_autostart_disable'));
         $this->config->store('WIKI_COMMENTS_ENABLE', Request::int('wiki_comments_enable'));
 
+        if (Config::get()->WYSIWYG) {
+            $this->config->store('WYSIWYG_DISABLED', !Request::int('wysiwyg_enabled'));
+        }
+
         if (Request::int('personal_notifications_activated')) {
             PersonalNotifications::activate($this->user->id);
         } else {
