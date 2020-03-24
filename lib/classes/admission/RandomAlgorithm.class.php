@@ -63,6 +63,10 @@ class RandomAlgorithm extends AdmissionAlgorithm
         foreach ($courseSet->getCourses() as $course_id) {
             $waiting_users = [];
             $course = Course::find($course_id);
+            if (!$course) {
+                Log::DEBUG(sprintf('course %s not found, continue', $course_id));
+                continue;
+            }
             $free_seats_course = $course->getFreeSeats();
             foreach ($groups_quota as $group_id => $quota) {
                 $claiming_users = AdmissionPriority::getPrioritiesByCourse($courseSet->getId(), $course->id);
@@ -193,14 +197,19 @@ class RandomAlgorithm extends AdmissionAlgorithm
         $stats = AdmissionPriority::getPrioritiesStats($courseSet->getId());
         $courses = array_map(function ($a) {return $a['h'];},$stats);
         arsort($courses, SORT_NUMERIC);
+        $id_courses = array_filter(array_keys($courses));
         $max_prio = AdmissionPriority::getPrioritiesMax($courseSet->getId());
         //count already manually distributed places
-        $distributed_users = $this->countParticipatingUsers(array_keys($courses), array_keys($claiming_users));
+        $distributed_users = $this->countParticipatingUsers($id_courses, array_keys($claiming_users));
         Log::DEBUG('already distributed users: ' . print_r($distributed_users,1));
         //walk through all prios with all courses
         foreach(range(1, $max_prio) as $current_prio) {
-            foreach (array_keys($courses) as $course_id) {
+            foreach ($id_courses as $course_id) {
                 $course = Course::find($course_id);
+                if (!$course) {
+                    Log::DEBUG(sprintf('course %s not found, continue', $course_id));
+                    continue;
+                }
                 $free_seats_course = $course->getFreeSeats();
                 foreach ($groups_quota as $group_id => $quota) {
                     $current_claiming = [];
