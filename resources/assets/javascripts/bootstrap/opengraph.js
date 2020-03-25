@@ -48,7 +48,7 @@ $(document).on('click', '.opengraph-area .switcher button', function (event) {
     event.preventDefault();
 }).on('click', '.opengraph a.flash-embedder', function (event) {
     let url = $(this).attr('href');
-    let template = _.template('<iframe width="100%" height="200px" frameborder="0" src="<%= url %>"></iframe>');
+    let template = _.template('<iframe width="100%" height="200px" frameborder="0" src="<%= url %>" allowfullscreen></iframe>');
     $(this).replaceWith(template({ url: url }));
 
     event.preventDefault();
