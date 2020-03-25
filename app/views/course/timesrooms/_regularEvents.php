@@ -82,24 +82,27 @@
                             Icon::create('edit', 'clickable', ['title' => _('Diesen Zeitraum bearbeiten'), 'style' => 'vertical-align: middle;']),
                             ['data-dialog' => 'size=600']
                         ) ?>
-                        <? $actionMenu->addLink(
-                            $controller->url_for(
-                                'course/room_requests/request_start/',
-                                [
-                                    'range' => 'cycle',
-                                    'range_id' => $metadate_id
-                                ]
-                            ),
-                            _('Raumanfrage erstellen'),
-                            Icon::create(
-                                'room-request',
-                                'clickable',
-                                [
-                                    'title' => _('Raumanfrage erstellen'),
-                                    'class' => 'text-align'
-                                ]
-                            )
-                        ) ?>
+                        <? if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) : ?>
+                            <? $actionMenu->addLink(
+                                $controller->url_for(
+                                    'course/room_requests/request_start/',
+                                    [
+                                        'range' => 'cycle',
+                                        'range_id' => $metadate_id
+                                    ]
+                                ),
+                                _('Raumanfrage erstellen'),
+                                Icon::create(
+                                    'room-request',
+                                    'clickable',
+                                    [
+                                        'title' => _('Raumanfrage erstellen'),
+                                        'class' => 'text-align'
+                                    ]
+                                ),
+                                ['data-dialog' => 'size=big']
+                            ) ?>
+                        <? endif ?>
                         <? $actionMenu->addButton(
                             'delete_cycle',
                             _('Diesen Zeitraum löschen'),
