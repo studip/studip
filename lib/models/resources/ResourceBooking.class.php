@@ -1517,7 +1517,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
     }
 
 
-    public function convertToEventData(array $time_intervals, User $user)
+    public function convertToEventData(array $time_intervals, $user)
     {
         $booking_plan_booking_bg =
             \ColourValue::find('Resources.BookingPlan.Booking.Bg');
@@ -1564,8 +1564,11 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
             $colour = $booking_plan_planned_booking_bg->__toString();
             $text_colour = $booking_plan_planned_booking_fg->__toString();
         }
-        
-        $booking_is_editable = !$this->isReadOnlyForUser($user);
+
+        $booking_is_editable = false;
+        if ($user instanceof User) {
+            $booking_is_editable = !$this->isReadOnlyForUser($user);
+        }
 
         $booking_api_urls = [];
         $booking_view_urls = [
@@ -1609,9 +1612,11 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
             }
             $prefix = '';
             $icon = '';
-    
-            if ($this->resource->userHasPermission($user, 'user') && $this->internal_comment) {
-                $icon = 'chat2';
+
+            if ($user instanceof User) {
+                if ($this->resource->userHasPermission($user, 'user') && $this->internal_comment) {
+                    $icon = 'chat2';
+                }
             }
 
             if (!$this->isSimpleBooking()) {
