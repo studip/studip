@@ -390,6 +390,8 @@ class Course_TimesroomsController extends AuthenticatedController
                 }
             } else if ($old_room_id && !$singledate->resource_id) {
                 $this->course->createInfo(sprintf(_("Die Raumbuchung für den Termin %s wurde aufgehoben, da die neuen Zeiten außerhalb der alten liegen!"), '<b>'. $singledate->toString() .'</b>'));
+            } else if (Request::get('room_id_parameter')) {
+                $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
             }
         } elseif (Request::option('room') == 'freetext') {
             $singledate->setFreeRoomText(Request::get('freeRoomText_sd'));
@@ -473,6 +475,10 @@ class Course_TimesroomsController extends AuthenticatedController
             $singledate->bookRoom(Request::option('room_id'));
             $this->course->appendMessages($singledate->getMessages());
         }
+        if (Request::get('room_id_parameter')) {
+            $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
+        }
+
 
         if ($start_time < $this->course->filterStart || $end_time > $this->course->filterEnd) {
             $this->course->setFilter('all');
@@ -774,15 +780,19 @@ class Course_TimesroomsController extends AuthenticatedController
         if (in_array(Request::get('action'), ['room', 'freetext', 'noroom']) || Request::get('course_type')) {
             foreach ($singledates as $key => $singledate) {
                 $date = new SingleDate($singledate);
-                if (Request::option('action') == 'room' && Request::option('room_id')) {
-                    if (Request::option('room_id') != $singledate->room_booking->resource_id) {
-                        if ($resObj = $date->bookRoom(Request::option('room_id'))) {
-                            $messages = $date->getMessages();
-                            $this->course->appendMessages($messages);
-                        } else if (!$date->ex_termin) {
-                            $this->course->createError(sprintf(_("Der angegebene Raum konnte für den Termin %s nicht gebucht werden!"),
-                                                               '<strong>' . $date->toString() . '</strong>'));
+                if (Request::option('action') == 'room') {
+                    if (Request::option('room_id')) {
+                        if (Request::option('room_id') != $singledate->room_booking->resource_id) {
+                            if ($resObj = $date->bookRoom(Request::option('room_id'))) {
+                                $messages = $date->getMessages();
+                                $this->course->appendMessages($messages);
+                            } else if (!$date->ex_termin) {
+                                $this->course->createError(sprintf(_("Der angegebene Raum konnte für den Termin %s nicht gebucht werden!"),
+                                    '<strong>' . $date->toString() . '</strong>'));
+                            }
                         }
+                    } else if (Request::get('room_id_parameter')) {
+                        $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
                     }
                 } elseif (Request::option('action') == 'freetext') {
                     $date->setFreeRoomText(Request::get('freeRoomText'));
