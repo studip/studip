@@ -176,7 +176,7 @@ class BlubberThreadsIndexTest extends \Codeception\Test\Unit
         // now create one new BlubberThread and assert its presence
         $thread = $this->createPrivateBlubberThreadForUser($credentials, [$credentials], 'some clever content');
         $threads = $this->tester->withPHPLib($credentials, function ($credentials) use ($now) {
-            return \BlubberThread::findMyGlobalThreads(9999, $now->getTimestamp(), null, $credentials['id']);
+            return \BlubberThread::findMyGlobalThreads(9999, $now->getTimestamp() - 1, null, $credentials['id']);
         });
         $this->tester->assertCount(1, $threads);
 
@@ -184,12 +184,12 @@ class BlubberThreadsIndexTest extends \Codeception\Test\Unit
         $this->tester->assertTrue((new DateTime("@".$pivot))->getTimestamp() == $thread['chdate']);
 
         // assert that there is one thread since (inclusive) pivot
-        $response = $this->fetchAllThreads($credentials, ['since' => (new DateTime("@".$pivot))->format(\DATE_ATOM)]);
+        $response = $this->fetchAllThreads($credentials, ['since' => (new DateTime("@".($pivot - 1)))->format(\DATE_ATOM)]);
         $this->tester->assertCount(1, $threads = $response->document()->primaryResources());
         $this->tester->assertSame($threads[0]->id(), $thread->id);
 
         // assert that there is no thread later than (not inclusive) pivot
-        $response = $this->fetchAllThreads($credentials, ['since' => (new DateTime("@".$pivot))->modify('+1 second')->format(\DATE_ATOM)]);
+        $response = $this->fetchAllThreads($credentials, ['since' => (new DateTime("@".($pivot - 1)))->modify('+1 second')->format(\DATE_ATOM)]);
         $this->tester->assertCount(0, $response->document()->primaryResources());
     }
 
@@ -208,7 +208,7 @@ class BlubberThreadsIndexTest extends \Codeception\Test\Unit
         // now create one new BlubberThread and assert its presence
         $thread = $this->createPrivateBlubberThreadForUser($credentials, [$credentials], 'some clever content');
         $threads = $this->tester->withPHPLib($credentials, function ($credentials) use ($now) {
-            return \BlubberThread::findMyGlobalThreads(9999, $now->getTimestamp(), null, $credentials['id']);
+            return \BlubberThread::findMyGlobalThreads(9999, $now->getTimestamp() - 1, null, $credentials['id']);
         });
         $this->tester->assertCount(1, $threads);
 
@@ -221,13 +221,13 @@ class BlubberThreadsIndexTest extends \Codeception\Test\Unit
         });
         $this->tester->assertTrue($countAllThreads > 0);
 
-        // assert that we get all the threads before (inclusive) pivot
-        $response = $this->fetchAllThreads($credentials, ['before' => (new DateTime("@".$pivot))->format(\DATE_ATOM)]);
+        // assert that we get all the threads before (exclusive) pivot
+        $response = $this->fetchAllThreads($credentials, ['before' => (new DateTime("@".($pivot + 1)))->format(\DATE_ATOM)]);
         $this->tester->assertCount($countAllThreads, $threads = $response->document()->primaryResources());
         $this->tester->assertSame($threads[0]->id(), $thread->id);
 
-        // assert that we get all the threads minus 1 before (not inclusive) pivot
-        $response = $this->fetchAllThreads($credentials, ['before' => (new DateTime("@".$pivot))->modify("-1 seconds")->format(\DATE_ATOM)]);
+        // assert that we get all the threads minus 1 before (exclusive) pivot
+        $response = $this->fetchAllThreads($credentials, ['before' => (new DateTime("@".($pivot + 1)))->modify("-1 seconds")->format(\DATE_ATOM)]);
         $this->tester->assertCount($countAllThreads - 1, $threads = $response->document()->primaryResources());
     }
 

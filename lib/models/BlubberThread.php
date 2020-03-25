@@ -138,8 +138,8 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
     /**
      * @param string $limit      optional; limits the number of results
-     * @param string $since      optional; selects threads after this date (inclusive)
-     * @param string $olderthan  optional; selects threads before this date (inclusive)
+     * @param string $since      optional; selects threads after this date (exclusive)
+     * @param string $olderthan  optional; selects threads before this date (exclusive)
      * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
      * @param string $search     optional; filters the threads by a search string
      *
@@ -238,8 +238,8 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
      * manage its own visibility and not only pure SQL, we need to execute
      * @param $thread_ids
      * @param string $limit      optional; limits the number of results
-     * @param string $since      optional; selects threads after this date (inclusive)
-     * @param string $olderthan  optional; selects threads before this date (inclusive)
+     * @param string $since      optional; selects threads after this date (exclusive)
+     * @param string $olderthan  optional; selects threads before this date (exclusive)
      * @param string $user_id    optional; use this ID instead of $GLOBALS['user']->id
      * @param string $search     optional; filters the threads by a search string
      * @return array
