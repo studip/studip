@@ -20,6 +20,15 @@ class Calendar_CalendarController extends AuthenticatedController
         parent::before_filter($action, $args);
         PageLayout::setHelpKeyword('Basis.Terminkalender');
         $this->settings = $GLOBALS['user']->cfg->CALENDAR_SETTINGS;
+        if ($this->settings['start'] < 0 || $this->settings['start'] > 23) {
+            $this->settings['start'] = 0;
+        }
+        if ($this->settings['end'] < 0 || $this->settings['end'] > 23) {
+            $this->settings['end'] = 23;
+        }
+        if (!in_array($this->settings['view'], ['day','week','month','year'])) {
+            $this->settings['view'] = 'week';
+        }
         if (!is_array($this->settings)) {
             $this->settings = Calendar::getDefaultUserSettings();
         }
