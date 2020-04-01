@@ -544,7 +544,7 @@ class Consultation_AdminController extends ConsultationController
                     continue;
                 }
 
-                $slots[] = $slots;
+                $slots[] = $slot;
             }
         }
 
