@@ -117,7 +117,7 @@ class ResourceNavigation extends Navigation
             $overview_navigation->addSubNavigation('rooms', $sub_navigation);
         }
 
-        if ($GLOBALS['perm']->have_perm('user')) {
+        if (Config::get()->RESOURCES_SHOW_PUPLIC_ROOM_PLANS) {
             $sub_navigation = new Navigation(
                 _('Öffentlich zugängliche Raumpläne'),
                 'dispatch.php/room_management/overview/public_booking_plans'

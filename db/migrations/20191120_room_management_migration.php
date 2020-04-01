@@ -1603,6 +1603,16 @@ class RoomManagementMigration extends Migration
                 UNIX_TIMESTAMP(),
                 UNIX_TIMESTAMP(),
                 'Whether to display the list with current requests in the room management overview (true) or not (false).'
+            ),
+            (
+                'RESOURCES_SHOW_PUPLIC_ROOM_PLANS',
+                '0',
+                'boolean',
+                'global',
+                'resources',
+                UNIX_TIMESTAMP(),
+                UNIX_TIMESTAMP(),
+                'Whether to display the list of available public room plans.'
             );"
         );
 
