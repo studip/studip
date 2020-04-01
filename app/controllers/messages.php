@@ -343,6 +343,11 @@ class MessagesController extends AuthenticatedController {
         if (Request::option("answer_to")) {
             $this->default_message->receivers = [];
             $old_message = new Message(Request::option("answer_to"));
+            $this->default_tags = Request::get("default_tags", "");
+            $oldtags = $old_message->getUserTags($GLOBALS['user']->id);
+            if (count($oldtags)) {
+                $this->default_tags .= " ".implode(" ", $oldtags);
+            }
             if (!$old_message->permissionToRead()) {
                 throw new AccessDeniedException("Message is not for you.");
             }
@@ -924,7 +929,7 @@ class MessagesController extends AuthenticatedController {
     public function setupSidebar($action)
     {
         $sidebar = Sidebar::get();
-        
+
         $actions = new ActionsWidget();
         if ($GLOBALS['user']->perms !== 'user') {
             $actions->addLink(
