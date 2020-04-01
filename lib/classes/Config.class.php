@@ -223,7 +223,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
 
             try {
                 $query = "SELECT config.field, IFNULL(config_values.value, config.value) AS value, type, section, `range`, description,
-                                 config_values.comment, config_values.value IS NULL AS is_default
+                                 config_values.comment, config_values.value = config.value AS is_default
                           FROM config
                           LEFT JOIN config_values ON config.field = config_values.field AND range_id = 'studip'
                           ORDER BY section, config.field";
@@ -304,7 +304,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
             if (isset($values['comment'])) {
                 $value_entry->comment = $values['comment'];
             }
-            if ($value_entry->value == $entry->value) {
+            if ($entry->isDefault($value_entry)) {
                 $ret += $value_entry->delete();
             } else {
                 $ret += $value_entry->store();
@@ -319,7 +319,11 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         if ($ret) {
             $this->fetchData();
             if (isset($value_entry)) {
-               NotificationCenter::postNotification('ConfigValueDidChange', $this, ['field' => $field, 'old_value' => $old_value, 'new_value' => $value_entry->value]);
+               NotificationCenter::postNotification('ConfigValueDidChange', $this, [
+                   'field'     => $field,
+                   'old_value' => $old_value,
+                   'new_value' => $value_entry->value,
+               ]);
             }
         }
         return $ret > 0;

@@ -36,4 +36,16 @@ class ConfigEntry extends SimpleORMap
         $config['db_table'] = 'config';
         parent::configure($config);
     }
+
+    /**
+     * Returns whether a config value does not differ from the default entry.
+     *
+     * @param  ConfigValue $value Value to check
+     * @return boolean
+     */
+    public function isDefault(ConfigValue $value)
+    {
+        return $value->value == $this->value
+            && !$value->comment;
+    }
 }
