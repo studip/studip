@@ -344,7 +344,7 @@ class MessagesController extends AuthenticatedController {
             $this->default_message->receivers = [];
             $old_message = new Message(Request::option("answer_to"));
             $this->default_tags = Request::get("default_tags", "");
-            $oldtags = $old_message->getUserTags($GLOBALS['user']->id);
+            $oldtags = $old_message->getTags($GLOBALS['user']->id);
             if (count($oldtags)) {
                 $this->default_tags .= " ".implode(" ", $oldtags);
             }
