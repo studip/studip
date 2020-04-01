@@ -33,7 +33,7 @@ class RoomManagement_OverviewController extends StudipController
     public function before_filter(&$action, &$args)
     {
         if ($action == 'public_booking_plans') {
-            if (Config::get()->RESOURCES_SHOW_PUPLIC_ROOM_PLANS) {
+            if (Config::get()->RESOURCES_SHOW_PUBLIC_ROOM_PLANS) {
                 $this->allow_nobody = true;
             } else {
                 throw new AccessDeniedException();

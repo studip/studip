@@ -39,7 +39,7 @@ class StudipNavigation extends Navigation
         }
         try {
             if (Config::get()->RESOURCES_ENABLE
-                && Config::get()->RESOURCES_SHOW_PUPLIC_ROOM_PLANS
+                && Config::get()->RESOURCES_SHOW_PUBLIC_ROOM_PLANS
                 && $user->id == 'nobody'
                 && Room::publicBookingPlansExists()) {
                 //Show a navigation entry for the public booking plans overview.

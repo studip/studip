@@ -1605,7 +1605,7 @@ class RoomManagementMigration extends Migration
                 'Whether to display the list with current requests in the room management overview (true) or not (false).'
             ),
             (
-                'RESOURCES_SHOW_PUPLIC_ROOM_PLANS',
+                'RESOURCES_SHOW_PUBLIC_ROOM_PLANS',
                 '0',
                 'boolean',
                 'global',
