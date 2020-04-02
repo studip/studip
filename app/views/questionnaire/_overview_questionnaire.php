@@ -14,7 +14,7 @@
                 $icons[$class] = $class::getIcon();
             }
             foreach ($icons as $class => $icon) {
-                echo $icon->asImg(20, ['class' => 'text-bottom', 'title' => $class::getName()]);
+                echo $icon->asImg(16, ['class' => 'text-bottom', 'title' => $class::getName()])." ";
             }
         ?>
         </span>

@@ -15,9 +15,11 @@
         </label>
     </fieldset>
 
-    <? foreach ($questionnaire->questions as $index => $question) : ?>
-        <?= $this->render_partial("questionnaire/_question.php", compact("question")) ?>
-    <? endforeach ?>
+    <div class="all_questions">
+        <? foreach ($questionnaire->questions as $index => $question) : ?>
+            <?= $this->render_partial("questionnaire/_question.php", compact("question")) ?>
+        <? endforeach ?>
+    </div>
 
     <div style="text-align: right;" class="add_questions">
         <? foreach (get_declared_classes() as $class) :

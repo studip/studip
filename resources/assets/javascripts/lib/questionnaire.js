@@ -131,10 +131,24 @@ const Questionnaire = {
                 jQuery("input[name=order]").val(JSON.stringify(order));
                 jQuery(output.html)
                     .hide()
-                    .insertBefore('.questionnaire_edit .add_questions')
+                    .appenTo('.questionnaire_edit .all_questions')
                     .show('fade');
             }
         });
+    },
+    moveQuestionUp: function () {
+        let thisquestion = jQuery(this).closest(".question");
+        let upper = thisquestion.prev();
+        thisquestion.insertBefore(upper);
+        upper.hide().fadeIn();
+        thisquestion.hide().fadeIn();
+    },
+    moveQuestionDown: function () {
+        let thisquestion = jQuery(this).closest(".question");
+        let downer = thisquestion.next();
+        thisquestion.insertAfter(downer);
+        downer.hide().fadeIn();
+        thisquestion.hide().fadeIn();
     }
 };
 
