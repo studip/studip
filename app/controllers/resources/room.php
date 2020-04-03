@@ -192,7 +192,9 @@ class Resources_RoomController extends AuthenticatedController
         $user            = User::findCurrent();
         $this->mode      = $mode;
         $this->show_form = false;
-        if ($mode == 'edit' || $mode == 'delete') {
+        if ($mode == 'add') {
+            PageLayout::setTitle(_('Raum hinzufügen'));
+        } elseif ($mode == 'edit' || $mode == 'delete') {
             $this->room = Room::find($room_id);
             if (!$this->room) {
                 PageLayout::postError(
@@ -204,6 +206,11 @@ class Resources_RoomController extends AuthenticatedController
             if (($mode == 'edit' && !$this->room->userHasPermission($user, 'admin'))
                 || ($mode == 'delete' && !$this->room->userHasPermission($user, 'admin'))) {
                 throw new AccessDeniedException();
+            }
+            if ($mode == 'edit') {
+                PageLayout::setTitle(sprintf(_('%s: Bearbeiten'), $this->room->getFullName()));
+            } elseif ($mode == 'delete') {
+                PageLayout::setTitle(sprintf(_('%s: Löschen'), $this->room->getFullName()));
             }
         }
 

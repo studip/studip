@@ -156,11 +156,13 @@ class Resources_BuildingController extends AuthenticatedController
             $this->grouped_defined_properties = $this->category->getGroupedPropertyDefinitions(
                 ['geo_coordinates', 'number', 'address']
             );
+            PageLayout::setTitle(_('Neues Gebäude'));
         } elseif ($mode == 'edit') {
             $this->grouped_defined_properties =
                 $this->building->category->getGroupedPropertyDefinitions(
                     $this->building->getRequiredPropertyNames()
                 );
+            PageLayout::setTitle(sprintf(_('%s: Bearbeiten'), $this->building->getFullName()));
         }
         
         if (($mode == 'add') || ($mode == 'edit')) {
@@ -407,6 +409,7 @@ class Resources_BuildingController extends AuthenticatedController
             );
             return;
         }
+        PageLayout::setTitle(sprintf(_('%s: Löschen'), $this->building->getFullName()));
         
         //geo_coordinates_object is needed in the index view that is loaded
         //from the view for this action.

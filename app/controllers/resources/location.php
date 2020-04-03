@@ -150,13 +150,20 @@ class Resources_LocationController extends AuthenticatedController
         $this->location = null;
         $this->mode = $mode;
 
-        if (($mode == 'edit') || ($mode == 'delete')) {
+        if ($mode == 'add') {
+            PageLayout::setTitle(_('Standort hinzufügen'));
+        } elseif (($mode == 'edit') || ($mode == 'delete')) {
             $this->location = Location::find($location_id);
             if (!$this->location) {
                 PageLayout::postError(
                     _('Der angegebene Standort wurde nicht gefunden!')
                 );
                 return;
+            }
+            if ($mode == 'edit') {
+                PageLayout::setTitle(sprintf(_('%s: Bearbeiten'), $this->location->getFullName()));
+            } elseif ($mode == 'delete') {
+                PageLayout::setTitle(sprintf(_('%s: Löschen'), $this->location->getFullName()));
             }
         }
 
