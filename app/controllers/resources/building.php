@@ -156,7 +156,6 @@ class Resources_BuildingController extends AuthenticatedController
             $this->grouped_defined_properties = $this->category->getGroupedPropertyDefinitions(
                 ['geo_coordinates', 'number', 'address']
             );
-            PageLayout::setTitle(_('Neues Gebäude'));
         } elseif ($mode == 'edit') {
             $this->grouped_defined_properties =
                 $this->building->category->getGroupedPropertyDefinitions(
