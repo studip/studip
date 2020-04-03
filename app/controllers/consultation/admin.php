@@ -674,14 +674,12 @@ class Consultation_AdminController extends ConsultationController
             Icon::create('add')
         )->asDialog('size=auto');
 
-        if ($action === 'index') {
-            $actions->addLink(
-                _('Alle Sprechstundentermine löschen'),
-                $this->purgeURL(),
-                Icon::create('trash'),
-                ['data-confirm' => _('Wollen Sie wirklich alle Sprechstundentermine löschen?')]
-            );
-        }
+        $actions->addLink(
+            _('Alle Sprechstundentermine löschen'),
+            $this->purgeURL(),
+            Icon::create('trash'),
+            ['data-confirm' => _('Wollen Sie wirklich alle Sprechstundentermine löschen?')]
+        );
 
         $options = $sidebar->addWidget(new OptionsWidget());
         $options->addCheckbox(
