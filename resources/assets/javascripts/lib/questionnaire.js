@@ -131,7 +131,7 @@ const Questionnaire = {
                 jQuery("input[name=order]").val(JSON.stringify(order));
                 jQuery(output.html)
                     .hide()
-                    .appenTo('.questionnaire_edit .all_questions')
+                    .appendTo('.questionnaire_edit .all_questions')
                     .show('fade');
             }
         });
