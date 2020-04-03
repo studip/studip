@@ -531,6 +531,39 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
+    public function purge_action()
+    {
+        $deleted = ['current' => 0, 'expired' => 0];
+
+        ConsultationSlot::findEachBySQL(
+            function ($slot) use (&$deleted) {
+                $index = $slot->is_expired ? 'expired' : 'current';
+
+                $slot->removeEvent();
+                $deleted[$index] += $slot->delete();
+            },
+            'JOIN consultation_blocks USING (block_id) WHERE teacher_id = ?',
+            [$this->current_user->id]
+        );
+
+        if (array_sum($deleted) > 0) {
+            $message = [];
+            if ($deleted['current'] > 0) {
+                $message[] = sprintf(_('%u aktuelle'), $deleted['current']);
+            }
+            if ($deleted['expired'] > 0) {
+                $message[] = sprintf(_('%u vergangene'), $deleted['expired']);
+            }
+
+            PageLayout::postSuccess(sprintf(
+                _('%s Sprechstundentermine wurden gelöscht'),
+                implode(_(' und '), $message)
+            ));
+        }
+
+        $this->redirect('consultation/admin/index');
+    }
+
     public function mail_action($block_id, $slot_id = null)
     {
         // Get matching slots
@@ -640,6 +673,15 @@ class Consultation_AdminController extends ConsultationController
             $this->url_for('consultation/admin/create'),
             Icon::create('add')
         )->asDialog('size=auto');
+
+        if ($action === 'index') {
+            $actions->addLink(
+                _('Alle Sprechstundentermine löschen'),
+                $this->purgeURL(),
+                Icon::create('trash'),
+                ['data-confirm' => _('Wollen Sie wirklich alle Sprechstundentermine löschen?')]
+            );
+        }
 
         $options = $sidebar->addWidget(new OptionsWidget());
         $options->addCheckbox(

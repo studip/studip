@@ -190,13 +190,7 @@ class ConsultationSlot extends SimpleORMap
     public function updateEvent()
     {
         if (count($this->bookings) === 0 && !$this->block->calendar_events) {
-            if ($this->event) {
-                $this->event->delete();
-
-                $this->teacher_event_id = null;
-                $this->store();
-            }
-            return;
+            return $this->removeEvent();
         }
 
         $event = $this->event;
@@ -238,5 +232,15 @@ class ConsultationSlot extends SimpleORMap
         restoreLanguage();
 
         $event->store();
+    }
+
+    public function removeEvent()
+    {
+        if ($this->event) {
+            $this->event->delete();
+
+            $this->teacher_event_id = null;
+            $this->store();
+        }
     }
 }
