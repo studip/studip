@@ -57,7 +57,8 @@
 <? if ($is_downloadable) : ?>
     <?= Studip\LinkButton::createDownload(
         _('Herunterladen'),
-        $file_ref->getDownloadURL('force_download')
+        $file_ref->getDownloadURL('force_download'),
+        $file_ref->isLink() ? ['target' => '_blank', 'rel' => 'noopener noreferrer'] : []
     ) ?>
 <? endif; ?>
 </footer>
