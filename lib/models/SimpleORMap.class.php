@@ -843,7 +843,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
                 $order = $arguments[2];
                 $param_arr[0] = $arguments[0];
                 $param_arr[1] =& $where;
-                $param_arr[2] = [$where_param];
+                $param_arr[2] = [$arguments[1]];
                 $method = 'findeachbysql';
                 break;
             case 'count':
