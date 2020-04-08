@@ -181,18 +181,26 @@ class MessagesController extends AuthenticatedController {
 
         //check if a receiver is given:
         if (Request::username('rec_uname')) {
-            $user = new MessageUser();
-            $user->setData(['user_id' => get_userid(Request::username('rec_uname')), 'snd_rec' => 'rec']);
-            $this->default_message->receivers[] = $user;
+            $user = User::findByUsername(Request::username('rec_uname'));
+            if ($user) {
+                $this->default_message->receivers[] = MessageUser::build([
+                    'user_id' => $user->id,
+                    'snd_rec' => 'rec',
+                ]);
+            }
         }
 
         //check if a list of receivers is given:
         if (Request::getArray('rec_uname')) {
-            foreach (Request::usernameArray('rec_uname') as $username) {
-                $user = new MessageUser();
-                $user->setData(['user_id' => get_userid($username), 'snd_rec' => 'rec']);
-                $this->default_message->receivers[] = $user;
-            }
+            User::findEachByUsername(
+                function ($user) {
+                    $this->default_message->receivers[] = MessageUser::build([
+                        'user_id' => $user->id,
+                        'snd_rec' => 'rec',
+                    ]);
+                },
+                Request::usernameArray('rec_uname')
+            );
         }
 
         //check if the message shall be sent to all members of a status group:
