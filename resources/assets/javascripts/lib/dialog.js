@@ -528,7 +528,8 @@ Dialog.calculateDimensions = function (instance, content, options) {
             helper_title.parent().append('<a class="ui-dialog-titlebar-wiki"></a>').addClass('with-wiki-link');
         }
 
-        $('<div class="ui-dialog-content">').html(content).appendTo(helper);
+
+        $('<div class="ui-dialog-content">').html($.parseHTML(content)).appendTo(helper);
         helper.css({
             position: 'absolute',
             left: '-10000px',
