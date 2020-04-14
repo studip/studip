@@ -7,7 +7,7 @@ const Responsive = {
     media_query: window.matchMedia('(max-width: 767px)'),
 
     // Builds a dom element from a navigation object
-    buildMenu (navigation, path, id, activated) {
+    buildMenu (navigation, id, activated) {
         var list = $('<ul>');
 
         if (id) {
@@ -17,7 +17,6 @@ const Responsive = {
         // TODO: Templating?
         _.forEach(navigation, (nav, node) => {
             nav.url = STUDIP.URLHelper.getURL(nav.url, {}, true);
-            let subpath = path ? `${path}/${node}` : node;
             let li = $('<li class="navigation-item">');
             let title = $('<div class="nav-title">').appendTo(li);
             let link = $(`<a href="${nav.url}">`).text(nav.title).appendTo(title);
@@ -30,13 +29,13 @@ const Responsive = {
             }
 
             if (nav.children) {
-                let active = activated.indexOf(subpath) !== -1;
-                $(`<input type="checkbox" id="resp/${subpath}">`)
+                let active = activated.indexOf(node) !== -1;
+                $(`<input type="checkbox" id="resp/${node}">`)
                     .prop('checked', active)
                     .appendTo(li);
                 li.append(
-                    `<label class="nav-label" for="resp/${subpath}"> </label>`,
-                    Responsive.buildMenu(nav.children, subpath, false, activated)
+                    `<label class="nav-label" for="resp/${node}"> </label>`,
+                    Responsive.buildMenu(nav.children, false, activated)
                 );
             }
 
@@ -53,7 +52,6 @@ const Responsive = {
             '<input type="checkbox" id="responsive-toggle">',
             Responsive.buildMenu(
                 STUDIP.Navigation.navigation,
-                false,
                 'responsive-navigation',
                 STUDIP.Navigation.activated
             ),
