@@ -3,6 +3,7 @@
         <th class="mvv-modul-details-head" style="width: 30%"><?= $modul->code ?></th>
         <th class="mvv-modul-details-head" style="width: 30%"><?= $institut->name ?></th>
         <th class="mvv-modul-details-head" style="width: 40%"><?= sprintf("%d CP", $modul->kp) ?> </th>
+        <th class="mvv-modul-details-head"></th>
     </tr>
     <tr>
         <td colspan="2">
@@ -22,9 +23,16 @@
             <? endforeach; ?>
             </dl>
         </td>
+        <td>
+            <? if ($GLOBALS['perm']->have_perm('admin')) : ?>
+                <a href="<?= URLHelper::getLink("dispatch.php/shared/modul/mail/{$modul->id}/{$semester['semester_id']}")?>" data-dialog>
+                    <?= Icon::create('mail', Icon::ROLE_CLICKABLE, tooltip2(_('Nachricht an alle Veranstaltungteilnehmer die diesem Modul zugeordnet sind.')))?>
+                </a>
+            <? endif; ?>
+        </td>
     </tr>
     <tr>
-        <td colspan="3" style="padding: 0;">
+        <td colspan="4" style="padding: 0;">
             <table class="default nohover">
                 <? if (mb_strlen($teilnahmeVoraussetzung) > 0): ?>
                     <tr>
