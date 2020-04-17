@@ -152,17 +152,23 @@ class Shared_ModulController extends AuthenticatedController
 
     public function mail_action($modul_id, $semester_id)
     {
-        $_SESSION['sms_data']['p_rec'] = array_unique(SimpleCollection::createFromArray(User::findBySQL('JOIN seminar_user ON (auth_user_md5.user_id = seminar_user.user_id)
-            JOIN seminare ON (seminare.seminar_id = seminar_user.seminar_id)
-            JOIN semester_data ON (seminare.start_time = semester_data.beginn)
-            JOIN mvv_lvgruppe_seminar ON (mvv_lvgruppe_seminar.seminar_id = seminare.seminar_id)
-            JOIN mvv_lvgruppe_modulteil ON (mvv_lvgruppe_modulteil.lvgruppe_id = mvv_lvgruppe_seminar.lvgruppe_id)
-            JOIN mvv_modulteil ON (mvv_modulteil.modulteil_id = mvv_lvgruppe_modulteil.modulteil_id)
-            WHERE mvv_modulteil.modul_id = :modul_id
-            AND seminar_user.status = :status
-            AND semester_data.semester_id = :semester_id',
-            ['modul_id' => $modul_id, 'status' => 'autor', ':semester_id' => $semester_id]))->pluck('username'));
+        if ($GLOBALS['perm']->have_perm('admin')) {
+            $stm = DBManager::get()->prepare('SELECT DISTINCT auth_user_md5.username FROM auth_user_md5
+                JOIN seminar_user ON (auth_user_md5.user_id = seminar_user.user_id)
+                JOIN seminare ON (seminare.seminar_id = seminar_user.seminar_id)
+                JOIN semester_data ON (seminare.start_time = semester_data.beginn)
+                JOIN mvv_lvgruppe_seminar ON (mvv_lvgruppe_seminar.seminar_id = seminare.seminar_id)
+                JOIN mvv_lvgruppe_modulteil ON (mvv_lvgruppe_modulteil.lvgruppe_id = mvv_lvgruppe_seminar.lvgruppe_id)
+                JOIN mvv_modulteil ON (mvv_modulteil.modulteil_id = mvv_lvgruppe_modulteil.modulteil_id)
+                WHERE mvv_modulteil.modul_id = :modul_id
+                AND seminar_user.status = :status
+                AND semester_data.semester_id = :semester_id');
+            $stm->execute(['modul_id' => $modul_id, 'status' => 'autor', ':semester_id' => $semester_id]);
+            $_SESSION['sms_data']['p_rec'] = $stm->fetchFirst();
 
-        $this->redirect(URLHelper::getURL('dispatch.php/messages/write'));
+            $this->redirect(URLHelper::getURL('dispatch.php/messages/write'));
+        } else {
+            throw new AccessDeniedException();
+        }
     }
 }
