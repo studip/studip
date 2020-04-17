@@ -1,3 +1,53 @@
+17.04.2020 v 4.4.2
+https://develop.studip.de/trac/query?milestone=Stud.IP+4.4.2
+- Migration 20190917_fix_missing_consultation_events schlägt fehl wegen kaputter Altdaten [#10363]
+- Möglichkeit fehlt, um Migrationshinweis auszublenden [#10404]
+- Mobile Ansicht: Navigationsebene nicht automatisch ausgeklappt [#10490]
+
+17.04.2020 v 4.3.3
+https://develop.studip.de/trac/query?milestone=Stud.IP+4.3.3
+- Spezielles ie.css wird nicht gefunden [#10340]
+- Falsche Semesterbezeichnung bei "Benachrichtigungen anpassen" und gesperrten Semestern [#10352]
+- Icon für Timepicker in 4.3 kaputt [#10393]
+- Fehlende Räume in der Kurzinfo einer Veranstaltung [#10402]
+- Tooltips gehen verloren, wenn das Element geclonet wird [#10403]
+- Nachricht bei Platzvergabe nicht ganz richtig (Losverfahren) [#10419]
+- PHP Warning:  count(): Parameter must be an array or an object that implements Countable in ilias_interface/edit_interface_settings.php [#10423]
+- Grunddaten einer Veranstaltung [#10424]
+- Veranstaltungsadministration - Datenfeld filter [#10432]
+- Terminkalender wird nicht angezeigt [#10433]
+- Nachrichtenfunktion an Teilnehmer von Sprechstunden(-blöcken) defekt [#10465]
+- JS: RESTAPI/JSONAPI-Lib unterstützt keine Änderung des Content-Type [#10495]
+
+17.04.2020 v 4.2.6
+https://develop.studip.de/trac/query?milestone=Stud.IP+4.2.6
+- Einstellung "WYSIWYG-Editor aktiv" unter Profil/Einstellungen verorten [#10446]
+- Nachricht an nicht vorhandenen Nutzer erzeugt Nachricht an alle [#10482]
+- SORM::findEachByColumn() ist kaputt [#10483]
+- Weblinks im Dateibereich öffnen sich im gleichen Fenster [#10484]
+- Dialoge: Eingebundene Skripte werden doppelt ausgeführt für `size=auto` [#10487]
+
+15.04.2020 v 4.2.5
+https://develop.studip.de/trac/query?milestone=Stud.IP+4.2.5
+- überflüssiger Zeilenumbruch Zuordnung Anmeldeset [#5076]
+- Forum: Anzahl der Beiträge in Icon-Navigation auf Meine Veranstaltungen ist nicht intuitiv [#9863]
+- Teilnehmende ist sichtbar in Gruppe, obwohl auf der Teilnehmendenliste unsichtbar eingestellt [#9908]
+- console.log() im JS [#10291]
+- Login nicht möglich mit Meldung Session: freeze() failed. [#10311]
+- Fehlerhafte Extrahierung von übersetzbaren Textstrings aus Javascript [#10313]
+- Cronjob mit falschem Pfad in "cronjobs_tasks" wird nicht als fehlerhaft markiert [#10343]
+- ActionMenu::addLink() gibt den Link unverändert aus [#10349]
+- Fehlende htmlReady() bei data-confirm [#10350]
+- Benachrichtigung beim Empfangen einer Nachricht erscheint in gewählter Sprache des Senders [#10375]
+- ActivityStream: Zeigt falsche Benutzerinformationen an [#10430]
+- Beim Aktualisieren einer Datei geht der Name in der Datenbank verloren [#10443]
+- Migration von Nutzerkonten und Löschen von Nutzern ignorieren Tabelle `termin_related_persons` [#10444]
+- Losverfahren bricht ab bei fehlender Veranstaltung / Inkonsistenz der DB [#10447]
+- Blubber: Speicherbutton auf Seite "Neuen Stream erstellen" nicht sichtbar [#10448]
+- OpenGraph: YouTube öffnet nicht in Vollbildmodus [#10451]
+- Fehler bei nachgeladenen Blubbernachrichten [#10470]
+- Fehlende htmlready in der Ressourcenverwaltung [#10486]
+
 24.01.2020 v 4.4.1
 https://develop.studip.de/trac/query?milestone=Stud.IP+4.4.1
 - PHP 7.3 Fehler [#9347]
