@@ -884,7 +884,15 @@ abstract class RouteMap
         $size = filesize($path);
         $this->response['Content-Length'] = $size;
 
-        $this->halt(200, $this->response->headers, function () use ($path) { readfile($path); });
+        // End all potential output buffers
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        // Send file
+        $this->halt(200, $this->response->headers, function () use ($path) {
+            readfile($path);
+        });
     }
 
 
