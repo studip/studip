@@ -4,7 +4,7 @@
     'message' => $exception->getMessage(),
     'file'    => $exception->getFile(),
     'line'    => $exception->getLine(),
-    'trace'   => $exception->getTraceAsString(),
+    'trace'   => explode("\n", $exception->getTraceAsString()),
 ]) ?>
 <? else: ?>
 <?= json_encode([
