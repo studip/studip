@@ -409,6 +409,10 @@ class MyCoursesController extends AuthenticatedController
         }
 
         $deputies_enabled = Config::get()->DEPUTIES_ENABLE;
+        $GLOBALS['user']->cfg->store(
+            'MY_COURSES_GROUPING',
+            Request::get('select_group_field', $GLOBALS['user']->cfg->MY_COURSES_GROUPING)
+        );
         $gruppe = Request::getArray('gruppe');
         if (!empty($gruppe)) {
             $query          = "UPDATE seminar_user SET gruppe = ? WHERE Seminar_id = ? AND user_id = ?";
