@@ -22,8 +22,6 @@
 class FileArchiveManager
 {
 
-    protected static $stats = [];
-
     //ARCHIVE HELPER METHODS
 
     /**
