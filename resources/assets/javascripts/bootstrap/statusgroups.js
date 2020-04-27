@@ -23,7 +23,7 @@ STUDIP.domReady(function() {
         }
     });
 
-    var handle = false;
+    var handle = '> header';
     // Check for touch device
     if (window.matchMedia('(hover: none)').matches) {
         $('.course-statusgroups[data-sortable]').addClass('by-touch').find('> .draggable').each(function () {
