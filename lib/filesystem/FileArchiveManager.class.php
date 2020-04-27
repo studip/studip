@@ -22,6 +22,8 @@
 class FileArchiveManager
 {
 
+    protected static $stats = [];
+
     //ARCHIVE HELPER METHODS
 
     /**
@@ -53,8 +55,6 @@ class FileArchiveManager
         &$file_list = null
     )
     {
-        $archive_max_size = Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
-
         //For FileRef objects we first have to do permission checks
         //using the FileRef's folder object.
         $adding_allowed = false;
@@ -116,18 +116,10 @@ class FileArchiveManager
             if ($file_path && file_exists($file_path)) {
                 $archive->addFile($file_path, $archive_fs_path . $file_ref->name);
 
-                //The archive file may not exist if it is empty!
-                if (file_exists($archive->filename) && filesize($archive->filename) > $archive_max_size) {
-                    throw new FileArchiveManagerException(
-                        sprintf(
-                            _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
-                            $archive_max_size
-                        )
-                    );
-                }
-
                 //Add the file to the file list (if available):
                 if (is_array($file_list)) {
+                    $archive_max_num_files = Config::get()->ZIP_DOWNLOAD_MAX_FILES;
+                    $archive_max_size =  Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
                     $file_list[] = [
                         'name' => $file_ref->name,
                         'size' => $file_ref->size,
@@ -137,6 +129,26 @@ class FileArchiveManager
                         'mkdate' => date('d.m.Y H:i', $file_ref->mkdate),
                         'path' => ($archive_fs_path . $file_ref->name)
                     ];
+                    if (count($file_list) > $archive_max_num_files) {
+                        $archive->unchangeAll();
+                        unlink($archive->filename);
+                        throw new FileArchiveManagerException(
+                            sprintf(
+                                _('Das Archiv beinhaltet zu viele Dateibereich-Objekte! Die Obergrenze liegt bei %d Objekten!'),
+                                $archive_max_num_files
+                            )
+                        );
+                    }
+                    if (array_sum(array_column($file_list, 'size')) > $archive_max_size) {
+                        $archive->unchangeAll();
+                        unlink($archive->filename);
+                        throw new FileArchiveManagerException(
+                            sprintf(
+                                _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
+                                $archive_max_size
+                            )
+                        );
+                    }
                 }
 
                 return true;
@@ -177,7 +189,6 @@ class FileArchiveManager
         $ignore_user = false,
         &$file_list = null
     ) {
-        $archive_max_size = Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
 
         if ($do_user_permission_checks) {
             //Check if the folder is readable for the user (identified by $user_id):
@@ -240,15 +251,6 @@ class FileArchiveManager
             );
         }
 
-        if (file_exists($archive->filename) && filesize($archive->filename) > $archive_max_size) {
-            throw new FileArchiveManagerException(
-                sprintf(
-                    _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
-                    $archive_max_size
-                )
-            );
-        }
-
         return true;
     }
 
@@ -301,8 +303,6 @@ class FileArchiveManager
         $add_filelist_to_archive = false
     )
     {
-        $archive_max_num_files = Config::get()->ZIP_DOWNLOAD_MAX_FILES;
-        $archive_max_size =  Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
 
         // check if archive path is set:
         if (!$archive_file_path) {
@@ -324,16 +324,6 @@ class FileArchiveManager
             throw new FileArchiveManagerException('Error opening new ZIP archive!');
         }
         $archive->setOutputEncoding($zip_encoding);
-        //Check if more file area objects than allowed shall be packed:
-        //In that case, stop here.
-        if ($archive_max_num_files && count($file_area_objects) > $archive_max_num_files) {
-            throw new FileArchiveManagerException(
-                sprintf(
-                    _('Das Archiv beinhaltet zu viele Dateibereich-Objekte! Die Obergrenze liegt bei %d Objekten!'),
-                    $archive_max_num_files
-                )
-            );
-        }
 
         //If $file_list is not an array
         //then no files are added to the file list.
@@ -430,9 +420,6 @@ class FileArchiveManager
         $do_user_permission_checks = true
     )
     {
-        $archive_max_num_files = Config::get()->ZIP_DOWNLOAD_MAX_FILES;
-        $archive_max_size = Config::get()->ZIP_DOWNLOAD_MAX_SIZE;
-
         if (!$archive_file_path) {
             throw new FileArchiveManagerException(
                 _('Der Zielpfad für das Archiv wurde nicht angegeben!')
