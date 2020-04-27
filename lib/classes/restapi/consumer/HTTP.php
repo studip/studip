@@ -25,9 +25,10 @@ class HTTP extends Base
      */
     public static function detect($request_type = null)
     {
-        if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])
-            || (false && isset($_SERVER['HTTP_AUTHORIZATION'])))
-        {
+        if (
+            isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])
+            || isset($_SERVER['HTTP_AUTHORIZATION'])
+        ) {
             $user_id = false;
 
             if (isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])) {
