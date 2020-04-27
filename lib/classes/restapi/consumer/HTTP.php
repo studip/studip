@@ -39,11 +39,10 @@ class HTTP extends Base
             }
 
             $check = StudipAuthAbstract::CheckAuthentication($username, $password);
-            if (!$check['uid'] || $check['uid'] == 'nobody') {
-                throw new RouterException(401, 'HTTP Authentication failed');
+            if ($check['uid'] && $check['uid'] !== 'nobody') {
+                return new self(null, $check['uid']);
             }
 
-            return new self(null, $check['uid']);
         }
         return false;
     }
