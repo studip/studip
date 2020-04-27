@@ -35,7 +35,5 @@ namespace RESTAPI {
     Consumer\Base::addType('studip', 'RESTAPI\\Consumer\\Studip');
     Consumer\Base::addType('oauth', 'RESTAPI\\Consumer\\OAuth');
 
-    // $router->registerConsumer('oauth', new Consumer\OAuth);
-    // $router->registerConsumer('basic', new Consumer\HTTP);
-    // $router->registerConsumer('studip', new Consumer\Studip);
+    \PluginEngine::getPlugins('RESTAPIPlugin');
 }
