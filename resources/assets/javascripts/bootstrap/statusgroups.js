@@ -34,7 +34,6 @@ STUDIP.domReady(function() {
 
     var index_before = null;
     $('.course-statusgroups[data-sortable]')
-        .disableSelection()
         .sortable({
             axis: 'y',
             containment: 'parent',
