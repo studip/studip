@@ -1,0 +1,94 @@
+// Alert dialog (like createQuestion)
+.ui-dialog.ui-widget.ui-widget-content.report {
+    &-info,
+    &-success,
+    &-warning,
+    &-error {
+        min-width: 30em;
+
+        .ui-dialog-titlebar {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .ui-dialog-content {
+            background-position: 12px 8px;
+            background-repeat: no-repeat;
+            background-size: 32px;
+            box-sizing: border-box;
+            max-height: 60vh;
+            padding: 15px 15px 15px 55px;
+        }
+
+        .ui-dialog-buttonpane {
+            text-align: center;
+
+            .ui-dialog-buttonset {
+                float: none;
+                > * {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+
+    &-info {
+        .ui-dialog-titlebar {
+            background-color: $base-color;
+            color: white;
+        }
+        .ui-dialog-content {
+            background-image: url("#{$image-path}/messagebox/info.png");
+        }
+    }
+
+    &-success {
+        .ui-dialog-titlebar {
+            background-color: $dark-green;
+            color: white;
+        }
+
+        .ui-dialog-content {
+            background-image: url("#{$image-path}/messagebox/success.png");
+        }
+    }
+
+    &-warning {
+        .ui-dialog-titlebar {
+            background-color: $yellow;
+            color: black;
+        }
+
+        .ui-button-icon {
+            .ui-icon {
+                .ui-icon-closethick {
+                    @include background-icon(decline, clickable);
+                }
+            }
+        }
+
+        .ui-dialog-content {
+            background-image: url("#{$image-path}/messagebox/advice.png");
+        }
+
+        .ui-dialog-titlebar-close {
+            background: transparent;
+            border: 0;
+
+            .ui-icon, .ui-icon:hover {
+                @include background-icon(decline, info);
+                background-position: 0;
+            }
+        }
+    }
+
+    &-error {
+        .ui-dialog-titlebar {
+            background-color: $red;
+            color: white;
+        }
+        .ui-dialog-content {
+            background-image: url("#{$image-path}/messagebox/error.png");
+        }
+    }
+}
