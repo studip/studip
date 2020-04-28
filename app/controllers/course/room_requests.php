@@ -57,6 +57,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function index_action()
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         $this->url_params = [];
         if (Request::get('origin') !== null) {
             $this->url_params['origin'] = Request::get('origin');
@@ -114,6 +119,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function new_action()
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         $options = array();
         $this->url_params = array();
         if (Request::get('origin') !== null) {
@@ -241,6 +251,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function request_start_action($request_id = '')
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         Helpbar::get()->addPlainText(
             _('Information'),
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
@@ -368,6 +383,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function request_select_properties_action($request_id = '')
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         Helpbar::get()->addPlainText(
             _('Information'),
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
@@ -510,6 +530,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function request_select_room_action($request_id)
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         Helpbar::get()->addPlainText(
             _('Information'),
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
@@ -671,6 +696,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function request_summary_action($request_id = null)
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         Helpbar::get()->addPlainText(
             _('Information'),
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
@@ -843,6 +873,11 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function request_store_action()
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         Helpbar::get()->addPlainText(
             _('Information'),
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
