@@ -289,7 +289,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     URLHelper::getURL('dispatch.php/resources/booking/add/' . $this->resource->id),
                     Icon::create('add')
                 )->asDialog("size=auto");
-            } elseif ($this->resource->requestable && $this->user_has_request_permissions) {
+            } elseif ($this->resource->requestable && $this->user_has_request_permissions
+                      && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
                 $actions->addLink(
                     _('Neue Anfrage'),
                     URLHelper::getURL(
@@ -361,7 +362,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if ($current_user instanceof User) {
             //No check necessary here: This part of the controller is only called
             //when a room has been selected before.
-            if ($this->resource instanceof Room) {
+            if (($this->resource instanceof Room) && RoomManager::userHasRooms($current_user)) {
                 $actions->addLink(
                     _('Anderen Raum wählen'),
                     URLHelper::getURL(
@@ -433,7 +434,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
             $this->fullcalendar_studip_urls['add'] = $this->url_for(
                 'resources/booking/add/' . $this->resource->id
             );
-        } elseif ($this->resource->requestable && !$this->anonymous_view && $this->user_has_request_permissions) {
+        } elseif ($this->resource->requestable && !$this->anonymous_view
+                  && $this->user_has_request_permissions && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
             $this->fullcalendar_studip_urls['add'] = $this->url_for(
                 'resources/room_request/add/' . $this->resource->id
             );

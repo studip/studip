@@ -620,6 +620,11 @@ class Resources_RoomRequestController extends AuthenticatedController
      */
     public function add_action($resource_id = null)
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            throw new AccessDeniedException(
+                _('Das Erstellen von Raumanfragen ist nicht erlaubt!')
+            );
+        }
         $this->resource = null;
         $this->request = null;
         $this->show_form = false;
