@@ -398,18 +398,10 @@ article.room-list-item {
         margin-right: 0;
     }
 
-    section {
-        padding: 0.5em;
-
-        .description {
-            min-height: 6em;
-        }
-
-        ul.property-list {
-            list-style: none;
-            padding-left: 0em;
-            flex-grow: 1;
-        }
+    section > ul.property-list {
+        list-style: none;
+        padding-left: 0em;
+        flex-grow: 1;
     }
 }
 
