@@ -29,7 +29,9 @@ body.enable-skiplinks {
     *:focus,
     .focus_box,
     .studip-checkbox:focus + label {
-        outline: 2px dashed @orange;
+        &:not(:empty) {
+            outline: 2px dashed @orange;
+        }
     }
 
     #tabs {
