@@ -1666,16 +1666,22 @@ class FileController extends AuthenticatedController
             }
 
             //create a ZIP archive:
-            $result = FileArchiveManager::createArchive(
-                $file_area_objects,
-                $user->id,
-                $tmp_file,
-                true,
-                true,
-                false,
-                $use_dos_encoding ? 'CP850' : 'UTF-8',
-                true
-            );
+            try {
+                $result = FileArchiveManager::createArchive(
+                    $file_area_objects,
+                    $user->id,
+                    $tmp_file,
+                    true,
+                    true,
+                    false,
+                    $use_dos_encoding ? 'CP850' : 'UTF-8',
+                    true
+                );
+            }  catch (FileArchiveManagerException $fame) {
+                PageLayout::postError(_('Es ist ein Fehler aufgetreten.'), [$fame->getMessage()]);
+                $this->redirectToFolder($parent_folder);
+                return;
+            }
 
             if ($result) {
                 if (count($file_area_objects) === 1 && $file_area_objects[0] instanceof FolderType) {
