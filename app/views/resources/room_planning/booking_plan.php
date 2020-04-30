@@ -58,6 +58,10 @@
             ],
             'weekNumbers' => true,
             'views' => [
+                'dayGridMonth' => [
+                    'eventTimeFormat' => ['hour' => 'numeric', 'minute' => '2-digit'],
+                    'displayEventEnd' => true
+                ],
                 'timeGridWeek' => [
                   'columnHeaderFormat' => [ 'weekday' => 'short', 'year' => 'numeric', 'month' => '2-digit', 'day' => '2-digit', 'omitCommas' => true ]
                 ],
