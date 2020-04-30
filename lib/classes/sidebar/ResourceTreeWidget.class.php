@@ -113,7 +113,7 @@ class ResourceTreeWidget extends SidebarWidget
             }
         }
         $variables['resource_path'] = $resource_path;
-        $variables['max_open_depth'] = 1;
+        $variables['max_open_depth'] = 0;
         $variables['layout_css_classes'] = $this->layout_css_classes;
 
         $template = $GLOBALS['template_factory']->open(
