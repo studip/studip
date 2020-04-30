@@ -4,7 +4,7 @@ use Studip\Button, Studip\LinkButton;
 
 ?>
 
-<form method="post" action="<?= $controller->url_for('admin/user/new/' . $prelim) ?>" class="default">
+<form method="post" action="<?= $controller->url_for('admin/user/new/' . $prelim) ?>" class="default" data-secure="true">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
