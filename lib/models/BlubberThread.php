@@ -333,7 +333,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
      */
     public static function findByContext($context_id, $only_in_stream = false, $context_type = 'course', string $user_id = null)
     {
-        if (!BlubberThread::findOneBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1' AND content IS NULL", ['context_id' => $context_id, 'type' => $context_type])) {
+        if (!BlubberThread::findOneBySQL("context_type = :type AND context_id = :context_id AND visible_in_stream = '1' AND content IS NULL AND display_class IS NULL", ['context_id' => $context_id, 'type' => $context_type])) {
             //create the default-thread for this context
             $coursethread = new BlubberThread();
             $coursethread['user_id'] = $user_id ?? $GLOBALS['user']->id;

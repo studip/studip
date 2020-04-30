@@ -50,7 +50,7 @@
         </p>
     <?php endif ?>
 
-    <?php if ($thread = $group->getBlubberthread()) : ?>
+    <?php if ($thread = $group->blubberthread) : ?>
         <p>
             <?= formatReady(sprintf(_('Zu dieser Gruppe gehört ein [Blubberthread]%s .'),
                 URLHelper::getURL('plugins.php/blubber/messenger/course/' . $thread->id, [

@@ -70,6 +70,11 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
             'class_name'  => 'User',
             'foreign_key' => 'range_id',
         ];
+        $config['has_one']['blubberthread'] = [
+            'class_name' => 'BlubberStatusgruppeThread',
+            'on_store' => 'store',
+            'on_delete' => 'delete'
+        ];
         $config['additional_fields']['children'] = true;
 
         $config['default_values']['position'] = null;
@@ -315,16 +320,6 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
                 return $groupFolder->store();
             }
         }
-    }
-
-    /**
-     * Gets the blubberthread assigned to this statusgroup.
-     *
-     * @return BlubberThread|false
-     */
-    public function getBlubberthread()
-    {
-        return BlubberStatusgruppeThread::findByStatusgruppe_id($this->id);
     }
 
     /**
