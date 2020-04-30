@@ -38,36 +38,44 @@ class ResourceFolder extends StandardFolder
 
     public function isVisible($user_id)
     {
+        if ($user_id == 'nobody') {
+            return false;
+        }
         //Get the resource object:
         $resource = Resource::find($this->range_id);
         $user = User::find($user_id);
 
-        if ($resource) {
-            return $resource->userHasPermission($user, 'user');
-        } else {
+        if (($resource instanceof Resource) && ($user instanceof User)) {
+            return true;
+        } elseif ($user instanceof User) {
             //Check global permissions:
             return ResourceManager::userHasGlobalPermission(
                 $user,
                 'admin'
             );
         }
+        return false;
     }
 
     public function isReadable($user_id)
     {
+        if ($user_id == 'nobody') {
+            return false;
+        }
         //Get the resource object:
         $resource = Resource::find($this->range_id);
         $user = User::find($user_id);
 
-        if ($resource) {
-            return $resource->userHasPermission($user, 'user');
-        } else {
+        if (($resource instanceof Resource) && ($user instanceof User)) {
+            return true;
+        } elseif ($user instanceof User) {
             //Check global permissions:
             return ResourceManager::userHasGlobalPermission(
                 $user,
                 'admin'
             );
         }
+        return false;
     }
 
     public function isWritable($user_id)
