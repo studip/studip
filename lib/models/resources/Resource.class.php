@@ -2471,6 +2471,9 @@ class Resource extends SimpleORMap implements StudipItem
      */
     public function userHasRequestRights(User $user)
     {
+        if (!Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+            return false;
+        }
         $min_perm = Config::get()->RESOURCES_MIN_REQUEST_PERMISSION;
         if (!in_array($min_perm, ['', 'user', 'autor', 'tutor', 'admin'])) {
             //Invalid permission level!

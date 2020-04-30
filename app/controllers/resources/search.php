@@ -57,12 +57,12 @@ class Resources_SearchController extends AuthenticatedController
         }
         $sidebar->addWidget($resource_tree_widget);
 
-        $room_clipboard_widget = new RoomClipboardWidget();
-        $sidebar->addWidget($room_clipboard_widget);
-
-        $this->clipboard_widget_id = $room_clipboard_widget->getClipboardWidgetId();
-
         $this->current_user = User::findCurrent();
+        if (ResourceManager::userHasGlobalPermission($this->current_user, 'user')) {
+            $room_clipboard_widget = new RoomClipboardWidget();
+            $sidebar->addWidget($room_clipboard_widget);
+            $this->clipboard_widget_id = $room_clipboard_widget->getClipboardWidgetId();
+        }
 
         $this->tree_selected_resource = Request::get('tree_selected_resource');
 
