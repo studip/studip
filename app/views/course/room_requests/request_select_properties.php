@@ -27,6 +27,13 @@
         <? endforeach ?>
 <? endif ?>
 
+<label>
+    <?= _('Rüstzeit (in Minuten)') ?>
+    <input type="number" name="preparation_time"
+           value="<?= htmlReady($preparation_time) ?>"
+           min="0" max="<?= htmlReady($max_preparation_time) ?>">
+</label>
+
 <? if (!$embedded) : ?>
     </div>
     </section>

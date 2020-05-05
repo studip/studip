@@ -231,6 +231,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             }
             $this->room_name = $session_data['room_name'];
             $this->category_id = $session_data['category_id'];
+            $this->preparation_time = $session_data['preparation_time'] ?: '0';
         }
         if ($step >= 3) {
             if ($this->category instanceof ResourceCategory) {
@@ -393,6 +394,8 @@ class Course_RoomRequestsController extends AuthenticatedController
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
         );
 
+        $this->max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
+
         $this->request_id = $request_id;
         $session_data = &$this->getRequestSessionData($this->request_id);
         $this->loadData($session_data, 2);
@@ -451,6 +454,17 @@ class Course_RoomRequestsController extends AuthenticatedController
                 }
             }
             $this->selected_properties = $filtered_selected_properties;
+            $this->preparation_time = Request::get('preparation_time');
+            if ($this->preparation_time > $this->max_preparation_time) {
+                PageLayout::postError(
+                    sprintf(
+                        _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
+                        $this->max_preparation_time
+                    )
+                );
+                return;
+            }
+            $session_data['preparation_time'] = $this->preparation_time;
 
             if (Request::submitted('search_by_name')) {
                 //Delete all selected properties from the session since the
@@ -492,6 +506,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                     //Do another thing: Delete all previously set properties:
                     $this->request->properties->delete();
                 }
+                $this->request->preparation_time = $this->preparation_time * 60;
 
                 $storing_successful = false;
                 if ($this->request->isDirty()) {
