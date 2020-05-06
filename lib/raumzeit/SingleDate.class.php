@@ -422,7 +422,7 @@ class SingleDate
         }
     }
 
-    function bookRoom($room_id)
+    function bookRoom($room_id, $preparation_time = 0)
     {
         if ($this->ex_termin || !$room_id) {
             return false;
@@ -448,9 +448,9 @@ class SingleDate
         //If there is already a room assigned, "change" the booking.
         //Otherwise create a new one.
         if ($this->resource_id != '') {
-            $this->changeAssign($room);
+            $this->changeAssign($room, $preparation_time);
         } else {
-            $this->insertAssign($room);
+            $this->insertAssign($room, $preparation_time);
         }
 
         return $room;
@@ -540,7 +540,7 @@ class SingleDate
     }
 
 
-    private function insertAssign(Room $room)
+    private function insertAssign(Room $room, $preparation_time = 0)
     {
         $begin = new DateTime();
         $begin->setTimestamp($this->date);
@@ -557,7 +557,11 @@ class SingleDate
                         'begin' => $begin,
                         'end' => $end
                     ]
-                ]
+                ],
+                null,
+                0,
+                null,
+                $preparation_time
             );
             if ($booking instanceof ResourceBooking) {
                 $this->assign_id = $booking->id;
@@ -618,8 +622,16 @@ class SingleDate
     }
 
 
-    private function changeAssign(Room $room)
+    private function changeAssign(Room $room, $preparation_time = 0)
     {
+        $max_preparation_time = (Config::get()->RESOURCES_MAX_PREPARATION_TIME);
+        if ($preparation_time > $max_preparation_time) {
+            $this->messages['error'][] = sprintf(
+                _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
+                $max_preparation_time
+            );
+            return false;
+        }
         if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
             $changeAssign = new ResourceBooking($assign_id);
             $changeAssign->resource_id = $room->id;
@@ -628,6 +640,9 @@ class SingleDate
             $changeAssign->repeat_end = $this->end_time;
             $changeAssign->repeat_quantity = 0;
             $changeAssign->repetition_interval = '';
+            if ($preparation_time > 0) {
+                $changeAssign->preparation_time = $preparation_time * 60;
+            }
 
             $room_link_string = sprintf(
                 '<a href="%1$s" data-dialog="1">%2$s</a>',
@@ -651,7 +666,18 @@ class SingleDate
             }
 
             $this->resource_id = $room->id;
-            $changeAssign->store();
+            try {
+                $changeAssign->store();
+            } catch (ResourceBookingOverlapException $e) {
+                $room = $changeAssign->resource->getDerivedClassInstance();
+                $this->messages['error'][] = sprintf(
+                    _('%1$s: Die Buchung vom %2$s bis %3$s konnte wegen Überlappungen nicht gespeichert werden: %4$s'),
+                    $room instanceof Room ? $room->getFullName() : $changeAssign->resource->name,
+                    date('d.m.Y H:i', $changeAssign->begin),
+                    date('H:i', $changeAssign->end),
+                    $e->getMessage()
+                );
+            }
 
             $msg = sprintf(
                 _('Für den Termin %1$s wurde der Raum %2$s gebucht.'),

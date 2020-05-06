@@ -36,7 +36,8 @@
                && ($selectable_rooms || $room_search)): ?>
             <label>
                 <input style="display: inline;" type="radio" name="room" value="room"
-                       id="room" <?= $date->room_booking->resource_id ? 'checked' : '' ?>>
+                       id="room" <?= $date->room_booking->resource_id ? 'checked' : '' ?>
+                       data-activates="input.preparation-time[name='preparation_time']">
                 <?= _('Raum direkt buchen') ?>
                 <? if ($room_search): ?>
                     <?= $room_search
@@ -59,9 +60,17 @@
                     </select>
                 <? endif ?>
             </label>
+            <label>
+                <?= _('Rüstzeit (in Minuten)') ?>
+                <input type="number" name="preparation_time"
+                       class="preparation-time"
+                       value="<?= htmlReady($preparation_time) ?>"
+                       min="0" max="<?= htmlReady($max_preparation_time) ?>">
+            </label>
         <? endif; ?>
         <label class="horizontal">
-            <input type="radio" name="room" value="freetext" <?= $date->raum ? 'checked' : '' ?>>
+            <input type="radio" name="room" value="freetext" <?= $date->raum ? 'checked' : '' ?>
+                   data-deactivates="input.preparation-time[name='preparation_time']">
             <?= _('Freie Ortsangabe (keine Raumbuchung)') ?>
             <input type="text"
                    name="freeRoomText_sd"
@@ -71,11 +80,13 @@
 
         <label>
             <input type="radio" name="room" value="noroom"
-                <?= (!empty($date->room_booking->resource_id) || !empty($date->raum) ? '' : 'checked') ?>>
+                   <?= (!empty($date->room_booking->resource_id) || !empty($date->raum) ? '' : 'checked') ?>
+                   data-deactivates="input.preparation-time[name='preparation_time']">
             <span style="display: inline-block;"><?= _('Kein Raum') ?></span>
         </label>
         <label>
-            <input type="radio" name="room" value="nochange" checked="checked">
+            <input type="radio" name="room" value="nochange" checked="checked"
+                   data-deactivates="input.preparation-time[name='preparation_time']">
             <?= _('Keine Änderungen an den Raumangaben vornehmen') ?>
             <? if ($date->room_booking) :?>
                 <?=sprintf(_('(gebucht: %s)'), htmlReady($date->room_booking->room_name))?>

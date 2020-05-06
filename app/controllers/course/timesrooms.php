@@ -306,6 +306,11 @@ class Course_TimesroomsController extends AuthenticatedController
 
         $this->groups          = $this->course->statusgruppen;
         $this->assigned_groups = $this->date->statusgruppen;
+
+        $this->preparation_time = $this->date->room_booking instanceof ResourceBooking
+                                ? $this->date->room_booking->preparation_time / 60
+                                : '0';
+        $this->max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
     }
 
 
@@ -323,6 +328,7 @@ class Course_TimesroomsController extends AuthenticatedController
         $termin   = CourseDate::find($termin_id);
         $date     = strtotime(sprintf('%s %s:00', Request::get('date'), Request::get('start_time')));
         $end_time = strtotime(sprintf('%s %s:00', Request::get('date'), Request::get('end_time')));
+        $max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
 
         if ($date === false || $end_time === false || $date > $end_time) {
             $date     = $termin->date;
@@ -374,10 +380,18 @@ class Course_TimesroomsController extends AuthenticatedController
 
         if (Request::option('room') == 'room') {
             $room_id = Request::get('room_id');
-
+            $preparation_time = Request::get('preparation_time');
+            if ($preparation_time > $max_preparation_time) {
+                PageLayout::postError(
+                    sprintf(
+                        _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
+                        $max_preparation_time
+                    )
+                );
+            }
             if ($room_id) {
                 if ($room_id != $singledate->resource_id) {
-                    if ($resObj = $singledate->bookRoom($room_id)) {
+                    if ($resObj = $singledate->bookRoom($room_id, $preparation_time ?: 0)) {
                         $messages = $singledate->getMessages();
                         $this->course->appendMessages($messages);
                     } else if (!$singledate->ex_termin) {
@@ -387,6 +401,8 @@ class Course_TimesroomsController extends AuthenticatedController
                                 '<b>' . $singledate->toString() . '</b>')
                         );
                     }
+                } elseif ($termin->room_booking->preparation_time != ($preparation_time * 60)) {
+                    $singledate->bookRoom($room_id, $preparation_time ?: 0);
                 }
             } else if ($old_room_id && !$singledate->resource_id) {
                 $this->course->createInfo(sprintf(_("Die Raumbuchung für den Termin %s wurde aufgehoben, da die neuen Zeiten außerhalb der alten liegen!"), '<b>'. $singledate->toString() .'</b>'));
@@ -403,6 +419,12 @@ class Course_TimesroomsController extends AuthenticatedController
             $singledate->killAssign();
             $singledate->store();
             $this->course->createMessage(sprintf(_("Der Termin %s wurde geändert, etwaige freie Ortsangaben und Raumbuchungen wurden entfernt."), '<b>' . $singledate->toString() . '</b>'));
+        }
+        if ($singledate->messages['error']) {
+            PageLayout::postError(
+                _('Die folgenden Fehler traten beim Bearbeiten des Termins auf:'),
+                $singledate->messages['error']
+            );
         }
 
         $this->displayMessages();
