@@ -40,7 +40,7 @@ class ResponsiveHelper
                 $activated[] = $path;
             }
 
-            if ($nav->getSubnavigation()) {
+            if ($nav->getSubnavigation()  && $path != 'start') {
                 $item['children'] = self::getChildren($nav, $path, $activated);
             }
 
