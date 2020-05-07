@@ -147,6 +147,9 @@ class RoomManagementMigration extends Migration
 
     public function migrateBookingRepeatIntervals(PDO $db)
     {
+        //Buchungen unbekannter Räume entfernen
+        $db->exec("DELETE resource_bookings FROM resource_bookings LEFT JOIN resources ON resources.id=resource_id WHERE resources.id IS NULL");
+
         //mehrtägige korrigieren
         $db->exec("UPDATE `resource_bookings` SET end=repeat_end WHERE repeat_end > end AND IFNULL(old_rep_interval,0) = 0");
 
