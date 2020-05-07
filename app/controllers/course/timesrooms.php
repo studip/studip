@@ -587,7 +587,8 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->cycle_id = $cycle_id;
         $this->teachers = $this->course->getMembers('dozent');
         $this->gruppen  = Statusgruppen::findBySeminar_id($this->course->id);
-        $this->setAvailableRooms(CourseDate::findMany($_SESSION['_checked_dates']));
+        $checked_course_dates = CourseDate::findMany($_SESSION['_checked_dates']);
+        $this->setAvailableRooms($checked_course_dates);
 
         /*
          * Extract a single date for start and end time
@@ -596,6 +597,27 @@ class Course_TimesroomsController extends AuthenticatedController
          */
         $this->date = CourseDate::findOneByMetadate_id($cycle_id);
         $this->checked_dates = $_SESSION['_checked_dates'];
+        $this->preparation_time = '0';
+        //Check if the preparation time is the same for all dates.
+        //In that case, use the common value as preparation time.
+        $i = 0;
+        $ptime = 0;
+        foreach ($checked_course_dates as $course_date) {
+            $current_ptime = $course_date->room_booking->preparation_time;
+            if ($i == 0) {
+                $ptime = $current_ptime;
+            } else {
+                if ($current_ptime != $ptime) {
+                    $ptime = -1;
+                    break;
+                }
+            }
+            $i++;
+        }
+        if ($ptime > -1) {
+            $this->preparation_time = $ptime / 60;
+        }
+        $this->max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
         $this->render_template('course/timesrooms/editStack');
     }
 
@@ -803,15 +825,30 @@ class Course_TimesroomsController extends AuthenticatedController
             foreach ($singledates as $key => $singledate) {
                 $date = new SingleDate($singledate);
                 if (Request::option('action') == 'room') {
+                    $preparation_time = Request::get('preparation_time');
+                    $max_preparation_time = Config::get()->RESOURCES_MAX_PREPARATION_TIME;
+                    if ($preparation_time > $max_preparation_time) {
+                        $this->course->createError(
+                            sprintf(
+                                _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
+                                $max_preparation_time
+                            )
+                        );
+                        continue;
+                    }
                     if (Request::option('room_id')) {
                         if (Request::option('room_id') != $singledate->room_booking->resource_id) {
-                            if ($resObj = $date->bookRoom(Request::option('room_id'))) {
+                            if ($resObj = $date->bookRoom(Request::option('room_id'), $preparation_time)) {
                                 $messages = $date->getMessages();
                                 $this->course->appendMessages($messages);
                             } else if (!$date->ex_termin) {
                                 $this->course->createError(sprintf(_("Der angegebene Raum konnte für den Termin %s nicht gebucht werden!"),
                                     '<strong>' . $date->toString() . '</strong>'));
                             }
+                        } elseif (($preparation_time * 60) != $singledate->room_booking->preparation_time) {
+                            $date->bookRoom(Request::option('room_id'), $preparation_time);
+                            $messages = $date->getMessages();
+                            $this->course->appendMessages($messages);
                         }
                     } else if (Request::get('room_id_parameter')) {
                         $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));

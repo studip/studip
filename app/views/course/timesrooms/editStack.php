@@ -25,6 +25,13 @@
                             <? endforeach ?>
                         </select>
                     <? endif ?>
+                    <div>
+                        <?= _('Rüstzeit (in Minuten)') ?>
+                        <input type="number" name="preparation_time"
+                               class="preparation-time"
+                               value="<?= htmlReady($preparation_time) ?>"
+                               min="0" max="<?= htmlReady($max_preparation_time) ?>">
+                    </div>
                 </label>
             </section>
 
