@@ -59,7 +59,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($comments as $comment) {
             if ($comment->thread->isVisibleInStream() && $comment->thread->isReadable() && ($comment->thread->getLatestActivity() > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$comment['thread_id']))) {
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')]));
+                $icon->setImage(Icon::create('blubber+new', Icon::ROLE_NEW, ['title' => _('Es gibt neue Blubber')]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 $icon->setBadgeNumber(count($comments));
                 $icon->setURL(PluginEngine::getURL($this, ['thread' => 'new'], 'messenger/course'));
@@ -79,7 +79,7 @@ class Blubber extends StudIPPlugin implements StandardPlugin
         ]);
         foreach ($threads as $thread) {
             if ($thread->isVisibleInStream() && $thread->isReadable() && ($thread['mkdate'] > UserConfig::get($user_id)->getValue("BLUBBERTHREAD_VISITED_".$thread->getId()))) {
-                $icon->setImage(Icon::create('blubber', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')]));
+                $icon->setImage(Icon::create('blubber+new', Icon::ROLE_ATTENTION, ['title' => _('Es gibt neue Blubber')]));
                 $icon->setTitle(_('Es gibt neue Blubber'));
                 break;
             }
