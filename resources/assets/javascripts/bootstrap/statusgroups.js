@@ -19,6 +19,7 @@ STUDIP.domReady(function() {
 
             $.get(url).done(function(html) {
                 dataEl.html(html);
+                $(document).trigger('refresh-handlers');
             });
         }
     });

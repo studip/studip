@@ -27,7 +27,7 @@
                         <input aria-label="<?= sprintf(_('Alle Mitglieder dieser Gruppe auswählen')) ?>"
                                type="checkbox" name="all" value="1"
                                data-proxyfor=":checkbox.groupmembers-<?= $group->id ?>"
-                               data-activates="select#members-action-<?= $group->id ?>">
+                               data-activates=".memberactions-<?= $group->id ?> select,.memberactions-<?= $group->id ?> button">
                     </th>
                 <? endif ?>
                 <th></th>
@@ -83,14 +83,14 @@
                                 <input aria-label="<?= sprintf(_('Alle Mitglieder dieser Gruppe auswählen')) ?>"
                                        type="checkbox" name="all" value="1"
                                        data-proxyfor=":checkbox.groupmembers-<?= $group->id ?>"
-                                       data-activates="select#members-action-<?= $group->id ?>">
+                                       data-activates=".memberactions-<?= $group->id ?> select,.memberactions-<?= $group->id ?> button">
                                 <?= _('Alle Mitglieder dieser Gruppe auswählen') ?>
                             </label>
                         </div>
-                        <div class="memberactions">
+                        <div class="memberactions memberactions-<?= $group->id ?>">
                             <label>
                                 <select name="members_action[<?= $group->id ?>]"
-                                        id="members-action-<?= $group->id ?>" disabled>
+                                        id="members-action-<?= $group->id ?>">
                                     <option value="move"><?= _('In andere Gruppe verschieben') ?></option>
                                 <? if ($group->id != 'nogroup') : ?>
                                     <option value="delete"><?= _('Aus dieser Gruppe entfernen') ?></option>
@@ -99,8 +99,11 @@
                                 </select>
                             </label>
                             <input type="hidden" name="source" value="<?= $group->id ?>">
-                            <?= Studip\Button::create(_('Ausführen'), 'batch_members['.$group->id.']',
-                                ['data-dialog' => 'size=auto']) ?>
+                            <?= Studip\Button::create(
+                                _('Ausführen'),
+                                "batch_members[{$group->id}]",
+                                ['data-dialog' => 'size=auto']
+                            ) ?>
                         </div>
                     <? endif ?>
                 </td>

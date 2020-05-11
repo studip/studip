@@ -4,15 +4,14 @@
     <td>
         <input aria-label="<?= _('Mitglieder auswählen') ?>"
                type="checkbox" name="group[<?= $group->id ?>][<?= $m->user_id ?>]"
-               class="groupmembers-<?= $group->id ?>" value="1"
-               data-activates="select#members-action-<?= $group->id ?>">
+               class="groupmembers-<?= $group->id ?>" value="1">
     </td>
 <? endif ?>
     <td>
         <?= str_pad($i, 2, '0', STR_PAD_LEFT) ?>
     </td>
     <td>
-        <a href="<?= $controller->url_for(sprintf('profile?username=%s', $m->username)) ?>">
+        <a href="<?= $controller->link_for('profile', ['username' => $m->username]) ?>">
             <?= Avatar::getAvatar($m->user_id, $m->username)->getImageTag(Avatar::SMALL, [
                 'style' => 'margin-right: 5px',
                 'title' => $user_fullname,

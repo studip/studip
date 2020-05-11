@@ -23,7 +23,7 @@
         </h1>
         <nav>
             <?php if ($is_autor && !$is_tutor && $group->id != 'nogroup' && $group->isMember($GLOBALS['user']->id)) : ?>
-                <a href="<?= $controller->url_for('messages/write', [
+                <a href="<?= $controller->link_for('messages/write', [
                             'group_id' => $group->id,
                             'default_subject' => htmlReady($course_title . ' (' . $group->name . ')'),
                         ]) ?>" data-dialog="size=auto">

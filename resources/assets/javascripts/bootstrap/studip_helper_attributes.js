@@ -2,74 +2,79 @@
  * This file provides a set of global handlers.
  */
 
-var proxy_elements_selector = ':checkbox[data-proxyfor], input[type="radio"][data-proxyfor]';
-var proxied_elements_selector = ':checkbox[data-proxiedby], input[type="radio"][data-proxiedby]';
+var proxy_elements_selector = ':checkbox[data-proxyfor], :radio[data-proxyfor]';
+var proxied_elements_selector = ':checkbox[data-proxiedby], :radio[data-proxiedby]';
 
 function connectProxyAndProxied(event) {
-    $(proxy_elements_selector)
-        .each(function() {
-            const proxy = $(this);
-            const proxyId = proxy.uniqueId().attr('id');
-            var proxied = proxy.data('proxyfor');
-            // The following seems like a hack but works perfectly fine.
-            $(proxied)
-                .attr('data-proxiedby', proxyId)
+    $(proxy_elements_selector).each(function () {
+        const proxy = $(this);
+        const proxyId = proxy.uniqueId().attr('id');
+        const proxied = proxy.data('proxyfor');
+        // The following seems like a hack but works perfectly fine.
+        $(proxied).each(function () {
+            const proxiedBy = ($(this).attr('data-proxiedby') || '').split(',').filter(a => a.length > 0);
+            proxiedBy.push(`#${proxyId}`);
+
+            $(this)
+                .attr('data-proxiedby', proxiedBy.join(','))
                 .data('proxiedby', `#${proxyId}`);
-        })
-        .trigger('update.proxy');
+        });
+    }).trigger('update.proxy');
 }
 
 // Use a checkbox as a proxy for a set of other checkboxes. Define
 // proxied elements by a css selector in attribute "data-proxyfor".
-$(document)
-    .on('change', proxy_elements_selector, function(event, force) {
-        // Detect if event was triggered natively (triggered events have no
-        // originalEvent)
-        if (event.originalEvent !== undefined || !!force) {
-            var proxied = $(this).data('proxyfor');
-            $(proxied)
-                .filter(':not(:disabled)')
-                .prop('checked', this.checked)
-                .prop('indeterminate', false)
-                .filter('[data-proxyfor]')
-                .trigger('change', [true]);
-        }
-    })
-    .on('update.proxy', proxy_elements_selector, function() {
-        var proxied = $(this).data('proxyfor'),
-            $proxied = $(proxied).filter(':not(:disabled)'),
-            $checked = $proxied.filter(':checked'),
-            $indeterminate = $proxied.filter(function() {
-                return $(this).prop('indeterminate');
-            });
-        $(this).prop('checked', $proxied.length > 0 && $proxied.length === $checked.length);
-        $(this).prop(
-            'indeterminate',
-            ($checked.length > 0 && $checked.length < $proxied.length) || $indeterminate.length > 0
-        );
-        $(this).trigger('change');
-    })
-    .on('change', proxied_elements_selector, function() {
-        //In case of radio buttons in a group that are deselected,
-        //we must trigger the update.proxy event for each radio
-        //button in the group, if the proxy is another element
-        //than the proxy for "this" element.
-        var proxy = $(this).data('proxiedby');
-        if (jQuery(this).attr('type') == 'radio') {
-            //It is a radio button.
-            var name = jQuery(this).attr('name');
-            var radio_button_group = jQuery('input[type="radio"][name="' + name + '"]');
-            jQuery(radio_button_group).each(function() {
-                console.log(this);
-                var button_proxy = jQuery(this).data('proxiedby');
-                if (button_proxy != proxy) {
-
-                    jQuery(button_proxy).trigger('update.proxy');
-                }
-            });
-        }
-        $(proxy).trigger('update.proxy');
+$(document).on('change', proxy_elements_selector, function (event, force) {
+    // Detect if event was triggered natively (triggered events have no
+    // originalEvent)
+    if (event.originalEvent !== undefined || !!force) {
+        const proxied = $(this).data('proxyfor');
+        $(proxied)
+            .filter(':not(:disabled)')
+            .prop('checked', this.checked)
+            .prop('indeterminate', false)
+            .each((index, element) => {
+                const proxiedBy = $(element).attr('data-proxiedby');
+                $(proxiedBy)
+                    .filter((idx, item) => item !== this)
+                    .trigger('update.proxy');
+            })
+            .filter('[data-proxyfor]')
+            .trigger('change', [true]);
+    }
+}).on('update.proxy', proxy_elements_selector, function () {
+    const proxied = $(this).data('proxyfor');
+    const $proxied = $(proxied).filter(':not(:disabled)');
+    const $checked = $proxied.filter(':checked');
+    const $indeterminate = $proxied.filter(function () {
+        return $(this).prop('indeterminate');
     });
+    $(this).prop('checked', $proxied.length > 0 && $proxied.length === $checked.length);
+    $(this).prop(
+        'indeterminate',
+        ($checked.length > 0 && $checked.length < $proxied.length) || $indeterminate.length > 0
+    );
+    $(this).trigger('change');
+}).on('change', proxied_elements_selector, function () {
+    //In case of radio buttons in a group that are deselected,
+    //we must trigger the update.proxy event for each radio
+    //button in the group, if the proxy is another element
+    //than the proxy for "this" element.
+    if ($(this).is(':radio')) {
+        var proxy = $(this).data('proxiedby');
+        var name = $(this).attr('name');
+        var radio_button_group = $(`:radio[name="${name}"]`);
+        $(radio_button_group).each(function () {
+            var button_proxy = $(this).data('proxiedby');
+            if (button_proxy != proxy) {
+                $(button_proxy).trigger('update.proxy');
+            }
+        });
+    } else {
+        const proxy = $(this).attr('data-proxiedby');
+        $(proxy).trigger('update.proxy');
+    }
+});
 
 STUDIP.ready(connectProxyAndProxied);
 $(document).on('refresh-handlers', connectProxyAndProxied);
