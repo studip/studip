@@ -83,7 +83,7 @@
     position: fixed;
     top: @header-bar-container-height; // + 1px white border
     bottom: 0;
-    height: 100vh;
+    height: calc(100vh - @header-bar-container-height);
 
     box-sizing: border-box;
     max-width: @responsive-menu-width;
@@ -435,7 +435,7 @@
                 }
             }
         }
-    });    
+    });
 }
 
 // Hide duplicated avatar menu in sidebar as default
