@@ -97,8 +97,8 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
             'url'  => URLHelper::getURL('resources.php', [
                 'view'        => 'view_schedule',
                 'show_object' => $res['resource_id'],
-                'start_time'  => strtotime('last monday', $res['begin'] + 24*60*60)
-            ]),
+                'start_time'  => strtotime('last monday', $res['begin'] + 24 * 60 * 60)
+            ], true),
             'img'        => Icon::create('room-clear', 'clickable')->asImagePath(),
             'additional' => self::mark($additional, $search),
             'expand'     => null

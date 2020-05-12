@@ -30,7 +30,7 @@ class GlobalSearchCalendar extends GlobalSearchModule
         return URLHelper::getURL('dispatch.php/search/globalsearch', [
             'q'        => $searchterm,
             'category' => self::class
-        ]);
+        ], true);
     }
 
     /**

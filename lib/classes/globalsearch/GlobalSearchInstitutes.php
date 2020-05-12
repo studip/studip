@@ -66,9 +66,11 @@ class GlobalSearchInstitutes extends GlobalSearchModule
         $result = [
             'id'     => $inst->id,
             'name'   => self::mark($inst->getFullname(), $search),
-            'url'    => URLHelper::getURL('dispatch.php/institute/overview', [
-                'cid' => $inst->id,
-            ]),
+            'url'    => URLHelper::getURL(
+                'dispatch.php/institute/overview',
+                ['cid' => $inst->id],
+                true
+            ),
             'expand' => self::getSearchURL($search),
         ];
         $avatar = InstituteAvatar::getAvatar($inst->id);

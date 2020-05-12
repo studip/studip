@@ -74,8 +74,8 @@ class GlobalSearchResources extends GlobalSearchModule
         }
 
         return [
-            'name' => self::mark($resource->getFullName(), $search),
-            'url'  => $resource->getUrl('show'),
+            'name'       => self::mark($resource->getFullName(), $search),
+            'url'        => $resource->getUrl('show'),
             'img'        => $resource->getIcon('clickable')->asImagePath(),
             'additional' => self::mark($resource->description, $search),
             'expand'     => self::getSearchURL($search),

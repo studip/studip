@@ -136,8 +136,10 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             $result = [
                 'id'          => $data['topic_id'],
                 'name'        => $name,
-                'url'         => URLHelper::getURL('plugins.php/coreforum/index/index/' . $data['topic_id'] .
-                    '#' . $data['topic_id'], ['cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id']]
+                'url'         => URLHelper::getURL(
+                    "plugins.php/coreforum/index/index/{$data['topic_id']}#{$data['topic_id']}",
+                    ['cid' => $data['seminar_id'], 'highlight_topic' => $data['topic_id']],
+                    true
                 ),
                 'img'         => CourseAvatar::getAvatar($course->id)->getUrl(Avatar::MEDIUM),
                 'date'        => strftime('%x', $data['chdate']),
@@ -154,7 +156,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
                 'expandtext'  => _('Im Forum dieser Veranstaltung suchen'),
                 'user'        => $temp
             ];
-    
+
             return $result;
         }
         return false;
@@ -162,7 +164,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
 
     /**
      * Looks for blockquote and removes it from content in recursive mode
-     * 
+     *
      * @param string $content data content
      * @return string purified content (without blockquote)
      */
@@ -185,10 +187,10 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
 
     /**
      * Search the query directly inside the string
-     * 
+     *
      * @param string $string text to be searched
      * @param string $query query to be found
-     * 
+     *
      * @return boolean $found in case of finding true, otherwise false
      */
     public static function direct_search($string, $query)

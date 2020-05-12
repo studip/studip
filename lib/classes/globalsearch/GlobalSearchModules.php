@@ -138,7 +138,11 @@ class GlobalSearchModules extends GlobalSearchModule
         return [
             'name'       => self::mark($code . ' ' . $bezeichnung, $search),
             // TODO: The following will unfortunately NOT open the details
-            'url'        => URLHelper::getURL("dispatch.php/search/module/index/{$modul_id}?sterm={$code}"),
+            'url'        => URLHelper::getURL(
+                "dispatch.php/search/module/index/{$modul_id}",
+                ['sterm' => $code],
+                true
+            ),
             'img'        => Icon::create('learnmodule', $icon_role)->asImagePath(),
             'date'       => $duration,
             'expand'     => self::getSearchURL($search),
