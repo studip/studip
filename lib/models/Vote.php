@@ -69,6 +69,12 @@ class Vote extends QuestionnaireQuestion implements QuestionType
             $options['randomize'] = (bool) $data['options']['randomize'];
             $this->etask->options = $options;
         }
+        // update mandatory option
+        if (isset($data['options']['mandatory'])) {
+            $options = $this->etask->options;
+            $options['mandatory'] = (bool) $data['options']['mandatory'];
+            $this->etask->options = $options;
+        }
 
         // store the eTask instance
         $this->etask->store();

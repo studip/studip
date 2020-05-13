@@ -86,6 +86,31 @@ const Questionnaire = {
         var questionnaire_id = jQuery(form)
             .closest('article')
             .data('questionnaire_id');
+        let validated = true;
+
+        //validation
+        $(form).find("input, select, textarea").each(function () {
+            if ($(this).is(":invalid")) {
+                validated = false;
+            }
+        });
+
+        $(form).find(".questionnaire_answer > article").each(function () {
+            let question_type = $(this).data("question_type");
+            if (typeof STUDIP.Questionnaire[question_type] !== "undefined"
+                    && typeof STUDIP.Questionnaire[question_type].validator === "function") {
+                if (!STUDIP.Questionnaire[question_type].validator.call(this)) {
+                    validated = false;
+                }
+            }
+        });
+
+        if (!validated) {
+            $(form).addClass("show_validation_hints");
+            STUDIP.Report.warning("Noch nicht komplett ausgefüllt.", "Füllen Sie noch die rot markierten Stellen korrekt aus.");
+            return false;
+        }
+
         if (jQuery(form).is('.questionnaire_widget form')) {
             jQuery.ajax({
                 url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/questionnaire/answer/' + questionnaire_id,
@@ -116,6 +141,19 @@ const Questionnaire = {
                             .val(index + 1);
                     });
             });
+        }
+    },
+    Vote: {
+        validator: function () {
+            if ($(this).find(".mandatory").length > 0) {
+                if ($(this).find(":selected, :checked").length === 0) {
+                    $(this).find(".invalidation_notice").addClass("invalid");
+                    return false;
+                } else {
+                    $(this).find(".invalidation_notice").removeClass("invalid");
+                }
+            }
+            return true;
         }
     },
     addQuestion: function(questiontype) {

@@ -405,6 +405,16 @@ form.default {
     .select2-container {
         margin-top: 0.5ex;
     }
+
+    &.show_validation_hints {
+        :invalid, .invalid {
+            .icon('before', 'exclaim-circle', 'attention', 16, 5px);
+            display: inline-block;
+        }
+        textarea:invalid, input[type=text]:invalid {
+            border-left: 4px solid @red;
+        }
+    }
 }
 
 form.narrow {

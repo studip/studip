@@ -70,6 +70,11 @@ jQuery(document).on('click', '.questionnaire_edit .options .add', function() {
         .focus();
     STUDIP.Questionnaire.Test.updateCheckboxValues();
 });
+jQuery(document).on('change', '.show_validation_hints .questionnaire_answer [data-question_type=Vote] input', function() {
+    STUDIP.Questionnaire.Vote.validator.call($(this).closest("article")[0]);
+});
+
+
 
 /*
  * This fixes the tab problem in chartist see:

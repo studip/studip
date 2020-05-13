@@ -2,7 +2,7 @@
     action="<?= URLHelper::getLink("dispatch.php/questionnaire/answer/".$questionnaire->getId()) ?>"
     method="post"
     enctype="multipart/form-data"
-    class="questionnaire"
+    class="default questionnaire"
     <? if (Request::isAjax()) : ?>
         data-dialog
     <? endif ?>
@@ -15,7 +15,7 @@
         <? foreach ($questionnaire->questions as $question) : ?>
             <? $template = $question->getDisplayTemplate() ?>
             <? if ($template) : ?>
-                <article>
+                <article data-question_type="<?= htmlReady(get_class($question)) ?>">
                     <?= $template->render() ?>
                 </article>
             <? endif ?>

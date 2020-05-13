@@ -169,7 +169,7 @@ const PersonalNotifications = {
         if (old_count !== count) {
             $('#notification_marker').text(count);
             updateFavicon(count);
-            $('#notification_container .mark-all-as-read').toggleClass('hidden', count < 2);
+            $('#notification_container .mark-all-as-read').toggleClass('notification_hidden', count < 2);
         }
     },
     isVisited: function() {

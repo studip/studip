@@ -26,6 +26,14 @@
     <?= _("Mehrere Antworten sind erlaubt.") ?>
 </label>
 
+<input type="hidden" name="questions[<?= $vote->getId() ?>][options][mandatory]" value="0">
+<label>
+    <input type="checkbox"
+           name="questions[<?= $vote->getId() ?>][options][mandatory]"
+           value="1"<?= isset($etask->options['mandatory']) && $etask->options['mandatory'] ? 'checked' : '' ?>>
+    <?= _("Pflichtfrage") ?>
+</label>
+
 <label>
     <input type="checkbox"
            name="questions[<?= $vote->getId() ?>][options][randomize]"
@@ -33,6 +41,9 @@
            <?= isset($etask->options['randomize']) && $etask->options['randomize'] ? 'checked' : '' ?>>
     <?= _('Antworten den Teilnehmenden zufällig präsentieren.') ?>
 </label>
+
+
+
 
 <div style="display: none" class="delete_question"><?= _('Diese Antwortmöglichkeit wirklich löschen?') ?></div>
 

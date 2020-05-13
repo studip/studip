@@ -61,6 +61,13 @@ class Freetext extends QuestionnaireQuestion implements QuestionType
         $this->etask->description = Studip\Markup::purifyHtml($data['description']);
         $this->etask->task = [];
 
+        // update mandatory option
+        if (isset($data['options']['mandatory'])) {
+            $options = $this->etask->options;
+            $options['mandatory'] = (bool) $data['options']['mandatory'];
+            $this->etask->options = $options;
+        }
+
         $this->etask->store();
     }
 
