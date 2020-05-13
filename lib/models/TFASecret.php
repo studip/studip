@@ -27,11 +27,11 @@ class TFASecret extends SimpleORMap
     // ];
     private static $types = [
         'email' => [
-            'window' => 30,
-            'period' => 1,
+            'window' => 60,
+            'period' => 5,
         ],
         'app' => [
-            'window' => 1,
+            'window' => 5,
             'period' => 30,
         ],
     ];

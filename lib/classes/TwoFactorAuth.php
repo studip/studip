@@ -210,8 +210,11 @@ final class TwoFactorAuth
         if ($this->secret->type === 'email') {
             StudipMail::sendMessage(
                 $this->secret->user->email,
-                'Ihr Zwei-Faktor-Token',
-                'Bitte geben Sie dieses Token ein: ' . $this->secret->getToken()
+                _('Ihr Zwei-Faktor-Token'),
+                sprintf(
+                    _('Bitte geben Sie dieses Token ein: %s'),
+                    $this->secret->getToken()
+                )
             );
         }
 
@@ -313,7 +316,7 @@ final class TwoFactorAuth
             } else {
                 $_SESSION[self::SESSION_FAILED][] = time();
 
-                PageLayout::postError('Invalid token');
+                PageLayout::postError(_('Das eingegebene Token ist nicht gültig.'));
             }
 
             unset($_SESSION[self::SESSION_DATA]);
