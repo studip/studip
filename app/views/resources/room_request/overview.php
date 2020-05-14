@@ -25,10 +25,12 @@
             </thead>
             <tbody>
                 <? foreach ($requests as $request): ?>
-                    <?= $this->render_partial(
-                        'resources/_common/_request_tr',
-                        ['request' => $request]
-                    ) ?>
+                    <? if ($request->getTimeIntervals()) : ?>
+                        <?= $this->render_partial(
+                            'resources/_common/_request_tr',
+                            ['request' => $request]
+                        ) ?>
+                    <? endif ?>
                 <? endforeach ?>
             </tbody>
         </table>
