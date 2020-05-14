@@ -31,10 +31,25 @@ class TFASecret extends SimpleORMap
             'period' => 5,
         ],
         'app' => [
-            'window' => 5,
-            'period' => 30,
+            'window' => 10,
+            'period' => 15,
         ],
     ];
+
+    /**
+     * Returns the duration in seconds for which a token is valid.
+     *
+     * @param  string $type Type of token
+     * @return int duration in seconds
+     */
+    public static function getValidationDuration($type)
+    {
+        if (!isset(self::$types[$type])) {
+            throw new InvalidArgumentException("Unknown tfa type {$type}");
+        }
+        $t = self::$types[$type];
+        return $t['window'] * $t['period'];
+    }
 
     /**
      * Configures the model.

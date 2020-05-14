@@ -18,6 +18,17 @@
         <div class="tfa-app-code">
             <code class="qr"><?= $secret->getProvisioningUri() ?></code>
         </div>
+    <? elseif ($secret->type === 'app' && $secret->confirmed): ?>
+        <p>
+            <?= _('Das notwendige Token wird von der von Ihnen verknüpften App generiert.') ?>
+        </p>
+    <? elseif ($secret->type === 'email'): ?>
+        <p>
+            <?= sprintf(
+                _('Das notwendige Token wurde Ihnen per E-Mail zugesendet und ist %u Minuten gültig.'),
+                TFASecret::getValidationDuration('email') / 60
+            ) ?>
+        </p>
     <? endif; ?>
 
         <div class="tfa-code-input">

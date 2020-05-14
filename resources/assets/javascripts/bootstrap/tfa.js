@@ -25,4 +25,18 @@ $(document).on('keyup', '.tfa-code-input input', function (event) {
         this.value = '';
         event.preventDefault();
     }
+}).on('paste', '.tfa-code-input input', function (event) {
+    this.value = '';
+    $(this).one('input', function () {
+        const pastedValue = this.value.trim();
+        if (!pastedValue.match(/^\d{6}$/)) {
+            return;
+        }
+
+        const container = $(this).closest('.tfa-code-input');
+        for (let i = 0; i < 6; i += 1) {
+            $(`input:eq(${i})`, container).val(pastedValue.substr(i, 1))
+        }
+        $('input:last', container).focus();
+    });
 });
