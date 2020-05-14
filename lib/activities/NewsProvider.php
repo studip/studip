@@ -112,8 +112,8 @@ class NewsProvider implements ActivityProvider
             return false;
         }
 
-        $activity->content = '<b>' . htmlReady($news->topic)
-            .'</b><br>'. formatReady($news->body);
+        $activity->content = '<b>' . htmlReady((string) $news->topic)
+            .'</b><br>'. formatReady((string) $news->body);
 
         $url = self::getUrlForContext($news, $activity);
         $route = \URLHelper::getURL('api.php/news/' . $news->id, NULL, true);

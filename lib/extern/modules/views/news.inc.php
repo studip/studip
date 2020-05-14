@@ -68,16 +68,10 @@ else {
     $statement = DBManager::get()->prepare($query);
 
     foreach($news as $news_id => $news_detail){
-        list ($content, $admin_msg) = explode("<admin_msg>", $news_detail["body"]);
-        if ($admin_msg) {
-            $admin_msg = preg_replace('# \(.*?\)#', '', $admin_msg);
-            $content .= "\n--%%{$admin_msg}%%--";
-        }
-
         // Mitarbeiter/in am Institut
         $statement->execute([
             $this->config->range_id,
-            $news_detail['user_id']
+            $news_detail->user_id,
         ]);
         $institute_user = $statement->fetchColumn() ?: 0;
         $statement->closeCursor();
@@ -85,30 +79,34 @@ else {
         // !!! LinkInternSimple is not the type of this element,
         // the type of this element is LinkIntern !!!
         // this is for compatibiliy reasons only
-        if ($show_date_author != 'date') {
+        if ($show_date_author !== 'date') {
             if ($not_author_link || !$institute_user)
-                $author_name = htmlReady(get_fullname($news_detail["user_id"], $nameformat));
+                $author_name = htmlReady(get_fullname($news_detail->user_id, $nameformat));
             else
                 $author_name = $this->elements["LinkInternSimple"]->toString([
-                                        "content" => htmlReady(get_fullname($news_detail["user_id"], $nameformat)),
-                                        "link_args" => "username=" . get_username($news_detail['user_id']),
-                                        "module" => "Persondetails"]);
+                    'content'   => htmlReady(get_fullname($news_detail->user_id, $nameformat)),
+                    'link_args' => 'username=' . get_username($news_detail->user_id),
+                    'module'    => 'Persondetails'
+                ]);
         }
 
         switch ($show_date_author) {
             case 'date' :
-                $data["content"]["date"] = strftime($dateform, $news_detail["date"]);
+                $data["content"]["date"] = strftime($dateform, $news_detail->date);
                 break;
             case 'author' :
                 $data["content"]["date"] = $author_name;
                 break;
             default :
-                $data["content"]["date"] = strftime($dateform, $news_detail["date"]) . "<br>" . $author_name;
+                $data["content"]["date"] = strftime($dateform, $news_detail->date) . "<br>" . $author_name;
         }
 
-        $data["content"]["topic"] = $this->elements["ContentNews"]->toString(["content" =>
-                                    ["topic" => htmlReady($news_detail["topic"]),
-                                    "body" => formatReady($content, TRUE, TRUE)]]);
+        $data["content"]["topic"] = $this->elements["ContentNews"]->toString([
+            "content" => [
+                "topic" => htmlReady((string) $news_detail->topic),
+                "body"  => formatReady((string) $news_detail->body, TRUE, TRUE),
+            ]
+        ]);
 
         $this->elements["TableRow"]->printout($data);
     }

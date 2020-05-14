@@ -196,25 +196,21 @@ class NewsController extends StudipController
         if (Request::get('news_isvisible')) {
             // visible categories, selected areas, topic, and body are utf8 encoded when sent via ajax
             $this->news_isvisible = json_decode(Request::get('news_isvisible'), true);
-            if (Request::isXhr()) {
-                $this->area_options_selected = json_decode(Request::get('news_selected_areas'), true);
-                $this->area_options_selectable = json_decode(Request::get('news_selectable_areas'), true);
-                $topic = Request::get('news_topic');
-                $body = transformBeforeSave(Studip\Markup::purifyHtml(Request::get('news_body')));
-            } else {
-                $this->area_options_selected = json_decode(Request::get('news_selected_areas'), true);
-                $this->area_options_selectable = json_decode(Request::get('news_selectable_areas'), true);
-                $topic = Request::get('news_topic');
-                $body = transformBeforeSave(Studip\Markup::purifyHtml(Request::get('news_body')));
-            }
-            $date = $this->getTimeStamp(Request::get('news_startdate'), 'start');
-            $expire = $this->getTimeStamp(Request::get('news_enddate'), 'end') ? $this->getTimeStamp(Request::get('news_enddate'), 'end') - $this->getTimeStamp(Request::get('news_startdate'), 'start') : '';
-            $allow_comments = Request::get('news_allow_comments') ? 1 : 0;
-            $news->topic          = $topic;
-            $news->body           = $body;
-            $news->date           = $date;
-            $news->expire         = $expire;
-            $news->allow_comments = $allow_comments;
+            $this->area_options_selected = json_decode(Request::get('news_selected_areas'), true);
+            $this->area_options_selectable = json_decode(Request::get('news_selectable_areas'), true);
+
+            $news->topic          = Request::i18n('news_topic');
+            $news->body           = Request::i18n('news_body', null, function ($string) {
+                                        if (!$string) {
+                                            return $string;
+                                        }
+                                        return transformBeforeSave(Studip\Markup::purifyHtml($string));
+                                    });
+            $news->date           = $this->getTimeStamp(Request::get('news_startdate'), 'start');
+            $news->expire         = $this->getTimeStamp(Request::get('news_enddate'), 'end')
+                                  ? $this->getTimeStamp(Request::get('news_enddate'), 'end') - $news->date
+                                  : '';
+            $news->allow_comments = Request::bool('news_allow_comments', false);
         } elseif ($id) {
             // if news id given check for valid id and load ranges
             if ($news->isNew()) {
@@ -262,7 +258,7 @@ class NewsController extends StudipController
             }
         }
         // build news var for template
-        $this->news = $news->toArray();
+        $this->news = $news;
 
         // treat faculties and institutes as one area group (inst)
         foreach ($ranges as $range) {

@@ -61,12 +61,12 @@ function delete_comments($delete_comments_array = '')
             PageLayout::postMessage(MessageBox::success(sprintf(_('%s Kommentare wurden gelöscht.'), $delete_counter)));
         elseif ($delete_counter == 1)
             PageLayout::postMessage(MessageBox::success(_('Kommentar wurde gelöscht.')));
-    }
-    else {
-        if (count($delete_comments_array) > 1)
+    } else {
+        if (count($delete_comments_array) > 1) {
             $text = sprintf(_('Wollen Sie die %s Komentare jetzt löschen?'), count($delete_comments_array));
-        elseif (count($delete_comments_array) == 1)
+        } elseif (count($delete_comments_array) == 1) {
             $text = _('Wollen Sie den Kommentar jetzt löschen?');
+        }
     }
     return $text;
 }
@@ -82,38 +82,66 @@ function delete_news($delete_news_array)
 {
     $text = '';
     $confirmed = false;
-    if (! is_array($delete_news_array))
+    if (!is_array($delete_news_array)) {
         $delete_news_array = [$delete_news_array];
-    if (Request::submitted('yes') AND Request::isPost()) {
+    }
+    if (Request::submitted('yes') && Request::isPost()) {
         CSRFProtection::verifySecurityToken();
         $confirmed = true;
     }
     foreach ($delete_news_array as $news_id) {
         if ($news_id) {
             $delete_news = new StudipNews($news_id);
-            $delete_news_titles[] = $delete_news->getValue('topic');
+            $delete_news_titles[] = (string) $delete_news->topic;
             if ($confirmed) {
                 $msg_object = new messaging();
                 if ($delete_news->havePermission('delete')) {
-                    PageLayout::postMessage(MessageBox::success(sprintf(_('Ankündigung "%s" wurde gelöscht.'), htmlReady($delete_news->getValue('topic')))));
+                    PageLayout::postSuccess(sprintf(
+                        _('Ankündigung "%s" wurde gelöscht.'),
+                        htmlReady((string) $delete_news->topic)
+                    ));
                     if ($delete_news->getValue('user_id') != $GLOBALS['auth']->auth['uid']) {
                         setTempLanguage($delete_news->getValue('user_id'));
-                        $msg = sprintf(_('Ihre Ankündigung "%s" wurde von der Administration gelöscht!.'), $delete_news->getValue('topic'), get_fullname() . ' ('.get_username().')'). "\n";
-                        $msg_object->insert_message($msg, get_username($delete_news->getValue('user_id')) , "____%system%____", FALSE, FALSE, "1", FALSE, _("Systemnachricht:")." "._("Ankündigung geändert"));
+                        $msg = sprintf(
+                            _('Ihre Ankündigung "%s" wurde von der Administration gelöscht!.'),
+                            (string) $delete_news->topic,
+                            get_fullname() . ' (' . get_username() . ')'
+                        ). "\n";
+                        $msg_object->insert_message(
+                            $msg,
+                            get_username($delete_news->user_id),
+                            '____%system%____',
+                            FALSE,
+                            FALSE,
+                            '1',
+                            FALSE,
+                            _('Systemnachricht:') . ' ' . _('Ankündigung geändert')
+                        );
                         restoreLanguage();
                     }
                     $delete_news->delete();
+                } else {
+                    PageLayout::postError(sprintf(
+                        _('Keine Berechtigung zum Löschen der Ankündigung "%s".'),
+                        htmlReady((string) $delete_news->topic)
+                    ));
                 }
-                else
-                    PageLayout::postMessage(MessageBox::error(sprintf(_('Keine Berechtigung zum Löschen der Ankündigung "%s".'), htmlReady($delete_news->getValue('topic')))));
             }
         }
     }
     if (! $confirmed) {
-        if (count($delete_news_titles) == 1)
-            $text = sprintf(_('- Die Ankündigung "%s" wird unwiderruflich gelöscht.'), $delete_news_titles[0])."\n";
-        elseif (count($delete_news_titles) > 1)
-            $text = sprintf(_('- Die %s Ankündigungen "%s" werden unwiderruflich gelöscht.'), count($delete_news_titles), implode('", "', $delete_news_titles))."\n";
+        if (count($delete_news_titles) === 1) {
+            $text = sprintf(
+                _('- Die Ankündigung "%s" wird unwiderruflich gelöscht.'),
+                $delete_news_titles[0]
+            ) . "\n";
+        } elseif (count($delete_news_titles) > 1) {
+            $text = sprintf(
+                _('- Die %s Ankündigungen "%s" werden unwiderruflich gelöscht.'),
+                count($delete_news_titles),
+                implode('", "', $delete_news_titles)
+            ) . "\n";
+        }
     }
     return $text;
 }
@@ -130,57 +158,75 @@ function remove_news($remove_array)
 {
     $confirmed = false;
     $question_text = [];
-    if (! is_array($remove_array))
+    if (!is_array($remove_array)) {
         return false;
-    if (Request::submitted('yes') AND Request::isPost()) {
+    }
+    if (Request::submitted('yes') && Request::isPost()) {
         CSRFProtection::verifySecurityToken();
         $confirmed = true;
     }
     foreach ($remove_array as $news_id => $ranges) {
         $remove_news = new StudipNews($news_id);
-        $remove_news_title = $remove_news->getValue('topic');
-        if (! is_array($ranges))
+        $remove_news_title = (string) $remove_news->topic;
+        if (!is_array($ranges)) {
             $ranges = [$ranges];
+        }
         // should we delete news completely
-        if (count($ranges) == count($remove_news->getRanges())) {
+        if (count($ranges) === count($remove_news->getRanges())) {
             $text = delete_news($news_id);
-            if ($text)
+            if ($text) {
                 $question_text[] = $text;
+            }
         // or just remove range_id(s)?
         } else {
             $text = '';
-            if ($confirmed AND ! $remove_news->isNew() AND count($ranges)) {
+            if ($confirmed && ! $remove_news->isNew() && count($ranges)) {
                 foreach ($ranges as $key => $range_id) {
                     if ($remove_news->havePermission('unassign', $range_id)) {
                         $remove_news->deleteRange($range_id);
                     } else {
                         unset($ranges[$key]);
-                        PageLayout::postMessage(MessageBox::error(sprintf(_('Keine Berechtigung zum Entfernen der Ankündigung "%s" aus diesem Bereich.'), htmlReady($remove_news->getValue('topic')))));
+                        PageLayout::postError(sprintf(
+                            _('Keine Berechtigung zum Entfernen der Ankündigung "%s" aus diesem Bereich.'),
+                            htmlReady($remove_news->topic)
+                        ));
                     }
                     if (count($ranges)) {
-                        if (count($ranges) == 1)
-                            PageLayout::postMessage(MessageBox::success(sprintf(_('Ankündigung "%s" wurde aus dem Bereich entfernt.'), htmlReady($remove_news->getValue('topic')))));
-                        else
-                            PageLayout::postMessage(MessageBox::success(sprintf(_('Ankündigung "%s" wurde aus %s Bereichen entfernt.'), htmlReady($remove_news->getValue('topic')), count($ranges))));
+                        if (count($ranges) === 1) {
+                            PageLayout::postSuccess(sprintf(
+                                _('Ankündigung "%s" wurde aus dem Bereich entfernt.'),
+                                htmlReady((string) $remove_news->topic)
+                            ));
+                        } else {
+                            PageLayout::postSuccess(sprintf(
+                                _('Ankündigung "%s" wurde aus %s Bereichen entfernt.'),
+                                htmlReady((string) $remove_news->topic),
+                                count($ranges)
+                            ));
+                        }
                         $remove_news->store();
                     }
                 }
-            } elseif (! $confirmed) {
-                if (count($ranges) == 1)
+            } elseif (!$confirmed) {
+                if (count($ranges) === 1) {
                     $text = sprintf(_('- Die Ankündigung "%s" wird aus dem aktiven Bereich entfernt. '
                                       .'Sie wird dadurch nicht endgültig gelöscht. Es wird nur die Zuordnung entfernt.'), $remove_news_title)."\n";
-                elseif (count($ranges) > 1)
+                } elseif (count($ranges) > 1) {
                     $text = sprintf(_('- Die Ankündigung "%s" wird aus den %s gewählten Bereichen entfernt. '
                                       .'Sie wird dadurch nicht endgültig gelöscht. Es werden nur die Zuordnungen entfernt.'), $remove_news_title, count($ranges))."\n";
+                }
             }
-            if ($text)
-               $question_text[] = $text;
+            if ($text) {
+                $question_text[] = $text;
+            }
         }
     }
-    if (count($question_text) > 1)
+    if (count($question_text) > 1) {
         return _('Wollen Sie die folgenden Aktionen jetzt ausführen?') . "\n" . implode($question_text);
-    elseif (count($question_text) == 1)
+    }
+    if (count($question_text) == 1) {
         return _('Wollen Sie diese Aktion jetzt ausführen?') . "\n" . implode($question_text);
+    }
 }
 
 /**
@@ -233,11 +279,9 @@ function show_rss_news($range_id, $type)
             $last_changed = $item['chdate'];
         }
 
-        if ($item['date'] < $item['chdate']) {
-            $item['date'] = $item['chdate'];
+        if ($item->date < $item->chdate) {
+            $item->date = $item->chdate;
         }
-        list($body, $admin_msg) = explode('<admin_msg>', $item['body']);
-        $item['body'] = $body;
     }
 
     header('Content-type: application/rss+xml; charset=utf-8');

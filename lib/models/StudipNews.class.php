@@ -65,13 +65,31 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             'foreign_key' => 'user_id',
         ];
 
+        $config['i18n_fields']['topic'] = true;
+        $config['i18n_fields']['body'] = true;
+
+        // Strip <admin_msg> from news body
+        $config['registered_callbacks']['after_initialize'][] = function ($news) {
+            if ($news->isI18nField('body')) {
+                $news->body->setOriginal(explode('<admin_msg>', $news->body->original())[0]);
+                foreach ($news->body->toArray() as $lang => $value) {
+                    if ($value) {
+                        $news->body->setLocalized(
+                            explode('<admin_msg>', $value)[0],
+                            $lang
+                        );
+                    }
+                }
+            }
+        };
+
         parent::configure($config);
     }
 
     public static function GetNewsByRange($range_id, $only_visible = false, $as_objects = false)
     {
         if ($only_visible){
-            $clause = " AND date < UNIX_TIMESTAMP() AND (date+expire) > UNIX_TIMESTAMP() ";
+            $clause = " AND date < UNIX_TIMESTAMP() AND (date + expire) > UNIX_TIMESTAMP() ";
         }
         $query = "SELECT news_id AS idx, news.*
                   FROM news_range
@@ -86,7 +104,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         $statement->execute([$range_id]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
 
-        return ($as_objects ? StudipNews::GetNewsObjects($ret) : $ret);
+        return $as_objects ? static::GetNewsObjects($ret) : $ret;
     }
 
     public static function CountUnread($range_id = 'studip', $user_id = false)
@@ -102,7 +120,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         $statement->bindValue(':user_id', $user_id ?: $GLOBALS['user']->id);
         $statement->bindValue(':range_id', $range_id);
         $statement->execute();
-        return (int)$statement->fetchColumn();
+        return (int) $statement->fetchColumn();
     }
 
     public static function GetNewsByAuthor($user_id, $as_objects = false)
@@ -119,13 +137,13 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         $statement->execute([$user_id]);
         $ret = $statement->fetchGrouped(PDO::FETCH_ASSOC);
 
-        return $as_objects ? StudipNews::GetNewsObjects($ret) : $ret;
+        return $as_objects ? static::GetNewsObjects($ret) : $ret;
     }
 
     public static function GetNewsByRSSId($rss_id, $as_objects = false)
     {
-        if ($user_id = StudipNews::GetUserIDFromRssID($rss_id)){
-            return StudipNews::GetNewsByRange($user_id, true, $as_objects);
+        if ($user_id = static::GetUserIDFromRssID($rss_id)) {
+            return static::GetNewsByRange($user_id, true, $as_objects);
         }
 
         return [];
@@ -133,15 +151,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
 
     public static function GetNewsObjects($news_result)
     {
-        $objects = [];
-        if (is_array($news_result)){
-            foreach ($news_result as $id => $result){
-                $objects[$id] = new StudipNews();
-                $objects[$id]->setData($result, true);
-                $objects[$id]->setNew(false);
-            }
-        }
-        return $objects;
+        return array_map('static::buildExisting', (array) $news_result);
     }
 
     /**
@@ -228,7 +238,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                 break;
             default:
                 foreach (['global', 'inst', 'sem', 'user'] as $type) {
-                    $add_news = StudipNews::GetNewsRangesByFilter($user_id, $type, $term, $startdate, $enddate, $as_objects, $limit);
+                    $add_news = static::GetNewsRangesByFilter($user_id, $type, $term, $startdate, $enddate, $as_objects, $limit);
                     if (is_array($add_news) && isset($add_news[$type])) {
                         $limit          = $limit - count($add_news[$type]);
                         $news_result    = array_merge($news_result, $add_news);
@@ -264,7 +274,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                     $objects[$area][$id]['title'] = _('Ankündigungen auf der Stud.IP Startseite');
                 }
                 if ($as_objects) {
-                    $objects[$area][$id]['object'] = new StudipNews();
+                    $objects[$area][$id]['object'] = new static();
                     $objects[$area][$id]['object']->setData($result, true);
                     $objects[$area][$id]['object']->setNew(false);
                 }
@@ -275,13 +285,13 @@ class StudipNews extends SimpleORMap implements PrivacyObject
 
     public static function GetUserIdFromRssID($rss_id)
     {
-        $ret = StudipNews::GetRangeIdFromRssID($rss_id);
+        $ret = static::GetRangeIdFromRssID($rss_id);
         return $ret['range_id'];
     }
 
     public static function GetRssIdFromUserId($user_id)
     {
-        return StudipNews::GetRssIdFromRangeId($user_id);
+        return static::GetRssIdFromRangeId($user_id);
     }
 
     public static function GetRangeFromRssID($rss_id)
@@ -303,7 +313,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
 
     public static function GetRangeIdFromRssID($rss_id)
     {
-        $ret = StudipNews::GetRangeFromRssID($rss_id);
+        $ret = static::GetRangeFromRssID($rss_id);
         return $ret['range_id'];
     }
 
@@ -354,13 +364,13 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         );
     }
 
-    public static function DoGarbageCollect($news_deletion_days = 0) 
+    public static function DoGarbageCollect($news_deletion_days = 0)
     {
         $db = DBManager::get();
         if (!Config::get()->NEWS_DISABLE_GARBAGE_COLLECT) {
             $query = "SELECT news.news_id
                       FROM news
-                      WHERE date + expire + ? < UNIX_TIMESTAMP() 
+                      WHERE date + expire + ? < UNIX_TIMESTAMP()
 
                       UNION DISTINCT
 
@@ -378,7 +388,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             $stm = $db->prepare($query);
             $stm->execute([$news_deletion_days]);
             $result = $stm->fetchAll(PDO::FETCH_COLUMN);
-            
+
             if (count($result) > 0) {
                 $query = "DELETE FROM news WHERE news_id IN (?)";
                 $statement = DBManager::get()->prepare($query);
@@ -406,7 +416,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         if (!$touch_stamp) {
             $touch_stamp = time();
         }
-        $news = new StudipNews($news_id);
+        $news = new static($news_id);
         if (!$news->isNew()) {
             $news->date = strtotime('today 0:00:00', $touch_stamp);
             if (!$news->store()) {
@@ -423,14 +433,14 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         $statement->bindValue(':id', $range_id);
         $result = $statement->execute();
 
-        StudipNews::DoGarbageCollect();
+        static::DoGarbageCollect();
 
         return $result;
     }
 
     public static function DeleteNewsByAuthor($user_id)
     {
-        foreach (StudipNews::GetNewsByAuthor($user_id, true) as $news) {
+        foreach (static::GetNewsByAuthor($user_id, true) as $news) {
             $deleted += $news->delete();
         }
         return $deleted;
@@ -575,7 +585,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
             $range_operation = $operation;
         }
         foreach ($this->getRanges() as $range_id) {
-            if (StudipNews::haveRangePermission($range_operation, $range_id, $user_id)) {
+            if (static::haveRangePermission($range_operation, $range_id, $user_id)) {
                 if ($operation === 'view' || $operation === 'edit' || $operation === 'copy') {
                     // in order to view, edit, copy, or unassign, access to one of the ranges is sufficient
                     return true;

@@ -172,24 +172,22 @@ class ExternModuleTemplateNews extends ExternModule {
         $now = time();
         foreach ($news as $news_id => $news_detail) {
             //aktuelle News ausgeben
-            if ($news_detail['date'] < $now && $news_detail['date'] + $news_detail['expire'] > $now)
-                {
-                list($news_content, $admin_msg) = explode("<admin_msg>", $news_detail['body']);
-                if ($news_detail['chdate_uid']){
-                    $admin_msg = StudipNews::GetAdminMsg($news_detail['chdate_uid'],$news_detail['chdate']);
+            if ($news_detail->date < $now && $news_detail->date + $news_detail->expire > $now) {
+                if ($news_detail->chdate_uid){
+                    $admin_msg = StudipNews::GetAdminMsg($news_detail->chdate_uid, $news_detail->chdate);
                 }
                 if ($admin_msg) {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_ADMIN-MESSAGE'] = preg_replace('# \(?(.*)\)?#', '$1', $admin_msg);
                 }
 
                 if (!$news_content) {
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] = _("Keine Beschreibung vorhanden.");
+                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] = _('Keine Beschreibung vorhanden.');
                 } else {
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] =  ExternModule::ExtFormatReady($news_content);
+                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] =  ExternModule::ExtFormatReady((string) $news_detail->body);
                 }
 
-                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_DATE'] = strftime($dateform, $news_detail['date']);
-                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_TOPIC'] = ExternModule::ExtHtmlReady($news_detail['topic']);
+                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_DATE'] = strftime($dateform, $news_detail->date);
+                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_TOPIC'] = ExternModule::ExtHtmlReady((string) $news_detail->topic);
                 $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_NO'] = $i;
 
                 $query = "SELECT Nachname, Vorname, title_front, title_rear,
@@ -199,7 +197,7 @@ class ExternModuleTemplateNews extends ExternModule {
                           LEFT JOIN user_info AS ui USING (user_id)
                           WHERE aum.user_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute([$news_detail['user_id']]);
+                $statement->execute([$news_detail->user_id]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 if ($temp) {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['FULLNAME'] = ExternModule::ExtHtmlReady($temp['fullname']);
@@ -211,13 +209,10 @@ class ExternModuleTemplateNews extends ExternModule {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['PERSONDETAIL-HREF'] = $this->elements['LinkInternTemplate']->createUrl(['link_args' => 'username=' . $temp['username']]);
                 }
                 $i++;
-            }
-            //archivierte News ausgeben
-            else if ($news_detail['date'] < $now)
-            {
-                list($news_content, $admin_msg) = explode("<admin_msg>", $news_detail['body']);
-                if ($news_detail['chdate_uid']){
-                    $admin_msg = StudipNews::GetAdminMsg($news_detail['chdate_uid'],$news_detail['chdate']);
+            } else if ($news_detail->date < $now) {
+                //archivierte News ausgeben
+                if ($news_detail->chdate_uid){
+                    $admin_msg = StudipNews::GetAdminMsg($news_detail->chdate_uid, $news_detail->chdate);
                 }
                 if ($admin_msg) {
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_ADMIN-MESSAGE'] = preg_replace('# \(?(.*)\)?#', '$1', $admin_msg);
@@ -226,11 +221,11 @@ class ExternModuleTemplateNews extends ExternModule {
                 if (!$news_content) {
                     $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_BODY'] = _("Keine Beschreibung vorhanden.");
                 } else {
-                    $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_BODY'] =  ExternModule::ExtFormatReady($news_content);
+                    $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_BODY'] =  ExternModule::ExtFormatReady((string) $news_detail->body);
                 }
 
-                $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_DATE'] = strftime($dateform, $news_detail['date']);
-                $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_TOPIC'] = ExternModule::ExtHtmlReady($news_detail['topic']);
+                $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_DATE'] = strftime($dateform, $news_detail->date);
+                $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_TOPIC'] = ExternModule::ExtHtmlReady((string) $news_detail->topic);
                 $content['NEWS']['ALL-ARCHIV-NEWS']['SINGLE-ARCHIVE-NEWS'][$j]['ARCHIV_NEWS_NO'] = $j;
 
                 $query = "SELECT Nachname, Vorname, title_front, title_rear,

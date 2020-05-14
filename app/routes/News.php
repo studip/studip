@@ -150,16 +150,15 @@ class News extends \RESTAPI\RouteMap
         }
 
         $news = new \StudipNews();
-        $news->setData(
-            [
-                'user_id'        => $GLOBALS['user']->id,
-                'author'         => $GLOBALS['user']->getFullName(),
-                'topic'          => trim(@$this->data['topic']),
-                'body'           => trim(@$this->data['body']),
-                'date'           => time(),
-                'expire'         => isset($this->data['expire']) ? intval($this->data['expire']) : 2 * 7 * 24 * 60 * 60,
-                'allow_comments' => isset($this->data['allow_comments']) ? intval($this->data['allow_comments']) : 0
-            ]);
+        $news->setData([
+            'user_id'        => $GLOBALS['user']->id,
+            'author'         => $GLOBALS['user']->getFullName(),
+            'topic'          => trim(@$this->data['topic']),
+            'body'           => trim(@$this->data['body']),
+            'date'           => time(),
+            'expire'         => isset($this->data['expire']) ? intval($this->data['expire']) : 2 * 7 * 24 * 60 * 60,
+            'allow_comments' => isset($this->data['allow_comments']) ? intval($this->data['allow_comments']) : 0
+        ]);
         $news->addRange($range_id);
 
         if ($errors = $this->validateNews($news)) {
@@ -326,7 +325,8 @@ class News extends \RESTAPI\RouteMap
     {
         $json = $news->toArray(words("news_id topic body date user_id expire allow_comments chdate chdate_uid mkdate"));
 
-        $json['body_html'] = formatReady($news->body);
+        $json['topic'] = (string) $news->topic;
+        $json['body_html'] = formatReady((string) $news->body);
         $json['chdate_uid'] = trim($json['chdate_uid']);
 
         if ($news->allow_comments) {

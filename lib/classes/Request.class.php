@@ -158,17 +158,24 @@ class Request implements ArrayAccess, IteratorAggregate
     /**
      * Return the value of the selected query parameter as an I18NString.
      *
-     * @param string $param    parameter name
-     * @param string $default  default value if parameter is not set
+     * @param string   $param    parameter name
+     * @param string   $default  default value if parameter is not set
+     * @param Callable $op       Operation to perform on each text string
      *
      * @return I18NString  parameter value as string (if set), else NULL
      */
-    public static function i18n($param, $default = NULL)
+    public static function i18n($param, $default = NULL, Callable $op = null)
     {
         $value = self::get($param, $default);
 
         if (isset($value)) {
             $lang = self::getArray($param . '_i18n');
+
+            if ($op) {
+                $value = $op($value);
+                $lang  = array_map($op, $lang);
+            }
+
             $value = new I18NString($value, $lang);
         }
 

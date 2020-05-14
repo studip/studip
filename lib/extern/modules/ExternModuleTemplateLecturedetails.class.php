@@ -62,7 +62,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                 'TemplateNews' => 'TemplateGeneric',
                 'TemplateStudipData' => 'TemplateGeneric'
         ];
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Untertitel"),
                 _("Lehrende"),
@@ -432,15 +432,9 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
         } else {
             $i = 0;
             foreach ($news as $news_id => $news_detail) {
-                list($news_content, $admin_msg) = explode("<admin_msg>", $news_detail['body']);
-                if ($admin_msg) {
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_ADMIN-MESSAGE'] = preg_replace('# \(.*?\)#', '', $admin_msg);
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] = ExternModule::ExtFormatReady($news_content);
-                } else {
-                    $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] = ExternModule::ExtFormatReady($news_detail['body']);
-                }
-                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_DATE'] = strftime($dateform, $news_detail['date']);
-                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_TOPIC'] = ExternModule::ExtHtmlReady($news_detail['topic']);
+                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_BODY'] = ExternModule::ExtFormatReady((string) $news_detail->body);
+                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_DATE'] = strftime($dateform, $news_detail->date);
+                $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_TOPIC'] = ExternModule::ExtHtmlReady((string) $news_detail->topic);
                 $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['NEWS_NO'] = $i + 1;
 
                 $query = "SELECT Nachname, Vorname, title_front, title_rear,
@@ -450,7 +444,7 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
                           LEFT JOIN user_info AS ui USING (user_id)
                           WHERE aum.user_id = ?";
                 $statement = DBManager::get()->prepare($query);
-                $statement->execute([$news_detail['user_id']]);
+                $statement->execute([$news_detail->user_id]);
                 $temp = $statement->fetch(PDO::FETCH_ASSOC);
                 if ($temp) {
                     $content['NEWS']['ALL-NEWS']['SINGLE-NEWS'][$i]['FULLNAME'] = ExternModule::ExtHtmlReady($temp['fullname']);

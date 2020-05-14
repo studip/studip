@@ -42,8 +42,8 @@ class StudipNews extends SchemaProvider
     public function getAttributes($news)
     {
         return [
-            'title' => $news->topic,
-            'content' => $news->body,
+            'title' => (string) $news->topic,
+            'content' => (string) $news->body,
             'mkdate' => date('c', $news->mkdate),
             'chdate' => date('c', $news->chdate),
             'publication-start' => date('c', $news->date),

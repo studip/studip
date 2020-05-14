@@ -1,17 +1,16 @@
 <? use Studip\Button, Studip\LinkButton; ?>
-<? if(!empty($flash['question_text'])) : ?>
+<? if(!empty($flash['question_text'])) : // TODO: This will certainly break with i18n fields ?>
     <? $form_content = ['news_isvisible' => htmlReady(json_encode($news_isvisible)),
               'news_selectable_areas' => htmlReady(json_encode($area_options_selectable)),
               'news_selected_areas' => htmlReady(json_encode($area_options_selected)),
               'news_basic_js' => '',
               'news_comments_js' => '',
               'news_areas_js' => '',
-              'news_allow_comments' => $news['allow_comments'],
-              'news_topic' => $news['topic'],
-              'news_body' => $news['body'],
-              'news_startdate' => ($news['date']) ? date('d.m.Y', $news['date']) : "",
-              'news_enddate' => ($news['expire']) ? date('d.m.Y', $news['date']+$news['expire']) : "",
-              'news_allow_comments' => $news['allow_comments']] ?>
+              'news_allow_comments' => $news->allow_comments,
+              'news_topic' => $news->topic,
+              'news_body' => $news->body,
+              'news_startdate' => $news->date ? date('d.m.Y', $news->date) : '',
+              'news_enddate' => $news->expire ? date('d.m.Y', $news->date + $news->expire) : ''] ?>
     <?=createQuestion2($flash['question_text'],
         array_merge($flash['question_param'], $form_content),
         $form_content,
@@ -43,8 +42,11 @@
             <span class="required">
                 <?= _("Titel") ?>
             </span>
-            <input type="text" name="news_topic" class="news_topic news_prevent_submit size-l" aria-label="<?= _('Titel der Ankündigung') ?>"
-                   value="<?= htmlReady($news['topic']) ?>" required>
+            <?= I18N::input('news_topic', $news->topic, [
+                'required'   => '',
+                'class'      => 'news_topic news_prevent_submit size-l',
+                'aria-label' => _('Titel der Ankündigung'),
+            ]) ?>
         </label>
 
         <label>
@@ -52,10 +54,14 @@
                 <?= _("Inhalt") ?>
             </span>
 
-            <? list ($body, $admin_msg) = explode("<admin_msg>", $news['body']); ?>
-            <textarea class="news_body add_toolbar wysiwyg size-l" name="news_body" rows="6"
-                wrap="virtual" placeholder="<?= _('Geben Sie hier den Ankündigungstext ein') ?>"
-                aria-label="<?= _('Inhalt der Ankündigung') ?>" required><?= wysiwygReady($body) ?></textarea>
+            <?= I18N::textarea('news_body', $news->body, [
+                'required'    => '',
+                'class'       => 'news_body add_toolbar wysiwyg size-l',
+                'rows'        => 6,
+                'wrap'        => 'virtual',
+                'placeholder' => _('Geben Sie hier den Ankündigungstext ein'),
+                'aria-label'  => _('Inhalt der Ankündigung'),
+            ]) ?>
         </label>
 
         <label class="col-2">
@@ -66,7 +72,7 @@
             <input type="text" class="news_date news_prevent_submit"
                    name="news_startdate" id="news_startdate"
                    data-date-picker
-                   value="<? if ($news['date']) echo date('d.m.Y', $news['date']); ?>"
+                   value="<? if ($news->date) echo strftime('%x', $news->date); ?>"
                    aria-label="<?= _('Einstelldatum') ?>" required>
         </label>
 
@@ -78,7 +84,7 @@
             <input type="text" class="news_date news_prevent_submit"
                    name="news_enddate" id="news_enddate"
                    data-date-picker='{">=":"#news_startdate","offset":"#news_duration"}'
-                   value="<? if ($news['expire']) echo date('d.m.Y', $news['date'] + $news['expire']) ?>"
+                   value="<? if ($news->expire) echo strftime('%x', $news->date + $news->expire) ?>"
                    aria-label="<?= _('Ablaufdatum') ?>" required>
         </label>
 
@@ -87,7 +93,7 @@
 
             <input type="number" class="news_date news_prevent_submit"
                    name="news_duration" id="news_duration"
-                   value="<?= $news['expire'] ? round($news['expire'] / (24 * 60 * 60)) : 8 ?>"
+                   value="<?= $news->expire ? round($news->expire / (24 * 60 * 60)) : 8 ?>"
                    aria-label="<?= _('Laufzeit') ?>"
                    min="1">
         </label>
@@ -98,7 +104,7 @@
         <label>
             <input type="checkbox"
                    id="news_allow_comments" name="news_allow_comments" value="1"
-                   <? if ($news['allow_comments']) echo 'checked'; ?>>
+                   <? if ($news->allow_comments) echo 'checked'; ?>>
             <?= _('Kommentare zulassen') ?>
         </label>
     </fieldset>
@@ -250,10 +256,10 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?  if ($news["mkdate"]) : ?>
-            <?= Button::createAccept(_('Änderungen speichern'), 'save_news') ?>
-        <? else : ?>
+        <? if ($news->isNew()) : ?>
             <?= Button::createAccept(_('Ankündigung erstellen'), 'save_news') ?>
+        <? else : ?>
+            <?= Button::createAccept(_('Änderungen speichern'), 'save_news') ?>
         <? endif ?>
         <? if (Request::isXhr()) : ?>
             <?= LinkButton::createCancel(_('Schließen'), URLHelper::getURL(''), ['rel' => 'close_dialog']) ?>

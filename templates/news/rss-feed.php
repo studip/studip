@@ -13,12 +13,12 @@
         <generator><?= htmlReady('Stud.IP - ' . $GLOBALS['SOFTWARE_VERSION']) ?></generator>
 <? foreach ($items as $id => $item): ?>
         <item>
-            <title><?= htmlReady($item['topic']) ?></title>
+            <title><?= htmlReady((string) $item->topic) ?></title>
             <link><?= htmlReady(sprintf($item_url_fmt, $studip_url, $id)) ?></link>
-            <description><![CDATA[<?= formatready($item['body'], 1, 1) ?>]]></description>
-            <dc:contributor><![CDATA[<?= $item['author'] ?>]]></dc:contributor>
-            <dc:date><?= gmstrftime('%Y-%m-%dT%H:%MZ', $item['date']) ?></dc:date>
-            <pubDate><?= date('r', $item['date']) ?></pubDate>
+            <description><![CDATA[<?= formatready((string) $item->body, 1, 1) ?>]]></description>
+            <dc:contributor><![CDATA[<?= $item->author ?>]]></dc:contributor>
+            <dc:date><?= gmstrftime('%Y-%m-%dT%H:%MZ', $item->date) ?></dc:date>
+            <pubDate><?= date('r', $item->date) ?></pubDate>
         </item>
 <? endforeach; ?>
     </channel>

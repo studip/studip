@@ -4,12 +4,32 @@ const News = {
     /**
      * (Re-)initialise news-page, f.e. to stay in dialog
      */
-    init: function (id) {
+    init (id) {
+        $('.add_toolbar').addToolbar();
+        STUDIP.i18n.init(`#${id}`);
+
         // prevent forms within dialog from reloading whole page, and reload dialog instead
-        $('#' + id + ' form').on('click', function (event) {
+        $(`#${id} form`).on('click', function (event) {
             $(this).data('clicked', $(event.target));
+        }).on('submit', function (event) {
+            event.preventDefault();
+
+            var textarea, button, form_route, form_data;
+            if (STUDIP.editor_enabled) {
+                textarea = $('textarea.news_body');
+                // wysiwyg is active, ensure HTML markers are set
+                textarea.val(STUDIP.wysiwyg.markAsHtml(textarea.val()));
+            }
+
+            button     = $(this).data('clicked').attr('name');
+            form_route = $(this).attr('action');
+            form_data  = $(this).serialize() + '&' + button + '=1';
+
+            $(this).find(`input[name=${button}]`).showAjaxNotification('left');
+            News.update_dialog(id, form_route, form_data);
         });
-        $(document).on('change', '#' + id + ' form .news_date', function () {
+
+        $(document).on('change', `#${id} form .news_date`, function () {
             // This is neccessary since datepickers are initialiszed on focus
             // which might not have occured yet
             STUDIP.UI.Datepicker.init();
@@ -35,60 +55,37 @@ const News = {
                 $('#news_duration').val(duration);
             }
         });
-
-        $('#' + id + ' form').on('submit', function (event) {
-            event.preventDefault();
-
-            var textarea, button, form_route, form_data;
-            if (STUDIP.editor_enabled) {
-                textarea = $('textarea.news_body');
-                // wysiwyg is active, ensure HTML markers are set
-                textarea.val(STUDIP.wysiwyg.markAsHtml(textarea.val()));
-            }
-
-            button     = $(this).data('clicked').attr('name');
-            form_route = $(this).attr('action');
-            form_data  = $(this).serialize() + '&' + button + '=1';
-
-            $(this).find('input[name=' + button + ']').showAjaxNotification('left');
-            News.update_dialog(id, form_route, form_data);
-        });
     },
 
-    init_dialog: function () {
-        $('.add_toolbar').addToolbar();
-    },
-
-    get_dialog: function (id, route) {
+    get_dialog (id, route) {
         // initialize dialog
-        $('body').append('<div id="' + id + '"></div>');
-        $('#' + id).dialog({
+        $('body').append(`<div id="${id}"></div>`);
+        $(`#${id}`).dialog({
             modal: true,
             height: News.dialog_height,
             title: 'Dialog wird geladen...'.toLocaleString(),
             width: News.dialog_width,
-            close: function () {
-                $('#' + id).remove();
+            close () {
+                $(`#${id}`).remove();
             }
         });
 
         // load actual dialog content
         $.get(route, 'html').done(function (html, status, xhr) {
-            $('#' + id).dialog('option', 'title', decodeURIComponent(xhr.getResponseHeader('X-Title')));
-            $('#' + id).html(html);
-            $('#' + id + '_content').css({
+            $(`#${id}`).dialog('option', 'title', decodeURIComponent(xhr.getResponseHeader('X-Title')));
+            $(`#${id}`).html(html);
+            $(`#${id}_content`).css({
                 height : (News.dialog_height - 120) + 'px',
                 maxHeight: (News.dialog_height - 120) + 'px'
             });
 
-            News.init_dialog();
             News.init(id);
         }).fail(function () {
             window.alert('Fehler beim Aufruf des News-Controllers'.toLocaleString());
         });
     },
 
-    update_dialog: function (id, route, form_data) {
+    update_dialog (id, route, form_data) {
         if (!News.pending_ajax_request) {
             News.pending_ajax_request = true;
 
@@ -97,18 +94,18 @@ const News = {
 
                 News.pending_ajax_request = false;
                 if (html.length > 0) {
-                    $('#' + id).html(html);
-                    $('#' + id + '_content').css({
-                        'height' : (News.dialog_height - 120) + 'px',
-                        'maxHeight': (News.dialog_height - 120) + 'px'
+                    $(`#${id}`).html(html);
+                    $(`#${id}_content`).css({
+                        height : (News.dialog_height - 120) + 'px',
+                        maxHeight: (News.dialog_height - 120) + 'px'
                     });
                     // scroll to anker
                     obj = $('a[name=anker]');
                     if (obj.length > 0) {
-                        $('#' + id + '_content').scrollTop(obj.position().top);
+                        $(`#${id}_content`).scrollTop(obj.position().top);
                     }
                 } else {
-                    $('#' + id).dialog('close');
+                    $(`#${id}`).dialog('close');
                     obj = $('#admin_news_form');
                     if (obj.length > 0) {
                         $('#admin_news_form').submit();
@@ -117,7 +114,6 @@ const News = {
                     }
                 }
 
-                News.init_dialog();
                 News.init(id);
             }).fail(function () {
                 News.pending_ajax_request = false;
@@ -126,19 +122,19 @@ const News = {
         }
     },
 
-    toggle_category_view: function (id) {
-        if ($('input[name=' + id + '_js]').val() === 'toggle') {
-            $('input[name=' + id + '_js]').val('');
+    toggle_category_view (id) {
+        if ($(`input[name=${id}_js]`).val() === 'toggle') {
+            $(`input[name=${id}_js]`).val('');
         } else {
-            $('input[name=' + id + '_js]').val('toggle');
+            $(`input[name=${id}_js]`).val('toggle');
         }
-        if ($('#' + id + '_content').is(':visible')) {
-            $("#" + id + '_content').slideUp(400);
-            $('#' + id + ' input[type=image]:first')
+        if ($(`#${id}_content`).is(':visible')) {
+            $(`#${id}_content`).slideUp(400);
+            $(`#${id} input[type=image]:first`)
                 .attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/arr_1right.svg');
         } else {
-            $('#' + id + '_content').slideDown(400);
-            $('#' + id + ' input[type=image]:first')
+            $(`#${id}_content`).slideDown(400);
+            $(`#${id} input[type=image]:first`)
                 .attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/arr_1down.svg');
         }
     }
