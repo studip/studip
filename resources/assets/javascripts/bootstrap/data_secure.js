@@ -65,7 +65,7 @@ function normalizeConfig(input) {
     } else if (input === false || input === true) {
         config.always = input;
     } else {
-        config.exists = input;
+        config.exists = input || false;
     }
     return config;
 }
@@ -94,9 +94,11 @@ function detectChanges(context) {
         var config = normalizeConfig(data);
         var items = $(this).is('form') ? $(this).find(':input') : $(this);
 
+        console.log('config', config);
+
         if (config.always === true) {
             changed = true;
-        } else if (config.exists === false) {
+        } else if (config.always !== false && config.exists === false) {
             items
                 .filter('[name]')
                 .filter(':not(:checkbox,:radio)')
