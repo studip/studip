@@ -94,8 +94,6 @@ function detectChanges(context) {
         var config = normalizeConfig(data);
         var items = $(this).is('form') ? $(this).find(':input') : $(this);
 
-        console.log('config', config);
-
         if (config.always === true) {
             changed = true;
         } else if (config.always !== false && config.exists === false) {
