@@ -8,7 +8,7 @@ class Tic9898AddCourseWizardStep extends Migration
         $db = DBManager::get();
 
         $db->exec(
-            "INSERT INTO `coursewizardsteps`
+            "INSERT IGNORE INTO `coursewizardsteps`
             (`id`, `name`, `classname`, `number`, `enabled`, `mkdate`, `chdate`)
             VALUES
             (MD5('StudyAreasLVGroupsCombinedWizardStep'), 'Studienbereich oder LV-Gruppe', 'StudyAreasLVGroupsCombinedWizardStep', '3', '0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP())"

@@ -131,7 +131,7 @@ class MediaProxy
      */
     private function sendData($url, $cache)
     {
-        $handle = fopen($url, 'rb');
+        $handle = fopen($url, 'rb', false, get_default_http_stream_context($url));
         $length = 0;
         $data = '';
 

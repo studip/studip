@@ -164,7 +164,8 @@ class OpenGraphURL extends SimpleORMap
                 $currentEncoding = 'UTF-8';
             }
 
-            $context = stream_context_create([
+            $context = get_default_http_stream_context($this['url']);
+            stream_context_set_option($context, [
                 'http' => [
                     'method' => 'GET',
                     'header' => sprintf("User-Agent: Stud.IP v%s OpenGraph Parser\r\n", $GLOBALS['SOFTWARE_VERSION']),

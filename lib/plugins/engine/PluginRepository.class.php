@@ -62,7 +62,8 @@ class PluginRepository
         if ($metadata === false) {
             // Set small timeout for the rare case that the repository is not
             // available
-            $context = stream_context_create(['http' => [
+            $context = get_default_http_stream_context($url);
+            stream_context_set_option($context, ['http' => [
                 'timeout' => 5,
             ]]);
             $metadata = @file_get_contents($url, false, $context);

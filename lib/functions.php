@@ -1829,6 +1829,37 @@ function readfile_chunked($filename, $start = null, $end = null) {
         fclose($handle);
         return $bytes; // return num. bytes delivered like readfile() does.
     } else {
-        return readfile($filename);
+        try {
+            $context = get_default_http_stream_context($filename);
+        } catch (InvalidArgumentException $e) {
+            return readfile($filename);
+        }
+        return readfile($filename, false, $context);
     }
+}
+
+/**
+ * @param string $url
+ * @return resource
+ */
+function get_default_http_stream_context($url = '')
+{
+    $proxy = Config::get()->HTTP_PROXY;
+    if ($url) {
+        $purl = parse_url($url);
+        if (!isset($purl['scheme']) || !in_array($purl['scheme'], ['http', 'https'])) {
+            throw new InvalidArgumentException('http/s url scheme mandatory');
+        }
+        $host = $purl['host'];
+        $whitelist = array_filter(array_map('trim', explode(',', Config::get()->HTTP_PROXY_IGNORE)));
+        if (in_array($host, $whitelist)) {
+            $proxy = '';
+        }
+    }
+    if ($proxy) {
+        $opts = ['http' => ['proxy' => 'tcp://' . $proxy]];
+    } else {
+        $opts = [];
+    }
+    return stream_context_get_default($opts);
 }

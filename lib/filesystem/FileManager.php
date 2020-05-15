@@ -1707,7 +1707,7 @@ class FileManager
             $out = $IDN->encode($host); // false by error
             $host = $out ?: $host;
         }
-        $socket = @fsockopen(($ssl ? 'ssl://' : '') . $host, $port, $errno, $errstr, 10);
+        $socket = @stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, get_default_http_stream_context());
         if (!$socket) {
             return ['response' => 'HTTP/1.0 502 Bad Gateway', 'response_code' => 502];
         }
