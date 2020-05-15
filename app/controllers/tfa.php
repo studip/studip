@@ -8,7 +8,31 @@ class TfaController extends AuthenticatedController
         Navigation::activateItem('/profile/settings/tfa');
         PageLayout::setTitle(_('Zwei-Faktor-Authentifizierung'));
 
-        $this->secret = new TFASecret(User::findCurrent()->id);
+        $this->user = User::findCurrent();
+        $this->is_root = $GLOBALS['perm']->have_perm('root');
+
+        if ($this->is_root && Request::submitted('username')) {
+            $username = Request::username('username');
+            $this->user = User::findOneByUsername($username);
+
+            if (!$this->user) {
+                throw new Exception(_('Diesen Nutzer gibt es nicht'));
+            }
+
+            URLHelper::addLinkParam('username', Request::username('username'));
+
+            PageLayout::postMessage(
+                MessageBox::info(sprintf(
+                    _('Daten von: %1$s (%2$s), Status: %3$s'),
+                    htmlReady($this->user->getFullName()),
+                    htmlReady($username),
+                    htmlReady($this->user->perms)
+                )),
+                'settings-user-anncouncement'
+            );
+        }
+
+        $this->secret = new TFASecret($this->user->id);
     }
 
     public function index_action()
@@ -67,13 +91,18 @@ class TfaController extends AuthenticatedController
 
     public function revoke_action()
     {
-        TwoFactorAuth::get()->confirm(
-            '2fa-revoke',
-            _('Bestätigen Sie das Aufheben der Methode')
-        );
+        if (!$this->is_root) {
+            TwoFactorAuth::get()->confirm(
+                '2fa-revoke',
+                _('Bestätigen Sie das Aufheben der Methode')
+            );
+        }
 
         $this->secret->delete();
-        TwoFactorAuth::removeCookie();
+
+        if (!$this->is_root) {
+            TwoFactorAuth::removeCookie();
+        }
 
         PageLayout::postSuccess(_('Die Zwei-Faktor-Authentifizierung wurde deaktiviert.'));
         $this->redirect('tfa/index');
