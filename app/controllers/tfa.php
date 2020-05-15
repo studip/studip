@@ -91,7 +91,7 @@ class TfaController extends AuthenticatedController
 
     public function revoke_action()
     {
-        if (!$this->is_root) {
+        if (!$this->is_root || $this->user->id === $GLOBALS['user']->id) {
             TwoFactorAuth::get()->confirm(
                 '2fa-revoke',
                 _('Bestätigen Sie das Aufheben der Methode')
@@ -100,7 +100,7 @@ class TfaController extends AuthenticatedController
 
         $this->secret->delete();
 
-        if (!$this->is_root) {
+        if (!$this->is_root || $this->user->id === $GLOBALS['user']->id) {
             TwoFactorAuth::removeCookie();
         }
 
