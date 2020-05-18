@@ -35,10 +35,10 @@ use Studip\Button, Studip\LinkButton;
                 <option <? if ($user['perm'] == 'tutor') echo 'selected'; ?>>tutor</option>
                 <option <? if ($user['perm'] == 'dozent') echo 'selected'; ?>>dozent</option>
                 <? if (!$prelim) : ?>
-                    <? if ($perm->is_fak_admin()) : ?>
+                    <? if ($GLOBALS['perm']->is_fak_admin()) : ?>
                         <option <? if ($user['perm'] == 'admin') echo 'selected'; ?>>admin</option>
                     <? endif ?>
-                    <? if ($perm->have_perm('root')) : ?>
+                    <? if ($GLOBALS['perm']->have_perm('root')) : ?>
                         <option <? if ($user['perm'] == 'root') echo 'selected'; ?>>root</option>
                     <? endif ?>
                 <? endif ?>
@@ -160,7 +160,7 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <?= _("Einrichtung") ?>
 
-            <select id="institut" class="user_form nested-select" name="institute" onchange="jQuery('#admin_special').toggle( jQuery('#institut').val() != '0' && jQuery('#perm').val() == 'admin')">
+            <select multiple id="institut" class="user_form nested-select" name="institutes[]" onchange="jQuery('#admin_special').toggle( jQuery('#institut').val() != '0' && jQuery('#perm').val() == 'admin')">
                 <option value="" class="is-placeholder">
                     <?= _('-- Bitte Einrichtung auswählen --') ?>
                 </option>

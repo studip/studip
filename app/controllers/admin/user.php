@@ -642,6 +642,7 @@ class Admin_UserController extends AuthenticatedController
         if (!in_array("Standard", $GLOBALS['STUDIP_AUTH_PLUGIN']) && !$prelim) {
             PageLayout::postInfo(_('Die Standard-Authentifizierung ist ausgeschaltet. Das Anlegen von neuen Benutzern ist nicht möglich!'));
             $this->redirect('admin/user');
+            return;
         }
 
         //get formdata
@@ -697,85 +698,84 @@ class Admin_UserController extends AuthenticatedController
 
                 //get user_id
                 $user_id = $UserManagement->user_data['auth_user_md5.user_id'];
+                $institutes = Request::getArray('institutes');
 
-                //new user is added to an institute
-                if (Request::get('institute')
-                    && $perm->have_studip_perm('admin', Request::get('institute'))
-                    && $UserManagement->user_data['auth_user_md5.perms'] != 'root'
-                    && ($UserManagement->user_data['auth_user_md5.perms'] != 'admin'
-                        || ($perm->is_fak_admin() && !Institute::find(Request::get('institute'))->isFaculty())
-                        || $perm->have_perm('root'))
-                ) {
+                if (!empty($institutes)) {
+                    $institutes = Institute::findMany($institutes);
+                    foreach ($institutes as $institute) {
+                        //new user is added to an institute
+                        if ($GLOBALS['perm']->have_studip_perm('admin', $institute->id)
+                            && $UserManagement->user_data['auth_user_md5.perms'] != 'root'
+                            && ($UserManagement->user_data['auth_user_md5.perms'] != 'admin'
+                                || ($GLOBALS['perm']->is_fak_admin() && !$institute->isFaculty())
+                                || $GLOBALS['perm']->have_perm('root'))
+                        ) {
+                            //log
+                            StudipLog::log(
+                                'INST_USER_ADD',
+                                $institute->id,
+                                $user_id,
+                                $UserManagement->user_data['auth_user_md5.perms']);
 
-                    //log
-                    StudipLog::log('INST_USER_ADD', Request::option('institute'), $user_id, $UserManagement->user_data['auth_user_md5.perms']);
+                            $inst_user = InstituteMember::build([
+                                'user_id' => $user_id,
+                                'Institut_id' => $institute->id,
+                                'inst_perms' => $UserManagement->user_data['auth_user_md5.perms']
+                            ])->store();
+                            NotificationCenter::postNotification('UserInstitutionDidCreate', $institute->id, $user_id);
+                            InstituteMember::ensureDefaultInstituteForUser($user_id);
 
-                    //insert into database
-                    $db    = DBManager::get()->prepare("INSERT INTO user_inst (user_id, Institut_id, inst_perms) VALUES (?, ?, ?)");
-                    $check = $db->execute([$user_id, Request::option('institute'), $UserManagement->user_data['auth_user_md5.perms']]);
-                    NotificationCenter::postNotification('UserInstitutionDidCreate', Request::option('institute'), $user_id);
-                    InstituteMember::ensureDefaultInstituteForUser($user_id);
+                            //send email, if new user is an admin
+                            if ($inst_user) {
+                                //check recipients
+                                if (Request::get('enable_mail_admin') === 'admin' && Request::get('enable_mail_dozent') === 'dozent') {
+                                    $in  = words('admin dozent');
+                                    $wem = "Admins und Dozenten";
+                                } elseif (Request::get('enable_mail_admin') === 'admin') {
+                                    $in  = 'admin';
+                                    $wem = "Admins";
+                                } elseif (Request::get('enable_mail_dozent') === 'dozent') {
+                                    $in  = 'dozent';
+                                    $wem = "Dozenten";
+                                }
 
-                    //send email, if new user is an admin
-                    if ($check) {
-                        //check recipients
-                        if (Request::get('enable_mail_admin') == "admin" && Request::get('enable_mail_dozent') == "dozent") {
-                            $in  = words('admin dozent');
-                            $wem = "Admins und Dozenten";
-                        } elseif (Request::get('enable_mail_admin') == "admin") {
-                            $in  = 'admin';
-                            $wem = "Admins";
-                        } elseif (Request::get('enable_mail_dozent') == "dozent") {
-                            $in  = 'dozent';
-                            $wem = "Dozenten";
-                        }
+                                if (!empty($in) && Request::get('perm') == 'admin') {
+                                    $i     = 0;
+                                    $notin = [];
 
-                        if (!empty($in) && Request::get('perm') == 'admin') {
-
-                            $i     = 0;
-                            $notin = [];
-
-                            $sql       = "SELECT Name FROM Institute WHERE Institut_id = ?";
-                            $statement = DBManager::get()->prepare($sql);
-                            $statement->execute([
-                                Request::option('institute'),
-                            ]);
-                            $inst_name = $statement->fetchColumn();
-
-                            //get admins
-                            $sql
-                                       = "SELECT user_id, b.Vorname, b.Nachname, b.Email
+                                    //get admins
+                                    $sql = "SELECT user_id, b.Vorname, b.Nachname, b.Email
                                     FROM user_inst AS a
                                     INNER JOIN auth_user_md5 AS b USING (user_id)
                                     WHERE a.Institut_id = ? AND a.inst_perms IN (?) AND a.user_id != ?";
-                            $statement = DBManager::get()->prepare($sql);
-                            $statement->execute([
-                                Request::option('institute'),
-                                $in,
-                                $user_id,
-                            ]);
-                            $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-                            foreach ($users as $admin) {
-                                $subject  = _("Neuer Administrator in Ihrer Einrichtung angelegt");
-                                $mailbody = sprintf(_("Liebe(r) %s %s,\n\n"
-                                    . "in der Einrichtung '%s' wurde %s %s als Administrator eingetragen "
-                                    . " und steht Ihnen als neuer Ansprechpartner bei Fragen oder Problemen "
-                                    . "in Stud.IP zur Verfügung. "),
-                                    $admin['Vorname'], $admin['Nachname'],
-                                    $inst_name, $this->user['Vorname'], $this->user['Nachname']);
+                                    $statement = DBManager::get()->prepare($sql);
+                                    $statement->execute([
+                                        $institute->id,
+                                        $in,
+                                        $user_id,
+                                    ]);
+                                    $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-                                StudipMail::sendMessage($admin['Email'], $subject, $mailbody);
-                                $notin[] = $admin['user_id'];
-                                $i++;
-                            }
+                                    foreach ($users as $admin) {
+                                        $subject  = _("Neuer Administrator in Ihrer Einrichtung angelegt");
+                                        $mailbody = sprintf(_("Liebe(r) %s %s,\n\n"
+                                            . "in der Einrichtung '%s' wurde %s %s als Administrator eingetragen "
+                                            . " und steht Ihnen als neuer Ansprechpartner bei Fragen oder Problemen "
+                                            . "in Stud.IP zur Verfügung. "),
+                                            $admin['Vorname'], $admin['Nachname'],
+                                            $institute->getFullname(), $this->user['Vorname'], $this->user['Nachname']);
 
-                            //Noch ein paar Mails für die Fakultätsadmins
-                            if ($in != 'dozent') {
-                                $notin[] = $user_id;
-                                //get admins
-                                $sql
-                                           = "SELECT a.user_id, b.Vorname, b.Nachname, b.Email
+                                        StudipMail::sendMessage($admin['Email'], $subject, $mailbody);
+                                        $notin[] = $admin['user_id'];
+                                        $i++;
+                                    }
+
+                                    //Noch ein paar Mails für die Fakultätsadmins
+                                    if ($in != 'dozent') {
+                                        $notin[] = $user_id;
+                                        //get admins
+                                        $sql = "SELECT a.user_id, b.Vorname, b.Nachname, b.Email
                                         FROM user_inst AS a
                                         INNER JOIN auth_user_md5 AS b USING (user_id)
                                         WHERE a.user_id NOT IN (?) AND a.Institut_id IN (
@@ -783,32 +783,46 @@ class Admin_UserController extends AuthenticatedController
                                             FROM Institute
                                             WHERE Institut_id = ? AND fakultaets_id != Institut_id
                                         ) AND a.inst_perms = 'admin'";
-                                $statement = DBManager::get()->prepare($sql);
-                                $statement->execute([
-                                    $notin,
-                                    Request::option('institute'),
-                                ]);
-                                $fak_admins = $statement->fetchAll(PDO::FETCH_ASSOC);
+                                        $statement = DBManager::get()->prepare($sql);
+                                        $statement->execute([
+                                            $notin,
+                                            $institute->id,
+                                        ]);
+                                        $fak_admins = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-                                foreach ($fak_admins as $admin) {
-                                    $subject  = _("Neuer Administrator in Ihrer Einrichtung angelegt");
-                                    $mailbody = sprintf(_("Liebe(r) %s %s,\n\n"
-                                        . "in der Einrichtung '%s' wurde %s %s als Administrator eingetragen "
-                                        . " und steht Ihnen als neuer Ansprechpartner bei Fragen oder Problemen "
-                                        . "in Stud.IP zur Verfügung. "),
-                                        $admin['Vorname'], $admin['Nachname'],
-                                        $inst_name, $this->user['Vorname'], $this->user['Nachname']);
+                                        foreach ($fak_admins as $admin) {
+                                            $subject  = _("Neuer Administrator in Ihrer Einrichtung angelegt");
+                                            $mailbody = sprintf(_("Liebe(r) %s %s,\n\n"
+                                                . "in der Einrichtung '%s' wurde %s %s als Administrator eingetragen "
+                                                . " und steht Ihnen als neuer Ansprechpartner bei Fragen oder Problemen "
+                                                . "in Stud.IP zur Verfügung. "),
+                                                $admin['Vorname'], $admin['Nachname'],
+                                                $institute->getFullname(), $this->user['Vorname'], $this->user['Nachname']);
 
-                                    StudipMail::sendMessage($admin['Email'], $subject, $mailbody);
-                                    $i++;
+                                            StudipMail::sendMessage($admin['Email'], $subject, $mailbody);
+                                            $i++;
+                                        }
+                                    }
+                                    $details[] = sprintf(
+                                        _('Es wurden ingesamt %s Mails an die %s der Einrichtung "%s" geschickt.'),
+                                        $i,
+                                        $wem,
+                                        htmlReady($institute->getFullname())
+                                    );
                                 }
-                            }
-                            $details[] = sprintf(_('Es wurden ingesamt %s Mails an die %s der Einrichtung "%s" geschickt.'), $i, $wem, htmlReady($inst_name));
-                        }
 
-                        $details[] = sprintf(_('Person wurde erfolgreich in die Einrichtung "%s" mit dem Status "%s" eingetragen.'), htmlReady($inst_name), $UserManagement->user_data['auth_user_md5.perms']);
-                    } else {
-                        $details[] = sprintf(_('Person konnte nicht in die Einrichtung "%s" eingetragen werden.'), htmlReady($inst_name));
+                                $details[] = sprintf(
+                                    _('Person wurde erfolgreich in die Einrichtung "%s" mit dem Status "%s" eingetragen.'),
+                                    htmlReady($institute->getFullname()),
+                                    $UserManagement->user_data['auth_user_md5.perms']
+                                );
+                            } else {
+                                $details[] = sprintf(
+                                    _('Person konnte nicht in die Einrichtung "%s" eingetragen werden.'),
+                                    htmlReady($institute->getFullname())
+                                );
+                            }
+                        }
                     }
                 }
 
