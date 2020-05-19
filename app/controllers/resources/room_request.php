@@ -268,18 +268,17 @@ class Resources_RoomRequestController extends AuthenticatedController
                 if ($sql) {
                     $sql .= ' AND ';
                 }
-                $sql .= '(' . sprintf(
-                    $common_seminar_sql,
-                    "(seminare.start_time = :semester_begin AND seminare.duration_time = '0')
-                    OR
-                    (seminare.start_time < :semester_begin AND
-                    (
-                        (seminare.duration_time = '-1')
-                        OR
-                        (seminare.start_time + seminare.duration_time = :semester_end)
+                $sql .= "((resource_requests.termin_id IN (
+                    SELECT DISTINCT termin_id FROM termine
+                    WHERE date BETWEEN :semester_begin AND :semester_end
+                    OR end_time BETWEEN :semester_begin AND :semester_end
                     )
-                    ) "
-                );
+                    OR resource_requests.metadate_id IN (
+                    SELECT DISTINCT metadate_id FROM termine
+                    WHERE date BETWEEN :semester_begin AND :semester_end
+                    OR end_time BETWEEN :semester_begin AND :semester_end
+                    )) ";
+
                 if (!$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']) {
                     $sql .= ' OR (
                             ((CAST(resource_requests.begin AS SIGNED) - resource_requests.preparation_time)
