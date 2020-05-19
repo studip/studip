@@ -79,7 +79,7 @@ class Fullcalendar
      * Converts semester events to the default fullcalendar event format.
      * The begin and end date are converted to fit into the current week.
      */
-    static convertSemesterEvents(event_data)
+    static convertSemesterEvents(event_data, fake_week_start = Date())
     {
         if (!event_data) {
             return {};
@@ -90,11 +90,11 @@ class Fullcalendar
 
         //start and end must be transformed to the current week.
         //Therefore, we need the ISO weekdays for begin and end.
-        var fake_start = new Date();
+        var fake_start = new Date(fake_week_start);
         fake_start.setHours(12);
         fake_start.setMinutes(0);
         fake_start.setSeconds(0);
-        var fake_end = new Date();
+        var fake_end = new Date(fake_week_start);
         fake_end.setHours(12);
         fake_end.setMinutes(0);
         fake_end.setSeconds(0);
@@ -115,16 +115,8 @@ class Fullcalendar
         );
 
         //Output the modified begin and end date in the correct ISO format:
-        event_data.start = [
-            fake_start.getFullYear(),
-            + pad(fake_start.getMonth() + 1),
-            + pad(fake_start.getDate())
-        ].join('-') + 'T' + start[1];
-        event_data.end = [
-            fake_end.getFullYear(),
-            pad(fake_end.getMonth() + 1),
-            pad(fake_end.getDate())
-        ].join('-') + 'T' + end[1];
+        event_data.start =`${fake_start.getFullYear()}-${pad(fake_start.getMonth() + 1)}-${pad(fake_start.getDate())}T${start[1]}`;
+        event_data.end = `${fake_end.getFullYear()}-${pad(fake_end.getMonth() + 1)}-${pad(fake_end.getDate())}T${end[1]}`;
 
         return event_data;
     }
@@ -148,26 +140,8 @@ class Fullcalendar
                 if (s.hasOwnProperty('url')) {
                     return s;
                 }
-
-                return $.extend(
-                    {eventDataTransform: STUDIP.Fullcalendar.convertSemesterEvents},
-                    s
-                );
             });
         }
-
-        /* config = $.extend(
-            {
-                defaultView: 'dayGridWeek',
-                columnHeaderFormat: {hour: '2-digit', minute: '2-digit'},
-                header: {
-                    left: '',
-                    center: '',
-                    right: ''
-                }
-            },
-            additional_config || {}
-        ); */
 
         return this.createFromNode(node, config);
     }
@@ -503,6 +477,14 @@ class Fullcalendar
                             })
                     );
                 }
+            },
+            eventSourceSuccess: function(content, xhr) {
+                if ($(node).hasClass('semester-plan')) {
+                    $(content).each(function(i, event_data){
+                        STUDIP.Fullcalendar.convertSemesterEvents(event_data, config.defaultDate);
+                    });
+                }
+                return content;
             },
             loading (isLoading) {
                 if (isLoading) {
