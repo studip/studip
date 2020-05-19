@@ -1707,7 +1707,24 @@ class FileManager
             $out = $IDN->encode($host); // false by error
             $host = $out ?: $host;
         }
-        $socket = @stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, get_default_http_stream_context());
+        if (Config::get()->HTTP_PROXY) {
+            $proxy_context = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false,]]);
+            $socket = stream_socket_client('tcp://' . Config::get()->HTTP_PROXY, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $proxy_context);
+            if ($ssl) {
+                if ($socket) {
+                    fputs($socket, 'CONNECT ' . $host . ':' . $port . " HTTP/1.0\r\nHost: $host\r\nUser-Agent: Stud.IP\r\n\r\n");
+                    while (true) {
+                        $s = rtrim(fgets($socket, 4096));
+                        if (preg_match('/^$/', $s)) {
+                            break;
+                        }
+                    }
+                    stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+                }
+            }
+        } else {
+            $socket = stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT);
+        }
         if (!$socket) {
             return ['response' => 'HTTP/1.0 502 Bad Gateway', 'response_code' => 502];
         }

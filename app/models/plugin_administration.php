@@ -151,7 +151,7 @@ class PluginAdministration
     {
         $temp_name = tempnam(get_config('TMP_PATH'), 'plugin');
 
-        if (!@copy($plugin_url, $temp_name)) {
+        if (!@copy($plugin_url, $temp_name, get_default_http_stream_context($plugin_url))) {
             throw new PluginInstallationException(_('Das Herunterladen des Plugins ist fehlgeschlagen.'));
         }
 
