@@ -1848,7 +1848,7 @@ function get_default_http_stream_context($url = '')
     if ($url) {
         $purl = parse_url($url);
         if (!isset($purl['scheme']) || !in_array($purl['scheme'], ['http', 'https'])) {
-            throw new InvalidArgumentException('http/s url scheme mandatory');
+            return stream_context_get_default();
         }
         $host = $purl['host'];
         $whitelist = array_filter(array_map('trim', explode(',', Config::get()->HTTP_PROXY_IGNORE)));
