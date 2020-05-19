@@ -31,8 +31,8 @@ class TFASecret extends SimpleORMap
             'period' => 5,
         ],
         'app' => [
-            'window' => 10,
-            'period' => 15,
+            'window' => 1,
+            'period' => 30,
         ],
     ];
 
