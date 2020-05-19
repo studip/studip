@@ -17,8 +17,10 @@
                 <a class="no-contentbox-link"
                         href="<?= $controller->url_for('course/statusgroups/groupinfo', $group->id) ?>"
                         data-dialog="size=auto">
-                    <?= Icon::create('info-circle', 'clickable',
-                        ['title' => sprintf(_('Informationen zu %s'), htmlReady($group->name))]) ?></a>
+                    <?= Icon::create('info-circle')->asImg([
+                        'title' => sprintf(_('Informationen zu %s'), $group->name)
+                    ]) ?>
+                </a>
             <?php endif ?>
         </h1>
         <nav>
