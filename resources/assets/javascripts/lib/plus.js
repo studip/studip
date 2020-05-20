@@ -10,8 +10,9 @@ const Plus = {
             "dataType": "json",
             "type": "post",
             "success": function (output) {
-                $(".tabs_wrapper").replaceWith(output.tabs);
-                //hallo
+                if (output.tabs) {
+                    $(".tabs_wrapper").replaceWith(output.tabs);
+                }
             }
         });
     }

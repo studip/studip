@@ -104,7 +104,7 @@ class Course_PlusController extends AuthenticatedController
                 $this->sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$this->sem->status]['class']];
             } else {
                 $this->sem = Institute::find($id);
-                $this->sem_class = SemClass::getDefaultInstituteClass();
+                $this->sem_class = SemClass::getDefaultInstituteClass($this->sem['type']);
             }
             $this->setupSidebar();
             $module = Request::get("moduleclass");
@@ -141,7 +141,11 @@ class Course_PlusController extends AuthenticatedController
                     (bool)$active
                 );
             }
-            $this->redirect("course/plus/trigger", ['cid' => $id]);
+            if ($object_type === "sem") {
+                $this->redirect("course/plus/trigger", ['cid' => $id]);
+            } else {
+                $this->render_nothing();
+            }
         } else {
             $template = $GLOBALS['template_factory']->open("tabs.php");
             $template->navigation = Navigation::getItem("/course");
