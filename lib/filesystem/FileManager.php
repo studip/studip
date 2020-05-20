@@ -1688,7 +1688,7 @@ class FileManager
         $host = $url_parts['host'];
         $port = $url_parts['port'];
         $scheme = mb_strtolower($url_parts['scheme']);
-        if (!in_array($scheme, ['http', 'https'])) {
+        if (!in_array($scheme, ['http', 'https']) || !$host) {
             return ['response' => 'HTTP/1.0 400 Bad Request', 'response_code' => 400];
         }
         if ($scheme === 'https') {
@@ -1709,7 +1709,7 @@ class FileManager
         }
         if (Config::get()->HTTP_PROXY) {
             $proxy_context = stream_context_create(['ssl' => ['verify_peer' => false, 'verify_peer_name' => false,]]);
-            $socket = stream_socket_client('tcp://' . Config::get()->HTTP_PROXY, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $proxy_context);
+            $socket = @stream_socket_client('tcp://' . Config::get()->HTTP_PROXY, $errno, $errstr, 5, STREAM_CLIENT_CONNECT, $proxy_context);
             if ($ssl) {
                 if ($socket) {
                     fputs($socket, 'CONNECT ' . $host . ':' . $port . " HTTP/1.0\r\nHost: $host\r\nUser-Agent: Stud.IP\r\n\r\n");
@@ -1723,7 +1723,7 @@ class FileManager
                 }
             }
         } else {
-            $socket = stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT);
+            $socket = @stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT);
         }
         if (!$socket) {
             return ['response' => 'HTTP/1.0 502 Bad Gateway', 'response_code' => 502];
