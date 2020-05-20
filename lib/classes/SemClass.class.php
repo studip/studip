@@ -289,6 +289,21 @@ class SemClass implements ArrayAccess
     }
 
     /**
+     * Returns the slot name of a module.
+     * @param string $module
+     * @return string|null
+     */
+    public function getModuleSlot($module)
+    {
+        foreach (self::$slots as $slot) {
+            if ($module === $this->getSlotModule($slot)) {
+                return $slot;
+            }
+        }
+        return null;
+    }
+
+    /**
      * returns an instance of the module of a given slotname or pluginclassname
      * @param string $slot_or_plugin
      * @return StudipModule | null
@@ -470,8 +485,8 @@ class SemClass implements ArrayAccess
             $GLOBALS['SEM_TYPE'] = SemType::getTypes();
             $db = DBManager::get();
             $statement = $db->prepare("
-                DELETE FROM sem_classes 
-                WHERE id = :id 
+                DELETE FROM sem_classes
+                WHERE id = :id
             ");
             StudipCacheFactory::getCache()->expire('DB_SEM_CLASSES_ARRAY');
             return $statement->execute([

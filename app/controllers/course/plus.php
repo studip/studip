@@ -70,7 +70,85 @@ class Course_PlusController extends AuthenticatedController
         $this->setupSidebar();
         $this->available_modules = $this->getSortedList($this->sem);
 
-        if (Request::submitted('deleteContent')) $this->deleteContent($this->available_modules);
+        if (Request::submitted('deleteContent')) {
+            $this->deleteContent($this->available_modules);
+        }
+    }
+
+    public function trigger_action()
+    {
+        $id = $GLOBALS['SessionSeminar'];
+        if (!$id) {
+            if ($GLOBALS['perm']->have_perm('admin')) {
+                Navigation::activateItem('/admin/institute/modules');
+                require_once 'lib/admin_search.inc.php';
+            } else {
+                throw new AccessDeniedException();
+            }
+        }
+
+        $object_type = get_object_type($id);
+
+        if ($object_type !== "sem") {
+            Navigation::activateItem('/admin/institute/modules');
+        } else {
+            Navigation::activateItem('/course/modules');
+        }
+
+        if (!$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
+            throw new AccessDeniedException();
+        }
+        if (Request::isPost()) {
+            if ($object_type === "sem") {
+                $this->sem = Course::find($id);
+                $this->sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$this->sem->status]['class']];
+            } else {
+                $this->sem = Institute::find($id);
+                $this->sem_class = SemClass::getDefaultInstituteClass();
+            }
+            $this->setupSidebar();
+            $module = Request::get("moduleclass");
+            $active = Request::int("active", 0);
+
+            if ($this->sem_class->isSlotModule($module)) {
+                $modules = new AdminModules();
+                $bitmask = $modules->getBin($id, $object_type);
+
+                foreach ($modules->registered_modules as $key => $val) {
+                    $studip_module = $this->sem_class->getModule($key);
+                    if ($studip_module) {
+                        $info = $studip_module->getMetadata();
+                        $info["category"] = $info["category"] ?: 'Sonstiges';
+
+                        if ($key === Request::get("key")) {
+                            if ($active) {
+                                $modules->setBit($bitmask, $modules->registered_modules[$key]["id"]);
+                            } else {
+                                $modules->clearBit($bitmask, $modules->registered_modules[$key]["id"]);
+                            }
+                            break;
+                        }
+                    }
+
+                }
+
+                $modules->writeBin($id, $bitmask, $object_type);
+            }
+            if (is_a($module, "StandardPlugin", true)) {
+                PluginManager::getInstance()->setPluginActivated(
+                    PluginEngine::getPlugin($module)->getPluginId(),
+                    $id,
+                    (bool)$active
+                );
+            }
+            $this->redirect("course/plus/trigger", ['cid' => $id]);
+        } else {
+            $template = $GLOBALS['template_factory']->open("tabs.php");
+            $template->navigation = Navigation::getItem("/course");
+            $this->render_json([
+                'tabs' => $template->render()
+            ]);
+        }
     }
 
 
@@ -212,6 +290,8 @@ class Course_PlusController extends AuthenticatedController
                 continue;
             }
 
+
+
             if ((!$this->sem_class && !$plugin->isCorePlugin())
                 || ($this->sem_class && !$this->sem_class->isModuleMandatory(get_class($plugin))
                     && $this->sem_class->isModuleAllowed(get_class($plugin))
@@ -221,9 +301,11 @@ class Course_PlusController extends AuthenticatedController
                 $info = $plugin->getMetadata();
 
                 $indcat = isset($info['category']) ? $info['category'] : 'Sonstiges';
-                if(!array_key_exists($indcat, $cat_index)) array_push($cat_index, $indcat);
+                if (!array_key_exists($indcat, $cat_index)) {
+                    array_push($cat_index, $indcat);
+                }
 
-                if($_SESSION['plus']['displaystyle'] != 'category'){
+                if ($_SESSION['plus']['displaystyle'] != 'category') {
 
                     $key = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
 
@@ -234,15 +316,20 @@ class Course_PlusController extends AuthenticatedController
 
                     $cat = isset($info['category']) ? $info['category'] : 'Sonstiges';
 
-                    if (!isset($_SESSION['plus']['Kategorie'][$cat])) $_SESSION['plus']['Kategorie'][$cat] = 1;
+                    if (!isset($_SESSION['plus']['Kategorie'][$cat])) {
+                        $_SESSION['plus']['Kategorie'][$cat] = 1;
+                    }
 
                     $key = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
 
+
                     $list[$cat][mb_strtolower($key)]['object'] = $plugin;
+                    $list[$cat][mb_strtolower($key)]['moduleclass'] = get_class($plugin);
                     $list[$cat][mb_strtolower($key)]['type'] = 'plugin';
                 }
             }
         }
+
 
         foreach ($this->registered_modules as $key => $val) {
 
@@ -260,9 +347,10 @@ class Course_PlusController extends AuthenticatedController
                 $indcat = isset($info['category']) ? $info['category'] : 'Sonstiges';
                 if(!array_key_exists($indcat, $cat_index)) array_push($cat_index, $indcat);
 
-                if($_SESSION['plus']['displaystyle'] != 'category') {
+                if ($_SESSION['plus']['displaystyle'] != 'category') {
 
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['object'] = $val;
+                    $list[$cat][mb_strtolower($val['name'])]['moduleclass'] = $mod;
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['type'] = 'modul';
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['modulkey'] = $key;
 
@@ -272,9 +360,10 @@ class Course_PlusController extends AuthenticatedController
 
                     if (!isset($_SESSION['plus']['Kategorie'][$cat])) $_SESSION['plus']['Kategorie'][$cat] = 1;
 
-                        $list[$cat][mb_strtolower($val['name'])]['object'] = $val;
-                        $list[$cat][mb_strtolower($val['name'])]['type'] = 'modul';
-                        $list[$cat][mb_strtolower($val['name'])]['modulkey'] = $key;
+                    $list[$cat][mb_strtolower($val['name'])]['object'] = $val;
+                    $list[$cat][mb_strtolower($val['name'])]['moduleclass'] = $mod;
+                    $list[$cat][mb_strtolower($val['name'])]['type'] = 'modul';
+                    $list[$cat][mb_strtolower($val['name'])]['modulkey'] = $key;
 
                 }
             }
@@ -287,10 +376,15 @@ class Course_PlusController extends AuthenticatedController
         foreach ($list as $cat_key => $cat_val) {
             ksort($cat_val);
             $list[$cat_key] = $cat_val;
-            if ($cat_key != 'Sonstiges') $sortedcats[$cat_key] = $list[$cat_key];
+            if ($cat_key != 'Sonstiges')  {
+                $sortedcats[$cat_key] = $list[$cat_key];
+            }
         }
 
-        if (isset($list['Sonstiges'])) $sortedcats['Sonstiges'] = $list['Sonstiges'];
+        if (isset($list['Sonstiges'])) {
+            $sortedcats['Sonstiges'] = $list['Sonstiges'];
+        }
+
 
         $_SESSION['plus']['Kategorielist'] = array_flip($cat_index);
 

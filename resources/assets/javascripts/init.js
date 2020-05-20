@@ -49,6 +49,7 @@ import Overlay from './lib/overlay.js';
 import PageLayout from './lib/page_layout.js';
 import parseOptions from './lib/parse_options.js';
 import PersonalNotifications from './lib/personal_notifications.js';
+import Plus from './lib/plus.js';
 import QRCode from './lib/qr_code.js';
 import Questionnaire from './lib/questionnaire.js';
 import QuickSearch from './lib/quick_search.js';
@@ -131,6 +132,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     PageLayout,
     parseOptions,
     PersonalNotifications,
+    Plus,
     QRCode,
     Questionnaire,
     QuickSearch,

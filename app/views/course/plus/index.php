@@ -94,53 +94,20 @@ foreach ($available_modules as $category => $pluginlist) {
                 <div class="plus_basic">
 
                     <!-- checkbox -->
-                    <input type="checkbox" id="<?= $pluginname ?>" name="<?= $cb_name ?>" value="TRUE" <?= $cb_disabled ?> <?= $cb_checked ?>
-                    onClick="form.submit()">
+                    <input type="checkbox"
+                           id="<?= $pluginname ?>"
+                           name="<?= $cb_name ?>"
+                           data-moduleclass="<?= htmlReady($val['moduleclass']) ?>"
+                           data-key="<?= htmlReady($val['modulkey']) ?>"
+                           value="TRUE" <?= $cb_disabled ?> <?= $cb_checked ?>
+                           onClick="STUDIP.Plus.setModule.call(this);">
 
                     <div class="element_header">
 
                         <!-- Name -->
-                        <label for="<?= $pluginname ?>"><strong><?= htmlReady($pluginname) ?></strong>
-                        <? if ($val['type'] == 'modul' && $sem_class && is_a($studip_module, "StandardPlugin")) : ?>
-                            <? $already_displayed_plugins[] = $mod ?>
-                            (<?= htmlReady($studip_module->getPluginName()) ?>)
-                        <? endif ?>
+                        <label for="<?= $pluginname ?>">
+                            <strong><?= htmlReady($pluginname) ?></strong>
                         </label>
-                        <!-- komplex -->
-                        <?/* switch ($info['complexity']) {
-                            case 3:
-                                $complexname = 'Intensiv';
-                                break;
-                            case 2:
-                                $complexname = 'Erweitert';
-                                break;
-                            case 1:
-                                $complexname = 'Standard';
-                                break;
-                            default:
-                                $complexname = 'Nicht angegeben';
-                                break;
-                        }
-
-                        if (isset($info['complexity'])) {
-
-                            $color1 = isset($info['complexity']) ? "hsl(57, 100%, 50%)" : "hsl(0, 0%, 100%)";
-                            $color2 = isset($info['complexity']) && $info['complexity'] > 1 ? "hsl(42, 100%, 50%)" : "hsl(0, 0%, 100%)";
-                            $color3 = isset($info['complexity']) && $info['complexity'] > 2 ? "hsl(15, 100%, 50%)" : "hsl(0, 0%, 100%)";
-                            $border_color1 = isset($info['complexity']) ? "hsl(57, 100%, 45%)" : "hsl(0, 0%, 80%)";
-                            $border_color2 = isset($info['complexity']) && $info['complexity'] > 1 ? "hsl(42, 100%, 45%)" : "hsl(0, 0%, 80%)";
-                            $border_color3 = isset($info['complexity']) && $info['complexity'] > 2 ? "hsl( 15, 100%, 45%)" : "hsl(0, 0%, 80%)";
-
-                            ?>
-                            <div class="complexity" title="Komplexität: <?= $complexname ?>">
-                                <div class="complexity_element"
-                                     style="background-color: <?= $color1 ?>; border-color: <?= $border_color1 ?>;"></div>
-                                <div class="complexity_element"
-                                     style="background-color: <?= $color2 ?>; border-color: <?= $border_color2 ?>;"></div>
-                                <div class="complexity_element"
-                                     style="background-color: <?= $color3 ?>; border-color: <?= $border_color3 ?>;"></div>
-                            </div>
-                        <? } */?>
 
                     </div>
 

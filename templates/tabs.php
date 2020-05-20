@@ -63,20 +63,3 @@ $ebene3 = [];
         <?= Helpbar::get()->render() ?>
     <? endif; ?>
 </div>
-
-<? /*
-<ul id="tabs2" role="navigation">
-<? if(!empty($ebene3)): ?>
-<? foreach ($ebene3 as $path => $nav): ?>
-<li id="nav_<?= $path1 ?>_<?= $path ?>"<?= $nav->isActive() ? ' class="current"' : '' ?>>
-	<a href="<?= URLHelper::getLink($nav->getURL()) ?>"<?//= $badge_attr ?>>
-        <? if ($image = $nav->getImage()) : ?>
-            <?= $image->asImg(['class' => "tab-icon", 'title' => $nav->getTitle() ? htmlReady($nav->getTitle()) : htmlReady($nav->getDescription())]) ?>
-        <? endif ?>
-        <span title="<?= $nav->getDescription() ? htmlReady($nav->getDescription()) :  htmlReady($nav->getTitle())?>" class="tab-title"><?= $nav->getTitle() ? htmlReady($nav->getTitle()) : '&nbsp;' ?></span>
-	</a>
-</li>
-<? endforeach; ?>
-<? endif; ?>
-</ul>
-*/ ?>

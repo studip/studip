@@ -42,10 +42,10 @@ class AdminModules extends ModulesNotification {
     public function __construct() {
         parent::__construct();
         //please add here the special messages for modules you need consistency checks (defined below in this class)
-        $this->registered_modules["forum"]["msg_warning"] = _("Wollen Sie wirklich das Forum deaktivieren?");
-        //$this->registered_modules["forum"]["msg_pre_warning"] = _("Achtung: Beim Deaktivieren des Forums werden <b>%s</b> Postings ebenfalls gelöscht!");
-        $this->registered_modules["forum"]["msg_activate"] = _("Das Forum kann jederzeit aktiviert werden.");
-        $this->registered_modules["forum"]["msg_deactivate"] = _("Das Forum kann jederzeit deaktiviert werden.");
+        $this->registered_modules["forumslot"]["msg_warning"] = _("Wollen Sie wirklich das Forum deaktivieren?");
+        //$this->registered_modules["forumslot"]["msg_pre_warning"] = _("Achtung: Beim Deaktivieren des Forums werden <b>%s</b> Postings ebenfalls gelöscht!");
+        $this->registered_modules["forumslot"]["msg_activate"] = _("Das Forum kann jederzeit aktiviert werden.");
+        $this->registered_modules["forumslot"]["msg_deactivate"] = _("Das Forum kann jederzeit deaktiviert werden.");
 
 
         $this->registered_modules["documents"]["msg_warning"] = _("Wollen Sie wirklich den Dateiordner deaktivieren?");

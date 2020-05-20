@@ -59,7 +59,7 @@ class ModulesNotification extends Modules {
             'mes' => TRUE, 'name' => _("Plugins der Veranstaltung")];
         $this->subject = _("Stud.IP Benachrichtigung");
         $extend_modules = [
-                "forum" => ['mes' => TRUE, 'name' =>  _("Forum")],
+                "forumslot" => ['mes' => TRUE, 'name' =>  _("Forum")],
                 "documents" => ['mes' => TRUE, 'name' => _("Dateiordner")],
                 "schedule" => ['mes' => TRUE, 'name' => _("Ablaufplan")],
                 "participants" => ['mes' => TRUE, 'name' => _("Teilnehmende")],
