@@ -1917,7 +1917,11 @@ class Resources_RoomRequestController extends AuthenticatedController
             //Build table rows:
             foreach ($date_data as $date_row) {
                 $table_body[] = [
-                    $request->user->getFullName(),     //Anfragende Person
+                    (                                  //Anfragende Person
+                        $request->user instanceof User
+                        ? $request->user->getFullName()
+                        : ''
+                    ),
                     $faculty_name,                     //Fakultät
                     $institute_name,                   //Institut
                     $course_number,                    //VA-Nummer
