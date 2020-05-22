@@ -123,17 +123,41 @@ class ContactController extends AuthenticatedController
 
     public function remove_action($group = null)
     {
-        CSRFProtection::verifyUnsafeRequest();
-        $contact = Contact::find([User::findCurrent()->id, User::findByUsername(Request::username('user'))->id]);
-        if ($contact) {
-            if ($group) {
-                $contact->group_assignments->unsetBy('statusgruppe_id', $group);
-                if ($contact->store()) {
-                    PageLayout::postMessage(MessageBox::success(_("Der Kontakt wurde aus der Gruppe entfernt.")));
+        if (Request::get('action') == 'collection') {
+            if ($this->flash['contacts']) {
+                $removed_numbers = 0;
+                $removed_group_number = 0;
+                foreach ($this->flash['contacts'] as $contact_username => $checked) {
+                    $contact = Contact::find([User::findCurrent()->id, User::findByUsername($contact_username)->id]);
+                    if ($contact) {
+                        if ($group) {
+                            $contact->group_assignments->unsetBy('statusgruppe_id', $group);
+                            if ($contact->store()) {
+                                $removed_group_number++;
+                            }
+                        } else {
+                            if ($contact->delete()) {
+                                $removed_numbers++;
+                            }
+                        }
+                    }
                 }
-            } else {
-                if ($contact->delete()) {
-                    PageLayout::postMessage(MessageBox::success(_("Der Kontakt wurde entfernt.")));
+                $removed_numbers ? PageLayout::postMessage(MessageBox::success( "$removed_numbers " . _("Kontakt(e) wurde(n) entfernt."))) : '';
+                $removed_group_number ? PageLayout::postMessage(MessageBox::success("$removed_group_number " . _("Kontakt(e) wurde(n) aus der Gruppe entfernt."))) : '';
+            }
+        } else {
+            CSRFProtection::verifyUnsafeRequest();
+            $contact = Contact::find([User::findCurrent()->id, User::findByUsername(Request::username('user'))->id]);
+            if ($contact) {
+                if ($group) {
+                    $contact->group_assignments->unsetBy('statusgruppe_id', $group);
+                    if ($contact->store()) {
+                        PageLayout::postMessage(MessageBox::success(_("Der Kontakt wurde aus der Gruppe entfernt.")));
+                    }
+                } else {
+                    if ($contact->delete()) {
+                        PageLayout::postMessage(MessageBox::success(_("Der Kontakt wurde entfernt.")));
+                    }
                 }
             }
         }
@@ -228,6 +252,27 @@ class ContactController extends AuthenticatedController
             $groupsWidget->addLink($group->name, URLHelper::getURL('dispatch.php/contact/index/' . $group->id))->setActive($group->id == $active_id);
         }
         $sidebar->addWidget($groupsWidget);
+    }
+
+    /**
+     * Helper function to select the action
+     */
+    public function edit_contact_action($group = null)
+    {
+        CSRFProtection::verifyUnsafeRequest();
+
+        $this->flash['contacts'] = Request::getArray('contact');
+
+        switch (Request::get('action_contact')) {
+            case 'remove':
+                $target = "contact/remove/$group?action=collection";
+                break;
+            case '':
+            default:
+                $target = "contact/index/$group";
+                break;
+        }
+        $this->relocate($target);
     }
 
 }

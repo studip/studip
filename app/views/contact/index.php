@@ -1,4 +1,5 @@
-<form method="post">
+<? use \Studip\Button; ?>
+<form action="<?= $controller->url_for('contact/edit_contact/' . $filter) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default">
         <caption>
@@ -19,6 +20,10 @@
         </caption>
         <thead>
             <tr>
+                <th style="width:20px !important;">
+                    <input aria-label="<?= _('Alle %s auswählen') ?>"
+                           type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=contact]">
+                </th>
                 <th>
                     <?= _('Name') ?>
                 </th>
@@ -37,12 +42,17 @@
             <? if (!empty($contacts))  : ?>
                 <? foreach ($contacts as $header => $contactgroup): ?>
                     <tr id="letter_<?= $header ?>">
-                        <th colspan="4">
+                        <th colspan="5">
                             <?= $header ?>
                         </th>
                     </tr>
                     <? foreach ($contactgroup as $contact): ?>
                         <tr id="contact_<?= $contact->id ?>">
+                            <td>
+                                <input aria-label="<?= _('Auswählen') ?>"
+                                type="checkbox" name="contact[<?= $contact->username?>]" value="1"
+                                <? if (isset($flash['contacts']) && in_array($contact->id, $flash['contacts'])) echo 'checked'; ?>>
+                            </td>
                             <td>
                                 <?= ObjectdisplayHelper::avatarlink($contact) ?>
                             </td>
@@ -88,5 +98,16 @@
                 </tr>
             <? endif ?>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">
+                    <select name="action_contact" id="contact_action" aria-label="<?= _('Aktion ausführen') ?>">
+                        <option value="">- <?= _('Aktion auswählen') ?></option>
+                        <option value="remove"><?= $filter ? _('Kontakte aus Gruppe entfernen') : _('Kontakte entfernen')?></option>
+                    </select>
+                    <?= Button::create(_('Ausführen'), 'submit_action') ?>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </form>
