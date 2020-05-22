@@ -9,12 +9,12 @@
                 <? if ($filter): ?>
                     <a href="<?= $controller->url_for('contact/editGroup/' . $filter) ?>" data-dialog="size=auto"
                        title="<?= _('Gruppe bearbeiten') ?>">
-                        <?= Icon::create('edit', 'clickable')->asImg(16) ?>
+                        <?= Icon::create('edit') ?>
                     </a>
-                    <?= Icon::create('trash', 'clickable')->asInput(16,
-                            ['formaction'   => $controller->url_for('contact/deleteGroup/' . $filter),
-                             'title'        => _('Gruppe löschen'),
-                             'data-confirm' => sprintf(_('Gruppe %s wirklich löschen?'), htmlReady($title))]) ?>
+                    <?= Icon::create('trash')->asInput(
+                        ['formaction'   => $controller->url_for('contact/deleteGroup/' . $filter),
+                         'title'        => _('Gruppe löschen'),
+                         'data-confirm' => sprintf(_('Gruppe %s wirklich löschen?'), htmlReady($title))]) ?>
                 <? endif; ?>
             </span>
         </caption>
@@ -50,8 +50,8 @@
                         <tr id="contact_<?= $contact->id ?>">
                             <td>
                                 <input aria-label="<?= _('Auswählen') ?>"
-                                type="checkbox" name="contact[<?= $contact->username?>]" value="1"
-                                <? if (isset($flash['contacts']) && in_array($contact->id, $flash['contacts'])) echo 'checked'; ?>>
+                                       type="checkbox" name="contact[<?= $contact->username ?>]" value="1"
+                                    <? if (isset($flash['contacts']) && in_array($contact->id, $flash['contacts'])) echo 'checked'; ?>>
                             </td>
                             <td>
                                 <?= ObjectdisplayHelper::avatarlink($contact) ?>
@@ -71,21 +71,26 @@
                                 <? $actionMenu = ActionMenu::get() ?>
                                 <? if (Config::get()->BLUBBER_GLOBAL_MESSENGER_ACTIVATE) : ?>
                                     <? $actionMenu->addLink(
-                                        URLHelper::getURL('dispatch.php/blubber/write_to/'.$contact->user_id),
+                                        URLHelper::getURL('dispatch.php/blubber/write_to/' . $contact->user_id),
                                         _('Blubber diesen Nutzer an'),
                                         Icon::create('blubber'),
                                         ['data-dialog' => '']
                                     ) ?>
                                 <? endif ?>
                                 <? $actionMenu->addLink($controller->url_for('contact/vcard', ['user[]' => $contact->username]),
-                                        _('vCard herunterladen'),
-                                        Icon::create('vcard', 'clickable')) ?>
-                                <? $actionMenu->addButton('remove_person',
-                                        $filter ? _('Kontakt aus Gruppe entfernen') : _('Kontakt entfernen'),
-                                        Icon::create('person+remove', 'clickable',
-                                                ['data-confirm' => sprintf(_('Wollen Sie %s wirklich von der Liste entfernen'), htmlReady($contact->username)),
-                                                 'formaction'   => $controller->url_for('contact/remove/' . $filter, ['user' => $contact->username])])) ?>
-                                <?= $actionMenu->render() ?>
+                                    _('vCard herunterladen'),
+                                    Icon::create('vcard')) ?>
+                                <?= $actionMenu->addButton('remove_person',
+                                    $filter ? _('Kontakt aus Gruppe entfernen') : _('Kontakt entfernen'),
+                                    Icon::create('person+remove',
+                                        [
+                                            'data-confirm' => sprintf(
+                                                _('Wollen Sie %s wirklich von der Liste entfernen'),
+                                                htmlReady($contact->username)
+                                            ),
+                                            'formaction'   => $controller->url_for('contact/remove/' . $filter, ['user' => $contact->username])
+                                        ])
+                                )->render() ?>
                             </td>
                         </tr>
                     <? endforeach; ?>
@@ -103,7 +108,7 @@
                 <td colspan="5">
                     <select name="action_contact" id="contact_action" aria-label="<?= _('Aktion ausführen') ?>">
                         <option value="">- <?= _('Aktion auswählen') ?></option>
-                        <option value="remove"><?= $filter ? _('Kontakte aus Gruppe entfernen') : _('Kontakte entfernen')?></option>
+                        <option value="remove"><?= $filter ? _('Kontakte aus Gruppe entfernen') : _('Kontakte entfernen') ?></option>
                     </select>
                     <?= Button::create(_('Ausführen'), 'submit_action') ?>
                 </td>
