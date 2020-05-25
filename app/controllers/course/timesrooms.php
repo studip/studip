@@ -296,9 +296,13 @@ class Course_TimesroomsController extends AuthenticatedController
         } else {
             $this->params = ['new_room_request_type' => 'date_' . $this->date->id];
         }
+        $this->only_bookable_rooms = Request::submitted('only_bookable_rooms');
 
         if (Config::get()->RESOURCES_ENABLE) {
-            $this->setAvailableRooms([$this->date]);
+            $room_booking_id = $this->date->room_booking instanceof ResourceBooking
+                             ? $this->date->room_booking->id
+                             : '';
+            $this->setAvailableRooms([$this->date], [$room_booking_id], $this->only_bookable_rooms);
         }
 
         $this->teachers          = $this->course->getMembersWithStatus('dozent');
@@ -1410,7 +1414,7 @@ class Course_TimesroomsController extends AuthenticatedController
     }
 
 
-    protected function setAvailableRooms($dates)
+    protected function setAvailableRooms($dates, $date_booking_ids = [], $only_bookable_rooms = false)
     {
         if (Config::get()->RESOURCES_ENABLE) {
             //Check for how many rooms the user has booking permissions.
@@ -1439,12 +1443,18 @@ class Course_TimesroomsController extends AuthenticatedController
                 foreach ($user_rooms as $room) {
                     if ($room->userHasBookingRights($current_user, $begin, $end)) {
                         $rooms_with_booking_permissions++;
-                        $this->selectable_rooms[] = $room;
+                        if ($only_bookable_rooms) {
+                            if ($room->isAvailable($begin, $end, $date_booking_ids)) {
+                                $this->selectable_rooms[] = $room;
+                            }
+                        } else {
+                            $this->selectable_rooms[] = $room;
+                        }
                     }
                 }
             }
 
-            if ($rooms_with_booking_permissions > 50) {
+            if (($rooms_with_booking_permissions > 50) && !$only_bookable_rooms) {
                 $room_search_type = new RoomSearch();
                 $room_search_type->with_seats = 1;
                 $room_search_type->setAcceptedPermissionLevels(
@@ -1460,7 +1470,20 @@ class Course_TimesroomsController extends AuthenticatedController
                 );
             } else {
                 if (ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
-                    $this->selectable_rooms = Room::findAll();
+                    if ($only_bookable_rooms) {
+                        $begin_dt = new DateTime();
+                        $begin_dt->setTimestamp($begin);
+                        $end_dt = new DateTime();
+                        $end_dt->setTimestamp($end);
+                        $rooms = Room::findAll();
+                        foreach ($rooms as $room) {
+                            if ($room->isAvailable($begin_dt, $end_dt, $date_booking_ids)) {
+                                $this->selectable_rooms[] = $room;
+                            }
+                        }
+                    } else {
+                        $this->selectable_rooms = Room::findAll();
+                    }
                 }
             }
         }

@@ -39,26 +39,43 @@
                        id="room" <?= $date->room_booking->resource_id ? 'checked' : '' ?>
                        data-activates="input.preparation-time[name='preparation_time']">
                 <?= _('Raum direkt buchen') ?>
-                <? if ($room_search): ?>
-                    <?= $room_search
-                        ->setAttributes(['onFocus' => "jQuery('input[type=radio][name=room][value=room]').prop('checked', 'checked')"])
-                        ->render() ?>
-                <? else: ?>
-                    <? $selected_room_id = $date->room_booking->resource_id; ?>
-                    <select name="room_id" onFocus="jQuery('input[type=radio][name=room][value=room]').prop('checked', 'checked')">
-                        <? foreach ($selectable_rooms as $room): ?>
-                            <option value="<?= htmlReady($room->id) ?>"
+                <span class="flex-row">
+                    <? if ($room_search && !$only_bookable_rooms): ?>
+                        <?= $room_search
+                            ->setAttributes(['onFocus' => "jQuery('input[type=radio][name=room][value=room]').prop('checked', 'checked')"])
+                            ->render() ?>
+                    <? else: ?>
+                        <? $selected_room_id = $date->room_booking->resource_id; ?>
+                        <select name="room_id" onFocus="jQuery('input[type=radio][name=room][value=room]').prop('checked', 'checked')">
+                            <? foreach ($selectable_rooms as $room): ?>
+                                <option value="<?= htmlReady($room->id) ?>"
                                     <?= $selected_room_id == $room->id
                                       ? 'selected="selected"'
                                       : '' ?>>
-                                <?= htmlReady($room->name) ?>
-                                <? if ($room->seats > 1) : ?>
-                                    <?= sprintf(_('(%d Sitzplätze)'), $room->seats) ?>
-                                <? endif ?>
-                            </option>
-                        <? endforeach ?>
-                    </select>
-                <? endif ?>
+                                    <?= htmlReady($room->name) ?>
+                                    <? if ($room->seats > 1) : ?>
+                                        <?= sprintf(_('(%d Sitzplätze)'), $room->seats) ?>
+                                    <? endif ?>
+                                </option>
+                            <? endforeach ?>
+                        </select>
+                    <? endif ?>
+                    <? if (!$only_bookable_rooms) : ?>
+                        <a href="<?= $controller->url_for(
+                                 'course/timesrooms/editDate/' . $date->termin_id,
+                                 ['only_bookable_rooms' => '1']
+                                 ) ?>" <?= Request::isDialog() ? 'data-dialog="size=normal"' : '' ?>
+                           title="<?= _('Nur buchbare Räume anzeigen') ?>">
+                            <?= Icon::create('room-request')->asImg(
+                                20,
+                                [
+                                    'class' => 'text-bottom',
+                                    'style' => 'margin-left: 0.2em; margin-top: 0.6em;',
+                                ]
+                            ) ?>
+                        </a>
+                    <? endif ?>
+                </span>
             </label>
             <label>
                 <?= _('Rüstzeit (in Minuten)') ?>
