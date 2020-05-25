@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{189:function(a,r,t){"use strict";t.r(r);t(222),t(223),t(224);jQuery.tablesorter.addParser({id:"htmldata",is:function(a,r,t){var e=r.config.parserMetadataName||"sortValue";return void 0!==$(t).data(e)},format:function(a,r,t){var e=r.config.parserMetadataName||"sortValue";return $(t).data(e)},type:"numeric"})}}]);
-//# sourceMappingURL=tablesorter-9354abb5e85b3e3a0a36.chunk.js.map
