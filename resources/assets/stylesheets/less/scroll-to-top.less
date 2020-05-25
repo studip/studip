@@ -1,0 +1,27 @@
+body #scroll-to-top {
+    @scroll-to-top-height: 45px;
+    @scroll-to-top-width: 45px;
+    @scroll-to-top-margin: 35px;
+    width: @scroll-to-top-height;
+    height: @scroll-to-top-width;
+    margin-right: @scroll-to-top-margin;
+    margin-bottom: @scroll-to-top-margin;
+    padding: 10px;
+    background: @base-color;
+    border: .05rem solid transparent;
+    background-clip: padding-box;
+    cursor: pointer;
+    box-sizing: border-box;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    transition: all 250ms ease-in-out;
+    z-index: 99;
+    &:hover {
+        background: @brand-color-darker;
+        border-radius: .12rem;
+    }
+    &.hide {
+        bottom: calc( 0px - @scroll-to-top-height - @scroll-to-top-margin);
+    }
+}

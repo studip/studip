@@ -76,6 +76,7 @@ import Tour from './lib/tour.js';
 import UserFilter from './lib/user_filter.js';
 import WidgetSystem from './lib/widget_system.js';
 import wysiwyg from './lib/wysiwyg.js';
+import ScrollToTop from './lib/scroll_to_top.js';
 
 const configURLHelper = _.get(window, 'STUDIP.URLHelper', {});
 const URLHelper = createURLHelper(configURLHelper);
@@ -162,5 +163,6 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Clipboard,
     ready,
     domReady,
-    dialogReady
+    dialogReady,
+    ScrollToTop
 });

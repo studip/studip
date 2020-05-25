@@ -172,6 +172,9 @@ if ($navigation) {
 
 
     <?= SkipLinks::getHTML() ?>
+    <a id="scroll-to-top" class="hide">
+        <?= Icon::create('arr_1up', 'info_alt')->asImg(24, ['class' => '']) ?>
+    </a>
 </body>
 </html>
 <?php NotificationCenter::postNotification('PageDidRender', $body_id ? : PageLayout::getBodyElementId());

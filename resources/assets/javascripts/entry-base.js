@@ -88,6 +88,7 @@ import "./bootstrap/inline-editing.js"
 import "./bootstrap/gradebook.js"
 import "./bootstrap/blubber.js"
 import "./bootstrap/vue.js"
+import "./bootstrap/scroll_to_top.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"
