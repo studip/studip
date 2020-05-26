@@ -437,7 +437,7 @@ class SingleDate
         }
 
         // check permissions (is current user allowed to book the passed room?)
-        if (!$room->userHasPermission(User::findCurrent(), 'autor')) {
+        if (!$room->userHasBookingRights(User::findCurrent())) {
             return false;
         }
 
@@ -635,6 +635,7 @@ class SingleDate
         if ($assign_id = SingleDateDB::getAssignID($this->termin_id)) {
             $changeAssign = new ResourceBooking($assign_id);
             $changeAssign->resource_id = $room->id;
+            $changeAssign->range_id = $this->termin_id;
             $changeAssign->begin = $this->date;
             $changeAssign->end = $this->end_time;
             $changeAssign->repeat_end = $this->end_time;

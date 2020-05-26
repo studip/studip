@@ -299,9 +299,19 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->only_bookable_rooms = Request::submitted('only_bookable_rooms');
 
         if (Config::get()->RESOURCES_ENABLE) {
-            $room_booking_id = $this->date->room_booking instanceof ResourceBooking
-                             ? $this->date->room_booking->id
-                             : '';
+            $room_booking_id = '';
+            if ($this->date->room_booking instanceof ResourceBooking) {
+                $room_booking_id = $this->date->room_booking->id;
+                $room = $this->date->room_booking->resource;
+                if ($room instanceof Resource) {
+                    $room = $room->getDerivedClassInstance();
+                    if (!$room->userHasBookingRights(User::findCurrent())) {
+                        PageLayout::postWarning(
+                            _('Die Raumbuchung zu diesem Termin wird bei der Verlängerung des Zeitbereiches gelöscht, da sie keine Buchungsrechte am Raum haben!')
+                        );
+                    }
+                }
+            }
             $this->setAvailableRooms([$this->date], [$room_booking_id], $this->only_bookable_rooms);
         }
 
@@ -382,7 +392,11 @@ class Course_TimesroomsController extends AuthenticatedController
             $singledate->store();
         }
 
-        if (Request::option('room') == 'room') {
+        if ((Request::option('room') == 'room') || Request::option('room') == 'nochange') {
+            //Storing the SingleDate above has deleted the room booking
+            //(see SingleDateDB::storeSingleDate). Therefore, the booking
+            //has to be recereated, even if the room option
+            //is set to "nochange".
             $room_id = Request::get('room_id');
             $preparation_time = Request::get('preparation_time');
             if ($preparation_time > $max_preparation_time) {
