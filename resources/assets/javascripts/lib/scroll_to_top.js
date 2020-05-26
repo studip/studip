@@ -13,7 +13,12 @@ const back_to_top = function(scrolltop) {
 
 const ScrollToTop = {
     enable() {
-        fold = $('#layout_container').offset().top;
+        var minScrollHeight = Math.min(
+            document.body.scrollHeight, document.documentElement.scrollHeight,
+            document.body.offsetHeight, document.documentElement.offsetHeight,
+            document.body.clientHeight, document.documentElement.clientHeight
+        );
+        fold = minScrollHeight - (minScrollHeight / 5); // top of fifth portion!
         Scroll.addHandler('back-to-top', back_to_top);
     },
     disable() {

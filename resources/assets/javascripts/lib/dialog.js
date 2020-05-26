@@ -420,7 +420,7 @@ Dialog.show = function(content, options) {
     }
 
     // Blur background
-    $('#layout_wrapper').css({
+    $('#layout_wrapper, #scroll-to-top').css({
         WebkitFilter: 'blur(' + Dialog.stack.length + 'px)',
         filter: 'blur(' + Dialog.stack.length + 'px)',
         overflowX: 'hidden'
@@ -463,12 +463,12 @@ Dialog.close = function(options) {
 
         // Remove background blur
         if (Dialog.stack.length > 0) {
-            $('#layout_wrapper').css({
+            $('#layout_wrapper, #scroll-to-top').css({
                 WebkitFilter: 'blur(' + Dialog.stack.length + 'px)',
                 filter: 'blur(' + Dialog.stack.length + 'px)'
             });
         } else {
-            $('#layout_wrapper').css({
+            $('#layout_wrapper, #scroll-to-top').css({
                 WebkitFilter: '',
                 filter: '',
                 overflowX: 'initial'
