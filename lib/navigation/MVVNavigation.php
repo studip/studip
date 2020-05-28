@@ -50,6 +50,9 @@ class MVVNavigation extends Navigation
         $stg_navigation->addSubNavigation('stgteilbezeichnungen',
                 new Navigation(_('Studiengangteil-Bezeichnungen'),
                 'dispatch.php/studiengaenge/stgteilbezeichnungen'));
+        $stg_navigation->addSubNavigation('informationen',
+                new Navigation(_('Studiengangsinformationen'),
+                'dispatch.php/studiengaenge/informationen'));
         $this->addSubNavigation('studiengaenge', $stg_navigation);
 
         $modul_navigation = new Navigation(_('Module'));
