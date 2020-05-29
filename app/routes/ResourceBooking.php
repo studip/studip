@@ -97,10 +97,22 @@ class ResourceBooking extends \RESTAPI\RouteMap
 
             $new_booking_begin = $new_booking_begin->add($begin_diff);
             $new_booking_end = $new_booking_end->add($end_diff);
-            $booking->begin = $new_booking_begin->getTimestamp();
+            //We must substract the preparation time to the begin timestamp
+            //to get the real begin:
+            $real_begin = clone $new_booking_begin;
+            if ($booking->preparation_time > 0) {
+                $real_begin->sub(new \DateInterval('PT' . ($booking->preparation_time / 60 ) . 'M'));
+            }
+            $booking->begin = $real_begin->getTimestamp();
             $booking->end = $new_booking_end->getTimestamp();
         } else {
-            $booking->begin = $begin->getTimestamp();
+            //We must substract the preparation time to the begin timestamp
+            //to get the real begin:
+            $real_begin = clone $begin;
+            if ($booking->preparation_time > 0) {
+                $real_begin->sub(new \DateInterval('PT' . ($booking->preparation_time / 60 ) . 'M'));
+            }
+            $booking->begin = $real_begin->getTimestamp();
             $booking->end = $end->getTimestamp();
         }
         if ($resource_id) {
