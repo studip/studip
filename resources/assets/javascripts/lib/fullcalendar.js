@@ -514,7 +514,7 @@ class Fullcalendar
                 }
 
                 if ($('.booking-plan-header').length) {
-                    end.setDate(end.getDate()-1);
+                    end.setDate(end.getDate());
                     var sem_start = $('.booking-plan-header').data('semester-begin');
                     var sem_end = $('.booking-plan-header').data('semester-end');
 
