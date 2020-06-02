@@ -561,7 +561,7 @@ class SingleDate
                 null,
                 0,
                 null,
-                $preparation_time
+                $preparation_time * 60
             );
             if ($booking instanceof ResourceBooking) {
                 $this->assign_id = $booking->id;
