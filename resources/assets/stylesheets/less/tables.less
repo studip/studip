@@ -12,7 +12,7 @@ table.header, .table_header { //normale Tabellenheader
     border-color: @brand-color-darker;
     border-style: solid;
     border-width: 0 0 1px 0;
-    color: #FFFFFF;
+    color: @white;
     font-size: 12pt;
     padding: 3px 5px;
 
@@ -20,7 +20,7 @@ table.header, .table_header { //normale Tabellenheader
 }
 
 
-table.links1 { background-color: #fff; }
+table.links1 { background-color: @white; }
 table.logintable {
     background-image: url("@{image-path}/login.jpg");
     background-size: 750px 350px;
@@ -471,6 +471,9 @@ table.default {
         }
     }
     > tbody:last-of-type > tr:last-child > td {
+        > table > tbody > tr > td {
+            border-bottom: 1px solid @table-header-color;
+        }
         border-bottom: 1px solid @brand-color-darker;
     }
     // Hover effect
