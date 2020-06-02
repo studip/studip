@@ -291,7 +291,7 @@ class RoomClipboard extends \RESTAPI\RouteMap
                 //It is a booking with repetitions that has to be included
                 //in the semester plan.
 
-                $event_data = current($plan_object->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $plan_object->begin, 'end' => $plan_object->end])], $current_user));
+                $event_data = $plan_object->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $plan_object->begin, 'end' => $plan_object->end])], $current_user);
 
                 //Merge event data from the same booking that have the
                 //same weekday and begin and end time into one event.
@@ -299,28 +299,29 @@ class RoomClipboard extends \RESTAPI\RouteMap
                 //to a course date, use the corresponding metadate ID or the
                 //course date ID in the index. Otherwise use the booking's
                 //ID (specified by event_data->object_id).
+                foreach ($event_data as $event) {
                     if ($plan_object->getAssignedUserType() === 'course') {
                         $index = sprintf(
                             '%1$s_%2$s_%3$s',
                             $plan_object->assigned_course_date->metadate_id,
-                            $event_data->begin->format('NHis'),
-                            $event_data->end->format('NHis')
+                            $event->begin->format('NHis'),
+                            $event->end->format('NHis')
                         );
                         $metadates[] = $plan_object->assigned_course_date->metadate_id;
                     } else {
                         $index = sprintf(
                             '%1$s_%2$s_%3$s',
                             $plan_object->id,
-                            $event_data->begin->format('NHis'),
-                            $event_data->end->format('NHis')
+                            $event->begin->format('NHis'),
+                            $event->end->format('NHis')
                         );
                     }
 
                     //Strip some data that cannot be used effectively in here:
-                    $event_data->api_urls = [];
+                    $event->api_urls = [];
 
-                    $merged_objects[$index] = $event_data;
-
+                    $merged_objects[$index] = $event;
+                }
             } elseif ($plan_object instanceof \ResourceRequest) {
                 if ($plan_object->cycle instanceof \SeminarCycleDate) {
                     $cycle_dates = $plan_object->cycle->getAllDates();

@@ -1588,11 +1588,11 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         foreach ($time_intervals as $interval) {
             $real_begin = $interval['begin'];
             if ($this->preparation_time) {
-                $real_begin += $this->preparation_time;
+                $prep_begin = $real_begin - $this->preparation_time;
                 $begin = new DateTime();
-                $begin->setTimestamp($interval['begin']);
+                $begin->setTimestamp($prep_begin);
                 $end = new DateTime();
-                $end->setTimestamp($real_begin);
+                $end->setTimestamp($interval['begin']);
                 $events[] = new Studip\Calendar\EventData(
                     $begin,
                     $end,
