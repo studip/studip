@@ -291,7 +291,11 @@ class RoomClipboard extends \RESTAPI\RouteMap
                 //It is a booking with repetitions that has to be included
                 //in the semester plan.
 
-                $event_data = $plan_object->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $plan_object->begin, 'end' => $plan_object->end])], $current_user);
+                $real_begin = $plan_object->begin;
+                if ($plan_object->preparation_time > 0) {
+                    $real_begin -= $plan_object->preparation_time;
+                }
+                $event_data = $plan_object->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $real_begin, 'end' => $plan_object->end])], $current_user);
 
                 //Merge event data from the same booking that have the
                 //same weekday and begin and end time into one event.
