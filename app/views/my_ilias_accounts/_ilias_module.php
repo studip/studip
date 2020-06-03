@@ -55,7 +55,7 @@
         </article>
         <? endif ?>
 
-        <? if ($ilias->getStructure($module->getId())) : ?>
+        <? if ((($module->getModuleType() == 'htlm') || ($module->getModuleType() == 'sahs') || ($module->getModuleType() == 'lm')) && ($ilias->getStructure($module->getId()))) : ?>
         <h3><?=_('Struktur')?></h3>
         <article>
             <? foreach ($ilias->getStructure($module->getId()) as $chapter) : ?>
