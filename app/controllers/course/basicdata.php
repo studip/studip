@@ -852,10 +852,10 @@ class Course_BasicdataController extends AuthenticatedController
                 if ($dozent->store()) {
                     deleteDeputy($GLOBALS['user']->id, $course_id);
                     PageLayout::postSuccess(sprintf(_('Sie wurden als %s eingetragen.'),
-                        get_title_for_status('dozent', 1)));
+                        htmlReady(get_title_for_status('dozent', 1))));
                 } else {
                     PageLayout::postError(sprintf(_('Sie konnten nicht als %s eingetragen werden.'),
-                        get_title_for_status('dozent', 1)));
+                        htmlReady(get_title_for_status('dozent', 1))));
                 }
                 break;
             case 'deputy':

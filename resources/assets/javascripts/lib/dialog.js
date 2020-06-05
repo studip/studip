@@ -599,7 +599,7 @@ Dialog.confirm = function(question, yes_callback, no_callback) {
         } else if (question === false) {
             defer.reject();
         } else {
-            Dialog.show(question, {
+            Dialog.show(_.escape(question), {
                 id: 'confirmation-dialog',
                 title: 'Bitte bestätigen Sie die Aktion'.toLocaleString(),
                 size: 'fit',

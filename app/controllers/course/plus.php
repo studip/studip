@@ -181,7 +181,7 @@ class Course_PlusController extends AuthenticatedController
                 PageLayout::postMessage(MessageBox::info(_("Das Plugin/Modul enthält keine Funktion zum Löschen der Inhalte.")));
             }
         } else {
-            PageLayout::postMessage(MessageBox::info(sprintf(_("Sie beabsichtigen die Inhalte von %s zu löschen."), $displayname)
+            PageLayout::postMessage(MessageBox::info(sprintf(_("Sie beabsichtigen die Inhalte von %s zu löschen."), htmlReady($displayname))
                 . "<br>" . _("Wollen Sie die Inhalte wirklich löschen?") . "<br>"
                 . LinkButton::createAccept(_('Ja'), URLHelper::getURL("?deleteContent=true&check=true&name=" . $name))
                 . LinkButton::createCancel(_('Nein'))));
@@ -561,9 +561,9 @@ class Course_PlusController extends AuthenticatedController
                 foreach (array_diff_assoc($old_mods, $new_mods) as $changed_mod => $value) {
                     $mod = $modules->registered_modules[$changed_mod];
                     if ($value) {
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), $mod['name']));
+                        PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($mod['name'])));
                     } else {
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), $mod['name']));
+                        PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($mod['name'])));
                     }
                     $anchor = '#m_' . $mod['id'];
                 }
@@ -587,11 +587,11 @@ class Course_PlusController extends AuthenticatedController
                         if ($activated) {
                             StudipLog::log('PLUGIN_ENABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
                             NotificationCenter::postNotification('PluginForSeminarDidEnabled', $seminar_id, $plugin_id);
-                            PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), $plugin->getPluginName()));
+                            PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($plugin->getPluginName())));
                         } else {
                             StudipLog::log('PLUGIN_DISABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
                             NotificationCenter::postNotification('PluginForSeminarDidDisabled', $seminar_id, $plugin_id);
-                            PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), $plugin->getPluginName()));
+                            PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($plugin->getPluginName())));
                         }
                         $anchor = '#p_' . $plugin->getPluginId();
                     }

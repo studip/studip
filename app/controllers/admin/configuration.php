@@ -100,7 +100,7 @@ class Admin_ConfigurationController extends AuthenticatedController
 
                 Config::get()->store($field, compact(words('value section comment')));
 
-                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag "%s" wurde erfolgreich übernommen!'), $field));
+                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag "%s" wurde erfolgreich übernommen!'), htmlReady($field)));
 
                 if ($range === 'user') {
                     $this->relocate('admin/configuration/user_configuration/' . $section);
@@ -158,7 +158,7 @@ class Admin_ConfigurationController extends AuthenticatedController
             if ($this->validateInput($field, $value)) {
                 UserConfig::get($user_id)->store($field, $value);
 
-                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), $field));
+                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), htmlReady($field)));
 
                 $this->relocate('admin/configuration/user_configuration?user_id=' . $user_id);
             }
@@ -212,7 +212,7 @@ class Admin_ConfigurationController extends AuthenticatedController
             if ($this->validateInput($field, $value)) {
                 CourseConfig::get($range_id)->store($field, $value);
 
-                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), $field));
+                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), htmlReady($field)));
 
                 $this->relocate('admin/configuration/course_configuration?range_id=' . $range_id);
             }

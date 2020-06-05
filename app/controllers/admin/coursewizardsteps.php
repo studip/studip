@@ -134,9 +134,9 @@ class Admin_CourseWizardStepsController extends AuthenticatedController
         if ($step) {
             $name = $step->name;
             if (CourseWizardStepRegistry::unregisterStep($id)) {
-                PageLayout::postSuccess(sprintf(_('Der Schritt "%s" wurde gelöscht.'), $name));
+                PageLayout::postSuccess(sprintf(_('Der Schritt "%s" wurde gelöscht.'), htmlReady($name)));
             } else {
-                PageLayout::postError(sprintf(_('Der Schritt %s konnte nicht gelöscht werden.'), $name));
+                PageLayout::postError(sprintf(_('Der Schritt %s konnte nicht gelöscht werden.'), htmlReady($name)));
             }
         }
         $this->redirect($this->url_for('admin/coursewizardsteps'));

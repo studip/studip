@@ -600,7 +600,8 @@ class Admin_CoursesController extends AuthenticatedController
         if (Request::option('sem_select')) {
             $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_CYCLE', Request::option('sem_select'));
             if (Request::option('sem_select') !== "all") {
-                PageLayout::postMessage(MessageBox::success(sprintf(_('Das %s wurde ausgewählt'), Semester::find(Request::option('sem_select'))->name)));
+                $sem_name = Semester::find(Request::option('sem_select'))->name;
+                PageLayout::postMessage(MessageBox::success(sprintf(_('Das %s wurde ausgewählt'), htmlReady($sem_name))));
             } else {
                 PageLayout::postMessage(MessageBox::success(_('Semesterfilter abgewählt')));
             }

@@ -649,7 +649,7 @@ class Admission_CoursesetController extends AuthenticatedController
                     PageLayout::postMessage(MessageBox::info(sprintf(_("Bitte passen Sie das Datum der automatischen Platzverteilung an, es wurde automatisch auf %s festgelegt!"), strftime('%x %X', $rule->getDistributiontime()))));
                 }
             } else if ($rule->getEndTime() && $rule->getEndTime() < time()) {
-                PageLayout::postMessage(MessageBox::info(sprintf(_("Der Gültigkeitszeitraum der Regel %s endet in der Vergangenheit!"), $rule->getName())));
+                PageLayout::postMessage(MessageBox::info(sprintf(_("Der Gültigkeitszeitraum der Regel %s endet in der Vergangenheit!"), htmlReady($rule->getName()))));
             }
         }
         $this->redirect(URLHelper::getURL('dispatch.php/admission/courseset/configure/' .

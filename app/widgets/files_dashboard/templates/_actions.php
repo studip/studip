@@ -69,7 +69,7 @@ if ($currentFolder->isFileWritable($fileRef->id, $userId)) {
         $controller->url_for('file/delete/'.$fileRef->id),
         _('Datei löschen'),
         Icon::create('trash', Icon::ROLE_CLICKABLE, ['size' => 20]),
-        ['onclick' => "return STUDIP.Dialog.confirmAsPost('".sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), htmlReady($fileRef->name))."', this.href);"]
+        ['onclick' => "return STUDIP.Dialog.confirmAsPost('".sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), jsReady($fileRef->name))."', this.href);"]
     );
 }
 

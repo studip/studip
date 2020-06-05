@@ -420,7 +420,7 @@ class Course_MembersController extends AuthenticatedController
             }
         }
         if($countAdded) {
-            PageLayout::postSuccess(sprintf(_('%s wurde hinzugefügt.'), get_title_for_status('tutor', $countAdded, $sem->status)));
+            PageLayout::postSuccess(sprintf(_('%s wurde hinzugefügt.'), htmlReady(get_title_for_status('tutor', $countAdded, $sem->status))));
         }
         $this->redirect('course/members/index');
     }

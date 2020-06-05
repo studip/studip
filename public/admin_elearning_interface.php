@@ -170,10 +170,10 @@ if (Config::get()->ELEARNING_INTERFACE_ENABLE)
         switch($status_info)
         {
             case "active":
-                PageLayout::postSuccess(sprintf(_("Die Verbindung zum System \"%s\" ist <b>aktiv</b>. Sie können die Einbindung des Systems in Stud.IP jederzeit deaktivieren."), $connected_cms[$cms_select]->getName()));
+                PageLayout::postSuccess(sprintf(_("Die Verbindung zum System \"%s\" ist <b>aktiv</b>. Sie können die Einbindung des Systems in Stud.IP jederzeit deaktivieren."), htmlReady($connected_cms[$cms_select]->getName())));
             break;
             case "not active":
-                PageLayout::postWarning(sprintf(_("Die Verbindung zum System \"%s\" steht, das System ist jedoch nicht aktiviert. Sie können die Einbindung des Systems in Stud.IP jederzeit aktivieren. Solange die Verbindung nicht aktiviert wurde, werden die Module des Systems \"%s\" in Stud.IP nicht angezeigt."), $connected_cms[$cms_select]->getName(), $connected_cms[$cms_select]->getName()));
+                PageLayout::postWarning(sprintf(_("Die Verbindung zum System \"%s\" steht, das System ist jedoch nicht aktiviert. Sie können die Einbindung des Systems in Stud.IP jederzeit aktivieren. Solange die Verbindung nicht aktiviert wurde, werden die Module des Systems \"%s\" in Stud.IP nicht angezeigt."), htmlReady($connected_cms[$cms_select]->getName()), htmlReady($connected_cms[$cms_select]->getName())));
             break;
             case "error":
                 PageLayout::postError(sprintf(_("Bei der Prüfung der Verbindung sind Fehler aufgetreten. Sie müssen zunächst die Einträge in der Konfigurationsdatei korrigieren, bevor das System angebunden werden kann."), $connected_cms[$cms_select]->getName()));

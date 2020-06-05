@@ -335,7 +335,7 @@ class StudipLitCatElement {
             }
         }
         if (is_array($missing_fields)){
-            PageLayout::postError(sprintf(_("Bitte füllen Sie folgende Felder aus: %s"), "\"" . join("\", \"",$missing_fields)));
+            PageLayout::postError(sprintf(_("Bitte füllen Sie folgende Felder aus: %s"), htmlReady("\"" . join("\", \"",$missing_fields))));
         }
         return is_array($missing_fields) ? false : true;
     }

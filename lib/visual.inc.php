@@ -34,7 +34,7 @@ function wysiwygReady($what, $trim=TRUE, $br=FALSE, $double_encode=true) {
     return Markup::wysiwygReady($what, $trim, $br, $double_encode);
 }
 
-function jsReady ($what, $target) {
+function jsReady ($what, $target = 'script-single') {
     switch ($target) {
 
     case "script-single" :

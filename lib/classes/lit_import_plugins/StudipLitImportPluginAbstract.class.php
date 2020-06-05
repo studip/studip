@@ -96,7 +96,7 @@ class StudipLitImportPluginAbstract {
         $newfile = $GLOBALS['TMP_PATH'] . '/' . $this->xmlfile_name;
         if(!@move_uploaded_file($this->xmlfile,$newfile)) {
             @unlink($newfile);
-            PageLayout::postError(sprintf(_("Es ist ein Fehler beim Kopieren der Datei %s aufgetreten. Die Datei wurde nicht hochgeladen!"),$this->xmlfile));
+            PageLayout::postError(sprintf(_("Es ist ein Fehler beim Kopieren der Datei %s aufgetreten. Die Datei wurde nicht hochgeladen!"),htmlReady($this->xmlfile)));
             return false;
         } else {
             // na dann lesen wir mal...

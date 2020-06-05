@@ -943,7 +943,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                     }
                 }
                 PageLayout::postError(sprintf(_('Die E-Mail-Adresse fehlt, ist falsch geschrieben oder gehört nicht zu folgenden Domains:%s'),
-                    '<br>' . $email_restriction_msg_part));
+                    '<br>' . htmlReady($email_restriction_msg_part)));
             } else {
                 PageLayout::postError(_('Die E-Mail-Adresse fehlt oder ist falsch geschrieben!'));
             }
@@ -1001,7 +1001,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
 
             $this->store();
 
-            PageLayout::postInfo(sprintf(_('An Ihre neue E-Mail-Adresse <b>%s</b> wurde ein Aktivierungslink geschickt, dem Sie folgen müssen bevor Sie sich das nächste mal einloggen können.'), $email));
+            PageLayout::postInfo(sprintf(_('An Ihre neue E-Mail-Adresse <b>%s</b> wurde ein Aktivierungslink geschickt, dem Sie folgen müssen bevor Sie sich das nächste mal einloggen können.'), htmlReady($email)));
             StudipLog::log('USER_NEWPWD', $this->user_id);
         }
         return true;
