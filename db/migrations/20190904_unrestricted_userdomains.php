@@ -9,6 +9,7 @@ class UnrestrictedUserdomains extends Migration
                   ADD COLUMN `chdate` INT(11) UNSIGNED NOT NULL DEFAULT 0";
         DBManager::get()->exec($query);
     }
+
     public function down()
     {
         $query = "ALTER TABLE `userdomains`
