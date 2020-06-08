@@ -34,6 +34,7 @@
     <?= _("Pflichtfrage") ?>
 </label>
 
+<input type="hidden" name="questions[<?= $vote->getId() ?>][options][randomize]" value="0">
 <label>
     <input type="checkbox"
            name="questions[<?= $vote->getId() ?>][options][randomize]"
