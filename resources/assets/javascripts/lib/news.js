@@ -18,12 +18,15 @@ const News = {
             if (STUDIP.editor_enabled) {
                 textarea = $('textarea.news_body');
                 // wysiwyg is active, ensure HTML markers are set
-                textarea.val(STUDIP.wysiwyg.markAsHtml(textarea.val()));
+                textarea.each(function () {
+                    $(this).val(STUDIP.wysiwyg.markAsHtml($(this).val()));
+                });
             }
 
             button     = $(this).data('clicked').attr('name');
             form_route = $(this).attr('action');
             form_data  = $(this).serialize() + '&' + button + '=1';
+            console.log('ajax data', $(this).serializeArray());
 
             $(this).find(`input[name=${button}]`).showAjaxNotification('left');
             News.update_dialog(id, form_route, form_data);
