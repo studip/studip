@@ -271,7 +271,7 @@ function show_rss_news($range_id, $type)
         break;
     }
 
-    $items = StudipNews::GetNewsByRange($range_id, true);
+    $items = StudipNews::GetNewsByRange($range_id, true, true);
     $last_changed = 0;
 
     foreach ($items as &$item) {
