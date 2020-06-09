@@ -10,10 +10,12 @@ $users = [];
 if ($numTaskAnswers > 0) {
     foreach ($answers as $answer) {
         if ($etask->task['type'] === 'multiple') {
-            foreach ($answer['answerdata']['answers'] as $a) {
-                $results[(int) $a]++;
-                $results_users[(int) $a][] = $answer['user_id'];
-                $users[] = $answer['user_id'];
+            if (is_array($answer['answerdata']['answers']) || $answer['answerdata']['answers'] instanceof Traversable) {
+                foreach ($answer['answerdata']['answers'] as $a) {
+                    $results[(int)$a]++;
+                    $results_users[(int)$a][] = $answer['user_id'];
+                    $users[] = $answer['user_id'];
+                }
             }
         } else {
             $results[(int) $answer['answerdata']['answers']]++;
