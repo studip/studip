@@ -11,11 +11,16 @@ install-dev: force_update
 doc: force_update
 	doxygen Doxyfile
 
-test: force_update
-	composer/bin/codecept run
+test: test-unit
+
+test-functional:
+	composer/bin/codecept run functional
 
 test-jsonapi:
 	composer/bin/codecept run jsonapi
+
+test-unit:
+	composer/bin/codecept run unit
 
 webpack-dev: force_update
 	npm run webpack-dev
