@@ -52,20 +52,19 @@ REPLACE INTO `files` (`id`, `user_id`, `mime_type`, `name`, `size`, `storage`, `
 -- Dumping data for table `file_refs`
 --
 
-REPLACE INTO `file_refs` (`id`, `file_id`, `folder_id`, `downloads`, `description`, `content_terms_of_use_id`, `user_id`, `name`, `mkdate`, `chdate`) VALUES('6b606bd3d6d6cda829200385fa79fcbf', '6b606bd3d6d6cda829200385fa79fcbf', 'ca002fbae136b07e4df29e0136e3bd32', 0, 'Stud.IP-Produktbroschüre im PDF-Format', 'FREE_LICENSE', '76ed43ef286fb55cf9e41beadb484a9f', 'mappe_studip-el.pdf', 1343924827, 1343924841);
+REPLACE INTO `file_refs` (`id`, `file_id`, `folder_id`, `downloads`, `description`, `content_terms_of_use_id`, `user_id`, `name`, `mkdate`, `chdate`) VALUES('6b606bd3d6d6cda829200385fa79fcbf', '6b606bd3d6d6cda829200385fa79fcbf', 'f7fc5ae64d2c453daa9619a820a6467e', 0, 'Stud.IP-Produktbroschüre im PDF-Format', 'FREE_LICENSE', '76ed43ef286fb55cf9e41beadb484a9f', 'mappe_studip-el.pdf', 1343924827, 1343924841);
 
 --
 -- Dumping data for table `file_urls`
 --
 
-REPLACE INTO `file_urls` (`file_id`, `url`, `access_type`) VALUES('6b606bd3d6d6cda829200385fa79fcbf', 'http://www.studip.de/download/mappe_studip-el.pdf', 'proxy');
+REPLACE INTO `file_urls` (`file_id`, `url`, `access_type`) VALUES('6b606bd3d6d6cda829200385fa79fcbf', 'http://www.studip.de/download/mappe_studip-el.pdf', 'redirect');
 
 --
 -- Dumping data for table `folders`
 --
 
 REPLACE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`) VALUES('012cb91a42cf85e5fafdd84e54ed2ec3', '76ed43ef286fb55cf9e41beadb484a9f', 'f7fc5ae64d2c453daa9619a820a6467e', 'a07535cf2f8a72df33c12ddfa4b53dde', 'course', 'CourseDateFolder', '15. Klausur am Do., 21.02.2019, 12:00 - 14:00', '{\"termin_id\":\"9ff59e18112a686c553412761a5df85c\",\"permission\":5}', '', 1543859055, 1543859055);
-REPLACE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`) VALUES('1af61dbdcfca1b394290c5d4283371d7', '76ed43ef286fb55cf9e41beadb484a9f', 'da3c2c2b4ea4c9781dccbae6eade5721', '7cb72dab1bf896a0b55c6aa7a70a3a86', 'course', 'StandardFolder', 'Allgemeiner Dateiordner', '', 'Ablage für allgemeine Ordner und Dokumente der Veranstaltung', 1343924088, 1343924088);
 REPLACE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`) VALUES('3cc9006789bceef5d3ea7bed680790b4', '76ed43ef286fb55cf9e41beadb484a9f', '', '110ce78ffefaf1e5f167cd7019b728bf', 'institute', 'RootFolder', 'externe Einrichtung B', '', '', 1510849315, 1510849315);
 REPLACE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`) VALUES('694cdcef09c2b8e70a7313b028e36fb6', '', '3cc9006789bceef5d3ea7bed680790b4', '110ce78ffefaf1e5f167cd7019b728bf', 'institute', 'StandardFolder', 'Allgemeiner Dateiordner', '', 'Ablage für allgemeine Ordner und Dokumente der Einrichtung', 1156516698, 1156516698);
 REPLACE INTO `folders` (`id`, `user_id`, `parent_id`, `range_id`, `range_type`, `folder_type`, `name`, `data_content`, `description`, `mkdate`, `chdate`) VALUES('76b822dcc7f1458ae6e144c3c0fb544e', '76ed43ef286fb55cf9e41beadb484a9f', '', 'ec2e364b28357106c0f8c282733dbe56', 'institute', 'RootFolder', 'externe Bildungseinrichtungen', '', '', 1510849315, 1510849315);

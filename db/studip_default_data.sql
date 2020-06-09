@@ -95,6 +95,12 @@ INSERT INTO `api_consumer_permissions` (`route_id`, `consumer_id`, `method`, `gr
 INSERT INTO `api_consumer_permissions` (`route_id`, `consumer_id`, `method`, `granted`) VALUES('ba45b38123c5986fb4719334d0ba6e8b', 'global', 'delete', 1);
 
 --
+-- Dumping data for table `blubber_threads`
+--
+
+INSERT INTO `blubber_threads` (`thread_id`, `context_type`, `context_id`, `user_id`, `external_contact`, `content`, `display_class`, `visible_in_stream`, `commentable`, `metadata`, `chdate`, `mkdate`) VALUES('global', 'public', '', '', 0, NULL, 'BlubberGlobalThread', 1, 1, NULL, 1591717440, 1591717440);
+
+--
 -- Dumping data for table `colour_values`
 --
 
