@@ -333,6 +333,8 @@ class StudygroupModel
             $sql_additional = 'GROUP BY s.Seminar_id';
         } elseif ($sort_by == 'access') {
             $sort_by = 'admission_prelim';
+        } else {
+            throw new Exception('Invalid sort parameter');
         }
 
         if (!empty($conditions)) {
