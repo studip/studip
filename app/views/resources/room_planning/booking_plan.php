@@ -13,12 +13,12 @@
                 <? if ($resource instanceof Room) : ?>
                     <?= htmlReady($resource->name) ?>,
                     <span id="booking-plan-header-seats">
-                        <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>
+                        <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>,
                     </span>
                 <? else : ?>
                     <?= htmlReady($resource->name) ?>
                 <? endif ?>
-                <span id="booking-plan-header-semrow">,
+                <span id="booking-plan-header-semrow">
                     <strong>
                         <span id="booking-plan-header-semname"></span>,
                         <?= _('Vorlesungswoche') ?>

@@ -19,8 +19,8 @@
              data-semester-begin="" data-semester-end="">
         <div>
             <?= _('Raumgruppe') ?>
-            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?></span>
-            <span id="booking-plan-header-semrow">,
+            <span id="booking-plan-header-roomgroup"><?= htmlReady($clipboard->name) ?>,</span>
+            <span id="booking-plan-header-semrow">
                 <strong>
                     <?= _('Semester')?>
                     <span id="booking-plan-header-semname"><?= htmlReady($semester->name) ?></span>

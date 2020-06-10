@@ -45,11 +45,11 @@
             <div id="booking-plan-header-resource-name-line">
                 <? if ($resource instanceof Room) : ?>
                     <?= htmlReady($resource->name) ?>,
-                    <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>
+                    <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>,
                 <? else : ?>
                     <?= htmlReady($resource->name) ?>
                 <? endif ?>
-                <span id="booking-plan-header-semrow">,
+                <span id="booking-plan-header-semrow">
                     <strong>
                         <?= _('Semester') ?>
                         <span id="booking-plan-header-semname"><?= htmlReady($semester->name) ?></span>
