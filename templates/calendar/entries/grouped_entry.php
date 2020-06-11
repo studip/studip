@@ -2,7 +2,9 @@
 # Lifter010: TODO
 $color_background = Color::brighten($entry[0]['color'], 20);
 
-$title = $heading = $ids = [];
+$title   = [];
+$heading = [];
+$ids     = [];
 
 // check, if at least one entry is visible
 $show = false;
@@ -27,9 +29,9 @@ $element_id = md5(uniqid());
 
     <!-- for safari5 we need to set the height for the dl as well -->
     <dl <?= $calendar_view->getReadOnly() ? '' : 'class="hover"' ?> style="height: <?= $height ?>px;
-        border: 1px solid <?= $entry[0]['color'] ?>;
-        background-color: <?= $color_background ?>">
-        <dt style="background-color: <?= $entry[0]['color'] ?>">
+        border: 1px solid <?= htmlReady($entry[0]['color']) ?>;
+        background-color: <?= htmlReady($color_background) ?>">
+        <dt style="background-color: <?= htmlReady($entry[0]['color']) ?>">
             <?= $entry[0]['start_formatted'] ?> - <?= $entry[0]['end_formatted'] ?>
             <?= (count($heading) ? ', <b>' . htmlReady(implode(', ', $heading)) . '</b>' : '') ?>
         </dt>
