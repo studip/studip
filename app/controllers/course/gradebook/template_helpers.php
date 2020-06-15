@@ -85,5 +85,6 @@ trait GradebookTemplateHelpers
     protected function setDefaultPageTitle()
     {
         \PageLayout::setTitle(Context::getHeaderLine().' - Gradebook');
+        \PageLayout::setHelpKeyword("Basis.Gradebook");
     }
 }
