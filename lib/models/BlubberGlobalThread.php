@@ -9,7 +9,7 @@ class BlubberGlobalThread extends BlubberThread
 
     public function getName()
     {
-        return _("Globale Blubber");
+        return _("Globaler Blubber");
     }
 
     public function getContextTemplate()
