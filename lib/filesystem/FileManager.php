@@ -1724,9 +1724,11 @@ class FileManager
                 }
             }
         } else {
-            $socket = @stream_socket_client($ssl ? 'ssl://' : '' . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT);
+            $errno = $errstr = '';
+            $socket = @stream_socket_client(($ssl ? 'ssl://' : 'tcp://') . $host . ':' . $port, $errno, $errstr, 5, STREAM_CLIENT_CONNECT);
         }
         if (!$socket) {
+            Log::error(__METHOD__ . ' - stream_socket_client(' . ($ssl ? 'ssl://' : 'tcp://') . $host . ':' . $port .') failed: ' . $errstr);
             return ['response' => 'HTTP/1.0 502 Bad Gateway', 'response_code' => 502];
         }
 
