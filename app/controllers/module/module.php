@@ -259,10 +259,6 @@ class Module_ModuleController extends MVVController
                 $this->modul->fassung_nr = Request::int('fassung_nr');
                 $this->modul->fassung_typ = Request::option('fassung_typ');
                 $this->modul->version = trim(Request::get('version'));
-                foreach ($GLOBALS['MVV_MODUL']['PERSONEN_GRUPPEN']['values'] as $key => $foo) {
-                    $grouped_users[$key] = Request::optionArray('users_items_' . $key);
-                }
-                $this->modul->assignUsers($grouped_users);
                 $this->modul->verantwortlich = trim(Request::get('verantwortlich'));
             }
 
