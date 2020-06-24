@@ -118,7 +118,7 @@ class Studiengaenge_InformationenController extends MVVController
     private function createSidebar($view = 'subject' )
     {
         $widget = new ViewsWidget();
-        $widget->addLink(_('Gruppieren nach Fächer'), $this->url_for('/index'))
+        $widget->addLink(_('Gruppieren nach Fächern'), $this->url_for('/index'))
                 ->setActive($view == 'subject');
         $widget->addLink(_('Gruppieren nach Abschlüssen'), $this->url_for('/degree'))
                 ->setActive($view == 'degrees');
@@ -127,7 +127,7 @@ class Studiengaenge_InformationenController extends MVVController
     
     public static function getStudyCount($degree_id)
     {
-        if ($GLOBALS['perm']->have_perm("root", $GLOBALS['user']->id)) {
+        if ($GLOBALS['perm']->have_perm('root', $GLOBALS['user']->id)) {
             return UserStudyCourse::countBySql('abschluss_id = :abschluss_id',
             [':abschluss_id' => $degree_id]);
         } else {
