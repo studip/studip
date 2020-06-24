@@ -16,18 +16,17 @@
                 </td>
                 <td class="dont-hide toggle-indicator">
                     <a class="mvv-load-in-new-row" href="<?= $controller->url_for($details_url, $modul->getId()) ?>"
-                       style="background-image: none; padding: 0;">
+                       style="background-image: none; padding: 0; display: inline;">
                         <?= htmlReady($modul->getDisplayName(0)) ?>
-                        <? $trails = $modul->getTrails(array('Studiengang','StgteilAbschnitt')); ?>
-                        <? if (count($trails)) : ?>
-                            <? $li = []; ?>
-                            <? foreach ($modul->getPathes($trails, ' > ') as $i => $path) : ?>
-                                <? $li[] = sprintf('%s) %s', $i+1, $path) . PHP_EOL; ?>
-                            <? endforeach; ?>
-                            <?= Icon::create('info-circle', Icon::ROLE_INACTIVE,
-                                ['title' => implode('', $li)]) ?>
-                        <? endif;?>
                     </a>
+                    <? $trails = $modul->getTrails(array('Studiengang', 'StgteilAbschnitt')); ?>
+                    <? if (count($trails)) : ?>
+                        <? $li = []; ?>
+                        <? foreach ($modul->getPathes($trails, ' > ') as $i => $path) : ?>
+                            <? $li[] = htmlReady(sprintf('%s) %s', $i+1, $path)); ?>
+                        <? endforeach; ?>
+                        <?= tooltipIcon(implode('<br>', $li), false, true); ?>
+                    <? endif;?>
                 </td>
             <? else : ?>
                 <td style="white-space:nowrap;">
