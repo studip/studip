@@ -6,11 +6,16 @@
  * @since       4.6
  */
 
-class Studiengaenge_InformationenController extends AuthenticatedController
+class Studiengaenge_InformationenController extends MVVController
 {
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
+        
+        if (!($GLOBALS['perm']->have_perm('root') || RolePersistence::isAssignedRole(
+                        $GLOBALS['user']->id, 'MVVAdmin'))) {
+            throw new AccessDeniedException();
+        }
         PageLayout::setTitle(_('Verwaltung der Studiengänge'));
         if (Navigation::hasItem('mvv/studiengaenge/informationen')) {
             Navigation::activateItem('mvv/studiengaenge/informationen');

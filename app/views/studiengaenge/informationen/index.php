@@ -28,7 +28,7 @@
             <td class="dont-hide actions">
                 <a href="<?= $controller->url_for('/messagehelper', ['fach_id' => $studycourse->fach_id]) ?>" data-dialog >
                     <?= Icon::create('mail', Icon::ROLE_CLICKABLE,
-                        ['title' => htmlReady(sprintf(_('Alle Studierenden des Faches %s per Mail informieren'),
+                        ['title' => htmlReady(sprintf(_('Alle Studierenden des Faches %s benachrichtigen.'),
                                 $studycourse->name))]) ?>
                 </a>
             </td>

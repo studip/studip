@@ -6,9 +6,9 @@
     </colgroup>
     <thead>
         <tr>
-            <th><?= _('Name des Abschlusses') ?></th>
-            <th><?= _('Nutzer') ?></th>
-            <th class="actions"></th>
+            <th><?= _('Abschluss') ?></th>
+            <th><?= _('Studierende') ?></th>
+            <th class="actions"><?= _('Aktionen') ?></th>
         </tr>
     </thead>
     <? foreach ($degree as $key => $deg) : ?>
@@ -33,7 +33,7 @@
                                 ['abschluss_id' => $deg->abschluss_id]) ?>" data-dialog >
 
                             <?= Icon::create('mail', Icon::ROLE_CLICKABLE,
-                                ['title' => htmlReady(sprintf(_('Alle Studierenden mit dem Studienabschluss %s per Mail informieren'),
+                                ['title' => htmlReady(sprintf(_('Alle Studierenden mit dem Studienabschluss %s benachrichtigen.'),
                                         $deg->name))]) ?>
                         </a>
                     <? endif; ?>
