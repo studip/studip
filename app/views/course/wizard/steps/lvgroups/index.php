@@ -55,10 +55,14 @@
                 <ul>
                 <? $pos_id = 1; ?>
                 <? foreach ((array) $tree as $node) : ?>
-                <?= $this->render_partial('lvgroups/_node',
+                    <? $children = $node->getChildren() ?>
+                    <? if (count($children)) : ?>
+                    <?= $this->render_partial('lvgroups/_node',
                         ['node' => $node, 'pos_id' => $pos_id++,
                             'open_nodes' => $open_lvg_nodes ?: [],
-                            'search_result' => $search_result ?: []]) ?>
+                            'search_result' => $search_result ?: [],
+                            'children' => $node->getChildren()]) ?>
+                    <? endif ?>
                 <? endforeach; ?>
                 </ul>
             </li>

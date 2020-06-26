@@ -97,7 +97,7 @@ MVV.CourseWizard = {
                             .removeClass('hidden-js');
                         $('#lvgsearchresults ul').empty();
                         $('#lvgsearchresults').show();
-                        for (i = 0; i < items.length; i++) {
+                        for (var i = 0; i < items.length; i++) {
                             lvgroup_html = $(items[i].html_string);
                             if ($('#lvgroup-tree-assigned-' + items[i].id).length) {
                                 lvgroup_html
@@ -139,11 +139,13 @@ MVV.CourseWizard = {
      * @returns {*|jQuery}
      */
     createTreeNode: function(values, assignable, selected) {
+        var item = $('<li>');
+        
         // Node in lvgroups tree.
         if (assignable) {
             var mvv_ids = values.id.split('-');
 
-            var item = $('<li>').addClass('lvgroup-tree-' + values.id);
+            item.addClass('lvgroup-tree-' + values.id);
             var assign = $('<input>')
                 .attr('type', 'image')
                 .attr('name', 'assign[' + values.id + ']')
