@@ -368,6 +368,7 @@ class IndexController extends ForumController
      */
     function add_entry_action()
     {
+        CSRFProtection::verifyUnsafeRequest();
         // Schutz vor Spambots - diese füllen meistens alle Felder aus, auch "versteckte".
         // Ist dieses Feld gefüllt, war das vermutlich kein Mensch
         if (Request::get('nixda')) {
@@ -435,6 +436,7 @@ class IndexController extends ForumController
             if ($topic_id != $this->getId()) {
                 // only delete directly if passed by ajax, otherwise ask for confirmation
                 if (Request::isXhr() || Request::isPost() || Request::get('approve_delete')) {
+                    CSRFProtection::verifyUnsafeRequest();
                     ForumEntry::delete($topic_id);
                     $this->flash['messages'] = ['success' => sprintf(_('Der Eintrag %s wurde gelöscht!'), $topic['name'])];
                 } else {
@@ -465,6 +467,8 @@ class IndexController extends ForumController
      */
     function update_entry_action($topic_id)
     {
+        CSRFProtection::verifyUnsafeRequest();
+
         $name    = Request::get('name', _('Kein Titel'));
         $content = Studip\Markup::purifyHtml(Request::get('content', _('Keine Beschreibung')));
 
@@ -715,6 +719,8 @@ class IndexController extends ForumController
      */
     function add_category_action()
     {
+        CSRFProtection::verifyUnsafeRequest();
+
         ForumPerm::check('add_category', $this->getId());
 
         $category_id = ForumCat::add($this->getId(), Request::get('category'));
@@ -729,6 +735,8 @@ class IndexController extends ForumController
      */
     function remove_category_action($category_id)
     {
+        CSRFProtection::verifyUnsafeRequest();
+
         ForumPerm::checkCategoryId($this->getId(), $category_id);
         ForumPerm::check('remove_category', $this->getId());
 
@@ -749,6 +757,8 @@ class IndexController extends ForumController
      * @param string $category_id the category to edit
      */
     function edit_category_action($category_id) {
+        CSRFProtection::verifyUnsafeRequest();
+
         ForumPerm::checkCategoryId($this->getId(), $category_id);
         ForumPerm::check('edit_category', $this->getId());
 

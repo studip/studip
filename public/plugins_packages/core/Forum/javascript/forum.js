@@ -75,6 +75,8 @@ STUDIP.Forum = {
             // ajax call to make the deletion permanent
             jQuery.ajax(STUDIP.URLHelper.getURL('plugins.php/coreforum/index/delete_entry/'
                 + STUDIP.Forum.current_area_id + '?cid=' + STUDIP.Forum.seminar_id), {
+                method: 'post',
+                data: {'security_token' : STUDIP.CSRF_TOKEN.value},
                 success: function (html) {
                     jQuery('#message_area').html(html);
                 }

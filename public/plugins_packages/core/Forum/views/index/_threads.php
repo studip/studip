@@ -9,7 +9,8 @@
 <? endif ?>
 
 <form action="#" method="post">
-<? if (!empty($list)) foreach ($list as $category_id => $entries) : ?>
+    <?= CSRFProtection::tokenTag() ?>
+    <? if (!empty($list)) foreach ($list as $category_id => $entries) : ?>
     <table class="default forum" data-category-id="<?= $category_id ?>">
         <colgroup>
             <col>

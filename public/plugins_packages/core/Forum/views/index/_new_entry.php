@@ -58,6 +58,7 @@
 
             <input type="hidden" name="parent" value="<?= $topic_id ?>">
             <input type="text" name="nixda" style="display: none;">
+            <?= CSRFProtection::tokenTag() ?>
         </form>
 
         <?= $this->render_partial('index/_preview', ['preview_id' => 'new_entry_preview']) ?>
