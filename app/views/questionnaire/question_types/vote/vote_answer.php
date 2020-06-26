@@ -13,6 +13,9 @@ $responseData = $response['answerdata'] ? $response['answerdata']->getArrayCopy(
 <div <?= isset($etask->options['mandatory']) && $etask->options['mandatory'] ? ' class="mandatory"' : "" ?>>
     <h3>
         <?= Icon::create(is_a($vote, 'Test') ? 'test' : 'vote', 'info')->asImg(20, ['class' => 'text-bottom']) ?>
+        <? if (isset($etask->options['mandatory']) && $etask->options['mandatory']) : ?>
+            <?= Icon::create('star', Icon::ROLE_ATTENTION)->asImg(20, ['class' => 'text-bottom', 'title' => _("Pflichtantwort")]) ?>
+        <? endif ?>
         <?= formatReady($etask->description) ?>
     </h3>
 
