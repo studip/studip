@@ -192,6 +192,10 @@ $translations = array(
     'Suche zurücksetzen' => _('Suche zurücksetzen'),
     'Keine Angabe beim Fach' => _('Keine Angabe beim Fach'),
 
+    // resources/assets/javascripts/questionnaire.js
+    'Noch nicht komplett ausgefüllt.' => _('Noch nicht komplett ausgefüllt.'),
+    'Füllen Sie noch die rot markierten Stellen korrekt aus.' => _('Füllen Sie noch die rot markierten Stellen korrekt aus.'),
+
     // resources/assets/javascripts/studip-jquery.multi-select.tweaks.js
     'Die Person ist bereits eingetragen.' => _('Die Person ist bereits eingetragen.'),
 
