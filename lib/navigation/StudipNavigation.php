@@ -131,7 +131,7 @@ class StudipNavigation extends Navigation
         }
 
         if (is_object($user) && $user->id != 'nobody') {
-            $this->addSubNavigation('files_dashboard', new FilesDashboardNavigation());
+            $this->addSubNavigation('files', new FilesNavigation());
         }
 
         // quick links

@@ -9,6 +9,9 @@ if (!$controllerpath) {
 $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
 ?>
 
+<form class="default" method="get" action="<?= $controller->link_for('files_dashboard/search') ?>">
+    <?= $this->render_partial('files_dashboard/_input-group-search') ?>
+</form>
 <form method="post" action="<?= $controller->link_for('file/bulk/' . $topFolder->getId()) ?>">
 <?= CSRFProtection::tokenTag() ?>
 <input type="hidden" name="parent_folder_id" value="<?= $topFolder->getId() ?>" >
@@ -50,7 +53,13 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
         <? endif; ?>
         </div>
     </caption>
-    <?= $this->render_partial('files/_files_thead.php', compact('show_downloads')) ?>
+    <?= $this->render_partial(
+        'files/_files_thead.php',
+        [
+            'show_downloads' => $show_downloads,
+            'show_bulk_checkboxes' => true
+        ]
+    ) ?>
 
     <tbody class="subfolders">
         <tr class="empty" data-sort-fixed <?= count($topFolder->getFiles()) + count($topFolder->getSubfolders()) > 0 ? ' style="display: none;"' : "" ?>>
@@ -76,6 +85,7 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
                 'current_folder' => $topFolder,
                 'controllerpath' => $controllerpath,
                 'show_downloads' => $show_downloads,
+                'show_bulk_checkboxes' => true
             ]) ?>
         <? endforeach; ?>
     <? endif; ?>
@@ -83,7 +93,7 @@ $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
     <? if ($GLOBALS['user']->id !== 'nobody') : ?>
         <tfoot>
             <tr>
-                <td colspan="<?= $show_downloads ? 8 : 7 ?>">
+                <td colspan="<?= $show_downloads ? 8 : 7 ?>" class="sticky" >
                     <span class="multibuttons">
                         <?= Studip\Button::create(_('Herunterladen'), 'download', [
                             'data-activates-condition' => 'table.documents tr[data-permissions*=d] :checkbox:checked'

@@ -172,10 +172,11 @@ class FileController extends AuthenticatedController
 
                 foreach ($storedFiles as $fileref) {
                     $output['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
-                        'controller'         => $this,
-                        'file_ref'           => $fileref,
-                        'current_folder'     => $folder,
-                        'marked_element_ids' => [],
+                        'controller'           => $this,
+                        'file_ref'             => $fileref,
+                        'current_folder'       => $folder,
+                        'marked_element_ids'   => [],
+                        'show_bulk_checkboxes' => true
                     ]);
                 }
 
@@ -1196,61 +1197,130 @@ class FileController extends AuthenticatedController
         $this->file_refs = FileRef::findMany($file_ref_ids);
         $this->folder = $this->file_refs[0]->folder;
         $this->show_description_field = Config::get()->ENABLE_DESCRIPTION_ENTRY_ON_UPLOAD;
+        if ($folder_id == 'bulk') {
+            $this->show_description_field = false;
+        }
         $this->origin_folder_id = $folder_id;
         if (Request::isPost()) {
-            $description = Request::get('description');
-            foreach ($this->file_refs as $file_ref) {
-                $file_ref['content_terms_of_use_id'] = Request::option('content_terms_of_use_id');
-                if ($this->show_description_field && $description) {
-                    $file_ref['description'] = $description;
-                }
-                $file_ref->store();
-            }
-            if (Request::isXhr()) {
-                $payload = ['html' => []];
+            CSRFProtection::verifyUnsafeRequest();
+            if (($folder_id == 'bulk') && !Request::submitted('accept')) {
+                $file_ref_ids = Request::getArray('ids');
+                $this->file_refs = FileRef::findMany($file_ref_ids);
+            } else {
+                $description = Request::get('description');
+                $success_files = [];
+                $error_files = [];
                 foreach ($this->file_refs as $file_ref) {
-                    $folder = $file_ref->folder->getTypedFolder();
-
-                    // Skip files not in current folder (during archive extract)
-                    if ($folder_id && $folder_id !== $folder->getId()) {
+                    //Check if the user may change the license of the file:
+                    $folder = $file_ref['folder'];
+                    if (!$folder) {
+                        //We have no way of determining whether the user may change
+                        //the license.
+                        $error_files[] = sprintf(_('Die Datei "%s" ist ungültig!'), $file_ref['name']);
                         continue;
                     }
-
-                    $this->file_ref = $file_ref;
-                    $this->current_folder = $file_ref->folder->getTypedFolder();
-                    $this->marked_element_ids = [];
-                    $payload['html'][] = $this->render_template_as_string('files/_fileref_tr');
-                }
-
-                $plugins = PluginManager::getInstance()->getPlugins('FileUploadHook');
-                $redirect = null;
-                foreach ($plugins as $plugin) {
-                    $url = $plugin->getAdditionalUploadWizardPage($file_ref);
-                    if ($url) {
-                        $redirect = $url;
-                        break;
+                    $folder_type = $folder->getTypedFolder();
+                    if (!$folder_type->isFileEditable($file_ref['id'], $GLOBALS['user']->id)) {
+                        //No permissions.
+                        $error_files[] = sprintf(_('Keine Berechtigung zum Ändern der Datei "%s"!'), $file_ref['name']);
+                        continue;
+                    }
+                    $file_ref['content_terms_of_use_id'] = Request::option('content_terms_of_use_id');
+                    if ($this->show_description_field && $description) {
+                        $file_ref['description'] = $description;
+                    }
+                    if ($file_ref->isDirty()) {
+                        if ($file_ref->store()) {
+                            $success_files[] = $file_ref['name'];
+                        } else {
+                            $error_files[] = sprintf(_('Fehler beim Speichern der Datei "%s"!'), $file_ref['name']);
+                        }
+                    } else {
+                        $success_files[] = $file_ref['name'];
                     }
                 }
+                if (Request::isXhr()) {
+                    $payload = ['html' => []];
+                    foreach ($this->file_refs as $file_ref) {
+                        $folder = $file_ref->folder->getTypedFolder();
 
-                if ($redirect) {
-                    $this->redirect($redirect);
+                        // Skip files not in current folder (during archive extract)
+                        if ($folder_id && $folder_id !== $folder->getId()) {
+                            continue;
+                        }
+
+                        $payload['html'][] = $this->render(
+                            'files/_fileref_tr',
+                            [
+                                'controller'           => $this,
+                                'file_ref'             => $file_ref,
+                                'current_folder'       => $file_ref->folder->getTypedFolder(),
+                                'marked_element_ids'   => [],
+                                'show_bulk_checkboxes' => true
+                            ]
+                        );
+                    }
+
+                    $plugins = PluginManager::getInstance()->getPlugins('FileUploadHook');
+                    $redirect = null;
+                    foreach ($plugins as $plugin) {
+                        $url = $plugin->getAdditionalUploadWizardPage($file_ref);
+                        if ($url) {
+                            $redirect = $url;
+                            break;
+                        }
+                    }
+
+                    if ($redirect) {
+                        $this->redirect($redirect);
+                        return;
+                    }
+
+                    $payload['url'] = $this->generateFilesUrl(
+                        $this->folder,
+                        $file_ref
+                    );
+
+                    if ($folder_id == 'bulk' && $this->file_refs) {
+                        if ($success_files) {
+                            if (count($success_files) == 1) {
+                                PageLayout::postSuccess(sprintf(
+                                    _('Die Lizenz der Datei "%s" wurde geändert.'),
+                                    $this->file_refs[0]->name
+                                ));
+                            } else {
+                                sort($success_files);
+                                PageLayout::postSuccess(
+                                    _('Die Lizenzen der folgenden Dateien wurden geändert:'),
+                                    $success_files
+                                );
+                            }
+                        }
+                        if ($error_files) {
+                            if (count($error_files) == 1) {
+                                PageLayout::postError(sprintf(
+                                    _('Die Lizenz der Datei "%s" konnte nicht geändert werden!'),
+                                    $this->file_refs[0]->name
+                                ));
+                            } else {
+                                PageLayout::postError(
+                                    _('Die Lizenzen der folgenden Dateien konnten nicht geändert werden:'),
+                                    $error_files
+                                );
+                            }
+                        }
+                    }
+
+                    $this->response->add_header(
+                        'X-Dialog-Execute',
+                        'STUDIP.Files.addFile'
+                    );
+                    $this->render_json($payload);
                     return;
+                } else {
+                    PageLayout::postSuccess(_('Datei wurde bearbeitet.'));
+                    return $this->redirectToFolder($this->folder);
                 }
-
-                $payload['url'] = $this->generateFilesUrl(
-                    $this->folder,
-                    $file_ref
-                );
-
-                $this->response->add_header(
-                    'X-Dialog-Execute',
-                    'STUDIP.Files.addFile'
-                );
-                $this->render_json($payload);
-                return;
-            } else {
-                PageLayout::postSuccess(_('Datei wurde bearbeitet.'));
-                return $this->redirectToFolder($this->folder);
             }
         }
 

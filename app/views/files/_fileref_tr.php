@@ -1,29 +1,40 @@
 <?php
 $permissions = [];
-if ($current_folder->isFileEditable($file_ref->id, $GLOBALS['user']->id)) {
-    $permissions[] = 'w';
-}
-if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
-    $permissions[] = 'dr';
+$downloadable = $downloadable || false;
+$editable = $editable || false;
+$writable = $writable || false;
+$show_bulk_checkboxes = $show_bulk_checkboxes || false;
+if ($current_folder) {
+    if ($current_folder->isFileEditable($file_ref->id, $GLOBALS['user']->id)) {
+        $permissions[] = 'w';
+        $editable = true;
+    }
+    if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
+        $permissions[] = 'dr';
+        $downloadable = true;
+    }
+    $writable = $current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id);
 }
 ?>
 <tr class="<? if ($file_ref->chdate > $last_visitdate && ($file_ref->user_id !== $GLOBALS['user']->id)) echo 'new'; ?>"
-    id="fileref_<?= htmlReady($file_ref->id) ?>"
+    id="fileref_<?= htmlReady($table_id) ?>_<?= htmlReady($file_ref->id) ?>"
     role="row"
     data-permissions="<?= implode($permissions) ?>">
-    <td>
-    <? if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id)) : ?>
-        <input type="checkbox"
-               class="studip-checkbox"
-               name="ids[]"
-               id="file_checkbox_<?= $file_ref->id ?>"
-               value="<?= $file_ref->id ?>"
-               <? if (in_array($file_ref->id, (array)$marked_element_ids)) echo 'checked'; ?>>
-        <label for="file_checkbox_<?= $file_ref->id ?>"></label>
+    <? if ($show_bulk_checkboxes) : ?>
+        <td>
+        <? if ($downloadable) : ?>
+            <input type="checkbox"
+                   class="studip-checkbox"
+                   name="ids[]"
+                   id="file_checkbox_<?= htmlReady($table_id) ?>_<?= $file_ref->id ?>"
+                   value="<?= $file_ref->id ?>"
+                   <? if (in_array($file_ref->id, (array)$marked_element_ids)) echo 'checked'; ?>>
+            <label for="file_checkbox_<?= htmlReady($table_id) ?>_<?= $file_ref->id ?>"></label>
+        <? endif ?>
+        </td>
     <? endif ?>
-    </td>
     <td class="document-icon" data-sort-value="<?=crc32($file_ref->mime_type)?>">
-    <? if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id)) : ?>
+    <? if ($downloadable) : ?>
         <a href="<?= htmlReady($file_ref->download_url) ?>" target="_blank" rel="noopener noreferrer">
             <?= FileManager::getIconForFileRef($file_ref)->asImg(24) ?>
         </a>
@@ -32,7 +43,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
     <? endif ?>
     </td>
     <td data-sort-value="<?= htmlReady($file_ref->name) ?>">
-    <? if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id)) : ?>
+    <? if ($downloadable) : ?>
         <a href="<?= $controller->link_for("file/details/{$file_ref->id}/1") ?>" data-dialog>
             <?= htmlReady($file_ref->name) ?>
         </a>
@@ -91,7 +102,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 );
             }
         }
-        if ($current_folder->isFileEditable($file_ref->id, $GLOBALS['user']->id)) {
+        if ($editable) {
             $actionMenu->addLink(
                 $controller->url_for('file/edit/' . $file_ref->id),
                 _('Datei bearbeiten'),
@@ -105,7 +116,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 ['data-dialog' => '']
             );
         }
-        if ($current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
+        if ($writable) {
             $actionMenu->addLink(
                 $controller->url_for('file/choose_destination/move/' . $file_ref->id),
                 _('Datei verschieben'),
@@ -113,7 +124,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 ['data-dialog' => 'size=auto']
             );
         }
-        if ($current_folder->isFileDownloadable($file_ref, $GLOBALS['user']->id) && $GLOBALS['user']->id !== 'nobody') {
+        if ($downloadable && $GLOBALS['user']->id !== 'nobody') {
             $actionMenu->addLink(
                 $controller->url_for('file/choose_destination/copy/' . $file_ref->id),
                 _('Datei kopieren'),
@@ -135,7 +146,7 @@ if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
                 ['data-dialog' => '1']
             );
         }
-        if ($current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
+        if ($writable) {
             $actionMenu->addButton(
                 'delete',
                 _('Datei löschen'),

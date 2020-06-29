@@ -19,8 +19,6 @@ use FilesSearch\Search;
 
 require_once 'app/controllers/files_dashboard/helpers.php';
 require_once 'app/controllers/files_dashboard/sidebar.php';
-require_once 'app/widgets/files_dashboard/LatestFilesWidget.php';
-require_once 'app/widgets/files_dashboard/MyPublicFilesWidget.php';
 
 /**
  * This controller shows the files dashboard and the files dashboard's
@@ -50,29 +48,6 @@ class FilesDashboardController extends AuthenticatedController
         $this->user = $GLOBALS['user'];
     }
 
-    // ***** DASHBOARD *****
-
-    /**
-     * Entry point of the controller that displays the dashboard page of Stud.IP.
-     *
-     * @param string $action
-     * @param string $widgetId
-     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
-     * @SuppressWarnings(PHPMD.Superglobals)
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function index_action($action = false, $widgetId = null)
-    {
-        Navigation::activateItem('/files_dashboard/dashboard');
-        PageLayout::setTitle(_('Dateien'));
-
-        $this->container = Widgets\Container::createForRange(
-            $GLOBALS['user']->getAuthenticatedUser(),
-            'dashboard',
-            $GLOBALS['user']->perms
-        );
-        $this->addIndexSidebar();
-    }
 
     // ***** SEARCH *****
 
@@ -87,7 +62,9 @@ class FilesDashboardController extends AuthenticatedController
         // FilesController::getRangeLink
         require_once 'app/controllers/files.php';
 
-        Navigation::activateItem('/files_dashboard/search');
+        if (Navigation::hasItem('/files/search')) {
+            Navigation::activateItem('/files/search');
+        }
         PageLayout::setTitle(_('Dokumentensuche'));
 
         $this->query = new Query();

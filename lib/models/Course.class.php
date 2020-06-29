@@ -693,4 +693,45 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $user_id = $user_id ?? $GLOBALS['user']->id;
         return $GLOBALS['perm']->have_studip_perm('autor', $this->Seminar_id, $user_id);
     }
+
+
+    /**
+     * Returns a list of courses for the specified user.
+     * Permission levels may be supplied to limit the course list.
+     *
+     * @param string $user_id The ID of the user whose courses shall be retrieved.
+     *
+     * @param string[] $perms The permission levels of the user that shall be
+     *     regarded when retrieving courses.
+     *
+     * @param bool $with_deputies Whether to include courses where the user is
+     *     a deputy (true) or not (false). Defaults to true.
+     *
+     * @returns Course[] A list of courses.
+     */
+    public static function findByUser($user_id, $perms = [], $with_deputies = true)
+    {
+        if (!$user_id) {
+            return [];
+        }
+
+        $sql = 'INNER JOIN `seminar_user` USING (`Seminar_id`) ';
+        $sql_params = ['user_id' => $user_id];
+        if (Config::get()->DEPUTIES_ENABLE && $with_deputies) {
+            $sql .= ' LEFT JOIN `deputies`
+                ON (`seminare`.`Seminar_id` = `deputies`.`range_id`) ';
+        }
+        $sql .= 'WHERE (`seminar_user`.`user_id` = :user_id';
+        if (is_array($perms) && count($perms)) {
+            $sql .= ' AND `seminar_user`.`perms` IN ( :perms )';
+            $sql_params = ['perms' => $perms];
+        }
+        $sql .= ' )';
+        if (Config::get()->DEPUTIES_ENABLE && $with_deputies) {
+            $sql .= ' OR `deputies`.`user_id` = :user_id';
+        }
+        $sql .= ' ORDER BY duration_time = -1, start_time DESC, Name ASC';
+
+        return Course::findBySql($sql, $sql_params);
+    }
 }

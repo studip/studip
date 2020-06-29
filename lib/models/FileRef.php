@@ -320,4 +320,303 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
 
         return $this->foldertype->isFileDownloadable($this->id, $user_id);
     }
+
+
+    /**
+     * This is a helper method to generate the SQL query for the
+     * findAll and countAll methods. Relevant FileRef objects for these methods
+     * can be limited by a time range and a specific course. The amount
+     * and the offset of the FileRef objects to be retrieved can also be set.
+     *
+     * @param string $user_id The ID of the user that is used to count or
+     *     retrieve FileRef objects.
+     *
+     * @param DateTime|null $begin The begin of the time range.
+     *
+     * @param DateTime|null $end The end of the time range.
+     *
+     * @param string $course_id The ID of the course from which FileRef objects
+     *     shall be retrieved.
+     *
+     * @param int $file_limit The maximum amount of FileRef objects to be
+     *     retrieved.
+     *
+     * @param int $file_offset The offset in the FileRef data from which to
+     *     start retrieving objects.
+     *
+     * @returns mixed[] An array with two indexes:
+     *     - sql: The SQL query string.
+     *     - params: An array with SQL query parameters.
+     */
+    protected static function getAllSql($user_id, $begin = null, $end = null, $course_id = '', $file_limit = 0, $file_offset = 0)
+    {
+        $sql = '';
+        $sql_params = [];
+        if ($course_id) {
+            //Limit the result for a specific course.
+            $sql = 'INNER JOIN `folders`
+                ON `file_refs`.`folder_id` = `folders`.`id`
+                WHERE `folders`.`range_id` =  :course_id ';
+            $sql_params['course_id'] = $course_id;
+            if (($begin instanceof DateTime) && ($end instanceof DateTime)) {
+                $sql .= 'AND `file_refs`.`chdate` BETWEEN :begin AND :end ';
+                $sql_params['begin'] = $begin->getTimestamp();
+                $sql_params['end'] = $end->getTimestamp();
+            }
+        } else {
+            if ($GLOBALS['perm']->have_perm('root', $user_id)) {
+                //This is easy: Get all recent files ordered by chdate.
+                if (($begin instanceof DateTime) && ($end instanceof DateTime)) {
+                    $sql = 'chdate BETWEEN :begin AND :end ';
+                    $sql_params['begin'] = $begin->getTimestamp();
+                    $sql_params['end'] = $end->getTimestamp();
+                } else {
+                    $sql = 'TRUE ';
+                }
+            } else {
+                //Get the folders (all folders) of the user first and then
+                //check for new files. This means getting all folders of courses
+                //and institutes where the user has access to.
+
+                $range_ids = FileManager::getRangeIdsForFolders($user_id, true);
+
+                //Now get all file refs:
+                $sql = 'INNER JOIN `folders`
+                    ON `file_refs`.`folder_id` = `folders`.`id`
+                    WHERE `folders`.`range_id` IN ( :range_ids ) ';
+                $sql_params['range_ids'] = $range_ids;
+
+                if (($begin instanceof DateTime) && ($end instanceof DateTime)) {
+                    $sql .= 'AND `file_refs`.`chdate` BETWEEN :begin AND :end ';
+                    $sql_params['begin'] = $begin->getTimestamp();
+                    $sql_params['end'] = $end->getTimestamp();
+                }
+            }
+        }
+        $sql .= ' ORDER BY `file_refs`.`chdate` DESC, `file_refs`.`mkdate` DESC, `file_refs`.`name` ASC';
+        if ($file_limit > 0) {
+            $sql .= ' LIMIT :limit';
+            $sql_params['limit'] = $file_limit;
+            if ($file_offset > 0) {
+                $sql .= ' OFFSET :offset';
+                $sql_params['offset'] = $file_offset;
+            }
+        }
+        return ['sql' => $sql, 'params' => $sql_params];
+    }
+
+
+    /**
+     * This method retrieves the FileRef objects a user has access to.
+     *
+     * @see FileRef::getAllSql for the parameter description.
+     *
+     * @returns FileRef[] A list of FileRef objects.
+     */
+    public static function findAll($user_id, $begin = null, $end = null, $course_id = null, $file_limit = 0, $file_offset = 0)
+    {
+        $sql_data = self::getAllSql($user_id, $begin, $end, $course_id, $file_limit, $file_offset);
+        return FileRef::findBySql($sql_data['sql'], $sql_data['params']);
+    }
+
+
+    /**
+     * This method counts all the FileRef objects a user has access to.
+     *
+     * @see FileRef::getAllSql for the parameter description.
+     *
+     * @returns int The amount of found FileRef rows.
+     */
+    public static function countAll($user_id, $begin = null, $end = null, $course_id = null)
+    {
+        $sql_data = self::getAllSql($user_id, $begin, $end, $course_id);
+        return FileRef::countBySql($sql_data['sql'], $sql_data['params']);
+    }
+
+
+    /**
+     * This is a helper method to generate the SQL query for the
+     * findPublicFiles and countPublicFiles methods. Relevant FileRef objects
+     * for these methods can be limited by a time range. The amount
+     * and the offset of the FileRef objects to be retrieved can also be set.
+     *
+     * @param string $user_id The ID of the user that is used to count or
+     *     retrieve FileRef objects in public folders.
+     *
+     * @param DateTime|null $begin The begin of the time range.
+     *
+     * @param DateTime|null $end The end of the time range.
+     *
+     * @param int $file_limit The maximum amount of FileRef objects to be
+     *     retrieved from public folders.
+     *
+     * @param int $file_offset The offset in the FileRef data from which to
+     *     start retrieving objects from public folders.
+     *
+     * @returns mixed[] An array with two indexes:
+     *     - sql: The SQL query string.
+     *     - params: An array with SQL query parameters.
+     */
+    protected static function getPublicFilesSql($user_id, $begin = null, $end = null, $file_limit = 0, $file_offset = 0)
+    {
+        $sql = "INNER JOIN `folders`
+            ON `file_refs`.`folder_id` = `folders`.`id`
+            WHERE `folders`.`folder_type` = 'PublicFolder'
+            AND `folders`.`range_type` = 'user' ";
+        $sql_params = [];
+        if ($user_id) {
+            $sql .= " AND `folders`.`user_id` = :user_id";
+            $sql_params['user_id'] = $user_id;
+        }
+        if (($begin instanceof DateTime) && ($end instanceof DateTime)) {
+            $sql .= ' AND `file_refs`.`chdate` BETWEEN :begin AND :end';
+            $sql_params['begin'] = $begin->getTimestamp();
+            $sql_params['end'] = $end->getTimestamp();
+        }
+        $sql .= " ORDER BY `file_refs`.`chdate` DESC";
+        if ($file_limit > 0) {
+            $sql .= " LIMIT :file_limit";
+            $sql_params['file_limit'] = $file_limit;
+        }
+        if ($file_offset > 0) {
+            $sql .= " OFFSET :file_offset";
+            $sql_params['file_offset'] = $file_offset;
+        }
+        return ['sql' => $sql, 'params' => $sql_params];
+    }
+
+
+    /**
+     * This method retrieves the FileRef objects in public folders which
+     * can be accessed by a user.
+     *
+     * @see FileRef::getPublicFilesSql for the parameter description.
+     *
+     * @returns FileRef[] A list of FileRef objects.
+     */
+    public static function findPublicFiles($user_id, $begin = null, $end = null, $file_limit = 0, $file_offset = 0)
+    {
+        $sql_data = self::getPublicFilesSql($user_id, $begin, $end, $file_limit, $file_offset);
+        return self::findBySql($sql_data['sql'], $sql_data['params']);
+    }
+
+
+    /**
+     * This method counts the FileRef objects in public folders which
+     * can be accessed by a user.
+     *
+     * @see FileRef::getPublicFilesSql for the parameter description.
+     *
+     * @returns int The amount of found FileRef rows.
+     */
+    public static function countPublicFiles($user_id, $begin = null, $end = null)
+    {
+        $sql_data = self::getPublicFilesSql($user_id, $begin, $end);
+        return self::countBySql($sql_data['sql'], $sql_data['params']);
+    }
+
+
+    /**
+     * This is a helper method to generate the SQL query for the
+     * findUploadedFiles and countUploadedFiles methods. Relevant FileRef
+     * objects for these methods can be limited by a time range and a specified
+     * course. Furthermore, it is possible to limit the search to FileRef
+     * objects without a license set or with the "unknown" license set.
+     * The amount and the offset of the FileRef objects to be retrieved can also
+     * be set.
+     *
+     * @param string $user_id The ID of the user whose uploaded files shall be
+     *     retrieved or counted.
+     *
+     * @param DateTime|null $begin The begin of the time range.
+     *
+     * @param DateTime|null $end The end of the time range.
+     *
+     * @param string $course_id The ID of the course from which FileRef objects
+     *     shall be retrieved.
+     *
+     * @param bool $unknown_license_only Whether to only query for FileRef
+     *     objects without a license or with the "unknown" license set
+     *     (true) or to query all uploaded FileRef objects (false).
+     *     Defaults to false.
+     *
+     * @param int $file_limit The maximum amount of FileRef objects to be
+     *     retrieved from public folders.
+     *
+     * @param int $file_offset The offset in the FileRef data from which to
+     *     start retrieving objects from public folders.
+     *
+     * @returns mixed[] An array with two indexes:
+     *     - sql: The SQL query string.
+     *     - params: An array with SQL query parameters.
+     */
+    protected static function getUploadedFilesSql($user_id, $begin = null, $end = null, $course_id = '', $unknown_license_only = false, $file_limit = 0, $file_offset = 0)
+    {
+        $sql = '';
+        if ($course_id) {
+            $sql = 'INNER JOIN `folders`
+                ON `file_refs`.`folder_id` = `folders`.`id`
+                WHERE ';
+        }
+        $sql .= "`file_refs`.`user_id` = :user_id";
+        $sql_params = [
+            'user_id' => $user_id
+        ];
+        if ($unknown_license_only) {
+            $sql .= " AND (
+                `file_refs`.`content_terms_of_use_id` IN ('', 'UNDEF_LICENSE')
+                OR
+                `file_refs`.`content_terms_of_use_id` IS NULL
+            )";
+        }
+
+        if (($begin instanceof DateTime) && ($end instanceof DateTime)) {
+            $active_sidebar_filters[] = 'course';
+            $sql .= ' AND `file_refs`.`chdate` BETWEEN :begin AND :end ';
+            $sql_params['begin'] = $begin->getTimestamp();
+            $sql_params['end'] = $end->getTimestamp();
+        }
+        if ($course_id) {
+            $sql .= ' AND `folders`.`range_id` = :course_id';
+            $sql_params['course_id'] = $course_id;
+        }
+        $sql .= " ORDER BY `file_refs`.`chdate` DESC";
+        if ($file_limit > 0) {
+            $sql .= " LIMIT :file_limit";
+            $sql_params['file_limit'] = $file_limit;
+        }
+        if ($file_offset > 0) {
+            $sql .= " OFFSET :file_offset";
+            $sql_params['file_offset'] = $file_offset;
+        }
+        return ['sql' => $sql, 'params' => $sql_params];
+    }
+
+
+    /**
+     * Retrieves all uploaded files a user has uploaded.
+     *
+     * @see FileRef::getUploadedFilesSql for the parameter description.
+     *
+     * @returns FileRef[] A list of FileRef objects for files the user uploaded.
+     */
+    public static function findUploadedFiles($user_id, $begin = null, $end = null, $course_id = '', $unknown_license_only = false, $file_limit = 0, $file_offset = 0)
+    {
+        $sql_data = self::getUploadedFilesSql($user_id, $begin, $end, $course_id, $unknown_license_only, $file_limit, $file_offset);
+        return self::findBySql($sql_data['sql'], $sql_data['params']);
+    }
+
+
+    /**
+     * Counts all uploaded files a user has uploaded.
+     *
+     * @see FileRef::getUploadedFilesSql for the parameter description.
+     *
+     * @returns int The amount of files the user uploaded.
+     */
+    public static function countUploadedFiles($user_id, $begin = null, $end = null, $course_id = '', $unknown_license_only = false)
+    {
+        $sql_data = self::getUploadedFilesSql($user_id, $begin, $end, $course_id, $unknown_license_only);
+        return self::countBySql($sql_data['sql'], $sql_data['params']);
+    }
 }

@@ -32,14 +32,13 @@ STUDIP.domReady(() => {
         $('.file_selector input[type=file]').first().click();
     });
 
-    $('table.documents.flat').each(function () {
+    $('table.documents.flat.filter').each(function () {
         var ignored = [];
         $('colgroup col', this).each((index, col) => {
             if ($(col).is('[data-filter-ignore]')) {
                 ignored.push(index);
             }
         });
-
         $(this).filterTable({
             highlightClass: 'filter-match',
             ignoreColumns: ignored,
@@ -63,6 +62,7 @@ STUDIP.domReady(() => {
         event.preventDefault();
     });
 });
+
 
 jQuery(document).on('ajaxComplete', (event, xhr) => {
     if (!xhr.getResponseHeader('X-Filesystem-Changes')) {

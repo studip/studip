@@ -83,4 +83,18 @@ class OutboxFolder extends InboxOutboxFolder
 
         return $files;
     }
+
+
+    /**
+     * The magic get method is overwritten to be able to set a
+     * custom value for the name attribute.
+     */
+    public function __get($attribute)
+    {
+        if ($attribute == 'name') {
+            return _('Ausgehende Dateianhänge');
+        } else {
+            return parent::__get($attribute);
+        }
+    }
 }

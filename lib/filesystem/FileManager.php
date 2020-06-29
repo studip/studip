@@ -1994,4 +1994,44 @@ class FileManager
     {
         return htmlReady(self::getFolderURL($folder));
     }
+
+
+    /**
+     * Retrieves the range-IDs for all courses and institutes a user has
+     * access to.
+     *
+     * @param string $user_id The ID of the user.
+     *
+     * @param bool $with_personal_file_area Whether to include the user-ID
+     *     of the user in the list of range-IDs (true) or not (false).
+     *     Defaults to false.
+     *
+     * @returns string[] An array with all retrieved range-IDs of the user.
+     */
+    public static function getRangeIdsForFolders($user_id = null, $with_personal_file_area = true)
+    {
+        if (!$user_id) {
+            return [];
+        }
+
+        //Get all courses first:
+        $courses = Course::findByUser($user_id);
+        //Get all institutes:
+        $institutes = Institute::getMyInstitutes($user_id);
+
+        //After that, collect the range-IDs:
+        $range_ids = [];
+        foreach ($courses as $course) {
+            $range_ids[] = $course->id;
+        }
+        foreach ($institutes as $institute) {
+            $range_ids[] = $institue->id;
+        }
+
+        if ($with_personal_file_area) {
+            //Add the personal file area, too:
+            $range_ids[] = $GLOBALS['user']->id;
+        }
+        return $range_ids;
+    }
 }
