@@ -30,7 +30,7 @@
     </table>
     <? if ($stgteil && !$count) : ?>
         <div>
-            <?= sprintf(_('Für den Studiengangteil <strong>%s</strong> wurden noch keine Versionen angelegt. '), $stgteil->getDisplayName()) ?>
+            <?= sprintf(_('Für den Studiengangteil <strong>%s</strong> wurden noch keine Versionen angelegt. '), htmlReady($stgteil->getDisplayName())) ?>
         </div>
         <a href="<?= $controller->url_for('studiengaenge/versionen/version') ?>">
             <?= Studip\LinkButton::create(
