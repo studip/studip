@@ -404,6 +404,21 @@ class Fullcalendar
                     return false;
                 }
 
+
+                if ($(eventClickInfo.event._calendar.el).hasClass('request-plan')) {
+
+                    if (extended_props.request_id && extended_props.studip_view_urls.edit) {
+                        STUDIP.Dialog.fromURL(
+                            STUDIP.URLHelper.getURL(extended_props.studip_view_urls.edit)
+                        );
+                    } else if(extended_props.studip_parent_object_class == 'ResourceBooking' && $.inArray('for-course', event._def.ui.classNames) != -1) {
+                        STUDIP.Dialog.fromURL(
+                            STUDIP.URLHelper.getURL('dispatch.php/resources/room_request/rerequest_booking/' + extended_props.studip_parent_object_id)
+                        );
+                    }
+                    return false;
+                }
+
                 if (extended_props.studip_view_urls === undefined) {
                     return;
                 }

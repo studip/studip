@@ -765,6 +765,51 @@ class Resources
             jQuery(source_node).parents('table.request-list').trigger('update');
         });
     }
+
+    static bookAllCalendarRequests()
+    {
+        var calendarSektion = $('*[data-resources-fullcalendar="1"]')[0];
+        if (calendarSektion) {
+            var calendar = calendarSektion.calendar;
+            if (calendar) {
+                if (!$('#loading-spinner').length) {
+                    jQuery('#layout_content').append(
+                        $('<div id="loading-spinner" style="position: absolute; top: calc(50% - 55px); left: calc(50% + 135px); z-index: 9001;">').html(
+                            $('<img>').attr('src', STUDIP.ASSETS_URL + 'images/ajax-indicator-black.svg')
+                                .css({
+                                    width: 64,
+                                    height: 64
+                                })
+                        )
+                    );
+                }
+                $('.fc-request-event').each(function(){
+                    var objectData = $(this).data();
+                    var existingRequestEvent = calendar.getEventById(objectData.eventId);
+                    if (existingRequestEvent) {
+                        var bookingURL = 'dispatch.php/resources/room_request/quickbook/'
+                                       + objectData.eventRequest +'/'
+                                       + objectData.eventResource +'/'
+                                       + objectData.eventMetadate;
+                        jQuery.ajax(
+                            STUDIP.URLHelper.getURL(bookingURL),
+                            {
+                                method: 'get',
+                                dataType: 'json',
+                                async: false,
+                                success: function(data) {
+                                    if (data) {
+                                    }
+                                }
+                            }
+                        );
+                    }
+                });
+                document.location.reload(true);
+            }
+        }
+    }
+
 };
 
 

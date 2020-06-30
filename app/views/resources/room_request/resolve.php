@@ -1,5 +1,6 @@
 <? if ($show_info) : ?>
-    <form id="resolve-request" class="default" method="post" data-dialog="size=big"
+    <form id="resolve-request" class="default" method="post"
+        data-dialog="size=big;<?= Request::submitted('reload-on-close')?'reload-on-close':'';?>"
           action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <article class="studip left-part">

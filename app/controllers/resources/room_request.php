@@ -27,7 +27,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $this->current_user = User::findCurrent();
 
-        if (in_array($action, ['overview', 'export_list'])) {
+        if (in_array($action, ['overview','planning', 'export_list'])) {
             $this->current_user = User::findCurrent();
             $user_is_global_resource_autor = ResourceManager::userHasGlobalPermission($this->current_user, 'autor');
             if (!RoomManager::userHasRooms($this->current_user, 'autor', true) && !$user_is_global_resource_autor) {
@@ -315,7 +315,6 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $requests = RoomRequest::findBySql($sql, $sql_params);
 
-
         $result = [];
         if (!empty($this->filter['dow'])) {
             $week_days = [$this->filter['dow']];
@@ -585,7 +584,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $this->requests = $this->getFilteredRoomRequests();
     }
-    
+
     public function index_action($request_id = null)
     {
         $this->request = ResourceRequest::find($request_id);
@@ -1038,7 +1037,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->request->end = $new_end->getTimestamp();
             $this->request->comment = $this->comment;
             $this->request->preparation_time = $this->preparation_time * 60;
-            
+
             if ($this->request->isDirty()) {
                 $successfully_stored = $this->request->store();
             } else {
@@ -1444,6 +1443,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         $force_resolve = Request::submitted('force_resolve');
         $resolve = Request::submitted('resolve') || $force_resolve;
         $this->show_force_resolve_button = false;
+        $this->selected_rooms = Request::getArray('selected_rooms');
 
         if ($resolve) {
             CSRFProtection::verifyUnsafeRequest();
@@ -1662,7 +1662,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         }
     }
-    
+
     public function decline_action($request_id = null)
     {
         $this->request = ResourceRequest::find($request_id);
@@ -1673,7 +1673,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             return;
         }
         $this->delete_mode = Request::get('delete');
-        
+
         $user = User::findCurrent();
 
         if ($this->request->resource) {
@@ -1868,7 +1868,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     $lecturer_names[] = $lecturer->user->getFullName('no_title_rev');
                 }
             }
-            
+
             $date_data = [];
             $request_type = $request->getType();
             if ($request_type == 'course') {
@@ -1958,5 +1958,502 @@ class Resources_RoomRequestController extends AuthenticatedController
         );
         $this->set_content_type('text/csv; charset=UTF-8');
         $this->render_text($csv_string);
+    }
+
+    public function rerequest_booking_action($booking_id)
+    {
+        PageLayout::setTitle(_('Buchung in Anfrage wandeln'));
+
+        $booking = ResourceBooking::find($booking_id);
+        $cdate = CourseDate::find($booking->range_id);
+
+        if(!$cdate) {
+            $this->response->add_header('X-Dialog-Close', 1);
+            $this->render_nothing();
+            return;
+        }
+
+         if (Request::submitted('delete_confirm')) {
+            CSRFProtection::verifyUnsafeRequest();
+
+            if (!$booking->resource->userHasPermission($this->current_user, 'tutor') && !$GLOBALS['perm']->have_perm('root')) {
+                //The user must not delete this booking!
+                throw new AccessDeniedException();
+            }
+
+            $cycle = $cdate->cycle;
+            $resource = Resource::find($booking->resource_id);
+
+            $request = ResourceRequest::findByMetadate($cycle->metadate_id);
+            if ($request && $request->closed > 0) {
+                $request->closed = 0;
+            } else {
+                $request = new ResourceRequest();
+                $request->course_id = $cycle->seminar_id;
+                $request->termin_id = '';
+                $request->metadate_id = $cycle->metadate_id;
+                $request->user_id = $booking->booking_user_id;
+                $request->resource_id = $booking->resource_id;
+                $request->category_id = $resource->category_id;
+                $request->setProperty('seats', $resource->getProperty('seats'));
+            }
+
+            if($request->store()) {
+                $cycle_bookings = [];
+                $booking_deleted = false;
+                foreach($cycle->getAllDates() as $bcdate) {
+                    $bcdate_booking = ResourceBooking::findOneBySQL('range_id=?', [$bcdate->id]);
+                    if ($bcdate_booking && $bcdate_booking->resource_id == $booking->resource_id) {
+                        $booking_deleted = boolVal($bcdate_booking->delete());
+                    }
+                }
+
+                if ($booking_deleted) {
+                    PageLayout::postSuccess(
+                        _('Die Buchung wurde in eine Anfrage umgewandelt!')
+                    );
+                } else {
+                    PageLayout::postError(
+                        _('Die Buchung konnte nicht gelöscht werden!')
+                    );
+                    $request->delete();
+                }
+            } else {
+                PageLayout::postError(
+                    _('Die Buchung konnte nicht in eine Anfrage umgewandelt werden!')
+                );
+            }
+
+            $this->relocate($this->url_for("resources/room_request/planning"));
+        }
+
+        $this->booking = $booking;
+
+        $this->user_has_user_perms = $this->booking->resource->userHasPermission(
+            $this->current_user,
+            'user'
+        ) || $GLOBALS['perm']->have_perm('root');
+
+        if (!$this->user_has_user_perms) {
+            $resource = $this->booking->resource->getDerivedClassInstance();
+            //The user has no permissions on the resource.
+            //But if it is a room resource, we must check if the booking plan
+            //is public. In such a case, viewing of the booking can be granted.
+            if (!($resource->bookingPlanVisibleForUser($this->current_user))) {
+                throw new AccessDeniedException();
+            }
+        }
+
+    }
+
+    public function quickbook_action($request_id, $room_id, $range_str)
+    {
+        $this->request = ResourceRequest::find($request_id);
+
+        $this->selected_rooms = Request::getArray('selected_rooms');
+        $this->notification_settings = Request::get('notification_settings');
+
+
+        $this->show_force_resolve_button = true;
+
+        $errors = [];
+        $bookings = [];
+
+        //Get room and check room permissions:
+        $room = Resource::find($room_id);
+        if (!$room) {
+            PageLayout::postError(
+                sprintf(
+                    _('Es wurde kein Raum ausgewählt!'),
+                    htmlReady($room_id)
+                )
+            );
+            return;
+        }
+        $room = $room->getDerivedClassInstance();
+        if (!($room instanceof Room)) {
+            PageLayout::postError(
+                sprintf(
+                    _('Die Ressource mit der ID %s ist kein Raum!'),
+                    htmlReady($room_id)
+                )
+            );
+            return;
+        }
+
+        if (!$room->userHasPermission($this->current_user, 'autor')) {
+            PageLayout::postError(
+                sprintf(
+                    _('Unzureichende Berechtigungen zum Buchen des Raumes %s!'),
+                    htmlReady($room->name)
+                )
+            );
+            return;
+        }
+
+        $booking = null;
+        //Get the range object:
+        $range_data = explode('_', $range_str);
+
+        if ($range_data[0] == 'CourseDate') {
+            $course_date = CourseDate::find($range_data[1]);
+            if (!($course_date instanceof CourseDate)) {
+                PageLayout::postError(
+                    sprintf(
+                        _('Der Veranstaltungstermin mit der ID %s wurde nicht gefunden!'),
+                        htmlReady($range_data[1])
+                    )
+                );
+                return;
+            }
+
+            try {
+                $booking = $room->createBooking(
+                    $this->current_user,
+                    $course_date->id,
+                    [
+                        [
+                            'begin' => $course_date->date,
+                            'end' => $course_date->end_time
+                        ]
+                    ],
+                    null,
+                    0,
+                    $course_date->end_time,
+                    $this->request->preparation_time,
+                    '',
+                    '',
+                    0,
+                    false
+                );
+                if ($booking instanceof ResourceBooking) {
+                    $bookings[] = $booking;
+                }
+            } catch (Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+        } elseif ($range_data[0] == 'SeminarCycleDate') {
+            //Get the dates of the metadate and create a booking for
+            //each of them.
+            $metadate = SeminarCycleDate::find($range_data[1]);
+            if (!($metadate instanceof SeminarCycleDate)) {
+                PageLayout::postError(
+                    sprintf(
+                        _('Die Terminserie mit der ID %s wurde nicht gefunden!'),
+                        htmlReady($range_data[1])
+                    )
+                );
+                return;
+            }
+            if ($metadate->dates) {
+                foreach ($metadate->dates as $date) {
+                    try {
+                        $booking = $room->createBooking(
+                            $this->current_user,
+                            $date->id,
+                            [
+                                [
+                                    'begin' => $date->date,
+                                    'end' => $date->end_time
+                                ]
+                            ],
+                            null,
+                            0,
+                            $course_date->end_time,
+                            $this->request->preparation_time,
+                            '',
+                            '',
+                            0,
+                            false
+                        );
+                        if ($booking instanceof ResourceBooking) {
+                            $bookings[] = $booking;
+                        }
+                    } catch (Exception $e) {
+                        $errors[] = $e->getMessage();
+                        continue;
+                    }
+                }
+            }
+        } elseif ($range_data[0] == 'User') {
+            $user = User::find($range_data[1]);
+            if (!($user instanceof User)) {
+                PageLayout::postError(
+                    sprintf(
+                        _('Die Person mit der ID %s wurde nicht gefunden!'),
+                        htmlReady($range_data[1])
+                    )
+                );
+                return;
+            }
+            try {
+                $booking = $room->createBooking(
+                    $this->current_user,
+                    $user->id,
+                    [
+                        [
+                            'begin' => $this->request->begin,
+                            'end' => $this->request->end
+                        ]
+                    ],
+                    null,
+                    0,
+                    null,
+                    $this->request->preparation_time,
+                    '',
+                    '',
+                    0,
+                    false
+                );
+                if ($booking instanceof ResourceBooking) {
+                    $bookings[] = $booking;
+                }
+            } catch (Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+        } else {
+            PageLayout::postError(
+                sprintf(
+                    _('Der Termin mit der ID %s ist mit einem unpassenden Stud.IP-Objekt verknüpft!'),
+                    htmlReady($range_data[1])
+                )
+            );
+            return;
+        }
+
+
+        if ($errors) {
+            //Delete all bookings that have been made:
+            foreach ($bookings as $booking) {
+                $booking->delete();
+            }
+            PageLayout::postError(
+                _('Es traten Fehler beim Auflösen der Anfrage auf!'),
+                $errors
+            );
+        } else {
+            //No errors: We can close the request.
+            $success = $this->request->closeRequest(
+                $this->notification_settings == 'creator_and_lecturers',
+                $bookings
+            );
+
+            if ($success) {
+                $this->show_form = false;
+                PageLayout::postSuccess(
+                    _('Die Anfrage wurde aufgelöst!')
+                );
+            } else {
+                PageLayout::postWarning(
+                    _('Die Anfrage wurde aufgelöst, konnte aber nicht geschlossen werden!')
+                );
+            }
+        }
+
+        if (Request::isAjax()) {
+            echo json_encode('done booking');
+            die();
+        } else {
+            $this->relocate($this->url_for("resources/room_request/planning"));
+        }
+
+    }
+
+    public function planning_action()
+    {
+        if (Navigation::hasItem('/resources/planning/requests_planning')) {
+            Navigation::activateItem('/resources/planning/requests_planning');
+        }
+
+        PageLayout::setTitle(_('Anfragenliste'));
+        PageLayout::allowFullscreenMode();
+
+        $sidebar = Sidebar::get();
+
+        if ($this->show_filter_reset_button) {
+            $filter_reset_widget = new ActionsWidget();
+            $filter_reset_widget->addLink(
+                _('Filter zurücksetzen'),
+                $this->url_for(
+                    'resources/room_request/overview',
+                    ['reset_filter' => '1']
+                ),
+                Icon::create('filter+decline')
+            );
+            $sidebar->addWidget($filter_reset_widget);
+        }
+
+        $institute_selector = new InstituteSelectWidget(
+            '',
+            'institut_id',
+            'get'
+        );
+        $institute_selector->includeAllOption(true);
+        $institute_selector->setSelectedElementIds($this->filter['institute']);
+        $sidebar->addWidget($institute_selector);
+
+        $semester_selector = new SemesterSelectorWidget(
+            '',
+            'semester_id',
+            'get'
+        );
+        $semester_selector->setSelection($this->filter['semester']);
+        $sidebar->addWidget($semester_selector);
+
+        $list = new SelectWidget(
+            _('Veranstaltungstypfilter'),
+            $this->url_for(),
+            'course_type'
+        );
+        $list->addElement(
+            new SelectElement(
+                'all',
+                _('Alle'),
+                empty($this->filter['course_type'])
+            ),
+            'course-type-all'
+        );
+
+        foreach (SemClass::getClasses() as $class_id => $class) {
+            if ($class['studygroup_mode']) {
+                continue;
+            }
+
+            $element = new SelectElement(
+                $class_id,
+                $class['name'],
+                $this->filter['course_type'] === (string)$class_id
+            );
+            $list->addElement(
+                $element->setAsHeader(),
+                'course-type-' . $class_id
+            );
+
+            foreach ($class->getSemTypes() as $id => $result) {
+                $element = new SelectElement(
+                    $class_id . '_' . $id,
+                    $result['name'],
+                    $this->filter['course_type'] === $class_id . '_' . $id
+                );
+                $list->addElement(
+                    $element->setIndentLevel(1),
+                    'course-type-' . $class_id . '_' . $id
+                );
+            }
+        }
+        $sidebar->addWidget($list, 'filter-course-type');
+
+        $widget = new SelectWidget(_('Räume'), $this->url_for(), 'room_id');
+        $widget->addElement(
+            new SelectElement(
+                '',
+                _('bitte wählen'),
+                !$this->filter['room_id']
+            )
+        );
+        foreach ($this->available_rooms as $room) {
+            $widget->addElement(
+                new SelectElement(
+                    $room->id,
+                    $room->name,
+                    $room->id == $this->filter['room_id']
+                )
+            );
+        }
+        $sidebar->addWidget($widget);
+
+        $widget = new OptionsWidget(_('Filter'));
+        $widget->addCheckbox(
+            _('Nur markierte Anfragen'),
+            $this->filter['marked'] == 1,
+            $this->url_for('', (
+                $this->filter['marked'] != '1'
+                ? ['marked' => '1']
+                : []
+            ))
+        );
+        $widget->addCheckbox(
+            _('Nur unmarkierte Anfragen'),
+            $this->filter['marked'] == 0,
+            $this->url_for('', (
+                $this->filter['marked'] != '0'
+                ? ['marked' => '0']
+                : []
+            ))
+        );
+        $widget->addCheckbox(
+            _('Nur regelmäßige Termine'),
+            $this->filter['periodic_requests'],
+            $this->url_for('', ['toggle_periodic_requests' => 1])
+        );
+        $widget->addCheckbox(
+            _('Nur unregelmäßige Termine'),
+            $this->filter['aperiodic_requests'],
+            $this->url_for('', ['toggle_aperiodic_requests' => 1])
+        );
+        $widget->addCheckbox(
+            _('Nur mit Raumangabe'),
+            $this->filter['specific_requests'],
+            $this->url_for('', ['toggle_specific_requests' => 1])
+        );
+        $widget->addCheckbox(
+            _('Eigene Anfragen anzeigen'),
+            $this->filter['own_requests'],
+            $this->url_for('', ['toggle_own_requests' => 1])
+        );
+        $sidebar->addWidget($widget);
+
+        $this->requests = $this->getFilteredRoomRequests();
+
+        if ($this->filter['room_id']) {
+            $this->resource = Resource::find($this->filter['room_id']);
+            if (!$this->resource) {
+                PageLayout::postError(
+                    _('Die angegebene Ressource wurde nicht gefunden!')
+                );
+                return;
+            }
+
+            URLHelper::addLinkParam('resource_id', $this->resource->id);
+            $this->resource = $this->resource->getDerivedClassInstance();
+            $this->privileged = $room->userHasPermission($this->current_user, 'autor');
+
+            if ($this->filter['semester']) {
+                $this->semester = Semester::find($this->filter['semester']);
+            } else {
+                $this->semester = Semester::find(Semester::findCurrent()->id);
+            }
+
+            $booking_colour                        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
+            $course_booking_colour                 = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+            $lock_colour                           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
+            $preparation_colour                    = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
+            $reservation_colour                    = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
+            $request_colour                        = ColourValue::find('Resources.BookingPlan.Request.Bg');
+            $this->table_keys                      = [
+                [
+                    'colour' => $booking_colour->__toString(),
+                    'text'   => _('Manuelle Buchung')
+                ],
+                [
+                    'colour' => $course_booking_colour->__toString(),
+                    'text'   => _('Veranstaltungsbezogene Buchung')
+                ],
+                [
+                    'colour' => $lock_colour->__toString(),
+                    'text'   => _('Sperrbuchung')
+                ],
+                [
+                    'colour' => $preparation_colour->__toString(),
+                    'text'   => _('Rüstzeit')
+                ],
+                [
+                    'colour' => $reservation_colour->__toString(),
+                    'text'   => _('Reservierung')
+                ],
+            ];
+            $this->event_color = $request_colour;
+        }
+
     }
 }

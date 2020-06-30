@@ -477,7 +477,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         $this->resource = Resource::find($resource_id);
         if (!$this->resource) {
             PageLayout::postError(
-                _('Die angegeben Ressource wurde nicht gefunden!')
+                _('Die angegebene Ressource wurde nicht gefunden!')
             );
             return;
         }

@@ -140,6 +140,12 @@ class ResourceNavigation extends Navigation
                     'dispatch.php/resources/room_request/overview'
                 );
                 $sub_navigation->addSubNavigation('requests_overview', $sub_sub_nav);
+
+                $sub_sub_nav = new Navigation(
+                    _('Anfragenplan'),
+                    'dispatch.php/resources/room_request/planning'
+                );
+                $sub_navigation->addSubNavigation('requests_planning', $sub_sub_nav);
             } else {
                 $sub_navigation = new Navigation(
                     _('Raumplanung'),

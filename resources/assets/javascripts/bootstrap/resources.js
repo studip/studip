@@ -851,4 +851,82 @@ STUDIP.ready(function() {
             STUDIP.Resources.toggleRequestMarked(event.target);
         }
     );
+
+    $(document).on(
+        'click',
+        "button[name='bulk-book-requests']",
+        function(event) {
+            STUDIP.Dialog.confirm(
+                'Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?'.toLocaleString()
+            ).done(function() {
+                STUDIP.Resources.bookAllCalendarRequests();
+            });
+        }
+    );
+
+
+    $(document).on(
+        'click',
+        '.fc-request-event',
+        function() {
+            var objectData = $(this).data();
+            var eventData = {
+                id: objectData.eventId,
+                title: objectData.eventTitle,
+                start: objectData.eventBegin,
+                end: objectData.eventEnd,
+                studip_weekday_begin: objectData.eventStudip_weekday_begin,
+                studip_weekday_end: objectData.eventStudip_weekday_end,
+                request_id: objectData.eventRequest,
+                tooltip: objectData.eventTooltip,
+                studip_api_urls: {},
+                studip_view_urls: {edit: objectData.eventView_urls_edit},
+                editable: false,
+                color: objectData.eventColor,
+                textColor: '#000'
+            };
+
+            var calendarSektion = $('*[data-resources-fullcalendar="1"]')[0];
+            if (calendarSektion) {
+                var calendar = calendarSektion.calendar;
+                if (calendar && eventData) {
+                    var existingRequestEvent = calendar.getEventById(eventData.id);
+                    if (existingRequestEvent) {
+                        existingRequestEvent.remove();
+
+                        var remainingRequestEvents = 0;
+                        $('.fc-request-event').each(function(){
+                            if (calendar.getEventById($(this).data().eventId)) {
+                                remainingRequestEvents++;
+                            }
+                        });
+                        if(remainingRequestEvents < 1) {
+                            $("button[name='bulk-book-requests']").prop('disabled', true);
+                        }
+                    } else {
+                        STUDIP.Fullcalendar.convertSemesterEvents(eventData, calendar.getDate().toString());
+                        var overlap = false;
+                        var checkStart = new Date(eventData.start);
+                        var checkEnd = new Date(eventData.end);
+                        $(calendar.getEvents()).each(function(){
+                            // start-time in between any of the events
+                            if ((checkStart >= this.start && checkStart < this.end)
+                            //end-time in between any of the events
+                            || (checkEnd > this.start && checkEnd <= this.end)
+                            //any of the events in between/on the start-time and end-time
+                            || (checkStart <= this.start && checkEnd >= this.end)) {
+                                overlap = true
+                            }
+                        });
+                        if (overlap) {
+                            eventData.icon = 'exclaim-circle-full';
+                        }
+                        calendar.addEvent(eventData);
+                        $("button[name='bulk-book-requests']").prop('disabled', false);
+                    }
+
+                }
+            }
+        }
+    );
 });
