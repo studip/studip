@@ -69,7 +69,7 @@ class Admin_DomainController extends AuthenticatedController
     public function validate_args(&$args, $types = NULL)
     {
         foreach ($args as $arg) {
-            if (!preg_match('/' . UserDomain::REGEXP . '/', $arg)) {
+            if ($arg && !preg_match('/' . UserDomain::REGEXP . '/', $arg)) {
                 throw new Trails_Exception(400);
             }
         }
