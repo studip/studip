@@ -533,6 +533,8 @@ class Consultation_AdminController extends ConsultationController
 
     public function purge_action()
     {
+        CSRFProtection::verifyUnsafeRequest();
+
         $deleted = ['current' => 0, 'expired' => 0];
 
         ConsultationSlot::findEachBySQL(
@@ -549,16 +551,17 @@ class Consultation_AdminController extends ConsultationController
         if (array_sum($deleted) > 0) {
             $message = [];
             if ($deleted['current'] > 0) {
-                $message[] = sprintf(_('%u aktuelle'), $deleted['current']);
+                PageLayout::postSuccess(sprintf(
+                    _('%u aktuelle Sprechstundentermine wurden gelöscht'),
+                    $deleted['current']
+                ));
             }
             if ($deleted['expired'] > 0) {
-                $message[] = sprintf(_('%u vergangene'), $deleted['expired']);
+                PageLayout::postSuccess(sprintf(
+                    _('%u vergangene  Sprechstundentermine wurden gelöscht'),
+                    $deleted['expired']
+                ));
             }
-
-            PageLayout::postSuccess(sprintf(
-                _('%s Sprechstundentermine wurden gelöscht'),
-                implode(_(' und '), $message)
-            ));
         }
 
         $this->redirect('consultation/admin/index');
@@ -678,7 +681,7 @@ class Consultation_AdminController extends ConsultationController
             _('Alle Sprechstundentermine löschen'),
             $this->purgeURL(),
             Icon::create('trash'),
-            ['data-confirm' => _('Wollen Sie wirklich alle Sprechstundentermine löschen?')]
+            ['onclick' => 'return STUDIP.Dialog.confirmAsPost(' . json_encode(_('Wollen Sie wirklich alle Sprechstundentermine löschen?')) . ');']
         );
 
         $options = $sidebar->addWidget(new OptionsWidget());
