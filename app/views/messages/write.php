@@ -1,6 +1,9 @@
 <form class="default" name="write_message" action="<?= URLHelper::getLink("dispatch.php/messages/send") ?>" method="post" style="margin-left: auto; margin-right: auto;" data-dialog data-secure="#adressees > li:eq(1), .files > li:eq(1)">
+    <?= CSRFProtection::tokenTag() ?>
+
     <input type="hidden" name="message_id" id="message_id" value="<?= htmlReady($default_message->id) ?>">
     <input type="hidden" name="answer_to" value="<?= htmlReady($answer_to) ?>">
+
     <fieldset>
         <legend><?= _('Neue Nachricht') ?></legend>
     <div>

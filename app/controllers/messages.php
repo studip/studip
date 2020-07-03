@@ -613,9 +613,7 @@ class MessagesController extends AuthenticatedController {
      */
     public function send_action()
     {
-        if (!Request::isPost()) {
-            throw new MethodNotAllowedException();
-        }
+        CSRFProtection::verifyUnsafeRequest();
 
         PageLayout::setTitle(_('Nachricht verschicken'));
 
