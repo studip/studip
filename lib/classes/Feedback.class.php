@@ -12,6 +12,9 @@ class Feedback
      */
     public static function getHTML(string $range_id, string $range_type)
     {
+        if (!$range_id) {
+            return null;
+        }
         if (is_subclass_of($range_type, \FeedbackRange::class)) {
             $course_id = $range_type::find($range_id)->getRangeCourseId();
         }
