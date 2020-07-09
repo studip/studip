@@ -46,20 +46,19 @@ class FileRef extends SchemaProvider
 
             'downloads' => (int) $resource['downloads'],
 
-            'filesize' => (int) $resource->file->size,
-
-            'storage' => $resource->file->storage,
+            'filesize' => (int) $resource->file->size
         ];
 
         $user = $this->getDiContainer()->get('studip-current-user');
         if ($folder = $resource->getFolderType()) {
+            $filetype = $resource->getFileType();
             $attributes = array_merge(
                 $attributes,
                 [
                     'is-readable' => $folder->isReadable($user->id),
-                    'is-downloadable' => $folder->isFileDownloadable($resource->id, $user->id),
-                    'is-editable' => $folder->isFileEditable($resource->id, $user->id),
-                    'is-writable' => $folder->isFileWritable($resource->id, $user->id),
+                    'is-downloadable' => $filetype->isDownloadable($user->id),
+                    'is-editable' => $filetype->isEditable($user->id),
+                    'is-writable' => $filetype->isWritable($user->id),
                 ]
             );
         }

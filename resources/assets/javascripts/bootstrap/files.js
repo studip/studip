@@ -19,6 +19,9 @@ function searchMoreFiles (button) {
 }
 
 STUDIP.domReady(() => {
+
+    STUDIP.Files.init();
+
     $('form.drag-and-drop.files').on('dragover dragleave', (event) => {
         $(event.target).toggleClass('hovered', event.type === 'dragover');
 

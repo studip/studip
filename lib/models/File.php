@@ -43,16 +43,13 @@ class File extends SimpleORMap
             'class_name'        => 'FileRef',
             'assoc_foreign_key' => 'file_id',
         ];
-        $config['has_one']['file_url'] = [
-            'class_name' => 'FileURL',
-            'on_store'   => 'store',
-            'on_delete'  => 'delete'
-        ];
 
         $config['additional_fields']['extension'] = true;
         $config['additional_fields']['path'] = true;
         $config['additional_fields']['url'] = true;
         $config['additional_fields']['url_access_type'] = true;
+
+        $config['serialized_fields']['metadata'] = 'JSONArrayObject';
 
         $config['registered_callbacks']['after_delete'][] = 'deleteDataFile';
         $config['registered_callbacks']['before_create'][] = 'cbSetAuthor';
@@ -82,7 +79,7 @@ class File extends SimpleORMap
     {
         $this->storage = 'url';
         if (!isset($this->file_url)) {
-            $this->file_url = new FileURL();
+            $this->file_url = new FileURL(); //TODO: change to URLFile
         }
         $this->file_url->url = $url;
 
@@ -96,9 +93,7 @@ class File extends SimpleORMap
      */
     public function getURL_access_type()
     {
-        return $this->storage === 'url' && isset($this->file_url)
-             ? $this->file_url->access_type
-             : null;
+        return $this->metadata['access_type'];
     }
 
     /**
@@ -111,7 +106,7 @@ class File extends SimpleORMap
     {
         $this->storage = 'url';
         if (!isset($this->file_url)) {
-            $this->file_url = new FileURL();
+            $this->file_url = new FileURL(); //TODO: change to URLFile
         }
         $this->file_url->access_type = $value;
 
@@ -135,7 +130,7 @@ class File extends SimpleORMap
      */
     public function getPath()
     {
-        if (!$this->id || $this->storage !== 'disk') {
+        if (!$this->id || !in_array($this->filetype, ['StandardFile', 'LibraryFile', 'LibraryRequestFile'])) {
             return null;
         }
         return $GLOBALS['UPLOAD_PATH'] . '/' . substr($this->id, 0, 2) . '/' . $this->id;

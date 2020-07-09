@@ -43,8 +43,7 @@ class Privacy
         'content' => [
             'FileRef',
             'ForumEntry',
-            'WikiPage',
-            'StudipLitList',
+            'WikiPage'
         ],
         'quest' => [
             'Evaluation',

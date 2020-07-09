@@ -47,7 +47,6 @@ class SemClass implements ArrayAccess
         "documents",
         "schedule",
         "participants",
-        "literature",
         "scm",
         "wiki",
         "calendar",
@@ -62,7 +61,6 @@ class SemClass implements ArrayAccess
         "CoreParticipants",
         "CoreStudygroupParticipants",
         "CoreSchedule",
-        "CoreLiterature",
         "CoreScm",
         "CoreWiki",
         "CoreCalendar",
@@ -79,7 +77,6 @@ class SemClass implements ArrayAccess
             'documents' => "CoreDocuments",
             'schedule' => "CoreSchedule",
             'participants' => "CoreParticipants",
-            'literature' => "CoreLiterature",
             'scm' => "CoreScm",
             'wiki' => "CoreWiki",
             'calendar' => "CoreCalendar",
@@ -112,7 +109,6 @@ class SemClass implements ArrayAccess
         $slots = [
             'forum'               => 'Blubber',
             'documents'           => 'CoreDocuments',
-            'literature'          => 'CoreLiterature',
             'scm'                 => 'CoreScm',
             'wiki'                => 'CoreWiki',
             'calendar'            => 'CoreCalendar',
@@ -395,7 +391,6 @@ class SemClass implements ArrayAccess
                 "documents = :documents, " .
                 "schedule = :schedule, " .
                 "participants = :participants, " .
-                "literature = :literature, " .
                 "scm = :scm, " .
                 "wiki = :wiki, " .
                 "calendar = :calendar, " .
@@ -437,7 +432,6 @@ class SemClass implements ArrayAccess
             'documents' => $this->data['documents'],
             'schedule' => $this->data['schedule'],
             'participants' => $this->data['participants'],
-            'literature' => $this->data['literature'],
             'scm' => $this->data['scm'],
             'wiki' => $this->data['wiki'],
             'calendar' => $this->data['calendar'],
@@ -551,8 +545,6 @@ class SemClass implements ArrayAccess
                 return $this->data['schedule'] !== null;
             case "participants":
                 return $this->data['participants'] !== null;
-            case "literature":
-                return $this->data['literature'] !== null;
             case "scm":
                 return $this->data['scm'] !== null;
             case "studygroup_mode":

@@ -172,9 +172,6 @@ class FileManager
      */
     public static function getIconForFileRef($ref, $role = Icon::ROLE_CLICKABLE, array $attributes = [])
     {
-        if ($ref->is_link) {
-            return Icon::create('link-extern', $role, $attributes);
-        }
         return self::getIconForMimeType($ref->mime_type);
     }
 
@@ -313,8 +310,9 @@ class FileManager
      *
      * @return mixed[] Array with the created file objects and error strings
      */
-    public static function handleFileUpload(Array $uploaded_files, FolderType $folder, $user_id)
+    public static function handleFileUpload(Array $uploaded_files, FolderType $folder, $user_id = null)
     {
+        $user_id || $user_id = $GLOBALS['user']->id;
         $result = [];
         $error  = [];
 
@@ -331,46 +329,32 @@ class FileManager
         if (is_array($uploaded_files['name'])) {
             $error = [];
             foreach ($uploaded_files['name'] as $key => $filename) {
-
-                $filetype = $uploaded_files['type'][$key] ?: get_mime_type($filename);
-                $tmpname  = $uploaded_files['tmp_name'][$key];
-                $size     = $uploaded_files['size'][$key];
-
-                $uploaded_file = [
+                $uploaded_file = StandardFile::create([
                     'name'     => $filename,
-                    'type'     => $filetype,
-                    'tmp_name' => $tmpname,
-                    'url'      => "",
-                    'size'     => $size,
-                    'user_id'  => $user_id,
-                    'error'    => $uploaded_files['error'][$key]
-                ];
-                $upload_errors = self::checkUploadedFileStatus($uploaded_file);
-                if ($upload_errors) {
-                    $error = array_merge($error, $upload_errors);
-                    continue;
-                }
+                    'type'     => $uploaded_files['type'][$key] ?: get_mime_type($filename),
+                    'size'     => $uploaded_files['size'][$key],
+                    'tmp_name' => $uploaded_files['tmp_name'][$key],
+                    'error'    =>  $uploaded_files['error'][$key]
+                ]);
 
-                //validate the upload by looking at the folder where the
-                //uploaded file shall be stored:
-                if ($folder_error = $folder->validateUpload(
-                    [
-                        'name' => $filename,
-                        'size' => $size
-                    ],
-                    $user_id)
-                ) {
-                    $error[] = $folder_error;
-                    continue;
-                }
+                if ($uploaded_file instanceof FileType) {
+                    //validate the upload by looking at the folder where the
+                    //uploaded file shall be stored:
+                    if ($folder_error = $folder->validateUpload($uploaded_file, $user_id)) {
+                        $error[] = $folder_error;
+                        $uploaded_file->delete();
+                        continue;
+                    }
 
-                $new_reference = $folder->createFile($uploaded_file);
-                if (!$new_reference){
-                    $error[] = _('Ein Systemfehler ist beim Upload aufgetreten.');
+                    $new_reference = $folder->addFile($uploaded_file, $user_id);
+                    if (!$new_reference){
+                        $error[] = _('Ein Systemfehler ist beim Upload aufgetreten.');
+                    } else {
+                        $result['files'][] = $new_reference;
+                    }
                 } else {
-                    $result['files'][] = $new_reference;
+                    $error = array_merge($error, $uploaded_file);
                 }
-
             }
         }
         return array_merge($result, compact('error'));
@@ -413,7 +397,8 @@ class FileManager
 
         // Do some checks:
         $folder = $source->getFolderType();
-        if (!$folder || !$folder->isFileEditable($source->id, $user->id)) {
+        $source_file = $source->getFileType();
+        if (!$source_file->isEditable($user->id)) {
             $errors[] = sprintf(
                 _('Sie sind nicht dazu berechtigt, die Datei %s zu aktualisieren!'),
                 $source->name
@@ -422,7 +407,7 @@ class FileManager
         }
 
         // Check if $uploaded_file_data has valid data in it:
-        $upload_error = $folder->validateUpload($uploaded_file_data, $user->id);
+        $upload_error = $folder->validateUpload($source_file, $user->id);
         if ($upload_error) {
             $errors[] = $upload_error;
             return $errors;
@@ -441,13 +426,13 @@ class FileManager
                 if (!$update_filename) {
                     $uploaded_file_data['name'] = $source->name;
                 } else {
-                    if(!$folder->deleteFile($source->getId())){
+                    if (!$folder->deleteFile($source->getId())){
                         $errors[] = _('Aktualisierte Datei konnte nicht ins Stud.IP Dateisystem übernommen werden!');
                         return $errors;
                     }
                 }
-                $new_reference = $folder->createFile($uploaded_file_data);
-                if(!$new_reference){
+                $new_reference = $folder->addFile($source_file);
+                if (!$new_reference) {
                     $errors[] = _('Aktualisierte Datei konnte nicht ins Stud.IP Dateisystem übernommen werden!');
                     return $errors;
                 }
@@ -488,7 +473,6 @@ class FileManager
 
             $data_file = new File();
             $data_file->user_id = $user->id;
-            $data_file->storage = 'disk';
             $data_file->id      = $data_file->getNewId();
 
             $connect_success = $data_file->connectWithDataFile($uploaded_file_data['tmp_name']);
@@ -594,7 +578,7 @@ class FileManager
             return [_('Ordnertyp konnte nicht ermittelt werden!')];
         }
 
-        if (!$folder_type->isFileEditable($file_ref, $user->id)) {
+        if (!$file_ref->getFileType()->isEditable($user->id)) {
             return [sprintf(
                 _('Ungenügende Berechtigungen zum Bearbeiten der Datei %s!'),
                 $file_ref->name
@@ -669,13 +653,13 @@ class FileManager
      * the destination folder. In that case, only the name in the FileRef object
      * of the file is altered and the File object's name is unchanged.
      *
-     * @param FileRef $source The file reference for the file that shall be copied.
+     * @param FileType $source The file reference for the file that shall be copied.
      * @param FolderType $destination_folder The destination folder for the file.
      * @param User $user The user who wishes to copy the file.
      *
-     * @return FileRef|string[] The copied FileRef object on success or an array with error messages on failure.
+     * @return FileType|string[] The copied FileType object on success or an array with error messages on failure.
      */
-    public static function copyFileRef(FileRef $source, FolderType $destination_folder, User $user)
+    public static function copyFile(FileType $source, FolderType $destination_folder, User $user)
     {
         // first we have to make sure if the user has the permissions to read the source folder
         // and the permissions to write to the destination folder:
@@ -691,191 +675,33 @@ class FileManager
             return [
                 sprintf(
                     _('Ungenügende Berechtigungen zum Kopieren der Datei %s in Ordner %s!'),
-                    $source->name,
+                    $source->getFilename(),
                     $destination_folder->name
                 )
             ];
         }
-
-        $source_plugin = PluginManager::getInstance()->getPlugin($source_folder->range_id);
-        if (!$source_plugin) {
-            $source_plugin = PluginManager::getInstance()->getPlugin($source_folder->range_type);;
-        }
-        $destination_plugin = PluginManager::getInstance()->getPlugin($destination_folder->range_id);
-        if (!$destination_plugin) {
-            $destination_plugin = PluginManager::getInstance()->getPlugin($destination_folder->range_type);;
+        $error = $destination_folder->validateUpload($source, $user->id);
+        if ($error && is_string($error)) {
+            return [$error];
         }
 
-        if (!$destination_plugin && !$source_plugin) {
-            //We copy a file from a Stud.IP file area to another
-            //Stud.IP file area. No file system plugin is involved.
-            if ($source->user_id === $user->id) {
-                //The user is the owner of the file:
-                //We can simply make a new reference to it
-                $new_reference = new FileRef();
-                $new_reference->file_id     = $source->file_id;
-                $new_reference->folder_id   = $destination_folder->getId();
-                $new_reference->name        = $source->name;
-                $new_reference->description = $source->description;
-                $new_reference->user_id     = $user->id;
-                $new_reference->content_terms_of_use_id = $source->content_terms_of_use_id;
-
-                if ($new_reference->store()) {
-                    return $new_reference;
-                }
-            } else {
-                //The user is not the owner of the file:
-                //We must also copy the data (the File object).
-
-                $copied_file = new File();
-                $copied_file->user_id = $user->id;
-                $copied_file->mime_type = $source->file->mime_type;
-                $copied_file->name = $source->name;
-                $copied_file->size = $source->file->size;
-                $copied_file->storage = $source->file->storage;
-                $copied_file->author_name = $user->getFullName('no_title');
-                $copied_file->id = $copied_file->getNewId();
-                if ($copied_file->storage === 'disk') {
-                    //We must copy the physical data.
-                    $copy_path = $GLOBALS['TMP_PATH'] . '/' . $copied_file->id;
-                    if (!copy($source->file->getPath(), $copy_path)) {
-                        return [
-                            _('Daten konnten nicht kopiert werden!')
-                        ];
-                    }
-                    if ($copied_file->connectWithDataFile($copy_path)) {
-                        @unlink($copy_path);
-                    } else {
-                        return [
-                            _('Daten konnten nicht kopiert werden!')
-                        ];
-                    }
-                } else {
-                    //We can simply copy the URL field's value.
-                    $copied_file->url = $source->file->url;
-                }
-
-                if (!$copied_file->store()) {
-                    return [
-                        _('Daten konnten nicht kopiert werden!')
-                    ];
-                }
-
-                //We finished copying the real data.
-                //Now we must copy the FileRef:
-                $copied_reference = new FileRef();
-                $copied_reference->file_id = $copied_file->id;
-                $copied_reference->folder_id = $destination_folder->getId();
-                $copied_reference->name = $source->name;
-                $copied_reference->description = $source->description;
-                $copied_reference->user_id = $user->id;
-                $copied_reference->content_terms_of_use_id = $source->content_terms_of_use_id;
-
-                if ($copied_reference->store()) {
-                    return $copied_reference;
-                }
-            }
-
-            return[_('Neue Referenz kann nicht erzeugt werden!')];
-
-        } else {
-
-            if ($source_plugin) {
-                $prepared_file_ref = $source_plugin->getPreparedFile($source->id, true);
-
-                $file_meta = [
-                    'name'     => $prepared_file_ref->name,
-                    'error'    => [0],
-                    'type'     => $prepared_file_ref->mime_type,
-                    'tmp_name' => $prepared_file_ref->path_to_blob,
-                    'size'     => $prepared_file_ref->size,
-                ];
-                $result = $destination_folder->createFile($file_meta);
-
-                if (is_a($result, "MessageBox")) {
-                    return [$result->message];
-                } else {
-                    return $result;
-                }
-
-            } else {
-
-                if (!$source->path_to_blob && $source->file_id) {
-                    $source->path_to_blob = File::find($source->file_id)->getPath();
-                }
-
-                $file_meta = [
-                    'name'     => $source->name,
-                    'error'    => [0],
-                    'type'     => $source->mime_type,
-                    'tmp_name' => $source->path_to_blob,
-                    'url'      => $source->file->url,
-                    'size'     => $source->size,
-                ];
-
-                if ($source->file->url) {
-                    if ($destination_plugin) {
-                        $new_reference = $destination_folder->createFile($file_meta);
-                    } else {
-                        $copied_file = new File();
-                        $copied_file->setData($source->file);
-                        $copied_file->name    = $source->name;
-                        $copied_file->user_id = $user->id;
-                        $copied_file->setId($copied_file->getNewId());
-                        $copied_file->store();
-
-                        $fileurl = new FileURL();
-                        $fileurl->setData($source->file->file_url->toArray());
-                        $fileurl['file_id'] = $copied_file->getId();
-                        $fileurl->store();
-
-                        $new_reference = new FileRef();
-                        $new_reference->file_id     = $copied_file->id;
-                        $new_reference->folder_id   = $destination_folder->getId();
-                        $new_reference->name        = $source->name;
-                        $new_reference->description = $source->description;
-                        $new_reference->user_id     = $user->id;
-                    }
-                } else {
-                    $file_meta = [
-                        'name'     => [$source->name],
-                        'error'    => [0],
-                        'type'     => [$source->mime_type],
-                        'tmp_name' => [$source->path_to_blob],
-                        'url'      => [$source->file->url],
-                        'size'     => [$source->size],
-                    ];
-                    $fcopy = self::handleFileUpload($file_meta, $destination_folder, $user->id);
-                    $new_reference = $fcopy['files'][0];
-                }
-
-                $new_reference->content_terms_of_use_id = $source->content_terms_of_use_id;
-
-            }
-            if ($destination_plugin) {
-                return $new_reference;
-            }
-
-            if ($new_reference->store()) {
-                return $new_reference;
-            } else {
-                $new_reference->delete();
-                return [$error ?: _('Daten konnten nicht kopiert werden!')];
-            }
+        $newfile = $destination_folder->addFile($source);
+        if (!$newfile) {
+            return [_('Daten konnten nicht kopiert werden!')];
         }
-
+        return $newfile;
     }
 
     /**
      * This method handles moving a file to a new folder.
      *
-     * @param FileRef $source The file reference for the file that shall be moved.
+     * @param FileType $source The file reference for the file that shall be moved.
      * @param FolderType $destination_folder The destination folder.
      * @param User $user The user who wishes to move the file.
      *
      * @return FileRef|string[] $source FileRef object on success, Array with error messages on failure.
      */
-    public static function moveFileRef(FileRef $source, FolderType $destination_folder, User $user)
+    public static function moveFile(FileType $source, FolderType $destination_folder, User $user)
     {
         $source_folder = $source->getFolderType();
         if (!$source_folder) {
@@ -888,7 +714,7 @@ class FileManager
             return [
                 sprintf(
                     _('Ungenügende Berechtigungen zum Kopieren der Datei %s in Ordner %s!'),
-                    $source->name,
+                    $source->getFilename(),
                     $destination_folder->name
                 )
             ];
@@ -903,16 +729,24 @@ class FileManager
             $destination_plugin = PluginManager::getInstance()->getPlugin($destination_folder->range_type);;
         }
 
-        if (!$source_plugin && !$destination_plugin) {
+        if (!$source_plugin && !$destination_plugin && $source instanceof StandardFile) {
 
-            $source->folder_id = $destination_folder->id;
-            if ($source->store()) {
-                return $source;
+            $error = $destination_folder->validateUpload($source, $user->id);
+            if (!$error) {
+                $source_fileref = FileRef::find($source->getId());
+                $source_fileref->folder_id = $destination_folder->getId();
+                if ($source_fileref->store()) {
+                    $classname = get_class($source);
+                    return new $classname($source_fileref);
+                } else {
+                    return [_('Datei konnte nicht gespeichert werden.')];
+                }
+            } else {
+                return $error;
             }
-            return [_('Datei konnte nicht gespeichert werden.')];
 
         } else {
-            $copy = self::copyFileRef($source, $destination_folder, $user);
+            $copy = self::copyFile($source, $destination_folder, $user);
             if (!is_array($copy)) {
                 $source_folder->deleteFile($source->getId());
             }
@@ -938,14 +772,14 @@ class FileManager
             return [_('Ordnertyp des Quellordners konnte nicht ermittelt werden!')];
         }
 
-        if (!$folder_type->isFileWritable($file_ref->id, $user->id)) {
+        if (!$file_ref->getFileType()->isWritable($user->id)) {
             return [sprintf(
                 _('Ungenügende Berechtigungen zum Löschen der Datei %s in Ordner %s!'),
                 $file_ref->name
             )];
         }
 
-        if ($folder_type->deleteFile($file_ref->getId())) {
+        if ($file_ref->getFileType()->delete()) {
             return $file_ref;
         }
 
@@ -1136,13 +970,9 @@ class FileManager
         }
 
         //now go through all files and copy them, too:
-        foreach ($source_folder->getFiles() as $file_ref) {
-            if (!($file_ref instanceof FileRef)) {
-                $file_ref = FileRef::build((array) $file_ref, false);
-                $file_ref->setFolderType('foldertype', $source_folder);
-            }
-            $result = self::copyFileRef($file_ref, $new_folder, $user);
-            if (!$result instanceof FileRef) {
+        foreach ($source_folder->getFiles() as $file) {
+            $result = self::copyFile($file, $new_folder, $user);
+            if (!$result instanceof FileType) {
                 return $result;
             }
         }
@@ -1494,7 +1324,7 @@ class FileManager
      *     files and subfolders of a folder.
      * @param bool $check_file_permissions Set to true, if file permissions
      *     shall be checked. Defaults to false.
-     * @return mixed[] A mixed array with FolderType and FileRef objects.
+     * @return mixed[] A mixed array with FolderType and FileType objects.
      */
     public static function getFolderFilesRecursive(
         FolderType $top_folder,
@@ -1993,6 +1823,42 @@ class FileManager
     public static function getFolderLink($folder)
     {
         return htmlReady(self::getFolderURL($folder));
+    }
+
+
+    /**
+     * Returns true if the mime-type of that FileType object starts with image/
+     * @param FileType $file : The file
+     * @return bool : True if it is an image else false
+     */
+    public static function fileIsImage(FileType $file)
+    {
+        $mimetype = $file->getMimeType();
+        return mb_substr($mimetype, 0, 6) === "image/";
+    }
+
+
+    /**
+     * Returns true if the mime-type of that FileType object starts with audio/
+     * @param FileType $file : The file
+     * @return bool : True if it is an audio file else false
+     */
+    public static function fileIsAudio(FileType $file)
+    {
+        $mimetype = $file->getMimeType();
+        return mb_substr($mimetype, 0, 6) === "audio/";
+    }
+
+
+    /**
+     * Returns true if the mime-type of that FileType object starts with video/
+     * @param FileType $file : The file
+     * @return bool : True if it is an video file else false
+     */
+    public static function fileIsVideo(FileType $file)
+    {
+        $mimetype = $file->getMimeType();
+        return mb_substr($mimetype, 0, 6) === "video/";
     }
 
 

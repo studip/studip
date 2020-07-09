@@ -72,26 +72,6 @@ namespace {
 
     $CONTENT_LANGUAGES['en_GB'] = ['picture' => 'lang_en.gif', 'name' => 'English'];
 
-    /*literature search plugins
-    ----------------------------------------------------------------
-    */
-
-    //standard plugin, searches in Stud.IP Database (table lit_catalog), you should leave this one enabled !
-    $_lit_search_plugins[] = ['name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => ''];
-
-    //Plugins derived from Z3950Abstract, used for querying Z39.50 Servers
-    //only activate these plugins, if your Version of PHP supports the YAZ extension!
-
-    /* Gemeinsamer Verbundkatalog - GVK */
-    $_lit_search_plugins[] = ['name' => "Gvk",'display_name' =>'Gemeinsamer Verbundkatalog', 'link' => 'http://gso.gbv.de/DB=2.1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
-
-    /* Niedersächsische Staats- und Universitätsbibliothek Göttingen, OPAC */
-    $_lit_search_plugins[] = ['name' => "SUBGoeOpac",'display_name' => "Opac der SUB Göttingen" , 'link' => 'http://goopc4.sub.uni-goettingen.de:8080/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
-
-    /* Göttinger Gesamtkatalog (Regionalkatalog Göttingen) */
-    $_lit_search_plugins[] = ['name' => 'Rkgoe', 'display_name' =>'Regionalkatalog Göttingen', 'link' => 'http://gso.gbv.de/DB=2.90/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}'];
-
-
 
     /*authentication plugins
     ----------------------------------------------------------------

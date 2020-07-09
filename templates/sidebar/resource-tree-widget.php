@@ -13,7 +13,7 @@
         } else {
             //$parameter_name is not set. Redirect to the resource's
             //details page:
-            $link = $resource->getLink('show');
+            $link = $resource->getActionLink('show');
         }
         ?>
         <li <?= ((!$resource_path && $resource->level > $max_open_depth) || $hide) ? 'style="display: none;"' : ''; ?>>

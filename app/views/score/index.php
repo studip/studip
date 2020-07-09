@@ -86,17 +86,7 @@
                 $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
             }
 
-            // Literaturangaben
-            if ($lit = $person['litcount']) {
-                $tmp = sprintf(ngettext('Eine Literaturangabe', '%s Literaturangaben', $lit), $lit);
-                $content .= sprintf(
-                    '<a href="%s">%s</a> ',
-                    URLHelper::getLink('dispatch.php/profile?username=' . $person['username']),
-                    Icon::create('literature', Icon::ROLE_CLICKABLE, ['title' => $tmp])->asImg()
-                );
-            } else {
-                $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
-            }
+            $content .= Assets::img('blank.gif', ['width' => 16]) . ' ';
 
             echo $content;
             ?>

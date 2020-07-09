@@ -88,25 +88,74 @@ class ActionMenu
     /**
      * Adds a link to the list of actions.
      *
-     * @param String $url        Link target
-     * @param String $label      Textual representation of the link
-     * @param mixed  $icon       Optional icon (as Icon object)
-     * @param array  $attributes Optional attributes to add to the <a> tag
+     * @param String|StudipLink  $url        Link target, eithe as string or
+     *                                       Stud.IP link. In the latter case,
+     *                                       all other parameters are ignored.
+     * @param String|array       $label      Textual representation of the link
+     * @param mixed              $icon       Optional icon (as Icon object)
+     * @param array              $attributes Optional attributes to add to the <a> tag
+     * @param mixed              $index      Optional index to access this link (remove for example) afterwards
+     * @param mixed              $before     Optional index to insert this link before the link with given index.
      * @return ActionMenu instance to allow chaining
      */
-    public function addLink($url, $label, Icon $icon = null, array $attributes = [])
+    public function addLink($url, $label = "", Icon $icon = null, array $attributes = [], $index = null, $before = null)
     {
         if ($this->checkCondition()) {
-            $this->actions[] = [
-                'type'       => 'link',
-                'link'       => $url,
-                'icon'       => $icon,
-                'label'      => $label,
-                'attributes' => $attributes,
-            ];
+            if ($url instanceof StudipLink) {
+                $action = [
+                    'type'       => 'link',
+                    'link'       => $url->link,
+                    'icon'       => $url->icon,
+                    'label'      => $url->label,
+                    'attributes' => $url->attributes
+                ];
+            } else {
+                $action = [
+                    'type'       => 'link',
+                    'link'       => $url,
+                    'icon'       => $icon,
+                    'label'      => $label,
+                    'attributes' => $attributes,
+                ];
+            }
+            $index = $index ?: md5($action['link'].json_encode($action['attributes']));
+            $action['index'] = $index;
+            //now insert it possibly at the desired position:
+            $before_key = null;
+            if ($before) {
+                $before_key = $this->getKeyForIndex($before);
+                if ($before_key !== null) {
+                    array_splice($this->actions, $before_key, 0, $action);
+                    return $this;
+                }
+            }
+            $current_key = $this->getKeyForIndex($index);
+            if ($current_key !== null) {
+                $this->actions[$current_key] = $action;
+                return $this;
+            }
+
+            $this->removeLink($index);
+            $this->actions[] = $action;
         }
 
         return $this;
+    }
+
+    /**
+     * Tries to remove the link with the given index and returns true on success (else false)
+     * @param $index : the index of the link. If the link had no special
+     *                 index it's md5($url.json_encode($ttributes)).
+     * @return bool : true if link was removed, false if index didn't exist
+     */
+    public function removeLink($index)
+    {
+        $key = $this->getKeyForIndex($index);
+        if ($key !== null) {
+            unset($this->actions[$key]);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -219,5 +268,15 @@ class ActionMenu
     public function __toString()
     {
         return $this->render();
+    }
+
+    protected function getKeyForIndex($index)
+    {
+        foreach ($this->actions as $key => $value) {
+            if ($value['index'] === $index) {
+                return $key;
+            }
+        }
+        return null;
     }
 }

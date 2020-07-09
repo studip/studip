@@ -725,8 +725,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         // Evaluations
         $evalDB = new EvaluationDB();
         $activeEvals = $evalDB->getEvaluationIDs($this->id, EVAL_STATE_ACTIVE);
-        // Literature
-        $lit_list = StudipLitList::GetListsByRange($this->id);
         // Free datafields
         $data_fields = DataFieldEntry::getDataFieldEntries($this->id, 'user');
         $homepageplugins = [];
@@ -823,13 +821,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Wo ich studiere'),
                 'visibility' => $homepage_visibility['studying'] ?: get_default_homepage_visibility($this->id),
                 'category'   => 'Studien-/Einrichtungsdaten',
-            ];
-        }
-        if ($lit_list && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['literature']) {
-            $homepage_elements['literature'] = [
-                'name'       => _('Literaturlisten'),
-                'visibility' => $homepage_visibility['literature'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Allgemeine Daten',
             ];
         }
         if ($this->info->lebenslauf && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['lebenslauf']) {

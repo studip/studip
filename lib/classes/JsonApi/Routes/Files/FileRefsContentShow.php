@@ -38,7 +38,8 @@ class FileRefsContentShow extends NonJsonApiController
     {
         //replace bad charakters to avoid problems when saving the file
         $fileName = \FileManager::cleanFileName($fileRef->name);
-        $pathFile = 'disk' == $fileRef->file->storage ? $fileRef->file->path : $fileRef->file->url;
+        $filetype = $fileRef->getFileType();
+        $pathFile = $filetype->getPath() ?: $filetype->getDownloadURL();
         $contentType = $fileRef->mime_type ?: get_mime_type($fileName);
 
         // check if linked file is obtainable
@@ -56,7 +57,7 @@ class FileRefsContentShow extends NonJsonApiController
             $filesize = $linkData['Content-Length'] ?: false;
         }
 
-        if ('disk' == $fileRef->file->storage) {
+        if ($filetype->getPath()) {
             $filesize = @filesize($pathFile);
             if (false === $filesize) {
                 throw new InternalServerError(
@@ -70,8 +71,8 @@ class FileRefsContentShow extends NonJsonApiController
             }
         }
 
-        if ('redirect' == $fileRef->file->url_access_type) {
-            return $response->withRedirect($fileRef->file->url);
+        if ('redirect' == $fileRef->file->metadata['access_type']) {
+            return $response->withRedirect($fileRef->file->metadata['url']);
         }
 
         $contentBlacklisted = function ($mime) {

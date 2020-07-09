@@ -19,7 +19,7 @@ if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turn
         $room_obj = Room::find($room_id);
         if ($link) {
             $output[
-                '<a href="' . $room_obj->getLink('show') . '" data-dialog="1">'
+                '<a href="' . $room_obj->getActionLink('show') . '" data-dialog="1">'
                 . htmlReady($room_obj->name) . '</a>'
                 ][] = $cycle['tostring_short'] .' ('. $count .'x)';
         } else {
@@ -57,7 +57,7 @@ if (is_array($output_dates)) foreach ($output_dates as $dates) :
         $room_obj = Room::find($dates[0]['resource_id']);
         if ($link) {
             $output[
-                '<a href="' . $room_obj->getLink('show') . '" data-dialog="1">'
+                '<a href="' . $room_obj->getActionLink('show') . '" data-dialog="1">'
                 . htmlReady($room_obj->name) . '</a>'
                 ][] = implode('<br>', shrink_dates($dates));
         } else {

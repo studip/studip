@@ -40,8 +40,6 @@
                 <?= Icon::create('files', 'info_alt')->asImg(32) ?>
             <% } else if(provider === 'forum') { %>
                 <?= Icon::create('forum', 'info_alt')->asImg(32) ?>
-            <% } else if(provider === 'literature') { %>
-                <?= Icon::create('literature', 'info_alt')->asImg(32) ?>
             <% } else if(provider === 'message') { %>
                 <?= Icon::create('mail', 'info_alt')->asImg(32) ?>
             <% } else if(provider === 'news') { %>

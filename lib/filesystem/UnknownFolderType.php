@@ -160,9 +160,14 @@ class UnknownFolderType implements FolderType
      * @param $uploadedfile
      * @param string $user_id
      */
-    public function validateUpload($uploadedfile, $user_id)
+    public function validateUpload(FileType $file, $user_id)
     {
 
+    }
+
+    public function addFile(FileType $file, $user_id = null)
+    {
+        return false;
     }
 
     /**
@@ -189,14 +194,6 @@ class UnknownFolderType implements FolderType
         return $this->folderdata->parentfolder
              ? $this->folderdata->parentfolder->getTypedFolder()
              : null;
-    }
-
-    /**
-     * @param array|ArrayAccess $file
-     */
-    public function createFile($file)
-    {
-
     }
 
     /**
@@ -270,5 +267,25 @@ class UnknownFolderType implements FolderType
     public function isFileWritable($fileref_or_id, $user_id)
     {
         return false;
+    }
+
+    public function getAdditionalColumns()
+    {
+
+    }
+
+    public function getContentForAdditionalColumn($column_index)
+    {
+
+    }
+
+    public function getAdditionalColumnOrderWeigh($column_index)
+    {
+
+    }
+
+    public function getAdditionalActionButtons()
+    {
+
     }
 }

@@ -647,7 +647,7 @@ class SingleDate
 
             $room_link_string = sprintf(
                 '<a href="%1$s" data-dialog="1">%2$s</a>',
-                $room->getLink(),
+                $room->getActionLink(),
                 $room->name
             );
 

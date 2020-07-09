@@ -30,16 +30,15 @@ class File extends SchemaProvider
             'name' => $resource['name'],
             'mime-type' => $resource['mime_type'],
             'filesize' => (int) $resource['size'],
-            'storage' => $resource['storage'],
 
             'mkdate' => date('c', $resource['mkdate']),
             'chdate' => date('c', $resource['chdate']),
         ];
 
-        if ($resource['storage'] === 'url') {
+        if ($resource['metadata']['url']) {
             $user = $this->getDiContainer()->get('studip-current-user');
             if (FilesAuthority::canUpdateFile($user, $resource)) {
-                $attributes['url'] = $resource['url'];
+                $attributes['url'] = $resource['metadata']['url'];
             }
         }
 

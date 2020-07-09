@@ -47,7 +47,7 @@ Template parameters:
                                                 )
                                             );
                                         } else {
-                                            $room_link = $room->getLink('booking_plan');
+                                            $room_link = $room->getActionLink('booking_plan');
                                         }
                                         ?>
                                         <tr>

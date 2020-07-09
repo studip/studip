@@ -17,7 +17,6 @@ return [
             'xml'       => 'Export',
             'ldap'      => 'LDAP-Nutzerverwaltung',
             'dom'       => true,
-            'yaz'       => 'Literaturverwaltung',
             'mysqlnd'   => 'Globale Suche',
             'mysqli'    => 'Globale Suche',
         ],

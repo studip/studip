@@ -373,12 +373,6 @@ class Institute_BasicdataController extends AuthenticatedController
                 $details[] = sprintf(_('%u Beteiligungen an Veranstaltungen gelöscht'), $i_courses);
             }
 
-            // delete literatur
-            $del_lit = StudipLitList::DeleteListsByRange($i_id);
-            if ($del_lit) {
-                $details[] = sprintf(_('%u Literaturlisten gelöscht.'), $del_lit['list']);
-            }
-
             // delete news-links
             StudipNews::DeleteNewsRanges($i_id);
 

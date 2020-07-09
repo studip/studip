@@ -64,7 +64,6 @@ class ModulesNotification extends Modules {
                 "schedule" => ['mes' => TRUE, 'name' => _("Ablaufplan")],
                 "participants" => ['mes' => TRUE, 'name' => _("Teilnehmende")],
                 "personal" => ['mes' => FALSE, 'name' => _("Personal")],
-                "literature" => ['mes' => TRUE, 'name' => _("Literatur")],
                 "wiki" => ['mes' => TRUE, 'name' => _("Wiki-Web")],
                 "scm" => ['mes' => TRUE, 'name' => _("Freie Informationsseite")],
                 "elearning_interface" => ['mes' => TRUE, 'name' => _("Lernmodule")]];
@@ -355,15 +354,6 @@ class ModulesNotification extends Modules {
                 }
                 $redirect = '&redirect_to=dispatch.php/course/dates#a';
                 $icon = Icon::create("date", "clickable");
-                break;
-            case 'literature' :
-                if ($r_data['neuelitlist'] > 1) {
-                    $text = sprintf(_("%s neue Literaturlisten angelegt"), $r_data['neuelitlist']);
-                } else if ($r_data['neuelitlist'] > 0) {
-                    $text = _("1 neue Literaturliste angelegt");
-                }
-                $redirect = '&redirect_to=dispatch.php/course/literatur';
-                $icon = Icon::create("literature", "clickable");
                 break;
             case 'elearning_interface' :
                 if (get_config('ELEARNING_INTERFACE_ENABLE')) {

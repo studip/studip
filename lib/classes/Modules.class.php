@@ -46,7 +46,6 @@ class Modules {
         'schedule' => ['id' => 2, 'const' => '', 'sem' => true, 'inst' => false],
         'participants' => ['id' => 3, 'const' => '', 'sem' => true, 'inst' => false],
         'personal' => ['id' => 4, 'const' => '', 'sem' => false, 'inst' => true],
-        'literature' => ['id' => 5, 'const' => 'LITERATURE_ENABLE', 'sem' => true, 'inst' => true],
         'wiki' => ['id' => 8, 'const' => 'WIKI_ENABLE', 'sem' => true, 'inst' => true],
         'scm' => ['id' => 12, 'const' => 'SCM_ENABLE', 'sem' => true, 'inst' => true],
         'elearning_interface' => ['id' => 13, 'const' => 'ELEARNING_INTERFACE_ENABLE', 'sem' => true, 'inst' => true],

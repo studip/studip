@@ -1,4 +1,5 @@
 <?php
+
 /**
  * files.php - controller class for related files
  *
@@ -12,8 +13,6 @@
  * @category    Stud.IP
  * @since       4.5
  */
-
-
 
 class Materialien_FilesController extends MVVController
 {
@@ -139,10 +138,10 @@ class Materialien_FilesController extends MVVController
 
             foreach($GLOBALS['MVV_LANGUAGES']['values'] as $key => $entry) {
                 if (Request::get('doc_url_'.$key)) {
-                    $fileref = $this->upload_fileurl($mvvfile_id, Request::get('doc_url_'.$key));
-                    if ($fileref) {
+                    $file = $this->upload_fileurl($mvvfile_id, Request::get('doc_url_'.$key));
+                    if ($file) {
                         $mvvfile_fileref = new MvvFileFileref([$mvvfile_id, $key]);
-                        $mvvfile_fileref->fileref_id = $fileref->id;
+                        $mvvfile_fileref->fileref_id = $file->getId();
                         $mvvfile_fileref->name = Request::get('doc_displayname_'.$key);
                         $mvvfile_fileref->store();
                     }
@@ -331,27 +330,20 @@ class Materialien_FilesController extends MVVController
         if (filter_var($url, FILTER_VALIDATE_URL) !== false && in_array($url_parts['scheme'], ['http', 'https','ftp'])) {
 
             if (in_array($url_parts['scheme'], ['http', 'https'])) {
-                $file = new File();
-                $file->url = $url;
-                $file->url_access_type = 'redirect';
-                $file->name = Request::get('name');
-                if (!$file->name) {
-                    $meta = FileManager::fetchURLMetadata($url);
-                    if ($meta['response_code'] === 200) {
-                        $file->name = $meta['filename'] ?: 'unknown';
-                        $file->mime_type = mb_strstr($meta['Content-Type'], ';', true);
-                    }
-                } else {
-                    $file->mime_type = get_mime_type($file->name);
-                }
+                $file = URLFile::create([
+                    'url' => $url,
+                    'name' => Request::get('name'),
+                    'access_type' => "redirect",
+                    ''
+                ]);
             } else {
                 PageLayout::postError(_('Die angegebene URL muss mit http(s) beginnen.'));
             }
 
             if ($file) {
-                $file['user_id'] = $GLOBALS['user']->id;
-                $file_ref = $stg_top_folder->createFile($file);
-                return $file_ref;
+                return $stg_top_folder->addFile($file);
+            } else {
+                $file->delete();
             }
         } else {
             PageLayout::postError(_('Die angegebene URL ist ungültig. Die URL muss mit http(s) beginnen.'));
@@ -378,45 +370,35 @@ class Materialien_FilesController extends MVVController
 
         $top_folder = $this->getTopFolder($mvvfile_id);
 
+        $user = User::findCurrent();
+
+        $file = StandardFile::create($_FILES['file']);
         $error = $top_folder->validateUpload($file, $GLOBALS['user']->id);
         if ($error != null) {
+            $file->delete();
             $this->response->set_status(400);
             $this->render_json(compact('error'));
             return;
         }
+        $file = $top_folder->addFile($file);
 
-        $user = User::findCurrent();
-
-        $file_object = new File();
-        $file_object->user_id = $user->id;
-        $file_object->mime_type = get_mime_type($output['name']);
-        $file_object->name = $output['name'];
-        $file_object->size = (int)$output['size'];
-        $file_object->storage = 'disk';
-        $file_object->author_name = $user->getFullName();
-
-        $file_ref = $top_folder->createFile($file);
-
-        if (!$file_ref instanceof FileRef) {
+        if (!$file instanceof FileType) {
             $error = _('Ein Systemfehler ist beim Upload aufgetreten.');
 
-            if ($file_ref instanceof MessageBox) {
-                $error .= ' ' . $file_ref->message;
-            }
             $this->response->set_status(400);
             $this->render_json(compact('error'));
             return;
         }
 
         $mvv_file_fileref = new MvvFileFileref([$mvvfile_id, $file_language]);
-        $mvv_file_fileref->fileref_id = $file_ref->id;
+        $mvv_file_fileref->fileref_id = $file->getId();
         $mvv_file_fileref->store();
 
-        $output['document_id'] = $file_ref->id;
+        $output['document_id'] = $file->getId();
 
         $output['icon'] = Icon::create(
             FileManager::getIconNameForMimeType(
-                $file_ref->file->mime_type
+                $file->getMimeType()
             ),
             'clickable'
         )->asImg(['class' => "text-bottom"]);

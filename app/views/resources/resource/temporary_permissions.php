@@ -1,12 +1,12 @@
 <form class="default" id="resource-temporary-permissions" method="post"
       action="<?= ($single_user_mode
-                 ? $resource->getLink(
+                 ? $resource->getActionLink(
                      'temporary_permissions',
                      [
                          'user_id' => $user->id
                      ]
                  )
-                 : $resource->getLink('temporary_permissions')
+                 : $resource->getActionLink('temporary_permissions')
               ) ?>"
       <?= (Request::isDialog()
          ? (

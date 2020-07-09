@@ -61,6 +61,8 @@ $no_access = true;
 //download from course or institute or document is a message attachement
 if (in_array($type, [0, 6, 7])) {
     if ($file_ref = FileRef::find($file_id)) {
+        $class = $file_ref->file['filetype'];
+        $file = new $class($file_ref);
         $folder = $file_ref->folder->getTypedFolder();
         $no_access = !$folder->isFileDownloadable($file_ref, $GLOBALS['user']->id);
     }
@@ -110,15 +112,24 @@ switch ($type) {
         $content_type = get_mime_type($file_name);
     break;
     default:
-        $path_file = $file_ref->file->storage == 'disk' ? $file_ref->file->path : $file_ref->file->url;
+        if ($file instanceof LibraryFile) {
+            //Get the file type:
+            if ($file->hasFileAttached()) {
+                $path_file = $file->getPath();
+            }
+        } else {
+            $path_file = is_a($file, "URLFile")
+                       ? $file_ref->file->metadata['url']
+                       : $file_ref->file->path;
+        }
         $content_type = $file_ref->mime_type ?: get_mime_type($file_name);
     break;
 }
 
 
 // check if linked file is obtainable
-if (isset($file_ref) && $file_ref->file->url_access_type == 'proxy') {
-    $link_data = FileManager::fetchURLMetadata($file_ref->file->url);
+if (isset($file_ref) && $file_ref->file->metadata['access_type'] == 'proxy') {
+    $link_data = FileManager::fetchURLMetadata($file_ref->file->metadata['url']);
     if ($link_data['response_code'] != 200) {
         throw new Exception(_("Diese Datei wird von einem externen Server geladen und ist dort momentan nicht erreichbar!"));
     }
@@ -127,8 +138,8 @@ if (isset($file_ref) && $file_ref->file->url_access_type == 'proxy') {
     $filesize = $link_data['Content-Length'];
     if (!$filesize) $filesize = false;
 }
-if (isset($file_ref) && $file_ref->file->storage == 'disk') {
-    $filesize = @filesize($path_file);
+if (isset($file)) {
+    $filesize = $file->getSize();
     if ($filesize === false) {
         throw new Exception(_('Fehler beim Laden der Inhalte der Datei'));
     }
@@ -141,8 +152,14 @@ while (ob_get_level()) {
     ob_end_clean();
 }
 
-if (isset($file_ref) && $file_ref->file->url_access_type == 'redirect') {
-    header('Location: ' . $file_ref->file->url);
+if ($file instanceof LibraryFile) {
+    if (!$file->hasFileAttached()) {
+        header('Location: ' . $file->library_document->csl_data['URL']);
+        die();
+    }
+}
+if (isset($file_ref) && $file_ref->file->metadata['access_type'] == 'redirect') {
+    header('Location: ' . $file_ref->file->metadata['url']);
     die();
 }
 
@@ -165,7 +182,7 @@ if (Request::int('force_download') || $content_type == "application/octet-stream
 }
 
 $start = $end = null;
-if ($filesize && $file_ref->file->storage == 'disk') {
+if ($filesize && $file_ref->file->filetype !== 'URLFile') {
     header("Accept-Ranges: bytes");
     $start = 0;
     $end = $filesize - 1;

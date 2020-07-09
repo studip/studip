@@ -1,6 +1,7 @@
 <form action="<?= $controller->link_for('file/edit_license', $origin_folder_id) ?>"
       method="post" class="default"
       <?= $origin_folder_id == 'bulk' ? 'data-dialog="reload-on-close"' : 'data-dialog' ?>>
+<input type="hidden" name="re_location" value="<?= htmlReady($re_location) ?>">
 <? foreach ($file_refs as $file_ref) : ?>
     <input type="hidden" name="file_refs[]" value="<?= htmlReady($file_ref->id) ?>">
 <? endforeach ?>

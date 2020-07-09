@@ -49,65 +49,65 @@ class Resource extends SimpleORMap implements StudipItem
      * same permission is queried a lot of times.
      */
     protected static $permission_cache;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'resources';
-        
+
         $config['belongs_to']['category'] = [
             'class_name'  => 'ResourceCategory',
             'foreign_key' => 'category_id',
             'assoc_func'  => 'find'
         ];
-        
+
         $config['has_many']['properties'] = [
             'class_name'        => 'ResourceProperty',
             'assoc_foreign_key' => 'resource_id',
             'on_delete'         => 'delete',
             'on_store'          => 'store'
         ];
-        
+
         $config['has_many']['permissions'] = [
             'class_name'        => 'ResourcePermission',
             'assoc_foreign_key' => 'resource_id',
             'on_delete'         => 'delete',
             'on_store'          => 'store'
         ];
-        
+
         $config['has_many']['requests'] = [
             'class_name'        => 'ResourceRequest',
             'assoc_foreign_key' => 'resource_id',
             'on_delete'         => 'delete',
             'on_store'          => 'store'
         ];
-        
+
         $config['has_many']['bookings'] = [
             'class_name'        => 'ResourceBooking',
             'assoc_foreign_key' => 'resource_id',
             'on_delete'         => 'delete',
             'on_store'          => 'store'
         ];
-        
+
         $config['has_many']['children'] = [
             'class_name' => 'Resource',
             'assoc_func' => 'findChildren',
             'on_delete'  => 'delete',
             'on_store'   => 'store'
         ];
-        
+
         $config['belongs_to']['parent'] = [
             'class_name'  => 'Resource',
             'foreign_key' => 'parent_id'
         ];
-        
+
         $config['i18n_fields']['description'] = true;
-        
+
         $config['additional_fields']['class_name']        = ['category', 'class_name'];
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * Returns the children of a resource.
      * The children are converted to an instance of the derived class,
@@ -119,17 +119,17 @@ class Resource extends SimpleORMap implements StudipItem
             'parent_id = :parent_id ORDER BY name ASC',
             ['parent_id' => $resource_id]
         );
-        
+
         if (!$children) {
             return [];
         }
-        
+
         foreach ($children as &$child) {
             $child = $child->getDerivedClassInstance();
         }
         return $children;
     }
-    
+
     /**
      * Returns a translation of the resource class name.
      * The translated name can be singular or plural, depending
@@ -151,7 +151,7 @@ class Resource extends SimpleORMap implements StudipItem
             $item_count
         );
     }
-    
+
     /**
      * Retrieves all resources which don't have a parent resource assigned.
      * Such resources are called root resources since they are roots of
@@ -164,7 +164,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return self::findBySql("parent_id = '' ORDER BY name");
     }
-    
+
     /**
      * A method for overloaded classes so that they can define properties
      * that are required for that resource class.
@@ -182,8 +182,8 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return [];
     }
-    
-    
+
+
     /**
      * Returns the part of the URL for getLink and getURL which will be
      * placed inside the calls to URLHelper::getLink and URLHelper::getURL
@@ -204,7 +204,7 @@ class Resource extends SimpleORMap implements StudipItem
                 _('Zur Erstellung der URL fehlt eine Ressourcen-ID!')
             );
         }
-        
+
         switch ($action) {
             case 'show':
                 return 'dispatch.php/resources/resource/index/' . $id;
@@ -242,7 +242,7 @@ class Resource extends SimpleORMap implements StudipItem
                 return 'dispatch.php/resources/resource/show/' . $id;
         }
     }
-    
+
     /**
      * Returns the appropriate link for the resource action that shall be
      * executed on a resource.
@@ -269,7 +269,7 @@ class Resource extends SimpleORMap implements StudipItem
             $link_parameters
         );
     }
-    
+
     /**
      * Returns the appropriate URL for the resource action that shall be
      * executed on a resource.
@@ -296,7 +296,7 @@ class Resource extends SimpleORMap implements StudipItem
             $url_parameters
         );
     }
-    
+
     /**
      * The SORM store method is overloaded to assure that the right level
      * attribute is stored.
@@ -311,29 +311,29 @@ class Resource extends SimpleORMap implements StudipItem
         } else {
             $this->level = 0;
         }
-        
+
         //Store the folder, if it hasn't been stored before:
-        
+
         $folder = $this->getFolder();
         if ($folder) {
             $folder->store();
         }
-        
+
         return parent::store();
     }
-    
+
     public function delete()
     {
         //Delete the folder:
-        
+
         $folder = $this->getFolder();
         if ($folder) {
             $folder->delete();
         }
-        
+
         return parent::delete();
     }
-    
+
     public function cbValidate()
     {
         if (!$this->category_id) {
@@ -346,19 +346,19 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return true;
     }
-    
+
     public function __toString()
     {
         return $this->getFullName();
     }
-    
+
     public function getFolder()
     {
         $folder = Folder::findOneByRange_id($this->id);
-        
+
         if ($folder) {
             $folder = $folder->getTypedFolder();
-            
+
             if ($folder instanceof ResourceFolder) {
                 //Only return ResourceFolder instances.
                 return $folder;
@@ -372,31 +372,31 @@ class Resource extends SimpleORMap implements StudipItem
         //In all other cases return null:
         return null;
     }
-    
+
     public function setFolder(ResourceFolder $folder)
     {
         if ($this->isNew()) {
             $this->store();
         }
-        
+
         $folder->range_id   = $this->id;
         $folder->range_type = 'Resource';
-        
+
         return $folder->store();
     }
-    
+
     public function createFolder()
     {
         if ($this->isNew()) {
             $this->id = $this->getNewId();
         }
-        
+
         $folder = Folder::createTopFolder(
             $this->id,
             'Resource',
             'ResourceFolder'
         );
-        
+
         if ($folder) {
             $folder = $folder->getTypedFolder();
             if ($folder) {
@@ -404,10 +404,10 @@ class Resource extends SimpleORMap implements StudipItem
                 return $folder;
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Returns a list of property names that are required
      * for the resource class.
@@ -418,8 +418,8 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return [];
     }
-    
-    
+
+
     /**
      * This is a simplified version of the createBooking method.
      * @param User $user
@@ -460,7 +460,7 @@ class Resource extends SimpleORMap implements StudipItem
             $booking_type
         );
     }
-    
+
     /**
      * Creates bookings from a request.
      * @param User $user
@@ -496,7 +496,7 @@ class Resource extends SimpleORMap implements StudipItem
     )
     {
         $course_dates = $request->getAffectedDates();
-        
+
         $bookings = [];
         if ($course_dates) {
             foreach ($course_dates as $course_date) {
@@ -521,7 +521,7 @@ class Resource extends SimpleORMap implements StudipItem
                     $internal_comment,
                     $booking_type
                 );
-                
+
                 if ($booking instanceof ResourceBooking) {
                     $bookings[] = $booking;
                 }
@@ -536,7 +536,7 @@ class Resource extends SimpleORMap implements StudipItem
                     : $appointment->appointment->date
                 );
                 $end   = $appointment->appointment->end_time;
-                
+
                 $booking = $this->createBooking(
                     $user,
                     $appointment->appointment_id,
@@ -554,7 +554,7 @@ class Resource extends SimpleORMap implements StudipItem
                     $internal_comment,
                     $booking_type
                 );
-                
+
                 if ($booking instanceof ResourceBooking) {
                     $bookings[] = $booking;
                 }
@@ -583,21 +583,21 @@ class Resource extends SimpleORMap implements StudipItem
                 $internal_comment,
                 $booking_type
             );
-            
+
             if ($booking instanceof ResourceBooking) {
                 $bookings[] = $booking;
             }
         }
-        
+
         if (!$request->closeRequest($notify_lecturers)) {
             throw new ResourceRequestException(
                 _('Die Anfrage konnte nicht als bearbeitet markiert werden!')
             );
         }
-        
+
         return $bookings;
     }
-    
+
     /**
      * A factory method for creating a ResourceBooking object
      * for this resource.
@@ -678,10 +678,10 @@ class Resource extends SimpleORMap implements StudipItem
                 _('Es wurden keine Zeitbereiche für die Buchung angegeben!')
             );
         }
-        
+
         $booking_begin = null;
         $booking_end   = null;
-        
+
         //Check if each entry of the $time_intervals array is in the right
         //format and if it contains either timestamps or DateTime objects.
         //After that the time ranges are checked for validity (begin > end)
@@ -693,13 +693,13 @@ class Resource extends SimpleORMap implements StudipItem
         foreach ($time_ranges as $index => $time_range) {
             $begin = $time_range['begin'];
             $end   = $time_range['end'];
-            
+
             if ($begin === null || $end === null) {
                 throw new InvalidArgumentException(
                     _('Mindestens eines der Zeitintervalls ist im falschen Format!')
                 );
             }
-            
+
             if (!($begin instanceof DateTime)) {
                 $b = new DateTime();
                 $b->setTimestamp($begin);
@@ -710,20 +710,20 @@ class Resource extends SimpleORMap implements StudipItem
                 $e->setTimestamp($end);
                 $end = $e;
             }
-            
+
             $real_begin = clone $begin;
             if ($preparation_time > 0) {
                 $real_begin = $real_begin->sub(
                     new DateInterval('PT' . $preparation_time . 'S')
                 );
             }
-            
+
             if ($real_begin > $end) {
                 throw new InvalidArgumentException(
                     _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
                 );
             }
-            
+
             $duration     = $end->getTimestamp() - $begin->getTimestamp();
             $min_duration = Config::get()->RESOURCES_MIN_BOOKING_TIME;
             if ($duration < ($min_duration * 60)) {
@@ -734,12 +734,12 @@ class Resource extends SimpleORMap implements StudipItem
                     )
                 );
             }
-            
+
             if ($index == array_keys($time_ranges)[0]) {
                 $booking_begin = clone $begin;
                 $booking_end   = clone $end;
             }
-            
+
             if ($repetition_interval instanceof DateInterval) {
                 //We must calculate the end of the repetition interval
                 //by using $repetition_amount or $repetition_end_date.
@@ -762,9 +762,9 @@ class Resource extends SimpleORMap implements StudipItem
                     }
                     $repetition_end = $repetition;
                 }
-                
+
                 $current_date = clone $real_begin;
-                
+
                 //Check for each repetition if the resource is available
                 //or locked:
                 while ($current_date <= $repetition_end) {
@@ -775,7 +775,7 @@ class Resource extends SimpleORMap implements StudipItem
                         intval($end->format('i')),
                         intval($end->format('s'))
                     );
-                    
+
                     if ($current_begin < $current_end) {
                         $affected_reservations = array_merge(
                             ResourceBooking::findByResourceAndTimeRanges(
@@ -791,7 +791,7 @@ class Resource extends SimpleORMap implements StudipItem
                             $affected_reservations
                         );
                     }
-                    
+
                     $current_date = $current_date->add($repetition_interval);
                 }
             } else {
@@ -810,7 +810,7 @@ class Resource extends SimpleORMap implements StudipItem
                 );
             }
         }
-        
+
         $booking                  = new ResourceBooking();
         $booking->resource_id     = $this->id;
         $booking->booking_user_id = $user->id;
@@ -818,7 +818,7 @@ class Resource extends SimpleORMap implements StudipItem
         $booking->description     = $description;
         $booking->begin           = $booking_begin->getTimestamp();
         $booking->end             = $booking_end->getTimestamp();
-        
+
         if ($repetition_interval instanceof DateInterval) {
             if ($repetition_end_date) {
                 if ($repetition_end_date instanceof DateTime) {
@@ -829,10 +829,10 @@ class Resource extends SimpleORMap implements StudipItem
             } elseif ($repetition_amount) {
                 $booking->repeat_quantity = $repetition_amount;
             }
-            
+
             $booking->repetition_interval = $repetition_interval->format('P%YY%MM%DD');
         }
-        
+
         if ($preparation_time) {
             $booking->preparation_time = $preparation_time;
         } else {
@@ -840,9 +840,9 @@ class Resource extends SimpleORMap implements StudipItem
         }
         $booking->internal_comment = $internal_comment;
         $booking->booking_type     = (int)$booking_type;
-        
+
         //We can finally store the new booking.
-        
+
         try {
             $booking->store($force_booking);
         } catch (ResourceBookingOverlapException $e) {
@@ -890,10 +890,10 @@ class Resource extends SimpleORMap implements StudipItem
                 );
             }
         }
-        
+
         return $booking;
     }
-    
+
     /**
      * This method creates a simple request for this resource.
      * A simple request is not bound to a date, metadate
@@ -931,13 +931,13 @@ class Resource extends SimpleORMap implements StudipItem
     {
         //All users are permitted to create a request,
         //if the resource is requestable.
-        
+
         if (!$this->requestable) {
             throw new InvalidArgumentException(
                 _('Diese Ressource kann nicht angefragt werden!')
             );
         }
-        
+
         if ($begin > $end) {
             throw new InvalidArgumentException(
                 _('Der Startzeitpunkt darf nicht hinter dem Endzeitpunkt liegen!')
@@ -947,7 +947,7 @@ class Resource extends SimpleORMap implements StudipItem
                 _('Startzeitpunkt und Endzeitpunkt sind identisch!')
             );
         }
-        
+
         if (!$this->isAvailable($begin, $end)) {
             throw new ResourceUnavailableException(
                 sprintf(
@@ -958,12 +958,12 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         $request              = new ResourceRequest();
         $request->resource_id = $this->id;
         $request->category_id = $this->category_id;
         $request->user_id     = $user->id;
-        
+
         $request->begin            = $begin->getTimestamp();
         $request->end              = $end->getTimestamp();
         $request->preparation_time = (
@@ -971,10 +971,10 @@ class Resource extends SimpleORMap implements StudipItem
             ? $preparation_time
             : 0
         );
-        
+
         $request->closed  = '0';
         $request->comment = $comment;
-        
+
         if (!$request->store()) {
             throw new ResourceRequestException(
                 sprintf(
@@ -983,11 +983,11 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         return $request;
     }
-    
-    
+
+
     /**
      * This method creates a resource request for this resource.
      *
@@ -1035,20 +1035,20 @@ class Resource extends SimpleORMap implements StudipItem
                 _('Es wurde keine ID eines Objektes angegeben, welches Zeiträume für eine Ressourcenanfrage liefern kann!')
             );
         }
-        
+
         if (!$this->requestable) {
             throw new InvalidArgumentException(
                 _('Diese Ressource kann nicht angefragt werden!')
             );
         }
-        
+
         //We must get the date ranges by looking at $date_range_id
         //and the object which lies behind that ID.
-        
+
         if (!is_array($date_range_ids)) {
             $date_range_ids = [$date_range_ids];
         }
-        
+
         $time_ranges = [];
         foreach ($date_range_ids as $date_range_id) {
             $time_ranges = array_merge(
@@ -1058,7 +1058,7 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         if (!$time_ranges) {
             //We couldn't find any time range.
             throw new ResourceNoTimeRangeException(
@@ -1068,10 +1068,10 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         //Default resource request handling:
         //Check if the resource is available in all requested time ranges.
-        
+
         foreach ($time_ranges as $time_range) {
             if (!$this->isAvailable($time_range[0], $time_range[1])) {
                 throw new ResourceUnavailableException(
@@ -1084,14 +1084,14 @@ class Resource extends SimpleORMap implements StudipItem
                 );
             }
         }
-        
+
         //We must check, if all the properties exist:
         if ($properties and is_array($properties)) {
             foreach ($properties as $property_name => $property_state) {
                 $property_object = ResourcePropertyDefinition::findByName(
                     $property_name
                 );
-                
+
                 if (!$property_object) {
                     throw new ResourcePropertyException(
                         sprintf(
@@ -1107,7 +1107,7 @@ class Resource extends SimpleORMap implements StudipItem
                         )
                     );
                 }
-                
+
                 //$property_object is an array of ResourcePropertyDefinition objects:
                 $property_data[] = [
                     'object' => $property_object[0],
@@ -1115,7 +1115,7 @@ class Resource extends SimpleORMap implements StudipItem
                 ];
             }
         }
-        
+
         $request                   = new ResourceRequest();
         $request->resource_id      = $this->id;
         $request->category_id      = $this->category_id;
@@ -1127,7 +1127,7 @@ class Resource extends SimpleORMap implements StudipItem
             : 0
         );
         $request->closed           = '0';
-        
+
         //Resolve the date range ID and set the
         //appropriate field in the request object:
         if (count($date_range_ids) <= 1) {
@@ -1145,7 +1145,7 @@ class Resource extends SimpleORMap implements StudipItem
                     }
                 }
             }
-            
+
             if (!$request->store()) {
                 throw new ResourceRequestException(
                     sprintf(
@@ -1163,7 +1163,7 @@ class Resource extends SimpleORMap implements StudipItem
                     )
                 );
             }
-            
+
             //More than one entry:
             //We must use ResourceBookingAppointment objects.
             foreach ($date_range_ids as $date_range_id) {
@@ -1182,7 +1182,7 @@ class Resource extends SimpleORMap implements StudipItem
                         }
                     }
                 }
-                
+
                 if ($appointment_id) {
                     $rra                 = new ResourceRequestAppointment();
                     $rra->request_id     = $request->id;
@@ -1195,7 +1195,7 @@ class Resource extends SimpleORMap implements StudipItem
                 }
             }
         }
-        
+
         //The request has been created: Now we need to link the properties:
         if(!empty($property_data)) {
             foreach ($property_data as $property) {
@@ -1216,7 +1216,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $request;
     }
-    
+
     /**
      * Creates a lock booking for this resource.
      *
@@ -1249,7 +1249,7 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         if ($this->isLocked($begin, $end)) {
             throw new ResourceUnavailableException(
                 sprintf(
@@ -1260,7 +1260,7 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         $lock                   = new ResourceBooking();
         $lock->booking_type     = '2';
         $lock->range_id         = $user->id;
@@ -1268,7 +1268,7 @@ class Resource extends SimpleORMap implements StudipItem
         $lock->begin            = $begin->getTimestamp();
         $lock->end              = $end->getTimestamp();
         $lock->internal_comment = $internal_comment;
-        
+
         if (!$lock->store()) {
             throw new ResourceBookingException(
                 sprintf(
@@ -1278,10 +1278,10 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         return $lock;
     }
-    
+
     /**
      * Retrieves the properties grouped by their property groups
      * and in the order specified in that group.
@@ -1339,11 +1339,11 @@ class Resource extends SimpleORMap implements StudipItem
                 ]
             );
         }
-        
+
         if (!$properties) {
             return [];
         }
-        
+
         $property_groups = [];
         foreach ($properties as $property) {
             if (!$property->state) {
@@ -1358,11 +1358,11 @@ class Resource extends SimpleORMap implements StudipItem
             }
             $property_groups[$group_name][] = $property;
         }
-        
+
         return $property_groups;
     }
-    
-    
+
+
     /**
      * Determines wheter this resource has a property
      * with the specified name.
@@ -1377,28 +1377,28 @@ class Resource extends SimpleORMap implements StudipItem
         if (!$name) {
             return false;
         }
-        
+
         $db = DBManager::get();
-        
+
         $exists_stmt = $db->prepare(
             "SELECT TRUE FROM resource_properties
             INNER JOIN resource_property_definitions rpd
             ON resource_properties.property_id = rpd.property_id
             WHERE resource_properties.resource_id = :resource_id
                 AND rpd.name = :name");
-        
+
         $exists_stmt->execute(
             [
                 'resource_id' => $this->id,
                 'name'        => $name
             ]
         );
-        
+
         $exists = $exists_stmt->fetchColumn(0);
-        
+
         return (bool)$exists;
     }
-    
+
     /**
      * Retrieves a ResourceProperty object for a property of this resource
      * which has the specified name. If the property has not been set for this
@@ -1420,20 +1420,20 @@ class Resource extends SimpleORMap implements StudipItem
             //A property with the name $name does not exist for this
             //resource object. If it is a defined property
             //we can still try to create it:
-            
+
             if ($this->category->hasProperty($name)) {
                 $property = $this->category->createDefinedResourceProperty(
                     $this,
                     $name
                 );
-                
+
                 $property->store();
                 return $property;
             } else {
                 return null;
             }
         }
-        
+
         return ResourceProperty::findOneBySql(
             "INNER JOIN resource_property_definitions rpd
                 ON resource_properties.property_id = rpd.property_id
@@ -1445,7 +1445,7 @@ class Resource extends SimpleORMap implements StudipItem
             ]
         );
     }
-    
+
     /**
      * Returns the state of the property specified by $name.
      * If the property has not been set for this resource, but is defined
@@ -1463,46 +1463,46 @@ class Resource extends SimpleORMap implements StudipItem
             //A property with the name $name does not exist for this
             //resource object. If it is a defined property
             //we can still try to create it:
-            
+
             if ($this->category->hasProperty($name)) {
                 $property = $this->category->createDefinedResourceProperty(
                     $this,
                     $name,
                     ''
                 );
-                
+
                 $property->store();
                 return $property->state;
             } else {
                 return null;
             }
         }
-        
+
         $db = DBManager::get();
-        
+
         $value_stmt = $db->prepare(
             "SELECT resource_properties.state FROM resource_properties
             INNER JOIN resource_property_definitions rpd
                 ON resource_properties.property_id = rpd.property_id
             WHERE resource_properties.resource_id = :resource_id
                 AND rpd.name = :name");
-        
+
         $value_stmt->execute(
             [
                 'resource_id' => $this->id,
                 'name'        => $name
             ]
         );
-        
+
         $value = $value_stmt->fetchColumn(0);
-        
+
         if (!$value) {
             return null;
         }
-        
+
         return $value;
     }
-    
+
     /**
      * Retrieves an object by the state of a property of this resource,
      * specified by the property's name.
@@ -1520,9 +1520,9 @@ class Resource extends SimpleORMap implements StudipItem
     {
         //Get the property state first:
         $property = $this->getPropertyObject($name);
-        
+
         //Now we return the object which is referenced by the property's state:
-        
+
         if ($property) {
             switch ($property->definition->type) {
                 case 'user':
@@ -1539,7 +1539,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return null;
     }
-    
+
     /**
      * Sets a specified property of this resource to the specified state.
      * If the property has not been set for this resource, but is defined
@@ -1561,9 +1561,9 @@ class Resource extends SimpleORMap implements StudipItem
                 return false;
             }
         }
-        
+
         //Get the minimum permission level required for modifying the property:
-        
+
         if (!$this->userHasPermission($user, 'admin')) {
             throw new AccessDeniedException(
                 sprintf(
@@ -1580,12 +1580,12 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         if (!$this->propertyExists($name)) {
             //A property with the name $name does not exist for this
             //resource object. If it is a defined property
             //we can still try to create it:
-            
+
             if ($this->category->hasProperty($name)) {
                 $property = $this->category->createDefinedResourceProperty(
                     $this,
@@ -1597,9 +1597,9 @@ class Resource extends SimpleORMap implements StudipItem
                 return false;
             }
         }
-        
+
         $property = $this->getPropertyObject($name);
-        
+
         if ($property) {
             $property->state = $state;
             if ($property->isDirty()) {
@@ -1608,7 +1608,7 @@ class Resource extends SimpleORMap implements StudipItem
             return true;
         }
     }
-    
+
     /**
      * Sets the properties (specified by their names) to the specified values.
      *
@@ -1632,7 +1632,7 @@ class Resource extends SimpleORMap implements StudipItem
     public function setPropertiesByName(array $properties, User $user)
     {
         $failed_properties = [];
-        
+
         if (!($user instanceof User)) {
             $user = User::findCurrent();
             if (!$user) {
@@ -1643,7 +1643,7 @@ class Resource extends SimpleORMap implements StudipItem
                 return $failed_properties;
             }
         }
-        
+
         foreach ($properties as $name => $state) {
             try {
                 $this->setProperty($name, $state, $user);
@@ -1651,10 +1651,10 @@ class Resource extends SimpleORMap implements StudipItem
                 $this->failed_properties[$name] = $e->getMessage();
             }
         }
-        
+
         return $failed_properties;
     }
-    
+
     /**
      * Sets the properties (specified by their IDs) to the specified values.
      *
@@ -1678,7 +1678,7 @@ class Resource extends SimpleORMap implements StudipItem
     public function setPropertiesById(array $properties, User $user = null)
     {
         $failed_properties = [];
-        
+
         if (!($user instanceof User)) {
             $user = User::findCurrent();
             if (!$user) {
@@ -1689,7 +1689,7 @@ class Resource extends SimpleORMap implements StudipItem
                 return $failed_properties;
             }
         }
-        
+
         foreach ($properties as $id => $state) {
             $property = ResourcePropertyDefinition::find($id);
             if (!$property) {
@@ -1704,10 +1704,10 @@ class Resource extends SimpleORMap implements StudipItem
                 $failed_properties[$id] = $e->getMessage();
             }
         }
-        
+
         return $failed_properties;
     }
-    
+
     /**
      * Determines if the specified user has sufficient permissions to edit
      * the property specified by its name.
@@ -1722,7 +1722,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return $this->category->userHasPropertyWritePermissions($name, $user, $this);
     }
-    
+
     /**
      * Sets the state of a property by its definition_id rather than its name.
      *
@@ -1739,19 +1739,19 @@ class Resource extends SimpleORMap implements StudipItem
         if (!$property_definition_id and !$state) {
             return false;
         }
-        
+
         //Get property definition:
         $definition = ResourcePropertyDefinition::find($property_definition_id);
         if (!$definition) {
             return false;
         }
-        
+
         //Check if the state matches the property definition's rules:
         $definition->validateState($state);
-        
+
         //Check if the property for this resource already exists.
         //If so, update it. Otherwise create it.
-        
+
         $property = ResourceProperty::findOneBySql(
             '(property_id = :property_id) AND (resource_id = :resource_id)',
             [
@@ -1759,17 +1759,17 @@ class Resource extends SimpleORMap implements StudipItem
                 'resource_id' => $this->id
             ]
         );
-        
+
         if (!$property) {
             $property              = new ResourceProperty();
             $property->property_id = $definition->id;
             $property->resource_id = $this->id;
         }
-        
+
         $property->state = $state;
         return $property->store();
     }
-    
+
     /**
      * Sets the property state by specifying an SimpleORMap object.
      * This method is meant for resource properties of type user,
@@ -1784,13 +1784,13 @@ class Resource extends SimpleORMap implements StudipItem
     {
         //Get the property state first:
         $property = $this->getPropertyObject($name);
-        
+
         if (!$property) {
             return false;
         }
-        
+
         //Now we return the object which is referenced by the property's state:
-        
+
         switch ($property->definition->type) {
             case 'user':
                 if (!($object instanceof User)) {
@@ -1816,14 +1816,14 @@ class Resource extends SimpleORMap implements StudipItem
             default:
             break;
         }
-        
+
         //When no exception is thrown above we can set the object's ID
         //as the property's state:
         $property->state = $object->id;
-        
+
         return $property->store();
     }
-    
+
     /**
      * Deletes a property for a resource.
      *
@@ -1836,7 +1836,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         //Get the user object and the minimum permission level
         //required for modifying the property:
-        
+
         if (!$this->userHasPermission($user, 'admin')) {
             throw new AccessDeniedException(
                 sprintf(
@@ -1853,7 +1853,7 @@ class Resource extends SimpleORMap implements StudipItem
                 )
             );
         }
-        
+
         return ResourceProperty::deleteBySql(
             "INNER JOIN resource_property_definitions rpd
             ON resource_properties.property_id = rpd.property_id
@@ -1865,7 +1865,7 @@ class Resource extends SimpleORMap implements StudipItem
             ]
         );
     }
-    
+
     /**
      * Returns the path for the resource's image.
      * If the resource has no image the path for a general
@@ -1881,7 +1881,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return '';
     }
-    
+
     /**
      * Returns the default picture for the resource class.
      *
@@ -1896,7 +1896,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return $this->getIcon()->asImagePath();
     }
-    
+
     /**
      * Returns the Icon for the resource class.
      *
@@ -1909,7 +1909,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return Icon::create('resources', $role);
     }
-    
+
     /**
      * Returns all properties in a two-dimensional array with the following
      * property data inside of the second dimension:
@@ -1930,7 +1930,7 @@ class Resource extends SimpleORMap implements StudipItem
     public function getPropertyArray($only_requestable_properties = false)
     {
         $property_array = [];
-        
+
         if ($this->properties) {
             foreach ($this->properties as $property) {
                 if ($only_requestable_properties) {
@@ -1938,7 +1938,7 @@ class Resource extends SimpleORMap implements StudipItem
                         $property->name,
                         $this->category_id
                     );
-                    
+
                     if ($category_property) {
                         if ($category_property->requestable) {
                             $property_array[] = [
@@ -1963,7 +1963,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $property_array;
     }
-    
+
     /**
      * Shortcut method for ResourceBooking::countByResourceAndTimeRanges.
      * Determines whether normal resource bookings exist
@@ -1997,7 +1997,7 @@ class Resource extends SimpleORMap implements StudipItem
                 $excluded_booking_ids
             ) > 0;
     }
-    
+
     /**
      * Shortcut method for ResourceBooking::countByResourceAndTimeRanges.
      * Determines whether resource reservations exist
@@ -2034,7 +2034,7 @@ class Resource extends SimpleORMap implements StudipItem
                 $excluded_reservation_ids
             ) > 0;
     }
-    
+
     /**
      * Shortcut method for ResourceBooking::countByResourceAndTimeRanges.
      * Determines whether resource locks exist
@@ -2071,7 +2071,7 @@ class Resource extends SimpleORMap implements StudipItem
                 $excluded_lock_ids
             ) > 0;
     }
-    
+
     /**
      * Determines, if the resource is available (not assigned or locked)
      * in a specified time range.
@@ -2103,7 +2103,7 @@ class Resource extends SimpleORMap implements StudipItem
                 $excluded_booking_ids
             ) == 0;
     }
-    
+
     /**
      * Determines, if the resource is available (not assigned or locked)
      * in the time ranges specified by a resource request.
@@ -2126,19 +2126,19 @@ class Resource extends SimpleORMap implements StudipItem
             $end   = new DateTime();
             $begin->setTimestamp($time_interval['begin']);
             $end->setTimestamp($time_interval['end']);
-            
+
             if (!$this->isAvailable($begin, $end)) {
                 //The resource is not available in the time interval.
                 //We can stop here and return false.
                 return false;
             }
-            
+
             //If code execution reaches this point the resource is
             //available in all time intervals of the resource request:
             return true;
         }
     }
-    
+
     /**
      * Returns the full (localised) name of the resource.
      *
@@ -2151,7 +2151,7 @@ class Resource extends SimpleORMap implements StudipItem
             $this->name
         );
     }
-    
+
     /**
      * Sets the permission for one user for this resource.
      *
@@ -2167,7 +2167,7 @@ class Resource extends SimpleORMap implements StudipItem
         if (!in_array($perm, ['user', 'autor', 'tutor', 'admin'])) {
             return false;
         }
-        
+
         $perm_object = ResourcePermission::findOneBySql(
             '(user_id = :user_id) AND (resource_id = :resource_id)',
             [
@@ -2193,7 +2193,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $stored;
     }
-    
+
     /**
      * Deletes the permission a specified user has on this resource.
      *
@@ -2238,7 +2238,7 @@ class Resource extends SimpleORMap implements StudipItem
 
         return true;
     }
-    
+
     /**
      * Retrieves the permission level a specified user
      * has on this resource.
@@ -2266,16 +2266,16 @@ class Resource extends SimpleORMap implements StudipItem
             //root users are automatically resource admins:
             return 'admin';
         }
-        
+
         //Check for a temporary permission first:
-        
+
         $perm_string = '';
         $temp_perm   = null;
-        
+
         if (!$permanent_only) {
             $begin = time();
             $end   = $begin;
-            
+
             //If $time range is set and contains two DateTime objects
             //we can include that in the search for temporary permissions.
             if ($time_range) {
@@ -2290,7 +2290,7 @@ class Resource extends SimpleORMap implements StudipItem
                     $end = $time_range[1];
                 }
             }
-            
+
             $temp_perm = ResourceTemporaryPermission::findOneBySql(
                 '(resource_id = :resource_id) AND (user_id = :user_id)
                 AND (begin <= :begin) AND (end >= :end)',
@@ -2302,7 +2302,7 @@ class Resource extends SimpleORMap implements StudipItem
                 ]
             );
         }
-        
+
         if ($temp_perm) {
             $perm_string = $temp_perm->perms;
         } else {
@@ -2331,9 +2331,9 @@ class Resource extends SimpleORMap implements StudipItem
                 $perm_string = $cached_perms;
             }
         }
-        
+
         //Now we must check for global resource locks:
-        
+
         if (GlobalResourceLock::currentlyLocked()) {
             //The resource management system is currently locked.
             //We must either return 'admin' for users with that
@@ -2351,13 +2351,13 @@ class Resource extends SimpleORMap implements StudipItem
                 return '';
             }
         }
-        
+
         //No global resource lock exists. We must return
         //the permission string if it is set:
         if ($perm_string) {
             return $perm_string;
         }
-        
+
         //A user which doesn't have special permissions for this resource
         //can have global resource permissions:
         $global_perm = ResourceManager::getGlobalResourcePermission($user);
@@ -2370,7 +2370,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $global_perm;
     }
-    
+
     /**
      * Determines if a user has the specified permission.
      *
@@ -2391,7 +2391,7 @@ class Resource extends SimpleORMap implements StudipItem
         if (!in_array($permission, ['user', 'autor', 'tutor', 'admin'])) {
             return false;
         }
-        
+
         if ($user->perms == 'root') {
             //root users have all permissions for the resource.
             return true;
@@ -2443,7 +2443,7 @@ class Resource extends SimpleORMap implements StudipItem
         //resource management system at all.
         return false;
     }
-    
+
     /**
      * Determines whether the user may create a child resource
      * on this resource.
@@ -2458,7 +2458,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         return $this->userHasPermission($user, 'admin');
     }
-    
+
     /**
      * Checks if the specified user has sufficient permissions to make resource
      * requests, according to the setting RESOURCES_MIN_REQUEST_PERMISSION.
@@ -2486,7 +2486,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $this->userHasPermission($user, $min_perm);
     }
-    
+
     /**
      * Determines whether the user may book the resource or not.
      * An optional time range can be set to check  the user's
@@ -2514,7 +2514,7 @@ class Resource extends SimpleORMap implements StudipItem
         if (!$end) {
             $end = $begin;
         }
-        
+
         //Check the permissions on this resource and the global permissions:
         return $this->userHasPermission(
             $user,
@@ -2525,7 +2525,7 @@ class Resource extends SimpleORMap implements StudipItem
             ]
         );
     }
-    
+
     /**
      * Determines if the booking plan of the resource is visible for a
      * specified user.
@@ -2545,7 +2545,7 @@ class Resource extends SimpleORMap implements StudipItem
         return $this->userHasPermission($user, 'user', $time_range)
             || $GLOBALS['perm']->have_perm('root', $user->id);
     }
-    
+
     /**
      * Retrieves a parent resource object that matches the specified
      * class name. The search stops when either a parent resource
@@ -2561,7 +2561,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         $resource_ids = [$this->id];
         $resource     = $this->parent;
-        
+
         while ($resource) {
             //We should check for circular hierarchies first
             //to avoid an endless while loop:
@@ -2592,7 +2592,7 @@ class Resource extends SimpleORMap implements StudipItem
         //resource matching the specified class name.
         return null;
     }
-    
+
     /**
      * This method searches the hierarchy below this resource
      * to find resources matching the specified class name.
@@ -2660,7 +2660,7 @@ class Resource extends SimpleORMap implements StudipItem
         }
         return $result;
     }
-    
+
     /**
      * Adds a resource as child resource to this resource.
      *
@@ -2672,10 +2672,10 @@ class Resource extends SimpleORMap implements StudipItem
     {
         $old_parent    = $resource->parent;
         $old_parent_id = $resource->parent_id;
-        
+
         $resource->parent    = $this;
         $resource->parent_id = $this->id;
-        
+
         if (!$resource->checkHierarchy()) {
             //We must revert the parent fields since $resource
             //may be used in other code pieces afterwards.
@@ -2700,7 +2700,7 @@ class Resource extends SimpleORMap implements StudipItem
         //We can return true.
         return true;
     }
-    
+
     /**
      * Get all resource requests for the resource in a given timeframe.
      *
@@ -2714,7 +2714,7 @@ class Resource extends SimpleORMap implements StudipItem
         //We must get all requests that either have a start and end date
         //set or that have a start date, repeate end, repeat interval and
         //repeat quantity set.
-        
+
         return ResourceRequest::findByResourceAndTimeRanges(
             $this,
             [
@@ -2726,7 +2726,7 @@ class Resource extends SimpleORMap implements StudipItem
             0
         );
     }
-    
+
     /**
      * Get all resource bookings for the resource in a given timeframe.
      *
@@ -2748,8 +2748,8 @@ class Resource extends SimpleORMap implements StudipItem
             [0]
         );
     }
-    
-    
+
+
     /**
      * Get all resource locks for the resource in a given timeframe.
      *
@@ -2771,8 +2771,8 @@ class Resource extends SimpleORMap implements StudipItem
             [2]
         );
     }
-    
-    
+
+
     /**
      * Determines if files are attached to this resource.
      * If a folder exists for this resource its files are counted.
@@ -2790,11 +2790,11 @@ class Resource extends SimpleORMap implements StudipItem
                 'range_id' => $this->id
             ]
         );
-        
+
         if (!$folder) {
             return false;
         }
-        
+
         //Since files from resources shall always be stored in the
         //Stud.IP file system we can skip the conversion from Folder
         //to FolderType and count the FileRef-objects for this resource
@@ -2807,7 +2807,7 @@ class Resource extends SimpleORMap implements StudipItem
                 ]
             ) > 0;
     }
-    
+
     /**
      * Converts a Resource object to an object of a specialised resource class.
      *
@@ -2820,12 +2820,12 @@ class Resource extends SimpleORMap implements StudipItem
     public function getDerivedClassInstance()
     {
         $class_name = $this->class_name;
-        
+
         if ($class_name == 'Resource') {
             //It is a standard resource which is managed by this class.
             return $this;
         }
-        
+
         if (is_subclass_of($class_name, 'Resource')) {
             $converted_resource = $class_name::buildExisting(
                 $this->toRawArray()
@@ -2840,7 +2840,7 @@ class Resource extends SimpleORMap implements StudipItem
             return $broken_resource;
         }
     }
-    
+
     /**
      * Checks if the place in the resource hierarchy (resource tree)
      * is correct for this resource.
@@ -2861,15 +2861,15 @@ class Resource extends SimpleORMap implements StudipItem
             //place of the resource hierarchy.
             return true;
         }
-        
+
         //The object does not use the Resource class name and uses
         //a derived class instead. We must check the hierarchy
         //using the checkHierarchy method of the derived class.
-        
+
         $converted_resource = $this->getDerivedClassInstance();
         return $converted_resource->checkHierarchy();
     }
-    
+
     /**
      * Returns the link for an action for this resource.
      * This is the non-static variant of Resource::getLinkForAction.
@@ -2880,11 +2880,11 @@ class Resource extends SimpleORMap implements StudipItem
      * @param array $link_parameters Optional parameters for the link.
      * @return string @TODO
      */
-    public function getLink($action = 'show', $link_parameters = [])
+    public function getActionLink($action = 'show', $link_parameters = [])
     {
         //We must check the class name and call the appropriate
         //getLinkForAction method for derived classes:
-        
+
         $class_name = $this->class_name;
         if (is_subclass_of($class_name, 'Resource')) {
             return $class_name::getLinkForAction(
@@ -2900,7 +2900,7 @@ class Resource extends SimpleORMap implements StudipItem
             );
         }
     }
-    
+
     /**
      * Returns the URL for an action for this resource.
      * This is the non-static variant of Resource::getURLForAction.
@@ -2911,11 +2911,11 @@ class Resource extends SimpleORMap implements StudipItem
      * @param array $url_parameters Optional parameters for the URL.
      * @return string @TODO
      */
-    public function getURL($action = 'show', $url_parameters = [])
+    public function getActionURL($action = 'show', $url_parameters = [])
     {
         //We must check the class name and call the appropriate
         //getURLForAction method for derived classes:
-        
+
         $class_name = $this->class_name;
         if (is_subclass_of($class_name, 'Resource')) {
             return $class_name::getURLForAction(
@@ -2931,7 +2931,7 @@ class Resource extends SimpleORMap implements StudipItem
             );
         }
     }
-    
+
     public function getItemName($long_format = true)
     {
         if ($long_format) {
@@ -2946,14 +2946,20 @@ class Resource extends SimpleORMap implements StudipItem
             return $this->name;
         }
     }
-    
+
     public function getItemURL()
     {
-        return $this->getURL('show');
+        return $this->getActionURL('show');
     }
-    
+
     public function getItemAvatarURL()
     {
         return Icon::create('resources', Icon::ROLE_INFO)->asImagePath();
+    }
+
+
+    public function getLink() : StudipLink
+    {
+        return new StudipLink($this->getActionURL(), $this->name, Icon::create('resources'));
     }
 }

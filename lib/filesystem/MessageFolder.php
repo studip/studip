@@ -15,7 +15,7 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category  Stud.IP
  */
-class MessageFolder implements FolderType
+class MessageFolder extends StandardFolder implements FolderType
 {
     protected $folder;
 
@@ -135,7 +135,7 @@ class MessageFolder implements FolderType
     /**
      * Returns the Icon object for the MessageFolder type.
      */
-    public function getIcon($role)
+    public function getIcon($role = Icon::DEFAULT_ROLE)
     {
         return Icon::create('folder-message', $role);
     }
@@ -215,21 +215,6 @@ class MessageFolder implements FolderType
     }
 
     /**
-     * Returns the files of this MessageFolder (e.g. the attachments
-     * of a message).
-     *
-     * @return FileRef[] An array of FileRef objects containing all files
-     *     that are placed inside this folder.
-     */
-    public function getFiles()
-    {
-        if ($this->folder) {
-            return $this->folder->file_refs->getArrayCopy();
-        }
-        return [];
-    }
-
-    /**
      * MessageFolders don't have parents.
      */
     public function getParent()
@@ -262,84 +247,15 @@ class MessageFolder implements FolderType
      *
      * @return string|null An error message on failure, null on success.
      */
-    public function validateUpload($uploaded_file, $user_id)
+    public function validateUpload(FileType $newfile, $user_id)
     {
         $status      = $GLOBALS['perm']->get_perm($user_id);
-        $upload_type = $GLOBALS['UPLOAD_TYPES']['attachments'];
-
-        if ($upload_type['file_sizes'][$status] < $uploaded_file['size']) {
-            return sprintf(
-                _('Die maximale Größe für einen Upload (%s) wurde überschritten.'),
-                relsize($upload_type['file_sizes'][$status])
-            );
-        }
-
-        $extension = strtolower(
-            pathinfo(
-                $uploaded_file['name'],
-                PATHINFO_EXTENSION
-            )
-        );
-        $types = array_map('strtolower', $upload_type['file_types']);
-
-        if (!in_array($extension, $types) && $upload_type['type'] === 'deny') {
-            return sprintf(
-                _('Sie dürfen nur die Dateitypen %s hochladen!'),
-                join(',', $upload_type['file_types'])
-            );
-        }
-        if (in_array($extension, $types) && $upload_type['type'] === 'allow') {
-            return sprintf(
-                _('Sie dürfen den Dateityp %s nicht hochladen!'),
-                $extension
-            );
-        }
-    }
-
-    /**
-     * This method handles creating a file inside the MessageFolder.
-     *
-     * @param File|array $file The file that shall be created inside
-     *     the MessageFolder.
-     *
-     * @return FileRef|null On success, a FileRef for the given file
-     *     is returned. Null otherwise.
-     */
-    public function createFile($file)
-    {
-        if (!$this->folder) {
-            return MessageBox::error(
-                _('Datei kann nicht erstellt werden, da kein Ordner angegeben wurde, in dem diese erstellt werden kann!')
-            );
-        }
-
-        $new_file = $file;
-        $file_ref_data = [];
-
-        if (!is_a($new_file, 'File')) {
-            $new_file = new File();
-            $new_file->name      = $file['name'];
-            $new_file->mime_type = $file['type'];
-            $new_file->size      = $file['size'];
-            $new_file->storage   = 'disk';
-            $new_file->id        = $new_file->getNewId();
-            if (!$new_file->connectWithDataFile($file['tmp_name'])) {
-                return null;
-            }
-        }
-
-        if ($new_file->isNew()) {
-            $new_file->store();
-        }
-
-        $file_ref_data['name'] = $file['name'];
-        $file_ref_data['description'] = $file['description'];
-        $file_ref_data['content_terms_of_use_id'] = $file['content_terms_of_use_id'];
-
-        return $this->folder->linkFile(
-            $new_file,
-            array_filter($file_ref_data)
-        );
+        $upload_type = [
+            'type' => $GLOBALS['UPLOAD_TYPES']['attachments']['type'],
+            'file_types' => $GLOBALS['UPLOAD_TYPES']['attachments']['file_types'],
+            'file_size' => $GLOBALS['UPLOAD_TYPES']['attachments']['file_sizes'][$status]
+        ];
+        return $this->getValidationMessages($upload_type, $newfile);
     }
 
     /**

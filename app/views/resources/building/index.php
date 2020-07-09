@@ -1,7 +1,7 @@
 <? if ($building): ?>
     <nav class="resource-hierarchy">
         <? if ($building->location): ?>
-            <a href="<?= $building->location->getLink('show') ?>" <?= (Request::isDialog()) ? 'data-dialog' : ''; ?>>
+            <a href="<?= $building->location->getActionLink('show') ?>" <?= (Request::isDialog()) ? 'data-dialog' : ''; ?>>
                 <?= htmlReady($building->location->name) ?>
             </a>
             &gt;
@@ -64,13 +64,17 @@
         </header>
         <table class="default sortable-table" data-sortlist="[[2, 0]]">
             <?= $this->render_partial('files/_files_thead') ?>
-            <? foreach ($resource_folder->getFiles() as $file_ref): ?>
-                <?= $this->render_partial('files/_fileref_tr',
-                    [
-                        'file_ref'       => $file_ref,
-                        'current_folder' => $resource_folder,
-                        'last_visitdate' => time()
-                    ]) ?>
+            <? foreach ($resource_folder->getFiles() as $file): ?>
+                <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
+                    <?= $this->render_partial(
+                        'files/_fileref_tr',
+                        [
+                            'file'           => $file,
+                            'current_folder' => $resource_folder,
+                            'last_visitdate' => time()
+                        ]
+                    ) ?>
+                <? endif ?>
             <? endforeach ?>
         </table>
     </section>

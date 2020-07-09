@@ -93,9 +93,18 @@ class FilesController extends AuthenticatedController
             );
         }
 
+        $actions->addLink(
+            _('Bildergalerie öffnen'),
+            '#g',
+            Icon::create('file-pic', 'clickable'),
+            [
+                'onClick' => "STUDIP.Files.openGallery(); return false;"
+            ]
+        );
+
         if ($folder->isWritable($GLOBALS['user']->id)) {
             $actions->addLink(
-                _('Datei hinzufügen'),
+                _('Dokument hinzufügen'),
                 '#',
                 Icon::create('file+add', 'clickable'),
                 ['onClick' => "STUDIP.Files.openAddFilesWindow(); return false;"]
@@ -309,6 +318,10 @@ class FilesController extends AuthenticatedController
         $this->topFolder = null;
         if ($folder) {
             $this->topFolder = $folder->getTypedFolder();
+            $this->vue_topfolder = FilesystemVueDataManager::getFolderVueData(
+                $this->topFolder,
+                $this->topFolder
+            );
         }
         $this->form_action = $this->link_for('file/bulk/' . $folder->id);
 
@@ -360,14 +373,42 @@ class FilesController extends AuthenticatedController
         $this->addViewsToOverview($this->current_view);
 
         if ($this->current_view == 'overview') {
-            $this->all_file_refs = FileRef::findAll($GLOBALS['user']->id, $this->begin, $this->end, '', 5, 0);
             $this->all_files_c = FileRef::countAll($GLOBALS['user']->id, $this->begin, $this->end);
-            $this->public_file_refs = FileRef::findPublicFiles($GLOBALS['user']->id, $this->begin, $this->end, 5, 0);
+            $all_file_refs = FileRef::findAll($GLOBALS['user']->id, $this->begin, $this->end, '', 5, 0);
+            $this->all_files = [];
+            foreach ($all_file_refs as $file_ref) {
+                $this->all_files[] = FilesystemVueDataManager::getFileVueData(
+                    $file_ref->getFileType(),
+                    $this->topFolder
+                );
+            }
             $this->public_files_c = FileRef::countPublicFiles($GLOBALS['user']->id, $this->begin, $this->end);
-            $this->uploaded_file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', false, 5, 0);
+            $public_file_refs = FileRef::findPublicFiles($GLOBALS['user']->id, $this->begin, $this->end, 5, 0);
+            $this->public_files = [];
+            foreach ($public_file_refs as $file_ref) {
+                $this->public_files[] = FilesystemVueDataManager::getFileVueData(
+                    $file_ref->getFileType(),
+                    $this->topFolder
+                );
+            }
             $this->uploaded_files_c = FileRef::countUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', false);
-            $this->uploaded_unlic_file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', true, 5, 0);
+            $uploaded_file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', false, 5, 0);
+            $this->uploaded_files = [];
+            foreach ($uploaded_file_refs as $file_ref) {
+                $this->uploaded_files[] = FilesystemVueDataManager::getFileVueData(
+                    $file_ref->getFileType(),
+                    $this->topFolder
+                );
+            }
             $this->uploaded_unlic_files_c = FileRef::countUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', true);
+            $uploaded_unlic_file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', true, 5, 0);
+            $this->uploaded_unlic_files = [];
+            foreach ($uploaded_unlic_file_refs as $file_ref) {
+                $this->uploaded_unlic_files[] = FilesystemVueDataManager::getFileVueData(
+                    $file_ref->getFileType(),
+                    $this->topFolder
+                );
+            }
             if (!$this->all_files_c) {
                 $this->no_files = true;
             }
@@ -435,27 +476,41 @@ class FilesController extends AuthenticatedController
                     //Check if the current user may download the file.
                     //If so, it is included in the new_files array.
                     if ($folder->isFileDownloadable($file_ref->id, $user_id)) {
-                        $this->files[] = $file_ref;
+                        $this->files[] = $file_ref->getFileType();
                     }
                 }
             }
         } elseif ($this->current_view == 'my_public_files') {
             $this->table_title = _('Meine öffentlichen Dateien');
             $this->addFiltersToOverviewSidebar(['time_range']);
-            $this->files = FileRef::findPublicFiles($GLOBALS['user']->id, $this->begin, $this->end);
+            $file_refs = FileRef::findPublicFiles($GLOBALS['user']->id, $this->begin, $this->end);
+            $this->files = [];
+            foreach ($file_refs as $file_ref) {
+                $this->files[] = $file_ref->getFileType();
+            }
         } elseif ($this->current_view == 'my_uploaded_files') {
             $this->addFiltersToOverviewSidebar(['time_range', 'course']);
             $this->table_title = _('Meine Dateien');
-            $this->files = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
+            $file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
             $this->files_c = FileRef::countUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
+            $this->files = [];
+            foreach ($file_refs as $file_ref) {
+                $this->files[] = $file_ref->getFileType();
+            }
         } elseif ($this->current_view == 'my_uploaded_files_unknown_license') {
             $this->addFiltersToOverviewSidebar(['time_range', 'course']);
             $this->table_title = _('Meine Dateien mit ungeklärter Lizenz');
-            $this->files = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id, true);
+            $file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id, true);
             $this->files_c = FileRef::countUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id, true);
+            $this->files = [];
+            foreach ($file_refs as $file_ref) {
+                $this->files[] = $file_ref->getFileType();
+            }
         } else {
             PageLayout::postError(_('Die gewählte Ansicht ist nicht verfügbar!'));
         }
+
+        $this->show_file_search = true;
     }
 
 
@@ -492,6 +547,8 @@ class FilesController extends AuthenticatedController
         //check for INBOX and OUTBOX folder:
         $inbox_folder  = FileManager::getInboxFolder($this->user);
         $outbox_folder = FileManager::getOutboxFolder($this->user);
+
+        $this->show_file_search = true;
     }
 
     /**
@@ -630,9 +687,9 @@ class FilesController extends AuthenticatedController
                     } else {
                         if ($source = $source_plugin->getPreparedFile($fileref, true)) {
                             if ($copymode === 'move') {
-                                $result = FileManager::moveFileRef($source, $destination_folder, $user);
+                                $result = FileManager::moveFile($source, $destination_folder, $user);
                             } else {
-                                $result = FileManager::copyFileRef($source, $destination_folder, $user);
+                                $result = FileManager::copyFile($source, $destination_folder, $user);
                             }
                             if (!is_array($result)) {
                                 $count_files += 1;
@@ -642,9 +699,9 @@ class FilesController extends AuthenticatedController
                 } else {
                     if ($source = FileRef::find($fileref)) {
                         if ($copymode === 'move') {
-                            $result = FileManager::moveFileRef($source, $destination_folder, $user);
+                            $result = FileManager::moveFile($source->getFileType(), $destination_folder, $user);
                         } else {
-                            $result = FileManager::copyFileRef($source, $destination_folder, $user);
+                            $result = FileManager::copyFile($source->getFiletype(), $destination_folder, $user);
                         }
                         if (!is_array($result)) {
                             $count_files += 1;

@@ -90,7 +90,7 @@ class Resources_LocationController extends AuthenticatedController
             if ($current_user_is_resource_admin) {
                 $actions->addLink(
                     _('Standort bearbeiten'),
-                    $this->location->getURL('edit'),
+                    $this->location->getActionURL('edit'),
                     Icon::create('edit'),
                     [
                         'data-dialog' => '1'
@@ -98,7 +98,7 @@ class Resources_LocationController extends AuthenticatedController
                 );
                 $actions->addLink(
                     _('Rechte bearbeiten'),
-                    $this->location->getURL('permissions'),
+                    $this->location->getActionURL('permissions'),
                     Icon::create('roles'),
                     [
                         'data-dialog' => '1'

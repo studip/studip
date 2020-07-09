@@ -81,7 +81,7 @@ class Resources_SearchController extends AuthenticatedController
 
             if ($resource) {
                 $this->redirect(
-                    $resource->getURL('show')
+                    $resource->getActionURL('show')
                 );
             }
         } else {

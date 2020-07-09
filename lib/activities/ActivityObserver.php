@@ -39,13 +39,5 @@ class ActivityObserver
 
         //Notifications for ScheduleProvider (Course)
         \NotificationCenter::addObserver('\Studip\Activity\ScheduleProvider', 'postActivity','CourseDidChangeSchedule');
-
-        //Notifications for LiteratureProvider
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListDidCreate');
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListDidUpdate');
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListDidDelete');
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListElementDidInsert');
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListElementDidUpdate');
-        \NotificationCenter::addObserver('\Studip\Activity\LiteratureProvider', 'postActivity','LitListElementDidDelete');
     }
 }

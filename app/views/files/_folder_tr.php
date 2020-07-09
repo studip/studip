@@ -59,6 +59,15 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
     <td title="<?= strftime('%x %X', $folder->mkdate) ?>" data-sort-value="<?= $folder->mkdate ?>" class="responsive-hidden">
         <?= $folder->mkdate ? reltime($folder->mkdate) : "" ?>
     </td>
+    <? foreach ($topFolder->getAdditionalColumns() as $index => $column_name) : ?>
+        <td class="responsive-hidden"
+            data-sort-value="<?= htmlReady($folder->getAdditionalColumnOrderWeigh($index)) ?>">
+            <? $content = $folder->getContentForAdditionalColumn($index) ?>
+            <? if ($content) : ?>
+                <?= is_a($content, "Flexi_Template") ? $content->render() : $content ?>
+            <? endif ?>
+        </td>
+    <? endforeach ?>
     <td class="actions">
     <?php
         $actionMenu = ActionMenu::get();

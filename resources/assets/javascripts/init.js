@@ -23,7 +23,6 @@ import DragAndDropUpload from './lib/drag_and_drop_upload.js';
 import enrollment from './lib/enrollment.js';
 import extractCallback from './lib/extract_callback.js';
 import Files from './lib/files.js';
-import Filesystem from './lib/filesystem.js';
 import FilesDashboard from './lib/files_dashboard.js';
 import Folders from './lib/folders.js';
 import Forms from './lib/forms.js';
@@ -106,7 +105,6 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     enrollment,
     extractCallback,
     Files,
-    Filesystem,
     FilesDashboard,
     Folders,
     Forms,

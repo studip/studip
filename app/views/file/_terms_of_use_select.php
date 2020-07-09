@@ -3,7 +3,7 @@ if (!$selected_terms_of_use_id) {
     $selected_terms_of_use_id = ContentTermsOfUse::findDefault()->id;
 }
 ?>
-<? if ($content_terms_of_use_entries): ?>
+<? if ($content_terms_of_use_entries) : ?>
     <div style="margin-bottom: 1ex;">
         <?= _('Bereitgestellte Dateien können heruntergeladen und ggf. weiterverbreitet werden.
                Dabei ist das Urheberrecht sowohl beim Hochladen der Datei als auch bei der Nutzung
@@ -43,7 +43,7 @@ if (!$selected_terms_of_use_id) {
                     <?= formatReady($content_terms_of_use_entry->description ?: _('Keine Beschreibung')) ?>
                 </div>
             </div>
-        <? endif; ?>
-    <? endforeach; ?>
+        <? endif ?>
+    <? endforeach ?>
     </fieldset>
 <? endif; ?>

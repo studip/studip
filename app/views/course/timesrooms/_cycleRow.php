@@ -54,7 +54,7 @@ $is_exTermin = $termin instanceof CourseExDate;
     <? elseif ($name = SemesterHoliday::isHoliday($termin->date, false) && $is_exTermin): ?>
         <?= $room_holiday ?>
     <? elseif ($room = $termin->getRoom()) : ?>
-        <a href="<?= $room->getLink(
+        <a href="<?= $room->getActionLink(
                  'booking_plan',
                  [
                      'defaultDate' => date('Y-m-d', $termin->date)

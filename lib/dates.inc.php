@@ -286,7 +286,7 @@ function vorbesprechung ($seminar_id, $type = 'standard')
             case 'standard':
             default:
                 $resource = Resource::find($termin->getResourceID());
-                $ret .= '<a href="' . $resource->getLink('show') . '" data-dialog="1">'
+                $ret .= '<a href="' . $resource->getActionLink('show') . '" data-dialog="1">'
                     . htmlReady($resource->name) . '</a>';
                 break;
         }
@@ -518,7 +518,7 @@ function getFormattedRooms($rooms, $link = false)
             if ($room_id && Config::get()->RESOURCES_ENABLE) {
                 $room = Room::find($room_id);
                 if ($link) {
-                    $room_list[] = '<a href="' . $room->getLink('show') . '" data-dialog="1">'
+                    $room_list[] = '<a href="' . $room->getActionLink('show') . '" data-dialog="1">'
                         . htmlReady($room->name) . '</a>';
                 } else {
                     $room_list[] = htmlReady($room->name);

@@ -7,9 +7,9 @@ namespace Composer\Autoload;
 class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
 {
     public static $files = array (
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
     );
@@ -25,6 +25,8 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
             'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Slim\\' => 5,
+            'Seboettg\\Collection\\' => 20,
+            'Seboettg\\CiteProc\\' => 18,
         ),
         'P' => 
         array (
@@ -41,6 +43,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         array (
             'Neomerx\\JsonApi\\' => 16,
             'Neomerx\\Cors\\' => 13,
+        ),
+        'M' => 
+        array (
+            'MyCLabs\\Enum\\' => 13,
         ),
         'L' => 
         array (
@@ -81,6 +87,14 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
+        'Seboettg\\Collection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/seboettg/collection/src/Seboettg/Collection',
+        ),
+        'Seboettg\\CiteProc\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/seboettg/citeproc-php/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -108,6 +122,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'Neomerx\\Cors\\' => 
         array (
             0 => __DIR__ . '/..' . '/neomerx/cors-psr7/src',
+        ),
+        'MyCLabs\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
         ),
         'Leafo\\ScssPhp\\' => 
         array (

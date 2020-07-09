@@ -148,7 +148,7 @@ class DateFormatter {
     {
         if ($resObj) {
             if ($this->return_mode == 'string') {
-                return '<a href="' . $resObj->getLink() . '" data-dialog="1">'
+                return '<a href="' . $resObj->getActionLink() . '" data-dialog="1">'
                     . htmlReady($resObj->name)
                     . '</a>';
             }

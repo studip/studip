@@ -178,38 +178,36 @@ class ContentTermsOfUse extends SimpleORMap
      *   The user's ID must therefore match the user_id attribute
      *   of the FileRef object.
      */
-    public function fileIsDownloadable(FileRef $file_ref, $allow_owner = true, $user_id = null)
+    public function isDownloadable($context_id, $context_type, $allow_owner = true, $user_id = null)
     {
         $user_id = $user_id ?: $GLOBALS['user']->id;
-
         if ($allow_owner) {
-            if ($file_ref->user_id === $GLOBALS['user']->id || Seminar_Perm::get()->have_perm('root', $user_id)) {
+            if (in_array($context_type, ['course', 'institute'])
+                && Seminar_Perm::get()->have_studip_perm(
+                    'tutor', $context_id, $user_id
+                )
+            ) {
                 return true;
-            }
-            if (in_array($file_ref->folder->range_type, ['course', 'institute']) && Seminar_Perm::get()->have_studip_perm('tutor', $file_ref->folder->range_id, $user_id)) {
+            } elseif ($context_type === "profile" && $context_id === $user_id) {
                 return true;
             }
         }
-
         if ($this->download_condition == 1) {
-            $folder = $file_ref->folder;
 
             //the content is only downloadable when the user is inside a closed group
             //(referenced by range_id). If download_condition is set to 2
             //the group must also have a terminated signup deadline.
-            if ($folder->range_id && $folder->range_type) {
+            if ($context_type === "course") {
                 //check where this range_id comes from:
-                if ($folder->range_type === 'course') {
-                    $seminar = Seminar::GetInstance($folder->range_id);
-                    $timed_admission = $seminar->getAdmissionTimeFrame();
+                $seminar = Seminar::GetInstance($context_id);
+                $timed_admission = $seminar->getAdmissionTimeFrame();
 
-                    if ($seminar->admission_prelim
-                        || $seminar->isPasswordProtected()
-                        || $seminar->isAdmissionLocked()
-                        || (is_array($timed_admission) && $timed_admission['end_time'] > 0 && $timed_admission['end_time'] < time())
-                    ) {
-                        return true;
-                    }
+                if ($seminar->admission_prelim
+                    || $seminar->isPasswordProtected()
+                    || $seminar->isAdmissionLocked()
+                    || (is_array($timed_admission) && $timed_admission['end_time'] > 0 && $timed_admission['end_time'] < time())
+                ) {
+                    return true;
                 }
             }
             return false;

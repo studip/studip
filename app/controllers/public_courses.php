@@ -96,7 +96,7 @@ class PublicCoursesController extends AuthenticatedController
         foreach ($seminars as $id => $seminar) {
             $seminar['navigations'] = [];
 
-            foreach (words('forum files news scm schedule wiki vote literature') as $key) {
+            foreach (words('forum files news scm schedule wiki vote') as $key) {
                 $seminar['navigations'][$key] = false;
             }
 
@@ -146,19 +146,6 @@ class PublicCoursesController extends AuthenticatedController
             $nav = new Navigation('scm', 'dispatch.php/course/scm');
             $nav->setImage(Icon::create('infopage', 'inactive', ["title" => sprintf(_('%s Einträge'),$row['count'])]));
             $seminars[$row['range_id']]['navigations']['scm'] = $nav;
-        }
-
-        // Literature
-        $query = "SELECT range_id, COUNT(list_id) AS count
-                  FROM lit_list
-                  WHERE range_id IN (?) AND visibility = 1
-                  GROUP BY range_id";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$seminar_ids]);
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $nav = new Navigation('literature', 'dispatch.php/course/literatur');
-            $nav->setImage(Icon::create('literature', 'inactive', ["title" => sprintf(_('%s Literaturlisten'),$row['count'])]));
-            $seminars[$row['range_id']]['navigations']['literature'] = $nav;
         }
 
         // Appointments

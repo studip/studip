@@ -1,49 +1,61 @@
 <?php
 $show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', 'flat']);
+$vue_files = [];
+foreach ($files as $file) {
+    if ($file->isVisible($GLOBALS['user']->id)) {
+        $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $file->getFolderType());
+    }
+}
+$topFolder = new StandardFolder();
+$vue_topFolder = [
+    'description' => $topFolder->getDescriptionTemplate(),
+    'additionalColumns' => $topFolder->getAdditionalColumns(),
+    'buttons' => null
+];
+if (is_a($vue_topFolder['description'], "Flexi_Template")) {
+    $vue_topFolder['description'] = $vue_topFolder['description']->render();
+}
+$vue_topFolder['buttons'] = '<span class="multibuttons">';
+$vue_topFolder['buttons'] .= Studip\Button::create(_('Herunterladen'), 'download', [
+    'data-activates-condition' => 'table.documents tr[data-permissions*=d] :checkbox:checked'
+]);
+if ($topFolder->isWritable($GLOBALS['user']->id)) {
+    $vue_topFolder['buttons'] .= Studip\Button::create(_('Verschieben'), 'move', [
+        'formaction'  => $controller->url_for('file/choose_destination/move/bulk'),
+        'data-dialog' => 'size=auto',
+        'data-activates-condition' => 'table.documents tr[data-permissions*=w] :checkbox:checked'
+    ]);
+}
+$vue_topFolder['buttons'] .= Studip\Button::create(_('Kopieren'), 'copy', [
+    'formaction'  => $controller->url_for('file/choose_destination/copy/bulk'),
+    'data-dialog' => 'size=auto',
+    'data-activates-condition' => 'table.documents tr[data-permissions*=r] :checkbox:checked'
+]);
+if ($topFolder->isWritable($GLOBALS['user']->id)) {
+    $vue_topFolder['buttons'] .= Studip\Button::create(_('Löschen'), 'delete', [
+        'data-confirm'             => _('Soll die Auswahl wirklich gelöscht werden?'),
+        'data-activates-condition' => 'table.documents tr[data-permissions*=w] :checkbox:checked'
+    ]);
+}
+$vue_topFolder['buttons'] .= '</span>';
+foreach ($topFolder->getAdditionalActionButtons() as $button) {
+    $vue_topFolder['buttons'] .= $button;
+}
 ?>
-<form method="post" action="<?= htmlReady($form_action) ?>">
+<form id="files_table_form"
+      method="post"
+      action="<?= htmlReady($form_action) ?>"
+      data-files="<?= htmlReady(json_encode($vue_files)) ?>"
+      data-topfolder="<?= htmlReady(json_encode((array) $vue_topFolder)) ?>">
     <?= CSRFProtection::tokenTag() ?>
-    <table class="default documents sortable-table flat <?= $enable_table_filter ? 'filter' : '' ?>" data-sortlist="[[<?= $show_downloads ? 6 : 5 ?>, 1]]" data-shiftcheck>
-        <? if ($table_title) : ?>
-            <caption><?= htmlReady($table_title) ?></caption>
-        <? endif ?>
-        <?= $this->render_partial(
-            'files/_files_thead.php',
-            [
-                'show_downloads'       => $show_downloads,
-                'show_bulk_checkboxes' => true
-            ]
-        ) ?>
-        <tbody>
-        <? if (count($files) === 0): ?>
-            <tr>
-                <td colspan="<?= $show_downloads ? 8 : 7 ?>" class="empty">
-                    <?= _('Keine Dateien vorhanden.') ?>
-                </td>
-            </tr>
-        <? else : ?>
-            <? foreach ($files as $file_ref) : ?>
-                <?= $this->render_partial('files/_fileref_tr', [
-                    'file_ref'             => $file_ref,
-                    'current_folder'       => $folders[$file_ref->folder_id] ?: $file_ref->folder->getTypedFolder(),
-                    'show_downloads'       => $show_downloads,
-                    'show_bulk_checkboxes' => true,
-                    'flat_view'            => true
-                ]) ?>
-            <? endforeach ?>
-        <? endif ?>
-        </tbody>
-        <? if ($GLOBALS['user']->id !== 'nobody') : ?>
-            <?= $this->render_partial(
-                'files/_flat_tfoot',
-                [
-                    'topFolder'      => $topFolder,
-                    'show_downloads' => $show_downloads,
-                    'pagination'     => $pagination
-                ]
-            ) ?>
-        <? endif ?>
-    </table>
+    <files-table :showdownloads="<?= $show_downloads ? "true" : "false" ?>"
+                 :breadcrumbs="breadcrumbs"
+                 :files="files"
+                 :folders="folders"
+                 :topfolder="topfolder"
+                 enable_table_filter="<?= $enable_table_filter ? 'true' : 'false' ?>"
+                 table_title="<?= htmlReady($table_title) ?>"
+    ></files-table>
 </form>
 
 <? ob_start(); ?>

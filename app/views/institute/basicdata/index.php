@@ -93,19 +93,6 @@
                    value="<?= htmlReady(Request::get('home', $institute->url)) ?>">
         </label>
 
-    <? if (get_config('LITERATURE_ENABLE') && $institute->is_fak): // choose preferred lit plugin ?>
-        <label class="col-3">
-            <?= _('Bevorzugter Bibliothekskatalog') ?>
-            <select id="lit_plugin_name" name="lit_plugin_name">
-            <? foreach (StudipLitSearch::GetAvailablePlugins() as $name => $title): ?>
-                <option value="<?= $name ?>" <?= ($name == Request::get('lit_plugin_name', $institute->lit_plugin_name)) ? 'selected' : '' ?>>
-                    <?= htmlReady($title) ?>
-               </option>
-            <? endforeach; ?>
-            </select>
-        </label>
-    <? endif; ?>
-
     <? if ($GLOBALS['perm']->have_perm('root')): // Select lockrule to apply ?>
         <label class="col-3">
             <?= _('Sperrebene') ?>

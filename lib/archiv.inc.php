@@ -54,8 +54,6 @@ function lastActivity ($sem_id)
             "SELECT MAX(chdate) AS chdate FROM termine WHERE range_id = :id",
             // News
             "SELECT MAX(`date`) AS chdate FROM news_range LEFT JOIN news USING (news_id) WHERE range_id = :id",
-            // Literature
-            "SELECT MAX(chdate) AS chdate FROM lit_list WHERE range_id = :id",
         ];
 
         // Votes
@@ -314,19 +312,6 @@ function dump_sem($sem_id, $print_view = false)
                 $dump .= '<tr><td align="left" width="100%"><br>'. formatReady($scm->content, 1, 1) .'<br></td></tr>' . "\n";
                 $dump .= '</table>' . "\n";
             }
-        }
-    }
-
-    if ($Modules['literature']) {
-        $lit = StudipLitList::GetFormattedListsByRange($sem_id, false, false);
-        if ($lit) {
-            $dump .= '<br>';
-            $dump .= '<table width="100%" border="1" cellpadding="2" cellspacing="0">';
-            $dump .= '<tr><td align="left" class="table_header_bold">';
-            $dump .= '<h2 class="table_header_bold">&nbsp;' . _('Literaturlisten') . '</h2>';
-            $dump .= '</td></tr>' . "\n";
-            $dump .= '<tr><td align="left" width="100%"><br>'. $lit .'<br></td></tr>' . "\n";
-            $dump .= '</table>' . "\n";
         }
     }
 

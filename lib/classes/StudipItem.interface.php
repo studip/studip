@@ -51,4 +51,14 @@ interface StudipItem
      *     or icon or null, if the object does not have an avatar.
      */
     public function getItemAvatarURL();
+
+
+    /**
+     * Creates a StudipLink object that links to a page with information
+     * about the StudipItem object.
+     *
+     * @returns StudipLink A StudipLink object for the information page
+     *     of the StudipItem object.
+     */
+    public function getLink() : StudipLink;
 }

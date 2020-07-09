@@ -42,29 +42,55 @@ div.file_select_possibilities, .folder_type_select_possibilities {
     @height: 100px;
 
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
-    > * {
-        background-color: transparent;
-        margin: 10px;
-        border: thin solid @content-color-20;
-        padding: 5px;
-        width: @width;
-        min-width: @width;
-        max-width: @width;
-        height: @height;
-        min-height: @height;
-        max-height: @height;
-        overflow: hidden;
+    flex-direction: column;
+    > div {
         display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
-        text-align: center;
-        > img {
-            margin-left: auto;
-            margin-right: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: stretch;
+        > a {
+            background-color: transparent;
+            margin: 10px;
+            border: thin solid @content-color-20;
+            padding: 10px;
+            width: @width;
+            min-width: @width;
+            max-width: @width;
+            height: @height;
+            min-height: @height;
+            max-height: @height;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+            > img {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        > .important-item {
+            min-width: calc(100% - 1.5em);
+            background-color: #E7EBF1;
+            border-color: @base-color-60;
+            display: flex;
+            flex-direction: row;
+            height: initial;
+            max-height: initial;
+
+            > .icon {
+                width: 10em;
+            }
+
+            > .description {
+                width: 100%;
+                text-align: left;
+                margin-left: 1em;
+                color: @black;
+            }
         }
     }
 
@@ -205,6 +231,16 @@ table.documents tfoot td.sticky {
         max-width: none;
     }
 
+    div#preview_container {
+        .file_preview {
+            max-width: 100%;
+        }
+
+        iframe.file_preview {
+            width: 100%;
+            height: 20em;
+        }
+    }
 }
 
 @media screen and (min-width: 801px) {
@@ -235,6 +271,11 @@ table.documents tfoot td.sticky {
 
         .file_preview {
             max-width: 100%;
+        }
+
+        iframe.file_preview {
+            width: 100%;
+            height: 40em;
         }
     }
 
@@ -343,4 +384,15 @@ when adding a file or copying/moving things:
 td.document-icon {
     max-width: 40px;
     width: 40px;
+}
+
+
+/* Rules for the library search dialog: */
+
+h2.search-result-info {
+    font-weight: normal;
+    font-size: 1.4em;
+    color: @base-gray;
+    border-bottom: none;
+    margin-top: 0;
 }

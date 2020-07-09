@@ -90,8 +90,8 @@
     <td>
         <a href="<?= (
                  $booking_plan_link_on_name
-                 ? $resource->getLink('booking_plan')
-                 : $resource->getLink('show')
+                 ? $resource->getActionLink('booking_plan')
+                 : $resource->getActionLink('show')
                  ) ?>"
            <?= $user_has_booking_rights ? '' : 'data-dialog' ?>
            data-id="<?= htmlReady($resource->id) ?>"
@@ -160,39 +160,39 @@
             $action_menu = ActionMenu::get();
             if ($show_user_actions) {
                 $actions['0010'] = [
-                    $resource->getLink('show'),
+                    $resource->getActionLink('show'),
                     _('Details'),
                     Icon::create('info-circle'),
                     ['data-dialog' => 'size=auto']
                 ];
 
                 $actions['0020'] = [
-                    $resource->getLink('booking_plan'),
+                    $resource->getActionLink('booking_plan'),
                     _('Belegungsplan'),
                     Icon::create('timetable')
                 ];
 
                 $actions['0030'] = [
-                    $resource->getLink('semester_plan'),
+                    $resource->getActionLink('semester_plan'),
                     _('Semester-Belegungsplan'),
                     Icon::create('timetable'),
                     ['target' => '_blank']
                 ];
                 if ($show_admin_actions) {
                     $actions['0040'] = [
-                        $resource->getLink('permissions'),
+                        $resource->getActionLink('permissions'),
                         _('Berechtigungen verwalten'),
                         Icon::create('roles2'),
                         ['data-dialog' => 'size=auto']
                     ];
                     $actions['0050'] = [
-                        $resource->getLink('temporary_permissions'),
+                        $resource->getActionLink('temporary_permissions'),
                         _('Temporäre Berechtigungen verwalten'),
                         Icon::create('roles2'),
                         ['data-dialog' => 'size=auto']
                     ];
                     $actions['0060'] = [
-                        $resource->getLink('edit'),
+                        $resource->getActionLink('edit'),
                         _('Bearbeiten'),
                         Icon::create('edit'),
                         ['data-dialog' => 'size=auto']
@@ -200,7 +200,7 @@
                 }
                 if ($show_autor_actions) {
                     $actions['0070'] = [
-                        $resource->getLink(
+                        $resource->getActionLink(
                             'assign-undecided',
                             [
                                 'no_reload' => '1'
@@ -214,7 +214,7 @@
                     ];
                     if ($show_global_admin_actions) {
                         $actions['0080'] = [
-                            $resource->getLink(
+                            $resource->getActionLink(
                                 'delete_bookings',
                                 [
                                     'no_reload' => '1'
@@ -228,14 +228,14 @@
                 }
                 if ($show_user_actions) {
                     $actions['0090'] = [
-                        $resource->getLink('export_bookings'),
+                        $resource->getActionLink('export_bookings'),
                         _('Buchungen exportieren'),
                         Icon::create('file-excel'),
                         ['data-dialog' => 'size=auto']
                     ];
                 }
                 $actions['0100'] = [
-                    $resource->getLink('files'),
+                    $resource->getActionLink('files'),
                     _('Dateien anzeigen'),
                     Icon::create(
                         $resource->hasFiles()
@@ -246,7 +246,7 @@
                 ];
                 if ($show_global_admin_actions) {
                     $actions['0110'] = [
-                        $resource->getLink('delete'),
+                        $resource->getActionLink('delete'),
                         _('Löschen'),
                         Icon::create('trash'),
                         ['data-dialog' => '']
@@ -256,7 +256,7 @@
                 if ($resource->propertyExists('booking_plan_is_public')) {
                     if ($resource->booking_plan_is_public) {
                         $actions['0020'] = [
-                            $resource->getLink('booking_plan'),
+                            $resource->getActionLink('booking_plan'),
                             _('Belegungsplan anzeigen'),
                             Icon::create('timetable'),
                             [

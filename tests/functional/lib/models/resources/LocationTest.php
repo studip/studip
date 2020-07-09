@@ -92,21 +92,21 @@ class LocationTest extends \Codeception\Test\Unit
 
     public function testGetURL()
     {
-        $link = $this->location->getURL('show');
+        $link = $this->location->getActionURL('show');
 
         $this->assertEquals(
             'dispatch.php/resources/location/index/' . $this->location->id,
             $link
         );
 
-        $link = $this->location->getURL('show', ['test' => '1']);
+        $link = $this->location->getActionURL('show', ['test' => '1']);
 
         $this->assertEquals(
             'dispatch.php/resources/location/index/' . $this->location->id . '?test=1',
             $link
         );
 
-        $link = $this->location->getURL('delete');
+        $link = $this->location->getActionURL('delete');
 
         $this->assertEquals(
             'dispatch.php/resources/location/delete/' . $this->location->id,

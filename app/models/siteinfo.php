@@ -497,10 +497,6 @@ class SiteinfoMarkupEngine {
         $indicator['link'] = ["query" => "SELECT COUNT(*) FROM files WHERE storage='url'",
                                    "title" => _("verlinkte Dateien"),
                                    "detail" => ""];
-        $indicator['litlist'] = ["count" => ['count_table_rows','lit_list'],
-                                      "title" => _("Literaturlisten"),
-                                      "detail" => "",
-                                      "constraint" => get_config('LITERATURE_ENABLE')];
         $indicator['termin'] = ["count" => ['count_table_rows','termine'],
                                      "title" => _("Termine"),
                                      "detail" => ""];

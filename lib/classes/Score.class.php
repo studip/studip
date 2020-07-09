@@ -47,19 +47,6 @@ class Score
             $persons[$row['user_id']]['eventcount'] = $row['eventcount'];
         }
 
-        // Literature
-        $query = "SELECT range_id as user_id, COUNT(*) AS litcount
-                  FROM lit_list
-                  INNER JOIN lit_list_content USING (list_id)
-                  WHERE range_id IN (?) AND visibility = 1
-                  GROUP BY range_id
-                  ORDER BY NULL";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$user_ids]);
-        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $persons[$row['user_id']]['litcount'] = $row['litcount'];
-        }
-
         // Votes
         if (get_config('VOTE_ENABLE')){
             $query = "SELECT questionnaire_assignments.range_id as user_id, COUNT(*) AS votecount

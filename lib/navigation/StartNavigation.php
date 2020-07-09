@@ -282,11 +282,6 @@ class StartNavigation extends Navigation
             $navigation->addSubNavigation('evaluation',new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $username]));
         }
 
-        // literature
-        if (Config::get()->LITERATURE_ENABLE) {
-            $navigation->addSubNavigation('literature', new Navigation(_('Literatur'), 'dispatch.php/literature/edit_list.php', ['_range_id' => 'self']));
-        }
-
         // elearning
         if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
             $navigation->addSubNavigation('elearning', new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts'));

@@ -19,7 +19,7 @@
 
 /**
  * The Clipboard class extends the wish list functionality of the clipboard
- * in the literature management to allow it to be used in other areas of the
+ * in the old literature management to allow it to be used in other areas of the
  * Stud.IP system. Furthermore, clipboards managed by this class
  * are stored permanently in the database until they are deleted.
  *

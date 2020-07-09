@@ -235,78 +235,6 @@ $CONTENT_LANGUAGES['de_DE'] = ['picture' => 'lang_de.gif', 'name' => 'Deutsch'];
 
 $_language_domain = "studip";  // the name of the language file. Should not be changed except in cases of individual translations or special terms.
 
-/*literature search plugins
-----------------------------------------------------------------
-If you write your own plugin put it in studip-htdocs/lib/classes/lit_search_plugins
-and enable it here. The name of the plugin is the classname excluding "StudipLitSearchPlugin".
-If the catalog your plugin is designed for offers the possibility to create a link to an entry, you
-could provide the link here. Place templates for the needed attributes in curly braces. (see examples below)*/
-
-//standard plugin, searches in Stud.IP Database (table lit_catalog), you should leave this one enabled !
-$_lit_search_plugins[] = ['name' => "Studip",'display_name' =>'Katalog der Stud.IP Datenbank', 'link' => ''];
-
-//Plugins derived from Z3950Abstract, used for querying Z39.50 Servers
-//only activate these plugins, if your Version of PHP supports the YAZ extension!
-
-/* Gemeinsamer Verbundkatalog - GVK */
-//$_lit_search_plugins[] = array('name' => "Gvk",'display_name' =>'Gemeinsamer Verbundkatalog', 'link' => 'http://gso.gbv.de/DB=2.1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Niedersächsische Staats- und Universitätsbibliothek Göttingen, OPAC */
-//$_lit_search_plugins[] = array('name' => "SUBGoeOpac",'display_name' => "Opac der SUB Göttingen" , 'link' => 'http://opac.sub.uni-goettingen.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Göttinger Gesamtkatalog (Regionalkatalog Göttingen) */
-//$_lit_search_plugins[] = array('name' => 'Rkgoe', 'display_name' =>'Regionalkatalog Göttingen', 'link' => 'http://gso.gbv.de/DB=2.90/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Technische Informationsbibliothek / Universitätsbibliothek Hannover, OPAC */
-//$_lit_search_plugins[] = array('name' => 'TIBUBOpac', 'display_name' =>'Technische Informationsbibliothek / Universitätsbibliothek Hannover', 'link' => 'http://opac.tib.uni-hannover.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}', 'display_name' => "UB Katalog");
-
-/* Hannover Gesamtkatalog (Regionalkatalog Hannover) */
-//$_lit_search_plugins[] = array('name' => 'Rkhan', 'display_name' =>'Regionalkatalog Hannover', 'link' => 'http://gso.gbv.de/DB=2.92/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}', 'display_name' => "Gesamtkatalog Hannover");
-
-/* Bibliotheken der Fachhochschule Hildesheim/Holzminden/Göttingen */
-//$_lit_search_plugins[] = array('name' => 'FHHIOpac', 'display_name' =>'Bibliotheken der FH Hildesheim/Holzminden/Göttingen', 'link' => 'http://opac.lbs-hildesheim.gbv.de/DB=2/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Thüringer Universitäts- und Landesbibliothek Jena */
-//$_lit_search_plugins[] = array('name' => 'ThULB_Jena', 'display_name' =>'Thüringer Universitäts- und Landesbibliothek Jena', 'link' => 'http://kataloge.thulb.uni-jena.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Bibliothek der Fachhochschule Jena */
-//$_lit_search_plugins[] = array('name' => 'FH_Jena', 'display_name' =>'Bibliothek der FH Jena', 'link' => 'http://kataloge.thulb.uni-jena.de/DB=2/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Universitätsbibliothek der Bauhaus-Universität Weimar */
-//$_lit_search_plugins[] = array('name' => 'UB_Weimar', 'display_name' =>'Universitätsbibliothek der Bauhaus-Universität Weimar', 'link' => 'http://opac.ub.uni-weimar.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Herzogin Anna Amalia Bibliothek Weimar */
-//$_lit_search_plugins[] = array('name' => 'HAAB_Weimar', 'display_name' =>'Herzogin Anna Amalia Bibliothek Weimar', 'link' => 'http://opac.ub.uni-weimar.de/DB=2/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Bibliothek der Hochschule für Musik Franz Liszt Weimar */
-//$_lit_search_plugins[] = array('name' => 'HSfMFL_Weimar', 'display_name' =>'Bibliothek der Hochschule für Musik Franz Liszt Weimar', 'link' => 'http://opac.ub.uni-weimar.de/DB=3/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Universitätsbibliothek Erfurt */
-//$_lit_search_plugins[] = array('name' => 'UB_Erfurt', 'display_name' =>'Universitätsbibliothek Erfurt', 'link' => 'http://opac.uni-erfurt.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Bibliothek der Fachhochschule Erfurt */
-//$_lit_search_plugins[] = array('name' => 'FH_Erfurt', 'display_name' =>'Bibliothek der FH Erfurt', 'link' => 'http://opac.uni-erfurt.de/DB=4/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Bibliothek der Fachhochschule Nordhausen */
-//$_lit_search_plugins[] = array('name' => 'FH_Nordhausen', 'display_name' =>'Bibliothek der FH Nordhausen', 'link' => 'http://opac.uni-erfurt.de/DB=5/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Universitätsbibliothek Ilmenau */
-//$_lit_search_plugins[] = array('name' => 'UB_Ilmenau', 'display_name' =>'Universitätsbibliothek Ilmenau', 'link' => 'http://opac.lbs-ilmenau.gbv.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Bibliothek der Fachhochschule Schmalkalden */
-//$_lit_search_plugins[] = array('name' => 'FH_Schmalkalden', 'display_name' =>'Bibliothek der FH Schmalkalden', 'link' => 'http://opac.lbs-ilmenau.gbv.de/DB=2/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Universitäts- und Landesbibliothek Sachsen-Anhalt Halle */
-//$_lit_search_plugins[] = array('name' => "Ulb", 'display_name' =>'Universitäts- und Landesbibliothek Sachsen-Anhalt Halle', 'link' => 'http://opac.bibliothek.uni-halle.de/DB=1/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* FB Technik ULB Halle und FH Merseburg  */
-//$_lit_search_plugins[] = array('name' => "FBTechnik", 'display_name' =>'Hochschule Merseburg', 'link' => 'http://opac.bibliothek.uni-halle.de/DB=2/SET=1/TTL=1/CMD?ACT=SRCHA&IKT=12&SRT=YOP&TRM={accession_number}');
-
-/* Universitätsbibliothek Trier */
-//$_lit_search_plugins[] = array('name' => 'UB_Trier', 'display_name' =>'BIB-KAT Universität Trier', 'link' => 'http://bibkat.uni-trier.de/F/?func=find-c&local_base=tri01&ccl_term={accession_number}');
-
-/* Südwestdeutscher Bibliotheksverbund SWB Online */
-//$_lit_search_plugins[] = array('name' => "Swb", 'display_name' => "SWB Online Katalog", 'link' => 'http://swb.bsz-bw.de/DB=2.1/SET=1/TTL=2/CLK?IKT=12&TRM={accession_number}');
 
 /*authentication plugins
 ----------------------------------------------------------------
@@ -440,6 +368,929 @@ $LOGIN_IP_RANGES =
         ]
     ];
 
-/*path generation
------------------------------------------------------------------
-(end of user defined settings)*/
+
+///////////////////////
+//Library configuration
+///////////////////////
+
+
+$LIBRARY_STYLESHEET_ID = 'din-1505-2';
+
+
+/**
+ * LIBRARY_CATALOGS contains the list of catalogs that are configured.
+ * Entries in this array have the following structure:
+ *
+ * [
+ *     'name'          => The name of the catalog.
+ *     'class_name'    => The class that handles the search in that catalog.
+ *                         It must be an implementation of the
+ *                         LibrarySearch interface.
+ *     'base_url'      => The base URL to the search page where requests can
+ *                        be sent to.
+ *     'settings'      => Catalog specific settings. This is an optional
+ *                        associative array.
+ *     'local_catalog' => Whether the catalog is a local catalog that is only
+ *                        used to enrich search results with additional data
+ *                        and download possibilities (true) or the catalog is
+ *                        a "normal" catalog that is used for the
+ *                        library search (false).
+ * ]
+ */
+$LIBRARY_CATALOGS = [];
+
+
+/**
+ * LIBRARY_VARIABLE_TYPES is a list containing the variable types that can be
+ * used for library variables.
+ */
+$LIBRARY_VARIABLE_TYPES = [
+    'date',
+    'name',
+    'number',
+    'standard'
+];
+
+
+/**
+ * LIBRARY_VARIABLES is a list with all variables that can be used for
+ * library documents.
+ */
+$LIBRARY_VARIABLES = [
+    [
+        'name' => 'abstract',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Inhaltsangabe',
+            'en_GB' => 'Abstract'
+        ]
+    ],
+    [
+        'name' => 'accessed',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Zugriffsdatum',
+            'en_GB' => 'Accessed'
+        ]
+    ],
+    [
+        'name' => 'annote',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Annotation',
+            'en_GB' => 'Annote'
+        ]
+    ],
+    [
+        'name' => 'archive',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Archiv',
+            'en_GB' => 'Archive'
+        ]
+    ],
+    [
+        'name' => 'archive_location',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Speicherort im Archiv',
+            'en_GB' => 'Archive location'
+        ]
+    ],
+    [
+        'name' => 'archive-place',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Archivort',
+            'en_GB' => 'Archive place'
+        ]
+    ],
+    [
+        'name' => 'author',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Autorin, Autor',
+            'en_GB' => 'Author'
+        ],
+        'required' => true
+    ],
+    [
+        'name' => 'authority',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Genehmigungsinstanz',
+            'en_GB' => 'Authority'
+        ]
+    ],
+    [
+        'name' => 'call-number',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Signatur',
+            'en_GB' => 'Call-number'
+        ]
+    ],
+    [
+        'name' => 'chapter-number',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Kapitelnummer',
+            'en_GB' => 'Chapter-number'
+        ]
+    ],
+    [
+        'name' => 'citation-label',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Zitierbezeichnung',
+            'en_GB' => 'Citation-label'
+        ]
+    ],
+    [
+        'name' => 'citation-number',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Zitiernummer',
+            'en_GB' => 'Citation-number'
+        ]
+    ],
+    [
+        'name' => 'collection-editor',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Sammlungseditor',
+            'en_GB' => 'Collection-editor'
+        ]
+    ],
+    [
+        'name' => 'collection-number',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Sammlungsnummer',
+            'en_GB' => 'Collection-number'
+        ]
+    ],
+    [
+        'name' => 'collection-title',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Sammlungstitel',
+            'en_GB' => 'Collection-title'
+        ]
+    ],
+    [
+        'name' => 'composer',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Komponist*in, Verfasser*in',
+            'en_GB' => 'Composer'
+        ]
+    ],
+    [
+        'name' => 'container',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Sammlung',
+            'en_GB' => 'Container'
+        ]
+    ],
+    [
+        'name' => 'container-author',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Autor*in',
+            'en_GB' => 'Container-author'
+        ]
+    ],
+    [
+        'name' => 'container-title',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Titel der Sammlung',
+            'en_GB' => 'Container-title'
+        ]
+    ],
+    [
+        'name' => 'container-title-short',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Kurztitel der Sammlung',
+            'en_GB' => 'Container-title-short'
+        ]
+    ],
+    [
+        'name' => 'dimensions',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Umfang',
+            'en_GB' => 'Dimension'
+        ]
+    ],
+    [
+        'name' => 'director',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Regisseur*in',
+            'en_GB' => 'Director'
+        ]
+    ],
+    [
+        'name' => 'DOI',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Digitale Objektkennung',
+            'en_GB' => 'Digital Object Identifier'
+        ]
+    ],
+    [
+        'name' => 'edition',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Auflage',
+            'en_GB' => 'Edition'
+        ]
+    ],
+    [
+        'name' => 'editor',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Verfasser*in',
+            'en_GB' => 'Editor'
+        ]
+    ],
+    [
+        'name' => 'editorial-director',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Herausgeber*in',
+            'en_GB' => 'Editorial-director'
+        ]
+    ],
+    [
+        'name' => 'event',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Veranstaltung',
+            'en_GB' => 'Event'
+        ]
+    ],
+    [
+        'name' => 'event-date',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Datum der Veranstaltung',
+            'en_GB' => 'Event-date'
+        ]
+    ],
+    [
+        'name' => 'event-place',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Veranstaltungsort',
+            'en_GB' => 'Event-place'
+        ]
+    ],
+    [
+        'name' => 'first-reference-note-number',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Erste Referenznummer zu vorherigem Eintrag',
+            'en_GB' => 'First-reference-note-number'
+        ]
+    ],
+    [
+        'name' => 'genre',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Gattung',
+            'en_GB' => 'Genre'
+        ]
+    ],
+    [
+        'name' => 'illustrator',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Illustrator*in',
+            'en_GB' => 'Illustrator'
+        ]
+    ],
+    [
+        'name' => 'interviewer',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Interviewer*in',
+            'en_GB' => 'Interviewer'
+        ]
+    ],
+    [
+        'name' => 'ISBN',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'ISBN',
+            'en_GB' => 'ISBN'
+        ]
+    ],
+    [
+        'name' => 'ISSN',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'ISSN',
+            'en_GB' => 'ISSN'
+        ]
+    ],
+    [
+        'name' => 'issue',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Ausgabe',
+            'en_GB' => 'Issue'
+        ]
+    ],
+    [
+        'name' => 'issued',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Datum der Veröffentlichung der Ausgabe',
+            'en_GB' => 'Issued'
+        ]
+    ],
+    [
+        'name' => 'jurisdiction',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Gerichtsstand',
+            'en_GB' => 'Jurisdiction'
+        ]
+    ],
+    [
+        'name' => 'keyword',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Schlagwort',
+            'en_GB' => 'Keyword'
+        ]
+    ],
+    [
+        'name' => 'language',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Sprache',
+            'en_GB' => 'Language'
+        ]
+    ],
+    [
+        'name' => 'locator',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Stelle',
+            'en_GB' => 'Locator'
+        ]
+    ],
+    [
+        'name' => 'medium',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Medium',
+            'en_GB' => 'Medium'
+        ]
+    ],
+    [
+        'name' => 'note',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'zusätzliche Informationen',
+            'en_GB' => 'Additional note'
+        ]
+    ],
+    [
+        'name' => 'number',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Identifikationsnummer',
+            'en_GB' => 'Number (identity of object)'
+        ]
+    ],
+    [
+        'name' => 'number-of-pages',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Seitenanzahl',
+            'en_GB' => 'Number-of-pages'
+        ]
+    ],
+    [
+        'name' => 'number-of-volumes',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Bandanzahl',
+            'en_GB' => 'Number-of-volumes'
+        ]
+    ],
+    [
+        'name' => 'original-author',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Autor des Originals',
+            'en_GB' => 'Original-author'
+        ]
+    ],
+    [
+        'name' => 'original-date',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Datum der Originalversion',
+            'en_GB' => 'Original-date'
+        ]
+    ],
+    [
+        'name' => 'original-publisher',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Originaler Verlag',
+            'en_GB' => 'Original-publisher'
+        ]
+    ],
+    [
+        'name' => 'original-publisher-place',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Verlagsort des Originals',
+            'en_GB' => 'Original-publisher-place'
+        ]
+    ],
+    [
+        'name' => 'original-title',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Titel der originalen Version',
+            'en_GB' => 'Original-title'
+        ]
+    ],
+    [
+        'name' => 'page',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Seite von bis',
+            'en_GB' => 'Page (range)'
+        ]
+    ],
+    [
+        'name' => 'page-first',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Erste Seite des Seitenbereichs',
+            'en_GB' => 'Page-first'
+        ]
+    ],
+    [
+        'name' => 'PMCID',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'PubMed Central reference number',
+            'en_GB' => 'PubMed Central reference number'
+        ]
+    ],
+    [
+        'name' => 'PMID',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'PubMedID',
+            'en_GB' => 'PubMed Identifier'
+        ]
+    ],
+    [
+        'name' => 'publisher',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Verlag',
+            'en_GB' => 'Publisher'
+        ]
+    ],
+    [
+        'name' => 'publisher-place',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Verlagsort',
+            'en_GB' => 'Publisher-place'
+        ]
+    ],
+    [
+        'name' => 'recipient',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Empfänger',
+            'en_GB' => 'Recipient'
+        ]
+    ],
+    [
+        'name' => 'references',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Referenzen',
+            'en_GB' => 'References'
+        ]
+    ],
+    [
+        'name' => 'reviewed-author',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Autor des rezensierten Werks',
+            'en_GB' => 'Reviewed-author'
+        ]
+    ],
+    [
+        'name' => 'reviewed-title',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Titel des rezensierten Werks',
+            'en_GB' => 'Reviewed-title'
+        ]
+    ],
+    [
+        'name' => 'scale',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Größe, Ausmaß',
+            'en_GB' => 'Scale'
+        ]
+    ],
+    [
+        'name' => 'section',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Abschnitt',
+            'en_GB' => 'Section'
+        ]
+    ],
+    [
+        'name' => 'source',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Quelle',
+            'en_GB' => 'Source'
+        ]
+    ],
+    [
+        'name' => 'status',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Status',
+            'en_GB' => 'Status'
+        ]
+    ],
+    [
+        'name' => 'submitted',
+        'type' => 'date',
+        'display_name' => [
+            'de_DE' => 'Einreichungsdatum',
+            'en_GB' => 'Submitted'
+        ]
+    ],
+    [
+        'name' => 'title',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Titel',
+            'en_GB' => 'Title'
+        ],
+        'required' => true
+    ],
+    [
+        'name' => 'title-short',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Kurztitel',
+            'en_GB' => 'Title-short'
+        ]
+    ],
+    [
+        'name' => 'translator',
+        'type' => 'name',
+        'display_name' => [
+            'de_DE' => 'Übersetzer',
+            'en_GB' => 'Translator'
+        ]
+    ],
+    [
+        'name' => 'URL',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'URL',
+            'en_GB' => 'URL'
+        ]
+    ],
+    [
+        'name' => 'version',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Version',
+            'en_GB' => 'Version'
+        ]
+    ],
+    [
+        'Name' => 'volume',
+        'type' => 'number',
+        'display_name' => [
+            'de_DE' => 'Band',
+            'en_GB' => 'Volume'
+        ]
+    ],
+    [
+        'name' => 'year-suffix',
+        'type' => 'standard',
+        'display_name' => [
+            'de_DE' => 'Jahrsuffix',
+            'en_GB' => 'Year-suffix'
+        ]
+    ]
+];
+
+
+$LIBRARY_DOCUMENT_TYPES = [
+    [
+        'name' => 'article-journal',
+        'display_name' => [
+            'de_DE' => 'Artikel Fachzeitschrift',
+            'en_GB' => 'Journal article'
+        ],
+        'properties' => [
+            'DOI',
+            'ISSN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-title',
+            'container-title',
+            'container-title-short',
+            'editor',
+            'issue',
+            'issued',
+            'language',
+            'note',
+            'page',
+            'reviewed-author',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ],
+    [
+        'name' => 'article-magazine',
+        'display_name' => [
+            'de_DE' => 'Zeitschriftenartikel',
+            'en_GB' => 'Magazine article'
+        ],
+        'properties' => [
+            'ISSN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'container-title',
+            'issue',
+            'issued',
+            'language',
+            'note',
+            'page',
+            'reviewed-author',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ],
+    [
+        'name' => 'article-newspaper',
+        'display_name' => [
+            'de_DE' => 'Zeitungsartikel',
+            'en_GB' => 'Newspaper article'
+        ],
+        'properties' => [
+            'ISSN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'container-title',
+            'issued',
+            'language',
+            'note',
+            'page',
+            'publisher-place',
+            'reviewed-author',
+            'section',
+            'source',
+            'title',
+            'title-short',
+            'translator'
+        ]
+    ],
+    [
+        'name' => 'article',
+        'display_name' => [
+            'de_DE' => 'Artikel',
+            'en_GB' => 'Article'
+        ],
+        'properties' => [
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'editor',
+            'issued',
+            'language',
+            'note',
+            'publisher',
+            'reviewed-author',
+            'source',
+            'title',
+            'title-short',
+            'translator'
+        ]
+    ],
+    [
+        'name' => 'book',
+        'display_name' => [
+            'de_DE' => 'Buch',
+            'en_GB' => 'Book'
+        ],
+        'properties' => [
+            'ISBN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-editor',
+            'collection-number',
+            'collection-title',
+            'edition',
+            'editor',
+            'event-place',
+            'issued',
+            'language',
+            'note',
+            'number-of-pages',
+            'number-of-volumes',
+            'publisher',
+            'publisher-place',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ],
+    [
+        'name' => 'paper-conference',
+        'display_name' => [
+            'de_DE' => 'Konferenzpapier',
+            'en_GB' => 'Conference paper'
+        ],
+        'properties' => [
+            'DOI',
+            'ISBN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-editor',
+            'collection-title',
+            'container-title',
+            'editor',
+            'event',
+            'issued',
+            'language',
+            'note',
+            'page',
+            'publisher',
+            'publisher-place',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ],
+    [
+        'name' => 'report',
+        'display_name' => [
+            'de_DE' => 'Bericht',
+            'en_GB' => 'Report'
+        ],
+        'properties' => [
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-editor',
+            'collection-title',
+            'issued',
+            'language',
+            'note',
+            'page',
+            'publisher',
+            'publisher-place',
+            'source',
+            'title',
+            'title-short',
+            'translator'
+        ]
+    ],
+    [
+        'name' => 'entry-dictionary',
+        'display_name' => [
+            'de_DE' => 'Wörterbucheintrag',
+            'en_GB' => 'Dictionary entry'
+        ],
+        'properties' => [
+            'ISBN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-editor',
+            'collection-number',
+            'collection-title',
+            'container-title',
+            'edition',
+            'editor',
+            'event-place',
+            'issued',
+            'language',
+            'note',
+            'number-of-volumes',
+            'page',
+            'publisher',
+            'publisher-place',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ],
+    [
+        'name' => 'entry-encyclopedia',
+        'display_name' => [
+            'de_DE' => 'Lexikoneintrag',
+            'en_GB' => 'Encyclopedia entry'
+        ],
+        'properties' => [
+            'ISBN',
+            'URL',
+            'abstract',
+            'accessed',
+            'archive',
+            'archive_location',
+            'author',
+            'call-number',
+            'collection-editor',
+            'collection-number',
+            'collection-title',
+            'container-title',
+            'edition',
+            'editor',
+            'event-place',
+            'issued',
+            'language',
+            'note',
+            'number-of-volumes',
+            'page',
+            'publisher',
+            'publisher-place',
+            'source',
+            'title',
+            'title-short',
+            'translator',
+            'volume'
+        ]
+    ]
+];

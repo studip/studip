@@ -34,7 +34,7 @@
                     <?
                     $actions = ActionMenu::get();
                     $actions->addLink(
-                        $room->getLink('booking_plan'),
+                        $room->getActionLink('booking_plan'),
                         Icon::create('timetable'),
                         _('Belegungsplan anzeigen'),
                         [

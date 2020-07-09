@@ -544,32 +544,6 @@ function get_my_obj_values (&$my_obj, $user_id)
         }
     }
 
-    //Literaturlisten
-    if (get_config('LITERATURE_ENABLE')) {
-        $db2->query(get_obj_clause('lit_list a','range_id','list_id',"(chdate > IFNULL(b.visitdate, $threshold) AND a.user_id !='$user_id')", 'literature', false, " AND a.visibility=1", false, $user_id));
-        while($db2->next_record()) {
-            $object_id = $db2->f('object_id');
-            if ($my_obj[$object_id]["modules"]["literature"]) {
-                $my_obj[$object_id]["neuelitlist"] = $db2->f("neue");
-                $my_obj[$object_id]["litlist"] = $db2->f("count");
-                if ($my_obj[$object_id]['last_modified'] < $db2->f('last_modified')){
-                    $my_obj[$object_id]['last_modified'] = $db2->f('last_modified');
-                }
-
-                $nav = new Navigation('literature', 'dispatch.php/course/literature');
-
-                if ($db2->f('neue')) {
-                    $nav->setImage(Icon::create('literature+new', 'attention', ["title" => sprintf(_('%s Literaturlisten, %s neue'),$db2->f('count'),$db2->f('neue'))]));
-                    $nav->setBadgeNumber($db2->f('neue'));
-                } else if ($db2->f('count')) {
-                    $nav->setImage(Icon::create('literature', 'inactive', ["title" => sprintf(_('%s Literaturlisten'),$db2->f('count'))]));
-                }
-
-                $my_obj[$object_id]['literature'] = $nav;
-            }
-        }
-    }
-
     // TeilnehmerInnen
     if ($GLOBALS['perm']->have_perm('tutor')) {
         //vorläufige Teilnahme

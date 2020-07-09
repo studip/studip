@@ -43,6 +43,7 @@
  */
 interface FolderType
 {
+
     /**
      * Returns a human-friendly representation of the FolderType's name.
      *
@@ -159,18 +160,19 @@ interface FolderType
     /**
      * Validates a file upload.
      *
-     * @param mixed file The file to be validated.
+     * @param FileType file The file to be validated.
      * @param string $user_id The ID of the user who uploaded the file.
+     * @return string|null : error message or null if it was successful
      */
-    public function validateUpload($file, $user_id);
+    public function validateUpload(FileType $file, $user_id);
 
     /**
-     * This method is responsible for creating a file and the associated FileRef object.
-     *
-     * @param ArrayAccess|Array $file Data which are required to create a file.
-     * @return File|MessageBox : File of the created file or MessageBox if an error occured
+     * Adds FileType object to this folder and returns the new FileType object.
+     * @param FileType $file
+     * @param $user_id : id of the given user
+     * @return FileType
      */
-    public function createFile($file);
+    public function addFile(FileType $file, $user_id = null);
 
     /**
      * Deletes a file in this folder.
@@ -207,6 +209,8 @@ interface FolderType
      */
     public function store();
 
+    //TODO: remove useless methods which are now handled by FileType interface
+
     /**
      * Determines if a user may download the file.
      * @param string $file_ref_id The ID of the FileRef object of a file that shall be downloaded.
@@ -230,4 +234,34 @@ interface FolderType
      * @return boolean True, if the user is permitted to write to the file, false otherwise.
      */
     public function isFileWritable($file_ref_id, $user_id);
+
+    /**
+     * Returns an associative array of additional colums with the index the id of the column
+     * and their values as the localized names of the columns
+     * @return array('col1' => _("Anfragestatus"))
+     */
+    public function getAdditionalColumns();
+
+    /**
+     * Returns the content for that additional column, if it exists. You can return null a string
+     * or a Flexi_Template as the content.
+     * @param string $column_index
+     * @return null|string|Flexi_Template
+     */
+    public function getContentForAdditionalColumn($column_index);
+
+    /**
+     * Returns an integer that marks the value the content of the given column should be
+     * ordered by.
+     * @param string $column_index
+     * @return integer : order value
+     */
+    public function getAdditionalColumnOrderWeigh($column_index);
+
+    /**
+     * Returns an array of Studip\Button or Studip\LinkButton objects that get displayed
+     * underneath the files-table.
+     * @return array of Studip\Button or Studip\LinkButton
+     */
+    public function getAdditionalActionButtons();
 }

@@ -10,14 +10,14 @@ trait EtagHelperTrait
     protected static function createEtag(\FileRef $fileRef, $fetchLinked = false)
     {
         $etag = null;
+        $filetype = $fileRef->getFileType();
 
-        if ('disk' == $fileRef->file->storage) {
-            $pathFile = $fileRef->file->path;
+        if ($pathFile = $filetype->getPath()) {
             if ($stat = stat($pathFile)) {
                 $etag = sprintf('"%s %d %d"', $stat['ino'], $stat['mtime'], $stat['size']);
             }
-        } elseif ($fetchLinked && 'url' == $fileRef->file->storage) {
-            $metadata = \FileManager::fetchURLMetadata($fileRef->file->url);
+        } elseif ($fetchLinked && is_a("URLFile", $filetype)) {
+            $metadata = \FileManager::fetchURLMetadata($fileRef->file->metadata['url']);
             if (isset($metadata['Etag'])) {
                 $etag = $metadata['Etag'];
             }

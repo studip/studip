@@ -519,6 +519,7 @@ class FileSystem extends \RESTAPI\RouteMap
     {
         $user = $this->requireUser();
         $typed_folder = $ref->folder->getTypedFolder();
+        $filetype = $ref->getFileType();
 
         $result = array_merge($ref->toRawArray(), [
             'size'      => (int) $ref->file->size,
@@ -526,9 +527,9 @@ class FileSystem extends \RESTAPI\RouteMap
             'storage'   => $ref->file->storage,
 
             'is_readable'     => $typed_folder->isReadable($user->id),
-            'is_downloadable' => $typed_folder->isFileDownloadable($ref->id, $user->id),
-            'is_editable'     => $typed_folder->isFileEditable($ref->id, $user->id),
-            'is_writable'     => $typed_folder->isFileWritable($ref->id, $user->id),
+            'is_downloadable' => $filetype->isDownloadable($user->id),
+            'is_editable'     => $filetype->isEditable($user->id),
+            'is_writable'     => $filetype->isWritable($user->id),
         ]);
 
         $result['downloads'] = (int) $result['downloads'];

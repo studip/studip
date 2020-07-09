@@ -1,163 +1,94 @@
 <?php
 $permissions = [];
-$downloadable = $downloadable || false;
-$editable = $editable || false;
-$writable = $writable || false;
-$show_bulk_checkboxes = $show_bulk_checkboxes || false;
-if ($current_folder) {
-    if ($current_folder->isFileEditable($file_ref->id, $GLOBALS['user']->id)) {
-        $permissions[] = 'w';
-        $editable = true;
-    }
-    if ($current_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
-        $permissions[] = 'dr';
-        $downloadable = true;
-    }
-    $writable = $current_folder->isFileWritable($file_ref->id, $GLOBALS['user']->id);
+if ($file->isEditable($GLOBALS['user']->id)) {
+    $permissions[] = 'w';
+}
+if ($file->isDownloadable($GLOBALS['user']->id)) {
+    $permissions[] = 'dr';
 }
 ?>
-<tr class="<? if ($file_ref->chdate > $last_visitdate && ($file_ref->user_id !== $GLOBALS['user']->id)) echo 'new'; ?>"
-    id="fileref_<?= htmlReady($table_id) ?>_<?= htmlReady($file_ref->id) ?>"
+<tr class="<? if ($file->getLastChangeDate() > $last_visitdate && ($file->getUserId() !== $GLOBALS['user']->id)) echo 'new'; ?>"
+    id="fileref_<?= htmlReady($table_id) ?>_<?= htmlReady($file->getId()) ?>"
     role="row"
     data-permissions="<?= implode($permissions) ?>">
     <? if ($show_bulk_checkboxes) : ?>
         <td>
-        <? if ($downloadable) : ?>
-            <input type="checkbox"
-                   class="studip-checkbox"
-                   name="ids[]"
-                   id="file_checkbox_<?= htmlReady($table_id) ?>_<?= $file_ref->id ?>"
-                   value="<?= $file_ref->id ?>"
-                   <? if (in_array($file_ref->id, (array)$marked_element_ids)) echo 'checked'; ?>>
-            <label for="file_checkbox_<?= htmlReady($table_id) ?>_<?= $file_ref->id ?>"></label>
-        <? endif ?>
+            <? if ($file->isDownloadable($GLOBALS['user']->id)) : ?>
+                <input type="checkbox"
+                       class="studip-checkbox"
+                       name="ids[]"
+                       id="file_checkbox_<?= htmlReady($table_id) ?>_<?= htmlReady($file->getId()) ?>"
+                       value="<?= htmlReady($file->getId()) ?>"
+                       <?= in_array($file->getId(), (array) $marked_element_ids) ? 'checked' : '' ?>>
+                <label for="file_checkbox_<?= htmlReady($table_id) ?>_<?= htmlReady($file->getId()) ?>"></label>
+            <? endif ?>
         </td>
     <? endif ?>
-    <td class="document-icon" data-sort-value="<?=crc32($file_ref->mime_type)?>">
-    <? if ($downloadable) : ?>
-        <a href="<?= htmlReady($file_ref->download_url) ?>" target="_blank" rel="noopener noreferrer">
-            <?= FileManager::getIconForFileRef($file_ref)->asImg(24) ?>
-        </a>
-    <? else : ?>
-        <?= FileManager::getIconForFileRef($file_ref, Icon::ROLE_INACTIVE)->asImg(24) ?>
-    <? endif ?>
+    <td class="document-icon" data-sort-value="<?= crc32($file->getMimeType()) ?>">
+        <? if ($file->isDownloadable($GLOBALS['user']->id)) : ?>
+            <a href="<?= htmlReady($file->getDownloadURL()) ?>" target="_blank" rel="noopener noreferrer">
+                <?= $file->getIcon(Icon::ROLE_CLICKABLE)->asImg(24) ?>
+            </a>
+        <? else : ?>
+            <?= $file->getIcon(Icon::ROLE_INACTIVE)->asImg(24) ?>
+        <? endif ?>
     </td>
-    <td data-sort-value="<?= htmlReady($file_ref->name) ?>">
-    <? if ($downloadable) : ?>
-        <a href="<?= $controller->link_for("file/details/{$file_ref->id}/1") ?>" data-dialog>
-            <?= htmlReady($file_ref->name) ?>
-        </a>
-    <? else : ?>
-        <?= htmlReady($file_ref->name) ?>
-    <? endif ?>
-    <? if ($file_ref->terms_of_use && !$file_ref->terms_of_use->fileIsDownloadable($file_ref, false)): ?>
-        <?= Icon::create('lock-locked', Icon::ROLE_INFO)->asImg(['title' => _('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.')]) ?>
-    <? endif; ?>
+    <td data-sort-value="<?= htmlReady($file->getFilename()) ?>">
+        <? if ($file->isDownloadable($GLOBALS['user']->id)) : ?>
+            <a href="<?= $controller->link_for("file/details/{$file->getId()}/1") ?>" data-dialog>
+                <?= htmlReady($file->getFilename()) ?>
+            </a>
+        <? else : ?>
+            <?= htmlReady($file->getFilename()) ?>
+        <? endif ?>
+
+        <?php $terms = $file->getTermsOfUse() ?>
+        <? if ($terms && !$terms->isDownloadable($topFolder->range_id, $topFolder->range_type, false)) : ?>
+            <?= Icon::create('lock-locked', Icon::ROLE_INFO)->asImg(['title' => _('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.')]) ?>
+        <? endif ?>
     </td>
-    <td title="<?= number_format($file_ref->size, 0, ',', '.') . ' Byte' ?>" data-sort-value="<?= $file_ref->size ?>" class="responsive-hidden">
-    <? if ($file_ref->is_link) : ?>
-        <?= _('Weblink') ?>
-    <? else : ?>
-        <?= relSize($file_ref->size, false) ?>
+    <? $size = $file->getSize() ?>
+    <td title="<?= number_format($size, 0, ',', '.') . ' Byte' ?>" data-sort-value="<?= htmlReady($size) ?>" class="responsive-hidden">
+    <? if ($size !== null) : ?>
+        <?= relSize($size, false) ?>
     <? endif ?>
     </td>
 <? if ($show_downloads) : ?>
-    <td data-sort-value="<?= htmlReady($file_ref->downloads) ?>" class="responsive-hidden">
-        <?= htmlReady($file_ref->downloads) ?>
+    <? $downloads = $file->getDownloads() ?>
+    <td data-sort-value="<?= htmlReady($downloads) ?>" class="responsive-hidden">
+        <?= htmlReady($downloads) ?>
     </td>
 <? endif ?>
-    <td data-sort-value="<?= htmlReady($file_ref->author_name) ?>" class="responsive-hidden">
-    <? if ($file_ref->user_id !== $GLOBALS['user']->id && $file_ref->owner): ?>
-        <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $file_ref->owner->username) ?>">
-            <?= htmlReady($file_ref->author_name) ?>
+    <? $author_name = $file->getUserName() ?>
+    <td data-sort-value="<?= htmlReady($author_name) ?>" class="responsive-hidden">
+    <? $user_id = $file->getUserId() ?>
+    <? if (($user_id !== null) && ($user_id !== $GLOBALS['user']->id)) : ?>
+        <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . get_username($user_id)) ?>">
+            <?= htmlReady($author_name) ?>
         </a>
     <? else: ?>
-        <?= htmlReady($file_ref->author_name) ?>
+        <?= htmlReady($author_name) ?>
     <? endif; ?>
     </td>
-    <td title="<?= strftime('%x %X', $file_ref->chdate) ?>" data-sort-value="<?= $file_ref->chdate ?>" class="responsive-hidden">
-        <?= $file_ref->chdate ? reltime($file_ref->chdate) : "" ?>
+    <? $chdate = $file->getLastChangeDate() ?>
+    <td title="<?= strftime('%x %X', $chdate) ?>" data-sort-value="<?= htmlReady($chdate) ?>" class="responsive-hidden">
+        <?= $chdate ? reltime($chdate) : "" ?>
     </td>
+    <? foreach ($current_folder->getAdditionalColumns() as $index => $column_name) : ?>
+        <td class="responsive-hidden"
+            data-sort-value="<?= htmlReady($file->getAdditionalColumnOrderWeigh($index)) ?>">
+        <? $content = $file->getContentForAdditionalColumn($index) ?>
+        <? if ($content) : ?>
+            <?= is_a($content, "Flexi_Template") ? $content->render() : $content ?>
+        <? endif ?>
+        </td>
+    <? endforeach ?>
     <td class="actions">
-    <?php
-        $actionMenu = ActionMenu::get();
-        $actionMenu->addLink(
-            $controller->url_for("file/details/{$file_ref->id}/1"),
-            _('Info'),
-            Icon::create('info-circle', Icon::ROLE_CLICKABLE, ['size' => 20]),
-            ['data-dialog' => '']
-        );
-        if ($current_action === 'flat') {
-            if (Navigation::hasItem('/course/files') && Navigation::getItem('/course/files')->isActive()) {
-                $actionMenu->addLink(
-                    $controller->url_for('course/files/index/' . $file_ref->folder_id),
-                    _('Ordner öffnen'),
-                    Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
-                );
-            } elseif (Navigation::hasItem('/files_dashboard/files') && Navigation::getItem('/files_dashboard/files')->isActive()) {
-                 $actionMenu->addLink(
-                     $controller->url_for('files/index/' . $file_ref->folder_id),
-                     _('Ordner öffnen'),
-                     Icon::create('folder-empty', Icon::ROLE_CLICKABLE, ['size' => 20])
-                );
-            }
+        <?
+        $actionMenu = $file->getActionMenu();
+        if ($actionMenu) {
+            echo $actionMenu->render();
         }
-        if ($editable) {
-            $actionMenu->addLink(
-                $controller->url_for('file/edit/' . $file_ref->id),
-                _('Datei bearbeiten'),
-                Icon::create('edit', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                ['data-dialog' => '']
-            );
-            $actionMenu->addLink(
-                $controller->url_for('file/update/' . $file_ref->id),
-                _('Datei aktualisieren'),
-                Icon::create('refresh', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                ['data-dialog' => '']
-            );
-        }
-        if ($writable) {
-            $actionMenu->addLink(
-                $controller->url_for('file/choose_destination/move/' . $file_ref->id),
-                _('Datei verschieben'),
-                Icon::create('file+move_right', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                ['data-dialog' => 'size=auto']
-            );
-        }
-        if ($downloadable && $GLOBALS['user']->id !== 'nobody') {
-            $actionMenu->addLink(
-                $controller->url_for('file/choose_destination/copy/' . $file_ref->id),
-                _('Datei kopieren'),
-                Icon::create('file+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                ['data-dialog' => 'size=auto']
-            );
-            $actionMenu->addLink(
-                $file_ref->getDownloadURL('force_download'),
-                _('Link kopieren'),
-                Icon::create('group'),
-                ['class' => 'copyable-link']
-            );
-        }
-        if (Feedback::isActivated() && Feedback::hasCreatePerm($course->id)) {
-            $actionMenu->addLink(
-                $controller->url_for('course/feedback/create_form/' . $file_ref->id . '/FileRef'),
-                _('Neues Feedback-Element'),
-                Icon::create('star+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                ['data-dialog' => '1']
-            );
-        }
-        if ($writable) {
-            $actionMenu->addButton(
-                'delete',
-                _('Datei löschen'),
-                Icon::create('trash', Icon::ROLE_CLICKABLE, ['size' => 20]),
-                [
-                    'formaction'   => $controller->url_for("file/delete/{$file_ref->id}", $flat_view ? ['from_flat_view' => 1] : []),
-                    'data-confirm' => sprintf(_('Soll die Datei "%s" wirklich gelöscht werden?'), jsReady($file_ref->name)),
-                ]
-            );
-        }
-    ?>
-        <?= $actionMenu->render() ?>
+        ?>
     </td>
 </tr>

@@ -103,7 +103,7 @@ class PermissionEnabledFolder extends StandardFolder
         return $template;
     }
 
-    public function validateUpload($uploadedfile, $user_id)
+    public function validateUpload(FileType $uploadedfile, $user_id)
     {
         if (!$this->isWritable($user_id)) {
             return _('Der Dateiordner ist nicht beschreibbar.');
@@ -128,7 +128,7 @@ class PermissionEnabledFolder extends StandardFolder
 
         if (is_object($fileref)) {
             if ($this->isVisible($user_id) && $this->isReadable($user_id)) {
-                return $fileref->terms_of_use->fileIsDownloadable($fileref, true, $user_id);
+                return $fileref->terms_of_use->isDownloadable($this->range_id, $this->range_type, true, $user_id);
             }
         }
         return false;

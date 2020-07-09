@@ -312,23 +312,23 @@ class BlubberController extends AuthenticatedController
                     if ($blubber_directory) {
                         //ok, blubber directory exists: we can handle the uploaded file
 
-                        $error_string = $blubber_directory->validateUpload(
-                            $file,
+                        $uploaded = FileManager::handleFileUpload(
+                            [
+                                'tmp_name' => [$file['tmp_name']],
+                                'name'     => [$file['name']],
+                                'size'     => [$file['size']],
+                                'type'     => [$file['type']],
+                                'error'    => [$file['error']]
+                            ],
+                            $blubber_directory,
                             $GLOBALS['user']->id
                         );
 
-                        if ($error_string) {
-                            throw new Exception($error_string);
-                        }
-
-
-                        $file['tmp_path'] = $file['tmp_name'];
-
-                        $file_ref = $blubber_directory->createFile($file);
-
-                        if ($file_ref) {
+                        if ($uploaded['error']) {
+                            throw new Exception(implode("\n", $uploaded['error']));
+                        } elseif($uploaded['files'][0]) {
                             $oldbase = URLHelper::setBaseURL($GLOBALS['ABSOLUTE_URI_STUDIP']);
-                            $url = $file_ref->getDownloadURL();
+                            $url = $uploaded['files'][0]->getDownloadURL();
                             URLHelper::setBaseURL($oldbase);
                             $success = true;
                         } else {

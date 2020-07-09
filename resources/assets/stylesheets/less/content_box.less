@@ -14,6 +14,26 @@ section.contentbox {
         padding: 2px;
         background-color: @content-color-20;
 
+        span.title {
+            font-size: medium;
+            color: @base-color;
+
+            &.no-overflow {
+                width: calc(100% - 1.5em);
+                overflow: hidden;
+                white-space: nowrap;
+
+                &:after {
+                    content: "";
+                    width: 4em;
+                    background: linear-gradient(to right, transparent, @content-color-20);
+                    position: absolute;
+                    height: 1.5em;
+                    right: 2.5em;
+                }
+            }
+        }
+
         h1 {
             flex: 1 0 0;
             padding: 5px;

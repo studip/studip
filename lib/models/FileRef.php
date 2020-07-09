@@ -221,12 +221,12 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
 
     /**
      * Determines whether this FileRef is a link or not.
-     *
+     * @deprecated
      * @return bool True, if the FileRef references a link, false otherwise.
      */
     public function isLink()
     {
-        return $this->file->url_access_type === 'redirect';
+        return false;
     }
 
     public function setFolderType($field, FolderType $folder_type)
@@ -292,6 +292,12 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
                 $storage->addTabularData(_('Dateien'), 'file_refs', $field_data);
             }
         }
+    }
+
+    public function getFileType()
+    {
+        $filetype = $this->file->filetype;
+        return new $filetype($this);
     }
 
     public function getRangeName()

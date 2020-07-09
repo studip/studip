@@ -12,16 +12,18 @@
             <?= $this->render_partial('files/_files_thead') ?>
             <tbody>
                 <? if (count($folder_files)): ?>
-                    <? foreach($folder_files as $file_ref): ?>
-                        <?= $this->render_partial(
-                            'files/_fileref_tr',
-                            [
-                                'file_ref'       => $file_ref,
-                                'current_folder' => $folder,
-                                'controllerpath' => 'resources/resource/files',
-                                'last_visitdate' => $last_visitdate
-                            ]
-                        ) ?>
+                    <? foreach($folder_files as $file): ?>
+                        <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
+                            <?= $this->render_partial(
+                                'files/_fileref_tr',
+                                [
+                                    'file'           => $file,
+                                    'current_folder' => $folder,
+                                    'controllerpath' => 'resources/resource/files',
+                                    'last_visitdate' => $last_visitdate
+                                ]
+                            ) ?>
+                        <? endif ?>
                     <? endforeach ?>
                 <? else: ?>
                     <tr class="empty">
@@ -70,7 +72,7 @@
                             <? endif ?>
                             <? if ($folder->isWritable($GLOBALS['user']->id)): ?>
                                 <?= Studip\LinkButton::create(
-                                    _('Datei hinzufügen'),
+                                    _('Dokument hinzufügen'),
                                     '#',
                                     [
                                         'onclick' => 'STUDIP.Files.openAddFilesWindow(); return false;'

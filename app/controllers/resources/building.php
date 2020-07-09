@@ -69,7 +69,7 @@ class Resources_BuildingController extends AuthenticatedController
             $actions_available = true;
             $actions->addLink(
                 _('Gebäude bearbeiten'),
-                $this->building->getURL('edit'),
+                $this->building->getActionURL('edit'),
                 Icon::create('edit'),
                 [
                     'data-dialog' => '1'
@@ -77,7 +77,7 @@ class Resources_BuildingController extends AuthenticatedController
             );
             $actions->addLink(
                 _('Rechte bearbeiten'),
-                $this->building->getURL('permissions'),
+                $this->building->getActionURL('permissions'),
                 Icon::create('roles'),
                 [
                     'data-dialog' => '1'

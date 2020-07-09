@@ -110,7 +110,7 @@
                             <?= date('d.m.Y H:i', $permission->end) ?>
                         </td>
                         <td class="actions">
-                            <a href="<?= $permission->resource->getLink(
+                            <a href="<?= $permission->resource->getActionLink(
                                      'temporary_permissions',
                                      [
                                          'user_id' => $permission->user_id
@@ -174,7 +174,7 @@
                             <? endif ?>
                         </td>
                         <td class="actions">
-                            <a href="<?= $permission->resource->getLink(
+                            <a href="<?= $permission->resource->getActionLink(
                                      'permissions',
                                      [
                                          'user_id' => $permission->user_id

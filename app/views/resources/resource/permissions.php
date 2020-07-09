@@ -2,14 +2,14 @@
       action="<?= ($custom_form_action_link
           ? $custom_form_action_link
           : ($single_user_mode
-              ? $resource->getLink(
+              ? $resource->getActionLink(
                   'permissions',
                   [
                       'user_id' => $user->id
                   ]
               )
               : ($resource
-                  ? $resource->getLink('permissions')
+                  ? $resource->getActionLink('permissions')
                   : URLHelper::getLink(
                       'dispatch.php/resources/admin/permissions/global'
                   )

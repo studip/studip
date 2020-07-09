@@ -11,7 +11,7 @@
         <? foreach ($resources as $resource): ?>
         <tr>
             <td>
-                <a href="<?= $resource->getLink('show') ?>">
+                <a href="<?= $resource->getActionLink('show') ?>">
                     <?= htmlReady($resource->name) ?>
                 </a>
             </td>

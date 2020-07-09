@@ -99,9 +99,6 @@ class Activity extends SchemaProvider
             'participants' => \Course::class,
             'schedule' => \Course::class,
             'wiki' => \WikiPage::class,
-
-            // TODO: not yet supported
-            // 'literaturelist'=> '',
         ];
 
 

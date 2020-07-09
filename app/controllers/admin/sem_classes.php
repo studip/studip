@@ -73,7 +73,6 @@ class Admin_SemClassesController extends AuthenticatedController
             'CoreSchedule' => ['id' => "CoreSchedule", 'name' => _("Kern-Termine"), 'enabled' => true],
             'CoreParticipants' => ['id' => "CoreParticipants", 'name' => _("Kern-Teilnehmende"), 'enabled' => true],
             'CoreStudygroupParticipants' => ['id' => "CoreStudygroupParticipants", 'name' => _("Kern-Studiengruppen-Teilnehmende"), 'enabled' => true],
-            'CoreLiterature' => ['id' => "CoreLiterature", 'name' => _("Kern-Literatur"), 'enabled' => true],
             'CoreScm' => ['id' => "CoreScm", 'name' => _("Kern-Freie-Informationen"), 'enabled' => true],
             'CoreWiki' => ['id' => "CoreWiki", 'name' => _("Kern-Wiki"), 'enabled' => true],
             'CoreCalendar' => ['id' => "CoreCalendar", 'name' => _("Kern-Kalender"), 'enabled' => true],

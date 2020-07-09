@@ -247,7 +247,7 @@ class Location extends Resource
      *
      * @return string The Link for the building action.
      */
-    public function getLink($action = 'show', $link_parameters = [])
+    public function getActionLink($action = 'show', $link_parameters = [])
     {
         return self::getLinkForAction(
             $action,
@@ -266,7 +266,7 @@ class Location extends Resource
      * @param array $url_parameters Optional parameters for the URL.
      * @return string
      */
-    public function getURL($action = 'show', $url_parameters = [])
+    public function getActionURL($action = 'show', $url_parameters = [])
     {
         return self::getURLForAction(
             $action,

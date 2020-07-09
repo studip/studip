@@ -14,13 +14,6 @@
                     <input id="edit_file_name" type="text" name="name"
                            value="<?= htmlReady($name) ?>">
                 </label>
-                <? if ($file_ref->isLink()): ?>
-                    <label>
-                        <?= _('URL') ?>
-                        <input id="edit_file_url" type="text" name="url"
-                               value="<?= htmlReady($url) ?>">
-                    </label>
-                <? endif ?>
                 <label>
                     <?= _('Beschreibung') ?>
                     <textarea name="description" placeholder="<?= _('Optionale Beschreibung') ?>"><?= htmlReady($description); ?></textarea>

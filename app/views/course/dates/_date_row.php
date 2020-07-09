@@ -41,7 +41,7 @@ $dialog_url = $show_raumzeit
     <td>
         <? $room = $date->getRoom(); ?>
         <? if ($room): ?>
-            <a href="<?= $room->getLink('show') ?>" data-dialog>
+            <a href="<?= $room->getActionLink('show') ?>" data-dialog>
                 <?= htmlReady($room->name) ?>
             </a>
         <? else: ?>

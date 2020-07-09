@@ -101,10 +101,6 @@ $translations = array(
     'Datei ist zu groß oder hat eine nicht erlaubte Endung.' => _('Datei ist zu groß oder hat eine nicht erlaubte Endung.'),
     'Datei hochladen' => _('Datei hochladen'),
 
-    // resources/assets/javascripts/lib/filesystem.js
-    'Objekt aufklappen' => _('Objekt aufklappen'),
-    'Objekt zuklappen' => _('Objekt zuklappen'),
-
     // resources/assets/javascripts/lib/instschedule.js
     'Detaillierte Veranstaltungsliste' => _('Detaillierte Veranstaltungsliste'),
 

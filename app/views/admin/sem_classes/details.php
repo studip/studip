@@ -213,7 +213,6 @@
             'participants' => ['name' => _("Teilnehmendenseite")],
             'documents' => ['name' => _("Dateibereich")],
             'schedule' => ['name' => _("Terminseite")],
-            'literature' => ['name' => _("Literaturübersicht")],
             'scm' => ['name' => _("Freie Informationen")],
             'wiki' => ['name' => _("Wiki")],
             'calendar' => ['name' => _("Kalender")],

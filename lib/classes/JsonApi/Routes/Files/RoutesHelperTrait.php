@@ -187,19 +187,7 @@ trait RoutesHelperTrait
         $user = $this->getUser($request);
         $tmpFilename = $this->moveUploadedFile($this->getTmpPath(), $uploadedFile);
 
-        if ($error =
-            $folder->validateUpload(
-                [
-                    'name' => $tmpFilename,
-                    'size' => $uploadedFile->getSize(),
-                ],
-                $user->id
-            )
-        ) {
-            throw new BadRequestException($error);
-        }
-
-        $file = [
+        $data = [
             'name' => $this->getFilename($request, $uploadedFile),
             'type' => $uploadedFile->getClientMediaType(),
             'size' => $uploadedFile->getSize(),
@@ -209,19 +197,18 @@ trait RoutesHelperTrait
             'content_terms_of_use_id' => 0,
         ];
 
-        $fileRef = $folder->createFile($file);
-        if (!$fileRef) {
+        $file = StandardFile::create($data);
+
+        if ($error = $folder->validateUpload($file,$user->id)) {
+            throw new BadRequestException($error);
+        }
+
+        $file = $folder->addFile($file);
+        if (!$file) {
             throw new InternalServerError();
         }
 
-        if ($defaultLicense = \ContentTermsOfUse::find('UNDEF_LICENSE')) {
-            if (!$fileRef->content_terms_of_use_id) {
-                $fileRef->content_terms_of_use_id = $defaultLicense->id;
-                $fileRef->store();
-            }
-        }
-
-        return $fileRef;
+        return $file->getFileRef();
     }
 
     protected function getUploadedFile($request)

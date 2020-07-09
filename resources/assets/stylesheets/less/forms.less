@@ -406,6 +406,39 @@ form.default {
         margin-top: 0.5ex;
     }
 
+    //hidden radio buttons with icon:
+
+    input[type="radio"].hidden-checkbox, input[type="checkbox"].hidden-checkbox {
+        display:none;
+
+        & + label {
+            cursor: pointer;
+
+            & .hidden-content {
+                cursor: initial;
+            }
+
+            & .hidden-checkbox-checked-icon {
+                display: inline;
+                visibility: hidden;
+            }
+
+            & .hidden-content {
+                display: none;
+            }
+        }
+
+        &:checked + label {
+            & .hidden-checkbox-checked-icon {
+                visibility: visible;
+            }
+
+            & .hidden-content {
+                display: block;
+            }
+        }
+    }
+
     &.show_validation_hints {
         :invalid, .invalid {
             .icon('before', 'exclaim-circle', 'attention', 16, 5px);
@@ -493,6 +526,19 @@ table.hide_datafield_title {
 
         legend {
             display: none;
+        }
+    }
+}
+
+
+@media (min-width: 800px) {
+    form.default .form-columns {
+        display: flex;
+        flex-direction: row;
+
+        .column {
+            flex-grow: 1;
+            margin-right: 1em;
         }
     }
 }

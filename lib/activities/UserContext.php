@@ -44,10 +44,6 @@ class UserContext extends Context
                 $this->addProvider('Studip\Activity\MessageProvider');
             }
 
-            if (get_config('LITERATURE_ENABLE')) {
-                $this->addProvider('Studip\Activity\LiteratureProvider');
-            }
-
             $homepage_plugins = \PluginEngine::getPlugins('HomepagePlugin');
             foreach ($homepage_plugins as $plugin) {
                 if ($plugin->isActivated($this->user->id, 'user')) {

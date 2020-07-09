@@ -3,16 +3,57 @@
 import Dialog from './dialog.js';
 
 const Files = {
+    init () {
+        if ($('#files-index, #course-files-index, #files-flat, #course-files-flat, #files-overview').length
+            && jQuery("#files_table_form").length) {
+            this.filesapp = new Vue({
+                el: "#layout_container",
+                data: {
+                    "files":       jQuery("#files_table_form").data("files") || [],
+                    "folders":     jQuery("#files_table_form").data("folders") || [],
+                    "topfolder":   jQuery("#files_table_form").data("topfolder"),
+                    "breadcrumbs": jQuery("#files_table_form").data("breadcrumbs") || []
+                },
+                methods: {
+                    hasFilesOfType (type) {
+                        for (let i in this.files) {
+                            if (this.files[i].mime_type.indexOf(type) === 0) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                }
+            });
+        }
+
+        //The following is only for (read only) vue file tables where multiple
+        //tables are displayed in one page.
+        var tables = jQuery('.vue-file-table');
+        if (tables.length) {
+            for (var table of tables) {
+                var vue_instance = new Vue({
+                    el: table,
+                    data: {
+                        "files":       jQuery(table).data("files") || [],
+                        "folders":     jQuery(table).data("folders") || [],
+                        "topfolder":   jQuery(table).data("topfolder"),
+                        "breadcrumbs": jQuery(table).data("breadcrumbs") || []
+                    }
+                });
+            }
+        }
+    },
     openAddFilesWindow: function(folder_id) {
         var responsive_mode = jQuery('html').first().hasClass('responsive-display');
         if ($('.files_source_selector').length > 0) {
             Dialog.show($('.files_source_selector').html(), {
-                title: 'Datei hinzufügen'.toLocaleString(),
+                title: 'Dokument hinzufügen'.toLocaleString(),
                 size: (responsive_mode ? undefined : 'auto')
             });
         } else {
             Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/file/add_files_window/' + folder_id), {
-                title: 'Datei hinzufügen'.toLocaleString(),
+                title: 'Dokument hinzufügen'.toLocaleString(),
                 size: (responsive_mode ? undefined : 'auto')
             });
         }
@@ -122,7 +163,6 @@ const Files = {
 
         if ($('table.documents').length > 0) {
             // on files page
-
             Files.addFileDisplay(html, delay);
         } else if (payload.url) {
             //not on files page
@@ -134,33 +174,20 @@ const Files = {
         if (!Array.isArray(html)) {
             html = [html];
         }
-
         html.forEach((value, i) => {
-            var id = $(value).attr('id');
-            if ($(document.getElementById(id)).length > 0) {
-                $(document.getElementById(id)).replaceWith(value);
-            } else {
-                $(value)
-                    .hide()
-                    .appendTo('.documents[data-folder_id] tbody.files')
-                    .delay(500 + delay + i * 200)
-                    .fadeIn(300);
+            let insert = true;
+            for (let i in STUDIP.Files.filesapp.files) {
+                if (value.id == STUDIP.Files.filesapp.files[i].id) {
+                    STUDIP.Files.filesapp.files[i] = value;
+                    insert = false;
+                }
+            }
+            if (insert) {
+                STUDIP.Files.filesapp.files.push(value);
             }
         });
-
-        $('.subfolders .empty').hide('fade');
-
         $(document).trigger('refresh-handlers');
-
-        // update tablesorter cache
-        $('table.documents').trigger('update');
-        $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
     },
-    // removeFile: function(fileref_id) {
-    //     $.post(STUDIP.URLHelper.getURL('dispatch.php/file/delete/' + fileref_id)).done(function() {
-    //         Files.removeFileDisplay(fileref_id);
-    //     });
-    // },
     removeFileDisplay: function (ids) {
         if (!Array.isArray(ids)) {
             ids = [ids];
@@ -168,51 +195,19 @@ const Files = {
 
         var count = ids.length;
         ids.forEach((id) => {
-            $(`.documents tbody.files > tr#fileref_${id}`).fadeOut(300, function () {
-                $(this).remove();
-                if (--count === 0) {
-                    if ($('.subfolders > *').length + $('.files > *').length < 2) {
-                        $('.subfolders .empty').show('fade');
-                    }
-
-                    $(document).trigger('refresh-handlers');
-                    // update tablesorter cache
-                    $('table.documents').trigger('update');
-                    $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
-                }
-            });
+            STUDIP.Files.filesapp.removeFile(id);
         });
+        $(document).trigger('refresh-handlers');
     },
     addFolderDisplay: function (html, delay = 0) {
         if (!Array.isArray(html)) {
             html = [html];
         }
-
         html.forEach((value, i) => {
-            var id = $(value).attr('id');
-            if ($(document.getElementById(id)).length > 0) {
-                $(document.getElementById(id)).replaceWith(value);
-            } else {
-                $(value)
-                    .hide()
-                    .appendTo('.documents[data-folder_id] tbody.subfolders')
-                    .delay(500 + delay + i * 200)
-                    .fadeIn(300);
-            }
+            STUDIP.Files.filesapp.folders.push(value);
         });
-
-        $('.subfolders .empty').hide('fade');
-
         $(document).trigger('refresh-handlers');
-
-        // update tablesorter cache
-        $('table.documents').trigger('update');
-        $('table.documents').trigger('sorton', [$('table.documents').get(0).config.sortList]);
     },
-    // reloadPage: function() {
-    //     Dialog.close();
-    //     location.reload();
-    // },
     getFolders: function(name) {
         var element_name = 'folder_select_' + name,
             context = $('#' + element_name + '-destination').val(),
@@ -279,6 +274,9 @@ const Files = {
         var selected_id = $(this).val();
 
         $('#terms_of_use_description-' + selected_id).removeClass('invisible');
+    },
+    openGallery: function () {
+        $(".lightbox-image").first().click();
     }
 };
 

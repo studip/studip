@@ -11,6 +11,12 @@ class RangeFileRefsIndex extends AbstractRangeIndex
         $rootFolder = \Folder::findTopFolder($resource->id)->getTypedFolder();
         $filesAndFolders = \FileManager::getFolderFilesRecursive($rootFolder, $user->id, true);
 
-        return $filesAndFolders['files'];
+        $filerefs = [];
+        foreach ($filesAndFolders['files'] as $file_object) {
+            if (method_exists($file_object, "getFileRef")) {
+                $filerefs[] = $file_object->getFileRef();
+            }
+        }
+        return $filerefs;
     }
 }

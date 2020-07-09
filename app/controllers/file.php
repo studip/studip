@@ -27,7 +27,7 @@ class FileController extends AuthenticatedController
      * This is a helper method that decides where a redirect shall be made
      * in case of error or success after an action was executed.
      */
-    private function redirectToFolder($folder)
+    public function redirectToFolder($folder)
     {
         switch ($folder->range_type) {
             case 'course':
@@ -106,30 +106,15 @@ class FileController extends AuthenticatedController
                 }
 
                 //all files were uploaded successfully:
-                $storedFiles = [];
-                $default_license = ContentTermsOfUse::findDefault();
-
-                foreach ($validatedFiles['files'] as $fileref) {
-                    //If no terms of use is set for the file ref
-                    //we must set it to a default terms of use
-                    //and update the fileref.
-                    if (!$fileref->content_terms_of_use_id && $default_license) {
-                        $fileref->content_terms_of_use_id = $default_license->id;
-                        if ($fileref->isDirty()) {
-                            $fileref->store();
-                        }
-                    }
-                    $storedFiles[] = $fileref;
-                }
-                if (count($storedFiles) > 0) {
+                if (count($validatedFiles['files']) > 0) {
                     PageLayout::postSuccess(
                         sprintf(
                             _('Es wurden %s Dateien hochgeladen'),
-                            count($storedFiles)
+                            count($validatedFiles['files'])
                         ),
                         array_map(function ($file) {
-                            return htmlReady($file->name);
-                        }, $storedFiles),
+                            return htmlReady($file->getFilename());
+                        }, $validatedFiles['files']),
                         true
                     );
                 }
@@ -147,21 +132,21 @@ class FileController extends AuthenticatedController
                 $changes = ['added_files' => null];
                 $output  = ['added_files' => []];
 
-                if (count($storedFiles) === 1
-                    && strtolower(substr($storedFiles[0]['name'], -4)) === '.zip'
+                if (count($validatedFiles['files']) === 1
+                    && strtolower(substr($validatedFiles['files'][0]->getFilename(), -4)) === '.zip'
                     && ($folder->range_id === $GLOBALS['user']->id || Seminar_Perm::get()->have_studip_perm('tutor', $folder->range_id)))
                 {
                     $ref_ids = [];
-                    foreach ($storedFiles as $file_ref) {
-                        $ref_ids[] = $file_ref->getId();
+                    foreach ($validatedFiles['files'] as $file) {
+                        $ref_ids[] = $file->getId();
                     }
                     $changes['redirect'] = $this->url_for('file/unzipquestion', [
                         'file_refs' => $ref_ids
                     ]);
                 } elseif (in_array($folder->range_type, ['course', 'institute', 'user'])) {
                     $ref_ids = [];
-                    foreach ($storedFiles as $file_ref) {
-                        $ref_ids[] = $file_ref->getId();
+                    foreach ($validatedFiles['files'] as $file) {
+                        $ref_ids[] = $file->getId();
                     }
                     $changes['redirect'] = $this->url_for("file/edit_license/{$folder->getId()}", [
                         'file_refs' => $ref_ids,
@@ -170,14 +155,9 @@ class FileController extends AuthenticatedController
                     $changes['close_dialog'] = true;
                 }
 
-                foreach ($storedFiles as $fileref) {
-                    $output['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
-                        'controller'           => $this,
-                        'file_ref'             => $fileref,
-                        'current_folder'       => $folder,
-                        'marked_element_ids'   => [],
-                        'show_bulk_checkboxes' => true
-                    ]);
+                $this->current_folder = $folder;
+                foreach ($validatedFiles['files'] as $file) {
+                    $output['added_files'][] = FilesystemVueDataManager::getFileVueData($file, $folder);
                 }
 
                 $this->response->add_header(
@@ -238,12 +218,7 @@ class FileController extends AuthenticatedController
                 $added_folders = [];
                 foreach ($this->file_refs as $fileref) {
                     if ($fileref->folder->id === $this->current_folder->id) {
-                        $payload['added_files'][] = $this->get_template_factory()->render('files/_fileref_tr', [
-                            'controller'         => $this,
-                            'file_ref'           => $fileref,
-                            'current_folder'     => $this->current_folder,
-                            'marked_element_ids' => [],
-                        ]);
+                        $payload['added_files'][] = FilesystemVueDataManager::getFileVueData($fileref->getFileType(), $this->current_folder);
                     } elseif (
                         $fileref->folder->parentfolder->id === $this->current_folder->id
                         && !in_array($fileref->folder->id, $added_folders)
@@ -255,12 +230,7 @@ class FileController extends AuthenticatedController
                             }
                         }
 
-                        $payload['added_folders'][] = $this->get_template_factory()->render('files/_folder_tr', [
-                            'controller'         => $this,
-                            'folder'             => $fileref->getFolderType(),
-                            'topFolder'          => $topFolder,
-                            'marked_element_ids' => [],
-                        ]);
+                        $payload['added_folders'][] = FilesystemVueDataManager::getFolderVueData($fileref->getFolderType());
 
                         $added_folders[] = $fileref->folder->id;
                     }
@@ -294,29 +264,34 @@ class FileController extends AuthenticatedController
             if (!$plugin) {
                 throw new Trails_Exception(404, _('Plugin existiert nicht.'));
             }
-            $this->file_ref = $plugin->getPreparedFile($file_id);
+            $this->file = $plugin->getPreparedFile($file_id);
             $this->from_plugin = Request::get("from_plugin");
         } else {
-            $this->file_ref = FileRef::find($file_area_object_id);
+            $file_ref = FileRef::find($file_area_object_id);
+            $class = $file_ref->file['filetype'];
+            $this->file = new $class($file_ref);
         }
 
-        if ($this->file_ref) {
+        if ($this->file) {
             //file system object is a FileRef
-            PageLayout::setTitle($this->file_ref->name);
+            PageLayout::setTitle($this->file->getFilename());
 
             //Check if file is downloadable for the current user:
             $this->show_preview    = false;
             $this->is_downloadable = false;
 
+            $this->is_standard_file = get_class($this->file) === StandardFile::class;
+
             // NOTE: The following can only work properly for folders which are
             // stored in the database, since remote folders
             // (for example owncloud/nextcloud folders) are not stored in the database.
-            $folder = $this->file_ref->foldertype;
+            $folder = $this->file->getFolderType();
             if (!$folder->isVisible(User::findCurrent()->id)) {
                 throw new AccessDeniedException();
             }
-            $this->is_downloadable = $folder->isFileDownloadable($this->file_ref->id, User::findCurrent()->id);
-            $this->is_editable     = $folder->isFileEditable($this->file_ref->id, User::findCurrent()->id);
+            $this->is_downloadable = $this->file->isDownloadable(User::findCurrent()->id);
+            $this->is_editable     = $this->file->isEditable(User::findCurrent()->id);
+            $this->file_info_template = $this->file->getInfoTemplate($this->is_downloadable);
 
             //load the previous and next file in the folder,
             //if the folder is of type FolderType.
@@ -324,16 +299,16 @@ class FileController extends AuthenticatedController
             $this->next_file_ref_id     = false;
             if ($include_navigation && $folder->isReadable(User::findCurrent()->id)) {
                 $current_file_ref_id = null;
-                foreach ($folder->getFiles() as $folder_file_ref) {
+                foreach ($folder->getFiles() as $folder_file) {
                     $last_file_ref_id = $current_file_ref_id;
-                    $current_file_ref_id = $folder_file_ref->id;
+                    $current_file_ref_id = $folder_file->getId();
 
-                    if ($folder_file_ref->id === $this->file_ref->id) {
+                    if ($folder_file->getId() === $this->file->getId()) {
                         $this->previous_file_ref_id = $last_file_ref_id;
                     }
 
-                    if ($last_file_ref_id === $this->file_ref->id) {
-                        $this->next_file_ref_id = $folder_file_ref->id;
+                    if ($last_file_ref_id === $this->file->getId()) {
+                        $this->next_file_ref_id = $folder_file->getId();
                         //at this point we have the ID of the previous
                         //and the next file ref so that we can exit
                         //the foreach loop:
@@ -373,7 +348,6 @@ class FileController extends AuthenticatedController
      */
     public function edit_action($file_ref_id)
     {
-
         if (Request::get("from_plugin")) {
             $file_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/edit/") + strlen("dispatch.php/file/edit/"));
             if (strpos($file_id, "?") !== false) {
@@ -391,6 +365,7 @@ class FileController extends AuthenticatedController
         } else {
             $this->file_ref = FileRef::find($file_ref_id);
         }
+        $this->file = $this->file_ref->getFileType();
         $this->folder = $this->file_ref->foldertype;
 
         if (!$this->folder || !$this->folder->isFileEditable($this->file_ref->id, $GLOBALS['user']->id)) {
@@ -508,6 +483,40 @@ class FileController extends AuthenticatedController
         $this->content_terms_of_use_id = $this->file_ref->content_terms_of_use_id;
     }
 
+    public function edit_urlfile_action($file_ref_id)
+    {
+        $this->file_ref = FileRef::find($file_ref_id);
+        $this->file = $this->file_ref->getFileType();
+        $this->folder = $this->file_ref->foldertype;
+
+        if (!$this->folder || !$this->folder->isFileEditable($this->file_ref->id, $GLOBALS['user']->id)) {
+            throw new AccessDeniedException();
+        }
+
+        $this->content_terms_of_use_entries = ContentTermsOfUse::findAll();
+        $this->show_force_button = false;
+
+        if (Request::isPost()) {
+            //form was sent
+            CSRFProtection::verifyUnsafeRequest();
+            $this->file_ref['name'] = trim(Request::get('name'));
+            $this->file_ref['description'] = trim(Request::get('description'));
+            $this->file_ref['content_terms_of_use_id'] = Request::get('content_terms_of_use_id');
+            $this->file_ref->file['metadata']['url'] = Request::get('url');
+            $this->file_ref->file['metadata']['access_type'] = Request::get('access_type');
+            $this->file_ref->file->store();
+            $this->file_ref->store();
+
+            PageLayout::postSuccess(_('Änderungen gespeichert!'));
+            $this->redirectToFolder($this->folder);
+        }
+
+        $this->name = $this->file_ref->name;
+        $this->url = $this->file_ref->file['metadata']['url'];
+        $this->description = $this->file_ref->description;
+        $this->content_terms_of_use_id = $this->file_ref->content_terms_of_use_id;
+    }
+
     /**
      * This action is responsible for updating a file reference.
      */
@@ -526,10 +535,11 @@ class FileController extends AuthenticatedController
             $this->from_plugin = Request::get("from_plugin");
         } else {
             $this->file_ref = FileRef::find($file_ref_id);
+            $this->file = $this->file_ref->getFileType();
         }
         $this->folder = $this->file_ref->foldertype;
 
-        if (!$this->folder || !$this->folder->isFileEditable($this->file_ref->id, $GLOBALS['user']->id)) {
+        if (!$this->file->isEditable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }
 
@@ -882,6 +892,247 @@ class FileController extends AuthenticatedController
         }
     }
 
+
+    public function add_from_library_action($folder_id = null)
+    {
+        PageLayout::setTitle(_('Suche im Bibliothekskatalog'));
+        if (!Config::get()->LITERATURE_ENABLE) {
+            throw new AccessDeniedException(_('Die Literaturverwaltung ist ausgeschaltet!'));
+        }
+
+        if (!$GLOBALS['perm']->have_perm('dozent')) {
+            throw new AccessDeniedException();
+        }
+
+        $this->top_folder = new StandardFolder(new Folder($folder_id));
+        if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
+            throw new AccessDeniedException();
+        }
+
+        $course = $this->top_folder->getRangeObject();
+        if (!($course instanceof Course) || !$GLOBALS['perm']->have_studip_perm('dozent', $course->id)) {
+            throw new AccessDeniedException();
+        }
+
+        if (!LibrarySearchManager::catalogsConfigured()) {
+            PageLayout::postError(
+                _('In dieser Stud.IP-Installation sind keine Bibliothekskataloge aktiviert!')
+            );
+            return;
+        }
+
+        $this->folder_id = $folder_id;
+
+        $plugin_manager = PluginManager::getInstance();
+        $this->page_size = 30;
+        $this->limit = 100; //the limit for items from each catalog
+        $this->next_page = 0;
+        $this->page = 0;
+        $this->order_by = LibrarySearch::ORDER_BY_RELEVANCE;
+        $this->global_stylesheet = $GLOBALS['LIBRARY_STYLESHEET_ID'];
+
+        if (Request::isPost()) {
+            CSRFProtection::verifyUnsafeRequest();
+
+            if (Request::submitted('search')) {
+                $this->title = Request::get('title');
+                $this->author = Request::get('author');
+                $this->year = Request::get('year');
+                $this->number = Request::get('number');
+                $this->publication = Request::get('publication');
+                $this->signature = Request::get('signature');
+                $this->order_by = Request::get('order_by');
+
+                if (!$this->title && !$this->author && !$this->year &&
+                    !$this->number && !$this->publication && !$this->signature) {
+                    PageLayout::postError(
+                        _('Es muss mindestens ein Suchkriterium angegeben werden!')
+                    );
+                    return;
+                }
+
+                $this->library_plugins = $plugin_manager->getPlugins('LibraryPlugin');
+
+                //Build the query parameter array:
+                $search_parameters = [];
+                if ($this->title) {
+                    $search_parameters[LibrarySearch::TITLE] = $this->title;
+                }
+                if ($this->author) {
+                    $search_parameters[LibrarySearch::AUTHOR] = $this->author;
+                }
+                if ($this->year) {
+                    $search_parameters[LibrarySearch::YEAR] = $this->year;
+                }
+                if ($this->number) {
+                    $search_parameters[LibrarySearch::NUMBER] = $this->number;
+                }
+                if ($this->publication) {
+                    $search_parameters[LibrarySearch::PUBLICATION] = $this->publication;
+                }
+                if ($this->signature) {
+                    $search_parameters[LibrarySearch::SIGNATURE] = $this->signature;
+                }
+
+                $this->search_id = md5(json_encode($search_parameters));
+
+                $cache = StudipCacheFactory::instantiateCache('StudipDbCache', []);
+
+                $merged_results = LibrarySearchManager::search(
+                    $search_parameters,
+                    $this->order_by,
+                    $this->limit
+                );
+                $this->total_results = count($merged_results);
+                $cache_data = [
+                    'search_params' => $search_parameters,
+                    'results' => $merged_results
+                ];
+                $cache->write($this->search_id, $cache_data);
+                if (count($merged_results) > $page_size) {
+                    $this->next_page = 2;
+                }
+                $this->result_set = array_slice($merged_results, 0, $this->page_size);
+                $this->pagination_link_closure = function($page_id) {
+                    return URLHelper::getLink(
+                        'dispatch.php/file/add_from_library/' . $this->top_folder->getId(),
+                        [
+                            'search_id' => $this->search_id,
+                            'page' => $page_id,
+                        ]
+                    );
+                };
+                return;
+            } elseif (Request::submitted('add_to_file_area')) {
+                $search_id = Request::get('search_id');
+                $result_id = Request::get('result_id');
+                $this->redirect(
+                    $this->url_for(
+                        'file/create_library_file/' . $this->top_folder->getId(),
+                        [
+                            'search_and_item_id' => $search_id . '_' . $result_id,
+                            'create_only' => '1'
+                        ]
+                    )
+                );
+            } elseif (Request::submitted('create_library_request')) {
+                $search_id = Request::get('search_id');
+                $result_id = Request::get('result_id');
+                $plugin_id = Request::get('plugin_id');
+                $this->redirect(
+                    $this->url_for(
+                        'file/create_library_file/' . $this->top_folder->getId(),
+                        [
+                            'search_and_item_id' => $search_id . '_' . $result_id,
+                            'plugin_id' => $plugin_id
+                        ]
+                    )
+                );
+            }
+        } elseif (Request::get('search_id')) {
+            $this->library_plugins = $plugin_manager->getPlugins('LibraryPlugin');
+
+            $this->search_id = Request::get('search_id');
+            $this->page = Request::get('page');
+
+            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $cache_data = $cache->read($this->search_id);
+            $results = $cache_data['results'];
+            $this->total_results = count($results);
+            $search_parameters = $cache_data['search_params'];
+            $this->title = $search_parameters[LibrarySearch::TITLE];
+            $this->author = $search_parameters[LibrarySearch::AUTHOR];
+            $this->year = $search_parameters[LibrarySearch::YEAR];
+            $this->number = $search_parameters[LibrarySearch::NUMBER];
+            $this->publication = $search_parameters[LibrarySearch::PUBLICATION];
+            $this->signature = $search_parameters[LibrarySearch::SIGNATURE];
+            $offset = $this->page_size * $this->page;
+            $this->result_set = array_slice($results, $offset, $this->page_size);
+            $this->pagination_link_closure = function($page_id) {
+                return URLHelper::getLink(
+                    'dispatch.php/file/add_from_library/' . $this->top_folder->getId(),
+                    [
+                        'search_id' => $this->search_id,
+                        'page' => $page_id,
+                    ]
+                );
+            };
+        }
+    }
+
+
+    public function create_library_file_action($folder_id = null)
+    {
+        PageLayout::setTitle(_('Bibliothekseintrag erstellen'));
+        if (!Config::get()->LITERATURE_ENABLE) {
+            throw new AccessDeniedException(_('Die Literaturverwaltung ist ausgeschaltet!'));
+        }
+        if (!$GLOBALS['perm']->have_perm('dozent')) {
+            throw new AccessDeniedException();
+        }
+        $this->top_folder = new StandardFolder(new Folder($folder_id));
+        if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
+            throw new AccessDeniedException();
+        }
+
+        $create_only = Request::submitted('create_only');
+        $plugin_id = Request::get('plugin_id');
+        $search_and_item_id = Request::get('search_and_item_id');
+        if (!$search_and_item_id) {
+            PageLayout::postError(_('Es wurde kein Suchergebnis ausgewählt!'));
+            return;
+        }
+        if (!$plugin_id && !$create_only) {
+            throw new Exception('No plugin ID has been provided!');
+        }
+        $search_and_item_id = explode('_', $search_and_item_id);
+        $search_id = $search_and_item_id[0];
+        $item_id = $search_and_item_id[1];
+        if (!$search_id) {
+            throw new Exception('No search_id provided!');
+        }
+
+        if ($item_id) {
+            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $documents = $cache->read($search_id);
+            $document = $documents['results'][$item_id];
+            if (!($document instanceof LibraryDocument)) {
+                throw new Exception('Library file not found in result cache!');
+            }
+            $file = LibraryFile::createFromLibraryDocument($document, $folder_id);
+        } else {
+            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $search = $cache->read($search_id);
+            if (!$search) {
+                throw new Exception('Search not found in cache!');
+            }
+            $search_params = $search['search_params'];
+            $document = new LibraryDocument();
+            $document->search_params = $search_params;
+            $file = LibraryFile::createFromLibraryDocument($document, $folder_id);
+        }
+
+        if ($create_only) {
+            $this->redirectToFolder($this->top_folder);
+        }
+
+        if ($plugin_id) {
+            $plugin_manager = PluginManager::getInstance();
+            $plugin = $plugin_manager->getPluginById($plugin_id);
+            if (!($plugin instanceof LibraryPlugin)) {
+                throw new Exception(sprintf('The plugin with the ID %s is not a LibraryPlugin!', $plugin_id));
+            }
+
+            if ($file instanceof LibraryFile) {
+                //Redirect to the request page of the plugin.
+                $this->redirect($plugin->getRequestURL($file->getId()));
+            } else {
+                throw new Exception('Library file could not be stored!');
+            }
+        }
+    }
+
+
     public function getFolders_action()
     {
         $rangeId   = Request::get('range');
@@ -927,11 +1178,12 @@ class FileController extends AuthenticatedController
         }
 
         $folder = $file_ref->foldertype;
-        if (!$folder || !$folder->isFileWritable($file_ref->id, $GLOBALS['user']->id)) {
+        $filetype = $file_ref->getFileType();
+        if (!$filetype->isWritable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }
 
-        if ($folder->deleteFile($file_ref->id)) {
+        if ($filetype->delete()) {
             PageLayout::postSuccess(_('Datei wurde gelöscht.'));
         } else {
             PageLayout::postError(_('Datei konnte nicht gelöscht werden.'));
@@ -947,9 +1199,15 @@ class FileController extends AuthenticatedController
     {
         $this->folder_id   = $folder_id;
 
+        $this->range = Context::getType();
         $this->upload_type = FileManager::getUploadTypeConfig(
             Context::getId(), $GLOBALS['user']->id
         );
+        $config = Config::get();
+        $this->show_library_functions = $config->LITERATURE_ENABLE;
+        if ($this->show_library_functions) {
+            $this->library_search_description = $config->LIBRARY_ADD_ITEM_ACTION_DESCRIPTION;
+        }
 
         $this->plugin = Request::get('to_plugin');
     }
@@ -1054,7 +1312,7 @@ class FileController extends AuthenticatedController
                     $file_ref = FileManager::copyFileRef($from_file_ref, $this->to_folder_type, User::findCurrent());
                 } else {
                     //do the copy
-                    $file_ref = $this->to_folder_type->createFile($file);
+                    $file_ref = $this->to_folder_type->addFile($file);
                 }
             }
             if ($file_ref instanceof FileRef) {
@@ -1065,7 +1323,7 @@ class FileController extends AuthenticatedController
                     ));
                     return;
                 } elseif (Request::isXhr()) {
-                    $this->file_ref = $file_ref;
+                    $this->file = $file_ref->getFileType();
                     $this->current_folder = $this->to_folder_type;
                     $this->marked_element_ids = [];
 
@@ -1079,7 +1337,7 @@ class FileController extends AuthenticatedController
                         }
                     }
                     $payload = [
-                        'html'     => $this->render_template_as_string('files/_fileref_tr'),
+                        'html'     => FilesystemVueDataManager::getFileVueData($this->file, $this->current_folder),
                         'redirect' => $redirects[0],
                         'url'      => $this->generateFilesUrl($this->current_folder, $this->file_ref),
                     ];
@@ -1104,7 +1362,7 @@ class FileController extends AuthenticatedController
         if (Request::get('from_plugin')) {
             $this->filesystemplugin = PluginManager::getInstance()->getPlugin(Request::get('from_plugin'));
             PageLayout::setTitle(sprintf(
-                _('Datei hinzufügen von %s'),
+                _('Dokument hinzufügen von %s'),
                 $this->filesystemplugin->getPluginName()
             ));
 
@@ -1188,6 +1446,7 @@ class FileController extends AuthenticatedController
 
     public function edit_license_action($folder_id = null)
     {
+        $this->re_location = Request::get('re_location');
         $file_ref_ids = Request::getArray('file_refs');
         if (!$file_ref_ids) {
             //In case the file ref IDs are not set in the request
@@ -1219,12 +1478,7 @@ class FileController extends AuthenticatedController
                         $error_files[] = sprintf(_('Die Datei "%s" ist ungültig!'), $file_ref['name']);
                         continue;
                     }
-                    $folder_type = $folder->getTypedFolder();
-                    if (!$folder_type->isFileEditable($file_ref['id'], $GLOBALS['user']->id)) {
-                        //No permissions.
-                        $error_files[] = sprintf(_('Keine Berechtigung zum Ändern der Datei "%s"!'), $file_ref['name']);
-                        continue;
-                    }
+
                     $file_ref['content_terms_of_use_id'] = Request::option('content_terms_of_use_id');
                     if ($this->show_description_field && $description) {
                         $file_ref['description'] = $description;
@@ -1238,8 +1492,13 @@ class FileController extends AuthenticatedController
                     } else {
                         $success_files[] = $file_ref['name'];
                     }
+
+                    $this->file = $file_ref->getFileType();
+                    $this->current_folder = $file_ref->folder->getTypedFolder();
+                    $this->marked_element_ids = [];
+                    $payload['html'][] = FilesystemVueDataManager::getFileVueData($this->file, $this->current_folder);
                 }
-                if (Request::isXhr()) {
+                if (Request::isXhr() && !$this->re_location) {
                     $payload = ['html' => []];
                     foreach ($this->file_refs as $file_ref) {
                         $folder = $file_ref->folder->getTypedFolder();
@@ -1319,7 +1578,11 @@ class FileController extends AuthenticatedController
                     return;
                 } else {
                     PageLayout::postSuccess(_('Datei wurde bearbeitet.'));
-                    return $this->redirectToFolder($this->folder);
+                    if ($this->re_location) {
+                        return $this->relocate(URLHelper::getURL($this->re_location));;
+                    } else {
+                        return $this->redirectToFolder($this->folder);
+                    }
                 }
             }
         }
@@ -1361,71 +1624,24 @@ class FileController extends AuthenticatedController
             CSRFProtection::verifyUnsafeRequest();
             $url = trim(Request::get('url'));
             $url_parts = parse_url($url);
-            $content_terms_of_use_id = Request::get('content_terms_of_use_id');
             if (filter_var($url, FILTER_VALIDATE_URL) !== false && in_array($url_parts['scheme'], ['http', 'https','ftp'])) {
-                if (Request::get('access_type') === 'redirect') {
-                    if (in_array($url_parts['scheme'], ['http', 'https'])) {
-                        $file = new File();
-                        $file->url = $url;
-                        $file->url_access_type = 'redirect';
-                        $file->name = Request::get('name');
-                        if (!$file->name) {
-                            $meta = FileManager::fetchURLMetadata($url);
-                            if ($meta['response_code'] === 200) {
-                                $file->name = $meta['filename'] ?: 'unknown';
-                                $file->mime_type = mb_strstr($meta['Content-Type'], ';', true);
-                            }
-                        } else {
-                            $file->mime_type = get_mime_type($file->name);
-                        }
-                    } else {
-                        PageLayout::postError(_('Die angegebene URL muss mit http(s) beginnen.'));
-                    }
-                } elseif (Request::get('access_type') === 'proxy') {
-                    $meta = FileManager::fetchURLMetadata($url);
-                    if ($meta['response_code'] === 200) {
-                        $file = new File();
-                        $file->url = $url;
-                        $file->url_access_type = 'proxy';
-                        $file->name = Request::get('name');
-                        if (!$file->name) {
-                            $file->name = $meta['filename'] ?: 'unknown';
-                        }
-                        $file->mime_type = $meta['Content-Type'] ? mb_strstr($meta['Content-Type'], ';', true) : get_mime_type($file->name);
-                        $file->size = $meta['Content-Length'];
-                    } else {
-                        PageLayout::postError(
-                            _('Die angegebene URL kann nicht abgerufen werden.'),
-                            [_('Fehlercode') . ':' . htmlReady($meta['response_code'])]
-                        );
-                    }
-                }
-                if ($file) {
-                    $file['user_id'] = $GLOBALS['user']->id;
+                $this->file = $this->top_folder->addFile(URLFile::create([
+                    'name' => Request::get('name'),
+                    'url' => $url,
+                    'access_type' => Request::get('access_type', "redirect"),
+                    'content_terms_of_use_id' => Request::get('content_terms_of_use_id')
+                ]));
 
-                    $this->file_ref = $this->top_folder->createFile($file);
-                    if ($this->file_ref instanceof FileRef) {
-                        //It is probably a file from the Stud.IP core system
-                        //and not a file from a plugin.
-                        if ($this->file_ref->file instanceof File) {
-                            //It is definetly a file from the core system.
-                            $this->file_ref->content_terms_of_use_id = $content_terms_of_use_id;
-                            if ($this->file_ref->isDirty()) {
-                                $this->file_ref->store();
-                            }
-                        }
-                    }
+                if ($this->file) {
                     $payload = [];
 
-                    $this->current_folder = $this->top_folder;
-                    $this->marked_element_ids = [];
-                    $payload['html'][] = $this->render_template_as_string('files/_fileref_tr');
+                    $payload['html'][] = FilesystemVueDataManager::getFileVueData($this->file, $this->top_folder);
 
                     $plugins = PluginManager::getInstance()->getPlugins('FileUploadHook');
 
                     $redirects = [];
                     foreach ($plugins as $plugin) {
-                        $url = $plugin->getAdditionalUploadWizardPage($this->file_ref);
+                        $url = $plugin->getAdditionalUploadWizardPage($this->file);
                         if ($url) {
                             $redirects[] = $url;
                         }

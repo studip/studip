@@ -63,6 +63,14 @@ final class StudipInstaller
         return $template;
     }
 
+    public function createLibraryConfigInc()
+    {
+        file_put_contents(
+            $this->base_path . '/config/library_config.inc.php',
+            file_get_contents($this->base_path . '/config/library_config.inc.php.dist')
+        );
+    }
+
     private function replaceVariable($variable, $replacement, $subject)
     {
         return preg_replace(

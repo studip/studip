@@ -2,168 +2,104 @@
     <?= $this->render_partial('files_dashboard/_input-group-search') ?>
 </form>
 
-<? if ($all_file_refs) : ?>
-    <table class="default documents sortable-table" data-sortlist="[[4, 1]]" data-shiftcheck
-           data-table_id="new_files">
-        <caption><?= _('Alle Dateien') ?></caption>
-        <?= $this->render_partial(
-            'files/_files_thead.php',
-            [
-                'show_bulk_checkboxes' => false
-            ]
-        ) ?>
-        <tfoot>
-            <tr>
-                <td colspan="6">
-                    <a href="<?= $controller->link_for('files/overview', ['view' => 'all_files']) ?>">
-                        <?= htmlReady(sprintf(
-                            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $all_files_c),
-                            $all_files_c
-                        )) ?>
-                    </a>
-                </td>
-            </tr>
-        </tfoot>
-        <tbody class="files">
-            <? foreach ($all_file_refs as $file_ref) : ?>
-                <?
-                $folder = $file_ref->folder;
-                if ($folder instanceof Folder) {
-                    $folder = $folder->getTypedFolder();
-                }
-                ?>
-                <?= $this->render_partial('files/_fileref_tr', [
-                    'file_ref'       => $file_ref,
-                    'current_folder' => $folder,
-                    'controllerpath' => $controllerpath,
-                    'show_bulk_checkboxes' => false
-                ]) ?>
-            <? endforeach ?>
-        </tbody>
-    </table>
+<? if ($all_files) : ?>
+    <?
+    $tfoot_link = [
+        'text' => sprintf(
+            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $all_files_c),
+            $all_files_c
+        ),
+        'href' => $controller->link_for('files/overview', ['view' => 'all_files'])
+    ];
+    ?>
+    <div class="vue-file-table"
+         data-topfolder="<?= htmlReady(json_encode($vue_topfolder)) ?>"
+         data-files="<?= htmlReady(json_encode($all_files)) ?>">
+        <?= CSRFProtection::tokenTag() ?>
+        <files-table :showdownloads="<?= $show_download_column ? "true" : "false" ?>"
+                     :files="files"
+                     :topfolder="topfolder"
+                     enable_table_filter="false"
+                     table_title="<?= _('Alle Dateien') ?>"
+                     :show_bulk_actions="false"
+                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+        ></files-table>
+    </div>
 <? endif ?>
 
-<? if ($uploaded_file_refs) : ?>
-    <table class="default documents sortable-table" data-sortlist="[[4, 1]]" data-shiftcheck
-           data-table_id="public_files">
-        <caption><?= _('Meine Dateien') ?></caption>
-        <?= $this->render_partial(
-            'files/_files_thead.php',
-            [
-                'show_bulk_checkboxes' => false
-            ]
-        ) ?>
-        <tfoot>
-            <tr>
-                <td colspan="6">
-                    <a href="<?= $controller->link_for('files/overview', ['view' => 'my_uploaded_files']) ?>">
-                        <?= htmlReady(sprintf(
-                            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $uploaded_files_c),
-                            $uploaded_files_c
-                        )) ?>
-                    </a>
-                </td>
-            </tr>
-        </tfoot>
-        <tbody class="files">
-            <? foreach ($uploaded_file_refs as $file_ref) : ?>
-                <?
-                $folder = $file_ref->folder;
-                if ($folder instanceof Folder) {
-                    $folder = $folder->getTypedFolder();
-                }
-                ?>
-                <?= $this->render_partial('files/_fileref_tr', [
-                    'file_ref'       => $file_ref,
-                    'current_folder' => $folder,
-                    'controllerpath' => $controllerpath,
-                    'show_bulk_checkboxes' => false
-                ]) ?>
-            <? endforeach ?>
-        </tbody>
-    </table>
+<? if ($uploaded_files) : ?>
+    <?
+    $tfoot_link = [
+        'text' => sprintf(
+            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $uploaded_files_c),
+            $uploaded_files_c
+        ),
+        'href' => $controller->link_for('files/overview', ['view' => 'my_uploaded_files'])
+    ];
+    ?>
+    <div class="vue-file-table"
+         data-topfolder="<?= htmlReady(json_encode($vue_topfolder)) ?>"
+         data-files="<?= htmlReady(json_encode($uploaded_files)) ?>">
+        <?= CSRFProtection::tokenTag() ?>
+        <files-table :showdownloads="<?= $show_download_column ? "true" : "false" ?>"
+                     :files="files"
+                     :topfolder="topfolder"
+                     enable_table_filter="false"
+                     table_title="<?= _('Meine Dateien') ?>"
+                     :show_bulk_actions="false"
+                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+        ></files-table>
+    </div>
 <? endif ?>
 
-<? if ($public_file_refs) : ?>
-    <table class="default documents sortable-table" data-sortlist="[[4, 1]]" data-shiftcheck
-           data-table_id="public_files">
-        <caption><?= _('Meine öffentlichen Dateien') ?></caption>
-        <?= $this->render_partial(
-            'files/_files_thead.php',
-            [
-                'show_bulk_checkboxes' => false
-            ]
-        ) ?>
-        <tfoot>
-            <tr>
-                <td colspan="6">
-                    <a href="<?= $controller->link_for('files/overview', ['view' => 'my_public_files']) ?>">
-                        <?= htmlReady(sprintf(
-                            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $public_files_c),
-                            $public_files_c
-                        )) ?>
-                    </a>
-                </td>
-            </tr>
-        </tfoot>
-        <tbody class="files">
-            <? foreach ($public_file_refs as $file_ref) : ?>
-                <?
-                $folder = $file_ref->folder;
-                if ($folder instanceof Folder) {
-                    $folder = $folder->getTypedFolder();
-                }
-                ?>
-                <?= $this->render_partial('files/_fileref_tr', [
-                    'file_ref'       => $file_ref,
-                    'current_folder' => $folder,
-                    'controllerpath' => $controllerpath,
-                    'show_bulk_checkboxes' => false
-                ]) ?>
-            <? endforeach ?>
-        </tbody>
-    </table>
+<? if ($public_files) : ?>
+    <?
+    $tfoot_link = [
+        'text' => sprintf(
+            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $public_files_c),
+            $public_files_c
+        ),
+        'href' => $controller->link_for('files/overview', ['view' => 'my_public_files'])
+    ];
+    ?>
+    <div class="vue-file-table"
+         data-topfolder="<?= htmlReady(json_encode($vue_topfolder)) ?>"
+         data-files="<?= htmlReady(json_encode($public_files)) ?>">
+        <?= CSRFProtection::tokenTag() ?>
+        <files-table :showdownloads="<?= $show_download_column ? "true" : "false" ?>"
+                     :files="files"
+                     :topfolder="topfolder"
+                     enable_table_filter="false"
+                     table_title="<?= _('Meine öffentlichen Dateien') ?>"
+                     :show_bulk_actions="false"
+                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+        ></files-table>
+    </div>
 <? endif ?>
 
-<? if ($uploaded_unlic_file_refs) : ?>
-    <table class="default documents sortable-table" data-sortlist="[[4, 1]]" data-shiftcheck
-           data-table_id="public_files">
-        <caption><?= _('Meine Dateien mit ungeklärter Lizenz') ?></caption>
-            <?= $this->render_partial(
-                'files/_files_thead.php',
-                [
-                    'show_bulk_checkboxes' => false
-                ]
-            ) ?>
-        <tfoot>
-            <tr>
-                <td colspan="6">
-                    <a href="<?= $controller->link_for('files/overview', ['view' => 'my_uploaded_files_unknown_license']) ?>">
-                        <?= htmlReady(sprintf(
-                            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $uploaded_unlic_files_c),
-                            $uploaded_unlic_files_c
-                        )) ?>
-                    </a>
-                </td>
-            </tr>
-        </tfoot>
-        <tbody class="files">
-            <? foreach ($uploaded_unlic_file_refs as $file_ref) : ?>
-                <?
-                $folder = $file_ref->folder;
-                if ($folder instanceof Folder) {
-                    $folder = $folder->getTypedFolder();
-                }
-                ?>
-                <?= $this->render_partial('files/_fileref_tr', [
-                    'file_ref'       => $file_ref,
-                    'current_folder' => $folder,
-                    'controllerpath' => $controllerpath,
-                    'show_bulk_checkboxes' => false
-                ]) ?>
-            <? endforeach ?>
-        </tbody>
-    </table>
+<? if ($uploaded_unlic_files) : ?>
+    <?
+    $tfoot_link = [
+        'text' => sprintf(
+            ngettext('Insgesamt %d Datei', 'Insgesamt %d Dateien', $uploaded_unlic_files_c),
+            $uploaded_unlic_files_c
+        ),
+        'href' => $controller->link_for('files/overview', ['view' => 'my_uploaded_files_unknown_license'])
+    ];
+    ?>
+    <div class="vue-file-table"
+         data-topfolder="<?= htmlReady(json_encode($vue_topfolder)) ?>"
+         data-files="<?= htmlReady(json_encode($uploaded_unlic_files)) ?>">
+        <?= CSRFProtection::tokenTag() ?>
+        <files-table :showdownloads="<?= $show_download_column ? "true" : "false" ?>"
+                     :files="files"
+                     :topfolder="topfolder"
+                     enable_table_filter="false"
+                     table_title="<?= _('Meine Dateien mit ungeklärter Lizenz') ?>"
+                     :show_bulk_actions="false"
+                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+        ></files-table>
+    </div>
 <? endif ?>
 
 <? if ($no_files) : ?>

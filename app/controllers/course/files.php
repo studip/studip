@@ -61,7 +61,7 @@ class Course_FilesController extends AuthenticatedController
         }
         if ($this->topFolder && $this->topFolder->isWritable($GLOBALS['user']->id)) {
             $actions->addLink(
-                _('Datei hinzufügen'),
+                _('Dokument hinzufügen'),
                 '#',
                 Icon::create('file+add', 'clickable'),
                 ['onclick' => "STUDIP.Files.openAddFilesWindow(); return false;"]
@@ -77,6 +77,16 @@ class Course_FilesController extends AuthenticatedController
         }
         $sidebar->addWidget($actions);
 
+        $actions->addLink(
+            _('Bildergalerie öffnen'),
+            '#g',
+            Icon::create('file-pic', 'clickable'),
+            [
+                'onClick' => "STUDIP.Files.openGallery(); return false;",
+                'v-if' => "hasFilesOfType('image')"
+            ]
+        );
+
         if ($this->topFolder->isWritable($GLOBALS['user']->id)) {
             $uploadArea = new LinksWidget();
             $uploadArea->setTitle(_("Dateien hochladen"));
@@ -85,6 +95,8 @@ class Course_FilesController extends AuthenticatedController
             );
             $sidebar->addWidget($uploadArea);
         }
+
+
 
         $views = new ViewsWidget();
         $views->addLink(
@@ -160,7 +172,6 @@ class Course_FilesController extends AuthenticatedController
 
         //find all files in all subdirectories:
         list($this->files, $this->folders) = array_values(FileManager::getFolderFilesRecursive($this->topFolder, $GLOBALS['user']->id));
-        $this->files = SimpleCollection::createFromArray($this->files)->orderBy('chdate desc');
         $this->range_type = 'course';
         $this->render_template('files/flat.php', $this->layout);
     }

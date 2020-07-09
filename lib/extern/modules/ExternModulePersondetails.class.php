@@ -52,7 +52,7 @@ class ExternModulePersondetails extends ExternModule {
                     'Home', 'sprechzeiten'],
                 'content' => [
                     'head', 'lebenslauf', 'schwerp', 'lehre',
-                    'news', 'termine', 'publi', 'kategorien'/*, 'literature' */]
+                    'news', 'termine', 'publi', 'kategorien']
         ];
         $this->registered_elements = [
                 'Body', 'TableHeader', 'PersondetailsHeader', 'Contact',

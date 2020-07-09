@@ -12,33 +12,33 @@
         <?
         $actions = ActionMenu::get();
         $actions->addLink(
-            $room->getLink('show'),
+            $room->getActionLink('show'),
             _('Raumdetails anzeigen'),
             Icon::create('info-circle'),
             ['data-dialog' => '']
         );
         if ($room->userHasPermission($current_user, 'autor')) {
             $actions->addLink(
-                $room->getLink('booking_plan'),
+                $room->getActionLink('booking_plan'),
                 _('Wochenbelegung'),
                 Icon::create('timetable'),
                 ['target' => '_blank']
             );
             $actions->addLink(
-                $room->getLink('semester_plan'),
+                $room->getActionLink('semester_plan'),
                 _('Semesterbelegung'),
                 Icon::create('timetable'),
                 ['target' => '_blank']
             );
         } else {
             $actions->addLink(
-                $room->getLink('booking_plan'),
+                $room->getActionLink('booking_plan'),
                 _('Belegungsplan'),
                 Icon::create('timetable'),
                 ['data-dialog' => 'size=big']
             );
             $actions->addLink(
-                $room->getLink('semester_plan'),
+                $room->getActionLink('semester_plan'),
                 _('Semesterbelegung'),
                 Icon::create('timetable'),
                 ['data-dialog' => 'size=big']
@@ -46,7 +46,7 @@
         }
         if ($room->requestable && $room->userHasRequestRights($current_user)) {
             $actions->addLink(
-                $room->getLink('request'),
+                $room->getActionLink('request'),
                 _('Raum anfragen'),
                 Icon::create('room-request'),
                 ['data-dialog' => 'size=auto']

@@ -205,20 +205,6 @@ class ProfileController extends AuthenticatedController
 
         $this->hompage_plugin = $render;
 
-        // show literature info
-        if (Config::get()->LITERATURE_ENABLE) {
-            $lit_list = StudipLitList::GetFormattedListsByRange($this->current_user->user_id);
-            if ($this->current_user->user_id == $this->user->user_id) {
-                $this->admin_url   = 'dispatch.php/literature/edit_list.php?_range_id=self';
-                $this->admin_title = _('Literaturlisten bearbeiten');
-            }
-
-            if (Visibility::verify('literature', $this->current_user->user_id)) {
-                $this->show_lit = true;
-                $this->lit_list = $lit_list;
-            }
-        }
-
         // get categories
         $category = Kategorie::findByUserId($this->current_user->user_id);
 

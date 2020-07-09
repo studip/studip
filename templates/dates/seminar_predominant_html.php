@@ -14,7 +14,7 @@ if (is_array($dates['regular']['turnus_data'])) foreach ($dates['regular']['turn
 
             $room = Room::find($resource_id);
             if ($link) :
-                $roominfo .= '<a href="' . $room->getLink('show') . '" data-dialog="1">'
+                $roominfo .= '<a href="' . $room->getActionLink('show') . '" data-dialog="1">'
                     . htmlReady($room->name) . '</a>';
             else :
                 $roominfo .= htmlReady($room->name);

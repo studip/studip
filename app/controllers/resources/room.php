@@ -81,7 +81,7 @@ class Resources_RoomController extends AuthenticatedController
                 $actions_available = true;
                 $actions->addLink(
                     _('Wochenbelegung'),
-                    $this->room->getURL('booking_plan'),
+                    $this->room->getActionURL('booking_plan'),
                     Icon::create('timetable'),
                     [
                         'target' => '_blank'
@@ -89,7 +89,7 @@ class Resources_RoomController extends AuthenticatedController
                 );
                 $actions->addLink(
                     _('Semesterbelegung'),
-                    $this->room->getURL('semester_plan'),
+                    $this->room->getActionURL('semester_plan'),
                     Icon::create('timetable'),
                     [
                         'target' => '_blank'
@@ -99,7 +99,7 @@ class Resources_RoomController extends AuthenticatedController
                 $actions_available = true;
                 $actions->addLink(
                     _('Belegungsplan'),
-                    $this->room->getURL('booking_plan'),
+                    $this->room->getActionURL('booking_plan'),
                     Icon::create('timetable'),
                     [
                         'data-dialog' => 'size=big'
@@ -107,7 +107,7 @@ class Resources_RoomController extends AuthenticatedController
                 );
                 $actions->addLink(
                     _('Semesterbelegung'),
-                    $this->room->getURL('semester_plan'),
+                    $this->room->getActionURL('semester_plan'),
                     Icon::create('timetable'),
                     [
                         'data-dialog' => 'size=big'
@@ -118,7 +118,7 @@ class Resources_RoomController extends AuthenticatedController
                 $actions_available = true;
                 $actions->addLink(
                     _('Raum bearbeiten'),
-                    $this->room->getURL('edit'),
+                    $this->room->getActionURL('edit'),
                     Icon::create('edit'),
                     [
                         'data-dialog' => 'size=auto'
@@ -126,7 +126,7 @@ class Resources_RoomController extends AuthenticatedController
                 );
                 $actions->addLink(
                     _('Rechte bearbeiten'),
-                    $this->room->getURL('permissions'),
+                    $this->room->getActionURL('permissions'),
                     Icon::create('roles'),
                     [
                         'data-dialog' => 'size=auto'
@@ -137,7 +137,7 @@ class Resources_RoomController extends AuthenticatedController
                 $actions_available = true;
                 $actions->addLink(
                     _('Raumanfragen anzeigen'),
-                    $this->room->getURL('request_list'),
+                    $this->room->getActionURL('request_list'),
                     Icon::create('room-request'),
                     [
                         'target' => '_blank'
@@ -149,7 +149,7 @@ class Resources_RoomController extends AuthenticatedController
             $actions_available = true;
             $actions->addLink(
                 _('Raum anfragen'),
-                $this->room->getURL('request'),
+                $this->room->getActionURL('request'),
                 Icon::create('room-request'),
                 [
                     'data-dialog' => 'size=auto'

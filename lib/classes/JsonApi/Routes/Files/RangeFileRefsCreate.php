@@ -94,30 +94,22 @@ class RangeFileRefsCreate extends JsonApiController
         $name = $getTrimmed('data.attributes.name');
         $description = $getTrimmed('data.attributes.description');
         $licenseId = $getTrimmed('data.relationships.terms-of-use.data.id.');
+        $tmp_path = $this->getTmpFile();
 
-        try {
-            $file = \File::create(
-                [
-                    'storage' => 'disk',
-                    'name' => $name,
-                    'size' => 0,
-                    'user_id' => $user->id,
-                ]
-            );
-
-            $emptyTmpFile = $this->getTmpFile();
-            $file->connectWithDataFile($emptyTmpFile);
-        } finally {
-            @unlink($emptyTmpFile);
+        $file = \StandardFile::create([
+            'name' => $name,
+            'description' => $description,
+            'tmp_name' => $tmp_path,
+            'size' => filesize($tmp_path),
+            'content_terms_of_use_id' => $licenseId
+        ]);
+        $error = $parentFolder->validateUpload($file, $user->getId());
+        if ($error && is_string($error)) {
+            throw new InternalServerError($error);
         }
 
-        $fileRef = $parentFolder->createFile($file);
-        $fileRef->description = $description;
-        if ($licenseId) {
-            $fileRef->content_terms_of_use_id = $licenseId;
-        }
-        $fileRef->store();
+        $file = $parentFolder->addFile($file);
 
-        return $fileRef;
+        return $file->getFileRef();
     }
 }

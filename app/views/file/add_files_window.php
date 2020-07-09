@@ -15,24 +15,48 @@ if ($folder_id) {
 
 ?>
 <div class="files_source_selector" data-folder_id="<?= htmlReady($folder_id) ?>" <? if ($hidden) echo ' style="display: none;"'; ?>>
-    <?= _('Quelle auswählen') ?>
+    <h2 class="dialog-subtitle"><?= _('Quelle auswählen') ?></h2>
     <div class="file_select_possibilities">
-        <a href="#" onclick="jQuery('.file_selector input[type=file]').first().click(); return false;">
-            <?= Icon::create('computer', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-            <?= _('Mein Computer') ?>
-        </a>
-        <a href="<?= $controller->link_for('file/add_url/' . $folder_id, array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-            <?= Icon::create('globe', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-            <?= _('Webadresse') ?>
-        </a>
-        <a href="<?= $controller->link_for('file/choose_file/' . Folder::findTopFolder($GLOBALS['user']->id)->getId(), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-            <?= Icon::create('files', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-            <?= _('Meine Dateien') ?>
-        </a>
-        <a href="<?= $controller->link_for('file/choose_file_from_course/' . htmlReady($folder_id), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-            <?= Icon::create('seminar', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-            <?= _('Meine Veranstaltungen') ?>
-        </a>
+        <? if (($range instanceof Course) && $GLOBALS['perm']->have_perm('dozent') && $GLOBALS['LIBRARY_CATALOGS'] && $show_library_functions) : ?>
+            <div>
+                <a class="important-item" data-dialog="size=medium-43"
+                   href="<?= $controller->link_for('file/add_from_library/' . $folder_id)?>">
+                    <div class="icon">
+                        <?= Icon::create('literature', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                        <div><?= _('Bibliothek') ?></div>
+                    </div>
+                    <div class="description">
+                        <strong><?= _('Originaldokument aus Bibliotheksverzeichnissen einbinden') ?></strong>
+                        <div><?= htmlReady($library_search_description) ?></div>
+                    </div>
+                </a>
+            </div>
+        <? endif ?>
+        <div>
+            <a href="#" onclick="jQuery('.file_selector input[type=file]').first().click(); return false;">
+                <?= Icon::create('computer', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= _('Mein Computer') ?>
+            </a>
+            <a href="<?= $controller->link_for('file/add_url/' . $folder_id, array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
+                <?= Icon::create('globe', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= _('Webadresse') ?>
+            </a>
+            <a href="<?= $controller->link_for('file/choose_file/' . Folder::findTopFolder($GLOBALS['user']->id)->getId(), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
+                <?= Icon::create('files', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= _('Meine Dateien') ?>
+            </a>
+            <a href="<?= $controller->link_for('file/choose_file_from_course/' . htmlReady($folder_id), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
+                <?= Icon::create('seminar', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= _('Meine Veranstaltungen') ?>
+            </a>
+            <? if (($range instanceof Course) && $GLOBALS['perm']->have_perm('dozent') && $show_library_functions) : ?>
+                <a href="<?= $controller->link_for('library_file/select_type/' . htmlReady($folder_id)) ?>"
+                   data-dialog="size=auto">
+                    <?= Icon::create('literature', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                    <?= _('Literatur') ?>
+                </a>
+            <? endif ?>
+        </div>
     <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
         <? if ($plugin->isSource()) : ?>
             <? $nav = $plugin->getFileSelectNavigation() ?>

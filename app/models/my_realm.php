@@ -129,79 +129,6 @@ class MyRealmModel
 
 
     /**
-     * @param      $my_obj
-     * @param      $user_id
-     * @param null $modules
-     */
-    public static function checkLiterature(&$my_obj, $user_id, $object_id)
-    {
-        if ($my_obj["modules"]["literature"]) {
-            $sql       = "SELECT a.range_id, COUNT(list_id) as count,
-                COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.user_id !=:user_id), list_id, NULL)) AS neue,
-                MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.user_id != :user_id), chdate, 0)) AS last_modified
-                FROM
-                lit_list a
-                LEFT JOIN object_user_visits b ON (b.object_id = a.range_id AND b.user_id = :user_id AND b.type ='literature')
-                WHERE a.range_id = :course_id  AND a. visibility = 1
-                GROUP BY a.range_id";
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-            if (!empty($result)) {
-                if (!is_null($result['last_modified']) && (int)$result['last_modified'] != 0) {
-                    if ($my_obj['last_modified'] < $result['last_modified']) {
-                        $my_obj['last_modified'] = $result['last_modified'];
-                    }
-                }
-                $nav = new Navigation('literature', 'dispatch.php/course/literature');
-                if ((int)$result['neue']) {
-                    $nav->setImage(
-                        Icon::create(
-                            'literature+new',
-                            'attention',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%1$d Literaturliste, %2$d neue',
-                                        '%1$d Literaturlisten, %2$d neue',
-                                        $result['count']
-                                    ),
-                                    $result['count'],
-                                    $result['neue']
-                                )
-                            ]
-                        )
-                    );
-                    $nav->setBadgeNumber($result['neue']);
-                } elseif ((int)$result['count']) {
-                    $nav->setImage(
-                        Icon::create(
-                            'literature',
-                            'inactive',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%d Literaturliste',
-                                        '%d Literaturlisten',
-                                        $result['count']
-                                    ),
-                                $result['count']
-                                )
-                            ]
-                        )
-                    );
-                }
-                return $nav;
-            }
-        }
-        return null;
-    }
-
-
-    /**
      * Check for new news
      * @param      $my_obj
      * @param      $user_id
@@ -1168,7 +1095,7 @@ class MyRealmModel
         }
 
         $plugin_navigation = MyRealmModel::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
-        $available_modules = 'forum participants documents overview scm schedule wiki vote literature elearning_interface resources';
+        $available_modules = 'forum participants documents overview scm schedule wiki vote elearning_interface resources';
 
         foreach (words($available_modules) as $key) {
 
@@ -1186,10 +1113,6 @@ class MyRealmModel
             }
 
             if (!Config::get()->ELEARNING_INTERFACE_ENABLE && strcmp($key, 'elearning_interface') === 0) {
-                continue;
-            }
-
-            if (!Config::get()->LITERATURE_ENABLE && strcmp($key, 'literature') === 0) {
                 continue;
             }
 
@@ -1295,7 +1218,7 @@ class MyRealmModel
         $statement->execute();
 
         // Update all activated modules
-        foreach (words('forum documents schedule participants literature wiki scm elearning_interface') as $type) {
+        foreach (words('forum documents schedule participants wiki scm elearning_interface') as $type) {
             if ($object['modules'][$type]) {
                 object_set_visit($object_id, $type);
             }

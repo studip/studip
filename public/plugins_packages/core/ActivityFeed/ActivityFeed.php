@@ -112,7 +112,6 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
             'documents'    => _('Dateien'),
             'wiki'         => _('Wiki'),
             'schedule'     => _('Ablaufplan'),
-            'literature'   => _('Literatur'),
             'news'         => _('Ankündigungen'),
             'blubber'      => _('Blubber')
         ];
@@ -141,13 +140,6 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
                 if ($plugin instanceof \Studip\ActivityProvider) {
                     $modules[\Context::USER][] = $plugin;
                 }
-            }
-        }
-
-
-        if (!get_config('LITERATURE_ENABLE')) {
-            foreach ($modules as $context => $provider) {
-                unset($modules[$context]['literature']);
             }
         }
 

@@ -7,7 +7,7 @@ $has_children = count($children) > 0;
         <h1>
             <a href="#"><?= htmlReady($resource->getFullName()) ?></a>
         </h1>
-        <a href="<?= $resource->getLink('show') ?>" data-dialog>
+        <a href="<?= $resource->getActionLink('show') ?>" data-dialog>
             <?= Icon::create('info-circle') ?>
         </a>
     </header>

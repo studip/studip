@@ -144,16 +144,6 @@ class CourseNavigation extends Navigation
             }
         }
 
-        // literature
-        if (($modules['literature'] || $sem_class->isSlotMandatory("literature"))
-                && $sem_class->isModuleAllowed($sem_class->getSlotModule("literature"))) {
-            foreach ($sem_class->getNavigationForSlot("literature") as $nav_name => $navigation) {
-                if ($nav_name && is_a($navigation, "Navigation")) {
-                    $this->addSubNavigation($nav_name, $navigation);
-                }
-            }
-        }
-
         // wiki
         if (($modules['wiki'] || $sem_class->isSlotMandatory("wiki"))
                 && $sem_class->isModuleAllowed($sem_class->getSlotModule("wiki"))) {

@@ -564,7 +564,7 @@ class Resources_ResourceController extends AuthenticatedController
         if (($this->resource instanceof Room) and $this->resource->booking_plan_is_public) {
             $actions->addLink(
                 _('QR-Code anzeigen'),
-                $this->resource->getUrl('booking_plan'),
+                $this->resource->getActionURL('booking_plan'),
                 Icon::create('download'),
                 [
                     'data-qr-code' => '',
@@ -1460,7 +1460,7 @@ class Resources_ResourceController extends AuthenticatedController
 
         if ($this->folder->isWritable($this->current_user->id)) {
             $actions->addLink(
-                _('Datei hinzufügen'),
+                _('Dokument hinzufügen'),
                 '#',
                 Icon::create('file+add'),
                 [

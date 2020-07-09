@@ -667,21 +667,21 @@ class ResourceTest extends \Codeception\Test\Unit
         //the methods getLink, getURLForAction and getLinkForAction
         //since all those methods generate the same URL. The "link"-methods
         //just generate a HTML compliant representation of them.
-        $link = $this->resource->getURL('show');
+        $link = $this->resource->getActionURL('show');
 
         $this->assertEquals(
             'dispatch.php/resources/resource/index/' . $this->resource->id,
             $link
         );
 
-        $link = $this->resource->getURL('show', ['test' => '1']);
+        $link = $this->resource->getActionURL('show', ['test' => '1']);
 
         $this->assertEquals(
             'dispatch.php/resources/resource/index/' . $this->resource->id . '?test=1',
             $link
         );
 
-        $link = $this->resource->getURL('delete');
+        $link = $this->resource->getActionURL('delete');
 
         $this->assertEquals(
             'dispatch.php/resources/resource/delete/' . $this->resource->id,

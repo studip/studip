@@ -1593,12 +1593,6 @@ class Seminar
             $this->createMessage(_("Freie Seite der Veranstaltung archiviert."));
         }
 
-        // delete literatur
-        $del_lit = StudipLitList::DeleteListsByRange($s_id);
-        if ($del_lit) {
-            $this->createMessage(sprintf(_("%s Literaturlisten archiviert."),$del_lit['list']));
-        }
-
         // Alle News-Verweise auf dieses Seminar löschen
         if ( ($db_ar = StudipNews::DeleteNewsRanges($s_id)) ) {
             $this->createMessage(sprintf(_("%s Ankündigungen gelöscht."), $db_ar));

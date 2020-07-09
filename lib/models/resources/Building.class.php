@@ -304,7 +304,7 @@ class Building extends Resource
      *
      * @return string The Link for the building action.
      */
-    public function getLink($action = 'show', $link_parameters = [])
+    public function getActionLink($action = 'show', $link_parameters = [])
     {
         return self::getLinkForAction(
             $action,
@@ -324,7 +324,7 @@ class Building extends Resource
      *
      * @return string The URL for the building action.
      */
-    public function getURL($action = 'show', $url_parameters = [])
+    public function getActionURL($action = 'show', $url_parameters = [])
     {
         return self::getURLForAction(
             $action,

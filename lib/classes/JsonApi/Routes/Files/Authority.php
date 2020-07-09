@@ -65,23 +65,17 @@ class Authority
 
     public static function canUpdateFileRef(User $user, \FileRef $fileRef)
     {
-        $folder = $fileRef->foldertype;
-
-        return $folder && $folder->isFileWritable($fileRef->id, $user->id);
+        return $fileRef->isWritable($user->id);
     }
 
     public static function canDeleteFileRef(User $user, \FileRef $fileRef)
     {
-        $folder = $fileRef->foldertype;
-
-        return $folder && $folder->isFileWritable($fileRef->id, $user->id);
+        return $fileRef->isWritable($user->id);
     }
 
     public static function canDownloadFileRef(User $user, \FileRef $fileRef)
     {
-        $folder = $fileRef->foldertype;
-
-        return $folder && $folder->isFileDownloadable($fileRef, $user->id);
+        return $fileRef->isDownloadable($user->id);
     }
 
     public static function canShowFile(User $user, \File $file)
@@ -103,9 +97,7 @@ class Authority
         return 0 < count(
             $file->refs->filter(
                 function (\FileRef $ref) use ($user) {
-                    $folder = $ref->foldertype;
-
-                    return $folder && $folder->isFileWritable($ref->id, $user->id);
+                    return $ref->getFileType()->isWritable($user->id);
                 },
                 1
             )

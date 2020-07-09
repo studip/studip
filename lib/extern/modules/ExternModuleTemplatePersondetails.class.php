@@ -186,7 +186,6 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $this->insertPluginMarkers('HomepagePlugin', $markers, 'TemplateMain');
         $markers['TemplateMain'][] = ['###LECTURES###', _("Inhalt aus dem Template für Veranstaltungen")];
         $markers['TemplateMain'][] = ['###NEWS###', _("Inhalt aus dem Template für News")];
-        $markers['TemplateMain'][] = ['###LITERATURE###', _("Inhalt aus dem Template für Literaturlisten")];
         $markers['TemplateMain'][] = ['###APPOINTMENTS###', _("Inhalt aus dem Template für Termine")];
         $markers['TemplateMain'][] = ['###OWNCATEGORIES###', _("Inhalt aus dem Template für eigene Kategorien")];
         $markers['TemplateMain'][] = ['<!-- END PERSONDETAILS -->', ''];
@@ -569,9 +568,6 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         }
         if (Visibility::verify('dates', $this->user_id)) {
             $content['PERSONDETAILS']['APPOINTMENTS'] = $this->elements['TemplateAppointments']->toString(['content' => $this->getContentAppointments(), 'subpart' => 'APPOINTMENTS']);
-        }
-        if (Visibility::verify('literature', $this->user_id)) {
-            $content['PERSONDETAILS']['LITERATURE'] = $this->elements['TemplateLitList']->toString(['content' => $this->elements['LitList']->getContent(['user_id' => $this->user_id]), 'subpart' => 'LITLISTS']);
         }
         $content['PERSONDETAILS']['OWNCATEGORIES'] = $this->elements['TemplateOwnCategories']->toString(['content' => $this->getContentOwnCategories(), 'subpart' => 'OWNCATEGORIES']);
 

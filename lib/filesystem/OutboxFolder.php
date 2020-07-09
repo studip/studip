@@ -33,7 +33,7 @@ class OutboxFolder extends InboxOutboxFolder
      *
      * @return Icon An icon object with the icon for this folder type.
      */
-    public function getIcon($role)
+    public function getIcon($role = Icon::DEFAULT_ROLE)
     {
         return Icon::create(
             count($this->getFiles())
@@ -72,13 +72,7 @@ class OutboxFolder extends InboxOutboxFolder
         $files = [];
 
         foreach ($message_folders as $folder) {
-            $file_refs = FileRef::findBySql(
-                'folder_id = :folder_id',
-                [
-                    'folder_id' => $folder->id
-                ]
-            );
-            $files = array_merge($files, $file_refs);
+            $files = array_merge($files, $folder->getTypedFolder()->getFiles());
         }
 
         return $files;

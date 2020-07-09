@@ -141,7 +141,6 @@ class ActivityStreamShow extends JsonApiController
                             // 'blubber',
                             'documents',
                             'forum',
-                            'literature',
                             'message',
                             'news',
                             'participants',

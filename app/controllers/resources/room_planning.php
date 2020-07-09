@@ -349,7 +349,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if ($this->resource instanceof Room && $this->resource->booking_plan_is_public) {
             $actions->addLink(
                 _('QR-Code anzeigen'),
-                $this->resource->getUrl('booking_plan'),
+                $this->resource->getActionURL('booking_plan'),
                 Icon::create('download'),
                 [
                     'data-qr-code'       => '',

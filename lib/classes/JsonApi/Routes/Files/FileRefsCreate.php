@@ -84,7 +84,7 @@ class FileRefsCreate extends JsonApiController
             try {
                 $file = \File::create(
                     [
-                        'storage' => 'disk',
+                        'filetype' => 'StandardFile',
                         'name' => $name,
                         'size' => 0,
                         'user_id' => $user->id,
@@ -115,12 +115,12 @@ class FileRefsCreate extends JsonApiController
         $file->mime_type = $source->mime_type;
         $file->name = $source->name;
         $file->size = $source->size;
-        $file->storage = $source->storage;
+        $file->metadata = $source->metadata;
         $file->author_name = $user->getFullName('no_title');
         $file->id = $file->getNewId();
 
         // We must copy the physical data.
-        if ($file->storage === 'disk') {
+        if ($source->getPath()) {
             $copyPath = $this->getTmpPath() . '/' . $file->id;
             if (!copy($source->getPath(), $copyPath)) {
                 throw new InternalServerError('Could not copy File.');

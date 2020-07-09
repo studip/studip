@@ -227,23 +227,26 @@ class StandardFolder implements FolderType
     }
 
     /**
-     * @param array $uploadedfile
+     * @param FileType $newfile
      * @param string $user_id
      * @return string
      */
-    public function validateUpload($uploadedfile, $user_id)
+    public function validateUpload(FileType $newfile, $user_id)
     {
-
         $upload_type = FileManager::getUploadTypeConfig($this->range_id, $user_id);
+        return $this->getValidationMessages($upload_type, $newfile);
+    }
 
-        if ($upload_type['file_size'] < $uploadedfile['size']) {
+    protected function getValidationMessages($upload_type, $newfile)
+    {
+        if ($upload_type['file_size'] < $newfile->getSize()) {
             return sprintf(
                 _('Die maximale Größe für einen Upload (%s) wurde überschritten.'),
                 relsize($upload_type['file_size'])
             );
         }
 
-        $ext   = strtolower(pathinfo($uploadedfile['name'], PATHINFO_EXTENSION));
+        $ext   = strtolower(pathinfo($newfile->getFilename(), PATHINFO_EXTENSION));
         $types = array_map('strtolower', $upload_type['file_types']);
 
         if (!in_array($ext, $types) && $upload_type['type'] === 'deny') {
@@ -277,14 +280,22 @@ class StandardFolder implements FolderType
     }
 
     /**
-     * @return FileRef[]
+     * @return FileType[]
      */
     public function getFiles()
     {
-        // We must load the files (FileRefs) directly from the database
-        // since files that were added to this folder object after it was
-        // created are not included in the file_refs attribute:
-        return FileRef::findByFolder_id($this->getId(), "ORDER BY name");
+        $filerefs = FileRef::findByFolder_id($this->getId(), "ORDER BY name");
+        $files = [];
+        foreach ($filerefs as $fileref) {
+            $class = $fileref->file['filetype'];
+            if (class_exists($class) && is_a($class, "StandardFile", true)) {
+                $files[] = new $class($fileref);
+            } else {
+                $files[] = new UnknownFileType($fileref);
+            }
+        }
+        NotificationCenter::postNotification("StandardFolderCollectsFiles", $this, $user_data = null);
+        return $files;
     }
 
     /**
@@ -298,39 +309,36 @@ class StandardFolder implements FolderType
              : null;
     }
 
-    /**
-     * @param File|array $file
-     * @return FileRef
-     */
-    public function createFile($file)
+    public function addFile(FileType $file, $user_id = null)
     {
-        $newfile = $file;
-        $file_ref_data = [];
+        $file = $file->convertToStandardFile();
 
-        if (!is_a($newfile, 'File')) {
-            $newfile = new File();
-            $newfile->name      = $file['name'];
-            $newfile->mime_type = $file['type'];
-            $newfile->size      = $file['size'];
-            $newfile->storage   = 'disk';
-            $newfile->user_id   = $file['$user_id'];
-            $newfile->id        = $newfile->getNewId();
-            if (!$newfile->connectWithDataFile($file['tmp_name'])) {
-                return null;
+        $filename = $original_filename = $file->getFilename();
+        $ext = pathinfo($original_filename, PATHINFO_EXTENSION);
+        if ($ext) {
+            $name = substr($original_filename, 0, -mb_strlen('.' . $ext));
+        } else {
+            $name = $original_filename;
+        }
+        $files = $this->getFiles();
+        $c = 1;
+
+        //rename file if name already exists in folder:
+        do {
+            $name_available = true;
+            foreach ($files as $folderfile) {
+                if ($folderfile->getFilename() === $filename) {
+                    $name_available = false;
+                    $filename;
+                    $filename = $name . '[' . ++$c . ']';
+                    if ($ext) {
+                        $filename .= '.' . $ext;
+                    }
+                    break;
+                }
             }
-
-            $file_ref_data['description'] = $file['description'];
-            $file_ref_data['content_terms_of_use_id'] = $file['content_terms_of_use_id'];
-        }
-
-        if ($newfile->isNew()) {
-            $newfile->store();
-        }
-
-        return $this->folderdata->linkFile(
-            $newfile,
-            array_filter($file_ref_data)
-        );
+        } while (!$name_available);
+        return $file->addToFolder($this, $filename, $user_id);
     }
 
     /**
@@ -424,9 +432,11 @@ class StandardFolder implements FolderType
         if (in_array($this->range_type, ['course', 'institute'])) {
             if (is_object($fileref->terms_of_use)) {
                 //terms of use are defined for this file!
-                return $this->isReadable($user_id) && $fileref->terms_of_use->fileIsDownloadable($fileref, true, $user_id);
+                return $this->isReadable($user_id)
+                    && $fileref->terms_of_use->isDownloadable($this->range_id, $this->range_type,true, $user_id);
             } else {
-                return $this->isReadable($user_id) && $GLOBALS['perm']->have_studip_perm('user', $this->range_id, $user_id);
+                return $this->isReadable($user_id)
+                    && $GLOBALS['perm']->have_studip_perm('user', $this->range_id, $user_id);
             }
         }
 
@@ -480,6 +490,48 @@ class StandardFolder implements FolderType
             }
         }
         return $range;
+    }
+
+    /**
+     * Returns an associative array of additional colums with the index the id of the column
+     * and their values as the localized names of the columns
+     * @return array('col1' => _("Anfragestatus"))
+     */
+    public function getAdditionalColumns()
+    {
+        return [];
+    }
+
+    /**
+     * Returns the content for that additional column, if it exists. You can return null a string
+     * or a Flexi_Template as the content.
+     * @param string $column_index
+     * @return null|string|Flexi_Template
+     */
+    public function getContentForAdditionalColumn($column_index)
+    {
+        return null;
+    }
+
+    /**
+     * Returns an integer or text that marks the value the content of the given column should be
+     * ordered by.
+     * @param string $column_index
+     * @return mixed : order value
+     */
+    public function getAdditionalColumnOrderWeigh($column_index)
+    {
+        return 1;
+    }
+
+    /**
+     * Returns an array of Studip\Button or Studip\LinkButton objects that get displayed
+     * underneath the files-table.
+     * @return array of Studip\Button or Studip\LinkButton
+     */
+    public function getAdditionalActionButtons()
+    {
+        return [];
     }
 
 }

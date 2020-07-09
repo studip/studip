@@ -680,7 +680,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     foreach ($other_room_parts as $room_part) {
                         $other_room_links[] = sprintf(
                             '<a target="_blank" href="%1$s">%2$s</a>',
-                            $room_part->getLink('show'),
+                            $room_part->getActionLink('show'),
                             htmlReady($room_part->name)
                         );
                     }
@@ -911,7 +911,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     foreach ($other_room_parts as $room_part) {
                         $other_room_links[] = sprintf(
                             '<a target="_blank" href="%1$s">%2$s</a>',
-                            $room_part->getLink('show'),
+                            $room_part->getActionLink('show'),
                             htmlReady($room_part->name)
                         );
                     }

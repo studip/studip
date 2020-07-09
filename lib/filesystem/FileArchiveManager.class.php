@@ -24,11 +24,12 @@ class FileArchiveManager
 
     //ARCHIVE HELPER METHODS
 
+
     /**
-     * Adds a FileRef to a Zip archive.
+     * Adds a file to an archive using its FileType object.
      *
      * @param ZipArchive $archive The Zip archive where the FileRef shall be added to.
-     * @param FileRef $file_ref The FileRef which shall be added to the zip archive.
+     * @param FileType $file_type The FileType which shall be added to the zip archive.
      * @param string $user_id The user who wishes to add the FileRef to the archive.
      * @param string $archive_fs_path The path of the file inside the archive's file system.
      * @param bool $do_user_permission_checks Set to true if reading/downloading permissions
@@ -43,9 +44,9 @@ class FileArchiveManager
      * @throws Exception|FileArchiveManagerException If an error occurs a general exception or a more
      *     special exception is thrown.
      */
-    public static function addFileRefToArchive(
+    public static function addFileTypeToArchive(
         ZipArchive $archive,
-        FileRef $file_ref,
+        FileType $file_type,
         $user_id = null,
         $archive_fs_path = '',
         $do_user_permission_checks = true,
@@ -58,19 +59,20 @@ class FileArchiveManager
         $adding_allowed = false;
 
         if ($do_user_permission_checks) {
-            $folder = $file_ref->getFolderType();
+            $folder = $file_type->getFolderType();
             if (!$folder) {
                 return false;
             }
 
-            if ($folder->isReadable($user_id) && $folder->isFileDownloadable($file_ref->id, $user_id)) {
+            if ($folder->isReadable($user_id) && $file_type->isDownloadable($user_id)) {
                 //FileRef is readable and downloadable for the user (identified by $user_id).
                 $adding_allowed = true;
             }
         } elseif ($ignore_user) {
             //we have to check the download condition by looking at the
-            //terms of use object of the FileRef:
-            if ($file_ref->terms_of_use && $file_ref->terms_of_use->download_condition == 0) {
+            //terms of use object of the FileType:
+            $terms_of_use = $file_type->getTermsOfUse();
+            if ($terms_of_use && $terms_of_use->download_condition == 0) {
                 $adding_allowed = true;
             }
         } else {
@@ -79,67 +81,26 @@ class FileArchiveManager
         }
 
         if ($adding_allowed) {
-            //Adding the FileRef is allowed:
-            //Get the file's path (if the file exists) and add the file to the archive:
-            $file = $file_ref->file;
-            if ($file) {
-                //Check if the FileRef references a file
-                //in the file system or a link:
-                if ($file_ref->file->storage == 'url') {
-                    //The FileRef references a link:
-                    //Put the URL into a file ending with .url:
-
-                    $url = $file_ref->file->getURL();
-
-                    if ($url) {
-                        //The URL has been fetched and we can put it
-                        //in a file in the archive:
-                        $archive->addFromString(
-                            $archive_fs_path . $file_ref->name . '.url',
-                            "[InternetShortcut]\nURL={$url}\n"
-                        );
-                        return true;
-                    }
-                } else {
-                    //The FileRef references a file:
-                    $file_path = $file->getPath();
-                }
+            //Adding the FileType is allowed:
+            $file_contains_link = false;
+            if ($file_type instanceof LibraryFile) {
+                $file_contains_link = !$file_type->hasFileAttached();
             } else {
-
-                if ($file_ref->path_to_blob) {
-                    //The FileRef references a pluginfile:
-                    $file_path = $file_ref->path_to_blob;
-                }
+                $file_contains_link = $file_type instanceof URLFile;
             }
-            if ($file_path && file_exists($file_path)) {
-                $archive->addFile($file_path, $archive_fs_path . $file_ref->name);
-
-                //Add the file to the file list (if available):
-                if (is_array($file_list)) {
-                    $archive_max_num_files = Config::get()->ZIP_DOWNLOAD_MAX_FILES;
-                    $archive_max_size =  Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
-                    $file_list[] = [
-                        'name' => $file_ref->name,
-                        'size' => $file_ref->size,
-                        'first_name' => isset($file_ref->owner) ? $file_ref->owner->vorname : '',
-                        'last_name' => isset($file_ref->owner) ? $file_ref->owner->nachname : '',
-                        'downloads' => $file_ref->downloads,
-                        'mkdate' => date('d.m.Y H:i', $file_ref->mkdate),
-                        'path' => ($archive_fs_path . $file_ref->name)
-                    ];
-                    if (count($file_list) > $archive_max_num_files) {
-                        $archive->unchangeAll();
-                        unlink($archive->filename);
-                        throw new FileArchiveManagerException(
-                            sprintf(
-                                _('Das Archiv beinhaltet zu viele Dateibereich-Objekte! Die Obergrenze liegt bei %d Objekten!'),
-                                $archive_max_num_files
-                            )
-                        );
-                    }
-                    if (array_sum(array_column($file_list, 'size')) > $archive_max_size) {
-                        $archive->unchangeAll();
-                        unlink($archive->filename);
+            if ($file_contains_link) {
+                //The FileType references a link:
+                //Put the URL into a file ending with .url:
+                $url = $file_type->getDownloadURL();
+                if ($url) {
+                    //The URL has been fetched and we can put it
+                    //in a file in the archive:
+                    $archive->addFromString(
+                        $archive_fs_path . $file_type->getFilename() . '.url',
+                        "[InternetShortcut]\nURL={$url}\n"
+                    );
+                    //Check the file size of the archive:
+                    if (file_exists($archive->filename) && filesize($archive->filename) > $archive_max_size) {
                         throw new FileArchiveManagerException(
                             sprintf(
                                 _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
@@ -147,13 +108,111 @@ class FileArchiveManager
                             )
                         );
                     }
+                    if (is_array($file_list)) {
+                        $user = $file_type->getUser();
+                        $file_list[] = [
+                            'name' => $file_type->getFilename(),
+                            'size' => $file_type->getSize(),
+                            'first_name' => ($user instanceof User) ? $user->vorname : '',
+                            'last_name' => ($user instanceof User) ? $user->nachname : '',
+                            'downloads' => $file_type->getDownloads(),
+                            'mkdate' => date('d.m.Y H:i', $file_type->getMakeDate()),
+                            'path' => ($archive_fs_path . $file_type->getFilename())
+                        ];
+                    }
+                    return true;
                 }
-
-                return true;
+            } else {
+                //Get the file's path (if the file exists) and add the file to the archive:
+                $path = $file_type->getPath();
+                if ($path) {
+                    //It is a file in the file system:
+                    if (file_exists($path)) {
+                        $archive->addFile($path, $archive_fs_path . $file_type->getFilename());
+                        //Check the file size of the archive:
+                        if (file_exists($archive->filename) && filesize($archive->filename) > $archive_max_size) {
+                            throw new FileArchiveManagerException(
+                                sprintf(
+                                    _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
+                                    $archive_max_size
+                                )
+                            );
+                        }
+                        //Add the file to the file list (if available):
+                        if (is_array($file_list)) {
+                            $archive_max_num_files = Config::get()->ZIP_DOWNLOAD_MAX_FILES;
+                            $archive_max_size =  Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024; //1048576 bytes = 1 Mebibyte
+                            $user = $file_type->getUser();
+                            $file_list[] = [
+                                'name' => $file_type->getFilename(),
+                                'size' => $file_type->getSize(),
+                                'first_name' => ($user instanceof User) ? $user->vorname : '',
+                                'last_name' => ($user instanceof User) ? $user->nachname : '',
+                                'downloads' => $file_type->getDownloads(),
+                                'mkdate' => date('d.m.Y H:i', $file_type->getMakeDate()),
+                                'path' => ($archive_fs_path . $file_type->getFilename())
+                            ];
+                            if (count($file_list) > $archive_max_num_files) {
+                                $archive->unchangeAll();
+                                unlink($archive->filename);
+                                throw new FileArchiveManagerException(
+                                    sprintf(
+                                        _('Das Archiv beinhaltet zu viele Dateibereich-Objekte! Die Obergrenze liegt bei %d Objekten!'),
+                                        $archive_max_num_files
+                                    )
+                                );
+                            }
+                            if (array_sum(array_column($file_list, 'size')) > $archive_max_size) {
+                                $archive->unchangeAll();
+                                unlink($archive->filename);
+                                throw new FileArchiveManagerException(
+                                    sprintf(
+                                        _('Das ZIP-Archiv ist zu groß! Die maximal erlaubte Größe ist %d bytes!'),
+                                        $archive_max_size
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
             }
         }
 
         //Something must have gone wrong:
+        return false;
+    }
+
+
+    /**
+     * Adds a FileRef to a Zip archive.
+     * This is only a wrapper to addFileTypeToArchive that exists only
+     * for compatibility reasons.
+     *
+     * @see addFileTypeToArchive
+     */
+    public static function addFileRefToArchive(
+        ZipArchive $archive,
+        FileRef $file_ref,
+        $user_id = null,
+        $archive_fs_path = '',
+        $do_user_permission_checks = true,
+        $ignore_user = false,
+        &$file_list = null
+    )
+    {
+        $file_type = $file_ref->getFileType();
+        if ($file_type instanceof FileType) {
+            return self::addFileTypeToArchive(
+                $archive,
+                $file_type,
+                $user_id,
+                $archive_fs_path,
+                $do_user_permission_checks,
+                $ignore_user,
+                $file_list
+            );
+        }
+        //The file type variable does not contain a FileType object.
         return false;
     }
 
@@ -211,9 +270,9 @@ class FileArchiveManager
             $folder_zip_path .= $folder->name;
             $archive->addEmptyDir($folder_zip_path);
         }
-        foreach ($folder->getFiles() as $file_ref) {
+        foreach ($folder->getFiles() as $file) {
 
-            if (!$file_ref instanceof FileRef) {
+            /*if (!$file_ref instanceof FileRef) { TODO: OwnCloudPlugin is this ready?
                 $plugin = PluginManager::getInstance()->getPlugin($folder->range_id);
                 if (!$plugin) {
                     $plugin = PluginManager::getInstance()->getPlugin($folder->range_type);;
@@ -221,11 +280,11 @@ class FileArchiveManager
                 if ($plugin) {
                     $file_ref = $plugin->getPreparedFile($file_ref->id, true);
                 }
-            }
+            }*/
 
-            self::addFileRefToArchive(
+            self::addFileTypeToArchive(
                 $archive,
-                $file_ref,
+                $file,
                 $user_id,
                 //keep hierarchy in zip file (files and subdirectories)
                 $keep_hierarchy ? $folder_zip_path . '/' : '',
@@ -333,6 +392,16 @@ class FileArchiveManager
         foreach ($file_area_objects as $file_area_object) {
             if ($file_area_object instanceof FileRef) {
                 self::addFileRefToArchive(
+                    $archive,
+                    $file_area_object,
+                    $user_id,
+                    '',
+                    $do_user_permission_checks,
+                    $ignore_user,
+                    $file_list
+                );
+            } elseif ($file_area_object instanceof FileType) {
+                self::addFileTypeToArchive(
                     $archive,
                     $file_area_object,
                     $user_id,
@@ -761,7 +830,6 @@ class FileArchiveManager
         $file->name      = $archive->convertArchiveFilename(basename($archive_path));
         $file->mime_type = get_mime_type($file->name);
         $file->size      = $file_info['size'];
-        $file->storage   = 'disk';
         $file->store();
 
         // Ok, we have a file object in the database. Now we must connect
@@ -788,7 +856,7 @@ class FileArchiveManager
         $file_ref->folder_id = $target_folder->getId();
         $file_ref->user_id   = $user->id;
         $file_ref->name     = $file->name;
-        if($file_ref->store()) {
+        if ($file_ref->store()) {
             return $file_ref;
         }
 

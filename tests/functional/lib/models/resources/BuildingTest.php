@@ -85,15 +85,15 @@ class BuildingTest extends \Codeception\Test\Unit
 
     public function testGetURL()
     {
-        $link = $this->building->getURL('show');
+        $link = $this->building->getActionURL('show');
 
         $this->assertEquals('dispatch.php/resources/building/index/' . $this->building->id, $link);
 
-        $link = $this->building->getURL('show', ['test' => '1']);
+        $link = $this->building->getActionURL('show', ['test' => '1']);
 
         $this->assertEquals('dispatch.php/resources/building/index/' . $this->building->id . '?test=1', $link);
 
-        $link = $this->building->getURL('delete');
+        $link = $this->building->getActionURL('delete');
 
         $this->assertEquals('dispatch.php/resources/building/delete/' . $this->building->id, $link);
     }

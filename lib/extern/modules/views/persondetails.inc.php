@@ -179,12 +179,6 @@ foreach ($order as $position) {
             case "head" :
                 $data_field($this, $row, $aliases_content[$position], $text_div, $text_div_end);
                 break;
-            /*
-            case 'literature' :
-                $literature_content = $this->elements['LitList']->getContent(NULL);
-                literature($this, $literature_content, $aliases_content[$position], $text_div, $text_div_end);
-                break;
-            */
             // generic data fields
             default :
                 // include generic datafields

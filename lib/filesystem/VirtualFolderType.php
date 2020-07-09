@@ -172,7 +172,7 @@ class VirtualFolderType implements FolderType
      * @param string $user_id
      * @return bool
      */
-    public function validateUpload($uploadedfile, $user_id)
+    public function validateUpload(FileType $file, $user_id)
     {
         return false;
     }
@@ -212,15 +212,12 @@ class VirtualFolderType implements FolderType
     }
 
     /**
-     * @param array|ArrayAccess $filedata
+     * @param array|ArrayAccess $file
      * @return FileRef
      */
-    public function createFile($filedata)
+    public function addFile(FileType $file, $user_id = null)
     {
-        if (is_array($filedata)) {
-            $filedata = (object) $filedata;
-        }
-        $this->files[] = $filedata;
+        $this->files[] = $file;
         return end($this->files);
     }
 
@@ -295,5 +292,25 @@ class VirtualFolderType implements FolderType
     public function isFileWritable($fileref_or_id, $user_id)
     {
         return false;
+    }
+
+    public function getAdditionalColumns()
+    {
+
+    }
+
+    public function getContentForAdditionalColumn($column_index)
+    {
+
+    }
+
+    public function getAdditionalColumnOrderWeigh($column_index)
+    {
+
+    }
+
+    public function getAdditionalActionButtons()
+    {
+
     }
 }

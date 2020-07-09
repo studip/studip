@@ -10,7 +10,7 @@ const Folders = {
                 folder_id +
                 '&js=1',
             {
-                title: 'Datei hinzufügen'.toLocaleString()
+                title: 'Dokument hinzufügen'.toLocaleString()
             }
         );
     },

@@ -41,7 +41,7 @@ $room_actions = [];
 if ($room->requestable && $show_autor_actions) {
     $room_actions = [
         '0071' => [
-            $room->getLink('request_list'),
+            $room->getActionLink('request_list'),
             _('Anfragen auflösen'),
             Icon::create('room-request'),
             ['target' => '_blank']

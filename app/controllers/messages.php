@@ -874,26 +874,29 @@ class MessagesController extends AuthenticatedController {
 
         $message_top_folder = MessageFolder::findTopFolder($message_id) ?: MessageFolder::createTopFolder($message_id);
 
-        $error = $message_top_folder->validateUpload($file, $GLOBALS['user']->id);
-        if ($error != null) {
+        $uploaded = FileManager::handleFileUpload(
+            [
+                'tmp_name' => [$file['tmp_name']],
+                'name' => [$file['name']],
+                'size' => [$file['size']],
+                'type' => [$file['type']],
+                'error' => [$file['error']]
+            ],
+            $message_top_folder,
+            $GLOBALS['user']->id
+        );
+
+        if ($uploaded['error']) {
+            throw new Exception(implode("\n", $uploaded['error']));
+        }
+        if ($uploaded['error']) {
             $this->response->set_status(400);
+            $error = implode("\n", $uploaded['error']);
             $this->render_json(compact('error'));
             return;
         }
 
-        $user = User::findCurrent();
-
-        $file_object = new File();
-        $file_object->user_id = $user->id;
-        $file_object->mime_type = get_mime_type($output['name']);
-        $file_object->name = $output['name'];
-        $file_object->size = (int)$output['size'];
-        $file_object->storage = 'disk';
-        $file_object->author_name = $user->getFullName();
-
-        $file_ref = $message_top_folder->createFile($file);
-
-        if (!$file_ref instanceof FileRef) {
+        if (!$uploaded['files'][0] instanceof FileType) {
             $error = _('Ein Systemfehler ist beim Upload aufgetreten.');
 
             if ($file_ref instanceof MessageBox) {
@@ -904,9 +907,9 @@ class MessagesController extends AuthenticatedController {
             return;
         }
 
-        $output['document_id'] = $file_ref->id;
+        $output['document_id'] = $uploaded['files'][0]->getId();
 
-        $output['icon'] = FileManager::getIconForFileRef($file_ref)->asImg(['class' => 'text-bottom']);
+        $output['icon'] = $uploaded['files'][0]->getIcon(Icon::ROLE_CLICKABLE)->asImg(['class' => 'text-bottom']);
 
         $this->render_json($output);
     }

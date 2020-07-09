@@ -695,6 +695,12 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     }
 
 
+    public function getLink() : StudipLink
+    {
+ 	    return new StudipLink($this->getItemURL(), $this->name, Icon::create('seminar'));
+    }
+
+
     /**
      * Returns a list of courses for the specified user.
      * Permission levels may be supplied to limit the course list.

@@ -54,7 +54,7 @@ class InboxOutboxFolder implements FolderType
      *
      * @return Icon An icon object with the icon for this folder type.
      */
-    public function getIcon($role)
+    public function getIcon($role = Icon::DEFAULT_ROLE)
     {
         $icon = count($this->getFiles())
             ? 'folder-full'
@@ -183,20 +183,14 @@ class InboxOutboxFolder implements FolderType
     /**
      * InboxOutboxFolders do not allow uploads.
      */
-    public function validateUpload($file, $user_id)
+    public function validateUpload(FileType $file, $user_id)
     {
         //no uploads allowed
         return false;
     }
 
-    /**
-     * InboxOutboxFolders do not allow creating files.
-     */
-    public function createFile($file)
-    {
-        return MessageBox::error(
-            _('In InboxOutbox-Ordnern können keine Dateien erzeugt werden!')
-        );
+    public function addFile(FileType $file, $user_id = null) {
+        return false;
     }
 
     /**
@@ -261,5 +255,47 @@ class InboxOutboxFolder implements FolderType
     {
         //files shall be unchanged in here
         return false;
+    }
+
+    /**
+     * Returns an associative array of additional colums with the index the id of the column
+     * and their values as the localized names of the columns
+     * @return array('col1' => _("Anfragestatus"))
+     */
+    public function getAdditionalColumns()
+    {
+        return [];
+    }
+
+    /**
+     * Returns the content for that additional column, if it exists. You can return null a string
+     * or a Flexi_Template as the content.
+     * @param string $column_index
+     * @return null|string|Flexi_Template
+     */
+    public function getContentForAdditionalColumn($column_index)
+    {
+        return null;
+    }
+
+    /**
+     * Returns an integer or text that marks the value the content of the given column should be
+     * ordered by.
+     * @param string $column_index
+     * @return mixed : order value
+     */
+    public function getAdditionalColumnOrderWeigh($column_index)
+    {
+        return 0;
+    }
+
+    /**
+     * Returns an array of Studip\Button or Studip\LinkButton objects that get displayed
+     * underneath the files-table.
+     * @return array of Studip\Button or Studip\LinkButton
+     */
+    public function getAdditionalActionButtons()
+    {
+        return [];
     }
 }

@@ -106,6 +106,14 @@ class ProfileNavigation extends Navigation
                     $navigation->addSubNavigation('deputies', new Navigation(_('Standardvertretung'), 'dispatch.php/settings/deputies'));
                 }
 
+                $navigation->addSubNavigation(
+                    'citation',
+                    new Navigation(
+                        _('Zitationsstil'),
+                        'dispatch.php/settings/library/citation'
+                    )
+                );
+
                 if (Config::Get()->API_ENABLED) {
                     $navigation->addSubNavigation('api', new Navigation(_('API-Berechtigungen'), 'dispatch.php/api/authorizations'));
                 }
