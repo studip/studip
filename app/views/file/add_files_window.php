@@ -56,18 +56,18 @@ if ($folder_id) {
                     <?= _('Literatur') ?>
                 </a>
             <? endif ?>
+            <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
+                <? if ($plugin->isSource()) : ?>
+                    <? $nav = $plugin->getFileSelectNavigation() ?>
+                    <? if ($nav): ?>
+                        <a href="<?= $controller->link_for('file/choose_file/', array_merge($options, ['from_plugin' => get_class($plugin)])) ?>" data-dialog>
+                            <?= $nav->getImage()->asImg(50) ?>
+                            <?= htmlReady($nav->getTitle()) ?>
+                        </a>
+                    <? endif; ?>
+                <? endif; ?>
+            <? endforeach; ?>
         </div>
-    <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
-        <? if ($plugin->isSource()) : ?>
-            <? $nav = $plugin->getFileSelectNavigation() ?>
-            <? if ($nav): ?>
-                <a href="<?= $controller->link_for('file/choose_file/', array_merge($options, ['from_plugin' => get_class($plugin)])) ?>" data-dialog>
-                    <?= $nav->getImage()->asImg(50) ?>
-                    <?= htmlReady($nav->getTitle()) ?>
-                </a>
-            <? endif; ?>
-        <? endif; ?>
-    <? endforeach; ?>
     </div>
     <div>
         <?=sprintf(_('Sie dürfen Dateien bis zu einer Größe von %s in diesem Bereich einstellen.'), '<b>' . relsize($upload_type['file_size']) . '</b>')?>
