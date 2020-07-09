@@ -76,14 +76,6 @@ if ($topFolder->isWritable($GLOBALS['user']->id)) {
 foreach ($topFolder->getAdditionalActionButtons() as $button) {
     $vue_topFolder['buttons'] .= $button;
 }
-if (Feedback::isActivated() && Feedback::hasCreatePerm($course->id)) {
-    $this->addLink(
-        $controller->url_for('course/feedback/create_form/' . $folder->getId() . '/Folder'),
-        _('Neues Feedback-Element'),
-        Icon::create('star+add', Icon::ROLE_CLICKABLE, ['size' => 20]),
-        ['data-dialog' => '1']
-    );
-}
 ?>
 
 <? if ($show_file_search) : ?>
