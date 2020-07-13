@@ -16,7 +16,7 @@ class AddAdminCoursesSidebarActiveElements extends Migration
                 '',
                 'string',
                 'user',
-                'Diese Einstellung legt fest, welche Elemente in der Seitenleiste der Veranstaltungsübersicht für Admins sichtbar ist. Diese Einstellung kann individuell vorgenommen werden.'
+                'Diese Einstellung legt fest, welche Elemente in der Seitenleiste der Veranstaltungsübersicht für Admins sichtbar sind.'
             )"
         );
     }
