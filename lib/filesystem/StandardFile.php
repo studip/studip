@@ -145,7 +145,7 @@ class StandardFile implements FileType
 
     public function getDescription()
     {
-        $this->fileref['description'];
+        return $this->fileref['description'];
     }
 
     public function getTermsOfUse()
