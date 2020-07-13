@@ -10,6 +10,11 @@ interface FileType
      */
     public function getIcon($role);
 
+    /**
+     * Returns the id of the file which is most likely the id of the FileRef object
+     * within the FileType object.
+     * @return mixed
+     */
     public function getId();
 
     /**
@@ -44,6 +49,10 @@ interface FileType
      */
     public function getSize();
 
+    /**
+     * Returns the URL to download the file. May be sendfile.php?... or an external link.
+     * @return string|null
+     */
     public function getDownloadURL();
 
     /**
@@ -70,10 +79,22 @@ interface FileType
      */
     public function getLastChangeDate();
 
+    /**
+     * Returns the UNIX-timestamp of creation of that file
+     * @return integer|null
+     */
     public function getMakeDate();
 
+    /**
+     * Returns the description of that FileType object.
+     * @return string|null
+     */
     public function getDescription();
 
+    /**
+     * Returns the mime-type of that FileType-object.
+     * @return string
+     */
     public function getMimeType();
 
     /**
@@ -81,6 +102,10 @@ interface FileType
      */
     public function getTermsOfUse();
 
+    /**
+     * Returns an instance of ActionMenu.
+     * @return ActionMenu|null
+     */
     public function getActionmenu();
 
 
@@ -98,6 +123,10 @@ interface FileType
     public function getInfoDialogButtons(array $extra_link_params = []) : array;
 
 
+    /**
+     * Deletes that file.
+     * @return bool : true on success
+     */
     public function delete();
 
     /**
