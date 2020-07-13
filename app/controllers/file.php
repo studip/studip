@@ -1508,15 +1508,9 @@ class FileController extends AuthenticatedController
                             continue;
                         }
 
-                        $payload['html'][] = $this->render(
-                            'files/_fileref_tr',
-                            [
-                                'controller'           => $this,
-                                'file_ref'             => $file_ref,
-                                'current_folder'       => $file_ref->folder->getTypedFolder(),
-                                'marked_element_ids'   => [],
-                                'show_bulk_checkboxes' => true
-                            ]
+                        $payload['html'][] = FilesystemVueDataManager::getFileVueData(
+                            $file_ref->getFileType(),
+                            $file_ref->folder->getTypedFolder()
                         );
                     }
 
