@@ -559,6 +559,19 @@ class FilesController extends AuthenticatedController
         if (Navigation::hasItem('/files/my_files')) {
             Navigation::activateItem('/files/my_files');
         }
+        $sidebar = Sidebar::get();
+
+        $actions = new ActionsWidget();
+        $actions->addLink(
+            _('Bildergalerie öffnen'),
+            '#g',
+            Icon::create('file-pic', 'clickable'),
+            [
+                'onClick' => "STUDIP.Files.openGallery(); return false;",
+                'v-if' => "hasFilesOfType('image')"
+            ]
+        );
+        $sidebar->addWidget($actions);
         $this->marked_element_ids = [];
 
         $folder = Folder::findTopFolder($this->user->id);
