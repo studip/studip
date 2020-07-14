@@ -153,10 +153,15 @@ class LogEvent extends SimpleORMap implements PrivacyObject
      * @param string $field The name of the table field.
      * @return string The name of the resource or resource id.
      */
-    protected function formatResource($field) {
-        $resObj = ResourceObject::Factory($this->$field);
-        if ($resObj->getName()) {
-            return $resObj->getFormattedLink();
+    protected function formatResource($field)
+    {
+        $resource = Resource::find($this->$field);
+        if ($resource && $resource->name) {
+            return sprintf(
+                '<a href="%s">%s</a>',
+                Resource::getLinkForAction('show', $resource->id),
+                htmlReady($resource->name)
+            );
         }
         return $this->$field;
     }
