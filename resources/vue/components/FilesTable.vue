@@ -1,7 +1,6 @@
 <template>
     <table class="default documents"
            :data-folder_id="topfolder.folder_id"
-           :data-table_id="table_id"
            data-shiftcheck>
         <caption>
             <div class="caption-container">
@@ -205,8 +204,8 @@
         <tfoot v-if="(topfolder.buttons && show_bulk_actions) || tfoot_link">
             <tr>
                 <td v-if="topfolder.buttons && show_bulk_actions"
-                    :colspan="numberOfColumns" v-html="topfolder.buttons"></td>
-                <td v-if="tfoot_link">
+                    :colspan="numberOfColumns - (tfoot_link ? 1 : 0)" v-html="topfolder.buttons"></td>
+                <td v-if="tfoot_link" :colspan="(topfolder.buttons && show_bulk_actions ? 1 : numberOfColumns)">
                     <a :href="tfoot_link.href">
                         {{tfoot_link.text}}
                     </a>
@@ -225,13 +224,17 @@
             folders: {
                 type: Array,
                 required: false,
-                default: []
+                default: function () {
+                    return [];
+                }
             },
             files: Array,
             breadcrumbs: {
                 type: Array,
                 required: false,
-                default: []
+                default: function () {
+                    return [];
+                }
             },
             showdownloads: {
                 type: Boolean,

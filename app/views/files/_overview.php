@@ -22,7 +22,7 @@
                      enable_table_filter="false"
                      table_title="<?= _('Alle Dateien') ?>"
                      :show_bulk_actions="false"
-                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+                     :tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
         ></files-table>
     </div>
 <? endif ?>
@@ -47,7 +47,7 @@
                      enable_table_filter="false"
                      table_title="<?= _('Meine Dateien') ?>"
                      :show_bulk_actions="false"
-                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+                     :tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
         ></files-table>
     </div>
 <? endif ?>
@@ -72,7 +72,7 @@
                      enable_table_filter="false"
                      table_title="<?= _('Meine öffentlichen Dateien') ?>"
                      :show_bulk_actions="false"
-                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+                     :tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
         ></files-table>
     </div>
 <? endif ?>
@@ -97,7 +97,7 @@
                      enable_table_filter="false"
                      table_title="<?= _('Meine Dateien mit ungeklärter Lizenz') ?>"
                      :show_bulk_actions="false"
-                     tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
+                     :tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
         ></files-table>
     </div>
 <? endif ?>
