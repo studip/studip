@@ -98,13 +98,15 @@ class FileRefsCreate extends JsonApiController
             }
         }
 
-        $fileRef = $parentFolder->createFile($file);
+        $fileRef = new \FileRef();
         $fileRef->description = $description;
         $fileRef->content_terms_of_use_id = $licenseId;
 
-        $fileRef->store();
+        $filetype = $parentFolder->addFile(
+            new \StandardFile($fileRef, $file)
+        );
 
-        return $fileRef;
+        return $filetype->getFileRef();
     }
 
 
