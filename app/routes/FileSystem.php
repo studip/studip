@@ -631,10 +631,11 @@ class FileSystem extends \RESTAPI\RouteMap
 
                 $result['file_refs'] = [];
                 foreach ($folder->getTypedFolder()->getFiles() as $file) {
-                    if (method_exists($file,"getFileRef"))
-                    $result['file_refs'][] = $this->filerefToJSON(
-                        $file->getFileRef()
-                    );
+                    if (method_exists($file,"getFileRef")) {
+                        $result['file_refs'][] = $this->filerefToJSON(
+                            $file->getFileRef()
+                        );
+                    }
                 }
             }
         }
