@@ -524,7 +524,7 @@ class FileSystem extends \RESTAPI\RouteMap
         $result = array_merge($ref->toRawArray(), [
             'size'      => (int) $ref->file->size,
             'mime_type' => $ref->file->mime_type,
-            'storage'   => $ref->file->storage,
+            'storage'   => $ref->file->filetype === "URLFile" ? "url" : "disk",
 
             'is_readable'     => $typed_folder->isReadable($user->id),
             'is_downloadable' => $filetype->isDownloadable($user->id),
@@ -537,7 +537,7 @@ class FileSystem extends \RESTAPI\RouteMap
         $result['chdate']    = (int) $result['chdate'];
 
         if ($result['storage'] === 'url') {
-            $result['url'] = $ref->file->url;
+            $result['url'] = $ref->getFileType()->getDownloadURL();
         }
 
         if ($extended) {
@@ -630,8 +630,11 @@ class FileSystem extends \RESTAPI\RouteMap
                 }
 
                 $result['file_refs'] = [];
-                foreach ($folder->getTypedFolder()->getFiles() as $file_ref) {
-                    $result['file_refs'][] = $this->filerefToJSON($file_ref);
+                foreach ($folder->getTypedFolder()->getFiles() as $file) {
+                    if (method_exists($file,"getFileRef"))
+                    $result['file_refs'][] = $this->filerefToJSON(
+                        $file->getFileRef()
+                    );
                 }
             }
         }
