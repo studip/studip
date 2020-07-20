@@ -428,10 +428,12 @@ class FilesController extends AuthenticatedController
 
             $this->file_ref_c = FileRef::countAll($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
 
-            $this->pagination = [
-                $this->page - 1,
+            $pagination = Pagination::create(
                 $this->file_ref_c,
-                $this->page_size,
+                $this->page - 1,
+                $this->page_size
+            );
+            $this->pagination_html = $pagination->asLinks(
                 function ($page_id) {
                     return URLHelper::getLink(
                         'dispatch.php/files/overview',
@@ -441,7 +443,7 @@ class FilesController extends AuthenticatedController
                         ]
                     );
                 }
-            ];
+            );
             //To optimise performance, the folders of the files are collected
             //in an array with all relevant files of the folder attached to it.
             //This way, we don't need to each file's folder separately and can
