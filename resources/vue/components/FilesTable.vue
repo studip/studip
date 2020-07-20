@@ -204,12 +204,14 @@
         <tfoot v-if="(topfolder.buttons && show_bulk_actions) || tfoot_link">
             <tr>
                 <td :colspan="numberOfColumns - (tfoot_link ? 1 : 0)">
-                    <span v-if="topfolder.buttons && show_bulk_actions"
-                          v-html="topfolder.buttons"></span>
-                    <span v-if="tfoot_link" :colspan="(topfolder.buttons && show_bulk_actions ? 1 : numberOfColumns)">
-                        <a :href="tfoot_link.href">{{tfoot_link.text}}</a>
-                    </span>
-                    <span v-if="pagination" v-html="pagination" class="pagination"></span>
+                    <div class="footer-items">
+                        <span v-if="topfolder.buttons && show_bulk_actions"
+                              v-html="topfolder.buttons" class="bulk-buttons"></span>
+                        <span v-if="tfoot_link" :colspan="(topfolder.buttons && show_bulk_actions ? 1 : numberOfColumns)">
+                            <a :href="tfoot_link.href">{{tfoot_link.text}}</a>
+                        </span>
+                        <span v-if="pagination" v-html="pagination" class="pagination"></span>
+                    </div>
                 </td>
             </tr>
         </tfoot>

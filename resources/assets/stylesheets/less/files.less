@@ -182,6 +182,16 @@ table.documents tfoot td.sticky {
     bottom: 0;
 }
 
+table.documents {
+    tfoot .footer-items {
+        display: flex;
+        flex-direction: row;
+        & > .bulk-buttons {
+            flex-grow: 1;
+        }
+    }
+}
+
 
 /* for file/edit and folder/edit only: */
 @media screen and (max-width: 800px) {
