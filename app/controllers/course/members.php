@@ -1333,6 +1333,8 @@ class Course_MembersController extends AuthenticatedController
 
         // Update em if they got submittet
         if (Request::submitted('save')) {
+            $success = true;
+
             $datafields = SimpleCollection::createFromArray($this->datafields);
             foreach (Request::getArray('aux') as $aux => $value) {
                 $datafield = $datafields->findOneBy('datafield_id', $aux);
@@ -1340,9 +1342,17 @@ class Course_MembersController extends AuthenticatedController
                     $typed = $datafield->getTypedDatafield();
                     if ($typed->isEditable()) {
                         $typed->setValueFromSubmit($value);
-                        $typed->store();
+                        // Track success across each store process.
+                        $success = $success && ($typed->store() !== false);
                     }
                 }
+            }
+
+            // Show success or error message.
+            if ($success) {
+                PageLayout::postSuccess(_('Die Daten wurden gespeichert.'));
+            } else {
+                PageLayout::postError(_('Die Daten konnten nicht gespeichert werden.'));
             }
         }
     }
