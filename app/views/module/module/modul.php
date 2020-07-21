@@ -217,7 +217,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
             <?= _('Einstellungen') ?>
         </legend>
 
-        <label><?= _('Bearbeitungsstatus') ?></label>
+        <label id="mvv-field-modul-status"><?= _('Bearbeitungsstatus') ?></label>
         <? $modul_stat = $modul->isNew() ? $GLOBALS['MVV_MODUL']['STATUS']['default'] : $modul->stat; ?>
         <? if ($def_lang) : ?>
             <input type="hidden" name="status" value="<?= $modul_stat ?>">
@@ -234,10 +234,12 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <?= $status_modul['name'] ?>
             </label>
             <? elseif($modul_stat == $key) : ?>
+            <div>
                 <?= $status_modul['name'] ?>
+            </div>
             <? endif; ?>
             <? endforeach; ?>
-            <label id="mvv-field-modul-kommentar_status"><?= _('Kommentar:') ?>
+            <label id="mvv-field-modul-kommentar_status"><?= _('Kommentar') ?>
                 <? if ($perm->haveFieldPerm('kommentar_status', MvvPerm::PERM_WRITE)): ?>
                 <textarea cols="60" rows="5" name="kommentar_status" id="kommentar_status" class="add_toolbar ui-resizable wysiwyg"><?= htmlReady($modul->kommentar_status) ?></textarea>
                 <? else : ?>
