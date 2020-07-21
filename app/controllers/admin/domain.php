@@ -138,7 +138,7 @@ class Admin_DomainController extends AuthenticatedController
         CSRFProtection::verifyUnsafeRequest();
         $domain = new UserDomain($id);
 
-        if (count($domain->getUsers()) == 0) {
+        if (count($domain->users) == 0) {
             $domain->delete();
         } else {
             PageLayout::postError(_('Domänen, denen noch Personen zugewiesen sind, können nicht gelöscht werden.'));
