@@ -923,9 +923,6 @@ class Modul extends ModuleManagementModelTreeItem
             foreach ($this->assigned_institutes as $assigned_institute) {
                 $assigned_institute->validate();
             }
-            foreach ($this->assigned_users as $assigned_user) {
-                $assigned_user->validate();
-            }
         }
         return $ret;
     }
