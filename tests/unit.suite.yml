@@ -1,10 +1,12 @@
 # Codeception Test Suite Configuration
-
-# suite for unit (internal) tests.
-# RUN `build` COMMAND AFTER ADDING/REMOVING MODULES.
+#
+# Suite for unit or integration tests.
 
 bootstrap: _bootstrap.php
 error_level: E_ALL & ~E_STRICT & ~E_DEPRECATED & ~E_NOTICE
-class_name: CodeGuy
+actor: UnitTester
 modules:
-    enabled: [CodeHelper]
+    enabled:
+        - Asserts
+        - \Helper\Unit
+    step_decorators: ~

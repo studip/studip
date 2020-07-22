@@ -35,7 +35,7 @@ ini_set('include_path', $inc_path);
 // load varstream for easier filesystem testing
 require_once 'varstream.php';
 
-define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/fixtures/");
+define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/_data/");
 
 require 'lib/classes/StudipAutoloader.php';
 require 'lib/functions.php';

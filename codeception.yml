@@ -3,12 +3,12 @@ params:
     - env
 paths:
     tests: tests
-    log: tests/_log
+    output: tests/_output
     data: tests/_data
-    helpers: tests/_helpers
+    support: tests/_support
+    envs: tests/_envs
 bootstrap: _bootstrap.php
-settings:
-    suite_class: \PHPUnit_Framework_TestSuite
-    colors: true
-    memory_limit: 1024M
-    log: true
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed

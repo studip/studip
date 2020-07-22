@@ -6,8 +6,6 @@ $inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../..';
 $inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../../config';
 ini_set('include_path', $inc_path);
 
-define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/fixtures/");
-
 require 'lib/classes/StudipAutoloader.php';
 require 'lib/functions.php';
 require_once 'lib/language.inc.php';
