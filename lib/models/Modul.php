@@ -72,9 +72,11 @@ class Modul extends ModuleManagementModelTreeItem
             'on_store' => 'store'
         ];
         $config['has_many']['contact_assignments'] = [
-            'class_name'        => 'MvvContactRange',
+            'class_name' => 'MvvContactRange',
             'assoc_foreign_key' => 'range_id',
-            'order_by'          => 'ORDER BY position'
+            'order_by' => 'ORDER BY position',
+            'on_delete' => 'delete',
+            'on_store' => 'store'
         ];
         $config['has_many']['abschnitte_modul'] = [
             'class_name' => 'StgteilabschnittModul',
@@ -486,15 +488,17 @@ class Modul extends ModuleManagementModelTreeItem
         }
         $copy->assigned_institutes = SimpleORMapCollection::createFromArray($institutes);
 
-        $users = [];
-        foreach ($this->assigned_users as $user) {
+        $contacts = [];
+        foreach ($this->contact_assignments as $contact) {
             $position = 1;
-            $cloned_user = clone $user;
-            $cloned_user->position = $position++;
-            $cloned_user->setNew(true);
-            $users[] = $cloned_user;
+            $cloned_contact = clone $contact;
+            $cloned_contact->position = $position++;
+            $cloned_contact->range_id = $copy->id;
+            $cloned_contact->setNewId();
+            $cloned_contact->setNew(true);
+            $contacts[] = $cloned_contact;
         }
-        $copy->assigned_users = SimpleORMapCollection::createFromArray($users);
+        $copy->contact_assignments = SimpleORMapCollection::createFromArray($contacts);
 
         $languages = [];
         foreach ($this->languages as $assigned_language) {
