@@ -107,7 +107,7 @@ if ($navigation) {
             <div id="layout_context_title">
             <? if (Context::isCourse()) : ?>
                 <?= Icon::create('seminar', Icon::ROLE_INFO)->asImg(20, ['class' => 'context_icon']) ?>
-                <?= htmlReady($GLOBALS['SEM_TYPE'][Context::get()->status]['name'] . ': ' . Context::get()->name) ?>
+                <?= htmlReady(Context::get()->getFullname()) ?>
             <? elseif (Context::isInstitute()) : ?>
                 <?= Icon::create('institute', Icon::ROLE_INFO)->asImg(20, ['class' => 'context_icon']) ?>
                 <?= htmlReady(Context::get()->name) ?>
