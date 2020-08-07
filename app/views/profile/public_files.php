@@ -10,15 +10,16 @@
         <form method="post" action="<?= $controller->link_for('file/bulk/' . $folder->id) ?>">
             <?= CSRFProtection::tokenTag() ?>
             <table class="default sortable-table documents" data-sortlist="[[2, 0]]">
-                <?= $this->render_partial('files/_files_thead') ?>
+                <?= $this->render_partial('files/_files_thead', ['show_bulk_checkboxes' => true]) ?>
                 <? foreach ($public_files as $file): ?>
                     <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
                         <?= $this->render_partial(
                             'files/_fileref_tr',
                             [
                                 'file'           => $file,
-                                'current_folder' => $public_folders[$file_ref->folder_id],
-                                'last_visitdate' => time()
+                                'current_folder' => $public_folders[$file->getFolderType()->getId()],
+                                'last_visitdate' => time(),
+                                'show_bulk_checkboxes' => true
                             ]
                         ) ?>
                     <? endif ?>

@@ -42,8 +42,6 @@
                 <? foreach ($topFolder->getAdditionalColumns() as $index => $column_name) : ?>
                     <th data-sort="htmldata" class="responsive-hidden"><?=htmlReady($column_name) ?></th>
                 <? endforeach ?>
-            <? else : ?>
-                <th></th>
             <? endif ?>
             <th data-sort="false"><?= _('Aktionen') ?></th>
         </tr>
