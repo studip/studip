@@ -1417,7 +1417,7 @@ class Course_MembersController extends AuthenticatedController
                 'emailrequest'    => 1
             ]);
             $widget->addLink(
-                _('Nachricht an alle (Rundmail)'),
+                _('Nachricht an alle eingetragenen Teilnehmenden (Rundmail)'),
                 $url,
                 Icon::create('inbox')
             )->asDialog();
