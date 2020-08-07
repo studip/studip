@@ -8,7 +8,7 @@ class AddAdminCoursesSidebarActiveElements extends Migration
         $c = DBManager::get();
 
         $c->exec(
-            "INSERT INTO `config`
+            "INSERT IGNORE INTO `config`
             (`field`, `value`, `type`, `range`, `description`)
             VALUES
             (
