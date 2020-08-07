@@ -22,16 +22,7 @@ if ($bg_mobile) {
         <ul id="tabs" role="navigation"></ul>
         <div id="background-desktop" style="background: url(<?= $bg_desktop ?>) no-repeat top left/cover;"></div>
         <div id="background-mobile" style="background: url(<?= $bg_mobile ?>) no-repeat top left/cover;"></div>
-        <? if (count($messages)): ?>
-            <? foreach($messages as $type => $_messages) {
-                if (!empty($_messages)) {
-                    foreach ($_messages as $message) {
-                        echo MessageBox::$type($message);
-                    }
-                }
-            }
-            ?>
-        <? endif ?>
+
         <div class="index_main">
             <form class="default" name="newpwd" method="post" action="<?= $_SERVER['REQUEST_URI'] ?>">
                 <header>
@@ -39,12 +30,19 @@ if ($bg_mobile) {
                         <?= sprintf(_('Stud.IP - Neues Passwort anfordern (Schritt %s von 5)'), $step) ?>
                     </h1>
                 </header>
-                <? if ($step == 2 || $step == 4): ?>
-                    <section>
-                        <br><br>
-                        <?= $link_startpage ?>
-                    </section>
+                <? if (count($messages)): ?>
+                <section>
+                    <? foreach($messages as $type => $_messages) {
+                        if (!empty($_messages)) {
+                            foreach ($_messages as $message) {
+                                echo MessageBox::$type($message);
+                            }
+                        }
+                    }
+                    ?>
+                </section><br>
                 <? endif ?>
+
                 <? if ($step == 1): ?>
                     <? if (!count($messages)): ?>
                         <section>
@@ -70,6 +68,35 @@ if ($bg_mobile) {
                     <?= LinkButton::createCancel(_('Abbrechen'), 'index.php?cancel_login=1')?>
                 <? endif ?>
             </form>
+            <? if ($step == 4 && $show_reset_password): ?>
+                <section>
+                    <form id="edit_password" method="post" action="<?= $_SERVER['REQUEST_URI'] ?>" class="default">
+                        <?= CSRFProtection::tokenTag() ?>
+                        <p><?= _('Bitte geben Sie ein neues Passwort ein.') ?></p>
+                        <fieldset>
+                            <label>
+                                <span class="required"><?= _('Neues Passwort') ?></span>
+                                <input required type="password" pattern=".{8,}"
+                                       id="new_password" name="new_password"
+                                       data-message="<?= _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.') ?>">
+                            </label>
+                            <label>
+                                <span class="required"><?= _('Passwort bestätigen') ?></span>
+                                <input required type="password" pattern=".{8,}"
+                                       id="new_password_confirm" name="new_password_confirm"
+                                       data-must-equal="#new_password">
+                            </label>
+                            <?= Button::createAccept(_('Übernehmen'), 'reset_pw') ?>
+                        </fieldset>
+                    </form>
+                    <br>
+                </section>
+            <? endif ?>
+            <? if ($step == 2 || $step == 4): ?>
+                <section>
+                    <?= $link_startpage ?>
+                </section>
+            <? endif ?>
         </div>
     </div>
 </div>

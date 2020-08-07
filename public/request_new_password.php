@@ -63,6 +63,7 @@ if (!(Config::get()->ENABLE_REQUEST_NEW_PASSWORD_BY_USER && in_array('Standard',
 }
 $msg        = [];
 $email      = '';
+
 $admin_link = sprintf(
     _("Leider ist ein Fehler aufgetreten. Bitte fordern Sie gegebenenfalls %sper E-Mail%s ein neues Passwort an."),
     "<a href=\"mailto:{$GLOBALS['UNI_CONTACT']}?subject=" . rawurlencode("Stud.IP Passwort vergessen - ".Config::get()->UNI_NAME_CLEAN) . "&amp;body=" . rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername:\n") . "\">",
@@ -133,20 +134,54 @@ if ($email != "") {
 if (Request::submitted('id')) {
     $token           = Request::option('id');
     $step            = 4;
-    $requesting_user = User::find(Token::isValid($token));
 
-    if ($requesting_user) {
-        $user_management = new UserManagement($requesting_user['user_id']);
-        if ($user_management->changePassword($user_management->generate_password(8))) {
-            StudipLog::USER_NEWPWD($requesting_user['user_id'], null, 'Passwort neu setzen angefordert', null, $requesting_user['user_id']);
-            $msg['success'][] = sprintf(_("Ihnen wird in Kürze eine E-Mail an die Adresse %s mit Ihrem neuen Passwort geschickt. Bitte beachten Sie die Hinweise in dieser E-Mail."), $requesting_user['Email']);
+    $show_reset_password = true;
+
+    if (Request::option('new_password')) {
+
+        $show_reset_password = false;
+        $requesting_user = User::find(Token::isValid($token));
+
+        if ($requesting_user) {
+            CSRFProtection::verifyUnsafeRequest();
+
+            $errors = [];
+            $validator = new email_validation_class();
+            $user_management = new UserManagement($requesting_user['user_id']);
+
+            $password = Request::get('new_password');
+            $confirm  = Request::get('new_password_confirm');
+
+            if (!$validator->ValidatePassword($password)) {
+                $errors[] = _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.');
+            } else if ($password !== $confirm) {
+                $errors[] = _('Die Wiederholung Ihres Passworts stimmt nicht mit Ihrer Eingabe überein.');
+            } else if ($password == $requesting_user->username) {
+                $errors[] = _('Das Passwort darf nicht mit dem Nutzernamen übereinstimmen.');
+            } else if (str_replace(['.', ' '], '', mb_strtolower($password)) == 'studip') {
+                $errors[] = _('Aus Sicherheitsgründen darf das Passwort nicht "Stud.IP" oder eine Abwandlung davon sein.');
+            }
+
+            if (count($errors) > 0) {
+                $msg['error'][] = _('Bitte überprüfen Sie Ihre Eingabe:');
+                foreach ($errors as $error) {
+                    $msg['error'][] = $error;
+                }
+            } else {
+                $pw_changed = $user_management->changePassword($password);
+                if ($pw_changed) {
+                    $msg['success'][] = _("Das Passwort wurde erfolgreich geändert. Sie können sich nun mit dem neuen Passwort einloggen.");
+                    $step = 5;
+                    StudipLog::USER_NEWPWD($requesting_user['user_id'], null, 'Passwort neu gesetzt', null, $requesting_user['user_id']);
+                } else {
+                    $msg['error'][] = _('Das Passwort konnte nicht gesetzt werden. Bitte wiederholen Sie den Vorgang.');
+                    $msg['info'][]  = $admin_link;
+                }
+            }
         } else {
-            $msg['error'][] = _("Das Passwort konnte nicht gesetzt werden. Bitte wiederholen Sie den Vorgang oder fordern Sie ein neues Passwort per E-Mail an.");
+            $msg['error'][] = _("Fehler beim Aufruf dieser Seite. Stellen Sie sicher, dass Sie den gesamten Link in die Adressleiste eingetragen haben. Bitte wiederholen Sie den Vorgang.");
             $msg['info'][]  = $admin_link;
         }
-    } else {
-        $msg['error'][] = _("Fehler beim Aufruf dieser Seite. Stellen Sie sicher, dass Sie den gesamten Link in die Adressleiste eingetragen haben. Bitte wiederholen Sie den Vorgang oder fordern Sie ein neues Passwort per E-Mail an.");
-        $msg['info'][]  = $admin_link;
     }
 }
 
@@ -159,7 +194,13 @@ $request_template->set_attribute('step', intval($step));
 $request_template->set_attribute('messages', $msg);
 $request_template->set_attribute('link_startpage', sprintf(_("Zurück zur %sStartseite%s."), '<a href="./index.php?cancel_login=1">', '</a>'));
 $request_template->set_attribute('email', $email);
+$request_template->set_attribute('show_reset_password', $show_reset_password);
+if ($show_reset_password) {
+    $request_template->set_attribute('userid', $requesting_user['user_id']);
+}
+$request_template->set_attribute('pw_success', $pw_changed);
 
+PageLayout::addStyle('div.index_container div.messagebox {width: auto; margin-top: 0px; margin-left: 0px;}');
 PageLayout::setHelpKeyword('Basis.AnmeldungPasswortAnfrage');
 $header_template               = $GLOBALS['template_factory']->open('header');
 $header_template->current_page = _('Passwort anfordern');
