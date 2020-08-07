@@ -16,15 +16,15 @@ class Visibility_Studip extends VisibilityAbstract {
 
     // Should this state be used?
     protected $activated = true;
-    
+
     // What number does this state get in the database?
     protected $int_representation = 4;
-    
+
     // How is the state displayed in the settings?
     protected $display_name = "Stud.IP-intern";
-    
+
     // Description for the state
-    protected $description = "für alle Stud.IP-Nutzer sichtbar";
+    protected $description = "für alle Stud.IP-Nutzenden sichtbar";
 
     // When do two users have this state
     public function verify($user_id, $other_id)
