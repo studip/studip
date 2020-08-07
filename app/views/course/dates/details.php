@@ -65,14 +65,14 @@
             </header>
             <section>
                 <table id="course_date_files" class="default sortable-table documents" data-sortlist="[[2, 0]]">
-                    <?= $this->render_partial('files/_files_thead') ?>
-                    <? foreach($files as $file_ref): ?>
-                        <? $file = $file_ref->getFileType() ?>
+                    <?= $this->render_partial('files/_files_thead', ['show_bulk_checkboxes' => true]) ?>
+                    <? foreach($files as $file): ?>
                         <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
                             <?= $this->render_partial('files/_fileref_tr', [
                                 'file'       => $file,
-                                'current_folder' => $folders[$file_ref->folder_id],
+                                'current_folder' => $folders[$file->getFolderType()->getId()],
                                 'last_visitdate' => time(),
+                                'show_bulk_checkboxes' => true
                             ]) ?>
                         <? endif ?>
                     <? endforeach ?>
