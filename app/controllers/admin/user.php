@@ -730,13 +730,13 @@ class Admin_UserController extends AuthenticatedController
                                 //check recipients
                                 if (Request::get('enable_mail_admin') === 'admin' && Request::get('enable_mail_dozent') === 'dozent') {
                                     $in  = words('admin dozent');
-                                    $wem = "Admins und Dozenten";
+                                    $wem = "Admins und Lehrende";
                                 } elseif (Request::get('enable_mail_admin') === 'admin') {
                                     $in  = 'admin';
                                     $wem = "Admins";
                                 } elseif (Request::get('enable_mail_dozent') === 'dozent') {
                                     $in  = 'dozent';
-                                    $wem = "Dozenten";
+                                    $wem = "Lehrende";
                                 }
 
                                 if (!empty($in) && Request::get('perm') == 'admin') {

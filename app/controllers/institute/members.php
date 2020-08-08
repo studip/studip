@@ -319,13 +319,13 @@ class Institute_MembersController extends AuthenticatedController
                         if ($enable_mail_dozent || $enable_mail_admin) {
                             if ($enable_mail_admin && $enable_mail_dozent) {
                                 $in  = ['admin', 'dozent'];
-                                $wem = _('Admins und Dozenten');
+                                $wem = _('Admins und Lehrende');
                             } elseif ($enable_mail_admin){
                                 $in  = ['admin'];
                                 $wem = _('Admins');
                             } elseif ($enable_mail_dozent) {
                                 $in  = ['dozent'];
-                                $wem = _('Dozenten');
+                                $wem = _('Lehrende');
                             }
 
                             $notin = [];
@@ -606,7 +606,7 @@ class Institute_MembersController extends AuthenticatedController
             ->setSearchObject($search_obj)
             ->setAdditionalHTML('<p><strong>' . _('Nur bei Zuordnung eines Admins:') .' </strong>
                             <label><input name="additional[]" value="admins" type="checkbox">' . _('Benachrichtigung der Admins') . '</label>
-                            <label><input name="additional[]" value="dozenten" type="checkbox">' . _('Benachrichtigung der Dozenten') . '</label>
+                            <label><input name="additional[]" value="dozenten" type="checkbox">' . _('Benachrichtigung der Lehrenden') . '</label>
                             </p>');
     }
 }

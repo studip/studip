@@ -405,7 +405,7 @@ class Admission_CoursesetController extends AuthenticatedController
 
         if ($csv === 'csv') {
             $captions = [
-                _('Nummer'), _('Name'), _('versteckt'), _('Zeiten'), _('Dozenten'),
+                _('Nummer'), _('Name'), _('versteckt'), _('Zeiten'), _('Lehrende'),
                 _('max. Teilnehmende'), _('Teilnehmende aktuell'), _('Anzahl Anmeldungen'),
                 _('Anzahl Anmeldungen Prio 1'), _('Warteliste'), _('max. Anzahl Warteliste'),
                 _('automatisches Nachrücken aus der Warteliste') , _('vorläufige Anmeldung'),

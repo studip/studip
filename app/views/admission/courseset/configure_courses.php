@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th><?= _("Name")?></th>
-                <th><?= _("Dozenten")?></th>
+                <th><?= _("Lehrende")?></th>
                 <th><?= _("versteckt")?></th>
                 <th><?= _("vorläufige Anmeldung")?></th>
                 <th><?= _("verbindliche Anmeldung")?></th>

@@ -120,7 +120,7 @@ class ExternElementMainTemplatePersondetails extends ExternElementMain {
 
         if (in_array(get_object_type($this->config->range_id), ['global'])) {
             $title = _('Nur Lehrende') . ':';
-            $info = _("Es werden nur Personen angezeigt, die in einer sichtbaren Veranstaltung des aktuellen Semesters Dozent sind.");
+            $info = _("Es werden nur Personen angezeigt, die in einer sichtbaren Veranstaltung des aktuellen Semesters Lehrperson sind.");
             $values = '1';
             $table .= $edit_form->editCheckboxGeneric('onlylecturers', $title, $info, $values, '');
 

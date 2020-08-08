@@ -111,7 +111,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
         <? if (count($dozenten) === 0): ?>
                 <tr>
                     <td colspan="4" style="text-align: center">
-                        <?= _('Keine DozentInnen eingetragen') ?>
+                        <?= _('Keine Lehrende eingetragen') ?>
                     </td>
                 </tr>
         <? else: ?>

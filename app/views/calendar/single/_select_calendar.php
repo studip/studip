@@ -42,7 +42,7 @@
                 $lecturers = [];
             ?>
             <? if (count($lecturers)) : ?>
-                <optgroup style="font-weight:bold;" label="<?= _('Dozentenkalender:') ?>">
+                <optgroup style="font-weight:bold;" label="<?= _('Lehrendenkalender:') ?>">
                 <? foreach ($lecturers as $lecturer) : ?>
                     <option value="<?= $lecturer['id'] ?>"<?= ($range_id == $lecturer['id'] ? ' selected' : '') ?>>
                         <?= htmlReady(my_substr($lecturer['name'] . " ({$lecturer['username']})", 0, 30)) ?>

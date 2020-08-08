@@ -5,7 +5,7 @@
     <xsl:template match="/">
     <xsl:text>&#xFEFF;</xsl:text>
 	<xsl:text>Typ;</xsl:text>
-	<xsl:text>Dozenten;</xsl:text>
+	<xsl:text>Lehrende;</xsl:text>
 	<xsl:text>Titel;</xsl:text>
 	<xsl:text>max. Teilnehmende;</xsl:text>
 	<xsl:text>ECTS;</xsl:text>

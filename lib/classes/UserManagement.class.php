@@ -464,7 +464,7 @@ class UserManagement
             $count = $statement->fetchColumn();
         }
         if ($count && isset($newuser['auth_user_md5.perms']) && $newuser['auth_user_md5.perms'] !== 'dozent') {
-            $this->msg .= 'error§' . sprintf(_('Der Benutzer <em>%s</em> ist alleiniger Dozent in %s aktiven Veranstaltungen und kann daher nicht in einen anderen Status versetzt werden!'), $this->user_data['auth_user_md5.username'], $count) . '§';
+            $this->msg .= 'error§' . sprintf(_('Der Benutzer <em>%s</em> ist alleiniger Lehrperson in %s aktiven Veranstaltungen und kann daher nicht in einen anderen Status versetzt werden!'), $this->user_data['auth_user_md5.username'], $count) . '§';
             return false;
         }
 

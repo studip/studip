@@ -114,7 +114,7 @@ class Ilias3ConnectedLink extends ConnectedLink
         elseif ($connected_cms[$this->cms_type]->content_module[$current_module]->isAllowed(OPERATION_WRITE))
         {
             $output .= "<div align=\"left\"><input type=\"CHECKBOX\" value=\"1\" name=\"write_permission\" style=\"vertical-align:middle\">";
-            $output .= _("Mit Schreibrechten für alle Dozenten/Tutoren dieser Veranstaltung") . "<br>";
+            $output .= _("Mit Schreibrechten für alle Lehrenden/Tutoren und Tutorinnen dieser Veranstaltung") . "<br>";
             $output .= "<input type=\"CHECKBOX\" value=\"1\" style=\"vertical-align:middle\" name=\"write_permission_autor\">";
             $output .= _("Mit Schreibrechten für alle Teilnehmenden dieser Veranstaltung") . "</div>";
             $output .=  Button::create(_('Hinzufügen'), 'add') . "<br>";

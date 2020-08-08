@@ -452,7 +452,7 @@ function get_visible_email($user_id) {
         $result = $statement->fetchColumn();
     // User's email is not visible
     } else if ($GLOBALS['perm']->get_perm($user_id) == 'dozent') {
-        // bei Dozenten eine Institutsadresse verwenden
+        // bei Lehrenden eine Institutsadresse verwenden
         $query = "SELECT i.email, u.externdefault
                   FROM user_inst AS u
                   JOIN Institute AS i USING (Institut_id)

@@ -191,7 +191,7 @@ class ExternElementMainLectures extends ExternElementMain {
         $table .= $edit_form->editCheckboxGeneric("time", $title, $info, $values, $names);
 
         $title = _('Lehrende anzeigen') . ':';
-        $info = _("Wählen Sie diese Option, wenn die Namen der Dozenten der Veranstaltung angezeigt werden sollen.");
+        $info = _("Wählen Sie diese Option, wenn die Namen der Lehrenden der Veranstaltung angezeigt werden sollen.");
         $values = "1";
         $names = "";
         $table .= $edit_form->editCheckboxGeneric("lecturer", $title, $info, $values, $names);

@@ -40,7 +40,7 @@ use Studip\Button, Studip\LinkButton;
                 <? if ($global_visibility === 'never'): ?>
                     <em><?= _('Ihre Kennung wurde von einem Administrator unsichtbar geschaltet.') ?></em>
                 <? elseif ($user_perm == 'dozent' && Config::get()->DOZENT_ALWAYS_VISIBLE): ?>
-                    <em><?= _('Sie haben Dozentenrechte und sind daher immer global sichtbar.') ?></em>
+                    <em><?= _('Sie haben Lehrendenrechte und sind daher immer global sichtbar.') ?></em>
                 <? else: ?>
                     <em><?= _('Sie sind immer global sichtbar.') ?></em>
                 <? endif; ?>

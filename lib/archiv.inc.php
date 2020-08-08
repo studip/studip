@@ -144,7 +144,7 @@ function dump_sem($sem_id, $print_view = false)
         $dumpRow(_('Ort') . ':', nl2br($data));
     }
 
-    //wer macht den Dozenten?
+    //wer macht den Lehrenden?
     $query = "SELECT {$_fullname_sql['full']} AS fullname
               FROM seminar_user
               LEFT JOIN auth_user_md5 USING (user_id)
@@ -645,7 +645,7 @@ function in_archiv ($sem_id)
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$seminar_id]);
 
-    // Eventuelle Vertretungen in der Veranstaltung haben weiterhin Zugriff mit Dozentenrechten
+    // Eventuelle Vertretungen in der Veranstaltung haben weiterhin Zugriff mit Lehrendenrechten
     if (get_config('DEPUTIES_ENABLE')) {
         $deputies = getDeputies($seminar_id);
         // Eintragen ins Archiv mit Zugriffsberechtigung "dozent"

@@ -1446,7 +1446,7 @@ class Admin_CoursesController extends AuthenticatedController
 
 
         $sidebar = Sidebar::Get();
-        $list = new SelectWidget(_('Dozentenfilter'), $this->url_for('admin/courses/index'), 'teacher_filter');
+        $list = new SelectWidget(_('Lehrendenfilter'), $this->url_for('admin/courses/index'), 'teacher_filter');
         $list->addElement(new SelectElement('all', _('alle'), Request::get('teacher_filter') == 'all'), 'teacher_filter-all');
 
         foreach ($teachers as $teacher) {

@@ -111,7 +111,7 @@ class ExternElementMainTemplatePersBrowse extends ExternElementMain {
             $table = $edit_form->editCheckboxGeneric('instperms', $title, $info, $values, $names);
 
             $title = _('Nur Lehrende') . ':';
-            $info = _("Es werden nur Personen angezeigt, die in einer sichtbaren Veranstaltung des aktuellen Semesters Dozent sind.");
+            $info = _("Es werden nur Personen angezeigt, die in einer sichtbaren Veranstaltung des aktuellen Semesters Lehrperson sind.");
             $values = '1';
             $table .= $edit_form->editCheckboxGeneric('onlylecturers', $title, $info, $values, '');
 

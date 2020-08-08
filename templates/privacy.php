@@ -13,12 +13,12 @@
         <tr>
           <th>&nbsp;</th>
           <th><?= _('Ich selbst') ?></th>
-          <th><?= _('Jeder Student') ?></th>
-          <th><?= _('Jeder Tutor') ?></th>
-          <th><?= _('Jeder Dozent') ?></th>
+          <th><?= _('Jeder Studierende') ?></th>
+          <th><?= _('Jeder Tutor oder Tutorin') ?></th>
+          <th><?= _('Jeder Lehrende') ?></th>
           <th><?= _('Jeder Admin') ?></th>
-          <th><?= _('Mein Tutor') ?></th>
-          <th><?= _('Mein Dozent') ?></th>
+          <th><?= _('Mein Tutor oder meien Tutorin') ?></th>
+          <th><?= _('Meine Lehrperon') ?></th>
           <th><?= _('Mein Admin') ?></th>
           <th><?= _('Root') ?></th>
         </tr>

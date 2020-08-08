@@ -776,7 +776,7 @@ class MyCoursesController extends AuthenticatedController
             'sem_tree_id' => _('Studienbereich'),
             'sem_status'  => _('Typ'),
             'gruppe'      => _('Farbgruppen'),
-            'dozent_id'   => _('Dozenten'),
+            'dozent_id'   => _('Lehrende'),
         ];
         $view    = new ViewsWidget();
         foreach ($groups as $key => $group) {

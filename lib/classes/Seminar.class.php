@@ -470,7 +470,7 @@ class Seminar
         // $cache->expire("formatted_turnus".$this->id);
 
         //check for security consistency
-        if ($this->write_level < $this->read_level) // hier wusste ein Dozent nicht, was er tat
+        if ($this->write_level < $this->read_level) // hier wusste ein Lehrender nicht, was er tat
             $this->write_level = $this->read_level;
 
         if ($this->irregularSingleDates) {
@@ -1040,7 +1040,7 @@ class Seminar
             }
             if (round(str_replace(',','.', $data['sws']),1) != $cycle->sws) {
                 $cycle->sws = $data['sws'];
-                $this->createMessage(_("Die Semesterwochenstunden für Dozenten des regelmäßigen Eintrags wurden geändert."));
+                $this->createMessage(_("Die Semesterwochenstunden für Lehrende des regelmäßigen Eintrags wurden geändert."));
                 $message = true;
                 $do_changes = true;
             }

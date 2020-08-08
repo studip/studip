@@ -647,7 +647,7 @@ class Course_BasicdataController extends AuthenticatedController
     }
 
     /**
-     * Löscht einen Dozenten (bis auf den letzten Dozenten)
+     * Löscht einen Lehrenden (bis auf den letzten Lehrenden)
      * Leitet danach weiter auf View und öffnet den Reiter Personal.
      *
      * @param string $course_id

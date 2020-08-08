@@ -8,7 +8,7 @@
 	<xsl:text>Einrichtung-Name;</xsl:text>
 	<xsl:text>Einrichtung-Fakultaet;</xsl:text>
 	<xsl:text>Typ;</xsl:text>
-	<xsl:text>Dozenten;</xsl:text>
+	<xsl:text>Lehrende;</xsl:text>
 	<xsl:text>Titel;</xsl:text>
 	<xsl:text>Untertitel;</xsl:text>
 	<xsl:text>Raum;</xsl:text>

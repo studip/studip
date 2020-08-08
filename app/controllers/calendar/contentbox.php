@@ -83,7 +83,7 @@ class Calendar_ContentboxController extends StudipController {
             // Build info
             $info = [];
             if (count($courseDate->dozenten) > 0) {
-                $info[_('Durchführende Dozenten')] = implode(', ', $courseDate->dozenten->getFullname());
+                $info[_('Durchführende Lehrende')] = implode(', ', $courseDate->dozenten->getFullname());
             }
             if (count($courseDate->statusgruppen) > 0) {
                 $info[_('Beteiligte Gruppen')] = implode(', ', $courseDate->statusgruppen->getValue('name'));

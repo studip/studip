@@ -38,7 +38,7 @@
             <input name="teacherActive" type="checkbox" value="1"
                 <?= ($userSelectedElements['teacher']) ? 'checked="checked"' : '' ?>
                 >
-            <?= _('Dozent'); ?>
+            <?= _('Lehrperson'); ?>
         </label>
         <label>
             <input name="viewFilterActive" type="checkbox" value="1"

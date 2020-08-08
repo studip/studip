@@ -40,7 +40,7 @@ $sem = Seminar::getInstance($show_entry['id']);
 
 
         <section>
-            <b><?= _("Dozenten") ?></b><br>
+            <b><?= _("Lehrende") ?></b><br>
             <? $pos = 0;foreach ($sem->getMembers('dozent') as $dozent) :
                 if ($pos > 0) echo ', ';
                 ?><a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $dozent['username']) ?>"><?= htmlReady($dozent['fullname']) ?></a><?

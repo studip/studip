@@ -518,9 +518,9 @@ class MembersModel
     private function getLogLevel($direction, $status)
     {
         if ($direction == 'upgrade') {
-            $directionString = 'Hochgestuft';
+            $directionString = 'hochgestuft';
         } else {
-            $directionString = 'Runtergestuft';
+            $directionString = 'runtergestuft';
         }
 
         switch ($status) {

@@ -2,8 +2,8 @@
 use Studip\Button, Studip\LinkButton;
 
 Helpbar::get()->addPlainText(_('Regeln'), _('Hier können Sie die Regeln, Eigenschaften und Zuordnungen des Anmeldesets bearbeiten.'));
-Helpbar::get()->addPlainText(_('Info'), _('Sie können das Anmeldeset allen Einrichtungen zuordnen, an denen Sie mindestens Dozentenrechte haben.'));
-Helpbar::get()->addPlainText(_('Sichtbarkeit'), _('Alle Veranstaltungen der Einrichtungen, an denen Sie mindestens Dozentenrechte haben, können zum Anmeldeset hinzugefügt werden.'));
+Helpbar::get()->addPlainText(_('Info'), _('Sie können das Anmeldeset allen Einrichtungen zuordnen, an denen Sie mindestens Lehrendenrechte haben.'));
+Helpbar::get()->addPlainText(_('Sichtbarkeit'), _('Alle Veranstaltungen der Einrichtungen, an denen Sie mindestens Lehrendenrechte haben, können zum Anmeldeset hinzugefügt werden.'));
 
 // Load assigned course IDs.
 $courseIds = $courseset ? $courseset->getCourses() : [];
@@ -106,7 +106,7 @@ if ($flash['error']) {
                 </select>
             </label>
             <label>
-                <?= _('Filter auf Name/Nummer/Dozent') ?><br>
+                <?= _('Filter auf Name/Nummer/Lehrperson') ?><br>
                 <input style="display:inline-block" type="text" onKeypress="if (event.which==13) return STUDIP.Admission.getCourses('<?= $controller->url_for('admission/courseset/instcourses', $courseset ? $courseset->getId() : '') ?>')" value="<?= htmlReady($current_course_filter) ?>" name="course_filter" >
                 <?=Icon::create('search', 'clickable', ['title' => _("Veranstaltungen anzeigen"),'onClick' => "return STUDIP.Admission.getCourses('" . $controller->url_for('admission/courseset/instcourses', $courseset ? $courseset->getId() : '') ."')"])->asImg()?>
             </label>

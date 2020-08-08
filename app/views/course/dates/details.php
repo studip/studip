@@ -24,7 +24,7 @@
         </tr>
     <? if (count($date->dozenten) > 0): ?>
         <tr>
-            <td><strong><?= _('Durchführende Dozenten') ?></strong></td>
+            <td><strong><?= _('Durchführende Lehrende') ?></strong></td>
             <td>
                 <ul class="dozenten_list clean">
                 <? foreach ($date->dozenten as $teacher): ?>

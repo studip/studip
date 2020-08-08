@@ -374,7 +374,7 @@ class SingleCalendar
         }
         switch ($this->type) {
             case 'User' :
-                // alle Dozenten haben gegenseitig schreibenden Zugriff, ab dozent immer schreibenden Zugriff
+                // alle Lehrenden haben gegenseitig schreibenden Zugriff, ab dozent immer schreibenden Zugriff
                 /*
                 if ($GLOBALS['perm']->have_perm('dozent') && $GLOBALS['perm']->get_perm($this->range_object->getId()) == 'dozent') {
                     return Calendar::PERMISSION_WRITABLE;

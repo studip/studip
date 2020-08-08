@@ -80,11 +80,11 @@
             <? endif; ?>
         <? endif; ?>
         <? if ($event instanceof CourseEvent) : ?>
-            <? // durchführende Dozenten ?>
+            <? // durchführende Lehrende ?>
             <? $related_persons = $event->dozenten; ?>
             <? if (sizeof($related_persons)) : ?>
             <div>
-                <b><?= ngettext('Durchführender Dozent', 'Durchführende Dozenten', sizeof($related_persons)) ?>:</b>
+                <b><?= ngettext('Durchführende Lehrperson', 'Durchführende Lehrende', sizeof($related_persons)) ?>:</b>
                 <ul class="list-unstyled">
                 <? foreach ($related_persons as $related_person) : ?>
                     <li>

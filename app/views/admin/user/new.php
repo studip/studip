@@ -185,7 +185,7 @@ use Studip\Button, Studip\LinkButton;
 
             <label>
                 <input type="checkbox" value="dozent" name="enable_mail_dozent" id="enable_mail_dozent">
-                <?= _('Dozenten der Einrichtung benachrichtigen') ?>
+                <?= _('Lehrende der Einrichtung benachrichtigen') ?>
             </label>
         </div>
 
