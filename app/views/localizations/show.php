@@ -64,6 +64,9 @@ $translations = array(
     'Wollen Sie die gewünschten Termine wirklich löschen?' => _('Wollen Sie die gewünschten Termine wirklich löschen?'),
     'Sind Sie sicher, dass Sie die regelmäßige Zeit ändern möchten?' => _('Sind Sie sicher, dass Sie die regelmäßige Zeit ändern möchten?'),
 
+    // resources/assets/javascripts/bootstrap/resources.js
+    'Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?' => _('Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?'),
+
     // resources/assets/javascripts/bootstrap/studip_helper_attributes.js
     'Wollen Sie die Aktion wirklich ausführen?' => _('Wollen Sie die Aktion wirklich ausführen?'),
     'Die beiden Werte "$1" und "$2" stimmen nicht überein. ' => _('Die beiden Werte "$1" und "$2" stimmen nicht überein. '),
@@ -97,7 +100,7 @@ $translations = array(
     'Nein' => _('Nein'),
 
     // resources/assets/javascripts/lib/files.js
-    'Datei hinzufügen' => _('Datei hinzufügen'),
+    'Dokument hinzufügen' => _('Dokument hinzufügen'),
     'Datei ist zu groß oder hat eine nicht erlaubte Endung.' => _('Datei ist zu groß oder hat eine nicht erlaubte Endung.'),
     'Datei hochladen' => _('Datei hochladen'),
 
@@ -136,6 +139,10 @@ $translations = array(
     'Keine weitere Auswahl möglich' => _('Keine weitere Auswahl möglich'),
     'Veranstaltung berücksichtigen' => _('Veranstaltung berücksichtigen'),
     'Veranstaltung nicht berücksichtigen' => _('Veranstaltung nicht berücksichtigen'),
+
+    // resources/assets/javascripts/lib/questionnaire.js
+    'Noch nicht komplett ausgefüllt.' => _('Noch nicht komplett ausgefüllt.'),
+    'Füllen Sie noch die rot markierten Stellen korrekt aus.' => _('Füllen Sie noch die rot markierten Stellen korrekt aus.'),
 
     // resources/assets/javascripts/lib/quick_search.js
     'Kein Ergebnis gefunden.' => _('Kein Ergebnis gefunden.'),
@@ -187,10 +194,6 @@ $translations = array(
     'hinzufügen' => _('hinzufügen'),
     'Suche zurücksetzen' => _('Suche zurücksetzen'),
     'Keine Angabe beim Fach' => _('Keine Angabe beim Fach'),
-
-    // resources/assets/javascripts/questionnaire.js
-    'Noch nicht komplett ausgefüllt.' => _('Noch nicht komplett ausgefüllt.'),
-    'Füllen Sie noch die rot markierten Stellen korrekt aus.' => _('Füllen Sie noch die rot markierten Stellen korrekt aus.'),
 
     // resources/assets/javascripts/studip-jquery.multi-select.tweaks.js
     'Die Person ist bereits eingetragen.' => _('Die Person ist bereits eingetragen.'),
@@ -254,6 +257,18 @@ $translations = array(
     'Kommentar schreiben. Enter zum Abschicken.' => _('Kommentar schreiben. Enter zum Abschicken.'),
     'Nachricht schreiben. Enter zum Abschicken' => _('Nachricht schreiben. Enter zum Abschicken'),
     'Abschicken' => _('Abschicken'),
+
+    // resources/vue/components/FilesTable.vue
+    'Zum Hauptordner' => _('Zum Hauptordner'),
+    'Typ' => _('Typ'),
+    'Name' => _('Name'),
+    'Größe' => _('Größe'),
+    'Downloads' => _('Downloads'),
+    'Autor/-in' => _('Autor/-in'),
+    'Datum' => _('Datum'),
+    'Aktionen' => _('Aktionen'),
+    'Dieser Ordner ist leer' => _('Dieser Ordner ist leer'),
+    'Das Herunterladen dieser Datei ist nur eingeschränkt möglich.' => _('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.'),
 
     // resources/vue/components/StudipDateTime.vue
     'Vor %s Minuten' => _('Vor %s Minuten'),
