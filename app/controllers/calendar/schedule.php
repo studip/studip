@@ -207,7 +207,10 @@ class Calendar_ScheduleController extends AuthenticatedController
         $data['end']   = (int)str_replace(':', '', Request::get('entry_end'));
         $data['day']   = Request::int('entry_day');
 
-        if ($data['start'] >= $data['end'] || !Request::int('entry_day')) {
+        if ($data['start'] >= $data['end']
+            || !Request::int('entry_day')
+            || !$this->validate_datetime(Request::get('entry_start'))
+            || !$this->validate_datetime(Request::get('entry_end'))) {
             $error = true;
         }
 

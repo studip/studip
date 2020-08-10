@@ -481,6 +481,13 @@ class Calendar_CalendarController extends AuthenticatedController
             );
         }
         $event->setEnd($this->parseDateTime($dt_string));
+
+        if (!$this->validate_datetime(sprintf('%02u:%02u',Request::int('start_hour'),Request::int('start_minute')))
+            || !$this->validate_datetime(sprintf('%02u:%02u',Request::int('end_hour'),Request::int('end_minute')))
+            ) {
+            $messages[] = _('Die Start- und/oder Endzeit ist ungültig!');
+        }
+
         if ($event->getStart() > $event->getEnd()) {
             $messages[] = _('Die Startzeit muss vor der Endzeit liegen.');
         }

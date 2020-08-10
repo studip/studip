@@ -1063,10 +1063,13 @@ class Course_TimesroomsController extends AuthenticatedController
     {
         CSRFProtection::verifyRequest();
 
+
         $start = strtotime(Request::get('start_time'));
         $end   = strtotime(Request::get('end_time'));
 
-        if ($start === false || $end === false || $start > $end) {
+        if ($start === false || $end === false || $start > $end
+        || !$this->validate_datetime(Request::get('start_time'))
+        || !$this->validate_datetime(Request::get('end_time'))) {
             $this->storeRequest();
             PageLayout::postError(_('Die Zeitangaben sind nicht korrekt. Bitte überprüfen Sie diese!'));
             $this->redirect('course/timesrooms/createCycle');

@@ -706,4 +706,20 @@ abstract class StudipController extends Trails_Controller
         $controller = strtosnakecase($controller);
         return preg_replace('/_{2,}/', '/', $controller);
     }
+
+
+    /**
+     * Validate the datetime according to specific format.
+     *
+     * @param string $datetime the datetime which should be validate
+     * @param string $format the format that the datetime should have by default H:i for time
+     *
+     * @return bool result of validation
+     */
+    public function validate_datetime($datetime, $format = 'H:i')
+    {
+        $dt = DateTime::createFromFormat($format, $datetime);
+        return $dt && $dt->format($format) == $datetime;
+    }
+
 }
