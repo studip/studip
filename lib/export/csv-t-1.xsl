@@ -69,6 +69,8 @@
 			<xsl:for-each select="institut">
 				<xsl:for-each select="personen">
 					<xsl:for-each select="gruppe">
+						<xsl:value-of select="@key"/>
+						<xsl:text>&#xa;</xsl:text>
 						<xsl:call-template name="showperson"/>
 					</xsl:for-each>
 				</xsl:for-each>
