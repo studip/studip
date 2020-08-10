@@ -86,8 +86,16 @@ STUDIP.domReady(() => {
 
     // Start searching 500 ms after user stopped typing.
     $('#search-input').keyup(_.debounce(function () {
-        STUDIP.Search.doSearch(STUDIP.Search.getFilter());
+        if ($('#search-input').val().trim().length >= STUDIP.Search.searchTermLength) {
+            STUDIP.Search.doSearch(STUDIP.Search.getFilter());
+        }
     }, 500));
+
+    // Click on search button
+    $('#search-btn').click(function () {
+        STUDIP.Search.doSearch(STUDIP.Search.getFilter());
+        return false;
+    });
 
     // Event driven history changes
     var history_timeout;

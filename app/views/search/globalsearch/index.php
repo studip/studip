@@ -5,7 +5,7 @@
             placeholder="<?= _('Was suchen Sie?') ?>">
 
         <span class="input-group-append">
-            <button type="submit" class="button">
+            <button type="submit" class="button" id="search-btn">
                 <?= Icon::create('search')->asImg(['title' => _('Suche beginnen')]) ?>
             </button>
 
@@ -20,6 +20,13 @@
 <div id="search">
     <div id="searching-gif">
         <?= _('Suche...') ?>
+    </div>
+
+    <div id="search-term-invalid">
+        <?= MessageBox::warning(sprintf(
+            _('Leider ist Ihr Suchbegriff zu kurz. Der Suchbegriff muss mindestens "%s" Zeichen lang sein.'),
+            '<span class="searchtermlen"></span>'
+        )) ?>
     </div>
 
     <div id="search-results" data-loading-text="<?= _('Suche...') ?>"

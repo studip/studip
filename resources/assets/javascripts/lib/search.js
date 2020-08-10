@@ -4,6 +4,7 @@ const Search = {
     lastSearch: null,
     lastSearchFilter: null,
     resultsInCategory: false,
+    searchTermLength: 3,
 
     getCache: function () {
         if (cache === null) {
@@ -26,7 +27,7 @@ const Search = {
 
         var cache        = STUDIP.Search.getCache();
         var searchterm   = $('#search-input').val().trim() || cache.get('searchterm');
-        var hasValue     = searchterm && searchterm.length >= 3;
+        var hasValue     = searchterm && searchterm.length >= STUDIP.Search.searchTermLength;
         var resultsDiv   = $('#search-results');
         var wrapper      = $('#search');
         const data       = resultsDiv.data();
@@ -34,6 +35,13 @@ const Search = {
 
         if (searchterm === '') {
             return;
+        }
+
+        if (!hasValue) {
+            $('#search-term-invalid .searchtermlen').text(STUDIP.Search.searchTermLength);
+            $('#search-term-invalid').show();
+        } else {
+            $('#search-term-invalid').hide();
         }
 
         if (!hasValue || STUDIP.Search.lastSearch === searchterm
