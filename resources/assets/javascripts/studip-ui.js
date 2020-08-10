@@ -516,6 +516,11 @@
 
     $.datepicker.setDefaults($.extend(defaults, {
         beforeShow (input) {
+            if ($(input).parents('.ui-dialog').length > 0) {
+                $('.ui-dialog-content').bind('scroll.datepicker-scroll', _.debounce($.proxy(DpHideOnScroll, null, input), 100, {leading:true, trailing:false}));
+            }
+            $(window).bind('scroll.datepicker-scroll', _.debounce($.proxy(DpHideOnScroll, null, input), 100, {leading:true, trailing:false}));
+
             if ($(input).closest('.sidebar').length === 0) {
                 return;
             }
@@ -532,8 +537,22 @@
             }).on('blur', function () {
                 $(this).off('click.picker');
             });
+
+            if ($(this).parents('.ui-dialog').length > 0) {
+                $('.ui-dialog-content').unbind('scroll.datepicker-scroll');
+            } else {
+                $(window).unbind('scroll.datepicker-scroll');
+            }
         }
     }));
+
+    var DpHideOnScroll = function () {
+        console.log('Here2');
+        var input = arguments[0];
+        $(input).blur();
+        $(input).datepicker('hide');
+    }
+
     $.timepicker.setDefaults(defaults);
 
     // Attach global focus handler on date picker elements
