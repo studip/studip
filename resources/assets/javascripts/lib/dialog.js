@@ -286,7 +286,11 @@ Dialog.fromURL = function(url, options) {
             $(options.origin || document).trigger('dialog-load', { xhr: xhr, options: options });
 
             // Execute all defined header handlers
-            $.each(Dialog.handlers.header, function(header, handler) {
+            var handlers = Object.assign(
+                Dialog.handlers.header,
+                STUDIP.Dialog.handlers.header
+            );
+            $.each(handlers, (header, handler) => {
                 var value = xhr.getResponseHeader(header),
                     result = true;
                 if (value !== null) {
@@ -661,6 +665,15 @@ Dialog.confirmAsPost = function(question, action) {
     });
 
     return false;
+};
+
+Dialog.registerHeaderHandler = function (header, handler) {
+    Dialog.handlers.header[header] = handler;
+};
+Dialog.removeHeaderHandler = function (header) {
+    if (Dialog.handlers.header.hasOwnProperty(header)) {
+        delete Dialog.handlers.header[header];
+    }
 };
 
 Dialog.initialize = function() {
