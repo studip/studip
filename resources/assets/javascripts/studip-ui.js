@@ -547,7 +547,6 @@
     }));
 
     var DpHideOnScroll = function () {
-        console.log('Here2');
         var input = arguments[0];
         $(input).blur();
         $(input).datepicker('hide');
