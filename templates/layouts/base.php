@@ -87,7 +87,8 @@ if ($navigation) {
 
     <? include 'lib/include/header.php' ?>
 
-    <div id="layout_page" <? if (!Context::get()) echo 'class="contextless"'; ?>>
+    <? $contextable = Context::get() && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive(); ?>
+    <div id="layout_page" <? if (!($contextable)) echo 'class="contextless"'; ?>>
 
     <? if (PageLayout::isHeaderEnabled() && is_object($GLOBALS['user']) && $GLOBALS['user']->id != 'nobody' && Navigation::hasItem('/course') && Navigation::getItem('/course')->isActive() && $_SESSION['seminar_change_view_'.Context::getId()]) : ?>
         <?= $this->render_partial('change_view', ['changed_status' => $_SESSION['seminar_change_view_'.Context::getId()]]) ?>
@@ -95,7 +96,7 @@ if ($navigation) {
 
     <? if (Context::get() || PageLayout::isHeaderEnabled()): ?>
         <nav class="secondary-navigation">
-        <? if (is_object($GLOBALS['perm']) && !$GLOBALS['perm']->have_perm('admin') && Context::get()) : ?>
+        <? if (is_object($GLOBALS['perm']) && !$GLOBALS['perm']->have_perm('admin') && $contextable) : ?>
             <? $membership = CourseMember::find([Context::get()->id, $GLOBALS['user']->id]) ?>
             <? if ($membership) : ?>
                 <a href="<?= URLHelper::getLink('dispatch.php/my_courses/groups') ?>"
@@ -103,7 +104,7 @@ if ($navigation) {
                    class="colorblock gruppe<?= $membership ? $membership['gruppe'] : 1 ?>"></a>
             <? endif ?>
         <? endif ?>
-        <? if (Context::get()) : ?>
+        <? if ($contextable) : ?>
             <div id="layout_context_title">
             <? if (Context::isCourse()) : ?>
                 <?= Icon::create('seminar', Icon::ROLE_INFO)->asImg(20, ['class' => 'context_icon']) ?>
