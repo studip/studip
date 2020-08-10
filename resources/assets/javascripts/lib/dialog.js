@@ -569,14 +569,9 @@ Dialog.calculateDimensions = function (instance, content, options) {
         //Medium size in 4:3 aspect ratio
         height = $('body').height() * 0.8;
         width = parseInt(height) * 1.33333333;
-        console.log(height);
-        console.log(width);
         if (width > $('body').width()) {
             width = $('body').width() * 0.9;
         }
-        console.log(height);
-        console.log(width);
-        
     } else if (options.size && options.size === 'small') {
         width = 300;
         height = 200;
