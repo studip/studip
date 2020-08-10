@@ -4,7 +4,7 @@
 use Studip\Button, Studip\LinkButton;
 
 /**
-* Retrieve a WikiPage version from current seminar's WikiWikiWeb.
+* Retrieve a WikiPage version from current seminar's Wiki-Startseite.
 *
 * Returns raw text data from database if requested version is
 * available. If not, an
@@ -27,7 +27,7 @@ function getWikiPage($keyword, $version)
         return $page;
     }
 
-    if ($keyword === 'WikiWikiWeb') {
+    if ($keyword === 'Wiki-Startseite') {
         return WikiPage::getStartPage(Context::getId());
     }
 
@@ -155,7 +155,7 @@ function getWikiPageVersions($keyword, $limit = 10, $getfirst = false)
 
 
 /**
- * Check if given keyword exists in current WikiWikiWeb.
+ * Check if given keyword exists in current Wiki-Startseite.
  *
  * @param    string  WikiPage keyword
  */
@@ -433,7 +433,7 @@ function showDeleteDialog($keyword, $version) {
 
 function showDeleteAllDialog($keyword) {
     $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), "<b>".htmlReady($keyword)."</b>") . "<br>\n";
-    if ($keyword=="WikiWikiWeb") {
+    if ($keyword=="Wiki-Startseite") {
         $msg .= "<p>" . _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.") . "</p>";
     } else {
         $numbacklinks=count(getBacklinks($keyword));
@@ -477,7 +477,7 @@ function deleteWikiPage($keyword, $version, $range_id) {
 
     if (!keywordExists($keyword)) { // all versions have gone
         $addmsg = '<br>' . sprintf(_("Damit ist die Seite %s mit allen Versionen gelöscht."),'<b>'.htmlReady($keyword).'</b>');
-        $newkeyword = "WikiWikiWeb";
+        $newkeyword = "Wiki-Startseite";
     } else {
         $newkeyword = $keyword;
         $addmsg = "";
@@ -513,7 +513,7 @@ function deleteAllWikiPage($keyword, $range_id) {
     $message = MessageBox::info(sprintf(_('Die Seite %s wurde mit allen Versionen gelöscht.'), '<b>'.htmlReady($keyword).'</b>'));
     PageLayout::postMessage($message);
     refreshBacklinks($keyword, "");
-    return "WikiWikiWeb";
+    return "Wiki-Startseite";
 }
 
 
@@ -928,7 +928,7 @@ function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
         $message = MessageBox::info(_("Sie bearbeiten die QuickLinks."), [_("Verwenden Sie Aufzählungszeichen (-, --, ---), um Verweise auf Seiten hinzuzufügen.")]);
         PageLayout::postMessage($message);
         if (!$body) {
-            $body=_("- WikiWikiWeb\n- BeispielSeite\n-- UnterSeite1\n-- UnterSeite2");
+            $body=_("- Wiki-Startseite\n- BeispielSeite\n-- UnterSeite1\n-- UnterSeite2");
         }
     }
 
@@ -1103,7 +1103,7 @@ function getAllWikiPages($range_id, $header, $fullhtml = true) {
     $visited = []; // holds names of already visited pages
     $tovisit = []; // holds names of pages yetto visit/expand
 
-    $tovisit[] = 'WikiWikiWeb'; // start with top level page
+    $tovisit[] = 'Wiki-Startseite'; // start with top level page
     if ($fullhtml) {
         $out[] = '<html><head><title>' . htmlReady($header) . '</title></head>';
         $out[] = '<body>';
@@ -1495,7 +1495,7 @@ function showDiffs($keyword, $versions_since)
 
 /////////////////////////////////////////////////
 // DIFF funcitons adapted from:
-// PukiWiki - Yet another WikiWikiWeb clone.
+// PukiWiki - Yet another Wiki-Startseite clone.
 // http://www.pukiwiki.org (GPL'd)
 //
 //

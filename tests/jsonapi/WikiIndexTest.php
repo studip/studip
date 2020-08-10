@@ -58,7 +58,7 @@ class WikiIndexTest extends \Codeception\Test\Unit
 
     private function createWikiStartPage($userId, $courseId, $body)
     {
-        return $this->createWikiPage($userId, $courseId, 'WikiWikiWeb', $body);
+        return $this->createWikiPage($userId, $courseId, 'Wiki-Startseite', $body);
 
     }
 
