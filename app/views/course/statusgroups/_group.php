@@ -53,8 +53,8 @@
                         ['title' => sprintf(_('Der Eintrag in diese Gruppe war möglich bis %s.'),
                             date('d.m.Y H:i', $group->selfassign_end))]) ?>
                 <?php elseif ($group->id != 'nogroup' && $group->userMayLeave($GLOBALS['user']->id)) : ?>
-                    <a href="<?= $controller->url_for('course/statusgroups/leave', $group->id) ?>">
-                        <?= Icon::create('door-leave', 'clickable',
+                    <a href="<?= $controller->url_for('course/statusgroups/leave', $group->id) ?>" data-confirm="<?= sprintf(_('Aus Gruppe %s austragen'),htmlReady($group->name)) . '?' ?>">
+                        <?= Icon::create('door-leave', 'attention',
                             ['title' => sprintf(_('Aus Gruppe %s austragen'),
                                 htmlReady($group->name))]) ?></a>
                 <?php endif ?>
