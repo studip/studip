@@ -8,7 +8,6 @@ class FixesOnScheduleColoring extends Migration
 
     public function up()
     {
-
         global $PERS_TERMIN_KAT;
 
         foreach ($PERS_TERMIN_KAT as $index => $cat) {
