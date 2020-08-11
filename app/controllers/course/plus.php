@@ -354,7 +354,7 @@ class Course_PlusController extends AuthenticatedController
                 if ($_SESSION['plus']['displaystyle'] != 'category') {
 
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['object'] = $val;
-                    $list[$cat][mb_strtolower($val['name'])]['moduleclass'] = $mod;
+                    $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['moduleclass'] = $mod;
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['type'] = 'modul';
                     $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['modulkey'] = $key;
 
