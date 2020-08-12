@@ -4,9 +4,13 @@
         'style' => ''
     ]) ?>
     <?php if ($GLOBALS['perm']->have_profile_perm('user', $current_user)) : ?>
-        <div class="avatar-overlay">
+        <div class="avatar-overlay" id="avatar-overlay"
+                accept="image/gif,image/png,image/jpeg" capture="camera"
+                data-max-size="<?= Avatar::MAX_FILE_SIZE ?>"
+                data-message-too-large="<?= _('Die hochgeladene Datei ist zu groß. Bitte wählen Sie ein anderes Bild.') ?>"
+                data-message-unaccepted="<?= _('Die hochgeladene Datei hat falsche Typ. Bitte wählen Sie ein anderes Bild.') ?>">
             <a href="<?= URLHelper::getURL('dispatch.php/avatar/update/user/' . $current_user) ?>" data-dialog>
-                <span><?= _('Bild hochladen oder löschen') ?></span>
+                <span><?= _('Bild hochladen oder löschen.') ?> <br> <?= _('Drag & Drop oder Klicken') ?></span>
             </a>
         </div>
     <?php endif ?>

@@ -55,6 +55,14 @@ div.avatar-widget {
             opacity: 1;
         }
 
+        &.dragging {
+            left: -2px;
+            top: -2px;
+            background-color: fadeout(@base-color-40, 33.3%);
+            border: 2px dashed @base-color;
+            opacity: 1;
+        }
+        
         a {
             color: @white;
             display: block;
