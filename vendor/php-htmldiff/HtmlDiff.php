@@ -259,7 +259,7 @@
 						}
 					}
 				}
-				if( count( $words ) == 0 && count( $specialCaseTagInjection ) == 0 ) {
+				if( count( $words ) == 0 && empty( $specialCaseTagInjection ) ) {
 					break;
 				}
 				if( $specialCaseTagInjectionIsBefore ) {
