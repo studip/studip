@@ -2396,7 +2396,7 @@ class HTMLPurifier_Config
     {
         return $this->getDefinition('HTML', true, true);
     }
-    
+
     /**
      * @return HTMLPurifier_CSSDefinition
      */
@@ -2404,7 +2404,7 @@ class HTMLPurifier_Config
     {
         return $this->getDefinition('CSS', true, true);
     }
-    
+
     /**
      * @return HTMLPurifier_URIDefinition
      */
@@ -6160,8 +6160,9 @@ class HTMLPurifier_HTMLModule
      */
     public function makeLookup($list)
     {
+        $list_as_array = func_get_args();
         if (is_string($list)) {
-            $list = func_get_args();
+            $list = $list_as_array;
         }
         $ret = array();
         foreach ($list as $value) {
