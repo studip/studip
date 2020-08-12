@@ -74,7 +74,7 @@ class Parser
 * The class constructor
 *
 * @param integer $byte_order The byte order (Little endian or Big endian) of the architecture
-                             (optional). 1 => big endian, 0 (default) => little endian. 
+                             (optional). 1 => big endian, 0 (default) => little endian.
 */
   function __construct($byte_order = 0)
     {
@@ -90,7 +90,7 @@ class Parser
     }
 
 /**
-* Initialize the ptg and function hashes. 
+* Initialize the ptg and function hashes.
 */
   function _initialize_hashes()
     {
@@ -466,7 +466,7 @@ class Parser
         {
         return(pack("C", $this->ptg[$token]));
         }
-    elseif(preg_match("/[A-Z0-9À-Ü\.]+/",$token))
+    elseif(preg_match("/[A-Z0-9ï¿½-ï¿½\.]+/",$token))
         {
         return($this->_convert_function($token,$this->_func_args));
         }
@@ -723,21 +723,21 @@ class Parser
             break;
         default:
 	    // if it's a reference
-            if(eregi("^[A-I]?[A-Z][0-9]+$",$token) and 
-	       !ereg("[0-9]",$this->_lookahead) and 
+            if(preg_match("/^[A-I]?[A-Z][0-9]+$/i", $token) and
+	        !preg_match("/[0-9]/",$this->_lookahead) and
                ($this->_lookahead != ':') and ($this->_lookahead != '.'))
                 {
                 return($token);
                 }
             // if it's a range (A1:A2)
-            elseif(eregi("^[A-I]?[A-Z][0-9]+:[A-I]?[A-Z][0-9]+$",$token) and 
-	           !ereg("[0-9]",$this->_lookahead))
+            elseif(preg_match("/^[A-I]?[A-Z][0-9]+:[A-I]?[A-Z][0-9]+$/i", $token) and
+	         !preg_match("/[0-9]/",$this->_lookahead))
 	        {
 		return($token);
 		}
             // if it's a range (A1..A2)
-            elseif(eregi("^[A-I]?[A-Z][0-9]+\.\.[A-I]?[A-Z][0-9]+$",$token) and 
-	           !ereg("[0-9]",$this->_lookahead))
+            elseif(preg_match("/^[A-I]?[A-Z][0-9]+\.\.[A-I]?[A-Z][0-9]+$/i", $token) and
+	           !preg_match("/[0-9]/",$this->_lookahead))
 	        {
 		return($token);
 		}
@@ -746,7 +746,7 @@ class Parser
                 return($token);
                 }
             // if it's a function call
-            elseif(eregi("^[A-Z0-9À-Ü\.]+$",$token) and ($this->_lookahead == "("))
+            elseif(preg_match("/^[A-Z0-9ï¿½-ï¿½\.]+$/i", $token) and ($this->_lookahead == "("))
 
 	        {
 		return($token);
@@ -786,7 +786,7 @@ class Parser
             $this->_advance();
             $result = $this->_create_tree('ptgAdd', $result, $this->_term());
             }
-        else 
+        else
             {
             $this->_advance();
             $result = $this->_create_tree('ptgSub', $result, $this->_term());
@@ -824,7 +824,7 @@ class Parser
             $this->_advance();
             $result = $this->_create_tree('ptgMul', $result, $this->_fact());
             }
-        else 
+        else
             {
             $this->_advance();
             $result = $this->_create_tree('ptgDiv', $result, $this->_fact());
@@ -857,15 +857,15 @@ class Parser
         return($result);
         }
     // if it's a reference
-    if (eregi("^[A-I]?[A-Z][0-9]+$",$this->_current_token))
+    if (preg_match("/^[A-I]?[A-Z][0-9]+$/i", $this->_current_token))
         {
         $result = $this->_create_tree($this->_current_token, '', '');
         $this->_advance();
         return($result);
         }
     // if it's a range
-    elseif (eregi("^[A-I]?[A-Z][0-9]+:[A-I]?[A-Z][0-9]+$",$this->_current_token) or 
-            eregi("^[A-I]?[A-Z][0-9]+\.\.[A-I]?[A-Z][0-9]+$",$this->_current_token)) 
+    elseif (preg_match("/^[A-I]?[A-Z][0-9]+:[A-I]?[A-Z][0-9]+$/i", $this->_current_token) or
+            preg_match("/^[A-I]?[A-Z][0-9]+\.\.[A-I]?[A-Z][0-9]+$/i", $this->_current_token))
         {
         $result = $this->_current_token;
         $this->_advance();
@@ -878,7 +878,7 @@ class Parser
         return($result);
         }
     // if it's a function call
-    elseif (eregi("^[A-Z0-9À-Ü\.]+$",$this->_current_token))
+    elseif (preg_match("/^[A-Z0-9ï¿½-ï¿½\.]+$/i", $this->_current_token))
         {
         $result = $this->_func();
         return($result);
@@ -941,10 +941,10 @@ class Parser
     }
 
 /**
-* Builds a string containing the tree in reverse polish notation (What you 
+* Builds a string containing the tree in reverse polish notation (What you
 * would use in a HP calculator stack).
 * The following tree:
-* 
+*
 *    +
 *   / \
 *  2   3
