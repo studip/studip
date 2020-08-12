@@ -88,17 +88,22 @@ if (function_exists('spl_autoload_register')) {
         }
     }
 } elseif (!function_exists('__autoload')) {
-
-    /**
-     * Autoload a class
-     *
-     * @param string $class Class name
-     *
-     * @return bool
-     */
-    function __autoload($class)
-    {
-        return CAS_autoload($class);
+    if (version_compare(PHP_VERSION, '7.2.0', '<')) {
+         /**
+         * Autoload a class
+         *
+         * @param string $class Class name
+         *
+         * @return bool
+         */
+        function __autoload($class)
+        {
+            return CAS_autoload($class);
+        }
+    } else {
+        spl_autoload_register(function($class) {
+            return CAS_autoload($class);
+        });
     }
 }
 
