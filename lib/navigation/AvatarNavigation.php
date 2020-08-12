@@ -29,11 +29,6 @@ class AvatarNavigation extends Navigation
         $this->addSubNavigation('profile', $navigation);
 
         if ($GLOBALS['perm']->have_perm('autor')) {
-            // Link to personal files
-            $navigation = new Navigation(_('Meine Dateien'), 'dispatch.php/files');
-            $navigation->setImage(Icon::create('folder-empty'));
-            $this->addSubNavigation('files', $navigation);
-
             // Link to user data
             $navigation = new Navigation(_('Persönliche Angaben'), 'dispatch.php/settings/account');
             $navigation->setImage(Icon::create('key'));
