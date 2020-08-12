@@ -95,8 +95,8 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
                 ++$this->curr_obj;
                 $this->reference_count = -1;
 
-                $this->__addProperty('type',$a_attribs['type']);
-                $this->__addProperty('obj_id',$a_attribs['obj_id']);
+                $this->addProperty__('type',$a_attribs['type']);
+                $this->addProperty__('obj_id',$a_attribs['obj_id']);
                 break;
 
             case 'Title':
@@ -119,7 +119,7 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
 
             case 'References':
                 ++$this->reference_count;
-                $this->__addReference($a_attribs['ref_id'], $a_attribs['accessInfo']);
+                $this->addReference__($a_attribs['ref_id'], $a_attribs['accessInfo']);
                 break;
 
             case 'Operation':
@@ -146,35 +146,35 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
                 break;
 
             case 'Title':
-                $this->__addProperty('title',trim($this->cdata));
+                $this->addProperty__('title',trim($this->cdata));
                 break;
 
             case 'Description':
-                $this->__addProperty('description',trim($this->cdata));
+                $this->addProperty__('description',trim($this->cdata));
                 break;
 
             case 'Owner':
-                $this->__addProperty('owner',trim($this->cdata));
+                $this->addProperty__('owner',trim($this->cdata));
                 break;
 
             case 'CreateDate':
-                $this->__addProperty('create_date',trim($this->cdata));
+                $this->addProperty__('create_date',trim($this->cdata));
                 break;
 
             case 'LastUpdate':
-                $this->__addProperty('last_update',trim($this->cdata));
+                $this->addProperty__('last_update',trim($this->cdata));
                 break;
 
             case 'ImportId':
-                $this->__addProperty('import_id',trim($this->cdata));
+                $this->addProperty__('import_id',trim($this->cdata));
                 break;
 
             case 'References':
-                $this->__addReference(trim($this->cdata));
+                $this->addReference__(trim($this->cdata));
                 break;
 
             case 'Operation':
-                $this->__addOperation(trim($this->cdata));
+                $this->addOperation__(trim($this->cdata));
                 break;
         }
 
@@ -203,7 +203,7 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
     }
 
     // PRIVATE
-    function __addProperty($a_name,$a_value)
+    function addProperty__($a_name,$a_value)
     {
             $this->object_data[$this->curr_obj][$a_name] = $a_value;
     /*/
@@ -220,7 +220,7 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
         /**/
     }
 
-    function __addReference($a_value, $a_accessinfo = "")
+    function addReference__($a_value, $a_accessinfo = "")
     {
         if($a_value)
         {
@@ -229,7 +229,7 @@ class Ilias3ObjectXMLParser extends Ilias3SaxParser
         }
     }
 
-    function __addOperation($a_value)
+    function addOperation__($a_value)
     {
         if($a_value)
             $this->object_data[$this->curr_obj]['references'][$this->reference_count]["operations"][] = $a_value;

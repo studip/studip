@@ -108,8 +108,8 @@ class ilObjectXMLParser extends ilSaxParser
 			case 'Object':
 				++$this->curr_obj;
 				
-				$this->__addProperty('type',$a_attribs['type']);
-				$this->__addProperty('obj_id',is_numeric($a_attribs['obj_id'])?(int) $a_attribs["obj_id"] :  ilUtil::__extractId($a_attribs["obj_id"], IL_INST_ID));
+				$this->addProperty__('type',$a_attribs['type']);
+				$this->addProperty__('obj_id',is_numeric($a_attribs['obj_id'])?(int) $a_attribs["obj_id"] :  ilUtil::__extractId($a_attribs["obj_id"], IL_INST_ID));
 				break;
 
 			case 'Title':
@@ -210,37 +210,37 @@ class ilObjectXMLParser extends ilSaxParser
 				break;
 
 			case 'Title':
-				$this->__addProperty('title',trim($this->cdata));
+				$this->addProperty__('title',trim($this->cdata));
 				break;
 
 			case 'Description':
-				$this->__addProperty('description',trim($this->cdata));
+				$this->addProperty__('description',trim($this->cdata));
 				break;
 
 			case 'Owner':
-				$this->__addProperty('owner',trim($this->cdata));
+				$this->addProperty__('owner',trim($this->cdata));
 				break;
 
 			case 'CreateDate':
-				$this->__addProperty('create_date',trim($this->cdata));
+				$this->addProperty__('create_date',trim($this->cdata));
 				break;
 
 			case 'LastUpdate':
-				$this->__addProperty('last_update',trim($this->cdata));
+				$this->addProperty__('last_update',trim($this->cdata));
 				break;
 				
 			case 'ImportId':
-				$this->__addProperty('import_id',trim($this->cdata));
+				$this->addProperty__('import_id',trim($this->cdata));
 				break;
 
 			case 'References':
-				$this->__addReference($this->ref_id,$this->parent_id,$this->time_target);
+				$this->addReference__($this->ref_id,$this->parent_id,$this->time_target);
 				break;
 				////////////////////////////////////////////
 				///////////// MODIFIED /////////////////////
 				////////////////////////////////////////////
 			case 'Operation':
-			    $this->__addOperation(trim($this->cdata));
+			    $this->addOperation__(trim($this->cdata));
 			    break;
 			    ////////////////////////////////////////////
 		}
@@ -270,7 +270,7 @@ class ilObjectXMLParser extends ilSaxParser
 	}
 
 	// PRIVATE
-	function __addProperty($a_name,$a_value)
+	function addProperty__($a_name,$a_value)
 	{
 		$this->object_data[$this->curr_obj][$a_name] = $a_value;
 	}
@@ -278,7 +278,7 @@ class ilObjectXMLParser extends ilSaxParser
 	/**
 	 * @throws ilObjectXMLException
 	 */
-	function __addReference($a_ref_id,$a_parent_id,$a_time_target)
+	function addReference__($a_ref_id,$a_parent_id,$a_time_target)
 	{
 		$reference['ref_id'] = $a_ref_id;
 		$reference['parent_id'] = $a_parent_id;
@@ -312,7 +312,7 @@ class ilObjectXMLParser extends ilSaxParser
 	////////////////////////////////////////////
 	///////////// MODIFIED /////////////////////
 	////////////////////////////////////////////
-	function __addOperation($a_value)
+	function addOperation__($a_value)
 	{
 	    if($a_value)
 	        $this->object_data[$this->curr_obj]['references'][$this->reference_count]["operations"][] = $a_value;

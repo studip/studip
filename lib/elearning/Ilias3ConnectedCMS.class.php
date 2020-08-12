@@ -268,17 +268,21 @@ class Ilias3ConnectedCMS extends ConnectedCMS
         $result = $this->soap_client->getTreeChilds($this->user->getCategory(), $types, $connected_cms[$this->cms_type]->user->getId());
         $obj_ids = [];
         if (is_array($result))
-            foreach($result as $key => $object_data)
-                if (is_array($object_data["operations"]))
+            foreach($result as $key => $object_data){
+                if (is_array($object_data["operations"])){
                     if ((!in_array($object_data["obj_id"], $obj_ids) && in_array(OPERATION_READ, $object_data["operations"]))
                     || in_array(OPERATION_WRITE, $object_data["operations"]))
                     {
-                    if (is_array($user_modules[$object_data["obj_id"]]["operations"]))
-                        if (in_array(OPERATION_WRITE, $user_modules[$object_data["obj_id"]]["operations"]))
-                            continue;
-                    $user_modules[$object_data["obj_id"]] = $object_data;
-                    $obj_ids[] = $result[$key]["obj_id"];
+                        if (is_array($user_modules[$object_data["obj_id"]]["operations"])){
+                            if (in_array(OPERATION_WRITE, $user_modules[$object_data["obj_id"]]["operations"])){
+                                continue;
+                            }
+                        }
+                        $user_modules[$object_data["obj_id"]] = $object_data;
+                        $obj_ids[] = $result[$key]["obj_id"];
+                    }
                 }
+            }
         return $user_modules;
     }
 
