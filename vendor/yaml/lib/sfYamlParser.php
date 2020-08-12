@@ -57,7 +57,12 @@ class sfYamlParser
     $this->currentLine = '';
     $this->lines = explode("\n", $this->cleanup($value));
 
-    if (function_exists('mb_internal_encoding') && ((int) ini_get('mbstring.func_overload')) & 2)
+    $func_overload = "0";
+    if (version_compare(PHP_VERSION, '7.2.0', '<')) {
+        $func_overload = ini_get('mbstring.func_overload');
+    }
+
+    if (function_exists('mb_internal_encoding') && ((int) $func_overload) & 2)
     {
       $mbEncoding = mb_internal_encoding();
       mb_internal_encoding('UTF-8');
