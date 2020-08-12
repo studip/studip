@@ -37,8 +37,8 @@ STUDIP.domReady(() => {
 
         avatar_dialog.click();
         div.files = files;
-        setTimeout(function(){
+        STUDIP.dialogReady(() => {
             STUDIP.Avatar.readFile(div);
-        }, 500);
+        });
     });
 });
