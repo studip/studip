@@ -384,13 +384,15 @@ const Search = {
         var filters = $('#search-results').data('filters');
         var category = STUDIP.Search.getActiveCategory();
         var filter = {category: category};
-        var active_filters = filters[category];
-        $('select[id$="_select"]').each(function () {
-            var selected = this.id.substr(0, this.id.lastIndexOf('_'));
-            if ($.inArray(selected, active_filters) !== -1) {
-                filter[selected] = $('option:selected', this).val();
-            }
-        });
+        if (filters !== undefined) {
+            var active_filters = filters[category];
+            $('select[id$="_select"]').each(function () {
+                var selected = this.id.substr(0, this.id.lastIndexOf('_'));
+                if ($.inArray(selected, active_filters) !== -1) {
+                    filter[selected] = $('option:selected', this).val();
+                }
+            });
+        }
         return filter;
     },
 

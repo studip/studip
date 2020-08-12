@@ -6,6 +6,7 @@ if (!$controllerpath) {
         $controllerpath = $topFolder->range_type . '/' . $controllerpath;
     }
 }
+
 $show_downloads = Config::get()->DISPLAY_DOWNLOAD_COUNTER === 'always';
 $vue_breadcrumbs = [];
 $folder = $topFolder;

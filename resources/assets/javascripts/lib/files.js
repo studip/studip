@@ -4,7 +4,7 @@ import Dialog from './dialog.js';
 
 const Files = {
     init () {
-        if ($('#files-index, #course-files-index, #files-flat, #course-files-flat, #files-overview').length
+        if ($('#files-index, #course-files-index, #institute-files-index, #files-flat, #course-files-flat, #institute-files-flat, #files-overview').length
             && jQuery("#files_table_form").length) {
             this.filesapp = new Vue({
                 el: "#layout_container",
