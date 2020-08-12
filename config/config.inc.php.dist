@@ -198,32 +198,32 @@ $INST_MODULES["default"] = array(
 * while editing dates as templates for the description of regular turnus meetings.
 */
 
-$TERMIN_TYP[1]=array("name"=>_("Sitzung"), "sitzung"=>1, "color"=>"#682c8b");
-$TERMIN_TYP[2]=array("name"=>_("Vorbesprechung"), "sitzung"=>0, "color"=>"#b02e7c");
-$TERMIN_TYP[3]=array("name"=>_("Klausur"), "sitzung"=>0, "color"=>"#129c94");
-$TERMIN_TYP[4]=array("name"=>_("Exkursion"), "sitzung"=>0, "color"=>"#f26e00");
-$TERMIN_TYP[5]=array("name"=>_("anderer Termin"), "sitzung"=>0, "color"=>"#008512");
-$TERMIN_TYP[6]=array("name"=>_("Sondersitzung"), "sitzung"=>0, "color"=>"#a85d45");
-$TERMIN_TYP[7]=array("name"=>_("Vorlesung"), "sitzung"=>1, "color"=>"#a85d45");
+$TERMIN_TYP[1]=array("name"=>_("Sitzung"), "sitzung"=>1);
+$TERMIN_TYP[2]=array("name"=>_("Vorbesprechung"), "sitzung"=>0);
+$TERMIN_TYP[3]=array("name"=>_("Klausur"), "sitzung"=>0);
+$TERMIN_TYP[4]=array("name"=>_("Exkursion"), "sitzung"=>0);
+$TERMIN_TYP[5]=array("name"=>_("anderer Termin"), "sitzung"=>0);
+$TERMIN_TYP[6]=array("name"=>_("Sondersitzung"), "sitzung"=>0);
+$TERMIN_TYP[7]=array("name"=>_("Vorlesung"), "sitzung"=>1);
 // more types can be added here
 
 
 // Configure the categories for the personal calendar
-$PERS_TERMIN_KAT[1]=array("name"=>_("Sonstiges"), "color"=>"#008512");
-$PERS_TERMIN_KAT[2]=array("name"=>_("Sitzung"), "color"=>"#682c8b");
-$PERS_TERMIN_KAT[3]=array("name"=>_("Vorbesprechung"), "color"=>"#b02e7c");
-$PERS_TERMIN_KAT[4]=array("name"=>_("Klausur"), "color"=>"#129c94");
-$PERS_TERMIN_KAT[5]=array("name"=>_("Exkursion"), "color"=>"#f26e00");
-$PERS_TERMIN_KAT[6]=array("name"=>_("Sondersitzung"), "color"=>"#a85d45");
-$PERS_TERMIN_KAT[7]=array("name"=>_("Prüfung"), "color"=>"#6ead10");
-$PERS_TERMIN_KAT[8]=array("name"=>_("Telefonat"), "color"=>"#d60000");
-$PERS_TERMIN_KAT[9]=array("name"=>_("Besprechung"), "color"=>"#ffbd33");
-$PERS_TERMIN_KAT[10]=array("name"=>_("Verabredung"), "color"=>"#66b570");
-$PERS_TERMIN_KAT[11]=array("name"=>_("Geburtstag"), "color"=>"#a480b9");
-$PERS_TERMIN_KAT[12]=array("name"=>_("Familie"), "color"=>"#d082b0");
-$PERS_TERMIN_KAT[13]=array("name"=>_("Urlaub"), "color"=>"#70c3bf");
-$PERS_TERMIN_KAT[14]=array("name"=>_("Reise"), "color"=>"#f7a866");
-$PERS_TERMIN_KAT[15]=array("name"=>_("Vorlesung"), "color"=>"#ca9eaf");
+$PERS_TERMIN_KAT[1]=array("name"=>_("Sonstiges"));
+$PERS_TERMIN_KAT[2]=array("name"=>_("Sitzung"));
+$PERS_TERMIN_KAT[3]=array("name"=>_("Vorbesprechung"));
+$PERS_TERMIN_KAT[4]=array("name"=>_("Klausur"));
+$PERS_TERMIN_KAT[5]=array("name"=>_("Exkursion"));
+$PERS_TERMIN_KAT[6]=array("name"=>_("Sondersitzung"));
+$PERS_TERMIN_KAT[7]=array("name"=>_("Prüfung"));
+$PERS_TERMIN_KAT[8]=array("name"=>_("Telefonat"));
+$PERS_TERMIN_KAT[9]=array("name"=>_("Besprechung"));
+$PERS_TERMIN_KAT[10]=array("name"=>_("Verabredung"));
+$PERS_TERMIN_KAT[11]=array("name"=>_("Geburtstag"));
+$PERS_TERMIN_KAT[12]=array("name"=>_("Familie"));
+$PERS_TERMIN_KAT[13]=array("name"=>_("Urlaub"));
+$PERS_TERMIN_KAT[14]=array("name"=>_("Reise"));
+$PERS_TERMIN_KAT[15]=array("name"=>_("Vorlesung"));
 // more categories can be added here
 
 //preset for academic titles -  add further titles to the array, if necessary
