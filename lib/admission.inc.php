@@ -55,6 +55,10 @@ require_once 'app/models/calendar/schedule.php';
  * @return void
  */
 function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse = false, $contingent = false, $log_message = false) {
+    
+    if (!$user_id) {
+        return false;
+    }
     // get the seminar-object
     $sem = Seminar::GetInstance($seminar_id);
 
