@@ -1,5 +1,6 @@
 <form action="<?= $url ?>" method="<?= $method ?>">
     <?= \SelectWidget::arrayToHiddenInput($params) ?>
+    <?= (strtolower($method) == 'post') ?  CSRFProtection::tokenTag() : ''; ?>
     <select class="sidebar-selectlist <?= $class ?> <? if ($__is_nested): ?>nested-select<? endif; ?>" <? if ($size) printf('size="%u"', $size); ?> <?= $attributes ?>
         name="<?= sprintf('%s%s', htmlReady($name), $multiple ? '[]' : '') ?>" <? if ($multiple) echo 'multiple'; ?>>
 
