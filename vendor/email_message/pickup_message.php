@@ -15,7 +15,7 @@
 
 	<name>pickup_message_class</name>
 	<version>@(#) $Id: pickup_message.php,v 1.4 2006/05/04 01:24:35 mlemos Exp $</version>
-	<copyright>Copyright ¿ (C) Manuel Lemos 1999-2004</copyright>
+	<copyright>Copyright ï¿½ (C) Manuel Lemos 1999-2004</copyright>
 	<title>MIME E-mail message composing and sending using a Windows mail
 		server pickup directory</title>
 	<author>Manuel Lemos</author>
@@ -154,7 +154,7 @@ class pickup_message_class extends email_message_class
 			return($this->OutputError("the specified mailroot path ".$this->mailroot_directory." does not contain a Pickup directory"));
 		$this->pickup_file_name=tempnam(GetEnv("TMP"),"eml");
 		if(!($this->pickup_file=@fopen($this->pickup_file_name,"w")))
-			return($this->OutputPHPError("could not create a pickup message file ".$this->pickup_file_name, $php_errormsg));
+			return($this->OutputPHPError("could not create a pickup message file ".$this->pickup_file_name, error_get_last()['message']));
 		return("");
 	}
 
@@ -224,7 +224,7 @@ class pickup_message_class extends email_message_class
 		if(!@fputs($this->pickup_file, $envelop.$header_data.$this->line_break))
 		{
 			$this->CleanupMessageFile();
-			return($this->OutputPHPError("could not write the message headers to the pickup file", $php_errormsg));
+			return($this->OutputPHPError("could not write the message headers to the pickup file", error_get_last()['message']));
 		}
 		return("");
 	}
@@ -234,7 +234,7 @@ class pickup_message_class extends email_message_class
 		if(!@fputs($this->pickup_file, $data))
 		{
 			$this->CleanupMessageFile();
-			return($this->OutputPHPError("could not write the message body to the pickup file", $php_errormsg));
+			return($this->OutputPHPError("could not write the message body to the pickup file", error_get_last()['message']));
 		}
 		return("");
 	}
@@ -242,7 +242,7 @@ class pickup_message_class extends email_message_class
 	Function EndSendingMessage()
 	{
 		if(!@fflush($this->pickup_file))
-			return($this->OutputPHPError("could not flush the message body to the pickup file", $php_errormsg));
+			return($this->OutputPHPError("could not flush the message body to the pickup file", error_get_last()['message']));
 		fclose($this->pickup_file);
 		$this->pickup_file=0;
 		$pickup_file_path=$this->mailroot_directory;
@@ -250,7 +250,7 @@ class pickup_message_class extends email_message_class
 			$pickup_file_path.="\\";
 		$pickup_file_path.="Pickup\\";
 		if(!@copy($this->pickup_file_name,$pickup_file_path.basename($this->pickup_file_name)))
-			$error=$this->OutputPHPError("could not copy the message file to the pickup directory", $php_errormsg);
+			$error=$this->OutputPHPError("could not copy the message file to the pickup directory", error_get_last()['message']);
 		else
 			$error="";
 		unlink($this->pickup_file_name);

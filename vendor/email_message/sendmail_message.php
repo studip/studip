@@ -15,7 +15,7 @@
 
 	<name>sendmail_message_class</name>
 	<version>@(#) $Id: sendmail_message.php,v 1.19 2011/11/26 09:41:09 mlemos Exp $</version>
-	<copyright>Copyright © (C) Manuel Lemos 1999-2004</copyright>
+	<copyright>Copyright ï¿½ (C) Manuel Lemos 1999-2004</copyright>
 	<title>MIME E-mail message composing and sending using Sendmail</title>
 	<author>Manuel Lemos</author>
 	<authoraddress>mlemos-at-acm.org</authoraddress>
@@ -245,13 +245,13 @@ class sendmail_message_class extends email_message_class
 		if(strlen($this->sendmail_arguments))
 			$command.=" ".$this->sendmail_arguments;
 		if(!($pipe=@popen($command,"w")))
-			return($this->OutputPHPError("it was not possible to open sendmail input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to open sendmail input pipe", error_get_last()['message']));
 		if(strlen($headers))
 			$headers.="\n";
 		if(!@fputs($pipe,"To: ".$to."\nSubject: ".$subject."\n".$headers."\n")
 		|| !@fputs($pipe,$body)
 		|| !@fflush($pipe))
-			return($this->OutputPHPError("it was not possible to write sendmail input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to write sendmail input pipe", error_get_last()['message']));
 		pclose($pipe);
 		return("");
 	}

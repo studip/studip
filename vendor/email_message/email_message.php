@@ -677,6 +677,10 @@ class email_message_class
 
 	Function SendMail($to, $subject, $body, $headers, $return_path)
 	{
+		$ini_safemode_chk = false;
+		if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+			$ini_safemode_chk = ini_get('safe_mode');
+		}
 		if(!function_exists("mail"))
 			return($this->OutputError("the mail() function is not available in this PHP installation"));
 		if(strlen($return_path))
@@ -688,13 +692,13 @@ class email_message_class
 			if($this->GetPHPVersion()<4000005)
 				return($this->OutputError("it is not possible to set the Return-Path header in PHP version older than 4.0.5"));
 			if(function_exists("ini_get")
-			&& ini_get("safe_mode"))
+			&& $ini_safemode_chk)
 				return($this->OutputError("it is not possible to set the Return-Path header due to PHP safe mode restrictions"));
 			$success=@mail($to,$subject,$body,$headers,"-f".$return_path);
 		}
 		else
 			$success=@mail($to,$subject,$body,$headers);
-		return($success ? "" : $this->OutputPHPError("it was not possible to send e-mail message", $php_errormsg));
+		return($success ? "" : $this->OutputPHPError("it was not possible to send e-mail message", error_get_last()['message']));
 	}
 
 	Function StartSendingMessage()
@@ -890,13 +894,13 @@ class email_message_class
 				{
 					$size=@filesize($this->parts[$part]["FILENAME"]);
 					if(!($file=@fopen($this->parts[$part]["FILENAME"],"rb")))
-						return($this->OutputPHPError("could not open part file ".$this->parts[$part]["FILENAME"], $php_errormsg));
+						return($this->OutputPHPError("could not open part file ".$this->parts[$part]["FILENAME"], error_get_last()['message']));
 					while(!feof($file))
 					{
 						if(GetType($block=@fread($file,$this->file_buffer_length))!="string")
 						{
 							fclose($file);
-							return($this->OutputPHPError("could not read part file", $php_errormsg));
+							return($this->OutputPHPError("could not read part file", error_get_last()['message']));
 						}
 						$body.=$block;
 					}
@@ -3270,18 +3274,22 @@ class email_message_class
 */
 	Function GetDataURL($file)
 	{
+		$ini_magic_quotes_runtime_chk = false;
+		if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+			$ini_magic_quotes_runtime_chk = ini_get('magic_quotes_runtime');
+		}
 		if(strlen($this->GetFileDefinition($file,$definition,0)))
 			return($this->error);
 		if(IsSet($definition["FILENAME"]))
 		{
 			$size=@filesize($definition["FILENAME"]);
 			if(!($file=@fopen($definition["FILENAME"],"rb")))
-				return($this->OutputPHPError("could not open data file ".$definition["FILENAME"], $php_errormsg));
+				return($this->OutputPHPError("could not open data file ".$definition["FILENAME"], error_get_last()['message']));
 			for($body="";!feof($file);)
 			{
 				if(GetType($block=@fread($file,$this->file_buffer_length))!="string")
 				{
-					$this->OutputPHPError("could not read data file", $php_errormsg);
+					$this->OutputPHPError("could not read data file", error_get_last()['message']);
 					fclose($file);
 					return("");
 				}
@@ -3295,7 +3303,7 @@ class email_message_class
 				return("");
 			}
 			if(function_exists("ini_get")
-			&& ini_get("magic_quotes_runtime"))
+			&& $ini_magic_quotes_runtime_chk)
 				$body=StripSlashes($body);
 			$body=chunk_split(base64_encode($body), $this->line_length, $this->line_break);
 		}
@@ -3689,21 +3697,21 @@ class email_message_class
 		if(strlen($error=$this->GetPartHeaders($headers,$this->body)))
 			return($error);
 		if(!($header_file=@fopen($base_path.".h","wb")))
-			return($this->OutputPHPError("could not open mailing headers file ".$base_path.".h", $php_errormsg));
+			return($this->OutputPHPError("could not open mailing headers file ".$base_path.".h", error_get_last()['message']));
 		for($header=0,Reset($headers);$header<count($headers);Next($headers),++$header)
 		{
 			$header_name=Key($headers);
 			if(!@fwrite($header_file,$header_name.": ".$headers[$header_name].$line_break))
 			{
 				fclose($header_file);
-				return($this->OutputPHPError("could not write to the mailing headers file ".$base_path.".h", $php_errormsg));
+				return($this->OutputPHPError("could not write to the mailing headers file ".$base_path.".h", error_get_last()['message']));
 			}
 		}
 		if(!@fflush($header_file))
 		{
 			fclose($header_file);
 			@unlink($base_path.".h");
-			return($this->OutputPHPError("could not write to the mailing headers file ".$base_path.".h", $php_errormsg));
+			return($this->OutputPHPError("could not write to the mailing headers file ".$base_path.".h", error_get_last()['message']));
 		}
 		fclose($header_file);
 		if(strlen($error=$this->GetPartBody($body,$this->body)))
@@ -3714,7 +3722,7 @@ class email_message_class
 		if(!($body_file=@fopen($base_path.".b","wb")))
 		{
 			@unlink($base_path.".h");
-			return($this->OutputPHPError("could not open mailing body file ".$base_path.".b", $php_errormsg));
+			return($this->OutputPHPError("could not open mailing body file ".$base_path.".b", error_get_last()['message']));
 		}
 		if(!@fwrite($body_file,$body)
 		|| !@fflush($body_file))
@@ -3722,14 +3730,14 @@ class email_message_class
 			fclose($body_file);
 			@unlink($base_path.".b");
 			@unlink($base_path.".h");
-			return($this->OutputPHPError("could not write to the mailing body file ".$base_path.".b", $php_errormsg));
+			return($this->OutputPHPError("could not write to the mailing body file ".$base_path.".b", error_get_last()['message']));
 		}
 		fclose($body_file);
 		if(!($envelope=@fopen($base_path.".e","wb")))
 		{
 			@unlink($base_path.".b");
 			@unlink($base_path.".h");
-			return($this->OutputPHPError("could not open mailing envelope file ".$base_path.".e", $php_errormsg));
+			return($this->OutputPHPError("could not open mailing envelope file ".$base_path.".e", error_get_last()['message']));
 		}
 		if(!@fwrite($envelope,"F".$mailing_properties["Return-Path"].chr(0))
 		|| !@fflush($envelope))
@@ -3738,7 +3746,7 @@ class email_message_class
 			@unlink($base_path.".e");
 			@unlink($base_path.".b");
 			@unlink($base_path.".h");
-			return($this->OutputPHPError("could not write to the return path to the mailing envelope file ".$base_path.".e", $php_errormsg));
+			return($this->OutputPHPError("could not write to the return path to the mailing envelope file ".$base_path.".e", error_get_last()['message']));
 		}
 		$mailing=++$this->last_mailing;
 		$this->mailings[$mailing]=array(
@@ -3758,7 +3766,7 @@ class email_message_class
 		|| strlen($recipient_properties["Address"])==0)
 			return($this->OutputError("it was not specified a valid mailing recipient Address"));
 		if(!@fwrite($this->mailings[$mailing]["Envelope"],"T".$recipient_properties["Address"].chr(0)))
-			return($this->OutputPHPError("could not write recipient address to the mailing envelope file", $php_errormsg));
+			return($this->OutputPHPError("could not write recipient address to the mailing envelope file", error_get_last()['message']));
 		return("");
 	}
 
@@ -3772,7 +3780,7 @@ class email_message_class
 			return($this->OutputError("the mailing was already ended"));
 		if(!@fwrite($this->mailings[$mailing]["Envelope"],chr(0))
 		|| !@fflush($this->mailings[$mailing]["Envelope"]))
-			return($this->OutputPHPError("could not end writing to the mailing envelope file", $php_errormsg));
+			return($this->OutputPHPError("could not end writing to the mailing envelope file", error_get_last()['message']));
 		fclose($this->mailings[$mailing]["Envelope"]);
 		Unset($this->mailings[$mailing]["Envelope"]);
 		return("");
@@ -3789,14 +3797,14 @@ class email_message_class
 		$this->ResetMessage();
 		$base_path=$this->mailings[$mailing]["BasePath"];
 		if(GetType($header_lines=@File($base_path.".h"))!="array")
-			return($this->OutputPHPError("could not read the mailing headers file ".$base_path.".h", $php_errormsg));
+			return($this->OutputPHPError("could not read the mailing headers file ".$base_path.".h", error_get_last()['message']));
 		for($line=0;$line<count($header_lines);++$line)
 		{
 			$header_name=$this->Tokenize($header_lines[$line],": ");
 			$this->headers[$header_name]=trim($this->Tokenize("\n"));
 		}
 		if(!($envelope_file=@fopen($base_path.".e","rb")))
-			return($this->OutputPHPError("could not open the mailing envelope file ".$base_path.".e", $php_errormsg));
+			return($this->OutputPHPError("could not open the mailing envelope file ".$base_path.".e", error_get_last()['message']));
 		for($bcc=$data="",$position=0;!feof($envelope_file) || strlen($data);)
 		{
 			if(GetType($break=strpos($data,chr(0),$position))!="integer")
@@ -3804,7 +3812,7 @@ class email_message_class
 				if(GetType($chunk=@fread($envelope_file,$this->file_buffer_length))!="string")
 				{
 					fclose($envelope_file);
-					return($this->OutputPHPError("could not read the mailing envelop file ".$base_path.".e", $php_errormsg));
+					return($this->OutputPHPError("could not read the mailing envelop file ".$base_path.".e", error_get_last()['message']));
 				}
 				$data=substr($data,$position).$chunk;
 				$position=0;
@@ -3830,13 +3838,13 @@ class email_message_class
 			return($this->OutputError("the mailing envelop file ".$base_path.".e does not contain any recipients"));
 		$this->headers["Bcc"]=$bcc;
 		if(!($body_file=@fopen($base_path.".b","rb")))
-			return($this->OutputPHPError("could not open the mailing body file ".$base_path.".b", $php_errormsg));
+			return($this->OutputPHPError("could not open the mailing body file ".$base_path.".b", error_get_last()['message']));
 		for($data="";!feof($body_file);)
 		{
 			if(GetType($chunk=@fread($body_file,$this->file_buffer_length))!="string")
 			{
 				fclose($body_file);
-				return($this->OutputPHPError("could not read the mailing body file ".$base_path.".b", $php_errormsg));
+				return($this->OutputPHPError("could not read the mailing body file ".$base_path.".b", error_get_last()['message']));
 			}
 			$data.=$chunk;
 		}

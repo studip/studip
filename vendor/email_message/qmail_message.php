@@ -15,7 +15,7 @@
 
 	<name>qmail_message_class</name>
 	<version>@(#) $Id: qmail_message.php,v 1.11 2009/07/27 22:07:23 mlemos Exp $</version>
-	<copyright>Copyright © (C) Manuel Lemos 2001-2004</copyright>
+	<copyright>Copyright ï¿½ (C) Manuel Lemos 2001-2004</copyright>
 	<title>MIME E-mail message composing and sending using Qmail</title>
 	<author>Manuel Lemos</author>
 	<authoraddress>mlemos-at-acm.org</authoraddress>
@@ -87,13 +87,13 @@ class qmail_message_class extends email_message_class
 		if(strcmp($return_path,""))
 			$command.=" '".preg_replace("/'/", "'\\''","-f$return_path")."'";
 		if(!($pipe=@popen($command,"w")))
-			return($this->OutputPHPError("it was not possible to open qmail-inject input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to open qmail-inject input pipe", error_get_last()['message']));
 		if(strlen($headers))
 			$headers.="\n";
 		if(!@fputs($pipe,"To: ".$to."\nSubject: ".$subject."\n".$headers."\n")
 		|| !@fputs($pipe,$body)
 		|| !@fflush($pipe))
-			return($this->OutputPHPError("it was not possible to write qmail-inject input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to write qmail-inject input pipe", error_get_last()['message']));
 		return(($rc=(pclose($pipe)>>8)) ? "qmail-inject error ".$rc : "");
 	}
 
@@ -108,9 +108,9 @@ class qmail_message_class extends email_message_class
 		$this->ResetMessage();
 		$base_path=$this->mailings[$mailing]["BasePath"];
 		if(GetType($header_lines=@File($base_path.".h"))!="array")
-			return($this->OutputPHPError("could not read the mailing headers file ".$base_path.".h", $php_errormsg));
+			return($this->OutputPHPError("could not read the mailing headers file ".$base_path.".h", error_get_last()['message']));
 		if(!($envelope_file=@fopen($base_path.".e","rb")))
-			return($this->OutputPHPError("could not open the mailing envelope file ".$base_path.".e", $php_errormsg));
+			return($this->OutputPHPError("could not open the mailing envelope file ".$base_path.".e", error_get_last()['message']));
 		for($return_path=$data="";!feof($envelope_file) || strlen($data);)
 		{
 			if(GetType($break=strpos($data,chr(0)))!="integer")
@@ -118,7 +118,7 @@ class qmail_message_class extends email_message_class
 				if(GetType($chunk=@fread($envelope_file,$this->file_buffer_length))!="string")
 				{
 					fclose($envelope_file);
-					return($this->OutputPHPError("could not read the mailing envelop file ".$base_path.".e", $php_errormsg));
+					return($this->OutputPHPError("could not read the mailing envelop file ".$base_path.".e", error_get_last()['message']));
 				}
 				$data.=$chunk;
 				continue;
@@ -175,23 +175,23 @@ class qmail_message_class extends email_message_class
 			$headers.=$this->FormatHeader("Message-ID","<".strftime("%Y%m%d%H%M%S",$seconds).substr($micros,1,5).".qmail@".$host.">")."\n";
 		}
 		if(!($body_file=@fopen($base_path.".b","rb")))
-			return($this->OutputPHPError("could not open the mailing body file ".$base_path.".b", $php_errormsg));
+			return($this->OutputPHPError("could not open the mailing body file ".$base_path.".b", error_get_last()['message']));
 		for($body="";!feof($body_file);)
 		{
 			if(GetType($chunk=@fread($body_file,$this->file_buffer_length))!="string")
 			{
 				fclose($body_file);
-				return($this->OutputPHPError("could not read the mailing body file ".$base_path.".b", $php_errormsg));
+				return($this->OutputPHPError("could not read the mailing body file ".$base_path.".b", error_get_last()['message']));
 			}
 			$body.=$chunk;
 		}
 		fclose($body_file);
 		$command=$this->qmail_path."/qmail-queue 1<".$base_path.".e";
 		if(!($pipe=@popen($command,"w")))
-			return($this->OutputPHPError("it was not possible to open qmail-queue input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to open qmail-queue input pipe", error_get_last()['message']));
 		if(!@fputs($pipe,$headers."\n".$body)
 		|| !@fflush($pipe))
-			return($this->OutputPHPError("it was not possible to write qmail-queue input pipe", $php_errormsg));
+			return($this->OutputPHPError("it was not possible to write qmail-queue input pipe", error_get_last()['message']));
 		return(($rc=(pclose($pipe)>>8)) ? "qmail-queue error ".$rc : "");
 	}
 };
