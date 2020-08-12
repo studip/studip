@@ -520,6 +520,42 @@ const Search = {
         STUDIP.Search.setActiveCategory('show_all_categories');
         $('#search-no-result').hide();
         return false;
+    },
+
+    /**
+     * Show active filters based on active category
+     *
+     * @param {Object} filter object with filter information (e.g. 'category', 'semester', etc.)
+     * @return {boolean} false
+     */
+    showActiveFilters: function (filter) {
+        var container = $('#search-active-filters').find('.filter-items');
+        container.empty();
+        var emptyFilter = true;
+        for ( var item in filter) {
+            if (item != 'category') {
+                var value = filter[item];
+                if (value.trim()) {
+                    var name = $(`#${item}_filter .sidebar-widget-header`).text().trim();
+                    var value_text = $(`#${item}_select option:selected`).text().trim();
+                    var filterItem = $('<button></button>').addClass('button remove-filter').text(name + ': ' + value_text).attr('data-filter-name', item);
+                    filterItem.on('click', function () {
+                        var filter_name = $(this).data('filter-name');
+                        $(`#${filter_name}_select`).val("");
+                        $(`#${filter_name}_select`).trigger('change');
+                        return false;
+                    });
+                    container.append(filterItem);
+                    emptyFilter = false;
+                }
+            }
+        }
+        if (emptyFilter) {
+            $('#search-active-filters').hide();
+        } else {
+            $('#search-active-filters').show();
+        }
+        return false;
     }
 };
 

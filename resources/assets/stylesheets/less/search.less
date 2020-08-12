@@ -195,3 +195,36 @@ div#div-search-input {
     }
 
 }
+
+#search-active-filters {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin: 10px 0;
+    h5 {
+        margin-right: 10px;
+    }
+    .filter-items {
+        .button {
+            background-color: @content-color-20;
+            color: @brand-color-dark;
+            min-width:auto;
+            border: 0;
+            white-space: nowrap;
+            padding: 8px;
+            margin: 0 5px;
+            &::before {
+                background-repeat: no-repeat;
+                content: " ";
+                float: right;
+                height: 16px;
+                width: 16px;
+                .background-icon('trash', 'clickable');
+            }
+
+            &:hover::before {
+                .background-icon('trash', 'attention');
+            }
+        }
+    }
+}

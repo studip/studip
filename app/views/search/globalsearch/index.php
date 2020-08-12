@@ -17,6 +17,11 @@
     </div>
 </form>
 
+<div id="search-active-filters">
+    <h5><?= _('Aktive Filter') . ': ' ?></h5>
+    <div class="filter-items"></div>
+</div>
+
 <div id="search">
     <div id="searching-gif">
         <?= _('Suche...') ?>

@@ -5,6 +5,7 @@ STUDIP.domReady(() => {
     STUDIP.Search.hideAllFilters();
     $('div#semester_filter').show();
     STUDIP.Search.setActiveCategory('show_all_categories');
+    STUDIP.Search.showActiveFilters(STUDIP.Search.getFilter());
 
     // searchterm and category can be passed by URL parameters (e.g. through the quicksearch)
     var searchterm = $('#search-results').data('searchterm');
@@ -42,6 +43,7 @@ STUDIP.domReady(() => {
         STUDIP.Search.expandCategory(category);
         STUDIP.Search.toggleLinkText(category);
         STUDIP.Search.setActiveCategory(category);
+        STUDIP.Search.showActiveFilters(STUDIP.Search.getFilter());
         return false;
     });
 
@@ -57,6 +59,7 @@ STUDIP.domReady(() => {
 
     // perform a new search when another filter is selected by the user
     $('#globalsearch-page select[id$="_select"]').on('change', function () {
+        STUDIP.Search.showActiveFilters(STUDIP.Search.getFilter());
         STUDIP.Search.doSearch(STUDIP.Search.getFilter());
         return false;
     }).closest('form').on('submit', function(e) {
