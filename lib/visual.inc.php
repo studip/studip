@@ -299,6 +299,12 @@ function isURL($url) {
 
 function isLinkIntern($url) {
     $pum = @parse_url(TransformInternalLinks($url));
+
+    // If given $url is pointing to an anchor, it should be internal
+    if (count($pum) === 1 && isset($pum['fragment'])) {
+        return true;
+    }
+
     return in_array($pum['scheme'], ['https', 'http', NULL], true)
         && in_array($pum['host'], [$_SERVER['SERVER_NAME'], NULL], true)
         && in_array($pum['port'], [$_SERVER['SERVER_PORT'], NULL], true)
