@@ -60,4 +60,5 @@ if (window.MutationObserver !== undefined) {
 // Engage
 STUDIP.domReady(() => {
     STUDIP.Sidebar.setSticky();
+    STUDIP.Sidebar.checkActiveLineHeight();
 });
