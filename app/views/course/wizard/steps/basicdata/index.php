@@ -32,7 +32,7 @@
 </section>
 <section>
     <label for="wizard-name" class="required">
-        <?= _(' Name der Veranstaltung') ?>
+        <?= _('Veranstaltungstitel') ?>
     </label>
     <input type="text" name="name" id="wizard-name" size="75" maxlength="254" value="<?= htmlReady($values['name']) ?>"/>
 </section>
