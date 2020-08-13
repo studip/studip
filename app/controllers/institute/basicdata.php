@@ -410,12 +410,6 @@ class Institute_BasicdataController extends AuthenticatedController
                 $details[] = sprintf(_('%u Wikiseiten gelöscht.'));
             }
 
-            // kill all the ressources that are assigned to the Veranstaltung (and all the linked or subordinated stuff!)
-            if (get_config('RESOURCES_ENABLE')) {
-                $killAssign = new DeleteResourcesUser($i_id);
-                $killAssign->delete();
-            }
-
             // delete all configuration files for the "extern modules"
             if (get_config('EXTERN_ENABLE')) {
                 $counts = ExternConfig::DeleteAllConfigurations($i_id);
