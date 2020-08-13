@@ -1,6 +1,6 @@
 <article class="studip" id="main_content" role="main">
     <header>
-        <h1><?= htmlReady($wikipage->keyword) ?></h1>
+        <h1><?= htmlReady(($wikipage->keyword == 'WikiWikiWeb') ? _('Wiki-Startseite') : $wikipage->keyword) ?></h1>
         <nav>
             <span><?= getZusatz($wikipage) ?></span>
             <? if ($wikipage->isLatestVersion()): ?>

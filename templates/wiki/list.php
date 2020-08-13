@@ -32,7 +32,7 @@
     <? foreach ($pages as $page): ?>
         <tr>
             <td>
-                <?= wikiReady("[[{$page->keyword}]]") ?>
+                <?= str_replace('>WikiWikiWeb<', '>' . _('Wiki-Startseite') . '<', wikiReady("[[{$page->keyword}]]")) ?>
             </td>
             <td>
                 <?= htmlReady($page->version) ?>
