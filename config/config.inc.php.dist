@@ -285,26 +285,6 @@ $SYMBOL_SHORT = array(
 this options are only needed, if you are using the addional Stud.IP modules (please see in config_local.inc.php
 which modules are activated). It's a good idea to leave this settings untouched...*/
 
-// Literature-Import Plugins
-$LIT_IMPORT_PLUGINS[1] = array('name' => 'EndNote', 'visual_name' => 'EndNote ab Version 7 / Reference Manager 11', 'description' => _("Exportieren Sie Ihre Literaturliste aus EndNote / Reference Manager als XML-Datei."));
-$LIT_IMPORT_PLUGINS[2] = array('name' => 'GenericXML', 'visual_name' => _("Einfaches XML nach fester Vorgabe"),
-        'description' => _("Die XML-Datei muss folgende Struktur besitzen:").'[code]
-        <?xml version="1.0" encoding="UTF-8"?>
-        <xml>
-        <eintrag>
-            <titel></titel>
-            <autor></autor>
-            <beschreibung></beschreibung>
-            <herausgeber></herausgeber>
-            <ort></ort>
-            <isbn></isbn>
-            <jahr></jahr>
-        </eintrag>
-        </xml>[/code]'.
-        _("Jeder Abschnitt darf mehrfach vorkommen oder kann weggelassen werden, mindestens ein Titel pro Eintrag muss vorhanden sein."));
-$LIT_IMPORT_PLUGINS[3] = array('name' => 'CSV', 'visual_name' => _("CSV mit Semikolon als Trennzeichen"), 'description' => _("Exportieren Sie Ihre Literaturliste in eine mit Trennzeichen getrennte Datei (CSV). Wichtig hierbei ist die Verwendung des Semikolons als Trennzeichen. Folgende Formatierung wird dabei in jeder Zeile erwartet:").'[pre]'._("Titel;Verfasser oder Urheber;Verleger;Herausgeber;Thema und Stichworte;ISBN").'[/pre]');
-$LIT_IMPORT_PLUGINS[4] = array('name' => 'StudipLitList', 'visual_name' => _("Literaturliste im Stud.IP Format"), 'description' => _("Benutzen Sie die Export-Funktion innerhalb von Stud.IP, um eine Literaturliste im Stud.IP Format zu exportieren."));
-$LIT_IMPORT_PLUGINS[5] = array('name' => 'Citavi', 'visual_name' => _("Literaturliste im Stud.IP (Citavi) Format"), 'description' => _("Benutzen Sie die Export-Funktion von Citavi, um eine Literaturliste im Stud.IP Format zu exportieren."));
 
 // cofiguration for flash player
 $FLASHPLAYER_DEFAULT_CONFIG_MIN = "&amp;showstop=1&amp;showvolume=1&amp;bgcolor=A6B6C6&amp;bgcolor1=A6B6C6&amp;bgcolor2=7387AC&amp;playercolor=7387AC&amp;buttoncolor=254580&amp;buttonovercolor=E9EFFD&amp;slidercolor1=CAD7E1&amp;slidercolor2=A6B6C6&amp;sliderovercolor=E9EFFD&amp;loadingcolor=E9B21A&amp;buffer=5&amp;buffercolor=white&amp;buffershowbg=0&amp;playeralpha=90&amp;playertimeout=500&amp;shortcut=1&amp;phpstream=0&amp;onclick=playpause&amp;showloading=always";
