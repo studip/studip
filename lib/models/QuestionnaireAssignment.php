@@ -19,6 +19,11 @@ class QuestionnaireAssignment extends SimpleORMap implements PrivacyObject
         return self::findOneBySQL("questionnaire_id = ? AND range_id = ? AND range_type = 'course'", [$questionnaire_id, $seminar_id]);
     }
 
+    public static function findByInstituteAndQuestionnaire($institute_id, $questionnaire_id)
+    {
+        return self::findOneBySQL("questionnaire_id = ? AND range_id = ? AND range_type = 'institute'", [$questionnaire_id, $institute_id]);
+    }
+
     /**
      * Export available data of a given user into a storage object
      * (an instance of the StoredUserData class) for that user.

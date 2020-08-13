@@ -142,10 +142,13 @@
     }
 }
 
-.courseselector > li > label {
-    cursor: pointer;
-    > input:checked + span {
-        text-decoration: line-through;
+.courseselector,
+.instituteselector {
+    > li > label {
+        cursor: pointer;
+        > input:checked + span {
+            text-decoration: line-through;
+        }
     }
 }
 

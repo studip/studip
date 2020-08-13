@@ -49,7 +49,7 @@
             <h3><?= _("Einrichtungen") ?></h3>
             <ul class="clean instituteselector">
                 <? foreach ($this->questionnaire->assignments as $assignment) : ?>
-                    <? if ($assignment['range_type'] === "institute") : ?>
+                    <? if ($assignment['range_type'] === 'institute') : ?>
                         <li>
                             <label>
                                 <input type="checkbox" name="remove_inst[]" value="<?= htmlReady($assignment['range_id']) ?>" style="display: none;">
@@ -60,7 +60,9 @@
                     <? endif ?>
                 <? endforeach ?>
             </ul>
-            <?= QuickSearch::get("add_institut_id", new SeminarSearch())->render() ?>
+            <?= QuickSearch::get('add_institut_id', new InstituteSearch($this->questionnaire->assignments->filter(function ($q) {
+                return $q['range_type'] === 'institute';
+            })->pluck('range_id')))->render() ?>
         <? endif ?>
 
     </fieldset>

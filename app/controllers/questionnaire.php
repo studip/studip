@@ -518,10 +518,21 @@ class QuestionnaireController extends AuthenticatedController
                 $course_assignment->store();
             }
 
-            foreach (Request::getArray("remove_sem") as $seminar_id) {
-                if ($GLOBALS['perm']->have_studip_perm("tutor", $seminar_id)) {
+            foreach (Request::getArray('remove_sem') as $seminar_id) {
+                if ($GLOBALS['perm']->have_studip_perm('tutor', $seminar_id)) {
                     $course_assignment = QuestionnaireAssignment::findBySeminarAndQuestionnaire($seminar_id, $this->questionnaire->getId());
-                    $course_assignment->delete();
+                    if ($course_assignment) {
+                        $course_assignment->delete();
+                    }
+                }
+            }
+
+            foreach (Request::optionArray('remove_inst') as $institute_id) {
+                if ($GLOBALS['perm']->have_studip_perm('admin', $institute_id)) {
+                    $inst_assignment = QuestionnaireAssignment::findByInstituteAndQuestionnaire($institute_id, $this->questionnaire->id);
+                    if ($inst_assignment) {
+                        $inst_assignment->delete();
+                    }
                 }
             }
 
