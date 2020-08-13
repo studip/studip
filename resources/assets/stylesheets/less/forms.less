@@ -23,6 +23,24 @@ form.default {
         margin-bottom: @gap;
     }
 
+    /* Capitalization */
+    fieldset > label > {
+        /* Generally (English), the rule applies to almost every word */
+        text-transform: capitalize;
+        span:not(:first-child) {
+            /* Usually used for information in sentences, no capitalization needed */
+            text-transform: none;
+        }
+
+        /* In Deutsch, the rules are different compare to English, therefore only the first-letter should be capital  */
+        html:lang(de) & {
+            text-transform: none;
+            &::first-letter {
+                text-transform: uppercase;
+            }
+        }
+    }
+
     ol.default {
         padding-left: 20px;
 
