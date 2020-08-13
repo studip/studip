@@ -15,10 +15,14 @@ class Feedback
         if (!$range_id) {
             return null;
         }
+        $course_id = null;
         if (is_subclass_of($range_type, \FeedbackRange::class)) {
-            $course_id = $range_type::find($range_id)->getRangeCourseId();
+            $range_object = $range_type::find($range_id);
+            if ($range_object) {
+                $course_id = $range_object->getRangeCourseId();
+            }
         }
-        if (Feedback::isActivated($course_id) && Feedback::hasRangeAccess($range_id, $range_type)) {
+        if ($course_id && Feedback::isActivated($course_id) && Feedback::hasRangeAccess($range_id, $range_type)) {
             return '<div class="feedback-elements" for="' . $range_id . '" type="' . $range_type . '" context="' . $course_id . '"></div>';
         } else {
             return null;
