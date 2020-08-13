@@ -6,7 +6,7 @@
 # Lifter010: TODO
 
 /*
-wiki.php - (No longer so) Simple Wiki-Startseite in Stud.IP
+wiki.php - (No longer so) Simple WikiWikiWeb in Stud.IP
 
 @module wiki
 @author Tobias Thelen <tthelen@uos.de>
@@ -194,7 +194,7 @@ if ($view === 'listall') {
     // Default action: Display WikiPage (+ logic for submission)
     //
     if (empty($keyword)) {
-        $keyword = 'Wiki-Startseite'; // display Start page as default
+        $keyword = 'WikiWikiWeb'; // display Start page as default
     }
     releaseLocks($keyword); // kill old locks
     $special = '';
@@ -224,7 +224,7 @@ if ($view === 'listall') {
 
         $keyword = deleteWikiPage($keyword, $version, Context::getId());
         $version = ''; // show latest version
-
+        
     } else if ($cmd === 'really_delete_all') {
         //
         // Delete all was confirmed -> delete entire page

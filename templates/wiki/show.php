@@ -39,7 +39,7 @@
         </nav>
     </header>
     <section>
-        <? if ($wikipage->keyword == 'Wiki-Startseite' && $wikipage->isNew()): ?>
+        <? if ($wikipage->keyword == 'WikiWikiWeb' && $wikipage->isNew()): ?>
             <div class="wiki-background">
                 <div class="flex">
                     <img src='assets/images/icons/blue/wiki.svg' class="image1">

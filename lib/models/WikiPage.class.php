@@ -166,7 +166,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
 
     /**
      * Returns the start page of a wiki for a given course. The start page has
-     * the keyword 'Wiki-Startseite'.
+     * the keyword 'WikiWikiWeb'.
      *
      * @param  string $course_id Course id
      * @return WikiPage
@@ -176,7 +176,7 @@ class WikiPage extends SimpleORMap implements PrivacyObject
         $start = self::findLatestPage($course_id, '');
 
         if (!$start) {
-            $start = new self([$course_id, 'Wiki-Startseite', 0]);
+            $start = new self([$course_id, 'WikiWikiWeb', 0]);
             $start->body = _('Dieses Wiki ist noch leer.');
 
             if ($start->isEditableBy($GLOBALS['user'])) {

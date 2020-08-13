@@ -88,11 +88,8 @@ class CoreWiki implements StudipModule {
             $navigation->setImage(Icon::create('wiki', 'info_alt'));
             $navigation->setActiveImage(Icon::create('wiki', 'info'));
 
-            $keyword = Request::get('keyword');
-            if ($keyword != 'Wiki-Startseite') {
-                $navigation->addSubNavigation('start', new Navigation(_('Wiki-Startseite'), 'wiki.php?view=show'));
-            }
-            if ($keyword) {
+            $navigation->addSubNavigation('start', new Navigation(_('Wiki-Startseite'), 'wiki.php?view=show'));
+            if ($keyword = Request::get('keyword')) {
                 $navigation->addSubNavigation('show', new Navigation(my_substr($keyword, 0, 35), 'wiki.php?view=show', compact('keyword')));
             }
             $navigation->addSubNavigation('listnew', new Navigation(_('Neue Seiten'), 'wiki.php?view=listnew'));
