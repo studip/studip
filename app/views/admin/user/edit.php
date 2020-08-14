@@ -8,7 +8,7 @@ use Studip\Button, Studip\LinkButton;
 <? endif ?>
 
 <span class="content-title">
-    <?= sprintf(_('Benutzerverwaltung für %s'), htmlReady($user->getFullName() . ' (' . $user->username . ', ' . $user->perms . ')')) ?>
+    <?= sprintf(_('Benutzerverwaltung für %s'), htmlReady($user->getFullName())) ?>
 
     <? if ($prelim): ?>
         (<?= _('vorläufiger Benutzer') ?>)
@@ -43,25 +43,18 @@ use Studip\Button, Studip\LinkButton;
                     || LockRules::check($user->user_id, 'username') ? 'readonly' : 'name="username"' ?>>
         </label>
 
-        <section>
-            <label for="email" <? if (!$prelim) echo 'class="required"'; ?>>
-                <?= _('E-Mail') ?>
-            </label>
+        <label>
+            <?= _('Globaler Status') ?>
 
-            <? if (StudipAuthAbstract::CheckField('auth_user_md5.Email', $user->auth_plugin) || LockRules::check($user->user_id, 'email')) : ?>
-                <input class="user_form" type="email" id="email"
-                       value="<?= htmlReady($user['Email']) ?>" <? if (!$prelim) echo 'required'; ?> readonly>
-            <? else : ?>
-                <input class="user_form" type="email" name="Email" id="email"
-                       value="<?= htmlReady($user['Email']) ?>" <? if (!$prelim) echo 'required'; ?>>
-                <? if ($GLOBALS['MAIL_VALIDATE_BOX']) : ?>
-                    <label>
-                        <input type="checkbox" name="disable_mail_host_check" value="1">
-                        <?= _('Mailboxüberprüfung deaktivieren') ?>
-                    </label>
-                <? endif ?>
-            <? endif ?>
-        </section>
+            <select name="perms[]" id="permission"
+                <?= StudipAuthAbstract::CheckField('auth_user_md5.perms', $user->auth_plugin) ? 'disabled' : '' ?>>
+                <? foreach (array_keys($GLOBALS['perm']->permissions) as $permission): ?>
+                    <option <? if ($permission === $user->perms) echo 'selected'; ?>>
+                        <?= htmlReady($permission) ?>
+                    </option>
+                <? endforeach; ?>
+            </select>
+        </label>
 
         <label >
             <?= _('Sichtbarkeit') ?>
@@ -194,92 +187,9 @@ use Studip\Button, Studip\LinkButton;
                 </label>
             </div>
         </section>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
     </fieldset>
 
-    <? if ($user['perms'] !== 'root'): ?>
-    <fieldset>
-        <legend>
-            <?= _('Status und Einrichtungszuordnung') ?>
-        </legend>
 
-        <label>
-            <?= _('Globaler Status') ?>
-
-            <select name="perms[]" id="permission"
-                <?= StudipAuthAbstract::CheckField('auth_user_md5.perms', $user->auth_plugin) ? 'disabled' : '' ?>>
-                <? foreach (array_keys($GLOBALS['perm']->permissions) as $permission): ?>
-                    <option <? if ($permission === $user->perms) echo 'selected'; ?>>
-                        <?= htmlReady($permission) ?>
-                    </option>
-                <? endforeach; ?>
-            </select>
-        </label>
-
-        <label class="col-3">
-            <?= _('Neue Einrichtung') ?>
-
-            <select name="new_inst[]" id="new_inst" class="nested-select" multiple>
-                <option value="" class="is-placeholder">
-                    <?= _('-- Bitte Einrichtung auswählen --') ?>
-                </option>
-            <? foreach ($available_institutes as $i) : ?>
-                <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ? AND inst_perms != "user"', [$user->user_id, $i['Institut_id']]) == 0
-                       && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
-                ) : ?>
-                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
-                            value="<?= htmlReady($i['Institut_id']) ?>">
-                        <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                    </option>
-                <? else: ?>
-
-                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
-                            <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                        </option>
-                <? endif; ?>
-            <? endforeach; ?>
-            </select>
-        </label>
-        <? if (isset($institutes) && count($institutes)) : ?>
-        <section class="col-3">
-            <ol class="default">
-            <? foreach ($institutes as $i => $inst_membership) : ?>
-                <li>
-                    <?= htmlReady($inst_membership->institute->name . ' (' . $inst_membership->inst_perms . ') ') ?>
-
-                    <? if ($GLOBALS['perm']->have_studip_perm("admin", $inst_membership->institut_id)) : ?>
-                        <a data-dialog="size=auto"
-                           href="<?= $controller->url_for('admin/user/edit_institute/' . $user->user_id . '/' . $inst_membership->institut_id) ?>">
-                            <?= Icon::create('edit')->asImg([
-                                'class' => 'text-bottom',
-                                'title' => _('Diese Einrichtung bearbeiten'),
-                            ]) ?>
-                        </a>
-                        <a href="<?= $controller->url_for('admin/user/delete_institute/' . $user->user_id . '/' . $inst_membership->institut_id) ?>">
-                            <?= Icon::create('trash')->asImg([
-                                'class' => 'text-bottom',
-                                'title' => _('Diese Einrichtung löschen'),
-                            ]) ?>
-                        </a>
-                    <? endif; ?>
-                </li>
-            <? endforeach; ?>
-            </ol>
-        </section>
-        <? endif;?>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
-    </fieldset>
-    <? endif; ?>
 
     <fieldset>
         <legend>
@@ -313,6 +223,27 @@ use Studip\Button, Studip\LinkButton;
             </label>
         <? endif; ?>
 
+
+        <section>
+            <label for="email" <? if (!$prelim) echo 'class="required"'; ?>>
+                <?= _('E-Mail') ?>
+            </label>
+
+            <? if (StudipAuthAbstract::CheckField('auth_user_md5.Email', $user->auth_plugin) || LockRules::check($user->user_id, 'email')) : ?>
+                <input class="user_form" type="email" id="email"
+                       value="<?= htmlReady($user['Email']) ?>" <? if (!$prelim) echo 'required'; ?> readonly>
+            <? else : ?>
+                <input class="user_form" type="email" name="Email" id="email"
+                       value="<?= htmlReady($user['Email']) ?>" <? if (!$prelim) echo 'required'; ?>>
+                <? if ($GLOBALS['MAIL_VALIDATE_BOX']) : ?>
+                    <label>
+                        <input type="checkbox" name="disable_mail_host_check" value="1">
+                        <?= _('Mailboxüberprüfung deaktivieren') ?>
+                    </label>
+                <? endif ?>
+            <? endif ?>
+        </section>
+
         <label>
             <?= _('Authentifizierung') ?>
 
@@ -325,7 +256,7 @@ use Studip\Button, Studip\LinkButton;
             </select>
         </label>
 
-
+        
         <section class="col-2">
             <label for="expiration_date">
                 <?= _('Ablaufdatum') ?>
@@ -392,12 +323,6 @@ use Studip\Button, Studip\LinkButton;
                 <?= _('unbekannt') ?>
             <? endif; ?>
         </section>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
     </fieldset>
 
     <? if (in_array($user->perms, ['autor', 'tutor', 'dozent'])): ?>
@@ -408,36 +333,58 @@ use Studip\Button, Studip\LinkButton;
 
         <? if (!StudipAuthAbstract::CheckField('studiengang_id', $user->auth_plugin)) : ?>
             <section class="col-3">
-                <label>
-                    <span class="label-text"><?= _('Neuer Studiengang') ?></span>
+                <span class="label-text"><?= _('Neuer Studiengang') ?></span>
 
-                    <div class="hgroup">
-                        <select style="width: 30%" name="new_studiengang" id="new_studiengang" aria-label="<?= _('-- Bitte Fach auswählen --')?>">
-                            <option selected value="none"><?= _('-- Bitte Fach auswählen --')?></option>
-                            <? foreach ($faecher as $fach) :?>
-                                <?= sprintf('<option value="%s">%s</option>', $fach->id, htmlReady(my_substr($fach->name, 0, 50)));?>
-                            <? endforeach?>
-                        </select>
+                <div class="hgroup">
+                    <select style="width: 30%" name="new_studiengang" id="new_studiengang" aria-label="<?= _('-- Bitte Fach auswählen --')?>">
+                        <option selected value="none"><?= _('-- Bitte Fach auswählen --')?></option>
+                        <? foreach ($faecher as $fach) :?>
+                            <?= sprintf('<option value="%s">%s</option>', $fach->id, htmlReady(my_substr($fach->name, 0, 50)));?>
+                        <? endforeach?>
+                    </select>
 
-                        <select style="width: 30%" name="new_abschluss" id="new_abschluss" aria-label="<?= _('-- Bitte Abschluss auswählen --')?>">
-                            <option selected value="none"><?= _('-- Bitte Abschluss auswählen --')?></option>
-                            <? foreach ($abschluesse as $abschluss) :?>
-                                <?= sprintf('<option value="%s">%s</option>' . "\n", $abschluss->id, htmlReady(my_substr($abschluss->name, 0, 50)));?>
-                            <? endforeach?>
-                        </select>
+                    <select style="width: 30%" name="new_abschluss" id="new_abschluss" aria-label="<?= _('-- Bitte Abschluss auswählen --')?>">
+                        <option selected value="none"><?= _('-- Bitte Abschluss auswählen --')?></option>
+                        <? foreach ($abschluesse as $abschluss) :?>
+                            <?= sprintf('<option value="%s">%s</option>' . "\n", $abschluss->id, htmlReady(my_substr($abschluss->name, 0, 50)));?>
+                        <? endforeach?>
+                    </select>
 
-                        <select name="fachsem" aria-label="<?= _("Bitte Fachsemester wählen") ?>">
-                            <? for ($i = 1; $i <= 50; $i += 1): ?>
-                                <option><?= $i ?></option>
-                            <? endfor; ?>
-                        </select>
-                    </div>
-                </label>
+                    <select name="fachsem" aria-label="<?= _("Bitte Fachsemester wählen") ?>">
+                        <? for ($i = 1; $i <= 50; $i += 1): ?>
+                            <option><?= $i ?></option>
+                        <? endfor; ?>
+                    </select>
+                </div>
             </section>
         <? endif ?>
+        <label class="col-3">
+            <?= _('Neue Einrichtung') ?>
+
+            <select name="new_student_inst" id="new_student_inst" class="nested-select">
+                <option value="" class="is-placeholder">
+                    <?= _('-- Bitte Einrichtung auswählen --') ?>
+                </option>
+                <? foreach ($available_institutes as $i) : ?>
+
+                    <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ?', [$user->user_id, $i['Institut_id']]) == 0
+                        && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
+                    ) : ?>
+                        <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
+                                value="<?= htmlReady($i['Institut_id']) ?>">
+                            <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                        </option>
+                    <? else: ?>
+                        <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
+                            <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                        </option>
+                    <? endif; ?>
+                <? endforeach; ?>
+            </select>
+        </label>
 
         <? if (sizeof($user->studycourses)) : ?>
-        <section>
+        <section class="col-3">
             <ol class="default">
             <? foreach ($user->studycourses as $i => $usc) : ?>
                 <li>
@@ -477,34 +424,7 @@ use Studip\Button, Studip\LinkButton;
             <? endforeach ?>
             </ol>
         </section>
-        <? endif; ?>
-
-        <section>
-            <label>
-                <?= _('Neue Einrichtung') ?>
-
-                <select name="new_student_inst" id="new_student_inst" class="nested-select">
-                    <option value="" class="is-placeholder">
-                        <?= _('-- Bitte Einrichtung auswählen --') ?>
-                    </option>
-                    <? foreach ($available_institutes as $i) : ?>
-
-                        <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ?', [$user->user_id, $i['Institut_id']]) == 0
-                            && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
-                        ) : ?>
-                            <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
-                                    value="<?= htmlReady($i['Institut_id']) ?>">
-                                <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                            </option>
-                        <? else: ?>
-                            <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
-                                <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
-                            </option>
-                        <? endif; ?>
-                    <? endforeach; ?>
-                </select>
-            </label>
-        </section>
+        <? endif ?>
 
         <? if (isset($student_institutes) && count($student_institutes)) : ?>
         <section class="col-3">
@@ -526,17 +446,67 @@ use Studip\Button, Studip\LinkButton;
             </ol>
         </section>
         <? endif; ?>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
+    <? endif; ?>
     </fieldset>
 
-    <? endif; ?>
+    <? if ($user['perms'] !== 'root'): ?>
+    <fieldset>
+        <legend>
+            <?= _('Einrichtungsdaten') ?>
+        </legend>
 
-    <? if ($user['perms'] !== 'root' && (count($userdomains) > 0 || !empty($domains))): ?>
+        <label class="col-3">
+            <?= _('Neue Einrichtung') ?>
+
+            <select name="new_inst[]" id="new_inst" class="nested-select" multiple>
+                <option value="" class="is-placeholder">
+                    <?= _('-- Bitte Einrichtung auswählen --') ?>
+                </option>
+            <? foreach ($available_institutes as $i) : ?>
+                <? if (InstituteMember::countBySql('user_id = ? AND institut_id = ?', [$user->user_id, $i['Institut_id']]) == 0
+                       && (!($i['is_fak'] && $user->perms == 'admin') || $GLOBALS['perm']->have_perm('root'))
+                ) : ?>
+                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>"
+                            value="<?= htmlReady($i['Institut_id']) ?>">
+                        <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                    </option>
+                <? else: ?>
+                    <option class="<?= $i['is_fak'] ? 'nested-item-header' : 'nested-item' ?>" disabled>
+                        <?= htmlReady(my_substr($i['Name'], 0, 70)) ?>
+                    </option>
+                <? endif; ?>
+            <? endforeach; ?>
+            </select>
+        </label>
+        <? if (isset($institutes) && count($institutes)) : ?>
+        <section class="col-3">
+            <ol class="default">
+            <? foreach ($institutes as $i => $inst_membership) : ?>
+                <li>
+                    <?= htmlReady($inst_membership->institute->name) ?>
+
+                    <? if ($GLOBALS['perm']->have_studip_perm("admin", $inst_membership->institut_id)) : ?>
+                        <a data-dialog="size=auto"
+                           href="<?= $controller->url_for('admin/user/edit_institute/' . $user->user_id . '/' . $inst_membership->institut_id) ?>">
+                            <?= Icon::create('edit')->asImg([
+                                'class' => 'text-bottom',
+                                'title' => _('Diese Einrichtung bearbeiten'),
+                            ]) ?>
+                        </a>
+                        <a href="<?= $controller->url_for('admin/user/delete_institute/' . $user->user_id . '/' . $inst_membership->institut_id) ?>">
+                            <?= Icon::create('trash')->asImg([
+                                'class' => 'text-bottom',
+                                'title' => _('Diese Einrichtung löschen'),
+                            ]) ?>
+                        </a>
+                    <? endif; ?>
+                </li>
+            <? endforeach; ?>
+            </ol>
+        </section>
+        <? endif;?>
+    </fieldset>
+
     <fieldset>
         <legend>
             <?= _('Nutzerdomänen') ?>
@@ -575,14 +545,8 @@ use Studip\Button, Studip\LinkButton;
             </ol>
         </section>
         <? endif; ?>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
     </fieldset>
-    <? endif;  /* $user['perms'] !== 'root' && (count($userdomains) > 0 || !empty($domains)) */ ?>
+    <? endif;  /* $user['perms'] !== 'root' */ ?>
 
     <? if ($GLOBALS['perm']->have_perm('root') && count(LockRule::findAllByType('user')) > 0) : ?>
     <fieldset>
@@ -604,12 +568,6 @@ use Studip\Button, Studip\LinkButton;
             <? endforeach; ?>
             </select>
         </label>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
     </fieldset>
     <? endif ?>
 
@@ -637,12 +595,6 @@ use Studip\Button, Studip\LinkButton;
                 <? endif ?>
             <? endif ?>
         <? endforeach ?>
-
-        <section class="text-center">
-            <?= Button::createAccept(_('Speichern'), 'edit') ?>
-            <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('admin/user'), ['name' => 'abort']) ?>
-        </section>
-
     </fieldset>
     <? endif ?>
 
