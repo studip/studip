@@ -511,6 +511,13 @@ class Admin_UserController extends AuthenticatedController
                         && $GLOBALS['perm']->have_studip_perm("admin", $institute_id)
                         && !Request::option('new_student_inst')
                     ) {
+
+                        foreach (InstituteMember::findByInstituteAndStatus($institute_id, 'user') as $existed_record) {
+                            if ($existed_record->institut_id == $institute_id) {
+                                $existed_record->delete();
+                            }
+                        }
+
                         $membership = InstituteMember::build(
                             ['user_id' => $user_id, 'Institut_id' => $institute_id, 'inst_perms' => $editPerms[0]]
                         );
@@ -1710,5 +1717,16 @@ class Admin_UserController extends AuthenticatedController
             );
         }
         $sidebar->insertWidget($views, 'user_actions', 'views');
+
+        $info = new SidebarWidget();
+        $info->setTitle(_('Hinweise'));
+        $info->addElement(new WidgetElement(
+                "<p>" .
+                    sprintf(_('Alle mit einem Sternchen %s markierten Felder müssen ausgefüllt werden.'),
+                        '<span style="font-size:1.5em;color:red;font-weigth:bold;">*</span>').
+                "</p>"
+        ));
+
+        $sidebar->addWidget($info);
     }
 }
