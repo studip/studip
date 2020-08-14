@@ -1690,12 +1690,6 @@ class Seminar
             }
         }
         AdmissionPriority::unsetAllPrioritiesForCourse($this->getId());
-
-        // Delete Course Plugin Setting from plugins_activated
-        $query = "DELETE FROM plugins_activated WHERE range_type = 'sem' AND range_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$s_id]);
-
         // und das Seminar loeschen.
         $this->course->delete();
         $this->restore();
