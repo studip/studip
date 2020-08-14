@@ -252,8 +252,9 @@ class FileController extends AuthenticatedController
      *
      * @param string $file_area_object_id A file area object like a Folder or a FileRef.
      */
-    public function details_action($file_area_object_id = null, $include_navigation = false)
+    public function details_action($file_area_object_id = null)
     {
+        $this->include_navigation = Request::get('file_navigation', false);
         //check if the file area object is a FileRef:
         if (Request::get("from_plugin")) {
             $file_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/details/") + strlen("dispatch.php/file/details/"));
@@ -297,7 +298,7 @@ class FileController extends AuthenticatedController
             //if the folder is of type FolderType.
             $this->previous_file_ref_id = false;
             $this->next_file_ref_id     = false;
-            if ($include_navigation && $folder->isReadable(User::findCurrent()->id)) {
+            if ($this->include_navigation && $folder->isReadable(User::findCurrent()->id)) {
                 $current_file_ref_id = null;
                 foreach ($folder->getFiles() as $folder_file) {
                     $last_file_ref_id = $current_file_ref_id;

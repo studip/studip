@@ -37,7 +37,7 @@ class FilesystemVueDataManager
             'author_id' => $file->getUserId(),
             'chdate' => (int) $file->getLastChangeDate(),
             'additionalColumns' => $additionalColumns,
-            'details_url' => URLhelper::getURL("dispatch.php/file/details/{$file->getId()}/1"),
+            'details_url' => URLhelper::getURL("dispatch.php/file/details/{$file->getId()}", ['file_navigation' => '1']),
             'restrictedTermsOfUse' => $terms && !$terms->isDownloadable($topFolder->range_id, $topFolder->range_type, false),
             'actions' => $actionMenu ? (is_string($actionMenu) ? $actionMenu : $actionMenu->render()) : ""
         ];

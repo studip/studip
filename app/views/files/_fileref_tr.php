@@ -35,7 +35,7 @@ if ($file->isDownloadable($GLOBALS['user']->id)) {
     </td>
     <td data-sort-value="<?= htmlReady($file->getFilename()) ?>">
         <? if ($file->isDownloadable($GLOBALS['user']->id)) : ?>
-            <a href="<?= $controller->link_for("file/details/{$file->getId()}/1") ?>" data-dialog>
+            <a href="<?= $controller->link_for("file/details/{$file->getId()}", ['file_navigation' => '1']) ?>" data-dialog>
                 <?= htmlReady($file->getFilename()) ?>
             </a>
         <? else : ?>
