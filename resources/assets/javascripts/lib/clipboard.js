@@ -34,8 +34,6 @@ const Clipboard = {
     },
 
     handleAddForm: function(event) {
-        console.log('form');
-        
         if (!event) {
             return false;
         }

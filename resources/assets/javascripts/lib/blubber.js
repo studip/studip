@@ -20,7 +20,6 @@ const Blubber = {
                         this.waiting = true;
                         let search = jQuery("form.sidebar-search input[name=search]").val();
                         let parameters = search ? {data: {"search": search}} : {};
-                        console.log(parameters);
                         STUDIP.api.GET(`blubber/threads/${thread_id}`, parameters).done((data) => {
                             this.active_thread = thread_id;
                             this.thread_data = data;

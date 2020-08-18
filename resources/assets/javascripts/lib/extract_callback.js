@@ -57,7 +57,6 @@ export default function extractCallback(cmd, payload) {
         }
 
         if (callback[chunk] === undefined) {
-            console.log(callback, chunk, parameters);
             throw 'Error: Undefined callback ' + cmd;
         }
 

@@ -62,7 +62,6 @@ $(document).on('mouseenter mouseleave', '[data-tooltip],.tooltip:has(.tooltip-co
         timeout = setTimeout(() => data.tooltipObject.hide(), delay);
     }
 }).on('mouseenter', '.studip-tooltip', () => {
-    console.log('cleared timeout');
     clearTimeout(timeout);
 }).on('mouseleave', '.studip-tooltip', function() {
     $(this).hide();

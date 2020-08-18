@@ -26,7 +26,6 @@ const News = {
             button     = $(this).data('clicked').attr('name');
             form_route = $(this).attr('action');
             form_data  = $(this).serialize() + '&' + button + '=1';
-            console.log('ajax data', $(this).serializeArray());
 
             $(this).find(`input[name=${button}]`).showAjaxNotification('left');
             News.update_dialog(id, form_route, form_data);
