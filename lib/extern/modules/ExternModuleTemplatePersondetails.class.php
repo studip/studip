@@ -439,7 +439,9 @@ class ExternModuleTemplatePersondetails extends ExternModule {
                 . "LEFT JOIN auth_user_md5 aum USING(user_id) "
                 . "LEFT JOIN user_info uin USING (user_id) "
                 . "WHERE ui.inst_perms IN ('autor','tutor','dozent') "
-                . "AND aum.username = ?"
+                . "AND aum.username = ? "
+                . "AND ui.`visible` = 1 "
+                . "ORDER BY ui.`externdefault` DESC, ui. `priority` ASC, i.`Name` ASC"
                 , $GLOBALS['_fullname_sql'][$nameformat]));
         $stm->execute([$username]);
         $allRows = $stm->fetchAll();
