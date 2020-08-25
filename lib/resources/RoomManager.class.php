@@ -66,13 +66,15 @@ class RoomManager
         );
 
         $query = '';
-        $data = [];
+        $data = [
+            'room_class_names' => self::getAllRoomClassNames()
+        ];
 
         if ($user_is_admin) {
             $query = "INNER JOIN resource_categories rc
                 ON rc.id = resources.category_id
                 WHERE
-                rc.class_name = 'Room' ";
+                rc.class_name IN ( :room_class_names ) ";
             if ($sql_conditions) {
                 $query .= 'AND ' . $sql_conditions;
                 if (count($sql_condition_parameters)) {
@@ -86,7 +88,7 @@ class RoomManager
             $query = "INNER JOIN resource_categories
                 ON resources.category_id = resource_categories.id
                 WHERE
-                resource_categories.class_name = 'Room'
+                resource_categories.class_name IN ( :room_class_names )
                 AND
                 resources.id IN (
                     SELECT resource_id FROM resource_permissions
@@ -215,10 +217,15 @@ class RoomManager
     {
         if (ResourceManager::userHasGlobalPermission($user, $level)) {
             //Count all rooms.
-            return Room::countBySql("INNER JOIN resource_categories
+            $room_class_names = self::getAllRoomClassNames();
+            return Room::countBySql(
+                "INNER JOIN resource_categories
                 ON resources.category_id = resource_categories.id
                 WHERE
-                resource_categories.class_name = 'Room'"
+                resource_categories.class_name IN ( :room_class_names )",
+                [
+                    'room_class_names' => $room_class_names
+                ]
             );
         }
         $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters);
@@ -264,12 +271,17 @@ class RoomManager
     {
         if (ResourceManager::userHasGlobalPermission($user, $level)) {
             //Return all rooms:
-            return Room::findBySql("INNER JOIN resource_categories
+            $room_class_names = self::getAllRoomClassNames();
+            return Room::findBySql(
+                "INNER JOIN resource_categories
                 ON resources.category_id = resource_categories.id
                 WHERE
-                resource_categories.class_name = 'Room'
+                resource_categories.class_name IN ( :room_class_names )
                 GROUP BY resources.id
-                ORDER BY resources.sort_position DESC, resources.name ASC"
+                ORDER BY resources.sort_position DESC, resources.name ASC",
+                [
+                    'room_class_names' => $room_class_names
+                ]
             );
         }
         $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters);
@@ -504,9 +516,11 @@ class RoomManager
     {
         $sql = "INNER JOIN resource_categories rc
                 ON resources.category_id = rc.id
-                WHERE rc.class_name = 'Room' ";
+                WHERE rc.class_name IN ( :room_class_names ) ";
 
-        $sql_array = [];
+        $sql_array = [
+            'room_class_names' => self::getAllRoomClassNames()
+        ];
 
         if ($only_requestable_rooms) {
             $sql .= "AND resources.requestable > '0' ";
@@ -584,7 +598,7 @@ class RoomManager
             //There is no selection for a specific building or location.
             $filtered_rooms = $rooms;
         }
-        
+
         $result = [];
         if (is_array($time_ranges)) {
             //We must check if the room is available:
@@ -814,8 +828,10 @@ class RoomManager
             INNER JOIN resource_categories rc
             ON rcp.category_id = rc.id
             WHERE
-            rc.class_name = 'Room' ";
-        $sql_params = [];
+            rc.class_name IN ( :room_class_names ) ";
+        $sql_array = [
+            'room_class_names' => self::getAllRoomClassNames()
+        ];
 
         if ($only_searchable) {
             $sql .= "AND resource_property_definitions.searchable = '1' ";
@@ -925,5 +941,22 @@ class RoomManager
         }
 
         return $grouped_rooms;
+    }
+
+
+    /**
+     * @returns string[] A list containing class names of all classes that are
+     *     derived from the Room class and the Room class itself.
+     */
+    public static function getAllRoomClassNames()
+    {
+        $resource_class_names = ResourceManager::getAllResourceClassNames();
+        $room_class_names = [];
+        foreach($resource_class_names as $class_name) {
+            if (is_a($class_name, 'Room', true)) {
+                $room_class_names[] = $class_name;
+            }
+        }
+        return $room_class_names;
     }
 }

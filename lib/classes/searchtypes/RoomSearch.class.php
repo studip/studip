@@ -61,7 +61,7 @@ class RoomSearch extends ResourceSearch
             ON resources.category_id = rc.id
             INNER JOIN resource_properties rp ON rp.resource_id = resources.id
             WHERE
-            rc.class_name = 'Room'
+            rc.class_name IN ( :room_class_names )
             AND
             rp.property_id = :prop_id_seats
             AND
@@ -77,13 +77,15 @@ class RoomSearch extends ResourceSearch
             $sql = "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
             WHERE
-            rc.class_name = 'Room'
+            rc.class_name IN ( :room_class_names )
             AND
             resources.name LIKE CONCAT('%', :keyword, '%') ";
             $sql_params = [
                 'keyword' => $keyword
             ];
         }
+        $sql_params['room_class_names'] = RoomManager::getAllRoomClassNames();
+
         //Root users can access everything so that we don't need
         //to check for permissions in case the current user is root.
         if (!$GLOBALS['perm']->have_perm('root')) {

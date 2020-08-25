@@ -177,7 +177,13 @@ class Resources_RoomController extends AuthenticatedController
         }
         PageLayout::setTitle(_('Raum hinzufügen'));
         $this->next_action = Request::get('next_action');
-        $this->categories  = ResourceCategory::findByClass_name('Room');
+        $room_class_names = RoomManager::getAllRoomClassNames();
+        $this->categories = ResourceCategory::findBySql(
+            'class_name IN ( :class_names ) ORDER BY name ASC',
+            [
+                'class_names' => $room_class_names
+            ]
+        );
 
         if (!$this->categories) {
             PageLayout::postError(

@@ -2575,7 +2575,7 @@ class Resource extends SimpleORMap implements StudipItem
                     )
                 );
             }
-            if ($resource->class_name == $class_name) {
+            if (is_a($resource->class_name, $class_name, true)) {
                 //We have found a parent node which has the
                 //specified class name: return that parent.
                 return $resource;
@@ -2623,7 +2623,7 @@ class Resource extends SimpleORMap implements StudipItem
             //this resource has children: iterate over them and
             //check if they match the search criteria.
             foreach ($this->children as $child) {
-                if ($child->class_name == $class_name) {
+                if (is_a($child->class_name, $class_name, true)) {
                     if ($convert_objects) {
                         $result[] = $child->getDerivedClassInstance();
                     } else {

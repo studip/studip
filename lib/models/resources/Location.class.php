@@ -171,7 +171,7 @@ class Location extends Resource
             );
         }
         
-        if ($this->category->class_name != get_class($this)) {
+        if (!is_a($this->category->class_name, get_class($this), true)) {
             //Only resources with the Location category can be handled
             //with this class!
             throw new InvalidResourceException(

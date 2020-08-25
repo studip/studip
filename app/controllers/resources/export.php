@@ -249,13 +249,14 @@ class Resources_ExportController extends AuthenticatedController
         $room_sql                  = "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
             WHERE
-            rc.class_name = 'Room'
+            rc.class_name IN ( :room_class_names )
             AND resources.id IN ( :room_ids )
             ORDER BY resources.name ASC";
         $this->selected_rooms      = Room::findBySql(
             $room_sql,
             [
-                'room_ids' => $this->selected_room_ids
+                'room_ids' => $this->selected_room_ids,
+                'room_class_names' => RoomManager::getAllRoomClassNames()
             ]
         );
         $this->selected_resources  = Resource::findMany(
@@ -268,7 +269,8 @@ class Resources_ExportController extends AuthenticatedController
             $clipboard_rooms    = Room::findBySql(
                 $room_sql,
                 [
-                    'room_ids' => $clipboard_room_ids
+                    'room_ids' => $clipboard_room_ids,
+                    'room_class_names' => RoomManager::getAllRoomClassNames()
                 ]
             );
             $resources          = array_merge($resources, $clipboard_rooms);

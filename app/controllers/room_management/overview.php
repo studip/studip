@@ -167,11 +167,12 @@ class RoomManagement_OverviewController extends StudipController
                         INNER JOIN resource_categories
                         ON resources.category_id = resource_categories.id
                         WHERE
-                        resource_categories.class_name = 'Room'
+                        resource_categories.class_name IN ( :room_class_names )
                         AND
                         resource_requests.closed = '0'
                         ORDER BY chdate DESC
-                        LIMIT 10"
+                        LIMIT 10",
+                        ['room_class_names' => RoomManager::getAllRoomClassNames()]
                     );
                 } else {
                     //Users who aren't global resource admins see only the requests
@@ -193,13 +194,14 @@ class RoomManagement_OverviewController extends StudipController
                         WHERE
                         resource_requests.resource_id IN ( :room_ids )
                         AND
-                        resource_categories.class_name = 'Room'
+                        resource_categories.class_name IN ( :room_class_names )
                         AND
                         resource_requests.closed = '0'
                         ORDER BY chdate DESC
                         LIMIT 10",
                         [
-                            'room_ids' => $room_ids
+                            'room_ids' => $room_ids,
+                            'room_class_names' => RoomManager::getAllRoomClassNames()
                         ]
                     );
                 }
@@ -418,7 +420,8 @@ class RoomManagement_OverviewController extends StudipController
 
             $rooms_sql .= " INNER JOIN resource_categories rc
                         ON resources.category_id = rc.id
-                        WHERE rc.class_name = 'Room'";
+                        WHERE rc.class_name IN ( :room_class_names )";
+            $rooms_parameter['room_class_names'] = RoomManager::getAllRoomClassNames();
 
             if (Request::get('room_name')) {
                 $rooms_sql .= " AND resources.name LIKE CONCAT('%', :room_name, '%')";

@@ -35,10 +35,11 @@ class Resources_RoomGroupController extends AuthenticatedController
             ON resources.category_id = rc.id
             WHERE
             resources.id IN ( :room_ids )
-            AND rc.class_name = 'Room'
+            AND rc.class_name IN ( :room_class_names )
             ORDER BY resources.name ASC",
             [
-                'room_ids' => $this->room_ids
+                'room_ids' => $this->room_ids,
+                'room_class_names' => RoomManager::getAllRoomClassNames()
             ]
         );
 

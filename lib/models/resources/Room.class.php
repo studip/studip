@@ -70,7 +70,10 @@ class Room extends Resource
         return self::countBySql(
             "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
-            WHERE rc.class_name = 'Room'"
+            WHERE rc.class_name IN ( :room_class_names )",
+            [
+                'room_class_names' => RoomManager::getAllRoomClassNames()
+            ]
         );
     }
     
@@ -80,8 +83,11 @@ class Room extends Resource
         return self::findBySql(
             "INNER JOIN resource_categories rc
             ON resources.category_id = rc.id
-            WHERE rc.class_name = 'Room'
-            ORDER BY sort_position DESC, name ASC, mkdate ASC"
+            WHERE rc.class_name IN ( :room_class_names )
+            ORDER BY sort_position DESC, name ASC, mkdate ASC",
+            [
+                'room_class_names' => RoomManager::getAllRoomClassNames()
+            ]
         );
     }
     
@@ -96,7 +102,8 @@ class Room extends Resource
             $sql .= " INNER JOIN resources pr
                     ON resources.parent_id = pr.id";
         }
-        $sql .= " WHERE rc.class_name = 'Room'";
+        $sql .= " WHERE rc.class_name IN ( :room_class_names )";
+        $params['room_class_names'] = RoomManager::getAllRoomClassNames();
         if ($room) {
             $sql                 .= " AND resources.name LIKE CONCAT('%', :room_name, '%')";
             $params['room_name'] = $room;
@@ -188,10 +195,12 @@ class Room extends Resource
             WHERE
             resources.requestable = '1'
             AND
-            rc.class_name = 'Room' ";
+            rc.class_name IN ( :room_class_names ) ";
+        $sql_array = [
+            'room_class_names' => RoomManager::getAllRoomClassNames()
+        ];
         if (count($properties)) {
             $sql       .= "AND ( ";
-            $sql_array = [];
             
             $property_c = 1;
             foreach ($properties as $name => $state) {
@@ -305,7 +314,7 @@ class Room extends Resource
             ON resources.id = rp.resource_id
         INNER JOIN resource_property_definitions AS rpd
             USING (property_id)
-        WHERE rc.class_name = 'Room'
+        WHERE rc.class_name IN ( :room_class_names )
             AND rpd.name = 'booking_plan_is_public'
             AND rp.state = '1'
         ORDER BY resources.name ASC, resources.mkdate ASC";
@@ -320,12 +329,10 @@ class Room extends Resource
      */
     public static function publicBookingPlansExists()
     {
-        $db           = DBManager::get();
-        $exists_query = 'SELECT 1 FROM resources '
-            . self::getPublicBookingPlansSql() . ' LIMIT 1';
-        $stmt         = $db->prepare($exists_query);
-        $stmt->execute();
-        return $stmt->fetchColumn();
+        return Room::countBySql(
+            self::getPublicBookingPlansSql(),
+            ['room_class_names' => RoomManager::getAllRoomClassNames()]
+        ) > 0;
     }
     
     
@@ -337,7 +344,10 @@ class Room extends Resource
      */
     public static function findByPublicBookingPlans()
     {
-        return self::findBySql(self::getPublicBookingPlansSql());
+        return self::findBySql(
+            self::getPublicBookingPlansSql(),
+            ['room_class_names' => RoomManager::getAllRoomClassNames()]
+        );
     }
     
     
@@ -352,7 +362,7 @@ class Room extends Resource
     public static function getAllRoomTypes()
     {
         $db      = DBManager::get();
-        $results = $db->query(
+        $stmt = $db->prepare(
             "SELECT DISTINCT state FROM resource_properties
             INNER JOIN resource_property_definitions rpd
             USING (property_id)
@@ -361,12 +371,15 @@ class Room extends Resource
             INNER JOIN resource_categories rc
             ON rcp.category_id = rc.id
             WHERE
-            rc.class_name = 'Room'
+            rc.class_name IN ( :room_class_names )
             AND
             rpd.name = 'room_type'
             ORDER BY state ASC"
         );
-        return $results->fetchAll(
+        $stmt->execute(
+            ['room_class_names' => RoomManager::getAllRoomClassNames()]
+        );
+        return $stmt->fetchAll(
             PDO::FETCH_COLUMN,
             0
         );
@@ -476,7 +489,7 @@ class Room extends Resource
             );
         }
         
-        if ($this->category->class_name != get_class($this)) {
+        if (!is_a($this->category->class_name, get_class($this), true)) {
             //Only resources with the Building category can be handled
             //with this class!
             throw new InvalidResourceException(
