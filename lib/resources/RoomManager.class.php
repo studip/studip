@@ -114,9 +114,7 @@ class RoomManager
                 }
             }
         }
-        $data = array_merge($data, [
-            'room_class_names' => self::getAllRoomClassNames()
-        ]);
+        $data['room_class_names'] = self::getAllRoomClassNames();
 
         $query .= " GROUP BY resources.id
                 ORDER BY resources.sort_position DESC, resources.name ASC";
