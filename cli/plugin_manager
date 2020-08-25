@@ -276,7 +276,7 @@ if ($args) {
                 if (is_dir($plugindir . '/migrations')) {
                     $schema_version = new DBSchemaVersion($plugin['name']);
                     $migrator = new Migrator($plugindir .'/migrations', $schema_version);
-                    $plugin['migration_top_version'] = $migrator->top_version();
+                    $plugin['migration_top_version'] = $migrator->topVersion();
                     $plugin['schema_version'] = $schema_version->get();
                 }
                 echo "\n";
