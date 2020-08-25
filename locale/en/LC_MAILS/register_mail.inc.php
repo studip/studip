@@ -1,26 +1,27 @@
-<?php
-    $subject="Stud.IP system confirmation mail";
+<?
+        $subject="Stud.IP system confirmation mail";
 
-    $mailbody="This e-mail has been generated automatically by the Stud.IP System.\n"
-    ."Stud.IP is a study-related online platform,\n"
-    ."used by the" . Config::get()->UNI_NAME_CLEAN . ", to support presence teaching.\n"
-    ."This email contains your user data.\n\n"
-    ."One of the Stud.IP-Admins recently generated your account.\n"
-    ."You have been added with the following data:\n\n"
-    ."Username: $username\n"
-    . ($password ? "Password: $password\n" : '')
-    . ($status ? "Status: $status\n" : '')
-    ."Name: $Vorname\n"
-    ."Surname: $Nachname\n"
-    ."E-mail address: $Email\n\n"
-    ."To visit Stud.IP, please go to the following url:\n\n"
-    ."$url\n\n"
-    ."If your e-mail client does not support HTML-directlinks,\n"
-    ."please copy the full path and insert it into the adress line of your browser.\n\n"
-    ."To login to Stud.IP, please use the login-button and enter your |username| and your |password|\n"
-    ." To switch your language setting within Stud.IP login and select Einstellungen.\n"
-    ."The first drop-down menu is for language settings.\n\n"
-    ."Your login data is only yours to know, please never hand this data to any third parties!\n\n"
-    ."Kind regards,\n\n"
-    ."your Stud.IP support-team\n";
+        $mailbody="This is a Stud.IP system confirmation mail.\n"
+        ."(Studienbegleitender Internetsupport von Präsenzlehre)\n"
+        ."- " . Config::get()->UNI_NAME_CLEAN . "-\n\n"
+        ."You registered with the following information at $Zeit:\n\n"
+        ."Username: $username\n"
+        ."Forename: $Vorname\n"
+        ."Surname: $Nachname\n"
+        ."E-mail address: $Email\n\n"
+        ."This mail is being sent to you to be sure,\n"
+        ."that the given E-mail address does actually belong to you.\n\n"
+        ."If this information is correct, please open the link\n\n"
+        ."$url\n\n"
+        ."in your browser.\n"
+        ."Your mail program will probably support a simple click on the link.\n"
+        ."If not, you must open your browser and copy the link completely into the line\n"
+        ."\"Location\" oder \"URL\".\n\n"
+        ."You must login as user \"$username\",\n"
+        ."so that the re-confirmation can work.\n\n"
+        ."If you have not registered as user \"$username\",\n"
+        ."or have no idea what is being talked about here,\n"
+        ."then someone has been using your mail address by mistake!\n\n"
+        ."In this case, please contact $abuse,\n"
+        ."so that the entry can be deleted from the database.\n";
 ?>
