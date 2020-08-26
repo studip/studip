@@ -28,30 +28,18 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
 
     public function countAnswers()
     {
-        if ($this['anonymous']) {
-            $statement = DBManager::get()->prepare("
-                SELECT COUNT(*)
-                FROM questionnaire_anonymous_answers
-                WHERE questionnaire_id = :questionnaire_id
-            ");
-            $statement->execute([
-                'questionnaire_id' => $this->getId()
-            ]);
-           return $statement->fetch(PDO::FETCH_COLUMN, 0);
-        } else {
-            $statement = DBManager::get()->prepare("
-                SELECT COUNT(*)
-                FROM questionnaire_answers
-                    INNER JOIN questionnaire_questions ON (questionnaire_answers.question_id = questionnaire_questions.question_id)
-                WHERE questionnaire_id = :questionnaire_id
-            ");
-            $statement->execute([
-                'questionnaire_id' => $this->getId()
-            ]);
-            $answers_total = $statement->fetch(PDO::FETCH_COLUMN, 0);
+        $statement = DBManager::get()->prepare("
+            SELECT COUNT(*)
+            FROM questionnaire_answers
+                INNER JOIN questionnaire_questions ON (questionnaire_answers.question_id = questionnaire_questions.question_id)
+            WHERE questionnaire_id = :questionnaire_id
+        ");
+        $statement->execute([
+            'questionnaire_id' => $this->getId()
+        ]);
+        $answers_total = $statement->fetch(PDO::FETCH_COLUMN, 0);
 
-            return count($this->questions) ? $answers_total / count($this->questions) : 1;
-        }
+        return count($this->questions) ? $answers_total / count($this->questions) : 1;
     }
 
     public function isAnswered($user_id = null)
