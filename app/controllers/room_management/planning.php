@@ -179,7 +179,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 );
             }
         }
-        
+
         $this->all_rooms_booking_rights = ($room_c == $booking_rights_c);
         $all_rooms_admin = ($room_c == $admin_rights_c);
         if ($all_rooms_admin) {
@@ -192,7 +192,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             );
         }
 
-        if ($this->all_rooms_booking_rights) {
+        if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS && $this->all_rooms_booking_rights) {
             $options = new OptionsWidget();
             $options->addCheckbox(
                 _('Alle Anfragen anzeigen'),
@@ -379,7 +379,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             )
         );
         $sidebar->addWidget($semester_selector);
-        
+
         //Add clipboard widget:
         $clipboard_widget = new RoomClipboardWidget();
         $clipboard_widget->setReadonly(true);
@@ -949,7 +949,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
             }
         }
     }
-    
+
     public function booking_comments_action($selected_clipboard_id = null)
     {
         PageLayout::setTitle(_('Buchungen mit Kommentaren'));

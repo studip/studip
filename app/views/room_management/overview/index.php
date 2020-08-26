@@ -3,12 +3,14 @@
         <article class="overview-action-tile studip">
             <header class="widget-header"><h1><?= _('Raumplanung') ?></h1></header>
             <ul>
-                <li>
-                    <a href="<?= URLHelper::getLink(
-                             'dispatch.php/resources/room_request/overview') ?>">
-                        <?= _('Anfragenliste') ?>
-                    </a>
-                </li>
+                <? if ($room_requests_activated) : ?>
+                    <li>
+                        <a href="<?= URLHelper::getLink(
+                                 'dispatch.php/resources/room_request/overview') ?>">
+                            <?= _('Anfragenliste') ?>
+                        </a>
+                    </li>
+                <? endif ?>
                 <li>
                     <a href="<?= URLHelper::getLink(
                              'dispatch.php/resources/room_planning/booking_plan') ?>">

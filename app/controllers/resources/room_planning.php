@@ -30,8 +30,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
         }
         parent::before_filter($action, $args);
     }
-    
-    
+
+
     public function overbooked_rooms_action()
     {
         $current_user = User::findCurrent();
@@ -41,9 +41,9 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if (!ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
             throw new AccessDeniedException();
         }
-        
+
         $current_semester = Semester::findCurrent();
-        
+
         if (!$current_semester) {
             PageLayout::postError(
                 _('Es gibt kein aktuelles Semester in dieser Stud.IP-Installation!')
@@ -53,9 +53,9 @@ class Resources_RoomPlanningController extends AuthenticatedController
         //$begin->setTimestamp($current_semester->beginn);
         $end = DateTime::createFromFormat('Y-m-d H:i:s', '2017-06-18 23:59:59');
         //$end->setTimestamp($current_semester->ende);
-        
+
         $this->overbooked_bookings = RoomManager::findOverbookedRoomBookings($begin, $end);
-        
+
         $this->courses          = [];
         $this->overbooked_rooms = [];
         foreach ($this->overbooked_bookings as $booking) {
@@ -66,7 +66,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 //or the course does not exist (anymore).
                 continue;
             }
-            
+
             $this->overbooked_rooms[$room->id] = $room;
             //There may be more than one course for a room:
             if (!is_array($this->courses[$room->id])) {
@@ -78,25 +78,25 @@ class Resources_RoomPlanningController extends AuthenticatedController
             ];
         }
     }
-    
-    
+
+
     public function booking_plan_action($resource_id = null)
     {
         if (Navigation::hasItem('/resources/planning/booking_plan')) {
             Navigation::activateItem('/resources/planning/booking_plan');
         }
-        
+
         PageLayout::setTitle(_('Belegungsplan'));
-        
+
         $current_user = User::findCurrent();
-        
+
         $new_resource_id = Request::get('new_resource_id');
         if ($new_resource_id) {
             $this->redirect(
                 'resources/room_planning/booking_plan/' . $new_resource_id
             );
         }
-        
+
         if (!$resource_id) {
             $resource_id = Request::get('resource_id');
         }
@@ -115,7 +115,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 throw new AccessDeniedException();
             }
         }
-        
+
         $this->resource = Resource::find($resource_id);
         if (!$this->resource) {
             PageLayout::postError(
@@ -123,23 +123,23 @@ class Resources_RoomPlanningController extends AuthenticatedController
             );
             return;
         }
-        
+
         URLHelper::addLinkParam('resource_id', $this->resource->id);
         $this->resource = $this->resource->getDerivedClassInstance();
-        
+
         PageLayout::setTitle(
             sprintf(
                 _('Belegungsplan: %s'),
                 $this->resource->getFullName()
             )
         );
-        
+
         if ($this->resource->requestable) {
             $this->display_all_requests = Request::get('display_all_requests');
         } else {
             $this->display_all_requests = false;
         }
-        
+
         //The booking plan is visible when the user-ID is not 'nobody'
         //and the user has at least 'user' permissions on the resource.
         //The booking plan is also visible when the resource is a room
@@ -172,7 +172,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 _('Der Belegungsplan ist für Sie nicht zugänglich!')
             );
         }
-        
+
         $this->user_has_request_permissions = false;
         $this->user_has_booking_permissions = false;
         if ($current_user instanceof User) {
@@ -181,13 +181,13 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 $current_user
             );
         }
-        
+
         if (!$this->user_has_booking_permissions && $this->display_all_requests) {
             throw new AccessDeniedException(
                 _('Sie sind nicht dazu berechtigt, alle Anfragen im Belegungsplan zu sehen!')
             );
         }
-        
+
         $week_timestamp = Request::get('timestamp');
         $default_date   = Request::get('defaultDate');
         $this->date     = new DateTime();
@@ -199,10 +199,10 @@ class Resources_RoomPlanningController extends AuthenticatedController
         } else {
             $week_timestamp = $this->date->getTimestamp();
         }
-        
+
         //Build sidebar:
         $sidebar = Sidebar::get();
-        
+
         if ($this->rooms) {
             $room_select = new SelectWidget(
                 _('Anderen Raum wählen'),
@@ -216,7 +216,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
             $room_select->setOptions($options, $this->resource->id);
             $sidebar->addWidget($room_select);
         }
-        
+
         $views = new ViewsWidget();
         if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
             if ($this->resource->userHasPermission($current_user, 'user')) {
@@ -231,7 +231,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     null,
                     ['class' => 'booking-plan-std_view']
                 )->setActive(!Request::get('allday'));
-                
+
                 $views->addLink(
                     _('Ganztägiges Zeitfenster'),
                     URLHelper::getURL(
@@ -247,8 +247,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
             }
         }
         $sidebar->addWidget($views);
-        
-        if ($this->user_has_booking_permissions) {
+
+        if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS && $this->user_has_booking_permissions) {
             $options = new OptionsWidget();
             if ($this->resource->requestable) {
                 $options->addCheckbox(
@@ -272,7 +272,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
             }
             $sidebar->addWidget($options);
         }
-        
+
         $dpicker = new SidebarWidget();
         $dpicker->setTitle('Datum');
         $picker_html = $this->get_template_factory()->render(
@@ -280,7 +280,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         );
         $dpicker->addElement(new WidgetElement($picker_html));
         $sidebar->addWidget($dpicker);
-        
+
         $actions = new ActionsWidget();
         if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
             if ($this->user_has_booking_permissions) {
@@ -333,7 +333,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                         'id'          => 'export-resource-bookings-action'
                     ]
                 );
-                
+
                 if ($this->resource instanceof Room) {
                     $actions->addLink(
                         _('Raumeigenschaften anzeigen'),
@@ -358,7 +358,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 ]
             );
         }
-        
+
         if ($current_user instanceof User) {
             //No check necessary here: This part of the controller is only called
             //when a room has been selected before.
@@ -375,14 +375,14 @@ class Resources_RoomPlanningController extends AuthenticatedController
             }
         }
         $sidebar->addWidget($actions);
-        
+
         $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
         $booking_colour        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
         $lock_colour           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
         $preparation_colour    = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
         $reservation_colour    = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
         $request_colour        = ColourValue::find('Resources.BookingPlan.Request.Bg');
-        
+
         if ($this->resource instanceof Room) {
             $this->table_keys = [
                 [
@@ -428,7 +428,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         } else {
             $this->table_keys = [];
         }
-        
+
         $this->fullcalendar_studip_urls = [];
         if ($this->user_has_booking_permissions) {
             $this->fullcalendar_studip_urls['add'] = $this->url_for(
@@ -441,8 +441,8 @@ class Resources_RoomPlanningController extends AuthenticatedController
             );
         }
     }
-    
-    
+
+
     public function semester_plan_action($resource_id = null)
     {
         $current_user = User::findCurrent();
@@ -450,30 +450,30 @@ class Resources_RoomPlanningController extends AuthenticatedController
             throw new AccessDeniedException();
         }
         $this->rooms = RoomManager::getUserRooms($current_user);
-        
+
         if (Navigation::hasItem('/resources/planning/semester_plan')) {
             Navigation::activateItem('/resources/planning/semester_plan');
         }
-        
+
         $new_resource_id = Request::get('new_resource_id');
         if ($new_resource_id) {
             $this->redirect(
                 'resources/room_planning/semester_plan/' . $new_resource_id
             );
         }
-        
+
         if (!$resource_id) {
             $resource_id = Request::get('resource_id');
         }
         if (!$resource_id) {
             //Get a list of all available rooms and let the user select
             //one of those.
-            
+
             $this->selection_link_template =
                 'resources/room_planning/semester_plan/%s';
             return;
         }
-        
+
         $this->resource = Resource::find($resource_id);
         if (!$this->resource) {
             PageLayout::postError(
@@ -483,7 +483,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         }
         URLHelper::addLinkParam('resource_id', $this->resource->id);
         $this->resource = $this->resource->getDerivedClassInstance();
-        
+
         PageLayout::setTitle(
             sprintf(
                 _('Semester-Belegungsplan: %s'),
@@ -507,30 +507,30 @@ class Resources_RoomPlanningController extends AuthenticatedController
         }
         URLHelper::addLinkParam('semester_timerange', Request::get("semester_timerange"));
         URLHelper::addLinkParam('allday', Request::get('allday'));
-        
+
         if ($this->resource->requestable) {
             $this->display_all_requests = Request::get('display_all_requests');
             URLHelper::addLinkParam('display_all_requests', Request::get('display_all_requests'));
-            
+
         } else {
             $this->display_all_requests = false;
         }
-        
-        
+
+
         //The booking plan is visible when the user-ID is not 'nobody'
         //and the user has at least 'user' permissions on the resource.
         //The booking plan is also visible when the resource is a room
         //and its booking plan is publicly available.
         $plan_is_visible =
             $this->resource->bookingPlanVisibleForUser($current_user);
-        
+
         if (!$plan_is_visible) {
             throw new AccessDeniedException(
                 _('Der Belegungsplan ist für Sie nicht zugänglich!')
             );
         }
-        
-        
+
+
         $this->user_has_booking_permissions = $this->resource->userHasBookingRights(
             $current_user
         );
@@ -542,13 +542,13 @@ class Resources_RoomPlanningController extends AuthenticatedController
             URLHelper::addLinkParam('display_single_bookings', Request::get("display_single_bookings"));
             $this->display_single_bookings = Request::get("display_single_bookings");
         }
-        
+
         if (!$this->user_has_booking_permissions && $this->display_all_requests) {
             throw new AccessDeniedException(
                 _('Sie sind nicht dazu berechtigt, alle Anfragen im Belegungsplan zu sehen!')
             );
         }
-        
+
         $this->fullcalendar_studip_urls = [];
         if ($this->user_has_booking_permissions) {
             $this->fullcalendar_studip_urls['add'] = $this->url_for(
@@ -557,7 +557,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         }
         //Build sidebar:
         $sidebar = Sidebar::get();
-        
+
         $this->semester = Semester::findCurrent();
         //For the semester selector:
         if (Request::submitted('semester_id')) {
@@ -569,14 +569,14 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 return;
             }
         }
-        
+
         $this->fullcalendar_studip_urls = [];
         if ($this->user_has_booking_permissions) {
             $this->fullcalendar_studip_urls['add'] = $this->url_for(
                 'resources/booking/add/' . $this->resource->id, ['semester_id' => $this->semester->id]
             );
         }
-        
+
         if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
             if ($this->rooms) {
                 $room_select = new SelectWidget(
@@ -605,7 +605,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     null,
                     ['class' => 'booking-plan-std_view']
                 )->setActive(!Request::get('allday'));
-                
+
                 $views->addLink(
                     _('Ganztägiges Zeitfenster'),
                     URLHelper::getURL(
@@ -618,7 +618,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     ['class' => 'booking-plan-allday_view']
                 )->setActive(Request::get('allday'));
                 $sidebar->addWidget($views);
-                
+
                 $views2 = new ViewsWidget();
                 $views2->setTitle(_('Semesterzeitraum'));
                 $views2->addLink(
@@ -649,7 +649,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     null,
                     ['class' => 'booking-plan-fullsem_view']
                 )->setActive(Request::get('semester_timerange') == 'fullsem');
-                
+
                 $sidebar->addWidget($views2);
             }
         }
@@ -662,7 +662,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     'resources/room_planning/semester_plan/' . $this->resource->id,
                     [
                         'display_single_bookings' => '1',
-                    
+
                     ]
                 ),
                 $this->url_for(
@@ -675,7 +675,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
             );
             $sidebar->addWidget($options);
         }
-        
+
         $semester_selector = new SemesterSelectorWidget(
             URLHelper::getURL(
                 'dispatch.php/resources/room_planning/semester_plan/' . $this->resource->id,
@@ -685,9 +685,9 @@ class Resources_RoomPlanningController extends AuthenticatedController
             )
         );
         $sidebar->addWidget($semester_selector);
-        
+
         $sidebar = Sidebar::get();
-        
+
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Drucken'),
@@ -706,7 +706,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
             Icon::create('refresh')
         );
         $sidebar->addWidget($actions);
-        
+
         $booking_colour                        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
         $course_booking_colour                 = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
         $lock_colour                           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
@@ -742,7 +742,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                 'text'   => _('Geplante Buchung')
             ];
         }
-        
+
         if ($this->resource->requestable) {
             if ($this->user_has_booking_permissions && $this->display_all_requests) {
                 $this->table_keys[] =

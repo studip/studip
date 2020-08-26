@@ -41,7 +41,7 @@
                             <? if ($cycle_room_names[$cycle['cycle']->id]): ?>
                                 <strong><?= _('Raum') ?>:</strong>
                                 <?= htmlReady($cycle_room_names[$cycle['cycle']->id])?>
-                            <? else: ?>
+                            <? elseif (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) : ?>
                                 <? if (count($cycle['cycle']->room_requests) > 0): ?>
                                     <? $room_request = $cycle['cycle']->room_requests[0] ?>
                                     <? if ($room_request->closed <= '1'): ?>

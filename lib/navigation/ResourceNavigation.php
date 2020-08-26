@@ -129,23 +129,31 @@ class ResourceNavigation extends Navigation
         if (RoomManager::userHasRooms($user, 'user', true) || $user_is_global_resource_user) {
             $sub_navigation = null;
             if (RoomManager::userHasRooms($user, 'autor', true) || $user_is_global_resource_autor) {
-                $sub_navigation = new Navigation(
-                    _('Raumplanung'),
-                    'dispatch.php/resources/room_request/overview'
-                );
-                $this->addSubNavigation('planning', $sub_navigation);
+                if (Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
+                    $sub_navigation = new Navigation(
+                        _('Raumplanung'),
+                        'dispatch.php/resources/room_request/overview'
+                    );
+                    $this->addSubNavigation('planning', $sub_navigation);
 
-                $sub_sub_nav = new Navigation(
-                    _('Anfragenliste'),
-                    'dispatch.php/resources/room_request/overview'
-                );
-                $sub_navigation->addSubNavigation('requests_overview', $sub_sub_nav);
+                    $sub_sub_nav = new Navigation(
+                        _('Anfragenliste'),
+                        'dispatch.php/resources/room_request/overview'
+                    );
+                    $sub_navigation->addSubNavigation('requests_overview', $sub_sub_nav);
 
-                $sub_sub_nav = new Navigation(
-                    _('Anfragenplan'),
-                    'dispatch.php/resources/room_request/planning'
-                );
-                $sub_navigation->addSubNavigation('requests_planning', $sub_sub_nav);
+                    $sub_sub_nav = new Navigation(
+                        _('Anfragenplan'),
+                        'dispatch.php/resources/room_request/planning'
+                    );
+                    $sub_navigation->addSubNavigation('requests_planning', $sub_sub_nav);
+                } else {
+                    $sub_navigation = new Navigation(
+                        _('Raumplanung'),
+                        'dispatch.php/resources/room_planning/booking_plan'
+                    );
+                    $this->addSubNavigation('planning', $sub_navigation);
+                }
             } else {
                 $sub_navigation = new Navigation(
                     _('Raumplanung'),

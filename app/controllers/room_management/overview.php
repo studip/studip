@@ -151,8 +151,9 @@ class RoomManagement_OverviewController extends StudipController
                 }
             }
         }
+        $this->room_requests_activated = Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS;
         $this->display_current_requests = false;
-        if (!$tree_selected_resource) {
+        if (!$tree_selected_resource && $this->room_requests_activated ) {
             if (Config::get()->RESOURCES_DISPLAY_CURRENT_REQUESTS_IN_OVERVIEW) {
                 $this->display_current_requests = true;
                 $current_user = User::findCurrent();
