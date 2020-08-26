@@ -38,7 +38,7 @@ class TermsController extends AuthenticatedController
             if (Request::get('action') == 'denied') {
                 $this->denial_message = trim(Config::get()->getValue('TERMS_CONFIG')['denial_message']) 
                                         ? Config::get()->getValue('TERMS_CONFIG')['denial_message'] 
-                                        : sprintf(_('Bitte Kontakrieren Sie System Administrator an: %s'), '<a href="mailto:'.$GLOBALS['UNI_CONTACT'].'">'.$GLOBALS['UNI_CONTACT'].'</a>');
+                                        : sprintf(_('Bitte kontaktieren Sie einen Systemadministrator unter: %s'), '<a href="mailto:'.$GLOBALS['UNI_CONTACT'].'">'.$GLOBALS['UNI_CONTACT'].'</a>');
             }
         }
     }
