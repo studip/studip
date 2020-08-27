@@ -479,9 +479,7 @@ form.narrow {
 
 .studip-checkbox {
     opacity: 0;
-    margin-right: -1.4em;
-    vertical-align: middle;
-
+    position: absolute;
     + label {
         .icon('before', 'checkbox-unchecked', 'clickable', 16, 5px);
         cursor: pointer;
@@ -503,7 +501,6 @@ form.narrow {
         }
     }
 }
-
 
 // give forms some optimized styling for very narrow screen sizes
 .media-breakpoint-tiny-down({
