@@ -425,7 +425,8 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         //The user must have either permanent permissions or they have to
         //have booking rights by a temporary permission in this moment
         //(the moment this booking is saved).
-        $user_has_booking_rights = $this->resource->userHasBookingRights(
+        $derived_resource = $this->resource->getDerivedClassInstance();
+        $user_has_booking_rights = $derived_resource->userHasBookingRights(
             $this->booking_user
         );
         if (!$user_has_booking_rights) {
@@ -440,7 +441,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         $time_intervals = $this->calculateTimeIntervals(true);
         $time_interval_overlaps = [];
         foreach ($time_intervals as $time_interval) {
-            $is_locked = $this->resource->isLocked(
+            $is_locked = $derived_resource->isLocked(
                 $time_interval['begin'],
                 $time_interval['end'],
                 ($this->isNew() ? [] : [$this->id])
@@ -460,7 +461,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                     );
                 }
             } else {
-                $is_assigned = $this->resource->isAssigned(
+                $is_assigned = $derived_resource->isAssigned(
                     $time_interval['begin'],
                     $time_interval['end'],
                     ($this->isNew() ? [] : [$this->id])
@@ -674,7 +675,8 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                     intval($end->format('i')),
                     intval($end->format('s'))
                 );
-                if ($this->resource->userHasPermission($this->booking_user, 'tutor', [$current_begin, $current_end])) {
+                $derived_resource = $this->resource->getDerivedClassInstance();
+                if ($derived_resource->userHasPermission($this->booking_user, 'tutor', [$current_begin, $current_end])) {
                     //Sufficient permissions to delete bookings
                     //in the time frame.
                     $delete_sql = '(begin BETWEEN :begin AND :end
@@ -711,7 +713,8 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                 $current_date = $current_date->add($repetition_interval);
             }
         } else {
-            if ($this->resource->userHasPermission($this->booking_user, 'autor', [$real_begin, $end])) {
+            $derived_resource = $this->resource->getDerivedClassInstance();
+            if ($derived_resource->userHasPermission($this->booking_user, 'autor', [$real_begin, $end])) {
                 $delete_sql = '(begin BETWEEN :begin AND :end
                     OR
                     end BETWEEN :begin AND :end)
@@ -892,7 +895,8 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                 return false;
             }
             //Still no answer? Check, if the user is resource tutor.
-            return !$this->resource->userHasPermission($user, 'tutor');
+            $derived_resource = $this->resource->getDerivedClassInstance();
+            return !$derived_resource->userHasPermission($user, 'tutor');
         }
         //Non-simple bookings (course bookings etc.) are always read-only.
         return true;
@@ -1614,7 +1618,8 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
             $icon = '';
 
             if ($user instanceof User) {
-                if ($this->resource->userHasPermission($user, 'user') && $this->internal_comment) {
+                $derived_resource = $this->resource->getDerivedClassInstance();
+                if ($derived_resource->userHasPermission($user, 'user') && $this->internal_comment) {
                     $icon = 'chat2';
                 }
             }
