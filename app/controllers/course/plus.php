@@ -315,6 +315,7 @@ class Course_PlusController extends AuthenticatedController
 
                     $list['Funktionen von A-Z'][mb_strtolower($key)]['object'] = $plugin;
                     $list['Funktionen von A-Z'][mb_strtolower($key)]['type'] = 'plugin';
+                    $list['Funktionen von A-Z'][mb_strtolower($key)]['moduleclass'] = get_class($plugin);
 
                 } else {
 
@@ -344,12 +345,16 @@ class Course_PlusController extends AuthenticatedController
 
             if ($this->modules->isEnableable($key, $_SESSION['admin_modules_data']["range_id"]) && (!$this->sem_class || $slot_editable)) {
 
-                if ($this->sem_class) $studip_module = $this->sem_class->getModule($mod);
+                if ($this->sem_class) {
+                    $studip_module = $this->sem_class->getModule($mod);
+                }
 
                 $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
 
                 $indcat = isset($info['category']) ? $info['category'] : 'Sonstiges';
-                if(!array_key_exists($indcat, $cat_index)) array_push($cat_index, $indcat);
+                if (!array_key_exists($indcat, $cat_index)) {
+                    array_push($cat_index, $indcat);
+                }
 
                 if ($_SESSION['plus']['displaystyle'] != 'category') {
 
