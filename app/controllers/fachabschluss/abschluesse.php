@@ -134,12 +134,21 @@ class Fachabschluss_AbschluesseController extends MVVController
                 PageLayout::postError(_('Der Abschluss kann nicht gelöscht werden (unbekannter Abschluss).'));
             } else {
                 CSRFProtection::verifyUnsafeRequest();
-                $name = $abschluss->name;
-                $abschluss->delete();
-                PageLayout::postSuccess(sprintf(
-                    _('Der Abschluss "%s" wurde gelöscht.'),
-                    htmlReady($name)
-                ));
+                if (count($abschluss->studiengaenge)) {
+                    $sp = ((count($abschluss->studiengaenge) > 1) ? 'Studiengängen' : 'Studiengang');
+                    PageLayout::postError(sprintf(
+                        _('Der Abschluss kann nicht gelöscht werden (in %s %s verwendet).'),
+                        count($abschluss->studiengaenge), $sp
+                    ));
+                } else {
+                    $name = $abschluss->name;
+                    $abschluss->delete();
+                    PageLayout::postSuccess(sprintf(
+                        _('Der Abschluss "%s" wurde gelöscht.'),
+                        htmlReady($name)
+                    ));
+                }
+
             }
         }
         $this->redirect($this->url_for('/index'));
