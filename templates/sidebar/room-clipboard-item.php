@@ -35,11 +35,12 @@ if (!$item) {
                name="selected_clipboard_items[]"
                title="<?= _('Diesen Raum auswählen.') ?>"
                value="<?= htmlReady($item['id']) ?>"
+               id="<?= htmlReady($checkbox_id) ?>"
                <?= in_array($item['id'], $selected_clipboard_items)
                  ? 'checked="checked"'
                  : '' ?>
                class="studip-checkbox">
-        <label></label><?= htmlReady($item['name']) ?>
+        <label for="<?= htmlReady($checkbox_id) ?>"></label><?= htmlReady($item['name']) ?>
     </td>
     <td class="item-actions">
         <?

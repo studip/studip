@@ -75,13 +75,22 @@
                     <? $items = $clipboard->getContent(false) ?>
                     <? if ($items): ?>
                         <? foreach ($items as $item): ?>
+                            <?
+                            $checkbox_id = sprintf(
+                                'item_%1$s_%2$s_%3$s',
+                                $clipboard->id,
+                                $item['range_type'],
+                                $item['range_id']
+                            )
+                            ?>
                             <? if ($special_item_template): ?>
                                 <?= $this->render_partial(
                                     $special_item_template,
                                     [
                                         'item' => $item,
                                         'draggable_items' => $draggable_items,
-                                        'readonly' => $readonly
+                                        'readonly' => $readonly,
+                                        'checkbox_id' => $checkbox_id
                                     ]
                                 ) ?>
                             <? else: ?>
@@ -94,11 +103,12 @@
                                                name="selected_clipboard_items[]"
                                                title="<?= _('Diesen Eintrag auswählen.') ?>"
                                                value="<?= htmlReady($item['id']) ?>"
+                                               id="<?= htmlReady($checkbox_id) ?>"
                                                <?= in_array($item['id'], $selected_clipboard_items)
                                                  ? 'checked="checked"'
                                                  : '' ?>
                                                class="studip-checkbox">
-                                        <label><?= htmlReady($item['name']) ?></label>
+                                        <label for="<?= htmlReady($checkbox_id) ?>"><?= htmlReady($item['name']) ?></label>
                                     </td>
                                     <? if (!$readonly): ?>
                                         <td class="item-actions">
