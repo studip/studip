@@ -135,7 +135,7 @@ class Fachabschluss_AbschluesseController extends MVVController
             } else {
                 CSRFProtection::verifyUnsafeRequest();
                 if (count($abschluss->studiengaenge)) {
-                    $sp = ((count($abschluss->studiengaenge) > 1) ? 'Studiengängen' : 'Studiengang');
+                    $sp = ngettext('Studiengang', 'Studiengängen', count($abschluss->studiengaenge));
                     PageLayout::postError(sprintf(
                         _('Der Abschluss kann nicht gelöscht werden (in %s %s verwendet).'),
                         count($abschluss->studiengaenge), $sp
