@@ -627,7 +627,7 @@ class Materialien_FilesController extends MVVController
         $sidebar->setImage(Assets::image_path('sidebar/files-sidebar.png'));
 
         $widget  = new ActionsWidget();
-        if (MvvPerm::get('MvvDokument')->havePermCreate()) {
+        if (MvvPerm::get('MvvFile')->havePermCreate()) {
             $widget->addLink( _('Neues Dokument anlegen'),
                             $this->url_for('/new_dokument'),
                             Icon::create('file+add', 'clickable'))->asDialog("size=auto");
@@ -678,7 +678,7 @@ class Materialien_FilesController extends MVVController
             'institute'          => MvvFile::getAllAssignedInstitutes('name', 'ASC', $institute_filter),
             'institute_count'    => 'count_objects',
             'selected_institut'  => $this->filter['mvv_studiengang.institut_id'],
-            'zuordnungen'        => MvvFile::getAllRelations($this->search_result['MvvDokument']),
+            'zuordnungen'        => MvvFile::getAllRelations($this->search_result['MvvFile']),
             'selected_zuordnung' => $this->filter['mvv_files_ranges.range_type'],
             'action'             => $this->url_for('/set_filter'),
             'action_reset'       => $this->url_for('/reset_filter')]);
