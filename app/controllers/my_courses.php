@@ -395,6 +395,7 @@ class MyCoursesController extends AuthenticatedController
         $this->group_names         = get_group_names($group_field, $groups);
         $this->group_field         = $group_field;
         $this->my_sem              = $my_sem;
+        $this->cid                 = Request::get('cid') ? Request::get('cid') : '';
     }
 
 
@@ -435,7 +436,13 @@ class MyCoursesController extends AuthenticatedController
             }
         }
 
-        $this->redirect($studygroups ? 'my_studygroups/index' : 'my_courses/index');
+        if (Request::get('cid')) {
+            $redirect = "course/overview?cid=" . Request::get('cid');
+        } else {
+            $redirect = 'my_courses/index';
+        }
+
+        $this->redirect($studygroups ? 'my_studygroups/index' : $redirect);
     }
 
 

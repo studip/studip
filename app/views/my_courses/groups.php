@@ -1,6 +1,7 @@
 <form method="post" action="<?= $controller->url_for('my_courses/store_groups/'.$studygroups) ?>" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
+    <input type="hidden" name="cid" value="<?= $cid ?>">
     <table class="default collapsable">
         <caption><?= _('Gruppenzuordnung') ?></caption>
         <thead>
