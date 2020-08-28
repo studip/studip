@@ -1,7 +1,7 @@
 <form action="<?= URLHelper::getLink("dispatch.php/questionnaire/edit/".(!$questionnaire->isNew() ? $questionnaire->getId() : "")) ?>"
       method="post" enctype="multipart/form-data"
       class="questionnaire_edit default"
-      <?= Request::isAjax() ? "data-dialog" : "" ?>>
+      <?= Request::isAjax() ? "data-dialog" : "" ?> data-secure="true">
     <input type="hidden" name="order" value="<?= htmlReady(json_encode($order)) ?>">
     <? if (Request::get("range_id")) : ?>
         <input type="hidden" name="range_id" value="<?= htmlReady(Request::get("range_id")) ?>">
