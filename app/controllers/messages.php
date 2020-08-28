@@ -550,6 +550,7 @@ class MessagesController extends AuthenticatedController {
             //with the wrong attachements attached to it.
             if (count($unattached_files)) {
                 //create an attachment folder for the new message:
+                PageLayout::postInfo(_('Es wurden Dateianhänge gefunden, welche zwar hochgeladen, aber noch nicht versandt wurden. Diese wurden an diese Nachricht angehängt!'));
                 $new_attachment_folder = MessageFolder::createTopFolder($this->default_message->id);
 
                 //"bend" the folder-ID of each unattached file to the new attachment folder's ID:
