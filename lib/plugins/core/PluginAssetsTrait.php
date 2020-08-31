@@ -207,7 +207,7 @@ trait PluginAssetsTrait
             ]);
         } elseif ($extension === 'scss') {
             $contents = Assets\SASSCompiler::getInstance()->compile($contents, $variables + [
-                'plugin-path' => $this->getPluginURL(),
+                'plugin-path' => '"' . $this->getPluginURL() . '"',
             ]);
         }
         return $contents;
