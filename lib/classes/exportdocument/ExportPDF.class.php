@@ -334,9 +334,15 @@ class ExportPDF extends TCPDF implements ExportDocument {
             }
         }
 
+        $src = 'src=""';
         $file_content = @file_get_contents($convurl);
-        $file_content = base64_encode($file_content);
-        return 'src="@' . $file_content . '"';
+        if ($file_content) {
+            $img_size = @getimagesizefromstring($file_content);
+            if (is_array($img_size) && $img_size[0] > 0) {
+                $src = 'src="@' . base64_encode($file_content) . '"';
+            }
+        }
+        return $src;
     }
 
     /**
