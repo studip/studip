@@ -73,14 +73,27 @@ class WidgetHelper
         $oldWidget = $db->fetchOne("SELECT position,col FROM widget_user WHERE id = ? AND range_id = ?", [$widget, $GLOBALS['user']->id]);
         if ($oldWidget) {
 
-            // Push all entries in the new column one position away
-            $db->execute("UPDATE widget_user SET position = position + 1 WHERE range_id = ? AND col = ? AND position >= ?", [$GLOBALS['user']->id, $column, $position]);
+            if ($oldWidget['col'] == $column) {
+                // Insert element
+                $db->execute("UPDATE widget_user SET position = ? WHERE id = ? ", [$position, $widget]);
+                if ($oldWidget['position'] < $position) {
+                    //Move back items BETWEEN old and new position
+                    $db->execute("UPDATE widget_user SET position = position - 1 WHERE col = ? AND range_id = ? AND position > ? AND  position <= ? AND id <> ?", [$oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position'], $position, $widget]);
+                } else {
+                    //Move forward items BETWEEN old and new position
+                    $db->execute("UPDATE widget_user SET position = position + 1 WHERE col = ? AND range_id = ? AND position < ? AND  position >= ? AND id <> ?", [$oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position'], $position, $widget]);
+                }
+            } else {
+                // Push all entries in the new column one position away
+                $db->execute("UPDATE widget_user SET position = position + 1 WHERE range_id = ? AND col = ? AND position >= ?", [$GLOBALS['user']->id, $column, $position]);
 
-            // Insert element
-            $db->execute("UPDATE widget_user SET position = ?, col = ? WHERE id = ? ", [$position, $column, $widget]);
+                // Insert element
+                $db->execute("UPDATE widget_user SET position = ?, col = ? WHERE id = ? ", [$position, $column, $widget]);
 
-            // Move positions in old column
-            $db->execute("UPDATE widget_user SET position = position - 1 WHERE col = ? AND range_id = ? AND position > ?", [$oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position']]);
+                // Move positions in old column
+                $db->execute("UPDATE widget_user SET position = position - 1 WHERE col = ? AND range_id = ? AND position > ?", [$oldWidget['col'], $GLOBALS['user']->id, $oldWidget['position']]);
+            }
+
         }
     }
 
