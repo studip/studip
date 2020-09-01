@@ -163,7 +163,7 @@ class Test extends QuestionnaireQuestion implements QuestionType
         $answersToCheck = is_array($answersToCheck) ? $answersToCheck : $this->answers->findBy('user_id', $userId);
 
         foreach ($answersToCheck as $answer) {
-            if ($task['type'] === 'multiple') {
+            if ($task['type'] === 'multiple'  && is_object($answer['answerdata']['answers'])) {
                 foreach ($answer['answerdata']['answers'] as $a) {
                     $resultsUsers[(int) $a][] = $answer['user_id'];
                 }
