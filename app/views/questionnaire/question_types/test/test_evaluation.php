@@ -87,7 +87,7 @@ $labels = array_map(function ($answer) { return strip_tags(formatReady($answer['
             <td style="text-align: right; background-size: <?= $percentage ?>% 100%; background-position: right center; background-image: url('<?= Assets::image_path("vote_lightgrey.png") ?>'); background-repeat: no-repeat;" width="50%">
                 <strong><?= formatReady($answer['text']) ?></strong>
                 <? if ($userAnswer) : ?>
-                    <?= Icon::create(in_array($key, $userAnswer['answers']) ? 'checkbox-checked' : 'checkbox-unchecked', 'info')->asImg( ['class' => 'text-bottom']) ?>
+                    <?= Icon::create((is_array($userAnswer['answers']) && in_array($key, $userAnswer['answers'])) ? 'checkbox-checked' : 'checkbox-unchecked', 'info')->asImg( ['class' => 'text-bottom']) ?>
                 <? endif ?>
                 <? if ($answer['score'] > 0) : ?>
                     <?= Icon::create('accept', 'status-green', ['title' => _('Diese Antwort ist richtig')])->asImg( ['class' => 'text-bottom']) ?>
