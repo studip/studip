@@ -26,7 +26,7 @@
     <td class="hidden-small-down">
     <? if ($message['autor_id'] == "____%system%____") : ?>
         <?= _("Systemnachricht") ?>
-    <? elseif (!$received): ?>
+    <? elseif (isset($received) && !$received): ?>
         <? $num_recipients = $message->getNumRecipients() ?>
         <? if ($num_recipients > 1) : ?>
             <?= sprintf(_("%s Personen"), $num_recipients) ?>
