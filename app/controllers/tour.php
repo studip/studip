@@ -396,7 +396,7 @@ class TourController extends AuthenticatedController
             $this->response->add_header('X-Action', 'question');
             return createQuestion2(sprintf(
                 _('Wollen Sie Schritt %s wirklich löschen?'), $step_nr),
-                ['confirm_delete_tour_step' => 1, 'tour_id' => $tour_id, 'step_nr' => $step_nr],
+                ['confirm_delete_tour_step' => $step_nr, 'tour_id' => $tour_id, 'step_nr' => $step_nr],
                 [],
                 ''
             );
@@ -616,11 +616,11 @@ class TourController extends AuthenticatedController
             if (Request::option('confirm_delete_tour_step') == $step->step) {
                 CSRFProtection::verifyUnsafeRequest();
                 $this->delete_step($this->tour->id, $step->step);
-            } elseif (Request::option('delete_tour_step') == $step->step) {
-                $this->delete_question = $this->delete_step($this->tour->tour_id, $step->step);
                 if (Request::submitted('yes') || Request::submitted('no')) {
                     $this->redirect('tour/admin_details/' . $this->tour->tour_id);
                 }
+            } elseif (Request::option('delete_tour_step') == $step->step) {
+                $this->delete_question = $this->delete_step($this->tour->tour_id, $step->step);
             }
         }
         if (Request::option('tour_type')) {
