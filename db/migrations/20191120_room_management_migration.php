@@ -2021,7 +2021,7 @@ class RoomManagementMigration extends Migration
             `takes_place` tinyint(1) unsigned NOT NULL DEFAULT 1,
             PRIMARY KEY (`interval_id`),
             INDEX `resource_id` (`resource_id`,`takes_place`,`end`)
-            )");
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC");
 
         //Delete old tables:
 
