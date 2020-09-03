@@ -135,10 +135,11 @@ class JsupdaterController extends AuthenticatedController
                 $page_info['Messages']['tag']
             );
             $template_factory = $this->get_template_factory();
+            $received = $page_info['Messages']['received'];
             foreach ($messages as $message) {
                 $data['Messages.newMessages']['messages'][$message->getId()] = $template_factory
                         ->open("messages/_message_row.php")
-                        ->render(compact("message") + ['controller' => $this]);
+                        ->render(compact("message", "received") + ['controller' => $this]);
             }
         }
         if (is_array($page_info['Questionnaire']['questionnaire_ids'])) {
@@ -172,7 +173,7 @@ class JsupdaterController extends AuthenticatedController
                 $data['Blubber.addNewComments'] = $blubber_data;
             }
             $statement = DBManager::get()->prepare("
-                SELECT blubber_events_queue.item_id 
+                SELECT blubber_events_queue.item_id
                 FROM blubber_events_queue
                 WHERE blubber_events_queue.event_type = 'delete'
             ");
