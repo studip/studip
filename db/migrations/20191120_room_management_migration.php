@@ -2008,15 +2008,20 @@ class RoomManagementMigration extends Migration
         $db->exec("UPDATE resource_permissions SET resource_id = 'global'
             WHERE resource_id = 'all';");
 
-        $db->exec("RENAME TABLE resources_temporary_events
-            TO resource_booking_intervals;");
-        $db->exec("ALTER TABLE resource_booking_intervals
-            CHANGE COLUMN event_id interval_id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-            CHANGE COLUMN assign_id booking_id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-            CHANGE COLUMN mkdate mkdate INT(11) UNSIGNED NOT NULL DEFAULT 0,
-            ADD COLUMN chdate INT(11) UNSIGNED NOT NULL DEFAULT 0,
-            ADD COLUMN takes_place TINYINT(1) UNSIGNED NOT NULL DEFAULT 1");
-        $db->exec("ALTER TABLE `resource_booking_intervals` DROP INDEX `resource_id`, ADD INDEX `resource_id` (`resource_id`, `takes_place`, `end`)");
+        $db->exec("DROP TABLE resources_temporary_events;");
+        $db->exec(
+            "CREATE TABLE `resource_booking_intervals` (
+            `interval_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+            `resource_id` char(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+            `booking_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+            `begin` int(20) NOT NULL DEFAULT 0,
+            `end` int(20) NOT NULL DEFAULT 0,
+            `mkdate` int(11) unsigned NOT NULL DEFAULT 0,
+            `chdate` int(11) unsigned NOT NULL DEFAULT 0,
+            `takes_place` tinyint(1) unsigned NOT NULL DEFAULT 1,
+            PRIMARY KEY (`interval_id`),
+            INDEX `resource_id` (`resource_id`,`takes_place`,`end`)
+            )");
 
         //Delete old tables:
 
