@@ -2,7 +2,7 @@
     <td class="hidden-small-down"><input type="checkbox" name="bulk[]" value="<?= htmlReady($message->getId()) ?>"></td>
     <td class="title">
         <a href="<?= URLHelper::getLink("dispatch.php/messages/read/".$message->getId()) ?>" data-dialog>
-            <?= $message['subject'] ? htmlReady($message['subject']) : htmlReady(mila($message['message'], 40)) ?>
+            <?= trim($message['subject']) ? htmlReady($message['subject']) : htmlReady(mila(kill_format($message['message']), 40)) ?>
             <div class="message-indicators">
                 <span><?= $message->getNumAttachments() ? Icon::create('staple', 'info', ["title" => _("Mit Anhang")])->asImg(20) : "" ?></span>
                 <span><?= $message->isAnswered($GLOBALS['user']->id) ? Icon::create('outbox', 'info', ["title" => _("Beantwortet")])->asImg(20) : "" ?></span>
