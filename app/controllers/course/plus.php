@@ -45,6 +45,7 @@ class Course_PlusController extends AuthenticatedController
             $this->sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$this->sem->status]['class']];
         } else {
             $this->sem = Institute::find($id);
+            $this->sem_class = SemClass::getDefaultInstituteClass($this->sem['type']);
         }
 
         PageLayout::setTitle($this->sem->getFullname() . " - " . PageLayout::getTitle());
