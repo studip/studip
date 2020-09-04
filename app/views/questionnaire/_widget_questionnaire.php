@@ -20,8 +20,7 @@
                 <a href="<?=
                          URLHelper::getLink(
                              "dispatch.php/questionnaire/answer/".$questionnaire->getId(),
-                             compact('range_type', 'range_id'),
-                             true
+                             compact('range_type', 'range_id')
                          ) ?>"
                    class="questionnaire-qr"
                     data-qr-code>
