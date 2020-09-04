@@ -17,7 +17,12 @@
             </span>
             <span title="<?= _("QR-Code zu diesem Fragebogen anzeigen") ?>">
                 <? $oldbase = URLHelper::setBaseURL($GLOBALS['ABSOLUTE_URI_STUDIP']) ?>
-                <a href="<?= URLHelper::getLink("dispatch.php/questionnaire/answer/".$questionnaire->getId()) ?>"
+                <a href="<?=
+                         URLHelper::getLink(
+                             "dispatch.php/questionnaire/answer/".$questionnaire->getId(),
+                             compact('range_type', 'range_id'),
+                             true
+                         ) ?>"
                    class="questionnaire-qr"
                     data-qr-code>
                     <? URLHelper::setBaseURL($oldbase) ?>
