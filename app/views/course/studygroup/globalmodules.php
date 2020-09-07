@@ -61,7 +61,7 @@ use Studip\Button, Studip\LinkButton;
 
     <!-- Title -->
     <fieldset>
-        <legend><?= _("Nutzungsbedingugen") ?></legend>
+        <legend><?= _("Nutzungsbedingungen") ?></legend>
         <label>
             <?= _("Geben Sie hier Nutzungsbedingungen für die Studiengruppen ein. ".
                     "Diese müssen akzeptiert werden, bevor eine Studiengruppe angelegt werden kann.") ?>
