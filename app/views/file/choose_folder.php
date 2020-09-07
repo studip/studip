@@ -93,6 +93,7 @@ $buttonLabels = [
             </tr>
         <? endif; ?>
     <? foreach ($top_folder->getSubfolders() as $subfolder) : ?>
+        <? if (!$subfolder->isVisible($GLOBALS['user']->id)) continue; ?>
         <? if ($subfolder->isWritable($GLOBALS['user']->id)): ?>
             <tr>
                 <td class="document-icon" data-sort-value="0">

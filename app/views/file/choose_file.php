@@ -83,6 +83,7 @@ if (Request::get('to_folder_id')) {
 <? else : ?>
     <tbody>
     <? foreach ($top_folder->getSubfolders() as $subfolder) : ?>
+    <? if (!$subfolder->isVisible($GLOBALS['user']->id)) continue; ?>
         <tr>
             <td class="document-icon" data-sort-value="0">
             <? if ($subfolder->isReadable($GLOBALS['user']->id)) : ?>

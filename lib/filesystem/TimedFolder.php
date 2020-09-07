@@ -72,6 +72,28 @@ class TimedFolder extends PermissionEnabledFolder
             parent::isVisible($user_id);
     }
 
+    public function isReadable($user_id = null)
+    {
+        $now = time();
+        return (
+                ($this->start_time == 0 || $this->start_time <= $now) &&
+                ($this->end_time == 0 || $this->end_time >= $now)
+                ||
+                $GLOBALS['perm']->have_studip_perm($this->must_have_perm, $this->range_id, $user_id)) &&
+            parent::isReadable($user_id);
+    }
+
+    public function isWritable($user_id = null)
+    {
+        $now = time();
+        return (
+                ($this->start_time == 0 || $this->start_time <= $now) &&
+                ($this->end_time == 0 || $this->end_time >= $now)
+                ||
+                $GLOBALS['perm']->have_studip_perm($this->must_have_perm, $this->range_id, $user_id)) &&
+            parent::isWritable($user_id);
+    }
+
     /**
      * This function returns the suitable Icon for this folder type (TimedFolder)
      *

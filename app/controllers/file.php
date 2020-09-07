@@ -1265,7 +1265,7 @@ class FileController extends AuthenticatedController
             $this->to_folder_type = $to_plugin->getFolder(Request::get('to_folder_id'));
         } else {
             $folder = new Folder(Request::option('to_folder_id'));
-            $this->to_folder_type = new StandardFolder($folder);
+            $this->to_folder_type = $folder->getTypedFolder();
         }
 
         if (Request::isPost()) {
@@ -1356,7 +1356,7 @@ class FileController extends AuthenticatedController
                 if (is_array($file_ref)) {
                     $error = $file_ref;
                 }
-                PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), [$error]);
+                PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), is_array($error) ? $error : [$error]);
             }
         }
 
