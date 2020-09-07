@@ -99,16 +99,20 @@
         <? endforeach ?>
         <li class="map-key">
             <?= Icon::create('refresh', Icon::ROLE_INFO, ['class' => 'text-bottom']); ?>
-            <?= htmlReady(_('Wiederholungstermin')) ?>
+            <?= _('Wiederholungstermin') ?>
         </li>
         <li class="map-key">
             <?= Icon::create('chat2', Icon::ROLE_INFO, ['class' => 'text-bottom']); ?>
-            <?= htmlReady(_('Kommentar')) ?>
+            <?= _('Kommentar') ?>
         </li>
     </ul>
-    <?= \Studip\Button::create('Im Plan gezeigte Anfragen buchen', 'bulk-book-requests', ['disabled' => 'disabled']); ?>
+    <?= \Studip\Button::create(
+        _('Im Plan gezeigte Anfragen buchen'),
+        'bulk-book-requests',
+        ['disabled' => 'disabled']
+    ); ?>
 <? else: ?>
-    <?= MessageBox::info(_('Es wurde kein Raum gwählt!')) ?>
+    <?= MessageBox::info(_('Es wurde kein Raum ausgewählt!')) ?>
 <? endif ?>
 
 <? if ($requests): ?>
