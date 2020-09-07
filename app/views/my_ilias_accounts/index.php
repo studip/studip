@@ -6,7 +6,7 @@
             <?= sprintf(_('Meine Lernobjekte in %s'), $ilias->getName()) ?>
             <span class="actions">
                 <a href="<?= $controller->url_for('my_ilias_accounts/add_object/'.$ilias_index) ?>" data-dialog="size=auto;reload-on-close">
-                    <?= Icon::create('add')->asImg(tooltip2(_('Neues Lernobjekt anlegen'))) ?>
+                    <?= Icon::create('add', Icon::ROLE_CLICKABLE, tooltip2(_('Neues Lernobjekt anlegen'))) ?>
                 </a>
             </span>
         </caption>
@@ -69,7 +69,10 @@
    <? else : ?>
         <tr>
             <td colspan="4">
-                 <?=sprintf(_("Sie haben im System %s noch keine eigenen Lernmodule."), htmlReady($ilias->getName()))?>
+                 <?= sprintf(
+                     _("Sie haben im System %s noch keine eigenen Lernmodule."),
+                     htmlReady($ilias->getName())
+                 )?>
             </td>
         </tr>
    <? endif ?>
@@ -110,7 +113,7 @@
                             Icon::create('person+new', Icon::ROLE_CLICKABLE, [
                                 'title'        => _('Account neu zuordnen'),
                                 'formaction'   => $controller->url_for('my_ilias_accounts/new_account/'.$ilias_index),
-                                'data-confirm' => 
+                                'data-confirm' =>
                                     sprintf(_('Möchten Sie wirklich die bestehende Zuordnung aufheben? Sie verlieren dadurch alle mit dem bestehenden Account verbundenen Inhalte und Lernfortschritte im System "%s".'),
                                     htmlReady($ilias->getName())
                                 ),
@@ -121,9 +124,9 @@
                             'change_account',
                             _('Account-Zuordnung aufheben'),
                             Icon::create('person+remove', Icon::ROLE_CLICKABLE, [
-                                'title'        => _('Account-Zuordnung aufeben'),
+                                'title'        => _('Account-Zuordnung aufheben'),
                                 'formaction'   => $controller->url_for('my_ilias_accounts/change_account/'.$ilias_index.'/remove'),
-                                'data-confirm' => 
+                                'data-confirm' =>
                                     sprintf(_('Möchten Sie wirklich die bestehende Zuordnung aufheben? Sie verlieren dadurch alle mit dem bestehenden Account verbundenen Inhalte und Lernfortschritte im System "%s".'),
                                     htmlReady($ilias->getName())
                                 )

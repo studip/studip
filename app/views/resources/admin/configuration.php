@@ -2,7 +2,7 @@
       action="<?= URLHelper::getLink('dispatch.php/resources/admin/configuration')?>">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
-        <legend><?= _('Grundlegende Einstellungen') ?></legend>
+        <legend><?= _('Grundeinstellungen') ?></legend>
         <label>
             <input type="hidden" name="resources_enable" value="0">
             <input type="checkbox" name="resources_enable" value="1"
