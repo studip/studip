@@ -24,8 +24,8 @@ class TermsController extends AuthenticatedController
         $this->return_to = Request::get('return_to');
         $this->redirect_token = Request::get('redirect_token');
 
-        $this->compulsory = Config::get()->getValue('TERMS_CONFIG')['compulsory'];
-       
+        $this->compulsory = Config::get()->TERMS_CONFIG['compulsory'];
+
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
             if (Request::submitted('accept')) {
@@ -34,11 +34,17 @@ class TermsController extends AuthenticatedController
             } else {
                 $this->redirectUser('logout.php');
             }
-        } else {
-            if (Request::get('action') == 'denied') {
-                $this->denial_message = trim(Config::get()->getValue('TERMS_CONFIG')['denial_message']) 
-                                        ? Config::get()->getValue('TERMS_CONFIG')['denial_message'] 
-                                        : sprintf(_('Bitte kontaktieren Sie einen Systemadministrator unter: %s'), '<a href="mailto:'.$GLOBALS['UNI_CONTACT'].'">'.$GLOBALS['UNI_CONTACT'].'</a>');
+        } elseif (Request::get('action') === 'denied') {
+            if (trim(Config::get()->TERMS_CONFIG['denial_message'])) {
+                $this->denial_message = trim(Config::get()->TERMS_CONFIG['denial_message']);
+            } else {
+                $this->denial_message = sprintf(
+                    _('Sie haben den Nutzungsbedingungen nicht zugestimmt und können '
+                    . 'damit das System nicht nutzen. Bitte kontaktieren Sie Ihren '
+                    . 'Support über folgende Adresse, um die nächsten Schritte '
+                    . 'abzustimmen: %s'),
+                    '<a href="mailto:' . $GLOBALS['UNI_CONTACT'] . '">' . $GLOBALS['UNI_CONTACT'] . '</a>'
+                );
             }
         }
     }
