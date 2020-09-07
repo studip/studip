@@ -50,7 +50,7 @@ class Lvgruppen_LvgruppenController extends MVVController
             );
         }
 
-        if (count($this->filter['mvv_modul_inst.institut_id'])) {
+        if (is_array($this->filter['mvv_modul_inst.institut_id']) && count($this->filter['mvv_modul_inst.institut_id'])) {
             $filter = array_merge(
                 [
                     'mvv_lvgruppe.lvgruppe_id' => $search_result,
