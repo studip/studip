@@ -12,7 +12,7 @@
     <? if ($ilias_config['user_data_category']) : ?>
     <label>
         <span class="required"><?= _('Kategorie mit User-Daten') ?></span>
-        <div><?=htmlReady(_('User_daten')).' (ID '.htmlReady($ilias_config['user_data_category']).')'?></div>
+        <div><?= _('User_daten').' (ID '.htmlReady($ilias_config['user_data_category']).')'?></div>
     </label>
     <? endif ?>
     <label>

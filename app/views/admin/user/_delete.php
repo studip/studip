@@ -16,21 +16,21 @@
             <input type="checkbox" id="personaldocuments" name="personaldocuments"
                    value="1" checked>
             <?= _('Dokumente löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('persönlicher Dateibereich'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('persönlicher Dateibereich')) ?>
         </label>
 
         <label>
             <input type="checkbox" id="personalcontent" name="personalcontent"
                    value="1" checked>
             <?= _('Andere Inhalte löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('Inhalte der Profilseite, persöhnliche Blubber, Nachrichten'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('Inhalte der Profilseite, persöhnliche Blubber, Nachrichten')) ?>
         </label>
 
         <label>
             <input type="checkbox" id="personalnames" name="personalnames"
                    value="1" checked>
             <?= _('Namen löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('Vor-/ Nachname, Username, E-Mail'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('Vor-/ Nachname, Username, E-Mail')) ?>
         </label>
 
     </fieldset>
@@ -39,24 +39,21 @@
         <legend><?= _('Veranstaltungsbezogene Daten') ?></legend>
 
         <label>
-            <input type="checkbox" id="documents" name="documents"
-                   value="1" checked>
+            <input type="checkbox" id="documents" name="documents" value="1" checked>
             <?= _('Dokumente löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('Dateien in Veranstaltungen und Einrichtungen'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('Dateien in Veranstaltungen und Einrichtungen')) ?>
         </label>
 
         <label>
-            <input type="checkbox" id="coursecontent" name="coursecontent"
-                   value="1" checked>
+            <input type="checkbox" id="coursecontent" name="coursecontent" value="1" checked>
             <?= _('Andere Inhalte löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('veranstaltungsbezogene Inhalte, bis auf Wiki und Forum Einträge'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('veranstaltungsbezogene Inhalte, bis auf Wiki und Forum Einträge')) ?>
         </label>
 
         <label>
-            <input type="checkbox" id="memberships" name="memberships"
-                   value="1" checked>
+            <input type="checkbox" id="memberships" name="memberships" value="1" checked>
             <?= _('Veranstaltungs-/Einrichtungszuordnungen löschen?') ?>
-            <?= tooltipHtmlIcon(htmlReady(_('Zuordnungen zu Veranstaltungen, Einrichtungen, Studiengruppen'), true, true)) ?>
+            <?= tooltipHtmlIcon(_('Zuordnungen zu Veranstaltungen, Einrichtungen, Studiengruppen')) ?>
         </label>
 
     </fieldset>
@@ -67,7 +64,7 @@
     </label>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('JA!'), 'delete', ['title' => _('Benutzer löschen')]) ?>
-        <?= Studip\Button::createCancel(_('NEIN!'), 'back', ['title' => _('Abbrechen')]) ?>
+        <?= Studip\Button::createAccept(_('Ja!'), 'delete', ['title' => _('Benutzer löschen')]) ?>
+        <?= Studip\Button::createCancel(_('Nein!'), 'back', ['title' => _('Abbrechen')]) ?>
     </footer>
 </form>

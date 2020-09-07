@@ -81,13 +81,13 @@ class ExternEditModule extends ExternEditHtml {
         if (!in_array("visible", $hide))
             $out .= "<td><b>" . _("Reihenfolge/<br>Sichtbarkeit") . "</b></td>\n";
         $out .= "</tr>\n";
-    
+
         if (is_array($field_names)) {
             for ($i = 0; $i < count($field_names); $i++) {
                 // name of column
                 $out .= "<tr valign=\"middle\">\n";
                 $out .= '<td>&nbsp;' . htmlReady($field_names[$order[$i]]) . '</td>';
-            
+
                 // column headline
                 if (!in_array('aliases', $hide)) {
                     if (!in_array($order[$i], $hide_fields["aliases"])) {
@@ -103,7 +103,7 @@ class ExternEditModule extends ExternEditHtml {
                         $out .= "value=\"\">";
                     }
                 }
-            
+
                 // width
                 if (!in_array("width", $hide)) {
                     $width = str_replace("%", "", $widths[$order[$i]]);
@@ -113,7 +113,7 @@ class ExternEditModule extends ExternEditHtml {
                         $out .= $this->error_sign;
                     $out .= "</td>\n";
                 }
-            
+
                 // sort
                 if (!in_array("sort", $hide)) {
                     if (!in_array($order[$i], $hide_fields["sort"])) {
@@ -135,16 +135,16 @@ class ExternEditModule extends ExternEditHtml {
                         $out .= "value=\"0\">\n";
                     }
                 }
-            
+
                 if (!in_array("visible", $hide)) {
                     // move left
                     $out .= "<td valign=\"middle\" nowrap=\"nowrap\">";
                     $out .= Icon::create('arr_2up', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_move_left[" . $i . "]"]);
-                
+
                     // move right
                     $out .= "\n";
                     $out .= Icon::create('arr_2down', 'sort', ['title' => _('Datenfeld verschieben')])->asInput(["type" => "image", "class" => "middle", "name" => $this->element_name . "_move_right[" . $i . "]"]);
-                
+
                     // visible
                     if ($visible[$order[$i]]) {
                         $out .= "\n";
@@ -157,7 +157,7 @@ class ExternEditModule extends ExternEditHtml {
                 }
             }
         }
-    
+
         // width in pixels or percent
         if (!in_array("widthpp", $hide) && !in_array('width', $hide)) {
             $colspan = 4 - count($hide);
@@ -370,7 +370,7 @@ class ExternEditModule extends ExternEditHtml {
                             . " ({$SEM_CLASS[$SEM_TYPE[$order[$i]]['class']]['name']})");
                     }
                     $out .= "</td>";
-            
+
                     // column headline
                     $out .= "<td><input type=\"text\" name=\"{$this->element_name}_class_";
                     $out .= $SEM_TYPE[$order[$i]]['class'] . "[{$mapping[$order[$i]]}]\"";
@@ -386,17 +386,17 @@ class ExternEditModule extends ExternEditHtml {
                         $out .= $this->error_sign;
                     }
                     $out .= "</td>\n";
-            
+
                     // move up
                     $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
                     $out .= Icon::create('arr_2up', Icon::ROLE_SORT, ['title' => _('Datenfeld verschieben')])
                         ->asInput(['name'=>$this->element_name.'_move_left['.$i.']','align'=>'middle',]);
-            
+
                     // move down
                     $out .= Icon::create('arr_2down', Icon::ROLE_SORT, ['title' => _('Datenfeld verschieben')])
                         ->asInput(['name'=>$this->element_name.'_move_right['.$i.']','align'=>'middle',]);
                     $out .= "</td>\n";
-            
+
                     // visibility
                     $out .= "<td valign=\"top\" align=\"center\" nowrap=\"nowrap\">";
                     $out .= "<input type=\"checkbox\" name=\"{$this->element_name}_visibility";
@@ -405,7 +405,7 @@ class ExternEditModule extends ExternEditHtml {
                         $out .= ' checked="checked"';
                     }
                     $out .= '>';
-            
+
                     $out .= "</td>\n</tr>\n";
                 }
             }
@@ -443,7 +443,7 @@ class ExternEditModule extends ExternEditHtml {
                 $selector->sem_tree_ids[] = $selected_id;
             }
         }
-        
+
         $form_name_tmp = $selector->form_name;
         $selector->form_name = 'SelectSubjectAreas';
         $selector->doSearch();
@@ -485,7 +485,7 @@ class ExternEditModule extends ExternEditHtml {
             $description = $marker[1];
             if ($mark == '__GLOBAL__') {
                 $out .= "<tr>\n";
-                $out .= '<td colspan="2"><strong>' . htmlReady(_("Globale Variablen")) . '</strong></td>';
+                $out .= '<td colspan="2"><strong>' . _('Globale Variablen') . '</strong></td>';
                 $spacer++;
                 $global_vars = true;
             } else if ($mark[0] == '<') {

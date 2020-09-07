@@ -90,11 +90,11 @@
         <? endforeach ?>
         <li class="map-key">
             <?= Icon::create('refresh', Icon::ROLE_INFO, ['class' => 'text-bottom']); ?>
-            <?= htmlReady(_('Wiederholungstermin')) ?>
+            <?= _('Wiederholungstermin') ?>
         </li>
         <li class="map-key">
             <?= Icon::create('chat2', Icon::ROLE_INFO, ['class' => 'text-bottom']); ?>
-            <?= htmlReady(_('Kommentar')) ?>
+            <?= _('Kommentar') ?>
         </li>
     </ul>
 <? endif ?>

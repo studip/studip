@@ -12,7 +12,7 @@
         <? if ($perm->haveFieldPerm('name', MvvPerm::PERM_WRITE)) : ?>
             <label>
                 <?= _('Fachsuche:') ?>
-                <?= tooltipHtmlIcon(htmlReady(_('Soll der Name des Studiengangs mit dem eines Fachs übereinstimmen, geben Sie den Namen des Fachs ein, und wählen Sie das Fach aus der Liste. Es werden dann automatisch die weiteren Bezeichnungen aus den Daten des Fachs übernommen.'), true, true)) ?>
+                <?= tooltipHtmlIcon(_('Soll der Name des Studiengangs mit dem eines Fachs übereinstimmen, geben Sie den Namen des Fachs ein, und wählen Sie das Fach aus der Liste. Es werden dann automatisch die weiteren Bezeichnungen aus den Daten des Fachs übernommen.')) ?>
                 <?= $search ?>
             </label>
         <? endif; ?>
