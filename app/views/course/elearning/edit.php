@@ -5,7 +5,7 @@
     <?=ELearningUtils::getCMSSelectbox(_("Um Lernmodule hinzuzufügen, wählen Sie ein angebundenes System aus:"))?>
 
     <? if (!count($content_modules)) : ?>
-        <? if (count($course_output['courses'])) : ?>
+        <? if (is_array($course_output['courses']) && count($course_output['courses'])) : ?>
             <?=$course_output['text']?><br>
             <? foreach ($course_output['courses'] as $course) : ?>
                 <a href="<?= $course['url'] ?>" target="_blank" rel="noopener noreferrer">
@@ -54,7 +54,7 @@
                 <br>
             <? elseif (mb_strlen( trim($search_key) ) > 2) : ?>
                 <br>
-                <b><font size="-1"><?=sprintf( _("Es gibt im System %s zu diesem Suchbegriff keine Lernmodule."),  $cms_name)?></font></b><br>
+                <b><?=sprintf( _("Es gibt im System %s zu diesem Suchbegriff keine Lernmodule."),  $cms_name)?></b><br>
                 <br>
             <? endif ?>
         <? else : ?>

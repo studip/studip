@@ -72,7 +72,7 @@ class Search_CoursesController extends AuthenticatedController
         }
 
         $sidebar = Sidebar::get();
-        
+
         // add search options to sidebar
         $level = Request::get('level', $_SESSION['sem_browse_data']['level']);
 

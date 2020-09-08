@@ -135,20 +135,24 @@ class Course_ElearningController extends AuthenticatedController
         }
         if (($this->module_count == 0) AND ($this->new_account_cms == "")) {
             if (Context::isInstitute()) {
-                PageLayout::postMessage(MessageBox::info(_('Momentan sind dieser Einrichtung keine Lernmodule zugeordnet.')));
+                PageLayout::postInfo(_('Momentan sind dieser Einrichtung keine Lernmodule zugeordnet.'));
             } else {
-                PageLayout::postMessage(MessageBox::info(_('Momentan sind dieser Veranstaltung keine Lernmodule zugeordnet.')));
+                PageLayout::postInfo(_('Momentan sind dieser Veranstaltung keine Lernmodule zugeordnet.'));
             }
         }
 
         $widget = new ActionsWidget();
-        $widget->addLink(_('Externe Accounts verwalten'), URLHelper::getURL('dispatch.php/elearning/my_accounts'), Icon::create('person', 'clickable'));
+        $widget->addLink(
+            _('Externe Accounts verwalten'),
+            URLHelper::getURL('dispatch.php/elearning/my_accounts'),
+            Icon::create('person')
+        );
         if (count($this->course_output['courses']))
             foreach ($this->course_output['courses'] as $course) {
                 $widget->addLink(
                     sprintf(_('Direkt zum Kurs in %s'), $course['cms_name']),
                     $course['url'],
-                    Icon::create('link-extern', 'clickable'),
+                    Icon::create('link-extern'),
                     ['target' => '_blank', 'rel' => 'noopener noreferrer']
                 );
             }
@@ -173,14 +177,14 @@ class Course_ElearningController extends AuthenticatedController
             ELearningUtils::loadClass($this->cms_select);
             if ((method_exists($connected_cms[$this->cms_select], "createCourse")))
                 if ($connected_cms[$this->cms_select]->createCourse($this->seminar_id))
-                    PageLayout::postMessage(MessageBox::info(_('Kurs wurde angelegt.')));
+                    PageLayout::postInfo(_('Kurs wurde angelegt.'));
         }
 
         // ggf. bestehenden Ilias4-Kurs zuordnen
         if (Request::submitted('connect_course')) {
             if ((ObjectConnections::getConnectionModuleId(Request::option("connect_course_sem_id"), "crs", $this->cms_select)) AND ($GLOBALS['perm']->have_studip_perm("dozent", Request::option("connect_course_sem_id")))) {
                 ObjectConnections::setConnection($this->seminar_id, ObjectConnections::getConnectionModuleId(Request::option("connect_course_sem_id"), "crs", $this->cms_select), "crs", $this->cms_select);
-                PageLayout::postMessage(MessageBox::info(_('Zuordnung wurde gespeichert.')));
+                PageLayout::postInfo(_('Zuordnung wurde gespeichert.'));
                 ELearningUtils::loadClass($this->cms_select);
                 if ((method_exists($connected_cms[$this->cms_select], "updateConnections")))
                     $connected_cms[$this->cms_select]->updateConnections( ObjectConnections::getConnectionModuleId(Request::option("connect_course_sem_id"), "crs", $this->cms_select) );
@@ -197,12 +201,12 @@ class Course_ElearningController extends AuthenticatedController
             if (Request::submitted('remove')) {
                 $connected_cms[$this->module_system_type]->newContentModule($this->module_id, $this->module_type, true);
                 if ($connected_cms[$this->module_system_type]->content_module[$this->module_id]->unsetConnection($this->seminar_id, $this->module_id, $this->module_type, $this->module_system_type))
-                    PageLayout::postMessage(MessageBox::info(_('Die Zuordnung wurde entfernt.')));
+                    PageLayout::postInfo(_('Die Zuordnung wurde entfernt.'));
                 unset($connected_cms[$this->module_system_type]->content_module[$this->module_id]);
             } elseif (Request::submitted('add')) {
                 $connected_cms[$this->module_system_type]->newContentModule($this->module_id, $this->module_type, true);
                 if ($connected_cms[$this->module_system_type]->content_module[$this->module_id]->setConnection($this->seminar_id))
-                    PageLayout::postMessage(MessageBox::info(_('Die Zuordnung wurde gespeichert.')));
+                    PageLayout::postInfo(_('Die Zuordnung wurde gespeichert.'));
                 unset($connected_cms[$this->module_system_type]->content_module[$this->module_id]);
             }
             if ($this->search_key != "") {
@@ -210,7 +214,7 @@ class Course_ElearningController extends AuthenticatedController
                 if ( mb_strlen( trim($this->search_key) ) > 2)
                     $searchresult_content_modules = $connected_cms[$this->cms_select]->searchContentModules($this->search_key);
                 else
-                    PageLayout::postMessage(MessageBox::error(_('Jeder Suchbegriff muss mindestens 3 Zeichen lang sein!')));
+                    PageLayout::postError(_('Jeder Suchbegriff muss mindestens 3 Zeichen lang sein!'));
             }
         }
         //Instanz mit den Zuordnungen von Content-Modulen zur Veranstaltung
@@ -254,9 +258,9 @@ class Course_ElearningController extends AuthenticatedController
         }
         if (($this->module_count == 0) AND ($this->new_account_cms == "")) {
             if (Context::isInstitute()) {
-                PageLayout::postMessage(MessageBox::info(_('Momentan sind dieser Einrichtung keine Lernmodule zugeordnet.')));
+                PageLayout::postInfo(_('Momentan sind dieser Einrichtung keine Lernmodule zugeordnet.'));
             } else {
-                PageLayout::postMessage(MessageBox::info(_('Momentan sind dieser Veranstaltung keine Lernmodule zugeordnet.')));
+                PageLayout::postInfo(_('Momentan sind dieser Veranstaltung keine Lernmodule zugeordnet.'));
             }
         }
         $this->caching_active = false;
@@ -328,8 +332,12 @@ class Course_ElearningController extends AuthenticatedController
                 $system->terminate();
 
         $widget = new ActionsWidget();
-        if (count($this->course_output['courses'])) {
-            $widget->addLink(_('Zuordnungen aktualisieren'), URLHelper::getURL('?view=edit&cms_select='.$this->cms_select.'&update=1'), Icon::create('refresh', 'clickable'));
+        if (is_array($this->course_output['courses']) && count($this->course_output['courses'])) {
+            $widget->addLink(
+                _('Zuordnungen aktualisieren'),
+                URLHelper::getURL('?', ['view' => 'edit', 'cms_select' => $this->cms_select,'update'=>1]),
+                Icon::create('refresh')
+            );
         }
         $this->sidebar->addWidget($widget);
         $this->new_account = $this->new_account_cms;
