@@ -283,68 +283,6 @@ class QuestionnaireController extends AuthenticatedController
             throw new AccessDeniedException("Der Fragebogen ist nicht einsehbar.");
         }
         object_set_visit($questionnaire_id, 'vote');
-        if (Request::isPost()) {
-            $answered_before = $this->questionnaire->isAnswered();
-            if ($this->questionnaire->isAnswerable()) {
-                foreach ($this->questionnaire->questions as $question) {
-                    $answer = $question->createAnswer();
-                    if (!$answer['question_id']) {
-                        $answer['question_id'] = $question->getId();
-                    }
-                    $answer['user_id'] = $GLOBALS['user']->id;
-                    if (!$answer['answerdata']) {
-                        $answer['answerdata'] = [];
-                    }
-                    if ($this->questionnaire['anonymous']) {
-                        $answer['user_id'] = 'anonymous';
-                        $answer['chdate'] = 1;
-                        $answer['mkdate'] = 1;
-                        $this->anonAnswers[] = $answer->toArray();
-                        $answer['user_id'] = null;
-                    }
-                    $answer->store();
-                }
-                if ($this->questionnaire['anonymous'] && ($GLOBALS['user']->id !== "nobody")) {
-                    $anonymous_answer = new QuestionnaireAnonymousAnswer();
-                    $anonymous_answer['questionnaire_id'] = $this->questionnaire->getId();
-                    $anonymous_answer['user_id'] = $GLOBALS['user']->id;
-                    $anonymous_answer->store();
-                }
-                if (!$answered_before && !$this->questionnaire['anonymous'] && ($this->questionnaire['user_id'] !== $GLOBALS['user']->id)) {
-                    $url = URLHelper::getURL("dispatch.php/questionnaire/evaluate/" . $this->questionnaire->getId(), [], true);
-                    PersonalNotifications::add(
-                        $this->questionnaire['user_id'],
-                        $url,
-                        sprintf(_("%s hat an der Befragung '%s' teilgenommen."), get_fullname(), $this->questionnaire['title']),
-                        "questionnaire_" . $this->questionnaire->getId(),
-                        Icon::create('vote', 'clickable'),
-                        true
-                    );
-                }
-            }
-
-            if (Request::isAjax()) {
-                $this->response->add_header("X-Dialog-Close", "1");
-                $this->response->add_header("X-Dialog-Execute", "STUDIP.Questionnaire.updateWidgetQuestionnaire");
-                $this->render_template("questionnaire/evaluate");
-            } elseif (Request::get("range_type") === "user") {
-                PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
-                $this->redirect("profile?username=".get_username(Request::option("range_id")));
-            } elseif (Request::get("range_type") === "course") {
-                PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
-                $this->redirect("course/overview?cid=".Request::option("range_id"));
-            } elseif (Request::get("range_id") === "start") {
-                PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
-                $this->redirect("start");
-            } else {
-                PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
-                if ($GLOBALS['perm']->have_perm("autor")) {
-                    $this->redirect("questionnaire/overview");
-                } else {
-                    $this->redirect("questionnaire/thank_you");
-                }
-            }
-        }
         $this->range_type = Request::get("range_type");
         $this->range_id = Request::get("range_id");
         PageLayout::setTitle(sprintf(_("Fragebogen beantworten: %s"), $this->questionnaire->title));
@@ -851,6 +789,74 @@ class QuestionnaireController extends AuthenticatedController
                         _('Alle gewählten Fragebögen wurden den gewählten Veranstaltungen zugeordnet!')
                     );
                 }
+            }
+        }
+    }
+
+    public function submit_action($questionnaire_id)
+    {
+        $this->questionnaire = new Questionnaire($questionnaire_id);
+        if (!$this->questionnaire->isViewable()) {
+            throw new AccessDeniedException("Der Fragebogen ist nicht einsehbar.");
+        }
+        $answered_before = $this->questionnaire->isAnswered();
+        if ($this->questionnaire->isAnswerable()) {
+            foreach ($this->questionnaire->questions as $question) {
+                $answer = $question->createAnswer();
+                if (!$answer['question_id']) {
+                    $answer['question_id'] = $question->getId();
+                }
+                $answer['user_id'] = $GLOBALS['user']->id;
+                if (!$answer['answerdata']) {
+                    $answer['answerdata'] = [];
+                }
+                if ($this->questionnaire['anonymous']) {
+                    $answer['user_id'] = 'anonymous';
+                    $answer['chdate'] = 1;
+                    $answer['mkdate'] = 1;
+                    $this->anonAnswers[] = $answer->toArray();
+                    $answer['user_id'] = null;
+                }
+                $answer->store();
+            }
+            if ($this->questionnaire['anonymous'] && ($GLOBALS['user']->id !== "nobody")) {
+                $anonymous_answer = new QuestionnaireAnonymousAnswer();
+                $anonymous_answer['questionnaire_id'] = $this->questionnaire->getId();
+                $anonymous_answer['user_id'] = $GLOBALS['user']->id;
+                $anonymous_answer->store();
+            }
+            if (!$answered_before && !$this->questionnaire['anonymous'] && ($this->questionnaire['user_id'] !== $GLOBALS['user']->id)) {
+                $url = URLHelper::getURL("dispatch.php/questionnaire/evaluate/" . $this->questionnaire->getId(), [], true);
+                PersonalNotifications::add(
+                    $this->questionnaire['user_id'],
+                    $url,
+                    sprintf(_("%s hat an der Befragung '%s' teilgenommen."), get_fullname(), $this->questionnaire['title']),
+                    "questionnaire_" . $this->questionnaire->getId(),
+                    Icon::create('vote', 'clickable'),
+                    true
+                );
+            }
+        }
+
+        if (Request::isAjax()) {
+            $this->response->add_header("X-Dialog-Close", "1");
+            $this->response->add_header("X-Dialog-Execute", "STUDIP.Questionnaire.updateWidgetQuestionnaire");
+            $this->render_template("questionnaire/evaluate");
+        } elseif (Request::get("range_type") === "user") {
+            PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
+            $this->redirect("profile?username=".get_username(Request::option("range_id")));
+        } elseif (Request::get("range_type") === "course") {
+            PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
+            $this->redirect("course/overview?cid=".Request::option("range_id"));
+        } elseif (Request::get("range_id") === "start") {
+            PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
+            $this->redirect("start");
+        } else {
+            PageLayout::postMessage(MessageBox::success(_("Danke für die Teilnahme!")));
+            if ($GLOBALS['perm']->have_perm("autor")) {
+                $this->redirect("questionnaire/overview");
+            } else {
+                $this->redirect("questionnaire/thank_you");
             }
         }
     }

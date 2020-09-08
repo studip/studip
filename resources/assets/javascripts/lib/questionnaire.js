@@ -113,7 +113,7 @@ const Questionnaire = {
 
         if (jQuery(form).is('.questionnaire_widget form')) {
             jQuery.ajax({
-                url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/questionnaire/answer/' + questionnaire_id,
+                url: STUDIP.ABSOLUTE_URI_STUDIP + 'dispatch.php/questionnaire/submit/' + questionnaire_id,
                 data: new FormData(form),
                 cache: false,
                 processData: false,

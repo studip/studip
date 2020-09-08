@@ -1,5 +1,5 @@
 <form
-    action="<?= URLHelper::getLink("dispatch.php/questionnaire/answer/".$questionnaire->getId()) ?>"
+    action="<?= URLHelper::getLink("dispatch.php/questionnaire/submit/".$questionnaire->getId()) ?>"
     method="post"
     enctype="multipart/form-data"
     class="default questionnaire"
