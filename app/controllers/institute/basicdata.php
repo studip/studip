@@ -284,7 +284,7 @@ class Institute_BasicdataController extends AuthenticatedController
             $modules = new Modules;
             $module_list = $modules->getLocalModules($institute->id, 'inst', $institute->modules, $institute->type);
 
-            PageLayout::postError(sprintf(
+            PageLayout::postSuccess(sprintf(
                 _('Die Einrichtung "%s" wurde erfolgreich angelegt.'),
                 htmlReady($institute->name))
             );
