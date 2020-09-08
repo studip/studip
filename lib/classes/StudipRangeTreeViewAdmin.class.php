@@ -506,9 +506,11 @@ class StudipRangeTreeViewAdmin extends TreeView{
 
     function isParentAdmin($item_id){
         $admin_ranges = $this->tree->getAdminRange($this->tree->tree_data[$item_id]['parent_id']);
-        for ($i = 0; $i < count($admin_ranges); ++$i){
-            if ($this->tree_status[$admin_ranges[$i]] == 1){
-                return true;
+        if (!empty($admin_ranges)) {
+            for ($i = 0; $i < count($admin_ranges); ++$i) {
+                if ($this->tree_status[$admin_ranges[$i]] == 1) {
+                    return true;
+                }
             }
         }
         return false;
