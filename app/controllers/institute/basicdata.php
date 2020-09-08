@@ -78,7 +78,7 @@ class Institute_BasicdataController extends AuthenticatedController
 
         $lockrule = LockRules::getObjectRule($i_view);
         if ($lockrule->description && LockRules::CheckLockRulePermission($i_view, $lockrule['permission'])) {
-            PageLayout::postMessage(MessageBox::info(formatLinks($lockrule->description)));
+            PageLayout::postInfo(formatLinks($lockrule->description));
         }
 
         // Load institute data
@@ -190,7 +190,7 @@ class Institute_BasicdataController extends AuthenticatedController
 
         // Do we have all necessary data?
         if (!mb_strlen($institute->name)) {
-            PageLayout::postMessage(MessageBox::error(_('Bitte geben Sie eine Bezeichnung für die Einrichtung ein!')));
+            PageLayout::postError(_('Bitte geben Sie eine Bezeichnung für die Einrichtung ein!'));
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
@@ -199,27 +199,28 @@ class Institute_BasicdataController extends AuthenticatedController
 
             // Is the user allowed to create new faculties
             if (!$institute->fakultaets_id && !$GLOBALS['perm']->have_perm('root')) {
-                PageLayout::postMessage(MessageBox::error(_('Sie haben nicht die Berechtigung, neue Fakultäten zu erstellen')));
+                PageLayout::postError(_('Sie haben nicht die Berechtigung, neue Fakultäten zu erstellen'));
                 return $this->redirect('institute/basicdata/index/new');
             }
 
             // Is the user allowed to create new institutes
             if (!$GLOBALS['perm']->have_perm('root') && !($GLOBALS['perm']->is_fak_admin() && get_config('INST_FAK_ADMIN_PERMS') !== 'none'))  {
-                PageLayout::postMessage(MessageBox::error(_('Sie haben nicht die Berechtigung, um neue Einrichtungen zu erstellen!')));
+                PageLayout::postError(_('Sie haben nicht die Berechtigung, um neue Einrichtungen zu erstellen!'));
                 return $this->redirect('institute/basicdata/index/new');
             }
 
             // Does an institute with the given name already exist in the given faculty?
             if ($institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = ?', [$institute->name, $institute->fakultaets_id]) !== null) {
-                $message = sprintf(_('Die Einrichtung "%s" existiert bereits innerhalb der angegebenen Fakultät!'), $institute->name);
-                PageLayout::postMessage(MessageBox::error($message));
+                PageLayout::postError(sprintf(
+                    _('Die Einrichtung "%s" existiert bereits innerhalb der angegebenen Fakultät!'),
+                    htmlReady($institute->name)
+                ));
                 return $this->redirect('institute/basicdata/index/new');
             }
 
             // Does a faculty with the given name already exist
             if (!$institute->fakultaets_id && Institute::findOneBySQL('Name = ? AND fakultaets_id = Institut_id', [$institute->name]) !== null) {
-                $message = sprintf(_('Die Fakultät "%s" existiert bereits!'), $institute->name);
-                PageLayout::postMessage(MessageBox::error($message));
+                PageLayout::postError(sprintf(_('Die Fakultät "%s" existiert bereits!'), htmlReady($institute->name)));
                 return $this->redirect('institute/basicdata/index/new');
             }
 
@@ -234,7 +235,7 @@ class Institute_BasicdataController extends AuthenticatedController
         } else {
             // Is the user allowed to change the institute/faculty?
             if (!$GLOBALS['perm']->have_studip_perm('admin', $institute->id)) {
-                PageLayout::postMessage(MessageBox::error(_('Sie haben nicht die Berechtigung diese Einrichtung zu verändern!')));
+                PageLayout::postError(_('Sie haben nicht die Berechtigung diese Einrichtung zu verändern!'));
                 return $this->redirect('institute/basicdata/index/' . $institute->id);
             }
 
@@ -260,16 +261,16 @@ class Institute_BasicdataController extends AuthenticatedController
             // If any errors occured while updating the datafields, report them
             if (count($invalidEntries) > 0) {
                 $this->flash['invalid_entries'] = $invalidEntries;
-                PageLayout::postMessage(MessageBox::error(_('ungültige Eingaben (s.u.) wurden nicht gespeichert')));
+                PageLayout::postError(_('ungültige Eingaben (s.u.) wurden nicht gespeichert'));
             }
         }
 
         // Try to store the institute, report any errors
         if ($institute->isDirty() && $institute->store() === false) {
             if ($institute->isNew()) {
-                PageLayout::postMessage(MessageBox::error(_('Die Einrichtung konnte nicht angelegt werden.')));
+                PageLayout::postError(_('Die Einrichtung konnte nicht angelegt werden.'));
             } else {
-                PageLayout::postMessage(MessageBox::error(_('Die Änderungen konnten nicht gespeichert werden.')));
+                PageLayout::postError(_('Die Änderungen konnten nicht gespeichert werden.'));
             }
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
@@ -283,15 +284,17 @@ class Institute_BasicdataController extends AuthenticatedController
             $modules = new Modules;
             $module_list = $modules->getLocalModules($institute->id, 'inst', $institute->modules, $institute->type);
 
-            // Report success
-            $message = sprintf(_('Die Einrichtung "%s" wurde erfolgreich angelegt.'), $institute->name);
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postError(sprintf(
+                _('Die Einrichtung "%s" wurde erfolgreich angelegt.'),
+                htmlReady($institute->name))
+            );
 
             object_set_visit($institute->id, "inst");
         } else {
-            // Report success
-            $message = sprintf(_('Die Änderung der Einrichtung "%s" wurde erfolgreich gespeichert.'), htmlReady($institute->name));
-            PageLayout::postMessage(MessageBox::success($message));
+            PageLayout::postSuccess(sprintf(
+                _('Die Änderung der Einrichtung "%s" wurde erfolgreich gespeichert.'),
+                htmlReady($institute->name))
+            );
         }
 
         $this->redirect('institute/basicdata/index/' . $institute->id, ['cid' => $institute->id]);
@@ -312,13 +315,13 @@ class Institute_BasicdataController extends AuthenticatedController
 
         // Invalid ticket
         if (!check_ticket(Request::option('studipticket'))) {
-            PageLayout::postMessage(MessageBox::error(_('Ihr Ticket ist abgelaufen. Versuchen Sie die letzte Aktion erneut.')));
+            PageLayout::postError(_('Ihr Ticket ist abgelaufen. Versuchen Sie die letzte Aktion erneut.'));
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
         // User may not delete this institue
-        if (!$GLOBALS['perm']->have_perm('root') && !($GLOBALS['perm']->is_fak_admin() && get_config('INST_FAK_ADMIN_PERMS') === 'all')) {
-            PageLayout::postMessage(MessageBox::error(_('Sie haben nicht die Berechtigung Fakultäten zu löschen!')));
+        if (!$GLOBALS['perm']->have_perm('root') && !($GLOBALS['perm']->is_fak_admin() && Config::get()->INST_FAK_ADMIN_PERMS === 'all')) {
+            PageLayout::postError(_('Sie haben nicht die Berechtigung Fakultäten zu löschen!'));
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
@@ -329,19 +332,23 @@ class Institute_BasicdataController extends AuthenticatedController
 
         // Institut in use?
         if (count($institute->home_courses)) {
-            PageLayout::postMessage(MessageBox::error(_('Diese Einrichtung kann nicht gelöscht werden, da noch Veranstaltungen an dieser Einrichtung existieren!')));
+            PageLayout::postError(
+                _('Diese Einrichtung kann nicht gelöscht werden, da noch Veranstaltungen an dieser Einrichtung existieren!')
+            );
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
         // Institute has sub institutes?
         if (count($institute->sub_institutes)) {
-            PageLayout::postMessage(MessageBox::error(_('Diese Einrichtung kann nicht gelöscht werden, da sie den Status Fakultät hat und noch andere Einrichtungen zugeordnet sind!')));
+            PageLayout::postError(
+                _('Diese Einrichtung kann nicht gelöscht werden, da sie den Status Fakultät hat und noch andere Einrichtungen zugeordnet sind!')
+            );
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
         // Is the user allowed to delete faculties?
         if ($institute->is_fak && !$GLOBALS['perm']->have_perm('root')) {
-            PageLayout::postMessage(MessageBox::error(_('Sie haben nicht die Berechtigung Fakultäten zu löschen!')));
+            PageLayout::postError(_('Sie haben nicht die Berechtigung Fakultäten zu löschen!'));
             return $this->redirect('institute/basicdata/index/' . $i_id);
         }
 
@@ -352,7 +359,7 @@ class Institute_BasicdataController extends AuthenticatedController
 
         // Delete that institute
         if (!$institute->delete()) {
-            PageLayout::postMessage(MessageBox::error(_('Die Einrichtung konnte nicht gelöscht werden.')));
+            PageLayout::postError(_('Die Einrichtung konnte nicht gelöscht werden.'));
         } else {
             $details = [];
 
@@ -411,7 +418,7 @@ class Institute_BasicdataController extends AuthenticatedController
             }
 
             // delete all configuration files for the "extern modules"
-            if (get_config('EXTERN_ENABLE')) {
+            if (Config::get()->EXTERN_ENABLE) {
                 $counts = ExternConfig::DeleteAllConfigurations($i_id);
                 if ($counts) {
                     $details[] = sprintf(_('%u Konfigurationsdateien für externe Seiten gelöscht.'), $counts);
@@ -456,9 +463,10 @@ class Institute_BasicdataController extends AuthenticatedController
             //kill the object_user_vists for this institut
             object_kill_visits(null, $i_id);
 
-            // Report success with details
-            $message = sprintf(_('Die Einrichtung "%s" wurde gelöscht!'), $i_name);
-            PageLayout::postMessage(MessageBox::success($message, $details));
+            PageLayout::postSuccess(
+                sprintf(_('Die Einrichtung "%s" wurde gelöscht!'), htmlReady($i_name)),
+                $details
+            );
         }
 
         $this->redirect('institute/basicdata/index?cid=');
