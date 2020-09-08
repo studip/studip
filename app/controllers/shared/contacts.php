@@ -733,7 +733,7 @@ class Shared_ContactsController extends MVVController
     {
         $ids = MvvContact::getIdsFiltered($this->filter);
         $stmt = DBManager::get()->prepare("SELECT
-            IFNULL(IFNULL(`mec`.`name`, `Institute`.`Name`), CONCAT(`Nachname`, ', ', `Vorname`)) AS `name`,
+            IFNULL(IFNULL(`mec`.`name`, `Institute`.`Name`), CONCAT(`aum`.`Nachname`, ', ', `aum`.`Vorname`)) AS `name`,
             IFNULL(`aum`.`Email`, `mec`.`mail`) AS `email`,
             `mec`.`homepage` AS `homepage`,
             `mvv_contacts`.`contact_status` AS `status`,
