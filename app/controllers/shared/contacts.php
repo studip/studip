@@ -12,12 +12,8 @@
  * @category    Stud.IP
  * @since       4.5
  */
-
-
-
 class Shared_ContactsController extends MVVController
 {
-
     public $filter = [];
     private $show_sidebar_search = false;
 
@@ -29,12 +25,12 @@ class Shared_ContactsController extends MVVController
 
         // set navigation
         Navigation::activateItem($this->me . '/contacts/index');
+
         $this->action = $action;
 
         if (Request::isXhr()) {
             $this->set_layout(null);
         }
-
     }
 
     public function index_action()
@@ -236,18 +232,22 @@ class Shared_ContactsController extends MVVController
      */
     protected function setSidebar()
     {
-
         $sidebar = Sidebar::get();
         $sidebar->setImage(Assets::image_path('sidebar/roles-sidebar.png'));
 
-        $widget  = new ActionsWidget();
+        $widget = new ActionsWidget();
         if (MvvPerm::get('MvvContactRange')->havePermCreate()) {
-            $widget->addLink( _('Neuen Ansprechpartner anlegen'),
-                    $this->url_for('/new_ansprechpartner'),
-                    Icon::create('headache+add', 'clickable'))->asDialog("size=auto");
+            $widget->addLink(
+                _('Neuen Ansprechpartner anlegen'),
+                $this->url_for('/new_ansprechpartner'),
+                Icon::create('headache+add')
+            )->asDialog('size=auto');
         }
-        $widget->addLink(_('Liste exportieren (CSV)'), $this->url_for('/export_csv'),
-                Icon::create('download'));
+        $widget->addLink(
+            _('Liste exportieren (CSV)'),
+            $this->url_for('/export_csv'),
+            Icon::create('download')
+        );
         $sidebar->addWidget($widget);
 
         if ($this->show_sidebar_search) {
@@ -285,10 +285,14 @@ class Shared_ContactsController extends MVVController
 
         $sidebar = Sidebar::get();
         $widget = new SearchWidget($this->url_for('/search'));
-        $widget->addNeedle(_('Ansprechpartner suchen'), 'ansprechpartner_suche', true,
+        $widget->addNeedle(
+            _('Ansprechpartner suchen'),
+            'ansprechpartner_suche',
+            true,
             new SQLSearch($query, $search_term, 'contact_id'),
             'function () { $(this).closest("form").submit(); }',
-            $this->search_term);
+            $this->search_term
+        );
         $widget->setTitle('Suche');
         $sidebar->addWidget($widget, 'search');
     }
@@ -315,26 +319,24 @@ class Shared_ContactsController extends MVVController
             $this->filter
         );
 
-        $semesters = new SimpleCollection(Semester::getAll());
-        $filter_template = $template_factory->render('shared/filter',
-            [
-                'semester'           => $semesters,
-                'selected_semester'  => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
-                'default_semester'   => Semester::findCurrent()->id,
-                'institute'          => MvvContact::getAllAssignedInstitutes('name', 'ASC', $institute_filter),
-                'institute_count'    => 'count_objects',
-                'selected_institut'  => $this->filter['mvv_modul_inst.institut_id'],
-                'zuordnungen'        => MvvContact::getAllRelations($this->search_result['MvvContact']),
-                'selected_zuordnung' => $this->filter['mvv_contacts_ranges.range_type'],
-                'kategorien'         => $this->findCategoriesByIds(),
-                'selected_kategorie' => $this->filter['mvv_contacts_ranges.category']
-                        . '__@type__' . $this->filter['mvv_contacts_ranges.range_type'],
-                'status'             => $this->findStatusByIds(),
-                'selected_status'    => $this->filter['mvv_contacts.contact_status'],
-                'status_array'       => ['intern' => ['name' => _('Intern')], 'extern' => ['name' =>_('Extern')]],
-                'action'             => $this->url_for('/set_filter'),
-                'action_reset'       => $this->url_for('/reset_filter')
-            ]);
+        $semesters = new SimpleCollection(array_reverse(Semester::getAll()));
+        $filter_template = $template_factory->render('shared/filter', [
+            'semester'           => $semesters,
+            'selected_semester'  => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
+            'default_semester'   => Semester::findCurrent()->id,
+            'institute'          => MvvContact::getAllAssignedInstitutes('name', 'ASC', $institute_filter),
+            'institute_count'    => 'count_objects',
+            'selected_institut'  => $this->filter['mvv_modul_inst.institut_id'],
+            'zuordnungen'        => MvvContact::getAllRelations($this->search_result['MvvContact']),
+            'selected_zuordnung' => $this->filter['mvv_contacts_ranges.range_type'],
+            'kategorien'         => $this->findCategoriesByIds(),
+            'selected_kategorie' => "{$this->filter['mvv_contacts_ranges.category']}__@type__{$this->filter['mvv_contacts_ranges.range_type']}",
+            'status'             => $this->findStatusByIds(),
+            'selected_status'    => $this->filter['mvv_contacts.contact_status'],
+            'status_array'       => ['intern' => ['name' => _('Intern')], 'extern' => ['name' =>_('Extern')]],
+            'action'             => $this->url_for('/set_filter'),
+            'action_reset'       => $this->url_for('/reset_filter')
+        ]);
 
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
@@ -546,7 +548,7 @@ class Shared_ContactsController extends MVVController
     public function sort_action($range_id = null)
     {
         if (Request::submitted('order')) {
-            $ordered = studip_json_decode(Request::get('ordering'));
+            $ordered = json_decode(Request::get('ordering'));
             if (is_array($ordered)) {
                 $ok = false;
                 foreach ($ordered as $p => $user_kat_id) {

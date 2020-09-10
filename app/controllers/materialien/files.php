@@ -13,10 +13,8 @@
  * @category    Stud.IP
  * @since       4.5
  */
-
 class Materialien_FilesController extends MVVController
 {
-
     public $filter = [];
     private $show_sidebar_search = false;
 
@@ -28,12 +26,12 @@ class Materialien_FilesController extends MVVController
 
         // set navigation
         Navigation::activateItem($this->me . '/materialien/files');
+
         $this->action = $action;
 
         if (Request::isXhr()) {
             $this->set_layout(null);
         }
-
     }
 
     public function index_action()
@@ -92,8 +90,7 @@ class Materialien_FilesController extends MVVController
         if (!MvvFile::countBySql()) {
             PageLayout::postInfo(sprintf(
                 _('Es wurden noch keine Dokumente angelegt. Klicken Sie %shier%s, um ein neues Dokument anzulegen.'),
-                '<a data-dialog="size=auto" href="'
-                . $this->link_for('/new_dokument') . '">',
+                '<a data-dialog="size=auto" href="' . $this->link_for('/new_dokument') . '">',
                 '</a>')
             );
         }
@@ -628,9 +625,11 @@ class Materialien_FilesController extends MVVController
 
         $widget  = new ActionsWidget();
         if (MvvPerm::get('MvvFile')->havePermCreate()) {
-            $widget->addLink( _('Neues Dokument anlegen'),
-                            $this->url_for('/new_dokument'),
-                            Icon::create('file+add', 'clickable'))->asDialog("size=auto");
+            $widget->addLink(
+                _('Neues Dokument anlegen'),
+                $this->url_for('/new_dokument'),
+                Icon::create('file+add')
+            )->asDialog('size=auto');
         }
         $sidebar->addWidget($widget);
 
@@ -667,11 +666,11 @@ class Materialien_FilesController extends MVVController
         );
         unset($institute_filter['searchnames']);
 
-        $semesters = new SimpleCollection(Semester::getAll());
+        $semesters = new SimpleCollection(array_reverse(Semester::getAll()));
         $filter_template = $template_factory->render('shared/filter', [
             'name_search'        => true,
             'selected_name'      => $this->filter['searchnames'],
-            'name_caption'       => _("Name, Kategorie, Schlagwort"),
+            'name_caption'       => _('Name, Kategorie, Schlagwort'),
             'semester'           => $semesters,
             'selected_semester'  => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
             'default_semester'   => Semester::findCurrent()->id,
@@ -681,7 +680,8 @@ class Materialien_FilesController extends MVVController
             'zuordnungen'        => MvvFile::getAllRelations($this->search_result['MvvFile']),
             'selected_zuordnung' => $this->filter['mvv_files_ranges.range_type'],
             'action'             => $this->url_for('/set_filter'),
-            'action_reset'       => $this->url_for('/reset_filter')]);
+            'action_reset'       => $this->url_for('/reset_filter')]
+        );
 
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
