@@ -126,7 +126,12 @@ class Shared_ContactsController extends MVVController
     public function new_ansprechpartner_action()
     {
         PageLayout::setTitle(_('Art des MVV-Objektes wählen'));
-        $this->allowed_object_types = ['Modul', 'Studiengang', 'StudiengangTeil'];
+        $this->allowed_object_types = [
+            'Modul',
+            'Studiengang',
+            // 'StudiengangTeil',
+            // Disabled for now, see BIEST #10331
+        ];
         if (Request::submitted('store')) {
             $this->redirect($this->url_for('shared/contacts/select_range', Request::get('range_type')));
         }
@@ -619,7 +624,12 @@ class Shared_ContactsController extends MVVController
     public function select_range_type_action($user_id)
     {
         PageLayout::setTitle(_('Art des MVV-Objektes wählen'));
-        $this->allowed_object_types = ['Studiengang','Modul','StudiengangTeil'];
+        $this->allowed_object_types = [
+            'Studiengang',
+            'Modul',
+            // 'StudiengangTeil',
+            // Disabled for now, see Biest #10331
+        ];
         $this->mvvcontact_id = $user_id;
         if (Request::submitted('store')) {
             $this->redirect($this->url_for('shared/contacts/add_ranges_to_contact',$user_id, Request::get('range_type')));
@@ -667,7 +677,7 @@ class Shared_ContactsController extends MVVController
             ];
         }
 
-        $this->render_text(json_encode($res));
+        $this->render_json($res);
     }
 
     /**
@@ -677,7 +687,7 @@ class Shared_ContactsController extends MVVController
     {
         $term = str_replace('%', '', Request::get('term'));
         if (!trim($term)) {
-            return [];
+            return $this->render_json([]);
         }
         $stat = array_keys(array_filter(
             $GLOBALS['MVV_MODUL']['STATUS']['values'],
@@ -725,7 +735,7 @@ class Shared_ContactsController extends MVVController
             }
         }
 
-        $this->render_text(json_encode($res));
+        $this->render_json($res);
     }
 
     /**
@@ -784,15 +794,11 @@ class Shared_ContactsController extends MVVController
             _('Code'),
             _('Objekname')
         ];
-        $tmpname = md5(uniqid('mvv_contacts_export_csv'));
-        if (array_to_csv($data, $GLOBALS['TMP_PATH'] . '/' . $tmpname, $captions)) {
-            $this->redirect(FileManager::getDownloadURLForTemporaryFile(
-                $tmpname,
-                'Contacts_Export.csv'
-                )
-            );
-            return;
-        }
+
+        $this->render_csv(
+            array_merge([$captions], $data),
+            'Contacts_Export.csv'
+        );
     }
 
     private function findStatusByIds()

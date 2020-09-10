@@ -1,4 +1,5 @@
-<form class="default" action="<?= $controller->url_for('/select_range', $range_type) ?>" method="post" data-dialog="size=auto">
+<form class="default" action="<?= $controller->link_for('/select_range', $range_type) ?>" method="post" data-dialog="size=auto">
+    <?= CSRFProtection::tokenTag(); ?>
 
     <label>
     <? if ($range_type == 'Studiengang'): ?>
@@ -8,14 +9,10 @@
     <? endif; ?>
     </label>
 
-    <?= CSRFProtection::tokenTag(); ?>
-    <div data-dialog-button>
+    <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Weiter'), 'store') ?>
         <?= Studip\LinkButton::createCancel(); ?>
-    </div>
+    </footer>
 
-    <div id="search-contact-params"
-        data-contact=""
-    ></div>
-
+    <div id="search-contact-params" data-contact=""></div>
 </form>

@@ -18,19 +18,20 @@ class MvvContact extends ModuleManagementModel
     /**
      * @param array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_contacts';
 
-        $config['has_many']['ranges'] = array(
+        $config['has_many']['ranges'] = [
             'class_name'  => 'MvvContactRange',
             'foreign_key' => 'contact_id',
             'on_delete'   => 'delete'
-        );
+        ];
 
         $config['additional_fields']['name']['get'] = 'getContactName';
-        $config['additional_fields']['count_relations']['get'] =
-            function($contact) { return $contact->count_relations; };
+        $config['additional_fields']['count_relations']['get'] = function ($contact) {
+            return $contact->count_relations;
+        };
 
         parent::configure($config);
     }
