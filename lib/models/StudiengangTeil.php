@@ -31,13 +31,13 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             'assoc_foreign_key' => 'stgteil_id',
             'on_delete' => 'delete'
         ];
-       
+
         $config['has_many']['contact_assignments'] = [
             'class_name'        => 'MvvContactRange',
             'assoc_foreign_key' => 'range_id',
             'order_by'          => 'ORDER BY position'
         ];
-        
+
         // The assigned Fach
         $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
@@ -223,7 +223,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
      */
     public static function getCount($filter = null)
     {
-        $query = 'SELECT COUNT(DISTINCT(mvv_stgteilversion.stgteil_id)) '
+        $query = 'SELECT COUNT(DISTINCT(mvv_stgteil.stgteil_id)) '
                 . 'FROM mvv_stgteil '
                 . 'LEFT JOIN fach USING(fach_id) '
                 . 'LEFT JOIN mvv_fach_inst USING(fach_id) '
@@ -362,7 +362,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
             $stgteil_bez_id)
     {
         return parent::getEnrichedByQuery(
-            'SELECT `mvv_stgteil`.* 
+            'SELECT `mvv_stgteil`.*
                 FROM `mvv_stgteil`
                     INNER JOIN `mvv_stg_stgteil` USING(`stgteil_id`)
                     INNER JOIN `fach` USING(`fach_id`)
