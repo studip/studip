@@ -83,9 +83,9 @@ class MVVNavigation extends Navigation
         $dok_navigation->addSubNavigation(
             'files', new Navigation(_('Dokumente'),
             'dispatch.php/materialien/files'));
-        $dok_navigation->addSubNavigation(
-                'dokumente', new Navigation(_('Materialien/Dokumente'),
-                'dispatch.php/materialien/dokumente'));
+        // $dok_navigation->addSubNavigation(
+        //         'dokumente', new Navigation(_('Materialien/Dokumente'),
+        //         'dispatch.php/materialien/dokumente'));
         $this->addSubNavigation('materialien', $dok_navigation);
 
         $contact_navigation = new Navigation(_('Ansprechpartner'));
