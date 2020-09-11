@@ -14,5 +14,5 @@ jQuery.tablesorter.addParser({
             p = c.parserMetadataName || 'sortValue';
         return $(cell).data(p);
     },
-    type: 'numeric'
+    type: 'text'
 });
