@@ -103,11 +103,21 @@
                 ?>
                 <? foreach ($modulVerantwortung as $group): ?>
                     <? foreach ($group['contacts'] as $contact): ?>
-                        <span data-mvv-field="mvv_modul_user" data-mvv-coid="<?= $contact['id']; ?>"><?= htmlReady($contact['name']) ?> (<?= htmlReady($group['name']) ?>)</span><br>
+                        <div data-mvv-field="mvv_modul_user" data-mvv-coid="<?= $contact['id'] ?>">
+                            <?= htmlReady($contact['name']) ?> (<?= htmlReady($group['name']) ?>)
+                        </div>
                     <? endforeach; ?>
                 <? endforeach; ?>
             </td>
         </tr>
+    <? if (trim($modulDeskriptor->verantwortlich)): ?>
+        <tr>
+            <td><strong><?= _('Weitere verantwortliche Personen') ?></strong></td>
+            <td>
+                <?= formatReady($modulDeskriptor->verantwortlich) ?>
+            </td>
+        </tr>
+    <? endif; ?>
         <tr>
             <td><strong><?= _('Teilnahmevoraussetzungen') ?></strong></td>
             <td data-mvv-field="mvv_modul_deskriptor.voraussetzung"><?= formatReady($modulDeskriptor->voraussetzung) ?></td>
