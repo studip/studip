@@ -4,7 +4,7 @@
 <ul class="mvv-result-list">
 <? foreach ($data as $fach_id => $fach) : ?>
     <li>
-        <a href="<?= $controller->url_for($verlauf_url, $fach_id) ?>"><?= htmlReady($fach) ?></a>
+        <a href="<?= $controller->link_for($verlauf_url, $fach_id) ?>"><?= htmlReady($fach) ?></a>
     </li>
 <? endforeach; ?>
 </ul>

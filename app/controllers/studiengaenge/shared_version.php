@@ -318,21 +318,36 @@ class SharedVersionController extends MVVController
         // search for modules so status of version doesn't matter
         $filter = $this->filter;
         unset($filter['mvv_stgteilversion.stat']);
-        $query = "
-            SELECT mvv_modul.modul_id,
-                CONCAT(mvv_modul_deskriptor.bezeichnung, ', ',
-                    IF(ISNULL(mvv_modul.code), '', mvv_modul.code),
-                    IF(ISNULL(start_sem.name), '', CONCAT(', ', IF(ISNULL(end_sem.name),
-                    CONCAT('ab ', start_sem.name),CONCAT(start_sem.name, ' - ', end_sem.name))))) AS modul_name
-            FROM mvv_modul
-                LEFT JOIN mvv_modul_deskriptor
+
+        $condition = ModuleManagementModel::getFilterSql($filter);
+        $query = "SELECT mvv_modul.modul_id,
+                         CONCAT(
+                             mvv_modul_deskriptor.bezeichnung,
+                             ', ',
+                             IF(ISNULL(mvv_modul.code), '', mvv_modul.code),
+                             IF(
+                                 ISNULL(start_sem.name),
+                                 '',
+                                 CONCAT(
+                                     ', ',
+                                     IF(
+                                         ISNULL(end_sem.name),
+                                         CONCAT('ab ', start_sem.name),
+                                         CONCAT(start_sem.name, ' - ', end_sem.name)
+                                     )
+                                 )
+                             )
+                         ) AS modul_name
+                  FROM mvv_modul
+                  LEFT JOIN mvv_modul_deskriptor
                     ON mvv_modul.modul_id = mvv_modul_deskriptor.modul_id
-                LEFT JOIN semester_data start_sem ON mvv_modul.start = start_sem.semester_id
-                LEFT JOIN semester_data end_sem ON mvv_modul.end = end_sem.semester_id
-                WHERE (mvv_modul.code LIKE :input
-                OR mvv_modul_deskriptor.bezeichnung LIKE :input)
-                " . ModuleManagementModel::getFilterSql($filter) . "
-            ORDER BY modul_name";
+                  LEFT JOIN semester_data start_sem ON mvv_modul.start = start_sem.semester_id
+                  LEFT JOIN semester_data end_sem ON mvv_modul.end = end_sem.semester_id
+                  WHERE (
+                      mvv_modul.code LIKE :input
+                      OR mvv_modul_deskriptor.bezeichnung LIKE :input
+                  ) {$condition}
+                  ORDER BY modul_name";
         $search = new SQLSearch($query, _('Modul suchen'),'modul_id_' . $this->version->id);
         $this->qs_search_modul_version_id = md5(serialize($search));
         $this->search_modul_version = QuickSearch::get('modul_id_' . $this->version->id, $search);

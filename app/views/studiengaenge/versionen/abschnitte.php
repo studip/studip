@@ -56,22 +56,19 @@
             <tfoot>
                 <tr>
                     <td colspan="3">
-                        <form class="mvv-qsform" action="<?= $controller->url_for('/add_modul/' . $version->id) ?>"
+                        <form class="mvv-qsform" action="<?= $controller->link_for('/add_modul/' . $version->id) ?>"
                               method="post">
                             <?= _('Modul hinzufügen') ?>
                             <?= CSRFProtection::tokenTag() ?>
                             <?= $search_modul_version->render(); ?>
-                            <?= Icon::create(
-                                'search',
-                                Icon::ROLE_CLICKABLE,
-                                [
-                                    'title'          => _('Modul suchen'),
-                                    'name'           => 'search_stgteil',
-                                    'data-qs_name'   => $search_modul_version->getId(),
-                                    'data-qs_id'     => $qs_search_modul_version_id,
-                                    'data-qs_submit' => 'no',
-                                    'class'          => 'mvv-qs-button'
-                                ])->asInput(); ?>
+                            <?= Icon::create('search')->asInput([
+                                'title'          => _('Modul suchen'),
+                                'name'           => 'search_stgteil',
+                                'data-qs_name'   => $search_modul_version->getId(),
+                                'data-qs_id'     => $qs_search_modul_version_id,
+                                'data-qs_submit' => 'no',
+                                'class'          => 'mvv-qs-button'
+                            ]) ?>
                             <label>
                                 <?= _('zu Abschnitt') ?>
                                 <select name="abschnitt_id">

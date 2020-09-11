@@ -201,11 +201,10 @@ class Search_StudiengaengeController extends MVVController
         $_SESSION['MVV_SEARCH_SEQUENCE_WITH_COURSES'] = $this->with_courses;
 
         $studiengangTeil = StudiengangTeil::find($stgteil_id);
-        $versionen = StgteilVersion::findByStgteil($stgteil_id, 'start', 'DESC')->filter(
-            function ($version) {
-                $public = $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
-                return ($public ? true : false);
-            });
+        $versionen = StgteilVersion::findByStgteil($stgteil_id, 'start', 'DESC')->filter(function ($version) {
+            $public = $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];
+            return (bool) $public;
+        });
         if (!$studiengangTeil || count($versionen) === 0) {
             PageLayout::postInfo(_('Kein Verlaufsplan im gewählten Bereich verfügbar.'));
         } else {
@@ -279,7 +278,9 @@ class Search_StudiengaengeController extends MVVController
                         }
 
                         // filter modules whether they have courses or not
- 	                if ($this->with_courses && $countcourses == 0) continue;
+ 	                    if ($this->with_courses && $countcourses == 0) {
+                            continue;
+                        }
 
                         $fachSemester = $abschnitt_modul->getAllFachSemester($teil->id);
 
@@ -294,6 +295,11 @@ class Search_StudiengaengeController extends MVVController
                             $abschnitteData[$abschnitt->getId()]['module'][$abschnitt_modul->modul->getId()]['modulTeile'][$teil->getId()]['fachsemester'][$fachsem->fachsemester] = $fachsem->differenzierung;
                         }
                     }
+
+                    if (count($abschnitt_modul->modul->modulteile) === 0) {
+                        $abschnitteData[$abschnitt->id]['rowspan']++;
+                    }
+
                     $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]['veranstaltungen'] = $countcourses;
                 }
             }
@@ -308,11 +314,10 @@ class Search_StudiengaengeController extends MVVController
                 $this->studiengang = Studiengang::get($studiengang_id);
             }
 
-            $this->setVersionSelectWidget($versionen,
-                    $this->url_for('/verlauf',
-                            $studiengangTeil->id,
-                            $stgteil_bez_id,
-                            $studiengang_id));
+            $this->setVersionSelectWidget(
+                $versionen,
+                $this->url_for('/verlauf', $studiengangTeil->id, $stgteil_bez_id, $studiengang_id)
+            );
 
             ksort($fachsemesterData);
             $this->fachsemesterData = $fachsemesterData;
@@ -326,9 +331,11 @@ class Search_StudiengaengeController extends MVVController
             // add option widget to show only modules with courses in the
             // selected semester
             $widget = new OptionsWidget();
-            $widget->addCheckbox(_('Nur Module mit Veranstaltungen anzeigen'),
-              $this->with_courses, $this->link_for('/verlauf/' . $stgteil_id,
-                ['with_courses' => intval(!$this->with_courses)]));
+            $widget->addCheckbox(
+                _('Nur Module mit Veranstaltungen anzeigen'),
+                $this->with_courses,
+                $this->url_for('/verlauf/' . $stgteil_id, ['with_courses' => intval(!$this->with_courses)])
+            );
             Sidebar::get()->addWidget($widget, 'with_courses');
         }
         $this->breadcrumb->append($this->studiengang, 'studiengang');
