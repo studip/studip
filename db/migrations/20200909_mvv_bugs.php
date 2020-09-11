@@ -23,6 +23,12 @@ class MvvBugs extends Migration
                     PRIMARY KEY (`extern_contact_id`)
                   ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC";
         DBManager::get()->exec($query);
+
+        // Adjust config sections for mvv
+        $query = "UPDATE `config`
+                  SET `section` = 'mvv'
+                  WHERE `field` LIKE 'MVV%'";
+        DBManager::get()->exec($query);
     }
 
     public function down()
