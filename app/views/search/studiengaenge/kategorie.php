@@ -1,15 +1,21 @@
 <?= $this->render_partial('search/breadcrumb') ?>
 <? foreach ($studiengaenge as $abschluss_id => $studiengaenge_abschluss): ?>
-<section class="contentbox">
+<article class="studip toggle">
     <header>
-        <h1><?= htmlReady($abschluesse[$abschluss_id]->getDisplayName()) ?></h1>
+        <h1>
+            <a name="abschluss-<?= $abschluss_id ?>">
+                <?= htmlReady($abschluesse[$abschluss_id]->getDisplayName()) ?>
+            </a>
+        </h1>
     </header>
     <ul class="mvv-result-list">
-        <? foreach ($studiengaenge_abschluss as $id => $s) : ?>
+    <? foreach ($studiengaenge_abschluss as $id => $s) : ?>
         <li>
-            <a href="<?= $controller->url_for('search/studiengaenge/studiengang', $id) ?>"><?= htmlReady($s->getDisplayName()); ?></a>
+            <a href="<?= $controller->link_for('search/studiengaenge/studiengang', $id) ?>">
+                <?= htmlReady($s->getDisplayName()); ?>
+            </a>
         </li>
-        <? endforeach; ?>
+    <? endforeach; ?>
     </ul>
-</section>
+</article>
 <? endforeach; ?>

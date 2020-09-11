@@ -85,17 +85,6 @@ class Search_AngebotController extends MVVController
             $chars[$char] = $char;
         }
 
-        function link_chars(&$char,
-                $key,
-                $pattern) {
-            $char = sprintf($pattern, $key, ucfirst($key));
-        }
-
-        array_walk($chars,
-                function (&$char) {
-                    $char = sprintf('<a href="#%s">%s</a>', $char, ucfirst($char));
-                });
-
         $this->breadcrumb->init();
         $this->breadcrumb->append(_('Studienangebot von A bis Z'), 'index');
         $this->faecher = $result;

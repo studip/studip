@@ -49,6 +49,17 @@ ol {
         }
     }
 }
+.list-pipe-separated {
+    .list-inline();
+    display: flex; // Prevents the mystery gap between elements
+
+    > li {
+        border-right: 1px solid @dark-gray-color;
+        &:last-child {
+            border-right: 0;
+        }
+    }
+}
 
 dl {
     dt {

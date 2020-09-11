@@ -16,4 +16,17 @@
         // Open the contentbox
         article.toggleClass('open').removeClass('new');
     });
+
+    // Open closed article contents when location hash matches
+    $(window).on('hashchange', (event) => {
+        const hash = location.hash.split('#').pop();
+        $(`article.studip.toggle:not(.open) header h1 a[name="${hash}"]`).click();
+    });
+
+    STUDIP.ready(() => {
+        const hash = location.hash.split('#').pop();
+        if (hash.length > 0) {
+            $(`article.studip.toggle:not(.open) header h1 a[name="${hash}"]`).click();
+        }
+    });
 }(jQuery, STUDIP));
