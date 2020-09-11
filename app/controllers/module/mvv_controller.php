@@ -168,14 +168,13 @@ class MVVController extends AuthenticatedController
     public function renderSortLink($action, $text, $field, $attributes = null)
     {
         $template = $this->get_template_factory()->open('shared/sort_link');
-        $template->set_attributes(
-            [
-                'controller' => $this,
-                'action'     => $action,
-                'text'       => $text,
-                'field'      => $field,
-                'attributes' => (array)$attributes
-            ]);
+        $template->set_attributes([
+            'controller' => $this,
+            'action'     => $action,
+            'text'       => $text,
+            'field'      => $field,
+            'attributes' => (array) $attributes
+        ]);
         return $template->render();
     }
 

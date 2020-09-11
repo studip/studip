@@ -28,10 +28,6 @@ class Materialien_FilesController extends MVVController
         Navigation::activateItem($this->me . '/materialien/files');
 
         $this->action = $action;
-
-        if (Request::isXhr()) {
-            $this->set_layout(null);
-        }
     }
 
     public function index_action()
@@ -87,7 +83,7 @@ class Materialien_FilesController extends MVVController
             $this->filter
         );
 
-        if (!MvvFile::countBySql()) {
+        if (MvvFile::countBySql() === 0) {
             PageLayout::postInfo(sprintf(
                 _('Es wurden noch keine Dokumente angelegt. Klicken Sie %shier%s, um ein neues Dokument anzulegen.'),
                 '<a data-dialog="size=auto" href="' . $this->link_for('/new_dokument') . '">',

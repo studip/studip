@@ -18,18 +18,18 @@ class MvvFile extends ModuleManagementModel
     /**
      * @param array $config
      */
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_files';
 
-        $config['has_many']['file_refs'] = array(
-            'class_name' => 'MvvFileFileref',
+        $config['has_many']['file_refs'] = [
+            'class_name'  => MvvFileFileref::class,
             'foreign_key' => 'mvvfile_id'
-        );
-        $config['has_many']['ranges'] = array(
-            'class_name' => 'MvvFileRange',
+        ];
+        $config['has_many']['ranges'] = [
+            'class_name'  => MvvFileRange::class,
             'foreign_key' => 'mvvfile_id'
-        );
+        ];
         $config['additional_fields']['count_relations']['get'] = 'countRelations';
 
         parent::configure($config);
@@ -43,20 +43,18 @@ class MvvFile extends ModuleManagementModel
      */
     public static function findByObject(SimpleORMap $object)
     {
-        return parent::getEnrichedByQuery('
-            SELECT md.*, mdz.position, mdz.mkdate, mdz.chdate
-                FROM mvv_files md
-                INNER JOIN mvv_files_ranges mdz USING(mvvfile_id)
-                WHERE mdz.range_id = ?
-                ' . self::getFilterSql(array('mdz.range_type' => get_class($object))) . '
-            ORDER BY mdz.position',
-            array($object->id)
-        );
+        $condition = self::getFilterSql(['mdz.range_type' => get_class($object)]);
+        $query = "SELECT md.*, mdz.position, mdz.mkdate, mdz.chdate
+                  FROM mvv_files md
+                  INNER JOIN mvv_files_ranges mdz USING(mvvfile_id)
+                  WHERE mdz.range_id = ? {$condition}
+                  ORDER BY mdz.position";
+        return parent::getEnrichedByQuery($query, [$object->id]);
     }
 
-    public static function findByRange_id($range)
+    public static function findByRange_id($range_id)
     {
-        return self::findBySQL('JOIN mvv_files_ranges USING (mvvfile_id) WHERE range_id =? ORDER BY position ASC', [$range]);
+        return self::findBySQL('JOIN mvv_files_ranges USING (mvvfile_id) WHERE range_id =? ORDER BY position ASC', [$range_id]);
     }
 
     /**
@@ -68,9 +66,8 @@ class MvvFile extends ModuleManagementModel
     {
         if ($this->file_refs) {
             return $this->file_refs[0]->name;
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -82,9 +79,8 @@ class MvvFile extends ModuleManagementModel
     {
         if ($this->ranges) {
             return $this->ranges[0]->range_type;
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**
@@ -94,7 +90,7 @@ class MvvFile extends ModuleManagementModel
      */
     public function countRelations()
     {
-        return MvvFileRange::countBySql("mvvfile_id =?", [$this->mvvfile_id]);
+        return MvvFileRange::countBySql('mvvfile_id = ?', [$this->mvvfile_id]);
     }
 
     /**
@@ -114,11 +110,13 @@ class MvvFile extends ModuleManagementModel
      */
     public function getRangesArray()
     {
-        $ranges = [];
-        foreach (MvvFileRange::findBySQL('mvvfile_id =?', [$this->mvvfile_id]) as $range) {
-            $ranges[] = $range->range_id;
-        }
-        return $ranges;
+        return MvvFileRange::findAndMapBySQL(
+            function ($range) {
+                return $range->range_id;
+            },
+            'mvvfile_id = ?',
+            [$this->mvvfile_id]
+        );
     }
 
     /**
@@ -128,11 +126,13 @@ class MvvFile extends ModuleManagementModel
      */
     public function getFilenames()
     {
-        $filenames = [];
-        foreach (MvvFileFileref::findBySQL('mvvfile_id =?', [$this->mvvfile_id]) as $fileref) {
-            $filenames[] = $fileref->getFilename();
-        }
-        return $filenames;
+        return MvvFileFileref::findAndMapBySQL(
+            function ($ref) {
+                return $ref->getFilename();
+            },
+            'mvvfile_id = ?',
+            [$this->mvvfile_id]
+        );
     }
 
     /**
@@ -142,11 +142,13 @@ class MvvFile extends ModuleManagementModel
      */
     public function getFiletypes()
     {
-        $filetypes = [];
-        foreach (MvvFileFileref::findBySQL('mvvfile_id =?', [$this->mvvfile_id]) as $fileref) {
-            $filetypes[] = $fileref->getFiletype();
-        }
-        return $filetypes;
+        return MvvFileFileref::findAndMapBySQL(
+            function ($ref) {
+                return $ref->getFileType();
+            },
+            'mvvfile_id = ?',
+            [$this->mvvfile_id]
+        );
     }
 
 
@@ -166,30 +168,37 @@ class MvvFile extends ModuleManagementModel
     public static function getAllEnriched($sortby = 'chdate', $order = 'DESC',
             $row_count = null, $offset = null, $filter = null)
     {
-        $sortby = self::createSortStatement($sortby, $order, 'mvvfile_id',
-                ['count_zuordnungen']);
+        $sortby = self::createSortStatement(
+            $sortby,
+            $order,
+            'mvvfile_id',
+            ['count_zuordnungen', 'mvv_files_filerefs.name', 'file_refs.name']
+        );
 
-        $searchnames = $filter['searchnames'];
+        $parameters = [
+            ':ranges' => self::getIdsFiltered($filter),
+        ];
+
         $name_filter_sql = '';
-        if ($searchnames) {
-            $name_filter_sql = " AND CONCAT_WS(' ', `file_refs`.`name`, `mvv_files_filerefs`.`name`, `mvv_files`.`category`,`mvv_files`.`tags`) LIKE ". DBManager::get()->quote('%' . $searchnames . '%');
+        if ($filter['searchnames']) {
+            $name_filter_sql = " AND CONCAT_WS(' ', `file_refs`.`name`, `mvv_files_filerefs`.`name`, `mvv_files`.`category`,`mvv_files`.`tags`) LIKE :needle";
+            $parameters[':needle'] = "%{$filter['searchnames']}%";
         }
         unset($filter['searchnames']);
-        $ids = self::getIdsFiltered($filter);
 
-        return parent::getEnrichedByQuery("
-            SELECT `mvv_files`.*,
-                    COUNT(`mvv_files_ranges`.`range_id`) AS `count_relations`,
-                    `file_refs`.`name` AS `filename`,
-                    `mvv_files_ranges`.`range_type` AS `range_type`
-            FROM `mvv_files`
-                LEFT JOIN `mvv_files_ranges` USING (`mvvfile_id`)
-                LEFT JOIN `mvv_files_filerefs` USING (`mvvfile_id`)
-                INNER JOIN `file_refs` ON (`fileref_id` = `file_refs`.`id`)
-                INNER JOIN `folders` ON (file_refs.folder_id = folders.id)
-            WHERE `mvv_files_ranges`.`range_id` IN (:ranges) $name_filter_sql 
-            GROUP BY `mvvfile_id`
-            ORDER BY $sortby ", [':ranges' => $ids], $row_count, $offset);
+        $query = "SELECT `mvv_files`.*,
+                         COUNT(`mvv_files_ranges`.`range_id`) AS `count_relations`,
+                         `file_refs`.`name` AS `filename`,
+                         `mvv_files_ranges`.`range_type` AS `range_type`
+                  FROM `mvv_files`
+                  LEFT JOIN `mvv_files_ranges` USING (`mvvfile_id`)
+                  LEFT JOIN `mvv_files_filerefs` USING (`mvvfile_id`)
+                  INNER JOIN `file_refs` ON (`fileref_id` = `file_refs`.`id`)
+                  INNER JOIN `folders` ON (file_refs.folder_id = folders.id)
+                  WHERE `mvv_files_ranges`.`range_id` IN (:ranges) {$name_filter_sql}
+                  GROUP BY `mvvfile_id`
+                  ORDER BY {$sortby}";
+        return parent::getEnrichedByQuery($query, $parameters, $row_count, $offset);
     }
 
     /**
@@ -199,7 +208,7 @@ class MvvFile extends ModuleManagementModel
      * @param array $dokument_ids Ids of the documents.
      * @return array References ordered by object types.
      */
-    public static function getAllRelations($dokument_ids = array())
+    public static function getAllRelations($dokument_ids = [])
     {
         $files = [];
         if ($dokument_ids) {
@@ -212,11 +221,9 @@ class MvvFile extends ModuleManagementModel
             $files = self::findBySQL('1');
         }
         $zuordnungen = [];
-        if (!empty($files)) {
-            foreach ($files as $file) {
-                foreach ($file->ranges as $file_range) {
-                    $zuordnungen[$file_range['range_type']][$file_range['range_id']] = $file;
-                }
+        foreach ($files as $file) {
+            foreach ($file->ranges as $file_range) {
+                $zuordnungen[$file_range['range_type']][$file_range['range_id']] = $file;
             }
         }
         return $zuordnungen;

@@ -53,7 +53,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      * Displays the name of the Studiengangteil if available for this object.
      */
     const DISPLAY_STGTEIL = 32;
-    
+
     /**
      * Usable as option ModuleManagementModel::getDisplayName().
      * Displays the name of the Abschluss if available for this object.
@@ -106,8 +106,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function get($id = null)
     {
-        $class = get_called_class();
-        return new $class($id);
+        return new static($id);
     }
 
     /**
@@ -138,13 +137,13 @@ abstract class ModuleManagementModel extends SimpleORMap
             if (!$perm->haveObjectPerm(MvvPerm::PERM_CREATE, $user_id)) {
                 throw new Exception(sprintf(
                     'Permission denied! The user is not allowed to '
-                    . 'create/delete an object of type %s.', get_called_class()));
+                    . 'create/delete an object of type %s.', static::class));
             }
         } else {
             if (!$perm->haveObjectPerm(MvvPerm::PERM_WRITE, $user_id)) {
                 throw new Exception(sprintf(
                     'Permission denied! The user is not allowed to store an '
-                    . 'object of type %s', get_called_class()));
+                    . 'object of type %s', static::class));
             }
         }
 
@@ -160,7 +159,7 @@ abstract class ModuleManagementModel extends SimpleORMap
                     && !$perm->haveFieldPerm($field, MvvPerm::PERM_WRITE, $user_id)) {
                 throw new Exception(sprintf(
                         'Permission denied! The user is not allowed to change '
-                        . 'value of field %s.%s.', get_called_class(), $field));
+                        . 'value of field %s.%s.', static::class, $field));
             }
         }
 
@@ -182,7 +181,7 @@ abstract class ModuleManagementModel extends SimpleORMap
                                     if (!$perm->haveDfEntryPerm($entry->datafield_id, MvvPerm::PERM_WRITE)) {
                                         throw new Exception(sprintf(
                                             'Permission denied! The user is not '
-                                            . 'allowed to change value of field %s::datafields[%s] ("%s").', get_called_class(), $entry->datafield_id, $entry->datafield->name));
+                                            . 'allowed to change value of field %s::datafields[%s] ("%s").', static::class, $entry->datafield_id, $entry->datafield->name));
                                     }
                                 }
                             }
@@ -494,8 +493,7 @@ abstract class ModuleManagementModel extends SimpleORMap
             }
             $stmt = DBManager::get()->prepare($query . $limit_sql);
             $stmt->execute($params);
-            $class = get_called_class();
-            $model_object = new $class();
+            $model_object = new static();
             foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
                 $pkey = [];
                 foreach ($model_object->pk as $pk) {
@@ -640,8 +638,7 @@ abstract class ModuleManagementModel extends SimpleORMap
         if (!is_array($sort)) {
             $sort = explode(',', $sort);
         }
-        $sorm_name = get_called_class();
-        $sorm = new $sorm_name();
+        $sorm = new static();
         if (sizeof(array_intersect(
                 array_merge(array_keys($sorm->db_fields), $additional_fields),
                 $sort))) {
@@ -662,17 +659,22 @@ abstract class ModuleManagementModel extends SimpleORMap
     protected static function createSortStatement($sort, $order = 'ASC',
             $standard_field = null, $additional_fields = [])
     {
-        $order = (mb_strtoupper(trim($order)) != 'DESC' ? ' ASC' : ' DESC');
+        $order = mb_strtoupper(trim($order)) !== 'DESC' ? ' ASC' : ' DESC';
         if (!is_array($sort)) {
             $sort = explode(',', $sort);
         }
         $sort = array_map('trim', $sort);
-        $sorm_name = get_called_class();
+        $sorm_name = static::class;
         $sorm = new $sorm_name();
-        $allowed_fields = array_intersect($sort, array_merge(array_keys(
-                $sorm->db_fields), $additional_fields));
-        if (sizeof($allowed_fields)) {
-            return implode($order . ',', $allowed_fields) . $order;
+        $allowed_fields = array_intersect(
+            $sort,
+            array_merge(
+                array_keys($sorm->db_fields),
+                $additional_fields
+            )
+        );
+        if (count($allowed_fields) > 0) {
+            return implode("{$order},", $allowed_fields) . $order;
         }
         return $standard_field;
     }
@@ -701,13 +703,12 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function getCount($filter = null)
     {
-        $class = get_called_class();
         if ($filter) {
             $filter_sql = self::getFilterSql($filter, true);
         } else {
             $filter_sql = '';
         }
-        $sorm = new $class();
+        $sorm = new static();
         $db = DBManager::get()->query('SELECT COUNT(*) FROM '
                 . $sorm->db_table . $filter_sql);
         return $db->fetchColumn(0);
@@ -747,12 +748,12 @@ abstract class ModuleManagementModel extends SimpleORMap
             require $GLOBALS['STUDIP_BASE_PATH'] . '/config/mvv_config.php';
         }
     }
-    
+
     /**
      * Switches the content to the given language.
      * Compared to ModuleManagementModel::setLanguage() strings translated with
      * gettext are always in the prefered language selected by the user.
-     * 
+     *
      * @param string $language The language code (see mvv_config.php)
      */
     public static function setContentLanguage($language)
@@ -764,7 +765,7 @@ abstract class ModuleManagementModel extends SimpleORMap
         I18NString::setContentLanguage($locale);
         self::$language = $language;
     }
-    
+
     public function getAvailableTranslations()
     {
         $translations[] = $GLOBALS['MVV_LANGUAGES']['default'];
@@ -780,7 +781,7 @@ abstract class ModuleManagementModel extends SimpleORMap
         }
         return $translations;
     }
-    
+
 
     /**
      * Returns the currently selected language.
@@ -823,7 +824,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function getPublicStatus($class_name = null)
     {
-        $class_name = $class_name ?: get_called_class();
+        $class_name = $class_name ?: static::class;
         $class_name = 'MVV_' . mb_strtoupper($class_name);
         $public_status = [];
         if (is_array($GLOBALS[$class_name]['STATUS']['values'])) {
@@ -861,7 +862,7 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public function hasPublicStatus($filter = null)
     {
-        $public_status = ModuleManagementModel::getPublicStatus(get_called_class());
+        $public_status = ModuleManagementModel::getPublicStatus(static::class);
         $filtered_status = $filter
                 ? array_intersect(words($filter), $public_status)
                 : $public_status;
