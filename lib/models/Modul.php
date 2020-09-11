@@ -40,6 +40,14 @@ class Modul extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
+        $config['belongs_to']['start_semester'] = [
+            'class_name'  => Semester::class,
+            'foreign_key' => 'start',
+        ];
+        $config['belongs_to']['end_semester'] = [
+            'class_name'  => Semester::class,
+            'foreign_key' => 'end',
+        ];
         $config['has_many']['modulteile'] = [
             'class_name' => 'Modulteil',
             'assoc_foreign_key' => 'modul_id',
@@ -107,7 +115,7 @@ class Modul extends ModuleManagementModelTreeItem
         $config['additional_fields']['languagesofinstruction']['get'] =
                 function ($modul) { return $modul->languages; };
         $config['additional_fields']['languagesofinstruction']['set'] = false;
-        $config['additional_fields']['display_name']['get'] = 
+        $config['additional_fields']['display_name']['get'] =
                 function ($modul) { return $modul->getDisplayName(); };
 
         $config['alias_fields']['flexnow_id'] = 'flexnow_modul';

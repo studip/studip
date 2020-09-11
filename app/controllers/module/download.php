@@ -43,11 +43,12 @@ class Module_DownloadController extends MVVController
 
             $content = $template->render();
             $this->response->add_header('Content-Type', 'application/msword');
-            $this->response->add_header('Content-Disposition', 'attachment; '
-                    . encode_header_parameter('filename', FileManager::cleanFileName($modul->getDisplayName() . '.doc')));
+            $this->response->add_header(
+                'Content-Disposition',
+                'attachment; ' . encode_header_parameter('filename', FileManager::cleanFileName($modul->getDisplayName() . '.doc'))
+            );
             $this->render_text($content);
         }
-        return;
     }
 
     private function getDetails($id, $language = null)
@@ -72,6 +73,9 @@ class Module_DownloadController extends MVVController
             $currentSemester = Semester::findCurrent();
         } else {
             $currentSemester = Semester::find(Request::get('sem_select'));
+        }
+        if (!$currentSemester) {
+            $currentSemester = $modul->start_semester;
         }
 
         $modulTeilData = [];
