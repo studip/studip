@@ -2,9 +2,8 @@
 use Studip\Button, Studip\LinkButton;
 SkipLinks::addIndex(_('Termine importieren'), 'main_content', 100);
 ?>
-<form action="<?= $controller->url_for('calendar/single/import/'
-        . $calendar->getRangeId(), ['atime' => $atime, 'last_view' => $last_view]) ?>" method="post" enctype="multipart/form-data" class="default">
-
+<form action="<?= $controller->link_for('calendar/single/import/' . $calendar->getRangeId(), ['atime' => $atime, 'last_view' => $last_view]) ?>" method="post" enctype="multipart/form-data" class="default">
+    <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend>
@@ -17,17 +16,13 @@ SkipLinks::addIndex(_('Termine importieren'), 'main_content', 100);
         </label>
 
         <label class="file-upload">
-            <?= _('Datei zum Importieren wählen') ?>
-            <input type="file" name="importfile">
+            <span class="required"><?= _('Datei zum Importieren wählen') ?></span>
+            <input required type="file" name="importfile" accept=".ics,.ifb,.iCal,.iFBf">
         </label>
-
-        <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Termine importieren'), 'import', ['title' => _('Termine importieren')]) ?>
-        <? if (!Request::isXhr()) : ?>
+        <?= Button::createAccept(_('Termine importieren'), 'import') ?>
         <?= LinkButton::create(_('Abbrechen'), $controller->url_for('calendar/single/' . $last_view)) ?>
-        <? endif; ?>
     </footer>
 </form>
