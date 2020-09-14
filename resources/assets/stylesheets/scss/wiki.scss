@@ -47,7 +47,7 @@ body#wiki #main_content td.printcontent:last-child:not(:first-child) {
 }
 
 a.wiki-restricted {
-    $icon-size: 12;
+    $icon-size: 12px;
     @include background-icon(lock-locked, info, $icon-size);
     background-position: left center;
     background-repeat: no-repeat;
@@ -69,7 +69,7 @@ a.wiki-restricted {
 }
 
 .image1 {
-    height: 140x;
+    height: 140px;
     width: 160px;
     margin-top: 90px;
     margin-left: 10px;

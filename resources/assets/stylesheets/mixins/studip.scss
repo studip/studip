@@ -20,7 +20,6 @@
 // --------
 // For clearing floats like a boss h5bp.com/q
 @mixin clearfix {
-    *zoom: 1;
     &::before,
     &::after {
         display: table;
