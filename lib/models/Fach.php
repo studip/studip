@@ -501,19 +501,17 @@ class Fach extends ModuleManagementModelTreeItem implements PrivacyObject
      * @param string $stgteil_id The id oa a Studiengangteil.
      * @return array Associative array of Faecher with id as key.
      */
-    public static function toArrayByFachbereichStgteil($fachbereich_id,
-            $stgteil_id)
+    public static function toArrayByFachbereichStgteil($fachbereich_id, $stgteil_id)
     {
         $faecher = [];
-        $query = '
-            SELECT mf.fach_id, mf.name, msf.position
-            FROM mvv_fach_inst
-                INNER JOIN fach mf USING (fach_id)
-                INNER JOIN mvv_stgteil AS mst USING (fach_id)
-                INNER JOIN mvv_stg_stgteil AS mss USING (stgteil_id)
-            WHERE mfi.institut_id = ?
-                AND mss.stgteil_id = ?
-            ORDER BY position, name';
+        $query = "SELECT mf.fach_id, mf.name, msf.position
+                  FROM mvv_fach_inst AS mfi
+                  JOIN fach AS mf USING (fach_id)
+                  JOIN mvv_stgteil AS mst USING (fach_id)
+                  JOIN mvv_stg_stgteil AS mss USING (stgteil_id)
+                  WHERE mfi.institut_id = ?
+                    AND mss.stgteil_id = ?
+                  ORDER BY position, name";
         $stmt = DBManager::get()->prepare($query);
         $stmt->execute([$fachbereich_id, $stgteil_id]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $fach) {

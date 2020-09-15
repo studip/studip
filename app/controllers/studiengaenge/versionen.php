@@ -121,10 +121,10 @@ class Studiengaenge_VersionenController extends SharedVersionController
 
     protected function chooser_faecher_stgteil()
     {
-        $this->lists['faecher']['elements'] =
-                Fach::toArrayByFachbereichStgteil(
-                    $this->chooser_filter['fachbereich'],
-                    $this->chooser_filter['stgteil']);
+        $this->lists['faecher']['elements'] = Fach::toArrayByFachbereichStgteil(
+            $this->chooser_filter['fachbereich'],
+            $this->chooser_filter['stgteil']
+        );
         $this->lists['faecher']['headline'] = _('Fach');
         $this->lists['faecher']['selected'] = $this->chooser_filter['fach'];
     }
