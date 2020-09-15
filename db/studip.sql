@@ -2946,6 +2946,29 @@ CREATE TABLE `mvv_modul_language` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+--
+-- Table structure for table `mvv_modul_user`
+--
+
+
+DROP TABLE IF EXISTS `mvv_modul_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mvv_modul_user`
+(
+    `modul_id`  varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+    `user_id`   varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+    `gruppe`    varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+    `position`  int(11)                                             NOT NULL DEFAULT '9999',
+    `author_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+    `editor_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+    `mkdate`    bigint(20)                                          NOT NULL,
+    `chdate`    bigint(20)                                          NOT NULL,
+    PRIMARY KEY (`modul_id`, `user_id`, `gruppe`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
 -- Table structure for table `mvv_modulteil`
 --
