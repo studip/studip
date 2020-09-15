@@ -117,7 +117,7 @@ class SharedVersionController extends MVVController
             );
             if ($this->version->stat === 'planung' && MvvPerm::haveFieldPermStat($this->version)) {
                 $action_widget->addLink(_('Version genehmigen'),
-                    $this->url_for('/approve/' . $this->stgteil->getId() . '/' .$this->version->getId()),
+                    $this->url_for('/approve/' . $this->version->getId()),
                     Icon::create('accept'),
                     ['data-dialog' => 'size=auto;buttons=false']
                 );
