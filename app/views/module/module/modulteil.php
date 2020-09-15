@@ -214,7 +214,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
         </label>
         <? if ($def_lang) : ?>
             <input <?= $perm->disable('kp') ?>
-                    type="text" name="kp" id="kp" value="<?= htmlReady($modulteil->kp) ?>" maxlength="2">
+                    type="text" name="kp" id="kp" value="<?= htmlReady($modulteil->kp) ?>" maxlength="10">
         <? else : ?>
             <?= $modulteil->kp ? htmlReady($modulteil->kp) : _('keine Angabe') ?>
         <? endif; ?>

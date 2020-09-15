@@ -24,6 +24,19 @@ class MvvBugs extends Migration
                   ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC";
         DBManager::get()->exec($query);
 
+        // Allow decimal credit point specifications
+        $query = "ALTER TABLE `mvv_modul`
+                  MODIFY COLUMN `kp` DOUBLE(5,2) DEFAULT NULL";
+        DBManager::get()->exec($query);
+
+        $query = "ALTER TABLE `mvv_modulteil`
+                  MODIFY COLUMN `kp` DOUBLE(5,2) DEFAULT NULL";
+        DBManager::get()->exec($query);
+
+        $query = "ALTER TABLE `mvv_stgteilabschnitt`
+                  MODIFY COLUMN `kp` DOUBLE(5,2) DEFAULT NULL";
+        DBManager::get()->exec($query);
+
         // Adjust config sections for mvv
         $query = "UPDATE `config`
                   SET `section` = 'mvv'
@@ -35,6 +48,19 @@ class MvvBugs extends Migration
     {
         // Remove table mvv_extern_contacts
         $query = "DROP TABLE IF EXISTS `mvv_extern_contacts`";
+        DBManager::get()->exec($query);
+
+        // Disallow decimal credit point specifications
+        $query = "ALTER TABLE `mvv_modul`
+                  MODIFY COLUMN `kp` INT(11) DEFAULT NULL";
+        DBManager::get()->exec($query);
+
+        $query = "ALTER TABLE `mvv_modulteil`
+                  MODIFY COLUMN `kp` INT(11) DEFAULT NULL";
+        DBManager::get()->exec($query);
+
+        $query = "ALTER TABLE `mvv_stgteilabschnitt`
+                  MODIFY COLUMN `kp` INT(11) DEFAULT NULL";
         DBManager::get()->exec($query);
     }
 }

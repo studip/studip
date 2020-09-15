@@ -14,7 +14,7 @@
             <label><?= _('Kreditpunkte') ?>
                 <input <?= $perm->disable('kp') ?>
                         type="text" name="kp" id="kp"
-                        value="<?= htmlReady($abschnitt->kp) ?>" size="3" maxlength="2">
+                        value="<?= htmlReady($abschnitt->kp) ?>" size="5" maxlength="10">
             </label>
             <label><?= _('Zwischenüberschrift') ?>
                 <?= MvvI18N::input('ueberschrift', $abschnitt->ueberschrift, ['maxlength' => '254'])->checkPermission($abschnitt) ?>

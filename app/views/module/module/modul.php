@@ -436,7 +436,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
 
         <label id="mvv-field-modul-kp"><?= _('Kreditpunkte') ?>
         <? if ($def_lang) : ?>
-            <input <?= $perm->disable('kp') ?> type="text" name="kp" id="kp" value="<?= htmlReady($modul->kp) ?>" maxlength="2">
+            <input <?= $perm->disable('kp') ?> type="text" name="kp" id="kp" value="<?= htmlReady($modul->kp) ?>" maxlength="10">
         <? else : ?>
             <?= $modul->kp ? htmlReady($modul->kp) : _('keine Angabe') ?>
         <? endif; ?>

@@ -288,8 +288,7 @@ class SharedVersionController extends MVVController
             $this->abschnitt->version_id = $this->version->getId();
             $this->abschnitt->name = Request::i18n('name')->trim();
             $this->abschnitt->kommentar = Request::i18n('kommentar')->trim();
-            $abschnitt_kp = trim(Request::get('kp'));
-            $this->abschnitt->kp = mb_strlen($abschnitt_kp) ? intval($abschnitt_kp) : null;
+            $this->abschnitt->kp = Request::float('kp');
             $this->abschnitt->ueberschrift = Request::i18n('ueberschrift')->trim();
             $this->abschnitt->verifyPermission();
             $stored = $this->abschnitt->store();

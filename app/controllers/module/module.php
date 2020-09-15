@@ -247,7 +247,7 @@ class Module_ModuleController extends MVVController
                     $kapazitaet = trim(Request::get('kapazitaet'));
                     $this->modul->kapazitaet = $kapazitaet === '' ? null : $kapazitaet;
                 }
-                $this->modul->kp = Request::int('kp');
+                $this->modul->kp = Request::float('kp');
                 $this->modul->wl_selbst = Request::int('wl_selbst');
                 $this->modul->wl_pruef = Request::int('wl_pruef');
                 $this->modul->pruef_ebene = Request::option('pruef_ebene');
@@ -708,7 +708,7 @@ class Module_ModuleController extends MVVController
                     $kapazitaet = trim(Request::get('kapazitaet'));
                     $this->modulteil->kapazitaet = $kapazitaet === '' ? null : $kapazitaet;
                 }
-                $this->modulteil->kp = Request::int('kp');
+                $this->modulteil->kp = Request::float('kp');
                 $this->modulteil->sws = Request::int('sws', 0);
                 $this->modulteil->wl_praesenz = Request::int('wl_praesenz', 0);
                 $this->modulteil->wl_bereitung = Request::int('wl_bereitung', 0);
