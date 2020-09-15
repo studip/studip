@@ -55,7 +55,7 @@ function export_form($range_id, $ex_type = "", $filename = "", $format = "", $fi
     $export_string .= "</select>";
 
     $export_string .= "</td><td align=\"right\" class=\"table_row_even\">";
-    $export_string .= Button::create(_('Export'), 'export', ['title' => _('Diese Daten Exportieren')]);
+    $export_string .= Button::create(_('Export'), 'export', ['title' => _('Diese Daten exportieren')]);
 
     $export_string .= "<input type=\"hidden\" name=\"range_id\" value=\"$range_id\">";
     $export_string .= "<input type=\"hidden\" name=\"o_mode\" value=\"choose\">";
