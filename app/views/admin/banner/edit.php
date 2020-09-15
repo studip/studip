@@ -21,7 +21,7 @@
                 <td class="nohover" style="vertical-align: top">
                     <fieldset>
                         <legend>
-                            <?= _('Banner editieren') ?>
+                            <?= _('Banner bearbeiten') ?>
                         </legend>
 
                         <label>

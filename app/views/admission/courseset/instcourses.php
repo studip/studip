@@ -38,12 +38,20 @@
                     <td>
                         <label for="<?= $course['seminar_id'] ?>">
                             <a href="<?=URLHelper::getScriptLink('dispatch.php/course/details/index/' . $course['seminar_id']) ?>"  data-dialog>
-                                <?= Icon::create('info-circle', 'inactive', ['title' =>_('Veranstaltungsdetails aufrufen')])->asImg()?>
+                                <?= Icon::create(
+                                    'info-circle',
+                                    Icon::ROLE_INACTIVE,
+                                    ['title' =>_('Veranstaltungsdetails anzeigen')]
+                                )?>
                             </a>
                             <?= htmlReady($title) ?>
                             <? if ($course['admission_type']) : ?>
                                 <? $typename = call_user_func($course['admission_type'] . '::getName') ?>
-                                <?= Icon::create('exclaim-circle', 'attention', ['title' => sprintf(_("vorhandene Anmelderegel: %s"), $typename)])->asImg(); ?>
+                                <?= Icon::create(
+                                    'exclaim-circle',
+                                    Icon::ROLE_ATTENTION,
+                                    ['title' => sprintf(_("vorhandene Anmelderegel: %s"), $typename)])
+                                ?>
                             <? endif ?>
                         </label>
                     </td>
