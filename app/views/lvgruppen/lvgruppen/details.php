@@ -132,8 +132,8 @@
                 <td><strong><?= _('Erstellt am:') ?></strong></td>
                 <td>
                     <?= strftime('%x, %X', $lvgruppe->mkdate) . ', ' ?>
-                    <?= get_fullname($lvgruppe->author_id) ?>
-                    <?= ' (' . get_username($lvgruppe->author_id) . ')' ?>
+                    <?= htmlReady(get_fullname($lvgruppe->author_id)) ?>
+                    <?= ' (' . htmlReady(get_username($lvgruppe->author_id)) . ')' ?>
                 </td>
             </tr>
             <? if ($lvgruppe->mkdate !== $lvgruppe->chdate) : ?>
@@ -141,8 +141,8 @@
                 <td><strong><?= _('Letzte Änderung am:') ?></strong></td>
                 <td>
                     <?= strftime('%x, %X', $lvgruppe->chdate) . ', ' ?>
-                    <?= get_fullname($lvgruppe->editor_id) ?>
-                    <?= ' (' . get_username($lvgruppe->editor_id) . ')' ?>
+                    <?= htmlReady(get_fullname($lvgruppe->editor_id)) ?>
+                    <?= ' (' . htmlReady(get_username($lvgruppe->editor_id)) . ')' ?>
                 </td>
             </tr>
             <? endif; ?>
