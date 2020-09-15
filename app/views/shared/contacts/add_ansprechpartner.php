@@ -46,9 +46,9 @@ jQuery(function ($) {
         <label>
             <?= _('Suche') ?>
             <?= QuickSearch::get(
-                                'ansp_user',
-                                new StandardSearch('user_id')
-                            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
+                'ansp_user',
+                new StandardSearch('user_id')
+            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
         </label>
     </div>
 
@@ -56,9 +56,9 @@ jQuery(function ($) {
         <label>
             <?= _('Suche') ?>
             <?= QuickSearch::get(
-                                'ansp_inst',
-                                new StandardSearch('Institut_id')
-                            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
+                'ansp_inst',
+                new StandardSearch('Institut_id')
+            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
         </label>
     </div>
 
@@ -66,9 +66,9 @@ jQuery(function ($) {
         <label>
             <?= _('Suche') ?>
             <?= QuickSearch::get(
-                                'ansp_ext_user',
-                                $extcontact_search_obj
-                            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
+                'ansp_ext_user',
+                $extcontact_search_obj
+            )->defaultValue($user_id, $ansp_name)->withButton()->render() ?>
         </label>
 
         <?= _('oder') ?>
@@ -90,7 +90,7 @@ jQuery(function ($) {
                 <?= MvvI18N::input('exansp_web', $ext_contact->homepage, ['maxlength' => '255'])->checkPermission($ext_contact) ?>
             </label>
             <label>
-                <?= _('Email') ?>
+                <?= _('E-Mail') ?>
                 <input name="exansp_mail" type="text" value=""<?= $perm_extern->disable('mail'); ?>>
             </label>
             <label>
@@ -126,7 +126,7 @@ jQuery(function ($) {
         </select>
     </label>
 
-<?= CSRFProtection::tokenTag(); ?>
+    <?= CSRFProtection::tokenTag(); ?>
     <div data-dialog-button>
         <?= Studip\Button::createAccept(_('Speichern'), 'store_ansprechpartner') ?>
         <?= Studip\LinkButton::createCancel(); ?>
