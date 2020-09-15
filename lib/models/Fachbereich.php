@@ -30,7 +30,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
             function($fb) { return $fb->count_module; };
 
         $config['i18n_fields']['name'] = true;
-        
+
         parent::configure($config);
     }
 
@@ -158,15 +158,21 @@ class Fachbereich extends ModuleManagementModelTreeItem
      */
     public function getChildren()
     {
-        $_SESSION['MVV/AbschlussKategorie/trail_parent_id'] =  $this->getId();
-        return AbschlussKategorie::getEnrichedByQuery('SELECT mak.* '
-            . 'FROM Institute ins '
-            . 'INNER JOIN mvv_studiengang ms ON ins.Institut_id = ms.institut_id '
-            . 'INNER JOIN mvv_abschl_zuord USING(abschluss_id) '
-            . 'INNER JOIN mvv_abschl_kategorie mak USING(kategorie_id) '
-            . 'WHERE ins.Institut_id = ? OR ins.fakultaets_id = ? '
-            . 'ORDER BY mak.name', [$this->getId(),
-                $this->getValue('fakultaets_id')]);
+        $_SESSION['MVV/AbschlussKategorie/trail_parent_id'] =  $this->id;
+
+        $query = "SELECT mak.*
+                  FROM Institute ins
+                  JOIN mvv_studiengang ms ON ins.Institut_id = ms.institut_id
+                  JOIN mvv_abschl_zuord USING (abschluss_id)
+                  JOIN mvv_abschl_kategorie mak USING(kategorie_id)
+                  WHERE (ins.Institut_id = ? OR ins.fakultaets_id = ?)
+                    AND ms.stat IN (?)
+                  ORDER BY mak.name";
+        return AbschlussKategorie::getEnrichedByQuery($query, [
+            $this->id,
+            $this->fakultaets_id,
+            Studiengang::getPublicStatus(),
+        ]);
 
     }
 

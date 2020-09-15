@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -17,7 +17,7 @@
 
 class MvvTreeRoot implements MvvTreeItem
 {
-    
+
     /**
      * @see MvvTreeItem::getTrailParentId()
      */
@@ -25,7 +25,7 @@ class MvvTreeRoot implements MvvTreeItem
     {
         return null;
     }
-    
+
     /**
      * @see MvvTreeItem::getTrailParent()
      */
@@ -33,31 +33,33 @@ class MvvTreeRoot implements MvvTreeItem
     {
         return null;
     }
-    
+
     /**
      * @see MvvTreeItem::getChildren()
      */
     public function getChildren()
     {
         $institute = [];
-        $stmt = DBManager::get()->prepare('SELECT DISTINCT inst.fakultaets_id '
-                . 'FROM mvv_modul_inst mmi '
-                . 'INNER JOIN mvv_modul USING(modul_id) '
-                . 'INNER JOIN mvv_modulteil USING(modul_id) '
-                . 'INNER JOIN mvv_lvgruppe_modulteil USING(modulteil_id) '
-                . 'LEFT JOIN Institute inst USING(institut_id) '
-                . 'LEFT JOIN Institute fak ON (fak.institut_id = inst.fakultaets_id) '
-                . 'WHERE mmi.gruppe = ? '
-                . 'ORDER BY fak.name ASC');
-        
-        $stmt->execute(['hauptverantwortlich']);
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $institut) {
-            $institute[$institut['fakultaets_id']] =
-                    new Fachbereich($institut['fakultaets_id']);
+
+        $query = "SELECT DISTINCT inst.fakultaets_id
+                  FROM mvv_modul_inst mmi
+                  JOIN mvv_modul USING (modul_id)
+                  JOIN mvv_modulteil USING (modul_id)
+                  JOIN mvv_lvgruppe_modulteil USING (modulteil_id)
+                  JOIN mvv_studiengang USING (institut_id)
+                  LEFT JOIN Institute inst USING (institut_id)
+                  LEFT JOIN Institute fak ON (fak.institut_id = inst.fakultaets_id)
+                  WHERE mmi.gruppe = ?
+                    AND mvv_studiengang.stat IN (?)
+                  ORDER BY fak.name ASC";
+        $statement = DBManager::get()->prepare($query);
+        $statement->execute(['hauptverantwortlich', Studiengang::getPublicStatus()]);
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $faculty_id) {
+            $institute[$faculty_id] = new Fachbereich($faculty_id);
         }
         return $institute;
     }
-    
+
     /**
      * @see MvvTreeItem::hasChildren()
      */
@@ -65,17 +67,17 @@ class MvvTreeRoot implements MvvTreeItem
     {
         return count($this->getChildren()) > 0;
     }
-    
+
     public function getDisplayName()
     {
         return Config::get()->UNI_NAME_CLEAN;
     }
-    
+
     public function getId()
     {
         return 'root';
     }
-    
+
     /**
      * @see MvvTreeItem::isAssignable()
      */
@@ -83,7 +85,7 @@ class MvvTreeRoot implements MvvTreeItem
     {
         return false;
     }
-    
+
     /**
      * @see MvvTreeItem::getParents()
      */
@@ -91,7 +93,7 @@ class MvvTreeRoot implements MvvTreeItem
     {
         return [];
     }
-    
+
     /**
      * @see MvvTreeItem::getTrails()
      */
@@ -103,7 +105,7 @@ class MvvTreeRoot implements MvvTreeItem
         $class_name = get_class($this);
         $next = $path[array_search($class_name, $path) + 1];
         $parents = $this->getParents($next);
-        
+
         foreach ($parents as $parent) {
             if ($parent) {
                 foreach ($parent->getTrails($types, $mode, $path, true) as $trail) {
@@ -121,11 +123,11 @@ class MvvTreeRoot implements MvvTreeItem
                 }
             }
         }
-        
+
         if (empty($trails) && in_array($class_name, $types)) {
             $trails = [[$class_name => $this]];
         }
-        
+
         return $trails;
     }
 
