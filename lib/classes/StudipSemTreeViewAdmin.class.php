@@ -230,11 +230,11 @@ class StudipSemTreeViewAdmin extends TreeView
             $this->msg[$item_id] = "info§" ._("Sie beabsichtigen diesen Bereich inklusive aller Unterbereiche zu löschen. ")
             . sprintf(_("Es werden insgesamt %s Bereiche gelöscht!"),count($this->tree->getKidsKids($item_id))+1)
             . "<br>" . _("Wollen Sie diese Bereiche wirklich löschen?") . "<br>"
-            . LinkButton::createAccept(_('JA!'),
+            . LinkButton::createAccept(_('Ja!'),
                     URLHelper::getURL($this->getSelf('cmd=DeleteItem&item_id='.$item_id)),
                     ['title' => _('löschen')])
             . "&nbsp;"
-            . LinkButton::createCancel(_('NEIN!'),
+            . LinkButton::createCancel(_('Nein!'),
                     URLHelper::getURL($this->getSelf('cmd=Cancel&item_id='. $item_id)));
         }
         return false;
