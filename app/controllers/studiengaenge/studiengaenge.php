@@ -728,11 +728,17 @@ class Studiengaenge_StudiengaengeController extends MVVController
     {
         $fach = Fach::find(Request::option('fach_id'));
         if ($fach) {
-            $this->render_json(
-                array_map(function ($v) {
-                    return trim($v) == '' ? null : $v;
-                }, $fach->toArray())
-            );
+            $data = array_map(function ($v) {
+                return trim($v) == '' ? null : (string) $v;
+            }, $fach->toArray());
+
+            $data['name'] = $fach->name->original();
+            $data['name_kurz'] = $fach->name_kurz->original();
+
+            $data['name_en'] = $fach->name->translation('en_GB') ?: null;
+            $data['name_kurz_en'] = $fach->name_kurz->translation('en_GB') ?: null;
+
+            $this->render_json($data);
         } else {
             $this->set_status(404, 'Not Found');
             $this->render_nothing();

@@ -1,7 +1,7 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <?= $controller->jsUrl() ?>
 <? $perm = MvvPerm::get($studiengang) ?>
-<form class="default" action="<?= $controller->url_for('/studiengang', $studiengang->id) ?>" method="post">
+<form class="default" action="<?= $controller->link_for('/studiengang', $studiengang->id) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset class="collapsable">

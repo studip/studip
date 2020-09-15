@@ -308,37 +308,44 @@ MVV.Search = {
     },
 
    insertFachName: function (item_id, item_name) {
-        jQuery.ajax({
-            url: STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'fach_data'),
-            data: {'fach_id' : item_id},
-            type: 'POST',
-            success:function(d){
-                if (_.isNull(d.name)) {
-                    jQuery('#fach_id_1').attr('placeholder',
-                        "Keine Angabe beim Fach".toLocaleString());
-                } else {
-                    jQuery('#fach_id_1').attr('value', d.name);
-                    jQuery('#fach_id_1').attr('aria-label', d.name);
-                    jQuery('#fach_id_1').attr('placeholder', d.name);
-                }
-                if (_.isNull(d.name_en)) {
-                    jQuery('#name_en').attr('placeholder',
-                        "Keine Angabe beim Fach".toLocaleString());
-                } else {
-                    jQuery('#name_en').attr('value', d.name_en);
-                }
-                if (_.isNull(d.name_kurz)) {
-                    jQuery('#name_kurz').attr('placeholder',
-                        "Keine Angabe beim Fach".toLocaleString());
-                } else {
-                    jQuery('#name_kurz').attr('value', d.name_kurz);
-                }
-                if (_.isNull(d.name_kurz_en)) {
-                    jQuery('#name_kurz_en').attr('placeholder',
-                        "Keine Angabe beim Fach".toLocaleString());
-                } else {
-                    jQuery('#name_kurz_en').attr('value', d.name_kurz_en);
-                }
+        $.get(STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'fach_data'), {
+            fach_id: item_id
+        }).done(function(d) {
+            if (_.isNull(d.name)) {
+                $('input[name="name"]').attr(
+                    'placeholder',
+                    'Keine Angabe beim Fach'.toLocaleString()
+                );
+            } else {
+                $('input[name="name"]').attr({
+                    value: d.name,
+                    placeholder: d.name,
+                    'aria-label': d.name,
+                });
+            }
+            if (_.isNull(d.name_en)) {
+                $('input[name="name_i18n[en_GB]"]').attr(
+                    'placeholder',
+                    'Keine Angabe beim Fach'.toLocaleString()
+                );
+            } else {
+                $('input[name="name_i18n[en_GB]"]').attr('value', d.name_en);
+            }
+            if (_.isNull(d.name_kurz)) {
+                $('input[name="name_kurz"]').attr(
+                    'placeholder',
+                    'Keine Angabe beim Fach'.toLocaleString()
+                );
+            } else {
+                $('input[name="name_kurz"]').attr('value', d.name_kurz);
+            }
+            if (_.isNull(d.name_kurz_en)) {
+                $('input[name="name_kurz_i18n[en_GB]"]').attr(
+                    'placeholder',
+                    'Keine Angabe beim Fach'.toLocaleString()
+                );
+            } else {
+                $('input[name="name_kurz_i18n[en_GB]"]').attr('value', d.name_kurz_en);
             }
         });
     }
