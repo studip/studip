@@ -54,7 +54,7 @@ class MvvTreeRoot implements MvvTreeItem
                   ORDER BY fak.name ASC";
         $statement = DBManager::get()->prepare($query);
         $statement->execute(['hauptverantwortlich', Studiengang::getPublicStatus()]);
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $faculty_id) {
+        foreach ($statement->fetchAll(PDO::FETCH_COLUMN) as $faculty_id) {
             $institute[$faculty_id] = new Fachbereich($faculty_id);
         }
         return $institute;
