@@ -481,7 +481,7 @@ class QuestionnaireController extends AuthenticatedController
                 'func' => "STUDIP.Questionnaire.updateOverviewQuestionnaire",
                 'payload' => [
                     'questionnaire_id' => $this->questionnaire->getId(),
-                    'html' => $this->render_template_as_string("questionnaire/_overview_questionnaire.php")
+                    'overview_html' => $this->render_template_as_string("questionnaire/_overview_questionnaire.php")
                 ]
             ];
             $this->response->add_header("X-Dialog-Execute", json_encode($output));
