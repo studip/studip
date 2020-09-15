@@ -9,6 +9,7 @@
             <th class="mvv-modul-details-head" data-mvv-field="mvv_modul.code"><?= htmlReady($modul->code) ?></th>
             <th class="mvv-modul-details-head" data-mvv-field="mvv_modul.kp" style="text-align: right;"><?= sprintf("%d CP", $modul->kp) ?></th>
         </tr>
+    <? if ($show_synopse || $modul->fassung_nr): ?>
         <tr>
             <th colspan="2" style="font-weight: normal;">
                 <? if ($show_synopse) : ?>
@@ -20,7 +21,7 @@
                     '<span data-mvv-field="mvv_modul.version">' . htmlReady($modul->version) . '</span>'
                 )
                 ?>
-                <? else : ?>
+            <? elseif ($modul->fassung_nr) : ?>
                 <?=
                 sprintf(_('In der Fassung des <b>%s</b>. Beschlusses vom <b>%s</b>.'),
                     '<span data-mvv-field="mvv_modul.fassung_nr">' . htmlReady($modul->fassung_nr) . '</span>',
@@ -30,6 +31,7 @@
                 <? endif; ?>
             </th>
         </tr>
+    <? endif; ?>
     </thead>
     <tbody>
         <tr>
@@ -54,6 +56,9 @@
             <td><strong><?= _('Verwendet in Studiengängen / Semestern') ?></strong></td>
             <td>
                 <? $trails = $modul->getTrails(['StgteilAbschnitt', 'StgteilVersion', 'Studiengang']); ?>
+                <? $trails = array_filter($trails, function ($trail) {
+                    return $trail['Studiengang']->stat !== 'ausgelaufen';
+                }); ?>
                 <? if (count($trails)) : ?>
                     <? $pathes = $modul->getPathes($trails, ' > ') ?>
                     <? if (count($pathes) > 9) : ?>
