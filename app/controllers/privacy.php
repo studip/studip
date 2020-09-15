@@ -50,7 +50,7 @@ class PrivacyController extends AuthenticatedController
         $actions->addLink(
             _('Export Personendaten als CSV'),
             $this->url_for("privacy/export/{$user_id}"),
-            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CVS')))
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CSV')))
         );
         $actions->addLink(
             _('Export persönlicher Dateien als XML'),
@@ -108,7 +108,7 @@ class PrivacyController extends AuthenticatedController
         $actions->addLink(
             _('Export Personendaten als CSV'),
             $this->url_for("privacy/export/{$user_id}"),
-            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CVS')))
+            Icon::create('file-text', Icon::ROLE_CLICKABLE, tooltip2(_('Export Personendaten als CSV')))
         );
         $actions->addLink(
             _('Export persönlicher Dateien als XML'),
