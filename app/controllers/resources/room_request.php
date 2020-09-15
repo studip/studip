@@ -1807,7 +1807,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 _('Wochentag'),
                 _('Uhrzeit'),
                 _('Rüstzeit'),
-                _('Anzahl Termine'),
+                _('Anzahl der Termine'),
                 _('Art der Anfrage'),
                 _('Datum des ersten Termins'),
                 _('Datum der Anfrage'),

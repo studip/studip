@@ -6,7 +6,7 @@
 
         <span class="input-group-append">
             <button type="submit" class="button" id="search-btn">
-                <?= Icon::create('search')->asImg(['title' => _('Suche beginnen')]) ?>
+                <?= Icon::create('search')->asImg(['title' => _('Suche starten')]) ?>
             </button>
 
             <button type="submit" class="button" id="reset-search">

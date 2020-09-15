@@ -10,7 +10,7 @@
 
     <span class="input-group-append">
         <button type="submit" class="button">
-            <?= Icon::create('search')->asImg(['title' => _("Suche beginnen")]) ?>
+            <?= Icon::create('search')->asImg(['title' => _("Suche starten")]) ?>
         </button>
 
         <? if ($query != '') : ?>
