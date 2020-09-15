@@ -838,7 +838,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         }
         if ($this->info->hobby && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['hobby']) {
             $homepage_elements['hobby'] = [
-                'name'       => _('Hobbies'),
+                'name'       => _('Hobbys'),
                 'visibility' => $homepage_visibility['hobby'] ?: get_default_homepage_visibility($this->id),
                 'category'   => 'Private Daten',
             ];

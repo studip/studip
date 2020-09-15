@@ -106,7 +106,7 @@ class Settings_DetailsController extends Settings_SettingsController
             'anschrift'  => _('Private Adresse'),
             'home'       => _('Homepage-Adresse'),
             'motto'      => _('Motto'),
-            'hobby'      => _('Hobbies'),
+            'hobby'      => _('Hobbys'),
             'lebenslauf' => _('Lebenslauf'),
             'schwerp'    => _('Arbeitsschwerpunkte'),
             'publi'      => _('Publikationen'),
