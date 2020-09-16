@@ -39,7 +39,7 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
         ]);
         $answers_total = $statement->fetch(PDO::FETCH_COLUMN, 0);
 
-        return count($this->questions) ? $answers_total / count($this->questions) : 1;
+        return count($this->questions) ? $answers_total / count($this->questions) : 0;
     }
 
     public function isAnswered($user_id = null)
