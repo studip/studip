@@ -356,6 +356,6 @@
         $('#mvv-studycourse-types').select2({
             placeholder: '<?= _('Typ wählen') ?>'
         });
-        MVV.Aufbaustg.loadTable('<?= $studiengang->id ?>');
+        STUDIP.MVV.Aufbaustg.loadTable('<?= $studiengang->id ?>');
     });
 </script>

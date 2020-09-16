@@ -465,7 +465,7 @@ class Shared_ContactsController extends MVVController
             if ($range_added || $contact_stored || $contactrange_stored) {
                 PageLayout::postSuccess(_('Der Ansprechpartner wurde gespeichert.'));
                 if ($origin === 'range') {
-                    $this->response->add_header('X-Dialog-Execute', 'MVV.Contact.reload_contacttable("' . $range_id . '", "' . $range_type . '")');
+                    $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Contact.reload_contacttable("' . $range_id . '", "' . $range_type . '")');
                     $this->response->add_header('X-Dialog-Close', 1);
                     $this->render_nothing();
                 } else {
@@ -614,7 +614,7 @@ class Shared_ContactsController extends MVVController
 
             }
 
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Contact.reload_contacttable()');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Contact.reload_contacttable()');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;

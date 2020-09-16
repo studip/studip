@@ -76,7 +76,7 @@
 jQuery(function ($) {
     $(document).on('dialog-close', function(event) {
         if ($('div.ui-dialog.studip-confirmation').length) {
-            MVV.Contact.reload_contacttable('<?= htmlReady($range_id) ?>', '<?= htmlReady($range_type) ?>');
+            STUDIP.MVV.Contact.reload_contacttable('<?= htmlReady($range_id) ?>', '<?= htmlReady($range_type) ?>');
         }
     });
 });

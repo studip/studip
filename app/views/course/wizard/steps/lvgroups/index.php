@@ -32,10 +32,10 @@
             <input type="text" size="40" style="width: auto;" name="search" id="lvgroup-tree-search"
                    value="<?= $values['searchterm'] ?>">
             <span id="lvgroup-tree-search-start">
-                <?= Icon::create('search', 'clickable')->asInput(["name" => 'start_search', "onclick" => "return MVV.CourseWizard.searchTree()", "class" => $search_result?'hidden-no-js':'']) ?>
+                <?= Icon::create('search', 'clickable')->asInput(["name" => 'start_search', "onclick" => "return STUDIP.MVV.CourseWizard.searchTree()", "class" => $search_result?'hidden-no-js':'']) ?>
             </span>
             <span id="lvgroup-tree-search-reset" class="hidden-js">
-                <?= Icon::create('refresh', 'clickable')->asInput(["name" => 'reset_search', "onclick" => "return MVV.CourseWizard.resetSearch()", "class" => $search_result?'':' hidden-no-js']) ?>
+                <?= Icon::create('refresh', 'clickable')->asInput(["name" => 'reset_search', "onclick" => "return STUDIP.MVV.CourseWizard.resetSearch()", "class" => $search_result?'':' hidden-no-js']) ?>
             </span>
         </div>
 
@@ -81,9 +81,9 @@
         element.on('keypress', function(e) {
             if (e.keyCode == 13) {
                 if (element.val() != '') {
-                    return MVV.CourseWizard.searchTree();
+                    return STUDIP.MVV.CourseWizard.searchTree();
                 } else {
-                    return MVV.CourseWizard.resetSearch();
+                    return STUDIP.MVV.CourseWizard.resetSearch();
                 }
             }
         });

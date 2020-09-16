@@ -96,7 +96,7 @@
 jQuery(function ($) {
     $(document).on('dialog-close', function(event) {
         if ($('div.ui-dialog.studip-confirmation').length) {
-            MVV.Contact.reload_contacttable();
+            STUDIP.MVV.Contact.reload_contacttable();
         }
     });
 });

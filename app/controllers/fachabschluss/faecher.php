@@ -116,7 +116,7 @@ class Fachabschluss_FaecherController extends MVVController
         $this->search_institutes = QuickSearch::get(
             'institut_id',
             new StandardSearch('Institut_id')
-        )->fireJSFunctionOnSelect('MVV.Search.addSelected')->noSelectbox();
+        )->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')->noSelectbox();
 
         if (!$this->fach->isNew() && MvvPerm::havePermCreate($this->fach)) {
             $this->setSidebar();

@@ -1,6 +1,6 @@
 jQuery(function ($) {
     $(document).on('click', 'a.mvv-load-in-new-row', function () {
-        MVV.Content.loadRow($(this));
+        STUDIP.MVV.Content.loadRow($(this));
         return false;
     });
 
@@ -9,20 +9,20 @@ jQuery(function ($) {
         return false;
     });
 
-    MVV.Sort.init($('.sortable'));
+    STUDIP.MVV.Sort.init($('.sortable'));
 
     $(document).on('change', '#mvv-chooser select', function(){
-        MVV.Chooser.create($(this));
+        STUDIP.MVV.Chooser.create($(this));
         return false;
     });
 
     $(document).on('click', '.mvv-item-remove', function () {
-        MVV.Content.removeItem(this);
+        STUDIP.MVV.Content.removeItem(this);
         return false;
     });
 
     $(document).on('click', '.mvv-item-edit', function () {
-        MVV.Content.editAnnotation(this);
+        STUDIP.MVV.Content.editAnnotation(this);
         return false;
     });
 
@@ -33,39 +33,39 @@ jQuery(function ($) {
 
     // get the quicksearch input
     $(document).on('click focus', '.ui-autocomplete-input', function() {
-        MVV.Search.qs_input = this;
+        STUDIP.MVV.Search.qs_input = this;
         return false;
     });
 
     $('.with-datepicker').datepicker();
 
     $(document).on('change', '.mvv-inst-chooser select', function() {
-        MVV.LanguageChooser.showButtons($(this));
+        STUDIP.MVV.LanguageChooser.showButtons($(this));
         return false;
     });
 
     $(document).on('click', '.mvv-show-original', function() {
-        MVV.Content.showOriginal($(this));
+        STUDIP.MVV.Content.showOriginal($(this));
         return false;
     });
 
     $(document).on('click', '.mvv-show-all-original', function() {
-        MVV.Content.showAllOriginal();
+        STUDIP.MVV.Content.showAllOriginal();
         return false;
     });
 
     $(document).on('click', 'a.mvv-new-tab', function(event) {
-        MVV.Diff.openNewTab(this);
+        STUDIP.MVV.Diff.openNewTab(this);
         return false;
     });
 
     $(document).on('click', 'input.mvv-qs-button', function($event) {
-        MVV.Search.addSelect($(this));
+        STUDIP.MVV.Search.addSelect($(this));
         return false;
     });
 
     $(document).on('click', '.stgfile .remove_attachment', function($event) {
-        MVV.Document.remove_attachment($(this));
+        STUDIP.MVV.Document.remove_attachment($(this));
         return false;
     });
 
@@ -150,16 +150,16 @@ jQuery(function ($) {
 /* ------------------------------------------------------------------------
  * the local MVV namespace
  * ------------------------------------------------------------------------ */
-window.MVV = window.MVV || {};
+window.STUDIP.MVV = window.STUDIP.MVV || {};
 
-MVV.Search = {
+STUDIP.MVV.Search = {
     qs_input : null,
     qs_selected_name : null,
     getFocus: function (item_id, item_name) {
-        var qs_input = jQuery(MVV.Search.qs_input),
+        var qs_input = jQuery(STUDIP.MVV.Search.qs_input),
             qs_item = jQuery('#'+qs_input.attr('id'));
         if (item_id == '') {
-            MVV.Search.addSelect(qs_item);
+            STUDIP.MVV.Search.addSelect(qs_item);
         } else {
             qs_input.closest('form')
             .find('.mvv-submit')
@@ -169,12 +169,12 @@ MVV.Search = {
         return true;
     },
     addButton: function (item_id, item_name) {
-        var qs_input = jQuery(MVV.Search.qs_input),
+        var qs_input = jQuery(STUDIP.MVV.Search.qs_input),
             qs_item = jQuery('#'+qs_input.attr('id'));
         if (item_id == '') {
-            MVV.Search.addSelect(qs_item);
+            STUDIP.MVV.Search.addSelect(qs_item);
         } else {
-            MVV.Search.addTheButton(qs_item);
+            STUDIP.MVV.Search.addTheButton(qs_item);
         }
         return true;
     },
@@ -196,12 +196,12 @@ MVV.Search = {
             });
         } else {
             add_button.click(function() {
-                    if (_.isNull(MVV.Search.qs_selected_name)) {
-                        MVV.Content.addItem(target_name, item_id,
+                    if (_.isNull(STUDIP.MVV.Search.qs_selected_name)) {
+                        STUDIP.MVV.Content.addItem(target_name, item_id,
                         qs_item.val());
                     } else {
-                        MVV.Content.addItem(target_name, item_id,
-                            MVV.Search.qs_selected_name);
+                        STUDIP.MVV.Content.addItem(target_name, item_id,
+                            STUDIP.MVV.Search.qs_selected_name);
                     }
                     jQuery(this).fadeOut('slow', function () {
                         qs_item.val('').focus();
@@ -255,13 +255,13 @@ MVV.Search = {
                 var selected = qs_select.children('option:selected'),
                 target_name = qs_name.slice(0, qs_name.indexOf('_'));
                 qs_real.val(selected.val());
-                MVV.Content.addItem(target_name, selected.val(),
+                STUDIP.MVV.Content.addItem(target_name, selected.val(),
                     selected.html().replace(/<.*>/g, ' '));
                 reset_button.click();
             });
         }
         jQuery.ajax({
-            url: STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'qs_result'),
+            url: STUDIP.URLHelper.getURL(STUDIP.MVV.CONTROLLER_URL + 'qs_result'),
             data: {'qs_id': qs_id, 'qs_term': qs_input.val()},
             type: 'POST',
             success: function (data) {
@@ -303,12 +303,12 @@ MVV.Search = {
             //QUICKSEARCHTODO
         //target_name = qs_id.slice(0, qs_id.lastIndexOf('_'));
         target_name = qs_name.split('_')[0];
-        MVV.Content.addItem(target_name, item_id,
+        STUDIP.MVV.Content.addItem(target_name, item_id,
             jQuery('<div/>').html(item_name.replace(strip_tags, '')).text());
     },
 
    insertFachName: function (item_id, item_name) {
-        $.get(STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'fach_data'), {
+        $.get(STUDIP.URLHelper.getURL(STUDIP.MVV.CONTROLLER_URL + 'fach_data'), {
             fach_id: item_id
         }).done(function(d) {
             if (_.isNull(d.name)) {
@@ -351,22 +351,22 @@ MVV.Search = {
     }
 };
 
-MVV.Sort = {
+STUDIP.MVV.Sort = {
     i: null,
     start: function(event, ui) {
-        MVV.Sort.i = jQuery(ui.item).index();
+        STUDIP.MVV.Sort.i = jQuery(ui.item).index();
     },
     stop: function(event, ui) {
         var i = jQuery(ui.item).index();
-        if(MVV.Sort.i !== i){
+        if(STUDIP.MVV.Sort.i !== i){
             var newOrder = jQuery(this).sortable('toArray');
             var tableID = jQuery(this).closest('.sortable').attr('id');
-            MVV.Sort.save(newOrder, tableID);
+            STUDIP.MVV.Sort.save(newOrder, tableID);
         }
     },
     save: function(newOrder, tableID) {
         jQuery.ajax({
-            url: STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'sort'),
+            url: STUDIP.URLHelper.getURL(STUDIP.MVV.CONTROLLER_URL + 'sort'),
             data:{
                 'list_id':tableID,
                 'newOrder':newOrder
@@ -381,13 +381,13 @@ MVV.Sort = {
             cursor: 'move',
             containment: 'parent',
             axis: 'y',
-            start: MVV.Sort.start,
-            stop: MVV.Sort.stop
+            start: STUDIP.MVV.Sort.start,
+            stop: STUDIP.MVV.Sort.stop
         });
     }
 };
 
-MVV.Chooser = {
+STUDIP.MVV.Chooser = {
     create: function (element) {
         var parent = element.closest('form');
         jQuery('#mvv-load-content').fadeOut().html('');
@@ -412,7 +412,7 @@ MVV.Chooser = {
     }
 };
 
-MVV.LanguageChooser = {
+STUDIP.MVV.LanguageChooser = {
     showButtons: function (element) {
         var chooser = element.closest('.mvv-inst-chooser');
         var sel = chooser.find(':selected');
@@ -422,11 +422,11 @@ MVV.LanguageChooser = {
             button.fadeIn('fast').unbind('click');
             jQuery(button).click(function() {
                 if (sel.data('fb') === '') {
-                    MVV.Content.addItem(
+                    STUDIP.MVV.Content.addItem(
                         chooser.find('select').attr('name'),
                             sel.val(), sel.text());
                 } else {
-                    MVV.Content.addItem(
+                    STUDIP.MVV.Content.addItem(
                         chooser.find('select').attr('name'),
                             sel.val(),
                             sel.data('fb') + ' - ' + sel.text());
@@ -436,12 +436,12 @@ MVV.LanguageChooser = {
     }
 };
 
-MVV.Content = {
+STUDIP.MVV.Content = {
     deskriptor_data: null,
 
     get: function (id) {
         jQuery('#mvv-load-content').load(
-                STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL+'content/'+id), function() {
+                STUDIP.URLHelper.getURL(STUDIP.MVV.CONTROLLER_URL+'content/'+id), function() {
             jQuery('#mvv-load-content').fadeIn();
         });
     },
@@ -516,7 +516,7 @@ MVV.Content = {
     },
 
     addItemFromDialog: function (data) {
-        MVV.Content.addItem(data.target, data.item_id, data.item_name);
+        STUDIP.MVV.Content.addItem(data.target, data.item_id, data.item_name);
     },
 
     removeItem: function (this_button) {
@@ -554,7 +554,7 @@ MVV.Content = {
     editProperties: function (button) {
         var this_button = jQuery(button),
             item = this_button.closest('li');
-        MVV.EditForm.openRef(item);
+        STUDIP.MVV.EditForm.openRef(item);
     },
     loadRow: function (element) {
         if (element.data('busy')) {
@@ -572,7 +572,7 @@ MVV.Content = {
             element.data('busy', false);
             jQuery('body').trigger('ajaxLoaded');
             jQuery(row).show();
-            MVV.Sort.init(jQuery('.sortable'));
+            STUDIP.MVV.Sort.init(jQuery('.sortable'));
             STUDIP.Table.enhanceSortableTable(row.find('.sortable-table'));
         });
         element.closest('tbody').toggleClass('collapsed not-collapsed');
@@ -583,35 +583,35 @@ MVV.Content = {
             element.next().slideToggle('fast');
             return false;
         };
-        if (_.isNull(MVV.Content.deskriptor_data)) {
+        if (_.isNull(STUDIP.MVV.Content.deskriptor_data)) {
             jQuery.ajax({
-                url: STUDIP.URLHelper.getURL(MVV.CONTROLLER_URL + 'show_original/'),
+                url: STUDIP.URLHelper.getURL(STUDIP.MVV.CONTROLLER_URL + 'show_original/'),
                 data: {
-                    'id'  : MVV.PARENT_ID,
+                    'id'  : STUDIP.MVV.PARENT_ID,
                     'type': element.data('type')
                 },
                 type: 'POST',
                 async: false,
                 success: function (data) {
                     if (data.length !== 0) {
-                        MVV.Content.deskriptor_data = data;
+                        STUDIP.MVV.Content.deskriptor_data = data;
                     }
                 }
             });
         }
-        if (!_.isNull(MVV.Content.deskriptor_data)) {
+        if (!_.isNull(STUDIP.MVV.Content.deskriptor_data)) {
             var field_id = element.closest('label')
                 .find('textarea, input[type=text]')
                 .attr('id');
             var item = jQuery('<div/>').addClass('mvv-orig-lang');
-            if (!_.isUndefined(MVV.Content.deskriptor_data[field_id])) {
-                if (MVV.Content.deskriptor_data[field_id]['empty']) {
+            if (!_.isUndefined(STUDIP.MVV.Content.deskriptor_data[field_id])) {
+                if (STUDIP.MVV.Content.deskriptor_data[field_id]['empty']) {
                     item.css({
                         "color": "red",
                         "font-style": "italic"
                     });
                 }
-                item.html(MVV.Content.deskriptor_data[field_id]['value']);
+                item.html(STUDIP.MVV.Content.deskriptor_data[field_id]['value']);
             } else {
                 item.html("Datenfeld in Original-Sprache nicht verfügbar."
                         .toLocaleString());
@@ -638,7 +638,7 @@ MVV.Content = {
     }
 };
 
-MVV.Diff = {
+STUDIP.MVV.Diff = {
     openNewTab: function (item) {
         var url_to_open = null,
             new_id = null,
@@ -658,7 +658,7 @@ MVV.Diff = {
     }
 };
 
-MVV.Document = {
+STUDIP.MVV.Document = {
     reload_documenttable: function(range_id, range_type) {
         setTimeout(function() {
             jQuery.ajax({
@@ -695,7 +695,7 @@ MVV.Document = {
             });
     },
     upload_from_input: function(input, file_language) {
-        MVV.Document.upload_files(input.files, file_language);
+        STUDIP.MVV.Document.upload_files(input.files, file_language);
         jQuery(input).val('');
     },
     fileIDQueue: 1,
@@ -711,7 +711,7 @@ MVV.Document = {
             fd.append('mvvfile_id', jQuery('#mvvfile_id').val());
             fd.append('range_id', jQuery('#range_id').val());
             fd.append('file_language', file_language);
-            MVV.Document.upload_file(fd, statusbar);
+            STUDIP.MVV.Document.upload_file(fd, statusbar);
         }
     },
     upload_file: function(formdata, statusbar) {
@@ -796,7 +796,7 @@ MVV.Document = {
 };
 
 
-MVV.Contact = {
+STUDIP.MVV.Contact = {
     reload_contacttable: function(range_id, range_type) {
         setTimeout(function() {
             jQuery.ajax({
@@ -816,7 +816,7 @@ MVV.Contact = {
     }
 };
 
-MVV.Aufbaustg = {
+STUDIP.MVV.Aufbaustg = {
     create: function(df) {
         setTimeout(function() {
             $.ajax({

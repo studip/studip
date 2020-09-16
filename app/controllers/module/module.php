@@ -319,7 +319,7 @@ class Module_ModuleController extends MVVController
         $this->qs_id_module = md5(serialize($sql_search_modul));
         $this->search_modul =
                 QuickSearch::get('modul', $sql_search_modul)
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                 ->noSelectbox();
 
         $sql_search_user = new PermissionSearch(
@@ -332,7 +332,7 @@ class Module_ModuleController extends MVVController
         $qs_users = QuickSearch::get('users', $sql_search_user);
         $this->qs_frame_id_users = $qs_users->getId();
         $this->search_users = $qs_users
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                 ->noSelectbox();
 
         $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name
@@ -350,7 +350,7 @@ class Module_ModuleController extends MVVController
         $qs_responsible = QuickSearch::get('responsible', $sql_search_responsible);
         $this->qs_frame_id_responsible = $qs_responsible->getId();
         $this->search_responsible = $qs_responsible
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                 ->noSelectbox();
 
         $query = 'SELECT DISTINCT Institute.Institut_id, Institute.Name AS name
@@ -365,7 +365,7 @@ class Module_ModuleController extends MVVController
         $qs_institutes = QuickSearch::get('institutes', $sql_search_institutes);
         $this->qs_frame_id_institutes = $qs_institutes->getId();
         $this->search_institutes = $qs_institutes
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                 ->noSelectbox();
 
         $this->cancel_url = $this->url_for('/index');

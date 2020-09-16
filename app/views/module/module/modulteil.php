@@ -8,7 +8,7 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
 }
 ?>
 <script>
-    MVV.PARENT_ID = '<?= $modulteil->getId() ?>';
+    STUDIP.MVV.PARENT_ID = '<?= $modulteil->getId() ?>';
 </script>
 
 <form id="modulteil_form" class="default" action="<?= $controller->url_for('/modulteil/', $modulteil->id) ?>"

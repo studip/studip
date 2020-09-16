@@ -112,7 +112,7 @@ class Studiengaenge_StudiengangteileController extends SharedVersionController
         $search = new SQLSearch($query, _('Fach suchen'), 'fach_id');
         $this->search_fach_id = md5(serialize($search));
         $this->search_fach = QuickSearch::get('fach', $search)
-                ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                 ->noSelectbox();
 
         $this->cancel_url = $this->url_for('/index');

@@ -7,7 +7,7 @@
 <div class="mvv-widget-right">
     <? if (!Request::isXhr()) : ?>
     <script>
-        MVV.INST_CHOOSER_URL = "<?= $controller->url_for('shared/inst_chooser', ($chooser_all_institutes ? ['all' => '1'] : [])) ?>/";
+        STUDIP.MVV.INST_CHOOSER_URL = "<?= $controller->url_for('shared/inst_chooser', ($chooser_all_institutes ? ['all' => '1'] : [])) ?>/";
     </script>
     <? endif; ?>
     <div class="mvv-inst-chooser">

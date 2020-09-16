@@ -173,7 +173,7 @@ class Materialien_FilesController extends MVVController
                 }
 
                 if ($origin == 'range') {
-                    $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
+                    $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
                     $this->response->add_header('X-Dialog-Close', 1);
                     $this->render_nothing();
                 } else {
@@ -243,7 +243,7 @@ class Materialien_FilesController extends MVVController
                 }
             }
 
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;
@@ -293,7 +293,7 @@ class Materialien_FilesController extends MVVController
                 }
             }
 
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable()');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable()');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;
@@ -438,7 +438,7 @@ class Materialien_FilesController extends MVVController
         }
         $this->range_id = $range_id;
         if (Request::isXhr()) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable("' . $range_id . '", "' . $range_type . '")');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;
@@ -466,7 +466,7 @@ class Materialien_FilesController extends MVVController
         }
         $this->range_id = $range_id;
         if (Request::isXhr()) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable("' . $range_id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable("' . $range_id . '")');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;
@@ -484,7 +484,7 @@ class Materialien_FilesController extends MVVController
         PageLayout::postSuccess(_('Das Dokument und alle seine Zuweisungen wurden gelöscht.'));
 
         if (Request::isXhr()) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Document.reload_documenttable("' . $range_id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Document.reload_documenttable("' . $range_id . '")');
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;

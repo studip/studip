@@ -1,4 +1,3 @@
-
 <script>
-    MVV.CONTROLLER_URL = "<?= $url ?>";
+    STUDIP.MVV.CONTROLLER_URL = "<?= $url ?>";
 </script>

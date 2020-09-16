@@ -122,7 +122,7 @@
 jQuery(function ($) {
     $(document).on('dialog-close', function(event) {
         if ($('div.ui-dialog.studip-confirmation').length) {
-            MVV.Document.reload_documenttable();
+            STUDIP.MVV.Document.reload_documenttable();
         }
     });
 });

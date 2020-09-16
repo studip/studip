@@ -723,7 +723,7 @@ class SharedVersionController extends MVVController
         $this->search_modul_abschnitt =
                 QuickSearch::get('modul_id_' . $this->abschnitt->id, $search)
                 ->setInputStyle('width: 240px')
-                ->fireJSFunctionOnSelect('MVV.Search.getFocus');
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.getFocus');
         if (Request::isXhr()) {
             $this->render_template('studiengaenge/versionen/details_abschnitt');
         } else {

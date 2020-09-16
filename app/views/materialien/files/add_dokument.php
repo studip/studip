@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         <label id="upload_chooser" style="cursor: pointer;">
-                            <input type="file" id="fileupload" multiple onChange="MVV.Document.upload_from_input(this, '<?= $key; ?>');" style="display: none;">
+                            <input type="file" id="fileupload" multiple onChange="STUDIP.MVV.Document.upload_from_input(this, '<?= $key; ?>');" style="display: none;">
                             <?= Icon::create('upload', 'clickable', ['title' => _("Datei hochladen"), 'class' => "text-bottom"])->asImg(20) ?>
                             <?= _("Datei hochladen") ?>
                         </label>

@@ -331,7 +331,7 @@ class MvvFile extends ModuleManagementModel
         $search = new SQLSearch($query, _('Dokument suchen'));
         $qs_id = md5(serialize($search));
         $qs_html = QuickSearch::get('dokumente', $search)
-                    ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+                    ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
                     ->noSelectbox();
         return ['id' => $qs_id, 'html' => $qs_html];
     }

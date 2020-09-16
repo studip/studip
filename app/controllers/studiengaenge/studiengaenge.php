@@ -248,7 +248,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
                     ->defaultValue($this->studiengang->name,
                         $this->studiengang->name)
                     ->noSelectbox()
-                    ->fireJSFunctionOnSelect('MVV.Search.insertFachName')
+                    ->fireJSFunctionOnSelect('STUDIP.MVV.Search.insertFachName')
                     ->render();
 
         // Einrichtung
@@ -256,7 +256,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $search = new StandardSearch('Institut_id');
         $this->search_institutes_id = md5(serialize($search));
         $this->search_institutes = QuickSearch::get('institut_id', $search)
-            ->fireJSFunctionOnSelect('MVV.Search.addSelected')
+            ->fireJSFunctionOnSelect('STUDIP.MVV.Search.addSelected')
             ->noSelectbox();
 
         if ($this->parent_id) {
@@ -407,7 +407,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $search = new SQLSearch($query, _('Studiengangteil suchen'));
         $this->qs_search_id = md5(serialize($search));
         $this->search = QuickSearch::get('stg_id_'. $this->stg_stgbez_id, $search)
-                ->fireJSFunctionOnSelect('MVV.Search.submitSelected');
+                ->fireJSFunctionOnSelect('STUDIP.MVV.Search.submitSelected');
     }
 
     public function details_studiengang_action($studiengang_id, $stgteil_bez_id = null)
@@ -837,7 +837,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             }
         }
         if ($stored) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grundstg->id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Aufbaustg.loadTable("' . $grundstg->id . '")');
 
         }
         $this->response->add_header('X-Dialog-Close', '1');
@@ -849,7 +849,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             PageLayout::postError(htmlReady($e->getMessage()));
         }
         if ($stored) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grund_stg->id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Aufbaustg.loadTable("' . $grund_stg->id . '")');
             $this->response->add_header('X-Dialog-Close', '1');
             $this->render_nothing();
         } else {
@@ -897,7 +897,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
             PageLayout::postError(htmlReady($e->getMessage()));
         }
         if ($stored) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $aufbaustg->grund_stg_id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Aufbaustg.loadTable("' . $aufbaustg->grund_stg_id . '")');
             $this->response->add_header('X-Dialog-Close', '1');
             $this->render_nothing();
         } else {
@@ -921,7 +921,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         }
         $grund_stg_id = $aufbaustg->grund_stg_id;
         if ($aufbaustg->delete()) {
-            $this->response->add_header('X-Dialog-Execute', 'MVV.Aufbaustg.loadTable("' . $grund_stg_id . '")');
+            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Aufbaustg.loadTable("' . $grund_stg_id . '")');
             $this->response->add_header('X-Dialog-Close', '1');
             $this->render_nothing();
         }

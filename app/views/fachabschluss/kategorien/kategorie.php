@@ -1,8 +1,8 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <?= $controller->jsUrl() ?>
 <script>
-    MVV.PARENT_ID = '<?= $abschluss_kategorie->getId() ?>';
-    MVV.OBJECT_TYPE = 'AbschlussKategorie';
+    STUDIP.MVV.PARENT_ID = '<?= $abschluss_kategorie->getId() ?>';
+    STUDIP.MVV.OBJECT_TYPE = 'AbschlussKategorie';
 </script>
 <? $perm = MvvPerm::get($abschluss_kategorie) ?>
 <form class="default"

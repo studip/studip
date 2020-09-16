@@ -1,7 +1,7 @@
 <script type="text/javascript">
 jQuery(function ($) {
     $('div.ui-dialog').on('dialogclose', function(event) {
-        MVV.Contact.reload_contacttable('<?= htmlReady($range_id) ?>', '<?= htmlReady($range_type) ?>');
+        STUDIP.MVV.Contact.reload_contacttable('<?= htmlReady($range_id) ?>', '<?= htmlReady($range_type) ?>');
     });
 });
 </script>

@@ -9,7 +9,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
 ?>
 <? if (!$def_lang) : ?>
     <script>
-        MVV.PARENT_ID = '<?= $modul->getId() ?>';
+        STUDIP.MVV.PARENT_ID = '<?= $modul->getId() ?>';
     </script>
 <? endif; ?>
 

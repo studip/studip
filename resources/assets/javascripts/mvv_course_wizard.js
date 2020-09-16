@@ -1,6 +1,6 @@
-window.MVV = window.MVV || {};
+window.STUDIP.MVV = window.STUDIP.MVV || {};
 
-MVV.CourseWizard = {
+STUDIP.MVV.CourseWizard = {
     /**
      * Fetches the children of a given lvgroup.
      * @param node the ID of the parent.
@@ -37,7 +37,7 @@ MVV.CourseWizard = {
                         var list = target.children('ul');
                         for (i = 0; i < items.length; i++) {
                             if (items[i].assignable || items[i].has_children) {
-                                list.append(MVV.CourseWizard.createTreeNode(items[i], assignable));
+                                list.append(STUDIP.MVV.CourseWizard.createTreeNode(items[i], assignable));
                             }
                         }
                     }
@@ -140,7 +140,7 @@ MVV.CourseWizard = {
      */
     createTreeNode: function(values, assignable, selected) {
         var item = $('<li>');
-        
+
         // Node in lvgroups tree.
         if (assignable) {
             var mvv_ids = values.id.split('-');
@@ -152,7 +152,7 @@ MVV.CourseWizard = {
                 .attr('src', STUDIP.ASSETS_URL + 'images/icons/yellow/arr_2left.svg')
                 .attr('width', '16')
                 .height('height', '16')
-                .attr('onclick', "return MVV.CourseWizard.assignNode('" + values.id + "')");
+                .attr('onclick', "return STUDIP.MVV.CourseWizard.assignNode('" + values.id + "')");
             if (values.assignable) {
                 item.append(assign);
                 item.append(document.createTextNode(' '));
@@ -166,7 +166,7 @@ MVV.CourseWizard = {
                     .attr('for', values.id)
                     .attr(
                         'onclick',
-                        "return MVV.CourseWizard.getTreeChildren('" + values.id + "', true, '" + values.mvvclass + "')"
+                        "return STUDIP.MVV.CourseWizard.getTreeChildren('" + values.id + "', true, '" + values.mvvclass + "')"
                     );
                 // Build link for opening the current node.
                 var link = $('div#studyareas').data('forward-url');
@@ -212,7 +212,7 @@ MVV.CourseWizard = {
         $.ajax($('#studyareas').data('ajax-url'), {
             data: params,
             beforeSend: function(xhr, settings) {
-                MVV.CourseWizard.loadingOverlay($('div#assigned ul.css-tree'));
+                STUDIP.MVV.CourseWizard.loadingOverlay($('div#assigned ul.css-tree'));
             },
             success: function(data, status, xhr) {
                 $('#loading-overlay').remove();
@@ -286,7 +286,7 @@ MVV.CourseWizard = {
             $.ajax($('#assigned').data('ajax-url'), {
                 data: params,
                 beforeSend: function(xhr, settings) {
-                    MVV.CourseWizard.loadingOverlay($('div#assigned ul.css-tree'));
+                    STUDIP.MVV.CourseWizard.loadingOverlay($('div#assigned ul.css-tree'));
                 },
                 success: function(data, status, xhr) {
                     $('#loading-overlay').remove();
@@ -315,7 +315,7 @@ MVV.CourseWizard = {
             $.ajax($('#studyareas').data('ajax-url'), {
                 data: params,
                 beforeSend: function(xhr, settings) {
-                    MVV.CourseWizard.loadingOverlay($('div#lvgsearchresults ul.css-tree'));
+                    STUDIP.MVV.CourseWizard.loadingOverlay($('div#lvgsearchresults ul.css-tree'));
                 },
                 success: function(data, status, xhr) {
                     $('#loading-overlay').remove();
