@@ -89,7 +89,7 @@
                         <td colspan="5" style="text-align: right;">
                             <?
                             $page_link = reset(explode('?', $controller->url_for('/index'))) . '?page_studiengangteile=%s';
-                            
+
                             $pagination = $GLOBALS['template_factory']->open('shared/pagechooser');
                             $pagination->clear_attributes();
                             $pagination->perPage      = MVVController::$items_per_page;

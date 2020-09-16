@@ -1,64 +1,64 @@
 dl {
-    &.mvv-form {        
+    &.mvv-form {
         margin: 0;
-        
+
         dt {
             font-weight: bold;
             padding-left: 15px;
             padding-top: 5px;
-            
+
             label&:after {
-                content: ":";                
+                content: ":";
             }
         }
-        
+
         dd {
             padding: 10px 10px 10px 30px;
             border-bottom: 1px solid @dark-gray-color-20;
-            
+
             label {
                 display: inline-block;
                 padding: 10px;
             }
-            
+
             div.mvv-fachsemester label {
                 display: inline;
-                padding: 0 10px 0 0;                    
+                padding: 0 10px 0 0;
             }
         }
-        
+
         label img {
             vertical-align: baseline;
         }
-        
+
         div.studip {
             width: 75%;
             display: inline;
         }
-        
+
         blockquote {
             border: 1px dashed @dark-gray-color-80;
             margin: 3px;
             padding: 3px;
             font-size: 0.9em;
             flex: 1 0 auto;
-            
+
             &:hover {
                 background-color: @yellow-20;
                 border-color: @red;
             }
         }
-        
+
     }
-    
+
     &.mvv-details {
         margin: 0;
-        
+
         dt {
             font-weight: bold;
             padding: 5px 0 0 5px;
         }
-        
+
         dd {
             margin: 0;
             padding: 5px 0 0 15px;
@@ -67,19 +67,19 @@ dl {
 }
 
 span.mvv-chooser-id {
-    display: none;    
+    display: none;
 }
 
 table {
-    
+
     tr td.ellipsis {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    
+
     &.default {
-        
+
         > tbody {
             &.collapsed > tr > td {
                 border-bottom: 1px solid @dark-gray-color-20;
@@ -88,7 +88,7 @@ table {
                     padding-left: 0;
                 }
             }
-            
+
             &.not-collapsed {
                 > tr > td {
                     border-bottom: 1px solid @dark-gray-color-20;
@@ -101,20 +101,20 @@ table {
                     padding: 0px 0px 5px 20px;
                 }
             }
-            
+
             &:last-of-type > tr.last-child > td {
                 border-bottom: 1px solid @dark-gray-color-20;
             }
-            
+
             &.ui-sortable-helper {
                 display: table;
             }
-            
+
             &.ui-sortable-placeholder {
                 display: block;
             }
         }
-        
+
         > tbody.sort_items {
             > tr.header-row > td:first-child {
                 background: #fff url("@{image-path}/anfasser_24.png") no-repeat left center;
@@ -126,38 +126,38 @@ table {
                 padding-left: 30px;
             }
         }
-        
+
     }
-    
+
     &.mvv-form tr td {
         &:first-child {
             vertical-align: top;
             font-weight: bold;
         }
-    }   
-    
+    }
+
     &.mvv-modul-details {
         margin: 10px;
         width: 99%;
-        
+
         td {
             vertical-align: top;
         }
-        
+
         th {
             text-align: left;
             vertical-align: top;
-            
+
             .mvv-modul-details-head {
                 text-align: center;
             }
         }
-        
+
         table th {
             text-align: left;
             vertical-align: top;
         }
-        
+
         input[type=checkbox].mvv-cb-more {
             display: none;
             &:checked ~ ul li {
@@ -180,25 +180,25 @@ table {
         border-collapse: collapse;
         border: none;
         height: 2em;
-        
+
         td {
             border: none;
             border-right:1px solid @dark-gray-color-20;
             text-align: center;
             margin: 0px;
             padding:0px;
-            
+
             &.type{
-                font-size: 0.5em;                
+                font-size: 0.5em;
                 &.soll{
                     color:@red;
-                }                
+                }
                 &.kann{
                     color:@dark-green;
                 }
             }
         }
-        
+
         th {
             border: none;
             border-right:1px solid @dark-gray-color-20;
@@ -207,113 +207,116 @@ table {
             padding:0px;
         }
     }
-    
+
 }
 
-ul {    
+ul {
     &.mvv-result-list {
         list-style-type: none;
         padding: 0;
-        
+
         dt {
             padding: 1em;
             margin: 0;
         }
-    
+
         li {
             padding: 10px 20px;
             margin: 0;
         }
-        
+
         dd {
             margin: 0;
         }
-        
+
         &.even {
             background-color: @dark-gray-color-10;
-            
+
             &:hover {
                 background-color: @content-color-60;
             }
         }
-        
+
         &.odd {
             background-color: @dark-gray-color-5;
-            
+
             &:hover {
                 background-color: @content-color-40;
             }
         }
     }
-    
+
     &.mvv-modul li {
         .icon('before', 'learnmodule', 'info', 16, 2px);
-        padding-left: 20px;        
+        padding-left: 20px;
     }
-    
+
     &.mvv-persons {
         width: 100%;
-        
+
         & li {
             .icon('before', 'person', 'info', 16, 2px);
             padding-left: 20px;
         }
     }
-    
+
     &.mvv-faecher li {
         .icon('before', 'file', 'info', 16, 2px);
         padding-left: 20px;
     }
-    
+
     &.mvv-dokumente li {
         > div:first-child {
             .icon('before', 'file', 'info', 16, 2px);
         }
     }
-    
+
     &.mvv-institute li {
         .icon('before', 'institute', 'info', 16, 2px);
         padding-left: 20px;
     }
-    
+
     &.mvv-languages li {
         .icon('before', 'consultation', 'info', 16, 2px);
         padding-left: 20px;
     }
-    
+
     &.mvv-assigned-items {
-        max-width: 40em;
+        max-width: 48em;
         width: 100%;
         list-style-type: none;
-        padding: 0px 0px 0px 10px;
-        
+        margin: 0.5em 0 0;
+        padding: 0;
+//        padding: 0px 0px 0px 10px;
+
         li {
             border-bottom: solid @dark-gray-color-45 1px;
             padding-top: 5px;
             padding-left: 5px;
             margin-bottom: 5px;
+            margin-left: 0;
             display: flex;
             flex-wrap: wrap;
-            
+
             &.sort_items {
                 background: #fff url("@{image-path}/anfasser_24.png") no-repeat left center;
                 cursor: move;
                 padding-left: 10px;
             }
-            
+
         }
-        
+
         &.ui-autocomplete {
             max-width: 700px;
-        }        
-        
+        }
+
     }
-    
+
     li.mvv-item-list-placeholder {
         background-image: none !important;
         border: none !important;
         font-weight: normal !important;
-        padding-left: 20px;    
+//        padding-left: 20px;
     }
 }
 
@@ -330,21 +333,21 @@ div {
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-    }    
-    
+    }
+
     &.mvv-item-list-text {
         flex: 9;
     }
-    
+
     &.mvv-item-list-buttons {
         flex: 1;
         text-align: right;
     }
-    
+
     &.mvv-edit-form-new {
         padding: 10px;
     }
-    
+
     &.mvv-property-en {
         background: url("@{image-path}/languages/lang_en.gif") no-repeat left center;
         padding-left: 20px;
@@ -352,7 +355,7 @@ div {
         height: 1.5em;
         text-overflow: ellipsis;
     }
-    
+
     &.mvv-property-de {
         background: url("@{image-path}/languages/lang_de.gif") no-repeat left center;
         padding-left: 20px;
@@ -374,32 +377,32 @@ select.mvv-search-select-list {
         width: 19%;
     }
 
-    ul {    
-        list-style: none inside;    
+    ul {
+        list-style: none inside;
         margin: 5px;
         padding: 0;
-    
-        li {            
+
+        li {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             border-top: 1px solid @dark-gray-color-60;
             padding: 3px 20px 3px 2px;
             height: 1.3em;
-            
+
             &:hover {
                 background:@dark-gray-color-10;
                 cursor: pointer;
                 font-weight: bold;
             }
-            
+
             &.selected {
                 .background-icon('arr_2right', 'inactive', 16);
                 background-position: right;
                 background-repeat: no-repeat;
                 cursor: pointer;
                 font-weight: bold;
-                
+
                 &.last {
                     .background-icon('accept', 'inactive', 16);
                     background-position: right;
@@ -410,17 +413,17 @@ select.mvv-search-select-list {
                     float: right;
                 }
             }
-        }        
+        }
     }
 }
 
-#mvv-chooser-toggle {    
+#mvv-chooser-toggle {
     .icon('before', 'arr_2up', 'clickable', 16, 2px);
     width: 20px;
     height: 20px;
     float: right;
     cursor: pointer;
-    display: none;    
+    display: none;
 }
 
 #exposeMask {
@@ -431,7 +434,7 @@ select.mvv-search-select-list {
 .mvv-add-button {
     width: 20px;
     display: inline-block;
-    
+
     a {
         cursor: pointer;
         display: none;
@@ -439,7 +442,7 @@ select.mvv-search-select-list {
     }
 }
 
-.mvv-chooser-hidden {    
+.mvv-chooser-hidden {
     .icon('before', 'arr_2down', 'clickable', 16, 2px);
 }
 
@@ -456,7 +459,7 @@ select.mvv-search-select-list {
 
 .mvv-edit-form-ovl {
     width: 560px;
-    
+
     input[type=text], textarea {
         width: 90%;
         vertical-align: top;
@@ -497,7 +500,7 @@ select.mvv-search-select-list {
 
 .sortable  a {
     cursor: pointer;
-} 
+}
 
 .ui-resizable-handle {
     z-index: 999;
@@ -526,7 +529,7 @@ form.default .mvv-inst-chooser select {
     height: 20px;
     display: inline-block;
     vertical-align: middle;
-    
+
     img {
         display: none;
         cursor: pointer;
@@ -538,7 +541,7 @@ form.default .mvv-inst-chooser select {
     height: 20px;
     vertical-align: middle;
     display: inline-block;
-    
+
     img {
         display: none;
         cursor: pointer;
@@ -547,14 +550,14 @@ form.default .mvv-inst-chooser select {
 
 .mvv-select-group {
     padding-bottom: 25px;
-    
+
     li {
         font-weight: bold;
-        
+
         ul {
             padding: 10px 0 0 10px;
             list-style-type: none;
-            
+
             li {
                 font-weight: normal;
             }
@@ -575,15 +578,15 @@ form.default .mvv-inst-chooser select {
 
 #lvgruppe_selection {
     padding: 1em;
-    
+
     h3 {
         margin-top: 1em;
     }
-    
+
     &.odd {
         background-color: @dark-gray-color-5;
     }
-    
+
     &.even {
         background-color: @content-color-20;
     }
@@ -594,12 +597,12 @@ form.default .mvv-inst-chooser select {
     float: left;
     margin: 0;
     padding: 0;
-    
+
     ul {
       /*  list-style: none; */
         padding: 0;
         margin: 0;
-        
+
         li {
             list-style: none;
             padding: 0 0 0 1em;
@@ -617,11 +620,11 @@ form.default .mvv-inst-chooser select {
     width: 49%;
     margin: 0 0 0 50%;
     padding: 0;
-    
-    ul {     
+
+    ul {
         padding: 0;
         margin: 0;
-        
+
         li {
             list-style: none;
             padding: 0 0 0 1em;
@@ -638,7 +641,7 @@ form.default .mvv-inst-chooser select {
 
 #admin_seminare_assi #lvgruppe_selection {
     font-size: 0.8em;
-    
+
     h3 {
         font-weight: normal;
     }
@@ -678,4 +681,3 @@ form.default .mvv-inst-chooser select {
     vertical-align: text-top;
     text-decoration: none;
 }
-
