@@ -247,11 +247,13 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <? endif; ?>
             </label>
         <? else : ?>
-            <?= $GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['name'] ?>
-            <div id="mvv-field-modul-kommentar_status" style="padding-top:10px;">
-                <div><?= _('Kommentar') ?></div>
-                <?= htmlReady($modul->kommentar_status) ?>
-            </div>
+            <input type="text" disabled value="<?= $GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['name'] ?>">
+            <? if ($modul->kommentar_status): ?>
+                <div id="mvv-field-modul-kommentar_status" style="padding-top:10px;">
+                    <div><?= _('Kommentar') ?></div>
+                    <?= htmlReady($modul->kommentar_status) ?>
+                </div>
+            <? endif; ?>
         <? endif; ?>
 
         <label><?= _('Verantwortliche Einrichtung') ?></label>
@@ -585,10 +587,9 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 </label>
             <? endforeach; ?>
         <? else : ?>
-            <?= $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'] ?>
-            <input type="hidden" name="pruef_ebene" value="<?= $modul->pruef_ebene ?>">
+            <input type="text" disabled value="<?= htmlReady($GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name']) ?>">
+            <input type="hidden" name="pruef_ebene" value="<?= htmlReady($modul->pruef_ebene) ?>">
         <? endif; ?>
-
 
         <label id="mvv-field-modul-pruef_vorleistung"><?= _('Prüfungsvorleistung') ?>
             <? if ($perm_d->haveFieldPerm('pruef_vorleistung', MvvPerm::PERM_WRITE)) : ?>
@@ -663,7 +664,7 @@ if ($GLOBALS['MVV_MODUL']['SPRACHE']['default'] != $display_language) {
                 <? endif; ?>
                 <? $tdf = $df->getTypedDatafield(); ?>
                 <? if ($perm_d->haveDfEntryPerm($df->datafield_id, MvvPerm::PERM_WRITE)) : ?>
-                    <?= $tdf->getHTML('datafields'); ?>
+                    <?= $tdf->getHTML('datafields') ?>
                 <? else : ?>
                     <em><?= htmlReady($tdf->getName()) ?>:</em><br>
                     <?= $tdf->getDisplayValue() ?>

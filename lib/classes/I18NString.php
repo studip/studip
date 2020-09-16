@@ -65,7 +65,7 @@ class I18NString
     public function __toString()
     {
         if (self::$content_language) {
-            return (string) $this->localized(self::$content_language);
+            return $this->localized(self::$content_language) ?? $this->base;
         } else {
             if (isset($_SESSION['_language'])
                 && $_SESSION['_language'] != self::getDefaultLanguage()
