@@ -83,5 +83,19 @@ if ($input['type'] === 'nested-select'): ?>
 endif;
 
 if ($input['type'] === 'datafield'): ?>
-        <?= $input['locked'] ? $input['display_value'] : $input['html_value'] ?>
+    <? if ($is_locked): ?>
+        <label>
+            <?= htmlReady($input['title']) ?>
+
+            <? if ($input['description']): ?>
+                <?= tooltipIcon($input['description']) ?>
+            <? endif?>
+
+            <div>
+                <?= $input['display_value'] ?>
+            </div>
+        </label>
+    <? else: ?>
+        <?= $input['html_value'] ?>
+    <? endif ?>
 <? endif;
