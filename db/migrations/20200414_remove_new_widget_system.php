@@ -1,8 +1,11 @@
 <?php
-
-
 class RemoveNewWidgetSystem extends Migration
 {
+    public function description()
+    {
+        return 'Remove fragments of orphaned widget system';
+    }
+
     public function up()
     {
         $db = DBManager::get();
