@@ -1,6 +1,11 @@
 <?php
-
 namespace Studip;
+
+if (version_compare(phpversion('zip'), '1.18') < 0) {
+    require_once __DIR__ . '/ZipArchiveLegacyTrait.php';
+} else {
+    require_once __DIR__ . '/ZipArchiveTrait.php';
+}
 
 /**
  * Custom derived ZipArchive class with convenience methods for
@@ -14,6 +19,8 @@ namespace Studip;
  */
 class ZipArchive extends \ZipArchive
 {
+    use ZipArchiveTrait;
+
     /**
      * @var string encoding for filenames in zip
      */
@@ -120,24 +127,6 @@ class ZipArchive extends \ZipArchive
         }
         $archive->close();
         return $ok;
-    }
-
-    /**
-     * Adds a single file.
-     *
-     * @param String $filename Name of the file to add
-     * @param String $localname Name of the file inside the archive,
-     *                          will default to $filename
-     * @param int $start Unused but required (according to php doc)
-     * @param int $length Unused but required (according to php doc)
-     * @return false on error, $localname otherwise
-     */
-    public function addFile($filename, $localname = null, $start = 0, $length = 0)
-    {
-        $localname = $this->convertLocalFilename($localname ?: basename($filename));
-        return parent::addFile($filename, $localname, $start, $length)
-            ? $localname
-            : false;
     }
 
     /**
