@@ -1,7 +1,13 @@
 <p>
     <?= _('In diesem Schritt wird geprüft, ob ausgewählte Datenverzeichnisse '
         . 'beschreibbar sind.') ?>
-    <?= _('Wenn alle Häkchen grün sind, können Sie fortfahren!') ?>
+    <?= _('Sie können fortfahren, wenn sichergestellt ist, dass die '
+        . 'notwendigen Verzeichnisse schreibbar sind!') ?>
+</p>
+<p>
+    <?= _('Sollte der Ordner "config" nicht schreibbar sein, wird die '
+        . 'erzeugte Konfiguration am Ende der Installation angezeigt und '
+        . 'muss von Hand in die entsprechenden Dateien kopiert werden.') ?>
 </p>
 
 <h3><?= _('Schreibbare Dateien/Ordner') ?></h3>
