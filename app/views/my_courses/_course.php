@@ -25,7 +25,7 @@
         <? if (!$course['visible']) : ?>
             <? $infotext = _('Versteckte Veranstaltungen können über die Suchfunktionen nicht gefunden werden.'); ?>
             <? $infotext .= ' '; ?>
-            <? if (Config::get()->ALLOW_DOZENT_VISIBILITY) : ?>
+            <? if (Config::get()->ALLOW_DOZENT_VISIBILITY && in_array($course['user_status'], ['dozent', 'admin'])) : ?>
                 <? $infotext .= _('Um die Veranstaltung sichtbar zu machen, wählen Sie den Punkt "Sichtbarkeit" im Administrationsbereich der Veranstaltung.'); ?>
             <? else : ?>
                 <? $infotext .= _('Um die Veranstaltung sichtbar zu machen, wenden Sie sich an Admins.'); ?>
