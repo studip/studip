@@ -57,7 +57,7 @@ class ExternModulePersondetails extends ExternModule {
         $this->registered_elements = [
                 'Body', 'TableHeader', 'PersondetailsHeader', 'Contact',
                 'PersondetailsLectures', 'TableParagraph', 'TableParagraphHeadline',
-                'TableParagraphSubHeadline', 'TableParagraphText', 'List',/* 'LitList',*/
+                'TableParagraphSubHeadline', 'TableParagraphText', 'List',
                 'LinkIntern', 'StudipLink'
         ];
         $this->args = ['username', 'seminar_id'];

@@ -62,23 +62,19 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $this->registered_elements = [
                 'PersondetailsLectures' => 'PersondetailsLecturesTemplate',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
-                'LitList',
                 'TemplateMain' => 'TemplateGeneric',
                 'TemplateLectures' => 'TemplateGeneric',
                 'TemplateNews' => 'TemplateGeneric',
                 'TemplateAppointments' => 'TemplateGeneric',
-                'TemplateLitList' => 'TemplateGeneric',
                 'TemplateOwnCategories' => 'TemplateGeneric'
             ];
         } else {
             $this->registered_elements = [
                 'PersondetailsLectures' => 'PersondetailsLecturesTemplate',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
-                'LitList',
                 'TemplateMain' => 'TemplateGeneric',
                 'TemplateLectures' => 'TemplateGeneric',
                 'TemplateNews' => 'TemplateGeneric',
-                'TemplateLitList' => 'TemplateGeneric',
                 'TemplateOwnCategories' => 'TemplateGeneric'
             ];
         }
@@ -98,14 +94,12 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $this->elements['LinkInternLecturedetails']->real_name = _("Link zum Modul Veranstaltungsdetails");
         $this->elements['LinkInternLecturedetails']->link_module_type = [4, 13];
         $this->elements['PersondetailsLectures']->real_name = _("Einstellungen für Lehrveranstaltungen");
-        $this->elements['LitList']->real_name = _("Einstellungen für Literaturlisten");
         $this->elements['TemplateMain']->real_name = _("Haupttemplate");
         $this->elements['TemplateLectures']->real_name = _("Template für Lehrveranstaltungen");
         $this->elements['TemplateNews']->real_name = _("Template für News");
         if (get_config('CALENDAR_ENABLE')) {
             $this->elements['TemplateAppointments']->real_name = _("Template für Termine");
         }
-        $this->elements['TemplateLitList']->real_name = _("Template für Literaturlisten");
         $this->elements['TemplateOwnCategories']->real_name = _("Template für eigene Kategorien");
         if (in_array(get_object_type($this->config->range_id), ['global'])) {
             $this->elements['SelectInstitutes']->real_name = _("Einschränkung auf Institute/Einrichtungen");
@@ -119,7 +113,6 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $this->updateGenericDatafields('TemplateMain', 'userinstrole');
         $this->elements['TemplateMain']->markers = $this->getMarkerDescription('TemplateMain');
         $this->elements['TemplateLectures']->markers = $this->getMarkerDescription('TemplateLectures');
-        $this->elements['TemplateLitList']->markers = $this->getMarkerDescription('TemplateLitList');
         if (get_config('CALENDAR_ENABLE')) {
             $this->elements['TemplateAppointments']->markers = $this->getMarkerDescription('TemplateAppointments');
         }
@@ -239,8 +232,6 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $markers['TemplateAppointments'][] = ['<!-- END ALL-APPOINTMENTS -->', ''];
             $markers['TemplateAppointments'][] = ['<!-- END APPOINTMENTS -->', ''];
         }
-
-        $markers['TemplateLitList'] = $this->elements['LitList']->getMarkerDescription('LitList');
 
         $markers['TemplateOwnCategories'][] = ['<!-- BEGIN OWNCATEGORIES -->', ''];
         $markers['TemplateOwnCategories'][] = ['<!-- BEGIN OWNCATEGORY -->', ''];
