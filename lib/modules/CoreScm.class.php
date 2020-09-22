@@ -2,105 +2,107 @@
 
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
- * 
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License as
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
 
-class CoreScm implements StudipModule {
-    
-    function getIconNavigation($course_id, $last_visit, $user_id) {
-        if (get_config('SCM_ENABLE')) {
-            $sql = "SELECT tab_name,  ouv.object_id,
-                  COUNT(IF(content !='',1,0)) as count,
-                  COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content !='',1,0), NULL)) AS neue,
-                  MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), chdate, 0)) AS last_modified
-                FROM
-                  scm
-                LEFT JOIN
-                  object_user_visits ouv ON(ouv.object_id = scm.range_id AND ouv.user_id = :user_id and ouv . type = 'scm')
-                WHERE
-                  scm.range_id = :course_id
-                GROUP BY
-                  scm.range_id";
+class CoreScm implements StudipModule
+{
+    public function getIconNavigation($course_id, $last_visit, $user_id)
+    {
+        if (!Config::get()->SCM_ENABLE) {
+            return null;
+        }
 
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $course_id);
-            $statement->bindValue(':threshold', $last_visit);
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT scm_id,
+                       SUM(IF(content != '', 1, 0)) AS count,
+                       SUM(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content != '', 1, 0), NULL)) AS neue,
+                       MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), chdate, 0)) AS last_modified
+                FROM scm
+                LEFT JOIN object_user_visits AS ouv
+                  ON ouv.object_id = scm.range_id
+                     AND ouv.user_id = :user_id
+                     AND ouv.type = 'scm'
+                WHERE scm.range_id = :course_id
+                GROUP BY scm.range_id";
 
+        $statement = DBManager::get()->prepare($sql);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-            if (!empty($result)) {
-                $nav = new Navigation('scm', 'dispatch.php/course/scm');
+        if ($result) {
+            $scm = StudipScmEntry::find($result['scm_id']);
 
-                if ($result['count']) {
-                    if ($result['neue']) {
-                        $image = Icon::create('infopage+new', 'attention');
-                        $nav->setBadgeNumber($result['neue']);
-                        if ($result['count'] == 1) {
-                            $title = $result['tab_name'] . _(' (geändert)');
-                        } else {
-                            $title = sprintf(
-                                _('%1$d Einträge insgesamt, %2$d neue'),
-                                $result['count'],
-                                $result['neue']
-                            );
-                        }
+            $nav = new Navigation('scm', 'dispatch.php/course/scm');
+
+            if ($result['count']) {
+                if ($result['neue']) {
+                    $image = Icon::create('infopage+new', Icon::ROLE_NEW);
+                    $nav->setBadgeNumber($result['neue']);
+                    if ($result['count'] == 1) {
+                        $title = $scm->tab_name . _(' (geändert)');
                     } else {
-                        $image = Icon::create('infopage', 'inactive');
-                        if ($result['count'] == 1) {
-                            $title = $result['tab_name'];
-                        } else {
-                            $title = sprintf(
-                                ngettext(
-                                    '%d Eintrag',
-                                    '%d Einträge',
-                                    $result['count']
-                                ),
-                                $result['count']
-                            );
-                        }
+                        $title = sprintf(
+                            _('%1$d Einträge insgesamt, %2$d neue'),
+                            $result['count'],
+                            $result['neue']
+                        );
                     }
-                    $nav->setImage($image, ['title' => $title]);
+                } else {
+                    $image = Icon::create('infopage', Icon::ROLE_INACTIVE);
+                    if ($result['count'] == 1) {
+                        $title = $scm->tab_name;
+                    } else {
+                        $title = sprintf(
+                            ngettext(
+                                '%d Eintrag',
+                                '%d Einträge',
+                                $result['count']
+                            ),
+                            $result['count']
+                        );
+                    }
                 }
-                return $nav;
+                $nav->setImage($image, ['title' => $title]);
             }
-        } else {
-            return null;
-        }
-    }
-    
-    function getTabNavigation($course_id) {
-        if (get_config('SCM_ENABLE')) {
-            $temp = StudipScmEntry::findByRange_id($course_id, 'ORDER BY position ASC');
-            $scms = SimpleORMapCollection::createFromArray($temp);
-
-            $link = 'dispatch.php/course/scm';
-
-            $navigation = new Navigation($scms->first()->tab_name ?: _('Informationen'), $link);
-            $navigation->setImage(Icon::create('infopage', 'info_alt'));
-            $navigation->setActiveImage(Icon::create('infopage', 'info'));
-
-            foreach ($scms as $scm) {
-                $scm_link = $link .'/'. $scm->id;
-                $nav = new Navigation($scm['tab_name'], $scm_link);
-                $navigation->addSubNavigation($scm->id, $nav);
-            }
-
-            return ['scm' => $navigation];
-        } else {
-            return null;
+            return $nav;
         }
     }
 
-    /** 
+    public function getTabNavigation($course_id)
+    {
+        if (!Config::get()->SCM_ENABLE) {
+            return null;
+        }
+
+        $temp = StudipScmEntry::findByRange_id($course_id, 'ORDER BY position ASC');
+        $scms = SimpleORMapCollection::createFromArray($temp);
+
+        $link = 'dispatch.php/course/scm';
+
+        $navigation = new Navigation($scms->first()->tab_name ?: _('Informationen'), $link);
+        $navigation->setImage(Icon::create('infopage', Icon::ROLE_INFO_ALT));
+        $navigation->setActiveImage(Icon::create('infopage', Icon::ROLE_INFO));
+
+        foreach ($scms as $scm) {
+            $scm_link = "{$link}/{$scm->id}";
+            $nav = new Navigation($scm['tab_name'], $scm_link);
+            $navigation->addSubNavigation($scm->id, $nav);
+        }
+
+        return ['scm' => $navigation];
+    }
+
+    /**
      * @see StudipModule::getMetadata()
-     */ 
-    function getMetadata()
+     */
+    public function getMetadata()
     {
         return [
             'summary' => _('Die Lehrenden bestimmen, wie Titel und Inhalt dieser Seite aussehen.'),
@@ -135,7 +137,7 @@ class CoreScm implements StudipModule {
                     0 => ['source' => 'Zwei_Eintraege_mit_Inhalten_zur_Verfuegung_stellen.jpg', 'title' => _('Zwei Einträge mit Inhalten zur Verfügung stellen')],
                     1 => [ 'source' => 'Neue_Informationsseite_anlegen.jpg', 'title' => _('Neue Informationsseite anlegen')]
                 ]
-            ]       
+            ]
         ];
     }
 }

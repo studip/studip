@@ -17,8 +17,10 @@
  * @since    2.5
  */
 
-class Course_ScmController extends StudipController
+class Course_ScmController extends AuthenticatedController
 {
+    protected $allow_nobody = true;
+
     /**
      * Sets the page title. Page title always includes the course name.
      *
@@ -44,21 +46,10 @@ class Course_ScmController extends StudipController
     {
         parent::before_filter($action, $args);
 
-        // open session
-        page_open(['sess' => 'Seminar_Session',
-                        'auth' => 'Seminar_Default_Auth',
-                        'perm' => 'Seminar_Perm',
-                        'user' => 'Seminar_User']);
-
-        // set up user session
-        include 'lib/seminar_open.php';
-
         if (!Config::Get()->SCM_ENABLE) {
             throw new AccessDeniedException(_('Die freien Informationsseiten sind nicht aktiviert.'));
         }
 
-        $GLOBALS['auth']->login_if(Request::get('again')
-                                   && $GLOBALS['auth']->auth['uid'] == 'nobody');
         $this->priviledged = $GLOBALS['perm']->have_studip_perm('tutor', Context::getId());
 
         if (!in_array($action, words('index create edit move delete'))) {
@@ -71,11 +62,12 @@ class Course_ScmController extends StudipController
         }
 
         if ($GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
-            $widget = new ActionsWidget();
-            $widget->addLink(_('Neuen Eintrag anlegen'),
-                             URLHelper::getURL('dispatch.php/course/scm/create'), Icon::create('add', 'clickable'))
-                   ->asDialog();
-            Sidebar::get()->addWidget($widget);
+            $widget = Sidebar::get()->addWidget(new ActionsWidget());
+            $widget->addLink(
+                _('Neuen Eintrag anlegen'),
+                $this->createURL(),
+                Icon::create('add')
+            )->asDialog();
         }
 
         Navigation::activateItem('/course/scm');
@@ -101,7 +93,7 @@ class Course_ScmController extends StudipController
             throw new Trails_Exception(404, _('Es konnte keine freie Informationsseite mit der angegebenen Id gefunden werden.'));
         }
 
-        if (Request::get('verify') == 'delete') {
+        if (Request::get('verify') === 'delete') {
             PageLayout::postQuestion(
                 _('Wollen Sie diese Seite wirklich löschen?'),
                 $this->url_for("course/scm/delete/{$this->scm->id}")
@@ -141,8 +133,8 @@ class Course_ScmController extends StudipController
 
             $scm = new StudipScmEntry($id);
 
-            $scm->tab_name = Request::get('tab_name_template') ?: Request::get('tab_name');
-            $scm->content  = Studip\Markup::purifyHtml(Request::get('content'));
+            $scm->tab_name = Request::i18n('tab_name');
+            $scm->content  = Studip\Markup::purifyHtml(Request::i18n('content'));
             $scm->user_id  = $GLOBALS['user']->id;
             $scm->range_id = Context::getId();
 
@@ -155,8 +147,7 @@ class Course_ScmController extends StudipController
             }
 
             if ($scm->store() !== false) {
-                $message = MessageBox::success(_('Die Änderungen wurden übernommen.'));
-                PageLayout::postMessage($message);
+                PageLayout::postsuccess(_('Die Änderungen wurden übernommen.'));
             }
 
             $this->redirect('course/scm/' . $scm->id);
@@ -188,7 +179,7 @@ class Course_ScmController extends StudipController
 
             $scm->position = 0;
             if ($scm->store()) {
-                PageLayout::postMessage(MessageBox::success(_('Der Eintrag wurde an die erste Position verschoben.')));
+                PageLayout::postSuccess(_('Der Eintrag wurde an die erste Position verschoben.'));
             }
         }
         $this->redirect('course/scm/' . $id);
@@ -206,7 +197,7 @@ class Course_ScmController extends StudipController
             $scm = new StudipScmEntry($id);
             if (!$scm->isNew() && $scm->range_id == Context::getId()){
                 $scm->delete();
-                PageLayout::postMessage(MessageBox::success(_('Der Eintrag wurde gelöscht.')));
+                PageLayout::postSuccess(_('Der Eintrag wurde gelöscht.'));
             }
             $this->redirect('course/scm');
             return;
@@ -216,18 +207,5 @@ class Course_ScmController extends StudipController
             _('Es ist ein Fehler aufgetreten.') . ' ' . _('Bitte versuchen Sie erneut, diese Seite zu löschen.')
         );
         $this->redirect('course/scm/' . $id);
-    }
-
-    /**
-     * After filter, closes the page.
-     *
-     * @param String $action Name of the action that has been invoked
-     * @param Array  $args   Arguments that were passed to the action method
-     */
-    public function after_filter($action, $args)
-    {
-        parent::after_filter($action, $args);
-
-        page_close();
     }
 }

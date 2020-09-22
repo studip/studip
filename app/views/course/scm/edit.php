@@ -1,18 +1,11 @@
-<?
-
-use Studip\Button,
-    Studip\LinkButton;
-?>
-
 <p>
-    <?=
-    _('Hier können Sie eine Seite mit Zusatzinformationen zu Ihrer '
-            . 'Veranstaltung gestalten. Sie können Links normal eingeben, diese '
-            . 'werden anschließend automatisch als Hyperlinks dargestellt.')
+    <?= _('Hier können Sie eine Seite mit Zusatzinformationen zu Ihrer '
+        . 'Veranstaltung gestalten. Sie können Links normal eingeben, diese '
+        . 'werden anschließend automatisch als Hyperlinks dargestellt.')
     ?>
 </p>
 
-<form action="<?= $controller->url_for('course/scm/edit/' . $scm->id) ?>" method="post" data-secure class="default">
+<form action="<?= $controller->edit($scm) ?>" method="post" data-secure class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
@@ -21,11 +14,15 @@ use Studip\Button,
         </legend>
         <label>
             <span class="required"><?= _('Titel') ?></span>
-            <input required id="tab_name" type="text" name="tab_name"
-                   value="<?= htmlReady($scm->tab_name) ?>"
-                   placeholder="<?= _('Titel der Informationsseite') ?>">
+            <?= I18N::input('tab_name', $scm->tab_name, [
+                'required'    => '',
+                'id'          => 'tab_name',
+                'aria-label'  => _('Titel der Informationsseite'),
+                'placeholder' => _('Titel der Informationsseite'),
+            ]) ?>
         </label>
 
+    <? if ($GLOBALS['SCM_PRESET']): ?>
         <label>
             <?= _('oder wählen Sie hier einen Namen aus:') ?>
             <select name="tab_name_template" data-copy-to="input[name=tab_name]">
@@ -35,10 +32,13 @@ use Studip\Button,
             <? endforeach; ?>
             </select>
         </label>
+    <? endif; ?>
 
         <label>
             <?= _('Inhalt') ?>
-            <textarea style="width: 100%;" class="add_toolbar wysiwyg" name="content"><?= wysiwygReady($scm->content) ?></textarea>
+            <?= I18N::textarea('content', $scm->content, [
+                'class' => 'add_toolbar wysiwyg',
+            ]) ?>
         </label>
     </fieldset>
 
@@ -51,12 +51,11 @@ use Studip\Button,
 <? endif; ?>
 
     <footer data-dialog-button>
-        <?= Button::createAccept(_('Speichern'), 'submit') ?>
+        <?= Studip\Button::createAccept(_('Speichern'), 'submit') ?>
     <? if ($first_entry): ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), URLHelper::getLink('seminar_main.php')) ?>
+        <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getLink('seminar_main.php')) ?>
     <? else: ?>
-        <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/scm/' . $scm->id))
-        ?>
+        <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/scm/' . $scm->id)) ?>
     <? endif; ?>
     </footer>
 </form>

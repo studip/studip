@@ -211,18 +211,17 @@ class MyRealmModel
     public static function checkScm(&$my_obj, $user_id, $object_id)
     {
         if ($my_obj["modules"]["scm"]) {
-            $sql = "SELECT tab_name,  ouv.object_id,
-                  COUNT(IF(content !='',1,0)) as count,
-                  COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content !='',1,0), NULL)) AS neue,
-                  MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), chdate, 0)) AS last_modified
-                FROM
-                  scm
-                LEFT JOIN
-                  object_user_visits ouv ON(ouv.object_id = scm.range_id AND ouv.user_id = :user_id and ouv . type = 'scm')
-                WHERE
-                  scm.range_id = :course_id
-                GROUP BY
-                  scm.range_id";
+            $sql = "SELECT scm_id,
+                           SUM(IF(content != '', 1, 0)) AS count,
+                           SUM(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id != :user_id), IF(content !='', 1, 0), NULL)) AS neue,
+                           MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id != :user_id), chdate, 0)) AS last_modified
+                    FROM scm
+                    LEFT JOIN object_user_visits AS ouv
+                      ON ouv.object_id = scm.range_id
+                         AND ouv.user_id = :user_id
+                         AND ouv.type = 'scm'
+                    WHERE scm.range_id = :course_id
+                    GROUP BY scm.range_id";
 
             $statement = DBManager::get()->prepare($sql);
             $statement->bindValue(':user_id', $user_id);
@@ -232,7 +231,9 @@ class MyRealmModel
             $result = $statement->fetch(PDO::FETCH_ASSOC);
 
 
-            if (!empty($result)) {
+            if ($result) {
+                $scm = StudipScmEntry::find($result['scm_id']);
+
                 if ($my_obj['last_modified'] < $result['last_modified']) {
                     $my_obj['last_modified'] = $result['last_modified'];
                 }
@@ -241,10 +242,10 @@ class MyRealmModel
 
                 if ($result['count']) {
                     if ($result['neue']) {
-                        $image = Icon::create('infopage+new', 'new');
+                        $image = Icon::create('infopage+new', Icon::ROLE_NEW);
                         $nav->setBadgeNumber($result['neue']);
                         if ($result['count'] == 1) {
-                            $title = $result['tab_name'] . _(' (geändert)');
+                            $title = $scm->tab_name . _(' (geändert)');
                         } else {
                             $title = sprintf(
                                 _('%1$d Einträge insgesamt, %2$d neue'),
@@ -253,9 +254,9 @@ class MyRealmModel
                             );
                         }
                     } else {
-                        $image = Icon::create('infopage', 'inactive');
+                        $image = Icon::create('infopage', Icon::ROLE_INACTIVE);
                         if ($result['count'] == 1) {
-                            $title = $result['tab_name'] . _(' (geändert)');
+                            $title = $scm->tab_name . _(' (geändert)');
                         } else {
                             $title = sprintf(
                                 ngettext(
