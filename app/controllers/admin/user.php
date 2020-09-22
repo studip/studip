@@ -1427,7 +1427,6 @@ class Admin_UserController extends AuthenticatedController
                   FROM (file_refs INNER JOIN files ON file_refs.file_id = files.id)
                   INNER JOIN folders ON file_refs.folder_id = folders.id
                   WHERE (file_refs.user_id = ?)
-                  AND (files.storage <> 'url')
                   AND (
                     (folders.range_type = 'course')
                     OR (folders.range_type = 'institute')
@@ -1441,7 +1440,7 @@ class Admin_UserController extends AuthenticatedController
                   FROM (file_refs INNER JOIN files ON file_refs.file_id = files.id)
                   INNER JOIN folders ON file_refs.folder_id = folders.id
                   WHERE (file_refs.user_id = ?)
-                  AND (files.storage <> 'url')
+                  AND (files.filetype = 'StandardFile')
                   AND (
                     (folders.range_type = 'course')
                     OR (folders.range_type = 'institute')
