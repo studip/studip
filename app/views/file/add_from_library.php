@@ -110,9 +110,11 @@
                         <dl>
                             <dt><?= _('Titel') ?></dt>
                             <dd><?= htmlReady($result->getTitle()) ?></dd>
-                            <? if ($result->csl_data['issued']) : ?>
+                            <dt><?= _('Typ') ?></dt>
+                            <dd><?= htmlReady($result->getType('display_name')) ?></dd>
+                            <? if ($result->csl_data['issued'] || $result->csl_data['publisher']) : ?>
                                 <dt><?= _('Veröffentlicht') ?></dt>
-                                <dd><?= htmlReady($result->getIssueDate()) ?></dd>
+                                <dd><?= htmlReady($result->csl_data['publisher'] . ' ' . $result->getIssueDate()) ?></dd>
                             <? endif ?>
                             <? if ($result->csl_data['author']) : ?>
                                 <dt><?= _('Erstellt von') ?></dt>

@@ -107,7 +107,8 @@ class K10PlusZentralLibrarySearch extends LibrarySearch
                 );
             } else {
                 //TODO: escape colon in data!
-                $query_string .= sprintf('%1$s:"%2$s"', $key, $value);
+                $value = '(' . $value . ')';
+                $query_string .= sprintf('%1$s:%2$s', $key, $value);
             }
         }
 
@@ -122,7 +123,7 @@ class K10PlusZentralLibrarySearch extends LibrarySearch
         if ($limit > 0) {
             $query_parameters['rows'] = $limit;
         }
-        $query_parameters['debug'] = 'query';
+        //$query_parameters['debug'] = 'query';
         $query_parameters['df'] = self::$field_replacements[LibrarySearch::TITLE];
         $data = $this->requestData($this->request_base_url, $query_parameters);
         if ($data === null) {

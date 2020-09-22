@@ -89,9 +89,23 @@ class LibraryDocument
      *
      * @returns string The type of the document.
      */
-    public function getType() : string
+    public function getType($format = 'name') : string
     {
-        return $this->type;
+        global $LIBRARY_DOCUMENT_TYPES;
+
+        if ($format === 'name') {
+            return $this->type;
+        }
+        if ($format === 'display_name') {
+            $ldt = SimpleCollection::createFromArray($LIBRARY_DOCUMENT_TYPES);
+            $found = $ldt->findOneBy('name', $this->type);
+            $lang = in_array($_SESSION['_language'], ['de_DE', 'en_GB']) ? $_SESSION['_language'] : 'de_DE';
+            if ($found) {
+                return $found['display_name'][$lang];
+            }
+        }
+
+        return '';
     }
 
 
@@ -211,7 +225,7 @@ class LibraryDocument
 
         $doc_type_config = null;
         foreach ($GLOBALS['LIBRARY_DOCUMENT_TYPES'] as $doc_config) {
-            if ($doctype['name'] == $this->type) {
+            if ($doc_config['name'] == $this->type) {
                 $doc_type_config = $doc_config;
                 break;
             }

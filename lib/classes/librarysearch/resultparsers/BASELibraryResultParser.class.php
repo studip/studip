@@ -64,16 +64,14 @@ class BASELibraryResultParser implements LibraryResultParser
                 if ($name == 'dctypenorm') {
                     //Set the document type by the value of this field.
                     $base_typeid = trim($child->textContent);
-                    if ($base_typeid == '11') {
-                        $this->type = 'book';
-                    } elseif ($base_typeid == '12') {
-                        $this->type = 'article-newspaper';
-                    } elseif ($base_typeid == '121') {
-                        $this->type = 'article';
+                    if ($base_typeid == '11' || $base_typeid == '111') {
+                        $result->type = 'book';
+                    } elseif ($base_typeid == '12' || $base_typeid == '121' || $base_typeid == '122') {
+                        $result->type = 'article';
                     } elseif ($base_typeid == '13') {
-                        $this->type = 'paper-conference';
+                        $result->type = 'paper-conference';
                     } elseif ($base_typeid == '14') {
-                        $this->type = 'report';
+                        $result->type = 'report';
                     }
                 } elseif ($name == 'dctitle') {
                     $result->csl_data['title'] = $child->textContent;

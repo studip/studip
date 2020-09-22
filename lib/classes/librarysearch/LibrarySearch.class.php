@@ -123,7 +123,7 @@ abstract class LibrarySearch
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_URL, $full_url);
 
-        //var_dump('<a href="' . $full_url . '">' . $full_url . '</a>');
+        //var_dump($full_url);
 
         $data = curl_exec($curl);
         if ($data === false) {

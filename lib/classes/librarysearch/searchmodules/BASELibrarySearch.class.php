@@ -82,7 +82,7 @@ class BASELibrarySearch extends LibrarySearch
                 $query_string .= ' AND ';
             }
             //TODO: escape colon in data!
-            $query_string .= sprintf('%1$s:"%2$s"', $key, $value);
+            $query_string .= sprintf('%1$s:(%2$s)', $key, $value);
         }
 
         $query_parameters = $this->additional_query_parameters;

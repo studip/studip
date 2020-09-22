@@ -977,7 +977,7 @@ class FileController extends AuthenticatedController
 
                 $this->search_id = md5(json_encode($search_parameters));
 
-                $cache = StudipCacheFactory::instantiateCache('StudipDbCache', []);
+                $cache = StudipCacheFactory::getCache();
 
                 $merged_results = LibrarySearchManager::search(
                     $search_parameters,
@@ -1036,7 +1036,7 @@ class FileController extends AuthenticatedController
             $this->search_id = Request::get('search_id');
             $this->page = Request::get('page');
 
-            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $cache = StudipCacheFactory::getCache();
             $cache_data = $cache->read($this->search_id);
             $results = $cache_data['results'];
             $this->total_results = count($results);
