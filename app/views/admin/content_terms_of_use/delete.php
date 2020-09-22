@@ -9,7 +9,7 @@
 
         <?= MessageBox::warning(sprintf(
                 _('Soll der Eintrag mit der ID "%s" wirklich gelöscht werden?'),
-                $entry_id
+                htmlReady($entry_id)
             )) ?>
         <? if ($dependent_files_count): ?>
             <p>

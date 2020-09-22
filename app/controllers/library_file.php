@@ -60,12 +60,16 @@ class LibraryFileController extends AuthenticatedController
         }
         $this->folder_id = $folder_id;
         if (!$this->folder_id) {
-            PageLayout::postError(_('Der Bibliothekseintrag kann nicht erstellt werden, da kein Ordner angegeben wurde!'));
+            PageLayout::postError(
+                _('Der Bibliothekseintrag kann nicht erstellt werden, da kein Ordner angegeben wurde!')
+            );
             return;
         }
         $folder = Folder::find($this->folder_id);
         if (!$folder) {
-            PageLayout::postError(_('Der Bibliothekseintrag kann nicht erstellt werden, da kein Ordner angegeben wurde!'));
+            PageLayout::postError(
+                _('Der Bibliothekseintrag kann nicht erstellt werden, da kein Ordner angegeben wurde!')
+            );
             return;
         }
         $this->folder = $folder->getTypedFolder();
@@ -80,7 +84,10 @@ class LibraryFileController extends AuthenticatedController
             }
         }
         if (!$this->document_type) {
-            PageLayout::postError(sprintf(_('Der Dokumenttyp "%s" ist nicht definiert!'), $this->document_type_name));
+            PageLayout::postError(sprintf(
+                _('Der Dokumenttyp "%s" ist nicht definiert!'),
+                htmlReady($this->document_type_name))
+            );
             $this->redirect('library_file/select_type');
         }
 
@@ -153,7 +160,7 @@ class LibraryFileController extends AuthenticatedController
                 PageLayout::postSuccess(
                     sprintf(
                         _('Der Bibliothekseintrag "%s" wurde hinzugefügt!'),
-                        $file->getFilename()
+                        htmlReady($file->getFilename())
                     )
                 );
                 //Close the dialog and reload the page:

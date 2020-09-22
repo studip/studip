@@ -34,10 +34,10 @@
             <td><?= $entry->is_default ? _('Ja') : _('Nein') ?></td>
             <td class="actions">
                 <a href="<?= $controller->url_for('admin/content_terms_of_use/edit', ['entry_id' => $entry->id]) ?>" data-dialog>
-                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE) ?>
+                    <?= Icon::create('edit') ?>
                 </a>
                 <a href="<?= $controller->url_for('admin/content_terms_of_use/delete', ['entry_id' => $entry->id]) ?>" data-dialog="size=auto">
-                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE) ?>
+                    <?= Icon::create('trash') ?>
                 </a>
             </td>
         </tr>

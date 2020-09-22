@@ -46,11 +46,11 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
         PageLayout::setTitle(_('Inhalts-Nutzungsbedingungen'));
 
         //build sidebar
-        $actions = new ActionsWidget(_('Aktionen'));
+        $actions = new ActionsWidget();
         $actions->addLink(
             _('Eintrag hinzufügen'),
             $this->url_for('admin/content_terms_of_use/add'),
-            Icon::create('add', 'clickable')
+            Icon::create('add')
         )->asDialog('size=auto');
         Sidebar::get()->addWidget($actions);
 
@@ -73,7 +73,7 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
         if ($id !== null && $this->entry->isNew()) {
             PageLayout::postError(sprintf(
                 _('Eintrag für Nutzungsbedingungen mit ID %s wurde nicht in der Datenbank gefunden!'),
-                $id
+                htmlReady($id)
             ));
             $this->redirect('admin/content_terms_of_use/index');
             return;
@@ -132,7 +132,7 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
             //entry not found: return to index page
             PageLayout::postError(sprintf(
                 _('Eintrag für Nutzungsbedingungen mit ID %s wurde nicht in der Datenbank gefunden!'),
-                $this->entry_id
+                htmlReady($this->entry_id)
             ));
             $this->redirect('admin/content_terms_of_use/index');
             return;
@@ -155,7 +155,7 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
                     //was selected. That's an error!
                     PageLayout::postError(sprintf(
                         _('Fehler beim Löschen von Eintrag mit ID %s: Es wurde für betroffene Dateien kein neuer Nutzungsbedingungen-Eintrag ausgewählt!'),
-                        $this->entry_id
+                        htmlReady($this->entry_id)
                     ));
                     $this->redirect('admin/content_terms_of_use/index');
                     return;
@@ -175,8 +175,8 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
                 if (!$result) {
                     PageLayout::postError(sprintf(
                         _('Fehler beim Zuordnen von Dateien zu Eintrag mit  ID %s! Eintrag mit ID %s wurde nicht gelöscht!'),
-                        $this->other_entry_id,
-                        $this->entry_id
+                        htmlReady($this->other_entry_id),
+                        htmlReady($this->entry_id)
                     ));
 
                     $this->redirect('admin/content_terms_of_use/index');
@@ -189,26 +189,26 @@ class Admin_ContentTermsOfUseController extends AuthenticatedController
                 if ($this->dependent_files_count > 0) {
                     PageLayout::postSuccess(sprintf(
                         _('Eintrag mit ID "%s" wurde gelöscht. Alle Dateien, welche diesen Eintrag verwendeten, nutzen nun den Eintrag mit ID "%s"!'),
-                        $this->entry_id,
-                        $this->other_entry_id
+                        htmlReady($this->entry_id),
+                        htmlReady($this->other_entry_id)
                     ));
                 } else {
                     PageLayout::postSuccess(sprintf(
                         _('Eintrag mit ID "%s" wurde gelöscht!'),
-                        $this->entry_id
+                        htmlReady($this->entry_id)
                     ));
                 }
             } else {
                 if ($this->dependent_files_count > 0) {
                     PageLayout::postError(sprintf(
                         _('Fehler beim Löschen von Eintrag mit ID "%s"! Alle Dateien, welche diesen Eintrag verwendeten, nutzen nun den Eintrag mit ID "%s"!'),
-                        $this->entry_id,
-                        $this->other_entry_id
+                        htmlReady($this->entry_id),
+                        htmlReady($this->other_entry_id)
                     ));
                 } else {
                     PageLayout::postError(sprintf(
                         _('Fehler beim Löschen von Eintrag mit ID "%s"!'),
-                        $this->entry_id
+                        htmlReady($this->entry_id)
                     ));
                 }
             }
