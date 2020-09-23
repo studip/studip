@@ -1,7 +1,4 @@
-<? use \Studip\Button; ?>
-
 <br>
-
 <a name="awaiting"></a>
 <form action="<?= $controller->url_for('course/members/edit_awaiting/') ?>" method="post" data-dialog="size=50%">
     <?= CSRFProtection::tokenTag() ?>
@@ -15,9 +12,11 @@
                     'course_id'            => $course_id,
                     'default_subject'      => $subject,
                 ])?>" data-dialog>
-                    <?= Icon::create('inbox', 'clickable', [
-                        'title' =>  _('Nachricht mit Mailweiterleitung an alle Wartenden versenden'),
-                    ]) ?>
+                    <?= Icon::create(
+                        'inbox',
+                        Icon::ROLE_CLICKABLE,
+                        ['title' =>  _('Nachricht mit Mailweiterleitung an alle Wartenden versenden')]
+                    ) ?>
                 </a>
             </span>
         </caption>
@@ -42,7 +41,7 @@
                 <th></th>
                 <th <? if ($sort_by === 'nachname' && $sort_status === $waiting_type) printf('class="sort%s"', $order); ?>>
                     <a href="<?= URLHelper::getLink(sprintf(
-                        "?sortby=nachname&sort_status=$waiting_type&order=%s&toggle=%s#awaiting",
+                        "?sortby=nachname&sort_status={$waiting_type}&order=%s&toggle=%s#awaiting",
                         $order,
                         $sort_by === 'nachname'
                     )) ?>">
@@ -84,7 +83,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $waiting['username']) ?>" <? if ($waiting['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($waiting['user_id'], $waiting['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                            'title' => $fullname,
+                            'title' => htmlReady($fullname),
                         ]) ?>
                         <?= htmlReady($fullname) ?>
                     </a>
@@ -108,7 +107,16 @@
                                 'default_subject' => $subject,
                             ]),
                             _('Nachricht mit Mailweiterleitung senden'),
-                            Icon::create('mail', 'clickable', ['title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), $fullname)]),
+                            Icon::create(
+                                'mail',
+                                Icon::ROLE_CLICKABLE,
+                                [
+                                    'title' => sprintf(
+                                        _('Nachricht mit Weiterleitung an %s senden'),
+                                        htmlReady($fullname)
+                                    )
+                                ]
+                            ),
                             ['data-dialog' => '']
                         ) ?>
                     <? endif?>
@@ -116,7 +124,11 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/cancel_subscription/singleuser/' . $waiting_type . '/' . $waiting['user_id']),
                             _('Aus Veranstaltung austragen'),
-                            Icon::create('door-leave', 'clickable', ['title' => sprintf(_('%s austragen'), $fullname)])
+                            Icon::create(
+                                'door-leave',
+                                'clickable',
+                                ['title' => sprintf(_('%s austragen'), htmlReady($fullname))]
+                            )
                         ) ?>
                     <? endif ?>
                     <?= $actionMenu->render() ?>
@@ -141,7 +153,7 @@
 <!--                    <option value="copy_to_sem"><?= _('In Seminar verschieben/kopieren') ?></option>-->
                     </select>
                     <input type="hidden" value="<?= $waiting_type ?>" name="waiting_type"/>
-                    <?= Button::create(_('Ausführen'), 'submit_awaiting') ?>
+                    <?= \Studip\Button::create(_('Ausführen'), 'submit_awaiting') ?>
                 </td>
             </tr>
         </tfoot>

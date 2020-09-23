@@ -1,4 +1,3 @@
-<? use Studip\Button, Studip\LinkButton; ?>
 <h1><?=_('Manuelle Zuordnung')?></h1>
 <?= (isset($flash['error'])) ? MessageBox::error($flash['error']) : '' ?>
 <?= (isset($flash['success'])) ? MessageBox::success($flash['success']) : '' ?>
@@ -8,7 +7,9 @@
 <table class="default">
     <thead>
         <tr>
-            <th class="topic" colspan="2"><?=sprintf(_('Folgende %s konnten <b>nicht eindeutig</b> zugewiesen werden. Bitte wählen Sie aus der jeweiligen Trefferliste:'), htmlReady($status_groups['autor']))?></th>
+            <th class="topic" colspan="2">
+                <?=sprintf(_('Folgende %s konnten <b>nicht eindeutig</b> zugewiesen werden. Bitte wählen Sie aus der jeweiligen Trefferliste:'), htmlReady($status_groups['autor']))?>
+            </th>
         </tr>
     </thead>
 
@@ -34,7 +35,7 @@
     <tfoot>
         <tr>
             <td colspan="2">
-                <?= Button::createAccept(_('Eintragen'))?>
+                <?= Studip\Button::createAccept(_('Eintragen'))?>
             </td>
         </tr>
     </tfoot>

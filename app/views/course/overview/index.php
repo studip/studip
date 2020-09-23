@@ -28,7 +28,7 @@
                 <? endif ?>
                 </dd>
             <? endif ?>
-            <dt><?= get_title_for_status('dozent', $num_dozenten) ?></dt>
+            <dt><?= htmlReady(get_title_for_status('dozent', $num_dozenten)) ?></dt>
             <dd><?= implode(', ', $show_dozenten) ?> </dd>
         <? else : ?>
             <? if ($sem->description) : ?>

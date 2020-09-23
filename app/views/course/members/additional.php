@@ -6,7 +6,7 @@
             <thead>
             <tr>
                 <? foreach ($aux['head'] as $head): ?>
-                    <th><?= $head ?></th>
+                    <th><?= htmlReady($head) ?></th>
                 <? endforeach; ?>
             </tr>
             </thead>

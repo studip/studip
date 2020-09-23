@@ -1,5 +1,3 @@
-<? use Studip\Button, Studip\LinkButton?>
-
 <h1><?=sprintf(_('%s hinzufügen'), htmlReady($decoratedStatusGroups['autor']))?></h1>
 <form action="<?=$controller->url_for('course/members/set_autor')?>" method="post">
 <?= CSRFProtection::tokenTag() ?>
@@ -27,7 +25,11 @@
 
                 </td>
                 <td style="width: 20%; text-align: right">
-                    <?= Button::createAccept(_('Eintragen'), 'add_autor', ['title' => sprintf(_("als %s eintragen"), $decoratedStatusGroups['autor']) ]) ?>
+                    <?= Studip\Button::createAccept(
+                        _('Eintragen'),
+                        'add_autor',
+                        ['title' => sprintf(_("als %s eintragen"), $decoratedStatusGroups['autor'])]
+                    ) ?>
                 </td>
             </tr>
         </tbody>
@@ -69,13 +71,23 @@
         </tr>
 
         <tr>
-            <td style="width: 30%"><?= sprintf(_('<strong>%s</strong> in die Veranstaltung eintragen'), htmlReady($decoratedStatusGroups['autor']))?></td>
+            <td style="width: 30%">
+                <?= sprintf(
+                    _('<strong>%s</strong> in die Veranstaltung eintragen'),
+                    htmlReady($decoratedStatusGroups['autor'])
+                )?>
+            </td>
             <td style="width: 50%">
                 <textarea name="csv_import" rows="6" cols="50"></textarea>
             </td>
             <td style="width: 20%; text-align: right">
-                <?= Button::createAccept(_('Eintragen'), 'add_member_list',
-                        ['title' => sprintf(_("als %s eintragen"), htmlReady($decoratedStatusGroups['autor']))]) ?>
+                <?= Studip\Button::createAccept(
+                    _('Eintragen'),
+                    'add_member_list',
+                    [
+                        'title' => sprintf(_("als %s eintragen"), htmlReady($decoratedStatusGroups['autor']))
+                    ]
+                ) ?>
             </td>
         </tr>
     </tbody>
@@ -83,5 +95,5 @@
 </form>
 
 <div style="text-align: right">
-    <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/members/index')) ?>
+    <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/members/index')) ?>
 </div>

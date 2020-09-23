@@ -17,7 +17,7 @@
             <col width="80">
         </colgroup>
         <caption>
-            <?= $status_groups['user'] ?>
+            <?= htmlReady($status_groups['user']) ?>
         <? if($is_tutor) :?>
             <span class="actions">
                 <a href="<?= URLHelper::getLink('dispatch.php/messages/write', [
@@ -27,9 +27,16 @@
                     'course_id'       => $course_id,
                     'default_subject' => $subject,
                 ]) ?>" data-dialog>
-                   <?= Icon::create('inbox', 'clickable', [
-                       'title' => sprintf(_('Nachricht mit Mailweiterleitung an alle %s versenden'), $status_groups['user']),
-                    ]) ?>
+                   <?= Icon::create(
+                       'inbox',
+                       Icon::ROLE_CLICKABLE,
+                       [
+                           'title' => sprintf(
+                               _('Nachricht mit Mailweiterleitung an alle %s versenden'),
+                               htmlReady($status_groups['user'])
+                           )
+                       ]
+                   ) ?>
                 </a>
             </span>
         <? endif ?>
@@ -38,7 +45,7 @@
             <tr class="sortable">
             <? if($is_tutor) :?>
                 <th>
-                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), $status_groups['user']) ?>"
+                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), htmlReady($status_groups['user'])) ?>"
                            type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=user]">
                 </th>
             <? endif ?>
@@ -75,7 +82,7 @@
             <tr>
             <? if($is_tutor) :?>
                 <td>
-                    <input aria-label="<?= sprintf(_('%s auswählen'), $status_groups['user']) ?>"
+                    <input aria-label="<?= sprintf(_('%s auswählen'), htmlReady($status_groups['user'])) ?>"
                            type="checkbox" name="user[<?= $leser['user_id'] ?>]" value="1"
                            <? if (isset($flash['checked']) && in_array($leser['user_id'], $flash['checked'])) echo 'checked'; ?>>
                 </td>
@@ -85,7 +92,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $leser['username']) ?>" <? if ($leser['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($leser['user_id'],$leser['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                            'title' => $fullname,
+                            'title' => htmlReady($fullname),
                         ]); ?>
                         <?= htmlReady($fullname) ?>
                     </a>
@@ -113,7 +120,16 @@
                                 'default_subject' => $subject,
                             ]),
                             _('Nachricht mit Mailweiterleitung senden'),
-                            Icon::create('mail', 'clickable', ['title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), $fullname)]),
+                            Icon::create(
+                                'mail',
+                                Icon::ROLE_CLICKABLE,
+                                [
+                                    'title' => sprintf(
+                                        _('Nachricht mit Weiterleitung an %s senden'),
+                                        htmlReady($fullname)
+                                    )
+                                ]
+                            ),
                             ['data-dialog' => '']
                         ) ?>
                     <? else: ?>
@@ -129,7 +145,11 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/cancel_subscription/singleuser/user/' . $leser['user_id']),
                             _('Aus Veranstaltung austragen'),
-                            Icon::create('door-leave', 'clickable', ['title' => sprintf(_('%s austragen'), $fullname)])
+                            Icon::create(
+                                'door-leave',
+                                Icon::ROLE_CLICKABLE,
+                                ['title' => sprintf(_('%s austragen'), htmlReady($fullname))]
+                            )
                         ) ?>
                     <? endif ?>
                     <?= $actionMenu->render() ?>

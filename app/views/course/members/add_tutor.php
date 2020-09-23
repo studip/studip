@@ -1,5 +1,3 @@
-<? use Studip\Button, Studip\LinkButton; ?>
-
 <h1><?=sprintf(_('%s hinzufügen'), htmlReady($decoratedStatusGroups['tutor']))?></h1>
 
 <form action="<?=$controller->url_for('course/members/set')?>" method="post">
@@ -8,24 +6,27 @@
     <table class="default">
         <thead>
             <tr>
-                <th colspan="2"><?=sprintf(_('%s suchen'), htmlReady($decoratedStatusGroups['tutor']))?></th>
+                <th colspan="2">
+                    <?=sprintf(_('%s suchen'), htmlReady($decoratedStatusGroups['tutor']))?>
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>
                     <?= QuickSearch::get('new_tutor', $search)
-                        ->withButton(['reset_button_name' => 'reset_tutor', 
+                        ->withButton(['reset_button_name' => 'reset_tutor',
                             'search_button_name' => 'search_tutor'])
-                        ->render(); ?>  
+                        ->render(); ?>
                     <input type="hidden" name="seminar_id" value="<?= $course_id ?>">
                 </td>
                 <td>
-                <?= Button::createAccept(_('Eintragen'), 'add_tutor', 
-                        ['title' => sprintf(_('als %s eintragen'), 
-                                htmlReady($decoratedStatusGroups['tutor']))]) ?>
-                <?= LinkButton::createCancel(_('Abbrechen'), 
-                        $controller->url_for('course/members/index')) ?>
+                <?= Studip\Button::createAccept(
+                    _('Eintragen'),
+                    'add_tutor',
+                    ['title' => sprintf(_('als %s eintragen'), htmlReady($decoratedStatusGroups['tutor']))]
+                ) ?>
+                <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/members/index')) ?>
                 </td>
             </tr>
         </tbody>

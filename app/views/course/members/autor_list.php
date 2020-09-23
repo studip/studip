@@ -15,16 +15,20 @@
                     'course_id'       => $course_id,
                     'default_subject' => $subject,
                 ]) ?>" data-dialog>
-                    <?= Icon::create('inbox', 'clickable', [
-                        'title' => sprintf(
-                            _('Nachricht mit Mailweiterleitung an alle %s versenden'),
-                            $status_groups['autor']
+                    <?= Icon::create(
+                        'inbox',
+                        Icon::ROLE_CLICKABLE,
+                        [
+                            'title' => sprintf(
+                                _('Nachricht mit Mailweiterleitung an alle %s versenden'),
+                                htmlReady($status_groups['autor']
+                            )
                         )
                     ]) ?>
                 </a>
            </span>
        <? endif ?>
-            <?= $status_groups['autor'] ?>
+            <?= htmlReady($status_groups['autor']) ?>
         </caption>
         <colgroup>
             <col width="20">
@@ -46,7 +50,7 @@
             <tr class="sortable">
             <? if ($is_tutor && !$is_locked) : ?>
                 <th>
-                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), $status_groups['autor']) ?>"
+                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), htmlReady($status_groups['autor'])) ?>"
                            type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=autor]">
                 </th>
             <? endif ?>
@@ -83,7 +87,7 @@
             <tr>
             <? if ($is_tutor && !$is_locked) : ?>
                 <td>
-                    <input aria-label="<?= sprintf(_('%s auswählen'), $status_groups['autor']) ?>"
+                    <input aria-label="<?= sprintf(_('%s auswählen'), htmlReady($status_groups['autor'])) ?>"
                            type="checkbox" name="autor[<?= $autor['user_id'] ?>]" value="1"
                            <? if (isset($flash['checked']) && in_array($autor['user_id'], $flash['checked'])) echo 'checked'; ?>>
                 </td>
@@ -91,10 +95,13 @@
                 <td style="text-align: right"><?= sprintf('%02u', ++$nr) ?></td>
                 <td>
                     <a href="<?= $controller->url_for('profile?username=' . $autor['username']) ?>" <? if ($autor['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
-                        <?= Avatar::getAvatar($autor['user_id'], $autor['username'])->getImageTag(Avatar::SMALL, [
-                            'style' => 'margin-right: 5px',
-                            'title' => $fullname,
-                        ]) ?>
+                        <?= Avatar::getAvatar($autor['user_id'], $autor['username'])->getImageTag(
+                            Avatar::SMALL,
+                            [
+                                'style' => 'margin-right: 5px',
+                                'title' => htmlReady($fullname)
+                            ]
+                        ) ?>
                         <?= htmlReady($fullname) ?>
                     <? if ($user_id === $autor['user_id'] && $autor['visible'] === 'no') : ?>
                        (<?= _('unsichtbar') ?>)
@@ -127,7 +134,7 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/add_comment/' . $autor['user_id']),
                             _('Bemerkung hinzufügen'),
-                            Icon::create('comment', 'clickable'),
+                            Icon::create('comment'),
                             ['data-dialog' => 'size=auto']
                         ) ?>
                     <? endif ?>
@@ -140,8 +147,10 @@
                                 'default_subject' => $subject,
                             ]),
                             _('Nachricht mit Mailweiterleitung senden'),
-                            Icon::create('mail', 'clickable', [
-                                'title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), $fullname),
+                            Icon::create(
+                                'mail',
+                                Icon::ROLE_CLICKABLE, [
+                                'title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), htmlReady($fullname)),
                             ]),
                             ['data-dialog' => '']
                         ) ?>
@@ -157,10 +166,11 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/cancel_subscription/singleuser/autor/' . $autor['user_id']),
                             _('Aus Veranstaltung austragen'),
-                            Icon::create('door-leave', 'clickable', [
-                                'title' => sprintf(_('%s austragen'), $fullname)
-                            ]
-                        )) ?>
+                            Icon::create(
+                                'door-leave',
+                                Icon::ROLE_CLICKABLE,
+                                ['title' => sprintf(_('%s austragen'), htmlReady($fullname))])
+                        ) ?>
                     <? endif ?>
                     <?= $actionMenu->render() ?>
                 </td>
@@ -171,7 +181,7 @@
                 <td colspan="<?= $cols ?>" class="blank"></td>
             </tr>
             <tr>
-                <td colspan="<?= $cols ?>">+ <?= sprintf(_('%u unsichtbare %s'), $invisibles, $status_groups['autor']) ?></td>
+                <td colspan="<?= $cols ?>">+ <?= sprintf(_('%u unsichtbare %s'), $invisibles, htmlReady($status_groups['autor'])) ?></td>
             </tr>
         <? endif ?>
 

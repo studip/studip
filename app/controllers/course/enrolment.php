@@ -126,7 +126,7 @@ class Course_EnrolmentController extends AuthenticatedController
                         if ($limit = $courseset->getAdmissionRule('LimitedAdmission')) {
                             $msg_details[] = sprintf(_("Diese Veranstaltung gehört zu einem Anmeldeset mit %s Veranstaltungen. Sie können maximal %s davon belegen. Bei der Verteilung werden die von Ihnen gewünschten Prioritäten berücksichtigt."), count($courseset->getCourses()), $limit->getMaxNumber());
                             $this->user_max_limit = $limit->getMaxNumberForUser($user_id);
-                            if (get_config('IMPORTANT_SEMNUMBER')) {
+                            if (Config::get()->IMPORTANT_SEMNUMBER) {
                                 $order = "ORDER BY VeranstaltungsNummer, Name";
                             } else {
                                 $order = "ORDER BY Name";
@@ -179,21 +179,35 @@ class Course_EnrolmentController extends AuthenticatedController
                             $status = 'autor';
                             StudygroupModel::accept_user(get_username($user_id), $this->course_id);
                             StudygroupModel::cancelInvitation(get_username($user_id), $this->course_id);
-                            $success = sprintf(_("Sie wurden in die Veranstaltung %s als %s eingetragen."), htmlReady($course->getName()), get_title_for_status($status, 1, $course->status));
+                            $success = sprintf(
+                                _("Sie wurden in die Veranstaltung %s als %s eingetragen."),
+                                htmlReady($course->getName()),
+                                htmlReady(get_title_for_status($status, 1, $course->status))
+                            );
                             PageLayout::postSuccess($success);
                         } else {
-                            $success = sprintf(_("Sie wurden auf die Anmeldeliste der Studiengruppe %s eingetragen. Die Moderatoren der Studiengruppe können Sie jetzt freischalten."), htmlReady($course->getName()));
+                            $success = sprintf(
+                                _("Sie wurden auf die Anmeldeliste der Studiengruppe %s eingetragen. Die Moderatoren der Studiengruppe können Sie jetzt freischalten."),
+                                htmlReady($course->getName())
+                            );
                             PageLayout::postSuccess($success);
                         }
                     } else {
-                        $success = sprintf(_("Sie wurden in die Veranstaltung %s vorläufig eingetragen."), htmlReady($course->getName()));
+                        $success = sprintf(
+                            _("Sie wurden in die Veranstaltung %s vorläufig eingetragen."),
+                            htmlReady($course->getName())
+                        );
                         PageLayout::postSuccess($success);
                     }
                 }
             } else {
                 $status = 'autor';
                 if ($course->addMember($user_id, $status)) {
-                    $success = sprintf(_("Sie wurden in die Veranstaltung %s als %s eingetragen."), htmlReady($course->getName()), get_title_for_status($status, 1, $course->status));
+                    $success = sprintf(
+                        _("Sie wurden in die Veranstaltung %s als %s eingetragen."),
+                        htmlReady($course->getName()),
+                        htmlReady(get_title_for_status($status, 1, $course->status))
+                    );
                     PageLayout::postSuccess($success);
 
                     if (StudygroupModel::isInvited($user_id, $this->course_id)) {
@@ -251,7 +265,9 @@ class Course_EnrolmentController extends AuthenticatedController
                     return $a > 0 ? $a : ++$max_prio;
                 }, $admission_prio);
                 if (count(array_unique($admission_prio)) != count(Request::getArray('admission_prio'))) {
-                    PageLayout::postInfo(_('Sie dürfen jede Priorität nur einmal auswählen. Überprüfen Sie bitte Ihre Auswahl!'));
+                    PageLayout::postInfo(
+                        _('Sie dürfen jede Priorität nur einmal auswählen. Überprüfen Sie bitte Ihre Auswahl!')
+                    );
                 }
                 $old_prio_count = AdmissionPriority::unsetAllPrioritiesForUser($courseset->getId(), $user_id);
                 if ($order_up = key(Request::getArray('admission_prio_order_up'))) {

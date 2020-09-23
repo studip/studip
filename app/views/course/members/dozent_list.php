@@ -1,4 +1,3 @@
-
 <table class="default collapsable ">
     <caption>
     <? if ($is_tutor) : ?>
@@ -10,11 +9,20 @@
                 'course_id'       => $course_id,
                 'default_subject' => $subject
             ]) ?>" data-dialog>
-                <?= Icon::create('inbox', 'clickable', ['title' => sprintf(_('Nachricht mit Mailweiterleitung an alle %s versenden'), $status_groups['dozent'])])->asImg() ?>
+                <?= Icon::create(
+                    'inbox',
+                    Icon::ROLE_CLICKABLE,
+                    [
+                        'title' => sprintf(
+                            _('Nachricht mit Mailweiterleitung an alle %s versenden'),
+                            htmlReady($status_groups['dozent'])
+                        )
+                    ]
+                )->asImg() ?>
             </a>
         </span>
     <? endif ?>
-        <?= $this->status_groups['dozent'] ?>
+        <?= htmlReady($status_groups['dozent']) ?>
     </caption>
     <colgroup>
         <col width="<?= $is_tutor ? 40 : 20 ?>">
@@ -46,7 +54,7 @@
                 <a href="<?= $controller->url_for(sprintf('profile?username=%s',$dozent['username'])) ?>" <? if ($dozent['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                     <?= Avatar::getAvatar($dozent['user_id'], $dozent['username'])->getImageTag(Avatar::SMALL, [
                         'style' => 'margin-right: 5px',
-                        'title' => $fullname,
+                        'title' => htmlReady($fullname),
                     ]) ?>
                     <?= htmlReady($fullname) ?>
                 </a>
@@ -64,7 +72,7 @@
                     <? $actionMenu->addLink(
                         $controller->url_for('course/members/add_comment/' . $dozent['user_id']),
                         _('Bemerkung hinzufügen'),
-                        Icon::create('comment', 'clickable'),
+                        Icon::create('comment'),
                         ['data-dialog' => 'size=auto']
                     ) ?>
                 <? endif ?>
@@ -77,7 +85,11 @@
                             'default_subject' => $subject,
                         ]),
                         _('Nachricht mit Mailweiterleitung senden'),
-                        Icon::create('mail', 'clickable', ['title' => sprintf('Nachricht mit Weiterleitung an %s senden', $fullname)]),
+                        Icon::create(
+                            'mail',
+                            Icon::ROLE_CLICKABLE,
+                            ['title' => sprintf('Nachricht mit Weiterleitung an %s senden', htmlReady($fullname))]
+                        ),
                         ['data-dialog' => '1']
                     ) ?>
                 <? else: ?>
@@ -92,7 +104,11 @@
                     <? $actionMenu->addLink(
                         $controller->url_for('course/members/cancel_subscription/singleuser/dozent/' . $dozent['user_id']),
                         _('Aus Veranstaltung austragen'),
-                        Icon::create('door-leave', 'clickable', ['title' => sprintf(_('%s austragen'), $fullname)])
+                        Icon::create(
+                            'door-leave',
+                            Icon::ROLE_CLICKABLE,
+                            ['title' => sprintf(_('%s austragen'), htmlReady($fullname))]
+                        )
                     ) ?>
                 <? endif ?>
                 <?= $actionMenu->render() ?>

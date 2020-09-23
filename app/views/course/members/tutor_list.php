@@ -14,13 +14,20 @@
                     'course_id'       => $course_id,
                     'default_subject' => $subject,
                 ]) ?>" data-dialog>
-                    <?= Icon::create('inbox', 'clickable', [
-                        'title' => sprintf(_('Nachricht mit Mailweiterleitung an alle %s versenden'), $status_groups['tutor'])
-                    ]) ?>
+                    <?= Icon::create(
+                        'inbox',
+                        Icon::ROLE_CLICKABLE,
+                        [
+                            'title' => sprintf(
+                                _('Nachricht mit Mailweiterleitung an alle %s versenden'),
+                                htmlReady( $status_groups['tutor'])
+                            )
+                        ]
+                    ) ?>
                 </a>
             </span>
         <? endif ?>
-            <?= $status_groups['tutor'] ?>
+            <?= htmlReady($status_groups['tutor']) ?>
         </caption>
         <colgroup>
         <? if ($is_dozent && !$tutor_is_locked) : ?>
@@ -38,7 +45,7 @@
             <tr class="sortable">
             <? if ($is_dozent && !$tutor_is_locked): ?>
                 <th>
-                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), $status_groups['tutor']) ?>"
+                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), htmlReady($status_groups['tutor'])) ?>"
                            type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=tutor]">
                 </th>
             <? endif ?>
@@ -75,7 +82,7 @@
             <tr>
             <? if ($is_dozent && !$tutor_is_locked): ?>
                 <td>
-                    <input aria-label="<?= sprintf(_('%s auswählen'), $status_groups['tutor']) ?>"
+                    <input aria-label="<?= sprintf(_('%s auswählen'), htmlReady($status_groups['tutor'])) ?>"
                            type="checkbox" name="tutor[<?= $tutor['user_id'] ?>]" value="1"
                            <? if (isset($flash['checked']) && in_array($tutor['user_id'], $flash['checked'])) echo 'checked'; ?>>
                 </td>
@@ -85,7 +92,7 @@
                     <a href="<?= $controller->url_for('profile?username=' . $tutor['username']) ?>" <? if ($tutor['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
                         <?= Avatar::getAvatar($tutor['user_id'], $tutor['username'])->getImageTag(Avatar::SMALL, [
                             'style' => 'margin-right: 5px',
-                            'title' => $fullname,
+                            'title' => htmlReady($fullname),
                         ]) ?>
                         <?= htmlReady($fullname) ?>
                     </a>
@@ -115,7 +122,7 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/add_comment/' . $tutor['user_id']),
                             _('Bemerkung hinzufügen'),
-                            Icon::create('comment', 'clickable'),
+                            Icon::create('comment'),
                             ['data-dialog' => 'size=auto']
                         ) ?>
                     <? endif ?>
@@ -128,7 +135,11 @@
                                 'default_subject' => $subject,
                             ]),
                             _('Nachricht mit Mailweiterleitung senden'),
-                            Icon::create('mail', 'clickable', ['title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), $fullname)]),
+                            Icon::create(
+                                'mail',
+                                Icon::ROLE_CLICKABLE,
+                                ['title' => sprintf(_('Nachricht mit Weiterleitung an %s senden'), htmlReady($fullname))]
+                            ),
                             ['data-dialog' => '']
                         ) ?>
                     <? else: ?>
@@ -143,7 +154,11 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/cancel_subscription/singleuser/tutor/' . $tutor['user_id']),
                             _('Aus Veranstaltung austragen'),
-                            Icon::create('door-leave', 'clickable', ['title' => sprintf(_('%s austragen'),htmlReady($fullname))])
+                            Icon::create(
+                                'door-leave',
+                                'clickable',
+                                ['title' => sprintf(_('%s austragen'), htmlReady($fullname))]
+                            )
                         ) ?>
                     <? endif ?>
                     <?= $actionMenu->render() ?>
@@ -157,7 +172,7 @@
                 <td colspan="6">
                     <select name="action_tutor" id="tutor_action" aria-label="<?= _('Aktion ausführen') ?>">
                         <option value="">- <?= _('Aktion auswählen') ?></option>
-                        <option value="downgrade"><?= sprintf(_('Zu %s herunterstufen'), $status_groups['autor']) ?></option>
+                        <option value="downgrade"><?= sprintf(_('Zu %s herunterstufen'), htmlReady($status_groups['autor'])) ?></option>
                         <option value="remove"><?= _('Austragen') ?></option>
                         <option value="message"><?=_('Nachricht senden')?></option>
                         <!--<option value="copy_to_course"><?= _('In Seminar verschieben/kopieren') ?></option>-->

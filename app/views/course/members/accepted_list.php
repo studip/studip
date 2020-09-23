@@ -13,7 +13,16 @@
                     'course_id'        => $course_id,
                     'default_subject'  => $subject,
                 ]) ?>" data-dialog>
-                    <?= Icon::create('inbox', 'clickable', ['title' => sprintf(_('Nachricht mit Mailweiterleitung an alle %s versenden'),'vorläufig akzeptierten Nutzer/-innen')]) ?>
+                    <?= Icon::create(
+                        'inbox',
+                        Icon::ROLE_CLICKABLE,
+                        [
+                            'title' => sprintf(
+                                _('Nachricht mit Mailweiterleitung an alle %s versenden'),
+                                _('vorläufig akzeptierten Nutzer/-innen')
+                            )
+                        ]
+                    ) ?>
                 </a>
             </span>
             <?= _('Vorläufig akzeptierte Teilnehmende') ?>
@@ -32,8 +41,8 @@
             <tr class="sortable">
             <? if (!$is_locked): ?>
                 <th>
-                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), 'vorläufig akzeptierten NutzerInnen') ?>"
-                               type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=accepted]">
+                    <input aria-label="<?= sprintf(_('Alle %s auswählen'), _('vorläufig akzeptierten NutzerInnen')) ?>"
+                           type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=accepted]">
                 </th>
             <? endif ?>
                 <th></th>
@@ -75,10 +84,13 @@
                 <td style="text-align: right"><?= sprintf('%02u', ++$nr) ?></td>
                 <td>
                     <a href="<?= $controller->url_for('profile?username=' . $accept['username']) ?>" <? if ($accept['mkdate'] >= $last_visitdate) echo 'class="new-member"'; ?>>
-                        <?= Avatar::getAvatar($accept['user_id'], $accept['username'])->getImageTag(Avatar::SMALL, [
-                            'style' => 'margin-right: 5px',
-                            'title' => $fullname,
-                        ]) ?>
+                        <?= Avatar::getAvatar($accept['user_id'], $accept['username'])->getImageTag(
+                            Avatar::SMALL,
+                            [
+                                'style' => 'margin-right: 5px',
+                                'title' => htmlReady($fullname),
+                            ]
+                        ) ?>
                         <?= htmlReady($fullname) ?>
                     </a>
                 <? if ($accept['comment']): ?>
@@ -104,7 +116,7 @@
                     <? $actionMenu->addLink(
                         $controller->url_for('course/members/add_comment/' . $accept['user_id']),
                         _('Bemerkung hinzufügen'),
-                        Icon::create('comment', 'clickable'),
+                        Icon::create('comment'),
                         ['data-dialog' => 'size=auto']
                     ) ?>
                     <? if ($user_id !== $accept['user_id']) : ?>
@@ -116,7 +128,13 @@
                                 'default_subject' => $subject,
                             ]),
                             _('Nachricht mit Mailweiterleitung senden'),
-                            Icon::create('mail', 'clickable', ['title' => sprintf('Nachricht mit Weiterleitung an %s senden', $fullname)]),
+                            Icon::create(
+                                'mail',
+                                Icon::ROLE_CLICKABLE,
+                                [
+                                    'title' => sprintf('Nachricht mit Weiterleitung an %s senden', htmlReady($fullname))
+                                ]
+                            ),
                             ['data-dialog' => '']
                         ) ?>
                     <? endif?>
@@ -124,9 +142,13 @@
                         <? $actionMenu->addLink(
                             $controller->url_for('course/members/cancel_subscription/singleuser/accepted/' . $accept['user_id']),
                             _('Aus Veranstaltung austragen'),
-                            Icon::create('door-leave', 'clickable', [
-                                'title' => sprintf(_('%s austragen'), htmlReady($fullname))
-                            ])
+                            Icon::create(
+                                'door-leave',
+                                Icon::ROLE_CLICKABLE,
+                                [
+                                    'title' => sprintf(_('%s austragen'), htmlReady($fullname))
+                                ]
+                            )
                         ) ?>
                     <? endif ?>
                     <?= $actionMenu->render() ?>
