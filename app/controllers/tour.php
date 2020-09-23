@@ -265,7 +265,8 @@ class TourController extends AuthenticatedController
     {
         // check permission
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
 
         PageLayout::setTitle(_('Hilfe-Tour importieren'));
@@ -284,7 +285,10 @@ class TourController extends AuthenticatedController
             // import basic data
             $imported_tour = new HelpTour($tour_data['tour']['tour_id']);
             if (!$imported_tour->isNew()) {
-                PageLayout::postError(sprintf(_('Es existiert bereits eine Tour mit dieser ID. Um sie zu ersetzen, müssen Sie die alte Tour "%s" erst löschen.'), $imported_tour->name));
+                PageLayout::postError(sprintf(
+                    _('Es existiert bereits eine Tour mit dieser ID. Um sie zu ersetzen, müssen Sie die alte Tour "%s" erst löschen.'),
+                    htmlReady($imported_tour->name)
+                ));
             } else {
                 $imported_tour->setData($tour_data['tour'], true);
                 if ($imported_tour->store()) {
@@ -325,7 +329,8 @@ class TourController extends AuthenticatedController
     {
         // check permission
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
 
         // load tour
@@ -351,7 +356,8 @@ class TourController extends AuthenticatedController
     private function delete_tour($tour_id)
     {
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
 
         $this->tour = new HelpTour($tour_id);
@@ -363,11 +369,10 @@ class TourController extends AuthenticatedController
             $this->response-add_header('X-Action', 'complete');
         } else {
             $this->response->add_header('X-Action', 'question');
-            return createQuestion2(
+            return (string) QuestionBox::create(
                 sprintf(_('Wollen Sie die Tour "%s" wirklich löschen?'), $this->tour->name),
                 ['confirm_delete_tour' => 1, 'tour_id' => $tour_id],
-                [],
-                ''
+                []
             );
         }
         return '';
@@ -383,7 +388,8 @@ class TourController extends AuthenticatedController
     private function delete_step($tour_id, $step_nr)
     {
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
 
         if (Request::submitted('yes')) {
@@ -400,6 +406,11 @@ class TourController extends AuthenticatedController
                 [],
                 ''
             );
+            return (string) QuestionBox::create(
+                sprintf(_('Wollen Sie Schritt %s wirklich löschen?'), $step_nr),
+                ['confirm_delete_tour_step' => $step_nr, 'tour_id' => $tour_id, 'step_nr' => $step_nr],
+                []
+            );
         }
         return '';
     }
@@ -413,7 +424,8 @@ class TourController extends AuthenticatedController
     public function delete_step_action($tour_id, $step_nr)
     {
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
         $this->tour = new HelpTour($tour_id);
         $this->render_text($this->delete_step($tour_id, $step_nr));
@@ -430,7 +442,8 @@ class TourController extends AuthenticatedController
     public function edit_step_action($tour_id, $step_nr, $mode = 'edit')
     {
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
         // Output as dialog (Ajax-Request) or as Stud.IP page?
         PageLayout::setTitle(_('Schritt bearbeiten'));
@@ -441,7 +454,8 @@ class TourController extends AuthenticatedController
             if ($temp_step->validate() && !$temp_step->isNew()) {
                 $temp_step->store();
             }
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
         // save step action (next)
         if ($mode === 'save_action_next') {
@@ -450,7 +464,8 @@ class TourController extends AuthenticatedController
             if ($temp_step->validate() && !$temp_step->isNew()) {
                 $temp_step->store();
             }
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
         // save step action (prev)
         if ($mode === 'save_action_prev') {
@@ -459,7 +474,8 @@ class TourController extends AuthenticatedController
             if ($temp_step->validate() && !$temp_step->isNew()) {
                 $temp_step->store();
             }
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
         // save step
         if ($mode === 'save') {
@@ -573,7 +589,8 @@ class TourController extends AuthenticatedController
     {
         // check permission
         if (!$this->help_admin) {
-            return $this->render_nothing();
+            $this->render_nothing();
+            return;
         }
 
         $this->tour = new HelpTour($id);
