@@ -82,10 +82,12 @@ class QuestionnaireController extends AuthenticatedController
             PageLayout::setTitle(_("Fragebogen bearbeiten: ").$this->questionnaire['title']);
         }
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Fragebogen ist nicht bearbeitbar.");
+            throw new AccessDeniedException(_('Fragebogen ist nicht bearbeitbar.'));
         }
         if ($this->questionnaire->isRunning() && $this->questionnaire->countAnswers() > 0) {
-            $this->render_text(MessageBox::error(_("Fragebogen ist gestartet worden und kann jetzt nicht mehr bearbeitet werden. Stoppen oder löschen Sie den Fragebogen stattdessen.")));
+            $this->render_text(
+                MessageBox::error(_("Fragebogen ist gestartet worden und kann jetzt nicht mehr bearbeitet werden. Stoppen oder löschen Sie den Fragebogen stattdessen."))
+            );
             return;
         }
         if (Request::isPost()) {
@@ -133,13 +135,13 @@ class QuestionnaireController extends AuthenticatedController
 
                 if ($is_new && Request::get("range_id") && Request::get("range_type")) {
                     if (Request::get("range_id") === "start" && !$GLOBALS['perm']->have_perm("root")) {
-                        throw new Exception("Der Fragebogen darf nicht von Ihnen auf die Startseite eingehängt werden, sondern nur von einem Admin.");
+                        throw new Exception(_("Der Fragebogen darf nicht von Ihnen auf die Startseite eingehängt werden, sondern nur von einem Admin."));
                     }
                     if (Request::get("range_type") === "course" && !$GLOBALS['perm']->have_studip_perm("tutor", Request::get("range_id"))) {
-                        throw new Exception("Der Fragebogen darf nicht in die ausgewählte Veranstaltung eingebunden werden.");
+                        throw new Exception(_("Der Fragebogen darf nicht in die ausgewählte Veranstaltung eingebunden werden."));
                     }
                     if (Request::get("range_type") === "user" && Request::get("range_id") !== $GLOBALS['user']->id) {
-                        throw new Exception("Der Fragebogen darf nicht in diesen Bereich eingebunden werden.");
+                        throw new Exception(_("Der Fragebogen darf nicht in diesen Bereich eingebunden werden."));
                     }
                     $assignment = new QuestionnaireAssignment();
                     $assignment['questionnaire_id'] = $this->questionnaire->getId();
@@ -197,7 +199,7 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->old_questionnaire = Questionnaire::find($from);
         if (!$this->old_questionnaire->isCopyable()) {
-            throw new AccessDeniedException("Reproduction and copy forbidden");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht kopierbar.'));
         }
         $this->questionnaire = new Questionnaire();
         $this->questionnaire->setData($this->old_questionnaire->toArray());
@@ -215,7 +217,7 @@ class QuestionnaireController extends AuthenticatedController
             $new_question['mkdate'] = time();
             $new_question->store();
         }
-        PageLayout::postMessage(MessageBox::success(_("Der Fragebogen wurde kopiert. Wo soll er angezeigt werden?")));
+        PageLayout::postSuccess(_('Der Fragebogen wurde kopiert. Wo soll er angezeigt werden?'));
         $this->redirect("questionnaire/context/".$this->questionnaire->getId());
     }
 
@@ -223,10 +225,10 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht bearbeitbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht bearbeitbar.'));
         }
         $this->questionnaire->delete();
-        PageLayout::postMessage(MessageBox::success(_("Der Fragebogen wurde gelöscht.")));
+        PageLayout::postSuccess(_('Der Fragebogen wurde gelöscht.'));
         if (Request::get("redirect")) {
             $this->redirect(Request::get("redirect"));
         } else {
@@ -245,7 +247,7 @@ class QuestionnaireController extends AuthenticatedController
                 $questionnaire->delete();
             }
         }
-        PageLayout::postSuccess(_("Fragebögen wurden gelöscht."));
+        PageLayout::postSuccess(_('Fragebögen wurden gelöscht.'));
         if (Request::get("range_type") === "user") {
             $this->redirect("questionnaire/overview");
         } elseif (Request::get("range_type") === "course") {
@@ -260,7 +262,7 @@ class QuestionnaireController extends AuthenticatedController
     public function add_question_action()
     {
         if (!$GLOBALS['perm']->have_perm("autor")) {
-            throw new AccessDeniedException("Only for logged in users.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht einsehbar.'));
         }
         $class = Request::get("questiontype");
         $this->question = new $class();
@@ -280,7 +282,7 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isViewable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht einsehbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht einsehbar.'));
         }
         object_set_visit($questionnaire_id, 'vote');
         $this->range_type = Request::get("range_type");
@@ -292,14 +294,12 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isViewable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht einsehbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht einsehbar.'));
         }
         object_set_visit($questionnaire_id, 'vote');
         PageLayout::setTitle(sprintf(_("Fragebogen: %s"), $this->questionnaire->title));
 
         if (Request::isAjax() && !$_SERVER['HTTP_X_DIALOG']) {
-            //Wenn das hier direkt auf der Übersichts-/Profil-/Startseite angezeigt
-            //wird, brauchen wir kein 'Danke für die Teilnahme'.
             PageLayout::clearMessages();
         }
     }
@@ -308,11 +308,11 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht bearbeitbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht bearbeitbar.'));
         }
         $this->questionnaire->stop();
 
-        PageLayout::postMessage(MessageBox::success(_("Die Befragung wurde beendet.")));
+        PageLayout::postSuccess(_('Die Befragung wurde beendet.'));
         if (Request::get("redirect")) {
             $this->redirect(Request::get("redirect"));
         } else {
@@ -324,11 +324,11 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht bearbeitbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht bearbeitbar.'));
         }
         $this->questionnaire->start();
 
-        PageLayout::postMessage(MessageBox::success(_("Die Befragung wurde gestartet.")));
+        PageLayout::postSuccess(_("Die Befragung wurde gestartet."));
         if (Request::get("redirect")) {
             $this->redirect(Request::get("redirect"));
         } else {
@@ -340,7 +340,7 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht exportierbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht exportierbar.'));
         }
         $csv = [[_("Nummer"), _("Benutzername"), _("Nachname"), _("Vorname"), _("E-Mail")]];
 
@@ -381,7 +381,7 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isEditable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht bearbeitbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht bearbeitbar.'));
         }
         foreach ($this->questionnaire->assignments as $relation) {
             if ($relation['range_type'] === "user") {
@@ -474,7 +474,7 @@ class QuestionnaireController extends AuthenticatedController
                 }
             }
 
-            PageLayout::postMessage(MessageBox::success(_("Die Bereichszuweisungen wurden gespeichert.")));
+            PageLayout::postSuccess(_('Die Bereichszuweisungen wurden gespeichert.'));
             $this->questionnaire->restore();
             $this->questionnaire->resetRelation("assignments");
             $output = [
@@ -708,7 +708,7 @@ class QuestionnaireController extends AuthenticatedController
                 $errors = [];
                 foreach ($this->selected_courses as $course) {
                     foreach ($this->selected_questionnaires as $questionnaire) {
-                        if ($copy_questionnaires) {
+                        if ($this->copy_questionnaires) {
                             //The questionnaire shall be copied and only the copy
                             //shall be placed inside the course.
 
@@ -770,8 +770,8 @@ class QuestionnaireController extends AuthenticatedController
                                 if (!$assignment->store()) {
                                     $errors[] = sprintf(
                                         _('Fragebogen "%1$s" konnte nicht zu Veranstaltung "%2$s" zugeordnet werden!'),
-                                        $questionnaire->title,
-                                        $course->name
+                                        htmlReady($questionnaire->title),
+                                        htmlReady($course->name)
                                     );
                                 }
                             }
@@ -797,7 +797,7 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->questionnaire = new Questionnaire($questionnaire_id);
         if (!$this->questionnaire->isViewable()) {
-            throw new AccessDeniedException("Der Fragebogen ist nicht einsehbar.");
+            throw new AccessDeniedException(_('Der Fragebogen ist nicht einsehbar.'));
         }
         $answered_before = $this->questionnaire->isAnswered();
         if ($this->questionnaire->isAnswerable()) {
@@ -830,9 +830,9 @@ class QuestionnaireController extends AuthenticatedController
                 PersonalNotifications::add(
                     $this->questionnaire['user_id'],
                     $url,
-                    sprintf(_("%s hat an der Befragung '%s' teilgenommen."), get_fullname(), $this->questionnaire['title']),
+                    sprintf(_("%s hat an der Befragung '%s' teilgenommen."), $GLOBALS['user']->getFullName(), $this->questionnaire['title']),
                     "questionnaire_" . $this->questionnaire->getId(),
-                    Icon::create('vote', 'clickable'),
+                    Icon::create('vote'),
                     true
                 );
             }
