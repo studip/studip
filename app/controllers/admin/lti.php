@@ -73,7 +73,10 @@ class Admin_LtiController extends AuthenticatedController
         $tool->send_lis_person = Request::int('send_lis_person', 0);
 
         if ($tool->store()) {
-            PageLayout::postSuccess(sprintf(_('Einstellungen für "%s" wurden gespeichert.'), $tool->name));
+            PageLayout::postSuccess(sprintf(
+                _('Einstellungen für "%s" wurden gespeichert.'),
+                htmlReady($tool->name)
+            ));
         }
 
         $this->redirect('admin/lti');
@@ -92,7 +95,10 @@ class Admin_LtiController extends AuthenticatedController
         $tool_name = $tool->name;
 
         if ($tool && $tool->delete()) {
-            PageLayout::postSuccess(sprintf(_('Das LTI-Tool "%s" wurde gelöscht.'), $tool_name));
+            PageLayout::postSuccess(sprintf(
+                _('Das LTI-Tool "%s" wurde gelöscht.'),
+                htmlReady($tool_name)
+            ));
         }
 
         $this->redirect('admin/lti');
