@@ -433,8 +433,8 @@ class Course_IliasInterfaceController extends AuthenticatedController
                 // add groups
                 foreach ($this->groups as $group) {
                     $group_data = [
-                                    'title' => $group->getName(),
-                                    'owner' => $this->ilias->user->getId()
+                        'title' => $group->getName(),
+                        'owner' => $this->ilias->user->getId()
                     ];
                     if ($group_id = IliasObjectConnections::getConnectionModuleId($group->getId(), "group", $this->ilias_index)) {
                         // update existing group
@@ -461,7 +461,11 @@ class Course_IliasInterfaceController extends AuthenticatedController
                         foreach ($ilias_group['members'] as $member) {
                             $this->ilias->soap_client->excludeGroupMember($group_id, $member);
                         }
-                        PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) aktualisiert.'), $group->getName(), $member_count));
+                        PageLayout::postSuccess(sprintf(
+                            _('Gruppe "%s" (%s Teilnehmende) aktualisiert.'),
+                            htmlReady($group->getName()),
+                            $member_count
+                        ));
                     } elseif ($group_id = $this->ilias->soap_client->addGroup($group_data, $course_id)) {
                         // create new group
                         IliasObjectConnections::setConnection($group->getId(), $group_id, 'group', $this->ilias_index);
@@ -477,7 +481,11 @@ class Course_IliasInterfaceController extends AuthenticatedController
                                 $this->ilias->soap_client->assignGroupMember($group_id, $data['external_user_id'], 'Member');
                             }
                         }
-                        PageLayout::postSuccess(sprintf(_('Gruppe "%s" (%s Teilnehmende) angelegt.'), $group->getName(), $member_count));
+                        PageLayout::postSuccess(sprintf(
+                            _('Gruppe "%s" (%s Teilnehmende) angelegt.'),
+                            htmlReady($group->getName()),
+                            $member_count
+                        ));
                     }
                 }
                 $this->redirect($this->url_for('course/ilias_interface'));
@@ -511,10 +519,10 @@ class Course_IliasInterfaceController extends AuthenticatedController
         $this->ilias = new ConnectedIlias($index);
         if ($this->ilias->isActive()) {
             if (IliasObjectConnections::DeleteAllConnections($this->seminar_id, $index)) {
-                PageLayout::postSuccess(_("Kurs-Verknüpfung entfernt."));
+                PageLayout::postSuccess(_('Kurs-Verknüpfung entfernt.'));
             }
         } else {
-            PageLayout::postError(_("Diese ILIAS-Installation ist nicht aktiv."));
+            PageLayout::postError(_('Diese ILIAS-Installation ist nicht aktiv.'));
         }
         $this->redirect($this->url_for('course/ilias_interface'));
     }
@@ -537,7 +545,7 @@ class Course_IliasInterfaceController extends AuthenticatedController
             $this->ilias_index = $index;
             PageLayout::setTitle($this->module->getTitle());
         } else {
-            PageLayout::postError(_("Diese ILIAS-Installation ist nicht aktiv."));
+            PageLayout::postError(_('Diese ILIAS-Installation ist nicht aktiv.'));
         }
     }
 
