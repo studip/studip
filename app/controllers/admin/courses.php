@@ -219,14 +219,16 @@ class Admin_CoursesController extends AuthenticatedController
         //actions: always visible, too
         if ($GLOBALS['perm']->have_perm($this->sem_create_perm)) {
             $actions = new ActionsWidget();
-            $actions->addLink(_('Neue Veranstaltung anlegen'),
-                              URLHelper::getURL('dispatch.php/course/wizard'),
-                              Icon::create('seminar+add', 'clickable'))->asDialog('size=50%');
+            $actions->addLink(
+                _('Neue Veranstaltung anlegen'),
+                  URLHelper::getURL('dispatch.php/course/wizard'),
+                  Icon::create('seminar+add')
+            )->asDialog('size=50%');
             $actions->addLink(
                 _('Diese Seitenleiste konfigurieren'),
                 URLHelper::getURL('dispatch.php/admin/courses/sidebar'),
-                Icon::create('admin', 'clickable')
-                )->asDialog();
+                Icon::create('admin')
+            )->asDialog();
 
 
             $sidebar->addWidget($actions, 'links');
@@ -237,7 +239,6 @@ class Admin_CoursesController extends AuthenticatedController
             $this->setViewWidget($this->view_filter);
         }
 
-
         //"export as Excel" is always visible:
         if ($this->sem_create_perm) {
             $params = [];
@@ -246,9 +247,11 @@ class Admin_CoursesController extends AuthenticatedController
                 $params['search'] = $GLOBALS['user']->cfg->ADMIN_COURSES_SEARCHTEXT;
             }
             $export = new ExportWidget();
-            $export->addLink(_('Als Excel exportieren'),
-                             URLHelper::getURL('dispatch.php/admin/courses/export_csv', $params),
-                             Icon::create('file-excel', 'clickable'));
+            $export->addLink(
+                _('Als Excel exportieren'),
+                 URLHelper::getURL('dispatch.php/admin/courses/export_csv', $params),
+                 Icon::create('file-excel')
+            );
             $sidebar->addWidget($export);
         }
     }
@@ -285,7 +288,7 @@ class Admin_CoursesController extends AuthenticatedController
         $this->insts = Institute::getMyInstitutes($GLOBALS['user']->id);
 
         if (empty($this->insts) && !$GLOBALS['perm']->have_perm('root')) {
-            PageLayout::postMessage(MessageBox::error(_('Sie wurden noch keiner Einrichtung zugeordnet')));
+            PageLayout::postError(_('Sie wurden noch keiner Einrichtung zugeordnet'));
         }
 
         if (!$GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT) {
@@ -297,18 +300,18 @@ class Admin_CoursesController extends AuthenticatedController
             $this->semester = Semester::find($GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE);
         }
 
-        if (Request::submitted("search")) {
-            $GLOBALS['user']->cfg->store('ADMIN_COURSES_SEARCHTEXT', Request::get("search"));
+        if (Request::submitted('search')) {
+            $GLOBALS['user']->cfg->store('ADMIN_COURSES_SEARCHTEXT', Request::get('search'));
         }
-        if (Request::get("reset-search")) {
+        if (Request::get('reset-search')) {
             $GLOBALS['user']->cfg->delete('ADMIN_COURSES_SEARCHTEXT');
         }
-        if (Request::submitted("teacher_filter")) {
-            $GLOBALS['user']->cfg->store('ADMIN_COURSES_TEACHERFILTER', Request::option("teacher_filter"));
+        if (Request::submitted('teacher_filter')) {
+            $GLOBALS['user']->cfg->store('ADMIN_COURSES_TEACHERFILTER', Request::option('teacher_filter'));
         }
 
-        PageLayout::setHelpKeyword("Basis.Veranstaltungen");
-        PageLayout::setTitle(_("Verwaltung von Veranstaltungen und Einrichtungen"));
+        PageLayout::setHelpKeyword('Basis.Veranstaltungen');
+        PageLayout::setTitle(_('Verwaltung von Veranstaltungen und Einrichtungen'));
         // Add admission functions.
         PageLayout::addScript('studip-admission.js');
     }
@@ -331,7 +334,7 @@ class Admin_CoursesController extends AuthenticatedController
         $this->view_filter = $this->getFilterConfig();
 
         if (Request::get('sortFlag')) {
-            $GLOBALS['user']->cfg->store('MEINE_SEMINARE_SORT_FLAG', Request::get('sortFlag') == 'asc' ? 'DESC' : 'ASC');
+            $GLOBALS['user']->cfg->store('MEINE_SEMINARE_SORT_FLAG', Request::get('sortFlag') === 'asc' ? 'DESC' : 'ASC');
         }
         if (Request::option('sortby')) {
             $GLOBALS['user']->cfg->store('MEINE_SEMINARE_SORT', Request::option('sortby'));
@@ -359,8 +362,10 @@ class Admin_CoursesController extends AuthenticatedController
         // get all available teacher for infobox-filter
         // filter by selected teacher
         $_SESSION['MY_COURSES_LIST'] = array_map(function ($c, $id) {
-            return ['Name'       => $c['Name'],
-                         'Seminar_id' => $id];
+        return [
+            'Name' => $c['Name'],
+            'Seminar_id' => $id
+        ];
         }, array_values($this->courses), array_keys($this->courses));
 
 
@@ -498,9 +503,11 @@ class Admin_CoursesController extends AuthenticatedController
             }
 
             if (in_array('type', $filter_config)) {
-                $row['type'] = sprintf('%s: %s',
-                                       $sem->getSemClass()['name'],
-                                       $sem->getSemType()['name']);
+                $row['type'] = sprintf(
+                    '%s: %s',
+                    $sem->getSemClass()['name'],
+                    $sem->getSemType()['name']
+                );
             }
 
             if (in_array('room_time', $filter_config)) {
@@ -539,11 +546,11 @@ class Admin_CoursesController extends AuthenticatedController
                 $row['semester'] = $sem->start_semester->name;
             }
 
-            foreach (PluginManager::getInstance()->getPlugins("AdminCourseContents") as $plugin) {
+            foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
                 foreach ($plugin->adminAvailableContents() as $index => $label) {
                     if (in_array($plugin->getPluginId()."_".$index, $filter_config)) {
                         $content = $plugin->adminAreaGetCourseContent(Course::find($course_id), $index);
-                        $row[$plugin->getPluginId()."_".$index] = strip_tags(is_a($content, "Flexi_Template")
+                        $row[$plugin->getPluginId()."_".$index] = strip_tags(is_a($content, 'Flexi_Template')
                             ? $content->render()
                             : $content
                         );
@@ -558,7 +565,7 @@ class Admin_CoursesController extends AuthenticatedController
         foreach ($filter_config as $index) {
             $captions[$index] = $view_filters[$index];
         }
-        foreach (PluginManager::getInstance()->getPlugins("AdminCourseContents") as $plugin) {
+        foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
             foreach ($plugin->adminAvailableContents() as $index => $label) {
                 if (in_array($plugin->getPluginId()."_".$index, $filter_config)) {
                     $captions[$plugin->getPluginId()."_".$index] = $label;
@@ -594,25 +601,28 @@ class Admin_CoursesController extends AuthenticatedController
                 $GLOBALS['user']->cfg->store('MY_INSTITUTES_INCLUDE_CHILDREN', 0);
             }
 
-            PageLayout::postMessage(MessageBox::success('Die gewünschte Einrichtung wurde ausgewählt!'));
+            PageLayout::postSuccess(_('Die gewünschte Einrichtung wurde ausgewählt!'));
         }
 
         if (Request::option('sem_select')) {
             $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_CYCLE', Request::option('sem_select'));
             if (Request::option('sem_select') !== "all") {
                 $sem_name = Semester::find(Request::option('sem_select'))->name;
-                PageLayout::postMessage(MessageBox::success(sprintf(_('Das %s wurde ausgewählt'), htmlReady($sem_name))));
+                PageLayout::postSuccess(sprintf(_('Das %s wurde ausgewählt'), htmlReady($sem_name)));
             } else {
-                PageLayout::postMessage(MessageBox::success(_('Semesterfilter abgewählt')));
+                PageLayout::postSuccess(_('Semesterfilter abgewählt'));
             }
         }
 
         if (Request::option('stgteil_select')) {
             $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_STGTEIL', Request::option('stgteil_select'));
             if (Request::option('stgteil_select') !== "all") {
-                PageLayout::postMessage(MessageBox::success(sprintf(_('Der Studiengangteil %s wurde ausgewählt'), StudiengangTeil::find(Request::option('stgteil_select'))->getDisplayName())));
+                PageLayout::postSuccess(sprintf(
+                    _('Der Studiengangteil %s wurde ausgewählt'),
+                    htmlReady(StudiengangTeil::find(Request::option('stgteil_select'))->getDisplayName())
+                ));
             } else {
-                PageLayout::postMessage(MessageBox::success(_('Studiengangteilfilter abgewählt')));
+                PageLayout::postSuccess(_('Studiengangteilfilter abgewählt'));
             }
         }
 
@@ -659,10 +669,13 @@ class Admin_CoursesController extends AuthenticatedController
             }
 
             if ($result) {
-                PageLayout::postMessage(MessageBox::success(_('Die gewünschten Änderungen wurden erfolgreich durchgeführt!')));
+                PageLayout::postSuccess(_('Die gewünschten Änderungen wurden erfolgreich durchgeführt!'));
             }
             if ($errors) {
-                PageLayout::postMessage(MessageBox::error(_('Bei den folgenden Veranstaltungen ist ein Fehler aufgetreten'), array_map('htmlReady', $errors)));
+                PageLayout::postError(
+                    _('Bei den folgenden Veranstaltungen ist ein Fehler aufgetreten'),
+                    array_map('htmlReady', $errors)
+                );
             }
         }
         $this->redirect('admin/courses/index');
@@ -708,7 +721,7 @@ class Admin_CoursesController extends AuthenticatedController
             }
         }
 
-        PageLayout::postMessage(MessageBox::success(_('Die gewünschten Änderungen wurden ausgeführt!')));
+        PageLayout::postSuccess(_('Die gewünschten Änderungen wurden ausgeführt!'));
         $this->redirect('admin/courses/index');
     }
 
@@ -799,10 +812,13 @@ class Admin_CoursesController extends AuthenticatedController
             }
 
             if ($result) {
-                PageLayout::postMessage(MessageBox::success(_('Die gewünschten Änderungen wurden erfolgreich durchgeführt!')));
+                PageLayout::postSuccess(_('Die gewünschten Änderungen wurden erfolgreich durchgeführt!'));
             }
             if ($errors) {
-                PageLayout::postMessage(MessageBox::error(_('Bei den folgenden Veranstaltungen ist ein Fehler aufgetreten'), array_map('htmlReady', $errors)));
+                PageLayout::postError(
+                    _('Bei den folgenden Veranstaltungen ist ein Fehler aufgetreten'),
+                    array_map('htmlReady', $errors)
+                );
             }
         }
         $this->redirect('admin/courses/index');
@@ -838,7 +854,7 @@ class Admin_CoursesController extends AuthenticatedController
         // select the action area
         if (Request::option('action_area')) {
             $GLOBALS['user']->cfg->store('MY_COURSES_ACTION_AREA', Request::option('action_area'));
-            PageLayout::postMessage(MessageBox::success(_('Der Aktionsbereich wurde erfolgreich übernommen!')));
+            PageLayout::postSuccess(_('Der Aktionsbereich wurde erfolgreich übernommen!'));
         }
 
         $this->redirect('admin/courses/index');
@@ -851,7 +867,7 @@ class Admin_CoursesController extends AuthenticatedController
     {
         if (Request::option('course_type')) {
             $GLOBALS['user']->cfg->store('MY_COURSES_TYPE_FILTER', Request::option('course_type'));
-            PageLayout::postMessage(MessageBox::success(_('Der gewünschte Veranstaltungstyp wurde übernommen!')));
+            PageLayout::postSuccess(_('Der gewünschte Veranstaltungstyp wurde übernommen!'));
         }
         $this->redirect('admin/courses/index');
     }
@@ -1049,7 +1065,7 @@ class Admin_CoursesController extends AuthenticatedController
             'contents'      => _('Inhalt'),
             'last_activity' => _('Letzte Aktivität'),
         ];
-        foreach (PluginManager::getInstance()->getPlugins("AdminCourseContents") as $plugin) {
+        foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
             foreach ($plugin->adminAvailableContents() as $index => $label) {
                 $views[$plugin->getPluginId() . "_" . $index] = $label;
             }
@@ -1060,10 +1076,9 @@ class Admin_CoursesController extends AuthenticatedController
     /**
      * Returns all courses matching set criteria.
      *
-     * @param Array $params Additional parameters
-     * @param String $parent_id Fetch only subcourses of this parent
-     * @param display_all : boolean should we show all courses or check for a limit of 500 courses?
-     * @return Array of courses
+     * @param array $params Additional parameters
+     * @param bool $display_all : boolean should we show all courses or check for a limit of 500 courses?
+     * @return array of courses
      */
     private function getCourses($params = [], $display_all = false)
     {
@@ -1089,7 +1104,7 @@ class Admin_CoursesController extends AuthenticatedController
                 // pick the institute IDs of the faculty/institute and of all sub-institutes.
                 $inst_ids[] = $inst_id;
                 if ($institut->isFaculty()) {
-                    foreach ($institut->sub_institutes->pluck("Institut_id") as $institut_id) {
+                    foreach ($institut->sub_institutes->pluck('Institut_id') as $institut_id) {
                         $inst_ids[] = $institut_id;
                     }
                 }
@@ -1189,14 +1204,24 @@ class Admin_CoursesController extends AuthenticatedController
 
                 if (in_array('contents', $params['view_filter'])) {
                     $seminars[$seminar_id]['sem_class'] = $sem_types[$seminar['status']]->getClass();
-                    $seminars[$seminar_id]['modules'] = $modules->getLocalModules($seminar_id, 'sem', $seminar['modules'], $seminar['status']);
-                    $seminars[$seminar_id]['navigation'] = MyRealmModel::getAdditionalNavigations($seminar_id, $seminars[$seminar_id], $seminars[$seminar_id]['sem_class'], $GLOBALS['user']->id);
+                    $seminars[$seminar_id]['modules'] = $modules->getLocalModules(
+                        $seminar_id,
+                        'sem',
+                        $seminar['modules'],
+                        $seminar['status']
+                    );
+                    $seminars[$seminar_id]['navigation'] = MyRealmModel::getAdditionalNavigations(
+                        $seminar_id,
+                        $seminars[$seminar_id],
+                        $seminars[$seminar_id]['sem_class'],
+                        $GLOBALS['user']->id
+                    );
                 }
                 //add last activity column:
                 if (in_array('last_activity', $params['view_filter'])) {
                     $seminars[$seminar_id]['last_activity'] = lastActivity($seminar_id);
                 }
-                if ($this->selected_action == 17) {
+                if ((int)$this->selected_action === 17) {
                     $seminars[$seminar_id]['admission_locked'] = false;
                     if ($seminar['course_set']) {
                         $set = new CourseSet($seminar['course_set']);
@@ -1247,7 +1272,11 @@ class Admin_CoursesController extends AuthenticatedController
 
         foreach ($this->getViewFilters() as $index => $label) {
             $state = in_array($index, $configs);
-            $checkbox_widget->addCheckbox($label, $state, $this->url_for('admin/courses/set_view_filter/' . $index . '/' . $state));
+            $checkbox_widget->addCheckbox(
+                $label,
+                $state,
+                $this->url_for('admin/courses/set_view_filter/' . $index . '/' . $state)
+            );
         }
         Sidebar::get()->addWidget($checkbox_widget, 'views');
     }
