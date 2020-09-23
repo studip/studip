@@ -493,7 +493,7 @@
 
     // Apply defaults including date picker handlers
     defaults = $.extend(locale, {
-        beforeShow: function (input, inst) {
+        beforeShow (input) {
             STUDIP.UI.Datepicker.refresh();
             STUDIP.UI.DateTimepicker.refresh();
             STUDIP.UI.Timepicker.refresh();
@@ -514,8 +514,11 @@
         }
     });
 
-    $.datepicker.setDefaults($.extend(defaults, {
+    $.datepicker.setDefaults($.extend({}, defaults, {
         beforeShow (input) {
+            // Don't lose original behaviour
+            defaults.beforeShow(input);
+
             if ($(input).parents('.ui-dialog').length > 0) {
                 $('.ui-dialog-content').bind('scroll.datepicker-scroll', _.debounce($.proxy(DpHideOnScroll, null, input), 100, {leading:true, trailing:false}));
             }
