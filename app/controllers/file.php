@@ -466,7 +466,7 @@ class FileController extends AuthenticatedController
                 PageLayout::postError(
                     sprintf(
                         _('Fehler beim Ändern der Datei %s!'),
-                        $this->file_ref->name
+                        htmlReady($this->file_ref->name)
                     ),
                     $this->errors
                 );
@@ -1356,7 +1356,10 @@ class FileController extends AuthenticatedController
                 if (is_array($file_ref)) {
                     $error = $file_ref;
                 }
-                PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), is_array($error) ? $error : [$error]);
+                if(!is_array($error)) {
+                    $error = [$error];
+                }
+                PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), array_map('htmlReady', $error));
             }
         }
 
@@ -1540,13 +1543,13 @@ class FileController extends AuthenticatedController
                             if (count($success_files) == 1) {
                                 PageLayout::postSuccess(sprintf(
                                     _('Die Lizenz der Datei "%s" wurde geändert.'),
-                                    $this->file_refs[0]->name
+                                    htmlReady($this->file_refs[0]->name)
                                 ));
                             } else {
                                 sort($success_files);
                                 PageLayout::postSuccess(
                                     _('Die Lizenzen der folgenden Dateien wurden geändert:'),
-                                    $success_files
+                                    array_map('htmlReady', $success_files)
                                 );
                             }
                         }
@@ -1554,12 +1557,12 @@ class FileController extends AuthenticatedController
                             if (count($error_files) == 1) {
                                 PageLayout::postError(sprintf(
                                     _('Die Lizenz der Datei "%s" konnte nicht geändert werden!'),
-                                    $this->file_refs[0]->name
+                                    htmlReady($this->file_refs[0]->name)
                                 ));
                             } else {
                                 PageLayout::postError(
                                     _('Die Lizenzen der folgenden Dateien konnten nicht geändert werden:'),
-                                    $error_files
+                                    array_map('htmlReady', $error_files)
                                 );
                             }
                         }
