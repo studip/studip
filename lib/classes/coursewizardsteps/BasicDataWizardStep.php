@@ -338,18 +338,24 @@ class BasicDataWizardStep implements CourseWizardStep
             }
         }
         if (!$values['lecturers']) {
-            $errors[] = sprintf(_('Bitte tragen Sie mindestens eine Person als %s ein.'),
-                get_title_for_status('dozent', 1, $values['coursetype']));
+            $errors[] = sprintf(
+                _('Bitte tragen Sie mindestens eine Person als %s ein.'),
+                htmlReady(get_title_for_status('dozent', 1, $values['coursetype']))
+            );
         }
         if (!$values['lecturers'][$GLOBALS['user']->id] && !$GLOBALS['perm']->have_perm('admin')) {
             if (Config::get()->DEPUTIES_ENABLE) {
                 if (!$values['deputies'][$GLOBALS['user']->id]) {
-                    $errors[] = sprintf(_('Sie selbst müssen entweder als %s oder als Vertretung eingetragen sein.'),
-                        get_title_for_status('dozent', 1, $values['coursetype']));
+                    $errors[] = sprintf(
+                        _('Sie selbst müssen entweder als %s oder als Vertretung eingetragen sein.'),
+                        htmlReady(get_title_for_status('dozent', 1, $values['coursetype']))
+                    );
                 }
             } else {
-                $errors[] = sprintf(_('Sie müssen selbst als %s eingetragen sein.'),
-                    get_title_for_status('dozent', 1, $values['coursetype']));
+                $errors[] = sprintf(
+                    _('Sie müssen selbst als %s eingetragen sein.'),
+                    htmlReady(get_title_for_status('dozent', 1, $values['coursetype']))
+                );
             }
         }
         if (in_array($values['coursetype'], studygroup_sem_types())) {
@@ -359,8 +365,7 @@ class BasicDataWizardStep implements CourseWizardStep
         }
         if ($errors) {
             $ok = false;
-            PageLayout::postMessage(MessageBox::error(
-                _('Bitte beheben Sie erst folgende Fehler, bevor Sie fortfahren:'), $errors));
+            PageLayout::postError(_('Bitte beheben Sie erst folgende Fehler, bevor Sie fortfahren:'), $errors);
         }
         return $ok;
     }
