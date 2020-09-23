@@ -47,7 +47,7 @@ class MyCoursesController extends AuthenticatedController
         }
     }
 
-    function after_filter($action, $args)
+    public function after_filter($action, $args)
     {
         parent::after_filter($action, $args);
 
@@ -72,8 +72,8 @@ class MyCoursesController extends AuthenticatedController
             return;
         }
         Navigation::activateItem('/browse/my_courses/list');
-        PageLayout::setHelpKeyword("Basis.MeineVeranstaltungen");
-        PageLayout::setTitle(_("Meine Veranstaltungen"));
+        PageLayout::setHelpKeyword('Basis.MeineVeranstaltungen');
+        PageLayout::setTitle(_('Meine Veranstaltungen'));
 
         $config_sem = $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE;
         if (!Config::get()->MY_COURSES_ENABLE_ALL_SEMESTERS && $config_sem == 'all') {
@@ -285,7 +285,6 @@ class MyCoursesController extends AuthenticatedController
             throw new AccessDeniedException();
         }
 
-
         $this->title = _('Meine Veranstaltungen') . ' - ' . _('Farbgruppierungen');
 
         PageLayout::setTitle($this->title);
@@ -486,7 +485,7 @@ class MyCoursesController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('admin')) {
             throw new AccessDeniedException();
         }
-        PageLayout::postMessage(MessageBox::error(_('Die Anmeldung ist verbindlich. Bitte wenden Sie sich an die Lehrenden.')));
+        PageLayout::postError(_('Die Anmeldung ist verbindlich. Bitte wenden Sie sich an die Lehrenden.'));
         $this->redirect('my_courses/index');
     }
 
@@ -530,11 +529,10 @@ class MyCoursesController extends AuthenticatedController
         }
 
         if (Request::option('cmd') != 'kill' && Request::option('cmd') != 'kill_admission') {
-
             if ($current_seminar->admission_binding && Request::get('cmd') != 'suppose_to_kill_admission' && !LockRules::Check($current_seminar->getId(), 'participants')) {
-                PageLayout::postMessage(MessageBox::error(sprintf(_("Die Veranstaltung <b>%s</b> ist als <b>bindend</b> angelegt.
+                PageLayout::postError(sprintf(_("Die Veranstaltung <b>%s</b> ist als <b>bindend</b> angelegt.
                     Wenn Sie sich abmelden wollen, müssen Sie sich an die Lehrende der Veranstaltung wenden."),
-                    htmlReady($current_seminar->name))));
+                    htmlReady($current_seminar->name)));
                 $this->redirect('my_courses/index');
                 return;
             }
@@ -547,18 +545,30 @@ class MyCoursesController extends AuthenticatedController
                 $admission_locked   = $current_seminar->isAdmissionLocked();
 
                 if ($admission_enabled || $admission_locked || (int)$current_seminar->admission_prelim == 1) {
-                    $message = sprintf(_('Wollen Sie sich von der teilnahmebeschränkten Veranstaltung "%s" wirklich abmelden? Sie verlieren damit die Berechtigung für die Veranstaltung und müssen sich ggf. neu anmelden!'), $current_seminar->name);
+                    $message = sprintf(
+                        _('Wollen Sie sich von der teilnahmebeschränkten Veranstaltung "%s" wirklich abmelden? Sie verlieren damit die Berechtigung für die Veranstaltung und müssen sich ggf. neu anmelden!'),
+                        htmlReady($current_seminar->name)
+                    );
                 } else if (isset($admission_end_time) && $admission_end_time < time()) {
-                    $message = sprintf(_('Wollen Sie sich von der teilnahmebeschränkten Veranstaltung "%s" wirklich abmelden? Der Anmeldzeitraum ist abgelaufen und Sie können sich nicht wieder anmelden!'), $current_seminar->name);
+                    $message = sprintf(
+                        _('Wollen Sie sich von der teilnahmebeschränkten Veranstaltung "%s" wirklich abmelden? Der Anmeldzeitraum ist abgelaufen und Sie können sich nicht wieder anmelden!'),
+                        htmlReady($current_seminar->name)
+                    );
                 } else {
-                    $message = sprintf(_('Wollen Sie sich von der Veranstaltung "%s" wirklich abmelden?'), $current_seminar->name);
+                    $message = sprintf(_('Wollen Sie sich von der Veranstaltung "%s" wirklich abmelden?'), htmlReady($current_seminar->name));
                 }
                 $this->flash['cmd'] = 'kill';
             } else {
                 if (admission_seminar_user_get_position($GLOBALS['user']->id, $course_id) === false) {
-                    $message = sprintf(_('Wollen Sie sich von der Anmeldeliste der Veranstaltung "%s" wirklich abmelden?'), $current_seminar->name);
+                    $message = sprintf(
+                        _('Wollen Sie sich von der Anmeldeliste der Veranstaltung "%s" wirklich abmelden?'),
+                        htmlReady($current_seminar->name)
+                    );
                 } else {
-                    $message = sprintf(_('Wollen Sie sich von der Warteliste der Veranstaltung "%s" wirklich abmelden? Sie verlieren damit die bereits erreichte Position und müssen sich ggf. neu anmelden!'), $current_seminar->name);
+                    $message = sprintf(
+                        _('Wollen Sie sich von der Warteliste der Veranstaltung "%s" wirklich abmelden? Sie verlieren damit die bereits erreichte Position und müssen sich ggf. neu anmelden!'),
+                        htmlReady($current_seminar->name)
+                    );
                 }
                 $this->flash['cmd'] = 'kill_admission';
             }
@@ -575,7 +585,9 @@ class MyCoursesController extends AuthenticatedController
                 $statement = DBManager::get()->prepare($query);
                 $statement->execute([$GLOBALS['user']->id, $course_id]);
                 if ($statement->rowCount() == 0) {
-                    PageLayout::postMessage(MessageBox::error(_('In der ausgewählten Veranstaltung wurde die gesuchten Personen nicht gefunden und konnte daher nicht ausgetragen werden.')));
+                    PageLayout::postError(
+                        _('In der ausgewählten Veranstaltung wurde die gesuchten Personen nicht gefunden und konnte daher nicht ausgetragen werden.')
+                    );
                 } else {
                     // LOGGING
                     StudipLog::log('SEM_USER_DEL', $course_id, $GLOBALS['user']->id, 'Hat sich selbst ausgetragen');
@@ -592,7 +604,6 @@ class MyCoursesController extends AuthenticatedController
 
                     // If this course is a child of another course...
                     if ($current_seminar->parent_course) {
-
                         // ... check if user is member in another sibling ...
                         $other = CourseMember::findBySQL(
                             "`user_id` = :user AND `Seminar_id` IN (:courses) AND `Seminar_id` != :this",
@@ -613,8 +624,10 @@ class MyCoursesController extends AuthenticatedController
                         }
                     }
 
-                    PageLayout::postMessage(MessageBox::success(sprintf(_("Erfolgreich von Veranstaltung <b>%s</b> abgemeldet."),
-                        htmlReady($current_seminar->name))));
+                    PageLayout::postSuccess(sprintf(
+                        _("Erfolgreich von Veranstaltung <b>%s</b> abgemeldet."),
+                        htmlReady($current_seminar->name)
+                    ));
                 }
             } else {
                 // LOGGING
@@ -632,11 +645,12 @@ class MyCoursesController extends AuthenticatedController
                     renumber_admission($course_id);
                     //Pruefen, ob es Nachruecker gibt
                     update_admission($course_id);
-                    PageLayout::postMessage(MessageBox::success(sprintf(_("Der Eintrag in der Anmelde- bzw. Warteliste der Veranstaltung <b>%s</b> wurde aufgehoben.
-                    Wenn Sie an der Veranstaltung teilnehmen wollen, müssen Sie sich erneut bewerben."), htmlReady($current_seminar->name))));
+                    PageLayout::postSuccess(sprintf(
+                        _("Der Eintrag in der Anmelde- bzw. Warteliste der Veranstaltung <b>%s</b> wurde aufgehoben. Wenn Sie an der Veranstaltung teilnehmen wollen, müssen Sie sich erneut bewerben."),
+                        htmlReady($current_seminar->name)
+                    ));
                 }
             }
-
             $this->redirect('my_courses/index');
         }
     }
@@ -678,7 +692,7 @@ class MyCoursesController extends AuthenticatedController
      * @param string $group_field
      * @return bool
      */
-    function check_for_new($my_obj, $group_field = 'sem_number')
+    public function check_for_new($my_obj, $group_field = 'sem_number')
     {
         if (empty($my_obj)) {
             return false;
@@ -714,8 +728,9 @@ class MyCoursesController extends AuthenticatedController
         $sem = Request::option('sem_select', null);
         if (!is_null($sem)) {
             $GLOBALS['user']->cfg->store('MY_COURSES_SELECTED_CYCLE', $sem);
-            PageLayout::postMessage(MessageBox::success(_('Das gewünschte Semester bzw.
-            die gewünschte Semester Filteroption wurde ausgewählt!')));
+            PageLayout::postSuccess(
+                _('Das gewünschte Semester bzw. die gewünschte Semester Filteroption wurde ausgewählt!')
+            );
         }
 
         $this->redirect('my_courses/index');
@@ -727,7 +742,7 @@ class MyCoursesController extends AuthenticatedController
      * @param $seminar_content
      * @return bool
      */
-    function check_course($seminar_content)
+    public function check_course($seminar_content)
     {
 
         if ($seminar_content['visitdate'] <= $seminar_content['chdate'] || $seminar_content['last_modified'] > 0) {
@@ -758,13 +773,15 @@ class MyCoursesController extends AuthenticatedController
     public function delete_boss_action($boss_id)
     {
         if (deleteDeputy($GLOBALS['user']->id, $boss_id)) {
-            PageLayout::postSuccess(
-                sprintf(_('Sie wurden als Standardvertretung von %s entfernt.'),
-                User::find($boss_id)->getFullname()));
+            PageLayout::postSuccess(sprintf(
+                _('Sie wurden als Standardvertretung von %s entfernt.'),
+                htmlReady(User::find($boss_id)->getFullname())
+            ));
         } else {
-            PageLayout::postError(
-                sprintf(_('Sie konnten nicht als Standardvertretung von %s entfernt werden.'),
-                User::find($boss_id)->getFullname()));
+            PageLayout::postError(sprintf(
+                _('Sie konnten nicht als Standardvertretung von %s entfernt werden.'),
+                htmlReady(User::find($boss_id)->getFullname())
+            ));
         }
         $this->redirect($this->url_for('my_courses'));
     }
