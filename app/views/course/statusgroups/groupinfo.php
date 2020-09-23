@@ -85,7 +85,7 @@
 
     <?php if ($lecturers = $group->findLecturers()) : ?>
         <p>
-            <?= sprintf(_('Zugeordnete %s:'), get_title_for_status('dozent', 2)) ?>
+            <?= sprintf(_('Zugeordnete %s:'), htmlReady(get_title_for_status('dozent', 2))) ?>
             <ul>
                 <?php foreach ($lecturers as $l) : ?>
                     <li><?= htmlReady($l->getFullname()) ?></li>

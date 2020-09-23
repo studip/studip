@@ -60,7 +60,7 @@ class Course_StatusgroupsController extends AuthenticatedController
         if ($this->is_locked && $this->is_tutor) {
             $lockdata = LockRules::getObjectRule($this->course_id);
             if ($lockdata['description']) {
-                PageLayout::postMessage(MessageBox::info(formatLinks($lockdata['description'])));
+                PageLayout::postInfo(formatLinks($lockdata['description']));
             }
         }
 
