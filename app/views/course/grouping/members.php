@@ -1,4 +1,4 @@
-<? if (empty($courses)) : ?>
+<? if (!empty($courses)) : ?>
     <form class="default" action="<?= $controller->url_for('course/grouping/action') ?>" method="post"
           data-dialog="size=auto">
         <section class="studip">
@@ -56,7 +56,6 @@
                     </section>
                 </article>
             <? endif ?>
-
             <footer>
                 <label>
                     <input type="checkbox" data-proxyfor=":checkbox.courses" data-activates="#actions-courses">
@@ -65,7 +64,7 @@
                 <span class="actions">
                 <select id="actions-courses" name="action" disabled>
                     <option value="add_dozent">
-                        <?= sprintf(_('%s eintragen'), get_title_for_status('dozent', 2)) ?>
+                        <?= sprintf(_('%s eintragen'), htmlReady(get_title_for_status('dozent', 2))) ?>
                     </option>
                 <? if (Config::get()->DEPUTIES_ENABLE) : ?>
                     <option value="add_deputy">
@@ -73,14 +72,13 @@
                     </option>
                 <? endif ?>
                     <option value="add_tutor">
-                        <?= sprintf(_('%s eintragen'), get_title_for_status('tutor', 2)) ?>
+                        <?= sprintf(_('%s eintragen'), htmlReady(get_title_for_status('tutor', 2))) ?>
                     </option>
                     <option value="add_autor">
-                        <?= sprintf(_('%s eintragen'), get_title_for_status('autor', 2)) ?>
+                        <?= sprintf(_('%s eintragen'), htmlReady(get_title_for_status('autor', 2))) ?>
                     </option>
                 </select>
                 <input type="hidden" name="course" value="<?= $current->id ?>">
-
                 <?= Studip\Button::createAccept(_('Ausführen'), 'courses_action') ?>
             </span>
             </footer>
