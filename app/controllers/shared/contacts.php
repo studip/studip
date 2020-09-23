@@ -525,7 +525,10 @@ class Shared_ContactsController extends MVVController
         }
 
         if (MvvContactRange::deleteBySQL('contact_id = ?',[$contact_id])) {
-            PageLayout::postSuccess(sprintf(_('Alle Verknüpfungen von %s gelöscht.'), $contact->getDisplayName()));
+            PageLayout::postSuccess(sprintf(
+                _('Alle Verknüpfungen von %s gelöscht.'),
+                htmlReady($contact->getDisplayName())
+            ));
         }
         if (Request::isXhr()) {
             header('X-Dialog-Close: 1');
@@ -542,7 +545,10 @@ class Shared_ContactsController extends MVVController
             foreach (MvvContactRange::findBySQL('contact_id = ?',[$user_id]) as $mvv_contact_range) {
                 $mvv_contact_range->delete();
             }
-            PageLayout::postSuccess(sprintf(_('Externer Ansprechpartner %s wurde gelöscht.'), $mvv_ext_contact->getDisplayName()));
+            PageLayout::postSuccess(sprintf(
+                _('Externer Ansprechpartner %s wurde gelöscht.'),
+                htmlReady($mvv_ext_contact->getDisplayName())
+            ));
         }
         if (Request::isXhr()) {
             header('X-Dialog-Close: 1');
@@ -607,11 +613,13 @@ class Shared_ContactsController extends MVVController
 
             if ($changes > 0) {
                 if ($changes > 1) {
-                    PageLayout::postSuccess(sprintf(_('%d Änderungen an der Zuweisung des Ansprechpartners wurden gespeichert.'), $changes));
+                    PageLayout::postSuccess(sprintf(
+                        _('%d Änderungen an der Zuweisung des Ansprechpartners wurden gespeichert.'),
+                        $changes
+                    ));
                 } else {
                     PageLayout::postSuccess(_('Die Änderung der Zuweisung des Ansprechpartners wurde gespeichert.'));
                 }
-
             }
 
             $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Contact.reload_contacttable()');
