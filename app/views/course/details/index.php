@@ -246,7 +246,7 @@
 <? if ($count_lecturers) : ?>
     <article class="studip">
         <header>
-            <h1><?= get_title_for_status('dozent', $count_lecturers, $course->status) ?></h1>
+            <h1><?= htmlReady(get_title_for_status('dozent', $count_lecturers, $course->status))?></h1>
         </header>
         <section>
             <ul class="list-csv">
@@ -267,7 +267,7 @@
 <? if ($count_tutors) : ?>
     <article class="studip">
         <header>
-            <h1><?= get_title_for_status('tutor', $count_tutors, $course->status) ?></h1>
+            <h1><?= htmlReady(get_title_for_status('tutor', $count_tutors, $course->status)) ?></h1>
         </header>
         <section>
             <ul class="list-csv">
@@ -308,7 +308,10 @@
         <h1><?= _('Veranstaltungsort') ?> / <?= _('Veranstaltungszeiten')?></h1>
     </header>
     <section>
-        <?= $sem->getDatesTemplate('dates/seminar_html_location', ['ort' => $course->ort, 'disable_list_shrinking' => true]) ?>
+        <?= $sem->getDatesTemplate(
+            'dates/seminar_html_location',
+            ['ort' => $course->ort, 'disable_list_shrinking' => true]
+        ) ?>
     </section>
 </article>
 <? if ($this->studymodules) : ?>
@@ -342,7 +345,14 @@
         </header>
         <section>
             <ul class="collapsable css-tree">
-                <?= $this->render_partial('study_area/tree.php', ['node' => $studyAreaTree, 'open' => true, 'dont_open' => Config::get()->COURSE_SEM_TREE_CLOSED_LEVELS]) ?>
+                <?= $this->render_partial(
+                    'study_area/tree.php',
+                    [
+                        'node' => $studyAreaTree,
+                        'open' => true,
+                        'dont_open' => Config::get()->COURSE_SEM_TREE_CLOSED_LEVELS
+                    ]
+                ) ?>
             </ul>
         </section>
     </article>
@@ -376,7 +386,10 @@ if ($mvv_tree) : ?>
         </header>
         <section>
             <ul class="collapsable css-tree">
-                <?= $this->render_partial('shared/mvv_tree.php', ['tree' => $mvv_tree, 'node' => 'start', 'id_sfx' => $id_sfx]) ?>
+                <?= $this->render_partial(
+                    'shared/mvv_tree.php',
+                    ['tree' => $mvv_tree, 'node' => 'start', 'id_sfx' => $id_sfx]
+                ) ?>
             </ul>
         </section>
     </article>
