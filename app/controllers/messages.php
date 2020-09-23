@@ -459,21 +459,22 @@ class MessagesController extends AuthenticatedController {
                         $new_attachment_folder = MessageFolder::createTopFolder($this->default_message->id);
                         if ($new_attachment_folder) {
                             foreach ($old_attachment_folder->getFiles() as $old_attachment) {
-                                $new_attachment = new FileRef();
-                                $new_attachment->file_id = $old_attachment->file_id;
-                                $new_attachment->folder_id = $new_attachment_folder->getId();
-                                $new_attachment->name = $old_attachment->file->name;
-                                $new_attachment->description = $old_attachment->description;
-                                $new_attachment->content_terms_of_use_id = $old_attachment->content_terms_of_use_id;
-                                $new_attachment->user_id = $GLOBALS['user']->id;
+                                $old_attachment_file_ref = $old_attachment->getFileRef();
+                                $new_attachment_file_ref = new FileRef();
+                                $new_attachment_file_ref->file_id = $old_attachment_file_ref->file_id;
+                                $new_attachment_file_ref->name = $old_attachment_file_ref->name;
+                                $new_attachment_file_ref->folder_id = $new_attachment_folder->getId();
+                                $new_attachment_file_ref->description = $old_attachment_file_ref->description;
+                                $new_attachment_file_ref->content_terms_of_use_id = $old_attachment_file_ref->content_terms_of_use_id;
+                                $new_attachment_file_ref->user_id = $GLOBALS['user']->id;
 
-                                if ($new_attachment->store()) {
-                                    $icon = FileManager::getIconForFileRef($new_attachment);
+                                if ($new_attachment_file_ref->store()) {
+                                    $icon = FileManager::getIconForFileRef($new_attachment_file_ref);
                                     $this->default_attachments[] = [
                                         'icon'        => $icon->asImg(['class' => 'text-bottom']),
-                                        'name'        => $new_attachment->name,
-                                        'document_id' => $new_attachment->id,
-                                        'size'        => relsize($new_attachment->file->size, false)
+                                        'name'        => $new_attachment_file_ref->name,
+                                        'document_id' => $new_attachment_file_ref->id,
+                                        'size'        => relsize($new_attachment_file_ref->size, false)
                                     ];
                                 }
                             }
@@ -888,9 +889,6 @@ class MessagesController extends AuthenticatedController {
         );
 
         if ($uploaded['error']) {
-            throw new Exception(implode("\n", $uploaded['error']));
-        }
-        if ($uploaded['error']) {
             $this->response->set_status(400);
             $error = implode("\n", $uploaded['error']);
             $this->render_json(compact('error'));
@@ -899,10 +897,6 @@ class MessagesController extends AuthenticatedController {
 
         if (!$uploaded['files'][0] instanceof FileType) {
             $error = _('Ein Systemfehler ist beim Upload aufgetreten.');
-
-            if ($file_ref instanceof MessageBox) {
-                $error .= ' ' . $file_ref->message;
-            }
             $this->response->set_status(400);
             $this->render_json(compact('error'));
             return;
