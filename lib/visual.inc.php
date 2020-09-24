@@ -130,14 +130,21 @@ function formatReady($text, $trim = true, $extern = false, $wiki = false, $show_
  * @return string         Marked-up text with markup-links converted to
  *                        HTML-links.
  */
-function formatLinks($text, $nl2br=TRUE){
+function formatLinks($text, $nl2br = true) {
     $link_markup_rule = StudipCoreFormat::getStudipMarkup('links');
+    $email_markup_rule = StudipCoreFormat::getStudipMarkup('emails');
     $markup = new TextFormat();
     $markup->addMarkup(
         'links',
         $link_markup_rule['start'],
         $link_markup_rule['end'],
         $link_markup_rule['callback']
+    );
+    $markup->addMarkup(
+        'emails',
+        $email_markup_rule['start'],
+        $email_markup_rule['end'],
+        $email_markup_rule['callback']
     );
     return $markup->format(htmlReady($text, true, $nl2br));
 }
