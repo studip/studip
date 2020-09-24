@@ -1,7 +1,7 @@
 <table class="default mvv-modul-details nohover">
     <tr>
-        <th class="mvv-modul-details-head" style="width: 30%"><?= $modul->code ?></th>
-        <th class="mvv-modul-details-head" style="width: 30%"><?= $institut->name ?></th>
+        <th class="mvv-modul-details-head" style="width: 30%"><?= htmlReady($modul->code) ?></th>
+        <th class="mvv-modul-details-head" style="width: 30%"><?= htmlReady($institut->name) ?></th>
         <th class="mvv-modul-details-head" style="width: 40%"><?= sprintf("%d CP", $modul->kp) ?> </th>
         <th class="mvv-modul-details-head"></th>
     </tr>
