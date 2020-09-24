@@ -106,7 +106,7 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $this->existing_studycourses = Studiengang::getAllEnriched();
         $this->abschluesse = Abschluss::getAll();
         $this->studiengang = Studiengang::get($studiengang_id);
-        $this->semester = Semester::getAll();
+        $this->semester = array_reverse(Semester::getAll());
         $this->dokumente = $this->studiengang->documents;
         $this->contacts = $this->studiengang->contact_assignments;
         $this->range_id = $studiengang_id;
@@ -1076,28 +1076,26 @@ class Studiengaenge_StudiengaengeController extends MVVController
         $semesters = new SimpleCollection(Semester::getAll());
         $semesters = $semesters->orderBy('beginn desc');
 
-        $filter_template = $template_factory->render('shared/filter',
-            [
-                'semester'             => $semesters,
-                'selected_semester'    => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
-                'default_semester'     => Semester::findCurrent()->id,
-                'status'               => Studiengang::findStatusByIds($studiengang_ids),
-                'selected_status'      => $this->filter['mvv_studiengang.stat'],
-                'status_array'         => $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'],
-                'kategorien'           => AbschlussKategorie::findByStudiengaenge($studiengang_ids),
-                'selected_kategorie'   => $this->filter['mvv_abschl_zuord.kategorie_id'],
-                'abschluesse'          => Abschluss::findByStudiengaenge($studiengang_ids),
-                'selected_abschluss'   => $this->filter['abschluss.abschluss_id'],
-                'institute'            => Studiengang::getAllAssignedInstitutes(
-                    ['mvv_studiengang.studiengang_id' => $studiengang_ids]
-                ),
-                'selected_institut'    => $this->filter['mvv_studiengang.institut_id'],
-                'fachbereiche'         => Fach::getAllAssignedInstitutes($studiengang_ids),
-                'selected_fachbereich' => $this->filter['mvv_fach_inst.institut_id'],
-                'action'               => $this->url_for('/set_filter'),
-                'action_reset'         => $this->url_for('/reset_filter')
-            ]
-        );
+        $filter_template = $template_factory->render('shared/filter', [
+            'semester'             => $semesters,
+            'selected_semester'    => $semesters->findOneBy('beginn', $this->filter['start_sem.beginn'])->id,
+            'default_semester'     => Semester::findCurrent()->id,
+            'status'               => Studiengang::findStatusByIds($studiengang_ids),
+            'selected_status'      => $this->filter['mvv_studiengang.stat'],
+            'status_array'         => $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'],
+            'kategorien'           => AbschlussKategorie::findByStudiengaenge($studiengang_ids),
+            'selected_kategorie'   => $this->filter['mvv_abschl_zuord.kategorie_id'],
+            'abschluesse'          => Abschluss::findByStudiengaenge($studiengang_ids),
+            'selected_abschluss'   => $this->filter['abschluss.abschluss_id'],
+            'institute'            => Studiengang::getAllAssignedInstitutes([
+                'mvv_studiengang.studiengang_id' => $studiengang_ids,
+            ]),
+            'selected_institut'    => $this->filter['mvv_studiengang.institut_id'],
+            'fachbereiche'         => Fach::getAllAssignedInstitutes($studiengang_ids),
+            'selected_fachbereich' => $this->filter['mvv_fach_inst.institut_id'],
+            'action'               => $this->url_for('/set_filter'),
+            'action_reset'         => $this->url_for('/reset_filter')
+        ]);
         $sidebar = Sidebar::get();
         $widget  = new SidebarWidget();
         $widget->setTitle(_('Filter'));

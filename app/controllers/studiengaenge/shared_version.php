@@ -43,7 +43,7 @@ class SharedVersionController extends MVVController
             $success_message = _('Die Version "%s" des Studiengangteils wurde geändert.');
         }
 
-        $this->semester = Semester::getAll();
+        $this->semester = array_reverse(Semester::getAll());
         $this->dokumente = $this->version->documents;
         $this->range_id = $version_id;
         $this->range_type = 'StgteilVersion';

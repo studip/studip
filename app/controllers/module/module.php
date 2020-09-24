@@ -216,7 +216,7 @@ class Module_ModuleController extends MVVController
                 $sidebar->addWidget($widget, 'variants');
             }
         }
-        $this->semester = Semester::getAll();
+        $this->semester = array_reverse(Semester::getAll());
         $this->def_lang = $this->display_language === $this->modul->getDefaultLanguage();
         ModuleManagementModel::setContentLanguage($this->display_language);
         if (!$this->def_lang) {

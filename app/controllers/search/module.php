@@ -571,12 +571,13 @@ class Search_ModuleController extends MVVController
 
     private function getSemesterCourses($modul)
     {
-        $semester = Semester::getAll();
         $courses = [];
         foreach ($modul->modulteile as $modulteil) {
             foreach ($modulteil->lvgruppen as $lvgruppe) {
-                $courses = array_merge($courses,
-                        array_keys($lvgruppe->getAllAssignedCourses(true)));
+                $courses = array_merge(
+                    $courses,
+                    array_keys($lvgruppe->getAllAssignedCourses(true))
+                );
             }
         }
         return $courses;
