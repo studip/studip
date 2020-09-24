@@ -371,13 +371,13 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
             <? if ($def_lang && $perm->haveFieldPerm('ausgleichbar', MvvPerm::PERM_WRITE)) : ?>
                 <section class="hgroup">
                     <label>
-                        <input type="radio" id="ausgleichbar" name="ausgleichbar"
-                               value="0"<?= $modulteil->ausgleichbar === 0 ? ' checked' : '' ?>>
+                        <input type="radio" id="ausgleichbar" name="ausgleichbar" value="0"
+                               <? if (!$modulteil->ausgleichbar) echo 'checked'; ?>>
                         <?= _('Nein') ?>
                     </label>
                     <label>
-                        <input type="radio" name="ausgleichbar"
-                               value="1"<?= $modulteil->ausgleichbar === 1 ? ' checked' : '' ?>>
+                        <input type="radio" name="ausgleichbar" value="1"
+                               <? if ($modulteil->ausgleichbar) echo 'checked'; ?>>
                         <?= _('Ja') ?>
                     </label>
                 </section>
@@ -398,12 +398,13 @@ if ($GLOBALS['MVV_MODULTEIL']['SPRACHE']['default'] != $display_language) {
         <? if ($def_lang && $perm->haveFieldPerm('pflicht', MvvPerm::PERM_WRITE)) : ?>
             <section class="hgroup">
                 <label>
-                    <input type="radio" id="pflicht" name="pflicht"
-                           value="0"<?= $modulteil->pflicht === 0 ? ' checked' : '' ?>>
+                    <input type="radio" id="pflicht" name="pflicht" value="0"
+                           <? if (!$modulteil->pflicht) echo 'checked'; ?>>
                     <?= _('Nein') ?>
                 </label>
                 <label>
-                    <input type="radio" name="pflicht" value="1"<?= $modulteil->pflicht === 1 ? ' checked' : '' ?>>
+                    <input type="radio" name="pflicht" value="1"
+                           <? if ($modulteil->pflicht) echo 'checked'; ?>>
                     <?= _('Ja') ?>
                 </label>
             </section>
