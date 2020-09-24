@@ -296,11 +296,13 @@ class Search_StudiengaengeController extends MVVController
                         }
                     }
 
-                    if (count($abschnitt_modul->modul->modulteile) === 0) {
+                    $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]['veranstaltungen'] = $countcourses;
+
+                    if ($this->with_courses && $countcourses === 0) {
+                        unset($abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]);
+                    } elseif (count($abschnitt_modul->modul->modulteile) === 0) {
                         $abschnitteData[$abschnitt->id]['rowspan']++;
                     }
-
-                    $abschnitteData[$abschnitt->id]['module'][$abschnitt_modul->modul->id]['veranstaltungen'] = $countcourses;
                 }
             }
 
