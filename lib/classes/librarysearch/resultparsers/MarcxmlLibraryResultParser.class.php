@@ -22,180 +22,115 @@
  */
 class MarcxmlLibraryResultParser implements LibraryResultParser
 {
-    /**
-     * This is a helper method to index the child nodes of a node which
-     * represent the Marc21 subfields. The index is the subfield code
-     * of the DOM child node.
-     *
-     * @param DOMElement $datafield The node whose child nodes shall be indexed.
-     *
-     * @returns DOMElement[] An array of DOMElement nodes reperesenting
-     * the indexed child nodes of the supplied node.
-     */
-    protected function indexSubfields(\DOMElement $datafield) : array
+    private $mapping = [
+        '001' => ['field' => 'id', 'callback' => 'simpleMap', 'cb_args' => ''],
+        '008' => [
+            ['field' => 'language', 'callback' => 'simpleFixFieldMap', 'cb_args' => ['start' => 35, 'length' => 3]],
+            ['field' => 'issued', 'callback' => 'simpleFixFieldMap', 'cb_args' => ['start' => 7, 'length' => 4], 'format' => 'date']
+        ],
+        '020' => ['field' => 'ISBN', 'callback' => 'simpleMap', 'cb_args' => '$a'],
+        '245' => ['field' => 'title', 'callback' => 'simpleMap', 'cb_args' => '$a $b $h'],
+        '264' => ['field' => 'publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b'],
+        '256' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
+        '300' => ['field' => 'medium', 'callback' => 'simpleMap', 'cb_args' => '$a $b $c $e'],
+        '440' => ['field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a $v'],
+        '500' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
+        '502' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
+        '518' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
+        '520' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
+        '533' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$n' . "\n"],
+        '600' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '610' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '611' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '630' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '650' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => '$a'],
+        '651' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '652' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '653' => ['field' => 'note', 'callback' => 'simpleListMap', 'cb_args' => false],
+        '773' => [
+            ['field' => 'publisher', 'callback' => 'simpleMap', 'cb_args' => '$t, $g, $d'],
+            ['field' => 'ISSN', 'callback' => 'simpleMap', 'cb_args' => '$x'],
+        ],
+        '100' => ['field' => 'author', 'callback' => 'simpleMap', 'cb_args' => '$a', 'format' => 'name'],
+        '700' => ['field' => 'author', 'callback' => 'notEmptyMap', 'cb_args' => ['$a', 'contributor', '$a;'], 'format' => 'name'],
+        '110' => ['field' => 'author', 'callback' => 'simpleMap', 'cb_args' => '$a, $b', 'format' => 'name'],
+        '111' => ['field' => 'author', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b', 'contributor', '$a, $b;'], 'format' => 'name'],
+        '710' => ['field' => 'author', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b', 'contributor', '$a, $b;'], 'format' => 'name'],
+        '711' => ['field' => 'author', 'callback' => 'notEmptyMap', 'cb_args' => ['$a, $b', 'contributor', '$a, $b;'], 'format' => 'name'],
+        '856' => ['field' => 'URL', 'callback' => 'notEmptyMap', 'cb_args' => ['$u', 'URL2', '$u']],
+    ];
+
+    function simpleListMap($doc, $data, $field, $args = [], $format = '')
     {
-        $indexed_subfields = [];
-        $subfields = $datafield->getElementsByTagName('subfield');
-        foreach ($subfields as $subfield) {
-            $code = $subfield->getAttribute('code');
-            $indexed_subfields[$code] = $subfield;
+        if (is_array($data)) {
+            $result = join('; ', $data);
+        } else {
+            $result = $data;
         }
-        return $indexed_subfields;
+        $result = (($doc->csl_data[$field])) ? $doc->csl_data[$field] . '; ' . $result : $result;
+        $doc->csl_data[$field] = trim($result);
     }
 
-
-    /**
-     * Reads the XML nodes of one record and creates a LibraryDocument
-     * out of it.
-     *
-     * @param DOMElement $node The XML node of one record.
-     *
-     * @returns LibraryDocument The LibraryDocument instance that could be read
-     *     from the data.
-     */
-    public function readResultNode(\DOMElement $node) : LibraryDocument
+    function simpleFixFieldMap($doc, $data, $field, $args = [], $format = '')
     {
-        $result = new LibraryDocument();
-
-        //Read the control fields:
-        $control_nodes = $node->getElementsByTagName('controlfield');
-        foreach ($control_nodes as $control_node) {
-            $tag = $control_node->getAttribute('tag');
-            if ($tag == '001') {
-                $result->opac_document_id = trim($control_node->textContent);
-            } elseif ($tag == '007') {
-                //Get the document type and the year.
-                $value = trim($control_node->textContent);
-                if ($value[0] == 'a') {
-                    //Map: TODO
-                } elseif ($value[0] == 'c') {
-                    //Electronic resource:
-                    $designation = $value[1];
-                } elseif ($value[0] == 'd') {
-                    //Globe: TODO?
-                } elseif ($value[0] == 'f') {
-                    //Tactile material: TODO?
-                } elseif ($value[0] == 'g') {
-                    //Projected graphic: TODO?
-                } elseif ($value[0] == 'h') {
-                    //Microform: TODO?
-                } elseif ($value[0] == 'k') {
-                    //Nonprojected graphic: TODO?
-                } elseif ($value[0] == 'm') {
-                    //Motion picture: TODO
-                } elseif ($value[0] == 'o') {
-                    //Kit: TODO?
-                } elseif ($value[0] == 'q') {
-                    //Notated music: TODO?
-                } elseif ($value[0] == 'r') {
-                    //Remote-sensing image: TODO?
-                } elseif ($value[0] == 's') {
-                    //Sound recording: TODO?
-                } elseif ($value[0] == 't') {
-                    //Text:
-                    $designation = $value[1];
-                    if ($designation == 'a') {
-                        //TODO
-                    } else {
-                        //TODO
-                    }
-                } elseif ($value[0] == 'v') {
-                    //Videorecording: TODO?
-                } elseif ($value[0] == 'z') {
-                    //Unspecified: TODO
+        if (is_array($args) && $data != "") {
+            if ($result = trim(mb_substr($data, $args['start'], $args['length']))) {
+                if ($format === 'date') {
+                    $result = ['date-parts' => [[$result, 1, 1]]];
+                    $doc->csl_data[$field] = $result;
                 } else {
-                    //All other media types.
+                    $doc->csl_data[$field] = trim($doc->csl_data[$field] . " " . $result);
                 }
-            } else {
-                //All other field values are stored in the datafields array.
-                $subfields = $this->indexSubfields($control_node);
-                $subfield_text = [];
-                foreach ($subfields as $key => $field) {
-                    $subfield_text[] = '"' . $key . '": "' . $field->textContent . '"';
-                }
-                $result->datafields[$tag] = 'all: "' . $control_node->textContent . '", subfields: {' . implode(', ', $subfield_text) . '}';
             }
         }
-        //We have to index the datafield nodes:
-        $datafield_nodes = $node->getElementsByTagName('datafield');
-        foreach ($datafield_nodes as $datafield_node) {
-            $tag = $datafield_node->getAttribute('tag');
-
-            if ($tag == '245') {
-                //Title: Get the subfields:
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('a', $subfields)) {
-                    if ($subfields['a'] instanceof \DOMElement) {
-                        //This is the title.
-                        $result->csl_data['title'] = $subfields['a']->textContent;
-                    }
-                }
-            } elseif ($tag == '100') {
-                //Author: Get the subfields:
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('a', $subfields)) {
-                    $author_data = explode(', ', $subfields['a']->textContent);
-                    $result->csl_data['author'] = [
-                        [
-                            'family' => $author_data[0],
-                            'given' => $author_data[1],
-                            'suffix' => ''
-                        ]
-                    ];
-                }
-            } elseif ($tag == '773') {
-                //ISSN: Get the subfields:
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('x', $subfields)) {
-                    if ($subfields['x'] instanceof \DOMElement) {
-                        $result->csl_data['ISSN'] = $subfields['x']->textContent;
-                    }
-                }
-            } elseif ($tag == '520') {
-                //Description: get subfield "a":
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('a', $subfields)) {
-                    //TODO: place this in a correct CSL field!
-                    $result->csl_data['description'] = $subfields['a']->textContent;
-                }
-            } elseif ($tag == '856') {
-                //Document-URL: get subfield "u":
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('u', $subfields)) {
-                    $result->csl_data['URL'] = $subfields['u']->textContent;
-                }
-            } elseif ($tag == '020') {
-                //ISBN: get subfield "a":
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('a', $subfields)) {
-                    $result->csl_data['ISBN'] = $subfields['a']->textContent;
-                }
-            } elseif ($tag == '024') {
-                //Identifier: get subfield "a":
-                $subfields = $this->indexSubfields($datafield_node);
-                if (array_key_exists('a', $subfields)) {
-                    $result->csl_data['DOI'] = $subfields['a']->textContent;
-                }
-            } else {
-                //All other field values are stored in the datafields array.
-                $subfields = $this->indexSubfields($datafield_node);
-                $subfield_text = [];
-                foreach ($subfields as $key => $field) {
-                    $subfield_text[] = '"' . $key . '": "' . $field->textContent . '"';
-                }
-                $result->datafields[$tag] = 'all: "' . $datafield_node->textContent . '", subfields: {' . implode(', ', $subfield_text) . '}';
-            }
-        }
-
-        return $result;
     }
 
+    function notEmptyMap($doc, $data, $field, $args, $format = '')
+    {
+        if (empty($doc->csl_data[$field])) {
+            $this->simpleMap($doc, $data, $field, $args[0], $format);
+        } else {
+            $this->simpleMap($doc, $data, $args[1], $args[2], $format);
+        }
+        return;
+    }
+
+    function simpleMap($doc, $data, $field, $args, $format = '')
+    {
+        $trim_chars = " \t\n\r\0/,:.";
+        if ($args != "" && is_array($data)) {
+            foreach ($data as $key => $value) {
+                $search[] = '$' . $key;
+                $replace[] = $value;
+            }
+            $result = str_replace($search, $replace, $args);
+            $result = preg_replace('/\$[0-9a-z]\s*/', "", $result);
+
+        } else {
+            $result = $data;
+        }
+        $result = trim($result, $trim_chars);
+        if ($format == 'name') {
+            $author_data = explode(', ', $result);
+            $result =
+                [
+                    'family' => $author_data[0],
+                    'given'  => $author_data[1],
+                    'suffix' => ''
+                ];
+
+            $doc->csl_data[$field][] = $result;
+        } else {
+            $doc->csl_data[$field] = trim($doc->csl_data[$field] . " " . $result);
+        }
+    }
 
     /**
      * @see LibraryResultParser::readResultSet
      */
-    public function readResultSet($data = '') : array
+    public function readResultSet($data = ''): array
     {
+        //echo '<pre>'. htmlready(print_r($data,1)) . '</pre>';
         $dom = new \DOMDocument();
         $dom->loadXML($data);
         $collection = $dom->getElementsByTagName('collection')[0];
@@ -213,17 +148,85 @@ class MarcxmlLibraryResultParser implements LibraryResultParser
         return $result_set;
     }
 
+    /**
+     * Reads the XML nodes of one record and creates a LibraryDocument
+     * out of it.
+     *
+     * @param DOMElement $node The XML node of one record.
+     *
+     * @returns LibraryDocument The LibraryDocument instance that could be read
+     *     from the data.
+     */
+    public function readResultNode(\DOMElement $node): LibraryDocument
+    {
+        $result = new LibraryDocument();
+
+
+
+        $xmlrecord = simplexml_import_dom($node);
+        $plugin_mapping = $this->mapping;
+        foreach ($xmlrecord->controlfield as $field) {
+            $code = (string)$field['tag'];
+            $data = (string)$field;
+            if (isset($plugin_mapping[$code])) {
+                $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : [$plugin_mapping[$code]];
+                for ($j = 0; $j < count($mapping); ++$j) {
+                    $map_method = $mapping[$j]['callback'];
+                    $this->$map_method($result, $data, $mapping[$j]['field'], $mapping[$j]['cb_args'], $mapping[$j]['format']);
+                }
+            }
+        }
+        foreach ($xmlrecord->datafield as $field) {
+            $code = (string)$field['tag'];
+            $data = [];
+            foreach ($field->subfield as $subfield) {
+                $subcode = (string)$subfield['code'];
+                if ($subcode && !isset($data[$subcode])) {
+                    $data[$subcode] = (string)$subfield;
+                }
+            }
+            if (isset($plugin_mapping[$code])) {
+                $mapping = (is_array($plugin_mapping[$code][0])) ? $plugin_mapping[$code] : [$plugin_mapping[$code]];
+                for ($j = 0; $j < count($mapping); ++$j) {
+                    $map_method = $mapping[$j]['callback'];
+                    $this->$map_method($result, $data, $mapping[$j]['field'], $mapping[$j]['cb_args'], $mapping[$j]['format']);
+                }
+            }
+        }
+        return $result;
+    }
 
     /**
      * @see LibraryResultParser::readRecord
      */
-    public function readRecord($data = '') : LibraryDocument
+    public function readRecord($data = ''): LibraryDocument
     {
-        $dom = \DOMDocument::loadXML($data);
+        $dom = new \DOMDocument();
+        $dom->loadXML($data);
         $record = $dom->getElementsByTagName('record')[0];
         if ($record instanceof \DOMElement) {
             return $this->readResultNode($record);
         }
-        return null;
+    }
+
+    /**
+     * This is a helper method to index the child nodes of a node which
+     * represent the Marc21 subfields. The index is the subfield code
+     * of the DOM child node.
+     *
+     * @param DOMElement $datafield The node whose child nodes shall be indexed.
+     *
+     * @returns DOMElement[] An array of DOMElement nodes reperesenting
+     * the indexed child nodes of the supplied node.
+     */
+    protected function indexSubfields(\DOMElement $datafield): array
+    {
+        $indexed_subfields = [];
+        $subfields = $datafield->getElementsByTagName('subfield');
+        foreach ($subfields as $subfield) {
+            $code = $subfield->getAttribute('code');
+            $indexed_subfields[$code] = $subfield;
+        }
+        return $indexed_subfields;
     }
 }

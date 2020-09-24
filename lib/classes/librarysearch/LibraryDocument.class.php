@@ -89,7 +89,7 @@ class LibraryDocument
      *
      * @returns string The type of the document.
      */
-    public function getType($format = 'name') : string
+    public function getType($format = 'name'): string
     {
         global $LIBRARY_DOCUMENT_TYPES;
 
@@ -121,7 +121,7 @@ class LibraryDocument
      *
      * @returns string The title of the document.
      */
-    public function getTitle($format = 'short') : string
+    public function getTitle($format = 'short'): string
     {
         if ($format == 'long') {
             $long_title = '';
@@ -160,7 +160,7 @@ class LibraryDocument
     /**
      * @returns string A list with all author names.
      */
-    public function getAuthorNames() : string
+    public function getAuthorNames(): string
     {
         if (!$this->csl_data['author']) {
             return '';
@@ -182,12 +182,11 @@ class LibraryDocument
      *
      * @returns string A string representing the issue date.
      */
-    public function getIssueDate($year_only = false) : string
+    public function getIssueDate($year_only = false): string
     {
         if (!$this->csl_data['issued']) {
             return '';
         }
-
         if ($year_only) {
             $year = @$this->csl_data['issued']['date-parts'][0][0];
             return $year ?: '';
@@ -199,7 +198,7 @@ class LibraryDocument
     /**
      * @returns string A string with identifiers of the document (ISBN, URL, ...).
      */
-    public function getIdentifiers() : string
+    public function getIdentifiers(): string
     {
         $identifiers = [];
         if ($this->csl_data['ISBN']) {
@@ -249,13 +248,13 @@ class LibraryDocument
      * @returns array An associative array containing the data of this
      *     LibraryDocument instance.
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         $other_data = [
-            'id' => $this->getId(),
-            'type' => $this->getType(),
-            'csl_data' => $this->csl_data,
-            'datafields' => $this->datafields,
+            'id'            => $this->getId(),
+            'type'          => $this->getType(),
+            'csl_data'      => $this->csl_data,
+            'datafields'    => $this->datafields,
             'search_params' => $this->search_params
         ];
         return array_merge($other_data, $this->csl_data);
@@ -268,7 +267,7 @@ class LibraryDocument
      * @returns string A string containing the JSON encoded version of this
      *     LibraryDocument instance.
      */
-    public function toJson() : string
+    public function toJson(): string
     {
         return json_encode($this->toArray());
     }
@@ -280,7 +279,7 @@ class LibraryDocument
      *
      * @returns array The "enriched" CSL data from this document.
      */
-    public function fillEmptyCslFields() : array
+    public function fillEmptyCslFields(): array
     {
         $enriched_data = [];
         foreach ($this->csl_data as $key => $field) {
@@ -295,7 +294,7 @@ class LibraryDocument
         if (!array_key_exists('author', $enriched_data)) {
             $enriched_data['author'] = [
                 [
-                    'given' => '',
+                    'given'  => '',
                     'family' => ' ',
                     'suffix' => ''
                 ]
@@ -315,7 +314,7 @@ class LibraryDocument
      * @returns string A string containing the HTML representation of this
      *     LibraryDocument instance.
      */
-    public function toHtml($stylesheet_id = '') : string
+    public function toHtml($stylesheet_id = ''): string
     {
         if (!$this->csl_data) {
             return '';
@@ -394,7 +393,7 @@ class LibraryDocument
      * @returns bool True, if this document is equal to the other document,
      *     false otherwise.
      */
-    public function isEqualTo(LibraryDocument $other) : bool
+    public function isEqualTo(LibraryDocument $other): bool
     {
         if ($this->type != $other->type) {
             //No need to do any further checks.
@@ -409,9 +408,9 @@ class LibraryDocument
         } elseif ($this->csl_data['DOI'] && ($this->csl_data['DOI'] == $other->csl_data['DOI'])) {
             return true;
         } elseif ($this->csl_data['title'] && $this->csl_data['author'] && $this->csl_data['issued']
-                  && ($this->csl_data['title'] == $other->csl_data['title'])
-                  && ($this->csl_data['author'] == $other->csl_data['author'])
-                  && ($this->csl_data['issued'] == $other->csl_data['issued'])) {
+            && ($this->csl_data['title'] == $other->csl_data['title'])
+            && ($this->csl_data['author'] == $other->csl_data['author'])
+            && ($this->csl_data['issued'] == $other->csl_data['issued'])) {
             return true;
         }
         return false;

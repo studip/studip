@@ -114,7 +114,7 @@
                             <dd><?= htmlReady($result->getType('display_name')) ?></dd>
                             <? if ($result->csl_data['issued'] || $result->csl_data['publisher']) : ?>
                                 <dt><?= _('Veröffentlicht') ?></dt>
-                                <dd><?= htmlReady($result->csl_data['publisher'] . ' ' . $result->getIssueDate()) ?></dd>
+                                <dd><?= htmlReady($result->csl_data['publisher'] . ' ' . $result->getIssueDate(true)) ?></dd>
                             <? endif ?>
                             <? if ($result->csl_data['author']) : ?>
                                 <dt><?= _('Erstellt von') ?></dt>
