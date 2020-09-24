@@ -18,7 +18,7 @@ if (!$nameformat = $this->config->getValue("Main", "nameformat"))
     $nameformat = "no_title";
 if ($nameformat == 'last') $GLOBALS['_fullname_sql']['last'] = ' Nachname ';
 
-$news =& StudipNews::GetNewsByRange($this->config->range_id, true);
+$news = StudipNews::GetNewsByRange($this->config->range_id, true, true);
 if (!count($news))
     $error_message = $this->config->getValue("Main", "nodatatext");
 
