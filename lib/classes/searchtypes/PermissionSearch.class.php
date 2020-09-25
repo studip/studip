@@ -182,9 +182,10 @@ class PermissionSearch extends SQLSearch {
                           AND auth_user_md5.perms IN (:permission)
                           AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-           default:
-               throw new InvalidArgumentException('search parameter not valid');
         }
+
+        // No search type matched?
+        throw new InvalidArgumentException('search parameter not valid');
     }
 
     private function getDefaultData()
