@@ -50,7 +50,8 @@ class PermissionSearch extends SQLSearch {
      * @param offset int: return results starting from this row (default: 0)
      * @return array: array(array(), ...)
      */
-    public function getResults($input, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0) {
+    public function getResults($input, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0)
+    {
         $db = DBManager::get();
         $sql = $this->getSQL();
         if ($offset || $limit != PHP_INT_MAX) {
@@ -61,23 +62,17 @@ class PermissionSearch extends SQLSearch {
         } else {
             $presets = $this->presets + $contextual_data;
         }
+
+        $data = $this->getDefaultData();
+        $data[':input'] = "%{$input}%";
+
         foreach ($presets as $name => $value) {
-            if ($name !== "input" && mb_strpos($sql, ":".$name) !== false) {
-                if (is_array($value)) {
-                    if (count($value)) {
-                        $sql = str_replace(":".$name, implode(',', array_map([$db, 'quote'], $value)), $sql);
-                    } else {
-                         $sql = str_replace(":".$name, "''", $sql);
-                    }
-                } else {
-                    $sql = str_replace(":".$name, $db->quote($value), $sql);
-                }
+            if ($name !== 'input' && mb_strpos($sql, ":{$name}") !== false) {
+                $data[":{$name}"] = $value;
             }
         }
 
-        $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
-        $data = [];
-        $data[":input"] = "%".$input."%";
+        $statement = $db->prepare($sql);
         $statement->execute($data);
         $results = $statement->fetchAll();
         return $results;
@@ -85,10 +80,23 @@ class PermissionSearch extends SQLSearch {
 
     private function getSQL()
     {
-        $first_column = 'auth_user_md5.' . $this->avatarLike;
+        $first_column = "auth_user_md5.{$this->avatarLike}";
+
+        // Respect user visibility setting
+        if ($GLOBALS['user']->perms === 'root') {
+            // Root may find everyone
+            $visibility_condition = '1';
+        } else {
+            $visibility_condition = "auth_user_md5.visible NOT IN ('no', 'never')";
+            if (Config::get()->DOZENT_ALWAYS_VISIBLE) {
+                $visibility_condition .= " OR auth_user_md5.perms = 'dozent'";
+            }
+            $visibility_condition = "({$visibility_condition})";
+        }
+
         switch ($this->search) {
             case 'user':
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN user_info USING (user_id)
                         WHERE (
@@ -98,10 +106,10 @@ class PermissionSearch extends SQLSearch {
                           )
                           AND auth_user_md5.perms IN (:permission)
                           AND auth_user_md5.user_id NOT IN (:exclude_user)
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-            break;
-            case "user_not_already_in_sem":
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+            case 'user_not_already_in_sem':
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN seminar_user su ON su.user_id = auth_user_md5.user_id AND seminar_id=:seminar_id AND status IN (:sem_perm)
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
@@ -112,10 +120,10 @@ class PermissionSearch extends SQLSearch {
                               OR auth_user_md5.username LIKE :input
                           )
                           AND auth_user_md5.perms IN (:permission)
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-            break;
-            case "user_in_sem":
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+            case 'user_in_sem':
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         JOIN seminar_user su ON su.user_id = auth_user_md5.user_id AND seminar_id=:seminar_id AND status IN (:sem_perm)
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
@@ -123,11 +131,12 @@ class PermissionSearch extends SQLSearch {
                             CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ')
                             OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                             OR auth_user_md5.username LIKE :input
-                        )
+                          )
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
             break;
-            case "user_inst":
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+            case 'user_inst':
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN user_inst ON user_inst.user_id = auth_user_md5.user_id
                         LEFT JOIN user_info ON auth_user_md5.user_id = user_info.user_id
@@ -139,9 +148,9 @@ class PermissionSearch extends SQLSearch {
                           AND user_inst.Institut_id IN (:institute)
                           AND user_inst.inst_perms IN (:permission)
                           AND auth_user_md5.user_id NOT IN (:exclude_user)
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-           break;
-           case "user_inst_not_already_in_sem":
+           case 'user_inst_not_already_in_sem':
                 $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN user_inst ON user_inst.user_id = auth_user_md5.user_id
@@ -155,10 +164,10 @@ class PermissionSearch extends SQLSearch {
                           )
                           AND user_inst.Institut_id IN (:institute)
                           AND user_inst.inst_perms IN (:permission)
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-           break;
-           case "user_not_already_in_sem_or_deputy":
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+           case 'user_not_already_in_sem_or_deputy':
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN seminar_user su ON su.user_id = auth_user_md5.user_id AND seminar_id=:seminar_id
                         LEFT JOIN deputies d ON d.user_id = auth_user_md5.user_id AND range_id=:seminar_id
@@ -171,12 +180,23 @@ class PermissionSearch extends SQLSearch {
                               OR auth_user_md5.username LIKE :input
                           )
                           AND auth_user_md5.perms IN (:permission)
+                          AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
-           break;
            default:
-               throw new InvalidArgumentException("search parameter not valid");
+               throw new InvalidArgumentException('search parameter not valid');
         }
-        return $sql;
+    }
+
+    private function getDefaultData()
+    {
+        $data = [];
+        if (in_array($this->search, ['user', 'user_inst'])) {
+            $data[':exclude_user'] = '';
+        }
+        if (in_array($this->search, ['user_not_already_in_sem', 'user_inst_not_already_in_sem'])) {
+            $data[':sem_perm'] = ['autor', 'tutor', 'dozent'];
+        }
+        return $data;
     }
 
     /**
@@ -184,7 +204,8 @@ class PermissionSearch extends SQLSearch {
      * returns the absolute path to this class for autoincluding this class.
      * @return: path to this class
      */
-    public function includePath() {
+    public function includePath()
+    {
         return studip_relative_path(__FILE__);
     }
 }
