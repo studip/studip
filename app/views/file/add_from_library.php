@@ -86,7 +86,7 @@
             <label for="result_<?= htmlReady($result_id) ?>">
                 <section class="contentbox">
                     <header>
-                        <span class="title no-overflow"><?= $result->getTitle('long-comma') ?></span>
+                        <span class="title no-overflow"><?= $result->getIcon()->asImg() ?> <?= $result->getTitle('long-comma') ?></span>
                         <nav>
                             <? if ($result->opac_link) : ?>
                                 <a href="<?= htmlReady($result->opac_link) ?>"
@@ -115,6 +115,10 @@
                             <? if ($result->csl_data['issued'] || $result->csl_data['publisher']) : ?>
                                 <dt><?= _('Veröffentlicht') ?></dt>
                                 <dd><?= htmlReady($result->csl_data['publisher'] . ' ' . $result->getIssueDate(true)) ?></dd>
+                            <? endif ?>
+                            <? if (!empty($result->csl_data['medium'])) : ?>
+                                <dt><?= _('Medium') ?></dt>
+                                <dd><?= htmlReady($result->csl_data['medium']) ?></dd>
                             <? endif ?>
                             <? if ($result->csl_data['author']) : ?>
                                 <dt><?= _('Erstellt von') ?></dt>

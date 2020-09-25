@@ -421,13 +421,14 @@ class LibraryDocument
      * @returns Flexi_Template A template containing information about the
      *     the document.
      */
-    public function getInfoTemplate()
+    public function getInfoTemplate($format = 'short')
     {
         $factory = new Flexi_TemplateFactory(
             $GLOBALS['STUDIP_BASE_PATH'] . '/templates/library/'
         );
         $template = $factory->open('library_document_info');
         $template->set_attribute('document', $this);
+        $template->set_attribute('format', $format);
         return $template;
     }
 
@@ -461,5 +462,17 @@ class LibraryDocument
             $description[] = sprintf(_('Signatur: „%s“'), $this->search_params[LibrarySearch::SIGNATURE]);
         }
         return $description;
+    }
+
+    public function getIcon()
+    {
+        global $LIBRARY_DOCUMENT_TYPES;
+        $ldt = SimpleCollection::createFromArray($LIBRARY_DOCUMENT_TYPES);
+        $found = $ldt->findOneBy('name', $this->type);
+        if ($found) {
+            $shape = $found['icon'];
+        }
+        $shape = $shape ?: 'literature-request';
+        return Icon::create($shape);
     }
 }

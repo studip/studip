@@ -309,7 +309,7 @@ class LibraryFile extends URLFile
         if (!$this->library_document) {
             return null;
         }
-        return $this->library_document->getInfoTemplate();
+        return $this->library_document->getInfoTemplate('full');
     }
 
 

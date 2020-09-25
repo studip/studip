@@ -1094,7 +1094,7 @@ class FileController extends AuthenticatedController
         }
 
         if ($item_id) {
-            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $cache = StudipCacheFactory::getCache();
             $documents = $cache->read($search_id);
             $document = $documents['results'][$item_id];
             if (!($document instanceof LibraryDocument)) {
@@ -1102,7 +1102,7 @@ class FileController extends AuthenticatedController
             }
             $file = LibraryFile::createFromLibraryDocument($document, $folder_id);
         } else {
-            $cache = StudipCacheFactory::instantiateCache('StudipDbCache', null);
+            $cache = StudipCacheFactory::getCache();
             $search = $cache->read($search_id);
             if (!$search) {
                 throw new Exception('Search not found in cache!');

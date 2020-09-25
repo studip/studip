@@ -72,6 +72,8 @@ class BASELibraryResultParser implements LibraryResultParser
                         $result->type = 'paper-conference';
                     } elseif ($base_typeid == '14') {
                         $result->type = 'report';
+                    } else {
+                        $result->type = $base_typeid;
                     }
                 } elseif ($name == 'dctitle') {
                     $result->csl_data['title'] = $child->textContent;
@@ -144,11 +146,11 @@ class BASELibraryResultParser implements LibraryResultParser
      */
     public function readRecord($data = '') : LibraryDocument
     {
-        $dom = \DOMDocument::loadXML($data);
+        $dom = new \DOMDocument();
+        @$dom->loadXML($data);
         $record = $dom->getElementsByTagName('doc')[0];
-        if (!$record) {
-            return null;
+        if ($record) {
+           return $this->readXMLRecord($record);
         }
-        return $this->readXMLRecord($record);
     }
 }

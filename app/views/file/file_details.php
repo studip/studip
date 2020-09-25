@@ -15,10 +15,12 @@
             <? endforeach; ?>
         </article>
 
-        <h3><?= _('Beschreibung') ?></h3>
-        <article>
-            <?= htmlReady($file->getDescription() ?: _('Keine Beschreibung vorhanden.'), true, true) ?>
-        </article>
+        <? if ($file->getDescription()) : ?>
+            <h3><?= _('Beschreibung') ?></h3>
+            <article>
+                <?= htmlReady($file->getDescription() ?: _('Keine Beschreibung vorhanden.'), true, true) ?>
+            </article>
+        <? endif ?>
         <?= Feedback::getHTML($file->getId(), 'FileRef') ?>
     </div>
 </div>

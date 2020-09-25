@@ -1013,6 +1013,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Artikel Fachzeitschrift',
             'en_GB' => 'Journal article'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'DOI',
             'ISSN',
@@ -1037,7 +1038,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ],
     [
@@ -1046,6 +1048,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Zeitschriftenartikel',
             'en_GB' => 'Magazine article'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'ISSN',
             'URL',
@@ -1066,7 +1069,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ],
     [
@@ -1075,6 +1079,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Zeitungsartikel',
             'en_GB' => 'Newspaper article'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'ISSN',
             'URL',
@@ -1095,7 +1100,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'source',
             'title',
             'title-short',
-            'translator'
+            'translator',
+            'medium'
         ]
     ],
     [
@@ -1104,6 +1110,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Artikel',
             'en_GB' => 'Article'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'URL',
             'abstract',
@@ -1121,7 +1128,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'source',
             'title',
             'title-short',
-            'translator'
+            'translator',
+            'medium'
         ]
     ],
     [
@@ -1130,6 +1138,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Buch',
             'en_GB' => 'Book'
         ],
+        'icon' => 'literature',
         'properties' => [
             'ISBN',
             'URL',
@@ -1156,7 +1165,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ],
     [
@@ -1165,6 +1175,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Konferenzpapier',
             'en_GB' => 'Conference paper'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'DOI',
             'ISBN',
@@ -1190,7 +1201,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ],
     [
@@ -1199,6 +1211,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Bericht',
             'en_GB' => 'Report'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'URL',
             'abstract',
@@ -1218,7 +1231,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'source',
             'title',
             'title-short',
-            'translator'
+            'translator',
+            'medium'
         ]
     ],
     [
@@ -1227,6 +1241,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Wörterbucheintrag',
             'en_GB' => 'Dictionary entry'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'ISBN',
             'URL',
@@ -1254,7 +1269,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ],
     [
@@ -1263,6 +1279,7 @@ $LIBRARY_DOCUMENT_TYPES = [
             'de_DE' => 'Lexikoneintrag',
             'en_GB' => 'Encyclopedia entry'
         ],
+        'icon' => 'bib-text',
         'properties' => [
             'ISBN',
             'URL',
@@ -1290,7 +1307,8 @@ $LIBRARY_DOCUMENT_TYPES = [
             'title',
             'title-short',
             'translator',
-            'volume'
+            'volume',
+            'medium'
         ]
     ]
 ];
