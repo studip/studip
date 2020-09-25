@@ -137,13 +137,13 @@
         <? if ($perm->haveFieldPerm('institut_id', MvvPerm::PERM_WRITE)): ?>
             <div>
                 <div style="display: inline-block;width: 100%;max-width: 48em;">
-                    <?= $search_institutes->render(); ?>
+                    <?= $search_institutes->render() ?>
                 </div>
-                <? if (Request::submitted('search_institutes')) : ?>
-                    <?= Icon::create('decline', Icon::ROLE_CLICKABLE , ['name' => 'reset_institutes', 'data-qs_id' => $search_institutes_id, 'class' => 'text-bottom'])->asInput(); ?>
-                <? else : ?>
-                    <?= Icon::create('search', Icon::ROLE_CLICKABLE , ['name' => 'search_institutes', 'data-qs_id' => $search_institutes_id, 'data-qs_name' => $search_institutes->getId(), 'class' => 'mvv-qs-button text-bottom'])->asInput(); ?>
-                <? endif; ?>
+            <? if (Request::submitted('search_institutes')) : ?>
+                <?= Icon::create('decline')->asInput(['name' => 'reset_institutes', 'data-qs_id' => $search_institutes_id, 'class' => 'text-bottom']) ?>
+            <? else : ?>
+                <?= Icon::create('search')->asInput(['name' => 'search_institutes', 'data-qs_id' => $search_institutes_id, 'data-qs_name' => $search_institutes->getId(), 'class' => 'mvv-qs-button text-bottom']) ?>
+            <? endif; ?>
             </div>
         <? endif; ?>
             <ul id="institut_target" class="mvv-assigned-items mvv-assign-single mvv-institute">

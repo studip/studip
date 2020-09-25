@@ -252,12 +252,12 @@ STUDIP.MVV.Search = {
             });
         } else {
             qs_select.change(function() {
-                var selected = qs_select.children('option:selected'),
-                target_name = qs_name.slice(0, qs_name.indexOf('_'));
-                qs_real.val(selected.val());
-                STUDIP.MVV.Content.addItem(target_name, selected.val(),
-                    selected.html().replace(/<.*>/g, ' '));
-                reset_button.click();
+                var selected = qs_select.children('option:selected');
+                STUDIP.MVV.Search.addSelected.call(
+                    qs_real,
+                    selected.val(),
+                    selected.text().trim()
+                );
             });
         }
         jQuery.ajax({
