@@ -1410,15 +1410,14 @@ class Course_MembersController extends AuthenticatedController
         $widget  = $sidebar->addWidget(new ActionsWidget());
 
         if ($this->is_tutor || $config->COURSE_STUDENT_MAILING) {
-            $url = URLHelper::getURL('dispatch.php/messages/write', [
-                'course_id'       => $this->course_id,
-                'default_subject' => $this->subject,
-                'filter'          => 'all',
-                'emailrequest'    => 1
-            ]);
             $widget->addLink(
                 _('Nachricht an alle eingetragenen Teilnehmenden (Rundmail)'),
-                $url,
+                URLHelper::getURL('dispatch.php/messages/write', [
+                    'course_id'       => $this->course_id,
+                    'default_subject' => $this->subject,
+                    'filter'          => 'all',
+                    'emailrequest'    => 1
+                ]),
                 Icon::create('inbox')
             )->asDialog();
         }
@@ -1440,35 +1439,43 @@ class Course_MembersController extends AuthenticatedController
                     $sem_institutes = $sem->getInstitutes();
 
                     if (SeminarCategories::getByTypeId($sem->status)->only_inst_user) {
-                        $search_template = "user_inst";
+                        $search_template = 'user_inst_not_already_in_sem';
                     } else {
-                        $search_template = "user";
+                        $search_template = 'user_not_already_in_sem';
                     }
 
                     // create new search for dozent
                     $searchtype = new PermissionSearch(
-                            $search_template, sprintf(_("%s suchen"), get_title_for_status('dozent', 1, $sem->status)), "user_id", ['permission' => 'dozent',
-                            'exclude_user' => [],
-                            'institute' => $sem_institutes]
+                        $search_template,
+                        sprintf(
+                            _('%s suchen'),
+                            get_title_for_status('dozent', 1, $sem->status)
+                        ),
+                        'user_id',
+                        [
+                            'permission' => 'dozent',
+                            'institute'  => $sem_institutes,
+                            'seminar_id' => $course->id,
+                        ]
                     );
 
-
                     // quickfilter: dozents of institut
-                    $sql = "SELECT user_id FROM user_inst
-                           WHERE Institut_id IN ( :institute_ids )
-                           AND inst_perms = 'dozent'";
+                    $sql = "SELECT `user_id`
+                            FROM `user_inst`
+                            WHERE `Institut_id` IN (:institute_ids)
+                              AND `inst_perms` = 'dozent'";
                     $db = DBManager::get();
-                    $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                    $statement = $db->prepare($sql);
                     $statement->execute(['institute_ids' => $course_institute_ids]);
-                    $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+                    $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN);
 
                     // add "add dozent" to infobox
-                    $mp = MultiPersonSearch::get('add_dozent' . $this->course_id)
-                        ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('dozent', 1)))
+                    $mp = MultiPersonSearch::get("add_dozent{$this->course_id}")
+                        ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('dozent', 1, $sem->status)))
                         ->setDefaultSelectedUser($filtered_members['dozent']->pluck('user_id'))
                         ->setLinkIconPath("")
-                        ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('dozent', 1)))
-                        ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_dozent'))
+                        ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('dozent', 1, $sem->status)))
+                        ->setExecuteURL($this->url_for('course/members/execute_multipersonsearch_dozent'))
                         ->setSearchObject($searchtype)
                         ->addQuickfilter(
                             sprintf(
@@ -1482,41 +1489,50 @@ class Course_MembersController extends AuthenticatedController
                             $membersOfInstitute)
                         ->setNavigationItem('/course/members/view')
                         ->render();
-                    $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
+                    $element = LinkElement::fromHTML($mp, Icon::create('community+add'));
                     $widget->addElement($element);
                 }
                 if (!$this->tutor_is_locked) {
                     $sem_institutes = $sem->getInstitutes();
 
                     if (SeminarCategories::getByTypeId($sem->status)->only_inst_user) {
-                        $search_template = 'user_inst';
+                        $search_template = 'user_inst_not_already_in_sem';
                     } else {
-                        $search_template = 'user';
+                        $search_template = 'user_not_already_in_sem';
                     }
 
                     // create new search for tutor
                     $searchType = new PermissionSearch(
-                            $search_template, sprintf(_('%s suchen'), get_title_for_status('tutor', 1, $sem->status)), 'user_id', ['permission' => ['dozent', 'tutor'],
-                        'exclude_user' => [],
-                        'institute' => $sem_institutes]
+                        $search_template,
+                        sprintf(
+                            _('%s suchen'),
+                            get_title_for_status('tutor', 1, $sem->status)
+                        ),
+                        'user_id',
+                        [
+                            'permission' => ['dozent', 'tutor'],
+                            'institute'  => $sem_institutes,
+                            'seminar_id' => $course->id,
+                        ]
                     );
 
                     // quickfilter: tutors of institut
-                    $sql = "SELECT user_id FROM user_inst
-                            WHERE Institut_id IN ( :institute_ids )
-                            AND inst_perms = 'tutor'";
+                    $sql = "SELECT `user_id`
+                            FROM `user_inst`
+                            WHERE `Institut_id` IN (:institute_ids)
+                              AND `inst_perms` = 'tutor'";
                     $db = DBManager::get();
-                    $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                    $statement = $db->prepare($sql);
                     $statement->execute(['institute_ids' => $course_institute_ids]);
-                    $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+                    $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN);
 
                     // add "add tutor" to infobox
-                    $mp = MultiPersonSearch::get("add_tutor" . $this->course_id)
-                        ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('tutor', 1)))
+                    $mp = MultiPersonSearch::get("add_tutor{$this->course_id}")
+                        ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('tutor', 1, $sem->status)))
                         ->setDefaultSelectedUser($filtered_members['tutor']->pluck('user_id'))
-                        ->setLinkIconPath("")
-                        ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('tutor', 1)))
-                        ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_tutor'))
+                        ->setLinkIconPath('')
+                        ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('tutor', 1, $sem->status)))
+                        ->setExecuteURL($this->url_for('course/members/execute_multipersonsearch_tutor'))
                         ->setSearchObject($searchType)
                         ->addQuickfilter(
                             sprintf(
@@ -1529,49 +1545,60 @@ class Course_MembersController extends AuthenticatedController
                             $membersOfInstitute)
                         ->setNavigationItem('/course/members/view')
                         ->render();
-                    $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
+                    $element = LinkElement::fromHTML($mp, Icon::create('community+add'));
                     $widget->addElement($element);
                 }
             }
             if (!$this->is_locked) {
                 // create new search for members
 
-                //The course institutes are the main institute and the
-                //participating institutes.
-                $course_institute_ids = [
-                    $course->home_institut->id
-                ];
+                // The course institutes are the main institute and the
+                // participating institutes.
+                $course_institute_ids = [$course->home_institut->id];
                 foreach ($course->institutes as $inst) {
-                    if ($inst->id != $course->home_institut->id) {
+                    if ($inst->id !== $course->home_institut->id) {
                         $course_institute_ids[] = $inst->id;
                     }
                 }
-                $searchType = new SQLSearch("SELECT auth_user_md5.user_id, CONCAT(" . $GLOBALS['_fullname_sql']['full'] .
-                    ", \" (\", auth_user_md5.username, \")\") as fullname " .
-                    "FROM auth_user_md5 " .
-                    "LEFT JOIN user_info ON (user_info.user_id = auth_user_md5.user_id) " .
-                    "WHERE (CONCAT(auth_user_md5.Vorname, \" \", auth_user_md5.Nachname) LIKE :input " .
-                    "OR CONCAT(auth_user_md5.Nachname, \" \", auth_user_md5.Vorname) LIKE :input " .
-                    "OR auth_user_md5.username LIKE :input) " .
-                    "AND auth_user_md5.perms IN ('autor', 'tutor', 'dozent') " .
-                    " AND auth_user_md5.visible <> 'never' " .
-                    "ORDER BY Vorname, Nachname", _("Teilnehmende/n suchen"), "username");
 
-                // quickfilter: tutors of institut
-                $sql = "SELECT user_id FROM user_inst WHERE Institut_id IN ( :institute_ids )
-                       AND inst_perms = 'autor'";
+                if (SeminarCategories::getByTypeId($sem->status)->only_inst_user) {
+                    $search_template = 'user_inst_not_already_in_sem';
+                } else {
+                    $search_template = 'user_not_already_in_sem';
+                }
+
+                // create new search for autor
+                $searchType = new PermissionSearch(
+                    $search_template,
+                    sprintf(
+                        _('%s suchen'),
+                        get_title_for_status('autor', 1, $sem->status)
+                    ),
+                    'user_id',
+                    [
+                        'permission' => ['autor', 'tutor', 'dozent'],
+                        'institute'  => $sem_institutes,
+                        'seminar_id' => $course->id,
+                    ]
+                );
+
+                // quickfilter: autors of institut
+                $sql = "SELECT `user_id`
+                        FROM `user_inst`
+                        WHERE `Institut_id` IN (:institute_ids)
+                          AND `inst_perms` = 'autor'";
                 $db = DBManager::get();
-                $statement = $db->prepare($sql, [PDO::FETCH_NUM]);
+                $statement = $db->prepare($sql);
                 $statement->execute(['institute_ids' => $course_institute_ids]);
-                $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+                $membersOfInstitute = $statement->fetchAll(PDO::FETCH_COLUMN);
 
                 // add "add autor" to infobox
-                $mp = MultiPersonSearch::get("add_autor" . $this->course_id)
-                    ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('autor', 1)))
+                $mp = MultiPersonSearch::get("add_autor{$this->course_id}")
+                    ->setLinkText(sprintf(_('%s eintragen'), get_title_for_status('autor', 1, $sem->status)))
                     ->setDefaultSelectedUser($filtered_members['autor']->pluck('user_id'))
-                    ->setLinkIconPath("")
-                    ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('autor', 1)))
-                    ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_autor'))
+                    ->setLinkIconPath('')
+                    ->setTitle(sprintf(_('%s eintragen'), get_title_for_status('autor', 1, $sem->status)))
+                    ->setExecuteURL($this->url_for('course/members/execute_multipersonsearch_autor'))
                     ->setSearchObject($searchType)
                     ->addQuickfilter(
                         sprintf(
@@ -1582,16 +1609,22 @@ class Course_MembersController extends AuthenticatedController
                             ),
                             $this->status_groups['autor']
                         ),
-                        $membersOfInstitute)
+                        $membersOfInstitute
+                    )
                     ->setNavigationItem('/course/members/view')
                     ->render();
-                $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
-                $widget->addElement($element);
+                $widget->addElement(LinkElement::fromHTML(
+                    $mp,
+                    Icon::create('community+add')
+                ));
 
                 // add "add person to waitlist" to sidebar
-                if ($sem->isAdmissionEnabled() && $sem->getCourseSet()->hasAlgorithmRun()
-                    && !$sem->admission_disable_waitlist &&
-                    (!$sem->getFreeSeats() || $sem->admission_disable_waitlist_move)) {
+                if (
+                    $sem->isAdmissionEnabled()
+                    && $sem->getCourseSet()->hasAlgorithmRun()
+                    && !$sem->admission_disable_waitlist
+                    && (!$sem->getFreeSeats() || $sem->admission_disable_waitlist_move)
+                ) {
                     $ignore = array_merge(
                         $filtered_members['dozent']->pluck('user_id'),
                         $filtered_members['tutor']->pluck('user_id'),
@@ -1599,25 +1632,28 @@ class Course_MembersController extends AuthenticatedController
                         $filtered_members['user']->pluck('user_id'),
                         $filtered_members['awaiting']->pluck('user_id')
                     );
-                    $mp = MultiPersonSearch::get('add_waitlist' . $this->course_id)
+                    $mp = MultiPersonSearch::get("add_waitlist{$this->course_id}")
                         ->setLinkText(_('Person(en) auf Warteliste eintragen'))
                         ->setDefaultSelectedUser($ignore)
                         ->setLinkIconPath('')
                         ->setTitle(_('Person(en) auf Warteliste eintragen'))
-                        ->setExecuteURL(URLHelper::getLink('dispatch.php/course/members/execute_multipersonsearch_waitlist'))
+                        ->setExecuteURL($this->url_for('course/members/execute_multipersonsearch_waitlist'))
                         ->setSearchObject($searchType)
                         ->addQuickfilter(_('Mitglieder der Einrichtung'), $membersOfInstitute)
                         ->setNavigationItem('/course/members/view')
                         ->render();
-                    $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
+                    $element = LinkElement::fromHTML($mp, Icon::create('community+add'));
                     $widget->addElement($element);
                 }
-                $widget->addLink(_('Teilnehmendenliste importieren'),
-                    $this->url_for('course/members/import_autorlist'), Icon::create('community+add', 'clickable'));
+                $widget->addLink(
+                    _('Teilnehmendenliste importieren'),
+                    $this->url_for('course/members/import_autorlist'),
+                    Icon::create('community+add')
+                );
             }
 
             if (Config::get()->EXPORT_ENABLE) {
-                $widget = new ExportWidget();
+                $widget = $sidebar->addWidget(new ExportWidget());
 
                 // create csv-export link
                 $csvExport = export_link(
@@ -1632,7 +1668,7 @@ class Course_MembersController extends AuthenticatedController
                 );
                 $widget->addLinkFromHTML(
                     $csvExport,
-                    Icon::create('file-office', 'clickable')
+                    Icon::create('file-office')
                 );
 
                 // create csv-export link
@@ -1648,7 +1684,7 @@ class Course_MembersController extends AuthenticatedController
                 );
                 $widget->addLinkFromHTML(
                     $rtfExport,
-                    Icon::create('file-text', 'clickable')
+                    Icon::create('file-text')
                 );
 
                 if (count($this->awaiting) > 0) {
@@ -1664,7 +1700,7 @@ class Course_MembersController extends AuthenticatedController
                     );
                     $widget->addLinkFromHTML(
                         $awaiting_rtf,
-                        Icon::create('file-office+export', 'clickable')
+                        Icon::create('file-office+export')
                     );
 
                     $awaiting_csv = export_link(
@@ -1679,15 +1715,13 @@ class Course_MembersController extends AuthenticatedController
                     );
                     $widget->addLinkFromHTML(
                         $awaiting_csv,
-                        Icon::create('file-text+export', 'clickable')
+                        Icon::create('file-text+export')
                     );
                 }
-
-                $sidebar->addWidget($widget);
             }
 
             if ($this->is_dozent) {
-                $options = new OptionsWidget();
+                $options = $sidebar->addWidget(new OptionsWidget());
                 $options->addCheckbox(
                     _('Rundmails von Studierenden erlauben'),
                     $config->COURSE_STUDENT_MAILING,
@@ -1695,31 +1729,28 @@ class Course_MembersController extends AuthenticatedController
                     $this->url_for('course/members/toggle_student_mailing/0'),
                     ['title' => _('Über diese Option können Sie Studierenden das Schreiben von Nachrichten an alle anderen Teilnehmenden der Veranstaltung erlauben')]
                 );
-                $sidebar->addWidget($options);
             }
         } else if ($this->is_autor || $this->is_user) {
             // Visibility preferences
-            if (!$this->my_visibility['iam_visible']) {
-                $text = _('Sie sind für andere Teilnehmenden auf der Teilnehmendenliste nicht sichtbar.');
-                $icon = Icon::create('visibility-visible', 'clickable');
-                $modus = 'make_visible';
-                $link_text = _('Klicken Sie hier, um sichtbar zu werden.');
-            } else {
+            if ($this->my_visibility['iam_visible']) {
                 $text = _('Sie sind für andere Teilnehmenden auf der Teilnehmendenliste sichtbar.');
-                $icon = Icon::create('visibility-invisible', 'clickable');
+                $icon = Icon::create('visibility-invisible');
                 $modus = 'make_invisible';
                 $link_text = _('Klicken Sie hier, um unsichtbar zu werden.');
+            } else {
+                $text = _('Sie sind für andere Teilnehmenden auf der Teilnehmendenliste nicht sichtbar.');
+                $icon = Icon::create('visibility-visible');
+                $modus = 'make_visible';
+                $link_text = _('Klicken Sie hier, um sichtbar zu werden.');
             }
 
-
-            $actions = new ActionsWidget();
+            $actions = $sidebar->addWidget(new ActionsWidget());
             $actions->addLink(
                 $link_text,
                 $this->url_for('course/members/change_visibility', $modus, $this->my_visibility['visible_mode']),
                 $icon,
                 ['title' => $text]
             );
-            $sidebar->addWidget($actions);
         }
     }
 
