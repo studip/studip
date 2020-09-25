@@ -87,7 +87,7 @@ class PermissionSearch extends SQLSearch {
             // Root may find everyone
             $visibility_condition = '1';
         } else {
-            $visibility_condition = "auth_user_md5.visible NOT IN ('no', 'never')";
+            $visibility_condition = "auth_user_md5.visible NOT IN ('never')";
             if (Config::get()->DOZENT_ALWAYS_VISIBLE) {
                 $visibility_condition .= " OR auth_user_md5.perms = 'dozent'";
             }
