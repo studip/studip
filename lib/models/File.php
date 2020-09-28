@@ -19,7 +19,8 @@
  * @property string mime_type database column
  * @property string name database column
  * @property string size database column
- * @property string storage enum('disk', 'url') database column
+ * @property string filetype database column
+ * @property string metadata database column
  * @property string author_name database column
  * @property string mkdate database column
  * @property string chdate database column
@@ -46,8 +47,6 @@ class File extends SimpleORMap
 
         $config['additional_fields']['extension'] = true;
         $config['additional_fields']['path'] = true;
-        $config['additional_fields']['url'] = true;
-        $config['additional_fields']['url_access_type'] = true;
 
         $config['serialized_fields']['metadata'] = 'JSONArrayObject';
 
@@ -55,62 +54,6 @@ class File extends SimpleORMap
         $config['registered_callbacks']['before_create'][] = 'cbSetAuthor';
 
         parent::configure($config);
-    }
-
-    /**
-     * Returns the URL, if the File object stores an URL.
-     *
-     * @return string|null The URL if the File object stores an URL, null otherwise.
-     */
-    public function getURL()
-    {
-        return $this->storage === 'url' && isset($this->file_url)
-             ? $this->file_url->url
-             : null;
-    }
-
-    /**
-     * Sets the URL for the File object, if it stores an URL.
-     *
-     * @param string $url The URL which shall be stored in the File object.
-     * @return string The URL from the $url parameter.
-     */
-    public function setURL($url)
-    {
-        $this->storage = 'url';
-        if (!isset($this->file_url)) {
-            $this->file_url = new FileURL(); //TODO: change to URLFile
-        }
-        $this->file_url->url = $url;
-
-        return $url;
-    }
-
-    /**
-     * Returns the URL access type, if the File object stores an URL.
-     *
-     * @return string|null The URL access type, if the File object stores an URL, null otherwise.
-     */
-    public function getURL_access_type()
-    {
-        return $this->metadata['access_type'];
-    }
-
-    /**
-     * Sets the URL access type for the File object, if it stores an URL.
-     *
-     * @param string $value The URL access type for the File object.
-     * @return string The URL access type from the $value parameter.
-     */
-    public function setURL_access_type($value)
-    {
-        $this->storage = 'url';
-        if (!isset($this->file_url)) {
-            $this->file_url = new FileURL(); //TODO: change to URLFile
-        }
-        $this->file_url->access_type = $value;
-
-        return $value;
     }
 
     /**
