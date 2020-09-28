@@ -1,0 +1,24 @@
+{
+    "name": "seboettg/collection",
+    "description": "Simple PHP ArrayList collection",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sebastian Böttger",
+            "email": "seboettg@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Seboettg\\Collection\\": "src/Seboettg/Collection"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Seboettg\\Collection\\Test\\": "tests/Seboettg/Collection/Test"}
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.5.*",
+        "satooshi/php-coveralls": "^v2.0"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
+}

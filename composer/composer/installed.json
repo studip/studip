@@ -681,23 +681,23 @@
     },
     {
         "name": "psr/log",
-        "version": "1.1.2",
-        "version_normalized": "1.1.2.0",
+        "version": "1.1.3",
+        "version_normalized": "1.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/php-fig/log.git",
-            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801"
+            "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/log/zipball/446d54b4cb6bf489fc9d75f55843658e6f25d801",
-            "reference": "446d54b4cb6bf489fc9d75f55843658e6f25d801",
+            "url": "https://api.github.com/repos/php-fig/log/zipball/0f73288fd15629204f9d42b7055f72dacbe811fc",
+            "reference": "0f73288fd15629204f9d42b7055f72dacbe811fc",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2019-11-01T11:05:21+00:00",
+        "time": "2020-03-23T09:12:05+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -730,20 +730,21 @@
     },
     {
         "name": "seboettg/citeproc-php",
-        "version": "v2.1.9",
-        "version_normalized": "2.1.9.0",
+        "version": "v2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/seboettg/citeproc-php.git",
-            "reference": "4ae85927ac43c838bfc0997469be4a1c9f6b1698"
+            "reference": "b1d45aa086a91e2e294f4b9977d8bfc9741605be"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/seboettg/citeproc-php/zipball/4ae85927ac43c838bfc0997469be4a1c9f6b1698",
-            "reference": "4ae85927ac43c838bfc0997469be4a1c9f6b1698",
+            "url": "https://api.github.com/repos/seboettg/citeproc-php/zipball/b1d45aa086a91e2e294f4b9977d8bfc9741605be",
+            "reference": "b1d45aa086a91e2e294f4b9977d8bfc9741605be",
             "shasum": ""
         },
         "require": {
+            "ext-intl": "*",
             "ext-json": "*",
             "ext-simplexml": "*",
             "myclabs/php-enum": "^1.5",
@@ -751,10 +752,12 @@
             "symfony/polyfill-mbstring": "v1.10.*"
         },
         "require-dev": {
-            "phpunit/phpunit": "6.0.13",
-            "satooshi/php-coveralls": "^1"
+            "phpmd/phpmd": "^2.8",
+            "phpunit/phpunit": "^7.5",
+            "satooshi/php-coveralls": "^1",
+            "squizlabs/php_codesniffer": "^3.5"
         },
-        "time": "2019-11-04T11:59:14+00:00",
+        "time": "2020-04-04T16:44:33+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1019,28 +1022,32 @@
     },
     {
         "name": "symfony/polyfill-php56",
-        "version": "v1.14.0",
-        "version_normalized": "1.14.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-php56.git",
-            "reference": "16ec91cb06998b609501b55b7177b7d7c02badb3"
+            "reference": "13df84e91cd168f247c2f2ec82cc0fa24901c011"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/16ec91cb06998b609501b55b7177b7d7c02badb3",
-            "reference": "16ec91cb06998b609501b55b7177b7d7c02badb3",
+            "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/13df84e91cd168f247c2f2ec82cc0fa24901c011",
+            "reference": "13df84e91cd168f247c2f2ec82cc0fa24901c011",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3",
             "symfony/polyfill-util": "~1.0"
         },
-        "time": "2020-01-13T11:15:53+00:00",
+        "time": "2020-07-14T12:35:20+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.14-dev"
+                "dev-master": "1.18-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -1073,31 +1080,49 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
         "name": "symfony/polyfill-util",
-        "version": "v1.14.0",
-        "version_normalized": "1.14.0.0",
+        "version": "v1.18.1",
+        "version_normalized": "1.18.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-util.git",
-            "reference": "ba3cfcea6d0192cae46c62041f61cbb704b526d3"
+            "reference": "46b910c71e9828f8ec2aa7a0314de1130d9b295a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-util/zipball/ba3cfcea6d0192cae46c62041f61cbb704b526d3",
-            "reference": "ba3cfcea6d0192cae46c62041f61cbb704b526d3",
+            "url": "https://api.github.com/repos/symfony/polyfill-util/zipball/46b910c71e9828f8ec2aa7a0314de1130d9b295a",
+            "reference": "46b910c71e9828f8ec2aa7a0314de1130d9b295a",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2020-01-13T11:15:53+00:00",
+        "time": "2020-07-14T12:35:20+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.14-dev"
+                "dev-master": "1.18-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -1127,6 +1152,20 @@
             "compatibility",
             "polyfill",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
