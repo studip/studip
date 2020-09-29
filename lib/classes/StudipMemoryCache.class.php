@@ -4,6 +4,7 @@
  *
  * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @license GPL2 or any later version
+ * @since   Stud.IP 5.0
  */
 class StudipMemoryCache implements StudipCache
 {
