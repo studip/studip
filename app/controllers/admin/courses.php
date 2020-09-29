@@ -250,7 +250,8 @@ class Admin_CoursesController extends AuthenticatedController
             $export->addLink(
                 _('Als Excel exportieren'),
                  URLHelper::getURL('dispatch.php/admin/courses/export_csv', $params),
-                 Icon::create('file-excel')
+                 Icon::create('file-excel'),
+                ['data-dialog' => 1]
             );
             $sidebar->addWidget($export);
         }
@@ -470,117 +471,119 @@ class Admin_CoursesController extends AuthenticatedController
      */
     public function export_csv_action()
     {
-        $filter_config = $this->getFilterConfig();
-        unset($filter_config['contents']);
+        $filter_config = Request::getArray("fields");
 
-        if (empty($filter_config)) {
-            return;
-        }
+        if (count($filter_config)) {
+            $sortby = $GLOBALS['user']->cfg->getValue('MEINE_SEMINARE_SORT');
+            $config_my_course_type_filter = $GLOBALS['user']->cfg->getValue('MY_COURSES_TYPE_FILTER');
 
-        $sortby = $GLOBALS['user']->cfg->getValue('MEINE_SEMINARE_SORT');
-        $config_my_course_type_filter = $GLOBALS['user']->cfg->getValue('MY_COURSES_TYPE_FILTER');
+            $courses = $this->getCourses([
+                'sortby' => $sortby,
+                'sortFlag' => 'asc',
+                'typeFilter' => $config_my_course_type_filter,
+                'view_filter' => $filter_config,
+            ], true);
 
-        $courses = $this->getCourses([
-            'sortby'      => $sortby,
-            'sortFlag'    => 'asc',
-            'typeFilter'  => $config_my_course_type_filter,
-            'view_filter' => $filter_config,
-        ], true);
+            $view_filters = $this->getViewFilters();
 
-        $view_filters = $this->getViewFilters();
+            $data = [];
+            foreach ($courses as $course_id => $course) {
+                $sem = new Seminar(Course::buildExisting($course));
+                $row = [];
 
-        $data = [];
-        foreach ($courses as $course_id => $course) {
-            $sem = new Seminar(Course::buildExisting($course));
-            $row = [];
+                if (in_array('number', $filter_config)) {
+                    $row['number'] = $course['VeranstaltungsNummer'];
+                }
 
-            if (in_array('number', $filter_config)) {
-                $row['number'] = $course['VeranstaltungsNummer'];
+                if (in_array('name', $filter_config)) {
+                    $row['name'] = $course['Name'];
+                }
+
+                if (in_array('type', $filter_config)) {
+                    $row['type'] = sprintf(
+                        '%s: %s',
+                        $sem->getSemClass()['name'],
+                        $sem->getSemType()['name']
+                    );
+                }
+
+                if (in_array('room_time', $filter_config)) {
+                    $_room = $sem->getDatesExport([
+                        'semester_id' => $this->semester->id,
+                        'show_room' => true
+                    ]);
+                    $row['room_time'] = $_room ?: _('nicht angegeben');
+                }
+
+                if (in_array('requests', $filter_config)) {
+                    $row['requests'] = $course['requests'];
+                }
+
+                if (in_array('teachers', $filter_config)) {
+                    $row['teachers'] = implode(', ', array_map(function ($d) {
+                        return $d['fullname'];
+                    }, $course['dozenten']));
+                }
+
+                if (in_array('members', $filter_config)) {
+                    $row['members'] = $course['teilnehmer'];
+                }
+
+                if (in_array('waiting', $filter_config)) {
+                    $row['waiting'] = $course['waiting'];
+                }
+
+                if (in_array('preliminary', $filter_config)) {
+                    $row['preliminary'] = $course['prelim'];
+                }
+
+                if (in_array('last_activity', $filter_config)) {
+                    $row['last_activity'] = $course['lastActivity'];
+                }
+
+                if (in_array('semester', $filter_config)) {
+                    $row['semester'] = $sem->start_semester->name;
+                }
+
+                foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
+                    foreach ($plugin->adminAvailableContents() as $index => $label) {
+                        if (in_array($plugin->getPluginId() . "_" . $index, $filter_config)) {
+                            $content = $plugin->adminAreaGetCourseContent(Course::find($course_id), $index);
+                            $row[$plugin->getPluginId() . "_" . $index] = strip_tags(is_a($content, 'Flexi_Template')
+                                ? $content->render()
+                                : $content
+                            );
+                        }
+                    }
+                }
+
+                $data[$course_id] = $row;
             }
 
-            if (in_array('name', $filter_config)) {
-                $row['name'] = $course['Name'];
+            $captions = [];
+            foreach ($filter_config as $index) {
+                $captions[$index] = $view_filters[$index];
             }
-
-            if (in_array('type', $filter_config)) {
-                $row['type'] = sprintf(
-                    '%s: %s',
-                    $sem->getSemClass()['name'],
-                    $sem->getSemType()['name']
-                );
-            }
-
-            if (in_array('room_time', $filter_config)) {
-                $_room = $sem->getDatesExport([
-                    'semester_id' => $this->semester->id,
-                    'show_room'   => true
-                ]);
-                $row['room_time'] = $_room ?: _('nicht angegeben');
-            }
-
-            if (in_array('requests', $filter_config)) {
-                $row['requests'] = $course['requests'];
-            }
-
-            if (in_array('teachers', $filter_config)) {
-                $row['teachers'] = implode(', ', array_map(function ($d) {return $d['fullname'];}, $course['dozenten']));
-            }
-
-            if (in_array('members', $filter_config)) {
-                $row['members'] = $course['teilnehmer'];
-            }
-
-            if (in_array('waiting', $filter_config)) {
-                $row['waiting'] = $course['waiting'];
-            }
-
-            if (in_array('preliminary', $filter_config)) {
-                $row['preliminary'] = $course['prelim'];
-            }
-
-            if (in_array('last_activity', $filter_config)) {
-                $row['last_activity'] = $course['lastActivity'];
-            }
-
-            if (in_array('semester', $filter_config)) {
-                $row['semester'] = $sem->start_semester->name;
-            }
-
             foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
                 foreach ($plugin->adminAvailableContents() as $index => $label) {
-                    if (in_array($plugin->getPluginId()."_".$index, $filter_config)) {
-                        $content = $plugin->adminAreaGetCourseContent(Course::find($course_id), $index);
-                        $row[$plugin->getPluginId()."_".$index] = strip_tags(is_a($content, 'Flexi_Template')
-                            ? $content->render()
-                            : $content
-                        );
+                    if (in_array($plugin->getPluginId() . "_" . $index, $filter_config)) {
+                        $captions[$plugin->getPluginId() . "_" . $index] = $label;
                     }
                 }
             }
 
-            $data[$course_id] = $row;
-        }
-
-        $captions = [];
-        foreach ($filter_config as $index) {
-            $captions[$index] = $view_filters[$index];
-        }
-        foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
-            foreach ($plugin->adminAvailableContents() as $index => $label) {
-                if (in_array($plugin->getPluginId()."_".$index, $filter_config)) {
-                    $captions[$plugin->getPluginId()."_".$index] = $label;
-                }
+            $tmpname = md5(uniqid('Veranstaltungsexport'));
+            if (array_to_csv($data, $GLOBALS['TMP_PATH'] . '/' . $tmpname, $captions)) {
+                $this->redirect(FileManager::getDownloadURLForTemporaryFile(
+                    $tmpname,
+                    'Veranstaltungen_Export.csv'
+                ));
+                return;
             }
-        }
-
-        $tmpname = md5(uniqid('Veranstaltungsexport'));
-        if (array_to_csv($data, $GLOBALS['TMP_PATH'] . '/' . $tmpname, $captions)) {
-            $this->redirect(FileManager::getDownloadURLForTemporaryFile(
-                $tmpname,
-                'Veranstaltungen_Export.csv'
-                )
-            );
-            return;
+        } else {
+            PageLayout::setTitle(_("Spalten zum Export auswählen"));
+            $this->fields = $this->getViewFilters();
+            $this->selection = $this->getFilterConfig();
         }
     }
 
