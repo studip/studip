@@ -455,6 +455,9 @@ class RolePersistence
     {
         if (self::$cache === null) {
             self::$cache = StudipCacheFactory::getCache();
+            if (self::$cache instanceof StudipNullCache) {
+                self::$cache = new StudipMemoryCache();
+            }
         }
         return self::$cache;
     }
