@@ -67,6 +67,10 @@ class PermissionSearch extends SQLSearch {
         $data[':input'] = "%{$input}%";
 
         foreach ($presets as $name => $value) {
+            if (is_array($value) && !$value) {
+                $value = '';
+            }
+
             if ($name !== 'input' && mb_strpos($sql, ":{$name}") !== false) {
                 $data[":{$name}"] = $value;
             }
