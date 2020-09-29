@@ -266,7 +266,8 @@ class Seminar_Auth
         //check if the user got kicked meanwhile, or if user is locked out
         if ($this->auth['uid'] && !in_array($this->auth['uid'], ['form', 'nobody'])) {
             $user = $GLOBALS['user']->id == $this->auth['uid'] ? $GLOBALS['user'] : User::find($this->auth['uid']);
-            if (!$user->username || $user->locked) {
+            $exp_d = $user->username ? UserConfig::get($user->id)->EXPIRATION_DATE : 0;
+            if (!$user->username || $user->locked || ($exp_d > 0 && $exp_d < time())) {
                 $this->unauth();
             }
         } elseif ($cfg->getValue('MAINTENANCE_MODE_ENABLE') && Request::username('loginname')) {
@@ -296,6 +297,13 @@ class Seminar_Auth
                 $authplugin->authenticateUser('', '');
                 if ($authplugin->getUser()) {
                     $user = $authplugin->getStudipUser($authplugin->getUser());
+                    $exp_d = UserConfig::get($user->id)->EXPIRATION_DATE;
+                    if ($exp_d > 0 && $exp_d < time()) {
+                        throw new AccessDeniedException(_('Dieses Benutzerkonto ist abgelaufen. Wenden Sie sich bitte an die Administration.'));
+                    }
+                    if ($user->locked == 1) {
+                        throw new AccessDeniedException(_('Dieser Benutzer ist gesperrt! Wenden Sie sich bitte an die Administration.'));
+                    }
                     $this->auth["jscript"] = true;
                     $this->auth["perm"] = $user->perms;
                     $this->auth["uname"] = $user->username;
