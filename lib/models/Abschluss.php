@@ -52,7 +52,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
 
         $config['belongs_to']['category'] = [
             'class_name' => 'AbschlussKategorie',
-            'assoc_func' => 'findByAbschluss'
+            'assoc_func' => 'findByAbschluss',
         ];
 
         $config['has_one']['category_assignment'] = [
@@ -322,8 +322,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
 
         $stmt->execute([$this->getId()]);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $institut) {
-            $institute[$institut['Institut_id']] =
-                    new Fachbereich($institut['Institut_id']);
+            $institute[$institut['Institut_id']] = Fachbereich::findCached($institut['Institut_id']);
         }
         return $institute;
     }
@@ -360,7 +359,7 @@ class Abschluss extends ModuleManagementModelTreeItem implements PrivacyObject
      */
     public function getTrailParent()
     {
-        return Fachbereich::get($this->getTrailParentId());
+        return Fachbereich::findCached($this->getTrailParentId());
     }
 
     /**

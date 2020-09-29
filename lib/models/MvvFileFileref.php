@@ -24,12 +24,14 @@ class MvvFileFileref extends ModuleManagementModel
 
         $config['belongs_to']['mvv_file'] = array(
             'class_name' => 'MvvFile',
-            'foreign_key' => 'mvvfile_id'
+            'foreign_key' => 'mvvfile_id',
+            'assoc_func' => 'findCached',
         );
 
         $config['belongs_to']['file_ref'] = array(
             'class_name' => 'FileRef',
-            'foreign_key' => 'fileref_id'
+            'foreign_key' => 'fileref_id',
+            'assoc_func' => 'findCached',
         );
         $config['additional_fields']['filetype']['get'] = 'getFiletype';
         $config['additional_fields']['filename']['get'] = 'getFilename';
@@ -93,5 +95,4 @@ class MvvFileFileref extends ModuleManagementModel
             }
         }
     }
-
 }

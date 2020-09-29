@@ -23,24 +23,25 @@ class Aufbaustudiengang extends ModuleManagementModel
 
         $config['belongs_to']['grund_studiengang'] = array(
             'class_name' => 'Studiengang',
-            'assoc_foreign_key' => 'studiengang_id',
-            'foreign_key' => 'grund_stg_id'
+            'foreign_key' => 'grund_stg_id',
+            'assoc_func' => 'findCached',
         );
         $config['has_one']['aufbau_studiengang'] = array(
             'class_name' => 'Studiengang',
-            'assoc_foreign_key' => 'studiengang_id',
-            'foreign_key' => 'aufbau_stg_id'
+            'foreign_key' => 'aufbau_stg_id',
+            'assoc_func' => 'findCached',
         );
+
         $config['i18n_fields']['kommentar'] = true;
 
         parent::configure($config);
     }
-    
+
     public function getDisplayName($options = self::DISPLAY_DEFAULT)
     {
         return $this->aufbau_studiengang->getDisplayName($options);
     }
-    
+
     public function validate()
     {
         $ret = parent::validate();
@@ -51,24 +52,25 @@ class Aufbaustudiengang extends ModuleManagementModel
             $messages = array(_('Unbekannter Typ des Aufbaustudiengangs'));
             throw new InvalidValuesException(join("\n", $messages), $ret);
         }
-         * 
+         *
          */
         return $ret;
     }
-    
+
     /**
      * Inherits the status of the parent study course.
-     * 
+     *
      * @return string The status (see mvv_config.php)
      */
     public function getStatus()
     {
         if ($this->aufbau_studiengang) {
             return $this->aufbau_studiengang->getStatus();
-        } elseif ($this->isNew()) {
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_STUDIENGANG']['STATUS']['default'];
         }
         return parent::getStatus();
     }
-    
+
 }

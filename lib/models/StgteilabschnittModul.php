@@ -24,19 +24,21 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
 
         $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
-            'foreign_key' => 'modul_id'
+            'foreign_key' => 'modul_id',
+            'assoc_func' => 'findCached',
         ];
         $config['belongs_to']['abschnitt'] = [
             'class_name' => 'StgteilAbschnitt',
-            'foreign_key' => 'abschnitt_id'
+            'foreign_key' => 'abschnitt_id',
+            'assoc_func' => 'findCached',
         ];
-        
+
         $config['i18n_fields']['bezeichnung'] = true;
 
         parent::configure($config);
     }
 
-    function __construct($id = null)
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name =
@@ -176,7 +178,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
         return Abschluss::get($this->getTrailParentId());
          *
          */
-        return StgteilAbschnitt::get($this->getTrailParentId());
+        return StgteilAbschnitt::findCached($this->getTrailParentId());
     }
 
     /**
@@ -208,7 +210,7 @@ class StgteilabschnittModul extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return [StgteilAbschnitt::find($this->abschnitt_id)];
+        return [$this->abschnitt];
     }
 
      /**

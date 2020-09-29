@@ -24,7 +24,8 @@ class StudycourseLanguage extends ModuleManagementModel
 
         $config['belongs_to']['studycourse'] = array(
             'class_name' => 'Studiengang',
-            'foreign_key' => 'studiengang_id'
+            'foreign_key' => 'studiengang_id',
+            'assoc_func' => 'findCached',
         );
 
         $config['alias_fields']['language'] = 'lang';
@@ -57,10 +58,10 @@ class StudycourseLanguage extends ModuleManagementModel
      */
     public function getStatus()
     {
-        $studycourse = Studiengang::find($this->studiengang_id);
-        if ($studycourse) {
-            return $studycourse->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->studycourse) {
+            return $this->studycourse->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_STUDIENGANG']['STATUS']['default'];
         }
         return parent::getStatus();

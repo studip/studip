@@ -58,12 +58,14 @@ class Modul extends ModuleManagementModelTreeItem
         // Ist Novellierung von (quelle)
         $config['has_one']['modul_quelle'] = [
             'class_name' => 'Modul',
-            'foreign_key' => 'quelle'
+            'foreign_key' => 'quelle',
+            'assoc_func' => 'findCached',
         ];
         // Ist Variante von (variante)
         $config['has_one']['modul_variante'] = [
             'class_name' => 'Modul',
-            'foreign_key' => 'variante'
+            'foreign_key' => 'variante',
+            'assoc_func' => 'findCached',
         ];
         // hauptverantwortliche Einrichtung
         $config['has_one']['responsible_institute'] = [
@@ -125,7 +127,7 @@ class Modul extends ModuleManagementModelTreeItem
         parent::configure($config);
     }
 
-    function __construct($id = null)
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name = _('Modul');
@@ -252,7 +254,7 @@ class Modul extends ModuleManagementModelTreeItem
      */
     public function getTrailParent()
     {
-        return Abschluss::get($this->getTrailParentId());
+        return Abschluss::findCached($this->getTrailParentId());
     }
 
     /**

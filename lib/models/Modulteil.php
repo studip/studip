@@ -27,7 +27,8 @@ class Modulteil extends ModuleManagementModelTreeItem
 
         $config['belongs_to']['modul'] = [
             'class_name'  => 'Modul',
-            'foreign_key' => 'modul_id'
+            'foreign_key' => 'modul_id',
+            'assoc_func'  => 'findCached',
         ];
         $config['has_and_belongs_to_many']['abschnitte'] = [
             'class_name'     => 'StgteilAbschnitt',
@@ -105,11 +106,11 @@ class Modulteil extends ModuleManagementModelTreeItem
     {
         return parent::getEnrichedByQuery('
                 SELECT mmt.*,
-                COUNT(lvgruppe_id) AS count_lvgruppen 
-                FROM mvv_modulteil AS mmt 
-                LEFT JOIN mvv_lvgruppe_modulteil USING(modulteil_id) 
-                WHERE mmt.modul_id = ? 
-                GROUP BY modulteil_id 
+                COUNT(lvgruppe_id) AS count_lvgruppen
+                FROM mvv_modulteil AS mmt
+                LEFT JOIN mvv_lvgruppe_modulteil USING(modulteil_id)
+                WHERE mmt.modul_id = ?
+                GROUP BY modulteil_id
                 ORDER BY position, mmt.mkdate',
             [$modul_id]
         );
@@ -124,10 +125,10 @@ class Modulteil extends ModuleManagementModelTreeItem
     public static function findByLvgruppe($lvgruppe_id)
     {
         return parent::getEnrichedByQuery('
-                SELECT mmt.* 
-                FROM mvv_modulteil mmt 
-                    LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id) 
-                WHERE mlm.lvgruppe_id = ? 
+                SELECT mmt.*
+                FROM mvv_modulteil mmt
+                    LEFT JOIN mvv_lvgruppe_modulteil mlm USING(modulteil_id)
+                WHERE mlm.lvgruppe_id = ?
                 ORDER BY position',
             [$lvgruppe_id]
         );
@@ -150,7 +151,7 @@ class Modulteil extends ModuleManagementModelTreeItem
             $name .= $name == '' ? $deskriptor->bezeichnung
                     : ' (' . $deskriptor->bezeichnung . ')';
         }
-        
+
         return trim($name);
     }
 
@@ -188,8 +189,8 @@ class Modulteil extends ModuleManagementModelTreeItem
             $this->deskriptoren = $deskriptor;
         }
         return $this->deskriptoren;
-    }    
-    
+    }
+
     /**
      * Returns a copy of this object.
      * If $deep is true, copy the connection to the Lvgruppen also.
@@ -213,7 +214,7 @@ class Modulteil extends ModuleManagementModelTreeItem
             $languages[] = $cloned_language;
         }
         $copy->languages = SimpleORMapCollection::createFromArray($languages);
-        
+
         if ($deep) {
             $lvgruppen = [];
             foreach ($this->lvgruppen_assignments as $lvgruppe) {
@@ -249,7 +250,7 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function getTrailParent()
     {
-        return Modul::get($this->getTrailParentId());
+        return Modul::findCached($this->getTrailParentId());
     }
 
     /**
@@ -274,7 +275,7 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return [Modul::get($this->getValue('modul_id'))];
+        return [$this->modul];
     }
 
     /**
@@ -310,10 +311,10 @@ class Modulteil extends ModuleManagementModelTreeItem
      */
     public function getStatus()
     {
-        $modul = Modul::find($this->modul_id);
-        if ($modul) {
-            return $modul->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->modul) {
+            return $this->modul->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_MODUL']['STATUS']['default'];
         }
         return $GLOBALS['MVV_MODUL']['STATUS']['default'];
@@ -331,12 +332,12 @@ class Modulteil extends ModuleManagementModelTreeItem
         }
         return $institutes;
     }
-    
+
     /**
      * Retrieves all courses this Modulteil is assigned by its LV-Gruppen.
      * Filtered by a given semester considering the global visibility or the
      * the visibility for a given user.
-     * 
+     *
      * @param string $semester_id The id of a semester.
      * @param mixed $only_visible Boolean true retrieves only visible courses, false
      * retrieves all courses. If $only_visible is an user id it depends on the users

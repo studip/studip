@@ -7,7 +7,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -21,11 +21,11 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     private $count_archiv;
     private $count_modulteile;
     private $count_semester;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_lvgruppe';
-        
+
         $config['has_and_belongs_to_many']['modulteile'] = [
             'class_name' => 'Modulteil',
             'thru_table' => 'mvv_lvgruppe_modulteil',
@@ -44,7 +44,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
-        
+
         $config['additional_fields']['count_seminare']['get'] =
             function($lvgruppe) { return $lvgruppe->count_seminare; };
         $config['additional_fields']['count_seminare']['set'] = false;
@@ -57,18 +57,18 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         $config['additional_fields']['count_semester']['get'] =
             function($lvgruppe) { return $lvgruppe->count_semester; };
         $config['additional_fields']['count_semester']['set'] = false;
-        
+
         $config['i18n_fields']['alttext'] = true;
-        
+
         parent::configure($config);
     }
-    
-    function __construct($id = null)
+
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name = _('Lehrveranstaltungsgruppe');
     }
-    
+
     /**
      * @see ModuleManagementModel::getClassDisplayName
      */
@@ -76,12 +76,12 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
         return _('Lehrveranstaltungsgruppe');
     }
-    
+
     /**
      * Returns all or a specified (by row count and offset) number of
      * Abschluesse sorted and filtered by given parameters and enriched with
      * some additional fields. This function is mainly used in the list view.
-     * 
+     *
      * @param string $sortby Field name to order by.
      * @param string $order ASC or DESC direction of order.
      * @param array $filter Key-value pairs of filed names and values
@@ -120,7 +120,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                     ':ende' => $semester->ende];
                 $semester_join = 'LEFT JOIN mvv_modul ON mvv_modul.modul_id = mvv_modulteil.modul_id '
                 . 'LEFT JOIN semester_data as start_sem ON start_sem.semester_id = mvv_modul.start '
-                . 'LEFT JOIN semester_data as end_sem ON end_sem.semester_id = mvv_modul.end ';   
+                . 'LEFT JOIN semester_data as end_sem ON end_sem.semester_id = mvv_modul.end ';
             }
         }
         $query = 'SELECT mvv_lvgruppe.*, mvv_lvgruppe.lvgruppe_id AS lvg_id, '
@@ -143,13 +143,13 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . $filter_sql
                 . 'GROUP BY lvgruppe_id '
                 . 'ORDER BY ' . $sortby;
-        return parent::getEnrichedByQuery($query, $params, $row_count, $offset); 
+        return parent::getEnrichedByQuery($query, $params, $row_count, $offset);
     }
-    
+
     /**
      * Returns the number of LV-Gruppen optionally reduced by
      * filter criteria.
-     * 
+     *
      * @param array $filter Key-value pairs of filed names and values
      * to filter the result.
      * @param string An id of a semester to restrict the result to groups
@@ -175,7 +175,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 } else {
                     $filter_sql .= ' WHERE';
                 }
-                
+
                 $filter_sql = trim($filter_sql) ? $filter_sql  : ' AND';
                 $filter_sql .= ' (seminare.start_time <= :beginn '
                         . 'AND ((:beginn <= seminare.start_time + seminare.duration_time) '
@@ -202,13 +202,13 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         $db->execute($params);
         return $db->fetchColumn(0);
     }
-    
+
     /**
      * Retrieves all LV-Gruppen by given search term. The term is compared with
      * the name of the LV-Gruppe, the code and the name of related modules
-     * 
+     *
      * @param string $term The search term.
-     * @param array|string $filter An array with filter options or a where part. 
+     * @param array|string $filter An array with filter options or a where part.
      * @return object A SimpleORMapCollection of LV-Gruppen.
      */
     public static function findBySearchTerm($term, $filter = null)
@@ -219,7 +219,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         } else {
             $filter_sql = '';
         }
-        
+
         $term = '%' . $term . '%';
         return parent::getEnrichedByQuery(
                 "SELECT mvv_lvgruppe.*, GROUP_CONCAT(DISTINCT mvv_modul.modul_id SEPARATOR ',') "
@@ -243,10 +243,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'GROUP BY lvgruppe_id '
                 . 'ORDER BY `name`', [':search_term' => $term]);
     }
-    
+
     /**
-     * Retrieves all LV-Gruppen related to the Modulteil with given id. 
-     * 
+     * Retrieves all LV-Gruppen related to the Modulteil with given id.
+     *
      * @param string $modulteil_id The id of a Modulteil.
      * @return object A SimpleORMapCollection of LV-Gruppen.
      */
@@ -258,10 +258,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'WHERE mlm.modulteil_id = ? '
                 . 'ORDER BY `position`,`mkdate`', [$modulteil_id]);
     }
-    
+
     /**
-     * Retrieves all LV-Gruppen related to the course with given id. 
-     * 
+     * Retrieves all LV-Gruppen related to the course with given id.
+     *
      * @param string $seminar_id The id of a course.
      * @return object A SimpleORMapCollection of LV-Gruppen.
      */
@@ -273,10 +273,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'WHERE mls.seminar_id = ? '
                 . 'ORDER BY `name`', [$seminar_id]);
     }
-    
+
     /**
      * Returns all institutes assigned to Module.
-     * 
+     *
      * @param string $sortby DB field to sort by.
      * @param string $order ASC or DESC
      * @param array $filter Array of filter.
@@ -300,10 +300,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                 . 'GROUP BY institut_id ORDER BY ' . $sortby
                 , [], $row_count, $offset);
     }
-    
+
     /**
      * Assigns the given seminar to this lvgruppe.
-     * 
+     *
      * @param string $seminar_id
      * @return int|boolean
      */
@@ -312,10 +312,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         return LvgruppeSeminar::get([$this->getId(), $seminar_id])
                 ->store();
     }
-    
+
     /**
      * Assigns the given course to the given LvGruppen.
-     * 
+     *
      * @param array Array of ids
      * @return int The number of assigned LvGruppen.
      */
@@ -332,10 +332,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         }
         return count($old) + $count_added - $count_removed;
     }
-    
+
     /**
      * Removes the seminar from this Lvgruppe.
-     * 
+     *
      * @param type $seminar_id
      * @return boolean Always true...
      */
@@ -344,7 +344,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         return LvgruppeSeminar::get([$this->getId(), $seminar_id])
                 ->delete();
     }
-    
+
     /**
      * @see MvvTreeItem::getTrailParentId()
      */
@@ -358,9 +358,9 @@ class Lvgruppe extends ModuleManagementModelTreeItem
      */
     public function getTrailParent()
     {
-        return Modul::get($this->getTrailParent_id());
+        return Modul::findCached($this->getTrailParent_id());
     }
-    
+
     /**
      * @see MvvTreeItem::getChildren()
      */
@@ -368,7 +368,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
         return [];
     }
-    
+
     /**
      * @see MvvTreeItem::hasChildren()
      */
@@ -376,7 +376,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
         return false;
     }
-    
+
     /**
      * @see MvvTreeItem::isAssignable()
      */
@@ -384,7 +384,7 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
         return true;
     }
-    
+
     /**
      * @see MvvTreeItem::getParents()
      */
@@ -392,12 +392,12 @@ class Lvgruppe extends ModuleManagementModelTreeItem
     {
          return Modulteil::findByLvgruppe($this->getId());
     }
-    
+
     /**
      * Retrieves courses this LV-Gruppe is assigned to. Filtered by a given
      * semester considering the global visibility or the the visibility
      * for a given user.
-     * 
+     *
      * @param string $semester_id The id of a semester.
      * @param mixed $only_visible Boolean true retrieves only visible courses, false
      * retrieves all courses. If $only_visible is an user id it depends on the users
@@ -476,18 +476,18 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         }
         return [];
     }
-    
+
     /**
      * Returns all courses assigned to this LV-Gruppe grouped by semesters.
-     * 
+     *
      * @param bool $only_visible Return only visible courses.
      * @param string $semester_id Return only this semester.
      * @return array All assigned courses grouped by semesters.
      */
     public function getAllAssignedCourses($only_visible = false, $semester_id = null)
-    {   
+    {
         $sem_start_times = [];
-        
+
         if ($semester_id) {
             $semester = Semester::find($semester_id);
             if (!$semester) {
@@ -525,10 +525,10 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         }
         return $courses;
     }
-    
+
     /**
      * Returns all archived courses previously assigned to this LV-Gruppe.
-     * 
+     *
      * @return array All archived courses.
      */
     public function getArchivedCourses()
@@ -541,11 +541,11 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         $stmt->execute([$this->getId()]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
     /**
      * Returns a default name for a new LV-Gruppe derived from a given
      * modulteil.
-     * 
+     *
      * @param string $modulteil_id The id of a Modulteil.
      * @return string The default name.
      */
@@ -562,24 +562,24 @@ class Lvgruppe extends ModuleManagementModelTreeItem
                     ->bezeichnung_kurz;
             $name .= $short_name_modul ? ' ' . $short_name_modul : '';
         }
-         * 
+         *
          */
         // Augsburg
-        $modulteil = Modulteil::find($modulteil_id);
+        $modulteil = Modulteil::findCached($modulteil_id);
         if ($modulteil) {
             $name = $modulteil->getDeskriptor()->bezeichnung;
             //$name = $name_modulteil ? ' ' . $name_modulteil : '';
         }
         return $name;
     }
-    
+
     public function validate()
     {
         $ret = parent::validate();
         if ($this->isDirty()) {
             $messages = [];
             $rejected = false;
-            
+
             // The name of the Fach must be longer than 4 characters
             if (mb_strlen($this->name) < 4) {
                 $ret['name'] = true;
@@ -603,5 +603,5 @@ class Lvgruppe extends ModuleManagementModelTreeItem
         }
         return $ret;
     }
-    
+
 }

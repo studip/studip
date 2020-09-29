@@ -24,7 +24,8 @@ class MvvFileRange extends ModuleManagementModel
 
         $config['belongs_to']['mvv_file'] = array(
             'class_name' => 'MvvFile',
-            'foreign_key' => 'mvvfile_id'
+            'foreign_key' => 'mvvfile_id',
+            'assoc_func' => 'findCached',
         );
 
         $config['additional_fields']['range_type']['get'] = 'getRangeType';

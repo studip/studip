@@ -26,7 +26,8 @@ class StgteilVersion extends ModuleManagementModelTreeItem
 
         $config['belongs_to']['studiengangteil'] = [
             'class_name' => 'StudiengangTeil',
-            'foreign_key' => 'stgteil_id'
+            'foreign_key' => 'stgteil_id',
+            'assoc_func' => 'findCached',
         ];
         $config['has_many']['abschnitte'] = [
             'class_name' => 'StgteilAbschnitt',
@@ -290,7 +291,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
             }
         }
         if ($with_stgteil) {
-            return StudiengangTeil::get($this->stgteil_id)->getDisplayName($with_fach)
+            return $this->studiengangteil->getDisplayName($with_fach)
                     . (trim($name) ? ', ' . $name : '');
         } else {
             return $name;
@@ -394,7 +395,7 @@ class StgteilVersion extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        return [StudiengangTeil::get($this->getValue('stgteil_id'))];
+        return [$this->studiengangteil];
     }
 
     /**

@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -17,48 +17,51 @@
 
 class StudiengangStgteil extends ModuleManagementModel
 {
-    
+
     private $stgteil_name;
     private $stgbez_name;
     private $stgbez_id;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stg_stgteil';
-        
+
         $config['belongs_to']['studiengang'] = [
             'class_name' => 'Studiengang',
-            'foreign_key' => 'studiengang_id'
+            'foreign_key' => 'studiengang_id',
+            'assoc_func' => 'findCached',
         ];
         $config['has_one']['stgteil_bezeichnung'] = [
             'class_name' => 'StgteilBezeichnung',
-            'foreign_key' => 'stgteil_bez_id'
+            'foreign_key' => 'stgteil_bez_id',
+            'assoc_func' => 'findCached',
         ];
         $config['belongs_to']['studiengangteil'] = [
             'class_name' => 'StudiengangTeil',
-            'foreign_key' => 'stgteil_id'
+            'foreign_key' => 'stgteil_id',
+            'assoc_func' => 'findCached',
         ];
-        
+
         $config['additional_fields']['stgteil_name']['get'] =
             function($st) { return $st->stgteil_name; };
         $config['additional_fields']['stgbez_id']['get'] =
             function($st) { return $st->stgbez_id; };
         $config['additional_fields']['stgbez_name']['get'] =
             function($st) { return $st->stgbez_name; };
-        
+
         parent::configure($config);
     }
-    
+
     function __construct($id = null)
     {
         $this->default_values['position'] = 10000;
         parent::__construct($id);
     }
-    
+
     /**
      * Retrieves the StudiengangStgteil and all related data and some
      * additional fields.
-     * 
+     *
      * @param string $modul_id The id of the module.
      * @return object The module with additional data or a new module.
      */
@@ -82,10 +85,10 @@ class StudiengangStgteil extends ModuleManagementModel
         }
         return self::get();
     }
-    
+
     /**
      * Retrieves all StudiengangStgteile by given Studiengangteil.
-     * 
+     *
      * @param string $studiengang_id The id of the Studiengang.
      * @param string $sortby Field names to order by.
      * @param string $order ASC or DESC direction of order.
@@ -105,11 +108,11 @@ class StudiengangStgteil extends ModuleManagementModel
                 . 'GROUP BY mss.stgteil_id '
                 . 'ORDER BY ' . $sort, [$studiengang_id]);
     }
-    
+
     /**
      * Retrieves all StudiengangStgteile by given Studiengang and an optional
      * Studiengangteil-Bezeichnung if the Studiengang is a Mehrfach-Studiengang.
-     * 
+     *
      * @param string $studiengang_id The id of a Studiengang.
      * @param string $bez_id The id of a Studiengangteil-Bezeichnung.
      * @return SimpleORMapCollection A collection of StudiengangStgteile.

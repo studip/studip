@@ -100,12 +100,15 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
      */
     public static function findByAbschluss($abschluss_id)
     {
-        $db = DBManager::get();
-        $stmt = $db->prepare('SELECT kategorie_id FROM mvv_abschl_zuord '
-                . 'WHERE abschluss_id = ?');
-        $stmt->execute([$abschluss_id]);
-        $kategorie_id = $stmt->fetch(PDO::FETCH_COLUMN, 0);
-        return new AbschlussKategorie($kategorie_id);
+        return static::fromCache(__METHOD__, $abschluss_id, function () use ($abschluss_id) {
+            $query = "SELECT kategorie_id
+                      FROM mvv_abschl_zuord
+                      WHERE abschluss_id = ?";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([$abschluss_id]);
+            $kategorie_id = $statement->fetchColumn();
+            return static::findCached($kategorie_id);
+        });
     }
 
     /**

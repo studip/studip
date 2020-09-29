@@ -22,7 +22,8 @@ class MvvExternContact extends ModuleManagementModel
 
         $config['belongs_to']['MvvContact'] = array(
             'class_name' => 'MvvContact',
-            'foreign_key' => 'extern_contact_id'
+            'foreign_key' => 'extern_contact_id',
+            'assoc_func' => 'findCached',
         );
 
         $config['i18n_fields']['name']     = true;
@@ -30,10 +31,4 @@ class MvvExternContact extends ModuleManagementModel
 
         parent::configure($config);
     }
-
-    function __construct($id = null)
-    {
-        parent::__construct($id);
-    }
-
 }

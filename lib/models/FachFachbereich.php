@@ -24,11 +24,13 @@ class FachFachbereich extends ModuleManagementModel
 
         $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
-            'foreign_key' => 'fach_id'
+            'foreign_key' => 'fach_id',
+            'assoc_func' => 'findCached',
         ];
         $config['belongs_to']['fachbereich'] = [
             'class_name' => 'Fachbereich',
-            'foreign_key' => 'institut_id'
+            'foreign_key' => 'institut_id',
+            'assoc_func' => 'findCached',
         ];
 
         parent::configure($config);

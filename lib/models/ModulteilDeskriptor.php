@@ -7,7 +7,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -16,16 +16,17 @@
 
 class ModulteilDeskriptor extends ModuleManagementModel
 {
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil_deskriptor';
-        
+
         $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
-            'foreign_key' => 'modulteil_id'
+            'foreign_key' => 'modulteil_id',
+            'assoc_func' => 'findCached',
         ];
-        
+
         $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_foreign_key' =>
@@ -40,7 +41,7 @@ class ModulteilDeskriptor extends ModuleManagementModel
                     return [$m];
                 }
         ];
-        
+
         $config['i18n_fields']['bezeichnung'] = true;
         $config['i18n_fields']['voraussetzung'] = true;
         $config['i18n_fields']['kommentar'] = true;
@@ -52,16 +53,16 @@ class ModulteilDeskriptor extends ModuleManagementModel
         $config['i18n_fields']['pruef_vorleistung'] = true;
         $config['i18n_fields']['pruef_leistung'] = true;
         $config['i18n_fields']['kommentar_pflicht'] = true;
-        
+
         parent::configure($config);
     }
-    
-    function __construct($id = null)
+
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name = _('Modulteil-Deskriptor');
     }
-    
+
     /**
      * @see ModuleManagementModel::getClassDisplayName
      */
@@ -69,27 +70,27 @@ class ModulteilDeskriptor extends ModuleManagementModel
     {
         return _('Modulteil-Deskriptor');
     }
-    
+
     /**
      * Inherits the status of the parent modulteil.
-     * 
+     *
      * @see ModuleManagementModel::getStatus()
      * @return string The status (see mvv_config.php)
      */
     public function getStatus()
     {
-        $modulteil = Modulteil::find($this->modulteil_id);
-        if ($modulteil) {
-            return $modulteil->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->modulteil) {
+            return $this->modulteil->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_MODUL']['STATUS']['default'];
         }
         return parent::getStatus();
     }
-    
+
     /**
      * Returns the language identifier as the variant of the descriptor object.
-     * 
+     *
      * @see ModuleManagementModel::getVariant()
      * @return string The language identifier.
      */
@@ -100,10 +101,10 @@ class ModulteilDeskriptor extends ModuleManagementModel
         }
         return self::getLanguage();
     }
-    
+
     /**
      * Deletes the translation in the given language of this descriptor.
-     * 
+     *
      * @param string $language The language of the translation to delete.
      * @return int The number of deleted translated fields.
      */

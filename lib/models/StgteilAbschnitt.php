@@ -7,7 +7,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -16,13 +16,13 @@
 
 class StgteilAbschnitt extends ModuleManagementModelTreeItem
 {
-    
+
     private $count_module;
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_stgteilabschnitt';
-    
+
         $config['has_and_belongs_to_many']['module'] = [
             'class_name' => 'Modul',
             'thru_table' => 'mvv_stgteilabschnitt_modul',
@@ -32,7 +32,8 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         ];
         $config['belongs_to']['version'] = [
             'class_name' => 'StgteilVersion',
-            'foreign_key' => 'version_id'
+            'foreign_key' => 'version_id',
+            'assoc_func' => 'findCached',
         ];
         $config['has_many']['modul_zuordnungen'] = [
             'class_name' => 'StgteilabschnittModul',
@@ -48,18 +49,18 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
             'on_delete' => 'delete',
             'on_store' => 'store'
         ];
-        
+
         $config['additional_fields']['count_module']['get'] =
             function($fach) { return $fach->count_module; };
         $config['additional_fields']['count_module']['set'] = false;
-        
+
         $config['i18n_fields']['name'] = true;
         $config['i18n_fields']['kommentar'] = true;
         $config['i18n_fields']['ueberschrift'] = true;
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * @see ModuleManagementModel::getClassDisplayName
      */
@@ -68,7 +69,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         return ($long ? _('Studiengangteil-Abschnitt')
             : _('Abschnitt'));
     }
-    
+
     public static function getEnriched($abschnitt_id)
     {
         $abschnitte = parent::getEnrichedByQuery(
@@ -83,11 +84,11 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         }
         return self::get();
     }
-    
+
     /**
      * Retrieves all Studienganteil-Abschnitte for the given
      * Studienganteil-Version.
-     * 
+     *
      * @param type $version_id The id of a Studiengangteil-Version.
      * @return SimpleORMapCollection A collection of Studiengangteil-Abschnitte.
      */
@@ -101,10 +102,10 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 . 'GROUP BY abschnitt_id '
                 . 'ORDER BY position, chdate', [$version_id]);
     }
-    
+
     /**
      * Retrieves all Studienganteil-Abschnitte the given Modul is assigned to.
-     * 
+     *
      * @param type $modul_id The id of a Modul.
      * @return SimpleORMapCollection A collection of Studiengangteil-Abschnitte.
      */
@@ -116,10 +117,10 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 . 'WHERE msm.modul_id = ? '
                 . 'ORDER BY position, chdate', [$modul_id]);
     }
-    
+
     /**
      * Assignes a Modul to this Studiengangteil-Abschnitt.
-     * 
+     *
      * @param type $modul The id of a Modul or the Modul as object.
      * @return boolean True if the assignemnt was successful.
      */
@@ -130,8 +131,10 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 return false;
             }
         } else {
-            $modul = Modul::find($modul);
-            if (!$modul) return false;
+            $modul = Modul::findCached($modul);
+            if (!$modul) {
+                return false;
+            }
         }
         $abschnitt_modul = StgteilabschnittModul::findBySQL(
                 'abschnitt_id = ? AND modul_id = ?', [$this->id, $modul->id]);
@@ -148,11 +151,11 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         }
         return true;
     }
-    
+
     /**
      * Removes (deletes the assignment of) a Modul to this Studiengangteil-
      * Abschnitt.
-     * 
+     *
      * @param type $modul The id of a Modul or the Modul as object.
      * @return boolean True if the Modul was successfully removed.
      */
@@ -163,8 +166,10 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 return false;
             }
         } else {
-            $modul = Modul::find($modul);
-            if (!$modul) return false;
+            $modul = Modul::findCached($modul);
+            if (!$modul) {
+                return false;
+            }
         }
         if (!$this->modul_zuordnungen) {
             return false;
@@ -175,17 +180,17 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         $removed = $this->modul_zuordnungen->unsetByPk($modul_zuordnung->id);
         return $removed !== false;
     }
-    
+
     /**
      * Returns the Version this Studiengangteilabschnitt is assigned to.
-     * 
+     *
      * @return null|object The Version.
      */
     public function getVersion()
     {
         return StgteilVersion::findByStgteilAbschnitt($this->getId());
     }
-    
+
     /**
      * @see MvvTreeItem::getTrailParentId()
      */
@@ -201,7 +206,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
     {
         return $this->getVersion();
     }
-    
+
     /**
      * @see MvvTreeItem::getParents()
      */
@@ -209,7 +214,7 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
     {
         return [StgteilVersion::findByStgteilAbschnitt($this->getId())];
     }
-    
+
     /**
      * @see MvvTreeItem::getChildren()
      */
@@ -222,17 +227,17 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
 
     /**
      * Returns all assignments of Module to this Studiengangteil-Abschnitt.
-     * 
+     *
      * @return SimpleORMapCollection A collection of Module.
      */
     public function getModulAssignments()
     {
         return $this->modul_zuordnungen;
     }
-    
+
     /**
      * Inherits the status of the parent version.
-     * 
+     *
      * @return string the status of parent version
      */
     public function getStatus()
@@ -244,11 +249,11 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
         }
         return parent::getStatus();
     }
-    
+
     /**
      * Returns the responsible institutes.
      * Inherits the responsible institutes from Studiengangteil-Version
-     * 
+     *
      * @return array Array of institute objects.
      */
     public function getResponsibleInstitutes()
@@ -261,5 +266,5 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
             return [];
         }
     }
-    
+
 }

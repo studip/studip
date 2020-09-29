@@ -74,6 +74,26 @@ abstract class ModuleManagementModel extends SimpleORMap
     protected static $perm_object = null;
     public $object_real_name = '';
 
+    protected static $object_cache = [];
+
+    /**
+     * Common configuration for all module management models. This will ensure
+     * that the caches are flushed whenever an object changes or is removed.
+     *
+     * @param array  $config Configuration from derived class
+     */
+    protected static function configure($config = [])
+    {
+        $config['registered_callbacks']['after_store'][] = function () {
+            self::clearCache();
+        };
+        $config['registered_callbacks']['after_delete'][] = function () {
+            self::clearCache();
+        };
+
+        parent::configure($config);
+    }
+
     /**
      * Returns a collection of a MVV object type found by search term optionally
      * filtered.
@@ -106,7 +126,8 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function get($id = null)
     {
-        return new static($id);
+        return static::findCached($id)
+            ?? new static($id);
     }
 
     /**
@@ -886,4 +907,55 @@ abstract class ModuleManagementModel extends SimpleORMap
         return '';
     }
 
+    /**
+     * Locates and returns an item from cache
+     *
+     * @param  string $id    Id of the item
+     * @param  string $index Optional index for the cache, defaults to class name
+     * @return ModuleManagementModel object or null
+     */
+    public static function findCached($id, $index = null)
+    {
+        return self::fromCache($index ?? static::class, $id, function () use ($id) {
+            return static::find($id);
+        });
+    }
+
+    /**
+     * Clears the cache for a given index or completely. If this method is
+     * called on this abstract class, it will always clear the whole cache.
+     * Otherwise it will clear the cache for the subclass of this class or
+     * the given index.
+     *
+     * @param  mixed $index Optional index to clear
+     */
+    public static function clearCache($index = null)
+    {
+        if (static::class === self::class && $index === null) {
+            static::$object_cache = [];
+        } else {
+            $index = $index ?? static::class;
+            unset(static::$object_cache[$index]);
+        }
+    }
+
+    /**
+     * Loads an item from cache and retrieves and stores it if it is not
+     * present.
+     *
+     * @param  string   $index  Index for the cache
+     * @param  string   $id     Id of the item
+     * @param  Callable $finder Function to actually locate the item.
+     * @return ModuleManagementModel object or null
+     */
+    protected static function fromCache($index, $id, Callable $finder)
+    {
+        if (!isset(static::$object_cache[$index])) {
+            static::$object_cache[$index] = [];
+        }
+        if (!array_key_exists($id, static::$object_cache[$index])) {
+            static::$object_cache[$index][$id] = $finder();
+        }
+        return static::$object_cache[$index][$id];
+    }
 }

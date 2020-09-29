@@ -7,7 +7,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -16,14 +16,14 @@
 
 class MvvCourse extends ModuleManagementModelTreeItem
 {
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'seminare';
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * @see MvvTreeItem::getTrailParentId()
      */
@@ -31,15 +31,15 @@ class MvvCourse extends ModuleManagementModelTreeItem
     {
         return ($_SESSION['MVV/MvvCourse/trail_parent_id']);
     }
-    
+
     /**
      * @see MvvTreeItem::getTrailParent()
      */
     public function getTrailParent()
     {
-        return LvGruppe::get($this->getTrailParent_id());
+        return LvGruppe::findCached($this->getTrailParent_id());
     }
-    
+
     /**
      * @see MvvTreeItem::getChildren()
      */
@@ -47,7 +47,7 @@ class MvvCourse extends ModuleManagementModelTreeItem
     {
         return null;
     }
-    
+
     /**
      * @see MvvTreeItem::hasChildren()
      */
@@ -55,12 +55,12 @@ class MvvCourse extends ModuleManagementModelTreeItem
     {
         return false;
     }
-    
+
     public function getDisplayName($options = self::DISPLAY_DEFAULT)
     {
         $this->getName();
     }
-    
+
     /**
      * @see MvvTreeItem::getParents()
      */

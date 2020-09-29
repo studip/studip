@@ -8,7 +8,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -17,24 +17,25 @@
 
 class ModulteilLanguage extends ModuleManagementModel
 {
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modulteil_language';
-    
+
         $config['belongs_to']['modulteil'] = [
             'class_name' => 'Modulteil',
-            'foreign_key' => 'modulteil_id'
+            'foreign_key' => 'modulteil_id',
+            'assoc_func' => 'findCached',
         ];
-        
+
         $config['alias_fields']['language'] = 'lang';
-        
+
         parent::configure($config);
     }
-    
+
     /**
      * Retrieves all languages assigned to the given Modulteil.
-     * 
+     *
      * @see mvv_config.php for defined languages.
      * @param type $modulteil_id The id of a Modulteil.
      * @return array An array with lnguage key as key and name as value.
@@ -43,9 +44,9 @@ class ModulteilLanguage extends ModuleManagementModel
     {
         $languages = [];
         $modulteil_languages = parent::getEnrichedByQuery('
-                SELECT * 
-                FROM mvv_modulteil_language 
-                WHERE modulteil_id = ? 
+                SELECT *
+                FROM mvv_modulteil_language
+                WHERE modulteil_id = ?
                 ORDER BY position, mkdate',
             [$modulteil_id]
         );
@@ -54,12 +55,12 @@ class ModulteilLanguage extends ModuleManagementModel
         }
         return $languages;
     }
-    
+
     public function getDisplayName($options = self::DISPLAY_DEFAULT)
     {
         return $GLOBALS['MVV_MODULTEIL']['SPRACHE']['values'][$this->lang]['name'];
     }
-    
+
     public function validate()
     {
         $ret = parent::validate();
@@ -71,18 +72,18 @@ class ModulteilLanguage extends ModuleManagementModel
         }
         return $ret;
     }
-    
+
     /**
      * Inherits the status of the parent modulteil.
-     * 
+     *
      * @return string The status (see mvv_config.php)
      */
     public function getStatus()
     {
-        $modulteil = Modulteil::find($this->modulteil_id);
-        if ($modulteil) {
-            return $modulteil->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->modulteil) {
+            return $this->modulteil->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_MODUL']['STATUS']['default'];
         }
         return parent::getStatus();

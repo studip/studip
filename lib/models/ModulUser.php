@@ -23,11 +23,12 @@ class ModulUser extends ModuleManagementModel
 
         $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
-            'foreign_key' => 'modul_id'
+            'foreign_key' => 'modul_id',
+            'assoc_func' => 'findCached',
         ];
         $config['belongs_to']['user'] = [
             'class_name' => 'User',
-            'foreign_key' => 'user_id'
+            'foreign_key' => 'user_id',
         ];
 
         parent::configure($config);
@@ -75,10 +76,10 @@ class ModulUser extends ModuleManagementModel
      */
     public function getStatus()
     {
-        $modul = Modul::find($this->modul_id);
-        if ($modul) {
-            return $modul->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->modul) {
+            return $this->modul->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_MODUL']['STATUS']['default'];
         }
         return parent::getStatus();

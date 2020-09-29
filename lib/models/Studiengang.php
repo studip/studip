@@ -29,7 +29,8 @@ class Studiengang extends ModuleManagementModelTreeItem
 
         $config['belongs_to']['abschluss'] = [
             'class_name'  => 'Abschluss',
-            'foreign_key' => 'abschluss_id'
+            'foreign_key' => 'abschluss_id',
+            'assoc_func'  => 'findCached',
         ];
         $config['has_and_belongs_to_many']['studiengangteile'] = [
             'class_name'     => 'StudiengangTeil',
@@ -70,9 +71,9 @@ class Studiengang extends ModuleManagementModelTreeItem
         ];
 
         $config['has_one']['responsible_institute'] = [
-            'class_name'        => 'Fachbereich',
-            'foreign_key'       => 'institut_id',
-            'assoc_foreign_key' => 'institut_id'
+            'class_name'  => 'Fachbereich',
+            'foreign_key' => 'institut_id',
+            'assoc_func'  => 'findCached',
         ];
         $config['has_many']['studycourse_types'] = [
             'class_name'  => 'StudycourseType',
@@ -767,7 +768,7 @@ class Studiengang extends ModuleManagementModelTreeItem
      */
     public function getTrailParent()
     {
-        return Abschluss::get($this->getTrailParentId());
+        return Abschluss::findCached($this->getTrailParentId());
     }
 
     /**
@@ -783,8 +784,7 @@ class Studiengang extends ModuleManagementModelTreeItem
      */
     public function getParents($mode = null)
     {
-        $fachbereich = Fachbereich::find($this->institut_id);
-        return [$fachbereich];
+        return [$this->responsible_institute];
     }
 
     /**

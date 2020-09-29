@@ -140,9 +140,9 @@ class Fachbereich extends ModuleManagementModelTreeItem
     {
         if ($this->isFaculty()) {
             return new MvvTreeRoot();
-        } else {
-            return new Fachbereich($this->getValue('fakultaets_id'));
         }
+
+        return static::findCached($this->fakultaets_id);
     }
 
     /**
@@ -190,7 +190,7 @@ class Fachbereich extends ModuleManagementModelTreeItem
             return $this->getValue('Name');
         }
         if ($options & self::DISPLAY_FACULTY) {
-            return (Fachbereich::get($this->getValue('fakultaets_id'))->getShortName()
+            return (static::findCached($this->fakultaets_id)->getShortName()
                 . ' - ' . $this->name);
         }
         return ($this->name);

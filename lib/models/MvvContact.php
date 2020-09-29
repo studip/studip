@@ -55,7 +55,7 @@ class MvvContact extends ModuleManagementModel
     {
         switch ($this->contact_status) {
             case 'extern':
-                $contact = MvvExternContact::find($this->contact_id);
+                $contact = MvvExternContact::findCached($this->contact_id);
                 return $contact->vorname ? $contact->name.', '.$contact->vorname : $contact->name;
             case 'intern':
                 $contact = User::find($this->contact_id);

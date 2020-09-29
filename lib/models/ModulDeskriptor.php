@@ -7,7 +7,7 @@
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of
  * the License, or (at your option) any later version.
- * 
+ *
  * @author      Peter Thienel <thienel@data-quest.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
@@ -16,16 +16,17 @@
 
 class ModulDeskriptor extends ModuleManagementModel
 {
-    
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'mvv_modul_deskriptor';
-    
+
         $config['belongs_to']['modul'] = [
             'class_name' => 'Modul',
-            'foreign_key' => 'modul_id'
+            'foreign_key' => 'modul_id',
+            'assoc_func' => 'findCached',
         ];
-        
+
         $config['has_many']['datafields'] = [
             'class_name' => 'DatafieldEntryModel',
             'assoc_foreign_key' =>
@@ -40,7 +41,7 @@ class ModulDeskriptor extends ModuleManagementModel
                     return [$m];
                 }
         ];
-        
+
         $config['i18n_fields']['verantwortlich'] = true;
         $config['i18n_fields']['bezeichnung'] = true;
         $config['i18n_fields']['voraussetzung'] = true;
@@ -59,16 +60,16 @@ class ModulDeskriptor extends ModuleManagementModel
         $config['i18n_fields']['pruef_leistung'] = true;
         $config['i18n_fields']['pruef_wiederholung'] = true;
         $config['i18n_fields']['ersatztext'] = true;
-        
+
         parent::configure($config);
     }
-    
-    function __construct($id = null)
+
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name = _('Modul-Deskriptor');
     }
-    
+
     /**
      * @see ModuleManagementModel::getClassDisplayName
      */
@@ -76,24 +77,23 @@ class ModulDeskriptor extends ModuleManagementModel
     {
         return _('Modul-Deskriptor');
     }
-    
+
     /**
      * Inherits the status of the parent module.
-     * 
+     *
      * @return string The status (see mvv_config.php)
      */
     public function getStatus()
     {
-        
-        $modul = Modul::find($this->modul_id);
-        if ($modul) {
-            return $modul->getStatus();
-        } elseif ($this->isNew()) {
+        if ($this->modul) {
+            return $this->modul->getStatus();
+        }
+        if ($this->isNew()) {
             return $GLOBALS['MVV_MODUL']['STATUS']['default'];
         }
         return parent::getStatus();
     }
-    
+
     public function getResponsibleInstitutes()
     {
         $institutes = [];
@@ -106,10 +106,10 @@ class ModulDeskriptor extends ModuleManagementModel
         }
         return $institutes;
     }
-    
+
     /**
      * Returns the language identifier as the variant of the descriptor object.
-     * 
+     *
      * @see ModuleManagementModel::getVariant()
      * @return string The language identifier.
      */
@@ -120,10 +120,10 @@ class ModulDeskriptor extends ModuleManagementModel
         }
         return self::getLanguage();
     }
-    
+
     /**
      * Deletes the translation in the given language of this descriptor.
-     * 
+     *
      * @param string $language The language of the translation to delete.
      * @return int The number of deleted translated fields.
      */

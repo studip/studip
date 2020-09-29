@@ -24,7 +24,8 @@ class MvvContactRange extends ModuleManagementModel
 
         $config['belongs_to']['contact'] = array(
             'class_name' => 'MvvContact',
-            'foreign_key' => 'contact_id'
+            'foreign_key' => 'contact_id',
+            'assoc_func' => 'findCached',
         );
 
         $config['additional_fields']['count_relations']['get'] = 'countRelations';

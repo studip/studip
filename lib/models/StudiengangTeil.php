@@ -41,7 +41,8 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
         // The assigned Fach
         $config['belongs_to']['fach'] = [
             'class_name' => 'Fach',
-            'foreign_key' => 'fach_id'
+            'foreign_key' => 'fach_id',
+            'assoc_func' => 'findCached',
         ];
         $config['has_and_belongs_to_many']['studiengang'] = [
             'class_name' => 'Studiengang',
@@ -71,7 +72,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
         parent::configure($config);
     }
 
-    function __construct($id = null)
+    public function __construct($id = null)
     {
         parent::__construct($id);
         $this->object_real_name = _('Studiengangteil');
@@ -133,7 +134,7 @@ class StudiengangTeil extends ModuleManagementModelTreeItem
      */
     public function getTrailParent()
     {
-        return Fach::get($this->getTrailParentId());
+        return Fach::findCached($this->getTrailParentId());
     }
 
     /**
