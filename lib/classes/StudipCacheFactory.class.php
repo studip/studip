@@ -138,7 +138,7 @@ class StudipCacheFactory
             $proxied = false;
 
             if (!$GLOBALS['CACHING_ENABLE']) {
-                self::$cache = new StudipNullCache();
+                self::$cache = new StudipMemoryCache();
 
                 // Proxy cache operations if CACHING_ENABLE is different from the globally set
                 // caching value. This should only be the case in cli mode.
@@ -194,8 +194,8 @@ class StudipCacheFactory
         if (is_null($cache_class)) {
             $version = new DBSchemaVersion();
             if (!$version->contains(224)) {
-                // db cache is not yet available, use StudipNullCache
-                return 'StudipNullCache';
+                // db cache is not yet available, use StudipMemoryCache
+                return 'StudipMemoryCache';
             }
 
             return self::DEFAULT_CACHE_CLASS;
