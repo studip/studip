@@ -599,7 +599,7 @@ class Resources extends \RESTAPI\RouteMap
                 //It is an booking with repetitions that has to be included
                 //in the semester plan.
                 if (in_array($booking->getRepetitionType(), ['single','weekly'])) {
-                    $event_list = $booking->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $booking->begin, 'end' => $booking->end])], $current_user);
+                    $event_list = $booking->convertToEventData([\ResourceBookingInterval::build(['interval_id' => md5(uniqid()), 'begin' => $booking->begin - $booking->preparation_time, 'end' => $booking->end])], $current_user);
                 } else {
                     $event_list = $booking->getFilteredEventData(null,null,null,strtotime('today'), $end_timestamp);
                 }
