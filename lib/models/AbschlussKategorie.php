@@ -107,7 +107,9 @@ class AbschlussKategorie extends ModuleManagementModelTreeItem
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$abschluss_id]);
             $kategorie_id = $statement->fetchColumn();
-            return static::findCached($kategorie_id);
+            return $kategorie_id
+                 ? static::findCached($kategorie_id)
+                 : null;
         });
     }
 
