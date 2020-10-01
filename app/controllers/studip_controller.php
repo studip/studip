@@ -719,7 +719,7 @@ abstract class StudipController extends Trails_Controller
     public function validate_datetime($datetime, $format = 'H:i')
     {
         $dt = DateTime::createFromFormat($format, $datetime);
-        return $dt && $dt->format($format) == $datetime;
+        return $dt && $dt->format($format) == date('H:i',strtotime($datetime));
     }
 
 }
