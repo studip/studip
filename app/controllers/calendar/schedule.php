@@ -35,19 +35,17 @@ class Calendar_ScheduleController extends AuthenticatedController
      * @param string  Name of the action to perform.
      * @param array   An array of arguments to the action.
      *
-     * @return bool
      */
-    function before_filter(&$action, &$args) {
-        global $user;
-
+    public function before_filter(&$action, &$args)
+    {
         parent::before_filter($action, $args);
         $zoom = Request::int('zoom');
-        $this->my_schedule_settings = UserConfig::get($user->id)->SCHEDULE_SETTINGS;
+        $this->my_schedule_settings = UserConfig::get($GLOBALS['user']->id)->SCHEDULE_SETTINGS;
         // bind zoom, show_hidden and semester_id for all actions, even preserving them after redirect
         if (isset($zoom)) {
             URLHelper::addLinkParam('zoom', Request::int('zoom'));
             $this->my_schedule_settings['zoom'] = Request::int('zoom');
-            UserConfig::get($user->id)->store('SCHEDULE_SETTINGS', $this->my_schedule_settings);
+            UserConfig::get($GLOBALS['user']->id)->store('SCHEDULE_SETTINGS', $this->my_schedule_settings);
         }
 
         URLHelper::bindLinkParam('semester_id', $this->current_semester['semester_id']);
@@ -61,32 +59,25 @@ class Calendar_ScheduleController extends AuthenticatedController
      * this action is the main action of the schedule-controller, setting the environment
      * for the timetable, accepting a comma-separated list of days.
      *
-     * @param  string  $days  a list of an arbitrary mix of the numbers 0-6, separated
+     * @param string $days a list of an arbitrary mix of the numbers 0-6, separated
      *                        with a comma (e.g. 1,2,3,4,5 (for Monday to Friday, the default))
-     * @return void
      */
-    function index_action($days = false)
+    public function index_action($days = null)
     {
-        global $user;
-
         $schedule_settings = CalendarScheduleModel::getScheduleSettings();
-
-        if ($GLOBALS['perm']->have_perm('admin')) $inst_mode = true;
-
+        $inst_mode = false;
+        if ($GLOBALS['perm']->have_perm('admin')) {
+            $inst_mode = true;
+        }
         if ($inst_mode) {
-
             // try to find the correct institute-id
             $institute_id = Request::option('institute_id', Context::getId());
-
-
             if (!$institute_id) {
-                $institute_id = UserConfig::get($user->id)->MY_INSTITUTES_DEFAULT;
+                $institute_id = UserConfig::get($GLOBALS['user']->id)->MY_INSTITUTES_DEFAULT;
             }
-
-            if (!$institute_id || !in_array(get_object_type($institute_id), words('fak inst'))) {
+            if (!$institute_id || !in_array(get_object_type($institute_id), ['fak', 'inst'])) {
                 throw new Exception('Cannot display institute-calender. No valid ID given!');
             }
-
             Navigation::activateItem('/browse/my_courses/schedule');
         } else {
             Navigation::activateItem('/calendar/schedule');
@@ -94,14 +85,13 @@ class Calendar_ScheduleController extends AuthenticatedController
 
         // check, if the hidden seminar-entries shall be shown
         $show_hidden = Request::int('show_hidden', 0);
-
         // load semester-data and current semester
         $this->semesters = array_reverse(SemesterData::getAllSemesterData());
 
         if (Request::option('semester_id')) {
             $this->current_semester = SemesterData::getSemesterData(Request::option('semester_id'));
             $schedule_settings['semester_id'] = Request::option('semester_id');
-            UserConfig::get($user->id)->store('SCHEDULE_SETTINGS',
+            UserConfig::get($GLOBALS['user']->id)->store('SCHEDULE_SETTINGS',
                 $schedule_settings);
         } else {
             $this->current_semester = $schedule_settings['semester_id'] ?
@@ -110,7 +100,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         }
 
         // check type-safe if days is false otherwise sunday (0) cannot be chosen
-        if ($days === false) {
+        if (!$days) {
             if (Request::getArray('days')) {
                 $this->days = array_keys(Request::getArray('days'));
             } else {
@@ -136,9 +126,10 @@ class Calendar_ScheduleController extends AuthenticatedController
                 foreach ($this->calendar_view->getColumns() as $entry_days) {
                     foreach ($entry_days->getEntries() as $entry) {
                         if ($this->flash['entry']['cycle_id']) {
-                            if ($this->flash['entry']['id'] .'-'. $this->flash['entry']['cycle_id'] == $entry['id']) {
+                            if ($this->flash['entry']['id'] . '-' . $this->flash['entry']['cycle_id'] == $entry['id']) {
                                 $this->show_entry = $entry;
-                                $this->show_entry['id'] = reset(explode('-', $this->show_entry['id']));
+                                $entry_ids = explode('-', $this->show_entry['id']);
+                                $this->show_entry['id'] = reset($entry_ids);
                             }
                         } else {
                             if ($entry['id'] == $this->flash['entry']['id']) {
@@ -168,19 +159,19 @@ class Calendar_ScheduleController extends AuthenticatedController
             PageLayout::addStylesheet('print.css', ['media' => 'print']);
         }
 
-        $this->show_hidden    = $show_hidden;
+        $this->show_hidden = $show_hidden;
 
         $inst = get_object_name($institute_id, 'inst');
-        $this->inst_mode      = $inst_mode;
+        $this->inst_mode = $inst_mode;
         $this->institute_name = $inst['name'];
-        $this->institute_id   = $institute_id;
+        $this->institute_id = $institute_id;
 
         if (Request::get('show_settings')) {
             $this->show_settings = true;
         }
     }
 
-    function new_entry_action()
+    public function new_entry_action()
     {
         $this->layout = null;
 
@@ -192,20 +183,18 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * this action is called whenever a new entry shall be modified or added to the schedule
      *
-     * @param  string  $id  optional, if id given, the entry with this id is updated
-     * @return void
+     * @param string $id optional, if id given, the entry with this id is updated
      */
-    function addEntry_action( $id = false )
+    public function addEntry_action($id = null)
     {
         if ($id) {
             $data['id'] = $id;
         }
 
         $error = false;
-
         $data['start'] = (int)str_replace(':', '', Request::get('entry_start'));
-        $data['end']   = (int)str_replace(':', '', Request::get('entry_end'));
-        $data['day']   = Request::int('entry_day');
+        $data['end'] = (int)str_replace(':', '', Request::get('entry_end'));
+        $data['day'] = Request::int('entry_day');
 
         if ($data['start'] >= $data['end']
             || !Request::int('entry_day')
@@ -215,9 +204,11 @@ class Calendar_ScheduleController extends AuthenticatedController
         }
 
         if ($error) {
-            PageLayout::postError(_("Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!"));
+            PageLayout::postError(
+                _('Eintrag konnte nicht gespeichert werden, da die Start- und/oder Endzeit ungültig ist!')
+            );
         } else {
-            $data['title']   = Request::get('entry_title');
+            $data['title'] = Request::get('entry_title');
             $data['content'] = Request::get('entry_content');
             $data['user_id'] = $GLOBALS['user']->id;
             if (Request::get('entry_color')) {
@@ -237,10 +228,10 @@ class Calendar_ScheduleController extends AuthenticatedController
      * this action keeps the entry of the submitted_id and enables displaying of the entry-dialog.
      * If no id is submitted, an empty entry_dialog is displayed.
      *
-     * @param  string  $id  the id of the entry to edit (if any), false otherwise.
-     * @return void
+     * @param string $id the id of the entry to edit (if any), false otherwise.
+     * @param string $cycle_id an optional cycle's ID
      */
-    function entry_action($id = false, $cycle_id = false)
+    public function entry_action($id = null, $cycle_id = null)
     {
         if (Request::isXhr()) {
             $this->response->add_header('Content-Type', 'text/html; charset=utf-8');
@@ -252,7 +243,8 @@ class Calendar_ScheduleController extends AuthenticatedController
             ];
 
             if ($cycle_id) {
-                $this->show_entry = array_pop(CalendarScheduleModel::getSeminarEntry($id, $GLOBALS['user']->id, $cycle_id));
+                $seminar_ids = CalendarScheduleModel::getSeminarEntry($id, $GLOBALS['user']->id, $cycle_id);
+                $this->show_entry = array_pop($seminar_ids);
                 $this->show_entry['id'] = $id;
                 $this->render_template('calendar/schedule/_entry_course');
             } else if ($id) {
@@ -274,15 +266,16 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * Return an HTML fragment containing a form to edit an entry
      *
-     * @param  string  the ID of a course
-     * @param  string  an optional cycle's ID
+     * @param string  the ID of a course
+     * @param string  an optional cycle's ID
      * @return void
      */
-    function entryajax_action($id, $cycle_id = false)
+    public function entryajax_action($id, $cycle_id = null)
     {
         $this->response->add_header('Content-Type', 'text/html; charset=utf-8');
         if ($cycle_id) {
-            $this->show_entry = array_pop(CalendarScheduleModel::getSeminarEntry($id, $GLOBALS['user']->id, $cycle_id));
+            $seminar_ids = CalendarScheduleModel::getSeminarEntry($id, $GLOBALS['user']->id, $cycle_id);
+            $this->show_entry = array_pop($seminar_ids);
             $this->show_entry['id'] = $id;
             $this->render_template('calendar/schedule/_entry_course');
         } else {
@@ -297,35 +290,38 @@ class Calendar_ScheduleController extends AuthenticatedController
      * Returns an HTML fragment of a grouped entry in the schedule of an institute.
      *
      * @param string $start the start time of the group, e.g. "1000"
-     * @param string $end   the end time of the group, e.g. "1200"
-     * @param string $seminars  the IDs of the courses
-     * @param string $day  numeric day to show
+     * @param string $end the end time of the group, e.g. "1200"
+     * @param string $seminars the IDs of the courses
+     * @param string $day numeric day to show
      *
      * @return void
      */
-    function groupedentry_action($start, $end, $seminars, $day)
+    public function groupedentry_action($start, $end, $seminars, $day)
     {
         $this->response->add_header('Content-Type', 'text/html; charset=utf-8');
-
-        // strucutre of an id: seminar_id-cycle_id
-        // we do not need the cycle id here, so we trash it.
-        $seminar_list = [];
-
-        foreach (explode(',', $seminars) as $seminar) {
+        $seminars = explode(',', $seminars);
+        foreach ($seminars as $seminar) {
             $zw = explode('-', $seminar);
             $this->seminars[$zw[0]] = Seminar::getInstance($zw[0]);
         }
 
-        $this->timespan = mb_substr($start, 0, 2) .':'. mb_substr($start, 2, 2)
-                        . ' - '. mb_substr($end, 0, 2) .':'. mb_substr($end, 2, 2);
-        $this->start    = $start;
-        $this->end      = $end;
+        $this->timespan = mb_substr($start, 0, 2) . ':' . mb_substr($start, 2, 2)
+            . ' - ' . mb_substr($end, 0, 2) . ':' . mb_substr($end, 2, 2);
+        $this->start = $start;
+        $this->end = $end;
 
-        $day_names  = [_("Montag"),_("Dienstag"),_("Mittwoch"),
-            _("Donnerstag"),_("Freitag"),_("Samstag"),_("Sonntag")];
+        $day_names = [
+            _('Montag'),
+            _('Dienstag'),
+            _('Mittwoch'),
+            _('Donnerstag'),
+            _('Freitag'),
+            _('Samstag'),
+            _('Sonntag')
+        ];
 
-        $this->day        = (int)$day;
-        $this->day_name   = $day_names[$this->day];
+        $this->day = (int)$day;
+        $this->day_name = $day_names[$this->day];
 
 
         $this->render_template('calendar/schedule/_entry_inst');
@@ -335,10 +331,10 @@ class Calendar_ScheduleController extends AuthenticatedController
      * delete the entry of the submitted id (only entry belonging to the current
      * use can be deleted)
      *
-     * @param  string  $id  the id of the entry to delete
+     * @param string $id the id of the entry to delete
      * @return void
      */
-    function delete_action($id)
+    public function delete_action($id)
     {
         CalendarScheduleModel::deleteEntry($id);
         $this->redirect('calendar/schedule');
@@ -347,15 +343,16 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * store the color-settings for the seminar
      *
-     * @param  string  $seminar_id
+     * @param string $seminar_id
+     * @param string $cycle_id
      * @return void
      */
-    function editseminar_action($seminar_id, $cycle_id)
+    public function editseminar_action($seminar_id, $cycle_id)
     {
         $data = [
-            'id'       => $seminar_id,
+            'id' => $seminar_id,
             'cycle_id' => $cycle_id,
-            'color'    => Request::get('entry_color')
+            'color' => Request::get('entry_color')
         ];
 
         CalendarScheduleModel::storeSeminarEntry($data);
@@ -366,17 +363,17 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * Adds the appointments of a course to your schedule.
      *
-     * @param  string  the ID of the course
+     * @param string $seminar_id the ID of the course
      * @return void
      */
-    function addvirtual_action($seminar_id)
+    public function addvirtual_action($seminar_id)
     {
         $sem = Seminar::getInstance($seminar_id);
         foreach ($sem->getCycles() as $cycle) {
             $data = [
-                'id'       => $seminar_id,
+                'id' => $seminar_id,
                 'cycle_id' => $cycle->getMetaDateId(),
-                'color'    => false
+                'color' => false
             ];
 
             CalendarScheduleModel::storeSeminarEntry($data);
@@ -389,13 +386,13 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * Set the visibility of the course.
      *
-     * @param  string  the ID of the course
-     * @param  string  the ID of the cycle
-     * @param  string  visibility; either '1' or '0'
-     * @param  string  if you give this optional param, it signals an Ajax request
+     * @param string $seminar_id the ID of the course
+     * @param string $cycle_id the ID of the cycle
+     * @param string $visible visibility; either '1' or '0'
+     * @param string $ajax if you give this optional param, it signals an Ajax request
      * @return void
      */
-    function adminbind_action($seminar_id, $cycle_id, $visible, $ajax = false)
+    public function adminbind_action($seminar_id, $cycle_id, $visible, $ajax = null)
     {
         CalendarScheduleModel::adminBind($seminar_id, $cycle_id, $visible);
 
@@ -409,12 +406,12 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * Hide the give appointment.
      *
-     * @param  string  the ID of the course
-     * @param  string  the ID of the cycle
-     * @param  string  if you give this optional param, it signals an Ajax request
+     * @param string $seminar_id the ID of the course
+     * @param string $cycle_id the ID of the cycle
+     * @param string $ajax if you give this optional param, it signals an Ajax request
      * @return void
      */
-    function unbind_action($seminar_id, $cycle_id = false, $ajax = false)
+    function unbind_action($seminar_id, $cycle_id = null, $ajax = null)
     {
         CalendarScheduleModel::unbind($seminar_id, $cycle_id);
 
@@ -428,12 +425,12 @@ class Calendar_ScheduleController extends AuthenticatedController
     /**
      * Show the given appointment.
      *
-     * @param  string  the ID of the course
-     * @param  string  the ID of the cycle
-     * @param  string  if you give this optional param, it signals an Ajax request
+     * @param string $seminar_id the ID of the course
+     * @param string $cycle_id the ID of the cycle
+     * @param string $ajax if you give this optional param, it signals an Ajax request
      * @return void
      */
-    function bind_action($seminar_id, $cycle_id, $ajax = false)
+    public function bind_action($seminar_id, $cycle_id, $ajax = null)
     {
         CalendarScheduleModel::bind($seminar_id, $cycle_id);
 
@@ -449,13 +446,8 @@ class Calendar_ScheduleController extends AuthenticatedController
      *
      * @return void
      */
-    function settings_action()
+    public function settings_action()
     {
-        if (Request::isXhr()) {
-            $this->response->add_header('Content-Type', 'text/html; charset=utf-8');
-            $this->layout = null;
-        }
-
         $this->settings = UserConfig::get($GLOBALS['user']->id)->SCHEDULE_SETTINGS;
     }
 
@@ -468,20 +460,18 @@ class Calendar_ScheduleController extends AuthenticatedController
      * @param string  the ID of the semester
      * @return void
      */
-    function storesettings_action($start_hour = false, $end_hour = false, $days = false, $semester_id = false)
+    public function storesettings_action($start_hour = null, $end_hour = null, $days = null, $semester_id = null)
     {
-        global $user;
-
-        if ($start_hour === false) {
-            $start_hour  = Request::int('start_hour');
-            $end_hour    = Request::int('end_hour');
-            $days        = Request::getArray('days');
+        if (!$start_hour) {
+            $start_hour = Request::int('start_hour');
+            $end_hour = Request::int('end_hour');
+            $days = Request::getArray('days');
         }
         $this->my_schedule_settings = [
             'glb_start_time' => $start_hour,
-            'glb_end_time'   => $end_hour,
-            'glb_days'       => $days,
-            'converted'      => true
+            'glb_end_time' => $end_hour,
+            'glb_days' => $days,
+            'converted' => true
         ];
 
         if ($semester_id) {
@@ -490,7 +480,7 @@ class Calendar_ScheduleController extends AuthenticatedController
             $this->my_schedule_settings['semester_id'] = $semester;
         }
 
-        UserConfig::get($user->id)->store('SCHEDULE_SETTINGS', $this->my_schedule_settings);
+        UserConfig::get($GLOBALS['user']->id)->store('SCHEDULE_SETTINGS', $this->my_schedule_settings);
 
         if (Context::isInstitute()) {
             $this->redirect('calendar/instschedule');
@@ -498,5 +488,4 @@ class Calendar_ScheduleController extends AuthenticatedController
             $this->redirect('calendar/schedule');
         }
     }
-
 }

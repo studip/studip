@@ -602,7 +602,7 @@ class CalendarScheduleModel
      * @param  string  $cycle_id    the cycle's ID
      * @return void
      */
-    static function unbind($seminar_id, $cycle_id = false)
+    public static function unbind($seminar_id, $cycle_id = null)
     {
         $stmt = DBManager::get()->prepare("SELECT su.*, sc.seminar_id as present
             FROM seminar_user as su

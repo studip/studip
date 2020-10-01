@@ -1,7 +1,4 @@
-<?
-# Lifter010: TODO
-?>
-<? if ($show_entry && in_array($show_entry['type'], words('sem virtual')) !== false) : ?>
+<? if ($show_entry && in_array($show_entry['type'], ['sem', 'virtual']) !== false) : ?>
     <?= $this->render_partial('calendar/schedule/_entry_course.php') ?>
     <? unset($this->show_entry) ?>
 <? elseif ($show_entry && $show_entry['type'] == 'inst') : ?>
