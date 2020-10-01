@@ -916,6 +916,11 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     public static function findCached($id, $index = null)
     {
+        // Prevent warnings
+        if ($id === null || $id === false) {
+            return null;
+        }
+
         return self::fromCache($index ?? static::class, $id, function () use ($id) {
             return static::find($id);
         });
