@@ -31,7 +31,11 @@ class StudygroupModel
         // get all globally enabled plugins
         $plugins = PluginManager::getInstance()->getPlugins('StandardPlugin');
         foreach ($plugins as $plugin) {
-            if ($context === null || $plugin->isActivatableForContext($context)) {
+            if (
+                $context === null
+                || $plugin->isActivated($context->getRangeId())
+                || $plugin->isActivatableForContext($context)
+            ) {
                 $modules[get_class($plugin)] = $plugin->getPluginName();
             }
         }
