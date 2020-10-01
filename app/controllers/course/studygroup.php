@@ -429,7 +429,7 @@ class Course_StudygroupController extends AuthenticatedController
             $this->sem_class         = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$sem->status]['class']];
             $this->tutors            = $sem->getMembers('tutor');
             $this->available_modules = StudygroupModel::getInstalledModules();
-            $this->available_plugins = StudygroupModel::getInstalledPlugins();
+            $this->available_plugins = StudygroupModel::getInstalledPlugins(Context::get());
             $this->enabled_plugins   = StudygroupModel::getEnabledPlugins($id);
             $this->modules           = new Modules();
             $this->founders          = StudygroupModel::getFounders($id);

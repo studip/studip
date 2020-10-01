@@ -24,14 +24,16 @@ class StudygroupModel
      *
      * @return array modules a set of all plugins
      */
-    public static function getInstalledPlugins()
+    public static function getInstalledPlugins(Range $context = null)
     {
         $modules = [];
 
         // get all globally enabled plugins
         $plugins = PluginManager::getInstance()->getPlugins('StandardPlugin');
         foreach ($plugins as $plugin) {
-            $modules[get_class($plugin)] = $plugin->getPluginName();
+            if ($context === null || $plugin->isActivatableForContext($context)) {
+                $modules[get_class($plugin)] = $plugin->getPluginName();
+            }
         }
 
         return $modules;
