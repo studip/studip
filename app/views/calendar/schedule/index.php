@@ -16,27 +16,27 @@ $actions = new ActionsWidget();
 if (!$inst_mode) {
     $actions->addLink(
         _('Neuer Eintrag'),
-        $controller->entryURL(),
+        $controller->url_for('calendar/schedule/entry'),
         Icon::create('date+add'),
         ['data-dialog' => 'size=auto']
     );
 }
 $actions->addLink(
     _('Darstellung ändern'),
-    $controller->settingsURL(),
+    $controller->url_for('calendar/schedule/settings'),
     Icon::create('admin'),
     ['data-dialog' => 'size=auto']
 );
 if (!$show_hidden) {
     $actions->addLink(
         _('Ausgeblendete Veranstaltungen anzeigen'),
-        $controller->indexURL(['show_hidden' => '1']),
+        $controller->url_for('calendar/schedule', ['show_hidden' => '1']),
         Icon::create('visibility-invisible')
     );
 } else {
     $actions->addLink(
         _('Ausgeblendete Veranstaltungen verbergen'),
-        $controller->indexURL(['show_hidden' => '0']),
+        $controller->url_for('calendar/schedule', ['show_hidden' => '0']),
         Icon::create('visibility-visible')
     );
 }
@@ -44,21 +44,22 @@ $sidebar->addWidget($actions, 'calendar/schedule/actions');
 
 $widget = new ExportWidget();
 $widget->addLink(_('Druckansicht'),
-    $controller->indexURL(
-        implode(',', $days),
+    $controller->url_for(
+        'calendar/schedule/index/' . implode(',', $days),
         [
             'printview' => 'true',
             'semester_id' => $current_semester['semester_id'],
-        ]),
+        ]
+    ),
     Icon::create('print'),
     ['target' => '_blank']);
 $sidebar->addWidget($widget, 'calendar/schedule/print');
 
 $options = new OptionsWidget();
-$options->setTitle(_("Darstellungsgröße"));
-$options->addRadioButton(_("klein"), URLHelper::getURL('', ['zoom' => 0]), $zoom == 0);
-$options->addRadioButton(_("mittel"), URLHelper::getURL('', ['zoom' => 1]), $zoom == 1);
-$options->addRadioButton(_("groß"), URLHelper::getURL('', ['zoom' => 2]), $zoom == 2);
+$options->setTitle(_('Darstellungsgröße'));
+$options->addRadioButton(_('klein'), URLHelper::getURL('', ['zoom' => 0]), $zoom == 0);
+$options->addRadioButton(_('mittel'), URLHelper::getURL('', ['zoom' => 1]), $zoom == 1);
+$options->addRadioButton(_('groß'), URLHelper::getURL('', ['zoom' => 2]), $zoom == 2);
 $sidebar->addWidget($options, 'calendar/schedule/options');
 
 ?>

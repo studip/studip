@@ -1,4 +1,4 @@
-<form class="default" method="post" action="<?= $controller->storesettings() ?>">
+<form class="default" method="post" action="<?= $controller->link_for('calendar/schedule/storesettings') ?>">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend>

@@ -1,5 +1,5 @@
 <form class="default"
-      action="<?= $controller->url_for('calendar/schedule/addentry' . ($show_entry['id'] ? '/' . $show_entry['id'] : '')) ?>"
+      action="<?= $controller->link_for('calendar/schedule/addentry' . ($show_entry['id'] ? '/' . $show_entry['id'] : '')) ?>"
       method="post" name="edit_entry" onSubmit="return STUDIP.Schedule.checkFormFields()">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
@@ -62,7 +62,7 @@
         <? if ($show_entry['id']) : ?>
             <?= Studip\LinkButton::create(
                 _('Löschen'),
-                $controller->deleteURL($show_entry['id']),
+                $controller->url_for('calendar/schedule/delete/'. $show_entry['id']),
                 ['style' => 'margin-right: 20px']
             ) ?>
         <? endif ?>

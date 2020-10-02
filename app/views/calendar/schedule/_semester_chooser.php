@@ -1,4 +1,4 @@
-<form method="post" class="default" action="<?= $controller->url_for(
+<form method="post" class="default" action="<?= $controller->link_for(
     isset($inst_mode) && $inst_mode == true ? 'calendar/instschedule/index' : 'calendar/schedule/index'
 ) ?>">
     <select name="semester_id" class="submit-upon-select">

@@ -2,7 +2,7 @@
 $sem = Seminar::getInstance($show_entry['id']);
 ?>
 <form class="default"
-      action="<?= $controller->url_for('calendar/schedule/editseminar/' . $show_entry['id'] . '/' . $show_entry['cycle_id']) ?>"
+      action="<?= $controller->link_for('calendar/schedule/editseminar/' . $show_entry['id'] . '/' . $show_entry['cycle_id']) ?>"
       method="post" name="edit_entry">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
@@ -28,38 +28,43 @@ $sem = Seminar::getInstance($show_entry['id']);
         <? endif ?>
 
         <section>
-            <b><?= _('Veranstaltungsnummer') ?></b><br>
+            <strong><?= _('Veranstaltungsnummer') ?></strong><br>
             <?= htmlReady($sem->getNumber()) ?>
         </section>
 
         <section>
-            <b><?= _('Name') ?></b><br>
+            <strong><?= _('Name') ?></strong><br>
             <?= htmlReady($sem->getName()) ?>
         </section>
 
         <section>
-            <b><?= _('Lehrende') ?></b><br>
+            <strong><?= _('Lehrende') ?></strong><br>
             <? $pos = 0;
-            foreach ($sem->getMembers('dozent') as $dozent) :
-                if ($pos > 0) echo ', ';
-                ?><a
-                href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $dozent['username']) ?>"><?= htmlReady($dozent['fullname']) ?></a><?
-                $pos++;
-            endforeach ?>
+            foreach ($sem->getMembers('dozent') as $dozent) :?>
+                <?php if ($pos > 0) echo ', '; ?>
+                <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $dozent['username']]) ?>">
+                    <?= htmlReady($dozent['fullname']) ?>
+                </a>
+                <? $pos++ ?>
+            <? endforeach ?>
         </section>
 
         <section>
-            <b><?= _('Veranstaltungszeiten') ?></b><br>
+            <strong><?= _('Veranstaltungszeiten') ?></strong><br>
             <?= $sem->getDatesHTML(['show_room' => true]) ?><br>
         </section>
 
         <section>
             <?= Icon::create('link-intern') ?>
             <? if ($show_entry['type'] == 'virtual') : ?>
-                <a href="<?= URLHelper::getLink('dispatch.php/course/details/?sem_id=' . $show_entry['id']) ?>"><?= _('Zur Veranstaltung') ?></a>
+                <a href="<?= URLHelper::getLink('dispatch.php/course/details', ['sem_id' => $show_entry['id']]) ?>">
+                    <?= _('Zur Veranstaltung') ?>
+                </a>
                 <br>
             <? else : ?>
-                <a href="<?= URLHelper::getLink('seminar_main.php?auswahl=' . $show_entry['id']) ?>"><?= _('Zur Veranstaltung') ?></a>
+                <a href="<?= URLHelper::getLink('seminar_main.php', ['auswahl' => $show_entry['id']]) ?>">
+                    <?= _('Zur Veranstaltung') ?>
+                </a>
                 <br>
             <? endif ?>
         </section>
@@ -71,7 +76,10 @@ $sem = Seminar::getInstance($show_entry['id']);
         <? if (!$show_entry['visible']) : ?>
             <?= Studip\LinkButton::create(
                 _('Einblenden'),
-                $controller->url_for('calendar/schedule/bind/' . $show_entry['id'] . '/' . $show_entry['cycle_id'] . '/' . '?show_hidden=1'),
+                $controller->url_for(
+                    'calendar/schedule/bind/' . $show_entry['id'] . '/' . $show_entry['cycle_id'] . '/',
+                    ['show_hidden' => '1']
+                ),
                 ['style' => 'margin-right: 20px']) ?>
         <? else : ?>
             <?= Studip\LinkButton::create(

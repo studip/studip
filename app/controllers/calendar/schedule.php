@@ -62,7 +62,7 @@ class Calendar_ScheduleController extends AuthenticatedController
      * @param string $days a list of an arbitrary mix of the numbers 0-6, separated
      *                        with a comma (e.g. 1,2,3,4,5 (for Monday to Friday, the default))
      */
-    public function index_action($days = null)
+    public function index_action($days = false)
     {
         $schedule_settings = CalendarScheduleModel::getScheduleSettings();
         $inst_mode = false;
@@ -460,7 +460,7 @@ class Calendar_ScheduleController extends AuthenticatedController
      * @param string  the ID of the semester
      * @return void
      */
-    public function storesettings_action($start_hour = null, $end_hour = null, $days = null, $semester_id = null)
+    public function storesettings_action($start_hour = false, $end_hour = false, $days = false, $semester_id = false)
     {
         if ($start_hour === false) {
             $start_hour = Request::int('start_hour');

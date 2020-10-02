@@ -1,4 +1,9 @@
 <table class="default">
+    <colgroup>
+        <col style="width: 15%">
+        <col style="width: 45%">
+        <col>
+    </colgroup>
     <caption>
         <?= sprintf(_('Veranstaltungen mit regelmäßigen Zeiten am %s, %s Uhr'), htmlReady($day), htmlReady($timespan)) ?>
     </caption>
@@ -11,15 +16,15 @@
     </thead>
     <tbody>
     <? foreach ($seminars as $seminar) : ?>
-        <tr class="<?= TextHelper::cycle('table_row_odd', 'table_row_even') ?>">
-            <td style="width: 15%"><?= htmlReady($seminar->getNumber()) ?></td>
-            <td style="width: 45%">
-                <a href="<?= URLHelper::getLink('dispatch.php/course/details/?sem_id=' . $seminar->getId()) ?>">
+        <tr>
+            <td><?= htmlReady($seminar->getNumber()) ?></td>
+            <td>
+                <a href="<?= URLHelper::getLink('dispatch.php/course/details/', ['sem_id' => $seminar->getId()]) ?>">
                     <?= Icon::create('link-intern') ?>
                     <?= htmlReady($seminar->getName()) ?>
                 </a>
             </td>
-            <td width="40%" class="schedule-adminbind">
+            <td class="schedule-adminbind">
                 <? $cycles = CalendarScheduleModel::getSeminarCycleId($seminar, $start, $end, $day) ?>
 
                 <? foreach ($cycles as $cycle) : ?>
