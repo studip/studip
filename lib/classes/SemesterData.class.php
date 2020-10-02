@@ -37,21 +37,4 @@ class SemesterData
         return $index;
     }
 
-    /**
-     * Returns array of all semesters
-     *
-     * @return array semester-list
-     * @deprecated use semester class instead
-     *
-     */
-    public static function getAllSemesterData()
-    {
-        $ret = [];
-        foreach (Semester::getAll() as $semester) {
-            if ($GLOBALS['perm']->have_perm('admin') || $semester->visible) {
-                $ret[] = $semester->toArray();
-            }
-        }
-        return $ret;
-    }
 }
