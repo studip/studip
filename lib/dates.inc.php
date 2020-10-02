@@ -143,7 +143,7 @@ function veranstaltung_beginn_from_metadata($reg_irreg, $sem_begin, $start_woche
         echo "<br>Fehler in dates.inc.php: veranstaltung_beginn_from_metadata() unterstuetzt nur den return mode 'int'.";
         die();
     }
-    $semester = SemesterData::getSemesterDataByDate($sem_begin);
+    $semester = Semester::findByTimestamp($sem_begin);
     $dow = date("w", $semester['vorles_beginn']);
     if ($dow <= 5)
         $corr = ($dow -1) * -1;
@@ -299,8 +299,8 @@ Die Funktion get_sem_name gibt den Namen eines Semester, in dem ein uebergebener
 */
 
 function get_sem_name ($time) {
-    $semester = SemesterData::getSemesterDataByDate($time);
-    return $semester["name"];
+    $semester = Semester::findByTimestamp($time);
+    return $semester->name;
 }
 
 /*

@@ -107,9 +107,9 @@ class SemesterData
      */
     public static function getSemesterIdByDate($timestamp)
     {
-        $one_semester = SemesterData::getSemesterDataByDate($timestamp);
-        return isset($one_semester['semester_id'])
-            ? $one_semester['semester_id']
+        $one_semester = Semester::findByTimestamp($timestamp);
+        return isset($one_semester->id)
+            ? $one_semester->id
             : null;
     }
 
