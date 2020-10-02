@@ -462,7 +462,7 @@ class Calendar_ScheduleController extends AuthenticatedController
      */
     public function storesettings_action($start_hour = null, $end_hour = null, $days = null, $semester_id = null)
     {
-        if (!$start_hour) {
+        if ($start_hour === false) {
             $start_hour = Request::int('start_hour');
             $end_hour = Request::int('end_hour');
             $days = Request::getArray('days');
