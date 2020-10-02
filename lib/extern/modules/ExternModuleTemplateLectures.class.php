@@ -61,7 +61,7 @@ class ExternModuleTemplateLectures extends ExternModule {
                 'LinkInternPersondetails' => 'LinkInternTemplate',
                 'TemplateGeneric'
         ];
-        $this->field_names = 
+        $this->field_names =
         [
                 _("Veranstaltungsnummer"),
                 _("Name"),
@@ -191,7 +191,7 @@ class ExternSemBrowseTemplate extends SemBrowse {
     function __construct(&$module, $start_item_id) {
 
         global $SEM_TYPE,$SEM_CLASS;
-        $all_semester = SemesterData::getAllSemesterData();
+        $all_semester = Semester::getAllAsArray(false);
         array_unshift($all_semester, 0);
 
         $this->group_by_fields = [ ['name' => _("Semester"), 'group_field' => 'sem_number'],

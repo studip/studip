@@ -370,7 +370,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
 
         $this->search_obj = new StudipSemSearchHelper(null, true);
 
-        $all_semester = SemesterData::getAllSemesterData();
+        $all_semester = Semester::getAllAsArray(false);
         array_unshift($all_semester,0);
 
         $switch_time = mktime(0, 0, 0, date('m'), date('d') + 7 * $this->config->getValue('Main', 'semswitch'), date('Y'));

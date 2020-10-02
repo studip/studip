@@ -18,7 +18,7 @@ foreach ($SEM_CLASS as $key_class => $class) {
 }
 
 // get semester data
-$semester_data = SemesterData::getAllSemesterData();
+$semester_data = Semester::getAllAsArray(false);
 // current semester
 $now = time();
 foreach ($semester_data as $key => $sem) {

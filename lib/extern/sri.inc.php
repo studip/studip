@@ -47,7 +47,7 @@ if (!ini_get('allow_url_fopen')){
 }
 // this script is included in extern.inc.php
 
-$all_semester = SemesterData::getAllSemesterData();
+$all_semester = Semester::getAllAsArray(false);
 
 if ($sri_file = @file($page_url))
     $sri_page = implode("", $sri_file);

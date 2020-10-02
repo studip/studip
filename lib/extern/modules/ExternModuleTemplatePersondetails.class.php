@@ -644,7 +644,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
     private function getContentLectures () {
         global $attr_text_td, $end, $start;
 
-        $all_semester = SemesterData::getAllSemesterData();
+        $all_semester = Semester::getAllAsArray(false);
         // old hard coded $SEMESTER-array starts with index 1
         array_unshift($all_semester, 0);
 

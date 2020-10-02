@@ -6,7 +6,7 @@
 
 
 global $SEM_TYPE,$SEM_CLASS ;
-$all_semester = SemesterData::getAllSemesterData();
+$all_semester = Semester::getAllAsArray(false);
 
 // reorganize the $SEM_TYPE-array
 foreach ($SEM_CLASS as $key_class => $class) {
