@@ -29,7 +29,7 @@
 
         <label>
             <?=_("Veranstaltungen aus diesem Semester:")?>
-            <?=SemesterData::GetSemesterSelector(['name'=>'select_semester_id'], $current_semester_id, 'semester_id', false)?>
+            <?= Semester::getSemesterSelector(['name'=>'select_semester_id'], $current_semester_id, 'semester_id', false)?>
         </label>
     </fieldset>
 

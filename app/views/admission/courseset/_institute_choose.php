@@ -57,7 +57,7 @@
 
         <label>
             <?=_("Zugewiesene Veranstaltungen aus diesem Semester:")?>
-            <?=SemesterData::GetSemesterSelector(['name'=>'select_semester_id'], $current_semester_id, 'semester_id', true)?>
+            <?= Semester::getSemesterSelector(['name'=>'select_semester_id'], $current_semester_id, 'semester_id', true)?>
         </label>
     </fieldset>
 

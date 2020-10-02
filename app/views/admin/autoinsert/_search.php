@@ -1,15 +1,10 @@
-<?
-# Lifter010: TODO
-use Studip\Button, Studip\LinkButton;
-
-?>
 <fieldset>
     <legend>
         <?= _('Suche nach Veranstaltungen')?>
     </legend>
     <label>
         <?= _('Semester') ?>
-        <?=SemesterData::GetSemesterSelector(['name' => 'sem_select', 'id' => 'sem_select', 'class' => 'user_form'], $sem_select, 'key', true)?>
+        <?= Semester::getSemesterSelector(['name' => 'sem_select', 'id' => 'sem_select', 'class' => 'user_form'], $sem_select, 'key', true)?>
     </label>
     <label>
         <?= _('Veranstaltung') ?>
@@ -17,5 +12,5 @@ use Studip\Button, Studip\LinkButton;
     </label>
 </fieldset>
 <footer>
-    <?= Button::create(_('Suchen'),'suchen')?>
+    <?= Studip\Button::create(_('Suchen'),'suchen')?>
 </footer>

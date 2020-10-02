@@ -96,7 +96,7 @@ class StudipSemSearch {
         }
         $this->form = new StudipForm($search_fields, $search_buttons, $form_name , false);
         $this->form_name = $form_name;
-        $this->sem_dates = SemesterData::GetSemesterArray();
+        $this->sem_dates = Semester::findAllVisible();
         $this->visible_only = $visible_only;
         $this->search_sem_class = $sem_class;
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Semester.class.php
  * model class for table semester_data
@@ -30,7 +31,7 @@ class Semester extends SimpleORMap
     /**
      * Configures this model.
      *
-     * @param Array $config
+     * @param array $config
      */
     protected static function configure($config = [])
     {
@@ -42,21 +43,21 @@ class Semester extends SimpleORMap
         $config['additional_fields']['past'] = true;
 
         $config['additional_fields']['absolute_seminars_count'] = [
-            'get' => 'seminar_counter',
+            'get' => 'seminarCounter',
             'set' => false,
         ];
         $config['additional_fields']['duration_seminars_count'] = [
-            'get' => 'seminar_counter',
+            'get' => 'seminarCounter',
             'set' => false,
         ];
         $config['additional_fields']['continuous_seminars_count'] = [
-            'get' => 'seminar_counter',
+            'get' => 'seminarCounter',
             'set' => false,
         ];
 
         $config['alias_fields']['token'] = 'semester_token';
 
-        $config['registered_callbacks']['after_store'][]  = 'refreshCache';
+        $config['registered_callbacks']['after_store'][] = 'refreshCache';
         $config['registered_callbacks']['after_delete'][] = 'refreshCache';
 
         $config['i18n_fields']['name'] = true;
@@ -91,7 +92,7 @@ class Semester extends SimpleORMap
      */
     public static function findByTimestamp($timestamp)
     {
-        foreach(self::getAll() as $semester) {
+        foreach (self::getAll() as $semester) {
             if ($timestamp >= $semester->beginn && $timestamp <= $semester->ende) {
                 return $semester;
             }
@@ -106,10 +107,10 @@ class Semester extends SimpleORMap
      */
     public static function findNext($timestamp = null)
     {
-        $timestamp = $timestamp OR $timestamp = time();
+        $timestamp = $timestamp ?: time();
         $semester = self::findByTimestamp($timestamp);
         if ($semester) {
-            return self::findByTimestamp($semester->ende + 1);
+            return self::findByTimestamp((int)$semester->ende + 1);
         }
 
         return null;
@@ -122,6 +123,18 @@ class Semester extends SimpleORMap
     {
         self::getAll();
         return self::$current_semester;
+    }
+
+    /**
+     * Return a specially orderd array of all semesters
+     */
+    public static function findAllVisible(): array
+    {
+        return array_values(
+            array_filter(self::getAllAsArray(), function ($semester, $key) {
+                return $GLOBALS['perm']->have_perm('admin') || $semester['visible'] || (int)$key === 0;
+            }, ARRAY_FILTER_USE_BOTH)
+        );
     }
 
     /**
@@ -138,7 +151,7 @@ class Semester extends SimpleORMap
                 $cache = StudipCacheFactory::getCache();
                 $semester_data_array = unserialize($cache->read('DB_SEMESTER_DATA'));
                 if ($semester_data_array) {
-                    foreach($semester_data_array as $semester_data) {
+                    foreach ($semester_data_array as $semester_data) {
                         $semester = self::buildExisting($semester_data);
                         self::$semester_cache[$semester->getId()] = $semester;
                         if ($semester->current) {
@@ -168,8 +181,8 @@ class Semester extends SimpleORMap
      * the beginning that represents the time before the first semester in the
      * system.
      *
-     * @param  boolean $with_before_first Show the optional first entry as described above
-     * @param  boolean $force_reload
+     * @param boolean $with_before_first Show the optional first entry as described above
+     * @param boolean $force_reload
      * @return array
      */
     public static function getAllAsArray($with_before_first = true, $force_reload = false)
@@ -192,10 +205,10 @@ class Semester extends SimpleORMap
     /**
      * returns the index for a given semester id, in an array returned from self::getAllAsArray(), beware of second parameter
      *
-     * @deprecated ASK YOURSELF WHAT THE F!!! YOU ARE DOING
      * @param $semester_id
      * @param bool $with_before_first
      * @return bool|int
+     * @deprecated ASK YOURSELF WHAT THE F!!! YOU ARE DOING
      */
     public static function getIndexById($semester_id, $with_before_first = true)
     {
@@ -205,6 +218,45 @@ class Semester extends SimpleORMap
             }
         }
         return false;
+    }
+
+    /**
+     * Returns an html fragment with a semester select-box
+     *
+     * @param array $select_attributes
+     * @param integer $default
+     * @param string $option_value
+     * @param boolean $include_all
+     * @return string
+     */
+    public static function getSemesterSelector(
+        $select_attributes = null,
+        $default = 0,
+        $option_value = 'semester_id',
+        $include_all = true)
+    {
+        $semester = Semester::findAllVisible();
+
+        unset($semester[0]);
+
+        if ($include_all) {
+            $semester['all'] = [
+                'name' => _('alle'),
+                'semester_id' => 0
+            ];
+        }
+        $semester = array_reverse($semester, true);
+
+        if (!$select_attributes['name']) {
+            $select_attributes['name'] = 'sem_select';
+        }
+
+        $template = $GLOBALS['template_factory']->open('shared/semester-selector');
+        $template->semesters = $semester;
+        $template->select_attributes = $select_attributes;
+        $template->default = $default;
+        $template->option_value = $option_value;
+        return $template->render();
     }
 
     /**
@@ -220,7 +272,7 @@ class Semester extends SimpleORMap
      * @param String $field Name of the seminar (/additional_fields) type
      * @return int The count of seminars of this type
      */
-    protected function seminar_counter($field)
+    protected function seminarCounter($field)
     {
         if ($this->seminar_counts === null) {
             $query = "SELECT SUM(duration_time = -1 AND start_time < :beginn) AS continuous,
@@ -245,7 +297,7 @@ class Semester extends SimpleORMap
      *
      * @return int Calendar week number of the first week of lecture
      */
-    public function getfirst_sem_week()
+    public function getFirstSemesterWeek()
     {
         return (int)strftime('%W', $this['vorles_beginn']);
     }
@@ -256,7 +308,7 @@ class Semester extends SimpleORMap
      *
      * @return int Calendar week number of the last week of lecture
      */
-    public function getlast_sem_week()
+    public function getLastSemesterWeek()
     {
         return (int)strftime('%W', $this['vorles_ende']);
     }
@@ -266,7 +318,7 @@ class Semester extends SimpleORMap
      *
      * @return bool Indicating whether this semester is in the past
      */
-    public function getpast()
+    public function isPast()
     {
         return $this['ende'] < time();
     }
@@ -276,7 +328,7 @@ class Semester extends SimpleORMap
      *
      * @return bool Indicating if this is the current semester
      */
-    public function getcurrent()
+    public function isCurrent()
     {
         return time() >= $this->beginn && time() < $this->ende;
     }
@@ -296,21 +348,23 @@ class Semester extends SimpleORMap
         if ($duration === false) {
             $end_semester = $this;
         } elseif ($duration == -1) {
-            $end_semester = end(self::getAll());
+            $semesters = self::getAll();
+            $end_semester = end($semesters);
         } else {
-            $end_semester = self::findByTimestamp($this->beginn + $duration);
+            $end_semester = self::findByTimestamp((int)$this->beginn + (int)$duration);
         }
 
-        $timestamp = $this->getCorrectedVorlesBegin();
-        $end_date  = $end_semester->vorles_ende;
+        $timestamp = $this->getCorrectedLectureBegin();
+        $end_date = $end_semester->vorles_ende;
 
         $i = 0;
 
         $start_weeks = [];
         while ($timestamp < $end_date) {
-            $start_weeks[$i] = sprintf(_('%u. Semesterwoche (ab %s)'),
-                                       $i + 1,
-                                       strftime('%x', $timestamp));
+            $start_weeks[$i] = sprintf(
+                _('%u. Semesterwoche (ab %s)'),
+                $i + 1,
+                strftime('%x', $timestamp));
 
             $i += 1;
 
@@ -326,17 +380,17 @@ class Semester extends SimpleORMap
      *
      * @return int unix timestamp of correct begin of lectures
      */
-    public function getCorrectedVorlesBegin()
+    public function getCorrectedLectureBegin()
     {
-        $dow = date('w', $this->vorles_beginn);
+        $dow = (int)date('w', $this->vorles_beginn);
 
         // Date is already on a monday
-        if ($dow == 1) {
+        if ($dow === 1) {
             return $this->vorles_beginn;
         }
 
         // Saturday or sunday: return next monday
-        if ($dow == 0 || $dow == 6) {
+        if ($dow === 0 || $dow === 6) {
             return strtotime('next monday', $this->vorles_beginn);
         }
 
@@ -353,15 +407,15 @@ class Semester extends SimpleORMap
     public function getSemWeekNumber($timestamp)
     {
         $current_sem_week = (int)strftime('%W', $timestamp);
-        if(strftime('%Y', $timestamp) > strftime('%Y', $this->vorles_beginn)){
+        if (strftime('%Y', $timestamp) > strftime('%Y', $this->vorles_beginn)) {
             $current_sem_week += 52;
         }
-        if($this->last_sem_week < $this->first_sem_week){
-            $last_sem_week = $this->last_sem_week + 52;
+        if ($this->last_sem_week < $this->first_sem_week) {
+            $last_sem_week = (int)$this->last_sem_week + 52;
         } else {
             $last_sem_week = $this->last_sem_week;
         }
-        if($current_sem_week >= $this->first_sem_week && $current_sem_week <= $last_sem_week){
+        if ($current_sem_week >= $this->first_sem_week && $current_sem_week <= $last_sem_week) {
             return $current_sem_week - $this->first_sem_week + 1;
         }
 

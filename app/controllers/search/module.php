@@ -137,7 +137,7 @@ class Search_ModuleController extends MVVController
         $widget = new SelectWidget(_('Semesterauswahl'),
             $this->url_for('',['sterm' => $this->sterm]), 'sem_select');
         $options = [];
-        $semester = SemesterData::GetSemesterArray();
+        $semester = Semester::findAllVisible();
         unset($semester[0]);
         $semester = array_reverse($semester, true);
         foreach ($semester as $sem) {

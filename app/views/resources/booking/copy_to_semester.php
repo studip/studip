@@ -14,8 +14,8 @@
                                 <?= $semester_id == $semester->id
                                   ? 'selected="selected"'
                                   : '' ?>
-                                data-start_week="<?= htmlReady($semester->getfirst_sem_week()) ?>"
-                                data-end_week="<?= htmlReady($semester->getlast_sem_week()) ?>">
+                                data-start_week="<?= htmlReady($semester->getFirstSemesterWeek()) ?>"
+                                data-end_week="<?= htmlReady($semester->getLastSemesterWeek()) ?>">
                             <?= htmlReady($semester->name) ?>
                         </option>
                     <? endforeach ?>

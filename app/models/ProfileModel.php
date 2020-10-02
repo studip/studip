@@ -107,7 +107,7 @@ class ProfileModel
                 if ($c->duration_time != -1) {
                     return $c->start_time <= $one->beginn
                         && $one->beginn <= $c->start_time + $c->duration_time;
-                } elseif ($one->getcurrent()) {
+                } elseif ($one->isCurrent()) {
                     return $c;
                 }
                 return false;

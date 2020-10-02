@@ -112,7 +112,7 @@ $export_pagecontent .="<label>". _("Aus welchem Semester sollen die Daten export
 if (!isset($ex_sem)) {
     $ex_sem = (Semester::findCurrent() ? Semester::findCurrent()->getId() : null);
 }
-$export_pagecontent .= SemesterData::GetSemesterSelector(['name' => 'ex_sem'], $ex_sem, 'semester_id', true);
+$export_pagecontent .= Semester::getSemesterSelector(['name' => 'ex_sem'], $ex_sem, 'semester_id', true);
 $export_pagecontent .="</label>";
 
 $export_pagecontent .="<label>". _("Welche Arten von Veranstaltungen sollen exportiert werden? ") . "<br>";

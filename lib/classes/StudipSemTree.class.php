@@ -59,7 +59,7 @@ class StudipSemTree extends TreeAbstract
             $this->buildIndex();
         }
 
-        $this->sem_dates = SemesterData::GetSemesterArray();
+        $this->sem_dates = Semester::findAllVisible();
     }
 
     /**

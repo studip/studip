@@ -483,7 +483,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         if (!Config::get()->MY_COURSES_ENABLE_ALL_SEMESTERS && $config_sem == 'all') {
             $config_sem = 'future';
         }
-        $this->sem_data = SemesterData::GetSemesterArray();
+        $this->sem_data = Semester::findAllVisible();
 
         $sem = ($config_sem && $config_sem != '0' ? $config_sem : Config::get()->MY_COURSES_DEFAULT_CYCLE);
         if (Request::option('sem_select')) {

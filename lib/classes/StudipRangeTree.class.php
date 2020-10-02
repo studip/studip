@@ -62,7 +62,7 @@ class StudipRangeTree extends TreeAbstract {
         }
         $this->visible_only = (int)$args['visible_only'];
         parent::__construct(); //calling the baseclass constructor
-        $this->sem_dates = SemesterData::GetSemesterArray();
+        $this->sem_dates = Semester::findAllVisible();
     }
 
     /**
@@ -116,16 +116,16 @@ class StudipRangeTree extends TreeAbstract {
         if (!$this->tree_data[$item_id]) {
             return false;
         }
-        
+
         $found = false;
         $ret = false;
         $next_link = $item_id;
-        
+
         while(($next_link = $this->getNextLink($next_link)) != 'root') {
             if ($this->tree_data[$next_link]['studip_object'] == 'inst') {
                 $found[] = $next_link;
             }
-            
+
             if ($this->tree_data[$next_link]['studip_object'] == 'fak') {
                 if (is_array($found) && count($found)) {
                     foreach($found as $f) {
@@ -133,7 +133,7 @@ class StudipRangeTree extends TreeAbstract {
                             $ret[] = $this->tree_data[$f]['studip_object_id'];
                         }
                     }
-                    
+
                     $ret[] = $this->tree_data[$next_link]['studip_object_id'];
                 } else {
                     $ret[] = $this->tree_data[$next_link]['studip_object_id'];
@@ -142,11 +142,11 @@ class StudipRangeTree extends TreeAbstract {
             }
             $next_link = $this->tree_data[$next_link]['parent_id'];
         }
-        
+
         if (!$ret){
             $ret[] = $next_link;
         }
-        
+
         return $ret;
     }
     /**

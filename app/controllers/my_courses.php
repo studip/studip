@@ -294,8 +294,8 @@ class MyCoursesController extends AuthenticatedController
         Navigation::activateItem('/browse/my_courses/list');
 
         $this->current_semester = $sem ? : Semester::findCurrent()->semester_id;
+        $this->semesters = Semester::findAllVisible();
 
-        $this->semesters = SemesterData::GetSemesterArray();
         $forced_grouping = Config::get()->MY_COURSES_FORCE_GROUPING;
         if ($forced_grouping == 'not_grouped') {
             $forced_grouping = 'sem_number';

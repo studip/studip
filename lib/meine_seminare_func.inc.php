@@ -17,7 +17,7 @@ function get_group_names($group_field, $groups)
         $the_tree = TreeAbstract::GetInstance("StudipSemTree", ["build_index" => true]);
     }
     if ($group_field == 'sem_number') {
-        $all_semester = SemesterData::GetSemesterArray();
+        $all_semester = Semester::findAllVisible();
     }
     foreach ($groups as $key => $value) {
         switch ($group_field){
@@ -134,7 +134,7 @@ function sort_groups($group_field, &$groups)
 function correct_group_sem_number(&$groups, &$my_obj)
 {
     if (is_array($groups) && is_array($my_obj)) {
-        $sem_data = SemesterData::GetSemesterArray();
+        $sem_data = Semester::findAllVisible();
         //end($sem_data);
         //$max_sem = key($sem_data);
         foreach ($sem_data as $sem_key => $one_sem){
@@ -177,7 +177,7 @@ function correct_group_sem_number(&$groups, &$my_obj)
 function add_sem_name(&$my_obj)
 {
     if ($GLOBALS['user']->cfg->getValue('SHOWSEM_ENABLE')) {
-        $sem_data = SemesterData::GetSemesterArray();
+        $sem_data = Semester::findAllVisible();
         if (is_array($my_obj)) {
             foreach ($my_obj as $seminar_id => $values){
                 if ($values['obj_type'] == 'sem' && $values['sem_number'] != $values['sem_number_end']){

@@ -125,7 +125,7 @@ class Lvgruppen_LvgruppenController extends MVVController
                 $this->semester_filter
             );
             $semester = Semester::find($this->semester_filter);
-            if ($semester && $semester->getcurrent()) {
+            if ($semester && $semester->isCurrent()) {
                 $this->next_sem = Semester::findNext();
                 $this->display_semesters[] = $this->next_sem;
                 $this->courses = array_merge($this->courses,

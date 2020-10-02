@@ -87,7 +87,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         $show_hidden = Request::int('show_hidden', 0);
         // load semester-data and current semester
         $this->semesters = array_reverse(SemesterData::getAllSemesterData());
-
+        var_dump($this->semesters);die;
         if (Request::option('semester_id')) {
             $this->current_semester = Semester::find(Request::option('semester_id'));
             $schedule_settings['semester_id'] = Request::option('semester_id');

@@ -26,7 +26,7 @@
 // +---------------------------------------------------------------------------+
 
 
-foreach (SemesterData::GetSemesterArray() as $key => $value){
+foreach (Semester::findAllVisible() as $key => $value){
     if (isset($value['beginn']) && $value['beginn'])
       $sem_start_times[] = $value['beginn'];
 }

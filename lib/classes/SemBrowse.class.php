@@ -1355,7 +1355,7 @@ class SemBrowse {
      */
     public static function setSemesterSelector($submit_url)
     {
-        $semesters = SemesterData::getSemesterArray();
+        $semesters = Semester::findAllVisible();
         unset($semesters[0]);
         $sidebar = Sidebar::Get();
         $list = new SelectWidget(_('Semester'),

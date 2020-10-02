@@ -25,7 +25,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+
 
-foreach (SemesterData::GetSemesterArray() as $key => $value){
+foreach (Semester::findAllVisible() as $key => $value){
     if (isset($value['beginn']) && $value['beginn'])
       $sem_start_times[] = $value['beginn'];
 }

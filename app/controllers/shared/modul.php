@@ -132,7 +132,7 @@ class Shared_ModulController extends AuthenticatedController
         $display_language = Request::get('display_language', $_SESSION['_language']);
         ModuleManagementModel::setLanguage($display_language);
 
-        $this->semesterSelector = SemesterData::GetSemesterSelector(null, $currentSemester['semester_id'], 'semester_id', false);
+        $this->semesterSelector = Semester::getSemesterSelector(null, $currentSemester['semester_id'], 'semester_id', false);
         $this->modul = $modul;
         $this->pruefungsEbene = $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'];
         $this->modulDeskriptor = $modul->getDeskriptor($display_language);

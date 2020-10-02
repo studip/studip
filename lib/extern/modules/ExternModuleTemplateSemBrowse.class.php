@@ -562,7 +562,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
 
     function getSelectSem () {
         $select_sem = '<select name="ext_templatesembrowse[sem]" id="ext_templatesembrowse_sem" size="1">';
-        $semester = SemesterData::GetSemesterArray();
+        $semester = Semester::findAllVisible();
         $sem_options = [['name' =>_("alle"),'value' => 'all']];
         for ($i = count($semester) -1; $i >= 0; --$i) {
             $sem_options[] = ['name' => $semester[$i]['name'], 'value' => "$i"];
@@ -748,7 +748,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
                 $content['__GLOBAL__']['GROUP_BY_LECTURER-HREF'] = $this->getLinkToSelf(['group_by' => '2'], true);
                 $content['__GLOBAL__']['GROUP_BY_INSTITUTE-HREF'] = $this->getLinkToSelf(['group_by' => '4'], true);
                 $j = 0;
-                $semester = SemesterData::GetSemesterArray();
+                $semester = Semester::findAllVisible();
                 foreach ($group_by_data as $group_field => $sem_ids) {
                     switch ($this->sem_browse_data['group_by']) {
                         case 0:
@@ -781,7 +781,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
 
                     if (is_array($sem_ids['Seminar_id'])) {
                         $k = 0;
-                        $semester = SemesterData::GetSemesterArray();
+                        $semester = Semester::findAllVisible();
                         foreach (array_keys($sem_ids['Seminar_id'])  as $seminar_id) {
                             $content['RESULT']['GROUP'][$j]['COURSE'][$k]['COURSE_ID'] = $seminar_id;
                             $content['RESULT']['GROUP'][$j]['COURSE'][$k]['TITLE'] = ExternModule::ExtHtmlReady(key($sem_data[$seminar_id]['Name']));
@@ -1150,7 +1150,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
         $group_by_data = $snap->getGroupedResult($group_field, $data_fields);
         $sem_data = $snap->getGroupedResult('Seminar_id');
         if ($this->sem_browse_data['group_by'] == 0) {
-            $semester = SemesterData::GetSemesterArray();
+            $semester = Semester::findAllVisible();
             $group_by_duration = $snap->getGroupedResult('sem_number_end', ['sem_number', 'Seminar_id']);
             foreach ($group_by_duration as $sem_number_end => $detail) {
                 if ($sem_number_end != -1 && ($detail['sem_number'][$sem_number_end] && count($detail['sem_number']) == 1)) {
@@ -1380,7 +1380,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
             foreach ($group_by_data as $group_field => $sem_ids){
                 switch ($this->sem_browse_data["group_by"]){
                     case 0:
-                    $semester = SemesterData::GetSemesterArray();
+                    $semester = Semester::findAllVisible();
                     $headline = $semester[$group_field]['name'];
                     break;
 
@@ -1408,7 +1408,7 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
                 $worksheet1->write_blank($row,3, $caption_format);
                 ++$row;
                 if (is_array($sem_ids['Seminar_id'])) {
-                    $semester = SemesterData::GetSemesterArray();
+                    $semester = Semester::findAllVisible();
                     foreach (array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                         $sem_name = key($sem_data[$seminar_id]["Name"]);
                         $seminar_number = key($sem_data[$seminar_id]['VeranstaltungsNummer']);

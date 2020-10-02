@@ -131,7 +131,7 @@ class Module_DownloadController extends MVVController
                     return $GLOBALS['MVV_MODUL']['SPRACHE']['values'][$al->lang]['name'];
                 }
             ));
-        $this->semesterSelector = SemesterData::GetSemesterSelector(null, $currentSemester->getId(), 'semester_id', false);
+        $this->semesterSelector = Semester::GetSemesterSelector(null, $currentSemester->getId(), 'semester_id', false);
         $this->modul = $modul;
         $this->pruefungsEbene = $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'];
         $this->modulDeskriptor = $modul->getDeskriptor($language);
