@@ -135,7 +135,13 @@ class Course_PlusController extends AuthenticatedController
 
                 $modules->writeBin($id, $bitmask, $object_type);
             }
-            if (is_a($module, "StandardPlugin", true)) {
+            if (
+                is_a($module, 'StandardPlugin', true)
+                && (
+                    !$active
+                    || $module->isActivatableForContext($this->sem)
+                )
+            ) {
                 PluginManager::getInstance()->setPluginActivated(
                     PluginEngine::getPlugin($module)->getPluginId(),
                     $id,
