@@ -82,7 +82,7 @@ class ExternElementPersondetailsLecturesTemplate extends ExternElementPersondeta
             $edit_form = '', $anker = '') {
 
         // get semester data
-        $semester_data = Semester::getAllAsArray(false);
+        $semester_data = SemesterData::getAllSemesterData();
 
         $out = '';
         $table = '';

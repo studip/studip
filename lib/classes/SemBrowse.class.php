@@ -457,8 +457,12 @@ class SemBrowse {
                 ob_end_flush();
                 ob_start();
                 if (is_array($sem_ids['Seminar_id'])) {
+                    if ($this->sem_browse_data['default_sem'] != 'all') {
+                        $current_semester_id = SemesterData::GetSemesterIdByIndex($this->sem_browse_data['default_sem']);
+                    }
+
                     // Get sem classes that can be used for grouping.
-                    $this->grouping = SemType::getGroupingSemTypes();
+                    $grouping = SemType::getGroupingSemTypes();
 
                     foreach(array_keys($sem_ids['Seminar_id']) as $seminar_id){
                         echo $this->printCourseRow($seminar_id, $sem_data);
@@ -488,7 +492,7 @@ class SemBrowse {
         require_once "vendor/write_excel/Worksheet.php";
         require_once "vendor/write_excel/Workbook.php";
 
-        global $SEM_TYPE, $SEM_CLASS, $TMP_PATH;
+        global $_fullname_sql, $SEM_TYPE, $SEM_CLASS, $TMP_PATH;
 
         if (!$headline) {
             $headline = _('Stud.IP Veranstaltungen') . ' - ' . Config::get()->UNI_NAME_CLEAN;
@@ -663,7 +667,7 @@ class SemBrowse {
 
     public function get_result()
     {
-        global $_fullname_sql, $user;
+        global $_fullname_sql, $SEM_TYPE, $SEM_CLASS, $user;
         if ($this->sem_browse_data['group_by'] == 1) {
             if (!is_object($this->sem_tree)) {
                 $the_tree = TreeAbstract::GetInstance('StudipSemTree', false);
@@ -835,6 +839,8 @@ class SemBrowse {
      */
     private function printCourseRow($seminar_id, &$sem_data, $child = false)
     {
+        global $_fullname_sql, $SEM_TYPE, $SEM_CLASS;
+
         $row = '';
 
         /*
@@ -851,7 +857,7 @@ class SemBrowse {
             // is this sem a studygroup?
             $studygroup_mode = SeminarCategories::GetByTypeId($seminar_obj->getStatus())->studygroup_mode;
 
-            $sem_name = $GLOBALS['SEM_TYPE'][key($sem_data[$seminar_id]['status'])]['name']
+            $sem_name = $SEM_TYPE[key($sem_data[$seminar_id]['status'])]['name']
                     . ': ' . key($sem_data[$seminar_id]['Name']);
             $seminar_number = key($sem_data[$seminar_id]['VeranstaltungsNummer']);
 
@@ -908,12 +914,12 @@ class SemBrowse {
                     });
                 }
                 if (count($visibleChildren) > 0) {
-                    $row .= Icon::create('add', Icon::ROLE_CLICKABLE,[
+                    $row .= Icon::create('add', 'clickable',[
                             'id' => 'show-subcourses-' . $seminar_id,
                             'title' => sprintf(_('%u Unterveranstaltungen anzeigen'), count($visibleChildren)),
                             'onclick' => "jQuery('tr.subcourses-" . $seminar_id . "').removeClass('hidden-js');jQuery(this).closest('tr').addClass('has-subcourses');jQuery(this).hide();jQuery('#hide-subcourses-" . $seminar_id . "').show();"
                         ])->asImg(12) . ' ';
-                    $row .= Icon::create('remove', Icon::ROLE_CLICKABLE,[
+                    $row .= Icon::create('remove', 'clickable',[
                             'id' => 'hide-subcourses-' . $seminar_id,
                             'style' => 'display:none',
                             'title' => sprintf(_('%u Unterveranstaltungen ausblenden'), count($visibleChildren)),
@@ -937,6 +943,7 @@ class SemBrowse {
                         [
                             'short' => true,
                             'shrink' => true,
+                            'semester_id' => $current_semester_id
                         ]);
                 //Shorten, if string too long (add link for details.php)
                 if (mb_strlen($temp_turnus_string) > 70) {

@@ -100,7 +100,7 @@ class ExternElementMainLectures extends ExternElementMain {
         global $SEM_CLASS;
 
         // get semester data
-        $semester_data = Semester::getAllAsArray(false);
+        $semester_data = SemesterData::getAllSemesterData();
 
         $out = "";
         $table = "";

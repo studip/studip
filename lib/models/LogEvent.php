@@ -274,7 +274,7 @@ class LogEvent extends SimpleORMap implements PrivacyObject
      * @return string The name of semester or the id.
      */
     protected function formatSemester($field) {
-        $all_semester = Semester::getAllAsArray(false);
+        $all_semester = SemesterData::getAllSemesterData();
         foreach ($all_semester as $val) {
             if ($val['beginn'] == $this->$field) {
                 return '<em>' . $val['name'] . '</em>';

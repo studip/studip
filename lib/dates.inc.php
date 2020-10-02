@@ -308,7 +308,7 @@ Die Funktion get_sem_num gibt die Nummer eines Semester, in dem ein uebergebener
 */
 
 function get_sem_num ($time) {
-    $all_semester = Semester::getAllAsArray(false);
+    $all_semester = SemesterData::getAllSemesterData();
     foreach ($all_semester as $key=>$val)
         if (($time >= $val["beginn"]) AND ($time <= $val["ende"]))
             return $key;
@@ -316,7 +316,7 @@ function get_sem_num ($time) {
 }
 
 function get_sem_num_sem_browse () {
-    $all_semester = Semester::getAllAsArray(false);
+    $all_semester = SemesterData::getAllSemesterData();
     $time = time();
     $ret = false;
     foreach ($all_semester as $key=>$val){

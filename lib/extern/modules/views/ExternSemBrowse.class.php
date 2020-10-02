@@ -51,7 +51,7 @@ class ExternSemBrowse extends SemBrowse {
         global $SEM_TYPE,$SEM_CLASS;
         // prevent warnings if snapshot of database is empty
         ob_start();
-        $all_semester = Semester::getAllAsArray(false);
+        $all_semester = SemesterData::getAllSemesterData();
         array_unshift($all_semester,0);
 
         $this->group_by_fields = [ ['name' => _("Semester"), 'group_field' => 'sem_number'],
@@ -395,7 +395,7 @@ class ExternSemBrowse extends SemBrowse {
                         $group_sem_types = SemType::getGroupingSemTypes();
                         $table_data = compact('zebra', 'colspan', 'show_time',
                             'show_lecturer', 'td_time', 'td_lecturer', 'group_sem_types');
-
+    
                         foreach (array_keys($sem_ids['Seminar_id']) as $seminar_id) {
                             $this->printCourseRow($seminar_id, $sem_data, $table_data);
                         }

@@ -17,7 +17,7 @@
         </tr>
 
         <?
-        $all_semester = Semester::getAllAsArray(false);
+        $all_semester = SemesterData::getAllSemesterData();
 
         foreach ($dates as $date) :
             if ( ($grenze == 0) || ($grenze < $date['start']) ) {

@@ -107,7 +107,7 @@ class ExternElementMainLecturestable extends ExternElementMain {
             $edit_form = "", $anker = "") {
 
         // get semester data
-        $semester_data = Semester::getAllAsArray(false);
+        $semester_data = SemesterData::getAllSemesterData();
 
         update_generic_datafields($this->config, $this->data_fields, $this->field_names, "sem");
         $out = "";
