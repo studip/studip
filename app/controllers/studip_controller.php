@@ -229,7 +229,7 @@ abstract class StudipController extends Trails_Controller
                     $info = $class_infos[$i];
 
                     $reflection = new ReflectionClass($info['model']);
-                    $sorm = $reflection->newInstanceArgs(explode(
+                    $sorm = $reflection->newInstance(explode(
                         SimpleORMap::ID_SEPARATOR,
                         $arg == -1 ? null : $arg
                     ));
