@@ -135,7 +135,7 @@ class Module_DownloadController extends MVVController
         $this->modul = $modul;
         $this->pruefungsEbene = $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'];
         $this->modulDeskriptor = $modul->getDeskriptor($language);
-        $this->startSemester = SemesterData::getSemesterData($modul->start);
+        $this->startSemester = Semester::find($modul->start);
         if ($modul->responsible_institute->institute) {
             $this->instituteName = $modul->responsible_institute->getDisplayName();
         } else {

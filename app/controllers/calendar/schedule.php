@@ -89,13 +89,13 @@ class Calendar_ScheduleController extends AuthenticatedController
         $this->semesters = array_reverse(SemesterData::getAllSemesterData());
 
         if (Request::option('semester_id')) {
-            $this->current_semester = SemesterData::getSemesterData(Request::option('semester_id'));
+            $this->current_semester = Semester::find(Request::option('semester_id'));
             $schedule_settings['semester_id'] = Request::option('semester_id');
             UserConfig::get($GLOBALS['user']->id)->store('SCHEDULE_SETTINGS',
                 $schedule_settings);
         } else {
             $this->current_semester = $schedule_settings['semester_id'] ?
-                SemesterData::getSemesterData($schedule_settings['semester_id']) :
+                Semester::find($schedule_settings['semester_id']) :
                 SemesterData::getCurrentSemesterData();
         }
 

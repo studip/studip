@@ -52,7 +52,7 @@ class Shared_ModulController extends AuthenticatedController
                 $semesterSwitch = intval(get_config('SEMESTER_TIME_SWITCH'));
                 $currentSemester = SemesterData::getSemesterDataByDate(time() + $semesterSwitch * 7 * 24 * 60 * 60);
             } else {
-                $currentSemester = SemesterData::getSemesterData($semester_id);
+                $currentSemester = Semester::find($semester_id);
             }
 
             $sws = 0;
