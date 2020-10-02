@@ -40,8 +40,6 @@ use Studip\Button, Studip\LinkButton;
 
 require_once ("lib/export/export_xslt_vars.inc.php");   // XSLT-Variablen
 
-$semester = new SemesterData;
-
 $export_pagename = _("Datenexport - Startseite");
 
 $export_info = null;

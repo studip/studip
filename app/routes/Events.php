@@ -1,7 +1,6 @@
 <?php
 namespace RESTAPI\Routes;
 
-use Calendar;
 use DbCalendarEventList;
 use SingleCalendar;
 use SingleDate;
@@ -9,7 +8,6 @@ use Seminar;
 use Issue;
 use CalendarExport;
 use CalendarWriterICalendar;
-use SemesterData;
 
 /**
  * @author  André Klaßen <andre.klassen@elan-ev.de>

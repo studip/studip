@@ -43,7 +43,12 @@
 QuickSearch::get("mandatory_course_id", new SeminarSearch('number-name-lecturer'))
     ->render();
 ?>
-<?= Semester::getSemesterSelector(['name' => 'search_sem_sem'], SemesterData::GetSemesterIndexById($_SESSION['_default_sem']), 'key', false)?>
+<?= Semester::getSemesterSelector(
+    ['name' => 'search_sem_sem'],
+    Semester::getIndexById($_SESSION['_default_sem'], false),
+    'key',
+    false
+)?>
 
 </div>
 

@@ -62,7 +62,7 @@ class CoursesIndex extends JsonApiController
             if (!$semester) {
                 return 'Invalid "semester".';
             }
-            $semNumber = \SemesterData::GetSemesterIndexById($semester->id);
+            $semNumber = \Semester::getIndexById($semester->id, false);
             if ($semNumber === false) {
                 return 'Invalid "semester".';
             }
@@ -84,7 +84,7 @@ class CoursesIndex extends JsonApiController
         $filtering = $this->getQueryParameters()->getFilteringParameters() ?: [];
 
         if (isset($filtering['semester'])) {
-            $filtering['semester'] = \SemesterData::GetSemesterIndexById($filtering['semester']);
+            $filtering['semester'] = \Semester::getIndexById($filtering['semester'], false);
         }
 
         return array_merge($defaults, $filtering);

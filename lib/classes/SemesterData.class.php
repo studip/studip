@@ -15,26 +15,5 @@
  */
 class SemesterData
 {
-    /**
-     * Return the index number of the passed semester in the array return by
-     * SemesterData::getAllSemesterData()
-     *
-     * @param string $semester_id
-     * @return int semester index
-     * @deprecated use semester class instead
-     *
-     */
-    public static function getSemesterIndexById($semester_id)
-    {
-        $index = false;
-
-        foreach (Semester::findAllVisible() as $i => $sem) {
-            if (@$sem['semester_id'] == $semester_id) {
-                $index = $i;
-            }
-        }
-
-        return $index;
-    }
 
 }
