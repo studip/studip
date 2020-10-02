@@ -1,9 +1,9 @@
 <? if (isset($flash['decline_course'])) : ?>
-    <?=
-    createQuestion($flash['message'], ['cmd' => $flash['cmd'], 'studipticket' => $flash['studipticket']],
-        ['cmd'          => 'back',
-              'studipticket' => $flash['studipticket']],
-        $controller->url_for(sprintf('my_courses/decline/%s', $flash['course_id']))); ?>
+    <?= (string)QuestionBox::create(
+        $flash['message'],
+        $controller->declineURL($flash['course_id'], ['cmd' => $flash['cmd'], 'studipticket' => $flash['studipticket']]),
+        $controller->declineURL($flash['course_id'], ['cmd' => 'back', 'studipticket' => $flash['studipticket']])
+    ) ?>
 <? endif ?>
 
 <? if (sizeof($waiting_list)) : ?>

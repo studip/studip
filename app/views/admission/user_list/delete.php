@@ -1,4 +1,8 @@
-<?= createQuestion(sprintf(_('Soll die Nutzerliste %s wirklich gelöscht werden?'), 
-    $list->getName()), ['really' => true], ['cancel' => true], 
-    $controller->url_for('admission/userlist/delete', $userlist->getId()));
+<?= (string)QuestionBox::create(
+    sprintf(_('Soll die Nutzerliste %s wirklich gelöscht werden?'),
+        $list->getName()
+    ),
+    $controller->deleteURL($userlist->getId(), ['really' => true]),
+    $controller->deleteURL($userlist->getId(), ['cancel' => true]),
+)
 ?>

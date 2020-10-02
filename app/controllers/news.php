@@ -92,7 +92,10 @@ class NewsController extends StudipController
                     $news->deleteRange($range);
                     $news->store();
                 } else {
-                    $this->question = createQuestion(_('Ankündigung wirklich aus diesem Bereich entfernen?'), ['remove_news' => $news_id, 'news_range' => $range, 'confirm' => true]);
+                    $this->question = (string)QuestionBox::create(
+                        _('Ankündigung wirklich löschen?'),
+                        URLHelper::getURL('', ['remove_news' => $news_id, 'news_range' => $range, 'confirm' => true])
+                    );
                 }
             }
         }
@@ -104,14 +107,16 @@ class NewsController extends StudipController
                 if (Request::get('confirm')) {
                     $news->delete();
                 } else {
-                    $this->question = createQuestion(_('Ankündigung wirklich löschen?'), ['delete_news' => $news_id, 'confirm' => true]);
+                    $this->question = (string)QuestionBox::create(
+                        _('Ankündigung wirklich löschen?'),
+                        URLHelper::getURL('', ['delete_news' => $news_id, 'confirm' => true])
+                    );
                 }
             }
         }
 
         $this->perm = StudipNews::haveRangePermission('edit', $range_id);
         $this->show_all_news = Request::get('nshow_all') && $this->perm;
-        $news = StudipNews::GetNewsByRange($range_id, !$this->show_all_news);
         if ($this->show_all_news) {
             URLHelper::addLinkParam('nshow_all', 1);
         }

@@ -1,11 +1,12 @@
-<?
-# Lifter010: TODO
-?>
 <? if (isset($flash['delete'])): ?>
-    <?= createQuestion(sprintf(_('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'), $flash['delete']['name']),
-                       ['delete' => 1],
-                       ['back' => 1],
-                       $controller->url_for('admin/datafields/delete'.'/' . $flash['delete']['datafield_id'])); ?>
+    <?= (string)QuestionBox::create(
+        sprintf(
+            _('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'),
+            $flash['delete']['name']
+        ),
+       $controller->deleteURL($flash['delete']['datafield_id'],['delete' => 1]),
+       $controller->deleteURL($flash['delete']['datafield_id'],['back' => 1]),
+       ); ?>
 <? endif; ?>
 
 <!-- Alle Datenfelder  -->
@@ -97,7 +98,7 @@
             <td>
             <? if (in_array($val->type, words('selectbox selectboxmultiple radio combo'))): ?>
                 <a data-dialog="size=auto" href="<?= $controller->url_for('admin/datafields/config/'. $val->id) ?>">
-                    <?= Icon::create('edit', 'clickable')->asImg(['class'=> 'text-top', 'title' => 'Einträge bearbeiten']) ?>
+                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE)->asImg(['class'=> 'text-top', 'title' => 'Einträge bearbeiten']) ?>
                 </a>
             <? endif; ?>
                  <span><?= htmlReady($val->type) ?></span>
@@ -136,31 +137,31 @@
         <? if ($key === 'user'): ?>
             <td>
             <? if ($val->system): ?>
-                <?= Icon::create('checkbox-checked', 'inactive', ['title' => _('Ja')])->asImg() ?>
+                <?= Icon::create('checkbox-checked', Icon::ROLE_INACTIVE, ['title' => _('Ja')])->asImg() ?>
             <? else: ?>
-                <?= Icon::create('checkbox-unchecked', 'inactive', ['title' => _('Nein')])->asImg() ?>
+                <?= Icon::create('checkbox-unchecked', Icon::ROLE_INACTIVE, ['title' => _('Nein')])->asImg() ?>
             <? endif; ?>
             </td>
             <td>
             <? if ($val->is_userfilter): ?>
-                <?= Icon::create('checkbox-checked', 'inactive', ['title' => _('Ja')])->asImg() ?>
+                <?= Icon::create('checkbox-checked', Icon::ROLE_INACTIVE, ['title' => _('Ja')])->asImg() ?>
             <? else: ?>
-                <?= Icon::create('checkbox-unchecked', 'inactive', ['title' => _('Nein')])->asImg() ?>
+                <?= Icon::create('checkbox-unchecked', Icon::ROLE_INACTIVE, ['title' => _('Nein')])->asImg() ?>
             <? endif; ?>
             </td>
         <? elseif ($key === 'sem'): ?>
             <td>
             <? if ($val->is_required): ?>
-                <?= Icon::create('checkbox-checked', 'inactive', ['title' => _('Ja')])->asImg() ?>
+                <?= Icon::create('checkbox-checked', Icon::ROLE_INACTIVE, ['title' => _('Ja')])->asImg() ?>
             <? else: ?>
-                <?= Icon::create('checkbox-unchecked', 'inactive', ['title' => _('Nein')])->asImg() ?>
+                <?= Icon::create('checkbox-unchecked', Icon::ROLE_INACTIVE, ['title' => _('Nein')])->asImg() ?>
             <? endif; ?>
             </td>
             <td>
             <? if (trim($val->description)): ?>
-                <?= Icon::create('checkbox-checked', 'inactive', ['title' => _('Ja')])->asImg() ?>
+                <?= Icon::create('checkbox-checked', Icon::ROLE_INACTIVE, ['title' => _('Ja')])->asImg() ?>
             <? else: ?>
-                <?= Icon::create('checkbox-unchecked', 'inactive', ['title' => _('Nein')])->asImg() ?>
+                <?= Icon::create('checkbox-unchecked', Icon::ROLE_INACTIVE, ['title' => _('Nein')])->asImg() ?>
             <? endif; ?>
             </td>
         <? else: ?>
@@ -170,10 +171,10 @@
             <td><?= count($val) ?></td>
             <td class="actions">
                 <a href="<?=$controller->url_for('admin/datafields/edit/' . $val->id)?>" data-dialog>
-                    <?= Icon::create('edit', 'clickable', ['title' => 'Datenfeld ändern'])->asImg() ?>
+                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE, ['title' => 'Datenfeld ändern'])->asImg() ?>
                 </a>
                 <a href="<?=$controller->url_for('admin/datafields/delete/' . $val->id)?>">
-                    <?= Icon::create('trash', 'clickable', ['title' => 'Datenfeld löschen'])->asImg() ?>
+                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => 'Datenfeld löschen'])->asImg() ?>
                 </a>
             </td>
         </tr>

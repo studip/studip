@@ -1,10 +1,12 @@
 <? if (isset($flash['decline_inst'])) : ?>
-    <?=
-    createQuestion(sprintf(_('Wollen Sie sich aus dem/der %s wirklich austragen?'),
-            htmlReady($flash['name'])), ['cmd' => 'kill', 'studipticket' => $flash['studipticket']],
-        ['cmd'          => 'back',
-              'studipticket' => $flash['studipticket']],
-        $controller->url_for(sprintf('my_institutes/decline_inst/%s', $flash['inst_id']))); ?>
+    <?= (string)QuestionBox::create(
+        sprintf(
+            _('Wollen Sie sich aus dem/der %s wirklich austragen?'),
+            htmlReady($flash['name'])
+        ),
+        $controller->declineURL($flash['inst_id'], ['cmd' => 'kill', 'studipticket' => $flash['studipticket']]),
+        $controller->declineURL($flash['inst_id'], ['cmd'=> 'back', 'studipticket' => $flash['studipticket']])
+    ) ?>
 <? endif ?>
 
 <? if (empty($institutes)) : ?>

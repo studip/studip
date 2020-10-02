@@ -999,7 +999,10 @@ class Seminar
                 $question_time = '**'. strftime('%A', $data['day']) .', '. $data['start_stunde'] .':'. $data['start_minute']
                     .' - '. $data['end_stunde'] .':'. $data['end_minute'] .'**';
 
-                echo createQuestion(sprintf($question, $question_time), $link_params);
+                echo (string)QuestionBox::create(
+                    sprintf($question, $question_time),
+                    URLHelper::getURL('', $link_params)
+                );
 
             } else {
                 $do_changes = true;
