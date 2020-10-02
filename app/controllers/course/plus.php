@@ -135,18 +135,9 @@ class Course_PlusController extends AuthenticatedController
 
                 $modules->writeBin($id, $bitmask, $object_type);
             }
-            if (
-                is_a($module, 'StandardPlugin', true)
-                && (
-                    !$active
-                    || $module->isActivatableForContext($this->sem)
-                )
-            ) {
-                PluginManager::getInstance()->setPluginActivated(
-                    PluginEngine::getPlugin($module)->getPluginId(),
-                    $id,
-                    (bool)$active
-                );
+            if (is_a($module, 'StandardPlugin', true)) {
+                $plugin = PluginEngine::getPlugin($module);
+                $this->setPluginActivated($plugin, $active);
             }
             if ($object_type === "sem") {
                 $this->redirect("course/plus/trigger", ['cid' => $id]);
@@ -421,13 +412,7 @@ class Course_PlusController extends AuthenticatedController
                     $modules->$moduleXxDeactivate($seminar_id);
                     if ($this->sem_class) {
                         $studip_module = $this->sem_class->getModule($key);
-                        if (is_a($studip_module, "StandardPlugin")) {
-                            PluginManager::getInstance()->setPluginActivated(
-                                $studip_module->getPluginId(),
-                                $seminar_id,
-                                false
-                            );
-                        }
+                        $this->setPluginActivated($studip_module, false);
                     }
                 }
                 $modules->clearBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]);
@@ -476,21 +461,17 @@ class Course_PlusController extends AuthenticatedController
 
                     if ($this->sem_class) {
                         $studip_module = $this->sem_class->getModule($key);
-                        if (is_a($studip_module, "StandardPlugin")) {
-                            PluginManager::getInstance()->setPluginActivated(
-                                $studip_module->getPluginId(),
-                                $seminar_id,
-                                Request::option($key . '_value') == "TRUE"
-                            );
-                        }
+                        $this->setPluginActivated(
+                            $studip_module,
+                            Request::option("{$key}_value") === 'TRUE'
+                        );
                     } else {
                         // check, if the passed module is represented by a core-plugin
                         if (mb_strtolower(get_parent_class('core' . $key)) == 'studipplugin') {
                             $plugin = PluginEngine::getPlugin('core' . $key);
-                            PluginManager::getInstance()->setPluginActivated(
-                                $plugin->getPluginId(),
-                                $seminar_id,
-                                Request::option($key . '_value') == "TRUE"
+                            $this->setPluginActivated(
+                                $plugin,
+                                Request::option("{$key}_value") === 'TRUE'
                             );
                         }
                     }
@@ -548,13 +529,7 @@ class Course_PlusController extends AuthenticatedController
                         $modules->$moduleXxActivate($seminar_id);
                         if ($this->sem_class) {
                             $studip_module = $this->sem_class->getModule($key);
-                            if (is_a($studip_module, "StandardPlugin")) {
-                                PluginManager::getInstance()->setPluginActivated(
-                                    $studip_module->getPluginId(),
-                                    $seminar_id,
-                                    true
-                                );
-                            }
+                            $this->setPluginActivated($studip_module, true);
                         }
                     }
                 }
@@ -591,22 +566,28 @@ class Course_PlusController extends AuthenticatedController
                 foreach ($plugins as $plugin) {
                     $plugin_id = $plugin->getPluginId();
 
-                    if (in_array($plugin_id, $_SESSION['plugin_toggle'])) {
-                        $activated = !$plugin_manager->isPluginActivated($plugin_id, $seminar_id);
-                        $plugin_manager->setPluginActivated($plugin_id, $seminar_id, $activated);
-                        $changes = true;
-                        // logging
-                        if ($activated) {
-                            StudipLog::log('PLUGIN_ENABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
-                            NotificationCenter::postNotification('PluginForSeminarDidEnabled', $seminar_id, $plugin_id);
-                            PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($plugin->getPluginName())));
-                        } else {
-                            StudipLog::log('PLUGIN_DISABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
-                            NotificationCenter::postNotification('PluginForSeminarDidDisabled', $seminar_id, $plugin_id);
-                            PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($plugin->getPluginName())));
-                        }
-                        $anchor = '#p_' . $plugin->getPluginId();
+                    if (!in_array($plugin_id, $_SESSION['plugin_toggle'])) {
+                        continue;
                     }
+
+                    $activated = $this->setPluginActivated($plugin);
+
+                    if ($activated === null) {
+                        continue;
+                    }
+
+                    $changes = true;
+                    // logging
+                    if ($activated) {
+                        StudipLog::log('PLUGIN_ENABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
+                        NotificationCenter::postNotification('PluginForSeminarDidEnabled', $seminar_id, $plugin_id);
+                        PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($plugin->getPluginName())));
+                    } else {
+                        StudipLog::log('PLUGIN_DISABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
+                        NotificationCenter::postNotification('PluginForSeminarDidDisabled', $seminar_id, $plugin_id);
+                        PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($plugin->getPluginName())));
+                    }
+                    $anchor = '#p_' . $plugin->getPluginId();
                 }
                 $_SESSION['plugin_toggle'] = [];
             }
@@ -614,5 +595,28 @@ class Course_PlusController extends AuthenticatedController
                 $this->redirect($this->url_for('course/plus/index/' . $seminar_id . $anchor));
             }
         }
+    }
+
+    private function setPluginActivated(StudIPModule $plugin = null, bool $state = null)
+    {
+        static $manager = null;
+        if ($manager === null) {
+            $manager = PluginManager::getInstance();
+        }
+
+        if (
+            !is_a($plugin, 'StandardPlugin')
+            || !$plugin->isActivatableForContext(Context::get())
+        ) {
+            return null;
+        }
+
+        if ($state === null) {
+            $state = !$manager->isPluginActivated($plugin->getPluginId(), Context::getId());
+        }
+
+        $manager->setPluginActivated($plugin->getPluginId(), Context::getId(), $state);
+
+        return $manager->isPluginActivated($plugin->getPluginId(), Context::getId());
     }
 }
