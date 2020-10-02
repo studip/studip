@@ -86,7 +86,7 @@ class ExternElementMainGlobal extends ExternElementMain {
             $edit_form = "", $anker = "") {
 
         // get semester data
-        $semester_data = SemesterData::getAllSemesterData();
+        $semester_data = Semester::findAllVisible(false);
 
         $out = "";
         $table = "";

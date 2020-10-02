@@ -83,7 +83,7 @@ class ExternElementMainTemplateSemBrowse extends ExternElementMain {
 
     function toStringEdit ($post_vars = '', $faulty_values = '', $edit_form = '', $anker = '') {
         // get semester data
-        $semester_data = SemesterData::getAllSemesterData();
+        $semester_data = Semester::findAllVisible(false);
 
         update_generic_datafields($this->config, $this->data_fields, $this->field_names, "sem");
 

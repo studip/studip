@@ -49,7 +49,7 @@ class ExternSemBrowseTable extends SemBrowse {
 
         global $SEM_TYPE,$SEM_CLASS;
         ob_start();
-        $all_semester = SemesterData::getAllSemesterData();
+        $all_semester = Semester::findAllVisible(false);
         array_unshift($all_semester, 0);
 
         $this->group_by_fields = [ ['name' => _("Semester"), 'group_field' => 'sem_number'],

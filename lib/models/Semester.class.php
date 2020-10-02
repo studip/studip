@@ -128,11 +128,11 @@ class Semester extends SimpleORMap
     /**
      * Return a specially orderd array of all semesters
      */
-    public static function findAllVisible(): array
+    public static function findAllVisible($with_before_first = true): array
     {
         return array_values(
-            array_filter(self::getAllAsArray(), function ($semester, $key) {
-                return $GLOBALS['perm']->have_perm('admin') || $semester['visible'] || (int)$key === 0;
+            array_filter(self::getAllAsArray(), function ($semester, $key) use($with_before_first) {
+                return $GLOBALS['perm']->have_perm('admin') || $semester['visible'] || ((int)$key === 0 && $with_before_first);
             }, ARRAY_FILTER_USE_BOTH)
         );
     }

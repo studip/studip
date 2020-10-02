@@ -86,8 +86,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         // check, if the hidden seminar-entries shall be shown
         $show_hidden = Request::int('show_hidden', 0);
         // load semester-data and current semester
-        $this->semesters = array_reverse(SemesterData::getAllSemesterData());
-        var_dump($this->semesters);die;
+        $this->semesters = array_reverse(Semester::findAllVisible(false));
         if (Request::option('semester_id')) {
             $this->current_semester = Semester::find(Request::option('semester_id'));
             $schedule_settings['semester_id'] = Request::option('semester_id');
