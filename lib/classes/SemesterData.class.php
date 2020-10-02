@@ -178,35 +178,6 @@ class SemesterData
     }
 
     /**
-     * Delete semester with the passed id
-     *
-     * @deprecated use semester class instead
-     *
-     * @param  string $semester_id
-     * @return array deleted semester
-     */
-    public static function deleteSemester($semester_id)
-    {
-        $ret = Semester::find($semester_id)->delete();
-        Semester::getAll(true);
-        return $ret;
-    }
-
-    /**
-     * Get semester array for the passed id or false, if none is found
-     *
-     * @deprecated use semester class instead
-     *
-     * @param  string $semester_id
-     * @return array found semester as array or false
-     */
-    public static function getSemesterData($semester_id)
-    {
-        $ret = Semester::find($semester_id);
-        return $ret ? $ret->toArray() : false;
-    }
-
-    /**
      * Get semester array for the passed timestamp or false, if none is found
      *
      * @deprecated use semester class instead
@@ -230,20 +201,6 @@ class SemesterData
     public static function getCurrentSemesterData()
     {
         $ret = Semester::findCurrent();
-        return $ret ? $ret->toArray() : false;
-    }
-
-    /**
-     * Get semester array for the next semester or false, if none is found
-     *
-     * @deprecated use semester class instead
-     *
-     * @param  boolean $timestamp
-     * @return array found semester as array or false
-     */
-    public static function getNextSemesterData($timestamp = false)
-    {
-        $ret = Semester::findNext($timestamp);
         return $ret ? $ret->toArray() : false;
     }
 }

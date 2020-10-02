@@ -96,7 +96,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         } else {
             $this->current_semester = $schedule_settings['semester_id'] ?
                 Semester::find($schedule_settings['semester_id']) :
-                SemesterData::getCurrentSemesterData();
+                Semester::findCurrent();
         }
 
         // check type-safe if days is false otherwise sunday (0) cannot be chosen

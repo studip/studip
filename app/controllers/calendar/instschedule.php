@@ -65,7 +65,7 @@ class Calendar_InstscheduleController extends AuthenticatedController
         if (Request::option('semester_id')) {
             $this->current_semester = Semester::find(Request::option('semester_id'));
         } else {
-            $this->current_semester = SemesterData::getCurrentSemesterData();
+            $this->current_semester = Semester::findCurrent();
         }
 
         $this->entries = (array)CalendarInstscheduleModel::getInstituteEntries($GLOBALS['user']->id,

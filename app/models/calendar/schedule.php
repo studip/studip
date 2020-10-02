@@ -702,7 +702,7 @@ class CalendarScheduleModel
      */
     static function getCurrentSemester()
     {
-        return SemesterData::getCurrentSemesterData();
+        return Semester::findCurrent();
     }
 
     /**
