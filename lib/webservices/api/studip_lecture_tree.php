@@ -15,15 +15,14 @@ class StudipLectureTreeHelper
     function get_seminars_by_sem_tree_id($sem_tree_id, $term_id)
     {
         $db = DBManager::get();
-
-        $semester = SemesterData::getSemesterData($term_id);
+        $semester = Semester::find($term_id);
 
         $stmt = $db->prepare('SELECT s.Seminar_id AS seminar_id, s.Name AS name
                               FROM seminar_sem_tree st
                               JOIN seminare s ON (st.seminar_id = s.Seminar_id)
                               WHERE st.sem_tree_id = ?  AND s.start_time <= ?
                               AND (s.start_time + s.duration_time >= ? OR duration_time = -1)');
-        $stmt->execute([$sem_tree_id, $semester['beginn'], $semester['beginn']]);
+        $stmt->execute([$sem_tree_id, $semester->beginn, $semester->beginn]);
 
         return $stmt->fetchAll();
     }
