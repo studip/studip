@@ -534,7 +534,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                 }
 
                 $repetition_begin = new DateTime();
-                $repetition_begin->setTimestamp($this->begin);
+                $repetition_begin->setTimestamp($this->begin - $this->preparation_time);
                 $date_end = new DateTime();
                 $date_end->setTimestamp($this->end);
                 $repetition_end = new DateTime();
