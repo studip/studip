@@ -154,7 +154,7 @@ class Semester extends SimpleORMap
                     foreach ($semester_data_array as $semester_data) {
                         $semester = self::buildExisting($semester_data);
                         self::$semester_cache[$semester->getId()] = $semester;
-                        if ($semester->current) {
+                        if ($semester->isCurrent()) {
                             self::$current_semester = $semester;
                         }
                     }
@@ -164,7 +164,7 @@ class Semester extends SimpleORMap
                 $semester_data = [];
                 foreach (self::findBySql('1 ORDER BY beginn') as $semester) {
                     self::$semester_cache[$semester->getId()] = $semester;
-                    if ($semester->current) {
+                    if ($semester->isCurrent()) {
                         self::$current_semester = $semester;
                     }
                     $semester_data[] = $semester->toRawArray();
