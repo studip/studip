@@ -100,7 +100,7 @@ class Calendar_ScheduleController extends AuthenticatedController
         }
 
         // check type-safe if days is false otherwise sunday (0) cannot be chosen
-        if (!$days) {
+        if ($days === false) {
             if (Request::getArray('days')) {
                 $this->days = array_keys(Request::getArray('days'));
             } else {
