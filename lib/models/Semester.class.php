@@ -37,10 +37,10 @@ class Semester extends SimpleORMap
     {
         $config['db_table'] = 'semester_data';
 
-        $config['additional_fields']['first_sem_week'] = true;
-        $config['additional_fields']['last_sem_week'] = true;
-        $config['additional_fields']['current'] = true;
-        $config['additional_fields']['past'] = true;
+        $config['additional_fields']['first_sem_week']['get'] = 'getFirstSemesterWeek';
+        $config['additional_fields']['last_sem_week']['get'] = 'getLastSemesterWeek';
+        $config['additional_fields']['current']['get'] = 'isCurrent';
+        $config['additional_fields']['past']['get'] = 'isPast';
 
         $config['additional_fields']['absolute_seminars_count'] = [
             'get' => 'seminarCounter',
@@ -320,7 +320,7 @@ class Semester extends SimpleORMap
      */
     public function isPast()
     {
-        return $this['ende'] < time();
+        return $this->ende < time();
     }
 
     /**
