@@ -5,8 +5,8 @@
             $flash['delete']['name']
         ),
        $controller->deleteURL($flash['delete']['datafield_id'],['delete' => 1]),
-       $controller->deleteURL($flash['delete']['datafield_id'],['back' => 1]),
-       ); ?>
+       $controller->deleteURL($flash['delete']['datafield_id'],['back' => 1])
+    ); ?>
 <? endif; ?>
 
 <!-- Alle Datenfelder  -->
