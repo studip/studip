@@ -57,7 +57,7 @@ $sem_browse_obj->target_url = "dispatch.php/course/details/";  //teilt der nachf
 $sem_browse_obj->target_id = "sem_id";        //teilt der nachfolgenden Include mit, wie die id die übergeben wird, bezeichnet werden soll
 $sem_browse_obj->sem_browse_data['level'] = $level;
 if ($show_semester) {
-    $sem_number = Semester::getIndexById($show_semester,false);
+    $sem_number = Semester::getIndexById($show_semester);
     $sem_browse_obj->sem_browse_data['default_sem'] = $sem_number;
     $sem_browse_obj->sem_number[0] = $sem_number;
 }

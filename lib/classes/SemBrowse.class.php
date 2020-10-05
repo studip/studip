@@ -745,7 +745,7 @@ class SemBrowse {
                     continue;
                 }
 
-                $current_semester_index = Semester::getIndexById(Semester::findCurrent()->semester_id, false);
+                $current_semester_index = Semester::getIndexById(Semester::findCurrent()->semester_id);
                 foreach (array_keys($detail['Seminar_id']) as $seminar_id) {
                     $start_sem = key($sem_data[$seminar_id]['sem_number']);
                     if ($sem_number_end == -1) {
@@ -1251,7 +1251,7 @@ class SemBrowse {
 
         // simulate button clicked if semester was changed
         if (Request::option('search_sem_sem', $_SESSION['sem_browse_data']['default_sem'])
-                != $_SESSION['sem_browse_data']['default_sem']) {
+                != $_SESSION['sem_browse_data']['default_sem']) {die;
             $_SESSION['sem_browse_data']['default_sem'] = Request::option('search_sem_sem');
             if ($_SESSION['sem_browse_data']['sset']) {
                 Request::set('search_sem_quick_search_parameter', $_SESSION['sem_browse_data']['sset']);
@@ -1295,9 +1295,9 @@ class SemBrowse {
         }
 
         // set default values
-        if (!$_SESSION['sem_browse_data']['default_sem']) {
+        if ($_SESSION['sem_browse_data']['default_sem']) {
             $_SESSION['sem_browse_data']['default_sem'] =
-                    Semester::getIndexById(self::getDefaultSemester(), false)
+                    Semester::getIndexById(self::getDefaultSemester())
                         ?: 'all';
         }
         $_SESSION['sem_browse_data']['show_class'] =

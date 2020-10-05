@@ -164,7 +164,7 @@ function export_range($range_id)
             $output_startet = true;
         }
         if (isset($ex_sem) && $semester = Semester::find($ex_sem)) {
-            $args = ['sem_number' => [Semester::getIndexById($ex_sem, false)]];
+            $args = ['sem_number' => [Semester::getIndexById($ex_sem)]];
         } else {
             $args = [];
         }
