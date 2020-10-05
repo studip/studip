@@ -1340,29 +1340,44 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      * @param string $field
      * @return null|string|SimpleORMapCollection
      */
-    function getValue($field)
+    public function getValue($field)
     {
         $field = mb_strtolower($field);
-        if (in_array($field, $this->known_slots)) {
-            if (isset($this->getter_setter_map[$field]['get'])) {
-                return call_user_func([$this, $this->getter_setter_map[$field]['get']]);
-            }
-            if (array_key_exists($field, $this->content)) {
-                return  $this->content[$field];
-            } else if (array_key_exists($field, $this->relations)) {
-                $this->initRelation($field);
-                return $this->relations[$field];
-            } elseif (isset($this->additional_fields[$field]['get'])) {
-                if ($this->additional_fields[$field]['get'] instanceof Closure) {
-                    return call_user_func_array($this->additional_fields[$field]['get'], [$this, $field]);
-                } else {
-                    return call_user_func([$this, $this->additional_fields[$field]['get']], $field);
-                }
-            }
-        } else {
-            throw new InvalidArgumentException(get_class($this) . '::'.$field . ' not found.');
 
+        // No value defined, throw exception
+        if (!in_array($field, $this->known_slots)) {
+            throw new InvalidArgumentException(static::class . '::'.$field . ' not found.');
         }
+
+        // Get value by getter
+        if (isset($this->getter_setter_map[$field]['get'])) {
+            return call_user_func([$this, $this->getter_setter_map[$field]['get']]);
+        }
+
+        // Get value from content
+        if (array_key_exists($field, $this->content)) {
+            return $this->content[$field];
+        }
+
+        // Get value from relation
+        if (array_key_exists($field, $this->relations)) {
+            $this->initRelation($field);
+            return $this->relations[$field];
+        }
+
+        // Get value from additional_field
+        if (isset($this->additional_fields[$field]['get'])) {
+            // Getter is defined as a closure
+            if ($this->additional_fields[$field]['get'] instanceof Closure) {
+                return call_user_func_array($this->additional_fields[$field]['get'], [$this, $field]);
+            }
+
+            // Getter is defined as a method of this object
+            return call_user_func([$this, $this->additional_fields[$field]['get']], $field);
+        }
+
+        // No value found, throw exception
+        throw new RuntimeException('No value could be found for ' . static::class . '::' . $field);
     }
 
     /**
