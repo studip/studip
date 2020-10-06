@@ -9,7 +9,7 @@ use JsonApi\Routes\Forum\ForumCategoryEntriesIndex;
 use JsonApi\Routes\Forum\ForumEntryEntriesIndex;
 use JsonApi\Errors\RecordNotFoundException;
 
-class ForumShowEntryTest extends \Codeception\Test\Unit
+class ForumEntriesShowTest extends \Codeception\Test\Unit
 {
     use ForumTestHelper;
 

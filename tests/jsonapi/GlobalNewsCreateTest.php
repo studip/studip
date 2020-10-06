@@ -2,7 +2,7 @@
 
 use JsonApi\Routes\News\StudipNewsCreate;
 
-class StudipNewsCreateTest extends \Codeception\Test\Unit
+class GlobalNewsCreateTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester

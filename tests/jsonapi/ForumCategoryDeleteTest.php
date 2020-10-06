@@ -6,7 +6,7 @@ use JsonApi\Models\ForumCat;
 use JsonApi\Routes\Forum\ForumCategoriesDelete;
 use JsonApi\Errors\RecordNotFoundException;
 
-class ForumCategoriesDeleteTest extends \Codeception\Test\Unit
+class ForumCategoryDeleteTest extends \Codeception\Test\Unit
 {
     use ForumTestHelper;
 

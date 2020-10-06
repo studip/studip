@@ -5,7 +5,7 @@ require_once 'ForumTestHelper.php';
 use JsonApi\Routes\Forum\ForumCategoriesCreate;
 use JsonApi\Errors\RecordNotFoundException;
 
-class ForumCategoryCreateTest extends \Codeception\Test\Unit
+class ForumCategoriesCreateTest extends \Codeception\Test\Unit
 {
     use ForumTestHelper;
 

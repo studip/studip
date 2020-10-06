@@ -2,7 +2,7 @@
 
 use JsonApi\Routes\News\ByUserIndex;
 
-class showUsersNewsTest extends \Codeception\Test\Unit
+class UsersShowNewsTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
