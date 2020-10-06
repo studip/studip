@@ -1,7 +1,7 @@
 <?php
 
 
-class CommentDeleteTest extends \Codeception\Test\Unit
+class CommentsDeleteTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
