@@ -1,6 +1,6 @@
 <br>
 <a name="awaiting"></a>
-<form action="<?= $controller->url_for('course/members/edit_awaiting/') ?>" method="post" data-dialog="size=50%">
+<form action="<?= $controller->link_for('course/members/edit_awaiting') ?>" method="post" data-dialog="size=50%">
     <?= CSRFProtection::tokenTag() ?>
     <table class="default collapsable ">
         <caption>
@@ -12,11 +12,9 @@
                     'course_id'            => $course_id,
                     'default_subject'      => $subject,
                 ])?>" data-dialog>
-                    <?= Icon::create(
-                        'inbox',
-                        Icon::ROLE_CLICKABLE,
-                        ['title' =>  _('Nachricht mit Mailweiterleitung an alle Wartenden versenden')]
-                    ) ?>
+                    <?= Icon::create('inbox')->asImg([
+                        'title' =>  _('Nachricht mit Mailweiterleitung an alle Wartenden versenden'),
+                    ]) ?>
                 </a>
             </span>
         </caption>
@@ -35,7 +33,9 @@
             <? if (!$is_locked) : ?>
                 <th>
                     <input aria-label="<?= _('NutzerInnen auswählen') ?>"
-                           type="checkbox" name="all" value="1" data-proxyfor=":checkbox[name^=awaiting]">
+                           type="checkbox" name="all" value="1"
+                           data-proxyfor=":checkbox[name^=awaiting]"
+                           data-activates="#action_awaiting,button[name='submit_awaiting']">
                 </th>
             <? endif ?>
                 <th></th>
@@ -74,8 +74,9 @@
             <tr>
             <? if (!$is_locked) : ?>
                 <td>
-                    <input aria-label="<?= _('Alle NutzerInnen auswählen') ?>" type="checkbox"
-                           name="awaiting[<?= $waiting['user_id'] ?>]" value="1">
+                    <input aria-label="<?= _('NutzerIn auswählen') ?>" type="checkbox"
+                           name="awaiting[<?= htmlReady($waiting['user_id']) ?>]" value="1"
+                           <? if (isset($flash['checked']) && in_array($waiting['user_id'], $flash['checked'])) echo 'checked'; ?>>
                         </td>
             <? endif ?>
                 <td style="text-align: right"><?= sprintf('%02d', ++$nr) ?></td>
@@ -152,7 +153,7 @@
                         <option value="message"><?=_('Nachricht senden')?></option>
 <!--                    <option value="copy_to_sem"><?= _('In Seminar verschieben/kopieren') ?></option>-->
                     </select>
-                    <input type="hidden" value="<?= $waiting_type ?>" name="waiting_type"/>
+                    <input type="hidden" value="<?= htmlReady($waiting_type) ?>" name="waiting_type"/>
                     <?= \Studip\Button::create(_('Ausführen'), 'submit_awaiting') ?>
                 </td>
             </tr>

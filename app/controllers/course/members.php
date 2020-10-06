@@ -145,6 +145,8 @@ class Course_MembersController extends AuthenticatedController
         $this->subject = $this->getSubject();
         $this->groups = $this->status_groups;
         // Check Seminar
+        $this->waitingTitle = _('Warteliste (nicht aktiv)');
+        $this->waiting_type = 'awaiting';
         if ($this->is_tutor && $sem->isAdmissionEnabled()) {
             $this->course = $sem;
             $distribution_time = $sem->getCourseSet()->getSeatDistributionTime();
