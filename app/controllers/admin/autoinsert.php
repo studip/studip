@@ -1,6 +1,4 @@
 <?php
-
-# Lifter010: TODO
 /**
  * autu_insert.php - controller class for the auto insert seminars
  *
@@ -18,31 +16,25 @@
  */
 class Admin_AutoinsertController extends AuthenticatedController
 {
-
     /**
      * Common tasks for all actions.
      */
     public function before_filter(&$action, &$args)
     {
-        global $perm;
         parent::before_filter($action, $args);
 
         // user must have root permission
-        $perm->check('root');
-
-        // set navigation
+        $GLOBALS['perm']->check('root');
         Navigation::activateItem('/admin/user/auto_insert');
-
-        //pagelayout
         PageLayout::setTitle(_('Automatisiertes Eintragen verwalten'));
-        PageLayout::setHelpKeyword("Admins.AutomatisiertesEintragen");
+        PageLayout::setHelpKeyword('Admins.AutomatisiertesEintragen');
     }
 
     /**
      * Maintenance view for the auto insert parameters
      *
      */
-    function index_action()
+    public function index_action()
     {
         // search seminars
         if (Request::submitted('suchen')) {
@@ -50,12 +42,15 @@ class Admin_AutoinsertController extends AuthenticatedController
                 $this->sem_search = Request::get('sem_search');
                 $this->sem_select = Request::option('sem_select');
                 $search = new SeminarSearch();
-                $this->seminar_search = $search->getResults(Request::get('sem_search'), ['search_sem_sem' => Request::option('sem_select')]);
+                $this->seminar_search = $search->getResults
+                    (Request::get('sem_search'),
+                    ['search_sem_sem' => Request::option('sem_select')]
+                );
                 if (count($this->seminar_search) == 0) {
-                    $this->flash['message'] = _("Es wurden keine Veranstaltungen gefunden.");
+                    PageLayout::postInfo(_('Es wurden keine Veranstaltungen gefunden.'));
                 }
             } else {
-                $this->flash['error'] = _("Bitte geben Sie einen Suchparameter ein.");
+                PageLayout::postError(_('Bitte geben Sie einen Suchparameter ein.'));
             }
         }
         $seminare = AutoInsert::getAllSeminars();
@@ -71,6 +66,14 @@ class Admin_AutoinsertController extends AuthenticatedController
         }
 
         $this->userdomains = $domains;
+
+        $links = new ActionsWidget();
+        $links->addLink(
+            _('Benutzergruppen manuell eintragen'),
+            $this->manualURL(),
+            Icon::create('visibility-visible')
+        );
+        Sidebar::Get()->addWidget($links);
     }
 
     /**
@@ -82,16 +85,16 @@ class Admin_AutoinsertController extends AuthenticatedController
             $sem_id = Request::option('sem_id');
             $domains = Request::getArray('rechte');
             if (empty($domains)) {
-                $this->flash['error'] = _('Mindestens ein Status sollte selektiert werden!');
+                PageLayout::postError(_('Mindestens ein Status sollte selektiert werden!'));
             } else {
                 foreach ($domains as $id => $rechte) {
                     if ($id === 'keine')
                         $id = '';
                     if (!AutoInsert::checkSeminar($sem_id, $id)) {
                         AutoInsert::saveSeminar($sem_id, $rechte, $id);
-                        $this->flash['success'] = _('Die Zuordnung wurde erfolgreich gespeichert!');
+                        PageLayout::postSuccess(_('Die Zuordnung wurde erfolgreich gespeichert!'));
                     } else {
-                        $this->flash['error'] = _('Das Seminar wird bereits zu diesem Zweck verwendet!');
+                        PageLayout::postError(_('Das Seminar wird bereits zu diesem Zweck verwendet!'));
                     }
                 }
             }
@@ -102,9 +105,7 @@ class Admin_AutoinsertController extends AuthenticatedController
     /**
      * Edit a rule
      *
-     * @param md5 $seminar_id
-     * @param string $status
-     * @param int $remove
+     * @param string $seminar_id
      */
     public function edit_action($seminar_id)
     {
@@ -114,20 +115,20 @@ class Admin_AutoinsertController extends AuthenticatedController
         if ($domain === 'keine')
             $domain = '';
         AutoInsert::updateSeminar($seminar_id, $domain, $status, $remove);
-        $this->flash['success'] = _("Die Statusgruppenanpassung wurde erfolgreich übernommen!");
+        PageLayout::postSuccess(_('Die Statusgruppenanpassung wurde erfolgreich übernommen!'));
         $this->redirect('admin/autoinsert');
     }
 
     /**
      * Removes a seminar from the auto-insert list, with modal dialog
      *
-     * @param md5 $seminar_id
+     * @param string $seminar_id
      */
     public function delete_action($seminar_id)
     {
-        if (Request::int('delete') == 1) {
+        if (Request::int('delete') === 1) {
             if (AutoInsert::deleteSeminar($seminar_id)) {
-                $this->flash['success'] = _("Die Zuordnung der Veranstaltung wurde gelöscht!");
+                PageLayout::postSuccess(_('Die Zuordnung der Veranstaltung wurde gelöscht!'));
             }
         } elseif (!Request::get('back')) {
             $this->flash['delete'] = $seminar_id;
@@ -139,16 +140,15 @@ class Admin_AutoinsertController extends AuthenticatedController
      * Maintenance view for the manual insert parameters
      *
      */
-    function manual_action()
+    public function manual_action()
     {
-        $_request = Request::GetInstance();
-
+        PageLayout::setTitle(_('Manuelles Eintragen von Nutzergruppen in Veranstaltungen'));
         if (Request::submitted('submit')) {
             $filters = array_filter(Request::getArray('filter'));
             if (!Request::get('sem_id') || Request::get('sem_id') == 'false') {
-                $this->flash['error'] = _('Ungültiger Aufruf');
+                PageLayout::postError(_('Ungültiger Aufruf'));
             } elseif (!count($filters)) {
-                $this->flash['error'] = _('Keine Filterkriterien gewählt');
+                PageLayout::postError(_('Keine Filterkriterien gewählt'));
             } else {
                 $seminar = Seminar::GetInstance(Request::option('sem_id'));
                 $group = select_group($seminar->getSemesterStartTime());
@@ -169,14 +169,23 @@ class Admin_AutoinsertController extends AuthenticatedController
 
                 //messagebox
                 $text = sprintf(
-                        _('Es wurden %u von %u möglichen Personen in die Veranstaltung %s eingetragen.'), $real_users, count($user_ids), sprintf('<a href="%s">%s</a>', URLHelper::getLink('dispatch.php/course/details/', ['cid' => $seminar->getId()]), htmlReady($seminar->getName()))
+                    _('Es wurden %u von %u möglichen Personen in die Veranstaltung %s eingetragen.'),
+                    $real_users,
+                    count($user_ids),
+                    sprintf(
+                        '<a href="%s">%s</a>',
+                        URLHelper::getLink('dispatch.php/course/details/', ['cid' => $seminar->getId()]),
+                        htmlReady($seminar->getName()
+                        )
+                    )
                 );
+                $details = [_('Etwaige Abweichungen der Personenzahlen enstehen durch bereits vorhandene bzw. wieder ausgetragene Personen.')];
                 if ($real_users > 0) {
-                    $this->flash['success'] = $text;
+                    PageLayout::postSuccess($text, $details);
                 } else {
-                    $this->flash['message'] = $text;
+                    PageLayout::postInfo($text, $details);
                 }
-                $this->flash['detail'] = [_('Etwaige Abweichungen der Personenzahlen enstehen durch bereits vorhandene bzw. wieder ausgetragene Personen.')];
+
                 $this->redirect('admin/autoinsert/manual');
             }
         }
@@ -198,10 +207,10 @@ class Admin_AutoinsertController extends AuthenticatedController
                 $search = new SeminarSearch('number-name');
                 $this->seminar_search = $search->getResults(Request::get('sem_search'), ['search_sem_sem' => $this->sem_select]);
                 if (count($this->seminar_search) == 0) {
-                    $this->flash['message'] = _("Es wurden keine Veranstaltungen gefunden.");
+                    PageLayout::postInfo(_('Es wurden keine Veranstaltungen gefunden.'));
                 }
             } else {
-                $this->flash['error'] = _("Im Suchfeld wurde nichts eingetragen!");
+                PageLayout::postError(_('Im Suchfeld wurde nichts eingetragen!'));
             }
         }
 
@@ -218,17 +227,19 @@ class Admin_AutoinsertController extends AuthenticatedController
             'status'       => _('Statusgruppe'),
             'domain'       => _('Domäne')
         ];
+
+        $links = new ActionsWidget();
+        $links->addLink(_('Übersicht'), $this->indexURL(), Icon::create('edit'));
+        Sidebar::Get()->addWidget($links);
+
     }
 
     /**
      * Count how many user a insert
-     * @param $filter (e.g. studycourse, studydegree, institut, studysemester)
      */
     public function manual_count_action()
     {
-
         $filters = array_filter(Request::getArray('filter'));
-
         if (empty($filters)) {
             $data = ['error' => _('Keine Filterkriterien gewählt')];
         } else {
@@ -241,5 +252,4 @@ class Admin_AutoinsertController extends AuthenticatedController
         $this->set_content_type('application/json;charset=utf-8');
         return $this->render_text(json_encode($data));
     }
-
 }
