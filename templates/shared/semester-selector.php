@@ -4,7 +4,7 @@
 <select <?= $attributes ?>>
     <? foreach ($semesters as $sem_key => $one_sem) : ?>
         <? $one_sem['key'] = $sem_key; ?>
-        <option value="<?= $one_sem[$option_value] ?>" <?= ($one_sem['semester_id'] == $default ? "selected" : "") ?>>
+        <option value="<?= $one_sem[$option_value] ?>" <?= ($one_sem[$option_value] == $default ? "selected" : "") ?>>
             <?= htmlReady($one_sem['name']) ?>
         </option>
     <? endforeach ?>

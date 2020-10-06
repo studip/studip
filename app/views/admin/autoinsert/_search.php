@@ -9,7 +9,6 @@
             $sem_select, 'semester_id',
             true
         )?>
-
     </label>
     <label>
         <?= _('Veranstaltung') ?>
