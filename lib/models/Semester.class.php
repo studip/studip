@@ -207,12 +207,18 @@ class Semester extends SimpleORMap
      *
      * @param $semester_id
      * @param bool $with_before_first
+     * @param bool $only_visible
      * @return bool|int
      * @deprecated ASK YOURSELF WHAT THE F!!! YOU ARE DOING
      */
-    public static function getIndexById($semester_id, $with_before_first = true)
+    public static function getIndexById($semester_id, $with_before_first = true, $only_visible = false)
     {
-        foreach (self::getAllAsArray($with_before_first) as $index => $semester) {
+        if($only_visible) {
+            $semesters = self::findAllVisible($with_before_first);
+        } else {
+            $semesters = self::getAllAsArray($with_before_first);
+        }
+        foreach ($semesters as $index => $semester) {
             if (@$semester['semester_id'] === $semester_id) {
                 return $index;
             }

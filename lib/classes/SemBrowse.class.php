@@ -745,7 +745,7 @@ class SemBrowse {
                     continue;
                 }
 
-                $current_semester_index = Semester::getIndexById(Semester::findCurrent()->semester_id);
+                $current_semester_index = Semester::getIndexById(Semester::findCurrent()->semester_id, true, true);
                 foreach (array_keys($detail['Seminar_id']) as $seminar_id) {
                     $start_sem = key($sem_data[$seminar_id]['sem_number']);
                     if ($sem_number_end == -1) {
@@ -1295,9 +1295,9 @@ class SemBrowse {
         }
 
         // set default values
-        if (!$_SESSION['sem_browse_data']['default_sem']) {
+        if ($_SESSION['sem_browse_data']['default_sem']) {
             $_SESSION['sem_browse_data']['default_sem'] =
-                    Semester::getIndexById(self::getDefaultSemester())
+                    Semester::getIndexById(self::getDefaultSemester(), false, true)
                         ?: 'all';
         }
         $_SESSION['sem_browse_data']['show_class'] =
