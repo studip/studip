@@ -11,17 +11,23 @@ use Studip\Button, Studip\LinkButton;
 
 <?= $this->render_partial("course/studygroup/_feedback") ?>
 <? if (!$configured): ?>
-    <?= MessageBox::error(_('Keine Veranstaltungsart für Studiengruppen gefunden'),
-        [sprintf(_('Die Standardkonfiguration für Studiengruppen in der Datei <b>%s</b> fehlt oder ist unvollständig.'),
-                'config.inc.php')]) ?>
+    <?= MessageBox::error(_('Keine Veranstaltungsart für Studiengruppen gefunden'), [
+        sprintf(
+            _('Die Standardkonfiguration für Studiengruppen in der Datei <b>%s</b> fehlt oder ist unvollständig.'),
+            'config.inc.php'
+        )
+    ]) ?>
 <? endif ?>
-<? if (!Config::getInstance()->getValue('STUDYGROUPS_ENABLE')):?>
-    <?= MessageBox::info( _("Die Studiengruppen sind derzeit <b>nicht</b> aktiviert.")
-            . '<br>'. _("Zum Aktivieren füllen Sie bitte das Formular aus und klicken Sie auf \"Speichern\".")); ?>
+<? if (!Config::getInstance()->STUDYGROUPS_ENABLE):?>
+    <?= MessageBox::info(
+        _('Die Studiengruppen sind derzeit <b>nicht</b> aktiviert.')
+        . '<br>'
+        . _('Zum Aktivieren füllen Sie bitte das Formular aus und klicken Sie auf "Speichern".')
+    ) ?>
 <? else: ?>
     <? if ($can_deactivate) : ?>
-        <?= MessageBox::info( _("Die Studiengruppen sind aktiviert.")) ?>
-        <form action="<?= $controller->url_for('course/studygroup/deactivate') ?>" method="post">
+        <?= MessageBox::info(_('Die Studiengruppen sind aktiviert.')) ?>
+        <form action="<?= $controller->deactivate() ?>" method="post">
         <?= CSRFProtection::tokenTag() ?>
         <?= Button::create(_("Deaktivieren"), 'deaktivieren') ?>
         </form>
@@ -30,7 +36,7 @@ use Studip\Button, Studip\LinkButton;
     <? endif; ?>
     <br>
 <? endif;?>
-<form class="default" action="<?= $controller->url_for('course/studygroup/savemodules') ?>" method="post">
+<form class="default" action="<?= $controller->savemodules() ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
     <!-- Title -->
     <fieldset>
@@ -38,22 +44,22 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <?= _("Alle Studiengruppen werden folgender Einrichtung zugeordnet:") ?><br>
             <select name="institute" class="nested-select">
-            <? if (!Config::getInstance()->getValue('STUDYGROUPS_ENABLE')):?>
+            <? if (!Config::getInstance()->STUDYGROUPS_ENABLE):?>
                 <option value="" class="is-placeholder">
                     <?= _('-- Bitte auswählen --') ?>
                 </option>
             <? endif ?>
             <? foreach ($institutes as $fak_id => $faculty) : ?>
-                <option value="<?= $fak_id ?>" class="nested-item-header"
-                    <?= ($fak_id == $default_inst) ? 'selected="selected"' : ''?>>
+                <option value="<?= htmlReady($fak_id) ?>" class="nested-item-header"
+                    <? if ($fak_id === $default_inst) echo 'selected'; ?>>
                     <?= htmlReady(my_substr($faculty['name'], 0, 60)) ?>
                 </option>
-                <? foreach ($faculty['childs'] as $inst_id => $inst_name) : ?>
-                <option value="<?= $inst_id ?>" class="nested-item"
-                    <?= ($inst_id == $default_inst) ? 'selected="selected"' : ''?>>
+              <? foreach ($faculty['childs'] as $inst_id => $inst_name) : ?>
+                <option value="<?= htmlReady($inst_id) ?>" class="nested-item"
+                    <? if ($inst_id == $default_inst) echo 'selected'; ?>>
                     <?= htmlReady(my_substr($inst_name, 0, 60)) ?>
                 </option>
-                <? endforeach; ?>
+              <? endforeach; ?>
             <? endforeach; ?>
             </select>
         </label>
@@ -61,14 +67,14 @@ use Studip\Button, Studip\LinkButton;
 
     <!-- Title -->
     <fieldset>
-        <legend><?= _("Nutzungsbedingungen") ?></legend>
+        <legend><?= _('Nutzungsbedingungen') ?></legend>
         <label>
-            <?= _("Geben Sie hier Nutzungsbedingungen für die Studiengruppen ein. ".
-                    "Diese müssen akzeptiert werden, bevor eine Studiengruppe angelegt werden kann.") ?>
-            <textarea name="terms" style="width: 90%" rows="10" style='align:middle;'><?= htmlReady($terms) ?></textarea>
+            <?= _('Geben Sie hier Nutzungsbedingungen für die Studiengruppen ein. '
+                . 'Diese müssen akzeptiert werden, bevor eine Studiengruppe angelegt werden kann.') ?>
+            <textarea name="terms"><?= htmlReady($terms) ?></textarea>
         </label>
     </fieldset>
     <footer>
-        <?= Button::createAccept(_("Speichern"), 'speichern') ?>
+        <?= Button::createAccept(_('Speichern'), 'speichern') ?>
     </footer>
 </form>
