@@ -306,10 +306,15 @@ class Migrator
         }
 
         // Sort migrations in correct order
-        if ($this->isUp()) {
-            ksort($migrations);
-        } else {
-            krsort($migrations);
+        uksort($migrations, function ($a, $b) {
+            if (mb_strlen($a) > 8 && mb_strlen($b) > 8) {
+                return $a - $b;
+            }
+            return mb_substr($a, 0, 8) - mb_substr($b, 0, 8);
+        });
+
+        if (!$this->isUp()) {
+            $migrations = array_reverse($migrations, true);
         }
 
         $result = [];
