@@ -31,7 +31,6 @@ class MvvFileFileref extends ModuleManagementModel
         $config['belongs_to']['file_ref'] = array(
             'class_name' => 'FileRef',
             'foreign_key' => 'fileref_id',
-            'assoc_func' => 'findCached',
         );
         $config['additional_fields']['filetype']['get'] = 'getFiletype';
         $config['additional_fields']['filename']['get'] = 'getFilename';
