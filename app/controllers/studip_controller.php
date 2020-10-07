@@ -228,11 +228,17 @@ abstract class StudipController extends Trails_Controller
                 case 'sorm':
                     $info = $class_infos[$i];
 
+                    $id = null;
+                    if ($arg != -1) {
+                        $id = $arg;
+                    }
+                    if (mb_strpos($id, SimpleORMap::ID_SEPARATOR) !== false) {
+                        $id = explode(SimpleORMap::ID_SEPARATOR, $id);
+                    }
+
                     $reflection = new ReflectionClass($info['model']);
-                    $sorm = $reflection->newInstance(explode(
-                        SimpleORMap::ID_SEPARATOR,
-                        $arg == -1 ? null : $arg
-                    ));
+
+                    $sorm = $reflection->newInstance($id);
                     if (!$info['optional'] && $sorm->isNew()) {
                         throw new Trails_Exception(
                             404,
