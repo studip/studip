@@ -109,7 +109,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
 
     public static function CountUnread($range_id = 'studip', $user_id = false)
     {
-        $query = "SELECT SUM(chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id != :user_id)
+        $query = "SELECT SUM(nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id != :user_id)
                   FROM news_range a
                   LEFT JOIN news nw ON (a.news_id = nw.news_id AND UNIX_TIMESTAMP() BETWEEN date AND date + expire)
                   LEFT JOIN object_user_visits b ON (b.object_id = nw.news_id AND b.user_id = :user_id AND b.type = 'news')
